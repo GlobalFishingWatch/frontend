@@ -1,6 +1,6 @@
 # @satellitestudio/eslint-config
 
-[![npm version](https://badge.fury.io/js/@satellitestudio/eslint-config.svg)](https://badge.fury.io/js/@satellitestudio/eslint-config)
+[![npm version](https://badge.fury.io/js/%40satellitestudio%2Feslint-config.svg)](https://badge.fury.io/js/%40satellitestudio%2Feslint-config)
 [![GitHub license](https://img.shields.io/github/license/satellitestudio/eslint-config.svg)](https://github.com/satellitestudio/eslint-config/blob/master/LICENCE)
 
 Eslint config based on [eslint-config-react-app](https://www.npmjs.com/package/eslint-config-react-app) with some custom rules and prettier integration
