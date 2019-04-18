@@ -1,0 +1,42 @@
+{
+  "name": "@satellitestudio/eslint-config",
+  "version": "1.0.1",
+  "description": "Eslint config ready to be used in our projects",
+  "keywords": [
+    "eslint",
+    "eslint-config",
+    "prettier",
+    "prettier-config"
+  ],
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "typescript.js",
+    "prettier.js",
+    "prettier.config.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/satellitestudio/eslint-config"
+  },
+  "author": "Satellite Studio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/satellitestudio/eslint-config/issues"
+  },
+  "homepage": "https://github.com/satellitestudio/eslint-config#readme",
+  "peerDependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.6.0",
+    "@typescript-eslint/parser": "^1.6.0",
+    "babel-eslint": "9.0.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-config-react-app": "^3.0.8",
+    "eslint-plugin-flowtype": "^3.6.1",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-react": "^7.12.4",
+    "prettier": "^1.17.0"
+  }
+}
