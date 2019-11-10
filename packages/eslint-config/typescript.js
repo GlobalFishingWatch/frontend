@@ -13,7 +13,6 @@ module.exports = {
     }
   },
   rules: {
-    "@typescript-eslint/explicit-member-accessibility": 0,
     "@typescript-eslint/explicit-function-return-type": 0,
   }
 }

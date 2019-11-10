@@ -1,6 +1,6 @@
 {
   "name": "@satellitestudio/eslint-config",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Eslint config ready to be used in our projects",
   "keywords": [
     "eslint",
