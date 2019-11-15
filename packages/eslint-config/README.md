@@ -72,34 +72,14 @@ Install the ESLint and Prettier VSCode extensions:
 ext install esbenp.prettier-vscode dbaeumer.vscode-eslint
 ```
 
-Activate autofix on save and disable format on save to avoid run it twice
-
-![vscode config autofix](https://github.com/satellitestudio/eslint-config/blob/master/vscode-autofix.png?raw=true)
-
-or copy this to `settings.json``
+Copy this to `settings.json`
 ```json
-"[javascript]": {
-  "editor.formatOnSave": false, // avoids running the format twice
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
-},
-"[javascriptreact]": {
-  "editor.formatOnSave": false,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
-},
-"[typescript]": {
-  "editor.formatOnSave": false
-},
-"[typescriptreact]": {
-  "editor.formatOnSave": false,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
-},
-"eslint.autoFixOnSave": true,
-"eslint.validate": [
-  "javascript",
-  "javascriptreact",
-  { "language": "typescript", "autoFix": true },
-  { "language": "typescriptreact", "autoFix": true }
-],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": false, // avoids running the format twice,
+  "eslint.autoFixOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
 ```
 
 ## LICENCE
