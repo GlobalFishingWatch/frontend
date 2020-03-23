@@ -1,9 +1,10 @@
 ### Ideas
 
-Include:
+Include all dependencies:
 - layer-composer
 - map-components (maybe rename to ui-components)
 - api-client
+- https://github.com/satellitestudio/eslint-config ?
 
 Maybe:
 - track-inspector / map-client v3.0
