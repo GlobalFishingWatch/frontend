@@ -27,7 +27,7 @@ Maybe maybe:
 - We should take the chance for map-components to:
   - rename to ui-components
   - remove Map module (keep legacy map-components for map-client and data-portal) 
-- Keep git history (`lerna import`)
+- Keep git history (`lerna import`) - we could also DGAF and archive old repos in case its needed
 - Lerna or Yarn workspaces?
 - **all the code is going to be public** - is that going to be aproblem (check with Enrique)
 
