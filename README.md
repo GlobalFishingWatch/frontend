@@ -1,4 +1,4 @@
-### Ideas
+### Structure
 
 Include all dependencies:
 - layer-composer
@@ -16,7 +16,7 @@ Maybe maybe:
 - Amathea?
 
 
-### Questions/idea
+### Questions/ideas
 
 - Only dependencies or also main project, or even other projects?
 - If we include other projects, how this behaves in cloud build?
