@@ -1,3 +1,5 @@
+_Embrace the monorepo. The monorepo is your friend and wants you to be happy._
+
 ### Structure
 
 Include all dependencies:
