@@ -19,7 +19,7 @@ Maybe maybe:
 ### Questions/ideas
 
 - Only dependencies or also main project, or even other projects?
-- If we include other projects, how this behaves in cloud build?
+- If we include other projects, how this behaves in cloud build? (check with Raul)
 - If we don't include other projects, must think harder on how to share more config between projects (same as we are doing already for eslint config, but also for testing, automatic dependency bumping, etc)
 - Should we be on the same version for all deps? (Lerna's _fixed versioning_)
 - We should take the chance for map-components to:
@@ -27,6 +27,7 @@ Maybe maybe:
   - remove Map module (keep legacy map-components for map-client and data-portal) 
 - Keep git history (`lerna import`)
 - Lerna or Yarn workspaces?
+- **all the code is going to be public** - is that going to be aproblem (check with Enrique)
 
 
 ### Links
