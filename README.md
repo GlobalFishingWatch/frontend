@@ -4,6 +4,7 @@ _Embrace the monorepo. The monorepo is your friend and wants you to be happy._
 
 Include all dependencies:
 - layer-composer
+   - fourwings (extracted from layer-composer?)
 - map-components (maybe rename to ui-components)
 - api-client
 - https://github.com/satellitestudio/eslint-config ?
