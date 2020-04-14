@@ -5,5 +5,6 @@ module.exports = {
     'prettier/prettier': 'error',
     'react/prop-types': 'error',
     'react/require-default-props': 'error',
+    'react/jsx-fragments': ['error', 'element'],
   },
 }
