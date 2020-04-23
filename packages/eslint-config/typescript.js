@@ -9,10 +9,11 @@ module.exports = {
   plugins: ['@typescript-eslint', 'react'],
   settings: {
     react: {
-      version: 'detect'
-    }
+      version: 'detect',
+    },
   },
   rules: {
-    "@typescript-eslint/explicit-function-return-type": 0,
-  }
+    'react/jsx-fragments': ['error', 'element'],
+    '@typescript-eslint/explicit-function-return-type': 0,
+  },
 }
