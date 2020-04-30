@@ -6,6 +6,7 @@
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "ISC",
   "main": "dist/index.js",
+  "typings": "dist/types/index.d.ts",
   "directories": {
     "lib": "lib",
     "test": "__tests__"

@@ -2,5 +2,8 @@
 
 import ApiClient from '@globalfishingwatch/api-client'
 
-console.log('hoook')
-ApiClient()
+export default () => {
+  console.log('hoook')
+  ApiClient()
+}
+
