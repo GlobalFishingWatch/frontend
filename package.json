@@ -43,7 +43,9 @@
     "eslint-plugin-prettier": "^3.1.3",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^4.0.0",
+    "husky": "^4.2.5",
     "lerna": "^3.20.2",
+    "lint-staged": "^10.2.2",
     "prettier": "^2.0.5",
     "rollup": "^2.7.2",
     "rollup-plugin-peer-deps-external": "^2.2.2",
@@ -55,5 +57,23 @@
   "peerDependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.css": [
+      "prettier --write",
+      "stylelint --fix"
+    ],
+    "*.scss": [
+      "prettier --write",
+      "stylelint --syntax=scss --fix"
+    ]
   }
 }
