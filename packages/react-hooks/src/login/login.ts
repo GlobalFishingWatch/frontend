@@ -1,4 +1,4 @@
-import GFWAPI, { UserData } from '@globalfishingwatch/api-client'
+import GFWAPI, { UserData } from '@globalfishingwatch/api-client/src/index'
 import { useState, useEffect } from 'react'
 import { getURLParameterByName, removeUrlParameterByName } from '../utils/url'
 
