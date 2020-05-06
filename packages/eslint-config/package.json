@@ -1,7 +1,7 @@
 {
-  "name": "@satellitestudio/eslint-config",
+  "name": "@globalfishingwatch/eslint-config",
   "version": "1.2.2",
-  "description": "Eslint config ready to be used in our projects",
+  "description": "Eslint config ready to be used in every gfw frontend project",
   "keywords": [
     "eslint",
     "eslint-config",
@@ -17,14 +17,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/satellitestudio/eslint-config"
+    "repository": "git@github.com:GlobalFishingWatch/frontend.git"
   },
   "author": "Satellite Studio",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/satellitestudio/eslint-config/issues"
+    "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
-  "homepage": "https://github.com/satellitestudio/eslint-config#readme",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "peerDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
