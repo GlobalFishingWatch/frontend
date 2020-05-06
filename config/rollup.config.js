@@ -3,12 +3,10 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import external from 'rollup-plugin-peer-deps-external'
-import camelCase from 'lodash/camelcase'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultConfig = {
   input: 'src/index.ts',
-  libraryName: 'api-client',
   file: "dist/index.es5.js",
 }
 const prepareConfig = (customConfig) => {
@@ -23,6 +21,7 @@ const prepareConfig = (customConfig) => {
       format: 'es',
       sourcemap: true,
     },
+    external: ['react', 'react-dom'],
     plugins: [
       // Allow json resolution
       json(),
