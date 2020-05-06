@@ -1,4 +1,3 @@
-
 export function isUrlAbsolute(url: string) {
   if (!url) {
     throw new Error('Url absolute check needs a proper url')

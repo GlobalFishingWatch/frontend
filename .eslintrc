@@ -1,0 +1,3 @@
+{
+  "extends": "@globalfishingwatch/eslint-config/typescript"
+}

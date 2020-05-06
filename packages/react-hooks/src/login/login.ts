@@ -41,4 +41,3 @@ const useGFWLogin = (APIClient: typeof GFWAPI = GFWAPI): GFWLoginHook => {
 }
 
 export default useGFWLogin
-
