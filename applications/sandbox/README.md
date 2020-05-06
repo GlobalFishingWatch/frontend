@@ -1,11 +1,6 @@
-# `sandbox`
+## Sandbox to test packages
 
-> TODO: description
-
-## Usage
-
+set .env with to have it running with lerna
 ```
-const sandbox = require('sandbox');
-
-// TODO: DEMONSTRATE API
+CI=true
 ```
