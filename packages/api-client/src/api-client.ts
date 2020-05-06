@@ -3,6 +3,8 @@ import { saveAs } from 'file-saver'
 import { isUrlAbsolute } from './utils/url'
 
 const API_GATEWAY =
+  process.env.API_GATEWAY ||
+  process.env.REACT_APP_API_GATEWAY ||
   'https://gateway.api.dev.globalfishingwatch.org'
 export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'
 export const USER_REFRESH_TOKEN_STORAGE_KEY = 'GFW_API_USER_REFRESH_TOKEN'
@@ -58,7 +60,7 @@ export class GFWAPI {
     refreshToken: string
   }
   maxRefreshRetries = 1
-  logging: Promise<any> | null
+  logging: Promise<UserData> | null
 
   constructor({
     debug = false,
@@ -109,7 +111,11 @@ export class GFWAPI {
 
   private setToken(token: string) {
     this.token = token
-    localStorage.setItem(this.storageKeys.token, token)
+    if (token) {
+      localStorage.setItem(this.storageKeys.token, token)
+    } else {
+      localStorage.removeItem(this.storageKeys.token)
+    }
     if (this.debug) {
       console.log('GFWAPI: updated token with', token)
     }
@@ -121,7 +127,11 @@ export class GFWAPI {
 
   private setRefreshToken(refreshToken: string) {
     this.refreshToken = refreshToken
-    localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
+    if (refreshToken) {
+      localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
+    } else {
+      localStorage.removeItem(this.storageKeys.refreshToken)
+    }
     if (this.debug) {
       console.log('GFWAPI: updated refreshToken with', refreshToken)
     }
@@ -148,7 +158,7 @@ export class GFWAPI {
   }
 
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
-    return this._internalFetch<any>(downloadUrl, { json: false })
+    return this._internalFetch<Response>(downloadUrl, { json: false })
       .then((res) => res.blob())
       .then((blob) => {
         saveAs(blob, fileName)
@@ -172,7 +182,9 @@ export class GFWAPI {
         try {
           await this.logging
         } catch (e) {
-          throw new Error(`Fetch resource not executed as the logged failed with url: ${url}`)
+          if (this.debug) {
+            console.log(`Fetch resource executed without login headers in url: ${url}`)
+          }
         }
       }
 
@@ -232,11 +244,6 @@ export class GFWAPI {
               console.log(`GFWAPI: Attemps to retry the request excedeed`)
             }
             console.warn(`GFWAPI: Error fetching ${url}`, e)
-          }
-          if (e instanceof SyntaxError) {
-            throw new Error(
-              `Error fetching resource: JSON parse failed, try setting fetch options to { json: false } - ${url}`
-            )
           }
           throw e
         }
@@ -338,8 +345,7 @@ export class GFWAPI {
           return null
         }
       }
-      resolve(null)
-      return null
+      reject(new Error('No login token provided'))
     })
     return await this.logging
   }
@@ -349,9 +355,13 @@ export class GFWAPI {
       if (this.debug) {
         console.log(`GFWAPI: Logout - tokens cleaned`)
       }
+      await fetch(`${this.baseUrl}/${AUTH_PATH}/logout`, {
+        headers: {
+          'refresh-token': this.refreshToken,
+        },
+      }).then(processStatus)
       this.setToken('')
       this.setRefreshToken('')
-      await this.fetch(`/${AUTH_PATH}/logout`)
       if (this.debug) {
         console.log(`GFWAPI: Logout invalid session api OK`)
       }
