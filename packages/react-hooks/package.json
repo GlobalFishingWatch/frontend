@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/react-hooks",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "set of react hooks to easily use pure js libraries",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -21,6 +21,7 @@
   "scripts": {
     "start": "rollup -c ./rollup.config.js -w",
     "build": "cross-env NODE_ENV=production tsc --module commonjs && rollup -c rollup.config.js",
+    "prepublishOnly" : "yarn build",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
