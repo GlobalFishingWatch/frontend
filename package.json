@@ -13,7 +13,7 @@
   "scripts": {
     "sandbox": "lerna run --scope @globalfishingwatch/sandbox dev",
     "start": "lerna run start --parallel",
-    "build": "lerna run build --parallel",
+    "build": "lerna run build",
     "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn"
   },
   "dependencies": {
@@ -48,7 +48,7 @@
     "lint-staged": "^10.2.2",
     "prettier": "^2.0.5",
     "rollup": "^2.7.2",
-    "rollup-plugin-peer-deps-external": "^2.2.2",
+    "rollup-plugin-terser": "^5.3.0",
     "stylelint": "^13.3.3",
     "stylelint-config-css-modules": "^2.2.0",
     "stylelint-config-prettier": "^8.0.1",
@@ -57,6 +57,8 @@
     "typescript": "^3.8.3"
   },
   "peerDependencies": {
+    "@globalfishingwatch/api-client": "*",
+    "@globalfishingwatch/react-hooks": "*",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },

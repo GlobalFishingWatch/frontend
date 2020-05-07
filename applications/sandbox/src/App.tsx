@@ -6,7 +6,9 @@ import GFWAPI from '@globalfishingwatch/api-client/src/index'
 import { useGFWLogin } from '@globalfishingwatch/react-hooks/src/index'
 
 function App() {
-  const { logged, user } = useGFWLogin(GFWAPI)
+  // used any as types and local definitions are incompatible	  const { logged, user } = useGFWLogin(GFWAPI)
+  // remove the /src/index from the import to use the builded version
+  const { logged, user } = useGFWLogin(GFWAPI as any)
 
   return (
     <div className="App">

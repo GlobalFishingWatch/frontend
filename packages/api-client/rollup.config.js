@@ -1,7 +1,3 @@
-import configure from '../../config/rollup.config'
+import rollup from '../../config/rollup.config'
 
-const pkg = require('./package.json')
-
-export default configure({
-  file: pkg.main,
-})
+export default rollup()

@@ -7,13 +7,14 @@
     "strict": true,
     "sourceMap": true,
     "declaration": true,
+    "declarationMap": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "rootDir": "src",
-    "outDir": "dist/",
+    "rootDir": "../packages",
     "declarationDir": "dist/types",
     "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["src"]
+  "include": ["../packages"],
+  "exclude": ["node_modules"],
 }

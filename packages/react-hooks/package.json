@@ -23,7 +23,7 @@
     "build": "cross-env NODE_ENV=production tsc --module commonjs && rollup -c rollup.config.js",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
-  "bugs": {
-    "url": "https://github.com/GlobalFishingWatch/frontend/issues"
+  "dependencies": {
+    "@globalfishingwatch/api-client": "*"
   }
 }

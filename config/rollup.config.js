@@ -2,17 +2,18 @@ import typescript from '@rollup/plugin-typescript'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
-import external from 'rollup-plugin-peer-deps-external'
+import { terser } from 'rollup-plugin-terser'
+const getYarnWorkspaces = require('get-yarn-workspaces')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultConfig = {
   input: 'src/index.ts',
-  file: "dist/index.es5.js",
+  tsconfig: './tsconfig.json',
 }
-const prepareConfig = (customConfig) => {
+const prepareConfig = (customConfig = {}) => {
   const config = {
     ...defaultConfig,
-    ...customConfig
+    ...customConfig,
   }
   return {
     input: config.input,
@@ -21,15 +22,14 @@ const prepareConfig = (customConfig) => {
       format: 'es',
       sourcemap: true,
     },
-    external: ['react', 'react-dom'],
+    external: ['react', 'react-dom', ...getYarnWorkspaces()],
     plugins: [
       // Allow json resolution
       json(),
-      // external modules you don't wanna include in your bundle taken from peerDependencies
-      external(),
       // Compile TypeScript files
       typescript({
-        sourceMap: true
+        sourceMap: true,
+        tsconfig: config.tsconfig,
       }),
       // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
       commonjs({ namedExports: { 'file-saver': ['saveAs'] } }),
@@ -37,6 +37,7 @@ const prepareConfig = (customConfig) => {
       // which external modules to include in the bundle
       // https://github.com/rollup/rollup-plugin-node-resolve#usage
       resolve(),
+      isProduction && terser(),
     ],
   }
 }
