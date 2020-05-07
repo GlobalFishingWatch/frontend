@@ -26,5 +26,6 @@
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.0.1"
-  }
+  },
+  "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
 }
