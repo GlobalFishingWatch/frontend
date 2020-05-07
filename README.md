@@ -7,7 +7,7 @@ Include all dependencies:
    - fourwings (extracted from layer-composer?)
 - map-components (maybe rename to ui-components)
 - api-client
-- https://github.com/satellitestudio/eslint-config ?
+- https://github.com/satellitestudio/linting ?
 
 Maybe:
 - track-inspector / map-client v3.0
@@ -27,7 +27,7 @@ Maybe maybe:
 - Should we be on the same version for all deps? (Lerna's _fixed versioning_)
 - We should take the chance for map-components to:
   - rename to ui-components
-  - remove Map module (keep legacy map-components for map-client and data-portal) 
+  - remove Map module (keep legacy map-components for map-client and data-portal)
 - Keep git history (`lerna import`) - we could also DGAF and archive old repos in case its needed
 - Lerna or Yarn workspaces?
 - **all the code is going to be public** - is that going to be aproblem (check with Enrique)

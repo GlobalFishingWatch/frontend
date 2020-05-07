@@ -49,6 +49,7 @@
     "prettier": "^2.0.5",
     "rollup": "^2.7.2",
     "rollup-plugin-peer-deps-external": "^2.2.2",
+    "stylelint": "^13.3.3",
     "stylelint-config-css-modules": "^2.2.0",
     "stylelint-config-prettier": "^8.0.1",
     "stylelint-config-standard": "^20.0.0",

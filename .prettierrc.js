@@ -1,1 +1,1 @@
-module.exports = require('@globalfishingwatch/eslint-config/prettier.config');
+module.exports = require('@globalfishingwatch/linting/prettier.config');

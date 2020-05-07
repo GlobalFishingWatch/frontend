@@ -1,4 +1,4 @@
-# @satellitestudio/eslint-config
+# @globalfishingwatch/linting
 
 [![npm version](https://badge.fury.io/js/%40satellitestudio%2Feslint-config.svg)](https://badge.fury.io/js/%40satellitestudio%2Feslint-config)
 [![GitHub license](https://img.shields.io/github/license/satellitestudio/eslint-config.svg)](https://github.com/satellitestudio/eslint-config/blob/master/LICENCE)
@@ -8,10 +8,10 @@ Eslint config based on [eslint-config-react-app](https://www.npmjs.com/package/e
 ## Installation
 
 ```sh
-npx install-peerdeps --dev @satellitestudio/eslint-config
+npx install-peerdeps --dev @globalfishingwatch/linting
 
 # or
-yarn add @satellitestudio/eslint-config -D --peer
+yarn add @globalfishingwatch/linting -D --peer
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ Now add the config to either your `package.json`:
 ```json
 {
   "eslintConfig": {
-    "extends": "@satellitestudio/eslint-config"
+    "extends": "@globalfishingwatch/linting"
   }
 }
 ```
@@ -33,7 +33,7 @@ to your `.eslintrc`:
 
 ```json
 {
-  "extends": "@satellitestudio/eslint-config"
+  "extends": "@globalfishingwatch/linting"
 }
 ```
 
@@ -41,7 +41,7 @@ to your `.eslintrc`:
 ```json
 {
   "eslintConfig": {
-    "extends": "@satellitestudio/eslint-config/typescript"
+    "extends": "@globalfishingwatch/linting/typescript"
   }
 }
 ```
@@ -50,7 +50,7 @@ to your `.eslintrc`:
 
 ```json
 {
-  "extends": "@satellitestudio/eslint-config/typescript"
+  "extends": "@globalfishingwatch/linting/typescript"
 }
 ```
 
@@ -59,7 +59,7 @@ to your `.eslintrc`:
 to your `.prettierrc.js`:
 
 ```js
-module.exports = require('@satellitestudio/eslint-config/prettier.config')
+module.exports = require('@globalfishingwatch/linting/prettier.config')
 ```
 
 ## Recommendations
