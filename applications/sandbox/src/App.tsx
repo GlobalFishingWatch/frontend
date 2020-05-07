@@ -1,9 +1,9 @@
 import React from 'react'
-import logo from './logo.svg'
-import './App.css'
-
 import GFWAPI from '@globalfishingwatch/api-client/src/index'
 import { useGFWLogin } from '@globalfishingwatch/react-hooks/src/index'
+
+import './App.css'
+import logo from './logo.svg'
 
 function App() {
   // used any as types and local definitions are incompatible	  const { logged, user } = useGFWLogin(GFWAPI)
