@@ -14,8 +14,11 @@ module.exports = {
     react: {
       version: 'detect',
     },
+    'import/resolver': { typescript: {} },
   },
   rules: {
+    'import/default': 0,
+    'import/no-unresolved': 0,
     'import/order': [
       'error',
       {
