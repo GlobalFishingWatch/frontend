@@ -1,0 +1,40 @@
+{
+  "name": "@globalfishingwatch/ui-kit",
+  "version": "1.0.0",
+  "description": "> TODO: description",
+  "author": "satellitestudio <contact@satellitestud.io>",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "license": "MIT",
+  "main": "dist/gfw-ui-kit.module.css",
+  "files": [ "dist" ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  },
+  "scripts": {
+    "start": "run-p watch serve",
+    "watch": "postcss -o src/styles.css src/index.css -w",
+    "serve": "live-server src --watch",
+    "build": "yarn build:clean && yarn run-p build:min build:base build:modules",
+    "build:clean": "rimraf dist/*",
+    "build:min": "cross-env NODE_ENV=production postcss -o dist/gfw-ui-kit.min.css src/index.css",
+    "build:base": "postcss -o dist/gfw-ui-kit.base.css src/base.css",
+    "build:modules": "postcss -o dist/gfw-ui-kit.module.css src/index.css",
+    "lint": "stylelint 'src/**/*.css'"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.7.6",
+    "cssnano": "^4.1.10",
+    "live-server": "^1.2.1",
+    "npm-run-all": "^4.1.5",
+    "postcss-cli": "^7.1.1",
+    "postcss-import": "^12.0.1",
+    "postcss-nested": "^4.2.1",
+    "rimraf": "^3.0.2",
+    "stylelint": "^13.3.3",
+    "stylelint-config-standard": "^20.0.0"
+  },
+  "browserslist": [
+    "defaults"
+  ]
+}

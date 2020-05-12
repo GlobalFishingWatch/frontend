@@ -7,8 +7,8 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "applications/*",
-    "packages/*"
+    "packages/*",
+    "applications/*"
   ],
   "scripts": {
     "sandbox": "lerna run --scope @globalfishingwatch/sandbox dev",
@@ -74,7 +74,6 @@
       "eslint --fix"
     ],
     "*.css": [
-      "prettier --write",
       "stylelint --fix"
     ],
     "*.scss": [

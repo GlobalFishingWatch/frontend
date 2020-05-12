@@ -1,10 +1,10 @@
 import React from 'react'
 import GFWAPI from '@globalfishingwatch/api-client/src/index'
 import { useLogin } from '@globalfishingwatch/react-hooks/src/index'
-import styles from '@globalfishingwatch/styles/dist/gfw-ui-kit.module.css'
-import '@globalfishingwatch/styles/dist/gfw-ui-kit.min.css'
+import styles from '@globalfishingwatch/ui-kit/dist/gfw-ui-kit.module.css'
 
 import './App.css'
+import '@globalfishingwatch/ui-kit/dist/gfw-ui-kit.base.css'
 import logo from './logo.svg'
 console.log('styles', styles)
 
@@ -22,7 +22,6 @@ function App() {
         {logged ? `Logged user: ${user?.firstName}` : 'User not logged'}
         <button className="button">Hi</button>
         <button className={styles.button}>Hi with cssModules</button>
-        <button className={styles.buttonSecondary}>Hi with cssModules</button>
       </header>
       <main></main>
     </div>
