@@ -13,8 +13,9 @@
   "scripts": {
     "sandbox": "lerna run --scope @globalfishingwatch/sandbox dev",
     "start": "lerna run start --parallel",
-    "build": "lerna run build",
-    "release": "lerna publish --conventional-commits",
+    "publish": "lerna publish",
+    "changelog": "lerna-changelog",
+    "release": "yarn publish && yarn changelog",
     "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn"
   },
   "dependencies": {
@@ -47,6 +48,7 @@
     "eslint-plugin-react-hooks": "^4.0.0",
     "husky": "^4.2.5",
     "lerna": "^3.20.2",
+    "lerna-changelog": "^1.0.1",
     "lint-staged": "^10.2.2",
     "prettier": "^2.0.5",
     "rollup": "^2.7.2",
