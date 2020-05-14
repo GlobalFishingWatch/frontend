@@ -14,7 +14,7 @@
     "sandbox": "lerna run --scope @globalfishingwatch/sandbox dev",
     "start": "lerna run start --parallel",
     "changelog": "lerna-changelog",
-    "release": "lerna publish && yarn changelog",
+    "release": "yarn changelog && lerna publish",
     "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn"
   },
   "dependencies": {
