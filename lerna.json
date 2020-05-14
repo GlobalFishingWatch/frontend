@@ -1,0 +1,16 @@
+{
+  "packages": ["packages/*", "applications/*"],
+  "version": "independent",
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "stream": true,
+  "changelog": {
+    "labels": {
+      "enhancement": ":rocket: enhancement",
+      "documentation": ":memo: documentation",
+      "breaking change": ":boom: breaking change",
+      "internal": ":house: internal",
+      "bug": ":bug: bug"
+    }
+  }
+}

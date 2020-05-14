@@ -1,0 +1,31 @@
+{
+  "name": "@globalfishingwatch/react-hooks",
+  "version": "1.0.3",
+  "description": "set of react hooks to easily use pure js libraries",
+  "author": "satellitestudio <contact@satellitestud.io>",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "typings": "dist/types/index.d.ts",
+  "directories": {
+    "src": "src",
+    "dist": "dist"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  },
+  "scripts": {
+    "start": "rollup -c ./rollup.config.js -w",
+    "build": "cross-env NODE_ENV=production tsc --module commonjs && rollup -c rollup.config.js",
+    "prepublishOnly": "yarn build",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "@globalfishingwatch/api-client": "^1.0.2"
+  },
+  "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
+}
