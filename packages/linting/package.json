@@ -7,14 +7,17 @@
     "eslint-config",
     "prettier",
     "prettier-config",
-    "stylelint"
+    "stylelint",
+    "stylelint-config"
   ],
   "main": "index.js",
   "files": [
     "index.js",
     "typescript.js",
     "prettier.js",
-    "prettier.config.js"
+    "prettier.config.js",
+    "stylelint.js",
+    "stylelint.config.js"
   ],
   "repository": {
     "type": "git",

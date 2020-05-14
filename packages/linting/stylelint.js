@@ -1,8 +1,3 @@
-module.exports = {
-  extends: [
-    'stylelint-config-standard',
-    'stylelint-config-css-modules',
-    'stylelint-config-prettier',
-  ],
-  rules: {},
-}
+const stylelint = require('./stylelint.config')
+
+module.exports = stylelint
