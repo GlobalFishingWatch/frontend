@@ -6,11 +6,11 @@
   "stream": true,
   "changelog": {
     "labels": {
-      "enhancement": ":rocket: enhancement",
-      "documentation": ":memo: documentation",
-      "breaking change": ":boom: breaking change",
-      "internal": ":house: internal",
-      "bug": ":bug: bug"
+      ":rocket: enhancement": ":rocket: enhancement",
+      ":memo: documentation": ":memo: documentation",
+      ":boom: breaking change": ":boom: breaking change",
+      ":house: internal": ":house: internal",
+      ":bug: bug": ":bug: bug"
     }
   }
 }
