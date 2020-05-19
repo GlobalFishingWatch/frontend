@@ -16,7 +16,7 @@
   "scripts": {
     "start": "run-p watch serve",
     "watch": "postcss -o src/styles.css src/index.css -w",
-    "serve": "live-server src --watch",
+    "serve": "live-server src --watch --no-browser",
     "build": "yarn build:clean && yarn run-p build:min build:base build:modules",
     "build:clean": "rimraf dist/*",
     "build:min": "cross-env NODE_ENV=production postcss -o dist/gfw-ui-kit.min.css src/index.css",
