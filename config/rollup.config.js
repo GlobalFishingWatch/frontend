@@ -3,19 +3,20 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import { terser } from 'rollup-plugin-terser'
-
-const getYarnWorkspaces = require('get-yarn-workspaces')
+import { getPackages } from '@lerna/project'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultConfig = {
   input: 'src/index.ts',
   tsconfig: './tsconfig.json',
 }
-const prepareConfig = (customConfig = {}) => {
+const prepareConfig = async (customConfig = {}) => {
   const config = {
     ...defaultConfig,
     ...customConfig,
   }
+  const gfwPackages = await getPackages(__dirname)
+
   return {
     input: config.input,
     output: {
@@ -23,7 +24,7 @@ const prepareConfig = (customConfig = {}) => {
       format: 'es',
       sourcemap: true,
     },
-    external: ['react', 'react-dom', ...getYarnWorkspaces()],
+    external: ['react', 'react-dom', ...gfwPackages.map(({ name }) => name)],
     plugins: [
       // Allow json resolution
       json(),
@@ -34,7 +35,6 @@ const prepareConfig = (customConfig = {}) => {
       }),
       // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
       commonjs({
-        // include: 'node_modules/**',
         namedExports: {
           'file-saver': ['saveAs'],
         },

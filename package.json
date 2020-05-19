@@ -24,6 +24,7 @@
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
+    "@lerna/project": "^3.21.0",
     "@rollup/plugin-commonjs": "^11.1.0",
     "@rollup/plugin-json": "^4.0.3",
     "@rollup/plugin-node-resolve": "^7.1.3",
