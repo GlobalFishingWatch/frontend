@@ -5,6 +5,11 @@ module.exports = {
     'stylelint-config-prettier',
   ],
   rules: {
-    'value-keyword-case': 0,
+    'value-keyword-case': [
+      'lower',
+      {
+        ignoreProperties: ['composes'],
+      },
+    ],
   },
 }

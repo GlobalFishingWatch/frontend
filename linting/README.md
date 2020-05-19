@@ -21,6 +21,7 @@ yarn add @globalfishingwatch/linting -D --peer
 Now add the config to either your `package.json`:
 
 #### JS
+
 ```json
 {
   "eslintConfig": {
@@ -38,6 +39,7 @@ to your `.eslintrc`:
 ```
 
 #### Typescript
+
 ```json
 {
   "eslintConfig": {
@@ -56,10 +58,10 @@ to your `.eslintrc`:
 
 ### Prettier
 
-to your `.prettierrc.js`:
+to your `.prettierrc`:
 
 ```js
-module.exports = require('@globalfishingwatch/linting/prettier.config')
+module.exports = require('@globalfishingwatch/linting/prettier')
 ```
 
 ## Recommendations
@@ -68,11 +70,12 @@ module.exports = require('@globalfishingwatch/linting/prettier.config')
 
 Install the ESLint and Prettier VSCode extensions:
 
-```
+```js
 ext install esbenp.prettier-vscode dbaeumer.vscode-eslint
 ```
 
 Copy this to `settings.json`
+
 ```json
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": false, // avoids running the format twice,

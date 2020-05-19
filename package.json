@@ -8,7 +8,8 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "applications/*"
+    "applications/*",
+    "linting"
   ],
   "scripts": {
     "sandbox": "lerna run --scope @globalfishingwatch/sandbox dev",

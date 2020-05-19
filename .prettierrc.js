@@ -1,1 +1,1 @@
-module.exports = require('@globalfishingwatch/linting/prettier.config')
+module.exports = require('@globalfishingwatch/linting/prettier')
