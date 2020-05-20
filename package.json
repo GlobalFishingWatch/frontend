@@ -66,7 +66,11 @@
   },
   "peerDependencies": {
     "@globalfishingwatch/api-client": "*",
+    "@globalfishingwatch/dataviews-client": "*",
+    "@globalfishingwatch/layer-composer": "*",
     "@globalfishingwatch/react-hooks": "*",
+    "@globalfishingwatch/ui-kit": "*",
+    "@globalfishingwatch/ui-components": "*",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },

@@ -1,0 +1,33 @@
+{
+  "name": "@globalfishingwatch/ui-components",
+  "version": "1.0.0",
+  "description": "Set of react components to consume on the gfw ecosystem",
+  "author": "satellitestudio <contact@satellitestud.io>",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/types/index.d.ts",
+  "directories": {
+    "src": "src",
+    "dist": "dist"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  },
+  "scripts": {
+    "start": "rollup -c ./rollup.config.js -w",
+    "build": "cross-env NODE_ENV=production tsc --module commonjs && rollup -c rollup.config.js",
+    "prepublishOnly": "yarn build",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "@globalfishingwatch/api-client": "^1.0.2",
+    "countryflag": "^3.0.3",
+    "topojson-client": "^3.1.0"
+  },
+  "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
+}
