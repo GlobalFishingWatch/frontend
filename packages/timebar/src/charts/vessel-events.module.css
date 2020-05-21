@@ -1,0 +1,135 @@
+:root {
+  --timebar-encounter-color: #e5647d;
+  --timebar-gap-color: #ffe7a0;
+  --timebar-gap-color-darker: #ffbf00;
+  --timebar-fishing-color: #fe81eb;
+  --timebar-unregistered-color: #9a84ed;
+  --timebar-port-color: #44a1b9;
+}
+
+.Events {
+  position: absolute;
+}
+
+.overlays rect,
+.backgrounds rect {
+  cursor: pointer;
+}
+
+.overlays rect {
+  stroke: var(--timebar-main-background-color);
+  stroke-width: 1px;
+}
+
+.overlays .encounter rect {
+  fill: var(--timebar-encounter-color);
+}
+
+.overlays .gap rect {
+  fill: var(--timebar-gap-color);
+}
+
+.overlays .fishing rect {
+  fill: var(--timebar-fishing-color);
+  stroke: none;
+}
+
+.overlays .port rect {
+  fill: var(--timebar-main-background-color);
+  stroke: var(--timebar-fishing-color);
+  stroke-width: 2px;
+}
+
+.overlays ._highlighted rect {
+  stroke: var(--timebar-white);
+  stroke-width: 2px;
+}
+
+.backgrounds .port rect {
+  fill: var(--timebar-main-background-color-white);
+}
+
+.overlays .port._highlighted rect {
+  stroke: var(--timebar-white);
+}
+
+.lines line {
+  stroke: var(--timebar-fishing-color);
+  stroke-width: 2px;
+}
+
+.lines line.port {
+  stroke-dasharray: 4;
+  stroke-linecap: butt;
+}
+
+.lines line.portBg {
+  stroke: var(--timebar-main-background-color-white-overlay);
+}
+
+.backgrounds .port._highlighted rect {
+  fill: var(--timebar-white);
+  fill-opacity: 0.2;
+}
+
+.tooltip {
+  background: var(--timebar-white);
+  position: absolute;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: var(--timebar-main-background-color);
+  padding: 6px 8px;
+  transform: translate(-50%, -100%);
+  top: 10px;
+  z-index: 10;
+  font-weight: normal;
+}
+
+.tooltip::after {
+  background: var(--timebar-white);
+  content: ' ';
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  left: calc(50% - 2px);
+  transform: rotate(45deg);
+  bottom: -5px;
+}
+
+.tooltipText {
+  margin-left: 10px;
+}
+
+.tooltipDate {
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.tooltip.encounter .tooltipDate {
+  color: var(--timebar-encounter-color);
+}
+
+.tooltip.encounter svg {
+  fill: var(--timebar-encounter-color);
+}
+
+.tooltip.gap .tooltipDate {
+  color: var(--timebar-gap-color-darker);
+}
+
+.tooltip.gap svg {
+  fill: var(--timebar-gap-color-darker);
+}
+
+.tooltip.fishing .tooltipDate {
+  color: var(--timebar-fishing-color);
+}
+
+.tooltip.port .tooltipDate {
+  color: var(--timebar-port-color);
+}
+
+.tooltip.port svg {
+  stroke: var(--timebar-port-color);
+}

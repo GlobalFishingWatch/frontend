@@ -1,0 +1,12 @@
+{
+  "extends": "../../config/tsconfig.json",
+  "include": ["src/"],
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist/",
+    "declarationDir": "dist/types",
+    "esModuleInterop": true,
+    "typeRoots": ["../../node_modules/@types"],
+    "module": "commonjs",
+  }
+}

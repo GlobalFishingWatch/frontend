@@ -3,6 +3,7 @@ import GFWAPI from '@globalfishingwatch/api-client/src/index'
 import { Type } from '@globalfishingwatch/layer-composer/src/generators/types'
 import { useLogin, useLayerComposer } from '@globalfishingwatch/react-hooks/src/index'
 import styles from '@globalfishingwatch/ui-kit/dist/gfw-ui-kit.module.css'
+import { MiniGlobe } from '@globalfishingwatch/ui-components'
 
 import './App.css'
 import '@globalfishingwatch/ui-kit/dist/gfw-ui-kit.base.css'
@@ -27,6 +28,10 @@ function App() {
         <br />
         <p>Map Style</p>
         <code>{JSON.stringify(mapStyle)}</code>
+        <MiniGlobe
+          center={{ latitude: 0, longitude: 0 }}
+          bounds={{ north: 0, south: 0, west: 0, east: 0 }}
+        />
       </header>
       <main></main>
     </div>
