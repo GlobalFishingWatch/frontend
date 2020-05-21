@@ -1,0 +1,42 @@
+.DateSelector {
+  /* font-family: var(--timebar-font-family); */
+  display: flex;
+  flex-direction: column;
+  width: 4.2rem;
+  margin-right: 1rem;
+}
+
+.arrowButton {
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  cursor: pointer;
+  height: 2.4rem;
+  background: transparent;
+  color: var(--timebar-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--timebar-hover-transition);
+}
+
+.arrowButton:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.arrowButton:hover,
+.arrowButton:focus {
+  background: rgba(255, 255, 255, 0.05);
+  outline: none;
+}
+
+.value {
+  display: flex;
+  height: 3.4rem;
+  align-items: center;
+  justify-content: center;
+  background: var(--timebar-secondary-background-color);
+  color: var(--timebar-light-blue);
+  text-transform: uppercase;
+}

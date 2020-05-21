@@ -1,0 +1,38 @@
+.highlighter,
+.tooltipContainer {
+  position: absolute;
+  pointer-events: none;
+}
+
+.highlighter {
+  background-color: var(--timebar-ui-btn-color-hover);
+  opacity: 0.4;
+  mix-blend-mode: hue;
+}
+
+.tooltipContainer {
+  pointer-events: none;
+  top: -23px;
+  z-index: var(--timebar-z-highlighter-tooltips);
+}
+
+.tooltip {
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  background: var(--timebar-ui-btn-color);
+  white-space: nowrap;
+  color: white;
+  padding: 6px;
+  border-radius: 6px;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.4);
+}
+
+.tooltipDate {
+  text-transform: uppercase;
+}
+
+.tooltipValue {
+  opacity: 0.5;
+  margin-left: 5px;
+}

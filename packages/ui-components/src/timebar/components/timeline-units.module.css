@@ -1,0 +1,59 @@
+.unit {
+  position: absolute;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  border-right: 0.1rem solid rgba(255, 255, 255, 0.2);
+}
+
+.unit:first-child {
+  border-left: 0.1rem solid rgba(255, 255, 255, 0.2);
+}
+
+.unit button,
+.unit div {
+  width: 100%;
+  padding: 0;
+  text-align: center;
+  line-height: 1.4rem;
+  text-transform: uppercase;
+  user-select: none;
+  color: var(--timebar-light-blue);
+  font-size: var(--timebar-small-font-size);
+  font-weight: 400;
+  font-family: var(--timebar-font-family);
+}
+
+.unit button {
+  background: none;
+  border: none;
+  cursor: zoom-in;
+  z-index: 1;
+}
+
+.unit button:focus {
+  outline: 0;
+}
+
+.unit button:hover {
+  outline: 0;
+  color: var(--timebar-white);
+  background-image:
+    linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+}
+
+@media only screen and (max-width: 460px) {
+  .unit {
+    align-items: center;
+  }
+
+  .unit span {
+    height: var(--timebar-size);
+    line-height: var(--timebar-size);
+  }
+}
