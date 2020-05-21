@@ -2,6 +2,8 @@ import typescript from '@rollup/plugin-typescript'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
+import postcss from 'rollup-plugin-postcss'
+import autoprefixer from 'autoprefixer'
 import { terser } from 'rollup-plugin-terser'
 import { getPackages } from '@lerna/project'
 
@@ -38,6 +40,10 @@ const prepareConfig = async (customConfig = {}) => {
         namedExports: {
           'file-saver': ['saveAs'],
         },
+      }),
+      postcss({
+        modules: true,
+        plugins: [autoprefixer()],
       }),
       // Allow node_modules resolution, so you can use 'external' to control
       // which external modules to include in the bundle
