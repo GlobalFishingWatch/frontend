@@ -20,31 +20,26 @@ interface MiniglobeCenter {
 
 interface MiniglobeProps {
   center: MiniglobeCenter
-  bounds?: MiniglobeBounds
-  zoom: number
+  bounds: MiniglobeBounds
   size?: number
   viewportThickness?: number
 }
 
 const defaultBounds = {
-  north: 25,
-  south: -25,
-  east: 40,
-  west: -40,
+  north: 10,
+  south: -10,
+  west: -10,
+  east: 10,
 }
 
+const MIN_DEGREES_PATH = 4
+const MAX_DEGREES_PATH = 160
 const defaultCenter = { latitude: 0, longitude: 0 }
 
 const MiniGlobe: React.FC<MiniglobeProps> = (props) => {
-  const {
-    bounds = defaultBounds,
-    center = defaultCenter,
-    zoom = 3,
-    size = 40,
-    viewportThickness = 6,
-  } = props
+  const { bounds = defaultBounds, center = defaultCenter, size = 40, viewportThickness = 4 } = props
 
-  const getProjection = (center: MiniglobeCenter, size: number) => {
+  const projection = useMemo(() => {
     const { latitude, longitude } = center
     const projection = geoOrthographic()
       .translate([size / 2, size / 2])
@@ -52,8 +47,8 @@ const MiniGlobe: React.FC<MiniglobeProps> = (props) => {
       .clipAngle(90)
     projection.rotate([-longitude, -latitude])
     return projection
-  }
-  const projection = useMemo(() => getProjection(center, size), [center, size])
+  }, [center, size])
+
   const worldData = useMemo(
     () =>
       feature((jsonData as unknown) as Topology, jsonData.objects.land as GeometryCollection)
@@ -67,6 +62,10 @@ const MiniGlobe: React.FC<MiniglobeProps> = (props) => {
   }
 
   const { north, south, west, east } = bounds
+  if (north < south || west > east) {
+    console.error('MiniGlobe: bounds specified not valid')
+  }
+
   const viewportBoundsGeoJSON = {
     type: 'Feature',
     geometry: {
@@ -83,17 +82,35 @@ const MiniGlobe: React.FC<MiniglobeProps> = (props) => {
     },
   }
 
-  const path = zoom ? geoPath().projection(projection)(viewportBoundsGeoJSON as any) || null : null
+  const showPoint = north - south <= MIN_DEGREES_PATH || east - west <= MIN_DEGREES_PATH
+  const showPath =
+    !showPoint &&
+    Math.abs(north) + Math.abs(south) <= MAX_DEGREES_PATH &&
+    Math.abs(west) + Math.abs(east) <= MAX_DEGREES_PATH
+  const path = geoPath().projection(projection)(viewportBoundsGeoJSON as any) || undefined
 
   return (
-    <svg width={size} height={size} className={styles.globeBackground}>
+    <svg
+      width={size}
+      height={size}
+      className={styles.globeBackground}
+      style={{ padding: viewportThickness }}
+    >
       <circle className={styles.globeSvg} cx={size / 2} cy={size / 2} r={size / 2} />
       <g>
         {worldData.map((d, i) => {
           const path = geoPath().projection(projection)(d)
           return path && <path key={`path-${i}`} d={path} />
         })}
-        {path && (
+        {showPoint && (
+          <circle
+            className={styles.viewportPoint}
+            cx={size / 2}
+            cy={size / 2}
+            r={viewportThickness}
+          />
+        )}
+        {showPath && (
           <path
             key="viewport"
             d={path}
