@@ -2,6 +2,7 @@ import typescript from '@rollup/plugin-typescript'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
+import svgr from '@svgr/rollup'
 import postcss from 'rollup-plugin-postcss'
 import autoprefixer from 'autoprefixer'
 import { terser } from 'rollup-plugin-terser'
@@ -30,11 +31,14 @@ const prepareConfig = async (customConfig = {}) => {
     plugins: [
       // Allow json resolution
       json(),
+      // Import svg as ReactComponents
+      svgr(),
       // Compile TypeScript files
-      typescript({
-        sourceMap: true,
-        tsconfig: config.tsconfig,
-      }),
+      config.tsconfig &&
+        typescript({
+          sourceMap: true,
+          tsconfig: config.tsconfig,
+        }),
       // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
       commonjs({
         namedExports: {

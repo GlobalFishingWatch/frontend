@@ -28,7 +28,10 @@ function App() {
         <br />
         <p>Map Style</p>
         <code>{JSON.stringify(mapStyle)}</code>
-        <MiniGlobe zoom={4} center={{ latitude: 0, longitude: 0 }} />
+        <MiniGlobe
+          center={{ latitude: 0, longitude: 0 }}
+          bounds={{ north: 0, south: 0, west: 0, east: 0 }}
+        />
       </header>
       <main></main>
     </div>

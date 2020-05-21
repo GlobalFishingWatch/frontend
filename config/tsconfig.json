@@ -6,7 +6,7 @@
     "lib": ["es2019", "dom"],
     "jsx": "react",
     "allowJs": true,
-    "checkJs": false,
+    "checkJs": true,
     "strict": true,
     "sourceMap": true,
     "declaration": true,

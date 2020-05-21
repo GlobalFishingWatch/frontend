@@ -1,0 +1,48 @@
+.handler {
+  border: none;
+  padding: 0;
+  background: var(--timebar-ui-btn-color);
+  color: var(--timebar-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  left: 15%;
+  transform: translateX(-50%);
+  border-radius: 0.4rem;
+  width: 1.7rem;
+  box-shadow: 0 0 7px 0 rgba(0, 16, 57, 0.7);
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  z-index: var(--timebar-z-handlers);
+  transition: var(--timebar-hover-transition);
+}
+
+/*
+.handler::after {
+  background: red;
+  content: ' ';
+  width: 1px;
+  height: 80px;
+  position: absolute;
+} */
+
+.handler._immediate {
+  transition: none;
+}
+
+.handler:hover,
+.handler:focus {
+  background: var(--timebar-ui-btn-color-hover);
+  outline: none;
+}
+
+@media only screen and (max-width: 460px) {
+  .handler {
+    width: 2.4rem;
+  }
+}

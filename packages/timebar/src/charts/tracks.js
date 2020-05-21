@@ -1,0 +1,90 @@
+import React, { useContext, useMemo } from 'react'
+import PropTypes from 'prop-types'
+
+import ImmediateContext from '../immediateContext'
+import { DEFAULT_CSS_TRANSITION } from '../constants'
+import { TimelineContext } from '../components/timeline'
+
+import styles from './tracks.module.css'
+import { getTrackY } from './utils'
+
+const SegmentType = PropTypes.shape({
+  start: PropTypes.number,
+  end: PropTypes.number,
+})
+const TrackType = PropTypes.shape({
+  color: PropTypes.string,
+  segments: PropTypes.arrayOf(SegmentType),
+})
+
+const Segments = ({ segments, color, immediate, y }) => {
+  return segments.map((segment) => (
+    <div
+      key={segment.id}
+      className={styles.segment}
+      style={{
+        backgroundColor: color,
+        top: y,
+        left: segment.x,
+        width: segment.width,
+        transition: immediate
+          ? 'none'
+          : `left ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
+      }}
+    />
+  ))
+}
+Segments.propTypes = {
+  segments: PropTypes.arrayOf(SegmentType).isRequired,
+  color: PropTypes.string,
+  y: PropTypes.number.isRequired,
+}
+Segments.defaultProps = {
+  color: 'var(--timebar-track-default)',
+}
+
+const getCoords = (tracks, outerScale) => {
+  if (tracks === null) return null
+  const coordTracks = []
+  tracks.forEach((track) => {
+    const coordTrack = {
+      color: track.color,
+    }
+    coordTrack.segments = track.segments.map((segment, i) => {
+      const x = outerScale(segment.start)
+      return {
+        id: i,
+        x,
+        width: outerScale(segment.end) - x,
+      }
+    })
+    coordTracks.push(coordTrack)
+  })
+  return coordTracks
+}
+
+const Tracks = ({ tracks }) => {
+  const { immediate } = useContext(ImmediateContext)
+  const { outerScale, graphHeight } = useContext(TimelineContext)
+  const trackCoords = useMemo(() => getCoords(tracks, outerScale), [tracks, outerScale])
+  if (tracks === null || tracks === undefined) return null
+
+  return trackCoords.map((track, i) => {
+    const y = getTrackY(tracks.length, i, graphHeight)
+    return (
+      <div key={i}>
+        <Segments segments={track.segments} color={track.color} immediate={immediate} y={y} />
+      </div>
+    )
+  })
+}
+
+Tracks.propTypes = {
+  tracks: PropTypes.arrayOf(TrackType).isRequired,
+}
+
+Tracks.defaultProps = {
+  tracks: null,
+}
+
+export default Tracks
