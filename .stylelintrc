@@ -1,5 +1,0 @@
-{
-  "extends": [
-    @globalfishingwatch/linting/stylelint
-  ],
-}
