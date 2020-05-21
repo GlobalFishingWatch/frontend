@@ -5,6 +5,8 @@
     "rootDir": ".",
     "outDir": "dist/",
     "declarationDir": "dist/types",
-    "typeRoots": ["../../node_modules/@types"]
+    "esModuleInterop": true,
+    "typeRoots": ["../../node_modules/@types"],
+    "module": "commonjs",
   }
 }

@@ -22,9 +22,10 @@
     "start": "run-p start:css start:js",
     "start:css": "tcm src -w",
     "start:js": "rollup -c ./rollup.config.js -w",
+    "prerender": "ts-node src/header/render-html.tsx",
     "clean": "rimraf dist/*",
     "build": "cross-env NODE_ENV=production tsc --module commonjs --rootDir src && rollup -c rollup.config.js",
-    "prepublishOnly": "yarn clean && yarn build",
+    "prepublishOnly": "yarn clean && yarn prerender && yarn build",
     "test": "echo \"Error: run tests from root\" && exit 1",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
@@ -50,6 +51,7 @@
     "react-docgen-typescript-loader": "^3.7.2",
     "style-loader": "^1.2.1",
     "ts-loader": "^7.0.4",
+    "ts-node": "^8.10.1",
     "typed-css-modules": "^0.6.4"
   },
   "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
