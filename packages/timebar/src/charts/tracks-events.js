@@ -29,6 +29,7 @@ const Tooltip = ({ highlightedEvent, outerScale, innerStartPx, innerEndPx }) => 
   if (!highlightedEvent) {
     return null
   }
+  console.log(highlightedEvent)
   const left = outerScale(highlightedEvent.start)
 
   if (left < innerStartPx || left > innerEndPx) {
@@ -48,7 +49,7 @@ const Tooltip = ({ highlightedEvent, outerScale, innerStartPx, innerEndPx }) => 
           className={styles.tooltipDate}
           style={{ color: highlightedEvent.colorLabels || highlightedEvent.color }}
         >
-          {start.format(DEFAULT_FULL_DATE_FORMAT)}
+          {start.format(DEFAULT_FULL_DATE_FORMAT)} UTC
         </div>
         {highlightedEvent.description}
       </div>

@@ -40,7 +40,7 @@ export const getDefaultFormat = (start, end) =>
   isMoreThanADay(start, end) ? DEFAULT_DATE_FORMAT : DEFAULT_FULL_DATE_FORMAT
 
 export const stickToClosestUnit = (date, unit) => {
-  const mDate = dayjs(date)
+  const mDate = dayjs(date).utc()
   const mStartOf = mDate.startOf(unit)
   const mEndOf = mDate.endOf(unit)
   const startDeltaMs = getTime(date) - mStartOf.valueOf()

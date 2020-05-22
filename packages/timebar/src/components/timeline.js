@@ -455,7 +455,7 @@ class Timeline extends PureComponent {
                 <animated.div className={styles.absoluteEnd} style={style}>
                   <div className={cx(styles.lastUpdate, styles.lastUpdateLabel)}>Last Update</div>
                   <div className={styles.lastUpdate}>
-                    {dayjs(absoluteEnd).format('MMMM D YYYY')}
+                    {dayjs(absoluteEnd).utc().format('MMMM D YYYY')}
                   </div>
                 </animated.div>
               )}

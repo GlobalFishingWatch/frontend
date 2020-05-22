@@ -4,8 +4,8 @@ import { getDefaultFormat } from './internal-utils'
 
 export const getHumanizedDates = (start, end) => {
   const format = getDefaultFormat(start, end)
-  const mStart = dayjs(start)
-  const mEnd = dayjs(end)
+  const mStart = dayjs(start).utc()
+  const mEnd = dayjs(end).utc()
   const humanizedStart = mStart.format(format)
   const humanizedEnd = mEnd.format(format)
   const interval = mEnd.diff(mStart, 'day')

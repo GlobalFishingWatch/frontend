@@ -17,7 +17,7 @@ const getCoords = (hoverStart, hoverEnd, outerScale) => {
     Math.round(hoverStartDate.getTime() + (hoverEndDate.getTime() - hoverStartDate.getTime()) / 2)
   )
   const format = getDefaultFormat(hoverStart, hoverEnd)
-  const centerDateLabel = dayjs(centerDate).format(format)
+  const centerDateLabel = dayjs(centerDate).utc().format(format)
   const center = outerScale(centerDate)
   return {
     left,

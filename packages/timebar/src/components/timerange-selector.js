@@ -34,14 +34,14 @@ class TimeRangeSelector extends Component {
     const { onSubmit } = this.props
 
     // on release, "stick" to day/hour
-    const newStart = dayjs(start).startOf('day').toISOString()
-    const newEnd = dayjs(end).startOf('day').toISOString()
+    const newStart = dayjs(start).utc().startOf('day').toISOString()
+    const newEnd = dayjs(end).utc().startOf('day').toISOString()
     onSubmit(newStart, newEnd)
   }
 
   setUnit(which, allBounds, unit, offset) {
     const prevDate = this.state[which]
-    const newDate = dayjs(prevDate).add(offset, unit)
+    const newDate = dayjs(prevDate).utc().add(offset, unit)
 
     const bounds = allBounds[which]
     let newDateMs = newDate.toDate().getTime()
@@ -66,7 +66,7 @@ class TimeRangeSelector extends Component {
 
   last30days = () => {
     const { absoluteEnd, onSubmit } = this.props
-    onSubmit(dayjs(absoluteEnd).subtract(30, 'day').toISOString(), absoluteEnd)
+    onSubmit(dayjs(absoluteEnd).utc().subtract(30, 'day').toISOString(), absoluteEnd)
   }
 
   render() {
@@ -94,8 +94,8 @@ class TimeRangeSelector extends Component {
         max: getTime(absoluteEnd),
       },
     }
-    const mStart = dayjs(start)
-    const mEnd = dayjs(end)
+    const mStart = dayjs(start).utc()
+    const mEnd = dayjs(end).utc()
 
     let errorMessage = ''
     if (!startCanDecrement)

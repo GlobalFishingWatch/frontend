@@ -96,7 +96,7 @@ class Timebar extends Component {
 
   static getDerivedStateFromProps(props) {
     // let absolute end run through the end of the day
-    const absoluteEnd = dayjs(props.absoluteEnd).endOf('day').toISOString()
+    const absoluteEnd = dayjs(props.absoluteEnd).utc().endOf('day').toISOString()
     return {
       absoluteEnd,
     }
@@ -164,7 +164,7 @@ class Timebar extends Component {
     const middleMs = getTime(start) + (getTime(end) - getTime(start)) / 2
     const offsetMs = (nextDelta * unitOffsetMs) / 2
     const newStartMs = middleMs - offsetMs
-    const mNewStart = dayjs(newStartMs).startOf(nextUnit)
+    const mNewStart = dayjs(newStartMs).utc().startOf(nextUnit)
     const newEnd = mNewStart.add(nextDelta, nextUnit).toISOString()
 
     const deltaMs = nextDelta * unitOffsetMs

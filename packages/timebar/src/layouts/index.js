@@ -82,8 +82,8 @@ export const getUnitsPositions = (
   const endMs = Math.min(getTime(outerEnd), getTime(absoluteEnd))
 
   // BUFFER ??
-  const mOuterStart = dayjs(startMs).startOf(baseUnit)
-  const mOuterEnd = dayjs(endMs).endOf(baseUnit)
+  const mOuterStart = dayjs(startMs).utc().startOf(baseUnit)
+  const mOuterEnd = dayjs(endMs).utc().endOf(baseUnit)
 
   const units = []
   const numUnitsOffset = getTime(outerEnd) > getTime(absoluteEnd) ? 0 : 1

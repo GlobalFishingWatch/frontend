@@ -21,8 +21,8 @@ class Events extends Component {
       }
 
       const baseUnit = events.offset
-      const mStart = dayjs(events.start)
-      const mEnd = dayjs(events.end)
+      const mStart = dayjs(events.start).utc()
+      const mEnd = dayjs(events.end).utc()
       let mCurrentStart = mStart.clone()
       const numUnits = mEnd.diff(mStart, baseUnit)
 
