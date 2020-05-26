@@ -2561,7 +2561,7 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
-"@reduxjs/toolkit@^1.2.5":
+"@reduxjs/toolkit@^1.2.5", "@reduxjs/toolkit@^1.3.6":
   version "1.3.6"
   resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-1.3.6.tgz#306171fce2ab7423931736c34fa82190959dcd62"
   integrity sha512-eNYURfoJa6mRNU5YtBVbmE5+nDoc4lpjZ181PBwRC6nIFYZdNR3GcoQ4uomFt8eHpXAUAdpCdxBlDsmwyXOt9Q==
@@ -6755,6 +6755,11 @@ countryflag@^3.0.3:
     cross-env "^7.0.2"
     if-emoji "0.1.0"
     world-countries "4.0.0"
+
+cra-template-typescript@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/cra-template-typescript/-/cra-template-typescript-1.0.3.tgz#437193fb09befe331c45ae3fd186e1da4408ab93"
+  integrity sha512-TQLIS9FQGf1ZkIw4R3yQQLQ1SmOEVFu3O9zNfTauBlik1TbGTJ8ILCdO9LPeQkEzefLIkGCjQCHtMgiIgQz4ag==
 
 create-ecdh@^4.0.0:
   version "4.0.3"

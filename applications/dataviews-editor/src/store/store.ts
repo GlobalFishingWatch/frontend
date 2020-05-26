@@ -1,0 +1,17 @@
+import { combineReducers } from 'redux'
+import { configureStore } from '@reduxjs/toolkit'
+import dataviews from 'features/dataviews/dataviews.slice'
+
+const rootReducer = combineReducers({
+  dataviews,
+})
+
+export type RootState = ReturnType<typeof rootReducer>
+
+export default () => {
+  const store = configureStore({
+    reducer: rootReducer,
+  })
+  // initialDispatch()
+  return store
+}

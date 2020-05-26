@@ -1,0 +1,15 @@
+{
+  "extends": "../../config/tsconfig.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "rootDir": "src",
+    "baseUrl": "src"
+  },
+  "include": [
+    "src"
+  ]
+}

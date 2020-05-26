@@ -6,11 +6,14 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "applications/*",
-    "linting"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "applications/*",
+      "linting"
+    ],
+    "nohoist": ["**/react-scripts", "**/react-scripts/**", "**/babel**"]
+  },
   "scripts": {
     "sandbox": "lerna run --scope @globalfishingwatch/sandbox dev",
     "start": "lerna run start --parallel",
