@@ -1,17 +1,31 @@
 .button {
-  font-family: var(--font-family);
-  font-size: var(--font-size-S);
-  line-height: 2rem;
-  color: var(--color-brand);
-  fill: var(--color-brand);
+  font: var(--font-S);
+  color: var(--color-white);
+  fill: var(--color-white);
+  text-transform: uppercase;
+  height: var(--size-M);
+  padding: 0 var(--space-M);
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: transparent;
   border: none;
-  cursor: pointer;
   outline: none;
-  transition: all 150ms ease-out;
-  background-repeat: no-repeat;
-  background-position: center center;
+  cursor: pointer;
+  transition: background-color 150ms ease-out;
+  will-change: background-color;
+  background-color: var(--color-primary-blue);
+}
+
+.button:hover {
+  background-color: var(--color-primary-blue-hover);
+}
+
+.buttonSecondary {
+  @extend .button; /* To extend or not to extent? */
+  background-color: var(--color-terthiary-blue);
+  color: var(--color-primary-blue);
+}
+
+.buttonSecondary:hover {
+  background-color: var(--color-terthiary-blue-hover);
 }

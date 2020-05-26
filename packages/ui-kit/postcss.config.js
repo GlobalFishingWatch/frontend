@@ -1,13 +1,13 @@
-const stylelint = require('stylelint')
-
 module.exports = (ctx) => ({
   map: ctx.options.map,
   plugins: {
     'postcss-import': {
       root: ctx.file.dirname,
-      plugins: [stylelint()],
+      plugins: [require('stylelint')],
     },
-    cssnano: ctx.env === 'production' ? {} : false,
+    'postcss-nested': {},
+    'postcss-extend-rule': {},
     autoprefixer: {},
+    cssnano: ctx.env === 'production' ? {} : false,
   },
 })

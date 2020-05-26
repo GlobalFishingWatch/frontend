@@ -1,37 +1,52 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto:400&display=swap');
 
 :root {
+  /* FONTS */
+  --font-family: 'Roboto', sans-serif;
+  --font-regular: 400;
+  --font-XS: var(--font-regular) 1.2rem/1.2rem var(--font-family);
+  --font-S: var(--font-regular) 1.4rem/2.2rem var(--font-family);
+  --font-M: var(--font-regular) 1.6rem/2.4rem var(--font-family);
+  --font-L: var(--font-regular) 2rem/3rem var(--font-family);
+  --font-XL: var(--font-regular) 2.6rem/4rem var(--font-family);
+  --font-XXL: var(--font-regular) 5rem/6.2rem var(--font-family);
+
+  /* BASE COLORS */
+  --primary-blue-rgb: 34, 68, 126; /* rgb(34, 68, 126) */
+  --danger-red-rgb: 360, 62, 98; /* rgb(360, 62, 98) */
+  --gradient-rgb: 229, 240, 242; /* rgb(229, 240, 242) */
+  --white-rgb: 255, 255, 255; /* rgb(255, 255, 255) */
+
+  /* COLORS */
+  --color-primary-blue: rgb(var(--primary-blue-rgb));
+  --color-primary-blue-hover: rgba(var(--primary-blue-rgb), var(--hover-opacity));
+  --color-secondary-blue: rgba(var(--primary-blue-rgb), var(--secondary-opacity));
+  --color-terthiary-blue: rgba(var(--primary-blue-rgb), var(--terthiary-opacity));
+  --color-danger-red: rgb(var(--danger-red-rgb));
+  --color-danger-secondary-red: rgba(var(--danger-red-rgb), var(--secondary-opacity));
+  --color-white: rgb(var(--white-rgb));
+  --gradient: linear-gradient(180deg, var(--gradient-rgb) 0, var(--white) 70rem);
+
+  /* OPACITIES */
+  --hover-opacity: 0.9;
+  --secondary-opacity: 0.65;
+  --terthiary-opacity: 0.1;
+  --border-opacity: 0.2;
+
+  /* SHADOWS */
+  --block-shadow: 0 0 1rem 0 rgba(var(--primary-blue-rgb), var(--border-opacity));
+  --filter-drop-shadow: drop-shadow(0 0 1rem rgba(var(--primary-blue-rgb), var(--border-opacity)));
+
+  /* UTILS */
+  --border: 1px solid rgba(var(--primary-blue-rgb), var(--border-opacity));
+
   /* SIZES */
-  --header-height: 6rem;
-  --block-height-M: 4rem;
-  --block-height-S: 3.2rem;
+  --size-S: 3.2rem;
+  --size-M: 4rem;
+  --size-L: 6rem;
   --space-S: 1rem;
   --space-M: 2rem;
   --space-L: 4rem;
-
-  /* TYPE */
-  --font-family: 'Roboto', sans-serif;
-  --font-size-XS: 1rem;
-  --font-size-S: 1.2rem;
-  --font-size-M: 1.4rem;
-  --font-size-L: 1.6rem;
-  --font-size-XL: 2rem;
-  --font-line-height-L: 1.8rem;
-  --font-line-height-XL: 3.4rem;
-  --font-weight-regular: 400;
-  --font-weight-light: 300;
-
-  /* COLORS */
-  --color-brand: rgba(22, 63, 137, 1);
-  --color-brand-secondary: rgba(22, 63, 137, 0.7);
-  --color-brand-highlight: #d1dee7;
-  --color-brand-highlight-softer: #e6f0f2;
-  --color-brand-hover: rgba(22, 63, 137, 0.9);
-  --color-brand-hover-highlight: rgba(22, 63, 137, 0.3);
-  --color-border: rgba(22, 63, 137, 0.25);
-  --color-border-light: rgba(22, 63, 137, 0.15);
-  --border: 1px solid var(--color-border);
-  --border-light: 1px solid var(--color-border-light);
 }
 
 html {
@@ -39,13 +54,8 @@ html {
 }
 
 body {
-  font-family: var(--font-family);
-  font-weight: var(--font-weight-regular);
-  font-size: var(--font-size-L);
-  color: var(--color-brand);
-  height: 100vh;
-  width: 100vw;
-  overflow-x: hidden;
+  font: var(--font-M);
+  color: var(--color-primary-blue);
 }
 
 a,
@@ -62,5 +72,13 @@ ul {
 * {
   margin: 0;
   padding: 0;
+  border: 0;
+  font: inherit;
   box-sizing: border-box;
+  vertical-align: baseline;
+}
+
+*::before,
+*::after {
+  content: '';
 }
