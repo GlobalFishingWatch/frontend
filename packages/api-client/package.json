@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "rollup -c ./rollup.config.js -w",
-    "build": "cross-env NODE_ENV=production tsc --module commonjs && rollup -c rollup.config.js",
+    "build": "cross-env NODE_ENV=production rollup -c rollup.config.js",
     "prepublishOnly": "yarn build",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },

@@ -1,19 +1,17 @@
 import React from 'react'
-import GFWAPI from '@globalfishingwatch/api-client/src/index'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { Type } from '@globalfishingwatch/layer-composer/src/generators/types'
 import { useLogin, useLayerComposer } from '@globalfishingwatch/react-hooks/src/index'
-import styles from '@globalfishingwatch/ui-kit/dist/gfw-ui-kit.module.css'
+import styles from '@globalfishingwatch/ui-kit/dist/components.module.css'
 import { MiniGlobe } from '@globalfishingwatch/ui-components'
 
 import './App.css'
-import '@globalfishingwatch/ui-kit/dist/gfw-ui-kit.base.css'
+import '@globalfishingwatch/ui-kit/dist/styles.min.css'
 
 const layers = [{ id: 'background', type: Type.Background }]
 
 function App() {
-  // used any as types and local definitions are incompatible	  const { logged, user } = useGFWLogin(GFWAPI)
-  // remove the /src/index from the import to use the builded version
-  const { logged, user } = useLogin(GFWAPI as any)
+  const { logged, user } = useLogin(GFWAPI)
   const [mapStyle] = useLayerComposer(layers)
   console.log('App -> mapStyle', mapStyle)
 
