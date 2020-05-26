@@ -21,7 +21,7 @@
     "clean": "rimraf dist/*",
     "build": "cross-env NODE_ENV=production rollup -c",
     "prepublishOnly": "yarn clean && yarn build",
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "exit 0"
   },
   "dependencies": {
     "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",

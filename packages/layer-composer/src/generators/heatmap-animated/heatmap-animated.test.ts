@@ -17,7 +17,7 @@ test('returns a valid style for a simple static gridded heatmap', async () => {
   const LAYER_DEFINITION = {
     id,
     tileset: TILESET,
-    type: 'HEATMAP',
+    type: Type.Heatmap,
     start: START,
     end: '2019-04-01T00:00:00.000Z',
     zoom: 1,
@@ -37,7 +37,6 @@ test('returns a valid style for a simple static gridded heatmap', async () => {
   const LayerComposer = new Composer()
   const { style } = LayerComposer.getGLStyle([
     {
-      type: Type.Heatmap,
       ...LAYER_DEFINITION,
     },
   ])

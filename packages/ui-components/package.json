@@ -26,7 +26,6 @@
     "clean": "rimraf dist/*",
     "build": "cross-env NODE_ENV=production tsc --module commonjs --rootDir src && rollup -c rollup.config.js",
     "prepublishOnly": "yarn clean && yarn prerender && yarn build",
-    "test": "echo \"Error: run tests from root\" && exit 1",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

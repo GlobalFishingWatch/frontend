@@ -6,17 +6,21 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "applications/*",
-    "linting"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "applications/*",
+      "linting"
+    ],
+    "nohoist":  ["**/react-scripts", "**/react-scripts/**"]
+  },
   "scripts": {
     "sandbox": "lerna run --scope @globalfishingwatch/sandbox dev",
     "start": "lerna run start --parallel",
     "changelog": "lerna-changelog",
     "release": "lerna publish && yarn changelog",
-    "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn"
+    "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn",
+    "test": "lerna run test --scope={@globalfishingwatch/layer-composer,@globalfishingwatch/sandbox}"
   },
   "dependencies": {
     "lodash": "^4.17.15",
@@ -33,6 +37,7 @@
     "@svgr/rollup": "^5.4.0",
     "@types/jest": "^25.2.1",
     "@types/lodash": "^4.14.151",
+    "@types/lodash-es": "^4.17.3",
     "@types/mapbox-gl": "^1.10.1",
     "@types/node": "^13.13.5",
     "@types/react": "^16.9.34",
@@ -54,9 +59,11 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^4.0.0",
     "husky": "^4.2.5",
+    "jest": "^26.0.1",
     "lerna": "^3.20.2",
     "lerna-changelog": "^1.0.1",
     "lint-staged": "^10.2.2",
+    "lodash-es": "^4.17.15",
     "npm-run-all": "^4.1.5",
     "postcss-cli": "^7.1.1",
     "postcss-import": "^12.0.1",
@@ -71,6 +78,7 @@
     "stylelint-config-css-modules": "^2.2.0",
     "stylelint-config-prettier": "^8.0.1",
     "stylelint-config-standard": "^20.0.0",
+    "ts-jest": "^26.0.0",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"
   },
