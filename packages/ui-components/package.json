@@ -19,16 +19,13 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "scripts": {
-    "start": "run-p start:css start:js",
-    "start:css": "tcm src -w",
-    "start:js": "rollup -c ./rollup.config.js -w",
-    "prerender": "ts-node src/header/render-html.tsx",
+    "start": "rollup -c ./rollup.config.js -w",
+    "build": "cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "prerender:build": "ts-node -P tsconfig.tsnode.json src/header/render-html.tsx",
+    "prerender:copy": "cp -r src/header/html dist/header",
+    "prepublishOnly": "yarn clean && yarn build && yarn prerender:build && yarn prerender:copy",
     "clean": "rimraf dist/*",
-    "build": "cross-env NODE_ENV=production tsc --module commonjs --rootDir src && rollup -c rollup.config.js",
-    "prepublishOnly": "yarn clean && yarn prerender && yarn build",
-    "test": "echo \"Error: run tests from root\" && exit 1",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "*",
@@ -37,23 +34,8 @@
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.6",
-    "@storybook/addon-actions": "^5.3.18",
-    "@storybook/addon-knobs": "^5.3.18",
-    "@storybook/addon-links": "^5.3.18",
-    "@storybook/addons": "^5.3.18",
-    "@storybook/preset-create-react-app": "^2.1.2",
-    "@storybook/preset-typescript": "^3.0.0",
-    "@storybook/react": "^5.3.18",
     "@types/topojson-client": "^3.0.0",
-    "babel-loader": "^8.1.0",
-    "css-loader": "^3.5.3",
-    "css-modules-typescript-loader": "^4.0.0",
-    "react-docgen-typescript-loader": "^3.7.2",
-    "style-loader": "^1.2.1",
-    "ts-loader": "^7.0.4",
-    "ts-node": "^8.10.1",
-    "typed-css-modules": "^0.6.4"
+    "ts-node": "^8.10.1"
   },
   "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
 }

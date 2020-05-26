@@ -6,18 +6,20 @@
     "lib": ["es2019", "dom"],
     "jsx": "react",
     "allowJs": true,
-    "checkJs": true,
+    "checkJs": false,
     "strict": true,
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "rootDir": "../packages",
     "declarationDir": "dist/types",
-    "typeRoots": ["./types", "./node_modules/@types"]
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "include": ["../packages"],
   "exclude": ["node_modules"]
