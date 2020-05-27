@@ -1,7 +1,7 @@
 import React from 'react'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Type } from '@globalfishingwatch/layer-composer/src/generators/types'
-import { useLogin, useLayerComposer } from '@globalfishingwatch/react-hooks/src/index'
+import { useLogin, useLayerComposer } from '@globalfishingwatch/react-hooks'
 import styles from '@globalfishingwatch/ui-kit/dist/components.module.css'
 import { MiniGlobe } from '@globalfishingwatch/ui-components'
 

@@ -110,7 +110,7 @@ export class GFWAPI {
     return this.token
   }
 
-  private setToken(token: string) {
+  setToken(token: string) {
     this.token = token
     if (token) {
       localStorage.setItem(this.storageKeys.token, token)
@@ -126,7 +126,7 @@ export class GFWAPI {
     return this.refreshToken
   }
 
-  private setRefreshToken(refreshToken: string) {
+  setRefreshToken(refreshToken: string) {
     this.refreshToken = refreshToken
     if (refreshToken) {
       localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
@@ -138,13 +138,13 @@ export class GFWAPI {
     }
   }
 
-  private async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
+  async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
     return fetch(`${this.baseUrl}/${AUTH_PATH}/token?access-token=${accessToken}`)
       .then(processStatus)
       .then(parseJSON)
   }
 
-  private async getTokenWithRefreshToken(refreshToken: string): Promise<{ token: string }> {
+  async getTokenWithRefreshToken(refreshToken: string): Promise<{ token: string }> {
     return fetch(`${this.baseUrl}/${AUTH_PATH}/token/reload`, {
       headers: {
         'refresh-token': refreshToken,
@@ -170,7 +170,7 @@ export class GFWAPI {
       })
   }
 
-  private async _internalFetch<T>(
+  async _internalFetch<T>(
     url: string,
     options: FetchOptions = {},
     refreshRetries = 0,
