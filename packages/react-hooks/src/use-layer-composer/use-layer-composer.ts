@@ -3,11 +3,8 @@ import LayerComposer from '@globalfishingwatch/layer-composer'
 import {
   AnyGeneratorConfig,
   GlobalGeneratorConfig,
-} from '@globalfishingwatch/layer-composer/dist/types/generators/types'
-import {
-  ExtendedStyle,
-  StyleTransformation,
-} from '@globalfishingwatch/layer-composer/dist/types/types'
+} from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { ExtendedStyle, StyleTransformation } from '@globalfishingwatch/layer-composer/dist/types'
 
 const applyStyleTransformations = (
   style: ExtendedStyle,

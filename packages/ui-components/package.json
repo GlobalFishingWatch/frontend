@@ -1,12 +1,12 @@
 {
   "name": "@globalfishingwatch/ui-components",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Set of react components to consume on the gfw ecosystem",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
   "main": "dist/index.js",
-  "typings": "dist/types",
+  "types": "dist/index.d.ts",
   "directories": {
     "src": "src",
     "dist": "dist"

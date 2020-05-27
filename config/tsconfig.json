@@ -16,9 +16,9 @@
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "rootDir": "../packages",
+    "rootDir": "../",
     "declarationDir": "dist/types",
-    "typeRoots": ["./types", "./node_modules/@types"],
+    "typeRoots": ["./node_modules/@types"],
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "include": ["../packages"],
