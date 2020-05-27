@@ -1,9 +1,5 @@
 import { useEffect, useState } from 'react'
-import LayerComposer from '@globalfishingwatch/layer-composer'
-import {
-  AnyGeneratorConfig,
-  GlobalGeneratorConfig,
-} from '@globalfishingwatch/layer-composer/dist/generators/types'
+import LayerComposer, { Generators } from '@globalfishingwatch/layer-composer'
 import { ExtendedStyle, StyleTransformation } from '@globalfishingwatch/layer-composer/dist/types'
 
 const applyStyleTransformations = (
@@ -18,7 +14,7 @@ const applyStyleTransformations = (
   return newStyle
 }
 
-type LayerComposerConfig = GlobalGeneratorConfig & {
+type LayerComposerConfig = Generators.GlobalGeneratorConfig & {
   styleTransformations?: StyleTransformation[]
 }
 
@@ -27,7 +23,7 @@ const defaultConfig: LayerComposerConfig = {
 }
 const defaultLayerComposerInstance = new LayerComposer()
 function useLayerComposer(
-  generatorConfigs: AnyGeneratorConfig[],
+  generatorConfigs: Generators.AnyGeneratorConfig[],
   layerComposer: LayerComposer = defaultLayerComposerInstance,
   config: LayerComposerConfig = defaultConfig
 ) {
@@ -42,7 +38,7 @@ function useLayerComposer(
       if (promises && promises.length) {
         setLoading(true)
         await Promise.all(
-          promises.map((p) => {
+          promises.map((p: Promise<{ style: ExtendedStyle }>) => {
             return p.then(({ style }) => {
               setMapStyle(applyStyleTransformations(style, styleTransformations))
             })
@@ -54,7 +50,7 @@ function useLayerComposer(
     getGlStyles()
   }, [config, generatorConfigs, layerComposer])
 
-  return [mapStyle, loading]
+  return { mapStyle, loading }
 }
 
 export default useLayerComposer
