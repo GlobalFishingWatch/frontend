@@ -6,14 +6,14 @@ import { Topology, GeometryCollection } from 'topojson-specification'
 import jsonData from './ne_110m_land.json'
 import styles from './miniglobe.module.css'
 
-interface MiniglobeBounds {
+export interface MiniglobeBounds {
   north: number
   south: number
   west: number
   east: number
 }
 
-interface MiniglobeCenter {
+export interface MiniglobeCenter {
   latitude: number
   longitude: number
 }

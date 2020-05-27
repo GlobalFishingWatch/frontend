@@ -1,1 +1,1 @@
-export { default } from './miniglobe'
+export { MiniglobeBounds, MiniglobeCenter, default } from './miniglobe'
