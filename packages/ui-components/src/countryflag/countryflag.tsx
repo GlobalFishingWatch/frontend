@@ -1,11 +1,12 @@
 import React from 'react'
 import countryflag from 'countryflag'
 
+import styles from './countryflag.module.css'
+
 interface CountryFlag {
   iso: string
   svg?: boolean
   svgBorder?: boolean
-  size?: string
   className?: string
   margin?: {
     left: string
@@ -19,7 +20,6 @@ const CountryFlag: React.FC<CountryFlag> = (props) => {
     svg = false,
     svgBorder = false,
     className = '',
-    size = '1em',
     margin = {
       left: '0.1em',
       right: '0.2em',
@@ -41,19 +41,18 @@ const CountryFlag: React.FC<CountryFlag> = (props) => {
   return svg === true || flag.emoji === null ? (
     <img
       style={{
-        height: size,
         marginRight: margin.right,
         marginLeft: margin.left,
         ...(svgBorder && {
           outline: '1px solid var(--color-border-light, rgba(22, 63, 137, 0.15))',
         }),
       }}
-      className={className}
+      className={`${styles.img} ${className}`}
       alt={flag.name}
       src={flag.svg}
     />
   ) : (
-    <span className={className} style={{ fontSize: size }} role="img" aria-label={flag.name}>
+    <span className={`${styles.span} ${className}`} role="img" aria-label={flag.name}>
       {flag.emoji}
     </span>
   )
