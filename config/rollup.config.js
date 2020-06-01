@@ -1,6 +1,8 @@
-import typescript from '@rollup/plugin-typescript'
+// import typescript from '@rollup/plugin-typescript'
+import typescript from 'rollup-plugin-typescript2'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
+import multiInput from 'rollup-plugin-multi-input'
 import json from '@rollup/plugin-json'
 import svgr from '@svgr/rollup'
 import postcss from 'rollup-plugin-postcss'
@@ -10,7 +12,7 @@ import { getPackages } from '@lerna/project'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultConfig = {
-  input: 'src/index.ts',
+  input: './src/**/index.ts',
   tsconfig: './tsconfig.json',
 }
 const prepareConfig = async (customConfig = {}) => {
@@ -33,6 +35,8 @@ const prepareConfig = async (customConfig = {}) => {
       json(),
       // Import svg as ReactComponents
       svgr(),
+      // Supports multiple entry points
+      multiInput(),
       // Compile TypeScript files
       config.tsconfig &&
         typescript({
@@ -53,6 +57,7 @@ const prepareConfig = async (customConfig = {}) => {
       // which external modules to include in the bundle
       // https://github.com/rollup/rollup-plugin-node-resolve#usage
       resolve(),
+      // Minify code only in production
       isProduction && terser(),
     ],
   }

@@ -14,12 +14,19 @@ module.exports = {
     react: {
       version: 'detect',
     },
-    'import/resolver': { typescript: {} },
+    'import/resolver': {
+      typescript: {},
+    },
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
+    },
   },
   rules: {
     'import/default': 0,
     'import/no-unresolved': 0,
     'import/no-named-as-default': 0,
+    'import/named': 0,
+    'import/namespace': 0,
     'import/order': [
       'error',
       {

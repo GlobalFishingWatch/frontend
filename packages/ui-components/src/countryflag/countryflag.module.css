@@ -1,0 +1,28 @@
+.span {
+  font-size: 1em;
+}
+
+
+.img {
+  height: 1em;
+  width: 1.33em;
+  position: relative;
+  text-indent:-9999px
+}
+
+/*
+  Hack to not show blank image when flag not found
+  https://bitsofco.de/styling-broken-images/
+*/
+.img::after {
+  content: '';
+  display: block;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+}
+

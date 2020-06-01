@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/timebar",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "GFW timebar",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -11,7 +11,10 @@
     "src": "src",
     "dist": "dist"
   },
-  "files": ["dist", "types.d.ts"],
+  "files": [
+    "dist",
+    "types.d.ts"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
@@ -86,9 +89,9 @@
   "peerDependencies": {
     "classnames": "^2.2.6",
     "dayjs": "^1.7.7",
+    "prop-types": "^15.6.2",
     "react": "^16.11.0",
-    "react-dom": "^16.11.0",
-    "prop-types": "^15.6.2"
+    "react-dom": "^16.11.0"
   },
   "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
 }

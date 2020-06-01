@@ -1,3 +1,5 @@
+/// <reference types="../types" />
+
 import fs from 'fs'
 import util from 'util'
 
@@ -9,14 +11,14 @@ import Header from './header'
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
-const components = [
+const componentsList = [
   { component: <Header />, path: 'src/header/html/header.html' },
   { component: <Header mini />, path: 'src/header/html/header-mini.html' },
   { component: <Header inverted />, path: 'src/header/html/header-inverted.html' },
   { component: <Header mini inverted />, path: 'src/header/html/header-mini-inverted.html' },
 ]
 
-async function preRender(components: any) {
+async function preRender(components: typeof componentsList) {
   const styles = await readFile('src/header/header.css')
   const script = await readFile('src/header/header-scripts.html')
 
@@ -33,4 +35,4 @@ async function preRender(components: any) {
   }
 }
 
-preRender(components)
+preRender(componentsList)

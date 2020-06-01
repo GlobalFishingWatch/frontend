@@ -29,7 +29,6 @@ const Tooltip = ({ highlightedEvent, outerScale, innerStartPx, innerEndPx }) => 
   if (!highlightedEvent) {
     return null
   }
-  console.log(highlightedEvent)
   const left = outerScale(highlightedEvent.start)
 
   if (left < innerStartPx || left > innerEndPx) {

@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './header.css'
 
 const navigation = [
@@ -65,7 +66,12 @@ const navigation = [
   },
 ]
 
-const Header = ({ mini = false, inverted = false }) => {
+interface HeaderProps {
+  mini?: boolean
+  inverted?: boolean
+}
+
+const Header: React.FC<HeaderProps> = ({ mini = false, inverted = false }) => {
   return (
     <div className={`gfw-header-container ${inverted ? 'gfw-header-container-inverted' : ''}`}>
       <header className="gfw-header">

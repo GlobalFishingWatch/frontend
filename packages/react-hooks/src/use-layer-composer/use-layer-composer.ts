@@ -1,13 +1,6 @@
 import { useEffect, useState } from 'react'
-import LayerComposer from '@globalfishingwatch/layer-composer'
-import {
-  AnyGeneratorConfig,
-  GlobalGeneratorConfig,
-} from '@globalfishingwatch/layer-composer/dist/types/generators/types'
-import {
-  ExtendedStyle,
-  StyleTransformation,
-} from '@globalfishingwatch/layer-composer/dist/types/types'
+import LayerComposer, { Generators } from '@globalfishingwatch/layer-composer'
+import { ExtendedStyle, StyleTransformation } from '@globalfishingwatch/layer-composer/dist/types'
 
 const applyStyleTransformations = (
   style: ExtendedStyle,
@@ -21,7 +14,7 @@ const applyStyleTransformations = (
   return newStyle
 }
 
-type LayerComposerConfig = GlobalGeneratorConfig & {
+type LayerComposerConfig = Generators.GlobalGeneratorConfig & {
   styleTransformations?: StyleTransformation[]
 }
 
@@ -30,24 +23,24 @@ const defaultConfig: LayerComposerConfig = {
 }
 const defaultLayerComposerInstance = new LayerComposer()
 function useLayerComposer(
-  generatorConfigs: AnyGeneratorConfig[],
+  generatorConfigs: Generators.AnyGeneratorConfig[],
   layerComposer: LayerComposer = defaultLayerComposerInstance,
   config: LayerComposerConfig = defaultConfig
 ) {
-  const [mapStyle, setMapStyle] = useState<ExtendedStyle | null>(null)
+  const [style, setStyle] = useState<ExtendedStyle | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const { styleTransformations, ...globalGeneratorConfig } = config
     const getGlStyles = async () => {
       const { style, promises } = layerComposer.getGLStyle(generatorConfigs, globalGeneratorConfig)
-      setMapStyle(applyStyleTransformations(style, styleTransformations))
+      setStyle(applyStyleTransformations(style, styleTransformations))
       if (promises && promises.length) {
         setLoading(true)
         await Promise.all(
-          promises.map((p) => {
+          promises.map((p: Promise<{ style: ExtendedStyle }>) => {
             return p.then(({ style }) => {
-              setMapStyle(applyStyleTransformations(style, styleTransformations))
+              setStyle(applyStyleTransformations(style, styleTransformations))
             })
           })
         )
@@ -57,7 +50,7 @@ function useLayerComposer(
     getGlStyles()
   }, [config, generatorConfigs, layerComposer])
 
-  return [mapStyle, loading]
+  return { style, loading }
 }
 
 export default useLayerComposer

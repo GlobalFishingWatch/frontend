@@ -1,12 +1,12 @@
 {
   "name": "@globalfishingwatch/dataviews-client",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
   "main": "dist/index.js",
-  "typings": "dist/types/index.d.ts",
+  "typings": "dist/index.d.ts",
   "directories": {
     "src": "src",
     "dist": "dist"
@@ -20,14 +20,13 @@
   },
   "scripts": {
     "start": "rollup -c ./rollup.config.js -w",
-    "build": "cross-env NODE_ENV=production tsc --module commonjs && rollup -c rollup.config.js",
-    "prepublishOnly": "yarn build",
+    "build": "cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "clean": "rimraf dist/*",
+    "prepublishOnly": "yarn clean && yarn build",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
-  "dependencies": {},
-  "devDependencies": {},
   "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
 }
