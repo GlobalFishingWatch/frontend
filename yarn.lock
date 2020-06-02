@@ -5644,10 +5644,10 @@ cosmiconfig@^6.0.0:
     path-type "^4.0.0"
     yaml "^1.7.2"
 
-countryflag@3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/countryflag/-/countryflag-3.2.1.tgz#9b1524997aea004cc19aa529cece3ea7a146df85"
-  integrity sha512-X1hmnk0nVz0BM4k5Pd/ofMhHUNMtLhUlKTg6MraCvC7SivYeb3UyW17cwn1zHMUyjFChGkV5WPX5LHzHVHxQYA==
+countryflag@3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/countryflag/-/countryflag-3.2.2.tgz#3706b8e5553848afe43309c6d74d4064f5a35224"
+  integrity sha512-DSnVjgz8LerPDSm8RckMa7lZ/bcmOzc309agVarm2mlVeq5rwKcUdcPfPI4oGFiwrIwqi+z37TlTNi8DrtzF9A==
   dependencies:
     core-js "3.1.4"
     cross-env "^7.0.2"
