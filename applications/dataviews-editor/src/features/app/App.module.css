@@ -3,7 +3,7 @@
   display: grid;
   grid-template-columns: min-content min-content auto;
   grid-template-rows: 1fr auto;
-  gap: 1px 1px;
+  gap: 0;
   grid-template-areas:  "dataviews dataview map" 
                         "dataviews dataview timebar";
 }

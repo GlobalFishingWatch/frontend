@@ -4,7 +4,6 @@ import { RootState } from 'store/store'
 
 export type EndpointType = 'track' | 'info' | 'tiles' | 'events'
 
-
 export interface Endpoint {
   type: EndpointType
   urlTemplate: string
@@ -17,6 +16,7 @@ export interface Dataset {
 }
 
 export interface ViewParams {
+  id: string
   type: string
   [propName: string]: unknown
 }
@@ -44,8 +44,7 @@ export interface EditorDataview extends Dataview {
   dirty: boolean
   editing: boolean
   allEndpointsLoaded?: boolean
-} 
-
+}
 
 const initialState: EditorDataview[] = [
   {
@@ -53,41 +52,46 @@ const initialState: EditorDataview[] = [
     name: 'background',
     description: 'background',
     resolvedViewParams: {
-      type: Generators.Type.Background
+      id: 'background',
+      type: Generators.Type.Background,
     },
     added: true,
     dirty: false,
-    editing: false
+    editing: false,
   },
   {
     id: 'basemap',
     name: 'basemap',
     description: 'basemap',
     resolvedViewParams: {
-      type: Generators.Type.Basemap
+      id: 'landmass',
+      type: Generators.Type.Basemap,
     },
-    added: false,
+    added: true,
     dirty: false,
-    editing: false
+    editing: false,
   },
   {
     id: 'carrierTrack',
     name: 'Carrier Track',
     description: 'Carrier Track desc',
     datasetIds: ['carriers:dev'],
-    resolvedDatasetsParams: [{
-      id: '123abc',
-      binary: true,
-      fields: 'latlon,fishing,speed'
-    }],
+    resolvedDatasetsParams: [
+      {
+        id: '123abc',
+        binary: true,
+        fields: 'latlon,fishing,speed',
+      },
+    ],
     resolvedViewParams: {
+      id: 'some_track',
       type: Generators.Type.Track,
       color: '#ff00ff',
     },
     added: true,
     dirty: true,
     editing: true,
-  }
+  },
 ]
 
 const slice = createSlice({
