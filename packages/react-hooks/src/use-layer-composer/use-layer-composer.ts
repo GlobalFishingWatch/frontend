@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import LayerComposer, { Generators } from '@globalfishingwatch/layer-composer'
+import LayerComposer, { Generators, sort } from '@globalfishingwatch/layer-composer'
 import { ExtendedStyle, StyleTransformation } from '@globalfishingwatch/layer-composer/dist/types'
 
 const applyStyleTransformations = (
@@ -14,24 +14,19 @@ const applyStyleTransformations = (
   return newStyle
 }
 
-type LayerComposerConfig = Generators.GlobalGeneratorConfig & {
-  styleTransformations?: StyleTransformation[]
-}
+const defaultTransformations: StyleTransformation[] = [sort]
 
-const defaultConfig: LayerComposerConfig = {
-  styleTransformations: [],
-}
 const defaultLayerComposerInstance = new LayerComposer()
 function useLayerComposer(
   generatorConfigs: Generators.AnyGeneratorConfig[],
-  layerComposer: LayerComposer = defaultLayerComposerInstance,
-  config: LayerComposerConfig = defaultConfig
+  globalGeneratorConfig: Generators.GlobalGeneratorConfig,
+  styleTransformations: StyleTransformation[] = defaultTransformations,
+  layerComposer: LayerComposer = defaultLayerComposerInstance
 ) {
-  const [style, setStyle] = useState<ExtendedStyle | null>(null)
+  const [style, setStyle] = useState<ExtendedStyle | undefined>()
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    const { styleTransformations, ...globalGeneratorConfig } = config
     const getGlStyles = async () => {
       const { style, promises } = layerComposer.getGLStyle(generatorConfigs, globalGeneratorConfig)
       setStyle(applyStyleTransformations(style, styleTransformations))
@@ -48,7 +43,7 @@ function useLayerComposer(
       }
     }
     getGlStyles()
-  }, [config, generatorConfigs, layerComposer])
+  }, [generatorConfigs, globalGeneratorConfig, layerComposer, styleTransformations])
 
   return { style, loading }
 }
