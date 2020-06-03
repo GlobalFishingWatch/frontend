@@ -4,10 +4,12 @@
   "private": true,
   "dependencies": {
     "@globalfishingwatch/layer-composer": "2.1.0",
+    "@globalfishingwatch/timebar": "^1.0.4",
     "@reduxjs/toolkit": "^1.3.6",
     "cra-template-typescript": "1.0.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-map-gl": "https://github.com/GlobalFishingWatch/react-map-gl.git#build",
     "react-scripts": "3.4.1"
   },
   "scripts": {
@@ -30,5 +32,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-map-gl": "^5.2.4"
   }
 }

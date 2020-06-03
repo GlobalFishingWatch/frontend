@@ -3,6 +3,8 @@ import cx from 'classnames'
 import styles from './App.module.css'
 import Dataviews from 'features/dataviews/Dataviews'
 import Dataview from 'features/dataview/Dataview'
+import Map from 'features/map/Map'
+import Timebar from 'features/timebar/Timebar'
 
 const App = () => {
   const [dataviewsMinimized, toggleDataviews] = useState(false)
@@ -26,8 +28,12 @@ const App = () => {
         </Fragment>
       )}
     </div>
-    <div className={styles.map}>map</div>
-    <div className={styles.timebar}>timebar</div>
+    <div className={styles.map}>
+      <Map />
+    </div>
+    <div className={styles.timebar}>
+      <Timebar />
+    </div>
   </div>
   )
 }
