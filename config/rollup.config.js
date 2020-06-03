@@ -29,7 +29,7 @@ const prepareConfig = async (customConfig = {}) => {
       format: 'es',
       sourcemap: true,
     },
-    external: ['react', 'react-dom', ...gfwPackages.map(({ name }) => name)],
+    external: ['react', 'react-dom', 'countryflag', ...gfwPackages.map(({ name }) => name)],
     plugins: [
       // Allow json resolution
       json(),
