@@ -26,7 +26,8 @@
     "lodash": "^4.17.15",
     "mapbox-gl": "^1.10.1",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-map-gl": "https://github.com/GlobalFishingWatch/react-map-gl.git#build"
   },
   "devDependencies": {
     "@lerna/project": "^3.21.0",
