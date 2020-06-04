@@ -78,7 +78,4 @@ ul {
   vertical-align: baseline;
 }
 
-*::before,
-*::after {
-  content: '';
-}
+/* TODO: include heading and other html tags styles */

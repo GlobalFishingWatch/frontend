@@ -6,8 +6,7 @@ import { useLogin, useLayerComposer } from '@globalfishingwatch/react-hooks/src/
 // import { MiniGlobe } from '@globalfishingwatch/ui-components'
 import './App.css'
 // import '@globalfishingwatch/ui-kit/dist/base.css'
-import '@globalfishingwatch/ui-kit/dist/styles.min.css'
-
+import '@globalfishingwatch/ui-components/dist/base.css'
 import Button from './components/button'
 
 const layers = [{ id: 'background', type: Type.Background }]

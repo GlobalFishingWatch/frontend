@@ -94,7 +94,6 @@
     "@globalfishingwatch/layer-composer": "*",
     "@globalfishingwatch/react-hooks": "*",
     "@globalfishingwatch/ui-components": "*",
-    "@globalfishingwatch/ui-kit": "*",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },

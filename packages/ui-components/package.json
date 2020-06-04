@@ -19,15 +19,20 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "scripts": {
-    "start": "rollup -c ./rollup.config.js -w",
-    "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
-    "clean": "rimraf dist/*",
+    "start": "run-p start:js start:css",
+    "start:js": "rollup -c ./rollup.config.js -w",
+    "start:css": "postcss src/base.css -o dist/base.css -w",
+    "build": "yarn clean && run-p build:js build:css build:css-min",
+    "build:js": "cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "build:css": "postcss src/base.css -o dist/base.css",
+    "build:css-min": "cross-env NODE_ENV=production postcss src/base.css -o dist/base.min.css ",
     "prerender:build": "ts-node -P tsconfig.tsnode.json src/header/render-html.tsx",
     "prerender:copy": "cp -r src/header/html dist/header",
-    "prepublishOnly": "yarn build && yarn prerender:build && yarn prerender:copy"
+    "prepublishOnly": "yarn build && yarn prerender:build && yarn prerender:copy",
+    "clean": "rimraf dist/*",
+    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@globalfishingwatch/ui-kit": "^1.1.2",
     "countryflag": "3.2.2",
     "d3-geo": "1.12.0",
     "topojson-client": "3.1.0"
