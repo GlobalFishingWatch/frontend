@@ -1,10 +1,10 @@
 {
-  "name": "@globalfishingwatch/sandbox",
+  "name": "@globalfishingwatchapp/sandbox",
   "version": "0.1.5",
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
   "scripts": {
-    "dev": "react-app-rewired start",
+    "start": "react-app-rewired start",
     "sandbox:build": "react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject"

@@ -1,5 +1,5 @@
 {
-  "name": "dataviews-editor",
+  "name": "@globalfishingwatchapp/dataviews-editor",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -28,6 +28,7 @@
     ]
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.10",
     "@types/react-map-gl": "^5.2.4"
   }
 }

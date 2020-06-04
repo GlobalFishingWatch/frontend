@@ -15,8 +15,9 @@
     "nohoist": ["**/react-scripts", "**/react-scripts/**", "**/babel**"]
   },
   "scripts": {
-    "sandbox": "lerna run --scope @globalfishingwatch/sandbox dev",
-    "start": "lerna run start --parallel",
+    "start:sandbox": "lerna run --scope @globalfishingwatchapp/sandbox start",
+    "start:dataviews": "lerna run --scope @globalfishingwatchapp/dataviews-editor start",
+    "start:packages": "lerna run start --parallel --scope @globalfishingwatch/*",
     "build": "lerna run build --parallel",
     "changelog": "lerna-changelog",
     "release": "lerna publish && yarn changelog",
