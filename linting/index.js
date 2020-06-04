@@ -24,7 +24,8 @@ module.exports = {
             position: 'after',
           },
           {
-            pattern: '{features,store,routes,common,types,assets,pages,data}/**',
+            pattern:
+              '{features,store,routes,common,components,redux-modules,types,assets,pages,data}/**',
             group: 'internal',
           },
         ],
