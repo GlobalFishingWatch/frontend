@@ -31,13 +31,19 @@ module.exports = {
       'error',
       {
         groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-        'newlines-between': 'always',
+        'newlines-between': 'never',
         pathGroups: [
           {
-            pattern: '@globalfishingwatch/**/*',
+            pattern: '@globalfishingwatch/**',
+            group: 'external',
+            position: 'after',
+          },
+          {
+            pattern: '{features,store,routes,common,types,assets,pages,data}/**',
             group: 'internal',
           },
         ],
+        pathGroupsExcludedImportTypes: ['builtin'],
       },
     ],
     'react/jsx-fragments': ['error', 'element'],
