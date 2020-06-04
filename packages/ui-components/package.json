@@ -20,12 +20,11 @@
   },
   "scripts": {
     "start": "rollup -c ./rollup.config.js -w",
-    "build": "cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "clean": "rimraf dist/*",
     "prerender:build": "ts-node -P tsconfig.tsnode.json src/header/render-html.tsx",
     "prerender:copy": "cp -r src/header/html dist/header",
-    "prepublishOnly": "yarn clean && yarn build && yarn prerender:build && yarn prerender:copy",
-    "clean": "rimraf dist/*",
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "prepublishOnly": "yarn build && yarn prerender:build && yarn prerender:copy"
   },
   "dependencies": {
     "@globalfishingwatch/ui-kit": "*",

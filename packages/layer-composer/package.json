@@ -19,11 +19,10 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "scripts": {
-    "start": "yarn clean && rollup -c ./rollup.config.js -w",
+    "start": "rollup -c ./rollup.config.js -w",
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
     "clean": "rimraf dist/*",
-    "prepublishOnly": "yarn build",
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "prepublishOnly": "yarn build"
   },
   "bugs": {
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
