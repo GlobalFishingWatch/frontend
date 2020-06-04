@@ -1,0 +1,55 @@
+.app {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: min-content min-content auto;
+  grid-template-rows: 1fr auto;
+  gap: 0;
+  grid-template-areas:  "dataviews dataview map" 
+                        "dataviews dataview timebar";
+}
+
+.column {
+  border-right: 1px solid lightgray;
+  padding: 10px 0;
+}
+
+.dataviews { 
+  width: 250px;
+  grid-area: dataviews;
+}
+
+.dataview { 
+  width: 300px;
+  grid-area: dataview;
+}
+
+.minimized {
+  width: 30px;
+}
+
+h1 {
+  padding: 10px;
+  cursor: pointer;
+  margin: 0;
+  font-size: large;
+}
+
+h2 {
+  padding: 5px;
+  margin: 0;
+  font-size: medium;
+  font-weight: 400;
+}
+
+.minimized h1 {
+  transform: rotate(90deg) translate(5px);
+}
+
+
+.timebar {
+  grid-area: timebar;
+}
+
+.map {
+  grid-area: map;
+}

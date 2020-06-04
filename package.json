@@ -6,14 +6,18 @@
   "author": "satellitestudio <contact@satellitestud.io>",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "applications/*",
-    "linting"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "applications/*",
+      "linting"
+    ],
+    "nohoist": ["**/react-scripts", "**/react-scripts/**", "**/babel**"]
+  },
   "scripts": {
-    "sandbox": "lerna run --scope @globalfishingwatch/sandbox dev",
-    "start": "lerna run start --parallel",
+    "start:sandbox": "lerna run --scope @globalfishingwatchapp/sandbox start",
+    "start:dataviews": "lerna run --scope @globalfishingwatchapp/dataviews-editor start",
+    "start:packages": "lerna run start --parallel --scope @globalfishingwatch/*",
     "build": "lerna run build --parallel",
     "changelog": "lerna-changelog",
     "release": "lerna publish && yarn changelog",
@@ -23,7 +27,8 @@
     "lodash": "^4.17.15",
     "mapbox-gl": "^1.10.1",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-map-gl": "https://github.com/GlobalFishingWatch/react-map-gl.git#build"
   },
   "devDependencies": {
     "@lerna/project": "^3.21.0",
