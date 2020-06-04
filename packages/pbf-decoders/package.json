@@ -1,0 +1,21 @@
+{
+  "name": "@globalfishingwatch/pbf",
+  "version": "0.0.1",
+  "private": false,
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf decoders && mkdirp ./decoders",
+    "build": "run-s clean build:pb:js build:pb:ts",
+    "build:pb:js": "pbjs ../../node_modules/tracks-cloud-function/src/proto/vessels.proto -t static-module -w commonjs -o decoders/vessels.js",
+    "build:pb:ts": "pbts decoders/vessels.js -o decoders/vessels.d.ts"
+  },
+  "dependencies": {
+    "tracks-cloud-function": "https://github.com/GlobalFishingWatch/api-function-vessels"
+  },
+  "devDependencies": {
+    "pbf": "3.2.1",
+    "pbjs": "^0.0.14",
+    "pbts-cli": "^1.0.3",
+    "protobufjs": "6.9.0"
+  }
+}
