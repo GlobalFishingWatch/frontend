@@ -1,9 +1,8 @@
 import React, { useMemo, useState } from 'react'
 import ReactMapGL from 'react-map-gl'
+import { useSelector } from 'react-redux'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import { useTimeConnect } from 'features/timebar/timebar.hooks'
-import { useSelector } from 'react-redux'
-
 import { selectGeneratorConfigWithData } from './map.selectors'
 
 const Map = () => {

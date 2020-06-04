@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'store/store'
 import { TRACK_START, TRACK_END } from 'config'
+import { RootState } from 'store/store'
 
 type TimebarSlice = {
   time: {
@@ -13,7 +13,7 @@ const initialState: TimebarSlice = {
   time: {
     start: TRACK_START.toISOString(),
     end: TRACK_END.toISOString(),
-  }
+  },
 }
 
 const slice = createSlice({
