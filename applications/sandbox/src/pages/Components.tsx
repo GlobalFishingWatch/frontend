@@ -1,9 +1,10 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import Button from '@globalfishingwatch/ui-components/src/button'
 import Icon from '@globalfishingwatch/ui-components/src/icon'
 import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
 // import { IconButton } from '@globalfishingwatch/ui-components'
 // import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import Switch from '@globalfishingwatch/ui-components/src/switch'
 import styles from './pages.module.css'
 
 const ButtonsSection = () => {
@@ -66,6 +67,22 @@ const IconButtonsSection = () => {
     </Fragment>
   )
 }
+const SwitchsSection = () => {
+  const [switchActive, setSwitchActive] = useState(false)
+  const toggle = () => {
+    setSwitchActive(!switchActive)
+  }
+  return (
+    <Fragment>
+      <label>Default</label>
+      <Switch active={switchActive} onClickFn={toggle} />
+      <label>Disabled</label>
+      <Switch active={false} onClickFn={toggle} disabled={true} />
+      <label>Custom color</label>
+      <Switch active={switchActive} onClickFn={toggle} color={'#ff0000'} />
+    </Fragment>
+  )
+}
 
 const ComponentsPage = () => {
   return (
@@ -80,6 +97,10 @@ const ComponentsPage = () => {
         <hr />
         <h2>IconButtons</h2>
         <IconButtonsSection />
+      </section>
+      <section>
+        <h2>Switchs</h2>
+        <SwitchsSection />
       </section>
     </main>
   )

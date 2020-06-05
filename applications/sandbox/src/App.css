@@ -17,3 +17,7 @@
   color: #e54430;
   text-decoration: underline;
 }
+
+section {
+  padding: 2rem;
+}
