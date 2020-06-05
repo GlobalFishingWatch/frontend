@@ -13,7 +13,7 @@ All of them availables with the `@globalfishingwatch/` prefix:
 | [layer-composer](packages/layer-composer)     | Orchestrates various Layer Generators to generate a Mapbox GL Style document |
 | [react-hooks](packages/react-hooks)           | Set of hooks to use libraries easily in react                                |
 | [timebar](packages/timebar)                   | Timebar component, not many more to say                                      |
-| [ui-components](packages/ui-components)       | Reusable components in gfw using ui-kit styles                               |
+| [ui-components](packages/ui-components)       | Reusable atoms components kit                                                |
 
 ## Applications
 

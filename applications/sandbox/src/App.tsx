@@ -2,11 +2,9 @@ import React from 'react'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Type } from '@globalfishingwatch/layer-composer/src/generators/types'
 import { useLogin, useLayerComposer } from '@globalfishingwatch/react-hooks/src/index'
-// import styles from '@globalfishingwatch/ui-kit/dist/components.modules.css'
+import '@globalfishingwatch/ui-components/dist/base.css'
 // import { MiniGlobe } from '@globalfishingwatch/ui-components'
 import './App.css'
-// import '@globalfishingwatch/ui-kit/dist/base.css'
-import '@globalfishingwatch/ui-components/dist/base.css'
 import Button from './components/button'
 
 const layers = [{ id: 'background', type: Type.Background }]
