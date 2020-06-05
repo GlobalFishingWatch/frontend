@@ -3,6 +3,7 @@ export type EndpointType = 'track' | 'info' | 'tiles' | 'events'
 export interface Endpoint {
   type: EndpointType
   urlTemplate: string
+  downloadable: boolean
 }
 
 export interface Dataset {
@@ -10,28 +11,36 @@ export interface Dataset {
   endpoints?: Endpoint[]
 }
 
-export interface Dataview {
+export interface ViewParams {
   id: string
-  name?: string
-  description?: string
-  config?: any
-  datasets?: Dataset[]
-  datasetsIds?: string[]
+  type: string
+  [propName: string]: unknown
 }
 
-export interface DataviewWorkspace {
-  id: string
-  overrides?: any
-  datasetParams?: any
-  dataview?: Dataview
+export interface DatasetParams {
+  [propName: string]: unknown
+}
+
+export interface Dataview {
+  id: number
+  name: string
+  description: string
+  createdAt?: string
+  updatedAt?: string
+  viewParams?: ViewParams
+  defaultViewParams?: ViewParams
+  datasetsParams?: DatasetParams[]
+  defaultDatasetParams?: DatasetParams[]
+  datasetIds?: string[]
+  datasets?: Dataset[] // foreign
+}
+
+export interface WorkspaceDataview {
+  id: number
+  viewParams?: ViewParams
+  datasetsParams?: DatasetParams[]
 }
 
 export interface Workspace {
-  id?: string
-  zoom: number
-  latitude: number
-  longitude: number
-  start: string
-  end: string
-  dataviewsWorkspace?: DataviewWorkspace[]
+  workspaceDataviews: WorkspaceDataview[]
 }

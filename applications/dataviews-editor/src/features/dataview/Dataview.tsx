@@ -1,12 +1,14 @@
 import React, { Fragment } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import cx from 'classnames'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { ViewParams } from '@globalfishingwatch/dataviews-client/dist/types'
 import AddButton from 'common/AddButton'
 import Field from 'common/Field'
 import fieldStyles from 'common/Field.module.css'
 import Section from 'common/Section'
 import { selectCurrentDataview } from 'features/dataviews/dataviews.selectors'
+import { setMeta } from 'features/dataviews/dataviews.slice'
 
 const DataviewTypeDropdown = () => {
   return (
@@ -23,7 +25,7 @@ const DataviewTypeDropdown = () => {
   )
 }
 
-const ResolvedViewParams = ({ params }: any) => {
+const ResolvedViewParams = ({ id, params }: { id: number; params?: ViewParams }) => {
   if (!params) return null
   return (
     <Fragment>
@@ -41,15 +43,16 @@ const ResolvedViewParams = ({ params }: any) => {
 const ResolvedDatasetParams = ({ params }: any) => {
   if (!params) return null
   return (
-    <Fragment>
+    <Section>
       {Object.entries(params).map(([fieldkey, value]: [string, unknown]) => (
         <Field key={fieldkey} fieldkey={fieldkey} value={value as string} />
       ))}
-    </Fragment>
+    </Section>
   )
 }
 
 const Dataview = () => {
+  const dispatch = useDispatch()
   const dataview = useSelector(selectCurrentDataview)
   if (!dataview) return null
 
@@ -57,27 +60,41 @@ const Dataview = () => {
     <Fragment>
       <Section>
         <h2>meta</h2>
-        <Field fieldkey="name" value={dataview.name} />
-        <Field fieldkey="description" value={dataview.description} />
+        <Field
+          fieldkey="name"
+          value={dataview.name}
+          onValueChange={(value) => {
+            dispatch(setMeta({ id: dataview.id, field: 'name', value }))
+          }}
+        />
+        <Field
+          fieldkey="description"
+          value={dataview.description}
+          onValueChange={(value) => {
+            dispatch(setMeta({ id: dataview.id, field: 'description', value }))
+          }}
+        />
       </Section>
       <Section>
         <h2>datasets</h2>
         <button className={cx('large', 'done')}>load endpoints data</button>
         {dataview.datasetIds &&
-          dataview.datasetIds?.map((datasetId) => (
+          dataview.datasetIds?.map((datasetId: string) => (
             <input type="text" key={datasetId} value={datasetId} />
           ))}
         <AddButton />
       </Section>
       <Section>
         <h2>defaultDatasetParams</h2>
-        {dataview.datasetsParams?.map((resolvedDatasetParams, index) => (
-          <ResolvedDatasetParams key={index} params={resolvedDatasetParams} />
-        ))}
+        {dataview.datasetsParams?.map(
+          (resolvedDatasetParams: Record<string, unknown>, index: number) => (
+            <ResolvedDatasetParams key={index} params={resolvedDatasetParams} />
+          )
+        )}
       </Section>
       <Section>
         <h2>defaultViewParams</h2>
-        <ResolvedViewParams params={dataview.viewParams} />
+        <ResolvedViewParams id={dataview.id} params={dataview.viewParams} />
         <AddButton />
       </Section>
     </Fragment>

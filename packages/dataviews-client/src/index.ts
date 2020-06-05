@@ -4,6 +4,6 @@ export type {
   Endpoint,
   Dataset,
   Dataview,
-  DataviewWorkspace,
   Workspace,
+  WorkspaceDataview,
 } from './types'

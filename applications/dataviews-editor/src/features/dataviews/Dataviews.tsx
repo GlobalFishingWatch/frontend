@@ -1,14 +1,16 @@
 import React, { Fragment } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import AddButton from 'common/AddButton'
 import ListItem from 'common/ListItem'
 import Section from 'common/Section'
-import { selectAddedDataviews } from './dataviews.selectors'
-import { selectDataviews } from './dataviews.slice'
+import { toggleDataview } from 'features/workspace/workspace.slice'
+import { selectAddedDataviews, selectEditorDataviews } from './dataviews.selectors'
+import { EditorDataview, setEditing, setMeta } from './dataviews.slice'
 
 const Dataviews = () => {
+  const dispatch = useDispatch()
   const addedDataviews = useSelector(selectAddedDataviews)
-  const dataviews = useSelector(selectDataviews)
+  const dataviews = useSelector(selectEditorDataviews)
   return (
     <Fragment>
       <Section>
@@ -17,11 +19,20 @@ const Dataviews = () => {
           {addedDataviews.map((dataview) => (
             <ListItem
               key={dataview.id}
-              title={dataview.id}
-              checked={dataview.added}
+              title={dataview.name}
               editing={dataview.editing}
               dirty={dataview.dirty}
               showActions={dataview.editing}
+              checked
+              onToggle={(toggle) => {
+                dispatch(toggleDataview({ id: dataview.id, added: toggle }))
+              }}
+              onClick={() => {
+                dispatch(setEditing(dataview.id))
+              }}
+              onChange={(value) => {
+                dispatch(setMeta({ id: dataview.id, field: 'name', value }))
+              }}
             />
           ))}
         </ul>
@@ -29,13 +40,16 @@ const Dataviews = () => {
       <Section>
         <h2>all dataviews</h2>
         <ul>
-          {dataviews.map((dataview) => (
+          {dataviews.map((dataview: EditorDataview) => (
             <ListItem
               key={dataview.id}
-              title={dataview.id}
-              checked={dataview.added}
+              title={dataview.name}
               editing={dataview.editing}
               dirty={dataview.dirty}
+              checked={dataview.added}
+              onToggle={(toggle) => {
+                dispatch(toggleDataview({ id: dataview.id, added: toggle }))
+              }}
             />
           ))}
         </ul>

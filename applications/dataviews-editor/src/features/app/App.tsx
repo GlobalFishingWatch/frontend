@@ -1,14 +1,19 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment, useEffect } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Dataview from 'features/dataview/Dataview'
 import Dataviews from 'features/dataviews/Dataviews'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import { selectCurrentDataview } from 'features/dataviews/dataviews.selectors'
+import { fetchDataviews } from 'features/dataviews/dataviews.slice'
 import styles from './App.module.css'
 
 const App = () => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(fetchDataviews())
+  }, [dispatch])
   const [dataviewsMinimized, toggleDataviews] = useState(false)
   const [dataviewMinimized, toggleDataview] = useState(false)
   const currentDataview = useSelector(selectCurrentDataview)
