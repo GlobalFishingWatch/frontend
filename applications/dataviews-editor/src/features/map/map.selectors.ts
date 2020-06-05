@@ -7,7 +7,8 @@ export const selectGeneratorConfigWithData = createSelector(
   [selectAddedDataviews],
   (addedDataviews) => {
     return addedDataviews.map((dataview: EditorDataview) => {
-      return dataview.viewParams as Generators.GeneratorConfig
+      // TODO defaultViewParams -> viewParams when we have the hook
+      return dataview.defaultViewParams as Generators.GeneratorConfig
     })
   }
 )

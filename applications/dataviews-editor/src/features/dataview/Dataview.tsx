@@ -78,15 +78,16 @@ const Dataview = () => {
       <Section>
         <h2>datasets</h2>
         <button className={cx('large', 'done')}>load endpoints data</button>
-        {dataview.datasetIds &&
-          dataview.datasetIds?.map((datasetId: string) => (
-            <input type="text" key={datasetId} value={datasetId} />
+        {dataview.datasets &&
+          dataview.datasets?.map((dataset) => (
+            <input type="text" key={dataset.id} value={dataset.id} />
           ))}
         <AddButton />
       </Section>
       <Section>
         <h2>defaultDatasetParams</h2>
-        {dataview.datasetsParams?.map(
+        {/* // TODO defaultViewParams -> viewParams when we have the hook */}
+        {dataview.defaultDatasetsParams?.map(
           (resolvedDatasetParams: Record<string, unknown>, index: number) => (
             <ResolvedDatasetParams key={index} params={resolvedDatasetParams} />
           )
@@ -94,7 +95,8 @@ const Dataview = () => {
       </Section>
       <Section>
         <h2>defaultViewParams</h2>
-        <ResolvedViewParams id={dataview.id} params={dataview.viewParams} />
+        {/* // TODO defaultViewParams -> viewParams when we have the hook */}
+        <ResolvedViewParams id={dataview.id} params={dataview.defaultViewParams} />
         <AddButton />
       </Section>
     </Fragment>

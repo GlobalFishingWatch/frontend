@@ -30,8 +30,7 @@ export interface Dataview {
   viewParams?: ViewParams
   defaultViewParams?: ViewParams
   datasetsParams?: DatasetParams[]
-  defaultDatasetParams?: DatasetParams[]
-  datasetIds?: string[]
+  defaultDatasetsParams?: DatasetParams[]
   datasets?: Dataset[] // foreign
 }
 
@@ -43,4 +42,12 @@ export interface WorkspaceDataview {
 
 export interface Workspace {
   workspaceDataviews: WorkspaceDataview[]
+}
+export interface Resource {
+  dataviewId: number
+  datasetId: string
+  // identifies resource uniquely, ie vessel id
+  mainDatasetParamId: string
+  resolvedUrl: string
+  data?: unknown
 }

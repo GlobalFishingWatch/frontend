@@ -1,8 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Dispatch } from 'react'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import DataviewsClient, { Dataview } from '@globalfishingwatch/dataviews-client'
+import DataviewsClient, { Dataview, Dataset } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store/store'
+
+const DATASET: Dataset = {
+  id: 'carriers:dev',
+  endpoints: [
+    {
+      type: 'track',
+      downloadable: true,
+      urlTemplate: `/datasets/{{dataset}}/vessels/{{id}}/tracks?startDate={{startDate}}&endDate={{endDate}}&binary={{binary}}&fields={{fields}}&format={{format}}&wrapLongitudes=false`,
+    },
+  ],
+}
 
 const MOCK: Record<string, Dataview[]> = {
   '/dataviews/': [
@@ -10,7 +21,7 @@ const MOCK: Record<string, Dataview[]> = {
       id: 0,
       name: 'background',
       description: 'background',
-      viewParams: {
+      defaultViewParams: {
         id: 'background',
         type: Generators.Type.Background,
       },
@@ -19,7 +30,7 @@ const MOCK: Record<string, Dataview[]> = {
       id: 1,
       name: 'basemap',
       description: 'basemap',
-      viewParams: {
+      defaultViewParams: {
         id: 'landmass',
         type: Generators.Type.Basemap,
       },
@@ -28,18 +39,42 @@ const MOCK: Record<string, Dataview[]> = {
       id: 2,
       name: 'Carrier Track',
       description: 'Carrier Track desc',
-      datasetIds: ['carriers:dev'],
-      datasetsParams: [
+      datasets: [DATASET],
+      defaultDatasetsParams: [
         {
-          id: '123abc',
+          id: '46df37738-8057-e7d4-f3f3-a9b44d52fe03',
           binary: true,
-          fields: 'latlon,fishing,speed',
+          format: 'valueArray',
+          fields: 'lonlat,timestamp',
+          startDate: '2017-01-01T00:00:00.000Z',
+          endDate: '2020-01-01T00:00:00.000Z',
         },
       ],
-      viewParams: {
+      defaultViewParams: {
         id: 'some_track',
         type: Generators.Type.Track,
         color: '#ff00ff',
+      },
+    },
+    {
+      id: 3,
+      name: 'Fishing Track',
+      description: 'Carrier Track desc',
+      datasets: [DATASET],
+      defaultDatasetsParams: [
+        {
+          id: 'c723c1925-56f9-465c-bee8-bcc6d649c17c',
+          binary: true,
+          format: 'valueArray',
+          fields: 'lonlat,timestamp',
+          startDate: '2017-01-01T00:00:00.000Z',
+          endDate: '2020-01-01T00:00:00.000Z',
+        },
+      ],
+      defaultViewParams: {
+        id: 'some_track',
+        type: Generators.Type.Track,
+        color: '#0000ff',
       },
     },
   ],
@@ -114,4 +149,8 @@ export const selectDataviews = (state: RootState) => state.dataviews.dataviews
 export const fetchDataviews = () => async (dispatch: Dispatch<PayloadAction>) => {
   const dataviews = await dataviewsClient.getDataviews()
   dispatch(setDataviews(dataviews))
+  // TODO trigger on button click OR add to workspace
+  const data = await dataviewsClient.getResources(dataviews)
+  console.log(data)
+  // dispatch(setData)
 }
