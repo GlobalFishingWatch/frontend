@@ -1,36 +1,33 @@
-import React from 'react'
-import GFWAPI from '@globalfishingwatch/api-client'
-import { Type } from '@globalfishingwatch/layer-composer/src/generators/types'
-import { useLogin, useLayerComposer } from '@globalfishingwatch/react-hooks/src/index'
-import '@globalfishingwatch/ui-components/dist/base.css'
-// import { MiniGlobe } from '@globalfishingwatch/ui-components'
+import React, { Fragment } from 'react'
+import { BrowserRouter as Router, Switch, Route, NavLink } from 'react-router-dom'
+import Components from './pages/Components'
+import ApiClient from './pages/ApiClient'
+import LayerComposer from './pages/LayerComposer'
 import './App.css'
-import Button from './components/button'
+import '@globalfishingwatch/ui-components/dist/base.css'
 
-const layers = [{ id: 'background', type: Type.Background }]
+const Home = () => <h1>Please select the page you want to see</h1>
 
 function App() {
-  const { logged, user } = useLogin(GFWAPI)
-  const { style } = useLayerComposer(layers, {})
-
   return (
-    <div className="App">
-      <header className="App-header">
-        Using <code>useGFWLogin</code>
-        {logged ? `Logged user: ${user?.firstName}` : 'User not logged'}
-        <br />
-        <Button>Hi</Button>
-        {/* <button className={styles.button}>Hi with cssModules</button> */}
-        <br />
-        <p>Map Style</p>
-        <code>{JSON.stringify(style)}</code>
-        {/* <MiniGlobe
-          center={{ latitude: 0, longitude: 0 }}
-          bounds={{ north: 0, south: 0, west: 0, east: 0 }}
-        /> */}
-      </header>
-      <main></main>
-    </div>
+    <Router>
+      <Fragment>
+        <nav className="nav">
+          <NavLink to="/ui-components">UI Components</NavLink>
+          <NavLink to="/layer-composer">Layer Composer</NavLink>
+          <NavLink to="/api-client">Api Client</NavLink>
+        </nav>
+        <div className="content">
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/ui-components" component={Components} />
+            <Route path="/api-client" component={ApiClient} />
+            <Route path="/layer-composer" component={LayerComposer} />
+            <Route component={Home} />
+          </Switch>
+        </div>
+      </Fragment>
+    </Router>
   )
 }
 
