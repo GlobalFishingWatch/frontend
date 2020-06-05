@@ -5,9 +5,12 @@ const ButtonsSection = () => {
   return (
     <Fragment>
       <h3>Basic</h3>
-      <Button>I'm the default</Button>
+      <Button tooltip="Tooltiping" onClick={(e) => console.log(e)}>
+        I'm the default
+      </Button>
       <h3>Secondary</h3>
       <Button type="secondary">I'm the secondary one</Button>
+      <Button disabled>I'm disabled</Button>
     </Fragment>
   )
 }
