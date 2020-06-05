@@ -4,6 +4,7 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import multiInput from 'rollup-plugin-multi-input'
 import json from '@rollup/plugin-json'
+import url from '@rollup/plugin-url'
 import svgr from '@svgr/rollup'
 import postcss from 'rollup-plugin-postcss'
 import autoprefixer from 'autoprefixer'
@@ -33,6 +34,8 @@ const prepareConfig = async (customConfig = {}) => {
     plugins: [
       // Allow json resolution
       json(),
+      // Allow imports files as data-URIs or ES Modules
+      url(),
       // Import svg as ReactComponents
       svgr(),
       // Supports multiple entry points
@@ -42,13 +45,11 @@ const prepareConfig = async (customConfig = {}) => {
         typescript({
           sourceMap: true,
           tsconfig: config.tsconfig,
+          // rollupCommonJSResolveHack: true,
+          clean: isProduction,
         }),
       // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
-      commonjs({
-        namedExports: {
-          'file-saver': ['saveAs'],
-        },
-      }),
+      commonjs({}),
       postcss({
         modules: true,
         plugins: [autoprefixer()],
