@@ -1,4 +1,0 @@
-.button {
-  composes: button from global;
-  composes: buttonSecondary from global;
-}
