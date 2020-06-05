@@ -1,6 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
-// import { ReactComponent as ArrowDownIcon } from '@globalfishingwatch/ui-components/src/assets/icons/arrow-down.svg'
+import { ReactComponent as ArrowDownIcon } from '../assets/icons/arrow-down.svg'
 import styles from './IconButton.module.css'
 
 type IconButtonTypes = 'default' | 'invert'
@@ -41,7 +41,7 @@ const IconButton: React.FC<IconButtonProps> = (props) => {
   const { type = 'default', className } = props
   return (
     <button className={cx(styles.IconButton, { [styles.invert]: type === 'invert' }, className)}>
-      {/* <ArrowDownIcon /> */}
+      <ArrowDownIcon />
     </button>
   )
 }

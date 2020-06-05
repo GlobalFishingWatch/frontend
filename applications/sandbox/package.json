@@ -37,6 +37,7 @@
     ]
   },
   "devDependencies": {
+    "@svgr/webpack": "^5.4.0",
     "@types/react-router-dom": "^5.1.5"
   }
 }
