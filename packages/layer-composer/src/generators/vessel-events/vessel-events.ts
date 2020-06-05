@@ -1,7 +1,6 @@
 import { FeatureCollection } from 'geojson'
 import { GeoJSONSourceRaw } from 'mapbox-gl'
 import memoizeOne from 'memoize-one'
-
 import { Group, Dictionary } from '../../types'
 import { Type, VesselEventsGeneratorConfig, RawEvent, AuthorizationOptions } from '../types'
 import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
@@ -141,8 +140,8 @@ export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureC
   }
 
   if (!trackEvents) return featureCollection
-
-  featureCollection.features = trackEvents.map((event: RawEvent) => {
+  const trackEventsSorted = [...trackEvents].sort((a, b) => (a.type === 'encounter' ? 1 : -1))
+  featureCollection.features = trackEventsSorted.map((event: RawEvent) => {
     const authorized = event.encounter && event.encounter.authorized === true
     const authorizationStatus = event.encounter
       ? event.encounter.authorizationStatus
