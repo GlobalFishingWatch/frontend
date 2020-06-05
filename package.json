@@ -22,7 +22,7 @@
     "start:sandbox": "cross-env CI=true SKIP_PREFLIGHT_CHECK=true lerna run --scope @globalfishingwatchapp/sandbox start",
     "start:dataviews": "cross-env CI=true SKIP_PREFLIGHT_CHECK=true lerna run --scope @globalfishingwatchapp/dataviews-editor start",
     "start:packages": "lerna run start --parallel --scope @globalfishingwatch/*",
-    "build": "lerna run build --parallel --scope @globalfishingwatch/*",
+    "build": "lerna run build --scope @globalfishingwatch/*",
     "changelog": "lerna-changelog",
     "release": "lerna publish && yarn changelog",
     "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn"
