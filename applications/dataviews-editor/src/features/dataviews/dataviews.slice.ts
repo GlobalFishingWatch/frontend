@@ -2,7 +2,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Dispatch } from 'react'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import DataviewsClient, { Dataview, Dataset } from '@globalfishingwatch/dataviews-client'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { RootState } from 'store/store'
+import { addResources, completeLoading } from './resources.slice'
 
 const DATASET: Dataset = {
   id: 'carriers:dev',
@@ -43,8 +45,8 @@ const MOCK: Record<string, Dataview[]> = {
       defaultDatasetsParams: [
         {
           id: '46df37738-8057-e7d4-f3f3-a9b44d52fe03',
-          binary: true,
-          format: 'valueArray',
+          binary: false,
+          format: 'lines',
           fields: 'lonlat,timestamp',
           startDate: '2017-01-01T00:00:00.000Z',
           endDate: '2020-01-01T00:00:00.000Z',
@@ -64,8 +66,8 @@ const MOCK: Record<string, Dataview[]> = {
       defaultDatasetsParams: [
         {
           id: 'c723c1925-56f9-465c-bee8-bcc6d649c17c',
-          binary: true,
-          format: 'valueArray',
+          binary: false,
+          format: 'lines',
           fields: 'lonlat,timestamp',
           startDate: '2017-01-01T00:00:00.000Z',
           endDate: '2020-01-01T00:00:00.000Z',
@@ -82,9 +84,9 @@ const MOCK: Record<string, Dataview[]> = {
 
 const mockFetch = (mockFetchUrl: string): Promise<Response> => {
   const mock = MOCK[mockFetchUrl]
-  // if (!mock) {
-  //   return GFWAPI.fetch(mockFetchUrl, { json: false })
-  // }
+  if (!mock) {
+    return GFWAPI.fetch(mockFetchUrl, { json: false })
+  }
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(
@@ -150,7 +152,17 @@ export const fetchDataviews = () => async (dispatch: Dispatch<PayloadAction>) =>
   const dataviews = await dataviewsClient.getDataviews()
   dispatch(setDataviews(dataviews))
   // TODO trigger on button click OR add to workspace
-  const data = await dataviewsClient.getResources(dataviews)
-  console.log(data)
+
   // dispatch(setData)
+}
+
+export const fetchResources = (dataviews: Dataview[]) => async (dispatch: any) => {
+  const { resources, promises } = dataviewsClient.getResources(dataviews)
+  dispatch(addResources(resources))
+  promises.forEach((promise) => {
+    promise.then((resource) => {
+      console.log(resource)
+      dispatch(completeLoading(resource))
+    })
+  })
 }

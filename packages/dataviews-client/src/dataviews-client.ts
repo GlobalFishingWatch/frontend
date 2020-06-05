@@ -1,4 +1,3 @@
-import uniq from 'lodash/uniq'
 import template from 'lodash/template'
 import { Dataview, WorkspaceDataview, Resource } from './types'
 
@@ -30,7 +29,7 @@ export default class DataviewsClient {
   getResources(
     dataviews: Dataview[],
     workspaceDataviews: WorkspaceDataview[] = []
-  ) /*: Promise<Resource>[]*/ {
+  ): { resources: Resource[]; promises: Promise<Resource>[] } {
     const resources: Resource[] = []
     dataviews.forEach((dataview) => {
       const workspaceDataview = workspaceDataviews.find(
@@ -79,5 +78,18 @@ export default class DataviewsClient {
       })
     })
     console.log(resources)
+    const promises = resources.map((resource) => {
+      // TODO Do appropriate stuff when datasetParams have valuesArray or binary
+      return this._fetch(resource.resolvedUrl)
+        .then((response) => response.json())
+        .then((data: unknown) => {
+          const resourceWithData = {
+            ...resource,
+            data,
+          }
+          return resourceWithData
+        })
+    })
+    return { resources, promises }
   }
 }

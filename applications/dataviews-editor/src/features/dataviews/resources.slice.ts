@@ -1,19 +1,33 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Dispatch } from 'react'
-import { Generators } from '@globalfishingwatch/layer-composer'
-import DataviewsClient, { Dataview, Dataset } from '@globalfishingwatch/dataviews-client'
+import { Resource } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store/store'
 
-const initialState: {} = {}
+export interface EditorResource extends Resource {
+  loaded: boolean
+}
+
+const initialState: { resources: EditorResource[] } = {
+  resources: [],
+}
 
 const slice = createSlice({
   name: 'resources',
   initialState,
   reducers: {
-    // setEditing: (state, action: PayloadAction<number>) => {
-    // },
+    addResources: (state, action: PayloadAction<Resource[]>) => {
+      state.resources = action.payload.map((resource) => ({ ...resource, loaded: false }))
+    },
+    completeLoading: (state, action: PayloadAction<Resource>) => {
+      const resource = state.resources.find(
+        (resource) => resource.resolvedUrl === action.payload.resolvedUrl
+      )
+      if (resource) {
+        resource.data = action.payload.data
+        resource.loaded = true
+      }
+    },
   },
 })
-// export const { setDataviews, setEditing, setMeta } = slice.actions
+export const { addResources, completeLoading } = slice.actions
 export default slice.reducer
-// export const selectDataviews = (state: RootState) => state.dataviews.dataviews
+export const selectResources = (state: RootState) => state.resources.resources

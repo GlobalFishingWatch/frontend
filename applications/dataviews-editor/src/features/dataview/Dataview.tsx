@@ -8,7 +8,8 @@ import Field from 'common/Field'
 import fieldStyles from 'common/Field.module.css'
 import Section from 'common/Section'
 import { selectCurrentDataview } from 'features/dataviews/dataviews.selectors'
-import { setMeta } from 'features/dataviews/dataviews.slice'
+import { setMeta, fetchResources } from 'features/dataviews/dataviews.slice'
+import { selectResourcesLoaded } from 'features/dataviews/resources.selectors'
 
 const DataviewTypeDropdown = () => {
   return (
@@ -54,6 +55,7 @@ const ResolvedDatasetParams = ({ params }: any) => {
 const Dataview = () => {
   const dispatch = useDispatch()
   const dataview = useSelector(selectCurrentDataview)
+  const loaded = useSelector(selectResourcesLoaded)
   if (!dataview) return null
 
   return (
@@ -77,7 +79,15 @@ const Dataview = () => {
       </Section>
       <Section>
         <h2>datasets</h2>
-        <button className={cx('large', 'done')}>load endpoints data</button>
+        <button
+          onClick={() => {
+            dispatch(fetchResources([dataview]))
+          }}
+          className={cx('large', { done: loaded, dirty: !loaded })}
+          disabled={!loaded}
+        >
+          load endpoints data
+        </button>
         {dataview.datasets &&
           dataview.datasets?.map((dataset) => (
             <input type="text" key={dataset.id} value={dataset.id} />

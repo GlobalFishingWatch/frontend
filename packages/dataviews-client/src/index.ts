@@ -6,4 +6,5 @@ export type {
   Dataview,
   Workspace,
   WorkspaceDataview,
+  Resource,
 } from './types'

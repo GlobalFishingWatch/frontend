@@ -1,6 +1,8 @@
 import React, { useState, Fragment, useEffect } from 'react'
 import cx from 'classnames'
 import { useSelector, useDispatch } from 'react-redux'
+import GFWAPI from '@globalfishingwatch/api-client'
+import useGFWLogin from '@globalfishingwatch/react-hooks/dist/use-login'
 import Dataview from 'features/dataview/Dataview'
 import Dataviews from 'features/dataviews/Dataviews'
 import Map from 'features/map/Map'
@@ -14,10 +16,18 @@ const App = () => {
   useEffect(() => {
     dispatch(fetchDataviews())
   }, [dispatch])
+
   const [dataviewsMinimized, toggleDataviews] = useState(false)
   const [dataviewMinimized, toggleDataview] = useState(false)
   const currentDataview = useSelector(selectCurrentDataview)
-  // console.log(dataviews, 'lol')
+
+  const { loading, logged } = useGFWLogin(GFWAPI)
+  if (!loading && !logged) {
+    window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+  } else if (loading) {
+    return <div>loading</div>
+  }
+
   return (
     <div className={styles.app}>
       <div
