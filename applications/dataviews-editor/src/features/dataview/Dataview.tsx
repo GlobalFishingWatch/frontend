@@ -56,6 +56,7 @@ const Dataview = () => {
   return (
     <Fragment>
       <Section>
+        <h2>meta</h2>
         <Field fieldkey="name" value={dataview.name} />
         <Field fieldkey="description" value={dataview.description} />
       </Section>
@@ -70,13 +71,13 @@ const Dataview = () => {
       </Section>
       <Section>
         <h2>defaultDatasetParams</h2>
-        {dataview.resolvedDatasetsParams?.map((resolvedDatasetParams, index) => (
+        {dataview.datasetsParams?.map((resolvedDatasetParams, index) => (
           <ResolvedDatasetParams key={index} params={resolvedDatasetParams} />
         ))}
       </Section>
       <Section>
         <h2>defaultViewParams</h2>
-        <ResolvedViewParams params={dataview.resolvedViewParams} />
+        <ResolvedViewParams params={dataview.viewParams} />
         <AddButton />
       </Section>
     </Fragment>

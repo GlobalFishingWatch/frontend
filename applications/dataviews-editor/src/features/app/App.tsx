@@ -1,14 +1,17 @@
 import React, { useState, Fragment } from 'react'
 import cx from 'classnames'
+import { useSelector } from 'react-redux'
 import Dataview from 'features/dataview/Dataview'
 import Dataviews from 'features/dataviews/Dataviews'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
+import { selectCurrentDataview } from 'features/dataviews/dataviews.selectors'
 import styles from './App.module.css'
 
 const App = () => {
   const [dataviewsMinimized, toggleDataviews] = useState(false)
   const [dataviewMinimized, toggleDataview] = useState(false)
+  const currentDataview = useSelector(selectCurrentDataview)
   // console.log(dataviews, 'lol')
   return (
     <div className={styles.app}>
@@ -36,7 +39,7 @@ const App = () => {
             toggleDataview(!dataviewMinimized)
           }}
         >
-          Dataview
+          Dataview: {currentDataview && currentDataview.id}
         </h1>
         {!dataviewMinimized && (
           <Fragment>

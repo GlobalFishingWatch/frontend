@@ -12,6 +12,7 @@ const Dataviews = () => {
   return (
     <Fragment>
       <Section>
+        <h2>current dataviews</h2>
         <ul>
           {addedDataviews.map((dataview) => (
             <ListItem
@@ -26,6 +27,7 @@ const Dataviews = () => {
         </ul>
       </Section>
       <Section>
+        <h2>all dataviews</h2>
         <ul>
           {dataviews.map((dataview) => (
             <ListItem

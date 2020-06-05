@@ -1,43 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import DataviewsClient, { Dataview } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store/store'
-
-export type EndpointType = 'track' | 'info' | 'tiles' | 'events'
-
-export interface Endpoint {
-  type: EndpointType
-  urlTemplate: string
-  downloadable: boolean
-}
-
-export interface Dataset {
-  id: string
-  endpoints?: Endpoint[]
-}
-
-export interface ViewParams {
-  id: string
-  type: string
-  [propName: string]: unknown
-}
-
-export interface DatasetParams {
-  [propName: string]: unknown
-}
-
-export interface Dataview {
-  id: string
-  name: string
-  description: string
-  createdAt?: string
-  updatedAt?: string
-  resolvedViewParams?: ViewParams
-  defaultViewParams?: ViewParams
-  resolvedDatasetsParams?: DatasetParams[]
-  defaultDatasetParams?: DatasetParams[]
-  datasetIds?: string[]
-  datasets?: Dataset[] // foreign
-}
 
 export interface EditorDataview extends Dataview {
   added: boolean
@@ -51,7 +15,7 @@ const initialState: EditorDataview[] = [
     id: 'background',
     name: 'background',
     description: 'background',
-    resolvedViewParams: {
+    viewParams: {
       id: 'background',
       type: Generators.Type.Background,
     },
@@ -63,7 +27,7 @@ const initialState: EditorDataview[] = [
     id: 'basemap',
     name: 'basemap',
     description: 'basemap',
-    resolvedViewParams: {
+    viewParams: {
       id: 'landmass',
       type: Generators.Type.Basemap,
     },
@@ -76,14 +40,14 @@ const initialState: EditorDataview[] = [
     name: 'Carrier Track',
     description: 'Carrier Track desc',
     datasetIds: ['carriers:dev'],
-    resolvedDatasetsParams: [
+    datasetsParams: [
       {
         id: '123abc',
         binary: true,
         fields: 'latlon,fishing,speed',
       },
     ],
-    resolvedViewParams: {
+    viewParams: {
       id: 'some_track',
       type: Generators.Type.Track,
       color: '#ff00ff',
@@ -114,3 +78,10 @@ const slice = createSlice({
 // export const { setDataviews } = slice.actions
 export default slice.reducer
 export const selectDataviews = (state: RootState) => state.dataviews
+
+// Define a thunk that dispatches those action creators
+// const fetchUsers = () => async dispatch => {
+//   dispatch(usersLoading())
+//   const response = await usersAPI.fetchAll()
+//   dispatch(usersReceived(response.data))
+// }

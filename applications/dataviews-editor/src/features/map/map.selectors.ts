@@ -6,7 +6,7 @@ export const selectGeneratorConfigWithData = createSelector(
   [selectAddedDataviews],
   (addedDataviews) => {
     return addedDataviews.map((dataview) => {
-      return dataview.resolvedViewParams as Generators.GeneratorConfig
+      return dataview.viewParams as Generators.GeneratorConfig
     })
   }
 )
