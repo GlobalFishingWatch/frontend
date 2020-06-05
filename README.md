@@ -20,7 +20,7 @@ All of them availables with the `@globalfishingwatch/` prefix:
 
 |                                      |                                              |
 | ------------------------------------ | -------------------------------------------- |
-| [dataviews-editor](dataviews-editor) | Simple interface to debug dataviews api      |
+| [dataviews-editor](dataviews-editor) | Simple interface to edit dataviews           |
 | [sandbox](sandbox)                   | Playground to use packages without releasing |
 
 ## Other utils
@@ -29,6 +29,10 @@ All of them availables with the `@globalfishingwatch/` prefix:
 | ------------------ | ---------------------------------------------------------- |
 | [config](config)   | Shared generic build config as tsconfig, rollup or postcss |
 | [linting](linting) | Define eslint prettier and stylelint configurations        |
+
+## See also
+
+We maintain our own forks of <a href="https://github.com/GlobalFishingWatch/react-map-gl/">react-map-gl</a> and <a href="https://github.com/GlobalFishingWatch/mapbox-gl-js/">Mapbox GL</a> to handle gridded temporal data (see `temporalgrid` branches on both repos)
 
 ### Dependencies
 
