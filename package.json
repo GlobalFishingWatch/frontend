@@ -28,6 +28,7 @@
     "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn"
   },
   "dependencies": {
+    "@tippyjs/react": "^4.0.2",
     "lodash": "^4.17.15",
     "mapbox-gl": "^1.10.1",
     "react": "^16.13.1",
