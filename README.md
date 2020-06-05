@@ -9,12 +9,11 @@ All of them availables with the `@globalfishingwatch/` prefix:
 |                                               |                                                                              |
 | --------------------------------------------- | ---------------------------------------------------------------------------- |
 | [api-client](packages/api-client)             | JS library to simplify GFW API login and resources fetch                     |
-| [dataviews-client](packages/dataviews-client) | api-client wrapper to fetch and edit dataviews and associated datasets/data                      |
+| [dataviews-client](packages/dataviews-client) | api-client wrapper to fetch and edit dataviews and associated datasets/data  |
 | [layer-composer](packages/layer-composer)     | Orchestrates various Layer Generators to generate a Mapbox GL Style document |
 | [react-hooks](packages/react-hooks)           | Set of hooks to use libraries easily in react                                |
 | [timebar](packages/timebar)                   | Timebar component, not many more to say                                      |
-| [ui-kit](packages/ui-kit)                     | Base styles of the gfw                                                       |
-| [ui-components](packages/ui-components)       | Reusable components in gfw using ui-kit styles                               |
+| [ui-components](packages/ui-components)       | Reusable atoms components kit                                                |
 
 ## Applications
 
