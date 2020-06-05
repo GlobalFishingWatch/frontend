@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": false,
   "license": "MIT",
+  "files": [
+    "decoders"
+  ],
   "scripts": {
     "clean": "rimraf decoders && mkdirp ./decoders",
     "build": "run-s clean build:pb:js build:pb:ts",
