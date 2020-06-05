@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react'
 import Button from '@globalfishingwatch/ui-components/src/button'
 import Icon from '@globalfishingwatch/ui-components/src/icon'
 import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
+import Tag from '@globalfishingwatch/ui-components/src/tag'
 // import { IconButton } from '@globalfishingwatch/ui-components'
 // import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Switch from '@globalfishingwatch/ui-components/src/switch'
@@ -84,6 +85,17 @@ const SwitchsSection = () => {
   )
 }
 
+const TagsSection = () => {
+  return (
+    <Fragment>
+      <label>Default</label>
+      <Tag>Argentina</Tag>
+      <Tag>Panama</Tag>
+      <Tag>Chile</Tag>
+    </Fragment>
+  )
+}
+
 const ComponentsPage = () => {
   return (
     <main style={{ padding: '2rem' }}>
@@ -106,6 +118,10 @@ const ComponentsPage = () => {
       <section>
         <h2>Switchs</h2>
         <SwitchsSection />
+      </section>
+      <section>
+        <h2>Tags</h2>
+        <TagsSection />
       </section>
     </main>
   )

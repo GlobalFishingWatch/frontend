@@ -1,0 +1,9 @@
+.Tag {
+  font: var(--font-S);
+  display: inline-block;
+  background-color: var(--color-terthiary-blue);
+  padding: 0 0.5rem;
+  border-radius: 0.3rem;
+  cursor: default;
+  margin-right: 0.5rem;
+}
