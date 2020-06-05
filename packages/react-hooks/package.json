@@ -20,10 +20,9 @@
   },
   "scripts": {
     "start": "rollup -c ./rollup.config.js -w",
-    "build": "cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
     "clean": "rimraf dist/*",
-    "prepublishOnly": "yarn clean && yarn build",
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "prepublishOnly": "yarn build"
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "*",
