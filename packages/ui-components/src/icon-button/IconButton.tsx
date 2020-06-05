@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { lazy, Suspense, useMemo } from 'react'
 import cx from 'classnames'
-import { ReactComponent as ArrowDownIcon } from '../assets/icons/arrow-down.svg'
 import styles from './IconButton.module.css'
 
 type IconButtonTypes = 'default' | 'invert'
@@ -38,10 +37,18 @@ interface IconButtonProps {
 }
 
 const IconButton: React.FC<IconButtonProps> = (props) => {
-  const { type = 'default', className } = props
+  const { type = 'default', className, icon } = props
+  const IconComponent = useMemo(() => {
+    return lazy(() =>
+      import(`../assets/icons/${icon}.svg`).then((node) => ({ default: node.ReactComponent }))
+    )
+  }, [icon])
+  console.log('IconComponent -> IconComponent', IconComponent)
   return (
     <button className={cx(styles.IconButton, { [styles.invert]: type === 'invert' }, className)}>
-      <ArrowDownIcon />
+      <Suspense fallback={null}>
+        <IconComponent />
+      </Suspense>
     </button>
   )
 }
