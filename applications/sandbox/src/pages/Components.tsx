@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import Button from '@globalfishingwatch/ui-components/src/button'
+import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
 
 const ButtonsSection = () => {
   return (
@@ -22,6 +23,15 @@ const ButtonsSection = () => {
   )
 }
 
+const IconButtonsSection = () => {
+  return (
+    <Fragment>
+      <h3>Default</h3>
+      <IconButton icon="camera" />
+    </Fragment>
+  )
+}
+
 const ComponentsPage = () => {
   return (
     <main>
@@ -29,6 +39,9 @@ const ComponentsPage = () => {
       <section>
         <h2>Buttons</h2>
         <ButtonsSection />
+        <hr />
+        <h2>IconButtons</h2>
+        <IconButtonsSection />
       </section>
     </main>
   )

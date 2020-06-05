@@ -4,7 +4,7 @@ import Components from './pages/Components'
 import ApiClient from './pages/ApiClient'
 import LayerComposer from './pages/LayerComposer'
 import './App.css'
-import '@globalfishingwatch/ui-components/dist/base.css'
+import '@globalfishingwatch/ui-components/src/base.css'
 
 const Home = () => <h1>Please select the page you want to see</h1>
 
