@@ -1,5 +1,4 @@
 import { Layer } from 'mapbox-gl'
-
 import { Group } from '../../types'
 import { Type, BackgroundGeneratorConfig } from '../types'
 

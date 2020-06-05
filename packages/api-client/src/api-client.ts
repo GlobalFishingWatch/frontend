@@ -1,5 +1,4 @@
 import { saveAs } from 'file-saver'
-
 import { UserData } from './types'
 import { isUrlAbsolute } from './utils/url'
 

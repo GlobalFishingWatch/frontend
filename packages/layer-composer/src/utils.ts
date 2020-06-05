@@ -1,5 +1,4 @@
 import { Layer } from 'mapbox-gl'
-
 import { Dictionary } from './types'
 
 export const flatObjectArrays = (object = {} as any) => {

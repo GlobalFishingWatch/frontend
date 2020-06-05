@@ -1,6 +1,5 @@
 import React from 'react'
 import countryflag from 'countryflag'
-
 import styles from './countryflag.module.css'
 
 interface CountryFlag {

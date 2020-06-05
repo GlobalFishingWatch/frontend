@@ -1,5 +1,4 @@
 import { Type, GeneratorConfig } from '../types'
-
 import { layers, sources } from './basemap-layers'
 
 class BasemapGenerator {

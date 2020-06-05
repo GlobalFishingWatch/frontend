@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import dayjs from 'dayjs'
-
 import { DEFAULT_CSS_TRANSITION, DEFAULT_FULL_DATE_FORMAT } from '../constants'
 import ImmediateContext from '../immediateContext'
 import { TimelineContext } from '../components/timeline'
@@ -12,7 +11,6 @@ import { ReactComponent as IconUnregistered } from '../icons/events/unregistered
 import { ReactComponent as IconLoitering } from '../icons/events/loitering.svg'
 import { ReactComponent as IconGap } from '../icons/events/gap.svg'
 import { ReactComponent as IconPort } from '../icons/events/port.svg'
-
 import { getTrackY } from './utils'
 import styles from './tracks-events.module.css'
 

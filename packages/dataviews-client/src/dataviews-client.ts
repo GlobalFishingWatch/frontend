@@ -1,6 +1,5 @@
 import uniq from 'lodash/uniq'
 import template from 'lodash/template'
-
 import { DataviewWorkspace, Dataview, Dataset } from './types'
 
 const DOWNLOADABLE_ENDPOINTS_TYPES = ['track', 'info', 'events']

@@ -10,7 +10,6 @@ import json from 'rollup-plugin-json'
 import svgr from '@svgr/rollup'
 import { terser } from 'rollup-plugin-terser'
 import multiInput from 'rollup-plugin-multi-input'
-
 import pkg from './package.json'
 
 require('dotenv').config()

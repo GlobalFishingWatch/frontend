@@ -1,5 +1,4 @@
 import { Layer, AnySourceImpl } from 'mapbox-gl'
-
 import { Group, Dictionary } from '../../types'
 
 export const BASEMAPS = {

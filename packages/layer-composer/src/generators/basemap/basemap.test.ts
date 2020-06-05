@@ -1,5 +1,4 @@
 import { validate as mapboxStyleValidator } from '@mapbox/mapbox-gl-style-spec'
-
 import LayerComposer from '../..'
 import { Type } from '../types'
 

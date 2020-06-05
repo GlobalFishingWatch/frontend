@@ -2,10 +2,8 @@
 
 import fs from 'fs'
 import util from 'util'
-
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-
 import Header from './header'
 
 const readFile = util.promisify(fs.readFile)

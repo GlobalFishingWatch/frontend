@@ -7,7 +7,6 @@ import dayjs from 'dayjs'
 import throttle from 'lodash/throttle'
 import { animated, Spring } from 'react-spring/renderprops'
 import ResizeObserver from 'resize-observer-polyfill'
-
 import ImmediateContext from '../immediateContext'
 import {
   getTime,
@@ -16,7 +15,6 @@ import {
   isMoreThanADay,
   stickToClosestUnit,
 } from '../utils/internal-utils'
-
 import Bookmark from './bookmark'
 import TimelineUnits from './timeline-units'
 import Handler from './timeline-handler'

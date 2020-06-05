@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-
 import { getTime } from '../utils/internal-utils'
 
 const getUnitLabel = (mUnit, baseUnit, availableWidth) => {

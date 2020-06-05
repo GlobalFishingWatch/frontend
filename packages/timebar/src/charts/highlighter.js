@@ -2,10 +2,8 @@ import React, { useMemo, useContext, Fragment } from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
-
 import { getDefaultFormat } from '../utils/internal-utils'
 import { TimelineContext } from '../components/timeline'
-
 import styles from './highlighter.module.css'
 
 const getCoords = (hoverStart, hoverEnd, outerScale) => {

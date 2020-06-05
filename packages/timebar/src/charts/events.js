@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import memoize from 'memoize-one'
 import { stack, stackOrderNone, stackOffsetSilhouette, area, curveStepAfter } from 'd3-shape'
 import dayjs from 'dayjs'
-
 import styles from './events.module.css'
 
 const TOP_MARGIN = 5

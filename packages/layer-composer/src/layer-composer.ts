@@ -1,5 +1,4 @@
 import { Style, AnySourceImpl, Layer } from 'mapbox-gl'
-
 import Generators from './generators'
 import { flatObjectArrays, layersDictToArray } from './utils'
 import { Dictionary, LayerComposerStyles, LayerComposerOptions, GeneratorStyles } from './types'

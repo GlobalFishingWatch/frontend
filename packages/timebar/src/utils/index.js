@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-
 import { getDefaultFormat } from './internal-utils'
 
 export const getHumanizedDates = (start, end) => {

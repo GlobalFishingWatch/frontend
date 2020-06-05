@@ -1,13 +1,11 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-
 import { getHumanizedDates } from '../utils'
 import ImmediateContext from '../immediateContext'
 import { ReactComponent as IconBookmarkFilled } from '../icons/bookmarkFilled.svg'
 import { ReactComponent as IconDelete } from '../icons/delete.svg'
 import { ReactComponent as Arrow } from '../icons/arrow.svg'
-
 import styles from './bookmark.module.css'
 
 const MIN_WIDTH = 32

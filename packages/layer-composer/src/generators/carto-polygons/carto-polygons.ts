@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { GeneratorStyles, Group } from '../../types'
 import { Type, CartoPolygonsGeneratorConfig } from '../types'
-
 import layersDirectory from './carto-polygons-layers'
 
 export const CARTO_FISHING_MAP_API = 'https://carto.globalfishingwatch.org/user/admin/api/v1/map'

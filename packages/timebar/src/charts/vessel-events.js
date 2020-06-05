@@ -6,13 +6,11 @@ import PropTypes from 'prop-types'
 import memoize from 'memoize-one'
 import classNames from 'classnames'
 import dayjs from 'dayjs'
-
 import { DEFAULT_FULL_DATE_FORMAT } from '../constants'
 import { ReactComponent as IconEncounter } from '../icons/events/encounter.svg'
 import { ReactComponent as IconUnregistered } from '../icons/events/unregistered.svg'
 import { ReactComponent as IconGap } from '../icons/events/gap.svg'
 import { ReactComponent as IconPort } from '../icons/events/port.svg'
-
 import styles from './vessel-events.module.css'
 
 const ICONS = {

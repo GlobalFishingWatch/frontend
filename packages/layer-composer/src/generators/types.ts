@@ -1,7 +1,5 @@
 import { FeatureCollection } from 'geojson'
-
 import { GeneratorStyles } from '../types'
-
 import { Segment } from './track/segments-to-geojson'
 
 export enum Type {
