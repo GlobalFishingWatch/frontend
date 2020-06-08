@@ -1,5 +1,10 @@
 import React, { Fragment } from 'react'
 import Button from '@globalfishingwatch/ui-components/src/button'
+import Icon from '@globalfishingwatch/ui-components/src/icon'
+import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
+// import { IconButton } from '@globalfishingwatch/ui-components'
+// import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import styles from './pages.module.css'
 
 const ButtonsSection = () => {
   return (
@@ -22,13 +27,59 @@ const ButtonsSection = () => {
   )
 }
 
+const IconsSection = () => {
+  return (
+    <Fragment>
+      <h3>Default</h3>
+      <Icon icon="menu" />
+      <h3>Custom fill</h3>
+      <span style={{ color: 'red' }}>
+        <Icon icon="delete" />
+      </span>
+    </Fragment>
+  )
+}
+
+const IconButtonsSection = () => {
+  return (
+    <Fragment>
+      <h3>Default</h3>
+      <IconButton icon="menu" onClick={(e) => console.log(e)} />
+      <h3>Default destructive</h3>
+      <IconButton icon="delete" />
+      <h3>Border</h3>
+      <IconButton icon="download" type="border" />
+      <h3>Invert</h3>
+      <IconButton icon="camera" type="invert" />
+      <h3>Small</h3>
+      <IconButton icon="compare" size="small" />
+      <h3>Small invert</h3>
+      <IconButton icon="edit" size="small" type="invert" />
+      <h3>Tiny</h3>
+      <IconButton icon="arrow-top" size="tiny" />
+      <h3>Tiny invert</h3>
+      <IconButton icon="arrow-down" size="tiny" type="invert" />
+      <h3>Custom fill</h3>
+      <IconButton icon="arrow-right" className={styles.customIcon} />
+      <h3>Custom fill invert</h3>
+      <IconButton icon="arrow-down" type="invert" className={styles.customIcon} />
+    </Fragment>
+  )
+}
+
 const ComponentsPage = () => {
   return (
-    <main>
+    <main style={{ padding: '2rem' }}>
       <h1>Components</h1>
       <section>
         <h2>Buttons</h2>
         <ButtonsSection />
+        <hr />
+        <h2>Icons</h2>
+        <IconsSection />
+        <hr />
+        <h2>IconButtons</h2>
+        <IconButtonsSection />
       </section>
     </main>
   )

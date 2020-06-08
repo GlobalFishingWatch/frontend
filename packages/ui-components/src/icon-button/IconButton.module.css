@@ -1,0 +1,62 @@
+.IconButton {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.default,
+.border {
+  color: var(--color-secondary-blue);
+  background-color: transparent;
+}
+
+.destructive {
+  color: var(--color-danger-red);
+  background-color: transparent;
+}
+
+.border {
+  border: var(--border);
+}
+
+.default:hover,
+.border:hover {
+  color: var(--color-primary-blue);
+  background-color: var(--color-terthiary-blue);
+}
+
+.destructive:hover {
+  color: var(--color-danger-secondary-red);
+  background-color: var(--color-terthiary-blue);
+}
+
+.invert {
+  color: rgba(var(--white-rgb), var(--opacity-secondary));
+  background-color: var(--color-primary-blue);
+}
+
+.invert:hover {
+  color: var(--color-white);
+  background-color: var(--color-primary-blue-hover);
+}
+
+.defaultSize {
+  width: var(--size-M);
+  height: var(--size-M);
+}
+
+.smallSize {
+  width: var(--size-S);
+  height: var(--size-S);
+}
+
+.tinySize {
+  width: var(--size-XS);
+  height: var(--size-XS);
+}

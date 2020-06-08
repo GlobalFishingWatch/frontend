@@ -1,0 +1,7 @@
+.customIcon {
+  color: red;
+}
+
+.customIcon:hover {
+  color: yellowgreen;
+}
