@@ -4,6 +4,7 @@ import Icon from '@globalfishingwatch/ui-components/src/icon'
 import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
 import Tag from '@globalfishingwatch/ui-components/src/tag'
 import TagList, { TagItem, TagListOnRemove } from '@globalfishingwatch/ui-components/src/tag-list'
+import InputText from '@globalfishingwatch/ui-components/src/input-text'
 // import { IconButton } from '@globalfishingwatch/ui-components'
 // import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Switch from '@globalfishingwatch/ui-components/src/switch'
@@ -125,6 +126,16 @@ const TagsSection = () => {
   )
 }
 
+const InputsSection = () => {
+  return (
+    <Fragment>
+      <InputText label="something" placeholder="Input something" />
+      <InputText label="email or stuff" placeholder="Input an email" icon="email" />
+      <InputText inputSize="small" label="email" placeholder="Input an email" icon="email" />
+    </Fragment>
+  )
+}
+
 const ComponentsPage = () => {
   return (
     <main style={{ padding: '2rem' }}>
@@ -151,6 +162,10 @@ const ComponentsPage = () => {
       <section>
         <h2>Tags</h2>
         <TagsSection />
+      </section>
+      <section>
+        <h2>Inputs</h2>
+        <InputsSection />
       </section>
     </main>
   )
