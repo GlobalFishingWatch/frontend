@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react'
 import Button from '@globalfishingwatch/ui-components/src/button'
 import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
+// import { IconButton } from '@globalfishingwatch/ui-components'
+// import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 
 const ButtonsSection = () => {
   return (
@@ -27,7 +29,9 @@ const IconButtonsSection = () => {
   return (
     <Fragment>
       <h3>Default</h3>
-      <IconButton icon="camera" />
+      <IconButton icon="menu" onClick={(e) => console.log(e)} />
+      <IconButton icon="download" type="border" />
+      <IconButton icon="camera" type="invert" />
     </Fragment>
   )
 }

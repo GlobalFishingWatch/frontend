@@ -19,30 +19,31 @@
 
   /* COLORS */
   --color-primary-blue: rgb(var(--primary-blue-rgb));
-  --color-primary-blue-hover: rgba(var(--primary-blue-rgb), var(--hover-opacity));
-  --color-secondary-blue: rgba(var(--primary-blue-rgb), var(--secondary-opacity));
-  --color-terthiary-blue: rgba(var(--primary-blue-rgb), var(--terthiary-opacity));
+  --color-primary-blue-hover: rgba(var(--primary-blue-rgb), var(--opacity-hover));
+  --color-secondary-blue: rgba(var(--primary-blue-rgb), var(--opacity-secondary));
+  --color-terthiary-blue: rgba(var(--primary-blue-rgb), var(--opacity-terthiary));
   --color-danger-red: rgb(var(--danger-red-rgb));
-  --color-danger-secondary-red: rgba(var(--danger-red-rgb), var(--secondary-opacity));
+  --color-danger-secondary-red: rgba(var(--danger-red-rgb), var(--opacity-secondary));
   --color-white: rgb(var(--white-rgb));
   --gradient: linear-gradient(180deg, var(--gradient-rgb) 0, var(--white) 70rem);
 
   /* OPACITIES */
-  --hover-opacity: 0.9;
-  --secondary-opacity: 0.65;
-  --terthiary-opacity: 0.1;
-  --border-opacity: 0.2;
+  --opacity-hover: 0.9;
+  --opacity-secondary: 0.65;
+  --opacity-terthiary: 0.1;
+  --opacity-border: 0.2;
 
   /* SHADOWS */
-  --block-shadow: 0 0 1rem 0 rgba(var(--primary-blue-rgb), var(--border-opacity));
-  --filter-drop-shadow: drop-shadow(0 0 1rem rgba(var(--primary-blue-rgb), var(--border-opacity)));
+  --block-shadow: 0 0 1rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
+  --filter-drop-shadow: drop-shadow(0 0 1rem rgba(var(--primary-blue-rgb), var(--opacity-border)));
 
   /* UTILS */
-  --color-border: rgba(var(--primary-blue-rgb), var(--border-opacity));
+  --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
   --border: 1px solid var(--color-border);
   --transition: all 150ms ease-out;
 
   /* SIZES */
+  --size-XS: 2rem;
   --size-S: 3.2rem;
   --size-M: 4rem;
   --size-L: 6rem;
@@ -54,6 +55,8 @@
 
 html {
   font-size: 10px;
+  -moz-osx-font-smoothing: auto;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {

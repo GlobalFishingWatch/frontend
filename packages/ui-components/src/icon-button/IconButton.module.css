@@ -1,16 +1,51 @@
 .IconButton {
-  display: flex;
+  width: var(--size-M);
+  height: var(--size-M);
+  border-radius: calc(var(--size-M) / 2);
+  display: inline-flex;
   justify-content: center;
   align-items: center;
-  background-color: transparent;
   border: none;
   cursor: pointer;
   outline: none;
   transition: all 150ms ease-out;
+  background-color: transparent;
   background-repeat: no-repeat;
   background-position: center center;
 }
 
+.IconButton:hover {
+  background-color: var(--color-terthiary-blue);
+}
+
+.IconButton svg path {
+  fill: var(--color-primary-blue);
+  opacity: var(--opacity-secondary);
+  transition: all 150ms ease-out;
+}
+
+
 .invert {
-  background-color: var(--color-brand);
+  background-color: var(--color-primary-blue);
+}
+
+.invert svg path {
+  fill: var(--color-white);
+}
+
+.IconButton:hover svg path {
+  opacity: unset;
+}
+
+.invert:hover {
+  background-color: var(--color-primary-blue-hover);
+}
+
+.border {
+  border: var(--border);
+}
+
+.border:hover,
+.default:hover {
+  background-color: var(--color-terthiary-blue);
 }
