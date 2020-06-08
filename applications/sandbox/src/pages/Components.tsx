@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useState } from 'react'
 import Button from '@globalfishingwatch/ui-components/src/button'
 import Icon from '@globalfishingwatch/ui-components/src/icon'
 import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
@@ -99,6 +99,10 @@ const TagsSection = () => {
     {
       name: 'China',
       value: 'CHN',
+    },
+    {
+      name: 'Portugal',
+      value: 'PRT',
     },
   ])
   const onRemoveTag = (value: string) => {
