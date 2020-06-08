@@ -17,7 +17,7 @@
 }
 
 .destructive {
-  color: var(--color-danger-red);
+  color: var(--color-danger-secondary-red);
   background-color: transparent;
 }
 
@@ -32,7 +32,7 @@
 }
 
 .destructive:hover {
-  color: var(--color-danger-secondary-red);
+  color: var(--color-danger-red);
   background-color: var(--color-terthiary-blue);
 }
 
