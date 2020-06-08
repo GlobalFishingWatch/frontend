@@ -61,7 +61,7 @@ interface IconProps {
 }
 
 const Icon: React.FC<IconProps> = (props) => {
-  const { className = '', icon } = props
+  const { icon, className = '' } = props
   const Component = useMemo(() => IconComponents[icon], [icon])
   return <Component className={cx(styles.Icon, className)} />
 }

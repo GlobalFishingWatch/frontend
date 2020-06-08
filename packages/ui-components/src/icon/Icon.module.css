@@ -3,3 +3,7 @@
   height: var(--size-XS);
 }
 
+.Icon path {
+  fill: currentColor;
+  transition: var(--transition);
+}

@@ -25,6 +25,16 @@ const ButtonsSection = () => {
   )
 }
 
+const IconsSection = () => {
+  return (
+    <Fragment>
+      <h3>Default</h3>
+      <Icon icon="menu" />
+      <h3>Custom fill</h3>
+      <Icon icon="delete" fill="red" />
+    </Fragment>
+  )
+}
 const IconButtonsSection = () => {
   return (
     <Fragment>
@@ -43,6 +53,9 @@ const ComponentsPage = () => {
       <section>
         <h2>Buttons</h2>
         <ButtonsSection />
+        <hr />
+        <h2>Icons</h2>
+        <IconsSection />
         <hr />
         <h2>IconButtons</h2>
         <IconButtonsSection />
