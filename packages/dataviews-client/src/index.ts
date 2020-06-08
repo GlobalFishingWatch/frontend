@@ -7,4 +7,6 @@ export type {
   Workspace,
   WorkspaceDataview,
   Resource,
+  ViewParams,
+  DatasetParams,
 } from './types'

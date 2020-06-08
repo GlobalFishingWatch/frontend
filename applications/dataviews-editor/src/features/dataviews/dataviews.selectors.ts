@@ -1,17 +1,19 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'store/store'
 import { selectWorkspaceDataviews } from 'features/workspace/workspace.slice'
 import { EditorDataview, selectDataviews } from './dataviews.slice'
 
-export const selectCurrentDataview = (state: RootState) =>
-  state.dataviews.dataviews.find((dataview: EditorDataview) => dataview.editing)
+export const selectCurrentDataview = createSelector([selectDataviews], (dataviews) => {
+  const currentDataview = dataviews.find((dataview: EditorDataview) => dataview.editing)
+  return currentDataview
+})
 
+// Retrieves all dataviews + whether it is currently added in the workspace or not
 export const selectEditorDataviews = createSelector(
   [selectWorkspaceDataviews, selectDataviews],
   (workspaceDataviews, dataviews) => {
     const editorDataviews: EditorDataview[] = dataviews.map((dataview) => {
       const workspaceDataview = workspaceDataviews.find(
-        (workspaceDataview) => workspaceDataview.id === dataview.id
+        (workspaceDataview) => workspaceDataview.editorId === dataview.editorId
       )
       return {
         ...dataview,

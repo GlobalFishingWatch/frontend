@@ -9,8 +9,8 @@ import { EditorDataview, setEditing, setMeta } from './dataviews.slice'
 
 const Dataviews = () => {
   const dispatch = useDispatch()
-  const addedDataviews = useSelector(selectAddedDataviews)
   const dataviews = useSelector(selectEditorDataviews)
+  const addedDataviews = useSelector(selectAddedDataviews)
   return (
     <Fragment>
       <Section>
@@ -25,13 +25,13 @@ const Dataviews = () => {
               showActions={dataview.editing}
               checked
               onToggle={(toggle) => {
-                dispatch(toggleDataview({ id: dataview.id, added: toggle }))
+                dispatch(toggleDataview({ editorId: dataview.editorId, added: toggle }))
               }}
               onClick={() => {
-                dispatch(setEditing(dataview.id))
+                dispatch(setEditing(dataview.editorId))
               }}
               onChange={(value) => {
-                dispatch(setMeta({ id: dataview.id, field: 'name', value }))
+                dispatch(setMeta({ editorId: dataview.editorId, field: 'name', value }))
               }}
             />
           ))}
@@ -48,7 +48,7 @@ const Dataviews = () => {
               dirty={dataview.dirty}
               checked={dataview.added}
               onToggle={(toggle) => {
-                dispatch(toggleDataview({ id: dataview.id, added: toggle }))
+                dispatch(toggleDataview({ editorId: dataview.id, added: toggle }))
               }}
             />
           ))}

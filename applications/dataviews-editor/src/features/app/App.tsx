@@ -54,7 +54,7 @@ const App = () => {
             toggleDataview(!dataviewMinimized)
           }}
         >
-          Dataview: {currentDataview && currentDataview.id}
+          Dataview: {currentDataview && currentDataview.name}
         </h1>
         {!dataviewMinimized && (
           <Fragment>

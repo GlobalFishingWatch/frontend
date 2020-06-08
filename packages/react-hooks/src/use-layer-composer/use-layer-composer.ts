@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import styleSpec from 'mapbox-gl/dist/style-spec'
 import LayerComposer, { Generators, sort } from '@globalfishingwatch/layer-composer'
 import { ExtendedStyle, StyleTransformation } from '@globalfishingwatch/layer-composer/dist/types'
 
@@ -25,27 +26,44 @@ function useLayerComposer(
 ) {
   const [style, setStyle] = useState<ExtendedStyle | undefined>()
   const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     const getGlStyles = async () => {
-      const { style, promises } = layerComposer.getGLStyle(generatorConfigs, globalGeneratorConfig)
-      setStyle(applyStyleTransformations(style, styleTransformations))
-      if (promises && promises.length) {
-        setLoading(true)
-        await Promise.all(
-          promises.map((p: Promise<{ style: ExtendedStyle }>) => {
-            return p.then(({ style }) => {
-              setStyle(applyStyleTransformations(style, styleTransformations))
-            })
-          })
+      try {
+        const { style, promises } = layerComposer.getGLStyle(
+          generatorConfigs,
+          globalGeneratorConfig
         )
-        setLoading(false)
+        const afterTransformations = applyStyleTransformations(style, styleTransformations)
+        if (process.env.NODE_ENV === 'development') {
+          const styleErrors = styleSpec.validate(afterTransformations)
+          if (styleErrors && styleErrors.length) {
+            throw new Error(styleErrors.map((e: any) => e.message).join('\n'))
+          }
+        }
+        setStyle(afterTransformations)
+        if (promises && promises.length) {
+          setLoading(true)
+          await Promise.all(
+            promises.map((p: Promise<{ style: ExtendedStyle }>) => {
+              return p.then(({ style }) => {
+                setStyle(applyStyleTransformations(style, styleTransformations))
+              })
+            })
+          )
+          setLoading(false)
+        }
+        setError(null)
+      } catch (e) {
+        console.log(e)
+        setError(e)
       }
     }
     getGlStyles()
   }, [generatorConfigs, globalGeneratorConfig, layerComposer, styleTransformations])
 
-  return { style, loading }
+  return { style, loading, error }
 }
 
 export default useLayerComposer

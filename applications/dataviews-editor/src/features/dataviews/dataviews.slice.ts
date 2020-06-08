@@ -1,7 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Dispatch } from 'react'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import DataviewsClient, { Dataview, Dataset } from '@globalfishingwatch/dataviews-client'
+import DataviewsClient, {
+  Dataview,
+  Dataset,
+  ViewParams,
+} from '@globalfishingwatch/dataviews-client'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { RootState } from 'store/store'
 import { addResources, completeLoading } from './resources.slice'
@@ -99,6 +103,7 @@ const mockFetch = (mockFetchUrl: string): Promise<Response> => {
 const dataviewsClient = new DataviewsClient(mockFetch)
 
 export interface EditorDataview extends Dataview {
+  editorId: number
   added: boolean
   dirty: boolean
   editing: boolean
@@ -114,8 +119,9 @@ const slice = createSlice({
   initialState,
   reducers: {
     setDataviews: (state, action) => {
-      const editorDataviews = action.payload.map((dataview: Dataview) => {
+      const editorDataviews = action.payload.map((dataview: Dataview, index: number) => {
         return {
+          editorId: index,
           added: false,
           dirty: false,
           editing: false,
@@ -125,23 +131,30 @@ const slice = createSlice({
       state.dataviews = editorDataviews
     },
     setEditing: (state, action: PayloadAction<number>) => {
-      state.dataviews.forEach((d) => {
-        d.editing = action.payload === d.id
+      state.dataviews.forEach((d, index) => {
+        d.editing = action.payload === index
       })
     },
     setMeta: (
       state,
-      action: PayloadAction<{ id: number; field: 'name' | 'description'; value: string }>
+      action: PayloadAction<{ editorId: number; field: 'name' | 'description'; value: string }>
     ) => {
-      const dataview = state.dataviews.find((d) => d.id === action.payload.id)
+      const dataview = state.dataviews.find((d) => d.editorId === action.payload.editorId)
       if (dataview) {
         dataview[action.payload.field] = action.payload.value
         dataview.dirty = true
       }
     },
+    setViewParams: (state, action: PayloadAction<{ editorId: number; params: ViewParams }>) => {
+      const dataview = state.dataviews.find((d) => d.editorId === action.payload.editorId)
+      if (dataview) {
+        dataview.defaultViewParams = action.payload.params
+        dataview.dirty = true
+      }
+    },
   },
 })
-export const { setDataviews, setEditing, setMeta } = slice.actions
+export const { setDataviews, setEditing, setMeta, setViewParams } = slice.actions
 export default slice.reducer
 export const selectDataviews = (state: RootState) => state.dataviews.dataviews
 

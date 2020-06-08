@@ -7,6 +7,7 @@ import { selectAddedDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectResources } from 'features/dataviews/resources.slice'
 import useDataviewsGenerators from './use-dataviews-generators'
 import useWorkspaceDataviews from './use-workspace-dataviews'
+import styles from './Map.module.css'
 
 const Map = () => {
   const { start, end } = useTimeConnect()
@@ -19,7 +20,7 @@ const Map = () => {
     }),
     [start, end]
   )
-  const { style } = useLayerComposer(generatorConfigs, globalGeneratorConfig)
+  const { style, error } = useLayerComposer(generatorConfigs, globalGeneratorConfig)
 
   const [viewport, updateViewport] = useState({
     zoom: 1,
@@ -28,16 +29,19 @@ const Map = () => {
   })
 
   return (
-    <ReactMapGL
-      width="100%"
-      height="100%"
-      {...viewport}
-      onViewportChange={updateViewport}
-      mapStyle={style}
-      mapOptions={{
-        customAttribution: '© Copyright Global Fishing Watch 2020',
-      }}
-    />
+    <div className={styles.container}>
+      {error && <div className={styles.error}>{error.toString()}</div>}
+      <ReactMapGL
+        width="100%"
+        height="100%"
+        {...viewport}
+        onViewportChange={updateViewport}
+        mapStyle={style}
+        mapOptions={{
+          customAttribution: '© Copyright Global Fishing Watch 2020',
+        }}
+      />
+    </div>
   )
 }
 

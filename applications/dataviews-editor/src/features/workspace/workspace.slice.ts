@@ -1,18 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-// import { Dispatch } from 'react'
-import { WorkspaceDataview } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store/store'
 
-const initialState: { dataviews: WorkspaceDataview[] } = {
+const initialState: { dataviews: { editorId: number }[] } = {
   dataviews: [
     // {
     //   id: 0,
     // },
     {
-      id: 1,
+      editorId: 1,
     },
     {
-      id: 2,
+      editorId: 2,
     },
   ],
 }
@@ -21,15 +19,15 @@ const slice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
-    toggleDataview: (state, action: PayloadAction<{ id: number; added: boolean }>) => {
-      const id = action.payload.id
+    toggleDataview: (state, action: PayloadAction<{ editorId: number; added: boolean }>) => {
+      const editorId = action.payload.editorId
       if (action.payload.added) {
         state.dataviews.push({
-          id,
+          editorId,
         })
       } else {
         state.dataviews.splice(
-          state.dataviews.findIndex((d) => d.id === id),
+          state.dataviews.findIndex((d) => d.editorId === editorId),
           1
         )
       }

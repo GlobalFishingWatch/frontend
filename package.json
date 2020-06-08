@@ -12,7 +12,11 @@
       "applications/*",
       "linting"
     ],
-    "nohoist": ["**/react-scripts", "**/react-scripts/**", "**/babel**"]
+    "nohoist": [
+      "**/react-scripts",
+      "**/react-scripts/**",
+      "**/babel**"
+    ]
   },
   "scripts": {
     "start:sandbox": "lerna run --scope @globalfishingwatchapp/sandbox start",

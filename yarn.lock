@@ -2302,7 +2302,7 @@
   resolved "https://registry.yarnpkg.com/@mapbox/jsonlint-lines-primitives/-/jsonlint-lines-primitives-2.0.2.tgz#ce56e539f83552b58d10d672ea4d6fc9adc7b234"
   integrity sha1-zlblOfg1UrWNENZy6k1vya3HsjQ=
 
-"@mapbox/mapbox-gl-style-spec@^13.14.0", "@mapbox/mapbox-gl-style-spec@^13.7.2":
+"@mapbox/mapbox-gl-style-spec@^13.14.0", "@mapbox/mapbox-gl-style-spec@^13.15.0", "@mapbox/mapbox-gl-style-spec@^13.7.2":
   version "13.15.0"
   resolved "https://registry.yarnpkg.com/@mapbox/mapbox-gl-style-spec/-/mapbox-gl-style-spec-13.15.0.tgz#0b0a67cf3a0934bec3c015a61427f2c03f493650"
   integrity sha512-RjAPWJDsGj4zDzgl0UDpDPUssv7LHwP0jYjchk3GxMtlomYzy2RrHEJvKmuni1lf4d2C12I6FWHPvejc3+rs8w==
