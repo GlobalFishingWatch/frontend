@@ -79,7 +79,7 @@ const SwitchsSection = () => {
       <label>Disabled</label>
       <Switch active={false} onClickFn={toggle} disabled={true} />
       <label>Custom color</label>
-      <Switch active={switchActive} onClickFn={toggle} color={'#ff0000'} />
+      <Switch tooltip="switch layer" active={switchActive} onClickFn={toggle} color={'#ff0000'} />
     </Fragment>
   )
 }
