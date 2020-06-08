@@ -38,12 +38,15 @@
   --filter-drop-shadow: drop-shadow(0 0 1rem rgba(var(--primary-blue-rgb), var(--border-opacity)));
 
   /* UTILS */
-  --border: 1px solid rgba(var(--primary-blue-rgb), var(--border-opacity));
+  --color-border: rgba(var(--primary-blue-rgb), var(--border-opacity));
+  --border: 1px solid var(--color-border);
+  --transition: all 150ms ease-out;
 
   /* SIZES */
   --size-S: 3.2rem;
   --size-M: 4rem;
   --size-L: 6rem;
+  --space-XS: 0.5rem;
   --space-S: 1rem;
   --space-M: 2rem;
   --space-L: 4rem;
