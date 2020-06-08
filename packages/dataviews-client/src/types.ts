@@ -12,7 +12,6 @@ export interface Dataset {
 }
 
 export interface ViewParams {
-  id?: string
   type?: string
   [propName: string]: unknown
 }

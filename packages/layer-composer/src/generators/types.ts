@@ -41,6 +41,17 @@ export interface GeneratorConfig extends GlobalGeneratorConfig {
 /**
  * A solid color background layer
  */
+export interface BasemapGeneratorConfig extends GeneratorConfig {
+  type: Type.Basemap
+  /**
+   * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
+   */
+  basemap?: string
+}
+
+/**
+ * A solid color background layer
+ */
 export interface BackgroundGeneratorConfig extends GeneratorConfig {
   type: Type.Background
   /**
@@ -149,6 +160,12 @@ export type AnyGeneratorConfig =
   | HeatmapAnimatedGeneratorConfig
 
 // ---- Generator specific types
+export enum BasemapType {
+  Satellite = 'satellite',
+  Landmass = 'landmass',
+  Graticules = 'graticules',
+}
+
 export type RawEvent = {
   id: string
   type: string

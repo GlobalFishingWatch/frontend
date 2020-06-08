@@ -24,17 +24,16 @@ const MOCK: Record<string, Dataview[]> = {
       name: 'background',
       description: 'background',
       defaultViewParams: {
-        id: 'background',
         type: Generators.Type.Background,
       },
     },
     {
       id: 1,
-      name: 'basemap',
-      description: 'basemap',
+      name: 'landmass',
+      description: 'landmass',
       defaultViewParams: {
-        id: 'landmass',
         type: Generators.Type.Basemap,
+        basemap: Generators.BasemapType.Landmass,
       },
     },
     {
@@ -53,7 +52,6 @@ const MOCK: Record<string, Dataview[]> = {
         },
       ],
       defaultViewParams: {
-        id: 'some_track',
         type: Generators.Type.Track,
         color: '#ff00ff',
       },
@@ -74,7 +72,6 @@ const MOCK: Record<string, Dataview[]> = {
         },
       ],
       defaultViewParams: {
-        id: 'some_track',
         type: Generators.Type.Track,
         color: '#0000ff',
       },
@@ -151,9 +148,6 @@ export const selectDataviews = (state: RootState) => state.dataviews.dataviews
 export const fetchDataviews = () => async (dispatch: Dispatch<PayloadAction>) => {
   const dataviews = await dataviewsClient.getDataviews()
   dispatch(setDataviews(dataviews))
-  // TODO trigger on button click OR add to workspace
-
-  // dispatch(setData)
 }
 
 export const fetchResources = (dataviews: Dataview[]) => async (dispatch: any) => {
@@ -161,7 +155,6 @@ export const fetchResources = (dataviews: Dataview[]) => async (dispatch: any) =
   dispatch(addResources(resources))
   promises.forEach((promise) => {
     promise.then((resource) => {
-      console.log(resource)
       dispatch(completeLoading(resource))
     })
   })

@@ -77,7 +77,6 @@ export default class DataviewsClient {
           })
       })
     })
-    console.log(resources)
     const promises = resources.map((resource) => {
       // TODO Do appropriate stuff when datasetParams have valuesArray or binary
       return this._fetch(resource.resolvedUrl)
