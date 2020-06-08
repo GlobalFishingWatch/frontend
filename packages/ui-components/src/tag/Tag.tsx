@@ -18,7 +18,13 @@ const Tag: React.FC<TagProps> = (props) => {
       {...(color && { style: { color: color } })}
     >
       <span className={styles.content}>{children}</span>
-      <IconButton className={styles.removeBtn} icon="close" size="tiny" onClick={onRemove} />
+      <IconButton
+        tooltip="Remove"
+        className={styles.removeBtn}
+        icon="close"
+        size="tiny"
+        onClick={onRemove}
+      />
     </div>
   )
 }
