@@ -89,9 +89,12 @@ const TagsSection = () => {
   return (
     <Fragment>
       <label>Default</label>
-      <Tag>Argentina</Tag>
-      <Tag>Panama</Tag>
-      <Tag>Chile</Tag>
+      <Tag onRemove={(e) => console.log(e)}>Argentina</Tag>
+      <Tag onRemove={(e) => console.log(e)}>Panama</Tag>
+      <label>Custom Color</label>
+      <Tag onRemove={(e) => console.log(e)} color={'#ff0000'}>
+        Chile
+      </Tag>
     </Fragment>
   )
 }
