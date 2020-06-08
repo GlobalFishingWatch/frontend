@@ -3,14 +3,14 @@ import cx from 'classnames'
 import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
 import styles from './Tag.module.css'
 
-interface ButtonProps {
+interface TagProps {
   className?: string
   children: string
   color?: string
   onRemove: (event: React.MouseEvent) => void
 }
 
-const Tag: React.FC<ButtonProps> = (props) => {
+const Tag: React.FC<TagProps> = (props) => {
   const { className, children, color, onRemove } = props
   return (
     <div

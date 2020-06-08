@@ -1,0 +1,43 @@
+.Tag {
+  position: relative;
+  font: var(--font-S);
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-XS);
+  cursor: default;
+  margin-right: var(--space-XS);
+  color: var(--color-primary-blue);
+  border-bottom: var(--border);
+  border-radius: var(--border-radius);
+}
+
+.Tag::after{
+  pointer-events: none;
+  position: absolute;
+  content: '';
+  top: 0;
+  right: 0;
+  bottom: -0.1rem;
+  left: 0;
+  border-radius: var(--border-radius);
+  background-color: currentColor;
+  opacity: var(--opacity-border);
+}
+
+.content{
+  color: var(--color-primary-blue);
+}
+
+.removeBtn {
+  display:none
+}
+
+.Tag:hover {
+  padding-right: 0;
+}
+
+.Tag:hover .removeBtn {
+  display: unset;
+  margin: 0 0.1rem;
+  border-radius: 0.2rem;
+}

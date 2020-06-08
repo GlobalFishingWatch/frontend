@@ -1,8 +1,9 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import Button from '@globalfishingwatch/ui-components/src/button'
 import Icon from '@globalfishingwatch/ui-components/src/icon'
 import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
 import Tag from '@globalfishingwatch/ui-components/src/tag'
+import TagList from '@globalfishingwatch/ui-components/src/tag-list'
 // import { IconButton } from '@globalfishingwatch/ui-components'
 // import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Switch from '@globalfishingwatch/ui-components/src/switch'
@@ -86,6 +87,24 @@ const SwitchsSection = () => {
 }
 
 const TagsSection = () => {
+  const [tags, setTags] = useState([
+    {
+      name: 'Russia',
+      value: 'RUS',
+    },
+    {
+      name: 'Japan',
+      value: 'JPN',
+    },
+    {
+      name: 'China',
+      value: 'CHN',
+    },
+  ])
+  const onRemoveTag = (value: string) => {
+    setTags(tags.filter((t) => t.value !== value))
+  }
+
   return (
     <Fragment>
       <label>Default</label>
@@ -95,6 +114,8 @@ const TagsSection = () => {
       <Tag onRemove={(e) => console.log(e)} color={'#ff0000'}>
         Chile
       </Tag>
+      <label>Tag list</label>
+      <TagList options={tags} onRemove={(value) => onRemoveTag(value)} />
     </Fragment>
   )
 }
