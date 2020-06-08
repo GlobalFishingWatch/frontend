@@ -84,4 +84,12 @@ ul {
   vertical-align: baseline;
 }
 
+label {
+  color: var(--color-secondary-blue);
+  font-size: var(--font-S);
+  line-height: 2rem;
+  text-transform: uppercase;
+  display: block;
+}
+
 /* TODO: include heading and other html tags styles */

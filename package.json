@@ -108,7 +108,8 @@
       "eslint --fix"
     ],
     "*.css": [
-      "stylelint --fix"
+      "stylelint --fix",
+      "stylelint --syntax=scss --fix"
     ],
     "*.scss": [
       "prettier --write",

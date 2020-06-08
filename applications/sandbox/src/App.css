@@ -17,3 +17,13 @@
   color: #e54430;
   text-decoration: underline;
 }
+
+section {
+  padding: 2rem;
+}
+
+hr {
+  display: block;
+  border-top: 1px solid var(--color-primary-blue);
+  margin: 2rem;
+}
