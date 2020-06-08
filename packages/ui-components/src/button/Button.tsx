@@ -4,15 +4,16 @@ import { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
 import styles from './Button.module.css'
 
-type ButtonTypes = 'default' | 'secondary'
-type ButtonContent = React.ReactChild | React.ReactChild[]
+export type ButtonType = 'default' | 'secondary'
+export type ButtonSize = 'default' | 'small'
 
 interface ButtonProps {
-  type?: ButtonTypes
+  type?: ButtonType
+  size?: ButtonSize
   disabled?: boolean
   className?: string
-  children: ButtonContent
-  tooltip?: ButtonContent
+  children: React.ReactChild | React.ReactChild[]
+  tooltip?: React.ReactChild | React.ReactChild[] | string
   tooltipPlacement?: Placement
   onClick?: (e: React.MouseEvent) => void
 }
@@ -20,6 +21,7 @@ interface ButtonProps {
 const Button: React.FC<ButtonProps> = (props) => {
   const {
     type = 'default',
+    size = 'default',
     disabled = false,
     className,
     children,
@@ -30,7 +32,7 @@ const Button: React.FC<ButtonProps> = (props) => {
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
-        className={cx(styles.Button, { [styles.secondary]: type === 'secondary' }, className)}
+        className={cx(styles.Button, styles[type], styles[size], className)}
         onClick={onClick}
         disabled={disabled}
       >
