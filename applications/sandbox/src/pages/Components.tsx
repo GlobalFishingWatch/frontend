@@ -31,9 +31,9 @@ const ButtonsSection = () => {
 const IconsSection = () => {
   return (
     <Fragment>
-      <h3>Default</h3>
+      <label>Default</label>
       <Icon icon="menu" />
-      <h3>Custom fill</h3>
+      <label>Custom fill</label>
       <span style={{ color: 'red' }}>
         <Icon icon="delete" />
       </span>
@@ -44,25 +44,25 @@ const IconsSection = () => {
 const IconButtonsSection = () => {
   return (
     <Fragment>
-      <h3>Default</h3>
+      <label>Default</label>
       <IconButton icon="menu" onClick={(e) => console.log(e)} />
-      <h3>Default destructive</h3>
+      <label>Default destructive</label>
       <IconButton icon="delete" />
-      <h3>Border</h3>
+      <label>Border</label>
       <IconButton icon="download" type="border" />
-      <h3>Invert</h3>
+      <label>Invert</label>
       <IconButton icon="camera" type="invert" />
-      <h3>Small</h3>
+      <label>Small</label>
       <IconButton icon="compare" size="small" />
-      <h3>Small invert</h3>
+      <label>Small invert</label>
       <IconButton icon="edit" size="small" type="invert" />
-      <h3>Tiny</h3>
+      <label>Tiny</label>
       <IconButton icon="arrow-top" size="tiny" />
-      <h3>Tiny invert</h3>
+      <label>Tiny invert</label>
       <IconButton icon="arrow-down" size="tiny" type="invert" />
-      <h3>Custom fill</h3>
+      <label>Custom fill</label>
       <IconButton icon="arrow-right" className={styles.customIcon} />
-      <h3>Custom fill invert</h3>
+      <label>Custom fill invert</label>
       <IconButton icon="arrow-down" type="invert" className={styles.customIcon} />
     </Fragment>
   )
@@ -75,11 +75,11 @@ const SwitchsSection = () => {
   return (
     <Fragment>
       <label>Default</label>
-      <Switch active={switchActive} onClickFn={toggle} />
+      <Switch active={switchActive} onClick={toggle} />
       <label>Disabled</label>
-      <Switch active={false} onClickFn={toggle} disabled={true} />
+      <Switch active={false} onClick={toggle} disabled={true} />
       <label>Custom color</label>
-      <Switch tooltip="switch layer" active={switchActive} onClickFn={toggle} color={'#ff0000'} />
+      <Switch tooltip="switch layer" active={switchActive} onClick={toggle} color={'#ff0000'} />
     </Fragment>
   )
 }
@@ -91,13 +91,18 @@ const ComponentsPage = () => {
       <section>
         <h2>Buttons</h2>
         <ButtonsSection />
-        <hr />
+      </section>
+      <hr />
+      <section>
         <h2>Icons</h2>
         <IconsSection />
-        <hr />
+      </section>
+      <hr />
+      <section>
         <h2>IconButtons</h2>
         <IconButtonsSection />
       </section>
+      <hr />
       <section>
         <h2>Switchs</h2>
         <SwitchsSection />

@@ -7,7 +7,7 @@ import styles from './Switch.module.css'
 interface SwitchProps {
   active: boolean
   disabled?: boolean
-  onClickFn: (event: React.MouseEvent<HTMLButtonElement>) => void
+  onClick: (event: React.MouseEvent) => void
   color?: string
   tooltip?: React.ReactChild | React.ReactChild[] | string
   tooltipPlacement?: Placement
@@ -19,7 +19,7 @@ const Switch: React.FC<SwitchProps> = (props) => {
     active = false,
     disabled = false,
     color,
-    onClickFn,
+    onClick,
     tooltip,
     tooltipPlacement = 'auto',
     className,
@@ -31,8 +31,7 @@ const Switch: React.FC<SwitchProps> = (props) => {
         role="switch"
         aria-checked={active}
         disabled={disabled}
-        data-color={color}
-        onClick={onClickFn}
+        onClick={onClick}
         className={cx(styles.Switch, { [styles.customColor]: color }, className)}
         {...(color && { style: { color } })}
       >
