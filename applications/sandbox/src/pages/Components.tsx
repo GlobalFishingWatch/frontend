@@ -45,6 +45,8 @@ const IconButtonsSection = () => {
     <Fragment>
       <h3>Default</h3>
       <IconButton icon="menu" onClick={(e) => console.log(e)} />
+      <h3>Default destructive</h3>
+      <IconButton icon="delete" />
       <h3>Border</h3>
       <IconButton icon="download" type="border" />
       <h3>Invert</h3>

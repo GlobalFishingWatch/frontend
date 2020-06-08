@@ -16,6 +16,11 @@
   background-color: transparent;
 }
 
+.destructive {
+  color: var(--color-danger-red);
+  background-color: transparent;
+}
+
 .border {
   border: var(--border);
 }
@@ -23,6 +28,11 @@
 .default:hover,
 .border:hover {
   color: var(--color-primary-blue);
+  background-color: var(--color-terthiary-blue);
+}
+
+.destructive:hover {
+  color: var(--color-danger-secondary-red);
   background-color: var(--color-terthiary-blue);
 }
 
