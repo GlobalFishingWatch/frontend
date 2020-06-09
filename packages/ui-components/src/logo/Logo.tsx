@@ -5,12 +5,12 @@ import styles from './Logo.module.css'
 export type LogoTypes = 'default' | 'invert'
 export type SubBrands = 'Marine Reserves' | 'Carrier Vessels'
 
-interface ButtonProps {
+interface LogoProps {
   type?: LogoTypes
   subBrand?: SubBrands
 }
 
-const Button: React.FC<ButtonProps> = (props) => {
+const Logo: React.FC<LogoProps> = (props) => {
   const { type = 'default', subBrand = '' } = props
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60">
@@ -36,4 +36,4 @@ const Button: React.FC<ButtonProps> = (props) => {
   )
 }
 
-export default Button
+export default Logo
