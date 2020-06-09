@@ -1,20 +1,26 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelect, useMultipleSelection } from 'downshift'
 import Icon from '../icon'
 import IconButton from '../icon-button'
+import Tooltip from '../tooltip'
+import TagList from '../tag-list'
 import styles from './Select.module.css'
-import { SelectOptionId, SelectOption } from './index'
+import { SelectOption, SelectOnChange } from './index'
 
 interface SelectProps {
   label?: string
   placeholder?: string
   options: SelectOption[]
-  selectedOptions: SelectOptionId[]
-  onSelect: (option: SelectOption) => void
-  onRemove: (option: SelectOption) => void
+  selectedOptions?: SelectOption[]
+  onSelect: SelectOnChange
+  onRemove: SelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
   className?: string
+}
+
+const isItemSelected = (selectedItems: SelectOption[], item: SelectOption) => {
+  return selectedItems !== null ? selectedItems.some((selected) => selected.id === item.id) : false
 }
 
 const Select: React.FC<SelectProps> = (props) => {
@@ -22,28 +28,13 @@ const Select: React.FC<SelectProps> = (props) => {
     label = '',
     placeholder = 'Select an option',
     options,
-    selectedOptions,
+    selectedOptions = [],
     onSelect,
     onRemove,
     onCleanClick,
-    className = '',
+    className,
   } = props
   const { getDropdownProps } = useMultipleSelection({})
-  const isItemSelected = (selectedItems: SelectOptionId[], item: SelectOption) => {
-    return selectedItems !== null ? selectedItems.some((selected) => selected === item.id) : false
-  }
-  console.log('selectedOptions', selectedOptions)
-
-  const handleChange = (item: SelectOption) => {
-    if (item) {
-      if (selectedOptions !== null && isItemSelected(selectedOptions, item)) {
-        onRemove(item)
-      } else {
-        onSelect(item)
-      }
-    }
-  }
-
   const {
     isOpen,
     highlightedIndex,
@@ -68,12 +59,46 @@ const Select: React.FC<SelectProps> = (props) => {
       }
     },
   })
+
+  const handleRemove = useCallback(
+    (option: SelectOption) => {
+      const newOptions = selectedOptions.filter((selectedOption) => selectedOption.id !== option.id)
+      onRemove(option, newOptions)
+    },
+    [onRemove, selectedOptions]
+  )
+
+  const handleSelect = useCallback(
+    (option: SelectOption) => {
+      const newOptions = [...selectedOptions, option]
+      onSelect(option, newOptions)
+    },
+    [onSelect, selectedOptions]
+  )
+
+  const handleChange = useCallback(
+    (option: SelectOption) => {
+      if (selectedOptions !== null && isItemSelected(selectedOptions, option)) {
+        handleRemove(option)
+      } else {
+        handleSelect(option)
+      }
+    },
+    [handleRemove, handleSelect, selectedOptions]
+  )
+  const hasSelectedOptions = selectedOptions && selectedOptions.length > 0
   return (
     <div className={cx(styles.container, { [styles.isOpen]: isOpen }, className)}>
       <label {...getLabelProps()}>{label}</label>
-      <div className={styles.placeholderContainer}>{placeholder}</div>
+      <div className={styles.placeholderContainer}>
+        {hasSelectedOptions ? (
+          <TagList tags={selectedOptions} onRemove={handleRemove} />
+        ) : (
+          placeholder
+        )}
+      </div>
       <div className={styles.buttonsContainer}>
-        {onCleanClick !== undefined && selectedOptions && selectedOptions.length > 0 && (
+        {onCleanClick !== undefined && hasSelectedOptions && (
           <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
         )}
         <IconButton
@@ -86,17 +111,22 @@ const Select: React.FC<SelectProps> = (props) => {
         {isOpen &&
           options.length > 0 &&
           options.map((item, index) => {
+            const highlight = highlightedIndex === index
             return (
-              <li
-                className={cx(styles.optionItem, {
-                  [styles.highlight]: highlightedIndex === index,
-                })}
-                key={`${item}${index}`}
-                {...getItemProps({ item, index })}
-              >
-                {item.label}
-                <Icon icon={isItemSelected(selectedOptions, item) ? 'close' : 'plus'} />
-              </li>
+              <Tooltip content={item.tooltip} placement="top-start">
+                <li
+                  className={cx(styles.optionItem, {
+                    [styles.highlight]: highlight,
+                  })}
+                  key={`${item}${index}`}
+                  {...getItemProps({ item, index })}
+                >
+                  {item.label}
+                  {highlight && (
+                    <Icon icon={isItemSelected(selectedOptions, item) ? 'close' : 'tick'} />
+                  )}
+                </li>
+              </Tooltip>
             )
           })}
       </ul>

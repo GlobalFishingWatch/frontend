@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
-import Select, { SelectOption } from '@globalfishingwatch/ui-components/src/select'
+import Select, {
+  SelectOption,
+  SelectOnChange,
+  SelectOnRemove,
+} from '@globalfishingwatch/ui-components/src/select'
 
 const selectOptions: SelectOption[] = [
   { id: 1, label: 'One', tooltip: 'Tooltip' },
@@ -7,16 +11,17 @@ const selectOptions: SelectOption[] = [
   { id: 3, label: 'Three' },
 ]
 const SelectsSection = () => {
-  const [selectedOptions, setSelectedOptions] = useState([selectOptions[0].id])
-  const onSelect = (selectedOption: SelectOption) => {
-    setSelectedOptions([...selectedOptions, selectedOption.id])
+  const [selectedOptions, setSelectedOptions] = useState([selectOptions[0]])
+  const onSelect: SelectOnChange = (option, selectedOptions) => {
+    setSelectedOptions(selectedOptions)
   }
-  const onClean = (event: React.MouseEvent) => {
+  const onClean: SelectOnRemove = () => {
     setSelectedOptions([])
   }
-  const onRemove = (selectedOption: SelectOption) => {
-    setSelectedOptions(selectedOptions.filter((option) => option !== selectedOption.id))
+  const onRemove: SelectOnChange = (selectedOption, currentSelection) => {
+    setSelectedOptions(currentSelection)
   }
+
   return (
     <Select
       options={selectOptions}

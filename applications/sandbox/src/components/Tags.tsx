@@ -36,7 +36,7 @@ const TagsSection = () => {
         Chile
       </Tag>
       <label>Tag list</label>
-      <TagList color={'#ff0000'} options={tags} onRemove={onRemoveTag} />
+      <TagList color={'#ff0000'} tags={tags} onRemove={onRemoveTag} />
     </Fragment>
   )
 }
