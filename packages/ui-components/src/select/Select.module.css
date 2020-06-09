@@ -1,6 +1,5 @@
 .container {
   position: relative;
-  border-bottom: var(--border);
 }
 
 .isOpen {
@@ -13,21 +12,30 @@
   display: flex;
 }
 
+.tagList {
+  border-bottom: 1px solid var(--color-secondary-blue);
+}
+
 .buttonsContainer {
   display: flex;
   position: absolute;
   right: 0;
-  top: -0.8rem;
+  top: 0;
 }
 
 .optionsContainer {
   width: 100%;
   position: absolute !important; /* as needs to overwrite default FixedSizeList behaviour */
-  top: 4.1rem;
+  top: 4rem;
   left: 0;
-  background: var(--color-background);
+  background: var(--color-white);
   max-height: 40rem;
   overflow: auto;
+  z-index: 10;
+}
+
+.optionsOpen {
+  border: var(--border);
 }
 
 .optionItem {

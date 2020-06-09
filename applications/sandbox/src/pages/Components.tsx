@@ -35,12 +35,12 @@ const ComponentsPage = () => {
         <TagsSection />
       </section>
       <section>
-        <h2>Inputs</h2>
-        <InputsSection />
-      </section>
-      <section>
         <h2>Select</h2>
         <SelectsSection />
+      </section>
+      <section>
+        <h2>Inputs</h2>
+        <InputsSection />
       </section>
     </main>
   )

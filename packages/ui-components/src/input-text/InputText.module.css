@@ -1,5 +1,6 @@
 .InputText {
   position: relative;
+  width: 100%;
 }
 
 .InputText input {

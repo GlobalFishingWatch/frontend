@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState, useMemo } from 'react'
+import { useMultipleSelection, useCombobox } from 'downshift'
 import cx from 'classnames'
-import { useSelect, useMultipleSelection } from 'downshift'
 import Icon from '../icon'
 import IconButton from '../icon-button'
 import Tooltip from '../tooltip'
 import TagList from '../tag-list'
+import InputText from '../input-text'
 import styles from './Select.module.css'
 import { SelectOption, SelectOnChange } from './index'
 
@@ -23,42 +24,32 @@ const isItemSelected = (selectedItems: SelectOption[], item: SelectOption) => {
   return selectedItems !== null ? selectedItems.some((selected) => selected.id === item.id) : false
 }
 
+const getItemsFiltered = (
+  items: SelectOption[],
+  selectedItems: SelectOption[],
+  filter?: string
+) => {
+  const hasSelectedItems = selectedItems?.length
+  if (!hasSelectedItems && !filter) return items
+
+  return items.filter(
+    (item) =>
+      (!hasSelectedItems || selectedItems.every(({ id }) => item.id !== id)) &&
+      (!filter || item.label.toLowerCase().startsWith(filter.toLowerCase()))
+  )
+}
+
 const Select: React.FC<SelectProps> = (props) => {
   const {
     label = '',
-    placeholder = 'Select an option',
     options,
     selectedOptions = [],
+    placeholder = 'Select an option',
+    className,
     onSelect,
     onRemove,
     onCleanClick,
-    className,
   } = props
-  const { getDropdownProps } = useMultipleSelection({})
-  const {
-    isOpen,
-    highlightedIndex,
-    getToggleButtonProps,
-    getLabelProps,
-    getMenuProps,
-    getItemProps,
-  } = useSelect({
-    items: options,
-    onStateChange: ({ type, selectedItem }) => {
-      switch (type) {
-        case useSelect.stateChangeTypes.MenuKeyDownEnter:
-        case useSelect.stateChangeTypes.MenuKeyDownSpaceButton:
-        case useSelect.stateChangeTypes.ItemClick:
-        case useSelect.stateChangeTypes.MenuBlur:
-          if (selectedItem) {
-            handleChange(selectedItem)
-          }
-          break
-        default:
-          break
-      }
-    },
-  })
 
   const handleRemove = useCallback(
     (option: SelectOption) => {
@@ -86,16 +77,87 @@ const Select: React.FC<SelectProps> = (props) => {
     },
     [handleRemove, handleSelect, selectedOptions]
   )
+
+  const [inputValue, setInputValue] = useState<string | undefined>()
+  const filteredItems = useMemo(() => getItemsFiltered(options, selectedOptions, inputValue), [
+    inputValue,
+    options,
+    selectedOptions,
+  ])
+
+  const { getDropdownProps } = useMultipleSelection({ selectedItems: selectedOptions })
+  const {
+    isOpen,
+    openMenu,
+    getToggleButtonProps,
+    getLabelProps,
+    getMenuProps,
+    getInputProps,
+    getComboboxProps,
+    highlightedIndex,
+    selectItem,
+    getItemProps,
+  } = useCombobox<SelectOption | null>({
+    items: filteredItems,
+    stateReducer: (state, { changes, type }) => {
+      switch (type) {
+        case useCombobox.stateChangeTypes.InputKeyDownEnter:
+        case useCombobox.stateChangeTypes.ItemClick: {
+          return {
+            ...changes,
+            isOpen: true, // keep menu open after selection.
+            inputValue: '', // don't add the item string as input value at selection.
+            highlightedIndex: state.highlightedIndex,
+          }
+        }
+        case useCombobox.stateChangeTypes.InputBlur: {
+          return {
+            ...changes,
+            inputValue: '',
+          }
+        }
+        default:
+          return changes
+      }
+    },
+    onStateChange: ({ inputValue, type, selectedItem }) => {
+      switch (type) {
+        case useCombobox.stateChangeTypes.InputChange: {
+          setInputValue(inputValue)
+          break
+        }
+        case useCombobox.stateChangeTypes.InputKeyDownEnter:
+        case useCombobox.stateChangeTypes.ItemClick: {
+          if (selectedItem) {
+            setInputValue('')
+            handleChange(selectedItem)
+            selectItem(null)
+          }
+          break
+        }
+        case useCombobox.stateChangeTypes.InputBlur: {
+          setInputValue('')
+          break
+        }
+        default:
+          break
+      }
+    },
+  })
+
   const hasSelectedOptions = selectedOptions && selectedOptions.length > 0
   return (
     <div className={cx(styles.container, { [styles.isOpen]: isOpen }, className)}>
       <label {...getLabelProps()}>{label}</label>
-      <div className={styles.placeholderContainer}>
-        {hasSelectedOptions ? (
-          <TagList tags={selectedOptions} onRemove={handleRemove} />
-        ) : (
-          placeholder
+      <div className={styles.placeholderContainer} {...getComboboxProps()}>
+        {hasSelectedOptions && (
+          <TagList className={styles.tagList} tags={selectedOptions} onRemove={handleRemove} />
         )}
+        <InputText
+          {...getInputProps({ ...getDropdownProps({ preventKeyAction: isOpen }) })}
+          placeholder={placeholder}
+          onFocus={() => openMenu()}
+        />
       </div>
       <div className={styles.buttonsContainer}>
         {onCleanClick !== undefined && hasSelectedOptions && (
@@ -104,16 +166,22 @@ const Select: React.FC<SelectProps> = (props) => {
         <IconButton
           icon={isOpen ? 'arrow-top' : 'arrow-down'}
           size="small"
+          aria-label={'toggle menu'}
           {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
         ></IconButton>
       </div>
-      <ul {...getMenuProps()} className={styles.optionsContainer}>
+      <ul
+        {...getMenuProps()}
+        className={cx(styles.optionsContainer, {
+          [styles.optionsOpen]: isOpen && filteredItems.length,
+        })}
+      >
         {isOpen &&
-          options.length > 0 &&
-          options.map((item, index) => {
+          filteredItems.length > 0 &&
+          filteredItems.map((item, index) => {
             const highlight = highlightedIndex === index
             return (
-              <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
+              <Tooltip key={item.id} content={item.tooltip} placement="top-start">
                 <li
                   className={cx(styles.optionItem, {
                     [styles.highlight]: highlight,
@@ -121,9 +189,7 @@ const Select: React.FC<SelectProps> = (props) => {
                   {...getItemProps({ item, index })}
                 >
                   {item.label}
-                  {highlight && (
-                    <Icon icon={isItemSelected(selectedOptions, item) ? 'close' : 'tick'} />
-                  )}
+                  {highlight && <Icon icon="tick" />}
                 </li>
               </Tooltip>
             )

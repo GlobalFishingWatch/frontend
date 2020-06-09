@@ -11,7 +11,7 @@ const selectOptions: SelectOption[] = [
   { id: 3, label: 'Three' },
 ]
 const SelectsSection = () => {
-  const [selectedOptions, setSelectedOptions] = useState([selectOptions[0]])
+  const [selectedOptions, setSelectedOptions] = useState<SelectOption[]>([selectOptions[0]])
   const onSelect: SelectOnChange = (option, selectedOptions) => {
     setSelectedOptions(selectedOptions)
   }
