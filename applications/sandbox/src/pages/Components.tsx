@@ -1,4 +1,5 @@
 import React from 'react'
+import LogosSection from '../components/Logos'
 import ButtonsSection from '../components/Buttons'
 import IconsSection from '../components/Icons'
 import IconButtonsSection from '../components/IconButtons'
@@ -11,6 +12,10 @@ const ComponentsPage = () => {
   return (
     <main style={{ padding: '2rem' }}>
       <h1>Components</h1>
+      <section>
+        <h2>Logos</h2>
+        <LogosSection />
+      </section>
       <section>
         <h2>Buttons</h2>
         <ButtonsSection />
