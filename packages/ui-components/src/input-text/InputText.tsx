@@ -41,8 +41,8 @@ const InputText: React.FC<InputTextProps> = (props) => {
       />
       {type !== 'text' && (
         <Icon
-          className={styles.icon}
           icon={type}
+          className={styles.icon}
           type={!inputRef.current || inputRef.current.validity.valid ? 'default' : 'warning'}
         />
       )}

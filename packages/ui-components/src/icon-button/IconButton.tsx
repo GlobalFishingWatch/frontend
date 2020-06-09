@@ -5,7 +5,7 @@ import Icon, { IconType } from '../icon'
 import Tooltip from '../tooltip'
 import styles from './IconButton.module.css'
 
-export type IconButtonType = 'default' | 'invert' | 'border' | 'destructive'
+export type IconButtonType = 'default' | 'invert' | 'border' | 'warning'
 export type IconButtonSize = 'default' | 'small' | 'tiny'
 
 interface IconButtonProps {
@@ -40,7 +40,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) =
         disabled={disabled}
         {...rest}
       >
-        <Icon icon={icon} />
+        <Icon icon={icon} type={type === 'warning' ? 'warning' : 'default'} />
       </button>
     </Tooltip>
   )

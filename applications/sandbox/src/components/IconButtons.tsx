@@ -7,8 +7,8 @@ const IconButtonsSection = () => {
     <Fragment>
       <label>Default</label>
       <IconButton icon="menu" onClick={(e) => console.log(e)} />
-      <label>Default destructive</label>
-      <IconButton icon="delete" type="destructive" />
+      <label>Default warning</label>
+      <IconButton icon="delete" type="warning" />
       <label>Border</label>
       <IconButton icon="download" type="border" />
       <label>Invert</label>
