@@ -19,7 +19,7 @@ interface IconButtonProps {
   tooltipPlacement?: Placement
 }
 
-const IconButton: React.FC<IconButtonProps> = forwardRef((props, ref) => {
+const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) => {
   const {
     type = 'default',
     size = 'default',
