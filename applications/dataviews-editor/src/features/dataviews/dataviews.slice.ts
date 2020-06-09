@@ -152,9 +152,25 @@ const slice = createSlice({
         dataview.dirty = true
       }
     },
+    addViewParam: (state, action: PayloadAction<number>) => {
+      const dataview = state.dataviews.find((d) => d.editorId === action.payload)
+      if (dataview) {
+        let paramName
+        let i = 0
+        while (!paramName) {
+          const newParamName = `param${i}`
+          if (!dataview.defaultViewParams![newParamName]) {
+            paramName = newParamName
+          }
+          i++
+        }
+        dataview.defaultViewParams![paramName] = 'value'
+        dataview.dirty = true
+      }
+    },
   },
 })
-export const { setDataviews, setEditing, setMeta, setViewParams } = slice.actions
+export const { setDataviews, setEditing, setMeta, setViewParams, addViewParam } = slice.actions
 export default slice.reducer
 export const selectDataviews = (state: RootState) => state.dataviews.dataviews
 

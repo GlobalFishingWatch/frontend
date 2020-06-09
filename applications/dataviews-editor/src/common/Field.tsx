@@ -5,22 +5,13 @@ type Props = {
   fieldkey: string
   value: string
   keyEditable?: boolean
-  onKeyChange?: (value: string) => void
   onValueChange?: (value: string) => void
 }
 
-const Field = ({ fieldkey, value, keyEditable = false, onKeyChange, onValueChange }: Props) => {
+const Field = ({ fieldkey, value, onValueChange }: Props) => {
   return (
     <div className={styles.field}>
-      <input
-        className={styles.fieldkey}
-        type="text"
-        value={fieldkey}
-        readOnly={!keyEditable}
-        onChange={(event) => {
-          if (onKeyChange) onKeyChange(event.target.value)
-        }}
-      />
+      <div className={styles.fieldkey}>{fieldkey}</div>
       <input
         className={styles.value}
         type="text"
