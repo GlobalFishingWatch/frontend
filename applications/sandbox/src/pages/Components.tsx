@@ -3,7 +3,7 @@ import Button from '@globalfishingwatch/ui-components/src/button'
 import Icon from '@globalfishingwatch/ui-components/src/icon'
 import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
 import Tag from '@globalfishingwatch/ui-components/src/tag'
-import TagList from '@globalfishingwatch/ui-components/src/tag-list'
+import TagList, { TagItem, TagListOnRemove } from '@globalfishingwatch/ui-components/src/tag-list'
 // import { IconButton } from '@globalfishingwatch/ui-components'
 // import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Switch from '@globalfishingwatch/ui-components/src/switch'
@@ -87,39 +87,40 @@ const SwitchsSection = () => {
 }
 
 const TagsSection = () => {
-  const [tags, setTags] = useState([
+  const [tags, setTags] = useState<TagItem[]>([
     {
-      name: 'Russia',
-      value: 'RUS',
+      id: 'RUS',
+      label: 'Russia',
     },
     {
-      name: 'Japan',
-      value: 'JPN',
+      id: 'JPN',
+      label: 'Japan',
     },
     {
-      name: 'China',
-      value: 'CHN',
+      id: 'CHN',
+      label: 'China',
     },
     {
-      name: 'Portugal',
-      value: 'PRT',
+      id: 'PRT',
+      label: 'Portugal',
     },
   ])
-  const onRemoveTag = (value: string) => {
-    setTags(tags.filter((t) => t.value !== value))
+  const onRemoveTag: TagListOnRemove = (id, currentOptions) => {
+    console.log('Removed', id)
+    setTags(currentOptions)
   }
 
   return (
     <Fragment>
       <label>Default</label>
-      <Tag onRemove={(e) => console.log(e)}>Argentina</Tag>
+      <Tag>Argentina</Tag>
       <Tag onRemove={(e) => console.log(e)}>Panama</Tag>
       <label>Custom Color</label>
       <Tag onRemove={(e) => console.log(e)} color={'#ff0000'}>
         Chile
       </Tag>
       <label>Tag list</label>
-      <TagList options={tags} onRemove={(value) => onRemoveTag(value)} />
+      <TagList color={'#ff0000'} options={tags} onRemove={onRemoveTag} />
     </Fragment>
   )
 }
