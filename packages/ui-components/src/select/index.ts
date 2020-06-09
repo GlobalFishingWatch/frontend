@@ -9,9 +9,8 @@ export type SelectOption = {
 /**
  * Callback on selecting or removing options
  * @param {SelectOption} option - Selected option
- * @param {SelectOption[]} [selectedOptions] - The list of new options after changes
  */
-export type SelectOnChange = (option: SelectOption, selectedOptions: SelectOption[]) => void
+export type SelectOnChange = (option: SelectOption) => void
 /**
  * Callback on removing all options
  */

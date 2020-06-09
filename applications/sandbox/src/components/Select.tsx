@@ -1,9 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 import Select, {
   SelectOption,
   SelectOnChange,
   SelectOnRemove,
 } from '@globalfishingwatch/ui-components/src/select'
+import MultiSelect, {
+  MultiSelectOption,
+  MultiSelectOnChange,
+  MultiSelectOnRemove,
+} from '@globalfishingwatch/ui-components/src/multi-select'
 
 const selectOptions: SelectOption[] = [
   { id: 1, label: 'One', tooltip: 'Tooltip' },
@@ -11,25 +16,49 @@ const selectOptions: SelectOption[] = [
   { id: 3, label: 'Three' },
 ]
 const SelectsSection = () => {
-  const [selectedOptions, setSelectedOptions] = useState<SelectOption[]>([selectOptions[0]])
-  const onSelect: SelectOnChange = (option, selectedOptions) => {
-    setSelectedOptions(selectedOptions)
+  const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>()
+  const onSelect: SelectOnChange = (option) => {
+    setSelectedOption(option)
   }
   const onClean: SelectOnRemove = () => {
-    setSelectedOptions([])
+    setSelectedOption(undefined)
   }
-  const onRemove: SelectOnChange = (selectedOption, currentSelection) => {
-    setSelectedOptions(currentSelection)
+  const onRemove: SelectOnChange = () => {
+    setSelectedOption(undefined)
+  }
+
+  const [selectedMultiOptions, setSelectedMultiOptions] = useState<MultiSelectOption[]>([
+    selectOptions[0],
+  ])
+  const onMultiSelect: MultiSelectOnChange = (option, selectedOptions) => {
+    setSelectedMultiOptions(selectedOptions)
+  }
+  const onMultiRemove: MultiSelectOnChange = (selectedOption, currentSelection) => {
+    setSelectedMultiOptions(currentSelection)
+  }
+  const oMultiClean: MultiSelectOnRemove = () => {
+    setSelectedMultiOptions([])
   }
 
   return (
-    <Select
-      options={selectOptions}
-      selectedOptions={selectedOptions}
-      onSelect={onSelect}
-      onRemove={onRemove}
-      onCleanClick={onClean}
-    />
+    <Fragment>
+      <label>Regular Select</label>
+      <Select
+        options={selectOptions}
+        selectedOption={selectedOption}
+        onSelect={onSelect}
+        onRemove={onRemove}
+        onCleanClick={onClean}
+      />
+      <label>Multi Select</label>
+      <MultiSelect
+        options={selectOptions}
+        selectedOptions={selectedMultiOptions}
+        onSelect={onMultiSelect}
+        onRemove={onMultiRemove}
+        onCleanClick={oMultiClean}
+      />
+    </Fragment>
   )
 }
 
