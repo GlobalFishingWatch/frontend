@@ -23,6 +23,7 @@ import { ReactComponent as Satellite } from '../assets/icons/satellite.svg'
 import { ReactComponent as Search } from '../assets/icons/search.svg'
 import { ReactComponent as Share } from '../assets/icons/share.svg'
 import { ReactComponent as Split } from '../assets/icons/split.svg'
+import { ReactComponent as Tick } from '../assets/icons/tick.svg'
 import { ReactComponent as ViewOnMap } from '../assets/icons/view-on-map.svg'
 import { ReactComponent as Warning } from '../assets/icons/warning.svg'
 import styles from './Icon.module.css'
@@ -51,6 +52,7 @@ export const IconComponents = {
   search: Search,
   share: Share,
   split: Split,
+  tick: Tick,
   'view-on-map': ViewOnMap,
   warning: Warning,
 }
