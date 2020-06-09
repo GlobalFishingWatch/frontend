@@ -7,24 +7,28 @@ interface TagProps {
   className?: string
   children: string
   color?: string
-  onRemove: (event: React.MouseEvent) => void
+  onRemove?: (event: React.MouseEvent) => void
 }
 
 const Tag: React.FC<TagProps> = (props) => {
   const { className, children, color, onRemove } = props
   return (
     <div
-      className={cx(styles.Tag, { [styles.customColor]: color }, className)}
-      {...(color && { style: { color: color } })}
+      className={cx(styles.Tag, { [styles.withRemove]: onRemove !== undefined }, className)}
+      {...(color && { style: { color } })}
     >
       <span className={styles.content}>{children}</span>
-      <IconButton
-        tooltip="Remove"
-        className={styles.removeBtn}
-        icon="close"
-        size="tiny"
-        onClick={onRemove}
-      />
+      {onRemove !== undefined && (
+        <IconButton
+          tooltip="Remove"
+          tooltipPlacement="top"
+          className={styles.removeBtn}
+          icon="close"
+          size="tiny"
+          onClick={onRemove}
+          aria-label={`Remove ${children}`}
+        />
+      )}
     </div>
   )
 }
