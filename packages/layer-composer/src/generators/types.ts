@@ -1,5 +1,4 @@
 import { FeatureCollection } from 'geojson'
-import { GeneratorStyles } from '../types'
 import { Segment } from './track/segments-to-geojson'
 
 export enum Type {
@@ -14,11 +13,6 @@ export enum Type {
   Rulers = 'RULERS',
 }
 
-export interface Generator {
-  type: string
-  getStyle: (layer: GeneratorConfig) => GeneratorStyles
-}
-
 export interface GlobalGeneratorConfig {
   start?: string
   end?: string
@@ -30,8 +24,6 @@ export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[]
 
 export interface GeneratorConfig extends GlobalGeneratorConfig {
   id: string
-  datasetParamsId?: string // TODO Remove?
-  dataviewId?: string
   data?: AnyData
   type: Type | string
   visible?: boolean

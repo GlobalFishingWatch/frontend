@@ -1,0 +1,9 @@
+{
+  "files": [
+    "src/generators/types.ts",
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist/"
+  }
+}

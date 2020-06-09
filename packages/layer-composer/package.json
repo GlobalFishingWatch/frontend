@@ -22,8 +22,11 @@
     "start": "yarn clean && rollup -c ./rollup.config.js -w",
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
     "clean": "rimraf dist/*",
+    "prepare": "yarn run json-schema",
     "prepublishOnly": "yarn build",
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "json-schema": "typescript-json-schema tsconfig.json-schema.json \"*\" > dist/json-schema.json",
+    "pwd": "pwd"
   },
   "bugs": {
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
@@ -39,6 +42,7 @@
     "geojson-vt": "^3.2.1",
     "memoize-one": "^5.1.1",
     "pbf": "^3.2.1",
+    "typescript-json-schema": "^0.42.0",
     "vt-pbf": "^3.1.1"
   },
   "devDependencies": {

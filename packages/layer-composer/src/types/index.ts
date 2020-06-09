@@ -1,7 +1,13 @@
 import type { Layer, AnySourceImpl, Style } from 'mapbox-gl'
+import { GeneratorConfig } from '../generators/types'
 
 export interface Dictionary<T> {
   [key: string]: T
+}
+
+export interface Generator {
+  type: string
+  getStyle: (layer: GeneratorConfig) => GeneratorStyles
 }
 
 /**

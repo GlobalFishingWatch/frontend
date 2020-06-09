@@ -1,14 +1,14 @@
 import { Style, AnySourceImpl, Layer } from 'mapbox-gl'
-
 import Generators from './generators'
 import { flatObjectArrays, layersDictToArray } from './utils'
-import { Dictionary, LayerComposerStyles, LayerComposerOptions, GeneratorStyles } from './types'
 import {
+  Dictionary,
+  LayerComposerStyles,
+  LayerComposerOptions,
+  GeneratorStyles,
   Generator,
-  GeneratorConfig,
-  GlobalGeneratorConfig,
-  AnyGeneratorConfig,
-} from './generators/types'
+} from './types'
+import { GeneratorConfig, GlobalGeneratorConfig, AnyGeneratorConfig } from './generators/types'
 
 export const DEFAULT_CONFIG = {
   version: 8,
