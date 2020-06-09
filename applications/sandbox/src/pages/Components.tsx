@@ -2,6 +2,8 @@ import React, { Fragment, useState } from 'react'
 import Button from '@globalfishingwatch/ui-components/src/button'
 import Icon from '@globalfishingwatch/ui-components/src/icon'
 import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
+import Tag from '@globalfishingwatch/ui-components/src/tag'
+import TagList, { TagItem, TagListOnRemove } from '@globalfishingwatch/ui-components/src/tag-list'
 // import { IconButton } from '@globalfishingwatch/ui-components'
 // import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Switch from '@globalfishingwatch/ui-components/src/switch'
@@ -84,6 +86,45 @@ const SwitchsSection = () => {
   )
 }
 
+const TagsSection = () => {
+  const [tags, setTags] = useState<TagItem[]>([
+    {
+      id: 'RUS',
+      label: 'Russia',
+    },
+    {
+      id: 'JPN',
+      label: 'Japan',
+    },
+    {
+      id: 'CHN',
+      label: 'China',
+    },
+    {
+      id: 'PRT',
+      label: 'Portugal',
+    },
+  ])
+  const onRemoveTag: TagListOnRemove = (id, currentOptions) => {
+    console.log('Removed', id)
+    setTags(currentOptions)
+  }
+
+  return (
+    <Fragment>
+      <label>Default</label>
+      <Tag>Argentina</Tag>
+      <Tag onRemove={(e) => console.log(e)}>Panama</Tag>
+      <label>Custom Color</label>
+      <Tag onRemove={(e) => console.log(e)} color={'#ff0000'}>
+        Chile
+      </Tag>
+      <label>Tag list</label>
+      <TagList color={'#ff0000'} options={tags} onRemove={onRemoveTag} />
+    </Fragment>
+  )
+}
+
 const ComponentsPage = () => {
   return (
     <main style={{ padding: '2rem' }}>
@@ -106,6 +147,10 @@ const ComponentsPage = () => {
       <section>
         <h2>Switchs</h2>
         <SwitchsSection />
+      </section>
+      <section>
+        <h2>Tags</h2>
+        <TagsSection />
       </section>
     </main>
   )
