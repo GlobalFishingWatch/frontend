@@ -19,7 +19,7 @@ interface IconButtonProps {
   tooltipPlacement?: Placement
 }
 
-const IconButton: React.FC<IconButtonProps> = (props) => {
+const IconButton: React.FC<IconButtonProps> = forwardRef((props, ref) => {
   const {
     type = 'default',
     size = 'default',
@@ -34,6 +34,7 @@ const IconButton: React.FC<IconButtonProps> = (props) => {
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
+        ref={ref}
         className={cx(styles.IconButton, styles[type], styles[`${size}Size`], className)}
         onClick={onClick}
         disabled={disabled}
@@ -43,6 +44,6 @@ const IconButton: React.FC<IconButtonProps> = (props) => {
       </button>
     </Tooltip>
   )
-}
+})
 
 export default IconButton

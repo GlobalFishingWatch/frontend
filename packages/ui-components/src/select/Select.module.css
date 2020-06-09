@@ -1,0 +1,49 @@
+.container {
+  position: relative;
+  border-bottom: var(--border);
+}
+
+.isOpen {
+  background: var(--color-background);
+  filter: var(--drop-shadow);
+  z-index: 2;
+}
+
+.placeholderContainer {
+  display: flex;
+}
+
+.buttonsContainer {
+  display: flex;
+  position: absolute;
+  right: 0;
+  top: -0.8rem;
+}
+
+.optionsContainer {
+  width: 100%;
+  position: absolute !important; /* as needs to overwrite default FixedSizeList behaviour */
+  top: 4.1rem;
+  left: 0;
+  background: var(--color-background);
+  max-height: 40rem;
+  overflow: auto;
+}
+
+.optionItem {
+  color: var(--color-brand-secondary);
+  line-height: 2rem;
+  padding: var(--space-S);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.highlight {
+  background-color: var(--color-terthiary-blue);
+}
+
+.selected {
+  background-color: var(--color-terthiary-blue);
+}
