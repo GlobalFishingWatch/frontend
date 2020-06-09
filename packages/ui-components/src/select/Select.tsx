@@ -113,12 +113,11 @@ const Select: React.FC<SelectProps> = (props) => {
           options.map((item, index) => {
             const highlight = highlightedIndex === index
             return (
-              <Tooltip content={item.tooltip} placement="top-start">
+              <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
                 <li
                   className={cx(styles.optionItem, {
                     [styles.highlight]: highlight,
                   })}
-                  key={`${item}${index}`}
                   {...getItemProps({ item, index })}
                 >
                   {item.label}
