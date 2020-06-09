@@ -31,6 +31,7 @@ const IconButton: React.FC<IconButtonProps> = (props) => {
     onClick,
     tooltip,
     tooltipPlacement = 'auto',
+    ...rest
   } = props
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
@@ -44,6 +45,7 @@ const IconButton: React.FC<IconButtonProps> = (props) => {
         )}
         onClick={onClick}
         disabled={disabled}
+        {...rest}
       >
         <Icon icon={icon} />
       </button>
