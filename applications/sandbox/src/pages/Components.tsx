@@ -4,6 +4,7 @@ import Icon from '@globalfishingwatch/ui-components/src/icon'
 import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
 import Tag from '@globalfishingwatch/ui-components/src/tag'
 import TagList, { TagItem, TagListOnRemove } from '@globalfishingwatch/ui-components/src/tag-list'
+import InputText from '@globalfishingwatch/ui-components/src/input-text'
 // import { IconButton } from '@globalfishingwatch/ui-components'
 // import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Switch from '@globalfishingwatch/ui-components/src/switch'
@@ -125,6 +126,41 @@ const TagsSection = () => {
   )
 }
 
+const InputsSection = () => {
+  const [textValue, setTextValue] = useState<string>('')
+  return (
+    <Fragment>
+      <InputText
+        value={textValue}
+        onChange={(e) => setTextValue(e.currentTarget.value)}
+        label="something"
+        placeholder="Input something"
+      />
+      <InputText
+        value={textValue}
+        onChange={(e) => setTextValue(e.currentTarget.value)}
+        label="text or stuff"
+        placeholder="Input a text"
+        disabled
+      />
+      <InputText
+        value={textValue}
+        onChange={(e) => setTextValue(e.currentTarget.value)}
+        label="email"
+        placeholder="Input an email"
+        type="email"
+      />
+      <InputText
+        value={textValue}
+        onChange={(e) => setTextValue(e.currentTarget.value)}
+        placeholder="Search something"
+        type="search"
+        inputSize="small"
+      />
+    </Fragment>
+  )
+}
+
 const ComponentsPage = () => {
   return (
     <main style={{ padding: '2rem' }}>
@@ -151,6 +187,10 @@ const ComponentsPage = () => {
       <section>
         <h2>Tags</h2>
         <TagsSection />
+      </section>
+      <section>
+        <h2>Inputs</h2>
+        <InputsSection />
       </section>
     </main>
   )

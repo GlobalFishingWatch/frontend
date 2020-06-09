@@ -58,12 +58,13 @@ export const IconComponents = {
 interface IconProps {
   className?: string
   icon: keyof typeof IconComponents
+  type?: 'default' | 'warning'
 }
 
 const Icon: React.FC<IconProps> = (props) => {
-  const { icon, className = '' } = props
+  const { icon, type = 'default', className = '' } = props
   const Component = useMemo(() => IconComponents[icon], [icon])
-  return <Component className={cx(styles.Icon, className)} />
+  return <Component className={cx(styles.Icon, styles[type], className)} />
 }
 
 export default Icon
