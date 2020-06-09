@@ -127,11 +127,36 @@ const TagsSection = () => {
 }
 
 const InputsSection = () => {
+  const [textValue, setTextValue] = useState<string>('')
   return (
     <Fragment>
-      <InputText label="something" placeholder="Input something" />
-      <InputText label="email or stuff" placeholder="Input an email" icon="email" />
-      <InputText inputSize="small" label="email" placeholder="Input an email" icon="email" />
+      <InputText
+        value={textValue}
+        onChange={(e) => setTextValue(e.currentTarget.value)}
+        label="something"
+        placeholder="Input something"
+      />
+      <InputText
+        value={textValue}
+        onChange={(e) => setTextValue(e.currentTarget.value)}
+        label="text or stuff"
+        placeholder="Input a text"
+        disabled
+      />
+      <InputText
+        value={textValue}
+        onChange={(e) => setTextValue(e.currentTarget.value)}
+        label="email"
+        placeholder="Input an email"
+        type="email"
+      />
+      <InputText
+        value={textValue}
+        onChange={(e) => setTextValue(e.currentTarget.value)}
+        placeholder="Search something"
+        type="search"
+        inputSize="small"
+      />
     </Fragment>
   )
 }

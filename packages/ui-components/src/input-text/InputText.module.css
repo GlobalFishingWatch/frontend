@@ -8,9 +8,10 @@
   color: var(--color-primary-blue);
   padding: 0 var(--space-XS);
   border-bottom: 1px solid var(--color-primary-blue);
+  background: none;
 }
 
-.default label {
+.InputText label {
   margin-bottom: var(--space-XS);
 }
 
@@ -43,4 +44,24 @@
 
 .InputText input::placeholder {
   color: var(--color-secondary-blue);
+}
+
+.InputText input:disabled {
+  border-bottom: var(--border);
+  opacity: var(--opacity-secondary);
+  cursor: not-allowed;
+}
+
+.InputText input:invalid {
+  border-bottom: 1px solid var(--color-danger-red);
+}
+
+.InputText input[type="search"]{
+  -moz-appearance: none;/* older firefox */
+  -webkit-appearance: none; /* safari, chrome, edge and ie mobile */
+  appearance: none; /* rest */
+}
+
+.InputText input[type="search"]::-webkit-search-cancel-button{
+  display: none;
 }

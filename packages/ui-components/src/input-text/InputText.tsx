@@ -1,34 +1,51 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import cx from 'classnames'
-import Icon, { IconType } from '../icon'
+import Icon from '../icon'
 import styles from './InputText.module.css'
 
 export type InputSize = 'default' | 'small'
+export type InputType = 'text' | 'email' | 'search'
 
-interface InputTextProps {
-  disabled?: boolean
+type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   className?: string
-  placeholder: string
-  label: string
-  value?: string
-  size?: InputSize
-  icon?: IconType
+  label?: string
+  type?: InputType
+  inputSize?: InputSize
 }
 
 const InputText: React.FC<InputTextProps> = (props) => {
-  const { disabled = false, className, placeholder, value, size = 'default', label, icon } = props
+  const {
+    className,
+    placeholder,
+    value,
+    inputSize = 'default',
+    label,
+    type = 'text',
+    onChange,
+    ...rest
+  } = props
+  const inputRef = useRef<HTMLInputElement>(null)
+
   return (
-    <div className={cx(styles.InputText, styles[size], className)}>
-      <label htmlFor={label}>{label}</label>
+    <div className={cx(styles.InputText, styles[inputSize], className)}>
+      {label && <label htmlFor={label}>{label}</label>}
       <input
+        ref={inputRef}
         id={label}
         name={label}
-        type="text"
+        type={type}
         placeholder={placeholder}
         value={value}
-        disabled={disabled}
+        onChange={onChange}
+        {...rest}
       />
-      {icon && <Icon className={styles.icon} icon={icon} />}
+      {type !== 'text' && (
+        <Icon
+          className={styles.icon}
+          icon={type}
+          type={!inputRef.current || inputRef.current.validity.valid ? 'default' : 'warning'}
+        />
+      )}
     </div>
   )
 }

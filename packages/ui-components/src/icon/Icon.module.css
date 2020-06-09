@@ -3,6 +3,10 @@
   height: var(--size-XS);
 }
 
-.Icon path {
+.default path{
   fill: currentColor;
+}
+
+.warning path{
+  fill: var(--color-danger-red);
 }
