@@ -21,9 +21,9 @@ const TagsSection = () => {
       label: 'Portugal',
     },
   ])
-  const onRemoveTag: TagListOnRemove = (id, currentOptions) => {
-    console.log('Removed', id)
-    setTags(currentOptions)
+  const onRemoveTag: TagListOnRemove = (tag, currentTags) => {
+    console.log('Removed', tag)
+    setTags(currentTags)
   }
 
   return (
