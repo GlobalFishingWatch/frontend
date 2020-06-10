@@ -17,6 +17,7 @@ interface IconButtonProps {
   onClick?: (e: React.MouseEvent) => void
   tooltip?: React.ReactChild | React.ReactChild[] | string
   tooltipPlacement?: Placement
+  children?: React.ReactNode
 }
 
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) => {
@@ -29,6 +30,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) =
     onClick,
     tooltip,
     tooltipPlacement = 'auto',
+    children,
     ...rest
   } = props
   return (
@@ -41,6 +43,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) =
         {...rest}
       >
         <Icon icon={icon} type={type === 'warning' ? 'warning' : 'default'} />
+        {children}
       </button>
     </Tooltip>
   )

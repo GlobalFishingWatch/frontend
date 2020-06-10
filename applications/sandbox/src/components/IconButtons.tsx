@@ -9,6 +9,10 @@ const IconButtonsSection = () => {
       <IconButton icon="menu" onClick={(e) => console.log(e)} />
       <label>Default warning</label>
       <IconButton icon="delete" type="warning" />
+      <label>With child</label>
+      <IconButton icon="ruler">
+        <span className={styles.iconText}>1</span>
+      </IconButton>
       <label>Border</label>
       <IconButton icon="download" type="border" />
       <label>Invert</label>
