@@ -6,6 +6,8 @@ const IconsSection = () => {
     <Fragment>
       <label>Default</label>
       <Icon icon="menu" />
+      <label>With tooltip</label>
+      <Icon tooltip="Menu tooltip" icon="menu" />
       <label>Custom fill</label>
       <span style={{ color: 'red' }}>
         <Icon icon="delete" />

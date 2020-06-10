@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react'
+import { Placement } from 'tippy.js'
 import cx from 'classnames'
+import Tooltip from '../tooltip'
 import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
 import { ReactComponent as ArrowRight } from '../assets/icons/arrow-right.svg'
 import { ReactComponent as ArrowTop } from '../assets/icons/arrow-top.svg'
@@ -61,12 +63,18 @@ interface IconProps {
   className?: string
   icon: keyof typeof IconComponents
   type?: 'default' | 'warning'
+  tooltip?: React.ReactChild | React.ReactChild[] | string
+  tooltipPlacement?: Placement
 }
 
 const Icon: React.FC<IconProps> = (props) => {
-  const { icon, type = 'default', className = '' } = props
+  const { icon, tooltip, type = 'default', className = '' } = props
   const Component = useMemo(() => IconComponents[icon], [icon])
-  return <Component className={cx(styles.Icon, styles[type], className)} />
+  return (
+    <Tooltip content={tooltip} placement="auto">
+      <Component className={cx(styles.Icon, styles[type], className)} />
+    </Tooltip>
+  )
 }
 
 export default Icon
