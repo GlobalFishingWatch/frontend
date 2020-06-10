@@ -14,7 +14,7 @@ const Logo: React.FC<LogoProps> = (props) => {
   const { type = 'default', subBrand = '' } = props
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60">
-      <g fill="none" fill-rule="evenodd">
+      <g fill="none" fillRule="evenodd">
         <path
           fill="#8ABBC7"
           d="M23.1 27.83c-.08.16-2.25 4.5.57 8.76.83 1.25 1.76 2.24 4.1 3.8 3.38 2.26 7.42 6.16 8.4 8.45.1.21.36.59-.06.83-.73.41-1.75.31-2.16.25l-.12-.02c-4.75-.88-14.5-5-13.8-13.8.18-2.21.98-4.87 3.07-8.27zm9.92-8.64c.7-.08 2.98-.15 3.08.08.07.17-.83.5-.87.52-5.22 1.98-6.97 3.16-7.22 3.3-3.3 2.01-4.71 4.35-4.82 4.57 1.48-3.1 5.2-7.93 9.83-8.47z"
