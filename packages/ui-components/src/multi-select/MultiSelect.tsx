@@ -78,7 +78,7 @@ const Select: React.FC<SelectProps> = (props) => {
     [handleRemove, handleSelect, selectedOptions]
   )
 
-  const [inputValue, setInputValue] = useState<string | undefined>()
+  const [inputValue, setInputValue] = useState('')
   const filteredItems = useMemo(() => getItemsFiltered(options, selectedOptions, inputValue), [
     inputValue,
     options,
@@ -99,6 +99,7 @@ const Select: React.FC<SelectProps> = (props) => {
     getItemProps,
   } = useCombobox<MultiSelectOption | null>({
     items: filteredItems,
+    inputValue,
     stateReducer: (state, { changes, type }) => {
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
@@ -120,17 +121,13 @@ const Select: React.FC<SelectProps> = (props) => {
           return changes
       }
     },
-    onStateChange: ({ inputValue, type, selectedItem }) => {
+    onStateChange: ({ type, selectedItem }) => {
       switch (type) {
-        case useCombobox.stateChangeTypes.InputChange: {
-          setInputValue(inputValue)
-          break
-        }
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick: {
           if (selectedItem) {
-            setInputValue('')
             handleChange(selectedItem)
+            setInputValue('')
             selectItem(null)
           }
           break
@@ -155,6 +152,8 @@ const Select: React.FC<SelectProps> = (props) => {
         )}
         <InputText
           {...getInputProps({ ...getDropdownProps({ preventKeyAction: isOpen }) })}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
           placeholder={placeholder}
           onFocus={() => openMenu()}
         />
