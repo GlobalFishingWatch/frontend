@@ -49,7 +49,7 @@ const Dataview = () => {
         <h2>datasets</h2>
         {currentDataview.datasets &&
           currentDataview.datasets?.map((dataset) => (
-            <input type="text" key={dataset.id} value={dataset.id} />
+            <input type="text" key={dataset.id} value={dataset.id} readOnly />
           ))}
         <AddButton />
       </Section>

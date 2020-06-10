@@ -34,7 +34,7 @@ const EditorViewParams = () => {
       <Dropdown selected={type} />
       <div className={styles.description}>{description}</div>
       {options.map((option) => (
-        <div>
+        <div key={option.key}>
           <div>
             {option.key} ({option.type})
           </div>

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Dispatch } from 'react'
+import maxBy from 'lodash/maxBy'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import DataviewsClient, {
   Dataview,
@@ -104,10 +105,16 @@ const mockFetch = (mockFetchUrl: string): Promise<Response> => {
 const dataviewsClient = new DataviewsClient(mockFetch)
 
 export interface EditorDataview extends Dataview {
+  // every DV has a distinct editor ID
   editorId: number
-  added: boolean
+  // is DV present in workspace (checkbox checked)
+  added?: boolean
+  // has DV been changed since last save
   dirty: boolean
+  // is dv the one being edited in DV panel
   editing: boolean
+  // whether DV has been saved already
+  saved: boolean
   allEndpointsLoaded?: boolean
 }
 
@@ -123,13 +130,29 @@ const slice = createSlice({
       const editorDataviews = action.payload.map((dataview: Dataview, index: number) => {
         return {
           editorId: index,
-          added: false,
           dirty: false,
           editing: false,
           ...dataview,
         }
       })
       state.dataviews = editorDataviews
+    },
+    addDataview: (state) => {
+      const currentId = maxBy(state.dataviews, (dv) => dv.editorId)?.editorId || 0
+      const newDataview: EditorDataview = {
+        editorId: currentId + 1,
+        dirty: true,
+        editing: false,
+        saved: false,
+        id: -1,
+        name: 'new dataview',
+        description: '',
+        defaultDatasetsParams: [{}],
+        defaultViewParams: {
+          type: Generators.Type.Background,
+        },
+      }
+      state.dataviews.push(newDataview)
     },
     setEditing: (state, action: PayloadAction<number>) => {
       state.dataviews.forEach((d, index) => {
@@ -167,8 +190,16 @@ const slice = createSlice({
     },
   },
 })
-export const { setDataviews, setEditing, setMeta, setViewParams, setType } = slice.actions
+export const {
+  setDataviews,
+  addDataview,
+  setEditing,
+  setMeta,
+  setViewParams,
+  setType,
+} = slice.actions
 export default slice.reducer
+
 export const selectDataviews = (state: RootState) => state.dataviews.dataviews
 
 export const fetchDataviews = () => async (dispatch: Dispatch<PayloadAction>) => {

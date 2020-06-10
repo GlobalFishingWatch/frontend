@@ -5,12 +5,13 @@ import ListItem from 'common/ListItem'
 import Section from 'common/Section'
 import { toggleDataview } from 'features/workspace/workspace.slice'
 import { selectAddedDataviews, selectEditorDataviews } from './dataviews.selectors'
-import { EditorDataview, setEditing, setMeta } from './dataviews.slice'
+import { EditorDataview, setEditing, setMeta, addDataview } from './dataviews.slice'
 
 const Dataviews = () => {
   const dispatch = useDispatch()
   const dataviews = useSelector(selectEditorDataviews)
   const addedDataviews = useSelector(selectAddedDataviews)
+
   return (
     <Fragment>
       <Section>
@@ -18,7 +19,7 @@ const Dataviews = () => {
         <ul>
           {addedDataviews.map((dataview) => (
             <ListItem
-              key={dataview.id}
+              key={dataview.editorId}
               title={dataview.name}
               editing={dataview.editing}
               dirty={dataview.dirty}
@@ -42,18 +43,22 @@ const Dataviews = () => {
         <ul>
           {dataviews.map((dataview: EditorDataview) => (
             <ListItem
-              key={dataview.id}
+              key={dataview.editorId}
               title={dataview.name}
               editing={dataview.editing}
               dirty={dataview.dirty}
-              checked={dataview.added}
+              checked={dataview.added || false}
               onToggle={(toggle) => {
-                dispatch(toggleDataview({ editorId: dataview.id, added: toggle }))
+                dispatch(toggleDataview({ editorId: dataview.editorId, added: toggle }))
               }}
             />
           ))}
         </ul>
-        <AddButton />
+        <AddButton
+          onClick={() => {
+            dispatch(addDataview())
+          }}
+        />
       </Section>
     </Fragment>
   )
