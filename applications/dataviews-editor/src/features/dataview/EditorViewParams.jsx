@@ -1,15 +1,21 @@
-import React, { useMemo } from 'react'
-import { omit } from 'lodash'
-import generatorsSchema from '@globalfishingwatch/layer-composer/dist/json-schema.json'
-// import styles from './Field.module.css'
+import React from 'react'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import fieldStyles from 'common/Field.module.css'
+import styles from './EditorViewParams.module.css'
+import { useViewParamsConnect } from './dataview.hooks'
 
-const Dropdown = ({ selected }) => {
+const Dropdown = () => {
+  const { type, setDataviewType } = useViewParamsConnect()
   return (
     <div className={fieldStyles.field}>
       <span className={fieldStyles.fieldkey}>type</span>
-      <select className={fieldStyles.value} value={selected}>
+      <select
+        className={fieldStyles.value}
+        value={type}
+        onChange={(event) => {
+          setDataviewType(event.target.value)
+        }}
+      >
         {Object.entries(Generators.Type).map(([t, v]) => (
           <option key={v} value={v}>
             {t}
@@ -20,49 +26,24 @@ const Dropdown = ({ selected }) => {
   )
 }
 
-const EditorViewParams = ({ editorId, params }) => {
-  const { generatorSchema, options } = useMemo(() => {
-    const type = params?.type
-    const globalConfigKeys = Object.keys(
-      generatorsSchema.definitions.GlobalGeneratorConfig.properties
-    )
-    const generatorForTypeEntry = Object.entries(generatorsSchema.definitions).find(
-      (generatorEntry) => {
-        const generator = generatorEntry[1]
-        return (
-          generator.properties &&
-          generator.properties.type &&
-          generator.properties.type.enum &&
-          generator.properties.type.enum[0] === type
-        )
-      }
-    )
-    if (!generatorForTypeEntry) return null
-    const generatorForType = generatorForTypeEntry[1]
-    const allOptions = generatorForType.properties
-    const filteredOptions = omit(allOptions, ['id', 'type', 'data'].concat(globalConfigKeys))
-    return { generatorSchema: generatorForType, options: filteredOptions }
-  }, [params])
-  console.log(generatorSchema, Object.entries(options))
-  if (!generatorSchema) {
-    return <div>error</div>
-  }
+const EditorViewParams = () => {
+  const { type, description, options, setLocalParamValue } = useViewParamsConnect()
+
   return (
     <div>
-      <Dropdown selected={params.type} />
-      {generatorSchema.description}
-      {Object.entries(options).map(([optionKey, v]) => (
+      <Dropdown selected={type} />
+      <div className={styles.description}>{description}</div>
+      {options.map((option) => (
         <div>
           <div>
-            {optionKey} ({v.type})
+            {option.key} ({option.type})
           </div>
           <input
-            // className={styles.value}
             type="text"
-            value={'lol'}
-            // onChange={(event) => {
-            //   if (onValueChange) onValueChange(event.target.value)
-            // }}
+            value={option.value}
+            onChange={(event) => {
+              setLocalParamValue(option.key, event.target.value)
+            }}
           />
         </div>
       ))}

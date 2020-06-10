@@ -7,6 +7,7 @@ import DataviewsClient, {
   ViewParams,
 } from '@globalfishingwatch/dataviews-client'
 import GFWAPI from '@globalfishingwatch/api-client'
+import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { RootState } from 'store/store'
 import { addResources, completeLoading } from './resources.slice'
 
@@ -148,29 +149,25 @@ const slice = createSlice({
     setViewParams: (state, action: PayloadAction<{ editorId: number; params: ViewParams }>) => {
       const dataview = state.dataviews.find((d) => d.editorId === action.payload.editorId)
       if (dataview) {
-        dataview.defaultViewParams = action.payload.params
+        dataview.defaultViewParams = {
+          ...dataview.defaultViewParams,
+          ...action.payload.params,
+        }
         dataview.dirty = true
       }
     },
-    addViewParam: (state, action: PayloadAction<number>) => {
-      const dataview = state.dataviews.find((d) => d.editorId === action.payload)
+    setType: (state, action: PayloadAction<{ editorId: number; type: Type }>) => {
+      const dataview = state.dataviews.find((d) => d.editorId === action.payload.editorId)
       if (dataview) {
-        let paramName
-        let i = 0
-        while (!paramName) {
-          const newParamName = `param${i}`
-          if (!dataview.defaultViewParams![newParamName]) {
-            paramName = newParamName
-          }
-          i++
+        dataview.defaultViewParams = {
+          type: action.payload.type,
         }
-        dataview.defaultViewParams![paramName] = 'value'
         dataview.dirty = true
       }
     },
   },
 })
-export const { setDataviews, setEditing, setMeta, setViewParams, addViewParam } = slice.actions
+export const { setDataviews, setEditing, setMeta, setViewParams, setType } = slice.actions
 export default slice.reducer
 export const selectDataviews = (state: RootState) => state.dataviews.dataviews
 

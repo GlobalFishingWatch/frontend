@@ -33,7 +33,7 @@ const ListItem = ({
         }}
       />
       {editing && '✏️'}
-      {dirty && '🚨'}
+      {dirty && '❋'}
       <input
         type="text"
         value={title}

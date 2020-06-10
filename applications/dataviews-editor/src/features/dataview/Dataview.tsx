@@ -1,79 +1,13 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import cx from 'classnames'
 import AddButton from 'common/AddButton'
 import Field from 'common/Field'
 import Section from 'common/Section'
-import { selectCurrentDataview } from 'features/dataviews/dataviews.selectors'
-import {
-  setMeta,
-  fetchResources,
-  setViewParams,
-  addViewParam,
-} from 'features/dataviews/dataviews.slice'
+import { setMeta, fetchResources } from 'features/dataviews/dataviews.slice'
 import { selectResourcesLoaded } from 'features/dataviews/resources.selectors'
+import { selectCurrentDataview } from './dataview.selectors'
 import ViewParams from './EditorViewParams'
-
-// const ResolvedViewParams = ({ editorId, params }: { editorId: number; params?: ViewParams }) => {
-//   const dispatch = useDispatch()
-//   const generatorSchema = useMemo(() => {
-//     const type = params?.type
-//     const generatorForType = Object.entries(generatorsSchema.definitions).find((generatorEntry) => {
-//       const generator = generatorEntry[1] as any
-//       return (
-//         generator.properties &&
-//         generator.properties.type &&
-//         generator.properties.type.enum &&
-//         generator.properties.type.enum[0] === type
-//       )
-//     })
-//     return generatorForType && generatorForType[1]
-//   }, [params])
-//   console.log(generatorSchema)
-//   if (!params) return null
-//   return (
-//     <Fragment>
-//       {Object.entries(params).map(([fieldkey, value]: [string, unknown]) =>
-//         fieldkey === 'type' ? (
-//           <DataviewTypeDropdown key={fieldkey} />
-//         ) : (
-//           <Field
-//             key={fieldkey}
-//             keyEditable
-//             fieldkey={fieldkey}
-//             // fieldkeyOptions={}
-//             value={value as string}
-//             onValueChange={(value) => {
-//               const newParams = {
-//                 ...params,
-//                 [fieldkey]: value,
-//               }
-//               dispatch(
-//                 setViewParams({
-//                   editorId,
-//                   params: newParams,
-//                 })
-//               )
-//             }}
-//             // onKeyChange={(key, previousKey) => {
-//             //   const newParams = {
-//             //     ...params,
-//             //     [key]: params[previousKey],
-//             //   }
-//             //   delete newParams[previousKey]
-//             //   dispatch(
-//             //     setViewParams({
-//             //       editorId,
-//             //       params: newParams,
-//             //     })
-//             //   )
-//             // }}
-//           />
-//         )
-//       )}
-//     </Fragment>
-//   )
-// }
 
 const ResolvedDatasetParams = ({ params }: any) => {
   if (!params) return null
@@ -121,7 +55,6 @@ const Dataview = () => {
       </Section>
       <Section>
         <h2>defaultDatasetParams</h2>
-        {/* // TODO defaultViewParams -> viewParams when we have the hook */}
         {currentDataview.defaultDatasetsParams?.map(
           (resolvedDatasetParams: Record<string, unknown>, index: number) => (
             <ResolvedDatasetParams key={index} params={resolvedDatasetParams} />
@@ -139,16 +72,7 @@ const Dataview = () => {
       </Section>
       <Section>
         <h2>defaultViewParams</h2>
-        {/* // TODO defaultViewParams -> viewParams when we have the hook */}
-        <ViewParams
-          editorId={currentDataview.editorId}
-          params={currentDataview.defaultViewParams}
-        />
-        <AddButton
-          onClick={() => {
-            dispatch(addViewParam(currentDataview.editorId))
-          }}
-        />
+        <ViewParams />
       </Section>
     </Fragment>
   )

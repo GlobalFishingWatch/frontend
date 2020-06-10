@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Resource } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { GeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { UniqueDataview } from './use-workspace-dataviews'
 
 /**
@@ -27,10 +27,10 @@ const useDataviewsGenerators = (
         return datasetParams
       })
 
-      const generatorConfig: GeneratorConfig = {
+      const generatorConfig: AnyGeneratorConfig = {
         id: dataview.uid,
         ...dataview.viewParams,
-      } as GeneratorConfig
+      } as AnyGeneratorConfig
       if (dataviewResource && dataviewResource.data) {
         generatorConfig.data = dataviewResource.data as Generators.AnyData
       }

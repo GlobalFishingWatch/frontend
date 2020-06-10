@@ -7,7 +7,7 @@ import Dataview from 'features/dataview/Dataview'
 import Dataviews from 'features/dataviews/Dataviews'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
-import { selectCurrentDataview } from 'features/dataviews/dataviews.selectors'
+import { selectCurrentDataview } from 'features/dataview/dataview.selectors'
 import { fetchDataviews } from 'features/dataviews/dataviews.slice'
 import styles from './App.module.css'
 
