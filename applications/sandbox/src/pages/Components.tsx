@@ -7,6 +7,7 @@ import SwitchsSection from '../components/Switch'
 import TagsSection from '../components/Tags'
 import SelectsSection from '../components/Select'
 import InputsSection from '../components/Inputs'
+import ModalsSection from '../components/Modal'
 
 const ComponentsPage = () => {
   return (
@@ -46,6 +47,10 @@ const ComponentsPage = () => {
       <section>
         <h2>Inputs</h2>
         <InputsSection />
+      </section>
+      <section>
+        <h2>Modals</h2>
+        <ModalsSection />
       </section>
     </main>
   )
