@@ -56,6 +56,7 @@ export interface BackgroundGeneratorConfig extends GeneratorConfig {
  * Placeholder for a generic set of Mapbox GL layers (consisting of one or more sources and one or mor layers)
  */
 export interface GlGeneratorConfig extends GeneratorConfig {
+  type: Type.GL
   sources?: any
   layers?: any
 }
@@ -64,6 +65,7 @@ export interface GlGeneratorConfig extends GeneratorConfig {
  * Renders outlined polygons for our CARTO tables library, typically context layers. Takes care of instanciating CARTO anonymous maps/layergroupid (hence asynchronous)
  */
 export interface CartoPolygonsGeneratorConfig extends GeneratorConfig {
+  type: Type.CartoPolygons
   baseUrl?: string
   selectedFeatures?: any
   color?: string
@@ -107,6 +109,7 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
 }
 
 export interface VesselEventsGeneratorConfig extends GeneratorConfig {
+  type: Type.VesselEvents
   data: RawEvent[]
   currentEventId?: string
 }
@@ -115,6 +118,7 @@ export interface VesselEventsGeneratorConfig extends GeneratorConfig {
  * Renders rulers showing a distance between two points, using great circle if needed
  */
 export interface RulersGeneratorConfig extends GeneratorConfig {
+  type: Type.Rulers
   /**
    * An array defining rulers with start and end coordinates, and an isNew flag
    */
@@ -122,6 +126,7 @@ export interface RulersGeneratorConfig extends GeneratorConfig {
 }
 
 export interface HeatmapGeneratorConfig extends GeneratorConfig {
+  type: Type.Heatmap
   start: string
   end: string
   zoom: number
@@ -135,6 +140,7 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends HeatmapGeneratorConfig {
+  // type: Type.HeatmapAnimated // TODO
   delta?: number
   geomType: string
   quantizeOffset?: number
