@@ -8,7 +8,7 @@ import Dataviews from 'features/dataviews/Dataviews'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import { selectCurrentDataview } from 'features/dataview/dataview.selectors'
-import { fetchDataviews } from 'features/dataviews/dataviews.slice'
+import { fetchDataviews, selectLoading } from 'features/dataviews/dataviews.slice'
 import styles from './App.module.css'
 
 const App = () => {
@@ -21,6 +21,8 @@ const App = () => {
   const [dataviewMinimized, toggleDataview] = useState(false)
   const currentDataview = useSelector(selectCurrentDataview)
 
+  const dataviewsLoading = useSelector(selectLoading)
+
   const { loading, logged } = useGFWLogin(GFWAPI)
   if (!loading && !logged) {
     window.location.href = GFWAPI.getLoginUrl(window.location.toString())
@@ -29,7 +31,7 @@ const App = () => {
   }
 
   return (
-    <div className={styles.app}>
+    <div className={cx(styles.app, { [styles.loading]: dataviewsLoading })}>
       <div
         className={cx(styles.column, styles.dataviews, { [styles.minimized]: dataviewsMinimized })}
       >

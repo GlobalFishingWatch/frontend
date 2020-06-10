@@ -29,7 +29,7 @@ const useDataviewsGenerators = (
 
       const generatorConfig: AnyGeneratorConfig = {
         id: dataview.uid,
-        ...dataview.viewParams,
+        ...dataview.view,
       } as AnyGeneratorConfig
       if (dataviewResource && dataviewResource.data) {
         generatorConfig.data = dataviewResource.data as Generators.AnyData

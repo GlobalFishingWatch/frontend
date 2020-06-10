@@ -26,8 +26,8 @@ export interface Dataview {
   description: string
   createdAt?: string
   updatedAt?: string
-  viewParams?: ViewParams
-  defaultViewParams?: ViewParams
+  view?: ViewParams
+  defaultView?: ViewParams
   datasetsParams?: DatasetParams[]
   defaultDatasetsParams?: DatasetParams[]
   datasets?: Dataset[] // foreign
@@ -35,7 +35,7 @@ export interface Dataview {
 
 export interface WorkspaceDataview {
   id: number
-  viewParams?: ViewParams
+  view?: ViewParams
   datasetsParams?: DatasetParams[]
 }
 

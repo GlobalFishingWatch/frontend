@@ -5,7 +5,14 @@ import ListItem from 'common/ListItem'
 import Section from 'common/Section'
 import { toggleDataview } from 'features/workspace/workspace.slice'
 import { selectAddedDataviews, selectEditorDataviews } from './dataviews.selectors'
-import { EditorDataview, setEditing, setMeta, addDataview } from './dataviews.slice'
+import {
+  EditorDataview,
+  setEditing,
+  setMeta,
+  addDataview,
+  startUpdatingDataview,
+  startDeletingDataview,
+} from './dataviews.slice'
 
 const Dataviews = () => {
   const dispatch = useDispatch()
@@ -33,6 +40,12 @@ const Dataviews = () => {
               }}
               onChange={(value) => {
                 dispatch(setMeta({ editorId: dataview.editorId, field: 'name', value }))
+              }}
+              onSave={() => {
+                dispatch(startUpdatingDataview(dataview))
+              }}
+              onDelete={() => {
+                dispatch(startDeletingDataview(dataview))
               }}
             />
           ))}

@@ -16,7 +16,7 @@ interface Option {
 export const useViewParamsConnect = () => {
   const dispatch = useDispatch()
   const dataview = useSelector(selectCurrentDataview) as EditorDataview
-  const currentParams = dataview.defaultViewParams as ViewParams
+  const currentParams = dataview.defaultView as ViewParams
   const type = currentParams.type
 
   // Retrieve schema to get available optiopns for type

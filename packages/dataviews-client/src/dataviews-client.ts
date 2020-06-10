@@ -1,19 +1,30 @@
 import template from 'lodash/template'
+import { stringify } from 'qs'
+import { FetchOptions } from '@globalfishingwatch/api-client'
 import { Dataview, WorkspaceDataview, Resource } from './types'
 
-export default class DataviewsClient {
-  _fetch: (url: string) => Promise<Response>
+const BASE_URL = '/dataviews'
 
-  constructor(_fetch: (url: string) => Promise<Response>) {
+type PostDataview = Omit<Dataview, 'id'>
+
+export default class DataviewsClient {
+  _fetch: (input: string, init?: FetchOptions) => Promise<Response>
+
+  constructor(_fetch: (input: string, init?: FetchOptions) => Promise<Response>) {
     this._fetch = _fetch
   }
 
-  getDataviews(
-    ids: string[] = [],
-    workspaceDataviews: WorkspaceDataview[] = []
-  ): Promise<Dataview[]> {
-    const dataviewsUrl = ids.length ? `/dataviews/${ids.join(',')}` : '/dataviews/'
-    const fetchDataviews = this._fetch(dataviewsUrl)
+  getDataviews(ids: string[] = []): Promise<Dataview[]> {
+    const baseUrl = ids.length ? `${BASE_URL}/${ids.join(',')}` : BASE_URL
+    const params = {
+      include: 'dataset,dataset.endpoints',
+    }
+    const paramsUrl = stringify(params)
+    const url = [baseUrl, paramsUrl].join('?')
+
+    const fetchDataviews = this._fetch(url, {
+      json: false,
+    })
       .then((response: Response) => response.json())
       .then((data: unknown) => {
         return data as Dataview[]
@@ -22,9 +33,36 @@ export default class DataviewsClient {
     return fetchDataviews
   }
 
-  // addDataview(dataview: Dataview): Promise<Dataview> {}
+  _writeDataview(dataview: Dataview, method: 'POST' | 'PATCH' | 'DELETE'): Promise<Dataview> {
+    const whitelistedDataview: PostDataview = {
+      name: dataview.name,
+      description: dataview.description,
+      defaultView: dataview.defaultView,
+      defaultDatasetsParams: dataview.defaultDatasetsParams,
+    }
+    const baseUrl = method === 'POST' ? BASE_URL : `${BASE_URL}/${dataview.id}`
+    const fetchOptions: FetchOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+      } as any,
+      method,
+    }
+    if (method !== 'DELETE') {
+      fetchOptions.body = whitelistedDataview as any
+    }
+    const write = this._fetch(baseUrl, fetchOptions).then((data: unknown) => {
+      return data as Dataview
+    })
+    return write
+  }
 
-  // updateDataview(dataview: Dataview): Promise<Dataview> {}
+  updateDataview(dataview: Dataview, savedOnce: boolean): Promise<Dataview> {
+    return this._writeDataview(dataview, savedOnce ? 'PATCH' : 'POST')
+  }
+
+  deleteDataview(dataview: Dataview): Promise<Dataview> {
+    return this._writeDataview(dataview, 'DELETE')
+  }
 
   getResources(
     dataviews: Dataview[],
@@ -78,7 +116,8 @@ export default class DataviewsClient {
       })
     })
     const promises = resources.map((resource) => {
-      // TODO Do appropriate stuff when datasetParams have valuesArray or binary
+      // TODO Do appropriate stuff when datasetParams have valuesArray or binary (tracks)
+      // See existing implementation of this in Track inspector's dataviews thunk
       return this._fetch(resource.resolvedUrl)
         .then((response) => response.json())
         .then((data: unknown) => {

@@ -7,10 +7,10 @@ import DataviewsClient, {
   Dataset,
   ViewParams,
 } from '@globalfishingwatch/dataviews-client'
-import GFWAPI from '@globalfishingwatch/api-client'
+import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
 import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { RootState } from 'store/store'
-import { addResources, completeLoading } from './resources.slice'
+import { addResources, completeLoading as completeResourceLoading } from './resources.slice'
 
 const DATASET: Dataset = {
   id: 'carriers:dev',
@@ -24,12 +24,14 @@ const DATASET: Dataset = {
 }
 
 const MOCK: Record<string, Dataview[]> = {
-  '/dataviews/': [
+  // here toggle between API and mock
+  // 'dummy': [
+  '/dataviews?include=dataset%2Cdataset.endpoints': [
     {
       id: 0,
       name: 'background',
       description: 'background',
-      defaultViewParams: {
+      defaultView: {
         type: Generators.Type.Background,
       },
     },
@@ -37,7 +39,7 @@ const MOCK: Record<string, Dataview[]> = {
       id: 1,
       name: 'landmass',
       description: 'landmass',
-      defaultViewParams: {
+      defaultView: {
         type: Generators.Type.Basemap,
         basemap: Generators.BasemapType.Landmass,
       },
@@ -57,7 +59,7 @@ const MOCK: Record<string, Dataview[]> = {
           endDate: '2020-01-01T00:00:00.000Z',
         },
       ],
-      defaultViewParams: {
+      defaultView: {
         type: Generators.Type.Track,
         color: '#ff00ff',
       },
@@ -77,7 +79,7 @@ const MOCK: Record<string, Dataview[]> = {
           endDate: '2020-01-01T00:00:00.000Z',
         },
       ],
-      defaultViewParams: {
+      defaultView: {
         type: Generators.Type.Track,
         color: '#0000ff',
       },
@@ -85,10 +87,10 @@ const MOCK: Record<string, Dataview[]> = {
   ],
 }
 
-const mockFetch = (mockFetchUrl: string): Promise<Response> => {
-  const mock = MOCK[mockFetchUrl]
+const mockFetch = (url: string, init?: FetchOptions): Promise<Response> => {
+  const mock = MOCK[url]
   if (!mock) {
-    return GFWAPI.fetch(mockFetchUrl, { json: false })
+    return GFWAPI.fetch(url as string, init as any)
   }
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -113,13 +115,14 @@ export interface EditorDataview extends Dataview {
   dirty: boolean
   // is dv the one being edited in DV panel
   editing: boolean
-  // whether DV has been saved already
-  saved: boolean
+  // whether DV has been savedOnce ?  already
+  savedOnce?: boolean
   allEndpointsLoaded?: boolean
 }
 
-const initialState: { dataviews: EditorDataview[] } = {
+const initialState: { dataviews: EditorDataview[]; loading: boolean } = {
   dataviews: [],
+  loading: false,
 }
 
 const slice = createSlice({
@@ -132,23 +135,24 @@ const slice = createSlice({
           editorId: index,
           dirty: false,
           editing: false,
+          savedOnce: true,
           ...dataview,
         }
       })
       state.dataviews = editorDataviews
     },
     addDataview: (state) => {
-      const currentId = maxBy(state.dataviews, (dv) => dv.editorId)?.editorId || 0
+      const currentId = maxBy(state.dataviews, (dv) => dv.editorId)?.editorId || 99
       const newDataview: EditorDataview = {
         editorId: currentId + 1,
         dirty: true,
         editing: false,
-        saved: false,
+        savedOnce: false,
         id: -1,
         name: 'new dataview',
         description: '',
         defaultDatasetsParams: [{}],
-        defaultViewParams: {
+        defaultView: {
           type: Generators.Type.Background,
         },
       }
@@ -156,7 +160,7 @@ const slice = createSlice({
     },
     setEditing: (state, action: PayloadAction<number>) => {
       state.dataviews.forEach((d, index) => {
-        d.editing = action.payload === index
+        d.editing = action.payload === d.editorId
       })
     },
     setMeta: (
@@ -172,8 +176,8 @@ const slice = createSlice({
     setViewParams: (state, action: PayloadAction<{ editorId: number; params: ViewParams }>) => {
       const dataview = state.dataviews.find((d) => d.editorId === action.payload.editorId)
       if (dataview) {
-        dataview.defaultViewParams = {
-          ...dataview.defaultViewParams,
+        dataview.defaultView = {
+          ...dataview.defaultView,
           ...action.payload.params,
         }
         dataview.dirty = true
@@ -182,11 +186,33 @@ const slice = createSlice({
     setType: (state, action: PayloadAction<{ editorId: number; type: Type }>) => {
       const dataview = state.dataviews.find((d) => d.editorId === action.payload.editorId)
       if (dataview) {
-        dataview.defaultViewParams = {
+        dataview.defaultView = {
           type: action.payload.type,
         }
         dataview.dirty = true
       }
+    },
+    startLoading: (state) => {
+      state.loading = true
+    },
+    completeLoading: (state) => {
+      state.loading = false
+    },
+    replaceDataview: (state, action) => {
+      const existingIndex = state.dataviews.findIndex((d) => d.editorId === action.payload.editorId)
+      if (existingIndex > -1) {
+        state.dataviews[existingIndex] = {
+          editorId: action.payload.editorId,
+          dirty: false,
+          editing: true,
+          savedOnce: true,
+          ...action.payload.dataview,
+        }
+      }
+    },
+    deleteDataview: (state, action) => {
+      const existingIndex = state.dataviews.findIndex((d) => d.editorId === action.payload.editorId)
+      state.dataviews.splice(existingIndex, 1)
     },
   },
 })
@@ -197,14 +223,42 @@ export const {
   setMeta,
   setViewParams,
   setType,
+  startLoading,
+  completeLoading,
+  replaceDataview,
+  deleteDataview,
 } = slice.actions
 export default slice.reducer
 
 export const selectDataviews = (state: RootState) => state.dataviews.dataviews
+export const selectLoading = (state: RootState) => state.dataviews.loading
 
 export const fetchDataviews = () => async (dispatch: Dispatch<PayloadAction>) => {
   const dataviews = await dataviewsClient.getDataviews()
   dispatch(setDataviews(dataviews))
+}
+
+export const startUpdatingDataview = (dataview: EditorDataview) => async (
+  dispatch: Dispatch<PayloadAction>
+) => {
+  dispatch(startLoading())
+  const editorId = dataview.editorId
+  const dataviewResp: Dataview = await dataviewsClient.updateDataview(
+    dataview,
+    dataview.savedOnce || false
+  )
+  dispatch(replaceDataview({ editorId, dataview: dataviewResp }))
+  dispatch(completeLoading())
+}
+
+export const startDeletingDataview = (dataview: EditorDataview) => async (
+  dispatch: Dispatch<PayloadAction>
+) => {
+  dispatch(startLoading())
+  const editorId = dataview.editorId
+  await dataviewsClient.deleteDataview(dataview)
+  dispatch(deleteDataview({ editorId }))
+  dispatch(completeLoading())
 }
 
 export const fetchResources = (dataviews: Dataview[]) => async (dispatch: any) => {
@@ -212,7 +266,7 @@ export const fetchResources = (dataviews: Dataview[]) => async (dispatch: any) =
   dispatch(addResources(resources))
   promises.forEach((promise) => {
     promise.then((resource) => {
-      dispatch(completeLoading(resource))
+      dispatch(completeResourceLoading(resource))
     })
   })
 }

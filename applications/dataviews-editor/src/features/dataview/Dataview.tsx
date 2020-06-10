@@ -71,7 +71,7 @@ const Dataview = () => {
         </button>
       </Section>
       <Section>
-        <h2>defaultViewParams</h2>
+        <h2>defaultView</h2>
         <ViewParams />
       </Section>
     </Fragment>

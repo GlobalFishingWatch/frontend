@@ -21,8 +21,8 @@ const useWorkspaceDataviews = (dataviews: Dataview[], workspace?: Workspace): Un
       // collect everything to generate a generator unique id
       const generatedUidComponents: (string | number | undefined)[] = [dataview.id, dataview.name]
 
-      // copy defaultViewParams|defaultDatasetsParams to viewParams|datasetsParams
-      newDataview.viewParams = newDataview.defaultViewParams
+      // copy defaultView|defaultDatasetsParams to view|datasetsParams
+      newDataview.view = newDataview.defaultView
       newDataview.datasetsParams = newDataview.defaultDatasetsParams
 
       // retrieve workspace dataview that matches dataview so that we can collect overrides
@@ -32,11 +32,11 @@ const useWorkspaceDataviews = (dataviews: Dataview[], workspace?: Workspace): Un
           (workspaceDataview) => workspaceDataview.id === dataview.id
         )
 
-      // if workspace dataview exist, we'll overwrite original viewParams|datasetsParams if they exist in workspace dataview
+      // if workspace dataview exist, we'll overwrite original view|datasetsParams if they exist in workspace dataview
       if (workspaceDataview) {
-        newDataview.viewParams = {
-          ...newDataview.viewParams,
-          ...workspaceDataview.viewParams,
+        newDataview.view = {
+          ...newDataview.view,
+          ...workspaceDataview.view,
         }
         newDataview.datasetsParams = newDataview.datasetsParams?.map((datasetParams, index) => {
           if (

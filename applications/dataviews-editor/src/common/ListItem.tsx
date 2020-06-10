@@ -11,6 +11,8 @@ type Props = {
   onClick?: () => void
   onToggle?: (toggle: boolean) => void
   onChange?: (value: string) => void
+  onSave?: () => void
+  onDelete?: () => void
 }
 
 const ListItem = ({
@@ -22,6 +24,8 @@ const ListItem = ({
   onClick,
   onToggle,
   onChange,
+  onSave,
+  onDelete,
 }: Props) => {
   return (
     <li className={cx(styles.listItem, { [styles.showActions]: showActions })}>
@@ -48,9 +52,22 @@ const ListItem = ({
       />
       {showActions && (
         <div className={styles.actions}>
-          <button className={cx({ dirty, done: !dirty })}>save</button>
+          <button
+            className={cx({ dirty, done: !dirty })}
+            onClick={() => {
+              if (onSave) onSave()
+            }}
+          >
+            save
+          </button>
           <button>duplicate</button>
-          <button>delete</button>
+          <button
+            onClick={() => {
+              if (onDelete) onDelete()
+            }}
+          >
+            delete
+          </button>
         </div>
       )}
     </li>

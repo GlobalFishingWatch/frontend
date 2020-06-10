@@ -8,6 +8,11 @@
                         "dataviews dataview timebar";
 }
 
+.loading {
+  opacity: .5;
+  pointer-events: none;
+}
+
 .column {
   border-right: 1px solid lightgray;
   padding: 10px 0;

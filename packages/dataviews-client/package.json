@@ -28,5 +28,12 @@
   "bugs": {
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
-  "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
+  "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650",
+  "dependencies": {
+    "qs": "^6.9.4",
+    "@globalfishingwatch/api-client": "*"
+  },
+  "devDependencies": {
+    "@types/qs": "^6.9.3"
+  }
 }
