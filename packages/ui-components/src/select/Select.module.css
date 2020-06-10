@@ -1,5 +1,11 @@
 .container {
   position: relative;
+  height: var(--size-M);
+}
+
+.container:focus,
+.container:hover {
+  box-shadow: var(--block-shadow);
 }
 
 .isOpen {
@@ -10,17 +16,22 @@
 
 .placeholderContainer {
   display: flex;
+  align-items: center;
+  height: 100%;
+  cursor: pointer;
 }
 
-.tagList {
-  border-bottom: 1px solid var(--color-secondary-blue);
+.placeholderSpaced {
+  padding-left: var(--space-XS);
 }
 
 .buttonsContainer {
   display: flex;
+  align-items: center;
   position: absolute;
-  right: 0;
+  right: var(--space-XS);
   top: 0;
+  bottom: 0;
 }
 
 .optionsContainer {
@@ -29,6 +40,7 @@
   top: 4rem;
   left: 0;
   background: var(--color-white);
+  box-shadow: var(--block-shadow);
   max-height: 40rem;
   overflow: auto;
   z-index: 10;
@@ -39,9 +51,10 @@
 }
 
 .optionItem {
-  color: var(--color-brand-secondary);
+  color: var(--color-secondary-blue);
   line-height: 2rem;
   padding: var(--space-S);
+  border-bottom: var(--border);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -49,7 +62,9 @@
 }
 
 .highlight {
+  color: var(--color-primary-blue);
   background-color: var(--color-terthiary-blue);
+  border-bottom-color: var(--color-secondary-blue);
 }
 
 .selected {

@@ -65,7 +65,10 @@ const Select: React.FC<SelectProps> = (props) => {
   return (
     <div className={cx(styles.container, { [styles.isOpen]: isOpen }, className)}>
       <label {...getLabelProps()}>{label}</label>
-      <div className={styles.placeholderContainer} {...getToggleButtonProps()}>
+      <div
+        className={cx(styles.placeholderContainer, styles.placeholderSpaced)}
+        {...getToggleButtonProps()}
+      >
         {selectedOption ? selectedOption.label : placeholder}
       </div>
       <div className={styles.buttonsContainer}>
@@ -88,18 +91,18 @@ const Select: React.FC<SelectProps> = (props) => {
           options.length > 0 &&
           options.map((item, index) => {
             const highlight = highlightedIndex === index
+            const selected = isItemSelected(selectedOption, item)
             return (
               <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
                 <li
                   className={cx(styles.optionItem, {
+                    [styles.selected]: selected,
                     [styles.highlight]: highlight,
                   })}
                   {...getItemProps({ item, index })}
                 >
                   {item.label}
-                  {highlight && (
-                    <Icon icon={isItemSelected(selectedOption, item) ? 'close' : 'tick'} />
-                  )}
+                  {highlight && <Icon icon={selected ? 'close' : 'tick'} />}
                 </li>
               </Tooltip>
             )

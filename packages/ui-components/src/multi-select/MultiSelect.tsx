@@ -6,7 +6,8 @@ import IconButton from '../icon-button'
 import Tooltip from '../tooltip'
 import TagList from '../tag-list'
 import InputText from '../input-text'
-import styles from './MultiSelect.module.css'
+import styles from '../select/Select.module.css'
+import multiSelectStyles from './MultiSelect.module.css'
 import { MultiSelectOption, MultiSelectOnChange } from './index'
 
 interface SelectProps {
@@ -148,7 +149,11 @@ const Select: React.FC<SelectProps> = (props) => {
       <label {...getLabelProps()}>{label}</label>
       <div className={styles.placeholderContainer} {...getComboboxProps()}>
         {hasSelectedOptions && (
-          <TagList className={styles.tagList} tags={selectedOptions} onRemove={handleRemove} />
+          <TagList
+            className={multiSelectStyles.tagList}
+            tags={selectedOptions}
+            onRemove={handleRemove}
+          />
         )}
         <InputText
           {...getInputProps({ ...getDropdownProps({ preventKeyAction: isOpen }) })}
