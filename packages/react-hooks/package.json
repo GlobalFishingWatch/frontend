@@ -22,7 +22,7 @@
     "start": "rollup -c ./rollup.config.js -w",
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
     "clean": "rimraf dist/*",
-    "prepublishOnly": "yarn build"
+    "prepare": "yarn build"
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.1.5",

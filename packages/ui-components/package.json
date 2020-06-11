@@ -28,7 +28,7 @@
     "build:css-min": "cross-env NODE_ENV=production postcss src/base.css -o dist/base.min.css ",
     "prerender:build": "ts-node -P tsconfig.tsnode.json src/header/render-html.tsx",
     "prerender:copy": "cp -r src/header/html dist/header",
-    "prepublishOnly": "yarn build && yarn prerender:build && yarn prerender:copy",
+    "prepare": "yarn build && yarn prerender:build && yarn prerender:copy",
     "clean": "rimraf dist/*"
   },
   "dependencies": {
