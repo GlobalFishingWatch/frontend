@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Icon, { IconType } from '../icon'
 import Tooltip from '../tooltip'
 import styles from './IconButton.module.css'
 
-export type IconButtonType = 'default' | 'invert' | 'border'
+export type IconButtonType = 'default' | 'invert' | 'border' | 'warning'
 export type IconButtonSize = 'default' | 'small' | 'tiny'
 
 interface IconButtonProps {
@@ -19,9 +19,7 @@ interface IconButtonProps {
   tooltipPlacement?: Placement
 }
 
-const isDestructiveIcon = (icon: IconType) => icon === 'delete' || icon === 'warning'
-
-const IconButton: React.FC<IconButtonProps> = (props) => {
+const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) => {
   const {
     type = 'default',
     size = 'default',
@@ -36,21 +34,16 @@ const IconButton: React.FC<IconButtonProps> = (props) => {
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
-        className={cx(
-          styles.IconButton,
-          styles[type],
-          styles[`${size}Size`],
-          { [styles.destructive]: isDestructiveIcon(icon) },
-          className
-        )}
+        ref={ref}
+        className={cx(styles.IconButton, styles[type], styles[`${size}Size`], className)}
         onClick={onClick}
         disabled={disabled}
         {...rest}
       >
-        <Icon icon={icon} />
+        <Icon icon={icon} type={type === 'warning' ? 'warning' : 'default'} />
       </button>
     </Tooltip>
   )
-}
+})
 
 export default IconButton

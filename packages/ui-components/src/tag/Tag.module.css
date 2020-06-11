@@ -38,6 +38,7 @@
   padding-right: 0;
 }
 
+.removeBtn:focus,
 .Tag:hover .removeBtn {
   width: auto;
   opacity: 1;

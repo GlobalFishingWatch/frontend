@@ -11,13 +11,9 @@
 }
 
 .default,
+.warning,
 .border {
   color: var(--color-secondary-blue);
-  background-color: transparent;
-}
-
-.destructive {
-  color: var(--color-danger-red);
   background-color: transparent;
 }
 
@@ -26,13 +22,9 @@
 }
 
 .default:hover,
+.warning:hover,
 .border:hover {
   color: var(--color-primary-blue);
-  background-color: var(--color-terthiary-blue);
-}
-
-.destructive:hover {
-  color: var(--color-danger-secondary-red);
   background-color: var(--color-terthiary-blue);
 }
 

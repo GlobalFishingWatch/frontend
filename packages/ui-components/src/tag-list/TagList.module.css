@@ -1,3 +1,4 @@
 .TagList {
   display: flex;
+  align-items: center;
 }

@@ -3,10 +3,10 @@
   height: var(--size-XS);
 }
 
-.default path{
+.default path {
   fill: currentColor;
 }
 
-.warning path{
+.warning path {
   fill: var(--color-danger-red);
 }

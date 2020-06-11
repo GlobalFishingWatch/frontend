@@ -1,8 +1,12 @@
 export { default } from './TagList'
 
-export type TagItemId = string | number
 export type TagItem = {
-  id: TagItemId
+  id: string | number
   label: string
 }
-export type TagListOnRemove = (id: TagItemId, currentOptions: TagItem[]) => void
+/**
+ * Callback on tag removal
+ * @param {TagItem} tag - Tag removed
+ * @param {TagItem[]} [tags] - The list of new tags filtered
+ */
+export type TagListOnRemove = (tag: TagItem, tags: TagItem[]) => void
