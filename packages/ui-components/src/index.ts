@@ -2,6 +2,8 @@ export { default as CountryFlag } from './countryflag'
 export { default as MiniGlobe } from './miniglobe'
 export { default as Header } from './header'
 export { default as Button } from './button'
+export { default as Modal } from './Modal'
+export { default as Menu, defaultLinks } from './Menu'
 export { default as Select, SelectOption, SelectOnChange, SelectOnRemove } from './select'
 export {
   default as MultiSelect,
