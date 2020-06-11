@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/layer-composer",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -44,5 +44,5 @@
     "@types/d3": "^5.7.2",
     "@types/geojson": "^7946.0.7"
   },
-  "gitHead": "badecf55e15a5854180e78de1a5ebd2a839f7808"
+  "gitHead": "200907b195ea5a64ab2ba049d69247eb7bbf056c"
 }

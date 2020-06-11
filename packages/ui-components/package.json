@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/ui-components",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "description": "Set of react components to consume on the gfw ecosystem",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -40,5 +40,5 @@
     "@types/topojson-client": "^3.0.0",
     "ts-node": "^8.10.1"
   },
-  "gitHead": "badecf55e15a5854180e78de1a5ebd2a839f7808"
+  "gitHead": "200907b195ea5a64ab2ba049d69247eb7bbf056c"
 }

@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/api-client",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -33,5 +33,5 @@
   "devDependencies": {
     "@types/file-saver": "^2.0.1"
   },
-  "gitHead": "badecf55e15a5854180e78de1a5ebd2a839f7808"
+  "gitHead": "200907b195ea5a64ab2ba049d69247eb7bbf056c"
 }
