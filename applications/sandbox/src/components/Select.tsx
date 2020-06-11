@@ -11,8 +11,8 @@ import MultiSelect, {
 } from '@globalfishingwatch/ui-components/src/multi-select'
 
 const selectOptions: SelectOption[] = [
-  { id: 1, label: 'One', tooltip: 'Tooltip' },
-  { id: 2, label: 'Two' },
+  { id: 1, label: 'One longer option to test overflows', tooltip: 'Tooltip' },
+  { id: 2, label: 'Two should be longer as well just in case' },
   { id: 3, label: 'Three' },
 ]
 const SelectsSection = () => {

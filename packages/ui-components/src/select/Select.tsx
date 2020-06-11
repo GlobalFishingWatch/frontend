@@ -65,10 +65,7 @@ const Select: React.FC<SelectProps> = (props) => {
   return (
     <div className={cx(styles.container, { [styles.isOpen]: isOpen }, className)}>
       <label {...getLabelProps()}>{label}</label>
-      <div
-        className={cx(styles.placeholderContainer, styles.placeholderSpaced)}
-        {...getToggleButtonProps()}
-      >
+      <div className={styles.placeholderContainer} {...getToggleButtonProps()}>
         {selectedOption ? selectedOption.label : placeholder}
       </div>
       <div className={styles.buttonsContainer}>

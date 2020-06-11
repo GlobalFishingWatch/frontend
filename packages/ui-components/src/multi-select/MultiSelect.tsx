@@ -147,7 +147,10 @@ const Select: React.FC<SelectProps> = (props) => {
   return (
     <div className={cx(styles.container, { [styles.isOpen]: isOpen }, className)}>
       <label {...getLabelProps()}>{label}</label>
-      <div className={styles.placeholderContainer} {...getComboboxProps()}>
+      <div
+        className={cx(styles.placeholderContainer, multiSelectStyles.placeholderContainer)}
+        {...getComboboxProps()}
+      >
         {hasSelectedOptions && (
           <TagList
             className={multiSelectStyles.tagList}
@@ -160,6 +163,7 @@ const Select: React.FC<SelectProps> = (props) => {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder={placeholder}
+          className={multiSelectStyles.input}
           onFocus={() => openMenu()}
         />
       </div>

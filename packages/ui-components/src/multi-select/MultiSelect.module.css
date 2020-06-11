@@ -2,4 +2,23 @@
   border-bottom: 1px solid var(--color-secondary-blue);
   height: var(--size-M);
   padding-left: var(--space-XS);
+  max-width: 75%;
+  overflow-x: auto;
+}
+
+.placeholderContainer {
+  display: flex;
+}
+
+.placeholderContainer input {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.input {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
