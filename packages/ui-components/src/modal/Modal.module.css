@@ -1,3 +1,7 @@
+:global(.ReactModal__Body--open) {
+  overflow: hidden;
+}
+
 .modalOverlay {
   background: var(--color-secondary-blue);
   position: fixed;
