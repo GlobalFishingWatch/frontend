@@ -1,0 +1,23 @@
+.tooltip {
+  position: relative;
+  font: var(--font-M);
+  border-radius: var(--border-radius);
+  background: var(--color-primary-blue);
+  color: var(--color-white);
+  padding: var(--space-XS) var(--space-S);
+  display: flex;
+  z-index: 100;
+  transition: var(--transition);
+}
+
+.tooltip[data-state='hidden'] {
+  opacity: 0;
+}
+
+.tooltip[data-state='visible'] {
+  opacity: 1;
+}
+
+.tooltip :global(.tippy-arrow) {
+  display: none;
+}

@@ -1,6 +1,5 @@
-import GFWAPI, { UserData } from '@globalfishingwatch/api-client'
 import { useState, useEffect } from 'react'
-
+import GFWAPI, { UserData } from '@globalfishingwatch/api-client'
 import { getURLParameterByName, removeUrlParameterByName } from '../utils/url'
 
 const accessTokenString = 'access-token'

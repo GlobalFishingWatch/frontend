@@ -2,11 +2,9 @@ import flatten from 'lodash/flatten'
 import zip from 'lodash/zip'
 import { scalePow } from 'd3-scale'
 import memoizeOne from 'memoize-one'
-
 import { Group } from '../../types'
 import { Type, HeatmapGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
-
 import paintByGeomType from './heatmap-layers-paint'
 import { fetchStats, getServerSideFilters } from './utils'
 import {

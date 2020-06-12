@@ -1,5 +1,4 @@
 import { FeatureCollection, Feature, LineString, Position } from 'geojson'
-
 import { Dictionary } from '../../types'
 
 const DEFAULT_POS_MAX_Δ = 0.005 // 500m at equator - https://www.usna.edu/Users/oceano/pguth/md_help/html/approx_equivalents.htm

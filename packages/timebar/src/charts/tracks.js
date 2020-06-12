@@ -1,10 +1,8 @@
 import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-
 import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { TimelineContext } from '../components/timeline'
-
 import styles from './tracks.module.css'
 import { getTrackY } from './utils'
 

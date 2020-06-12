@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/ui-components",
-  "version": "1.1.6",
+  "version": "1.2.0",
   "description": "Set of react components to consume on the gfw ecosystem",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -19,23 +19,29 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "scripts": {
-    "start": "rollup -c ./rollup.config.js -w",
-    "build": "cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "start": "run-p start:js start:css",
+    "start:js": "rollup -c ./rollup.config.js -w",
+    "start:css": "postcss src/base.css -o dist/base.css -w",
+    "build": "yarn clean && run-p build:js build:css build:css-min",
+    "build:js": "cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "build:css": "postcss src/base.css -o dist/base.css",
+    "build:css-min": "cross-env NODE_ENV=production postcss src/base.css -o dist/base.min.css ",
     "prerender:build": "ts-node -P tsconfig.tsnode.json src/header/render-html.tsx",
     "prerender:copy": "cp -r src/header/html dist/header",
-    "prepublishOnly": "yarn clean && yarn build && yarn prerender:build && yarn prerender:copy",
-    "clean": "rimraf dist/*",
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "prepare": "yarn build && yarn prerender:build && yarn prerender:copy",
+    "clean": "rimraf dist/*"
   },
   "dependencies": {
-    "@globalfishingwatch/ui-kit": "*",
-    "countryflag": "3.2.2",
+    "countryflag": "4.0.0",
     "d3-geo": "1.12.0",
+    "downshift": "^5.4.3",
+    "react-modal": "^3.11.2",
     "topojson-client": "3.1.0"
   },
   "devDependencies": {
+    "@types/react-modal": "^3.10.5",
     "@types/topojson-client": "^3.0.0",
     "ts-node": "^8.10.1"
   },
-  "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
+  "gitHead": "200907b195ea5a64ab2ba049d69247eb7bbf056c"
 }

@@ -1,0 +1,46 @@
+.switch {
+  width: 2.4rem;
+  height: 1.4rem;
+  position: relative;
+  background-color: transparent;
+  border: var(--border);
+  border-radius: 0.7rem;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.switch:disabled {
+  cursor: not-allowed;
+}
+
+.switch .nib {
+  position: absolute;
+  width: 0.8rem;
+  height: 0.8rem;
+  top: 0.2rem;
+  left: 0.2rem;
+  border-radius: 0.4rem;
+  background-color: var(--color-secondary-blue);
+  transition: var(--transition);
+}
+
+.switch[aria-checked='true'] {
+  background-color: var(--color-primary-blue);
+}
+
+.switch[aria-checked='true'].customColor {
+  background-color: currentColor;
+}
+
+.switch[aria-checked='true'] .nib {
+  left: 1.2rem;
+  background-color: var(--color-white);
+}
+
+.switch:not(:disabled):not([aria-checked='true']):hover {
+  border: 0.1rem solid var(--color-secondary-blue);
+}
+
+.switch:not(:disabled):not([aria-checked='true']):hover .nib {
+  background-color: var(--color-primary-blue);
+}

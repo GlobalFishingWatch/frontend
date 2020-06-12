@@ -1,0 +1,24 @@
+.container {
+  font-family: var(--font-family);
+}
+
+.mainBrand {
+  font-size: 1.8rem;
+  font-weight: 400;
+}
+
+.default{
+  fill: #3C3C3B;
+}
+
+.invert{
+  fill: var(--color-white);
+}
+
+.subBrand {
+  fill: var(--color-danger-red);
+  text-transform: uppercase;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}

@@ -1,7 +1,5 @@
 import { validate as mapboxStyleValidator } from '@mapbox/mapbox-gl-style-spec'
-
 import generators from './generators'
-
 import LayerComposer, { DEFAULT_CONFIG } from '.'
 
 test('instanciates with the default config', async () => {

@@ -1,6 +1,5 @@
 import { HeatmapColorRampColors, HeatmapColorRamp } from '../types'
 import { DEFAULT_BASEMAP_COLOR } from '../index'
-
 import { HeatmapGeomGL, HeatmapGeoms } from './types'
 
 export const API_TILES_URL =

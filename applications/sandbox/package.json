@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/sandbox",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
   "scripts": {
@@ -20,6 +20,7 @@
     "react-app-rewired": "^2.1.6",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "typescript": "~3.8.2"
   },
@@ -34,5 +35,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^5.4.0",
+    "@types/react-router-dom": "^5.1.5"
   }
 }

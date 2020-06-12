@@ -1,5 +1,4 @@
 import { FeatureCollection, LineString } from 'geojson'
-
 import { simplifyTrack } from './simplify-track'
 
 const baseGeojson: FeatureCollection<LineString> = {

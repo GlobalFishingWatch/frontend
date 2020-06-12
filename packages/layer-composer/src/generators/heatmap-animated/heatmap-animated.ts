@@ -3,7 +3,6 @@ import compact from 'lodash/compact'
 import debounce from 'lodash/debounce'
 import zip from 'lodash/zip'
 import memoizeOne from 'memoize-one'
-
 import { Group } from '../../types'
 import { Type, HeatmapAnimatedGeneratorConfig } from '../types'
 import { statsByZoom } from '../heatmap/types'

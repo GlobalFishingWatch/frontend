@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/timebar",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "GFW timebar",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -22,9 +22,8 @@
   "scripts": {
     "start": "rollup -c ./rollup.config.js -w",
     "clean": "rimraf dist/*",
-    "build": "cross-env NODE_ENV=production rollup -c",
-    "prepublishOnly": "yarn clean && yarn build",
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "build": "yarn clean && cross-env NODE_ENV=production rollup -c",
+    "prepare": "yarn build"
   },
   "dependencies": {
     "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
@@ -93,5 +92,5 @@
     "react": "^16.11.0",
     "react-dom": "^16.11.0"
   },
-  "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
+  "gitHead": "200907b195ea5a64ab2ba049d69247eb7bbf056c"
 }

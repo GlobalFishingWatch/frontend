@@ -1,0 +1,14 @@
+.customIcon {
+  color: red;
+}
+
+.customIcon:hover {
+  color: yellowgreen;
+}
+
+.iconText {
+  position: absolute;
+  top: 1rem;
+  right: 0.5rem;
+  font: var(--font-XS);
+}

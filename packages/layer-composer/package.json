@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/layer-composer",
-  "version": "2.1.1",
+  "version": "2.1.5",
   "description": "",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -19,10 +19,10 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "scripts": {
-    "start": "yarn clean && rollup -c ./rollup.config.js -w",
+    "start": "rollup -c ./rollup.config.js -w",
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
     "clean": "rimraf dist/*",
-    "prepare": "yarn run json-schema",
+    "prepare": "yarn build && yarn run json-schema",
     "prepublishOnly": "yarn build",
     "test": "echo \"Error: run tests from root\" && exit 1",
     "json-schema": "typescript-json-schema tsconfig.json-schema.json \"*\" > dist/json-schema.json"
@@ -48,5 +48,5 @@
     "@types/d3": "^5.7.2",
     "@types/geojson": "^7946.0.7"
   },
-  "gitHead": "10c3825a90f584a1c240e6f3c1a77dece200a650"
+  "gitHead": "200907b195ea5a64ab2ba049d69247eb7bbf056c"
 }

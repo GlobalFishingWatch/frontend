@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import memoize from 'memoize-one'
 import { scaleLinear } from 'd3-scale'
-
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
 import ImmediateContext from '../immediateContext'
 import { ReactComponent as IconLoop } from '../icons/loop.svg'
@@ -12,7 +11,6 @@ import { ReactComponent as IconPlay } from '../icons/play.svg'
 import { ReactComponent as IconPause } from '../icons/pause.svg'
 import { ReactComponent as IconForward } from '../icons/forward.svg'
 import uiStyles from '../timebar.module.css'
-
 import styles from './playback.module.css'
 
 const BASE_STEP = 0.001

@@ -3,7 +3,6 @@ import { FeatureCollection, Feature, LineString, Point } from 'geojson'
 import length from '@turf/length'
 import greatCircle from '@turf/great-circle'
 import { Layer } from 'mapbox-gl'
-
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { Dictionary, Group } from '../../types'
 import { Type, RulersGeneratorConfig, Ruler } from '../types'

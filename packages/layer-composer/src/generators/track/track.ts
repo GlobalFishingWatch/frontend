@@ -1,11 +1,9 @@
 import { scaleLinear, scalePow } from 'd3-scale'
 import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
-
 import { Group } from '../../types'
 import { Type, TrackGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
-
 import valuesArrayToGeoJSON from './segments-to-geojson'
 import filterGeoJSONByTimerange from './filterGeoJSONByTimerange'
 import { simplifyTrack } from './simplify-track'

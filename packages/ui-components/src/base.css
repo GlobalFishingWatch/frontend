@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
+
+:root {
+  /* FONTS */
+  --font-family: 'Roboto', sans-serif;
+  --font-regular: 400;
+  --font-XS: var(--font-regular) 1.2rem/1.2rem var(--font-family);
+  --font-S: var(--font-regular) 1.4rem/2.2rem var(--font-family);
+  --font-M: var(--font-regular) 1.6rem/2.4rem var(--font-family);
+  --font-L: var(--font-regular) 2rem/3rem var(--font-family);
+  --font-XL: var(--font-regular) 2.6rem/4rem var(--font-family);
+  --font-XXL: var(--font-regular) 5rem/6.2rem var(--font-family);
+
+  /* BASE COLORS */
+  --primary-blue-rgb: 34, 68, 126; /* rgb(34, 68, 126) */
+  --danger-red-rgb: 360, 62, 98; /* rgb(360, 62, 98) */
+  --gradient-rgb: 229, 240, 242; /* rgb(229, 240, 242) */
+  --white-rgb: 255, 255, 255; /* rgb(255, 255, 255) */
+
+  /* COLORS */
+  --color-primary-blue: rgb(var(--primary-blue-rgb));
+  --color-primary-blue-hover: rgba(var(--primary-blue-rgb), var(--opacity-hover));
+  --color-secondary-blue: rgba(var(--primary-blue-rgb), var(--opacity-secondary));
+  --color-terthiary-blue: rgba(var(--primary-blue-rgb), var(--opacity-terthiary));
+  --color-danger-red: rgb(var(--danger-red-rgb));
+  --color-danger-secondary-red: rgba(var(--danger-red-rgb), var(--opacity-secondary));
+  --color-gradient: rgb(var(--gradient-rgb));
+  --color-white: rgb(var(--white-rgb));
+  --gradient: linear-gradient(180deg, var(--color-gradient) 0, var(--color-white) 70rem);
+  --color-map-background: #002458;
+
+  /* OPACITIES */
+  --opacity-hover: 0.9;
+  --opacity-secondary: 0.75;
+  --opacity-terthiary: 0.1;
+  --opacity-border: 0.2;
+
+  /* SHADOWS */
+  --block-shadow: 0 0 1rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
+  --filter-drop-shadow: drop-shadow(0 0 1rem rgba(var(--primary-blue-rgb), var(--opacity-border)));
+
+  /* UTILS */
+  --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
+  --border: 1px solid var(--color-border);
+  --transition: all 150ms ease-out;
+  --border-radius: 0.3rem;
+
+  /* SIZES */
+  --size-XS: 2rem;
+  --size-S: 3.2rem;
+  --size-M: 4rem;
+  --size-L: 6rem;
+  --space-XS: 0.5rem;
+  --space-S: 1rem;
+  --space-M: 2rem;
+  --space-L: 4rem;
+}
+
+html {
+  height: 100%;
+  font-size: 10px;
+  -moz-osx-font-smoothing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  height: 100%;
+  font: var(--font-M);
+  color: var(--color-primary-blue);
+}
+
+a,
+a:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  box-sizing: border-box;
+  vertical-align: baseline;
+}
+
+label {
+  color: var(--color-secondary-blue);
+  font-size: var(--font-S);
+  line-height: 2rem;
+  text-transform: uppercase;
+  display: block;
+}
+
+/* TODO: include heading and other html tags styles */

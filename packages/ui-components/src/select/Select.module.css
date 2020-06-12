@@ -1,0 +1,70 @@
+.container {
+  position: relative;
+  height: var(--size-M);
+  display: flex;
+  border-bottom: 1px solid var(--color-secondary-blue);
+  line-height: var(--size-M);
+}
+
+.container:focus,
+.container:hover {
+  box-shadow: var(--block-shadow);
+}
+
+.isOpen {
+  background: var(--color-background);
+  filter: var(--drop-shadow);
+  z-index: 2;
+}
+
+.placeholderContainer {
+  height: 100%;
+  cursor: pointer;
+  flex: 1;
+  padding: 0 var(--space-XS);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.buttonsContainer {
+  display: flex;
+  align-items: center;
+  margin-right: var(--space-XS);
+}
+
+.optionsContainer {
+  width: 100%;
+  position: absolute !important; /* as needs to overwrite default FixedSizeList behaviour */
+  top: var(--size-M);
+  left: 0;
+  background: var(--color-white);
+  box-shadow: var(--block-shadow);
+  max-height: 40rem;
+  overflow: auto;
+  z-index: 10;
+}
+
+.optionsOpen {
+  border: var(--border);
+}
+
+.optionItem {
+  color: var(--color-secondary-blue);
+  line-height: 2rem;
+  padding: var(--space-S);
+  border-bottom: var(--border);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.highlight {
+  color: var(--color-primary-blue);
+  background-color: var(--color-terthiary-blue);
+}
+
+.selected {
+  background-color: var(--color-terthiary-blue);
+}

@@ -11,7 +11,6 @@ import {
   curveCatmullRom,
   curveCardinal,
 } from 'd3-shape'
-
 import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { TimelineContext } from '../components/timeline'
