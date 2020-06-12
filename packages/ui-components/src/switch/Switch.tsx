@@ -21,7 +21,7 @@ const Switch: React.FC<SwitchProps> = (props) => {
     color,
     onClick,
     tooltip,
-    tooltipPlacement = 'auto',
+    tooltipPlacement = 'top',
     className,
   } = props
   return (
@@ -31,6 +31,7 @@ const Switch: React.FC<SwitchProps> = (props) => {
         role="switch"
         aria-checked={active}
         disabled={disabled}
+        {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
         onClick={onClick}
         className={cx(styles.switch, { [styles.customColor]: color }, className)}
         {...(color && { style: { color } })}

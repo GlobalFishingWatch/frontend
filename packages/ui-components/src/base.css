@@ -28,6 +28,7 @@
   --color-white: rgb(var(--white-rgb));
   --gradient: linear-gradient(180deg, var(--color-gradient) 0, var(--color-white) 70rem);
   --color-map-background: #002458;
+  --color-highlight-blue: #6AECF9;
 
   /* OPACITIES */
   --opacity-hover: 0.9;
@@ -42,6 +43,7 @@
   /* UTILS */
   --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
   --border: 1px solid var(--color-border);
+  --box-shadow-highlight: 0 0 0.2rem 0.2rem var(--color-highlight-blue);
   --transition: all 150ms ease-out;
   --border-radius: 0.3rem;
 
@@ -87,6 +89,15 @@ ul {
   font: inherit;
   box-sizing: border-box;
   vertical-align: baseline;
+}
+
+*:focus {
+  outline: none;
+}
+
+::selection {
+  color: inherit;
+  background: var(--color-highlight-blue);
 }
 
 label {

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import GFWAPI, { UserData } from '@globalfishingwatch/api-client'
-import { getURLParameterByName, removeUrlParameterByName } from '../utils/url'
-
-const accessTokenString = 'access-token'
+import GFWAPI, {
+  UserData,
+  getAccessTokenFromUrl,
+  removeAccessTokenFromUrl,
+} from '@globalfishingwatch/api-client'
 
 interface GFWLoginHook {
   logged: boolean
@@ -20,7 +21,7 @@ const useGFWLogin = (APIClient: typeof GFWAPI = GFWAPI): GFWLoginHook => {
   })
 
   useEffect(() => {
-    const accessToken = getURLParameterByName(accessTokenString)
+    const accessToken = getAccessTokenFromUrl()
     APIClient.login({ accessToken })
       .then((user) => {
         const newState = user
@@ -29,7 +30,7 @@ const useGFWLogin = (APIClient: typeof GFWAPI = GFWAPI): GFWLoginHook => {
 
         setState((state) => ({ ...state, ...newState }))
         if (accessToken) {
-          removeUrlParameterByName(accessTokenString)
+          removeAccessTokenFromUrl()
         }
       })
       .catch((e) => {

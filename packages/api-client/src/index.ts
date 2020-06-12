@@ -4,5 +4,5 @@ export {
   USER_REFRESH_TOKEN_STORAGE_KEY,
   FetchOptions,
 } from './api-client'
-
+export { ACCESS_TOKEN_STRING, getAccessTokenFromUrl, removeAccessTokenFromUrl } from './utils/url'
 export type { UserData } from './types'

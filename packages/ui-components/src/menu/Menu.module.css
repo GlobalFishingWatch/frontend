@@ -60,18 +60,23 @@
   padding: 0.5rem 2rem;
 }
 
-.link.active,
-.link:hover {
-  color: #ff6b6b;
-  border-left: 3px solid #ff6b6b;
-}
-
 .link a,
 .link a:visited {
   line-height: var(--size-M);
   width: 100%;
   display: flex;
   align-items: center;
+}
+
+.link.active,
+.link:hover {
+  border-left: 3px solid var(--color-danger-red);
+}
+
+.link.active a,
+.link:hover a,
+.link a:focus {
+  color: var(--color-danger-red);
 }
 
 .closeBtn {

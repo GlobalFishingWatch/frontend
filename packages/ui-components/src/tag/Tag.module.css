@@ -11,6 +11,10 @@
   border-radius: var(--border-radius);
 }
 
+.withRemove {
+  padding-right: 0;
+}
+
 .tag::before {
   pointer-events: none;
   position: absolute;
@@ -32,14 +36,12 @@
   width: 0;
   opacity: 0;
   transform: scale(0);
-}
-
-.Tag.withRemove:hover {
-  padding-right: 0;
+  margin-right: var(--space-XS);
+  transition: transform 150ms ease-out, opacity 150ms ease-out;
 }
 
 .removeBtn:focus,
-.Tag:hover .removeBtn {
+.tag:hover .removeBtn {
   width: auto;
   opacity: 1;
   margin: 0 0.1rem;

@@ -117,16 +117,14 @@ export default class DataviewsClient {
     })
     const promises = resources.map((resource) => {
       // TODO Do appropriate stuff when datasetParams have valuesArray or binary (tracks)
-      // See existing implementation of this in Track inspector's dataviews thunk
-      return this._fetch(resource.resolvedUrl)
-        .then((response) => response.json())
-        .then((data: unknown) => {
-          const resourceWithData = {
-            ...resource,
-            data,
-          }
-          return resourceWithData
-        })
+      // See existing implementation of this in Track inspector's dataviews thunk:
+      return this._fetch(resource.resolvedUrl).then((data: unknown) => {
+        const resourceWithData = {
+          ...resource,
+          data,
+        }
+        return resourceWithData
+      })
     })
     return { resources, promises }
   }
