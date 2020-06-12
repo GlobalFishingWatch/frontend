@@ -1,5 +1,11 @@
 import React, { useCallback, useState, useMemo } from 'react'
-import { useMultipleSelection, useCombobox } from 'downshift'
+import {
+  useMultipleSelection,
+  useCombobox,
+  UseComboboxStateChangeOptions,
+  UseComboboxState,
+  UseComboboxStateChangeTypes,
+} from 'downshift'
 import cx from 'classnames'
 import Icon from '../icon'
 import IconButton from '../icon-button'
@@ -122,7 +128,12 @@ const Select: React.FC<SelectProps> = (props) => {
           return changes
       }
     },
-    onStateChange: ({ type, selectedItem }) => {
+    onStateChange: ({
+      type,
+      selectedItem,
+    }: Partial<UseComboboxState<MultiSelectOption | null>> & {
+      type?: UseComboboxStateChangeTypes
+    }) => {
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick: {
