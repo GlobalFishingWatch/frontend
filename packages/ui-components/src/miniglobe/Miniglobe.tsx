@@ -4,18 +4,7 @@ import { feature } from 'topojson-client'
 import { Topology, GeometryCollection } from 'topojson-specification'
 import jsonData from './ne_110m_land.json'
 import styles from './miniglobe.module.css'
-
-export interface MiniglobeBounds {
-  north: number
-  south: number
-  west: number
-  east: number
-}
-
-export interface MiniglobeCenter {
-  latitude: number
-  longitude: number
-}
+import { MiniglobeCenter, MiniglobeBounds } from './index'
 
 interface MiniglobeProps {
   center: MiniglobeCenter
