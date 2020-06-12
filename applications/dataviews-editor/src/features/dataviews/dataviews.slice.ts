@@ -52,8 +52,8 @@ const MOCK: Record<string, Dataview[]> = {
       defaultDatasetsParams: [
         {
           id: '46df37738-8057-e7d4-f3f3-a9b44d52fe03',
-          binary: false,
-          format: 'lines',
+          binary: true,
+          format: 'valueArray',
           fields: 'lonlat,timestamp',
           startDate: '2017-01-01T00:00:00.000Z',
           endDate: '2020-01-01T00:00:00.000Z',
@@ -72,8 +72,8 @@ const MOCK: Record<string, Dataview[]> = {
       defaultDatasetsParams: [
         {
           id: 'c723c1925-56f9-465c-bee8-bcc6d649c17c',
-          binary: false,
-          format: 'lines',
+          binary: true,
+          format: 'valueArray',
           fields: 'lonlat,timestamp',
           startDate: '2017-01-01T00:00:00.000Z',
           endDate: '2020-01-01T00:00:00.000Z',

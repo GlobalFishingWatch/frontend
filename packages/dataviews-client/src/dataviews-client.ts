@@ -118,6 +118,7 @@ export default class DataviewsClient {
     const promises = resources.map((resource) => {
       // TODO Do appropriate stuff when datasetParams have valuesArray or binary (tracks)
       // See existing implementation of this in Track inspector's dataviews thunk:
+      // https://github.com/GlobalFishingWatch/track-inspector/blob/develop/src/features/dataviews/dataviews.thunks.ts#L58
       return this._fetch(resource.resolvedUrl).then((data: unknown) => {
         const resourceWithData = {
           ...resource,
