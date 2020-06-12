@@ -6,11 +6,11 @@ export interface UniqueDataview extends Dataview {
 }
 
 /**
- * Gets list of dataviews and those present in the workspace, and applies any viewParams or datasetParams from it.
+ * Gets list of dataviews and those present in the workspace, and applies any view or datasetParams from it (merges dataview.defaultView with dataviuew.view and workspace's dataview.view).
  * @param dataviews
  * @param workspace
  */
-const useWorkspaceDataviews = (dataviews: Dataview[], workspace?: Workspace): UniqueDataview[] => {
+const useWorkspace = (dataviews: Dataview[], workspace?: Workspace): UniqueDataview[] => {
   const newDataviews = useMemo(() => {
     return dataviews.map((dataview) => {
       const newDataview: UniqueDataview = {
@@ -69,4 +69,4 @@ const useWorkspaceDataviews = (dataviews: Dataview[], workspace?: Workspace): Un
   return newDataviews
 }
 
-export default useWorkspaceDataviews
+export default useWorkspace
