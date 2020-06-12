@@ -3,6 +3,7 @@ import { Placement } from 'tippy.js'
 import cx from 'classnames'
 import Tooltip from '../tooltip'
 import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
+import { ReactComponent as ArrowLeft } from '../assets/icons/arrow-left.svg'
 import { ReactComponent as ArrowRight } from '../assets/icons/arrow-right.svg'
 import { ReactComponent as ArrowTop } from '../assets/icons/arrow-top.svg'
 import { ReactComponent as Camera } from '../assets/icons/camera.svg'
@@ -32,6 +33,7 @@ import styles from './Icon.module.css'
 
 export const IconComponents = {
   'arrow-down': ArrowDown,
+  'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
   'arrow-top': ArrowTop,
   camera: Camera,

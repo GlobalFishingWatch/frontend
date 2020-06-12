@@ -1,7 +1,7 @@
 .nav {
   display: flex;
   align-items: center;
-  min-height: 40px;
+  height: 6rem;
   padding: 20px;
   background-color: #021236;
 }
@@ -16,6 +16,24 @@
 .nav a.active {
   color: #e54430;
   text-decoration: underline;
+}
+
+#root,
+.content {
+  height: 100%;
+}
+
+.content {
+  height: calc(100vh - 6rem);
+}
+
+.sidebar {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.split-container {
+  background-color: white;
 }
 
 section {
