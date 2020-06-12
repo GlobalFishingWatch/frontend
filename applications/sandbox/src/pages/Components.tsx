@@ -8,11 +8,16 @@ import TagsSection from '../components/Tags'
 import SelectsSection from '../components/Select'
 import InputsSection from '../components/Inputs'
 import ModalsSection from '../components/Modal'
+import MenuSection from '../components/Menu'
 
 const ComponentsPage = () => {
   return (
     <main style={{ padding: '2rem' }}>
       <h1>Components</h1>
+      <section>
+        <h2>Menu</h2>
+        <MenuSection />
+      </section>
       <section>
         <h2>Logos</h2>
         <LogosSection />

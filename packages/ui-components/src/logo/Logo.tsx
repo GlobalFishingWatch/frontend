@@ -8,12 +8,19 @@ export type SubBrands = 'Marine Reserves' | 'Carrier Vessels'
 interface LogoProps {
   type?: LogoTypes
   subBrand?: SubBrands
+  className?: string
 }
 
 const Logo: React.FC<LogoProps> = (props) => {
-  const { type = 'default', subBrand = '' } = props
+  const { type = 'default', subBrand = '', className } = props
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 240 60"
+      width="240"
+      height="60"
+      className={cx(styles.container, className)}
+    >
       <g fill="none" fillRule="evenodd">
         <path
           fill="#8ABBC7"
