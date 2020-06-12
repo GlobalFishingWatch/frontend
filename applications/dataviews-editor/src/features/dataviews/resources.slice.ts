@@ -3,7 +3,7 @@ import { Resource } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store/store'
 
 export interface EditorResource extends Resource {
-  loaded: boolean
+  loaded?: boolean
 }
 
 const initialState: { resources: EditorResource[] } = {
@@ -15,7 +15,20 @@ const slice = createSlice({
   initialState,
   reducers: {
     addResources: (state, action: PayloadAction<Resource[]>) => {
-      state.resources = action.payload.map((resource) => ({ ...resource, loaded: false }))
+      action.payload.forEach((resource) => {
+        const existingResourceIndex = state.resources.findIndex(
+          (r) => r.resolvedUrl === resource.resolvedUrl
+        )
+        if (existingResourceIndex === -1) {
+          state.resources.push(resource)
+        } else {
+          state.resources = [
+            ...state.resources.slice(0, existingResourceIndex),
+            resource,
+            ...state.resources.slice(existingResourceIndex + 1),
+          ]
+        }
+      })
     },
     completeLoading: (state, action: PayloadAction<Resource>) => {
       const resource = state.resources.find(
