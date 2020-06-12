@@ -28,6 +28,7 @@
   --color-white: rgb(var(--white-rgb));
   --gradient: linear-gradient(180deg, var(--color-gradient) 0, var(--color-white) 70rem);
   --color-map-background: #002458;
+  --color-highlight-blue: #6AECF9;
 
   /* OPACITIES */
   --opacity-hover: 0.9;

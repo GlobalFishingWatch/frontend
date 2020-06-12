@@ -1,25 +1,18 @@
-:root {
-  --miniglobe-bg-color: #011137;
-  --miniglobe-fg-color: #99d3e1;
-  --miniglobe-viewport-color: #f00;
-}
-
-.globeBackground {
-  fill: var(--miniglobe-fg-color);
+.globe {
+  fill: var(--color-highlight-blue);
   stroke: none;
-  box-sizing: content-box;
 }
 
-.globeSvg {
-  fill: var(--miniglobe-bg-color);
+.land {
+  fill: var(--color-map-background);
   stroke: none;
 }
 
 .viewport {
   fill: none;
-  stroke: var(--miniglobe-viewport-color);
+  stroke: var(--color-danger-red);
 }
 
 .viewportPoint {
-  fill: var(--miniglobe-viewport-color);
+  fill: var(--color-danger-red);
 }
