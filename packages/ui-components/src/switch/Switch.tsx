@@ -32,7 +32,7 @@ const Switch: React.FC<SwitchProps> = (props) => {
         aria-checked={active}
         disabled={disabled}
         onClick={onClick}
-        className={cx(styles.Switch, { [styles.customColor]: color }, className)}
+        className={cx(styles.switch, { [styles.customColor]: color }, className)}
         {...(color && { style: { color } })}
       >
         <span className={styles.nib}></span>

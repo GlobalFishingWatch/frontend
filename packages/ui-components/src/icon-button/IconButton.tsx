@@ -37,7 +37,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) =
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
         ref={ref}
-        className={cx(styles.IconButton, styles[type], styles[`${size}Size`], className)}
+        className={cx(styles.iconButton, styles[type], styles[`${size}Size`], className)}
         onClick={onClick}
         disabled={disabled}
         {...rest}

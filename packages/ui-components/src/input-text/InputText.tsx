@@ -19,7 +19,7 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>((props, forwarded
   useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
 
   return (
-    <div className={cx(styles.InputText, styles[inputSize], className)}>
+    <div className={cx(styles.inputText, styles[inputSize], className)}>
       {label && <label htmlFor={label}>{label}</label>}
       <input ref={inputRef} id={label} name={label} type={type} {...rest} />
       {type !== 'text' && (

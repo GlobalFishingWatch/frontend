@@ -24,7 +24,7 @@ const TagList: React.FC<TagListProps> = (props) => {
   )
 
   return (
-    <ul className={cx(styles.TagList, className)}>
+    <ul className={cx(styles.tagList, className)}>
       {tags.map((tag) => (
         <li key={tag.id}>
           <Tag onRemove={() => onRemoveTag(tag)} {...(color && { color })}>

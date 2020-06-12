@@ -72,7 +72,7 @@ const Icon: React.FC<IconProps> = (props) => {
   const Component = useMemo(() => IconComponents[icon], [icon])
   return (
     <Tooltip content={tooltip} placement="auto">
-      <Component className={cx(styles.Icon, styles[type], className)} />
+      <Component className={cx(styles.icon, styles[type], className)} />
     </Tooltip>
   )
 }
