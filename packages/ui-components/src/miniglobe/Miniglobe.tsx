@@ -3,7 +3,7 @@ import { geoOrthographic, geoPath } from 'd3-geo'
 import { feature } from 'topojson-client'
 import { Topology, GeometryCollection } from 'topojson-specification'
 import jsonData from './ne_110m_land.json'
-import styles from './miniglobe.module.css'
+import styles from './Miniglobe.module.css'
 import { MiniglobeCenter, MiniglobeBounds } from './index'
 
 interface MiniglobeProps {
@@ -81,32 +81,33 @@ const MiniGlobe: React.FC<MiniglobeProps> = (props) => {
     <svg
       width={size}
       height={size}
-      className={styles.globeBackground}
-      style={{ padding: viewportThickness }}
+      viewBox={`0 0 ${size} ${size}`}
+      aria-hidden="true"
+      focusable="false"
     >
-      <circle className={styles.globeSvg} cx={size / 2} cy={size / 2} r={size / 2} />
-      <g>
+      <circle className={styles.globe} cx={size / 2} cy={size / 2} r={size / 2} />
+      <g className={styles.land}>
         {worldData.map((d, i) => {
           const path = geoPath().projection(projection)(d)
           return path && <path key={`path-${i}`} d={path} />
         })}
-        {showPoint && (
-          <circle
-            className={styles.viewportPoint}
-            cx={size / 2}
-            cy={size / 2}
-            r={viewportThickness}
-          />
-        )}
-        {showPath && (
-          <path
-            key="viewport"
-            d={path}
-            className={styles.viewport}
-            style={{ strokeWidth: viewportThickness }}
-          />
-        )}
       </g>
+      {showPoint && (
+        <circle
+          className={styles.viewportPoint}
+          cx={size / 2}
+          cy={size / 2}
+          r={viewportThickness}
+        />
+      )}
+      {showPath && (
+        <path
+          key="viewport"
+          d={path}
+          className={styles.viewport}
+          style={{ strokeWidth: viewportThickness }}
+        />
+      )}
     </svg>
   )
 }

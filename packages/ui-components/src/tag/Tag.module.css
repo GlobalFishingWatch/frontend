@@ -34,12 +34,12 @@
   transform: scale(0);
 }
 
-.Tag.withRemove:hover {
+.tag.withRemove:hover {
   padding-right: 0;
 }
 
 .removeBtn:focus,
-.Tag:hover .removeBtn {
+.tag:hover .removeBtn {
   width: auto;
   opacity: 1;
   margin: 0 0.1rem;

@@ -11,6 +11,10 @@
   background-position: center center;
 }
 
+.iconButton:focus {
+  box-shadow: var(--box-shadow-highlight);
+}
+
 .default,
 .warning,
 .border {
@@ -23,18 +27,33 @@
 }
 
 .default:hover,
+.default:focus,
 .warning:hover,
-.border:hover {
+.warning:focus,
+.border:hover,
+.border:focus {
   color: var(--color-primary-blue);
   background-color: var(--color-terthiary-blue);
 }
 
 .invert {
   color: rgba(var(--white-rgb), var(--opacity-secondary));
+  background-color: rgba(var(--white-rgb), var(--opacity-terthiary));
+}
+
+.invert:hover,
+.invert:focus {
+  color: var(--color-white);
+  background-color: rgba(var(--white-rgb), var(--opacity-border));
+}
+
+.map-tool {
+  color: rgba(var(--white-rgb), var(--opacity-secondary));
   background-color: var(--color-primary-blue);
 }
 
-.invert:hover {
+.map-tool:hover,
+.map-tool:focus {
   color: var(--color-white);
   background-color: var(--color-primary-blue-hover);
 }

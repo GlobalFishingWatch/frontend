@@ -9,7 +9,6 @@ type MenuLink = {
   id: string
   label: string
   href: string
-  ariaLabel?: string
 }
 
 export const defaultLinks: MenuLink[] = [
@@ -66,11 +65,9 @@ const Menu: React.FC<MenuProps> = (props) => {
       <Logo type="invert" />
       {links?.length > 0 && (
         <ul>
-          {links.map(({ id, label, href, ariaLabel }) => (
+          {links.map(({ id, label, href }) => (
             <li className={cx(styles.link, { [styles.active]: id === activeLinkId })} key={id}>
-              <a aria-label={ariaLabel || 'Global Fishing Watch link'} href={href}>
-                {label}
-              </a>
+              <a href={href}>{label}</a>
             </li>
           ))}
         </ul>

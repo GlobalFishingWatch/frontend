@@ -5,7 +5,7 @@ import Icon, { IconType } from '../icon'
 import Tooltip from '../tooltip'
 import styles from './IconButton.module.css'
 
-export type IconButtonType = 'default' | 'invert' | 'border' | 'warning'
+export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'warning'
 export type IconButtonSize = 'default' | 'small' | 'tiny'
 
 interface IconButtonProps {
@@ -40,6 +40,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) =
         className={cx(styles.iconButton, styles[type], styles[`${size}Size`], className)}
         onClick={onClick}
         disabled={disabled}
+        {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
         {...rest}
       >
         <Icon icon={icon} type={type === 'warning' ? 'warning' : 'default'} />

@@ -1,4 +1,4 @@
-export { default } from './miniglobe'
+export { default } from './Miniglobe'
 
 export interface MiniglobeBounds {
   north: number

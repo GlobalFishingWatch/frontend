@@ -12,13 +12,24 @@
   text-transform: uppercase;
 }
 
+.button:focus {
+  box-shadow: var(--box-shadow-highlight);
+}
+
+.button:disabled {
+  color: var(--color-secondary-blue);
+  background-color: var(--color-terthiary-blue);
+  cursor: not-allowed;
+}
+
 .default {
   height: var(--size-M);
   color: var(--color-white);
   background-color: var(--color-primary-blue);
 }
 
-.default:not(:disabled):hover {
+.default:not(:disabled):hover,
+.default:not(:disabled):focus {
   background-color: var(--color-primary-blue-hover);
 }
 
@@ -27,17 +38,12 @@
   background-color: var(--color-terthiary-blue);
 }
 
-.secondary:not(:disabled):hover {
+.secondary:not(:disabled):hover,
+.secondary:not(:disabled):focus {
   color: var(--color-primary-blue);
   background-color: var(--color-border);
 }
 
 .small {
   height: var(--size-S);
-}
-
-.Button:disabled {
-  color: var(--color-secondary-blue);
-  background-color: var(--color-terthiary-blue);
-  cursor: not-allowed;
 }
