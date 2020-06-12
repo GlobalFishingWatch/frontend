@@ -11,6 +11,10 @@
   background-position: center center;
 }
 
+.iconButton:focus {
+  box-shadow: var(--box-shadow-highlight);
+}
+
 .default,
 .warning,
 .border {
@@ -23,8 +27,11 @@
 }
 
 .default:hover,
+.default:focus,
 .warning:hover,
-.border:hover {
+.warning:focus,
+.border:hover,
+.border:focus {
   color: var(--color-primary-blue);
   background-color: var(--color-terthiary-blue);
 }
@@ -34,7 +41,8 @@
   background-color: var(--color-primary-blue);
 }
 
-.invert:hover {
+.invert:hover,
+.invert:focus {
   color: var(--color-white);
   background-color: var(--color-primary-blue-hover);
 }

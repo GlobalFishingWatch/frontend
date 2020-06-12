@@ -24,7 +24,7 @@
 .modalContentWrapper {
   padding: 0;
   position: relative;
-  background: var(--color-white);
+  background: var(--color-gradient);
   width: 100%;
   max-width: 72rem;
   overflow-y: auto;
@@ -51,6 +51,7 @@
   padding-left: var(--space-M);
   position: sticky;
   top: 0;
+  width: auto;
 }
 
 .withTitle {
@@ -69,4 +70,5 @@
 
 .contentNoHeader {
   padding-top: 0;
+  padding-right: var(--size-L);
 }
