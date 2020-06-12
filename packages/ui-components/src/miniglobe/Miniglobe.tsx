@@ -78,7 +78,13 @@ const MiniGlobe: React.FC<MiniglobeProps> = (props) => {
   const path = geoPath().projection(projection)(viewportBoundsGeoJSON as any) || undefined
 
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      aria-hidden="true"
+      focusable="false"
+    >
       <circle className={styles.globe} cx={size / 2} cy={size / 2} r={size / 2} />
       <g className={styles.land}>
         {worldData.map((d, i) => {

@@ -38,11 +38,22 @@
 
 .invert {
   color: rgba(var(--white-rgb), var(--opacity-secondary));
-  background-color: var(--color-primary-blue);
+  background-color: rgba(var(--white-rgb), var(--opacity-terthiary));
 }
 
 .invert:hover,
 .invert:focus {
+  color: var(--color-white);
+  background-color: rgba(var(--white-rgb), var(--opacity-border));
+}
+
+.map-tool {
+  color: rgba(var(--white-rgb), var(--opacity-secondary));
+  background-color: var(--color-primary-blue);
+}
+
+.map-tool:hover,
+.map-tool:focus {
   color: var(--color-white);
   background-color: var(--color-primary-blue-hover);
 }
