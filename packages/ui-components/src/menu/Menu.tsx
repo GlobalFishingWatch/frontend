@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import ReactModal from 'react-modal'
+import cx from 'classnames'
 import IconButton from '../icon-button'
 import Logo from '../logo'
 import styles from './Menu.module.css'
@@ -11,7 +12,7 @@ type MenuLink = {
   ariaLabel?: string
 }
 
-export const defaultLinks = [
+export const defaultLinks: MenuLink[] = [
   { id: 'about-us', label: 'About Us', href: 'https://globalfishingwatch.org/about-us/' },
   { id: 'map-data', label: 'Map & data', href: 'https://globalfishingwatch.org/map-and-data/' },
   { id: 'research', label: 'Research', href: 'https://globalfishingwatch.org/research/' },
@@ -41,11 +42,12 @@ interface MenuProps {
    */
   appSelector?: string
   links?: MenuLink[]
+  activeLinkId?: string
   onClose: (e: React.MouseEvent) => void
 }
 
 const Menu: React.FC<MenuProps> = (props) => {
-  const { isOpen, onClose, appSelector = 'root', links = defaultLinks } = props
+  const { isOpen, onClose, appSelector = 'root', links = defaultLinks, activeLinkId } = props
   const appElement = useMemo(() => document.getElementById(appSelector), [appSelector])
   if (!appElement) {
     console.warn(`Invalid appSelector (${appSelector}) provided`)
@@ -65,7 +67,7 @@ const Menu: React.FC<MenuProps> = (props) => {
       {links?.length > 0 && (
         <ul>
           {links.map(({ id, label, href, ariaLabel }) => (
-            <li className={styles.link} key={id}>
+            <li className={cx(styles.link, { [styles.active]: id === activeLinkId })} key={id}>
               <a aria-label={ariaLabel || 'Global Fishing Watch link'} href={href}>
                 {label}
               </a>
