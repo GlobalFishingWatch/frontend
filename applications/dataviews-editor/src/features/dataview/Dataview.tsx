@@ -51,6 +51,7 @@ const Dataview = () => {
           currentDataview.datasets?.map((dataset) => (
             <input type="text" key={dataset.id} value={dataset.id} readOnly />
           ))}
+        <button>load datasets fields</button>
         <AddButton />
       </Section>
       <Section>

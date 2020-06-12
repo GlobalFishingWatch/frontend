@@ -42,11 +42,11 @@ export interface WorkspaceDataview {
 export interface Workspace {
   workspaceDataviews: WorkspaceDataview[]
 }
-export interface Resource {
+export interface Resource<T = unknown> {
   dataviewId: number
   datasetId: string
   // identifies resource uniquely, ie vessel id
   mainDatasetParamId: string
   resolvedUrl: string
-  data?: unknown
+  data?: T
 }
