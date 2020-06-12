@@ -30,8 +30,10 @@ const Modal: React.FC<ModalProps> = (props) => {
       isOpen={isOpen}
       onRequestClose={onClose}
     >
-      {header && <div className={styles.header}>{header}</div>}
-      <IconButton className={styles.closeBtn} icon="close" onClick={onClose} />
+      <div className={cx(styles.header, { [styles.withTitle]: header })}>
+        <h1 className={styles.title}>{header}</h1>
+        <IconButton className={styles.closeBtn} icon="close" onClick={onClose} />
+      </div>
       <div className={cx(styles.content, { [styles.contentNoHeader]: !header })}>{children}</div>
     </ReactModal>
   )

@@ -27,7 +27,7 @@
   background: var(--color-white);
   width: 100%;
   max-width: 72rem;
-  overflow: auto;
+  overflow-y: auto;
   max-height: 100vh;
   height: var(--vh, 1vh) * 100;
 }
@@ -36,28 +36,37 @@
   .modalContentWrapper {
     width: 90%;
     height: auto;
+    max-height: 90vh;
   }
 }
 
 .header {
-  min-height: var(--size-M);
-  font: var(--font-L);
+  min-height: var(--size-L);
+  font: var(--font-S);
+  text-transform: uppercase;
   display: flex;
   align-items: center;
-  padding: var(--space-M);
-  background-color: var(--color-terthiary-blue);
+  justify-content: flex-end;
+  padding: var(--space-S);
+  padding-left: var(--space-M);
+  position: sticky;
+  top: 0;
 }
 
-.closeBtn {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
+.withTitle {
+  background-color: var(--color-white);
+  border-bottom: var(--border);
+}
+
+.title {
+  flex:1;
 }
 
 .content {
   padding: var(--space-M);
+  background: var(--gradient);
 }
 
 .contentNoHeader {
-  padding-top: 6rem;
+  padding-top: 0;
 }
