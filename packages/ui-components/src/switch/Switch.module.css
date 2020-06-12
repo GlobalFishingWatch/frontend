@@ -1,4 +1,4 @@
-.Switch {
+.switch {
   width: 2.4rem;
   height: 1.4rem;
   position: relative;
@@ -9,11 +9,11 @@
   cursor: pointer;
 }
 
-.Switch:disabled {
+.switch:disabled {
   cursor: not-allowed;
 }
 
-.Switch .nib {
+.switch .nib {
   position: absolute;
   width: 0.8rem;
   height: 0.8rem;
@@ -24,23 +24,23 @@
   transition: var(--transition);
 }
 
-.Switch[aria-checked='true'] {
+.switch[aria-checked='true'] {
   background-color: var(--color-primary-blue);
 }
 
-.Switch[aria-checked='true'].customColor {
+.switch[aria-checked='true'].customColor {
   background-color: currentColor;
 }
 
-.Switch[aria-checked='true'] .nib {
+.switch[aria-checked='true'] .nib {
   left: 1.2rem;
   background-color: var(--color-white);
 }
 
-.Switch:not(:disabled):not([aria-checked='true']):hover {
+.switch:not(:disabled):not([aria-checked='true']):hover {
   border: 0.1rem solid var(--color-secondary-blue);
 }
 
-.Switch:not(:disabled):not([aria-checked='true']):hover .nib {
+.switch:not(:disabled):not([aria-checked='true']):hover .nib {
   background-color: var(--color-primary-blue);
 }

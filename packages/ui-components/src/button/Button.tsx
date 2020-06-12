@@ -32,7 +32,7 @@ const Button: React.FC<ButtonProps> = (props) => {
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
-        className={cx(styles.Button, styles[type], styles[size], className)}
+        className={cx(styles.button, styles[type], styles[size], className)}
         onClick={onClick}
         disabled={disabled}
       >

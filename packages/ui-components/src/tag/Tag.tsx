@@ -14,7 +14,7 @@ const Tag: React.FC<TagProps> = (props) => {
   const { className, children, color, onRemove } = props
   return (
     <div
-      className={cx(styles.Tag, { [styles.withRemove]: onRemove !== undefined }, className)}
+      className={cx(styles.tag, { [styles.withRemove]: onRemove !== undefined }, className)}
       {...(color && { style: { color } })}
     >
       <span className={styles.content}>{children}</span>

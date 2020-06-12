@@ -1,8 +1,8 @@
-.InputText {
+.inputText {
   position: relative;
 }
 
-.InputText input {
+.inputText input {
   width: 100%;
   font: var(--font-M);
   color: var(--color-primary-blue);
@@ -11,7 +11,7 @@
   background: none;
 }
 
-.InputText label {
+.inputText label {
   margin-bottom: var(--space-XS);
 }
 
