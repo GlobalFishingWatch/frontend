@@ -1,29 +1,24 @@
 import { Layer, AnySourceImpl } from 'mapbox-gl'
+import { BasemapType } from '../types'
 import { Group, Dictionary } from '../../types'
-
-export const BASEMAPS = {
-  Satellite: 'satellite',
-  Landmass: 'landmass',
-  Graticules: 'graticules',
-}
 
 const BASEMAP_VECTOR_SOURCE = 'basemap_vector'
 export const DEFAULT_LANDMASS_COLOR = '#274777'
 
 export const layers: Dictionary<Layer> = {
-  [BASEMAPS.Satellite]: {
+  [BasemapType.Satellite]: {
     type: 'raster',
-    id: BASEMAPS.Satellite,
-    source: BASEMAPS.Satellite,
+    id: BasemapType.Satellite,
+    source: BasemapType.Satellite,
     metadata: {
       group: Group.Basemap,
     },
   },
-  [BASEMAPS.Landmass]: {
+  [BasemapType.Landmass]: {
     type: 'fill',
-    id: BASEMAPS.Landmass,
+    id: BasemapType.Landmass,
     source: BASEMAP_VECTOR_SOURCE,
-    'source-layer': BASEMAPS.Landmass,
+    'source-layer': BasemapType.Landmass,
     metadata: {
       group: Group.BasemapFill,
     },
@@ -32,9 +27,9 @@ export const layers: Dictionary<Layer> = {
       'fill-opacity': 0.99,
     },
   },
-  [BASEMAPS.Graticules]: {
+  [BasemapType.Graticules]: {
     type: 'line',
-    id: BASEMAPS.Graticules,
+    id: BasemapType.Graticules,
     source: BASEMAP_VECTOR_SOURCE,
     'source-layer': 'graticules',
     metadata: {
@@ -49,7 +44,7 @@ export const layers: Dictionary<Layer> = {
 }
 
 export const sources: Dictionary<AnySourceImpl> = {
-  [BASEMAPS.Satellite]: {
+  [BasemapType.Satellite]: {
     tiles: [
       'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
       'https://mt2.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',

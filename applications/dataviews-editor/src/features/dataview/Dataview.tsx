@@ -1,83 +1,79 @@
 import React, { Fragment } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import cx from 'classnames'
-import { Generators } from '@globalfishingwatch/layer-composer'
 import AddButton from 'common/AddButton'
 import Field from 'common/Field'
-import fieldStyles from 'common/Field.module.css'
 import Section from 'common/Section'
-import { selectCurrentDataview } from 'features/dataviews/dataviews.selectors'
-
-const DataviewTypeDropdown = () => {
-  return (
-    <div className={fieldStyles.field}>
-      <span className={fieldStyles.fieldkey}>type</span>
-      <select className={fieldStyles.value}>
-        {Object.entries(Generators.Type).map(([t, v]: [string, string]) => (
-          <option key={v} value={v}>
-            {t}
-          </option>
-        ))}
-      </select>
-    </div>
-  )
-}
-
-const ResolvedViewParams = ({ params }: any) => {
-  if (!params) return null
-  return (
-    <Fragment>
-      {Object.entries(params).map(([fieldkey, value]: [string, unknown]) =>
-        fieldkey === 'type' ? (
-          <DataviewTypeDropdown key={fieldkey} />
-        ) : (
-          <Field key={fieldkey} keyEditable fieldkey={fieldkey} value={value as string} />
-        )
-      )}
-    </Fragment>
-  )
-}
+import { setMeta, fetchResources } from 'features/dataviews/dataviews.slice'
+import { selectResourcesLoaded } from 'features/dataviews/resources.selectors'
+import { selectCurrentDataview } from './dataview.selectors'
+import ViewParams from './EditorViewParams'
 
 const ResolvedDatasetParams = ({ params }: any) => {
   if (!params) return null
   return (
-    <Fragment>
+    <Section>
       {Object.entries(params).map(([fieldkey, value]: [string, unknown]) => (
         <Field key={fieldkey} fieldkey={fieldkey} value={value as string} />
       ))}
-    </Fragment>
+    </Section>
   )
 }
 
 const Dataview = () => {
-  const dataview = useSelector(selectCurrentDataview)
-  if (!dataview) return null
+  const dispatch = useDispatch()
+  const currentDataview = useSelector(selectCurrentDataview)
+  const loaded = useSelector(selectResourcesLoaded)
+  if (!currentDataview) return null
 
   return (
     <Fragment>
       <Section>
-        <Field fieldkey="name" value={dataview.name} />
-        <Field fieldkey="description" value={dataview.description} />
+        <h2>meta</h2>
+        <Field
+          fieldkey="name"
+          value={currentDataview.name}
+          onValueChange={(value) => {
+            dispatch(setMeta({ editorId: currentDataview.editorId, field: 'name', value }))
+          }}
+        />
+        <Field
+          fieldkey="description"
+          value={currentDataview.description}
+          onValueChange={(value) => {
+            dispatch(setMeta({ editorId: currentDataview.editorId, field: 'description', value }))
+          }}
+        />
       </Section>
       <Section>
         <h2>datasets</h2>
-        <button className={cx('large', 'done')}>load endpoints data</button>
-        {dataview.datasetIds &&
-          dataview.datasetIds?.map((datasetId) => (
-            <input type="text" key={datasetId} value={datasetId} />
+        {currentDataview.datasets &&
+          currentDataview.datasets?.map((dataset) => (
+            <input type="text" key={dataset.id} value={dataset.id} readOnly />
           ))}
+        <button>load datasets fields</button>
         <AddButton />
       </Section>
       <Section>
         <h2>defaultDatasetParams</h2>
-        {dataview.resolvedDatasetsParams?.map((resolvedDatasetParams, index) => (
-          <ResolvedDatasetParams key={index} params={resolvedDatasetParams} />
-        ))}
+        {currentDataview.defaultDatasetsParams?.map(
+          (resolvedDatasetParams: Record<string, unknown>, index: number) => (
+            <ResolvedDatasetParams key={index} params={resolvedDatasetParams} />
+          )
+        )}
+        <button
+          onClick={() => {
+            dispatch(fetchResources([currentDataview]))
+          }}
+          className={cx('large', { done: loaded, dirty: !loaded })}
+          disabled={!loaded}
+        >
+          load endpoints data
+        </button>
       </Section>
       <Section>
-        <h2>defaultViewParams</h2>
-        <ResolvedViewParams params={dataview.resolvedViewParams} />
-        <AddButton />
+        <h2>defaultView</h2>
+        <ViewParams />
       </Section>
     </Fragment>
   )

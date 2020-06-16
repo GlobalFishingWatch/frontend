@@ -1,21 +1,21 @@
-import { Type, GeneratorConfig } from '../types'
+import { Type, BasemapGeneratorConfig } from '../types'
 import { layers, sources } from './basemap-layers'
 
 class BasemapGenerator {
   type = Type.Basemap
 
-  _getStyleSources = (config: GeneratorConfig) => {
-    const layer = layers[config.id]
+  _getStyleSources = (config: BasemapGeneratorConfig) => {
+    const layer = layers[config.basemap || config.id]
     const sourceId = layer.source as string
     const source = sources[sourceId]
     return [{ id: sourceId, ...source }]
   }
-  _getStyleLayers = (config: GeneratorConfig) => {
-    const layer = layers[config.id]
+  _getStyleLayers = (config: BasemapGeneratorConfig) => {
+    const layer = layers[config.basemap || config.id]
     return [layer]
   }
 
-  getStyle = (config: GeneratorConfig) => {
+  getStyle = (config: BasemapGeneratorConfig) => {
     return {
       id: config.id,
       sources: this._getStyleSources(config),

@@ -1,43 +1,77 @@
 import React, { Fragment } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import AddButton from 'common/AddButton'
 import ListItem from 'common/ListItem'
 import Section from 'common/Section'
-import { selectAddedDataviews } from './dataviews.selectors'
-import { selectDataviews } from './dataviews.slice'
+import { toggleDataview } from 'features/workspace/workspace.slice'
+import { selectAddedDataviews, selectEditorDataviews } from './dataviews.selectors'
+import {
+  EditorDataview,
+  setEditing,
+  setMeta,
+  addDataview,
+  startUpdatingDataview,
+  startDeletingDataview,
+} from './dataviews.slice'
 
 const Dataviews = () => {
+  const dispatch = useDispatch()
+  const dataviews = useSelector(selectEditorDataviews)
   const addedDataviews = useSelector(selectAddedDataviews)
-  const dataviews = useSelector(selectDataviews)
+
   return (
     <Fragment>
       <Section>
+        <h2>current dataviews</h2>
         <ul>
           {addedDataviews.map((dataview) => (
             <ListItem
-              key={dataview.id}
-              title={dataview.id}
-              checked={dataview.added}
+              key={dataview.editorId}
+              title={dataview.name}
               editing={dataview.editing}
               dirty={dataview.dirty}
               showActions={dataview.editing}
+              checked
+              onToggle={(toggle) => {
+                dispatch(toggleDataview({ editorId: dataview.editorId, added: toggle }))
+              }}
+              onClick={() => {
+                dispatch(setEditing(dataview.editorId))
+              }}
+              onChange={(value) => {
+                dispatch(setMeta({ editorId: dataview.editorId, field: 'name', value }))
+              }}
+              onSave={() => {
+                dispatch(startUpdatingDataview(dataview))
+              }}
+              onDelete={() => {
+                dispatch(startDeletingDataview(dataview))
+              }}
             />
           ))}
         </ul>
       </Section>
       <Section>
+        <h2>all dataviews</h2>
         <ul>
-          {dataviews.map((dataview) => (
+          {dataviews.map((dataview: EditorDataview) => (
             <ListItem
-              key={dataview.id}
-              title={dataview.id}
-              checked={dataview.added}
+              key={dataview.editorId}
+              title={dataview.name}
               editing={dataview.editing}
               dirty={dataview.dirty}
+              checked={dataview.added || false}
+              onToggle={(toggle) => {
+                dispatch(toggleDataview({ editorId: dataview.editorId, added: toggle }))
+              }}
             />
           ))}
         </ul>
-        <AddButton />
+        <AddButton
+          onClick={() => {
+            dispatch(addDataview())
+          }}
+        />
       </Section>
     </Fragment>
   )

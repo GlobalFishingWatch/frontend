@@ -1,19 +1,34 @@
 import { combineReducers } from 'redux'
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
+import workspace from 'features/workspace/workspace.slice'
 import dataviews from 'features/dataviews/dataviews.slice'
+import resources from 'features/dataviews/resources.slice'
 import timebar from 'features/timebar/timebar.slice'
 
 const rootReducer = combineReducers({
+  workspace,
   dataviews,
+  resources,
   timebar,
 })
 
 export type RootState = ReturnType<typeof rootReducer>
 
+const defaultMiddlewareOptions: any = {
+  // Fix issue with Redux-first-router and RTK (https://stackoverflow.com/questions/59773345/react-toolkit-and-redux-first-router)
+  serializableCheck: false,
+  immutableCheck: {
+    ignoredPaths: [
+      // Too big to check for immutability:
+      'resources',
+    ],
+  },
+}
+
 export default () => {
   const store = configureStore({
     reducer: rootReducer,
+    middleware: [...getDefaultMiddleware(defaultMiddlewareOptions)],
   })
-  // initialDispatch()
   return store
 }

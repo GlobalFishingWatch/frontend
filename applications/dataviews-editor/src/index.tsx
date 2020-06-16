@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import App from 'features/app/App'
 import configureStore from 'store/store'
@@ -8,7 +8,7 @@ import './index.css'
 
 const store = configureStore()
 
-ReactDOM.render(
+render(
   <Provider store={store}>
     <React.StrictMode>
       <App />

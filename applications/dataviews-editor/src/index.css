@@ -44,7 +44,7 @@ button.done::after {
 }
 
 button.dirty::after {
-  content: '✸';
+  content: '❋';
 }
 
 button.large {
@@ -58,7 +58,11 @@ input[type="text"] {
   border: 1px solid darkgray;
 }
 
-input[disabled] {
+input[readonly] {
   border: 0;
   color: black;
+}
+
+input[readonly]:focus {
+  outline: none;
 }

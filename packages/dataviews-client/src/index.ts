@@ -4,6 +4,9 @@ export type {
   Endpoint,
   Dataset,
   Dataview,
-  DataviewWorkspace,
   Workspace,
+  WorkspaceDataview,
+  Resource,
+  ViewParams,
+  DatasetParams,
 } from './types'

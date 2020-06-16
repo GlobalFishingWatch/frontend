@@ -1,13 +1,14 @@
 import { Style, AnySourceImpl, Layer } from 'mapbox-gl'
 import Generators from './generators'
 import { flatObjectArrays, layersDictToArray } from './utils'
-import { Dictionary, LayerComposerStyles, LayerComposerOptions, GeneratorStyles } from './types'
 import {
+  Dictionary,
+  LayerComposerStyles,
+  LayerComposerOptions,
+  GeneratorStyles,
   Generator,
-  GeneratorConfig,
-  GlobalGeneratorConfig,
-  AnyGeneratorConfig,
-} from './generators/types'
+} from './types'
+import { GeneratorConfig, GlobalGeneratorConfig, AnyGeneratorConfig } from './generators/types'
 
 export const DEFAULT_CONFIG = {
   version: 8,
@@ -62,11 +63,22 @@ class LayerComposer {
     const newGeneratorStyles = { ...generatorStyles }
     newGeneratorStyles.layers = newGeneratorStyles.layers.map((layer) => {
       const newLayer = { ...layer }
+      if (!newLayer.layout) {
+        newLayer.layout = {}
+      }
+      if (!newLayer.paint) {
+        newLayer.paint = {}
+      }
       if (generatorConfig.visible !== undefined && generatorConfig.visible !== null) {
-        if (!newLayer.layout) {
-          newLayer.layout = {}
-        }
         newLayer.layout.visibility = generatorConfig.visible === true ? 'visible' : 'none'
+      }
+      if (generatorConfig.opacity !== undefined && generatorConfig.opacity !== null) {
+        // Can't really handle global opacity on symbol layers as we don't know whether it applies to icon or text
+        if (newLayer.type !== 'symbol') {
+          const propName = `${newLayer.type}-opacity`
+          const currentOpacity = (newLayer.paint as any)[propName] || 1
+          ;(newLayer.paint as any)[propName] = currentOpacity * generatorConfig.opacity
+        }
       }
       return newLayer
     })

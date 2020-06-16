@@ -31,8 +31,8 @@ interface LoginParams {
   refreshToken?: string | null
 }
 
-interface FetchOptions {
-  method?: 'GET' | 'POST' | 'PUT' | 'PATCH'
+export interface FetchOptions {
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   body?: Body
   headers?: Headers
   signal?: AbortSignal

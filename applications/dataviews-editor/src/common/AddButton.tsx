@@ -1,8 +1,8 @@
 import React from 'react'
 import styles from './AddButton.module.css'
 
-const AddButton = () => {
-  return <button className={styles.addButton} />
+const AddButton = ({ onClick }: { onClick?: () => void }) => {
+  return <button className={styles.addButton} onClick={onClick} />
 }
 
 export default AddButton
