@@ -6,7 +6,6 @@ import Section from 'common/Section'
 import { toggleDataview } from 'features/workspace/workspace.slice'
 import { selectAddedDataviews, selectEditorDataviews } from './dataviews.selectors'
 import {
-  EditorDataview,
   setEditing,
   setMeta,
   addDataview,
@@ -54,7 +53,7 @@ const Dataviews = () => {
       <Section>
         <h2>all dataviews</h2>
         <ul>
-          {dataviews.map((dataview: EditorDataview) => (
+          {dataviews.map((dataview) => (
             <ListItem
               key={dataview.editorId}
               title={dataview.name}

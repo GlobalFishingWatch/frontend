@@ -4,7 +4,7 @@
   grid-template-columns: min-content min-content auto;
   grid-template-rows: 1fr auto;
   gap: 0;
-  grid-template-areas:  "dataviews dataview map" 
+  grid-template-areas:  "dataviews dataview map"
                         "dataviews dataview timebar";
 }
 
@@ -18,12 +18,12 @@
   padding: 10px 0;
 }
 
-.dataviews { 
+.dataviews {
   width: 250px;
   grid-area: dataviews;
 }
 
-.dataview { 
+.dataview {
   width: 300px;
   grid-area: dataview;
 }
@@ -47,7 +47,9 @@ h2 {
 }
 
 .minimized h1 {
-  transform: rotate(90deg) translate(5px);
+  transform: rotate(90deg) translate(-24px, -15px);
+  transform-origin: 0;
+  width: 300px;
 }
 
 

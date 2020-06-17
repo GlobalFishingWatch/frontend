@@ -15,8 +15,6 @@ const rootReducer = combineReducers({
 export type RootState = ReturnType<typeof rootReducer>
 
 const defaultMiddlewareOptions: any = {
-  // Fix issue with Redux-first-router and RTK (https://stackoverflow.com/questions/59773345/react-toolkit-and-redux-first-router)
-  serializableCheck: false,
   immutableCheck: {
     ignoredPaths: [
       // Too big to check for immutability:
