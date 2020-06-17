@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import styleSpec from 'mapbox-gl/dist/style-spec'
 import LayerComposer, { Generators, sort } from '@globalfishingwatch/layer-composer'
 import { ExtendedStyle, StyleTransformation } from '@globalfishingwatch/layer-composer/dist/types'
 
@@ -20,7 +19,7 @@ const defaultTransformations: StyleTransformation[] = [sort]
 const defaultLayerComposerInstance = new LayerComposer()
 function useLayerComposer(
   generatorConfigs: Generators.AnyGeneratorConfig[],
-  globalGeneratorConfig: Generators.GlobalGeneratorConfig,
+  globalGeneratorConfig?: Generators.GlobalGeneratorConfig,
   styleTransformations: StyleTransformation[] = defaultTransformations,
   layerComposer: LayerComposer = defaultLayerComposerInstance
 ) {
@@ -37,9 +36,14 @@ function useLayerComposer(
         )
         const afterTransformations = applyStyleTransformations(style, styleTransformations)
         if (process.env.NODE_ENV === 'development') {
-          const styleErrors = styleSpec.validate(afterTransformations)
-          if (styleErrors && styleErrors.length) {
-            throw new Error(styleErrors.map((e: any) => e.message).join('\n'))
+          try {
+            const styleSpec = await import('mapbox-gl/dist/style-spec')
+            const styleErrors = styleSpec.validate(afterTransformations)
+            if (styleErrors && styleErrors.length) {
+              throw new Error(styleErrors.map((e: any) => e.message).join('\n'))
+            }
+          } catch (e) {
+            console.error(e)
           }
         }
         setStyle(afterTransformations)

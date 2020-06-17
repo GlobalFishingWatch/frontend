@@ -42,11 +42,7 @@ const App = () => {
         >
           Dataviews
         </h1>
-        {!dataviewsMinimized && (
-          <Fragment>
-            <Dataviews />
-          </Fragment>
-        )}
+        {!dataviewsMinimized && <Dataviews />}
       </div>
       <div
         className={cx(styles.column, styles.dataview, { [styles.minimized]: dataviewMinimized })}
@@ -58,11 +54,7 @@ const App = () => {
         >
           Dataview: {currentDataview && currentDataview.name}
         </h1>
-        {!dataviewMinimized && (
-          <Fragment>
-            <Dataview />
-          </Fragment>
-        )}
+        {!dataviewMinimized && <Dataview />}
       </div>
       <div className={styles.map}>
         <Map />
