@@ -8,6 +8,11 @@ import { selectResources } from 'features/dataviews/resources.slice'
 import styles from './Map.module.css'
 
 const Map = () => {
+  const [viewport, updateViewport] = useState({
+    zoom: 1,
+    latitude: 0,
+    longitude: 0,
+  })
   const { start, end } = useTimeConnect()
   const dataviews = useWorkspace(useSelector(selectAddedDataviews))
   const generatorConfigs = useDataviews(dataviews, useSelector(selectResources))
@@ -15,16 +20,11 @@ const Map = () => {
     () => ({
       start,
       end,
+      zoom: viewport.zoom,
     }),
-    [start, end]
+    [start, end, viewport.zoom]
   )
   const { style, error } = useLayerComposer(generatorConfigs, globalGeneratorConfig)
-
-  const [viewport, updateViewport] = useState({
-    zoom: 1,
-    latitude: 0,
-    longitude: 0,
-  })
 
   return (
     <div className={styles.container}>

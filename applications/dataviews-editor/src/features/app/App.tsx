@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
 import { useSelector, useDispatch } from 'react-redux'
 import GFWAPI from '@globalfishingwatch/api-client'
