@@ -14,9 +14,9 @@ export enum Type {
 }
 
 export interface GlobalGeneratorConfig {
-  start?: string
-  end?: string
-  zoom?: number
+  start: string
+  end: string
+  zoom: number
   zoomLoadLevel?: number
 }
 

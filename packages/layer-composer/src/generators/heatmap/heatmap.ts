@@ -117,7 +117,7 @@ class HeatmapGenerator {
   }
 
   _getStyleLayers = (layer: HeatmapGeneratorConfig) => {
-    if (layer.fetchStats !== true) {
+    if (layer.fetchStats !== true || !layer.start || !layer.end) {
       return { layers: this._getHeatmapLayers(layer) }
     }
 

@@ -20,7 +20,7 @@ const defaultTransformations: StyleTransformation[] = [sort]
 const defaultLayerComposerInstance = new LayerComposer()
 function useLayerComposer(
   generatorConfigs: Generators.AnyGeneratorConfig[],
-  globalGeneratorConfig: Generators.GlobalGeneratorConfig,
+  globalGeneratorConfig?: Generators.GlobalGeneratorConfig,
   styleTransformations: StyleTransformation[] = defaultTransformations,
   layerComposer: LayerComposer = defaultLayerComposerInstance
 ) {

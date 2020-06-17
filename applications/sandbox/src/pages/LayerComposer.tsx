@@ -1,12 +1,14 @@
 import React from 'react'
-import { Type } from '@globalfishingwatch/layer-composer/src/generators/types'
+import {
+  Type,
+  BackgroundGeneratorConfig,
+} from '@globalfishingwatch/layer-composer/src/generators/types'
 import { useLayerComposer } from '@globalfishingwatch/react-hooks/src/index'
 
-const generatorsConfig = [{ id: 'background', type: Type.Background }]
-const globalConfig = {}
+const generatorsConfig = [{ id: 'background', type: Type.Background } as BackgroundGeneratorConfig]
 
 function App() {
-  const { style } = useLayerComposer(generatorsConfig, globalConfig)
+  const { style } = useLayerComposer(generatorsConfig)
 
   return (
     <div className="App">

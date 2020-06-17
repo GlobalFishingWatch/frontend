@@ -86,7 +86,9 @@ class LayerComposer {
   }
 
   // Compute helpers based on global config
-  _getGlobalConfig = (config: GlobalGeneratorConfig) => {
+  _getGlobalConfig = (config?: GlobalGeneratorConfig) => {
+    if (!config) return {}
+
     const newConfig = { ...config }
     if (newConfig.zoom) {
       newConfig.zoomLoadLevel = Math.floor(newConfig.zoom)
@@ -97,7 +99,7 @@ class LayerComposer {
   // Uses generators to return the layer with sources and layers
   _getGeneratorStyles = (
     config: GeneratorConfig,
-    globalConfig: GlobalGeneratorConfig
+    globalConfig?: GlobalGeneratorConfig
   ): GeneratorStyles => {
     if (!this.generators[config.type]) {
       throw new Error(`There is no generator loaded for the config: ${config.type}}`)
@@ -125,7 +127,7 @@ class LayerComposer {
   // Main method of the library which uses the privates one to compose the style
   getGLStyle = (
     layers: AnyGeneratorConfig[],
-    globalGeneratorConfig: GlobalGeneratorConfig = {}
+    globalGeneratorConfig?: GlobalGeneratorConfig
   ): LayerComposerStyles => {
     if (!layers) {
       console.warn('No layers passed to layer manager')
