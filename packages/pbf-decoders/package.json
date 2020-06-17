@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/pbf",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": false,
   "license": "MIT",
   "files": [
@@ -22,5 +22,5 @@
     "pbts-cli": "^1.0.3",
     "protobufjs": "6.9.0"
   },
-  "gitHead": "e36edd35e253448908d00966aa882fba08f8ea6c"
+  "gitHead": "6e2cabd6713330900030a0c226b37da245386e53"
 }

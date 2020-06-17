@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/timebar",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "GFW timebar",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -92,5 +92,5 @@
     "react": "^16.11.0",
     "react-dom": "^16.11.0"
   },
-  "gitHead": "e36edd35e253448908d00966aa882fba08f8ea6c"
+  "gitHead": "6e2cabd6713330900030a0c226b37da245386e53"
 }
