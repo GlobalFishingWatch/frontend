@@ -149,6 +149,7 @@ export interface HeatmapAnimatedGeneratorConfig extends HeatmapGeneratorConfig {
 
 export type AnyGeneratorConfig =
   | BackgroundGeneratorConfig
+  | BasemapGeneratorConfig
   | GlGeneratorConfig
   | CartoPolygonsGeneratorConfig
   | TrackGeneratorConfig
