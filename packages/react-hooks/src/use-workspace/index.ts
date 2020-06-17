@@ -1,1 +1,1 @@
-export { default } from './use-workspace'
+export { default, UniqueDataview } from './use-workspace'
