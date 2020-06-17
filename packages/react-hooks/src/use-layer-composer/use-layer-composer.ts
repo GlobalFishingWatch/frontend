@@ -36,14 +36,12 @@ function useLayerComposer(
         )
         const afterTransformations = applyStyleTransformations(style, styleTransformations)
         if (process.env.NODE_ENV === 'development') {
-          try {
-            const styleSpec = await import('mapbox-gl/dist/style-spec')
+          const styleSpec = await import('mapbox-gl/dist/style-spec')
+          if (styleSpec && styleSpec.validate) {
             const styleErrors = styleSpec.validate(afterTransformations)
             if (styleErrors && styleErrors.length) {
               throw new Error(styleErrors.map((e: any) => e.message).join('\n'))
             }
-          } catch (e) {
-            console.error(e)
           }
         }
         setStyle(afterTransformations)
