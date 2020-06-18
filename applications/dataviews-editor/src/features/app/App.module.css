@@ -1,11 +1,11 @@
 .app {
   height: 100vh;
   display: grid;
-  grid-template-columns: min-content min-content auto;
+  grid-template-columns: min-content min-content min-content auto;
   grid-template-rows: 1fr auto;
   gap: 0;
-  grid-template-areas:  "dataviews dataview map"
-                        "dataviews dataview timebar";
+  grid-template-areas:  "workspace dataviews dataview map"
+                        "workspace dataviews dataview timebar";
 }
 
 .loading {
@@ -16,6 +16,11 @@
 .column {
   border-right: 1px solid lightgray;
   padding: 10px 0;
+}
+
+.workspace {
+  width: 250px;
+  grid-area: workspace;
 }
 
 .dataviews {

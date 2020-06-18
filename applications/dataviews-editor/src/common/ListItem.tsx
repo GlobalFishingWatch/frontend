@@ -4,9 +4,9 @@ import styles from './ListItem.module.css'
 
 type Props = {
   title: string
-  editing: boolean
-  checked: boolean
-  dirty: boolean
+  editing?: boolean
+  checked?: boolean
+  dirty?: boolean
   showActions?: boolean
   onClick?: () => void
   onToggle?: (toggle: boolean) => void

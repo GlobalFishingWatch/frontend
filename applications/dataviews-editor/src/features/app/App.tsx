@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useSelector, useDispatch } from 'react-redux'
 import GFWAPI from '@globalfishingwatch/api-client'
 import useGFWLogin from '@globalfishingwatch/react-hooks/dist/use-login'
+import Workspace from 'features/workspace/Workspace'
 import Dataview from 'features/dataview/Dataview'
 import Dataviews from 'features/dataviews/Dataviews'
 import Map from 'features/map/Map'
@@ -17,6 +18,7 @@ const App = () => {
     dispatch(fetchDataviews())
   }, [dispatch])
 
+  const [workspaceMinimized, toggleWorkspace] = useState(true)
   const [dataviewsMinimized, toggleDataviews] = useState(false)
   const [dataviewMinimized, toggleDataview] = useState(false)
   const currentDataview = useSelector(selectCurrentDataview)
@@ -32,6 +34,18 @@ const App = () => {
 
   return (
     <div className={cx(styles.app, { [styles.loading]: dataviewsLoading })}>
+      <div
+        className={cx(styles.column, styles.workspace, { [styles.minimized]: workspaceMinimized })}
+      >
+        <h1
+          onClick={() => {
+            toggleWorkspace(!workspaceMinimized)
+          }}
+        >
+          Workspaces
+        </h1>
+        {!workspaceMinimized && <Workspace />}
+      </div>
       <div
         className={cx(styles.column, styles.dataviews, { [styles.minimized]: dataviewsMinimized })}
       >
