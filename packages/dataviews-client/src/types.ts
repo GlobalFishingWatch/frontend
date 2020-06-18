@@ -1,8 +1,21 @@
+import { FetchResponseTypes } from '@globalfishingwatch/api-client/dist/api-client'
+
 export type EndpointType = 'track' | 'info' | 'tiles' | 'events'
+
+export type EndpointParam = {
+  id: string
+  label: string
+  required: boolean
+  type: string
+  default: unknown
+  description: string
+}
 
 export interface Endpoint {
   type: EndpointType
-  urlTemplate: string
+  pathTemplate: string
+  params: EndpointParam[]
+  query: EndpointParam[]
   downloadable: boolean
 }
 
@@ -47,6 +60,7 @@ export interface Workspace {
   start: string
   end: string
 }
+
 export interface Resource<T = unknown> {
   dataviewId: number | string
   datasetId: string
@@ -54,6 +68,7 @@ export interface Resource<T = unknown> {
   // identifies resource uniquely, ie vessel id
   datasetParamId: string
   resolvedUrl: string
+  responseType?: FetchResponseTypes
   data?: T
 }
 
