@@ -1,4 +1,5 @@
 import { saveAs } from 'file-saver'
+import { vessels } from '@globalfishingwatch/pbf/decoders/vessels'
 import { UserData } from './types'
 import { isUrlAbsolute } from './utils/url'
 
@@ -31,19 +32,22 @@ interface LoginParams {
   refreshToken?: string | null
 }
 
-export interface FetchOptions {
+export type FetchResponseTypes = 'default' | 'text' | 'json' | 'blob' | 'arrayBuffer' | 'vessel'
+export type FetchOptions = RequestInit & {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  body?: Body
-  headers?: Headers
-  signal?: AbortSignal
-  json?: boolean
+  /**
+   * JSON Object
+   */
+  body?: any
+  responseType?: FetchResponseTypes
   dataset?: boolean
 }
 
-const processStatus = (response: Response) =>
-  response.status >= 200 && response.status < 300
+const processStatus = (response: Response) => {
+  return response.status >= 200 && response.status < 300
     ? Promise.resolve(response)
     : Promise.reject({ status: response.status, message: response.statusText })
+}
 
 const parseJSON = (response: Response) => response.json()
 const isUnauthorizedError = (error: ResponseError) =>
@@ -158,8 +162,7 @@ export class GFWAPI {
   }
 
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
-    return this._internalFetch<Response>(downloadUrl, { json: false })
-      .then((res) => res.blob())
+    return this._internalFetch<Blob>(downloadUrl, { responseType: 'blob' })
       .then((blob) => {
         saveAs(blob, fileName)
         return true
@@ -169,7 +172,7 @@ export class GFWAPI {
       })
   }
 
-  async _internalFetch<T>(
+  async _internalFetch<T = Record<string, unknown> | Blob | ArrayBuffer | Response>(
     url: string,
     options: FetchOptions = {},
     refreshRetries = 0,
@@ -193,7 +196,7 @@ export class GFWAPI {
           method = 'GET',
           body = null,
           headers = {},
-          json = true,
+          responseType = 'json',
           signal,
           dataset = this.dataset,
         } = options
@@ -209,7 +212,25 @@ export class GFWAPI {
           headers: { ...headers, Authorization: `Bearer ${this.getToken()}` },
         })
           .then(processStatus)
-          .then((res) => (json ? parseJSON(res) : res))
+          .then((res) => {
+            switch (responseType) {
+              case 'default':
+                return res
+              case 'json':
+                return parseJSON(res)
+              case 'blob':
+                return res.blob()
+              case 'arrayBuffer':
+                return res.arrayBuffer()
+              case 'vessel':
+                return res.arrayBuffer().then((buffer) => {
+                  const track = vessels.Track.decode(new Uint8Array(buffer))
+                  return track.data
+                })
+              default:
+                return res
+            }
+          })
         return data
       } catch (e) {
         // 401 = not authenticated => trying to refresh the token
