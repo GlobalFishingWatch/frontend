@@ -8,7 +8,7 @@ import { Generators } from '@globalfishingwatch/layer-composer'
  * If workspace is provided, it will only use the dataviews specified in the Workspace,
  * and apply any viewParams or datasetParams from it.
  * @param dataviews
- * @param ressources
+ * @param resources
  */
 const useDataviews = (
   dataviews: ResolvedDataview[],
@@ -16,7 +16,7 @@ const useDataviews = (
 ): Generators.AnyGeneratorConfig[] => {
   const generators = useMemo(() => {
     return dataviews.map((dataview) => {
-      const dataviewResource = ressources.find((resource) => {
+      const dataviewResource = resources.find((resource) => {
         if (resource.dataviewId !== dataview.id) return false
         const matchedDatasetParamId = dataview.datasetsParamIds.find(
           (datasetParamId: string | number) => datasetParamId === resource.datasetParamId
@@ -33,7 +33,7 @@ const useDataviews = (
       }
       return generatorConfig
     })
-  }, [dataviews, ressources])
+  }, [dataviews, resources])
   return generators
 }
 
