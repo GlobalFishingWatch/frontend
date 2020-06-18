@@ -1,20 +1,23 @@
 import template from 'lodash/template'
 import { stringify } from 'qs'
-import { FetchOptions } from '@globalfishingwatch/api-client'
+import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
 import { vessels } from '@globalfishingwatch/pbf/decoders/vessels'
-import { Dataview, WorkspaceDataview, Resource } from './types'
+import { Dataview, WorkspaceDataview, Resource, DatasetParams } from './types'
 import { RESOURCE_TYPES_BY_VIEW_TYPE } from './config'
 import resolveDataviews from './resolve-dataviews'
 
 const BASE_URL = '/dataviews'
 
 type PostDataview = Omit<Dataview, 'id'>
-
+export type DataviewsClientFetch = typeof GFWAPI.fetch
 export default class DataviewsClient {
-  _fetch: (input: string, init?: FetchOptions) => Promise<Response>
+  _fetch: DataviewsClientFetch
 
-  constructor(_fetch: (input: string, init?: FetchOptions) => Promise<Response>) {
-    this._fetch = _fetch
+  constructor(_fetch?: DataviewsClientFetch) {
+    const defaultFetch: DataviewsClientFetch = (url, init) => {
+      return GFWAPI.fetch(url, init)
+    }
+    this._fetch = _fetch || defaultFetch
   }
 
   getDataviews(ids: number[] = []): Promise<Dataview[]> {
@@ -24,14 +27,7 @@ export default class DataviewsClient {
     }
     const paramsUrl = stringify(params)
     const url = [baseUrl, paramsUrl].join('?')
-
-    const fetchDataviews = this._fetch(url, {
-      json: false,
-    })
-      .then((response: Response) => response.json())
-      .then((data: unknown) => {
-        return data as Dataview[]
-      })
+    const fetchDataviews = this._fetch<Dataview[]>(url)
 
     return fetchDataviews
   }
@@ -47,15 +43,13 @@ export default class DataviewsClient {
     const fetchOptions: FetchOptions = {
       headers: {
         'Content-Type': 'application/json',
-      } as any,
+      },
       method,
     }
     if (method !== 'DELETE') {
-      fetchOptions.body = whitelistedDataview as any
+      fetchOptions.body = whitelistedDataview
     }
-    const write = this._fetch(baseUrl, fetchOptions).then((data: unknown) => {
-      return data as Dataview
-    })
+    const write = this._fetch<Dataview>(baseUrl, fetchOptions)
     return write
   }
 
@@ -90,30 +84,38 @@ export default class DataviewsClient {
             return true
           })
           .forEach((endpoint) => {
-            const urlTemplateCompiled = template(endpoint.urlTemplate, {
+            // TODO: include query params here too
+            const pathTemplateCompiled = template(endpoint.pathTemplate, {
               interpolate: /{{([\s\S]+?)}}/g,
             })
             let resolvedUrl: string
 
-            const resolvedDatasetParams = {
+            const resolvedDatasetParams: DatasetParams = {
               dataset: dataset.id,
               ...datasetParams,
             }
 
             // template compilation will fail if template needs an override an and override has not been defined
             try {
-              resolvedUrl = urlTemplateCompiled(resolvedDatasetParams)
+              resolvedUrl = pathTemplateCompiled(resolvedDatasetParams)
               resources.push({
                 dataviewId: dataview.id,
                 type: endpoint.type,
                 datasetId: dataset.id,
                 resolvedUrl,
-                datasetParamId: datasetParams.id as string,
+                responseType: resolvedDatasetParams.binary
+                  ? endpoint.type === 'track'
+                    ? 'vessel'
+                    : 'arrayBuffer'
+                  : 'json',
+                datasetParamId:
+                  (datasetParams.id as string) || (resolvedDatasetParams.id as string),
               })
             } catch (e) {
-              console.error('Could not use urlTemplate, maybe a datasetParam is missing?')
+              console.error('Could not use pathTemplate, maybe a datasetParam is missing?')
               console.error('dataview:', dataview.id, dataview.name)
-              console.error('urlTemplate:', endpoint.urlTemplate)
+              console.error('pathTemplate:', endpoint.pathTemplate)
+              console.error('defaultDatasetParams:', defaultDatasetParams)
               console.error('datasetParams:', datasetParams)
               console.error('resolvedDatasetParams:', resolvedDatasetParams)
             }
@@ -121,20 +123,12 @@ export default class DataviewsClient {
       })
     })
     const promises = resources.map((resource) => {
-      const promise = this._fetch(resource.resolvedUrl, { json: false })
-      let thennable
-      if (resource.type === 'track') {
-        thennable = promise
-          .then((r) => r.arrayBuffer())
-          .then((buffer) => {
-            const track = vessels.Track.decode(new Uint8Array(buffer))
-            return track.data
-          })
-      } else {
-        thennable = promise.then((response) => response.json())
-      }
-
-      return thennable.then((data: unknown) => {
+      // TODO Do appropriate stuff when datasetParams have valuesArray or binary (tracks)
+      // See existing implementation of this in Track inspector's dataviews thunk:
+      // https://github.com/GlobalFishingWatch/track-inspector/blob/develop/src/features/dataviews/dataviews.thunks.ts#L58
+      return this._fetch(resource.resolvedUrl, {
+        responseType: resource.responseType,
+      }).then((data: unknown) => {
         const resourceWithData = {
           ...resource,
           data,
