@@ -4,107 +4,162 @@ import maxBy from 'lodash/maxBy'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import DataviewsClient, {
   Dataview,
-  Dataset,
   ViewParams,
+  DatasetParams,
 } from '@globalfishingwatch/dataviews-client'
-import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
 import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { RootState } from 'store/store'
 import { addResources, completeLoading as completeResourceLoading } from './resources.slice'
 
-const DATASET: Dataset = {
-  id: 'carriers:dev',
-  endpoints: [
-    {
-      type: 'track',
-      downloadable: true,
-      urlTemplate: `/datasets/{{dataset}}/vessels/{{id}}/tracks?startDate={{startDate}}&endDate={{endDate}}&binary={{binary}}&fields={{fields}}&format={{format}}&wrapLongitudes=false`,
-    },
-  ],
-}
+// const DATASET: Dataset = {
+//   id: 'carriers:dev',
+//   endpoints: [
+//     {
+//       type: 'track',
+//       downloadable: true,
+//       params: [
+//         {
+//           label: 'vessel id',
+//           id: 'id',
+//           type: 'string',
+//         },
+//       ],
+//       query: [
+//         {
+//           label: 'start date',
+//           id: 'startDate',
+//           type: 'Date ISO',
+//           required: false,
+//         },
+//         {
+//           label: 'end date',
+//           id: 'endDate',
+//           type: 'Date ISO',
+//           required: false,
+//         },
+//         {
+//           label: 'binary',
+//           id: 'binary',
+//           type: 'boolean',
+//           default: true,
+//         },
+//         {
+//           label: 'format',
+//           id: 'format',
+//           type: 'string',
+//           default: 'lines',
+//           description:
+//             'Specific encoding format to use for the track. Possible values lines, points or valueArray. valueArray: is a custom compact format, an array with all the fields serialized. The format is further explained in this issue: valueArray format. lines: Geojson with a single LineString feature containing all the points in the track points: Geojson with a FeatureCollection containing a Point feature for every point in the track',
+//         },
+//       ],
+//       pathTemplate: `/datasets/{{dataset}}/vessels/{{id}}/tracks`,
+//     },
+//     {
+//       type: 'vessel',
+//       downloadable: true,
+//       params: [
+//         {
+//           label: 'vessel id',
+//           id: 'id',
+//           type: 'string',
+//         },
+//       ],
+//       query: [],
+//       pathTemplate: `/datasets/{{dataset}}/vessels/{{id}}`,
+//     },
+//     {
+//       type: 'events',
+//       downloadable: true,
+//       params: [],
+//       query: [
+//         {
+//           label: 'event type',
+//           id: 'type',
+//           type: 'string',
+//         },
+//       ],
+//       pathTemplate: `/datasets/{{dataset}}/events`,
+//     },
+//   ],
+// }
 
-const MOCK: Record<string, Dataview[]> = {
-  // here toggle between API and mock
-  // 'dummy': [
-  '/dataviews?include=dataset%2Cdataset.endpoints': [
-    {
-      id: 0,
-      name: 'background',
-      description: 'background',
-      defaultView: {
-        type: Generators.Type.Background,
-      },
-    },
-    {
-      id: 1,
-      name: 'landmass',
-      description: 'landmass',
-      defaultView: {
-        type: Generators.Type.Basemap,
-        basemap: Generators.BasemapType.Landmass,
-      },
-    },
-    {
-      id: 2,
-      name: 'Carrier Track',
-      description: 'Carrier Track desc',
-      datasets: [DATASET],
-      defaultDatasetsParams: [
-        {
-          id: '46df37738-8057-e7d4-f3f3-a9b44d52fe03',
-          binary: true,
-          format: 'valueArray',
-          fields: 'lonlat,timestamp',
-          startDate: '2017-01-01T00:00:00.000Z',
-          endDate: '2020-01-01T00:00:00.000Z',
-        },
-      ],
-      defaultView: {
-        type: Generators.Type.Track,
-        color: '#ff00ff',
-      },
-    },
-    {
-      id: 3,
-      name: 'Fishing Track',
-      description: 'Carrier Track desc',
-      datasets: [DATASET],
-      defaultDatasetsParams: [
-        {
-          id: 'c723c1925-56f9-465c-bee8-bcc6d649c17c',
-          binary: true,
-          format: 'valueArray',
-          fields: 'lonlat,timestamp',
-          startDate: '2017-01-01T00:00:00.000Z',
-          endDate: '2020-01-01T00:00:00.000Z',
-        },
-      ],
-      defaultView: {
-        type: Generators.Type.Track,
-        color: '#0000ff',
-      },
-    },
-  ],
-}
+// const MOCK: Record<string, Dataview[]> = {
+//   // here toggle between API and mock
+//   // '/dataviews?include=dataset%2Cdataset.endpoints': [
+//   dummy: [
+//     {
+//       id: 0,
+//       name: 'background',
+//       description: 'background',
+//       defaultView: {
+//         type: Generators.Type.Background,
+//       },
+//     },
+//     {
+//       id: 1,
+//       name: 'landmass',
+//       description: 'landmass',
+//       defaultView: {
+//         type: Generators.Type.Basemap,
+//         basemap: Generators.BasemapType.Landmass,
+//       },
+//     },
+//     {
+//       id: 2,
+//       name: 'Carrier Track',
+//       description: 'Carrier Track desc',
+//       datasets: [DATASET],
+//       defaultDatasetsParams: [
+//         {
+//           id: '46df37738-8057-e7d4-f3f3-a9b44d52fe03',
+//           binary: true,
+//           format: 'valueArray',
+//           fields: 'lonlat,timestamp',
+//           startDate: '2017-01-01T00:00:00.000Z',
+//           endDate: '2020-01-01T00:00:00.000Z',
+//         },
+//       ],
+//       defaultView: {
+//         type: Generators.Type.Track,
+//         color: '#ff00ff',
+//       },
+//     },
+//     {
+//       id: 3,
+//       name: 'Fishing Track',
+//       description: 'Carrier Track desc',
+//       datasets: [DATASET],
+//       defaultDatasetsParams: [
+//         {
+//           id: 'c723c1925-56f9-465c-bee8-bcc6d649c17c',
+//           binary: true,
+//           format: 'valueArray',
+//           fields: 'lonlat,timestamp',
+//           startDate: '2017-01-01T00:00:00.000Z',
+//           endDate: '2020-01-01T00:00:00.000Z',
+//         },
+//       ],
+//       defaultView: {
+//         type: Generators.Type.Track,
+//         color: '#0000ff',
+//       },
+//     },
+//   ],
+// }
 
-const mockFetch = (url: string, init?: FetchOptions): Promise<Response> => {
-  const mock = MOCK[url]
-  if (!mock) {
-    return GFWAPI.fetch(url as string, init as any)
-  }
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(
-        new Response(JSON.stringify(mock), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
-      )
-    }, 1)
-  })
-}
+// const mockFetch: DataviewsClientFetch = (url, init) => {
+//   const mock = MOCK[url]
+//   if (!mock) {
+//     return GFWAPI.fetch(url, init)
+//   }
+//   return new Promise<any>((resolve) => {
+//     setTimeout(() => {
+//       resolve(mock)
+//     }, 1)
+//   })
+// }
 
-const dataviewsClient = new DataviewsClient(mockFetch)
+const dataviewsClient = new DataviewsClient()
 
 export interface EditorDataview extends Dataview {
   // every DV has a distinct editor ID
@@ -117,7 +172,8 @@ export interface EditorDataview extends Dataview {
   editing: boolean
   // whether DV has been savedOnce ?  already
   savedOnce?: boolean
-  allEndpointsLoaded?: boolean
+  // which endpoint is selected to load and fill params and query
+  selectedEndpoint?: string
 }
 
 const initialState: { dataviews: EditorDataview[]; loading: boolean } = {
@@ -151,7 +207,6 @@ const slice = createSlice({
         id: -1,
         name: 'new dataview',
         description: '',
-        defaultDatasetsParams: [{}],
         defaultView: {
           type: Generators.Type.Background,
         },
@@ -165,12 +220,51 @@ const slice = createSlice({
     },
     setMeta: (
       state,
-      action: PayloadAction<{ editorId: number; field: 'name' | 'description'; value: string }>
+      action: PayloadAction<{
+        editorId: number
+        field: 'name' | 'description'
+        value: string
+      }>
     ) => {
       const dataview = state.dataviews.find((d) => d.editorId === action.payload.editorId)
       if (dataview) {
         dataview[action.payload.field] = action.payload.value
         dataview.dirty = true
+      }
+    },
+    setDatasetEndpoint: (
+      state,
+      action: PayloadAction<{
+        editorId: number
+        dataset: string
+        endpoint: string
+      }>
+    ) => {
+      const { editorId, endpoint, dataset } = action.payload
+      const dataview = state.dataviews.find((d) => d.editorId === editorId)
+      if (dataview) {
+        dataview.selectedEndpoint = endpoint
+        dataview.defaultDatasetsParams = dataview.defaultDatasetsParams?.map((datasetParam) => {
+          if (datasetParam.endpoint !== endpoint) return datasetParam
+          return {
+            dataset,
+            endpoint,
+            params: datasetParam.params || {},
+            query: datasetParam.query || {},
+          }
+        })
+      }
+    },
+    setDatasetParams: (
+      state,
+      action: PayloadAction<{ editorId: number; type: 'params' | 'query'; params: DatasetParams }>
+    ) => {
+      const { editorId, type, params } = action.payload
+      const dataview = state.dataviews.find((d) => d.editorId === editorId)
+      if (dataview && dataview.defaultDatasetsParams && dataview.defaultDatasetsParams[0][type]) {
+        dataview.dirty = true
+        const datasetParams = dataview.defaultDatasetsParams[0][type]
+        dataview.defaultDatasetsParams[0][type] = { ...(datasetParams as DatasetParams), ...params }
       }
     },
     setViewParams: (state, action: PayloadAction<{ editorId: number; params: ViewParams }>) => {
@@ -221,6 +315,8 @@ export const {
   addDataview,
   setEditing,
   setMeta,
+  setDatasetEndpoint,
+  setDatasetParams,
   setViewParams,
   setType,
   startLoading,

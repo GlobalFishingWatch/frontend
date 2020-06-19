@@ -3,9 +3,9 @@ import { RootState } from 'store/store'
 
 const initialState: { dataviews: { editorId: number }[] } = {
   dataviews: [
-    // {
-    //   id: 0,
-    // },
+    {
+      editorId: 0,
+    },
     {
       editorId: 1,
     },
