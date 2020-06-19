@@ -75,9 +75,10 @@ export default class DataviewsClient {
 
       dataview.datasets?.forEach((dataset, datasetIndex) => {
         const datasetParams = datasetsParams?.length ? datasetsParams[datasetIndex] : {}
+        const endpointParamType = datasetParams.endpoint
 
         dataset.endpoints
-          ?.filter((endpoint) => endpoint.downloadable)
+          ?.filter((endpoint) => endpoint.downloadable && endpoint.type === endpointParamType)
           .filter((endpoint) => {
             const allowedEndpointTypes = RESOURCE_TYPES_BY_VIEW_TYPE[dataviewType]
             if (!allowedEndpointTypes || !allowedEndpointTypes.includes(endpoint.type)) return false
@@ -92,12 +93,19 @@ export default class DataviewsClient {
 
             const resolvedDatasetParams: DatasetParams = {
               dataset: dataset.id,
-              ...datasetParams,
+              ...(datasetParams?.params as DatasetParams),
             }
+
+            const resolvedDatasetQuery = stringify({
+              ...(datasetParams?.query as DatasetParams),
+            })
 
             // template compilation will fail if template needs an override an and override has not been defined
             try {
               resolvedUrl = pathTemplateCompiled(resolvedDatasetParams)
+              if (resolvedDatasetQuery.length) {
+                resolvedUrl += `?${resolvedDatasetQuery}`
+              }
               resources.push({
                 dataviewId: dataview.id,
                 type: endpoint.type,
@@ -115,7 +123,6 @@ export default class DataviewsClient {
               console.error('Could not use pathTemplate, maybe a datasetParam is missing?')
               console.error('dataview:', dataview.id, dataview.name)
               console.error('pathTemplate:', endpoint.pathTemplate)
-              console.error('defaultDatasetParams:', defaultDatasetParams)
               console.error('datasetParams:', datasetParams)
               console.error('resolvedDatasetParams:', resolvedDatasetParams)
             }
