@@ -96,28 +96,28 @@ export default class DataviewsClient {
               ...(datasetParams?.params as DatasetParams),
             }
 
-            const resolvedDatasetQuery = stringify({
+            const resolvedDatasetQuery = {
               ...(datasetParams?.query as DatasetParams),
-            })
+            }
+            const resolvedDatasetQueryString = stringify(resolvedDatasetQuery)
 
             // template compilation will fail if template needs an override an and override has not been defined
             try {
               resolvedUrl = pathTemplateCompiled(resolvedDatasetParams)
-              if (resolvedDatasetQuery.length) {
-                resolvedUrl += `?${resolvedDatasetQuery}`
+              if (resolvedDatasetQueryString.length) {
+                resolvedUrl += `?${resolvedDatasetQueryString}`
               }
               resources.push({
                 dataviewId: dataview.id,
                 type: endpoint.type,
                 datasetId: dataset.id,
                 resolvedUrl,
-                responseType: resolvedDatasetParams.binary
-                  ? endpoint.type === 'track'
+                responseType: resolvedDatasetQuery.binary
+                  ? endpoint.type === 'track' && resolvedDatasetQuery?.format === 'valueArray'
                     ? 'vessel'
                     : 'arrayBuffer'
                   : 'json',
-                datasetParamId:
-                  (datasetParams.id as string) || (resolvedDatasetParams.id as string),
+                datasetParamId: resolvedDatasetParams.id as string,
               })
             } catch (e) {
               console.error('Could not use pathTemplate, maybe a datasetParam is missing?')
