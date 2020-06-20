@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Dispatch } from 'react'
 import maxBy from 'lodash/maxBy'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { Generators, trackSegments, TRACK_FIELDS } from '@globalfishingwatch/layer-composer'
 import DataviewsClient, {
   Dataview,
   ViewParams,
@@ -362,6 +362,9 @@ export const fetchResources = (dataviews: Dataview[]) => async (dispatch: any) =
   dispatch(addResources(resources))
   promises.forEach((promise) => {
     promise.then((resource) => {
+      if (resource.responseType === 'vessel') {
+        resource.data = trackSegments(resource.data as number[], TRACK_FIELDS)
+      }
       dispatch(completeResourceLoading(resource))
     })
   })

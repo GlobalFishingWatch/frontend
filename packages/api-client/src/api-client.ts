@@ -220,6 +220,8 @@ export class GFWAPI {
                 return parseJSON(res)
               case 'blob':
                 return res.blob()
+              case 'text':
+                return res.text()
               case 'arrayBuffer':
                 return res.arrayBuffer()
               case 'vessel':

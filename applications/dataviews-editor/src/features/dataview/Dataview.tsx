@@ -89,7 +89,7 @@ const Dataview = () => {
               </Fragment>
             )
           })}
-        <AddButton />
+        {!currentDataview.datasets?.length && <AddButton />}
       </Section>
       <Section>
         <h2>defaultDatasetParams</h2>

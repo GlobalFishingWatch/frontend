@@ -33,6 +33,13 @@ export interface DatasetParams {
   [propName: string]: unknown
 }
 
+export interface DatasetParamsConfig {
+  dataset: string
+  endpoint: string
+  params: DatasetParams
+  query: DatasetParams
+}
+
 export interface Dataview {
   id: number | string
   name: string

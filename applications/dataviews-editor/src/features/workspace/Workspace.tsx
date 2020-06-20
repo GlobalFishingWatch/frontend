@@ -1,12 +1,10 @@
 import React, { Fragment } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import AddButton from 'common/AddButton'
+import { useSelector } from 'react-redux'
 import ListItem from 'common/ListItem'
 import Section from 'common/Section'
 import { selectWorkspaceDataviews } from './workspace.slice'
 
 const Dataviews = () => {
-  const dispatch = useDispatch()
   const dataviews = useSelector(selectWorkspaceDataviews)
   console.log('Dataviews -> dataviews', dataviews)
 
