@@ -2,8 +2,14 @@ import { createSelector } from 'reselect'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
+import { LocationRoute, ROUTE_TYPES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
+
+export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
+  const routeMap = routesMap[type] as LocationRoute
+  return { type: type as ROUTE_TYPES, ...routeMap }
+})
 
 const selectLocationQuery = createSelector([selectLocation], (location) => {
   return location.query

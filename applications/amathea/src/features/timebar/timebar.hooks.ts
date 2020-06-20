@@ -1,12 +1,12 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { selectTimerange } from 'routes/routes.selectors'
-import { updateQueryParams } from 'routes/routes.actions'
+import { useLocationConnect } from 'routes/routes.hook'
 
 export const useTimerangeConnect = () => {
-  const dispatch = useDispatch()
   const { start, end } = useSelector(selectTimerange)
+  const { dispatchQueryParams } = useLocationConnect()
   // TODO needs to be debounced like viewport
   const dispatchTimerange = (newStart: string, newEnd: string) =>
-    dispatch(updateQueryParams({ start: newStart, end: newEnd }))
+    dispatchQueryParams({ start: newStart, end: newEnd })
   return { start, end, dispatchTimerange }
 }

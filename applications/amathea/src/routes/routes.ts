@@ -1,20 +1,50 @@
 import { Dispatch } from 'redux'
-import { NOT_FOUND, RoutesMap, redirect, connectRoutes, Options } from 'redux-first-router'
+import {
+  NOT_FOUND,
+  RoutesMap,
+  redirect,
+  connectRoutes,
+  Options,
+  RouteObject,
+} from 'redux-first-router'
 import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { UpdateQueryParamsAction } from './routes.actions'
 
-export const HOME = 'HOME'
+export const WORKSPACES = 'WORKSPACES'
+export const AREAS_OF_INTEREST = 'AREAS_OF_INTEREST'
+export const DATASETS = 'DATASETS'
+export const NEW_DATASET = 'NEW_DATASET'
 
-const routesMap: RoutesMap = {
-  [HOME]: {
+export type ROUTE_TYPES =
+  | typeof WORKSPACES
+  | typeof AREAS_OF_INTEREST
+  | typeof DATASETS
+  | typeof NEW_DATASET
+
+export type LocationRoute = RouteObject & { component?: string }
+
+const routesMap: RoutesMap<LocationRoute> = {
+  [WORKSPACES]: {
     path: '/',
+    component: 'workspaces/Workspaces.tsx',
+  },
+  [AREAS_OF_INTEREST]: {
+    path: '/areas-of-interest',
+    component: 'areas-of-interest/AreasOfInterest.tsx',
+  },
+  [NEW_DATASET]: {
+    path: '/datasets/new',
+  },
+  [DATASETS]: {
+    path: '/datasets',
+    component: 'datasets/Datasets.tsx',
   },
   [NOT_FOUND]: {
     path: '',
     thunk: async (dispatch: Dispatch) => {
-      dispatch(redirect({ type: HOME }))
+      dispatch(redirect({ type: WORKSPACES }))
     },
   },
 }
