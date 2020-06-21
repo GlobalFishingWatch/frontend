@@ -56,3 +56,7 @@ export interface Resource<T = unknown> {
   resolvedUrl: string
   data?: T
 }
+
+export interface UniqueDataview extends Dataview {
+  uid: string
+}

@@ -1,4 +1,4 @@
-export { default } from './dataviews-client'
+export { default, resolveDataviews } from './dataviews-client'
 export type {
   EndpointType,
   Endpoint,
