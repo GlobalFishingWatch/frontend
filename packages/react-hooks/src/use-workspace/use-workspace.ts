@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Dataview, Workspace } from '@globalfishingwatch/dataviews-client'
+import { Dataview, WorkspaceDataview } from '@globalfishingwatch/dataviews-client'
 
 export interface UniqueDataview extends Dataview {
   uid: string
@@ -10,7 +10,11 @@ export interface UniqueDataview extends Dataview {
  * @param dataviews
  * @param workspace
  */
-const useWorkspace = (dataviews: Dataview[], workspace?: Workspace): UniqueDataview[] => {
+const useWorkspace = (
+  dataviews: Dataview[],
+  workspaceDataviews?: WorkspaceDataview[]
+): UniqueDataview[] => {
+  console.log(dataviews, workspaceDataviews)
   const newDataviews = useMemo(() => {
     return dataviews.map((dataview) => {
       const newDataview: UniqueDataview = {
@@ -27,10 +31,8 @@ const useWorkspace = (dataviews: Dataview[], workspace?: Workspace): UniqueDatav
 
       // retrieve workspace dataview that matches dataview so that we can collect overrides
       const workspaceDataview =
-        workspace &&
-        workspace.workspaceDataviews.find(
-          (workspaceDataview) => workspaceDataview.id === dataview.id
-        )
+        workspaceDataviews &&
+        workspaceDataviews.find((workspaceDataview) => workspaceDataview.id === dataview.id)
 
       // if workspace dataview exist, we'll overwrite original view|datasetsParams if they exist in workspace dataview
       if (workspaceDataview) {
@@ -65,7 +67,7 @@ const useWorkspace = (dataviews: Dataview[], workspace?: Workspace): UniqueDatav
         .join('_')
       return newDataview
     })
-  }, [dataviews, workspace])
+  }, [dataviews, workspaceDataviews])
   return newDataviews
 }
 

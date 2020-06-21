@@ -14,7 +14,7 @@ export default class DataviewsClient {
     this._fetch = _fetch
   }
 
-  getDataviews(ids: string[] = []): Promise<Dataview[]> {
+  getDataviews(ids: number[] = []): Promise<Dataview[]> {
     const baseUrl = ids.length ? `${BASE_URL}/${ids.join(',')}` : BASE_URL
     const params = {
       include: 'dataset,dataset.endpoints',
@@ -74,6 +74,7 @@ export default class DataviewsClient {
         (workspaceDataview) => workspaceDataview.id === dataview.id
       )
       const datasetsParams = workspaceDataview ? workspaceDataview.datasetsParams : []
+      console.log(dataview, dataview.datasets)
       dataview.datasets?.forEach((dataset, datasetIndex) => {
         const defaultDatasetParams = dataview.defaultDatasetsParams
           ? dataview.defaultDatasetsParams[datasetIndex]
