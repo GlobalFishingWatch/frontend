@@ -50,6 +50,7 @@ export interface Workspace {
 export interface Resource<T = unknown> {
   dataviewId: number
   datasetId: string
+  type?: string
   // identifies resource uniquely, ie vessel id
   mainDatasetParamId: string
   resolvedUrl: string

@@ -14,7 +14,6 @@ const useWorkspace = (
   dataviews: Dataview[],
   workspaceDataviews?: WorkspaceDataview[]
 ): UniqueDataview[] => {
-  console.log(dataviews, workspaceDataviews)
   const newDataviews = useMemo(() => {
     return dataviews.map((dataview) => {
       const newDataview: UniqueDataview = {

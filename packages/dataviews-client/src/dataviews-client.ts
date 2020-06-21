@@ -1,6 +1,7 @@
 import template from 'lodash/template'
 import { stringify } from 'qs'
 import { FetchOptions } from '@globalfishingwatch/api-client'
+import { vessels } from '@globalfishingwatch/pbf/decoders/vessels'
 import { Dataview, WorkspaceDataview, Resource } from './types'
 
 const BASE_URL = '/dataviews'
@@ -100,6 +101,7 @@ export default class DataviewsClient {
               resolvedUrl = urlTemplateCompiled(resolvedDatasetParams)
               resources.push({
                 dataviewId: dataview.id,
+                type: endpoint.type,
                 datasetId: dataset.id,
                 resolvedUrl,
                 mainDatasetParamId:
@@ -117,10 +119,20 @@ export default class DataviewsClient {
       })
     })
     const promises = resources.map((resource) => {
-      // TODO Do appropriate stuff when datasetParams have valuesArray or binary (tracks)
-      // See existing implementation of this in Track inspector's dataviews thunk:
-      // https://github.com/GlobalFishingWatch/track-inspector/blob/develop/src/features/dataviews/dataviews.thunks.ts#L58
-      return this._fetch(resource.resolvedUrl).then((data: unknown) => {
+      const promise = this._fetch(resource.resolvedUrl, { json: false })
+      let thennable
+      if (resource.type === 'track') {
+        thennable = promise
+          .then((r) => r.arrayBuffer())
+          .then((buffer) => {
+            const track = vessels.Track.decode(new Uint8Array(buffer))
+            return track.data
+          })
+      } else {
+        thennable = promise.then((response) => response.json())
+      }
+
+      return thennable.then((data: unknown) => {
         const resourceWithData = {
           ...resource,
           data,

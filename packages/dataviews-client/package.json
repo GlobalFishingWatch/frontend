@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.2.3",
+    "@globalfishingwatch/pbf": "*",
     "qs": "^6.9.4"
   },
   "devDependencies": {
