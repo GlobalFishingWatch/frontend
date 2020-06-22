@@ -1,0 +1,39 @@
+.container {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.steps {
+  display: flex;
+  justify-content: center;
+  font: var(--font-S);
+  margin-bottom: var(--space-M);
+}
+
+.steps button {
+  color: var(--color-secondary-blue);
+}
+
+.steps button.currentStep {
+  color: var(--color-primary-blue);
+}
+
+.steps button:not(:last-child) {
+  margin-right: var(--space-M);
+}
+
+.steps button:not(:last-child)::after {
+  color: var(--color-secondary-blue);
+  margin-left: var(--space-M);
+  content: '>';
+}
+
+.typeWrapper {
+  margin-top: var(--space-M);
+}
+
+.saveBtn {
+  margin-top: auto;
+  align-self: flex-end;
+}

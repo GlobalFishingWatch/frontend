@@ -33,11 +33,12 @@
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 0;
+  top: var(--space-XS);
   right: -2.4rem;
   width: 2.4rem;
-  height: 4.8rem;
+  height: 5rem;
   cursor: pointer;
   color: var(--color-white);
   background-color: var(--color-primary-blue);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }

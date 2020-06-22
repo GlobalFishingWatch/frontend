@@ -2,8 +2,9 @@ import React, { memo, useState, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Login from './features/user/Login'
+import Modal from './features/modal/Modal'
 import Map from './features/map/Map'
-import Timebar from './features/timebar/Timebar'
+// import Timebar from './features/timebar/Timebar'
 import Sidebar from './features/sidebar/Sidebar'
 import styles from './App.module.css'
 import { isUserLogged } from './features/user/user.slice'
@@ -13,7 +14,7 @@ import '@globalfishingwatch/ui-components/dist/base.css'
 const Main = memo(() => (
   <div className={styles.main}>
     <Map />
-    <Timebar />
+    {/* <Timebar /> */}
   </div>
 ))
 
@@ -36,10 +37,11 @@ function App(): React.ReactElement {
           onToggle={onToggle}
           aside={<Sidebar />}
           main={<Main />}
-          asideWidth="30%"
+          asideWidth="50%"
           className="split-container"
         />
       )}
+      <Modal />
     </Fragment>
   )
 }

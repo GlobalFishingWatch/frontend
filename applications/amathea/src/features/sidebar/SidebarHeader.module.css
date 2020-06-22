@@ -1,0 +1,13 @@
+.container {
+  width: 100%;
+  height: var(--size-L);
+  background: var(--color-white);
+  box-shadow: var(--box-shadow);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-S);
+}
+
+.righSide {
+  margin-left: auto;
+}

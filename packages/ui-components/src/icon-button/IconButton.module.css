@@ -9,6 +9,8 @@
   border-radius: 50%;
   background-repeat: no-repeat;
   background-position: center center;
+  color: var(--color-primary-blue);
+  background-color: transparent;
 }
 
 .iconButton:focus {
@@ -17,9 +19,8 @@
 
 .default,
 .warning,
-.border {
-  color: var(--color-secondary-blue);
-  background-color: transparent;
+.border{
+  opacity: var(--opacity-secondary);
 }
 
 .border {
@@ -32,7 +33,7 @@
 .warning:focus,
 .border:hover,
 .border:focus {
-  color: var(--color-primary-blue);
+  opacity: 1;
   background-color: var(--color-terthiary-blue);
 }
 

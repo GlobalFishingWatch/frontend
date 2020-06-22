@@ -37,7 +37,7 @@
   --opacity-border: 0.2;
 
   /* SHADOWS */
-  --block-shadow: 0 0 1rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
+  --box-shadow: 0 0 1rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
   --filter-drop-shadow: drop-shadow(0 0 1rem rgba(var(--primary-blue-rgb), var(--opacity-border)));
 
   /* UTILS */
@@ -86,6 +86,7 @@ ul {
   margin: 0;
   padding: 0;
   border: 0;
+  background: none;
   font: inherit;
   box-sizing: border-box;
   vertical-align: baseline;
@@ -102,10 +103,20 @@ ul {
 
 label {
   color: var(--color-secondary-blue);
-  font-size: var(--font-S);
-  line-height: 2rem;
+  font: var(--font-S);
   text-transform: uppercase;
   display: block;
 }
 
+.sr-only {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: auto;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
 /* TODO: include heading and other html tags styles */

@@ -9,7 +9,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 10;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,9 +22,9 @@
 }
 
 .modalContentWrapper {
+  background: var(--gradient);
   padding: 0;
   position: relative;
-  background: var(--color-gradient);
   width: 100%;
   max-width: 72rem;
   overflow-y: auto;
@@ -35,8 +35,6 @@
 @media only screen and (min-width: 720px) {
   .modalContentWrapper {
     width: 90%;
-    height: auto;
-    max-height: 90vh;
   }
 }
 
@@ -52,6 +50,7 @@
   position: sticky;
   top: 0;
   width: auto;
+  z-index: 2;
 }
 
 .withTitle {
@@ -65,7 +64,14 @@
 
 .content {
   padding: var(--space-M);
-  background: var(--gradient);
+  height: calc(100vh - var(--size-L));
+}
+
+@media only screen and (min-width: 720px) {
+  .content {
+    height: 50rem;
+    max-height: calc(100vh - var(--size-L));
+  }
 }
 
 .contentNoHeader {

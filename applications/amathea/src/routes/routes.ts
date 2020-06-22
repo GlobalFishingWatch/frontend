@@ -12,34 +12,26 @@ import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { UpdateQueryParamsAction } from './routes.actions'
 
-export const WORKSPACES = 'WORKSPACES'
-export const AREAS_OF_INTEREST = 'AREAS_OF_INTEREST'
-export const DATASETS = 'DATASETS'
-export const NEW_DATASET = 'NEW_DATASET'
+export const WORKSPACES = 'Workspaces'
+export const AREAS_OF_INTEREST = 'Areas of Interest'
+export const DATASETS = 'Datasets'
 
-export type ROUTE_TYPES =
-  | typeof WORKSPACES
-  | typeof AREAS_OF_INTEREST
-  | typeof DATASETS
-  | typeof NEW_DATASET
+export type ROUTE_TYPES = typeof WORKSPACES | typeof AREAS_OF_INTEREST | typeof DATASETS
 
-export type LocationRoute = RouteObject & { component?: string }
+export type LocationRoute = RouteObject & { sidebarComponent?: string }
 
 const routesMap: RoutesMap<LocationRoute> = {
   [WORKSPACES]: {
     path: '/',
-    component: 'workspaces/Workspaces.tsx',
+    sidebarComponent: 'workspaces/Workspaces.tsx',
   },
   [AREAS_OF_INTEREST]: {
     path: '/areas-of-interest',
-    component: 'areas-of-interest/AreasOfInterest.tsx',
-  },
-  [NEW_DATASET]: {
-    path: '/datasets/new',
+    sidebarComponent: 'areas-of-interest/AreasOfInterest.tsx',
   },
   [DATASETS]: {
     path: '/datasets',
-    component: 'datasets/Datasets.tsx',
+    sidebarComponent: 'datasets/Datasets.tsx',
   },
   [NOT_FOUND]: {
     path: '',

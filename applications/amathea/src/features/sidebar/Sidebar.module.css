@@ -1,3 +1,20 @@
-.aside {
-  padding: var(--space-S);
+.tabs {
+  width: 100%;
+  display: flex;
+}
+
+.tabs button {
+  width: 100%;
+}
+
+.tabs button.active {
+  pointer-events: none;
+  background: none;
+  color: var(--color-primary-blue);
+}
+
+.content {
+  padding: var(--space-M);
+  height: calc(100vh - 10rem);
+  overflow-y: auto;
 }
