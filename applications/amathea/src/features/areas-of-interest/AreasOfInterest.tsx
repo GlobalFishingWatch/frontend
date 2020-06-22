@@ -18,8 +18,8 @@ function AreasOfInterest(): React.ReactElement {
       {aois.map((aoi) => (
         <div className={styles.listItem} key={aoi.id}>
           <button className={styles.titleLink}>{aoi.label}</button>
-          <IconButton icon="edit" />
-          <IconButton icon="delete" type="warning" />
+          <IconButton icon="edit" tooltip="Edit Area of Interest" />
+          <IconButton icon="delete" type="warning" tooltip="Delete Area of Interest" />
         </div>
       ))}
       <Button

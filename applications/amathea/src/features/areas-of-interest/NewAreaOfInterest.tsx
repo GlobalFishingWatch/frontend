@@ -11,22 +11,37 @@ import { ReactComponent as CustomShapeFormats } from '../../assets/custom-shape-
 import styles from './NewAreaOfInterest.module.css'
 
 function NewAreaOfInterest(): React.ReactElement {
-  const [selectedSource, setSelectedOption] = useState<SelectOption | undefined>()
-  const onSelect: SelectOnChange = (option) => {
-    console.log(option)
-
-    setSelectedOption(option)
+  const [selectedSource, setSelectedSourceOption] = useState<SelectOption | undefined>()
+  const [selectedMpa, setSelectedMpaOption] = useState<SelectOption | undefined>()
+  const onSelectSource: SelectOnChange = (option) => {
+    setSelectedSourceOption(option)
   }
-  const onClean: SelectOnRemove = () => {
-    setSelectedOption(undefined)
+  const onCleanSource: SelectOnRemove = () => {
+    setSelectedSourceOption(undefined)
   }
-  const onRemove: SelectOnChange = () => {
-    setSelectedOption(undefined)
+  const onRemoveSource: SelectOnChange = () => {
+    setSelectedSourceOption(undefined)
+  }
+  const onSelectMpa: SelectOnChange = (option) => {
+    setSelectedMpaOption(option)
+  }
+  const onCleanMpa: SelectOnRemove = () => {
+    setSelectedMpaOption(undefined)
+  }
+  const onRemoveMpa: SelectOnChange = () => {
+    setSelectedMpaOption(undefined)
   }
   const { hideModal } = useModalConnect()
   const sources = [
-    { id: 'static-context-areas', label: 'Marine Protected Areas' },
+    { id: 'mpas', label: 'Marine Protected Areas' },
     { id: 'custom-shape', label: 'Custom Shape' },
+  ]
+  const mpas = [
+    { id: 'mpa1', label: 'Marine Protected Area 1' },
+    { id: 'mpa2', label: 'Marine Protected Area 2' },
+    { id: 'mpa3', label: 'Marine Protected Area 3' },
+    { id: 'mpa4', label: 'Marine Protected Area 4' },
+    { id: 'mpa5', label: 'Marine Protected Area 5' },
   ]
   return (
     <div className={styles.verticalContainer}>
@@ -38,12 +53,26 @@ function NewAreaOfInterest(): React.ReactElement {
               label="Source"
               options={sources}
               selectedOption={selectedSource}
-              onSelect={onSelect}
-              onRemove={onRemove}
-              onCleanClick={onClean}
+              onSelect={onSelectSource}
+              onRemove={onRemoveSource}
+              onCleanClick={onCleanSource}
             ></Select>
           </div>
-          <InputText label="Name" placeholder="Name your Area of Interest" />
+          {selectedSource?.id === 'mpas' && (
+            <div className={styles.sourceWrapper}>
+              <Select
+                label="Marine Protected Area"
+                options={mpas}
+                selectedOption={selectedMpa}
+                onSelect={onSelectMpa}
+                onRemove={onRemoveMpa}
+                onCleanClick={onCleanMpa}
+              ></Select>
+            </div>
+          )}
+          {selectedSource?.id === 'custom-shape' && (
+            <InputText label="Name" placeholder="Name your Area of Interest" />
+          )}
         </div>
         {selectedSource?.id === 'custom-shape' && (
           <div className={styles.verticalContainer}>

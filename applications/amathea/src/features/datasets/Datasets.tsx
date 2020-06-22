@@ -23,9 +23,9 @@ function Datasets(): React.ReactElement {
       {datasets.user.map((dataset) => (
         <div className={styles.listItem} key={dataset.id}>
           <button className={styles.titleLink}>{dataset.label}</button>
-          <IconButton icon="edit" />
-          <IconButton icon="share" />
-          <IconButton icon="delete" type="warning" />
+          <IconButton icon="edit" tooltip="Edit Dataset" />
+          <IconButton icon="share" tooltip="Share Dataset" />
+          <IconButton icon="delete" type="warning" tooltip="Delete Dataset" />
         </div>
       ))}
       <Button
@@ -40,7 +40,7 @@ function Datasets(): React.ReactElement {
       {datasets.shared.map((dataset) => (
         <div className={styles.listItem} key={dataset.id}>
           <button className={styles.titleLink}>{dataset.name}</button>
-          <IconButton icon="edit" />
+          <IconButton icon="edit" tooltip="Edit Dataset" />
         </div>
       ))}
     </div>

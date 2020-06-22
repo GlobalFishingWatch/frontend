@@ -1,6 +1,7 @@
 import React, { memo, useState, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
+import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Login from './features/user/Login'
 import Modal from './features/modal/Modal'
 import Map from './features/map/Map'
@@ -19,10 +20,15 @@ const Main = memo(() => (
 ))
 
 function App(): React.ReactElement {
+  const [menuOpen, setMenuOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const logged = useSelector(isUserLogged)
 
-  const onToggle = () => {
+  // const onToggleMenu = () => {
+  //   setMenuOpen(!menuOpen)
+  // }
+
+  const onToggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
@@ -34,7 +40,7 @@ function App(): React.ReactElement {
       ) : (
         <SplitView
           isOpen={sidebarOpen}
-          onToggle={onToggle}
+          onToggle={onToggleSidebar}
           aside={<Sidebar />}
           main={<Main />}
           asideWidth="50%"
@@ -42,6 +48,9 @@ function App(): React.ReactElement {
         />
       )}
       <Modal />
+      <Menu isOpen={menuOpen} onClose={(e) => setMenuOpen(false)} activeLinkId="map-data">
+        Menu toggle
+      </Menu>
     </Fragment>
   )
 }

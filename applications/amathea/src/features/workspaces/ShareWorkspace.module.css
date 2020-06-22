@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: var(--border);
+}
+
+.newEditorWrapper {
+  margin: var(--space-M) 0;
+  display: flex;
+  align-items: flex-end;
+}
+
+.newEditorWrapper div:first-child {
+  flex: 1;
+  margin-right: var(--space-S);
+}
+

@@ -25,10 +25,16 @@ function Workspaces(): React.ReactElement {
       {workspaces.user.map((workspace) => (
         <div className={styles.listItem} key={workspace.id}>
           <button className={styles.titleLink}>{workspace.label}</button>
-          <IconButton icon="edit" />
-          <IconButton icon="publish" />
-          <IconButton icon="share" />
-          <IconButton icon="delete" type="warning" />
+          <IconButton icon="edit" tooltip="Edit Workspace" />
+          {/* <IconButton icon="publish" tooltip="Publish workspace" /> */}
+          <IconButton
+            icon="share"
+            tooltip="Share Workspace"
+            onClick={() => {
+              showModal('shareWorkspace')
+            }}
+          />
+          <IconButton icon="delete" type="warning" tooltip="Delete Workspace" />
         </div>
       ))}
       <Button
@@ -43,7 +49,7 @@ function Workspaces(): React.ReactElement {
       {workspaces.shared.map((workspace) => (
         <div className={styles.listItem} key={workspace.id}>
           <button className={styles.titleLink}>{workspace.label}</button>
-          <IconButton icon="edit" />
+          <IconButton icon="edit" tooltip="Edit Workspace" />
         </div>
       ))}
     </div>
