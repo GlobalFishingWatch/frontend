@@ -7,23 +7,23 @@ export const CARTO_FISHING_MAP_API = 'https://carto.globalfishingwatch.org/user/
 const DEFAULT_LINE_COLOR = 'white'
 
 interface CartoLayerOptions {
-  id: string
+  cartoTableId: string
   sql: string
   baseUrl: string
 }
 
 const getCartoLayergroupId = async (options: CartoLayerOptions) => {
-  const { id, sql, baseUrl } = options
+  const { cartoTableId, sql, baseUrl } = options
   const layerConfig = JSON.stringify({
     version: '1.3.0',
     stat_tag: 'API',
-    layers: [{ id, options: { sql } }],
+    layers: [{ id: cartoTableId, options: { sql } }],
   })
   const url = `${baseUrl}?config=${encodeURIComponent(layerConfig)}`
 
   const response = await fetch(url).then((res) => {
     if (res.status >= 400) {
-      throw new Error(`loading of layer failed ${id}`)
+      throw new Error(`loading of layer failed ${cartoTableId}`)
     }
     return res.json()
   })
@@ -42,11 +42,12 @@ class CartoPolygonsGenerator {
 
   _getStyleSources = (config: CartoPolygonsGeneratorConfig) => {
     const { id } = config
-    const layerData = (layersDirectory as any)[id] || config
+    const cartoTableId = config.cartoTableId || id
+    const layerData = (layersDirectory as any)[cartoTableId as string] || config
 
     try {
       const response = {
-        sources: [{ id, ...layerData.source, tiles: [] }],
+        sources: [{ id: cartoTableId, ...layerData.source, tiles: [] }],
       }
       if (this.tilesCacheByid[id] !== undefined) {
         response.sources[0].tiles = this.tilesCacheByid[id]
@@ -56,7 +57,7 @@ class CartoPolygonsGenerator {
       const promise = async () => {
         try {
           const { layergroupid } = await getCartoLayergroupId({
-            id,
+            cartoTableId,
             baseUrl: config.baseUrl || this.baseUrl,
             ...layerData.source,
           })
@@ -78,7 +79,10 @@ class CartoPolygonsGenerator {
     const isSourceReady = this.tilesCacheByid[config.id] !== undefined
     if (!isSourceReady) return []
 
-    const layerData = (layersDirectory as any)[config.id] || config
+    const { id } = config
+    const cartoTableId = config.cartoTableId || id
+
+    const layerData = (layersDirectory as any)[cartoTableId] || config
     const layers: any = layerData.layers.map((glLayer: any) => {
       const visibility =
         config.visible !== undefined ? (config.visible ? 'visible' : 'none') : 'visible'

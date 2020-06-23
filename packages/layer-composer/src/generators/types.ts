@@ -62,10 +62,11 @@ export interface GlGeneratorConfig extends GeneratorConfig {
 }
 
 /**
- * Renders outlined polygons for our CARTO tables library, typically context layers. Takes care of instanciating CARTO anonymous maps/layergroupid (hence asynchronous)
+ * Renders outlined polygons for our CARTO tables library, typically context layers. Takes care of instanciating CARTO anonymous maps/layergroupid (hence asynchronous). cartoTableId should be provided but will fallback to base generator id in case it's not.
  */
 export interface CartoPolygonsGeneratorConfig extends GeneratorConfig {
   type: Type.CartoPolygons
+  cartoTableId?: string
   baseUrl?: string
   selectedFeatures?: any
   color?: string
