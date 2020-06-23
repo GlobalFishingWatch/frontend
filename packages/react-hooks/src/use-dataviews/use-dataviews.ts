@@ -21,7 +21,7 @@ const useDataviews = (
         if (resource.dataviewId !== dataview.id) return false
         if (!dataview.datasetsParams) return false
         const datasetParams = dataview.datasetsParams.find((datasetParams: DatasetParams) => {
-          return datasetParams.id && datasetParams.id === resource.mainDatasetParamId
+          return datasetParams.id && datasetParams.id === resource.datasetParamId
         })
         return datasetParams
       })

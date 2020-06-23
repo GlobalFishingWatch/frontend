@@ -6,7 +6,7 @@ export interface UniqueDataview extends Dataview {
 }
 
 /**
- * Gets list of dataviews and those present in the workspace, and applies any view or datasetParams from it (merges dataview.defaultView with dataviuew.view and workspace's dataview.view).
+ * Gets list of dataviews and those present in the workspace, and applies any view or datasetParams from it (merges dataview.defaultView with dataview.view and workspace's dataview.view).
  * @param dataviews
  * @param workspace
  */

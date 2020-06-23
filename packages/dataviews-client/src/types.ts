@@ -52,11 +52,12 @@ export interface Resource<T = unknown> {
   datasetId: string
   type?: string
   // identifies resource uniquely, ie vessel id
-  mainDatasetParamId: string
+  datasetParamId: string
   resolvedUrl: string
   data?: T
 }
 
 export interface UniqueDataview extends Dataview {
   uid: string
+  datasetsParamIds: string[]
 }
