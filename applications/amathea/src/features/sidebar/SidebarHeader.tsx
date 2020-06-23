@@ -9,7 +9,7 @@ function SidebarHeader(): React.ReactElement {
       <IconButton icon="menu" />
       <Logo subBrand="Marine Reserves" />
       <div className={styles.righSide}>
-        <IconButton icon="share" />
+        <IconButton icon="user" />
       </div>
     </header>
   )

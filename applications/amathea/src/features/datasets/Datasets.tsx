@@ -1,26 +1,20 @@
 import React from 'react'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
+import { DatasetConfig } from 'types'
 import { useModalConnect } from 'features/modal/modal.hooks'
+import { USER_DATA } from 'data/user-data'
 import styles from './Datasets.module.css'
 
 function Datasets(): React.ReactElement {
   const { showModal } = useModalConnect()
-  const datasets = {
-    user: [
-      { id: 'user-id-plus-hash-1', label: 'Dataset Name 1' },
-      { id: 'user-id-plus-hash-2', label: 'Dataset Name 2' },
-      { id: 'user-id-plus-hash-3', label: 'Dataset Name 3' },
-      { id: 'user-id-plus-hash-4', label: 'Dataset Name 4' },
-      { id: 'user-id-plus-hash-5', label: 'Dataset Name 5' },
-    ],
-    shared: [{ id: 'user-id-plus-hash-6', name: 'Shared Dataset Name 1' }],
-  }
+  const userDatasets: DatasetConfig[] = USER_DATA.datasets.user
+  const sharedDatasets: DatasetConfig[] = USER_DATA.datasets.shared
   return (
     <div className={styles.container}>
       <h1 className="sr-only">Datasets</h1>
       <label>Your Datasets</label>
-      {datasets.user.map((dataset) => (
+      {userDatasets.map((dataset) => (
         <div className={styles.listItem} key={dataset.id}>
           <button className={styles.titleLink}>{dataset.label}</button>
           <IconButton icon="edit" tooltip="Edit Dataset" />
@@ -37,9 +31,9 @@ function Datasets(): React.ReactElement {
         Create new dataset
       </Button>
       <label>Datasets shared with you</label>
-      {datasets.shared.map((dataset) => (
+      {sharedDatasets.map((dataset) => (
         <div className={styles.listItem} key={dataset.id}>
-          <button className={styles.titleLink}>{dataset.name}</button>
+          <button className={styles.titleLink}>{dataset.label}</button>
           <IconButton icon="edit" tooltip="Edit Dataset" />
         </div>
       ))}

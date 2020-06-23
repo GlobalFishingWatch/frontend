@@ -11,13 +11,16 @@
   border-bottom: var(--border);
 }
 
-.newEditorWrapper {
-  margin: var(--space-M) 0;
+.currentEditors {
+  margin-bottom: var(--space-M);
+}
+
+.newEditors {
   display: flex;
   align-items: flex-end;
 }
 
-.newEditorWrapper div:first-child {
+.newEditors div:first-child {
   flex: 1;
   margin-right: var(--space-S);
 }

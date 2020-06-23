@@ -7,6 +7,7 @@ import Select, {
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { useModalConnect } from 'features/modal/modal.hooks'
+import { AOI_SOURCES, MPAS } from 'data/data'
 import { ReactComponent as CustomShapeFormats } from '../../assets/custom-shape-formats.svg'
 import styles from './NewAreaOfInterest.module.css'
 
@@ -32,17 +33,7 @@ function NewAreaOfInterest(): React.ReactElement {
     setSelectedMpaOption(undefined)
   }
   const { hideModal } = useModalConnect()
-  const sources = [
-    { id: 'mpas', label: 'Marine Protected Areas' },
-    { id: 'custom-shape', label: 'Custom Shape' },
-  ]
-  const mpas = [
-    { id: 'mpa1', label: 'Marine Protected Area 1' },
-    { id: 'mpa2', label: 'Marine Protected Area 2' },
-    { id: 'mpa3', label: 'Marine Protected Area 3' },
-    { id: 'mpa4', label: 'Marine Protected Area 4' },
-    { id: 'mpa5', label: 'Marine Protected Area 5' },
-  ]
+
   return (
     <div className={styles.verticalContainer}>
       <h1 className="sr-only">New Area of Interest</h1>
@@ -51,7 +42,7 @@ function NewAreaOfInterest(): React.ReactElement {
           <div className={styles.sourceWrapper}>
             <Select
               label="Source"
-              options={sources}
+              options={AOI_SOURCES}
               selectedOption={selectedSource}
               onSelect={onSelectSource}
               onRemove={onRemoveSource}
@@ -62,7 +53,7 @@ function NewAreaOfInterest(): React.ReactElement {
             <div className={styles.sourceWrapper}>
               <Select
                 label="Marine Protected Area"
-                options={mpas}
+                options={MPAS}
                 selectedOption={selectedMpa}
                 onSelect={onSelectMpa}
                 onRemove={onRemoveMpa}

@@ -8,11 +8,14 @@ import { ReactComponent as ArrowRight } from '../assets/icons/arrow-right.svg'
 import { ReactComponent as ArrowTop } from '../assets/icons/arrow-top.svg'
 import { ReactComponent as Camera } from '../assets/icons/camera.svg'
 import { ReactComponent as Close } from '../assets/icons/close.svg'
+import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
 import { ReactComponent as Compare } from '../assets/icons/compare.svg'
 import { ReactComponent as Delete } from '../assets/icons/delete.svg'
 import { ReactComponent as Download } from '../assets/icons/download.svg'
 import { ReactComponent as Edit } from '../assets/icons/edit.svg'
 import { ReactComponent as Email } from '../assets/icons/email.svg'
+import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
+import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
 import { ReactComponent as Graph } from '../assets/icons/graph.svg'
 import { ReactComponent as Home } from '../assets/icons/home.svg'
 import { ReactComponent as Info } from '../assets/icons/info.svg'
@@ -27,6 +30,8 @@ import { ReactComponent as Search } from '../assets/icons/search.svg'
 import { ReactComponent as Share } from '../assets/icons/share.svg'
 import { ReactComponent as Split } from '../assets/icons/split.svg'
 import { ReactComponent as Tick } from '../assets/icons/tick.svg'
+import { ReactComponent as Upload } from '../assets/icons/upload.svg'
+import { ReactComponent as User } from '../assets/icons/user.svg'
 import { ReactComponent as ViewOnMap } from '../assets/icons/view-on-map.svg'
 import { ReactComponent as Warning } from '../assets/icons/warning.svg'
 import styles from './Icon.module.css'
@@ -38,11 +43,14 @@ export const IconComponents = {
   'arrow-top': ArrowTop,
   camera: Camera,
   close: Close,
+  'color-picker': ColorPicker,
   compare: Compare,
   delete: Delete,
   download: Download,
   edit: Edit,
   email: Email,
+  'filter-off': FilterOff,
+  'filter-on': FilterOn,
   graph: Graph,
   home: Home,
   info: Info,
@@ -57,6 +65,8 @@ export const IconComponents = {
   share: Share,
   split: Split,
   tick: Tick,
+  upload: Upload,
+  user: User,
   'view-on-map': ViewOnMap,
   warning: Warning,
 }

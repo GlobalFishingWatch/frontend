@@ -10,6 +10,9 @@
   flex: 1;
   color: inherit;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .rightSide {
