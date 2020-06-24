@@ -1,5 +1,3 @@
-import { type } from 'os'
-
 export type WorkspaceParam = 'zoom' | 'latitude' | 'longitude' | 'start' | 'end' | 'modal'
 
 export type QueryParams = {
