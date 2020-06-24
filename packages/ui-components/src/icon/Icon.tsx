@@ -19,6 +19,7 @@ import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
 import { ReactComponent as Graph } from '../assets/icons/graph.svg'
 import { ReactComponent as Home } from '../assets/icons/home.svg'
 import { ReactComponent as Info } from '../assets/icons/info.svg'
+import { ReactComponent as Logout } from '../assets/icons/logout.svg'
 import { ReactComponent as Menu } from '../assets/icons/menu.svg'
 import { ReactComponent as Minus } from '../assets/icons/minus.svg'
 import { ReactComponent as Plus } from '../assets/icons/plus.svg'
@@ -54,6 +55,7 @@ export const IconComponents = {
   graph: Graph,
   home: Home,
   info: Info,
+  logout: Logout,
   menu: Menu,
   minus: Minus,
   plus: Plus,
