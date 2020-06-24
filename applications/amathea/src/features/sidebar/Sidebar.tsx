@@ -12,8 +12,8 @@ const SidebarComponent = (component: string) => {
 function Sidebar(): React.ReactElement {
   const { location, dispatchLocation } = useLocationConnect()
   const ComponentSidebar = useMemo(() => {
-    return location?.sidebarComponent ? SidebarComponent(location.sidebarComponent) : null
-  }, [location?.sidebarComponent])
+    return location.sidebarComponent ? SidebarComponent(location.sidebarComponent) : null
+  }, [location.sidebarComponent])
 
   return (
     <div className={styles.container}>
