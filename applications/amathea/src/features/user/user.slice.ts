@@ -22,7 +22,23 @@ const initialState: UserState = {
   error: '',
 }
 
-export const counterSlice = createSlice({
+interface UserPermissions {
+  type: string
+  value: string
+  action: string
+}
+
+interface UserData {
+  email: string
+  firstName: string
+  lastName: string
+  id: number
+  permissions: UserPermissions[]
+  photo: string
+  type: string
+}
+
+const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
@@ -41,7 +57,7 @@ export const counterSlice = createSlice({
       state.logged = true
       state.data = action.payload
     },
-    userError: (state, action: PayloadAction<string>) => {
+    userError: (state, action: PayloadAction<Error>) => {
       state.loading = false
       state.resolved = true
       state.logged = false
@@ -50,7 +66,7 @@ export const counterSlice = createSlice({
   },
 })
 
-export const { userLoading, userLoaded, userError } = counterSlice.actions
+const { userLoading, userLoaded, userError } = userSlice.actions
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(fetchUser())`. This
@@ -60,13 +76,15 @@ export const fetchUser = (): AppThunk => (dispatch) => {
   dispatch(userLoading())
   const accessToken = getAccessTokenFromUrl()
   GFWAPI.login({ accessToken })
-    .then((user) => {
+    .then((user: UserData) => {
+      console.log(user)
+
       dispatch(userLoaded(user))
       if (accessToken) {
         removeAccessTokenFromUrl()
       }
     })
-    .catch((e) => {
+    .catch((e: Error) => {
       dispatch(userError(e))
     })
 }
@@ -84,4 +102,4 @@ export const isUserLogged = createSelector(
   (logged, loading) => !loading && logged
 )
 
-export default counterSlice.reducer
+export default userSlice.reducer
