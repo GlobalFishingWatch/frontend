@@ -7,10 +7,18 @@
   width: 100%;
 }
 
+.tabs button:not(:last-child) {
+  margin-right: 0.1rem;
+}
+
 .tabs button.active {
   pointer-events: none;
   background: none;
   color: var(--color-primary-blue);
+}
+
+.tabs button.active:focus {
+  background: none;
 }
 
 .content {
