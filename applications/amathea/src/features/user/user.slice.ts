@@ -22,22 +22,6 @@ const initialState: UserState = {
   error: '',
 }
 
-interface UserPermissions {
-  type: string
-  value: string
-  action: string
-}
-
-interface UserData {
-  email: string
-  firstName: string
-  lastName: string
-  id: number
-  permissions: UserPermissions[]
-  photo: string
-  type: string
-}
-
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -77,8 +61,6 @@ export const fetchUser = (): AppThunk => (dispatch) => {
   const accessToken = getAccessTokenFromUrl()
   GFWAPI.login({ accessToken })
     .then((user: UserData) => {
-      console.log(user)
-
       dispatch(userLoaded(user))
       if (accessToken) {
         removeAccessTokenFromUrl()

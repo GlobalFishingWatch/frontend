@@ -2,22 +2,27 @@ import React, { memo, useState, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
+import { useLocationConnect } from 'routes/routes.hook'
+import { WORKSPACE_EDITOR } from 'routes/routes'
 import Login from './features/user/Login'
 import Modal from './features/modal/Modal'
 import Map from './features/map/Map'
-// import Timebar from './features/timebar/Timebar'
+import Timebar from './features/timebar/Timebar'
 import Sidebar from './features/sidebar/Sidebar'
 import styles from './App.module.css'
 import { isUserLogged } from './features/user/user.slice'
 
 import '@globalfishingwatch/ui-components/dist/base.css'
 
-const Main = memo(() => (
-  <div className={styles.main}>
-    <Map />
-    {/* <Timebar /> */}
-  </div>
-))
+const Main = memo(() => {
+  const { location } = useLocationConnect()
+  return (
+    <div className={styles.main}>
+      <Map />
+      {location.type === WORKSPACE_EDITOR && <Timebar />}
+    </div>
+  )
+})
 
 function App(): React.ReactElement {
   const [menuOpen, setMenuOpen] = useState(false)

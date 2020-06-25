@@ -13,10 +13,15 @@ import { RootState } from 'store'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const WORKSPACES = 'Workspaces'
+export const WORKSPACE_EDITOR = 'Workspace Editor'
 export const AREAS_OF_INTEREST = 'Areas of Interest'
 export const DATASETS = 'Datasets'
 
-export type ROUTE_TYPES = typeof WORKSPACES | typeof AREAS_OF_INTEREST | typeof DATASETS
+export type ROUTE_TYPES =
+  | typeof WORKSPACES
+  | typeof WORKSPACE_EDITOR
+  | typeof AREAS_OF_INTEREST
+  | typeof DATASETS
 
 export type LocationRoute = RouteObject & { sidebarComponent?: string }
 
