@@ -14,7 +14,7 @@ function ShareWorkspace(): React.ReactElement {
   )?.editors
   return (
     <div className={styles.container}>
-      <h1 className="sr-only">Workspace sharing options</h1>
+      <h1 className="screen-reader-only">Workspace sharing options</h1>
       {editors && editors.length >= 1 && (
         <ul className={styles.currentEditors}>
           <label>Current editors</label>

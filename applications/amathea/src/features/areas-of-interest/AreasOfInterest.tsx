@@ -11,7 +11,7 @@ function AreasOfInterest(): React.ReactElement {
   const aois: AOIConfig[] = USER_DATA.aois
   return (
     <div className={styles.container}>
-      <h1 className="sr-only">Areas of interest</h1>
+      <h1 className="screen-reader-only">Areas of interest</h1>
       <label>Your Areas of interest</label>
       {aois.map((aoi) => (
         <div className={styles.listItem} key={aoi.id}>

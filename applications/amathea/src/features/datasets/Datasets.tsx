@@ -12,7 +12,7 @@ function Datasets(): React.ReactElement {
   const sharedDatasets: DatasetConfig[] = USER_DATA.datasets.shared
   return (
     <div className={styles.container}>
-      <h1 className="sr-only">Datasets</h1>
+      <h1 className="screen-reader-only">Datasets</h1>
       <label>Your Datasets</label>
       {userDatasets.map((dataset) => (
         <div className={styles.listItem} key={dataset.id}>

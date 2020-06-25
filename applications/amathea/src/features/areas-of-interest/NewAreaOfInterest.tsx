@@ -36,7 +36,7 @@ function NewAreaOfInterest(): React.ReactElement {
 
   return (
     <div className={styles.verticalContainer}>
-      <h1 className="sr-only">New Area of Interest</h1>
+      <h1 className="screen-reader-only">New Area of Interest</h1>
       <div className={styles.horizontalContainer}>
         <div className={styles.verticalContainer}>
           <div className={styles.sourceWrapper}>

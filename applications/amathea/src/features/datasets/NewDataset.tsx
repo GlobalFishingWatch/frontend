@@ -30,7 +30,7 @@ function NewDataset(): React.ReactElement {
 
   return (
     <div className={styles.container}>
-      <h1 className="sr-only">New Dataset</h1>
+      <h1 className="screen-reader-only">New Dataset</h1>
       <div className={styles.steps}>
         <button
           onClick={() => setStep('info')}

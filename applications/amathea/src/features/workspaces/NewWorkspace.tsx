@@ -29,7 +29,7 @@ function NewWorkspace(): React.ReactElement {
   ]
   return (
     <div className={styles.container}>
-      <h1 className="sr-only">New Workspace</h1>
+      <h1 className="screen-reader-only">New Workspace</h1>
       <InputText label="Name" placeholder="Name your workspace" />
       <div className={styles.AOIWrapper}>
         <Select

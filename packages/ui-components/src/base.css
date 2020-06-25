@@ -108,7 +108,7 @@ label {
   display: block;
 }
 
-.sr-only {
+.screen-reader-only {
   border: 0;
   clip: rect(0 0 0 0);
   height: auto;

@@ -12,7 +12,7 @@ function Workspaces(): React.ReactElement {
   const sharedWorkspaces: WorkspaceConfig[] = USER_DATA.workspaces.shared
   return (
     <div className={styles.container}>
-      <h1 className="sr-only">Workspaces</h1>
+      <h1 className="screen-reader-only">Workspaces</h1>
       <label>Your workspaces</label>
       {userWorkspaces.map((workspace) => (
         <div className={styles.listItem} key={workspace.id}>
