@@ -3,6 +3,7 @@ import { stringify } from 'qs'
 import { FetchOptions } from '@globalfishingwatch/api-client'
 import { vessels } from '@globalfishingwatch/pbf/decoders/vessels'
 import { Dataview, WorkspaceDataview, Resource } from './types'
+import { RESOURCE_TYPES_BY_VIEW_TYPE } from './config'
 
 const BASE_URL = '/dataviews'
 
@@ -65,6 +66,8 @@ export default class DataviewsClient {
     return this._writeDataview(dataview, 'DELETE')
   }
 
+  // TODO support for a list of already downloaded resources
+  // TODO uniq by URL
   getResources(
     dataviews: Dataview[],
     workspaceDataviews: WorkspaceDataview[] = []
@@ -75,6 +78,7 @@ export default class DataviewsClient {
         (workspaceDataview) => workspaceDataview.id === dataview.id
       )
       const datasetsParams = workspaceDataview ? workspaceDataview.datasetsParams : []
+      const dataviewType = dataview.view?.type || dataview.defaultView?.type || ''
 
       dataview.datasets?.forEach((dataset, datasetIndex) => {
         const defaultDatasetParams = dataview.defaultDatasetsParams
@@ -84,6 +88,11 @@ export default class DataviewsClient {
 
         dataset.endpoints
           ?.filter((endpoint) => endpoint.downloadable)
+          .filter((endpoint) => {
+            const allowedEndpointTypes = RESOURCE_TYPES_BY_VIEW_TYPE[dataviewType]
+            if (!allowedEndpointTypes || !allowedEndpointTypes.includes(endpoint.type)) return false
+            return true
+          })
           .forEach((endpoint) => {
             const urlTemplateCompiled = template(endpoint.urlTemplate, {
               interpolate: /{{([\s\S]+?)}}/g,
