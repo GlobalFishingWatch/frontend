@@ -1,4 +1,4 @@
-import { Dataview, WorkspaceDataview, UniqueDataview } from './types'
+import { Dataview, WorkspaceDataview, ResolvedDataview } from './types'
 
 /**
  * Gets list of dataviews and those present in the workspace, and applies any view or datasetParams from it (merges dataview.defaultView with dataview.view and workspace's dataview.view).
@@ -7,7 +7,7 @@ import { Dataview, WorkspaceDataview, UniqueDataview } from './types'
  */
 export default (dataviews: Dataview[], workspaceDataviews?: WorkspaceDataview[]) => {
   return dataviews.map((dataview) => {
-    const newDataview: UniqueDataview = {
+    const newDataview: ResolvedDataview = {
       uid: '',
       datasetsParamIds: [],
       ...dataview,

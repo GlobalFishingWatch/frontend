@@ -21,7 +21,7 @@ export interface DatasetParams {
 }
 
 export interface Dataview {
-  id: number
+  id: number | string
   name: string
   description: string
   createdAt?: string
@@ -34,7 +34,7 @@ export interface Dataview {
 }
 
 export interface WorkspaceDataview {
-  id: number
+  id: number | string
   view?: ViewParams
   datasetsParams?: DatasetParams[]
 }
@@ -48,7 +48,7 @@ export interface Workspace {
   end: string
 }
 export interface Resource<T = unknown> {
-  dataviewId: number
+  dataviewId: number | string
   datasetId: string
   type?: string
   // identifies resource uniquely, ie vessel id
@@ -57,7 +57,7 @@ export interface Resource<T = unknown> {
   data?: T
 }
 
-export interface UniqueDataview extends Dataview {
+export interface ResolvedDataview extends Dataview {
   uid: string
   datasetsParamIds: string[]
 }

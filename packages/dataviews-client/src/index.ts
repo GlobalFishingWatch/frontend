@@ -10,4 +10,5 @@ export type {
   Resource,
   ViewParams,
   DatasetParams,
+  ResolvedDataview,
 } from './types'
