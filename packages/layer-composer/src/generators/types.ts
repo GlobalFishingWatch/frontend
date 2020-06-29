@@ -22,7 +22,7 @@ export interface GlobalGeneratorConfig {
 
 export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[]
 
-export interface GeneratorConfig extends GlobalGeneratorConfig {
+export interface GeneratorConfig {
   id: string
   data?: AnyData
   type: Type | string
