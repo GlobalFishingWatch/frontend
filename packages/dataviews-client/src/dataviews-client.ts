@@ -4,6 +4,7 @@ import { FetchOptions } from '@globalfishingwatch/api-client'
 import { vessels } from '@globalfishingwatch/pbf/decoders/vessels'
 import { Dataview, WorkspaceDataview, Resource } from './types'
 import { RESOURCE_TYPES_BY_VIEW_TYPE } from './config'
+import resolveDataviews from './resolve-dataviews'
 
 const BASE_URL = '/dataviews'
 
@@ -73,17 +74,12 @@ export default class DataviewsClient {
     workspaceDataviews: WorkspaceDataview[] = []
   ): { resources: Resource[]; promises: Promise<Resource>[] } {
     const resources: Resource[] = []
-    dataviews.forEach((dataview) => {
-      const workspaceDataview = workspaceDataviews.find(
-        (workspaceDataview) => workspaceDataview.id === dataview.id
-      )
-      const datasetsParams = workspaceDataview ? workspaceDataview.datasetsParams : []
+    const resolvedDataviews = resolveDataviews(dataviews, workspaceDataviews)
+    resolvedDataviews.forEach((dataview) => {
+      const datasetsParams = dataview.datasetsParams
       const dataviewType = dataview.view?.type || dataview.defaultView?.type || ''
 
       dataview.datasets?.forEach((dataset, datasetIndex) => {
-        const defaultDatasetParams = dataview.defaultDatasetsParams
-          ? dataview.defaultDatasetsParams[datasetIndex]
-          : {}
         const datasetParams = datasetsParams?.length ? datasetsParams[datasetIndex] : {}
 
         dataset.endpoints
@@ -101,7 +97,6 @@ export default class DataviewsClient {
 
             const resolvedDatasetParams = {
               dataset: dataset.id,
-              ...defaultDatasetParams,
               ...datasetParams,
             }
 
@@ -113,13 +108,12 @@ export default class DataviewsClient {
                 type: endpoint.type,
                 datasetId: dataset.id,
                 resolvedUrl,
-                datasetParamId: (datasetParams.id as string) || (defaultDatasetParams.id as string),
+                datasetParamId: datasetParams.id as string,
               })
             } catch (e) {
               console.error('Could not use urlTemplate, maybe a datasetParam is missing?')
               console.error('dataview:', dataview.id, dataview.name)
               console.error('urlTemplate:', endpoint.urlTemplate)
-              console.error('defaultDatasetParams:', defaultDatasetParams)
               console.error('datasetParams:', datasetParams)
               console.error('resolvedDatasetParams:', resolvedDatasetParams)
             }
