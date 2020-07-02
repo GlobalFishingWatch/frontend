@@ -128,9 +128,10 @@ export interface RulersGeneratorConfig extends GeneratorConfig {
 
 export interface HeatmapGeneratorConfig extends GeneratorConfig {
   type: Type.Heatmap
-  start: string
-  end: string
-  zoom: number
+  // Types needed but already in GlobalGeneratorConfig
+  // start: string
+  // end: string
+  // zoom: number
   maxZoom?: number
   tileset: string
   fetchStats?: boolean
