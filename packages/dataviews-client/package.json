@@ -29,6 +29,8 @@
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.2.3",
+    "@globalfishingwatch/pbf": "*",
+    "@globalfishingwatch/layer-composer": "*",
     "qs": "^6.9.4"
   },
   "devDependencies": {

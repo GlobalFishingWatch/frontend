@@ -1,7 +1,10 @@
 import template from 'lodash/template'
 import { stringify } from 'qs'
 import { FetchOptions } from '@globalfishingwatch/api-client'
+import { vessels } from '@globalfishingwatch/pbf/decoders/vessels'
 import { Dataview, WorkspaceDataview, Resource } from './types'
+import { RESOURCE_TYPES_BY_VIEW_TYPE } from './config'
+import resolveDataviews from './resolve-dataviews'
 
 const BASE_URL = '/dataviews'
 
@@ -14,7 +17,7 @@ export default class DataviewsClient {
     this._fetch = _fetch
   }
 
-  getDataviews(ids: string[] = []): Promise<Dataview[]> {
+  getDataviews(ids: number[] = []): Promise<Dataview[]> {
     const baseUrl = ids.length ? `${BASE_URL}/${ids.join(',')}` : BASE_URL
     const params = {
       include: 'dataset,dataset.endpoints',
@@ -64,24 +67,28 @@ export default class DataviewsClient {
     return this._writeDataview(dataview, 'DELETE')
   }
 
+  // TODO support for a list of already downloaded resources
+  // TODO uniq by URL
   getResources(
     dataviews: Dataview[],
     workspaceDataviews: WorkspaceDataview[] = []
   ): { resources: Resource[]; promises: Promise<Resource>[] } {
     const resources: Resource[] = []
-    dataviews.forEach((dataview) => {
-      const workspaceDataview = workspaceDataviews.find(
-        (workspaceDataview) => workspaceDataview.id === dataview.id
-      )
-      const datasetsParams = workspaceDataview ? workspaceDataview.datasetsParams : []
+    const resolvedDataviews = resolveDataviews(dataviews, workspaceDataviews)
+    resolvedDataviews.forEach((dataview) => {
+      const datasetsParams = dataview.datasetsParams
+      const dataviewType = dataview.view?.type || dataview.defaultView?.type || ''
+
       dataview.datasets?.forEach((dataset, datasetIndex) => {
-        const defaultDatasetParams = dataview.defaultDatasetsParams
-          ? dataview.defaultDatasetsParams[datasetIndex]
-          : {}
         const datasetParams = datasetsParams?.length ? datasetsParams[datasetIndex] : {}
 
         dataset.endpoints
           ?.filter((endpoint) => endpoint.downloadable)
+          .filter((endpoint) => {
+            const allowedEndpointTypes = RESOURCE_TYPES_BY_VIEW_TYPE[dataviewType]
+            if (!allowedEndpointTypes || !allowedEndpointTypes.includes(endpoint.type)) return false
+            return true
+          })
           .forEach((endpoint) => {
             const urlTemplateCompiled = template(endpoint.urlTemplate, {
               interpolate: /{{([\s\S]+?)}}/g,
@@ -90,7 +97,6 @@ export default class DataviewsClient {
 
             const resolvedDatasetParams = {
               dataset: dataset.id,
-              ...defaultDatasetParams,
               ...datasetParams,
             }
 
@@ -99,16 +105,15 @@ export default class DataviewsClient {
               resolvedUrl = urlTemplateCompiled(resolvedDatasetParams)
               resources.push({
                 dataviewId: dataview.id,
+                type: endpoint.type,
                 datasetId: dataset.id,
                 resolvedUrl,
-                mainDatasetParamId:
-                  (datasetParams.id as string) || (defaultDatasetParams.id as string),
+                datasetParamId: datasetParams.id as string,
               })
             } catch (e) {
               console.error('Could not use urlTemplate, maybe a datasetParam is missing?')
               console.error('dataview:', dataview.id, dataview.name)
               console.error('urlTemplate:', endpoint.urlTemplate)
-              console.error('defaultDatasetParams:', defaultDatasetParams)
               console.error('datasetParams:', datasetParams)
               console.error('resolvedDatasetParams:', resolvedDatasetParams)
             }
@@ -116,10 +121,20 @@ export default class DataviewsClient {
       })
     })
     const promises = resources.map((resource) => {
-      // TODO Do appropriate stuff when datasetParams have valuesArray or binary (tracks)
-      // See existing implementation of this in Track inspector's dataviews thunk:
-      // https://github.com/GlobalFishingWatch/track-inspector/blob/develop/src/features/dataviews/dataviews.thunks.ts#L58
-      return this._fetch(resource.resolvedUrl).then((data: unknown) => {
+      const promise = this._fetch(resource.resolvedUrl, { json: false })
+      let thennable
+      if (resource.type === 'track') {
+        thennable = promise
+          .then((r) => r.arrayBuffer())
+          .then((buffer) => {
+            const track = vessels.Track.decode(new Uint8Array(buffer))
+            return track.data
+          })
+      } else {
+        thennable = promise.then((response) => response.json())
+      }
+
+      return thennable.then((data: unknown) => {
         const resourceWithData = {
           ...resource,
           data,

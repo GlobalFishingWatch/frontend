@@ -2,7 +2,13 @@ import { FeatureCollection } from 'geojson'
 import { GeoJSONSourceRaw } from 'mapbox-gl'
 import memoizeOne from 'memoize-one'
 import { Group, Dictionary } from '../../types'
-import { Type, VesselEventsGeneratorConfig, RawEvent, AuthorizationOptions } from '../types'
+import {
+  Type,
+  VesselEventsGeneratorConfig,
+  RawEvent,
+  AuthorizationOptions,
+  GlobalGeneratorConfig,
+} from '../types'
 import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 
@@ -33,7 +39,7 @@ class VesselsEventsGenerator {
     return featureCollection
   }
 
-  _getStyleSources = (config: VesselEventsGeneratorConfig) => {
+  _getStyleSources = (config: VesselEventsGeneratorConfig & GlobalGeneratorConfig) => {
     const { id, data } = config
 
     if (!data) {
@@ -106,7 +112,7 @@ class VesselsEventsGenerator {
     return layers
   }
 
-  getStyle = (config: VesselEventsGeneratorConfig) => {
+  getStyle = (config: VesselEventsGeneratorConfig & GlobalGeneratorConfig) => {
     memoizeByLayerId(config.id, {
       getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
     })

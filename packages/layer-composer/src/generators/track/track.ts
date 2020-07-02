@@ -2,7 +2,7 @@ import { scaleLinear, scalePow } from 'd3-scale'
 import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
 import { Group } from '../../types'
-import { Type, TrackGeneratorConfig } from '../types'
+import { Type, TrackGeneratorConfig, GlobalGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import valuesArrayToGeoJSON from './segments-to-geojson'
 import filterGeoJSONByTimerange from './filterGeoJSONByTimerange'
@@ -81,7 +81,7 @@ class TrackGenerator {
   highlightSufix = '_highlighted'
   highlightEventSufix = `${this.highlightSufix}_event`
 
-  _getStyleSources = (config: TrackGeneratorConfig) => {
+  _getStyleSources = (config: TrackGeneratorConfig & GlobalGeneratorConfig) => {
     const defaultGeoJSON: FeatureCollection = {
       type: 'FeatureCollection',
       features: [],
@@ -144,7 +144,7 @@ class TrackGenerator {
     return sources
   }
 
-  _getStyleLayers = (config: TrackGeneratorConfig) => {
+  _getStyleLayers = (config: TrackGeneratorConfig & GlobalGeneratorConfig) => {
     const layer = {
       type: 'line',
       id: config.id,
@@ -182,7 +182,7 @@ class TrackGenerator {
     return layers
   }
 
-  getStyle = (config: TrackGeneratorConfig) => {
+  getStyle = (config: TrackGeneratorConfig & GlobalGeneratorConfig) => {
     memoizeByLayerId(config.id, {
       convertToGeoJSON: memoizeOne(valuesArrayToGeoJSON),
       simplifyTrackWithZoomLevel: memoizeOne(simplifyTrackWithZoomLevel),

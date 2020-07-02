@@ -21,7 +21,7 @@ export interface DatasetParams {
 }
 
 export interface Dataview {
-  id: number
+  id: number | string
   name: string
   description: string
   createdAt?: string
@@ -34,19 +34,30 @@ export interface Dataview {
 }
 
 export interface WorkspaceDataview {
-  id: number
+  id: number | string
   view?: ViewParams
   datasetsParams?: DatasetParams[]
 }
 
 export interface Workspace {
   workspaceDataviews: WorkspaceDataview[]
+  zoom: number
+  latitude: number
+  longitude: number
+  start: string
+  end: string
 }
 export interface Resource<T = unknown> {
-  dataviewId: number
+  dataviewId: number | string
   datasetId: string
+  type?: string
   // identifies resource uniquely, ie vessel id
-  mainDatasetParamId: string
+  datasetParamId: string
   resolvedUrl: string
   data?: T
+}
+
+export interface ResolvedDataview extends Dataview {
+  uid: string
+  datasetsParamIds: string[]
 }
