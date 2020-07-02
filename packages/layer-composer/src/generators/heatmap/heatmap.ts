@@ -3,7 +3,7 @@ import zip from 'lodash/zip'
 import { scalePow } from 'd3-scale'
 import memoizeOne from 'memoize-one'
 import { Group } from '../../types'
-import { Type, HeatmapGeneratorConfig } from '../types'
+import { Type, HeatmapGeneratorConfig, GlobalGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import paintByGeomType from './heatmap-layers-paint'
 import { fetchStats, getServerSideFilters } from './utils'
@@ -18,6 +18,8 @@ import {
 } from './config'
 import { statsByZoom } from './types'
 
+type GlobalHeatmapGeneratorConfig = HeatmapGeneratorConfig & GlobalGeneratorConfig
+
 class HeatmapGenerator {
   type = Type.Heatmap
   fastTilesAPI: string
@@ -29,7 +31,7 @@ class HeatmapGenerator {
     this.fastTilesAPI = fastTilesAPI
   }
 
-  _getStyleSources = (layer: HeatmapGeneratorConfig) => {
+  _getStyleSources = (layer: GlobalHeatmapGeneratorConfig) => {
     if (!layer.start || !layer.end || !layer.tileset) {
       throw new Error(
         `Heatmap generator must specify start, end and tileset parameters in ${layer}`
@@ -55,7 +57,7 @@ class HeatmapGenerator {
     ]
   }
 
-  _getHeatmapLayers = (layer: HeatmapGeneratorConfig) => {
+  _getHeatmapLayers = (layer: GlobalHeatmapGeneratorConfig) => {
     const colorRampType = layer.colorRamp || HEATMAP_COLOR_RAMPS.PRESENCE
 
     let stops: number[] = []
@@ -116,7 +118,7 @@ class HeatmapGenerator {
     ]
   }
 
-  _getStyleLayers = (layer: HeatmapGeneratorConfig) => {
+  _getStyleLayers = (layer: GlobalHeatmapGeneratorConfig) => {
     if (layer.fetchStats !== true || !layer.start || !layer.end) {
       return { layers: this._getHeatmapLayers(layer) }
     }
@@ -154,7 +156,7 @@ class HeatmapGenerator {
     return { layers, promise }
   }
 
-  getStyle = (layer: HeatmapGeneratorConfig) => {
+  getStyle = (layer: GlobalHeatmapGeneratorConfig) => {
     memoizeByLayerId(layer.id, {
       _fetchStats: memoizeOne(fetchStats),
     })

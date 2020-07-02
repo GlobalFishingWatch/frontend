@@ -4,7 +4,7 @@ import debounce from 'lodash/debounce'
 import zip from 'lodash/zip'
 import memoizeOne from 'memoize-one'
 import { Group } from '../../types'
-import { Type, HeatmapAnimatedGeneratorConfig } from '../types'
+import { Type, HeatmapAnimatedGeneratorConfig, GlobalGeneratorConfig } from '../types'
 import { statsByZoom } from '../heatmap/types'
 import {
   API_TILES_URL,
@@ -44,6 +44,8 @@ const toQuantizedDays = (date: string, quantizeOffset: number) => {
   return days - quantizeOffset
 }
 
+type GlobalHeatmapAnimatedGeneratorConfig = HeatmapAnimatedGeneratorConfig & GlobalGeneratorConfig
+
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
   fastTilesAPI: string
@@ -57,7 +59,7 @@ class HeatmapAnimatedGenerator {
     this.fastTilesAPI = fastTilesAPI
   }
 
-  _getStyleSources = (layer: HeatmapAnimatedGeneratorConfig) => {
+  _getStyleSources = (layer: GlobalHeatmapAnimatedGeneratorConfig) => {
     if (!layer.start || !layer.end || !layer.tileset) {
       throw new Error(
         `Heatmap generator must specify start, end and tileset parameters in ${layer}`
@@ -85,7 +87,7 @@ class HeatmapAnimatedGenerator {
     ]
   }
 
-  _getHeatmapLayers = (layer: HeatmapAnimatedGeneratorConfig) => {
+  _getHeatmapLayers = (layer: GlobalHeatmapAnimatedGeneratorConfig) => {
     const geomType = layer.geomType || HEATMAP_GEOM_TYPES.GRIDDED
     const colorRampType = layer.colorRamp || HEATMAP_COLOR_RAMPS.PRESENCE
     const colorRampMult = layer.colorRampMult || 1
@@ -203,7 +205,7 @@ class HeatmapAnimatedGenerator {
     ]
   }
 
-  _getStyleLayers = (layer: HeatmapAnimatedGeneratorConfig) => {
+  _getStyleLayers = (layer: GlobalHeatmapAnimatedGeneratorConfig) => {
     if (layer.fetchStats !== true) {
       return { layers: this._getHeatmapLayers(layer) }
     }
@@ -239,7 +241,7 @@ class HeatmapAnimatedGenerator {
     return { layers, promise }
   }
 
-  _updateDelta = (layer: HeatmapAnimatedGeneratorConfig) => {
+  _updateDelta = (layer: GlobalHeatmapAnimatedGeneratorConfig) => {
     const newDelta = getDelta(layer.start, layer.end)
     if (newDelta === this.delta) return null
 
@@ -257,7 +259,7 @@ class HeatmapAnimatedGenerator {
   }
   _setDelta = debounce(this._updateDelta, 1000)
 
-  getStyle = (layer: HeatmapAnimatedGeneratorConfig) => {
+  getStyle = (layer: GlobalHeatmapAnimatedGeneratorConfig) => {
     memoizeByLayerId(layer.id, {
       _fetchStats: memoizeOne(fetchStats),
     })
