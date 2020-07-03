@@ -28,7 +28,8 @@
     "release": "lerna publish && yarn changelog",
     "release:retry": "lerna publish from-package --yes",
     "release:publish": "lerna exec --scope @globalfishingwatch/* -- \"npm publish || exit 0\" ",
-    "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn"
+    "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn",
+    "clean:packages": "lerna run clean --parallel --scope @globalfishingwatch/*"
   },
   "dependencies": {
     "@tippyjs/react": "^4.0.2",
