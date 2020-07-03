@@ -412,7 +412,7 @@ export const fetchDataset = ({
 }) => async (dispatch: any) => {
   try {
     const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${datasetId}`)
-    dataset.endpoints = carrierEndpoints as Endpoint[]
+    dataset.endpoints = carrierEndpoints as any
     const defaultParams = [
       {
         dataset: 'carriers:v20200507',

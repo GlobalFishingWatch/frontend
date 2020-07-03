@@ -32,8 +32,9 @@ export default class DataviewsClient {
   }
 
   _writeDataview(dataview: Dataview, method: 'POST' | 'PATCH' | 'DELETE'): Promise<Dataview> {
-    const whitelistedDataview: PostDataview = {
+    const whitelistedDataview = {
       name: dataview.name,
+      datasets: dataview.datasets?.length ? dataview.datasets?.map((d) => d.id) : [],
       description: dataview.description,
       defaultView: dataview.defaultView,
       defaultDatasetsParams: dataview.defaultDatasetsParams,
