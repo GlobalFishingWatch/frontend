@@ -1,7 +1,6 @@
 import template from 'lodash/template'
 import { stringify } from 'qs'
 import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
-import { vessels } from '@globalfishingwatch/pbf/decoders/vessels'
 import { Dataview, WorkspaceDataview, Resource, DatasetParams } from './types'
 import { RESOURCE_TYPES_BY_VIEW_TYPE } from './config'
 import resolveDataviews from './resolve-dataviews'

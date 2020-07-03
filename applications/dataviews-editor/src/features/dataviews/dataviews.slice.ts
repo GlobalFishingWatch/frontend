@@ -6,10 +6,14 @@ import DataviewsClient, {
   Dataview,
   ViewParams,
   DatasetParams,
+  Dataset,
+  Endpoint,
 } from '@globalfishingwatch/dataviews-client'
 import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { RootState } from 'store/store'
 import { addResources, completeLoading as completeResourceLoading } from './resources.slice'
+import { carrierEndpoints } from './data'
 
 // const DATASET: Dataset = {
 //   id: 'carriers:dev',
@@ -213,6 +217,35 @@ const slice = createSlice({
       }
       state.dataviews.push(newDataview)
     },
+    addDataset: (state, action: PayloadAction<number>) => {
+      const dataview = state.dataviews.find((d) => d.editorId === action.payload)
+      if (dataview) {
+        dataview.datasets = [{ id: '' }]
+        dataview.dirty = true
+      }
+    },
+    setDatasetId: (state, action: PayloadAction<{ editorId: number; dataset: string }>) => {
+      const dataview = state.dataviews.find((d) => d.editorId === action.payload.editorId)
+      if (dataview && dataview.datasets && dataview.datasets[0]) {
+        dataview.datasets[0].id = action.payload.dataset
+        dataview.dirty = true
+      }
+    },
+    setDataset: (
+      state,
+      action: PayloadAction<{
+        editorId: number
+        dataset: Dataset
+        defaultParams: DatasetParams[]
+      }>
+    ) => {
+      const dataview = state.dataviews.find((d) => d.editorId === action.payload.editorId)
+      if (dataview && dataview.datasets && dataview.datasets[0]) {
+        dataview.datasets[0] = action.payload.dataset
+        // TODO move this to dataset ?
+        dataview.defaultDatasetsParams = action.payload.defaultParams
+      }
+    },
     setEditing: (state, action: PayloadAction<number>) => {
       state.dataviews.forEach((d, index) => {
         d.editing = action.payload === d.editorId
@@ -244,15 +277,17 @@ const slice = createSlice({
       const dataview = state.dataviews.find((d) => d.editorId === editorId)
       if (dataview) {
         dataview.selectedEndpoint = endpoint
-        dataview.defaultDatasetsParams = dataview.defaultDatasetsParams?.map((datasetParam) => {
-          if (datasetParam.endpoint !== endpoint) return datasetParam
-          return {
-            dataset,
-            endpoint,
-            params: datasetParam.params || {},
-            query: datasetParam.query || {},
-          }
-        })
+        dataview.defaultDatasetsParams = dataview.defaultDatasetsParams
+          ? dataview.defaultDatasetsParams.map((datasetParam) => {
+              if (datasetParam.endpoint !== endpoint) return datasetParam
+              return {
+                dataset,
+                endpoint,
+                params: datasetParam.params || {},
+                query: datasetParam.query || {},
+              }
+            })
+          : []
       }
     },
     setDatasetParams: (
@@ -261,10 +296,18 @@ const slice = createSlice({
     ) => {
       const { editorId, type, params } = action.payload
       const dataview = state.dataviews.find((d) => d.editorId === editorId)
-      if (dataview && dataview.defaultDatasetsParams && dataview.defaultDatasetsParams[0][type]) {
+      debugger
+      if (
+        dataview?.defaultDatasetsParams &&
+        dataview?.defaultDatasetsParams[0] &&
+        dataview.defaultDatasetsParams[0][type]
+      ) {
         dataview.dirty = true
         const datasetParams = dataview.defaultDatasetsParams[0][type]
-        dataview.defaultDatasetsParams[0][type] = { ...(datasetParams as DatasetParams), ...params }
+        dataview.defaultDatasetsParams[0][type] = {
+          ...(datasetParams as DatasetParams),
+          ...params,
+        }
       }
     },
     setViewParams: (state, action: PayloadAction<{ editorId: number; params: ViewParams }>) => {
@@ -313,8 +356,11 @@ const slice = createSlice({
 export const {
   setDataviews,
   addDataview,
+  addDataset,
+  setDatasetId,
   setEditing,
   setMeta,
+  setDataset,
   setDatasetEndpoint,
   setDatasetParams,
   setViewParams,
@@ -355,6 +401,38 @@ export const startDeletingDataview = (dataview: EditorDataview) => async (
   await dataviewsClient.deleteDataview(dataview)
   dispatch(deleteDataview({ editorId }))
   dispatch(completeLoading())
+}
+
+export const fetchDataset = ({
+  editorId,
+  datasetId,
+}: {
+  editorId: number
+  datasetId: string
+}) => async (dispatch: any) => {
+  try {
+    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${datasetId}`)
+    dataset.endpoints = carrierEndpoints as Endpoint[]
+    const defaultParams = [
+      {
+        dataset: 'carriers:v20200507',
+        endpoint: 'track',
+        params: {
+          id: '46df37738-8057-e7d4-f3f3-a9b44d52fe03',
+        },
+        query: {
+          binary: 'true',
+          fields: 'lonlat,timestamp',
+          format: 'valueArray',
+          endDate: '2020-01-01T00:00:00.000Z',
+          startDate: '2017-01-01T00:00:00.000Z',
+        },
+      },
+    ]
+    dispatch(setDataset({ editorId, dataset, defaultParams }))
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 export const fetchResources = (dataviews: Dataview[]) => async (dispatch: any) => {
