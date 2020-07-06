@@ -1,4 +1,4 @@
-This monorepo hosts packages and applications of the global-fishing-watch ecosystem.
+This monorepo hosts frontend packages and applications of the <a href="globalfishingwatch.org/">GlobalFishingWatch</a> ecosystem.
 
 ## Packages
 
