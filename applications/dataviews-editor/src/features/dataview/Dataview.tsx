@@ -85,9 +85,8 @@ const Dataview = () => {
                     }}
                     className={cx('large', {
                       done: !!dataset.endpoints?.length,
-                      dirty: currentDataview.dirty,
+                      dirty: !loaded,
                     })}
-                    disabled={!!dataset.endpoints?.length}
                   >
                     load dataset endpoints
                   </button>

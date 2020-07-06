@@ -1,167 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Dispatch } from 'react'
 import maxBy from 'lodash/maxBy'
-import { Generators, trackSegments, TRACK_FIELDS } from '@globalfishingwatch/layer-composer'
+import { trackSegments, TRACK_FIELDS } from '@globalfishingwatch/layer-composer'
 import DataviewsClient, {
   Dataview,
   ViewParams,
   DatasetParams,
   Dataset,
-  Endpoint,
 } from '@globalfishingwatch/dataviews-client'
 import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { RootState } from 'store/store'
 import { addResources, completeLoading as completeResourceLoading } from './resources.slice'
-import { carrierEndpoints } from './data'
-
-// const DATASET: Dataset = {
-//   id: 'carriers:dev',
-//   endpoints: [
-//     {
-//       type: 'track',
-//       downloadable: true,
-//       params: [
-//         {
-//           label: 'vessel id',
-//           id: 'id',
-//           type: 'string',
-//         },
-//       ],
-//       query: [
-//         {
-//           label: 'start date',
-//           id: 'startDate',
-//           type: 'Date ISO',
-//           required: false,
-//         },
-//         {
-//           label: 'end date',
-//           id: 'endDate',
-//           type: 'Date ISO',
-//           required: false,
-//         },
-//         {
-//           label: 'binary',
-//           id: 'binary',
-//           type: 'boolean',
-//           default: true,
-//         },
-//         {
-//           label: 'format',
-//           id: 'format',
-//           type: 'string',
-//           default: 'lines',
-//           description:
-//             'Specific encoding format to use for the track. Possible values lines, points or valueArray. valueArray: is a custom compact format, an array with all the fields serialized. The format is further explained in this issue: valueArray format. lines: Geojson with a single LineString feature containing all the points in the track points: Geojson with a FeatureCollection containing a Point feature for every point in the track',
-//         },
-//       ],
-//       pathTemplate: `/datasets/{{dataset}}/vessels/{{id}}/tracks`,
-//     },
-//     {
-//       type: 'vessel',
-//       downloadable: true,
-//       params: [
-//         {
-//           label: 'vessel id',
-//           id: 'id',
-//           type: 'string',
-//         },
-//       ],
-//       query: [],
-//       pathTemplate: `/datasets/{{dataset}}/vessels/{{id}}`,
-//     },
-//     {
-//       type: 'events',
-//       downloadable: true,
-//       params: [],
-//       query: [
-//         {
-//           label: 'event type',
-//           id: 'type',
-//           type: 'string',
-//         },
-//       ],
-//       pathTemplate: `/datasets/{{dataset}}/events`,
-//     },
-//   ],
-// }
-
-// const MOCK: Record<string, Dataview[]> = {
-//   // here toggle between API and mock
-//   // '/dataviews?include=dataset%2Cdataset.endpoints': [
-//   dummy: [
-//     {
-//       id: 0,
-//       name: 'background',
-//       description: 'background',
-//       defaultView: {
-//         type: Generators.Type.Background,
-//       },
-//     },
-//     {
-//       id: 1,
-//       name: 'landmass',
-//       description: 'landmass',
-//       defaultView: {
-//         type: Generators.Type.Basemap,
-//         basemap: Generators.BasemapType.Landmass,
-//       },
-//     },
-//     {
-//       id: 2,
-//       name: 'Carrier Track',
-//       description: 'Carrier Track desc',
-//       datasets: [DATASET],
-//       defaultDatasetsParams: [
-//         {
-//           id: '46df37738-8057-e7d4-f3f3-a9b44d52fe03',
-//           binary: true,
-//           format: 'valueArray',
-//           fields: 'lonlat,timestamp',
-//           startDate: '2017-01-01T00:00:00.000Z',
-//           endDate: '2020-01-01T00:00:00.000Z',
-//         },
-//       ],
-//       defaultView: {
-//         type: Generators.Type.Track,
-//         color: '#ff00ff',
-//       },
-//     },
-//     {
-//       id: 3,
-//       name: 'Fishing Track',
-//       description: 'Carrier Track desc',
-//       datasets: [DATASET],
-//       defaultDatasetsParams: [
-//         {
-//           id: 'c723c1925-56f9-465c-bee8-bcc6d649c17c',
-//           binary: true,
-//           format: 'valueArray',
-//           fields: 'lonlat,timestamp',
-//           startDate: '2017-01-01T00:00:00.000Z',
-//           endDate: '2020-01-01T00:00:00.000Z',
-//         },
-//       ],
-//       defaultView: {
-//         type: Generators.Type.Track,
-//         color: '#0000ff',
-//       },
-//     },
-//   ],
-// }
-
-// const mockFetch: DataviewsClientFetch = (url, init) => {
-//   const mock = MOCK[url]
-//   if (!mock) {
-//     return GFWAPI.fetch(url, init)
-//   }
-//   return new Promise<any>((resolve) => {
-//     setTimeout(() => {
-//       resolve(mock)
-//     }, 1)
-//   })
-// }
 
 const dataviewsClient = new DataviewsClient()
 
@@ -191,11 +41,17 @@ const slice = createSlice({
   reducers: {
     setDataviews: (state, action) => {
       const editorDataviews = action.payload.map((dataview: Dataview, index: number) => {
+        let selectedEndpoint = ''
+        if (dataview.defaultDatasetsParams?.length) {
+          selectedEndpoint = dataview.defaultDatasetsParams[0].endpoint as string
+        }
+
         return {
           editorId: index,
           dirty: false,
           editing: false,
           savedOnce: true,
+          selectedEndpoint,
           ...dataview,
         }
       })
@@ -212,7 +68,8 @@ const slice = createSlice({
         name: 'new dataview',
         description: '',
         defaultView: {
-          type: Generators.Type.Background,
+          type: '',
+          // type: Generators.Type.Background,
         },
       }
       state.dataviews.push(newDataview)
@@ -296,7 +153,6 @@ const slice = createSlice({
     ) => {
       const { editorId, type, params } = action.payload
       const dataview = state.dataviews.find((d) => d.editorId === editorId)
-      debugger
       if (
         dataview?.defaultDatasetsParams &&
         dataview?.defaultDatasetsParams[0] &&
@@ -411,11 +267,10 @@ export const fetchDataset = ({
   datasetId: string
 }) => async (dispatch: any) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${datasetId}`)
-    dataset.endpoints = carrierEndpoints as any
+    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${datasetId}?include=endpoints`)
     const defaultParams = [
       {
-        dataset: 'carriers:v20200507',
+        dataset: dataset.id,
         endpoint: 'track',
         params: {
           id: '46df37738-8057-e7d4-f3f3-a9b44d52fe03',
@@ -430,6 +285,7 @@ export const fetchDataset = ({
       },
     ]
     dispatch(setDataset({ editorId, dataset, defaultParams }))
+    dispatch(setDatasetEndpoint({ editorId, endpoint: 'track', dataset: dataset.id }))
   } catch (e) {
     console.log(e)
   }
