@@ -31,7 +31,13 @@ All of them availables with the `@globalfishingwatch/` prefix:
 
 ## See also
 
+### Mapbox GL / react-map-gl forks
+
 We maintain our own forks of <a href="https://github.com/GlobalFishingWatch/react-map-gl/">react-map-gl</a> and <a href="https://github.com/GlobalFishingWatch/mapbox-gl-js/">Mapbox GL</a> to handle gridded temporal data (see `temporalgrid` branches on both repos)
+
+### LayerComposer / Dataviews / Workspaces
+
+See: <a href="https://docs.google.com/presentation/d/1LdxRbB491Rjf64C5VVF9oTWwWjFVnN5dzDf1uhxcHY4/edit?ts=5f031be2#slide=id.g807f22e76b_0_78">From WebGL triangles to Dataviews - Organizing visualization of data at GFW</a>
 
 ### Dependencies
 
