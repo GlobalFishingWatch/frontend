@@ -1,6 +1,4 @@
-_Embrace the monorepo. The monorepo is your friend and wants you to be happy._
-
-This repository houses packages and applications of the global-fishing-watch ecosystem.
+This monorepo hosts packages and applications of the global-fishing-watch ecosystem.
 
 ## Packages
 
