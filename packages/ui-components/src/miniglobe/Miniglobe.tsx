@@ -21,7 +21,7 @@ const defaultBounds = {
 }
 
 const MIN_DEGREES_PATH = 4
-const MAX_DEGREES_PATH = 160
+const MAX_DEGREES_PATH = 150
 const defaultCenter = { latitude: 0, longitude: 0 }
 
 const MiniGlobe: React.FC<MiniglobeProps> = (props) => {
@@ -72,9 +72,7 @@ const MiniGlobe: React.FC<MiniglobeProps> = (props) => {
 
   const showPoint = north - south <= MIN_DEGREES_PATH || east - west <= MIN_DEGREES_PATH
   const showPath =
-    !showPoint &&
-    Math.abs(north) + Math.abs(south) <= MAX_DEGREES_PATH &&
-    Math.abs(west) + Math.abs(east) <= MAX_DEGREES_PATH
+    !showPoint && north - south <= MAX_DEGREES_PATH && east - west <= MAX_DEGREES_PATH
   const path = geoPath().projection(projection)(viewportBoundsGeoJSON as any) || undefined
 
   return (
