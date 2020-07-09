@@ -24,7 +24,7 @@
     "clean": "rimraf dist/*",
     "prepare": "yarn build",
     "prepublishOnly": "yarn build",
-    "json-schema": "typescript-json-schema tsconfig.json-schema.json \"*\" > dist/json-schema.json"
+    "json-schema": "mkdirp dist && typescript-json-schema tsconfig.json-schema.json \"*\" > dist/json-schema.json"
   },
   "bugs": {
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
@@ -45,7 +45,8 @@
   },
   "devDependencies": {
     "@types/d3": "^5.7.2",
-    "@types/geojson": "^7946.0.7"
+    "@types/geojson": "^7946.0.7",
+    "mkdirp": "^1.0.4"
   },
   "gitHead": "e401a97d85e852a21903684dfea4d868c9f1b9a4"
 }
