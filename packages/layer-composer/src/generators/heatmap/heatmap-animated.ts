@@ -1,7 +1,7 @@
 import memoizeOne from 'memoize-one'
 import { Layer } from 'mapbox-gl'
 import { flatten } from 'lodash'
-import { Type, HeatmapAnimatedGeneratorConfig, GlobalGeneratorConfig } from '../types'
+import { Type, HeatmapAnimatedGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { Group } from '../../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import {
@@ -13,7 +13,7 @@ import {
 } from './config'
 import { getServerSideFilters } from './utils'
 
-type GlobalHeatmapAnimatedGeneratorConfig = HeatmapAnimatedGeneratorConfig & GlobalGeneratorConfig
+type GlobalHeatmapAnimatedGeneratorConfig = MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
 
 // TODO this can yield different deltas depending even when start and end stays equally further apart:
 //  improve logic or throttle

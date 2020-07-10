@@ -31,6 +31,12 @@ export interface GeneratorConfig {
 }
 
 /**
+ * This is the union of GeneratorConfig <T> with GlobalGeneratorConfig, which allows access to both
+ * generator config params and global config params, at the generator level
+ */
+export type MergedGeneratorConfig<T> = T & GlobalGeneratorConfig
+
+/**
  * A solid color background layer
  */
 export interface BasemapGeneratorConfig extends GeneratorConfig {
