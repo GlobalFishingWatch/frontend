@@ -52,7 +52,7 @@ const getTimeChunks = () => {
     start: TEST_CHUNK_START,
     end: TEST_CHUNK_END,
     id: `heatmapchunk_${TEST_CHUNK_START.slice(0, 13)}_${TEST_CHUNK_END.slice(0, 13)}`,
-    quantizeOffset: 0,
+    quantizeOffset: toDays(TEST_CHUNK_START),
   }
   return [TEST_TIME_CHUNK]
 }
@@ -82,6 +82,7 @@ class HeatmapAnimatedGenerator {
         geomType: config.geomType || HEATMAP_GEOM_TYPES.GRIDDED,
         serverSideFilters: getServerSideFilters(timeChunk.start, timeChunk.end),
         delta: getDelta(config.start, config.end).toString(),
+        quantizeOffset: timeChunk.quantizeOffset.toString(),
       }
       const url = new URL(`${tilesUrl}?${new URLSearchParams(sourceParams)}`)
       const source = {
@@ -92,8 +93,6 @@ class HeatmapAnimatedGenerator {
       }
       return source
     })
-
-    console.log(sources)
 
     return sources
   }
@@ -146,8 +145,6 @@ class HeatmapAnimatedGenerator {
         return chunkLayers
       })
     )
-
-    console.log(layers)
 
     return layers
   }
