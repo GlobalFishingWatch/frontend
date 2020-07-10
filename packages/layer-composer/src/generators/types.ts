@@ -141,18 +141,12 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   updateColorRampOnTimeChange?: boolean
 }
 
-// export interface HeatmapAnimatedGeneratorConfig extends HeatmapGeneratorConfig {
-//   // type: Type.HeatmapAnimated // TODO
-//   delta?: number
-//   geomType: string
-//   quantizeOffset?: number
-//   colorRampMult: number
-// }
-
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
+  type: Type.HeatmapAnimated
   tileset: string
   geomType: string
   maxZoom?: number
+  debug?: boolean
 }
 
 export type AnyGeneratorConfig =
