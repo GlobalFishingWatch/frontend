@@ -60,12 +60,14 @@ export interface WorkspaceDataview {
 }
 
 export interface Workspace {
-  workspaceDataviews: WorkspaceDataview[]
-  zoom: number
-  latitude: number
-  longitude: number
-  start: string
-  end: string
+  id: number
+  description: string
+  dataviewWorkspaces: WorkspaceDataview[]
+  zoom?: number
+  latitude?: number
+  longitude?: number
+  start?: string
+  end?: string
 }
 
 export interface Resource<T = unknown> {

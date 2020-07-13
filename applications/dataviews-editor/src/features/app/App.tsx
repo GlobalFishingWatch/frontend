@@ -10,11 +10,14 @@ import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import { selectCurrentDataview } from 'features/dataview/dataview.selectors'
 import { fetchDataviews, selectLoading } from 'features/dataviews/dataviews.slice'
+import { fetchWorkspaces } from 'features/workspace/workspace.slice'
 import styles from './App.module.css'
 
 const App = () => {
   const dispatch = useDispatch()
+
   useEffect(() => {
+    dispatch(fetchWorkspaces())
     dispatch(fetchDataviews())
   }, [dispatch])
 

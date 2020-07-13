@@ -13,7 +13,7 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import { RootState } from 'store/store'
 import { addResources, completeLoading as completeResourceLoading } from './resources.slice'
 
-const dataviewsClient = new DataviewsClient()
+export const dataviewsClient = new DataviewsClient()
 
 export interface EditorDataview extends Dataview {
   // every DV has a distinct editor ID
