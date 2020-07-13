@@ -3,7 +3,7 @@ import BackgroundGenerator, { DEFAULT_BASEMAP_COLOR } from './background/backgro
 import BaseMapGenerator from './basemap/basemap'
 import GLStyleGenerator from './gl/gl'
 import CartoGenerator, { CARTO_FISHING_MAP_API } from './carto-polygons/carto-polygons'
-import HeatmapAnimatedGenerator from './heatmap-animated/heatmap-animated'
+import HeatmapAnimatedGenerator from './heatmap/heatmap-animated'
 import HeatmapGenerator from './heatmap/heatmap'
 import TrackGenerator from './track/track'
 import VesselEventsGenerator from './vessel-events/vessel-events'

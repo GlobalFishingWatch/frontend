@@ -31,6 +31,12 @@ export interface GeneratorConfig {
 }
 
 /**
+ * This is the union of GeneratorConfig <T> with GlobalGeneratorConfig, which allows access to both
+ * generator config params and global config params, at the generator level
+ */
+export type MergedGeneratorConfig<T> = T & GlobalGeneratorConfig
+
+/**
  * A solid color background layer
  */
 export interface BasemapGeneratorConfig extends GeneratorConfig {
@@ -141,12 +147,12 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   updateColorRampOnTimeChange?: boolean
 }
 
-export interface HeatmapAnimatedGeneratorConfig extends HeatmapGeneratorConfig {
-  // type: Type.HeatmapAnimated // TODO
-  delta?: number
+export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
+  type: Type.HeatmapAnimated
+  tileset: string
   geomType: string
-  quantizeOffset?: number
-  colorRampMult: number
+  maxZoom?: number
+  debug?: boolean
 }
 
 export type AnyGeneratorConfig =

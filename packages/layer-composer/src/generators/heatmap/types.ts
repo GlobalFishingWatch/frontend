@@ -3,7 +3,7 @@ export type HeatmapGeoms = {
   [key: string]: Geoms
 }
 
-export type GeomGl = 'heatmap' | 'fill' | 'fill-extrusion'
+export type GeomGl = 'heatmap' | 'fill' | 'fill-extrusion' | 'symbol'
 export type HeatmapGeomGL = {
   [key: string]: GeomGl
 }
