@@ -12,10 +12,10 @@ import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { UpdateQueryParamsAction } from './routes.actions'
 
-export const WORKSPACES = 'Workspaces'
-export const WORKSPACE_EDITOR = 'Workspace Editor'
-export const AREAS_OF_INTEREST = 'Areas of Interest'
-export const DATASETS = 'Datasets'
+export const WORKSPACES = 'location/workspaces'
+export const WORKSPACE_EDITOR = 'location/workspaceEditor'
+export const AREAS_OF_INTEREST = 'location/areasOfInterest'
+export const DATASETS = 'location/datasets'
 
 export type ROUTE_TYPES =
   | typeof WORKSPACES
