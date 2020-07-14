@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
+import { AppThunk, RootState } from 'store'
 import GFWAPI, {
   UserData,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
-import { AppThunk, RootState } from 'store'
 
 interface UserState {
   logged: boolean
@@ -27,14 +27,9 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     userLoading: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
       state.loading = true
       state.resolved = false
     },
-    // Use the PayloadAction type to declare the contents of `action.payload`
     userLoaded: (state, action: PayloadAction<UserData>) => {
       state.loading = false
       state.resolved = true
@@ -52,10 +47,6 @@ const userSlice = createSlice({
 
 const { userLoading, userLoaded, userError } = userSlice.actions
 
-// The function below is called a thunk and allows us to perform async logic. It
-// can be dispatched like a regular action: `dispatch(fetchUser())`. This
-// will call the thunk with the `dispatch` function as the first argument. Async
-// code can then be executed and other actions can be dispatched
 export const fetchUser = (): AppThunk => (dispatch) => {
   dispatch(userLoading())
   const accessToken = getAccessTokenFromUrl()
@@ -71,9 +62,6 @@ export const fetchUser = (): AppThunk => (dispatch) => {
     })
 }
 
-// The function below is called a selector and allows us to select a value from
-// the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectUserData = (state: RootState) => state.user.data
 export const selectUserResolved = (state: RootState) => state.user.resolved
 export const selectUserLogged = (state: RootState) => state.user.logged

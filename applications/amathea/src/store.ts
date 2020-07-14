@@ -6,6 +6,7 @@ import {
   getDefaultMiddleware,
 } from '@reduxjs/toolkit'
 import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
+import appReducer from './features/app/app.slice'
 import userReducer from './features/user/user.slice'
 import mapReducer from './features/map/map.slice'
 import timebarReducer from './features/timebar/timebar.slice'
@@ -18,6 +19,7 @@ const {
 } = connectedRoutes
 
 const rootReducer = combineReducers({
+  app: appReducer,
   user: userReducer,
   map: mapReducer,
   timebar: timebarReducer,

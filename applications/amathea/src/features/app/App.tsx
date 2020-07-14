@@ -1,17 +1,17 @@
-import React, { memo, useState, Fragment } from 'react'
-import { useSelector } from 'react-redux'
+import React, { memo, Fragment, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import { useLocationConnect } from 'routes/routes.hook'
 import { WORKSPACE_EDITOR } from 'routes/routes'
-import Login from './features/user/Login'
-import Modal from './features/modal/Modal'
-import Map from './features/map/Map'
-import Timebar from './features/timebar/Timebar'
-import Sidebar from './features/sidebar/Sidebar'
+import Login from '../user/Login'
+import Modal from '../modal/Modal'
+import Map from '../map/Map'
+import Timebar from '../timebar/Timebar'
+import Sidebar from '../sidebar/Sidebar'
+import { isUserLogged } from '../user/user.slice'
+import { toggleMenu, isMenuOpen, isSidebarOpen, toggleSidebar } from './app.slice'
 import styles from './App.module.css'
-import { isUserLogged } from './features/user/user.slice'
-
 import '@globalfishingwatch/ui-components/dist/base.css'
 
 const Main = memo(() => {
@@ -25,17 +25,18 @@ const Main = memo(() => {
 })
 
 function App(): React.ReactElement {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const menuOpen = useSelector(isMenuOpen)
+  const sidebarOpen = useSelector(isSidebarOpen)
   const logged = useSelector(isUserLogged)
+  const dispatch = useDispatch()
 
-  // const onToggleMenu = () => {
-  //   setMenuOpen(!menuOpen)
-  // }
+  const onToggleMenu = useCallback(() => {
+    dispatch(toggleMenu())
+  }, [dispatch])
 
-  const onToggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen)
-  }
+  const onToggleSidebar = useCallback(() => {
+    dispatch(toggleSidebar())
+  }, [dispatch])
 
   return (
     <Fragment>
@@ -53,7 +54,7 @@ function App(): React.ReactElement {
         />
       )}
       <Modal />
-      <Menu isOpen={menuOpen} onClose={(e) => setMenuOpen(false)} activeLinkId="map-data">
+      <Menu isOpen={menuOpen} onClose={onToggleMenu} activeLinkId="map-data">
         Menu toggle
       </Menu>
     </Fragment>

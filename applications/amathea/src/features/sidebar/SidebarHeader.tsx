@@ -1,18 +1,20 @@
 import React, { Fragment } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { selectUserData } from 'features/user/user.slice'
+import { toggleMenu } from 'features/app/app.slice'
 import styles from './SidebarHeader.module.css'
 
 function SidebarHeader(): React.ReactElement {
+  const dispatch = useDispatch()
   const userData = useSelector(selectUserData)
   const initials = `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
 
   return (
     <header className={styles.container}>
-      <IconButton icon="menu" />
+      <IconButton icon="menu" onClick={() => dispatch(toggleMenu())} />
       <Logo subBrand="Marine Reserves" />
 
       <div className={styles.righSide}>
