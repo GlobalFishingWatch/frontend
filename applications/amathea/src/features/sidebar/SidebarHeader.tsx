@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import { selectUserData } from 'features/user/user.slice'
+import { selectUserData, logoutUser } from 'features/user/user.slice'
 import { toggleMenu } from 'features/app/app.slice'
 import styles from './SidebarHeader.module.css'
 
@@ -20,7 +20,12 @@ function SidebarHeader(): React.ReactElement {
       <div className={styles.righSide}>
         {userData && (
           <Fragment>
-            <IconButton icon="logout" tooltip="Log out" tooltipPlacement="left" />
+            <IconButton
+              icon="logout"
+              tooltip="Log out"
+              tooltipPlacement="left"
+              onClick={() => dispatch(logoutUser())}
+            />
             <Button
               tooltip={
                 <span>

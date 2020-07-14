@@ -42,10 +42,14 @@ const userSlice = createSlice({
       state.logged = false
       state.error += action.payload
     },
+    logout: (state) => {
+      state.logged = false
+      state.data = null
+    },
   },
 })
 
-const { userLoading, userLoaded, userError } = userSlice.actions
+const { userLoading, userLoaded, userError, logout } = userSlice.actions
 
 export const fetchUser = (): AppThunk => (dispatch) => {
   dispatch(userLoading())
@@ -60,6 +64,15 @@ export const fetchUser = (): AppThunk => (dispatch) => {
     .catch((e: Error) => {
       dispatch(userError(e))
     })
+}
+
+export const logoutUser = (): AppThunk => async (dispatch) => {
+  try {
+    await GFWAPI.logout()
+    dispatch(logout())
+  } catch (e) {
+    console.warn(e)
+  }
 }
 
 export const selectUserData = (state: RootState) => state.user.data
