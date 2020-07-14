@@ -1,10 +1,15 @@
 export type WorkspaceParam = 'zoom' | 'latitude' | 'longitude' | 'start' | 'end' | 'modal'
 
-export type QueryParams = {
-  [query in WorkspaceParam]?: ModalTypes | string | number | boolean | null
-}
-
 export type ModalTypes = 'newWorkspace' | 'newAOI' | 'newDataset' | 'shareWorkspace'
+
+export type QueryParams = {
+  zoom?: number
+  latitude?: number
+  longitude?: number
+  start?: string
+  end?: string
+  modal?: ModalTypes
+}
 
 export type ModalConfigOption = { title: string; component: string }
 

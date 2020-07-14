@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import { RootState } from 'store'
-import { WorkspaceParam } from 'types'
+import { Query } from 'redux-first-router'
+import { WorkspaceParam, ModalTypes } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { LocationRoute, ROUTE_TYPES } from './routes'
 
@@ -12,23 +13,23 @@ export const selectCurrentLocation = createSelector([selectLocation], ({ type, r
 })
 
 const selectLocationQuery = createSelector([selectLocation], (location) => {
-  return location.query
+  return location.query as Query
 })
 
-const selectQueryParam = (param: WorkspaceParam) =>
-  createSelector([selectLocationQuery], (query: any) => {
+const selectQueryParam = <T = any>(param: WorkspaceParam) =>
+  createSelector<RootState, Query, T>([selectLocationQuery], (query: any) => {
     if (query === undefined || query[param] === undefined) {
       return DEFAULT_WORKSPACE[param]
     }
     return query[param]
   })
 
-export const selectMapZoomQuery = selectQueryParam('zoom')
-export const selectMapLatitudeQuery = selectQueryParam('latitude')
-export const selectMapLongitudeQuery = selectQueryParam('longitude')
-export const selectStartQuery = selectQueryParam('start')
-export const selectEndQuery = selectQueryParam('end')
-export const selectModal = selectQueryParam('modal')
+export const selectMapZoomQuery = selectQueryParam<number>('zoom')
+export const selectMapLatitudeQuery = selectQueryParam<number>('latitude')
+export const selectMapLongitudeQuery = selectQueryParam<number>('longitude')
+export const selectStartQuery = selectQueryParam<string>('start')
+export const selectEndQuery = selectQueryParam<string>('end')
+export const selectModal = selectQueryParam<ModalTypes>('modal')
 
 export const selectViewport = createSelector(
   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery],
