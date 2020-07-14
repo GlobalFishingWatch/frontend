@@ -146,9 +146,9 @@ class TrackGenerator {
 
   _getStyleLayers = (config: TrackGeneratorConfig & GlobalGeneratorConfig) => {
     const layer = {
-      type: 'line',
       id: config.id,
       source: config.id,
+      type: 'line',
       layout: {},
       paint: {
         'line-color': config.color || DEFAULT_TRACK_COLOR,
