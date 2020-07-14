@@ -26,7 +26,7 @@ function SidebarHeader(): React.ReactElement {
               tooltipPlacement="left"
               onClick={() => dispatch(logoutUser())}
             />
-            <Button
+            <IconButton
               tooltip={
                 <span>
                   {`${userData.firstName} ${userData.lastName}`}
@@ -38,7 +38,7 @@ function SidebarHeader(): React.ReactElement {
               className={styles.userBtn}
             >
               {initials}
-            </Button>
+            </IconButton>
           </Fragment>
         )}
       </div>

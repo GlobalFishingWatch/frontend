@@ -15,16 +15,7 @@
 }
 
 .userBtn {
-  width: var(--size-M);
-  height: var(--size-M);
-  border-radius: 2rem;
-  color: var(--color-secondary-blue);
-  background: var(--color-terthiary-blue);
   cursor: default;
-  margin-left: var(--space-XS);
-}
-
-.userBtn:not(:disabled):hover {
-  color: var(--color-primary-blue);
   background: var(--color-terthiary-blue);
+  margin-left: var(--space-S);
 }
