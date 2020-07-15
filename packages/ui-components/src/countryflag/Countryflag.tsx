@@ -1,6 +1,6 @@
 import React from 'react'
 import countryflag from 'countryflag'
-import styles from './countryflag.module.css'
+import styles from './Countryflag.module.css'
 
 interface CountryFlag {
   iso: string
