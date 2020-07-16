@@ -23,7 +23,7 @@ const EVENTS_COLORS: Dictionary<string> = {
 class VesselsEventsGenerator {
   type = Type.VesselEvents
 
-  _setActiveEvent = (data: FeatureCollection, currentEventId: string): FeatureCollection => {
+  _setActiveEvent = (data: FeatureCollection, currentEventId: string | null): FeatureCollection => {
     const featureCollection = { ...data }
     featureCollection.features = featureCollection.features.map((feature) => {
       const newFeature = { ...feature }
@@ -50,9 +50,7 @@ class VesselsEventsGenerator {
     const geojson = memoizeCache[config.id].getVesselEventsGeojson(data) as FeatureCollection
 
     let newData: FeatureCollection = { ...geojson }
-    if (config.currentEventId) {
-      newData = this._setActiveEvent(newData, config.currentEventId)
-    }
+    newData = this._setActiveEvent(newData, config.currentEventId || null)
 
     if (config.start && config.end) {
       const startMs = new Date(config.start).getTime()
