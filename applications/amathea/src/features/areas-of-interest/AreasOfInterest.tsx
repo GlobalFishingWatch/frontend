@@ -1,25 +1,29 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import { AOIConfig } from 'types'
 import { useModalConnect } from 'features/modal/modal.hooks'
-import { USER_DATA } from 'data/user-data'
 import styles from './AreasOfInterest.module.css'
+import { useAOIConnect } from './areas-of-interest.hook'
 
 function AreasOfInterest(): React.ReactElement {
   const { showModal } = useModalConnect()
-  const aois: AOIConfig[] = USER_DATA.aois
+  const { aoiList, fetchList } = useAOIConnect()
+  useEffect(() => {
+    fetchList()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">Areas of interest</h1>
       <label>Your Areas of interest</label>
-      {aois.map((aoi) => (
-        <div className={styles.listItem} key={aoi.id}>
-          <button className={styles.titleLink}>{aoi.label}</button>
-          <IconButton icon="edit" tooltip="Edit Area of Interest" />
-          <IconButton icon="delete" type="warning" tooltip="Delete Area of Interest" />
-        </div>
-      ))}
+      {aoiList &&
+        aoiList.map((aoi) => (
+          <div className={styles.listItem} key={aoi.id}>
+            <button className={styles.titleLink}>{aoi.label}</button>
+            <IconButton icon="edit" tooltip="Edit Area of Interest" />
+            <IconButton icon="delete" type="warning" tooltip="Delete Area of Interest" />
+          </div>
+        ))}
       <Button
         onClick={() => {
           showModal('newAOI')

@@ -28,10 +28,6 @@ export const USER_DATA = {
       { id: 'workspace-6', label: 'Shared Worspace 2' },
     ],
   },
-  aois: [
-    { id: 'aoi-1', label: 'Galapagos Marine Reserve' },
-    { id: 'aoi-2', label: 'Caribbean Sea' },
-  ],
   datasets: {
     user: [
       {

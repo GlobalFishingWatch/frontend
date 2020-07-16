@@ -7,6 +7,7 @@ import {
 } from '@reduxjs/toolkit'
 import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
 import appReducer from './features/app/app.slice'
+import aoiReducer from './features/areas-of-interest/areas-of-interest.slice'
 import userReducer from './features/user/user.slice'
 import mapReducer from './features/map/map.slice'
 import timebarReducer from './features/timebar/timebar.slice'
@@ -20,6 +21,7 @@ const {
 
 const rootReducer = combineReducers({
   app: appReducer,
+  aoi: aoiReducer,
   user: userReducer,
   map: mapReducer,
   timebar: timebarReducer,
