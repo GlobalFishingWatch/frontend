@@ -48,9 +48,7 @@ class VesselsEventsGenerator {
     }
 
     const geojson = memoizeCache[config.id].getVesselEventsGeojson(data) as FeatureCollection
-
-    let newData: FeatureCollection = { ...geojson }
-    newData = this._setActiveEvent(newData, config.currentEventId || null)
+    const newData: FeatureCollection = this._setActiveEvent(geojson, config.currentEventId || null)
 
     if (config.start && config.end) {
       const startMs = new Date(config.start).getTime()
