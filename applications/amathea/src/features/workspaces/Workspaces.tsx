@@ -1,35 +1,42 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { WorkspaceConfig } from 'types'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import { WorkspaceConfig } from 'types'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { USER_DATA } from 'data/user-data'
 import styles from './Workspaces.module.css'
+import { useWorkspacesConnect } from './workspaces.hook'
 
 function Workspaces(): React.ReactElement {
   const { showModal } = useModalConnect()
-  const userWorkspaces: WorkspaceConfig[] = USER_DATA.workspaces.user
+  const { workspacesList, fetchList } = useWorkspacesConnect()
+  useEffect(() => {
+    fetchList()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  // const userWorkspaces: WorkspaceConfig[] = USER_DATA.workspaces.user
   const sharedWorkspaces: WorkspaceConfig[] = USER_DATA.workspaces.shared
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">Workspaces</h1>
       <label>Your workspaces</label>
-      {userWorkspaces.map((workspace) => (
-        <div className={styles.listItem} key={workspace.id}>
-          <button className={styles.titleLink}>{workspace.label}</button>
-          {workspace.description && <IconButton icon="info" tooltip={workspace.description} />}
-          <IconButton icon="edit" tooltip="Edit Workspace" />
-          {/* <IconButton icon="publish" tooltip="Publish workspace" /> */}
-          <IconButton
-            icon="share"
-            tooltip="Share Workspace"
-            onClick={() => {
-              showModal('shareWorkspace')
-            }}
-          />
-          <IconButton icon="delete" type="warning" tooltip="Delete Workspace" />
-        </div>
-      ))}
+      {workspacesList &&
+        workspacesList.map((workspace) => (
+          <div className={styles.listItem} key={workspace.id}>
+            <button className={styles.titleLink}>{workspace.label}</button>
+            {workspace.description && <IconButton icon="info" tooltip={workspace.description} />}
+            <IconButton icon="edit" tooltip="Edit Workspace" />
+            {/* <IconButton icon="publish" tooltip="Publish workspace" /> */}
+            <IconButton
+              icon="share"
+              tooltip="Share Workspace"
+              onClick={() => {
+                showModal('shareWorkspace')
+              }}
+            />
+            <IconButton icon="delete" type="warning" tooltip="Delete Workspace" />
+          </div>
+        ))}
       <Button
         onClick={() => {
           showModal('newWorkspace')
