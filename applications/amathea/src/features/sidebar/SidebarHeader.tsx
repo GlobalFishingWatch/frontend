@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
-import { selectUserData, logoutUser } from 'features/user/user.slice'
+import { selectUserData, logoutUserThunk } from 'features/user/user.slice'
 import { toggleMenu } from 'features/app/app.slice'
 import styles from './SidebarHeader.module.css'
 
@@ -23,7 +23,7 @@ function SidebarHeader(): React.ReactElement {
               icon="logout"
               tooltip="Log out"
               tooltipPlacement="left"
-              onClick={() => dispatch(logoutUser())}
+              onClick={() => dispatch(logoutUserThunk())}
             />
             <IconButton
               tooltip={

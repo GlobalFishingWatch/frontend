@@ -1,4 +1,4 @@
-import React, { memo, Fragment, useCallback, useEffect } from 'react'
+import React, { memo, Fragment, useCallback, useEffect, Suspense } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
@@ -6,6 +6,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { WORKSPACE_EDITOR } from 'routes/routes'
 import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
 import { useWorkspacesConnect } from 'features/workspaces/workspaces.hook'
+import { useUserConnect } from 'features/user/user.hook'
 import Login from '../user/Login'
 import Modal from '../modal/Modal'
 import Map from '../map/Map'
@@ -29,7 +30,7 @@ const Main = memo(() => {
 function App(): React.ReactElement {
   const menuOpen = useSelector(isMenuOpen)
   const sidebarOpen = useSelector(isSidebarOpen)
-  const logged = useSelector(isUserLogged)
+  const { logged, status } = useUserConnect()
   const dispatch = useDispatch()
 
   const { fetchAOI } = useAOIConnect()
@@ -51,7 +52,7 @@ function App(): React.ReactElement {
   return (
     <Fragment>
       <Login />
-      {!logged ? (
+      {status === 'loading' || !logged ? (
         <div className={styles.placeholder}>Loading</div>
       ) : (
         <SplitView

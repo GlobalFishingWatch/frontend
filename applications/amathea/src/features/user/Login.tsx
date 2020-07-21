@@ -1,18 +1,16 @@
 import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { selectUserResolved, fetchUser, isUserLogged } from './user.slice'
+import { useUserConnect } from './user.hook'
 
 export default function Login(): React.ReactElement | null {
-  const dispatch = useDispatch()
-  const logged = useSelector(isUserLogged)
-  const resolved = useSelector(selectUserResolved)
+  const { status, logged, fetchUser } = useUserConnect()
 
   useEffect(() => {
-    dispatch(fetchUser())
-  }, [dispatch])
+    fetchUser()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  if (resolved && !logged) {
+  if ((status === 'finished' || status === 'error') && !logged) {
     window.location.href = GFWAPI.getLoginUrl(window.location.toString())
   }
   return null

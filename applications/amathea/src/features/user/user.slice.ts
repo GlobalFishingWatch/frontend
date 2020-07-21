@@ -1,88 +1,72 @@
-import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
-import { AppThunk, RootState } from 'store'
+import { createSlice, createSelector, createAsyncThunk } from '@reduxjs/toolkit'
 import GFWAPI, {
   UserData,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
+import { RootState } from 'store'
+import { AsyncReducerStatus } from 'features/api/api.slice'
 
 interface UserState {
   logged: boolean
-  loading: boolean
-  resolved: boolean
+  status: AsyncReducerStatus
   data: UserData | null
-  error: string
 }
 
 const initialState: UserState = {
   logged: false,
-  resolved: false,
-  loading: false,
+  status: 'idle',
   data: null,
-  error: '',
 }
+
+export const fetchUserThunk = createAsyncThunk('user/fetch', async () => {
+  const accessToken = getAccessTokenFromUrl()
+  if (accessToken) {
+    removeAccessTokenFromUrl()
+  }
+  const user = await GFWAPI.login({ accessToken })
+  return user
+})
+
+export const logoutUserThunk = createAsyncThunk('user/logout', async () => {
+  await GFWAPI.logout()
+  return true
+})
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-    userLoading: (state) => {
-      state.loading = true
-      state.resolved = false
-    },
-    userLoaded: (state, action: PayloadAction<UserData>) => {
-      state.loading = false
-      state.resolved = true
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchUserThunk.pending, (state) => {
+      state.status = 'loading'
+    })
+    builder.addCase(fetchUserThunk.fulfilled, (state, action) => {
+      state.status = 'finished'
       state.logged = true
       state.data = action.payload
-    },
-    userError: (state, action: PayloadAction<Error>) => {
-      state.loading = false
-      state.resolved = true
-      state.logged = false
-      state.error += action.payload
-    },
-    logout: (state) => {
+    })
+    builder.addCase(fetchUserThunk.rejected, (state) => {
+      state.status = 'error'
+    })
+    builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.logged = false
       state.data = null
-    },
+    })
   },
 })
 
-const { userLoading, userLoaded, userError, logout } = userSlice.actions
-
-export const fetchUser = (): AppThunk => (dispatch) => {
-  dispatch(userLoading())
-  const accessToken = getAccessTokenFromUrl()
-  GFWAPI.login({ accessToken })
-    .then((user: UserData) => {
-      dispatch(userLoaded(user))
-      if (accessToken) {
-        removeAccessTokenFromUrl()
-      }
-    })
-    .catch((e: Error) => {
-      dispatch(userError(e))
-    })
-}
-
-export const logoutUser = (): AppThunk => async (dispatch) => {
-  try {
-    await GFWAPI.logout()
-    dispatch(logout())
-  } catch (e) {
-    console.warn(e)
-  }
-}
-
 export const selectUserData = (state: RootState) => state.user.data
-export const selectUserResolved = (state: RootState) => state.user.resolved
+export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
-export const selectUserLoading = (state: RootState) => state.user.loading
 
 export const isUserLogged = createSelector(
-  [selectUserLogged, selectUserLoading],
-  (logged, loading) => !loading && logged
+  [selectUserStatus, selectUserLogged],
+  (status, logged) => {
+    return status === 'finished' && logged
+  }
 )
+
+export const getUserId = createSelector([selectUserData], (userData) => userData?.id)
 
 export default userSlice.reducer
