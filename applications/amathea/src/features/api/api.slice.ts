@@ -2,46 +2,59 @@ import {
   createSlice,
   SliceCaseReducers,
   ValidateSliceCaseReducers,
-  CaseReducers,
   ActionReducerMapBuilder,
+  createEntityAdapter,
+  Dictionary,
 } from '@reduxjs/toolkit'
 
-export interface AsyncReducer<T> {
-  data?: T
-  error?: ''
-  status?: 'idle' | 'loading' | 'finished' | 'error'
+export type AsyncReducerStatus = 'idle' | 'loading' | 'finished' | 'error'
+export type AsyncReducer<T> = {
+  ids: (number | string)[]
+  entities: Dictionary<T>
+  error: string
+  status: AsyncReducerStatus
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const createAsyncSlice = <T, Reducers extends SliceCaseReducers<T>>({
+export const createAsyncSlice = <T, U>({
   name = '',
   initialState = {} as T,
   reducers,
-  extraReducers = {},
+  extraReducers,
   thunk,
 }: {
   name: string
   initialState?: T
-  reducers: ValidateSliceCaseReducers<T, Reducers>
-  extraReducers?: CaseReducers<T, any> | ((builder: ActionReducerMapBuilder<T>) => void)
+  reducers: ValidateSliceCaseReducers<T, SliceCaseReducers<T>>
+  extraReducers?: (builder: ActionReducerMapBuilder<T>) => void
   thunk: any
 }) => {
-  return createSlice({
+  const entityAdapter = createEntityAdapter<U>()
+  const slice = createSlice({
     name,
-    initialState: { status: 'idle', ...initialState },
-    reducers: reducers,
+    initialState: entityAdapter.getInitialState({
+      status: 'idle',
+      error: '',
+      ids: [],
+      entities: {},
+      ...initialState,
+    }),
+    reducers,
     extraReducers: (builder) => {
-      builder.addCase(thunk.pending, (state) => {
-        ;(state as AsyncReducer<T>).status = 'loading'
+      builder.addCase(thunk.pending, (state: any) => {
+        state.status = 'loading'
       })
-      builder.addCase(thunk.fulfilled, (state, action) => {
-        ;(state as AsyncReducer<T>).status = 'finished'
-        ;(state as AsyncReducer<T>).data = action.payload
+      builder.addCase(thunk.fulfilled, (state: any, action) => {
+        state.status = 'finished'
+        entityAdapter.setAll(state, action.payload)
       })
-      builder.addCase(thunk.rejected, (state) => {
-        ;(state as AsyncReducer<T>).status = 'error'
+      builder.addCase(thunk.rejected, (state: any) => {
+        state.status = 'error'
       })
+      if (extraReducers) {
+        extraReducers(builder)
+      }
     },
-    ...extraReducers,
   })
+  return { entityAdapter, slice }
 }
