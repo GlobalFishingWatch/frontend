@@ -5,6 +5,7 @@ import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import { useLocationConnect } from 'routes/routes.hook'
 import { WORKSPACE_EDITOR } from 'routes/routes'
 import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
+import { useWorkspacesConnect } from 'features/workspaces/workspaces.hook'
 import Login from '../user/Login'
 import Modal from '../modal/Modal'
 import Map from '../map/Map'
@@ -31,9 +32,11 @@ function App(): React.ReactElement {
   const logged = useSelector(isUserLogged)
   const dispatch = useDispatch()
 
-  const { fetchList } = useAOIConnect()
+  const { fetchAOI } = useAOIConnect()
+  const { fetchWorkspaces } = useWorkspacesConnect()
   useEffect(() => {
-    fetchList()
+    fetchAOI()
+    fetchWorkspaces()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

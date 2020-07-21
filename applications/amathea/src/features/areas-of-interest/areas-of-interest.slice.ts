@@ -1,75 +1,37 @@
 import { createSelector, createAsyncThunk } from '@reduxjs/toolkit'
-import { RootState } from 'store'
-import { AOIConfig } from 'types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { RootState } from 'store'
+import { AOIConfig } from 'types'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 
-function timeout(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-export const fetchAOI = createAsyncThunk('aoi/fetchList', async () => {
-  // const data = await GFWAPI.fetch<AOIConfig[]>('http://localhost:3001/aoi')
-  // return data
-  await timeout(100)
-  return [
-    {
-      id: 1,
-      label: 'Caribe',
-      bbox: [-82, 21, -45, 2],
-      geometry: {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-              type: 'Polygon',
-              coordinates: [
-                [
-                  [-82.42414360599997, 21.551266906000023],
-                  [-82.42414360599997, 1.7392250490000265],
-                  [-46.15867214299993, 1.4002702140000451],
-                  [-45.962434851999944, 21.475000831000045],
-                  [-82.42414360599997, 21.551266906000023],
-                ],
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ]
+export const fetchAOIThunk = createAsyncThunk('aoi/fetch', async () => {
+  const data = await GFWAPI.fetch<AOIConfig[]>('/aoi')
+  return data
 })
 
-interface AOIState extends AsyncReducer<AOIConfig[]> {
+interface AOIState extends AsyncReducer<AOIConfig> {
   selected: string
 }
 
-const initialState: AOIState = {
-  selected: '',
-}
-
-const aoiSlice = createAsyncSlice({
+const { slice: aoiSlice, entityAdapter } = createAsyncSlice<AOIState, AOIConfig>({
   name: 'aoi',
-  initialState,
   reducers: {},
-  thunk: fetchAOI,
+  thunk: fetchAOIThunk,
 })
 
-export const selectAOIList = (state: RootState) => state.aoi.data
+export const { selectAll } = entityAdapter.getSelectors<RootState>((state) => state.aoi)
 export const selectAOISelected = (state: RootState) => state.aoi.selected
 
 export const getCurrentAOI = createSelector(
-  [selectAOIList, selectAOISelected],
+  [selectAll, selectAOISelected],
   (aoiList, selectedId) => {
     if (!aoiList) return
     aoiList.find((aoi) => aoi.id === selectedId)
   }
 )
 
-export const getAOIGeneratorsConfig = createSelector([selectAOIList], (aoiList) => {
+export const getAOIGeneratorsConfig = createSelector([selectAll], (aoiList) => {
   if (!aoiList) return
   return aoiList.map((aoi) => {
     return {

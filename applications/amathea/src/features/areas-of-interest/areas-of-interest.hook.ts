@@ -1,12 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { selectAOIList, fetchAOI } from './areas-of-interest.slice'
+import { selectAll, fetchAOIThunk } from './areas-of-interest.slice'
 
 export const useAOIConnect = () => {
   const dispatch = useDispatch()
-  const aoiList = useSelector(selectAOIList)
-  const fetchList = useCallback(() => {
-    dispatch(fetchAOI())
+  const aoiList = useSelector(selectAll)
+  const fetchAOI = useCallback(() => {
+    dispatch(fetchAOIThunk())
   }, [dispatch])
-  return { aoiList, fetchList }
+  return { aoiList, fetchAOI }
 }

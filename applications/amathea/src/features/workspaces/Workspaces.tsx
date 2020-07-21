@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { WorkspaceConfig } from 'types'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
+import { WorkspaceConfig } from 'types'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { USER_DATA } from 'data/user-data'
 import styles from './Workspaces.module.css'
@@ -9,11 +9,7 @@ import { useWorkspacesConnect } from './workspaces.hook'
 
 function Workspaces(): React.ReactElement {
   const { showModal } = useModalConnect()
-  const { workspacesList, fetchList } = useWorkspacesConnect()
-  useEffect(() => {
-    fetchList()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const { workspacesList, deleteWorkspace } = useWorkspacesConnect()
   // const userWorkspaces: WorkspaceConfig[] = USER_DATA.workspaces.user
   const sharedWorkspaces: WorkspaceConfig[] = USER_DATA.workspaces.shared
   return (
@@ -34,7 +30,12 @@ function Workspaces(): React.ReactElement {
                 showModal('shareWorkspace')
               }}
             />
-            <IconButton icon="delete" type="warning" tooltip="Delete Workspace" />
+            <IconButton
+              icon="delete"
+              type="warning"
+              tooltip="Delete Workspace"
+              onClick={() => deleteWorkspace(workspace.id)}
+            />
           </div>
         ))}
       <Button
