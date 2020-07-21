@@ -7,11 +7,7 @@ import { useAOIConnect } from './areas-of-interest.hook'
 
 function AreasOfInterest(): React.ReactElement {
   const { showModal } = useModalConnect()
-  const { aoiList, fetchList } = useAOIConnect()
-  useEffect(() => {
-    fetchList()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const { aoiList } = useAOIConnect()
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">Areas of interest</h1>
@@ -20,8 +16,12 @@ function AreasOfInterest(): React.ReactElement {
         aoiList.map((aoi) => (
           <div className={styles.listItem} key={aoi.id}>
             <button className={styles.titleLink}>{aoi.label}</button>
-            <IconButton icon="edit" tooltip="Edit Area of Interest" />
-            <IconButton icon="delete" type="warning" tooltip="Delete Area of Interest" />
+            <IconButton icon="edit" tooltip="Edit Area of Interest (Cooming soon)" />
+            <IconButton
+              icon="delete"
+              type="warning"
+              tooltip="Delete Area of Interest (Cooming soon)"
+            />
           </div>
         ))}
       <Button
@@ -29,6 +29,8 @@ function AreasOfInterest(): React.ReactElement {
           showModal('newAOI')
         }}
         className={styles.rightSide}
+        tooltip="Cooming soon"
+        tooltipPlacement="top"
       >
         Create new area of interest
       </Button>

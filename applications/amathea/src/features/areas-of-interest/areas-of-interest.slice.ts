@@ -1,7 +1,8 @@
 import { createSelector, createAsyncThunk } from '@reduxjs/toolkit'
-// import GFWAPI from '@globalfishingwatch/api-client'
 import { RootState } from 'store'
 import { AOIConfig } from 'types'
+import GFWAPI from '@globalfishingwatch/api-client'
+import { Generators } from '@globalfishingwatch/layer-composer'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 
 function timeout(ms: number) {
@@ -9,12 +10,36 @@ function timeout(ms: number) {
 }
 
 export const fetchAOI = createAsyncThunk('aoi/fetchList', async () => {
-  // const data = await GFWAPI.fetch<AOIConfig[]>('/areas-of-interest')
+  // const data = await GFWAPI.fetch<AOIConfig[]>('http://localhost:3001/aoi')
   // return data
-  await timeout(1000)
+  await timeout(100)
   return [
-    { id: 'aoi-1', label: 'Galapagos Marine Reserve' },
-    { id: 'aoi-2', label: 'Caribbean Sea' },
+    {
+      id: 1,
+      label: 'Caribe',
+      bbox: [-82, 21, -45, 2],
+      geometry: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-82.42414360599997, 21.551266906000023],
+                  [-82.42414360599997, 1.7392250490000265],
+                  [-46.15867214299993, 1.4002702140000451],
+                  [-45.962434851999944, 21.475000831000045],
+                  [-82.42414360599997, 21.551266906000023],
+                ],
+              ],
+            },
+          },
+        ],
+      },
+    },
   ]
 })
 
@@ -43,4 +68,29 @@ export const getCurrentAOI = createSelector(
     aoiList.find((aoi) => aoi.id === selectedId)
   }
 )
+
+export const getAOIGeneratorsConfig = createSelector([selectAOIList], (aoiList) => {
+  if (!aoiList) return
+  return aoiList.map((aoi) => {
+    return {
+      type: Generators.Type.GL,
+      id: `aoi-${aoi.id}`,
+      sources: [
+        {
+          type: 'geojson',
+          data: aoi.geometry,
+        },
+      ],
+      layers: [
+        {
+          type: 'line',
+          paint: {
+            'line-color': 'red',
+          },
+        },
+      ],
+    }
+  }) as Generators.GlGeneratorConfig[]
+})
+
 export default aoiSlice.reducer

@@ -1,3 +1,5 @@
+import { Feature, Geometry } from 'geojson'
+
 export type WorkspaceParam = 'zoom' | 'latitude' | 'longitude' | 'start' | 'end' | 'modal'
 
 export type ModalTypes = 'newWorkspace' | 'newAOI' | 'newDataset' | 'shareWorkspace'
@@ -35,6 +37,7 @@ export type WorkspaceConfig = {
 export type AOIConfig = {
   id: string
   label: string
+  geometry: Feature<Geometry, unknown>
 }
 
 export type DatasetConfig = {

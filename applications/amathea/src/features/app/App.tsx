@@ -1,9 +1,10 @@
-import React, { memo, Fragment, useCallback } from 'react'
+import React, { memo, Fragment, useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import { useLocationConnect } from 'routes/routes.hook'
 import { WORKSPACE_EDITOR } from 'routes/routes'
+import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
 import Login from '../user/Login'
 import Modal from '../modal/Modal'
 import Map from '../map/Map'
@@ -29,6 +30,12 @@ function App(): React.ReactElement {
   const sidebarOpen = useSelector(isSidebarOpen)
   const logged = useSelector(isUserLogged)
   const dispatch = useDispatch()
+
+  const { fetchList } = useAOIConnect()
+  useEffect(() => {
+    fetchList()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onToggleMenu = useCallback(() => {
     dispatch(toggleMenu())

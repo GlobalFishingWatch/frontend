@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
+import { RootState } from 'store'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   AnyGeneratorConfig,
   BackgroundGeneratorConfig,
   BasemapGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { RootState } from 'store'
 import { selectMapZoomQuery, selectTimerange } from 'routes/routes.selectors'
 
 export interface MapState {
@@ -18,7 +18,7 @@ const initialState: MapState = {
     {
       id: 'background',
       type: Generators.Type.Background,
-      color: '#6aecf9',
+      color: '#002458',
     } as BackgroundGeneratorConfig,
     { id: 'satellite', type: Generators.Type.Basemap, visible: true } as BasemapGeneratorConfig,
   ],
