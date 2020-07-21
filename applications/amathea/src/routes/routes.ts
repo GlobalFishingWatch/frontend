@@ -13,9 +13,9 @@ import { RootState } from 'store'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const WORKSPACES = 'location/workspaces'
-export const WORKSPACE_EDITOR = 'location/workspaceEditor'
 export const AREAS_OF_INTEREST = 'location/areasOfInterest'
 export const DATASETS = 'location/datasets'
+export const WORKSPACE_EDITOR = 'location/workspaceEditor'
 
 export type ROUTE_TYPES =
   | typeof WORKSPACES
@@ -36,6 +36,10 @@ const routesMap: RoutesMap<LocationRoute> = {
   },
   [DATASETS]: {
     path: '/datasets',
+    sidebarComponent: 'datasets/Datasets.tsx',
+  },
+  [WORKSPACE_EDITOR]: {
+    path: '/workspaces/:workspaceId',
     sidebarComponent: 'datasets/Datasets.tsx',
   },
   [NOT_FOUND]: {

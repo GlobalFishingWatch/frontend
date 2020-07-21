@@ -5,6 +5,7 @@ export interface UpdateQueryParamsAction {
   type: ROUTE_TYPES
   query: QueryParams
   replaceQuery?: boolean
+  payload?: any
   meta?: {
     location: {
       kind: string
@@ -12,6 +13,9 @@ export interface UpdateQueryParamsAction {
   }
 }
 
-export function updateQueryParams(type: ROUTE_TYPES, query: QueryParams): UpdateQueryParamsAction {
-  return { type, query }
+export function updateQueryParams(
+  type: ROUTE_TYPES,
+  { query, payload = {} }: { query: QueryParams; payload: any }
+): UpdateQueryParamsAction {
+  return { type, query, payload }
 }

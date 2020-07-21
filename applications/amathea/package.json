@@ -28,7 +28,8 @@
     "react-map-gl": "https://github.com/GlobalFishingWatch/react-map-gl.git#build",
     "react-redux": "^7.2.0",
     "react-scripts": "3.4.1",
-    "redux-first-router": "^2.1.5"
+    "redux-first-router": "^2.1.5",
+    "redux-first-router-link": "^2.1.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -44,6 +45,7 @@
     "@types/react-map-gl": "^5.2.4",
     "@types/react-redux": "^7.1.7",
     "@types/redux-first-router": "^2.1.5",
+    "@types/redux-first-router-link": "^1.4.4",
     "@typescript-eslint/eslint-plugin": "^3.2.0",
     "@typescript-eslint/parser": "^3.2.0",
     "eslint-config-prettier": "^6.11.0",

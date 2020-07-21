@@ -1,7 +1,9 @@
 import React from 'react'
+import Link from 'redux-first-router-link'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { useModalConnect } from 'features/modal/modal.hooks'
+import { WORKSPACE_EDITOR } from 'routes/routes'
 import styles from './Workspaces.module.css'
 import { useWorkspacesConnect } from './workspaces.hook'
 
@@ -17,7 +19,9 @@ function Workspaces(): React.ReactElement {
           <div className={styles.listItem} key={workspace.id}>
             <button className={styles.titleLink}>{workspace.label}</button>
             {workspace.description && <IconButton icon="info" tooltip={workspace.description} />}
-            <IconButton icon="edit" tooltip="Edit Workspace" />
+            <Link to={{ type: WORKSPACE_EDITOR, payload: { workspaceId: workspace.id } }}>
+              <IconButton icon="edit" tooltip="Edit Workspace" />
+            </Link>
             {/* <IconButton icon="publish" tooltip="Publish workspace" /> */}
             <IconButton
               icon="share"

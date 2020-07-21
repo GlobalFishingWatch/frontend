@@ -1,8 +1,6 @@
 import React, { useMemo, Suspense, lazy } from 'react'
-import { useSelector } from 'react-redux'
 import { ModalConfigOptions } from 'types'
 import GFWModal from '@globalfishingwatch/ui-components/dist/modal'
-import { selectModal } from 'routes/routes.selectors'
 import { useModalConnect } from './modal.hooks'
 
 const MODALS: ModalConfigOptions = {
@@ -25,8 +23,7 @@ const MODALS: ModalConfigOptions = {
 }
 
 function Modal(): React.ReactElement | null {
-  const { hideModal } = useModalConnect()
-  const modal = useSelector(selectModal)
+  const { modal, hideModal } = useModalConnect()
   const selectedModal = MODALS[modal]
 
   const ModalComponent = (component: string) => {

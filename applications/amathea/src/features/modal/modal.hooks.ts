@@ -1,20 +1,20 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
 import { ModalTypes } from 'types'
-import { selectCurrentLocation } from 'routes/routes.selectors'
-import { updateQueryParams } from 'routes/routes.actions'
+import { selectModal } from 'routes/routes.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 
 export const useModalConnect = () => {
-  const dispatch = useDispatch()
-  const location = useSelector(selectCurrentLocation)
+  const modal = useSelector(selectModal)
+  const { dispatchQueryParams } = useLocationConnect()
   const showModal = useCallback(
     (modal: ModalTypes) => {
-      dispatch(updateQueryParams(location.type, { modal: modal }))
+      dispatchQueryParams({ modal })
     },
-    [dispatch, location.type]
+    [dispatchQueryParams]
   )
   const hideModal = useCallback(() => {
-    dispatch(updateQueryParams(location.type, { modal: undefined }))
-  }, [dispatch, location.type])
-  return { showModal, hideModal }
+    dispatchQueryParams({ modal: undefined })
+  }, [dispatchQueryParams])
+  return { modal, showModal, hideModal }
 }

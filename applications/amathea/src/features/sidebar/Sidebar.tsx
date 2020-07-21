@@ -1,9 +1,12 @@
-import React, { lazy, useMemo, Suspense } from 'react'
+import React, { lazy, useMemo, Suspense, useEffect } from 'react'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { useLocationConnect } from 'routes/routes.hook'
 import { WORKSPACES, AREAS_OF_INTEREST, DATASETS } from 'routes/routes'
-import styles from './Sidebar.module.css'
+import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
+import { useWorkspacesConnect } from 'features/workspaces/workspaces.hook'
+import { useDatasetsConnect } from 'features/datasets/datasets.hook'
 import SidebarHeader from './SidebarHeader'
+import styles from './Sidebar.module.css'
 
 const SidebarComponent = (component: string) => {
   return lazy(() => import(`../${component}`))
@@ -11,6 +14,17 @@ const SidebarComponent = (component: string) => {
 
 function Sidebar(): React.ReactElement {
   const { location, dispatchLocation } = useLocationConnect()
+  const { fetchAOI } = useAOIConnect()
+  const { fetchWorkspaces } = useWorkspacesConnect()
+  const { fetchDatasets } = useDatasetsConnect()
+
+  useEffect(() => {
+    fetchAOI()
+    fetchWorkspaces()
+    fetchDatasets()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const ComponentSidebar = useMemo(() => {
     return location.sidebarComponent ? SidebarComponent(location.sidebarComponent) : null
   }, [location.sidebarComponent])

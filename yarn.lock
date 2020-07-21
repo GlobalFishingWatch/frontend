@@ -4752,7 +4752,15 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/redux-first-router@^2.1.5":
+"@types/redux-first-router-link@^1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@types/redux-first-router-link/-/redux-first-router-link-1.4.4.tgz#d9ee41404f730416a1b9f4ad3d14b448d9c0f58f"
+  integrity sha512-amvEgN9sVH3xgbBbngIAgT/eJp/cv5bvnpkOhQOOTs+99nCqUlhEgkJZ9hQFiY1uhENhLYI9z9FS02VmX4W8gw==
+  dependencies:
+    "@types/react" "*"
+    "@types/redux-first-router" "*"
+
+"@types/redux-first-router@*", "@types/redux-first-router@^2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@types/redux-first-router/-/redux-first-router-2.1.5.tgz#13e769524c10394e802d7cda87f0a7701222031f"
   integrity sha512-hGar9Ap//l/rRgFCNyLcanOUNi6MhfSiQ1W/TH+QrGsNxOrb2lNeZN0EWCPrfWUYz8DupU7jTb6lUCWqcZ9fMA==
@@ -17401,6 +17409,16 @@ redis-parser@^3.0.0:
   integrity sha1-tm2CjNyv5rS4pCin3vTGvKwxyLQ=
   dependencies:
     redis-errors "^1.0.0"
+
+redux-first-router-link@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/redux-first-router-link/-/redux-first-router-link-2.1.1.tgz#93097de2d0863578c15547d16e71688b4e8b763a"
+  integrity sha512-WjOuaMPWhdeWCFGpkcwSJqhhNa5+v9XJwZOrfZki+Nv51QO+klDb11xQEPiLFRPZvQ9yqv5waqRrnbCCZe7d0A==
+  dependencies:
+    path-to-regexp "^1.7.0"
+    prop-types "^15.5.10"
+    rudy-history "^1.0.0"
+    rudy-match-path "^0.3.0"
 
 redux-first-router@^2.1.5:
   version "2.1.5"
