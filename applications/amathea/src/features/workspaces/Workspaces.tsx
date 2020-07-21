@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { WorkspaceConfig } from 'types'
@@ -33,6 +33,7 @@ function Workspaces(): React.ReactElement {
             <IconButton
               icon="delete"
               type="warning"
+              disabled={workspace.id === 5}
               tooltip="Delete Workspace"
               onClick={() => deleteWorkspace(workspace.id)}
             />

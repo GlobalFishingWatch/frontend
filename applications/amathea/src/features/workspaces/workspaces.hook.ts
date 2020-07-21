@@ -1,6 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { fetchWorkspacesThunk, deleteWorkspaceThunk, selectAll } from './workspaces.slice'
+import { Workspace } from '@globalfishingwatch/dataviews-client'
+import {
+  fetchWorkspacesThunk,
+  deleteWorkspaceThunk,
+  createWorkspaceThunk,
+  selectAll,
+} from './workspaces.slice'
 
 export const useWorkspacesConnect = () => {
   const dispatch = useDispatch()
@@ -14,5 +20,11 @@ export const useWorkspacesConnect = () => {
     },
     [dispatch]
   )
-  return { workspacesList, fetchWorkspaces, deleteWorkspace }
+  const createWorkspace = useCallback(
+    (workspace: Partial<Workspace>) => {
+      dispatch(createWorkspaceThunk(workspace))
+    },
+    [dispatch]
+  )
+  return { workspacesList, fetchWorkspaces, deleteWorkspace, createWorkspace }
 }

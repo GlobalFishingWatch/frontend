@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { useModalConnect } from 'features/modal/modal.hooks'

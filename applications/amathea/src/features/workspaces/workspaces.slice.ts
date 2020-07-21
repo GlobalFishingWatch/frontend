@@ -23,6 +23,22 @@ export const deleteWorkspaceThunk = createAsyncThunk(
   }
 )
 
+export const createWorkspaceThunk = createAsyncThunk(
+  'workspaces/create',
+  async (workspaceData: Partial<Workspace>, { rejectWithValue }) => {
+    try {
+      console.log('workspaceData', workspaceData)
+      const workspace = await GFWAPI.fetch<Workspace>(`/workspaces`, {
+        method: 'POST',
+        body: workspaceData as Body,
+      })
+      return { workspace }
+    } catch (e) {
+      return rejectWithValue(workspaceData.label)
+    }
+  }
+)
+
 export type WorkspacesState = AsyncReducer<Workspace>
 
 const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesState, Workspace>({
@@ -34,6 +50,12 @@ const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesSta
     })
     builder.addCase(deleteWorkspaceThunk.rejected, (state, action) => {
       state.error = `Error removing workspace ${action.payload}`
+    })
+    builder.addCase(createWorkspaceThunk.fulfilled, (state, action) => {
+      entityAdapter.addOne(state, action.payload.workspace)
+    })
+    builder.addCase(createWorkspaceThunk.rejected, (state, action) => {
+      state.error = `Error adding workspace ${action.payload}`
     })
   },
   thunk: fetchWorkspacesThunk,

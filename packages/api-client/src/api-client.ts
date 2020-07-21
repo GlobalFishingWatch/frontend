@@ -213,7 +213,11 @@ export class GFWAPI {
           method,
           signal,
           ...(body && { body: JSON.stringify(body) }),
-          headers: { ...headers, Authorization: `Bearer ${this.getToken()}` },
+          headers: {
+            ...headers,
+            ...(json && { 'Content-Type': 'application/json' }),
+            Authorization: `Bearer ${this.getToken()}`,
+          },
         })
           .then(processStatus)
           .then((res) => {

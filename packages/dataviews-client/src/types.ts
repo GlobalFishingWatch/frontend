@@ -1,3 +1,4 @@
+import { GeoJSON } from 'geojson'
 import { FetchResponseTypes } from '@globalfishingwatch/api-client/dist/api-client'
 
 export type EndpointType = 'track' | 'info' | 'tiles' | 'events'
@@ -61,15 +62,24 @@ export interface WorkspaceDataview {
   datasetsParams?: DatasetParams[]
 }
 
+export interface AOI {
+  id: number
+  geometry?: GeoJSON
+  bbox: number[]
+}
+
 export interface Workspace {
   id: number
   description: string
-  dataviewWorkspaces: WorkspaceDataview[]
-  zoom?: number
-  latitude?: number
-  longitude?: number
-  start?: string
-  end?: string
+  label: string
+  workspaceDataviews: WorkspaceDataview[]
+  aoiId: number
+  aoi?: number | AOI
+  zoom: number
+  latitude: number
+  longitude: number
+  start: string
+  end: string
 }
 
 export interface Resource<T = unknown> {
