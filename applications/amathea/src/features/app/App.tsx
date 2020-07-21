@@ -1,4 +1,4 @@
-import React, { memo, Fragment, useCallback, useEffect, Suspense } from 'react'
+import React, { memo, Fragment, useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
@@ -7,12 +7,12 @@ import { WORKSPACE_EDITOR } from 'routes/routes'
 import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
 import { useWorkspacesConnect } from 'features/workspaces/workspaces.hook'
 import { useUserConnect } from 'features/user/user.hook'
+import { useDatasetsConnect } from 'features/datasets/datasets.hook'
 import Login from '../user/Login'
 import Modal from '../modal/Modal'
 import Map from '../map/Map'
 import Timebar from '../timebar/Timebar'
 import Sidebar from '../sidebar/Sidebar'
-import { isUserLogged } from '../user/user.slice'
 import { toggleMenu, isMenuOpen, isSidebarOpen, toggleSidebar } from './app.slice'
 import styles from './App.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
@@ -35,9 +35,11 @@ function App(): React.ReactElement {
 
   const { fetchAOI } = useAOIConnect()
   const { fetchWorkspaces } = useWorkspacesConnect()
+  const { fetchDatasets } = useDatasetsConnect()
   useEffect(() => {
     fetchAOI()
     fetchWorkspaces()
+    fetchDatasets()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

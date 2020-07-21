@@ -6,11 +6,13 @@ import {
   deleteWorkspaceThunk,
   createWorkspaceThunk,
   selectAll,
+  selectShared,
 } from './workspaces.slice'
 
 export const useWorkspacesConnect = () => {
   const dispatch = useDispatch()
   const workspacesList = useSelector(selectAll)
+  const workspacesSharedList = useSelector(selectShared)
   const fetchWorkspaces = useCallback(() => {
     dispatch(fetchWorkspacesThunk())
   }, [dispatch])
@@ -26,5 +28,5 @@ export const useWorkspacesConnect = () => {
     },
     [dispatch]
   )
-  return { workspacesList, fetchWorkspaces, deleteWorkspace, createWorkspace }
+  return { workspacesList, workspacesSharedList, fetchWorkspaces, deleteWorkspace, createWorkspace }
 }

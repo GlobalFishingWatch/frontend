@@ -1,8 +1,9 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Workspace } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
+import { getUserId } from 'features/user/user.slice'
 
 export const fetchWorkspacesThunk = createAsyncThunk('workspaces/fetch', async () => {
   const data = await GFWAPI.fetch<Workspace[]>('/workspaces')
@@ -27,7 +28,6 @@ export const createWorkspaceThunk = createAsyncThunk(
   'workspaces/create',
   async (workspaceData: Partial<Workspace>, { rejectWithValue }) => {
     try {
-      console.log('workspaceData', workspaceData)
       const workspace = await GFWAPI.fetch<Workspace>(`/workspaces`, {
         method: 'POST',
         body: workspaceData as Body,
@@ -63,6 +63,11 @@ const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesSta
 
 export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(
   (state) => state.workspaces
+)
+
+export const selectShared = createSelector([selectAll, getUserId], (workspaces, userId) =>
+  // TODO: make this real when editors in workspaces API
+  workspaces.filter((w: any) => w.editors?.includes(userId))
 )
 
 export default workspacesSlice.reducer

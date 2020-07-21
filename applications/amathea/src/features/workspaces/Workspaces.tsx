@@ -1,17 +1,13 @@
 import React from 'react'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import { WorkspaceConfig } from 'types'
 import { useModalConnect } from 'features/modal/modal.hooks'
-import { USER_DATA } from 'data/user-data'
 import styles from './Workspaces.module.css'
 import { useWorkspacesConnect } from './workspaces.hook'
 
 function Workspaces(): React.ReactElement {
   const { showModal } = useModalConnect()
-  const { workspacesList, deleteWorkspace } = useWorkspacesConnect()
-  // const userWorkspaces: WorkspaceConfig[] = USER_DATA.workspaces.user
-  const sharedWorkspaces: WorkspaceConfig[] = USER_DATA.workspaces.shared
+  const { workspacesList, workspacesSharedList, deleteWorkspace } = useWorkspacesConnect()
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">Workspaces</h1>
@@ -48,7 +44,7 @@ function Workspaces(): React.ReactElement {
         Create new workspace
       </Button>
       <label>Workspaces shared with you</label>
-      {sharedWorkspaces.map((workspace) => (
+      {workspacesSharedList.map((workspace) => (
         <div className={styles.listItem} key={workspace.id}>
           <button className={styles.titleLink}>{workspace.label}</button>
           <IconButton icon="edit" tooltip="Edit Workspace" />

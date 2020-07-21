@@ -5,13 +5,14 @@ import {
   combineReducers,
   getDefaultMiddleware,
 } from '@reduxjs/toolkit'
-import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
+import datasetsReducer from './features/datasets/datasets.slice'
 import appReducer from './features/app/app.slice'
 import aoiReducer from './features/areas-of-interest/areas-of-interest.slice'
 import workspacesReducer from './features/workspaces/workspaces.slice'
 import userReducer from './features/user/user.slice'
 import mapReducer from './features/map/map.slice'
 import timebarReducer from './features/timebar/timebar.slice'
+import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
 
 const {
   reducer: location,
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   app: appReducer,
   user: userReducer,
   aoi: aoiReducer,
+  datasets: datasetsReducer,
   workspaces: workspacesReducer,
   map: mapReducer,
   timebar: timebarReducer,

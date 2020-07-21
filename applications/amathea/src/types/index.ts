@@ -39,9 +39,3 @@ export type AOIConfig = {
   label: string
   geometry: Feature<Geometry, unknown>
 }
-
-export type DatasetConfig = {
-  id: string
-  label: string
-  editors?: Editor[]
-}
