@@ -17,7 +17,12 @@ function Workspaces(): React.ReactElement {
       {workspacesList &&
         workspacesList.map((workspace) => (
           <div className={styles.listItem} key={workspace.id}>
-            <button className={styles.titleLink}>{workspace.label}</button>
+            <Link
+              className={styles.titleLink}
+              to={{ type: WORKSPACE_EDITOR, payload: { workspaceId: workspace.id } }}
+            >
+              <button>{workspace.label}</button>
+            </Link>
             {workspace.description && <IconButton icon="info" tooltip={workspace.description} />}
             <Link to={{ type: WORKSPACE_EDITOR, payload: { workspaceId: workspace.id } }}>
               <IconButton icon="edit" tooltip="Edit Workspace" />

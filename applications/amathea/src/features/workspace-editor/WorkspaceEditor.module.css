@@ -1,14 +1,47 @@
 .container {
   display: flex;
+  height: calc(100vh - var(--size-L));
 }
 
 .content {
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+}
+
+.content > div:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.infoPanel {
+  padding: var(--space-M) var(--space-S) calc(var(--space-M) + var(--space-S)) var(--space-M);
+}
+
+.infoPanel > div:not(:last-child) {
+  margin-bottom: var(--space-M);
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title h1 {
+  font: var(--font-XL)
+}
+
+.description {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dataviewPanel {
+  padding: var(--space-M) var(--space-S) var(--space-M) var(--space-M);
 }
 
 .footer {
   display: flex;
   justify-content: flex-end;
+  padding: var(--space-M);
 }

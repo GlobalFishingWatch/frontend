@@ -7,9 +7,13 @@ export default function ResumeColumn(): React.ReactElement | null {
   const { showModal } = useModalConnect()
 
   return (
-    <div className={styles.container}>
-      <IconButton icon="info" />
-      <IconButton icon="plus" onClick={() => showModal('newDataview')} />
-    </div>
+    <ul className={styles.container}>
+      <li className={styles.current}>
+        <IconButton icon="info" />
+      </li>
+      <li>
+        <IconButton icon="plus" onClick={() => showModal('newDataview')} />
+      </li>
+    </ul>
   )
 }

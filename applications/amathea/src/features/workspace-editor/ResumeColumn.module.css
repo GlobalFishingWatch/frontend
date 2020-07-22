@@ -1,7 +1,24 @@
 .container {
+  display: flex;
+  flex-direction: column;
+}
+
+.container li {
   width: var(--size-L);
+  height: var(--size-L);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
+  margin-bottom: 0.1rem;
+  background: var(--color-terthiary-blue);
+}
+
+.container li.current {
+  background: none;
+}
+
+.container::after {
+  content: '';
+  flex: 1;
+  background: var(--color-terthiary-blue);
 }

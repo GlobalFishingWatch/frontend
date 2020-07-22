@@ -10,6 +10,7 @@
   background-position: center center;
   color: var(--color-primary-blue);
   background-color: transparent;
+  flex-shrink: 0;
 }
 
 .iconButton:not(:disabled) {

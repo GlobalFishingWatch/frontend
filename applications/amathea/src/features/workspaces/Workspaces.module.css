@@ -8,11 +8,14 @@
 .titleLink {
   text-align: left;
   flex: 1;
-  color: inherit;
-  cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.titleLink button {
+  color: inherit;
+  cursor: pointer;
 }
 
 .rightSide {

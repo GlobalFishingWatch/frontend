@@ -1,0 +1,14 @@
+.container {
+  padding: var(--space-M) var(--space-S) var(--space-M) var(--space-M);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--space-S);
+}
+
+.title {
+  font: var(--font-L);
+  flex: 1;
+}
