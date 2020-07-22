@@ -20,6 +20,10 @@ const MODALS: ModalConfigOptions = {
     title: 'New Dataset',
     component: 'datasets/NewDataset.tsx',
   },
+  newDataview: {
+    title: 'New Dataview',
+    component: 'dataviews/NewDataview.tsx',
+  },
 }
 
 function Modal(): React.ReactElement | null {

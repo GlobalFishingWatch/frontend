@@ -1,12 +1,14 @@
-import React, { useEffect, Fragment } from 'react'
-import Link from 'redux-first-router-link'
+import React, { useEffect } from 'react'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { useLocationConnect } from 'routes/routes.hook'
-import { WORKSPACES } from 'routes/routes'
-import { useWorkspaceEditorConnect } from './workspace-editor.hook'
+import { useWorkspacesConnect } from 'features/workspaces/workspaces.hook'
+import { useModalConnect } from 'features/modal/modal.hooks'
+import ResumeColumn from './ResumeColumn'
+import styles from './WorkspaceEditor.module.css'
 
-export default function Login(): React.ReactElement | null {
-  const { workspace, fetchWorkspaceById } = useWorkspaceEditorConnect()
+export default function WorkspaceEditor(): React.ReactElement | null {
+  const { workspace, fetchWorkspaceById } = useWorkspacesConnect()
+  const { showModal } = useModalConnect()
   const { payload } = useLocationConnect()
 
   useEffect(() => {
@@ -17,12 +19,15 @@ export default function Login(): React.ReactElement | null {
   }, [])
 
   return (
-    <Fragment>
-      <h1>Workspace Editor</h1>
-      {workspace && <p>Workspace Label: {workspace.description}</p>}
-      <Link to={{ type: WORKSPACES }}>
-        <Button>BACK</Button>
-      </Link>
-    </Fragment>
+    <div className={styles.container}>
+      <ResumeColumn />
+      <div className={styles.content}>
+        <h1>Workspace Editor</h1>
+        <p>Label: {workspace ? workspace.description : 'loading'}</p>
+        <div className={styles.footer}>
+          <Button onClick={() => showModal('newDataview')}>Add new dataview</Button>
+        </div>
+      </div>
+    </div>
   )
 }

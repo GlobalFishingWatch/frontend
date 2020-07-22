@@ -5,11 +5,11 @@ import {
   combineReducers,
   getDefaultMiddleware,
 } from '@reduxjs/toolkit'
-import datasetsReducer from './features/datasets/datasets.slice'
 import appReducer from './features/app/app.slice'
 import aoiReducer from './features/areas-of-interest/areas-of-interest.slice'
+import datasetsReducer from './features/datasets/datasets.slice'
+import dataviewsReducer from './features/dataviews/dataviews.slice'
 import workspacesReducer from './features/workspaces/workspaces.slice'
-import workspaceEditorReducer from './features/workspace-editor/workspace-editor.slice'
 import userReducer from './features/user/user.slice'
 import mapReducer from './features/map/map.slice'
 import timebarReducer from './features/timebar/timebar.slice'
@@ -27,8 +27,8 @@ const rootReducer = combineReducers({
   user: userReducer,
   aoi: aoiReducer,
   datasets: datasetsReducer,
+  dataviews: dataviewsReducer,
   workspaces: workspacesReducer,
-  workspaceEditor: workspaceEditorReducer,
   map: mapReducer,
   timebar: timebarReducer,
   location: location,
