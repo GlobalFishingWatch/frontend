@@ -5,7 +5,6 @@ import { WORKSPACES, AREAS_OF_INTEREST, DATASETS } from 'routes/routes'
 import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
 import { useWorkspacesConnect } from 'features/workspaces/workspaces.hook'
 import { useDatasetsConnect } from 'features/datasets/datasets.hook'
-import SidebarHeader from './SidebarHeader'
 import styles from './Sidebar.module.css'
 
 const SidebarComponent = (component: string) => {
@@ -31,7 +30,6 @@ function Sidebar(): React.ReactElement {
 
   return (
     <div className={styles.container}>
-      <SidebarHeader />
       <div className={styles.tabs}>
         <Button
           onClick={() => {

@@ -3,13 +3,17 @@ import { RootState } from 'store'
 import { Query } from 'redux-first-router'
 import { WorkspaceParam, ModalTypes } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { LocationRoute, ROUTE_TYPES } from './routes'
+import { LocationRoute, ROUTE_TYPES, WORKSPACE_EDITOR } from './routes'
 
 const selectLocation = (state: RootState) => state.location
 
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
   const routeMap = routesMap[type] as LocationRoute
   return { type: type as ROUTE_TYPES, ...routeMap }
+})
+
+export const isWorkspaceEditorPage = createSelector([selectCurrentLocation], ({ type }) => {
+  return type === WORKSPACE_EDITOR
 })
 
 export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => {

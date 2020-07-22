@@ -2,28 +2,38 @@ import React, { Suspense, lazy, memo, Fragment, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
-import { useLocationConnect } from 'routes/routes.hook'
-import { WORKSPACE_EDITOR } from 'routes/routes'
 import { useUserConnect } from 'features/user/user.hook'
 import Login from 'features/user/Login'
-import WorkspaceEditor from 'features/workspace-editor/WorkspaceEditor'
 import Modal from 'features/modal/Modal'
-import Sidebar from 'features/sidebar/Sidebar'
+import SidebarHeader from 'common/SidebarHeader'
+import { isWorkspaceEditorPage } from 'routes/routes.selectors'
 import { toggleMenu, isMenuOpen, isSidebarOpen, toggleSidebar } from './app.slice'
 import styles from './App.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
 
-const Timebar = lazy(() => import('features/timebar/Timebar'))
 const Map = lazy(() => import('features/map/Map'))
+const Timebar = lazy(() => import('features/timebar/Timebar'))
+const Sidebar = lazy(() => import('features/sidebar/Sidebar'))
+const WorkspaceEditor = lazy(() => import('features/workspace-editor/WorkspaceEditor'))
 
 const Main = memo(() => {
-  const { location } = useLocationConnect()
+  const isWorkspaceEditor = useSelector(isWorkspaceEditorPage)
   return (
     <Suspense fallback={null}>
       <div className={styles.main}>
         <Map />
-        {location.type === WORKSPACE_EDITOR && <Timebar />}
+        {isWorkspaceEditor && <Timebar />}
       </div>
+    </Suspense>
+  )
+})
+
+const SidebarWrapper = memo(() => {
+  const isWorkspaceEditor = useSelector(isWorkspaceEditorPage)
+  return (
+    <Suspense fallback={null}>
+      <SidebarHeader />
+      {isWorkspaceEditor ? <WorkspaceEditor /> : <Sidebar />}
     </Suspense>
   )
 })
@@ -33,7 +43,6 @@ function App(): React.ReactElement {
   const sidebarOpen = useSelector(isSidebarOpen)
   const { logged, status } = useUserConnect()
   const dispatch = useDispatch()
-  const { location } = useLocationConnect()
 
   const onToggleMenu = useCallback(() => {
     dispatch(toggleMenu())
@@ -52,7 +61,7 @@ function App(): React.ReactElement {
         <SplitView
           isOpen={sidebarOpen}
           onToggle={onToggleSidebar}
-          aside={location.type === WORKSPACE_EDITOR ? <WorkspaceEditor /> : <Sidebar />}
+          aside={<SidebarWrapper />}
           main={<Main />}
           asideWidth="50%"
           className="split-container"
