@@ -1,8 +1,10 @@
-import React, { Suspense, lazy, memo, Fragment, useCallback } from 'react'
+import React, { Suspense, lazy, memo, Fragment, useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import { useUserConnect } from 'features/user/user.hook'
+import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
+import { useDatasetsConnect } from 'features/datasets/datasets.hook'
 import Login from 'features/user/Login'
 import Modal from 'features/modal/Modal'
 import SidebarHeader from 'common/SidebarHeader'
@@ -39,10 +41,18 @@ const SidebarWrapper = memo(() => {
 })
 
 function App(): React.ReactElement {
+  const dispatch = useDispatch()
   const menuOpen = useSelector(isMenuOpen)
   const sidebarOpen = useSelector(isSidebarOpen)
   const { logged, status } = useUserConnect()
-  const dispatch = useDispatch()
+  const { fetchAOI } = useAOIConnect()
+  const { fetchDatasets } = useDatasetsConnect()
+
+  useEffect(() => {
+    fetchAOI()
+    fetchDatasets()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onToggleMenu = useCallback(() => {
     dispatch(toggleMenu())

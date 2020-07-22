@@ -35,7 +35,7 @@ export type WorkspaceConfig = {
 }
 
 export type AOIConfig = {
-  id: string
+  id: number
   label: string
   geometry: Feature<Geometry, unknown>
 }

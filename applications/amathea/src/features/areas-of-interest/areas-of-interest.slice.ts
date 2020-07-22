@@ -4,15 +4,14 @@ import { AOIConfig } from 'types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
+import { selectCurrentWorkspace } from 'features/workspaces/workspaces.slice'
 
 export const fetchAOIThunk = createAsyncThunk('aoi/fetch', async () => {
   const data = await GFWAPI.fetch<AOIConfig[]>('/aoi')
   return data
 })
 
-interface AOIState extends AsyncReducer<AOIConfig> {
-  selected: string
-}
+type AOIState = AsyncReducer<AOIConfig>
 
 const { slice: aoiSlice, entityAdapter } = createAsyncSlice<AOIState, AOIConfig>({
   name: 'aoi',
@@ -21,38 +20,34 @@ const { slice: aoiSlice, entityAdapter } = createAsyncSlice<AOIState, AOIConfig>
 })
 
 export const { selectAll } = entityAdapter.getSelectors<RootState>((state) => state.aoi)
-export const selectAOISelected = (state: RootState) => state.aoi.selected
 
-export const getCurrentAOI = createSelector(
-  [selectAll, selectAOISelected],
-  (aoiList, selectedId) => {
+export const getAOIGeneratorsConfig = createSelector(
+  [selectAll, selectCurrentWorkspace],
+  (aoiList, workspace) => {
     if (!aoiList) return
-    aoiList.find((aoi) => aoi.id === selectedId)
+    return aoiList
+      .filter((aoi) => !workspace || workspace.aoiId === aoi.id)
+      .map((aoi) => {
+        return {
+          type: Generators.Type.GL,
+          id: `aoi-${aoi.id}`,
+          sources: [
+            {
+              type: 'geojson',
+              data: aoi.geometry,
+            },
+          ],
+          layers: [
+            {
+              type: 'line',
+              paint: {
+                'line-color': 'red',
+              },
+            },
+          ],
+        }
+      }) as Generators.GlGeneratorConfig[]
   }
 )
-
-export const getAOIGeneratorsConfig = createSelector([selectAll], (aoiList) => {
-  if (!aoiList) return
-  return aoiList.map((aoi) => {
-    return {
-      type: Generators.Type.GL,
-      id: `aoi-${aoi.id}`,
-      sources: [
-        {
-          type: 'geojson',
-          data: aoi.geometry,
-        },
-      ],
-      layers: [
-        {
-          type: 'line',
-          paint: {
-            'line-color': 'red',
-          },
-        },
-      ],
-    }
-  }) as Generators.GlGeneratorConfig[]
-})
 
 export default aoiSlice.reducer
