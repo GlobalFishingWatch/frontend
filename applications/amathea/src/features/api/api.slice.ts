@@ -19,16 +19,17 @@ export type AsyncReducer<T> = {
 export const createAsyncSlice = <T, U>({
   name = '',
   initialState = {} as T,
-  reducers,
+  reducers = {},
   extraReducers,
-  thunk,
+  thunks = {},
 }: {
   name: string
   initialState?: T
-  reducers: ValidateSliceCaseReducers<T, SliceCaseReducers<T>>
+  reducers?: ValidateSliceCaseReducers<T, SliceCaseReducers<T>>
   extraReducers?: (builder: ActionReducerMapBuilder<T>) => void
-  thunk: any
+  thunks?: { fetchThunk?: any; fetchByIdThunk?: any; createThunk?: any; deleteThunk?: any }
 }) => {
+  const { fetchThunk, fetchByIdThunk, createThunk, deleteThunk } = thunks
   const entityAdapter = createEntityAdapter<U>()
   const slice = createSlice({
     name,
@@ -41,16 +42,58 @@ export const createAsyncSlice = <T, U>({
     }),
     reducers,
     extraReducers: (builder) => {
-      builder.addCase(thunk.pending, (state: any) => {
-        state.status = 'loading'
-      })
-      builder.addCase(thunk.fulfilled, (state: any, action) => {
-        state.status = 'finished'
-        entityAdapter.setAll(state, action.payload)
-      })
-      builder.addCase(thunk.rejected, (state: any) => {
-        state.status = 'error'
-      })
+      if (fetchThunk) {
+        builder.addCase(fetchThunk.pending, (state: any) => {
+          state.status = 'loading'
+        })
+        builder.addCase(fetchThunk.fulfilled, (state: any, action) => {
+          state.status = 'finished'
+          entityAdapter.upsertMany(state, action.payload)
+        })
+        builder.addCase(fetchThunk.rejected, (state: any) => {
+          state.status = 'error'
+          state.error = 'Error fetching workspaces'
+        })
+      }
+      if (fetchByIdThunk) {
+        builder.addCase(fetchByIdThunk.pending, (state: any) => {
+          state.status = 'loading'
+        })
+        builder.addCase(fetchByIdThunk.fulfilled, (state: any, action) => {
+          state.status = 'finished'
+          entityAdapter.upsertOne(state, action.payload)
+        })
+        builder.addCase(fetchByIdThunk.rejected, (state: any, action) => {
+          state.status = 'error'
+          state.error = `Error fetching workspace id: ${action.payload}`
+        })
+      }
+      if (createThunk) {
+        builder.addCase(createThunk.pending, (state: any) => {
+          state.status = 'loading'
+        })
+        builder.addCase(createThunk.fulfilled, (state: any, action) => {
+          state.status = 'finished'
+          entityAdapter.upsertOne(state, action.payload)
+        })
+        builder.addCase(createThunk.rejected, (state: any, action) => {
+          state.status = 'error'
+          state.error = `Error adding workspace ${action.payload}`
+        })
+      }
+      if (deleteThunk) {
+        builder.addCase(deleteThunk.pending, (state: any) => {
+          state.status = 'loading'
+        })
+        builder.addCase(deleteThunk.fulfilled, (state: any, action) => {
+          state.status = 'finished'
+          entityAdapter.removeOne(state, action.payload.id)
+        })
+        builder.addCase(deleteThunk.rejected, (state: any, action) => {
+          state.status = 'error'
+          state.error = `Error removing workspace ${action.payload}`
+        })
+      }
       if (extraReducers) {
         extraReducers(builder)
       }

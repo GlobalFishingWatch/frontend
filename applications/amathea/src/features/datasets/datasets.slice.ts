@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { RootState } from 'store'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Dataset } from '@globalfishingwatch/dataviews-client'
-import { RootState } from 'store'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
 
@@ -38,7 +38,7 @@ const { slice: datasetsSlice, entityAdapter } = createAsyncSlice<DatasetsState, 
   //   state.error = `Error adding dataset ${action.payload}`
   // })
   // },
-  thunk: fetchDatasetsThunk,
+  thunks: { fetchThunk: fetchDatasetsThunk },
 })
 
 export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(

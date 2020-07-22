@@ -1,8 +1,8 @@
 import { createSelector, createAsyncThunk } from '@reduxjs/toolkit'
-import GFWAPI from '@globalfishingwatch/api-client'
-import { Generators } from '@globalfishingwatch/layer-composer'
 import { RootState } from 'store'
 import { AOIConfig } from 'types'
+import GFWAPI from '@globalfishingwatch/api-client'
+import { Generators } from '@globalfishingwatch/layer-composer'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 
 export const fetchAOIThunk = createAsyncThunk('aoi/fetch', async () => {
@@ -17,7 +17,7 @@ interface AOIState extends AsyncReducer<AOIConfig> {
 const { slice: aoiSlice, entityAdapter } = createAsyncSlice<AOIState, AOIConfig>({
   name: 'aoi',
   reducers: {},
-  thunk: fetchAOIThunk,
+  thunks: { fetchThunk: fetchAOIThunk },
 })
 
 export const { selectAll } = entityAdapter.getSelectors<RootState>((state) => state.aoi)
