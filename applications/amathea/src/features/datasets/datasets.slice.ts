@@ -3,7 +3,6 @@ import { RootState } from 'store'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Dataset } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice, asyncInitialState } from 'features/api/api.slice'
-import { getUserId } from 'features/user/user.slice'
 
 export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () => {
   const data = await GFWAPI.fetch<Dataset[]>('/datasets')
@@ -79,10 +78,5 @@ export const selectDraftDataset = (state: RootState) => state.datasets.draft
 
 export const selectDraftDatasetStep = createSelector([selectDraftDataset], ({ step }) => step)
 export const selectDraftDatasetData = createSelector([selectDraftDataset], ({ data }) => data)
-
-export const selectShared = createSelector([selectAll, getUserId], (workspaces, userId) =>
-  // TODO: make this real when editors in workspaces API
-  workspaces.filter((w: any) => w.editors?.includes(userId))
-)
 
 export default datasetsSlice.reducer

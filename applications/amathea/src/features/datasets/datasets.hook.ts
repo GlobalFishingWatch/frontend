@@ -1,3 +1,4 @@
+// import { bindActionCreators } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import {
@@ -6,12 +7,12 @@ import {
   setDraftDatasetStep,
   setDraftDatasetData,
   selectAll,
-  selectShared,
   selectDraftDatasetData,
   selectDraftDatasetStep,
   DatasetDraftSteps,
   DatasetDraftData,
 } from './datasets.slice'
+import { selectShared } from './datasets.selectors'
 
 export const useDraftDatasetConnect = () => {
   const dispatch = useDispatch()
@@ -34,6 +35,11 @@ export const useDraftDatasetConnect = () => {
     },
     [dispatch]
   )
+
+  // const actions = bindActionCreators(
+  //   { resetDraftDataset, setDraftDatasetStep, setDraftDatasetData },
+  //   dispatch
+  // )
 
   return {
     draftDataset,

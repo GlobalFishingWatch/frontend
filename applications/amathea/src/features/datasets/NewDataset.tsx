@@ -71,7 +71,7 @@ const InfoFields: React.FC<InfoFieldsProps> = (props) => {
         }
         className={styles.saveBtn}
       >
-        FINISH
+        CONTINUE
       </Button>
     </Fragment>
   )
@@ -194,7 +194,6 @@ function NewDataset(): React.ReactElement {
   const {
     draftDataset,
     draftDatasetStep,
-    dispatchResetDraftDataset,
     dispatchDraftDatasetStep,
     dispatchDraftDatasetData,
   } = useDraftDatasetConnect()
@@ -236,7 +235,7 @@ function NewDataset(): React.ReactElement {
           datasetInfo={draftDataset}
           onContinue={() => {
             hideModal()
-            dispatchResetDraftDataset()
+            dispatchDraftDatasetStep('info')
             // dispatchDraftDatasetStep('parameters')
           }}
         />
