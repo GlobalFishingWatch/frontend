@@ -41,6 +41,20 @@ See: <a href="https://docs.google.com/presentation/d/1LdxRbB491Rjf64C5VVF9oTWwWj
 
 The repo is using yarn workspaces so npm is not suported yet, to install yarn [follow this instructions](https://classic.yarnpkg.com/en/docs/install/)
 
+#### Install a new dependency
+
+For all packages:
+
+```bash
+yarn add npm-package -W
+```
+
+Only for a specific package
+
+```bash
+yarn lerna add npm-package --scope=@scope/my-package
+```
+
 ### Installation
 
 To install all packages dependencies just run:

@@ -29,8 +29,8 @@
   content: '>';
 }
 
-.typeWrapper {
-  margin-top: var(--space-M);
+.input {
+  margin-bottom: var(--space-M);
 }
 
 .saveBtn {

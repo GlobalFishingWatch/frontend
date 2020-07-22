@@ -8,13 +8,19 @@ import {
 } from '@reduxjs/toolkit'
 
 export type AsyncReducerStatus = 'idle' | 'loading' | 'finished' | 'error'
-export type AsyncReducer<T> = {
+export type AsyncReducer<T = any> = {
   ids: (number | string)[]
   entities: Dictionary<T>
   error: string
   status: AsyncReducerStatus
 }
 
+export const asyncInitialState: AsyncReducer = {
+  status: 'idle',
+  error: '',
+  ids: [],
+  entities: {},
+}
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const createAsyncSlice = <T, U>({
   name = '',

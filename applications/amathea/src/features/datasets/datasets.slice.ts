@@ -1,8 +1,8 @@
-import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Dataset } from '@globalfishingwatch/dataviews-client'
-import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
+import { AsyncReducer, createAsyncSlice, asyncInitialState } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
 
 export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () => {
@@ -25,11 +25,39 @@ export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () =>
 //   }
 // )
 
-export type DatasetsState = AsyncReducer<Dataset>
+export type DatasetTypes = 'context_areas' | 'track' | '4wings' | undefined
+export type DatasetDraftSteps = 'info' | 'data' | 'parameters'
+export type DatasetDraftData = Partial<Dataset> & { type?: DatasetTypes; file?: any; data?: any }
+
+export type DatasetDraft = {
+  step: DatasetDraftSteps
+  data: DatasetDraftData
+}
+
+export interface DatasetsState extends AsyncReducer<Dataset> {
+  draft: DatasetDraft
+}
+
+const draftInitialState: DatasetDraft = { step: 'info', data: {} }
+const initialState: DatasetsState = {
+  ...asyncInitialState,
+  draft: draftInitialState,
+}
 
 const { slice: datasetsSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
   name: 'datasets',
-  reducers: {},
+  initialState,
+  reducers: {
+    resetDraftDataset: (state) => {
+      state.draft = draftInitialState
+    },
+    setDraftDatasetStep: (state, action: PayloadAction<DatasetDraftSteps>) => {
+      state.draft.step = action.payload
+    },
+    setDraftDatasetData: (state, action: PayloadAction<DatasetDraftData>) => {
+      state.draft.data = { ...state.draft.data, ...action.payload }
+    },
+  },
   // extraReducers: (builder) => {
   // builder.addCase(createDatasetThunk.fulfilled, (state, action) => {
   //   entityAdapter.addOne(state, action.payload.dataset)
@@ -41,9 +69,16 @@ const { slice: datasetsSlice, entityAdapter } = createAsyncSlice<DatasetsState, 
   thunks: { fetchThunk: fetchDatasetsThunk },
 })
 
+export const { resetDraftDataset, setDraftDatasetStep, setDraftDatasetData } = datasetsSlice.actions
+
 export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(
   (state) => state.datasets
 )
+
+export const selectDraftDataset = (state: RootState) => state.datasets.draft
+
+export const selectDraftDatasetStep = createSelector([selectDraftDataset], ({ step }) => step)
+export const selectDraftDatasetData = createSelector([selectDraftDataset], ({ data }) => data)
 
 export const selectShared = createSelector([selectAll, getUserId], (workspaces, userId) =>
   // TODO: make this real when editors in workspaces API
