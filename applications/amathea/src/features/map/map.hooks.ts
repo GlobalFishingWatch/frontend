@@ -18,11 +18,11 @@ export const useGeneratorsConnect = () => {
     updateGenerator: (payload: UpdateGeneratorPayload) => dispatch(updateGenerator(payload)),
   }
 }
-
+type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>
 type UseViewport = {
   viewport: MapCoordinates
   onViewportChange: (viewport: ViewportProps) => void
-  setMapCoordinates: (viewport: ViewportProps) => void
+  setMapCoordinates: (viewport: SetMapCoordinatesArgs) => void
 }
 export function useDebouncedViewport(
   urlViewport: MapCoordinates,
@@ -31,7 +31,7 @@ export function useDebouncedViewport(
   const [viewport, setViewport] = useState<MapCoordinates>(urlViewport)
   const debouncedViewport = useDebounce<MapCoordinates>(viewport, 400)
 
-  const setMapCoordinates = useCallback((viewport: ViewportProps) => {
+  const setMapCoordinates = useCallback((viewport: SetMapCoordinatesArgs) => {
     setViewport({ ...viewport })
   }, [])
 

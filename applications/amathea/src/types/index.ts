@@ -38,4 +38,5 @@ export type AOIConfig = {
   id: number
   label: string
   geometry: Feature<Geometry, unknown>
+  bbox: number[]
 }

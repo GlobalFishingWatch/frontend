@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { getAOIGeneratorsConfig } from 'features/areas-of-interest/areas-of-interest.slice'
+import { getAOIGeneratorsConfig } from 'features/areas-of-interest/areas-of-interest.selectors'
 import { selectGeneratorsConfig } from './map.slice'
 
 export const getGeneratorsConfig = createSelector(
