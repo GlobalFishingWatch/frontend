@@ -104,7 +104,8 @@ class HeatmapAnimatedGenerator {
       timeChunks.map((timeChunk: TimeChunk) => {
         const day = toQuantizedDays(config.start, timeChunk.quantizeOffset)
         const pickValueAt = day.toString()
-        const valueExpression = ['to-number', ['get', pickValueAt]]
+        const exprPick = ['to-number', ['get', pickValueAt]]
+        const exprDebugFill = ['case', ['>', exprPick, 0], 'rgba(0,255,0,1)', 'rgba(0,0,0,0)']
         const chunkLayers: Layer[] = [
           {
             id: timeChunk.id,
@@ -112,7 +113,8 @@ class HeatmapAnimatedGenerator {
             'source-layer': 'temporalgrid',
             type: HEATMAP_GEOM_TYPES_GL_TYPES[config.geomType || HEATMAP_GEOM_TYPES.GRIDDED],
             paint: {
-              'fill-color': 'red',
+              'fill-color': exprDebugFill as any,
+              'fill-outline-color': 'rgba(0,255,0,.5)',
             },
             metadata: {
               group: Group.Heatmap,
@@ -127,7 +129,7 @@ class HeatmapAnimatedGenerator {
             source: timeChunk.id,
             'source-layer': 'temporalgrid',
             layout: {
-              'text-field': ['to-string', valueExpression],
+              'text-field': ['to-string', exprPick],
               'text-font': ['Roboto Mono Light'],
               'text-size': 8,
               'text-allow-overlap': true,
