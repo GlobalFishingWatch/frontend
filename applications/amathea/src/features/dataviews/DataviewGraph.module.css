@@ -10,6 +10,11 @@
   stroke: var(--color-secondary-blue);
 }
 
+:global(.recharts-line-curve) {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 :global(.recharts-cartesian-grid-horizontal line) {
   stroke: var(--color-terthiary-blue);
 }

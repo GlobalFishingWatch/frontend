@@ -28,25 +28,23 @@ const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
     const endDate = DateTime.fromISO(end).startOf('day')
     return currentDate >= startDate && currentDate <= endDate
   })
-  const dataMax = data.length
+  const dataMax: AxisDomain = data.length
     ? data.reduce((prev: GraphData, curr: GraphData) => (curr.value > prev.value ? curr : prev))
         .value
     : 0
-  const dataMin = data.length
+  const dataMin: AxisDomain = data.length
     ? data.reduce((prev: GraphData, curr: GraphData) => (curr.value < prev.value ? curr : prev))
         .value
     : 0
   const domainPadding = (dataMax - dataMin) / 4
-  const domain: [AxisDomain, AxisDomain] = [
+  const paddedDomain: [AxisDomain, AxisDomain] = [
     Math.max(0, Math.floor(dataMin - domainPadding)),
     Math.ceil(dataMax + domainPadding),
   ]
 
-  const formatDates = useCallback((tick: string, withYear: boolean) => {
+  const formatDates = useCallback((tick: string, withYear = false) => {
     const tickDate = DateTime.fromISO(tick)
-    return tickDate.month === 1 || withYear
-      ? tickDate.toFormat('LLL yyyy')
-      : tickDate.toFormat('LLL')
+    return tickDate.month === 1 || withYear ? tickDate.toFormat('LLL yy') : tickDate.toFormat('LLL')
   }, [])
 
   return (
@@ -56,10 +54,16 @@ const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
         <XAxis
           dataKey="date"
           interval="preserveStartEnd"
-          tickFormatter={(tick: string) => formatDates(tick, false)}
-          axisLine={domain[0] === 0}
+          tickFormatter={(tick: string) => formatDates(tick)}
+          axisLine={paddedDomain[0] === 0}
         />
-        <YAxis scale="linear" domain={domain} axisLine={false} tickLine={false} tickCount={4} />
+        <YAxis
+          scale="linear"
+          domain={paddedDomain}
+          axisLine={false}
+          tickLine={false}
+          tickCount={4}
+        />
         <Tooltip
           labelFormatter={(label) => formatDates(label as string, true)}
           formatter={(value) => [`${value} ${dataview.unit}`, '']}
