@@ -16,7 +16,16 @@ import {
 } from './config'
 import { getServerSideFilters } from './utils'
 
-type GlobalHeatmapAnimatedGeneratorConfig = MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
+type GlobalHeatmapAnimatedGeneratorConfig = Required<
+  MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
+>
+
+const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
+  datasetStart: '2012-01-01T00:00:00.000Z',
+  datasetEnd: new Date().toISOString(),
+  geomType: HEATMAP_GEOM_TYPES.GRIDDED,
+  colorRamp: HEATMAP_COLOR_RAMPS.PRESENCE,
+}
 
 // TODO this can yield different deltas depending even when start and end stays equally further apart:
 //  improve logic or throttle
@@ -49,8 +58,8 @@ type TimeChunk = {
 
 // TODO this will be made dynamic and configurable in next time chunks PR
 const getTimeChunks = () => {
-  const TEST_CHUNK_START = '2019-01-01T00:00:00.000Z'
-  const TEST_CHUNK_END = '2020-01-01T00:00:00.000Z'
+  const TEST_CHUNK_START = '2012-01-01T00:00:00.000Z'
+  const TEST_CHUNK_END = '2013-01-01T00:00:00.000Z'
   const TEST_TIME_CHUNK: TimeChunk = {
     start: TEST_CHUNK_START,
     end: TEST_CHUNK_END,
@@ -58,6 +67,15 @@ const getTimeChunks = () => {
     quantizeOffset: toDays(TEST_CHUNK_START),
   }
   return [TEST_TIME_CHUNK]
+}
+
+const getCurrentTimeChunk = (
+  start: string,
+  end: string,
+  datasetStart: string,
+  datasetEnd: string
+) => {
+  return getTimeChunks()
 }
 
 class HeatmapAnimatedGenerator {
@@ -77,7 +95,12 @@ class HeatmapAnimatedGenerator {
 
     const tilesUrl = `${this.fastTilesAPI}/${config.tileset}/${API_ENDPOINTS.tiles}`
 
-    const timeChunks = memoizeCache[config.id].getTimeChunks()
+    const timeChunks = memoizeCache[config.id].getCurrentTimeChunk(
+      config.start,
+      config.end,
+      config.datasetStart,
+      config.datasetEnd
+    )
 
     const sources = timeChunks.map((timeChunk: TimeChunk) => {
       const sourceParams = {
@@ -86,6 +109,7 @@ class HeatmapAnimatedGenerator {
         serverSideFilters: getServerSideFilters(timeChunk.start, timeChunk.end),
         delta: getDelta(config.start, config.end).toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
+        interval: 'day',
       }
       const url = new URL(`${tilesUrl}?${new URLSearchParams(sourceParams)}`)
       const source = {
@@ -101,9 +125,13 @@ class HeatmapAnimatedGenerator {
   }
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
-    const timeChunks = memoizeCache[config.id].getTimeChunks()
-    const colorRampType = config.colorRamp || HEATMAP_COLOR_RAMPS.PRESENCE
-    const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[colorRampType]
+    const timeChunks = memoizeCache[config.id].getCurrentTimeChunk(
+      config.start,
+      config.end,
+      config.datasetStart,
+      config.datasetEnd
+    )
+    const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[config.colorRamp]
     // TODO - generate this using updated API
     const stops = [0, 1, 5, 10, 15, 30]
     const legend = stops.length ? zip(stops, originalColorRamp) : []
@@ -126,7 +154,7 @@ class HeatmapAnimatedGenerator {
             id: timeChunk.id,
             source: timeChunk.id,
             'source-layer': 'temporalgrid',
-            type: HEATMAP_GEOM_TYPES_GL_TYPES[config.geomType || HEATMAP_GEOM_TYPES.GRIDDED],
+            type: HEATMAP_GEOM_TYPES_GL_TYPES[config.geomType],
             paint: {
               'fill-color': config.debug ? (exprDebugFill as any) : exprColorRamp,
               'fill-outline-color': config.debug ? 'rgba(0,255,0,1)' : 'transparent',
@@ -168,12 +196,18 @@ class HeatmapAnimatedGenerator {
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
     memoizeByLayerId(config.id, {
-      getTimeChunks: memoizeOne(getTimeChunks),
+      getCurrentTimeChunk: memoizeOne(getCurrentTimeChunk),
     })
+
+    const finalConfig = {
+      ...DEFAULT_CONFIG,
+      ...config,
+    }
+
     return {
       id: config.id,
-      sources: this._getStyleSources(config),
-      layers: this._getStyleLayers(config),
+      sources: this._getStyleSources(finalConfig),
+      layers: this._getStyleLayers(finalConfig),
     }
   }
 }
