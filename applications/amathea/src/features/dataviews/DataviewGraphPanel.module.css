@@ -12,3 +12,7 @@
   font: var(--font-L);
   flex: 1;
 }
+
+.unit {
+  color: var(--color-secondary-blue);
+}
