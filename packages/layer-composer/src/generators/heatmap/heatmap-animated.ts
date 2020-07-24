@@ -1,6 +1,7 @@
 import memoizeOne from 'memoize-one'
 import { Layer } from 'mapbox-gl'
-import { flatten } from 'lodash'
+import flatten from 'lodash/flatten'
+import zip from 'lodash/zip'
 import { Type, HeatmapAnimatedGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { Group } from '../../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
@@ -10,6 +11,8 @@ import {
   HEATMAP_GEOM_TYPES,
   HEATMAP_DEFAULT_MAX_ZOOM,
   HEATMAP_GEOM_TYPES_GL_TYPES,
+  HEATMAP_COLOR_RAMPS,
+  HEATMAP_COLOR_RAMPS_RAMPS,
 } from './config'
 import { getServerSideFilters } from './utils'
 
@@ -99,13 +102,25 @@ class HeatmapAnimatedGenerator {
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
     const timeChunks = memoizeCache[config.id].getTimeChunks()
+    const colorRampType = config.colorRamp || HEATMAP_COLOR_RAMPS.PRESENCE
+    const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[colorRampType]
+    // TODO - generate this using updated API
+    const stops = [0, 1, 5, 10, 15, 30]
+    const legend = stops.length ? zip(stops, originalColorRamp) : []
+    const colorRampValues = flatten(legend)
 
     const layers: Layer[] = flatten(
       timeChunks.map((timeChunk: TimeChunk) => {
         const day = toQuantizedDays(config.start, timeChunk.quantizeOffset)
         const pickValueAt = day.toString()
         const exprPick = ['to-number', ['get', pickValueAt]]
-        const exprDebugFill = ['case', ['>', exprPick, 0], 'rgba(0,255,0,1)', 'rgba(0,0,0,0)']
+        const exprDebugFill = ['case', ['>', exprPick, 0], 'rgba(0,255,0,.5)', 'rgba(0,0,0,0)']
+        const exprDebugText = ['case', ['>', exprPick, 0], ['to-string', exprPick], '']
+        const exprColorRamp =
+          colorRampValues.length > 0
+            ? ['interpolate', ['linear'], exprPick, ...colorRampValues]
+            : 'transparent'
+
         const chunkLayers: Layer[] = [
           {
             id: timeChunk.id,
@@ -113,8 +128,8 @@ class HeatmapAnimatedGenerator {
             'source-layer': 'temporalgrid',
             type: HEATMAP_GEOM_TYPES_GL_TYPES[config.geomType || HEATMAP_GEOM_TYPES.GRIDDED],
             paint: {
-              'fill-color': exprDebugFill as any,
-              'fill-outline-color': 'rgba(0,255,0,.5)',
+              'fill-color': config.debug ? (exprDebugFill as any) : exprColorRamp,
+              'fill-outline-color': config.debug ? 'rgba(0,255,0,1)' : 'transparent',
             },
             metadata: {
               group: Group.Heatmap,
@@ -129,7 +144,7 @@ class HeatmapAnimatedGenerator {
             source: timeChunk.id,
             'source-layer': 'temporalgrid',
             layout: {
-              'text-field': ['to-string', exprPick],
+              'text-field': exprDebugText as any,
               'text-font': ['Roboto Mono Light'],
               'text-size': 8,
               'text-allow-overlap': true,

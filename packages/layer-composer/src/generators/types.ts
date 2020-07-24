@@ -153,6 +153,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   geomType: string
   maxZoom?: number
   debug?: boolean
+  colorRamp?: ColorRamps
 }
 
 export type AnyGeneratorConfig =
