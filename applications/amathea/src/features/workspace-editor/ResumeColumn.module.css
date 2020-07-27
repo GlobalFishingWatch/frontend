@@ -10,11 +10,16 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 0.1rem;
-  background: var(--color-terthiary-blue);
+  background-color: var(--color-terthiary-blue);
+  transition: background-color 300ms linear;
+}
+
+.container li * {
+  cursor: pointer;
 }
 
 .container li.current {
-  background: none;
+  background-color: transparent;
 }
 
 .container::after {

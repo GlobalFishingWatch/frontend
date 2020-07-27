@@ -25,7 +25,7 @@ export default function WorkspaceEditor(): React.ReactElement | null {
     <div className={styles.container}>
       <ResumeColumn />
       <div className={styles.content}>
-        <div className={styles.infoPanel}>
+        <div className={styles.infoPanel} id="info">
           <div className={styles.title}>
             <h1>{workspace ? workspace.label : 'loading'}</h1>
             <IconButton icon="edit" tooltip="Edit workspace information" />
