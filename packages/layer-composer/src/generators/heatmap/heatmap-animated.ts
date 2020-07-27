@@ -1,4 +1,5 @@
 import memoizeOne from 'memoize-one'
+import { DateTime } from 'luxon'
 import { Layer } from 'mapbox-gl'
 import flatten from 'lodash/flatten'
 import zip from 'lodash/zip'
@@ -52,30 +53,53 @@ const toQuantizedDays = (date: string, quantizeOffset: number) => {
 type TimeChunk = {
   id: string
   start: string
-  end: string
+  viewEnd: string
+  dataEnd: string
   quantizeOffset: number
 }
 
-// TODO this will be made dynamic and configurable in next time chunks PR
-const getTimeChunks = () => {
-  const TEST_CHUNK_START = '2012-01-01T00:00:00.000Z'
-  const TEST_CHUNK_END = '2013-01-01T00:00:00.000Z'
-  const TEST_TIME_CHUNK: TimeChunk = {
-    start: TEST_CHUNK_START,
-    end: TEST_CHUNK_END,
-    id: `heatmapchunk_${TEST_CHUNK_START.slice(0, 13)}_${TEST_CHUNK_END.slice(0, 13)}`,
-    quantizeOffset: toDays(TEST_CHUNK_START),
-  }
-  return [TEST_TIME_CHUNK]
-}
+const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
 
-const getCurrentTimeChunk = (
-  start: string,
-  end: string,
+const getActiveTimeChunk = (
+  activeStart: string,
+  activeEnd: string,
   datasetStart: string,
   datasetEnd: string
 ) => {
-  return getTimeChunks()
+  // view range is completely outside of dataset range
+  if (+toDT(activeEnd) < +toDT(datasetStart) || +toDT(activeStart) > +toDT(datasetEnd)) {
+    return []
+  }
+
+  // tileset should start at current year
+  let chunkStart = toDT(activeStart).startOf('year')
+
+  // end of *usable* tileset is end of year
+  // end of *loaded* tileset is end of year + 100 days
+  const chunkViewEnd = chunkStart.plus({ years: 1 })
+  let chunkDataEnd = chunkStart.plus({ years: 1, days: 100 })
+
+  // use dataset start if chunk starts before dataset
+  if (+chunkStart < +toDT(datasetStart)) chunkStart = toDT(datasetStart)
+  // use dataset end if chunk ends after dataset
+  if (+chunkDataEnd > +toDT(datasetEnd)) chunkDataEnd = toDT(datasetEnd)
+
+  const start = chunkStart.toString()
+  const viewEnd = chunkViewEnd.toString()
+  const dataEnd = chunkDataEnd.toString()
+
+  // we will substract every timestamp with this to end up with shorter arrays indexes
+  const quantizeOffset = Math.floor(+chunkStart / 1000 / 60 / 60 / 24)
+
+  const chunk: TimeChunk = {
+    start,
+    viewEnd,
+    dataEnd,
+    quantizeOffset,
+    id: `heatmapchunk_${start.slice(0, 13)}_${viewEnd.slice(0, 13)}`,
+  }
+
+  return [chunk]
 }
 
 class HeatmapAnimatedGenerator {
@@ -95,7 +119,7 @@ class HeatmapAnimatedGenerator {
 
     const tilesUrl = `${this.fastTilesAPI}/${config.tileset}/${API_ENDPOINTS.tiles}`
 
-    const timeChunks = memoizeCache[config.id].getCurrentTimeChunk(
+    const timeChunks = memoizeCache[config.id].getActiveTimeChunk(
       config.start,
       config.end,
       config.datasetStart,
@@ -106,7 +130,7 @@ class HeatmapAnimatedGenerator {
       const sourceParams = {
         singleFrame: 'false',
         geomType: config.geomType || HEATMAP_GEOM_TYPES.GRIDDED,
-        serverSideFilters: getServerSideFilters(timeChunk.start, timeChunk.end),
+        serverSideFilters: getServerSideFilters(timeChunk.start, timeChunk.dataEnd),
         delta: getDelta(config.start, config.end).toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: 'day',
@@ -125,15 +149,16 @@ class HeatmapAnimatedGenerator {
   }
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
-    const timeChunks = memoizeCache[config.id].getCurrentTimeChunk(
+    const timeChunks = memoizeCache[config.id].getActiveTimeChunk(
       config.start,
       config.end,
       config.datasetStart,
       config.datasetEnd
     )
+    console.log(timeChunks)
     const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[config.colorRamp]
-    // TODO - generate this using updated API
-    const stops = [0, 1, 5, 10, 15, 30]
+    // TODO - generate this using updated stats API
+    const stops = [0, 1, 500, 1000, 1500, 3000]
     const legend = stops.length ? zip(stops, originalColorRamp) : []
     const colorRampValues = flatten(legend)
 
@@ -196,7 +221,7 @@ class HeatmapAnimatedGenerator {
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
     memoizeByLayerId(config.id, {
-      getCurrentTimeChunk: memoizeOne(getCurrentTimeChunk),
+      getActiveTimeChunk: memoizeOne(getActiveTimeChunk),
     })
 
     const finalConfig = {
