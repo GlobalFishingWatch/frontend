@@ -40,7 +40,7 @@ export const TEST_WORSPACE_DATAVIEWS: DataviewGraphConfig[] = [
     datasets: [{ id: '', label: '', description: '' }],
     description:
       'Ocean salinity is generally defined as the salt concentration (e.g., Sodium and Chlorure) in sea water. It is measured in unit of PSU (Practical Salinity Unit), which is a unit based on the properties of sea water conductivity. It is equivalent to per thousand or (o/00) or to g/kg.',
-    unit: 'psu',
+    unit: 'PSU',
     color: '#FD5480',
   },
 ]

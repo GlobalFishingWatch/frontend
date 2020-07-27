@@ -28,24 +28,29 @@ export default function WorkspaceEditor(): React.ReactElement | null {
         <div className={styles.infoPanel}>
           <div className={styles.title}>
             <h1>{workspace ? workspace.label : 'loading'}</h1>
-            <IconButton icon="edit" />
+            <IconButton icon="edit" tooltip="Edit workspace information" />
           </div>
-          <div className={styles.area}>
+          <div>
             <label>Area</label>
             <p>xxx km2</p>
           </div>
-          <div className={styles.description}>
-            <div>
-              <label>Description</label>
-              <p>{workspace ? workspace.description : 'loading'}</p>
-            </div>
-            <IconButton icon="edit" />
+          <div>
+            <label>Description</label>
+            <p>{workspace ? workspace.description : 'loading'}</p>
           </div>
         </div>
         {TEST_WORSPACE_DATAVIEWS.map((dataview) => (
           <DataviewGraphPanel dataview={dataview} key={dataview.id} />
         ))}
         <div className={styles.footer}>
+          {TEST_WORSPACE_DATAVIEWS.length >= 2 && (
+            <Button type="secondary" tooltip="Coming soon">
+              Create Analysis
+            </Button>
+          )}
+          <Button type="secondary" tooltip="Coming soon">
+            Download data
+          </Button>
           <Button onClick={() => showModal('newDataview')}>Add new dataview</Button>
         </div>
       </div>

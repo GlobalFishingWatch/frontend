@@ -25,15 +25,7 @@
 .title {
   display: flex;
   justify-content: space-between;
-}
-
-.title h1 {
   font: var(--font-XL)
-}
-
-.description {
-  display: flex;
-  justify-content: space-between;
 }
 
 .dataviewPanel {
@@ -44,4 +36,16 @@
   display: flex;
   justify-content: flex-end;
   padding: var(--space-M);
+}
+
+.footer * {
+  flex: 1;
+}
+
+.footer *:not(:first-child) {
+  margin-left: var(--space-XS);
+}
+
+.footer *:not(:last-child) {
+  margin-right: var(--space-XS);
 }
