@@ -76,6 +76,7 @@ export interface GeneratorStyles {
   layers: ExtendedLayer[]
   promise?: Promise<GeneratorStyles>
   promises?: Promise<GeneratorStyles>[]
+  metadata?: {}
 }
 
 export type StyleTransformation = (style: ExtendedStyle) => ExtendedStyle

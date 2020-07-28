@@ -6,7 +6,8 @@ import { Group } from '../../types'
 import { Type, HeatmapGeneratorConfig, GlobalGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import paintByGeomType from './heatmap-layers-paint'
-import { fetchStats, getServerSideFilters } from './utils'
+import fetchStats from './util/fetch-stats'
+import getServerSideFilters from './util/get-server-side-filters'
 import {
   API_TILES_URL,
   API_ENDPOINTS,
