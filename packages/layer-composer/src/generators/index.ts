@@ -17,7 +17,7 @@ export default {
   [Type.Basemap]: new BaseMapGenerator(),
   [Type.GL]: new GLStyleGenerator(),
   [Type.CartoPolygons]: new CartoGenerator({ baseUrl: CARTO_FISHING_MAP_API }),
-  [Type.HeatmapAnimated]: new HeatmapAnimatedGenerator({}),
+  [Type.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
   [Type.Heatmap]: new HeatmapGenerator({}),
   [Type.Track]: new TrackGenerator(),
   [Type.VesselEvents]: new VesselEventsGenerator(),

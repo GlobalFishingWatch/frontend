@@ -26,6 +26,7 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   datasetEnd: new Date().toISOString(),
   geomType: HEATMAP_GEOM_TYPES.GRIDDED,
   colorRamp: HEATMAP_COLOR_RAMPS.PRESENCE,
+  tilesAPI: API_TILES_URL,
 }
 
 // TODO this can yield different deltas depending even when start and end stays equally further apart:
@@ -52,11 +53,6 @@ const toQuantizedDays = (date: string, quantizeOffset: number) => {
 
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
-  fastTilesAPI: string
-
-  constructor({ fastTilesAPI = API_TILES_URL }) {
-    this.fastTilesAPI = fastTilesAPI
-  }
 
   _getStyleSources = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
     if (!config.start || !config.end || !config.tileset) {
@@ -65,7 +61,7 @@ class HeatmapAnimatedGenerator {
       )
     }
 
-    const tilesUrl = `${this.fastTilesAPI}/${config.tileset}/${API_ENDPOINTS.tiles}`
+    const tilesUrl = `${config.tilesAPI}/${config.tileset}/${API_ENDPOINTS.tiles}`
 
     const sources = timeChunks.map((timeChunk: TimeChunk) => {
       const sourceParams = {
@@ -77,6 +73,7 @@ class HeatmapAnimatedGenerator {
         interval: 'day',
       }
       const url = new URL(`${tilesUrl}?${new URLSearchParams(sourceParams)}`)
+      console.log(url)
       const source = {
         id: timeChunk.id,
         type: 'temporalgrid',
