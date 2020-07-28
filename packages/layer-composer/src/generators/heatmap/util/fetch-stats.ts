@@ -1,5 +1,5 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import { stats, statsByZoom } from './types'
+import { stats, statsByZoom } from '../types'
 
 type ExtendedPromise<T> = Promise<T> & {
   resolved?: boolean
@@ -7,7 +7,7 @@ type ExtendedPromise<T> = Promise<T> & {
 }
 
 const controllerCache: { [key: string]: AbortController } = {}
-export const fetchStats = (url: string, serverSideFilters?: string, singleFrame = false) => {
+export default (url: string, serverSideFilters?: string, singleFrame = false) => {
   const statsUrl = new URL(url)
   if (singleFrame) {
     statsUrl.searchParams.set('temporal-aggregation', 'true')
@@ -43,12 +43,4 @@ export const fetchStats = (url: string, serverSideFilters?: string, singleFrame 
   promise.resolved = false
   promise.error = false
   return promise
-}
-
-export const getServerSideFilters = (start: string, end: string, serverSideFilter = '') => {
-  const serverSideFiltersList = serverSideFilter ? [serverSideFilter] : []
-  serverSideFiltersList.push(`timestamp >= '${start.slice(0, 19).replace('T', ' ')}'`)
-  serverSideFiltersList.push(`timestamp <= '${end.slice(0, 19).replace('T', ' ')}'`)
-
-  return serverSideFiltersList.join(' AND ')
 }
