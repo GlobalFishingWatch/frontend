@@ -58,7 +58,7 @@ class HeatmapAnimatedGenerator {
     this.fastTilesAPI = fastTilesAPI
   }
 
-  _getStyleSources = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
+  _getStyleSources = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
     if (!config.start || !config.end || !config.tileset) {
       throw new Error(
         `Heatmap generator must specify start, end and tileset parameters in ${config}`
@@ -66,13 +66,6 @@ class HeatmapAnimatedGenerator {
     }
 
     const tilesUrl = `${this.fastTilesAPI}/${config.tileset}/${API_ENDPOINTS.tiles}`
-
-    const timeChunks = memoizeCache[config.id].getActiveTimeChunks(
-      config.start,
-      config.end,
-      config.datasetStart,
-      config.datasetEnd
-    )
 
     const sources = timeChunks.map((timeChunk: TimeChunk) => {
       const sourceParams = {
@@ -96,14 +89,7 @@ class HeatmapAnimatedGenerator {
     return sources
   }
 
-  _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
-    const timeChunks = memoizeCache[config.id].getActiveTimeChunks(
-      config.start,
-      config.end,
-      config.datasetStart,
-      config.datasetEnd
-    )
-    console.log(timeChunks)
+  _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
     const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[config.colorRamp]
     // TODO - generate this using updated stats API
     const stops = [0, 1, 500, 1000, 1500, 3000]
@@ -172,6 +158,13 @@ class HeatmapAnimatedGenerator {
       getActiveTimeChunks: memoizeOne(getActiveTimeChunks),
     })
 
+    const timeChunks = memoizeCache[config.id].getActiveTimeChunks(
+      config.start,
+      config.end,
+      config.datasetStart,
+      config.datasetEnd
+    )
+
     const finalConfig = {
       ...DEFAULT_CONFIG,
       ...config,
@@ -179,8 +172,11 @@ class HeatmapAnimatedGenerator {
 
     return {
       id: config.id,
-      sources: this._getStyleSources(finalConfig),
-      layers: this._getStyleLayers(finalConfig),
+      sources: this._getStyleSources(finalConfig, timeChunks),
+      layers: this._getStyleLayers(finalConfig, timeChunks),
+      metadata: {
+        timeChunks,
+      },
     }
   }
 }
