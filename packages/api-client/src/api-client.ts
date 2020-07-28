@@ -49,6 +49,8 @@ const parseJSON = (response: Response) => response.json()
 const isUnauthorizedError = (error: ResponseError) =>
   error && error.status > 400 && error.status < 403
 
+const isClientSide = typeof window !== 'undefined'
+
 export class GFWAPI {
   debug: boolean
   token = ''
@@ -71,8 +73,10 @@ export class GFWAPI {
     this.debug = debug
     this.baseUrl = baseUrl
     this.storageKeys = { token: tokenStorageKey, refreshToken: refreshTokenStorageKey }
-    this.setToken(localStorage.getItem(tokenStorageKey) || '')
-    this.setRefreshToken(localStorage.getItem(refreshTokenStorageKey) || '')
+    if (isClientSide) {
+      this.setToken(localStorage.getItem(tokenStorageKey) || '')
+      this.setRefreshToken(localStorage.getItem(refreshTokenStorageKey) || '')
+    }
     this.logging = null
 
     if (debug) {

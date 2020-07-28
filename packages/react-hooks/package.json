@@ -25,7 +25,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@globalfishingwatch/api-client": "^1.2.4",
+    "@globalfishingwatch/api-client": "^1.2.5",
     "@globalfishingwatch/dataviews-client": "^2.1.0",
     "@globalfishingwatch/layer-composer": "^2.3.0"
   },
