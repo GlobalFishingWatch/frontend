@@ -330,7 +330,7 @@ VesselEvents.propTypes = {
   outerWidth: PropTypes.number.isRequired,
   outerHeight: PropTypes.number.isRequired,
   graphHeight: PropTypes.number.isRequired,
-  tooltipContainer: PropTypes.instanceOf(Element),
+  tooltipContainer: PropTypes.node,
 }
 
 VesselEvents.defaultProps = {

@@ -129,7 +129,7 @@ Highlighter.propTypes = {
     })
   ),
   unit: PropTypes.string,
-  tooltipContainer: PropTypes.instanceOf(Element),
+  tooltipContainer: PropTypes.node,
 }
 
 Highlighter.defaultProps = {
