@@ -1,9 +1,8 @@
-import { SlowBuffer } from 'buffer'
 import { DateTime } from 'luxon'
-import { buffer } from 'd3'
 
 export type TimeChunk = {
   id: string
+  interval: '10day' | 'day' | 'hour'
   start: string
   viewEnd: string
   dataEnd: string
@@ -16,7 +15,7 @@ const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
 const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2
 
 // Thresholds / extra time to load per precision level
-const TIME_CHUNK_OVERFLOW_BY_PRECISION = {
+const TIME_CHUNK_OVERFLOW_BY_INTERVAL = {
   day: { days: 100 },
 }
 
@@ -51,7 +50,7 @@ export const getActiveTimeChunks = (
     // end of *usable* tileset is end of year
     // end of *loaded* tileset is end of year + 100 days
     const chunkViewEnd = chunkStart.plus({ years: 1 })
-    let chunkDataEnd = chunkViewEnd.plus(TIME_CHUNK_OVERFLOW_BY_PRECISION.day)
+    let chunkDataEnd = chunkViewEnd.plus(TIME_CHUNK_OVERFLOW_BY_INTERVAL.day)
     // use dataset start if chunk starts before dataset
     if (+chunkStart < +toDT(datasetStart)) chunkStart = toDT(datasetStart)
     // use dataset end if chunk ends after dataset
@@ -64,6 +63,7 @@ export const getActiveTimeChunks = (
     const quantizeOffset = Math.floor(+chunkStart / 1000 / 60 / 60 / 24)
 
     const chunk: TimeChunk = {
+      interval: 'day',
       start,
       viewEnd,
       dataEnd,
