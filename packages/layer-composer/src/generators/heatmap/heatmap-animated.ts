@@ -15,7 +15,7 @@ import {
   HEATMAP_COLOR_RAMPS_RAMPS,
 } from './config'
 import getServerSideFilters from './util/get-server-side-filters'
-import { TimeChunk, getActiveTimeChunk } from './util/time-chunks'
+import { TimeChunk, getActiveTimeChunks } from './util/time-chunks'
 
 type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
@@ -67,7 +67,7 @@ class HeatmapAnimatedGenerator {
 
     const tilesUrl = `${this.fastTilesAPI}/${config.tileset}/${API_ENDPOINTS.tiles}`
 
-    const timeChunks = memoizeCache[config.id].getActiveTimeChunk(
+    const timeChunks = memoizeCache[config.id].getActiveTimeChunks(
       config.start,
       config.end,
       config.datasetStart,
@@ -97,7 +97,7 @@ class HeatmapAnimatedGenerator {
   }
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
-    const timeChunks = memoizeCache[config.id].getActiveTimeChunk(
+    const timeChunks = memoizeCache[config.id].getActiveTimeChunks(
       config.start,
       config.end,
       config.datasetStart,
@@ -169,7 +169,7 @@ class HeatmapAnimatedGenerator {
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
     memoizeByLayerId(config.id, {
-      getActiveTimeChunk: memoizeOne(getActiveTimeChunk),
+      getActiveTimeChunks: memoizeOne(getActiveTimeChunks),
     })
 
     const finalConfig = {
