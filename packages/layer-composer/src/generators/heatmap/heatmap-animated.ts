@@ -26,6 +26,7 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   datasetEnd: new Date().toISOString(),
   geomType: HEATMAP_GEOM_TYPES.GRIDDED,
   colorRamp: HEATMAP_COLOR_RAMPS.PRESENCE,
+  maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   tilesAPI: API_TILES_URL,
 }
 
@@ -66,19 +67,19 @@ class HeatmapAnimatedGenerator {
     const sources = timeChunks.map((timeChunk: TimeChunk) => {
       const sourceParams = {
         singleFrame: 'false',
-        geomType: config.geomType || HEATMAP_GEOM_TYPES.GRIDDED,
+        geomType: config.geomType,
         serverSideFilters: getServerSideFilters(timeChunk.start, timeChunk.dataEnd),
         delta: getDelta(config.start, config.end).toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: 'day',
       }
       const url = new URL(`${tilesUrl}?${new URLSearchParams(sourceParams)}`)
-      console.log(url)
+      // console.log(url)
       const source = {
         id: timeChunk.id,
         type: 'temporalgrid',
         tiles: [decodeURI(url.toString())],
-        maxzoom: config.maxZoom || HEATMAP_DEFAULT_MAX_ZOOM,
+        maxzoom: config.maxZoom,
       }
       return source
     })
@@ -98,8 +99,6 @@ class HeatmapAnimatedGenerator {
         const day = toQuantizedDays(config.start, timeChunk.quantizeOffset)
         const pickValueAt = day.toString()
         const exprPick = ['to-number', ['get', pickValueAt]]
-        const exprDebugFill = ['case', ['>', exprPick, 0], 'rgba(0,255,0,.5)', 'rgba(0,0,0,0)']
-        const exprDebugText = ['case', ['>', exprPick, 0], ['to-string', exprPick], '']
         const exprColorRamp =
           colorRampValues.length > 0
             ? ['interpolate', ['linear'], exprPick, ...colorRampValues]
@@ -112,8 +111,7 @@ class HeatmapAnimatedGenerator {
             'source-layer': 'temporalgrid',
             type: HEATMAP_GEOM_TYPES_GL_TYPES[config.geomType],
             paint: {
-              'fill-color': config.debug ? (exprDebugFill as any) : exprColorRamp,
-              'fill-outline-color': config.debug ? 'rgba(0,255,0,1)' : 'transparent',
+              'fill-color': exprColorRamp as any,
             },
             metadata: {
               group: Group.Heatmap,
@@ -122,8 +120,30 @@ class HeatmapAnimatedGenerator {
         ]
 
         if (config.debug) {
+          const exprDebugOutline = [
+            'case',
+            ['>', exprPick, 0],
+            'rgba(0,255,0,1)',
+            'rgba(255,255,0,1)',
+          ]
           chunkLayers.push({
             id: `${timeChunk.id}_debug`,
+            source: timeChunk.id,
+            'source-layer': 'temporalgrid',
+            type: 'fill',
+            paint: {
+              'fill-color': 'transparent',
+              'fill-outline-color': exprDebugOutline as any,
+            },
+            metadata: {
+              group: Group.Heatmap,
+            },
+          })
+        }
+        if (config.debugLabels) {
+          const exprDebugText = ['case', ['>', exprPick, 0], ['to-string', exprPick], '']
+          chunkLayers.push({
+            id: `${timeChunk.id}_debug_labels`,
             type: 'symbol',
             source: timeChunk.id,
             'source-layer': 'temporalgrid',
