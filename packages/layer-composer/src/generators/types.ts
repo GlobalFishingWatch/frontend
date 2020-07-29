@@ -156,6 +156,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   datasetEnd?: string
   maxZoom?: number
   debug?: boolean
+  debugLabels?: boolean
   colorRamp?: ColorRamps
 }
 
