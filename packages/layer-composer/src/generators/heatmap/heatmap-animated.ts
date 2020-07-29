@@ -5,6 +5,7 @@ import zip from 'lodash/zip'
 import { Type, HeatmapAnimatedGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { Group } from '../../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
+import paintByGeomType from './heatmap-layers-paint'
 import {
   API_TILES_URL,
   API_ENDPOINTS,
@@ -91,7 +92,7 @@ class HeatmapAnimatedGenerator {
     const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[config.colorRamp]
     // TODO - generate this using updated stats API
     const stops = [0, 1, 500, 1000, 1500, 3000]
-    const legend = stops.length ? zip(stops, originalColorRamp) : []
+    const legend = zip(stops, originalColorRamp)
     const colorRampValues = flatten(legend)
 
     const layers: Layer[] = flatten(
@@ -104,15 +105,31 @@ class HeatmapAnimatedGenerator {
             ? ['interpolate', ['linear'], exprPick, ...colorRampValues]
             : 'transparent'
 
+        let paint
+        if (config.geomType === 'gridded') {
+          paint = {
+            'fill-color': exprColorRamp as any,
+          }
+        } else if (config.geomType === 'blob') {
+          paint = paintByGeomType.blob
+          paint['heatmap-weight'] = exprPick as any
+          const hStops = [0, 0.005, 0.01, 0.1, 0.2, 1]
+          const heatmapColorRamp = flatten(zip(hStops, originalColorRamp))
+          paint['heatmap-color'] = [
+            'interpolate',
+            ['linear'],
+            ['heatmap-density'],
+            ...heatmapColorRamp,
+          ] as any
+        }
+
         const chunkLayers: Layer[] = [
           {
             id: timeChunk.id,
             source: timeChunk.id,
             'source-layer': 'temporalgrid',
             type: HEATMAP_GEOM_TYPES_GL_TYPES[config.geomType],
-            paint: {
-              'fill-color': exprColorRamp as any,
-            },
+            paint: paint as any,
             metadata: {
               group: Group.Heatmap,
             },
