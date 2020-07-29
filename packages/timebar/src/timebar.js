@@ -195,6 +195,11 @@ class Timebar extends Component {
     this.notifyChange(newStart, newEnd)
   }
 
+  onTogglePlay = (isPlaying) => {
+    const { onTogglePlay } = this.props
+    onTogglePlay(isPlaying)
+  }
+
   render() {
     const {
       start,
@@ -241,6 +246,7 @@ class Timebar extends Component {
               absoluteStart={absoluteStart}
               absoluteEnd={absoluteEnd}
               onTick={this.onPlaybackTick}
+              onTogglePlay={this.onTogglePlay}
             />
           )}
 
@@ -334,6 +340,7 @@ Timebar.propTypes = {
   absoluteStart: PropTypes.string.isRequired,
   absoluteEnd: PropTypes.string.isRequired,
   enablePlayback: PropTypes.bool,
+  onTogglePlay: PropTypes.func,
   minimumRange: PropTypes.number,
   minimumRangeUnit: PropTypes.string,
   maximumRange: PropTypes.number,
@@ -345,6 +352,7 @@ Timebar.defaultProps = {
   bookmarkStart: null,
   bookmarkEnd: null,
   enablePlayback: false,
+  onTogglePlay: () => {},
   children: () => {},
   onMouseLeave: () => {},
   onMouseMove: () => {},
