@@ -469,7 +469,7 @@ Timeline.propTypes = {
   onChange: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func,
   onMouseMove: PropTypes.func,
-  children: PropTypes.func.isRequired,
+  children: PropTypes.func,
   start: PropTypes.string.isRequired,
   end: PropTypes.string.isRequired,
   absoluteStart: PropTypes.string.isRequired,
@@ -483,6 +483,7 @@ Timeline.propTypes = {
 Timeline.defaultProps = {
   bookmarkStart: null,
   bookmarkEnd: null,
+  children: () => {},
   onBookmarkChange: () => {},
   onMouseLeave: () => {},
   onMouseMove: () => {},
