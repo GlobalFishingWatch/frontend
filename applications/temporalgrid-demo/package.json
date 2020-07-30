@@ -8,7 +8,16 @@
     "@testing-library/user-event": "^7.1.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "react-map-gl": "https://github.com/GlobalFishingWatch/react-map-gl.git#build",
+    "luxon": "^1.24.1",
+    "qs": "^6.9.3",
+    "@globalfishingwatch/layer-composer": "2.4.4",
+    "@globalfishingwatch/react-hooks": "2.5.0",
+    "@globalfishingwatch/timebar": "1.0.11",
+    "classnames": "^2.2.6",
+    "dayjs": "^1.7.7",
+    "prop-types": "^15.6.2"
   },
   "scripts": {
     "start": "react-scripts start",
