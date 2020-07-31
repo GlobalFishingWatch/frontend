@@ -9,7 +9,6 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "react-map-gl": "https://github.com/GlobalFishingWatch/react-map-gl.git#build",
     "luxon": "^1.24.1",
     "qs": "^6.9.3",
     "@globalfishingwatch/layer-composer": "2.4.4",

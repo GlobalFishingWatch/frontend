@@ -9,8 +9,6 @@ import TimebarComponent from '@globalfishingwatch/timebar';
 // const DEFAULT_TILESET = 'carriers_v8'
 const DEFAULT_TILESET = 'fishing_v3'
 
-console.log('??')
-
 function App() {
   const [viewport, setViewport] = useState({
     longitude: -17.3163661,

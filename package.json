@@ -34,7 +34,7 @@
   "dependencies": {
     "@tippyjs/react": "^4.0.2",
     "lodash": "^4.17.15",
-    "mapbox-gl": "^1.10.1",
+    "mapbox-gl": "https://github.com/GlobalFishingWatch/mapbox-gl-js.git#build",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-map-gl": "https://github.com/GlobalFishingWatch/react-map-gl.git#build"
