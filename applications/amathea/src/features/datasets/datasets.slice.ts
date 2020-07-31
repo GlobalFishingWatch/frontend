@@ -5,7 +5,7 @@ import { Dataset } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice, asyncInitialState } from 'features/api/api.slice'
 
 export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () => {
-  const data = await GFWAPI.fetch<Dataset[]>('/datasets')
+  const data = await GFWAPI.fetch<Dataset[]>('/v1/datasets?cache=false')
   return data
 })
 

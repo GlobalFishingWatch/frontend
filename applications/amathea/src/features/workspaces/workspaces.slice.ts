@@ -7,7 +7,7 @@ import { getUserId } from 'features/user/user.slice'
 import { selectCurrentWorkspaceId } from 'routes/routes.selectors'
 
 export const fetchWorkspacesThunk = createAsyncThunk('workspaces/fetch', async () => {
-  const data = await GFWAPI.fetch<Workspace[]>('/workspaces')
+  const data = await GFWAPI.fetch<Workspace[]>('/v1/workspaces')
   return data
 })
 
@@ -15,7 +15,7 @@ export const fetchWorkspaceByIdThunk = createAsyncThunk(
   'workspace/fetchById',
   async (id: number, { rejectWithValue }) => {
     try {
-      const workspace = await GFWAPI.fetch<Workspace>(`/workspaces/${id}`)
+      const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}`)
       return workspace
     } catch (e) {
       return rejectWithValue(id)
@@ -27,7 +27,7 @@ export const createWorkspaceThunk = createAsyncThunk(
   'workspaces/create',
   async (workspaceData: Partial<Workspace>, { rejectWithValue }) => {
     try {
-      const workspace = await GFWAPI.fetch<Workspace>(`/workspaces`, {
+      const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces`, {
         method: 'POST',
         body: workspaceData as Body,
       })
@@ -42,7 +42,7 @@ export const deleteWorkspaceThunk = createAsyncThunk(
   'workspaces/delete',
   async (id: number, { rejectWithValue }) => {
     try {
-      const workspace = await GFWAPI.fetch<Workspace>(`/workspaces/${id}`, {
+      const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}`, {
         method: 'DELETE',
       })
       return { ...workspace, id }

@@ -6,7 +6,7 @@ import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
 
 export const fetchDataviewsThunk = createAsyncThunk('dataviews/fetch', async () => {
-  const data = await GFWAPI.fetch<Dataview[]>('/datavews')
+  const data = await GFWAPI.fetch<Dataview[]>('/v1/datavews')
   return data
 })
 

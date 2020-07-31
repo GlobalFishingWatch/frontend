@@ -5,7 +5,7 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 
 export const fetchAOIThunk = createAsyncThunk('aoi/fetch', async () => {
-  const data = await GFWAPI.fetch<AOIConfig[]>('/aoi')
+  const data = await GFWAPI.fetch<AOIConfig[]>('/v1/aoi')
   return data
 })
 
