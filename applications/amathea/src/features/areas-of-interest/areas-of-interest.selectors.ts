@@ -31,7 +31,8 @@ export const getAOIGeneratorsConfig = createSelector(
             {
               type: 'line',
               paint: {
-                'line-color': 'red',
+                'line-color': 'white',
+                'line-width': 2,
               },
             },
           ],

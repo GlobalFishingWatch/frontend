@@ -44,11 +44,11 @@ export default function WorkspaceEditor(): React.ReactElement | null {
         ))}
         <div className={styles.footer}>
           {TEST_WORSPACE_DATAVIEWS.length >= 2 && (
-            <Button type="secondary" tooltip="Coming soon">
+            <Button type="secondary" tooltip="Coming soon" tooltipPlacement="top">
               Create Analysis
             </Button>
           )}
-          <Button type="secondary" tooltip="Coming soon">
+          <Button type="secondary" tooltip="Coming soon" tooltipPlacement="top">
             Download data
           </Button>
           <Button onClick={() => showModal('newDataview')}>Add new dataview</Button>

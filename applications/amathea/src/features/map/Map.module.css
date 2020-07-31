@@ -12,6 +12,6 @@
   top: var(--space-S);
 }
 
-.mapControls * {
+.mapControls > * {
   margin-bottom: var(--space-XS);
 }

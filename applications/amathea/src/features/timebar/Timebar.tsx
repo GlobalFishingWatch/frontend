@@ -14,7 +14,7 @@ const TimebarWrapper = () => {
 
   return (
     <TimebarComponent
-      enablePlayback
+      enablePlayback={false}
       start={start}
       end={end}
       absoluteStart={DEFAULT_WORKSPACE.start}
