@@ -18,7 +18,7 @@ export default (dataviews: Dataview[], workspaceDataviews?: WorkspaceDataview[])
 
     // copy defaultView|defaultDatasetsParams to view|datasetsParams
     newDataview.view = newDataview.defaultView
-    newDataview.datasetsParams = newDataview.defaultDatasetsParams
+    newDataview.datasetsParams = newDataview.datasetsConfig
 
     // retrieve workspace dataview that matches dataview so that we can collect overrides
     const workspaceDataview =

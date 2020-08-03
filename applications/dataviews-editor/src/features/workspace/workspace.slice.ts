@@ -75,7 +75,7 @@ export const {
 export default slice.reducer
 
 export const fetchWorkspaces = () => async (dispatch: Dispatch) => {
-  const workspaces = await GFWAPI.fetch<Workspace[]>(`/workspaces?include=dataview`)
+  const workspaces = await GFWAPI.fetch<Workspace[]>(`/v1/workspaces?include=dataview`)
   dispatch(setWorkspaces(workspaces))
 }
 

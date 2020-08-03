@@ -12,7 +12,8 @@ export type EndpointParam = {
 }
 
 export interface Endpoint {
-  type: EndpointType
+  id: string
+  description: string
   pathTemplate: string
   params: EndpointParam[]
   query: EndpointParam[]
@@ -21,6 +22,7 @@ export interface Endpoint {
 
 export interface Dataset {
   id: string
+  type?: string
   endpoints?: Endpoint[]
 }
 
@@ -49,7 +51,7 @@ export interface Dataview {
   view?: ViewParams
   defaultView?: ViewParams
   datasetsParams?: DatasetParams[]
-  defaultDatasetsParams?: DatasetParams[]
+  datasetsConfig?: DatasetParams[]
   datasets?: Dataset[] // foreign
 }
 

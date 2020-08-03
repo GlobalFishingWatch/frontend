@@ -96,20 +96,19 @@ const Dataview = () => {
                     <h3>endpoints</h3>
                     <ul>
                       {dataset.endpoints?.map((endpoint, index) => {
-                        const isSelectedEndpoint =
-                          endpoint.type === currentDataview.selectedEndpoint
+                        const isSelectedEndpoint = endpoint.id === currentDataview.selectedEndpoint
                         return (
                           <Fragment key={index}>
                             <ListItem
                               editable={false}
-                              title={endpoint.type}
+                              title={endpoint.id || 'default'}
                               checked={isSelectedEndpoint}
                               onToggle={(toggle) => {
                                 dispatch(
                                   setDatasetEndpoint({
                                     editorId: currentDataview.editorId,
                                     dataset: dataset.id,
-                                    endpoint: toggle ? endpoint.type : '',
+                                    endpoint: toggle ? endpoint.id : '',
                                   })
                                 )
                               }}
@@ -136,7 +135,7 @@ const Dataview = () => {
         {currentDataview.datasets &&
           currentDataview.datasets?.map((dataset, index) => {
             const selectedEndpoint = dataset.endpoints?.find(
-              (endpoint) => endpoint.type === currentDataview.selectedEndpoint
+              (endpoint) => endpoint.id === currentDataview.selectedEndpoint
             )
             if (!selectedEndpoint) return null
             return (
@@ -145,12 +144,12 @@ const Dataview = () => {
                   <h2>Params</h2>
                   {selectedEndpoint.params.map((param) => {
                     const defaultDatasetValue =
-                      currentDataview.defaultDatasetsParams &&
-                      currentDataview.defaultDatasetsParams[index] &&
-                      currentDataview.defaultDatasetsParams[index]['params']
-                        ? ((currentDataview.defaultDatasetsParams[index][
-                            'params'
-                          ] as DatasetParams)[param.id] as string)
+                      currentDataview.datasetsConfig &&
+                      currentDataview.datasetsConfig[index] &&
+                      currentDataview.datasetsConfig[index]['params']
+                        ? ((currentDataview.datasetsConfig[index]['params'] as DatasetParams)[
+                            param.id
+                          ] as string)
                         : ''
                     return (
                       <Field
@@ -172,10 +171,10 @@ const Dataview = () => {
                   <h2>Query</h2>
                   {selectedEndpoint.query.map((query) => {
                     const defaultDatasetQueryValue =
-                      currentDataview.defaultDatasetsParams &&
-                      currentDataview.defaultDatasetsParams[index] &&
-                      currentDataview.defaultDatasetsParams[index]['query']
-                        ? ((currentDataview.defaultDatasetsParams[index]['query'] as DatasetParams)[
+                      currentDataview.datasetsConfig &&
+                      currentDataview.datasetsConfig[index] &&
+                      currentDataview.datasetsConfig[index]['query']
+                        ? ((currentDataview.datasetsConfig[index]['query'] as DatasetParams)[
                             query.id
                           ] as string)
                         : ''
@@ -206,10 +205,10 @@ const Dataview = () => {
               dispatch(fetchResources([currentDataview]))
             }}
             className={cx('large', {
-              done: loaded && currentDataview.defaultDatasetsParams?.length,
+              done: loaded && currentDataview.datasetsConfig?.length,
               dirty: !loaded,
             })}
-            disabled={!loaded || !currentDataview.defaultDatasetsParams?.length}
+            // disabled={!loaded || !currentDataview.datasetsConfig?.length}
           >
             load endpoints data
           </button>

@@ -42,8 +42,8 @@ const slice = createSlice({
     setDataviews: (state, action) => {
       const editorDataviews = action.payload.map((dataview: Dataview, index: number) => {
         let selectedEndpoint = ''
-        if (dataview.defaultDatasetsParams?.length) {
-          selectedEndpoint = dataview.defaultDatasetsParams[0].endpoint as string
+        if (dataview.datasetsConfig?.length) {
+          selectedEndpoint = dataview.datasetsConfig[0].endpoint as string
         }
 
         return {
@@ -100,7 +100,7 @@ const slice = createSlice({
       if (dataview && dataview.datasets && dataview.datasets[0]) {
         dataview.datasets[0] = action.payload.dataset
         // TODO move this to dataset ?
-        dataview.defaultDatasetsParams = action.payload.defaultParams
+        dataview.datasetsConfig = action.payload.defaultParams
       }
     },
     setEditing: (state, action: PayloadAction<number>) => {
@@ -134,8 +134,8 @@ const slice = createSlice({
       const dataview = state.dataviews.find((d) => d.editorId === editorId)
       if (dataview) {
         dataview.selectedEndpoint = endpoint
-        dataview.defaultDatasetsParams = dataview.defaultDatasetsParams
-          ? dataview.defaultDatasetsParams.map((datasetParam) => {
+        dataview.datasetsConfig = dataview.datasetsConfig
+          ? dataview.datasetsConfig.map((datasetParam) => {
               if (datasetParam.endpoint !== endpoint) return datasetParam
               return {
                 dataset,
@@ -154,13 +154,13 @@ const slice = createSlice({
       const { editorId, type, params } = action.payload
       const dataview = state.dataviews.find((d) => d.editorId === editorId)
       if (
-        dataview?.defaultDatasetsParams &&
-        dataview?.defaultDatasetsParams[0] &&
-        dataview.defaultDatasetsParams[0][type]
+        dataview?.datasetsConfig &&
+        dataview?.datasetsConfig[0] &&
+        dataview.datasetsConfig[0][type]
       ) {
         dataview.dirty = true
-        const datasetParams = dataview.defaultDatasetsParams[0][type]
-        dataview.defaultDatasetsParams[0][type] = {
+        const datasetParams = dataview.datasetsConfig[0][type]
+        dataview.datasetsConfig[0][type] = {
           ...(datasetParams as DatasetParams),
           ...params,
         }
@@ -267,7 +267,7 @@ export const fetchDataset = ({
   datasetId: string
 }) => async (dispatch: any) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${datasetId}?include=endpoints`)
+    const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${datasetId}?include=endpoints`)
     const defaultParams = [
       {
         dataset: dataset.id,

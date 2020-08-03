@@ -1,11 +1,10 @@
 import template from 'lodash/template'
 import { stringify } from 'qs'
-import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
+import GFWAPI, { FetchResponseTypes } from '@globalfishingwatch/api-client'
 import { Dataview, WorkspaceDataview, Resource, DatasetParams } from './types'
-import { RESOURCE_TYPES_BY_VIEW_TYPE } from './config'
 import resolveDataviews from './resolve-dataviews'
 
-const BASE_URL = '/dataviews'
+const BASE_URL = '/v1/dataviews'
 
 type PostDataview = Omit<Dataview, 'id'>
 export type DataviewsClientFetch = typeof GFWAPI.fetch
@@ -37,10 +36,10 @@ export default class DataviewsClient {
       datasets: dataview.datasets?.length ? dataview.datasets?.map((d) => d.id) : [],
       description: dataview.description,
       defaultView: dataview.defaultView,
-      defaultDatasetsParams: dataview.defaultDatasetsParams,
+      datasetsConfig: dataview.datasetsConfig,
     }
     const baseUrl = method === 'POST' ? BASE_URL : `${BASE_URL}/${dataview.id}`
-    const fetchOptions: FetchOptions = {
+    const fetchOptions: any = {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -71,26 +70,18 @@ export default class DataviewsClient {
     const resolvedDataviews = resolveDataviews(dataviews, workspaceDataviews)
     resolvedDataviews.forEach((dataview) => {
       const datasetsParams = dataview.datasetsParams
-      const dataviewType = dataview.view?.type || dataview.defaultView?.type || ''
-
       dataview.datasets?.forEach((dataset, datasetIndex) => {
         const datasetParams = datasetsParams?.length ? datasetsParams[datasetIndex] : {}
         const endpointParamType = datasetParams.endpoint
 
         dataset.endpoints
-          ?.filter((endpoint) => endpoint.downloadable && endpoint.type === endpointParamType)
-          .filter((endpoint) => {
-            const allowedEndpointTypes = RESOURCE_TYPES_BY_VIEW_TYPE[dataviewType]
-            if (!allowedEndpointTypes || !allowedEndpointTypes.includes(endpoint.type)) return false
-            return true
-          })
+          ?.filter((endpoint) => endpoint.downloadable && endpoint.id === endpointParamType)
           .forEach((endpoint) => {
             // TODO: include query params here too
             const pathTemplateCompiled = template(endpoint.pathTemplate, {
               interpolate: /{{([\s\S]+?)}}/g,
             })
             let resolvedUrl: string
-
             const resolvedDatasetParams: DatasetParams = {
               dataset: dataset.id,
               ...(datasetParams?.params as DatasetParams),
@@ -109,11 +100,11 @@ export default class DataviewsClient {
               }
               resources.push({
                 dataviewId: dataview.id,
-                type: endpoint.type,
+                type: dataset.type,
                 datasetId: dataset.id,
                 resolvedUrl,
                 responseType: resolvedDatasetQuery.binary
-                  ? endpoint.type === 'track' && resolvedDatasetQuery?.format === 'valueArray'
+                  ? dataset.type?.includes('track') && resolvedDatasetQuery?.format === 'valueArray'
                     ? 'vessel'
                     : 'arrayBuffer'
                   : 'json',
@@ -134,7 +125,7 @@ export default class DataviewsClient {
       // See existing implementation of this in Track inspector's dataviews thunk:
       // https://github.com/GlobalFishingWatch/track-inspector/blob/develop/src/features/dataviews/dataviews.thunks.ts#L58
       return this._fetch(resource.resolvedUrl, {
-        responseType: resource.responseType,
+        responseType: resource.responseType as FetchResponseTypes,
       }).then((data: unknown) => {
         const resourceWithData = {
           ...resource,
