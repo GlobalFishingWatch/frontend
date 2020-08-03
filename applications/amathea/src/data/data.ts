@@ -28,7 +28,7 @@ export const TEST_WORSPACE_DATAVIEWS: DataviewGraphConfig[] = [
   {
     id: 'dataview-1',
     name: 'Sea Surface Temperature',
-    datasets: [{ id: '', label: '', description: '' }],
+    datasets: [{ id: '', type: '', label: '', description: '' }],
     description:
       "Sea surface temperature (SST) is the water temperature close to the ocean's surface.",
     unit: 'ºC',
@@ -37,7 +37,7 @@ export const TEST_WORSPACE_DATAVIEWS: DataviewGraphConfig[] = [
   {
     id: 'dataview-2',
     name: 'Salinity',
-    datasets: [{ id: '', label: '', description: '' }],
+    datasets: [{ id: '', type: '', label: '', description: '' }],
     description:
       'Ocean salinity is generally defined as the salt concentration (e.g., Sodium and Chlorure) in sea water. It is measured in unit of PSU (Practical Salinity Unit), which is a unit based on the properties of sea water conductivity. It is equivalent to per thousand or (o/00) or to g/kg.',
     unit: 'PSU',

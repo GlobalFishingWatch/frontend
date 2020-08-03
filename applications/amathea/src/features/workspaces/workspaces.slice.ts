@@ -29,7 +29,7 @@ export const createWorkspaceThunk = createAsyncThunk(
     try {
       const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces`, {
         method: 'POST',
-        body: workspaceData as Body,
+        body: workspaceData as BodyInit,
       })
       return workspace
     } catch (e) {
