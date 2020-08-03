@@ -1,13 +1,28 @@
+import { FetchResponseTypes } from '@globalfishingwatch/api-client/dist/api-client'
+
 export type EndpointType = 'track' | 'info' | 'tiles' | 'events'
 
+export type EndpointParam = {
+  id: string
+  label: string
+  required: boolean
+  type: string
+  default: unknown
+  description: string
+}
+
 export interface Endpoint {
-  type: EndpointType
-  urlTemplate: string
+  id: string
+  description: string
+  pathTemplate: string
+  params: EndpointParam[]
+  query: EndpointParam[]
   downloadable: boolean
 }
 
 export interface Dataset {
   id: string
+  type?: string
   endpoints?: Endpoint[]
 }
 
@@ -20,6 +35,13 @@ export interface DatasetParams {
   [propName: string]: unknown
 }
 
+export interface DatasetParamsConfig {
+  dataset: string
+  endpoint: string
+  params: DatasetParams
+  query: DatasetParams
+}
+
 export interface Dataview {
   id: number | string
   name: string
@@ -29,7 +51,7 @@ export interface Dataview {
   view?: ViewParams
   defaultView?: ViewParams
   datasetsParams?: DatasetParams[]
-  defaultDatasetsParams?: DatasetParams[]
+  datasetsConfig?: DatasetParams[]
   datasets?: Dataset[] // foreign
 }
 
@@ -40,13 +62,16 @@ export interface WorkspaceDataview {
 }
 
 export interface Workspace {
-  workspaceDataviews: WorkspaceDataview[]
-  zoom: number
-  latitude: number
-  longitude: number
-  start: string
-  end: string
+  id: number
+  description: string
+  dataviewWorkspaces: WorkspaceDataview[]
+  zoom?: number
+  latitude?: number
+  longitude?: number
+  start?: string
+  end?: string
 }
+
 export interface Resource<T = unknown> {
   dataviewId: number | string
   datasetId: string
@@ -54,6 +79,7 @@ export interface Resource<T = unknown> {
   // identifies resource uniquely, ie vessel id
   datasetParamId: string
   resolvedUrl: string
+  responseType?: FetchResponseTypes
   data?: T
 }
 

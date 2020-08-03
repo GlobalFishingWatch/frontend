@@ -9,10 +9,10 @@ const MiniglobesSection = () => {
         size={60}
         center={{ latitude: 0, longitude: 0 }}
         bounds={{
-          north: 30,
-          south: -30,
-          west: -30,
-          east: 30,
+          north: 35,
+          south: -14,
+          west: -70,
+          east: 80,
         }}
       />
       <label>Point</label>

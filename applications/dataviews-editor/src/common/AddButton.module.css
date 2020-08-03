@@ -10,7 +10,7 @@
 .addButton::after {
   content: '+';
   position: absolute;
-  left: 7px;
-  top: 0;
+  left: 6px;
+  top: -2px;
   font-size: x-large;
 }
