@@ -69,10 +69,13 @@ class HeatmapAnimatedGenerator {
       const sourceParams = {
         singleFrame: 'false',
         geomType: config.geomType,
-        serverSideFilters: getServerSideFilters(timeChunk.start, timeChunk.dataEnd),
+        serverSideFilters: getServerSideFilters(
+          timeChunk.start as string,
+          timeChunk.dataEnd as string
+        ),
         delta: getDelta(config.start, config.end).toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
-        interval: 'day',
+        interval: timeChunk.interval,
       }
       const url = new URL(`${tilesUrl}?${new URLSearchParams(sourceParams)}`)
       // console.log(url)
