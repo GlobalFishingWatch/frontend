@@ -1,5 +1,4 @@
 import { HeatmapColorRampColors, HeatmapColorRamp } from '../types'
-import { DEFAULT_BASEMAP_COLOR } from '../index'
 import { HeatmapGeomGL, HeatmapGeoms } from './types'
 
 export const API_TILES_URL =
@@ -36,7 +35,7 @@ export const HEATMAP_COLOR_RAMPS: HeatmapColorRamp = {
 export const HEATMAP_COLOR_RAMPS_RAMPS: HeatmapColorRampColors = {
   [HEATMAP_COLOR_RAMPS.FISHING]: ['rgba(22, 63, 137, 1)', '#3B9088', '#EEFF00', '#ffffff'],
   [HEATMAP_COLOR_RAMPS.PRESENCE]: [
-    DEFAULT_BASEMAP_COLOR,
+    'rgba(22, 63, 137, 0)',
     '#163F89',
     '#0F6F97',
     '#07BBAE',
