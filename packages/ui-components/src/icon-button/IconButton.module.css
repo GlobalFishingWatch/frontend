@@ -4,11 +4,17 @@
   justify-content: center;
   align-items: center;
   border: none;
-  cursor: pointer;
   transition: var(--transition);
   border-radius: 50%;
   background-repeat: no-repeat;
   background-position: center center;
+  color: var(--color-primary-blue);
+  background-color: transparent;
+  flex-shrink: 0;
+}
+
+.iconButton:not(:disabled) {
+  cursor: pointer;
 }
 
 .iconButton:focus {
@@ -17,22 +23,21 @@
 
 .default,
 .warning,
-.border {
-  color: var(--color-secondary-blue);
-  background-color: transparent;
+.border{
+  opacity: var(--opacity-secondary);
 }
 
 .border {
   border: var(--border);
 }
 
-.default:hover,
-.default:focus,
-.warning:hover,
-.warning:focus,
-.border:hover,
-.border:focus {
-  color: var(--color-primary-blue);
+.default:hover:not(:disabled),
+.default:focus:not(:disabled),
+.warning:hover:not(:disabled),
+.warning:focus:not(:disabled),
+.border:hover:not(:disabled),
+.border:focus:not(:disabled) {
+  opacity: 1;
   background-color: var(--color-terthiary-blue);
 }
 

@@ -1,0 +1,24 @@
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: var(--border);
+}
+
+.titleLink {
+  text-align: left;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.titleLink button {
+  color: inherit;
+  cursor: pointer;
+}
+
+.rightSide {
+  display: block;
+  margin: var(--space-S) 0 var(--space-M) auto;
+}

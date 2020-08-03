@@ -33,12 +33,8 @@ interface LoginParams {
 }
 
 export type FetchResponseTypes = 'default' | 'text' | 'json' | 'blob' | 'arrayBuffer' | 'vessel'
-export type FetchOptions = RequestInit & {
+export type FetchOptions = Partial<RequestInit> & {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  /**
-   * JSON Object
-   */
-  body?: any
   responseType?: FetchResponseTypes
   dataset?: boolean
 }
@@ -213,7 +209,11 @@ export class GFWAPI {
           method,
           signal,
           ...(body && { body: JSON.stringify(body) }),
-          headers: { ...headers, Authorization: `Bearer ${this.getToken()}` },
+          headers: {
+            ...headers,
+            ...(responseType === 'json' && { 'Content-Type': 'application/json' }),
+            Authorization: `Bearer ${this.getToken()}`,
+          },
         })
           .then(processStatus)
           .then((res) => {

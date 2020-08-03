@@ -1,0 +1,8 @@
+{
+  "amathea": {
+    "cloudbuildTaskId": "amathea-autodeploy-bot",
+    "watch": [
+      "applications/amathea/**/*"
+    ]
+  }
+}

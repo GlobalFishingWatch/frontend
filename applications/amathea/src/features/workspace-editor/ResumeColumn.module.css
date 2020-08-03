@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.container li {
+  width: var(--size-L);
+  height: var(--size-L);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.1rem;
+  background-color: var(--color-terthiary-blue);
+  transition: background-color 300ms linear;
+}
+
+.container li * {
+  cursor: pointer;
+}
+
+.container li.current {
+  background-color: transparent;
+}
+
+.container::after {
+  content: '';
+  flex: 1;
+  background: var(--color-terthiary-blue);
+}

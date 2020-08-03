@@ -54,6 +54,9 @@ const MiniGlobe: React.FC<MiniglobeProps> = (props) => {
     console.error('MiniGlobe: bounds specified not valid')
   }
 
+  const longitudeExtent = east - west
+  const latitudeExtent = north - south
+
   const viewportBoundsGeoJSON = {
     type: 'Feature',
     geometry: {
@@ -61,18 +64,54 @@ const MiniGlobe: React.FC<MiniglobeProps> = (props) => {
       coordinates: [
         [
           [west, north],
+          [west + longitudeExtent * 0.1, north],
+          [west + longitudeExtent * 0.2, north],
+          [west + longitudeExtent * 0.3, north],
+          [west + longitudeExtent * 0.4, north],
+          [west + longitudeExtent * 0.5, north],
+          [west + longitudeExtent * 0.6, north],
+          [west + longitudeExtent * 0.7, north],
+          [west + longitudeExtent * 0.8, north],
+          [west + longitudeExtent * 0.9, north],
           [east, north],
+          [east, north - latitudeExtent * 0.1],
+          [east, north - latitudeExtent * 0.2],
+          [east, north - latitudeExtent * 0.3],
+          [east, north - latitudeExtent * 0.4],
+          [east, north - latitudeExtent * 0.5],
+          [east, north - latitudeExtent * 0.6],
+          [east, north - latitudeExtent * 0.7],
+          [east, north - latitudeExtent * 0.8],
+          [east, north - latitudeExtent * 0.9],
           [east, south],
+          [east - longitudeExtent * 0.1, south],
+          [east - longitudeExtent * 0.2, south],
+          [east - longitudeExtent * 0.3, south],
+          [east - longitudeExtent * 0.4, south],
+          [east - longitudeExtent * 0.5, south],
+          [east - longitudeExtent * 0.6, south],
+          [east - longitudeExtent * 0.7, south],
+          [east - longitudeExtent * 0.8, south],
+          [east - longitudeExtent * 0.9, south],
           [west, south],
+          [west, south + latitudeExtent * 0.1],
+          [west, south + latitudeExtent * 0.2],
+          [west, south + latitudeExtent * 0.3],
+          [west, south + latitudeExtent * 0.4],
+          [west, south + latitudeExtent * 0.5],
+          [west, south + latitudeExtent * 0.6],
+          [west, south + latitudeExtent * 0.7],
+          [west, south + latitudeExtent * 0.8],
+          [west, south + latitudeExtent * 0.9],
           [west, north],
         ],
       ],
     },
   }
 
-  const showPoint = north - south <= MIN_DEGREES_PATH || east - west <= MIN_DEGREES_PATH
+  const showPoint = latitudeExtent <= MIN_DEGREES_PATH || longitudeExtent <= MIN_DEGREES_PATH
   const showPath =
-    !showPoint && north - south <= MAX_DEGREES_PATH && east - west <= MAX_DEGREES_PATH
+    !showPoint && latitudeExtent <= MAX_DEGREES_PATH && longitudeExtent <= MAX_DEGREES_PATH
   const path = geoPath().projection(projection)(viewportBoundsGeoJSON as any) || undefined
 
   return (

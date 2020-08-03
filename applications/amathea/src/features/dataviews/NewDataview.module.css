@@ -1,0 +1,9 @@
+.container {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.input {
+  margin-bottom: var(--space-M);
+}

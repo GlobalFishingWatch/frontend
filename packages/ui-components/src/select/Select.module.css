@@ -8,13 +8,18 @@
 
 .container:focus,
 .container:hover {
-  box-shadow: var(--block-shadow);
+  border-bottom: 1px solid var(--color-primary-blue);
+  color: var(--color-primary-blue);
+}
+
+.placeholderShown {
+  color: var(--color-secondary-blue);
 }
 
 .isOpen {
-  background: var(--color-background);
-  filter: var(--drop-shadow);
-  z-index: 2;
+  background: var(--color-white);
+  box-shadow: var(--box-shadow);
+  z-index: 11;
 }
 
 .placeholderContainer {
@@ -39,25 +44,24 @@
   top: var(--size-M);
   left: 0;
   background: var(--color-white);
-  box-shadow: var(--block-shadow);
+  box-shadow: var(--box-shadow);
   max-height: 40rem;
   overflow: auto;
   z-index: 10;
-}
-
-.optionsOpen {
-  border: var(--border);
 }
 
 .optionItem {
   color: var(--color-secondary-blue);
   line-height: 2rem;
   padding: var(--space-S);
-  border-bottom: var(--border);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.optionItem:not(:last-child) {
+  border-bottom: var(--border);
 }
 
 .highlight {
