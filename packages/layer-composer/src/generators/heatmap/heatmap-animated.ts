@@ -28,6 +28,7 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   geomType: HEATMAP_GEOM_TYPES.GRIDDED,
   colorRamp: HEATMAP_COLOR_RAMPS.PRESENCE,
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
+  serverSideFilter: '',
   tilesAPI: API_TILES_URL,
 }
 
@@ -69,7 +70,11 @@ class HeatmapAnimatedGenerator {
       const sourceParams = {
         singleFrame: 'false',
         geomType: config.geomType,
-        serverSideFilters: getServerSideFilters(timeChunk.start, timeChunk.dataEnd),
+        serverSideFilters: getServerSideFilters(
+          timeChunk.start,
+          timeChunk.dataEnd,
+          config.serverSideFilter
+        ),
         delta: getDelta(config.start, config.end).toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: 'day',
