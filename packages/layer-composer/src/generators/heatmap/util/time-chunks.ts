@@ -33,7 +33,7 @@ const CONFIG_BY_INTERVAL: Record<Interval, Record<string, Function>> = {
       return chunkViewEnd.plus({ days: 5 })
     },
     // We will substract every timestamp with a quantize offset to end up with shorter arrays indexes
-    getQuantizeOffset: (start: number) => {
+    getFrame: (start: number) => {
       return Math.floor(start / 1000 / 60 / 60)
     },
   },
@@ -51,12 +51,12 @@ const CONFIG_BY_INTERVAL: Record<Interval, Record<string, Function>> = {
     getChunkDataEnd: (chunkViewEnd: DateTime): DateTime => {
       return chunkViewEnd.plus({ days: 100 })
     },
-    getQuantizeOffset: (start: number) => {
+    getFrame: (start: number) => {
       return Math.floor(start / 1000 / 60 / 60 / 24)
     },
   },
   '10days': {
-    getQuantizeOffset: (start: number) => {
+    getFrame: (start: number) => {
       return Math.floor(start / 1000 / 60 / 60 / 24 / 10)
     },
   },
@@ -129,7 +129,7 @@ const getTimeChunks = (
     const dataEnd = chunkDataEnd.toString()
 
     // we will substract every timestamp with this to end up with shorter arrays indexes
-    const quantizeOffset = config.getQuantizeOffset(+chunkStart)
+    const quantizeOffset = config.getFrame(+chunkStart)
 
     const chunk: TimeChunk = {
       interval,
@@ -186,6 +186,22 @@ export const getActiveTimeChunks = (
   const chunkStarts = getChunkStarts(bufferedActiveStart, bufferedActiveEnd, interval)
   const chunks = getTimeChunks(chunkStarts, datasetStart, datasetEnd, interval)
 
-  console.log(chunks)
   return chunks
+}
+
+export const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interval) => {
+  const config = CONFIG_BY_INTERVAL[interval]
+  const ms = new Date(date).getTime()
+  const frame = config.getFrame(ms)
+  return frame - quantizeOffset
+}
+
+export const getDelta = (start: string, end: string, interval: Interval) => {
+  const config = CONFIG_BY_INTERVAL[interval]
+  const startTimestampMs = new Date(start).getTime()
+  const endTimestampMs = new Date(end).getTime()
+  const startFrame = config.getFrame(startTimestampMs)
+  const endFrame = config.getFrame(endTimestampMs)
+  const delta = Math.round(endFrame - startFrame)
+  return delta
 }
