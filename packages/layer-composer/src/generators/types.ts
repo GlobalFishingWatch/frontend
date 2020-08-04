@@ -158,6 +158,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   debug?: boolean
   debugLabels?: boolean
   colorRamp?: ColorRamps
+  serverSideFilter?: string
 }
 
 export type AnyGeneratorConfig =
