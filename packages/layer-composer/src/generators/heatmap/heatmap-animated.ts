@@ -16,7 +16,7 @@ import {
   HEATMAP_COLOR_RAMPS_RAMPS,
 } from './config'
 import getServerSideFilters from './util/get-server-side-filters'
-import { TimeChunk, getActiveTimeChunks } from './util/time-chunks'
+import { TimeChunk, getActiveTimeChunks, toQuantizedFrame } from './util/time-chunks'
 
 type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
@@ -42,16 +42,6 @@ const getDelta = (start: string, end: string) => {
   const endTimestampDays = endTimestampMs / 1000 / 60 / 60 / 24
   const daysDelta = Math.round(endTimestampDays - startTimestampDays)
   return daysDelta
-}
-
-export const toDays = (date: string) => {
-  return Math.floor(new Date(date).getTime() / 1000 / 60 / 60 / 24)
-}
-
-// TODO for now only works in days
-const toQuantizedDays = (date: string, quantizeOffset: number) => {
-  const days = toDays(date)
-  return days - quantizeOffset
 }
 
 class HeatmapAnimatedGenerator {
@@ -102,8 +92,8 @@ class HeatmapAnimatedGenerator {
 
     const layers: Layer[] = flatten(
       timeChunks.map((timeChunk: TimeChunk) => {
-        const day = toQuantizedDays(config.start, timeChunk.quantizeOffset)
-        const pickValueAt = day.toString()
+        const frame = toQuantizedFrame(config.start, timeChunk.quantizeOffset, timeChunk.interval)
+        const pickValueAt = frame.toString()
         const exprPick = ['to-number', ['get', pickValueAt]]
         const exprColorRamp =
           colorRampValues.length > 0
