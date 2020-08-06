@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@globalfishingwatch/react-map-gl": "^5.2.7",
-    "@globalfishingwatch/layer-composer": "2.4.4",
+    "@globalfishingwatch/layer-composer": "2.4.6",
     "@globalfishingwatch/react-hooks": "2.5.0",
     "@globalfishingwatch/timebar": "1.0.11",
     "classnames": "^2.2.6",
