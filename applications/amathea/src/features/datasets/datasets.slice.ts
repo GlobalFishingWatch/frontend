@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'store'
-import GFWAPI from '@globalfishingwatch/api-client'
+import GFWAPI, { UploadResponse } from '@globalfishingwatch/api-client'
 import { Dataset } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice, asyncInitialState } from 'features/api/api.slice'
 
@@ -8,6 +8,29 @@ export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () =>
   const data = await GFWAPI.fetch<Dataset[]>('/v1/datasets?cache=false')
   return data
 })
+
+export const createDatasetThunk = createAsyncThunk(
+  'datasets/uploadFile',
+  async ({ dataset, file }: { dataset: Partial<Dataset>; file: File }) => {
+    const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload')
+    try {
+      await fetch(url, { method: 'PUT', body: file })
+      const datasetWithFilePath = {
+        ...dataset,
+        configuration: {
+          filePath: path,
+        },
+      }
+      const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
+        method: 'POST',
+        body: datasetWithFilePath as any,
+      })
+      return createdDataset
+    } catch (e) {
+      console.error(e.message)
+    }
+  }
+)
 
 // export const createDatasetThunk = createAsyncThunk(
 //   'datasets/create',
@@ -26,7 +49,7 @@ export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () =>
 
 export type DatasetTypes = 'context_areas' | 'track' | '4wings' | undefined
 export type DatasetDraftSteps = 'info' | 'data' | 'parameters'
-export type DatasetDraftData = Partial<Dataset> & { type?: DatasetTypes; file?: any; data?: any }
+export type DatasetDraftData = Partial<Dataset> & { type?: DatasetTypes }
 
 export type DatasetDraft = {
   step: DatasetDraftSteps
