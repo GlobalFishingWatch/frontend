@@ -24,7 +24,7 @@ export interface Endpoint {
 export interface Dataset {
   id: string
   type: string
-  label: string
+  name: string
   description: string
   endpoints?: Endpoint[]
 }

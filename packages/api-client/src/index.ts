@@ -6,4 +6,4 @@ export {
   FetchResponseTypes,
 } from './api-client'
 export { ACCESS_TOKEN_STRING, getAccessTokenFromUrl, removeAccessTokenFromUrl } from './utils/url'
-export type { UserData } from './types'
+export type { UserData, UploadResponse } from './types'

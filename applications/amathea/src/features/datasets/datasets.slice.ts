@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'store'
-import GFWAPI from '@globalfishingwatch/api-client'
+import kebabCase from 'lodash/kebabCase'
+import GFWAPI, { UploadResponse } from '@globalfishingwatch/api-client'
 import { Dataset } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice, asyncInitialState } from 'features/api/api.slice'
 
@@ -9,24 +10,51 @@ export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () =>
   return data
 })
 
-// export const createDatasetThunk = createAsyncThunk(
-//   'datasets/create',
-//   async (datasetData: Partial<Dataset>, { rejectWithValue }) => {
-//     try {
-//       const dataset = await GFWAPI.fetch<Dataset>(`/datasets`, {
-//         method: 'POST',
-//         body: datasetData as Body,
-//       })
-//       return { dataset }
-//     } catch (e) {
-//       return rejectWithValue(datasetData.label)
-//     }
-//   }
-// )
+export const createDatasetThunk = createAsyncThunk(
+  'datasets/uploadFile',
+  async ({ dataset, file }: { dataset: Partial<Dataset>; file: File }) => {
+    const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
+      method: 'POST',
+      body: { contentType: file.type } as any,
+    })
+    try {
+      await fetch(url, { method: 'PUT', body: file })
+      const datasetWithFilePath = {
+        ...dataset,
+        id: kebabCase(dataset.name),
+        type: 'user-context-layer:v1',
+        configuration: {
+          filePath: path,
+        },
+      }
+      const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
+        method: 'POST',
+        body: datasetWithFilePath as any,
+      })
+      return createdDataset
+    } catch (e) {
+      console.error(e.message)
+    }
+  }
+)
+
+export const deleteDatasetThunk = createAsyncThunk(
+  'datasets/delete',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const workspace = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}`, {
+        method: 'DELETE',
+      })
+      return { ...workspace, id }
+    } catch (e) {
+      return rejectWithValue(id)
+    }
+  }
+)
 
 export type DatasetTypes = 'context_areas' | 'track' | '4wings' | undefined
 export type DatasetDraftSteps = 'info' | 'data' | 'parameters'
-export type DatasetDraftData = Partial<Dataset> & { type?: DatasetTypes; file?: any; data?: any }
+export type DatasetDraftData = Partial<Dataset> & { type?: DatasetTypes }
 
 export type DatasetDraft = {
   step: DatasetDraftSteps
@@ -57,15 +85,11 @@ const { slice: datasetsSlice, entityAdapter } = createAsyncSlice<DatasetsState, 
       state.draft.data = { ...state.draft.data, ...action.payload }
     },
   },
-  // extraReducers: (builder) => {
-  // builder.addCase(createDatasetThunk.fulfilled, (state, action) => {
-  //   entityAdapter.addOne(state, action.payload.dataset)
-  // })
-  // builder.addCase(createDatasetThunk.rejected, (state, action) => {
-  //   state.error = `Error adding dataset ${action.payload}`
-  // })
-  // },
-  thunks: { fetchThunk: fetchDatasetsThunk },
+  thunks: {
+    fetchThunk: fetchDatasetsThunk,
+    createThunk: createDatasetThunk,
+    deleteThunk: deleteDatasetThunk,
+  },
 })
 
 export const { resetDraftDataset, setDraftDatasetStep, setDraftDatasetData } = datasetsSlice.actions
