@@ -32,6 +32,9 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   tilesAPI: API_TILES_URL,
 }
 
+// TODO - generate this using updated stats API
+const HARDCODED_BREAKS = [0, 1, 5, 10, 15, 30]
+
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
 
@@ -56,8 +59,8 @@ class HeatmapAnimatedGenerator {
         delta: getDelta(config.start, config.end, timeChunk.interval).toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: timeChunk.interval,
+        breaks: HARDCODED_BREAKS.toString(),
       }
-      console.log(sourceParams.delta)
       const url = new URL(`${tilesUrl}?${new URLSearchParams(sourceParams)}`)
       // console.log(url)
       const source = {
@@ -74,20 +77,15 @@ class HeatmapAnimatedGenerator {
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
     const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[config.colorRamp]
-    // TODO - generate this using updated stats API
-    const stops = [0, 1, 500, 1000, 1500, 3000]
-    const legend = zip(stops, originalColorRamp)
+    const legend = HARDCODED_BREAKS.map((b, i) => [i, originalColorRamp[i]])
     const colorRampValues = flatten(legend)
 
     const layers: Layer[] = flatten(
       timeChunks.map((timeChunk: TimeChunk) => {
         const frame = toQuantizedFrame(config.start, timeChunk.quantizeOffset, timeChunk.interval)
         const pickValueAt = frame.toString()
-        const exprPick = ['to-number', ['get', pickValueAt]]
-        const exprColorRamp =
-          colorRampValues.length > 0
-            ? ['interpolate', ['linear'], exprPick, ...colorRampValues]
-            : 'transparent'
+        const exprPick = ['coalesce', ['get', pickValueAt], 0]
+        const exprColorRamp = ['step', exprPick, 'transparent', ...colorRampValues]
 
         let paint
         if (config.geomType === 'gridded') {

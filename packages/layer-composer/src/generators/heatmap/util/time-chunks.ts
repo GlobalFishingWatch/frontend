@@ -160,8 +160,6 @@ export const getActiveTimeChunks = (
   const delta = +toDT(activeEnd) - +toDT(activeStart)
   const interval = getInterval(delta)
 
-  console.log(interval)
-
   // ignore any start/end time chunk calculation as for the '10 days' interval the entire tileset is loaded
   if (interval === '10days') {
     return [
