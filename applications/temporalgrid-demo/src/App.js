@@ -1,6 +1,6 @@
 import './App.css';
-import React, {useState, useMemo, useRef, useCallback} from 'react';
-import MapGL from 'react-map-gl';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
+import MapGL from '@globalfishingwatch/react-map-gl';
 import { DateTime } from 'luxon'
 import { Generators } from '@globalfishingwatch/layer-composer';
 import { useLayerComposer, useDebounce } from '@globalfishingwatch/react-hooks';
@@ -30,11 +30,11 @@ function App() {
   const [debug, setDebug] = useState(true)
   const [debugLabels, setDebugLabels] = useState(true)
   const [geomTypeMode, setGeomTypeMode] = useState('gridded')
-  
+
   const [showInfo, setShowInfo] = useState(false)
 
   const [isPlaying, setIsPlaying] = useState(false)
-  
+
   const layers = useMemo(
     () => {
       const generators = [

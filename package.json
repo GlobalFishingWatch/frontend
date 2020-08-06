@@ -34,13 +34,12 @@
     "clean:packages": "lerna run clean --parallel --scope @globalfishingwatch/*"
   },
   "dependencies": {
+    "@globalfishingwatch/react-map-gl": "^5.2.7",
     "@tippyjs/react": "^4.0.2",
     "geojson": "^0.5.0",
     "lodash": "^4.17.15",
-    "mapbox-gl": "https://github.com/GlobalFishingWatch/mapbox-gl-js.git#build",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-map-gl": "https://github.com/GlobalFishingWatch/react-map-gl.git#build"
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "@lerna/project": "^3.21.0",
