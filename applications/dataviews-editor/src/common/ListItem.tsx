@@ -4,9 +4,10 @@ import styles from './ListItem.module.css'
 
 type Props = {
   title: string
-  editing: boolean
-  checked: boolean
-  dirty: boolean
+  editable?: boolean
+  editing?: boolean
+  checked?: boolean
+  dirty?: boolean
   showActions?: boolean
   onClick?: () => void
   onToggle?: (toggle: boolean) => void
@@ -17,6 +18,7 @@ type Props = {
 
 const ListItem = ({
   title,
+  editable = true,
   editing,
   checked,
   dirty,
@@ -41,7 +43,7 @@ const ListItem = ({
       <input
         type="text"
         value={title}
-        readOnly={!showActions}
+        readOnly={!editable}
         onClick={() => {
           if (!showActions && onClick) onClick()
         }}

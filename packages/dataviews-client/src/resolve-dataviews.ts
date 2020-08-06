@@ -1,4 +1,4 @@
-import { Dataview, WorkspaceDataview, ResolvedDataview } from './types'
+import { Dataview, WorkspaceDataview, ResolvedDataview, DatasetParams } from './types'
 
 /**
  * Gets list of dataviews and those present in the workspace, and applies any view or datasetParams from it (merges dataview.defaultView with dataview.view and workspace's dataview.view).
@@ -18,7 +18,7 @@ export default (dataviews: Dataview[], workspaceDataviews?: WorkspaceDataview[])
 
     // copy defaultView|defaultDatasetsParams to view|datasetsParams
     newDataview.view = newDataview.defaultView
-    newDataview.datasetsParams = newDataview.defaultDatasetsParams
+    newDataview.datasetsParams = newDataview.datasetsConfig
 
     // retrieve workspace dataview that matches dataview so that we can collect overrides
     const workspaceDataview =
@@ -41,15 +41,15 @@ export default (dataviews: Dataview[], workspaceDataviews?: WorkspaceDataview[])
           ...workspaceDatasetParams,
         }
 
-        generatedUidComponents.push(newDatasetParams.id as string)
-        newDataview.datasetsParamIds.push(newDatasetParams.id as string)
+        generatedUidComponents.push((newDatasetParams.params as DatasetParams).id as string)
+        newDataview.datasetsParamIds.push((newDatasetParams.params as DatasetParams).id as string)
 
         return newDatasetParams
       })
     } else {
       // add id linked to datasets (ie vessel id) to identify generator uniquely
       newDataview.datasetsParams?.forEach((datasetParams) => {
-        generatedUidComponents.push(datasetParams.id as string)
+        generatedUidComponents.push((datasetParams.params as DatasetParams).id as string)
         newDataview.datasetsParamIds.push(datasetParams.id as string)
       })
     }

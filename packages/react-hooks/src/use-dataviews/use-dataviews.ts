@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Resource, ResolvedDataview } from '@globalfishingwatch/dataviews-client'
+import { Resource, ResolvedDataview, DatasetParams } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 
 /**
@@ -8,20 +8,24 @@ import { Generators } from '@globalfishingwatch/layer-composer'
  * If workspace is provided, it will only use the dataviews specified in the Workspace,
  * and apply any viewParams or datasetParams from it.
  * @param dataviews
- * @param ressources
+ * @param resources
  */
 const useDataviews = (
   dataviews: ResolvedDataview[],
-  ressources: Resource[]
+  resources: Resource[]
 ): Generators.AnyGeneratorConfig[] => {
   const generators = useMemo(() => {
     return dataviews.map((dataview) => {
-      const dataviewResource = ressources.find((resource) => {
+      const dataviewResource = resources.find((resource) => {
         if (resource.dataviewId !== dataview.id) return false
-        const matchedDatasetParamId = dataview.datasetsParamIds.find(
-          (datasetParamId: string | number) => datasetParamId === resource.datasetParamId
-        )
-        return matchedDatasetParamId
+        if (!dataview.datasetsParams) return false
+        const datasetParams = dataview.datasetsParams.find((datasetParams) => {
+          return (
+            (datasetParams?.params as DatasetParams).id &&
+            (datasetParams?.params as DatasetParams).id === resource.datasetParamId
+          )
+        })
+        return datasetParams
       })
 
       const generatorConfig: Generators.AnyGeneratorConfig = {
@@ -33,7 +37,7 @@ const useDataviews = (
       }
       return generatorConfig
     })
-  }, [dataviews, ressources])
+  }, [dataviews, resources])
   return generators
 }
 

@@ -29,16 +29,18 @@ const Map = () => {
   return (
     <div className={styles.container}>
       {error && <div className={styles.error}>{error.toString()}</div>}
-      <ReactMapGL
-        width="100%"
-        height="100%"
-        {...viewport}
-        onViewportChange={updateViewport}
-        mapStyle={style}
-        mapOptions={{
-          customAttribution: '© Copyright Global Fishing Watch 2020',
-        }}
-      />
+      {style && (
+        <ReactMapGL
+          width="100%"
+          height="100%"
+          {...viewport}
+          onViewportChange={updateViewport}
+          mapStyle={style}
+          mapOptions={{
+            customAttribution: '© Copyright Global Fishing Watch 2020',
+          }}
+        />
+      )}
     </div>
   )
 }

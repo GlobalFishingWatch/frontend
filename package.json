@@ -22,17 +22,20 @@
     "start:sandbox": "cross-env CI=true SKIP_PREFLIGHT_CHECK=true lerna run --scope @globalfishingwatchapp/sandbox start",
     "start:dataviews": "cross-env CI=true SKIP_PREFLIGHT_CHECK=true lerna run --scope @globalfishingwatchapp/dataviews-editor start",
     "start:temporalgrid-demo": "cross-env CI=true SKIP_PREFLIGHT_CHECK=true lerna run --scope @globalfishingwatchapp/temporalgrid-demo start",
+    "start:amathea": "cross-env CI=true SKIP_PREFLIGHT_CHECK=true lerna run --scope @globalfishingwatchapp/amathea start",
     "start:packages": "lerna run start --parallel --scope @globalfishingwatch/*",
     "build": "lerna run build --scope @globalfishingwatch/*",
-    "prepare": "lerna run prepare --scope @globalfishingwatch/*",
+    "test:prepare": "lerna run prepare --scope @globalfishingwatch/*",
     "changelog": "lerna-changelog",
     "release": "lerna publish && yarn changelog",
     "release:retry": "lerna publish from-package --yes",
     "release:publish": "lerna exec --scope @globalfishingwatch/* -- \"npm publish || exit 0\" ",
-    "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn"
+    "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn",
+    "clean:packages": "lerna run clean --parallel --scope @globalfishingwatch/*"
   },
   "dependencies": {
     "@tippyjs/react": "^4.0.2",
+    "geojson": "^0.5.0",
     "lodash": "^4.17.15",
     "mapbox-gl": "https://github.com/GlobalFishingWatch/mapbox-gl-js.git#build",
     "react": "^16.13.1",

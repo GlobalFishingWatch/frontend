@@ -3,20 +3,25 @@ import cx from 'classnames'
 import { useSelector, useDispatch } from 'react-redux'
 import GFWAPI from '@globalfishingwatch/api-client'
 import useGFWLogin from '@globalfishingwatch/react-hooks/dist/use-login'
+import Workspace from 'features/workspace/Workspace'
 import Dataview from 'features/dataview/Dataview'
 import Dataviews from 'features/dataviews/Dataviews'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import { selectCurrentDataview } from 'features/dataview/dataview.selectors'
 import { fetchDataviews, selectLoading } from 'features/dataviews/dataviews.slice'
+import { fetchWorkspaces } from 'features/workspace/workspace.slice'
 import styles from './App.module.css'
 
 const App = () => {
   const dispatch = useDispatch()
+
   useEffect(() => {
+    dispatch(fetchWorkspaces())
     dispatch(fetchDataviews())
   }, [dispatch])
 
+  const [workspaceMinimized, toggleWorkspace] = useState(true)
   const [dataviewsMinimized, toggleDataviews] = useState(false)
   const [dataviewMinimized, toggleDataview] = useState(false)
   const currentDataview = useSelector(selectCurrentDataview)
@@ -32,6 +37,18 @@ const App = () => {
 
   return (
     <div className={cx(styles.app, { [styles.loading]: dataviewsLoading })}>
+      <div
+        className={cx(styles.column, styles.workspace, { [styles.minimized]: workspaceMinimized })}
+      >
+        <h1
+          onClick={() => {
+            toggleWorkspace(!workspaceMinimized)
+          }}
+        >
+          Workspaces
+        </h1>
+        {!workspaceMinimized && <Workspace />}
+      </div>
       <div
         className={cx(styles.column, styles.dataviews, { [styles.minimized]: dataviewsMinimized })}
       >

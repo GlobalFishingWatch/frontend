@@ -2,25 +2,7 @@ export function isUrlAbsolute(url: string) {
   if (!url) {
     throw new Error('Url absolute check needs a proper url')
   }
-  if (url.indexOf('//') === 0) {
-    return true
-  } // URL is protocol-relative (= absolute)
-  if (url.indexOf('://') === -1) {
-    return false
-  } // URL has no protocol (= relative)
-  if (url.indexOf('.') === -1) {
-    return false
-  } // URL does not contain a dot, i.e. no TLD (= relative, possibly REST)
-  if (url.indexOf('/') === -1) {
-    return false
-  } // URL does not contain a single slash (= relative)
-  if (url.indexOf(':') > url.indexOf('/')) {
-    return false
-  } // The first colon comes after the first slash (= relative)
-  if (url.indexOf('://') < url.indexOf('.')) {
-    return true
-  } // Protocol is defined before first dot (= absolute)
-  return false // Anything else must be relative
+  return url.indexOf('http://') === 0 || url.indexOf('https://') === 0
 }
 
 export function getURLParameterByName(paramName: string, url: string = window.location.href) {

@@ -1,0 +1,28 @@
+.tabs {
+  width: 100%;
+  display: flex;
+}
+
+.tabs button {
+  width: 100%;
+}
+
+.tabs button:not(:last-child) {
+  margin-right: 0.1rem;
+}
+
+.tabs button.active {
+  pointer-events: none;
+  background: none;
+  color: var(--color-primary-blue);
+}
+
+.tabs button.active:focus {
+  background: none;
+}
+
+.content {
+  padding: var(--space-M);
+  height: calc(100vh - 10rem);
+  overflow-y: auto;
+}

@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/pbf",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "private": false,
   "license": "MIT",
   "files": [
@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "clean": "rimraf decoders && mkdirp ./decoders",
+    "start": "yarn build",
     "build": "run-s clean build:pb:vessels:js build:pb:vessels:ts build:pb:4wings-tile:js",
     "build:pb:vessels:js": "pbjs ../../node_modules/tracks-cloud-function/src/proto/vessels.proto -t static-module -w commonjs -o decoders/vessels.js",
     "build:pb:vessels:ts": "pbts decoders/vessels.js -o decoders/vessels.d.ts",
@@ -23,5 +24,5 @@
     "pbts-cli": "^1.0.3",
     "protobufjs": "6.9.0"
   },
-  "gitHead": "e401a97d85e852a21903684dfea4d868c9f1b9a4"
+  "gitHead": "d3257a17acb1bd0880b760492bf936a61da4d8d8"
 }

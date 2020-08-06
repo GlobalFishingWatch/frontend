@@ -1,0 +1,76 @@
+.container {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.steps {
+  display: flex;
+  justify-content: center;
+  font: var(--font-S);
+  margin-bottom: var(--space-M);
+}
+
+.steps button {
+  color: var(--color-secondary-blue);
+}
+
+.steps button.currentStep {
+  color: var(--color-primary-blue);
+}
+
+.steps button:not(:last-child) {
+  margin-right: var(--space-M);
+}
+
+.steps button:not(:last-child)::after {
+  color: var(--color-secondary-blue);
+  margin-left: var(--space-M);
+  content: '>';
+}
+
+.input {
+  margin-bottom: var(--space-M);
+}
+
+.saveBtn {
+  margin-top: auto;
+  align-self: flex-end;
+}
+
+.dropFiles {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-M);
+  text-align: center;
+  background: var(--color-terthiary-blue);
+  border: 0.2rem dotted var(--color-secondary-blue);
+  color: var(--color-secondary-blue);
+  font: var(--font-S);
+  border-radius: 3px;
+  margin-bottom: var(--space-M);
+}
+
+.horizontalContainer {
+  display: flex;
+  flex: 1;
+  margin-bottom: var(--space-M);
+}
+
+.verticalContainer {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  flex: 1;
+}
+
+.horizontalContainer > div:first-child {
+  margin-right: var(--space-S);
+}
+
+.horizontalContainer > div:last-child {
+  margin-left: var(--space-S);
+}

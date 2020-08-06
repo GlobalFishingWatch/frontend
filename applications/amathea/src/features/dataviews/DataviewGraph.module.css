@@ -1,0 +1,20 @@
+:global(.recharts-cartesian-axis-tick-value) {
+  fill: var(--color-secondary-blue);
+  font: var(--font-XS);
+  text-transform: uppercase;
+  width: 4rem;
+}
+
+:global(.recharts-cartesian-axis-line),
+:global(.recharts-cartesian-axis-tick-line) {
+  stroke: var(--color-secondary-blue);
+}
+
+:global(.recharts-line-curve) {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+:global(.recharts-cartesian-grid-horizontal line) {
+  stroke: var(--color-terthiary-blue);
+}

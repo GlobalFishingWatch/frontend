@@ -1,0 +1,8 @@
+.maxHeight {
+  max-height: 300px;
+  overflow: auto;
+}
+
+.text {
+  margin: 0;
+}

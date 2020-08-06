@@ -1,0 +1,52 @@
+.container {
+  display: flex;
+  height: calc(100vh - var(--size-L));
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.content > div:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.infoPanel {
+  padding: var(--space-M) var(--space-S) calc(var(--space-M) + var(--space-S)) var(--space-M);
+}
+
+.infoPanel > div:not(:last-child) {
+  margin-bottom: var(--space-M);
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  font: var(--font-XL)
+}
+
+.dataviewPanel {
+  padding: var(--space-M) var(--space-S) var(--space-M) var(--space-M);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--space-M);
+}
+
+.footer * {
+  flex: 1;
+}
+
+.footer *:not(:first-child) {
+  margin-left: var(--space-XS);
+}
+
+.footer *:not(:last-child) {
+  margin-right: var(--space-XS);
+}

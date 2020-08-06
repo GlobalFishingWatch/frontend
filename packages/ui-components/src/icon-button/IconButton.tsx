@@ -9,7 +9,7 @@ export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'war
 export type IconButtonSize = 'default' | 'small' | 'tiny'
 
 interface IconButtonProps {
-  icon: IconType
+  icon?: IconType
   type?: IconButtonType
   size?: IconButtonSize
   className?: string
@@ -43,7 +43,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) =
         {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
         {...rest}
       >
-        <Icon icon={icon} type={type === 'warning' ? 'warning' : 'default'} />
+        {icon && <Icon icon={icon} type={type === 'warning' ? 'warning' : 'default'} />}
         {children}
       </button>
     </Tooltip>

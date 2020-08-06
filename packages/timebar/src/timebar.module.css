@@ -59,7 +59,6 @@
 }
 
 .timeScale .uiButton {
-  border-top: 0.1rem solid var(--timebar-main-background-color);
   height: 3.5rem;
 }
 

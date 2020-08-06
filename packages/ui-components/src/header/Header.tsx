@@ -76,7 +76,7 @@ const Header: React.FC<HeaderProps> = ({ mini = false, inverted = false }) => {
       <header className="gfw-header">
         <div className="white-bg"></div>
         <a className="app-logo" href="http://globalfishingwatch.org" />
-        <a className="sr-only" href="#main">
+        <a className="screen-reader-only" href="#main">
           Skip navigation links
         </a>
 

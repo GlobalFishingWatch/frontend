@@ -1,24 +1,35 @@
 import React, { Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import cx from 'classnames'
+import { DatasetParams } from '@globalfishingwatch/dataviews-client'
 import AddButton from 'common/AddButton'
 import Field from 'common/Field'
 import Section from 'common/Section'
-import { setMeta, fetchResources } from 'features/dataviews/dataviews.slice'
+import {
+  setMeta,
+  addDataset,
+  setDatasetId,
+  setDatasetEndpoint,
+  setDatasetParams,
+  fetchDataset,
+  fetchResources,
+} from 'features/dataviews/dataviews.slice'
 import { selectResourcesLoaded } from 'features/dataviews/resources.selectors'
+import ListItem from 'common/ListItem'
 import { selectCurrentDataview } from './dataview.selectors'
 import ViewParams from './EditorViewParams'
+import styles from './Dataview.module.css'
 
-const ResolvedDatasetParams = ({ params }: any) => {
-  if (!params) return null
-  return (
-    <Section>
-      {Object.entries(params).map(([fieldkey, value]: [string, unknown]) => (
-        <Field key={fieldkey} fieldkey={fieldkey} value={value as string} />
-      ))}
-    </Section>
-  )
-}
+// const ResolvedDatasetParams = ({ params }: any) => {
+//   if (!params) return null
+//   return (
+//     <Section>
+//       {Object.entries(params).map(([fieldkey, value]: [string, unknown]) => (
+//         <Field key={fieldkey} fieldkey={fieldkey} value={value as string} />
+//       ))}
+//     </Section>
+//   )
+// }
 
 const Dataview = () => {
   const dispatch = useDispatch()
@@ -48,28 +59,160 @@ const Dataview = () => {
       <Section>
         <h2>datasets</h2>
         {currentDataview.datasets &&
-          currentDataview.datasets?.map((dataset) => (
-            <input type="text" key={dataset.id} value={dataset.id} readOnly />
-          ))}
-        <button>load datasets fields</button>
-        <AddButton />
+          currentDataview.datasets?.map((dataset, i) => {
+            return (
+              <Fragment key={i}>
+                <input
+                  type="text"
+                  key="datasetInput"
+                  placeholder="Type your dataset here"
+                  value={dataset.id}
+                  onChange={({ target }) =>
+                    dispatch(
+                      setDatasetId({
+                        editorId: currentDataview.editorId,
+                        dataset: target.value,
+                      })
+                    )
+                  }
+                />
+                {dataset.id.length > 0 && (
+                  <button
+                    onClick={() => {
+                      dispatch(
+                        fetchDataset({ editorId: currentDataview.editorId, datasetId: dataset.id })
+                      )
+                    }}
+                    className={cx('large', {
+                      done: !!dataset.endpoints?.length,
+                      dirty: !loaded,
+                    })}
+                  >
+                    load dataset endpoints
+                  </button>
+                )}
+                {dataset.endpoints && (
+                  <Section>
+                    <h3>endpoints</h3>
+                    <ul>
+                      {dataset.endpoints?.map((endpoint, index) => {
+                        const isSelectedEndpoint = endpoint.id === currentDataview.selectedEndpoint
+                        return (
+                          <Fragment key={index}>
+                            <ListItem
+                              editable={false}
+                              title={endpoint.id || 'default'}
+                              checked={isSelectedEndpoint}
+                              onToggle={(toggle) => {
+                                dispatch(
+                                  setDatasetEndpoint({
+                                    editorId: currentDataview.editorId,
+                                    dataset: dataset.id,
+                                    endpoint: toggle ? endpoint.id : '',
+                                  })
+                                )
+                              }}
+                            />
+                          </Fragment>
+                        )
+                      })}
+                    </ul>
+                  </Section>
+                )}
+              </Fragment>
+            )
+          })}
+        {!currentDataview.datasets?.length && (
+          <AddButton
+            onClick={() => {
+              dispatch(addDataset(currentDataview.editorId))
+            }}
+          />
+        )}
       </Section>
       <Section>
         <h2>defaultDatasetParams</h2>
-        {currentDataview.defaultDatasetsParams?.map(
-          (resolvedDatasetParams: Record<string, unknown>, index: number) => (
-            <ResolvedDatasetParams key={index} params={resolvedDatasetParams} />
-          )
+        {currentDataview.datasets &&
+          currentDataview.datasets?.map((dataset, index) => {
+            const selectedEndpoint = dataset.endpoints?.find(
+              (endpoint) => endpoint.id === currentDataview.selectedEndpoint
+            )
+            if (!selectedEndpoint) return null
+            return (
+              <div className={styles.maxHeight} key={index}>
+                <Section>
+                  <h2>Params</h2>
+                  {selectedEndpoint.params.map((param) => {
+                    const defaultDatasetValue =
+                      currentDataview.datasetsConfig &&
+                      currentDataview.datasetsConfig[index] &&
+                      currentDataview.datasetsConfig[index]['params']
+                        ? ((currentDataview.datasetsConfig[index]['params'] as DatasetParams)[
+                            param.id
+                          ] as string)
+                        : ''
+                    return (
+                      <Field
+                        key={param.id}
+                        fieldkey={param.label}
+                        value={defaultDatasetValue || (param.default as string)}
+                        onValueChange={(value) =>
+                          dispatch(
+                            setDatasetParams({
+                              editorId: currentDataview.editorId,
+                              type: 'params',
+                              params: { [param.id]: value },
+                            })
+                          )
+                        }
+                      />
+                    )
+                  })}
+                  <h2>Query</h2>
+                  {selectedEndpoint.query.map((query) => {
+                    const defaultDatasetQueryValue =
+                      currentDataview.datasetsConfig &&
+                      currentDataview.datasetsConfig[index] &&
+                      currentDataview.datasetsConfig[index]['query']
+                        ? ((currentDataview.datasetsConfig[index]['query'] as DatasetParams)[
+                            query.id
+                          ] as string)
+                        : ''
+                    return (
+                      <Field
+                        key={query.id}
+                        fieldkey={query.label}
+                        value={defaultDatasetQueryValue || (query.default as string)}
+                        onValueChange={(value) =>
+                          dispatch(
+                            setDatasetParams({
+                              editorId: currentDataview.editorId,
+                              type: 'query',
+                              params: { [query.id]: value },
+                            })
+                          )
+                        }
+                      />
+                    )
+                  })}
+                </Section>
+              </div>
+            )
+          })}
+        {currentDataview.selectedEndpoint && (
+          <button
+            onClick={() => {
+              dispatch(fetchResources([currentDataview]))
+            }}
+            className={cx('large', {
+              done: loaded && currentDataview.datasetsConfig?.length,
+              dirty: !loaded,
+            })}
+            // disabled={!loaded || !currentDataview.datasetsConfig?.length}
+          >
+            load endpoints data
+          </button>
         )}
-        <button
-          onClick={() => {
-            dispatch(fetchResources([currentDataview]))
-          }}
-          className={cx('large', { done: loaded, dirty: !loaded })}
-          disabled={!loaded}
-        >
-          load endpoints data
-        </button>
       </Section>
       <Section>
         <h2>defaultView</h2>

@@ -5,5 +5,11 @@
     "watch": [
       "applications/temporalgrid-demo/**/*"
     ]
+  },
+  "amathea": {
+    "cloudbuildTaskId": "amathea-autodeploy-bot",
+    "watch": [
+      "applications/amathea/**/*"
+    ]
   }
 }

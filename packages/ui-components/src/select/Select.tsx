@@ -63,48 +63,52 @@ const Select: React.FC<SelectProps> = (props) => {
   )
   const hasSelectedOptions = selectedOption !== undefined
   return (
-    <div className={cx(styles.container, { [styles.isOpen]: isOpen }, className)}>
+    <div>
       <label {...getLabelProps()}>{label}</label>
-      <div className={styles.placeholderContainer} {...getToggleButtonProps()}>
-        {selectedOption ? selectedOption.label : placeholder}
-      </div>
-      <div className={styles.buttonsContainer}>
-        {onCleanClick !== undefined && hasSelectedOptions && (
-          <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
+      <div
+        className={cx(
+          styles.container,
+          { [styles.isOpen]: isOpen },
+          { [styles.placeholderShown]: !selectedOption },
+          className
         )}
-        <IconButton
-          icon={isOpen ? 'arrow-top' : 'arrow-down'}
-          size="small"
-          {...getToggleButtonProps()}
-        ></IconButton>
-      </div>
-      <ul
-        {...getMenuProps()}
-        className={cx(styles.optionsContainer, {
-          [styles.optionsOpen]: isOpen && options.length,
-        })}
       >
-        {isOpen &&
-          options.length > 0 &&
-          options.map((item, index) => {
-            const highlight = highlightedIndex === index
-            const selected = isItemSelected(selectedOption, item)
-            return (
-              <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
-                <li
-                  className={cx(styles.optionItem, {
-                    [styles.selected]: selected,
-                    [styles.highlight]: highlight,
-                  })}
-                  {...getItemProps({ item, index })}
-                >
-                  {item.label}
-                  {highlight && <Icon icon={selected ? 'close' : 'tick'} />}
-                </li>
-              </Tooltip>
-            )
-          })}
-      </ul>
+        <div {...getToggleButtonProps()} className={styles.placeholderContainer}>
+          {selectedOption ? selectedOption.label : placeholder}
+        </div>
+        <div className={styles.buttonsContainer}>
+          {onCleanClick !== undefined && hasSelectedOptions && (
+            <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
+          )}
+          <IconButton
+            icon={isOpen ? 'arrow-top' : 'arrow-down'}
+            size="small"
+            {...getToggleButtonProps()}
+          ></IconButton>
+        </div>
+        <ul {...getMenuProps()} className={styles.optionsContainer}>
+          {isOpen &&
+            options.length > 0 &&
+            options.map((item, index) => {
+              const highlight = highlightedIndex === index
+              const selected = isItemSelected(selectedOption, item)
+              return (
+                <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
+                  <li
+                    className={cx(styles.optionItem, {
+                      [styles.selected]: selected,
+                      [styles.highlight]: highlight,
+                    })}
+                    {...getItemProps({ item, index })}
+                  >
+                    {item.label}
+                    {highlight && <Icon icon={selected ? 'close' : 'tick'} />}
+                  </li>
+                </Tooltip>
+              )
+            })}
+        </ul>
+      </div>
     </div>
   )
 }

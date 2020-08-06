@@ -12,6 +12,7 @@ import {
   startUpdatingDataview,
   startDeletingDataview,
 } from './dataviews.slice'
+import styles from './Dataviews.module.css'
 
 const Dataviews = () => {
   const dispatch = useDispatch()
@@ -24,29 +25,32 @@ const Dataviews = () => {
         <h2>current dataviews</h2>
         <ul>
           {addedDataviews.map((dataview) => (
-            <ListItem
-              key={dataview.editorId}
-              title={dataview.name}
-              editing={dataview.editing}
-              dirty={dataview.dirty}
-              showActions={dataview.editing}
-              checked
-              onToggle={(toggle) => {
-                dispatch(toggleDataview({ editorId: dataview.editorId, added: toggle }))
-              }}
-              onClick={() => {
-                dispatch(setEditing(dataview.editorId))
-              }}
-              onChange={(value) => {
-                dispatch(setMeta({ editorId: dataview.editorId, field: 'name', value }))
-              }}
-              onSave={() => {
-                dispatch(startUpdatingDataview(dataview))
-              }}
-              onDelete={() => {
-                dispatch(startDeletingDataview(dataview))
-              }}
-            />
+            <div className={styles.dataviewContainer}>
+              <span className={styles.dataviewId}>{dataview.editorId}</span>
+              <ListItem
+                key={dataview.editorId}
+                title={dataview.name}
+                editing={dataview.editing}
+                dirty={dataview.dirty}
+                showActions={dataview.editing}
+                checked
+                onToggle={(toggle) => {
+                  dispatch(toggleDataview({ editorId: dataview.editorId, added: toggle }))
+                }}
+                onClick={() => {
+                  dispatch(setEditing(dataview.editorId))
+                }}
+                onChange={(value) => {
+                  dispatch(setMeta({ editorId: dataview.editorId, field: 'name', value }))
+                }}
+                onSave={() => {
+                  dispatch(startUpdatingDataview(dataview))
+                }}
+                onDelete={() => {
+                  dispatch(startDeletingDataview(dataview))
+                }}
+              />
+            </div>
           ))}
         </ul>
       </Section>

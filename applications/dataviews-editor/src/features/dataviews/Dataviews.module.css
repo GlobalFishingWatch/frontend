@@ -1,0 +1,8 @@
+.dataviewContainer {
+  display: flex;
+  align-items: center;
+}
+
+.dataviewId {
+  margin-right: 5px;
+}

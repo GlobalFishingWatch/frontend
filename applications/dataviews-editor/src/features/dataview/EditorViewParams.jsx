@@ -16,6 +16,7 @@ const Dropdown = () => {
           setDataviewType(event.target.value)
         }}
       >
+        <option value="">Select one option</option>
         {Object.entries(Generators.Type).map(([t, v]) => (
           <option key={v} value={v}>
             {t}
