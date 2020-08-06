@@ -14,7 +14,6 @@
   "scripts": {
     "start": "BROWSER=none react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "browserslist": {
@@ -30,7 +29,6 @@
     ]
   },
   "devDependencies": {
-    "@types/classnames": "^2.2.10",
-    "@types/react-map-gl": "^5.2.4"
+    "@types/classnames": "^2.2.10"
   }
 }

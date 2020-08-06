@@ -1,10 +1,10 @@
 import { createSlice, createSelector, createAsyncThunk } from '@reduxjs/toolkit'
+import { RootState } from 'store'
 import GFWAPI, {
   UserData,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
-import { RootState } from 'store'
 import { AsyncReducerStatus } from 'features/api/api.slice'
 
 interface UserState {

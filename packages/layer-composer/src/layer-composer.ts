@@ -55,6 +55,12 @@ class LayerComposer {
     )
   }
 
+  _getGeneratorMetadata = (layers: GeneratorStyles[]): Dictionary<any> => {
+    return Object.fromEntries(
+      layers.filter((layer) => layer.metadata).map((layer) => [layer.id, layer.metadata])
+    )
+  }
+
   // apply generic config to all generator layers
   _applyGenericStyle = (
     generatorConfig: GeneratorConfig,
@@ -114,13 +120,17 @@ class LayerComposer {
   }
 
   // Latest step in the workflow which compose the output needed for mapbox-gl
-  _getStyleJson(sources = {}, layers = {}): Style {
+  _getStyleJson(sources = {}, layers = {}, metadata = {}): Style {
     return {
       version: this.version,
       glyphs: this.glyphs,
       sprite: this.sprite,
       sources: flatObjectArrays(sources),
       layers: layersDictToArray(layers),
+      metadata: {
+        generatedAt: new Date(),
+        layers: metadata,
+      },
     }
   }
 
@@ -149,6 +159,7 @@ class LayerComposer {
 
     const sourcesStyle = this._getGeneratorSources(layersGenerated)
     const layersStyle = this._getGeneratorLayers(layersGenerated)
+    const metadataStyle = this._getGeneratorMetadata(layersGenerated)
 
     this.latestGenerated = { sourcesStyle, layersStyle }
 
@@ -160,15 +171,15 @@ class LayerComposer {
           // Mutating the reference to keep the layers order
           sourcesStyle[id] = sources
           layersStyle[id] = layers
-          return { style: this._getStyleJson(sourcesStyle, layersStyle), layer }
+          return { style: this._getStyleJson(sourcesStyle, layersStyle, metadataStyle), layer }
         })
         .catch((e) => {
           console.warn(e)
-          return { style: this._getStyleJson(sourcesStyle, layersStyle) }
+          return { style: this._getStyleJson(sourcesStyle, layersStyle, metadataStyle) }
         })
     })
 
-    return { style: this._getStyleJson(sourcesStyle, layersStyle), promises }
+    return { style: this._getStyleJson(sourcesStyle, layersStyle, metadataStyle), promises }
   }
 }
 

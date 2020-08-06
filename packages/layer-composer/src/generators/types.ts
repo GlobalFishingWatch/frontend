@@ -150,9 +150,15 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: Type.HeatmapAnimated
   tileset: string
-  geomType: string
+  tilesAPI?: string
+  geomType?: string
+  datasetStart?: string
+  datasetEnd?: string
   maxZoom?: number
   debug?: boolean
+  debugLabels?: boolean
+  colorRamp?: ColorRamps
+  serverSideFilter?: string
 }
 
 export type AnyGeneratorConfig =

@@ -1,4 +1,11 @@
+
 {
+  "temporalgrid-demo": {
+    "cloudbuildTaskId": "temporalgrid-demo-autodeploy-bot",
+    "watch": [
+      "applications/temporalgrid-demo/**/*"
+    ]
+  },
   "amathea": {
     "cloudbuildTaskId": "amathea-autodeploy-bot",
     "watch": [

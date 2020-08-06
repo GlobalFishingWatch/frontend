@@ -95,6 +95,7 @@ class Playback extends Component {
 
   togglePlay = (force) => {
     const { playing } = this.state
+    const { onTogglePlay } = this.props
 
     const playingNext = force === undefined ? !playing : force
 
@@ -111,6 +112,8 @@ class Playback extends Component {
     this.setState({
       playing: playingNext,
     })
+
+    onTogglePlay(playingNext)
   }
 
   componentWillUnmount() {
@@ -206,6 +209,11 @@ Playback.propTypes = {
   end: PropTypes.string.isRequired,
   absoluteStart: PropTypes.string.isRequired,
   absoluteEnd: PropTypes.string.isRequired,
+  onTogglePlay: PropTypes.func,
+}
+
+Playback.defaultProps = {
+  onTogglePlay: () => {},
 }
 
 export default Playback

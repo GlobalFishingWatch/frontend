@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback, useEffect, useState } from 'react'
-import { ViewportProps } from 'react-map-gl'
 import { MapCoordinates } from 'types'
+import { ViewportProps } from '@globalfishingwatch/react-map-gl'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { selectViewport } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
