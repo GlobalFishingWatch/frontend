@@ -22,13 +22,26 @@ type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
 >
 
+// tilesets: string[]
+//   filters?: string[]
+//   colorRamps?: ColorRamps[]
+//   tilesAPI?: string
+//   combinationMode?: CombinationMode
+//   geomType?: string
+//   tilesetStart?: string
+//   tilesetEnd?: string
+//   maxZoom?: number
+//   debug?: boolean
+//   debugLabels?: boolean
+
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
-  datasetStart: '2012-01-01T00:00:00.000Z',
-  datasetEnd: new Date().toISOString(),
+  filters: [],
+  colorRamps: [HEATMAP_COLOR_RAMPS.PRESENCE],
+  combinationMode: 'none',
   geomType: HEATMAP_GEOM_TYPES.GRIDDED,
-  colorRamp: HEATMAP_COLOR_RAMPS.PRESENCE,
+  tilesetsStart: '2012-01-01T00:00:00.000Z',
+  tilesetsEnd: new Date().toISOString(),
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
-  serverSideFilter: '',
   tilesAPI: API_TILES_URL,
 }
 
@@ -39,23 +52,25 @@ class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
 
   _getStyleSources = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
-    if (!config.start || !config.end || !config.tileset) {
+    if (!config.start || !config.end || !config.tilesets) {
       throw new Error(
         `Heatmap generator must specify start, end and tileset parameters in ${config}`
       )
     }
 
-    const tilesUrl = `${config.tilesAPI}/${config.tileset}/${API_ENDPOINTS.tiles}`
+    const tilesUrl = `${config.tilesAPI}/${config.tilesets.join(',')}/${API_ENDPOINTS.tiles}`
 
     const sources = timeChunks.map((timeChunk: TimeChunk) => {
       const sourceParams = {
         singleFrame: 'false',
         geomType: config.geomType,
-        serverSideFilters: getServerSideFilters(
-          timeChunk.start as string,
-          timeChunk.dataEnd as string,
-          config.serverSideFilter
-        ),
+        'date-range': [timeChunk.start, timeChunk.dataEnd].join(','),
+        serverSideFilters: config.filters
+          .map((filter, i) => {
+            if (!filter || filter === '') return ''
+            return `filters[${i}]=${filter}`
+          })
+          .join('&'),
         delta: getDelta(config.start, config.end, timeChunk.interval).toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: timeChunk.interval,
@@ -76,7 +91,9 @@ class HeatmapAnimatedGenerator {
   }
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
-    const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[config.colorRamp]
+    // TODO
+    const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[config.colorRamps[0]]
+
     const legend = HARDCODED_BREAKS.map((b, i) => [i, originalColorRamp[i]])
     const colorRampValues = flatten(legend)
 
@@ -177,8 +194,8 @@ class HeatmapAnimatedGenerator {
     const timeChunks = memoizeCache[config.id].getActiveTimeChunks(
       config.start,
       config.end,
-      config.datasetStart,
-      config.datasetEnd
+      config.tilesetsStart,
+      config.tilesetsEnd
     )
 
     const finalConfig = {

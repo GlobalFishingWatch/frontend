@@ -149,16 +149,19 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: Type.HeatmapAnimated
-  tileset: string
+  tilesets: string[]
+  filters?: string[]
+  colorRamps?: ColorRamps[]
   tilesAPI?: string
+  combinationMode?: CombinationMode
   geomType?: string
-  datasetStart?: string
-  datasetEnd?: string
+  tilesetStart?: string
+  tilesetEnd?: string
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
-  colorRamp?: ColorRamps
-  serverSideFilter?: string
+  tilesetsStart?: string
+  tilesetsEnd?: string
 }
 
 export type AnyGeneratorConfig =
@@ -216,3 +219,4 @@ export type HeatmapColorRamp = {
 export type HeatmapColorRampColors = {
   [key in string]: string[]
 }
+export type CombinationMode = 'none' | 'compare' | 'bivariate'
