@@ -57,7 +57,7 @@ function App() {
           debug,
           debugLabels,
           geomType,
-          // tilesAPI: 'https://fourwings.api.dev.globalfishingwatch.org/v1'
+          tilesAPI: 'https://fourwings.api.dev.globalfishingwatch.org/v1'
         })
       } else {
         generators.push({
