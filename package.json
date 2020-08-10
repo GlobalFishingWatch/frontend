@@ -27,8 +27,8 @@
     "build": "lerna run build --scope @globalfishingwatch/*",
     "test:prepare": "lerna run prepare --scope @globalfishingwatch/*",
     "changelog": "lerna-changelog",
-    "release": "lerna publish && yarn changelog",
-    "release:retry": "lerna publish from-package --yes",
+    "release": "lerna publish from-git --yes",
+    "release:conventional": "lerna publish from-package --yes --no-push --conventional-commits",
     "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn",
     "clean:packages": "lerna run clean --parallel --scope @globalfishingwatch/*"
   },
