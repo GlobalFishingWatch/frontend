@@ -60,19 +60,21 @@ const Map = (): React.ReactElement => {
 
   return (
     <div className={styles.container}>
-      <InteractiveMap
-        ref={mapRef}
-        width="100%"
-        height="100%"
-        latitude={latitude}
-        longitude={longitude}
-        zoom={zoom}
-        onViewportChange={onViewportChange}
-        mapStyle={style}
-        mapOptions={{
-          customAttribution: '© Copyright Global Fishing Watch 2020',
-        }}
-      />
+      {style && (
+        <InteractiveMap
+          ref={mapRef}
+          width="100%"
+          height="100%"
+          latitude={latitude}
+          longitude={longitude}
+          zoom={zoom}
+          onViewportChange={onViewportChange}
+          mapStyle={style}
+          mapOptions={{
+            customAttribution: '© Copyright Global Fishing Watch 2020',
+          }}
+        />
+      )}
       <div className={styles.mapControls}>
         {bounds && <Miniglobe size={60} bounds={bounds} center={{ latitude, longitude }} />}
         <IconButton
