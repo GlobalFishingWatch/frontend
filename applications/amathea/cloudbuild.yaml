@@ -12,15 +12,17 @@ steps:
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
         '--target',
         'build',
+        '-f',
+        './applications/amathea/Dockerfile',
         '-t',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA',
-        '.',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA',
+        './applications/amathea',
       ]
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'run',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA',
         'npm',
         'test',
       ]
@@ -34,13 +36,15 @@ steps:
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '-f',
+        './applications/amathea/Dockerfile',
         '-t',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA',
-        '.',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA',
+        './applications/amathea',
       ]
   - name: 'gcr.io/cloud-builders/docker'
     args:
-      ['push', 'gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA']
+      ['push', 'gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA']
 
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -53,7 +57,7 @@ steps:
         '--project',
         '$_RUN_PROJECT',
         '--image',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA',
         '--region',
         '$_RUN_REGION',
         '--platform',
@@ -63,6 +67,6 @@ steps:
         '--allow-unauthenticated',
       ]
 images:
-  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA'
+  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA'
 
 timeout: 1800s

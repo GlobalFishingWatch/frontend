@@ -1,6 +1,7 @@
-import React, { useState, Fragment, useCallback } from 'react'
+import React, { useState, Fragment } from 'react'
 import cx from 'classnames'
 import { useDropzone } from 'react-dropzone'
+import { useDispatch } from 'react-redux'
 import Select, {
   SelectOnChange,
   SelectOnRemove,
@@ -13,7 +14,7 @@ import { DATASET_TYPE_OPTIONS } from 'data/data'
 import { ReactComponent as CustomShapeFormats } from 'assets/custom-shape-formats.svg'
 import styles from './NewDataset.module.css'
 import { useDraftDatasetConnect } from './datasets.hook'
-import { DatasetDraftData, DatasetTypes } from './datasets.slice'
+import { DatasetDraftData, DatasetTypes, createDatasetThunk } from './datasets.slice'
 
 interface InfoFieldsProps {
   datasetInfo?: DatasetDraftData
@@ -23,7 +24,7 @@ interface InfoFieldsProps {
 const InfoFields: React.FC<InfoFieldsProps> = (props) => {
   const { datasetInfo, onContinue } = props
 
-  const [datasetName, setDatasetName] = useState<string | undefined>(datasetInfo?.label || '')
+  const [datasetName, setDatasetName] = useState<string | undefined>(datasetInfo?.name || '')
   const [datasetDescription, setDatasetDescription] = useState<string | undefined>(
     datasetInfo?.description || ''
   )
@@ -67,7 +68,7 @@ const InfoFields: React.FC<InfoFieldsProps> = (props) => {
       </div>
       <Button
         onClick={() =>
-          onContinue({ label: datasetName, description: datasetDescription, type: datasetType })
+          onContinue({ name: datasetName, description: datasetDescription, type: datasetType })
         }
         className={styles.saveBtn}
       >
@@ -79,47 +80,20 @@ const InfoFields: React.FC<InfoFieldsProps> = (props) => {
 
 interface DataFieldsProps {
   datasetInfo?: DatasetDraftData
-  onContinue: () => void
+  onContinue: (file: File) => void
 }
 
 const DataFields: React.FC<DataFieldsProps> = (props) => {
   const { datasetInfo, onContinue } = props
-  const [loading, setLoading] = useState<boolean>(false)
-  const { draftDataset, dispatchDraftDatasetData } = useDraftDatasetConnect()
-  const onDrop = useCallback(
-    ([dataset]) => {
-      setLoading(true)
-      const reader = new FileReader()
-      reader.onabort = () => {
-        console.log('file reading was aborted')
-        setLoading(false)
-      }
-      reader.onerror = () => {
-        console.log('file reading has failed')
-        setLoading(false)
-      }
-      reader.onload = () => {
-        const { result } = reader
-        if (result) {
-          dispatchDraftDatasetData({ data: result.toString() })
-        }
-        setLoading(false)
-      }
-      reader.readAsBinaryString(dataset)
-      dispatchDraftDatasetData({ file: dataset.name })
-    },
-    [dispatchDraftDatasetData]
-  )
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+  const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone()
   return (
     <Fragment>
       {datasetInfo?.type === 'context_areas' && (
-        <div className={styles.dropFiles} {...getRootProps()}>
+        <div className={styles.dropFiles} {...(getRootProps() as any)}>
           <CustomShapeFormats />
           <input {...getInputProps()} />
-          {draftDataset?.file ? (
-            <p>File: {draftDataset.file}</p>
+          {acceptedFiles.length ? (
+            <p>File: {acceptedFiles[0].name}</p>
           ) : isDragActive ? (
             <p>Drop the files here ...</p>
           ) : (
@@ -131,8 +105,8 @@ const DataFields: React.FC<DataFieldsProps> = (props) => {
           )}
         </div>
       )}
-      <Button disabled={loading} onClick={onContinue} className={styles.saveBtn}>
-        {loading ? 'LOADING' : 'CONTINUE'}
+      <Button onClick={() => onContinue(acceptedFiles[0])} className={styles.saveBtn}>
+        CONTINUE
       </Button>
     </Fragment>
   )
@@ -191,6 +165,7 @@ const ParameterFields: React.FC<ParameterFieldsProps> = (props) => {
 
 function NewDataset(): React.ReactElement {
   const { hideModal } = useModalConnect()
+  const dispatch = useDispatch()
   const {
     draftDataset,
     draftDatasetStep,
@@ -233,9 +208,10 @@ function NewDataset(): React.ReactElement {
       {draftDatasetStep === 'data' && (
         <DataFields
           datasetInfo={draftDataset}
-          onContinue={() => {
+          onContinue={(file) => {
             hideModal()
             dispatchDraftDatasetStep('info')
+            dispatch(createDatasetThunk({ dataset: draftDataset, file }))
             // dispatchDraftDatasetStep('parameters')
           }}
         />
