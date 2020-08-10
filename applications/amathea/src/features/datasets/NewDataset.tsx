@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useCallback } from 'react'
+import React, { useState, Fragment } from 'react'
 import cx from 'classnames'
 import { useDropzone } from 'react-dropzone'
 import { useDispatch } from 'react-redux'
@@ -85,8 +85,6 @@ interface DataFieldsProps {
 
 const DataFields: React.FC<DataFieldsProps> = (props) => {
   const { datasetInfo, onContinue } = props
-  const [loading, setLoading] = useState<boolean>(false)
-
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone()
   return (
     <Fragment>
@@ -107,12 +105,8 @@ const DataFields: React.FC<DataFieldsProps> = (props) => {
           )}
         </div>
       )}
-      <Button
-        disabled={loading}
-        onClick={() => onContinue(acceptedFiles[0])}
-        className={styles.saveBtn}
-      >
-        {loading ? 'LOADING' : 'CONTINUE'}
+      <Button onClick={() => onContinue(acceptedFiles[0])} className={styles.saveBtn}>
+        CONTINUE
       </Button>
     </Fragment>
   )
