@@ -12,9 +12,11 @@ steps:
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
         '--target',
         'build',
+        '-f',
+        './applications/amathea/Dockerfile',
         '-t',
         'gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA',
-        '.',
+        './applications/amathea',
       ]
   - name: 'gcr.io/cloud-builders/docker'
     args:
@@ -34,9 +36,11 @@ steps:
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '-f',
+        './applications/amathea/Dockerfile',
         '-t',
         'gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA',
-        '.',
+        './applications/amathea',
       ]
   - name: 'gcr.io/cloud-builders/docker'
     args:
