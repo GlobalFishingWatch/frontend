@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import {
   fetchDatasetsThunk,
+  deleteDatasetThunk,
   resetDraftDataset,
   setDraftDatasetStep,
   setDraftDatasetData,
@@ -57,5 +58,11 @@ export const useDatasetsConnect = () => {
   const fetchDatasets = useCallback(() => {
     dispatch(fetchDatasetsThunk())
   }, [dispatch])
-  return { datasetsList, datasetsSharedList, fetchDatasets }
+  const deleteDataset = useCallback(
+    (id: string) => {
+      dispatch(deleteDatasetThunk(id))
+    },
+    [dispatch]
+  )
+  return { datasetsList, datasetsSharedList, fetchDatasets, deleteDataset }
 }
