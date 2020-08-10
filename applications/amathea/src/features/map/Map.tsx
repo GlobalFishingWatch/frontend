@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
-import ReactMapGL from 'react-map-gl'
+import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
 import Miniglobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
@@ -8,7 +8,7 @@ import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import styles from './Map.module.css'
 
-import 'mapbox-gl/dist/mapbox-gl.css'
+import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const Map = (): React.ReactElement => {
   const mapRef = useRef<any>(null)
@@ -60,21 +60,19 @@ const Map = (): React.ReactElement => {
 
   return (
     <div className={styles.container}>
-      {style && (
-        <ReactMapGL
-          ref={mapRef}
-          width="100%"
-          height="100%"
-          latitude={latitude}
-          longitude={longitude}
-          zoom={zoom}
-          onViewportChange={onViewportChange}
-          mapStyle={style}
-          mapOptions={{
-            customAttribution: '© Copyright Global Fishing Watch 2020',
-          }}
-        ></ReactMapGL>
-      )}
+      <InteractiveMap
+        ref={mapRef}
+        width="100%"
+        height="100%"
+        latitude={latitude}
+        longitude={longitude}
+        zoom={zoom}
+        onViewportChange={onViewportChange}
+        mapStyle={style}
+        mapOptions={{
+          customAttribution: '© Copyright Global Fishing Watch 2020',
+        }}
+      />
       <div className={styles.mapControls}>
         {bounds && <Miniglobe size={60} bounds={bounds} center={{ latitude, longitude }} />}
         <IconButton
