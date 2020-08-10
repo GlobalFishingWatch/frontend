@@ -26,7 +26,6 @@
     "start:packages": "lerna run start --parallel --scope @globalfishingwatch/*",
     "build": "lerna run build --scope @globalfishingwatch/*",
     "test:prepare": "lerna run prepare --scope @globalfishingwatch/*",
-    "changelog": "lerna-changelog",
     "release": "lerna publish from-git --yes",
     "release:conventional": "lerna publish from-package --yes --no-push --conventional-commits",
     "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn",
@@ -34,6 +33,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@changesets/cli": "^2.10.0",
     "@lerna/project": "^3.21.0",
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-json": "^4.1.0",
