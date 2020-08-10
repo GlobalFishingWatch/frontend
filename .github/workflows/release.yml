@@ -1,9 +1,9 @@
-name: Release and publish packages
+name: Prepare packages release
 
 on:
   push:
     branches:
-      - master
+      - develop
 
 jobs:
   release:
@@ -25,18 +25,3 @@ jobs:
         uses: changesets/action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  publish-npm:
-    name: Publish to NPM
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: https://registry.npmjs.org/
-      - run: yarn
-      - run: yarn test
-      - run: yarn release:ci
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
