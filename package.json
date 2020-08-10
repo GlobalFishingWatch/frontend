@@ -26,7 +26,7 @@
     "start:packages": "lerna run start --parallel --scope @globalfishingwatch/*",
     "build": "lerna run build --scope @globalfishingwatch/*",
     "test": "lerna run test --scope @globalfishingwatch/*",
-    "test:prepare": "lerna run test --scope @globalfishingwatch/*",
+    "test:prepare": "lerna run prepare --scope @globalfishingwatch/*",
     "release": "lerna publish",
     "release:ci": "lerna publish from-package -y --no-verify-access",
     "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn",
