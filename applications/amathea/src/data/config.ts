@@ -6,3 +6,6 @@ export const DEFAULT_WORKSPACE = {
   end: '2019-12-31T23:59:59.999Z',
   modal: undefined,
 }
+
+// Params to use replace instead of push for router history to make navigation easier
+export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
