@@ -18,6 +18,7 @@ steps:
         '-c',
         './applications/amathea',
       ]
+
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
@@ -26,6 +27,7 @@ steps:
         'npm',
         'test',
       ]
+
   - name: 'gcr.io/kaniko-project/executor:latest'
     args:
       [
@@ -42,8 +44,6 @@ steps:
         '-c',
         './applications/amathea',
       ]
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA']
 
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -65,6 +65,7 @@ steps:
         'BASIC_AUTH=$_BASIC_AUTH',
         '--allow-unauthenticated',
       ]
+
 images:
   - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA'
 
