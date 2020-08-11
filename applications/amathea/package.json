@@ -5,6 +5,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "lint": "eslint -c .eslintrc.js src/**/*.{js,ts,jsx,tsx} --fix",
+    "test:watch": "react-scripts test",
+    "test": "CI=true react-scripts test --passWithNoTests",
     "eject": "react-scripts eject"
   },
   "dependencies": {

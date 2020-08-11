@@ -26,7 +26,7 @@ steps:
         'npm',
         'test',
       ]
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'gcr.io/kaniko-project/executor:latest'
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA',
