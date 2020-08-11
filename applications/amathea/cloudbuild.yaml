@@ -39,6 +39,8 @@ steps:
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
         'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '--target',
+        'production',
         '-f',
         './applications/amathea/Dockerfile',
         '-c',

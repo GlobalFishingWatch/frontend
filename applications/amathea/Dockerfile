@@ -26,7 +26,7 @@ RUN npm run build
 #################################################################################
 # Actual application to run
 #################################################################################
-FROM nginx
+FROM nginx as production
 ARG BASIC_AUTH_USER=gfw
 ARG BASIC_AUTH_PASS=default
 
