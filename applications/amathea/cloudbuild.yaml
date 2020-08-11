@@ -1,22 +1,21 @@
 steps:
   # Push production image to GCR
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'gcr.io/kaniko-project/executor:latest'
     args:
       [
-        'build',
-        '--build-arg',
-        'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
-        '--build-arg',
-        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
-        '--build-arg',
-        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
-        '--target',
-        'build',
-        '-f',
-        './applications/amathea/Dockerfile',
-        '-t',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA',
-        './applications/amathea',
+      '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/amathea:$COMMIT_SHA',
+      '--cache=true',
+      '--build-arg',
+      'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
+      '--build-arg',
+      'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
+      '--build-arg',
+      'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+      '--target',
+      'build',
+      '-f',
+      './applications/amathea/Dockerfile',
+      './applications/amathea',
       ]
   - name: 'gcr.io/cloud-builders/docker'
     args:
