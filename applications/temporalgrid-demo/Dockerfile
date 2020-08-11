@@ -8,18 +8,21 @@ WORKDIR /app
 # Config build args
 
 # Install build dependencies
-COPY . /app
+COPY ./package.json /app
 ENV NODE_ENV=development
 RUN npm install --unsafe-perm
 
 # Build the application assets
 ENV NODE_ENV=production
+COPY ./src /app/src
+COPY ./public /app/public
+COPY ./entrypoint.sh /app/entrypoint.sh
 RUN npm run build
 
 #################################################################################
 # Actual application to run
 #################################################################################
-FROM nginx
+FROM nginx as production
 ARG BASIC_AUTH_USER=gfw
 ARG BASIC_AUTH_PASS=default
 
