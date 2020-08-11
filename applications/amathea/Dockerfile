@@ -9,13 +9,18 @@ WORKDIR /app
 ARG REACT_APP_GOOGLE_TAG_MANAGER_KEY=
 
 # Install build dependencies
-COPY . /app
+COPY ./package.json /app
 ENV NODE_ENV=development
 ENV REACT_APP_GOOGLE_TAG_MANAGER_KEY=${REACT_APP_GOOGLE_TAG_MANAGER_KEY}
 RUN npm install --unsafe-perm
 
 # Build the application assets
 ENV NODE_ENV=production
+COPY ./src /app/src
+COPY ./public /app/public
+COPY ./.eslintignore /app/.eslintignore
+COPY ./entrypoint.sh /app/entrypoint.sh
+COPY ./tsconfig.json /app/tsconfig.json
 RUN npm run build
 
 #################################################################################
