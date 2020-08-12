@@ -5,6 +5,7 @@ export type {
   Endpoint,
   Dataset,
   Dataview,
+  DataviewCreation,
   Workspace,
   WorkspaceDataview,
   Resource,

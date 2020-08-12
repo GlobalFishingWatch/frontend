@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { Workspace } from '@globalfishingwatch/dataviews-client'
+import { selectCurrentWorkspaceDataviews } from 'features/dataviews/dataviews.selectors'
 import {
   fetchWorkspacesThunk,
   deleteWorkspaceThunk,
@@ -49,4 +50,9 @@ export const useWorkspacesConnect = () => {
     deleteWorkspace,
     createWorkspace,
   }
+}
+
+export const useWorkspaceDataviewsConnect = () => {
+  const dataviews = useSelector(selectCurrentWorkspaceDataviews)
+  return { dataviews }
 }

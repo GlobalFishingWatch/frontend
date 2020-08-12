@@ -2,15 +2,18 @@ import React, { useEffect } from 'react'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useLocationConnect } from 'routes/routes.hook'
-import { useWorkspacesConnect } from 'features/workspaces/workspaces.hook'
+import {
+  useWorkspacesConnect,
+  useWorkspaceDataviewsConnect,
+} from 'features/workspaces/workspaces.hook'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import DataviewGraphPanel from 'features/dataviews/DataviewGraphPanel'
-import { TEST_WORSPACE_DATAVIEWS } from 'data/data'
 import ResumeColumn from './ResumeColumn'
 import styles from './WorkspaceEditor.module.css'
 
 export default function WorkspaceEditor(): React.ReactElement | null {
   const { workspace, fetchWorkspaceById } = useWorkspacesConnect()
+  const { dataviews } = useWorkspaceDataviewsConnect()
   const { showModal } = useModalConnect()
   const { payload } = useLocationConnect()
 
@@ -39,11 +42,21 @@ export default function WorkspaceEditor(): React.ReactElement | null {
             <p>{workspace ? workspace.description : 'loading'}</p>
           </div>
         </div>
-        {TEST_WORSPACE_DATAVIEWS.map((dataview) => (
-          <DataviewGraphPanel dataview={dataview} key={dataview.id} />
-        ))}
+        {dataviews?.length > 0 && (
+          <ul>
+            {dataviews.map((dataview) => (
+              <li>
+                <DataviewGraphPanel
+                  dataview={dataview}
+                  graphConfig={{ unit: 'm', color: 'red' }}
+                  key={dataview.id}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
         <div className={styles.footer}>
-          {TEST_WORSPACE_DATAVIEWS.length >= 2 && (
+          {dataviews.length >= 2 && (
             <Button type="secondary" tooltip="Coming soon" tooltipPlacement="top">
               Create Analysis
             </Button>

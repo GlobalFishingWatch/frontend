@@ -1,18 +1,18 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { selectAll, selectById } from 'features/areas-of-interest/areas-of-interest.slice'
+import { selectAllAOI, selectAOIById } from 'features/areas-of-interest/areas-of-interest.slice'
 import { selectCurrentWorkspace } from 'features/workspaces/workspaces.slice'
 
 export const getCurrentAOI = createSelector(
   [(state) => state, selectCurrentWorkspace],
   (state, currentWorkspace) => {
     if (!currentWorkspace) return
-    return selectById(state, currentWorkspace.aoiId)
+    return selectAOIById(state, currentWorkspace.aoiId)
   }
 )
 
 export const getAOIGeneratorsConfig = createSelector(
-  [selectAll, selectCurrentWorkspace],
+  [selectAllAOI, selectCurrentWorkspace],
   (aoiList, currentWorkspace) => {
     if (!aoiList) return
     return aoiList

@@ -1,34 +1,45 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Select, { SelectOnChange } from '@globalfishingwatch/ui-components/dist/select'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { DATASET_SOURCE_OPTIONS } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
+import { updateWorkspaceThunk } from 'features/workspaces/workspaces.slice'
+import { useWorkspacesConnect } from 'features/workspaces/workspaces.hook'
 import styles from './NewDataview.module.css'
-import {
-  setDraftDataview,
-  selectDrafDataviewSource,
-  selectDrafDataviewDataset,
-} from './dataviews.slice'
 import { selectDatasetOptionsBySource } from './dataviews.selectors'
+import { useDataviewsConnect, useDraftDataviewConnect } from './dataviews.hook'
+import { DataviewDraftDataset } from './dataviews.slice'
 
 function NewDataview(): React.ReactElement {
+  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
   const { hideModal } = useModalConnect()
-  const selectedSource = useSelector(selectDrafDataviewSource)
-  const selectedDataset = useSelector(selectDrafDataviewDataset)
+  const { workspace } = useWorkspacesConnect()
+  const { draftDataview, setDraftDataview } = useDraftDataviewConnect()
+  const { createDataview } = useDataviewsConnect()
+  const { source, dataset } = draftDataview || {}
   const datasetsOptions = useSelector(selectDatasetOptionsBySource)
   const onSourceSelect: SelectOnChange = (option) => {
-    dispatch(setDraftDataview({ source: option }))
+    setDraftDataview({ source: option })
   }
   const onSourceClean = () => {
-    dispatch(setDraftDataview({ source: undefined }))
+    setDraftDataview({ source: undefined })
   }
-  const onDatasetSelect: SelectOnChange = (option) => {
-    dispatch(setDraftDataview({ dataset: option }))
+  const onDatasetSelect = (option: DataviewDraftDataset) => {
+    setDraftDataview({ dataset: option })
   }
   const onDatasetClean = () => {
-    dispatch(setDraftDataview({ dataset: undefined }))
+    setDraftDataview({ dataset: undefined })
+  }
+  const onCreateClick = async () => {
+    setLoading(true)
+    const dataview = await createDataview(draftDataview)
+    await dispatch(
+      updateWorkspaceThunk({ id: workspace?.id, dataviews: [{ id: dataview.id }] as any })
+    )
+    setLoading(false)
+    hideModal()
   }
   return (
     <div className={styles.container}>
@@ -36,7 +47,7 @@ function NewDataview(): React.ReactElement {
       <Select
         label="Sources"
         options={DATASET_SOURCE_OPTIONS}
-        selectedOption={selectedSource}
+        selectedOption={source}
         className={styles.input}
         onSelect={onSourceSelect}
         onRemove={onSourceClean}
@@ -45,15 +56,15 @@ function NewDataview(): React.ReactElement {
       <Select
         label="Datasets"
         options={datasetsOptions}
-        selectedOption={selectedDataset}
+        selectedOption={dataset}
         className={styles.input}
-        onSelect={onDatasetSelect}
+        onSelect={onDatasetSelect as SelectOnChange}
         onRemove={onDatasetClean}
         onCleanClick={onDatasetClean}
       ></Select>
 
-      <Button onClick={hideModal} className={styles.saveBtn}>
-        ADD NEW DATAVIEW
+      <Button onClick={onCreateClick} className={styles.saveBtn}>
+        {loading ? 'LOADING' : 'ADD NEW DATAVIEW'}
       </Button>
     </div>
   )

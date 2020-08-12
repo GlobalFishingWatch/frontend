@@ -21,8 +21,9 @@ export const createDatasetThunk = createAsyncThunk(
       await fetch(url, { method: 'PUT', body: file })
       const datasetWithFilePath = {
         ...dataset,
-        id: kebabCase(dataset.name),
+        id: `public-${kebabCase(dataset.name)}`,
         type: 'user-context-layer:v1',
+        source: 'gfw',
         configuration: {
           filePath: path,
         },
@@ -94,9 +95,10 @@ const { slice: datasetsSlice, entityAdapter } = createAsyncSlice<DatasetsState, 
 
 export const { resetDraftDataset, setDraftDatasetStep, setDraftDatasetData } = datasetsSlice.actions
 
-export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(
-  (state) => state.datasets
-)
+export const {
+  selectAll: selectAllDatasets,
+  selectById: selectDatasetById,
+} = entityAdapter.getSelectors<RootState>((state) => state.datasets)
 
 export const selectDraftDataset = (state: RootState) => state.datasets.draft
 export const selectDatasetStatus = (state: RootState) => state.datasets.status

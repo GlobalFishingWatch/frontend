@@ -7,7 +7,7 @@ import {
   resetDraftDataset,
   setDraftDatasetStep,
   setDraftDatasetData,
-  selectAll,
+  selectAllDatasets,
   selectDraftDatasetData,
   selectDraftDatasetStep,
   DatasetDraftSteps,
@@ -55,7 +55,7 @@ export const useDraftDatasetConnect = () => {
 export const useDatasetsConnect = () => {
   const dispatch = useDispatch()
   const datasetStatus = useSelector(selectDatasetStatus)
-  const datasetsList = useSelector(selectAll)
+  const datasetsList = useSelector(selectAllDatasets)
   const datasetsSharedList = useSelector(selectShared)
   const fetchDatasets = useCallback(() => {
     dispatch(fetchDatasetsThunk())

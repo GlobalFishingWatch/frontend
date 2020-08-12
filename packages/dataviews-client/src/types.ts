@@ -46,8 +46,15 @@ export interface DatasetParamsConfig {
   query: DatasetParams
 }
 
+export interface DataviewCreation {
+  name: string
+  description: string
+  datasets: string[]
+  defaultView?: ViewParams
+}
+
 export interface Dataview {
-  id: number | string
+  id: number
   name: string
   description: string
   createdAt?: string
@@ -56,7 +63,8 @@ export interface Dataview {
   defaultView?: ViewParams
   datasetsParams?: DatasetParams[]
   datasetsConfig?: DatasetParams[]
-  datasets?: Dataset[] // foreign
+  datasets?: Dataset[]
+  datasetsId?: number[]
 }
 
 export interface WorkspaceDataview {
@@ -76,6 +84,8 @@ export interface Workspace {
   id: number
   description: string
   label: string
+  dataviews: number[] | Dataview[]
+  dataviewsId: number[]
   workspaceDataviews: WorkspaceDataview[]
   aoiId: number
   aoi?: number | AOI

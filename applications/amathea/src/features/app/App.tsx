@@ -12,6 +12,7 @@ import { isWorkspaceEditorPage } from 'routes/routes.selectors'
 import { toggleMenu, isMenuOpen, isSidebarOpen, toggleSidebar } from './app.slice'
 import styles from './App.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
+import { useDataviewsConnect } from 'features/dataviews/dataviews.hook'
 
 const Map = lazy(() => import('features/map/Map'))
 const Timebar = lazy(() => import('features/timebar/Timebar'))
@@ -47,10 +48,12 @@ function App(): React.ReactElement {
   const { logged, status } = useUserConnect()
   const { fetchAOI } = useAOIConnect()
   const { fetchDatasets } = useDatasetsConnect()
+  const { fetchDataviews } = useDataviewsConnect()
 
   useEffect(() => {
     fetchAOI()
     fetchDatasets()
+    fetchDataviews()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
