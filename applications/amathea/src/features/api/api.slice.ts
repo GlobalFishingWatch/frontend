@@ -33,9 +33,15 @@ export const createAsyncSlice = <T, U>({
   initialState?: T
   reducers?: ValidateSliceCaseReducers<T, SliceCaseReducers<T>>
   extraReducers?: (builder: ActionReducerMapBuilder<T>) => void
-  thunks?: { fetchThunk?: any; fetchByIdThunk?: any; createThunk?: any; deleteThunk?: any }
+  thunks?: {
+    fetchThunk?: any
+    fetchByIdThunk?: any
+    createThunk?: any
+    updateThunk?: any
+    deleteThunk?: any
+  }
 }) => {
-  const { fetchThunk, fetchByIdThunk, createThunk, deleteThunk } = thunks
+  const { fetchThunk, fetchByIdThunk, createThunk, updateThunk, deleteThunk } = thunks
   const entityAdapter = createEntityAdapter<U>()
   const slice = createSlice({
     name,
@@ -84,7 +90,20 @@ export const createAsyncSlice = <T, U>({
         })
         builder.addCase(createThunk.rejected, (state: any, action) => {
           state.status = 'error'
-          state.error = `Error adding workspace ${action.payload}`
+          state.error = `Error adding resource ${action.payload}`
+        })
+      }
+      if (updateThunk) {
+        builder.addCase(updateThunk.pending, (state: any) => {
+          state.status = 'loading'
+        })
+        builder.addCase(updateThunk.fulfilled, (state: any, action) => {
+          state.status = 'finished'
+          entityAdapter.upsertOne(state, action.payload)
+        })
+        builder.addCase(updateThunk.rejected, (state: any, action) => {
+          state.status = 'error'
+          state.error = `Error updating resource ${action.payload}`
         })
       }
       if (deleteThunk) {
@@ -97,7 +116,7 @@ export const createAsyncSlice = <T, U>({
         })
         builder.addCase(deleteThunk.rejected, (state: any, action) => {
           state.status = 'error'
-          state.error = `Error removing workspace ${action.payload}`
+          state.error = `Error removing resource ${action.payload}`
         })
       }
       if (extraReducers) {
