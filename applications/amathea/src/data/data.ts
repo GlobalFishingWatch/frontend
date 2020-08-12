@@ -13,6 +13,11 @@ export const MPAS = [
   { id: 'mpa5', label: 'Marine Protected Area 5' },
 ]
 
+export const DATASET_SOURCE_OPTIONS = [
+  { id: 'gfw', label: 'Global Fishing Watch' },
+  { id: 'personal', label: 'Personal datasets' },
+]
+
 export const DATASET_TYPE_OPTIONS = [
   { id: 'context_areas', label: 'Static Context Areas' },
   { id: 'tracks', label: 'Spatiotemporal Tracks (Coming soon)' },
@@ -28,7 +33,7 @@ export const TEST_WORSPACE_DATAVIEWS: DataviewGraphConfig[] = [
   {
     id: 'dataview-1',
     name: 'Sea Surface Temperature',
-    datasets: [{ id: '', type: '', name: '', description: '' }],
+    datasets: [{ id: '', type: '', name: '', description: '', ownerId: 45 }],
     description:
       "Sea surface temperature (SST) is the water temperature close to the ocean's surface.",
     unit: 'ºC',
@@ -37,7 +42,7 @@ export const TEST_WORSPACE_DATAVIEWS: DataviewGraphConfig[] = [
   {
     id: 'dataview-2',
     name: 'Salinity',
-    datasets: [{ id: '', type: '', name: '', description: '' }],
+    datasets: [{ id: '', type: '', name: '', description: '', ownerId: 45 }],
     description:
       'Ocean salinity is generally defined as the salt concentration (e.g., Sodium and Chlorure) in sea water. It is measured in unit of PSU (Practical Salinity Unit), which is a unit based on the properties of sea water conductivity. It is equivalent to per thousand or (o/00) or to g/kg.',
     unit: 'PSU',

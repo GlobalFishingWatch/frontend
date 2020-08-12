@@ -1,56 +1,60 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
-import Select, {
-  SelectOption,
-  SelectOnChange,
-  SelectOnRemove,
-} from '@globalfishingwatch/ui-components/dist/select'
-import { selectDatasetSources } from 'features/datasets/datasets.selectors'
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import Select, { SelectOnChange } from '@globalfishingwatch/ui-components/dist/select'
+import Button from '@globalfishingwatch/ui-components/dist/button'
+import { DATASET_SOURCE_OPTIONS } from 'data/data'
+import { useModalConnect } from 'features/modal/modal.hooks'
 import styles from './NewDataview.module.css'
+import {
+  setDraftDataview,
+  selectDrafDataviewSource,
+  selectDrafDataviewDataset,
+} from './dataviews.slice'
+import { selectDatasetOptionsBySource } from './dataviews.selectors'
 
 function NewDataview(): React.ReactElement {
-  const [selectedSource, setSelectedSource] = useState<SelectOption | undefined>()
-  const [selectedDataset, setSelectedDataset] = useState<SelectOption | undefined>()
-  const datasetsOptions = useSelector(selectDatasetSources)
+  const dispatch = useDispatch()
+  const { hideModal } = useModalConnect()
+  const selectedSource = useSelector(selectDrafDataviewSource)
+  const selectedDataset = useSelector(selectDrafDataviewDataset)
+  const datasetsOptions = useSelector(selectDatasetOptionsBySource)
   const onSourceSelect: SelectOnChange = (option) => {
-    setSelectedSource(option)
+    dispatch(setDraftDataview({ source: option }))
   }
-  const onSourceClean: SelectOnRemove = () => {
-    setSelectedSource(undefined)
-  }
-  const onSourceRemove: SelectOnChange = () => {
-    setSelectedSource(undefined)
+  const onSourceClean = () => {
+    dispatch(setDraftDataview({ source: undefined }))
   }
   const onDatasetSelect: SelectOnChange = (option) => {
-    setSelectedDataset(option)
+    dispatch(setDraftDataview({ dataset: option }))
   }
-  const onDatasetClean: SelectOnRemove = () => {
-    setSelectedDataset(undefined)
-  }
-  const onDatasetRemove: SelectOnChange = () => {
-    setSelectedDataset(undefined)
+  const onDatasetClean = () => {
+    dispatch(setDraftDataview({ dataset: undefined }))
   }
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">New Dataview</h1>
       <Select
         label="Sources"
-        options={[{ id: 'gfw', label: 'Global Fishing Watch' }]}
+        options={DATASET_SOURCE_OPTIONS}
         selectedOption={selectedSource}
         className={styles.input}
         onSelect={onSourceSelect}
-        onRemove={onSourceRemove}
+        onRemove={onSourceClean}
         onCleanClick={onSourceClean}
       ></Select>
       <Select
         label="Datasets"
-        options={selectedSource?.id === 'gfw' ? datasetsOptions : []}
+        options={datasetsOptions}
         selectedOption={selectedDataset}
         className={styles.input}
         onSelect={onDatasetSelect}
-        onRemove={onDatasetRemove}
+        onRemove={onDatasetClean}
         onCleanClick={onDatasetClean}
       ></Select>
+
+      <Button onClick={hideModal} className={styles.saveBtn}>
+        ADD NEW DATAVIEW
+      </Button>
     </div>
   )
 }

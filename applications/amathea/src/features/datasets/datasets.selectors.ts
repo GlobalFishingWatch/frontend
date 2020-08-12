@@ -6,7 +6,3 @@ export const selectShared = createSelector([selectAll, getUserId], (workspaces, 
   // TODO: make this real when editors in workspaces API
   workspaces.filter((w: any) => w.editors?.includes(userId))
 )
-
-export const selectDatasetSources = createSelector([selectAll], (datasets) =>
-  datasets.map((dataset) => ({ id: dataset.id, label: dataset.description }))
-)

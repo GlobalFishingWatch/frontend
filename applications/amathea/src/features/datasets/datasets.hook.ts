@@ -12,6 +12,7 @@ import {
   selectDraftDatasetStep,
   DatasetDraftSteps,
   DatasetDraftData,
+  selectDatasetStatus,
 } from './datasets.slice'
 import { selectShared } from './datasets.selectors'
 
@@ -53,6 +54,7 @@ export const useDraftDatasetConnect = () => {
 
 export const useDatasetsConnect = () => {
   const dispatch = useDispatch()
+  const datasetStatus = useSelector(selectDatasetStatus)
   const datasetsList = useSelector(selectAll)
   const datasetsSharedList = useSelector(selectShared)
   const fetchDatasets = useCallback(() => {
@@ -64,5 +66,5 @@ export const useDatasetsConnect = () => {
     },
     [dispatch]
   )
-  return { datasetsList, datasetsSharedList, fetchDatasets, deleteDataset }
+  return { datasetStatus, datasetsList, datasetsSharedList, fetchDatasets, deleteDataset }
 }

@@ -26,6 +26,7 @@ export interface Dataset {
   type: string
   name: string
   description: string
+  ownerId: number
   endpoints?: Endpoint[]
 }
 

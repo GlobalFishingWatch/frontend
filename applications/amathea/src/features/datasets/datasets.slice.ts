@@ -99,6 +99,7 @@ export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(
 )
 
 export const selectDraftDataset = (state: RootState) => state.datasets.draft
+export const selectDatasetStatus = (state: RootState) => state.datasets.status
 
 export const selectDraftDatasetStep = createSelector([selectDraftDataset], ({ step }) => step)
 export const selectDraftDatasetData = createSelector([selectDraftDataset], ({ data }) => data)

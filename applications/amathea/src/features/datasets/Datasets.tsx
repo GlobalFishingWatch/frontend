@@ -7,7 +7,7 @@ import { useDatasetsConnect } from './datasets.hook'
 
 function Datasets(): React.ReactElement {
   const { showModal } = useModalConnect()
-  const { datasetsList, datasetsSharedList, deleteDataset } = useDatasetsConnect()
+  const { datasetStatus, datasetsList, datasetsSharedList, deleteDataset } = useDatasetsConnect()
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">Datasets</h1>
@@ -21,6 +21,7 @@ function Datasets(): React.ReactElement {
             icon="delete"
             type="warning"
             tooltip="Delete Dataset"
+            disabled={datasetStatus === 'loading'}
             onClick={() => deleteDataset(dataset.id)}
           />
         </div>
