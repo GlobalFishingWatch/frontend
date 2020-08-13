@@ -89,7 +89,7 @@ export interface Workspace {
   dataviewsId: number[]
   workspaceDataviews: WorkspaceDataview[]
   aoiId: number
-  aoi?: number | AOI
+  aoi?: AOI
   zoom: number
   latitude: number
   longitude: number

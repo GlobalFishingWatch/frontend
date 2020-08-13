@@ -32,7 +32,7 @@ function NewWorkspace(): React.ReactElement {
   const onSaveClick = useCallback(() => {
     if (workspaceLabel && workspaceDescription && selectedOption) {
       const workspace = {
-        aoi: selectedOption.id as number,
+        aoiId: selectedOption.id as number,
         label: workspaceLabel,
         description: workspaceDescription,
       }

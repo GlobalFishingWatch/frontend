@@ -15,7 +15,7 @@ export const fetchWorkspaceByIdThunk = createAsyncThunk(
   'workspace/fetchById',
   async (id: number, { rejectWithValue }) => {
     try {
-      const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}?include=dataview`)
+      const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}?include=dataview,aoi`)
       // REMODE THESE MOCKED VALUES AND RETURN FROM API
       if (!workspace.dataviewsId?.length) {
         workspace.dataviewsId = [43, 44, 45, 46, 47, 48, 49, 50]
@@ -33,7 +33,9 @@ export const createWorkspaceThunk = createAsyncThunk(
     try {
       const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces`, {
         method: 'POST',
-        body: workspaceData as BodyInit,
+        // Hack to support aoi and aoi living together for now
+        // Needs to be addressed at API level first
+        body: { ...workspaceData, aoi: workspaceData.aoiId } as any,
       })
       return workspace
     } catch (e) {
