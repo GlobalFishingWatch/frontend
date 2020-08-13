@@ -23,9 +23,9 @@ export const DATASET_SOURCE_OPTIONS = [
 ]
 
 export const DATASET_TYPE_OPTIONS = [
-  { id: 'context_areas', label: 'Static Context Areas' },
-  { id: 'tracks', label: 'Spatiotemporal Tracks (Coming soon)' },
-  { id: '4wings', label: 'Spatiotemporal Grid (Coming soon)' },
+  { id: 'user-context-layer:v1', label: 'Static Context Areas' },
+  { id: 'user-tracks:v1', label: 'Spatiotemporal Tracks (Coming soon)' },
+  { id: '4wings:v1', label: 'Spatiotemporal Grid (Coming soon)' },
 ]
 
 export interface DataviewGraphConfig {

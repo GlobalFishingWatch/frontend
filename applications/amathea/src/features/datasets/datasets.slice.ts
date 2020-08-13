@@ -23,7 +23,6 @@ export const createDatasetThunk = createAsyncThunk(
       const datasetWithFilePath = {
         ...dataset,
         id: kebabCase(dataset.name),
-        type: 'user-context-layer:v1',
         source: DATASET_SOURCE_IDS.user,
         configuration: {
           filePath: path,
@@ -54,7 +53,7 @@ export const deleteDatasetThunk = createAsyncThunk(
   }
 )
 
-export type DatasetTypes = 'context_areas' | 'track' | '4wings' | undefined
+export type DatasetTypes = 'user-context-layer:v1' | 'user-tracks:v1' | '4wings:v1' | undefined
 export type DatasetDraftSteps = 'info' | 'data' | 'parameters'
 export type DatasetDraftData = Partial<Dataset> & { type?: DatasetTypes }
 

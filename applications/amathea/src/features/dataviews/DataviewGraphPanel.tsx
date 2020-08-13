@@ -52,7 +52,9 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = (props) => {
         <div className={styles.header}>
           <p className={styles.title}>
             {dataview.name}
-            <span className={styles.unit}>{graphConfig.unit && ` (${graphConfig.unit})`}</span>
+            {dataset?.type !== 'user-context-layer:v1' && (
+              <span className={styles.unit}>{graphConfig.unit && ` (${graphConfig.unit})`}</span>
+            )}
           </p>
           <IconButton icon="info" tooltip={dataview.description} />
           <IconButton icon="edit" tooltip="Edit dataview" onClick={onEditClick} />

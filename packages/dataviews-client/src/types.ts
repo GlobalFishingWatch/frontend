@@ -21,9 +21,19 @@ export interface Endpoint {
   downloadable: boolean
 }
 
+export type DatasetTypes =
+  | 'carriers-tracks:v1'
+  | 'carriers-vessels:v1'
+  | 'carriers-events:v1'
+  | 'carriers-ports:v1'
+  | '4wings:v1'
+  | 'user-tracks:v1'
+  | 'user-context-layer:v1'
+  | 'data-download:v1'
+
 export interface Dataset {
   id: string
-  type: string
+  type: DatasetTypes
   name: string
   source: string
   description: string

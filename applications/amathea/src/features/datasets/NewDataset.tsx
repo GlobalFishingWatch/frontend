@@ -70,9 +70,15 @@ const InfoFields: React.FC<InfoFieldsProps> = (props) => {
         onClick={() =>
           onContinue({ name: datasetName, description: datasetDescription, type: datasetType })
         }
+        disabled={
+          !datasetName ||
+          !datasetDescription ||
+          !datasetType ||
+          datasetType !== 'user-context-layer:v1'
+        }
         className={styles.saveBtn}
       >
-        CONTINUE
+        {!datasetType || datasetType === 'user-context-layer:v1' ? 'CONTINUE' : 'COMING SOON'}
       </Button>
     </Fragment>
   )
@@ -88,7 +94,7 @@ const DataFields: React.FC<DataFieldsProps> = (props) => {
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone()
   return (
     <Fragment>
-      {datasetInfo?.type === 'context_areas' && (
+      {datasetInfo?.type === 'user-context-layer:v1' && (
         <div className={styles.dropFiles} {...(getRootProps() as any)}>
           <CustomShapeFormats />
           <input {...getInputProps()} />
@@ -139,7 +145,7 @@ const ParameterFields: React.FC<ParameterFieldsProps> = (props) => {
   }
   return (
     <Fragment>
-      {datasetInfo?.type === 'context_areas' && (
+      {datasetInfo?.type === 'user-context-layer:v1' && (
         <div className={styles.horizontalContainer}>
           <div className={styles.verticalContainer}>
             <Select
