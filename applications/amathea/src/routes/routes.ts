@@ -100,15 +100,17 @@ export const routerQueryMiddleware: Middleware = ({ getState }: { getState: () =
         ...newAction.query,
       }
     }
-    const { query } = newAction
-    const redirect = Object.keys(query)
-      .filter((k) => query[k as keyof QueryParams])
-      .some((key) => REPLACE_URL_PARAMS.includes(key))
-    if (redirect === true) {
-      newAction.meta = {
-        location: {
-          kind: 'redirect',
-        },
+    const { query } = action
+    if (query) {
+      const redirect = Object.keys(prevQuery)
+        .filter((k) => query[k as keyof QueryParams])
+        .some((key) => REPLACE_URL_PARAMS.includes(key))
+      if (redirect === true) {
+        newAction.meta = {
+          location: {
+            kind: 'redirect',
+          },
+        }
       }
     }
     next(newAction)
