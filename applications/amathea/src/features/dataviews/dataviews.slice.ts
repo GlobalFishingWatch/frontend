@@ -37,6 +37,22 @@ export const createDataviewThunk = createAsyncThunk(
   }
 )
 
+export const updateDataviewThunk = createAsyncThunk(
+  'dataviews/update',
+  async (draftDataview: DataviewDraft) => {
+    const updatedDataview = await GFWAPI.fetch<Dataview>(`/v1/dataviews/${draftDataview.id}`, {
+      method: 'PATCH',
+      body: draftDataview as any,
+    })
+    return updatedDataview
+  },
+  {
+    condition: (draftDataview) => {
+      if (!draftDataview || !draftDataview.id) return false
+    },
+  }
+)
+
 export const deleteDataviewThunk = createAsyncThunk(
   'dataviews/delete',
   async (id: number, { rejectWithValue }) => {
@@ -54,13 +70,14 @@ export const deleteDataviewThunk = createAsyncThunk(
 export type DataviewDraftDataset = SelectOption & { type: string; description: string }
 
 export type DataviewDraft = {
+  id?: number // used when needs update
   source?: SelectOption
   dataset: DataviewDraftDataset
   color?: string
 }
 
 export interface DataviewsState extends AsyncReducer<Dataview> {
-  draft: DataviewDraft
+  draft?: DataviewDraft
 }
 
 const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState, Dataview>({
@@ -69,15 +86,19 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState
     setDraftDataview: (state, action: PayloadAction<DataviewDraft>) => {
       state.draft = { ...state.draft, ...action.payload }
     },
+    resetDraftDataview: (state, action: PayloadAction<undefined>) => {
+      state.draft = action.payload
+    },
   },
   thunks: {
     fetchThunk: fetchDataviewsThunk,
     createThunk: createDataviewThunk,
+    updateThunk: updateDataviewThunk,
     deleteThunk: deleteDataviewThunk,
   },
 })
 
-export const { setDraftDataview } = dataviewsSlice.actions
+export const { setDraftDataview, resetDraftDataview } = dataviewsSlice.actions
 
 export const {
   selectAll: selectAllDataviews,

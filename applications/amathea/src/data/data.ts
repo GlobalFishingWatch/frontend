@@ -11,9 +11,15 @@ export const MPAS = [
   { id: 'mpa5', label: 'Marine Protected Area 5' },
 ]
 
+export type DatasetSources = 'gfw' | 'user'
+export const DATASET_SOURCE_IDS = {
+  gfw: 'gfw',
+  user: 'user',
+}
+
 export const DATASET_SOURCE_OPTIONS = [
-  { id: 'gfw', label: 'Global Fishing Watch' },
-  { id: 'personal', label: 'Personal datasets' },
+  { id: DATASET_SOURCE_IDS.gfw, label: 'Global Fishing Watch' },
+  { id: DATASET_SOURCE_IDS.user, label: 'Your datasets' },
 ]
 
 export const DATASET_TYPE_OPTIONS = [

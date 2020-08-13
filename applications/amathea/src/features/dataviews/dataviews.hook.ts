@@ -8,7 +8,9 @@ import {
   deleteDataviewThunk,
   DataviewDraft,
   setDraftDataview as setDraftDataviewAction,
+  resetDraftDataview as resetDraftDataviewAction,
   selectDraftDataview,
+  updateDataviewThunk,
 } from './dataviews.slice'
 
 export const useDraftDataviewConnect = () => {
@@ -20,7 +22,10 @@ export const useDraftDataviewConnect = () => {
     },
     [dispatch]
   )
-  return { draftDataview, setDraftDataview }
+  const resetDraftDataview = useCallback(() => {
+    dispatch(resetDraftDataviewAction(undefined))
+  }, [dispatch])
+  return { draftDataview, setDraftDataview, resetDraftDataview }
 }
 
 export const useDataviewsConnect = () => {
@@ -36,11 +41,18 @@ export const useDataviewsConnect = () => {
     },
     [dispatch]
   )
+  const updateDataview = useCallback(
+    async (dataview: DataviewDraft): Promise<Dataview> => {
+      const { payload }: any = await dispatch(updateDataviewThunk(dataview))
+      return payload
+    },
+    [dispatch]
+  )
   const deleteDataview = useCallback(
     (id: number) => {
       dispatch(deleteDataviewThunk(id))
     },
     [dispatch]
   )
-  return { dataviewsList, fetchDataviews, createDataview, deleteDataview }
+  return { dataviewsList, fetchDataviews, createDataview, updateDataview, deleteDataview }
 }

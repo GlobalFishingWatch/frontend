@@ -4,6 +4,7 @@ import kebabCase from 'lodash/kebabCase'
 import GFWAPI, { UploadResponse } from '@globalfishingwatch/api-client'
 import { Dataset } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice, asyncInitialState } from 'features/api/api.slice'
+import { DATASET_SOURCE_IDS } from 'data/data'
 
 export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () => {
   const data = await GFWAPI.fetch<Dataset[]>('/v1/datasets?cache=false')
@@ -21,9 +22,9 @@ export const createDatasetThunk = createAsyncThunk(
       await fetch(url, { method: 'PUT', body: file })
       const datasetWithFilePath = {
         ...dataset,
-        id: `public-${kebabCase(dataset.name)}`,
+        id: kebabCase(dataset.name),
         type: 'user-context-layer:v1',
-        source: 'gfw',
+        source: DATASET_SOURCE_IDS.user,
         configuration: {
           filePath: path,
         },
@@ -95,14 +96,14 @@ const { slice: datasetsSlice, entityAdapter } = createAsyncSlice<DatasetsState, 
 
 export const { resetDraftDataset, setDraftDatasetStep, setDraftDatasetData } = datasetsSlice.actions
 
-export const {
-  selectAll: selectAllDatasets,
-  selectById: selectDatasetById,
-} = entityAdapter.getSelectors<RootState>((state) => state.datasets)
+export const { selectAll: selectAllDatasets, selectById } = entityAdapter.getSelectors<RootState>(
+  (state) => state.datasets
+)
+export const selectDatasetById = (id: string) =>
+  createSelector([(state: RootState) => state], (state) => selectById(state, id))
 
 export const selectDraftDataset = (state: RootState) => state.datasets.draft
 export const selectDatasetStatus = (state: RootState) => state.datasets.status
-
 export const selectDraftDatasetStep = createSelector([selectDraftDataset], ({ step }) => step)
 export const selectDraftDatasetData = createSelector([selectDraftDataset], ({ data }) => data)
 
