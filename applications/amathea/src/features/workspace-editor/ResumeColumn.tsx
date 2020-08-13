@@ -4,6 +4,7 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import DataviewGraphMini from 'features/dataviews/DataviewGraphMini'
 import { useWorkspaceDataviewsConnect } from 'features/workspaces/workspaces.hook'
+import Circle from 'common/Circle'
 import styles from './ResumeColumn.module.css'
 
 export default function ResumeColumn(): React.ReactElement | null {
@@ -24,7 +25,11 @@ export default function ResumeColumn(): React.ReactElement | null {
           className={cx({ [styles.current]: currentPosition === `#${dataview.id}` })}
         >
           <a href={`#${dataview.id}`} onClick={() => setCurrentPosition(`#${dataview.id}`)}>
-            <DataviewGraphMini dataview={dataview} graphConfig={{ color: 'red' }} />
+            {dataview.datasets?.length && dataview.datasets[0]?.type === 'user-context-layer:v1' ? (
+              <Circle />
+            ) : (
+              <DataviewGraphMini dataview={dataview} graphConfig={{ color: 'red' }} />
+            )}
           </a>
         </li>
       ))}

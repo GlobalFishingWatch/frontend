@@ -45,12 +45,8 @@ export default function WorkspaceEditor(): React.ReactElement | null {
         {dataviews?.length > 0 && (
           <ul>
             {dataviews.map((dataview) => (
-              <li>
-                <DataviewGraphPanel
-                  dataview={dataview}
-                  graphConfig={{ unit: 'm', color: 'red' }}
-                  key={dataview.id}
-                />
+              <li key={dataview.id}>
+                <DataviewGraphPanel dataview={dataview} graphConfig={{ unit: 'm', color: 'red' }} />
               </li>
             ))}
           </ul>

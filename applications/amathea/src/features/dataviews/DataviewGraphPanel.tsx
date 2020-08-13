@@ -10,6 +10,7 @@ import {
 } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
+import Circle from 'common/Circle'
 import styles from './DataviewGraphPanel.module.css'
 import DataviewGraph from './DataviewGraph'
 import { useDataviewsConnect, useDraftDataviewConnect } from './dataviews.hook'
@@ -46,19 +47,23 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = (props) => {
       showModal('newDataview')
     }
   }, [dataset, dataview, setDraftDataview, showModal])
+  const isUserContextLayer = dataset?.type === 'user-context-layer:v1'
   return (
     dataview && (
       <div className={styles.container} id={dataview.id.toString()}>
         <div className={styles.header}>
+          {isUserContextLayer && <Circle className={styles.circleMargin} />}
           <p className={styles.title}>
             {dataview.name}
-            {dataset?.type !== 'user-context-layer:v1' && (
+            {!isUserContextLayer && (
               <span className={styles.unit}>{graphConfig.unit && ` (${graphConfig.unit})`}</span>
             )}
           </p>
           <IconButton icon="info" tooltip={dataview.description} />
           <IconButton icon="edit" tooltip="Edit dataview" onClick={onEditClick} />
-          <IconButton icon="download" tooltip="Download time series data (Coming soon)" />
+          {!isUserContextLayer && (
+            <IconButton icon="download" tooltip="Download time series data (Coming soon)" />
+          )}
           <IconButton
             icon="delete"
             type="warning"
@@ -67,7 +72,11 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = (props) => {
           />
           <IconButton icon="view-on-map" tooltip="Show on map" />
         </div>
-        <DataviewGraph dataview={dataview} graphConfig={graphConfig} />
+        {!isUserContextLayer && (
+          <div className={styles.graph}>
+            <DataviewGraph dataview={dataview} graphConfig={graphConfig} />
+          </div>
+        )}
       </div>
     )
   )
