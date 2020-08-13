@@ -69,11 +69,7 @@ function NewWorkspace(): React.ReactElement {
           onRemove={onRemove}
           onCleanClick={onClean}
         ></Select>
-        <IconButton
-          icon="plus"
-          type="border"
-          tooltip="Create new area of interest (Cooming soon)"
-        />
+        <IconButton icon="plus" type="border" tooltip="Create new area of interest (Coming soon)" />
       </div>
       {error && <p className={styles.error}>{error}</p>}
       <Button onClick={onSaveClick} className={styles.saveBtn}>

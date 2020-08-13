@@ -76,7 +76,12 @@ function NewAreaOfInterest(): React.ReactElement {
           </div>
         )}
       </div>
-      <Button onClick={hideModal} className={styles.saveBtn}>
+      <Button
+        onClick={hideModal}
+        className={styles.saveBtn}
+        tooltip="Coming soon"
+        tooltipPlacement="top"
+      >
         CONTINUE
       </Button>
     </div>

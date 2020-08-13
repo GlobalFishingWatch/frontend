@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import { RootState } from 'store'
 import { Query } from 'redux-first-router'
-import { WorkspaceParam, ModalTypes } from 'types'
+import { WorkspaceParam } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { LocationRoute, ROUTE_TYPES, WORKSPACE_EDITOR } from './routes'
 
@@ -41,7 +41,6 @@ export const selectMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectStartQuery = selectQueryParam<string>('start')
 export const selectEndQuery = selectQueryParam<string>('end')
-export const selectModal = selectQueryParam<ModalTypes>('modal')
 
 export const selectViewport = createSelector(
   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery],

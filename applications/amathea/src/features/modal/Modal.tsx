@@ -1,4 +1,4 @@
-import React, { useMemo, Suspense, lazy } from 'react'
+import React, { Suspense, lazy } from 'react'
 import { ModalConfigOptions } from 'types'
 import GFWModal from '@globalfishingwatch/ui-components/dist/modal'
 import { useModalConnect } from './modal.hooks'
@@ -26,18 +26,17 @@ const MODALS: ModalConfigOptions = {
   },
 }
 
+const ModalComponent = (component: string) => {
+  return lazy(() => import(`../${component}`))
+}
+
 function Modal(): React.ReactElement | null {
   const { modal, hideModal } = useModalConnect()
+
+  if (!modal) return null
+
   const selectedModal = MODALS[modal]
-
-  const ModalComponent = (component: string) => {
-    return lazy(() => import(`../${component}`))
-  }
-
-  const ComponentModal = useMemo(() => {
-    return selectedModal ? ModalComponent(selectedModal.component) : null
-  }, [selectedModal])
-
+  const ComponentModal = selectedModal ? ModalComponent(selectedModal.component) : null
   return selectedModal ? (
     <GFWModal header={selectedModal.title} isOpen onClose={hideModal}>
       <Suspense fallback={null}>{ComponentModal && <ComponentModal />}</Suspense>

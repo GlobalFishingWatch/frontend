@@ -56,7 +56,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = (props) => {
           </p>
           <IconButton icon="info" tooltip={dataview.description} />
           <IconButton icon="edit" tooltip="Edit dataview" onClick={onEditClick} />
-          <IconButton icon="download" tooltip="Download time series data (Cooming soon)" />
+          <IconButton icon="download" tooltip="Download time series data (Coming soon)" />
           <IconButton
             icon="delete"
             type="warning"
