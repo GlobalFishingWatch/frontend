@@ -9,7 +9,7 @@
   z-index: 10;
   position: absolute;
   top: 0;
-  left: 0;
+  left: -1px;
   bottom: 0;
   transition: var(--transition);
   transform: translateX(-100%);

@@ -1,0 +1,18 @@
+export { default } from './ColorBar'
+
+export type ColorBarOptions =
+  | '#F95E5E'
+  | '#21D375'
+  | '#F09300'
+  | '#FFE500'
+  | '#03E5BB'
+  | '#9E6AB0'
+  | '#F4511F'
+  | '#B39DDB'
+  | '#0B8043'
+  | '#4CBDD0'
+  | '#BB00FF'
+  | '#069688'
+  | '#4184F4'
+  | '#AD1457'
+  | '#FD5480'

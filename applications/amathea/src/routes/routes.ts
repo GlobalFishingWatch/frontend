@@ -10,6 +10,8 @@ import {
 import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
+import { QueryParams } from 'types'
+import { REPLACE_URL_PARAMS } from 'data/config'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const WORKSPACES = 'location/workspaces'
@@ -96,6 +98,19 @@ export const routerQueryMiddleware: Middleware = ({ getState }: { getState: () =
       newAction.query = {
         ...prevQuery,
         ...newAction.query,
+      }
+    }
+    const { query } = action
+    if (query) {
+      const redirect = Object.keys(prevQuery)
+        .filter((k) => query[k as keyof QueryParams])
+        .some((key) => REPLACE_URL_PARAMS.includes(key))
+      if (redirect === true) {
+        newAction.meta = {
+          location: {
+            kind: 'redirect',
+          },
+        }
       }
     }
     next(newAction)

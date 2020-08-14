@@ -1,20 +1,19 @@
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { ModalTypes } from 'types'
-import { selectModal } from 'routes/routes.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import { selectModalOpen, setModalOpen } from 'features/app/app.slice'
 
 export const useModalConnect = () => {
-  const modal = useSelector(selectModal)
-  const { dispatchQueryParams } = useLocationConnect()
+  const dispatch = useDispatch()
+  const modal = useSelector(selectModalOpen)
   const showModal = useCallback(
     (modal: ModalTypes) => {
-      dispatchQueryParams({ modal })
+      dispatch(setModalOpen(modal))
     },
-    [dispatchQueryParams]
+    [dispatch]
   )
   const hideModal = useCallback(() => {
-    dispatchQueryParams({ modal: undefined })
-  }, [dispatchQueryParams])
+    dispatch(setModalOpen(false))
+  }, [dispatch])
   return { modal, showModal, hideModal }
 }

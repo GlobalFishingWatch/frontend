@@ -4,15 +4,17 @@ import kebabCase from 'lodash/kebabCase'
 import GFWAPI, { UploadResponse } from '@globalfishingwatch/api-client'
 import { Dataset } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice, asyncInitialState } from 'features/api/api.slice'
+import { DATASET_SOURCE_IDS } from 'data/data'
 
 export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () => {
-  const data = await GFWAPI.fetch<Dataset[]>('/v1/datasets?cache=false')
+  const data = await GFWAPI.fetch<Dataset[]>('/v1/datasets?include=endpoints&cache=false')
   return data
 })
 
+export type CreateDataset = { dataset: Partial<Dataset>; file: File }
 export const createDatasetThunk = createAsyncThunk(
   'datasets/uploadFile',
-  async ({ dataset, file }: { dataset: Partial<Dataset>; file: File }) => {
+  async ({ dataset, file }: CreateDataset) => {
     const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
       method: 'POST',
       body: { contentType: file.type } as any,
@@ -22,7 +24,7 @@ export const createDatasetThunk = createAsyncThunk(
       const datasetWithFilePath = {
         ...dataset,
         id: kebabCase(dataset.name),
-        type: 'user-context-layer:v1',
+        source: DATASET_SOURCE_IDS.user,
         configuration: {
           filePath: path,
         },
@@ -52,7 +54,7 @@ export const deleteDatasetThunk = createAsyncThunk(
   }
 )
 
-export type DatasetTypes = 'context_areas' | 'track' | '4wings' | undefined
+export type DatasetTypes = 'user-context-layer:v1' | 'user-tracks:v1' | '4wings:v1' | undefined
 export type DatasetDraftSteps = 'info' | 'data' | 'parameters'
 export type DatasetDraftData = Partial<Dataset> & { type?: DatasetTypes }
 
@@ -94,12 +96,14 @@ const { slice: datasetsSlice, entityAdapter } = createAsyncSlice<DatasetsState, 
 
 export const { resetDraftDataset, setDraftDatasetStep, setDraftDatasetData } = datasetsSlice.actions
 
-export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(
+export const { selectAll: selectAllDatasets, selectById } = entityAdapter.getSelectors<RootState>(
   (state) => state.datasets
 )
+export const selectDatasetById = (id: string) =>
+  createSelector([(state: RootState) => state], (state) => selectById(state, id))
 
 export const selectDraftDataset = (state: RootState) => state.datasets.draft
-
+export const selectDatasetStatus = (state: RootState) => state.datasets.status
 export const selectDraftDatasetStep = createSelector([selectDraftDataset], ({ step }) => step)
 export const selectDraftDatasetData = createSelector([selectDraftDataset], ({ data }) => data)
 

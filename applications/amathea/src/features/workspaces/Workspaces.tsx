@@ -5,11 +5,12 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { WORKSPACE_EDITOR } from 'routes/routes'
 import styles from './Workspaces.module.css'
-import { useWorkspacesConnect } from './workspaces.hook'
+import { useWorkspacesConnect, useWorkspacesAPI } from './workspaces.hook'
 
 function Workspaces(): React.ReactElement {
   const { showModal } = useModalConnect()
-  const { workspacesList, workspacesSharedList, deleteWorkspace } = useWorkspacesConnect()
+  const { deleteWorkspace } = useWorkspacesAPI()
+  const { workspacesList, workspacesSharedList } = useWorkspacesConnect()
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">Workspaces</h1>

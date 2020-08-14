@@ -17,6 +17,8 @@ const { slice: aoiSlice, entityAdapter } = createAsyncSlice<AOIState, AOIConfig>
   thunks: { fetchThunk: fetchAOIThunk },
 })
 
-export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>((state) => state.aoi)
+export const { selectAll: selectAllAOI, selectById: selectAOIById } = entityAdapter.getSelectors<
+  RootState
+>((state) => state.aoi)
 
 export default aoiSlice.reducer

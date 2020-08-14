@@ -40,17 +40,32 @@ interface MenuProps {
    * Id of the html root selector, normally in CRA 'root'
    */
   appSelector?: string
+  bgImage: string
+  bgImageSource?: string
   links?: MenuLink[]
   activeLinkId?: string
   onClose: (e: React.MouseEvent) => void
 }
 
 const Menu: React.FC<MenuProps> = (props) => {
-  const { isOpen, onClose, appSelector = 'root', links = defaultLinks, activeLinkId } = props
+  const {
+    isOpen,
+    onClose,
+    appSelector = 'root',
+    links = defaultLinks,
+    bgImage = 'https://globalfishingwatch.org/carrier-portal/static/media/juan-vilata.fc4bde7c.jpg',
+    bgImageSource = '',
+    activeLinkId,
+  } = props
   const appElement = useMemo(() => document.getElementById(appSelector), [appSelector])
   if (!appElement) {
     console.warn(`Invalid appSelector (${appSelector}) provided`)
     return null
+  }
+  const customStyles = {
+    content: {
+      backgroundImage: `url(${bgImage})`,
+    },
   }
   return (
     <ReactModal
@@ -58,6 +73,7 @@ const Menu: React.FC<MenuProps> = (props) => {
       className={styles.modalContentWrapper}
       appElement={appElement}
       closeTimeoutMS={400}
+      style={customStyles}
       isOpen={isOpen}
       onRequestClose={onClose}
     >
@@ -72,7 +88,7 @@ const Menu: React.FC<MenuProps> = (props) => {
           ))}
         </ul>
       )}
-      <p className={styles.copyright}>© Jiri Rezac / Greenpeace</p>
+      {bgImageSource && <p className={styles.copyright}>{bgImageSource}</p>}
     </ReactModal>
   )
 }

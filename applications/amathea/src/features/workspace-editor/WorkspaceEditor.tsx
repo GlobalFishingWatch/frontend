@@ -2,15 +2,22 @@ import React, { useEffect } from 'react'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useLocationConnect } from 'routes/routes.hook'
-import { useWorkspacesConnect } from 'features/workspaces/workspaces.hook'
+import {
+  useWorkspacesAPI,
+  useCurrentWorkspaceConnect,
+  useWorkspaceDataviewsConnect,
+} from 'features/workspaces/workspaces.hook'
 import { useModalConnect } from 'features/modal/modal.hooks'
+import { useDataviewsAPI } from 'features/dataviews/dataviews.hook'
 import DataviewGraphPanel from 'features/dataviews/DataviewGraphPanel'
-import { TEST_WORSPACE_DATAVIEWS } from 'data/data'
 import ResumeColumn from './ResumeColumn'
 import styles from './WorkspaceEditor.module.css'
 
 export default function WorkspaceEditor(): React.ReactElement | null {
-  const { workspace, fetchWorkspaceById } = useWorkspacesConnect()
+  const { workspace } = useCurrentWorkspaceConnect()
+  const { fetchDataviews } = useDataviewsAPI()
+  const { fetchWorkspaceById } = useWorkspacesAPI()
+  const { dataviews } = useWorkspaceDataviewsConnect()
   const { showModal } = useModalConnect()
   const { payload } = useLocationConnect()
 
@@ -18,6 +25,7 @@ export default function WorkspaceEditor(): React.ReactElement | null {
     if (payload && payload.workspaceId) {
       fetchWorkspaceById(payload.workspaceId)
     }
+    fetchDataviews()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -28,22 +36,32 @@ export default function WorkspaceEditor(): React.ReactElement | null {
         <div className={styles.infoPanel} id="info">
           <div className={styles.title}>
             <h1>{workspace ? workspace.label : 'loading'}</h1>
-            <IconButton icon="edit" tooltip="Edit workspace information" />
+            <IconButton
+              icon="edit"
+              tooltip="Edit workspace information"
+              onClick={() => showModal('newWorkspace')}
+            />
           </div>
           <div>
             <label>Area</label>
-            <p>xxx km2</p>
+            <p>{workspace?.aoi?.area ? Math.round(workspace?.aoi?.area / 1000000) : '---'} km2</p>
           </div>
           <div>
             <label>Description</label>
             <p>{workspace ? workspace.description : 'loading'}</p>
           </div>
         </div>
-        {TEST_WORSPACE_DATAVIEWS.map((dataview) => (
-          <DataviewGraphPanel dataview={dataview} key={dataview.id} />
-        ))}
+        {dataviews?.length > 0 && (
+          <ul>
+            {dataviews.map((dataview) => (
+              <li key={dataview.id}>
+                <DataviewGraphPanel dataview={dataview} graphConfig={{ unit: 'm', color: 'red' }} />
+              </li>
+            ))}
+          </ul>
+        )}
         <div className={styles.footer}>
-          {TEST_WORSPACE_DATAVIEWS.length >= 2 && (
+          {dataviews.length >= 2 && (
             <Button type="secondary" tooltip="Coming soon" tooltipPlacement="top">
               Create Analysis
             </Button>
