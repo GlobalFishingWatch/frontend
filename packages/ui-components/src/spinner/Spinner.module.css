@@ -1,0 +1,59 @@
+.spinner {
+  overflow: visible;
+}
+
+.circleContainer {
+  transform-origin: 50% 50%;
+  animation: rotate 2s linear infinite;
+}
+
+.circle {
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke: black;
+  fill: none;
+}
+
+.default {
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+.small {
+  animation: dash-small 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+@keyframes dash-small {
+  0% {
+    stroke-dasharray: 1, 75;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 45, 75;
+    stroke-dashoffset: -18;
+  }
+  100% {
+    stroke-dasharray: 45, 75;
+    stroke-dashoffset: -62;
+  }
+}
