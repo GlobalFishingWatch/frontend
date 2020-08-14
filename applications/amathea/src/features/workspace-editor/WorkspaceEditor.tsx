@@ -8,12 +8,14 @@ import {
   useWorkspaceDataviewsConnect,
 } from 'features/workspaces/workspaces.hook'
 import { useModalConnect } from 'features/modal/modal.hooks'
+import { useDataviewsAPI } from 'features/dataviews/dataviews.hook'
 import DataviewGraphPanel from 'features/dataviews/DataviewGraphPanel'
 import ResumeColumn from './ResumeColumn'
 import styles from './WorkspaceEditor.module.css'
 
 export default function WorkspaceEditor(): React.ReactElement | null {
   const { workspace } = useCurrentWorkspaceConnect()
+  const { fetchDataviews } = useDataviewsAPI()
   const { fetchWorkspaceById } = useWorkspacesAPI()
   const { dataviews } = useWorkspaceDataviewsConnect()
   const { showModal } = useModalConnect()
@@ -23,6 +25,7 @@ export default function WorkspaceEditor(): React.ReactElement | null {
     if (payload && payload.workspaceId) {
       fetchWorkspaceById(payload.workspaceId)
     }
+    fetchDataviews()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

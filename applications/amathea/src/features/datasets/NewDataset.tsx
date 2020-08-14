@@ -1,7 +1,6 @@
 import React, { useState, Fragment } from 'react'
 import cx from 'classnames'
 import { useDropzone } from 'react-dropzone'
-import { useDispatch } from 'react-redux'
 import Select, {
   SelectOnChange,
   SelectOnRemove,
@@ -13,8 +12,8 @@ import { useModalConnect } from 'features/modal/modal.hooks'
 import { DATASET_TYPE_OPTIONS } from 'data/data'
 import { ReactComponent as CustomShapeFormats } from 'assets/custom-shape-formats.svg'
 import styles from './NewDataset.module.css'
-import { useDraftDatasetConnect } from './datasets.hook'
-import { DatasetDraftData, DatasetTypes, createDatasetThunk } from './datasets.slice'
+import { useDraftDatasetConnect, useDatasetsAPI } from './datasets.hook'
+import { DatasetDraftData, DatasetTypes } from './datasets.slice'
 
 interface InfoFieldsProps {
   datasetInfo?: DatasetDraftData
@@ -86,12 +85,22 @@ const InfoFields: React.FC<InfoFieldsProps> = (props) => {
 
 interface DataFieldsProps {
   datasetInfo?: DatasetDraftData
-  onContinue: (file: File) => void
+  onContinue: () => void
 }
 
 const DataFields: React.FC<DataFieldsProps> = (props) => {
   const { datasetInfo, onContinue } = props
+  const [loading, setLoading] = useState(false)
+  const { draftDataset, dispatchResetDraftDataset } = useDraftDatasetConnect()
+  const { createDataset } = useDatasetsAPI()
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone()
+  const onContinueClick = async () => {
+    setLoading(true)
+    await createDataset({ dataset: draftDataset, file: acceptedFiles[0] })
+    setLoading(false)
+    dispatchResetDraftDataset()
+    onContinue()
+  }
   return (
     <Fragment>
       {datasetInfo?.type === 'user-context-layer:v1' && (
@@ -111,8 +120,8 @@ const DataFields: React.FC<DataFieldsProps> = (props) => {
           )}
         </div>
       )}
-      <Button onClick={() => onContinue(acceptedFiles[0])} className={styles.saveBtn}>
-        CONTINUE
+      <Button onClick={onContinueClick} className={styles.saveBtn}>
+        {loading ? 'LOADING' : 'CONTINUE'}
       </Button>
     </Fragment>
   )
@@ -171,7 +180,6 @@ const ParameterFields: React.FC<ParameterFieldsProps> = (props) => {
 
 function NewDataset(): React.ReactElement {
   const { hideModal } = useModalConnect()
-  const dispatch = useDispatch()
   const {
     draftDataset,
     draftDatasetStep,
@@ -212,15 +220,7 @@ function NewDataset(): React.ReactElement {
         />
       )}
       {draftDatasetStep === 'data' && (
-        <DataFields
-          datasetInfo={draftDataset}
-          onContinue={(file) => {
-            hideModal()
-            dispatchDraftDatasetStep('info')
-            dispatch(createDatasetThunk({ dataset: draftDataset, file }))
-            // dispatchDraftDatasetStep('parameters')
-          }}
-        />
+        <DataFields datasetInfo={draftDataset} onContinue={hideModal} />
       )}
       {draftDatasetStep === 'parameters' && (
         <ParameterFields datasetInfo={draftDataset} onContinue={hideModal} />

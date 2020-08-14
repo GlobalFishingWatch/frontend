@@ -3,11 +3,12 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import styles from './Datasets.module.css'
-import { useDatasetsConnect } from './datasets.hook'
+import { useDatasetsConnect, useDatasetsAPI } from './datasets.hook'
 
 function Datasets(): React.ReactElement {
   const { showModal } = useModalConnect()
-  const { datasetStatus, datasetsList, datasetsSharedList, deleteDataset } = useDatasetsConnect()
+  const { deleteDataset } = useDatasetsAPI()
+  const { datasetStatus, datasetsList, datasetsSharedList } = useDatasetsConnect()
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">Datasets</h1>

@@ -13,7 +13,7 @@ import { selectDatasetById } from 'features/datasets/datasets.slice'
 import Circle from 'common/Circle'
 import styles from './DataviewGraphPanel.module.css'
 import DataviewGraph from './DataviewGraph'
-import { useDataviewsConnect, useDraftDataviewConnect } from './dataviews.hook'
+import { useDraftDataviewConnect, useDataviewsAPI } from './dataviews.hook'
 
 interface DataviewGraphPanelProps {
   dataview: Dataview
@@ -22,7 +22,7 @@ interface DataviewGraphPanelProps {
 
 const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = (props) => {
   const { dataview, graphConfig } = props
-  const { deleteDataview } = useDataviewsConnect()
+  const { deleteDataview } = useDataviewsAPI()
   const { showModal } = useModalConnect()
   const { setDraftDataview } = useDraftDataviewConnect()
   const datasetId = dataview.datasets?.length ? dataview.datasets[0].id : ''

@@ -8,7 +8,7 @@ import { updateWorkspaceThunk } from 'features/workspaces/workspaces.slice'
 import { useCurrentWorkspaceConnect } from 'features/workspaces/workspaces.hook'
 import styles from './NewDataview.module.css'
 import { selectDatasetOptionsBySource } from './dataviews.selectors'
-import { useDataviewsConnect, useDraftDataviewConnect } from './dataviews.hook'
+import { useDraftDataviewConnect, useDataviewsAPI } from './dataviews.hook'
 import { DataviewDraftDataset, DataviewDraft } from './dataviews.slice'
 
 function NewDataview(): React.ReactElement {
@@ -17,7 +17,7 @@ function NewDataview(): React.ReactElement {
   const { hideModal } = useModalConnect()
   const { workspace } = useCurrentWorkspaceConnect()
   const { draftDataview, setDraftDataview, resetDraftDataview } = useDraftDataviewConnect()
-  const { updateDataview, createDataview } = useDataviewsConnect()
+  const { updateDataview, createDataview } = useDataviewsAPI()
   const { source, dataset } = draftDataview || {}
   const datasetsOptions = useSelector(selectDatasetOptionsBySource)
   const onSourceSelect: SelectOnChange = (option) => {

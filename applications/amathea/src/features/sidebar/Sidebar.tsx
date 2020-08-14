@@ -2,6 +2,7 @@ import React, { lazy, useMemo, Suspense, useEffect } from 'react'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { useLocationConnect } from 'routes/routes.hook'
 import { WORKSPACES, AREAS_OF_INTEREST, DATASETS } from 'routes/routes'
+import { useAOIAPI } from 'features/areas-of-interest/areas-of-interest.hook'
 import { useWorkspacesAPI } from 'features/workspaces/workspaces.hook'
 import styles from './Sidebar.module.css'
 
@@ -13,8 +14,10 @@ function Sidebar(): React.ReactElement {
   const { location, dispatchLocation } = useLocationConnect()
 
   const { fetchWorkspaces } = useWorkspacesAPI()
+  const { fetchAOI } = useAOIAPI()
 
   useEffect(() => {
+    fetchAOI()
     fetchWorkspaces()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

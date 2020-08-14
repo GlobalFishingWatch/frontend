@@ -8,7 +8,33 @@ import { selectGeneratorsConfig } from './map.slice'
 
 const API_GATEWAY = 'https://gateway.api.dev.globalfishingwatch.org'
 
-export const getAOIGeneratorsConfig = createSelector(
+export const getCurrentWorkspaceAOIGeneratorsConfig = createSelector(
+  [selectCurrentWorkspace],
+  (currentWorkspace) => {
+    if (!currentWorkspace || !currentWorkspace.aoi) return
+    const generator: Generators.GlGeneratorConfig = {
+      type: Generators.Type.GL,
+      id: `aoi-${currentWorkspace.aoiId}`,
+      sources: [
+        {
+          type: 'geojson',
+          data: currentWorkspace.aoi.geometry,
+        },
+      ],
+      layers: [
+        {
+          type: 'line',
+          paint: {
+            'line-color': 'white',
+            'line-width': 2,
+          },
+        },
+      ],
+    }
+    return generator
+  }
+)
+export const getAllAOIGeneratorsConfig = createSelector(
   [selectAllAOI, selectCurrentWorkspace],
   (aoiList, currentWorkspace) => {
     if (!aoiList) return
@@ -77,9 +103,15 @@ export const getDataviewsGeneratorsConfig = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [selectGeneratorsConfig, getAOIGeneratorsConfig, getDataviewsGeneratorsConfig],
-  (generators, aoiGenerators, dataviewsGenerators) => {
+  [
+    selectGeneratorsConfig,
+    getAllAOIGeneratorsConfig,
+    getCurrentWorkspaceAOIGeneratorsConfig,
+    getDataviewsGeneratorsConfig,
+  ],
+  (generators, aoiGenerators, currentWorkspaceAOI, dataviewsGenerators) => {
     let allGenerators = [...generators]
+    if (currentWorkspaceAOI) allGenerators.push(currentWorkspaceAOI)
     if (aoiGenerators) allGenerators = allGenerators.concat(aoiGenerators)
     if (dataviewsGenerators) allGenerators = allGenerators.concat(dataviewsGenerators)
     return allGenerators

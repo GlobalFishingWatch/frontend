@@ -29,8 +29,13 @@ export const useDraftDataviewConnect = () => {
 }
 
 export const useDataviewsConnect = () => {
-  const dispatch = useDispatch()
   const dataviewsList = useSelector(selectAllDataviews)
+  return { dataviewsList }
+}
+
+export const useDataviewsAPI = () => {
+  const dispatch = useDispatch()
+
   const fetchDataviews = useCallback(() => {
     dispatch(fetchDataviewsThunk())
   }, [dispatch])
@@ -54,5 +59,5 @@ export const useDataviewsConnect = () => {
     },
     [dispatch]
   )
-  return { dataviewsList, fetchDataviews, createDataview, updateDataview, deleteDataview }
+  return { fetchDataviews, createDataview, updateDataview, deleteDataview }
 }

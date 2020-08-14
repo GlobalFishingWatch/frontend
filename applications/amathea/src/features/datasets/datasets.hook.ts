@@ -1,6 +1,7 @@
 // import { bindActionCreators } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
+import { Dataset } from '@globalfishingwatch/dataviews-client'
 import {
   fetchDatasetsThunk,
   deleteDatasetThunk,
@@ -13,6 +14,8 @@ import {
   DatasetDraftSteps,
   DatasetDraftData,
   selectDatasetStatus,
+  createDatasetThunk,
+  CreateDataset,
 } from './datasets.slice'
 import { selectShared } from './datasets.selectors'
 
@@ -53,18 +56,33 @@ export const useDraftDatasetConnect = () => {
 }
 
 export const useDatasetsConnect = () => {
-  const dispatch = useDispatch()
   const datasetStatus = useSelector(selectDatasetStatus)
   const datasetsList = useSelector(selectAllDatasets)
   const datasetsSharedList = useSelector(selectShared)
+  return { datasetStatus, datasetsList, datasetsSharedList }
+}
+
+export const useDatasetsAPI = () => {
+  const dispatch = useDispatch()
+
   const fetchDatasets = useCallback(() => {
     dispatch(fetchDatasetsThunk())
   }, [dispatch])
+
+  const createDataset = useCallback(
+    async (createDataset: CreateDataset): Promise<Dataset> => {
+      const { payload }: any = await dispatch(createDatasetThunk(createDataset))
+      return payload
+    },
+    [dispatch]
+  )
+
   const deleteDataset = useCallback(
     (id: string) => {
       dispatch(deleteDatasetThunk(id))
     },
     [dispatch]
   )
-  return { datasetStatus, datasetsList, datasetsSharedList, fetchDatasets, deleteDataset }
+
+  return { fetchDatasets, createDataset, deleteDataset }
 }

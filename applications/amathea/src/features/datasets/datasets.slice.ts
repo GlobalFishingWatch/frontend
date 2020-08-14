@@ -11,9 +11,10 @@ export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () =>
   return data
 })
 
+export type CreateDataset = { dataset: Partial<Dataset>; file: File }
 export const createDatasetThunk = createAsyncThunk(
   'datasets/uploadFile',
-  async ({ dataset, file }: { dataset: Partial<Dataset>; file: File }) => {
+  async ({ dataset, file }: CreateDataset) => {
     const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
       method: 'POST',
       body: { contentType: file.type } as any,
