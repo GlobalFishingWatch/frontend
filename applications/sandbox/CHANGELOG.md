@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.1.14
+
+### Patch Changes
+
+- 8ab0f03: New dataview types and ColorBar Component
+
 ## 0.1.13
 
 ### Patch Changes
