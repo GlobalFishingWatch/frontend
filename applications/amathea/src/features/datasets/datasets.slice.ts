@@ -7,7 +7,7 @@ import { AsyncReducer, createAsyncSlice, asyncInitialState } from 'features/api/
 import { DATASET_SOURCE_IDS } from 'data/data'
 
 export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () => {
-  const data = await GFWAPI.fetch<Dataset[]>('/v1/datasets?cache=false')
+  const data = await GFWAPI.fetch<Dataset[]>('/v1/datasets?include=endpoints&cache=false')
   return data
 })
 

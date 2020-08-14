@@ -1,9 +1,10 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
-import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
+import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import Miniglobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import styles from './Map.module.css'
@@ -19,8 +20,22 @@ const Map = (): React.ReactElement => {
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
+  const token = GFWAPI.getToken()
 
   const [bounds, setBounds] = useState<MiniglobeBounds | null>(null)
+
+  const transformRequest: any = useCallback(
+    (url: string, resourceType: string) => {
+      const response: MapRequest = { url }
+      if (resourceType === 'Tile' && url.includes('globalfishingwatch')) {
+        response.headers = {
+          Authorization: 'Bearer ' + token,
+        }
+      }
+      return response
+    },
+    [token]
+  )
 
   useEffect(() => {
     const mapboxRef = mapRef?.current?.getMap()
@@ -67,6 +82,7 @@ const Map = (): React.ReactElement => {
           height="100%"
           latitude={latitude}
           longitude={longitude}
+          transformRequest={transformRequest}
           zoom={zoom}
           onViewportChange={onViewportChange}
           mapStyle={style}

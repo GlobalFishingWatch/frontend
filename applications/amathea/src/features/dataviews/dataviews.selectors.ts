@@ -1,14 +1,20 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectAllDatasets, selectDatasetById } from 'features/datasets/datasets.slice'
 import { getUserId } from 'features/user/user.slice'
 import { selectCurrentWorkspace } from 'features/workspaces/workspaces.slice'
 import { DATASET_SOURCE_IDS } from 'data/data'
 import { selectAllDataviews, selectDrafDataviewSource } from './dataviews.slice'
 
 export const selectCurrentWorkspaceDataviews = createSelector(
-  [selectAllDataviews, selectCurrentWorkspace],
-  (dataviews, workspace) => {
-    return dataviews.filter((dataview) => workspace?.dataviewsId?.includes(dataview.id))
+  [(state) => state, selectAllDataviews, selectCurrentWorkspace],
+  (state, dataviews, workspace) => {
+    return dataviews
+      .filter((dataview) => workspace?.dataviewsId?.includes(dataview.id))
+      .map((dataview) => {
+        const datasetId = dataview.datasets?.length ? dataview.datasets[0].id : ''
+        const dataset = selectDatasetById(datasetId)(state)
+        return { ...dataview, dataset }
+      })
   }
 )
 
