@@ -38,7 +38,7 @@ function Modal(): React.ReactElement | null {
   const { draftDataview, resetDraftDataview } = useDraftDataviewConnect()
 
   const onCloseClick = useCallback(() => {
-    if (draftDataview?.id) {
+    if (draftDataview) {
       resetDraftDataview()
     }
     hideModal()

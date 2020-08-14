@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Select, { SelectOnChange } from '@globalfishingwatch/ui-components/dist/select'
 import Button from '@globalfishingwatch/ui-components/dist/button'
+import ColorBar, { ColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { DATASET_SOURCE_OPTIONS } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { updateWorkspaceThunk } from 'features/workspaces/workspaces.slice'
@@ -66,7 +67,12 @@ function NewDataview(): React.ReactElement {
           onCleanClick={() => onCleanClick('dataset')}
         ></Select>
       )}
-
+      {dataset && dataset.id && (
+        <ColorBar
+          selectedColor={draftDataview?.color as ColorBarOptions}
+          onColorClick={(color) => setDraftDataview({ color })}
+        />
+      )}
       <Button onClick={onCreateClick} className={styles.saveBtn}>
         {loading ? 'LOADING' : draftDataview?.id ? 'UPDATE DATAVIEW' : 'ADD NEW DATAVIEW'}
       </Button>
