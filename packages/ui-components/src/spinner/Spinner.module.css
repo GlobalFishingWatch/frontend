@@ -8,17 +8,18 @@
 }
 
 .circle {
-  stroke-width: 4;
   stroke-linecap: round;
   stroke: black;
   fill: none;
 }
 
 .default {
+  stroke-width: 4;
   animation: dash 1.5s ease-in-out infinite;
 }
 
 .small {
+  stroke-width: 3;
   animation: dash-small 1.5s ease-in-out infinite;
 }
 
@@ -45,15 +46,15 @@
 
 @keyframes dash-small {
   0% {
-    stroke-dasharray: 1, 75;
+    stroke-dasharray: 1, 60;
     stroke-dashoffset: 0;
   }
   50% {
-    stroke-dasharray: 45, 75;
-    stroke-dashoffset: -18;
+    stroke-dasharray: 35, 60;
+    stroke-dashoffset: -14;
   }
   100% {
-    stroke-dasharray: 45, 75;
-    stroke-dashoffset: -62;
+    stroke-dasharray: 35, 60;
+    stroke-dashoffset: -54;
   }
 }

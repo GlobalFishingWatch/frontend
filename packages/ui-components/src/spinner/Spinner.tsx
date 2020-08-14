@@ -15,7 +15,7 @@ const Spinner: React.FC<SpinnerProps> = (props) => {
     color = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-blue'),
     size = 'default',
   } = props
-  const radius = size === 'default' ? 20 : 10
+  const radius = size === 'default' ? 20 : 8
   return (
     <svg
       className={styles.spinner}
