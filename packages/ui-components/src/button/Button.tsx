@@ -2,6 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
+import Spinner from '../spinner'
 import styles from './Button.module.css'
 
 export type ButtonType = 'default' | 'secondary'
@@ -11,6 +12,7 @@ interface ButtonProps {
   type?: ButtonType
   size?: ButtonSize
   disabled?: boolean
+  loading?: boolean
   className?: string
   children: React.ReactChild | React.ReactChild[]
   tooltip?: React.ReactChild | React.ReactChild[] | string
@@ -23,6 +25,7 @@ const Button: React.FC<ButtonProps> = (props) => {
     type = 'default',
     size = 'default',
     disabled = false,
+    loading = false,
     className,
     children,
     tooltip,
@@ -36,7 +39,11 @@ const Button: React.FC<ButtonProps> = (props) => {
         onClick={onClick}
         disabled={disabled}
       >
-        {children}
+        {loading ? (
+          <Spinner size="small" color={type === 'default' ? 'white' : undefined} />
+        ) : (
+            children
+          )}
       </button>
     </Tooltip>
   )
