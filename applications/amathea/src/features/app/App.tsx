@@ -9,10 +9,11 @@ import Login from 'features/user/Login'
 import Modal from 'features/modal/Modal'
 import SidebarHeader from 'common/SidebarHeader'
 import { isWorkspaceEditorPage } from 'routes/routes.selectors'
+import { useDataviewsConnect } from 'features/dataviews/dataviews.hook'
+import menuBgImage from 'assets/images/menubg.jpg'
 import { toggleMenu, isMenuOpen, isSidebarOpen, toggleSidebar } from './app.slice'
 import styles from './App.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
-import { useDataviewsConnect } from 'features/dataviews/dataviews.hook'
 
 const Map = lazy(() => import('features/map/Map'))
 const Timebar = lazy(() => import('features/timebar/Timebar'))
@@ -81,7 +82,7 @@ function App(): React.ReactElement {
         />
       )}
       <Modal />
-      <Menu isOpen={menuOpen} onClose={onToggleMenu} activeLinkId="map-data">
+      <Menu bgImage={menuBgImage} isOpen={menuOpen} onClose={onToggleMenu} activeLinkId="map-data">
         Menu toggle
       </Menu>
     </Fragment>
