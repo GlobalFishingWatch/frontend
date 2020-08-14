@@ -2,19 +2,17 @@ import React from 'react'
 import cx from 'classnames'
 import styles from './Spinner.module.css'
 
-type SpinnerColor = string
-type SpinnerSize = 'default' | 'small'
-
 interface SpinnerProps {
-  color?: SpinnerColor
-  size?: SpinnerSize
+  color?: string
+  size?: 'default' | 'small'
 }
 
+const spinnerVarColor = getComputedStyle(document.documentElement).getPropertyValue(
+  '--color-primary-blue'
+)
+
 const Spinner: React.FC<SpinnerProps> = (props) => {
-  const {
-    color = getComputedStyle(document.documentElement).getPropertyValue('--color-primary-blue'),
-    size = 'default',
-  } = props
+  const { color = spinnerVarColor || '#22447e', size = 'default' } = props
   const radius = size === 'default' ? 20 : 8
   return (
     <svg

@@ -22,6 +22,10 @@ interface IconButtonProps {
   children?: React.ReactNode
 }
 
+const warningVarColor = getComputedStyle(document.documentElement).getPropertyValue(
+  '--color-danger-red'
+)
+
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) => {
   const {
     type = 'default',
@@ -36,10 +40,9 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) =
     children,
     ...rest
   } = props
-  let spinnerColor = undefined
+  let spinnerColor
   if (type === 'invert' || type === 'map-tool') spinnerColor = 'white'
-  if (type === 'warning')
-    spinnerColor = getComputedStyle(document.documentElement).getPropertyValue('--color-danger-red')
+  if (type === 'warning') spinnerColor = warningVarColor || '#ff3e62'
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
@@ -53,11 +56,11 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) =
         {loading ? (
           <Spinner size="small" color={spinnerColor} />
         ) : (
-            <Fragment>
-              {icon && <Icon icon={icon} type={type === 'warning' ? 'warning' : 'default'} />}
-              {children}
-            </Fragment>
-          )}
+          <Fragment>
+            {icon && <Icon icon={icon} type={type === 'warning' ? 'warning' : 'default'} />}
+            {children}
+          </Fragment>
+        )}
       </button>
     </Tooltip>
   )
