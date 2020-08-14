@@ -5,7 +5,7 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import { DATASET_SOURCE_OPTIONS } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { updateWorkspaceThunk } from 'features/workspaces/workspaces.slice'
-import { useWorkspacesConnect } from 'features/workspaces/workspaces.hook'
+import { useCurrentWorkspaceConnect } from 'features/workspaces/workspaces.hook'
 import styles from './NewDataview.module.css'
 import { selectDatasetOptionsBySource } from './dataviews.selectors'
 import { useDataviewsConnect, useDraftDataviewConnect } from './dataviews.hook'
@@ -15,7 +15,7 @@ function NewDataview(): React.ReactElement {
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
   const { hideModal } = useModalConnect()
-  const { workspace } = useWorkspacesConnect()
+  const { workspace } = useCurrentWorkspaceConnect()
   const { draftDataview, setDraftDataview, resetDraftDataview } = useDraftDataviewConnect()
   const { updateDataview, createDataview } = useDataviewsConnect()
   const { source, dataset } = draftDataview || {}

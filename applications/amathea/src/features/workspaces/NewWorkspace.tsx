@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import Select, {
   SelectOption,
   SelectOnChange,
@@ -10,13 +10,21 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
 import styles from './NewWorkspace.module.css'
-import { useWorkspacesConnect } from './workspaces.hook'
+import { useCurrentWorkspaceConnect, useWorkspacesAPI } from './workspaces.hook'
 
 function NewWorkspace(): React.ReactElement {
-  const [workspaceLabel, setWorkspaceLabel] = useState<string>('')
-  const [workspaceDescription, setWorkspaceDescription] = useState<string>('')
+  const { workspace } = useCurrentWorkspaceConnect()
+  const { upsertWorkspace } = useWorkspacesAPI()
   const [error, setError] = useState<string>('')
-  const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>()
+  const [loading, setLoading] = useState(false)
+  const [workspaceLabel, setWorkspaceLabel] = useState<string>(workspace?.label || '')
+  const [workspaceDescription, setWorkspaceDescription] = useState<string>(
+    workspace?.description || ''
+  )
+  const defaultSelection = workspace?.aoi
+    ? { id: workspace.aoi.id, label: workspace.aoi.label }
+    : undefined
+  const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>(defaultSelection)
   const onSelect: SelectOnChange = (option) => {
     setSelectedOption(option)
   }
@@ -27,22 +35,24 @@ function NewWorkspace(): React.ReactElement {
     setSelectedOption(undefined)
   }
   const { hideModal } = useModalConnect()
-  const { createWorkspace } = useWorkspacesConnect()
   const { aoiList } = useAOIConnect()
-  const onSaveClick = useCallback(() => {
+  const onSaveClick = async () => {
     if (workspaceLabel && workspaceDescription && selectedOption) {
-      const workspace = {
+      setLoading(true)
+      const newWorkspace = {
+        ...(workspace?.id && { id: workspace.id }),
         aoiId: selectedOption.id as number,
         label: workspaceLabel,
         description: workspaceDescription,
       }
-      createWorkspace(workspace)
+      await upsertWorkspace(newWorkspace)
+      setLoading(false)
       hideModal()
       setError('')
     } else {
       setError('Fill all fields')
     }
-  }, [createWorkspace, hideModal, selectedOption, workspaceDescription, workspaceLabel])
+  }
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">New Workspace</h1>
@@ -73,7 +83,7 @@ function NewWorkspace(): React.ReactElement {
       </div>
       {error && <p className={styles.error}>{error}</p>}
       <Button onClick={onSaveClick} className={styles.saveBtn}>
-        Save workspace
+        {loading ? 'LOADING' : workspace?.id ? 'Update workspace' : 'Save workspace'}
       </Button>
     </div>
   )

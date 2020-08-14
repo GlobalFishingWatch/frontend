@@ -2,7 +2,7 @@ import React, { lazy, useMemo, Suspense, useEffect } from 'react'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { useLocationConnect } from 'routes/routes.hook'
 import { WORKSPACES, AREAS_OF_INTEREST, DATASETS } from 'routes/routes'
-import { useWorkspacesConnect } from 'features/workspaces/workspaces.hook'
+import { useWorkspacesAPI } from 'features/workspaces/workspaces.hook'
 import styles from './Sidebar.module.css'
 
 const SidebarComponent = (component: string) => {
@@ -12,7 +12,7 @@ const SidebarComponent = (component: string) => {
 function Sidebar(): React.ReactElement {
   const { location, dispatchLocation } = useLocationConnect()
 
-  const { fetchWorkspaces } = useWorkspacesConnect()
+  const { fetchWorkspaces } = useWorkspacesAPI()
 
   useEffect(() => {
     fetchWorkspaces()

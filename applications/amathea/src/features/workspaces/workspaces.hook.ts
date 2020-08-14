@@ -6,25 +6,25 @@ import {
   fetchWorkspacesThunk,
   deleteWorkspaceThunk,
   createWorkspaceThunk,
+  updateWorkspaceThunk,
   selectAll,
   selectShared,
   fetchWorkspaceByIdThunk,
   selectCurrentWorkspace,
 } from './workspaces.slice'
 
-export const useWorkspacesConnect = () => {
+export const useWorkspacesAPI = () => {
   const dispatch = useDispatch()
-  const workspacesList = useSelector(selectAll)
-  const workspace = useSelector(selectCurrentWorkspace)
-  const workspacesSharedList = useSelector(selectShared)
 
-  const fetchWorkspaces = useCallback(() => {
-    dispatch(fetchWorkspacesThunk())
+  const fetchWorkspaces = useCallback(async (): Promise<Workspace[]> => {
+    const { payload }: any = await dispatch(fetchWorkspacesThunk())
+    return payload
   }, [dispatch])
 
   const fetchWorkspaceById = useCallback(
-    (id: number) => {
-      dispatch(fetchWorkspaceByIdThunk(id))
+    async (id: number): Promise<Workspace> => {
+      const { payload }: any = await dispatch(fetchWorkspaceByIdThunk(id))
+      return payload
     },
     [dispatch]
   )
@@ -35,21 +35,57 @@ export const useWorkspacesConnect = () => {
     },
     [dispatch]
   )
-  const createWorkspace = useCallback(
-    (workspace: Partial<Workspace>) => {
-      dispatch(createWorkspaceThunk(workspace))
+
+  const updateWorkspace = useCallback(
+    async (workspace: Partial<Workspace>): Promise<Workspace> => {
+      const { payload }: any = await dispatch(updateWorkspaceThunk(workspace))
+      return payload
     },
     [dispatch]
   )
+
+  const createWorkspace = useCallback(
+    async (workspace: Partial<Workspace>): Promise<Workspace> => {
+      const { payload }: any = await dispatch(createWorkspaceThunk(workspace))
+      return payload
+    },
+    [dispatch]
+  )
+
+  const upsertWorkspace = useCallback(
+    async (partialWorkspace: Partial<Workspace>): Promise<Workspace> => {
+      if (partialWorkspace.id) {
+        return updateWorkspace(partialWorkspace)
+      } else {
+        return createWorkspace(partialWorkspace)
+      }
+    },
+    [createWorkspace, updateWorkspace]
+  )
+
   return {
-    workspace,
-    workspacesList,
-    workspacesSharedList,
     fetchWorkspaces,
     fetchWorkspaceById,
     deleteWorkspace,
     createWorkspace,
+    updateWorkspace,
+    upsertWorkspace,
   }
+}
+
+export const useWorkspacesConnect = () => {
+  const workspacesList = useSelector(selectAll)
+  const workspacesSharedList = useSelector(selectShared)
+
+  return {
+    workspacesList,
+    workspacesSharedList,
+  }
+}
+
+export const useCurrentWorkspaceConnect = () => {
+  const workspace = useSelector(selectCurrentWorkspace)
+  return { workspace }
 }
 
 export const useWorkspaceDataviewsConnect = () => {

@@ -3,7 +3,8 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
-  useWorkspacesConnect,
+  useWorkspacesAPI,
+  useCurrentWorkspaceConnect,
   useWorkspaceDataviewsConnect,
 } from 'features/workspaces/workspaces.hook'
 import { useModalConnect } from 'features/modal/modal.hooks'
@@ -12,7 +13,8 @@ import ResumeColumn from './ResumeColumn'
 import styles from './WorkspaceEditor.module.css'
 
 export default function WorkspaceEditor(): React.ReactElement | null {
-  const { workspace, fetchWorkspaceById } = useWorkspacesConnect()
+  const { workspace } = useCurrentWorkspaceConnect()
+  const { fetchWorkspaceById } = useWorkspacesAPI()
   const { dataviews } = useWorkspaceDataviewsConnect()
   const { showModal } = useModalConnect()
   const { payload } = useLocationConnect()
@@ -31,7 +33,11 @@ export default function WorkspaceEditor(): React.ReactElement | null {
         <div className={styles.infoPanel} id="info">
           <div className={styles.title}>
             <h1>{workspace ? workspace.label : 'loading'}</h1>
-            <IconButton icon="edit" tooltip="Edit workspace information" />
+            <IconButton
+              icon="edit"
+              tooltip="Edit workspace information"
+              onClick={() => showModal('newWorkspace')}
+            />
           </div>
           <div>
             <label>Area</label>

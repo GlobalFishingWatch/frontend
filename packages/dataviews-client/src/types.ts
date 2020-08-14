@@ -86,6 +86,7 @@ export interface WorkspaceDataview {
 
 export interface AOI {
   id: number
+  label: string
   area: number
   geometry?: GeoJSON
   bbox: number[]
