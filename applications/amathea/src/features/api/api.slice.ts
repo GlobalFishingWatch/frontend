@@ -21,10 +21,12 @@ export type AsyncReducer<T = any> = {
   entities: Dictionary<T>
   error: string
   status: AsyncReducerStatus
+  statusId: number | string | null
 }
 
 export const asyncInitialState: AsyncReducer = {
   status: 'idle',
+  statusId: null,
   error: '',
   ids: [],
   entities: {},
@@ -72,20 +74,23 @@ export const createAsyncSlice = <T, U>({
         })
         builder.addCase(fetchThunk.rejected, (state: any) => {
           state.status = 'error'
-          state.error = 'Error fetching workspaces'
+          state.error = 'Error fetching resources'
         })
       }
       if (fetchByIdThunk) {
-        builder.addCase(fetchByIdThunk.pending, (state: any) => {
+        builder.addCase(fetchByIdThunk.pending, (state: any, action) => {
           state.status = 'loading.item'
+          state.statusId = action.meta.arg
         })
         builder.addCase(fetchByIdThunk.fulfilled, (state: any, action) => {
           state.status = 'finished'
+          state.statusId = null
           entityAdapter.upsertOne(state, action.payload)
         })
         builder.addCase(fetchByIdThunk.rejected, (state: any, action) => {
           state.status = 'error'
-          state.error = `Error fetching workspace id: ${action.payload}`
+          state.statusId = null
+          state.error = `Error fetching resource id: ${action.payload}`
         })
       }
       if (createThunk) {
@@ -102,28 +107,34 @@ export const createAsyncSlice = <T, U>({
         })
       }
       if (updateThunk) {
-        builder.addCase(updateThunk.pending, (state: any) => {
+        builder.addCase(updateThunk.pending, (state: any, action) => {
           state.status = 'loading.update'
+          state.statusId = action.meta.arg.id
         })
         builder.addCase(updateThunk.fulfilled, (state: any, action) => {
           state.status = 'finished'
+          state.statusId = null
           entityAdapter.upsertOne(state, action.payload)
         })
         builder.addCase(updateThunk.rejected, (state: any, action) => {
           state.status = 'error'
+          state.statusId = null
           state.error = `Error updating resource ${action.payload}`
         })
       }
       if (deleteThunk) {
-        builder.addCase(deleteThunk.pending, (state: any) => {
+        builder.addCase(deleteThunk.pending, (state: any, action) => {
           state.status = 'loading.delete'
+          state.statusId = action.meta.arg
         })
         builder.addCase(deleteThunk.fulfilled, (state: any, action) => {
           state.status = 'finished'
+          state.statusId = null
           entityAdapter.removeOne(state, action.payload.id)
         })
         builder.addCase(deleteThunk.rejected, (state: any, action) => {
           state.status = 'error'
+          state.statusId = null
           state.error = `Error removing resource ${action.payload}`
         })
       }
