@@ -10,7 +10,7 @@ import styles from './ResumeColumn.module.css'
 export default function ResumeColumn(): React.ReactElement | null {
   const { showModal } = useModalConnect()
   const { dataviews } = useWorkspaceDataviewsConnect()
-  const [currentPosition, setCurrentPosition] = useState<string>(window.location.hash)
+  const [currentPosition, setCurrentPosition] = useState<string>(window.location.hash || '#info')
 
   return (
     <ul className={styles.container}>
