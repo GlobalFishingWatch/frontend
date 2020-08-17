@@ -8,8 +8,10 @@
   transition: var(--transition);
   background-repeat: no-repeat;
   background-position: center center;
-  padding: 0 var(--space-M);
+  padding: 0 var(--space-S);
   text-transform: uppercase;
+  min-width: 150px;
+  line-height: 1;
 }
 
 .button:focus {
