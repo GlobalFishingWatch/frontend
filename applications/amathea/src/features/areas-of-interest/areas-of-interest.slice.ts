@@ -35,4 +35,5 @@ export const { selectAll: selectAllAOI, selectById: selectAOIById } = entityAdap
   RootState
 >((state) => state.aoi)
 
+export const selectAOIStatus = (state: RootState) => state.aoi.status
 export default aoiSlice.reducer

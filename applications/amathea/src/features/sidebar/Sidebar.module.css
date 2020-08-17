@@ -22,7 +22,10 @@
 }
 
 .content {
-  padding: var(--space-M);
   height: calc(100vh - 10rem);
   overflow-y: auto;
+}
+
+.contentPadding {
+  padding: var(--space-M);
 }

@@ -7,7 +7,15 @@ import {
   Dictionary,
 } from '@reduxjs/toolkit'
 
-export type AsyncReducerStatus = 'idle' | 'loading' | 'finished' | 'error'
+export type AsyncReducerStatus =
+  | 'idle'
+  | 'loading'
+  | 'loading.item'
+  | 'loading.create'
+  | 'loading.update'
+  | 'loading.delete'
+  | 'finished'
+  | 'error'
 export type AsyncReducer<T = any> = {
   ids: (number | string)[]
   entities: Dictionary<T>
@@ -69,7 +77,7 @@ export const createAsyncSlice = <T, U>({
       }
       if (fetchByIdThunk) {
         builder.addCase(fetchByIdThunk.pending, (state: any) => {
-          state.status = 'loading'
+          state.status = 'loading.item'
         })
         builder.addCase(fetchByIdThunk.fulfilled, (state: any, action) => {
           state.status = 'finished'
@@ -82,7 +90,7 @@ export const createAsyncSlice = <T, U>({
       }
       if (createThunk) {
         builder.addCase(createThunk.pending, (state: any) => {
-          state.status = 'loading'
+          state.status = 'loading.create'
         })
         builder.addCase(createThunk.fulfilled, (state: any, action) => {
           state.status = 'finished'
@@ -95,7 +103,7 @@ export const createAsyncSlice = <T, U>({
       }
       if (updateThunk) {
         builder.addCase(updateThunk.pending, (state: any) => {
-          state.status = 'loading'
+          state.status = 'loading.update'
         })
         builder.addCase(updateThunk.fulfilled, (state: any, action) => {
           state.status = 'finished'
@@ -108,7 +116,7 @@ export const createAsyncSlice = <T, U>({
       }
       if (deleteThunk) {
         builder.addCase(deleteThunk.pending, (state: any) => {
-          state.status = 'loading'
+          state.status = 'loading.delete'
         })
         builder.addCase(deleteThunk.fulfilled, (state: any, action) => {
           state.status = 'finished'

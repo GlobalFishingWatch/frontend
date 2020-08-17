@@ -2,6 +2,7 @@ import React, { useCallback } from 'react'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { Dataset } from '@globalfishingwatch/dataviews-client'
+import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import styles from './Datasets.module.css'
 import { useDatasetsConnect, useDatasetsAPI } from './datasets.hook'
@@ -23,6 +24,10 @@ function Datasets(): React.ReactElement {
     [deleteDataset]
   )
 
+  if (datasetStatus === 'loading') {
+    return <Spinner centered />
+  }
+
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">Datasets</h1>
@@ -36,7 +41,7 @@ function Datasets(): React.ReactElement {
             icon="delete"
             type="warning"
             tooltip="Delete Dataset"
-            disabled={datasetStatus === 'loading'}
+            disabled={datasetStatus.includes('loading')}
             onClick={() => onDeleteClick(dataset)}
           />
         </div>

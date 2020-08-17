@@ -90,6 +90,8 @@ export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(
   (state) => state.workspaces
 )
 
+export const selectWorkspaceStatus = (state: RootState) => state.workspaces.status
+
 export const selectCurrentWorkspace = createSelector(
   [(state: RootState) => state, selectCurrentWorkspaceId],
   (state, workspaceId) => selectById(state, workspaceId)

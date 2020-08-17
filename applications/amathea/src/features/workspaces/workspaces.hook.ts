@@ -11,6 +11,7 @@ import {
   selectShared,
   fetchWorkspaceByIdThunk,
   selectCurrentWorkspace,
+  selectWorkspaceStatus,
 } from './workspaces.slice'
 
 export const useWorkspacesAPI = () => {
@@ -74,10 +75,12 @@ export const useWorkspacesAPI = () => {
 }
 
 export const useWorkspacesConnect = () => {
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspacesList = useSelector(selectAll)
   const workspacesSharedList = useSelector(selectShared)
 
   return {
+    workspaceStatus,
     workspacesList,
     workspacesSharedList,
   }

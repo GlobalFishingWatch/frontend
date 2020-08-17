@@ -11,6 +11,7 @@ import {
   resetDraftDataview as resetDraftDataviewAction,
   selectDraftDataview,
   updateDataviewThunk,
+  selectDataviewStatus,
 } from './dataviews.slice'
 
 export const useDraftDataviewConnect = () => {
@@ -29,8 +30,9 @@ export const useDraftDataviewConnect = () => {
 }
 
 export const useDataviewsConnect = () => {
+  const dataviewsStatus = useSelector(selectDataviewStatus)
   const dataviewsList = useSelector(selectAllDataviews)
-  return { dataviewsList }
+  return { dataviewsStatus, dataviewsList }
 }
 
 export const useDataviewsAPI = () => {

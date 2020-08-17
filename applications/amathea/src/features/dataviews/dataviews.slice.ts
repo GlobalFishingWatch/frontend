@@ -106,6 +106,7 @@ export const {
 } = entityAdapter.getSelectors<RootState>((state) => state.dataviews)
 
 export const selectDraftDataview = (state: RootState) => state.dataviews.draft
+export const selectDataviewStatus = (state: RootState) => state.dataviews.status
 
 export const selectDrafDataviewSource = createSelector(
   [selectDraftDataview],
