@@ -6,7 +6,7 @@ interface SpinnerProps {
   color?: string
   size?: 'default' | 'small'
   className?: string
-  centered?: boolean
+  inline?: boolean
 }
 
 const spinnerVarColor = getComputedStyle(document.documentElement).getPropertyValue(
@@ -18,28 +18,31 @@ const Spinner: React.FC<SpinnerProps> = (props) => {
     color = spinnerVarColor || '#22447e',
     size = 'default',
     className = '',
-    centered = false,
+    inline = false,
   } = props
   const radius = size === 'default' ? 20 : 8
-  return (
-    <div className={cx({ [styles.centered]: centered }, className)}>
-      <svg
-        className={styles.spinner}
-        width={radius * 2}
-        height={radius * 2}
-        viewBox={`0 0 ${radius * 2} ${radius * 2}`}
-      >
-        <g className={styles.circleContainer}>
-          <circle
-            className={cx(styles.circle, styles[size])}
-            style={{ stroke: color }}
-            cx={radius}
-            cy={radius}
-            r={radius}
-          ></circle>
-        </g>
-      </svg>
-    </div>
+  const SvgComponent = (
+    <svg
+      className={styles.spinner}
+      width={radius * 2}
+      height={radius * 2}
+      viewBox={`0 0 ${radius * 2} ${radius * 2}`}
+    >
+      <g className={styles.circleContainer}>
+        <circle
+          className={cx(styles.circle, styles[size])}
+          style={{ stroke: color }}
+          cx={radius}
+          cy={radius}
+          r={radius}
+        ></circle>
+      </g>
+    </svg>
+  )
+  return inline ? (
+    SvgComponent
+  ) : (
+    <div className={cx(styles.centered, className)}>{SvgComponent}</div>
   )
 }
 

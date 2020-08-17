@@ -25,7 +25,7 @@ function Datasets(): React.ReactElement {
   )
 
   if (datasetStatus === 'loading') {
-    return <Spinner centered />
+    return <Spinner />
   }
 
   return (

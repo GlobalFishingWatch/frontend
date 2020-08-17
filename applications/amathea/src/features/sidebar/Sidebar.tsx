@@ -65,9 +65,7 @@ function Sidebar(): React.ReactElement {
         </div>
       )}
       <div className={cx(styles.content, { [styles.contentPadding]: !isWorkspaceEditor })}>
-        <Suspense fallback={<Spinner centered />}>
-          {ComponentSidebar && <ComponentSidebar />}
-        </Suspense>
+        <Suspense fallback={<Spinner />}>{ComponentSidebar && <ComponentSidebar />}</Suspense>
       </div>
     </div>
   )

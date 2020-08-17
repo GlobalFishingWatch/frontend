@@ -21,7 +21,7 @@ function AreasOfInterest(): React.ReactElement {
   }
 
   if (aoiStatus === 'loading') {
-    return <Spinner centered />
+    return <Spinner />
   }
 
   return (

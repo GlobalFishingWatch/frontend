@@ -36,14 +36,14 @@ const Button: React.FC<ButtonProps> = (props) => {
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
         className={cx(styles.button, styles[type], styles[size], className)}
-        onClick={onClick}
+        onClick={(e) => !loading && onClick && onClick(e)}
         disabled={disabled}
       >
         {loading ? (
           <Spinner size="small" color={type === 'default' ? 'white' : undefined} />
         ) : (
-            children
-          )}
+          children
+        )}
       </button>
     </Tooltip>
   )

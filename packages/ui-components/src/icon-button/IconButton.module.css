@@ -11,6 +11,7 @@
   color: var(--color-primary-blue);
   background-color: transparent;
   flex-shrink: 0;
+  line-height: 1;
 }
 
 .iconButton:not(:disabled) {
