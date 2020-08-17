@@ -16,6 +16,7 @@ import {
   selectDatasetStatus,
   createDatasetThunk,
   CreateDataset,
+  selectDatasetStatusId,
 } from './datasets.slice'
 import { selectShared } from './datasets.selectors'
 
@@ -57,9 +58,10 @@ export const useDraftDatasetConnect = () => {
 
 export const useDatasetsConnect = () => {
   const datasetStatus = useSelector(selectDatasetStatus)
+  const datasetStatusId = useSelector(selectDatasetStatusId)
   const datasetsList = useSelector(selectAllDatasets)
   const datasetsSharedList = useSelector(selectShared)
-  return { datasetStatus, datasetsList, datasetsSharedList }
+  return { datasetStatus, datasetStatusId, datasetsList, datasetsSharedList }
 }
 
 export const useDatasetsAPI = () => {

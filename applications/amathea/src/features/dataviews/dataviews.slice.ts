@@ -107,6 +107,7 @@ export const {
 
 export const selectDraftDataview = (state: RootState) => state.dataviews.draft
 export const selectDataviewStatus = (state: RootState) => state.dataviews.status
+export const selectDataviewStatusId = (state: RootState) => state.dataviews.statusId
 
 export const selectDrafDataviewSource = createSelector(
   [selectDraftDataview],

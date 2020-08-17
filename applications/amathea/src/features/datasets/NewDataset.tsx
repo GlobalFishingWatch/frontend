@@ -120,8 +120,8 @@ const DataFields: React.FC<DataFieldsProps> = (props) => {
           )}
         </div>
       )}
-      <Button onClick={onContinueClick} className={styles.saveBtn}>
-        {loading ? 'LOADING' : 'CONTINUE'}
+      <Button onClick={onContinueClick} className={styles.saveBtn} loading={loading}>
+        CONTINUE
       </Button>
     </Fragment>
   )

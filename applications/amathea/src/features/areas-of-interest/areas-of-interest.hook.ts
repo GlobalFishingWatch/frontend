@@ -5,14 +5,16 @@ import {
   fetchAOIThunk,
   deleteAOIThunk,
   selectAOIStatus,
+  selectAOIStatusId,
 } from './areas-of-interest.slice'
 import { getCurrentAOI } from './areas-of-interest.selectors'
 
 export const useAOIConnect = () => {
   const aoiStatus = useSelector(selectAOIStatus)
+  const aoiStatusId = useSelector(selectAOIStatusId)
   const aoiList = useSelector(selectAllAOI)
   const currentAOI = useSelector(getCurrentAOI)
-  return { aoiStatus, aoiList, currentAOI }
+  return { aoiStatus, aoiStatusId, aoiList, currentAOI }
 }
 
 export const useAOIAPI = () => {

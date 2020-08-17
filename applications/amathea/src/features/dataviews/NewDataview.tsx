@@ -73,8 +73,8 @@ function NewDataview(): React.ReactElement {
           onColorClick={(color) => setDraftDataview({ color })}
         />
       )}
-      <Button onClick={onCreateClick} className={styles.saveBtn}>
-        {loading ? 'LOADING' : draftDataview?.id ? 'UPDATE DATAVIEW' : 'ADD NEW DATAVIEW'}
+      <Button onClick={onCreateClick} className={styles.saveBtn} loading={loading}>
+        {draftDataview?.id ? 'UPDATE DATAVIEW' : 'ADD NEW DATAVIEW'}
       </Button>
     </div>
   )

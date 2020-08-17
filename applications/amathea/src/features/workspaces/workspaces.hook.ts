@@ -12,6 +12,7 @@ import {
   fetchWorkspaceByIdThunk,
   selectCurrentWorkspace,
   selectWorkspaceStatus,
+  selectWorkspaceStatusId,
 } from './workspaces.slice'
 
 export const useWorkspacesAPI = () => {
@@ -31,8 +32,9 @@ export const useWorkspacesAPI = () => {
   )
 
   const deleteWorkspace = useCallback(
-    (id: number) => {
-      dispatch(deleteWorkspaceThunk(id))
+    async (id: number): Promise<Workspace> => {
+      const { payload }: any = await dispatch(deleteWorkspaceThunk(id))
+      return payload
     },
     [dispatch]
   )
@@ -76,11 +78,13 @@ export const useWorkspacesAPI = () => {
 
 export const useWorkspacesConnect = () => {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const workspaceStatusId = useSelector(selectWorkspaceStatusId)
   const workspacesList = useSelector(selectAll)
   const workspacesSharedList = useSelector(selectShared)
 
   return {
     workspaceStatus,
+    workspaceStatusId,
     workspacesList,
     workspacesSharedList,
   }

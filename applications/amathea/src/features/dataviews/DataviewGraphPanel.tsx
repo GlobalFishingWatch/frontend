@@ -13,7 +13,7 @@ import { selectDatasetById } from 'features/datasets/datasets.slice'
 import Circle from 'common/Circle'
 import styles from './DataviewGraphPanel.module.css'
 import DataviewGraph from './DataviewGraph'
-import { useDraftDataviewConnect, useDataviewsAPI } from './dataviews.hook'
+import { useDraftDataviewConnect, useDataviewsAPI, useDataviewsConnect } from './dataviews.hook'
 
 interface DataviewGraphPanelProps {
   dataview: Dataview
@@ -25,6 +25,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = (props) => {
   const { deleteDataview } = useDataviewsAPI()
   const { showModal } = useModalConnect()
   const { setDraftDataview } = useDraftDataviewConnect()
+  const { dataviewsStatus, dataviewsStatusId } = useDataviewsConnect()
   const datasetId = dataview.datasets?.length ? dataview.datasets[0].id : ''
   const dataset = useSelector(selectDatasetById(datasetId))
   const onEditClick = useCallback(() => {
@@ -80,6 +81,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = (props) => {
             icon="delete"
             type="warning"
             tooltip="Remove dataview"
+            loading={dataviewsStatus === 'loading.delete' && dataviewsStatusId === dataview.id}
             onClick={() => onDeleteClick(dataview)}
           />
           <IconButton icon="view-on-map" tooltip="Show on map" />

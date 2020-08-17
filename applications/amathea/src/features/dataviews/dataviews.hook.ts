@@ -12,6 +12,7 @@ import {
   selectDraftDataview,
   updateDataviewThunk,
   selectDataviewStatus,
+  selectDataviewStatusId,
 } from './dataviews.slice'
 
 export const useDraftDataviewConnect = () => {
@@ -31,8 +32,9 @@ export const useDraftDataviewConnect = () => {
 
 export const useDataviewsConnect = () => {
   const dataviewsStatus = useSelector(selectDataviewStatus)
+  const dataviewsStatusId = useSelector(selectDataviewStatusId)
   const dataviewsList = useSelector(selectAllDataviews)
-  return { dataviewsStatus, dataviewsList }
+  return { dataviewsStatus, dataviewsStatusId, dataviewsList }
 }
 
 export const useDataviewsAPI = () => {

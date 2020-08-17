@@ -10,7 +10,7 @@ import { useDatasetsConnect, useDatasetsAPI } from './datasets.hook'
 function Datasets(): React.ReactElement {
   const { showModal } = useModalConnect()
   const { deleteDataset } = useDatasetsAPI()
-  const { datasetStatus, datasetsList, datasetsSharedList } = useDatasetsConnect()
+  const { datasetStatus, datasetStatusId, datasetsList, datasetsSharedList } = useDatasetsConnect()
 
   const onDeleteClick = useCallback(
     (dataset: Dataset) => {
@@ -41,7 +41,7 @@ function Datasets(): React.ReactElement {
             icon="delete"
             type="warning"
             tooltip="Delete Dataset"
-            disabled={datasetStatus.includes('loading')}
+            loading={datasetStatus === 'loading.delete' && datasetStatusId === dataset.id}
             onClick={() => onDeleteClick(dataset)}
           />
         </div>

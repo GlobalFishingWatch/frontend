@@ -12,7 +12,12 @@ import { useWorkspacesConnect, useWorkspacesAPI } from './workspaces.hook'
 function Workspaces(): React.ReactElement {
   const { showModal } = useModalConnect()
   const { deleteWorkspace } = useWorkspacesAPI()
-  const { workspaceStatus, workspacesList, workspacesSharedList } = useWorkspacesConnect()
+  const {
+    workspaceStatus,
+    workspaceStatusId,
+    workspacesList,
+    workspacesSharedList,
+  } = useWorkspacesConnect()
 
   const onDeleteClick = useCallback(
     (workspace: Workspace) => {
@@ -27,7 +32,7 @@ function Workspaces(): React.ReactElement {
   )
 
   if (workspaceStatus === 'loading') {
-    return <Spinner centered />
+    return <Spinner />
   }
 
   return (
@@ -60,7 +65,7 @@ function Workspaces(): React.ReactElement {
                 icon="delete"
                 type="warning"
                 disabled={workspace.id === 5}
-                tooltip="Delete Workspace"
+                loading={workspaceStatus === 'loading.delete' && workspaceStatusId === workspace.id}
                 onClick={() => onDeleteClick(workspace)}
               />
             </li>

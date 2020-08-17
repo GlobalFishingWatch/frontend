@@ -13,7 +13,7 @@ export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () =>
 
 export type CreateDataset = { dataset: Partial<Dataset>; file: File }
 export const createDatasetThunk = createAsyncThunk(
-  'datasets/uploadFile',
+  'datasets/create',
   async ({ dataset, file }: CreateDataset) => {
     const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
       method: 'POST',
@@ -44,10 +44,10 @@ export const deleteDatasetThunk = createAsyncThunk(
   'datasets/delete',
   async (id: string, { rejectWithValue }) => {
     try {
-      const workspace = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}`, {
+      const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}`, {
         method: 'DELETE',
       })
-      return { ...workspace, id }
+      return { ...dataset, id }
     } catch (e) {
       return rejectWithValue(id)
     }
@@ -104,6 +104,7 @@ export const selectDatasetById = (id: string) =>
 
 export const selectDraftDataset = (state: RootState) => state.datasets.draft
 export const selectDatasetStatus = (state: RootState) => state.datasets.status
+export const selectDatasetStatusId = (state: RootState) => state.datasets.statusId
 export const selectDraftDatasetStep = createSelector([selectDraftDataset], ({ step }) => step)
 export const selectDraftDatasetData = createSelector([selectDraftDataset], ({ data }) => data)
 
