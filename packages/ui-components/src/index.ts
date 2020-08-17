@@ -17,6 +17,7 @@ export {
 } from './multi-select'
 export { default as Select, SelectOption, SelectOnChange, SelectOnRemove } from './select'
 export { default as SplitView } from './split-view'
+export { default as Spinner } from './spinner'
 export { default as Switch } from './switch'
 export { default as Tag } from './tag'
 export { default as TagList } from './tag-list'

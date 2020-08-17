@@ -5,6 +5,8 @@ import styles from './Spinner.module.css'
 interface SpinnerProps {
   color?: string
   size?: 'default' | 'small'
+  className?: string
+  centered?: boolean
 }
 
 const spinnerVarColor = getComputedStyle(document.documentElement).getPropertyValue(
@@ -12,25 +14,32 @@ const spinnerVarColor = getComputedStyle(document.documentElement).getPropertyVa
 )
 
 const Spinner: React.FC<SpinnerProps> = (props) => {
-  const { color = spinnerVarColor || '#22447e', size = 'default' } = props
+  const {
+    color = spinnerVarColor || '#22447e',
+    size = 'default',
+    className = '',
+    centered = false,
+  } = props
   const radius = size === 'default' ? 20 : 8
   return (
-    <svg
-      className={styles.spinner}
-      width={radius * 2}
-      height={radius * 2}
-      viewBox={`0 0 ${radius * 2} ${radius * 2}`}
-    >
-      <g className={styles.circleContainer}>
-        <circle
-          className={cx(styles.circle, styles[size])}
-          style={{ stroke: color }}
-          cx={radius}
-          cy={radius}
-          r={radius}
-        ></circle>
-      </g>
-    </svg>
+    <div className={cx({ [styles.centered]: centered }, className)}>
+      <svg
+        className={styles.spinner}
+        width={radius * 2}
+        height={radius * 2}
+        viewBox={`0 0 ${radius * 2} ${radius * 2}`}
+      >
+        <g className={styles.circleContainer}>
+          <circle
+            className={cx(styles.circle, styles[size])}
+            style={{ stroke: color }}
+            cx={radius}
+            cy={radius}
+            r={radius}
+          ></circle>
+        </g>
+      </svg>
+    </div>
   )
 }
 
