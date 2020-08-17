@@ -32,10 +32,3 @@ export type WorkspaceConfig = {
   description?: string
   editors?: Editor[]
 }
-
-export type AOIConfig = {
-  id: number
-  label: string
-  geometry: Feature<Geometry, unknown>
-  bbox: number[]
-}

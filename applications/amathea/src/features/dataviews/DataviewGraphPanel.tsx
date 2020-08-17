@@ -47,6 +47,18 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = (props) => {
       showModal('newDataview')
     }
   }, [dataset, dataview, setDraftDataview, showModal])
+
+  const onDeleteClick = useCallback(
+    (dataview: Dataview) => {
+      const confirmation = window.confirm(
+        `Are you sure you want to permanently delete this dataview?\n${dataview.name}`
+      )
+      if (confirmation) {
+        deleteDataview(dataview.id)
+      }
+    },
+    [deleteDataview]
+  )
   const isUserContextLayer = dataset?.type === 'user-context-layer:v1'
   return (
     dataview && (
@@ -68,7 +80,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = (props) => {
             icon="delete"
             type="warning"
             tooltip="Remove dataview"
-            onClick={() => deleteDataview(dataview.id)}
+            onClick={() => onDeleteClick(dataview)}
           />
           <IconButton icon="view-on-map" tooltip="Show on map" />
         </div>

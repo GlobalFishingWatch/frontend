@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import Link from 'redux-first-router-link'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
+import { Workspace } from '@globalfishingwatch/dataviews-client'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { WORKSPACE_EDITOR } from 'routes/routes'
 import styles from './Workspaces.module.css'
@@ -11,6 +12,19 @@ function Workspaces(): React.ReactElement {
   const { showModal } = useModalConnect()
   const { deleteWorkspace } = useWorkspacesAPI()
   const { workspacesList, workspacesSharedList } = useWorkspacesConnect()
+
+  const onDeleteClick = useCallback(
+    (workspace: Workspace) => {
+      const confirmation = window.confirm(
+        `Are you sure you want to permanently delete this workspace?\n${workspace.label}`
+      )
+      if (confirmation) {
+        deleteWorkspace(workspace.id)
+      }
+    },
+    [deleteWorkspace]
+  )
+
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">Workspaces</h1>
@@ -41,7 +55,7 @@ function Workspaces(): React.ReactElement {
               type="warning"
               disabled={workspace.id === 5}
               tooltip="Delete Workspace"
-              onClick={() => deleteWorkspace(workspace.id)}
+              onClick={() => onDeleteClick(workspace)}
             />
           </div>
         ))}

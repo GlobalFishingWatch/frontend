@@ -1,20 +1,34 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from 'store'
-import { AOIConfig } from 'types'
 import GFWAPI from '@globalfishingwatch/api-client'
+import { AOI } from '@globalfishingwatch/dataviews-client/dist/types'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 
 export const fetchAOIThunk = createAsyncThunk('aoi/fetch', async () => {
-  const data = await GFWAPI.fetch<AOIConfig[]>('/v1/aoi')
+  const data = await GFWAPI.fetch<AOI[]>('/v1/aoi')
   return data
 })
 
-type AOIState = AsyncReducer<AOIConfig>
+export const deleteAOIThunk = createAsyncThunk(
+  'aoi/delete',
+  async (id: number, { rejectWithValue }) => {
+    try {
+      const aoi = await GFWAPI.fetch<AOI>(`/v1/aoi/${id}`, {
+        method: 'DELETE',
+      })
+      return { ...aoi, id }
+    } catch (e) {
+      return rejectWithValue(id)
+    }
+  }
+)
 
-const { slice: aoiSlice, entityAdapter } = createAsyncSlice<AOIState, AOIConfig>({
+type AOIState = AsyncReducer<AOI>
+
+const { slice: aoiSlice, entityAdapter } = createAsyncSlice<AOIState, AOI>({
   name: 'aoi',
   reducers: {},
-  thunks: { fetchThunk: fetchAOIThunk },
+  thunks: { fetchThunk: fetchAOIThunk, deleteThunk: deleteAOIThunk },
 })
 
 export const { selectAll: selectAllAOI, selectById: selectAOIById } = entityAdapter.getSelectors<

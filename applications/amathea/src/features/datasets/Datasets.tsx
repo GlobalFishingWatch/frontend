@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
+import { Dataset } from '@globalfishingwatch/dataviews-client'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import styles from './Datasets.module.css'
 import { useDatasetsConnect, useDatasetsAPI } from './datasets.hook'
@@ -9,6 +10,19 @@ function Datasets(): React.ReactElement {
   const { showModal } = useModalConnect()
   const { deleteDataset } = useDatasetsAPI()
   const { datasetStatus, datasetsList, datasetsSharedList } = useDatasetsConnect()
+
+  const onDeleteClick = useCallback(
+    (dataset: Dataset) => {
+      const confirmation = window.confirm(
+        `Are you sure you want to permanently delete this dataset?\n${dataset.name}`
+      )
+      if (confirmation) {
+        deleteDataset(dataset.id)
+      }
+    },
+    [deleteDataset]
+  )
+
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">Datasets</h1>
@@ -23,7 +37,7 @@ function Datasets(): React.ReactElement {
             type="warning"
             tooltip="Delete Dataset"
             disabled={datasetStatus === 'loading'}
-            onClick={() => deleteDataset(dataset.id)}
+            onClick={() => onDeleteClick(dataset)}
           />
         </div>
       ))}
