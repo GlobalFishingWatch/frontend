@@ -34,7 +34,7 @@ export default function WorkspaceEditor(): React.ReactElement | null {
   }, [])
 
   if (workspaceStatus === 'loading.item' || dataviewsStatus === 'loading') {
-    return <Spinner centered />
+    return <Spinner />
   }
 
   return (
@@ -62,7 +62,7 @@ export default function WorkspaceEditor(): React.ReactElement | null {
         {dataviews?.length > 0 && (
           <ul>
             {dataviews.map((dataview) => (
-              <li key={dataview.id}>
+              <li key={dataview.id} className={styles.dataviewContainer}>
                 <DataviewGraphPanel dataview={dataview} graphConfig={{ unit: 'm', color: 'red' }} />
               </li>
             ))}
