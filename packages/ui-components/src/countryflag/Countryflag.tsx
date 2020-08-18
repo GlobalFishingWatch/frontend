@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import countryflag from 'countryflag'
 import styles from './Countryflag.module.css'
 
@@ -13,7 +13,7 @@ interface CountryFlag {
   }
 }
 
-const CountryFlag: React.FC<CountryFlag> = (props) => {
+function CountryFlag(props: CountryFlag) {
   const {
     iso,
     svg = false,
@@ -57,4 +57,4 @@ const CountryFlag: React.FC<CountryFlag> = (props) => {
   )
 }
 
-export default CountryFlag
+export default memo(CountryFlag)

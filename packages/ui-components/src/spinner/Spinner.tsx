@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import cx from 'classnames'
 import styles from './Spinner.module.css'
 
@@ -13,7 +13,7 @@ const spinnerVarColor = getComputedStyle(document.documentElement).getPropertyVa
   '--color-primary-blue'
 )
 
-const Spinner: React.FC<SpinnerProps> = (props) => {
+function Spinner(props: SpinnerProps) {
   const {
     color = spinnerVarColor || '#22447e',
     size = 'default',
@@ -46,4 +46,4 @@ const Spinner: React.FC<SpinnerProps> = (props) => {
   )
 }
 
-export default Spinner
+export default memo(Spinner)

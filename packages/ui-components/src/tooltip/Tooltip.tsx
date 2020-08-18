@@ -1,8 +1,8 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 import Tippy, { TippyProps } from '@tippyjs/react'
 import styles from './Tooltip.module.css'
 
-const Tooltip = (props: TippyProps) => {
+function Tooltip(props: TippyProps) {
   if (!props.content) return <Fragment>{props.children}</Fragment>
   return (
     <Tippy className={styles.tooltip} duration={100} {...props}>
@@ -11,4 +11,4 @@ const Tooltip = (props: TippyProps) => {
   )
 }
 
-export default Tooltip
+export default memo(Tooltip)

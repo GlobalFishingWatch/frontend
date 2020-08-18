@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import cx from 'classnames'
 import styles from './ColorBar.module.css'
 import { ColorBarOptions } from './index'
@@ -28,7 +28,7 @@ const colors: ColorBarOptions[] = [
   '#FD5480',
 ]
 
-const ColorBar: React.FC<ColorBarProps> = (props) => {
+function ColorBar(props: ColorBarProps) {
   const { onColorClick, className = '', selectedColor, disabledColors = [] } = props
   return (
     <ul className={cx(styles.listContainer, className)}>
@@ -50,4 +50,4 @@ const ColorBar: React.FC<ColorBarProps> = (props) => {
   )
 }
 
-export default ColorBar
+export default memo(ColorBar)

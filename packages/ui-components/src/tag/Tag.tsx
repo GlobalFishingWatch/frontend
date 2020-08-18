@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import cx from 'classnames'
 import IconButton from '@globalfishingwatch/ui-components/src/icon-button'
 import styles from './Tag.module.css'
@@ -10,7 +10,7 @@ interface TagProps {
   onRemove?: (event: React.MouseEvent) => void
 }
 
-const Tag: React.FC<TagProps> = (props) => {
+function Tag(props: TagProps) {
   const { className, children, color, onRemove } = props
   return (
     <div
@@ -33,4 +33,4 @@ const Tag: React.FC<TagProps> = (props) => {
   )
 }
 
-export default Tag
+export default memo(Tag)

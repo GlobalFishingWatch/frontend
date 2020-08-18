@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
@@ -20,7 +20,7 @@ interface ButtonProps {
   onClick?: (e: React.MouseEvent) => void
 }
 
-const Button: React.FC<ButtonProps> = (props) => {
+function Button(props: ButtonProps) {
   const {
     type = 'default',
     size = 'default',
@@ -49,4 +49,4 @@ const Button: React.FC<ButtonProps> = (props) => {
   )
 }
 
-export default Button
+export default memo(Button)

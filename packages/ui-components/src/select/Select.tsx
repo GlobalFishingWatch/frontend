@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { memo, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelect } from 'downshift'
 import Icon from '../icon'
@@ -22,7 +22,7 @@ const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOpti
   return selectedItem !== undefined ? selectedItem.id === item.id : false
 }
 
-const Select: React.FC<SelectProps> = (props) => {
+function Select(props: SelectProps) {
   const {
     label = '',
     placeholder = 'Select an option',
@@ -113,4 +113,4 @@ const Select: React.FC<SelectProps> = (props) => {
   )
 }
 
-export default Select
+export default memo(Select)
