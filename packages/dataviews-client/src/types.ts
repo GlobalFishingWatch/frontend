@@ -37,6 +37,7 @@ export interface Dataset {
   name: string
   source: string
   description: string
+  unit: string
   ownerId: number
   endpoints?: Endpoint[]
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
@@ -14,7 +14,7 @@ interface SwitchProps {
   className?: string
 }
 
-const Switch: React.FC<SwitchProps> = (props) => {
+function Switch(props: SwitchProps) {
   const {
     active = false,
     disabled = false,
@@ -42,4 +42,4 @@ const Switch: React.FC<SwitchProps> = (props) => {
   )
 }
 
-export default Switch
+export default memo(Switch)

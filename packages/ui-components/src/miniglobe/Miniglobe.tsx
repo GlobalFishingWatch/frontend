@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, memo } from 'react'
 import { geoOrthographic, geoPath } from 'd3-geo'
 import { feature } from 'topojson-client'
 import { Topology, GeometryCollection } from 'topojson-specification'
@@ -24,7 +24,7 @@ const MIN_DEGREES_PATH = 4
 const MAX_DEGREES_PATH = 150
 const defaultCenter = { latitude: 0, longitude: 0 }
 
-const MiniGlobe: React.FC<MiniglobeProps> = (props) => {
+function MiniGlobe(props: MiniglobeProps) {
   const { bounds = defaultBounds, center = defaultCenter, size = 40, viewportThickness = 4 } = props
 
   const projection = useMemo(() => {
@@ -149,4 +149,4 @@ const MiniGlobe: React.FC<MiniglobeProps> = (props) => {
   )
 }
 
-export default MiniGlobe
+export default memo(MiniGlobe)

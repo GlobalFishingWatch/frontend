@@ -42,7 +42,7 @@ const routesMap: RoutesMap<LocationRoute> = {
   },
   [WORKSPACE_EDITOR]: {
     path: '/workspaces/:workspaceId',
-    sidebarComponent: 'datasets/Datasets.tsx',
+    sidebarComponent: 'workspace-editor/WorkspaceEditor.tsx',
   },
   [NOT_FOUND]: {
     path: '',

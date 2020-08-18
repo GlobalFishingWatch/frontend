@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, memo } from 'react'
 import ReactModal from 'react-modal'
 import cx from 'classnames'
 import IconButton from '../icon-button'
@@ -15,7 +15,7 @@ interface ModalProps {
   onClose: (e: React.MouseEvent) => void
 }
 
-const Modal: React.FC<ModalProps> = (props) => {
+function Modal(props: ModalProps) {
   const { isOpen, onClose, appSelector = 'root', header, children } = props
   const appElement = useMemo(() => document.getElementById(appSelector), [appSelector])
   if (!appElement) {
@@ -32,11 +32,11 @@ const Modal: React.FC<ModalProps> = (props) => {
     >
       <div className={cx(styles.header, { [styles.withTitle]: header })}>
         <h1 className={styles.title}>{header}</h1>
-        <IconButton className={styles.closeBtn} icon="close" onClick={onClose} />
+        <IconButton icon="close" onClick={onClose} />
       </div>
       <div className={cx(styles.content, { [styles.contentNoHeader]: !header })}>{children}</div>
     </ReactModal>
   )
 }
 
-export default Modal
+export default memo(Modal)

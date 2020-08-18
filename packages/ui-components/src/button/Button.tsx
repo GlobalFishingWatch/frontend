@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
@@ -20,7 +20,7 @@ interface ButtonProps {
   onClick?: (e: React.MouseEvent) => void
 }
 
-const Button: React.FC<ButtonProps> = (props) => {
+function Button(props: ButtonProps) {
   const {
     type = 'default',
     size = 'default',
@@ -36,17 +36,17 @@ const Button: React.FC<ButtonProps> = (props) => {
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
         className={cx(styles.button, styles[type], styles[size], className)}
-        onClick={onClick}
+        onClick={(e) => !loading && onClick && onClick(e)}
         disabled={disabled}
       >
         {loading ? (
           <Spinner size="small" color={type === 'default' ? 'white' : undefined} />
         ) : (
-            children
-          )}
+          children
+        )}
       </button>
     </Tooltip>
   )
 }
 
-export default Button
+export default memo(Button)

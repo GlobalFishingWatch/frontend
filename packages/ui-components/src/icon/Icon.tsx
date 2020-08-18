@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, memo } from 'react'
 import { Placement } from 'tippy.js'
 import cx from 'classnames'
 import Tooltip from '../tooltip'
@@ -83,7 +83,7 @@ interface IconProps {
 
 const Icon: React.FC<IconProps> = (props) => {
   const { icon, tooltip, type = 'default', className = '' } = props
-  const Component = useMemo(() => IconComponents[icon], [icon])
+  const Component = IconComponents[icon]
   return (
     <Tooltip content={tooltip} placement="auto">
       <Component className={cx(styles.icon, styles[type], className)} />
@@ -91,4 +91,4 @@ const Icon: React.FC<IconProps> = (props) => {
   )
 }
 
-export default Icon
+export default memo(Icon)

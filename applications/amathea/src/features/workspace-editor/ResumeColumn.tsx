@@ -10,7 +10,7 @@ import styles from './ResumeColumn.module.css'
 export default function ResumeColumn(): React.ReactElement | null {
   const { showModal } = useModalConnect()
   const { dataviews } = useWorkspaceDataviewsConnect()
-  const [currentPosition, setCurrentPosition] = useState<string>(window.location.hash)
+  const [currentPosition, setCurrentPosition] = useState<string>(window.location.hash || '#info')
 
   return (
     <ul className={styles.container}>
@@ -19,20 +19,24 @@ export default function ResumeColumn(): React.ReactElement | null {
           <IconButton icon="info" />
         </a>
       </li>
-      {dataviews.map((dataview) => (
-        <li
-          key={dataview.id}
-          className={cx({ [styles.current]: currentPosition === `#${dataview.id}` })}
-        >
-          <a href={`#${dataview.id}`} onClick={() => setCurrentPosition(`#${dataview.id}`)}>
-            {dataview.datasets?.length && dataview.datasets[0]?.type === 'user-context-layer:v1' ? (
-              <Circle />
-            ) : (
-              <DataviewGraphMini dataview={dataview} graphConfig={{ color: 'red' }} />
-            )}
-          </a>
-        </li>
-      ))}
+      {dataviews.map((dataview) => {
+        const color = dataview.defaultView?.color as string
+        return (
+          <li
+            key={dataview.id}
+            className={cx({ [styles.current]: currentPosition === `#${dataview.id}` })}
+          >
+            <a href={`#${dataview.id}`} onClick={() => setCurrentPosition(`#${dataview.id}`)}>
+              {dataview.datasets?.length &&
+              dataview.datasets[0]?.type === 'user-context-layer:v1' ? (
+                <Circle color={color} />
+              ) : (
+                <DataviewGraphMini dataview={dataview} graphColor={color} />
+              )}
+            </a>
+          </li>
+        )
+      })}
       <li key="add-dataview">
         <IconButton icon="plus" onClick={() => showModal('newDataview')} />
       </li>

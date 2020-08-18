@@ -82,8 +82,8 @@ function NewWorkspace(): React.ReactElement {
         <IconButton icon="plus" type="border" tooltip="Create new area of interest (Coming soon)" />
       </div>
       {error && <p className={styles.error}>{error}</p>}
-      <Button onClick={onSaveClick} className={styles.saveBtn}>
-        {loading ? 'LOADING' : workspace?.id ? 'Update workspace' : 'Save workspace'}
+      <Button onClick={onSaveClick} className={styles.saveBtn} loading={loading}>
+        {workspace?.id ? 'Update workspace' : 'Save workspace'}
       </Button>
     </div>
   )

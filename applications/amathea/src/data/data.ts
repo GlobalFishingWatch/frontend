@@ -28,11 +28,6 @@ export const DATASET_TYPE_OPTIONS = [
   { id: '4wings:v1', label: 'Spatiotemporal Grid (Coming soon)' },
 ]
 
-export interface DataviewGraphConfig {
-  unit?: string
-  color?: string
-}
-
 export interface GraphData {
   date: string
   value: number

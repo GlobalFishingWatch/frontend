@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, memo } from 'react'
 import ReactModal from 'react-modal'
 import cx from 'classnames'
 import IconButton from '../icon-button'
@@ -47,7 +47,7 @@ interface MenuProps {
   onClose: (e: React.MouseEvent) => void
 }
 
-const Menu: React.FC<MenuProps> = (props) => {
+function Menu(props: MenuProps) {
   const {
     isOpen,
     onClose,
@@ -93,4 +93,4 @@ const Menu: React.FC<MenuProps> = (props) => {
   )
 }
 
-export default Menu
+export default memo(Menu)

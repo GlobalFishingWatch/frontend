@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import cx from 'classnames'
 import styles from './Logo.module.css'
 
@@ -11,7 +11,7 @@ interface LogoProps {
   className?: string
 }
 
-const Logo: React.FC<LogoProps> = (props) => {
+function Logo(props: LogoProps) {
   const { type = 'default', subBrand = '', className } = props
   return (
     <svg
@@ -44,4 +44,4 @@ const Logo: React.FC<LogoProps> = (props) => {
   )
 }
 
-export default Logo
+export default memo(Logo)

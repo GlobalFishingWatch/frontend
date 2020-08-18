@@ -11,6 +11,10 @@ import styles from './Map.module.css'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
+const mapOptions = {
+  customAttribution: '© Copyright Global Fishing Watch 2020',
+}
+
 const Map = (): React.ReactElement => {
   const mapRef = useRef<any>(null)
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
@@ -73,6 +77,13 @@ const Map = (): React.ReactElement => {
     }
   }, [currentAOI, setMapCoordinates])
 
+  const onZoomInClick = useCallback(() => {
+    setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
+  }, [latitude, longitude, setMapCoordinates, zoom])
+  const onZoomOutClick = useCallback(() => {
+    setMapCoordinates({ latitude, longitude, zoom: Math.max(1, zoom - 1) })
+  }, [latitude, longitude, setMapCoordinates, zoom])
+
   return (
     <div className={styles.container}>
       {style && (
@@ -86,31 +97,19 @@ const Map = (): React.ReactElement => {
           zoom={zoom}
           onViewportChange={onViewportChange}
           mapStyle={style}
-          mapOptions={{
-            customAttribution: '© Copyright Global Fishing Watch 2020',
-          }}
+          mapOptions={mapOptions}
         />
       )}
       <div className={styles.mapControls}>
-        {bounds && <Miniglobe size={60} bounds={bounds} center={{ latitude, longitude }} />}
-        <IconButton
-          icon="plus"
-          type="map-tool"
-          tooltip="Zoom in"
-          onClick={() => {
-            setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
-          }}
-        />
-        <IconButton
-          icon="minus"
-          type="map-tool"
-          tooltip="Zoom out"
-          onClick={() => {
-            setMapCoordinates({ latitude, longitude, zoom: Math.max(1, zoom - 1) })
-          }}
-        />
-        <IconButton icon="ruler" type="map-tool" tooltip="Open ruler tool" />
-        <IconButton icon="camera" type="map-tool" tooltip="Capture the map" />
+        {bounds ? (
+          <Miniglobe size={60} bounds={bounds} center={{ latitude, longitude }} />
+        ) : (
+          <div className={styles.miniglobePlaceholder} />
+        )}
+        <IconButton icon="plus" type="map-tool" tooltip="Zoom in" onClick={onZoomInClick} />
+        <IconButton icon="minus" type="map-tool" tooltip="Zoom out" onClick={onZoomOutClick} />
+        <IconButton icon="ruler" type="map-tool" tooltip="Open ruler tool (Coming soon)" />
+        <IconButton icon="camera" type="map-tool" tooltip="Capture the map (Coming soon)" />
       </div>
     </div>
   )

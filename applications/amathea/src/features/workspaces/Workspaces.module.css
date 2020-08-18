@@ -11,9 +11,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.titleLink button {
   color: inherit;
   cursor: pointer;
 }

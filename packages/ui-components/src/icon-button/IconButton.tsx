@@ -1,4 +1,4 @@
-import React, { forwardRef, Fragment } from 'react'
+import React, { forwardRef, Fragment, ForwardRefRenderFunction, Ref, memo } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Icon, { IconType } from '../icon'
@@ -26,7 +26,7 @@ const warningVarColor = getComputedStyle(document.documentElement).getPropertyVa
   '--color-danger-red'
 )
 
-const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) => {
+function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
   const {
     type = 'default',
     size = 'default',
@@ -64,6 +64,6 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) =
       </button>
     </Tooltip>
   )
-})
+}
 
-export default IconButton
+export default memo(forwardRef<HTMLButtonElement, IconButtonProps>(IconButton))
