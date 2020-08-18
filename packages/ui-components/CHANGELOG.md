@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 1.5.0
+
+### Minor Changes
+
+- 0413cc6: Memoize functional components
+
 ## 1.4.0
 
 ### Minor Changes

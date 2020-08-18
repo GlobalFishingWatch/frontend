@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/amathea
 
+## 0.3.0
+
+### Minor Changes
+
+- 0413cc6: Memoize functional components
+
+### Patch Changes
+
+- Updated dependencies [0413cc6]
+  - @globalfishingwatch/ui-components@1.5.0
+
 ## 0.2.3
 
 ### Patch Changes
