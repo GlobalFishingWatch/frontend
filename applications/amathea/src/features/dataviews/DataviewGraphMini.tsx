@@ -2,16 +2,16 @@ import React from 'react'
 import { LineChart, Line, YAxis } from 'recharts'
 import { DateTime } from 'luxon'
 import { Dataview } from '@globalfishingwatch/dataviews-client/dist/types'
-import { TEST_DATAVIEW_MONTHLY_STATS, DataviewGraphConfig } from 'data/data'
+import { TEST_DATAVIEW_MONTHLY_STATS } from 'data/data'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
 interface DataviewGraphMiniProps {
   dataview: Dataview
-  graphConfig: DataviewGraphConfig
+  graphColor: string
 }
 
 const DataviewGraphMini: React.FC<DataviewGraphMiniProps> = (props) => {
-  const { dataview, graphConfig } = props
+  const { dataview, graphColor } = props
   const { start, end } = useTimerangeConnect()
 
   const data = (TEST_DATAVIEW_MONTHLY_STATS[`dataview-${dataview.id}`] || []).filter((current) => {
@@ -27,7 +27,7 @@ const DataviewGraphMini: React.FC<DataviewGraphMiniProps> = (props) => {
       <Line
         type="monotone"
         dataKey="value"
-        stroke={graphConfig?.color}
+        stroke={graphColor}
         strokeWidth={2}
         isAnimationActive={false}
         dot={false}

@@ -11,17 +11,18 @@ import {
 } from 'recharts'
 import { DateTime } from 'luxon'
 import { Dataview } from '@globalfishingwatch/dataviews-client/dist/types'
-import { TEST_DATAVIEW_MONTHLY_STATS, GraphData, DataviewGraphConfig } from 'data/data'
+import { TEST_DATAVIEW_MONTHLY_STATS, GraphData } from 'data/data'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import './DataviewGraph.module.css'
 
 interface DataviewGraphProps {
   dataview: Dataview
-  graphConfig: DataviewGraphConfig
+  graphColor: string
+  graphUnit?: string
 }
 
 const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
-  const { dataview, graphConfig } = props
+  const { dataview, graphColor, graphUnit = '' } = props
   const { start, end } = useTimerangeConnect()
 
   const data = (TEST_DATAVIEW_MONTHLY_STATS[`dataview-${dataview.id}`] || []).filter((current) => {
@@ -68,13 +69,13 @@ const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
         />
         <Tooltip
           labelFormatter={(label) => formatDates(label as string, true)}
-          formatter={(value) => [`${value} ${graphConfig?.unit}`, '']}
+          formatter={(value) => [`${value} ${graphUnit}`, '']}
           separator=""
         />
         <Line
           type="linear"
           dataKey="value"
-          stroke={graphConfig?.color}
+          stroke={graphColor}
           strokeWidth={2}
           isAnimationActive={false}
         />

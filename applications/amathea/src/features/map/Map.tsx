@@ -108,8 +108,8 @@ const Map = (): React.ReactElement => {
         )}
         <IconButton icon="plus" type="map-tool" tooltip="Zoom in" onClick={onZoomInClick} />
         <IconButton icon="minus" type="map-tool" tooltip="Zoom out" onClick={onZoomOutClick} />
-        <IconButton icon="ruler" type="map-tool" tooltip="Open ruler tool" />
-        <IconButton icon="camera" type="map-tool" tooltip="Capture the map" />
+        <IconButton icon="ruler" type="map-tool" tooltip="Open ruler tool (Coming soon)" />
+        <IconButton icon="camera" type="map-tool" tooltip="Capture the map (Coming soon)" />
       </div>
     </div>
   )
