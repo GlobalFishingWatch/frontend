@@ -5,12 +5,25 @@ import { Dataset } from '@globalfishingwatch/dataviews-client'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import styles from './Datasets.module.css'
-import { useDatasetsConnect, useDatasetsAPI } from './datasets.hook'
+import { useDatasetsConnect, useDatasetsAPI, useDraftDatasetConnect } from './datasets.hook'
 
 function Datasets(): React.ReactElement {
   const { showModal } = useModalConnect()
   const { deleteDataset } = useDatasetsAPI()
+  const { dispatchDraftDatasetData } = useDraftDatasetConnect()
   const { datasetStatus, datasetStatusId, datasetsList, datasetsSharedList } = useDatasetsConnect()
+
+  const onEditClick = useCallback(
+    (dataset: Dataset) => {
+      showModal('editDataset')
+      dispatchDraftDatasetData({
+        id: dataset.id,
+        name: dataset.name,
+        description: dataset.description,
+      })
+    },
+    [dispatchDraftDatasetData, showModal]
+  )
 
   const onDeleteClick = useCallback(
     (dataset: Dataset) => {
@@ -34,8 +47,9 @@ function Datasets(): React.ReactElement {
       <label>Your Datasets</label>
       {datasetsList.map((dataset) => (
         <div className={styles.listItem} key={dataset.id}>
-          <button className={styles.titleLink}>{dataset.description}</button>
-          <IconButton icon="edit" tooltip="Edit Dataset" />
+          <span className={styles.titleLink}>{dataset.name}</span>
+          <IconButton icon="info" tooltip={dataset.description} />
+          <IconButton icon="edit" tooltip="Edit Dataset" onClick={() => onEditClick(dataset)} />
           <IconButton icon="share" tooltip="Share Dataset" />
           <IconButton
             icon="delete"

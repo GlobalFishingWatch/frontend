@@ -31,7 +31,7 @@ function AreasOfInterest(): React.ReactElement {
       {aoiList &&
         aoiList.map((aoi) => (
           <div className={styles.listItem} key={aoi.id}>
-            <button className={styles.titleLink}>{aoi.label}</button>
+            <span className={styles.titleLink}>{aoi.label}</span>
             {/* <IconButton icon="edit" tooltip="Edit Area of Interest (Coming soon)" /> */}
             <IconButton
               disabled
