@@ -7,6 +7,8 @@ import { useWorkspaceDataviewsConnect } from 'features/workspaces/workspaces.hoo
 import Circle from 'common/Circle'
 import styles from './ResumeColumn.module.css'
 
+const graphConfig = { color: 'red' }
+
 export default function ResumeColumn(): React.ReactElement | null {
   const { showModal } = useModalConnect()
   const { dataviews } = useWorkspaceDataviewsConnect()
@@ -28,7 +30,7 @@ export default function ResumeColumn(): React.ReactElement | null {
             {dataview.datasets?.length && dataview.datasets[0]?.type === 'user-context-layer:v1' ? (
               <Circle />
             ) : (
-              <DataviewGraphMini dataview={dataview} graphConfig={{ color: 'red' }} />
+              <DataviewGraphMini dataview={dataview} graphConfig={graphConfig} />
             )}
           </a>
         </li>

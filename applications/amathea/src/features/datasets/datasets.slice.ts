@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import kebabCase from 'lodash/kebabCase'
+import memoize from 'lodash/memoize'
 import GFWAPI, { UploadResponse } from '@globalfishingwatch/api-client'
 import { Dataset } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice, asyncInitialState } from 'features/api/api.slice'
@@ -116,8 +117,10 @@ export const { resetDraftDataset, setDraftDatasetStep, setDraftDatasetData } = d
 export const { selectAll: selectAllDatasets, selectById } = entityAdapter.getSelectors<RootState>(
   (state) => state.datasets
 )
-export const selectDatasetById = (id: string) =>
+
+export const selectDatasetById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
+)
 
 export const selectDraftDataset = (state: RootState) => state.datasets.draft
 export const selectDatasetStatus = (state: RootState) => state.datasets.status

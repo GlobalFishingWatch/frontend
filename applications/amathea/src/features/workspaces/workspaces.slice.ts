@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'store'
+import memoize from 'lodash/memoize'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Workspace } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
@@ -94,8 +95,14 @@ export const selectWorkspaceStatus = (state: RootState) => state.workspaces.stat
 export const selectWorkspaceStatusId = (state: RootState) => state.workspaces.statusId
 
 export const selectCurrentWorkspace = createSelector(
-  [(state: RootState) => state, selectCurrentWorkspaceId],
-  (state, workspaceId) => selectById(state, workspaceId)
+  [selectAll, selectCurrentWorkspaceId],
+  (workspaces, workspaceId) => {
+    return workspaces.find((workspace) => workspace.id === workspaceId)
+  }
+)
+
+export const selectWorkspaceById = memoize((id: string) =>
+  createSelector([(state: RootState) => state], (state) => selectById(state, id))
 )
 
 export const selectShared = createSelector([selectAll, getUserId], (workspaces, userId) =>

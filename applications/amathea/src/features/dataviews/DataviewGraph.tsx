@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, memo } from 'react'
 import {
   ResponsiveContainer,
   LineChart,
@@ -83,4 +83,4 @@ const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
   )
 }
 
-export default DataviewGraph
+export default memo(DataviewGraph)

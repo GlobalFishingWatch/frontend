@@ -15,6 +15,8 @@ import DataviewGraphPanel from 'features/dataviews/DataviewGraphPanel'
 import ResumeColumn from './ResumeColumn'
 import styles from './WorkspaceEditor.module.css'
 
+const graphConfig = { unit: 'm', color: 'red' }
+
 export default function WorkspaceEditor(): React.ReactElement | null {
   const { dataviewsStatus } = useDataviewsConnect()
   const { workspaceStatus } = useWorkspacesConnect()
@@ -63,7 +65,7 @@ export default function WorkspaceEditor(): React.ReactElement | null {
           <ul>
             {dataviews.map((dataview) => (
               <li key={dataview.id} className={styles.dataviewContainer}>
-                <DataviewGraphPanel dataview={dataview} graphConfig={{ unit: 'm', color: 'red' }} />
+                <DataviewGraphPanel dataview={dataview} graphConfig={graphConfig} />
               </li>
             ))}
           </ul>

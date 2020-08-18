@@ -1,5 +1,6 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'store'
+import memoize from 'lodash/memoize'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AOI } from '@globalfishingwatch/dataviews-client/dist/types'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
@@ -31,9 +32,13 @@ const { slice: aoiSlice, entityAdapter } = createAsyncSlice<AOIState, AOI>({
   thunks: { fetchThunk: fetchAOIThunk, deleteThunk: deleteAOIThunk },
 })
 
-export const { selectAll: selectAllAOI, selectById: selectAOIById } = entityAdapter.getSelectors<
-  RootState
->((state) => state.aoi)
+export const { selectAll: selectAllAOI, selectById } = entityAdapter.getSelectors<RootState>(
+  (state) => state.aoi
+)
+
+export const selectAOIById = memoize((id: string) =>
+  createSelector([(state: RootState) => state], (state) => selectById(state, id))
+)
 
 export const selectAOIStatus = (state: RootState) => state.aoi.status
 export const selectAOIStatusId = (state: RootState) => state.aoi.statusId
