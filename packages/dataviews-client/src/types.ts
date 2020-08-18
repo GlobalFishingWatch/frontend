@@ -97,7 +97,7 @@ export interface Workspace {
   id: number
   description: string
   label: string
-  dataviews: number[] | Dataview[]
+  dataviews: Dataview[]
   dataviewsId: number[]
   workspaceDataviews: WorkspaceDataview[]
   aoiId: number

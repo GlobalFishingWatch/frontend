@@ -42,9 +42,9 @@ export const createDatasetThunk = createAsyncThunk(
 )
 
 export const updateDatasetThunk = createAsyncThunk(
-  'dataviews/update',
+  'datasets/update',
   async (partialDataset: Partial<Dataset>) => {
-    const updatedDataset = await GFWAPI.fetch<Dataset>(`/v1/dataviews/${partialDataset.id}`, {
+    const updatedDataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${partialDataset.id}`, {
       method: 'PATCH',
       body: partialDataset as any,
     })

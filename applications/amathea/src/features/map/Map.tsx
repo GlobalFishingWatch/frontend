@@ -4,8 +4,8 @@ import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import Miniglobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
-import GFWAPI from '@globalfishingwatch/api-client'
 import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
+import { useUserConnect } from 'features/user/user.hook'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import styles from './Map.module.css'
 
@@ -20,11 +20,11 @@ const Map = (): React.ReactElement => {
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
   const { currentAOI } = useAOIConnect()
+  const { logged, token } = useUserConnect()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
-  const token = GFWAPI.getToken()
 
   const [bounds, setBounds] = useState<MiniglobeBounds | null>(null)
 
@@ -86,7 +86,7 @@ const Map = (): React.ReactElement => {
 
   return (
     <div className={styles.container}>
-      {style && (
+      {style && logged && token && (
         <InteractiveMap
           ref={mapRef}
           width="100%"

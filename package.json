@@ -27,6 +27,7 @@
     "build": "lerna run build --scope @globalfishingwatch/*",
     "test": "lerna run test --scope @globalfishingwatch/*",
     "test:prepare": "lerna run prepare --scope @globalfishingwatch/*",
+    "changeset": "yarn changeset",
     "release": "lerna publish",
     "release:ci": "yarn test:prepare && lerna publish from-package -y --no-verify-access --ignore-scripts",
     "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn",

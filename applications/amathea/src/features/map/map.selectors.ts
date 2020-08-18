@@ -90,10 +90,10 @@ export const getDataviewsGeneratorsConfig = createSelector(
             {
               type: 'line',
               paint: {
-                'line-color': 'red',
-                'line-width': 3,
+                'line-color': dataview.defaultView?.color,
+                'line-width': 1,
               },
-              'source-layer': `user-context-${dataview.id}`,
+              'source-layer': dataview.dataset?.id,
             },
           ],
         }
@@ -111,9 +111,9 @@ export const getGeneratorsConfig = createSelector(
   ],
   (generators, aoiGenerators, currentWorkspaceAOI, dataviewsGenerators) => {
     let allGenerators = [...generators]
-    if (currentWorkspaceAOI) allGenerators.push(currentWorkspaceAOI)
-    if (aoiGenerators) allGenerators = allGenerators.concat(aoiGenerators)
     if (dataviewsGenerators) allGenerators = allGenerators.concat(dataviewsGenerators)
+    if (aoiGenerators) allGenerators = allGenerators.concat(aoiGenerators)
+    if (currentWorkspaceAOI) allGenerators.push(currentWorkspaceAOI)
     return allGenerators
   }
 )
