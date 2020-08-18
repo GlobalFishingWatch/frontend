@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 2.2.4
+
+### Patch Changes
+
+- 5bfb599: Update typings
+
 ## 2.2.3
 
 ### Patch Changes
