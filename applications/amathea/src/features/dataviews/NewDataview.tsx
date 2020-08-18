@@ -10,7 +10,7 @@ import { useCurrentWorkspaceConnect } from 'features/workspaces/workspaces.hook'
 import styles from './NewDataview.module.css'
 import { selectDatasetOptionsBySource } from './dataviews.selectors'
 import { useDraftDataviewConnect, useDataviewsAPI } from './dataviews.hook'
-import { DataviewDraftDataset, DataviewDraft } from './dataviews.slice'
+import { DataviewDraftDataset } from './dataviews.slice'
 
 function NewDataview(): React.ReactElement {
   const [loading, setLoading] = useState(false)
@@ -18,7 +18,7 @@ function NewDataview(): React.ReactElement {
   const { hideModal } = useModalConnect()
   const { workspace } = useCurrentWorkspaceConnect()
   const { draftDataview, setDraftDataview, resetDraftDataview } = useDraftDataviewConnect()
-  const { updateDataview, createDataview } = useDataviewsAPI()
+  const { upsertDataview } = useDataviewsAPI()
   const { source, dataset } = draftDataview || {}
   const datasetsOptions = useSelector(selectDatasetOptionsBySource)
   const onSourceSelect: SelectOnChange = (option) => {
@@ -32,17 +32,17 @@ function NewDataview(): React.ReactElement {
   }
   const onCreateClick = async () => {
     setLoading(true)
-    const dataview = draftDataview?.id
-      ? await updateDataview(draftDataview)
-      : await createDataview(draftDataview as DataviewDraft)
-    if (dataview) {
-      await dispatch(
-        updateWorkspaceThunk({ id: workspace?.id, dataviews: [{ id: dataview.id }] as any })
-      )
+    if (draftDataview) {
+      const dataview = await upsertDataview(draftDataview)
+      if (dataview) {
+        await dispatch(
+          updateWorkspaceThunk({ id: workspace?.id, dataviews: [{ id: dataview.id }] as any })
+        )
+      }
+      setLoading(false)
+      resetDraftDataview()
+      hideModal()
     }
-    setLoading(false)
-    resetDraftDataview()
-    hideModal()
   }
   return (
     <div className={styles.container}>

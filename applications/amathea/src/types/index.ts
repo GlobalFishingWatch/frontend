@@ -2,7 +2,13 @@ import { Feature, Geometry } from 'geojson'
 
 export type WorkspaceParam = 'zoom' | 'latitude' | 'longitude' | 'start' | 'end'
 
-export type ModalTypes = 'newWorkspace' | 'newAOI' | 'newDataset' | 'newDataview' | 'shareWorkspace'
+export type ModalTypes =
+  | 'newWorkspace'
+  | 'newAOI'
+  | 'newDataset'
+  | 'editDataset'
+  | 'newDataview'
+  | 'shareWorkspace'
 
 export type QueryParams = {
   zoom?: number

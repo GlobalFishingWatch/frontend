@@ -40,6 +40,22 @@ export const createDatasetThunk = createAsyncThunk(
   }
 )
 
+export const updateDatasetThunk = createAsyncThunk(
+  'dataviews/update',
+  async (partialDataset: Partial<Dataset>) => {
+    const updatedDataset = await GFWAPI.fetch<Dataset>(`/v1/dataviews/${partialDataset.id}`, {
+      method: 'PATCH',
+      body: partialDataset as any,
+    })
+    return updatedDataset
+  },
+  {
+    condition: (partialDataset) => {
+      if (!partialDataset || !partialDataset.id) return false
+    },
+  }
+)
+
 export const deleteDatasetThunk = createAsyncThunk(
   'datasets/delete',
   async (id: string, { rejectWithValue }) => {
@@ -90,6 +106,7 @@ const { slice: datasetsSlice, entityAdapter } = createAsyncSlice<DatasetsState, 
   thunks: {
     fetchThunk: fetchDatasetsThunk,
     createThunk: createDatasetThunk,
+    updateThunk: updateDatasetThunk,
     deleteThunk: deleteDatasetThunk,
   },
 })

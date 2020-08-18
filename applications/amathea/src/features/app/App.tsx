@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, memo, Fragment, useCallback, useEffect } from 'react'
+import React, { Suspense, lazy, Fragment, useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
@@ -16,7 +16,7 @@ const Map = lazy(() => import('features/map/Map'))
 const Timebar = lazy(() => import('features/timebar/Timebar'))
 const Sidebar = lazy(() => import('features/sidebar/Sidebar'))
 
-const Main = memo(() => {
+function Main() {
   const isWorkspaceEditor = useSelector(isWorkspaceEditorPage)
   return (
     <Suspense fallback={null}>
@@ -26,16 +26,16 @@ const Main = memo(() => {
       </div>
     </Suspense>
   )
-})
+}
 
-const SidebarWrapper = memo(() => {
+function SidebarWrapper() {
   return (
     <Suspense fallback={null}>
       <SidebarHeader />
       <Sidebar />
     </Suspense>
   )
-})
+}
 
 function App(): React.ReactElement {
   const dispatch = useDispatch()
@@ -68,9 +68,12 @@ function App(): React.ReactElement {
         className="split-container"
       />
       <Modal />
-      <Menu bgImage={menuBgImage} isOpen={menuOpen} onClose={onToggleMenu} activeLinkId="map-data">
-        Menu toggle
-      </Menu>
+      <Menu
+        bgImage={menuBgImage}
+        isOpen={menuOpen}
+        onClose={onToggleMenu}
+        activeLinkId="map-data"
+      />
     </Fragment>
   )
 }
