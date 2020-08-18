@@ -20,7 +20,7 @@ const initialState: MapState = {
       type: Generators.Type.Background,
       color: '#002458',
     } as BackgroundGeneratorConfig,
-    { id: 'satellite', type: Generators.Type.Basemap, visible: true } as BasemapGeneratorConfig,
+    { id: 'landmass', type: Generators.Type.Basemap, visible: true } as BasemapGeneratorConfig,
   ],
 }
 
