@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { isWorkspaceEditorPage } from 'routes/routes.selectors'
+import { selectHiddenDataviews } from 'routes/routes.selectors'
 import { selectAllAOI } from 'features/areas-of-interest/areas-of-interest.slice'
 import { selectCurrentWorkspace } from 'features/workspaces/workspaces.slice'
 import { selectCurrentWorkspaceDataviews } from 'features/dataviews/dataviews.selectors'
@@ -65,38 +65,72 @@ export const getAllAOIGeneratorsConfig = createSelector(
 )
 
 export const getDataviewsGeneratorsConfig = createSelector(
-  [selectCurrentWorkspaceDataviews, isWorkspaceEditorPage],
-  (dataviews, currentWorkspace) => {
-    if (!dataviews) return
-
+  [selectCurrentWorkspaceDataviews, selectHiddenDataviews],
+  (dataviews, hiddenDataviews) => {
+    if (!dataviews || !dataviews.length) return
     return dataviews
+      .filter((dataview) => !hiddenDataviews.includes(dataview.id))
       .map((dataview) => {
-        const tilesEndpoint = dataview.dataset?.endpoints?.find(
+        const contextTilesEndpoint = dataview.dataset?.endpoints?.find(
           (endpoint) => endpoint.id === 'user-context-tiles'
         )
-        if (!tilesEndpoint) return null
-        return {
-          type: Generators.Type.GL,
-          id: `user-context-${dataview.id}`,
-          sources: [
-            {
-              type: 'vector',
-              tiles: [
-                API_GATEWAY + tilesEndpoint.pathTemplate.replace(/{{/g, '{').replace(/}}/g, '}'),
-              ],
-            },
-          ],
-          layers: [
-            {
-              type: 'line',
-              paint: {
-                'line-color': dataview.defaultView?.color,
-                'line-width': 1,
+        if (contextTilesEndpoint) {
+          return {
+            type: Generators.Type.GL,
+            id: `user-context-${dataview.id}`,
+            sources: [
+              {
+                type: 'vector',
+                tiles: [
+                  API_GATEWAY +
+                    contextTilesEndpoint.pathTemplate.replace(/{{/g, '{').replace(/}}/g, '}'),
+                ],
               },
-              'source-layer': dataview.dataset?.id,
-            },
-          ],
+            ],
+            layers: [
+              {
+                type: 'line',
+                paint: {
+                  'line-color': dataview.defaultView?.color,
+                  'line-width': 1,
+                },
+                'source-layer': dataview.dataset?.id,
+              },
+            ],
+          }
         }
+        const fourwingsTilesEndpoint = dataview.dataset?.endpoints?.find(
+          (endpoint) => endpoint.id === '4wings-tiles'
+        )
+        if (fourwingsTilesEndpoint) {
+          return {
+            type: Generators.Type.GL,
+            id: `fourwings-${dataview.id}`,
+            sources: [
+              {
+                type: 'vector',
+                tiles: [
+                  API_GATEWAY +
+                    fourwingsTilesEndpoint.pathTemplate
+                      .replace('{{type}}', 'heatmap')
+                      .replace(/{{/g, '{')
+                      .replace(/}}/g, '}') +
+                    `?format=mvt`,
+                ],
+              },
+            ],
+            layers: [
+              {
+                type: 'fill',
+                paint: {
+                  'fill-color': dataview.defaultView?.color,
+                },
+                'source-layer': dataview.dataset?.id,
+              },
+            ],
+          }
+        }
+        return null
       })
       .filter((g) => g !== null) as Generators.GlGeneratorConfig[]
   }

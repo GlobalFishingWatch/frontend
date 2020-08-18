@@ -6,6 +6,8 @@ import { DatasetSources, DATASET_SOURCE_IDS, DATASET_SOURCE_OPTIONS } from 'data
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import Circle from 'common/Circle'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectHiddenDataviews } from 'routes/routes.selectors'
 import styles from './DataviewGraphPanel.module.css'
 import DataviewGraph from './DataviewGraph'
 import { useDraftDataviewConnect, useDataviewsAPI, useDataviewsConnect } from './dataviews.hook'
@@ -19,6 +21,8 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
   const { showModal } = useModalConnect()
   const { setDraftDataview } = useDraftDataviewConnect()
   const { dataviewsStatus, dataviewsStatusId } = useDataviewsConnect()
+  const { dispatchQueryParams } = useLocationConnect()
+  const hiddenDataviews = useSelector(selectHiddenDataviews)
   const datasetId = dataview.datasets?.length ? dataview.datasets[0].id : ''
   const dataset = useSelector(selectDatasetById(datasetId))
   const color = dataview.defaultView?.color as string
@@ -55,6 +59,14 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
     },
     [deleteDataview]
   )
+
+  const isDataviewHidden = hiddenDataviews.includes(dataview.id)
+  const onToggleMapClick = useCallback(
+    (dataview: Dataview) => {
+      dispatchQueryParams({ hiddenDataviews: isDataviewHidden ? [] : [dataview.id] })
+    },
+    [dispatchQueryParams, isDataviewHidden]
+  )
   const isUserContextLayer = dataset?.type === 'user-context-layer:v1'
   return (
     dataview && (
@@ -77,7 +89,11 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
             loading={dataviewsStatus === 'loading.delete' && dataviewsStatusId === dataview.id}
             onClick={() => onDeleteClick(dataview)}
           />
-          <IconButton icon="view-on-map" tooltip="Show on map" />
+          <IconButton
+            icon={isDataviewHidden ? 'view-on-map' : 'remove-from-map'}
+            tooltip={isDataviewHidden ? 'Show on map' : 'Remove from map'}
+            onClick={() => onToggleMapClick(dataview)}
+          />
         </div>
         {!isUserContextLayer && (
           <div className={styles.graph}>

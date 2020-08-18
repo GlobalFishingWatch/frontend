@@ -41,6 +41,7 @@ export const selectMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectStartQuery = selectQueryParam<string>('start')
 export const selectEndQuery = selectQueryParam<string>('end')
+export const selectHiddenDataviews = selectQueryParam<number[]>('hiddenDataviews')
 
 export const selectViewport = createSelector(
   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery],

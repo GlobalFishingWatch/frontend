@@ -3,6 +3,7 @@ import { RootState } from 'store'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Dataview, DataviewCreation } from '@globalfishingwatch/dataviews-client'
 import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
+import { Generators } from '@globalfishingwatch/layer-composer'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
 
@@ -20,7 +21,7 @@ export const createDataviewThunk = createAsyncThunk(
       description: dataset.description,
       datasets: [dataset.id as string],
       defaultView: {
-        type: dataset.type === 'user-context-layer:v1' ? 'gl' : 'TRACK',
+        type: Generators.Type.GL,
         color,
       },
     }
