@@ -29,7 +29,7 @@ const MODALS: ModalConfigOptions = {
     component: 'datasets/EditDataset.tsx',
   },
   newDataview: {
-    title: 'New Dataview',
+    title: 'Add Dataset',
     component: 'dataviews/NewDataview.tsx',
   },
 }
@@ -64,7 +64,9 @@ function Modal(): React.ReactElement | null {
 
   const isUpdating =
     (workspace?.id && modal === 'newWorkspace') || (draftDataview?.id && modal === 'newDataview')
-  const title = isUpdating ? selectedModal?.title.replace('New', 'Edit') : selectedModal?.title
+  const title = isUpdating
+    ? selectedModal?.title.replace('New', 'Edit').replace('Add', 'Edit')
+    : selectedModal?.title
   return selectedModal ? (
     <GFWModal header={title} isOpen onClose={onCloseClick}>
       <Suspense fallback={<Spinner />}>{ComponentModal && <ComponentModal />}</Suspense>

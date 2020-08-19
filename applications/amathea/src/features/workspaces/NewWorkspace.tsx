@@ -83,7 +83,7 @@ function NewWorkspace(): React.ReactElement {
       </div>
       {error && <p className={styles.error}>{error}</p>}
       <Button onClick={onSaveClick} className={styles.saveBtn} loading={loading}>
-        {workspace?.id ? 'Update workspace' : 'Save workspace'}
+        Confirm
       </Button>
     </div>
   )

@@ -26,7 +26,7 @@ const Map = (): React.ReactElement => {
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
-  const [bounds, setBounds] = useState<MiniglobeBounds | null>(null)
+  const [bounds, setBounds] = useState<MiniglobeBounds | undefined>()
 
   const transformRequest: any = useCallback(
     (url: string, resourceType: string) => {
@@ -101,11 +101,7 @@ const Map = (): React.ReactElement => {
         />
       )}
       <div className={styles.mapControls}>
-        {bounds ? (
-          <Miniglobe size={60} bounds={bounds} center={{ latitude, longitude }} />
-        ) : (
-          <div className={styles.miniglobePlaceholder} />
-        )}
+        <Miniglobe size={60} bounds={bounds} center={{ latitude, longitude }} />
         <IconButton icon="plus" type="map-tool" tooltip="Zoom in" onClick={onZoomInClick} />
         <IconButton icon="minus" type="map-tool" tooltip="Zoom out" onClick={onZoomOutClick} />
         <IconButton icon="ruler" type="map-tool" tooltip="Open ruler tool (Coming soon)" />

@@ -77,7 +77,7 @@ export default function WorkspaceEditor(): React.ReactElement | null {
           <Button type="secondary" tooltip="Coming soon" tooltipPlacement="top">
             Download data
           </Button>
-          <Button onClick={() => showModal('newDataview')}>Add new dataview</Button>
+          <Button onClick={() => showModal('newDataview')}>Add dataset</Button>
         </div>
       </div>
     </div>

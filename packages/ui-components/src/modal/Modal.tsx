@@ -32,7 +32,7 @@ function Modal(props: ModalProps) {
     >
       <div className={cx(styles.header, { [styles.withTitle]: header })}>
         <h1 className={styles.title}>{header}</h1>
-        <IconButton icon="close" onClick={onClose} />
+        <IconButton icon="close" tooltip="Dismiss" tooltipPlacement="left" onClick={onClose} />
       </div>
       <div className={cx(styles.content, { [styles.contentNoHeader]: !header })}>{children}</div>
     </ReactModal>

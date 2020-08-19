@@ -4,6 +4,7 @@ import memoizeOne from 'memoize-one'
 import { Group } from '../../types'
 import { Type, TrackGeneratorConfig, GlobalGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
+import { isConfigVisible } from '../utils'
 import valuesArrayToGeoJSON from './segments-to-geojson'
 import filterGeoJSONByTimerange from './filterGeoJSONByTimerange'
 import { simplifyTrack } from './simplify-track'
@@ -63,6 +64,7 @@ const getHighlightedLayer = (id: string, { group = Group.TrackHighlighted, paint
     layout: {
       'line-join': 'round',
       'line-cap': 'round',
+      visibility: 'visible',
     },
     paint: {
       'line-color': 'white',
@@ -145,11 +147,12 @@ class TrackGenerator {
   }
 
   _getStyleLayers = (config: TrackGeneratorConfig & GlobalGeneratorConfig) => {
+    const visibility = isConfigVisible(config)
     const layer = {
       id: config.id,
       source: config.id,
       type: 'line',
-      layout: {},
+      layout: { visibility },
       paint: {
         'line-color': config.color || DEFAULT_TRACK_COLOR,
         'line-opacity': 0.9,
@@ -160,7 +163,7 @@ class TrackGenerator {
     }
     const layers = [layer]
 
-    if (config.highlightedEvent) {
+    if (visibility && config.highlightedEvent) {
       const id = `${config.id}${this.highlightEventSufix}`
       const paint = {
         'line-color': config.color || DEFAULT_TRACK_COLOR,
@@ -173,7 +176,7 @@ class TrackGenerator {
       layers.push(highlightedEventLayer)
     }
 
-    if (config.highlightedTime) {
+    if (visibility && config.highlightedTime) {
       const id = `${config.id}${this.highlightSufix}`
       const highlightedLayer = getHighlightedLayer(id)
       layers.push(highlightedLayer)

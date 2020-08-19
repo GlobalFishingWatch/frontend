@@ -31,11 +31,13 @@ export type DatasetTypes =
   | 'user-context-layer:v1'
   | 'data-download:v1'
 
+export type DatasetStatus = 'done' | 'importing' | 'error'
 export interface Dataset {
   id: string
   type: DatasetTypes
   name: string
   source: string
+  status: DatasetStatus
   description: string
   unit: string
   ownerId: number

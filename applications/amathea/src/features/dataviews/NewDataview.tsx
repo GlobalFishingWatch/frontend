@@ -46,9 +46,9 @@ function NewDataview(): React.ReactElement {
   }
   return (
     <div className={styles.container}>
-      <h1 className="screen-reader-only">{draftDataview?.id ? 'Dataview' : 'New Dataview'}</h1>
+      <h1 className="screen-reader-only">{draftDataview?.id ? 'Update Dataset' : 'New Dataset'}</h1>
       <Select
-        label="Sources"
+        label="Source"
         options={DATASET_SOURCE_OPTIONS}
         selectedOption={source}
         className={styles.input}
@@ -58,7 +58,7 @@ function NewDataview(): React.ReactElement {
       ></Select>
       {source && source.id && (
         <Select
-          label="Datasets"
+          label="Dataset"
           options={datasetsOptions}
           selectedOption={dataset}
           className={styles.input}
@@ -74,7 +74,7 @@ function NewDataview(): React.ReactElement {
         />
       )}
       <Button onClick={onCreateClick} className={styles.saveBtn} loading={loading}>
-        {draftDataview?.id ? 'UPDATE DATAVIEW' : 'ADD NEW DATAVIEW'}
+        Confirm
       </Button>
     </div>
   )

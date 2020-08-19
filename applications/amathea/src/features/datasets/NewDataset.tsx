@@ -121,7 +121,7 @@ const DataFields: React.FC<DataFieldsProps> = (props) => {
         </div>
       )}
       <Button onClick={onContinueClick} className={styles.saveBtn} loading={loading}>
-        CONTINUE
+        Confirm
       </Button>
     </Fragment>
   )

@@ -46,7 +46,7 @@ function EditDataset(): React.ReactElement {
         loading={loading}
         className={styles.saveBtn}
       >
-        EDIT
+        Confirm
       </Button>
     </div>
   )
