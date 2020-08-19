@@ -5,6 +5,7 @@ import GLStyleGenerator from './gl/gl'
 import CartoGenerator, { CARTO_FISHING_MAP_API } from './carto-polygons/carto-polygons'
 import HeatmapAnimatedGenerator from './heatmap/heatmap-animated'
 import HeatmapGenerator from './heatmap/heatmap'
+import UserContextGenerator from './user-context/user-context'
 import TrackGenerator from './track/track'
 import VesselEventsGenerator from './vessel-events/vessel-events'
 import RulersGenerator from './rulers/rulers'
@@ -17,6 +18,7 @@ export default {
   [Type.Basemap]: new BaseMapGenerator(),
   [Type.GL]: new GLStyleGenerator(),
   [Type.CartoPolygons]: new CartoGenerator({ baseUrl: CARTO_FISHING_MAP_API }),
+  [Type.UserContext]: new UserContextGenerator(),
   [Type.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
   [Type.Heatmap]: new HeatmapGenerator({}),
   [Type.Track]: new TrackGenerator(),

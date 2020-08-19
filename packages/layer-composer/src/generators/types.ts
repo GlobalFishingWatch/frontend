@@ -3,6 +3,7 @@ import { Segment } from './track/segments-to-geojson'
 
 export enum Type {
   Background = 'BACKGROUND',
+  UserContext = 'USER_CONTEXT',
   Basemap = 'BASEMAP',
   CartoPolygons = 'CARTO_POLYGONS',
   GL = 'GL',
@@ -56,6 +57,21 @@ export interface BackgroundGeneratorConfig extends GeneratorConfig {
    * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
    */
   color?: string
+}
+
+/**
+ * Layers created by user uploading their own shapefile
+ */
+export interface UserContextGeneratorConfig extends GeneratorConfig {
+  type: Type.UserContext
+  /**
+   * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
+   */
+  color?: string
+  /**
+   * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
+   */
+  tilesUrl: string
 }
 
 /**
@@ -166,6 +182,7 @@ export type AnyGeneratorConfig =
   | BasemapGeneratorConfig
   | GlGeneratorConfig
   | CartoPolygonsGeneratorConfig
+  | UserContextGeneratorConfig
   | TrackGeneratorConfig
   | VesselEventsGeneratorConfig
   | RulersGeneratorConfig

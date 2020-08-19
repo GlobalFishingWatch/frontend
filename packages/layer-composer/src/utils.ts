@@ -1,6 +1,13 @@
 import { Layer } from 'mapbox-gl'
 import { Dictionary } from './types'
 
+export function isUrlAbsolute(url: string) {
+  if (!url) {
+    throw new Error('Url absolute check needs a proper url')
+  }
+  return url.indexOf('http://') === 0 || url.indexOf('https://') === 0
+}
+
 export const flatObjectArrays = (object = {} as any) => {
   let objectParsed: { [key: string]: any } = {}
   Object.keys(object).forEach((key) => {

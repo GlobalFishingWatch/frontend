@@ -71,34 +71,21 @@ export const getDataviewsGeneratorsConfig = createSelector(
     return dataviews
       .filter((dataview) => !hiddenDataviews.includes(dataview.id))
       .map((dataview) => {
+        if (!dataview.dataset) return null
+
         const contextTilesEndpoint = dataview.dataset?.endpoints?.find(
           (endpoint) => endpoint.id === 'user-context-tiles'
         )
         if (contextTilesEndpoint) {
-          return {
-            type: Generators.Type.GL,
-            id: `user-context-${dataview.id}`,
-            sources: [
-              {
-                type: 'vector',
-                tiles: [
-                  API_GATEWAY +
-                    contextTilesEndpoint.pathTemplate.replace(/{{/g, '{').replace(/}}/g, '}'),
-                ],
-              },
-            ],
-            layers: [
-              {
-                type: 'line',
-                paint: {
-                  'line-color': dataview.defaultView?.color,
-                  'line-width': 1,
-                },
-                'source-layer': dataview.dataset?.id,
-              },
-            ],
+          const generator: Generators.UserContextGeneratorConfig = {
+            id: dataview.dataset.id as string,
+            type: Generators.Type.UserContext,
+            color: dataview.defaultView?.color as string,
+            tilesUrl: contextTilesEndpoint.pathTemplate,
           }
+          return generator
         }
+
         const fourwingsTilesEndpoint = dataview.dataset?.endpoints?.find(
           (endpoint) => endpoint.id === '4wings-tiles'
         )
