@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { GeneratorStyles, Group } from '../../types'
 import { Type, CartoPolygonsGeneratorConfig } from '../types'
+import { isConfigVisible } from '../utils'
 import layersDirectory from './carto-polygons-layers'
 
 export const CARTO_FISHING_MAP_API = 'https://carto.globalfishingwatch.org/user/admin/api/v1/map'
@@ -84,8 +85,7 @@ class CartoPolygonsGenerator {
 
     const layerData = (layersDirectory as any)[cartoTableId] || config
     const layers: any = layerData.layers.map((glLayer: any) => {
-      const visibility =
-        config.visible !== undefined ? (config.visible ? 'visible' : 'none') : 'visible'
+      const visibility = isConfigVisible(config)
       const layout = glLayer.layout ? { ...glLayer.layout, visibility } : { visibility }
       const paint: any = {}
       const hasSelectedFeatures = config.selectedFeatures?.values?.length

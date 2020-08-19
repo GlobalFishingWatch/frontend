@@ -1,19 +1,20 @@
 import { Type, GlGeneratorConfig } from '../types'
+import { isConfigVisible } from '../utils'
 
 class GlStyleGenerator {
   type = Type.GL
 
-  _getStyleSources = (layer: GlGeneratorConfig) => {
-    return layer.sources.map((glSource: any) => ({ id: `${layer.id}`, ...glSource }))
+  _getStyleSources = (config: GlGeneratorConfig) => {
+    return config.sources.map((glSource: any) => ({ id: `${config.id}`, ...glSource }))
   }
 
-  _getStyleLayers = (layer: GlGeneratorConfig) => {
+  _getStyleLayers = (config: GlGeneratorConfig) => {
     const layout = {
-      visibility: layer.visible !== undefined ? (layer.visible ? 'visible' : 'none') : 'visible',
+      visibility: isConfigVisible(config),
     }
-    return layer.layers.map((glLayer: any, i: number) => ({
-      id: `${layer.id}-${i}`,
-      source: layer.id,
+    return config.layers.map((glLayer: any, i: number) => ({
+      id: `${config.id}-${i}`,
+      source: config.id,
       ...glLayer,
       layout: {
         ...layout,

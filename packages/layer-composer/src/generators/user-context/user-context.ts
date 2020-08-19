@@ -1,5 +1,6 @@
 import { Type, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
+import { isConfigVisible } from '../utils'
 
 const API_GATEWAY =
   process.env.API_GATEWAY ||
@@ -20,7 +21,6 @@ class UserContextGenerator {
     ]
   }
   _getStyleLayers = (config: UserContextGeneratorConfig) => {
-    const visibility: 'visible' | 'none' = config && config.visible ? 'visible' : 'none'
     return [
       {
         id: `user-context-${config.id}`,
@@ -32,7 +32,7 @@ class UserContextGenerator {
           'line-width': 1,
         },
         layout: {
-          visibility,
+          visibility: isConfigVisible(config),
         },
       },
     ]
