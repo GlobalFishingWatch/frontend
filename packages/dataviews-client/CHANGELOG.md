@@ -1,5 +1,13 @@
 # @globalfishingwatch/dataviews-client
 
+## 2.2.5
+
+### Patch Changes
+
+- 152d7ed: y
+- Updated dependencies [152d7ed]
+  - @globalfishingwatch/layer-composer@2.5.0
+
 ## 2.2.4
 
 ### Patch Changes
