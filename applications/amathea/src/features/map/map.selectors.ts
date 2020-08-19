@@ -95,6 +95,7 @@ export const getDataviewsGeneratorsConfig = createSelector(
             id: `fourwings-${dataview.id}`,
             sources: [
               {
+                maxzoom: 12,
                 type: 'vector',
                 tiles: [
                   API_GATEWAY +
@@ -102,7 +103,7 @@ export const getDataviewsGeneratorsConfig = createSelector(
                       .replace('{{type}}', 'heatmap')
                       .replace(/{{/g, '{')
                       .replace(/}}/g, '}') +
-                    `?format=mvt`,
+                    `?format=mvt&proxy=true&temporal-aggregation=true`,
                 ],
               },
             ],
@@ -110,7 +111,24 @@ export const getDataviewsGeneratorsConfig = createSelector(
               {
                 type: 'fill',
                 paint: {
-                  'fill-color': dataview.defaultView?.color,
+                  // 'fill-color': dataview.defaultView?.color,
+                  'fill-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['to-number', ['get', '17532']],
+                    0,
+                    '#002457',
+                    20,
+                    '#163F89',
+                    24,
+                    '#0F6F97',
+                    25,
+                    '#07BBAE',
+                    26,
+                    '#00FFC3',
+                    28,
+                    '#FFFFFF',
+                  ],
                 },
                 'source-layer': dataview.dataset?.id,
               },
@@ -131,6 +149,7 @@ export const getGeneratorsConfig = createSelector(
     getDataviewsGeneratorsConfig,
   ],
   (generators, aoiGenerators, currentWorkspaceAOI, dataviewsGenerators) => {
+    console.log('dataviewsGenerators', dataviewsGenerators)
     let allGenerators = [...generators]
     if (dataviewsGenerators) allGenerators = allGenerators.concat(dataviewsGenerators)
     if (aoiGenerators) allGenerators = allGenerators.concat(aoiGenerators)

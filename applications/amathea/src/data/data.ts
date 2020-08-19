@@ -34,7 +34,7 @@ export interface GraphData {
 }
 
 export const TEST_DATAVIEW_MONTHLY_STATS: { [id: string]: GraphData[] } = {
-  'dataview-52': [
+  'dataview-56': [
     { date: '2018-01', value: 33.818 },
     { date: '2018-02', value: 32.976 },
     { date: '2018-03', value: 33.669 },
