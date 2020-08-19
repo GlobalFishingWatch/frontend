@@ -90,6 +90,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
             onClick={() => onDeleteClick(dataview)}
           />
           <IconButton
+            loading={dataset?.status === 'importing'}
             icon={isDataviewHidden ? 'view-on-map' : 'remove-from-map'}
             tooltip={isDataviewHidden ? 'Show on map' : 'Remove from map'}
             onClick={() => onToggleMapClick(dataview)}
