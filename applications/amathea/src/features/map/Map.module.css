@@ -3,10 +3,6 @@
   position: relative;
 }
 
-.miniglobePlaceholder {
-  min-height: 6rem;
-}
-
 .mapControls {
   display: flex;
   flex-direction: column;
