@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.1
+
+### Patch Changes
+
+- 152d7ed: y
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/amathea
 
+## 0.3.1
+
+### Patch Changes
+
+- 152d7ed: y
+- Updated dependencies [152d7ed]
+  - @globalfishingwatch/layer-composer@2.5.0
+  - @globalfishingwatch/dataviews-client@2.2.5
+  - @globalfishingwatch/react-hooks@2.5.2
+  - @globalfishingwatch/ui-components@1.5.2
+
 ## 0.3.0
 
 ### Minor Changes
