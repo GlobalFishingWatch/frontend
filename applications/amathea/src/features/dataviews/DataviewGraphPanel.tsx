@@ -63,9 +63,13 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
   const isDataviewHidden = hiddenDataviews.includes(dataview.id)
   const onToggleMapClick = useCallback(
     (dataview: Dataview) => {
-      dispatchQueryParams({ hiddenDataviews: isDataviewHidden ? [] : [dataview.id] })
+      dispatchQueryParams({
+        hiddenDataviews: isDataviewHidden
+          ? hiddenDataviews.filter((d) => d !== dataview.id)
+          : [...hiddenDataviews, dataview.id],
+      })
     },
-    [dispatchQueryParams, isDataviewHidden]
+    [dispatchQueryParams, hiddenDataviews, isDataviewHidden]
   )
   const isUserContextLayer = dataset?.type === 'user-context-layer:v1'
   return (

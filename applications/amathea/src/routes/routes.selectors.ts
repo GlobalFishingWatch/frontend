@@ -28,12 +28,20 @@ const selectLocationQuery = createSelector([selectLocation], (location) => {
   return location.query as Query
 })
 
+const queryParamsParse: { [key in WorkspaceParam]?: any } = {
+  hiddenDataviews: (dataviews: string[]) => dataviews.map((d) => parseInt(d)),
+}
+
 const selectQueryParam = <T = any>(param: WorkspaceParam) =>
   createSelector<RootState, Query, T>([selectLocationQuery], (query: any) => {
     if (query === undefined || query[param] === undefined) {
       return DEFAULT_WORKSPACE[param]
     }
-    return query[param]
+    const queryParamValue = query[param]
+    if (queryParamsParse[param]) {
+      return queryParamsParse[param](queryParamValue)
+    }
+    return queryParamValue
   })
 
 export const selectMapZoomQuery = selectQueryParam<number>('zoom')

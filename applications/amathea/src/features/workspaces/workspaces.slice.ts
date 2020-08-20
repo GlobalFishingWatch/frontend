@@ -19,7 +19,7 @@ export const fetchWorkspaceByIdThunk = createAsyncThunk(
       const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}?include=dataview,aoi`)
       // REMOVE THESE MOCKED VALUES AND RETURN FROM API
       if (!workspace.dataviewsId?.length) {
-        workspace.dataviewsId = [50, 51, 53, 56]
+        workspace.dataviewsId = [50, 51, 53, 56, 59, 60, 61]
       }
       return workspace
     } catch (e) {

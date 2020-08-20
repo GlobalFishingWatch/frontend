@@ -149,7 +149,6 @@ export const getGeneratorsConfig = createSelector(
     getDataviewsGeneratorsConfig,
   ],
   (generators, aoiGenerators, currentWorkspaceAOI, dataviewsGenerators) => {
-    console.log('dataviewsGenerators', dataviewsGenerators)
     let allGenerators = [...generators]
     if (dataviewsGenerators) allGenerators = allGenerators.concat(dataviewsGenerators)
     if (aoiGenerators) allGenerators = allGenerators.concat(aoiGenerators)
