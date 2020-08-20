@@ -65,7 +65,7 @@ class HeatmapAnimatedGenerator {
         singleFrame: 'false',
         geomType: config.geomType,
         'date-range': [timeChunk.start, timeChunk.dataEnd].join(','),
-        serverSideFilters: config.filters
+        filters: config.filters
           .map((filter, i) => {
             if (!filter || filter === '') return ''
             return `filters[${i}]=${filter}`
@@ -94,7 +94,7 @@ class HeatmapAnimatedGenerator {
     // TODO
     const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[config.colorRamps[0]]
 
-    const legend = HARDCODED_BREAKS.map((b, i) => [i, originalColorRamp[i]])
+    const legend = [...Array(HARDCODED_BREAKS.length)].map((b, i) => [i, originalColorRamp[i]])
     const colorRampValues = flatten(legend)
 
     const layers: Layer[] = flatten(

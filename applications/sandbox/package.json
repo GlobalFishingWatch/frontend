@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/sandbox",
-  "version": "0.1.12",
+  "version": "0.1.14",
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
   "scripts": {
@@ -10,7 +10,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.2.5",
+    "@reduxjs/toolkit": "^1.4.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",

@@ -1,6 +1,6 @@
 import { Feature, Geometry } from 'geojson'
 
-export type WorkspaceParam = 'zoom' | 'latitude' | 'longitude' | 'start' | 'end' | 'modal'
+export type WorkspaceParam = 'zoom' | 'latitude' | 'longitude' | 'start' | 'end'
 
 export type ModalTypes = 'newWorkspace' | 'newAOI' | 'newDataset' | 'newDataview' | 'shareWorkspace'
 
@@ -10,7 +10,6 @@ export type QueryParams = {
   longitude?: number
   start?: string
   end?: string
-  modal?: ModalTypes
 }
 
 export type ModalConfigOption = { title: string; component: string }

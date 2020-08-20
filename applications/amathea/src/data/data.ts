@@ -1,5 +1,3 @@
-import { Dataview } from '@globalfishingwatch/dataviews-client'
-
 export const AOI_SOURCES = [
   { id: 'mpas', label: 'Marine Protected Areas' },
   { id: 'custom-shape', label: 'Custom Shape' },
@@ -13,37 +11,27 @@ export const MPAS = [
   { id: 'mpa5', label: 'Marine Protected Area 5' },
 ]
 
-export const DATASET_TYPE_OPTIONS = [
-  { id: 'context_areas', label: 'Static Context Areas' },
-  { id: 'tracks', label: 'Spatiotemporal Tracks (Coming soon)' },
-  { id: '4wings', label: 'Spatiotemporal Grid (Coming soon)' },
-]
-
-export interface DataviewGraphConfig extends Dataview {
-  unit?: string
-  color: string
+export type DatasetSources = 'gfw' | 'user'
+export const DATASET_SOURCE_IDS = {
+  gfw: 'gfw',
+  user: 'user',
 }
 
-export const TEST_WORSPACE_DATAVIEWS: DataviewGraphConfig[] = [
-  {
-    id: 'dataview-1',
-    name: 'Sea Surface Temperature',
-    datasets: [{ id: '', type: '', label: '', description: '' }],
-    description:
-      "Sea surface temperature (SST) is the water temperature close to the ocean's surface.",
-    unit: 'ºC',
-    color: '#03E5BB',
-  },
-  {
-    id: 'dataview-2',
-    name: 'Salinity',
-    datasets: [{ id: '', type: '', label: '', description: '' }],
-    description:
-      'Ocean salinity is generally defined as the salt concentration (e.g., Sodium and Chlorure) in sea water. It is measured in unit of PSU (Practical Salinity Unit), which is a unit based on the properties of sea water conductivity. It is equivalent to per thousand or (o/00) or to g/kg.',
-    unit: 'PSU',
-    color: '#FD5480',
-  },
+export const DATASET_SOURCE_OPTIONS = [
+  { id: DATASET_SOURCE_IDS.gfw, label: 'Global Fishing Watch' },
+  { id: DATASET_SOURCE_IDS.user, label: 'Your datasets' },
 ]
+
+export const DATASET_TYPE_OPTIONS = [
+  { id: 'user-context-layer:v1', label: 'Static Context Areas' },
+  { id: 'user-tracks:v1', label: 'Spatiotemporal Tracks (Coming soon)' },
+  { id: '4wings:v1', label: 'Spatiotemporal Grid (Coming soon)' },
+]
+
+export interface DataviewGraphConfig {
+  unit?: string
+  color?: string
+}
 
 export interface GraphData {
   date: string
@@ -51,7 +39,7 @@ export interface GraphData {
 }
 
 export const TEST_DATAVIEW_MONTHLY_STATS: { [id: string]: GraphData[] } = {
-  'dataview-1': [
+  'dataview-47': [
     { date: '2018-01', value: 33.818 },
     { date: '2018-02', value: 32.976 },
     { date: '2018-03', value: 33.669 },
@@ -77,7 +65,7 @@ export const TEST_DATAVIEW_MONTHLY_STATS: { [id: string]: GraphData[] } = {
     { date: '2019-11', value: 33.939 },
     { date: '2019-12', value: 33.864 },
   ],
-  'dataview-2': [
+  'dataview-48': [
     { date: '2018-01', value: 26.773 },
     { date: '2018-02', value: 26.126 },
     { date: '2018-03', value: 26.063 },

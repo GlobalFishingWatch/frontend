@@ -1,4 +1,5 @@
 export { default as Button } from './button'
+export { default as ColorBar, ColorBarOptions } from './color-bar'
 export { default as CountryFlag } from './countryflag'
 export { default as Header } from './header'
 export { default as Icon, IconType } from './icon'

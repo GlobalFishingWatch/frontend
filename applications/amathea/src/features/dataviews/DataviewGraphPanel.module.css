@@ -5,12 +5,19 @@
 .header {
   display: flex;
   align-items: center;
-  margin-bottom: var(--space-S);
 }
 
 .title {
   font: var(--font-L);
   flex: 1;
+}
+
+.circleMargin {
+  margin-right: var(--space-S);
+}
+
+.graph {
+  margin-top: var(--space-S);
 }
 
 .unit {

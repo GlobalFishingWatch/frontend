@@ -1,32 +1,62 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'store'
-import GFWAPI from '@globalfishingwatch/api-client'
+import kebabCase from 'lodash/kebabCase'
+import GFWAPI, { UploadResponse } from '@globalfishingwatch/api-client'
 import { Dataset } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice, asyncInitialState } from 'features/api/api.slice'
+import { DATASET_SOURCE_IDS } from 'data/data'
 
 export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () => {
-  const data = await GFWAPI.fetch<Dataset[]>('/v1/datasets?cache=false')
+  const data = await GFWAPI.fetch<Dataset[]>('/v1/datasets?include=endpoints&cache=false')
   return data
 })
 
-// export const createDatasetThunk = createAsyncThunk(
-//   'datasets/create',
-//   async (datasetData: Partial<Dataset>, { rejectWithValue }) => {
-//     try {
-//       const dataset = await GFWAPI.fetch<Dataset>(`/datasets`, {
-//         method: 'POST',
-//         body: datasetData as Body,
-//       })
-//       return { dataset }
-//     } catch (e) {
-//       return rejectWithValue(datasetData.label)
-//     }
-//   }
-// )
+export type CreateDataset = { dataset: Partial<Dataset>; file: File }
+export const createDatasetThunk = createAsyncThunk(
+  'datasets/uploadFile',
+  async ({ dataset, file }: CreateDataset) => {
+    const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
+      method: 'POST',
+      body: { contentType: file.type } as any,
+    })
+    try {
+      await fetch(url, { method: 'PUT', body: file })
+      const datasetWithFilePath = {
+        ...dataset,
+        id: kebabCase(dataset.name),
+        source: DATASET_SOURCE_IDS.user,
+        configuration: {
+          filePath: path,
+        },
+      }
+      const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
+        method: 'POST',
+        body: datasetWithFilePath as any,
+      })
+      return createdDataset
+    } catch (e) {
+      console.error(e.message)
+    }
+  }
+)
 
-export type DatasetTypes = 'context_areas' | 'track' | '4wings' | undefined
+export const deleteDatasetThunk = createAsyncThunk(
+  'datasets/delete',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const workspace = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}`, {
+        method: 'DELETE',
+      })
+      return { ...workspace, id }
+    } catch (e) {
+      return rejectWithValue(id)
+    }
+  }
+)
+
+export type DatasetTypes = 'user-context-layer:v1' | 'user-tracks:v1' | '4wings:v1' | undefined
 export type DatasetDraftSteps = 'info' | 'data' | 'parameters'
-export type DatasetDraftData = Partial<Dataset> & { type?: DatasetTypes; file?: any; data?: any }
+export type DatasetDraftData = Partial<Dataset> & { type?: DatasetTypes }
 
 export type DatasetDraft = {
   step: DatasetDraftSteps
@@ -57,25 +87,23 @@ const { slice: datasetsSlice, entityAdapter } = createAsyncSlice<DatasetsState, 
       state.draft.data = { ...state.draft.data, ...action.payload }
     },
   },
-  // extraReducers: (builder) => {
-  // builder.addCase(createDatasetThunk.fulfilled, (state, action) => {
-  //   entityAdapter.addOne(state, action.payload.dataset)
-  // })
-  // builder.addCase(createDatasetThunk.rejected, (state, action) => {
-  //   state.error = `Error adding dataset ${action.payload}`
-  // })
-  // },
-  thunks: { fetchThunk: fetchDatasetsThunk },
+  thunks: {
+    fetchThunk: fetchDatasetsThunk,
+    createThunk: createDatasetThunk,
+    deleteThunk: deleteDatasetThunk,
+  },
 })
 
 export const { resetDraftDataset, setDraftDatasetStep, setDraftDatasetData } = datasetsSlice.actions
 
-export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(
+export const { selectAll: selectAllDatasets, selectById } = entityAdapter.getSelectors<RootState>(
   (state) => state.datasets
 )
+export const selectDatasetById = (id: string) =>
+  createSelector([(state: RootState) => state], (state) => selectById(state, id))
 
 export const selectDraftDataset = (state: RootState) => state.datasets.draft
-
+export const selectDatasetStatus = (state: RootState) => state.datasets.status
 export const selectDraftDatasetStep = createSelector([selectDraftDataset], ({ step }) => step)
 export const selectDraftDatasetData = createSelector([selectDraftDataset], ({ data }) => data)
 

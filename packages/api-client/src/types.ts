@@ -13,3 +13,8 @@ export interface UserData {
   type: string
   permissions: [UserPermission]
 }
+
+export interface UploadResponse {
+  path: string
+  url: string
+}

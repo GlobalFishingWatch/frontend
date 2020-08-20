@@ -21,11 +21,23 @@ export interface Endpoint {
   downloadable: boolean
 }
 
+export type DatasetTypes =
+  | 'carriers-tracks:v1'
+  | 'carriers-vessels:v1'
+  | 'carriers-events:v1'
+  | 'carriers-ports:v1'
+  | '4wings:v1'
+  | 'user-tracks:v1'
+  | 'user-context-layer:v1'
+  | 'data-download:v1'
+
 export interface Dataset {
   id: string
-  type: string
-  label: string
+  type: DatasetTypes
+  name: string
+  source: string
   description: string
+  ownerId: number
   endpoints?: Endpoint[]
 }
 
@@ -45,8 +57,15 @@ export interface DatasetParamsConfig {
   query: DatasetParams
 }
 
+export interface DataviewCreation {
+  name: string
+  description: string
+  datasets: string[]
+  defaultView?: ViewParams
+}
+
 export interface Dataview {
-  id: number | string
+  id: number
   name: string
   description: string
   createdAt?: string
@@ -55,7 +74,8 @@ export interface Dataview {
   defaultView?: ViewParams
   datasetsParams?: DatasetParams[]
   datasetsConfig?: DatasetParams[]
-  datasets?: Dataset[] // foreign
+  datasets?: Dataset[]
+  datasetsId?: number[]
 }
 
 export interface WorkspaceDataview {
@@ -66,6 +86,7 @@ export interface WorkspaceDataview {
 
 export interface AOI {
   id: number
+  label: string
   area: number
   geometry?: GeoJSON
   bbox: number[]
@@ -75,9 +96,11 @@ export interface Workspace {
   id: number
   description: string
   label: string
+  dataviews: number[] | Dataview[]
+  dataviewsId: number[]
   workspaceDataviews: WorkspaceDataview[]
   aoiId: number
-  aoi?: number | AOI
+  aoi?: AOI
   zoom: number
   latitude: number
   longitude: number

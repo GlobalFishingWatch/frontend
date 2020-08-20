@@ -1,3 +1,5 @@
+![Publish to npm](https://github.com/GlobalFishingWatch/frontend/workflows/Publish%20packages/badge.svg)
+
 This monorepo hosts frontend packages and applications of the <a href="globalfishingwatch.org/">GlobalFishingWatch</a> ecosystem.
 
 ## Packages
@@ -9,16 +11,19 @@ All of them availables with the `@globalfishingwatch/` prefix:
 | [api-client](packages/api-client)             | JS library to simplify GFW API login and resources fetch                     |
 | [dataviews-client](packages/dataviews-client) | api-client wrapper to fetch and edit dataviews and associated datasets/data  |
 | [layer-composer](packages/layer-composer)     | Orchestrates various Layer Generators to generate a Mapbox GL Style document |
+| [pb-decoders](packages/pb-decoders)           | PBF custom responses parsers                                                 |
 | [react-hooks](packages/react-hooks)           | Set of hooks to use libraries easily in react                                |
 | [timebar](packages/timebar)                   | Timebar component, not many more to say                                      |
 | [ui-components](packages/ui-components)       | Reusable atoms components kit                                                |
 
 ## Applications
 
-|                                      |                                              |
-| ------------------------------------ | -------------------------------------------- |
-| [dataviews-editor](dataviews-editor) | Simple interface to edit dataviews           |
-| [sandbox](sandbox)                   | Playground to use packages without releasing |
+|                                       |                                                               |
+| ------------------------------------- | ------------------------------------------------------------- |
+| [amathea](amathea)                    | Marine reserve areas proyect                                  |
+| [temporalgrid-demo](temporalgrid-demo)| CRA to show how new custom mapbox-gl format development goes  |
+| [dataviews-editor](dataviews-editor)  | Simple interface to edit dataviews                            |
+| [sandbox](sandbox)                    | Playground to use packages without releasing                  |
 
 ## Other utils
 

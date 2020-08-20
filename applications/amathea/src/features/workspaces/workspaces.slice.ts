@@ -15,7 +15,11 @@ export const fetchWorkspaceByIdThunk = createAsyncThunk(
   'workspace/fetchById',
   async (id: number, { rejectWithValue }) => {
     try {
-      const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}`)
+      const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}?include=dataview,aoi`)
+      // REMODE THESE MOCKED VALUES AND RETURN FROM API
+      if (!workspace.dataviewsId?.length) {
+        workspace.dataviewsId = [46, 47, 48, 49, 50]
+      }
       return workspace
     } catch (e) {
       return rejectWithValue(id)
@@ -29,11 +33,28 @@ export const createWorkspaceThunk = createAsyncThunk(
     try {
       const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces`, {
         method: 'POST',
-        body: workspaceData as BodyInit,
+        // Hack to support aoi and aoi living together for now
+        // Needs to be addressed at API level first
+        body: { ...workspaceData, aoi: workspaceData.aoiId } as any,
       })
       return workspace
     } catch (e) {
       return rejectWithValue(workspaceData.label)
+    }
+  }
+)
+
+export const updateWorkspaceThunk = createAsyncThunk(
+  'workspaces/update',
+  async (workspaceData: Partial<Workspace>, { rejectWithValue }) => {
+    try {
+      const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${workspaceData.id}`, {
+        method: 'PATCH',
+        body: workspaceData as BodyInit,
+      })
+      return workspace
+    } catch (e) {
+      return rejectWithValue(workspaceData.id)
     }
   }
 )
@@ -59,6 +80,7 @@ const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesSta
   thunks: {
     fetchThunk: fetchWorkspacesThunk,
     fetchByIdThunk: fetchWorkspaceByIdThunk,
+    updateThunk: updateWorkspaceThunk,
     createThunk: createWorkspaceThunk,
     deleteThunk: deleteWorkspaceThunk,
   },
@@ -69,7 +91,7 @@ export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(
 )
 
 export const selectCurrentWorkspace = createSelector(
-  [(state) => state, selectCurrentWorkspaceId],
+  [(state: RootState) => state, selectCurrentWorkspaceId],
   (state, workspaceId) => selectById(state, workspaceId)
 )
 
