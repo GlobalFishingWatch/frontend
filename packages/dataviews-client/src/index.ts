@@ -1,15 +1,23 @@
 export { default } from './dataviews-client'
 export { default as resolveDataviews } from './resolve-dataviews'
 export type {
-  EndpointType,
   Endpoint,
+  EndpointParam,
   Dataset,
+  DatasetTypes,
+  DatasetStatus,
+  DatasetConfiguration,
   Dataview,
   DataviewCreation,
+  DataviewConfig,
+  DataviewDatasetConfigParams,
+  DataviewDatasetConfig,
+  DataviewDatasetConfigDict,
+  AOI,
   Workspace,
-  WorkspaceDataview,
+  WorkspaceCreation,
+  WorkspaceDataviewConfig,
+  WorkspaceDataviewConfigDict,
   Resource,
-  ViewParams,
-  DatasetParams,
   ResolvedDataview,
 } from './types'
