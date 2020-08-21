@@ -61,6 +61,11 @@ jobs:
           project_id: ${{ secrets.RUN_PROJECT }}
 
       # Build and push image to Google Container Registry
-      - name: Trigger gcloud build apps
+      - name: Install gcloud beta
         run: |-
-          gcloud components install beta && gcloud beta builds triggers run --branch=develop ui-amateha-push-develop
+          gcloud -q components install beta
+
+      - name: Trigger amathea build
+        run: |-
+          gcloud -q beta builds triggers run --branch=develop ui-amateha-push-develop
+
