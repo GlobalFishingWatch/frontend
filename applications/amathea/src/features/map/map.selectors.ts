@@ -14,7 +14,7 @@ export const getCurrentWorkspaceAOIGeneratorsConfig = createSelector(
     if (!currentWorkspace || !currentWorkspace.aoi) return
     const generator: Generators.GlGeneratorConfig = {
       type: Generators.Type.GL,
-      id: `aoi-${currentWorkspace.aoiId}`,
+      id: `aoi-${currentWorkspace.aoi.id}`,
       sources: [
         {
           type: 'geojson',
@@ -39,7 +39,7 @@ export const getAllAOIGeneratorsConfig = createSelector(
   (aoiList, currentWorkspace) => {
     if (!aoiList) return
     return aoiList
-      .filter((aoi) => !currentWorkspace || currentWorkspace.aoiId === aoi.id)
+      .filter((aoi) => !currentWorkspace || currentWorkspace?.aoi?.id === aoi.id)
       .map((aoi) => {
         return {
           type: Generators.Type.GL,
@@ -80,7 +80,7 @@ export const getDataviewsGeneratorsConfig = createSelector(
           const generator: Generators.UserContextGeneratorConfig = {
             id: dataview.dataset.id as string,
             type: Generators.Type.UserContext,
-            color: dataview.defaultView?.color as string,
+            color: dataview.config?.color as string,
             tilesUrl: contextTilesEndpoint.pathTemplate,
           }
           return generator
@@ -115,18 +115,18 @@ export const getDataviewsGeneratorsConfig = createSelector(
                   'fill-color': [
                     'interpolate',
                     ['linear'],
-                    ['to-number', ['get', '17532']],
+                    ['to-number', ['get', 'count']],
                     0,
                     '#002457',
-                    20,
+                    300,
                     '#163F89',
-                    24,
+                    1000,
                     '#0F6F97',
-                    25,
+                    3000,
                     '#07BBAE',
-                    26,
+                    56000,
                     '#00FFC3',
-                    28,
+                    146000,
                     '#FFFFFF',
                   ],
                 },
@@ -149,6 +149,7 @@ export const getGeneratorsConfig = createSelector(
     getDataviewsGeneratorsConfig,
   ],
   (generators, aoiGenerators, currentWorkspaceAOI, dataviewsGenerators) => {
+    console.log('dataviewsGenerators', dataviewsGenerators)
     let allGenerators = [...generators]
     if (dataviewsGenerators) allGenerators = allGenerators.concat(dataviewsGenerators)
     if (aoiGenerators) allGenerators = allGenerators.concat(aoiGenerators)

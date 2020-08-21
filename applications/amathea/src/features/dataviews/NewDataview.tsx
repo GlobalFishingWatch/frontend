@@ -34,9 +34,12 @@ function NewDataview(): React.ReactElement {
     setLoading(true)
     if (draftDataview) {
       const dataview = await upsertDataview(draftDataview)
-      if (dataview) {
+      if (dataview && workspace?.id) {
         await dispatch(
-          updateWorkspaceThunk({ id: workspace?.id, dataviews: [{ id: dataview.id }] as any })
+          updateWorkspaceThunk({
+            id: workspace.id,
+            dataviews: [...workspace.dataviews.map((d) => d.id), dataview.id] as any,
+          })
         )
       }
       setLoading(false)

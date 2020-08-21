@@ -25,7 +25,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
   const hiddenDataviews = useSelector(selectHiddenDataviews)
   const datasetId = dataview.datasets?.length ? dataview.datasets[0].id : ''
   const dataset = useSelector(selectDatasetById(datasetId))
-  const color = dataview.defaultView?.color as string
+  const color = dataview.config?.color as string
   const unit = dataset?.unit
   const onEditClick = useCallback(() => {
     if (dataset) {
@@ -33,7 +33,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
       const sourceLabel = DATASET_SOURCE_OPTIONS.find((d) => d.id === sourceLabelId)?.label || ''
       const draftDataview = {
         id: dataview.id,
-        label: dataview.name,
+        name: dataview.name,
         color: color as string,
         source: { id: dataset.source, label: sourceLabel },
         dataset: {

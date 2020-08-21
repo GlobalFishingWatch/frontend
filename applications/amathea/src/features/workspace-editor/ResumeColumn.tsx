@@ -20,7 +20,7 @@ export default function ResumeColumn(): React.ReactElement | null {
         </a>
       </li>
       {dataviews.map((dataview) => {
-        const color = dataview.defaultView?.color as string
+        const color = dataview.config?.color as string
         return (
           <li
             key={dataview.id}

@@ -6,6 +6,6 @@ export const getCurrentAOI = createSelector(
   [selectAllAOI, selectCurrentWorkspace],
   (aois, currentWorkspace) => {
     if (!currentWorkspace) return
-    return aois.find((aoi) => aoi.id === currentWorkspace.aoiId)
+    return aois.find((aoi) => aoi.id === currentWorkspace?.aoi?.id)
   }
 )

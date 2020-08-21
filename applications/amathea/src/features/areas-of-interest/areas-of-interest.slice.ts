@@ -36,6 +36,10 @@ export const { selectAll: selectAllAOI, selectById } = entityAdapter.getSelector
   (state) => state.aoi
 )
 
+export const selectAllAOIOptions = createSelector([selectAllAOI], (aois) =>
+  aois.map(({ id, name }) => ({ id, label: name }))
+)
+
 export const selectAOIById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
 )

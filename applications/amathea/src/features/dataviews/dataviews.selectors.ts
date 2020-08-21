@@ -9,7 +9,7 @@ export const selectCurrentWorkspaceDataviews = createSelector(
   [selectAllDataviews, selectCurrentWorkspace, selectAllDatasets],
   (dataviews, workspace, datasets) => {
     return dataviews
-      .filter((dataview) => workspace?.dataviewsId?.includes(dataview.id))
+      .filter((dataview) => workspace?.dataviews?.map((d) => d.id).includes(dataview.id))
       .map((dataview) => {
         const datasetId = dataview.datasets?.length ? dataview.datasets[0].id : ''
         const dataset = datasets.find((dataset) => dataset.id === datasetId)
