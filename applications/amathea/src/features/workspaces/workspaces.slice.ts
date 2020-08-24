@@ -16,7 +16,9 @@ export const fetchWorkspaceByIdThunk = createAsyncThunk(
   'workspace/fetchById',
   async (id: number, { rejectWithValue }) => {
     try {
-      const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}?include=dataview,aoi`)
+      const workspace = await GFWAPI.fetch<Workspace>(
+        `/v1/workspaces/${id}?include=aoi,dataviews,dataviews.datasets,dataviews.datasets.endpoints`
+      )
       return workspace
     } catch (e) {
       return rejectWithValue(id)

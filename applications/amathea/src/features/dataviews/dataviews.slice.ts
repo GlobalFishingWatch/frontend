@@ -8,7 +8,7 @@ import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
 
 export const fetchDataviewsThunk = createAsyncThunk('dataviews/fetch', async () => {
-  const data = await GFWAPI.fetch<Dataview[]>('/v1/dataviews?include=dataset&endpoints')
+  const data = await GFWAPI.fetch<Dataview[]>('/v1/dataviews?include=datasets,datasets.endpoints')
   return data
 })
 
@@ -21,7 +21,7 @@ export const createDataviewThunk = createAsyncThunk(
       description: dataset.description,
       datasets: [dataset.id as string],
       config: {
-        type: Generators.Type.GL,
+        type: Generators.Type.UserContext,
         color,
       },
     }

@@ -26,7 +26,7 @@ class UserContextGenerator {
         id: `user-context-${config.id}`,
         type: 'line',
         source: config.id,
-        'source-layer': config.id,
+        'source-layer': config.sourceLayer,
         paint: {
           'line-color': config.color,
           'line-width': 1,
