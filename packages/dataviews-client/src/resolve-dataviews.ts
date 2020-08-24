@@ -1,62 +1,50 @@
-import { Dataview, WorkspaceDataview, ResolvedDataview, DatasetParams } from './types'
+import { Dataview, WorkspaceDataviewConfigDict, DataviewDatasetConfigDict } from './types'
 
 /**
- * Gets list of dataviews and those present in the workspace, and applies any view or datasetParams from it (merges dataview.defaultView with dataview.view and workspace's dataview.view).
+ * Gets list of dataviews and those present in the workspace, and applies any config or datasetConfig
+ * from it (merges dataview.config and workspace's dataviewConfig and datasetConfig).
  * @param dataviews
- * @param workspace
+ * @param workspaceDataviewsConfig
  */
-export default (dataviews: Dataview[], workspaceDataviews?: WorkspaceDataview[]) => {
+export default function resolveDataviews(
+  dataviews: Dataview[],
+  workspaceDataviewsConfig?: WorkspaceDataviewConfigDict
+) {
+  if (!dataviews) {
+    console.warn('Empty dataviews to resolve')
+    return
+  }
+
   return dataviews.map((dataview) => {
-    const newDataview: ResolvedDataview = {
-      uid: '',
-      datasetsParamIds: [],
-      ...dataview,
-    }
-
-    // collect everything to generate a generator unique id
-    const generatedUidComponents: (string | number | undefined)[] = [dataview.id, dataview.name]
-
-    // copy defaultView|defaultDatasetsParams to view|datasetsParams
-    newDataview.view = newDataview.defaultView
-    newDataview.datasetsParams = newDataview.datasetsConfig
-
+    const newDataview = { ...dataview }
     // retrieve workspace dataview that matches dataview so that we can collect overrides
-    const workspaceDataview =
-      workspaceDataviews &&
-      workspaceDataviews.find((workspaceDataview) => workspaceDataview.id === dataview.id)
+    const workspaceDataview = workspaceDataviewsConfig && workspaceDataviewsConfig[dataview.id]
 
-    // if workspace dataview exist, we'll overwrite original view|datasetsParams if they exist in workspace dataview
     if (workspaceDataview) {
-      newDataview.view = {
-        ...newDataview.view,
-        ...workspaceDataview.view,
-      }
-      newDataview.datasetsParams = newDataview.datasetsParams?.map((datasetParams, index) => {
-        // add id linked to dataset (ie vessel id) to identify generator uniquely
-        const workspaceDatasetParams =
-          (workspaceDataview.datasetsParams && workspaceDataview.datasetsParams[index]) || {}
-
-        const newDatasetParams = {
-          ...datasetParams,
-          ...workspaceDatasetParams,
+      // if workspace dataview exist, we'll overwrite original config
+      if (workspaceDataview.config) {
+        newDataview.config = {
+          ...newDataview.config,
+          ...workspaceDataview.config,
         }
+      }
 
-        generatedUidComponents.push((newDatasetParams.params as DatasetParams).id as string)
-        newDataview.datasetsParamIds.push((newDatasetParams.params as DatasetParams).id as string)
-
-        return newDatasetParams
-      })
-    } else {
-      // add id linked to datasets (ie vessel id) to identify generator uniquely
-      newDataview.datasetsParams?.forEach((datasetParams) => {
-        generatedUidComponents.push((datasetParams.params as DatasetParams).id as string)
-        newDataview.datasetsParamIds.push(datasetParams.id as string)
-      })
+      if (newDataview.datasetsConfig) {
+        const datasetsConfig: DataviewDatasetConfigDict = {}
+        Object.entries(newDataview.datasetsConfig).forEach(([key, value]) => {
+          // replace default dataviewDatasetsConfig if exists in workspace datasetsConfig
+          const workspaceDataviewDatasetConfig =
+            workspaceDataview.datasetsConfig && workspaceDataview.datasetsConfig[key]
+          if (workspaceDataviewDatasetConfig) {
+            datasetsConfig[key] = {
+              ...value,
+              ...workspaceDataviewDatasetConfig,
+            }
+          }
+        })
+        newDataview.datasetsConfig = datasetsConfig
+      }
     }
-
-    newDataview.uid = generatedUidComponents
-      .filter((component) => component !== undefined)
-      .join('_')
     return newDataview
   })
 }

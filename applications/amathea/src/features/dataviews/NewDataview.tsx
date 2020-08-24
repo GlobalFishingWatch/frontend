@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Select, { SelectOnChange } from '@globalfishingwatch/ui-components/dist/select'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import ColorBar, { ColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { DATASET_SOURCE_OPTIONS } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
-import { updateWorkspaceThunk } from 'features/workspaces/workspaces.slice'
-import { useCurrentWorkspaceConnect } from 'features/workspaces/workspaces.hook'
+import { useCurrentWorkspaceConnect, useWorkspacesAPI } from 'features/workspaces/workspaces.hook'
 import styles from './NewDataview.module.css'
 import { selectDatasetOptionsBySource } from './dataviews.selectors'
 import { useDraftDataviewConnect, useDataviewsAPI } from './dataviews.hook'
@@ -14,11 +13,11 @@ import { DataviewDraftDataset } from './dataviews.slice'
 
 function NewDataview(): React.ReactElement {
   const [loading, setLoading] = useState(false)
-  const dispatch = useDispatch()
   const { hideModal } = useModalConnect()
   const { workspace } = useCurrentWorkspaceConnect()
+  const { updateWorkspace } = useWorkspacesAPI()
   const { draftDataview, setDraftDataview, resetDraftDataview } = useDraftDataviewConnect()
-  const { upsertDataview } = useDataviewsAPI()
+  const { createDataview } = useDataviewsAPI()
   const { source, dataset } = draftDataview || {}
   const datasetsOptions = useSelector(selectDatasetOptionsBySource)
   const onSourceSelect: SelectOnChange = (option) => {
@@ -33,14 +32,22 @@ function NewDataview(): React.ReactElement {
   const onCreateClick = async () => {
     setLoading(true)
     if (draftDataview) {
-      const dataview = await upsertDataview(draftDataview)
-      if (dataview && workspace?.id) {
-        await dispatch(
-          updateWorkspaceThunk({
-            id: workspace.id,
-            dataviews: [...workspace.dataviews.map((d) => d.id), dataview.id] as any,
-          })
-        )
+      let dataview
+      if (draftDataview.source?.id === 'user' && !draftDataview.id) {
+        dataview = await createDataview(draftDataview)
+      }
+      const dataviewId = draftDataview.id || dataview?.id
+      if (dataviewId && workspace?.id) {
+        await updateWorkspace({
+          id: workspace.id,
+          dataviews: [...(new Set([...workspace.dataviews.map((d) => d.id), dataviewId]) as any)],
+          dataviewsConfig: {
+            ...workspace.dataviewsConfig,
+            [dataviewId]: {
+              config: { color: draftDataview.color },
+            },
+          },
+        })
       }
       setLoading(false)
       resetDraftDataview()

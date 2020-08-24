@@ -19,24 +19,25 @@ export default function ResumeColumn(): React.ReactElement | null {
           <IconButton icon="info" />
         </a>
       </li>
-      {dataviews.map((dataview) => {
-        const color = dataview.config?.color as string
-        return (
-          <li
-            key={dataview.id}
-            className={cx({ [styles.current]: currentPosition === `#${dataview.id}` })}
-          >
-            <a href={`#${dataview.id}`} onClick={() => setCurrentPosition(`#${dataview.id}`)}>
-              {dataview.datasets?.length &&
-              dataview.datasets[0]?.type === 'user-context-layer:v1' ? (
-                <Circle color={color} />
-              ) : (
-                <DataviewGraphMini dataview={dataview} graphColor={color} />
-              )}
-            </a>
-          </li>
-        )
-      })}
+      {dataviews &&
+        dataviews.map((dataview) => {
+          const color = dataview.config?.color as string
+          return (
+            <li
+              key={dataview.id}
+              className={cx({ [styles.current]: currentPosition === `#${dataview.id}` })}
+            >
+              <a href={`#${dataview.id}`} onClick={() => setCurrentPosition(`#${dataview.id}`)}>
+                {dataview.datasets?.length &&
+                dataview.datasets[0]?.type === 'user-context-layer:v1' ? (
+                  <Circle color={color} />
+                ) : (
+                  <DataviewGraphMini dataview={dataview} graphColor={color} />
+                )}
+              </a>
+            </li>
+          )
+        })}
       <li key="add-dataview">
         <IconButton icon="plus" onClick={() => showModal('newDataview')} />
       </li>

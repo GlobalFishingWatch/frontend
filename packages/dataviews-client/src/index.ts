@@ -19,5 +19,4 @@ export type {
   WorkspaceDataviewConfig,
   WorkspaceDataviewConfigDict,
   Resource,
-  ResolvedDataview,
 } from './types'

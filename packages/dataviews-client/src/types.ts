@@ -112,11 +112,11 @@ export interface WorkspaceCreation {
 
 export interface WorkspaceDataviewConfig {
   config: DataviewConfig
-  datasetConfig: DataviewDatasetConfig
+  datasetsConfig: DataviewDatasetConfigDict
 }
 
 export interface WorkspaceDataviewConfigDict {
-  [id: string]: DataviewConfig
+  [id: string]: WorkspaceDataviewConfig
 }
 
 export interface Workspace {
@@ -144,9 +144,4 @@ export interface Resource<T = unknown> {
   resolvedUrl: string
   responseType?: FetchResponseTypes
   data?: T
-}
-
-export interface ResolvedDataview extends Dataview {
-  uid: string
-  datasetsParamIds: string[]
 }

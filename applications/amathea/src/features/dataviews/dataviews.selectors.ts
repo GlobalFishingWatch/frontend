@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { resolveDataviews } from '@globalfishingwatch/dataviews-client'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getUserId } from 'features/user/user.slice'
 import { selectCurrentWorkspace } from 'features/workspaces/workspaces.slice'
@@ -15,6 +16,13 @@ export const selectCurrentWorkspaceDataviews = createSelector(
         const dataset = datasets.find((dataset) => dataset.id === datasetId)
         return { ...dataview, dataset }
       })
+  }
+)
+
+export const selectCurrentWorkspaceDataviewsResolved = createSelector(
+  [selectCurrentWorkspaceDataviews, selectCurrentWorkspace],
+  (dataviews, workspace) => {
+    return resolveDataviews(dataviews, workspace?.dataviewsConfig)
   }
 )
 
