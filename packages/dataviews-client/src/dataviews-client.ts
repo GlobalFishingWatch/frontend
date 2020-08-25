@@ -1,12 +1,11 @@
 import template from 'lodash/template'
 import { stringify } from 'qs'
-import GFWAPI, { FetchResponseTypes } from '@globalfishingwatch/api-client'
-import { Dataview, WorkspaceDataview, Resource, DatasetParams } from './types'
+import GFWAPI, { FetchResponseTypes, FetchOptions } from '@globalfishingwatch/api-client'
+import { Dataview, Resource, WorkspaceDataviewConfigDict } from './types'
 import resolveDataviews from './resolve-dataviews'
 
 const BASE_URL = '/v1/dataviews'
 
-type PostDataview = Omit<Dataview, 'id'>
 export type DataviewsClientFetch = typeof GFWAPI.fetch
 export default class DataviewsClient {
   _fetch: DataviewsClientFetch
@@ -18,12 +17,11 @@ export default class DataviewsClient {
     this._fetch = _fetch || defaultFetch
   }
 
-  getDataviews(ids: number[] = []): Promise<Dataview[]> {
-    const baseUrl = ids.length ? `${BASE_URL}/${ids.join(',')}` : BASE_URL
-    const params = {
-      include: 'dataset,dataset.endpoints',
-    }
-    const paramsUrl = stringify(params)
+  getDataviews(id?: number): Promise<Dataview[]> {
+    const baseUrl = id ? `${BASE_URL}/${id}` : BASE_URL
+    const paramsUrl = stringify({
+      include: 'datasets,datasets.endpoints',
+    })
     const url = [baseUrl, paramsUrl].join('?')
     const fetchDataviews = this._fetch<Dataview[]>(url)
 
@@ -33,20 +31,20 @@ export default class DataviewsClient {
   _writeDataview(dataview: Dataview, method: 'POST' | 'PATCH' | 'DELETE'): Promise<Dataview> {
     const whitelistedDataview = {
       name: dataview.name,
-      datasets: dataview.datasets?.length ? dataview.datasets?.map((d) => d.id) : [],
+      datasets: dataview.datasets?.length ? dataview.datasets?.map(({ id }) => ({ id })) : [],
       description: dataview.description,
-      defaultView: dataview.defaultView,
+      config: dataview.config,
       datasetsConfig: dataview.datasetsConfig,
     }
     const baseUrl = method === 'POST' ? BASE_URL : `${BASE_URL}/${dataview.id}`
-    const fetchOptions: any = {
+    const fetchOptions: FetchOptions = {
       headers: {
         'Content-Type': 'application/json',
       },
       method,
     }
     if (method !== 'DELETE') {
-      fetchOptions.body = whitelistedDataview
+      fetchOptions.body = whitelistedDataview as any
     }
     const write = this._fetch<Dataview>(baseUrl, fetchOptions)
     return write
@@ -64,62 +62,57 @@ export default class DataviewsClient {
   // TODO uniq by URL
   getResources(
     dataviews: Dataview[],
-    workspaceDataviews: WorkspaceDataview[] = []
+    workspaceDataviewsConfig: WorkspaceDataviewConfigDict = {}
   ): { resources: Resource[]; promises: Promise<Resource>[] } {
     const resources: Resource[] = []
-    const resolvedDataviews = resolveDataviews(dataviews, workspaceDataviews)
-    resolvedDataviews.forEach((dataview) => {
-      const datasetsParams = dataview.datasetsParams
-      dataview.datasets?.forEach((dataset, datasetIndex) => {
-        const datasetParams = datasetsParams?.length ? datasetsParams[datasetIndex] : {}
-        const endpointParamType = datasetParams.endpoint
+    const resolvedDataviews = resolveDataviews(dataviews, workspaceDataviewsConfig)
+    if (resolvedDataviews) {
+      resolvedDataviews.forEach((dataview) => {
+        const { datasetsConfig } = dataview
+        dataview.datasets?.forEach((dataset) => {
+          const datasetParams = datasetsConfig && datasetsConfig[dataset.id]
+          const endpointParamType = datasetParams?.endpoint
 
-        dataset.endpoints
-          ?.filter((endpoint) => endpoint.downloadable && endpoint.id === endpointParamType)
-          .forEach((endpoint) => {
-            // TODO: include query params here too
-            const pathTemplateCompiled = template(endpoint.pathTemplate, {
-              interpolate: /{{([\s\S]+?)}}/g,
-            })
-            let resolvedUrl: string
-            const resolvedDatasetParams: DatasetParams = {
-              dataset: dataset.id,
-              ...(datasetParams?.params as DatasetParams),
-            }
-
-            const resolvedDatasetQuery = {
-              ...(datasetParams?.query as DatasetParams),
-            }
-            const resolvedDatasetQueryString = stringify(resolvedDatasetQuery)
-
-            // template compilation will fail if template needs an override an and override has not been defined
-            try {
-              resolvedUrl = pathTemplateCompiled(resolvedDatasetParams)
-              if (resolvedDatasetQueryString.length) {
-                resolvedUrl += `?${resolvedDatasetQueryString}`
-              }
-              resources.push({
-                dataviewId: dataview.id,
-                type: dataset.type,
-                datasetId: dataset.id,
-                resolvedUrl,
-                responseType: resolvedDatasetQuery.binary
-                  ? dataset.type?.includes('track') && resolvedDatasetQuery?.format === 'valueArray'
-                    ? 'vessel'
-                    : 'arrayBuffer'
-                  : 'json',
-                datasetParamId: resolvedDatasetParams.id as string,
+          dataset.endpoints
+            ?.filter((endpoint) => endpoint.downloadable && endpoint.id === endpointParamType)
+            .forEach((endpoint) => {
+              // TODO: include query params here too
+              const pathTemplateCompiled = template(endpoint.pathTemplate, {
+                interpolate: /{{([\s\S]+?)}}/g,
               })
-            } catch (e) {
-              console.error('Could not use pathTemplate, maybe a datasetParam is missing?')
-              console.error('dataview:', dataview.id, dataview.name)
-              console.error('pathTemplate:', endpoint.pathTemplate)
-              console.error('datasetParams:', datasetParams)
-              console.error('resolvedDatasetParams:', resolvedDatasetParams)
-            }
-          })
+              let resolvedUrl: string
+              // template compilation will fail if template needs an override an and override has not been defined
+              try {
+                resolvedUrl = pathTemplateCompiled(datasetParams?.params)
+                if (datasetParams?.query.length) {
+                  resolvedUrl += `?${stringify(datasetParams?.query)}`
+                }
+                const datasetParam = datasetParams?.params?.find((query) => query.id === 'id')
+                const binaryQuery = datasetParams?.query?.find((query) => query.id === 'binary')
+                const formatQuery = datasetParams?.query?.find((query) => query.id === 'format')
+                resources.push({
+                  dataviewId: dataview.id,
+                  type: dataset.type,
+                  datasetId: dataset.id,
+                  resolvedUrl,
+                  responseType:
+                    binaryQuery?.value === true
+                      ? dataset.type?.includes('track') && formatQuery?.value === 'valueArray'
+                        ? 'vessel'
+                        : 'arrayBuffer'
+                      : 'json',
+                  datasetParamId: datasetParam?.id as string,
+                })
+              } catch (e) {
+                console.error('Could not use pathTemplate, maybe a datasetParam is missing?')
+                console.error('dataview:', dataview.id, dataview.name)
+                console.error('pathTemplate:', endpoint.pathTemplate)
+                console.error('datasetParams:', datasetParams)
+              }
+            })
+        })
       })
-    })
+    }
     const promises = resources.map((resource) => {
       // TODO Do appropriate stuff when datasetParams have valuesArray or binary (tracks)
       // See existing implementation of this in Track inspector's dataviews thunk:
