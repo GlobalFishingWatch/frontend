@@ -37,7 +37,7 @@ type GlobalHeatmapAnimatedGeneratorConfig = Required<
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   filters: [],
   colorRamps: [HEATMAP_COLOR_RAMPS.PRESENCE],
-  combinationMode: 'none',
+  combinationMode: 'add',
   geomType: HEATMAP_GEOM_TYPES.GRIDDED,
   tilesetsStart: '2012-01-01T00:00:00.000Z',
   tilesetsEnd: new Date().toISOString(),
@@ -46,7 +46,7 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
 }
 
 // TODO - generate this using updated stats API
-const HARDCODED_BREAKS = [0, 1, 5, 10, 15, 30]
+const HARDCODED_BREAKS = [[0, 1, 5, 10, 15, 30]]
 
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
@@ -73,7 +73,8 @@ class HeatmapAnimatedGenerator {
         delta: getDelta(config.start, config.end, timeChunk.interval).toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: timeChunk.interval,
-        breaks: HARDCODED_BREAKS.toString(),
+        breaks: JSON.stringify(HARDCODED_BREAKS),
+        combinationMode: config.combinationMode,
       }
       if (timeChunk.start && timeChunk.dataEnd) {
         sourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd].join(',')
@@ -95,7 +96,7 @@ class HeatmapAnimatedGenerator {
     // TODO
     const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[config.colorRamps[0]]
 
-    const legend = [...Array(HARDCODED_BREAKS.length)].map((b, i) => [i, originalColorRamp[i]])
+    const legend = [...Array(HARDCODED_BREAKS[0].length)].map((b, i) => [i, originalColorRamp[i]])
     const colorRampValues = flatten(legend)
 
     const layers: Layer[] = flatten(

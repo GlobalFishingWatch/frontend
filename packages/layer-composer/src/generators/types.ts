@@ -219,4 +219,4 @@ export type HeatmapColorRamp = {
 export type HeatmapColorRampColors = {
   [key in string]: string[]
 }
-export type CombinationMode = 'none' | 'compare' | 'bivariate'
+export type CombinationMode = 'add' | 'compare' | 'bivariate'
