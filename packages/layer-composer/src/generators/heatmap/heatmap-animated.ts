@@ -61,10 +61,9 @@ class HeatmapAnimatedGenerator {
     const tilesUrl = `${config.tilesAPI}/${config.tilesets.join(',')}/${API_ENDPOINTS.tiles}`
 
     const sources = timeChunks.map((timeChunk: TimeChunk) => {
-      const sourceParams = {
+      const sourceParams: Record<string, string> = {
         singleFrame: 'false',
         geomType: config.geomType,
-        'date-range': [timeChunk.start, timeChunk.dataEnd].join(','),
         filters: config.filters
           .map((filter, i) => {
             if (!filter || filter === '') return ''
@@ -76,8 +75,10 @@ class HeatmapAnimatedGenerator {
         interval: timeChunk.interval,
         breaks: HARDCODED_BREAKS.toString(),
       }
+      if (timeChunk.start && timeChunk.dataEnd) {
+        sourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd].join(',')
+      }
       const url = new URL(`${tilesUrl}?${new URLSearchParams(sourceParams)}`)
-      // console.log(url)
       const source = {
         id: timeChunk.id,
         type: 'temporalgrid',
