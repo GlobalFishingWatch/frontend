@@ -1,1 +1,1 @@
-export { default, getDataviewsLayers, getGeneratorsConfig } from './use-dataviews-layers'
+export { default, getDataviewsGeneratorConfigs, getGeneratorConfig } from './use-dataviews-layers'

@@ -2,24 +2,71 @@ import { useMemo } from 'react'
 import { Resource, Dataview } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 
-export function getGeneratorsConfig(dataview: Dataview) {
-  switch (dataview.config.type) {
-    case Generators.Type.Basemap:
-    case Generators.Type.Background: {
-      return dataview.config
-    }
-    case Generators.Type.UserContext: {
-      const dataset = dataview.datasets?.find((dataset) => dataset.type === 'user-context-layer:v1')
-      const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === 'user-context-tiles')
-      if (endpoint) {
-        return { ...dataview.config, sourceLayer: dataset?.id, tilesUrl: endpoint.pathTemplate }
-      }
-      return null
-    }
-    default: {
-      return null
+const API_GATEWAY = 'https://gateway.api.dev.globalfishingwatch.org'
+
+export function getGeneratorConfig(dataview: Dataview) {
+  if (dataview.config.type === Generators.Type.UserContext) {
+    const dataset = dataview.datasets?.find((dataset) => dataset.type === 'user-context-layer:v1')
+    const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === 'user-context-tiles')
+    if (endpoint) {
+      return { ...dataview.config, sourceLayer: dataset?.id, tilesUrl: endpoint.pathTemplate }
     }
   }
+  if (dataview.config.type === Generators.Type.Heatmap) {
+    // ADHOC CODE FOR AMATHEA UNTIL we:
+    // - have support for "proxy" param in temporalgrid
+    // - decide how to render different colors by user selection
+    const dataset = dataview.datasets?.find((dataset) => dataset.type === '4wings:v1')
+    const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
+    if (endpoint) {
+      return {
+        // WORKAROUND UNTIL 4WINGS TYPE IS READY IN LAYER COMPOSER
+        type: Generators.Type.GL,
+        id: `fourwings-${dataview.id}`,
+        sources: [
+          {
+            maxzoom: 12,
+            type: 'vector',
+            tiles: [
+              API_GATEWAY +
+                endpoint.pathTemplate
+                  .replace('{{type}}', 'heatmap')
+                  .replace(/{{/g, '{')
+                  .replace(/}}/g, '}') +
+                `?format=mvt&proxy=true&temporal-aggregation=true`,
+            ],
+          },
+        ],
+        layers: [
+          {
+            type: 'fill',
+            paint: {
+              // 'fill-color': dataview.defaultView?.color,
+              'fill-color': [
+                'interpolate',
+                ['linear'],
+                ['to-number', ['get', 'count']],
+                0,
+                '#002457',
+                300,
+                '#163F89',
+                1000,
+                '#0F6F97',
+                3000,
+                '#07BBAE',
+                56000,
+                '#00FFC3',
+                146000,
+                '#FFFFFF',
+              ],
+            },
+            'source-layer': dataset?.id,
+          },
+        ],
+      }
+    }
+  }
+  return dataview.config
 }
 
 /**
@@ -31,7 +78,7 @@ export function getGeneratorsConfig(dataview: Dataview) {
  * @param resources
  */
 
-export function getDataviewsLayers(dataviews: Dataview[], resources?: Resource[]) {
+export function getDataviewsGeneratorConfigs(dataviews: Dataview[], resources?: Resource[]) {
   return dataviews.flatMap((dataview) => {
     const generatedUidComponents: (string | number | undefined)[] = [dataview.id, dataview.name]
 
@@ -51,7 +98,7 @@ export function getDataviewsLayers(dataviews: Dataview[], resources?: Resource[]
       })
     }
 
-    const generatorConfig = getGeneratorsConfig(dataview)
+    const generatorConfig = getGeneratorConfig(dataview)
     if (!generatorConfig) return []
 
     const generator: Generators.AnyGeneratorConfig = {
@@ -67,11 +114,11 @@ export function getDataviewsLayers(dataviews: Dataview[], resources?: Resource[]
   }) as Generators.AnyGeneratorConfig[]
 }
 
-function useDataviewsLayers(dataviews: Dataview[], resources?: Resource[]) {
+function useDataviewsGeneratorConfigs(dataviews: Dataview[], resources?: Resource[]) {
   const generators = useMemo(() => {
-    return getDataviewsLayers(dataviews, resources)
+    return getDataviewsGeneratorConfigs(dataviews, resources)
   }, [dataviews, resources])
   return generators
 }
 
-export default useDataviewsLayers
+export default useDataviewsGeneratorConfigs

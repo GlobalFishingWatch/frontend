@@ -1,13 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { getDataviewsLayers } from '@globalfishingwatch/react-hooks/dist/use-dataviews-layers'
+import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/react-hooks/dist/use-dataviews-layers'
 import { selectHiddenDataviews } from 'routes/routes.selectors'
 import { selectAllAOI } from 'features/areas-of-interest/areas-of-interest.slice'
 import { selectCurrentWorkspace } from 'features/workspaces/workspaces.slice'
 import { selectCurrentWorkspaceDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectGeneratorsConfig } from './map.slice'
-
-const API_GATEWAY = 'https://gateway.api.dev.globalfishingwatch.org'
 
 export const getCurrentWorkspaceAOIGeneratorsConfig = createSelector(
   [selectCurrentWorkspace],
@@ -71,61 +69,8 @@ export const getDataviewsGeneratorsConfig = createSelector(
     if (!dataviews || !dataviews.length) return
     const filteredDataviews = dataviews.filter((dataview) => !hiddenDataviews.includes(dataview.id))
 
-    const generators = getDataviewsLayers(filteredDataviews)
+    const generators = getDataviewsGeneratorConfigs(filteredDataviews)
     return generators
-    // TODO: move this to getDataviewsLayers method
-    //   const fourwingsTilesEndpoint = dataview.dataset?.endpoints?.find(
-    //     (endpoint) => endpoint.id === '4wings-tiles'
-    //   )
-    //   if (fourwingsTilesEndpoint) {
-    //     return {
-    //       type: Generators.Type.GL,
-    //       id: `fourwings-${dataview.id}`,
-    //       sources: [
-    //         {
-    //           maxzoom: 12,
-    //           type: 'vector',
-    //           tiles: [
-    //             API_GATEWAY +
-    //               fourwingsTilesEndpoint.pathTemplate
-    //                 .replace('{{type}}', 'heatmap')
-    //                 .replace(/{{/g, '{')
-    //                 .replace(/}}/g, '}') +
-    //               `?format=mvt&proxy=true&temporal-aggregation=true`,
-    //           ],
-    //         },
-    //       ],
-    //       layers: [
-    //         {
-    //           type: 'fill',
-    //           paint: {
-    //             // 'fill-color': dataview.defaultView?.color,
-    //             'fill-color': [
-    //               'interpolate',
-    //               ['linear'],
-    //               ['to-number', ['get', 'count']],
-    //               0,
-    //               '#002457',
-    //               300,
-    //               '#163F89',
-    //               1000,
-    //               '#0F6F97',
-    //               3000,
-    //               '#07BBAE',
-    //               56000,
-    //               '#00FFC3',
-    //               146000,
-    //               '#FFFFFF',
-    //             ],
-    //           },
-    //           'source-layer': dataview.dataset?.id,
-    //         },
-    //       ],
-    //     }
-    //   }
-    //   return null
-    // })
-    // .filter((g) => g !== null) as Generators.GlGeneratorConfig[]
   }
 )
 

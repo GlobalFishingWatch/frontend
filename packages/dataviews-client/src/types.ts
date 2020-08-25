@@ -1,5 +1,6 @@
 import { GeoJSON } from 'geojson'
 import { FetchResponseTypes } from '@globalfishingwatch/api-client/dist/api-client'
+import { Generators } from '@globalfishingwatch/layer-composer'
 
 export interface EndpointParam {
   id: string
@@ -58,7 +59,7 @@ export interface Dataset {
 }
 
 export interface DataviewConfig {
-  type?: string
+  type?: Generators.Type | string
   color?: string
   [key: string]: unknown
 }

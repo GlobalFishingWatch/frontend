@@ -2,8 +2,8 @@ export { default as useLogin } from './use-login'
 export { default as useLayerComposer } from './use-layer-composer'
 export { default as useWorkspace } from './use-workspace'
 export {
-  default as useDataviewsLayers,
-  getGeneratorsConfig,
-  getDataviewsLayers,
+  default as useDataviewsGeneratorConfigs,
+  getDataviewsGeneratorConfigs,
+  getGeneratorConfig,
 } from './use-dataviews-layers'
 export { default as useDebounce } from './use-debounce'
