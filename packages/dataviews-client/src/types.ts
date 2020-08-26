@@ -61,6 +61,7 @@ export interface Dataset {
 export interface DataviewConfig {
   type?: Generators.Type | string
   color?: string
+  colorRamp?: Generators.ColorRampsIds
   [key: string]: unknown
 }
 

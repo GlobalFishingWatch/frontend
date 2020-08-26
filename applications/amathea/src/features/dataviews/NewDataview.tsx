@@ -44,7 +44,7 @@ function NewDataview(): React.ReactElement {
           dataviewsConfig: {
             ...workspace.dataviewsConfig,
             [dataviewId]: {
-              config: { color: draftDataview.color },
+              config: { color: draftDataview.color, colorRamp: draftDataview.colorRamp },
             },
           },
         })
@@ -80,7 +80,7 @@ function NewDataview(): React.ReactElement {
       {dataset && dataset.id && (
         <ColorBar
           selectedColor={draftDataview?.color as ColorBarIds}
-          onColorClick={(color) => setDraftDataview({ color: color.id })}
+          onColorClick={(color) => setDraftDataview({ color: color.value, colorRamp: color.id })}
         />
       )}
       <Button onClick={onCreateClick} className={styles.saveBtn} loading={loading}>

@@ -11,6 +11,7 @@ import { selectHiddenDataviews } from 'routes/routes.selectors'
 import styles from './DataviewGraphPanel.module.css'
 import DataviewGraph from './DataviewGraph'
 import { useDraftDataviewConnect, useDataviewsAPI, useDataviewsConnect } from './dataviews.hook'
+import { DataviewDraft } from './dataviews.slice'
 
 interface DataviewGraphPanelProps {
   dataview: Dataview
@@ -31,10 +32,11 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
     if (dataset) {
       const sourceLabelId = DATASET_SOURCE_IDS[dataset.source as DatasetSources]
       const sourceLabel = DATASET_SOURCE_OPTIONS.find((d) => d.id === sourceLabelId)?.label || ''
-      const draftDataview = {
+      const draftDataview: DataviewDraft = {
         id: dataview.id,
         name: dataview.name,
         color: color as string,
+        colorRamp: dataview.config?.colorRamp,
         source: { id: dataset.source, label: sourceLabel },
         dataset: {
           id: dataset?.id,

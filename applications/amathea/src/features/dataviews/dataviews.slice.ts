@@ -15,7 +15,7 @@ export const fetchDataviewsThunk = createAsyncThunk('dataviews/fetch', async () 
 export const createDataviewThunk = createAsyncThunk(
   'dataviews/create',
   async (draftDataview: DataviewDraft) => {
-    const { dataset, color } = draftDataview
+    const { dataset, color, colorRamp } = draftDataview
     const dataview: DataviewCreation = {
       name: dataset.label,
       description: dataset.description,
@@ -23,6 +23,7 @@ export const createDataviewThunk = createAsyncThunk(
       config: {
         type: Generators.Type.UserContext,
         color,
+        colorRamp,
       },
     }
     const createdDataview = await GFWAPI.fetch<Dataview>('/v1/dataviews', {
@@ -76,6 +77,7 @@ export type DataviewDraft = {
   source?: SelectOption
   dataset: DataviewDraftDataset
   color?: string
+  colorRamp?: Generators.ColorRampsIds
 }
 
 export interface DataviewsState extends AsyncReducer<Dataview> {
