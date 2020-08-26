@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import Select, { SelectOnChange } from '@globalfishingwatch/ui-components/dist/select'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import ColorBar, { ColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
+import ColorBar, { ColorBarIds } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { DATASET_SOURCE_OPTIONS } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { useCurrentWorkspaceConnect, useWorkspacesAPI } from 'features/workspaces/workspaces.hook'
@@ -79,8 +79,8 @@ function NewDataview(): React.ReactElement {
       )}
       {dataset && dataset.id && (
         <ColorBar
-          selectedColor={draftDataview?.color as ColorBarOptions}
-          onColorClick={(color) => setDraftDataview({ color })}
+          selectedColor={draftDataview?.color as ColorBarIds}
+          onColorClick={(color) => setDraftDataview({ color: color.id })}
         />
       )}
       <Button onClick={onCreateClick} className={styles.saveBtn} loading={loading}>

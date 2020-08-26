@@ -1,6 +1,16 @@
 export { default } from './ColorBar'
 
-export type ColorBarOptions =
+export type ColorBarIds =
+  | 'teal'
+  | 'magenta'
+  | 'lilac'
+  | 'salmon'
+  | 'sky'
+  | 'red'
+  | 'yellow'
+  | 'green'
+  | 'orange'
+export type ColorBarValues =
   | '#00FFBC'
   | '#FF64CE'
   | '#9CA4FF'
@@ -9,4 +19,9 @@ export type ColorBarOptions =
   | '#FF6854'
   | '#FFEA00'
   | '#A6FF59'
-  | '#FFC300'
+  | '#FFAA0D'
+
+export type ColorBarOption = {
+  id: ColorBarIds
+  value: ColorBarValues
+}
