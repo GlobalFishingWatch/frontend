@@ -17,6 +17,11 @@ export const DEFAULT_CONFIG = {
   sprite: 'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites',
 }
 
+export const API_GATEWAY =
+  process.env.API_GATEWAY ||
+  process.env.REACT_APP_API_GATEWAY ||
+  'https://gateway.api.dev.globalfishingwatch.org'
+
 class LayerComposer {
   version: number
   glyphs: string

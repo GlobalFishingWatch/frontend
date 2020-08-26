@@ -1,22 +1,20 @@
 import { Type, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { isConfigVisible } from '../utils'
-
-const API_GATEWAY =
-  process.env.API_GATEWAY ||
-  process.env.REACT_APP_API_GATEWAY ||
-  'https://gateway.api.dev.globalfishingwatch.org'
+import { API_GATEWAY } from '../../layer-composer'
 
 class UserContextGenerator {
   type = Type.UserContext
 
   _getStyleSources = (config: UserContextGeneratorConfig) => {
-    const tiles = isUrlAbsolute(config.tilesUrl) ? config.tilesUrl : API_GATEWAY + config.tilesUrl
+    const tilesUrl = isUrlAbsolute(config.tilesUrl)
+      ? config.tilesUrl
+      : API_GATEWAY + config.tilesUrl
     return [
       {
         id: config.id,
         type: 'vector',
-        tiles: [tiles.replace(/{{/g, '{').replace(/}}/g, '}')],
+        tiles: [tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}')],
       },
     ]
   }
