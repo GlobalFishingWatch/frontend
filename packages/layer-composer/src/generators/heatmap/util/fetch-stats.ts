@@ -6,8 +6,14 @@ type ExtendedPromise<T> = Promise<T> & {
   error?: boolean
 }
 
+type FetchStatsOptions = {
+  token?: string
+  singleFrame?: boolean
+  serverSideFilters?: string
+}
 const controllerCache: { [key: string]: AbortController } = {}
-export default (url: string, serverSideFilters?: string, singleFrame = false) => {
+export default function fetchStats(url: string, options: FetchStatsOptions) {
+  const { serverSideFilters, singleFrame, token } = options
   const statsUrl = new URL(url)
   if (singleFrame) {
     statsUrl.searchParams.set('temporal-aggregation', 'true')
@@ -21,6 +27,11 @@ export default (url: string, serverSideFilters?: string, singleFrame = false) =>
   controllerCache[url] = new AbortController()
   const promise: ExtendedPromise<statsByZoom> = fetch(statsUrl.toString(), {
     signal: controllerCache[url].signal,
+    ...(token && {
+      header: {
+        Authorization: `Bearer ${token}`,
+      },
+    }),
   })
     .then((r) => {
       if (r.ok) return r.json()
