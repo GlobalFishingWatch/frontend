@@ -142,7 +142,7 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   tileset: string
   fetchStats?: boolean
   statsFilter?: string
-  colorRamp?: ColorRamps
+  colorRamp?: ColorRampsIds
   serverSideFilter?: string
   updateColorRampOnTimeChange?: boolean
 }
@@ -151,7 +151,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: Type.HeatmapAnimated
   tilesets: string[]
   filters?: string[]
-  colorRamps?: ColorRamps[]
+  colorRamps?: ColorRampsIds[]
   tilesAPI?: string
   combinationMode?: CombinationMode
   geomType?: string
@@ -212,23 +212,10 @@ export type Ruler = {
 }
 
 // ---- Heatmap Generator types
-export type ColorRamps =
+export type ColorRampsIds =
   | 'fishing'
   | 'presence'
   | 'reception'
-  | '#00FFBC'
-  | '#FF64CE'
-  | '#9CA4FF'
-  | '#FFAE9B'
-  | '#00EEFF'
-  | '#FF6854'
-  | '#FFEA00'
-  | '#A6FF59'
-  | '#FFAA0D'
-export type ColorRampsKey =
-  | 'FISHING'
-  | 'PRESENCE'
-  | 'RECEPTION'
   | 'teal'
   | 'magenta'
   | 'lilac'
@@ -238,10 +225,5 @@ export type ColorRampsKey =
   | 'yellow'
   | 'green'
   | 'orange'
-export type HeatmapColorRamp = {
-  [key in ColorRampsKey]: ColorRamps
-}
-export type HeatmapColorRampColors = {
-  [key in string]: string[]
-}
+
 export type CombinationMode = 'add' | 'compare' | 'bivariate'

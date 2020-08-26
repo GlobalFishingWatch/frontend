@@ -2,7 +2,13 @@ import memoizeOne from 'memoize-one'
 import { Layer } from 'mapbox-gl'
 import flatten from 'lodash/flatten'
 import zip from 'lodash/zip'
-import { Type, HeatmapAnimatedGeneratorConfig, MergedGeneratorConfig } from '../types'
+import {
+  Type,
+  HeatmapAnimatedGeneratorConfig,
+  MergedGeneratorConfig,
+  ColorRampsIds,
+  CombinationMode,
+} from '../types'
 import { Group } from '../../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import paintByGeomType from './heatmap-layers-paint'
@@ -13,30 +19,16 @@ import {
   HEATMAP_DEFAULT_MAX_ZOOM,
   HEATMAP_GEOM_TYPES_GL_TYPES,
   HEATMAP_COLOR_RAMPS,
-  HEATMAP_COLOR_RAMPS_RAMPS,
 } from './config'
-import getServerSideFilters from './util/get-server-side-filters'
 import { TimeChunk, getActiveTimeChunks, toQuantizedFrame, getDelta } from './util/time-chunks'
 
 type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
 >
 
-// tilesets: string[]
-//   filters?: string[]
-//   colorRamps?: ColorRamps[]
-//   tilesAPI?: string
-//   combinationMode?: CombinationMode
-//   geomType?: string
-//   tilesetStart?: string
-//   tilesetEnd?: string
-//   maxZoom?: number
-//   debug?: boolean
-//   debugLabels?: boolean
-
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   filters: [],
-  colorRamps: [HEATMAP_COLOR_RAMPS.PRESENCE],
+  colorRamps: ['presence'],
   combinationMode: 'add',
   geomType: HEATMAP_GEOM_TYPES.GRIDDED,
   tilesetsStart: '2012-01-01T00:00:00.000Z',
@@ -46,7 +38,46 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
 }
 
 // TODO - generate this using updated stats API
-const HARDCODED_BREAKS = [[0, 1, 5, 10, 15, 30]]
+// Breaks array must must have length === colorRamp length - 1
+const HARDCODED_BREAKS = {
+  add: [[0, 1, 5, 10, 30]],
+  compare: [
+    [0, 1, 5, 10, 30],
+    [0, 1, 5, 10, 30],
+    [0, 1, 5, 10, 30],
+    [0, 1, 5, 10, 30],
+    [0, 1, 5, 10, 30],
+  ],
+  bivariate: [[]], // TODO
+}
+
+const getColorRampBaseExpression = (
+  breaks: number[][],
+  colorRampIds: ColorRampsIds[],
+  combinationMode: CombinationMode
+) => {
+  const colorRamps = colorRampIds.map((colorRampId) => {
+    const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampId]
+    return originalColorRamp
+  })
+
+  const expressions = breaks.map((datasetBreaks, datasetIndex) => {
+    const originalColorRamp = colorRamps[datasetIndex]
+    const legend = [...Array(datasetBreaks.length + 1)].map((_, i) => [
+      // offset each dataset by 10 + add actual bucket value
+      datasetIndex * 10 + i,
+      originalColorRamp[i],
+    ])
+    const expr = flatten(legend)
+    return expr
+  })
+
+  if (combinationMode === 'compare') {
+    return { colorRamp: colorRamps[0], colorRampBaseExpression: flatten(expressions) }
+  }
+
+  return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions[0] }
+}
 
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
@@ -59,6 +90,9 @@ class HeatmapAnimatedGenerator {
     }
 
     const tilesUrl = `${config.tilesAPI}/${config.tilesets.join(',')}/${API_ENDPOINTS.tiles}`
+
+    // TODO - generate this using updated stats API
+    const breaks = HARDCODED_BREAKS[config.combinationMode].slice(0, config.tilesets.length)
 
     const sources = timeChunks.map((timeChunk: TimeChunk) => {
       const sourceParams: Record<string, string> = {
@@ -73,7 +107,8 @@ class HeatmapAnimatedGenerator {
         delta: getDelta(config.start, config.end, timeChunk.interval).toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: timeChunk.interval,
-        breaks: JSON.stringify(HARDCODED_BREAKS),
+        // TODO - generate this using updated stats API
+        breaks: JSON.stringify(breaks),
         combinationMode: config.combinationMode,
       }
       if (timeChunk.start && timeChunk.dataEnd) {
@@ -93,18 +128,21 @@ class HeatmapAnimatedGenerator {
   }
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
-    // TODO
-    const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[config.colorRamps[0]]
+    // TODO - generate this using updated stats API
+    const breaks = HARDCODED_BREAKS[config.combinationMode].slice(0, config.tilesets.length)
 
-    const legend = [...Array(HARDCODED_BREAKS[0].length)].map((b, i) => [i, originalColorRamp[i]])
-    const colorRampValues = flatten(legend)
+    const { colorRamp, colorRampBaseExpression } = getColorRampBaseExpression(
+      breaks,
+      config.colorRamps,
+      config.combinationMode
+    )
 
     const layers: Layer[] = flatten(
       timeChunks.map((timeChunk: TimeChunk) => {
         const frame = toQuantizedFrame(config.start, timeChunk.quantizeOffset, timeChunk.interval)
         const pickValueAt = frame.toString()
         const exprPick = ['coalesce', ['get', pickValueAt], 0]
-        const exprColorRamp = ['step', exprPick, 'transparent', ...colorRampValues]
+        const exprColorRamp = ['step', exprPick, 'transparent', ...colorRampBaseExpression]
 
         let paint
         if (config.geomType === 'gridded') {
@@ -115,7 +153,7 @@ class HeatmapAnimatedGenerator {
           paint = paintByGeomType.blob
           paint['heatmap-weight'] = exprPick as any
           const hStops = [0, 0.005, 0.01, 0.1, 0.2, 1]
-          const heatmapColorRamp = flatten(zip(hStops, originalColorRamp))
+          const heatmapColorRamp = flatten(zip(hStops, colorRamp))
           paint['heatmap-color'] = [
             'interpolate',
             ['linear'],

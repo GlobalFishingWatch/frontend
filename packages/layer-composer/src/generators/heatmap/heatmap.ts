@@ -13,7 +13,6 @@ import {
   API_ENDPOINTS,
   HEATMAP_GEOM_TYPES,
   HEATMAP_COLOR_RAMPS,
-  HEATMAP_COLOR_RAMPS_RAMPS,
   HEATMAP_GEOM_TYPES_GL_TYPES,
   HEATMAP_DEFAULT_MAX_ZOOM,
 } from './config'
@@ -59,7 +58,7 @@ class HeatmapGenerator {
   }
 
   _getHeatmapLayers = (layer: GlobalHeatmapGeneratorConfig) => {
-    const colorRampType = layer.colorRamp || HEATMAP_COLOR_RAMPS.PRESENCE
+    const colorRampType = layer.colorRamp || 'presence'
 
     let stops: number[] = []
     const zoom = Math.min(Math.floor(layer.zoom), layer.maxZoom || HEATMAP_DEFAULT_MAX_ZOOM)
@@ -86,7 +85,7 @@ class HeatmapGenerator {
     }
 
     const pickValueAt = 'value'
-    const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[colorRampType as string]
+    const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampType]
     const legend = stops.length ? zip(stops, originalColorRamp) : []
 
     const colorRampValues = flatten(legend)
