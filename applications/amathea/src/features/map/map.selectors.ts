@@ -4,7 +4,7 @@ import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/react-hooks/di
 import { selectHiddenDataviews } from 'routes/routes.selectors'
 import { selectAllAOI } from 'features/areas-of-interest/areas-of-interest.slice'
 import { selectCurrentWorkspace } from 'features/workspaces/workspaces.slice'
-import { selectCurrentWorkspaceDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectCurrentWorkspaceDataviewsResolved } from 'features/dataviews/dataviews.selectors'
 import { selectGeneratorsConfig } from './map.slice'
 
 export const getCurrentWorkspaceAOIGeneratorsConfig = createSelector(
@@ -64,7 +64,7 @@ export const getAllAOIGeneratorsConfig = createSelector(
 )
 
 export const getDataviewsGeneratorsConfig = createSelector(
-  [selectCurrentWorkspaceDataviews, selectHiddenDataviews],
+  [selectCurrentWorkspaceDataviewsResolved, selectHiddenDataviews],
   (dataviews, hiddenDataviews) => {
     if (!dataviews || !dataviews.length) return
     const filteredDataviews = dataviews.filter((dataview) => !hiddenDataviews.includes(dataview.id))

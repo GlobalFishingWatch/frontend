@@ -2,8 +2,6 @@ import { useMemo } from 'react'
 import { Resource, Dataview } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 
-const API_GATEWAY = 'https://gateway.api.dev.globalfishingwatch.org'
-
 export function getGeneratorConfig(dataview: Dataview) {
   if (dataview.config.type === Generators.Type.UserContext) {
     const dataset = dataview.datasets?.find((dataset) => dataset.type === 'user-context-layer:v1')
@@ -13,56 +11,19 @@ export function getGeneratorConfig(dataview: Dataview) {
     }
   }
   if (dataview.config.type === Generators.Type.Heatmap) {
-    // ADHOC CODE FOR AMATHEA UNTIL we:
-    // - have support for "proxy" param in temporalgrid
-    // - decide how to render different colors by user selection
     const dataset = dataview.datasets?.find((dataset) => dataset.type === '4wings:v1')
-    const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
-    if (endpoint) {
+    const tilesEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
+    const statsEndpoint = dataset?.endpoints?.find(
+      (endpoint) => endpoint.id === '4wings-statistics'
+    )
+    if (tilesEndpoint) {
       return {
-        // WORKAROUND UNTIL 4WINGS TYPE IS READY IN LAYER COMPOSER
-        type: Generators.Type.GL,
         id: `fourwings-${dataview.id}`,
-        sources: [
-          {
-            maxzoom: 12,
-            type: 'vector',
-            tiles: [
-              API_GATEWAY +
-                endpoint.pathTemplate
-                  .replace('{{type}}', 'heatmap')
-                  .replace(/{{/g, '{')
-                  .replace(/}}/g, '}') +
-                `?format=mvt&proxy=true&temporal-aggregation=true`,
-            ],
-          },
-        ],
-        layers: [
-          {
-            type: 'fill',
-            paint: {
-              // 'fill-color': dataview.defaultView?.color,
-              'fill-color': [
-                'interpolate',
-                ['linear'],
-                ['to-number', ['get', 'count']],
-                0,
-                '#002457',
-                300,
-                '#163F89',
-                1000,
-                '#0F6F97',
-                3000,
-                '#07BBAE',
-                56000,
-                '#00FFC3',
-                146000,
-                '#FFFFFF',
-              ],
-            },
-            'source-layer': dataset?.id,
-          },
-        ],
+        ...dataview.config,
+        tileset: dataset?.id,
+        fetchStats: statsEndpoint !== undefined,
+        tilesUrl: tilesEndpoint.pathTemplate,
+        statsUrl: statsEndpoint?.pathTemplate,
       }
     }
   }
