@@ -12,8 +12,6 @@ import {
   HEATMAP_GEOM_TYPES,
   HEATMAP_DEFAULT_MAX_ZOOM,
   HEATMAP_GEOM_TYPES_GL_TYPES,
-  HEATMAP_COLOR_RAMPS,
-  HEATMAP_COLOR_RAMPS_RAMPS,
 } from './config'
 import getServerSideFilters from './util/get-server-side-filters'
 import { TimeChunk, getActiveTimeChunks, toQuantizedFrame, getDelta } from './util/time-chunks'
@@ -26,7 +24,7 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   datasetStart: '2012-01-01T00:00:00.000Z',
   datasetEnd: new Date().toISOString(),
   geomType: HEATMAP_GEOM_TYPES.GRIDDED,
-  colorRamp: HEATMAP_COLOR_RAMPS.PRESENCE,
+  colorRamp: 'presence',
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   serverSideFilter: '',
   tilesAPI: API_TILES_URL,
@@ -76,8 +74,7 @@ class HeatmapAnimatedGenerator {
   }
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
-    const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[config.colorRamp]
-    const legend = HARDCODED_BREAKS.map((b, i) => [i, originalColorRamp[i]])
+    const legend = HARDCODED_BREAKS.map((b, i) => [i, config.colorRamp[i]])
     const colorRampValues = flatten(legend)
 
     const layers: Layer[] = flatten(
@@ -96,7 +93,7 @@ class HeatmapAnimatedGenerator {
           paint = paintByGeomType.blob
           paint['heatmap-weight'] = exprPick as any
           const hStops = [0, 0.005, 0.01, 0.1, 0.2, 1]
-          const heatmapColorRamp = flatten(zip(hStops, originalColorRamp))
+          const heatmapColorRamp = flatten(zip(hStops, config.colorRamp))
           paint['heatmap-color'] = [
             'interpolate',
             ['linear'],

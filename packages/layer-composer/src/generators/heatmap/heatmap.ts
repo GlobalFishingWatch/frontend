@@ -1,6 +1,6 @@
 import flatten from 'lodash/flatten'
 import zip from 'lodash/zip'
-import { scalePow } from 'd3-scale'
+import { scaleLinear } from 'd3-scale'
 import memoizeOne from 'memoize-one'
 import { Group } from '../../types'
 import { Type, HeatmapGeneratorConfig, GlobalGeneratorConfig } from '../types'
@@ -13,7 +13,6 @@ import getServerSideFilters from './util/get-server-side-filters'
 import {
   HEATMAP_GEOM_TYPES,
   HEATMAP_COLOR_RAMPS,
-  HEATMAP_COLOR_RAMPS_RAMPS,
   HEATMAP_GEOM_TYPES_GL_TYPES,
   HEATMAP_DEFAULT_MAX_ZOOM,
 } from './config'
@@ -54,7 +53,6 @@ class HeatmapGenerator {
   }
 
   _getHeatmapLayers = (config: GlobalHeatmapGeneratorConfig) => {
-    const colorRampType = config.colorRamp || HEATMAP_COLOR_RAMPS.PRESENCE
     const geomType = config.geomType || HEATMAP_GEOM_TYPES.GRIDDED
 
     let stops: number[] = []
@@ -63,9 +61,9 @@ class HeatmapGenerator {
     if (statsByZoom) {
       const { min, max, avg } = statsByZoom
       if (min && max && avg) {
-        const precision = Array.from(max.toString()).reduce((acc) => acc * 10, 0.1)
+        const precision = Array.from(Math.round(max).toString()).reduce((acc) => acc * 10, 0.1)
         const roundedMax = Math.floor(max / precision) * precision
-        const scale = scalePow().exponent(10).domain([0, 0.5, 1]).range([min, avg, roundedMax])
+        const scale = scaleLinear().domain([0, 0.5, 1]).range([min, avg, roundedMax])
 
         stops = [0, min, scale(0.25), scale(0.5), scale(0.75), roundedMax]
 
@@ -82,7 +80,7 @@ class HeatmapGenerator {
     }
 
     const pickValueAt = 'value'
-    const originalColorRamp = HEATMAP_COLOR_RAMPS_RAMPS[colorRampType as string]
+    const originalColorRamp = HEATMAP_COLOR_RAMPS[config.colorRamp || 'presence']
     const legend = stops.length ? zip(stops, originalColorRamp) : []
 
     const colorRampValues = flatten(legend)
@@ -128,13 +126,12 @@ class HeatmapGenerator {
       ? config.statsUrl
       : API_GATEWAY + config.statsUrl
     // use statsError to invalidate cache and try again when it fails
+    // also params can't be named as needs to be independant params for memoization
     const statsPromise = memoizeCache[config.id]._fetchStats(
       statsUrl,
-      {
-        serverSideFilters,
-        singleFrame: true,
-        token: config.token,
-      },
+      serverSideFilters,
+      true,
+      config.token,
       this.statsError
     )
     const layers = this._getHeatmapLayers(config)
@@ -152,7 +149,9 @@ class HeatmapGenerator {
         resolve(this.getStyle(config))
       })
       statsPromise.catch((e: any) => {
-        this.statsError++
+        if (e.name !== 'AbortError') {
+          this.statsError++
+        }
         reject(e)
       })
     })
