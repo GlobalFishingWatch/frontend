@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import TagList from '@globalfishingwatch/ui-components/dist/tag-list'
@@ -9,9 +9,10 @@ import { selectDatasetById } from 'features/datasets/datasets.slice'
 import Circle from 'common/Circle'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectHiddenDataviews } from 'routes/routes.selectors'
+import { useCurrentWorkspaceConnect, useWorkspacesAPI } from 'features/workspaces/workspaces.hook'
 import styles from './DataviewGraphPanel.module.css'
 import DataviewGraph from './DataviewGraph'
-import { useDraftDataviewConnect, useDataviewsAPI, useDataviewsConnect } from './dataviews.hook'
+import { useDraftDataviewConnect } from './dataviews.hook'
 import { DataviewDraft } from './dataviews.slice'
 
 interface DataviewGraphPanelProps {
@@ -19,10 +20,11 @@ interface DataviewGraphPanelProps {
 }
 
 const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => {
-  const { deleteDataview } = useDataviewsAPI()
+  const [dataviewLoadingId, setDataviewLoadingId] = useState<number | undefined>()
+  const { workspace } = useCurrentWorkspaceConnect()
+  const { updateWorkspace } = useWorkspacesAPI()
   const { showModal } = useModalConnect()
   const { setDraftDataview } = useDraftDataviewConnect()
-  const { dataviewsStatus, dataviewsStatusId } = useDataviewsConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const hiddenDataviews = useSelector(selectHiddenDataviews)
   const datasetId = dataview.datasets?.length ? dataview.datasets[0].id : ''
@@ -56,15 +58,22 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
   }, [color, flagFilter, dataset, dataview, setDraftDataview, showModal])
 
   const onDeleteClick = useCallback(
-    (dataview: Dataview) => {
+    async (dataview: Dataview) => {
       const confirmation = window.confirm(
         `Are you sure you want to permanently delete this dataview?\n${dataview.name}`
       )
-      if (confirmation) {
-        deleteDataview(dataview.id)
+      if (confirmation && workspace) {
+        setDataviewLoadingId(dataview.id)
+        await updateWorkspace({
+          id: workspace.id,
+          dataviews: workspace.dataviews
+            .filter((d) => d.id !== dataview.id)
+            .map(({ id }) => id) as any,
+        })
+        setDataviewLoadingId(undefined)
       }
     },
-    [deleteDataview]
+    [updateWorkspace, workspace]
   )
 
   const isDataviewHidden = hiddenDataviews.includes(dataview.id)
@@ -99,7 +108,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
             icon="delete"
             type="warning"
             tooltip="Remove dataset"
-            loading={dataviewsStatus === 'loading.delete' && dataviewsStatusId === dataview.id}
+            loading={dataviewLoadingId === dataview.id}
             onClick={() => onDeleteClick(dataview)}
           />
           <IconButton
