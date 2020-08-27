@@ -74,10 +74,6 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
    */
   tilesUrl: string
-  /**
-   * Layer name to grab vector tiles from source https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#source-layer
-   */
-  sourceLayer: string
 }
 
 /**

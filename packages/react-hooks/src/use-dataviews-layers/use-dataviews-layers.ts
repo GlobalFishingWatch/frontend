@@ -7,7 +7,7 @@ export function getGeneratorConfig(dataview: Dataview) {
     const dataset = dataview.datasets?.find((dataset) => dataset.type === 'user-context-layer:v1')
     const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === 'user-context-tiles')
     if (endpoint) {
-      return { ...dataview.config, sourceLayer: dataset?.id, tilesUrl: endpoint.pathTemplate }
+      return { ...dataview.config, tilesUrl: endpoint.pathTemplate }
     }
   }
   if (dataview.config.type === Generators.Type.Heatmap) {
