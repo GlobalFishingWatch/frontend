@@ -71,6 +71,24 @@ body {
   color: var(--color-primary-blue);
 }
 
+/* * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0) rgba(0,0,0,0.3);
+}
+
+*::-webkit-scrollbar {
+  width: 0.6rem;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.3);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0);
+  border-radius: 6px;
+} */
+
 a,
 a:visited {
   color: inherit;

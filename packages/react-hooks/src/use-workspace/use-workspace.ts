@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 import {
   Dataview,
-  WorkspaceDataview,
+  WorkspaceDataviewConfigDict,
   resolveDataviews,
-  ResolvedDataview,
 } from '@globalfishingwatch/dataviews-client'
 
 /**
@@ -13,8 +12,8 @@ import {
  */
 const useWorkspace = (
   dataviews: Dataview[],
-  workspaceDataviews?: WorkspaceDataview[]
-): ResolvedDataview[] => {
+  workspaceDataviews?: WorkspaceDataviewConfigDict
+): Dataview[] | undefined => {
   const newDataviews = useMemo(() => {
     return resolveDataviews(dataviews, workspaceDataviews)
   }, [dataviews, workspaceDataviews])

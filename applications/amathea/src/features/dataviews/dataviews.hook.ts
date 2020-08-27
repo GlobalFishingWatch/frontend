@@ -11,6 +11,8 @@ import {
   resetDraftDataview as resetDraftDataviewAction,
   selectDraftDataview,
   updateDataviewThunk,
+  selectDataviewStatus,
+  selectDataviewStatusId,
 } from './dataviews.slice'
 
 export const useDraftDataviewConnect = () => {
@@ -29,8 +31,10 @@ export const useDraftDataviewConnect = () => {
 }
 
 export const useDataviewsConnect = () => {
+  const dataviewsStatus = useSelector(selectDataviewStatus)
+  const dataviewsStatusId = useSelector(selectDataviewStatusId)
   const dataviewsList = useSelector(selectAllDataviews)
-  return { dataviewsList }
+  return { dataviewsStatus, dataviewsStatusId, dataviewsList }
 }
 
 export const useDataviewsAPI = () => {
@@ -39,6 +43,7 @@ export const useDataviewsAPI = () => {
   const fetchDataviews = useCallback(() => {
     dispatch(fetchDataviewsThunk())
   }, [dispatch])
+
   const createDataview = useCallback(
     async (dataview: DataviewDraft): Promise<Dataview> => {
       const { payload }: any = await dispatch(createDataviewThunk(dataview))
@@ -53,11 +58,23 @@ export const useDataviewsAPI = () => {
     },
     [dispatch]
   )
+
+  const upsertDataview = useCallback(
+    async (partialDataview: DataviewDraft): Promise<Dataview> => {
+      if (partialDataview.id) {
+        return updateDataview(partialDataview)
+      } else {
+        return createDataview(partialDataview)
+      }
+    },
+    [createDataview, updateDataview]
+  )
+
   const deleteDataview = useCallback(
     (id: number) => {
       dispatch(deleteDataviewThunk(id))
     },
     [dispatch]
   )
-  return { fetchDataviews, createDataview, updateDataview, deleteDataview }
+  return { fetchDataviews, createDataview, updateDataview, upsertDataview, deleteDataview }
 }

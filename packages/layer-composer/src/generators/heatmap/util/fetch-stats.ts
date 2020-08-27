@@ -7,13 +7,20 @@ type ExtendedPromise<T> = Promise<T> & {
 }
 
 const controllerCache: { [key: string]: AbortController } = {}
-export default (url: string, serverSideFilters?: string, singleFrame = false) => {
+export default function fetchStats(
+  url: string,
+  serverSideFilters = '',
+  singleFrame = false,
+  token?: string
+) {
   const statsUrl = new URL(url)
   if (singleFrame) {
     statsUrl.searchParams.set('temporal-aggregation', 'true')
   }
   if (serverSideFilters) {
-    statsUrl.searchParams.set('filters', serverSideFilters)
+    // TODO once we support multiple datasetsConfig in same dataview
+    // generate filters array
+    statsUrl.searchParams.set('filters[0]', serverSideFilters)
   }
   if (controllerCache[url]) {
     controllerCache[url].abort()
@@ -21,6 +28,11 @@ export default (url: string, serverSideFilters?: string, singleFrame = false) =>
   controllerCache[url] = new AbortController()
   const promise: ExtendedPromise<statsByZoom> = fetch(statsUrl.toString(), {
     signal: controllerCache[url].signal,
+    ...(token && {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }),
   })
     .then((r) => {
       if (r.ok) return r.json()

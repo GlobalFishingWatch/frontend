@@ -1,53 +1,49 @@
-import React from 'react'
+import React, { memo } from 'react'
 import cx from 'classnames'
 import styles from './ColorBar.module.css'
-import { ColorBarOptions } from './index'
+import { ColorBarOption, ColorBarIds, ColorBarValues } from './index'
 
 interface ColorBarProps {
-  onColorClick?: (color: ColorBarOptions, e: React.MouseEvent) => void
-  selectedColor?: ColorBarOptions
-  disabledColors?: ColorBarOptions[]
+  onColorClick?: (color: ColorBarOption, e: React.MouseEvent) => void
+  selectedColor?: ColorBarIds | ColorBarValues
+  disabledColors?: (ColorBarIds | ColorBarValues)[]
   className?: string
 }
 
-const colors: ColorBarOptions[] = [
-  '#F95E5E',
-  '#21D375',
-  '#F09300',
-  '#FFE500',
-  '#03E5BB',
-  '#9E6AB0',
-  '#F4511F',
-  '#B39DDB',
-  '#0B8043',
-  '#4CBDD0',
-  '#BB00FF',
-  '#069688',
-  '#4184F4',
-  '#AD1457',
-  '#FD5480',
+const colors: ColorBarOption[] = [
+  { id: 'teal', value: '#00FFBC' },
+  { id: 'magenta', value: '#FF64CE' },
+  { id: 'lilac', value: '#9CA4FF' },
+  { id: 'salmon', value: '#FFAE9B' },
+  { id: 'sky', value: '#00EEFF' },
+  { id: 'red', value: '#FF6854' },
+  { id: 'yellow', value: '#FFEA00' },
+  { id: 'green', value: '#A6FF59' },
+  { id: 'orange', value: '#FFAA0D' },
 ]
 
-const ColorBar: React.FC<ColorBarProps> = (props) => {
+function ColorBar(props: ColorBarProps) {
   const { onColorClick, className = '', selectedColor, disabledColors = [] } = props
   return (
     <ul className={cx(styles.listContainer, className)}>
-      {colors.map((color) => (
-        <li key={color} className={styles.colorContainer}>
-          <button
-            className={cx(styles.color, {
-              [styles.colorActive]: selectedColor === color,
-              [styles.colorDisabled]: disabledColors.includes(color),
-            })}
-            style={{ backgroundColor: color }}
-            onClick={(e) =>
-              onColorClick && !disabledColors.includes(color) && onColorClick(color, e)
-            }
-          ></button>
-        </li>
-      ))}
+      {colors.map((color) => {
+        const disabledColor =
+          disabledColors.includes(color.id) || disabledColors.includes(color.value)
+        return (
+          <li key={color.id} className={styles.colorContainer}>
+            <button
+              className={cx(styles.color, {
+                [styles.colorActive]: selectedColor === color.id || selectedColor === color.value,
+                [styles.colorDisabled]: disabledColor,
+              })}
+              style={{ backgroundColor: color.value }}
+              onClick={(e) => onColorClick && !disabledColor && onColorClick(color, e)}
+            ></button>
+          </li>
+        )
+      })}
     </ul>
   )
 }
 
-export default ColorBar
+export default memo(ColorBar)

@@ -16,8 +16,10 @@ import {
   selectDatasetStatus,
   createDatasetThunk,
   CreateDataset,
+  selectDatasetStatusId,
+  updateDatasetThunk,
 } from './datasets.slice'
-import { selectShared } from './datasets.selectors'
+import { selectShared, selectUserDatasets } from './datasets.selectors'
 
 export const useDraftDatasetConnect = () => {
   const dispatch = useDispatch()
@@ -57,9 +59,11 @@ export const useDraftDatasetConnect = () => {
 
 export const useDatasetsConnect = () => {
   const datasetStatus = useSelector(selectDatasetStatus)
+  const datasetStatusId = useSelector(selectDatasetStatusId)
   const datasetsList = useSelector(selectAllDatasets)
+  const datasetsUserList = useSelector(selectUserDatasets)
   const datasetsSharedList = useSelector(selectShared)
-  return { datasetStatus, datasetsList, datasetsSharedList }
+  return { datasetStatus, datasetStatusId, datasetsList, datasetsUserList, datasetsSharedList }
 }
 
 export const useDatasetsAPI = () => {
@@ -77,6 +81,14 @@ export const useDatasetsAPI = () => {
     [dispatch]
   )
 
+  const updateDataset = useCallback(
+    async (createDataset: Partial<Dataset>): Promise<Dataset> => {
+      const { payload }: any = await dispatch(updateDatasetThunk(createDataset))
+      return payload
+    },
+    [dispatch]
+  )
+
   const deleteDataset = useCallback(
     (id: string) => {
       dispatch(deleteDatasetThunk(id))
@@ -84,5 +96,5 @@ export const useDatasetsAPI = () => {
     [dispatch]
   )
 
-  return { fetchDatasets, createDataset, deleteDataset }
+  return { fetchDatasets, createDataset, updateDataset, deleteDataset }
 }

@@ -2,6 +2,7 @@ import React from 'react'
 import LogosSection from '../components/Logos'
 import ButtonsSection from '../components/Buttons'
 import ColorBarSection from '../components/ColorBar'
+import SpinnersSection from '../components/Spinners'
 import IconsSection from '../components/Icons'
 import IconButtonsSection from '../components/IconButtons'
 import SwitchsSection from '../components/Switch'
@@ -27,6 +28,10 @@ const ComponentsPage = () => {
       <section>
         <h2>Buttons</h2>
         <ButtonsSection />
+      </section>
+      <section>
+        <h2>Spinners</h2>
+        <SpinnersSection />
       </section>
       <hr />
       <section>

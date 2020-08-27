@@ -1,4 +1,4 @@
-import React, { useRef, forwardRef, useImperativeHandle } from 'react'
+import React, { useRef, forwardRef, useImperativeHandle, memo, Ref } from 'react'
 import cx from 'classnames'
 import Icon from '../icon'
 import styles from './InputText.module.css'
@@ -11,17 +11,27 @@ type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: string
   type?: InputType
   inputSize?: InputSize
+  inputKey?: string
 }
 
-const InputText = forwardRef<HTMLInputElement, InputTextProps>((props, forwardedRef) => {
-  const { className, label, type = 'text', inputSize = 'default', ...rest } = props
+const defaultKey = Date.now().toString()
+
+function InputText(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
+  const {
+    className,
+    label,
+    type = 'text',
+    inputSize = 'default',
+    inputKey = defaultKey,
+    ...rest
+  } = props
   const inputRef = useRef<HTMLInputElement>(null)
   useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
 
   return (
     <div className={cx(styles.inputText, styles[inputSize], className)}>
       {label && <label htmlFor={label}>{label}</label>}
-      <input ref={inputRef} id={label} name={label} type={type} {...rest} />
+      <input key={inputKey} ref={inputRef} id={label} name={label} type={type} {...rest} />
       {type !== 'text' && (
         <Icon
           icon={type}
@@ -31,6 +41,6 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>((props, forwarded
       )}
     </div>
   )
-})
+}
 
-export default InputText
+export default memo(forwardRef<HTMLInputElement, InputTextProps>(InputText))

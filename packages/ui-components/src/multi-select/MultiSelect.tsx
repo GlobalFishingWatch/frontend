@@ -1,8 +1,7 @@
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { useCallback, useState, useMemo, memo } from 'react'
 import {
   useMultipleSelection,
   useCombobox,
-  UseComboboxStateChangeOptions,
   UseComboboxState,
   UseComboboxStateChangeTypes,
 } from 'downshift'
@@ -46,7 +45,7 @@ const getItemsFiltered = (
   )
 }
 
-const Select: React.FC<SelectProps> = (props) => {
+function Select(props: SelectProps) {
   const {
     label = '',
     options,
@@ -189,12 +188,7 @@ const Select: React.FC<SelectProps> = (props) => {
           {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
         ></IconButton>
       </div>
-      <ul
-        {...getMenuProps()}
-        className={cx(styles.optionsContainer, {
-          [styles.optionsOpen]: isOpen && filteredItems.length,
-        })}
-      >
+      <ul {...getMenuProps()} className={styles.optionsContainer}>
         {isOpen &&
           filteredItems.length > 0 &&
           filteredItems.map((item, index) => {
@@ -218,4 +212,4 @@ const Select: React.FC<SelectProps> = (props) => {
   )
 }
 
-export default Select
+export default memo(Select)

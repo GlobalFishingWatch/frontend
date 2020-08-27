@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, memo } from 'react'
 import cx from 'classnames'
 import Icon from '../icon'
 import styles from './SplitView.module.css'
@@ -12,7 +12,7 @@ interface SplitViewProps {
   className?: string
 }
 
-const SplitView: React.FC<SplitViewProps> = (props) => {
+function SplitView(props: SplitViewProps) {
   const {
     isOpen = true,
     onToggle,
@@ -52,4 +52,4 @@ const SplitView: React.FC<SplitViewProps> = (props) => {
   )
 }
 
-export default SplitView
+export default memo(SplitView)

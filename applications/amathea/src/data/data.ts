@@ -11,6 +11,13 @@ export const MPAS = [
   { id: 'mpa5', label: 'Marine Protected Area 5' },
 ]
 
+export const FLAG_FILTERS = [
+  { id: 'AIA', label: 'Anguilla' },
+  { id: 'CHN', label: 'China' },
+  { id: 'COL', label: 'Colombia' },
+  { id: 'ECU', label: 'Ecuador' },
+]
+
 export type DatasetSources = 'gfw' | 'user'
 export const DATASET_SOURCE_IDS = {
   gfw: 'gfw',
@@ -28,18 +35,13 @@ export const DATASET_TYPE_OPTIONS = [
   { id: '4wings:v1', label: 'Spatiotemporal Grid (Coming soon)' },
 ]
 
-export interface DataviewGraphConfig {
-  unit?: string
-  color?: string
-}
-
 export interface GraphData {
   date: string
   value: number
 }
 
 export const TEST_DATAVIEW_MONTHLY_STATS: { [id: string]: GraphData[] } = {
-  'dataview-47': [
+  'dataview-62': [
     { date: '2018-01', value: 33.818 },
     { date: '2018-02', value: 32.976 },
     { date: '2018-03', value: 33.669 },

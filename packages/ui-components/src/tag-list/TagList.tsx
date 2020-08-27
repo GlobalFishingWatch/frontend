@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, memo } from 'react'
 import cx from 'classnames'
 import Tag from '@globalfishingwatch/ui-components/src/tag'
 import styles from './TagList.module.css'
@@ -11,7 +11,7 @@ interface TagListProps {
   onRemove?: TagListOnRemove
 }
 
-const TagList: React.FC<TagListProps> = (props) => {
+function TagList(props: TagListProps) {
   const { className = '', color, tags = [], onRemove } = props
   const onRemoveTag = useCallback(
     (tag: TagItem) => {
@@ -27,7 +27,7 @@ const TagList: React.FC<TagListProps> = (props) => {
     <ul className={cx(styles.tagList, className)}>
       {tags.map((tag) => (
         <li key={tag.id}>
-          <Tag onRemove={() => onRemoveTag(tag)} {...(color && { color })}>
+          <Tag onRemove={onRemove ? () => onRemoveTag(tag) : undefined} {...(color && { color })}>
             {tag.label}
           </Tag>
         </li>
@@ -36,4 +36,4 @@ const TagList: React.FC<TagListProps> = (props) => {
   )
 }
 
-export default TagList
+export default memo(TagList)

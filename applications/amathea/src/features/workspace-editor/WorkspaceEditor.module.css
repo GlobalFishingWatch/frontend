@@ -1,22 +1,26 @@
 .container {
   display: flex;
-  height: calc(100vh - var(--size-L));
 }
 
 .content {
   flex: 1;
   display: flex;
   flex-direction: column;
+  height: calc(100vh - var(--size-L));
   overflow-y: auto;
   scroll-behavior: smooth;
 }
 
-.content > div:not(:last-child) {
+.dataviewContainer {
   border-bottom: var(--border);
 }
 
 .infoPanel {
-  padding: var(--space-M) var(--space-S) calc(var(--space-M) + var(--space-S)) var(--space-M);
+  padding-top: var(--space-M);
+  padding-right: var(--space-S);
+  padding-bottom: calc(var(--space-M) + var(--space-S));
+  padding-left: var(--space-M);
+  border-bottom: var(--border);
 }
 
 .infoPanel > div:not(:last-child) {

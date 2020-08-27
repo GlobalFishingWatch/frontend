@@ -1,19 +1,23 @@
 import { ColorRampsIds } from '../types'
 import { HeatmapGeomGL, HeatmapGeoms } from './types'
+
 export const API_TILES_URL =
   process.env.NODE_ENV === 'production'
     ? 'https://fourwings.api.globalfishingwatch.org/v1'
     : 'https://fourwings.api.dev.globalfishingwatch.org/v1'
+
 export const API_ENDPOINTS = {
   tiles: 'tile/heatmap/{z}/{x}/{y}',
   statistics: 'statistics',
 }
+
 export const HEATMAP_DEFAULT_MAX_ZOOM = 12
 export const HEATMAP_GEOM_TYPES: HeatmapGeoms = {
   BLOB: 'blob',
   GRIDDED: 'gridded',
   EXTRUDED: 'extruded',
 }
+
 export const HEATMAP_DEFAULT_GEOM_TYPE = HEATMAP_GEOM_TYPES.GRIDDED
 export const HEATMAP_GEOM_TYPES_GL_TYPES: HeatmapGeomGL = {
   [HEATMAP_GEOM_TYPES.BLOB]: 'heatmap',

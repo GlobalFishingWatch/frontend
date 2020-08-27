@@ -36,7 +36,7 @@ function useLayerComposer(
         )
         const afterTransformations = applyStyleTransformations(style, styleTransformations)
         if (process.env.NODE_ENV === 'development') {
-          const styleSpec = await import('mapbox-gl/dist/style-spec')
+          const styleSpec = await import('@globalfishingwatch/mapbox-gl/dist/style-spec')
           if (styleSpec && styleSpec.validate) {
             const styleErrors = styleSpec.validate(afterTransformations)
             if (styleErrors && styleErrors.length) {

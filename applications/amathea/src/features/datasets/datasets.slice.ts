@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import kebabCase from 'lodash/kebabCase'
+import memoize from 'lodash/memoize'
 import GFWAPI, { UploadResponse } from '@globalfishingwatch/api-client'
 import { Dataset } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice, asyncInitialState } from 'features/api/api.slice'
@@ -13,7 +14,7 @@ export const fetchDatasetsThunk = createAsyncThunk('datasets/fetch', async () =>
 
 export type CreateDataset = { dataset: Partial<Dataset>; file: File }
 export const createDatasetThunk = createAsyncThunk(
-  'datasets/uploadFile',
+  'datasets/create',
   async ({ dataset, file }: CreateDataset) => {
     const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
       method: 'POST',
@@ -40,14 +41,30 @@ export const createDatasetThunk = createAsyncThunk(
   }
 )
 
+export const updateDatasetThunk = createAsyncThunk(
+  'datasets/update',
+  async (partialDataset: Partial<Dataset>) => {
+    const updatedDataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${partialDataset.id}`, {
+      method: 'PATCH',
+      body: partialDataset as any,
+    })
+    return updatedDataset
+  },
+  {
+    condition: (partialDataset) => {
+      if (!partialDataset || !partialDataset.id) return false
+    },
+  }
+)
+
 export const deleteDatasetThunk = createAsyncThunk(
   'datasets/delete',
   async (id: string, { rejectWithValue }) => {
     try {
-      const workspace = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}`, {
+      const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}`, {
         method: 'DELETE',
       })
-      return { ...workspace, id }
+      return { ...dataset, id }
     } catch (e) {
       return rejectWithValue(id)
     }
@@ -90,6 +107,7 @@ const { slice: datasetsSlice, entityAdapter } = createAsyncSlice<DatasetsState, 
   thunks: {
     fetchThunk: fetchDatasetsThunk,
     createThunk: createDatasetThunk,
+    updateThunk: updateDatasetThunk,
     deleteThunk: deleteDatasetThunk,
   },
 })
@@ -99,11 +117,14 @@ export const { resetDraftDataset, setDraftDatasetStep, setDraftDatasetData } = d
 export const { selectAll: selectAllDatasets, selectById } = entityAdapter.getSelectors<RootState>(
   (state) => state.datasets
 )
-export const selectDatasetById = (id: string) =>
+
+export const selectDatasetById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
+)
 
 export const selectDraftDataset = (state: RootState) => state.datasets.draft
 export const selectDatasetStatus = (state: RootState) => state.datasets.status
+export const selectDatasetStatusId = (state: RootState) => state.datasets.statusId
 export const selectDraftDatasetStep = createSelector([selectDraftDataset], ({ step }) => step)
 export const selectDraftDatasetData = createSelector([selectDraftDataset], ({ data }) => data)
 

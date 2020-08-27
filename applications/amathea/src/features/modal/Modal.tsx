@@ -1,8 +1,10 @@
-import React, { Suspense, lazy, useCallback } from 'react'
-import { ModalConfigOptions } from 'types'
+import React, { Suspense, lazy, useCallback, useMemo } from 'react'
+import { ModalConfigOptions, ModalTypes } from 'types'
 import GFWModal from '@globalfishingwatch/ui-components/dist/modal'
+import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useCurrentWorkspaceConnect } from 'features/workspaces/workspaces.hook'
 import { useDraftDataviewConnect } from 'features/dataviews/dataviews.hook'
+import { useDraftDatasetConnect } from 'features/datasets/datasets.hook'
 import { useModalConnect } from './modal.hooks'
 
 const MODALS: ModalConfigOptions = {
@@ -22,8 +24,12 @@ const MODALS: ModalConfigOptions = {
     title: 'New Dataset',
     component: 'datasets/NewDataset.tsx',
   },
+  editDataset: {
+    title: 'Edit Dataset',
+    component: 'datasets/EditDataset.tsx',
+  },
   newDataview: {
-    title: 'New Dataview',
+    title: 'Add Dataset',
     component: 'dataviews/NewDataview.tsx',
   },
 }
@@ -36,24 +42,34 @@ function Modal(): React.ReactElement | null {
   const { modal, hideModal } = useModalConnect()
   const { workspace } = useCurrentWorkspaceConnect()
   const { draftDataview, resetDraftDataview } = useDraftDataviewConnect()
+  const { draftDataset, dispatchResetDraftDataset } = useDraftDatasetConnect()
 
   const onCloseClick = useCallback(() => {
     if (draftDataview) {
       resetDraftDataview()
     }
+    if (draftDataset) {
+      dispatchResetDraftDataset()
+    }
     hideModal()
-  }, [draftDataview, hideModal, resetDraftDataview])
+  }, [dispatchResetDraftDataset, draftDataset, draftDataview, hideModal, resetDraftDataview])
+
+  const selectedModal = MODALS[modal as ModalTypes]
+  const ComponentModal = useMemo(
+    () => (selectedModal ? ModalComponent(selectedModal.component) : null),
+    [selectedModal]
+  )
 
   if (!modal) return null
 
-  const selectedModal = MODALS[modal]
-  const ComponentModal = selectedModal ? ModalComponent(selectedModal.component) : null
   const isUpdating =
     (workspace?.id && modal === 'newWorkspace') || (draftDataview?.id && modal === 'newDataview')
-  const title = isUpdating ? selectedModal?.title.replace('New', 'Edit') : selectedModal?.title
+  const title = isUpdating
+    ? selectedModal?.title.replace('New', 'Edit').replace('Add', 'Edit')
+    : selectedModal?.title
   return selectedModal ? (
     <GFWModal header={title} isOpen onClose={onCloseClick}>
-      <Suspense fallback={null}>{ComponentModal && <ComponentModal />}</Suspense>
+      <Suspense fallback={<Spinner />}>{ComponentModal && <ComponentModal />}</Suspense>
     </GFWModal>
   ) : null
 }
