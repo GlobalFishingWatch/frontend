@@ -27,7 +27,7 @@ function TagList(props: TagListProps) {
     <ul className={cx(styles.tagList, className)}>
       {tags.map((tag) => (
         <li key={tag.id}>
-          <Tag onRemove={() => onRemoveTag(tag)} {...(color && { color })}>
+          <Tag onRemove={onRemove ? () => onRemoveTag(tag) : undefined} {...(color && { color })}>
             {tag.label}
           </Tag>
         </li>
