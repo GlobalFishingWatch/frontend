@@ -13,11 +13,20 @@ export enum Type {
   Rulers = 'RULERS',
 }
 
+export interface GeneratorFeature {
+  id: string
+  layerId: string
+  generator: Type
+  isCluster?: boolean
+}
+
 export interface GlobalGeneratorConfig {
   start: string
   end: string
   zoom: number
   zoomLoadLevel?: number
+  highlightedFeature?: GeneratorFeature
+  selectedFeature?: GeneratorFeature
 }
 
 export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[]

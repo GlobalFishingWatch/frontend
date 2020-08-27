@@ -171,6 +171,8 @@ class HeatmapAnimatedGenerator {
             paint: paint as any,
             metadata: {
               group: Group.Heatmap,
+              interactive: true,
+              generator: Type.HeatmapAnimated,
             },
           },
         ]
@@ -216,6 +218,24 @@ class HeatmapAnimatedGenerator {
             metadata: {
               group: Group.Label,
             },
+          })
+        }
+        if (
+          config.highlightedFeature &&
+          config.highlightedFeature.generator === Type.HeatmapAnimated
+        ) {
+          chunkLayers.push({
+            id: `${timeChunk.id}_highlight`,
+            source: timeChunk.id,
+            'source-layer': 'temporalgrid',
+            type: 'line',
+            paint: {
+              'line-color': '#ff00ff',
+            },
+            metadata: {
+              group: Group.Heatmap,
+            },
+            filter: ['==', 'id', config.highlightedFeature.id],
           })
         }
 
