@@ -1,18 +1,27 @@
 export { default } from './ColorBar'
 
-export type ColorBarOptions =
-  | '#F95E5E'
-  | '#21D375'
-  | '#F09300'
-  | '#FFE500'
-  | '#03E5BB'
-  | '#9E6AB0'
-  | '#F4511F'
-  | '#B39DDB'
-  | '#0B8043'
-  | '#4CBDD0'
-  | '#BB00FF'
-  | '#069688'
-  | '#4184F4'
-  | '#AD1457'
-  | '#FD5480'
+export type ColorBarIds =
+  | 'teal'
+  | 'magenta'
+  | 'lilac'
+  | 'salmon'
+  | 'sky'
+  | 'red'
+  | 'yellow'
+  | 'green'
+  | 'orange'
+export type ColorBarValues =
+  | '#00FFBC'
+  | '#FF64CE'
+  | '#9CA4FF'
+  | '#FFAE9B'
+  | '#00EEFF'
+  | '#FF6854'
+  | '#FFEA00'
+  | '#A6FF59'
+  | '#FFAA0D'
+
+export type ColorBarOption = {
+  id: ColorBarIds
+  value: ColorBarValues
+}

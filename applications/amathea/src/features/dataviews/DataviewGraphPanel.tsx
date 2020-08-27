@@ -1,41 +1,50 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import TagList from '@globalfishingwatch/ui-components/dist/tag-list'
 import { Dataview } from '@globalfishingwatch/dataviews-client'
-import { DatasetSources, DATASET_SOURCE_IDS, DATASET_SOURCE_OPTIONS } from 'data/data'
+import { DatasetSources, DATASET_SOURCE_IDS, DATASET_SOURCE_OPTIONS, FLAG_FILTERS } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import Circle from 'common/Circle'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectHiddenDataviews } from 'routes/routes.selectors'
+import { useCurrentWorkspaceConnect, useWorkspacesAPI } from 'features/workspaces/workspaces.hook'
 import styles from './DataviewGraphPanel.module.css'
 import DataviewGraph from './DataviewGraph'
-import { useDraftDataviewConnect, useDataviewsAPI, useDataviewsConnect } from './dataviews.hook'
+import { useDraftDataviewConnect } from './dataviews.hook'
+import { DataviewDraft } from './dataviews.slice'
 
 interface DataviewGraphPanelProps {
   dataview: Dataview
 }
 
 const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => {
-  const { deleteDataview } = useDataviewsAPI()
+  const [dataviewLoadingId, setDataviewLoadingId] = useState<number | undefined>()
+  const { workspace } = useCurrentWorkspaceConnect()
+  const { updateWorkspace } = useWorkspacesAPI()
   const { showModal } = useModalConnect()
   const { setDraftDataview } = useDraftDataviewConnect()
-  const { dataviewsStatus, dataviewsStatusId } = useDataviewsConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const hiddenDataviews = useSelector(selectHiddenDataviews)
   const datasetId = dataview.datasets?.length ? dataview.datasets[0].id : ''
   const dataset = useSelector(selectDatasetById(datasetId))
-  const color = dataview.defaultView?.color as string
+  const color = dataview.config?.color as string
   const unit = dataset?.unit
+  const flagFilter = dataview.datasetsConfig?.datasetId?.query?.find((q) => q.id === 'flag')
+    ?.value as string
   const onEditClick = useCallback(() => {
     if (dataset) {
+      // TODO USE REAL DATASET ID WHEN SUPPORTING MULTIPLE
       const sourceLabelId = DATASET_SOURCE_IDS[dataset.source as DatasetSources]
       const sourceLabel = DATASET_SOURCE_OPTIONS.find((d) => d.id === sourceLabelId)?.label || ''
-      const draftDataview = {
+      const draftDataview: DataviewDraft = {
         id: dataview.id,
-        label: dataview.name,
+        name: dataview.name,
         color: color as string,
+        colorRamp: dataview.config?.colorRamp,
         source: { id: dataset.source, label: sourceLabel },
+        flagFilter,
         dataset: {
           id: dataset?.id,
           label: dataset?.name,
@@ -46,28 +55,41 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
       setDraftDataview(draftDataview)
       showModal('newDataview')
     }
-  }, [color, dataset, dataview.id, dataview.name, setDraftDataview, showModal])
+  }, [color, flagFilter, dataset, dataview, setDraftDataview, showModal])
 
   const onDeleteClick = useCallback(
-    (dataview: Dataview) => {
+    async (dataview: Dataview) => {
       const confirmation = window.confirm(
         `Are you sure you want to permanently delete this dataview?\n${dataview.name}`
       )
-      if (confirmation) {
-        deleteDataview(dataview.id)
+      if (confirmation && workspace) {
+        setDataviewLoadingId(dataview.id)
+        await updateWorkspace({
+          id: workspace.id,
+          dataviews: workspace.dataviews
+            .filter((d) => d.id !== dataview.id)
+            .map(({ id }) => id) as any,
+        })
+        setDataviewLoadingId(undefined)
       }
     },
-    [deleteDataview]
+    [updateWorkspace, workspace]
   )
 
   const isDataviewHidden = hiddenDataviews.includes(dataview.id)
   const onToggleMapClick = useCallback(
     (dataview: Dataview) => {
-      dispatchQueryParams({ hiddenDataviews: isDataviewHidden ? [] : [dataview.id] })
+      dispatchQueryParams({
+        hiddenDataviews: isDataviewHidden
+          ? hiddenDataviews.filter((d) => d !== dataview.id)
+          : [...hiddenDataviews, dataview.id],
+      })
     },
-    [dispatchQueryParams, isDataviewHidden]
+    [dispatchQueryParams, hiddenDataviews, isDataviewHidden]
   )
   const isUserContextLayer = dataset?.type === 'user-context-layer:v1'
+
+  const selectedFlagFilter = FLAG_FILTERS.find((flag) => flag.id === flagFilter)
   return (
     dataview && (
       <div className={styles.container} id={dataview.id.toString()}>
@@ -75,7 +97,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
           {isUserContextLayer && <Circle className={styles.circleMargin} color={color} />}
           <p className={styles.title}>
             {dataview.name}
-            {!isUserContextLayer && unit && <span className={styles.unit}>({unit})</span>}
+            {!isUserContextLayer && unit && <span className={styles.unit}> ({unit})</span>}
           </p>
           <IconButton icon="info" tooltip={dataview.description} />
           <IconButton icon="edit" tooltip="Edit dataset" onClick={onEditClick} />
@@ -86,7 +108,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
             icon="delete"
             type="warning"
             tooltip="Remove dataset"
-            loading={dataviewsStatus === 'loading.delete' && dataviewsStatusId === dataview.id}
+            loading={dataviewLoadingId === dataview.id}
             onClick={() => onDeleteClick(dataview)}
           />
           <IconButton
@@ -96,6 +118,12 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
             onClick={() => onToggleMapClick(dataview)}
           />
         </div>
+        {selectedFlagFilter && (
+          <div>
+            <label>Flag filter</label>
+            <TagList tags={[selectedFlagFilter]} color={color} />
+          </div>
+        )}
         {!isUserContextLayer && (
           <div className={styles.graph}>
             <DataviewGraph dataview={dataview} graphColor={color} graphUnit={unit} />

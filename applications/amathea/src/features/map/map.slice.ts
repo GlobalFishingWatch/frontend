@@ -6,6 +6,7 @@ import {
   BackgroundGeneratorConfig,
   BasemapGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { selectMapZoomQuery, selectTimerange } from 'routes/routes.selectors'
 
 export interface MapState {
@@ -57,6 +58,7 @@ export const selectGlobalGeneratorsConfig = createSelector(
     zoom,
     start,
     end,
+    token: GFWAPI.getToken(),
   })
 )
 

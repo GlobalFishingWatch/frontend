@@ -11,7 +11,12 @@ function Datasets(): React.ReactElement {
   const { showModal } = useModalConnect()
   const { deleteDataset } = useDatasetsAPI()
   const { dispatchDraftDatasetData } = useDraftDatasetConnect()
-  const { datasetStatus, datasetStatusId, datasetsList, datasetsSharedList } = useDatasetsConnect()
+  const {
+    datasetStatus,
+    datasetStatusId,
+    datasetsUserList,
+    datasetsSharedList,
+  } = useDatasetsConnect()
 
   const onEditClick = useCallback(
     (dataset: Dataset) => {
@@ -45,7 +50,7 @@ function Datasets(): React.ReactElement {
     <div className={styles.container}>
       <h1 className="screen-reader-only">Datasets</h1>
       <label>Your Datasets</label>
-      {datasetsList.map((dataset) => (
+      {datasetsUserList.map((dataset) => (
         <div className={styles.listItem} key={dataset.id}>
           <span className={styles.titleLink}>{dataset.name}</span>
           <IconButton icon="info" tooltip={dataset.description} />

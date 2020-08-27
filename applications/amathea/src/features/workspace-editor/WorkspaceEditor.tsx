@@ -43,7 +43,7 @@ export default function WorkspaceEditor(): React.ReactElement | null {
       <div className={styles.content}>
         <div className={styles.infoPanel} id="info">
           <div className={styles.title}>
-            <h1>{workspace ? workspace.label : 'loading'}</h1>
+            <h1>{workspace ? workspace.name : 'loading'}</h1>
             <IconButton
               icon="edit"
               tooltip="Edit workspace information"
@@ -59,7 +59,7 @@ export default function WorkspaceEditor(): React.ReactElement | null {
             <p>{workspace ? workspace.description : 'loading'}</p>
           </div>
         </div>
-        {dataviews?.length > 0 && (
+        {dataviews && dataviews.length > 0 && (
           <ul>
             {dataviews.map((dataview) => (
               <li key={dataview.id} className={styles.dataviewContainer}>
@@ -69,7 +69,7 @@ export default function WorkspaceEditor(): React.ReactElement | null {
           </ul>
         )}
         <div className={styles.footer}>
-          {dataviews.length >= 2 && (
+          {dataviews && dataviews?.length >= 2 && (
             <Button type="secondary" tooltip="Coming soon" tooltipPlacement="top">
               Create Analysis
             </Button>

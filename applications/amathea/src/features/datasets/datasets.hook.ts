@@ -19,7 +19,7 @@ import {
   selectDatasetStatusId,
   updateDatasetThunk,
 } from './datasets.slice'
-import { selectShared } from './datasets.selectors'
+import { selectShared, selectUserDatasets } from './datasets.selectors'
 
 export const useDraftDatasetConnect = () => {
   const dispatch = useDispatch()
@@ -61,8 +61,9 @@ export const useDatasetsConnect = () => {
   const datasetStatus = useSelector(selectDatasetStatus)
   const datasetStatusId = useSelector(selectDatasetStatusId)
   const datasetsList = useSelector(selectAllDatasets)
+  const datasetsUserList = useSelector(selectUserDatasets)
   const datasetsSharedList = useSelector(selectShared)
-  return { datasetStatus, datasetStatusId, datasetsList, datasetsSharedList }
+  return { datasetStatus, datasetStatusId, datasetsList, datasetsUserList, datasetsSharedList }
 }
 
 export const useDatasetsAPI = () => {
@@ -82,9 +83,7 @@ export const useDatasetsAPI = () => {
 
   const updateDataset = useCallback(
     async (createDataset: Partial<Dataset>): Promise<Dataset> => {
-      debugger
       const { payload }: any = await dispatch(updateDatasetThunk(createDataset))
-      debugger
       return payload
     },
     [dispatch]

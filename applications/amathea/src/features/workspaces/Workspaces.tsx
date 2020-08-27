@@ -22,7 +22,7 @@ function Workspaces(): React.ReactElement {
   const onDeleteClick = useCallback(
     (workspace: Workspace) => {
       const confirmation = window.confirm(
-        `Are you sure you want to permanently delete this workspace?\n${workspace.label}`
+        `Are you sure you want to permanently delete this workspace?\n${workspace.name}`
       )
       if (confirmation) {
         deleteWorkspace(workspace.id)
@@ -47,7 +47,7 @@ function Workspaces(): React.ReactElement {
                 className={styles.titleLink}
                 to={{ type: WORKSPACE_EDITOR, payload: { workspaceId: workspace.id } }}
               >
-                {workspace.label}
+                {workspace.name}
               </Link>
               {workspace.description && <IconButton icon="info" tooltip={workspace.description} />}
               <Link to={{ type: WORKSPACE_EDITOR, payload: { workspaceId: workspace.id } }}>
@@ -85,7 +85,7 @@ function Workspaces(): React.ReactElement {
       <label>Workspaces shared with you</label>
       {workspacesSharedList.map((workspace) => (
         <div className={styles.listItem} key={workspace.id}>
-          <button className={styles.titleLink}>{workspace.label}</button>
+          <button className={styles.titleLink}>{workspace.name}</button>
           <IconButton icon="edit" tooltip="Edit Workspace" />
         </div>
       ))}

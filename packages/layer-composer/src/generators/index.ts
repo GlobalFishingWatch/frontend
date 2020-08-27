@@ -20,7 +20,7 @@ export default {
   [Type.CartoPolygons]: new CartoGenerator({ baseUrl: CARTO_FISHING_MAP_API }),
   [Type.UserContext]: new UserContextGenerator(),
   [Type.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
-  [Type.Heatmap]: new HeatmapGenerator({}),
+  [Type.Heatmap]: new HeatmapGenerator(),
   [Type.Track]: new TrackGenerator(),
   [Type.VesselEvents]: new VesselEventsGenerator(),
   [Type.Rulers]: new RulersGenerator(),

@@ -1,5 +1,6 @@
 import { FeatureCollection } from 'geojson'
 import { Segment } from './track/segments-to-geojson'
+import { Geoms } from './heatmap/types'
 
 export enum Type {
   Background = 'BACKGROUND',
@@ -19,6 +20,7 @@ export interface GlobalGeneratorConfig {
   end: string
   zoom: number
   zoomLoadLevel?: number
+  token?: string
 }
 
 export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[]
@@ -155,25 +157,29 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   // end: string
   // zoom: number
   maxZoom?: number
-  tileset: string
+  tilesUrl: string
+  statsUrl?: string
   fetchStats?: boolean
   statsFilter?: string
-  colorRamp?: ColorRamps
+  geomType?: Geoms
+  colorRamp?: ColorRampsIds
   serverSideFilter?: string
   updateColorRampOnTimeChange?: boolean
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: Type.HeatmapAnimated
+  // TODO remove as not animated config
   tileset: string
+  // TODO match with not animated config (tilesUrl)
   tilesAPI?: string
-  geomType?: string
+  geomType?: Geoms
   datasetStart?: string
   datasetEnd?: string
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
-  colorRamp?: ColorRamps
+  colorRamp?: ColorRampsIds
   serverSideFilter?: string
 }
 
@@ -225,11 +231,17 @@ export type Ruler = {
   isNew?: boolean
 }
 
-// ---- Heatmap Generator types
-export type ColorRamps = 'fishing' | 'presence' | 'reception'
-export type HeatmapColorRamp = {
-  [key: string]: ColorRamps
-}
-export type HeatmapColorRampColors = {
-  [key in string]: string[]
-}
+// ---- Heatmap Generator color ramps types
+export type ColorRampsIds =
+  | 'fishing'
+  | 'presence'
+  | 'reception'
+  | 'teal'
+  | 'magenta'
+  | 'lilac'
+  | 'salmon'
+  | 'sky'
+  | 'red'
+  | 'yellow'
+  | 'green'
+  | 'orange'

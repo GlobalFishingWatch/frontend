@@ -1,24 +1,24 @@
 import { GeoJSON } from 'geojson'
 import { FetchResponseTypes } from '@globalfishingwatch/api-client/dist/api-client'
+import { Generators } from '@globalfishingwatch/layer-composer'
 
-export type EndpointType = 'track' | 'info' | 'tiles' | 'events'
-
-export type EndpointParam = {
+export interface EndpointParam {
   id: string
   label: string
-  required: boolean
-  type: string
-  default: unknown
   description: string
+  type: 'enum' | 'boolean' | 'number' | 'string' | 'Date ISO' | 'sql'
+  values?: string[]
+  default?: string | boolean | number
+  required?: boolean
 }
 
 export interface Endpoint {
   id: string
   description: string
   pathTemplate: string
+  downloadable: boolean
   params: EndpointParam[]
   query: EndpointParam[]
-  downloadable: boolean
 }
 
 export type DatasetTypes =
@@ -32,39 +32,59 @@ export type DatasetTypes =
   | 'data-download:v1'
 
 export type DatasetStatus = 'done' | 'importing' | 'error'
+export interface DatasetConfiguration {
+  index?: string
+  filePath?: string
+  srid?: number
+  [key: string]: unknown
+}
+
 export interface Dataset {
   id: string
   type: DatasetTypes
+  alias: string[]
   name: string
+  description: string
+  category: string
+  subcategory: string
   source: string
   status: DatasetStatus
-  description: string
+  importLogs: string
   unit: string
   ownerId: number
+  startDate: string
+  endDate: string
   endpoints?: Endpoint[]
+  configuration: DatasetConfiguration
 }
 
-export interface ViewParams {
-  type?: string
-  [propName: string]: unknown
+export interface DataviewConfig {
+  type?: Generators.Type | string
+  color?: string
+  colorRamp?: Generators.ColorRampsIds
+  [key: string]: unknown
 }
 
-export interface DatasetParams {
-  [propName: string]: unknown
+export interface DataviewDatasetConfigParams {
+  id: string
+  value: string | number | boolean
 }
 
-export interface DatasetParamsConfig {
-  dataset: string
+export interface DataviewDatasetConfig {
   endpoint: string
-  params: DatasetParams
-  query: DatasetParams
+  params: DataviewDatasetConfigParams[]
+  query: DataviewDatasetConfigParams[]
+}
+
+export interface DataviewDatasetConfigDict {
+  [key: string]: DataviewDatasetConfig
 }
 
 export interface DataviewCreation {
   name: string
   description: string
   datasets: string[]
-  defaultView?: ViewParams
+  config?: DataviewConfig
 }
 
 export interface Dataview {
@@ -73,40 +93,46 @@ export interface Dataview {
   description: string
   createdAt?: string
   updatedAt?: string
-  view?: ViewParams
-  defaultView?: ViewParams
-  datasetsParams?: DatasetParams[]
-  datasetsConfig?: DatasetParams[]
+  config: DataviewConfig
   datasets?: Dataset[]
-  datasetsId?: number[]
-}
-
-export interface WorkspaceDataview {
-  id: number | string
-  view?: ViewParams
-  datasetsParams?: DatasetParams[]
+  datasetsConfig?: DataviewDatasetConfigDict
 }
 
 export interface AOI {
   id: number
-  label: string
+  name: string
   area: number
   geometry?: GeoJSON
   bbox: number[]
 }
 
+export interface WorkspaceCreation {
+  name: string
+  description: string
+  dataviews: number[]
+}
+
+export interface WorkspaceDataviewConfig {
+  config: DataviewConfig
+  datasetsConfig: DataviewDatasetConfigDict
+}
+
+export interface WorkspaceDataviewConfigDict {
+  [id: string]: WorkspaceDataviewConfig
+}
+
 export interface Workspace {
   id: number
   description: string
-  label: string
+  name: string
   dataviews: Dataview[]
-  dataviewsId: number[]
-  workspaceDataviews: WorkspaceDataview[]
-  aoiId: number
+  dataviewsConfig: WorkspaceDataviewConfigDict
   aoi?: AOI
-  zoom: number
-  latitude: number
-  longitude: number
+  viewport: {
+    zoom: number
+    latitude: number
+    longitude: number
+  }
   start: string
   end: string
 }
@@ -120,9 +146,4 @@ export interface Resource<T = unknown> {
   resolvedUrl: string
   responseType?: FetchResponseTypes
   data?: T
-}
-
-export interface ResolvedDataview extends Dataview {
-  uid: string
-  datasetsParamIds: string[]
 }

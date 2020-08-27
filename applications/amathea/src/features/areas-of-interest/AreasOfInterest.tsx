@@ -13,7 +13,7 @@ function AreasOfInterest(): React.ReactElement {
   const { deleteAOI } = useAOIAPI()
   const onDeleteClick = (aoi: AOI) => {
     const confirmation = window.confirm(
-      `Are you sure you want to permanently delete this area of interest?\n${aoi.label}`
+      `Are you sure you want to permanently delete this area of interest?\n${aoi.name}`
     )
     if (confirmation) {
       deleteAOI(aoi.id)
@@ -31,7 +31,7 @@ function AreasOfInterest(): React.ReactElement {
       {aoiList &&
         aoiList.map((aoi) => (
           <div className={styles.listItem} key={aoi.id}>
-            <span className={styles.titleLink}>{aoi.label}</span>
+            <span className={styles.titleLink}>{aoi.name}</span>
             {/* <IconButton icon="edit" tooltip="Edit Area of Interest (Coming soon)" /> */}
             <IconButton
               disabled

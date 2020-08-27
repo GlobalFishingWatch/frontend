@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import Select, {
   SelectOption,
   SelectOnChange,
@@ -8,7 +9,7 @@ import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { useModalConnect } from 'features/modal/modal.hooks'
-import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
+import { selectAllAOIOptions } from 'features/areas-of-interest/areas-of-interest.slice'
 import styles from './NewWorkspace.module.css'
 import { useCurrentWorkspaceConnect, useWorkspacesAPI } from './workspaces.hook'
 
@@ -17,12 +18,12 @@ function NewWorkspace(): React.ReactElement {
   const { upsertWorkspace } = useWorkspacesAPI()
   const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState(false)
-  const [workspaceLabel, setWorkspaceLabel] = useState<string>(workspace?.label || '')
+  const [workspaceLabel, setWorkspaceLabel] = useState<string>(workspace?.name || '')
   const [workspaceDescription, setWorkspaceDescription] = useState<string>(
     workspace?.description || ''
   )
   const defaultSelection = workspace?.aoi
-    ? { id: workspace.aoi.id, label: workspace.aoi.label }
+    ? { id: workspace.aoi.id, label: workspace.aoi.name }
     : undefined
   const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>(defaultSelection)
   const onSelect: SelectOnChange = (option) => {
@@ -35,14 +36,14 @@ function NewWorkspace(): React.ReactElement {
     setSelectedOption(undefined)
   }
   const { hideModal } = useModalConnect()
-  const { aoiList } = useAOIConnect()
+  const aoiList = useSelector(selectAllAOIOptions)
   const onSaveClick = async () => {
     if (workspaceLabel && workspaceDescription && selectedOption) {
       setLoading(true)
       const newWorkspace = {
         ...(workspace?.id && { id: workspace.id }),
         aoiId: selectedOption.id as number,
-        label: workspaceLabel,
+        name: workspaceLabel,
         description: workspaceDescription,
       }
       await upsertWorkspace(newWorkspace)
