@@ -27,7 +27,7 @@ export function getGeneratorConfig(dataview: Dataview) {
         tilesUrl: tilesEndpoint.pathTemplate,
         statsUrl: statsEndpoint?.pathTemplate,
         // ADHOC for Amathea for now
-        ...(flagFilter && { serverSideFilter: `flag in (${flagFilter})` }),
+        ...(flagFilter && { serverSideFilter: `flag in ('${flagFilter}')` }),
       }
       return generator
     }

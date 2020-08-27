@@ -37,10 +37,12 @@ class HeatmapGenerator {
     )
     url.searchParams.set('geomType', config.geomType || HEATMAP_GEOM_TYPES.GRIDDED)
     url.searchParams.set('singleFrame', 'true')
-    url.searchParams.set(
-      'serverSideFilters',
-      getServerSideFilters(config.start, config.end, config.serverSideFilter)
-    )
+    if (config.start && config.end) {
+      url.searchParams.set('date-range', [config.start, config.end].join(','))
+    }
+    if (config.serverSideFilter) {
+      url.searchParams.set('filters', config.serverSideFilter)
+    }
 
     return [
       {
