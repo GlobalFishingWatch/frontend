@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.6.1
+
+### Patch Changes
+
+- 488b88d: Fix heatmap filters
+
 ## 2.6.0
 
 ### Minor Changes
