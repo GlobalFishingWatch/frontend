@@ -17,14 +17,19 @@ export function getGeneratorConfig(dataview: Dataview) {
       (endpoint) => endpoint.id === '4wings-statistics'
     )
     if (tilesEndpoint) {
-      return {
+      const flagFilter = dataview.datasetsConfig?.datasetId?.query.find((q) => q.id === 'flag')
+        ?.value
+      const generator = {
         id: `fourwings-${dataview.id}`,
         ...dataview.config,
-        tileset: dataset?.id,
+        tileset: dataset?.id as string,
         fetchStats: statsEndpoint !== undefined,
         tilesUrl: tilesEndpoint.pathTemplate,
         statsUrl: statsEndpoint?.pathTemplate,
+        // ADHOC for Amathea for now
+        ...(flagFilter && { serverSideFilter: `flag in (${flagFilter})` }),
       }
+      return generator
     }
   }
   return dataview.config
@@ -46,16 +51,17 @@ export function getDataviewsGeneratorConfigs(dataviews: Dataview[], resources?: 
     const dataviewResource = resources?.find((resource) => {
       if (resource.dataviewId !== dataview.id) return false
       if (!dataview.datasetsConfig) return false
-      const datasetParams = dataview.datasetsConfig[dataview.id].params.find((datasetParams) => {
-        return datasetParams.id && datasetParams.id === resource.datasetParamId
-      })
-      return datasetParams
+      // TODO once we support multiple datasetsConfig in same dataview
+      // const datasetParams = dataview.datasetsConfig[dataview.id].params.find((datasetParams) => {
+      //   return datasetParams.id && datasetParams.id === resource.datasetParamId
+      // })
+      // return datasetParams
+      return false
     })
 
     if (dataview.datasetsConfig) {
       Object.entries(dataview.datasetsConfig).forEach(([key, value]) => {
         generatedUidComponents.push(key)
-        generatedUidComponents.push(...value.params.map((p) => p.id))
       })
     }
 

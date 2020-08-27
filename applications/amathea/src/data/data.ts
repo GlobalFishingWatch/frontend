@@ -11,6 +11,13 @@ export const MPAS = [
   { id: 'mpa5', label: 'Marine Protected Area 5' },
 ]
 
+export const FLAG_FILTERS = [
+  { id: 'AIA', label: 'Anguilla' },
+  { id: 'CHN', label: 'China' },
+  { id: 'COL', label: 'Colombia' },
+  { id: 'ECU', label: 'Ecuador' },
+]
+
 export type DatasetSources = 'gfw' | 'user'
 export const DATASET_SOURCE_IDS = {
   gfw: 'gfw',

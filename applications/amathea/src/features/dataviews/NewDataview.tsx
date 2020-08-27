@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import Select, { SelectOnChange } from '@globalfishingwatch/ui-components/dist/select'
+import Select, { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import ColorBar, { ColorBarIds } from '@globalfishingwatch/ui-components/dist/color-bar'
-import { DATASET_SOURCE_OPTIONS } from 'data/data'
+import { DATASET_SOURCE_OPTIONS, FLAG_FILTERS } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { useCurrentWorkspaceConnect, useWorkspacesAPI } from 'features/workspaces/workspaces.hook'
 import styles from './NewDataview.module.css'
 import { selectDatasetOptionsBySource } from './dataviews.selectors'
-import { useDraftDataviewConnect, useDataviewsAPI } from './dataviews.hook'
+import { useDraftDataviewConnect, useDataviewsAPI, useDataviewsConnect } from './dataviews.hook'
 import { DataviewDraftDataset } from './dataviews.slice'
 
 function NewDataview(): React.ReactElement {
@@ -18,15 +18,24 @@ function NewDataview(): React.ReactElement {
   const { updateWorkspace } = useWorkspacesAPI()
   const { draftDataview, setDraftDataview, resetDraftDataview } = useDraftDataviewConnect()
   const { createDataview } = useDataviewsAPI()
+  const { dataviewsList } = useDataviewsConnect()
   const { source, dataset } = draftDataview || {}
   const datasetsOptions = useSelector(selectDatasetOptionsBySource)
-  const onSourceSelect: SelectOnChange = (option) => {
-    setDraftDataview({ source: option })
+  const onSelect = (property: string, option: SelectOption | DataviewDraftDataset | number) => {
+    setDraftDataview({ [property]: option })
   }
-  const onDatasetSelect = (option: DataviewDraftDataset) => {
-    setDraftDataview({ dataset: option })
+  const onDatasetSelect = (dataset: SelectOption) => {
+    if (draftDataview?.source?.id === 'gfw') {
+      const dataview = dataviewsList.find((dataview) =>
+        dataview.datasets?.find((d) => d.id === dataset.id)
+      )
+      if (dataview) {
+        onSelect('id', dataview.id)
+      }
+    }
+    onSelect('dataset', dataset)
   }
-  const onCleanClick = (property: 'dataset' | 'source') => {
+  const onCleanClick = (property: 'dataset' | 'source' | 'flagFilter') => {
     setDraftDataview({ [property]: undefined })
   }
   const onCreateClick = async () => {
@@ -45,6 +54,11 @@ function NewDataview(): React.ReactElement {
             ...workspace.dataviewsConfig,
             [dataviewId]: {
               config: { color: draftDataview.color, colorRamp: draftDataview.colorRamp },
+              datasetsConfig: {
+                datasetId: {
+                  query: [{ id: 'flag', value: draftDataview.flagFilter }],
+                },
+              },
             },
           },
         })
@@ -54,6 +68,9 @@ function NewDataview(): React.ReactElement {
       hideModal()
     }
   }
+
+  const isFishingEffortLayer = dataset?.id === 'dgg_fishing_galapagos'
+  const selectedFlagFilter = FLAG_FILTERS.find((flag) => flag.id === draftDataview?.flagFilter)
   return (
     <div className={styles.container}>
       <h1 className="screen-reader-only">{draftDataview?.id ? 'Update Dataset' : 'New Dataset'}</h1>
@@ -62,7 +79,7 @@ function NewDataview(): React.ReactElement {
         options={DATASET_SOURCE_OPTIONS}
         selectedOption={source}
         className={styles.input}
-        onSelect={onSourceSelect}
+        onSelect={(option) => onSelect('source', option)}
         onRemove={() => onCleanClick('source')}
         onCleanClick={() => onCleanClick('source')}
       ></Select>
@@ -72,16 +89,30 @@ function NewDataview(): React.ReactElement {
           options={datasetsOptions}
           selectedOption={dataset}
           className={styles.input}
-          onSelect={onDatasetSelect as SelectOnChange}
+          onSelect={onDatasetSelect}
           onRemove={() => onCleanClick('dataset')}
           onCleanClick={() => onCleanClick('dataset')}
         ></Select>
       )}
       {dataset && dataset.id && (
-        <ColorBar
-          selectedColor={draftDataview?.color as ColorBarIds}
-          onColorClick={(color) => setDraftDataview({ color: color.value, colorRamp: color.id })}
-        />
+        <div className={styles.input}>
+          <label>Color</label>
+          <ColorBar
+            selectedColor={draftDataview?.color as ColorBarIds}
+            onColorClick={(color) => setDraftDataview({ color: color.value, colorRamp: color.id })}
+          />
+        </div>
+      )}
+      {isFishingEffortLayer && (
+        <Select
+          label="Filter by flag"
+          options={FLAG_FILTERS}
+          selectedOption={selectedFlagFilter}
+          className={styles.input}
+          onSelect={(option) => setDraftDataview({ flagFilter: option.id as string })}
+          onRemove={() => onCleanClick('flagFilter')}
+          onCleanClick={() => onCleanClick('flagFilter')}
+        ></Select>
       )}
       <Button onClick={onCreateClick} className={styles.saveBtn} loading={loading}>
         Confirm

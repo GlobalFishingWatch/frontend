@@ -18,7 +18,9 @@ export default function fetchStats(
     statsUrl.searchParams.set('temporal-aggregation', 'true')
   }
   if (serverSideFilters) {
-    statsUrl.searchParams.set('filters', serverSideFilters)
+    // TODO once we support multiple datasetsConfig in same dataview
+    // generate filters array
+    statsUrl.searchParams.set('filters[0]', serverSideFilters)
   }
   if (controllerCache[url]) {
     controllerCache[url].abort()

@@ -29,18 +29,16 @@ export default function resolveDataviews(
         }
       }
 
-      if (newDataview.datasetsConfig) {
+      if (workspaceDataview.datasetsConfig) {
         const datasetsConfig: DataviewDatasetConfigDict = {}
-        Object.entries(newDataview.datasetsConfig).forEach(([key, value]) => {
+        Object.entries(workspaceDataview.datasetsConfig).forEach(([key, value]) => {
+          datasetsConfig[key] = value
+          // TODO once we support multiple datasetsConfig in same dataview
           // replace default dataviewDatasetsConfig if exists in workspace datasetsConfig
-          const workspaceDataviewDatasetConfig =
-            workspaceDataview.datasetsConfig && workspaceDataview.datasetsConfig[key]
-          if (workspaceDataviewDatasetConfig) {
-            datasetsConfig[key] = {
-              ...value,
-              ...workspaceDataviewDatasetConfig,
-            }
-          }
+          // datasetsConfig[key] = {
+          //   ...newDataview.datasetsConfig,
+          //   ...value,
+          // }
         })
         newDataview.datasetsConfig = datasetsConfig
       }

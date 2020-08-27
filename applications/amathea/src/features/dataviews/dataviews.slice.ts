@@ -78,6 +78,7 @@ export type DataviewDraft = {
   dataset: DataviewDraftDataset
   color?: string
   colorRamp?: Generators.ColorRampsIds
+  flagFilter?: string
 }
 
 export interface DataviewsState extends AsyncReducer<Dataview> {
