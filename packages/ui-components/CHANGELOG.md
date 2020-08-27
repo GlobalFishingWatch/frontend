@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 1.6.0
+
+### Minor Changes
+
+- 99e3507: New color bar component
+
 ## 1.5.2
 
 ### Patch Changes

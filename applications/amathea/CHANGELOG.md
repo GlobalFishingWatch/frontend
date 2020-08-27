@@ -1,5 +1,20 @@
 # @globalfishingwatchapp/amathea
 
+## 0.4.0
+
+### Minor Changes
+
+- 99e3507: Update workspaces - dataviews - datasets types
+
+### Patch Changes
+
+- Updated dependencies [99e3507]
+- Updated dependencies [99e3507]
+  - @globalfishingwatch/ui-components@1.6.0
+  - @globalfishingwatch/dataviews-client@2.3.0
+  - @globalfishingwatch/layer-composer@2.6.0
+  - @globalfishingwatch/react-hooks@2.6.0
+
 ## 0.3.1
 
 ### Patch Changes

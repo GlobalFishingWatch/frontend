@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.3.0
+
+### Minor Changes
+
+- 99e3507: Update workspaces - dataviews - datasets types
+
 ## 0.2.1
 
 ### Patch Changes
