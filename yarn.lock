@@ -1454,10 +1454,10 @@
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
 
-"@globalfishingwatch/mapbox-gl@1.12.0":
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/mapbox-gl/-/mapbox-gl-1.12.0.tgz#db5b7eb0278384f8ce6456f6da0e2eeec3e8b1b4"
-  integrity sha512-y4xXcagYhGrN913oY+xxNvHD0HlY4XAYIOEnIW/sn4lhjJxFRK0HX/eUGvdAcEy0uFNxsx4c4VLzILTBi+xu9Q==
+"@globalfishingwatch/mapbox-gl@1.12.0-gfw.0":
+  version "1.12.0-gfw.0"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/mapbox-gl/-/mapbox-gl-1.12.0-gfw.0.tgz#d4f711d914f0cf83c09ca95c9ae4484c939ea6cc"
+  integrity sha512-B/9fWNmOaMClFRdqJT06Oc2skVRMdSzBFne0NjKMKoJ0a5EvqlbszYz0kxP2lost8vUNWF8B9o8qhcUEv8Avug==
   dependencies:
     "@mapbox/geojson-rewind" "^0.5.0"
     "@mapbox/geojson-types" "^1.0.2"
