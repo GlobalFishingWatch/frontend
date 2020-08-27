@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/amathea
 
+## 0.4.1
+
+### Patch Changes
+
+- 488b88d: Update layer composer to fix heatmap filters
+- Updated dependencies [488b88d]
+  - @globalfishingwatch/layer-composer@2.6.1
+
 ## 0.4.0
 
 ### Minor Changes
