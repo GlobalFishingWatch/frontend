@@ -1,4 +1,4 @@
-import { ColorRampsIds } from '../types'
+import { ColorRampsIds, BivariateColorRampsIds } from '../types'
 import { HeatmapGeomGL, HeatmapGeoms } from './types'
 
 export const API_TILES_URL =
@@ -25,7 +25,7 @@ export const HEATMAP_GEOM_TYPES_GL_TYPES: HeatmapGeomGL = {
   [HEATMAP_GEOM_TYPES.EXTRUDED]: 'fill-extrusion',
 }
 
-export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
+export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds | BivariateColorRampsIds, string[]> = {
   fishing: ['rgba(22, 63, 137, 1)', '#3B9088', '#EEFF00', '#ffffff'],
   presence: ['rgba(22, 63, 137, 0)', '#163F89', '#0F6F97', '#07BBAE', '#00FFC3', '#FFFFFF'],
   reception: ['rgb(255, 69, 115)', '#7b2e8d', '#093b76', '#0c276c'],
@@ -38,4 +38,11 @@ export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   yellow: ['rgba(22, 63, 137, 0)', '#334B45', '#667334', '#999A22', '#CCC211', '#FFEA00'],
   green: ['rgba(22, 63, 137, 0)', '#214F57', '#427B58', '#64A757', '#85D358', '#A6FF59'],
   orange: ['rgba(22, 63, 137, 0)', '#333E48', '#665939', '#99742A', '#CC8F1B', '#FFAA0D'],
+  // prettier-ignore
+  bivariate: [
+    '#274874', '#267C8A', '#26B39F', '#26FFBD',
+    '#66518F', '#3E579A', '#667C9E', '#66FFC2',
+    '#A659A9', '#A67CB2', '#A6B3BB', '#A6FFC7',
+    '#FF64CE', '#FF7CCE', '#FFB3CE', '#FFFFFF',
+  ]
 }
