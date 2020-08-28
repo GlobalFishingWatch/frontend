@@ -107,6 +107,7 @@ class HeatmapAnimatedGenerator {
         delta: getDelta(config.start, config.end, timeChunk.interval).toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: timeChunk.interval,
+        numDatasets: config.tilesets.length.toString(),
         // TODO - generate this using updated stats API
         breaks: JSON.stringify(breaks),
         combinationMode: config.combinationMode,
