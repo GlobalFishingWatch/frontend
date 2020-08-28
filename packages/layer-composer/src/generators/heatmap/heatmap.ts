@@ -56,6 +56,7 @@ class HeatmapGenerator {
 
   _getHeatmapLayers = (config: GlobalHeatmapGeneratorConfig) => {
     const geomType = config.geomType || HEATMAP_GEOM_TYPES.GRIDDED
+    const colorRampType = config.colorRamp || 'presence'
 
     let stops: number[] = []
     const zoom = Math.min(Math.floor(config.zoom), config.maxZoom || HEATMAP_DEFAULT_MAX_ZOOM)
@@ -82,7 +83,7 @@ class HeatmapGenerator {
     }
 
     const pickValueAt = 'value'
-    const originalColorRamp = HEATMAP_COLOR_RAMPS[config.colorRamp || 'presence']
+    const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampType]
     const legend = stops.length ? zip(stops, originalColorRamp) : []
 
     const colorRampValues = flatten(legend)

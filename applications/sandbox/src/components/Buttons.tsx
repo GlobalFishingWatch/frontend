@@ -20,7 +20,9 @@ const ButtonsSection = () => {
       <Button disabled>I'm disabled</Button>
       <h3>Loading</h3>
       <Button loading>I'm loading</Button>
-      <Button type="secondary" loading>I'm loading</Button>
+      <Button type="secondary" loading>
+        I'm loading
+      </Button>
     </Fragment>
   )
 }
