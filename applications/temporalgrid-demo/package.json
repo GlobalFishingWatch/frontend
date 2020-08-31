@@ -3,8 +3,8 @@
   "version": "0.2.1",
   "private": true,
   "dependencies": {
-    "@globalfishingwatch/layer-composer": "2.6.1",
-    "@globalfishingwatch/react-map-gl": "^5.2.7",
+    "@globalfishingwatch/layer-composer": "2.7.0",
+    "@globalfishingwatch/react-map-gl": "^5.2.7-gfw.0",
     "@globalfishingwatch/react-hooks": "2.6.0",
     "@globalfishingwatch/timebar": "1.0.11",
     "classnames": "^2.2.6",
