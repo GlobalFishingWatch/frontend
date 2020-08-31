@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/amathea
 
+## 0.5.1
+
+### Patch Changes
+
+- 8912bb0: fix temporal-grid demo
+- Updated dependencies [8912bb0]
+  - @globalfishingwatch/dataviews-client@2.3.1
+  - @globalfishingwatch/layer-composer@2.7.1
+  - @globalfishingwatch/react-hooks@2.6.1
+  - @globalfishingwatch/ui-components@1.6.1
+
 ## 0.5.0
 
 ### Minor Changes
