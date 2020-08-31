@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/amathea
 
+## 0.5.0
+
+### Minor Changes
+
+- ba5064b: fix temporalgrid filters
+
+### Patch Changes
+
+- Updated dependencies [ba5064b]
+  - @globalfishingwatch/layer-composer@2.7.0
+
 ## 0.4.1
 
 ### Patch Changes
