@@ -1,5 +1,14 @@
 # @globalfishingwatch/react-hooks
 
+## 2.6.1
+
+### Patch Changes
+
+- 8912bb0: fix temporal-grid demo
+- Updated dependencies [8912bb0]
+  - @globalfishingwatch/dataviews-client@2.3.1
+  - @globalfishingwatch/layer-composer@2.7.1
+
 ## 2.6.0
 
 ### Minor Changes

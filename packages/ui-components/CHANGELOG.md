@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 1.6.1
+
+### Patch Changes
+
+- 8912bb0: fix temporal-grid demo
+
 ## 1.6.0
 
 ### Minor Changes

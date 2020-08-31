@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.7.1
+
+### Patch Changes
+
+- 8912bb0: fix temporal-grid demo
+
 ## 2.7.0
 
 ### Minor Changes
