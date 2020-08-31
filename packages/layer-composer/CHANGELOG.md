@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.7.0
+
+### Minor Changes
+
+- ba5064b: fix temporalgrid filters
+
 ## 2.6.1
 
 ### Patch Changes
