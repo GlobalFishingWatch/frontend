@@ -1,12 +1,15 @@
 import 'babel-polyfill';
 import React, {useState, useMemo, useRef, useCallback} from 'react';
 import {render} from 'react-dom';
-import MapGL from 'react-map-gl';
+import MapGL from '@globalfishingwatch/react-map-gl';
 import { DateTime } from 'luxon'
 import { Generators } from '@globalfishingwatch/layer-composer';
 import { useLayerComposer, useDebounce } from '@globalfishingwatch/react-hooks';
 import TimebarComponent from '@globalfishingwatch/timebar';
 import Tilesets from './Tilesets';
+
+import './App.css'
+import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 export const DEFAULT_TILESETS = [
   {

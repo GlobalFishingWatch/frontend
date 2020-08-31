@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import { DEFAULT_TILESETS } from './app';
+import { DEFAULT_TILESETS } from './App';
 
 function Tileset({ index, tileset, setTileset, setFilter, setActive }) {
   return <div className={`tileset ${tileset.active ? '' : 'disabled'}`}>
