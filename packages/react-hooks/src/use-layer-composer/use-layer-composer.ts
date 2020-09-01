@@ -39,15 +39,15 @@ function useLayerComposer(
           globalGeneratorConfig
         )
         const afterTransformations = applyStyleTransformations(style, styleTransformations)
-        if (process.env.NODE_ENV === 'development') {
-          const styleSpec = await import('mapbox-gl/dist/style-spec')
-          if (styleSpec && styleSpec.validate) {
-            const styleErrors = styleSpec.validate(afterTransformations)
-            if (styleErrors && styleErrors.length) {
-              throw new Error(styleErrors.map((e: any) => e.message).join('\n'))
-            }
-          }
-        }
+        // if (process.env.NODE_ENV === 'development') {
+        //   const styleSpec = await import('@globalfishingwatch/mapbox-gl/dist/style-spec')
+        //   if (styleSpec && styleSpec.validate) {
+        //     const styleErrors = styleSpec.validate(afterTransformations)
+        //     if (styleErrors && styleErrors.length) {
+        //       throw new Error(styleErrors.map((e: any) => e.message).join('\n'))
+        //     }
+        //   }
+        // }
         setStyle(afterTransformations)
         if (promises && promises.length) {
           setLoading(true)

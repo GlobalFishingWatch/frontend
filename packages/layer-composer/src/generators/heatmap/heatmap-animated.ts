@@ -35,6 +35,7 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   tilesetsEnd: new Date().toISOString(),
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   tilesAPI: API_TILES_URL,
+  interactive: true,
 }
 
 // TODO - generate this using updated stats API
@@ -177,6 +178,22 @@ class HeatmapAnimatedGenerator {
           },
         ]
 
+        if (config.interactive) {
+          chunkLayers.push({
+            id: `${timeChunk.id}_interaction`,
+            source: timeChunk.id,
+            'source-layer': 'temporalgrid',
+            type: 'line',
+            paint: {
+              'line-color': 'white',
+              'line-width': ['case', ['boolean', ['feature-state', 'hover'], false], 3, 0],
+            },
+            metadata: {
+              group: Group.Heatmap,
+            },
+          })
+        }
+
         if (config.debug) {
           const exprDebugOutline = [
             'case',
@@ -220,25 +237,6 @@ class HeatmapAnimatedGenerator {
             },
           })
         }
-        if (
-          config.highlightedFeature &&
-          config.highlightedFeature.generator === Type.HeatmapAnimated
-        ) {
-          chunkLayers.push({
-            id: `${timeChunk.id}_highlight`,
-            source: timeChunk.id,
-            'source-layer': 'temporalgrid',
-            type: 'line',
-            paint: {
-              'line-color': '#ff00ff',
-            },
-            metadata: {
-              group: Group.Heatmap,
-            },
-            filter: ['==', 'id', config.highlightedFeature.id],
-          })
-        }
-
         return chunkLayers
       })
     )

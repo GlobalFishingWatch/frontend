@@ -26,8 +26,9 @@
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.3.0",
-    "@globalfishingwatch/dataviews-client": "^2.2.0",
-    "@globalfishingwatch/layer-composer": "^2.4.4"
+    "@globalfishingwatch/dataviews-client": "^2.3.0",
+    "@globalfishingwatch/layer-composer": "^2.6.0",
+    "@globalfishingwatch/mapbox-gl": "*"
   },
   "gitHead": "d3257a17acb1bd0880b760492bf936a61da4d8d8"
 }

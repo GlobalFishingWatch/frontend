@@ -164,13 +164,12 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   tilesAPI?: string
   combinationMode?: CombinationMode
   geomType?: string
-  tilesetStart?: string
-  tilesetEnd?: string
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
   tilesetsStart?: string
   tilesetsEnd?: string
+  interactive?: boolean
 }
 
 export type AnyGeneratorConfig =
