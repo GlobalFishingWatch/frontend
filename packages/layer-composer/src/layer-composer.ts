@@ -8,7 +8,12 @@ import {
   GeneratorStyles,
   Generator,
 } from './types'
-import { GeneratorConfig, GlobalGeneratorConfig, AnyGeneratorConfig } from './generators/types'
+import {
+  GeneratorConfig,
+  GlobalGeneratorConfig,
+  AnyGeneratorConfig,
+  Type,
+} from './generators/types'
 
 export const DEFAULT_CONFIG = {
   version: 8,
@@ -66,6 +71,7 @@ class LayerComposer {
     )
   }
 
+  // TODO: async generators doesn't go thought this style
   // apply generic config to all generator layers
   _applyGenericStyle = (
     generatorConfig: GeneratorConfig,
@@ -79,6 +85,16 @@ class LayerComposer {
       }
       if (!newLayer.paint) {
         newLayer.paint = {}
+      }
+      if (!newLayer.metadata) {
+        newLayer.metadata = {
+          generatorType: generatorConfig.type as Type,
+        }
+      } else {
+        newLayer.metadata = {
+          ...newLayer.metadata,
+          generatorType: generatorConfig.type as Type,
+        }
       }
       if (generatorConfig.visible !== undefined && generatorConfig.visible !== null) {
         newLayer.layout.visibility = generatorConfig.visible === true ? 'visible' : 'none'
