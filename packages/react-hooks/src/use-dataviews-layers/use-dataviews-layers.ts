@@ -28,6 +28,10 @@ export function getGeneratorConfig(dataview: Dataview) {
         statsUrl: statsEndpoint?.pathTemplate,
         // ADHOC for Amathea for now
         ...(flagFilter && { serverSideFilter: `flag in ('${flagFilter}')` }),
+        legend: {
+          label: dataset?.name,
+          unit: dataset?.unit,
+        },
       }
       return generator
     }

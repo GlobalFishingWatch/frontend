@@ -54,6 +54,12 @@ class HeatmapGenerator {
     ]
   }
 
+  _roundNumber = (number: number) => {
+    const precision = Array.from(Math.round(number).toString()).reduce((acc) => acc * 10, 0.1)
+    const rounded = Math.floor(number / precision) * precision
+    return rounded
+  }
+
   _getHeatmapLayers = (config: GlobalHeatmapGeneratorConfig) => {
     const geomType = config.geomType || HEATMAP_GEOM_TYPES.GRIDDED
     const colorRampType = config.colorRamp || 'presence'
@@ -64,15 +70,14 @@ class HeatmapGenerator {
     if (statsByZoom) {
       const { min, max, avg } = statsByZoom
       if (min && max && avg) {
-        const precision = Array.from(Math.round(max).toString()).reduce((acc) => acc * 10, 0.1)
-        const roundedMax = Math.floor(max / precision) * precision
+        const roundedMax = this._roundNumber(max)
         const scale = scaleLinear().domain([0, 0.5, 1]).range([min, avg, roundedMax])
 
         stops = [0, min, scale(0.25), scale(0.5), scale(0.75), roundedMax]
 
         const prevStepValues: number[] = []
         stops = stops.map((stop, index) => {
-          let roundValue = Math.round(stop)
+          let roundValue = this._roundNumber(stop)
           if (prevStepValues.indexOf(roundValue) > -1) {
             roundValue = prevStepValues[index - 1] + 1
           }
@@ -84,9 +89,9 @@ class HeatmapGenerator {
 
     const pickValueAt = 'value'
     const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampType]
-    const legend = stops.length ? zip(stops, originalColorRamp) : []
+    const legendRamp = stops.length ? zip(stops, originalColorRamp) : []
 
-    const colorRampValues = flatten(legend)
+    const colorRampValues = flatten(legendRamp)
     const valueExpression = ['to-number', ['get', pickValueAt]]
     const colorRamp =
       colorRampValues.length > 0
@@ -107,7 +112,15 @@ class HeatmapGenerator {
         },
         paint,
         metadata: {
-          legend,
+          // TODO: support multiple legends by each datasets
+          legend: {
+            ...config.legend,
+            type: 'colorramp',
+            ramp: legendRamp,
+          },
+          // TODO: It should be added on _applyGenericStyle from layers composer,
+          // but it needs to be fixed to make it work
+          generatorType: Type.Heatmap,
           gridArea: statsByZoom && statsByZoom.area,
           currentlyAt: pickValueAt,
           group: Group.Heatmap,
