@@ -15,3 +15,9 @@
 .mapControls > * {
   margin-bottom: var(--space-XS);
 }
+
+.mapLegend{
+  position: absolute;
+  left: var(--space-S);
+  bottom: var(--space-S);
+}
