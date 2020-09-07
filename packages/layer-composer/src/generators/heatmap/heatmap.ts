@@ -9,7 +9,6 @@ import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
 import paintByGeomType from './heatmap-layers-paint'
 import fetchStats from './util/fetch-stats'
-import getServerSideFilters from './util/get-server-side-filters'
 import {
   HEATMAP_GEOM_TYPES,
   HEATMAP_COLOR_RAMPS,
@@ -137,7 +136,7 @@ class HeatmapGenerator {
     const statsFilters = [config.serverSideFilter, config.statsFilter]
       .filter((f) => f)
       .join(' AND ')
-    const serverSideFilters = getServerSideFilters(config.start, config.end, statsFilters)
+    const dateRange = [config.start, config.end].join(',')
     const statsUrl = isUrlAbsolute(config.statsUrl)
       ? config.statsUrl
       : API_GATEWAY + config.statsUrl
@@ -145,7 +144,8 @@ class HeatmapGenerator {
     // also params can't be named as needs to be independant params for memoization
     const statsPromise = memoizeCache[config.id]._fetchStats(
       statsUrl,
-      serverSideFilters,
+      dateRange,
+      statsFilters,
       true,
       config.token,
       this.statsError
