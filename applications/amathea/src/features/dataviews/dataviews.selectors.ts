@@ -55,7 +55,6 @@ export const selectDatasetOptionsBySource = createSelector(
       )
 
       const currentWorkspaceDataviews = currentWorkspace?.dataviews.map((dataview) => dataview.id)
-      console.log('currentWorkspaceDataviews', currentWorkspaceDataviews)
       if (
         !dataset ||
         dataset.source !== sourceSelected.id ||

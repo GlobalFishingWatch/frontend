@@ -20,12 +20,12 @@ function MapLegend(props: MapLegendProps) {
   }, [style])
   return (
     <div className={cx(styles.legend, className)}>
-      {layersWithLegend?.map((layer) => {
+      {layersWithLegend?.map((layer, index) => {
         if (layer.metadata?.legend?.type === 'colorramp') {
-          return <ColorRamp layer={layer} onClick={onClick} />
+          return <ColorRamp key={layer.id || index} layer={layer} onClick={onClick} />
         }
         if (layer.metadata?.legend?.type === 'bivariate') {
-          return <Bivariate layer={layer} onClick={onClick} />
+          return <Bivariate key={layer.id || index} layer={layer} onClick={onClick} />
         }
         return null
       })}

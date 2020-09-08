@@ -16,6 +16,7 @@ export function getGeneratorConfig(dataview: Dataview) {
     const statsEndpoint = dataset?.endpoints?.find(
       (endpoint) => endpoint.id === '4wings-statistics'
     )
+
     if (tilesEndpoint) {
       const flagFilter = dataview.datasetsConfig?.datasetId?.query.find((q) => q.id === 'flag')
         ?.value
@@ -23,7 +24,7 @@ export function getGeneratorConfig(dataview: Dataview) {
         id: `fourwings-${dataview.id}`,
         ...dataview.config,
         tileset: dataset?.id as string,
-        fetchStats: statsEndpoint !== undefined,
+        fetchStats: !dataview.config.steps,
         tilesUrl: tilesEndpoint.pathTemplate,
         statsUrl: statsEndpoint?.pathTemplate,
         // ADHOC for Amathea for now
