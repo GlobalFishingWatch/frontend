@@ -1,6 +1,7 @@
 .tabs {
   width: 100%;
   display: flex;
+  height: var(--size-M);
 }
 
 .tabs button {
@@ -21,8 +22,17 @@
   background: none;
 }
 
-.content {
-  padding: var(--space-M);
-  height: calc(100vh - 10rem);
+.container {
+  height: calc(100vh - var(--size-L));
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+}
+
+.contentPadding {
+  padding: var(--space-M);
 }

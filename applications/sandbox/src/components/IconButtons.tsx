@@ -23,6 +23,12 @@ const IconButtonsSection = () => {
       <IconButton icon="arrow-top" size="tiny" />
       <label>Custom fill</label>
       <IconButton icon="arrow-right" className={styles.customIcon} />
+      <label>Loading</label>
+      <IconButton icon="download" loading />
+      <label>Loading Warning</label>
+      <IconButton icon="delete" type="warning" loading />
+      <label>Loading Map tool</label>
+      <IconButton icon="download" loading type="map-tool" />
 
       <div style={{ padding: '2rem', backgroundColor: 'black' }}>
         <label>Small invert</label>
@@ -31,6 +37,8 @@ const IconButtonsSection = () => {
         <IconButton icon="arrow-down" size="tiny" type="invert" />
         <label>Custom fill invert</label>
         <IconButton icon="arrow-down" type="invert" className={styles.customIcon} />
+        <label>Loading invert</label>
+        <IconButton icon="edit" type="invert" loading />
       </div>
     </Fragment>
   )

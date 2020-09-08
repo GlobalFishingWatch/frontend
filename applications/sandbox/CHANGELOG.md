@@ -1,5 +1,29 @@
 # Change Log
 
+## 0.3.1
+
+### Patch Changes
+
+- 8912bb0: fix temporal-grid demo
+
+## 0.3.0
+
+### Minor Changes
+
+- 99e3507: Update workspaces - dataviews - datasets types
+
+## 0.2.1
+
+### Patch Changes
+
+- 152d7ed: y
+
+## 0.2.0
+
+### Minor Changes
+
+- 0413cc6: Memoize functional components
+
 ## 0.1.14
 
 ### Patch Changes

@@ -22,6 +22,14 @@ body {
   grid-template-areas: "map" "timebar";
 }
 
+.loading {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: white;
+  z-index: 1;
+}
+
 .timebar { grid-area: timebar; }
 
 .map { grid-area: map; height: 100%; }
@@ -46,4 +54,13 @@ fieldset {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.tileset span {
+  display: inline-block;
+  width: 20px;
+}
+
+.tileset.disabled {
+  opacity: .5;
 }

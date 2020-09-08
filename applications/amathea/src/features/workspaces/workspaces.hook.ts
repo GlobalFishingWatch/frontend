@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { Workspace } from '@globalfishingwatch/dataviews-client'
-import { selectCurrentWorkspaceDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectCurrentWorkspaceDataviewsResolved } from 'features/dataviews/dataviews.selectors'
 import {
   fetchWorkspacesThunk,
   deleteWorkspaceThunk,
@@ -11,6 +11,8 @@ import {
   selectShared,
   fetchWorkspaceByIdThunk,
   selectCurrentWorkspace,
+  selectWorkspaceStatus,
+  selectWorkspaceStatusId,
 } from './workspaces.slice'
 
 export const useWorkspacesAPI = () => {
@@ -30,8 +32,9 @@ export const useWorkspacesAPI = () => {
   )
 
   const deleteWorkspace = useCallback(
-    (id: number) => {
-      dispatch(deleteWorkspaceThunk(id))
+    async (id: number): Promise<Workspace> => {
+      const { payload }: any = await dispatch(deleteWorkspaceThunk(id))
+      return payload
     },
     [dispatch]
   )
@@ -74,10 +77,14 @@ export const useWorkspacesAPI = () => {
 }
 
 export const useWorkspacesConnect = () => {
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const workspaceStatusId = useSelector(selectWorkspaceStatusId)
   const workspacesList = useSelector(selectAll)
   const workspacesSharedList = useSelector(selectShared)
 
   return {
+    workspaceStatus,
+    workspaceStatusId,
     workspacesList,
     workspacesSharedList,
   }
@@ -89,6 +96,6 @@ export const useCurrentWorkspaceConnect = () => {
 }
 
 export const useWorkspaceDataviewsConnect = () => {
-  const dataviews = useSelector(selectCurrentWorkspaceDataviews)
+  const dataviews = useSelector(selectCurrentWorkspaceDataviewsResolved)
   return { dataviews }
 }

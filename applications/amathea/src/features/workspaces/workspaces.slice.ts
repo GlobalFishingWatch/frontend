@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'store'
+import memoize from 'lodash/memoize'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Workspace } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
@@ -15,11 +16,9 @@ export const fetchWorkspaceByIdThunk = createAsyncThunk(
   'workspace/fetchById',
   async (id: number, { rejectWithValue }) => {
     try {
-      const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}?include=dataview,aoi`)
-      // REMODE THESE MOCKED VALUES AND RETURN FROM API
-      if (!workspace.dataviewsId?.length) {
-        workspace.dataviewsId = [46, 47, 48, 49, 50]
-      }
+      const workspace = await GFWAPI.fetch<Workspace>(
+        `/v1/workspaces/${id}?include=aoi,dataviews,dataviews.datasets,dataviews.datasets.endpoints`
+      )
       return workspace
     } catch (e) {
       return rejectWithValue(id)
@@ -35,11 +34,11 @@ export const createWorkspaceThunk = createAsyncThunk(
         method: 'POST',
         // Hack to support aoi and aoi living together for now
         // Needs to be addressed at API level first
-        body: { ...workspaceData, aoi: workspaceData.aoiId } as any,
+        body: { ...workspaceData, aoi: workspaceData.aoi?.id } as any,
       })
       return workspace
     } catch (e) {
-      return rejectWithValue(workspaceData.label)
+      return rejectWithValue(workspaceData.name)
     }
   }
 )
@@ -90,9 +89,18 @@ export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(
   (state) => state.workspaces
 )
 
+export const selectWorkspaceStatus = (state: RootState) => state.workspaces.status
+export const selectWorkspaceStatusId = (state: RootState) => state.workspaces.statusId
+
 export const selectCurrentWorkspace = createSelector(
-  [(state: RootState) => state, selectCurrentWorkspaceId],
-  (state, workspaceId) => selectById(state, workspaceId)
+  [selectAll, selectCurrentWorkspaceId],
+  (workspaces, workspaceId) => {
+    return workspaces.find((workspace) => workspace.id === workspaceId)
+  }
+)
+
+export const selectWorkspaceById = memoize((id: string) =>
+  createSelector([(state: RootState) => state], (state) => selectById(state, id))
 )
 
 export const selectShared = createSelector([selectAll, getUserId], (workspaces, userId) =>

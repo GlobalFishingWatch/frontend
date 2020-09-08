@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './Header.css'
 
@@ -70,7 +70,7 @@ interface HeaderProps {
   inverted?: boolean
 }
 
-const Header: React.FC<HeaderProps> = ({ mini = false, inverted = false }) => {
+function Header({ mini = false, inverted = false }: HeaderProps) {
   return (
     <div className={`gfw-header-container ${inverted ? 'gfw-header-container-inverted' : ''}`}>
       <header className="gfw-header">
@@ -142,4 +142,4 @@ const Header: React.FC<HeaderProps> = ({ mini = false, inverted = false }) => {
   )
 }
 
-export default Header
+export default memo(Header)

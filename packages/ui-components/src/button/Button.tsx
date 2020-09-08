@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { memo } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
+import Spinner from '../spinner'
 import styles from './Button.module.css'
 
 export type ButtonType = 'default' | 'secondary'
@@ -11,6 +12,7 @@ interface ButtonProps {
   type?: ButtonType
   size?: ButtonSize
   disabled?: boolean
+  loading?: boolean
   className?: string
   children: React.ReactChild | React.ReactChild[]
   tooltip?: React.ReactChild | React.ReactChild[] | string
@@ -18,11 +20,12 @@ interface ButtonProps {
   onClick?: (e: React.MouseEvent) => void
 }
 
-const Button: React.FC<ButtonProps> = (props) => {
+function Button(props: ButtonProps) {
   const {
     type = 'default',
     size = 'default',
     disabled = false,
+    loading = false,
     className,
     children,
     tooltip,
@@ -33,13 +36,17 @@ const Button: React.FC<ButtonProps> = (props) => {
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
         className={cx(styles.button, styles[type], styles[size], className)}
-        onClick={onClick}
+        onClick={(e) => !loading && onClick && onClick(e)}
         disabled={disabled}
       >
-        {children}
+        {loading ? (
+          <Spinner size="small" color={type === 'default' ? 'white' : undefined} />
+        ) : (
+          children
+        )}
       </button>
     </Tooltip>
   )
 }
 
-export default Button
+export default memo(Button)

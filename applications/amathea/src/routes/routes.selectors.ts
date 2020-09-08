@@ -21,19 +21,27 @@ export const selectLocationPayload = createSelector([selectLocation], ({ payload
 })
 
 export const selectCurrentWorkspaceId = createSelector([selectLocation], ({ payload }) => {
-  return payload?.workspaceId as number
+  return parseInt(payload?.workspaceId)
 })
 
 const selectLocationQuery = createSelector([selectLocation], (location) => {
   return location.query as Query
 })
 
+const queryParamsParse: { [key in WorkspaceParam]?: any } = {
+  hiddenDataviews: (dataviews: string[]) => dataviews.map((d) => parseInt(d)),
+}
+
 const selectQueryParam = <T = any>(param: WorkspaceParam) =>
   createSelector<RootState, Query, T>([selectLocationQuery], (query: any) => {
     if (query === undefined || query[param] === undefined) {
       return DEFAULT_WORKSPACE[param]
     }
-    return query[param]
+    const queryParamValue = query[param]
+    if (queryParamsParse[param]) {
+      return queryParamsParse[param](queryParamValue)
+    }
+    return queryParamValue
   })
 
 export const selectMapZoomQuery = selectQueryParam<number>('zoom')
@@ -41,6 +49,7 @@ export const selectMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectStartQuery = selectQueryParam<string>('start')
 export const selectEndQuery = selectQueryParam<string>('end')
+export const selectHiddenDataviews = selectQueryParam<number[]>('hiddenDataviews')
 
 export const selectViewport = createSelector(
   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery],

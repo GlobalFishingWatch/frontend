@@ -1,4 +1,5 @@
 import { Type, BasemapGeneratorConfig } from '../types'
+import { isConfigVisible } from '../utils'
 import { layers, sources } from './basemap-layers'
 
 class BasemapGenerator {
@@ -12,7 +13,14 @@ class BasemapGenerator {
   }
   _getStyleLayers = (config: BasemapGeneratorConfig) => {
     const layer = layers[config.basemap || config.id]
-    return [layer]
+    return [
+      {
+        ...layer,
+        layout: {
+          visibility: isConfigVisible(config),
+        },
+      },
+    ]
   }
 
   getStyle = (config: BasemapGeneratorConfig) => {

@@ -1,12 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { isWorkspaceEditorPage } from 'routes/routes.selectors'
+import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/react-hooks/dist/use-dataviews-layers'
+import { selectHiddenDataviews } from 'routes/routes.selectors'
 import { selectAllAOI } from 'features/areas-of-interest/areas-of-interest.slice'
 import { selectCurrentWorkspace } from 'features/workspaces/workspaces.slice'
-import { selectCurrentWorkspaceDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectCurrentWorkspaceDataviewsResolved } from 'features/dataviews/dataviews.selectors'
 import { selectGeneratorsConfig } from './map.slice'
-
-const API_GATEWAY = 'https://gateway.api.dev.globalfishingwatch.org'
 
 export const getCurrentWorkspaceAOIGeneratorsConfig = createSelector(
   [selectCurrentWorkspace],
@@ -14,7 +13,7 @@ export const getCurrentWorkspaceAOIGeneratorsConfig = createSelector(
     if (!currentWorkspace || !currentWorkspace.aoi) return
     const generator: Generators.GlGeneratorConfig = {
       type: Generators.Type.GL,
-      id: `aoi-${currentWorkspace.aoiId}`,
+      id: `aoi-${currentWorkspace.aoi.id}`,
       sources: [
         {
           type: 'geojson',
@@ -39,7 +38,7 @@ export const getAllAOIGeneratorsConfig = createSelector(
   (aoiList, currentWorkspace) => {
     if (!aoiList) return
     return aoiList
-      .filter((aoi) => !currentWorkspace || currentWorkspace.aoiId === aoi.id)
+      .filter((aoi) => !currentWorkspace || currentWorkspace?.aoi?.id === aoi.id)
       .map((aoi) => {
         return {
           type: Generators.Type.GL,
@@ -65,40 +64,13 @@ export const getAllAOIGeneratorsConfig = createSelector(
 )
 
 export const getDataviewsGeneratorsConfig = createSelector(
-  [selectCurrentWorkspaceDataviews, isWorkspaceEditorPage],
-  (dataviews, currentWorkspace) => {
-    if (!dataviews) return
+  [selectCurrentWorkspaceDataviewsResolved, selectHiddenDataviews],
+  (dataviews, hiddenDataviews) => {
+    if (!dataviews || !dataviews.length) return
+    const filteredDataviews = dataviews.filter((dataview) => !hiddenDataviews.includes(dataview.id))
 
-    return dataviews
-      .map((dataview) => {
-        const tilesEndpoint = dataview.dataset?.endpoints?.find(
-          (endpoint) => endpoint.id === 'user-context-tiles'
-        )
-        if (!tilesEndpoint) return null
-        return {
-          type: Generators.Type.GL,
-          id: `user-context-${dataview.id}`,
-          sources: [
-            {
-              type: 'vector',
-              tiles: [
-                API_GATEWAY + tilesEndpoint.pathTemplate.replace(/{{/g, '{').replace(/}}/g, '}'),
-              ],
-            },
-          ],
-          layers: [
-            {
-              type: 'line',
-              paint: {
-                'line-color': 'red',
-                'line-width': 3,
-              },
-              'source-layer': `user-context-${dataview.id}`,
-            },
-          ],
-        }
-      })
-      .filter((g) => g !== null) as Generators.GlGeneratorConfig[]
+    const generators = getDataviewsGeneratorConfigs(filteredDataviews)
+    return generators
   }
 )
 
@@ -111,9 +83,9 @@ export const getGeneratorsConfig = createSelector(
   ],
   (generators, aoiGenerators, currentWorkspaceAOI, dataviewsGenerators) => {
     let allGenerators = [...generators]
-    if (currentWorkspaceAOI) allGenerators.push(currentWorkspaceAOI)
-    if (aoiGenerators) allGenerators = allGenerators.concat(aoiGenerators)
     if (dataviewsGenerators) allGenerators = allGenerators.concat(dataviewsGenerators)
+    if (aoiGenerators) allGenerators = allGenerators.concat(aoiGenerators)
+    if (currentWorkspaceAOI) allGenerators.push(currentWorkspaceAOI)
     return allGenerators
   }
 )
