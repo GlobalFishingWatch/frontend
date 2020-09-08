@@ -181,13 +181,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   colorRamps?: ColorRampsIds[]
   tilesAPI?: string
   combinationMode?: CombinationMode
-<<<<<<< HEAD
   geomType?: string
-=======
-  geomType?: Geoms
-  tilesetStart?: string
-  tilesetEnd?: string
->>>>>>> 6eccc77844e6007f340f07f7b20eea1703cddedb
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean

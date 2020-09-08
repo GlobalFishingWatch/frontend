@@ -95,36 +95,54 @@ class HeatmapAnimatedGenerator {
     // TODO - generate this using updated stats API
     const breaks = HARDCODED_BREAKS[config.combinationMode].slice(0, config.tilesets.length)
 
-    const sources = timeChunks.map((timeChunk: TimeChunk) => {
-      const sourceParams: Record<string, string> = {
-        singleFrame: 'false',
-        geomType: config.geomType,
-        filters: config.filters
-          .map((filter, i) => {
-            if (!filter || filter === '') return ''
-            return `filters[${i}]=${filter}`
-          })
-          .join('&'),
-        delta: getDelta(config.start, config.end, timeChunk.interval).toString(),
-        quantizeOffset: timeChunk.quantizeOffset.toString(),
-        interval: timeChunk.interval,
-        numDatasets: config.tilesets.length.toString(),
-        // TODO - generate this using updated stats API
-        breaks: JSON.stringify(breaks),
-        combinationMode: config.combinationMode,
-      }
-      if (timeChunk.start && timeChunk.dataEnd) {
-        sourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd].join(',')
-      }
-      const url = new URL(`${tilesUrl}?${new URLSearchParams(sourceParams)}`)
-      const source = {
-        id: timeChunk.id,
-        type: 'temporalgrid',
-        tiles: [decodeURI(url.toString())],
-        maxzoom: config.maxZoom,
-      }
-      return source
-    })
+    const sources = flatten(
+      timeChunks.map((timeChunk: TimeChunk) => {
+        const baseSourceParams: Record<string, string> = {
+          id: timeChunk.id,
+          singleFrame: 'false',
+          geomType: config.geomType,
+          filters: config.filters
+            .map((filter, i) => {
+              if (!filter || filter === '') return ''
+              return `filters[${i}]=${filter}`
+            })
+            .join('&'),
+          delta: getDelta(config.start, config.end, timeChunk.interval).toString(),
+          quantizeOffset: timeChunk.quantizeOffset.toString(),
+          interval: timeChunk.interval,
+          numDatasets: config.tilesets.length.toString(),
+          // TODO - generate this using updated stats API
+          breaks: JSON.stringify(breaks),
+          combinationMode: config.combinationMode,
+        }
+        if (timeChunk.start && timeChunk.dataEnd) {
+          baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd].join(',')
+        }
+
+        const sourceParams = [baseSourceParams]
+        if (config.interactive) {
+          const interactiveSource = {
+            ...baseSourceParams,
+            id: `${baseSourceParams.id}_interaction`,
+          }
+          delete (interactiveSource as any).breaks
+          sourceParams.push(interactiveSource)
+        }
+        console.log(sourceParams, 'ss')
+
+        return sourceParams.map((params: Record<string, string>) => {
+          const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)
+          const source = {
+            id: params.id,
+            type: 'temporalgrid',
+            tiles: [decodeURI(url.toString())],
+            maxzoom: config.maxZoom,
+          }
+          return source
+        })
+      })
+    )
+    console.log(sources)
 
     return sources
   }
@@ -173,8 +191,6 @@ class HeatmapAnimatedGenerator {
             paint: paint as any,
             metadata: {
               group: Group.Heatmap,
-              interactive: true,
-              generator: Type.HeatmapAnimated,
             },
           },
         ]
@@ -182,7 +198,23 @@ class HeatmapAnimatedGenerator {
         if (config.interactive) {
           chunkLayers.push({
             id: `${timeChunk.id}_interaction`,
-            source: timeChunk.id,
+            source: `${timeChunk.id}_interaction`,
+            'source-layer': 'temporalgrid',
+            type: 'fill',
+            paint: {
+              'fill-color': 'pink',
+              'fill-opacity': 0.5,
+            },
+            metadata: {
+              group: Group.Heatmap,
+              generator: Type.HeatmapAnimated,
+              interactive: true,
+              frame,
+            },
+          })
+          chunkLayers.push({
+            id: `${timeChunk.id}_interaction_hover`,
+            source: `${timeChunk.id}_interaction`,
             'source-layer': 'temporalgrid',
             type: 'line',
             paint: {
