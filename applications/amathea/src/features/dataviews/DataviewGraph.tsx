@@ -22,15 +22,16 @@ interface DataviewGraphProps {
 }
 
 const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
-  const { dataview, graphColor, graphUnit = '' } = props
+  const { graphColor, graphUnit = '' } = props
   const { start, end } = useTimerangeConnect()
 
-  const data = (TEST_DATAVIEW_MONTHLY_STATS[`dataview-${dataview.id}`] || []).filter((current) => {
+  const data = TEST_DATAVIEW_MONTHLY_STATS.demo.filter((current) => {
     const currentDate = DateTime.fromISO(current.date).startOf('day')
     const startDate = DateTime.fromISO(start).startOf('day')
     const endDate = DateTime.fromISO(end).startOf('day')
     return currentDate >= startDate && currentDate <= endDate
   })
+
   const dataMax: AxisDomain = data.length
     ? data.reduce((prev: GraphData, curr: GraphData) => (curr.value > prev.value ? curr : prev))
         .value

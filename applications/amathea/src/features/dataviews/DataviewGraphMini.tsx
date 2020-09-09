@@ -11,10 +11,10 @@ interface DataviewGraphMiniProps {
 }
 
 const DataviewGraphMini: React.FC<DataviewGraphMiniProps> = (props) => {
-  const { dataview, graphColor } = props
+  const { graphColor } = props
   const { start, end } = useTimerangeConnect()
 
-  const data = (TEST_DATAVIEW_MONTHLY_STATS[`dataview-${dataview.id}`] || []).filter((current) => {
+  const data = TEST_DATAVIEW_MONTHLY_STATS.demo.filter((current) => {
     const currentDate = DateTime.fromISO(current.date).startOf('day')
     const startDate = DateTime.fromISO(start).startOf('day')
     const endDate = DateTime.fromISO(end).startOf('day')
