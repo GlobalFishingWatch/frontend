@@ -22,7 +22,7 @@ type GlobalHeatmapGeneratorConfig = HeatmapGeneratorConfig & GlobalGeneratorConf
 class HeatmapGenerator {
   type = Type.Heatmap
   statsError = 0
-  stats: statsByZoom | null = null
+  stats: Record<string, statsByZoom> = {}
 
   _getStyleSources = (config: GlobalHeatmapGeneratorConfig) => {
     if (!config.tilesUrl) {
@@ -65,8 +65,10 @@ class HeatmapGenerator {
 
     let stops: number[] = []
     const zoom = Math.min(Math.floor(config.zoom), config.maxZoom || HEATMAP_DEFAULT_MAX_ZOOM)
-    const statsByZoom = (this.stats !== null && this.stats[zoom]) || null
-    if (statsByZoom) {
+    const statsByZoom = (this.stats[config.id] && this.stats[config.id][zoom]) || null
+    if (config.steps) {
+      stops = config.steps
+    } else if (statsByZoom) {
       const { min, max, avg } = statsByZoom
       if (min && max && avg) {
         const roundedMax = this._roundNumber(max)
@@ -96,8 +98,10 @@ class HeatmapGenerator {
       colorRampValues.length > 0
         ? ['interpolate', ['linear'], valueExpression, ...colorRampValues]
         : 'transparent'
-    const paint: any = paintByGeomType[geomType]
-    paint['fill-color'] = colorRamp
+    const paint: any = {
+      ...paintByGeomType[geomType],
+      'fill-color': colorRamp,
+    }
 
     const visibility = isConfigVisible(config)
     return [
@@ -129,7 +133,9 @@ class HeatmapGenerator {
   }
 
   _getStyleLayers = (config: GlobalHeatmapGeneratorConfig) => {
-    if (config.fetchStats !== true || !config.start || !config.end || !config.statsUrl) {
+    const hasDates = config.start && config.end
+    const fetchStats = config.fetchStats === true && config.statsUrl !== undefined
+    if (!fetchStats || !hasDates) {
       return { layers: this._getHeatmapLayers(config) }
     }
 
@@ -137,7 +143,7 @@ class HeatmapGenerator {
       .filter((f) => f)
       .join(' AND ')
     const dateRange = [config.start, config.end].join(',')
-    const statsUrl = isUrlAbsolute(config.statsUrl)
+    const statsUrl = isUrlAbsolute(config.statsUrl as string)
       ? config.statsUrl
       : API_GATEWAY + config.statsUrl
     // use statsError to invalidate cache and try again when it fails
@@ -158,7 +164,7 @@ class HeatmapGenerator {
 
     const promise = new Promise((resolve, reject) => {
       statsPromise.then((stats: statsByZoom) => {
-        this.stats = stats
+        this.stats[config.id] = stats
         if (this.statsError > 0) {
           this.statsError = 0
         }

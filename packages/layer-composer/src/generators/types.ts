@@ -162,6 +162,7 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   // end: string
   // zoom: number
   maxZoom?: number
+  steps?: number[]
   tilesUrl: string
   statsUrl?: string
   fetchStats?: boolean

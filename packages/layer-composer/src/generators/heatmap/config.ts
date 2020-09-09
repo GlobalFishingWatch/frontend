@@ -26,17 +26,33 @@ export const HEATMAP_GEOM_TYPES_GL_TYPES: HeatmapGeomGL = {
   [HEATMAP_GEOM_TYPES.EXTRUDED]: 'fill-extrusion',
 }
 
+const opacitySteps = [0, 0.2, 0.4, 0.6, 0.8, 1]
+const hex2Rgb = (hex: string) => {
+  const cleanHex = hex.replace('#', '')
+  const color = {
+    r: parseInt(cleanHex.slice(0, 2), 16),
+    g: parseInt(cleanHex.slice(2, 4), 16),
+    b: parseInt(cleanHex.slice(4, 6), 16),
+  }
+  return `${color.r}, ${color.g}, ${color.b}`
+}
+
+const getColorRampByOpacitySteps = (finalColor: string) => {
+  const color = finalColor.includes('#') ? hex2Rgb(finalColor) : finalColor
+  return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
+}
+
 export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   fishing: [DEFAULT_BASEMAP_COLOR, '#3B9088', '#EEFF00', '#ffffff'],
   presence: [DEFAULT_BASEMAP_COLOR, '#163F89', '#0F6F97', '#07BBAE', '#00FFC3', '#FFFFFF'],
   reception: ['rgb(255, 69, 115, 1)', '#7b2e8d', '#093b76', DEFAULT_BASEMAP_COLOR],
-  teal: [DEFAULT_BASEMAP_COLOR, '#004F6B', '#007B7F', '#00A793', '#00D3A7', '#00FFBC'],
-  magenta: [DEFAULT_BASEMAP_COLOR, '#33306E', '#663D86', '#994A9E', '#994A9E', '#FF64CE'],
-  lilac: [DEFAULT_BASEMAP_COLOR, '#1F3D78', '#3E579A', '#5E70BB', '#7D8ADD', '#9CA4FF'],
-  salmon: [DEFAULT_BASEMAP_COLOR, '#333F64', '#665B72', '#665B72', '#CC928D', '#FFAE9B'],
-  sky: [DEFAULT_BASEMAP_COLOR, '#004C78', '#00749A', '#009DBB', '#00C5DD', '#00EEFF'],
-  red: [DEFAULT_BASEMAP_COLOR, '#333156', '#663E56', '#994C54', '#CC5A54', '#FF6854'],
-  yellow: [DEFAULT_BASEMAP_COLOR, '#334B45', '#667334', '#999A22', '#CCC211', '#FFEA00'],
-  green: [DEFAULT_BASEMAP_COLOR, '#214F57', '#427B58', '#64A757', '#85D358', '#A6FF59'],
-  orange: [DEFAULT_BASEMAP_COLOR, '#333E48', '#665939', '#99742A', '#CC8F1B', '#FFAA0D'],
+  teal: getColorRampByOpacitySteps('#00FFBC'),
+  magenta: getColorRampByOpacitySteps('#FF64CE'),
+  lilac: getColorRampByOpacitySteps('#9CA4FF'),
+  salmon: getColorRampByOpacitySteps('#FFAE9B'),
+  sky: getColorRampByOpacitySteps('#00EEFF'),
+  red: getColorRampByOpacitySteps('#FF6854'),
+  yellow: getColorRampByOpacitySteps('#FFEA00'),
+  green: getColorRampByOpacitySteps('#A6FF59'), // 166,255,89
+  orange: getColorRampByOpacitySteps('#FFAA0D'),
 }
