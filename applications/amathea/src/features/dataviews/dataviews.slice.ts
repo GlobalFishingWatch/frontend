@@ -129,9 +129,9 @@ export const selectDrafDataviewColor = createSelector(
   (draftDataview) => draftDataview?.dataset
 )
 
-export const selectShared = createSelector([selectAllDataviews, getUserId], (workspaces, userId) =>
+export const selectShared = createSelector([selectAllDataviews, getUserId], (dataviews, userId) =>
   // TODO: make this real when editors in workspaces API
-  workspaces.filter((w: any) => w.editors?.includes(userId))
+  dataviews.filter((w: any) => w.editors?.includes(userId))
 )
 
 export default dataviewsSlice.reducer

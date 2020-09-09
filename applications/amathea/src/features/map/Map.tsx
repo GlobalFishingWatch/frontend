@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import Miniglobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
+import MapLegend from '@globalfishingwatch/ui-components/dist/map-legend'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
@@ -106,6 +107,9 @@ const Map = (): React.ReactElement => {
         <IconButton icon="minus" type="map-tool" tooltip="Zoom out" onClick={onZoomOutClick} />
         <IconButton icon="ruler" type="map-tool" tooltip="Open ruler tool (Coming soon)" />
         <IconButton icon="camera" type="map-tool" tooltip="Capture the map (Coming soon)" />
+      </div>
+      <div className={styles.mapLegend}>
+        <MapLegend style={style} />
       </div>
     </div>
   )

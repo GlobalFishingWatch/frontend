@@ -9,7 +9,6 @@ import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
 import paintByGeomType from './heatmap-layers-paint'
 import fetchStats from './util/fetch-stats'
-import getServerSideFilters from './util/get-server-side-filters'
 import {
   HEATMAP_GEOM_TYPES,
   HEATMAP_COLOR_RAMPS,
@@ -23,7 +22,7 @@ type GlobalHeatmapGeneratorConfig = HeatmapGeneratorConfig & GlobalGeneratorConf
 class HeatmapGenerator {
   type = Type.Heatmap
   statsError = 0
-  stats: statsByZoom | null = null
+  stats: Record<string, statsByZoom> = {}
 
   _getStyleSources = (config: GlobalHeatmapGeneratorConfig) => {
     if (!config.tilesUrl) {
@@ -54,25 +53,32 @@ class HeatmapGenerator {
     ]
   }
 
+  _roundNumber = (number: number) => {
+    const precision = Array.from(Math.round(number).toString()).reduce((acc) => acc * 10, 0.1)
+    const rounded = Math.floor(number / precision) * precision
+    return rounded
+  }
+
   _getHeatmapLayers = (config: GlobalHeatmapGeneratorConfig) => {
     const geomType = config.geomType || HEATMAP_GEOM_TYPES.GRIDDED
     const colorRampType = config.colorRamp || 'presence'
 
     let stops: number[] = []
     const zoom = Math.min(Math.floor(config.zoom), config.maxZoom || HEATMAP_DEFAULT_MAX_ZOOM)
-    const statsByZoom = (this.stats !== null && this.stats[zoom]) || null
-    if (statsByZoom) {
+    const statsByZoom = (this.stats[config.id] && this.stats[config.id][zoom]) || null
+    if (config.steps) {
+      stops = config.steps
+    } else if (statsByZoom) {
       const { min, max, avg } = statsByZoom
       if (min && max && avg) {
-        const precision = Array.from(Math.round(max).toString()).reduce((acc) => acc * 10, 0.1)
-        const roundedMax = Math.floor(max / precision) * precision
+        const roundedMax = this._roundNumber(max)
         const scale = scaleLinear().domain([0, 0.5, 1]).range([min, avg, roundedMax])
 
         stops = [0, min, scale(0.25), scale(0.5), scale(0.75), roundedMax]
 
         const prevStepValues: number[] = []
         stops = stops.map((stop, index) => {
-          let roundValue = Math.round(stop)
+          let roundValue = this._roundNumber(stop)
           if (prevStepValues.indexOf(roundValue) > -1) {
             roundValue = prevStepValues[index - 1] + 1
           }
@@ -84,16 +90,18 @@ class HeatmapGenerator {
 
     const pickValueAt = 'value'
     const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampType]
-    const legend = stops.length ? zip(stops, originalColorRamp) : []
+    const legendRamp = stops.length ? zip(stops, originalColorRamp) : []
 
-    const colorRampValues = flatten(legend)
+    const colorRampValues = flatten(legendRamp)
     const valueExpression = ['to-number', ['get', pickValueAt]]
     const colorRamp =
       colorRampValues.length > 0
         ? ['interpolate', ['linear'], valueExpression, ...colorRampValues]
         : 'transparent'
-    const paint: any = paintByGeomType[geomType]
-    paint['fill-color'] = colorRamp
+    const paint: any = {
+      ...paintByGeomType[geomType],
+      'fill-color': colorRamp,
+    }
 
     const visibility = isConfigVisible(config)
     return [
@@ -107,7 +115,15 @@ class HeatmapGenerator {
         },
         paint,
         metadata: {
-          legend,
+          // TODO: support multiple legends by each datasets
+          legend: {
+            ...config.legend,
+            type: 'colorramp',
+            ramp: legendRamp,
+          },
+          // TODO: It should be added on _applyGenericStyle from layers composer,
+          // but it needs to be fixed to make it work
+          generatorType: Type.Heatmap,
           gridArea: statsByZoom && statsByZoom.area,
           currentlyAt: pickValueAt,
           group: Group.Heatmap,
@@ -117,22 +133,25 @@ class HeatmapGenerator {
   }
 
   _getStyleLayers = (config: GlobalHeatmapGeneratorConfig) => {
-    if (config.fetchStats !== true || !config.start || !config.end || !config.statsUrl) {
+    const hasDates = config.start && config.end
+    const fetchStats = config.fetchStats === true && config.statsUrl !== undefined
+    if (!fetchStats || !hasDates) {
       return { layers: this._getHeatmapLayers(config) }
     }
 
     const statsFilters = [config.serverSideFilter, config.statsFilter]
       .filter((f) => f)
       .join(' AND ')
-    const serverSideFilters = getServerSideFilters(config.start, config.end, statsFilters)
-    const statsUrl = isUrlAbsolute(config.statsUrl)
+    const dateRange = [config.start, config.end].join(',')
+    const statsUrl = isUrlAbsolute(config.statsUrl as string)
       ? config.statsUrl
       : API_GATEWAY + config.statsUrl
     // use statsError to invalidate cache and try again when it fails
     // also params can't be named as needs to be independant params for memoization
     const statsPromise = memoizeCache[config.id]._fetchStats(
       statsUrl,
-      serverSideFilters,
+      dateRange,
+      statsFilters,
       true,
       config.token,
       this.statsError
@@ -145,7 +164,7 @@ class HeatmapGenerator {
 
     const promise = new Promise((resolve, reject) => {
       statsPromise.then((stats: statsByZoom) => {
-        this.stats = stats
+        this.stats[config.id] = stats
         if (this.statsError > 0) {
           this.statsError = 0
         }

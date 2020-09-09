@@ -20,12 +20,22 @@ export const FLAG_FILTERS = [
 
 export type DatasetSources = 'gfw' | 'user'
 export const DATASET_SOURCE_IDS = {
-  gfw: 'gfw',
+  gfw: 'Global Fishing Watch',
+  marineregions: 'Marine Regions',
+  wdpa: 'World Database on Protected Areas (WDPA)',
+  noaa: 'NOAA Physical Sciences Laboratory',
+  copernicus: 'Copernicus Marine Service',
+  nasa: 'NASA',
   user: 'user',
 }
 
 export const DATASET_SOURCE_OPTIONS = [
   { id: DATASET_SOURCE_IDS.gfw, label: 'Global Fishing Watch' },
+  { id: DATASET_SOURCE_IDS.marineregions, label: 'Marine Regions' },
+  { id: DATASET_SOURCE_IDS.wdpa, label: 'World Database on Protected Areas (WDPA)' },
+  { id: DATASET_SOURCE_IDS.noaa, label: 'NOAA Physical Sciences Laboratory' },
+  { id: DATASET_SOURCE_IDS.copernicus, label: 'Copernicus Marine Service' },
+  { id: DATASET_SOURCE_IDS.nasa, label: 'NASA' },
   { id: DATASET_SOURCE_IDS.user, label: 'Your datasets' },
 ]
 

@@ -26,24 +26,49 @@ export const selectCurrentWorkspaceDataviewsResolved = createSelector(
   }
 )
 
-export const selectDatasetOptionsBySource = createSelector(
-  [selectAllDatasets, selectDrafDataviewSource, getUserId],
-  (datasetOptions, sourceSelected, userId) => {
-    if (!sourceSelected) return []
-    const options = datasetOptions.filter((dataset) => {
-      if (
-        dataset.source === DATASET_SOURCE_IDS.user &&
-        sourceSelected.id === DATASET_SOURCE_IDS.user
-      ) {
-        return dataset.ownerId === userId
-      }
-      return dataset.source === sourceSelected.id
+export const selectUserDatasets = createSelector(
+  [selectAllDatasets, getUserId],
+  (datasets, userId) => {
+    return datasets.filter((dataset) => {
+      return dataset.source === DATASET_SOURCE_IDS.user && dataset.ownerId === userId
     })
-    return options.map((dataset) => ({
-      id: dataset.id,
-      label: dataset.name,
-      type: dataset.type,
-      description: dataset.description,
-    }))
+  }
+)
+
+export const selectDatasetOptionsBySource = createSelector(
+  [selectUserDatasets, selectAllDataviews, selectCurrentWorkspace, selectDrafDataviewSource],
+  (userDatasets, dataviews, currentWorkspace, sourceSelected) => {
+    if (!sourceSelected) return []
+
+    if (sourceSelected.id === DATASET_SOURCE_IDS.user) {
+      return userDatasets.map((dataset) => ({
+        id: dataset.id,
+        label: dataset.name,
+        type: dataset.type,
+        description: dataset.description,
+      }))
+    }
+
+    return dataviews.flatMap((dataview) => {
+      const dataset = dataview.datasets?.find(
+        (dataset) => dataset.type === '4wings:v1' || dataset.type === 'user-context-layer:v1'
+      )
+
+      const currentWorkspaceDataviews = currentWorkspace?.dataviews.map((dataview) => dataview.id)
+      if (
+        !dataset ||
+        dataset.source !== sourceSelected.id ||
+        currentWorkspaceDataviews?.includes(dataview.id)
+      ) {
+        return []
+      }
+      return {
+        id: dataset.id,
+        dataviewId: dataview.id,
+        label: dataset.name,
+        type: dataset.type,
+        description: dataset.description,
+      }
+    })
   }
 )
