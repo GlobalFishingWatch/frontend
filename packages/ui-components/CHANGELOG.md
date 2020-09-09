@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 1.7.0
+
+### Minor Changes
+
+- a566ff6: Layer component
+
 ## 1.6.1
 
 ### Patch Changes
