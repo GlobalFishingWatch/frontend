@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 1.8.0
+
+### Minor Changes
+
+- e6f5aa7: Update enpdoints ids
+
 ## 1.7.0
 
 ### Minor Changes
