@@ -1,6 +1,5 @@
-import React, { memo, useMemo, Fragment } from 'react'
+import React, { memo, useMemo } from 'react'
 import { scaleLinear } from 'd3-scale'
-import cx from 'classnames'
 import { ExtendedLayer, LayerMetadataLegend } from '@globalfishingwatch/layer-composer/dist/types'
 import styles from './MapLegend.module.css'
 
@@ -28,9 +27,8 @@ function ColorRampLegend({ layer }: ColorRampLegendProps) {
         {/* TODO: grab this from meta in generator */}
         {label && (
           <span className={styles.legendTitle}>
-            {' '}
             {label}
-            {unit && ` (${unit})`}
+            {unit && <span className={styles.legendSubTitle}> ({unit})</span>}
           </span>
         )}
         {gridArea && (

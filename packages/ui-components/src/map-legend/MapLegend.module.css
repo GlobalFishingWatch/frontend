@@ -22,8 +22,8 @@
   align-items: center;
 }
 
-.legendTitle {
-  text-transform: uppercase;
+.legendSubTitle {
+  opacity: var(--opacity-secondary);
 }
 
 .legendDimmed,

@@ -2,8 +2,8 @@ import React from 'react'
 import { LineChart, Line, YAxis } from 'recharts'
 import { DateTime } from 'luxon'
 import { Dataview } from '@globalfishingwatch/dataviews-client/dist/types'
-import { TEST_DATAVIEW_MONTHLY_STATS } from 'data/data'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useDataviewResource } from './dataviews.hook'
 
 interface DataviewGraphMiniProps {
   dataview: Dataview
@@ -11,10 +11,13 @@ interface DataviewGraphMiniProps {
 }
 
 const DataviewGraphMini: React.FC<DataviewGraphMiniProps> = (props) => {
-  const { graphColor } = props
+  const { dataview, graphColor } = props
   const { start, end } = useTimerangeConnect()
+  const { dataviewResource } = useDataviewResource(dataview)
 
-  const data = TEST_DATAVIEW_MONTHLY_STATS.demo.filter((current) => {
+  if (!dataviewResource || !dataviewResource.data) return null
+
+  const data = dataviewResource.data.filter((current) => {
     const currentDate = DateTime.fromISO(current.date).startOf('day')
     const startDate = DateTime.fromISO(start).startOf('day')
     const endDate = DateTime.fromISO(end).startOf('day')

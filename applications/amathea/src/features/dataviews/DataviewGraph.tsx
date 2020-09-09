@@ -11,9 +11,10 @@ import {
 } from 'recharts'
 import { DateTime } from 'luxon'
 import { Dataview } from '@globalfishingwatch/dataviews-client/dist/types'
-import { TEST_DATAVIEW_MONTHLY_STATS, GraphData } from 'data/data'
+import { GraphData } from 'data/data'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import './DataviewGraph.module.css'
+import { useDataviewResource } from './dataviews.hook'
 
 interface DataviewGraphProps {
   dataview: Dataview
@@ -22,10 +23,18 @@ interface DataviewGraphProps {
 }
 
 const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
-  const { graphColor, graphUnit = '' } = props
+  const { dataview, graphColor, graphUnit = '' } = props
   const { start, end } = useTimerangeConnect()
+  const { dataviewResource } = useDataviewResource(dataview)
 
-  const data = TEST_DATAVIEW_MONTHLY_STATS.demo.filter((current) => {
+  const formatDates = useCallback((tick: string, withYear = false) => {
+    const tickDate = DateTime.fromISO(tick)
+    return tickDate.month === 1 || withYear ? tickDate.toFormat('LLL yy') : tickDate.toFormat('LLL')
+  }, [])
+
+  if (!dataviewResource || !dataviewResource.data) return null
+
+  const data = dataviewResource.data.filter((current) => {
     const currentDate = DateTime.fromISO(current.date).startOf('day')
     const startDate = DateTime.fromISO(start).startOf('day')
     const endDate = DateTime.fromISO(end).startOf('day')
@@ -46,11 +55,6 @@ const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
     Math.ceil(dataMax + domainPadding),
   ]
 
-  const formatDates = useCallback((tick: string, withYear = false) => {
-    const tickDate = DateTime.fromISO(tick)
-    return tickDate.month === 1 || withYear ? tickDate.toFormat('LLL yy') : tickDate.toFormat('LLL')
-  }, [])
-
   return (
     <ResponsiveContainer width="100%" height={240}>
       <LineChart data={data} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
@@ -70,7 +74,7 @@ const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
         />
         <Tooltip
           labelFormatter={(label) => formatDates(label as string, true)}
-          formatter={(value) => [`${value} ${graphUnit}`, '']}
+          formatter={(value) => [`${(value as number).toFixed(2)} ${graphUnit}`, '']}
           separator=""
         />
         <Line

@@ -133,7 +133,7 @@ class HeatmapGenerator {
   }
 
   _getStyleLayers = (config: GlobalHeatmapGeneratorConfig) => {
-    const hasDates = config.start && config.end
+    const hasDates = config.start !== undefined && config.end !== undefined
     const fetchStats = config.fetchStats === true && config.statsUrl !== undefined
     if (!fetchStats || !hasDates) {
       return { layers: this._getHeatmapLayers(config) }
