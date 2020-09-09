@@ -1,5 +1,16 @@
 # @globalfishingwatch/react-hooks
 
+## 2.8.0
+
+### Minor Changes
+
+- e6f5aa7: Update enpdoints ids
+
+### Patch Changes
+
+- Updated dependencies [e6f5aa7]
+  - @globalfishingwatch/layer-composer@2.8.1
+
 ## 2.7.0
 
 ### Minor Changes
