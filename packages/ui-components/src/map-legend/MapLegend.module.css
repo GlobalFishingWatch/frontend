@@ -39,7 +39,7 @@
   top: 1rem;
   padding: 4px 8px;
   z-index: 1;
-  background-color: var(--color-white);
+  background-color: var(--color-primary-blue);
   transform: translateX(-50%);
   transition: left 0.1s linear;
   line-height: 1;
