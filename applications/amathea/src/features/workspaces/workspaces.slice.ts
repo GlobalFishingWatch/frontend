@@ -2,7 +2,7 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import memoize from 'lodash/memoize'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { Workspace } from '@globalfishingwatch/dataviews-client'
+import { Workspace, WorkspaceUpsert } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
 import { selectCurrentWorkspaceId } from 'routes/routes.selectors'
@@ -28,13 +28,11 @@ export const fetchWorkspaceByIdThunk = createAsyncThunk(
 
 export const createWorkspaceThunk = createAsyncThunk(
   'workspaces/create',
-  async (workspaceData: Partial<Workspace>, { rejectWithValue }) => {
+  async (workspaceData: WorkspaceUpsert, { rejectWithValue }) => {
     try {
       const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces`, {
         method: 'POST',
-        // Hack to support aoi and aoi living together for now
-        // Needs to be addressed at API level first
-        body: { ...workspaceData, aoi: workspaceData.aoi?.id } as any,
+        body: workspaceData as any,
       })
       return workspace
     } catch (e) {
@@ -45,11 +43,11 @@ export const createWorkspaceThunk = createAsyncThunk(
 
 export const updateWorkspaceThunk = createAsyncThunk(
   'workspaces/update',
-  async (workspaceData: Partial<Workspace>, { rejectWithValue }) => {
+  async (workspaceData: WorkspaceUpsert, { rejectWithValue }) => {
     try {
       const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${workspaceData.id}`, {
         method: 'PATCH',
-        body: workspaceData as BodyInit,
+        body: workspaceData as any,
       })
       return workspace
     } catch (e) {
