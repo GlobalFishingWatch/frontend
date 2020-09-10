@@ -1,5 +1,5 @@
 import type { Layer, AnySourceImpl, Style } from 'mapbox-gl'
-import { GeneratorConfig } from '../generators/types'
+import { GeneratorConfig, Type } from '../generators/types'
 
 export interface Dictionary<T> {
   [key: string]: T
@@ -35,8 +35,21 @@ export enum Group {
 /**
  * Set of additional metadata properties added by LayerCompoeser for later use in transformations or to be consumed directly ie (group, legend, etc)
  */
+export interface LayerMetadataLegend {
+  type: 'colorramp' | 'bivariate'
+  label?: string
+  gridArea?: number
+  ramp?: [number, string][]
+  [key: string]: any
+}
+
+/**
+ * Set of additional metadata properties added by LayerCompoeser for later use in transformations or to be consumed directly ie (group, legend, etc)
+ */
 export interface ExtendedLayerMeta {
   group?: Group
+  generatorType: Type
+  legend?: LayerMetadataLegend
 }
 
 /**

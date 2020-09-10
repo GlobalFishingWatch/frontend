@@ -1,0 +1,102 @@
+.legend {
+  position: relative;
+  pointer-events: none;
+  background-color: var(--color-primary-blue);
+  min-width: 25rem;
+}
+
+.legendEventContainer {
+  color: var(--color-primary-blue);
+  padding: var(--space-S) var(--space-M);
+  line-height: 2rem;
+}
+
+.legendHeatmap {
+  font: var(--font-S);
+  color: var(--color-white);
+}
+
+.legendHeatmapContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.legendSubTitle {
+  opacity: var(--opacity-secondary);
+}
+
+.legendDimmed,
+.legendHeatmapContentStep {
+  opacity: 0.65;
+}
+
+.legendHeatmapContentRamp {
+  height: 1rem;
+  width: 100%;
+  position: relative;
+}
+
+.legendHeatmapContentRamp::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 1px solid var(--color-primary-blue-hover);
+}
+
+.legendHeatmapCurrentValue {
+  position: absolute;
+  top: 1rem;
+  padding: 4px 8px;
+  z-index: 1;
+  background-color: var(--color-white);
+  transform: translateX(-50%);
+  transition: left 0.1s linear;
+  line-height: 1;
+}
+
+.legendHeatmapCurrentValue::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2rem;
+  height: 1rem;
+  width: 1px;
+  z-index: 1;
+  background-color: var(--color-white);
+}
+
+.legendHeatmapContentSteps {
+  width: 100%;
+  position: relative;
+  min-height: 1.5rem;
+}
+
+.legendHeatmapContentStep {
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+@media only screen and (max-width: 720px) {
+  .legendEventContainer {
+    padding: var(--space-S);
+  }
+  .legendActionContainer {
+    flex-direction: column;
+    margin-right: 5rem;
+  }
+  .legendLabel {
+    margin-right: 0;
+  }
+  .actionButton {
+    margin-right: 0;
+    margin-bottom: var(--space-S);
+  }
+  .actionLink {
+    min-width: 7rem;
+    padding: 1rem 0;
+  }
+}

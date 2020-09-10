@@ -35,6 +35,7 @@ export default {
   gridded: {
     // 'fill-opacity': 0.99,
     'fill-color': null, // set with value picking
+    'fill-outline-color': 'transparent',
   },
   extruded: {
     'fill-extrusion-color': null, // set with value picking

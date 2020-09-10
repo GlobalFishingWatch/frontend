@@ -1,5 +1,17 @@
 # @globalfishingwatch/layer-composer
 
+## 2.8.1
+
+### Patch Changes
+
+- e6f5aa7: Update enpdoints ids
+
+## 2.8.0
+
+### Minor Changes
+
+- a566ff6: Layer component
+
 ## 2.7.1
 
 ### Patch Changes

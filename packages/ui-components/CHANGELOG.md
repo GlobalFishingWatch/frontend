@@ -1,5 +1,17 @@
 # @globalfishingwatch/ui-components
 
+## 1.8.0
+
+### Minor Changes
+
+- e6f5aa7: Update enpdoints ids
+
+## 1.7.0
+
+### Minor Changes
+
+- a566ff6: Layer component
+
 ## 1.6.1
 
 ### Patch Changes

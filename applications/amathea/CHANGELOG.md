@@ -1,5 +1,31 @@
 # @globalfishingwatchapp/amathea
 
+## 0.7.0
+
+### Minor Changes
+
+- e6f5aa7: Update enpdoints ids
+
+### Patch Changes
+
+- Updated dependencies [e6f5aa7]
+  - @globalfishingwatch/react-hooks@2.8.0
+  - @globalfishingwatch/ui-components@1.8.0
+  - @globalfishingwatch/layer-composer@2.8.1
+
+## 0.6.0
+
+### Minor Changes
+
+- a566ff6: Layer component
+
+### Patch Changes
+
+- Updated dependencies [a566ff6]
+  - @globalfishingwatch/layer-composer@2.8.0
+  - @globalfishingwatch/react-hooks@2.7.0
+  - @globalfishingwatch/ui-components@1.7.0
+
 ## 0.5.1
 
 ### Patch Changes

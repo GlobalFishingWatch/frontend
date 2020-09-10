@@ -52,12 +52,11 @@ const HARDCODED_BREAKS = {
   bivariate: [
     [0, 5, 30],
     [0, 5, 30],
-  ], // TODO
+  ],
   literal: [[]],
 }
 
 const getColorRampBaseExpression = (
-  breaks: number[][],
   colorRampIds: ColorRampsIds[],
   combinationMode: CombinationMode
 ) => {
@@ -66,11 +65,10 @@ const getColorRampBaseExpression = (
     return originalColorRamp
   })
 
-  const expressions = breaks.map((datasetBreaks, datasetIndex) => {
-    const originalColorRamp = colorRamps[datasetIndex]
-    const legend = [...Array(datasetBreaks.length + 1)].map((_, i) => [
+  const expressions = colorRamps.map((originalColorRamp, colorRampIndex) => {
+    const legend = [...Array(originalColorRamp.length)].map((_, i) => [
       // offset each dataset by 10 + add actual bucket value
-      datasetIndex * 10 + i,
+      colorRampIndex * 10 + i,
       originalColorRamp[i],
     ])
     const expr = flatten(legend)
@@ -152,11 +150,7 @@ class HeatmapAnimatedGenerator {
   }
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
-    // TODO - generate this using updated stats API
-    const breaks = HARDCODED_BREAKS[config.combinationMode].slice(0, config.tilesets.length)
-
     const { colorRamp, colorRampBaseExpression } = getColorRampBaseExpression(
-      breaks,
       config.colorRamps,
       config.combinationMode
     )

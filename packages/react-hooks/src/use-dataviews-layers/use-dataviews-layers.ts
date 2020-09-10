@@ -13,21 +13,25 @@ export function getGeneratorConfig(dataview: Dataview) {
   if (dataview.config.type === Generators.Type.Heatmap) {
     const dataset = dataview.datasets?.find((dataset) => dataset.type === '4wings:v1')
     const tilesEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
-    const statsEndpoint = dataset?.endpoints?.find(
-      (endpoint) => endpoint.id === '4wings-statistics'
-    )
+    const statsEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-legend')
+
     if (tilesEndpoint) {
       const flagFilter = dataview.datasetsConfig?.datasetId?.query.find((q) => q.id === 'flag')
         ?.value
       const generator = {
         id: `fourwings-${dataview.id}`,
         ...dataview.config,
+        maxZoom: 8,
         tileset: dataset?.id as string,
-        fetchStats: statsEndpoint !== undefined,
+        fetchStats: !dataview.config.steps,
         tilesUrl: tilesEndpoint.pathTemplate,
         statsUrl: statsEndpoint?.pathTemplate,
         // ADHOC for Amathea for now
         ...(flagFilter && { serverSideFilter: `flag in ('${flagFilter}')` }),
+        legend: {
+          label: dataset?.name,
+          unit: dataset?.unit,
+        },
       }
       return generator
     }
