@@ -144,7 +144,6 @@ class HeatmapAnimatedGenerator {
         })
       })
     )
-    console.log(sources)
 
     return sources
   }
@@ -206,6 +205,7 @@ class HeatmapAnimatedGenerator {
             metadata: {
               group: Group.Heatmap,
               generator: Type.HeatmapAnimated,
+              generatorId: config.id,
               interactive: true,
               frame,
             },

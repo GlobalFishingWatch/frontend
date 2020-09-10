@@ -1,38 +1,49 @@
-import { useCallback, useState } from 'react'
+import uniqBy from 'lodash/uniqBy'
+// import debounce from 'lodash/debounce'
+import type { MapboxGeoJSONFeature } from 'mapbox-gl'
+import { useCallback, useState /*, useEffect*/ } from 'react'
 import { Generators } from '@globalfishingwatch/layer-composer'
 
 type FeatureStateSource = { source: string; sourceLayer: string }
 
+export type ExtendedFeature = {
+  properties: { [name: string]: any }
+  generator: string | null
+  generatorId: string | null
+  source: string
+  sourceLayer: string
+  id?: number
+  value: any
+}
+
+export type InteractionEvent = {
+  features?: ExtendedFeature[]
+  latitude: number
+  longitude: number
+}
+
 const useMapInteraction = (
-  clickCallback: (feature: Generators.GeneratorFeature | null) => any,
-  hoverCallback: (feature: Generators.GeneratorFeature | null) => any,
+  clickCallback: (event: InteractionEvent) => any,
+  hoverCallback: (event: InteractionEvent) => any,
   map: any
 ) => {
-  const onMapClick = useCallback(
-    (event) => {
-      if (event.features && event.features.length) {
-        console.log(event.features[0].layer)
-        if (
-          event.features[0].layer.metadata &&
-          event.features[0].layer.metadata.generator === 'HEATMAP_ANIMATED'
-        ) {
-          const props = event.features[0].properties
-          const frame = event.features[0].layer.metadata.frame
-          console.log(props, frame)
-          console.log(props[frame.toString()])
-          console.log(JSON.parse(props[frame.toString()]))
-        }
-        // TODO: Sort features by priority in order to only return a single feature. We could use metadata.group, or a new metadata.interactionPriority param?
-        // for now just use the 1st one
-        // TODO: add some cluster/not cluster logic here
-        if (clickCallback) clickCallback(event.features[0])
-      }
-    },
-    [clickCallback]
-  )
+  const onMapClick = useCallback((event) => {
+    console.log('click')
+  }, [])
 
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
   const [sourcesWithHoverState, setSourcesWithHoverState] = useState<FeatureStateSource[]>([])
+
+  // const [debouncedHoverCallback, setDebouncedHoverCallback] = useState<any>(null)
+  // useEffect(() => {
+  //   // Set debouncedValue to value (passed in) after the specified delay
+  //   const debounced = debounce(hoverCallback, 1000)
+  //   setDebouncedHoverCallback(debounced)
+  //   // return () => {
+  //   //   debounced.cancel()
+  //   // }
+  //   // }, [delay, options, value])
+  // }, [hoverCallback, debouncedHoverCallback])
 
   const onMapHover = useCallback(
     (event) => {
@@ -43,8 +54,49 @@ const useMapInteraction = (
         })
       }
       if (event.features && event.features.length) {
+        const extendedFeatures = event.features
+          .map((feature: MapboxGeoJSONFeature) => {
+            const generator = feature.layer.metadata ? feature.layer.metadata.generator : null
+            const generatorId = feature.layer.metadata ? feature.layer.metadata.generatorId : null
+            const properties = feature.properties || {}
+            let extendedFeature: ExtendedFeature | null = {
+              properties,
+              generator,
+              generatorId,
+              source: feature.source,
+              sourceLayer: feature.sourceLayer,
+              id: feature.id as number | undefined,
+              value: properties.value,
+            }
+            switch (generator) {
+              case Generators.Type.HeatmapAnimated:
+                const frame = feature.layer.metadata.frame
+                const valuesAtFrame = properties[frame.toString()]
+                if (valuesAtFrame) {
+                  extendedFeature.value = JSON.parse(valuesAtFrame)
+                  if (extendedFeature.value === 0) {
+                    extendedFeature = null
+                  }
+                } else {
+                  extendedFeature = null
+                }
+            }
+            return extendedFeature
+          })
+          .filter((f: ExtendedFeature) => f !== null)
+
+        if (hoverCallback && extendedFeatures.length) {
+          // hoverCallback.cancel()
+          hoverCallback({
+            features: extendedFeatures,
+            longitude: event.lngLat[0],
+            latitude: event.lngLat[1],
+          })
+        }
+
         const newSourcesWithHoverState: FeatureStateSource[] = []
-        event.features.forEach((feature: any) => {
+        extendedFeatures.forEach((feature: ExtendedFeature) => {
+          console.log(feature.id)
           if (feature.id !== undefined && map) {
             map.setFeatureState(
               {
@@ -55,38 +107,34 @@ const useMapInteraction = (
               { hover: true }
             )
 
-            // Add source to active feature states only if not added yet
-            if (
-              !newSourcesWithHoverState
-                .map((source) => `${source.source}${source.sourceLayer}`)
-                .includes(`${feature.source}${feature.sourceLayer}`)
-            ) {
-              newSourcesWithHoverState.push({
-                source: feature.source,
-                sourceLayer: feature.sourceLayer,
-              })
-            }
+            // Add source to active feature states
+            newSourcesWithHoverState.push({
+              source: feature.source,
+              sourceLayer: feature.sourceLayer,
+            })
           }
         })
-        setSourcesWithHoverState(newSourcesWithHoverState)
 
-        // TODO: Sort features by priority in order to only return a single feature. We could use metadata.group, or a new metadata.interactionPriority param?
-        // for now just use the 1st one
-        const feature = event.features[0]
-        const featureData = {
-          featureStateId: feature.id,
-          source: feature.source,
-          id: feature.properties.id,
-          layerId: feature.layer.id,
-          generator: feature.layer.metadata ? feature.layer.metadata.generator : null,
+        // Updates sources on which to turn feature state off, only if it really changed
+        // this allows keeping the onMapHover reference, avoiding unnecesary map renders
+        const uniqNewSourcesWithHoverState = uniqBy(newSourcesWithHoverState, JSON.stringify)
+        if (
+          JSON.stringify(sourcesWithHoverState) !== JSON.stringify(uniqNewSourcesWithHoverState)
+        ) {
+          setSourcesWithHoverState(newSourcesWithHoverState)
         }
-        // Then this should be used by LC to generate a distinct style for highlighted feature
-        if (hoverCallback) hoverCallback(featureData)
+
         return
       }
-      if (hoverCallback) hoverCallback(null)
+      if (hoverCallback) {
+        // hoverCallback.cancel()
+        hoverCallback({
+          longitude: event.lngLat[0],
+          latitude: event.lngLat[1],
+        })
+      }
     },
-    [hoverCallback, map, sourcesWithHoverState]
+    [map, hoverCallback, sourcesWithHoverState]
   )
 
   return {

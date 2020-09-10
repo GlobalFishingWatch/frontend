@@ -5,7 +5,7 @@ import LayerComposer, {
   getInteractiveLayerIds,
 } from '@globalfishingwatch/layer-composer'
 import { ExtendedStyle, StyleTransformation } from '@globalfishingwatch/layer-composer/dist/types'
-
+console.log('???')
 const applyStyleTransformations = (
   style: ExtendedStyle,
   styleTransformations?: StyleTransformation[]
