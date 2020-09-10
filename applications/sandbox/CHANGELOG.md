@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.3.1
+
+### Patch Changes
+
+- 8912bb0: fix temporal-grid demo
+
 ## 0.3.0
 
 ### Minor Changes

@@ -9,6 +9,7 @@ type ExtendedPromise<T> = Promise<T> & {
 const controllerCache: { [key: string]: AbortController } = {}
 export default function fetchStats(
   url: string,
+  dateRange = '',
   serverSideFilters = '',
   singleFrame = false,
   token?: string
@@ -16,6 +17,9 @@ export default function fetchStats(
   const statsUrl = new URL(url)
   if (singleFrame) {
     statsUrl.searchParams.set('temporal-aggregation', 'true')
+  }
+  if (dateRange) {
+    statsUrl.searchParams.set('date-range', dateRange)
   }
   if (serverSideFilters) {
     // TODO once we support multiple datasetsConfig in same dataview

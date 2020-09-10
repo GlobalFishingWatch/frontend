@@ -150,6 +150,11 @@ export interface RulersGeneratorConfig extends GeneratorConfig {
   data: Ruler[]
 }
 
+export interface HeatmapGeneratorLegend {
+  label: string
+  unit: string
+}
+
 export interface HeatmapGeneratorConfig extends GeneratorConfig {
   type: Type.Heatmap
   // Types needed but already in GlobalGeneratorConfig
@@ -157,6 +162,7 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   // end: string
   // zoom: number
   maxZoom?: number
+  steps?: number[]
   tilesUrl: string
   statsUrl?: string
   fetchStats?: boolean
@@ -165,6 +171,7 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   colorRamp?: ColorRampsIds
   serverSideFilter?: string
   updateColorRampOnTimeChange?: boolean
+  legend?: HeatmapGeneratorLegend
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {

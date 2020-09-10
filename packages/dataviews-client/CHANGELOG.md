@@ -1,5 +1,13 @@
 # @globalfishingwatch/dataviews-client
 
+## 2.3.1
+
+### Patch Changes
+
+- 8912bb0: fix temporal-grid demo
+- Updated dependencies [8912bb0]
+  - @globalfishingwatch/layer-composer@2.7.1
+
 ## 2.3.0
 
 ### Minor Changes

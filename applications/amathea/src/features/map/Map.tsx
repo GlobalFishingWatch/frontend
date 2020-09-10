@@ -1,7 +1,9 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import Miniglobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
+import MapLegend from '@globalfishingwatch/ui-components/dist/map-legend'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
@@ -20,8 +22,11 @@ const Map = (): React.ReactElement => {
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
   const { currentAOI } = useAOIConnect()
-  const { logged, token } = useUserConnect()
+  const { logged } = useUserConnect()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
+  const token = GFWAPI.getToken()
+  // Updating token at render time instead of selector in case it was refreshed
+  globalConfig.token = token
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
@@ -106,6 +111,9 @@ const Map = (): React.ReactElement => {
         <IconButton icon="minus" type="map-tool" tooltip="Zoom out" onClick={onZoomOutClick} />
         <IconButton icon="ruler" type="map-tool" tooltip="Open ruler tool (Coming soon)" />
         <IconButton icon="camera" type="map-tool" tooltip="Capture the map (Coming soon)" />
+      </div>
+      <div className={styles.mapLegend}>
+        <MapLegend style={style} />
       </div>
     </div>
   )
