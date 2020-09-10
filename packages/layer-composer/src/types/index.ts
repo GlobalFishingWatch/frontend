@@ -50,6 +50,7 @@ export interface ExtendedLayerMeta {
   group?: Group
   generatorType: Type
   legend?: LayerMetadataLegend
+  gridArea?: number
 }
 
 /**

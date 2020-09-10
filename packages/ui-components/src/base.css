@@ -27,7 +27,7 @@
   --color-gradient: rgb(var(--gradient-rgb));
   --color-white: rgb(var(--white-rgb));
   --gradient: linear-gradient(180deg, var(--color-gradient) 0, var(--color-white) 70rem);
-  --color-map-background: #002458;
+  --color-map-background: #002457;
   --color-highlight-blue: #6AECF9;
 
   /* OPACITIES */
@@ -108,6 +108,14 @@ ul {
   font: inherit;
   box-sizing: border-box;
   vertical-align: baseline;
+}
+
+sub {
+  vertical-align: sub;
+}
+
+sup {
+  vertical-align: super;
 }
 
 *:focus {

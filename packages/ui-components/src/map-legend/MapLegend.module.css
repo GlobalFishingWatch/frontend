@@ -1,43 +1,30 @@
 .legend {
-  position: relative;
-  pointer-events: none;
   background-color: var(--color-primary-blue);
   min-width: 25rem;
-}
-
-.legendEventContainer {
-  color: var(--color-primary-blue);
-  padding: var(--space-S) var(--space-M);
-  line-height: 2rem;
-}
-
-.legendHeatmap {
   font: var(--font-S);
   color: var(--color-white);
 }
 
-.legendHeatmapContent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.row {
+  padding: var(--space-S) var(--space-M);
 }
 
-.legendSubTitle {
+.row:not(:last-child) {
+  border-bottom: 1px solid rgba(var(--white-rgb), var(--opacity-terthiary));
+}
+
+.subTitle {
   opacity: var(--opacity-secondary);
 }
 
-.legendDimmed,
-.legendHeatmapContentStep {
-  opacity: 0.65;
-}
-
-.legendHeatmapContentRamp {
+.ramp {
   height: 1rem;
   width: 100%;
   position: relative;
+  background-color: var(--color-map-background);
 }
 
-.legendHeatmapContentRamp::after {
+.ramp::after {
   content: '';
   position: absolute;
   top: 0;
@@ -47,7 +34,7 @@
   border: 1px solid var(--color-primary-blue-hover);
 }
 
-.legendHeatmapCurrentValue {
+.currentValue {
   position: absolute;
   top: 1rem;
   padding: 4px 8px;
@@ -58,7 +45,7 @@
   line-height: 1;
 }
 
-.legendHeatmapCurrentValue::after {
+.currentValue::after {
   content: '';
   position: absolute;
   left: 50%;
@@ -69,34 +56,17 @@
   background-color: var(--color-white);
 }
 
-.legendHeatmapContentSteps {
+.stepsContainer {
   width: 100%;
   position: relative;
   min-height: 1.5rem;
+  line-height: 1;
+  padding-top: 0.2rem;
 }
 
-.legendHeatmapContentStep {
+.step {
+  font: var(--font-XS);
+  opacity: var(--opacity-secondary);
   position: absolute;
   transform: translateX(-50%);
-}
-
-@media only screen and (max-width: 720px) {
-  .legendEventContainer {
-    padding: var(--space-S);
-  }
-  .legendActionContainer {
-    flex-direction: column;
-    margin-right: 5rem;
-  }
-  .legendLabel {
-    margin-right: 0;
-  }
-  .actionButton {
-    margin-right: 0;
-    margin-bottom: var(--space-S);
-  }
-  .actionLink {
-    min-width: 7rem;
-    padding: 1rem 0;
-  }
 }

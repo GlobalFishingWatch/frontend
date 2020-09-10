@@ -9,6 +9,7 @@ import {
   Line,
   AxisDomain,
 } from 'recharts'
+import { format } from 'd3-format'
 import { DateTime } from 'luxon'
 import { Dataview } from '@globalfishingwatch/dataviews-client/dist/types'
 import { GraphData } from 'data/data'
@@ -22,15 +23,20 @@ interface DataviewGraphProps {
   graphUnit?: string
 }
 
+const tickFormatter = (tick: number) => {
+  const formatter = tick < 1 ? '~r' : '~s'
+  return format(formatter)(tick)
+}
+
+const formatDates = (tick: string, withYear = false) => {
+  const tickDate = DateTime.fromISO(tick)
+  return tickDate.month === 1 || withYear ? tickDate.toFormat('LLL yy') : tickDate.toFormat('LLL')
+}
+
 const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
   const { dataview, graphColor, graphUnit = '' } = props
   const { start, end } = useTimerangeConnect()
   const { dataviewResource } = useDataviewResource(dataview)
-
-  const formatDates = useCallback((tick: string, withYear = false) => {
-    const tickDate = DateTime.fromISO(tick)
-    return tickDate.month === 1 || withYear ? tickDate.toFormat('LLL yy') : tickDate.toFormat('LLL')
-  }, [])
 
   if (!dataviewResource || !dataviewResource.data) return null
 
@@ -68,6 +74,7 @@ const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
         <YAxis
           scale="linear"
           domain={paddedDomain}
+          tickFormatter={tickFormatter}
           axisLine={false}
           tickLine={false}
           tickCount={4}

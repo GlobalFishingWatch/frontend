@@ -8,11 +8,10 @@ import styles from './MapLegend.module.css'
 interface MapLegendProps {
   className?: string
   style?: ExtendedStyle
-  onClick?: (layer: ExtendedLayer, event: React.MouseEvent) => void
 }
 
 function MapLegend(props: MapLegendProps) {
-  const { className, style, onClick } = props
+  const { className, style } = props
   const layersWithLegend = useMemo(() => {
     return style
       ? style?.layers?.filter((layer) => layer.metadata?.legend !== undefined)
@@ -22,10 +21,10 @@ function MapLegend(props: MapLegendProps) {
     <div className={cx(styles.legend, className)}>
       {layersWithLegend?.map((layer, index) => {
         if (layer.metadata?.legend?.type === 'colorramp') {
-          return <ColorRamp key={layer.id || index} layer={layer} onClick={onClick} />
+          return <ColorRamp key={layer.id || index} layer={layer} />
         }
         if (layer.metadata?.legend?.type === 'bivariate') {
-          return <Bivariate key={layer.id || index} layer={layer} onClick={onClick} />
+          return <Bivariate key={layer.id || index} layer={layer} />
         }
         return null
       })}
