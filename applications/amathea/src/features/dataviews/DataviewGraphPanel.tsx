@@ -36,8 +36,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
   const onEditClick = useCallback(() => {
     if (dataset) {
       // TODO USE REAL DATASET ID WHEN SUPPORTING MULTIPLE
-      const sourceLabelId = DATASET_SOURCE_IDS[dataset.source as DatasetSources]
-      const sourceLabel = DATASET_SOURCE_OPTIONS.find((d) => d.id === sourceLabelId)?.label || ''
+      const sourceLabel = DATASET_SOURCE_OPTIONS.find((d) => d.id === dataset.source)?.label || ''
       const draftDataview: DataviewDraft = {
         id: dataview.id,
         name: dataview.name,
