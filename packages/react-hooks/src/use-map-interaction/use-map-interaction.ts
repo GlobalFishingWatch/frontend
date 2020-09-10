@@ -11,13 +11,16 @@ const useMapInteraction = (
   const onMapClick = useCallback(
     (event) => {
       if (event.features && event.features.length) {
+        console.log(event.features[0].layer)
         if (
           event.features[0].layer.metadata &&
           event.features[0].layer.metadata.generator === 'HEATMAP_ANIMATED'
         ) {
           const props = event.features[0].properties
           const frame = event.features[0].layer.metadata.frame
+          console.log(props, frame)
           console.log(props[frame.toString()])
+          console.log(JSON.parse(props[frame.toString()]))
         }
         // TODO: Sort features by priority in order to only return a single feature. We could use metadata.group, or a new metadata.interactionPriority param?
         // for now just use the 1st one

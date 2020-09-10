@@ -253,4 +253,4 @@ export type ColorRampsIds =
   | 'green'
   | 'orange'
 
-export type CombinationMode = 'add' | 'compare' | 'bivariate'
+export type CombinationMode = 'add' | 'compare' | 'bivariate' | 'literal'

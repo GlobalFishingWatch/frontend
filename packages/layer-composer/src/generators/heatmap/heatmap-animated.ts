@@ -49,7 +49,11 @@ const HARDCODED_BREAKS = {
     [0, 1, 5, 10, 30],
     [0, 1, 5, 10, 30],
   ],
-  bivariate: [[]], // TODO
+  bivariate: [
+    [0, 5, 30],
+    [0, 5, 30],
+  ], // TODO
+  literal: [[]],
 }
 
 const getColorRampBaseExpression = (
@@ -124,11 +128,11 @@ class HeatmapAnimatedGenerator {
           const interactiveSource = {
             ...baseSourceParams,
             id: `${baseSourceParams.id}_interaction`,
+            combinationMode: 'literal',
           }
-          delete (interactiveSource as any).breaks
+          // delete (interactiveSource as any).breaks
           sourceParams.push(interactiveSource)
         }
-        console.log(sourceParams, 'ss')
 
         return sourceParams.map((params: Record<string, string>) => {
           const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)
@@ -203,7 +207,7 @@ class HeatmapAnimatedGenerator {
             type: 'fill',
             paint: {
               'fill-color': 'pink',
-              'fill-opacity': 0.5,
+              'fill-opacity': config.debug ? 0.5 : 0,
             },
             metadata: {
               group: Group.Heatmap,
