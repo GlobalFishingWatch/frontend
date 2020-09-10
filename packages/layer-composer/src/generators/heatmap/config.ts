@@ -1,4 +1,4 @@
-import { ColorRampsIds } from '../types'
+import { ColorRampsIds, BivariateColorRampsIds } from '../types'
 import { DEFAULT_BASEMAP_COLOR } from '..'
 import { HeatmapGeomGL, HeatmapGeoms } from './types'
 
@@ -42,7 +42,7 @@ const getColorRampByOpacitySteps = (finalColor: string) => {
   return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
 }
 
-export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
+export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds | BivariateColorRampsIds, string[]> = {
   fishing: [DEFAULT_BASEMAP_COLOR, '#3B9088', '#EEFF00', '#ffffff'],
   presence: [DEFAULT_BASEMAP_COLOR, '#163F89', '#0F6F97', '#07BBAE', '#00FFC3', '#FFFFFF'],
   reception: ['rgb(255, 69, 115, 1)', '#7b2e8d', '#093b76', DEFAULT_BASEMAP_COLOR],
@@ -55,4 +55,11 @@ export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   yellow: getColorRampByOpacitySteps('#FFEA00'),
   green: getColorRampByOpacitySteps('#A6FF59'), // 166,255,89
   orange: getColorRampByOpacitySteps('#FFAA0D'),
+  // prettier-ignore
+  bivariate: [
+    '#274874', '#267C8A', '#26B39F', '#26FFBD',
+    '#66518F', '#3E579A', '#667C9E', '#66FFC2',
+    '#A659A9', '#A67CB2', '#A6B3BB', '#A6FFC7',
+    '#FF64CE', '#FF7CCE', '#FFB3CE', '#FFFFFF',
+  ]
 }
