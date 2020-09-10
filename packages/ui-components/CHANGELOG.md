@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 1.9.0
+
+### Minor Changes
+
+- 24344bc: Clean LegendRamp
+
 ## 1.8.0
 
 ### Minor Changes

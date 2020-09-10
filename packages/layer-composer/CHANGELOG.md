@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.9.0
+
+### Minor Changes
+
+- 24344bc: Clean LegendRamp
+
 ## 2.8.1
 
 ### Patch Changes
