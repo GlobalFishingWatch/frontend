@@ -3,10 +3,10 @@ import { ExtendedLayer } from '@globalfishingwatch/layer-composer/dist/types'
 
 type BivariateLegendProps = {
   layer: ExtendedLayer
-  onClick?: (layer: ExtendedLayer, event: React.MouseEvent) => void
+  className?: string
 }
 
-function BivariateLegend({ layer, onClick }: BivariateLegendProps) {
+function BivariateLegend({ layer, className }: BivariateLegendProps) {
   // TODO
   return null
 }

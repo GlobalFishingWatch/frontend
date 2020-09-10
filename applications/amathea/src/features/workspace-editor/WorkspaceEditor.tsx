@@ -52,7 +52,12 @@ export default function WorkspaceEditor(): React.ReactElement | null {
           </div>
           <div>
             <label>Area</label>
-            <p>{workspace?.aoi?.area ? Math.round(workspace?.aoi?.area / 1000000) : '---'} km2</p>
+            <p>
+              {workspace?.aoi?.area
+                ? Math.round(workspace?.aoi?.area / 1000000).toLocaleString()
+                : '---'}{' '}
+              km2
+            </p>
           </div>
           <div>
             <label>Description</label>

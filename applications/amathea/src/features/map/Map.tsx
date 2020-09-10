@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react'
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
@@ -6,6 +6,7 @@ import Miniglobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/di
 import MapLegend from '@globalfishingwatch/ui-components/dist/map-legend'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
+import { ExtendedLayer, ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
 import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
 import { useUserConnect } from 'features/user/user.hook'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
@@ -13,8 +14,28 @@ import styles from './Map.module.css'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
-const mapOptions = {
-  customAttribution: '© Copyright Global Fishing Watch 2020',
+type LegendConfig = Record<string, number>
+
+// TODO: move this to its own component?
+function useLegendComposer(style: ExtendedStyle, currentValues: LegendConfig) {
+  const layersWithLegend = useMemo(() => {
+    return style
+      ? style?.layers?.flatMap((layer) => {
+          if (!layer.metadata?.legend) return []
+
+          return {
+            ...layer,
+            ...(currentValues[layer.id] !== undefined && {
+              metadata: {
+                ...layer.metadata,
+                legend: { ...layer.metadata.legend, currentValue: currentValues[layer.id] },
+              },
+            }),
+          }
+        })
+      : ([] as ExtendedLayer[])
+  }, [currentValues, style])
+  return layersWithLegend
 }
 
 const Map = (): React.ReactElement => {
@@ -30,6 +51,8 @@ const Map = (): React.ReactElement => {
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
+  const [currentValues, setCurrentValues] = useState<LegendConfig>({})
+  const legendLayers = useLegendComposer(style as ExtendedStyle, currentValues)
 
   const [bounds, setBounds] = useState<MiniglobeBounds | undefined>()
 
@@ -89,6 +112,21 @@ const Map = (): React.ReactElement => {
     setMapCoordinates({ latitude, longitude, zoom: Math.max(1, zoom - 1) })
   }, [latitude, longitude, setMapCoordinates, zoom])
 
+  const handleMapHover = useCallback(({ lngLat, features }) => {
+    const heatmapFeatures = (features || []).filter((feature: any) =>
+      feature.layer.id.includes('fourwings')
+    )
+
+    const values = heatmapFeatures.reduce(
+      (acc: any, { layer, properties }: any) => ({
+        ...acc,
+        ...(properties.value && { [layer.id]: properties.value }),
+      }),
+      {}
+    )
+    setCurrentValues(values)
+  }, [])
+
   return (
     <div className={styles.container}>
       {style && logged && token && (
@@ -96,13 +134,13 @@ const Map = (): React.ReactElement => {
           ref={mapRef}
           width="100%"
           height="100%"
+          zoom={zoom}
           latitude={latitude}
           longitude={longitude}
+          onHover={handleMapHover}
           transformRequest={transformRequest}
-          zoom={zoom}
           onViewportChange={onViewportChange}
           mapStyle={style}
-          mapOptions={mapOptions}
         />
       )}
       <div className={styles.mapControls}>
@@ -113,7 +151,7 @@ const Map = (): React.ReactElement => {
         <IconButton icon="camera" type="map-tool" tooltip="Capture the map (Coming soon)" />
       </div>
       <div className={styles.mapLegend}>
-        <MapLegend style={style} />
+        <MapLegend layers={legendLayers} />
       </div>
     </div>
   )

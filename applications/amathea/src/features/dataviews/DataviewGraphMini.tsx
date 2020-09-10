@@ -8,10 +8,11 @@ import { useDataviewResource } from './dataviews.hook'
 interface DataviewGraphMiniProps {
   dataview: Dataview
   graphColor: string
+  className?: string
 }
 
 const DataviewGraphMini: React.FC<DataviewGraphMiniProps> = (props) => {
-  const { dataview, graphColor } = props
+  const { dataview, graphColor, className } = props
   const { start, end } = useTimerangeConnect()
   const { dataviewResource } = useDataviewResource(dataview)
 
@@ -25,7 +26,13 @@ const DataviewGraphMini: React.FC<DataviewGraphMiniProps> = (props) => {
   })
 
   return (
-    <LineChart width={40} height={20} data={data} margin={{ top: 1, right: 1, left: 1, bottom: 1 }}>
+    <LineChart
+      className={className}
+      width={40}
+      height={20}
+      data={data}
+      margin={{ top: 1, right: 1, left: 1, bottom: 1 }}
+    >
       <YAxis type="number" domain={['dataMin', 'dataMax']} hide />
       <Line
         type="monotone"

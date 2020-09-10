@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import TagList from '@globalfishingwatch/ui-components/dist/tag-list'
 import { Dataview } from '@globalfishingwatch/dataviews-client'
-import { DatasetSources, DATASET_SOURCE_IDS, DATASET_SOURCE_OPTIONS, FLAG_FILTERS } from 'data/data'
+import { DATASET_SOURCE_OPTIONS, FLAG_FILTERS } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import Circle from 'common/Circle'
@@ -36,8 +36,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
   const onEditClick = useCallback(() => {
     if (dataset) {
       // TODO USE REAL DATASET ID WHEN SUPPORTING MULTIPLE
-      const sourceLabelId = DATASET_SOURCE_IDS[dataset.source as DatasetSources]
-      const sourceLabel = DATASET_SOURCE_OPTIONS.find((d) => d.id === sourceLabelId)?.label || ''
+      const sourceLabel = DATASET_SOURCE_OPTIONS.find((d) => d.id === dataset.source)?.label || ''
       const draftDataview: DataviewDraft = {
         id: dataview.id,
         name: dataview.name,
@@ -90,6 +89,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
   const isUserContextLayer = dataset?.type === 'user-context-layer:v1'
 
   const selectedFlagFilter = FLAG_FILTERS.find((flag) => flag.id === flagFilter)
+
   return (
     dataview && (
       <div className={styles.container} id={dataview.id.toString()}>
@@ -114,7 +114,13 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
           <IconButton
             loading={dataset?.status === 'importing'}
             icon={isDataviewHidden ? 'view-on-map' : 'remove-from-map'}
-            tooltip={isDataviewHidden ? 'Show on map' : 'Remove from map'}
+            tooltip={
+              dataset?.status === 'importing'
+                ? 'Your dataset is being imported, try reloading the page'
+                : isDataviewHidden
+                ? 'Show on map'
+                : 'Remove from map'
+            }
             onClick={() => onToggleMapClick(dataview)}
           />
         </div>

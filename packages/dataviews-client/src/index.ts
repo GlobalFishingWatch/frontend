@@ -15,7 +15,7 @@ export type {
   DataviewDatasetConfigDict,
   AOI,
   Workspace,
-  WorkspaceCreation,
+  WorkspaceUpsert,
   WorkspaceDataviewConfig,
   WorkspaceDataviewConfigDict,
   Resource,

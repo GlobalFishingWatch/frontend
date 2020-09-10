@@ -113,7 +113,7 @@ const DataFields: React.FC<DataFieldsProps> = (props) => {
             <p>Drop the files here ...</p>
           ) : (
             <p>
-              Drop a shapefile or geojson here
+              Drop a shapefile here
               <br />
               or select it from a folder
             </p>
@@ -197,10 +197,7 @@ function NewDataset(): React.ReactElement {
         >
           1. INFO
         </button>
-        <button
-          onClick={() => dispatchDraftDatasetStep('data')}
-          className={cx({ [styles.currentStep]: draftDatasetStep === 'data' })}
-        >
+        <button className={cx({ [styles.currentStep]: draftDatasetStep === 'data' })}>
           2. DATA
         </button>
         {/* <button

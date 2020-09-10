@@ -64,7 +64,7 @@ function Workspaces(): React.ReactElement {
               <IconButton
                 icon="delete"
                 type="warning"
-                disabled={workspace.id === 5}
+                disabled={workspace.id === 5 || workspace.id === 19}
                 loading={workspaceStatus === 'loading.delete' && workspaceStatusId === workspace.id}
                 onClick={() => onDeleteClick(workspace)}
               />

@@ -42,7 +42,7 @@ function NewWorkspace(): React.ReactElement {
       setLoading(true)
       const newWorkspace = {
         ...(workspace?.id && { id: workspace.id }),
-        aoiId: selectedOption.id as number,
+        aoi: selectedOption.id as number,
         name: workspaceLabel,
         description: workspaceDescription,
       }

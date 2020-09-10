@@ -22,21 +22,27 @@ export const useDataviewResource = (dataview: Dataview, type = 'stats') => {
   const id = `dataview-${type}-${dataview?.id}`
   const dataviewResource: Resource<GraphData[]> | undefined = useSelector(selectResourceById(id))
   const { fetchResourceById } = useResourcesAPI()
+  const filter = dataview?.datasetsConfig?.datasetId.query.find((q) => q.id === 'flag')?.value
 
   useEffect(() => {
-    if (!dataviewResource) {
-      const dataset = dataview?.datasets?.find((dataset) => dataset.type === '4wings:v1')
-      // TODO use this instead the fixed url once the redirect works
-      // ?.endpoints?.find((endpoint) => endpoint.id === `4wings-${type}`)?.pathTemplate
-      const url =
-        dataset &&
-        `https://storage.googleapis.com/raul-tiles-scratch-60ttl/${dataset.id}/statistics.json`
-      if (url) {
-        fetchResourceById({ id, url: url })
+    const dataset = dataview?.datasets?.find((dataset) => dataset.type === '4wings:v1')
+    if (!dataset) {
+      return
+    }
+    let url = `https://storage.googleapis.com/raul-tiles-scratch-60ttl/${dataset.id}/statistics.json`
+    if (dataset.id.includes('fishing')) {
+      const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === `4wings-${type}`)
+      if (endpoint) {
+        const pathTemplate = endpoint.pathTemplate.replace('{{aoiId}}', '1')
+        const filterString = filter ? `?filters[0]=flag='${filter}'` : ''
+        url = pathTemplate + filterString
       }
     }
+    if (url) {
+      fetchResourceById({ id, url })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataviewResource])
+  }, [type, filter])
 
   return { dataviewResource }
 }
