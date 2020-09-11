@@ -1,7 +1,8 @@
 import uniqBy from 'lodash/uniqBy'
-// import debounce from 'lodash/debounce'
+import debounce from 'lodash/debounce'
+import { Cancelable } from 'lodash'
 import type { MapboxGeoJSONFeature } from 'mapbox-gl'
-import { useCallback, useState /*, useEffect*/ } from 'react'
+import { useCallback, useState, useEffect, useRef } from 'react'
 import { Generators } from '@globalfishingwatch/layer-composer'
 
 type FeatureStateSource = { source: string; sourceLayer: string }
@@ -23,8 +24,8 @@ export type InteractionEvent = {
 }
 
 const useMapInteraction = (
-  clickCallback: (event: InteractionEvent) => any,
-  hoverCallback: (event: InteractionEvent) => any,
+  clickCallback: (event: InteractionEvent) => void,
+  hoverCallback: (event: InteractionEvent | null) => void,
   map: any
 ) => {
   const onMapClick = useCallback((event) => {
@@ -34,19 +35,17 @@ const useMapInteraction = (
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
   const [sourcesWithHoverState, setSourcesWithHoverState] = useState<FeatureStateSource[]>([])
 
-  // const [debouncedHoverCallback, setDebouncedHoverCallback] = useState<any>(null)
-  // useEffect(() => {
-  //   // Set debouncedValue to value (passed in) after the specified delay
-  //   const debounced = debounce(hoverCallback, 1000)
-  //   setDebouncedHoverCallback(debounced)
-  //   // return () => {
-  //   //   debounced.cancel()
-  //   // }
-  //   // }, [delay, options, value])
-  // }, [hoverCallback, debouncedHoverCallback])
+  const hoverCallbackDebounced = useRef<null | (Cancelable & ((e: InteractionEvent) => void))>(null)
+  useEffect(() => {
+    const debounced = debounce((e) => {
+      hoverCallback(e)
+    }, 500)
+    hoverCallbackDebounced.current = debounced
+  }, [hoverCallback])
 
   const onMapHover = useCallback(
     (event) => {
+      hoverCallback(null)
       // Turn all sources with active feature states off
       if (map) {
         sourcesWithHoverState.forEach((source: FeatureStateSource) => {
@@ -85,9 +84,9 @@ const useMapInteraction = (
           })
           .filter((f: ExtendedFeature) => f !== null)
 
-        if (hoverCallback && extendedFeatures.length) {
-          // hoverCallback.cancel()
-          hoverCallback({
+        if (hoverCallbackDebounced && hoverCallbackDebounced.current && extendedFeatures.length) {
+          hoverCallbackDebounced.current.cancel()
+          hoverCallbackDebounced.current({
             features: extendedFeatures,
             longitude: event.lngLat[0],
             latitude: event.lngLat[1],
@@ -96,7 +95,6 @@ const useMapInteraction = (
 
         const newSourcesWithHoverState: FeatureStateSource[] = []
         extendedFeatures.forEach((feature: ExtendedFeature) => {
-          console.log(feature.id)
           if (feature.id !== undefined && map) {
             map.setFeatureState(
               {
@@ -127,14 +125,16 @@ const useMapInteraction = (
         return
       }
       if (hoverCallback) {
-        // hoverCallback.cancel()
+        if (hoverCallbackDebounced && hoverCallbackDebounced.current) {
+          hoverCallbackDebounced.current.cancel()
+        }
         hoverCallback({
           longitude: event.lngLat[0],
           latitude: event.lngLat[1],
         })
       }
     },
-    [map, hoverCallback, sourcesWithHoverState]
+    [map, hoverCallback, hoverCallbackDebounced, sourcesWithHoverState]
   )
 
   return {
