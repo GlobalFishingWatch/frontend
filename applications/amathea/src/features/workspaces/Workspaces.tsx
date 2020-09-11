@@ -47,6 +47,7 @@ function Workspaces(): React.ReactElement {
                 className={styles.titleLink}
                 to={{ type: WORKSPACE_EDITOR, payload: { workspaceId: workspace.id } }}
               >
+                <span className={styles.colorBar} style={{ backgroundColor: workspace.color }} />
                 {workspace.name}
               </Link>
               {workspace.description && <IconButton icon="info" tooltip={workspace.description} />}
