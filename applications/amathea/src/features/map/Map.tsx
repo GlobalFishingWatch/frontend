@@ -1,5 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
-import { fitBounds } from 'viewport-mercator-project'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import Miniglobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
@@ -7,8 +6,8 @@ import MapLegend from '@globalfishingwatch/ui-components/dist/map-legend'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import { ExtendedLayer, ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
-import { useAOIConnect } from 'features/areas-of-interest/areas-of-interest.hook'
 import { useUserConnect } from 'features/user/user.hook'
+import { useMapboxRef } from './map.context'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import styles from './Map.module.css'
 
@@ -39,10 +38,9 @@ function useLegendComposer(style: ExtendedStyle, currentValues: LegendConfig) {
 }
 
 const Map = (): React.ReactElement => {
-  const mapRef = useRef<any>(null)
+  const mapRef = useMapboxRef()
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
-  const { currentAOI } = useAOIConnect()
   const { logged } = useUserConnect()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const token = GFWAPI.getToken()
@@ -83,27 +81,6 @@ const Map = (): React.ReactElement => {
       }
     }
   }, [zoom, latitude, longitude, mapRef])
-
-  useEffect(() => {
-    const map = mapRef.current?.getMap()
-    if (map) {
-      if (currentAOI && currentAOI.bbox) {
-        const [minLng, minLat, maxLng, maxLat] = currentAOI.bbox
-        const { latitude, longitude, zoom } = fitBounds({
-          bounds: [
-            [minLng, minLat],
-            [maxLng, maxLat],
-          ],
-          width: mapRef.current?._width,
-          height: mapRef.current?._height,
-          padding: 60,
-        })
-        setMapCoordinates({ latitude, longitude, zoom })
-      } else {
-        setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
-      }
-    }
-  }, [currentAOI, setMapCoordinates])
 
   const onZoomInClick = useCallback(() => {
     setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })

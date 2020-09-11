@@ -3,13 +3,14 @@ import { RootState } from 'store'
 import memoize from 'lodash/memoize'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Workspace, WorkspaceUpsert } from '@globalfishingwatch/dataviews-client'
+import { ColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
 import { selectCurrentWorkspaceId } from 'routes/routes.selectors'
 
 export const fetchWorkspacesThunk = createAsyncThunk('workspaces/fetch', async () => {
-  const data = await GFWAPI.fetch<Workspace[]>('/v1/workspaces')
-  return data
+  const workspaces = await GFWAPI.fetch<Workspace[]>('/v1/workspaces?include=aoi')
+  return workspaces.map((workspace, i) => ({ ...workspace, color: ColorBarOptions[i].value }))
 })
 
 export const fetchWorkspaceByIdThunk = createAsyncThunk(
@@ -70,9 +71,14 @@ export const deleteWorkspaceThunk = createAsyncThunk(
   }
 )
 
-export type WorkspacesState = AsyncReducer<Workspace>
+type WorkpaceExtended = Workspace & { color: string }
 
-const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesState, Workspace>({
+export type WorkspacesState = AsyncReducer<WorkpaceExtended>
+
+const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<
+  WorkspacesState,
+  WorkpaceExtended
+>({
   name: 'workspaces',
   thunks: {
     fetchThunk: fetchWorkspacesThunk,
@@ -83,7 +89,7 @@ const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesSta
   },
 })
 
-export const { selectAll, selectById } = entityAdapter.getSelectors<RootState>(
+export const { selectAll: selectAllWorkspaces, selectById } = entityAdapter.getSelectors<RootState>(
   (state) => state.workspaces
 )
 
@@ -91,7 +97,7 @@ export const selectWorkspaceStatus = (state: RootState) => state.workspaces.stat
 export const selectWorkspaceStatusId = (state: RootState) => state.workspaces.statusId
 
 export const selectCurrentWorkspace = createSelector(
-  [selectAll, selectCurrentWorkspaceId],
+  [selectAllWorkspaces, selectCurrentWorkspaceId],
   (workspaces, workspaceId) => {
     return workspaces.find((workspace) => workspace.id === workspaceId)
   }
@@ -101,7 +107,7 @@ export const selectWorkspaceById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
 )
 
-export const selectShared = createSelector([selectAll, getUserId], (workspaces, userId) =>
+export const selectShared = createSelector([selectAllWorkspaces, getUserId], (workspaces, userId) =>
   // TODO: make this real when editors in workspaces API
   workspaces.filter((w: any) => w.editors?.includes(userId))
 )

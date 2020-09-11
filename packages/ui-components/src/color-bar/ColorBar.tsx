@@ -1,7 +1,7 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
 import styles from './ColorBar.module.css'
-import { ColorBarOption, ColorBarIds, ColorBarValues } from './index'
+import { ColorBarOption, ColorBarIds, ColorBarValues, ColorBarOptions } from './index'
 
 interface ColorBarProps {
   onColorClick?: (color: ColorBarOption, e: React.MouseEvent) => void
@@ -10,23 +10,11 @@ interface ColorBarProps {
   className?: string
 }
 
-const colors: ColorBarOption[] = [
-  { id: 'teal', value: '#00FFBC' },
-  { id: 'magenta', value: '#FF64CE' },
-  { id: 'lilac', value: '#9CA4FF' },
-  { id: 'salmon', value: '#FFAE9B' },
-  { id: 'sky', value: '#00EEFF' },
-  { id: 'red', value: '#FF6854' },
-  { id: 'yellow', value: '#FFEA00' },
-  { id: 'green', value: '#A6FF59' },
-  { id: 'orange', value: '#FFAA0D' },
-]
-
 function ColorBar(props: ColorBarProps) {
   const { onColorClick, className = '', selectedColor, disabledColors = [] } = props
   return (
     <ul className={cx(styles.listContainer, className)}>
-      {colors.map((color) => {
+      {ColorBarOptions.map((color) => {
         const disabledColor =
           disabledColors.includes(color.id) || disabledColors.includes(color.value)
         return (

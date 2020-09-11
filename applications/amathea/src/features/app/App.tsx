@@ -1,10 +1,11 @@
-import React, { Suspense, lazy, Fragment, useCallback, useEffect } from 'react'
+import React, { Suspense, lazy, useCallback, useEffect, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import { useDatasetsAPI } from 'features/datasets/datasets.hook'
 import Login from 'features/user/Login'
 import Modal from 'features/modal/Modal'
+import { MapboxRefProvider } from 'features/map/map.context'
 import SidebarHeader from 'common/SidebarHeader'
 import { isWorkspaceEditorPage } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
@@ -59,14 +60,16 @@ function App(): React.ReactElement {
   return (
     <Fragment>
       <Login />
-      <SplitView
-        isOpen={sidebarOpen}
-        onToggle={onToggleSidebar}
-        aside={<SidebarWrapper />}
-        main={<Main />}
-        asideWidth="50%"
-        className="split-container"
-      />
+      <MapboxRefProvider>
+        <SplitView
+          isOpen={sidebarOpen}
+          onToggle={onToggleSidebar}
+          aside={<SidebarWrapper />}
+          main={<Main />}
+          asideWidth="50%"
+          className="split-container"
+        />
+      </MapboxRefProvider>
       <Modal />
       <Menu
         bgImage={menuBgImage}

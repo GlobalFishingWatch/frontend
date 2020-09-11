@@ -5,7 +5,15 @@
   border-bottom: var(--border);
 }
 
+.colorBar {
+  width: 2rem;
+  height: 2px;
+  margin-right: var(--space-S);
+}
+
 .titleLink {
+  display: flex;
+  align-items: center;
   text-align: left;
   flex: 1;
   white-space: nowrap;

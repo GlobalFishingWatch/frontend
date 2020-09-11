@@ -7,7 +7,7 @@ import {
   deleteWorkspaceThunk,
   createWorkspaceThunk,
   updateWorkspaceThunk,
-  selectAll,
+  selectAllWorkspaces,
   selectShared,
   fetchWorkspaceByIdThunk,
   selectCurrentWorkspace,
@@ -79,7 +79,7 @@ export const useWorkspacesAPI = () => {
 export const useWorkspacesConnect = () => {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceStatusId = useSelector(selectWorkspaceStatusId)
-  const workspacesList = useSelector(selectAll)
+  const workspacesList = useSelector(selectAllWorkspaces)
   const workspacesSharedList = useSelector(selectShared)
 
   return {
