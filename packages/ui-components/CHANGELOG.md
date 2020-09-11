@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 1.9.1
+
+### Patch Changes
+
+- 39189f7: Export color bar options
+
 ## 1.9.0
 
 ### Minor Changes
