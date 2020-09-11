@@ -1,40 +1,49 @@
-import 'babel-polyfill';
-import React, {useState, useMemo, useRef, useCallback} from 'react';
+/* eslint max-statements: 0 */
+import React, {useState, useMemo, useCallback} from 'react';
 import {render} from 'react-dom';
-import MapGL from '@globalfishingwatch/react-map-gl';
 import { DateTime } from 'luxon'
 import { Generators } from '@globalfishingwatch/layer-composer';
-import { useLayerComposer, useDebounce } from '@globalfishingwatch/react-hooks';
+import { useLayerComposer, useDebounce, useMapInteraction } from '@globalfishingwatch/react-hooks';
 import TimebarComponent from '@globalfishingwatch/timebar';
-import Tilesets from './Tilesets';
+import Tilesets from './tilesets';
+import HoverPopup from './hoverPopup';
+import Map from './map';
 
 import './App.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
+// if (process.env.NODE_ENV === 'development') {
+//   const whyDidYouRender = require('@welldone-software/why-did-you-render');
+//   whyDidYouRender(React, {
+//     trackAllPureComponents: true,
+//   });
+// }
+
+
 export const DEFAULT_TILESETS = [
-  {
+  { 
     // tileset: 'carriers_v8',
     tileset: 'fishing_v4',
     // filter: ''
     filter: "flag='ESP'",
     active: true
   },
-  {
+  { 
     tileset: 'fishing_v4',
     filter: "flag='FRA'",
     active: false
   },
-  {
+  { 
     tileset: 'fishing_v4',
     filter: "flag='ITA'",
     active: false
   },
-  {
+  { 
     tileset: 'fishing_v4',
     filter: "flag='GBR'",
     active: false
   },
-  {
+  { 
     tileset: 'fishing_v4',
     filter: "flag='PRT'",
     active: false
@@ -43,12 +52,6 @@ export const DEFAULT_TILESETS = [
 
 
 export default function App() {
-  const [viewport, setViewport] = useState({
-    longitude: -6,
-    latitude: 47,
-    zoom: 4.6424032
-  });
-
   const [time, setTime] = useState({
     start: '2012-10-01T00:00:00.000Z',
     end: '2012-11-01T00:00:00.000Z',
@@ -60,16 +63,16 @@ export default function App() {
 
   const [showBasemap, setShowBasemap] = useState(true)
   const [animated, setAnimated] = useState(true)
-  const [debug, setDebug] = useState(true)
-  const [debugLabels, setDebugLabels] = useState(true)
+  const [debug, setDebug] = useState(false)
+  const [debugLabels, setDebugLabels] = useState(false)
   const [geomTypeMode, setGeomTypeMode] = useState('gridded')
-
+  
   const [showInfo, setShowInfo] = useState(false)
 
   const [isPlaying, setIsPlaying] = useState(false)
 
   const [isLoading, setLoading] = useState(false)
-
+  
   const layers = useMemo(
     () => {
       const generators = [
@@ -87,9 +90,13 @@ export default function App() {
           geomType = (isPlaying) ? 'blob' : 'gridded'
         }
         const activeTilesets = tilesets.filter(t => t.active)
-        const colorRamps = (activeTilesets.length === 1 || combinationMode === 'add')
-          ? ['presence']
-          : ['sky', 'magenta', 'yellow', 'salmon', 'green'].slice(0, activeTilesets.length)
+        let colorRamps = ['presence']
+        if (activeTilesets.length > 1 && combinationMode === 'compare') {
+          colorRamps = ['sky', 'magenta', 'yellow', 'salmon', 'green'].slice(0, activeTilesets.length) 
+        } else if (activeTilesets.length > 1 && combinationMode === 'bivariate') {
+          colorRamps = ['bivariate']
+        }
+          
         generators.push({
           id: 'heatmap-animated',
           type: Generators.Type.HeatmapAnimated,
@@ -102,6 +109,7 @@ export default function App() {
           tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1/datasets',
           combinationMode,
           colorRamps,
+          interactive: true,
         })
       } else {
         generators.push({
@@ -113,50 +121,54 @@ export default function App() {
           serverSideFilter: undefined,
           // serverSideFilter: `vesselid IN ('ddef384a3-330b-0511-5c1d-6f8ed78de0ca')`,
           updateColorRampOnTimeChange: true,
-          zoom: viewport.zoom,
+          // zoom: viewport.zoom,
           fetchStats: true
         })
       }
 
     return generators
   },
-    [animated, viewport, showBasemap, debug, debugLabels, tilesets, geomTypeMode, isPlaying, combinationMode]
+    [animated, showBasemap, debug, debugLabels, tilesets, geomTypeMode, isPlaying, combinationMode]
   );
 
-  // TODO switch between debounced/immediate/throttled time when using animated
-  const { style } = useLayerComposer(layers, (animated) ? time: debouncedTime)
+  const [mapRef, setMapRef] = useState(null)
 
-  const mapRef = useRef(null)
-  if (mapRef && mapRef.current) {
-    mapRef.current.getMap().showTileBoundaries = debug
-    mapRef.current.getMap().on('idle', () =>  {
+  const clickCallback = useCallback((feature) => {
+    // probably dispatch a redux action here or whatever
+    console.log(feature)
+  })
+
+  const [hoveredEvent, setHoveredEvent] = useState(null)
+  const hoverCallback = useCallback((event) => {
+    setHoveredEvent(event)
+  }, [])
+
+  const { onMapClick, onMapHover } = useMapInteraction(clickCallback, hoverCallback, mapRef)
+
+  const globalConfig = useMemo(() => {
+    const finalTime = (animated) ? time: debouncedTime
+    return { ...finalTime }
+  }, [animated, time, debouncedTime])
+
+  const { style } = useLayerComposer(layers, globalConfig)
+
+  if (mapRef) {
+    mapRef.showTileBoundaries = debug
+    mapRef.on('idle', () =>  {
       setLoading(false)
     })
-    mapRef.current.getMap().on('dataloading', () =>  {
+    mapRef.on('dataloading', () =>  {
       setLoading(true)
     })
   }
-
-  const onMapClick = useCallback((e) => {
-    if (e.features && e.features.length) {
-      console.log(e.features[0])
-    }
-  })
 
   return (
     <div className="container">
       {isLoading && <div className="loading">loading</div>}
       <div className="map">
-        <MapGL
-          {...viewport}
-          ref={mapRef}
-          width="100%"
-          height="100%"
-          mapStyle={style}
-          onViewportChange={nextViewport => setViewport(nextViewport)}
-          onClick={onMapClick}
-          onData={() => { console.log('loafed') }}
-        />
+        {style && <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover} onSetMapRef={setMapRef}>
+          <HoverPopup hoveredEvent={hoveredEvent} />
+        </Map>}
       </div>
       <div className="timebar">
         <TimebarComponent
@@ -169,13 +181,10 @@ export default function App() {
           }}
           enablePlayback
           onTogglePlay={setIsPlaying}
-        >
-          {/* TODO hack to shut up timebar warning, will need to fix in Timebar */}
-
-        </TimebarComponent>
+        />
       </div>
       <div className="control-buttons">
-        <Tilesets onChange={(tilesets, combinationMode) => { setTilesets(tilesets); setCombinationMode(combinationMode) }} />
+        <Tilesets onChange={(newTilesets, newCombinationMode) => { setTilesets(newTilesets); setCombinationMode(newCombinationMode) }} />
         <hr />
         <fieldset>
           <input type="checkbox" id="showBasemap" checked={showBasemap} onChange={(e) => {

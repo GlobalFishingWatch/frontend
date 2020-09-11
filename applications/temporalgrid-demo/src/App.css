@@ -64,3 +64,14 @@ fieldset {
 .tileset.disabled {
   opacity: .5;
 }
+
+.popup {
+  background: white;
+  padding: 10px;
+}
+
+.popupSection:not(:last-child) {
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid black;
+}
