@@ -111,6 +111,11 @@ export default function App() {
           colorRamps,
           interactive: true,
         })
+        generators.push({
+          id: 'eez',
+          type: Generators.Type.CartoPolygons,
+          color: 'red'
+        })
       } else {
         generators.push({
           id: 'heatmap',
@@ -140,6 +145,7 @@ export default function App() {
 
   const [hoveredEvent, setHoveredEvent] = useState(null)
   const hoverCallback = useCallback((event) => {
+    console.log(event)
     setHoveredEvent(event)
   }, [])
 

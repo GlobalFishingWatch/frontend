@@ -64,8 +64,8 @@ const useMapInteraction = (
               generatorId,
               source: feature.source,
               sourceLayer: feature.sourceLayer,
-              id: feature.id as number | undefined,
-              value: properties.value,
+              id: (feature.id as number) || undefined,
+              value: properties.value || properties.name || properties.id,
             }
             switch (generator) {
               case Generators.Type.HeatmapAnimated:
