@@ -22,7 +22,7 @@ import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 export const DEFAULT_TILESETS = [
   {
-    id: '4w1',
+    id: 0,
     // tileset: 'carriers_v8',
     tileset: 'fishing_v4',
     // filter: ''
@@ -30,25 +30,25 @@ export const DEFAULT_TILESETS = [
     active: true
   },
   { 
-    id: '4w2',
+    id: 1,
     tileset: 'fishing_v4',
     filter: "flag='FRA'",
     active: false
   },
   { 
-    id: '4w3',
+    id: 2,
     tileset: 'fishing_v4',
     filter: "flag='ITA'",
     active: false
   },
   { 
-    id: '4w4',
+    id: 3,
     tileset: 'fishing_v4',
     filter: "flag='GBR'",
     active: false
   },
   { 
-    id: '4w5',
+    id: 4,
     tileset: 'fishing_v4',
     filter: "flag='PRT'",
     active: false
@@ -61,27 +61,32 @@ const DATAVIEWS = {
   'eez': {
     id: 'eez',
     type: Generators.Type.CartoPolygons,
-    colorRamp: 'red'
+    color: 'red'
   },
-  '4w1': { 
+  0: { 
     type: Generators.Type.HeatmapAnimated,
-    colorRamp: 'sky',
+    colorRamp: 'teal',
+    color: '#00FFBC',
   },
-  '4w2': { 
+  1: { 
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'magenta',
+    color: '#FF64CE'
   },
-  '4w3': { 
+  2: { 
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'yellow',
+    color: '#FFEA00'
   },
-  '4w4': { 
+  3: { 
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'salmon',
+    color: '#FFAE9B'
   },
-  '4w5': { 
+  4: { 
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'green',
+    color: '#A6FF59'
   }
 }
 
@@ -215,7 +220,7 @@ export default function App() {
       {isLoading && <div className="loading">loading</div>}
       <div className="map">
         {style && <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover} onSetMapRef={setMapRef}>
-          <HoverPopup hoveredEvent={hoveredEvent} />
+          <HoverPopup hoveredEvent={hoveredEvent} layers={DATAVIEWS} />
         </Map>}
       </div>
       <div className="timebar">
