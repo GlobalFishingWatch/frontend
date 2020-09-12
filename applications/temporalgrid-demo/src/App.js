@@ -21,7 +21,8 @@ import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 
 export const DEFAULT_TILESETS = [
-  { 
+  {
+    id: '4w1',
     // tileset: 'carriers_v8',
     tileset: 'fishing_v4',
     // filter: ''
@@ -29,27 +30,60 @@ export const DEFAULT_TILESETS = [
     active: true
   },
   { 
+    id: '4w2',
     tileset: 'fishing_v4',
     filter: "flag='FRA'",
     active: false
   },
   { 
+    id: '4w3',
     tileset: 'fishing_v4',
     filter: "flag='ITA'",
     active: false
   },
   { 
+    id: '4w4',
     tileset: 'fishing_v4',
     filter: "flag='GBR'",
     active: false
   },
   { 
+    id: '4w5',
     tileset: 'fishing_v4',
     filter: "flag='PRT'",
     active: false
   }
 ]
 
+const DATAVIEWS = {
+  'background': {id: 'background', type: Generators.Type.Background, color: '#00265c'},
+  'basemap': {id: 'basemap', type: Generators.Type.Basemap, basemap: 'landmass' },
+  'eez': {
+    id: 'eez',
+    type: Generators.Type.CartoPolygons,
+    colorRamp: 'red'
+  },
+  '4w1': { 
+    type: Generators.Type.HeatmapAnimated,
+    colorRamp: 'sky',
+  },
+  '4w2': { 
+    type: Generators.Type.HeatmapAnimated,
+    colorRamp: 'magenta',
+  },
+  '4w3': { 
+    type: Generators.Type.HeatmapAnimated,
+    colorRamp: 'yellow',
+  },
+  '4w4': { 
+    type: Generators.Type.HeatmapAnimated,
+    colorRamp: 'salmon',
+  },
+  '4w5': { 
+    type: Generators.Type.HeatmapAnimated,
+    colorRamp: 'green',
+  }
+}
 
 export default function App() {
   const [time, setTime] = useState({
@@ -75,46 +109,54 @@ export default function App() {
   
   const layers = useMemo(
     () => {
-      const generators = [
-        {id: 'background', type: Generators.Type.Background, color: '#00265c'}
-      ]
+      const generators = [{...DATAVIEWS.background}, {...DATAVIEWS.eez}]
 
       if (showBasemap) {
-        generators.push({id: 'basemap', type: Generators.Type.Basemap, basemap: 'landmass' })
+        generators.push({...DATAVIEWS.basemap})
       }
 
       if (animated) {
-
+        const heatmapSublayers = tilesets.filter(t => t.active).map((tileset, i) => {
+          const sublayer = {...DATAVIEWS[tileset.id]}
+          let colorRamp = sublayer.colorRamp
+          if (tilesets.filter(t => t.active).length === 1) {
+            colorRamp = 'presence'
+          } else if (combinationMode === 'bivariate') {
+            colorRamp = 'bivariate'
+          }
+          return {
+            id: tileset.id,
+            colorRamp,
+            // TODO API should support an array of tilesets for each sublayer
+            tilesets: [tileset.tileset],
+            filter: tileset.filter,
+          }
+        })
+  
         let geomType = geomTypeMode
         if (geomType === 'blobOnPlay') {
           geomType = (isPlaying) ? 'blob' : 'gridded'
         }
-        const activeTilesets = tilesets.filter(t => t.active)
+
         let colorRamps = ['presence']
-        if (activeTilesets.length > 1 && combinationMode === 'compare') {
-          colorRamps = ['sky', 'magenta', 'yellow', 'salmon', 'green'].slice(0, activeTilesets.length) 
-        } else if (activeTilesets.length > 1 && combinationMode === 'bivariate') {
+        if (heatmapSublayers.length > 1 && combinationMode === 'compare') {
+          colorRamps = heatmapSublayers.map(s => s.color)
+        } else if (heatmapSublayers.length === 2 && combinationMode === 'bivariate') {
           colorRamps = ['bivariate']
         }
           
         generators.push({
           id: 'heatmap-animated',
           type: Generators.Type.HeatmapAnimated,
-          tilesets: activeTilesets.map(t => t.tileset),
-          filters: activeTilesets.map(t => t.filter),
+          sublayers: heatmapSublayers,
+          sublayersCombinationMode: combinationMode,
           debug,
           debugLabels,
           geomType,
           // tilesAPI: 'https://fourwings.api.dev.globalfishingwatch.org/v1'
           tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1/datasets',
-          combinationMode,
           colorRamps,
           interactive: true,
-        })
-        generators.push({
-          id: 'eez',
-          type: Generators.Type.CartoPolygons,
-          color: 'red'
         })
       } else {
         generators.push({
