@@ -1,4 +1,4 @@
-import React, { createContext, useRef, useContext, useEffect, useState } from 'react'
+import React, { createContext, useRef, useContext } from 'react'
 
 const MapStateContext = createContext<any>('')
 

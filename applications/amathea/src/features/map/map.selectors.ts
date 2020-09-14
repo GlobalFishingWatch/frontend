@@ -49,7 +49,8 @@ export const getDataviewsGeneratorsConfig = createSelector(
     const filteredDataviews = dataviews.filter((dataview) => !hiddenDataviews.includes(dataview.id))
 
     const generators = getDataviewsGeneratorConfigs(filteredDataviews)
-    return generators
+    // Reverse to see the first layer on top
+    return generators.reverse()
   }
 )
 

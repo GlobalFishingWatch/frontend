@@ -19,19 +19,22 @@ type LegendConfig = Record<string, number>
 function useLegendComposer(style: ExtendedStyle, currentValues: LegendConfig) {
   const layersWithLegend = useMemo(() => {
     return style
-      ? style?.layers?.flatMap((layer) => {
-          if (!layer.metadata?.legend) return []
+      ? style?.layers
+          ?.flatMap((layer) => {
+            if (!layer.metadata?.legend) return []
 
-          return {
-            ...layer,
-            ...(currentValues[layer.id] !== undefined && {
-              metadata: {
-                ...layer.metadata,
-                legend: { ...layer.metadata.legend, currentValue: currentValues[layer.id] },
-              },
-            }),
-          }
-        })
+            return {
+              ...layer,
+              ...(currentValues[layer.id] !== undefined && {
+                metadata: {
+                  ...layer.metadata,
+                  legend: { ...layer.metadata.legend, currentValue: currentValues[layer.id] },
+                },
+              }),
+            }
+          })
+          // Reverse again to keep dataviews sidebar and legend aligned
+          .reverse()
       : ([] as ExtendedLayer[])
   }, [currentValues, style])
   return layersWithLegend
@@ -53,6 +56,12 @@ const Map = (): React.ReactElement => {
   const legendLayers = useLegendComposer(style as ExtendedStyle, currentValues)
 
   const [bounds, setBounds] = useState<MiniglobeBounds | undefined>()
+
+  const handleError = useCallback(({ error }: any) => {
+    if (error?.status === 401 && error?.url.includes('globalfishingwatch')) {
+      GFWAPI.refreshAPIToken()
+    }
+  }, [])
 
   const transformRequest: any = useCallback(
     (url: string, resourceType: string) => {
@@ -114,6 +123,7 @@ const Map = (): React.ReactElement => {
           zoom={zoom}
           latitude={latitude}
           longitude={longitude}
+          onError={handleError}
           onHover={handleMapHover}
           transformRequest={transformRequest}
           onViewportChange={onViewportChange}
