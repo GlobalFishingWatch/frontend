@@ -183,11 +183,9 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: Type.HeatmapAnimated
-  tilesets: string[]
-  filters?: string[]
-  colorRamps?: ColorRampsIds[]
+  sublayers: HeatmapAnimatedGeneratorSublayer[]
+  sublayersCombinationMode?: CombinationMode
   tilesAPI?: string
-  combinationMode?: CombinationMode
   geomType?: string
   maxZoom?: number
   debug?: boolean
@@ -243,6 +241,13 @@ export type Ruler = {
     longitude: number
   }
   isNew?: boolean
+}
+
+export interface HeatmapAnimatedGeneratorSublayer {
+  id: string
+  tilesets: string[]
+  filter: string
+  colorRamp: ColorRampsIds
 }
 
 // ---- Heatmap Generator color ramps types

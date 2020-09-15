@@ -27,9 +27,7 @@ type GlobalHeatmapAnimatedGeneratorConfig = Required<
 >
 
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
-  filters: [],
-  colorRamps: ['presence'],
-  combinationMode: 'add',
+  sublayersCombinationMode: 'add',
   geomType: HEATMAP_GEOM_TYPES.GRIDDED,
   tilesetsStart: '2012-01-01T00:00:00.000Z',
   tilesetsEnd: new Date().toISOString(),
@@ -86,16 +84,20 @@ class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
 
   _getStyleSources = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
-    if (!config.start || !config.end || !config.tilesets) {
+    if (!config.start || !config.end || !config.sublayers) {
       throw new Error(
-        `Heatmap generator must specify start, end and tileset parameters in ${config}`
+        `Heatmap generator must specify start, end and sublayers parameters in ${config}`
       )
     }
 
-    const tilesUrl = `${config.tilesAPI}/${config.tilesets.join(',')}/${API_ENDPOINTS.tiles}`
+    // TODO API should support an array of tilesets for each sublayer
+    const tilesets = config.sublayers.map((s) => s.tilesets[0])
+    const filters = config.sublayers.map((s) => s.filter || '')
+
+    const tilesUrl = `${config.tilesAPI}/${tilesets.join(',')}/${API_ENDPOINTS.tiles}`
 
     // TODO - generate this using updated stats API
-    const breaks = HARDCODED_BREAKS[config.combinationMode].slice(0, config.tilesets.length)
+    const breaks = HARDCODED_BREAKS[config.sublayersCombinationMode].slice(0, tilesets.length)
 
     const sources = flatten(
       timeChunks.map((timeChunk: TimeChunk) => {
@@ -103,7 +105,7 @@ class HeatmapAnimatedGenerator {
           id: timeChunk.id,
           singleFrame: 'false',
           geomType: config.geomType,
-          filters: config.filters
+          filters: filters
             .map((filter, i) => {
               if (!filter || filter === '') return ''
               return `filters[${i}]=${filter}`
@@ -112,10 +114,10 @@ class HeatmapAnimatedGenerator {
           delta: getDelta(config.start, config.end, timeChunk.interval).toString(),
           quantizeOffset: timeChunk.quantizeOffset.toString(),
           interval: timeChunk.interval,
-          numDatasets: config.tilesets.length.toString(),
+          numDatasets: config.sublayers.length.toString(),
           // TODO - generate this using updated stats API
           breaks: JSON.stringify(breaks),
-          combinationMode: config.combinationMode,
+          combinationMode: config.sublayersCombinationMode,
         }
         if (timeChunk.start && timeChunk.dataEnd) {
           baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd].join(',')
@@ -150,8 +152,8 @@ class HeatmapAnimatedGenerator {
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
     const { colorRamp, colorRampBaseExpression } = getColorRampBaseExpression(
-      config.colorRamps,
-      config.combinationMode
+      config.sublayers.map((s) => s.colorRamp),
+      config.sublayersCombinationMode
     )
 
     const layers: Layer[] = flatten(

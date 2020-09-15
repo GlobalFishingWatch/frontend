@@ -1,7 +1,7 @@
 import { Popup } from '@globalfishingwatch/react-map-gl';
 import React from 'react';
 
-export default function HoverPopup({ hoveredEvent }) {
+export default function HoverPopup({ hoveredEvent, layers }) {
   if (hoveredEvent && hoveredEvent.features) {
     return <Popup
     latitude={hoveredEvent.latitude}
@@ -12,7 +12,8 @@ export default function HoverPopup({ hoveredEvent }) {
     <div className="popup">
       {hoveredEvent.features.map((feature, i) => 
         <div key={i} className="popupSection">
-          {Array.isArray(feature.value) ? feature.value.map(v => <div>{v}</div>) : feature.value}
+          <span className="popupSectionColor" style={{backgroundColor: (layers[feature.generatorId]) ? layers[feature.generatorId].color : 'black' }}></span>
+          {feature.generatorId} : {feature.value}
         </div>
       )}
     </div>

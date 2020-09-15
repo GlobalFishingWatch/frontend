@@ -1,6 +1,6 @@
 import uniqBy from 'lodash/uniqBy'
 import debounce from 'lodash/debounce'
-import { Cancelable } from 'lodash'
+import { Cancelable, isArray } from 'lodash'
 import type { MapboxGeoJSONFeature } from 'mapbox-gl'
 import { useCallback, useState, useEffect, useRef } from 'react'
 import { Generators } from '@globalfishingwatch/layer-composer'
@@ -10,7 +10,7 @@ type FeatureStateSource = { source: string; sourceLayer: string }
 export type ExtendedFeature = {
   properties: { [name: string]: any }
   generator: string | null
-  generatorId: string | null
+  generatorId: string | number | null
   source: string
   sourceLayer: string
   id?: number
@@ -53,36 +53,42 @@ const useMapInteraction = (
         })
       }
       if (event.features && event.features.length) {
-        const extendedFeatures = event.features
-          .map((feature: MapboxGeoJSONFeature) => {
-            const generator = feature.layer.metadata ? feature.layer.metadata.generator : null
-            const generatorId = feature.layer.metadata ? feature.layer.metadata.generatorId : null
-            const properties = feature.properties || {}
-            let extendedFeature: ExtendedFeature | null = {
-              properties,
-              generator,
-              generatorId,
-              source: feature.source,
-              sourceLayer: feature.sourceLayer,
-              id: feature.id as number | undefined,
-              value: properties.value,
-            }
-            switch (generator) {
-              case Generators.Type.HeatmapAnimated:
-                const frame = feature.layer.metadata.frame
-                const valuesAtFrame = properties[frame.toString()]
-                if (valuesAtFrame) {
-                  extendedFeature.value = JSON.parse(valuesAtFrame)
-                  if (extendedFeature.value === 0) {
-                    extendedFeature = null
-                  }
-                } else {
-                  extendedFeature = null
-                }
-            }
-            return extendedFeature
-          })
-          .filter((f: ExtendedFeature) => f !== null)
+        const extendedFeatures: ExtendedFeature[] = []
+        event.features.forEach((feature: MapboxGeoJSONFeature) => {
+          const generator = feature.layer.metadata ? feature.layer.metadata.generator : null
+          const generatorId = feature.layer.metadata ? feature.layer.metadata.generatorId : null
+          const properties = feature.properties || {}
+          const extendedFeature: ExtendedFeature | null = {
+            properties,
+            generator,
+            generatorId,
+            source: feature.source,
+            sourceLayer: feature.sourceLayer,
+            id: (feature.id as number) || undefined,
+            value: properties.value || properties.name || properties.id,
+          }
+          switch (generator) {
+            case Generators.Type.HeatmapAnimated:
+              const frame = feature.layer.metadata.frame
+              const valuesAtFrame = properties[frame.toString()]
+              if (valuesAtFrame) {
+                let parsed = JSON.parse(valuesAtFrame)
+                if (extendedFeature.value === 0) break
+                if (!isArray(parsed)) parsed = [parsed]
+                parsed.forEach((value: any, i: number) => {
+                  extendedFeatures.push({
+                    ...extendedFeature,
+                    // TODO this should be sublayer id but it has to be carried in GeoJSON feature by aggregator
+                    generatorId: i,
+                    value,
+                  })
+                })
+              }
+              break
+            default:
+              extendedFeatures.push(extendedFeature)
+          }
+        })
 
         if (hoverCallbackDebounced && hoverCallbackDebounced.current && extendedFeatures.length) {
           hoverCallbackDebounced.current.cancel()

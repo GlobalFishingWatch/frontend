@@ -21,7 +21,8 @@ import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 
 export const DEFAULT_TILESETS = [
-  { 
+  {
+    id: 0,
     // tileset: 'carriers_v8',
     tileset: 'fishing_v4',
     // filter: ''
@@ -29,27 +30,65 @@ export const DEFAULT_TILESETS = [
     active: true
   },
   { 
+    id: 1,
     tileset: 'fishing_v4',
     filter: "flag='FRA'",
     active: false
   },
   { 
+    id: 2,
     tileset: 'fishing_v4',
     filter: "flag='ITA'",
     active: false
   },
   { 
+    id: 3,
     tileset: 'fishing_v4',
     filter: "flag='GBR'",
     active: false
   },
   { 
+    id: 4,
     tileset: 'fishing_v4',
     filter: "flag='PRT'",
     active: false
   }
 ]
 
+const DATAVIEWS = {
+  'background': {id: 'background', type: Generators.Type.Background, color: '#00265c'},
+  'basemap': {id: 'basemap', type: Generators.Type.Basemap, basemap: 'landmass' },
+  'eez': {
+    id: 'eez',
+    type: Generators.Type.CartoPolygons,
+    color: 'red'
+  },
+  0: { 
+    type: Generators.Type.HeatmapAnimated,
+    colorRamp: 'teal',
+    color: '#00FFBC',
+  },
+  1: { 
+    type: Generators.Type.HeatmapAnimated,
+    colorRamp: 'magenta',
+    color: '#FF64CE'
+  },
+  2: { 
+    type: Generators.Type.HeatmapAnimated,
+    colorRamp: 'yellow',
+    color: '#FFEA00'
+  },
+  3: { 
+    type: Generators.Type.HeatmapAnimated,
+    colorRamp: 'salmon',
+    color: '#FFAE9B'
+  },
+  4: { 
+    type: Generators.Type.HeatmapAnimated,
+    colorRamp: 'green',
+    color: '#A6FF59'
+  }
+}
 
 export default function App() {
   const [time, setTime] = useState({
@@ -75,39 +114,52 @@ export default function App() {
   
   const layers = useMemo(
     () => {
-      const generators = [
-        {id: 'background', type: Generators.Type.Background, color: '#00265c'}
-      ]
+      const generators = [{...DATAVIEWS.background}, {...DATAVIEWS.eez}]
 
       if (showBasemap) {
-        generators.push({id: 'basemap', type: Generators.Type.Basemap, basemap: 'landmass' })
+        generators.push({...DATAVIEWS.basemap})
       }
 
       if (animated) {
-
+        const heatmapSublayers = tilesets.filter(t => t.active).map((tileset, i) => {
+          const sublayer = {...DATAVIEWS[tileset.id]}
+          let colorRamp = sublayer.colorRamp
+          if (tilesets.filter(t => t.active).length === 1) {
+            colorRamp = 'presence'
+          } else if (combinationMode === 'bivariate') {
+            colorRamp = 'bivariate'
+          }
+          return {
+            id: tileset.id,
+            colorRamp,
+            // TODO API should support an array of tilesets for each sublayer
+            tilesets: [tileset.tileset],
+            filter: tileset.filter,
+          }
+        })
+  
         let geomType = geomTypeMode
         if (geomType === 'blobOnPlay') {
           geomType = (isPlaying) ? 'blob' : 'gridded'
         }
-        const activeTilesets = tilesets.filter(t => t.active)
+
         let colorRamps = ['presence']
-        if (activeTilesets.length > 1 && combinationMode === 'compare') {
-          colorRamps = ['sky', 'magenta', 'yellow', 'salmon', 'green'].slice(0, activeTilesets.length) 
-        } else if (activeTilesets.length > 1 && combinationMode === 'bivariate') {
+        if (heatmapSublayers.length > 1 && combinationMode === 'compare') {
+          colorRamps = heatmapSublayers.map(s => s.color)
+        } else if (heatmapSublayers.length === 2 && combinationMode === 'bivariate') {
           colorRamps = ['bivariate']
         }
           
         generators.push({
           id: 'heatmap-animated',
           type: Generators.Type.HeatmapAnimated,
-          tilesets: activeTilesets.map(t => t.tileset),
-          filters: activeTilesets.map(t => t.filter),
+          sublayers: heatmapSublayers,
+          sublayersCombinationMode: combinationMode,
           debug,
           debugLabels,
           geomType,
           // tilesAPI: 'https://fourwings.api.dev.globalfishingwatch.org/v1'
           tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1/datasets',
-          combinationMode,
           colorRamps,
           interactive: true,
         })
@@ -140,6 +192,7 @@ export default function App() {
 
   const [hoveredEvent, setHoveredEvent] = useState(null)
   const hoverCallback = useCallback((event) => {
+    console.log(event)
     setHoveredEvent(event)
   }, [])
 
@@ -167,7 +220,7 @@ export default function App() {
       {isLoading && <div className="loading">loading</div>}
       <div className="map">
         {style && <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover} onSetMapRef={setMapRef}>
-          <HoverPopup hoveredEvent={hoveredEvent} />
+          <HoverPopup hoveredEvent={hoveredEvent} layers={DATAVIEWS} />
         </Map>}
       </div>
       <div className="timebar">

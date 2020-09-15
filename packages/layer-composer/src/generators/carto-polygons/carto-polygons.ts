@@ -60,6 +60,7 @@ class CartoPolygonsGenerator {
           const { layergroupid } = await getCartoLayergroupId({
             cartoTableId,
             baseUrl: config.baseUrl || this.baseUrl,
+            promoteId: 'id',
             ...layerData.source,
           })
           const tiles = [`${CARTO_FISHING_MAP_API}/${layergroupid}/{z}/{x}/{y}.mvt`]
@@ -93,7 +94,12 @@ class CartoPolygonsGenerator {
       if (glLayer.type === 'line') {
         paint['line-opacity'] = config.opacity !== undefined ? config.opacity : 1
         const color = config.color || DEFAULT_LINE_COLOR
-        paint['line-color'] = color
+        paint['line-color'] = [
+          'case',
+          ['boolean', ['feature-state', 'hover'], false],
+          'white',
+          color,
+        ]
       } else if (glLayer.type === 'fill') {
         paint['fill-opacity'] = config.opacity !== undefined ? config.opacity : 1
         const fillColor = config.fillColor || DEFAULT_LINE_COLOR
@@ -132,6 +138,11 @@ class CartoPolygonsGenerator {
           paint['circle-stroke-color'] = [...matchFilter, circleStrokeColor, strokeColor]
           paint['circle-stroke-width'] = [...matchFilter, circleStrokeWidth, strokeWidth]
         }
+      }
+
+      glLayer.metadata = {
+        interactive: true,
+        generatorId: config.id,
       }
 
       return { ...glLayer, layout, paint }
