@@ -165,6 +165,7 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   steps?: number[]
   tilesUrl: string
   statsUrl?: string
+  scalePowExponent?: number
   fetchStats?: boolean
   statsFilter?: string
   geomType?: Geoms
