@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.10.0
+
+### Minor Changes
+
+- e737311: pow scale exponent option to heatmap generator
+
 ## 2.9.0
 
 ### Minor Changes

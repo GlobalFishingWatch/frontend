@@ -1,3 +1,5 @@
+export const BASE_URL = process.env.NODE_ENV === 'production' ? '/marine-reserves' : ''
+
 export const DEFAULT_WORKSPACE = {
   latitude: 0,
   longitude: 0,
