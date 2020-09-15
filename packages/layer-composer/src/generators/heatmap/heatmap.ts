@@ -1,6 +1,6 @@
 import flatten from 'lodash/flatten'
 import zip from 'lodash/zip'
-import { scaleLinear } from 'd3-scale'
+import { scalePow } from 'd3-scale'
 import memoizeOne from 'memoize-one'
 import { Group } from '../../types'
 import { Type, HeatmapGeneratorConfig, GlobalGeneratorConfig } from '../types'
@@ -62,6 +62,7 @@ class HeatmapGenerator {
   _getHeatmapLayers = (config: GlobalHeatmapGeneratorConfig) => {
     const geomType = config.geomType || HEATMAP_GEOM_TYPES.GRIDDED
     const colorRampType = config.colorRamp || 'presence'
+    const scalePowExponent = config.scalePowExponent || 1
 
     let stops: number[] = []
     const zoom = Math.min(Math.floor(config.zoom), config.maxZoom || HEATMAP_DEFAULT_MAX_ZOOM)
@@ -72,7 +73,10 @@ class HeatmapGenerator {
       const { min, max, avg } = statsByZoom
       if (min && max && avg) {
         const roundedMax = this._roundNumber(max)
-        const scale = scaleLinear().domain([0, 0.5, 1]).range([min, avg, roundedMax])
+        const scale = scalePow()
+          .exponent(scalePowExponent)
+          .domain([0, 0.5, 1])
+          .range([min, avg, roundedMax])
 
         stops = [0, min, scale(0.25), scale(0.5), scale(0.75), roundedMax]
 
