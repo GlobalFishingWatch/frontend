@@ -99,9 +99,11 @@ const useMapInteraction = (
           })
         }
 
-        const newSourcesWithHoverState: FeatureStateSource[] = []
-        extendedFeatures.forEach((feature: ExtendedFeature) => {
-          if (feature.id !== undefined && map) {
+        const newSourcesWithHoverState: FeatureStateSource[] = extendedFeatures.flatMap(
+          (feature: ExtendedFeature) => {
+            if (!map || feature.id === undefined) {
+              return []
+            }
             map.setFeatureState(
               {
                 source: feature.source,
@@ -112,12 +114,12 @@ const useMapInteraction = (
             )
 
             // Add source to active feature states
-            newSourcesWithHoverState.push({
+            return {
               source: feature.source,
               sourceLayer: feature.sourceLayer,
-            })
+            }
           }
-        })
+        )
 
         // Updates sources on which to turn feature state off, only if it really changed
         // this allows keeping the onMapHover reference, avoiding unnecesary map renders
