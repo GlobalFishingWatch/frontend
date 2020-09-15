@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.10.1
+
+### Patch Changes
+
+- fix stats filters
+
 ## 2.10.0
 
 ### Minor Changes
