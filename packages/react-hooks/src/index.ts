@@ -1,6 +1,7 @@
 export { default as useLogin } from './use-login'
 export { default as useLayerComposer } from './use-layer-composer'
 export { default as useMapInteraction } from './use-map-interaction'
+export { default as useMapTooltip } from './use-map-tooltip'
 export { default as useWorkspace } from './use-workspace'
 export {
   default as useDataviewsGeneratorConfigs,

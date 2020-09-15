@@ -3,22 +3,14 @@ import React, {useState, useMemo, useCallback} from 'react';
 import {render} from 'react-dom';
 import { DateTime } from 'luxon'
 import { Generators } from '@globalfishingwatch/layer-composer';
-import { useLayerComposer, useDebounce, useMapInteraction } from '@globalfishingwatch/react-hooks';
+import { useLayerComposer, useDebounce, useMapInteraction, useMapTooltip } from '@globalfishingwatch/react-hooks';
 import TimebarComponent from '@globalfishingwatch/timebar';
 import Tilesets from './tilesets';
-import HoverPopup from './hoverPopup';
+import { HoverPopup } from './popup';
 import Map from './map';
 
 import './App.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
-
-// if (process.env.NODE_ENV === 'development') {
-//   const whyDidYouRender = require('@welldone-software/why-did-you-render');
-//   whyDidYouRender(React, {
-//     trackAllPureComponents: true,
-//   });
-// }
-
 
 export const DEFAULT_TILESETS = [
   {
@@ -55,40 +47,51 @@ export const DEFAULT_TILESETS = [
   }
 ]
 
-const DATAVIEWS = {
-  'background': {id: 'background', type: Generators.Type.Background, color: '#00265c'},
-  'basemap': {id: 'basemap', type: Generators.Type.Basemap, basemap: 'landmass' },
-  'eez': {
+const DATAVIEWS = [
+  {id: 'background', type: Generators.Type.Background, color: '#00265c'},
+  {id: 'basemap', type: Generators.Type.Basemap, basemap: 'landmass' },
+  {
     id: 'eez',
     type: Generators.Type.CartoPolygons,
     color: 'red'
   },
-  0: { 
+  {
+    id: 0, 
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'teal',
     color: '#00FFBC',
+    unit: 'fishing hours'
   },
-  1: { 
+  { 
+    id: 1, 
+    title: 'that second thing',
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'magenta',
-    color: '#FF64CE'
+    color: '#FF64CE',
+    unit: 'fishing hours'
   },
-  2: { 
+  { 
+    id: 2, 
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'yellow',
-    color: '#FFEA00'
+    color: '#FFEA00',
+    unit: 'fishing hours'
   },
-  3: { 
+  { 
+    id: 3, 
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'salmon',
-    color: '#FFAE9B'
+    color: '#FFAE9B',
+    unit: 'fishing hours'
   },
-  4: { 
+  {
+    id: 4,
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'green',
-    color: '#A6FF59'
+    color: '#A6FF59',
+    unit: 'fishing hours'
   }
-}
+]
 
 export default function App() {
   const [time, setTime] = useState({
@@ -114,15 +117,15 @@ export default function App() {
   
   const layers = useMemo(
     () => {
-      const generators = [{...DATAVIEWS.background}, {...DATAVIEWS.eez}]
+      const generators = [{...DATAVIEWS.find(dv => dv.id === 'background')}, {...DATAVIEWS.find(dv => dv.id === 'eez')}]
 
       if (showBasemap) {
-        generators.push({...DATAVIEWS.basemap})
+        generators.push({...DATAVIEWS.find(dv => dv.id === 'basemap')})
       }
 
       if (animated) {
         const heatmapSublayers = tilesets.filter(t => t.active).map((tileset, i) => {
-          const sublayer = {...DATAVIEWS[tileset.id]}
+          const sublayer = {...DATAVIEWS.find(dv => dv.id === tileset.id)}
           let colorRamp = sublayer.colorRamp
           if (tilesets.filter(t => t.active).length === 1) {
             colorRamp = 'presence'
@@ -177,7 +180,7 @@ export default function App() {
           fetchStats: true
         })
       }
-
+    console.log(generators)
     return generators
   },
     [animated, showBasemap, debug, debugLabels, tilesets, geomTypeMode, isPlaying, combinationMode]
@@ -187,16 +190,22 @@ export default function App() {
 
   const clickCallback = useCallback((feature) => {
     // probably dispatch a redux action here or whatever
+    // TODO
+    // if (feature.popupCallbackURL) {
+    //   // dispatchEvent(...)
+    // }
     console.log(feature)
   })
 
   const [hoveredEvent, setHoveredEvent] = useState(null)
   const hoverCallback = useCallback((event) => {
-    console.log(event)
     setHoveredEvent(event)
   }, [])
 
   const { onMapClick, onMapHover } = useMapInteraction(clickCallback, hoverCallback, mapRef)
+  // unifies app wide dataviews config and picked values, eg adds color, title, etc to picked values
+  const hoverTooltipEvent = useMapTooltip(DATAVIEWS, hoveredEvent /*, clickedEvent*/) 
+  // const { legends } = useMapLegend(style, dataviews, )
 
   const globalConfig = useMemo(() => {
     const finalTime = (animated) ? time: debouncedTime
@@ -220,7 +229,8 @@ export default function App() {
       {isLoading && <div className="loading">loading</div>}
       <div className="map">
         {style && <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover} onSetMapRef={setMapRef}>
-          <HoverPopup hoveredEvent={hoveredEvent} layers={DATAVIEWS} />
+          {hoverTooltipEvent && <HoverPopup hoverTooltipEvent={hoverTooltipEvent} />}
+          {/* {clickTooltip && <ClickPopup values={clickTooltip} />} */}
         </Map>}
       </div>
       <div className="timebar">

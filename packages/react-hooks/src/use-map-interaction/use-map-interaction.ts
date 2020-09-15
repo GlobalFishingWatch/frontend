@@ -9,10 +9,10 @@ type FeatureStateSource = { source: string; sourceLayer: string }
 
 export type ExtendedFeature = {
   properties: { [name: string]: any }
-  generator: string | null
-  generatorId: string | number | null
   source: string
   sourceLayer: string
+  generator: string | null
+  generatorId: string | number | null
   id?: number
   value: any
 }
