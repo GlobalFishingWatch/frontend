@@ -11,7 +11,7 @@ import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { QueryParams } from 'types'
-import { REPLACE_URL_PARAMS } from 'data/config'
+import { REPLACE_URL_PARAMS, BASE_URL } from 'data/config'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const WORKSPACES = 'location/workspaces'
@@ -76,6 +76,7 @@ const decodeWorkspace = (queryString: string) => {
 }
 
 const routesOptions: Options = {
+  basename: BASE_URL,
   querySerializer: {
     stringify: encodeWorkspace,
     parse: decodeWorkspace,
