@@ -29,14 +29,12 @@ export const useDataviewResource = (dataview: Dataview, type = 'stats') => {
     if (!dataset) {
       return
     }
-    let url = `https://storage.googleapis.com/raul-tiles-scratch-60ttl/${dataset.id}/statistics.json`
-    if (dataset.id.includes('fishing')) {
-      const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === `4wings-${type}`)
-      if (endpoint) {
-        const pathTemplate = endpoint.pathTemplate.replace('{{aoiId}}', '1')
-        const filterString = filter ? `?filters[0]=flag='${filter}'` : ''
-        url = pathTemplate + filterString
-      }
+    let url
+    const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === `4wings-${type}`)
+    if (endpoint) {
+      const pathTemplate = endpoint.pathTemplate.replace('{{aoiId}}', '1') + '?proxy=true'
+      const filterString = filter ? `&filters[0]=flag='${filter}'` : ''
+      url = pathTemplate + filterString
     }
     if (url) {
       fetchResourceById({ id, url })
