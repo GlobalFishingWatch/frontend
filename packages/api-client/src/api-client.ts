@@ -51,6 +51,7 @@ const isUnauthorizedError = (error: ResponseError) =>
 
 const isClientSide = typeof window !== 'undefined'
 
+export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloading'
 export class GFWAPI {
   debug: boolean
   token = ''
@@ -63,6 +64,7 @@ export class GFWAPI {
   }
   maxRefreshRetries = 1
   logging: Promise<UserData> | null
+  status: RequestStatus = 'idle'
 
   constructor({
     debug = false,
@@ -86,6 +88,10 @@ export class GFWAPI {
 
   getBaseUrl() {
     return this.baseUrl
+  }
+
+  getStatus() {
+    return this.status
   }
 
   getLoginUrl(callbackUrl: string, client = 'gfw') {
@@ -157,17 +163,34 @@ export class GFWAPI {
       .then(parseJSON)
   }
 
+  async refreshAPIToken() {
+    if (this.status !== 'refreshingToken') {
+      this.status = 'refreshingToken'
+      try {
+        const { token } = await this.getTokenWithRefreshToken(this.getRefreshToken())
+        this.setToken(token)
+        this.status = 'idle'
+        return token
+      } catch (e) {
+        this.status = 'idle'
+      }
+    }
+  }
+
   fetch<T>(url: string, options: FetchOptions = {}) {
     return this._internalFetch<T>(url, options)
   }
 
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
+    this.status = 'downloading'
     return this._internalFetch<Blob>(downloadUrl, { responseType: 'blob' })
       .then((blob) => {
         saveAs(blob, fileName)
+        this.status = 'idle'
         return true
       })
       .catch((e) => {
+        this.status = 'idle'
         return false
       })
   }
@@ -203,8 +226,9 @@ export class GFWAPI {
         if (this.debug) {
           console.log(`GFWAPI: Fetching url: ${url}`)
         }
-        const prefix = `${isUrlAbsolute(url) ? '' : this.baseUrl}`
-        const fetchUrl = prefix + (dataset ? `/datasets/${this.dataset}` : '') + url
+        const fetchUrl = isUrlAbsolute(url)
+          ? url
+          : this.baseUrl + (dataset ? `/datasets/${this.dataset}` : '') + url
         const data = await fetch(fetchUrl, {
           method,
           signal,
@@ -248,9 +272,7 @@ export class GFWAPI {
               console.log(`GFWAPI: Trying to refresh the token attempt: ${refreshRetries}`)
             }
             try {
-              const { token } = await this.getTokenWithRefreshToken(this.getRefreshToken())
-              this.setToken(token)
-
+              await this.refreshAPIToken()
               if (this.debug) {
                 console.log(`GFWAPI: Token refresh worked! trying to fetch again ${url}`)
               }
@@ -300,6 +322,7 @@ export class GFWAPI {
 
   async login(params: LoginParams): Promise<UserData> {
     const { accessToken = null, refreshToken = this.getRefreshToken() } = params
+    this.status = 'logging'
     this.logging = new Promise(async (resolve, reject) => {
       if (accessToken) {
         if (this.debug) {
@@ -321,6 +344,7 @@ export class GFWAPI {
               console.warn(`GFWAPI: ${msg}`)
             }
             reject(new Error(msg))
+            this.status = 'idle'
             return null
           }
         }
@@ -336,6 +360,7 @@ export class GFWAPI {
             console.log(`GFWAPI: Token valid, user data ready:`, user)
           }
           resolve(user)
+          this.status = 'idle'
           return user
         } catch (e) {
           if (this.debug) {
@@ -359,6 +384,7 @@ export class GFWAPI {
             console.log(`GFWAPI: Login finished, user data ready:`, user)
           }
           resolve(user)
+          this.status = 'idle'
           return user
         } catch (e) {
           const msg = isUnauthorizedError(e)
@@ -369,9 +395,11 @@ export class GFWAPI {
             console.warn(`GFWAPI: ${msg}`)
           }
           reject(new Error(msg))
+          this.status = 'idle'
           return null
         }
       }
+      this.status = 'idle'
       reject(new Error('No login token provided'))
     })
     return await this.logging

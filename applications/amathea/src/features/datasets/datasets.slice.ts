@@ -20,24 +20,20 @@ export const createDatasetThunk = createAsyncThunk(
       method: 'POST',
       body: { contentType: file.type } as any,
     })
-    try {
-      await fetch(url, { method: 'PUT', body: file })
-      const datasetWithFilePath = {
-        ...dataset,
-        id: kebabCase(dataset.name),
-        source: DATASET_SOURCE_IDS.user,
-        configuration: {
-          filePath: path,
-        },
-      }
-      const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
-        method: 'POST',
-        body: datasetWithFilePath as any,
-      })
-      return createdDataset
-    } catch (e) {
-      console.error(e.message)
+    await fetch(url, { method: 'PUT', body: file })
+    const datasetWithFilePath = {
+      ...dataset,
+      id: kebabCase(dataset.name),
+      source: DATASET_SOURCE_IDS.user,
+      configuration: {
+        filePath: path,
+      },
     }
+    const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
+      method: 'POST',
+      body: datasetWithFilePath as any,
+    })
+    return createdDataset
   }
 )
 

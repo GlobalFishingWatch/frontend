@@ -79,10 +79,11 @@ function NewAreaOfInterest(): React.ReactElement {
       <Button
         onClick={hideModal}
         className={styles.saveBtn}
+        disabled
         tooltip="Coming soon"
         tooltipPlacement="top"
       >
-        CONTINUE
+        COMING SOON
       </Button>
     </div>
   )

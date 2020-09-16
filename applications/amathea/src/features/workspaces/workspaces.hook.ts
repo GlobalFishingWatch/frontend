@@ -1,13 +1,13 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { Workspace } from '@globalfishingwatch/dataviews-client'
+import { Workspace, WorkspaceUpsert } from '@globalfishingwatch/dataviews-client'
 import { selectCurrentWorkspaceDataviewsResolved } from 'features/dataviews/dataviews.selectors'
 import {
   fetchWorkspacesThunk,
   deleteWorkspaceThunk,
   createWorkspaceThunk,
   updateWorkspaceThunk,
-  selectAll,
+  selectAllWorkspaces,
   selectShared,
   fetchWorkspaceByIdThunk,
   selectCurrentWorkspace,
@@ -40,7 +40,7 @@ export const useWorkspacesAPI = () => {
   )
 
   const updateWorkspace = useCallback(
-    async (workspace: Partial<Workspace>): Promise<Workspace> => {
+    async (workspace: WorkspaceUpsert): Promise<Workspace> => {
       const { payload }: any = await dispatch(updateWorkspaceThunk(workspace))
       return payload
     },
@@ -48,7 +48,7 @@ export const useWorkspacesAPI = () => {
   )
 
   const createWorkspace = useCallback(
-    async (workspace: Partial<Workspace>): Promise<Workspace> => {
+    async (workspace: WorkspaceUpsert): Promise<Workspace> => {
       const { payload }: any = await dispatch(createWorkspaceThunk(workspace))
       return payload
     },
@@ -56,7 +56,7 @@ export const useWorkspacesAPI = () => {
   )
 
   const upsertWorkspace = useCallback(
-    async (partialWorkspace: Partial<Workspace>): Promise<Workspace> => {
+    async (partialWorkspace: WorkspaceUpsert): Promise<Workspace> => {
       if (partialWorkspace.id) {
         return updateWorkspace(partialWorkspace)
       } else {
@@ -79,7 +79,7 @@ export const useWorkspacesAPI = () => {
 export const useWorkspacesConnect = () => {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceStatusId = useSelector(selectWorkspaceStatusId)
-  const workspacesList = useSelector(selectAll)
+  const workspacesList = useSelector(selectAllWorkspaces)
   const workspacesSharedList = useSelector(selectShared)
 
   return {

@@ -1,30 +1,20 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import memoize from 'lodash/memoize'
-// import GFWAPI from '@globalfishingwatch/api-client'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { Resource } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { MONTHLY_DATES } from 'data/data'
 
-// export const fetchResourceByIdThunk = createAsyncThunk(
-//   'resources/fetchById',
-//   async ({ id, url }: { id: string; url: string }, { rejectWithValue }) => {
-//     try {
-//       const resource = await GFWAPI.fetch<Resource>(url)
-//       return resource
-//     } catch (e) {
-//       return rejectWithValue(id)
-//     }
-//   }
-// )
-
-// TODO: remove this and use the above once redirect to .json works
 export const fetchResourceByIdThunk = createAsyncThunk(
   'resources/fetchById',
   async ({ id, url }: { id: string; url: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(url)
-      const { monthly } = await response.json()
+      const { monthly } = url.includes('storage.googleapis')
+        ? await fetch(url).then((r) => r.json())
+        : await GFWAPI.fetch<Resource>(url)
+
+      // TODO: remove this and use the above once redirect to .json works
       const data = MONTHLY_DATES.map((date, index) => {
         const value = monthly[index] || 0
         return { date, value }

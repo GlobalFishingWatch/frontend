@@ -52,6 +52,11 @@
   font: var(--font-S);
   border-radius: 3px;
   margin-bottom: var(--space-M);
+  cursor: pointer;
+}
+
+.dropFiles:hover {
+  border-style: solid;
 }
 
 .horizontalContainer {

@@ -106,12 +106,6 @@ export interface AOI {
   bbox: number[]
 }
 
-export interface WorkspaceCreation {
-  name: string
-  description: string
-  dataviews: number[]
-}
-
 export interface WorkspaceDataviewConfig {
   config: DataviewConfig
   datasetsConfig: DataviewDatasetConfigDict
@@ -135,6 +129,11 @@ export interface Workspace {
   }
   start: string
   end: string
+}
+
+export interface WorkspaceUpsert extends Partial<Omit<Workspace, 'aoi' | 'dataviews'>> {
+  aoi?: number
+  dataviews?: number[]
 }
 
 export interface Resource<T = unknown> {

@@ -1,5 +1,16 @@
 # @globalfishingwatch/dataviews-client
 
+## 2.4.0
+
+### Minor Changes
+
+- 24344bc: Clean LegendRamp
+
+### Patch Changes
+
+- Updated dependencies [24344bc]
+  - @globalfishingwatch/layer-composer@2.9.0
+
 ## 2.3.1
 
 ### Patch Changes

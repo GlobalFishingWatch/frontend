@@ -1,5 +1,29 @@
 # @globalfishingwatchapp/amathea
 
+## 0.9.0
+
+### Minor Changes
+
+- 0712c3a: Expose refreshAPIToken in api-client
+
+### Patch Changes
+
+- Updated dependencies [0712c3a]
+  - @globalfishingwatch/api-client@1.4.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 24344bc: Clean LegendRamp
+
+### Patch Changes
+
+- Updated dependencies [24344bc]
+  - @globalfishingwatch/dataviews-client@2.4.0
+  - @globalfishingwatch/layer-composer@2.9.0
+  - @globalfishingwatch/ui-components@1.9.0
+
 ## 0.7.0
 
 ### Minor Changes
