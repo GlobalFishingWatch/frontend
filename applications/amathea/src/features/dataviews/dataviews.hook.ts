@@ -22,7 +22,7 @@ export const useDataviewResource = (dataview: Dataview, type = 'stats') => {
   const id = `dataview-${type}-${dataview?.id}`
   const dataviewResource: Resource<GraphData[]> | undefined = useSelector(selectResourceById(id))
   const { fetchResourceById } = useResourcesAPI()
-  const filter = dataview?.datasetsConfig?.datasetId.query.find((q) => q.id === 'flag')?.value
+  const filter = dataview?.datasetsConfig?.datasetId?.query?.find((q) => q.id === 'flag')?.value
 
   useEffect(() => {
     const dataset = dataview?.datasets?.find((dataset) => dataset.type === '4wings:v1')
