@@ -192,6 +192,7 @@ export default function App() {
   const clickCallback = useCallback((event) => {  
     // probably dispatch a redux action here or whatever
     setClickedEvent(event)
+    console.log(event)
     // TODO
     // if (feature.popupCallbackURL) {
     //   // dispatchEvent(...)

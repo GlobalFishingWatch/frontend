@@ -1,4 +1,5 @@
 import uniqBy from 'lodash/uniqBy'
+import template from 'lodash/template'
 import debounce from 'lodash/debounce'
 import { Cancelable, isArray } from 'lodash'
 import type { MapboxGeoJSONFeature } from 'mapbox-gl'
@@ -15,6 +16,7 @@ export type ExtendedFeature = {
   generatorId: string | number | null
   id?: number
   value: any
+  tooltipCallbackURLs?: string[]
 }
 
 export type InteractionEvent = {
@@ -46,12 +48,29 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
           let parsed = JSON.parse(valuesAtFrame)
           if (extendedFeature.value === 0) break
           if (!isArray(parsed)) parsed = [parsed]
+          const tooltipCallbackURLTemplates = feature.layer.metadata
+            ? feature.layer.metadata.tooltipCallbackURLTemplates
+            : []
+          console.log(tooltipCallbackURLTemplates)
+          const tooltipCallbackURLs = tooltipCallbackURLTemplates
+            ? tooltipCallbackURLTemplates.map((t: string) =>
+                template(t)({
+                  z: 0,
+                  x: 0,
+                  y: 0,
+                  cols: 42,
+                  rows: 34,
+                })
+              )
+            : []
+          console.log(tooltipCallbackURLs)
           parsed.forEach((value: any, i: number) => {
             extendedFeatures.push({
               ...extendedFeature,
               // TODO this should be sublayer id but it has to be carried in GeoJSON feature by aggregator
               generatorId: i,
               value,
+              tooltipCallbackURLs,
             })
           })
         }

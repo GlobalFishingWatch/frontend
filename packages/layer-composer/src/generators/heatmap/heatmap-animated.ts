@@ -191,6 +191,9 @@ class HeatmapAnimatedGenerator {
       ]
 
       if (config.interactive) {
+        console.log(config.tilesAPI, config.sublayers)
+        const baseTooltipCallbackURLTemplates =
+          config.tilesAPI + '/${datasets}/interaction/${z}/${x}/${y}/${cols}/${rows}'
         chunkLayers.push({
           id: `${timeChunk.id}_interaction`,
           source: `${timeChunk.id}_interaction`,
@@ -206,6 +209,10 @@ class HeatmapAnimatedGenerator {
             generatorId: config.id,
             interactive: true,
             frame,
+            // TODO : interaction API should support several tilesets + filters for each sublayer
+            tooltipCallbackURLTemplates: config.sublayers.map((s) =>
+              baseTooltipCallbackURLTemplates.replace('${datasets}', s.tilesets[0])
+            ),
           },
         })
         chunkLayers.push({
