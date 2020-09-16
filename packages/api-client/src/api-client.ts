@@ -226,8 +226,9 @@ export class GFWAPI {
         if (this.debug) {
           console.log(`GFWAPI: Fetching url: ${url}`)
         }
-        const prefix = `${isUrlAbsolute(url) ? '' : this.baseUrl}`
-        const fetchUrl = prefix + (dataset ? `/datasets/${this.dataset}` : '') + url
+        const fetchUrl = isUrlAbsolute(url)
+          ? url
+          : this.baseUrl + (dataset ? `/datasets/${this.dataset}` : '') + url
         const data = await fetch(fetchUrl, {
           method,
           signal,

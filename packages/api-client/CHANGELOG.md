@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-client
 
+## 1.4.1
+
+### Patch Changes
+
+- Fix absolute url without dataset
+
 ## 1.4.0
 
 ### Minor Changes
