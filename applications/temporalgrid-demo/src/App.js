@@ -6,7 +6,7 @@ import { Generators } from '@globalfishingwatch/layer-composer';
 import { useLayerComposer, useDebounce, useMapInteraction, useMapTooltip } from '@globalfishingwatch/react-hooks';
 import TimebarComponent from '@globalfishingwatch/timebar';
 import Tilesets from './tilesets';
-import { HoverPopup } from './popup';
+import { HoverPopup, ClickPopup } from './popup';
 import Map from './map';
 
 import './App.css'
@@ -188,14 +188,18 @@ export default function App() {
 
   const [mapRef, setMapRef] = useState(null)
 
-  const clickCallback = useCallback((feature) => {
+  const [clickedEvent, setClickedEvent] = useState(null)
+  const clickCallback = useCallback((event) => {  
     // probably dispatch a redux action here or whatever
+    setClickedEvent(event)
     // TODO
     // if (feature.popupCallbackURL) {
     //   // dispatchEvent(...)
     // }
-    console.log(feature)
-  })
+  }, [])
+  const closePopup = useCallback(() => {
+    setClickedEvent(null)
+  }, [])
 
   const [hoveredEvent, setHoveredEvent] = useState(null)
   const hoverCallback = useCallback((event) => {
@@ -204,7 +208,8 @@ export default function App() {
 
   const { onMapClick, onMapHover } = useMapInteraction(clickCallback, hoverCallback, mapRef)
   // unifies app wide dataviews config and picked values, eg adds color, title, etc to picked values
-  const hoverTooltipEvent = useMapTooltip(DATAVIEWS, hoveredEvent /*, clickedEvent*/) 
+  const hoverTooltipEvent = useMapTooltip(DATAVIEWS, hoveredEvent) 
+  const clickedTooltipEvent = useMapTooltip(DATAVIEWS, clickedEvent) 
   // const { legends } = useMapLegend(style, dataviews, )
 
   const globalConfig = useMemo(() => {
@@ -229,8 +234,8 @@ export default function App() {
       {isLoading && <div className="loading">loading</div>}
       <div className="map">
         {style && <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover} onSetMapRef={setMapRef}>
-          {hoverTooltipEvent && <HoverPopup hoverTooltipEvent={hoverTooltipEvent} />}
-          {/* {clickTooltip && <ClickPopup values={clickTooltip} />} */}
+          {hoverTooltipEvent && <HoverPopup event={hoverTooltipEvent} />}
+          {clickedTooltipEvent && <ClickPopup event={clickedTooltipEvent} onClose={closePopup} />}
         </Map>}
       </div>
       <div className="timebar">

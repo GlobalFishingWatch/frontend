@@ -29,7 +29,6 @@ export const getTooltipEvent = (
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     const dataview = dataviews.find((dataview: Dataview) => dataview.id === feature.generatorId)
     if (!dataview) return []
-    console.log(feature, dataview)
     return [
       {
         title: dataview.title || dataview.id.toString(),

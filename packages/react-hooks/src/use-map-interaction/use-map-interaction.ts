@@ -23,14 +23,70 @@ export type InteractionEvent = {
   longitude: number
 }
 
+const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[] => {
+  const extendedFeatures: ExtendedFeature[] = []
+  features.forEach((feature: MapboxGeoJSONFeature) => {
+    const generator = feature.layer.metadata ? feature.layer.metadata.generator : null
+    const generatorId = feature.layer.metadata ? feature.layer.metadata.generatorId : null
+    const properties = feature.properties || {}
+    const extendedFeature: ExtendedFeature | null = {
+      properties,
+      generator,
+      generatorId,
+      source: feature.source,
+      sourceLayer: feature.sourceLayer,
+      id: (feature.id as number) || undefined,
+      value: properties.value || properties.name || properties.id,
+    }
+    switch (generator) {
+      case Generators.Type.HeatmapAnimated:
+        const frame = feature.layer.metadata.frame
+        const valuesAtFrame = properties[frame.toString()]
+        if (valuesAtFrame) {
+          let parsed = JSON.parse(valuesAtFrame)
+          if (extendedFeature.value === 0) break
+          if (!isArray(parsed)) parsed = [parsed]
+          parsed.forEach((value: any, i: number) => {
+            extendedFeatures.push({
+              ...extendedFeature,
+              // TODO this should be sublayer id but it has to be carried in GeoJSON feature by aggregator
+              generatorId: i,
+              value,
+            })
+          })
+        }
+        break
+      default:
+        extendedFeatures.push(extendedFeature)
+    }
+  })
+  return extendedFeatures
+}
+
 const useMapInteraction = (
-  clickCallback: (event: InteractionEvent) => void,
+  clickCallback: (event: InteractionEvent | null) => void,
   hoverCallback: (event: InteractionEvent | null) => void,
   map: any
 ) => {
-  const onMapClick = useCallback((event) => {
-    console.log('click')
-  }, [])
+  const onMapClick = useCallback(
+    (event) => {
+      if (clickCallback) {
+        clickCallback(null)
+      }
+      if (event.features && event.features.length) {
+        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
+
+        if (extendedFeatures.length) {
+          clickCallback({
+            features: extendedFeatures,
+            longitude: event.lngLat[0],
+            latitude: event.lngLat[1],
+          })
+        }
+      }
+    },
+    [clickCallback]
+  )
 
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
   const [sourcesWithHoverState, setSourcesWithHoverState] = useState<FeatureStateSource[]>([])
@@ -45,7 +101,7 @@ const useMapInteraction = (
 
   const onMapHover = useCallback(
     (event) => {
-      hoverCallback(null)
+      if (hoverCallback) hoverCallback(null)
       // Turn all sources with active feature states off
       if (map) {
         sourcesWithHoverState.forEach((source: FeatureStateSource) => {
@@ -53,42 +109,7 @@ const useMapInteraction = (
         })
       }
       if (event.features && event.features.length) {
-        const extendedFeatures: ExtendedFeature[] = []
-        event.features.forEach((feature: MapboxGeoJSONFeature) => {
-          const generator = feature.layer.metadata ? feature.layer.metadata.generator : null
-          const generatorId = feature.layer.metadata ? feature.layer.metadata.generatorId : null
-          const properties = feature.properties || {}
-          const extendedFeature: ExtendedFeature | null = {
-            properties,
-            generator,
-            generatorId,
-            source: feature.source,
-            sourceLayer: feature.sourceLayer,
-            id: (feature.id as number) || undefined,
-            value: properties.value || properties.name || properties.id,
-          }
-          switch (generator) {
-            case Generators.Type.HeatmapAnimated:
-              const frame = feature.layer.metadata.frame
-              const valuesAtFrame = properties[frame.toString()]
-              if (valuesAtFrame) {
-                let parsed = JSON.parse(valuesAtFrame)
-                if (extendedFeature.value === 0) break
-                if (!isArray(parsed)) parsed = [parsed]
-                parsed.forEach((value: any, i: number) => {
-                  extendedFeatures.push({
-                    ...extendedFeature,
-                    // TODO this should be sublayer id but it has to be carried in GeoJSON feature by aggregator
-                    generatorId: i,
-                    value,
-                  })
-                })
-              }
-              break
-            default:
-              extendedFeatures.push(extendedFeature)
-          }
-        })
+        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
 
         if (hoverCallbackDebounced && hoverCallbackDebounced.current && extendedFeatures.length) {
           hoverCallbackDebounced.current.cancel()

@@ -70,6 +70,10 @@ fieldset {
   padding: 10px;
 }
 
+.popup.click {
+  background: grey
+}
+
 .popupSection:not(:last-child) {
   padding-bottom: 5px;
   margin-bottom: 5px;
