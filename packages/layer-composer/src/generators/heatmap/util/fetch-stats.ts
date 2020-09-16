@@ -21,16 +21,15 @@ export default function fetchStats(
   if (dateRange) {
     statsUrl.searchParams.set('date-range', dateRange)
   }
-  if (serverSideFilters) {
-    // TODO once we support multiple datasetsConfig in same dataview
-    // generate filters array
-    statsUrl.searchParams.set('filters[0]', serverSideFilters)
-  }
   if (controllerCache[url]) {
     controllerCache[url].abort()
   }
+  const statsUrlString = statsUrl.toString()
+  const finalurl = serverSideFilters
+    ? statsUrlString + `&${serverSideFilters}`
+    : statsUrl.toString()
   controllerCache[url] = new AbortController()
-  const promise: ExtendedPromise<statsByZoom> = fetch(statsUrl.toString(), {
+  const promise: ExtendedPromise<statsByZoom> = fetch(finalurl, {
     signal: controllerCache[url].signal,
     ...(token && {
       headers: {
