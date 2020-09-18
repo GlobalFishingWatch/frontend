@@ -52,6 +52,7 @@ export interface ExtendedLayerMeta {
   legend?: LayerMetadataLegend
   gridArea?: number
   currentValue?: number
+  generatorId?: number
 }
 
 /**

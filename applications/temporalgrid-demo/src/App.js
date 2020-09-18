@@ -21,25 +21,25 @@ export const DEFAULT_TILESETS = [
     filter: "flag='ESP'",
     active: true
   },
-  { 
+  {
     id: 1,
     tileset: 'fishing_v4',
     filter: "flag='FRA'",
     active: false
   },
-  { 
+  {
     id: 2,
     tileset: 'fishing_v4',
     filter: "flag='ITA'",
     active: false
   },
-  { 
+  {
     id: 3,
     tileset: 'fishing_v4',
     filter: "flag='GBR'",
     active: false
   },
-  { 
+  {
     id: 4,
     tileset: 'fishing_v4',
     filter: "flag='PRT'",
@@ -56,29 +56,29 @@ const DATAVIEWS = [
     color: 'red'
   },
   {
-    id: 0, 
+    id: 0,
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'teal',
     color: '#00FFBC',
     unit: 'fishing hours'
   },
-  { 
-    id: 1, 
+  {
+    id: 1,
     title: 'that second thing',
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'magenta',
     color: '#FF64CE',
     unit: 'fishing hours'
   },
-  { 
-    id: 2, 
+  {
+    id: 2,
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'yellow',
     color: '#FFEA00',
     unit: 'fishing hours'
   },
-  { 
-    id: 3, 
+  {
+    id: 3,
     type: Generators.Type.HeatmapAnimated,
     colorRamp: 'salmon',
     color: '#FFAE9B',
@@ -108,13 +108,13 @@ export default function App() {
   const [debug, setDebug] = useState(false)
   const [debugLabels, setDebugLabels] = useState(false)
   const [geomTypeMode, setGeomTypeMode] = useState('gridded')
-  
+
   const [showInfo, setShowInfo] = useState(false)
 
   const [isPlaying, setIsPlaying] = useState(false)
 
   const [isLoading, setLoading] = useState(false)
-  
+
   const layers = useMemo(
     () => {
       const generators = [{...DATAVIEWS.find(dv => dv.id === 'background')}, {...DATAVIEWS.find(dv => dv.id === 'eez')}]
@@ -140,7 +140,7 @@ export default function App() {
             filter: tileset.filter,
           }
         })
-  
+
         let geomType = geomTypeMode
         if (geomType === 'blobOnPlay') {
           geomType = (isPlaying) ? 'blob' : 'gridded'
@@ -152,12 +152,12 @@ export default function App() {
         } else if (heatmapSublayers.length === 2 && combinationMode === 'bivariate') {
           colorRamps = ['bivariate']
         }
-          
+
         generators.push({
           id: 'heatmap-animated',
           type: Generators.Type.HeatmapAnimated,
           sublayers: heatmapSublayers,
-          sublayersCombinationMode: combinationMode,
+          combinationMode: combinationMode,
           debug,
           debugLabels,
           geomType,
@@ -189,7 +189,7 @@ export default function App() {
   const [mapRef, setMapRef] = useState(null)
 
   const [clickedEvent, setClickedEvent] = useState(null)
-  const clickCallback = useCallback((event) => {  
+  const clickCallback = useCallback((event) => {
     // probably dispatch a redux action here or whatever
     setClickedEvent(event)
     // TODO
@@ -208,8 +208,8 @@ export default function App() {
 
   const { onMapClick, onMapHover } = useMapInteraction(clickCallback, hoverCallback, mapRef)
   // unifies app wide dataviews config and picked values, eg adds color, title, etc to picked values
-  const hoverTooltipEvent = useMapTooltip(DATAVIEWS, hoveredEvent) 
-  const clickedTooltipEvent = useMapTooltip(DATAVIEWS, clickedEvent) 
+  const hoverTooltipEvent = useMapTooltip(DATAVIEWS, hoveredEvent)
+  const clickedTooltipEvent = useMapTooltip(DATAVIEWS, clickedEvent)
   // const { legends } = useMapLegend(style, dataviews, )
 
   const globalConfig = useMemo(() => {

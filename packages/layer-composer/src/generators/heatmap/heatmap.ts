@@ -124,6 +124,7 @@ class HeatmapGenerator {
             ...config.legend,
             type: 'colorramp',
             ramp: legendRamp,
+            generatorId: config.id,
           },
           // TODO: It should be added on _applyGenericStyle from layers composer,
           // but it needs to be fixed to make it work

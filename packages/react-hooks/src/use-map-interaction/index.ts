@@ -1,7 +1,7 @@
-export { default } from './use-map-interaction'
+export { default, useMapHover, useMapClick } from './use-map-interaction'
 
 export type ExtendedFeature = {
-  properties: { [name: string]: any }
+  properties: Record<string, any>
   source: string
   sourceLayer: string
   generator: string | null
@@ -9,6 +9,8 @@ export type ExtendedFeature = {
   id?: number
   value: any
 }
+
+export type InteractionEventCallback = (event: InteractionEvent | null) => void
 
 export type InteractionEvent = {
   features?: ExtendedFeature[]

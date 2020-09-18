@@ -27,7 +27,7 @@ function useLayerComposer(
   styleTransformations: StyleTransformation[] = defaultTransformations,
   layerComposer: LayerComposer = defaultLayerComposerInstance
 ) {
-  const [style, setStyle] = useState<ExtendedStyle | undefined>()
+  const [style, setStyle] = useState<ExtendedStyle>({} as ExtendedStyle)
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<Error | null>(null)
 
