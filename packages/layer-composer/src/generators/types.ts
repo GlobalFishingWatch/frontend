@@ -15,6 +15,13 @@ export enum Type {
   Rulers = 'RULERS',
 }
 
+export interface GeneratorFeature {
+  id: string
+  layerId: string
+  generator: Type
+  isCluster?: boolean
+}
+
 export interface GlobalGeneratorConfig {
   start: string
   end: string
@@ -177,19 +184,16 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: Type.HeatmapAnimated
-  tilesets: string[]
-  filters?: string[]
-  colorRamps?: ColorRampsIds[]
-  tilesAPI?: string
+  sublayers: HeatmapAnimatedGeneratorSublayer[]
   combinationMode?: CombinationMode
+  tilesAPI?: string
   geomType?: Geoms
-  tilesetStart?: string
-  tilesetEnd?: string
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
   tilesetsStart?: string
   tilesetsEnd?: string
+  interactive?: boolean
 }
 
 export type AnyGeneratorConfig =
@@ -240,6 +244,13 @@ export type Ruler = {
   isNew?: boolean
 }
 
+export interface HeatmapAnimatedGeneratorSublayer {
+  id: string
+  tilesets: string[]
+  filter: string
+  colorRamp: ColorRampsIds
+}
+
 // ---- Heatmap Generator color ramps types
 export type ColorRampsIds =
   | 'fishing'
@@ -257,4 +268,4 @@ export type ColorRampsIds =
 
 export type BivariateColorRampsIds = 'bivariate'
 
-export type CombinationMode = 'add' | 'compare' | 'bivariate'
+export type CombinationMode = 'add' | 'compare' | 'bivariate' | 'literal'

@@ -61,5 +61,5 @@ export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds | BivariateColorRampsIds,
     '#66518F', '#3E579A', '#667C9E', '#66FFC2',
     '#A659A9', '#A67CB2', '#A6B3BB', '#A6FFC7',
     '#FF64CE', '#FF7CCE', '#FFB3CE', '#FFFFFF',
-  ]
+  ],
 }

@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
-import LayerComposer, { Generators, sort } from '@globalfishingwatch/layer-composer'
+import LayerComposer, {
+  Generators,
+  sort,
+  getInteractiveLayerIds,
+} from '@globalfishingwatch/layer-composer'
 import { ExtendedStyle, StyleTransformation } from '@globalfishingwatch/layer-composer/dist/types'
 
 const applyStyleTransformations = (
@@ -14,7 +18,7 @@ const applyStyleTransformations = (
   return newStyle
 }
 
-const defaultTransformations: StyleTransformation[] = [sort]
+const defaultTransformations: StyleTransformation[] = [sort, getInteractiveLayerIds]
 
 const defaultLayerComposerInstance = new LayerComposer()
 function useLayerComposer(
