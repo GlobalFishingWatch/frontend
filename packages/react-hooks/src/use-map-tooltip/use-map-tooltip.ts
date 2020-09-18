@@ -1,4 +1,4 @@
-import { InteractionEvent } from '../use-map-interaction/use-map-interaction'
+import { InteractionEvent } from '../use-map-interaction'
 
 // TODO use dataview type from dataview-client
 type Dataview = {
@@ -29,14 +29,12 @@ export const getTooltipEvent = (
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     const dataview = dataviews.find((dataview: Dataview) => dataview.id === feature.generatorId)
     if (!dataview) return []
-    return [
-      {
-        title: dataview.title || dataview.id.toString(),
-        color: dataview.color || 'black',
-        unit: dataview.unit || '',
-        value: feature.value,
-      },
-    ]
+    return {
+      title: dataview.title || dataview.id.toString(),
+      color: dataview.color || 'black',
+      unit: dataview.unit || '',
+      value: feature.value,
+    }
   })
   return {
     latitude: event.latitude,

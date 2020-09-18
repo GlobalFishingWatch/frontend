@@ -26,7 +26,7 @@
     "@globalfishingwatch/api-client": "^1.3.0",
     "@globalfishingwatch/dataviews-client": "^2.3.1",
     "@globalfishingwatch/layer-composer": "^2.8.1",
-    "@globalfishingwatch/mapbox-gl": "*"
+    "@globalfishingwatch/mapbox-gl": "latest"
   },
   "gitHead": "d3257a17acb1bd0880b760492bf936a61da4d8d8"
 }

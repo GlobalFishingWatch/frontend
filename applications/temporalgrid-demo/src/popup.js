@@ -1,7 +1,7 @@
 import { Popup } from '@globalfishingwatch/react-map-gl';
 import React from 'react';
 
-function PopupWrapper ({ tooltipEvent, closeButton, closeOnClick, className, onClose, children }) {
+function PopupWrapper ({ tooltipEvent, closeButton, closeOnClick, className, onClose }) {
   return <Popup
     latitude={tooltipEvent.latitude}
     longitude={tooltipEvent.longitude}
@@ -10,7 +10,7 @@ function PopupWrapper ({ tooltipEvent, closeButton, closeOnClick, className, onC
     onClose={onClose}
     anchor="top">
       <div className={`popup ${className}`}>
-        {tooltipEvent.features.map((feature, i) => 
+        {tooltipEvent.features.map((feature, i) =>
           <div key={i} className="popupSection">
             <h3>
               <span className="popupSectionColor" style={{backgroundColor: feature.color }} />
@@ -19,7 +19,6 @@ function PopupWrapper ({ tooltipEvent, closeButton, closeOnClick, className, onC
             <p>
               {feature.value} {feature.unit}
             </p>
-            {/* {...children} */}
           </div>
         )}
       </div>

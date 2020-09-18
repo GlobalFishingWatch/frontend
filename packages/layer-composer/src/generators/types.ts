@@ -185,9 +185,9 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: Type.HeatmapAnimated
   sublayers: HeatmapAnimatedGeneratorSublayer[]
-  sublayersCombinationMode?: CombinationMode
+  combinationMode?: CombinationMode
   tilesAPI?: string
-  geomType?: string
+  geomType?: Geoms
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
