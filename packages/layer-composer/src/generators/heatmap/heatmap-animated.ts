@@ -27,7 +27,7 @@ type GlobalHeatmapAnimatedGeneratorConfig = Required<
 >
 
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
-  sublayersCombinationMode: 'add',
+  combinationMode: 'add',
   geomType: HEATMAP_GEOM_TYPES.GRIDDED,
   tilesetsStart: '2012-01-01T00:00:00.000Z',
   tilesetsEnd: new Date().toISOString(),
@@ -97,7 +97,7 @@ class HeatmapAnimatedGenerator {
     const tilesUrl = `${config.tilesAPI}/${tilesets.join(',')}/${API_ENDPOINTS.tiles}`
 
     // TODO - generate this using updated stats API
-    const breaks = HARDCODED_BREAKS[config.sublayersCombinationMode].slice(0, tilesets.length)
+    const breaks = HARDCODED_BREAKS[config.combinationMode].slice(0, tilesets.length)
 
     const sources = timeChunks.flatMap((timeChunk: TimeChunk) => {
       const baseSourceParams: Record<string, string> = {
@@ -116,7 +116,7 @@ class HeatmapAnimatedGenerator {
         numDatasets: config.sublayers.length.toString(),
         // TODO - generate this using updated stats API
         breaks: JSON.stringify(breaks),
-        combinationMode: config.sublayersCombinationMode,
+        combinationMode: config.combinationMode,
       }
       if (timeChunk.start && timeChunk.dataEnd) {
         baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd].join(',')
@@ -150,7 +150,7 @@ class HeatmapAnimatedGenerator {
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
     const { colorRamp, colorRampBaseExpression } = getColorRampBaseExpression(
       config.sublayers.map((s) => s.colorRamp),
-      config.sublayersCombinationMode
+      config.combinationMode
     )
 
     const layers: Layer[] = timeChunks.flatMap((timeChunk: TimeChunk) => {
