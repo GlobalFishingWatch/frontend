@@ -1,8 +1,8 @@
 import React, { memo } from 'react'
-import { ExtendedLayer } from '@globalfishingwatch/layer-composer/dist/types'
+import { LegendLayer } from './MapLegend'
 
 type BivariateLegendProps = {
-  layer: ExtendedLayer
+  layer: LegendLayer
   className?: string
 }
 

@@ -1,50 +1,29 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import Miniglobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
 import MapLegend from '@globalfishingwatch/ui-components/dist/map-legend'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
-import { ExtendedLayer, ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
+import {
+  useMapHover,
+  InteractionEventCallback,
+} from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
 import { useUserConnect } from 'features/user/user.hook'
+import { useDataviewsConnect } from 'features/dataviews/dataviews.hook'
 import { useMapboxRef } from './map.context'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import styles from './Map.module.css'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
-type LegendConfig = Record<string, number>
-
-// TODO: move this to its own component?
-function useLegendComposer(style: ExtendedStyle, currentValues: LegendConfig) {
-  const layersWithLegend = useMemo(() => {
-    return style
-      ? style?.layers
-          ?.flatMap((layer) => {
-            if (!layer.metadata?.legend) return []
-
-            return {
-              ...layer,
-              ...(currentValues[layer.id] !== undefined && {
-                metadata: {
-                  ...layer.metadata,
-                  legend: { ...layer.metadata.legend, currentValue: currentValues[layer.id] },
-                },
-              }),
-            }
-          })
-          // Reverse again to keep dataviews sidebar and legend aligned
-          .reverse()
-      : ([] as ExtendedLayer[])
-  }, [currentValues, style])
-  return layersWithLegend
-}
-
 const Map = (): React.ReactElement => {
   const mapRef = useMapboxRef()
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
   const { logged } = useUserConnect()
+  const { dataviewsList } = useDataviewsConnect()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const token = GFWAPI.getToken()
   // Updating token at render time instead of selector in case it was refreshed
@@ -52,8 +31,12 @@ const Map = (): React.ReactElement => {
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
-  const [currentValues, setCurrentValues] = useState<LegendConfig>({})
-  const legendLayers = useLegendComposer(style as ExtendedStyle, currentValues)
+  const [hoverEvent, setHoverEvent] = useState<any>()
+  const hoverCallback: InteractionEventCallback = (e) => {
+    setHoverEvent(e)
+  }
+  const onMapHover = useMapHover(hoverCallback, mapRef)
+  const legendLayers = useMapLegend(style, dataviewsList, hoverEvent)
 
   const [bounds, setBounds] = useState<MiniglobeBounds | undefined>()
 
@@ -98,20 +81,20 @@ const Map = (): React.ReactElement => {
     setMapCoordinates({ latitude, longitude, zoom: Math.max(1, zoom - 1) })
   }, [latitude, longitude, setMapCoordinates, zoom])
 
-  const handleMapHover = useCallback(({ lngLat, features }) => {
-    const heatmapFeatures = (features || []).filter((feature: any) =>
-      feature.layer.id.includes('fourwings')
-    )
+  // const handleMapHover = useCallback(({ lngLat, features }) => {
+  //   const heatmapFeatures = (features || []).filter((feature: any) =>
+  //     feature.layer.id.includes('fourwings')
+  //   )
 
-    const values = heatmapFeatures.reduce(
-      (acc: any, { layer, properties }: any) => ({
-        ...acc,
-        ...(properties.value && { [layer.id]: properties.value }),
-      }),
-      {}
-    )
-    setCurrentValues(values)
-  }, [])
+  //   const values = heatmapFeatures.reduce(
+  //     (acc: any, { layer, properties }: any) => ({
+  //       ...acc,
+  //       ...(properties.value && { [layer.id]: properties.value }),
+  //     }),
+  //     {}
+  //   )
+  //   setCurrentValues(values)
+  // }, [])
 
   return (
     <div className={styles.container}>
@@ -124,7 +107,7 @@ const Map = (): React.ReactElement => {
           latitude={latitude}
           longitude={longitude}
           onError={handleError}
-          onHover={handleMapHover}
+          onHover={onMapHover}
           transformRequest={transformRequest}
           onViewportChange={onViewportChange}
           mapStyle={style}

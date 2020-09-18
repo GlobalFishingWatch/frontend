@@ -1,11 +1,7 @@
+import { LayerMetadataLegend } from '@globalfishingwatch/layer-composer/dist/types'
+
 export { default } from './use-map-legend'
 
-export type LegendLayerConfig = {
+export type LegendLayer = LayerMetadataLegend & {
   color: string
-}
-
-export type LegendConfig = {
-  latitude?: number
-  longitude?: number
-  layers?: LegendLayerConfig[]
 }

@@ -4,7 +4,7 @@ import { Cancelable, isArray } from 'lodash'
 import { useCallback, useState, useEffect, useRef } from 'react'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { ExtendedFeature, InteractionEvent } from '.'
+import { ExtendedFeature, InteractionEvent, InteractionEventCallback } from '.'
 
 type FeatureStateSource = { source: string; sourceLayer: string }
 
@@ -48,7 +48,7 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
   return extendedFeatures
 }
 
-export const useMapClick = (clickCallback: (event: InteractionEvent | null) => void) => {
+export const useMapClick = (clickCallback: InteractionEventCallback) => {
   const onMapClick = useCallback(
     (event) => {
       if (clickCallback) {
@@ -76,7 +76,7 @@ type MapHoverConfig = {
   debounced: number
 }
 export const useMapHover = (
-  hoverCallback: (event: InteractionEvent | null) => void,
+  hoverCallback: InteractionEventCallback,
   map: Map,
   config?: MapHoverConfig
 ) => {
@@ -162,8 +162,8 @@ export const useMapHover = (
 }
 
 const useMapInteraction = (
-  clickCallback: (event: InteractionEvent | null) => void,
-  hoverCallback: (event: InteractionEvent | null) => void,
+  clickCallback: InteractionEventCallback,
+  hoverCallback: InteractionEventCallback,
   map: Map
 ) => {
   const onMapClick = useMapClick(clickCallback)

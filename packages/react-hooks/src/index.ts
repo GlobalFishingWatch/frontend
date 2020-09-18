@@ -3,9 +3,11 @@ export { default as useLayerComposer } from './use-layer-composer'
 export {
   default as useMapInteraction,
   InteractionEvent,
+  InteractionEventCallback,
   ExtendedFeature,
 } from './use-map-interaction'
 export { default as useMapTooltip } from './use-map-tooltip'
+export { default as useMapLegend } from './use-map-legend'
 export { default as useWorkspace } from './use-workspace'
 export {
   default as useDataviewsGeneratorConfigs,
