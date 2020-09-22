@@ -1,53 +1,39 @@
 import { useMemo } from 'react'
-import { Dataview } from '@globalfishingwatch/dataviews-client'
 import { ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
 import { InteractionEvent } from '../use-map-interaction'
 import { LegendLayer } from '.'
 
-export function mergeStyleDataview(
+export function getLegendLayers(
   style: ExtendedStyle,
-  dataviews: Dataview[]
-): LegendLayer[] | undefined {
-  if (!style.layers) return
-  return style?.layers?.flatMap((layer) => {
-    if (!layer.metadata?.legend) return []
-    debugger
-    const dataview = dataviews.find(
-      (dataview: Dataview) => dataview.id === (layer?.metadata?.generatorId as any)
-    )
-
-    return {
-      ...layer.metadata.legend,
-      color: dataview?.config?.color || 'red',
-    }
-  })
-}
-
-export function mergeLegendLayersEvent(layers: LegendLayer[], event?: InteractionEvent) {
-  if (!event) return layers
-  return []
-}
-
-export function getLegendConfig(
-  style: ExtendedStyle,
-  dataviews: Dataview[],
   event?: InteractionEvent
 ): LegendLayer[] | undefined {
-  const layersConfig = mergeStyleDataview(style, dataviews)
-  return event ? mergeLegendLayersEvent(layersConfig as any, event) : layersConfig
+  const layers = style?.layers?.flatMap((layer) => {
+    if (!layer.metadata?.legend) return []
+    const legendLayer = {
+      ...layer.metadata.legend,
+      color: layer.metadata.color || 'red',
+      generatorId: layer.metadata.generatorId as string,
+    }
+    if (!event) return legendLayer
+    const eventFeature = event?.features?.find(
+      (feature) => feature.generatorId === layer.metadata?.generatorId
+    )
+    if (!eventFeature) return legendLayer
+    return {
+      ...legendLayer,
+      value: eventFeature.value,
+      properties: eventFeature.properties,
+    }
+  })
+  return layers
 }
 
-function useMapLegend(
-  style?: ExtendedStyle,
-  dataviews?: Dataview[],
-  interactionEvent?: InteractionEvent
-) {
+function useMapLegend(style?: ExtendedStyle, interactionEvent?: InteractionEvent) {
   const legendLayers = useMemo(() => {
-    if (!style || !dataviews) return
-    const legendLayers = getLegendConfig(style, dataviews, interactionEvent)
-    console.log('legendLayers -> legendLayers', legendLayers)
-    return [] as LegendLayer[]
-  }, [dataviews, interactionEvent, style])
+    if (!style) return
+    const legendLayers = getLegendLayers(style, interactionEvent)
+    return legendLayers?.reverse()
+  }, [style, interactionEvent])
   return legendLayers
 }
 export default useMapLegend
