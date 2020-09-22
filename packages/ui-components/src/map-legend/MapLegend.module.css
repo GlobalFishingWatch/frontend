@@ -9,12 +9,24 @@
   padding: var(--space-S) var(--space-M);
 }
 
+.rowColum {
+  display: flex;
+  align-items: center;
+}
+
 .row:not(:last-child) {
   border-bottom: 1px solid rgba(var(--white-rgb), var(--opacity-terthiary));
 }
 
 .subTitle {
   opacity: var(--opacity-secondary);
+}
+
+.line {
+  display: inline-flex;
+  width: 2rem;
+  height: 2px;
+  margin-right: var(--space-S);
 }
 
 .ramp {

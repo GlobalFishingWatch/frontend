@@ -11,7 +11,6 @@ import {
 } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
 import { useUserConnect } from 'features/user/user.hook'
-import { useDataviewsConnect } from 'features/dataviews/dataviews.hook'
 import { useMapboxRef } from './map.context'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import styles from './Map.module.css'
@@ -23,7 +22,6 @@ const Map = (): React.ReactElement => {
   const { viewport, onViewportChange, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
   const { logged } = useUserConnect()
-  const { dataviewsList } = useDataviewsConnect()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const token = GFWAPI.getToken()
   // Updating token at render time instead of selector in case it was refreshed
@@ -36,7 +34,7 @@ const Map = (): React.ReactElement => {
     setHoverEvent(e)
   }
   const onMapHover = useMapHover(hoverCallback, mapRef)
-  const legendLayers = useMapLegend(style, dataviewsList, hoverEvent)
+  const legendLayers = useMapLegend(style, hoverEvent)
 
   const [bounds, setBounds] = useState<MiniglobeBounds | undefined>()
 
