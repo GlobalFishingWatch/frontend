@@ -120,11 +120,12 @@ class HeatmapGenerator {
         paint,
         metadata: {
           // TODO: support multiple legends by each datasets
+          ...config.metadata,
+          generatorId: config.id,
           legend: {
-            ...config.legend,
+            ...config.metadata?.legend,
             type: 'colorramp',
             ramp: legendRamp,
-            generatorId: config.id,
           },
           // TODO: It should be added on _applyGenericStyle from layers composer,
           // but it needs to be fixed to make it work

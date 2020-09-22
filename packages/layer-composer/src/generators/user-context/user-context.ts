@@ -19,9 +19,10 @@ class UserContextGenerator {
     ]
   }
   _getStyleLayers = (config: UserContextGeneratorConfig) => {
+    const generatorId = `user-context-${config.id}`
     return [
       {
-        id: `user-context-${config.id}`,
+        id: generatorId,
         type: 'line',
         source: config.id,
         'source-layer': 'main',
@@ -31,6 +32,14 @@ class UserContextGenerator {
         },
         layout: {
           visibility: isConfigVisible(config),
+        },
+        metadata: {
+          color: config.color,
+          generatorId,
+          legend: {
+            type: 'solid',
+            ...config.metadata?.legend,
+          },
         },
       },
     ]

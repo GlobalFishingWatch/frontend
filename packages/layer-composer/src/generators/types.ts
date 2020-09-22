@@ -32,12 +32,23 @@ export interface GlobalGeneratorConfig {
 
 export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[]
 
+export interface GeneratorLegend {
+  label: string
+  unit: string
+}
+
+export interface GeneratorMetadata {
+  legend?: GeneratorLegend
+  [key: string]: any
+}
+
 export interface GeneratorConfig {
   id: string
   data?: AnyData
   type: Type | string
   visible?: boolean
   opacity?: number
+  metadata?: GeneratorMetadata
 }
 
 /**
@@ -157,11 +168,6 @@ export interface RulersGeneratorConfig extends GeneratorConfig {
   data: Ruler[]
 }
 
-export interface HeatmapGeneratorLegend {
-  label: string
-  unit: string
-}
-
 export interface HeatmapGeneratorConfig extends GeneratorConfig {
   type: Type.Heatmap
   // Types needed but already in GlobalGeneratorConfig
@@ -179,7 +185,6 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   colorRamp?: ColorRampsIds
   serverSideFilter?: string
   updateColorRampOnTimeChange?: boolean
-  legend?: HeatmapGeneratorLegend
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
