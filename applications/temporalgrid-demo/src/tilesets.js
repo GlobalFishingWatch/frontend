@@ -25,18 +25,16 @@ export default function Tilesets({ onChange }) {
     newTilesets[index].tileset = tileset
     updateTilesets(newTilesets)
   })
-
   const setFilter = useCallback((index, filter) => {
     const newTilesets = [...tilesets]
     newTilesets[index].filter = filter
     updateTilesets(newTilesets)
-  }, [tilesets])
-
+  })
   const setActive = useCallback((index, active) => {
     const newTilesets = [...tilesets]
     newTilesets[index].active = active
     updateTilesets(newTilesets)
-  }, [tilesets])
+  })
 
   const [combinationMode, setCombinationMode] = useState('add')
 

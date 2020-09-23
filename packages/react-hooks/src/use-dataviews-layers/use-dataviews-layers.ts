@@ -6,8 +6,18 @@ export function getGeneratorConfig(dataview: Dataview) {
   if (dataview.config.type === Generators.Type.UserContext) {
     const dataset = dataview.datasets?.find((dataset) => dataset.type === 'user-context-layer:v1')
     const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === 'user-context-tiles')
+    const pickValueAt = dataset?.configuration?.propertyToInclude
     if (endpoint) {
-      return { ...dataview.config, tilesUrl: endpoint.pathTemplate }
+      return {
+        ...dataview.config,
+        ...(pickValueAt && { pickValueAt }),
+        tilesUrl: endpoint.pathTemplate,
+        metadata: {
+          legend: {
+            label: dataset?.name,
+          },
+        },
+      }
     }
   }
   if (dataview.config.type === Generators.Type.Heatmap) {
@@ -28,9 +38,12 @@ export function getGeneratorConfig(dataview: Dataview) {
         statsUrl: statsEndpoint?.pathTemplate,
         // ADHOC for Amathea for now
         ...(flagFilter && { serverSideFilter: `flag in ('${flagFilter}')` }),
-        legend: {
-          label: dataset?.name,
-          unit: dataset?.unit,
+        metadata: {
+          color: dataview?.config?.color,
+          legend: {
+            label: dataset?.name,
+            unit: dataset?.unit,
+          },
         },
       }
       return generator

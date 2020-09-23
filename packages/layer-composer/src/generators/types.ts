@@ -15,6 +15,13 @@ export enum Type {
   Rulers = 'RULERS',
 }
 
+export interface GeneratorFeature {
+  id: string
+  layerId: string
+  generator: Type
+  isCluster?: boolean
+}
+
 export interface GlobalGeneratorConfig {
   start: string
   end: string
@@ -25,12 +32,23 @@ export interface GlobalGeneratorConfig {
 
 export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[]
 
+export interface GeneratorLegend {
+  label: string
+  unit: string
+}
+
+export interface GeneratorMetadata {
+  legend?: GeneratorLegend
+  [key: string]: any
+}
+
 export interface GeneratorConfig {
   id: string
   data?: AnyData
   type: Type | string
   visible?: boolean
   opacity?: number
+  metadata?: GeneratorMetadata
 }
 
 /**
@@ -71,9 +89,21 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    */
   color?: string
   /**
+   * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
+   */
+  colorRamp?: ColorRampsIds
+  /**
    * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
    */
   tilesUrl: string
+  /**
+   * Custom color ramp for filled layers
+   */
+  steps?: number[]
+  /**
+   * Property to get value to display the ramp
+   */
+  pickValueAt?: string
 }
 
 /**
@@ -150,11 +180,6 @@ export interface RulersGeneratorConfig extends GeneratorConfig {
   data: Ruler[]
 }
 
-export interface HeatmapGeneratorLegend {
-  label: string
-  unit: string
-}
-
 export interface HeatmapGeneratorConfig extends GeneratorConfig {
   type: Type.Heatmap
   // Types needed but already in GlobalGeneratorConfig
@@ -172,24 +197,20 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   colorRamp?: ColorRampsIds
   serverSideFilter?: string
   updateColorRampOnTimeChange?: boolean
-  legend?: HeatmapGeneratorLegend
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: Type.HeatmapAnimated
-  tilesets: string[]
-  filters?: string[]
-  colorRamps?: ColorRampsIds[]
-  tilesAPI?: string
+  sublayers: HeatmapAnimatedGeneratorSublayer[]
   combinationMode?: CombinationMode
+  tilesAPI?: string
   geomType?: Geoms
-  tilesetStart?: string
-  tilesetEnd?: string
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
   tilesetsStart?: string
   tilesetsEnd?: string
+  interactive?: boolean
 }
 
 export type AnyGeneratorConfig =
@@ -240,6 +261,13 @@ export type Ruler = {
   isNew?: boolean
 }
 
+export interface HeatmapAnimatedGeneratorSublayer {
+  id: string
+  tilesets: string[]
+  filter: string
+  colorRamp: ColorRampsIds
+}
+
 // ---- Heatmap Generator color ramps types
 export type ColorRampsIds =
   | 'fishing'
@@ -257,4 +285,4 @@ export type ColorRampsIds =
 
 export type BivariateColorRampsIds = 'bivariate'
 
-export type CombinationMode = 'add' | 'compare' | 'bivariate'
+export type CombinationMode = 'add' | 'compare' | 'bivariate' | 'literal'

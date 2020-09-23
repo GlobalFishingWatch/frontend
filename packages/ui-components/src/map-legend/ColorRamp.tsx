@@ -1,21 +1,16 @@
 import React, { memo, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
-import {
-  ExtendedLayer,
-  LayerMetadataLegend,
-  ExtendedLayerMeta,
-} from '@globalfishingwatch/layer-composer/dist/types'
 import styles from './MapLegend.module.css'
+import { LegendLayer } from './MapLegend'
 
 type ColorRampLegendProps = {
-  layer: ExtendedLayer
+  layer: LegendLayer
   className?: string
 }
 
 function ColorRampLegend({ layer, className }: ColorRampLegendProps) {
-  const { gridArea, legend = {} } = (layer?.metadata || {}) as ExtendedLayerMeta
-  const { ramp, label, unit, currentValue } = legend as LayerMetadataLegend
+  const { gridArea, ramp, label, unit, currentValue } = (layer || {}) as LegendLayer
 
   const heatmapLegendScale = useMemo(() => {
     if (!ramp) return null

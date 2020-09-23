@@ -88,6 +88,7 @@ class LayerComposer {
       }
       if (!newLayer.metadata) {
         newLayer.metadata = {
+          generatorId: generatorConfig.id,
           generatorType: generatorConfig.type as Type,
         }
       } else {

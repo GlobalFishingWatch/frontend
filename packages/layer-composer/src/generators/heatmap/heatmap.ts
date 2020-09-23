@@ -120,8 +120,10 @@ class HeatmapGenerator {
         paint,
         metadata: {
           // TODO: support multiple legends by each datasets
+          ...config.metadata,
+          generatorId: config.id,
           legend: {
-            ...config.legend,
+            ...config.metadata?.legend,
             type: 'colorramp',
             ramp: legendRamp,
           },

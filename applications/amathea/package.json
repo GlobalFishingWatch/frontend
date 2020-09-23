@@ -25,6 +25,7 @@
     "countryflag": "^4.0.0",
     "classnames": "^2.2.6",
     "d3-format": "2.0.0",
+    "d3-scale": "^3.2.2",
     "dayjs": "^1.8.28",
     "lodash": "^4.17.19",
     "luxon": "^1.24.1",

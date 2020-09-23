@@ -21,7 +21,7 @@ const Workspaces = () => {
       <Section>
         <h2>Workspaces list</h2>
         <ul>
-          {worspaces.map((workspace) => (
+          {worspaces?.map((workspace) => (
             <ListItem
               key={workspace.id}
               checked={workspace.id === workspaceId}

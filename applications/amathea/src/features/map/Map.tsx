@@ -5,37 +5,35 @@ import Miniglobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/di
 import MapLegend from '@globalfishingwatch/ui-components/dist/map-legend'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
-import { ExtendedLayer, ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
+// import { useMapHover } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+// import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
+import { ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
+import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
 import { useUserConnect } from 'features/user/user.hook'
 import { useMapboxRef } from './map.context'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import styles from './Map.module.css'
-
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 type LegendConfig = Record<string, number>
 
-// TODO: move this to its own component?
 function useLegendComposer(style: ExtendedStyle, currentValues: LegendConfig) {
   const layersWithLegend = useMemo(() => {
     return style
       ? style?.layers
           ?.flatMap((layer) => {
             if (!layer.metadata?.legend) return []
-
+            const currentValue = currentValues[layer.id]
             return {
-              ...layer,
-              ...(currentValues[layer.id] !== undefined && {
-                metadata: {
-                  ...layer.metadata,
-                  legend: { ...layer.metadata.legend, currentValue: currentValues[layer.id] },
-                },
-              }),
+              ...layer.metadata.legend,
+              color: layer.metadata.color || 'red',
+              generatorId: layer.metadata.generatorId as string,
+              currentValue,
             }
           })
           // Reverse again to keep dataviews sidebar and legend aligned
           .reverse()
-      : ([] as ExtendedLayer[])
+      : ([] as LegendLayer[])
   }, [currentValues, style])
   return layersWithLegend
 }
@@ -54,6 +52,9 @@ const Map = (): React.ReactElement => {
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
   const [currentValues, setCurrentValues] = useState<LegendConfig>({})
   const legendLayers = useLegendComposer(style as ExtendedStyle, currentValues)
+  // const [hoverEvent, setHoverEvent] = useState<any>()
+  // const onMapHover = useMapHover(setHoverEvent, mapRef, { debounced: 0 })
+  // const legendLayers = useMapLegend(style, hoverEvent)
 
   const [bounds, setBounds] = useState<MiniglobeBounds | undefined>()
 
@@ -99,8 +100,9 @@ const Map = (): React.ReactElement => {
   }, [latitude, longitude, setMapCoordinates, zoom])
 
   const handleMapHover = useCallback(({ lngLat, features }) => {
-    const heatmapFeatures = (features || []).filter((feature: any) =>
-      feature.layer.id.includes('fourwings')
+    const heatmapFeatures = (features || []).filter(
+      (feature: any) =>
+        feature.layer.id.includes('fourwings') || feature.layer.id.includes('user-context')
     )
 
     const values = heatmapFeatures.reduce(

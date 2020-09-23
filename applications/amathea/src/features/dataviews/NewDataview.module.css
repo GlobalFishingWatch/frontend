@@ -4,8 +4,17 @@
   flex-direction: column;
 }
 
+.containerRow {
+  display: flex;
+  flex-direction: row;
+}
+
 .input {
   margin-bottom: var(--space-M);
+}
+
+.input + .input {
+  margin-left: var(--space-S);
 }
 
 .saveBtn {
