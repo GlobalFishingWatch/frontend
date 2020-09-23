@@ -83,11 +83,14 @@ export const useMapHover = (
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
   const [sourcesWithHoverState, setSourcesWithHoverState] = useState<FeatureStateSource[]>([])
 
-  const hoverCallbackDebounced = useRef<null | (Cancelable & ((e: InteractionEvent) => void))>(null)
+  const hoverCallbackDebounced = useRef<any>(null)
   useEffect(() => {
-    const debouncedFn = debounce((e) => {
-      hoverCallback(e)
-    }, debounced)
+    const debouncedFn =
+      debounced > 0
+        ? debounce((e) => {
+            hoverCallback(e)
+          }, debounced)
+        : hoverCallback
     hoverCallbackDebounced.current = debouncedFn
   }, [debounced, hoverCallback])
 
@@ -104,7 +107,9 @@ export const useMapHover = (
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
 
         if (hoverCallbackDebounced && hoverCallbackDebounced.current && extendedFeatures.length) {
-          hoverCallbackDebounced.current.cancel()
+          if (hoverCallbackDebounced.current.cancel) {
+            hoverCallbackDebounced.current.cancel()
+          }
           hoverCallbackDebounced.current({
             features: extendedFeatures,
             longitude: event.lngLat[0],
@@ -143,7 +148,7 @@ export const useMapHover = (
           setSourcesWithHoverState(newSourcesWithHoverState)
         }
       } else {
-        if (hoverCallbackDebounced && hoverCallbackDebounced.current) {
+        if (hoverCallbackDebounced?.current?.cancel) {
           hoverCallbackDebounced.current.cancel()
         }
         if (hoverCallback) {
