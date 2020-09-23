@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/amathea",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "private": true,
   "homepage": "/marine-reserves",
   "scripts": {
@@ -12,15 +12,15 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@globalfishingwatch/api-client": "^1.4.0",
-    "@globalfishingwatch/dataviews-client": "^2.4.0",
-    "@globalfishingwatch/layer-composer": "^2.10.1",
+    "@globalfishingwatch/api-client": "^1.5.0",
+    "@globalfishingwatch/dataviews-client": "^2.5.0",
+    "@globalfishingwatch/layer-composer": "^2.11.0",
     "@globalfishingwatch/linting": "^1.1.1",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.1-beta1",
     "@globalfishingwatch/react-map-gl": "^5.2.7-gfw.0",
-    "@globalfishingwatch/react-hooks": "^2.8.0",
+    "@globalfishingwatch/react-hooks": "^2.9.0",
     "@globalfishingwatch/timebar": "^1.0.13",
-    "@globalfishingwatch/ui-components": "^1.9.1",
+    "@globalfishingwatch/ui-components": "^1.10.0",
     "@reduxjs/toolkit": "^1.4.0",
     "countryflag": "^4.0.0",
     "classnames": "^2.2.6",

@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.11.0
+
+### Minor Changes
+
+- 1774aee: Interaction hooks and user-context ramps
+
 ## 2.10.1
 
 ### Patch Changes

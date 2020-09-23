@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-client
 
+## 1.5.0
+
+### Minor Changes
+
+- 1774aee: Interaction hooks and user-context ramps
+
 ## 1.4.1
 
 ### Patch Changes
