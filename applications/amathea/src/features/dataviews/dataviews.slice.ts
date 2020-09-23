@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'store'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Dataview, DataviewCreation } from '@globalfishingwatch/dataviews-client'
 import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { RootState } from 'store'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
 
@@ -12,20 +12,25 @@ export const fetchDataviewsThunk = createAsyncThunk('dataviews/fetch', async () 
   return data
 })
 
+const draftToAPIdataview = (draftDataview: DataviewDraft) => {
+  const { dataset, color, colorRamp, steps } = draftDataview
+  const dataview: DataviewCreation = {
+    name: dataset.label,
+    description: dataset.description,
+    datasets: [dataset.id as string],
+    config: {
+      type: Generators.Type.UserContext,
+      color,
+      colorRamp,
+      ...(steps && { steps }),
+    },
+  }
+  return dataview
+}
 export const createDataviewThunk = createAsyncThunk(
   'dataviews/create',
   async (draftDataview: DataviewDraft) => {
-    const { dataset, color, colorRamp } = draftDataview
-    const dataview: DataviewCreation = {
-      name: dataset.label,
-      description: dataset.description,
-      datasets: [dataset.id as string],
-      config: {
-        type: Generators.Type.UserContext,
-        color,
-        colorRamp,
-      },
-    }
+    const dataview = draftToAPIdataview(draftDataview)
     const createdDataview = await GFWAPI.fetch<Dataview>('/v1/dataviews', {
       method: 'POST',
       body: dataview as any,
@@ -42,9 +47,10 @@ export const createDataviewThunk = createAsyncThunk(
 export const updateDataviewThunk = createAsyncThunk(
   'dataviews/update',
   async (draftDataview: DataviewDraft) => {
+    const dataview = draftToAPIdataview(draftDataview)
     const updatedDataview = await GFWAPI.fetch<Dataview>(`/v1/dataviews/${draftDataview.id}`, {
       method: 'PATCH',
-      body: draftDataview as any,
+      body: dataview as any,
     })
     return updatedDataview
   },
@@ -69,7 +75,11 @@ export const deleteDataviewThunk = createAsyncThunk(
   }
 )
 
-export type DataviewDraftDataset = SelectOption & { type: string; description: string }
+export type DataviewDraftDataset = SelectOption & {
+  type: string
+  description: string
+  category?: string
+}
 
 export type DataviewDraft = {
   id?: number // used when needs update
@@ -79,6 +89,7 @@ export type DataviewDraft = {
   color?: string
   colorRamp?: Generators.ColorRampsIds
   flagFilter?: string
+  steps?: number[]
 }
 
 export interface DataviewsState extends AsyncReducer<Dataview> {

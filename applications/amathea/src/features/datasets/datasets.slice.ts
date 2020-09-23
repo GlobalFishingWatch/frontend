@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'store'
 import kebabCase from 'lodash/kebabCase'
 import memoize from 'lodash/memoize'
 import GFWAPI, { UploadResponse } from '@globalfishingwatch/api-client'
 import { Dataset } from '@globalfishingwatch/dataviews-client'
+import { RootState } from 'store'
 import { AsyncReducer, createAsyncSlice, asyncInitialState } from 'features/api/api.slice'
 import { DATASET_SOURCE_IDS } from 'data/data'
 
@@ -26,6 +26,7 @@ export const createDatasetThunk = createAsyncThunk(
       id: kebabCase(dataset.name),
       source: DATASET_SOURCE_IDS.user,
       configuration: {
+        ...dataset.configuration,
         filePath: path,
       },
     }
