@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 1.10.0
+
+### Minor Changes
+
+- 1774aee: Interaction hooks and user-context ramps
+
 ## 1.9.1
 
 ### Patch Changes

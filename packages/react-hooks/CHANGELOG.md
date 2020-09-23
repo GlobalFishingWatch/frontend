@@ -1,5 +1,18 @@
 # @globalfishingwatch/react-hooks
 
+## 2.9.0
+
+### Minor Changes
+
+- 1774aee: Interaction hooks and user-context ramps
+
+### Patch Changes
+
+- Updated dependencies [1774aee]
+  - @globalfishingwatch/api-client@1.5.0
+  - @globalfishingwatch/dataviews-client@2.5.0
+  - @globalfishingwatch/layer-composer@2.11.0
+
 ## 2.8.0
 
 ### Minor Changes
