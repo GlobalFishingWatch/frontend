@@ -21,7 +21,7 @@ export function getLegendLayers(
     if (!eventFeature) return legendLayer
     return {
       ...legendLayer,
-      value: eventFeature.value,
+      currentValue: eventFeature.value,
       properties: eventFeature.properties,
     }
   })
