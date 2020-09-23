@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { scaleLinear } from 'd3-scale'
 import Select, { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import Button from '@globalfishingwatch/ui-components/dist/button'
+import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import ColorBar, { ColorBarIds } from '@globalfishingwatch/ui-components/dist/color-bar'
-import { DATASET_SOURCE_OPTIONS, FLAG_FILTERS } from 'data/data'
+import { DATASET_SOURCE_OPTIONS, FLAG_FILTERS, CUSTOM_DATA_SHAPE } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { useCurrentWorkspaceConnect, useWorkspacesAPI } from 'features/workspaces/workspaces.hook'
 import styles from './NewDataview.module.css'
@@ -17,9 +19,24 @@ function NewDataview(): React.ReactElement {
   const { workspace } = useCurrentWorkspaceConnect()
   const { updateWorkspace } = useWorkspacesAPI()
   const { draftDataview, setDraftDataview, resetDraftDataview } = useDraftDataviewConnect()
-  const { createDataview } = useDataviewsAPI()
+  const { upsertDataview } = useDataviewsAPI()
   const { source, dataset } = draftDataview || {}
   const datasetsOptions = useSelector(selectDatasetOptionsBySource)
+  const [minRange, setMinRange] = useState<number>(
+    draftDataview?.steps?.length ? draftDataview?.steps[0] : 0
+  )
+  const [maxRange, setMaxRange] = useState<number>(
+    draftDataview?.steps?.length ? draftDataview?.steps[draftDataview?.steps.length - 1] : 0
+  )
+
+  const onStepMinRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target
+    setMinRange(parseFloat(value))
+  }
+  const onStepMaxRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target
+    setMaxRange(parseFloat(value))
+  }
 
   const onSelect = (property: string, option: SelectOption | DataviewDraftDataset | number) => {
     setDraftDataview({ [property]: option })
@@ -34,11 +51,18 @@ function NewDataview(): React.ReactElement {
     setDraftDataview({ [property]: undefined })
   }
   const onCreateClick = async () => {
-    setLoading(true)
     if (draftDataview) {
+      setLoading(true)
       let dataview
-      if (draftDataview.source?.id === 'user' && !draftDataview.id) {
-        dataview = await createDataview(draftDataview)
+      if (draftDataview.source?.id === 'user') {
+        let steps
+        if (maxRange - minRange > 0) {
+          const rampScale = scaleLinear().range([minRange, maxRange]).domain([0, 1])
+          steps = [0, 0.2, 0.4, 0.6, 0.8, 1].map((value) => parseFloat(rampScale(value).toFixed(1)))
+        }
+        if (!draftDataview.id || steps) {
+          dataview = await upsertDataview({ ...draftDataview, ...(steps && { steps }) })
+        }
       }
       const dataviewId = draftDataview.id || dataview?.id
       if (dataviewId && workspace?.id) {
@@ -65,6 +89,7 @@ function NewDataview(): React.ReactElement {
   }
 
   const isFishingEffortLayer = dataset?.id === 'dgg_fishing_galapagos'
+  const isCustomUserDatashape = dataset?.category === CUSTOM_DATA_SHAPE
   const selectedFlagFilter = FLAG_FILTERS.find((flag) => flag.id === draftDataview?.flagFilter)
   return (
     <div className={styles.container}>
@@ -108,6 +133,24 @@ function NewDataview(): React.ReactElement {
           onRemove={() => onCleanClick('flagFilter')}
           onCleanClick={() => onCleanClick('flagFilter')}
         ></Select>
+      )}
+      {isCustomUserDatashape && (
+        <div className={styles.containerRow}>
+          <InputText
+            className={styles.input}
+            label="Minimum value"
+            type="number"
+            value={minRange}
+            onChange={onStepMinRangeChange}
+          />
+          <InputText
+            className={styles.input}
+            label="Maximum value"
+            type="number"
+            value={maxRange}
+            onChange={onStepMaxRangeChange}
+          />
+        </div>
       )}
       <Button onClick={onCreateClick} className={styles.saveBtn} loading={loading}>
         Confirm

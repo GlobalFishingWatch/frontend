@@ -42,6 +42,7 @@ export const selectDatasetOptionsBySource = createSelector(
         label: dataset.name,
         type: dataset.type,
         description: dataset.description,
+        category: dataset.category,
       }))
     }
 

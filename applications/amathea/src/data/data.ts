@@ -40,10 +40,13 @@ export const DATASET_SOURCE_OPTIONS = [
 ]
 
 export const DATASET_TYPE_OPTIONS = [
-  { id: 'user-context-layer:v1', label: 'Static Context Areas' },
+  { id: 'user-context-layer:v1', label: 'Static Context Shapes' },
+  { id: 'user-context-layer:v1-custom', label: 'Static Data Shapes' },
   { id: 'user-tracks:v1', label: 'Spatiotemporal Tracks (Coming soon)' },
   { id: '4wings:v1', label: 'Spatiotemporal Grid (Coming soon)' },
 ]
+
+export const CUSTOM_DATA_SHAPE = 'data-shape'
 
 export interface GraphData {
   date: string

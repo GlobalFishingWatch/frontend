@@ -9,7 +9,7 @@ import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import Map from 'features/map/Map'
 import { useModalConnect } from 'features/modal/modal.hooks'
-import { DATASET_TYPE_OPTIONS } from 'data/data'
+import { DATASET_TYPE_OPTIONS, CUSTOM_DATA_SHAPE } from 'data/data'
 import { ReactComponent as CustomShapeFormats } from 'assets/custom-shape-formats.svg'
 import styles from './NewDataset.module.css'
 import { useDraftDatasetConnect, useDatasetsAPI } from './datasets.hook'
@@ -22,12 +22,18 @@ interface InfoFieldsProps {
 
 const InfoFields: React.FC<InfoFieldsProps> = (props) => {
   const { datasetInfo, onContinue } = props
-
+  const [propertyToInclude, setPropertyToInclude] = useState<string>('value')
   const [datasetName, setDatasetName] = useState<string | undefined>(datasetInfo?.name || '')
   const [datasetDescription, setDatasetDescription] = useState<string | undefined>(
     datasetInfo?.description || ''
   )
   const [datasetType, setDatasetType] = useState<DatasetTypes | undefined>(datasetInfo?.type)
+
+  const selectedOption = DATASET_TYPE_OPTIONS.find((o) => o.id === datasetType)
+  const isSelectedOptionCustomContex = selectedOption?.id === 'user-context-layer:v1-custom'
+  const isContexDataset =
+    datasetType !== 'user-context-layer:v1' ||
+    datasetType !== ('user-context-layer:v1-custom' as DatasetTypes)
 
   const onSelectDatasetType: SelectOnChange = (option) => {
     setDatasetType(option.id as DatasetTypes)
@@ -37,6 +43,22 @@ const InfoFields: React.FC<InfoFieldsProps> = (props) => {
   }
   const onRemoveDatasetType: SelectOnChange = () => {
     setDatasetType(undefined)
+  }
+
+  const onContinueClick = () => {
+    const type =
+      datasetType && isSelectedOptionCustomContex
+        ? (datasetType.replace('-custom', '') as DatasetTypes)
+        : datasetType
+    const category = isSelectedOptionCustomContex ? CUSTOM_DATA_SHAPE : undefined
+    const configuration = isSelectedOptionCustomContex ? { propertyToInclude } : {}
+    onContinue({
+      name: datasetName,
+      description: datasetDescription,
+      type,
+      category,
+      configuration,
+    })
   }
 
   return (
@@ -59,25 +81,27 @@ const InfoFields: React.FC<InfoFieldsProps> = (props) => {
         <Select
           label="Type"
           options={DATASET_TYPE_OPTIONS}
-          selectedOption={DATASET_TYPE_OPTIONS.find((o) => o.id === datasetType)}
+          selectedOption={selectedOption}
           onSelect={onSelectDatasetType}
           onRemove={onRemoveDatasetType}
           onCleanClick={onCleanDatasetType}
         ></Select>
       </div>
+      {isSelectedOptionCustomContex && (
+        <InputText
+          label="Name of the property to display"
+          type="text"
+          placeholder="value"
+          value={propertyToInclude}
+          onChange={(e) => setPropertyToInclude(e.target.value)}
+        />
+      )}
       <Button
-        onClick={() =>
-          onContinue({ name: datasetName, description: datasetDescription, type: datasetType })
-        }
-        disabled={
-          !datasetName ||
-          !datasetDescription ||
-          !datasetType ||
-          datasetType !== 'user-context-layer:v1'
-        }
+        onClick={onContinueClick}
+        disabled={!datasetName || !datasetDescription || !datasetType || !isContexDataset}
         className={styles.saveBtn}
       >
-        {!datasetType || datasetType === 'user-context-layer:v1' ? 'CONTINUE' : 'COMING SOON'}
+        {!datasetType || isContexDataset ? 'CONTINUE' : 'COMING SOON'}
       </Button>
     </Fragment>
   )

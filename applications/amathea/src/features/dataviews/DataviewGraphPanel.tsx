@@ -42,6 +42,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
         name: dataview.name,
         color: color as string,
         colorRamp: dataview.config?.colorRamp,
+        steps: dataview.config.steps as number[],
         source: { id: dataset.source, label: sourceLabel },
         flagFilter,
         dataset: {
@@ -49,6 +50,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
           label: dataset?.name,
           type: dataset?.type,
           description: dataset?.description,
+          category: dataset?.category,
         },
       }
       setDraftDataview(draftDataview)
