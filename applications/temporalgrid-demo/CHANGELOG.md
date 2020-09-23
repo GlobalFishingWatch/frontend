@@ -1,5 +1,17 @@
 # @globalfishingwatchapp/temporalgrid-demo
 
+## 0.3.0
+
+### Minor Changes
+
+- 1774aee: Interaction hooks and user-context ramps
+
+### Patch Changes
+
+- Updated dependencies [1774aee]
+  - @globalfishingwatch/layer-composer@2.11.0
+  - @globalfishingwatch/react-hooks@2.9.0
+
 ## 0.2.7
 
 ### Patch Changes
