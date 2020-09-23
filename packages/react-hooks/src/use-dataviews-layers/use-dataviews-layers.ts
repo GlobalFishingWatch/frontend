@@ -6,9 +6,11 @@ export function getGeneratorConfig(dataview: Dataview) {
   if (dataview.config.type === Generators.Type.UserContext) {
     const dataset = dataview.datasets?.find((dataset) => dataset.type === 'user-context-layer:v1')
     const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === 'user-context-tiles')
+    const pickValueAt = dataset?.configuration?.propertyToInclude
     if (endpoint) {
       return {
         ...dataview.config,
+        ...(pickValueAt && { pickValueAt }),
         tilesUrl: endpoint.pathTemplate,
         metadata: {
           legend: {

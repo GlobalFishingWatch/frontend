@@ -1,7 +1,10 @@
+import zip from 'lodash/zip'
+import flatten from 'lodash/flatten'
 import { Type, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
+import { HEATMAP_COLOR_RAMPS } from '..'
 
 class UserContextGenerator {
   type = Type.UserContext
@@ -20,29 +23,48 @@ class UserContextGenerator {
   }
   _getStyleLayers = (config: UserContextGeneratorConfig) => {
     const generatorId = `user-context-${config.id}`
-    return [
-      {
-        id: generatorId,
-        type: 'line',
-        source: config.id,
-        'source-layer': 'main',
-        paint: {
-          'line-color': config.color,
-          'line-width': 1,
-        },
-        layout: {
-          visibility: isConfigVisible(config),
-        },
-        metadata: {
-          color: config.color,
-          generatorId,
-          legend: {
-            type: 'solid',
-            ...config.metadata?.legend,
-          },
+
+    let paint: any = {
+      'line-color': config.color,
+      'line-width': 1,
+    }
+    let legendRamp
+    if (config.steps && config.colorRamp) {
+      const originalColorRamp = HEATMAP_COLOR_RAMPS[config.colorRamp]
+      legendRamp = config.steps?.length ? zip(config.steps, originalColorRamp) : []
+      const valueExpression = ['to-number', ['get', config.pickValueAt || 'value']]
+      const colorRampValues = flatten(legendRamp)
+      const colorRamp =
+        colorRampValues.length > 0
+          ? ['interpolate', ['linear'], valueExpression, ...colorRampValues]
+          : 'transparent'
+      paint = {
+        'fill-outline-color': 'transparent',
+        'fill-color': colorRamp,
+      }
+    }
+    const baseStyle = {
+      id: generatorId,
+      type: config.steps ? 'fill' : 'line',
+      source: config.id,
+      'source-layer': 'main',
+      paint,
+      layout: {
+        visibility: isConfigVisible(config),
+      },
+      metadata: {
+        color: config.color,
+        generatorId,
+        legend: {
+          type: config.steps ? 'colorramp' : 'solid',
+          ...config.metadata?.legend,
+          ...(legendRamp && {
+            ramp: legendRamp,
+          }),
         },
       },
-    ]
+    }
+    return [baseStyle]
   }
 
   getStyle = (config: UserContextGeneratorConfig) => {

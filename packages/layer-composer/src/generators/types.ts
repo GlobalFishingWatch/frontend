@@ -89,9 +89,21 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    */
   color?: string
   /**
+   * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
+   */
+  colorRamp?: ColorRampsIds
+  /**
    * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
    */
   tilesUrl: string
+  /**
+   * Custom color ramp for filled layers
+   */
+  steps?: number[]
+  /**
+   * Property to get value to display the ramp
+   */
+  pickValueAt?: string
 }
 
 /**

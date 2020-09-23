@@ -9,8 +9,7 @@ import { ExtendedFeature, InteractionEvent, InteractionEventCallback } from '.'
 type FeatureStateSource = { source: string; sourceLayer: string }
 
 const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[] => {
-  const extendedFeatures: ExtendedFeature[] = []
-  features.forEach((feature: MapboxGeoJSONFeature) => {
+  const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
     const generator = feature.layer.metadata ? feature.layer.metadata.generator : null
     const generatorId = feature.layer.metadata ? feature.layer.metadata.generatorId : null
     const properties = feature.properties || {}
@@ -31,18 +30,18 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
           let parsed = JSON.parse(valuesAtFrame)
           if (extendedFeature.value === 0) break
           if (!isArray(parsed)) parsed = [parsed]
-          parsed.forEach((value: any, i: number) => {
-            extendedFeatures.push({
+          return parsed.map((value: any, i: number) => {
+            return {
               ...extendedFeature,
               // TODO this should be sublayer id but it has to be carried in GeoJSON feature by aggregator
               generatorId: i,
               value,
-            })
+            }
           })
         }
-        break
+        return []
       default:
-        extendedFeatures.push(extendedFeature)
+        return extendedFeature
     }
   })
   return extendedFeatures
