@@ -35,6 +35,7 @@ export type DatasetStatus = 'done' | 'importing' | 'error'
 export interface DatasetConfiguration {
   index?: string
   filePath?: string
+  propertyToInclude?: string
   srid?: number
   [key: string]: unknown
 }
