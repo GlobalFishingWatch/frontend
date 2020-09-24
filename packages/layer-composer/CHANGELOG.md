@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.11.1
+
+### Patch Changes
+
+- 0c2a302: Fix pickValueAt
+
 ## 2.11.0
 
 ### Minor Changes

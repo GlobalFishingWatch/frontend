@@ -29,15 +29,11 @@ class UserContextGenerator {
       'line-width': 1,
     }
     let legendRamp
-    if (config.steps && config.colorRamp) {
+    if (config.steps?.length && config.colorRamp) {
       const originalColorRamp = HEATMAP_COLOR_RAMPS[config.colorRamp]
-      legendRamp = config.steps?.length ? zip(config.steps, originalColorRamp) : []
+      legendRamp = zip(config.steps, originalColorRamp)
       const valueExpression = ['to-number', ['get', config.pickValueAt || 'value']]
-      const colorRampValues = flatten(legendRamp)
-      const colorRamp =
-        colorRampValues.length > 0
-          ? ['interpolate', ['linear'], valueExpression, ...colorRampValues]
-          : 'transparent'
+      const colorRamp = ['interpolate', ['linear'], valueExpression, ...flatten(legendRamp)]
       paint = {
         'fill-outline-color': 'transparent',
         'fill-color': colorRamp,
