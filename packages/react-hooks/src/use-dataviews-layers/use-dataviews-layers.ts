@@ -6,11 +6,9 @@ export function getGeneratorConfig(dataview: Dataview) {
   if (dataview.config.type === Generators.Type.UserContext) {
     const dataset = dataview.datasets?.find((dataset) => dataset.type === 'user-context-layer:v1')
     const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === 'user-context-tiles')
-    const pickValueAt = dataset?.configuration?.propertyToInclude
     if (endpoint) {
       return {
         ...dataview.config,
-        ...(pickValueAt && { pickValueAt }),
         tilesUrl: endpoint.pathTemplate,
         metadata: {
           legend: {
@@ -63,7 +61,10 @@ export function getGeneratorConfig(dataview: Dataview) {
 
 export function getDataviewsGeneratorConfigs(dataviews: Dataview[], resources?: Resource[]) {
   return dataviews.flatMap((dataview) => {
-    const generatedUidComponents: (string | number | undefined)[] = [dataview.id, dataview.name]
+    const generatedUidComponents: (string | number | undefined)[] = [
+      dataview.id,
+      dataview.name.replace(/ /g, '_'),
+    ]
 
     const dataviewResource = resources?.find((resource) => {
       if (resource.dataviewId !== dataview.id) return false
