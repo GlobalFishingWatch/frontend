@@ -1450,25 +1450,6 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
-"@globalfishingwatch/layer-composer@2.10.0":
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/layer-composer/-/layer-composer-2.10.0.tgz#1cd75e338b545ecc0a799f25c152f12a8d9cc118"
-  integrity sha512-eBdtIQJdTBe1U7AfpC1NbVRwPYNUh/otuvH+JwZYiZCIZ6woQSOnHG9olfWP8jYkDbIDiDIKv1HWwtkPJ6JR7A==
-  dependencies:
-    "@mapbox/mapbox-gl-style-spec" "^13.14.0"
-    "@mapbox/tilebelt" "^1.0.1"
-    "@mapbox/vector-tile" "^1.3.1"
-    "@turf/great-circle" "^5.1.5"
-    "@turf/length" "^6.0.2"
-    abortcontroller-polyfill "^1.4.0"
-    d3-scale "^3.2.1"
-    geojson-vt "^3.2.1"
-    luxon "^1.24.1"
-    memoize-one "^5.1.1"
-    pbf "^3.2.1"
-    typescript-json-schema "^0.42.0"
-    vt-pbf "^3.1.1"
-
 "@globalfishingwatch/map-convert@github:GlobalFishingWatch/map-convert":
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
@@ -4794,7 +4775,7 @@
   resolved "https://registry.yarnpkg.com/@types/d3-scale-chromatic/-/d3-scale-chromatic-1.5.0.tgz#315367557d51b823bec848614fac095325613fc3"
   integrity sha512-9/D7cOBKdZdTCPc6re0HeSUFBM0aFzdNdmYggUWT9SRRiYSOa6Ys2xdTwHKgc1WS3gGfwTMatBOdWCS863REsg==
 
-"@types/d3-scale@*":
+"@types/d3-scale@*", "@types/d3-scale@^2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@types/d3-scale/-/d3-scale-2.2.0.tgz#e5987a2857365823eb26ed5eb21bc566c4dcf1c0"
   integrity sha512-oQFanN0/PiR2oySHfj+zAAkK1/p4LD32Nt1TMVmzk+bYHk7vgIg/iTXQWitp1cIkDw4LMdcgvO63wL+mNs47YA==
