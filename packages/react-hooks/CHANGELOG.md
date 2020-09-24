@@ -1,5 +1,13 @@
 # @globalfishingwatch/react-hooks
 
+## 2.9.1
+
+### Patch Changes
+
+- 0c2a302: Fix pickValueAt
+- Updated dependencies [0c2a302]
+  - @globalfishingwatch/layer-composer@2.11.1
+
 ## 2.9.0
 
 ### Minor Changes
