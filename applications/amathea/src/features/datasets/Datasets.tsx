@@ -53,6 +53,7 @@ function Datasets(): React.ReactElement {
       {datasetsUserList.map((dataset) => (
         <div className={styles.listItem} key={dataset.id}>
           <span className={styles.titleLink}>{dataset.name}</span>
+          {dataset.status === 'error' && <IconButton icon="warning" tooltip={dataset.importLogs} />}
           <IconButton icon="info" tooltip={dataset.description} />
           <IconButton icon="edit" tooltip="Edit Dataset" onClick={() => onEditClick(dataset)} />
           <IconButton icon="share" tooltip="Share Dataset" />

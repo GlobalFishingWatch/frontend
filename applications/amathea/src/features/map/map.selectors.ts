@@ -46,7 +46,11 @@ export const getDataviewsGeneratorsConfig = createSelector(
   [selectCurrentWorkspaceDataviewsResolved, selectHiddenDataviews],
   (dataviews, hiddenDataviews) => {
     if (!dataviews || !dataviews.length) return
-    const filteredDataviews = dataviews.filter((dataview) => !hiddenDataviews.includes(dataview.id))
+    const filteredDataviews = dataviews.filter(
+      (dataview) =>
+        !hiddenDataviews.includes(dataview.id) &&
+        !dataview?.datasets?.some((dataset) => dataset.status === 'error')
+    )
 
     const generators = getDataviewsGeneratorConfigs(filteredDataviews)
     // Reverse to see the first layer on top

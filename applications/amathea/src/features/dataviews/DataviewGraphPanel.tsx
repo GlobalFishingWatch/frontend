@@ -91,7 +91,6 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
   const isUserContextLayer = dataset?.type === 'user-context-layer:v1'
 
   const selectedFlagFilter = FLAG_FILTERS.find((flag) => flag.id === flagFilter)
-
   return (
     dataview && (
       <div className={styles.container} id={dataview.id.toString()}>
@@ -113,18 +112,19 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
             loading={dataviewLoadingId === dataview.id}
             onClick={() => onDeleteClick(dataview)}
           />
-          <IconButton
-            loading={dataset?.status === 'importing'}
-            icon={isDataviewHidden ? 'view-on-map' : 'remove-from-map'}
-            tooltip={
-              dataset?.status === 'importing'
-                ? 'Your dataset is being imported, try reloading the page'
-                : isDataviewHidden
-                ? 'Show on map'
-                : 'Remove from map'
-            }
-            onClick={() => onToggleMapClick(dataview)}
-          />
+          {dataset?.status === 'error' && (
+            <IconButton icon="warning" tooltip={dataset.importLogs} />
+          )}
+          {dataset?.status === 'importing' && (
+            <IconButton loading tooltip="Your dataset is being imported, try reloading the page" />
+          )}
+          {dataset?.status !== 'error' && dataset?.status !== 'importing' && (
+            <IconButton
+              icon={isDataviewHidden ? 'view-on-map' : 'remove-from-map'}
+              tooltip={isDataviewHidden ? 'Show on map' : 'Remove from map'}
+              onClick={() => onToggleMapClick(dataview)}
+            />
+          )}
         </div>
         {selectedFlagFilter && (
           <div>
