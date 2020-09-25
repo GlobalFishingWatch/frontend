@@ -82,7 +82,7 @@ export const layers: Dictionary<Layer[]> = {
   ],
 }
 
-export const sources: Dictionary<Record<string, AnySourceImpl>> = {
+export const sources: Dictionary<Record<string, Partial<AnySourceImpl>>> = {
   [BasemapType.Satellite]: {
     satellite: {
       tiles: [
