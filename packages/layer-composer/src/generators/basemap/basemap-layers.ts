@@ -1,4 +1,4 @@
-import { Layer, AnySourceImpl } from 'mapbox-gl'
+import { Layer } from 'mapbox-gl'
 import { BasemapType } from '../types'
 import { Group, Dictionary } from '../../types'
 
@@ -43,7 +43,7 @@ export const layers: Dictionary<Layer> = {
   },
 }
 
-export const sources: Dictionary<AnySourceImpl> = {
+export const sources: Dictionary<any> = {
   [BasemapType.Satellite]: {
     tiles: [
       'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',

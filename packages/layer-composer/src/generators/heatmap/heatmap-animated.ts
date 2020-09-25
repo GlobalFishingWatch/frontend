@@ -1,6 +1,5 @@
 import memoizeOne from 'memoize-one'
 import { Layer } from 'mapbox-gl'
-import flatten from 'lodash/flatten'
 import zip from 'lodash/zip'
 import {
   Type,
@@ -80,6 +79,15 @@ const getColorRampBaseExpression = (
   return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions[0] }
 }
 
+const toURLArray = (paramName: string, arr: string[]) => {
+  return arr
+    .map((element, i) => {
+      if (!element) return ''
+      return `${paramName}[${i}]=${element}`
+    })
+    .join('&')
+}
+
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
 
@@ -90,26 +98,21 @@ class HeatmapAnimatedGenerator {
       )
     }
 
-    // TODO API should support an array of tilesets for each sublayer
-    const tilesets = config.sublayers.map((s) => s.tilesets[0])
-    const filters = config.sublayers.map((s) => s.filter || '')
+    const datasets = config.sublayers.map((sublayer) => sublayer.datasets.join(','))
+    const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
 
-    const tilesUrl = `${config.tilesAPI}/${tilesets.join(',')}/${API_ENDPOINTS.tiles}`
+    const tilesUrl = `${config.tilesAPI}/${API_ENDPOINTS.tiles}/`
 
     // TODO - generate this using updated stats API
-    const breaks = HARDCODED_BREAKS[config.combinationMode].slice(0, tilesets.length)
+    const breaks = HARDCODED_BREAKS[config.combinationMode].slice(0, datasets.length)
 
     const sources = timeChunks.flatMap((timeChunk: TimeChunk) => {
       const baseSourceParams: Record<string, string> = {
         id: timeChunk.id,
         singleFrame: 'false',
         geomType: config.geomType,
-        filters: filters
-          .map((filter, i) => {
-            if (!filter || filter === '') return ''
-            return `filters[${i}]=${filter}`
-          })
-          .join('&'),
+        filters: toURLArray('filters', filters),
+        datasets: toURLArray('datasets', datasets),
         delta: getDelta(config.start, config.end, timeChunk.interval).toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: timeChunk.interval,

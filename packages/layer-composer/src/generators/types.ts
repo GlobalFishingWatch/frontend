@@ -263,7 +263,7 @@ export type Ruler = {
 
 export interface HeatmapAnimatedGeneratorSublayer {
   id: string
-  tilesets: string[]
+  datasets: string[]
   filter: string
   colorRamp: ColorRampsIds
 }

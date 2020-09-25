@@ -12,36 +12,36 @@ import Map from './map';
 import './App.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
-export const DEFAULT_TILESETS = [
+export const DEFAULT_SUBLAYERS = [
   {
     id: 0,
     // tileset: 'carriers_v8',
-    tileset: 'fishing_v4',
+    datasets: 'fishing_v4',
     // filter: ''
     filter: "flag='ESP'",
     active: true
   },
   {
     id: 1,
-    tileset: 'fishing_v4',
+    datasets: 'fishing_v4',
     filter: "flag='FRA'",
     active: false
   },
   {
     id: 2,
-    tileset: 'fishing_v4',
+    datasets: 'fishing_v4',
     filter: "flag='ITA'",
     active: false
   },
   {
     id: 3,
-    tileset: 'fishing_v4',
+    datasets: 'fishing_v4',
     filter: "flag='GBR'",
     active: false
   },
   {
     id: 4,
-    tileset: 'fishing_v4',
+    datasets: 'fishing_v4',
     filter: "flag='PRT'",
     active: false
   }
@@ -100,7 +100,7 @@ export default function App() {
   })
   const debouncedTime = useDebounce(time, 1000)
 
-  const [tilesets, setTilesets] = useState(DEFAULT_TILESETS)
+  const [sublayers, setSublayers] = useState(DEFAULT_SUBLAYERS)
   const [combinationMode, setCombinationMode] = useState('add')
 
   const [showBasemap, setShowBasemap] = useState(true)
@@ -124,20 +124,20 @@ export default function App() {
       }
 
       if (animated) {
-        const heatmapSublayers = tilesets.filter(t => t.active).map((tileset, i) => {
-          const sublayer = {...DATAVIEWS.find(dv => dv.id === tileset.id)}
-          let colorRamp = sublayer.colorRamp
-          if (tilesets.filter(t => t.active).length === 1) {
+        const heatmapSublayers = sublayers.filter(t => t.active).map((sublayer) => {
+          const heatmapSublayer = {...DATAVIEWS.find(dv => dv.id === sublayer.id)}
+          let colorRamp = heatmapSublayer.colorRamp
+          if (sublayers.filter(t => t.active).length === 1) {
             colorRamp = 'presence'
           } else if (combinationMode === 'bivariate') {
             colorRamp = 'bivariate'
           }
           return {
-            id: tileset.id,
+            id: sublayer.id,
             colorRamp,
             // TODO API should support an array of tilesets for each sublayer
-            tilesets: [tileset.tileset],
-            filter: tileset.filter,
+            datasets: sublayer.datasets.split(','),
+            filter: sublayer.filter,
           }
         })
 
@@ -157,12 +157,13 @@ export default function App() {
           id: 'heatmap-animated',
           type: Generators.Type.HeatmapAnimated,
           sublayers: heatmapSublayers,
-          combinationMode: combinationMode,
+          combinationMode,
           debug,
           debugLabels,
           geomType,
           // tilesAPI: 'https://fourwings.api.dev.globalfishingwatch.org/v1'
-          tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1/datasets',
+          // tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1/datasets',
+          tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1',
           colorRamps,
           interactive: true,
         })
@@ -170,7 +171,7 @@ export default function App() {
         generators.push({
           id: 'heatmap',
           type: Generators.Type.Heatmap,
-          tileset: tilesets.tileset[0],
+          tileset: sublayers.datasets[0][0],
           visible: true,
           geomType: 'gridded',
           serverSideFilter: undefined,
@@ -183,7 +184,7 @@ export default function App() {
     console.log(generators)
     return generators
   },
-    [animated, showBasemap, debug, debugLabels, tilesets, geomTypeMode, isPlaying, combinationMode]
+    [animated, showBasemap, debug, debugLabels, sublayers, geomTypeMode, isPlaying, combinationMode]
   );
 
   const [mapRef, setMapRef] = useState(null)
@@ -252,7 +253,7 @@ export default function App() {
         />
       </div>
       <div className="control-buttons">
-        <Tilesets onChange={(newTilesets, newCombinationMode) => { setTilesets(newTilesets); setCombinationMode(newCombinationMode) }} />
+        <Tilesets onChange={(newTilesets, newCombinationMode) => { setSublayers(newTilesets); setCombinationMode(newCombinationMode) }} />
         <hr />
         <fieldset>
           <input type="checkbox" id="showBasemap" checked={showBasemap} onChange={(e) => {
