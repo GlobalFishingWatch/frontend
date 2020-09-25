@@ -1,0 +1,16 @@
+:global(#root) {
+  height: 100%;
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
