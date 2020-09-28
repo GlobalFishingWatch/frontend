@@ -11,5 +11,11 @@
     "watch": [
       "applications/amathea/**/*"
     ]
+  },
+  "fishing-map": {
+    "cloudbuildTaskId": "fishing-map-autodeploy-bot",
+    "watch": [
+      "applications/fishing-map/**/*"
+    ]
   }
 }

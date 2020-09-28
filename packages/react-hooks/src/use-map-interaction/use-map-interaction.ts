@@ -1,6 +1,6 @@
 import uniqBy from 'lodash/uniqBy'
 import debounce from 'lodash/debounce'
-import { Cancelable, isArray } from 'lodash'
+import { isArray } from 'lodash'
 import { useCallback, useState, useEffect, useRef } from 'react'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { Generators } from '@globalfishingwatch/layer-composer'

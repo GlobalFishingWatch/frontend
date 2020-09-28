@@ -65,7 +65,7 @@ export interface BasemapGeneratorConfig extends GeneratorConfig {
   /**
    * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
    */
-  basemap?: string
+  basemap: BasemapType
 }
 
 /**
@@ -228,8 +228,7 @@ export type AnyGeneratorConfig =
 // ---- Generator specific types
 export enum BasemapType {
   Satellite = 'satellite',
-  Landmass = 'landmass',
-  Graticules = 'graticules',
+  Default = 'basemap_default',
 }
 
 export type RawEvent = {

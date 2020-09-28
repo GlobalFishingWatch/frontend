@@ -10,7 +10,7 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import Map from 'features/map/Map'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { DATASET_TYPE_OPTIONS, CUSTOM_DATA_SHAPE } from 'data/data'
-import { ReactComponent as CustomShapeFormats } from 'assets/custom-shape-formats.svg'
+import { ReactComponent as ZipIcon } from 'assets/zip.svg'
 import styles from './NewDataset.module.css'
 import { useDraftDatasetConnect, useDatasetsAPI } from './datasets.hook'
 import { DatasetDraftData, DatasetTypes } from './datasets.slice'
@@ -117,7 +117,9 @@ const DataFields: React.FC<DataFieldsProps> = (props) => {
   const [loading, setLoading] = useState(false)
   const { draftDataset, dispatchResetDraftDataset } = useDraftDatasetConnect()
   const { createDataset } = useDatasetsAPI()
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone()
+  const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
+    accept: '.zip',
+  })
   const onContinueClick = async () => {
     setLoading(true)
     await createDataset({ dataset: draftDataset, file: acceptedFiles[0] })
@@ -129,22 +131,30 @@ const DataFields: React.FC<DataFieldsProps> = (props) => {
     <Fragment>
       {datasetInfo?.type === 'user-context-layer:v1' && (
         <div className={styles.dropFiles} {...(getRootProps() as any)}>
-          <CustomShapeFormats />
+          <ZipIcon />
           <input {...getInputProps()} />
           {acceptedFiles.length ? (
-            <p>File: {acceptedFiles[0].name}</p>
+            <p className={styles.fileText}>File: {acceptedFiles[0].name}</p>
           ) : isDragActive ? (
-            <p>Drop the files here ...</p>
+            <p className={styles.fileText}>Drop the file here ...</p>
           ) : (
-            <p>
-              Drop a shapefile here
+            <p className={styles.fileText}>
+              Drop a compressed shapefile here
               <br />
-              or select it from a folder
+              or click to select it.
             </p>
+          )}
+          {fileRejections.length > 0 && (
+            <p className={cx(styles.fileText, styles.warning)}>(Only .zip files are allowed)</p>
           )}
         </div>
       )}
-      <Button onClick={onContinueClick} className={styles.saveBtn} loading={loading}>
+      <Button
+        disabled={!acceptedFiles.length}
+        onClick={onContinueClick}
+        className={styles.saveBtn}
+        loading={loading}
+      >
         Confirm
       </Button>
     </Fragment>
