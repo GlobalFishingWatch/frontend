@@ -39,7 +39,7 @@ function App(): React.ReactElement {
           onToggle={onToggle}
           aside={<Sidebar />}
           main={<Main />}
-          asideWidth="30%"
+          asideWidth="32rem"
           className="split-container"
         />
       )}

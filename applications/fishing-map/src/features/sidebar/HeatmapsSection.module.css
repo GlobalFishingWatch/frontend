@@ -1,0 +1,10 @@
+.container {
+  border-bottom: var(--border);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-S);
+}
