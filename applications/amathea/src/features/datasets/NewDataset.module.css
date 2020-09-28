@@ -59,6 +59,15 @@
   border-style: solid;
 }
 
+.fileText {
+  line-height: 1.2;
+  margin-top: var(--space-S);
+}
+
+.warning {
+  color: var(--color-danger-red);
+}
+
 .horizontalContainer {
   display: flex;
   flex: 1;

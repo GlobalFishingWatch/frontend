@@ -49,7 +49,7 @@ export const DEFAULT_SUBLAYERS = [
 
 const DATAVIEWS = [
   {id: 'background', type: Generators.Type.Background, color: '#00265c'},
-  {id: 'basemap', type: Generators.Type.Basemap, basemap: 'landmass' },
+  {id: 'basemap', type: Generators.Type.Basemap },
   {
     id: 'eez',
     type: Generators.Type.CartoPolygons,
@@ -181,7 +181,6 @@ export default function App() {
           fetchStats: true
         })
       }
-    console.log(generators)
     return generators
   },
     [animated, showBasemap, debug, debugLabels, sublayers, geomTypeMode, isPlaying, combinationMode]

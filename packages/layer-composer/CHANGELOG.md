@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.12.0
+
+### Minor Changes
+
+- 08a9236: New basemap
+
 ## 2.11.1
 
 ### Patch Changes

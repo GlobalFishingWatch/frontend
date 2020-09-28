@@ -8,7 +8,7 @@ import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { AOI_SOURCES, MPAS } from 'data/data'
-import { ReactComponent as CustomShapeFormats } from '../../assets/custom-shape-formats.svg'
+import { ReactComponent as CustomShapeFormats } from 'assets/custom-shape-formats.svg'
 import styles from './NewAreaOfInterest.module.css'
 
 function NewAreaOfInterest(): React.ReactElement {
