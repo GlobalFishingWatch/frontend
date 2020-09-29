@@ -1,12 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { MiniGlobe, IconButton, MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { InteractiveMap, ScaleControl } from '@globalfishingwatch/react-map-gl'
+import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/react-map-gl'
+import GFWAPI from '@globalfishingwatch/api-client'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import { useMapboxRef } from './map.context'
 import styles from './Map.module.css'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+
+const mapOptions = {
+  customAttribution: 'Global Fishing Watch 2020',
+}
 
 const Map = (): React.ReactElement => {
   const mapRef = useMapboxRef()
@@ -44,6 +49,19 @@ const Map = (): React.ReactElement => {
     setMapBounds()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoom, latitude, longitude])
+  const token = GFWAPI.getToken()
+  const transformRequest: (...args: any[]) => MapRequest = useCallback(
+    (url: string, resourceType: string) => {
+      const response: MapRequest = { url }
+      if (resourceType === 'Tile' && url.includes('globalfishingwatch')) {
+        response.headers = {
+          Authorization: 'Bearer ' + token,
+        }
+      }
+      return response
+    },
+    [token]
+  )
 
   return (
     <div className={styles.container}>
@@ -57,9 +75,8 @@ const Map = (): React.ReactElement => {
           zoom={viewport.zoom}
           onViewportChange={onViewportChange}
           mapStyle={style}
-          mapOptions={{
-            customAttribution: 'Global Fishing Watch 2020',
-          }}
+          mapOptions={mapOptions}
+          transformRequest={transformRequest}
           onLoad={setMapBounds}
           onResize={setMapBounds}
         >

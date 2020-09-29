@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'store'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   AnyGeneratorConfig,
@@ -43,7 +44,7 @@ const initialState: MapState = {
       debug: false,
       debugLabels: false,
       geomType: 'gridded',
-      tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1',
+      tilesAPI: `${process.env.REACT_APP_API_GATEWAY}/v1/4wings`,
       interactive: true,
     } as HeatmapAnimatedGeneratorConfig,
   ],
@@ -82,6 +83,7 @@ export const selectGlobalGeneratorsConfig = createSelector(
     zoom,
     start,
     end,
+    token: GFWAPI.getToken(),
   })
 )
 
