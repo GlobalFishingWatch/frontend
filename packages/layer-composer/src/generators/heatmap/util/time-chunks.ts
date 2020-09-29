@@ -198,8 +198,6 @@ export const getDelta = (start: string, end: string, interval: Interval) => {
   const config = CONFIG_BY_INTERVAL[interval]
   const startTimestampMs = new Date(start).getTime()
   const endTimestampMs = new Date(end).getTime()
-  const startFrame = config.getFrame(startTimestampMs)
-  const endFrame = config.getFrame(endTimestampMs)
-  const delta = Math.round(endFrame - startFrame)
+  const delta = config.getFrame(endTimestampMs - startTimestampMs)
   return delta
 }
