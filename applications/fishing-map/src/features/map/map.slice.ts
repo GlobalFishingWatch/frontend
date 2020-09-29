@@ -5,6 +5,8 @@ import {
   AnyGeneratorConfig,
   BackgroundGeneratorConfig,
   BasemapGeneratorConfig,
+  CartoPolygonsGeneratorConfig,
+  HeatmapAnimatedGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { selectMapZoomQuery, selectTimerange } from 'routes/routes.selectors'
 
@@ -18,9 +20,32 @@ const initialState: MapState = {
     {
       id: 'background',
       type: Generators.Type.Background,
-      color: '#274777',
+      color: '#00265c',
     } as BackgroundGeneratorConfig,
-    { id: 'satellite', type: Generators.Type.Basemap, visible: true } as BasemapGeneratorConfig,
+    {
+      id: 'eez',
+      type: Generators.Type.CartoPolygons,
+      color: 'red',
+    } as CartoPolygonsGeneratorConfig,
+    {
+      id: 'basemap',
+      type: Generators.Type.Basemap,
+      basemap: Generators.BasemapType.Default,
+    } as BasemapGeneratorConfig,
+    {
+      id: 'heatmap-animated',
+      type: Generators.Type.HeatmapAnimated,
+      sublayers: [
+        { id: '0', colorRamp: 'teal', datasets: ['fishing_v4'], filter: "flag='ESP'" },
+        { id: '1', colorRamp: 'magenta', datasets: ['fishing_v4'], filter: "flag='FRA'" },
+      ],
+      combinationMode: 'compare',
+      debug: false,
+      debugLabels: false,
+      geomType: 'gridded',
+      tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1',
+      interactive: true,
+    } as HeatmapAnimatedGeneratorConfig,
   ],
 }
 
