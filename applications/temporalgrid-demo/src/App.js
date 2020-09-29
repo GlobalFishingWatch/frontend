@@ -146,13 +146,6 @@ export default function App() {
           geomType = (isPlaying) ? 'blob' : 'gridded'
         }
 
-        let colorRamps = ['presence']
-        if (heatmapSublayers.length > 1 && combinationMode === 'compare') {
-          colorRamps = heatmapSublayers.map(s => s.color)
-        } else if (heatmapSublayers.length === 2 && combinationMode === 'bivariate') {
-          colorRamps = ['bivariate']
-        }
-
         generators.push({
           id: 'heatmap-animated',
           type: Generators.Type.HeatmapAnimated,
@@ -164,7 +157,6 @@ export default function App() {
           // tilesAPI: 'https://fourwings.api.dev.globalfishingwatch.org/v1'
           // tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1/datasets',
           tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1',
-          colorRamps,
           interactive: true,
         })
       } else {
@@ -185,6 +177,8 @@ export default function App() {
   },
     [animated, showBasemap, debug, debugLabels, sublayers, geomTypeMode, isPlaying, combinationMode]
   );
+
+  console.log(layers)
 
   const [mapRef, setMapRef] = useState(null)
 
