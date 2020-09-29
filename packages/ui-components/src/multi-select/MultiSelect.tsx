@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, memo } from 'react'
+import React, { useCallback, useState, useMemo, memo, Fragment } from 'react'
 import {
   useMultipleSelection,
   useCombobox,
@@ -51,7 +51,7 @@ function Select(props: SelectProps) {
     options,
     selectedOptions = [],
     placeholder = 'Select an option',
-    className,
+    className = '',
     onSelect,
     onRemove,
     onCleanClick,
@@ -155,59 +155,61 @@ function Select(props: SelectProps) {
 
   const hasSelectedOptions = selectedOptions && selectedOptions.length > 0
   return (
-    <div className={cx(styles.container, { [styles.isOpen]: isOpen }, className)}>
-      <label {...getLabelProps()}>{label}</label>
-      <div
-        className={cx(styles.placeholderContainer, multiSelectStyles.placeholderContainer)}
-        {...getComboboxProps()}
-      >
-        {hasSelectedOptions && (
-          <TagList
-            className={multiSelectStyles.tagList}
-            tags={selectedOptions}
-            onRemove={handleRemove}
+    <div className={className}>
+      {label !== undefined && <label {...getLabelProps()}>{label}</label>}
+      <div className={cx(styles.container, { [styles.isOpen]: isOpen })}>
+        <div
+          className={cx(styles.placeholderContainer, multiSelectStyles.placeholderContainer)}
+          {...getComboboxProps()}
+        >
+          {hasSelectedOptions && (
+            <TagList
+              className={multiSelectStyles.tagList}
+              tags={selectedOptions}
+              onRemove={handleRemove}
+            />
+          )}
+          <InputText
+            {...getInputProps({ ...getDropdownProps({ preventKeyAction: isOpen }) })}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder={placeholder}
+            className={multiSelectStyles.input}
+            onFocus={() => openMenu()}
           />
-        )}
-        <InputText
-          {...getInputProps({ ...getDropdownProps({ preventKeyAction: isOpen }) })}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder={placeholder}
-          className={multiSelectStyles.input}
-          onFocus={() => openMenu()}
-        />
+        </div>
+        <div className={styles.buttonsContainer}>
+          {onCleanClick !== undefined && hasSelectedOptions && (
+            <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
+          )}
+          <IconButton
+            icon={isOpen ? 'arrow-top' : 'arrow-down'}
+            size="small"
+            aria-label={'toggle menu'}
+            {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
+          ></IconButton>
+        </div>
+        <ul {...getMenuProps()} className={styles.optionsContainer}>
+          {isOpen &&
+            filteredItems.length > 0 &&
+            filteredItems.map((item, index) => {
+              const highlight = highlightedIndex === index
+              return (
+                <Tooltip key={item.id} content={item.tooltip} placement="top-start">
+                  <li
+                    className={cx(styles.optionItem, {
+                      [styles.highlight]: highlight,
+                    })}
+                    {...getItemProps({ item, index })}
+                  >
+                    {item.label}
+                    {highlight && <Icon icon="tick" />}
+                  </li>
+                </Tooltip>
+              )
+            })}
+        </ul>
       </div>
-      <div className={styles.buttonsContainer}>
-        {onCleanClick !== undefined && hasSelectedOptions && (
-          <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
-        )}
-        <IconButton
-          icon={isOpen ? 'arrow-top' : 'arrow-down'}
-          size="small"
-          aria-label={'toggle menu'}
-          {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
-        ></IconButton>
-      </div>
-      <ul {...getMenuProps()} className={styles.optionsContainer}>
-        {isOpen &&
-          filteredItems.length > 0 &&
-          filteredItems.map((item, index) => {
-            const highlight = highlightedIndex === index
-            return (
-              <Tooltip key={item.id} content={item.tooltip} placement="top-start">
-                <li
-                  className={cx(styles.optionItem, {
-                    [styles.highlight]: highlight,
-                  })}
-                  {...getItemProps({ item, index })}
-                >
-                  {item.label}
-                  {highlight && <Icon icon="tick" />}
-                </li>
-              </Tooltip>
-            )
-          })}
-      </ul>
     </div>
   )
 }

@@ -1,9 +1,17 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 import useClickedOutside from 'hooks/useClickedOutside'
-import { Switch, IconButton, TagList, SelectOption } from '@globalfishingwatch/ui-components'
+import {
+  Switch,
+  IconButton,
+  TagList,
+  Tooltip,
+  SelectOption,
+} from '@globalfishingwatch/ui-components'
 import styles from './LayerPanel.module.css'
 import Filters from './Filters'
+
+const title = 'Apparent Fishing Efforts'
 
 type LayerPanelProps = {
   sources: SelectOption[]
@@ -27,7 +35,11 @@ function LayerPanel(props: LayerPanelProps): React.ReactElement {
     setFiltersOpen(false)
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
-
+  const TitleComponent = (
+    <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
+      {title}
+    </h3>
+  )
   return (
     <div className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: filterOpen })}>
       <div className={styles.header}>
@@ -38,12 +50,7 @@ function LayerPanel(props: LayerPanelProps): React.ReactElement {
           tooltipPlacement="top"
           color={color}
         />
-        <h3
-          className={cx(styles.name, { [styles.active]: layerActive })}
-          onClick={onToggleLayerActive}
-        >
-          Apparent Fishing Effort
-        </h3>
+        {title.length > 30 ? <Tooltip content={title}>{TitleComponent}</Tooltip> : TitleComponent}
         <div className={cx(styles.actions, { [styles.active]: layerActive })}>
           {layerActive && (
             <IconButton

@@ -8,8 +8,8 @@ function Filters(): React.ReactElement {
 
   return (
     <Fragment>
-      <label className={styles.selectLabel}>Sources</label>
       <MultiSelect
+        label="Sources"
         options={sources}
         selectedOptions={sourcesSelected}
         onSelect={(e) => {
@@ -19,10 +19,11 @@ function Filters(): React.ReactElement {
           console.log(e)
         }}
       />
-      <label className={styles.selectLabel}>Flag States</label>
       <MultiSelect
+        label="Flag States"
         options={sources}
         selectedOptions={sourcesSelected}
+        className={styles.multiSelect}
         onSelect={(e) => {
           console.log(e)
         }}

@@ -59,6 +59,6 @@
   opacity: 1;
 }
 
-.selectLabel:not(:first-child) {
+.multiSelect {
   margin-top: var(--space-S);
 }
