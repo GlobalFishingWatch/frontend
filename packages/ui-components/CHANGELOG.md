@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 1.11.0
+
+### Minor Changes
+
+- 8934db8: Update base.css and ui-components"
+
 ## 1.10.0
 
 ### Minor Changes
