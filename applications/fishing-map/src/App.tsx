@@ -2,6 +2,7 @@ import React, { memo, useState, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
+import { MapboxRefProvider } from 'features/map/map.context'
 import Login from './features/user/Login'
 import Map from './features/map/Map'
 import Timebar from './features/timebar/Timebar'
@@ -34,14 +35,16 @@ function App(): React.ReactElement {
           <Spinner />
         </div>
       ) : (
-        <SplitView
-          isOpen={sidebarOpen}
-          onToggle={onToggle}
-          aside={<Sidebar />}
-          main={<Main />}
-          asideWidth="32rem"
-          className="split-container"
-        />
+        <MapboxRefProvider>
+          <SplitView
+            isOpen={sidebarOpen}
+            onToggle={onToggle}
+            aside={<Sidebar />}
+            main={<Main />}
+            asideWidth="32rem"
+            className="split-container"
+          />
+        </MapboxRefProvider>
       )}
     </Fragment>
   )
