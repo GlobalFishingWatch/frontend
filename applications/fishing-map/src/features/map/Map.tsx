@@ -1,22 +1,55 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { MiniGlobe, IconButton, MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
+import { useMapboxRef } from './map.context'
 import styles from './Map.module.css'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const Map = (): React.ReactElement => {
-  const { viewport, onViewportChange } = useViewport()
+  const mapRef = useMapboxRef()
+  const { viewport, onViewportChange, setMapCoordinates } = useViewport()
+  const { latitude, longitude, zoom } = viewport
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
+  const [bounds, setBounds] = useState<MiniglobeBounds | undefined>()
+
+  const onZoomInClick = useCallback(() => {
+    setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
+  }, [latitude, longitude, setMapCoordinates, zoom])
+  const onZoomOutClick = useCallback(() => {
+    setMapCoordinates({ latitude, longitude, zoom: Math.max(1, zoom - 1) })
+  }, [latitude, longitude, setMapCoordinates, zoom])
+
+  const setMapBounds = useCallback(() => {
+    const mapboxRef = mapRef?.current?.getMap()
+    if (mapboxRef) {
+      const rawBounds = mapboxRef.getBounds()
+      if (rawBounds) {
+        setBounds({
+          north: rawBounds.getNorth() as number,
+          south: rawBounds.getSouth() as number,
+          west: rawBounds.getWest() as number,
+          east: rawBounds.getEast() as number,
+        })
+      }
+    }
+  }, [mapRef])
+
+  useEffect(() => {
+    setMapBounds()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [zoom, latitude, longitude])
 
   return (
     <div className={styles.container}>
       {style && (
         <InteractiveMap
+          ref={mapRef}
           width="100%"
           height="100%"
           latitude={viewport.latitude}
@@ -25,10 +58,19 @@ const Map = (): React.ReactElement => {
           onViewportChange={onViewportChange}
           mapStyle={style}
           mapOptions={{
-            customAttribution: '© Copyright Global Fishing Watch 2020',
+            customAttribution: 'Global Fishing Watch 2020',
           }}
+          onLoad={setMapBounds}
+          onResize={setMapBounds}
         ></InteractiveMap>
       )}
+      <div className={styles.mapControls}>
+        <MiniGlobe size={60} bounds={bounds} center={{ latitude, longitude }} />
+        <IconButton icon="plus" type="map-tool" tooltip="Zoom in" onClick={onZoomInClick} />
+        <IconButton icon="minus" type="map-tool" tooltip="Zoom out" onClick={onZoomOutClick} />
+        <IconButton icon="ruler" type="map-tool" tooltip="Ruler (Coming soon)" />
+        <IconButton icon="camera" type="map-tool" tooltip="Capture (Coming soon)" />
+      </div>
     </div>
   )
 }
