@@ -17,10 +17,6 @@ export const sources: SelectOption[] = [
     label: 'AIS',
   },
   {
-    id: 'vms-all',
-    label: 'VMS (X COUNTRIES)',
-  },
-  {
     id: 'vms-chile',
     label: 'VMS Chile',
   },

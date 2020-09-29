@@ -3,6 +3,17 @@
   position: relative;
 }
 
+.LayerPanel:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: var(--space-S);
+  bottom: 0;
+  height: 0.1rem;
+  width: calc(100% - var(--space-S));
+  background-color: var(--color-border);
+  z-index: -1;
+}
+
 .expandedContainerOpen {
   z-index: 1;
   filter: var(--filter-drop-shadow);
@@ -26,6 +37,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 .actions {
@@ -95,4 +107,8 @@
 
 .properties {
   padding: 0 var(--space-S) var(--space-S); 
+}
+
+.tagList {
+  width: 100%;
 }

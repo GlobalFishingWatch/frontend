@@ -38,7 +38,10 @@ function LayerPanel(props: LayerPanelProps): React.ReactElement {
           tooltipPlacement="top"
           color={color}
         />
-        <h3 className={cx(styles.name, { [styles.active]: layerActive })}>
+        <h3
+          className={cx(styles.name, { [styles.active]: layerActive })}
+          onClick={onToggleLayerActive}
+        >
           Apparent Fishing Effort
         </h3>
         <div className={cx(styles.actions, { [styles.active]: layerActive })}>
@@ -70,10 +73,12 @@ function LayerPanel(props: LayerPanelProps): React.ReactElement {
           />
         </div>
       </div>
-      <div className={styles.properties}>
-        <label>Sources</label>
-        <TagList tags={sources} color={color} />
-      </div>
+      {layerActive && (
+        <div className={styles.properties}>
+          <label>Sources</label>
+          <TagList tags={sources} color={color} className={styles.tagList} />
+        </div>
+      )}
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
         {filterOpen && <Filters />}
       </div>

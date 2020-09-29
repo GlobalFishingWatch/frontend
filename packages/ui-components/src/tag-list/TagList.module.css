@@ -1,4 +1,6 @@
 .tagList {
   display: flex;
   align-items: center;
+  white-space: nowrap;
+  flex-wrap: wrap;
 }
