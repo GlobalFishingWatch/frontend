@@ -4,7 +4,7 @@ import { sources } from 'data/config'
 import styles from './Filters.module.css'
 
 function Filters(): React.ReactElement {
-  const [sourcesSelected, setSourcesSelected] = useState([sources[0]])
+  const [sourcesSelected] = useState([sources[0]])
 
   return (
     <Fragment>

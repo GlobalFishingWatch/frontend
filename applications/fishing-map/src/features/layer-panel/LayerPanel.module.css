@@ -1,6 +1,7 @@
 .LayerPanel {
   z-index: 0;
   position: relative;
+  padding-top: var(--space-XS);
 }
 
 .LayerPanel:not(:last-child)::after {
@@ -69,7 +70,7 @@
   padding: var(--space-S);
   padding-bottom: var(--space-M);
   background: var(--color-white);
-  transform: translateY(3.7rem);
+  transform: translateY(4.2rem);
   opacity: 1;
   border-top: var(--border);
   border-bottom: var(--border);
