@@ -1,8 +1,9 @@
-import React, { memo, useState, Fragment } from 'react'
-import { useSelector } from 'react-redux'
+import React, { memo, useState, Fragment, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { MapboxRefProvider } from 'features/map/map.context'
+import { fetchWorkspaceThunk, selectWorkspaceStatus } from 'features/workspace/workspace.slice'
 import Login from './features/user/Login'
 import Map from './features/map/Map'
 import Timebar from './features/timebar/Timebar'
@@ -20,17 +21,25 @@ const Main = memo(() => (
 ))
 
 function App(): React.ReactElement {
+  const dispatch = useDispatch()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const logged = useSelector(isUserLogged)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
 
   const onToggle = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
+  useEffect(() => {
+    if (logged) {
+      dispatch(fetchWorkspaceThunk())
+    }
+  }, [dispatch, logged])
+
   return (
     <Fragment>
       <Login />
-      {!logged ? (
+      {!logged || workspaceStatus !== 'finished' ? (
         <div className={styles.placeholder}>
           <Spinner />
         </div>
