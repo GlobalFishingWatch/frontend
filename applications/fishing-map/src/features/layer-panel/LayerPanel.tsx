@@ -1,11 +1,17 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 import useClickedOutside from 'hooks/useClickedOutside'
-import { Switch, IconButton } from '@globalfishingwatch/ui-components'
+import { Switch, IconButton, TagList, SelectOption } from '@globalfishingwatch/ui-components'
 import styles from './LayerPanel.module.css'
 import Filters from './Filters'
 
-function LayerPanel(): React.ReactElement {
+type LayerPanelProps = {
+  sources: SelectOption[]
+  color?: string
+}
+
+function LayerPanel(props: LayerPanelProps): React.ReactElement {
+  const { sources, color } = props
   const [layerActive, setLayerActive] = useState(true)
   const [filterOpen, setFiltersOpen] = useState(false)
 
@@ -30,6 +36,7 @@ function LayerPanel(): React.ReactElement {
           onClick={onToggleLayerActive}
           tooltip="Toggle layer visibility"
           tooltipPlacement="top"
+          color={color}
         />
         <h3 className={cx(styles.name, { [styles.active]: layerActive })}>
           Apparent Fishing Effort
@@ -62,6 +69,10 @@ function LayerPanel(): React.ReactElement {
             tooltipPlacement="top"
           />
         </div>
+      </div>
+      <div className={styles.properties}>
+        <label>Sources</label>
+        <TagList tags={sources} color={color} />
       </div>
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
         {filterOpen && <Filters />}

@@ -1,4 +1,5 @@
 .LayerPanel {
+  z-index: 0;
   position: relative;
 }
 
@@ -9,7 +10,6 @@
 
 .header {
   padding: var(--space-XS) var(--space-S);
-  z-index: 1;
   display: flex;
   align-items: center;
   transition: background-color 150ms linear;
@@ -40,6 +40,7 @@
 
 .active {
   opacity: 1;
+  z-index: 1
 }
 
 .expandedContainer {
@@ -47,12 +48,9 @@
   position: absolute;
   left: 0;
   top: 1px;
-  z-index: -1;
   transform: translateY(0);
   transition: transform 150ms ease-out, opacity 150ms linear;
   opacity: 0;
-  border-top: var(--border);
-  border-bottom: var(--border);
 }
 
 .expandedContainerOpen .expandedContainer {
@@ -61,6 +59,8 @@
   background: var(--color-white);
   transform: translateY(3.7rem);
   opacity: 1;
+  border-top: var(--border);
+  border-bottom: var(--border);
 }
 
 .selectLabel:not(:first-child) {
@@ -91,4 +91,8 @@
   transform: translateX(-50%) rotateZ(-45deg);
   transform-origin: center;
   opacity: 1;
+}
+
+.properties {
+  padding: 0 var(--space-S) var(--space-S); 
 }
