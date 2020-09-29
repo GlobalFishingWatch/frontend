@@ -1,0 +1,94 @@
+.LayerPanel {
+  position: relative;
+}
+
+.expandedContainerOpen {
+  z-index: 1;
+  filter: var(--filter-drop-shadow);
+}
+
+.header {
+  padding: var(--space-XS) var(--space-S);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  transition: background-color 150ms linear;
+}
+
+.expandedContainerOpen .header {
+  background-color: var(--color-white);
+}
+
+.name {
+  margin-left: var(--space-XS);
+  flex: 1;
+  opacity: var(--opacity-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actions {
+  opacity: 0;
+  transition: opacity 150ms linear;
+  line-height: 1;
+}
+
+.LayerPanel:hover .actions {
+  opacity: 1;
+}
+
+.active {
+  opacity: 1;
+}
+
+.expandedContainer {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 1px;
+  z-index: -1;
+  transform: translateY(0);
+  transition: transform 150ms ease-out, opacity 150ms linear;
+  opacity: 0;
+  border-top: var(--border);
+  border-bottom: var(--border);
+}
+
+.expandedContainerOpen .expandedContainer {
+  padding: var(--space-S);
+  padding-bottom: var(--space-M);
+  background: var(--color-white);
+  transform: translateY(3.7rem);
+  opacity: 1;
+}
+
+.selectLabel:not(:first-child) {
+  margin-top: var(--space-S);
+}
+
+.expandable::after {
+  content: '';
+  opacity: 0;
+  transform: translateX(-50%) translateY(-50%) rotateZ(-45deg);
+  transition: transform 150ms ease-out, opacity 150ms linear;
+}
+
+.expanded {
+  position: relative;
+  opacity: 1;
+}
+
+.expanded::after{
+  position: absolute;
+  width: 36%;
+  height: 36%;
+  border-top: var(--border);
+  border-right: var(--border);
+  top: 100%;
+  left: 50%;
+  background-color: var(--color-white);
+  transform: translateX(-50%) rotateZ(-45deg);
+  transform-origin: center;
+  opacity: 1;
+}
