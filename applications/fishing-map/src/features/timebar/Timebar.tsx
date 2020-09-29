@@ -19,8 +19,8 @@ const TimebarWrapper = () => {
       enablePlayback
       start={start}
       end={end}
-      absoluteStart={DEFAULT_WORKSPACE.start}
-      absoluteEnd={DEFAULT_WORKSPACE.end}
+      absoluteStart={DEFAULT_WORKSPACE.availableStart}
+      absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
       onChange={dispatchTimerange}
       showLastUpdate={false}
       onMouseMove={(clientX: number, scale: (arg: number) => Date) => {
