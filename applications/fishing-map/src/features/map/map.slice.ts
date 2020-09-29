@@ -23,11 +23,11 @@ const initialState: MapState = {
       type: Generators.Type.Background,
       color: '#00265c',
     } as BackgroundGeneratorConfig,
-    {
-      id: 'eez',
-      type: Generators.Type.CartoPolygons,
-      color: 'red',
-    } as CartoPolygonsGeneratorConfig,
+    // {
+    //   id: 'eez',
+    //   type: Generators.Type.CartoPolygons,
+    //   color: 'red',
+    // } as CartoPolygonsGeneratorConfig,
     {
       id: 'basemap',
       type: Generators.Type.Basemap,
