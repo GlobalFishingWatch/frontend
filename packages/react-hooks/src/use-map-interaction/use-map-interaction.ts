@@ -4,7 +4,7 @@ import { isArray } from 'lodash'
 import { useCallback, useState, useEffect, useRef } from 'react'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { ExtendedFeature, InteractionEvent, InteractionEventCallback } from '.'
+import { ExtendedFeature, InteractionEventCallback } from '.'
 
 type FeatureStateSource = { source: string; sourceLayer: string }
 

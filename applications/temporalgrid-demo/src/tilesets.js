@@ -1,50 +1,50 @@
 import React, {useState, useCallback} from 'react';
-import { DEFAULT_TILESETS } from './App';
+import { DEFAULT_SUBLAYERS } from './App';
 
-function Tileset({ index, tileset, setTileset, setFilter, setActive }) {
-  return <div className={`tileset ${tileset.active ? '' : 'disabled'}`}>
+function Sublayer({ index, sublayer, setDatasets, setFilter, setActive }) {
+  return <div className={`tileset ${sublayer.active ? '' : 'disabled'}`}>
     <span>
-      {index > 0 && <input type="checkbox" checked={tileset.active} onChange={(event) => setActive(index, event.target.checked)} />}
+      {index > 0 && <input type="checkbox" checked={sublayer.active} onChange={(event) => setActive(index, event.target.checked)} />}
     </span>
     <fieldset>
-      <label htmlFor={`tileset_${index}`} />
-      <input id={`tileset_${index}`} type="text" value={tileset.tileset} onChange={(event) => setTileset(index, event.target.value)} />
+      <label htmlFor={`datsets_${index}`} />
+      <input id={`datsets_${index}`} type="text" value={sublayer.datasets} onChange={(event) => setDatasets(index, event.target.value)} />
     </fieldset>
     <fieldset>
       <label htmlFor={`filters_${index}`}>filters</label>
-      <input id={`filters_${index}`} type="text" value={tileset.filter} onChange={(event) => setFilter(index, event.target.value)} />
+      <input id={`filters_${index}`} type="text" value={sublayer.filter} onChange={(event) => setFilter(index, event.target.value)} />
     </fieldset>
   </div>
 }
 
-export default function Tilesets({ onChange }) {
-  const [tilesets, updateTilesets] = useState(DEFAULT_TILESETS)
+export default function Sublayers({ onChange }) {
+  const [sublayers, updateSublayers] = useState(DEFAULT_SUBLAYERS)
 
-  const setTileset = useCallback((index, tileset) => {
-    const newTilesets = [...tilesets]
-    newTilesets[index].tileset = tileset
-    updateTilesets(newTilesets)
+  const setDatasets = useCallback((index, datasets) => {
+    const newSublayers = [...sublayers]
+    newSublayers[index].datasets = datasets
+    updateSublayers(newSublayers)
   })
   const setFilter = useCallback((index, filter) => {
-    const newTilesets = [...tilesets]
-    newTilesets[index].filter = filter
-    updateTilesets(newTilesets)
+    const newSublayers = [...sublayers]
+    newSublayers[index].filter = filter
+    updateSublayers(newSublayers)
   })
   const setActive = useCallback((index, active) => {
-    const newTilesets = [...tilesets]
-    newTilesets[index].active = active
-    updateTilesets(newTilesets)
+    const newSublayers = [...sublayers]
+    newSublayers[index].active = active
+    updateSublayers(newSublayers)
   })
 
   const [combinationMode, setCombinationMode] = useState('add')
 
   return <>
-    {tilesets.map((tileset, i) => <Tileset key={i} index={i} tileset={tileset} setTileset={setTileset} setFilter={setFilter} setActive={setActive} />)}
+    {sublayers.map((sublayer, i) => <Sublayer key={i} index={i} sublayer={sublayer} setDatasets={setDatasets} setFilter={setFilter} setActive={setActive} />)}
     <select id="combinationMode" onChange={(event) => { setCombinationMode(event.target.value)}}>
       <option value="add">combine:add</option>
       <option value="compare">combine:compare</option>
       <option value="bivariate">combine:bivariate</option>
     </select>
-    <button onClick={() => onChange(tilesets, combinationMode)}>ok</button>
+    <button onClick={() => onChange(sublayers, combinationMode)}>ok</button>
   </>
 }
