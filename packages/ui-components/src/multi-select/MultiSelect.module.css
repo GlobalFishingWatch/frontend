@@ -4,6 +4,7 @@
   padding-left: var(--space-XS);
   max-width: 75%;
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .placeholderContainer {

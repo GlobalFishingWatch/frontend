@@ -6,6 +6,7 @@
   padding: 0 var(--space-XS);
   cursor: default;
   margin-right: var(--space-XS);
+  margin-bottom: var(--space-XS);
   color: var(--color-primary-blue);
   border-bottom: var(--border);
   border-radius: var(--border-radius);

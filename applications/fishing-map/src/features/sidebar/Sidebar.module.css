@@ -1,3 +1,11 @@
-.aside {
-  padding: var(--space-S);
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  padding-right: var(--space-S);
+}
+
+.logo {
+  width: 18rem;
+  height: auto;
+  margin-right: auto;
 }
