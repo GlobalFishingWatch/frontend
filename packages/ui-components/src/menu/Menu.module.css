@@ -85,6 +85,10 @@
   right: var(--space-M);
 }
 
+.logo {
+  margin-left: var(--space-M);
+}
+
 .content {
   padding: var(--space-M);
 }
