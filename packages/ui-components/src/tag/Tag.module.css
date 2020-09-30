@@ -16,7 +16,7 @@
   padding-right: 0;
 }
 
-.tag::before {
+.tag::after {
   pointer-events: none;
   position: absolute;
   content: '';
@@ -27,6 +27,7 @@
   border-radius: var(--border-radius);
   background-color: currentColor;
   opacity: var(--opacity-border);
+  z-index: -1;
 }
 
 .content {

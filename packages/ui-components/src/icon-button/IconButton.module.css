@@ -56,7 +56,7 @@
 .map-tool {
   color: rgba(var(--white-rgb), var(--opacity-secondary));
   background-color: var(--color-primary-blue);
-  border: 0.1rem solid rgba(255, 255, 255, .1);
+  border: var(--border-white);
 }
 
 .map-tool:hover,
