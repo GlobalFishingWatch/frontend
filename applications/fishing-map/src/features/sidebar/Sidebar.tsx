@@ -7,7 +7,11 @@ import styles from './Sidebar.module.css'
 import HeatmapsSection from './HeatmapsSection'
 import VesselsSection from './VesselsSection'
 
-function SidebarHeader() {
+type SidebarProps = {
+  onMenuClick: () => void
+}
+
+function SidebarHeader({ onMenuClick }: SidebarProps) {
   const dispatch = useDispatch()
   const userData = useSelector(selectUserData)
   const initials = `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
@@ -17,7 +21,7 @@ function SidebarHeader() {
 
   return (
     <div className={styles.sidebarHeader}>
-      <IconButton icon="menu" />
+      <IconButton icon="menu" onClick={onMenuClick} />
       <Logo className={styles.logo} />
       <IconButton icon="share" tooltip="Click to share this view" tooltipPlacement="bottom" />
       {userData ? (
@@ -53,11 +57,11 @@ function Sections() {
   )
 }
 
-function Sidebar(): React.ReactElement {
+function Sidebar({ onMenuClick }: SidebarProps): React.ReactElement {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   return (
     <Fragment>
-      <SidebarHeader />
+      <SidebarHeader onMenuClick={onMenuClick} />
       {workspaceStatus === 'error' ? (
         <div className={styles.placeholder}>
           There was an error loading the workspace, please try again later
