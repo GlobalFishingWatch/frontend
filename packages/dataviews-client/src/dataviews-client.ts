@@ -84,7 +84,7 @@ export default class DataviewsClient {
               // template compilation will fail if template needs an override an and override has not been defined
               try {
                 resolvedUrl = pathTemplateCompiled(datasetParams?.params)
-                if (datasetParams?.query.length) {
+                if (datasetParams?.query?.length) {
                   resolvedUrl += `?${stringify(datasetParams?.query)}`
                 }
                 const datasetParam = datasetParams?.params?.find((query) => query.id === 'id')

@@ -1,28 +1,34 @@
 import React, { Fragment, useState } from 'react'
-import { MultiSelect } from '@globalfishingwatch/ui-components'
-import { sources } from 'data/config'
+import { useSelector } from 'react-redux'
+import { MultiSelect, MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { flags } from 'data/config'
+import { selectFishingDatasets } from 'features/workspace/workspace.selectors'
 import styles from './Filters.module.css'
 
 function Filters(): React.ReactElement {
-  const [sourcesSelected] = useState([sources[0]])
+  const sources = useSelector(selectFishingDatasets)
+  const [sourcesSelected, setSourcesSelected] = useState<any>(
+    sources?.length ? sources[0] : undefined
+  )
 
   return (
     <Fragment>
       <MultiSelect
         label="Sources"
-        options={sources}
-        selectedOptions={sourcesSelected}
+        options={sources || ([] as MultiSelectOption[])}
+        selectedOptions={sourcesSelected ? [sourcesSelected] : undefined}
         onSelect={(e) => {
-          console.log(e)
+          console.log('e', e)
+          setSourcesSelected(e)
         }}
         onRemove={(e) => {
-          console.log(e)
+          setSourcesSelected(undefined)
         }}
       />
       <MultiSelect
         label="Flag States"
-        options={sources}
-        selectedOptions={sourcesSelected}
+        options={flags}
+        selectedOptions={[flags[0]]}
         className={styles.multiSelect}
         onSelect={(e) => {
           console.log(e)

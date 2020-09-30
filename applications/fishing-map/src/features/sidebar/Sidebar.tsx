@@ -3,6 +3,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { IconButton, Logo } from '@globalfishingwatch/ui-components'
 import { selectUserData, logoutUserThunk } from 'features/user/user.slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.slice'
+import { useLocationConnect } from 'routes/routes.hook'
+import { SEARCH } from 'routes/routes'
+import Search from 'features/search/Search'
 import styles from './Sidebar.module.css'
 import HeatmapsSection from './HeatmapsSection'
 import VesselsSection from './VesselsSection'
@@ -57,8 +60,14 @@ function Sections() {
   )
 }
 
-function Sidebar({ onMenuClick }: SidebarProps): React.ReactElement {
+function Sidebar({ onMenuClick }: SidebarProps) {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const { location } = useLocationConnect()
+
+  if (location.type === SEARCH) {
+    return <Search />
+  }
+
   return (
     <Fragment>
       <SidebarHeader onMenuClick={onMenuClick} />
