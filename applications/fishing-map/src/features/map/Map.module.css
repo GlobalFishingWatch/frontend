@@ -15,7 +15,27 @@
   margin-bottom: var(--space-XS);
 }
 
+.scale {
+  position: absolute;
+  left: var(--space-XS);
+  bottom: var(--space-XS);
+  color: var(--color-white);
+  opacity: .4;
+}
+
+.scale :global(.mapboxgl-ctrl-scale) {
+  font: var(--font-XS);
+  background: none;
+  color: var(--color-white);
+  border-color: var(--color-white);
+  border-left: none;
+  border-right: none;
+}
+
 :global(.mapboxgl-control-container .mapboxgl-ctrl.mapboxgl-ctrl-attrib) {
+  padding-right: var(--space-XS);
+  padding-bottom: var(--space-XS);
+  font: var(--font-XS);
   background: none;
   color: var(--color-white);
   opacity: .4;

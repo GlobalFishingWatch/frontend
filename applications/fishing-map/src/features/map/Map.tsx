@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { MiniGlobe, IconButton, MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
+import { InteractiveMap, ScaleControl } from '@globalfishingwatch/react-map-gl'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import { useMapboxRef } from './map.context'
@@ -62,7 +62,11 @@ const Map = (): React.ReactElement => {
           }}
           onLoad={setMapBounds}
           onResize={setMapBounds}
-        ></InteractiveMap>
+        >
+          <div className={styles.scale}>
+            <ScaleControl maxWidth={100} unit="nautical" />
+          </div>
+        </InteractiveMap>
       )}
       <div className={styles.mapControls}>
         <MiniGlobe size={60} bounds={bounds} center={{ latitude, longitude }} />
