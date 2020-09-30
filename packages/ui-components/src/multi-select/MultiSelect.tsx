@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, memo, Fragment } from 'react'
+import React, { useCallback, useState, useMemo, memo } from 'react'
 import {
   useMultipleSelection,
   useCombobox,
@@ -15,7 +15,7 @@ import styles from '../select/Select.module.css'
 import multiSelectStyles from './MultiSelect.module.css'
 import { MultiSelectOption, MultiSelectOnChange } from './index'
 
-interface SelectProps {
+interface MultiSelectProps {
   label?: string
   placeholder?: string
   options: MultiSelectOption[]
@@ -45,7 +45,7 @@ const getItemsFiltered = (
   )
 }
 
-function Select(props: SelectProps) {
+function MultiSelect(props: MultiSelectProps) {
   const {
     label = '',
     options,
@@ -170,12 +170,20 @@ function Select(props: SelectProps) {
             />
           )}
           <InputText
-            {...getInputProps({ ...getDropdownProps({ preventKeyAction: isOpen }) })}
+            {...getInputProps({
+              ...getDropdownProps({
+                onFocus: () => {
+                  if (!isOpen) {
+                    openMenu()
+                  }
+                },
+                preventKeyAction: isOpen,
+              }),
+            })}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={placeholder}
             className={multiSelectStyles.input}
-            onFocus={() => openMenu()}
           />
         </div>
         <div className={styles.buttonsContainer}>
@@ -214,4 +222,4 @@ function Select(props: SelectProps) {
   )
 }
 
-export default memo(Select)
+export default memo(MultiSelect)

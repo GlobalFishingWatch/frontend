@@ -1,8 +1,8 @@
 export { default } from './MultiSelect'
 
 export type SelectOptionId = number | string
-export type MultiSelectOption = {
-  id: SelectOptionId
+export type MultiSelectOption<T = SelectOptionId> = {
+  id: T
   label: string
   tooltip?: string
 }
