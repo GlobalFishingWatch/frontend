@@ -1,11 +1,11 @@
 export { default as useLogin } from './use-login'
 export { default as useLayerComposer } from './use-layer-composer'
-export {
-  default as useMapInteraction,
+export { default as useMapInteraction } from './use-map-interaction'
+export type {
   InteractionEvent,
   InteractionEventCallback,
   ExtendedFeature,
-} from './use-map-interaction'
+} from './use-map-interaction/index'
 export { default as useMapTooltip } from './use-map-tooltip'
 export { default as useMapLegend } from './use-map-legend'
 export { default as useWorkspace } from './use-workspace'

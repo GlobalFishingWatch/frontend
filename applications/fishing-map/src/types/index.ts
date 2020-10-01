@@ -9,3 +9,5 @@ export type MapCoordinates = {
   longitude: number
   zoom: number
 }
+
+export type AsyncReducerStatus = 'idle' | 'loading' | 'finished' | 'error'

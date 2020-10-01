@@ -24,7 +24,7 @@ export function getGeneratorConfig(dataview: Dataview) {
     const statsEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-legend')
 
     if (tilesEndpoint) {
-      const flagFilter = dataview.datasetsConfig?.datasetId?.query.find((q) => q.id === 'flag')
+      const flagFilter = dataview.datasetsConfig?.datasetId?.query?.find((q) => q.id === 'flag')
         ?.value
       const generator = {
         id: `fourwings-${dataview.id}`,

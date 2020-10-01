@@ -1,8 +1,11 @@
-import React, { memo, useState, Fragment } from 'react'
-import { useSelector } from 'react-redux'
+import React, { memo, useState, Fragment, useEffect, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
+import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import { MapboxRefProvider } from 'features/map/map.context'
+import { fetchWorkspaceThunk, selectWorkspaceStatus } from 'features/workspace/workspace.slice'
+import menuBgImage from 'assets/images/menubg.jpg'
 import Login from './features/user/Login'
 import Map from './features/map/Map'
 import Timebar from './features/timebar/Timebar'
@@ -20,17 +23,30 @@ const Main = memo(() => (
 ))
 
 function App(): React.ReactElement {
+  const dispatch = useDispatch()
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [menuOpen, setMenuOpen] = useState(false)
   const logged = useSelector(isUserLogged)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
 
   const onToggle = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
+  const onMenuClick = useCallback(() => {
+    setMenuOpen(true)
+  }, [])
+
+  useEffect(() => {
+    if (logged) {
+      dispatch(fetchWorkspaceThunk())
+    }
+  }, [dispatch, logged])
+
   return (
     <Fragment>
       <Login />
-      {!logged ? (
+      {!logged || workspaceStatus !== 'finished' ? (
         <div className={styles.placeholder}>
           <Spinner />
         </div>
@@ -39,13 +55,19 @@ function App(): React.ReactElement {
           <SplitView
             isOpen={sidebarOpen}
             onToggle={onToggle}
-            aside={<Sidebar />}
+            aside={<Sidebar onMenuClick={onMenuClick} />}
             main={<Main />}
             asideWidth="32rem"
             className="split-container"
           />
         </MapboxRefProvider>
       )}
+      <Menu
+        bgImage={menuBgImage}
+        isOpen={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        activeLinkId="map-data"
+      />
     </Fragment>
   )
 }

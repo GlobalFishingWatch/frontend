@@ -27,9 +27,7 @@ const SelectsSection = () => {
     setSelectedOption(undefined)
   }
 
-  const [selectedMultiOptions, setSelectedMultiOptions] = useState<MultiSelectOption[]>([
-    selectOptions[0],
-  ])
+  const [selectedMultiOptions, setSelectedMultiOptions] = useState<MultiSelectOption[]>()
   const onMultiSelect: MultiSelectOnChange = (option, selectedOptions) => {
     setSelectedMultiOptions(selectedOptions)
   }

@@ -5,18 +5,20 @@ import { Generators } from '@globalfishingwatch/layer-composer'
 export interface EndpointParam {
   id: string
   label: string
-  description: string
-  type: 'enum' | 'boolean' | 'number' | 'string' | 'Date ISO' | 'sql'
-  values?: string[]
+  type: 'enum' | 'boolean' | 'number' | 'string' | 'Date ISO' | 'sql' | '4wings-datasets'
+  description?: string
+  enum?: string[]
   default?: string | boolean | number
   required?: boolean
 }
 
 export interface Endpoint {
   id: string
-  description: string
+  description?: string
+  method?: 'GET' | 'POST'
   pathTemplate: string
   downloadable: boolean
+  body?: any
   params: EndpointParam[]
   query: EndpointParam[]
 }
@@ -43,7 +45,7 @@ export interface DatasetConfiguration {
 export interface Dataset {
   id: string
   type: DatasetTypes
-  alias: string[]
+  alias: string[] | null
   name: string
   description: string
   category: string
@@ -52,11 +54,14 @@ export interface Dataset {
   status: DatasetStatus
   importLogs: string
   unit: string
+  ownerType: string
   ownerId: number
   startDate: string
   endDate: string
+  createdAt: string
   endpoints?: Endpoint[]
-  configuration: DatasetConfiguration
+  configuration: DatasetConfiguration | null
+  relatedDatasets: unknown
 }
 
 export interface DataviewConfig {
@@ -74,7 +79,7 @@ export interface DataviewDatasetConfigParams {
 export interface DataviewDatasetConfig {
   endpoint: string
   params: DataviewDatasetConfigParams[]
-  query: DataviewDatasetConfigParams[]
+  query?: DataviewDatasetConfigParams[]
 }
 
 export interface DataviewDatasetConfigDict {

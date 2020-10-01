@@ -1,25 +1,17 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 import useClickedOutside from 'hooks/useClickedOutside'
-import {
-  Switch,
-  IconButton,
-  TagList,
-  Tooltip,
-  SelectOption,
-} from '@globalfishingwatch/ui-components'
+import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
+import { Dataview } from '@globalfishingwatch/dataviews-client'
+import { getDatasetsByDataview } from 'features/workspace/workspace.selectors'
 import styles from './LayerPanel.module.css'
 import Filters from './Filters'
 
-const title = 'Apparent Fishing Efforts'
-
 type LayerPanelProps = {
-  sources: SelectOption[]
-  color?: string
+  dataview: Dataview
 }
 
-function LayerPanel(props: LayerPanelProps): React.ReactElement {
-  const { sources, color } = props
+function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [layerActive, setLayerActive] = useState(true)
   const [filterOpen, setFiltersOpen] = useState(false)
 
@@ -37,9 +29,11 @@ function LayerPanel(props: LayerPanelProps): React.ReactElement {
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {title}
+      {dataview.name}
     </h3>
   )
+
+  const sources = getDatasetsByDataview(dataview)
   return (
     <div className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: filterOpen })}>
       <div className={styles.header}>
@@ -48,9 +42,13 @@ function LayerPanel(props: LayerPanelProps): React.ReactElement {
           onClick={onToggleLayerActive}
           tooltip="Toggle layer visibility"
           tooltipPlacement="top"
-          color={color}
+          color={dataview.config.color}
         />
-        {title.length > 30 ? <Tooltip content={title}>{TitleComponent}</Tooltip> : TitleComponent}
+        {dataview.name.length > 30 ? (
+          <Tooltip content={dataview.name}>{TitleComponent}</Tooltip>
+        ) : (
+          TitleComponent
+        )}
         <div className={cx(styles.actions, { [styles.active]: layerActive })}>
           {layerActive && (
             <IconButton
@@ -80,10 +78,10 @@ function LayerPanel(props: LayerPanelProps): React.ReactElement {
           />
         </div>
       </div>
-      {layerActive && (
+      {layerActive && dataview.datasetsConfig && (
         <div className={styles.properties}>
           <label>Sources</label>
-          <TagList tags={sources} color={color} className={styles.tagList} />
+          <TagList tags={sources} color={dataview.config.color} className={styles.tagList} />
         </div>
       )}
       <div className={styles.expandedContainer} ref={expandedContainerRef}>

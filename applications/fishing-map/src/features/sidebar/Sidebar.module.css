@@ -1,3 +1,12 @@
+.placeholder {
+  height: calc(100% - 5.4rem);
+  display: flex;
+  flex: 1;
+  align-items: center;
+  padding: var(--space-M);
+  text-align: center;
+}
+
 .sidebarHeader {
   display: flex;
   align-items: center;
@@ -8,4 +17,16 @@
   width: 18rem;
   height: auto;
   margin-right: auto;
+}
+
+.userBtn svg {
+  display: none;
+}
+
+.userBtn:hover {
+  font-size: 0;
+}
+
+.userBtn:hover svg {
+  display: unset;
 }
