@@ -101,7 +101,7 @@ class HeatmapAnimatedGenerator {
     const datasets = config.sublayers.map((sublayer) => sublayer.datasets.join(','))
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
 
-    const tilesUrl = `${config.tilesAPI}/${API_ENDPOINTS.tiles}/`
+    const tilesUrl = `${config.tilesAPI}/${API_ENDPOINTS.tiles}`
 
     // TODO - generate this using updated stats API
     const breaks = HARDCODED_BREAKS[config.combinationMode].slice(0, datasets.length)

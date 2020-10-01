@@ -68,6 +68,7 @@ export interface DataviewConfig {
   type?: Generators.Type | string
   color?: string
   colorRamp?: Generators.ColorRampsIds
+  visible?: boolean
   [key: string]: unknown
 }
 

@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 import useClickedOutside from 'hooks/useClickedOutside'
+import { useSelector } from 'react-redux'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
 import { Dataview } from '@globalfishingwatch/dataviews-client'
 import { getDatasetsByDataview } from 'features/workspace/workspace.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectDataviews } from 'routes/routes.selectors'
 import styles from './LayerPanel.module.css'
 import Filters from './Filters'
 
@@ -12,11 +15,18 @@ type LayerPanelProps = {
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
-  const [layerActive, setLayerActive] = useState(true)
   const [filterOpen, setFiltersOpen] = useState(false)
+  const { dispatchQueryParams } = useLocationConnect()
+  const urlDataviews = useSelector(selectDataviews)
 
+  // TODO reuse an unify the same logic than map.selector
+  const urlDataview = (urlDataviews || []).find(
+    (urlDataview) => urlDataview.id?.toString() === dataview.id.toString()
+  )
+  const layerActive =
+    urlDataview?.config?.visible !== undefined ? urlDataview?.config?.visible : true
   const onToggleLayerActive = () => {
-    setLayerActive(!layerActive)
+    dispatchQueryParams({ dataviews: [{ id: dataview.id, config: { visible: !layerActive } }] })
   }
 
   const onToggleFilterOpen = () => {
@@ -66,7 +76,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             icon="info"
             size="small"
             className={styles.actionButton}
-            tooltip="Info"
+            tooltip={dataview.description}
             tooltipPlacement="top"
           />
           <IconButton

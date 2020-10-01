@@ -1,10 +1,13 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'store'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   AnyGeneratorConfig,
   BackgroundGeneratorConfig,
   BasemapGeneratorConfig,
+  // CartoPolygonsGeneratorConfig,
+  HeatmapAnimatedGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { selectMapZoomQuery, selectTimerange } from 'routes/routes.selectors'
 
@@ -18,9 +21,32 @@ const initialState: MapState = {
     {
       id: 'background',
       type: Generators.Type.Background,
-      color: '#274777',
+      color: '#00265c',
     } as BackgroundGeneratorConfig,
-    { id: 'satellite', type: Generators.Type.Basemap, visible: true } as BasemapGeneratorConfig,
+    // {
+    //   id: 'eez',
+    //   type: Generators.Type.CartoPolygons,
+    //   color: 'red',
+    // } as CartoPolygonsGeneratorConfig,
+    {
+      id: 'basemap',
+      type: Generators.Type.Basemap,
+      basemap: Generators.BasemapType.Default,
+    } as BasemapGeneratorConfig,
+    {
+      id: '1', // Use same than dataview name to match it for now, will need to be matched in a more accurate way
+      type: Generators.Type.HeatmapAnimated,
+      sublayers: [
+        { id: '0', colorRamp: 'teal', datasets: ['dgg_fishing_galapagos'] },
+        { id: '1', colorRamp: 'magenta', datasets: ['dgg_fishing_caribe'] },
+      ],
+      combinationMode: 'compare',
+      debug: false,
+      debugLabels: false,
+      geomType: 'gridded',
+      tilesAPI: `${process.env.REACT_APP_API_GATEWAY}/v1/4wings`,
+      interactive: true,
+    } as HeatmapAnimatedGeneratorConfig,
   ],
 }
 
@@ -57,6 +83,7 @@ export const selectGlobalGeneratorsConfig = createSelector(
     zoom,
     start,
     end,
+    token: GFWAPI.getToken(),
   })
 )
 

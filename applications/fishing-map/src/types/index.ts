@@ -1,7 +1,12 @@
-export type WorkspaceParam = 'zoom' | 'latitude' | 'longitude' | 'start' | 'end'
+export type WorkspaceParam = 'zoom' | 'latitude' | 'longitude' | 'start' | 'end' | 'dataviews'
 
 export type QueryParams = {
-  [query in WorkspaceParam]?: string | number | boolean | null
+  zoom?: number
+  latitude?: number
+  longitude?: number
+  start?: string
+  end?: string
+  dataviews?: any[]
 }
 
 export type MapCoordinates = {
