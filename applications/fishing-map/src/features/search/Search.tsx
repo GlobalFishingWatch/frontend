@@ -8,6 +8,7 @@ import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { HOME, SEARCH } from 'routes/routes'
+import vesselImage from 'assets/images/vessel@2x.png'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -22,7 +23,6 @@ function Search() {
   const query = useDebounce(searchQuery, 200)
   const { dispatchLocation } = useLocationConnect()
   const searchResults = useSelector(selectSearchResults)
-  console.log('Search -> searchResults', searchResults)
 
   useEffect(() => {
     if (query) {
@@ -122,19 +122,25 @@ function Search() {
         ) : (
           <div className={styles.emptyState}>
             <div>
-              Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…)
-              <br />
-              You can narrow your search pressing the filter icon (
-              {<Icon className={styles.inlineIcon} icon="filter-off" />}) in the top bar or writing
-              filters like:
-              <br />
-              flag:china,japan,spain
-              <br />
-              active-after:2017/03/01
-              <br />
-              active-before:2018/01/01
-              <br />
-              source:AIS
+              <img src={vesselImage} alt="vessel" className={styles.vesselImage} />
+              <p>Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…)</p>
+              <p>
+                You can narrow your search pressing the filter icon (
+                {<Icon className={styles.inlineIcon} icon="filter-off" />}) in the top bar or
+                writing filters like:
+              </p>
+              <p>
+                <code>flag:china,japan,spain</code>
+              </p>
+              <p>
+                <code>active-after:2017/03/01</code>
+              </p>
+              <p>
+                <code>active-before:2018/01/01</code>
+              </p>
+              <p>
+                <code>source:AIS</code>
+              </p>
             </div>
           </div>
         )}

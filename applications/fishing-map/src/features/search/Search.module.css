@@ -78,6 +78,20 @@
     color: var(--color-secondary-blue);
 }
 
+.emptyState p:not(:last-child) {
+    margin-bottom: var(--space-S);
+}
+
+.emptyState code {
+    font-style: italic;
+}
+
+.vesselImage {
+    height: 14rem;
+    display: block;
+    margin: 0 auto;
+}
+
 .inlineIcon {
     height: 1em;
 }
