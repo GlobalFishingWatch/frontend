@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.4.1
+
+### Patch Changes
+
+- da23184: Fix heatmap path url
+- Updated dependencies [da23184]
+  - @globalfishingwatch/layer-composer@2.13.1
+
 ## 0.4.0
 
 ### Minor Changes
