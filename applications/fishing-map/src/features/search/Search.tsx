@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
-import { DateTime } from 'luxon'
 import Downshift from 'downshift'
+import { formatDate } from 'utils/dates'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -44,10 +44,6 @@ function Search() {
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
-  }
-
-  const formatDate = (date: string) => {
-    return DateTime.fromISO(date).toFormat('yyyy/MM/dd')
   }
 
   return (
