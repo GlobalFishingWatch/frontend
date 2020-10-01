@@ -6,7 +6,7 @@ import {
   AnyGeneratorConfig,
   BackgroundGeneratorConfig,
   BasemapGeneratorConfig,
-  CartoPolygonsGeneratorConfig,
+  // CartoPolygonsGeneratorConfig,
   HeatmapAnimatedGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { selectMapZoomQuery, selectTimerange } from 'routes/routes.selectors'
@@ -34,11 +34,11 @@ const initialState: MapState = {
       basemap: Generators.BasemapType.Default,
     } as BasemapGeneratorConfig,
     {
-      id: 'heatmap-animated',
+      id: '1', // Use same than dataview name to match it for now, will need to be matched in a more accurate way
       type: Generators.Type.HeatmapAnimated,
       sublayers: [
-        { id: '0', colorRamp: 'teal', datasets: ['fishing_v4'], filter: "flag='ESP'" },
-        { id: '1', colorRamp: 'magenta', datasets: ['fishing_v4'], filter: "flag='FRA'" },
+        { id: '0', colorRamp: 'teal', datasets: ['dgg_fishing_galapagos'] },
+        { id: '1', colorRamp: 'magenta', datasets: ['dgg_fishing_caribe'] },
       ],
       combinationMode: 'compare',
       debug: false,

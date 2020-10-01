@@ -4,6 +4,7 @@ import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { QueryParams } from 'types'
+import { Dataview } from '@globalfishingwatch/dataviews-client'
 import { REPLACE_URL_PARAMS } from 'data/config'
 import { UpdateQueryParamsAction } from './routes.actions'
 
@@ -27,9 +28,17 @@ const routesMap: RoutesMap = {
 }
 
 const urlToObjectTransformation: Dictionary<(value: any) => any> = {
-  latitude: (s) => parseFloat(s),
-  longitude: (s) => parseFloat(s),
-  zoom: (s) => parseFloat(s),
+  latitude: (latitude) => parseFloat(latitude),
+  longitude: (longitude) => parseFloat(longitude),
+  zoom: (zoom) => parseFloat(zoom),
+  dataviews: (dataviews) =>
+    dataviews.map((dataview: Dataview) => ({
+      ...dataview,
+      config: {
+        ...dataview.config,
+        visible: dataview.config?.visible?.toString() === 'true',
+      },
+    })),
 }
 
 const encodeWorkspace = (object: Record<string, unknown>) => {
@@ -38,7 +47,6 @@ const encodeWorkspace = (object: Record<string, unknown>) => {
 
 const decodeWorkspace = (queryString: string) => {
   const parsed = parse(queryString, { arrayLimit: 300 })
-
   Object.keys(parsed).forEach((param: string) => {
     const value = parsed[param]
     const transformationFn = urlToObjectTransformation[param]
