@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/sandbox",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
   "scripts": {
