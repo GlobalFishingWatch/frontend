@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.4.0
+
+### Minor Changes
+
+- 9a356a0: Release fishing-map
+
 ## 0.3.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.13.0
+
+### Minor Changes
+
+- 9a356a0: Release fishing-map
+
 ## 2.12.0
 
 ### Minor Changes
