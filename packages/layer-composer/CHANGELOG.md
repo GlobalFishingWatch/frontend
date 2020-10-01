@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.13.1
+
+### Patch Changes
+
+- da23184: Fix heatmap path url
+
 ## 2.13.0
 
 ### Minor Changes
