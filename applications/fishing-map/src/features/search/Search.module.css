@@ -30,12 +30,14 @@
     padding: var(--space-M) var(--space-S);
     background-color: transparent;
     cursor: pointer;
-    transition: background-color 150ms linear, box-shadow 150ms linear;
+    border-left: 0.1rem solid transparent;
+    transition: background-color 150ms linear, box-shadow 150ms linear, border-left 150ms linear;
 }
 
-.searchResult:hover {
+.searchResult:hover, .highlighted {
     background-color: var(--color-white);
     box-shadow: var(--box-shadow);
+    border-left: 0.5rem solid var(--color-secondary-blue);
 }
 
 .searchResult:not(:last-child)::after {
@@ -68,30 +70,4 @@
 .searchResult:hover .properties, .searchResult:hover .properties label {
     cursor: pointer;
     opacity: var(--opacity-primary);
-}
-
-.emptyState {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding: var(--space-M);
-    color: var(--color-secondary-blue);
-}
-
-.emptyState p:not(:last-child) {
-    margin-bottom: var(--space-S);
-}
-
-.emptyState code {
-    font-style: italic;
-}
-
-.vesselImage {
-    height: 14rem;
-    display: block;
-    margin: 0 auto;
-}
-
-.inlineIcon {
-    height: 1em;
 }
