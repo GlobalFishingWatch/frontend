@@ -41,6 +41,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
           tooltipPlacement="bottom"
           className={styles.userBtn}
           onClick={onLogoutClick}
+          icon="logout"
         >
           {initials}
         </IconButton>
