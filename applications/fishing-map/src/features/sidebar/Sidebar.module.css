@@ -18,3 +18,15 @@
   height: auto;
   margin-right: auto;
 }
+
+.userBtn svg {
+  display: none;
+}
+
+.userBtn:hover {
+  font-size: 0;
+}
+
+.userBtn:hover svg {
+  display: unset;
+}

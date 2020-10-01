@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
 import GFWAPI from '@globalfishingwatch/api-client'
-import searchMock from './search.mock'
 
 interface UserState {
   status: AsyncReducerStatus
@@ -15,15 +14,20 @@ const initialState: UserState = {
 }
 
 export const fetchVesselSearchThunk = createAsyncThunk('search/fetch', async (query: string) => {
-  // const searchResults = await GFWAPI.fetch<any>(`/v1/vessels?datasets='carriers'&query=${query}`)
-  // return searchResults
-  return searchMock
+  const searchResults = await GFWAPI.fetch<any>(
+    `/v1/vessels?datasets=test-alias-import-vessels-pipeline:latest&query=${query}`
+  )
+  return searchResults
 })
 
 const searchSlice = createSlice({
   name: 'search',
   initialState,
-  reducers: {},
+  reducers: {
+    cleanVesselSearchResults: (state) => {
+      state.data = null
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchVesselSearchThunk.pending, (state) => {
       state.status = 'loading'
@@ -38,7 +42,9 @@ const searchSlice = createSlice({
   },
 })
 
-export const selectWorkspace = (state: RootState) => state.workspace.data
-export const selectWorkspaceStatus = (state: RootState) => state.workspace.status
+export const { cleanVesselSearchResults } = searchSlice.actions
+
+export const selectSearchResults = (state: RootState) => state.search.data
+export const selectSearchStatus = (state: RootState) => state.search.status
 
 export default searchSlice.reducer
