@@ -70,13 +70,13 @@ const Map = (): React.ReactElement => {
   const [track, setTrack] = useState<Segment[] | null>(null)
   useEffect(() => {
     const fields = [Field.lonlat, Field.timestamp, Field.speed, Field.fishing]
-    fetch(
+    GFWAPI.fetch(
       `https://gateway.api.dev.globalfishingwatch.org/datasets/fishing/vessels/00ba29183-3b86-9e36-cf20-ee340e409521/tracks?startDate=2017-01-01T00:00:00.000Z&endDate=2020-09-14T18:31:59.567Z&fields=${fields}&wrapLongitudes=false&format=valueArray`
       // &binary=true &format=valueArray
     )
-      .then((r) => r.json())
+      // .then((r) => r.json())
       .then((data) => {
-        const segments = trackValueArrayToSegments(data, fields)
+        const segments = trackValueArrayToSegments(data as any, fields)
         setTrack(segments)
       })
   }, [])
