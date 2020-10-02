@@ -42,14 +42,9 @@ const workspace: Workspace = {
       config: {
         type: Generators.Type.HeatmapAnimated,
         color: '#00FFBC',
-        colorRamp: 'teal',
         sublayers: [{ id: 'fishing', colorRamp: 'teal', datasets: ['fishing_v4'] }],
         combinationMode: 'compare',
-        debug: false,
-        debugLabels: false,
-        geomType: 'gridded',
         tilesAPI: `${process.env.REACT_APP_API_GATEWAY}/v1/4wings`,
-        interactive: true,
       },
       datasetsConfig: {
         dgg_fishing_galapagos: {
