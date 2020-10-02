@@ -40,22 +40,3 @@ export const sources: SelectOption[] = [
     label: 'VMS Panama',
   },
 ]
-
-export const flags: SelectOption[] = [
-  {
-    id: 'ESP',
-    label: 'Spain',
-  },
-  {
-    id: 'FRA',
-    label: 'France',
-  },
-  {
-    id: 'ITA',
-    label: 'Italy',
-  },
-  {
-    id: 'GBR',
-    label: 'United Kingdom',
-  },
-]
