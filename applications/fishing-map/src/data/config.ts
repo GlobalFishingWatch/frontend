@@ -43,18 +43,6 @@ export const sources: SelectOption[] = [
 
 export const flags: SelectOption[] = [
   {
-    id: 'ARG',
-    label: 'Argentina',
-  },
-  {
-    id: 'BRA',
-    label: 'Brazil',
-  },
-  {
-    id: 'PAN',
-    label: 'Panama',
-  },
-  {
     id: 'ESP',
     label: 'Spain',
   },

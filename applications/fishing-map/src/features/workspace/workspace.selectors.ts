@@ -17,10 +17,16 @@ export const selectWorkspaceViewport = createSelector([selectWorkspace], (worksp
   return workspace?.viewport
 })
 
-export const selectFishingDataviews = createSelector([selectWorkspace], (workspace) => {
+export const selectWorkspaceDataviews = createSelector([selectWorkspace], (workspace) => {
   if (!workspace) return
+  // TODO resolve them here
+  return workspace.dataviews
+})
 
-  return workspace.dataviews.filter((dataview) => dataview.config.type === Generators.Type.Heatmap)
+export const selectFishingDataviews = createSelector([selectWorkspaceDataviews], (dataviews) => {
+  if (!dataviews) return
+
+  return dataviews.filter((dataview) => dataview.config.type === Generators.Type.HeatmapAnimated)
 })
 
 export const selectFishingDatasets = createSelector([selectFishingDataviews], (dataviews) => {
