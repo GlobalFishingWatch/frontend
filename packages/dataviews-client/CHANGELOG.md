@@ -1,5 +1,13 @@
 # @globalfishingwatch/dataviews-client
 
+## 2.6.1
+
+### Patch Changes
+
+- 70e6beb: Fix dataview types definition
+- Updated dependencies [440e403]
+  - @globalfishingwatch/layer-composer@2.13.2
+
 ## 2.6.0
 
 ### Minor Changes
