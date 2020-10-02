@@ -1,20 +1,9 @@
-export enum Field {
-  lonlat = 'lonlat',
-  longitude = 'longitude',
-  latitude = 'latitude',
-  timestamp = 'timestamp',
-  fishing = 'fishing',
-  speed = 'speed',
-  course = 'course',
-}
-
-export type Point = Partial<Record<Field, number | null>>
-export type Segment = Point[]
+import { Field, Segment, Point } from './types'
 
 export const TRACK_FIELDS = [Field.lonlat, Field.timestamp, Field.speed]
 export const DEFAULT_NULL_VALUE = -Math.pow(2, 31)
 
-export default (valueArray: number[], fields_: Field[]) => {
+export const trackValueArrayToSegments = (valueArray: number[], fields_: Field[]) => {
   if (!fields_.length) {
     throw new Error()
   }

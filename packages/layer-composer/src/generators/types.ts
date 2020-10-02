@@ -1,5 +1,5 @@
 import { FeatureCollection } from 'geojson'
-import { Segment } from './track/segments-to-geojson'
+import { Segment } from '@globalfishingwatch/data-transforms'
 import { Geoms } from './heatmap/types'
 
 export enum Type {

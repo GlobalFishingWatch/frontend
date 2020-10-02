@@ -7,6 +7,7 @@ import {
   AnyGeneratorConfig,
   TrackGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { trackValueArrayToSegments, Field, Segment } from '@globalfishingwatch/data-transforms'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import { useMapboxRef } from './map.context'
 import styles from './Map.module.css'
@@ -66,15 +67,17 @@ const Map = (): React.ReactElement => {
     [token]
   )
 
-  const [track, setTrack] = useState(null)
+  const [track, setTrack] = useState<Segment[] | null>(null)
   useEffect(() => {
+    const fields = [Field.lonlat, Field.timestamp, Field.speed, Field.fishing]
     fetch(
-      'https://gateway.api.dev.globalfishingwatch.org/datasets/fishing/vessels/00ba29183-3b86-9e36-cf20-ee340e409521/tracks?startDate=2017-01-01T00:00:00.000Z&endDate=2020-09-14T18:31:59.567Z&fields=lonlat,timestamp,speed,fishing&wrapLongitudes=false'
+      `https://gateway.api.dev.globalfishingwatch.org/datasets/fishing/vessels/00ba29183-3b86-9e36-cf20-ee340e409521/tracks?startDate=2017-01-01T00:00:00.000Z&endDate=2020-09-14T18:31:59.567Z&fields=${fields}&wrapLongitudes=false&format=valueArray`
       // &binary=true &format=valueArray
     )
       .then((r) => r.json())
       .then((data) => {
-        setTrack(data)
+        const segments = trackValueArrayToSegments(data, fields)
+        setTrack(segments)
       })
   }, [])
 
@@ -86,6 +89,7 @@ const Map = (): React.ReactElement => {
       ...oldTrackGenerator,
       data: track,
     }
+    console.log(track)
     genConfigs[trackAt] = trackGenerator
     return genConfigs
   }, [track, generatorsConfig])
