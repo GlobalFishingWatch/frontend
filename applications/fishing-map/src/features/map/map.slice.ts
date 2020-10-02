@@ -8,6 +8,7 @@ import {
   BasemapGeneratorConfig,
   // CartoPolygonsGeneratorConfig,
   HeatmapAnimatedGeneratorConfig,
+  TrackGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { selectMapZoomQuery, selectTimerange } from 'routes/routes.selectors'
 
@@ -47,6 +48,11 @@ const initialState: MapState = {
       tilesAPI: `${process.env.REACT_APP_API_GATEWAY}/v1/4wings`,
       interactive: true,
     } as HeatmapAnimatedGeneratorConfig,
+    {
+      id: 'track',
+      type: Generators.Type.Track,
+      color: 'red',
+    } as TrackGeneratorConfig,
   ],
 }
 

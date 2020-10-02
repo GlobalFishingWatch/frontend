@@ -30,7 +30,7 @@ export interface GlobalGeneratorConfig {
   token?: string
 }
 
-export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[]
+export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | null
 
 export interface GeneratorLegend {
   label: string
@@ -138,7 +138,7 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
   /**
    * A GeoJSON made of one or more LineStrings. Features should have `coordinateProperties` set in order to filter by time
    */
-  data: FeatureCollection | Segment[]
+  data: FeatureCollection | Segment[] | null
   /**
    * Progresseively simplify geometries when zooming out for improved performance
    */
