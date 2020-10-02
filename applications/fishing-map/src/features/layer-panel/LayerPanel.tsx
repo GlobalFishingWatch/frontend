@@ -4,7 +4,6 @@ import useClickedOutside from 'hooks/useClickedOutside'
 import { useSelector } from 'react-redux'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
 import { Dataview } from '@globalfishingwatch/dataviews-client'
-import { getDatasetsByDataview } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectDataviews, selectFishingFilters } from 'routes/routes.selectors'
 import styles from './LayerPanel.module.css'
@@ -44,7 +43,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     </h3>
   )
 
-  const sources = getDatasetsByDataview(dataview)
   return (
     <div className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: filterOpen })}>
       <div className={styles.header}>

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import { FishingFilter } from 'types'
 import { MultiSelect } from '@globalfishingwatch/ui-components'

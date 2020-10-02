@@ -13,6 +13,10 @@ export const getDatasetsByDataview = (dataview: Dataview) =>
     }
   })
 
+export const selectWorkspaceViewport = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.viewport
+})
+
 export const selectFishingDataviews = createSelector([selectWorkspace], (workspace) => {
   if (!workspace) return
 
