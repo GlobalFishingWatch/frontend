@@ -6,7 +6,7 @@ import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-com
 import { Dataview } from '@globalfishingwatch/dataviews-client'
 import { getDatasetsByDataview } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectDataviews } from 'routes/routes.selectors'
+import { selectDataviews, selectFishingFilters } from 'routes/routes.selectors'
 import styles from './LayerPanel.module.css'
 import Filters from './Filters'
 
@@ -18,6 +18,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [filterOpen, setFiltersOpen] = useState(false)
   const { dispatchQueryParams } = useLocationConnect()
   const urlDataviews = useSelector(selectDataviews)
+  const fishingFilters = useSelector(selectFishingFilters)
 
   // TODO reuse an unify the same logic than map.selector
   const urlDataview = (urlDataviews || []).find(
@@ -88,14 +89,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           />
         </div>
       </div>
-      {layerActive && dataview.datasetsConfig && (
+      {layerActive && fishingFilters.length > 0 && (
         <div className={styles.properties}>
-          <label>Sources</label>
-          <TagList tags={sources} color={dataview.config.color} className={styles.tagList} />
+          <label>Filters</label>
+          <TagList tags={fishingFilters} color={dataview.config.color} className={styles.tagList} />
         </div>
       )}
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
-        {filterOpen && <Filters />}
+        {filterOpen && <Filters dataview={dataview} />}
       </div>
     </div>
   )
