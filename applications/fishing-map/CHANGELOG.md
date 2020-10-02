@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.4.2
+
+### Patch Changes
+
+- 70e6beb: Fix dataview types definition
+- Updated dependencies [440e403]
+  - @globalfishingwatch/layer-composer@2.13.2
+
 ## 0.4.1
 
 ### Patch Changes
