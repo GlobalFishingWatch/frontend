@@ -11,7 +11,11 @@ import {
   selectTimerange,
   selectFishingFilters,
 } from 'routes/routes.selectors'
-import { selectWorkspaceDataviews } from 'features/workspace/workspace.selectors'
+import {
+  selectWorkspaceDataviews,
+  selectDataviewsResourceQueries,
+} from 'features/workspace/workspace.selectors'
+import { selectResources } from 'features/resources/resources.slice'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimerange],
@@ -24,8 +28,14 @@ export const selectGlobalGeneratorsConfig = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [selectWorkspaceDataviews, selectDataviews, selectFishingFilters],
-  (dataviews = [], urlDataviews, fishingFilters) => {
+  [
+    selectWorkspaceDataviews,
+    selectDataviews,
+    selectFishingFilters,
+    selectDataviewsResourceQueries,
+    selectResources,
+  ],
+  (dataviews = [], urlDataviews, fishingFilters, resourceQueries, resources) => {
     return dataviews.map((dataview) => {
       const urlDataview = urlDataviews?.find((urlDataview) => urlDataview.id === dataview.id)
       const visible =
@@ -40,12 +50,24 @@ export const getGeneratorsConfig = createSelector(
           })
         )
       }
+
+      // Try to retrieve resource if it exists
+      let data
+      const resourceQuery = resourceQueries.find((rq) => rq.dataviewId === dataview.id)
+      if (resourceQuery) {
+        const resource = resources[resourceQuery.url]
+        if (resource) {
+          data = resource.data
+        }
+      }
+
       return {
         ...config,
         // TODO Add vessel id for tracks ie
         // dataview.datasetsConfig[?].query.find(q => q.id === 'id').value
         id: `${config.type}_${dataview.id}_SOME_UNIQUE_ID`,
         visible,
+        data,
       }
     }) as AnyGeneratorConfig[]
   }

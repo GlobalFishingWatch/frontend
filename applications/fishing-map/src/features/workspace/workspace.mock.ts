@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Workspace } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { Field } from '@globalfishingwatch/data-transforms'
 
 const workspace: Workspace = {
   id: 1,
@@ -527,6 +528,71 @@ const workspace: Workspace = {
         type: Generators.Type.Track,
         color: 'red',
       },
+      datasetsConfig: {
+        'carriers-tracks:v20200507': {
+          params: [{ id: 'vesselId', value: 'TODO set that correctly' }],
+          query: [
+            // { id: 'binary', value: false },
+            { id: 'wrapLongitudes', value: false },
+            {
+              id: 'fields',
+              value: [Field.lonlat, Field.timestamp, Field.speed, Field.fishing].join(','),
+            },
+            {
+              id: 'format',
+              value: 'valueArray',
+            },
+          ],
+          endpoint: 'carriers-tracks',
+        },
+      },
+      datasets: [
+        {
+          alias: null,
+          id: 'carriers-tracks:v20200507',
+          name: 'carriers-tracks:v20200507',
+          type: 'carriers-tracks:v1',
+          description: 'test dataset',
+          status: 'done',
+          ownerId: 46,
+          ownerType: 'user',
+          configuration: { table: 'carriers_v20200507_tracks' },
+          createdAt: '2020-09-25T14:40:24.004Z',
+          relatedDatasets: null,
+          endpoints: [
+            {
+              id: 'carriers-tracks',
+              description: 'Endpoint to retrieve vessel track',
+              downloadable: true,
+              // TODO Why is it {{id}} in pathTemplate and then 'vesselId' in params???
+              pathTemplate: '/v1/vessels/{{id}}/tracks',
+              params: [{ label: 'vessel id', id: 'vesselId', type: 'string' }],
+              query: [
+                { label: 'Datasets', id: 'datasets', type: 'string', required: true },
+                { label: 'start date', id: 'startDate', type: 'Date ISO', required: false },
+                { label: 'end date', id: 'endDate', type: 'Date ISO', required: false },
+                { label: 'binary', id: 'binary', type: 'boolean', default: true },
+                { label: 'wrapLongitudes', id: 'wrapLongitudes', type: 'boolean', default: false },
+                {
+                  label: 'fields',
+                  id: 'fields',
+                  type: 'enum',
+                  enum: ['lat', 'lon', 'timestamp', 'speed', 'course'],
+                },
+                {
+                  label: 'format',
+                  id: 'format',
+                  type: 'enum',
+                  values: ['point', 'lines', 'valueArray'],
+                  default: 'lines',
+                  description:
+                    'Specific encoding format to use for the track. Possible values lines, points or valueArray. valueArray: is a custom compact format, an array with all the fields serialized. The format is further explained in this issue: valueArray format. lines: Geojson with a single LineString feature containing all the points in the track points: Geojson with a FeatureCollection containing a Point feature for every point in the track',
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
   ],
   dataviewsConfig: {

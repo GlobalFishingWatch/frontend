@@ -10,6 +10,7 @@ export interface EndpointParam {
   enum?: string[]
   default?: string | boolean | number
   required?: boolean
+  values?: any
 }
 
 export interface Endpoint {
@@ -48,16 +49,16 @@ export interface Dataset {
   alias: string[] | null
   name: string
   description: string
-  category: string
-  subcategory: string
-  source: string
+  category?: string
+  subcategory?: string
+  source?: string
   status: DatasetStatus
-  importLogs: string
-  unit: string
+  importLogs?: string
+  unit?: string
   ownerType: string
   ownerId: number
-  startDate: string
-  endDate: string
+  startDate?: string
+  endDate?: string
   createdAt: string
   endpoints?: Endpoint[]
   configuration: DatasetConfiguration | null
