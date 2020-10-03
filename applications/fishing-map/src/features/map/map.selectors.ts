@@ -42,6 +42,9 @@ export const getGeneratorsConfig = createSelector(
       }
       return {
         ...config,
+        // TODO Add vessel id for tracks ie
+        // dataview.datasetsConfig[?].query.find(q => q.id === 'id').value
+        id: `${config.type}_${dataview.id}_SOME_UNIQUE_ID`,
         visible,
       }
     }) as AnyGeneratorConfig[]

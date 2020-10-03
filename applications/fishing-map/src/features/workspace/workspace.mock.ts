@@ -519,6 +519,15 @@ const workspace: Workspace = {
         },
       ],
     },
+    {
+      id: 2,
+      name: 'Default track',
+      description: 'Default track',
+      config: {
+        type: Generators.Type.Track,
+        color: 'red',
+      },
+    },
   ],
   dataviewsConfig: {
     '3': {

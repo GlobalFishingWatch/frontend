@@ -83,13 +83,12 @@ const Map = (): React.ReactElement => {
 
   const generatorsConfigWithTrack = useMemo<AnyGeneratorConfig[]>(() => {
     const genConfigs = [...generatorsConfig]
-    const trackAt = genConfigs.findIndex((generator) => generator.id === 'track')
+    const trackAt = genConfigs.findIndex((generator) => generator.id === 'TRACK_2_SOME_UNIQUE_ID')
     const oldTrackGenerator = genConfigs[trackAt] as TrackGeneratorConfig
     const trackGenerator: TrackGeneratorConfig = {
       ...oldTrackGenerator,
       data: track,
     }
-    console.log(track)
     genConfigs[trackAt] = trackGenerator
     return genConfigs
   }, [track, generatorsConfig])
