@@ -15,7 +15,7 @@ interface UserState {
 
 const initialState: UserState = {
   logged: false,
-  status: 'idle',
+  status: AsyncReducerStatus.Idle,
   data: null,
 }
 
@@ -39,15 +39,15 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchUserThunk.pending, (state) => {
-      state.status = 'loading'
+      state.status = AsyncReducerStatus.Loading
     })
     builder.addCase(fetchUserThunk.fulfilled, (state, action) => {
-      state.status = 'finished'
+      state.status = AsyncReducerStatus.Finished
       state.logged = true
       state.data = action.payload
     })
     builder.addCase(fetchUserThunk.rejected, (state) => {
-      state.status = 'error'
+      state.status = AsyncReducerStatus.Error
     })
     builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.logged = false

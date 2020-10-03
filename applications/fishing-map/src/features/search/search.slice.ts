@@ -9,7 +9,7 @@ interface UserState {
 }
 
 const initialState: UserState = {
-  status: 'idle',
+  status: AsyncReducerStatus.Idle,
   data: null,
 }
 
@@ -30,14 +30,14 @@ const searchSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchVesselSearchThunk.pending, (state) => {
-      state.status = 'loading'
+      state.status = AsyncReducerStatus.Loading
     })
     builder.addCase(fetchVesselSearchThunk.fulfilled, (state, action) => {
-      state.status = 'finished'
+      state.status = AsyncReducerStatus.Finished
       state.data = action.payload
     })
     builder.addCase(fetchVesselSearchThunk.rejected, (state) => {
-      state.status = 'error'
+      state.status = AsyncReducerStatus.Error
     })
   },
 })

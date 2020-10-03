@@ -1,5 +1,6 @@
 import React, { memo, useState, Fragment, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { AsyncReducerStatus } from 'types'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
@@ -46,7 +47,7 @@ function App(): React.ReactElement {
   return (
     <Fragment>
       <Login />
-      {!logged || workspaceStatus !== 'finished' ? (
+      {!logged || workspaceStatus !== AsyncReducerStatus.Finished ? (
         <div className={styles.placeholder}>
           <Spinner />
         </div>

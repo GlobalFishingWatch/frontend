@@ -8,6 +8,7 @@ import {
 import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
 import userReducer from './features/user/user.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
+// import resourcesReducer from './features/resources/resources.slice'
 import searchReducer from './features/search/search.slice'
 import timebarReducer from './features/timebar/timebar.slice'
 
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   search: searchReducer,
   workspace: workspaceReducer,
+  // resources: resourcesReducer,
   timebar: timebarReducer,
   location: location,
 })
