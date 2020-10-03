@@ -13,10 +13,20 @@ export const getDatasetsByDataview = (dataview: Dataview) =>
     }
   })
 
-export const selectFishingDataviews = createSelector([selectWorkspace], (workspace) => {
-  if (!workspace) return
+export const selectWorkspaceViewport = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.viewport
+})
 
-  return workspace.dataviews.filter((dataview) => dataview.config.type === Generators.Type.Heatmap)
+export const selectWorkspaceDataviews = createSelector([selectWorkspace], (workspace) => {
+  if (!workspace) return
+  // TODO resolve them here
+  return workspace.dataviews
+})
+
+export const selectFishingDataviews = createSelector([selectWorkspaceDataviews], (dataviews) => {
+  if (!dataviews) return
+
+  return dataviews.filter((dataview) => dataview.config.type === Generators.Type.HeatmapAnimated)
 })
 
 export const selectFishingDatasets = createSelector([selectFishingDataviews], (dataviews) => {

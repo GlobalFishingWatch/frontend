@@ -1,40 +1,47 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { MultiSelect, MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { flags } from 'data/config'
-import { selectFishingDatasets } from 'features/workspace/workspace.selectors'
+import { FishingFilter } from 'types'
+import { MultiSelect } from '@globalfishingwatch/ui-components'
+import { Dataview } from '@globalfishingwatch/dataviews-client'
+import flags from 'data/flags'
+// import { selectFishingDatasets } from 'features/workspace/workspace.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectFishingFilters } from 'routes/routes.selectors'
 import styles from './Filters.module.css'
 
-function Filters(): React.ReactElement {
-  const sources = useSelector(selectFishingDatasets)
-  const [sourcesSelected, setSourcesSelected] = useState<any>(
-    sources?.length ? sources[0] : undefined
-  )
+type FiltersProps = {
+  dataview: Dataview
+}
+
+const sourceOptions = [{ id: 'ais', label: 'AIS' }]
+
+function Filters({ dataview }: FiltersProps): React.ReactElement {
+  const { dispatchQueryParams } = useLocationConnect()
+  const fishingFilters = useSelector(selectFishingFilters)
 
   return (
     <Fragment>
       <MultiSelect
         label="Sources"
-        options={sources || ([] as MultiSelectOption[])}
-        selectedOptions={sourcesSelected ? [sourcesSelected] : undefined}
+        options={sourceOptions}
+        selectedOptions={sourceOptions}
         onSelect={(e) => {
-          console.log('e', e)
-          setSourcesSelected(e)
+          console.log(e)
         }}
         onRemove={(e) => {
-          setSourcesSelected(undefined)
+          console.log(e)
         }}
       />
       <MultiSelect
         label="Flag States"
         options={flags}
-        selectedOptions={[flags[0]]}
+        selectedOptions={fishingFilters}
         className={styles.multiSelect}
-        onSelect={(e) => {
-          console.log(e)
+        onSelect={(filter) => {
+          dispatchQueryParams({ fishingFilters: [...fishingFilters, filter as FishingFilter] })
         }}
-        onRemove={(e) => {
-          console.log(e)
+        onRemove={(filter, rest) => {
+          dispatchQueryParams({ fishingFilters: rest as FishingFilter[] })
         }}
       />
     </Fragment>

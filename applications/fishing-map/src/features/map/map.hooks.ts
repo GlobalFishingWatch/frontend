@@ -1,21 +1,18 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useState } from 'react'
 import { ViewportProps } from 'react-map-gl'
 import { MapCoordinates } from 'types'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { selectViewport } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { updateGenerator, UpdateGeneratorPayload, selectGlobalGeneratorsConfig } from './map.slice'
-import { getGeneratorsConfig } from './map.selectors'
+import { getGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
-  const dispatch = useDispatch()
   return {
     globalConfig: useSelector(selectGlobalGeneratorsConfig),
     generatorsConfig: useSelector(getGeneratorsConfig),
-    updateGenerator: (payload: UpdateGeneratorPayload) => dispatch(updateGenerator(payload)),
   }
 }
 type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>

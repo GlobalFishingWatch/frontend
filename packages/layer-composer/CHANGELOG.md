@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.13.2
+
+### Patch Changes
+
+- 440e403: Fix heatmap transparent outline
+
 ## 2.13.1
 
 ### Patch Changes

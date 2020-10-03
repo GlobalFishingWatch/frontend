@@ -166,6 +166,7 @@ class HeatmapAnimatedGenerator {
       if (config.geomType === 'gridded') {
         paint = {
           'fill-color': exprColorRamp as any,
+          'fill-outline-color': 'transparent',
         }
       } else if (config.geomType === 'blob') {
         paint = paintByGeomType.blob

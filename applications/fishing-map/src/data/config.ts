@@ -1,14 +1,22 @@
 import { SelectOption } from '@globalfishingwatch/ui-components'
 
+// used when no url data and no workspace data
+export const FALLBACK_VIEWPORT = {
+  latitude: 7,
+  longitude: -75,
+  zoom: 3,
+}
+
 export const DEFAULT_WORKSPACE = {
-  latitude: 0,
-  longitude: 0,
-  zoom: 1,
+  latitude: undefined,
+  longitude: undefined,
+  zoom: undefined,
   start: new Date(2019, 0, 1).toISOString(),
   end: new Date(2019, 1, 1).toISOString(),
   availableStart: new Date(2012, 0, 1).toISOString(),
   availableEnd: new Date().toISOString(),
   dataviews: undefined,
+  fishingFilters: [],
 }
 
 // Params to use replace instead of push for router history to make navigation easier
@@ -31,11 +39,4 @@ export const sources: SelectOption[] = [
     id: 'vms-panama',
     label: 'VMS Panama',
   },
-]
-
-export const flags: SelectOption[] = [
-  { id: 'AIA', label: 'Anguilla' },
-  { id: 'CHN', label: 'China' },
-  { id: 'COL', label: 'Colombia' },
-  { id: 'ECU', label: 'Ecuador' },
 ]

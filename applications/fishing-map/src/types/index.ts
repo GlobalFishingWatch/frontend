@@ -1,4 +1,13 @@
-export type WorkspaceParam = 'zoom' | 'latitude' | 'longitude' | 'start' | 'end' | 'dataviews'
+export type FishingFilter = { id: string; label: string }
+
+export type WorkspaceParam =
+  | 'zoom'
+  | 'latitude'
+  | 'longitude'
+  | 'start'
+  | 'end'
+  | 'dataviews'
+  | 'fishingFilters'
 
 export type QueryParams = {
   zoom?: number
@@ -7,6 +16,7 @@ export type QueryParams = {
   start?: string
   end?: string
   dataviews?: any[]
+  fishingFilters?: FishingFilter[]
 }
 
 export type MapCoordinates = {
