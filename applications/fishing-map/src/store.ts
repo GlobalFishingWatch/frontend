@@ -11,6 +11,7 @@ import workspaceReducer from './features/workspace/workspace.slice'
 import resourcesReducer from './features/resources/resources.slice'
 import searchReducer from './features/search/search.slice'
 import timebarReducer from './features/timebar/timebar.slice'
+import mapFeaturesReducer from './features/map/map-features.slice'
 
 const {
   reducer: location,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   workspace: workspaceReducer,
   resources: resourcesReducer,
   timebar: timebarReducer,
+  mapFeatures: mapFeaturesReducer,
   location: location,
 })
 
