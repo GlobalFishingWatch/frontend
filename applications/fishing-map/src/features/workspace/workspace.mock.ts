@@ -79,6 +79,77 @@ const workspace: Workspace = {
           relatedDatasets: null,
           endpoints: [
             {
+              id: '4wings-interaction',
+              description: 'Endpoint to retrieve vessel ids from a 4wings cell',
+              downloadable: true,
+              // TODO Dataset?
+              pathTemplate:
+                '/v1/datasets/fishing_v4/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}',
+              params: [
+                {
+                  label: 'Z',
+                  id: 'z',
+                  type: 'number',
+                },
+                {
+                  label: 'X',
+                  id: 'x',
+                  type: 'number',
+                },
+                {
+                  label: 'Y',
+                  id: 'y',
+                  type: 'number',
+                },
+                {
+                  label: 'cols',
+                  id: 'cols',
+                  type: 'number',
+                },
+                {
+                  label: 'rows',
+                  id: 'rows',
+                  type: 'number',
+                },
+              ],
+              query: [
+                {
+                  label: 'Datasets',
+                  id: 'datasets',
+                  type: '4wings-datasets',
+                  required: true,
+                },
+                {
+                  label: 'filters',
+                  id: 'filters',
+                  type: 'sql',
+                  required: false,
+                },
+                {
+                  label: 'format',
+                  id: 'format',
+                  type: 'string',
+                  required: false,
+                  enum: ['intArray', 'mvt'],
+                },
+                {
+                  label: 'proxy',
+                  id: 'proxy',
+                  type: 'boolean',
+                  required: false,
+                  description:
+                    'Server will load the request instead of redirect to avoid CORS issues',
+                },
+                {
+                  label: 'temporal-aggregation',
+                  id: 'temporal-aggregation',
+                  type: 'boolean',
+                  required: false,
+                  default: false,
+                },
+              ],
+            },
+            {
               id: '4wings-tiles',
               description: 'Endpoint to retrieve tiles from 4wings dataset',
               downloadable: false,

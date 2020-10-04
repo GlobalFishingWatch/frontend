@@ -36,6 +36,7 @@ export const getGeneratorsConfig = createSelector(
     selectResources,
   ],
   (dataviews = [], urlDataviews, fishingFilters, resourceQueries, resources) => {
+    // TODO add logic to merge 4Wings dataviews into one generator
     return dataviews.map((dataview) => {
       const urlDataview = urlDataviews?.find((urlDataview) => urlDataview.id === dataview.id)
       const visible =
