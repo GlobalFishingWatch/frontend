@@ -78,7 +78,6 @@ const Map = (): React.ReactElement => {
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
   const onEventClick = useCallback(
     (event) => {
-      console.log('now load vessel ids!', event)
       dispatchClickedEvent(event)
       // TODO should work for multiple features
       const feature: ExtendedFeature = event.features[0]
