@@ -58,9 +58,7 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
 export const useMapClick = (clickCallback: InteractionEventCallback) => {
   const onMapClick = useCallback(
     (event) => {
-      if (clickCallback) {
-        clickCallback(null)
-      }
+      if (!clickCallback) return
       if (event.features && event.features.length) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
 
@@ -70,8 +68,8 @@ export const useMapClick = (clickCallback: InteractionEventCallback) => {
             longitude: event.lngLat[0],
             latitude: event.lngLat[1],
           })
-        }
-      }
+        } else clickCallback(null)
+      } else clickCallback(null)
     },
     [clickCallback]
   )

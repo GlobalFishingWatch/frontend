@@ -22,7 +22,7 @@ const slice = createSlice({
   },
 })
 
-export const selectClickedFeatures = (state: RootState) => state.mapFeatures.clicked
+export const selectClickedEvent = (state: RootState) => state.mapFeatures.clicked
 
 export const { setClickedEvent } = slice.actions
 export default slice.reducer

@@ -1,1 +1,1 @@
-export { default } from './use-map-tooltip'
+export { default, TooltipEvent, TooltipEventFeature } from './use-map-tooltip'

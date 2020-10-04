@@ -13,6 +13,11 @@ export type ExtendedFeature = {
     y: number
     z: number
   }
+  temporalgrid?: {
+    sublayerIndex: number
+    col: number
+    row: number
+  }
 }
 
 export type InteractionEventCallback = (event: InteractionEvent | null) => void

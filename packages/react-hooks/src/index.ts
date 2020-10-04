@@ -6,7 +6,7 @@ export type {
   InteractionEventCallback,
   ExtendedFeature,
 } from './use-map-interaction/index'
-export { default as useMapTooltip } from './use-map-tooltip'
+export { default as useMapTooltip, TooltipEvent, TooltipEventFeature } from './use-map-tooltip'
 export { default as useMapLegend } from './use-map-legend'
 export { default as useWorkspace } from './use-workspace'
 export {
