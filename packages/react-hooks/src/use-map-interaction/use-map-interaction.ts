@@ -21,6 +21,11 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
       sourceLayer: feature.sourceLayer,
       id: (feature.id as number) || undefined,
       value: properties.value || properties.name || properties.id,
+      tile: {
+        x: (feature as any)._vectorTileFeature._x,
+        y: (feature as any)._vectorTileFeature._y,
+        z: (feature as any)._vectorTileFeature._z,
+      },
     }
     switch (generator) {
       case Generators.Type.HeatmapAnimated:
@@ -33,8 +38,11 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
           return parsed.map((value: any, i: number) => {
             return {
               ...extendedFeature,
-              // TODO this should be sublayer id but it has to be carried in GeoJSON feature by aggregator
-              generatorId: i,
+              temporalgrid: {
+                sublayerIndex: i,
+                col: properties._col,
+                row: properties._row,
+              },
               value,
             }
           })

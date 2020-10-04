@@ -8,6 +8,11 @@ export type ExtendedFeature = {
   generatorId: string | number | null
   id?: number
   value: any
+  tile: {
+    x: number
+    y: number
+    z: number
+  }
 }
 
 export type InteractionEventCallback = (event: InteractionEvent | null) => void
