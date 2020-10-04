@@ -601,7 +601,7 @@ const workspace: Workspace = {
       },
       datasetsConfig: {
         'carriers-tracks:v20200507': {
-          params: [{ id: 'vesselId', value: 'TODO set that correctly' }],
+          params: [{ id: 'vesselId', value: '00ba29183-3b86-9e36-cf20-ee340e409521' }],
           query: [
             // { id: 'binary', value: false },
             { id: 'wrapLongitudes', value: false },
@@ -636,7 +636,8 @@ const workspace: Workspace = {
               description: 'Endpoint to retrieve vessel track',
               downloadable: true,
               // TODO Why is it {{id}} in pathTemplate and then 'vesselId' in params???
-              pathTemplate: '/v1/vessels/{{id}}/tracks',
+              // pathTemplate: '/v1/vessels/{{id}}/tracks',
+              pathTemplate: '/datasets/fishing/vessels/{{vesselId}}/tracks',
               params: [{ label: 'vessel id', id: 'vesselId', type: 'string' }],
               query: [
                 { label: 'Datasets', id: 'datasets', type: 'string', required: true },
