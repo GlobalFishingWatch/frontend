@@ -10,7 +10,7 @@ export default (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
 
   let url = template
   datasetConfig.params.forEach((param) => {
-    url = template.replace(`{{${param.id}}}`, param.value as string)
+    url = url.replace(`{{${param.id}}}`, param.value as string)
   })
 
   if (datasetConfig.query) {
