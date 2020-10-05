@@ -1,11 +1,15 @@
 import React, { useCallback } from 'react'
+import { useSelector } from 'react-redux'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { SEARCH } from 'routes/routes'
+import { selectVesselsDataviews } from 'features/workspace/workspace.selectors'
+import LayerPanel from 'features/layer-panel/LayerPanel'
 import styles from './VesselsSection.module.css'
 
 function VesselsSection(): React.ReactElement {
   const { dispatchLocation } = useLocationConnect()
+  const dataviews = useSelector(selectVesselsDataviews)
   const onSearchClick = useCallback(() => {
     dispatchLocation(SEARCH)
   }, [dispatchLocation])
@@ -21,6 +25,9 @@ function VesselsSection(): React.ReactElement {
           onClick={onSearchClick}
         />
       </div>
+      {dataviews?.map((dataview) => (
+        <LayerPanel key={dataview.id} dataview={dataview} />
+      ))}
     </div>
   )
 }

@@ -30,6 +30,12 @@ export const selectFishingDataviews = createSelector([selectWorkspaceDataviews],
   return dataviews.filter((dataview) => dataview.config.type === Generators.Type.HeatmapAnimated)
 })
 
+export const selectVesselsDataviews = createSelector([selectWorkspaceDataviews], (dataviews) => {
+  if (!dataviews) return
+
+  return dataviews.filter((dataview) => dataview.config.type === Generators.Type.Track)
+})
+
 export const selectFishingDatasets = createSelector([selectFishingDataviews], (dataviews) => {
   if (!dataviews) return
 

@@ -614,6 +614,20 @@ const workspace: Workspace = {
         },
       ],
     },
+    {
+      dataviewId: 2,
+      config: {
+        color: '#FFAA0D',
+        colorRamp: 'orange',
+      },
+      datasetsConfig: [
+        {
+          datasetId: 'carriers-tracks:v20200507',
+          params: [{ id: 'vesselId', value: '00ba29183-3b86-9e36-cf20-ee340e409521' }],
+          endpoint: '4wings-tiles',
+        },
+      ],
+    },
   ],
 }
 
