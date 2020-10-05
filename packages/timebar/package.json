@@ -92,5 +92,7 @@
     "react": "^16.11.0",
     "react-dom": "^16.11.0"
   },
-  "gitHead": "d3257a17acb1bd0880b760492bf936a61da4d8d8"
+  "publishConfig": {
+    "access": "public"
+  }
 }

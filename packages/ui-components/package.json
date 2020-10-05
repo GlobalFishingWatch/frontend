@@ -11,7 +11,9 @@
     "src": "src",
     "dist": "dist"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
@@ -45,5 +47,7 @@
     "@types/topojson-client": "^3.0.0",
     "ts-node": "^8.10.1"
   },
-  "gitHead": "d3257a17acb1bd0880b760492bf936a61da4d8d8"
+  "publishConfig": {
+    "access": "public"
+  }
 }

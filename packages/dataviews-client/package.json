@@ -34,5 +34,7 @@
   "devDependencies": {
     "@types/qs": "^6.9.3"
   },
-  "gitHead": "d3257a17acb1bd0880b760492bf936a61da4d8d8"
+  "publishConfig": {
+    "access": "public"
+  }
 }

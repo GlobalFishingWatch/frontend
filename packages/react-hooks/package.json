@@ -28,5 +28,8 @@
     "@globalfishingwatch/layer-composer": "^2.13.0",
     "@globalfishingwatch/mapbox-gl": "latest"
   },
-  "gitHead": "d3257a17acb1bd0880b760492bf936a61da4d8d8"
+
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -10,5 +10,8 @@
     "clean": "rimraf dist/*",
     "prepare": "yarn build",
     "prepublishOnly": "yarn build"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

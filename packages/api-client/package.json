@@ -32,5 +32,7 @@
   "devDependencies": {
     "@types/file-saver": "^2.0.1"
   },
-  "gitHead": "d3257a17acb1bd0880b760492bf936a61da4d8d8"
+  "publishConfig": {
+    "access": "public"
+  }
 }
