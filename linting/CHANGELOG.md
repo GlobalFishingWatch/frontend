@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 1.3.1
+
+### Patch Changes
+
+- Release fishing-map
+
 ## 1.3.0
 
 ### Minor Changes

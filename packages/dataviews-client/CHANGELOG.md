@@ -1,5 +1,15 @@
 # @globalfishingwatch/dataviews-client
 
+## 2.7.1
+
+### Patch Changes
+
+- Release fishing-map
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-client@1.5.1
+  - @globalfishingwatch/layer-composer@2.13.3
+  - @globalfishingwatch/pbf@1.0.8
+
 ## 2.7.0
 
 ### Minor Changes

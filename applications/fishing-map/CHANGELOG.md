@@ -1,5 +1,19 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.5.1
+
+### Patch Changes
+
+- Release fishing-map
+- Updated dependencies [undefined]
+  - @globalfishingwatch/linting@1.3.1
+  - @globalfishingwatch/api-client@1.5.1
+  - @globalfishingwatch/data-transforms@1.0.2
+  - @globalfishingwatch/layer-composer@2.13.3
+  - @globalfishingwatch/react-hooks@2.10.1
+  - @globalfishingwatch/timebar@1.0.14
+  - @globalfishingwatch/ui-components@1.13.2
+
 ## 0.5.0
 
 ### Minor Changes

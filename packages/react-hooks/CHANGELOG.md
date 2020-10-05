@@ -1,5 +1,15 @@
 # @globalfishingwatch/react-hooks
 
+## 2.10.1
+
+### Patch Changes
+
+- Release fishing-map
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-client@1.5.1
+  - @globalfishingwatch/dataviews-client@2.7.1
+  - @globalfishingwatch/layer-composer@2.13.3
+
 ## 2.10.0
 
 ### Minor Changes
