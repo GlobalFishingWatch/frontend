@@ -1,5 +1,15 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.4.3
+
+### Patch Changes
+
+- 32001ce: Data transform initial release
+- Updated dependencies [32001ce]
+- Updated dependencies [83c397a]
+  - @globalfishingwatch/data-transforms@1.0.1
+  - @globalfishingwatch/ui-components@1.13.1
+
 ## 0.4.2
 
 ### Patch Changes
