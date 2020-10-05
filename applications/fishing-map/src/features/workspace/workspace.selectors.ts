@@ -47,7 +47,9 @@ export const selectDataviewsResourceQueries = createSelector(
       const DATASET_ID = 'carriers-tracks:v20200507'
       const dataset = dataview.datasets?.find((dataset) => dataset.id === DATASET_ID)
       if (!dataset) return []
-      const datasetConfig = dataview.datasetsConfig && dataview.datasetsConfig[dataset.id]
+      const datasetConfig = dataview?.datasetsConfig?.find(
+        (datasetConfig) => datasetConfig.datasetId === dataset.id
+      )
       if (!datasetConfig) return []
       const url = resolveEndpoint(dataset, datasetConfig)
       if (!url) return []
