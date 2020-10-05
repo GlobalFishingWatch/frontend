@@ -1,11 +1,5 @@
 import { FeatureCollection, LineString, Feature } from 'geojson'
-
-type Point = {
-  latitude: number
-  longitude: number
-  timestamp: number
-}
-export type Segment = Point[]
+import { Segment } from '@globalfishingwatch/data-transforms'
 
 export default (segments: Segment[]) => {
   const geoJSON: FeatureCollection = {
@@ -13,7 +7,10 @@ export default (segments: Segment[]) => {
     features: [],
   }
   geoJSON.features = segments.map((segment) => {
-    const coordinates = segment.map((point) => [point.longitude, point.latitude])
+    const coordinates = segment.map((point) => [
+      point.longitude as number,
+      point.latitude as number,
+    ])
     const geometry: LineString = {
       type: 'LineString',
       coordinates,

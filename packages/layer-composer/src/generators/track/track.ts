@@ -5,7 +5,7 @@ import { Group } from '../../types'
 import { Type, TrackGeneratorConfig, GlobalGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { isConfigVisible } from '../utils'
-import valuesArrayToGeoJSON from './segments-to-geojson'
+import segmentsToGeoJSON from './segments-to-geojson'
 import filterGeoJSONByTimerange from './filterGeoJSONByTimerange'
 import { simplifyTrack } from './simplify-track'
 
@@ -187,7 +187,7 @@ class TrackGenerator {
 
   getStyle = (config: TrackGeneratorConfig & GlobalGeneratorConfig) => {
     memoizeByLayerId(config.id, {
-      convertToGeoJSON: memoizeOne(valuesArrayToGeoJSON),
+      convertToGeoJSON: memoizeOne(segmentsToGeoJSON),
       simplifyTrackWithZoomLevel: memoizeOne(simplifyTrackWithZoomLevel),
       filterByTimerange: memoizeOne(filterByTimerange),
       getHighlightedData: memoizeOne(getHighlightedData),

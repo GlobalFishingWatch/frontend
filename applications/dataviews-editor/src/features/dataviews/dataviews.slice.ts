@@ -1,7 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Dispatch } from 'react'
 import maxBy from 'lodash/maxBy'
-import { trackSegments, TRACK_FIELDS } from '@globalfishingwatch/layer-composer'
+import {
+  trackValueArrayToSegments as trackSegments,
+  TRACK_FIELDS,
+} from '@globalfishingwatch/data-transforms'
 import DataviewsClient, {
   Dataview,
   ViewParams,

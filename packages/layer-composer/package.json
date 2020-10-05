@@ -28,6 +28,7 @@
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
   "dependencies": {
+    "@globalfishingwatch/data-transforms": "^1.0.0",
     "@mapbox/mapbox-gl-style-spec": "^13.14.0",
     "@mapbox/tilebelt": "^1.0.1",
     "@mapbox/vector-tile": "^1.3.1",

@@ -56,7 +56,9 @@ function ColorRampLegend({ layer, className }: ColorRampLegendProps) {
           <span
             className={styles.currentValue}
             style={{
-              left: heatmapLegendScale ? `${Math.min(heatmapLegendScale(currentValue), 100)}%` : 0,
+              left: heatmapLegendScale
+                ? `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`
+                : 0,
             }}
           >
             {currentValue}
