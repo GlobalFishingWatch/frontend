@@ -1,13 +1,8 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { MiniGlobe, IconButton, MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
-import {
-  AnyGeneratorConfig,
-  TrackGeneratorConfig,
-} from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { trackValueArrayToSegments, Field, Segment } from '@globalfishingwatch/data-transforms'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import { useMapboxRef } from './map.context'
 import styles from './Map.module.css'
@@ -67,35 +62,9 @@ const Map = (): React.ReactElement => {
     [token]
   )
 
-  const [track, setTrack] = useState<Segment[] | null>(null)
-  useEffect(() => {
-    const fields = [Field.lonlat, Field.timestamp, Field.speed, Field.fishing]
-    GFWAPI.fetch(
-      `https://gateway.api.dev.globalfishingwatch.org/datasets/fishing/vessels/00ba29183-3b86-9e36-cf20-ee340e409521/tracks?startDate=2017-01-01T00:00:00.000Z&endDate=2020-09-14T18:31:59.567Z&fields=${fields}&wrapLongitudes=false&format=valueArray`
-      // &binary=true &format=valueArray
-    )
-      // .then((r) => r.json())
-      .then((data) => {
-        const segments = trackValueArrayToSegments(data as any, fields)
-        setTrack(segments)
-      })
-  }, [])
-
-  const generatorsConfigWithTrack = useMemo<AnyGeneratorConfig[]>(() => {
-    const genConfigs = [...generatorsConfig]
-    const trackAt = genConfigs.findIndex((generator) => generator.id === 'TRACK_2_SOME_UNIQUE_ID')
-    const oldTrackGenerator = genConfigs[trackAt] as TrackGeneratorConfig
-    const trackGenerator: TrackGeneratorConfig = {
-      ...oldTrackGenerator,
-      data: track,
-    }
-    genConfigs[trackAt] = trackGenerator
-    return genConfigs
-  }, [track, generatorsConfig])
-
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
-  const { style } = useLayerComposer(generatorsConfigWithTrack, globalConfig)
+  const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
   return (
     <div className={styles.container}>

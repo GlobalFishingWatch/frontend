@@ -11,7 +11,7 @@ interface UserState {
 }
 
 const initialState: UserState = {
-  status: 'idle',
+  status: AsyncReducerStatus.Idle,
   data: null,
 }
 
@@ -26,14 +26,14 @@ const workspaceSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaceThunk.pending, (state) => {
-      state.status = 'loading'
+      state.status = AsyncReducerStatus.Loading
     })
     builder.addCase(fetchWorkspaceThunk.fulfilled, (state, action) => {
-      state.status = 'finished'
+      state.status = AsyncReducerStatus.Finished
       state.data = action.payload
     })
     builder.addCase(fetchWorkspaceThunk.rejected, (state) => {
-      state.status = 'error'
+      state.status = AsyncReducerStatus.Error
     })
   },
 })

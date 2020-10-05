@@ -1,10 +1,13 @@
 import React, { memo, useState, Fragment, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { AsyncReducerStatus } from 'types'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import { MapboxRefProvider } from 'features/map/map.context'
 import { fetchWorkspaceThunk, selectWorkspaceStatus } from 'features/workspace/workspace.slice'
+import { selectDataviewsResourceQueries } from 'features/workspace/workspace.selectors'
+import { fetchResourceThunk } from 'features/resources/resources.slice'
 import menuBgImage from 'assets/images/menubg.jpg'
 import Login from './features/user/Login'
 import Map from './features/map/Map'
@@ -43,10 +46,19 @@ function App(): React.ReactElement {
     }
   }, [dispatch, logged])
 
+  const resourceQueries = useSelector(selectDataviewsResourceQueries)
+  useEffect(() => {
+    if (workspaceStatus === AsyncReducerStatus.Finished) {
+      resourceQueries.forEach((resourceQuery) => {
+        dispatch(fetchResourceThunk(resourceQuery))
+      })
+    }
+  }, [dispatch, workspaceStatus, resourceQueries])
+
   return (
     <Fragment>
       <Login />
-      {!logged || workspaceStatus !== 'finished' ? (
+      {!logged || workspaceStatus !== AsyncReducerStatus.Finished ? (
         <div className={styles.placeholder}>
           <Spinner />
         </div>

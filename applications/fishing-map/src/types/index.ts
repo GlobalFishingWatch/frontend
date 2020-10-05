@@ -25,4 +25,9 @@ export type MapCoordinates = {
   zoom: number
 }
 
-export type AsyncReducerStatus = 'idle' | 'loading' | 'finished' | 'error'
+export enum AsyncReducerStatus {
+  Idle = 'idle',
+  Loading = 'loading',
+  Finished = 'finished',
+  Error = 'error',
+}

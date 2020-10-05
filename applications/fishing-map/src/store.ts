@@ -8,6 +8,7 @@ import {
 import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
 import userReducer from './features/user/user.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
+import resourcesReducer from './features/resources/resources.slice'
 import searchReducer from './features/search/search.slice'
 import timebarReducer from './features/timebar/timebar.slice'
 
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   search: searchReducer,
   workspace: workspaceReducer,
+  resources: resourcesReducer,
   timebar: timebarReducer,
   location: location,
 })
@@ -30,10 +32,31 @@ const rootReducer = combineReducers({
 const defaultMiddlewareOptions: any = {
   // Fix issue with Redux-first-router and RTK (https://stackoverflow.com/questions/59773345/react-toolkit-and-redux-first-router)
   serializableCheck: false,
-  immutableCheck: {},
+  immutableCheck: {
+    ignoredPaths: [
+      // Too big to check for immutability:
+      'resources',
+    ],
+  },
 }
 
 const store = configureStore({
+  devTools: {
+    stateSanitizer: (state: any) => {
+      if (!state.resources?.resources) return state
+      const serializedResources = Object.entries(
+        state.resources.resources
+      ).map(([key, value]: any) => [key, { ...value, data: 'NOT_SERIALIZED' }])
+
+      return {
+        ...state,
+        resources: {
+          ...state.resources,
+          resources: Object.fromEntries(serializedResources),
+        },
+      }
+    },
+  },
   reducer: rootReducer,
   middleware: [
     ...getDefaultMiddleware(defaultMiddlewareOptions),
