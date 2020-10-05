@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 2.7.0
+
+### Minor Changes
+
+- 7644a9d: Resolve endpoint util
+
 ## 2.6.1
 
 ### Patch Changes

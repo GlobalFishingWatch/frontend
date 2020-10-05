@@ -1,5 +1,11 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.5.0
+
+### Minor Changes
+
+- 7644a9d: Resolve endpoint util
+
 ## 0.4.3
 
 ### Patch Changes
