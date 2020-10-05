@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 1.13.1
+
+### Patch Changes
+
+- 83c397a: Fix build on new typescript version
+
 ## 1.13.0
 
 ### Minor Changes
