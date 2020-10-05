@@ -1,14 +1,29 @@
-import React, { memo } from 'react'
+import React, { memo, useContext } from 'react'
 import { useDispatch } from 'react-redux'
-import TimebarComponent from '@globalfishingwatch/timebar'
+import TimebarComponent, { TimelineContext } from '@globalfishingwatch/timebar'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { setHighlightedTime, disableHighlightedTime } from './timebar.slice'
 
-const emptyFn = () => {
-  // Needed to avoid timeline complaining about empty children
-  return null
+const SomeTimebarChildren = () => {
+  const { outerScale, outerHeight } = useContext(TimelineContext)
+  const startX = outerScale(new Date(2019, 1, 1))
+  const endX = outerScale(new Date(2019, 1, 10))
+
+  return (
+    <div
+      style={{
+        background: 'red',
+        position: 'relative',
+        left: startX,
+        width: endX - startX,
+        top: outerHeight / 2 - 5,
+        height: 10,
+      }}
+    ></div>
+  )
 }
+
 const TimebarWrapper = () => {
   const { start, end, dispatchTimerange } = useTimerangeConnect()
 
@@ -33,7 +48,9 @@ const TimebarWrapper = () => {
         dispatch(setHighlightedTime({ start, end }))
       }}
     >
-      {emptyFn}
+      {() => {
+        return <SomeTimebarChildren />
+      }}
     </TimebarComponent>
   )
 }
