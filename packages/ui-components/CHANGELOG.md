@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 1.13.3
+
+### Patch Changes
+
+- e942b6c: add "skip" and "layers" icons
+
 ## 1.13.2
 
 ### Patch Changes
