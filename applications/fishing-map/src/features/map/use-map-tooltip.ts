@@ -1,6 +1,6 @@
 import { Dataview } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { InteractionEvent, ExtendedFeature } from '../use-map-interaction'
+import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 
 export type TooltipEventFeature = {
   title: string

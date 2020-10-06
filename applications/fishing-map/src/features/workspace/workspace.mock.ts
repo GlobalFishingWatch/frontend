@@ -87,7 +87,9 @@ const workspace: Workspace = {
               downloadable: true,
               // TODO Dataset?
               pathTemplate:
-                '/v1/datasets/fishing_v4/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}',
+                // '/v1/datasets/fishing_v4/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}',
+                // '/v1/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}?datasets[0]=fishing_v4',
+                'https://4wings.api.dev.globalfishingwatch.org/v1/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}?datasets[0]=fishing_v4',
               params: [
                 {
                   label: 'Z',

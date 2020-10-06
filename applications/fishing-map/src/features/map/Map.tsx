@@ -3,12 +3,7 @@ import { useSelector } from 'react-redux'
 import { MiniGlobe, IconButton, MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
-import {
-  ExtendedFeature,
-  useLayerComposer,
-  useMapClick,
-  useMapTooltip,
-} from '@globalfishingwatch/react-hooks'
+import { ExtendedFeature, useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { useClickedEventConnect } from '../map-features/map-features.hooks'
@@ -16,6 +11,7 @@ import { selectWorkspaceDataviews } from '../workspace/workspace.selectors'
 import { ClickPopup } from '../map-features/Popup'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import { useMapboxRef } from './map.context'
+import useMapTooltip from './use-map-tooltip'
 import styles from './Map.module.css'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'

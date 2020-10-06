@@ -42,6 +42,14 @@ export const selectFishingDatasets = createSelector([selectFishingDataviews], (d
   return dataviews.flatMap((dataview) => getDatasetsByDataview(dataview))
 })
 
+export const selectTemporalgridDataviews = createSelector(
+  [selectWorkspaceDataviews],
+  (dataviews) => {
+    if (!dataviews) return []
+    return dataviews.filter((dataview) => dataview.config.type === Generators.Type.HeatmapAnimated)
+  }
+)
+
 export const selectDataviewsResourceQueries = createSelector(
   [selectWorkspaceDataviews],
   (dataviews) => {
