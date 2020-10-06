@@ -92,6 +92,7 @@ const Map = (): React.ReactElement => {
       const dataset = dataview.datasets?.find((dataset) => dataset.id === DATASET_ID)
       if (!dataset) return []
       const datasetConfig = {
+        datasetId: DATASET_ID,
         params: [
           { id: 'z', value: feature.tile.z },
           { id: 'x', value: feature.tile.x },
