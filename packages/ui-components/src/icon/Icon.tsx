@@ -19,6 +19,7 @@ import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
 import { ReactComponent as Graph } from '../assets/icons/graph.svg'
 import { ReactComponent as Home } from '../assets/icons/home.svg'
 import { ReactComponent as Info } from '../assets/icons/info.svg'
+import { ReactComponent as Layers } from '../assets/icons/layers.svg'
 import { ReactComponent as Logout } from '../assets/icons/logout.svg'
 import { ReactComponent as Menu } from '../assets/icons/menu.svg'
 import { ReactComponent as Minus } from '../assets/icons/minus.svg'
@@ -29,6 +30,7 @@ import { ReactComponent as Ruler } from '../assets/icons/ruler.svg'
 import { ReactComponent as Satellite } from '../assets/icons/satellite.svg'
 import { ReactComponent as Search } from '../assets/icons/search.svg'
 import { ReactComponent as Share } from '../assets/icons/share.svg'
+import { ReactComponent as Skip } from '../assets/icons/skip.svg'
 import { ReactComponent as Split } from '../assets/icons/split.svg'
 import { ReactComponent as Tick } from '../assets/icons/tick.svg'
 import { ReactComponent as Upload } from '../assets/icons/upload.svg'
@@ -56,6 +58,7 @@ export const IconComponents = {
   home: Home,
   info: Info,
   logout: Logout,
+  layers: Layers,
   menu: Menu,
   minus: Minus,
   plus: Plus,
@@ -65,6 +68,7 @@ export const IconComponents = {
   satellite: Satellite,
   search: Search,
   share: Share,
+  skip: Skip,
   split: Split,
   tick: Tick,
   upload: Upload,
