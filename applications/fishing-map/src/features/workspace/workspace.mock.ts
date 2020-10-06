@@ -686,6 +686,20 @@ const workspace: Workspace = {
         },
       ],
     },
+    {
+      dataviewId: 2,
+      config: {
+        color: '#FFAAAD',
+        colorRamp: 'salmon',
+      },
+      datasetsConfig: [
+        {
+          datasetId: 'carriers-tracks:v20200507',
+          params: [{ id: 'vesselId', value: '0017a7b68-87c4-5af4-c46e-5bebee3ddceb' }],
+          endpoint: 'carriers-tracks',
+        },
+      ],
+    },
   ],
 }
 

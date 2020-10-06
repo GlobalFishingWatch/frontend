@@ -12,8 +12,9 @@ import {
   selectFishingFilters,
 } from 'routes/routes.selectors'
 import {
-  selectWorkspaceDataviews,
+  selectWorkspaceDataviewsResolved,
   selectDataviewsResourceQueries,
+  getUniqueDataviewId,
 } from 'features/workspace/workspace.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 
@@ -29,7 +30,7 @@ export const selectGlobalGeneratorsConfig = createSelector(
 
 export const getGeneratorsConfig = createSelector(
   [
-    selectWorkspaceDataviews,
+    selectWorkspaceDataviewsResolved,
     selectDataviews,
     selectFishingFilters,
     selectDataviewsResourceQueries,
@@ -37,8 +38,10 @@ export const getGeneratorsConfig = createSelector(
   ],
   (dataviews = [], urlDataviews, fishingFilters, resourceQueries, resources) => {
     // TODO add logic to merge 4Wings dataviews into one generator
-    return dataviews.map((dataview) => {
-      const urlDataview = urlDataviews?.find((urlDataview) => urlDataview.id === dataview.id)
+    const generatorsConfig = dataviews.map((dataview) => {
+      const urlDataview = urlDataviews?.find(
+        (urlDataview) => urlDataview.id === dataview.id || urlDataview.id === dataview.uid
+      )
       const visible =
         urlDataview?.config?.visible !== undefined ? urlDataview?.config?.visible : true
       const filters = fishingFilters?.map((filter) => filter.id)
@@ -54,7 +57,8 @@ export const getGeneratorsConfig = createSelector(
 
       // Try to retrieve resource if it exists
       let data
-      const resourceQuery = resourceQueries.find((rq) => rq.dataviewId === dataview.id)
+      const resourceId = getUniqueDataviewId(dataview)
+      const resourceQuery = resourceQueries.find((rq) => rq.id === resourceId)
       if (resourceQuery) {
         const resource = resources[resourceQuery.url]
         if (resource) {
@@ -66,10 +70,11 @@ export const getGeneratorsConfig = createSelector(
         ...config,
         // TODO Add vessel id for tracks ie
         // dataview.datasetsConfig[?].query.find(q => q.id === 'id').value
-        id: `${config.type}_${dataview.id}_SOME_UNIQUE_ID`,
+        id: `${config.type}_${resourceId}`,
         visible,
         data,
       }
     }) as AnyGeneratorConfig[]
+    return generatorsConfig
   }
 )

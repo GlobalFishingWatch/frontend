@@ -95,6 +95,7 @@ export interface DataviewCreation {
 
 export interface Dataview {
   id: number
+  uid?: string // Unique id to identify with datasetConfig params
   name: string
   description: string
   createdAt?: string

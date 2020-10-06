@@ -21,12 +21,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   // TODO reuse an unify the same logic than map.selector
   const urlDataview = (urlDataviews || []).find(
-    (urlDataview) => urlDataview.id?.toString() === dataview.id.toString()
+    (urlDataview) => urlDataview.id === dataview.id || urlDataview.id === dataview.uid
   )
   const layerActive =
     urlDataview?.config?.visible !== undefined ? urlDataview?.config?.visible : true
   const onToggleLayerActive = () => {
-    dispatchQueryParams({ dataviews: [{ id: dataview.id, config: { visible: !layerActive } }] })
+    dispatchQueryParams({
+      dataviews: [{ id: dataview.uid || dataview.id, config: { visible: !layerActive } }],
+    })
   }
 
   const onToggleFilterOpen = () => {
