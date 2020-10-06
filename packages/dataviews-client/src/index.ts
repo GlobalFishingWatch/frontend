@@ -13,11 +13,9 @@ export type {
   DataviewConfig,
   DataviewDatasetConfigParams,
   DataviewDatasetConfig,
-  DataviewDatasetConfigDict,
   AOI,
   Workspace,
   WorkspaceUpsert,
   WorkspaceDataviewConfig,
-  WorkspaceDataviewConfigDict,
   Resource,
 } from './types'
