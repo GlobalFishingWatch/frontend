@@ -1,7 +1,7 @@
 import template from 'lodash/template'
 import { stringify } from 'qs'
 import GFWAPI, { FetchResponseTypes, FetchOptions } from '@globalfishingwatch/api-client'
-import { Dataview, Resource, WorkspaceDataviewConfigDict } from './types'
+import { Dataview, Resource, WorkspaceDataviewConfig } from './types'
 import resolveDataviews from './resolve-dataviews'
 
 const BASE_URL = '/v1/dataviews'
@@ -62,7 +62,7 @@ export default class DataviewsClient {
   // TODO uniq by URL
   getResources(
     dataviews: Dataview[],
-    workspaceDataviewsConfig: WorkspaceDataviewConfigDict = {}
+    workspaceDataviewsConfig: WorkspaceDataviewConfig[]
   ): { resources: Resource[]; promises: Promise<Resource>[] } {
     const resources: Resource[] = []
     const resolvedDataviews = resolveDataviews(dataviews, workspaceDataviewsConfig)
@@ -70,7 +70,9 @@ export default class DataviewsClient {
       resolvedDataviews.forEach((dataview) => {
         const { datasetsConfig } = dataview
         dataview.datasets?.forEach((dataset) => {
-          const datasetParams = datasetsConfig && datasetsConfig[dataset.id]
+          const datasetParams = datasetsConfig?.find(
+            (datasetConfig) => datasetConfig.datasetId === dataset.id
+          )
           const endpointParamType = datasetParams?.endpoint
 
           dataset.endpoints

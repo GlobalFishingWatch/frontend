@@ -10,6 +10,7 @@ export interface EndpointParam {
   enum?: string[]
   default?: string | boolean | number
   required?: boolean
+  // TODO remove this or enum, but they both do the same
   values?: any
 }
 
@@ -79,13 +80,10 @@ export interface DataviewDatasetConfigParams {
 }
 
 export interface DataviewDatasetConfig {
+  datasetId: string
   endpoint: string
   params: DataviewDatasetConfigParams[]
   query?: DataviewDatasetConfigParams[]
-}
-
-export interface DataviewDatasetConfigDict {
-  [key: string]: DataviewDatasetConfig
 }
 
 export interface DataviewCreation {
@@ -103,7 +101,7 @@ export interface Dataview {
   updatedAt?: string
   config: DataviewConfig
   datasets?: Dataset[]
-  datasetsConfig?: DataviewDatasetConfigDict
+  datasetsConfig?: DataviewDatasetConfig[]
 }
 
 export interface AOI {
@@ -115,12 +113,9 @@ export interface AOI {
 }
 
 export interface WorkspaceDataviewConfig {
+  dataviewId: number
   config: DataviewConfig
-  datasetsConfig: DataviewDatasetConfigDict
-}
-
-export interface WorkspaceDataviewConfigDict {
-  [id: string]: WorkspaceDataviewConfig
+  datasetsConfig?: DataviewDatasetConfig[]
 }
 
 export interface Workspace {
@@ -128,7 +123,7 @@ export interface Workspace {
   description: string
   name: string
   dataviews: Dataview[]
-  dataviewsConfig: WorkspaceDataviewConfigDict
+  dataviewsConfig: WorkspaceDataviewConfig[]
   aoi?: AOI
   viewport: {
     zoom: number

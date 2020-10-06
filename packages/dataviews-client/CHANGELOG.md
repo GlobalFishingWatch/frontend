@@ -1,5 +1,29 @@
 # @globalfishingwatch/dataviews-client
 
+## 3.0.0
+
+### Major Changes
+
+- a6ffee9: BREAKING CHANGE
+
+  In order to Support multiple dataviewsConfig for different dataviews in the same workspace, for example multiple vessels with same track-dataview, the types moves from key-value structure to an array with dataviewId and datasetId
+
+## 2.7.1
+
+### Patch Changes
+
+- Release fishing-map
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-client@1.5.1
+  - @globalfishingwatch/layer-composer@2.13.3
+  - @globalfishingwatch/pbf@1.0.8
+
+## 2.7.0
+
+### Minor Changes
+
+- 7644a9d: Resolve endpoint util
+
 ## 2.6.1
 
 ### Patch Changes

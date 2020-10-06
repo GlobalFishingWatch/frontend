@@ -1,5 +1,19 @@
 # @globalfishingwatch/ui-components
 
+## 1.13.2
+
+### Patch Changes
+
+- Release fishing-map
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@2.13.3
+
+## 1.13.1
+
+### Patch Changes
+
+- 83c397a: Fix build on new typescript version
+
 ## 1.13.0
 
 ### Minor Changes

@@ -47,16 +47,19 @@ const workspace: Workspace = {
         combinationMode: 'compare',
         tilesAPI: `${process.env.REACT_APP_API_GATEWAY}/v1/4wings`,
       },
-      datasetsConfig: {
-        dgg_fishing_galapagos: {
+      datasetsConfig: [
+        {
+          // TODO use this in sublayers
+          datasetId: 'dgg_fishing_galapagos',
           params: [{ id: 'type', value: 'heatmap' }],
           endpoint: '4wings-tiles',
         },
-        dgg_fishing_caribe: {
+        {
+          datasetId: 'dgg_fishing_caribe',
           params: [{ id: 'type', value: 'heatmap' }],
           endpoint: '4wings-tiles',
         },
-      },
+      ],
       datasets: [
         {
           alias: null,
@@ -599,8 +602,9 @@ const workspace: Workspace = {
         type: Generators.Type.Track,
         color: 'red',
       },
-      datasetsConfig: {
-        'carriers-tracks:v20200507': {
+      datasetsConfig: [
+        {
+          datasetId: 'carriers-tracks:v20200507',
           params: [{ id: 'vesselId', value: '00ba29183-3b86-9e36-cf20-ee340e409521' }],
           query: [
             // { id: 'binary', value: false },
@@ -616,7 +620,7 @@ const workspace: Workspace = {
           ],
           endpoint: 'carriers-tracks',
         },
-      },
+      ],
       datasets: [
         {
           alias: null,
@@ -667,20 +671,36 @@ const workspace: Workspace = {
       ],
     },
   ],
-  dataviewsConfig: {
-    '3': {
+  dataviewsConfig: [
+    {
+      dataviewId: 3,
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
       },
-      datasetsConfig: {
-        dgg_fishing_caribe: {
+      datasetsConfig: [
+        {
+          datasetId: 'dgg_fishing_caribe',
           params: [{ id: 'type', value: 'heatmap' }],
           endpoint: '4wings-tiles',
         },
-      },
+      ],
     },
-  },
+    {
+      dataviewId: 2,
+      config: {
+        color: '#FFAA0D',
+        colorRamp: 'orange',
+      },
+      datasetsConfig: [
+        {
+          datasetId: 'carriers-tracks:v20200507',
+          params: [{ id: 'vesselId', value: '00ba29183-3b86-9e36-cf20-ee340e409521' }],
+          endpoint: 'carriers-tracks',
+        },
+      ],
+    },
+  ],
 }
 
 export default workspace

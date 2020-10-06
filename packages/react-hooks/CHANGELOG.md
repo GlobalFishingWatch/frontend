@@ -1,5 +1,28 @@
 # @globalfishingwatch/react-hooks
 
+## 3.0.0
+
+### Major Changes
+
+- a6ffee9: BREAKING CHANGE
+
+  In order to Support multiple dataviewsConfig for different dataviews in the same workspace, for example multiple vessels with same track-dataview, the types moves from key-value structure to an array with dataviewId and datasetId
+
+### Patch Changes
+
+- Updated dependencies [a6ffee9]
+  - @globalfishingwatch/dataviews-client@3.0.0
+
+## 2.10.1
+
+### Patch Changes
+
+- Release fishing-map
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-client@1.5.1
+  - @globalfishingwatch/dataviews-client@2.7.1
+  - @globalfishingwatch/layer-composer@2.13.3
+
 ## 2.10.0
 
 ### Minor Changes

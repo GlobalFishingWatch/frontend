@@ -1,5 +1,13 @@
 # @globalfishingwatch/layer-composer
 
+## 2.13.3
+
+### Patch Changes
+
+- Release fishing-map
+- Updated dependencies [undefined]
+  - @globalfishingwatch/data-transforms@1.0.2
+
 ## 2.13.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @globalfishingwatch/api-client
 
+## 1.5.1
+
+### Patch Changes
+
+- Release fishing-map
+- Updated dependencies [undefined]
+  - @globalfishingwatch/pbf@1.0.8
+
 ## 1.5.0
 
 ### Minor Changes

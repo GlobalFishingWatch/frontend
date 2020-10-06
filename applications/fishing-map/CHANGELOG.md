@@ -1,5 +1,44 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.5.2
+
+### Patch Changes
+
+- a6ffee9: Bump breaking change dependencies
+- Updated dependencies [a6ffee9]
+  - @globalfishingwatch/dataviews-client@3.0.0
+  - @globalfishingwatch/react-hooks@3.0.0
+
+## 0.5.1
+
+### Patch Changes
+
+- Release fishing-map
+- Updated dependencies [undefined]
+  - @globalfishingwatch/linting@1.3.1
+  - @globalfishingwatch/api-client@1.5.1
+  - @globalfishingwatch/data-transforms@1.0.2
+  - @globalfishingwatch/layer-composer@2.13.3
+  - @globalfishingwatch/react-hooks@2.10.1
+  - @globalfishingwatch/timebar@1.0.14
+  - @globalfishingwatch/ui-components@1.13.2
+
+## 0.5.0
+
+### Minor Changes
+
+- 7644a9d: Resolve endpoint util
+
+## 0.4.3
+
+### Patch Changes
+
+- 32001ce: Data transform initial release
+- Updated dependencies [32001ce]
+- Updated dependencies [83c397a]
+  - @globalfishingwatch/data-transforms@1.0.1
+  - @globalfishingwatch/ui-components@1.13.1
+
 ## 0.4.2
 
 ### Patch Changes
