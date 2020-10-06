@@ -1,13 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { MiniGlobe, IconButton, MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { ExtendedFeature, useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
-import { Generators } from '@globalfishingwatch/layer-composer'
-import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { useClickedEventConnect } from '../map-features/map-features.hooks'
-import { selectWorkspaceDataviews } from '../workspace/workspace.selectors'
 import { ClickPopup } from '../map-features/Popup'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import { useMapboxRef } from './map.context'
@@ -69,46 +65,9 @@ const Map = (): React.ReactElement => {
     [token]
   )
 
-  const dataviews = useSelector(selectWorkspaceDataviews)
-
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
-  const onEventClick = useCallback(
-    (event) => {
-      dispatchClickedEvent(event)
-      // TODO should work for multiple features
-      const feature: ExtendedFeature = event.features[0]
-      if (!dataviews || !feature || !feature.temporalgrid) return
-      const allTemporalgridDataviews = dataviews.filter(
-        (dataview) => dataview.config.type === Generators.Type.HeatmapAnimated
-      )
-      // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
-      const dataview = allTemporalgridDataviews[feature.temporalgrid.sublayerIndex]
-      // TODO How to get the proper id? Should be fishing_v4
-      const DATASET_ID = 'dgg_fishing_galapagos'
-      const dataset = dataview.datasets?.find((dataset) => dataset.id === DATASET_ID)
-      if (!dataset) return []
-      const datasetConfig = {
-        datasetId: DATASET_ID,
-        params: [
-          { id: 'z', value: feature.tile.z },
-          { id: 'x', value: feature.tile.x },
-          { id: 'y', value: feature.tile.y },
-          { id: 'rows', value: feature.temporalgrid.row },
-          { id: 'cols', value: feature.temporalgrid.col },
-        ],
-        endpoint: '4wings-interaction',
-      }
-      const url = resolveEndpoint(dataset, datasetConfig)
-      if (url) {
-        GFWAPI.fetch(url).then((vessels) => {
-          console.log(vessels)
-        })
-      }
-    },
-    [dispatchClickedEvent, dataviews]
-  )
-  const onMapClick = useMapClick(onEventClick)
-  const clickedTooltipEvent = useMapTooltip(dataviews, clickedEvent)
+  const onMapClick = useMapClick(dispatchClickedEvent)
+  const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const closePopup = useCallback(() => {
     dispatchClickedEvent(null)
   }, [dispatchClickedEvent])
