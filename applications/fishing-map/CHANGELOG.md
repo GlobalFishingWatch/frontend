@@ -1,5 +1,14 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.5.2
+
+### Patch Changes
+
+- a6ffee9: Bump breaking change dependencies
+- Updated dependencies [a6ffee9]
+  - @globalfishingwatch/dataviews-client@3.0.0
+  - @globalfishingwatch/react-hooks@3.0.0
+
 ## 0.5.1
 
 ### Patch Changes
