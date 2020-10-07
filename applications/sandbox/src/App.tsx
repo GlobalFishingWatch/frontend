@@ -11,7 +11,7 @@ const Home = () => <h1>Please select the page you want to see</h1>
 
 function App() {
   return (
-    <Router>
+    <Router basename="/frontend">
       <Fragment>
         <nav className="nav">
           <NavLink to="/ui-components">UI Components</NavLink>
