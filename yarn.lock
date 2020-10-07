@@ -1511,10 +1511,10 @@
     react-virtualized-auto-sizer "^1.0.2"
     viewport-mercator-project "^6.2.3 || ^7.0.1"
 
-"@globalfishingwatch/timebar@1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/timebar/-/timebar-1.0.11.tgz#b99f14e21346ddeff2869acec579927760b57aa6"
-  integrity sha512-p1j5aTTrJoV9CYqVfBbPBIK9WDJmx2UC7ZtgPwFs/0Fn0NfbsBpDz4PnXJ+Fdqrw+wegCByCp8SsIrrrdmcJIA==
+"@globalfishingwatch/timebar@1.0.14":
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/timebar/-/timebar-1.0.14.tgz#8ac47b6a26b67eb3cc4259ac2ed4abcb6a43ca0d"
+  integrity sha512-bib6EmsNGCOekOlFXcFa3COBV1Q2ZFqL9RL/N8ib0T4cXuV97c0mTPq25vyWQyseG1gJqAKsCH7CP8oQg6a1Ug==
   dependencies:
     "@globalfishingwatch/map-convert" "github:GlobalFishingWatch/map-convert"
     "@mapbox/tile-cover" "^3.0.2"
