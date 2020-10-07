@@ -2,18 +2,18 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { InteractionEvent, ExtendedFeatureVessel } from '@globalfishingwatch/react-hooks'
 
-type MapFeaturesState = {
+type MapState = {
   clicked: InteractionEvent | null
   hovered: InteractionEvent | null
 }
 
-const initialState: MapFeaturesState = {
+const initialState: MapState = {
   clicked: null,
   hovered: null,
 }
 
 const slice = createSlice({
-  name: 'mapFeatures',
+  name: 'map',
   initialState,
   reducers: {
     setClickedEvent: (state, action: PayloadAction<InteractionEvent | null>) => {
@@ -37,7 +37,7 @@ const slice = createSlice({
   },
 })
 
-export const selectClickedEvent = (state: RootState) => state.mapFeatures.clicked
+export const selectClickedEvent = (state: RootState) => state.map.clicked
 
 export const { setClickedEvent, setFeatureVessels } = slice.actions
 export default slice.reducer

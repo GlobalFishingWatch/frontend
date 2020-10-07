@@ -1,10 +1,18 @@
-import { useSelector } from 'react-redux'
-import { useCallback, useEffect, useState } from 'react'
-import { ViewportProps } from 'react-map-gl'
-import { MapCoordinates } from 'types'
-import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
-import { selectViewport } from 'routes/routes.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useSelector, useDispatch } from 'react-redux'
+import GFWAPI from '@globalfishingwatch/api-client'
+import {
+  ExtendedFeature,
+  ExtendedFeatureVessel,
+  InteractionEvent,
+} from '@globalfishingwatch/react-hooks'
+import { resolveEndpoint, Dataview } from '@globalfishingwatch/dataviews-client'
+import { Generators } from '@globalfishingwatch/layer-composer'
+import {
+  selectWorkspaceDataviews,
+  selectTemporalgridDataviews,
+} from 'features/workspace/workspace.selectors'
+import { selectTimerange } from 'routes/routes.selectors'
+import { setClickedEvent, setFeatureVessels, selectClickedEvent } from './map.slice'
 import { getGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
@@ -15,56 +23,125 @@ export const useGeneratorsConnect = () => {
     generatorsConfig: useSelector(getGeneratorsConfig),
   }
 }
-type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>
-type UseViewport = {
-  viewport: MapCoordinates
-  onViewportChange: (viewport: ViewportProps) => void
-  setMapCoordinates: (viewport: SetMapCoordinatesArgs) => void
-}
-export function useDebouncedViewport(
-  urlViewport: MapCoordinates,
-  callback: (viewport: MapCoordinates) => void
-): UseViewport {
-  const [viewport, setViewport] = useState<MapCoordinates>(urlViewport)
-  const debouncedViewport = useDebounce<MapCoordinates>(viewport, 400)
 
-  const setMapCoordinates = useCallback((viewport: SetMapCoordinatesArgs) => {
-    setViewport({ ...viewport })
-  }, [])
+export const useClickedEventConnect = () => {
+  const dispatch = useDispatch()
+  const clickedEvent = useSelector(selectClickedEvent)
 
-  const onViewportChange = useCallback((viewport: ViewportProps) => {
-    const { latitude, longitude, zoom } = viewport
-    setViewport({ latitude, longitude, zoom })
-  }, [])
+  const dataviews = useSelector(selectWorkspaceDataviews)
+  const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
+  const { start, end } = useSelector(selectTimerange)
 
-  // Updates local state when url changes
-  useEffect(() => {
-    const { latitude, longitude, zoom } = viewport
-    if (
-      urlViewport &&
-      (urlViewport?.latitude !== latitude ||
-        urlViewport?.longitude !== longitude ||
-        urlViewport?.zoom !== zoom)
-    ) {
-      setViewport({ ...urlViewport })
+  const dispatchClickedEvent = (event: InteractionEvent | null) => {
+    if (event === null) {
+      dispatch(setClickedEvent(null))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlViewport])
+    if (!event || !event.features) return
+    dispatch(setClickedEvent(event))
+    // TODO should work for multiple features
+    const feature: ExtendedFeature = event.features[0]
+    if (!dataviews || !feature || !feature.temporalgrid) return
 
-  // Sync the url with the local state debounced
-  useEffect(() => {
-    if (debouncedViewport && callback) {
-      callback(debouncedViewport)
+    // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
+    const dataview = temporalgridDataviews[feature.temporalgrid.sublayerIndex]
+    // TODO How to get the proper id? Should be fishing_v4
+    const DATASET_ID = 'dgg_fishing_galapagos'
+    const INTERACTION_DATASET_ID = 'fishing_v4'
+    const dataset = dataview.datasets?.find((dataset) => dataset.id === DATASET_ID)
+    if (!dataset) return []
+    const datasetConfig = {
+      endpoint: '4wings-interaction',
+      datasetId: DATASET_ID,
+      params: [
+        { id: 'z', value: feature.tile.z },
+        { id: 'x', value: feature.tile.x },
+        { id: 'y', value: feature.tile.y },
+        { id: 'rows', value: feature.temporalgrid.row },
+        { id: 'cols', value: feature.temporalgrid.col },
+      ],
+      query: [
+        // TODO remove hardcoded dataset ID
+        { id: 'datasets', value: [INTERACTION_DATASET_ID] },
+        { id: 'date-range', value: [start, end].join(',') },
+        // { id: 'limit', value: 11 },
+      ],
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedViewport])
-
-  return { viewport, onViewportChange, setMapCoordinates }
+    const url = resolveEndpoint(dataset, datasetConfig)
+    if (url) {
+      // TODO move this to async action in map.reducer ?
+      GFWAPI.fetch(url).then((vesselsByDataset) => {
+        const vesselsForDataset = (vesselsByDataset as Record<string, unknown>)[
+          INTERACTION_DATASET_ID
+        ] as ExtendedFeatureVessel[]
+        if (feature.generatorId) {
+          dispatch(
+            setFeatureVessels({
+              generatorId: feature.generatorId.toString(),
+              vessels: vesselsForDataset,
+            })
+          )
+        }
+      })
+    }
+  }
+  return { clickedEvent, dispatchClickedEvent }
 }
 
-export function useViewport(): UseViewport {
-  const { dispatchQueryParams } = useLocationConnect()
-  const urlViewport = useSelector(selectViewport)
-  const callback = useCallback((viewport) => dispatchQueryParams(viewport), [dispatchQueryParams])
-  return useDebouncedViewport(urlViewport, callback)
+export type TooltipEventFeature = {
+  title: string
+  color?: string
+  unit?: string
+  value: string
+  vesselsInfo?: {
+    overflow: boolean
+    numVessels: number
+    vessels: ExtendedFeatureVessel[]
+  }
+}
+
+export type TooltipEvent = {
+  latitude: number
+  longitude: number
+  features: TooltipEventFeature[]
+}
+
+export const useMapTooltip = (event?: InteractionEvent | null) => {
+  const dataviews = useSelector(selectWorkspaceDataviews)
+  const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
+  if (!event || !event.features || !dataviews) return null
+  const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
+    let dataview
+    if (feature.generator === Generators.Type.HeatmapAnimated) {
+      if (!feature.temporalgrid || feature.temporalgrid.sublayerIndex === undefined) {
+        return []
+      }
+
+      // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
+      dataview = temporalgridDataviews[feature.temporalgrid?.sublayerIndex]
+    } else {
+      dataview = dataviews.find((dataview: Dataview) => dataview.id === feature.generatorId)
+    }
+    if (!dataview) return []
+    const tooltipEventFeature: TooltipEventFeature = {
+      title: dataview.name || dataview.id.toString(),
+      color: dataview.config.color || 'black',
+      // unit: dataview.unit || '',
+      value: feature.value,
+    }
+    if (feature.vessels) {
+      const MAX_VESSELS = 5
+      tooltipEventFeature.vesselsInfo = {
+        vessels: feature.vessels.slice(0, MAX_VESSELS),
+        numVessels: feature.vessels.length,
+        overflow: feature.vessels.length > MAX_VESSELS,
+      }
+    }
+    return tooltipEventFeature
+  })
+  if (!tooltipEventFeatures.length) return null
+  return {
+    latitude: event.latitude,
+    longitude: event.longitude,
+    features: tooltipEventFeatures,
+  }
 }

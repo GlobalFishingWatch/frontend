@@ -1,7 +1,7 @@
 import React from 'react'
 import { Popup } from '@globalfishingwatch/react-map-gl'
+import { TooltipEvent, TooltipEventFeature } from '../map/map.hooks'
 import styles from './Popup.module.css'
-import { TooltipEvent, TooltipEventFeature } from './map-features.hooks'
 
 function PopupWrapper({
   tooltipEvent,
