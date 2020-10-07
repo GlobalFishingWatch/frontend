@@ -36,7 +36,7 @@ function PopupWrapper({
               {feature.title}
             </h3>
             <div>
-              {feature.value} {feature.unit}
+              {Math.round(parseFloat(feature.value))} {feature.unit} h total
             </div>
             {feature.vesselsInfo && (
               <div>
@@ -45,10 +45,10 @@ function PopupWrapper({
                     key={i}
                     className={styles.vessel}
                     onClick={() => {
-                      window.alert(vessel)
+                      window.alert(vessel.id)
                     }}
                   >
-                    {vessel}
+                    {Math.round(vessel.hours)} hours: {vessel.id}
                   </button>
                 ))}
                 {feature.vesselsInfo.overflow && (
