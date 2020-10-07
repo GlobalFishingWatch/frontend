@@ -4,7 +4,7 @@ import useClickedOutside from 'hooks/useClickedOutside'
 import { useSelector } from 'react-redux'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
 import { Dataview } from '@globalfishingwatch/dataviews-client'
-import { selectDataviews, selectFishingFilters } from 'routes/routes.selectors'
+import { selectFishingFilters } from 'routes/routes.selectors'
 import styles from 'features/sidebar/common/LayerPanel.module.css'
 import { useDataviewsConnect } from 'features/workspace/workspace.hook'
 import Filters from './HeatmapFilters'
@@ -15,16 +15,10 @@ type LayerPanelProps = {
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [filterOpen, setFiltersOpen] = useState(false)
-  const urlDataviews = useSelector(selectDataviews)
   const fishingFilters = useSelector(selectFishingFilters)
   const { updateUrlDataview } = useDataviewsConnect()
 
-  // TODO merge url and current dataview in selector instead of component
-  const urlDataview = (urlDataviews || []).find(
-    (urlDataview) => urlDataview.uid === dataview.id?.toString()
-  )
-  const layerActive =
-    urlDataview?.config?.visible !== undefined ? urlDataview?.config?.visible : true
+  const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
     updateUrlDataview({
       uid: dataview.uid || dataview.id.toString(),

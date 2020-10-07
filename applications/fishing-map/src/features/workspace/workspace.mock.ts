@@ -20,7 +20,6 @@ const workspace: Workspace = {
       name: 'background',
       description: '',
       config: {
-        id: 'background',
         type: Generators.Type.Background,
         color: '#00265c',
       },
@@ -30,7 +29,6 @@ const workspace: Workspace = {
       name: 'basemap',
       description: '',
       config: {
-        id: 'basemap',
         type: Generators.Type.Basemap,
         basemap: Generators.BasemapType.Default,
       },

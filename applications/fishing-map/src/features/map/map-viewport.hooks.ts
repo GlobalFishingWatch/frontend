@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { ViewportProps } from 'react-map-gl'
 import { MapCoordinates } from 'types'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
-import { selectViewport } from 'routes/routes.selectors'
+import { selectViewport } from 'features/map/map.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 
 type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>

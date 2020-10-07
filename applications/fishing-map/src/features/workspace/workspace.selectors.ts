@@ -3,6 +3,7 @@ import { Generators } from '@globalfishingwatch/layer-composer'
 import { Dataview, resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { selectWorkspace } from 'features/workspace/workspace.slice'
 import { ResourceQuery } from 'features/resources/resources.slice'
+import { selectDataviews } from 'routes/routes.selectors'
 
 // TODO should come from search or 4wings cell - not sure how to get that when set in a workspace?
 export const TRACKS_DATASET_ID = 'carriers-tracks:v20200507'
@@ -33,42 +34,66 @@ export const selectWorkspaceViewport = createSelector([selectWorkspace], (worksp
   return workspace?.viewport
 })
 
-export const selectWorkspaceDataviewsResolved = createSelector([selectWorkspace], (workspace) => {
-  if (!workspace) return
-  // TODO move this to use-workspace helper
-  const dataviews = workspace.dataviews.flatMap((dataview) => {
-    const workspaceDataviewsConfig = workspace.dataviewsConfig.filter(
-      (dataviewConfig) => dataviewConfig.dataviewId === dataview.id
-    )
-    if (!workspaceDataviewsConfig.length) return dataview
-    return workspaceDataviewsConfig.map((workspaceDataviewConfig) => {
-      const config = {
-        ...dataview.config,
-        ...workspaceDataviewConfig.config,
-      }
-      const datasetsConfig = dataview.datasetsConfig?.map((datasetConfig) => {
-        const workspaceDataviewDatasetConfig = workspaceDataviewConfig.datasetsConfig?.find(
-          (wddc) =>
-            wddc.datasetId === datasetConfig.datasetId && wddc.endpoint === datasetConfig.endpoint
-        )
-        if (!workspaceDataviewDatasetConfig) return datasetConfig
+export const selectWorkspaceDataviewsResolved = createSelector(
+  [selectWorkspace, selectDataviews],
+  (workspace, urlDataviews = []) => {
+    if (!workspace) return
+    // TODO move this to use-workspace helper
+    const dataviews = workspace.dataviews.flatMap((dataview) => {
+      const workspaceDataviewsConfig = workspace.dataviewsConfig.filter(
+        (dataviewConfig) => dataviewConfig.dataviewId === dataview.id
+      )
+      if (!workspaceDataviewsConfig.length) return dataview
 
-        return { ...datasetConfig, ...workspaceDataviewDatasetConfig }
+      return workspaceDataviewsConfig.map((workspaceDataviewConfig) => {
+        const config = {
+          ...dataview.config,
+          ...workspaceDataviewConfig.config,
+        }
+        const datasetsConfig = dataview.datasetsConfig?.map((datasetConfig) => {
+          const workspaceDataviewDatasetConfig = workspaceDataviewConfig.datasetsConfig?.find(
+            (wddc) =>
+              wddc.datasetId === datasetConfig.datasetId && wddc.endpoint === datasetConfig.endpoint
+          )
+          if (!workspaceDataviewDatasetConfig) return datasetConfig
+
+          return { ...datasetConfig, ...workspaceDataviewDatasetConfig }
+        })
+        const resolvedDataview = {
+          ...dataview,
+          config,
+          datasetsConfig,
+        }
+        return {
+          ...resolvedDataview,
+          uid: getUniqueDataviewId(resolvedDataview),
+        }
       })
-      const resolvedDataview = {
-        ...dataview,
-        uid: getUniqueDataviewId(dataview),
-        config,
-        datasetsConfig,
-      }
+    })
+    // Now it merges with urlDataviews
+    const urlMergedDataviews = dataviews.map((dataview) => {
+      const urlDataview = urlDataviews.find(
+        (urlDataview) =>
+          urlDataview.uid === dataview.id?.toString() || urlDataview.uid === dataview.uid
+      )
+      if (!urlDataview) return dataview
       return {
-        ...resolvedDataview,
-        uid: getUniqueDataviewId(resolvedDataview),
+        ...dataview,
+        ...urlDataview,
+        config: {
+          ...dataview.config,
+          ...urlDataview?.config,
+        },
       }
     })
-  })
-  return dataviews
-})
+    // Get dataviews defined uniquely in the url
+    const urlOnlyDataviews = urlDataviews.filter(
+      (urlDataview) =>
+        !urlMergedDataviews.some((mergedDataview) => mergedDataview.uid === urlDataview.uid)
+    )
+    return [...urlMergedDataviews, ...(urlOnlyDataviews as Dataview[])]
+  }
+)
 
 export const selectVesselsDataviews = createSelector(
   [selectWorkspaceDataviewsResolved],

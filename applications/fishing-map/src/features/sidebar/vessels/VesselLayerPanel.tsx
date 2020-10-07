@@ -1,9 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { Switch, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { Dataview } from '@globalfishingwatch/dataviews-client'
-import { selectDataviews } from 'routes/routes.selectors'
 import styles from 'features/sidebar/common/LayerPanel.module.css'
 import { TRACKS_DATASET_ID } from 'features/workspace/workspace.selectors'
 import { useDataviewsConnect } from 'features/workspace/workspace.hook'
@@ -14,12 +12,8 @@ type LayerPanelProps = {
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { updateUrlDataview } = useDataviewsConnect()
-  const urlDataviews = useSelector(selectDataviews)
 
-  // TODO merge url and current dataview in selector instead of component
-  const urlDataview = (urlDataviews || []).find((urlDataview) => urlDataview.uid === dataview.uid)
-  const layerActive =
-    urlDataview?.config?.visible !== undefined ? urlDataview?.config?.visible : true
+  const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
     updateUrlDataview({
       uid: dataview.uid || dataview.id.toString(),

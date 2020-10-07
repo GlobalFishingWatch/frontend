@@ -8,7 +8,7 @@ import {
 import { resolveEndpoint, Dataview } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
-  selectWorkspaceDataviews,
+  selectWorkspaceDataviewsResolved,
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectTimerange } from 'routes/routes.selectors'
@@ -28,7 +28,7 @@ export const useClickedEventConnect = () => {
   const dispatch = useDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
 
-  const dataviews = useSelector(selectWorkspaceDataviews)
+  const dataviews = useSelector(selectWorkspaceDataviewsResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
   const { start, end } = useSelector(selectTimerange)
 
@@ -106,7 +106,7 @@ export type TooltipEvent = {
 }
 
 export const useMapTooltip = (event?: InteractionEvent | null) => {
-  const dataviews = useSelector(selectWorkspaceDataviews)
+  const dataviews = useSelector(selectWorkspaceDataviewsResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
   if (!event || !event.features || !dataviews) return null
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {

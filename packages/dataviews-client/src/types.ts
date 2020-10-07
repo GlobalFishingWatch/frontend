@@ -1,6 +1,7 @@
 import { GeoJSON } from 'geojson'
 import { FetchResponseTypes } from '@globalfishingwatch/api-client/dist/api-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { HeatmapAnimatedGeneratorSublayer } from '@globalfishingwatch/layer-composer/dist/generators/types'
 
 export interface EndpointParam {
   id: string
@@ -67,11 +68,14 @@ export interface Dataset {
 }
 
 export interface DataviewConfig {
+  // TODO use any property from layer-composer here?
   type?: Generators.Type | string
   color?: string
   colorRamp?: Generators.ColorRampsIds
   visible?: boolean
-  [key: string]: unknown
+  basemap?: string
+  sublayers?: HeatmapAnimatedGeneratorSublayer[]
+  [key: string]: any
 }
 
 export interface DataviewDatasetConfigParams {
