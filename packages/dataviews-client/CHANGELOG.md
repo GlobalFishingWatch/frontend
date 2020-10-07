@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 3.1.0
+
+### Minor Changes
+
+- 394ec60: 4Wings map layer interactions
+
 ## 3.0.0
 
 ### Major Changes

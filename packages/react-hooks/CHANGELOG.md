@@ -1,5 +1,16 @@
 # @globalfishingwatch/react-hooks
 
+## 3.1.0
+
+### Minor Changes
+
+- 394ec60: 4Wings map layer interactions
+
+### Patch Changes
+
+- Updated dependencies [394ec60]
+  - @globalfishingwatch/dataviews-client@3.1.0
+
 ## 3.0.0
 
 ### Major Changes
