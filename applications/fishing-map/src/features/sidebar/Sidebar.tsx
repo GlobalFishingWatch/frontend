@@ -7,8 +7,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { SEARCH } from 'routes/routes'
 import Search from 'features/search/Search'
 import styles from './Sidebar.module.css'
-import HeatmapsSection from './HeatmapsSection'
-import VesselsSection from './VesselsSection'
+import HeatmapsSection from './heatmaps/HeatmapsSection'
+import VesselsSection from './vessels/VesselsSection'
 
 type SidebarProps = {
   onMenuClick: () => void
@@ -52,15 +52,6 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
   )
 }
 
-function Sections() {
-  return (
-    <Fragment>
-      <HeatmapsSection />
-      <VesselsSection />
-    </Fragment>
-  )
-}
-
 function Sidebar({ onMenuClick }: SidebarProps) {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { location } = useLocationConnect()
@@ -77,7 +68,10 @@ function Sidebar({ onMenuClick }: SidebarProps) {
           There was an error loading the workspace, please try again later
         </div>
       ) : (
-        <Sections />
+        <Fragment>
+          <HeatmapsSection />
+          <VesselsSection />
+        </Fragment>
       )}
     </Fragment>
   )

@@ -7,7 +7,7 @@ import flags from 'data/flags'
 // import { selectTemporalgridDatasets } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectFishingFilters } from 'routes/routes.selectors'
-import styles from './Filters.module.css'
+import styles from './HeatmapFilters.module.css'
 
 type FiltersProps = {
   dataview: Dataview

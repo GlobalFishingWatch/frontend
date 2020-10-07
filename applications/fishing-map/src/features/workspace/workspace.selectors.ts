@@ -5,10 +5,10 @@ import { selectWorkspace } from 'features/workspace/workspace.slice'
 import { ResourceQuery } from 'features/resources/resources.slice'
 
 // TODO should come from search or 4wings cell - not sure how to get that when set in a workspace?
-const DATASET_ID = 'carriers-tracks:v20200507'
+export const TRACKS_DATASET_ID = 'carriers-tracks:v20200507'
 
 export const getUniqueDataviewId = (dataview: Dataview) => {
-  const dataset = dataview.datasets?.find((dataset) => dataset.id === DATASET_ID)
+  const dataset = dataview.datasets?.find((dataset) => dataset.id === TRACKS_DATASET_ID)
   if (!dataset) return dataview.id.toString()
 
   const datasetConfig = dataview?.datasetsConfig?.find(
@@ -102,7 +102,7 @@ export const selectDataviewsResourceQueries = createSelector(
     if (!dataviews) return []
     const resourceQueries: ResourceQuery[] = dataviews.flatMap((dataview) => {
       if (dataview.config.type !== Generators.Type.Track) return []
-      const dataset = dataview.datasets?.find((dataset) => dataset.id === DATASET_ID)
+      const dataset = dataview.datasets?.find((dataset) => dataset.id === TRACKS_DATASET_ID)
       if (!dataset) return []
       const datasetConfig = dataview?.datasetsConfig?.find(
         (datasetConfig) => datasetConfig.datasetId === dataset.id

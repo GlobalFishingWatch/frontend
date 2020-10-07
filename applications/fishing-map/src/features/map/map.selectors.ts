@@ -39,11 +39,11 @@ export const getGeneratorsConfig = createSelector(
   (dataviews = [], urlDataviews, fishingFilters, resourceQueries, resources) => {
     // TODO add logic to merge 4Wings dataviews into one generator
     const generatorsConfig = dataviews.map((dataview) => {
-      const urlDataview = urlDataviews?.find(
-        (urlDataview) => urlDataview.id === dataview.id || urlDataview.id === dataview.uid
+      const urlDataview = (urlDataviews || []).find(
+        (urlDataview) =>
+          urlDataview.uid === dataview.id?.toString() || urlDataview.uid === dataview.uid
       )
-      const visible =
-        urlDataview?.config?.visible !== undefined ? urlDataview?.config?.visible : true
+      const visible = urlDataview?.config?.visible ?? true
       const filters = fishingFilters?.map((filter) => filter.id)
       const config = { ...dataview.config }
       if (config.type === Generators.Type.HeatmapAnimated && filters?.length) {

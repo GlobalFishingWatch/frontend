@@ -2,8 +2,8 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
-import LayerPanel from '../layer-panel/LayerPanel'
-import styles from './HeatmapsSection.module.css'
+import styles from 'features/sidebar/common/Sections.module.css'
+import LayerPanel from './HeatmapLayerPanel'
 
 function HeatmapsSection(): React.ReactElement {
   const dataviews = useSelector(selectTemporalgridDataviews)
