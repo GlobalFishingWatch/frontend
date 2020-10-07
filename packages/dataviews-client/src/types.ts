@@ -76,7 +76,7 @@ export interface DataviewConfig {
 
 export interface DataviewDatasetConfigParams {
   id: string
-  value: string | number | boolean
+  value: string | number | boolean | string[]
 }
 
 export interface DataviewDatasetConfig {

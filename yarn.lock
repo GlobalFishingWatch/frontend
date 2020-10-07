@@ -1454,10 +1454,10 @@
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
 
-"@globalfishingwatch/mapbox-gl@1.12.0-gfw.1", "@globalfishingwatch/mapbox-gl@latest":
-  version "1.12.0-gfw.1"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/mapbox-gl/-/mapbox-gl-1.12.0-gfw.1.tgz#6727af6b4ce2a65c68b5f6348ae1cba6992774b0"
-  integrity sha512-xO38RsedzV9wE8ADASd59agnoa0vLNlgISTaDk+Z5RUgxOtqb+KiAC2BBHNzgwbAlfHjlBy/tG9Wa+CNTNrBZg==
+"@globalfishingwatch/mapbox-gl@1.12.0-gfw.2", "@globalfishingwatch/mapbox-gl@latest":
+  version "1.12.0-gfw.2"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/mapbox-gl/-/mapbox-gl-1.12.0-gfw.2.tgz#a411b0edd0b036489749502eb76693dbd377ee3c"
+  integrity sha512-DuiPQD83y8TDObekeHIf53iJvIug0cBtxZIkMx5Nj0rPBWyrapTvQrjblzKBwDJA05UF/Bfotw7B+BO97HI66w==
   dependencies:
     "@mapbox/geojson-rewind" "^0.5.0"
     "@mapbox/geojson-types" "^1.0.2"
@@ -1485,37 +1485,7 @@
     tinyqueue "^2.0.3"
     vt-pbf "^3.1.1"
 
-"@globalfishingwatch/mapbox-gl@1.12.0-gfw.1-beta1":
-  version "1.12.0-gfw.1-beta1"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/mapbox-gl/-/mapbox-gl-1.12.0-gfw.1-beta1.tgz#1cf11963b5d97281bb87455b60f12cbc8de98688"
-  integrity sha512-2c9uHsTmXztXw33R2flSMKSwJb/OYOxc3OVuPQIJzEQv69QhetuSP7S7gNp4SO7aftu+LrsqCvKldajZU2Z9eA==
-  dependencies:
-    "@mapbox/geojson-rewind" "^0.5.0"
-    "@mapbox/geojson-types" "^1.0.2"
-    "@mapbox/jsonlint-lines-primitives" "^2.0.2"
-    "@mapbox/mapbox-gl-supported" "^1.5.0"
-    "@mapbox/point-geometry" "^0.1.0"
-    "@mapbox/tilebelt" "^1.0.1"
-    "@mapbox/tiny-sdf" "^1.1.1"
-    "@mapbox/unitbezier" "^0.0.0"
-    "@mapbox/vector-tile" "^1.3.1"
-    "@mapbox/whoots-js" "^3.1.0"
-    csscolorparser "~1.0.3"
-    earcut "^2.2.2"
-    geojson-vt "^3.2.1"
-    gl-matrix "^3.2.1"
-    grid-index "^1.1.0"
-    minimist "^1.2.5"
-    murmurhash-js "^1.0.0"
-    pbf "^3.2.1"
-    potpack "^1.0.1"
-    quickselect "^2.0.0"
-    rw "^1.3.3"
-    supercluster "^7.1.0"
-    tinyqueue "^2.0.3"
-    vt-pbf "^3.1.1"
-
-"@globalfishingwatch/react-map-gl@5.2.7-gfw.1-beta3", "@globalfishingwatch/react-map-gl@^5.2.7-gfw.0", "@globalfishingwatch/react-map-gl@^5.2.7-gfw.1-beta3":
+"@globalfishingwatch/react-map-gl@5.2.7-gfw.1-beta3":
   version "5.2.7-gfw.1-beta3"
   resolved "https://registry.yarnpkg.com/@globalfishingwatch/react-map-gl/-/react-map-gl-5.2.7-gfw.1-beta3.tgz#a366fa24fe77e590f3812610467c444dfe88d7d9"
   integrity sha512-Q7kSbUyVctHN0X0XDCLXIVsmMuYIHqZqn9Gxw+kYZZfj/pc3zfWCVko+jgITENESg4Oco+BQFHHeEYCxgoL7sA==
@@ -1528,10 +1498,23 @@
     react-virtualized-auto-sizer "^1.0.2"
     viewport-mercator-project "^6.2.3 || ^7.0.1"
 
-"@globalfishingwatch/timebar@1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/timebar/-/timebar-1.0.11.tgz#b99f14e21346ddeff2869acec579927760b57aa6"
-  integrity sha512-p1j5aTTrJoV9CYqVfBbPBIK9WDJmx2UC7ZtgPwFs/0Fn0NfbsBpDz4PnXJ+Fdqrw+wegCByCp8SsIrrrdmcJIA==
+"@globalfishingwatch/react-map-gl@5.2.7-gfw.1-beta4", "@globalfishingwatch/react-map-gl@^5.2.7-gfw.0", "@globalfishingwatch/react-map-gl@^5.2.7-gfw.1-beta3", "@globalfishingwatch/react-map-gl@^5.2.7-gfw.1-beta4":
+  version "5.2.7-gfw.1-beta4"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/react-map-gl/-/react-map-gl-5.2.7-gfw.1-beta4.tgz#cff1b1f791477eeebf2074310ba7d476182bbc9c"
+  integrity sha512-4PVwspssDxohUrUXCsT9vlYS8ZgMAr2pPf43naOtEJcArFxAb8kstmxEhvKxuvNi3M5/rlQmJkwIYjR1UixFig==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    "@globalfishingwatch/react-map-gl" "^5.2.7-gfw.1-beta4"
+    "@types/react-map-gl" "^5.2.6"
+    mjolnir.js "^2.4.0"
+    prop-types "^15.7.2"
+    react-virtualized-auto-sizer "^1.0.2"
+    viewport-mercator-project "^6.2.3 || ^7.0.1"
+
+"@globalfishingwatch/timebar@1.0.14":
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/timebar/-/timebar-1.0.14.tgz#8ac47b6a26b67eb3cc4259ac2ed4abcb6a43ca0d"
+  integrity sha512-bib6EmsNGCOekOlFXcFa3COBV1Q2ZFqL9RL/N8ib0T4cXuV97c0mTPq25vyWQyseG1gJqAKsCH7CP8oQg6a1Ug==
   dependencies:
     "@globalfishingwatch/map-convert" "github:GlobalFishingWatch/map-convert"
     "@mapbox/tile-cover" "^3.0.2"
@@ -3360,9 +3343,9 @@
     "@types/testing-library__react" "^9.1.2"
 
 "@testing-library/user-event@^12.1.6":
-  version "12.1.6"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-12.1.6.tgz#f550b138dfdc20387b89cbe3e9f3d969ab10c2bd"
-  integrity sha512-BdSe6cmzDEapTBH3s1NKbzu+GyX5bJKraKwVpM2vZF1+EEWxZr0EiA0z9bA5Nux8P+6nKMOZKsXQrj5q/kicfQ==
+  version "12.1.7"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-12.1.7.tgz#67a81ee04e81b4abca8931804655d364fbb93c10"
+  integrity sha512-wuJiPqSQTVIHsYuumv1PAOBjblSrYA5vyN1nkUDF5HgfuWGz44jQsO22u7PQNkuACGYJE4eU0sybX8CzsySv+Q==
   dependencies:
     "@babel/runtime" "^7.10.2"
 
@@ -7097,9 +7080,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001135:
-  version "1.0.30001142"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001142.tgz#a8518fdb5fee03ad95ac9f32a9a1e5999469c250"
-  integrity sha512-pDPpn9ankEpBFZXyCv2I4lh1v/ju+bqb78QfKf+w9XgDAFWBwSYPswXqprRdrgQWK0wQnpIbfwRjNHO1HWqvoQ==
+  version "1.0.30001143"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001143.tgz#560f2cfb9f313d1d7e52eb8dac0e4e36c8821c0d"
+  integrity sha512-p/PO5YbwmCpBJPxjOiKBvAlUPgF8dExhfEpnsH+ys4N/791WHrYrGg0cyHiAURl5hSbx5vIcjKmQAP6sHDYH3w==
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -9599,9 +9582,9 @@ eslint-plugin-react@7.19.0:
     xregexp "^4.3.0"
 
 eslint-plugin-react@^7.12.4, eslint-plugin-react@^7.20.0:
-  version "7.21.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.21.2.tgz#3bd5d2c4c36d5a0428d0d6dda301ac9a84d681b2"
-  integrity sha512-j3XKvrK3rpBzveKFbgAeGsWb9uz6iUOrR0jixRfjwdFeGSRsXvVTFtHDQYCjsd1/6Z/xvb8Vy3LiI5Reo7fDrg==
+  version "7.21.3"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.21.3.tgz#71655d2af5155b19285ec929dd2cdc67a4470b52"
+  integrity sha512-OI4GwTCqyIb4ipaOEGLWdaOHCXZZydStAsBEPB2e1ZfNM37bojpgO1BoOQbFb0eLVz3QLDx7b+6kYcrxCuJfhw==
   dependencies:
     array-includes "^3.1.1"
     array.prototype.flatmap "^1.2.3"
@@ -16447,9 +16430,9 @@ postcss-browser-comments@^3.0.0:
     postcss "^7"
 
 postcss-calc@^7.0.1:
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/postcss-calc/-/postcss-calc-7.0.4.tgz#5e177ddb417341e6d4a193c5d9fd8ada79094f8b"
-  integrity sha512-0I79VRAd1UTkaHzY9w83P39YGO/M3bG7/tNLrHGEunBolfoGM0hSjrGvjoeaj0JE/zIw5GsI2KZ0UwDJqv5hjw==
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/postcss-calc/-/postcss-calc-7.0.5.tgz#f8a6e99f12e619c2ebc23cf6c486fdc15860933e"
+  integrity sha512-1tKHutbGtLtEZF6PT4JSihCHfIVldU72mZ8SdZHIYriIZ9fh9k9aWSppaT8rHsyI3dX+KSR+W+Ix9BMY3AODrg==
   dependencies:
     postcss "^7.0.27"
     postcss-selector-parser "^6.0.2"

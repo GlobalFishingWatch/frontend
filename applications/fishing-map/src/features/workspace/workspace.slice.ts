@@ -5,12 +5,12 @@ import { Workspace } from '@globalfishingwatch/dataviews-client'
 import workspace from './workspace.mock'
 // import GFWAPI from '@globalfishingwatch/api-client'
 
-interface UserState {
+interface WorkspaceState {
   status: AsyncReducerStatus
   data: Workspace | null
 }
 
-const initialState: UserState = {
+const initialState: WorkspaceState = {
   status: AsyncReducerStatus.Idle,
   data: null,
 }

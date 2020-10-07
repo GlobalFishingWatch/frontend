@@ -10,13 +10,22 @@ export default (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
 
   let url = template
   datasetConfig.params.forEach((param) => {
-    url = template.replace(`{{${param.id}}}`, param.value as string)
+    url = url.replace(`{{${param.id}}}`, param.value as string)
   })
 
   if (datasetConfig.query) {
     const resolvedQuery = new URLSearchParams()
     datasetConfig.query.forEach((query) => {
-      resolvedQuery.set(query.id, query.value.toString())
+      // if (query)
+      const endpointQuery = endpoint.query.find((q) => q.id === query.id)
+      if (endpointQuery && endpointQuery.type === '4wings-datasets') {
+        ;(query.value as string[]).forEach((queryArrItem, i) => {
+          const queryArrId = `${query.id}[${i}]`
+          resolvedQuery.set(queryArrId, queryArrItem)
+        })
+      } else {
+        resolvedQuery.set(query.id, query.value.toString())
+      }
     })
     url = `${url}?${resolvedQuery.toString()}`
   }

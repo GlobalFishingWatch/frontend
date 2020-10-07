@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { MiniGlobe, IconButton, MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
-import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
+import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
+import { useClickedEventConnect, useMapTooltip } from '../map-features/map-features.hooks'
+import { ClickPopup } from '../map-features/Popup'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import { useMapboxRef } from './map.context'
 import styles from './Map.module.css'
@@ -62,6 +64,13 @@ const Map = (): React.ReactElement => {
     [token]
   )
 
+  const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
+  const onMapClick = useMapClick(dispatchClickedEvent)
+  const clickedTooltipEvent = useMapTooltip(clickedEvent)
+  const closePopup = useCallback(() => {
+    dispatchClickedEvent(null)
+  }, [dispatchClickedEvent])
+
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
@@ -82,10 +91,13 @@ const Map = (): React.ReactElement => {
           transformRequest={transformRequest}
           onLoad={setMapBounds}
           onResize={setMapBounds}
+          interactiveLayerIds={style.metadata.interactiveLayerIds}
+          onClick={onMapClick}
         >
           <div className={styles.scale}>
             <ScaleControl maxWidth={100} unit="nautical" />
           </div>
+          {clickedEvent && <ClickPopup event={clickedTooltipEvent} onClose={closePopup} />}
         </InteractiveMap>
       )}
       <div className={styles.mapControls}>

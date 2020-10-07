@@ -82,6 +82,63 @@ const workspace: Workspace = {
           relatedDatasets: null,
           endpoints: [
             {
+              id: '4wings-interaction',
+              description: 'Endpoint to retrieve vessel ids from a 4wings cell',
+              downloadable: true,
+              // TODO Dataset?
+              pathTemplate:
+                // '/v1/datasets/fishing_v4/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}',
+                // '/v1/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}?datasets[0]=fishing_v4',
+                'https://4wings.api.dev.globalfishingwatch.org/v1/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}',
+              params: [
+                {
+                  label: 'Z',
+                  id: 'z',
+                  type: 'number',
+                },
+                {
+                  label: 'X',
+                  id: 'x',
+                  type: 'number',
+                },
+                {
+                  label: 'Y',
+                  id: 'y',
+                  type: 'number',
+                },
+                {
+                  label: 'cols',
+                  id: 'cols',
+                  type: 'number',
+                },
+                {
+                  label: 'rows',
+                  id: 'rows',
+                  type: 'number',
+                },
+              ],
+              query: [
+                {
+                  label: 'Datasets',
+                  id: 'datasets',
+                  type: '4wings-datasets',
+                  required: true,
+                },
+                {
+                  label: 'filters',
+                  id: 'filters',
+                  type: 'sql',
+                  required: false,
+                },
+                {
+                  label: 'date-range',
+                  id: 'date-range',
+                  type: 'string',
+                  required: false,
+                },
+              ],
+            },
+            {
               id: '4wings-tiles',
               description: 'Endpoint to retrieve tiles from 4wings dataset',
               downloadable: false,

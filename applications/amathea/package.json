@@ -15,7 +15,7 @@
     "@globalfishingwatch/dataviews-client": "^3.0.0",
     "@globalfishingwatch/layer-composer": "^2.11.1",
     "@globalfishingwatch/linting": "^1.1.1",
-    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.1-beta1",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.2",
     "@globalfishingwatch/react-map-gl": "^5.2.7-gfw.0",
     "@globalfishingwatch/react-hooks": "^3.0.0",
     "@globalfishingwatch/timebar": "^1.0.13",

@@ -1,0 +1,29 @@
+.popup {
+  background: white;
+  padding: 10px;
+}
+
+.popup.click {
+  background: grey
+}
+
+.popupSection:not(:last-child) {
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid black;
+}
+
+.popupSectionColor {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.vessel {
+  display: block;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+}
