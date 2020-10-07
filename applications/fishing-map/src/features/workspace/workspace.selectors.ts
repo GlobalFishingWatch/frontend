@@ -24,22 +24,10 @@ export const selectWorkspaceDataviews = createSelector([selectWorkspace], (works
   return workspace.dataviews
 })
 
-export const selectFishingDataviews = createSelector([selectWorkspaceDataviews], (dataviews) => {
-  if (!dataviews) return
-
-  return dataviews.filter((dataview) => dataview.config.type === Generators.Type.HeatmapAnimated)
-})
-
 export const selectVesselsDataviews = createSelector([selectWorkspaceDataviews], (dataviews) => {
   if (!dataviews) return
 
   return dataviews.filter((dataview) => dataview.config.type === Generators.Type.Track)
-})
-
-export const selectFishingDatasets = createSelector([selectFishingDataviews], (dataviews) => {
-  if (!dataviews) return
-
-  return dataviews.flatMap((dataview) => getDatasetsByDataview(dataview))
 })
 
 export const selectTemporalgridDataviews = createSelector(
@@ -47,6 +35,15 @@ export const selectTemporalgridDataviews = createSelector(
   (dataviews) => {
     if (!dataviews) return []
     return dataviews.filter((dataview) => dataview.config.type === Generators.Type.HeatmapAnimated)
+  }
+)
+
+export const selectTemporalgridDatasets = createSelector(
+  [selectTemporalgridDataviews],
+  (dataviews) => {
+    if (!dataviews) return
+
+    return dataviews.flatMap((dataview) => getDatasetsByDataview(dataview))
   }
 )
 
