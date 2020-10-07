@@ -89,7 +89,7 @@ const workspace: Workspace = {
               pathTemplate:
                 // '/v1/datasets/fishing_v4/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}',
                 // '/v1/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}?datasets[0]=fishing_v4',
-                'https://4wings.api.dev.globalfishingwatch.org/v1/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}?datasets[0]=fishing_v4',
+                'https://4wings.api.dev.globalfishingwatch.org/v1/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}',
               params: [
                 {
                   label: 'Z',
@@ -131,26 +131,10 @@ const workspace: Workspace = {
                   required: false,
                 },
                 {
-                  label: 'format',
-                  id: 'format',
+                  label: 'date-range',
+                  id: 'date-range',
                   type: 'string',
                   required: false,
-                  enum: ['intArray', 'mvt'],
-                },
-                {
-                  label: 'proxy',
-                  id: 'proxy',
-                  type: 'boolean',
-                  required: false,
-                  description:
-                    'Server will load the request instead of redirect to avoid CORS issues',
-                },
-                {
-                  label: 'temporal-aggregation',
-                  id: 'temporal-aggregation',
-                  type: 'boolean',
-                  required: false,
-                  default: false,
                 },
               ],
             },

@@ -3,11 +3,10 @@ import { MiniGlobe, IconButton, MiniglobeBounds } from '@globalfishingwatch/ui-c
 import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
-import { useClickedEventConnect } from '../map-features/map-features.hooks'
+import { useClickedEventConnect, useMapTooltip } from '../map-features/map-features.hooks'
 import { ClickPopup } from '../map-features/Popup'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
 import { useMapboxRef } from './map.context'
-import useMapTooltip from './use-map-tooltip'
 import styles from './Map.module.css'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
