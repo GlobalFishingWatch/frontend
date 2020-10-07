@@ -1,5 +1,9 @@
 export { default, useMapHover, useMapClick } from './use-map-interaction'
 
+export type ExtendedFeatureVessel = {
+  id: string
+}
+
 export type ExtendedFeature = {
   properties: Record<string, any>
   source: string
@@ -18,6 +22,7 @@ export type ExtendedFeature = {
     col: number
     row: number
   }
+  vessels?: ExtendedFeatureVessel[]
 }
 
 export type InteractionEventCallback = (event: InteractionEvent | null) => void

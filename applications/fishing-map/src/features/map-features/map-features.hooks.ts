@@ -1,6 +1,10 @@
 import { useSelector, useDispatch } from 'react-redux'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { ExtendedFeature, InteractionEvent } from '@globalfishingwatch/react-hooks'
+import {
+  ExtendedFeature,
+  ExtendedFeatureVessel,
+  InteractionEvent,
+} from '@globalfishingwatch/react-hooks'
 import { resolveEndpoint, Dataview } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
@@ -8,7 +12,7 @@ import {
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectTimerange } from 'routes/routes.selectors'
-import { setClickedEvent, selectClickedEvent } from './map-features.slice'
+import { setClickedEvent, setFeatureVessels, selectClickedEvent } from './map-features.slice'
 
 export const useClickedEventConnect = () => {
   const dispatch = useDispatch()
@@ -19,7 +23,11 @@ export const useClickedEventConnect = () => {
   const { start, end } = useSelector(selectTimerange)
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
+    if (event === null) {
+      dispatch(setClickedEvent(null))
+    }
     if (!event || !event.features) return
+    dispatch(setClickedEvent(event))
     // TODO should work for multiple features
     const feature: ExtendedFeature = event.features[0]
     if (!dataviews || !feature || !feature.temporalgrid) return
@@ -28,6 +36,7 @@ export const useClickedEventConnect = () => {
     const dataview = temporalgridDataviews[feature.temporalgrid.sublayerIndex]
     // TODO How to get the proper id? Should be fishing_v4
     const DATASET_ID = 'dgg_fishing_galapagos'
+    const INTERACTION_DATASET_ID = 'fishing_v4'
     const dataset = dataview.datasets?.find((dataset) => dataset.id === DATASET_ID)
     if (!dataset) return []
     const datasetConfig = {
@@ -39,23 +48,30 @@ export const useClickedEventConnect = () => {
         { id: 'y', value: feature.tile.y },
         { id: 'rows', value: feature.temporalgrid.row },
         { id: 'cols', value: feature.temporalgrid.col },
-        { id: 'cols', value: feature.temporalgrid.col },
       ],
       query: [
         // TODO remove hardcoded dataset ID
-        { id: 'datasets', value: ['fishing_v4'] },
+        { id: 'datasets', value: [INTERACTION_DATASET_ID] },
         { id: 'date-range', value: [start, end].join(',') },
         // { id: 'limit', value: 11 },
       ],
     }
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
-      GFWAPI.fetch(url).then((vessels) => {
-        console.log(vessels)
+      GFWAPI.fetch(url).then((vesselsByDataset) => {
+        const vesselsForDataset = (vesselsByDataset as Record<string, unknown>)[
+          INTERACTION_DATASET_ID
+        ] as ExtendedFeatureVessel[]
+        if (feature.generatorId) {
+          dispatch(
+            setFeatureVessels({
+              generatorId: feature.generatorId.toString(),
+              vessels: vesselsForDataset,
+            })
+          )
+        }
       })
     }
-
-    dispatch(setClickedEvent(event))
   }
   return { clickedEvent, dispatchClickedEvent }
 }
@@ -65,6 +81,11 @@ export type TooltipEventFeature = {
   color?: string
   unit?: string
   value: string
+  vesselsInfo?: {
+    overflow: boolean
+    numVessels: number
+    vessels: ExtendedFeatureVessel[]
+  }
 }
 
 export type TooltipEvent = {
@@ -90,12 +111,21 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       dataview = dataviews.find((dataview: Dataview) => dataview.id === feature.generatorId)
     }
     if (!dataview) return []
-    return {
+    const tooltipEventFeature: TooltipEventFeature = {
       title: dataview.name || dataview.id.toString(),
       color: dataview.config.color || 'black',
       // unit: dataview.unit || '',
       value: feature.value,
     }
+    if (feature.vessels) {
+      const MAX_VESSELS = 5
+      tooltipEventFeature.vesselsInfo = {
+        vessels: feature.vessels.slice(0, MAX_VESSELS),
+        numVessels: feature.vessels.length,
+        overflow: feature.vessels.length > MAX_VESSELS,
+      }
+    }
+    return tooltipEventFeature
   })
   if (!tooltipEventFeatures.length) return null
   return {

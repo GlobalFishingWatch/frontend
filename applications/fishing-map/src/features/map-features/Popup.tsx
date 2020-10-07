@@ -1,7 +1,7 @@
 import React from 'react'
 import { Popup } from '@globalfishingwatch/react-map-gl'
-import { TooltipEvent } from '@globalfishingwatch/react-hooks'
 import styles from './Popup.module.css'
+import { TooltipEvent, TooltipEventFeature } from './map-features.hooks'
 
 function PopupWrapper({
   tooltipEvent,
@@ -26,7 +26,7 @@ function PopupWrapper({
       anchor="top"
     >
       <div className={`${styles.popup} ${className}`}>
-        {tooltipEvent.features.map((feature, i) => (
+        {tooltipEvent.features.map((feature: TooltipEventFeature, i: number) => (
           <div key={i} className={styles.popupSection}>
             <h3>
               <span
@@ -35,9 +35,27 @@ function PopupWrapper({
               />
               {feature.title}
             </h3>
-            <p>
+            <div>
               {feature.value} {feature.unit}
-            </p>
+            </div>
+            {feature.vesselsInfo && (
+              <div>
+                {feature.vesselsInfo.vessels.map((vessel, i) => (
+                  <button
+                    key={i}
+                    className={styles.vessel}
+                    onClick={() => {
+                      window.alert(vessel)
+                    }}
+                  >
+                    {vessel}
+                  </button>
+                ))}
+                {feature.vesselsInfo.overflow && (
+                  <div>{feature.vesselsInfo.numVessels} vessels found, zoom in to inspect more</div>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -64,7 +82,7 @@ export function ClickPopup({
       <PopupWrapper
         tooltipEvent={event}
         closeButton={true}
-        closeOnClick={true}
+        closeOnClick={false}
         className={styles.click}
         onClose={onClose}
       />

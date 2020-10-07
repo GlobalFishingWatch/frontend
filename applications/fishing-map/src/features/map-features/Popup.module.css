@@ -19,3 +19,11 @@
   height: 8px;
   border-radius: 4px;
 }
+
+.vessel {
+  display: block;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+}

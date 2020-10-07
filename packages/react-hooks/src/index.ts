@@ -5,6 +5,7 @@ export type {
   InteractionEvent,
   InteractionEventCallback,
   ExtendedFeature,
+  ExtendedFeatureVessel,
 } from './use-map-interaction/index'
 export { default as useMapLegend } from './use-map-legend'
 export { default as useWorkspace } from './use-workspace'
