@@ -196,7 +196,6 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   geomType?: Geoms
   colorRamp?: ColorRampsIds
   serverSideFilter?: string
-  updateColorRampOnTimeChange?: boolean
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
