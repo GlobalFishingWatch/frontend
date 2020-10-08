@@ -43,11 +43,11 @@ export const useClickedEventConnect = () => {
     if (!dataviews || !feature || !feature.temporalgrid) return
 
     // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
-    const dataview = temporalgridDataviews[feature.temporalgrid.sublayerIndex]
+    const dataview = temporalgridDataviews?.[feature.temporalgrid.sublayerIndex]
     // TODO How to get the proper id? Should be fishing_v4
     const DATASET_ID = 'dgg_fishing_galapagos'
     const INTERACTION_DATASET_ID = 'fishing_v4'
-    const dataset = dataview.datasets?.find((dataset) => dataset.id === DATASET_ID)
+    const dataset = dataview?.datasets?.find((dataset) => dataset.id === DATASET_ID)
     if (!dataset) return []
     const datasetConfig = {
       endpoint: '4wings-interaction',
@@ -117,7 +117,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       }
 
       // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
-      dataview = temporalgridDataviews[feature.temporalgrid?.sublayerIndex]
+      dataview = temporalgridDataviews?.[feature.temporalgrid?.sublayerIndex]
     } else {
       dataview = dataviews.find((dataview: Dataview) => dataview.id === feature.generatorId)
     }

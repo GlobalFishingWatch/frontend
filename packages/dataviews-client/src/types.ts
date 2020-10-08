@@ -118,8 +118,9 @@ export interface AOI {
 }
 
 export interface WorkspaceDataviewConfig {
+  id: string
   dataviewId: number
-  config: DataviewConfig
+  config?: DataviewConfig
   datasetsConfig?: DataviewDatasetConfig[]
 }
 
