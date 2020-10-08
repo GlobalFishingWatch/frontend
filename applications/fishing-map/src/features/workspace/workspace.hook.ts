@@ -31,7 +31,7 @@ export const useDataviewsConfigConnect = () => {
     [dispatchQueryParams, urlDataviewsConfig]
   )
 
-  const removeDataviewConfig = useCallback(
+  const deleteDataviewConfig = useCallback(
     (id: string) => {
       const dataviewsConfig = (urlDataviewsConfig || []).filter(
         (urlDataviewConfig) => urlDataviewConfig.id !== id
@@ -46,5 +46,5 @@ export const useDataviewsConfigConnect = () => {
     },
     [dispatchQueryParams, urlDataviewsConfig, workspaceDataviewsConfig]
   )
-  return { updateDataviewConfig, removeDataviewConfig }
+  return { updateDataviewConfig, deleteDataviewConfig }
 }

@@ -16,7 +16,7 @@ type LayerPanelProps = {
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [filterOpen, setFiltersOpen] = useState(false)
   const fishingFilters = useSelector(selectFishingFilters)
-  const { updateDataviewConfig, removeDataviewConfig } = useDataviewsConfigConnect()
+  const { updateDataviewConfig, deleteDataviewConfig } = useDataviewsConfigConnect()
 
   const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
@@ -26,7 +26,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     })
   }
   const onRemoveLayerClick = () => {
-    removeDataviewConfig(dataview.configId)
+    deleteDataviewConfig(dataview.configId)
   }
 
   const onToggleFilterOpen = () => {

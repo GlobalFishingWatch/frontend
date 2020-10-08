@@ -11,7 +11,7 @@ type LayerPanelProps = {
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
-  const { updateDataviewConfig, removeDataviewConfig } = useDataviewsConfigConnect()
+  const { updateDataviewConfig, deleteDataviewConfig } = useDataviewsConfigConnect()
 
   const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
@@ -21,7 +21,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     })
   }
   const onRemoveLayerClick = () => {
-    removeDataviewConfig(dataview.configId)
+    deleteDataviewConfig(dataview.configId)
   }
 
   const datasetConfig = dataview.datasetsConfig?.find((d) => d.datasetId === TRACKS_DATASET_ID)

@@ -57,7 +57,7 @@ function Search() {
       datasetsConfig: [
         {
           datasetId: TRACKS_DATASET_ID,
-          params: [{ id: 'vesselId', value: selection.vessel_id }],
+          params: [{ id: 'vesselId', value: selection.id }],
           endpoint: 'carriers-tracks',
         },
       ],
