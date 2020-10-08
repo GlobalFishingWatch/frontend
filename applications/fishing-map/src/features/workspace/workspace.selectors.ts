@@ -1,12 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { WorkspaceDataview } from 'types'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { Dataview, resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import {
+  Dataview,
+  resolveEndpoint,
+  WorkspaceDataviewConfig,
+} from '@globalfishingwatch/dataviews-client'
 import { selectWorkspace } from 'features/workspace/workspace.slice'
 import { ResourceQuery } from 'features/resources/resources.slice'
-import { selectDataviews } from 'routes/routes.selectors'
-
-// TODO should come from search or 4wings cell - not sure how to get that when set in a workspace?
-export const TRACKS_DATASET_ID = 'carriers-tracks:v20200507'
+import { selectDataviewsConfig } from 'routes/routes.selectors'
+import { TRACKS_DATASET_ID } from './workspace.mock'
 
 export const getUniqueDataviewId = (dataview: Dataview) => {
   const dataset = dataview.datasets?.find((dataset) => dataset.id === TRACKS_DATASET_ID)
@@ -35,81 +38,83 @@ export const selectWorkspaceViewport = createSelector([selectWorkspace], (worksp
 })
 
 export const selectWorkspaceDataviewsResolved = createSelector(
-  [selectWorkspace, selectDataviews],
-  (workspace, urlDataviews = []) => {
+  [selectWorkspace, selectDataviewsConfig],
+  (workspace, urlDataviewsConfig = []): WorkspaceDataview[] | undefined => {
     if (!workspace) return
-    // TODO move this to use-workspace helper
-    const dataviews = workspace.dataviews.flatMap((dataview) => {
-      const workspaceDataviewsConfig = workspace.dataviewsConfig.filter(
-        (dataviewConfig) => dataviewConfig.dataviewId === dataview.id
+    const urlDataviews = urlDataviewsConfig.reduce<
+      Record<'workspace' | 'new', WorkspaceDataviewConfig[]>
+    >(
+      (acc, urlDataview) => {
+        const isInWorkspace = workspace.dataviewsConfig.some(
+          (dataviewConfig) => dataviewConfig.id === urlDataview.id
+        )
+        if (isInWorkspace) {
+          acc.workspace.push(urlDataview)
+        } else {
+          acc.new.push(urlDataview)
+        }
+        return acc
+      },
+      { workspace: [], new: [] }
+    )
+    const dataviewsConfig = [...workspace.dataviewsConfig, ...urlDataviews.new]
+    const dataviews = dataviewsConfig.flatMap((dataviewConfig) => {
+      const dataview = workspace.dataviews.find(
+        (dataview) => dataview.id === dataviewConfig.dataviewId
       )
-      if (!workspaceDataviewsConfig.length) return dataview
+      if (!dataview) {
+        console.warn(
+          `DataviewConfig id: ${dataviewConfig.id} doesn't have a valid dataview (${dataviewConfig.dataviewId})`
+        )
+        return []
+      }
 
-      return workspaceDataviewsConfig.map((workspaceDataviewConfig) => {
-        const config = {
-          ...dataview.config,
-          ...workspaceDataviewConfig.config,
-        }
-        const datasetsConfig = dataview.datasetsConfig?.map((datasetConfig) => {
-          const workspaceDataviewDatasetConfig = workspaceDataviewConfig.datasetsConfig?.find(
-            (wddc) =>
-              wddc.datasetId === datasetConfig.datasetId && wddc.endpoint === datasetConfig.endpoint
-          )
-          if (!workspaceDataviewDatasetConfig) return datasetConfig
+      const urlDataview = urlDataviews.workspace.find(
+        (urlDataview) => urlDataview.id === dataviewConfig.id
+      )
+      const config = {
+        ...dataview.config,
+        ...dataviewConfig.config,
+        ...urlDataview?.config,
+      }
+      config.visible = config?.visible ?? true
+      const datasetsConfig = dataview.datasetsConfig?.map((datasetConfig) => {
+        const workspaceDataviewDatasetConfig = dataviewConfig.datasetsConfig?.find(
+          (wddc) =>
+            wddc.datasetId === datasetConfig.datasetId && wddc.endpoint === datasetConfig.endpoint
+        )
+        if (!workspaceDataviewDatasetConfig) return datasetConfig
 
-          return { ...datasetConfig, ...workspaceDataviewDatasetConfig }
-        })
-        const resolvedDataview = {
-          ...dataview,
-          config,
-          datasetsConfig,
-        }
-        return {
-          ...resolvedDataview,
-          uid: getUniqueDataviewId(resolvedDataview),
-        }
+        return { ...datasetConfig, ...workspaceDataviewDatasetConfig }
       })
-    })
-    // Now it merges with urlDataviews
-    const urlMergedDataviews = dataviews.map((dataview) => {
-      const urlDataview = urlDataviews.find(
-        (urlDataview) =>
-          urlDataview.uid === dataview.id?.toString() || urlDataview.uid === dataview.uid
-      )
-      if (!urlDataview) return dataview
-      return {
+      const resolvedDataview = {
         ...dataview,
-        ...urlDataview,
-        config: {
-          ...dataview.config,
-          ...urlDataview?.config,
-        },
+        config,
+        datasetsConfig,
+      }
+      return {
+        ...resolvedDataview,
+        configId: dataviewConfig.id,
       }
     })
-    // Get dataviews defined uniquely in the url
-    const urlOnlyDataviews = urlDataviews.filter(
-      (urlDataview) =>
-        !urlMergedDataviews.some((mergedDataview) => mergedDataview.uid === urlDataview.uid)
-    )
-    return [...urlMergedDataviews, ...(urlOnlyDataviews as Dataview[])]
+    return dataviews
   }
 )
 
-export const selectVesselsDataviews = createSelector(
-  [selectWorkspaceDataviewsResolved],
-  (dataviews) => {
-    if (!dataviews) return
+export const selectDataviewsConfigByType = (type: Generators.Type) => {
+  return createSelector([selectWorkspaceDataviewsResolved], (dataviews) => {
+    return dataviews?.filter((dataview) => dataview.config.type === type)
+  })
+}
 
-    return dataviews.filter((dataview) => dataview.config.type === Generators.Type.Track)
-  }
+export const selectVesselsDataviews = createSelector(
+  [selectDataviewsConfigByType(Generators.Type.Track)],
+  (dataviews) => dataviews
 )
 
 export const selectTemporalgridDataviews = createSelector(
-  [selectWorkspaceDataviewsResolved],
-  (dataviews) => {
-    if (!dataviews) return []
-    return dataviews.filter((dataview) => dataview.config.type === Generators.Type.HeatmapAnimated)
-  }
+  [selectDataviewsConfigByType(Generators.Type.HeatmapAnimated)],
+  (dataviews) => dataviews
 )
 
 export const selectTemporalgridDatasets = createSelector(
@@ -124,7 +129,7 @@ export const selectTemporalgridDatasets = createSelector(
 export const selectDataviewsResourceQueries = createSelector(
   [selectWorkspaceDataviewsResolved],
   (dataviews) => {
-    if (!dataviews) return []
+    if (!dataviews) return
     const resourceQueries: ResourceQuery[] = dataviews.flatMap((dataview) => {
       if (dataview.config.type !== Generators.Type.Track) return []
       const dataset = dataview.datasets?.find((dataset) => dataset.id === TRACKS_DATASET_ID)
