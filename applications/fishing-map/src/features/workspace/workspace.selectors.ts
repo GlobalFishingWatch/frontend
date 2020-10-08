@@ -11,18 +11,6 @@ import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDataviewsConfig } from 'routes/routes.selectors'
 import { TRACKS_DATASET_ID } from './workspace.mock'
 
-export const getUniqueDataviewId = (dataview: Dataview) => {
-  const dataset = dataview.datasets?.find((dataset) => dataset.id === TRACKS_DATASET_ID)
-  if (!dataset) return dataview.id.toString()
-
-  const datasetConfig = dataview?.datasetsConfig?.find(
-    (datasetConfig) => datasetConfig.datasetId === dataset.id
-  )
-  return `${dataview.id}-${datasetConfig?.params
-    .map(({ id, value }) => `${id}-${value}`)
-    .join(',')}`
-}
-
 export const getDatasetsByDataview = (dataview: Dataview) =>
   Object.entries(dataview.datasetsConfig || {}).flatMap(([id, value]) => {
     const dataset = dataview.datasets?.find((dataset) => dataset.id === id)
@@ -126,26 +114,35 @@ export const selectTemporalgridDatasets = createSelector(
   }
 )
 
+export const resolveDataviewDatasetResource = (
+  dataview: Dataview,
+  datasetId = TRACKS_DATASET_ID
+) => {
+  const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetId)
+  if (!dataset) return {}
+  const datasetConfig = dataview?.datasetsConfig?.find(
+    (datasetConfig) => datasetConfig.datasetId === dataset.id
+  )
+  if (!datasetConfig) return {}
+  const url = resolveEndpoint(dataset, datasetConfig)
+  if (!url) return {}
+
+  return { dataset, datasetConfig, url }
+}
+
 export const selectDataviewsResourceQueries = createSelector(
   [selectWorkspaceDataviewsResolved],
   (dataviews) => {
     if (!dataviews) return
     const resourceQueries: ResourceQuery[] = dataviews.flatMap((dataview) => {
       if (dataview.config.type !== Generators.Type.Track) return []
-      const dataset = dataview.datasets?.find((dataset) => dataset.id === TRACKS_DATASET_ID)
-      if (!dataset) return []
-      const datasetConfig = dataview?.datasetsConfig?.find(
-        (datasetConfig) => datasetConfig.datasetId === dataset.id
-      )
-      if (!datasetConfig) return []
-      const url = resolveEndpoint(dataset, datasetConfig)
-      if (!url) return []
+      const { url, dataset, datasetConfig } = resolveDataviewDatasetResource(dataview)
 
+      if (!url || !dataset || !datasetConfig) return []
       return {
-        id: getUniqueDataviewId(dataview),
         dataviewId: dataview.id,
         datasetType: dataset.type,
-        datasetConfig,
+        datasetConfig: datasetConfig,
         url,
       }
     })

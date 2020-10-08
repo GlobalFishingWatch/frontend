@@ -6,7 +6,6 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/dataviews-client'
 
 export interface ResourceQuery {
-  id: string
   url: string
   dataviewId: number
   datasetConfig: DataviewDatasetConfig
