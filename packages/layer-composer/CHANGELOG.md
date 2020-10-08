@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.13.4
+
+### Patch Changes
+
+- fae4346: Update types
+
 ## 2.13.3
 
 ### Patch Changes
