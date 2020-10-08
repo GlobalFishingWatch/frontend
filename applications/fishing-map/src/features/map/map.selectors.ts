@@ -11,9 +11,8 @@ import {
 } from 'routes/routes.selectors'
 import {
   selectWorkspaceDataviewsResolved,
-  selectDataviewsResourceQueries,
-  getUniqueDataviewId,
   selectWorkspaceViewport,
+  resolveDataviewDatasetResource,
 } from 'features/workspace/workspace.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 import { FALLBACK_VIEWPORT } from 'data/config'
@@ -40,13 +39,8 @@ export const selectGlobalGeneratorsConfig = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [
-    selectWorkspaceDataviewsResolved,
-    selectFishingFilters,
-    selectDataviewsResourceQueries,
-    selectResources,
-  ],
-  (dataviews = [], fishingFilters, resourceQueries, resources) => {
+  [selectWorkspaceDataviewsResolved, selectFishingFilters, selectResources],
+  (dataviews = [], fishingFilters, resources) => {
     // TODO add logic to merge 4Wings dataviews into one generator
     const generatorsConfig = dataviews.map((dataview) => {
       const filters = fishingFilters?.map((filter) => filter.id)
@@ -60,20 +54,16 @@ export const getGeneratorsConfig = createSelector(
 
       // Try to retrieve resource if it exists
       let data
-      const resourceId = getUniqueDataviewId(dataview)
-      const resourceQuery = resourceQueries?.find((rq) => rq.id === resourceId)
-      if (resourceQuery) {
-        const resource = resources[resourceQuery.url]
-        if (resource) {
-          data = resource.data
-        }
+      const { url } = resolveDataviewDatasetResource(dataview)
+      if (url && resources[url]) {
+        data = resources[url].data
       }
 
       return {
         ...config,
         // TODO Add vessel id for tracks ie
         // dataview.datasetsConfig[?].query.find(q => q.id === 'id').value
-        id: `${config.type}_${resourceId}`,
+        id: `${config.type}_${dataview.configId}`,
         data,
       }
     }) as AnyGeneratorConfig[]

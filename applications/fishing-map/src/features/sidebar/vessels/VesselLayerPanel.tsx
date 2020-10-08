@@ -1,22 +1,22 @@
 import React from 'react'
 import cx from 'classnames'
+import { WorkspaceDataview } from 'types'
 import { Switch, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
-import { Dataview } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/sidebar/common/LayerPanel.module.css'
-import { TRACKS_DATASET_ID } from 'features/workspace/workspace.selectors'
-import { useDataviewsConnect } from 'features/workspace/workspace.hook'
+import { useDataviewsConfigConnect } from 'features/workspace/workspace.hook'
+import { TRACKS_DATASET_ID } from 'features/workspace/workspace.mock'
 
 type LayerPanelProps = {
-  dataview: Dataview
+  dataview: WorkspaceDataview
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
-  const { updateUrlDataview } = useDataviewsConnect()
+  const { updateUrlDataviewConfig } = useDataviewsConfigConnect()
 
   const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
-    updateUrlDataview({
-      uid: dataview.uid || dataview.id.toString(),
+    updateUrlDataviewConfig({
+      id: dataview.configId,
       config: { visible: !layerActive },
     })
   }

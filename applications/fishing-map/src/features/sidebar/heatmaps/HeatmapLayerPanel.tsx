@@ -2,26 +2,26 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import useClickedOutside from 'hooks/useClickedOutside'
 import { useSelector } from 'react-redux'
+import { WorkspaceDataview } from 'types'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
-import { Dataview } from '@globalfishingwatch/dataviews-client'
 import { selectFishingFilters } from 'routes/routes.selectors'
 import styles from 'features/sidebar/common/LayerPanel.module.css'
-import { useDataviewsConnect } from 'features/workspace/workspace.hook'
+import { useDataviewsConfigConnect } from 'features/workspace/workspace.hook'
 import Filters from './HeatmapFilters'
 
 type LayerPanelProps = {
-  dataview: Dataview
+  dataview: WorkspaceDataview
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [filterOpen, setFiltersOpen] = useState(false)
   const fishingFilters = useSelector(selectFishingFilters)
-  const { updateUrlDataview } = useDataviewsConnect()
+  const { updateUrlDataviewConfig } = useDataviewsConfigConnect()
 
   const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
-    updateUrlDataview({
-      uid: dataview.uid || dataview.id.toString(),
+    updateUrlDataviewConfig({
+      id: dataview.configId,
       config: { visible: !layerActive },
     })
   }

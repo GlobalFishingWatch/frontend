@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'store'
 import { WorkspaceParam, FishingFilter } from 'types'
-import { Dataview } from '@globalfishingwatch/dataviews-client'
+import { WorkspaceDataviewConfig } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { ROUTE_TYPES } from './routes'
 
@@ -32,7 +32,7 @@ export const selectMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectStartQuery = selectQueryParam<string>('start')
 export const selectEndQuery = selectQueryParam<string>('end')
-export const selectDataviews = selectQueryParam<Partial<Dataview>[]>('dataviews')
+export const selectDataviewsConfig = selectQueryParam<WorkspaceDataviewConfig[]>('dataviewsConfig')
 export const selectFishingFilters = selectQueryParam<FishingFilter[]>('fishingFilters')
 
 export const selectTimerange = createSelector([selectStartQuery, selectEndQuery], (start, end) => ({

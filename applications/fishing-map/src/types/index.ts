@@ -1,4 +1,8 @@
+import { Dataview } from '@globalfishingwatch/dataviews-client'
+
 export type FishingFilter = { id: string; label: string }
+
+export type WorkspaceDataview = Dataview & { configId: string }
 
 export type WorkspaceParam =
   | 'zoom'
@@ -6,7 +10,7 @@ export type WorkspaceParam =
   | 'longitude'
   | 'start'
   | 'end'
-  | 'dataviews'
+  | 'dataviewsConfig'
   | 'fishingFilters'
 
 export type QueryParams = {
@@ -15,7 +19,7 @@ export type QueryParams = {
   longitude?: number
   start?: string
   end?: string
-  dataviews?: any[]
+  dataviewsConfig?: any[]
   fishingFilters?: FishingFilter[]
 }
 
