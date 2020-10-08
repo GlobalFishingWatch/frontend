@@ -93,6 +93,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
         {filterOpen && <Filters dataview={dataview} />}
       </div>
+      {/* TODO Use the real dataview instance id */}
+      {/* <div id={dataview.id.toString()}></div> */}
+      <div id={'HEATMAP_ANIMATED_1'}></div>
     </div>
   )
 }

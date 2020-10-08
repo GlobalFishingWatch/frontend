@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import { MiniGlobe, IconButton, MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
+import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
 import { useClickedEventConnect, useMapTooltip } from 'features/map/map.hooks'
 import { ClickPopup } from 'features/map/Popup'
 import { useGeneratorsConnect } from './map.hooks'
@@ -76,6 +78,22 @@ const Map = (): React.ReactElement => {
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
+  const layersWithLegend = useMemo(() => {
+    return style
+      ? style?.layers?.flatMap((layer) => {
+          if (!layer.metadata?.legend) return []
+          return {
+            ...layer.metadata.legend,
+            color: layer.metadata.color || 'red',
+            generatorId: layer.metadata.generatorId as string,
+          }
+        })
+      : // Reverse again to keep dataviews sidebar and legend aligned
+        // .reverse()
+        ([] as LegendLayer[])
+  }, [style])
+  console.log(layersWithLegend)
+
   return (
     <div className={styles.container}>
       {style && (
@@ -108,6 +126,14 @@ const Map = (): React.ReactElement => {
         <IconButton icon="ruler" type="map-tool" tooltip="Ruler (Coming soon)" />
         <IconButton icon="camera" type="map-tool" tooltip="Capture (Coming soon)" />
       </div>
+      {layersWithLegend?.map(
+        (legend) =>
+          document.getElementById(legend.generatorId) &&
+          createPortal(
+            <div>{legend.label}</div>,
+            document.getElementById(legend.generatorId) as any
+          )
+      )}
     </div>
   )
 }

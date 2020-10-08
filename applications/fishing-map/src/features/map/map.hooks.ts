@@ -111,7 +111,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
   if (!event || !event.features || !dataviews) return null
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     let dataview
-    if (feature.generator === Generators.Type.HeatmapAnimated) {
+    if (feature.generatorType === Generators.Type.HeatmapAnimated) {
       if (!feature.temporalgrid || feature.temporalgrid.sublayerIndex === undefined) {
         return []
       }
