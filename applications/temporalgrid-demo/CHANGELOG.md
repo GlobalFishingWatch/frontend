@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/temporalgrid-demo
 
+## 0.5.1
+
+### Patch Changes
+
+- Updated dependencies [fae4346]
+  - @globalfishingwatch/layer-composer@2.13.4
+
 ## 0.5.0
 
 ### Minor Changes
