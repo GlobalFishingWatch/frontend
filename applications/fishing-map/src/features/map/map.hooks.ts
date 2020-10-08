@@ -1,18 +1,22 @@
 import { useSelector, useDispatch } from 'react-redux'
-import GFWAPI from '@globalfishingwatch/api-client'
 import {
   ExtendedFeature,
   ExtendedFeatureVessel,
   InteractionEvent,
 } from '@globalfishingwatch/react-hooks'
-import { resolveEndpoint, Dataview } from '@globalfishingwatch/dataviews-client'
+import { Dataview } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   selectWorkspaceDataviewsResolved,
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectTimerange } from 'routes/routes.selectors'
-import { setClickedEvent, setFeatureVessels, selectClickedEvent } from './map.slice'
+import {
+  setClickedEvent,
+  selectClickedEvent,
+  selectClickedEventStatus,
+  fetch4WingStatsThunk,
+} from './map.slice'
 import { getGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
@@ -27,6 +31,7 @@ export const useGeneratorsConnect = () => {
 export const useClickedEventConnect = () => {
   const dispatch = useDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
+  const clickedEventStatus = useSelector(selectClickedEventStatus)
 
   const dataviews = useSelector(selectWorkspaceDataviewsResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
@@ -40,7 +45,7 @@ export const useClickedEventConnect = () => {
     dispatch(setClickedEvent(event))
     // TODO should work for multiple features
     const feature: ExtendedFeature = event.features[0]
-    if (!dataviews || !feature || !feature.temporalgrid) return
+    if (!dataviews || !feature || !feature.temporalgrid || !feature.generatorId) return
 
     // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
     const dataview = temporalgridDataviews?.[feature.temporalgrid.sublayerIndex]
@@ -52,6 +57,7 @@ export const useClickedEventConnect = () => {
     const datasetConfig = {
       endpoint: '4wings-interaction',
       datasetId: DATASET_ID,
+      generatorId: feature.generatorId as string,
       params: [
         { id: 'z', value: feature.tile.z },
         { id: 'x', value: feature.tile.x },
@@ -66,25 +72,9 @@ export const useClickedEventConnect = () => {
         // { id: 'limit', value: 11 },
       ],
     }
-    const url = resolveEndpoint(dataset, datasetConfig)
-    if (url) {
-      // TODO move this to async action in map.reducer ?
-      GFWAPI.fetch(url).then((vesselsByDataset) => {
-        const vesselsForDataset = (vesselsByDataset as Record<string, unknown>)[
-          INTERACTION_DATASET_ID
-        ] as ExtendedFeatureVessel[]
-        if (feature.generatorId) {
-          dispatch(
-            setFeatureVessels({
-              generatorId: feature.generatorId.toString(),
-              vessels: vesselsForDataset,
-            })
-          )
-        }
-      })
-    }
+    dispatch(fetch4WingStatsThunk({ dataset, datasetConfig }))
   }
-  return { clickedEvent, dispatchClickedEvent }
+  return { clickedEvent, clickedEventStatus, dispatchClickedEvent }
 }
 
 export type TooltipEventFeature = {

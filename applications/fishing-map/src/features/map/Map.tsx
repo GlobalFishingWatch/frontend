@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { AsyncReducerStatus } from 'types'
 import { MiniGlobe, IconButton, MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -65,7 +66,7 @@ const Map = (): React.ReactElement => {
     [token]
   )
 
-  const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
+  const { clickedEvent, clickedEventStatus, dispatchClickedEvent } = useClickedEventConnect()
   const onMapClick = useMapClick(dispatchClickedEvent)
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const closePopup = useCallback(() => {
@@ -98,7 +99,13 @@ const Map = (): React.ReactElement => {
           <div className={styles.scale}>
             <ScaleControl maxWidth={100} unit="nautical" />
           </div>
-          {clickedEvent && <ClickPopup event={clickedTooltipEvent} onClose={closePopup} />}
+          {clickedEvent && (
+            <ClickPopup
+              event={clickedTooltipEvent}
+              onClose={closePopup}
+              loading={clickedEventStatus === AsyncReducerStatus.Loading}
+            />
+          )}
         </InteractiveMap>
       )}
       <div className={styles.mapControls}>
