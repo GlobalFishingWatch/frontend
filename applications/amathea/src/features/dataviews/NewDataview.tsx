@@ -58,7 +58,9 @@ function NewDataview(): React.ReactElement {
         let steps
         if (maxRange - minRange > 0) {
           const rampScale = scaleLinear().range([minRange, maxRange]).domain([0, 1])
-          steps = [0, 0.2, 0.4, 0.6, 0.8, 1].map((value) => parseFloat(rampScale(value).toFixed(1)))
+          steps = [0, 0.2, 0.4, 0.6, 0.8, 1].map((value) =>
+            parseFloat((rampScale(value) as number).toFixed(1))
+          )
         }
         if (!draftDataview.id || steps) {
           dataview = await upsertDataview({ ...draftDataview, ...(steps && { steps }) })
@@ -66,21 +68,23 @@ function NewDataview(): React.ReactElement {
       }
       const dataviewId = draftDataview.id || dataview?.id
       if (dataviewId && workspace?.id) {
+        // TODO update dataview and this to match new config structure
+        const dataviewConfig = {
+          config: { color: draftDataview.color, colorRamp: draftDataview.colorRamp },
+          datasetsConfig: {
+            datasetId: {
+              query: [{ id: 'flag', value: draftDataview.flagFilter }],
+            },
+          },
+        }
         await updateWorkspace({
           id: workspace.id,
           dataviews: [...(new Set([...workspace.dataviews.map((d) => d.id), dataviewId]) as any)],
           dataviewsConfig: {
             ...workspace.dataviewsConfig,
-            [dataviewId]: {
-              config: { color: draftDataview.color, colorRamp: draftDataview.colorRamp },
-              datasetsConfig: {
-                datasetId: {
-                  query: [{ id: 'flag', value: draftDataview.flagFilter }],
-                },
-              },
-            },
+            [dataviewId]: dataviewConfig,
           },
-        })
+        } as any)
       }
       setLoading(false)
       resetDraftDataview()

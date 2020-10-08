@@ -48,12 +48,12 @@ function App(): React.ReactElement {
 
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   useEffect(() => {
-    if (workspaceStatus === AsyncReducerStatus.Finished) {
+    if (resourceQueries) {
       resourceQueries.forEach((resourceQuery) => {
         dispatch(fetchResourceThunk(resourceQuery))
       })
     }
-  }, [dispatch, workspaceStatus, resourceQueries])
+  }, [dispatch, resourceQueries])
 
   return (
     <Fragment>

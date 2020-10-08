@@ -1,5 +1,8 @@
 import React from 'react'
 import { Popup } from '@globalfishingwatch/react-map-gl'
+import { WorkspaceDataviewConfig } from '@globalfishingwatch/dataviews-client'
+import { TRACKS_DATASET_ID } from 'features/workspace/workspace.mock'
+import { useDataviewsConfigConnect } from 'features/workspace/workspace.hook'
 import { TooltipEvent, TooltipEventFeature } from '../map/map.hooks'
 import styles from './Popup.module.css'
 
@@ -16,6 +19,21 @@ function PopupWrapper({
   className: string
   onClose?: () => void
 }) {
+  const { updateDataviewConfig } = useDataviewsConfigConnect()
+  const onVesselClick = (vessel: any) => {
+    const dataviewConfig: WorkspaceDataviewConfig = {
+      id: `track-${vessel.id}`,
+      dataviewId: 2,
+      datasetsConfig: [
+        {
+          datasetId: TRACKS_DATASET_ID,
+          params: [{ id: 'vesselId', value: vessel.id }],
+          endpoint: 'carriers-tracks',
+        },
+      ],
+    }
+    updateDataviewConfig(dataviewConfig)
+  }
   return (
     <Popup
       latitude={tooltipEvent.latitude}
@@ -45,7 +63,7 @@ function PopupWrapper({
                     key={i}
                     className={styles.vessel}
                     onClick={() => {
-                      window.alert(vessel.id)
+                      onVesselClick(vessel)
                     }}
                   >
                     {Math.round(vessel.hours)} hours: {vessel.id}

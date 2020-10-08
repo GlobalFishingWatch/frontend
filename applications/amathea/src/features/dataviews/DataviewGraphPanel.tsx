@@ -31,8 +31,10 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
   const dataset = useSelector(selectDatasetById(datasetId))
   const color = dataview.config?.color as string
   const unit = dataset?.unit
-  const flagFilter = dataview.datasetsConfig?.datasetId?.query?.find((q) => q.id === 'flag')
-    ?.value as string
+  // TODO update dataview and this to match new config structure
+  const flagFilter = (dataview.datasetsConfig as any)?.datasetId?.query?.find(
+    (q: any) => q.id === 'flag'
+  )?.value as string
   const onEditClick = useCallback(() => {
     if (dataset) {
       // TODO USE REAL DATASET ID WHEN SUPPORTING MULTIPLE
@@ -43,7 +45,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
         color: color as string,
         colorRamp: dataview.config?.colorRamp,
         steps: dataview.config.steps as number[],
-        source: { id: dataset.source, label: sourceLabel },
+        source: { id: dataset.source as string, label: sourceLabel },
         flagFilter,
         dataset: {
           id: dataset?.id,

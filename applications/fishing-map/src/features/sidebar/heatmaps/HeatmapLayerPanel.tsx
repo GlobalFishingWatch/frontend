@@ -2,31 +2,31 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import useClickedOutside from 'hooks/useClickedOutside'
 import { useSelector } from 'react-redux'
+import { WorkspaceDataview } from 'types'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
-import { Dataview } from '@globalfishingwatch/dataviews-client'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectDataviews, selectFishingFilters } from 'routes/routes.selectors'
-import styles from './LayerPanel.module.css'
-import Filters from './Filters'
+import { selectFishingFilters } from 'routes/routes.selectors'
+import styles from 'features/sidebar/common/LayerPanel.module.css'
+import { useDataviewsConfigConnect } from 'features/workspace/workspace.hook'
+import Filters from './HeatmapFilters'
 
 type LayerPanelProps = {
-  dataview: Dataview
+  dataview: WorkspaceDataview
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [filterOpen, setFiltersOpen] = useState(false)
-  const { dispatchQueryParams } = useLocationConnect()
-  const urlDataviews = useSelector(selectDataviews)
   const fishingFilters = useSelector(selectFishingFilters)
+  const { updateDataviewConfig, removeDataviewConfig } = useDataviewsConfigConnect()
 
-  // TODO reuse an unify the same logic than map.selector
-  const urlDataview = (urlDataviews || []).find(
-    (urlDataview) => urlDataview.id?.toString() === dataview.id.toString()
-  )
-  const layerActive =
-    urlDataview?.config?.visible !== undefined ? urlDataview?.config?.visible : true
+  const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
-    dispatchQueryParams({ dataviews: [{ id: dataview.id, config: { visible: !layerActive } }] })
+    updateDataviewConfig({
+      id: dataview.configId,
+      config: { visible: !layerActive },
+    })
+  }
+  const onRemoveLayerClick = () => {
+    removeDataviewConfig(dataview.configId)
   }
 
   const onToggleFilterOpen = () => {
@@ -84,6 +84,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             className={styles.actionButton}
             tooltip="Delete"
             tooltipPlacement="top"
+            onClick={onRemoveLayerClick}
           />
         </div>
       </div>

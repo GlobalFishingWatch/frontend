@@ -3,6 +3,10 @@ import { Workspace } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { Field } from '@globalfishingwatch/data-transforms'
 
+// TODO should come from search or 4wings cell - not sure how to get that when set in a workspace?
+export const TRACKS_DATASET_ID = 'fishing-tracks:v20200507'
+export const VESSELS_DATASET_ID = 'test-alias-import-vessels-pipeline:latest'
+
 const workspace: Workspace = {
   id: 1,
   name: 'Default public Fishing Map workspace',
@@ -20,7 +24,6 @@ const workspace: Workspace = {
       name: 'background',
       description: '',
       config: {
-        id: 'background',
         type: Generators.Type.Background,
         color: '#00265c',
       },
@@ -30,7 +33,6 @@ const workspace: Workspace = {
       name: 'basemap',
       description: '',
       config: {
-        id: 'basemap',
         type: Generators.Type.Basemap,
         basemap: Generators.BasemapType.Default,
       },
@@ -590,8 +592,8 @@ const workspace: Workspace = {
       },
       datasetsConfig: [
         {
-          datasetId: 'carriers-tracks:v20200507',
-          params: [{ id: 'vesselId', value: '00ba29183-3b86-9e36-cf20-ee340e409521' }],
+          datasetId: TRACKS_DATASET_ID,
+          params: [{ id: 'vesselId', value: '' }],
           query: [
             // { id: 'binary', value: false },
             { id: 'wrapLongitudes', value: false },
@@ -610,7 +612,7 @@ const workspace: Workspace = {
       datasets: [
         {
           alias: null,
-          id: 'carriers-tracks:v20200507',
+          id: TRACKS_DATASET_ID,
           name: 'carriers-tracks:v20200507',
           type: 'carriers-tracks:v1',
           description: 'test dataset',
@@ -657,31 +659,41 @@ const workspace: Workspace = {
       ],
     },
   ],
+  // We need to "instanciate" every dataview we want to use in the workspace
+  // think as same model than mapbox-gl with source (dataview) and layer (dataviewConfig)
   dataviewsConfig: [
     {
-      dataviewId: 3,
+      id: 'basemap',
+      dataviewId: 11,
+    },
+    {
+      id: 'fishing',
+      dataviewId: 1,
+    },
+    {
+      id: 'track-1',
+      dataviewId: 2,
       config: {
         color: '#FFAA0D',
-        colorRamp: 'orange',
       },
       datasetsConfig: [
         {
-          datasetId: 'dgg_fishing_caribe',
-          params: [{ id: 'type', value: 'heatmap' }],
-          endpoint: '4wings-tiles',
+          datasetId: TRACKS_DATASET_ID,
+          params: [{ id: 'vesselId', value: '00ba29183-3b86-9e36-cf20-ee340e409521' }],
+          endpoint: 'carriers-tracks',
         },
       ],
     },
     {
+      id: 'track-2',
       dataviewId: 2,
       config: {
-        color: '#FFAA0D',
-        colorRamp: 'orange',
+        color: '#FFAAAD',
       },
       datasetsConfig: [
         {
-          datasetId: 'carriers-tracks:v20200507',
-          params: [{ id: 'vesselId', value: '00ba29183-3b86-9e36-cf20-ee340e409521' }],
+          datasetId: TRACKS_DATASET_ID,
+          params: [{ id: 'vesselId', value: '0017a7b68-87c4-5af4-c46e-5bebee3ddceb' }],
           endpoint: 'carriers-tracks',
         },
       ],

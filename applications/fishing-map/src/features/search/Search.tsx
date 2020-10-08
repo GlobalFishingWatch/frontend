@@ -7,8 +7,11 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
+import { WorkspaceDataviewConfig } from '@globalfishingwatch/dataviews-client'
 import { useLocationConnect } from 'routes/routes.hook'
 import { HOME, SEARCH } from 'routes/routes'
+import { useDataviewsConfigConnect } from 'features/workspace/workspace.hook'
+import { TRACKS_DATASET_ID } from 'features/workspace/workspace.mock'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -21,6 +24,7 @@ import SearchEmptyState from './SearchEmptyState'
 function Search() {
   const dispatch = useDispatch()
   const { payload } = useLocationConnect()
+  const { updateDataviewConfig } = useDataviewsConfigConnect()
   const [searchQuery, setSearchQuery] = useState((payload.query || '') as string)
   const query = useDebounce(searchQuery, 200)
   const { dispatchLocation } = useLocationConnect()
@@ -46,13 +50,24 @@ function Search() {
     setSearchQuery(e.target.value)
   }
 
+  const onSelectionChange = (selection: any) => {
+    const dataviewConfig: WorkspaceDataviewConfig = {
+      id: `track-${selection.id}`,
+      dataviewId: 2,
+      datasetsConfig: [
+        {
+          datasetId: TRACKS_DATASET_ID,
+          params: [{ id: 'vesselId', value: selection.vessel_id }],
+          endpoint: 'carriers-tracks',
+        },
+      ],
+    }
+    updateDataviewConfig(dataviewConfig)
+    dispatchLocation(HOME)
+  }
+
   return (
-    <Downshift
-      onChange={(selection) =>
-        alert(selection ? `You selected ${selection.shipname}` : 'Selection Cleared')
-      }
-      itemToString={(item) => (item ? item.shipname : '')}
-    >
+    <Downshift onChange={onSelectionChange} itemToString={(item) => (item ? item.shipname : '')}>
       {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, selectedItem }) => (
         <div className={styles.search}>
           <div className={styles.inputContainer}>

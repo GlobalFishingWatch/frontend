@@ -13,18 +13,13 @@ export interface ResourceQuery {
 }
 
 export interface Resource extends ResourceQuery {
-  data: unknown
-}
-
-interface ResourcesState {
   status: AsyncReducerStatus
-  resources: Record<string, Resource>
+  data?: unknown
 }
 
-const initialState: ResourcesState = {
-  status: AsyncReducerStatus.Idle,
-  resources: {},
-}
+type ResourcesState = Record<any, Resource>
+
+const initialState: ResourcesState = {}
 
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
@@ -43,6 +38,13 @@ export const fetchResourceThunk = createAsyncThunk(
       ...resource,
       data,
     }
+  },
+  {
+    condition: (resource: ResourceQuery, { getState }) => {
+      const { resources } = getState() as RootState
+      const { status } = resources[resource.url] || {}
+      return !status || (status !== 'loading' && status !== 'finished')
+    },
   }
 )
 
@@ -51,19 +53,21 @@ const resourcesSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchResourceThunk.pending, (state) => {
-      state.status = AsyncReducerStatus.Loading
+    builder.addCase(fetchResourceThunk.pending, (state, action) => {
+      const resource = action.meta.arg
+      state[resource.url] = { status: AsyncReducerStatus.Loading, ...resource }
     })
     builder.addCase(fetchResourceThunk.fulfilled, (state, action) => {
-      state.status = AsyncReducerStatus.Finished
-      state.resources[action.payload.url] = action.payload
+      const { url } = action.payload
+      state[url] = { status: AsyncReducerStatus.Finished, ...action.payload }
     })
-    builder.addCase(fetchResourceThunk.rejected, (state) => {
-      state.status = AsyncReducerStatus.Error
+    builder.addCase(fetchResourceThunk.rejected, (state, action) => {
+      const { url } = action.meta.arg
+      state[url].status = AsyncReducerStatus.Error
     })
   },
 })
 
-export const selectResources = (state: RootState) => state.resources.resources
+export const selectResources = (state: RootState) => state.resources
 
 export default resourcesSlice.reducer
