@@ -61,7 +61,7 @@ export const getGeneratorsConfig = createSelector(
       // Try to retrieve resource if it exists
       let data
       const resourceId = getUniqueDataviewId(dataview)
-      const resourceQuery = resourceQueries.find((rq) => rq.id === resourceId)
+      const resourceQuery = resourceQueries?.find((rq) => rq.id === resourceId)
       if (resourceQuery) {
         const resource = resources[resourceQuery.url]
         if (resource) {
