@@ -8,7 +8,7 @@ import {
   ColorRampsIds,
   CombinationMode,
 } from '../types'
-import { Group } from '../../types'
+import { ExtendedLayer, Group } from '../../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import paintByGeomType from './heatmap-layers-paint'
 import {
@@ -156,7 +156,7 @@ class HeatmapAnimatedGenerator {
       config.combinationMode
     )
 
-    const layers: Layer[] = timeChunks.flatMap((timeChunk: TimeChunk) => {
+    const layers: Layer[] = timeChunks.flatMap((timeChunk: TimeChunk, timeChunkIndex: number) => {
       const frame = toQuantizedFrame(config.start, timeChunk.quantizeOffset, timeChunk.interval)
       const pickValueAt = frame.toString()
       const exprPick = ['coalesce', ['get', pickValueAt], 0]
@@ -181,18 +181,30 @@ class HeatmapAnimatedGenerator {
         ] as any
       }
 
-      const chunkLayers: Layer[] = [
-        {
-          id: timeChunk.id,
-          source: timeChunk.id,
-          'source-layer': 'temporalgrid',
-          type: HEATMAP_GEOM_TYPES_GL_TYPES[config.geomType],
-          paint: paint as any,
-          metadata: {
-            group: Group.Heatmap,
-          },
+      const mainLayer: ExtendedLayer = {
+        id: timeChunk.id,
+        source: timeChunk.id,
+        'source-layer': 'temporalgrid',
+        type: HEATMAP_GEOM_TYPES_GL_TYPES[config.geomType],
+        paint: paint as any,
+        metadata: {
+          group: Group.Heatmap,
+          generatorType: Type.HeatmapAnimated,
+          generatorId: config.id,
         },
-      ]
+      }
+
+      // only add legend metadata for first time chunk
+      if (timeChunkIndex === 0 && mainLayer.metadata) {
+        mainLayer.metadata.legend = {
+          label: 'Hello, temporal grid legend!',
+          unit: 'hours',
+          type: 'colorramp',
+          ramp: [[42, 'plop']],
+        }
+      }
+
+      const chunkLayers: Layer[] = [mainLayer]
 
       if (config.interactive) {
         chunkLayers.push({
@@ -206,7 +218,7 @@ class HeatmapAnimatedGenerator {
           },
           metadata: {
             group: Group.Heatmap,
-            generator: Type.HeatmapAnimated,
+            generatorType: Type.HeatmapAnimated,
             generatorId: config.id,
             interactive: true,
             frame,
