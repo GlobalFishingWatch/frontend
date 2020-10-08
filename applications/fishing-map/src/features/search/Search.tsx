@@ -24,7 +24,7 @@ import SearchEmptyState from './SearchEmptyState'
 function Search() {
   const dispatch = useDispatch()
   const { payload } = useLocationConnect()
-  const { updateUrlDataviewConfig } = useDataviewsConfigConnect()
+  const { updateDataviewConfig } = useDataviewsConfigConnect()
   const [searchQuery, setSearchQuery] = useState((payload.query || '') as string)
   const query = useDebounce(searchQuery, 200)
   const { dispatchLocation } = useLocationConnect()
@@ -62,7 +62,7 @@ function Search() {
         },
       ],
     }
-    updateUrlDataviewConfig(dataviewConfig)
+    updateDataviewConfig(dataviewConfig)
     dispatchLocation(HOME)
   }
 

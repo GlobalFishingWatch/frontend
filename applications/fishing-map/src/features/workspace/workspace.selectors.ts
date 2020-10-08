@@ -1,11 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { WorkspaceDataview } from 'types'
+import { WorkspaceDataview, UrlWorkspaceDataviewConfig } from 'types'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import {
-  Dataview,
-  resolveEndpoint,
-  WorkspaceDataviewConfig,
-} from '@globalfishingwatch/dataviews-client'
+import { Dataview, resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { selectWorkspace } from 'features/workspace/workspace.slice'
 import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDataviewsConfig } from 'routes/routes.selectors'
@@ -25,12 +21,16 @@ export const selectWorkspaceViewport = createSelector([selectWorkspace], (worksp
   return workspace?.viewport
 })
 
+export const selectWorkspaceDataviewConfig = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.dataviewsConfig
+})
+
 export const selectWorkspaceDataviewsResolved = createSelector(
   [selectWorkspace, selectDataviewsConfig],
   (workspace, urlDataviewsConfig = []): WorkspaceDataview[] | undefined => {
     if (!workspace) return
     const urlDataviews = urlDataviewsConfig.reduce<
-      Record<'workspace' | 'new', WorkspaceDataviewConfig[]>
+      Record<'workspace' | 'new', UrlWorkspaceDataviewConfig[]>
     >(
       (acc, urlDataview) => {
         const isInWorkspace = workspace.dataviewsConfig.some(
@@ -60,6 +60,9 @@ export const selectWorkspaceDataviewsResolved = createSelector(
       const urlDataview = urlDataviews.workspace.find(
         (urlDataview) => urlDataview.id === dataviewConfig.id
       )
+      if (urlDataview?.deleted) {
+        return []
+      }
       const config = {
         ...dataview.config,
         ...dataviewConfig.config,
