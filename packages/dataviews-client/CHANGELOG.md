@@ -1,5 +1,13 @@
 # @globalfishingwatch/dataviews-client
 
+## 3.1.1
+
+### Patch Changes
+
+- fae4346: Update types
+- Updated dependencies [fae4346]
+  - @globalfishingwatch/layer-composer@2.13.4
+
 ## 3.1.0
 
 ### Minor Changes

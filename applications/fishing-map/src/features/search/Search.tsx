@@ -24,7 +24,7 @@ import SearchEmptyState from './SearchEmptyState'
 function Search() {
   const dispatch = useDispatch()
   const { payload } = useLocationConnect()
-  const { updateUrlDataviewConfig } = useDataviewsConfigConnect()
+  const { updateDataviewConfig } = useDataviewsConfigConnect()
   const [searchQuery, setSearchQuery] = useState((payload.query || '') as string)
   const query = useDebounce(searchQuery, 200)
   const { dispatchLocation } = useLocationConnect()
@@ -57,12 +57,12 @@ function Search() {
       datasetsConfig: [
         {
           datasetId: TRACKS_DATASET_ID,
-          params: [{ id: 'vesselId', value: selection.vessel_id }],
+          params: [{ id: 'vesselId', value: selection.id }],
           endpoint: 'carriers-tracks',
         },
       ],
     }
-    updateUrlDataviewConfig(dataviewConfig)
+    updateDataviewConfig(dataviewConfig)
     dispatchLocation(HOME)
   }
 

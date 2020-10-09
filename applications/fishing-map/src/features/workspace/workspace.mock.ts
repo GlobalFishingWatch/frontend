@@ -5,6 +5,7 @@ import { Field } from '@globalfishingwatch/data-transforms'
 
 // TODO should come from search or 4wings cell - not sure how to get that when set in a workspace?
 export const TRACKS_DATASET_ID = 'fishing-tracks:v20200507'
+export const VESSELS_DATASET_ID = 'test-alias-import-vessels-pipeline:latest'
 
 const workspace: Workspace = {
   id: 1,

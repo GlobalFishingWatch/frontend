@@ -1,21 +1,43 @@
 import React from 'react'
 import { Popup } from '@globalfishingwatch/react-map-gl'
+import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
+import { WorkspaceDataviewConfig } from '@globalfishingwatch/dataviews-client'
+import { TRACKS_DATASET_ID } from 'features/workspace/workspace.mock'
+import { useDataviewsConfigConnect } from 'features/workspace/workspace.hook'
 import { TooltipEvent, TooltipEventFeature } from '../map/map.hooks'
 import styles from './Popup.module.css'
 
+type PopupWrapper = {
+  tooltipEvent: TooltipEvent
+  closeButton?: boolean
+  closeOnClick?: boolean
+  className: string
+  onClose?: () => void
+  loading?: boolean
+}
 function PopupWrapper({
   tooltipEvent,
   closeButton = false,
   closeOnClick = false,
   className,
   onClose,
-}: {
-  tooltipEvent: TooltipEvent
-  closeButton?: boolean
-  closeOnClick?: boolean
-  className: string
-  onClose?: () => void
-}) {
+  loading = false,
+}: PopupWrapper) {
+  const { updateDataviewConfig } = useDataviewsConfigConnect()
+  const onVesselClick = (vessel: any) => {
+    const dataviewConfig: WorkspaceDataviewConfig = {
+      id: `track-${vessel.id}`,
+      dataviewId: 2,
+      datasetsConfig: [
+        {
+          datasetId: TRACKS_DATASET_ID,
+          params: [{ id: 'vesselId', value: vessel.id }],
+          endpoint: 'carriers-tracks',
+        },
+      ],
+    }
+    updateDataviewConfig(dataviewConfig)
+  }
   return (
     <Popup
       latitude={tooltipEvent.latitude}
@@ -38,6 +60,7 @@ function PopupWrapper({
             <div>
               {Math.round(parseFloat(feature.value))} {feature.unit} h total
             </div>
+            {loading && <Spinner />}
             {feature.vesselsInfo && (
               <div>
                 {feature.vesselsInfo.vessels.map((vessel, i) => (
@@ -45,7 +68,7 @@ function PopupWrapper({
                     key={i}
                     className={styles.vessel}
                     onClick={() => {
-                      window.alert(vessel.id)
+                      onVesselClick(vessel)
                     }}
                   >
                     {Math.round(vessel.hours)} hours: {vessel.id}
@@ -70,13 +93,12 @@ export function HoverPopup({ event }: { event: TooltipEvent | null }) {
   return null
 }
 
-export function ClickPopup({
-  event,
-  onClose,
-}: {
+type ClickPopup = {
   event: TooltipEvent | null
   onClose?: () => void
-}) {
+  loading?: boolean
+}
+export function ClickPopup({ event, onClose, loading = false }: ClickPopup) {
   if (event && event.features) {
     return (
       <PopupWrapper
@@ -85,6 +107,7 @@ export function ClickPopup({
         closeOnClick={false}
         className={styles.click}
         onClose={onClose}
+        loading={loading}
       />
     )
   }
