@@ -16,25 +16,29 @@ interface MapLegendProps {
   layers?: LegendLayer[]
 }
 
-function MapLegend(props: MapLegendProps) {
+export function MapLegend({ layer }: { layer: LegendLayer }) {
+  // TODO: include user context and categorical options
+  if (layer.type === 'solid') {
+    return <Solid layer={layer} />
+  }
+  if (layer.type === 'colorramp') {
+    return <ColorRamp layer={layer} />
+  }
+  if (layer.type === 'bivariate') {
+    return <Bivariate layer={layer} />
+  }
+  return null
+}
+
+function MapLegends(props: MapLegendProps) {
   const { className, layers } = props
   return (
     <div className={cx(styles.legend, className)}>
-      {layers?.map((layer, index) => {
-        // TODO: include user context and categorical options
-        if (layer.type === 'solid') {
-          return <Solid key={layer.id || index} layer={layer} />
-        }
-        if (layer.type === 'colorramp') {
-          return <ColorRamp key={layer.id || index} layer={layer} />
-        }
-        if (layer.type === 'bivariate') {
-          return <Bivariate key={layer.id || index} layer={layer} />
-        }
-        return null
-      })}
+      {layers?.map((layer, index) => (
+        <MapLegend layer={layer} key={layer.id || index} />
+      ))}
     </div>
   )
 }
 
-export default memo(MapLegend)
+export default memo(MapLegends)

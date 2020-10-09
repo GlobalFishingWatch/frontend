@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import Miniglobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
-import MapLegend from '@globalfishingwatch/ui-components/dist/map-legend'
+import MapLegends from '@globalfishingwatch/ui-components/dist/map-legend'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 // import { useMapHover } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
@@ -140,7 +140,7 @@ const Map = (): React.ReactElement => {
         <IconButton icon="camera" type="map-tool" tooltip="Capture the map (Coming soon)" />
       </div>
       <div className={styles.mapLegend}>
-        <MapLegend layers={legendLayers} />
+        <MapLegends layers={legendLayers} />
       </div>
     </div>
   )

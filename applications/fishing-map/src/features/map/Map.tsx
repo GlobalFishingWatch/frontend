@@ -1,11 +1,16 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { AsyncReducerStatus } from 'types'
 import { createPortal } from 'react-dom'
-import { MiniGlobe, IconButton, MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import {
+  MiniGlobe,
+  IconButton,
+  MiniglobeBounds,
+  MapLegend,
+  LegendLayer,
+} from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
-import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
 import { useClickedEventConnect, useMapTooltip } from 'features/map/map.hooks'
 import { ClickPopup } from 'features/map/Popup'
 import { useGeneratorsConnect } from './map.hooks'
@@ -137,7 +142,7 @@ const Map = (): React.ReactElement => {
         (legend) =>
           document.getElementById(legend.generatorId) &&
           createPortal(
-            <div>{legend.label}</div>,
+            <MapLegend layer={legend} />,
             document.getElementById(legend.generatorId) as any
           )
       )}
