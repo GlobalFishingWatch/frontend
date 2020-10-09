@@ -64,7 +64,7 @@ export interface Dataset {
   createdAt: string
   endpoints?: Endpoint[]
   configuration: DatasetConfiguration | null
-  relatedDatasets: unknown
+  relatedDatasets: Partial<Dataset>[] | null
 }
 
 export interface DataviewConfig {
@@ -97,10 +97,16 @@ export interface DataviewCreation {
   config?: DataviewConfig
 }
 
+export enum DataviewRenderer {
+  LayerComposer = 'layer-composer',
+  Info = 'info',
+  Timebar = 'timebar',
+}
+
 export interface Dataview {
   id: number
-  uid?: string // Unique id to identify with datasetConfig params
   name: string
+  renderer: DataviewRenderer
   description: string
   createdAt?: string
   updatedAt?: string
@@ -117,7 +123,7 @@ export interface AOI {
   bbox: number[]
 }
 
-export interface WorkspaceDataviewConfig {
+export interface DataviewInstance {
   id: string
   dataviewId: number
   config?: DataviewConfig
@@ -128,8 +134,6 @@ export interface Workspace {
   id: number
   description: string
   name: string
-  dataviews: Dataview[]
-  dataviewsConfig: WorkspaceDataviewConfig[]
   aoi?: AOI
   viewport: {
     zoom: number
@@ -138,6 +142,9 @@ export interface Workspace {
   }
   start: string
   end: string
+  datasets?: Partial<Dataset>[]
+  dataviews?: Partial<Dataview>[]
+  dataviewInstances: DataviewInstance[]
 }
 
 export interface WorkspaceUpsert extends Partial<Omit<Workspace, 'aoi' | 'dataviews'>> {
