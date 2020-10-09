@@ -45,7 +45,8 @@ const workspace: Workspace = {
       config: {
         type: Generators.Type.HeatmapAnimated,
         color: '#00FFBC',
-        sublayers: [{ id: 'fishing', colorRamp: 'teal', datasets: ['fishing_v4'] }],
+        // TODO This should not be in workspace. A selector should merge various dataviews to create that for the generator.
+        sublayers: [{ id: '1', colorRamp: 'teal', datasets: ['fishing_v4'] }],
         combinationMode: 'compare',
         tilesAPI: `${process.env.REACT_APP_API_GATEWAY}/v1/4wings`,
       },

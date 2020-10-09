@@ -1,17 +1,18 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { AsyncReducerStatus } from 'types'
 import { createPortal } from 'react-dom'
+import { useSelector } from 'react-redux'
 import {
   MiniGlobe,
   IconButton,
   MiniglobeBounds,
   MapLegend,
-  LegendLayer,
 } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { useClickedEventConnect, useMapTooltip } from 'features/map/map.hooks'
+import { selectWorkspaceDataviewsResolved } from 'features/workspace/workspace.selectors'
 import { ClickPopup } from 'features/map/Popup'
 import { useGeneratorsConnect } from './map.hooks'
 import useViewport from './map-viewport.hooks'
@@ -84,21 +85,28 @@ const Map = (): React.ReactElement => {
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
+  const dataviews = useSelector(selectWorkspaceDataviewsResolved)
   const layersWithLegend = useMemo(() => {
-    return style
-      ? style?.layers?.flatMap((layer) => {
-          if (!layer.metadata?.legend) return []
-          return {
-            ...layer.metadata.legend,
-            color: layer.metadata.color || 'red',
-            generatorId: layer.metadata.generatorId as string,
-          }
-        })
-      : // Reverse again to keep dataviews sidebar and legend aligned
-        // .reverse()
-        ([] as LegendLayer[])
-  }, [style])
-  console.log(layersWithLegend)
+    if (!style) return []
+    return style.layers?.flatMap((layer) => {
+      if (!layer.metadata?.legend) return []
+      const sublayerLegendsMetadata = Array.isArray(layer.metadata.legend)
+        ? layer.metadata.legend
+        : [layer.metadata.legend]
+      // TODO label should come from dv maybe
+      return sublayerLegendsMetadata.map((sublayerLegendMetadata) => {
+        const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
+        // TODO remove the parseInt
+        const dataview = dataviews?.find((d) => d.id === parseInt(id))
+        const sublayerLegend = {
+          ...sublayerLegendMetadata,
+          id,
+          color: layer.metadata?.color || dataview?.config.color || 'red',
+        }
+        return sublayerLegend
+      })
+    })
+  }, [style, dataviews])
 
   return (
     <div className={styles.container}>
@@ -140,11 +148,8 @@ const Map = (): React.ReactElement => {
       </div>
       {layersWithLegend?.map(
         (legend) =>
-          document.getElementById(legend.generatorId) &&
-          createPortal(
-            <MapLegend layer={legend} />,
-            document.getElementById(legend.generatorId) as any
-          )
+          document.getElementById(legend.id) &&
+          createPortal(<MapLegend layer={legend} />, document.getElementById(legend.id) as any)
       )}
     </div>
   )
