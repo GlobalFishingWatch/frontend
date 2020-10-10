@@ -84,26 +84,29 @@ const toURLArray = (paramName: string, arr: string[]) => {
     .join('&')
 }
 
-const getSublayersBreaks = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
-  // TODO - generate this using updated stats API
+const getSublayersBreaks = (
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  intervalInDays: number
+) => {
+  // TODO - generate this using updated stats API ?
   // TODO - in consequence, for each sublayer a different set of breaks should be produced
   // TODO - BIVARIATE
   if (config.combinationMode === 'bivariate') {
     throw new Error('breaks generation not working for bivariate yet')
   }
-  return config.sublayers.map(() => getBreaks(1, 30, 10, 1, [0.33, 0.66]))
+  return config.sublayers.map(() => getBreaks(1, 30, 10, 1, [0.33, 0.66], intervalInDays))
 }
 
-const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
-  const breaks = getSublayersBreaks(config)
+const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays: number) => {
+  const breaks = getSublayersBreaks(config, intervalInDays)
   const ramps = getSublayersColorRamps(config)
   return breaks.map((sublayerBreaks, sublayerIndex) => {
     const ramp = ramps[sublayerIndex]
     const legendRamp = sublayerBreaks.map((break_, breakIndex) => {
       // TODO Omitting the Zero value hence the +1
       const rampColor = ramp[breakIndex + 1] as string
-      const legendRamItem: [number, string] = [break_, rampColor]
-      return legendRamItem
+      const legendRampItem: [number, string] = [break_, rampColor]
+      return legendRampItem
     })
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
@@ -125,13 +128,12 @@ class HeatmapAnimatedGenerator {
         `Heatmap generator must specify start, end and sublayers parameters in ${config}`
       )
     }
-
     const datasets = config.sublayers.map((sublayer) => sublayer.datasets.join(','))
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
 
     const tilesUrl = `${config.tilesAPI}/${API_ENDPOINTS.tiles}`
 
-    const breaks = getSublayersBreaks(config)
+    const breaks = getSublayersBreaks(config, timeChunks[0].intervalInDays)
 
     const sources = timeChunks.flatMap((timeChunk: TimeChunk) => {
       const baseSourceParams: Record<string, string> = {
@@ -218,7 +220,7 @@ class HeatmapAnimatedGenerator {
 
       // only add legend metadata for first time chunk
       if (timeChunkIndex === 0 && mainLayer.metadata) {
-        mainLayer.metadata.legend = getLegends(config)
+        mainLayer.metadata.legend = getLegends(config, timeChunks[0].intervalInDays)
       }
 
       const chunkLayers: Layer[] = [mainLayer]

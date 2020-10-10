@@ -5,6 +5,7 @@ type Interval = '10days' | 'day' | 'hour'
 export type TimeChunk = {
   id: string
   interval: Interval
+  intervalInDays: number
   start?: string
   viewEnd?: string
   dataEnd?: string
@@ -112,7 +113,8 @@ const getTimeChunks = (
   chunkStarts: DateTime[],
   datasetStart: string,
   datasetEnd: string,
-  interval: Interval
+  interval: Interval,
+  intervalInDays: number
 ) => {
   const config = CONFIG_BY_INTERVAL[interval]
   const chunks: TimeChunk[] = chunkStarts.map((chunkStart) => {
@@ -138,6 +140,7 @@ const getTimeChunks = (
       dataEnd,
       quantizeOffset,
       id: `heatmapchunk_${start.slice(0, 13)}_${viewEnd.slice(0, 13)}`,
+      intervalInDays,
     }
     return chunk
   })
@@ -159,6 +162,7 @@ export const getActiveTimeChunks = (
 ): TimeChunk[] => {
   const delta = +toDT(activeEnd) - +toDT(activeStart)
   const interval = getInterval(delta)
+  const intervalInDays = Duration.fromMillis(delta).as('days')
 
   // ignore any start/end time chunk calculation as for the '10 days' interval the entire tileset is loaded
   if (interval === '10days') {
@@ -167,6 +171,7 @@ export const getActiveTimeChunks = (
         interval,
         quantizeOffset: 0,
         id: 'heatmapchunk_10days',
+        intervalInDays,
       },
     ]
   }
@@ -182,7 +187,7 @@ export const getActiveTimeChunks = (
   }
 
   const chunkStarts = getChunkStarts(bufferedActiveStart, bufferedActiveEnd, interval)
-  const chunks = getTimeChunks(chunkStarts, datasetStart, datasetEnd, interval)
+  const chunks = getTimeChunks(chunkStarts, datasetStart, datasetEnd, interval, intervalInDays)
 
   return chunks
 }

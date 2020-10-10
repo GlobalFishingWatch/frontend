@@ -24,7 +24,8 @@ const getBreaks = (
   max: number,
   avg: number,
   scalePowExponent = 1,
-  intermediateBreakRatios = [0.25, 0.5, 0.75]
+  intermediateBreakRatios = [0.25, 0.5, 0.75],
+  multiplier = 1
 ) => {
   const roundedMax = roundNumber(max)
   const scale = scalePow()
@@ -46,6 +47,13 @@ const getBreaks = (
     prevStepValues.push(roundValue)
     return roundValue
   })
+
+  // apply multiplier
+  breaks = breaks.map((number) => number * multiplier)
+
+  // Round to 2 decimals
+  // TODO this is not good enough, revise with the 'k' suffix and why it produces decimals when changing delta
+  breaks = breaks.map((number) => Math.round(number * 100) / 100)
 
   return breaks
 }
