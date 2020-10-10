@@ -14,6 +14,7 @@ import {
   HEATMAP_COLOR_RAMPS,
 } from './config'
 import { TimeChunk, getActiveTimeChunks, toQuantizedFrame, getDelta } from './util/time-chunks'
+import getBreaks from './util/get-breaks'
 
 type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
@@ -29,23 +30,21 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   interactive: true,
 }
 
-// TODO - generate this using updated stats API
-// Breaks array must must have length === colorRamp length - 1
-const HARDCODED_BREAKS = {
-  add: [[0, 1, 5, 10, 30]],
-  compare: [
-    [0, 1, 5, 10, 30],
-    [0, 1, 5, 10, 30],
-    [0, 1, 5, 10, 30],
-    [0, 1, 5, 10, 30],
-    [0, 1, 5, 10, 30],
-  ],
-  bivariate: [
-    [0, 5, 30],
-    [0, 5, 30],
-  ],
-  literal: [[]],
-}
+// const HARDCODED_BREAKS = {
+//   add: [[0, 1, 5, 10, 30]],
+//   compare: [
+//     [0, 1, 5, 10, 30],
+//     [0, 1, 5, 10, 30],
+//     [0, 1, 5, 10, 30],
+//     [0, 1, 5, 10, 30],
+//     [0, 1, 5, 10, 30],
+//   ],
+//   bivariate: [
+//     [0, 5, 30],
+//     [0, 5, 30],
+//   ],
+//   literal: [[]],
+// }
 
 const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
   const colorRampIds = config.sublayers.map((s) => s.colorRamp)
@@ -85,14 +84,18 @@ const toURLArray = (paramName: string, arr: string[]) => {
     .join('&')
 }
 
-const getBreaks = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
+const getSublayersBreaks = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
   // TODO - generate this using updated stats API
-  const breaks = HARDCODED_BREAKS[config.combinationMode].slice(0, config.sublayers.length)
-  return breaks
+  // TODO - in consequence, for each sublayer a different set of breaks should be produced
+  // TODO - BIVARIATE
+  if (config.combinationMode === 'bivariate') {
+    throw new Error('breaks generation not working for bivariate yet')
+  }
+  return config.sublayers.map(() => getBreaks(1, 30, 10, 1, [0.33, 0.66]))
 }
 
 const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
-  const breaks = getBreaks(config)
+  const breaks = getSublayersBreaks(config)
   const ramps = getSublayersColorRamps(config)
   return breaks.map((sublayerBreaks, sublayerIndex) => {
     const ramp = ramps[sublayerIndex]
@@ -128,7 +131,7 @@ class HeatmapAnimatedGenerator {
 
     const tilesUrl = `${config.tilesAPI}/${API_ENDPOINTS.tiles}`
 
-    const breaks = getBreaks(config)
+    const breaks = getSublayersBreaks(config)
 
     const sources = timeChunks.flatMap((timeChunk: TimeChunk) => {
       const baseSourceParams: Record<string, string> = {
@@ -141,7 +144,6 @@ class HeatmapAnimatedGenerator {
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: timeChunk.interval,
         numDatasets: config.sublayers.length.toString(),
-        // TODO - generate this using updated stats API
         breaks: JSON.stringify(breaks),
         combinationMode: config.combinationMode,
       }
