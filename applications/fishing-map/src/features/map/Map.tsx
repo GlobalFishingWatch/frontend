@@ -93,7 +93,7 @@ const Map = (): React.ReactElement => {
       const sublayerLegendsMetadata = Array.isArray(layer.metadata.legend)
         ? layer.metadata.legend
         : [layer.metadata.legend]
-      // TODO label should come from dv maybe
+
       return sublayerLegendsMetadata.map((sublayerLegendMetadata) => {
         const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
         // TODO remove the parseInt
@@ -149,7 +149,7 @@ const Map = (): React.ReactElement => {
       {layersWithLegend?.map(
         (legend) =>
           document.getElementById(legend.id) &&
-          createPortal(<MapLegend layer={legend} />, document.getElementById(legend.id) as any)
+          createPortal(<MapLegend layer={legend} />, document.getElementById(legend.id) as Element)
       )}
     </div>
   )
