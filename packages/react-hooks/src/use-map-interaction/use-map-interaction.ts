@@ -81,8 +81,9 @@ type MapHoverConfig = {
   debounced: number
 }
 export const useMapHover = (
-  hoverCallback: InteractionEventCallback,
-  map: Map,
+  hoverCallbackImmediate?: InteractionEventCallback,
+  hoverCallback?: InteractionEventCallback,
+  map?: Map,
   config?: MapHoverConfig
 ) => {
   const { debounced = 500 } = config || ({} as MapHoverConfig)
@@ -91,18 +92,15 @@ export const useMapHover = (
 
   const hoverCallbackDebounced = useRef<any>(null)
   useEffect(() => {
-    const debouncedFn =
-      debounced > 0
-        ? debounce((e) => {
-            hoverCallback(e)
-          }, debounced)
-        : hoverCallback
+    const debouncedFn = debounce((e) => {
+      if (hoverCallback) hoverCallback(e)
+    }, debounced)
+
     hoverCallbackDebounced.current = debouncedFn
   }, [debounced, hoverCallback])
 
   const onMapHover = useCallback(
     (event) => {
-      if (hoverCallback) hoverCallback(null)
       // Turn all sources with active feature states off
       if (map) {
         sourcesWithHoverState.forEach((source: FeatureStateSource) => {
@@ -112,15 +110,19 @@ export const useMapHover = (
       if (event.features && event.features.length) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
 
-        if (hoverCallbackDebounced && hoverCallbackDebounced.current && extendedFeatures.length) {
-          if (hoverCallbackDebounced.current.cancel) {
-            hoverCallbackDebounced.current.cancel()
-          }
-          hoverCallbackDebounced.current({
+        if (extendedFeatures.length) {
+          const hoverEvent = {
             features: extendedFeatures,
             longitude: event.lngLat[0],
             latitude: event.lngLat[1],
-          })
+          }
+          if (hoverCallbackImmediate) {
+            hoverCallbackImmediate(hoverEvent)
+          }
+          if (hoverCallbackDebounced?.current) {
+            hoverCallbackDebounced.current.cancel()
+            hoverCallbackDebounced.current(hoverEvent)
+          }
         }
 
         const newSourcesWithHoverState: FeatureStateSource[] = extendedFeatures.flatMap(
@@ -154,35 +156,21 @@ export const useMapHover = (
           setSourcesWithHoverState(newSourcesWithHoverState)
         }
       } else {
-        if (hoverCallbackDebounced?.current?.cancel) {
-          hoverCallbackDebounced.current.cancel()
+        const hoverEvent = {
+          longitude: event.lngLat[0],
+          latitude: event.lngLat[1],
         }
-        if (hoverCallback) {
-          hoverCallback({
-            longitude: event.lngLat[0],
-            latitude: event.lngLat[1],
-          })
+        if (hoverCallbackDebounced?.current) {
+          hoverCallbackDebounced.current.cancel()
+          hoverCallbackDebounced.current(hoverEvent)
+        }
+        if (hoverCallbackImmediate) {
+          hoverCallbackImmediate(hoverEvent)
         }
       }
     },
-    [map, hoverCallback, hoverCallbackDebounced, sourcesWithHoverState]
+    [map, hoverCallbackImmediate, hoverCallbackDebounced, sourcesWithHoverState]
   )
 
   return onMapHover
 }
-
-const useMapInteraction = (
-  clickCallback: InteractionEventCallback,
-  hoverCallback: InteractionEventCallback,
-  map: Map
-) => {
-  const onMapClick = useMapClick(clickCallback)
-  const onMapHover = useMapHover(hoverCallback, map)
-
-  return {
-    onMapClick,
-    onMapHover,
-  }
-}
-
-export default useMapInteraction

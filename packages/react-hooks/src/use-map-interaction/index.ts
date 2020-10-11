@@ -1,4 +1,4 @@
-export { default, useMapHover, useMapClick } from './use-map-interaction'
+export { useMapHover, useMapClick } from './use-map-interaction'
 
 export type ExtendedFeatureVessel = {
   id: string
