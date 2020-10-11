@@ -1,13 +1,8 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react'
+import React, { useCallback, useState, useMemo } from 'react'
 import { AsyncReducerStatus } from 'types'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
-import {
-  MiniGlobe,
-  IconButton,
-  MiniglobeBounds,
-  MapLegend,
-} from '@globalfishingwatch/ui-components/dist'
+import { MapLegend } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
@@ -20,8 +15,9 @@ import { useClickedEventConnect, useMapTooltip } from 'features/map/map.hooks'
 import { selectWorkspaceDataviewsResolved } from 'features/workspace/workspace.selectors'
 import { ClickPopup, HoverPopup } from './Popup'
 import MapInfo from './MapInfo'
+import MapControls from './MapControls'
 import { useGeneratorsConnect } from './map.hooks'
-import useViewport from './map-viewport.hooks'
+import useViewport, { useMapBounds } from './map-viewport.hooks'
 import { useMapboxRef } from './map.context'
 import styles from './Map.module.css'
 
@@ -33,37 +29,9 @@ const mapOptions = {
 
 const Map = (): React.ReactElement => {
   const mapRef = useMapboxRef()
-  const { viewport, onViewportChange, setMapCoordinates } = useViewport()
-  const { latitude, longitude, zoom } = viewport
+  const { viewport, onViewportChange } = useViewport()
+  const { setMapBounds } = useMapBounds()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
-  const [bounds, setBounds] = useState<MiniglobeBounds | undefined>()
-
-  const onZoomInClick = useCallback(() => {
-    setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
-  }, [latitude, longitude, setMapCoordinates, zoom])
-  const onZoomOutClick = useCallback(() => {
-    setMapCoordinates({ latitude, longitude, zoom: Math.max(1, zoom - 1) })
-  }, [latitude, longitude, setMapCoordinates, zoom])
-
-  const setMapBounds = useCallback(() => {
-    const mapboxRef = mapRef?.current?.getMap()
-    if (mapboxRef) {
-      const rawBounds = mapboxRef.getBounds()
-      if (rawBounds) {
-        setBounds({
-          north: rawBounds.getNorth() as number,
-          south: rawBounds.getSouth() as number,
-          west: rawBounds.getWest() as number,
-          east: rawBounds.getEast() as number,
-        })
-      }
-    }
-  }, [mapRef])
-
-  useEffect(() => {
-    setMapBounds()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom, latitude, longitude])
 
   // TODO: Abstract this away
   const token = GFWAPI.getToken()
@@ -155,13 +123,7 @@ const Map = (): React.ReactElement => {
           <MapInfo center={hoveredPosEvent} />
         </InteractiveMap>
       )}
-      <div className={styles.mapControls}>
-        <MiniGlobe size={60} bounds={bounds} center={{ latitude, longitude }} />
-        <IconButton icon="plus" type="map-tool" tooltip="Zoom in" onClick={onZoomInClick} />
-        <IconButton icon="minus" type="map-tool" tooltip="Zoom out" onClick={onZoomOutClick} />
-        <IconButton icon="ruler" type="map-tool" tooltip="Ruler (Coming soon)" />
-        <IconButton icon="camera" type="map-tool" tooltip="Capture (Coming soon)" />
-      </div>
+      <MapControls />
       {layersWithLegend?.map(
         (legend) =>
           document.getElementById(legend.id) &&

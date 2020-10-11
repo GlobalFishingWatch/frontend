@@ -2,19 +2,6 @@
   flex: 1;
 }
 
-.mapControls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: absolute;
-  right: var(--space-S);
-  top: var(--space-S);
-}
-
-.mapControls > * {
-  margin-bottom: var(--space-XS);
-}
-
 :global(.mapboxgl-control-container .mapboxgl-ctrl.mapboxgl-ctrl-attrib) {
   padding-right: var(--space-XS);
   padding-bottom: var(--space-XS);

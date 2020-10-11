@@ -3,8 +3,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { ViewportProps } from 'react-map-gl'
 import { MapCoordinates } from 'types'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
+import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
 import { selectViewport } from 'features/map/map.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { useMapboxRef } from './map.context'
 
 type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>
 type UseViewport = {
@@ -51,6 +53,26 @@ export function useDebouncedViewport(
   }, [debouncedViewport])
 
   return { viewport, onViewportChange, setMapCoordinates }
+}
+
+export function useMapBounds() {
+  const mapRef = useMapboxRef()
+  const [bounds, setBounds] = useState<MiniglobeBounds | undefined>()
+  const setMapBounds = useCallback(() => {
+    const mapboxRef = mapRef?.current?.getMap()
+    if (mapboxRef) {
+      const rawBounds = mapboxRef.getBounds()
+      if (rawBounds) {
+        setBounds({
+          north: rawBounds.getNorth() as number,
+          south: rawBounds.getSouth() as number,
+          west: rawBounds.getWest() as number,
+          east: rawBounds.getEast() as number,
+        })
+      }
+    }
+  }, [mapRef])
+  return { bounds, setMapBounds }
 }
 
 export default function useViewport(): UseViewport {
