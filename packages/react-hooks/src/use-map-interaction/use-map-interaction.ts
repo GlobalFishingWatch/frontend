@@ -86,7 +86,7 @@ export const useMapHover = (
   map?: Map,
   config?: MapHoverConfig
 ) => {
-  const { debounced = 500 } = config || ({} as MapHoverConfig)
+  const { debounced = 300 } = config || ({} as MapHoverConfig)
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
   const [sourcesWithHoverState, setSourcesWithHoverState] = useState<FeatureStateSource[]>([])
 

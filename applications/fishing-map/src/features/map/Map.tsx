@@ -8,12 +8,18 @@ import {
   MiniglobeBounds,
   MapLegend,
 } from '@globalfishingwatch/ui-components/dist'
-import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/react-map-gl'
+import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
+import {
+  InteractionEventCallback,
+  useLayerComposer,
+  useMapClick,
+  useMapHover,
+} from '@globalfishingwatch/react-hooks'
 import { useClickedEventConnect, useMapTooltip } from 'features/map/map.hooks'
 import { selectWorkspaceDataviewsResolved } from 'features/workspace/workspace.selectors'
-import { ClickPopup } from 'features/map/Popup'
+import { ClickPopup, HoverPopup } from './Popup'
+import MapInfo from './MapInfo'
 import { useGeneratorsConnect } from './map.hooks'
 import useViewport from './map-viewport.hooks'
 import { useMapboxRef } from './map.context'
@@ -81,12 +87,22 @@ const Map = (): React.ReactElement => {
     dispatchClickedEvent(null)
   }, [dispatchClickedEvent])
 
+  const [hoveredEvent, setHoveredEvent] = useState(null)
+  const [hoveredPosEvent, setHoveredPosEvent] = useState(null)
+  const onMapHover = useMapHover(
+    setHoveredPosEvent as InteractionEventCallback,
+    setHoveredEvent as InteractionEventCallback,
+    mapRef?.current?.getMap()
+  )
+  const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
+
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
   const dataviews = useSelector(selectWorkspaceDataviewsResolved)
   const layersWithLegend = useMemo(() => {
+    // TODO use hoveredPosEvent to change legend
     if (!style) return []
     return style.layers?.flatMap((layer) => {
       if (!layer.metadata?.legend) return []
@@ -126,10 +142,8 @@ const Map = (): React.ReactElement => {
           onResize={setMapBounds}
           interactiveLayerIds={style.metadata.interactiveLayerIds}
           onClick={onMapClick}
+          onHover={onMapHover}
         >
-          <div className={styles.scale}>
-            <ScaleControl maxWidth={100} unit="nautical" />
-          </div>
           {clickedEvent && (
             <ClickPopup
               event={clickedTooltipEvent}
@@ -137,6 +151,8 @@ const Map = (): React.ReactElement => {
               loading={clickedEventStatus === AsyncReducerStatus.Loading}
             />
           )}
+          {hoveredEvent && !clickedEvent && <HoverPopup event={hoveredTooltipEvent} />}
+          <MapInfo center={hoveredPosEvent} />
         </InteractiveMap>
       )}
       <div className={styles.mapControls}>
