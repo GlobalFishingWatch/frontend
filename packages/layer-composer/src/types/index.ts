@@ -40,6 +40,7 @@ export interface LayerMetadataLegend extends GeneratorLegend {
   type: 'colorramp' | 'bivariate' | 'solid'
   gridArea?: number
   ramp?: [number, string][]
+  currentValue?: number
   [key: string]: any
 }
 
