@@ -33,7 +33,7 @@ export enum Group {
 }
 
 /**
- * Set of additional metadata properties added by LayerCompoeser for later use in transformations or to be consumed directly ie (group, legend, etc)
+ * Set of additional metadata properties added by LayerComposer for later use in transformations or to be consumed directly ie (group, legend, etc)
  */
 export interface LayerMetadataLegend extends GeneratorLegend {
   id?: string

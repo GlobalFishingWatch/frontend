@@ -100,8 +100,11 @@ const Map = (): React.ReactElement => {
         const dataview = dataviews?.find((d) => d.id === parseInt(id))
         const sublayerLegend = {
           ...sublayerLegendMetadata,
-          id,
+          id: `legend_${id}`,
           color: layer.metadata?.color || dataview?.config.color || 'red',
+          // TODO Get that from dataview
+          label: 'Soy leyenda ✌️',
+          unit: 'hours',
         }
         return sublayerLegend
       })

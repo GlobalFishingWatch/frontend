@@ -110,8 +110,6 @@ const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays
     })
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
-      label: 'Soy leyenda ✌️',
-      unit: 'hours',
       type: 'colorramp',
       ramp: legendRamp,
     }

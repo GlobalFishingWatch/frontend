@@ -33,8 +33,8 @@ export interface GlobalGeneratorConfig {
 export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | null
 
 export interface GeneratorLegend {
-  label: string
-  unit: string
+  label?: string
+  unit?: string
 }
 
 export interface GeneratorMetadata {

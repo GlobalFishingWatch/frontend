@@ -99,7 +99,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       </div>
       {/* TODO Use the real dataview instance id */}
       {/* <div id={dataview.id.toString()}></div> */}
-      <div id={'1'}></div>
+      <div id={'legend_1'}></div>
     </div>
   )
 }
