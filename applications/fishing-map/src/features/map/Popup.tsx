@@ -1,9 +1,9 @@
 import React from 'react'
 import { Popup } from '@globalfishingwatch/react-map-gl'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { WorkspaceDataviewConfig } from '@globalfishingwatch/dataviews-client'
-import { TRACKS_DATASET_ID } from 'features/workspace/workspace.mock'
-import { useDataviewsConfigConnect } from 'features/workspace/workspace.hook'
+import { DataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { TRACKS_DATASET_TYPE } from 'features/workspace/workspace.mock'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { TooltipEvent, TooltipEventFeature } from '../map/map.hooks'
 import styles from './Popup.module.css'
 
@@ -23,20 +23,25 @@ function PopupWrapper({
   onClose,
   loading = false,
 }: PopupWrapper) {
-  const { updateDataviewConfig } = useDataviewsConfigConnect()
-  const onVesselClick = (vessel: any) => {
-    const dataviewConfig: WorkspaceDataviewConfig = {
-      id: `track-${vessel.id}`,
-      dataviewId: 2,
-      datasetsConfig: [
-        {
-          datasetId: TRACKS_DATASET_ID,
-          params: [{ id: 'vesselId', value: vessel.id }],
-          endpoint: 'carriers-tracks',
-        },
-      ],
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const onVesselClick = (vessel: any, feature: TooltipEventFeature) => {
+    const datasetId = feature.dataset?.relatedDatasets?.find(
+      (relatedDataset) => relatedDataset.type === TRACKS_DATASET_TYPE
+    )?.id
+    if (datasetId) {
+      const dataviewInstance: DataviewInstance = {
+        id: `track-${vessel.id}`,
+        dataviewId: 4,
+        datasetsConfig: [
+          {
+            datasetId: datasetId,
+            params: [{ id: 'vesselId', value: vessel.id }],
+            endpoint: 'carriers-tracks',
+          },
+        ],
+      }
+      upsertDataviewInstance(dataviewInstance)
     }
-    updateDataviewConfig(dataviewConfig)
   }
   return (
     <Popup
@@ -68,7 +73,7 @@ function PopupWrapper({
                     key={i}
                     className={styles.vessel}
                     onClick={() => {
-                      onVesselClick(vessel)
+                      onVesselClick(vessel, feature)
                     }}
                   >
                     {Math.round(vessel.hours)} hours: {vessel.id}

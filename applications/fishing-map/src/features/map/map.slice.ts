@@ -33,7 +33,7 @@ export const fetch4WingStatsThunk = createAsyncThunk(
     if (url) {
       const vesselsByDataset = await GFWAPI.fetch<Record<string, ExtendedFeatureVessel[]>>(url)
       const vesselsForDataset = vesselsByDataset[datasetId]
-      return { generatorId: datasetConfig.generatorId, vessels: vesselsForDataset }
+      return { generatorId: datasetConfig.generatorId, vessels: vesselsForDataset, dataset }
     }
   }
 )
@@ -62,7 +62,10 @@ const slice = createSlice({
         (f) => f.generatorId === action.payload?.generatorId
       )
       if (!clickedFeature) return
-      clickedFeature.vessels = action.payload?.vessels
+      if (action.payload) {
+        clickedFeature.vessels = action.payload.vessels
+        clickedFeature.dataset = action.payload.dataset
+      }
     })
     builder.addCase(fetch4WingStatsThunk.rejected, (state) => {
       state.status = AsyncReducerStatus.Error

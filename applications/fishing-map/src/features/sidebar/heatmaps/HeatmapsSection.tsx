@@ -14,7 +14,7 @@ function HeatmapsSection(): React.ReactElement {
         <IconButton icon="plus" type="border" tooltip="Add layer" tooltipPlacement="top" />
       </div>
       {dataviews?.map((dataview) => (
-        <LayerPanel key={dataview.configId} dataview={dataview} />
+        <LayerPanel key={dataview.id} dataview={dataview} />
       ))}
     </div>
   )

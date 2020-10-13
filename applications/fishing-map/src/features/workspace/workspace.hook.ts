@@ -1,50 +1,52 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import { WorkspaceDataviewConfig } from '@globalfishingwatch/dataviews-client'
-import { selectDataviewsConfig } from 'routes/routes.selectors'
+import { UrlDataviewInstance } from 'types'
+import { selectDataviewInstances } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectWorkspaceDataviewConfig } from './workspace.selectors'
+import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
-export const useDataviewsConfigConnect = () => {
-  const urlDataviewsConfig = useSelector(selectDataviewsConfig)
-  const workspaceDataviewsConfig = useSelector(selectWorkspaceDataviewConfig)
+export const useDataviewInstancesConnect = () => {
+  const urlDataviewInstances = useSelector(selectDataviewInstances)
+  const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
   const { dispatchQueryParams } = useLocationConnect()
 
-  const updateDataviewConfig = useCallback(
-    (dataviewConfig: Partial<WorkspaceDataviewConfig>) => {
-      const currentDataviewConfig = urlDataviewsConfig?.find(
-        (urlDataviewConfig) => urlDataviewConfig.id === dataviewConfig.id
+  const upsertDataviewInstance = useCallback(
+    (dataviewInstance: Partial<UrlDataviewInstance>) => {
+      const currentDataviewInstance = urlDataviewInstances?.find(
+        (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
       )
-      if (currentDataviewConfig) {
-        const dataviewsConfig = urlDataviewsConfig.map((urlDataviewConfig) => {
-          if (urlDataviewConfig.id !== dataviewConfig.id) return urlDataviewConfig
+      if (currentDataviewInstance) {
+        const dataviewInstances = urlDataviewInstances.map((urlDataviewInstance) => {
+          if (urlDataviewInstance.id !== dataviewInstance.id) return urlDataviewInstance
           return {
-            ...urlDataviewConfig,
-            ...dataviewConfig,
+            ...urlDataviewInstance,
+            ...dataviewInstance,
           }
         })
-        dispatchQueryParams({ dataviewsConfig })
+        dispatchQueryParams({ dataviewInstances })
       } else {
-        dispatchQueryParams({ dataviewsConfig: [...(urlDataviewsConfig || []), dataviewConfig] })
+        dispatchQueryParams({
+          dataviewInstances: [...(urlDataviewInstances || []), dataviewInstance],
+        })
       }
     },
-    [dispatchQueryParams, urlDataviewsConfig]
+    [dispatchQueryParams, urlDataviewInstances]
   )
 
-  const deleteDataviewConfig = useCallback(
+  const deleteDataviewInstance = useCallback(
     (id: string) => {
-      const dataviewsConfig = (urlDataviewsConfig || []).filter(
-        (urlDataviewConfig) => urlDataviewConfig.id !== id
+      const dataviewInstances = (urlDataviewInstances || []).filter(
+        (urlDataviewInstance) => urlDataviewInstance.id !== id
       )
-      const workspaceDataviewConfig = workspaceDataviewsConfig?.find(
-        (dataviewConfig) => dataviewConfig.id === id
+      const workspaceDataviewInstance = workspaceDataviewInstances?.find(
+        (dataviewInstance) => dataviewInstance.id === id
       )
-      if (workspaceDataviewConfig) {
-        dataviewsConfig.push({ id, deleted: true })
+      if (workspaceDataviewInstance) {
+        dataviewInstances.push({ id, deleted: true })
       }
-      dispatchQueryParams({ dataviewsConfig })
+      dispatchQueryParams({ dataviewInstances })
     },
-    [dispatchQueryParams, urlDataviewsConfig, workspaceDataviewsConfig]
+    [dispatchQueryParams, urlDataviewInstances, workspaceDataviewInstances]
   )
-  return { updateDataviewConfig, deleteDataviewConfig }
+  return { upsertDataviewInstance, deleteDataviewInstance }
 }

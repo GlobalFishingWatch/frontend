@@ -4,6 +4,7 @@ import { RootState } from 'store'
 import { trackValueArrayToSegments, Field } from '@globalfishingwatch/data-transforms'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/dataviews-client'
+import { TRACKS_DATASET_TYPE } from 'features/workspace/workspace.mock'
 
 export interface ResourceQuery {
   url: string
@@ -26,7 +27,7 @@ export const fetchResourceThunk = createAsyncThunk(
   async (resource: ResourceQuery) => {
     const data = await GFWAPI.fetch(resource.url).then((data) => {
       // TODO Replace with enum?
-      if (resource.datasetType === 'carriers-tracks:v1') {
+      if (resource.datasetType === TRACKS_DATASET_TYPE) {
         const fields = (resource.datasetConfig.query?.find((q) => q.id === 'fields')
           ?.value as string).split(',') as Field[]
         const segments = trackValueArrayToSegments(data as any, fields)

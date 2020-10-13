@@ -59,6 +59,10 @@ const Map = (): React.ReactElement => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoom, latitude, longitude])
 
+  const onMapError = useCallback((error: any) => {
+    // TODO: Handle auth errors and retry to load tile
+    // console.log(error)
+  }, [])
   // TODO: Abstract this away
   const token = GFWAPI.getToken()
   const transformRequest: (...args: any[]) => MapRequest = useCallback(
@@ -127,8 +131,9 @@ const Map = (): React.ReactElement => {
           transformRequest={transformRequest}
           onLoad={setMapBounds}
           onResize={setMapBounds}
-          interactiveLayerIds={style.metadata.interactiveLayerIds}
+          onError={onMapError}
           onClick={onMapClick}
+          interactiveLayerIds={style.metadata.interactiveLayerIds}
         >
           <div className={styles.scale}>
             <ScaleControl maxWidth={100} unit="nautical" />

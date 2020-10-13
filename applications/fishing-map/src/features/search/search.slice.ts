@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { VESSELS_DATASET_ID } from 'features/workspace/workspace.mock'
 
 interface UserState {
   status: AsyncReducerStatus
@@ -14,12 +13,15 @@ const initialState: UserState = {
   data: null,
 }
 
-export const fetchVesselSearchThunk = createAsyncThunk('search/fetch', async (query: string) => {
-  const searchResults = await GFWAPI.fetch<any>(
-    `/v1/vessels?datasets=${VESSELS_DATASET_ID}&query=${query}`
-  )
-  return searchResults
-})
+export const fetchVesselSearchThunk = createAsyncThunk(
+  'search/fetch',
+  async ({ query, datasets }: { query: string; datasets: string[] }) => {
+    const searchResults = await GFWAPI.fetch<any>(
+      `/v1/vessels?datasets=${datasets.join(',')}&query=${query}`
+    )
+    return searchResults
+  }
+)
 
 const searchSlice = createSlice({
   name: 'search',

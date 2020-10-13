@@ -1,13 +1,20 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { WorkspaceDataview, UrlWorkspaceDataviewConfig } from 'types'
+import uniqBy from 'lodash/uniqBy'
+import { UrlDataviewInstance } from 'types'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { Dataview, resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import {
+  Dataset,
+  DataviewDatasetConfig,
+  resolveEndpoint,
+} from '@globalfishingwatch/dataviews-client'
 import { selectWorkspace } from 'features/workspace/workspace.slice'
 import { ResourceQuery } from 'features/resources/resources.slice'
-import { selectDataviewsConfig } from 'routes/routes.selectors'
-import { TRACKS_DATASET_ID } from './workspace.mock'
+import { selectDataviewInstances } from 'routes/routes.selectors'
+import { selectDatasets } from 'features/datasets/datasets.slice'
+import { selectDataviews } from 'features/dataviews/dataviews.slice'
+import { TRACKS_DATASET_TYPE, VESSELS_DATASET_TYPE, FISHING_DATASET_TYPE } from './workspace.mock'
 
-export const getDatasetsByDataview = (dataview: Dataview) =>
+export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
   Object.entries(dataview.datasetsConfig || {}).flatMap(([id, value]) => {
     const dataset = dataview.datasets?.find((dataset) => dataset.id === id)
     if (!dataset) return []
@@ -21,20 +28,25 @@ export const selectWorkspaceViewport = createSelector([selectWorkspace], (worksp
   return workspace?.viewport
 })
 
-export const selectWorkspaceDataviewConfig = createSelector([selectWorkspace], (workspace) => {
-  return workspace?.dataviewsConfig
+export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.dataviewInstances
 })
 
-export const selectWorkspaceDataviewsResolved = createSelector(
-  [selectWorkspace, selectDataviewsConfig],
-  (workspace, urlDataviewsConfig = []): WorkspaceDataview[] | undefined => {
+export const selectDataviewInstancesResolved = createSelector(
+  [selectWorkspace, selectDatasets, selectDataviews, selectDataviewInstances],
+  (
+    workspace,
+    datasets,
+    dataviews,
+    urlDataviewInstances = []
+  ): UrlDataviewInstance[] | undefined => {
     if (!workspace) return
-    const urlDataviews = urlDataviewsConfig.reduce<
-      Record<'workspace' | 'new', UrlWorkspaceDataviewConfig[]>
+    const urlDataviews = urlDataviewInstances.reduce<
+      Record<'workspace' | 'new', UrlDataviewInstance[]>
     >(
       (acc, urlDataview) => {
-        const isInWorkspace = workspace.dataviewsConfig.some(
-          (dataviewConfig) => dataviewConfig.id === urlDataview.id
+        const isInWorkspace = workspace.dataviewInstances.some(
+          (dataviewInstance) => dataviewInstance.id === urlDataview.id
         )
         if (isInWorkspace) {
           acc.workspace.push(urlDataview)
@@ -45,32 +57,35 @@ export const selectWorkspaceDataviewsResolved = createSelector(
       },
       { workspace: [], new: [] }
     )
-    const dataviewsConfig = [...workspace.dataviewsConfig, ...urlDataviews.new]
-    const dataviews = dataviewsConfig.flatMap((dataviewConfig) => {
-      const dataview = workspace.dataviews.find(
-        (dataview) => dataview.id === dataviewConfig.dataviewId
-      )
+    const dataviewInstances = [...workspace.dataviewInstances, ...urlDataviews.new]
+    const dataviewInstancesResolved = dataviewInstances.flatMap((dataviewIntance) => {
+      const dataview = dataviews?.find((dataview) => dataview.id === dataviewIntance.dataviewId)
       if (!dataview) {
         console.warn(
-          `DataviewConfig id: ${dataviewConfig.id} doesn't have a valid dataview (${dataviewConfig.dataviewId})`
+          `DataviewIntance id: ${dataviewIntance.id} doesn't have a valid dataview (${dataviewIntance.dataviewId})`
         )
         return []
       }
 
       const urlDataview = urlDataviews.workspace.find(
-        (urlDataview) => urlDataview.id === dataviewConfig.id
+        (urlDataview) => urlDataview.id === dataviewIntance.id
       )
       if (urlDataview?.deleted) {
         return []
       }
       const config = {
         ...dataview.config,
-        ...dataviewConfig.config,
+        ...dataviewIntance.config,
         ...urlDataview?.config,
       }
       config.visible = config?.visible ?? true
+      const dataviewDatasets: Dataset[] = []
       const datasetsConfig = dataview.datasetsConfig?.map((datasetConfig) => {
-        const workspaceDataviewDatasetConfig = dataviewConfig.datasetsConfig?.find(
+        const dataset = datasets.find((dataset) => dataset.id === datasetConfig.datasetId)
+        if (dataset) {
+          dataviewDatasets.push(dataset)
+        }
+        const workspaceDataviewDatasetConfig = dataviewIntance.datasetsConfig?.find(
           (wddc) =>
             wddc.datasetId === datasetConfig.datasetId && wddc.endpoint === datasetConfig.endpoint
         )
@@ -80,31 +95,65 @@ export const selectWorkspaceDataviewsResolved = createSelector(
       })
       const resolvedDataview = {
         ...dataview,
+        id: dataviewIntance.id as string,
+        dataviewId: dataview.id,
         config,
+        datasets: dataviewDatasets,
         datasetsConfig,
       }
-      return {
-        ...resolvedDataview,
-        configId: dataviewConfig.id,
-      }
+      return resolvedDataview
     })
-    return dataviews
+    return dataviewInstancesResolved
   }
 )
 
-export const selectDataviewsConfigByType = (type: Generators.Type) => {
-  return createSelector([selectWorkspaceDataviewsResolved], (dataviews) => {
-    return dataviews?.filter((dataview) => dataview.config.type === type)
+type DatasetTypes =
+  | typeof TRACKS_DATASET_TYPE
+  | typeof VESSELS_DATASET_TYPE
+  | typeof FISHING_DATASET_TYPE
+export const selectDatasetsByType = (type: DatasetTypes) => {
+  return createSelector([selectDatasets], (datasets) => {
+    return uniqBy(
+      datasets.flatMap((dataset) => {
+        if (dataset.type === type) return dataset
+        const relatedDatasetId = dataset.relatedDatasets?.find(
+          (relatedDataset) => relatedDataset.type === type
+        )?.id
+        if (!relatedDatasetId) return []
+        const relatedDataset = datasets.find((dataset) => dataset.id === relatedDatasetId)
+        return relatedDataset || []
+      }),
+      'id'
+    )
+  })
+}
+
+export const selectVesselsDatasets = createSelector(
+  [selectDatasetsByType(VESSELS_DATASET_TYPE)],
+  (datasets) => {
+    return datasets
+  }
+)
+export const selectTracksDatasets = createSelector(
+  [selectDatasetsByType(TRACKS_DATASET_TYPE)],
+  (datasets) => {
+    return datasets
+  }
+)
+
+export const selectDataviewInstancesByType = (type: Generators.Type) => {
+  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
+    return dataviews?.filter((dataview) => dataview.config?.type === type)
   })
 }
 
 export const selectVesselsDataviews = createSelector(
-  [selectDataviewsConfigByType(Generators.Type.Track)],
+  [selectDataviewInstancesByType(Generators.Type.Track)],
   (dataviews) => dataviews
 )
 
 export const selectTemporalgridDataviews = createSelector(
-  [selectDataviewsConfigByType(Generators.Type.HeatmapAnimated)],
+  [selectDataviewInstancesByType(Generators.Type.HeatmapAnimated)],
   (dataviews) => dataviews
 )
 
@@ -118,10 +167,14 @@ export const selectTemporalgridDatasets = createSelector(
 )
 
 export const resolveDataviewDatasetResource = (
-  dataview: Dataview,
-  datasetId = TRACKS_DATASET_ID
-) => {
-  const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetId)
+  dataview: UrlDataviewInstance,
+  datasetType: DatasetTypes
+): {
+  dataset?: Dataset
+  datasetConfig?: DataviewDatasetConfig
+  url?: string
+} => {
+  const dataset = dataview.datasets?.find((dataset) => dataset.type === datasetType)
   if (!dataset) return {}
   const datasetConfig = dataview?.datasetsConfig?.find(
     (datasetConfig) => datasetConfig.datasetId === dataset.id
@@ -134,20 +187,40 @@ export const resolveDataviewDatasetResource = (
 }
 
 export const selectDataviewsResourceQueries = createSelector(
-  [selectWorkspaceDataviewsResolved],
-  (dataviews) => {
-    if (!dataviews) return
-    const resourceQueries: ResourceQuery[] = dataviews.flatMap((dataview) => {
-      if (dataview.config.type !== Generators.Type.Track) return []
-      const { url, dataset, datasetConfig } = resolveDataviewDatasetResource(dataview)
+  [selectDataviewInstancesResolved],
+  (dataviewInstances) => {
+    if (!dataviewInstances) return
 
-      if (!url || !dataset || !datasetConfig) return []
-      return {
-        dataviewId: dataview.id,
-        datasetType: dataset.type,
-        datasetConfig: datasetConfig,
-        url,
+    const resourceQueries: ResourceQuery[] = dataviewInstances.flatMap((dataview) => {
+      if (
+        dataview.config?.type !== Generators.Type.Track ||
+        dataview.config.visible === false ||
+        dataview.deleted
+      )
+        return []
+      const trackResource = resolveDataviewDatasetResource(dataview, TRACKS_DATASET_TYPE)
+      if (!trackResource.url || !trackResource.dataset || !trackResource.datasetConfig) {
+        return []
       }
+      const trackQuery = {
+        dataviewId: dataview.dataviewId as number,
+        url: trackResource.url,
+        datasetType: trackResource.dataset.type,
+        datasetConfig: trackResource.datasetConfig,
+      }
+      return trackQuery
+
+      // const infoResource = resolveDataviewDatasetResource(dataview, VESSELS_DATASET_TYPE)
+      // if (!infoResource.url || !infoResource.dataset || !infoResource.datasetConfig) {
+      //   return trackQuery
+      // }
+      // const infoQuery = {
+      //   dataviewId: dataview.dataviewId as number,
+      //   url: infoResource.url,
+      //   datasetType: infoResource.dataset.type,
+      //   datasetConfig: infoResource.datasetConfig,
+      // }
+      // return [trackQuery, infoQuery]
     })
 
     return resourceQueries

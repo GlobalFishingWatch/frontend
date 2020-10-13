@@ -97,20 +97,14 @@ export interface DataviewCreation {
   config?: DataviewConfig
 }
 
-export enum DataviewRenderer {
-  LayerComposer = 'layer-composer',
-  Info = 'info',
-  Timebar = 'timebar',
-}
-
 export interface Dataview {
   id: number
   name: string
-  renderer: DataviewRenderer
   description: string
   createdAt?: string
   updatedAt?: string
   config: DataviewConfig
+  info?: any
   datasets?: Dataset[]
   datasetsConfig?: DataviewDatasetConfig[]
 }
@@ -123,7 +117,7 @@ export interface AOI {
   bbox: number[]
 }
 
-export interface DataviewInstance {
+export interface DataviewInstance extends Partial<Omit<Dataview, 'id' | 'config'>> {
   id: string
   dataviewId: number
   config?: DataviewConfig

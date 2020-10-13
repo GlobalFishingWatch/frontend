@@ -15,7 +15,7 @@ export const DEFAULT_WORKSPACE = {
   end: new Date(2019, 1, 1).toISOString(),
   availableStart: new Date(2012, 0, 1).toISOString(),
   availableEnd: new Date().toISOString(),
-  dataviewsConfig: undefined,
+  dataviewInstances: undefined,
   fishingFilters: [],
 }
 
