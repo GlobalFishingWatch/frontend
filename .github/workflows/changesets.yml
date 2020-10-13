@@ -7,11 +7,14 @@ on:
 
 jobs:
   release:
-    name: Release
+    name: Prepare changesets
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v1
+        with:
+          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v1
