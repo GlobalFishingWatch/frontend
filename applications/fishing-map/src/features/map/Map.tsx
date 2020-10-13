@@ -31,7 +31,6 @@ const mapOptions = {
 
 const Map = memo(
   ({ style, onMapClick, onMapHover, children }: any): React.ReactElement => {
-    console.log(Math.random())
     const mapRef = useMapboxRef()
     const { viewport, onViewportChange } = useViewport()
     // TODO: Abstract this away
@@ -86,10 +85,10 @@ const MapWrapper = (): React.ReactElement => {
   }, [dispatchClickedEvent])
 
   const [hoveredEvent, setHoveredEvent] = useState<InteractionEvent | null>(null)
-  const [hoveredPosEvent, setHoveredPosEvent] = useState<InteractionEvent | null>(null)
+  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<InteractionEvent | null>(null)
   const onMapHover = useMapHover(
-    setHoveredPosEvent as InteractionEventCallback,
     setHoveredEvent as InteractionEventCallback,
+    setHoveredDebouncedEvent as InteractionEventCallback,
     mapRef?.current?.getMap()
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
@@ -118,10 +117,9 @@ const MapWrapper = (): React.ReactElement => {
           id,
           color: layer.metadata?.color || dataview?.config.color || 'red',
         }
-        const hoveredFeatureForDataview =
-          hoveredPosEvent &&
-          hoveredPosEvent.features &&
-          hoveredPosEvent.features.find((f) => f.generatorId === /*id*/ 'HEATMAP_ANIMATED_fishing')
+        const hoveredFeatureForDataview = hoveredEvent?.features?.find(
+          (f) => f.generatorId === /*id*/ 'HEATMAP_ANIMATED_fishing'
+        )
 
         if (hoveredFeatureForDataview) {
           sublayerLegend.currentValue = hoveredFeatureForDataview.value
@@ -129,7 +127,7 @@ const MapWrapper = (): React.ReactElement => {
         return sublayerLegend
       })
     })
-  }, [style, dataviews, hoveredPosEvent])
+  }, [style, dataviews, hoveredEvent])
 
   return (
     <div className={styles.container}>
@@ -142,8 +140,10 @@ const MapWrapper = (): React.ReactElement => {
               loading={clickedEventStatus === AsyncReducerStatus.Loading}
             />
           )}
-          {hoveredEvent && !clickedEvent && <HoverPopup event={hoveredTooltipEvent} />}
-          <MapInfo center={hoveredPosEvent} />
+          {hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
+            hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude &&
+            !clickedEvent && <HoverPopup event={hoveredTooltipEvent} />}
+          <MapInfo center={hoveredDebouncedEvent} />
         </Map>
       )}
       <MapControls />
@@ -151,7 +151,7 @@ const MapWrapper = (): React.ReactElement => {
         (legend) =>
           document.getElementById(legend.id as string) &&
           createPortal(
-            <MapLegend layer={legend} />,
+            <MapLegend layer={legend} currentValueClassName={styles.currentValue} />,
             document.getElementById(legend.id as string) as Element
           )
       )}

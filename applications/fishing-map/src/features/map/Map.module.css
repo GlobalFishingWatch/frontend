@@ -2,6 +2,10 @@
   flex: 1;
 }
 
+.currentValue {
+  background-color: white
+}
+
 :global(.mapboxgl-control-container .mapboxgl-ctrl.mapboxgl-ctrl-attrib) {
   padding-right: var(--space-XS);
   padding-bottom: var(--space-XS);
