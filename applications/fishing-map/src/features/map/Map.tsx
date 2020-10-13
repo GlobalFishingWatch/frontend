@@ -143,7 +143,7 @@ const MapWrapper = (): React.ReactElement => {
           {hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
             hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude &&
             !clickedEvent && <HoverPopup event={hoveredTooltipEvent} />}
-          <MapInfo center={hoveredDebouncedEvent} />
+          <MapInfo center={hoveredEvent} />
         </Map>
       )}
       <MapControls />
