@@ -12,7 +12,7 @@ import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/re
 import GFWAPI from '@globalfishingwatch/api-client'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { useClickedEventConnect, useMapTooltip } from 'features/map/map.hooks'
-import { selectWorkspaceDataviewsResolved } from 'features/workspace/workspace.selectors'
+import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import { ClickPopup } from 'features/map/Popup'
 import { useGeneratorsConnect } from './map.hooks'
 import useViewport from './map-viewport.hooks'
@@ -89,7 +89,7 @@ const Map = (): React.ReactElement => {
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
-  const dataviews = useSelector(selectWorkspaceDataviewsResolved)
+  const dataviews = useSelector(selectDataviewInstancesResolved)
   const layersWithLegend = useMemo(() => {
     if (!style) return []
     return style.layers?.flatMap((layer) => {
@@ -100,12 +100,11 @@ const Map = (): React.ReactElement => {
 
       return sublayerLegendsMetadata.map((sublayerLegendMetadata) => {
         const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
-        // TODO remove the parseInt
-        const dataview = dataviews?.find((d) => d.id === parseInt(id))
+        const dataview = dataviews?.find((d) => d.id === id)
         const sublayerLegend = {
           ...sublayerLegendMetadata,
           id: `legend_${id}`,
-          color: layer.metadata?.color || dataview?.config.color || 'red',
+          color: layer.metadata?.color || dataview?.config?.color || 'red',
           // TODO Get that from dataview
           label: 'Soy leyenda ✌️',
           unit: 'hours',

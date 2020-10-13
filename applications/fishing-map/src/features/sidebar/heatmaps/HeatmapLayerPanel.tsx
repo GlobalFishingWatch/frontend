@@ -101,9 +101,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
         {filterOpen && <Filters dataview={dataview} />}
       </div>
-      {/* TODO Use the real dataview instance id */}
-      {/* <div id={dataview.id.toString()}></div> */}
-      <div id={'legend_1'}></div>
+      <div id={`legend_${dataview.id}`}></div>
     </div>
   )
 }
