@@ -1,5 +1,16 @@
 # @globalfishingwatch/ui-components
 
+## 2.0.0
+
+### Major Changes
+
+- 87dfcf5: animated heatmap legend
+
+### Patch Changes
+
+- Updated dependencies [87dfcf5]
+  - @globalfishingwatch/layer-composer@2.14.0
+
 ## 1.13.3
 
 ### Patch Changes

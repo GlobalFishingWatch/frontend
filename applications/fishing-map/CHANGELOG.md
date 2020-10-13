@@ -1,5 +1,18 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.7.0
+
+### Minor Changes
+
+- 87dfcf5: animated heatmap legend
+
+### Patch Changes
+
+- Updated dependencies [87dfcf5]
+  - @globalfishingwatch/ui-components@2.0.0
+  - @globalfishingwatch/layer-composer@2.14.0
+  - @globalfishingwatch/react-hooks@3.2.0
+
 ## 0.6.1
 
 ### Patch Changes
