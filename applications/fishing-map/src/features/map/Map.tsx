@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { memo, useCallback, useState, useMemo } from 'react'
 import { AsyncReducerStatus } from 'types'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
@@ -7,10 +7,12 @@ import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   InteractionEventCallback,
+  InteractionEvent,
   useLayerComposer,
   useMapClick,
   useMapHover,
 } from '@globalfishingwatch/react-hooks'
+import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
 import { useClickedEventConnect, useMapTooltip } from 'features/map/map.hooks'
 import { selectWorkspaceDataviewsResolved } from 'features/workspace/workspace.selectors'
 import { ClickPopup, HoverPopup } from './Popup'
@@ -27,26 +29,54 @@ const mapOptions = {
   customAttribution: 'Global Fishing Watch 2020',
 }
 
-const Map = (): React.ReactElement => {
-  const mapRef = useMapboxRef()
-  const { viewport, onViewportChange } = useViewport()
-  const { setMapBounds } = useMapBounds()
-  const { generatorsConfig, globalConfig } = useGeneratorsConnect()
-
-  // TODO: Abstract this away
-  const token = GFWAPI.getToken()
-  const transformRequest: (...args: any[]) => MapRequest = useCallback(
-    (url: string, resourceType: string) => {
-      const response: MapRequest = { url }
-      if (resourceType === 'Tile' && url.includes('globalfishingwatch')) {
-        response.headers = {
-          Authorization: 'Bearer ' + token,
+const Map = memo(
+  ({ style, onMapClick, onMapHover, children }: any): React.ReactElement => {
+    console.log(Math.random())
+    const mapRef = useMapboxRef()
+    const { viewport, onViewportChange } = useViewport()
+    // TODO: Abstract this away
+    const token = GFWAPI.getToken()
+    const transformRequest: (...args: any[]) => MapRequest = useCallback(
+      (url: string, resourceType: string) => {
+        const response: MapRequest = { url }
+        if (resourceType === 'Tile' && url.includes('globalfishingwatch')) {
+          response.headers = {
+            Authorization: 'Bearer ' + token,
+          }
         }
-      }
-      return response
-    },
-    [token]
-  )
+        return response
+      },
+      [token]
+    )
+    const { setMapBounds } = useMapBounds()
+    return (
+      <InteractiveMap
+        ref={mapRef}
+        width="100%"
+        height="100%"
+        latitude={viewport.latitude}
+        longitude={viewport.longitude}
+        zoom={viewport.zoom}
+        onViewportChange={onViewportChange}
+        mapStyle={style}
+        mapOptions={mapOptions}
+        transformRequest={transformRequest}
+        onLoad={setMapBounds}
+        onResize={setMapBounds}
+        interactiveLayerIds={style.metadata.interactiveLayerIds}
+        onClick={onMapClick}
+        onHover={onMapHover}
+      >
+        {children}
+      </InteractiveMap>
+    )
+  }
+)
+
+const MapWrapper = (): React.ReactElement => {
+  const mapRef = useMapboxRef()
+
+  const { generatorsConfig, globalConfig } = useGeneratorsConnect()
 
   const { clickedEvent, clickedEventStatus, dispatchClickedEvent } = useClickedEventConnect()
   const onMapClick = useMapClick(dispatchClickedEvent)
@@ -55,8 +85,8 @@ const Map = (): React.ReactElement => {
     dispatchClickedEvent(null)
   }, [dispatchClickedEvent])
 
-  const [hoveredEvent, setHoveredEvent] = useState(null)
-  const [hoveredPosEvent, setHoveredPosEvent] = useState(null)
+  const [hoveredEvent, setHoveredEvent] = useState<InteractionEvent | null>(null)
+  const [hoveredPosEvent, setHoveredPosEvent] = useState<InteractionEvent | null>(null)
   const onMapHover = useMapHover(
     setHoveredPosEvent as InteractionEventCallback,
     setHoveredEvent as InteractionEventCallback,
@@ -82,36 +112,29 @@ const Map = (): React.ReactElement => {
         const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
         // TODO remove the parseInt
         const dataview = dataviews?.find((d) => d.id === parseInt(id))
-        const sublayerLegend = {
+        // TODO generatorId / dataviews ID mismatch (wrongly set in getGeneratorsConfig)
+        const sublayerLegend: LegendLayer = {
           ...sublayerLegendMetadata,
           id,
           color: layer.metadata?.color || dataview?.config.color || 'red',
         }
+        const hoveredFeatureForDataview =
+          hoveredPosEvent &&
+          hoveredPosEvent.features &&
+          hoveredPosEvent.features.find((f) => f.generatorId === /*id*/ 'HEATMAP_ANIMATED_fishing')
+
+        if (hoveredFeatureForDataview) {
+          sublayerLegend.currentValue = hoveredFeatureForDataview.value
+        }
         return sublayerLegend
       })
     })
-  }, [style, dataviews])
+  }, [style, dataviews, hoveredPosEvent])
 
   return (
     <div className={styles.container}>
       {style && (
-        <InteractiveMap
-          ref={mapRef}
-          width="100%"
-          height="100%"
-          latitude={viewport.latitude}
-          longitude={viewport.longitude}
-          zoom={viewport.zoom}
-          onViewportChange={onViewportChange}
-          mapStyle={style}
-          mapOptions={mapOptions}
-          transformRequest={transformRequest}
-          onLoad={setMapBounds}
-          onResize={setMapBounds}
-          interactiveLayerIds={style.metadata.interactiveLayerIds}
-          onClick={onMapClick}
-          onHover={onMapHover}
-        >
+        <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover}>
           {clickedEvent && (
             <ClickPopup
               event={clickedTooltipEvent}
@@ -121,16 +144,19 @@ const Map = (): React.ReactElement => {
           )}
           {hoveredEvent && !clickedEvent && <HoverPopup event={hoveredTooltipEvent} />}
           <MapInfo center={hoveredPosEvent} />
-        </InteractiveMap>
+        </Map>
       )}
       <MapControls />
       {layersWithLegend?.map(
         (legend) =>
-          document.getElementById(legend.id) &&
-          createPortal(<MapLegend layer={legend} />, document.getElementById(legend.id) as Element)
+          document.getElementById(legend.id as string) &&
+          createPortal(
+            <MapLegend layer={legend} />,
+            document.getElementById(legend.id as string) as Element
+          )
       )}
     </div>
   )
 }
 
-export default Map
+export default MapWrapper

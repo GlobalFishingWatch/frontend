@@ -169,7 +169,7 @@ export const useMapHover = (
         }
       }
     },
-    [map, hoverCallbackImmediate, hoverCallbackDebounced, sourcesWithHoverState]
+    [hoverCallbackImmediate, hoverCallbackDebounced, sourcesWithHoverState, map]
   )
 
   return onMapHover
