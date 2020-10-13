@@ -7,9 +7,14 @@ import { LegendLayer } from './MapLegend'
 type ColorRampLegendProps = {
   layer: LegendLayer
   className?: string
+  currentValueClassName?: string
 }
 
-function ColorRampLegend({ layer, className }: ColorRampLegendProps) {
+function ColorRampLegend({
+  layer,
+  className = '',
+  currentValueClassName = '',
+}: ColorRampLegendProps) {
   const { gridArea, ramp, label, unit, currentValue } = (layer || {}) as LegendLayer
 
   const heatmapLegendScale = useMemo(() => {
@@ -54,7 +59,7 @@ function ColorRampLegend({ layer, className }: ColorRampLegendProps) {
       >
         {currentValue && (
           <span
-            className={styles.currentValue}
+            className={cx(styles.currentValue, currentValueClassName)}
             style={{
               left: heatmapLegendScale
                 ? `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`
