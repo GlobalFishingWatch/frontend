@@ -9,7 +9,7 @@ export type ExtendedFeature = {
   properties: Record<string, any>
   source: string
   sourceLayer: string
-  generator: string | null
+  generatorType: string | null
   generatorId: string | number | null
   id?: number
   value: any

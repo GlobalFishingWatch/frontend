@@ -8,7 +8,7 @@ export { default as InputText } from './input-text'
 export { default as Logo } from './logo'
 export { default as Menu, defaultLinks } from './menu'
 export { default as MiniGlobe, MiniglobeBounds, MiniglobeCenter } from './miniglobe'
-export { default as MapLegend, ColorRampLegend, BivariateLegend } from './map-legend'
+export { default as MapLegends, MapLegend, ColorRampLegend, BivariateLegend } from './map-legend'
 export { default as Modal } from './modal'
 export {
   default as MultiSelect,

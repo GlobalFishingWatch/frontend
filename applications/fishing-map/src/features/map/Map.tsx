@@ -1,10 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { AsyncReducerStatus } from 'types'
-import { MiniGlobe, IconButton, MiniglobeBounds } from '@globalfishingwatch/ui-components'
+import { createPortal } from 'react-dom'
+import { useSelector } from 'react-redux'
+import {
+  MiniGlobe,
+  IconButton,
+  MiniglobeBounds,
+  MapLegend,
+} from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { useClickedEventConnect, useMapTooltip } from 'features/map/map.hooks'
+import { selectWorkspaceDataviewsResolved } from 'features/workspace/workspace.selectors'
 import { ClickPopup } from 'features/map/Popup'
 import { useGeneratorsConnect } from './map.hooks'
 import useViewport from './map-viewport.hooks'
@@ -77,6 +85,32 @@ const Map = (): React.ReactElement => {
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
+  const dataviews = useSelector(selectWorkspaceDataviewsResolved)
+  const layersWithLegend = useMemo(() => {
+    if (!style) return []
+    return style.layers?.flatMap((layer) => {
+      if (!layer.metadata?.legend) return []
+      const sublayerLegendsMetadata = Array.isArray(layer.metadata.legend)
+        ? layer.metadata.legend
+        : [layer.metadata.legend]
+
+      return sublayerLegendsMetadata.map((sublayerLegendMetadata) => {
+        const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
+        // TODO remove the parseInt
+        const dataview = dataviews?.find((d) => d.id === parseInt(id))
+        const sublayerLegend = {
+          ...sublayerLegendMetadata,
+          id: `legend_${id}`,
+          color: layer.metadata?.color || dataview?.config.color || 'red',
+          // TODO Get that from dataview
+          label: 'Soy leyenda ✌️',
+          unit: 'hours',
+        }
+        return sublayerLegend
+      })
+    })
+  }, [style, dataviews])
+
   return (
     <div className={styles.container}>
       {style && (
@@ -115,6 +149,11 @@ const Map = (): React.ReactElement => {
         <IconButton icon="ruler" type="map-tool" tooltip="Ruler (Coming soon)" />
         <IconButton icon="camera" type="map-tool" tooltip="Capture (Coming soon)" />
       </div>
+      {layersWithLegend?.map(
+        (legend) =>
+          document.getElementById(legend.id) &&
+          createPortal(<MapLegend layer={legend} />, document.getElementById(legend.id) as Element)
+      )}
     </div>
   )
 }

@@ -168,7 +168,6 @@ export default function App() {
           geomType: 'gridded',
           serverSideFilter: undefined,
           // serverSideFilter: `vesselid IN ('ddef384a3-330b-0511-5c1d-6f8ed78de0ca')`,
-          updateColorRampOnTimeChange: true,
           // zoom: viewport.zoom,
           fetchStats: true
         })

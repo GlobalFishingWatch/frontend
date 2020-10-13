@@ -25,7 +25,7 @@ export function getLegendLayers(
       properties: eventFeature.properties,
     }
   })
-  return layers
+  return layers as LegendLayer[]
 }
 
 function useMapLegend(style?: ExtendedStyle, interactionEvent?: InteractionEvent) {

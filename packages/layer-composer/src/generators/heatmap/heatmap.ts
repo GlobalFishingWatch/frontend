@@ -16,6 +16,7 @@ import {
   HEATMAP_DEFAULT_MAX_ZOOM,
 } from './config'
 import { statsByZoom } from './types'
+import getBreaks from './util/get-breaks'
 
 type GlobalHeatmapGeneratorConfig = HeatmapGeneratorConfig & GlobalGeneratorConfig
 
@@ -62,7 +63,6 @@ class HeatmapGenerator {
   _getHeatmapLayers = (config: GlobalHeatmapGeneratorConfig) => {
     const geomType = config.geomType || HEATMAP_GEOM_TYPES.GRIDDED
     const colorRampType = config.colorRamp || 'presence'
-    const scalePowExponent = config.scalePowExponent || 1
 
     let stops: number[] = []
     const zoom = Math.min(Math.floor(config.zoom), config.maxZoom || HEATMAP_DEFAULT_MAX_ZOOM)
@@ -72,23 +72,7 @@ class HeatmapGenerator {
     } else if (statsByZoom) {
       const { min, max, avg } = statsByZoom
       if (min && max && avg) {
-        const roundedMax = this._roundNumber(max)
-        const scale = scalePow()
-          .exponent(scalePowExponent)
-          .domain([0, 0.5, 1])
-          .range([min, avg, roundedMax])
-
-        stops = [0, min, scale(0.25), scale(0.5), scale(0.75), roundedMax]
-
-        const prevStepValues: number[] = []
-        stops = stops.map((stop, index) => {
-          let roundValue = this._roundNumber(stop)
-          if (prevStepValues.indexOf(roundValue) > -1) {
-            roundValue = prevStepValues[index - 1] + 1
-          }
-          prevStepValues.push(roundValue)
-          return roundValue
-        })
+        stops = getBreaks(min, max, avg, config.scalePowExponent)
       }
     }
 

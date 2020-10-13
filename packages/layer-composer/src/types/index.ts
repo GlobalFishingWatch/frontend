@@ -33,9 +33,10 @@ export enum Group {
 }
 
 /**
- * Set of additional metadata properties added by LayerCompoeser for later use in transformations or to be consumed directly ie (group, legend, etc)
+ * Set of additional metadata properties added by LayerComposer for later use in transformations or to be consumed directly ie (group, legend, etc)
  */
 export interface LayerMetadataLegend extends GeneratorLegend {
+  id?: string
   type: 'colorramp' | 'bivariate' | 'solid'
   gridArea?: number
   ramp?: [number, string][]
@@ -49,7 +50,7 @@ export interface ExtendedLayerMeta {
   group?: Group
   generatorId: string
   generatorType: Type
-  legend?: LayerMetadataLegend
+  legend?: LayerMetadataLegend | LayerMetadataLegend[]
   gridArea?: number
   currentValue?: number
   color?: string

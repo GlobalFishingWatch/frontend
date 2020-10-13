@@ -10,12 +10,12 @@ type FeatureStateSource = { source: string; sourceLayer: string }
 
 const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[] => {
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
-    const generator = feature.layer.metadata ? feature.layer.metadata.generator : null
+    const generatorType = feature.layer.metadata ? feature.layer.metadata.generatorType : null
     const generatorId = feature.layer.metadata ? feature.layer.metadata.generatorId : null
     const properties = feature.properties || {}
     const extendedFeature: ExtendedFeature | null = {
       properties,
-      generator,
+      generatorType,
       generatorId,
       source: feature.source,
       sourceLayer: feature.sourceLayer,
@@ -27,7 +27,7 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
         z: (feature as any)._vectorTileFeature._z,
       },
     }
-    switch (generator) {
+    switch (generatorType) {
       case Generators.Type.HeatmapAnimated:
         const frame = feature.layer.metadata.frame
         const valuesAtFrame = properties[frame.toString()]
