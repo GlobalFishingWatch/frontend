@@ -1,5 +1,16 @@
 # @globalfishingwatch/react-hooks
 
+## 3.2.0
+
+### Minor Changes
+
+- 87dfcf5: animated heatmap legend
+
+### Patch Changes
+
+- Updated dependencies [87dfcf5]
+  - @globalfishingwatch/layer-composer@2.14.0
+
 ## 3.1.0
 
 ### Minor Changes
