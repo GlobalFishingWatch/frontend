@@ -103,13 +103,14 @@ yarn build
 
 ### Publishing
 
-Using [lerna-publish](https://github.com/lerna/lerna/tree/master/commands/publish#readme) to versioning, tag and publish to npm every package individually
-_Pending to have [lerna-changelog](https://github.com/lerna/lerna-changelog) working properly to auto generate the changelogs on PR labels_
+Using [changesets](https://github.com/atlassian/changesets) and its [github bot](https://github.com/apps/changeset-bot) to versioning, tag and generate the changelog on every package. See an [example of bot usage](https://github.com/GlobalFishingWatch/frontend/pull/90#issuecomment-698843334)
 
-To release just run:
+This will read the packages included in the changeset and open a [new PR with the packages affected](https://github.com/GlobalFishingWatch/frontend/pull/92). Once this PR is merged, a [github action](https://github.com/GlobalFishingWatch/frontend/blob/develop/.github/workflows/publish-and-build.yml) will publish in npm automatically.
+
+If you prefer to do it locally you could run
 
 ```bash
-yarn release
+yarn changesets
 ```
 
-And you will be prompt to select the new versions of the packages with changes since the last release.
+and follow the steps to generate a changeset release, once merged to develop the github action will deploy to npm automatically.
