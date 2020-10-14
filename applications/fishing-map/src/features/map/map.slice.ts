@@ -64,7 +64,6 @@ const slice = createSlice({
       if (!clickedFeature) return
       if (action.payload) {
         clickedFeature.vessels = action.payload.vessels
-        console.log(action.payload.dataset)
         clickedFeature.dataset = action.payload.dataset
       }
     })

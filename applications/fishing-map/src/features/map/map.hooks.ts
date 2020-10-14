@@ -64,7 +64,6 @@ export const useClickedEventConnect = () => {
         { id: 'cols', value: feature.temporalgrid.col },
       ],
       query: [
-        // TODO remove hardcoded dataset ID
         { id: 'datasets', value: [dataset.id] },
         { id: 'date-range', value: [start, end].join(',') },
         // { id: 'limit', value: 11 },
