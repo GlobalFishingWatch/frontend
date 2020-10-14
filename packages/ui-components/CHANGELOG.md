@@ -1,5 +1,13 @@
 # @globalfishingwatch/ui-components
 
+## 2.0.1
+
+### Patch Changes
+
+- 9b6c010: Fishing map hover
+- Updated dependencies [9b6c010]
+  - @globalfishingwatch/layer-composer@2.14.1
+
 ## 2.0.0
 
 ### Major Changes
