@@ -56,7 +56,8 @@ const dataviews: Dataview[] = [
       color: 'red',
     },
     info: {
-      fields: ['name', 'flag'],
+      // TODO think how we can format by different types, for example dates
+      fields: ['imo', 'flag', 'first_transmission_date', 'last_transmission_date'],
     },
     datasetsConfig: [
       {
@@ -67,7 +68,8 @@ const dataviews: Dataview[] = [
           { id: 'wrapLongitudes', value: false },
           {
             id: 'fields',
-            value: [Field.lonlat, Field.timestamp, Field.speed, Field.fishing].join(','),
+            value: [Field.lonlat].join(','),
+            // value: [Field.lonlat, Field.timestamp, Field.speed, Field.fishing].join(','),
           },
           {
             id: 'format',
@@ -79,7 +81,7 @@ const dataviews: Dataview[] = [
       {
         datasetId: VESSELS_DATASET_ID,
         params: [{ id: 'vesselId', value: '' }],
-        endpoint: 'carriers-vessels',
+        endpoint: 'carriers-vessel',
       },
     ],
   },

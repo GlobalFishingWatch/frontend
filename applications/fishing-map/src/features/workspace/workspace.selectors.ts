@@ -192,35 +192,34 @@ export const selectDataviewsResourceQueries = createSelector(
     if (!dataviewInstances) return
 
     const resourceQueries: ResourceQuery[] = dataviewInstances.flatMap((dataview) => {
-      if (
-        dataview.config?.type !== Generators.Type.Track ||
-        dataview.config.visible === false ||
-        dataview.deleted
-      )
-        return []
-      const trackResource = resolveDataviewDatasetResource(dataview, TRACKS_DATASET_TYPE)
-      if (!trackResource.url || !trackResource.dataset || !trackResource.datasetConfig) {
+      if (dataview.config?.type !== Generators.Type.Track || dataview.deleted) {
         return []
       }
-      const trackQuery = {
-        dataviewId: dataview.dataviewId as number,
-        url: trackResource.url,
-        datasetType: trackResource.dataset.type,
-        datasetConfig: trackResource.datasetConfig,
+      let trackQuery: any = [] // initialized as empty array to be filter by flatMap if not used
+      if (dataview.config.visible === true) {
+        const trackResource = resolveDataviewDatasetResource(dataview, TRACKS_DATASET_TYPE)
+        if (!trackResource.url || !trackResource.dataset || !trackResource.datasetConfig) {
+          return []
+        }
+        trackQuery = {
+          dataviewId: dataview.dataviewId as number,
+          url: trackResource.url,
+          datasetType: trackResource.dataset.type,
+          datasetConfig: trackResource.datasetConfig,
+        }
       }
-      return trackQuery
 
-      // const infoResource = resolveDataviewDatasetResource(dataview, VESSELS_DATASET_TYPE)
-      // if (!infoResource.url || !infoResource.dataset || !infoResource.datasetConfig) {
-      //   return trackQuery
-      // }
-      // const infoQuery = {
-      //   dataviewId: dataview.dataviewId as number,
-      //   url: infoResource.url,
-      //   datasetType: infoResource.dataset.type,
-      //   datasetConfig: infoResource.datasetConfig,
-      // }
-      // return [trackQuery, infoQuery]
+      const infoResource = resolveDataviewDatasetResource(dataview, VESSELS_DATASET_TYPE)
+      if (!infoResource.url || !infoResource.dataset || !infoResource.datasetConfig) {
+        return trackQuery as ResourceQuery
+      }
+      const infoQuery: ResourceQuery = {
+        dataviewId: dataview.dataviewId as number,
+        url: infoResource.url,
+        datasetType: infoResource.dataset.type,
+        datasetConfig: infoResource.datasetConfig,
+      }
+      return [trackQuery, infoQuery]
     })
 
     return resourceQueries
