@@ -38,8 +38,8 @@ const urlToObjectTransformation: Dictionary<(value: any) => any> = {
   latitude: (latitude) => parseFloat(latitude),
   longitude: (longitude) => parseFloat(longitude),
   zoom: (zoom) => parseFloat(zoom),
-  dataviewInstances: (dataviewInstances: Record<number, UrlDataviewInstance>) => {
-    return Object.values(dataviewInstances).map(parseDataviewInstance)
+  dataviewInstances: (dataviewInstances: UrlDataviewInstance[]) => {
+    return dataviewInstances.map(parseDataviewInstance)
   },
 }
 
@@ -73,7 +73,7 @@ const decoder = (str: string, decoder?: any, charset?: string) => {
 }
 
 const decodeWorkspace = (queryString: string) => {
-  const parsed = parse(queryString, { arrayLimit: 0, depth: 20, decoder })
+  const parsed = parse(queryString, { arrayLimit: 1000, depth: 20, decoder })
   Object.keys(parsed).forEach((param: string) => {
     const value = parsed[param]
     const transformationFn = urlToObjectTransformation[param]
