@@ -1,5 +1,16 @@
 # @globalfishingwatch/react-hooks
 
+## 3.3.0
+
+### Minor Changes
+
+- fe37510: Rename dataviewConfig to dataviewInstance
+
+### Patch Changes
+
+- Updated dependencies [fe37510]
+  - @globalfishingwatch/dataviews-client@3.2.0
+
 ## 3.2.0
 
 ### Minor Changes
