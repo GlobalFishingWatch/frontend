@@ -1,32 +1,71 @@
 import React from 'react'
 import cx from 'classnames'
-import { WorkspaceDataview } from 'types'
-import { Switch, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
+import { useSelector } from 'react-redux'
+// import { formatDate } from 'utils/dates'
+import { Switch, IconButton, Tooltip, Spinner } from '@globalfishingwatch/ui-components'
 import styles from 'features/sidebar/common/LayerPanel.module.css'
-import { useDataviewsConfigConnect } from 'features/workspace/workspace.hook'
-import { TRACKS_DATASET_ID } from 'features/workspace/workspace.mock'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
+import { VESSELS_DATASET_TYPE } from 'features/workspace/workspace.mock'
+import { selectResourceByUrl } from 'features/resources/resources.slice'
 
 type LayerPanelProps = {
-  dataview: WorkspaceDataview
+  dataview: UrlDataviewInstance
+}
+
+type Vessel = {
+  shipname: string
+  flag: string
+  imo: string
+  first_transmission_date: string
+  last_transmission_date: string
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
-  const { updateDataviewConfig, deleteDataviewConfig } = useDataviewsConfigConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
+  const { url } = resolveDataviewDatasetResource(dataview, VESSELS_DATASET_TYPE)
+  const resource = useSelector(selectResourceByUrl<Vessel>(url))
 
   const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
-    updateDataviewConfig({
-      id: dataview.configId,
+    upsertDataviewInstance({
+      id: dataview.id,
       config: { visible: !layerActive },
     })
   }
   const onRemoveLayerClick = () => {
-    deleteDataviewConfig(dataview.configId)
+    deleteDataviewInstance(dataview.id)
   }
 
-  const datasetConfig = dataview.datasetsConfig?.find((d) => d.datasetId === TRACKS_DATASET_ID)
+  if (resource?.status === AsyncReducerStatus.Loading) {
+    return (
+      <div className={cx(styles.LayerPanel)}>
+        <Spinner size="small" />
+      </div>
+    )
+  }
+
+  const datasetConfig = dataview.datasetsConfig?.find(
+    (dc) => dc?.params.find((p) => p.id === 'vesselId')?.value
+  )
+
+  const vesselName = resource?.data?.shipname
   const vesselId = datasetConfig?.params.find((p) => p.id === 'vesselId')?.value as string
-  const title = vesselId || dataview.name
+  const title = vesselName || vesselId || dataview.name
+  const infoTooltip = (
+    <p className={styles.infoTooltip}>
+      {dataview.info.fields.map((field: keyof Vessel) => {
+        const fieldValue = resource?.data?.[field]
+        if (!fieldValue) return null
+        return (
+          <span key={field} className={styles.infoTooltipRow}>
+            {field.toUpperCase()}: {fieldValue}
+          </span>
+        )
+      })}
+    </p>
+  )
 
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
@@ -42,15 +81,19 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           onClick={onToggleLayerActive}
           tooltip="Toggle layer visibility"
           tooltipPlacement="top"
-          color={dataview.config.color}
+          color={dataview.config?.color}
         />
-        {title.length > 30 ? <Tooltip content={title}>{TitleComponent}</Tooltip> : TitleComponent}
+        {title && title.length > 30 ? (
+          <Tooltip content={title}>{TitleComponent}</Tooltip>
+        ) : (
+          TitleComponent
+        )}
         <div className={cx(styles.actions, { [styles.active]: layerActive })}>
           <IconButton
             icon="info"
             size="small"
             className={styles.actionButton}
-            tooltip={dataview.description}
+            tooltip={infoTooltip}
             tooltipPlacement="top"
           />
           <IconButton

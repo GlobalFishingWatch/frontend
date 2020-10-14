@@ -28,6 +28,9 @@ export default (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
       }
     })
     url = `${url}?${resolvedQuery.toString()}`
+  } else if (endpoint.query.some((q) => q.id === 'datasets')) {
+    // Fallback when no dataset query is defined but we already know which dataset want to search in
+    url = `${url}?datasets=${dataset.id}`
   }
 
   return url

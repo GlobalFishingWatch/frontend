@@ -12,7 +12,7 @@ import { InteractiveMap, ScaleControl, MapRequest } from '@globalfishingwatch/re
 import GFWAPI from '@globalfishingwatch/api-client'
 import { useLayerComposer, useMapClick } from '@globalfishingwatch/react-hooks'
 import { useClickedEventConnect, useMapTooltip } from 'features/map/map.hooks'
-import { selectWorkspaceDataviewsResolved } from 'features/workspace/workspace.selectors'
+import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import { ClickPopup } from 'features/map/Popup'
 import { useGeneratorsConnect } from './map.hooks'
 import useViewport from './map-viewport.hooks'
@@ -59,6 +59,10 @@ const Map = (): React.ReactElement => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoom, latitude, longitude])
 
+  const onMapError = useCallback((error: any) => {
+    // TODO: Handle auth errors and retry to load tile
+    // console.log(error)
+  }, [])
   // TODO: Abstract this away
   const token = GFWAPI.getToken()
   const transformRequest: (...args: any[]) => MapRequest = useCallback(
@@ -85,7 +89,7 @@ const Map = (): React.ReactElement => {
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
-  const dataviews = useSelector(selectWorkspaceDataviewsResolved)
+  const dataviews = useSelector(selectDataviewInstancesResolved)
   const layersWithLegend = useMemo(() => {
     if (!style) return []
     return style.layers?.flatMap((layer) => {
@@ -96,12 +100,11 @@ const Map = (): React.ReactElement => {
 
       return sublayerLegendsMetadata.map((sublayerLegendMetadata) => {
         const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
-        // TODO remove the parseInt
-        const dataview = dataviews?.find((d) => d.id === parseInt(id))
+        const dataview = dataviews?.find((d) => d.id === id)
         const sublayerLegend = {
           ...sublayerLegendMetadata,
           id: `legend_${id}`,
-          color: layer.metadata?.color || dataview?.config.color || 'red',
+          color: layer.metadata?.color || dataview?.config?.color || 'red',
           // TODO Get that from dataview
           label: 'Soy leyenda ✌️',
           unit: 'hours',
@@ -127,8 +130,9 @@ const Map = (): React.ReactElement => {
           transformRequest={transformRequest}
           onLoad={setMapBounds}
           onResize={setMapBounds}
-          interactiveLayerIds={style.metadata.interactiveLayerIds}
+          onError={onMapError}
           onClick={onMapClick}
+          interactiveLayerIds={style.metadata.interactiveLayerIds}
         >
           <div className={styles.scale}>
             <ScaleControl maxWidth={100} unit="nautical" />

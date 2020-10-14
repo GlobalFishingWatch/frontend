@@ -4,18 +4,19 @@ import {
   ExtendedFeatureVessel,
   InteractionEvent,
 } from '@globalfishingwatch/react-hooks'
-import { Dataview } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { Dataset } from '@globalfishingwatch/dataviews-client'
 import {
-  selectWorkspaceDataviewsResolved,
+  selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectTimerange } from 'routes/routes.selectors'
+import { FISHING_DATASET_TYPE } from 'features/workspace/workspace.mock'
 import {
   setClickedEvent,
   selectClickedEvent,
   selectClickedEventStatus,
-  fetch4WingStatsThunk,
+  fetch4WingInteractionThunk,
 } from './map.slice'
 import { getGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
 
@@ -33,7 +34,7 @@ export const useClickedEventConnect = () => {
   const clickedEvent = useSelector(selectClickedEvent)
   const clickedEventStatus = useSelector(selectClickedEventStatus)
 
-  const dataviews = useSelector(selectWorkspaceDataviewsResolved)
+  const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
   const { start, end } = useSelector(selectTimerange)
 
@@ -49,14 +50,11 @@ export const useClickedEventConnect = () => {
 
     // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
     const dataview = temporalgridDataviews?.[feature.temporalgrid.sublayerIndex]
-    // TODO How to get the proper id? Should be fishing_v4
-    const DATASET_ID = 'dgg_fishing_galapagos'
-    const INTERACTION_DATASET_ID = 'fishing_v4'
-    const dataset = dataview?.datasets?.find((dataset) => dataset.id === DATASET_ID)
+    const dataset = dataview?.datasets?.find((dataset) => dataset.type === FISHING_DATASET_TYPE)
     if (!dataset) return []
     const datasetConfig = {
       endpoint: '4wings-interaction',
-      datasetId: DATASET_ID,
+      datasetId: dataset.id,
       generatorId: feature.generatorId as string,
       params: [
         { id: 'z', value: feature.tile.z },
@@ -66,13 +64,12 @@ export const useClickedEventConnect = () => {
         { id: 'cols', value: feature.temporalgrid.col },
       ],
       query: [
-        // TODO remove hardcoded dataset ID
-        { id: 'datasets', value: [INTERACTION_DATASET_ID] },
+        { id: 'datasets', value: [dataset.id] },
         { id: 'date-range', value: [start, end].join(',') },
         // { id: 'limit', value: 11 },
       ],
     }
-    dispatch(fetch4WingStatsThunk({ dataset, datasetConfig }))
+    dispatch(fetch4WingInteractionThunk({ dataset, datasetConfig }))
   }
   return { clickedEvent, clickedEventStatus, dispatchClickedEvent }
 }
@@ -82,6 +79,8 @@ export type TooltipEventFeature = {
   color?: string
   unit?: string
   value: string
+  // TODO decide if we embed the entire dataset or just the id
+  dataset?: Dataset
   vesselsInfo?: {
     overflow: boolean
     numVessels: number
@@ -96,7 +95,7 @@ export type TooltipEvent = {
 }
 
 export const useMapTooltip = (event?: InteractionEvent | null) => {
-  const dataviews = useSelector(selectWorkspaceDataviewsResolved)
+  const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
   if (!event || !event.features || !dataviews) return null
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
@@ -109,14 +108,15 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
       dataview = temporalgridDataviews?.[feature.temporalgrid?.sublayerIndex]
     } else {
-      dataview = dataviews.find((dataview: Dataview) => dataview.id === feature.generatorId)
+      dataview = dataviews.find((dataview) => dataview.id === feature.generatorId)
     }
     if (!dataview) return []
     const tooltipEventFeature: TooltipEventFeature = {
       title: dataview.name || dataview.id.toString(),
-      color: dataview.config.color || 'black',
+      color: dataview.config?.color || 'black',
       // unit: dataview.unit || '',
       value: feature.value,
+      ...(feature.dataset && { dataset: feature.dataset }),
     }
     if (feature.vessels) {
       const MAX_VESSELS = 5

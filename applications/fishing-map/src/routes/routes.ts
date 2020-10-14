@@ -3,8 +3,7 @@ import { NOT_FOUND, RoutesMap, redirect, connectRoutes, Options } from 'redux-fi
 import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
-import { QueryParams } from 'types'
-import { WorkspaceDataviewConfig } from '@globalfishingwatch/dataviews-client'
+import { QueryParams, UrlDataviewInstance } from 'types'
 import { REPLACE_URL_PARAMS } from 'data/config'
 import { UpdateQueryParamsAction } from './routes.actions'
 
@@ -27,8 +26,8 @@ const routesMap: RoutesMap = {
   },
 }
 
-const parseDataviewConfig = (dataview: WorkspaceDataviewConfig) => {
-  const dataviewId = parseInt(dataview.dataviewId?.toString())
+const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
+  const dataviewId = parseInt((dataview.dataviewId as number)?.toString())
   return {
     ...dataview,
     ...(dataviewId && { dataviewId }),
@@ -39,8 +38,9 @@ const urlToObjectTransformation: Dictionary<(value: any) => any> = {
   latitude: (latitude) => parseFloat(latitude),
   longitude: (longitude) => parseFloat(longitude),
   zoom: (zoom) => parseFloat(zoom),
-  dataviewsConfig: (dataviewsConfig: Record<number, WorkspaceDataviewConfig>) =>
-    Object.values(dataviewsConfig).map(parseDataviewConfig),
+  dataviewInstances: (dataviewInstances: UrlDataviewInstance[]) => {
+    return dataviewInstances.map(parseDataviewInstance)
+  },
 }
 
 const encodeWorkspace = (object: Record<string, unknown>) => {
@@ -73,7 +73,7 @@ const decoder = (str: string, decoder?: any, charset?: string) => {
 }
 
 const decodeWorkspace = (queryString: string) => {
-  const parsed = parse(queryString, { arrayLimit: 0, depth: 10, decoder })
+  const parsed = parse(queryString, { arrayLimit: 1000, depth: 20, decoder })
   Object.keys(parsed).forEach((param: string) => {
     const value = parsed[param]
     const transformationFn = urlToObjectTransformation[param]

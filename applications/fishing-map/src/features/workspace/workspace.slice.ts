@@ -2,7 +2,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
 import { Workspace } from '@globalfishingwatch/dataviews-client'
-import workspace from './workspace.mock'
+import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
+import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
+import workspaceMock from './workspace.mock'
 // import GFWAPI from '@globalfishingwatch/api-client'
 
 interface WorkspaceState {
@@ -15,10 +17,22 @@ const initialState: WorkspaceState = {
   data: null,
 }
 
-export const fetchWorkspaceThunk = createAsyncThunk('workspace/fetch', async () => {
-  // const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces${id}`)
-  return workspace
-})
+export const fetchWorkspaceThunk = createAsyncThunk(
+  'workspace/fetch',
+  async (arg, { dispatch }) => {
+    // const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces${id}`)
+    const workspace = workspaceMock
+    const datasets = workspace.datasets?.map((dataset) => dataset.id as string)
+    if (datasets) {
+      await dispatch(fetchDatasetsByIdsThunk(datasets))
+    }
+    const dataviews = workspace.dataviews?.map((dataview) => dataview.id as number)
+    if (dataviews) {
+      await dispatch(fetchDataviewsByIdsThunk(dataviews))
+    }
+    return workspace
+  }
+)
 
 const workspaceSlice = createSlice({
   name: 'workspace',

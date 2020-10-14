@@ -2,6 +2,7 @@
   z-index: 0;
   position: relative;
   padding-top: var(--space-XS);
+  min-height: var(--size-M);
 }
 
 .LayerPanel:not(:last-child)::after {
@@ -112,4 +113,8 @@
 
 .tagList {
   width: 100%;
+}
+
+.infoTooltipRow {
+  display: block;
 }
