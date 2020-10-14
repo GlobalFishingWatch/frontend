@@ -1,4 +1,11 @@
-import React, { forwardRef, Fragment, ForwardRefRenderFunction, Ref, memo } from 'react'
+import React, {
+  forwardRef,
+  Fragment,
+  ForwardRefRenderFunction,
+  Ref,
+  memo,
+  CSSProperties,
+} from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Icon, { IconType } from '../icon'
@@ -20,6 +27,7 @@ interface IconButtonProps {
   tooltip?: React.ReactChild | React.ReactChild[] | string
   tooltipPlacement?: Placement
   children?: React.ReactNode
+  style?: CSSProperties
 }
 
 const warningVarColor = getComputedStyle(document.documentElement).getPropertyValue(

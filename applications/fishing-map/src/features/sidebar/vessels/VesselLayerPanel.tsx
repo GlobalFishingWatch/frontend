@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import { useSelector } from 'react-redux'
 // import { formatDate } from 'utils/dates'
+import useClickedOutside from 'hooks/useClickedOutside'
 import { Switch, IconButton, Tooltip, Spinner } from '@globalfishingwatch/ui-components'
 import styles from 'features/sidebar/common/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -26,6 +27,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { url } = resolveDataviewDatasetResource(dataview, VESSELS_DATASET_TYPE)
   const resource = useSelector(selectResourceByUrl<Vessel>(url))
+  const [colorOpen, setColorOpen] = useState(false)
 
   const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
@@ -38,20 +40,22 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     deleteDataviewInstance(dataview.id)
   }
 
-  if (resource?.status === AsyncReducerStatus.Loading) {
-    return (
-      <div className={cx(styles.LayerPanel)}>
-        <Spinner size="small" />
-      </div>
-    )
-  }
-
   const datasetConfig = dataview.datasetsConfig?.find(
-    (dc) => dc?.params.find((p) => p.id === 'vesselId')?.value
+    (dc: any) => dc?.params.find((p: any) => p.id === 'vesselId')?.value
   )
 
   const vesselName = resource?.data?.shipname
-  const vesselId = datasetConfig?.params.find((p) => p.id === 'vesselId')?.value as string
+
+  const onToggleColorOpen = () => {
+    setColorOpen(!colorOpen)
+  }
+
+  const closeExpandedContainer = () => {
+    setColorOpen(false)
+  }
+
+  const expandedContainerRef = useClickedOutside(closeExpandedContainer)
+  const vesselId = datasetConfig?.params.find((p: any) => p.id === 'vesselId')?.value as string
   const title = vesselName || vesselId || dataview.name
   const infoTooltip = (
     <p className={styles.infoTooltip}>
@@ -67,6 +71,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     </p>
   )
 
+  if (resource?.status === AsyncReducerStatus.Loading) {
+    return (
+      <div className={cx(styles.LayerPanel)}>
+        <Spinner size="small" />
+      </div>
+    )
+  }
+
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
       {title}
@@ -74,7 +86,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   )
 
   return (
-    <div className={cx(styles.LayerPanel)}>
+    <div className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: colorOpen })}>
       <div className={styles.header}>
         <Switch
           active={layerActive}
@@ -97,6 +109,17 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             tooltipPlacement="top"
           />
           <IconButton
+            icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
+            size="small"
+            style={colorOpen ? {} : { color: dataview.config.color }}
+            tooltip="Change color"
+            tooltipPlacement="top"
+            onClick={onToggleColorOpen}
+            className={cx(styles.actionButton, styles.expandable, {
+              [styles.expanded]: colorOpen,
+            })}
+          />
+          <IconButton
             icon="delete"
             size="small"
             className={styles.actionButton}
@@ -105,6 +128,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             onClick={onRemoveLayerClick}
           />
         </div>
+      </div>
+      <div className={styles.expandedContainer} ref={expandedContainerRef}>
+        {colorOpen && <p>chacaflus</p>}
       </div>
     </div>
   )
