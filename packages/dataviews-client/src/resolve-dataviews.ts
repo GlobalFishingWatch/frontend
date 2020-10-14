@@ -1,14 +1,14 @@
-import { Dataview, WorkspaceDataviewConfig } from './types'
+import { Dataview, DataviewInstance } from './types'
 
 /**
  * Gets list of dataviews and those present in the workspace, and applies any config or datasetConfig
  * from it (merges dataview.config and workspace's dataviewConfig and datasetConfig).
  * @param dataviews
- * @param workspaceDataviewsConfig
+ * @param dataviewInstances
  */
 export default function resolveDataviews(
   dataviews: Dataview[],
-  workspaceDataviewsConfig?: WorkspaceDataviewConfig[]
+  dataviewInstances?: DataviewInstance[]
 ) {
   if (!dataviews) {
     console.warn('Empty dataviews to resolve')
@@ -18,11 +18,9 @@ export default function resolveDataviews(
   return dataviews.map((d) => {
     const dataview = { ...d }
     // retrieve workspace dataview that matches dataview so that we can collect overrides
-    const workspaceDataview =
-      workspaceDataviewsConfig &&
-      workspaceDataviewsConfig.find(
-        (workspaceDataview) => workspaceDataview.dataviewId === dataview.id
-      )
+    const workspaceDataview = dataviewInstances?.find(
+      (workspaceDataview) => workspaceDataview.dataviewId === dataview.id
+    )
 
     if (workspaceDataview) {
       // if workspace dataview exist, we'll overwrite original config

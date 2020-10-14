@@ -7,11 +7,11 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
-import { WorkspaceDataviewConfig } from '@globalfishingwatch/dataviews-client'
 import { useLocationConnect } from 'routes/routes.hook'
 import { HOME, SEARCH } from 'routes/routes'
-import { useDataviewsConfigConnect } from 'features/workspace/workspace.hook'
-import { TRACKS_DATASET_ID } from 'features/workspace/workspace.mock'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectVesselsDatasets, selectTracksDatasets } from 'features/workspace/workspace.selectors'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -24,17 +24,19 @@ import SearchEmptyState from './SearchEmptyState'
 function Search() {
   const dispatch = useDispatch()
   const { payload } = useLocationConnect()
-  const { updateDataviewConfig } = useDataviewsConfigConnect()
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((payload.query || '') as string)
   const query = useDebounce(searchQuery, 200)
   const { dispatchLocation } = useLocationConnect()
+  const searchDatasets = useSelector(selectVesselsDatasets)
+  const trackDatasets = useSelector(selectTracksDatasets)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
 
   useEffect(() => {
     if (query) {
       dispatchLocation(SEARCH, { query })
-      dispatch(fetchVesselSearchThunk(query))
+      dispatch(fetchVesselSearchThunk({ query, datasets: searchDatasets.map((d) => d.id) }))
     } else {
       dispatchLocation(SEARCH)
       dispatch(cleanVesselSearchResults())
@@ -51,19 +53,18 @@ function Search() {
   }
 
   const onSelectionChange = (selection: any) => {
-    const dataviewConfig: WorkspaceDataviewConfig = {
-      id: `track-${selection.id}`,
-      dataviewId: 2,
-      datasetsConfig: [
-        {
-          datasetId: TRACKS_DATASET_ID,
-          params: [{ id: 'vesselId', value: selection.id }],
-          endpoint: 'carriers-tracks',
-        },
-      ],
+    if (selection) {
+      const vesselDataviewInstance = getVesselDataviewInstance(
+        selection,
+        // TODO this datasets not are all of them but the response of the selection
+        trackDatasets,
+        searchDatasets
+      )
+      if (vesselDataviewInstance) {
+        upsertDataviewInstance(vesselDataviewInstance)
+        dispatchLocation(HOME)
+      }
     }
-    updateDataviewConfig(dataviewConfig)
-    dispatchLocation(HOME)
   }
 
   return (

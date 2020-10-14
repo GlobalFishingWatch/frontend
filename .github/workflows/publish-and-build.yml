@@ -1,14 +1,17 @@
-name: Publish packages
+name: Publish packages in npm registry
 
 on:
   push:
     branches:
       - develop
+    paths-ignore:
+      - '.changeset/*.md'
 
 jobs:
   publish-npm:
     name: Publish to NPM
     runs-on: ubuntu-latest
+    if: "contains(github.event.commits[0].message, 'changeset-release')"
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
@@ -52,6 +55,8 @@ jobs:
     name: Trigger gcloud builds
     runs-on: ubuntu-latest
     needs: publish-npm
+    # Execute when publish toi npm is skipped
+    if: "!failure()"
     steps:
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:

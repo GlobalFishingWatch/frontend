@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { DataviewConfig } from '@globalfishingwatch/dataviews-client'
 import {
   selectTimerange,
   selectFishingFilters,
@@ -10,12 +11,13 @@ import {
   selectMapLongitudeQuery,
 } from 'routes/routes.selectors'
 import {
-  selectWorkspaceDataviewsResolved,
+  selectDataviewInstancesResolved,
   selectWorkspaceViewport,
   resolveDataviewDatasetResource,
 } from 'features/workspace/workspace.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 import { FALLBACK_VIEWPORT } from 'data/config'
+import { TRACKS_DATASET_TYPE } from 'features/workspace/workspace.mock'
 
 export const selectViewport = createSelector(
   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery, selectWorkspaceViewport],
@@ -39,13 +41,13 @@ export const selectGlobalGeneratorsConfig = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [selectWorkspaceDataviewsResolved, selectFishingFilters, selectResources],
+  [selectDataviewInstancesResolved, selectFishingFilters, selectResources],
   (dataviews = [], fishingFilters, resources) => {
     // TODO add logic to merge 4Wings dataviews into one generator
-    const generatorsConfig = dataviews.map((dataview) => {
+    const generatorsConfig = dataviews.flatMap((dataview) => {
       const filters = fishingFilters?.map((filter) => filter.id)
-      const config = { ...dataview.config }
-      if (config.type === Generators.Type.HeatmapAnimated && filters?.length) {
+      const config: DataviewConfig = { ...dataview.config }
+      if (config?.type === Generators.Type.HeatmapAnimated && filters?.length) {
         config.sublayers = config.sublayers?.map((layer) => ({
           ...layer,
           filter: `flag=${filters.map((filter) => `'${filter}'`).join(',')}`,
@@ -54,17 +56,15 @@ export const getGeneratorsConfig = createSelector(
 
       // Try to retrieve resource if it exists
       let data
-      const { url } = resolveDataviewDatasetResource(dataview)
+      const { url } = resolveDataviewDatasetResource(dataview, TRACKS_DATASET_TYPE)
       if (url && resources[url]) {
         data = resources[url].data
       }
 
       return {
         ...config,
-        // TODO Add vessel id for tracks ie
-        // dataview.datasetsConfig[?].query.find(q => q.id === 'id').value
-        id: `${config.type}_${dataview.configId}`,
-        data,
+        id: dataview.id,
+        ...(data && { data }),
       }
     }) as AnyGeneratorConfig[]
     return generatorsConfig

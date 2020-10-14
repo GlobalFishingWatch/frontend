@@ -26,7 +26,7 @@ function VesselsSection(): React.ReactElement {
         />
       </div>
       {dataviews?.map((dataview) => (
-        <LayerPanel key={dataview.configId} dataview={dataview} />
+        <LayerPanel key={dataview.id} dataview={dataview} />
       ))}
     </div>
   )

@@ -1,5 +1,30 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.8.0
+
+### Minor Changes
+
+- fe37510: Rename dataviewConfig to dataviewInstance
+
+### Patch Changes
+
+- Updated dependencies [fe37510]
+  - @globalfishingwatch/dataviews-client@3.2.0
+  - @globalfishingwatch/react-hooks@3.3.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 87dfcf5: animated heatmap legend
+
+### Patch Changes
+
+- Updated dependencies [87dfcf5]
+  - @globalfishingwatch/ui-components@2.0.0
+  - @globalfishingwatch/layer-composer@2.14.0
+  - @globalfishingwatch/react-hooks@3.2.0
+
 ## 0.6.1
 
 ### Patch Changes

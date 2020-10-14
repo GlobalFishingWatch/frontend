@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 3.2.0
+
+### Minor Changes
+
+- fe37510: Rename dataviewConfig to dataviewInstance
+
 ## 3.1.1
 
 ### Patch Changes

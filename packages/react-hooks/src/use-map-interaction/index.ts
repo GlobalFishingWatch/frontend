@@ -1,3 +1,4 @@
+import { Dataset } from '@globalfishingwatch/dataviews-client'
 export { useMapHover, useMapClick } from './use-map-interaction'
 
 export type ExtendedFeatureVessel = {
@@ -24,6 +25,7 @@ export type ExtendedFeature = {
     row: number
   }
   vessels?: ExtendedFeatureVessel[]
+  dataset?: Dataset
 }
 
 export type InteractionEventCallback = (event: InteractionEvent | null) => void

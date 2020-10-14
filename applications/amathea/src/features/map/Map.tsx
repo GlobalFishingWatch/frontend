@@ -140,7 +140,8 @@ const Map = (): React.ReactElement => {
         <IconButton icon="camera" type="map-tool" tooltip="Capture the map (Coming soon)" />
       </div>
       <div className={styles.mapLegend}>
-        <MapLegends layers={legendLayers} />
+        {/* TODO remove this any once the legacy is removed */}
+        <MapLegends layers={legendLayers as any} />
       </div>
     </div>
   )

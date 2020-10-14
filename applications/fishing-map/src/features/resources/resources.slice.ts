@@ -1,9 +1,11 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { AsyncReducerStatus } from 'types'
 import { RootState } from 'store'
+import memoize from 'lodash/memoize'
 import { trackValueArrayToSegments, Field } from '@globalfishingwatch/data-transforms'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/dataviews-client'
+import { TRACKS_DATASET_TYPE } from 'features/workspace/workspace.mock'
 
 export interface ResourceQuery {
   url: string
@@ -12,9 +14,9 @@ export interface ResourceQuery {
   datasetType: DatasetTypes
 }
 
-export interface Resource extends ResourceQuery {
+export interface Resource<T = unknown> extends ResourceQuery {
   status: AsyncReducerStatus
-  data?: unknown
+  data?: T
 }
 
 type ResourcesState = Record<any, Resource>
@@ -26,7 +28,7 @@ export const fetchResourceThunk = createAsyncThunk(
   async (resource: ResourceQuery) => {
     const data = await GFWAPI.fetch(resource.url).then((data) => {
       // TODO Replace with enum?
-      if (resource.datasetType === 'carriers-tracks:v1') {
+      if (resource.datasetType === TRACKS_DATASET_TYPE) {
         const fields = (resource.datasetConfig.query?.find((q) => q.id === 'fields')
           ?.value as string).split(',') as Field[]
         const segments = trackValueArrayToSegments(data as any, fields)
@@ -69,5 +71,8 @@ const resourcesSlice = createSlice({
 })
 
 export const selectResources = (state: RootState) => state.resources
+export const selectResourceByUrl = memoize(<T = any>(url = '') =>
+  createSelector([selectResources], (resources) => resources[url] as Resource<T>)
+)
 
 export default resourcesSlice.reducer

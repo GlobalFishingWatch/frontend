@@ -74,7 +74,7 @@ export function useMapBounds() {
         )
       }
     }
-  }, [mapRef])
+  }, [dispatch, mapRef])
   return { bounds, setMapBounds }
 }
 

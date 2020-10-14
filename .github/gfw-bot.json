@@ -2,18 +2,21 @@
 {
   "temporalgrid-demo": {
     "cloudbuildTaskId": "temporalgrid-demo-autodeploy-bot",
+    "auto": false,
     "watch": [
       "applications/temporalgrid-demo/**/*"
     ]
   },
   "amathea": {
     "cloudbuildTaskId": "amathea-autodeploy-bot",
+    "auto": false,
     "watch": [
       "applications/amathea/**/*"
     ]
   },
   "fishing-map": {
     "cloudbuildTaskId": "fishing-map-autodeploy-bot",
+    "auto": false,
     "watch": [
       "applications/fishing-map/**/*"
     ]

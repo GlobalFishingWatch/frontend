@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { FishingFilter } from 'types'
+import { FishingFilter, UrlDataviewInstance } from 'types'
 import { MultiSelect } from '@globalfishingwatch/ui-components'
-import { Dataview } from '@globalfishingwatch/dataviews-client'
 import flags from 'data/flags'
 // import { selectTemporalgridDatasets } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -10,7 +9,7 @@ import { selectFishingFilters } from 'routes/routes.selectors'
 import styles from './HeatmapFilters.module.css'
 
 type FiltersProps = {
-  dataview: Dataview
+  dataview: UrlDataviewInstance
 }
 
 const sourceOptions = [{ id: 'ais', label: 'AIS' }]

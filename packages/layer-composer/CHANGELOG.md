@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.14.0
+
+### Minor Changes
+
+- 87dfcf5: animated heatmap legend
+
 ## 2.13.4
 
 ### Patch Changes

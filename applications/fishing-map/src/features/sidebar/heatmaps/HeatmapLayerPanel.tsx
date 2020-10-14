@@ -2,31 +2,31 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import useClickedOutside from 'hooks/useClickedOutside'
 import { useSelector } from 'react-redux'
-import { WorkspaceDataview } from 'types'
+import { UrlDataviewInstance } from 'types'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
 import { selectFishingFilters } from 'routes/routes.selectors'
 import styles from 'features/sidebar/common/LayerPanel.module.css'
-import { useDataviewsConfigConnect } from 'features/workspace/workspace.hook'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import Filters from './HeatmapFilters'
 
 type LayerPanelProps = {
-  dataview: WorkspaceDataview
+  dataview: UrlDataviewInstance
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [filterOpen, setFiltersOpen] = useState(false)
   const fishingFilters = useSelector(selectFishingFilters)
-  const { updateDataviewConfig, deleteDataviewConfig } = useDataviewsConfigConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
 
   const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
-    updateDataviewConfig({
-      id: dataview.configId,
+    upsertDataviewInstance({
+      id: dataview.id,
       config: { visible: !layerActive },
     })
   }
   const onRemoveLayerClick = () => {
-    deleteDataviewConfig(dataview.configId)
+    deleteDataviewInstance(dataview.id)
   }
 
   const onToggleFilterOpen = () => {
@@ -51,9 +51,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           onClick={onToggleLayerActive}
           tooltip="Toggle layer visibility"
           tooltipPlacement="top"
-          color={dataview.config.color}
+          color={dataview.config?.color}
         />
-        {dataview.name.length > 30 ? (
+        {dataview.name && dataview.name.length > 30 ? (
           <Tooltip content={dataview.name}>{TitleComponent}</Tooltip>
         ) : (
           TitleComponent
@@ -91,15 +91,17 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       {layerActive && fishingFilters.length > 0 && (
         <div className={styles.properties}>
           <label>Filters</label>
-          <TagList tags={fishingFilters} color={dataview.config.color} className={styles.tagList} />
+          <TagList
+            tags={fishingFilters}
+            color={dataview.config?.color}
+            className={styles.tagList}
+          />
         </div>
       )}
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
         {filterOpen && <Filters dataview={dataview} />}
       </div>
-      {/* TODO Use the real dataview instance id */}
-      {/* <div id={dataview.id.toString()}></div> */}
-      <div id={'1'}></div>
+      <div id={`legend_${dataview.id}`}></div>
     </div>
   )
 }

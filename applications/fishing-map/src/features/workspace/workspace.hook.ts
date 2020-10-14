@@ -1,50 +1,95 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
-import { WorkspaceDataviewConfig } from '@globalfishingwatch/dataviews-client'
-import { selectDataviewsConfig } from 'routes/routes.selectors'
+import { UrlDataviewInstance } from 'types'
+import { selectDataviewInstances } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectWorkspaceDataviewConfig } from './workspace.selectors'
+import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
-export const useDataviewsConfigConnect = () => {
-  const urlDataviewsConfig = useSelector(selectDataviewsConfig)
-  const workspaceDataviewsConfig = useSelector(selectWorkspaceDataviewConfig)
+export const useDataviewInstancesConnect = () => {
+  const urlDataviewInstances = useSelector(selectDataviewInstances)
   const { dispatchQueryParams } = useLocationConnect()
 
-  const updateDataviewConfig = useCallback(
-    (dataviewConfig: Partial<WorkspaceDataviewConfig>) => {
-      const currentDataviewConfig = urlDataviewsConfig?.find(
-        (urlDataviewConfig) => urlDataviewConfig.id === dataviewConfig.id
+  const addDataviewInstance = useCallback(
+    (dataviewInstance: Partial<UrlDataviewInstance>) => {
+      const dataviewAlreadyDefined = urlDataviewInstances?.some(
+        (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
       )
-      if (currentDataviewConfig) {
-        const dataviewsConfig = urlDataviewsConfig.map((urlDataviewConfig) => {
-          if (urlDataviewConfig.id !== dataviewConfig.id) return urlDataviewConfig
-          return {
-            ...urlDataviewConfig,
-            ...dataviewConfig,
-          }
-        })
-        dispatchQueryParams({ dataviewsConfig })
-      } else {
-        dispatchQueryParams({ dataviewsConfig: [...(urlDataviewsConfig || []), dataviewConfig] })
+      if (dataviewAlreadyDefined) {
+        console.error('Dataview instance already defined, use updateDataviewInstance instead')
+        return
       }
+      dispatchQueryParams({
+        dataviewInstances: [...(urlDataviewInstances || []), dataviewInstance],
+      })
     },
-    [dispatchQueryParams, urlDataviewsConfig]
+    [dispatchQueryParams, urlDataviewInstances]
   )
 
-  const deleteDataviewConfig = useCallback(
-    (id: string) => {
-      const dataviewsConfig = (urlDataviewsConfig || []).filter(
-        (urlDataviewConfig) => urlDataviewConfig.id !== id
+  const updateDataviewInstance = useCallback(
+    (dataviewInstance: Partial<UrlDataviewInstance>) => {
+      const dataviewAlreadyDefined = urlDataviewInstances?.some(
+        (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
       )
-      const workspaceDataviewConfig = workspaceDataviewsConfig?.find(
-        (dataviewConfig) => dataviewConfig.id === id
-      )
-      if (workspaceDataviewConfig) {
-        dataviewsConfig.push({ id, deleted: true })
+      if (!dataviewAlreadyDefined) {
+        console.error('Dataview to updated not found, use addDataviewInstance instead')
+        return
       }
-      dispatchQueryParams({ dataviewsConfig })
+      const dataviewInstances = urlDataviewInstances.map((urlDataviewInstance) => {
+        if (urlDataviewInstance.id !== dataviewInstance.id) return urlDataviewInstance
+        return {
+          ...urlDataviewInstance,
+          ...dataviewInstance,
+        }
+      })
+      dispatchQueryParams({ dataviewInstances })
     },
-    [dispatchQueryParams, urlDataviewsConfig, workspaceDataviewsConfig]
+    [dispatchQueryParams, urlDataviewInstances]
   )
-  return { updateDataviewConfig, deleteDataviewConfig }
+
+  // TODO review if this is still needed or we switch to add / update
+  const upsertDataviewInstance = useCallback(
+    (dataviewInstance: Partial<UrlDataviewInstance>) => {
+      const currentDataviewInstance = urlDataviewInstances?.find(
+        (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
+      )
+      if (currentDataviewInstance) {
+        const dataviewInstances = urlDataviewInstances.map((urlDataviewInstance) => {
+          if (urlDataviewInstance.id !== dataviewInstance.id) return urlDataviewInstance
+          return {
+            ...urlDataviewInstance,
+            ...dataviewInstance,
+          }
+        })
+        dispatchQueryParams({ dataviewInstances })
+      } else {
+        dispatchQueryParams({
+          dataviewInstances: [...(urlDataviewInstances || []), dataviewInstance],
+        })
+      }
+    },
+    [dispatchQueryParams, urlDataviewInstances]
+  )
+
+  const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
+  const deleteDataviewInstance = useCallback(
+    (id: string) => {
+      const dataviewInstances = (urlDataviewInstances || []).filter(
+        (urlDataviewInstance) => urlDataviewInstance.id !== id
+      )
+      const workspaceDataviewInstance = workspaceDataviewInstances?.find(
+        (dataviewInstance) => dataviewInstance.id === id
+      )
+      if (workspaceDataviewInstance) {
+        dataviewInstances.push({ id, deleted: true })
+      }
+      dispatchQueryParams({ dataviewInstances })
+    },
+    [dispatchQueryParams, urlDataviewInstances, workspaceDataviewInstances]
+  )
+  return {
+    upsertDataviewInstance,
+    addDataviewInstance,
+    updateDataviewInstance,
+    deleteDataviewInstance,
+  }
 }

@@ -14,7 +14,7 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
 import { useClickedEventConnect, useMapTooltip } from 'features/map/map.hooks'
-import { selectWorkspaceDataviewsResolved } from 'features/workspace/workspace.selectors'
+import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import { ClickPopup, HoverPopup } from './Popup'
 import MapInfo from './MapInfo'
 import MapControls from './MapControls'
@@ -47,10 +47,13 @@ const Map = memo(
       },
       [token]
     )
+
     const { setMapBounds } = useMapBounds()
     useEffect(() => {
       setMapBounds()
-    }, [])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [viewport])
+
     return (
       <InteractiveMap
         ref={mapRef}
@@ -78,7 +81,6 @@ const MapWrapper = (): React.ReactElement => {
   const mapRef = useMapboxRef()
 
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
-
   const { clickedEvent, clickedEventStatus, dispatchClickedEvent } = useClickedEventConnect()
   const onMapClick = useMapClick(dispatchClickedEvent)
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
@@ -99,7 +101,7 @@ const MapWrapper = (): React.ReactElement => {
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
-  const dataviews = useSelector(selectWorkspaceDataviewsResolved)
+  const dataviews = useSelector(selectDataviewInstancesResolved)
   const layersWithLegend = useMemo(() => {
     // TODO use hoveredPosEvent to change legend
     if (!style) return []
@@ -112,12 +114,15 @@ const MapWrapper = (): React.ReactElement => {
       return sublayerLegendsMetadata.map((sublayerLegendMetadata) => {
         const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
         // TODO remove the parseInt
-        const dataview = dataviews?.find((d) => d.id === parseInt(id))
+        const dataview = dataviews?.find((d) => d.id === id)
         // TODO generatorId / dataviews ID mismatch (wrongly set in getGeneratorsConfig)
         const sublayerLegend: LegendLayer = {
           ...sublayerLegendMetadata,
-          id,
-          color: layer.metadata?.color || dataview?.config.color || 'red',
+          id: `legend_${id}`,
+          color: layer.metadata?.color || dataview?.config?.color || 'red',
+          // TODO Get that from dataview
+          label: 'Soy leyenda ✌️',
+          unit: 'hours',
         }
         const hoveredFeatureForDataview = hoveredEvent?.features?.find(
           (f) => f.generatorId === /*id*/ 'HEATMAP_ANIMATED_fishing'
