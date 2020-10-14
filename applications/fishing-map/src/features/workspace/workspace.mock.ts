@@ -48,29 +48,29 @@ const workspace: Workspace = {
         {
           datasetId: VESSELS_DATASET_ID,
           params: [{ id: 'vesselId', value: '00ba29183-3b86-9e36-cf20-ee340e409521' }],
-          endpoint: 'carriers-vessels',
+          endpoint: 'carriers-vessel',
         },
       ],
     },
-    {
-      id: 'vessel-2',
-      dataviewId: 4,
-      config: {
-        color: '#FFAAAD',
-      },
-      datasetsConfig: [
-        {
-          datasetId: TRACKS_DATASET_ID,
-          params: [{ id: 'vesselId', value: '0017a7b68-87c4-5af4-c46e-5bebee3ddceb' }],
-          endpoint: 'carriers-tracks',
-        },
-        {
-          datasetId: VESSELS_DATASET_ID,
-          params: [{ id: 'vesselId', value: '0017a7b68-87c4-5af4-c46e-5bebee3ddceb' }],
-          endpoint: 'carriers-vessels',
-        },
-      ],
-    },
+    // {
+    //   id: 'vessel-2',
+    //   dataviewId: 4,
+    //   config: {
+    //     color: '#FFAAAD',
+    //   },
+    //   datasetsConfig: [
+    //     {
+    //       datasetId: TRACKS_DATASET_ID,
+    //       params: [{ id: 'vesselId', value: '0017a7b68-87c4-5af4-c46e-5bebee3ddceb' }],
+    //       endpoint: 'carriers-tracks',
+    //     },
+    //     {
+    //       datasetId: VESSELS_DATASET_ID,
+    //       params: [{ id: 'vesselId', value: '0017a7b68-87c4-5af4-c46e-5bebee3ddceb' }],
+    //       endpoint: 'carriers-vessel',
+    //     },
+    //   ],
+    // },
   ],
 }
 
