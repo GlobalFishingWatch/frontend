@@ -8,11 +8,13 @@ import {
   Dataset,
   resolveEndpoint,
 } from '@globalfishingwatch/dataviews-client'
+import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
 
 type MapState = {
   clicked: InteractionEvent | null
   hovered: InteractionEvent | null
   status: AsyncReducerStatus
+  bounds?: MiniglobeBounds
 }
 
 const initialState: MapState = {
@@ -49,6 +51,9 @@ const slice = createSlice({
       }
       state.clicked = { ...action.payload }
     },
+    setBounds: (state, action: PayloadAction<MiniglobeBounds>) => {
+      state.bounds = action.payload
+    },
   },
 
   extraReducers: (builder) => {
@@ -75,6 +80,7 @@ const slice = createSlice({
 
 export const selectClickedEvent = (state: RootState) => state.map.clicked
 export const selectClickedEventStatus = (state: RootState) => state.map.status
+export const selectBounds = (state: RootState) => state.map.bounds
 
-export const { setClickedEvent } = slice.actions
+export const { setClickedEvent, setBounds } = slice.actions
 export default slice.reducer

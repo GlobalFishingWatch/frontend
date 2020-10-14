@@ -1,6 +1,5 @@
 import { Dataset } from '@globalfishingwatch/dataviews-client'
-
-export { default, useMapHover, useMapClick } from './use-map-interaction'
+export { useMapHover, useMapClick } from './use-map-interaction'
 
 export type ExtendedFeatureVessel = {
   id: string

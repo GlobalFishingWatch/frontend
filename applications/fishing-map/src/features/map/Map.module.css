@@ -2,34 +2,8 @@
   flex: 1;
 }
 
-.mapControls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: absolute;
-  right: var(--space-S);
-  top: var(--space-S);
-}
-
-.mapControls > * {
-  margin-bottom: var(--space-XS);
-}
-
-.scale {
-  position: absolute;
-  left: var(--space-XS);
-  bottom: var(--space-XS);
-  color: var(--color-white);
-  opacity: .4;
-}
-
-.scale :global(.mapboxgl-ctrl-scale) {
-  font: var(--font-XS);
-  background: none;
-  color: var(--color-white);
-  border-color: var(--color-white);
-  border-left: none;
-  border-right: none;
+.currentValue {
+  background-color: white
 }
 
 :global(.mapboxgl-control-container .mapboxgl-ctrl.mapboxgl-ctrl-attrib) {

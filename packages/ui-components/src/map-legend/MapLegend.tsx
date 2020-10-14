@@ -13,24 +13,37 @@ export type LegendLayer = LayerMetadataLegend & {
 
 interface MapLegendProps {
   className?: string
+  currentValueClassName?: string
+  layer: LegendLayer
+}
+
+interface MapLegendsProps {
+  className?: string
+  currentValueClassName?: string
   layers?: LegendLayer[]
 }
 
-export function MapLegend({ layer }: { layer: LegendLayer }) {
+export function MapLegend({ layer, className, currentValueClassName }: MapLegendProps) {
   // TODO: include user context and categorical options
   if (layer.type === 'solid') {
-    return <Solid layer={layer} />
+    return <Solid layer={layer} className={className} />
   }
   if (layer.type === 'colorramp') {
-    return <ColorRamp layer={layer} />
+    return (
+      <ColorRamp
+        layer={layer}
+        className={className}
+        currentValueClassName={currentValueClassName}
+      />
+    )
   }
   if (layer.type === 'bivariate') {
-    return <Bivariate layer={layer} />
+    return <Bivariate layer={layer} className={className} />
   }
   return null
 }
 
-function MapLegends(props: MapLegendProps) {
+function MapLegends(props: MapLegendsProps) {
   const { className, layers } = props
   return (
     <div className={cx(styles.legend, className)}>

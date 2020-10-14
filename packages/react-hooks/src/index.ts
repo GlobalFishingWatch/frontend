@@ -1,6 +1,6 @@
 export { default as useLogin } from './use-login'
 export { default as useLayerComposer } from './use-layer-composer'
-export { default as useMapInteraction, useMapHover, useMapClick } from './use-map-interaction'
+export { useMapHover, useMapClick } from './use-map-interaction'
 export type {
   InteractionEvent,
   InteractionEventCallback,

@@ -1,10 +1,9 @@
-import uniqBy from 'lodash/uniqBy'
 import debounce from 'lodash/debounce'
 import { isArray } from 'lodash'
-import { useCallback, useState, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { ExtendedFeature, InteractionEventCallback } from '.'
+import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
 type FeatureStateSource = { source: string; sourceLayer: string }
 
@@ -81,46 +80,41 @@ type MapHoverConfig = {
   debounced: number
 }
 export const useMapHover = (
-  hoverCallback: InteractionEventCallback,
-  map: Map,
+  hoverCallbackImmediate?: InteractionEventCallback,
+  hoverCallback?: InteractionEventCallback,
+  map?: Map,
   config?: MapHoverConfig
 ) => {
-  const { debounced = 500 } = config || ({} as MapHoverConfig)
+  const { debounced = 300 } = config || ({} as MapHoverConfig)
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
-  const [sourcesWithHoverState, setSourcesWithHoverState] = useState<FeatureStateSource[]>([])
+  const sourcesWithHoverState = useRef<FeatureStateSource[]>([])
 
   const hoverCallbackDebounced = useRef<any>(null)
   useEffect(() => {
-    const debouncedFn =
-      debounced > 0
-        ? debounce((e) => {
-            hoverCallback(e)
-          }, debounced)
-        : hoverCallback
+    const debouncedFn = debounce((e) => {
+      if (hoverCallback) hoverCallback(e)
+    }, debounced)
+
     hoverCallbackDebounced.current = debouncedFn
   }, [debounced, hoverCallback])
 
   const onMapHover = useCallback(
     (event) => {
-      if (hoverCallback) hoverCallback(null)
       // Turn all sources with active feature states off
       if (map) {
-        sourcesWithHoverState.forEach((source: FeatureStateSource) => {
+        sourcesWithHoverState.current?.forEach((source: FeatureStateSource) => {
           map.removeFeatureState({ source: source.source, sourceLayer: source.sourceLayer })
         })
+      }
+      const hoverEvent: InteractionEvent = {
+        longitude: event.lngLat[0],
+        latitude: event.lngLat[1],
       }
       if (event.features && event.features.length) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
 
-        if (hoverCallbackDebounced && hoverCallbackDebounced.current && extendedFeatures.length) {
-          if (hoverCallbackDebounced.current.cancel) {
-            hoverCallbackDebounced.current.cancel()
-          }
-          hoverCallbackDebounced.current({
-            features: extendedFeatures,
-            longitude: event.lngLat[0],
-            latitude: event.lngLat[1],
-          })
+        if (extendedFeatures.length) {
+          hoverEvent.features = extendedFeatures
         }
 
         const newSourcesWithHoverState: FeatureStateSource[] = extendedFeatures.flatMap(
@@ -144,45 +138,19 @@ export const useMapHover = (
             }
           }
         )
+        sourcesWithHoverState.current = newSourcesWithHoverState
+      }
 
-        // Updates sources on which to turn feature state off, only if it really changed
-        // this allows keeping the onMapHover reference, avoiding unnecesary map renders
-        const uniqNewSourcesWithHoverState = uniqBy(newSourcesWithHoverState, JSON.stringify)
-        if (
-          JSON.stringify(sourcesWithHoverState) !== JSON.stringify(uniqNewSourcesWithHoverState)
-        ) {
-          setSourcesWithHoverState(newSourcesWithHoverState)
-        }
-      } else {
-        if (hoverCallbackDebounced?.current?.cancel) {
-          hoverCallbackDebounced.current.cancel()
-        }
-        if (hoverCallback) {
-          hoverCallback({
-            longitude: event.lngLat[0],
-            latitude: event.lngLat[1],
-          })
-        }
+      if (hoverCallbackDebounced?.current) {
+        hoverCallbackDebounced.current.cancel()
+        hoverCallbackDebounced.current(hoverEvent)
+      }
+      if (hoverCallbackImmediate) {
+        hoverCallbackImmediate(hoverEvent)
       }
     },
-    [map, hoverCallback, hoverCallbackDebounced, sourcesWithHoverState]
+    [hoverCallbackImmediate, hoverCallbackDebounced, map]
   )
 
   return onMapHover
 }
-
-const useMapInteraction = (
-  clickCallback: InteractionEventCallback,
-  hoverCallback: InteractionEventCallback,
-  map: Map
-) => {
-  const onMapClick = useMapClick(clickCallback)
-  const onMapHover = useMapHover(hoverCallback, map)
-
-  return {
-    onMapClick,
-    onMapHover,
-  }
-}
-
-export default useMapInteraction

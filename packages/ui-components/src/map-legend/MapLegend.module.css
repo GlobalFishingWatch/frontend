@@ -47,6 +47,7 @@
 }
 
 .currentValue {
+  font: var(--font-XS);
   position: absolute;
   top: 1rem;
   padding: 4px 8px;

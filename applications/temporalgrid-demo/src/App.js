@@ -199,6 +199,7 @@ export default function App() {
     setHoveredEvent(event)
   }, [])
 
+  // TODO useMapInteraction has been removed
   const { onMapClick, onMapHover } = useMapInteraction(clickCallback, hoverCallback, mapRef)
   // unifies app wide dataviews config and picked values, eg adds color, title, etc to picked values
   const hoverTooltipEvent = useMapTooltip(DATAVIEWS, hoveredEvent)
