@@ -58,24 +58,24 @@ export const selectDataviewInstancesResolved = createSelector(
       { workspace: [], new: [] }
     )
     const dataviewInstances = [...workspace.dataviewInstances, ...urlDataviews.new]
-    const dataviewInstancesResolved = dataviewInstances.flatMap((dataviewIntance) => {
-      const dataview = dataviews?.find((dataview) => dataview.id === dataviewIntance.dataviewId)
+    const dataviewInstancesResolved = dataviewInstances.flatMap((dataviewInstance) => {
+      const dataview = dataviews?.find((dataview) => dataview.id === dataviewInstance.dataviewId)
       if (!dataview) {
         console.warn(
-          `DataviewIntance id: ${dataviewIntance.id} doesn't have a valid dataview (${dataviewIntance.dataviewId})`
+          `DataviewInstance id: ${dataviewInstance.id} doesn't have a valid dataview (${dataviewInstance.dataviewId})`
         )
         return []
       }
 
       const urlDataview = urlDataviews.workspace.find(
-        (urlDataview) => urlDataview.id === dataviewIntance.id
+        (urlDataview) => urlDataview.id === dataviewInstance.id
       )
       if (urlDataview?.deleted) {
         return []
       }
       const config = {
         ...dataview.config,
-        ...dataviewIntance.config,
+        ...dataviewInstance.config,
         ...urlDataview?.config,
       }
       config.visible = config?.visible ?? true
@@ -85,7 +85,7 @@ export const selectDataviewInstancesResolved = createSelector(
         if (dataset) {
           dataviewDatasets.push(dataset)
         }
-        const workspaceDataviewDatasetConfig = dataviewIntance.datasetsConfig?.find(
+        const workspaceDataviewDatasetConfig = dataviewInstance.datasetsConfig?.find(
           (wddc) =>
             wddc.datasetId === datasetConfig.datasetId && wddc.endpoint === datasetConfig.endpoint
         )
@@ -95,7 +95,7 @@ export const selectDataviewInstancesResolved = createSelector(
       })
       const resolvedDataview = {
         ...dataview,
-        id: dataviewIntance.id as string,
+        id: dataviewInstance.id as string,
         dataviewId: dataview.id,
         config,
         datasets: dataviewDatasets,
