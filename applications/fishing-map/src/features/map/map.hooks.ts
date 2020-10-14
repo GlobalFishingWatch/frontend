@@ -16,7 +16,7 @@ import {
   setClickedEvent,
   selectClickedEvent,
   selectClickedEventStatus,
-  fetch4WingStatsThunk,
+  fetch4WingInteractionThunk,
 } from './map.slice'
 import { getGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
 
@@ -70,7 +70,7 @@ export const useClickedEventConnect = () => {
         // { id: 'limit', value: 11 },
       ],
     }
-    dispatch(fetch4WingStatsThunk({ dataset, datasetConfig }))
+    dispatch(fetch4WingInteractionThunk({ dataset, datasetConfig }))
   }
   return { clickedEvent, clickedEventStatus, dispatchClickedEvent }
 }
