@@ -1,5 +1,15 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.8.1
+
+### Patch Changes
+
+- 9b6c010: Fishing map hover
+- Updated dependencies [9b6c010]
+  - @globalfishingwatch/layer-composer@2.14.1
+  - @globalfishingwatch/react-hooks@3.3.1
+  - @globalfishingwatch/ui-components@2.0.1
+
 ## 0.8.0
 
 ### Minor Changes
