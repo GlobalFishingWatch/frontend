@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState, useMemo } from 'react'
+import React, { memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { AsyncReducerStatus } from 'types'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
@@ -48,6 +48,9 @@ const Map = memo(
       [token]
     )
     const { setMapBounds } = useMapBounds()
+    useEffect(() => {
+      setMapBounds()
+    }, [])
     return (
       <InteractiveMap
         ref={mapRef}
@@ -60,7 +63,6 @@ const Map = memo(
         mapStyle={style}
         mapOptions={mapOptions}
         transformRequest={transformRequest}
-        onLoad={setMapBounds}
         onResize={setMapBounds}
         interactiveLayerIds={style.metadata.interactiveLayerIds}
         onClick={onMapClick}

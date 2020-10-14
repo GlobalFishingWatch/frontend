@@ -22,7 +22,7 @@ const MapControls = (): React.ReactElement => {
 
   return (
     <div className={styles.mapControls}>
-      <MiniGlobe size={60} bounds={bounds} center={{ latitude, longitude }} />
+      <MiniGlobe size={60} viewportThickness={3} bounds={bounds} center={{ latitude, longitude }} />
       <IconButton icon="plus" type="map-tool" tooltip="Zoom in" onClick={onZoomInClick} />
       <IconButton icon="minus" type="map-tool" tooltip="Zoom out" onClick={onZoomOutClick} />
       <IconButton icon="ruler" type="map-tool" tooltip="Ruler (Coming soon)" />
