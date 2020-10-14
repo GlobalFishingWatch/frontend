@@ -7,11 +7,11 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
-import { DataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useLocationConnect } from 'routes/routes.hook'
 import { HOME, SEARCH } from 'routes/routes'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectVesselsDatasets, selectTracksDatasets } from 'features/workspace/workspace.selectors'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -54,25 +54,16 @@ function Search() {
 
   const onSelectionChange = (selection: any) => {
     if (selection) {
-      const datasetsConfig = [
-        ...trackDatasets.map((dataset) => ({
-          datasetId: dataset?.id as string,
-          params: [{ id: 'vesselId', value: selection.id }],
-          endpoint: 'carriers-tracks',
-        })),
-        ...searchDatasets.map((dataset) => ({
-          datasetId: dataset?.id as string,
-          params: [{ id: 'vesselId', value: selection.id }],
-          endpoint: 'carriers-vessels',
-        })),
-      ]
-      const vesselDataviewInstance: DataviewInstance = {
-        id: `vessel-${selection.id}`,
-        dataviewId: 4,
-        datasetsConfig,
+      const vesselDataviewInstance = getVesselDataviewInstance(
+        selection,
+        // TODO this datasets not are all of them but the response of the selection
+        trackDatasets,
+        searchDatasets
+      )
+      if (vesselDataviewInstance) {
+        upsertDataviewInstance(vesselDataviewInstance)
+        dispatchLocation(HOME)
       }
-      upsertDataviewInstance(vesselDataviewInstance)
-      dispatchLocation(HOME)
     }
   }
 

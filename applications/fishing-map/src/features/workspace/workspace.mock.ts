@@ -20,10 +20,12 @@ const workspace: Workspace = {
   },
   start: '2018-01-01T00:00:00.000Z',
   end: '2019-12-31T00:00:00.000Z',
+  // TODO: if a dataview is using a dataset not included here we have to fetch it
   datasets: [{ id: FISHING_DATASET_ID }, { id: TRACKS_DATASET_ID }, { id: VESSELS_DATASET_ID }],
+  // TODO: same with dataviewInstances using dataviews not included here
   dataviews: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }],
   // We need to "instanciate" every dataview we want to use in the workspace
-  // think as same model than mapbox-gl with source (dataview) and layer (dataviewConfig)
+  // think as same model than mapbox-gl with source (dataview) and layer (dataviewIntance)
   dataviewInstances: [
     {
       id: 'basemap',

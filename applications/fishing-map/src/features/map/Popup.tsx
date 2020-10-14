@@ -1,9 +1,10 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Popup } from '@globalfishingwatch/react-map-gl'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { DataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { TRACKS_DATASET_TYPE } from 'features/workspace/workspace.mock'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { selectTracksDatasets, selectVesselsDatasets } from 'features/workspace/workspace.selectors'
 import { TooltipEvent, TooltipEventFeature } from '../map/map.hooks'
 import styles from './Popup.module.css'
 
@@ -24,23 +25,26 @@ function PopupWrapper({
   loading = false,
 }: PopupWrapper) {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const trackDatasets = useSelector(selectTracksDatasets)
+  const searchDatasets = useSelector(selectVesselsDatasets)
   const onVesselClick = (vessel: any, feature: TooltipEventFeature) => {
-    const datasetId = feature.dataset?.relatedDatasets?.find(
-      (relatedDataset) => relatedDataset.type === TRACKS_DATASET_TYPE
-    )?.id
-    if (datasetId) {
-      const dataviewInstance: DataviewInstance = {
-        id: `track-${vessel.id}`,
-        dataviewId: 4,
-        datasetsConfig: [
-          {
-            datasetId: datasetId,
-            params: [{ id: 'vesselId', value: vessel.id }],
-            endpoint: 'carriers-tracks',
-          },
-        ],
-      }
-      upsertDataviewInstance(dataviewInstance)
+    const trackDatasetByFeature = trackDatasets.filter((trackDataset) =>
+      feature.dataset?.relatedDatasets?.some(
+        (featureRelatedDataset) => featureRelatedDataset.id === trackDataset.id
+      )
+    )
+    const searchDatasetByFeature = searchDatasets.filter((trackDataset) =>
+      feature.dataset?.relatedDatasets?.some(
+        (featureRelatedDataset) => featureRelatedDataset.id === trackDataset.id
+      )
+    )
+    const vesselDataviewInstance = getVesselDataviewInstance(
+      vessel,
+      trackDatasetByFeature,
+      searchDatasetByFeature
+    )
+    if (vesselDataviewInstance) {
+      upsertDataviewInstance(vesselDataviewInstance)
     }
   }
   return (

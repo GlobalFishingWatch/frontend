@@ -7,9 +7,46 @@ import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
 export const useDataviewInstancesConnect = () => {
   const urlDataviewInstances = useSelector(selectDataviewInstances)
-  const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
   const { dispatchQueryParams } = useLocationConnect()
 
+  const addDataviewInstance = useCallback(
+    (dataviewInstance: Partial<UrlDataviewInstance>) => {
+      const dataviewAlreadyDefined = urlDataviewInstances?.some(
+        (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
+      )
+      if (dataviewAlreadyDefined) {
+        console.error('Dataview instance already defined, use updateDataviewInstance instead')
+        return
+      }
+      dispatchQueryParams({
+        dataviewInstances: [...(urlDataviewInstances || []), dataviewInstance],
+      })
+    },
+    [dispatchQueryParams, urlDataviewInstances]
+  )
+
+  const updateDataviewInstance = useCallback(
+    (dataviewInstance: Partial<UrlDataviewInstance>) => {
+      const dataviewAlreadyDefined = urlDataviewInstances?.some(
+        (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
+      )
+      if (!dataviewAlreadyDefined) {
+        console.error('Dataview to updated not found, use addDataviewInstance instead')
+        return
+      }
+      const dataviewInstances = urlDataviewInstances.map((urlDataviewInstance) => {
+        if (urlDataviewInstance.id !== dataviewInstance.id) return urlDataviewInstance
+        return {
+          ...urlDataviewInstance,
+          ...dataviewInstance,
+        }
+      })
+      dispatchQueryParams({ dataviewInstances })
+    },
+    [dispatchQueryParams, urlDataviewInstances]
+  )
+
+  // TODO review if this is still needed or we switch to add / update
   const upsertDataviewInstance = useCallback(
     (dataviewInstance: Partial<UrlDataviewInstance>) => {
       const currentDataviewInstance = urlDataviewInstances?.find(
@@ -33,6 +70,7 @@ export const useDataviewInstancesConnect = () => {
     [dispatchQueryParams, urlDataviewInstances]
   )
 
+  const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
   const deleteDataviewInstance = useCallback(
     (id: string) => {
       const dataviewInstances = (urlDataviewInstances || []).filter(
@@ -48,5 +86,10 @@ export const useDataviewInstancesConnect = () => {
     },
     [dispatchQueryParams, urlDataviewInstances, workspaceDataviewInstances]
   )
-  return { upsertDataviewInstance, deleteDataviewInstance }
+  return {
+    upsertDataviewInstance,
+    addDataviewInstance,
+    updateDataviewInstance,
+    deleteDataviewInstance,
+  }
 }
