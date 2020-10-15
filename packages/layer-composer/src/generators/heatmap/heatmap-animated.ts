@@ -105,7 +105,13 @@ const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays
     const legendRamp = sublayerBreaks.map((break_, breakIndex) => {
       // TODO Omitting the Zero value hence the +1
       const rampColor = ramp[breakIndex + 1] as string
-      const legendRampItem: [number, string] = [break_, rampColor]
+      let rampValue = break_
+      if (config.geomType === 'blob') {
+        if (breakIndex === 0) rampValue = 'less'
+        else if (breakIndex === sublayerBreaks.length - 1) rampValue = 'more'
+        else rampValue = null
+      }
+      const legendRampItem: [number, string] = [rampValue, rampColor]
       return legendRampItem
     })
     const sublayerLegend: LayerMetadataLegend = {
