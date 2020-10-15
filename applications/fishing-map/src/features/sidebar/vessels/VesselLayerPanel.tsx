@@ -3,7 +3,6 @@ import cx from 'classnames'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import { useSelector } from 'react-redux'
 import useClickedOutside from 'hooks/useClickedOutside'
-import { formatDate } from 'utils/dates'
 import { formatInfoField, formatInfoLabel } from 'utils/info'
 import { Switch, IconButton, Tooltip, Spinner, ColorBar } from '@globalfishingwatch/ui-components'
 import {
