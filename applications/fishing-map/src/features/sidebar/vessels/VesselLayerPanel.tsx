@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import { useSelector } from 'react-redux'
-// import { formatDate } from 'utils/dates'
 import useClickedOutside from 'hooks/useClickedOutside'
+import { formatDate } from 'utils/dates'
+import { formatInfoField } from 'utils/info'
 import { Switch, IconButton, Tooltip, Spinner, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
@@ -72,10 +73,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     setColorOpen(false)
     setInfoOpen(false)
   }
-
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
-  const vesselId = datasetConfig?.params.find((p: any) => p.id === 'vesselId')?.value as string
-  const title = vesselName || vesselId || dataview.name
 
   if (resource?.status === AsyncReducerStatus.Loading) {
     return (
@@ -84,6 +82,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       </div>
     )
   }
+
+  const vesselId = datasetConfig?.params.find((p: any) => p.id === 'vesselId')?.value as string
+  const title = vesselName || vesselId || dataview.name
 
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
@@ -156,7 +157,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               return (
                 <li key={field.id} className={styles.infoContentItem}>
                   <label>{field.id}</label>
-                  <span>{fieldValue}</span>
+                  <span>{formatInfoField(fieldValue, field.type)}</span>
                 </li>
               )
             })}
