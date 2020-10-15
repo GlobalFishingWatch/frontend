@@ -1,9 +1,10 @@
 import React, { memo, useState, Fragment, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { AsyncReducerStatus } from 'types'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
-import { AsyncReducerStatus } from 'types'
+import { Modal } from '@globalfishingwatch/ui-components'
 import { MapboxRefProvider } from 'features/map/map.context'
 import { fetchWorkspaceThunk, selectWorkspaceStatus } from 'features/workspace/workspace.slice'
 import { selectDataviewsResourceQueries } from 'features/workspace/workspace.selectors'
@@ -94,7 +95,13 @@ function App(): React.ReactElement {
         onClose={() => setMenuOpen(false)}
         activeLinkId="map-data"
       />
-      {debugActive && <DebugMenu />}
+      <Modal
+        header="Secret debug menu 🤖"
+        isOpen={debugActive}
+        onClose={(e) => dispatch(toggleDebugMenu())}
+      >
+        <DebugMenu />
+      </Modal>
     </Fragment>
   )
 }
