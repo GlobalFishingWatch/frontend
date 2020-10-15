@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
+import { useRef } from 'react'
 import {
   ExtendedFeature,
   ExtendedFeatureVessel,
@@ -34,12 +35,16 @@ export const useClickedEventConnect = () => {
   const dispatch = useDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
   const clickedEventStatus = useSelector(selectClickedEventStatus)
+  const promiseRef = useRef<any>()
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
   const { start, end } = useSelector(selectTimerange)
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
+    if (promiseRef.current) {
+      promiseRef.current.abort()
+    }
     if (event === null) {
       dispatch(setClickedEvent(null))
     }
@@ -70,7 +75,7 @@ export const useClickedEventConnect = () => {
         // { id: 'limit', value: 11 },
       ],
     }
-    dispatch(fetch4WingInteractionThunk({ dataset, datasetConfig }))
+    promiseRef.current = dispatch(fetch4WingInteractionThunk({ dataset, datasetConfig }))
   }
   return { clickedEvent, clickedEventStatus, dispatchClickedEvent }
 }

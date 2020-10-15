@@ -34,12 +34,17 @@ type Fetch4WingInteractionThunk = {
 }
 export const fetch4WingInteractionThunk = createAsyncThunk(
   'map/fetchInteraction',
-  async ({ dataset, datasetConfig }: Fetch4WingInteractionThunk, { getState }) => {
+  async (
+    { dataset, datasetConfig }: Fetch4WingInteractionThunk,
+    { getState, signal, rejectWithValue }
+  ) => {
     const url = resolveEndpoint(dataset, datasetConfig)
     const datasetId = datasetConfig.query?.find((query) => query.id === 'datasets')?.value as any
     let vesselsForDataset: ExtendedFeatureVessel[]
     if (url) {
-      const vesselsByDataset = await GFWAPI.fetch<Record<string, ExtendedFeatureVessel[]>>(url)
+      const vesselsByDataset = await GFWAPI.fetch<Record<string, ExtendedFeatureVessel[]>>(url, {
+        signal,
+      })
       vesselsForDataset = vesselsByDataset[datasetId]
       const infoDatasetId = getRelatedDatasetByType(dataset, VESSELS_DATASET_TYPE)?.id
       if (infoDatasetId) {
@@ -60,7 +65,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
           const infoUrl = resolveEndpoint(infoDataset, infoDatasetConfig)
           if (infoUrl) {
             // TODO create search API results response
-            const vesselsInfo = await GFWAPI.fetch<any>(infoUrl)
+            const vesselsInfo = await GFWAPI.fetch<any>(infoUrl, { signal })
             const { entries } = vesselsInfo?.[0]?.results
             if (entries) {
               vesselsForDataset = vesselsForDataset.map((vessel) => {
@@ -95,7 +100,7 @@ const slice = createSlice({
   },
 
   extraReducers: (builder) => {
-    builder.addCase(fetch4WingInteractionThunk.pending, (state) => {
+    builder.addCase(fetch4WingInteractionThunk.pending, (state, action) => {
       state.status = AsyncReducerStatus.Loading
     })
     builder.addCase(fetch4WingInteractionThunk.fulfilled, (state, action) => {
@@ -110,8 +115,10 @@ const slice = createSlice({
         clickedFeature.dataset = action.payload.dataset
       }
     })
-    builder.addCase(fetch4WingInteractionThunk.rejected, (state) => {
-      state.status = AsyncReducerStatus.Error
+    builder.addCase(fetch4WingInteractionThunk.rejected, (state, action) => {
+      if (action.error.message !== 'Aborted') {
+        state.status = AsyncReducerStatus.Error
+      }
     })
   },
 })
