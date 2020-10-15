@@ -115,6 +115,11 @@
   width: 100%;
 }
 
-.infoTooltipRow {
-  display: block;
+.infoContent {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.infoContentItem {
+  margin-right: var(--space-M);
 }
