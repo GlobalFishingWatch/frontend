@@ -17,7 +17,7 @@ type LayerPanelProps = {
 type Vessel = {
   shipname: string
   flag: string
-  imo: string
+  imo?: string
   first_transmission_date: string
   last_transmission_date: string
 }
@@ -55,12 +55,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const title = vesselName || vesselId || dataview.name
   const infoTooltip = (
     <p className={styles.infoTooltip}>
-      {dataview.info.fields.map((field: keyof Vessel) => {
-        const fieldValue = resource?.data?.[field]
+      {dataview.info.fields.map((field: { id: keyof Vessel; type: string }) => {
+        const fieldValue = resource?.data?.[field.id]
         if (!fieldValue) return null
         return (
-          <span key={field} className={styles.infoTooltipRow}>
-            {field.toUpperCase()}: {fieldValue}
+          <span key={field.id} className={styles.infoTooltipRow}>
+            {field.id.toUpperCase()}: {fieldValue}
           </span>
         )
       })}

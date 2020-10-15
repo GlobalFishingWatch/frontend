@@ -56,8 +56,12 @@ const dataviews: Dataview[] = [
       color: 'red',
     },
     info: {
-      // TODO think how we can format by different types, for example dates
-      fields: ['imo', 'flag', 'first_transmission_date', 'last_transmission_date'],
+      fields: [
+        { id: 'flag', type: 'flag' },
+        { id: 'imo', type: 'number' },
+        { id: 'first_transmission_date', type: 'date' },
+        { id: 'last_transmission_date', type: 'date' },
+      ],
     },
     datasetsConfig: [
       {
