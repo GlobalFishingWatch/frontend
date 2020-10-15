@@ -178,6 +178,7 @@ class HeatmapAnimatedGenerator {
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
     const { colorRamp, colorRampBaseExpression } = getColorRampBaseExpression(config)
+    const intervalInDays = timeChunks[0].intervalInDays
     const layers: Layer[] = timeChunks.flatMap((timeChunk: TimeChunk, timeChunkIndex: number) => {
       const frame = toQuantizedFrame(config.start, timeChunk.quantizeOffset, timeChunk.interval)
       const pickValueAt = frame.toString()
@@ -201,6 +202,11 @@ class HeatmapAnimatedGenerator {
           ['heatmap-density'],
           ...heatmapColorRamp,
         ] as any
+        const BASE_BLOB_INTENSITY = 0.5
+        const baseIntensity = BASE_BLOB_INTENSITY / Math.sqrt(Math.sqrt(intervalInDays))
+        const maxIntensity = baseIntensity * 16
+        paint['heatmap-intensity'][4] = baseIntensity
+        paint['heatmap-intensity'][6] = maxIntensity
       }
 
       const mainLayer: ExtendedLayer = {
@@ -218,12 +224,12 @@ class HeatmapAnimatedGenerator {
 
       // only add legend metadata for first time chunk
       if (timeChunkIndex === 0 && mainLayer.metadata) {
-        mainLayer.metadata.legend = getLegends(config, timeChunks[0].intervalInDays)
+        mainLayer.metadata.legend = getLegends(config, intervalInDays)
       }
 
       const chunkLayers: Layer[] = [mainLayer]
 
-      if (config.interactive) {
+      if (config.interactive && config.geomType === 'gridded') {
         chunkLayers.push({
           id: `${timeChunk.id}_interaction`,
           source: `${timeChunk.id}_interaction`,

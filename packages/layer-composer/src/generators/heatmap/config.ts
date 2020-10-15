@@ -1,5 +1,5 @@
 import { ColorRampsIds, BivariateColorRampsIds } from '../types'
-import { DEFAULT_BASEMAP_COLOR } from '..'
+import { DEFAULT_BACKGROUND_COLOR } from '..'
 import { HeatmapGeomGL, HeatmapGeoms } from './types'
 
 export const API_TILES_URL =
@@ -42,10 +42,19 @@ const getColorRampByOpacitySteps = (finalColor: string) => {
   return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
 }
 
+const DEFAULT_BACKGROUND_TRANSPARENT_COLOR = `rgba(${DEFAULT_BACKGROUND_COLOR.replace(')', ', 0)')}`
+
 export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds | BivariateColorRampsIds, string[]> = {
-  fishing: [DEFAULT_BASEMAP_COLOR, '#3B9088', '#EEFF00', '#ffffff'],
-  presence: [DEFAULT_BASEMAP_COLOR, '#163F89', '#0F6F97', '#07BBAE', '#00FFC3', '#FFFFFF'],
-  reception: ['rgb(255, 69, 115, 1)', '#7b2e8d', '#093b76', DEFAULT_BASEMAP_COLOR],
+  fishing: [DEFAULT_BACKGROUND_TRANSPARENT_COLOR, '#3B9088', '#EEFF00', '#ffffff'],
+  presence: [
+    DEFAULT_BACKGROUND_TRANSPARENT_COLOR,
+    '#163F89',
+    '#0F6F97',
+    '#07BBAE',
+    '#00FFC3',
+    '#FFFFFF',
+  ],
+  reception: ['rgb(255, 69, 115, 1)', '#7b2e8d', '#093b76', DEFAULT_BACKGROUND_TRANSPARENT_COLOR],
   teal: getColorRampByOpacitySteps('#00FFBC'),
   magenta: getColorRampByOpacitySteps('#FF64CE'),
   lilac: getColorRampByOpacitySteps('#9CA4FF'),

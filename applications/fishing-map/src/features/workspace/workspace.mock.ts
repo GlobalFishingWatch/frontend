@@ -35,25 +35,25 @@ const workspace: Workspace = {
       id: 'fishing',
       dataviewId: 3,
     },
-    {
-      id: 'vessel-1',
-      dataviewId: 4,
-      config: {
-        color: '#FFAA0D',
-      },
-      datasetsConfig: [
-        {
-          datasetId: TRACKS_DATASET_ID,
-          params: [{ id: 'vesselId', value: '00ba29183-3b86-9e36-cf20-ee340e409521' }],
-          endpoint: 'carriers-tracks',
-        },
-        {
-          datasetId: VESSELS_DATASET_ID,
-          params: [{ id: 'vesselId', value: '00ba29183-3b86-9e36-cf20-ee340e409521' }],
-          endpoint: 'carriers-vessel',
-        },
-      ],
-    },
+    // {
+    //   id: 'vessel-1',
+    //   dataviewId: 4,
+    //   config: {
+    //     color: '#FFAA0D',
+    //   },
+    //   datasetsConfig: [
+    //     {
+    //       datasetId: TRACKS_DATASET_ID,
+    //       params: [{ id: 'vesselId', value: '00ba29183-3b86-9e36-cf20-ee340e409521' }],
+    //       endpoint: 'carriers-tracks',
+    //     },
+    //     {
+    //       datasetId: VESSELS_DATASET_ID,
+    //       params: [{ id: 'vesselId', value: '00ba29183-3b86-9e36-cf20-ee340e409521' }],
+    //       endpoint: 'carriers-vessel',
+    //     },
+    //   ],
+    // },
     // {
     //   id: 'vessel-2',
     //   dataviewId: 4,
