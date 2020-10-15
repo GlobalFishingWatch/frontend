@@ -79,7 +79,8 @@ function ColorRampLegend({
               style={{ left: `${(i * 100) / (ramp.length - 1)}%` }}
               key={i}
             >
-              {(i === ramp.length - 1 ? '≥ ' : '') + (value >= 1000 ? `${value / 1000}k` : value)}
+              {(i === ramp.length - 1 && !isNaN(value) ? '≥ ' : '') +
+                (value >= 1000 ? `${value / 1000}k` : value)}
             </span>
           )
         })}

@@ -14,6 +14,7 @@ import resourcesReducer from './features/resources/resources.slice'
 import searchReducer from './features/search/search.slice'
 import timebarReducer from './features/timebar/timebar.slice'
 import mapReducer from './features/map/map.slice'
+import debugReducer from './features/debug/debug.slice'
 
 const {
   reducer: location,
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   resources: resourcesReducer,
   timebar: timebarReducer,
   map: mapReducer,
+  debug: debugReducer,
   location: location,
 })
 

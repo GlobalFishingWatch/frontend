@@ -74,6 +74,7 @@ export const layers: Dictionary<Layer[]> = {
       'source-layer': 'countries',
       paint: {
         'fill-color': DEFAULT_LANDMASS_COLOR,
+        'fill-opacity': 0.99, // This is a trick to allow proper rendering of MGL heatmap layers behind
       },
       metadata: {
         group: Group.BasemapFill,

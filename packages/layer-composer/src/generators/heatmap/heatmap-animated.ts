@@ -105,7 +105,13 @@ const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays
     const legendRamp = sublayerBreaks.map((break_, breakIndex) => {
       // TODO Omitting the Zero value hence the +1
       const rampColor = ramp[breakIndex + 1] as string
-      const legendRampItem: [number, string] = [break_, rampColor]
+      let rampValue = break_
+      if (config.geomType === 'blob') {
+        if (breakIndex === 0) rampValue = 'less'
+        else if (breakIndex === sublayerBreaks.length - 1) rampValue = 'more'
+        else rampValue = null
+      }
+      const legendRampItem: [number, string] = [rampValue, rampColor]
       return legendRampItem
     })
     const sublayerLegend: LayerMetadataLegend = {
@@ -178,7 +184,13 @@ class HeatmapAnimatedGenerator {
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
     const { colorRamp, colorRampBaseExpression } = getColorRampBaseExpression(config)
+    const intervalInDays = timeChunks[0].intervalInDays
     const layers: Layer[] = timeChunks.flatMap((timeChunk: TimeChunk, timeChunkIndex: number) => {
+      // Seems like MGL 'heatmap' layer types can be rendered more than once,
+      // so when using 'blob' type, just use the first time chunk - this will prevent buffering to happen, but whatever
+      if (config.geomType === 'blob' && timeChunkIndex > 0) {
+        return []
+      }
       const frame = toQuantizedFrame(config.start, timeChunk.quantizeOffset, timeChunk.interval)
       const pickValueAt = frame.toString()
       const exprPick = ['coalesce', ['get', pickValueAt], 0]
@@ -201,6 +213,11 @@ class HeatmapAnimatedGenerator {
           ['heatmap-density'],
           ...heatmapColorRamp,
         ] as any
+        const BASE_BLOB_INTENSITY = 0.5
+        const baseIntensity = BASE_BLOB_INTENSITY / Math.sqrt(Math.sqrt(intervalInDays))
+        const maxIntensity = baseIntensity * 16
+        paint['heatmap-intensity'][4] = baseIntensity
+        paint['heatmap-intensity'][6] = maxIntensity
       }
 
       const mainLayer: ExtendedLayer = {
@@ -218,12 +235,12 @@ class HeatmapAnimatedGenerator {
 
       // only add legend metadata for first time chunk
       if (timeChunkIndex === 0 && mainLayer.metadata) {
-        mainLayer.metadata.legend = getLegends(config, timeChunks[0].intervalInDays)
+        mainLayer.metadata.legend = getLegends(config, intervalInDays)
       }
 
       const chunkLayers: Layer[] = [mainLayer]
 
-      if (config.interactive) {
+      if (config.interactive && config.geomType === 'gridded') {
         chunkLayers.push({
           id: `${timeChunk.id}_interaction`,
           source: `${timeChunk.id}_interaction`,
