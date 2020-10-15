@@ -36,7 +36,7 @@ function Search() {
   useEffect(() => {
     if (query) {
       dispatchLocation(SEARCH, { query })
-      dispatch(fetchVesselSearchThunk({ query, datasets: searchDatasets.map((d) => d.id) }))
+      dispatch(fetchVesselSearchThunk({ query, datasets: searchDatasets }))
     } else {
       dispatchLocation(SEARCH)
       dispatch(cleanVesselSearchResults())
