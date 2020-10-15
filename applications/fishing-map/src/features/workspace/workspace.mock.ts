@@ -39,7 +39,7 @@ const workspace: Workspace = {
       id: 'vessel-1',
       dataviewId: 4,
       config: {
-        color: '#FFAA0D',
+        color: '#F95E5E',
       },
       datasetsConfig: [
         {

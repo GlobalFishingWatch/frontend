@@ -44,7 +44,7 @@ const urlToObjectTransformation: Dictionary<(value: any) => any> = {
 }
 
 const encodeWorkspace = (object: Record<string, unknown>) => {
-  return stringify(object, { encode: false })
+  return stringify(object, { encodeValuesOnly: true })
 }
 
 // Extended logic from qs utils decoder to have some keywords parsed
