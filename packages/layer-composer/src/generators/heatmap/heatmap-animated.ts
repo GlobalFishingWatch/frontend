@@ -186,6 +186,11 @@ class HeatmapAnimatedGenerator {
     const { colorRamp, colorRampBaseExpression } = getColorRampBaseExpression(config)
     const intervalInDays = timeChunks[0].intervalInDays
     const layers: Layer[] = timeChunks.flatMap((timeChunk: TimeChunk, timeChunkIndex: number) => {
+      // Seems like MGL 'heatmap' layer types can be rendered more than once,
+      // so when using 'blob' type, just use the first time chunk - this will prevent buffering to happen, but whatever
+      if (config.geomType === 'blob' && timeChunkIndex > 0) {
+        return []
+      }
       const frame = toQuantizedFrame(config.start, timeChunk.quantizeOffset, timeChunk.interval)
       const pickValueAt = frame.toString()
       const exprPick = ['coalesce', ['get', pickValueAt], 0]
