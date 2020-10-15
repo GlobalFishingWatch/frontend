@@ -9,6 +9,11 @@ import {
   resolveEndpoint,
 } from '@globalfishingwatch/dataviews-client'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
+import { VESSELS_DATASET_TYPE } from 'features/workspace/workspace.mock'
+import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
+import { selectDatasetById } from 'features/datasets/datasets.slice'
+
+export const MAX_TOOLTIP_VESSELS = 5
 
 type MapState = {
   clicked: InteractionEvent | null
@@ -29,12 +34,45 @@ type Fetch4WingInteractionThunk = {
 }
 export const fetch4WingInteractionThunk = createAsyncThunk(
   'map/fetchInteraction',
-  async ({ dataset, datasetConfig }: Fetch4WingInteractionThunk) => {
+  async ({ dataset, datasetConfig }: Fetch4WingInteractionThunk, { getState }) => {
     const url = resolveEndpoint(dataset, datasetConfig)
     const datasetId = datasetConfig.query?.find((query) => query.id === 'datasets')?.value as any
+    let vesselsForDataset: ExtendedFeatureVessel[]
     if (url) {
       const vesselsByDataset = await GFWAPI.fetch<Record<string, ExtendedFeatureVessel[]>>(url)
-      const vesselsForDataset = vesselsByDataset[datasetId]
+      vesselsForDataset = vesselsByDataset[datasetId]
+      const infoDatasetId = getRelatedDatasetByType(dataset, VESSELS_DATASET_TYPE)?.id
+      if (infoDatasetId) {
+        const infoDataset = selectDatasetById(infoDatasetId)(getState() as RootState)
+        if (infoDataset) {
+          const infoDatasetConfig = {
+            endpoint: 'carriers-multiple-vessel',
+            datasetId: infoDataset.id,
+            params: [],
+            query: [
+              { id: 'datasets', value: infoDataset.id },
+              {
+                id: 'ids',
+                value: vesselsForDataset.slice(0, MAX_TOOLTIP_VESSELS).map((v) => v.id),
+              },
+            ],
+          }
+          const infoUrl = resolveEndpoint(infoDataset, infoDatasetConfig)
+          if (infoUrl) {
+            // TODO create search API results response
+            const vesselsInfo = await GFWAPI.fetch<any>(infoUrl)
+            const { entries } = vesselsInfo?.[0]?.results
+            if (entries) {
+              vesselsForDataset = vesselsForDataset.map((vessel) => {
+                // TODO use vessel API response here
+                const vesselInfo = entries.find((entry: any) => entry.id === vessel.id)
+                if (!vesselInfo) return vessel
+                return { ...vessel, ...vesselInfo }
+              })
+            }
+          }
+        }
+      }
       return { generatorId: datasetConfig.generatorId, vessels: vesselsForDataset, dataset }
     }
   }

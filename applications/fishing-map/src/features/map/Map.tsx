@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
+import { AsyncReducerStatus } from 'types'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -12,7 +13,6 @@ import {
   useMapHover,
 } from '@globalfishingwatch/react-hooks'
 import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
-import { AsyncReducerStatus } from 'types'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import { ClickPopup, HoverPopup } from './Popup'
@@ -110,9 +110,9 @@ const MapWrapper = (): React.ReactElement => {
         ? layer.metadata.legend
         : [layer.metadata.legend]
 
+      // TODO Move this to its own package
       return sublayerLegendsMetadata.map((sublayerLegendMetadata) => {
         const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
-        // TODO remove the parseInt
         const dataview = dataviews?.find((d) => d.id === id)
         // TODO generatorId / dataviews ID mismatch (wrongly set in getGeneratorsConfig)
         const sublayerLegend: LegendLayer = {

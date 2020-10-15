@@ -17,6 +17,7 @@ import {
   selectClickedEvent,
   selectClickedEventStatus,
   fetch4WingInteractionThunk,
+  MAX_TOOLTIP_VESSELS,
 } from './map.slice'
 import { getGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
 
@@ -119,11 +120,10 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       ...(feature.dataset && { dataset: feature.dataset }),
     }
     if (feature.vessels) {
-      const MAX_VESSELS = 5
       tooltipEventFeature.vesselsInfo = {
-        vessels: feature.vessels.slice(0, MAX_VESSELS),
+        vessels: feature.vessels.slice(0, MAX_TOOLTIP_VESSELS),
         numVessels: feature.vessels.length,
-        overflow: feature.vessels.length > MAX_VESSELS,
+        overflow: feature.vessels.length > MAX_TOOLTIP_VESSELS,
       }
     }
     return tooltipEventFeature

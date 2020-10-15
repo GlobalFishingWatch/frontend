@@ -80,7 +80,7 @@ function PopupWrapper({
                       onVesselClick(vessel, feature)
                     }}
                   >
-                    {Math.round(vessel.hours)} hours: {vessel.id}
+                    {vessel.shipname || vessel.id}: {Math.round(vessel.hours)} hours
                   </button>
                 ))}
                 {feature.vesselsInfo.overflow && (

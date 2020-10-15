@@ -4,6 +4,7 @@ export { useMapHover, useMapClick } from './use-map-interaction'
 export type ExtendedFeatureVessel = {
   id: string
   hours: number
+  [key: string]: any
 }
 
 export type ExtendedFeature = {
