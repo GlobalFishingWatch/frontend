@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.2.0
+
+### Minor Changes
+
+- 36e469d: Fishing map - Vessel layer panel UI
+
 ## 2.1.0
 
 ### Minor Changes
