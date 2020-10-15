@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useState, useMemo, useEffect } from 'react'
-import { AsyncReducerStatus } from 'types'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
@@ -13,12 +12,12 @@ import {
   useMapHover,
 } from '@globalfishingwatch/react-hooks'
 import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
-import { useClickedEventConnect, useMapTooltip } from 'features/map/map.hooks'
+import { AsyncReducerStatus } from 'types'
+import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import { ClickPopup, HoverPopup } from './Popup'
 import MapInfo from './MapInfo'
 import MapControls from './MapControls'
-import { useGeneratorsConnect } from './map.hooks'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import { useMapboxRef } from './map.context'
 import styles from './Map.module.css'
@@ -124,9 +123,7 @@ const MapWrapper = (): React.ReactElement => {
           label: 'Soy leyenda ✌️',
           unit: 'hours',
         }
-        const hoveredFeatureForDataview = hoveredEvent?.features?.find(
-          (f) => f.generatorId === /*id*/ 'HEATMAP_ANIMATED_fishing'
-        )
+        const hoveredFeatureForDataview = hoveredEvent?.features?.find((f) => f.generatorId === id)
 
         if (hoveredFeatureForDataview) {
           sublayerLegend.currentValue = hoveredFeatureForDataview.value
