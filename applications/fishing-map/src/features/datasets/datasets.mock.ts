@@ -86,7 +86,7 @@ const datasets: Dataset[] = [
         id: 'carriers-vessels',
         description: 'Endpoint to retrieve vessels information',
         downloadable: true,
-        pathTemplate: '/v1/vessels',
+        pathTemplate: '/v1/vessels/search',
         params: [],
         query: [
           {
