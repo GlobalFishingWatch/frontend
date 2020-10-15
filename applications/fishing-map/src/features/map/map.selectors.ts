@@ -18,6 +18,7 @@ import {
 import { selectResources } from 'features/resources/resources.slice'
 import { FALLBACK_VIEWPORT } from 'data/config'
 import { TRACKS_DATASET_TYPE } from 'features/workspace/workspace.mock'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 
 export const selectViewport = createSelector(
   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery, selectWorkspaceViewport],
@@ -41,17 +42,19 @@ export const selectGlobalGeneratorsConfig = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [selectDataviewInstancesResolved, selectFishingFilters, selectResources],
-  (dataviews = [], fishingFilters, resources) => {
+  [selectDataviewInstancesResolved, selectFishingFilters, selectResources, selectDebugOptions],
+  (dataviews = [], fishingFilters, resources, debugOptions) => {
     // TODO add logic to merge 4Wings dataviews into one generator
     const generatorsConfig = dataviews.flatMap((dataview) => {
       const filters = fishingFilters?.map((filter) => filter.id)
       const config: DataviewConfig = { ...dataview.config }
-      if (config?.type === Generators.Type.HeatmapAnimated && filters?.length) {
-        config.sublayers = config.sublayers?.map((layer) => ({
-          ...layer,
-          filter: `flag=${filters.map((filter) => `'${filter}'`).join(',')}`,
-        }))
+      if (config?.type === Generators.Type.HeatmapAnimated) {
+        if (filters?.length) {
+          config.sublayers = config.sublayers?.map((layer) => ({
+            ...layer,
+            filter: `flag=${filters.map((filter) => `'${filter}'`).join(',')}`,
+          }))
+        }
       }
 
       // Try to retrieve resource if it exists
@@ -65,6 +68,8 @@ export const getGeneratorsConfig = createSelector(
         ...config,
         id: dataview.id,
         ...(data && { data }),
+        geomType:
+          debugOptions.blob === true && config?.sublayers?.length === 1 ? 'blob' : 'gridded',
       }
     }) as AnyGeneratorConfig[]
     return generatorsConfig
