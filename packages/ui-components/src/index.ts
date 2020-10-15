@@ -4,7 +4,6 @@ export {
   ColorBarOption,
   HeatmapColorBarIds,
   HeatmapColorBarValues,
-  TrackColorBarIds,
   TrackColorBarValues,
 } from './color-bar'
 export { default as CountryFlag } from './countryflag'
