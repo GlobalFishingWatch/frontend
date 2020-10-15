@@ -1,5 +1,16 @@
 # @globalfishingwatch/ui-components
 
+## 2.1.0
+
+### Minor Changes
+
+- a40d300: Fishing map blob
+
+### Patch Changes
+
+- Updated dependencies [a40d300]
+  - @globalfishingwatch/layer-composer@2.15.0
+
 ## 2.0.1
 
 ### Patch Changes

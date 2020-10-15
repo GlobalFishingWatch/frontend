@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 1.4.0
+
+### Minor Changes
+
+- a40d300: Fishing map blob
+
 ## 1.3.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 2.15.0
+
+### Minor Changes
+
+- a40d300: Fishing map blob
+
 ## 2.14.1
 
 ### Patch Changes
