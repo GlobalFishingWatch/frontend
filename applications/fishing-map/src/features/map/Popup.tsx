@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { formatInfoField, formatNumber } from 'utils/info'
+import { Anchor } from 'mapbox-gl'
 import { Popup } from '@globalfishingwatch/react-map-gl'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -16,15 +17,7 @@ type PopupWrapper = {
   className: string
   onClose?: () => void
   loading?: boolean
-  anchor?:
-    | 'top'
-    | 'top-left'
-    | 'top-right'
-    | 'bottom'
-    | 'bottom-left'
-    | 'bottom-right'
-    | 'left'
-    | 'right'
+  anchor?: Anchor
 }
 function PopupWrapper({
   tooltipEvent,

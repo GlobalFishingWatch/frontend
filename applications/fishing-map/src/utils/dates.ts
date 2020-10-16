@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon'
-
-const DATE_FORMAT = 'yyyy/MM/dd'
+import { DATE_FORMAT } from 'data/config'
 
 export function formatDate(date?: string) {
   if (!date) return ''
