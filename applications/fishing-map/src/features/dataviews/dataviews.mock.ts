@@ -55,7 +55,7 @@ const dataviews: Dataview[] = [
     description: 'Default track',
     config: {
       type: Generators.Type.Track,
-      color: 'red',
+      color: '#F95E5E',
     },
     info: {
       fields: [

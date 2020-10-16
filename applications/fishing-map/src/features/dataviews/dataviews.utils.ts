@@ -1,4 +1,5 @@
 import { Dataset, DataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { TrackColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 
 export const getVesselDataviewInstance = (
   vessel: any, // TODO: use vessel api-types here
@@ -20,6 +21,9 @@ export const getVesselDataviewInstance = (
   const vesselDataviewInstance: DataviewInstance = {
     id: `vessel-${vessel.id}`,
     dataviewId: 4,
+    config: {
+      color: TrackColorBarOptions[Math.floor(Math.random() * TrackColorBarOptions.length)].value,
+    },
     datasetsConfig,
   }
   return vesselDataviewInstance
