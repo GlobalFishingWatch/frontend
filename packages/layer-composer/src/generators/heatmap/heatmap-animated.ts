@@ -1,26 +1,29 @@
 import memoizeOne from 'memoize-one'
-import { Type, HeatmapAnimatedGeneratorConfig, MergedGeneratorConfig } from '../types'
-import { ExtendedLayer, Group } from '../../types'
+import {
+  Type,
+  HeatmapAnimatedGeneratorConfig,
+  MergedGeneratorConfig,
+  HeatmapAnimatedMode,
+} from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import {
   API_TILES_URL,
   API_ENDPOINTS,
-  HEATMAP_GEOM_TYPES,
   HEATMAP_DEFAULT_MAX_ZOOM,
-  HEATMAP_GEOM_TYPES_GL_TYPES,
+  HEATMAP_MODE_COMBINATION,
 } from './config'
 import { TimeChunk, getActiveTimeChunks, getDelta } from './util/time-chunks'
 import { getSublayersBreaks } from './util/get-legends'
-import getGriddedLayers from './geomTypes/gridded'
-import getBlobLayer from './geomTypes/blob'
+import getGriddedLayers from './modes/gridded'
+import getBlobLayer from './modes/blob'
+import getExtrudedLayer from './modes/extruded'
 
 export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
 >
 
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
-  combinationMode: 'add',
-  geomType: HEATMAP_GEOM_TYPES.GRIDDED,
+  mode: HeatmapAnimatedMode.Compare,
   tilesetsStart: '2012-01-01T00:00:00.000Z',
   tilesetsEnd: new Date().toISOString(),
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
@@ -53,11 +56,15 @@ class HeatmapAnimatedGenerator {
 
     const breaks = getSublayersBreaks(config, timeChunks[0].intervalInDays)
 
+    const geomType = config.mode === HeatmapAnimatedMode.Blob ? 'point' : 'rectangle'
+    const combinationMode = HEATMAP_MODE_COMBINATION[config.mode]
+
     const sources = timeChunks.flatMap((timeChunk: TimeChunk) => {
       const baseSourceParams: Record<string, string> = {
         id: timeChunk.id,
         singleFrame: 'false',
-        geomType: config.geomType,
+        geomType,
+        combinationMode,
         filters: toURLArray('filters', filters),
         datasets: toURLArray('datasets', datasets),
         delta: getDelta(config.start, config.end, timeChunk.interval).toString(),
@@ -65,14 +72,18 @@ class HeatmapAnimatedGenerator {
         interval: timeChunk.interval,
         numDatasets: config.sublayers.length.toString(),
         breaks: JSON.stringify(breaks),
-        combinationMode: config.combinationMode,
       }
       if (timeChunk.start && timeChunk.dataEnd) {
         baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd].join(',')
       }
 
       const sourceParams = [baseSourceParams]
-      if (config.interactive) {
+      // interaction layer only available with:
+      if (
+        config.interactive &&
+        (config.mode === HeatmapAnimatedMode.Compare ||
+          config.mode === HeatmapAnimatedMode.Bivariate)
+      ) {
         const interactiveSource = {
           ...baseSourceParams,
           id: `${baseSourceParams.id}_interaction`,
@@ -97,14 +108,20 @@ class HeatmapAnimatedGenerator {
   }
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
-    if (config.geomType === HEATMAP_GEOM_TYPES.GRIDDED) {
+    if (
+      config.mode === HeatmapAnimatedMode.Compare ||
+      config.mode === HeatmapAnimatedMode.Bivariate
+    ) {
       return getGriddedLayers(config, timeChunks)
-    } else if (config.geomType === HEATMAP_GEOM_TYPES.BLOB) {
+    } else if (config.mode === HeatmapAnimatedMode.Blob) {
       return getBlobLayer(config, timeChunks[0])
+    } else if (config.mode === HeatmapAnimatedMode.Extruded) {
+      return getExtrudedLayer(config, timeChunks)
     }
   }
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
+    // TODO Handle num sublayers/mode errors
     memoizeByLayerId(config.id, {
       getActiveTimeChunks: memoizeOne(getActiveTimeChunks),
     })

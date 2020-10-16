@@ -29,7 +29,7 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
     switch (generatorType) {
       case Generators.Type.HeatmapAnimated:
         const frame = feature.layer.metadata.frame
-        const valuesAtFrame = properties[frame.toString()]
+        const valuesAtFrame = properties[frame.toString()] || properties[frame]
         if (valuesAtFrame) {
           let parsed = JSON.parse(valuesAtFrame)
           if (extendedFeature.value === 0) break

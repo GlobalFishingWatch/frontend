@@ -1,4 +1,5 @@
 import { LayerMetadataLegend } from '../../../types'
+import { HeatmapAnimatedMode } from '../../types'
 import { HEATMAP_COLOR_RAMPS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import getBreaks from './get-breaks'
@@ -41,7 +42,7 @@ export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGenerato
     return expr
   })
 
-  if (config.combinationMode === 'compare') {
+  if (config.mode === HeatmapAnimatedMode.Compare) {
     return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions.flat() }
   }
 
@@ -55,7 +56,7 @@ export const getSublayersBreaks = (
   // TODO - generate this using updated stats API ?
   // TODO - in consequence, for each sublayer a different set of breaks should be produced
   // TODO - BIVARIATE
-  if (config.combinationMode === 'bivariate') {
+  if (config.mode === HeatmapAnimatedMode.Bivariate) {
     throw new Error('breaks generation not working for bivariate yet')
   }
   return config.sublayers.map(() => getBreaks(1, 30, 10, 1, [0.33, 0.66], intervalInDays))
@@ -70,7 +71,7 @@ const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays
       // TODO Omitting the Zero value hence the +1
       const rampColor = ramp[breakIndex + 1] as string
       let rampValue = break_
-      if (config.geomType === 'blob') {
+      if (config.mode === HeatmapAnimatedMode.Blob) {
         if (breakIndex === 0) rampValue = 'less'
         else if (breakIndex === sublayerBreaks.length - 1) rampValue = 'more'
         else rampValue = null

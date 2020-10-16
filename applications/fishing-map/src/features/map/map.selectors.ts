@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { UrlDataviewInstance } from 'types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   AnyGeneratorConfig,
@@ -7,6 +6,7 @@ import {
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { DataviewConfig } from '@globalfishingwatch/dataviews-client'
+import { UrlDataviewInstance } from 'types'
 import {
   selectTimerange,
   selectMapZoomQuery,
@@ -80,7 +80,10 @@ export const getGeneratorsConfig = createSelector(
         config: {
           ...animatedHeatmapDataviews[0].config,
           sublayers,
-          geomType: debugOptions.blob === true && sublayers.length === 1 ? 'blob' : 'gridded',
+          mode:
+            debugOptions.blob === true && sublayers.length === 1
+              ? Generators.HeatmapAnimatedMode.Blob
+              : Generators.HeatmapAnimatedMode.Compare,
         },
       }
       generatorsConfig.push(mergedLayer)
