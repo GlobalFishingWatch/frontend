@@ -1,11 +1,14 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { UrlDataviewInstance } from 'types'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import {
+  AnyGeneratorConfig,
+  HeatmapAnimatedGeneratorSublayer,
+} from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { DataviewConfig } from '@globalfishingwatch/dataviews-client'
 import {
   selectTimerange,
-  selectFishingFilters,
   selectMapZoomQuery,
   selectMapLatitudeQuery,
   selectMapLongitudeQuery,
@@ -42,21 +45,49 @@ export const selectGlobalGeneratorsConfig = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [selectDataviewInstancesResolved, selectFishingFilters, selectResources, selectDebugOptions],
-  (dataviews = [], fishingFilters, resources, debugOptions) => {
-    // TODO add logic to merge 4Wings dataviews into one generator
-    const generatorsConfig = dataviews.flatMap((dataview) => {
-      const filters = fishingFilters?.map((filter) => filter.id)
-      const config: DataviewConfig = { ...dataview.config }
-      if (config?.type === Generators.Type.HeatmapAnimated) {
-        if (filters?.length) {
-          config.sublayers = config.sublayers?.map((layer) => ({
-            ...layer,
-            filter: `flag=${filters.map((filter) => `'${filter}'`).join(',')}`,
-          }))
-        }
-      }
+  [selectDataviewInstancesResolved, selectResources, selectDebugOptions],
+  (dataviews = [], resources, debugOptions) => {
+    const animatedHeatmapDataviews: UrlDataviewInstance[] = []
 
+    // Collect heatmap animated generators and filter them out from main dataview list
+    let generatorsConfig = dataviews.filter((d) => {
+      const isAnimatedHeatmap = d.config?.type === Generators.Type.HeatmapAnimated
+      if (isAnimatedHeatmap) {
+        animatedHeatmapDataviews.push(d)
+      }
+      return !isAnimatedHeatmap
+    })
+
+    // If heatmap animated generators found, merge them into one generator with multiple sublayers
+    if (animatedHeatmapDataviews.length) {
+      const sublayers = animatedHeatmapDataviews.flatMap((dataview) => {
+        const config = dataview.config
+        const datasetsConfig = dataview.datasetsConfig
+        if (!config || !datasetsConfig || !datasetsConfig.length) return []
+        const sublayer: HeatmapAnimatedGeneratorSublayer = {
+          id: dataview.id,
+          datasets: datasetsConfig.map((dc) => dc.datasetId),
+          colorRamp: config.colorRamp || 'presence',
+        }
+        if (config.filters) {
+          const flags = config.filters.map((flag: string) => `flag='${flag}'`).join(' OR ')
+          sublayer.filter = flags
+        }
+        return sublayer
+      })
+      const mergedLayer = {
+        ...animatedHeatmapDataviews[0],
+        config: {
+          ...animatedHeatmapDataviews[0].config,
+          sublayers,
+          geomType: debugOptions.blob === true && sublayers.length === 1 ? 'blob' : 'gridded',
+        },
+      }
+      generatorsConfig.push(mergedLayer)
+    }
+
+    generatorsConfig = generatorsConfig.flatMap((dataview) => {
+      const config: DataviewConfig = { ...dataview.config }
       // Try to retrieve resource if it exists
       let data
       const { url } = resolveDataviewDatasetResource(dataview, TRACKS_DATASET_TYPE)
@@ -68,8 +99,6 @@ export const getGeneratorsConfig = createSelector(
         ...config,
         id: dataview.id,
         ...(data && { data }),
-        geomType:
-          debugOptions.blob === true && config?.sublayers?.length === 1 ? 'blob' : 'gridded',
       }
     }) as AnyGeneratorConfig[]
     return generatorsConfig

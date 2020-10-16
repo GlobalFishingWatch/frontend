@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'store'
-import { WorkspaceParam, FishingFilter, UrlDataviewInstance } from 'types'
+import { WorkspaceParam, UrlDataviewInstance } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { ROUTE_TYPES } from './routes'
 
@@ -32,7 +32,6 @@ export const selectMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectStartQuery = selectQueryParam<string>('start')
 export const selectEndQuery = selectQueryParam<string>('end')
 export const selectDataviewInstances = selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
-export const selectFishingFilters = selectQueryParam<FishingFilter[]>('fishingFilters')
 
 export const selectTimerange = createSelector([selectStartQuery, selectEndQuery], (start, end) => ({
   start,

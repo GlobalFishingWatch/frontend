@@ -1,7 +1,5 @@
 import { Dataview, DataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-export type FishingFilter = { id: string; label: string }
-
 export type WorkspaceDataview = Dataview & { configId: string }
 export type UrlDataviewInstance = Omit<DataviewInstance, 'dataviewId'> & {
   dataviewId?: number // making this optional as sometimes we just need to reference the id
@@ -24,7 +22,6 @@ export type QueryParams = {
   start?: string
   end?: string
   dataviewInstances?: any[]
-  fishingFilters?: FishingFilter[]
 }
 
 export type MapCoordinates = {

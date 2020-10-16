@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 import useClickedOutside from 'hooks/useClickedOutside'
-import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from 'types'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
-import { selectFishingFilters } from 'routes/routes.selectors'
 import styles from 'features/sidebar/common/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { getFlagsByIds } from 'data/flags'
 import Filters from './HeatmapFilters'
 
 type LayerPanelProps = {
@@ -15,7 +14,7 @@ type LayerPanelProps = {
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [filterOpen, setFiltersOpen] = useState(false)
-  const fishingFilters = useSelector(selectFishingFilters)
+  const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters || [])
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
 
   const layerActive = dataview?.config?.visible ?? true
@@ -88,11 +87,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           />
         </div>
       </div>
-      {layerActive && fishingFilters.length > 0 && (
+      {layerActive && fishingFiltersOptions.length > 0 && (
         <div className={styles.properties}>
           <label>Filters</label>
           <TagList
-            tags={fishingFilters}
+            tags={fishingFiltersOptions}
             color={dataview.config?.color}
             className={styles.tagList}
           />

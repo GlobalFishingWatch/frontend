@@ -1,11 +1,8 @@
 import React, { Fragment } from 'react'
-import { useSelector } from 'react-redux'
-import { FishingFilter, UrlDataviewInstance } from 'types'
+import { UrlDataviewInstance } from 'types'
 import { MultiSelect } from '@globalfishingwatch/ui-components'
-import flags from 'data/flags'
-// import { selectTemporalgridDatasets } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectFishingFilters } from 'routes/routes.selectors'
+import flags, { getFlagsByIds } from 'data/flags'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import styles from './HeatmapFilters.module.css'
 
 type FiltersProps = {
@@ -15,9 +12,9 @@ type FiltersProps = {
 const sourceOptions = [{ id: 'ais', label: 'AIS' }]
 
 function Filters({ dataview }: FiltersProps): React.ReactElement {
-  const { dispatchQueryParams } = useLocationConnect()
-  const fishingFilters = useSelector(selectFishingFilters)
-
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const fishingFilters = dataview.config?.filters
+  const fishingFiltersOptions = getFlagsByIds(fishingFilters || [])
   return (
     <Fragment>
       <MultiSelect
@@ -34,13 +31,20 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
       <MultiSelect
         label="Flag States"
         options={flags}
-        selectedOptions={fishingFilters}
+        selectedOptions={fishingFiltersOptions}
         className={styles.multiSelect}
         onSelect={(filter) => {
-          dispatchQueryParams({ fishingFilters: [...fishingFilters, filter as FishingFilter] })
+          upsertDataviewInstance({
+            id: dataview.id,
+            config: { filters: [...fishingFilters, filter.id] },
+          })
         }}
         onRemove={(filter, rest) => {
-          dispatchQueryParams({ fishingFilters: rest as FishingFilter[] })
+          console.log(rest)
+          upsertDataviewInstance({
+            id: dataview.id,
+            config: { filters: rest.map((f) => f.id) },
+          })
         }}
       />
     </Fragment>
