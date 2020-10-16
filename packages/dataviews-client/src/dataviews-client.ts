@@ -1,7 +1,12 @@
 import template from 'lodash/template'
 import { stringify } from 'qs'
-import GFWAPI, { FetchResponseTypes, FetchOptions } from '@globalfishingwatch/api-client'
-import { Dataview, Resource, DataviewInstance } from './types'
+import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
+import {
+  Dataview,
+  Resource,
+  DataviewInstance,
+  ResourceResponseType,
+} from '@globalfishingwatch/api-types'
 import resolveDataviews from './resolve-dataviews'
 
 const BASE_URL = '/v1/dataviews'
@@ -120,7 +125,7 @@ export default class DataviewsClient {
       // See existing implementation of this in Track inspector's dataviews thunk:
       // https://github.com/GlobalFishingWatch/track-inspector/blob/develop/src/features/dataviews/dataviews.thunks.ts#L58
       return this._fetch(resource.resolvedUrl, {
-        responseType: resource.responseType as FetchResponseTypes,
+        responseType: resource.responseType as ResourceResponseType,
       }).then((data: unknown) => {
         const resourceWithData = {
           ...resource,

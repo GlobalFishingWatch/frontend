@@ -1,0 +1,1 @@
+# @globalfishingwatch/api-types
