@@ -11,7 +11,7 @@ import {
 } from 'recharts'
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
-import { Dataview } from '@globalfishingwatch/dataviews-client/dist/types'
+import { Dataview } from '@globalfishingwatch/api-types'
 import { GraphData } from 'data/data'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import './DataviewGraph.module.css'
@@ -40,18 +40,18 @@ const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
 
   if (!dataviewResource || !dataviewResource.data) return null
 
-  const data = dataviewResource.data.filter((current) => {
+  const data = dataviewResource.data.filter((current: any) => {
     const currentDate = DateTime.fromISO(current.date).startOf('day')
     const startDate = DateTime.fromISO(start).startOf('day')
     const endDate = DateTime.fromISO(end).startOf('day')
     return currentDate >= startDate && currentDate <= endDate
   })
 
-  const dataMax: AxisDomain = data.length
+  const dataMax: number = data.length
     ? data.reduce((prev: GraphData, curr: GraphData) => (curr.value > prev.value ? curr : prev))
         .value
     : 0
-  const dataMin: AxisDomain = data.length
+  const dataMin: number = data.length
     ? data.reduce((prev: GraphData, curr: GraphData) => (curr.value < prev.value ? curr : prev))
         .value
     : 0

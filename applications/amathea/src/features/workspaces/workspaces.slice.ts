@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
-import GFWAPI from '@globalfishingwatch/api-client'
-import { Workspace, WorkspaceUpsert } from '@globalfishingwatch/dataviews-client'
-import { ColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { RootState } from 'store'
+import GFWAPI from '@globalfishingwatch/api-client'
+import { Workspace, WorkspaceUpsert } from '@globalfishingwatch/api-types'
+import { HeatmapColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
 import { selectCurrentWorkspaceId } from 'routes/routes.selectors'
@@ -11,7 +11,7 @@ import { selectCurrentWorkspaceId } from 'routes/routes.selectors'
 export const fetchWorkspacesThunk = createAsyncThunk('workspaces/fetch', async () => {
   const workspaces = await GFWAPI.fetch<Workspace[]>('/v1/workspaces?include=aoi')
   return workspaces.map((workspace, i) => {
-    return { ...workspace, color: ColorBarOptions[i % ColorBarOptions.length].value }
+    return { ...workspace, color: HeatmapColorBarOptions[i % HeatmapColorBarOptions.length].value }
   })
 })
 
