@@ -3,10 +3,9 @@ import React, {useState, useMemo, useCallback} from 'react';
 import {render} from 'react-dom';
 import { DateTime } from 'luxon'
 import { Generators } from '@globalfishingwatch/layer-composer';
-import { useLayerComposer, useDebounce, useMapInteraction, useMapTooltip } from '@globalfishingwatch/react-hooks';
+import { useLayerComposer, useDebounce, useMapClick, useMapHover } from '@globalfishingwatch/react-hooks';
 import TimebarComponent from '@globalfishingwatch/timebar';
 import Tilesets from './tilesets';
-import { HoverPopup, ClickPopup } from './popup';
 import Map from './map';
 
 import './App.css'
@@ -177,34 +176,19 @@ export default function App() {
     [animated, showBasemap, debug, debugLabels, sublayers, geomTypeMode, isPlaying, combinationMode]
   );
 
-  console.log(layers)
-
   const [mapRef, setMapRef] = useState(null)
 
-  const [clickedEvent, setClickedEvent] = useState(null)
   const clickCallback = useCallback((event) => {
-    // probably dispatch a redux action here or whatever
-    setClickedEvent(event)
-    // TODO
-    // if (feature.popupCallbackURL) {
-    //   // dispatchEvent(...)
-    // }
+    console.log(event)
   }, [])
-  const closePopup = useCallback(() => {
-    setClickedEvent(null)
-  }, [])
-
-  const [hoveredEvent, setHoveredEvent] = useState(null)
   const hoverCallback = useCallback((event) => {
-    setHoveredEvent(event)
+    console.log(event)
   }, [])
 
   // TODO useMapInteraction has been removed
-  const { onMapClick, onMapHover } = useMapInteraction(clickCallback, hoverCallback, mapRef)
-  // unifies app wide dataviews config and picked values, eg adds color, title, etc to picked values
-  const hoverTooltipEvent = useMapTooltip(DATAVIEWS, hoveredEvent)
-  const clickedTooltipEvent = useMapTooltip(DATAVIEWS, clickedEvent)
-  // const { legends } = useMapLegend(style, dataviews, )
+  // const { onMapClick, onMapHover } = useMapInteraction(clickCallback, hoverCallback, mapRef)
+  const onMapClick = useMapClick(clickCallback)
+  const onMapHover = useMapHover(null, hoverCallback, mapRef)
 
   const globalConfig = useMemo(() => {
     const finalTime = (animated) ? time: debouncedTime
@@ -227,10 +211,7 @@ export default function App() {
     <div className="container">
       {isLoading && <div className="loading">loading</div>}
       <div className="map">
-        {style && <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover} onSetMapRef={setMapRef}>
-          {hoverTooltipEvent && <HoverPopup event={hoverTooltipEvent} />}
-          {clickedTooltipEvent && <ClickPopup event={clickedTooltipEvent} onClose={closePopup} />}
-        </Map>}
+        {style && <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover} onSetMapRef={setMapRef} />}
       </div>
       <div className="timebar">
         <TimebarComponent
