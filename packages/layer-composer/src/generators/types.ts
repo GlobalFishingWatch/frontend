@@ -193,7 +193,6 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   scalePowExponent?: number
   fetchStats?: boolean
   statsFilter?: string
-  geomType?: Geoms
   colorRamp?: ColorRampsIds
   serverSideFilter?: string
 }

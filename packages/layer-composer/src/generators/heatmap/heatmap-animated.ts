@@ -1,22 +1,20 @@
 import memoizeOne from 'memoize-one'
-import { Layer } from 'mapbox-gl'
-import zip from 'lodash/zip'
 import { Type, HeatmapAnimatedGeneratorConfig, MergedGeneratorConfig } from '../types'
-import { ExtendedLayer, Group, LayerMetadataLegend } from '../../types'
+import { ExtendedLayer, Group } from '../../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
-import paintByGeomType from './heatmap-layers-paint'
 import {
   API_TILES_URL,
   API_ENDPOINTS,
   HEATMAP_GEOM_TYPES,
   HEATMAP_DEFAULT_MAX_ZOOM,
   HEATMAP_GEOM_TYPES_GL_TYPES,
-  HEATMAP_COLOR_RAMPS,
 } from './config'
-import { TimeChunk, getActiveTimeChunks, toQuantizedFrame, getDelta } from './util/time-chunks'
-import getBreaks from './util/get-breaks'
+import { TimeChunk, getActiveTimeChunks, getDelta } from './util/time-chunks'
+import { getSublayersBreaks } from './util/get-legends'
+import getGriddedLayers from './geomTypes/gridded'
+import getBlobLayer from './geomTypes/blob'
 
-type GlobalHeatmapAnimatedGeneratorConfig = Required<
+export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
 >
 
@@ -30,51 +28,6 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   interactive: true,
 }
 
-// const HARDCODED_BREAKS = {
-//   add: [[0, 1, 5, 10, 30]],
-//   compare: [
-//     [0, 1, 5, 10, 30],
-//     [0, 1, 5, 10, 30],
-//     [0, 1, 5, 10, 30],
-//     [0, 1, 5, 10, 30],
-//     [0, 1, 5, 10, 30],
-//   ],
-//   bivariate: [
-//     [0, 5, 30],
-//     [0, 5, 30],
-//   ],
-//   literal: [[]],
-// }
-
-const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
-  const colorRampIds = config.sublayers.map((s) => s.colorRamp)
-  const colorRamps = colorRampIds.map((colorRampId) => {
-    const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampId]
-    return originalColorRamp
-  })
-  return colorRamps
-}
-
-const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
-  const colorRamps = getSublayersColorRamps(config)
-
-  const expressions = colorRamps.map((originalColorRamp, colorRampIndex) => {
-    const legend = [...Array(originalColorRamp.length)].map((_, i) => [
-      // offset each dataset by 10 + add actual bucket value
-      colorRampIndex * 10 + i,
-      originalColorRamp[i],
-    ])
-    const expr = legend.flat()
-    return expr
-  })
-
-  if (config.combinationMode === 'compare') {
-    return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions.flat() }
-  }
-
-  return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions[0] }
-}
-
 const toURLArray = (paramName: string, arr: string[]) => {
   return arr
     .map((element, i) => {
@@ -82,45 +35,6 @@ const toURLArray = (paramName: string, arr: string[]) => {
       return `${paramName}[${i}]=${element}`
     })
     .join('&')
-}
-
-const getSublayersBreaks = (
-  config: GlobalHeatmapAnimatedGeneratorConfig,
-  intervalInDays: number
-) => {
-  // TODO - generate this using updated stats API ?
-  // TODO - in consequence, for each sublayer a different set of breaks should be produced
-  // TODO - BIVARIATE
-  if (config.combinationMode === 'bivariate') {
-    throw new Error('breaks generation not working for bivariate yet')
-  }
-  return config.sublayers.map(() => getBreaks(1, 30, 10, 1, [0.33, 0.66], intervalInDays))
-}
-
-const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays: number) => {
-  const breaks = getSublayersBreaks(config, intervalInDays)
-  const ramps = getSublayersColorRamps(config)
-  return breaks.map((sublayerBreaks, sublayerIndex) => {
-    const ramp = ramps[sublayerIndex]
-    const legendRamp = sublayerBreaks.map((break_, breakIndex) => {
-      // TODO Omitting the Zero value hence the +1
-      const rampColor = ramp[breakIndex + 1] as string
-      let rampValue = break_
-      if (config.geomType === 'blob') {
-        if (breakIndex === 0) rampValue = 'less'
-        else if (breakIndex === sublayerBreaks.length - 1) rampValue = 'more'
-        else rampValue = null
-      }
-      const legendRampItem: [number, string] = [rampValue, rampColor]
-      return legendRampItem
-    })
-    const sublayerLegend: LayerMetadataLegend = {
-      id: config.sublayers[sublayerIndex].id,
-      type: 'colorramp',
-      ramp: legendRamp,
-    }
-    return sublayerLegend
-  })
 }
 
 class HeatmapAnimatedGenerator {
@@ -183,143 +97,11 @@ class HeatmapAnimatedGenerator {
   }
 
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
-    const { colorRamp, colorRampBaseExpression } = getColorRampBaseExpression(config)
-    const intervalInDays = timeChunks[0].intervalInDays
-    const layers: Layer[] = timeChunks.flatMap((timeChunk: TimeChunk, timeChunkIndex: number) => {
-      // Seems like MGL 'heatmap' layer types can be rendered more than once,
-      // so when using 'blob' type, just use the first time chunk - this will prevent buffering to happen, but whatever
-      if (config.geomType === 'blob' && timeChunkIndex > 0) {
-        return []
-      }
-      const frame = toQuantizedFrame(config.start, timeChunk.quantizeOffset, timeChunk.interval)
-      const pickValueAt = frame.toString()
-      const exprPick = ['coalesce', ['get', pickValueAt], 0]
-      const exprColorRamp = ['step', exprPick, 'transparent', ...colorRampBaseExpression]
-
-      let paint
-      if (config.geomType === 'gridded') {
-        paint = {
-          'fill-color': exprColorRamp as any,
-          'fill-outline-color': 'transparent',
-        }
-      } else if (config.geomType === 'blob') {
-        paint = paintByGeomType.blob
-        paint['heatmap-weight'] = exprPick as any
-        const hStops = [0, 0.005, 0.01, 0.1, 0.2, 1]
-        const heatmapColorRamp = zip(hStops, colorRamp).flat()
-        paint['heatmap-color'] = [
-          'interpolate',
-          ['linear'],
-          ['heatmap-density'],
-          ...heatmapColorRamp,
-        ] as any
-        const BASE_BLOB_INTENSITY = 0.5
-        const baseIntensity = BASE_BLOB_INTENSITY / Math.sqrt(Math.sqrt(intervalInDays))
-        const maxIntensity = baseIntensity * 16
-        paint['heatmap-intensity'][4] = baseIntensity
-        paint['heatmap-intensity'][6] = maxIntensity
-      }
-
-      const mainLayer: ExtendedLayer = {
-        id: timeChunk.id,
-        source: timeChunk.id,
-        'source-layer': 'temporalgrid',
-        type: HEATMAP_GEOM_TYPES_GL_TYPES[config.geomType],
-        paint: paint as any,
-        metadata: {
-          group: Group.Heatmap,
-          generatorType: Type.HeatmapAnimated,
-          generatorId: config.id,
-        },
-      }
-
-      // only add legend metadata for first time chunk
-      if (timeChunkIndex === 0 && mainLayer.metadata) {
-        mainLayer.metadata.legend = getLegends(config, intervalInDays)
-      }
-
-      const chunkLayers: Layer[] = [mainLayer]
-
-      if (config.interactive && config.geomType === 'gridded') {
-        chunkLayers.push({
-          id: `${timeChunk.id}_interaction`,
-          source: `${timeChunk.id}_interaction`,
-          'source-layer': 'temporalgrid',
-          type: 'fill',
-          paint: {
-            'fill-color': 'pink',
-            'fill-opacity': config.debug ? 0.5 : 0,
-          },
-          metadata: {
-            group: Group.Heatmap,
-            generatorType: Type.HeatmapAnimated,
-            generatorId: config.id,
-            interactive: true,
-            frame,
-          },
-        })
-        chunkLayers.push({
-          id: `${timeChunk.id}_interaction_hover`,
-          source: `${timeChunk.id}_interaction`,
-          'source-layer': 'temporalgrid',
-          type: 'line',
-          paint: {
-            'line-color': 'white',
-            'line-width': ['case', ['boolean', ['feature-state', 'hover'], false], 3, 0],
-          },
-          metadata: {
-            group: Group.Heatmap,
-          },
-        })
-      }
-
-      if (config.debug) {
-        const exprDebugOutline = [
-          'case',
-          ['>', exprPick, 0],
-          'rgba(0,255,0,1)',
-          'rgba(255,255,0,1)',
-        ]
-        chunkLayers.push({
-          id: `${timeChunk.id}_debug`,
-          source: timeChunk.id,
-          'source-layer': 'temporalgrid',
-          type: 'fill',
-          paint: {
-            'fill-color': 'transparent',
-            'fill-outline-color': exprDebugOutline as any,
-          },
-          metadata: {
-            group: Group.Heatmap,
-          },
-        })
-      }
-      if (config.debugLabels) {
-        const exprDebugText = ['case', ['>', exprPick, 0], ['to-string', exprPick], '']
-        chunkLayers.push({
-          id: `${timeChunk.id}_debug_labels`,
-          type: 'symbol',
-          source: timeChunk.id,
-          'source-layer': 'temporalgrid',
-          layout: {
-            'text-field': exprDebugText as any,
-            'text-font': ['Roboto Mono Light'],
-            'text-size': 8,
-            'text-allow-overlap': true,
-          },
-          paint: {
-            'text-halo-color': 'hsl(320, 0%, 100%)',
-            'text-halo-width': 2,
-          },
-          metadata: {
-            group: Group.Label,
-          },
-        })
-      }
-      return chunkLayers
-    })
-
-    return layers
+    if (config.geomType === HEATMAP_GEOM_TYPES.GRIDDED) {
+      return getGriddedLayers(config, timeChunks)
+    } else if (config.geomType === HEATMAP_GEOM_TYPES.BLOB) {
+      return getBlobLayer(config, timeChunks[0])
+    }
   }
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {

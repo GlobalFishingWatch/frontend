@@ -1,13 +1,11 @@
 import flatten from 'lodash/flatten'
 import zip from 'lodash/zip'
-import { scalePow } from 'd3-scale'
 import memoizeOne from 'memoize-one'
 import { Group } from '../../types'
 import { Type, HeatmapGeneratorConfig, GlobalGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache, isUrlAbsolute } from '../../utils'
 import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
-import paintByGeomType from './heatmap-layers-paint'
 import fetchStats from './util/fetch-stats'
 import {
   HEATMAP_GEOM_TYPES,
@@ -35,7 +33,7 @@ class HeatmapGenerator {
     const url = new URL(
       tilesUrl.replace('{{type}}', 'heatmap').replace(/{{/g, '{').replace(/}}/g, '}')
     )
-    url.searchParams.set('geomType', config.geomType || HEATMAP_GEOM_TYPES.GRIDDED)
+    url.searchParams.set('geomType', HEATMAP_GEOM_TYPES.GRIDDED)
     url.searchParams.set('singleFrame', 'true')
     if (config.start && config.end) {
       url.searchParams.set('date-range', [config.start, config.end].join(','))
@@ -61,7 +59,6 @@ class HeatmapGenerator {
   }
 
   _getHeatmapLayers = (config: GlobalHeatmapGeneratorConfig) => {
-    const geomType = config.geomType || HEATMAP_GEOM_TYPES.GRIDDED
     const colorRampType = config.colorRamp || 'presence'
 
     let stops: number[] = []
@@ -87,7 +84,7 @@ class HeatmapGenerator {
         ? ['interpolate', ['linear'], valueExpression, ...colorRampValues]
         : 'transparent'
     const paint: any = {
-      ...paintByGeomType[geomType],
+      'fill-outline-color': 'transparent',
       'fill-color': colorRamp,
     }
 
@@ -97,7 +94,7 @@ class HeatmapGenerator {
         id: config.id,
         source: config.id,
         'source-layer': 'temporalgrid',
-        type: HEATMAP_GEOM_TYPES_GL_TYPES[geomType],
+        type: HEATMAP_GEOM_TYPES_GL_TYPES[HEATMAP_GEOM_TYPES.GRIDDED],
         layout: {
           visibility,
         },
