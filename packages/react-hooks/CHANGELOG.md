@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 3.3.2
+
+### Patch Changes
+
+- 31a904d: Vessel popup info
+
 ## 3.3.1
 
 ### Patch Changes

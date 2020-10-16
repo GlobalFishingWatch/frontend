@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.10.1
+
+### Patch Changes
+
+- 31a904d: Vessel popup info
+- Updated dependencies [31a904d]
+  - @globalfishingwatch/react-hooks@3.3.2
+
 ## 0.10.0
 
 ### Minor Changes
