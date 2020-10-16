@@ -11,9 +11,9 @@ export const useLocationConnect = () => {
   const payload = useSelector(selectLocationPayload)
   const dispatchLocation = useCallback(
     (type: ROUTE_TYPES, customPayload: any = {}) => {
-      dispatch({ type, payload: customPayload })
+      dispatch({ type, payload: { ...payload, ...customPayload } })
     },
-    [dispatch]
+    [dispatch, payload]
   )
   const dispatchQueryParams = useCallback(
     (query: QueryParams) => {

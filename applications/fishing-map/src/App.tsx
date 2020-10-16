@@ -9,6 +9,7 @@ import { MapboxRefProvider } from 'features/map/map.context'
 import { fetchWorkspaceThunk, selectWorkspaceStatus } from 'features/workspace/workspace.slice'
 import { selectDataviewsResourceQueries } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
+import { selectWorkspaceId } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { selectActive, toggleDebugMenu } from 'features/debug/debug.slice'
 import DebugMenu from './features/debug/DebugMenu'
@@ -32,6 +33,7 @@ function App(): React.ReactElement {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const logged = useSelector(isUserLogged)
+  const workspaceId = useSelector(selectWorkspaceId)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
 
   useEffect(() => {
@@ -57,9 +59,9 @@ function App(): React.ReactElement {
 
   useEffect(() => {
     if (logged) {
-      dispatch(fetchWorkspaceThunk())
+      dispatch(fetchWorkspaceThunk(workspaceId))
     }
-  }, [dispatch, logged])
+  }, [dispatch, logged, workspaceId])
 
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   useEffect(() => {

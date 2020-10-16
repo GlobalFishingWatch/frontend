@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { batch, useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import Downshift from 'downshift'
 import { formatDate } from 'utils/dates'
@@ -8,10 +8,10 @@ import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useLocationConnect } from 'routes/routes.hook'
-import { HOME, SEARCH } from 'routes/routes'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectVesselsDatasets, selectTracksDatasets } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { selectSearchQuery } from 'routes/routes.selectors'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -23,29 +23,31 @@ import SearchEmptyState from './SearchEmptyState'
 
 function Search() {
   const dispatch = useDispatch()
-  const { payload } = useLocationConnect()
+  const urlQuery = useSelector(selectSearchQuery)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const [searchQuery, setSearchQuery] = useState((payload.query || '') as string)
+  const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const query = useDebounce(searchQuery, 200)
-  const { dispatchLocation } = useLocationConnect()
+  const { dispatchQueryParams } = useLocationConnect()
   const searchDatasets = useSelector(selectVesselsDatasets)
   const trackDatasets = useSelector(selectTracksDatasets)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
 
   useEffect(() => {
-    if (query) {
-      dispatchLocation(SEARCH, { query })
-      dispatch(fetchVesselSearchThunk({ query, datasets: searchDatasets }))
-    } else {
-      dispatchLocation(SEARCH)
-      dispatch(cleanVesselSearchResults())
+    if (query !== '') {
+      batch(() => {
+        dispatchQueryParams({ query })
+        dispatch(fetchVesselSearchThunk({ query, datasets: searchDatasets }))
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query])
 
   const onCloseClick = () => {
-    dispatchLocation(HOME)
+    batch(() => {
+      dispatchQueryParams({ query: undefined })
+      dispatch(cleanVesselSearchResults())
+    })
   }
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,8 +63,10 @@ function Search() {
         searchDatasets
       )
       if (vesselDataviewInstance) {
-        upsertDataviewInstance(vesselDataviewInstance)
-        dispatchLocation(HOME)
+        batch(() => {
+          upsertDataviewInstance(vesselDataviewInstance)
+          onCloseClick()
+        })
       }
     }
   }

@@ -8,15 +8,11 @@ import { REPLACE_URL_PARAMS } from 'data/config'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const HOME = 'HOME'
-export const SEARCH = 'SEARCH'
-export type ROUTE_TYPES = typeof HOME | typeof SEARCH
+export type ROUTE_TYPES = typeof HOME
 
 const routesMap: RoutesMap = {
   [HOME]: {
-    path: '/',
-  },
-  [SEARCH]: {
-    path: '/search/:query?',
+    path: '/:workspaceId?/:version?',
   },
   [NOT_FOUND]: {
     path: '',

@@ -5,6 +5,8 @@ import { Workspace } from '@globalfishingwatch/dataviews-client'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import workspaceMock from './workspace.mock'
+
+// import { selectVersion } from 'routes/routes.selectors'
 // import GFWAPI from '@globalfishingwatch/api-client'
 
 interface WorkspaceState {
@@ -19,8 +21,9 @@ const initialState: WorkspaceState = {
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
-  async (arg, { dispatch }) => {
-    // const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces${id}`)
+  async (workspaceId: string, { dispatch, getState }) => {
+    // const version = selectVersion(getState() as RootState)
+    // const workspace = await GFWAPI.fetch<Workspace>(`/${version}/workspaces/${workspaceId}`)
     const workspace = workspaceMock
     const datasets = workspace.datasets?.map((dataset) => dataset.id as string)
     if (datasets) {
@@ -44,7 +47,9 @@ const workspaceSlice = createSlice({
     })
     builder.addCase(fetchWorkspaceThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
-      state.data = action.payload
+      if (action.payload) {
+        state.data = action.payload
+      }
     })
     builder.addCase(fetchWorkspaceThunk.rejected, (state) => {
       state.status = AsyncReducerStatus.Error
