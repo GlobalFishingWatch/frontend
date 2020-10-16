@@ -83,6 +83,33 @@ const datasets: Dataset[] = [
     ],
     endpoints: [
       {
+        id: 'carriers-multiple-vessel',
+        description: 'Endpoint to retrieve multiple vessels information',
+        downloadable: true,
+        pathTemplate: '/v1/vessels',
+        params: [],
+        query: [
+          {
+            label: 'Datasets',
+            id: 'datasets',
+            type: 'string',
+            required: true,
+          },
+          {
+            label: 'Ids',
+            id: 'ids',
+            type: 'string',
+            required: true,
+          },
+          {
+            label: 'binary',
+            id: 'binary',
+            type: 'boolean',
+            default: false,
+          },
+        ],
+      },
+      {
         id: 'carriers-vessels',
         description: 'Endpoint to retrieve vessels information',
         downloadable: true,
@@ -117,13 +144,13 @@ const datasets: Dataset[] = [
             label: 'binary',
             id: 'binary',
             type: 'boolean',
-            default: true,
+            default: false,
           },
           {
             label: 'querySuggestions',
-            id: 'binary',
+            id: 'querySuggestions',
             type: 'boolean',
-            default: true,
+            default: false,
           },
           {
             label: 'queryFields',
@@ -155,7 +182,7 @@ const datasets: Dataset[] = [
             label: 'binary',
             id: 'binary',
             type: 'boolean',
-            default: true,
+            default: false,
           },
         ],
       },

@@ -166,6 +166,10 @@ export const selectTemporalgridDatasets = createSelector(
   }
 )
 
+export const getRelatedDatasetByType = (dataset: Dataset, datasetType: DatasetTypes) => {
+  return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)
+}
+
 export const resolveDataviewDatasetResource = (
   dataview: UrlDataviewInstance,
   datasetType: DatasetTypes
