@@ -13,6 +13,7 @@ export type WorkspaceParam =
   | 'start'
   | 'end'
   | 'query'
+  | 'sidebarOpen'
   | 'dataviewInstances'
   | 'fishingFilters' // TODO embed in dataviewInstances config
 
@@ -23,6 +24,7 @@ export type QueryParams = {
   start?: string
   end?: string
   query?: string
+  sidebarOpen?: boolean
   dataviewInstances?: any[]
 }
 

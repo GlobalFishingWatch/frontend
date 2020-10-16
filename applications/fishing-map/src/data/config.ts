@@ -14,6 +14,7 @@ export const DEFAULT_WORKSPACE = {
   longitude: undefined,
   zoom: undefined,
   query: undefined,
+  sidebarOpen: true,
   start: new Date(2019, 0, 1).toISOString(),
   end: new Date(2019, 1, 1).toISOString(),
   availableStart: new Date(2012, 0, 1).toISOString(),

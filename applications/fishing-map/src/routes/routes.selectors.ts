@@ -40,6 +40,7 @@ export const selectMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectStartQuery = selectQueryParam<string>('start')
 export const selectEndQuery = selectQueryParam<string>('end')
 export const selectSearchQuery = selectQueryParam<string>('query')
+export const selectSidebarOpen = selectQueryParam<boolean>('sidebarOpen')
 export const selectDataviewInstances = selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
 
 export const selectTimerange = createSelector([selectStartQuery, selectEndQuery], (start, end) => ({

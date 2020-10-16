@@ -4,7 +4,7 @@ import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import { useSelector } from 'react-redux'
 import useClickedOutside from 'hooks/useClickedOutside'
 import { formatInfoField, formatInfoLabel } from 'utils/info'
-import { Switch, IconButton, Tooltip, Spinner, ColorBar } from '@globalfishingwatch/ui-components'
+import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
   TrackColorBarOptions,
