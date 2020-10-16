@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { formatInfoField, formatNumber } from 'utils/info'
-import { Anchor } from 'mapbox-gl'
 import { Popup } from '@globalfishingwatch/react-map-gl'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -10,6 +9,19 @@ import { selectTracksDatasets, selectVesselsDatasets } from 'features/workspace/
 import { TooltipEvent, TooltipEventFeature } from '../map/map.hooks'
 import styles from './Popup.module.css'
 
+// Once this PR is merged
+// https://github.com/DefinitelyTyped/DefinitelyTyped/pull/48853
+// use import { Anchor } from 'mapbox-gl'
+type ReactPopupAnchor =
+  | 'left'
+  | 'right'
+  | 'top'
+  | 'bottom'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right'
+
 type PopupWrapper = {
   tooltipEvent: TooltipEvent
   closeButton?: boolean
@@ -17,7 +29,7 @@ type PopupWrapper = {
   className: string
   onClose?: () => void
   loading?: boolean
-  anchor?: Anchor
+  anchor?: ReactPopupAnchor
 }
 function PopupWrapper({
   tooltipEvent,
@@ -26,7 +38,7 @@ function PopupWrapper({
   className,
   onClose,
   loading = false,
-  anchor = undefined,
+  anchor,
 }: PopupWrapper) {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const trackDatasets = useSelector(selectTracksDatasets)

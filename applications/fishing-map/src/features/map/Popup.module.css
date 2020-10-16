@@ -29,7 +29,7 @@
   display: flex;
 }
 
-.hover .popupSection:not(:last-child), 
+.hover .popupSection:not(:last-child),
 .click .popupSection:not(:last-child) {
   border-bottom: none;
 }
@@ -53,6 +53,7 @@
 }
 
 .loading {
+  min-height: 4rem;
   padding: var(--space-S);
 }
 
