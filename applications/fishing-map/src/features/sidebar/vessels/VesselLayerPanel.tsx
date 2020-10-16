@@ -79,7 +79,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {title}
+      {title && formatInfoField(title, 'name')}
     </h3>
   )
 
