@@ -34,10 +34,7 @@ type Fetch4WingInteractionThunk = {
 }
 export const fetch4WingInteractionThunk = createAsyncThunk(
   'map/fetchInteraction',
-  async (
-    { dataset, datasetConfig }: Fetch4WingInteractionThunk,
-    { getState, signal, rejectWithValue }
-  ) => {
+  async ({ dataset, datasetConfig }: Fetch4WingInteractionThunk, { getState, signal }) => {
     const url = resolveEndpoint(dataset, datasetConfig)
     const datasetId = datasetConfig.query?.find((query) => query.id === 'datasets')?.value as any
     let vesselsForDataset: ExtendedFeatureVessel[]
@@ -64,16 +61,20 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
           }
           const infoUrl = resolveEndpoint(infoDataset, infoDatasetConfig)
           if (infoUrl) {
-            // TODO create search API results response
-            const vesselsInfo = await GFWAPI.fetch<any>(infoUrl, { signal })
-            const { entries } = vesselsInfo?.[0]?.results
-            if (entries) {
-              vesselsForDataset = vesselsForDataset.map((vessel) => {
-                // TODO use vessel API response here
-                const vesselInfo = entries.find((entry: any) => entry.id === vessel.id)
-                if (!vesselInfo) return vessel
-                return { ...vessel, ...vesselInfo }
-              })
+            try {
+              // TODO create search API results response
+              const vesselsInfo = await GFWAPI.fetch<any>(infoUrl, { signal })
+              const { entries } = vesselsInfo?.[0]?.results
+              if (entries) {
+                vesselsForDataset = vesselsForDataset.map((vessel) => {
+                  // TODO use vessel API response here
+                  const vesselInfo = entries.find((entry: any) => entry.id === vessel.id)
+                  if (!vesselInfo) return vessel
+                  return { ...vessel, ...vesselInfo }
+                })
+              }
+            } catch (e) {
+              console.warn(e)
             }
           }
         }
