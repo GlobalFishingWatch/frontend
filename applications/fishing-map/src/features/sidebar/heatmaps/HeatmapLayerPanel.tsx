@@ -95,12 +95,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             color={dataview.config?.color}
             className={styles.tagList}
           />
+          <div id={`legend_${dataview.id}`}></div>
         </div>
       )}
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
         {filterOpen && <Filters dataview={dataview} />}
       </div>
-      <div id={`legend_${dataview.id}`}></div>
     </div>
   )
 }
