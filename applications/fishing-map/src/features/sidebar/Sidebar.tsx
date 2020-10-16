@@ -3,9 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { IconButton, Logo } from '@globalfishingwatch/ui-components'
 import { selectUserData, logoutUserThunk } from 'features/user/user.slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.slice'
-import { useLocationConnect } from 'routes/routes.hook'
-import { SEARCH } from 'routes/routes'
 import Search from 'features/search/Search'
+import { selectSearchQuery } from 'routes/routes.selectors'
 import styles from './Sidebar.module.css'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'
@@ -54,9 +53,9 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
 
 function Sidebar({ onMenuClick }: SidebarProps) {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const { location } = useLocationConnect()
+  const searchQuery = useSelector(selectSearchQuery)
 
-  if (location.type === SEARCH) {
+  if (searchQuery !== undefined) {
     return <Search />
   }
 

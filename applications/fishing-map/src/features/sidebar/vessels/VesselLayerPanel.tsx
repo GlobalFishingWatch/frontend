@@ -4,7 +4,7 @@ import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import { useSelector } from 'react-redux'
 import useClickedOutside from 'hooks/useClickedOutside'
 import { formatInfoField, formatInfoLabel } from 'utils/info'
-import { Switch, IconButton, Tooltip, Spinner, ColorBar } from '@globalfishingwatch/ui-components'
+import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
   TrackColorBarOptions,
@@ -74,14 +74,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
 
-  if (resource?.status === AsyncReducerStatus.Loading) {
-    return (
-      <div className={cx(styles.LayerPanel)}>
-        <Spinner size="small" />
-      </div>
-    )
-  }
-
   const vesselId = datasetConfig?.params.find((p: any) => p.id === 'vesselId')?.value as string
   const title = vesselName || vesselId || dataview.name
 
@@ -112,6 +104,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           <IconButton
             icon="info"
             size="small"
+            loading={resource?.status === AsyncReducerStatus.Loading}
             className={styles.actionButton}
             tooltip="info"
             onClick={onToggleInfoOpen}

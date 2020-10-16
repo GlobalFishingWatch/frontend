@@ -12,6 +12,8 @@ export type WorkspaceParam =
   | 'longitude'
   | 'start'
   | 'end'
+  | 'query'
+  | 'sidebarOpen'
   | 'dataviewInstances'
   | 'fishingFilters' // TODO embed in dataviewInstances config
 
@@ -21,6 +23,8 @@ export type QueryParams = {
   longitude?: number
   start?: string
   end?: string
+  query?: string
+  sidebarOpen?: boolean
   dataviewInstances?: any[]
 }
 
