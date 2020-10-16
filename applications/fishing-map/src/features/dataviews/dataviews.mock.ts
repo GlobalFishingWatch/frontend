@@ -1,4 +1,4 @@
-import { Dataview } from '@globalfishingwatch/dataviews-client'
+import { Dataview } from '@globalfishingwatch/api-types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { Field } from '@globalfishingwatch/data-transforms'
 import {

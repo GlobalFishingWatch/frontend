@@ -1,4 +1,4 @@
-import { Dataset } from '@globalfishingwatch/dataviews-client'
+import { Dataset } from '@globalfishingwatch/api-types'
 import {
   TRACKS_DATASET_ID,
   TRACKS_DATASET_TYPE,

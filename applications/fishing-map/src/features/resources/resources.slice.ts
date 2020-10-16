@@ -4,7 +4,7 @@ import { RootState } from 'store'
 import memoize from 'lodash/memoize'
 import { trackValueArrayToSegments, Field } from '@globalfishingwatch/data-transforms'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/dataviews-client'
+import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/api-types'
 import { TRACKS_DATASET_TYPE } from 'features/workspace/workspace.mock'
 
 export interface ResourceQuery {

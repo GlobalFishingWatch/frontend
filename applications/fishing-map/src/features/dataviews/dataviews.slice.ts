@@ -2,7 +2,7 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import memoize from 'lodash/memoize'
 import { AsyncReducer, createAsyncSlice } from 'utils/async-slice'
-import { Dataview } from '@globalfishingwatch/dataviews-client'
+import { Dataview } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import dataviews from './dataviews.mock'
 

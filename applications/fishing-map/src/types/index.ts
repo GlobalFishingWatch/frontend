@@ -1,4 +1,4 @@
-import { Dataview, DataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { Dataview, DataviewInstance } from '@globalfishingwatch/api-types'
 
 export type WorkspaceDataview = Dataview & { configId: string }
 export type UrlDataviewInstance = Omit<DataviewInstance, 'dataviewId'> & {

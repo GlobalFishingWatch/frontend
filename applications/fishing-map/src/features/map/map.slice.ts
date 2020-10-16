@@ -3,11 +3,8 @@ import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
 import { InteractionEvent, ExtendedFeatureVessel } from '@globalfishingwatch/react-hooks'
 import GFWAPI from '@globalfishingwatch/api-client'
-import {
-  DataviewDatasetConfig,
-  Dataset,
-  resolveEndpoint,
-} from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { DataviewDatasetConfig, Dataset } from '@globalfishingwatch/api-types'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
 import { VESSELS_DATASET_TYPE } from 'features/workspace/workspace.mock'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
