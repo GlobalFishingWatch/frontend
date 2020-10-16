@@ -17,7 +17,7 @@
     "@globalfishingwatch/react-hooks": "^3.3.2",
     "@globalfishingwatch/react-map-gl": "5.2.7-gfw.1-beta4",
     "@globalfishingwatch/timebar": "^1.0.14",
-    "@globalfishingwatch/ui-components": "^2.2.0",
+    "@globalfishingwatch/ui-components": "^2.2.1",
     "@globalfishingwatch/data-transforms": "^1.0.2",
     "@reduxjs/toolkit": "^1.4.0",
     "countryflag": "^4.0.1",
