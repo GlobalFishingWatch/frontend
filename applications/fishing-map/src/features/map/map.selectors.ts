@@ -100,7 +100,7 @@ export const getGeneratorsConfig = createSelector(
         id: dataview.id,
         ...(data && { data }),
       }
-    }) as AnyGeneratorConfig[]
-    return generatorsConfig
+    })
+    return generatorsConfig as AnyGeneratorConfig[]
   }
 )
