@@ -9,7 +9,6 @@ import { Generators } from '@globalfishingwatch/layer-composer'
 import { DataviewConfig } from '@globalfishingwatch/dataviews-client'
 import {
   selectTimerange,
-  selectFishingFilters,
   selectMapZoomQuery,
   selectMapLatitudeQuery,
   selectMapLongitudeQuery,
@@ -46,8 +45,8 @@ export const selectGlobalGeneratorsConfig = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [selectDataviewInstancesResolved, selectFishingFilters, selectResources, selectDebugOptions],
-  (dataviews = [], fishingFilters, resources, debugOptions) => {
+  [selectDataviewInstancesResolved, selectResources, selectDebugOptions],
+  (dataviews = [], resources, debugOptions) => {
     const animatedHeatmapDataviews: UrlDataviewInstance[] = []
 
     // Collect heatmap animated generators and filter them out from main dataview list
@@ -69,7 +68,10 @@ export const getGeneratorsConfig = createSelector(
           id: dataview.id,
           datasets: datasetsConfig.map((dc) => dc.datasetId),
           colorRamp: config.colorRamp || 'presence',
-          filter: config.filter,
+        }
+        if (config.filters) {
+          const flags = config.filters.map((flag: string) => `flag='${flag}'`).join(' OR ')
+          sublayer.filter = flags
         }
         return sublayer
       })
@@ -78,25 +80,14 @@ export const getGeneratorsConfig = createSelector(
         config: {
           ...animatedHeatmapDataviews[0].config,
           sublayers,
+          geomType: debugOptions.blob === true && sublayers.length === 1 ? 'blob' : 'gridded',
         },
       }
       generatorsConfig.push(mergedLayer)
     }
 
     generatorsConfig = generatorsConfig.flatMap((dataview) => {
-      // const filters = fishingFilters?.map((filter) => filter.id)
       const config: DataviewConfig = { ...dataview.config }
-      if (config?.type === Generators.Type.HeatmapAnimated) {
-        // if (filters?.length) {
-        // config.sublayers = config.sublayers?.map((layer) => ({
-        //   ...layer,
-        //   filter: `flag=${filters.map((filter) => `'${filter}'`).join(',')}`,
-        // }))
-        // }
-        config.geomType =
-          debugOptions.blob === true && config?.sublayers?.length === 1 ? 'blob' : 'gridded'
-      }
-
       // Try to retrieve resource if it exists
       let data
       const { url } = resolveDataviewDatasetResource(dataview, TRACKS_DATASET_TYPE)

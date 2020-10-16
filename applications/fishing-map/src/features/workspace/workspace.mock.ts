@@ -35,7 +35,7 @@ const workspace: Workspace = {
       id: 'fishing-1',
       dataviewId: 3,
       config: {
-        filter: "flag='CHL'",
+        filters: ['CHL'],
       },
     },
     {
@@ -44,7 +44,7 @@ const workspace: Workspace = {
       config: {
         color: '#ff0000',
         colorRamp: 'red',
-        filter: "flag='ARG'",
+        filters: ['ARG'],
       },
     },
     {
