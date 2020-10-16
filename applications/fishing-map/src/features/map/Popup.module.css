@@ -29,6 +29,11 @@
   display: flex;
 }
 
+.hover .popupSection:not(:last-child), 
+.click .popupSection:not(:last-child) {
+  border-bottom: none;
+}
+
 .popupSectionColor {
   display: inline-block;
   margin-top: var(--space-XS);
@@ -45,6 +50,10 @@
 
 .popupSectionTitle {
   opacity: var(--opacity-secondary);
+}
+
+.loading {
+  padding: var(--space-S);
 }
 
 .vesselsTable {

@@ -70,7 +70,11 @@ function PopupWrapper({
               <div>
                 {formatNumber(feature.value)} {feature.unit} hours
               </div>
-              {loading && <Spinner />}
+              {loading && (
+                <div className={styles.loading}>
+                  <Spinner size="small" />
+                </div>
+              )}
               {feature.vesselsInfo && (
                 <div className={styles.vesselsTable}>
                   <div className={styles.vesselsHeader}>
@@ -86,7 +90,7 @@ function PopupWrapper({
                       }}
                     >
                       <span className={styles.vesselName}>
-                        {formatInfoField(vessel.shipname, 'name') || vessel.id}
+                        {vessel.shipname ? formatInfoField(vessel.shipname, 'name') : vessel.id}
                       </span>
                       <span>{formatNumber(vessel.hours)}</span>
                     </button>
