@@ -1,5 +1,11 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.11.1
+
+### Patch Changes
+
+- d75f11b: Change between default and satellite basemap
+
 ## 0.11.0
 
 ### Minor Changes

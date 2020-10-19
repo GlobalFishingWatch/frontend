@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/fishing-map",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "private": true,
   "scripts": {
     "start": "PORT=3003 react-scripts start",
