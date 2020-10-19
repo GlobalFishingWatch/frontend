@@ -21,7 +21,7 @@ type LayerPanelProps = {
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
-  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url } = resolveDataviewDatasetResource(dataview, VESSELS_DATASET_TYPE)
   const resource = useSelector(selectResourceByUrl<Vessel>(url))
   const [colorOpen, setColorOpen] = useState(false)
@@ -41,10 +41,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       config: { color: color.value },
     })
     setColorOpen(false)
-  }
-
-  const onRemoveLayerClick = () => {
-    deleteDataviewInstance(dataview.id)
   }
 
   const datasetConfig = dataview.datasetsConfig?.find(
@@ -108,14 +104,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               })}
             />
           )}
-          <IconButton
-            icon="delete"
-            size="small"
-            className={styles.actionButton}
-            tooltip="Delete"
-            tooltipPlacement="top"
-            onClick={onRemoveLayerClick}
-          />
         </div>
       </div>
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
