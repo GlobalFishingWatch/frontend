@@ -6,17 +6,24 @@
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "ISC",
   "main": "src/index.ts",
-  "typings": "src/index.ts",
+  "typings": "dist",
   "directories": {
     "src": "src",
     "dist": "dist"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
-  "scripts": {},
+  "scripts": {
+    "start": "rollup -c ./rollup.config.js -w",
+    "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "clean": "rimraf dist/*",
+    "prepare": "yarn build"
+  },
   "dependencies": {
     "@globalfishingwatch/layer-composer": "*"
   },
