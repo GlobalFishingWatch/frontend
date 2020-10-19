@@ -36,15 +36,9 @@ export default function Sublayers({ onChange }) {
     updateSublayers(newSublayers)
   })
 
-  const [combinationMode, setCombinationMode] = useState('add')
-
   return <>
     {sublayers.map((sublayer, i) => <Sublayer key={i} index={i} sublayer={sublayer} setDatasets={setDatasets} setFilter={setFilter} setActive={setActive} />)}
-    <select id="combinationMode" onChange={(event) => { setCombinationMode(event.target.value)}}>
-      <option value="add">combine:add</option>
-      <option value="compare">combine:compare</option>
-      <option value="bivariate">combine:bivariate</option>
-    </select>
-    <button onClick={() => onChange(sublayers, combinationMode)}>ok</button>
+
+    <button onClick={() => onChange(sublayers)}>ok</button>
   </>
 }
