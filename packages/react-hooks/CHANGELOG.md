@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 3.4.2
+
+### Patch Changes
+
+- 141cc14: Fishingmap/temporalfrid interaction fixes
+
 ## 3.4.1
 
 ### Patch Changes
