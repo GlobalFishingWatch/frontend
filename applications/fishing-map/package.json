@@ -21,6 +21,7 @@
     "@globalfishingwatch/timebar": "^1.0.14",
     "@globalfishingwatch/ui-components": "^2.2.1",
     "@reduxjs/toolkit": "^1.4.0",
+    "@types/react-sticky-el": "^1.0.2",
     "countryflag": "^4.0.1",
     "dayjs": "^1.8.36",
     "jest": "^24.9.0",
@@ -32,6 +33,7 @@
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
     "react-scripts": "3.4.1",
+    "react-sticky-el": "^2.0.5",
     "redux": "^4.0.5",
     "redux-first-router": "^2.1.5",
     "typescript": "^4.0.3"

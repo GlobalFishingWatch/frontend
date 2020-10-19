@@ -1,3 +1,15 @@
+:global(.sticky) {
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+  z-index: 1;
+}
+
+:global(.scrollContainer) {
+  height: 100%;
+  overflow-y: auto;
+  padding-bottom: var(--space-L);
+}
+
 .placeholder {
   height: calc(100% - 5.4rem);
   display: flex;
