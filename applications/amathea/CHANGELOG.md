@@ -1,5 +1,15 @@
 # @globalfishingwatchapp/amathea
 
+## 0.13.1
+
+### Patch Changes
+
+- d7bc617: Added extruded mode and merged geomType and combinationMode into mode
+- Updated dependencies [d7bc617]
+  - @globalfishingwatch/layer-composer@3.0.0
+  - @globalfishingwatch/react-hooks@3.4.1
+  - @globalfishingwatch/dataviews-client@3.3.2
+
 ## 0.13.0
 
 ### Minor Changes

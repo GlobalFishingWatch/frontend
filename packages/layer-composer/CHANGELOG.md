@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 3.0.0
+
+### Major Changes
+
+- d7bc617: Added extruded mode and merged geomType and combinationMode into mode
+
 ## 2.16.0
 
 ### Minor Changes
