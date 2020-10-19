@@ -64,10 +64,11 @@ export const getGeneratorsConfig = createSelector(
         const config = dataview.config
         const datasetsConfig = dataview.datasetsConfig
         if (!config || !datasetsConfig || !datasetsConfig.length) return []
+        const colorRamp = animatedHeatmapDataviews.length === 1 ? 'presence' : config.colorRamp
         const sublayer: HeatmapAnimatedGeneratorSublayer = {
           id: dataview.id,
           datasets: datasetsConfig.map((dc) => dc.datasetId),
-          colorRamp: config.colorRamp || 'presence',
+          colorRamp,
         }
         if (config.filters) {
           const flags = config.filters.map((flag: string) => `flag='${flag}'`).join(' OR ')
