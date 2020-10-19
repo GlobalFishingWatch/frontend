@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
+import { AsyncReducerStatus } from 'types'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -13,16 +14,15 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { AsyncReducerStatus } from 'types'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ClickPopup, HoverPopup } from './Popup'
 import MapInfo from './MapInfo'
 import MapControls from './MapControls'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import { useMapboxRef } from './map.context'
 import styles from './Map.module.css'
-
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const mapOptions = {
@@ -54,6 +54,8 @@ const Map = memo(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [viewport])
 
+    const debugOptions = useSelector(selectDebugOptions)
+
     return (
       <InteractiveMap
         ref={mapRef}
@@ -61,6 +63,7 @@ const Map = memo(
         height="100%"
         latitude={viewport.latitude}
         longitude={viewport.longitude}
+        pitch={debugOptions.extruded ? 40 : 0}
         zoom={viewport.zoom}
         onViewportChange={onViewportChange}
         mapStyle={style}

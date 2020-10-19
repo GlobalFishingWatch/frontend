@@ -10,6 +10,7 @@ const initialState: UserState = {
   active: false,
   options: {
     blob: false,
+    extruded: false,
   },
 }
 
@@ -22,6 +23,12 @@ const debugSlice = createSlice({
     },
     toggleOption: (state, action: PayloadAction<string>) => {
       state.options[action.payload] = !state.options[action.payload]
+      if (state.options.blob) {
+        state.options.extruded = false
+      }
+      if (state.options.extruded) {
+        state.options.blob = false
+      }
     },
   },
 })
