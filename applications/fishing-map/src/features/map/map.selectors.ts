@@ -72,11 +72,9 @@ export const getGeneratorsConfig = createSelector(
           id: dataview.id,
           datasets: datasetsConfig.map((dc) => dc.datasetId),
           colorRamp,
+          filter: config.filter,
         }
-        if (config.filters) {
-          const flags = config.filters.map((flag: string) => `flag='${flag}'`).join(' OR ')
-          sublayer.filter = flags
-        }
+
         return sublayer
       })
 
