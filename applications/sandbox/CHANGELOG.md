@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.5.0
+
+### Minor Changes
+
+- db69167: Use types from api-types
+
 ## 0.4.1
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @globalfishingwatch/react-hooks
 
+## 3.4.0
+
+### Minor Changes
+
+- db69167: Use types from api-types
+
+### Patch Changes
+
+- Updated dependencies [db69167]
+  - @globalfishingwatch/api-client@1.6.0
+  - @globalfishingwatch/dataviews-client@3.3.0
+
 ## 3.3.2
 
 ### Patch Changes

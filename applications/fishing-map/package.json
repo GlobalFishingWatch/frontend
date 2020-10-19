@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/fishing-map",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "private": true,
   "scripts": {
     "start": "PORT=3003 react-scripts start",
@@ -9,12 +9,12 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@globalfishingwatch/api-client": "^1.5.1",
-    "@globalfishingwatch/dataviews-client": "^3.2.0",
+    "@globalfishingwatch/api-client": "^1.6.0",
+    "@globalfishingwatch/dataviews-client": "^3.3.0",
     "@globalfishingwatch/layer-composer": "^2.15.0",
     "@globalfishingwatch/linting": "^1.4.0",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.2",
-    "@globalfishingwatch/react-hooks": "^3.3.2",
+    "@globalfishingwatch/react-hooks": "^3.4.0",
     "@globalfishingwatch/react-map-gl": "5.2.7-gfw.1-beta4",
     "@globalfishingwatch/timebar": "^1.0.14",
     "@globalfishingwatch/ui-components": "^2.2.1",
