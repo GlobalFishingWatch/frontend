@@ -56,6 +56,10 @@ const Map = memo(
 
     const debugOptions = useSelector(selectDebugOptions)
 
+    useEffect(() => {
+      mapRef.current.getMap().showTileBoundaries = debugOptions.debug
+    }, [mapRef, debugOptions])
+
     return (
       <InteractiveMap
         ref={mapRef}

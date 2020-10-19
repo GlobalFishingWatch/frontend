@@ -11,6 +11,7 @@ const initialState: UserState = {
   options: {
     blob: false,
     extruded: false,
+    debug: false,
   },
 }
 

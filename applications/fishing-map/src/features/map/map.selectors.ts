@@ -90,6 +90,8 @@ export const getGeneratorsConfig = createSelector(
           ...animatedHeatmapDataviews[0].config,
           sublayers,
           mode,
+          debug: debugOptions.debug,
+          debugLabels: debugOptions.debug,
         },
       }
       generatorsConfig.push(mergedLayer)

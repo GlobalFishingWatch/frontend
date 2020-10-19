@@ -11,21 +11,22 @@ function DebugMenu() {
     <div className={styles.row}>
       <div className={styles.header}>
         <Switch active={debugOptions.blob} onClick={() => dispatch(toggleOption('blob'))} />
-        <label htmlFor="option_blob">
-          [experimental] Render fishing layer with smooth heatmap style
-        </label>
+        <label htmlFor="option_blob">[experimental] Smooth heatmap style</label>
       </div>
       <p>
-        Use a smoother rendering style. Only works when a single fishing layer is shown. Will
-        disable interaction on this layer.
+        Render fishing layer with a smoother rendering style. Only works when a single fishing layer
+        is shown. Will disable interaction on this layer.
       </p>
       <div className={styles.header}>
         <Switch active={debugOptions.extruded} onClick={() => dispatch(toggleOption('extruded'))} />
-        <label htmlFor="option_extruded">
-          [experimental] Render fishing layer with stacked 3D bars
-        </label>
+        <label htmlFor="option_extruded">[experimental] Stacked 3D bars</label>
       </div>
       <p>Renders fishing activity as stacked 3D bars. Will disable interaction on this layer.</p>
+      <div className={styles.header}>
+        <Switch active={debugOptions.debug} onClick={() => dispatch(toggleOption('debug'))} />
+        <label htmlFor="option_debug">Debug tiles</label>
+      </div>
+      <p>Displays info on tiles useful for debugging.</p>
     </div>
   )
 }
