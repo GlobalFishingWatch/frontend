@@ -7,6 +7,7 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
+import { Vessel } from '@globalfishingwatch/api-types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectVesselsDatasets, selectTracksDatasets } from 'features/workspace/workspace.selectors'
@@ -54,7 +55,7 @@ function Search() {
     setSearchQuery(e.target.value)
   }
 
-  const onSelectionChange = (selection: any) => {
+  const onSelectionChange = (selection: Vessel | null) => {
     if (selection) {
       const vesselDataviewInstance = getVesselDataviewInstance(
         selection,
@@ -100,7 +101,7 @@ function Search() {
           </div>
           {searchResults && (
             <ul {...getMenuProps()} className={styles.searchResults}>
-              {searchResults[0].results?.entries?.map((entry: any, index: number) => {
+              {searchResults[0].results?.entries?.map((entry, index: number) => {
                 const {
                   id,
                   shipname,

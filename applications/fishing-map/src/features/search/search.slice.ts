@@ -3,14 +3,14 @@ import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { Dataset } from '@globalfishingwatch/api-types'
+import { Dataset, Vessel, APISearch } from '@globalfishingwatch/api-types'
 
-interface UserState {
+interface SearchState {
   status: AsyncReducerStatus
-  data: any // TODO type search api results
+  data: APISearch<Vessel> | null
 }
 
-const initialState: UserState = {
+const initialState: SearchState = {
   status: AsyncReducerStatus.Idle,
   data: null,
 }
