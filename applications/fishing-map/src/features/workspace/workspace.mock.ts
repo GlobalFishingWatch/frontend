@@ -8,6 +8,7 @@ export const VESSELS_DATASET_ID = 'test-alias-import-vessels-pipeline:latest'
 export const FISHING_DATASET_TYPE = '4wings:v1'
 export const TRACKS_DATASET_TYPE = 'carriers-tracks:v1'
 export const VESSELS_DATASET_TYPE = 'carriers-vessels:v1'
+export const USER_CONTEXT_TYPE = 'user-context-layer:v1'
 
 const workspace: Workspace = {
   id: 1,
@@ -85,6 +86,13 @@ const workspace: Workspace = {
     //     },
     //   ],
     // },
+    {
+      id: 'context-layer-1',
+      dataviewId: 5,
+      config: {
+        color: '#069688',
+      },
+    },
   ],
 }
 

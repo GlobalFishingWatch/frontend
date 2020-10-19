@@ -9,41 +9,11 @@ export const useDataviewInstancesConnect = () => {
   const urlDataviewInstances = useSelector(selectDataviewInstances)
   const { dispatchQueryParams } = useLocationConnect()
 
-  const addDataviewInstance = useCallback(
-    (dataviewInstance: Partial<UrlDataviewInstance>) => {
-      const dataviewAlreadyDefined = urlDataviewInstances?.some(
-        (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
+  const removeDataviewInstance = useCallback(
+    (id: string) => {
+      const dataviewInstances = urlDataviewInstances?.filter(
+        (urlDataviewInstance) => urlDataviewInstance.id !== id
       )
-      if (dataviewAlreadyDefined) {
-        console.error('Dataview instance already defined, use updateDataviewInstance instead')
-        return
-      }
-      dispatchQueryParams({
-        dataviewInstances: [
-          ...(urlDataviewInstances || []),
-          dataviewInstance as UrlDataviewInstance,
-        ],
-      })
-    },
-    [dispatchQueryParams, urlDataviewInstances]
-  )
-
-  const updateDataviewInstance = useCallback(
-    (dataviewInstance: Partial<UrlDataviewInstance>) => {
-      const dataviewAlreadyDefined = urlDataviewInstances?.some(
-        (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
-      )
-      if (!dataviewAlreadyDefined) {
-        console.error('Dataview to updated not found, use addDataviewInstance instead')
-        return
-      }
-      const dataviewInstances = urlDataviewInstances.map((urlDataviewInstance) => {
-        if (urlDataviewInstance.id !== dataviewInstance.id) return urlDataviewInstance
-        return {
-          ...urlDataviewInstance,
-          ...dataviewInstance,
-        }
-      })
       dispatchQueryParams({ dataviewInstances })
     },
     [dispatchQueryParams, urlDataviewInstances]
@@ -94,8 +64,7 @@ export const useDataviewInstancesConnect = () => {
   )
   return {
     upsertDataviewInstance,
-    addDataviewInstance,
-    updateDataviewInstance,
+    removeDataviewInstance,
     deleteDataviewInstance,
   }
 }

@@ -9,7 +9,12 @@ import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDataviewInstances } from 'routes/routes.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { selectDataviews } from 'features/dataviews/dataviews.slice'
-import { TRACKS_DATASET_TYPE, VESSELS_DATASET_TYPE, FISHING_DATASET_TYPE } from './workspace.mock'
+import {
+  TRACKS_DATASET_TYPE,
+  VESSELS_DATASET_TYPE,
+  FISHING_DATASET_TYPE,
+  USER_CONTEXT_TYPE,
+} from './workspace.mock'
 
 export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
   Object.entries(dataview.datasetsConfig || {}).flatMap(([id, value]) => {
@@ -108,6 +113,7 @@ type DatasetTypes =
   | typeof TRACKS_DATASET_TYPE
   | typeof VESSELS_DATASET_TYPE
   | typeof FISHING_DATASET_TYPE
+  | typeof USER_CONTEXT_TYPE
 export const selectDatasetsByType = (type: DatasetTypes) => {
   return createSelector([selectDatasets], (datasets) => {
     return uniqBy(
@@ -146,6 +152,11 @@ export const selectDataviewInstancesByType = (type: Generators.Type) => {
 
 export const selectVesselsDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.Track)],
+  (dataviews) => dataviews
+)
+
+export const selectContextAreasDataviews = createSelector(
+  [selectDataviewInstancesByType(Generators.Type.UserContext)],
   (dataviews) => dataviews
 )
 
