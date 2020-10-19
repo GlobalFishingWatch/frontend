@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-client
 
+## 1.6.0
+
+### Minor Changes
+
+- db69167: Use types from api-types
+
 ## 1.5.1
 
 ### Patch Changes
