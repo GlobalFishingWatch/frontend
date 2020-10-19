@@ -25,13 +25,13 @@ const initialState: MapState = {
   status: AsyncReducerStatus.Idle,
 }
 
-type Fetch4WingInteractionThunk = {
+type Fetch4WingInteractionThunkPayload = {
   dataset: Dataset
   datasetConfig: DataviewDatasetConfig & { generatorId: string }
 }
 export const fetch4WingInteractionThunk = createAsyncThunk(
   'map/fetchInteraction',
-  async ({ dataset, datasetConfig }: Fetch4WingInteractionThunk, { getState, signal }) => {
+  async ({ dataset, datasetConfig }: Fetch4WingInteractionThunkPayload, { getState, signal }) => {
     const url = resolveEndpoint(dataset, datasetConfig)
     const datasetId = datasetConfig.query?.find((query) => query.id === 'datasets')?.value as any
     let vesselsForDataset: ExtendedFeatureVessel[]
@@ -39,6 +39,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
       const vesselsByDataset = await GFWAPI.fetch<Record<string, ExtendedFeatureVessel[]>>(url, {
         signal,
       })
+      // TODO We should actually care about not just one dataset
       vesselsForDataset = vesselsByDataset[datasetId]
       const infoDatasetId = getRelatedDatasetByType(dataset, VESSELS_DATASET_TYPE)?.id
       if (infoDatasetId) {

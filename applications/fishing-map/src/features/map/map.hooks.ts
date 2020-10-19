@@ -50,32 +50,62 @@ export const useClickedEventConnect = () => {
     }
     if (!event || !event.features) return
     dispatch(setClickedEvent(event))
-    // TODO should work for multiple features
-    const feature: ExtendedFeature = event.features[0]
-    if (!dataviews || !feature || !feature.temporalgrid || !feature.generatorId) return
 
-    // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
-    const dataview = temporalgridDataviews?.[feature.temporalgrid.sublayerIndex]
-    const dataset = dataview?.datasets?.find((dataset) => dataset.type === FISHING_DATASET_TYPE)
-    if (!dataset) return []
+    if (!temporalgridDataviews) return
+
+    // get temporal grid clicked features and order them by sublayerindex
+    const features = event.features
+      .filter((feature) => feature.temporalgrid !== undefined)
+      .sort((feature) => feature.temporalgrid!.sublayerIndex || 0)
+
+    // get corresponding dataviews
+    const featuresDataviews = features.map(
+      (feature) => temporalgridDataviews[feature.temporalgrid!.sublayerIndex]
+    )
+
+    // get corresponding datasets
+    const featuresDataviewsDatasets = featuresDataviews.map((dv) => {
+      // TODO We should take into acocunt user selection here - not just what datasets are available
+      const datasets = dv.datasets?.filter((dataset) => dataset.type === FISHING_DATASET_TYPE)
+      return datasets
+    })
+
+    // use the first feature/dv for common parameters
+    const mainFeature = features[0]
+    const mainDataview = featuresDataviews[0]
+
     const datasetConfig = {
       endpoint: '4wings-interaction',
-      datasetId: dataset.id,
-      generatorId: feature.generatorId as string,
+      // TODO Why is that needed?
+      datasetId: mainDataview.datasetsConfig[0].datasetId,
+      // TODO Why is that needed?
+      generatorId: mainDataview.generatorId as string,
       params: [
-        { id: 'z', value: feature.tile.z },
-        { id: 'x', value: feature.tile.x },
-        { id: 'y', value: feature.tile.y },
-        { id: 'rows', value: feature.temporalgrid.row },
-        { id: 'cols', value: feature.temporalgrid.col },
+        { id: 'z', value: mainFeature.tile.z },
+        { id: 'x', value: mainFeature.tile.x },
+        { id: 'y', value: mainFeature.tile.y },
+        { id: 'rows', value: mainFeature.temporalgrid!.row },
+        { id: 'cols', value: mainFeature.temporalgrid!.col },
       ],
       query: [
-        { id: 'datasets', value: [dataset.id] },
         { id: 'date-range', value: [start, end].join(',') },
+        {
+          id: 'datasets',
+          value: featuresDataviewsDatasets.map((dataviewDatasets) =>
+            dataviewDatasets.map((ds) => ds.id).join(',')
+          ),
+        },
+        { id: 'filters', value: featuresDataviews.map((dv) => dv.config.filter) },
         // { id: 'limit', value: 11 },
       ],
     }
-    promiseRef.current = dispatch(fetch4WingInteractionThunk({ dataset, datasetConfig }))
+
+    // TODO Not sure of this
+    const mainDataset = featuresDataviewsDatasets[0][0]
+    console.log(mainDataset, datasetConfig)
+    promiseRef.current = dispatch(
+      fetch4WingInteractionThunk({ dataset: mainDataset, datasetConfig })
+    )
   }
   return { clickedEvent, clickedEventStatus, dispatchClickedEvent }
 }
