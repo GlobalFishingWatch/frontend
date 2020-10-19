@@ -7,12 +7,7 @@ import { memoizeByLayerId, memoizeCache, isUrlAbsolute } from '../../utils'
 import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
 import fetchStats from './util/fetch-stats'
-import {
-  HEATMAP_GEOM_TYPES,
-  HEATMAP_COLOR_RAMPS,
-  HEATMAP_GEOM_TYPES_GL_TYPES,
-  HEATMAP_DEFAULT_MAX_ZOOM,
-} from './config'
+import { HEATMAP_COLOR_RAMPS, HEATMAP_DEFAULT_MAX_ZOOM } from './config'
 import { statsByZoom } from './types'
 import getBreaks from './util/get-breaks'
 
@@ -33,7 +28,7 @@ class HeatmapGenerator {
     const url = new URL(
       tilesUrl.replace('{{type}}', 'heatmap').replace(/{{/g, '{').replace(/}}/g, '}')
     )
-    url.searchParams.set('geomType', HEATMAP_GEOM_TYPES.GRIDDED)
+    url.searchParams.set('geomType', 'rectangle')
     url.searchParams.set('singleFrame', 'true')
     if (config.start && config.end) {
       url.searchParams.set('date-range', [config.start, config.end].join(','))
@@ -94,7 +89,7 @@ class HeatmapGenerator {
         id: config.id,
         source: config.id,
         'source-layer': 'temporalgrid',
-        type: HEATMAP_GEOM_TYPES_GL_TYPES[HEATMAP_GEOM_TYPES.GRIDDED],
+        type: 'fill',
         layout: {
           visibility,
         },

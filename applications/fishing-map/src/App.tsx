@@ -1,6 +1,7 @@
 import React, { memo, useState, Fragment, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { AsyncReducerStatus } from 'types'
+import useDebugMenu from 'hooks/use-debug-menu'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
@@ -11,7 +12,6 @@ import { selectDataviewsResourceQueries } from 'features/workspace/workspace.sel
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { selectWorkspaceId, selectSidebarOpen } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
-import { selectActive, toggleDebugMenu } from 'features/debug/debug.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from './features/debug/DebugMenu'
 import Login from './features/user/Login'
@@ -38,18 +38,7 @@ function App(): React.ReactElement {
   const workspaceId = useSelector(selectWorkspaceId)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'd') {
-        dispatch(toggleDebugMenu())
-      }
-    }
-    document.addEventListener('keydown', onKeyDown)
-    return () => {
-      document.removeEventListener('keydown', onKeyDown)
-    }
-  }, [dispatch])
-  const debugActive = useSelector(selectActive)
+  const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 
   const onToggle = () => {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })
@@ -102,7 +91,7 @@ function App(): React.ReactElement {
       <Modal
         header="Secret debug menu 🤖"
         isOpen={debugActive}
-        onClose={(e) => dispatch(toggleDebugMenu())}
+        onClose={() => dispatchToggleDebugMenu()}
       >
         <DebugMenu />
       </Modal>

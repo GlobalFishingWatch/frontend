@@ -11,6 +11,7 @@ import Map from './map';
 import './App.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
+
 export const DEFAULT_SUBLAYERS = [
   {
     id: 0,
@@ -24,7 +25,7 @@ export const DEFAULT_SUBLAYERS = [
     id: 1,
     datasets: 'fishing_v4',
     filter: "flag='FRA'",
-    active: false
+    active: true
   },
   {
     id: 2,
@@ -100,13 +101,12 @@ export default function App() {
   const debouncedTime = useDebounce(time, 1000)
 
   const [sublayers, setSublayers] = useState(DEFAULT_SUBLAYERS)
-  const [combinationMode, setCombinationMode] = useState('add')
+  const [mode, setMode] = useState('extruded')
 
   const [showBasemap, setShowBasemap] = useState(true)
   const [animated, setAnimated] = useState(true)
   const [debug, setDebug] = useState(false)
   const [debugLabels, setDebugLabels] = useState(false)
-  const [geomTypeMode, setGeomTypeMode] = useState('gridded')
 
   const [showInfo, setShowInfo] = useState(false)
 
@@ -128,7 +128,7 @@ export default function App() {
           let colorRamp = heatmapSublayer.colorRamp
           if (sublayers.filter(t => t.active).length === 1) {
             colorRamp = 'presence'
-          } else if (combinationMode === 'bivariate') {
+          } else if (mode === 'bivariate') {
             colorRamp = 'bivariate'
           }
           return {
@@ -140,19 +140,18 @@ export default function App() {
           }
         })
 
-        let geomType = geomTypeMode
-        if (geomType === 'blobOnPlay') {
-          geomType = (isPlaying) ? 'blob' : 'gridded'
+        let finalMode = mode
+        if (mode === 'blobOnPlay') {
+          finalMode = (isPlaying) ? 'blob' : 'compare'
         }
 
         generators.push({
           id: 'heatmap-animated',
           type: Generators.Type.HeatmapAnimated,
           sublayers: heatmapSublayers,
-          combinationMode,
+          mode: finalMode,
           debug,
           debugLabels,
-          geomType,
           // tilesAPI: 'https://fourwings.api.dev.globalfishingwatch.org/v1'
           // tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1/datasets',
           tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1',
@@ -173,8 +172,10 @@ export default function App() {
       }
     return generators
   },
-    [animated, showBasemap, debug, debugLabels, sublayers, geomTypeMode, isPlaying, combinationMode]
+    [animated, showBasemap, debug, debugLabels, sublayers, mode, isPlaying]
   );
+
+  // console.log(layers)
 
   const [mapRef, setMapRef] = useState(null)
 
@@ -188,7 +189,7 @@ export default function App() {
   // TODO useMapInteraction has been removed
   // const { onMapClick, onMapHover } = useMapInteraction(clickCallback, hoverCallback, mapRef)
   const onMapClick = useMapClick(clickCallback)
-  const onMapHover = useMapHover(null, hoverCallback, mapRef)
+  // const onMapHover = useMapHover(null, hoverCallback, mapRef)
 
   const globalConfig = useMemo(() => {
     const finalTime = (animated) ? time: debouncedTime
@@ -196,6 +197,7 @@ export default function App() {
   }, [animated, time, debouncedTime])
 
   const { style } = useLayerComposer(layers, globalConfig)
+  // console.log(style)
 
   if (mapRef) {
     mapRef.showTileBoundaries = debug
@@ -211,7 +213,7 @@ export default function App() {
     <div className="container">
       {isLoading && <div className="loading">loading</div>}
       <div className="map">
-        {style && <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover} onSetMapRef={setMapRef} />}
+        {style && <Map style={style} onMapClick={onMapClick}  onSetMapRef={setMapRef} />}
       </div>
       <div className="timebar">
         <TimebarComponent
@@ -227,7 +229,7 @@ export default function App() {
         />
       </div>
       <div className="control-buttons">
-        <Tilesets onChange={(newTilesets, newCombinationMode) => { setSublayers(newTilesets); setCombinationMode(newCombinationMode) }} />
+        <Tilesets onChange={(newTilesets) => { setSublayers(newTilesets); }} />
         <hr />
         <fieldset>
           <input type="checkbox" id="showBasemap" checked={showBasemap} onChange={(e) => {
@@ -255,10 +257,12 @@ export default function App() {
         </fieldset>
 
         <fieldset>
-          <select id="geom" onChange={(event) => { setGeomTypeMode(event.target.value)}}>
-            <option value="gridded">geom:gridded</option>
-            <option value="blob">geom:blob</option>
-            <option value="blobOnPlay">geom:blob on play</option>
+          <select id="mode" onChange={(event) => { setMode(event.target.value)}}>
+            <option value="compare">compare</option>
+            <option value="bivariate">bivariate</option>
+            <option value="blob">blob</option>
+            <option value="blobOnPlay">blob on play</option>
+            <option value="extruded">extruded</option>
           </select>
         </fieldset>
         <hr />

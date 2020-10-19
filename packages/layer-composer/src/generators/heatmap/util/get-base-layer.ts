@@ -1,6 +1,6 @@
 import { ExtendedLayer, Group } from '../../../types'
 import { Type } from '../../types'
-import { HEATMAP_GEOM_TYPES_GL_TYPES } from '../config'
+import { HEATMAP_MODE_LAYER_TYPE } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 
 export default function (config: GlobalHeatmapAnimatedGeneratorConfig): ExtendedLayer {
@@ -8,7 +8,7 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig): Extended
     id: '_',
     source: '_',
     'source-layer': 'temporalgrid',
-    type: HEATMAP_GEOM_TYPES_GL_TYPES[config.geomType],
+    type: HEATMAP_MODE_LAYER_TYPE[config.mode] as any,
     metadata: {
       group: Group.Heatmap,
       generatorType: Type.HeatmapAnimated,

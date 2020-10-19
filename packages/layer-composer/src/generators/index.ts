@@ -11,7 +11,7 @@ import VesselEventsGenerator from './vessel-events/vessel-events'
 import RulersGenerator from './rulers/rulers'
 
 export { DEFAULT_BACKGROUND_COLOR }
-export { HEATMAP_GEOM_TYPES, HEATMAP_COLOR_RAMPS } from './heatmap/config'
+export { HEATMAP_COLOR_RAMPS } from './heatmap/config'
 
 export default {
   [Type.Background]: new BackgroundGenerator(),

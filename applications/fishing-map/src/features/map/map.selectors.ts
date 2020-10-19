@@ -64,10 +64,14 @@ export const getGeneratorsConfig = createSelector(
         const config = dataview.config
         const datasetsConfig = dataview.datasetsConfig
         if (!config || !datasetsConfig || !datasetsConfig.length) return []
+        const colorRamp =
+          animatedHeatmapDataviews.length === 1
+            ? 'presence'
+            : (config.colorRamp as Generators.ColorRampsIds)
         const sublayer: HeatmapAnimatedGeneratorSublayer = {
           id: dataview.id,
           datasets: datasetsConfig.map((dc) => dc.datasetId),
-          colorRamp: config.colorRamp || 'presence',
+          colorRamp,
         }
         if (config.filters) {
           const flags = config.filters.map((flag: string) => `flag='${flag}'`).join(' OR ')
@@ -75,12 +79,22 @@ export const getGeneratorsConfig = createSelector(
         }
         return sublayer
       })
+
+      let mode = Generators.HeatmapAnimatedMode.Compare
+      if (debugOptions.extruded) {
+        mode = Generators.HeatmapAnimatedMode.Extruded
+      } else if (debugOptions.blob && sublayers.length === 1) {
+        mode = Generators.HeatmapAnimatedMode.Blob
+      }
+
       const mergedLayer = {
         ...animatedHeatmapDataviews[0],
         config: {
           ...animatedHeatmapDataviews[0].config,
           sublayers,
-          geomType: debugOptions.blob === true && sublayers.length === 1 ? 'blob' : 'gridded',
+          mode,
+          debug: debugOptions.debug,
+          debugLabels: debugOptions.debug,
         },
       }
       generatorsConfig.push(mergedLayer)

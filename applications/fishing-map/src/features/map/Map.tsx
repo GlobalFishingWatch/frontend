@@ -13,15 +13,16 @@ import {
   useMapHover,
 } from '@globalfishingwatch/react-hooks'
 import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
+import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ClickPopup, HoverPopup } from './Popup'
 import MapInfo from './MapInfo'
 import MapControls from './MapControls'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import { useMapboxRef } from './map.context'
 import styles from './Map.module.css'
-
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const mapOptions = {
@@ -53,6 +54,12 @@ const Map = memo(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [viewport])
 
+    const debugOptions = useSelector(selectDebugOptions)
+
+    useEffect(() => {
+      mapRef.current.getMap().showTileBoundaries = debugOptions.debug
+    }, [mapRef, debugOptions])
+
     return (
       <InteractiveMap
         ref={mapRef}
@@ -60,6 +67,7 @@ const Map = memo(
         height="100%"
         latitude={viewport.latitude}
         longitude={viewport.longitude}
+        pitch={debugOptions.extruded ? 40 : 0}
         zoom={viewport.zoom}
         onViewportChange={onViewportChange}
         mapStyle={style}
@@ -98,7 +106,7 @@ const MapWrapper = (): React.ReactElement => {
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
-  const { style } = useLayerComposer(generatorsConfig, globalConfig)
+  const { style } = useLayerComposer(generatorsConfig as AnyGeneratorConfig[], globalConfig)
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const layersWithLegend = useMemo(() => {
@@ -128,7 +136,6 @@ const MapWrapper = (): React.ReactElement => {
         if (hoveredFeatureForDataview) {
           sublayerLegend.currentValue = hoveredFeatureForDataview.value
         }
-        sublayerLegend.currentValue = 32
         return sublayerLegend
       })
     })

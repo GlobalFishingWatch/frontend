@@ -1,6 +1,5 @@
 import { FeatureCollection } from 'geojson'
 import { Segment } from '@globalfishingwatch/data-transforms'
-import { Geoms } from './heatmap/types'
 
 export enum Type {
   Background = 'BACKGROUND',
@@ -200,9 +199,8 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: Type.HeatmapAnimated
   sublayers: HeatmapAnimatedGeneratorSublayer[]
-  combinationMode?: CombinationMode
+  mode?: HeatmapAnimatedMode
   tilesAPI?: string
-  geomType?: Geoms
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
@@ -282,4 +280,13 @@ export type ColorRampsIds =
 
 export type BivariateColorRampsIds = 'bivariate'
 
-export type CombinationMode = 'add' | 'compare' | 'bivariate' | 'literal'
+export enum HeatmapAnimatedMode {
+  // Pick sublayer with highest value and place across this sublayer's color ramp. Works with 0 - n sublayers
+  Compare = 'compare',
+  // Place values on a 2D bivariate scale where the two axis represent the two sublayers. Works only with 2 sublayers
+  Bivariate = 'bivariate',
+  // Uses a MGL heatmap layer to represent values with smooth translations between grid points. Works only with 1 sublayer
+  Blob = 'blob',
+  // Represents value in 3D stacked bars. Works with 0 - n sublayers
+  Extruded = 'extruded',
+}

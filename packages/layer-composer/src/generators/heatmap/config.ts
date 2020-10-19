@@ -1,6 +1,6 @@
-import { ColorRampsIds, BivariateColorRampsIds } from '../types'
+import { ColorRampsIds, BivariateColorRampsIds, HeatmapAnimatedMode } from '../types'
 import { DEFAULT_BACKGROUND_COLOR } from '..'
-import { HeatmapGeomGL, HeatmapGeoms } from './types'
+import { HeatmapAnimatedCombinationMode } from './types'
 
 export const API_TILES_URL =
   process.env.NODE_ENV === 'production'
@@ -13,17 +13,22 @@ export const API_ENDPOINTS = {
 }
 
 export const HEATMAP_DEFAULT_MAX_ZOOM = 12
-export const HEATMAP_GEOM_TYPES: HeatmapGeoms = {
-  BLOB: 'blob',
-  GRIDDED: 'gridded',
-  EXTRUDED: 'extruded',
+
+export const HEATMAP_MODE_COMBINATION: Record<
+  HeatmapAnimatedMode,
+  HeatmapAnimatedCombinationMode
+> = {
+  [HeatmapAnimatedMode.Compare]: HeatmapAnimatedCombinationMode.Compare,
+  [HeatmapAnimatedMode.Bivariate]: HeatmapAnimatedCombinationMode.Bivariate,
+  [HeatmapAnimatedMode.Blob]: HeatmapAnimatedCombinationMode.Literal,
+  [HeatmapAnimatedMode.Extruded]: HeatmapAnimatedCombinationMode.Cumulative,
 }
 
-export const HEATMAP_DEFAULT_GEOM_TYPE = HEATMAP_GEOM_TYPES.GRIDDED
-export const HEATMAP_GEOM_TYPES_GL_TYPES: HeatmapGeomGL = {
-  [HEATMAP_GEOM_TYPES.BLOB]: 'heatmap',
-  [HEATMAP_GEOM_TYPES.GRIDDED]: 'fill',
-  [HEATMAP_GEOM_TYPES.EXTRUDED]: 'fill-extrusion',
+export const HEATMAP_MODE_LAYER_TYPE: Record<HeatmapAnimatedMode, string> = {
+  [HeatmapAnimatedMode.Compare]: 'fill',
+  [HeatmapAnimatedMode.Bivariate]: 'fill',
+  [HeatmapAnimatedMode.Blob]: 'heatmap',
+  [HeatmapAnimatedMode.Extruded]: 'fill-extrusion',
 }
 
 const opacitySteps = [0, 0.2, 0.4, 0.6, 0.8, 1]
