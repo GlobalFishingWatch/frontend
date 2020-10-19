@@ -136,7 +136,6 @@ const MapWrapper = (): React.ReactElement => {
         if (hoveredFeatureForDataview) {
           sublayerLegend.currentValue = hoveredFeatureForDataview.value
         }
-        sublayerLegend.currentValue = 32
         return sublayerLegend
       })
     })
