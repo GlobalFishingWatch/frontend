@@ -128,6 +128,7 @@ const MapWrapper = (): React.ReactElement => {
         if (hoveredFeatureForDataview) {
           sublayerLegend.currentValue = hoveredFeatureForDataview.value
         }
+        sublayerLegend.currentValue = 32
         return sublayerLegend
       })
     })
@@ -155,7 +156,11 @@ const MapWrapper = (): React.ReactElement => {
         (legend) =>
           document.getElementById(legend.id as string) &&
           createPortal(
-            <MapLegend layer={legend} currentValueClassName={styles.currentValue} />,
+            <MapLegend
+              layer={legend}
+              className={styles.legend}
+              currentValueClassName={styles.currentValue}
+            />,
             document.getElementById(legend.id as string) as Element
           )
       )}
