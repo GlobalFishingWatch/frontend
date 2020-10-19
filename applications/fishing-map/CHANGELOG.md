@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.11.2
+
+### Patch Changes
+
+- d7bc617: Added extruded mode and merged geomType and combinationMode into mode
+- 3c890b7: Debug menu
+- Updated dependencies [d7bc617]
+  - @globalfishingwatch/layer-composer@3.0.0
+  - @globalfishingwatch/react-hooks@3.4.1
+  - @globalfishingwatch/dataviews-client@3.3.2
+
 ## 0.11.1
 
 ### Patch Changes

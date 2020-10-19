@@ -1,5 +1,14 @@
 # @globalfishingwatch/react-hooks
 
+## 3.4.1
+
+### Patch Changes
+
+- d7bc617: Added extruded mode and merged geomType and combinationMode into mode
+- Updated dependencies [d7bc617]
+  - @globalfishingwatch/layer-composer@3.0.0
+  - @globalfishingwatch/dataviews-client@3.3.2
+
 ## 3.4.0
 
 ### Minor Changes
