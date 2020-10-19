@@ -11,6 +11,7 @@
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.6.0",
     "@globalfishingwatch/api-types": "^1.2.0",
+    "@globalfishingwatch/data-transforms": "^1.0.2",
     "@globalfishingwatch/dataviews-client": "^3.3.2",
     "@globalfishingwatch/layer-composer": "^3.0.0",
     "@globalfishingwatch/linting": "^1.4.0",
@@ -19,7 +20,6 @@
     "@globalfishingwatch/react-map-gl": "5.2.7-gfw.3",
     "@globalfishingwatch/timebar": "^1.0.14",
     "@globalfishingwatch/ui-components": "^2.2.1",
-    "@globalfishingwatch/data-transforms": "^1.0.2",
     "@reduxjs/toolkit": "^1.4.0",
     "countryflag": "^4.0.1",
     "dayjs": "^1.8.36",
@@ -31,7 +31,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
-    "react-scripts": "3.4.3",
+    "react-scripts": "3.4.1",
     "redux": "^4.0.5",
     "redux-first-router": "^2.1.5",
     "typescript": "^4.0.3"

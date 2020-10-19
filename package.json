@@ -12,11 +12,7 @@
       "applications/*",
       "linting"
     ],
-    "nohoist": [
-      "**/react-scripts",
-      "**/react-scripts/**",
-      "**/babel**"
-    ]
+    "nohoist": []
   },
   "scripts": {
     "start:sandbox": "cross-env CI=true SKIP_PREFLIGHT_CHECK=true lerna run --scope @globalfishingwatchapp/sandbox start",
