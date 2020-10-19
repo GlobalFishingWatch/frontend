@@ -6,7 +6,7 @@ import {
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { DataviewConfig } from '@globalfishingwatch/dataviews-client'
+import { DataviewConfig } from '@globalfishingwatch/api-types'
 import {
   selectTimerange,
   selectMapZoomQuery,

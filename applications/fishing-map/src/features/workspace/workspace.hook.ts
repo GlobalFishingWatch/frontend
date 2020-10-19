@@ -19,7 +19,10 @@ export const useDataviewInstancesConnect = () => {
         return
       }
       dispatchQueryParams({
-        dataviewInstances: [...(urlDataviewInstances || []), dataviewInstance],
+        dataviewInstances: [
+          ...(urlDataviewInstances || []),
+          dataviewInstance as UrlDataviewInstance,
+        ],
       })
     },
     [dispatchQueryParams, urlDataviewInstances]
@@ -63,7 +66,10 @@ export const useDataviewInstancesConnect = () => {
         dispatchQueryParams({ dataviewInstances })
       } else {
         dispatchQueryParams({
-          dataviewInstances: [...(urlDataviewInstances || []), dataviewInstance],
+          dataviewInstances: [
+            ...(urlDataviewInstances || []),
+            dataviewInstance as UrlDataviewInstance,
+          ],
         })
       }
     },

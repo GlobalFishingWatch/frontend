@@ -43,7 +43,7 @@ function PopupWrapper({
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const trackDatasets = useSelector(selectTracksDatasets)
   const searchDatasets = useSelector(selectVesselsDatasets)
-  const onVesselClick = (vessel: any, feature: TooltipEventFeature) => {
+  const onVesselClick = (vessel: { id: string }, feature: TooltipEventFeature) => {
     const trackDatasetByFeature = trackDatasets.filter((trackDataset) =>
       feature.dataset?.relatedDatasets?.some(
         (featureRelatedDataset) => featureRelatedDataset.id === trackDataset.id

@@ -1,7 +1,7 @@
 import React from 'react'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import { AOI } from '@globalfishingwatch/dataviews-client/dist/types'
+import { AOI } from '@globalfishingwatch/api-types'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import styles from './AreasOfInterest.module.css'

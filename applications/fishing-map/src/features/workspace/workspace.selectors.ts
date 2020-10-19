@@ -2,11 +2,8 @@ import { createSelector } from '@reduxjs/toolkit'
 import uniqBy from 'lodash/uniqBy'
 import { UrlDataviewInstance } from 'types'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import {
-  Dataset,
-  DataviewDatasetConfig,
-  resolveEndpoint,
-} from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import { selectWorkspace } from 'features/workspace/workspace.slice'
 import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDataviewInstances } from 'routes/routes.selectors'

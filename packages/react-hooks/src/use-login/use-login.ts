@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import GFWAPI, {
-  UserData,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
+import { UserData } from '@globalfishingwatch/api-types'
 
 interface GFWLoginHook {
   logged: boolean

@@ -1,4 +1,4 @@
-import { Dataview } from '@globalfishingwatch/dataviews-client'
+import { Dataview } from '@globalfishingwatch/api-types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { Field } from '@globalfishingwatch/data-transforms'
 import {
@@ -69,11 +69,11 @@ const dataviews: Dataview[] = [
         datasetId: TRACKS_DATASET_ID,
         params: [{ id: 'vesselId', value: '' }],
         query: [
-          // { id: 'binary', value: false },
+          { id: 'binary', value: true },
           { id: 'wrapLongitudes', value: false },
           {
             id: 'fields',
-            value: [Field.lonlat].join(','),
+            value: [Field.lonlat, Field.timestamp].join(','),
             // value: [Field.lonlat, Field.timestamp, Field.speed, Field.fishing].join(','),
           },
           {

@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import TagList from '@globalfishingwatch/ui-components/dist/tag-list'
-import { Dataview } from '@globalfishingwatch/dataviews-client'
+import { Dataview } from '@globalfishingwatch/api-types'
 import { DATASET_SOURCE_OPTIONS, FLAG_FILTERS } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
@@ -65,7 +65,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
       const confirmation = window.confirm(
         `Are you sure you want to permanently delete this dataview?\n${dataview.name}`
       )
-      if (confirmation && workspace) {
+      if (confirmation && workspace?.dataviews) {
         setDataviewLoadingId(dataview.id)
         await updateWorkspace({
           id: workspace.id,

@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver'
 import { vessels } from '@globalfishingwatch/pbf/decoders/vessels'
-import { UserData } from './types'
+import { UserData, ResourceResponseType } from '@globalfishingwatch/api-types'
 import { isUrlAbsolute } from './utils/url'
 
 const API_GATEWAY =
@@ -32,10 +32,9 @@ interface LoginParams {
   refreshToken?: string | null
 }
 
-export type FetchResponseTypes = 'default' | 'text' | 'json' | 'blob' | 'arrayBuffer' | 'vessel'
 export type FetchOptions = Partial<RequestInit> & {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  responseType?: FetchResponseTypes
+  responseType?: ResourceResponseType
   dataset?: boolean
 }
 

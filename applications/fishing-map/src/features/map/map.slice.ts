@@ -3,11 +3,8 @@ import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
 import { InteractionEvent, ExtendedFeatureVessel } from '@globalfishingwatch/react-hooks'
 import GFWAPI from '@globalfishingwatch/api-client'
-import {
-  DataviewDatasetConfig,
-  Dataset,
-  resolveEndpoint,
-} from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { DataviewDatasetConfig, Dataset, APISearch, Vessel } from '@globalfishingwatch/api-types'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
 import { VESSELS_DATASET_TYPE } from 'features/workspace/workspace.mock'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
@@ -63,12 +60,11 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
           if (infoUrl) {
             try {
               // TODO create search API results response
-              const vesselsInfo = await GFWAPI.fetch<any>(infoUrl, { signal })
+              const vesselsInfo = await GFWAPI.fetch<APISearch<Vessel>>(infoUrl, { signal })
               const { entries } = vesselsInfo?.[0]?.results
               if (entries) {
                 vesselsForDataset = vesselsForDataset.map((vessel) => {
-                  // TODO use vessel API response here
-                  const vesselInfo = entries.find((entry: any) => entry.id === vessel.id)
+                  const vesselInfo = entries.find((entry) => entry.id === vessel.id)
                   if (!vesselInfo) return vessel
                   return { ...vessel, ...vesselInfo }
                 })

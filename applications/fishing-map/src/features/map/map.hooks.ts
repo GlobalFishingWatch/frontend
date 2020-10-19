@@ -6,7 +6,7 @@ import {
   InteractionEvent,
 } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { Dataset } from '@globalfishingwatch/dataviews-client'
+import { Dataset } from '@globalfishingwatch/api-types'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,

@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { Workspace, WorkspaceUpsert } from '@globalfishingwatch/dataviews-client'
+import { Workspace, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import { selectCurrentWorkspaceDataviewsResolved } from 'features/dataviews/dataviews.selectors'
 import {
   fetchWorkspacesThunk,

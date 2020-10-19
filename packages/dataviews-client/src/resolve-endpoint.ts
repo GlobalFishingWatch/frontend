@@ -1,4 +1,4 @@
-import { Dataset, DataviewDatasetConfig } from './types'
+import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 
 // Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
 export default (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
