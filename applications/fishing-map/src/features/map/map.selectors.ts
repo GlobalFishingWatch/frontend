@@ -89,6 +89,7 @@ export const getGeneratorsConfig = createSelector(
 
       const mergedLayer = {
         ...animatedHeatmapDataviews[0],
+        id: 'mergedAnimatedHeatmap',
         config: {
           ...animatedHeatmapDataviews[0].config,
           sublayers,

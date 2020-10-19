@@ -119,10 +119,9 @@ const MapWrapper = (): React.ReactElement => {
         : [layer.metadata.legend]
 
       // TODO Move this to its own package
-      return sublayerLegendsMetadata.map((sublayerLegendMetadata) => {
+      return sublayerLegendsMetadata.map((sublayerLegendMetadata, sublayerIndex) => {
         const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
         const dataview = dataviews?.find((d) => d.id === id)
-        // TODO generatorId / dataviews ID mismatch (wrongly set in getGeneratorsConfig)
         const sublayerLegend: LegendLayer = {
           ...sublayerLegendMetadata,
           id: `legend_${id}`,
@@ -131,8 +130,9 @@ const MapWrapper = (): React.ReactElement => {
           label: 'Soy leyenda ✌️',
           unit: 'hours',
         }
-        const hoveredFeatureForDataview = hoveredEvent?.features?.find((f) => f.generatorId === id)
-
+        const hoveredFeatureForDataview = hoveredEvent?.features?.find(
+          (f) => f.temporalgrid?.sublayerIndex === sublayerIndex
+        )
         if (hoveredFeatureForDataview) {
           sublayerLegend.currentValue = hoveredFeatureForDataview.value
         }
