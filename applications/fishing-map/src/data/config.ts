@@ -44,3 +44,5 @@ export const sources: SelectOption[] = [
     label: 'VMS Panama',
   },
 ]
+
+export const DATE_FORMAT = 'yyyy/MM/dd'

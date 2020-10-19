@@ -5,8 +5,9 @@ import {
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { DataviewConfig } from '@globalfishingwatch/dataviews-client'
+import { DataviewConfig } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from 'types'
+
 import {
   selectTimerange,
   selectMapZoomQuery,
@@ -103,7 +104,7 @@ export const getGeneratorsConfig = createSelector(
         id: dataview.id,
         ...(data && { data }),
       }
-    }) as AnyGeneratorConfig[]
-    return generatorsConfig
+    })
+    return generatorsConfig as AnyGeneratorConfig[]
   }
 )

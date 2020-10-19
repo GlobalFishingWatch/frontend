@@ -4,7 +4,10 @@ import { scaleLinear } from 'd3-scale'
 import Select, { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
-import ColorBar, { ColorBarIds } from '@globalfishingwatch/ui-components/dist/color-bar'
+import ColorBar, {
+  HeatmapColorBarIds,
+  HeatmapColorBarOptions,
+} from '@globalfishingwatch/ui-components/dist/color-bar'
 import { DATASET_SOURCE_OPTIONS, FLAG_FILTERS, CUSTOM_DATA_SHAPE } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { useCurrentWorkspaceConnect, useWorkspacesAPI } from 'features/workspaces/workspaces.hook'
@@ -16,7 +19,7 @@ import { DataviewDraftDataset } from './dataviews.slice'
 function NewDataview(): React.ReactElement {
   const [loading, setLoading] = useState(false)
   const { hideModal } = useModalConnect()
-  const { workspace } = useCurrentWorkspaceConnect()
+  const { workspace } = useCurrentWorkspaceConnect() as any
   const { updateWorkspace } = useWorkspacesAPI()
   const { draftDataview, setDraftDataview, resetDraftDataview } = useDraftDataviewConnect()
   const { upsertDataview } = useDataviewsAPI()
@@ -67,7 +70,7 @@ function NewDataview(): React.ReactElement {
         }
       }
       const dataviewId = draftDataview.id || dataview?.id
-      if (dataviewId && workspace?.id) {
+      if (dataviewId && workspace?.id && workspace?.dataviews && workspace?.dataviewsConfig) {
         // TODO update dataview and this to match new config structure
         const dataviewConfig = {
           config: { color: draftDataview.color, colorRamp: draftDataview.colorRamp },
@@ -79,7 +82,9 @@ function NewDataview(): React.ReactElement {
         }
         await updateWorkspace({
           id: workspace.id,
-          dataviews: [...(new Set([...workspace.dataviews.map((d) => d.id), dataviewId]) as any)],
+          dataviews: [
+            ...(new Set([...workspace.dataviews.map((d: any) => d.id), dataviewId]) as any),
+          ],
           dataviewsConfig: {
             ...workspace.dataviewsConfig,
             [dataviewId]: dataviewConfig,
@@ -122,8 +127,11 @@ function NewDataview(): React.ReactElement {
         <div className={styles.input}>
           <label>Color</label>
           <ColorBar
-            selectedColor={draftDataview?.color as ColorBarIds}
-            onColorClick={(color) => setDraftDataview({ color: color.value, colorRamp: color.id })}
+            colorBarOptions={HeatmapColorBarOptions}
+            selectedColor={draftDataview?.color as HeatmapColorBarIds}
+            onColorClick={(color) =>
+              setDraftDataview({ color: color.value, colorRamp: color.id as HeatmapColorBarIds })
+            }
           />
         </div>
       )}

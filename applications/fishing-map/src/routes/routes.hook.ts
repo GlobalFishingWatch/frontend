@@ -10,7 +10,7 @@ export const useLocationConnect = () => {
   const location = useSelector(selectCurrentLocation)
   const payload = useSelector(selectLocationPayload)
   const dispatchLocation = useCallback(
-    (type: ROUTE_TYPES, customPayload: any = {}) => {
+    (type: ROUTE_TYPES, customPayload: Record<string, any> = {}) => {
       dispatch({ type, payload: { ...payload, ...customPayload } })
     },
     [dispatch, payload]

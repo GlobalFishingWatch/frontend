@@ -4,6 +4,7 @@ import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import { useSelector } from 'react-redux'
 import useClickedOutside from 'hooks/useClickedOutside'
 import { formatInfoField, formatInfoLabel } from 'utils/info'
+import { Vessel } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
@@ -17,14 +18,6 @@ import { selectResourceByUrl } from 'features/resources/resources.slice'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
-}
-
-type Vessel = {
-  shipname: string
-  flag: string
-  imo?: string
-  first_transmission_date: string
-  last_transmission_date: string
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
@@ -79,7 +72,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {title}
+      {title && formatInfoField(title, 'name')}
     </h3>
   )
 

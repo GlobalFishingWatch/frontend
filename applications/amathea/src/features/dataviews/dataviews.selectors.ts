@@ -17,7 +17,7 @@ export const selectCurrentWorkspaceDataviews = createSelector(
 
 export const selectCurrentWorkspaceDataviewsResolved = createSelector(
   [selectCurrentWorkspaceDataviews, selectCurrentWorkspace],
-  (dataviews, workspace) => {
+  (dataviews, workspace: any) => {
     return resolveDataviews(dataviews, workspace?.dataviewsConfig)
   }
 )
@@ -48,10 +48,10 @@ export const selectDatasetOptionsBySource = createSelector(
 
     return dataviews.flatMap((dataview) => {
       const dataset = dataview.datasets?.find(
-        (dataset) => dataset.type === '4wings:v1' || dataset.type === 'user-context-layer:v1'
+        (dataset: any) => dataset.type === '4wings:v1' || dataset.type === 'user-context-layer:v1'
       )
 
-      const currentWorkspaceDataviews = currentWorkspace?.dataviews.map((dataview) => dataview.id)
+      const currentWorkspaceDataviews = currentWorkspace?.dataviews?.map((dataview) => dataview.id)
       if (
         !dataset ||
         dataset.source !== sourceSelected.id ||

@@ -1,4 +1,4 @@
-import { Dataview, DataviewInstance } from './types'
+import { Dataview, DataviewInstance } from '@globalfishingwatch/api-types'
 
 /**
  * Gets list of dataviews and those present in the workspace, and applies any config or datasetConfig

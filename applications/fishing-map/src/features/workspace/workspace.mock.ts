@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { Workspace } from '@globalfishingwatch/dataviews-client'
+import { Workspace } from '@globalfishingwatch/api-types'
 export const FISHING_DATASET_ID = 'fishing_v4'
 export const TRACKS_DATASET_ID = 'fishing-tracks:v20200507'
 export const VESSELS_DATASET_ID = 'test-alias-import-vessels-pipeline:latest'

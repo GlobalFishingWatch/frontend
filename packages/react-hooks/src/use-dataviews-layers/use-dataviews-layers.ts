@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Resource, Dataview } from '@globalfishingwatch/dataviews-client'
+import { Resource, Dataview } from '@globalfishingwatch/api-types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 
 export function getGeneratorConfig(dataview: Dataview) {

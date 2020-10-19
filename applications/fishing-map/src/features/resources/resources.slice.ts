@@ -4,7 +4,7 @@ import { RootState } from 'store'
 import memoize from 'lodash/memoize'
 import { trackValueArrayToSegments, Field } from '@globalfishingwatch/data-transforms'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/dataviews-client'
+import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/api-types'
 import { TRACKS_DATASET_TYPE } from 'features/workspace/workspace.mock'
 
 export interface ResourceQuery {
@@ -26,9 +26,15 @@ const initialState: ResourcesState = {}
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
   async (resource: ResourceQuery) => {
-    const data = await GFWAPI.fetch(resource.url).then((data) => {
+    const isTrackResource = resource.datasetType === TRACKS_DATASET_TYPE
+    const responseType =
+      isTrackResource &&
+      resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
+        ? 'vessel'
+        : 'json'
+    const data = await GFWAPI.fetch(resource.url, { responseType }).then((data) => {
       // TODO Replace with enum?
-      if (resource.datasetType === TRACKS_DATASET_TYPE) {
+      if (isTrackResource) {
         const fields = (resource.datasetConfig.query?.find((q) => q.id === 'fields')
           ?.value as string).split(',') as Field[]
         const segments = trackValueArrayToSegments(data as any, fields)

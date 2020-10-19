@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { Resource } from '@globalfishingwatch/dataviews-client'
+import { Resource } from '@globalfishingwatch/api-types'
 import { GraphData } from 'data/data'
 import { selectAll, fetchResourceByIdThunk } from './resources.slice'
 

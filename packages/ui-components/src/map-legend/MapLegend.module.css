@@ -5,9 +5,9 @@
   color: var(--color-white);
 }
 
-.row {
+/* .row {
   padding: var(--space-S) var(--space-M);
-}
+} */
 
 .rowColum {
   display: flex;
@@ -43,7 +43,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  border: 1px solid var(--color-primary-blue-hover);
+  border: var(--border);
 }
 
 .currentValue {
@@ -82,4 +82,12 @@
   opacity: var(--opacity-secondary);
   position: absolute;
   transform: translateX(-50%);
+}
+
+.step:first-child {
+  transform: translateX(0);
+}
+
+.step:last-child {
+  transform: translateX(-100%);
 }

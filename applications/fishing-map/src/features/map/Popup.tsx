@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { formatInfoField, formatNumber } from 'utils/info'
 import { Popup } from '@globalfishingwatch/react-map-gl'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -8,6 +9,19 @@ import { selectTracksDatasets, selectVesselsDatasets } from 'features/workspace/
 import { TooltipEvent, TooltipEventFeature } from '../map/map.hooks'
 import styles from './Popup.module.css'
 
+// Once this PR is merged
+// https://github.com/DefinitelyTyped/DefinitelyTyped/pull/48853
+// use import { Anchor } from 'mapbox-gl'
+type ReactPopupAnchor =
+  | 'left'
+  | 'right'
+  | 'top'
+  | 'bottom'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right'
+
 type PopupWrapper = {
   tooltipEvent: TooltipEvent
   closeButton?: boolean
@@ -15,6 +29,7 @@ type PopupWrapper = {
   className: string
   onClose?: () => void
   loading?: boolean
+  anchor?: ReactPopupAnchor
 }
 function PopupWrapper({
   tooltipEvent,
@@ -23,11 +38,12 @@ function PopupWrapper({
   className,
   onClose,
   loading = false,
+  anchor,
 }: PopupWrapper) {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const trackDatasets = useSelector(selectTracksDatasets)
   const searchDatasets = useSelector(selectVesselsDatasets)
-  const onVesselClick = (vessel: any, feature: TooltipEventFeature) => {
+  const onVesselClick = (vessel: { id: string }, feature: TooltipEventFeature) => {
     const trackDatasetByFeature = trackDatasets.filter((trackDataset) =>
       feature.dataset?.relatedDatasets?.some(
         (featureRelatedDataset) => featureRelatedDataset.id === trackDataset.id
@@ -54,40 +70,51 @@ function PopupWrapper({
       closeButton={closeButton}
       closeOnClick={closeOnClick}
       onClose={onClose}
-      anchor="top"
+      className={styles.popup}
+      anchor={anchor}
     >
-      <div className={`${styles.popup} ${className}`}>
+      <div className={className}>
         {tooltipEvent.features.map((feature: TooltipEventFeature, i: number) => (
           <div key={i} className={styles.popupSection}>
-            <h3>
-              <span
-                className={styles.popupSectionColor}
-                style={{ backgroundColor: feature.color }}
-              />
-              {feature.title}
-            </h3>
-            <div>
-              {Math.round(parseFloat(feature.value))} {feature.unit} h total
-            </div>
-            {loading && <Spinner />}
-            {feature.vesselsInfo && (
+            <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
+            <div className={styles.popupSectionContent}>
+              <h3 className={styles.popupSectionTitle}>{feature.title}</h3>
               <div>
-                {feature.vesselsInfo.vessels.map((vessel, i) => (
-                  <button
-                    key={i}
-                    className={styles.vessel}
-                    onClick={() => {
-                      onVesselClick(vessel, feature)
-                    }}
-                  >
-                    {vessel.shipname || vessel.id}: {Math.round(vessel.hours)} hours
-                  </button>
-                ))}
-                {feature.vesselsInfo.overflow && (
-                  <div>{feature.vesselsInfo.numVessels} vessels found, zoom in to inspect more</div>
-                )}
+                {formatNumber(feature.value)} {feature.unit} hours
               </div>
-            )}
+              {loading && (
+                <div className={styles.loading}>
+                  <Spinner size="small" />
+                </div>
+              )}
+              {feature.vesselsInfo && (
+                <div className={styles.vesselsTable}>
+                  <div className={styles.vesselsHeader}>
+                    <label className={styles.vesselsHeaderLabel}>Vessels</label>
+                    <label className={styles.vesselsHeaderLabel}>Hours</label>
+                  </div>
+                  {feature.vesselsInfo.vessels.map((vessel, i) => (
+                    <button
+                      key={i}
+                      className={styles.vesselRow}
+                      onClick={() => {
+                        onVesselClick(vessel, feature)
+                      }}
+                    >
+                      <span className={styles.vesselName}>
+                        {vessel.shipname ? formatInfoField(vessel.shipname, 'name') : vessel.id}
+                      </span>
+                      <span>{formatNumber(vessel.hours)}</span>
+                    </button>
+                  ))}
+                  {feature.vesselsInfo.overflow && (
+                    <div className={styles.vesselsMore}>
+                      + {feature.vesselsInfo.numVessels - feature.vesselsInfo.vessels.length} more
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -97,7 +124,7 @@ function PopupWrapper({
 
 export function HoverPopup({ event }: { event: TooltipEvent | null }) {
   if (event && event.features) {
-    return <PopupWrapper tooltipEvent={event} className={styles.hover} />
+    return <PopupWrapper tooltipEvent={event} className={styles.hover} anchor="top" />
   }
   return null
 }
@@ -107,6 +134,7 @@ type ClickPopup = {
   onClose?: () => void
   loading?: boolean
 }
+
 export function ClickPopup({ event, onClose, loading = false }: ClickPopup) {
   if (event && event.features) {
     return (

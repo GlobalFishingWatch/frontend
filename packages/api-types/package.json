@@ -1,0 +1,26 @@
+{
+  "name": "@globalfishingwatch/api-types",
+  "version": "1.1.1",
+  "description": "Typescript definitions for API responses",
+  "author": "satellitestudio <contact@satellitestud.io>",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "license": "ISC",
+  "main": "src/index.ts",
+  "typings": "src/index.ts",
+  "directories": {
+    "src": "src",
+    "dist": "dist"
+  },
+  "files": ["dist"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@globalfishingwatch/layer-composer": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,5 +1,25 @@
 # @globalfishingwatch/dataviews-client
 
+## 3.3.1
+
+### Patch Changes
+
+- Fix build dependencies
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-client@1.6.1
+  - @globalfishingwatch/api-types@1.1.1
+
+## 3.3.0
+
+### Minor Changes
+
+- db69167: Use types from api-types
+
+### Patch Changes
+
+- Updated dependencies [db69167]
+  - @globalfishingwatch/api-client@1.6.0
+
 ## 3.2.0
 
 ### Minor Changes

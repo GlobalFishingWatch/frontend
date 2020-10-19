@@ -1,6 +1,5 @@
-import { Dataview, DataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DataviewInstance } from '@globalfishingwatch/api-types'
 
-export type WorkspaceDataview = Dataview & { configId: string }
 export type UrlDataviewInstance = Omit<DataviewInstance, 'dataviewId'> & {
   dataviewId?: number // making this optional as sometimes we just need to reference the id
   deleted?: boolean // needed when you want to override from url an existing workspace config
@@ -25,7 +24,7 @@ export type QueryParams = {
   end?: string
   query?: string
   sidebarOpen?: boolean
-  dataviewInstances?: any[]
+  dataviewInstances?: Partial<UrlDataviewInstance[]>
 }
 
 export type MapCoordinates = {

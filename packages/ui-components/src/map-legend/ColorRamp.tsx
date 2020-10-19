@@ -80,7 +80,7 @@ function ColorRampLegend({
               key={i}
             >
               {(i === ramp.length - 1 && !isNaN(value) ? '≥ ' : '') +
-                (value >= 1000 ? `${value / 1000}k` : value)}
+                (value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value)}
             </span>
           )
         })}
