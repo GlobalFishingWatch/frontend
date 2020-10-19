@@ -18,5 +18,7 @@ export const formatInfoLabel = (fieldLabel: string) => {
 
 export const formatNumber = (num: string | number) => {
   const number = typeof num === 'string' ? parseFloat(num) : num
-  return Math.round(number).toLocaleString()
+  return number.toLocaleString(undefined, {
+    maximumFractionDigits: number < 10 ? 2 : 0,
+  })
 }
