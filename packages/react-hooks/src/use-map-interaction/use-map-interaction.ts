@@ -34,16 +34,19 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
           let parsed = JSON.parse(valuesAtFrame)
           if (extendedFeature.value === 0) break
           if (!isArray(parsed)) parsed = [parsed]
-          return parsed.map((value: any, i: number) => {
-            return {
-              ...extendedFeature,
-              temporalgrid: {
-                sublayerIndex: i,
-                col: properties._col,
-                row: properties._row,
+          return parsed.flatMap((value: any, i: number) => {
+            if (value === 0) return []
+            return [
+              {
+                ...extendedFeature,
+                temporalgrid: {
+                  sublayerIndex: i,
+                  col: properties._col,
+                  row: properties._row,
+                },
+                value,
               },
-              value,
-            }
+            ]
           })
         }
         return []
