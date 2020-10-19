@@ -1,5 +1,13 @@
 # @globalfishingwatch/api-client
 
+## 1.6.1
+
+### Patch Changes
+
+- Fix build dependencies
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@1.1.1
+
 ## 1.6.0
 
 ### Minor Changes
