@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { UrlDataviewInstance } from 'types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   AnyGeneratorConfig,
@@ -6,8 +7,6 @@ import {
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { DataviewConfig } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from 'types'
-
 import {
   selectTimerange,
   selectMapZoomQuery,
@@ -65,10 +64,11 @@ export const getGeneratorsConfig = createSelector(
         const config = dataview.config
         const datasetsConfig = dataview.datasetsConfig
         if (!config || !datasetsConfig || !datasetsConfig.length) return []
+        const colorRamp = animatedHeatmapDataviews.length === 1 ? 'presence' : config.colorRamp
         const sublayer: HeatmapAnimatedGeneratorSublayer = {
           id: dataview.id,
           datasets: datasetsConfig.map((dc) => dc.datasetId),
-          colorRamp: config.colorRamp || 'presence',
+          colorRamp,
         }
         if (config.filters) {
           const flags = config.filters.map((flag: string) => `flag='${flag}'`).join(' OR ')
@@ -76,15 +76,22 @@ export const getGeneratorsConfig = createSelector(
         }
         return sublayer
       })
+
+      let mode = Generators.HeatmapAnimatedMode.Compare
+      if (debugOptions.extruded) {
+        mode = Generators.HeatmapAnimatedMode.Extruded
+      } else if (debugOptions.blob && sublayers.length === 1) {
+        mode = Generators.HeatmapAnimatedMode.Blob
+      }
+
       const mergedLayer = {
         ...animatedHeatmapDataviews[0],
         config: {
           ...animatedHeatmapDataviews[0].config,
           sublayers,
-          mode:
-            debugOptions.blob === true && sublayers.length === 1
-              ? Generators.HeatmapAnimatedMode.Blob
-              : Generators.HeatmapAnimatedMode.Compare,
+          mode,
+          debug: debugOptions.debug,
+          debugLabels: debugOptions.debug,
         },
       }
       generatorsConfig.push(mergedLayer)

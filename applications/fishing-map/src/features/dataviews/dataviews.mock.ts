@@ -35,9 +35,6 @@ const dataviews: Dataview[] = [
       type: Generators.Type.HeatmapAnimated,
       color: '#00FFBC',
       colorRamp: 'teal',
-      // TODO                     👇 should this be automatically set to 'presence' when there is only a single layer?
-      // sublayers: [{ id: 'fishing', colorRamp: 'presence', datasets: [FISHING_DATASET_ID] }],
-      combinationMode: 'compare',
       tilesAPI: `${process.env.REACT_APP_API_GATEWAY}/v1/4wings`,
     },
     datasetsConfig: [
