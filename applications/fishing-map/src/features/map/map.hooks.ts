@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useRef } from 'react'
 import { ExtendedFeatureVessel, InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { Dataset } from '@globalfishingwatch/api-types'
+import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
@@ -60,11 +60,12 @@ export const useClickedEventConnect = () => {
 
     // get corresponding datasets
     const featuresDataviewsDatasets = featuresDataviews.map((dv) => {
-      // TODO We should take into acocunt user selection here - not just what datasets are available
+      // TODO We should take into account user selection here (ie a sublayer could have fishing_v4 and another vms:whatever)
+      //     - not just what datasets are available
       const datasets = dv.datasets?.filter(
         (dataset: Dataset) => dataset.type === FISHING_DATASET_TYPE
       )
-      return datasets
+      return datasets || []
     })
 
     // use the first feature/dv for common parameters
@@ -87,15 +88,22 @@ export const useClickedEventConnect = () => {
             dataviewDatasets.map((ds: Dataset) => ds.id).join(',')
           ),
         },
-        { id: 'filters', value: featuresDataviews.map((dv) => dv.config.filter) },
+        { id: 'filters', value: featuresDataviews.map((dv) => dv.config && dv.config.filter) },
         // { id: 'limit', value: 11 },
       ],
     }
 
     // TODO Not sure of this
-    const mainDataset = featuresDataviewsDatasets[0][0]
+    const mainDataset = featuresDataviewsDatasets[0].find(
+      (dataset: Dataset) => dataset.type === FISHING_DATASET_TYPE
+    )
+
+    if (!mainDataset) return
     promiseRef.current = dispatch(
-      fetch4WingInteractionThunk({ dataset: mainDataset, datasetConfig })
+      fetch4WingInteractionThunk({
+        dataset: mainDataset,
+        datasetConfig: datasetConfig as DataviewDatasetConfig,
+      })
     )
   }
   return { clickedEvent, clickedEventStatus, dispatchClickedEvent }

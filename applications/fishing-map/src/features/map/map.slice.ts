@@ -27,7 +27,7 @@ const initialState: MapState = {
 
 type Fetch4WingInteractionThunkPayload = {
   dataset: Dataset
-  datasetConfig: DataviewDatasetConfig & { generatorId: string }
+  datasetConfig: DataviewDatasetConfig
 }
 export const fetch4WingInteractionThunk = createAsyncThunk(
   'map/fetchInteraction',
@@ -78,7 +78,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
           }
         }
       }
-      return { generatorId: datasetConfig.generatorId, vessels: sublayersVessels, dataset }
+      return { vessels: sublayersVessels, dataset }
     }
   }
 )

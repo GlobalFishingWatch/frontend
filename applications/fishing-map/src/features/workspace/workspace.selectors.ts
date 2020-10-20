@@ -105,11 +105,14 @@ export const selectDataviewInstancesResolved = createSelector(
 
     // resolved array filters to url filters
     dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
-      if (dataviewInstance.config.type === Generators.Type.HeatmapAnimated) {
+      if (
+        dataviewInstance.config &&
+        dataviewInstance.config.type === Generators.Type.HeatmapAnimated
+      ) {
         const dataviewInstanceWithUrlFilter = {
           ...dataviewInstance,
         }
-        if (dataviewInstanceWithUrlFilter.config.filters) {
+        if (dataviewInstance.config.filters && dataviewInstanceWithUrlFilter.config) {
           dataviewInstanceWithUrlFilter.config.filter = dataviewInstanceWithUrlFilter.config.filters
             .map((flag: string) => `flag='${flag}'`)
             .join(' OR ')
@@ -169,10 +172,7 @@ export const selectVesselsDataviews = createSelector(
 
 export const selectTemporalgridDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.HeatmapAnimated)],
-  (dataviews) => {
-    console.log(dataviews)
-    return dataviews
-  }
+  (dataviews) => dataviews
 )
 
 export const selectTemporalgridDatasets = createSelector(
