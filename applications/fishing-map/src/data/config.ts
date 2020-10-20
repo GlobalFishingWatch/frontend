@@ -77,7 +77,7 @@ export const TIMEBAR_EVENT_OPTIONS: SelectOption[] = [
   },
 ]
 
-export const timebarGraphOptions: SelectOption[] = [
+export const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = [
   {
     id: 'speed',
     label: 'Speed',
