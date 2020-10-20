@@ -1,12 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useRef } from 'react'
-import {
-  ExtendedFeature,
-  ExtendedFeatureVessel,
-  InteractionEvent,
-} from '@globalfishingwatch/react-hooks'
+import { ExtendedFeatureVessel, InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { Dataset, Dataset, Dataset } from '@globalfishingwatch/api-types'
+import { Dataset } from '@globalfishingwatch/api-types'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,

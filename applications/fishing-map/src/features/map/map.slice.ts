@@ -38,7 +38,6 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
       const sublayersVesselsIds = await GFWAPI.fetch<ExtendedFeatureVessel[]>(url, {
         signal,
       })
-      console.log(sublayersVesselsIds)
       const infoDatasetId = getRelatedDatasetByType(dataset, VESSELS_DATASET_TYPE)?.id
       if (infoDatasetId) {
         const infoDataset = selectDatasetById(infoDatasetId)(getState() as RootState)
