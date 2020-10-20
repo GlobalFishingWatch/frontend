@@ -106,8 +106,7 @@ export const selectDataviewInstancesResolved = createSelector(
     // resolved array filters to url filters
     dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
       if (
-        dataviewInstance.config &&
-        dataviewInstance.config.type === Generators.Type.HeatmapAnimated
+        dataviewInstance.config?.type === Generators.Type.HeatmapAnimated
       ) {
         const dataviewInstanceWithUrlFilter = {
           ...dataviewInstance,
