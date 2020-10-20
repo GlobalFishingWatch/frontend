@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.11.4
+
+### Patch Changes
+
+- Rulers and avoid crash when no frame and send always click event
+- Updated dependencies [undefined]
+  - @globalfishingwatch/react-hooks@3.4.3
+
 ## 0.11.3
 
 ### Patch Changes
