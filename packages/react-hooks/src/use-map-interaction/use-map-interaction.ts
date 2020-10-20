@@ -29,7 +29,7 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
     switch (generatorType) {
       case Generators.Type.HeatmapAnimated:
         const frame = feature.layer.metadata.frame
-        const valuesAtFrame = properties[frame.toString()] || properties[frame]
+        const valuesAtFrame = properties[frame?.toString()] || properties[frame]
         if (valuesAtFrame) {
           let parsed = JSON.parse(valuesAtFrame)
           if (extendedFeature.value === 0) break
@@ -61,17 +61,17 @@ export const useMapClick = (clickCallback: InteractionEventCallback) => {
   const onMapClick = useCallback(
     (event) => {
       if (!clickCallback) return
+      const interactionEvent: InteractionEvent = {
+        longitude: event.lngLat[0],
+        latitude: event.lngLat[1],
+      }
       if (event.features && event.features.length) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
-
         if (extendedFeatures.length) {
-          clickCallback({
-            features: extendedFeatures,
-            longitude: event.lngLat[0],
-            latitude: event.lngLat[1],
-          })
-        } else clickCallback(null)
-      } else clickCallback(null)
+          interactionEvent.features = extendedFeatures
+        }
+      }
+      clickCallback(interactionEvent)
     },
     [clickCallback]
   )
