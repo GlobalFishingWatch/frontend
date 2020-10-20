@@ -94,7 +94,6 @@ export const useClickedEventConnect = () => {
 
     // TODO Not sure of this
     const mainDataset = featuresDataviewsDatasets[0][0]
-    console.log(mainDataset, datasetConfig)
     promiseRef.current = dispatch(
       fetch4WingInteractionThunk({ dataset: mainDataset, datasetConfig })
     )

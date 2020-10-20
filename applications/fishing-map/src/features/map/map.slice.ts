@@ -58,12 +58,10 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
             ],
           }
           const infoUrl = resolveEndpoint(infoDataset, infoDatasetConfig)
-          console.log(infoUrl)
           if (infoUrl) {
             try {
               // TODO create search API results response
               const vesselsInfo = await GFWAPI.fetch<APISearch<Vessel>>(infoUrl, { signal })
-              console.log(vesselsInfo)
               const { entries } = vesselsInfo?.[0]?.results
               if (entries) {
                 sublayersVessels = sublayersVesselsIds.map((sublayerVessels) => {
@@ -94,7 +92,6 @@ const slice = createSlice({
         state.clicked = null
         return
       }
-      console.log(action.payload)
       state.clicked = { ...action.payload }
     },
     setBounds: (state, action: PayloadAction<MiniglobeBounds>) => {
