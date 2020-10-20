@@ -114,7 +114,7 @@ export const getGeneratorsConfig = createSelector(
         id: dataview.id,
         ...(data && { data }),
       }
-
+      // TODO: remove UserContext and use Context
       if (dataview.config?.type === Generators.Type.UserContext) {
         const { url } = resolveDataviewDatasetResource(dataview, USER_CONTEXT_TYPE)
         if (url) {

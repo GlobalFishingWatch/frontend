@@ -4,7 +4,7 @@ import { selectContextAreasDataviews } from 'features/workspace/workspace.select
 import styles from 'features/sidebar/common/Sections.module.css'
 import LayerPanel from './ContextAreaLayerPanel'
 
-function VesselsSection(): React.ReactElement {
+function ContextAreaSection(): React.ReactElement {
   const dataviews = useSelector(selectContextAreasDataviews)
   return (
     <div className={styles.container}>
@@ -18,4 +18,4 @@ function VesselsSection(): React.ReactElement {
   )
 }
 
-export default VesselsSection
+export default ContextAreaSection

@@ -35,7 +35,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
 
   const color = dataview?.config?.color
-  const changeTrackColor = (color: ColorBarOption) => {
+  const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
       config: { color: color.value },
@@ -111,7 +111,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           <ColorBar
             colorBarOptions={TrackColorBarOptions}
             selectedColor={dataview.config?.color}
-            onColorClick={changeTrackColor}
+            onColorClick={changeColor}
           />
         )}
       </div>
