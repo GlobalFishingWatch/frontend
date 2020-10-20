@@ -14,6 +14,7 @@ import resourcesReducer from './features/resources/resources.slice'
 import searchReducer from './features/search/search.slice'
 import timebarReducer from './features/timebar/timebar.slice'
 import mapReducer from './features/map/map.slice'
+import rulersReducer from './features/map/rulers/rulers.slice'
 import debugReducer from './features/debug/debug.slice'
 
 const {
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
   resources: resourcesReducer,
   timebar: timebarReducer,
   map: mapReducer,
+  rulers: rulersReducer,
   debug: debugReducer,
   location: location,
 })

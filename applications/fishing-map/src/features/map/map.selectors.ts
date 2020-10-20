@@ -22,6 +22,7 @@ import { selectResources } from 'features/resources/resources.slice'
 import { FALLBACK_VIEWPORT } from 'data/config'
 import { TRACKS_DATASET_TYPE } from 'features/workspace/workspace.mock'
 import { selectDebugOptions } from 'features/debug/debug.slice'
+import { selectRulers } from 'features/map/rulers/rulers.slice'
 
 export const selectViewport = createSelector(
   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery, selectWorkspaceViewport],
@@ -45,8 +46,8 @@ export const selectGlobalGeneratorsConfig = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [selectDataviewInstancesResolved, selectResources, selectDebugOptions],
-  (dataviews = [], resources, debugOptions) => {
+  [selectDataviewInstancesResolved, selectResources, selectRulers, selectDebugOptions],
+  (dataviews = [], resources, rulers, debugOptions) => {
     const animatedHeatmapDataviews: UrlDataviewInstance[] = []
 
     // Collect heatmap animated generators and filter them out from main dataview list
@@ -116,6 +117,12 @@ export const getGeneratorsConfig = createSelector(
         ...(data && { data }),
       }
     })
-    return generatorsConfig as AnyGeneratorConfig[]
+
+    const rulersConfig = {
+      type: Generators.Type.Rulers,
+      id: 'rulers',
+      data: rulers,
+    }
+    return [...generatorsConfig, rulersConfig] as AnyGeneratorConfig[]
   }
 )

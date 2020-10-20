@@ -13,6 +13,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectTimerange } from 'routes/routes.selectors'
 import { FISHING_DATASET_TYPE } from 'features/workspace/workspace.mock'
+import { selectEditing, editRuler } from 'features/map/rulers/rulers.slice'
 import {
   setClickedEvent,
   selectClickedEvent,
@@ -40,15 +41,30 @@ export const useClickedEventConnect = () => {
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
   const { start, end } = useSelector(selectTimerange)
+  const rulersEditing = useSelector(selectEditing)
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
+    if (rulersEditing === true && event) {
+      dispatch(
+        editRuler({
+          longitude: event.longitude,
+          latitude: event.latitude,
+        })
+      )
+      return
+    }
+
     if (promiseRef.current) {
       promiseRef.current.abort()
     }
-    if (event === null) {
-      dispatch(setClickedEvent(null))
+
+    if (!event || !event.features) {
+      if (clickedEvent) {
+        dispatch(setClickedEvent(null))
+      }
+      return
     }
-    if (!event || !event.features) return
+
     dispatch(setClickedEvent(event))
     // TODO should work for multiple features
     const feature: ExtendedFeature = event.features[0]
