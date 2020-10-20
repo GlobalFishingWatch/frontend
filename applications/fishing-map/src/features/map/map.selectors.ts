@@ -20,7 +20,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 import { FALLBACK_VIEWPORT } from 'data/config'
-import { TRACKS_DATASET_TYPE } from 'features/workspace/workspace.mock'
+import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'features/workspace/workspace.mock'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 
 export const selectViewport = createSelector(
@@ -110,11 +110,19 @@ export const getGeneratorsConfig = createSelector(
         data = resources[url].data
       }
 
-      return {
+      const generator: any = {
         ...config,
         id: dataview.id,
         ...(data && { data }),
       }
+      // TODO: remove UserContext and use Context
+      if (dataview.config?.type === Generators.Type.UserContext) {
+        const { url } = resolveDataviewDatasetResource(dataview, USER_CONTEXT_TYPE)
+        if (url) {
+          generator.tilesUrl = url
+        }
+      }
+      return generator
     })
     return generatorsConfig as AnyGeneratorConfig[]
   }
