@@ -23,6 +23,7 @@ import { FALLBACK_VIEWPORT } from 'data/config'
 import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'features/workspace/workspace.mock'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/rulers/rulers.slice'
+import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 
 export const selectViewport = createSelector(
   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery, selectWorkspaceViewport],
@@ -46,8 +47,14 @@ export const selectGlobalGeneratorsConfig = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [selectDataviewInstancesResolved, selectResources, selectRulers, selectDebugOptions],
-  (dataviews = [], resources, rulers, debugOptions) => {
+  [
+    selectDataviewInstancesResolved,
+    selectResources,
+    selectRulers,
+    selectDebugOptions,
+    selectHighlightedTime,
+  ],
+  (dataviews = [], resources, rulers, debugOptions, highlightedTime) => {
     const animatedHeatmapDataviews: UrlDataviewInstance[] = []
 
     // Collect heatmap animated generators and filter them out from main dataview list
@@ -79,6 +86,7 @@ export const getGeneratorsConfig = createSelector(
         return sublayer
       })
 
+      // Force HeatmapAnimated mode depending on debug options
       let mode = Generators.HeatmapAnimatedMode.Compare
       if (debugOptions.extruded) {
         mode = Generators.HeatmapAnimatedMode.Extruded
@@ -99,6 +107,19 @@ export const getGeneratorsConfig = createSelector(
       }
       generatorsConfig.push(mergedLayer)
     }
+
+    // Collect track generators and inject highligtedTime
+    generatorsConfig = generatorsConfig.map((generator) => {
+      const isTrack = generator.config?.type === Generators.Type.Track
+      if (!isTrack) return generator
+      return {
+        ...generator,
+        config: {
+          ...generator.config,
+          highlightedTime,
+        },
+      }
+    })
 
     generatorsConfig = generatorsConfig.flatMap((dataview) => {
       const config: DataviewConfig = { ...dataview.config }
