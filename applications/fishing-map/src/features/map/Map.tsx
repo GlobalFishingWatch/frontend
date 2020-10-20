@@ -84,6 +84,7 @@ const Map = memo(
         interactiveLayerIds={rulersEditing ? undefined : style.metadata.interactiveLayerIds}
         onClick={onMapClick}
         onHover={onMapHover}
+        transitionDuration={viewport.transitionDuration}
       >
         {children}
       </InteractiveMap>
@@ -132,7 +133,6 @@ const MapWrapper = (): React.ReactElement => {
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const layersWithLegend = useMemo(() => {
-    // TODO use hoveredPosEvent to change legend
     if (!style) return []
     return style.layers?.flatMap((layer) => {
       if (!layer.metadata?.legend) return []
