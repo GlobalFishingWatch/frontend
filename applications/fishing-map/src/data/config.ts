@@ -50,7 +50,7 @@ export const sources: SelectOption[] = [
 
 export const DATE_FORMAT = 'yyyy/MM/dd'
 
-export const timebarEventsOptions: SelectOption[] = [
+export const TIMEBAR_EVENT_OPTIONS: SelectOption[] = [
   {
     id: 'all',
     label: 'All events',
