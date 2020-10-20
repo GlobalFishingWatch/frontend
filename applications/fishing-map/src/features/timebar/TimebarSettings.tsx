@@ -8,7 +8,7 @@ import {
   selectActiveTemporalgridDataviews,
   selectActiveVesselsDataviews,
 } from 'features/workspace/workspace.selectors'
-import { timebarEventsOptions, timebarGraphOptions } from 'data/config'
+import { TIMEBAR_EVENT_OPTIONS, TIMEBAR_GRAPH_OPTIONS } from 'data/config'
 import { selectTimebarEvents, selectTimebarGraph } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useTimebarVisualisation } from './timebar.hooks'
@@ -89,16 +89,16 @@ const TimebarSettings = () => {
                 <div className={styles.vesselTrackOptions}>
                   <Select
                     label="Events"
-                    options={timebarEventsOptions}
-                    selectedOption={timebarEventsOptions.find((o) => o.id === timebarEvents)}
+                    options={TIMEBAR_EVENT_OPTIONS}
+                    selectedOption={TIMEBAR_EVENT_OPTIONS.find((o) => o.id === timebarEvents)}
                     onSelect={setEventsOption}
                     onRemove={removeEventsOption}
                     direction="top"
                   />
                   <Select
                     label="Graph"
-                    options={timebarGraphOptions}
-                    selectedOption={timebarGraphOptions.find((o) => o.id === timebarGraph)}
+                    options={TIMEBAR_GRAPH_OPTIONS}
+                    selectedOption={TIMEBAR_GRAPH_OPTIONS.find((o) => o.id === timebarGraph)}
                     onSelect={setGraphOption}
                     onRemove={removeGraphOption}
                     direction="top"
