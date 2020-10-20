@@ -1,4 +1,4 @@
-import React, { Fragment, memo } from 'react'
+import React, { Fragment, memo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import TimebarComponent, { TimebarHighlighter } from '@globalfishingwatch/timebar'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -10,6 +10,18 @@ const TimebarWrapper = () => {
   const highlightedTime = useSelector(selectHighlightedTime)
 
   const dispatch = useDispatch()
+
+  const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
+  const onBookmarkChange = useCallback(
+    (start, end) => {
+      if (!start || !end) {
+        setBookmark(null)
+        return
+      }
+      setBookmark({ start, end })
+    },
+    [setBookmark]
+  )
 
   return (
     <TimebarComponent
@@ -29,6 +41,9 @@ const TimebarWrapper = () => {
         const end = scale(clientX + 10).toISOString()
         dispatch(setHighlightedTime({ start, end }))
       }}
+      onBookmarkChange={onBookmarkChange}
+      bookmarkStart={bookmark && bookmark.start}
+      bookmarkEnd={bookmark && bookmark.end}
     >
       {() => (
         <Fragment>
