@@ -60,50 +60,70 @@ export const selectDataviewInstancesResolved = createSelector(
       { workspace: [], new: [] }
     )
     const dataviewInstances = [...workspace.dataviewInstances, ...urlDataviews.new]
-    const dataviewInstancesResolved = dataviewInstances.flatMap((dataviewInstance) => {
-      const dataview = dataviews?.find((dataview) => dataview.id === dataviewInstance.dataviewId)
-      if (!dataview) {
-        console.warn(
-          `DataviewInstance id: ${dataviewInstance.id} doesn't have a valid dataview (${dataviewInstance.dataviewId})`
-        )
-        return []
-      }
-
-      const urlDataview = urlDataviews.workspace.find(
-        (urlDataview) => urlDataview.id === dataviewInstance.id
-      )
-      if (urlDataview?.deleted) {
-        return []
-      }
-      const config = {
-        ...dataview.config,
-        ...dataviewInstance.config,
-        ...urlDataview?.config,
-      }
-      config.visible = config?.visible ?? true
-      const dataviewDatasets: Dataset[] = []
-      const datasetsConfig = dataview.datasetsConfig?.map((datasetConfig) => {
-        const dataset = datasets.find((dataset) => dataset.id === datasetConfig.datasetId)
-        if (dataset) {
-          dataviewDatasets.push(dataset)
+    let dataviewInstancesResolved: UrlDataviewInstance[] = dataviewInstances.flatMap(
+      (dataviewInstance) => {
+        const dataview = dataviews?.find((dataview) => dataview.id === dataviewInstance.dataviewId)
+        if (!dataview) {
+          console.warn(
+            `DataviewInstance id: ${dataviewInstance.id} doesn't have a valid dataview (${dataviewInstance.dataviewId})`
+          )
+          return []
         }
-        const workspaceDataviewDatasetConfig = dataviewInstance.datasetsConfig?.find(
-          (wddc) =>
-            wddc.datasetId === datasetConfig.datasetId && wddc.endpoint === datasetConfig.endpoint
-        )
-        if (!workspaceDataviewDatasetConfig) return datasetConfig
 
-        return { ...datasetConfig, ...workspaceDataviewDatasetConfig }
-      })
-      const resolvedDataview = {
-        ...dataview,
-        id: dataviewInstance.id as string,
-        dataviewId: dataview.id,
-        config,
-        datasets: dataviewDatasets,
-        datasetsConfig,
+        const urlDataview = urlDataviews.workspace.find(
+          (urlDataview) => urlDataview.id === dataviewInstance.id
+        )
+        if (urlDataview?.deleted) {
+          return []
+        }
+        const config = {
+          ...dataview.config,
+          ...dataviewInstance.config,
+          ...urlDataview?.config,
+        }
+        config.visible = config?.visible ?? true
+        const dataviewDatasets: Dataset[] = []
+        const datasetsConfig = dataview.datasetsConfig?.map((datasetConfig) => {
+          const dataset = datasets.find((dataset) => dataset.id === datasetConfig.datasetId)
+          if (dataset) {
+            dataviewDatasets.push(dataset)
+          }
+          const workspaceDataviewDatasetConfig = dataviewInstance.datasetsConfig?.find(
+            (wddc) =>
+              wddc.datasetId === datasetConfig.datasetId && wddc.endpoint === datasetConfig.endpoint
+          )
+          if (!workspaceDataviewDatasetConfig) return datasetConfig
+
+          return { ...datasetConfig, ...workspaceDataviewDatasetConfig }
+        })
+        const resolvedDataview = {
+          ...dataview,
+          id: dataviewInstance.id as string,
+          dataviewId: dataview.id,
+          config,
+          datasets: dataviewDatasets,
+          datasetsConfig,
+        }
+        return resolvedDataview
       }
-      return resolvedDataview
+    )
+
+    // resolved array filters to url filters
+    dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
+      if (
+        dataviewInstance.config?.type === Generators.Type.HeatmapAnimated
+      ) {
+        const dataviewInstanceWithUrlFilter = {
+          ...dataviewInstance,
+        }
+        if (dataviewInstance.config.filters && dataviewInstanceWithUrlFilter.config) {
+          dataviewInstanceWithUrlFilter.config.filter = dataviewInstanceWithUrlFilter.config.filters
+            .map((flag: string) => `flag='${flag}'`)
+            .join(' OR ')
+        }
+        return dataviewInstanceWithUrlFilter
+      }
+      return dataviewInstance
     })
     return dataviewInstancesResolved
   }
