@@ -47,6 +47,22 @@ export enum AsyncReducerStatus {
   Error = 'error',
 }
 
-export type TimebarVisualisations = 'heatmap' | 'vessel'
-export type TimebarEvents = 'all' | 'fishing' | 'encounters' | 'loitering' | 'ports' | 'none'
-export type TimebarGraphs = 'speed' | 'depth' | 'none'
+export enum TimebarVisualisations {
+  Heatmap = 'heatmap',
+  Vessel = 'vessel',
+}
+
+export enum TimebarEvents {
+  All = 'all',
+  Fishing = 'fishing',
+  Encounters = 'encounters',
+  Loitering = 'loitering',
+  Ports = 'ports',
+  None = 'none',
+}
+
+export enum TimebarGraphs {
+  Speed = 'speed',
+  Depth = 'depth',
+  None = 'none',
+}

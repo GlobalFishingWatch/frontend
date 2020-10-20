@@ -1,3 +1,4 @@
+import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 
 // used when no url data and no workspace data
@@ -21,9 +22,9 @@ export const DEFAULT_WORKSPACE = {
   availableEnd: new Date().toISOString(),
   dataviewInstances: undefined,
   fishingFilters: [],
-  timebarVisualisation: 'heatmap',
-  timebarEvents: 'none',
-  timebarGraph: 'none',
+  timebarVisualisation: TimebarVisualisations.Heatmap,
+  timebarEvents: TimebarEvents.None,
+  timebarGraph: TimebarGraphs.None,
 }
 
 // Params to use replace instead of push for router history to make navigation easier

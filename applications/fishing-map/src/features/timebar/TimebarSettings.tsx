@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import useClickedOutside from 'hooks/useClickedOutside'
-import { TimebarEvents, TimebarGraphs } from 'types'
+import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 import { IconButton, Radio, Select, SelectOption } from '@globalfishingwatch/ui-components/dist'
 import {
   selectActiveTemporalgridDataviews,
@@ -30,10 +30,10 @@ const TimebarSettings = () => {
     setOptionsPanelOpen(false)
   }
   const setHeatmapActive = () => {
-    dispatchTimebarVisualisation('heatmap')
+    dispatchTimebarVisualisation(TimebarVisualisations.Heatmap)
   }
   const setVesselActive = () => {
-    dispatchTimebarVisualisation('vessel')
+    dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
   }
   const setEventsOption = (o: SelectOption) => {
     dispatchQueryParams({ timebarEvents: o.id as TimebarEvents })
@@ -42,10 +42,10 @@ const TimebarSettings = () => {
     dispatchQueryParams({ timebarGraph: o.id as TimebarGraphs })
   }
   const removeEventsOption = () => {
-    dispatchQueryParams({ timebarEvents: 'none' })
+    dispatchQueryParams({ timebarEvents: TimebarEvents.None })
   }
   const removeGraphOption = () => {
-    dispatchQueryParams({ timebarGraph: 'none' })
+    dispatchQueryParams({ timebarGraph: TimebarGraphs.None })
   }
   const expandedContainerRef = useClickedOutside(closeOptions)
 
