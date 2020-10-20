@@ -1,9 +1,10 @@
-import React, { memo, useContext } from 'react'
+import React, { Fragment, memo, useContext } from 'react'
 import { useDispatch } from 'react-redux'
 import TimebarComponent, { TimelineContext } from '@globalfishingwatch/timebar'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { setHighlightedTime, disableHighlightedTime } from './timebar.slice'
+import TimebarSettings from './TimebarSettings'
 
 const SomeTimebarChildren = () => {
   const { outerScale, outerHeight } = useContext(TimelineContext)
@@ -30,28 +31,31 @@ const TimebarWrapper = () => {
   const dispatch = useDispatch()
 
   return (
-    <TimebarComponent
-      enablePlayback
-      start={start}
-      end={end}
-      absoluteStart={DEFAULT_WORKSPACE.availableStart}
-      absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
-      onChange={dispatchTimerange}
-      showLastUpdate={false}
-      onMouseMove={(clientX: number, scale: (arg: number) => Date) => {
-        if (clientX === null) {
-          dispatch(disableHighlightedTime())
-          return
-        }
-        const start = scale(clientX - 10).toISOString()
-        const end = scale(clientX + 10).toISOString()
-        dispatch(setHighlightedTime({ start, end }))
-      }}
-    >
-      {() => {
-        return <SomeTimebarChildren />
-      }}
-    </TimebarComponent>
+    <Fragment>
+      <TimebarComponent
+        enablePlayback
+        start={start}
+        end={end}
+        absoluteStart={DEFAULT_WORKSPACE.availableStart}
+        absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
+        onChange={dispatchTimerange}
+        showLastUpdate={false}
+        onMouseMove={(clientX: number, scale: (arg: number) => Date) => {
+          if (clientX === null) {
+            dispatch(disableHighlightedTime())
+            return
+          }
+          const start = scale(clientX - 10).toISOString()
+          const end = scale(clientX + 10).toISOString()
+          dispatch(setHighlightedTime({ start, end }))
+        }}
+      >
+        {() => {
+          return <SomeTimebarChildren />
+        }}
+      </TimebarComponent>
+      <TimebarSettings />
+    </Fragment>
   )
 }
 

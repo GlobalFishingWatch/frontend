@@ -21,6 +21,9 @@ export const DEFAULT_WORKSPACE = {
   availableEnd: new Date().toISOString(),
   dataviewInstances: undefined,
   fishingFilters: [],
+  timebarVisualisation: 'heatmap',
+  timebarEvents: 'none',
+  timebarGraph: 'none',
 }
 
 // Params to use replace instead of push for router history to make navigation easier
@@ -46,3 +49,45 @@ export const sources: SelectOption[] = [
 ]
 
 export const DATE_FORMAT = 'yyyy/MM/dd'
+
+export const timebarEventsOptions: SelectOption[] = [
+  {
+    id: 'all',
+    label: 'All events',
+  },
+  {
+    id: 'fishing',
+    label: 'Fishing',
+  },
+  {
+    id: 'encounters',
+    label: 'Encounters',
+  },
+  {
+    id: 'loitering',
+    label: 'Loitering',
+  },
+  {
+    id: 'ports',
+    label: 'Port visits',
+  },
+  {
+    id: 'none',
+    label: 'None',
+  },
+]
+
+export const timebarGraphOptions: SelectOption[] = [
+  {
+    id: 'speed',
+    label: 'Speed',
+  },
+  {
+    id: 'depth',
+    label: 'Depth',
+  },
+  {
+    id: 'none',
+    label: 'None',
+  },
+]
