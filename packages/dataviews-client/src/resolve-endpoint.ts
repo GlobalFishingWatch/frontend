@@ -3,7 +3,6 @@ import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 // Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
 export default (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
   const endpoint = dataset.endpoints?.find((endpoint) => endpoint.id === datasetConfig.endpoint)
-
   if (!endpoint) return null
 
   const template = endpoint.pathTemplate
@@ -18,7 +17,8 @@ export default (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
     datasetConfig.query.forEach((query) => {
       // if (query)
       const endpointQuery = endpoint.query.find((q) => q.id === query.id)
-      if (endpointQuery && endpointQuery.type === '4wings-datasets') {
+      // TODO               this won't scale, we need another meta in Dataset
+      if (endpointQuery && ['4wings-datasets', 'sql'].includes(endpointQuery.type)) {
         ;(query.value as string[]).forEach((queryArrItem, i) => {
           const queryArrId = `${query.id}[${i}]`
           resolvedQuery.set(queryArrId, queryArrItem)

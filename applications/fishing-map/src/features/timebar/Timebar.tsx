@@ -1,34 +1,28 @@
-import React, { Fragment, memo, useContext } from 'react'
-import { useDispatch } from 'react-redux'
-import TimebarComponent, { TimelineContext } from '@globalfishingwatch/timebar'
+import React, { Fragment, memo, useCallback, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import TimebarComponent, { TimebarHighlighter } from '@globalfishingwatch/timebar'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { setHighlightedTime, disableHighlightedTime } from './timebar.slice'
+import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
-
-const SomeTimebarChildren = () => {
-  const { outerScale, outerHeight } = useContext(TimelineContext)
-  const startX = outerScale(new Date(2019, 1, 1))
-  const endX = outerScale(new Date(2019, 1, 10))
-
-  return (
-    <div
-      style={{
-        background: 'red',
-        position: 'relative',
-        left: startX,
-        width: endX - startX,
-        top: outerHeight / 2 - 5,
-        height: 10,
-      }}
-    ></div>
-  )
-}
 
 const TimebarWrapper = () => {
   const { start, end, dispatchTimerange } = useTimerangeConnect()
+  const highlightedTime = useSelector(selectHighlightedTime)
 
   const dispatch = useDispatch()
+
+  const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
+  const onBookmarkChange = useCallback(
+    (start, end) => {
+      if (!start || !end) {
+        setBookmark(null)
+        return
+      }
+      setBookmark({ start, end })
+    },
+    [setBookmark]
+  )
 
   return (
     <Fragment>
@@ -49,10 +43,22 @@ const TimebarWrapper = () => {
           const end = scale(clientX + 10).toISOString()
           dispatch(setHighlightedTime({ start, end }))
         }}
+        onBookmarkChange={onBookmarkChange}
+        bookmarkStart={bookmark && bookmark.start}
+        bookmarkEnd={bookmark && bookmark.end}
       >
-        {() => {
-          return <SomeTimebarChildren />
-        }}
+        {() => (
+          <Fragment>
+            {highlightedTime && (
+              <TimebarHighlighter
+                hoverStart={highlightedTime.start}
+                hoverEnd={highlightedTime.end}
+                // activity={timebarMode === TimebarMode.speed ? tracksGraph : null}
+                unit="knots"
+              />
+            )}
+          </Fragment>
+        )}
       </TimebarComponent>
       <TimebarSettings />
     </Fragment>

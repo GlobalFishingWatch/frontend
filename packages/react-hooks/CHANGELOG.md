@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 3.4.3
+
+### Patch Changes
+
+- Rulers and avoid crash when no frame and send always click event
+
 ## 3.4.2
 
 ### Patch Changes

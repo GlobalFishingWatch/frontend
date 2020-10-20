@@ -6,6 +6,7 @@ import {
   FISHING_DATASET_TYPE,
   VESSELS_DATASET_ID,
   VESSELS_DATASET_TYPE,
+  USER_CONTEXT_TYPE,
 } from 'features/workspace/workspace.mock'
 
 const datasets: Dataset[] = [
@@ -481,6 +482,58 @@ const datasets: Dataset[] = [
             default: false,
           },
         ],
+      },
+    ],
+  },
+  // TODO: add a mecanism to fetch datasets when it doesn't already exist in the slice
+  {
+    alias: null,
+    id: 'marine-protected-areas',
+    name: 'Marine Protected Areas',
+    type: USER_CONTEXT_TYPE,
+    description:
+      'The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA)',
+    startDate: undefined,
+    endDate: undefined,
+    unit: undefined,
+    status: 'done',
+    importLogs:
+      'Not recognize srid for GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]. Using srid 4326',
+    category: undefined,
+    subcategory: undefined,
+    source: 'World Database on Protected Areas (WDPA)',
+    ownerId: 49,
+    ownerType: 'user',
+    configuration: {
+      srid: 4326,
+      filePath: 'dataset-upload-tmp/97953eca-9860-4664-8e31-a67734a183b0',
+    },
+    createdAt: '2020-08-25T15:23:35.688Z',
+    relatedDatasets: null,
+    endpoints: [
+      {
+        id: 'user-context-tiles',
+        description: 'Endpoint to retrieve tiles from user context layers',
+        downloadable: true,
+        pathTemplate: '/v1/datasets/marine-protected-areas/user-context-layer-v1/{{z}}/{{x}}/{{y}}',
+        params: [
+          {
+            label: 'Z',
+            id: 'z',
+            type: 'number',
+          },
+          {
+            label: 'X',
+            id: 'x',
+            type: 'number',
+          },
+          {
+            label: 'Y',
+            id: 'y',
+            type: 'number',
+          },
+        ],
+        query: [],
       },
     ],
   },

@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { AsyncReducerStatus } from 'types'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
@@ -16,6 +16,7 @@ import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/M
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
+import { selectEditing, moveCurrentRuler } from 'features/map/rulers/rulers.slice'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ClickPopup, HoverPopup } from './Popup'
 import MapInfo from './MapInfo'
@@ -33,6 +34,7 @@ const Map = memo(
   ({ style, onMapClick, onMapHover, children }: any): React.ReactElement => {
     const mapRef = useMapboxRef()
     const { viewport, onViewportChange } = useViewport()
+    const rulersEditing = useSelector(selectEditing)
     // TODO: Abstract this away
     const token = GFWAPI.getToken()
     const transformRequest: (...args: any[]) => MapRequest = useCallback(
@@ -56,6 +58,10 @@ const Map = memo(
 
     const debugOptions = useSelector(selectDebugOptions)
 
+    const getRulersCursor = useCallback(() => {
+      return 'crosshair'
+    }, [])
+
     useEffect(() => {
       mapRef.current.getMap().showTileBoundaries = debugOptions.debug
     }, [mapRef, debugOptions])
@@ -74,9 +80,11 @@ const Map = memo(
         mapOptions={mapOptions}
         transformRequest={transformRequest}
         onResize={setMapBounds}
-        interactiveLayerIds={style.metadata.interactiveLayerIds}
+        getCursor={rulersEditing ? getRulersCursor : undefined}
+        interactiveLayerIds={rulersEditing ? undefined : style.metadata.interactiveLayerIds}
         onClick={onMapClick}
         onHover={onMapHover}
+        transitionDuration={viewport.transitionDuration}
       >
         {children}
       </InteractiveMap>
@@ -87,18 +95,33 @@ const Map = memo(
 const MapWrapper = (): React.ReactElement => {
   const mapRef = useMapboxRef()
 
+  const dispatch = useDispatch()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const { clickedEvent, clickedEventStatus, dispatchClickedEvent } = useClickedEventConnect()
   const onMapClick = useMapClick(dispatchClickedEvent)
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
+  const rulersEditing = useSelector(selectEditing)
   const closePopup = useCallback(() => {
     dispatchClickedEvent(null)
   }, [dispatchClickedEvent])
 
   const [hoveredEvent, setHoveredEvent] = useState<InteractionEvent | null>(null)
+  const handleHoverEvent = useCallback(
+    (event) => {
+      setHoveredEvent(event)
+      if (rulersEditing === true) {
+        const center = {
+          longitude: event.longitude,
+          latitude: event.latitude,
+        }
+        dispatch(moveCurrentRuler(center))
+      }
+    },
+    [dispatch, rulersEditing]
+  )
   const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<InteractionEvent | null>(null)
   const onMapHover = useMapHover(
-    setHoveredEvent as InteractionEventCallback,
+    handleHoverEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,
     mapRef?.current?.getMap()
   )
@@ -110,7 +133,6 @@ const MapWrapper = (): React.ReactElement => {
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const layersWithLegend = useMemo(() => {
-    // TODO use hoveredPosEvent to change legend
     if (!style) return []
     return style.layers?.flatMap((layer) => {
       if (!layer.metadata?.legend) return []

@@ -5,6 +5,7 @@ import { MiniGlobe, IconButton, Tooltip } from '@globalfishingwatch/ui-component
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
+import Rulers from 'features/map/rulers/Rulers'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './MapControls.module.css'
 
@@ -48,7 +49,7 @@ const MapControls = (): React.ReactElement => {
       <MiniGlobe size={60} viewportThickness={3} bounds={bounds} center={{ latitude, longitude }} />
       <IconButton icon="plus" type="map-tool" tooltip="Zoom in" onClick={onZoomInClick} />
       <IconButton icon="minus" type="map-tool" tooltip="Zoom out" onClick={onZoomOutClick} />
-      <IconButton icon="ruler" type="map-tool" tooltip="Ruler (Coming soon)" />
+      <Rulers />
       <IconButton icon="camera" type="map-tool" tooltip="Capture (Coming soon)" />
       <Tooltip
         content={`Switch to ${

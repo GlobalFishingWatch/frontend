@@ -9,7 +9,12 @@ import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDataviewInstances } from 'routes/routes.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { selectDataviews } from 'features/dataviews/dataviews.slice'
-import { TRACKS_DATASET_TYPE, VESSELS_DATASET_TYPE, FISHING_DATASET_TYPE } from './workspace.mock'
+import {
+  TRACKS_DATASET_TYPE,
+  VESSELS_DATASET_TYPE,
+  FISHING_DATASET_TYPE,
+  USER_CONTEXT_TYPE,
+} from './workspace.mock'
 
 export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
   Object.entries(dataview.datasetsConfig || {}).flatMap(([id, value]) => {
@@ -55,50 +60,69 @@ export const selectDataviewInstancesResolved = createSelector(
       { workspace: [], new: [] }
     )
     const dataviewInstances = [...workspace.dataviewInstances, ...urlDataviews.new]
-    const dataviewInstancesResolved = dataviewInstances.flatMap((dataviewInstance) => {
-      const dataview = dataviews?.find((dataview) => dataview.id === dataviewInstance.dataviewId)
-      if (!dataview) {
-        console.warn(
-          `DataviewInstance id: ${dataviewInstance.id} doesn't have a valid dataview (${dataviewInstance.dataviewId})`
-        )
-        return []
-      }
-
-      const urlDataview = urlDataviews.workspace.find(
-        (urlDataview) => urlDataview.id === dataviewInstance.id
-      )
-      if (urlDataview?.deleted) {
-        return []
-      }
-      const config = {
-        ...dataview.config,
-        ...dataviewInstance.config,
-        ...urlDataview?.config,
-      }
-      config.visible = config?.visible ?? true
-      const dataviewDatasets: Dataset[] = []
-      const datasetsConfig = dataview.datasetsConfig?.map((datasetConfig) => {
-        const dataset = datasets.find((dataset) => dataset.id === datasetConfig.datasetId)
-        if (dataset) {
-          dataviewDatasets.push(dataset)
+    let dataviewInstancesResolved: UrlDataviewInstance[] = dataviewInstances.flatMap(
+      (dataviewInstance) => {
+        const dataview = dataviews?.find((dataview) => dataview.id === dataviewInstance.dataviewId)
+        if (!dataview) {
+          console.warn(
+            `DataviewInstance id: ${dataviewInstance.id} doesn't have a valid dataview (${dataviewInstance.dataviewId})`
+          )
+          return []
         }
-        const workspaceDataviewDatasetConfig = dataviewInstance.datasetsConfig?.find(
-          (wddc) =>
-            wddc.datasetId === datasetConfig.datasetId && wddc.endpoint === datasetConfig.endpoint
-        )
-        if (!workspaceDataviewDatasetConfig) return datasetConfig
 
-        return { ...datasetConfig, ...workspaceDataviewDatasetConfig }
-      })
-      const resolvedDataview = {
-        ...dataview,
-        id: dataviewInstance.id as string,
-        dataviewId: dataview.id,
-        config,
-        datasets: dataviewDatasets,
-        datasetsConfig,
+        const urlDataview = urlDataviews.workspace.find(
+          (urlDataview) => urlDataview.id === dataviewInstance.id
+        )
+        if (urlDataview?.deleted) {
+          return []
+        }
+        const config = {
+          ...dataview.config,
+          ...dataviewInstance.config,
+          ...urlDataview?.config,
+        }
+        config.visible = config?.visible ?? true
+        const dataviewDatasets: Dataset[] = []
+        const datasetsConfig = dataview.datasetsConfig?.map((datasetConfig) => {
+          const dataset = datasets.find((dataset) => dataset.id === datasetConfig.datasetId)
+          if (dataset) {
+            dataviewDatasets.push(dataset)
+          }
+          const workspaceDataviewDatasetConfig = dataviewInstance.datasetsConfig?.find(
+            (wddc) =>
+              wddc.datasetId === datasetConfig.datasetId && wddc.endpoint === datasetConfig.endpoint
+          )
+          if (!workspaceDataviewDatasetConfig) return datasetConfig
+
+          return { ...datasetConfig, ...workspaceDataviewDatasetConfig }
+        })
+        const resolvedDataview = {
+          ...dataview,
+          id: dataviewInstance.id as string,
+          dataviewId: dataview.id,
+          config,
+          datasets: dataviewDatasets,
+          datasetsConfig,
+        }
+        return resolvedDataview
       }
-      return resolvedDataview
+    )
+
+    // resolved array filters to url filters
+    dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
+      if (dataviewInstance.config?.type === Generators.Type.HeatmapAnimated) {
+        const dataviewInstanceWithUrlFilter = {
+          ...dataviewInstance,
+        }
+        if (dataviewInstance.config.filters && dataviewInstanceWithUrlFilter.config) {
+          const flags = dataviewInstanceWithUrlFilter.config.filters
+          dataviewInstanceWithUrlFilter.config.filter = `flag IN (${flags
+            .map((f: string) => `'${f}'`)
+            .join(', ')})`
+        }
+        return dataviewInstanceWithUrlFilter
+      }
+      return dataviewInstance
     })
     return dataviewInstancesResolved
   }
@@ -108,6 +132,7 @@ type DatasetTypes =
   | typeof TRACKS_DATASET_TYPE
   | typeof VESSELS_DATASET_TYPE
   | typeof FISHING_DATASET_TYPE
+  | typeof USER_CONTEXT_TYPE
 export const selectDatasetsByType = (type: DatasetTypes) => {
   return createSelector([selectDatasets], (datasets) => {
     return uniqBy(
@@ -151,6 +176,11 @@ export const selectVesselsDataviews = createSelector(
 
 export const selectActiveVesselsDataviews = createSelector([selectVesselsDataviews], (dataviews) =>
   dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectContextAreasDataviews = createSelector(
+  [selectDataviewInstancesByType(Generators.Type.UserContext)],
+  (dataviews) => dataviews
 )
 
 export const selectTemporalgridDataviews = createSelector(

@@ -87,6 +87,22 @@ const dataviews: Dataview[] = [
       },
     ],
   },
+  {
+    id: 5,
+    name: 'Marine Protected Areas',
+    description: 'Source: Protected Planet WDPA',
+    config: {
+      type: 'USER_CONTEXT',
+      color: '#00FFBC',
+    },
+    datasetsConfig: [
+      {
+        datasetId: 'marine-protected-areas',
+        endpoint: 'user-context-tiles',
+        params: [],
+      },
+    ],
+  },
 ]
 
 export default dataviews

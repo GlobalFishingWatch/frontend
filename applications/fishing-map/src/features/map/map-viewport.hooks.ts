@@ -39,7 +39,11 @@ export function useDebouncedViewport(
         urlViewport?.longitude !== longitude ||
         urlViewport?.zoom !== zoom)
     ) {
-      setViewport({ ...urlViewport })
+      let transitionDuration = 0
+      if (Math.abs(zoom - urlViewport.zoom) === 1) {
+        transitionDuration = 300
+      }
+      setViewport({ ...urlViewport, transitionDuration })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlViewport])

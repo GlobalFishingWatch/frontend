@@ -20,8 +20,10 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 import { FALLBACK_VIEWPORT } from 'data/config'
-import { TRACKS_DATASET_TYPE } from 'features/workspace/workspace.mock'
+import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'features/workspace/workspace.mock'
 import { selectDebugOptions } from 'features/debug/debug.slice'
+import { selectRulers } from 'features/map/rulers/rulers.slice'
+import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 
 export const selectViewport = createSelector(
   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery, selectWorkspaceViewport],
@@ -45,8 +47,14 @@ export const selectGlobalGeneratorsConfig = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [selectDataviewInstancesResolved, selectResources, selectDebugOptions],
-  (dataviews = [], resources, debugOptions) => {
+  [
+    selectDataviewInstancesResolved,
+    selectResources,
+    selectRulers,
+    selectDebugOptions,
+    selectHighlightedTime,
+  ],
+  (dataviews = [], resources, rulers, debugOptions, highlightedTime) => {
     const animatedHeatmapDataviews: UrlDataviewInstance[] = []
 
     // Collect heatmap animated generators and filter them out from main dataview list
@@ -72,14 +80,13 @@ export const getGeneratorsConfig = createSelector(
           id: dataview.id,
           datasets: datasetsConfig.map((dc) => dc.datasetId),
           colorRamp,
+          filter: config.filter,
         }
-        if (config.filters) {
-          const flags = config.filters.map((flag: string) => `flag='${flag}'`).join(' OR ')
-          sublayer.filter = flags
-        }
+
         return sublayer
       })
 
+      // Force HeatmapAnimated mode depending on debug options
       let mode = Generators.HeatmapAnimatedMode.Compare
       if (debugOptions.extruded) {
         mode = Generators.HeatmapAnimatedMode.Extruded
@@ -101,6 +108,19 @@ export const getGeneratorsConfig = createSelector(
       generatorsConfig.push(mergedLayer)
     }
 
+    // Collect track generators and inject highligtedTime
+    generatorsConfig = generatorsConfig.map((generator) => {
+      const isTrack = generator.config?.type === Generators.Type.Track
+      if (!isTrack) return generator
+      return {
+        ...generator,
+        config: {
+          ...generator.config,
+          highlightedTime,
+        },
+      }
+    })
+
     generatorsConfig = generatorsConfig.flatMap((dataview) => {
       const config: DataviewConfig = { ...dataview.config }
       // Try to retrieve resource if it exists
@@ -110,12 +130,26 @@ export const getGeneratorsConfig = createSelector(
         data = resources[url].data
       }
 
-      return {
+      const generator: any = {
         ...config,
         id: dataview.id,
         ...(data && { data }),
       }
+      // TODO: remove UserContext and use Context
+      if (dataview.config?.type === Generators.Type.UserContext) {
+        const { url } = resolveDataviewDatasetResource(dataview, USER_CONTEXT_TYPE)
+        if (url) {
+          generator.tilesUrl = url
+        }
+      }
+      return generator
     })
-    return generatorsConfig as AnyGeneratorConfig[]
+
+    const rulersConfig = {
+      type: Generators.Type.Rulers,
+      id: 'rulers',
+      data: rulers,
+    }
+    return [...generatorsConfig, rulersConfig] as AnyGeneratorConfig[]
   }
 )

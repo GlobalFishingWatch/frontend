@@ -9,6 +9,7 @@ import { selectSearchQuery } from 'routes/routes.selectors'
 import styles from './Sidebar.module.css'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'
+import ContextArea from './context-areas/ContextAreaSection'
 
 type SidebarProps = {
   onMenuClick: () => void
@@ -73,6 +74,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
         <Fragment>
           <HeatmapsSection />
           <VesselsSection />
+          <ContextArea />
         </Fragment>
       )}
     </div>
