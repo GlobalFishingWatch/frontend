@@ -110,16 +110,15 @@ export const selectDataviewInstancesResolved = createSelector(
 
     // resolved array filters to url filters
     dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
-      if (
-        dataviewInstance.config?.type === Generators.Type.HeatmapAnimated
-      ) {
+      if (dataviewInstance.config?.type === Generators.Type.HeatmapAnimated) {
         const dataviewInstanceWithUrlFilter = {
           ...dataviewInstance,
         }
         if (dataviewInstance.config.filters && dataviewInstanceWithUrlFilter.config) {
-          dataviewInstanceWithUrlFilter.config.filter = dataviewInstanceWithUrlFilter.config.filters
-            .map((flag: string) => `flag='${flag}'`)
-            .join(' OR ')
+          const flags = dataviewInstanceWithUrlFilter.config.filters
+          dataviewInstanceWithUrlFilter.config.filter = `flag IN (${flags
+            .map((f: string) => `'${f}'`)
+            .join(', ')})`
         }
         return dataviewInstanceWithUrlFilter
       }
