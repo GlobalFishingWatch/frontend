@@ -9,22 +9,19 @@ import {
   selectActiveVesselsDataviews,
 } from 'features/workspace/workspace.selectors'
 import { timebarEventsOptions, timebarGraphOptions } from 'data/config'
-import {
-  selectTimebarEvents,
-  selectTimebarGraph,
-  selectTimebarVisualisation,
-} from 'routes/routes.selectors'
+import { selectTimebarEvents, selectTimebarGraph } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { useTimebarVisualisation } from './timebar.hooks'
 import styles from './TimebarSettings.module.css'
 
 const TimebarSettings = () => {
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
   const activeHeatmapDataviews = useSelector(selectActiveTemporalgridDataviews)
   const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
-  const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const timebarEvents = useSelector(selectTimebarEvents)
   const timebarGraph = useSelector(selectTimebarGraph)
   const { dispatchQueryParams } = useLocationConnect()
+  const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisation()
 
   const openOptions = () => {
     setOptionsPanelOpen(true)
@@ -33,10 +30,10 @@ const TimebarSettings = () => {
     setOptionsPanelOpen(false)
   }
   const setHeatmapActive = () => {
-    dispatchQueryParams({ timebarVisualisation: 'heatmap' })
+    dispatchTimebarVisualisation('heatmap')
   }
   const setVesselActive = () => {
-    dispatchQueryParams({ timebarVisualisation: 'vessel' })
+    dispatchTimebarVisualisation('vessel')
   }
   const setEventsOption = (o: SelectOption) => {
     dispatchQueryParams({ timebarEvents: o.id as TimebarEvents })
@@ -52,10 +49,7 @@ const TimebarSettings = () => {
   }
   const expandedContainerRef = useClickedOutside(closeOptions)
 
-  if (activeHeatmapDataviews?.length === 0 && timebarVisualisation === 'heatmap')
-    dispatchQueryParams({ timebarVisualisation: 'vessel' })
   if (activeVesselDataviews?.length === 0) return null
-
   return (
     <div className={styles.container} ref={expandedContainerRef}>
       <IconButton
