@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { selectContextAreasDataviews } from 'features/workspace/workspace.selectors'
-import styles from 'features/sidebar/common/Sections.module.css'
+import styles from 'features/sidebar/Sections.module.css'
 import LayerPanel from './ContextAreaLayerPanel'
 
 function ContextAreaSection(): React.ReactElement {

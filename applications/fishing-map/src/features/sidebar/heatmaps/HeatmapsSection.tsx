@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
-import styles from 'features/sidebar/common/Sections.module.css'
+import styles from 'features/sidebar/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import LayerPanel from './HeatmapLayerPanel'
 
