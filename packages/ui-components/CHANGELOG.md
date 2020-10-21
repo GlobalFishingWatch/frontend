@@ -1,5 +1,12 @@
 # @globalfishingwatch/ui-components
 
+## 2.3.0
+
+### Minor Changes
+
+- 4f18670: New Radio component
+  Support Select direction
+
 ## 2.2.0
 
 ### Minor Changes
