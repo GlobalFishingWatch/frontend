@@ -14,6 +14,9 @@ export type WorkspaceParam =
   | 'query'
   | 'sidebarOpen'
   | 'dataviewInstances'
+  | 'timebarVisualisation'
+  | 'timebarEvents'
+  | 'timebarGraph'
   | 'fishingFilters' // TODO embed in dataviewInstances config
 
 export type QueryParams = {
@@ -25,6 +28,9 @@ export type QueryParams = {
   query?: string
   sidebarOpen?: boolean
   dataviewInstances?: Partial<UrlDataviewInstance[]>
+  timebarVisualisation?: TimebarVisualisations
+  timebarEvents?: TimebarEvents
+  timebarGraph?: TimebarGraphs
 }
 
 export type MapCoordinates = {
@@ -39,4 +45,24 @@ export enum AsyncReducerStatus {
   Loading = 'loading',
   Finished = 'finished',
   Error = 'error',
+}
+
+export enum TimebarVisualisations {
+  Heatmap = 'heatmap',
+  Vessel = 'vessel',
+}
+
+export enum TimebarEvents {
+  All = 'all',
+  Fishing = 'fishing',
+  Encounters = 'encounters',
+  Loitering = 'loitering',
+  Ports = 'ports',
+  None = 'none',
+}
+
+export enum TimebarGraphs {
+  Speed = 'speed',
+  Depth = 'depth',
+  None = 'none',
 }

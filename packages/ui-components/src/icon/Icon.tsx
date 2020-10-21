@@ -30,6 +30,7 @@ import { ReactComponent as RemoveFromMap } from '../assets/icons/remove-from-map
 import { ReactComponent as Ruler } from '../assets/icons/ruler.svg'
 import { ReactComponent as Satellite } from '../assets/icons/satellite.svg'
 import { ReactComponent as Search } from '../assets/icons/search.svg'
+import { ReactComponent as Settings } from '../assets/icons/settings.svg'
 import { ReactComponent as Share } from '../assets/icons/share.svg'
 import { ReactComponent as Skip } from '../assets/icons/skip.svg'
 import { ReactComponent as Split } from '../assets/icons/split.svg'
@@ -69,6 +70,7 @@ export const IconComponents = {
   ruler: Ruler,
   satellite: Satellite,
   search: Search,
+  settings: Settings,
   share: Share,
   skip: Skip,
   split: Split,

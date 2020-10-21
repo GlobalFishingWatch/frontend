@@ -1,7 +1,13 @@
 import { createSelector } from 'reselect'
 import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'store'
-import { WorkspaceParam, UrlDataviewInstance } from 'types'
+import {
+  WorkspaceParam,
+  UrlDataviewInstance,
+  TimebarVisualisations,
+  TimebarGraphs,
+  TimebarEvents,
+} from 'types'
 import { DEFAULT_WORKSPACE, DEFAULT_WERSION } from 'data/config'
 import { ROUTE_TYPES } from './routes'
 
@@ -41,6 +47,11 @@ export const selectStartQuery = selectQueryParam<string>('start')
 export const selectEndQuery = selectQueryParam<string>('end')
 export const selectSearchQuery = selectQueryParam<string>('query')
 export const selectSidebarOpen = selectQueryParam<boolean>('sidebarOpen')
+export const selectTimebarVisualisation = selectQueryParam<TimebarVisualisations>(
+  'timebarVisualisation'
+)
+export const selectTimebarEvents = selectQueryParam<TimebarEvents>('timebarEvents')
+export const selectTimebarGraph = selectQueryParam<TimebarGraphs>('timebarGraph')
 export const selectDataviewInstances = selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
 
 export const selectTimerange = createSelector([selectStartQuery, selectEndQuery], (start, end) => ({

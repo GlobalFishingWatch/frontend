@@ -22,6 +22,7 @@ export {
   MultiSelectOnChange,
   MultiSelectOnRemove,
 } from './multi-select'
+export { default as Radio } from './radio'
 export { default as Select, SelectOption, SelectOnChange, SelectOnRemove } from './select'
 export { default as SplitView } from './split-view'
 export { default as Spinner } from './spinner'

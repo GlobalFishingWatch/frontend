@@ -16,6 +16,7 @@ interface SelectProps {
   onRemove: SelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
   className?: string
+  direction?: 'bottom' | 'top'
 }
 
 const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOption) => {
@@ -32,6 +33,7 @@ function Select(props: SelectProps) {
     onRemove,
     onCleanClick,
     className,
+    direction = 'bottom',
   } = props
   const {
     isOpen,
@@ -86,7 +88,7 @@ function Select(props: SelectProps) {
             {...getToggleButtonProps()}
           ></IconButton>
         </div>
-        <ul {...getMenuProps()} className={styles.optionsContainer}>
+        <ul {...getMenuProps()} className={cx(styles.optionsContainer, styles[direction])}>
           {isOpen &&
             options.length > 0 &&
             options.map((item, index) => {
