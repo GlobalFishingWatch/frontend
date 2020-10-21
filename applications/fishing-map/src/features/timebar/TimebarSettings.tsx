@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import useClickedOutside from 'hooks/useClickedOutside'
+import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 import { IconButton, Radio, Select, SelectOption } from '@globalfishingwatch/ui-components/dist'
 import {
