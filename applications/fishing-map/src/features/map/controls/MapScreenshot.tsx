@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect, useCallback, useLayoutEffect } from 'react'
-import Modal from 'react-modal'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
+import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { Button } from '@globalfishingwatch/ui-components'
@@ -9,8 +9,6 @@ import { useMapboxRef } from '../map.context'
 import styles from './MapScreenshot.module.css'
 
 const DOWNLOAD_IMAGE_ID = 'download-image'
-
-Modal.setAppElement('#root')
 
 interface MapScreenshotProps {
   visible: boolean
@@ -70,10 +68,10 @@ const MapScreenshot: React.FC<MapScreenshotProps> = (props) => {
         </div>
       </div>
       <Modal
-        overlayClassName={styles.modalOverlay}
-        className={styles.modalContent}
+        header={false}
         isOpen={visible}
-        onRequestClose={handleFinished}
+        onClose={handleFinished}
+        contentClassName={styles.modalContent}
       >
         <div className={styles.imgPreviewContainer}>
           {imgPreview ? (

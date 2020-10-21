@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.6.0
+
+### Minor Changes
+
+- Modal with no header prop
+
 ## 0.5.0
 
 ### Minor Changes

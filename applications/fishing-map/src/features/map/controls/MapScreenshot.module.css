@@ -1,22 +1,16 @@
-.modalOverlay {
-  background: var(--color-secondary-blue);
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .modalContent {
   padding: var(--space-M);
   outline: none;
   background: var(--color-white);
   min-width: 50%;
 }
+
+@media only screen and (min-width: 720px) {
+  .modalContent {
+    height: auto;
+  }
+}
+
 
 .imgContainerTranslated {
   position: fixed;
@@ -54,15 +48,32 @@
 }
 
 .imgPreviewContainer {
-  height: 80vh;
   position: relative;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
 }
 
 .imgPreview {
   height: 100%;
-  width: auto;
+  width: 100%;
+  object-fit: contain;
+  max-height: 90vh;
 }
+
+
+@media only screen and (min-width: 720px) {
+  .imgPreviewContainer {
+    min-height: 70vh;
+}
+
+  .imgPreview {
+    max-height: 80vh;
+  }
+}
+
 
 .footer {
   display: flex;

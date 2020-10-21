@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/fishing-map",
-  "version": "0.11.4",
+  "version": "0.12.0",
   "private": true,
   "scripts": {
     "start": "PORT=3003 react-scripts start",
@@ -19,7 +19,7 @@
     "@globalfishingwatch/react-hooks": "^3.4.3",
     "@globalfishingwatch/react-map-gl": "5.2.7-gfw.3",
     "@globalfishingwatch/timebar": "^1.0.14",
-    "@globalfishingwatch/ui-components": "^2.2.1",
+    "@globalfishingwatch/ui-components": "^2.4.0",
     "@reduxjs/toolkit": "^1.4.0",
     "countryflag": "^4.0.1",
     "dayjs": "^1.8.36",
@@ -46,6 +46,7 @@
     "@testing-library/react": "^11.0.4",
     "@testing-library/user-event": "^12.1.6",
     "@types/classnames": "^2.2.10",
+    "@types/file-saver": "^2.0.1",
     "@types/jest": "^26.0.14",
     "@types/lodash": "^4.14.161",
     "@types/luxon": "^1.25.0",

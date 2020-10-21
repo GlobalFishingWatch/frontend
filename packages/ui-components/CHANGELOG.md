@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.4.0
+
+### Minor Changes
+
+- Modal with no header prop
+
 ## 2.3.0
 
 ### Minor Changes

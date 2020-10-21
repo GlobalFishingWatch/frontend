@@ -90,7 +90,7 @@ function App(): React.ReactElement {
         activeLinkId="map-data"
       />
       <Modal
-        header="Secret debug menu 🤖"
+        title="Secret debug menu 🤖"
         isOpen={debugActive}
         onClose={() => dispatchToggleDebugMenu()}
       >

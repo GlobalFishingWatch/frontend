@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.12.0
+
+### Minor Changes
+
+- Modal with no header prop
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.4.0
+
 ## 0.11.4
 
 ### Patch Changes
