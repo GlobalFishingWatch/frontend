@@ -1,0 +1,10 @@
+{
+  "errors": {
+    "workspaceLoad": "hubo un error cargando la vista, porfavor, inténtelo de nuevo"
+  },
+  "tooltips": {
+    "login": "Login",
+    "logout": "logout",
+    "share": "Haz click aquí para compartir la vista actual"
+  }
+}
