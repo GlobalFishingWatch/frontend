@@ -5,6 +5,8 @@ import App from 'features/app/App'
 import store from './store'
 import * as serviceWorker from './serviceWorker'
 
+import './i18n'
+
 render(
   <React.StrictMode>
     <Provider store={store}>
