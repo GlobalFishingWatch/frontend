@@ -1,4 +1,4 @@
-.modalContent {
+.modalContent.modalContent {
   padding: var(--space-M);
   outline: none;
   background: var(--color-white);
@@ -6,7 +6,7 @@
 }
 
 @media only screen and (min-width: 720px) {
-  .modalContent {
+  .modalContent.modalContent {
     height: auto;
   }
 }
@@ -66,7 +66,7 @@
 
 @media only screen and (min-width: 720px) {
   .imgPreviewContainer {
-    min-height: 70vh;
+    min-height: 60vh;
 }
 
   .imgPreview {

@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.12.1
+
+### Patch Changes
+
+- fix selector priority in screenshot
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.4.1
+
 ## 0.12.0
 
 ### Minor Changes

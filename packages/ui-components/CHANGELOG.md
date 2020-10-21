@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.4.1
+
+### Patch Changes
+
+- fix selector priority in screenshot
+
 ## 2.4.0
 
 ### Minor Changes
