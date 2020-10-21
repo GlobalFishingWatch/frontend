@@ -1,0 +1,78 @@
+.modalOverlay {
+  background: var(--color-secondary-blue);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContent {
+  padding: var(--space-M);
+  outline: none;
+  background: var(--color-white);
+  min-width: 50%;
+}
+
+.imgContainerTranslated {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.imgContainer {
+  position: relative;
+}
+
+.logoContainer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: var(--space-S);
+  box-sizing: content-box;
+  background-image: linear-gradient(180deg, rgba(22, 63, 137, 0.3) 0%, rgba(22, 63, 137, 0) 100%);
+}
+
+.logo {
+  margin-right: var(--space-M);
+}
+
+.img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.imgPreviewContainer {
+  height: 80vh;
+  position: relative;
+  text-align: center;
+}
+
+.imgPreview {
+  height: 100%;
+  width: auto;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-S);
+}
+
+@media only screen and (max-width: 720px) {
+  .footer button {
+    min-width: 8rem;
+  }
+}
