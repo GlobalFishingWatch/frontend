@@ -1,6 +1,7 @@
 import React, { useCallback, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Sticky from 'react-sticky-el'
+import { useTranslation } from 'react-i18next'
 import { IconButton, Logo } from '@globalfishingwatch/ui-components'
 import { selectUserData, logoutUserThunk } from 'features/user/user.slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.slice'
@@ -17,6 +18,7 @@ type SidebarProps = {
 
 function SidebarHeader({ onMenuClick }: SidebarProps) {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
   const userData = useSelector(selectUserData)
   const initials = `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
   const onLogoutClick = useCallback(() => {
@@ -28,7 +30,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
       <div className={styles.sidebarHeader}>
         <IconButton icon="menu" onClick={onMenuClick} />
         <Logo className={styles.logo} />
-        <IconButton icon="share" tooltip="Click to share this view" tooltipPlacement="bottom" />
+        <IconButton icon="share" tooltip={t('tooltips.share')} tooltipPlacement="bottom" />
         {userData ? (
           <IconButton
             tooltip={
@@ -37,7 +39,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
                 <br />
                 {userData.email}
                 <br />
-                Click to logout
+                {t('tooltips.logout')}
               </span>
             }
             tooltipPlacement="bottom"
@@ -48,7 +50,11 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
             {initials}
           </IconButton>
         ) : (
-          <IconButton icon="user" tooltip="Login" tooltipPlacement="bottom" />
+          <IconButton
+            icon="user"
+            tooltip={t('tooltips.login', 'Login')}
+            tooltipPlacement="bottom"
+          />
         )}
       </div>
     </Sticky>
@@ -58,6 +64,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
 function Sidebar({ onMenuClick }: SidebarProps) {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const searchQuery = useSelector(selectSearchQuery)
+  const { t } = useTranslation()
 
   if (searchQuery !== undefined) {
     return <Search />
@@ -67,9 +74,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     <div className="scrollContainer">
       <SidebarHeader onMenuClick={onMenuClick} />
       {workspaceStatus === 'error' ? (
-        <div className={styles.placeholder}>
-          There was an error loading the workspace, please try again later
-        </div>
+        <div className={styles.placeholder}>{t('errors.workspaceLoad')}</div>
       ) : (
         <Fragment>
           <HeatmapsSection />
