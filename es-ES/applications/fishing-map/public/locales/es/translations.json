@@ -1,0 +1,10 @@
+{
+  "errors": {
+    "workspaceLoad": "errors.workspaceLoad"
+  },
+  "tooltips": {
+    "login": "tooltips.login",
+    "logout": "tooltips.logout",
+    "share": "tooltips.share"
+  }
+}
