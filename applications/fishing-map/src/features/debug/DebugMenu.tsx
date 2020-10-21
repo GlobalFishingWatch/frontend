@@ -8,7 +8,7 @@ import styles from './DebugMenu.module.css'
 function DebugMenu() {
   const dispatch = useDispatch()
   const debugOptions = useSelector(selectDebugOptions)
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const lang = i18n.language.split('-')[0]
 
   const toggleLanguage = () => {
