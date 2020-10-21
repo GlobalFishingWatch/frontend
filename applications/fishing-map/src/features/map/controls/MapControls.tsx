@@ -1,15 +1,17 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { MiniGlobe, IconButton, Tooltip } from '@globalfishingwatch/ui-components/dist'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
-import Rulers from 'features/map/rulers/Rulers'
-import useViewport, { useMapBounds } from './map-viewport.hooks'
+import Rulers from 'features/map/controls/Rulers'
+import MapScreenshot from 'features/map/controls/MapScreenshot'
+import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import styles from './MapControls.module.css'
 
 const MapControls = (): React.ReactElement => {
+  const [screenshotVisible, setScreenshotVisible] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { viewport, setMapCoordinates } = useViewport()
@@ -50,7 +52,13 @@ const MapControls = (): React.ReactElement => {
       <IconButton icon="plus" type="map-tool" tooltip="Zoom in" onClick={onZoomInClick} />
       <IconButton icon="minus" type="map-tool" tooltip="Zoom out" onClick={onZoomOutClick} />
       <Rulers />
-      <IconButton icon="camera" type="map-tool" tooltip="Capture (Coming soon)" />
+      <IconButton
+        icon="camera"
+        type="map-tool"
+        tooltip="Capture screen"
+        onClick={() => setScreenshotVisible(true)}
+      />
+      <MapScreenshot visible={screenshotVisible} setMapDownloadVisible={setScreenshotVisible} />
       <Tooltip
         content={`Switch to ${
           currentBasemap === Generators.BasemapType.Default ? 'satellite' : 'default'

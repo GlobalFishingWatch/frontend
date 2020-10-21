@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
-import useClickedOutside from 'hooks/useClickedOutside'
+import useClickedOutside from 'hooks/use-clicked-outside'
 import { UrlDataviewInstance } from 'types'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
 import styles from 'features/sidebar/common/LayerPanel.module.css'
