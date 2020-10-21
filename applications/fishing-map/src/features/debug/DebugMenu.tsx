@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { selectDebugOptions, toggleOption } from './debug.slice'
 import styles from './DebugMenu.module.css'
@@ -7,6 +8,12 @@ import styles from './DebugMenu.module.css'
 function DebugMenu() {
   const dispatch = useDispatch()
   const debugOptions = useSelector(selectDebugOptions)
+  const { i18n } = useTranslation()
+  const lang = i18n.language.split('-')[0]
+
+  const toggleLanguage = () => {
+    i18n.changeLanguage(lang === 'es' ? 'en' : 'es')
+  }
   return (
     <div className={styles.row}>
       <div className={styles.header}>
@@ -27,6 +34,11 @@ function DebugMenu() {
         <label htmlFor="option_debug">Debug tiles</label>
       </div>
       <p>Displays info on tiles useful for debugging.</p>
+      <div className={styles.header}>
+        <Switch active={lang === 'es'} onClick={toggleLanguage} />
+        <label htmlFor="option_language">Ver en Español</label>
+      </div>
+      <p>Translations in progress, some literals could be missing.</p>
     </div>
   )
 }
