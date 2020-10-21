@@ -49,7 +49,7 @@ const TimebarSettings = () => {
   }
   const expandedContainerRef = useClickedOutside(closeOptions)
 
-  if (activeVesselDataviews?.length === 0) return null
+  if (!timebarVisualisation) return null
   return (
     <div className={styles.container} ref={expandedContainerRef}>
       <IconButton
@@ -61,10 +61,13 @@ const TimebarSettings = () => {
         <div className={styles.optionsContainer}>
           {activeHeatmapDataviews && activeHeatmapDataviews.length > 0 && (
             <div>
-              <Radio active={timebarVisualisation === 'heatmap'} onClick={setHeatmapActive} />
+              <Radio
+                active={timebarVisualisation === TimebarVisualisations.Heatmap}
+                onClick={setHeatmapActive}
+              />
               <span
                 className={cx(styles.option, {
-                  [styles.active]: timebarVisualisation === 'heatmap',
+                  [styles.active]: timebarVisualisation === TimebarVisualisations.Heatmap,
                 })}
                 onClick={setHeatmapActive}
               >
@@ -75,17 +78,20 @@ const TimebarSettings = () => {
           {activeVesselDataviews && activeVesselDataviews.length > 0 && (
             <Fragment>
               <div>
-                <Radio active={timebarVisualisation === 'vessel'} onClick={setVesselActive} />
+                <Radio
+                  active={timebarVisualisation === TimebarVisualisations.Vessel}
+                  onClick={setVesselActive}
+                />
                 <span
                   className={cx(styles.option, {
-                    [styles.active]: timebarVisualisation === 'vessel',
+                    [styles.active]: timebarVisualisation === TimebarVisualisations.Vessel,
                   })}
                   onClick={setVesselActive}
                 >
                   Vessel Tracks
                 </span>
               </div>
-              {timebarVisualisation === 'vessel' && (
+              {timebarVisualisation === TimebarVisualisations.Vessel && (
                 <div className={styles.vesselTrackOptions}>
                   <Select
                     label="Events"

@@ -1,8 +1,12 @@
 import { useSelector } from 'react-redux'
 import { TimebarVisualisations } from 'types'
+import { useCallback, useEffect } from 'react'
 import { selectTimebarVisualisation, selectTimerange } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectActiveTemporalgridDataviews } from 'features/workspace/workspace.selectors'
+import {
+  selectActiveTemporalgridDataviews,
+  selectActiveVesselsDataviews,
+} from 'features/workspace/workspace.selectors'
 
 export const useTimerangeConnect = () => {
   const { dispatchQueryParams } = useLocationConnect()
@@ -15,11 +19,34 @@ export const useTimerangeConnect = () => {
 
 export const useTimebarVisualisation = () => {
   const activeHeatmapDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const currentVis = useSelector(selectTimebarVisualisation)
+  const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
+  const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const { dispatchQueryParams } = useLocationConnect()
-  const dispatchTimebarVisualisation = (timebarVisualisation: TimebarVisualisations) => {
-    dispatchQueryParams({ timebarVisualisation })
+  const dispatchTimebarVisualisation = useCallback(
+    (timebarVisualisation: TimebarVisualisations | undefined) => {
+      dispatchQueryParams({ timebarVisualisation: timebarVisualisation })
+    },
+    [dispatchQueryParams]
+  )
+
+  // Automates the selection based on current active layers
+  const getUpdatedTimebarVisualization = () => {
+    if (activeHeatmapDataviews?.length) {
+      return timebarVisualisation ? timebarVisualisation : TimebarVisualisations.Heatmap
+    }
+    if (activeVesselDataviews?.length) {
+      return TimebarVisualisations.Vessel
+    }
+    return undefined
   }
-  const timebarVisualisation = activeHeatmapDataviews?.length === 0 ? 'vessel' : currentVis
+
+  useEffect(() => {
+    const newTimebarVisualisation = getUpdatedTimebarVisualization()
+    if (newTimebarVisualisation !== timebarVisualisation) {
+      dispatchTimebarVisualisation(newTimebarVisualisation)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeHeatmapDataviews, activeVesselDataviews])
+
   return { timebarVisualisation, dispatchTimebarVisualisation }
 }

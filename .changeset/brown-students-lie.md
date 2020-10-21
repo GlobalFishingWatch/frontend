@@ -1,5 +1,6 @@
 ---
-"@globalfishingwatch/ui-components": patch
+"@globalfishingwatch/ui-components": minor
 ---
 
-adds UI and queryParams to set Timebar settings
+New Radio component
+Support Select direction
