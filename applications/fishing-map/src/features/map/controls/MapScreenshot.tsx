@@ -1,10 +1,10 @@
 import React, { Fragment, useState, useEffect, useCallback, useLayoutEffect } from 'react'
 import Modal from 'react-modal'
-import { useMapImage } from 'hooks/map.hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { Button } from '@globalfishingwatch/ui-components'
+import { useMapImage } from 'features/map/map.hooks'
 import { useMapboxRef } from '../map.context'
 import styles from './MapScreenshot.module.css'
 
