@@ -23,9 +23,9 @@
 }
 
 .basemapSwitcher.basemap_default {
-  background-image: url('../../assets/images/basemap-satellite.jpg');
+  background-image: url('../../../assets/images/basemap-satellite.jpg');
 }
 
 .basemapSwitcher.satellite {
-  background-image: url('../../assets/images/basemap-default.jpg');
+  background-image: url('../../../assets/images/basemap-default.jpg');
 }

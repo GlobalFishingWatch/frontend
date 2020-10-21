@@ -4,7 +4,7 @@ import { DateTime } from 'luxon'
 import { ScaleControl } from '@globalfishingwatch/react-map-gl'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import useViewport from './map-viewport.hooks'
+import useViewport from 'features/map/map-viewport.hooks'
 import styles from './MapInfo.module.css'
 
 const A_DAY = 1000 * 60 * 60 * 24

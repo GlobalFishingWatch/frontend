@@ -9,7 +9,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectTimerange } from 'routes/routes.selectors'
 import { FISHING_DATASET_TYPE } from 'features/workspace/workspace.mock'
-import { selectEditing, editRuler } from 'features/map/rulers/rulers.slice'
+import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import {
   setClickedEvent,
   selectClickedEvent,
