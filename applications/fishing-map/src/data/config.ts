@@ -1,4 +1,4 @@
-import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
+import { TimebarEvents, TimebarGraphs } from 'types'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 
 // used when no url data and no workspace data
@@ -22,7 +22,7 @@ export const DEFAULT_WORKSPACE = {
   availableEnd: new Date().toISOString(),
   dataviewInstances: undefined,
   fishingFilters: [],
-  timebarVisualisation: TimebarVisualisations.Heatmap,
+  timebarVisualisation: undefined,
   timebarEvents: TimebarEvents.None,
   timebarGraph: TimebarGraphs.None,
 }

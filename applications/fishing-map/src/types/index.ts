@@ -17,7 +17,6 @@ export type WorkspaceParam =
   | 'timebarVisualisation'
   | 'timebarEvents'
   | 'timebarGraph'
-  | 'fishingFilters' // TODO embed in dataviewInstances config
 
 export type QueryParams = {
   zoom?: number
