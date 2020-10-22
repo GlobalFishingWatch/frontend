@@ -15,6 +15,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
 import { VESSELS_DATASET_TYPE } from 'features/workspace/workspace.mock'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
+import I18nDate from 'features/i18n/i18nDate'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -136,13 +137,19 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         )}
         {infoOpen && (
           <ul className={styles.infoContent}>
-            {dataview.info.fields.map((field: { id: keyof Vessel; type: string }) => {
-              const fieldValue = resource?.data?.[field.id]
+            {dataview.infoConfig?.fields.map((field) => {
+              const fieldValue = resource?.data?.[field.id as keyof Vessel]
               if (!fieldValue) return null
               return (
                 <li key={field.id} className={styles.infoContentItem}>
                   <label>{formatInfoLabel(field.id)}</label>
-                  <span>{formatInfoField(fieldValue, field.type)}</span>
+                  <span>
+                    {field.type === 'date' ? (
+                      <I18nDate date={field.id} />
+                    ) : (
+                      formatInfoField(fieldValue, field.type)
+                    )}
+                  </span>
                 </li>
               )
             })}

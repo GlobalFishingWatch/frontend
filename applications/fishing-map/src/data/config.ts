@@ -49,8 +49,6 @@ export const sources: SelectOption[] = [
   },
 ]
 
-export const DATE_FORMAT = 'yyyy/MM/dd'
-
 export const TIMEBAR_EVENT_OPTIONS: SelectOption[] = [
   {
     id: 'all',

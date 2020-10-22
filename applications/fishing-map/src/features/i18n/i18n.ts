@@ -19,12 +19,12 @@ i18n
     debug: process.env.NODE_ENV === 'development',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default,
-      format: (value, format, lng) => {
-        if (format === 'intlDate') {
-          return new Intl.DateTimeFormat(lng).format(value)
-        }
-        return value
-      },
+      // format: (value, format, lng) => {
+      //   if (format === 'intlDate') {
+      //     return new Intl.DateTimeFormat(lng).format(value)
+      //   }
+      //   return value
+      // },
     },
   })
 

@@ -1,5 +1,4 @@
 import flags from 'data/flags'
-import { formatDate } from './dates'
 
 export const formatInfoField = (fieldValue: string, type: string) => {
   if (type === 'name')
@@ -7,7 +6,6 @@ export const formatInfoField = (fieldValue: string, type: string) => {
       /\w\S*/g,
       (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
     )
-  if (type === 'date') return formatDate(fieldValue)
   if (type === 'flag') return flags.find((flag) => flag.id === fieldValue)?.label
   return fieldValue
 }
