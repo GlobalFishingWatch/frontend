@@ -33,8 +33,8 @@ const datasets: Dataset[] = [
         params: [{ label: 'vessel id', id: 'vesselId', type: 'string' }],
         query: [
           { label: 'Datasets', id: 'datasets', type: 'string', required: true },
-          { label: 'start date', id: 'startDate', type: 'Date ISO', required: false },
-          { label: 'end date', id: 'endDate', type: 'Date ISO', required: false },
+          { label: 'start date', id: 'startDate', type: 'date-iso', required: false },
+          { label: 'end date', id: 'endDate', type: 'date-iso', required: false },
           { label: 'binary', id: 'binary', type: 'boolean', default: true },
           { label: 'wrapLongitudes', id: 'wrapLongitudes', type: 'boolean', default: false },
           {
@@ -47,7 +47,7 @@ const datasets: Dataset[] = [
             label: 'format',
             id: 'format',
             type: 'enum',
-            values: ['point', 'lines', 'valueArray'],
+            enum: ['point', 'lines', 'valueArray'],
             default: 'lines',
             description:
               'Specific encoding format to use for the track. Possible values lines, points or valueArray. valueArray: is a custom compact format, an array with all the fields serialized. The format is further explained in this issue: valueArray format. lines: Geojson with a single LineString feature containing all the points in the track points: Geojson with a FeatureCollection containing a Point feature for every point in the track',

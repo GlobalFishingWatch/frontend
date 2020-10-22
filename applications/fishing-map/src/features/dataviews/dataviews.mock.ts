@@ -53,7 +53,7 @@ const dataviews: Dataview[] = [
       type: Generators.Type.Track,
       color: '#F95E5E',
     },
-    info: {
+    infoConfig: {
       fields: [
         { id: 'flag', type: 'flag' },
         { id: 'imo', type: 'number' },
