@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.12.2
+
+### Patch Changes
+
+- Update tooltip types
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.4.2
+
 ## 0.12.1
 
 ### Patch Changes

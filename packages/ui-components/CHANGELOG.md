@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.4.2
+
+### Patch Changes
+
+- Update tooltip types
+
 ## 2.4.1
 
 ### Patch Changes
