@@ -11,7 +11,8 @@
     "more": "More",
     "save": "Save",
     "share": "Click to share the current view",
-    "vessel_plural": "Vessels"
+    "vessel_plural": "Vessels",
+    "open_menu": "Open Menu"
   },
   "errors": {
     "workspaceLoad": "There was an error loading the workspace, please try again later"
