@@ -2,6 +2,7 @@ import i18n from 'i18next'
 import Backend from 'i18next-http-backend'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
+import { LocaleOptions } from 'types'
 
 i18n
   // load translation using http -> see /public/locales
@@ -15,16 +16,19 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    fallbackLng: 'en',
+    ns: ['translation', 'flags'],
+    defaultNS: 'translation',
+    fallbackLng: LocaleOptions.en,
+    supportedLngs: Object.values(LocaleOptions),
     debug: process.env.NODE_ENV === 'development',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default,
-      format: (value, format, lng) => {
-        if (format === 'intlDate') {
-          return new Intl.DateTimeFormat(lng).format(value)
-        }
-        return value
-      },
+      // format: (value, format, lng) => {
+      //   if (format === 'intlDate') {
+      //     return new Intl.DateTimeFormat(lng).format(value)
+      //   }
+      //   return value
+      // },
     },
   })
 

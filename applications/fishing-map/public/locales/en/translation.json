@@ -1,1 +1,62 @@
-{}
+{
+  "common": {
+    "context_area_plural": "Context areas",
+    "dismiss": "Dismiss",
+    "events": "Events",
+    "fishing": "Fishing",
+    "hour": "Hour",
+    "hour_plural": "Hours",
+    "login": "Login",
+    "logout": "Logout",
+    "more": "More",
+    "save": "Save",
+    "share": "Click to share the current view",
+    "vessel_plural": "Vessels"
+  },
+  "errors": {
+    "workspaceLoad": "There was an error loading the workspace, please try again later"
+  },
+  "layer": {
+    "color_change": "Change color",
+    "filter_close": "Close filters",
+    "filter_open": "Open filters",
+    "filter_plural": "Filters",
+    "info_close": "Hide info",
+    "info_open": "Info",
+    "remove": "Remove layer",
+    "toggle_visibility": "Toggle layer visibility"
+  },
+  "map": {
+    "capture_map": "Capture map",
+    "change_basemap_default": "Switch to default basemap",
+    "change_basemap_satellite": "Switch to satellite basemap",
+    "rulers_add": "Add rulers",
+    "rulers_remove": "Remove all rulers",
+    "screenshot": "Map screenshot",
+    "zoom_in": "Zoom in",
+    "zoom_out": "Zoom out"
+  },
+  "timebar": {
+    "graph": "Graph",
+    "settings_close": "Close timebar settings",
+    "settings_open": "Open timebar settings"
+  },
+  "vessel": {
+    "callsign": "Callsign",
+    "first_transmission_date": "First transmission date",
+    "flag": "Flag",
+    "imo": "IMO",
+    "last_transmission_date": "Last transmission date",
+    "mmsi": "MMSI",
+    "search": {
+      "close": "Close search",
+      "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar or writing filters like:",
+      "filter_open": "Filter search (Coming soon)",
+      "placeholder": "Type to search vessels",
+      "search": "Search vessels"
+    },
+    "tracks": "Vessel Tracks",
+    "transmission_plural": "Transmissions",
+    "transmission": "Transmission"
+  }
+}

@@ -2,6 +2,7 @@ import React, { memo } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
+import { TooltipTypes } from '../types/index'
 import styles from './Switch.module.css'
 
 interface SwitchProps {
@@ -9,7 +10,7 @@ interface SwitchProps {
   disabled?: boolean
   onClick: (event: React.MouseEvent) => void
   color?: string
-  tooltip?: React.ReactChild | React.ReactChild[] | string
+  tooltip?: TooltipTypes
   tooltipPlacement?: Placement
   className?: string
 }

@@ -4,6 +4,7 @@ import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import { useSelector } from 'react-redux'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { formatInfoField } from 'utils/info'
+import { useTranslation } from 'react-i18next'
 import { Vessel } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
@@ -21,6 +22,7 @@ type LayerPanelProps = {
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+  const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url } = resolveDataviewDatasetResource(dataview, VESSELS_DATASET_TYPE)
   const resource = useSelector(selectResourceByUrl<Vessel>(url))
@@ -73,7 +75,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         <Switch
           active={layerActive}
           onClick={onToggleLayerActive}
-          tooltip="Toggle layer visibility"
+          tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
           color={dataview.config?.color}
         />
@@ -96,7 +98,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
               size="small"
               style={colorOpen ? {} : { color: dataview.config?.color }}
-              tooltip="Change color"
+              tooltip={t('layer.color_change', 'Change color')}
               tooltipPlacement="top"
               onClick={onToggleColorOpen}
               className={cx(styles.actionButton, styles.expandable, {

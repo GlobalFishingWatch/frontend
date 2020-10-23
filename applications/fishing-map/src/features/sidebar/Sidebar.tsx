@@ -30,7 +30,11 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
       <div className={styles.sidebarHeader}>
         <IconButton icon="menu" onClick={onMenuClick} />
         <Logo className={styles.logo} />
-        <IconButton icon="share" tooltip={t('tooltips.share')} tooltipPlacement="bottom" />
+        <IconButton
+          icon="share"
+          tooltip={t('common.share', 'Click to share the current view')}
+          tooltipPlacement="bottom"
+        />
         {userData ? (
           <IconButton
             tooltip={
@@ -39,7 +43,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
                 <br />
                 {userData.email}
                 <br />
-                {t('tooltips.logout')}
+                {t('common.logout', 'Logout')}
               </span>
             }
             tooltipPlacement="bottom"
@@ -50,11 +54,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
             {initials}
           </IconButton>
         ) : (
-          <IconButton
-            icon="user"
-            tooltip={t('tooltips.login', 'Login')}
-            tooltipPlacement="bottom"
-          />
+          <IconButton icon="user" tooltip={t('common.login', 'Login')} tooltipPlacement="bottom" />
         )}
       </div>
     </Sticky>
@@ -74,7 +74,12 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     <div className="scrollContainer">
       <SidebarHeader onMenuClick={onMenuClick} />
       {workspaceStatus === 'error' ? (
-        <div className={styles.placeholder}>{t('errors.workspaceLoad')}</div>
+        <div className={styles.placeholder}>
+          {t(
+            'errors.workspaceLoad',
+            'There was an error loading the workspace, please try again later'
+          )}
+        </div>
       ) : (
         <Fragment>
           <HeatmapsSection />
