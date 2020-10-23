@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
+import { useTranslation } from 'react-i18next'
 import { IconButton, Radio, Select, SelectOption } from '@globalfishingwatch/ui-components/dist'
 import {
   selectActiveTemporalgridDataviews,
@@ -15,6 +16,7 @@ import { useTimebarVisualisation } from './timebar.hooks'
 import styles from './TimebarSettings.module.css'
 
 const TimebarSettings = () => {
+  const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
   const activeHeatmapDataviews = useSelector(selectActiveTemporalgridDataviews)
   const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
@@ -56,6 +58,11 @@ const TimebarSettings = () => {
         icon={optionsPanelOpen ? 'close' : 'settings'}
         type="map-tool"
         onClick={optionsPanelOpen ? closeOptions : openOptions}
+        tooltip={
+          optionsPanelOpen
+            ? t('timebar.settings_close', 'Close timebar settings')
+            : t('timebar.settings_open', 'Open timebar settings')
+        }
       />
       {optionsPanelOpen && (
         <div className={styles.optionsContainer}>
@@ -88,13 +95,13 @@ const TimebarSettings = () => {
                   })}
                   onClick={setVesselActive}
                 >
-                  Vessel Tracks
+                  {t('vessel.tracks', 'Vessel Tracks')}
                 </span>
               </div>
               {timebarVisualisation === TimebarVisualisations.Vessel && (
                 <div className={styles.vesselTrackOptions}>
                   <Select
-                    label="Events"
+                    label={t('common.events', 'Events')}
                     options={TIMEBAR_EVENT_OPTIONS}
                     selectedOption={TIMEBAR_EVENT_OPTIONS.find((o) => o.id === timebarEvents)}
                     onSelect={setEventsOption}
@@ -102,7 +109,7 @@ const TimebarSettings = () => {
                     direction="top"
                   />
                   <Select
-                    label="Graph"
+                    label={t('timebar.graph', 'Graph')}
                     options={TIMEBAR_GRAPH_OPTIONS}
                     selectedOption={TIMEBAR_GRAPH_OPTIONS.find((o) => o.id === timebarGraph)}
                     onSelect={setGraphOption}

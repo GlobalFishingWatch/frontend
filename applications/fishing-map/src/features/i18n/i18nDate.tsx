@@ -8,7 +8,9 @@ type Dates = {
 }
 
 export const formatI18nDate = (date: string, locale: string, format = DateTime.DATE_MED) => {
-  return DateTime.fromISO(date).toUTC().setLocale(locale).toLocaleString(format)
+  return `${DateTime.fromISO(date).toUTC().setLocale(locale).toLocaleString(format)}${
+    format === DateTime.DATETIME_MED ? ' UTC' : ''
+  }`
 }
 
 export const useI18nDate = (date: string, format = DateTime.DATE_MED) => {

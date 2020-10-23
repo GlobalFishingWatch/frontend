@@ -1,8 +1,8 @@
 import React from 'react'
 import { DateTime } from 'luxon'
+import toFixed from 'utils/toFixed'
 import { ScaleControl } from '@globalfishingwatch/react-map-gl'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
-import toFixed from 'utils/toFixed'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import I18nDate from 'features/i18n/i18nDate'
@@ -27,8 +27,7 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
         </div>
       )}
       <div>
-        <I18nDate date={start} format={dateFormat} /> UTC -{' '}
-        <I18nDate date={end} format={dateFormat} /> UTC
+        <I18nDate date={start} format={dateFormat} /> - <I18nDate date={end} format={dateFormat} />
       </div>
     </div>
   )

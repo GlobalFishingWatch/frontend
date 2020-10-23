@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect, useCallback, useLayoutEffect } from 'react'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
+import { useTranslation } from 'react-i18next'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -16,6 +17,7 @@ interface MapScreenshotProps {
 }
 
 const MapScreenshot: React.FC<MapScreenshotProps> = (props) => {
+  const { t } = useTranslation()
   const { visible, setMapDownloadVisible } = props
   const mapRef = useMapboxRef()
   const imgMap = useMapImage(visible ? mapRef.current?.getMap() : null)
@@ -62,7 +64,11 @@ const MapScreenshot: React.FC<MapScreenshotProps> = (props) => {
               <div className={styles.logoContainer}>
                 <Logo type="invert" className={styles.logo} />
               </div>
-              <img className={styles.img} src={imgMap} alt="Map screenshot" />
+              <img
+                className={styles.img}
+                src={imgMap}
+                alt={t('map.screenshot', 'Map screenshot')}
+              />
             </Fragment>
           )}
         </div>
@@ -75,17 +81,21 @@ const MapScreenshot: React.FC<MapScreenshotProps> = (props) => {
       >
         <div className={styles.imgPreviewContainer}>
           {imgPreview ? (
-            <img className={styles.imgPreview} src={imgPreview} alt="Map screenshot preview" />
+            <img
+              className={styles.imgPreview}
+              src={imgPreview}
+              alt={t('map.screenshot', 'Map screenshot')}
+            />
           ) : (
             <Spinner />
           )}
         </div>
         <div className={styles.footer}>
           <Button type="secondary" onClick={handleFinished}>
-            DISMISS
+            {t('common.dismiss', 'Dismiss') as string}
           </Button>
           <Button disabled={!imgPreview} onClick={() => downloadImage()}>
-            {loading ? <Spinner size="small" /> : 'Save'}
+            {loading ? <Spinner size="small" /> : (t('common.save', 'Save') as string)}
           </Button>
         </div>
       </Modal>

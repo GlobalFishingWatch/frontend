@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { formatInfoField } from 'utils/info'
+import useClickedOutside from 'hooks/use-clicked-outside'
+import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import { Vessel } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
   TrackColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
-import { formatInfoField } from 'utils/info'
-import useClickedOutside from 'hooks/use-clicked-outside'
-import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
@@ -94,7 +94,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         <Switch
           active={layerActive}
           onClick={onToggleLayerActive}
-          tooltip="Toggle layer visibility"
+          tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
           color={dataview.config?.color}
         />
@@ -109,7 +109,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             size="small"
             loading={resource?.status === AsyncReducerStatus.Loading}
             className={styles.actionButton}
-            tooltip="info"
+            tooltip={
+              infoOpen ? t('layer.info_close', 'Hide info') : t('layer.info_open', 'Show info')
+            }
             onClick={onToggleInfoOpen}
             tooltipPlacement="top"
           />
@@ -118,7 +120,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
               size="small"
               style={colorOpen ? {} : { color: dataview.config?.color }}
-              tooltip="Change color"
+              tooltip={t('layer.color_change', 'Change color')}
               tooltipPlacement="top"
               onClick={onToggleColorOpen}
               className={cx(styles.actionButton, styles.expandable, {
@@ -130,7 +132,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             icon="delete"
             size="small"
             className={styles.actionButton}
-            tooltip="Delete"
+            tooltip={t('layer.remove', 'Remove layer')}
             tooltipPlacement="top"
             onClick={onRemoveLayerClick}
           />

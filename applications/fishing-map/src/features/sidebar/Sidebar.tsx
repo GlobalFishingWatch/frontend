@@ -32,7 +32,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
         <Logo className={styles.logo} />
         <IconButton
           icon="share"
-          tooltip={t('tooltips.share', 'Click to share the current view')}
+          tooltip={t('common.share', 'Click to share the current view')}
           tooltipPlacement="bottom"
         />
         {userData ? (
@@ -43,7 +43,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
                 <br />
                 {userData.email}
                 <br />
-                {t('tooltips.logout', 'Logout')}
+                {t('common.logout', 'Logout')}
               </span>
             }
             tooltipPlacement="bottom"
@@ -54,11 +54,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
             {initials}
           </IconButton>
         ) : (
-          <IconButton
-            icon="user"
-            tooltip={t('tooltips.login', 'Login')}
-            tooltipPlacement="bottom"
-          />
+          <IconButton icon="user" tooltip={t('common.login', 'Login')} tooltipPlacement="bottom" />
         )}
       </div>
     </Sticky>

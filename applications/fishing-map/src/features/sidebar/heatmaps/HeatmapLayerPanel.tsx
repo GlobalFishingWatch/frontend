@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { UrlDataviewInstance } from 'types'
+import { useTranslation } from 'react-i18next'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
 import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -13,6 +14,7 @@ type LayerPanelProps = {
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+  const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters || [])
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
@@ -48,7 +50,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         <Switch
           active={layerActive}
           onClick={onToggleLayerActive}
-          tooltip="Toggle layer visibility"
+          tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
           color={dataview.config?.color}
         />
@@ -66,7 +68,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               className={cx(styles.actionButton, styles.expandable, {
                 [styles.expanded]: filterOpen,
               })}
-              tooltip="Filter"
+              tooltip={
+                filterOpen
+                  ? t('layer.filter_close', 'Close filters')
+                  : t('layer.filter_open', 'Open filters')
+              }
               tooltipPlacement="top"
             />
           )}
@@ -81,7 +87,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             icon="delete"
             size="small"
             className={styles.actionButton}
-            tooltip="Delete"
+            tooltip={t('layer.remove', 'Remove layer')}
             tooltipPlacement="top"
             onClick={onRemoveLayerClick}
           />
@@ -89,7 +95,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       </div>
       {layerActive && fishingFiltersOptions.length > 0 && (
         <div className={styles.properties}>
-          <label>Filters</label>
+          <label>{t('layer.filter_plural', 'Filters')}</label>
           <TagList
             tags={fishingFiltersOptions}
             color={dataview.config?.color}

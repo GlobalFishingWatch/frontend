@@ -4,18 +4,11 @@ import { Placement } from 'tippy.js'
 import Icon, { IconType } from '../icon'
 import Tooltip from '../tooltip'
 import Spinner from '../spinner'
+import { TooltipTypes } from '../types/index'
 import styles from './IconButton.module.css'
 
 export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'warning'
 export type IconButtonSize = 'default' | 'small' | 'tiny'
-export type TooltipTypes =
-  | React.ReactChild
-  | React.ReactChild[]
-  | string
-  | object
-  | Array<string | object>
-  | undefined
-  | null
 
 interface IconButtonProps {
   icon?: IconType
