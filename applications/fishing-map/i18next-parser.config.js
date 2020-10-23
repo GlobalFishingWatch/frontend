@@ -8,7 +8,7 @@ module.exports = {
   // Indentation of the catalog files
   indentation: 2,
   // Keep keys from the catalog that are no longer in code
-  keepRemoved: false,
+  keepRemoved: true,
   // Key separator used in your translation keys
   // If you want to use plain english keys, separators such as `.` and `:` will conflict. You might want to set `keySeparator: false` and `namespaceSeparator: false`. That way, `t('Status: Loading...')` will not think that there are a namespace and three separator dots for instance.
   keySeparator: '.',
@@ -41,7 +41,7 @@ module.exports = {
   sort: true,
   // Whether to use the keys as the default value; ex. "Hello": "Hello", "World": "World"
   // This option takes precedence over the `defaultValue` and `skipDefaultValues` options
-  useKeysAsDefaultValue: true,
+  useKeysAsDefaultValue: false,
   // Whether to ignore default values.
   skipDefaultValues: false,
   // Default value to give to empty keys
