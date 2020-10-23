@@ -196,8 +196,9 @@ class Timebar extends Component {
   }
 
   onTogglePlay = (isPlaying) => {
-    const { onTogglePlay } = this.props
+    const { onTogglePlay, onToggleIdle } = this.props
     onTogglePlay(isPlaying)
+    onToggleIdle(!isPlaying)
   }
 
   render() {
@@ -212,6 +213,7 @@ class Timebar extends Component {
       minimumRangeUnit,
       maximumRange,
       maximumRangeUnit,
+      onToggleIdle,
     } = this.props
     const { immediate } = this.state
 
@@ -320,6 +322,12 @@ class Timebar extends Component {
             bookmarkStart={bookmarkStart}
             bookmarkEnd={bookmarkEnd}
             showLastUpdate={this.props.showLastUpdate}
+            onSeekStart={() => {
+              onToggleIdle(false)
+            }}
+            onSeekEnd={() => {
+              onToggleIdle(true)
+            }}
           />
         </div>
       </ImmediateContext.Provider>
@@ -346,6 +354,7 @@ Timebar.propTypes = {
   maximumRange: PropTypes.number,
   maximumRangeUnit: PropTypes.string,
   showLastUpdate: PropTypes.bool,
+  onToggleIdle: PropTypes.func,
 }
 
 Timebar.defaultProps = {
@@ -362,6 +371,7 @@ Timebar.defaultProps = {
   maximumRange: null,
   maximumRangeUnit: 'month',
   showLastUpdate: true,
+  onToggleIdle: () => {},
 }
 
 export default Timebar

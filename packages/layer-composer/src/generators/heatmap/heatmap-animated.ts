@@ -1,4 +1,5 @@
 import memoizeOne from 'memoize-one'
+import debounce from 'lodash/debounce'
 import {
   Type,
   HeatmapAnimatedGeneratorConfig,
@@ -40,6 +41,11 @@ const toURLArray = (paramName: string, arr: string[]) => {
     .join('&')
 }
 
+const getDebouncedDeltaAndBreaks = debounce((config, intervalInDays, debouncedDelta) => {
+  const debouncedBreaks = getSublayersBreaks(config, intervalInDays)
+  return { debouncedBreaks, debouncedDelta }
+})
+
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
 
@@ -54,7 +60,12 @@ class HeatmapAnimatedGenerator {
 
     const tilesUrl = `${config.tilesAPI}/${API_ENDPOINTS.tiles}`
 
-    const breaks = getSublayersBreaks(config, timeChunks[0].intervalInDays)
+    const delta = getDelta(config.start, config.end, timeChunks[0].interval)
+    const { debouncedDelta, debouncedBreaks } = getDebouncedDeltaAndBreaks(
+      config,
+      timeChunks[0].intervalInDays,
+      delta
+    ) as any
 
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? 'point' : 'rectangle'
     const interactiveSource =
@@ -70,11 +81,11 @@ class HeatmapAnimatedGenerator {
         combinationMode,
         filters: toURLArray('filters', filters),
         datasets: toURLArray('datasets', datasets),
-        delta: getDelta(config.start, config.end, timeChunk.interval).toString(),
+        delta: debouncedDelta.toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: timeChunk.interval,
         numDatasets: config.sublayers.length.toString(),
-        breaks: JSON.stringify(breaks),
+        breaks: JSON.stringify(debouncedBreaks),
         interactive: interactiveSource.toString(),
       }
       if (timeChunk.start && timeChunk.dataEnd) {
@@ -85,6 +96,7 @@ class HeatmapAnimatedGenerator {
 
       return sourceParams.map((params: Record<string, string>) => {
         const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)
+        console.log(decodeURI(url.toString()))
         const source = {
           id: params.id,
           type: 'temporalgrid',

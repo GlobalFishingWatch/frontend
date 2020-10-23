@@ -38,7 +38,7 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk
         type: 'fill',
         paint: {
           'fill-color': 'pink',
-          'fill-opacity': config.debug ? 0.5 : 0,
+          'fill-opacity': config.debug ? 0.5 : 0.1,
         },
         metadata: {
           group: Group.Heatmap,
