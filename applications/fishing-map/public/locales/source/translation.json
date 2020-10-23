@@ -4,14 +4,14 @@
     "dismiss": "Dismiss",
     "events": "Events",
     "fishing": "Fishing",
-    "hour": "missing_translation",
-    "hour_plural": "missing_translation",
+    "hour": "Hour",
+    "hour_plural": "Hours",
     "login": "Login",
     "logout": "Logout",
-    "more": "missing_translation",
+    "more": "More",
     "save": "Save",
     "share": "Click to share the current view",
-    "vessel_plural": "missing_translation"
+    "vessel_plural": "Vessels"
   },
   "errors": {
     "workspaceLoad": "There was an error loading the workspace, please try again later"
