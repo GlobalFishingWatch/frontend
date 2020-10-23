@@ -4,14 +4,15 @@
     "dismiss": "Cancelar",
     "events": "Eventos",
     "fishing": "Pesca",
-    "hour": "Hour",
-    "hour_plural": "Hours",
+    "hour": "Hora",
+    "hour_plural": "Horas",
     "login": "Login",
     "logout": "Cerrar sesión",
-    "more": "More",
+    "more": "Más",
     "save": "Guardar",
     "share": "Haz click para compartir tu vista actual",
-    "vessel_plural": "Vessels"
+    "vessel_plural": "Embarcaciones",
+    "open_menu": "Open Menu"
   },
   "errors": {
     "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo"
