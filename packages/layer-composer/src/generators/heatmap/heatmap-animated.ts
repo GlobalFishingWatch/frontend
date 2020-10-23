@@ -57,6 +57,9 @@ class HeatmapAnimatedGenerator {
     const breaks = getSublayersBreaks(config, timeChunks[0].intervalInDays)
 
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? 'point' : 'rectangle'
+    const interactiveSource =
+      config.interactive &&
+      (config.mode === HeatmapAnimatedMode.Compare || config.mode === HeatmapAnimatedMode.Bivariate)
     const combinationMode = HEATMAP_MODE_COMBINATION[config.mode]
 
     const sources = timeChunks.flatMap((timeChunk: TimeChunk) => {
@@ -72,25 +75,13 @@ class HeatmapAnimatedGenerator {
         interval: timeChunk.interval,
         numDatasets: config.sublayers.length.toString(),
         breaks: JSON.stringify(breaks),
+        interactive: interactiveSource.toString(),
       }
       if (timeChunk.start && timeChunk.dataEnd) {
         baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd].join(',')
       }
 
       const sourceParams = [baseSourceParams]
-      // interaction layer only available with:
-      if (
-        config.interactive &&
-        (config.mode === HeatmapAnimatedMode.Compare ||
-          config.mode === HeatmapAnimatedMode.Bivariate)
-      ) {
-        const interactiveSource = {
-          ...baseSourceParams,
-          id: `${baseSourceParams.id}_interaction`,
-          combinationMode: 'literal',
-        }
-        sourceParams.push(interactiveSource)
-      }
 
       return sourceParams.map((params: Record<string, string>) => {
         const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)

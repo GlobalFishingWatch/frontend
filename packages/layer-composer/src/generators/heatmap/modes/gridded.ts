@@ -33,8 +33,8 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk
     if (config.interactive) {
       chunkLayers.push({
         id: `${timeChunk.id}_interaction`,
-        source: `${timeChunk.id}_interaction`,
-        'source-layer': 'temporalgrid',
+        source: timeChunk.id,
+        'source-layer': 'temporalgrid_interactive',
         type: 'fill',
         paint: {
           'fill-color': 'pink',
@@ -50,8 +50,8 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk
       })
       chunkLayers.push({
         id: `${timeChunk.id}_interaction_hover`,
-        source: `${timeChunk.id}_interaction`,
-        'source-layer': 'temporalgrid',
+        source: timeChunk.id,
+        'source-layer': 'temporalgrid_interactive',
         type: 'line',
         paint: {
           'line-color': 'white',
