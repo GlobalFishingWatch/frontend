@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { AsyncReducerStatus } from 'types'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -14,6 +13,7 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { AsyncReducerStatus } from 'types'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import { selectEditing, moveCurrentRuler } from 'features/map/controls/rulers.slice'
@@ -148,7 +148,7 @@ const MapWrapper = (): React.ReactElement => {
           ...sublayerLegendMetadata,
           id: `legend_${id}`,
           color: layer.metadata?.color || dataview?.config?.color || 'red',
-          // TODO Get that from dataview
+          // TODO Get that from dataview and use i18n
           label: 'Soy leyenda ✌️',
           unit: 'hours',
         }
