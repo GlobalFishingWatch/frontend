@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
-import useClickedOutside from 'hooks/use-clicked-outside'
-import { UrlDataviewInstance } from 'types'
 import { useTranslation } from 'react-i18next'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
+import useClickedOutside from 'hooks/use-clicked-outside'
+import { UrlDataviewInstance } from 'types'
 import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getFlagsByIds } from 'data/flags'
+import { FISHING_DATASET_TYPE } from 'features/workspace/workspace.mock'
 import Filters from './HeatmapFilters'
 
 type LayerPanelProps = {
@@ -38,9 +39,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     setFiltersOpen(false)
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
+
+  const dataset = dataview.datasets?.find((d) => d.type === FISHING_DATASET_TYPE)
+  const datasetName = t(`datasets:${dataset?.id}.name`)
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {dataview.name}
+      {datasetName}
     </h3>
   )
 
@@ -54,8 +58,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           tooltipPlacement="top"
           color={dataview.config?.color}
         />
-        {dataview.name && dataview.name.length > 30 ? (
-          <Tooltip content={dataview.name}>{TitleComponent}</Tooltip>
+        {datasetName.length > 24 ? (
+          <Tooltip content={datasetName}>{TitleComponent}</Tooltip>
         ) : (
           TitleComponent
         )}
@@ -80,7 +84,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             icon="info"
             size="small"
             className={styles.actionButton}
-            tooltip={dataview.description}
+            tooltip={t(`datasets:${dataset?.id}.description`)}
             tooltipPlacement="top"
           />
           <IconButton

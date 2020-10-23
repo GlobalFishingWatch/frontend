@@ -28,7 +28,11 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
   return (
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
-        <IconButton icon="menu" onClick={onMenuClick} />
+        <IconButton
+          icon="menu"
+          tooltip={t('common.open_menu', 'Open menu')}
+          onClick={onMenuClick}
+        />
         <Logo className={styles.logo} />
         <IconButton
           icon="share"
