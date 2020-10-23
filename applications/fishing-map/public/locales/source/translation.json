@@ -1,10 +1,22 @@
 {
+  "common": {
+    "hour": "missing_translation",
+    "hour_plural": "missing_translation",
+    "more": "missing_translation",
+    "vessel_plural": "missing_translation"
+  },
   "errors": {
-    "workspaceLoad": "errors.workspaceLoad"
+    "workspaceLoad": "There was an error loading the workspace, please try again later"
   },
   "tooltips": {
-    "login": "tooltips.login",
-    "logout": "tooltips.logout",
-    "share": "tooltips.share"
+    "login": "Login",
+    "logout": "Logout",
+    "share": "Click to share the current view"
+  },
+  "vessel": {
+    "first_transmission_date": "First transmission date",
+    "flag": "Flag",
+    "imo": "IMO",
+    "last_transmission_date": "Last transmission date"
   }
 }
