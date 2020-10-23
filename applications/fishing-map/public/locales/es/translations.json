@@ -1,0 +1,10 @@
+{
+  "fishing_v4": {
+    "name": "Esfuerzo aparente de pesca",
+    "description": "Utilizamos datos sobre la identidad, el tipo, la ubicación, la velocidad, la dirección y más de una embarcación que se transmiten mediante el Sistema de identificación automática (AIS) y se recopilan a través de satélites y receptores terrestres. Analizamos los datos AIS recopilados de embarcaciones que nuestra investigación ha identificado como embarcaciones de pesca comercial conocidas o posibles, y aplicamos un algoritmo de detección de pesca para determinar la “actividad pesquera aparente” en función de los cambios en la velocidad y dirección de la embarcación. El algoritmo clasifica cada punto de datos de transmisión AIS para estos barcos como aparentemente pescando o no pescando y muestra el primero en nuestro mapa de calor de actividad pesquera."
+  },
+  "marine-protected-areas": {
+    "name": "Áreas Marinas Protegidas",
+    "description": "El término Áreas Marinas Protegidas incluye reservas marinas, áreas marinas totalmente protegidas, zonas de veda, santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente, por nombrar algunos. Muchos de estos tienen niveles de protección bastante diferentes, y la gama de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. Fuente: Base de datos mundial sobre áreas protegidas (WDPA)"
+  }
+}
