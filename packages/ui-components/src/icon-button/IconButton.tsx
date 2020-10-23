@@ -1,16 +1,10 @@
-import React, {
-  forwardRef,
-  Fragment,
-  ForwardRefRenderFunction,
-  Ref,
-  memo,
-  CSSProperties,
-} from 'react'
+import React, { forwardRef, Fragment, Ref, memo, CSSProperties } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Icon, { IconType } from '../icon'
 import Tooltip from '../tooltip'
 import Spinner from '../spinner'
+import { TooltipTypes } from '../types/index'
 import styles from './IconButton.module.css'
 
 export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'warning'
@@ -24,7 +18,7 @@ interface IconButtonProps {
   disabled?: boolean
   loading?: boolean
   onClick?: (e: React.MouseEvent) => void
-  tooltip?: React.ReactChild | React.ReactChild[] | string
+  tooltip?: TooltipTypes
   tooltipPlacement?: Placement
   children?: React.ReactNode
   style?: CSSProperties

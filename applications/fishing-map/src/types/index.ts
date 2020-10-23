@@ -1,5 +1,10 @@
 import { DataviewInstance } from '@globalfishingwatch/api-types'
 
+export enum LocaleOptions {
+  en = 'en',
+  es = 'es',
+}
+
 export type UrlDataviewInstance = Omit<DataviewInstance, 'dataviewId'> & {
   dataviewId?: number // making this optional as sometimes we just need to reference the id
   deleted?: boolean // needed when you want to override from url an existing workspace config

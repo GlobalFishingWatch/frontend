@@ -2,6 +2,7 @@ import React, { memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { AsyncReducerStatus } from 'types'
+import { useTranslation } from 'react-i18next'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -93,6 +94,7 @@ const Map = memo(
 )
 
 const MapWrapper = (): React.ReactElement => {
+  const { t } = useTranslation()
   const mapRef = useMapboxRef()
 
   const dispatch = useDispatch()
@@ -148,9 +150,9 @@ const MapWrapper = (): React.ReactElement => {
           ...sublayerLegendMetadata,
           id: `legend_${id}`,
           color: layer.metadata?.color || dataview?.config?.color || 'red',
-          // TODO Get that from dataview
+          // TODO Get that from dataview and use i18n
           label: 'Soy leyenda ✌️',
-          unit: 'hours',
+          unit: t('common.hour_plural', 'hours'),
         }
         const hoveredFeatureForDataview = hoveredEvent?.features?.find(
           (f) => f.temporalgrid?.sublayerIndex === sublayerIndex
@@ -161,7 +163,7 @@ const MapWrapper = (): React.ReactElement => {
         return sublayerLegend
       })
     })
-  }, [style, dataviews, hoveredEvent])
+  }, [style, dataviews, hoveredEvent, t])
 
   return (
     <div className={styles.container}>

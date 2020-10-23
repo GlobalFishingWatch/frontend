@@ -1,13 +1,18 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { formatInfoField, formatNumber } from 'utils/info'
+import { useTranslation } from 'react-i18next'
 import { Popup } from '@globalfishingwatch/react-map-gl'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
+import { formatInfoField, formatNumber } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectTracksDatasets, selectVesselsDatasets } from 'features/workspace/workspace.selectors'
+import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEvent, TooltipEventFeature } from '../map/map.hooks'
 import styles from './Popup.module.css'
+
+// Translations by feature.unit static keys
+// t('common.hour')
 
 // Once this PR is merged
 // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/48853
@@ -40,6 +45,7 @@ function PopupWrapper({
   loading = false,
   anchor,
 }: PopupWrapper) {
+  const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const trackDatasets = useSelector(selectTracksDatasets)
   const searchDatasets = useSelector(selectVesselsDatasets)
@@ -80,7 +86,10 @@ function PopupWrapper({
             <div className={styles.popupSectionContent}>
               <h3 className={styles.popupSectionTitle}>{feature.title}</h3>
               <div>
-                {formatNumber(feature.value)} {feature.unit} hours
+                <I18nNumber number={feature.value} />{' '}
+                {t([`common.${feature.unit}`, 'common.hour'], 'hours', {
+                  count: parseInt(feature.value), // neded to select the plural automatically
+                })}
               </div>
               {loading && (
                 <div className={styles.loading}>
@@ -90,8 +99,8 @@ function PopupWrapper({
               {feature.vesselsInfo && (
                 <div className={styles.vesselsTable}>
                   <div className={styles.vesselsHeader}>
-                    <label className={styles.vesselsHeaderLabel}>Vessels</label>
-                    <label className={styles.vesselsHeaderLabel}>Hours</label>
+                    <label className={styles.vesselsHeaderLabel}>{t('common.vessel_plural')}</label>
+                    <label className={styles.vesselsHeaderLabel}>{t('common.hour_plural')}</label>
                   </div>
                   {feature.vesselsInfo.vessels.map((vessel, i) => (
                     <button
@@ -109,7 +118,8 @@ function PopupWrapper({
                   ))}
                   {feature.vesselsInfo.overflow && (
                     <div className={styles.vesselsMore}>
-                      + {feature.vesselsInfo.numVessels - feature.vesselsInfo.vessels.length} more
+                      + {feature.vesselsInfo.numVessels - feature.vesselsInfo.vessels.length}{' '}
+                      {t('common.more')}
                     </div>
                   )}
                 </div>

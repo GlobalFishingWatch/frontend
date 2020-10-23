@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { saveAs } from 'file-saver'
 import setInlineStyles from 'utils/dom'
-import { formatDate } from 'utils/dates'
 
 export const useDownloadDomElementAsImage = (
   domElement: HTMLElement | null,
@@ -36,7 +35,7 @@ export const useDownloadDomElementAsImage = (
   }, [domElement])
 
   const downloadImage = useCallback(
-    async (fileName = `GFW-fishingmap-${formatDate(new Date().toISOString())}.png`) => {
+    async (fileName = `GFW-fishingmap-${new Date().toLocaleString()}.png`) => {
       if (domElement) {
         try {
           setLoading(true)

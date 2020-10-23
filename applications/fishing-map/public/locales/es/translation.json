@@ -1,0 +1,56 @@
+{
+  "common": {
+    "context_area_plural": "Areas de contexto",
+    "dismiss": "Cancelar",
+    "events": "Eventos",
+    "fishing": "Pesca",
+    "hour": "hora",
+    "hour_plural": "horas",
+    "login": "Login",
+    "logout": "Logout",
+    "more": "más",
+    "save": "Guardar",
+    "share": "Haz click para compartir tu vista actual",
+    "vessel_plural": "embarcaciones"
+  },
+  "errors": {
+    "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo"
+  },
+  "layer": {
+    "color_change": "Cambia el color",
+    "filter_plural": "Filtros",
+    "filter_close": "Cierra los filtros",
+    "filter_open": "Abre los filtros",
+    "info_close": "Oculta la información",
+    "info_open": "Muestra la información",
+    "remove": "Borra la capa",
+    "toggle_visibility": "Cambia la visibilidad de la capa"
+  },
+  "map": {
+    "capture_map": "Captura el mapa",
+    "change_basemap_default": "Cambia al mapa base por defecto",
+    "change_basemap_satellite": "Cambia al mapa base satelital",
+    "rulers_add": "Añade reglas",
+    "rulers_remove": "Borra todas las reglas",
+    "screenshot": "Captura del mapa",
+    "zoom_in": "Acercar",
+    "zoom_out": "Alejar"
+  },
+  "vessel": {
+    "callsign": "Callsign",
+    "first_transmission_date": "Fecha primera transmisión",
+    "flag": "Bandera",
+    "imo": "IMO",
+    "last_transmission_date": "Fecha última transmisión",
+    "mmsi": "MMSI",
+    "search": {
+      "close": "Cierra la busqueda",
+      "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar or writing filters like:",
+      "filter_open": "Filtra tu búsqueda (Coming soon)",
+      "placeholder": "Escribe para buscar $t(common.vessel_plural)",
+      "search": "Busca $t(common.vessel_plural)"
+    },
+    "transmission_plural": "Transmissions",
+    "transmission": "Transmission"
+  }
+}

@@ -6,7 +6,8 @@
     "start": "PORT=3003 react-scripts start",
     "build": "react-scripts build",
     "test": "CI=true react-scripts test --passWithNoTests",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.6.0",
@@ -25,6 +26,9 @@
     "dayjs": "^1.8.36",
     "file-saver": "^2.0.2",
     "html2canvas": "^1.0.0-rc.7",
+    "i18next": "^19.8.2",
+    "i18next-browser-languagedetector": "^6.0.1",
+    "i18next-http-backend": "^1.0.21",
     "jest": "^24.9.0",
     "lint-staged": "^10.4.0",
     "lodash": "^4.17.20",
@@ -33,6 +37,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
+    "react-i18next": "^11.7.3",
     "react-scripts": "3.4.1",
     "react-sticky-el": "^2.0.5",
     "redux": "^4.0.5",
@@ -73,6 +78,7 @@
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^4.0.4",
     "husky": "^4.3.0",
+    "i18next-parser": "^3.3.0",
     "imagemin-lint-staged": "^0.4.0",
     "prettier": "^2.1.2",
     "react-test-renderer": "^16.12.0",
