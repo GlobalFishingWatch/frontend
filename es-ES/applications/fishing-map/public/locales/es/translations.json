@@ -1,0 +1,62 @@
+{
+  "common": {
+    "context_area_plural": "Areas de contexto",
+    "dismiss": "Cancelar",
+    "events": "Eventos",
+    "fishing": "Pesca",
+    "hour": "Hour",
+    "hour_plural": "Hours",
+    "login": "Login",
+    "logout": "Cerrar sesión",
+    "more": "More",
+    "save": "Guardar",
+    "share": "Haz click para compartir tu vista actual",
+    "vessel_plural": "Vessels"
+  },
+  "errors": {
+    "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo"
+  },
+  "layer": {
+    "color_change": "Cambia el color",
+    "filter_close": "Cierra los filtros",
+    "filter_open": "Abre los filtros",
+    "filter_plural": "Filtros",
+    "info_close": "Oculta la información",
+    "info_open": "Muestra la información",
+    "remove": "Borra la capa",
+    "toggle_visibility": "Cambia la visibilidad de la capa"
+  },
+  "map": {
+    "capture_map": "Captura el mapa",
+    "change_basemap_default": "Cambia al mapa base por defecto",
+    "change_basemap_satellite": "Cambia al mapa base satelital",
+    "rulers_add": "Añade reglas",
+    "rulers_remove": "Borra todas las reglas",
+    "screenshot": "Captura del mapa",
+    "zoom_in": "Acercar",
+    "zoom_out": "Alejar"
+  },
+  "timebar": {
+    "graph": "Graph",
+    "settings_close": "Cerrar opciones del timebar",
+    "settings_open": "Abrir opciones del timebar"
+  },
+  "vessel": {
+    "callsign": "Callsing",
+    "first_transmission_date": "Fecha primera transmisión",
+    "flag": "Bandera",
+    "imo": "IMO",
+    "last_transmission_date": "Fecha última transmisión",
+    "mmsi": "MMSI",
+    "search": {
+      "close": "Cierra la busqueda",
+      "description": "Buscar por nombre de barco o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior o escribiendo filtros como:",
+      "filter_open": "Filtra tu búsqueda (Coming soon)",
+      "placeholder": "Escribe para buscar $t(common.vessel_plural)",
+      "search": "Busca $t(common.vessel_plural)"
+    },
+    "tracks": "Tracks de barcos",
+    "transmission_plural": "Transmisión",
+    "transmission": "Transmisión"
+  }
+}
