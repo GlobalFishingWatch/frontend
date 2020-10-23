@@ -1,62 +1,62 @@
 {
   "common": {
-    "context_area_plural": "Context areas",
-    "dismiss": "Dismiss",
-    "events": "Events",
-    "fishing": "Fishing",
-    "hour": "missing_translation",
-    "hour_plural": "missing_translation",
+    "context_area_plural": "Areas de contexto",
+    "dismiss": "Cancelar",
+    "events": "Eventos",
+    "fishing": "Pesca",
+    "hour": "hora",
+    "hour_plural": "horas",
     "login": "Login",
-    "logout": "Logout",
-    "more": "missing_translation",
-    "save": "Save",
-    "share": "Click to share the current view",
-    "vessel_plural": "missing_translation"
+    "logout": "Cerrar sesión",
+    "more": "más",
+    "save": "Guardar",
+    "share": "Haz click para compartir tu vista actual",
+    "vessel_plural": "embarcaciones"
   },
   "errors": {
-    "workspaceLoad": "There was an error loading the workspace, please try again later"
+    "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo"
   },
   "layer": {
-    "color_change": "Change color",
-    "filter_close": "Close filters",
-    "filter_open": "Open filters",
-    "filter_plural": "Filters",
-    "info_close": "Hide info",
-    "info_open": "Info",
-    "remove": "Remove layer",
-    "toggle_visibility": "Toggle layer visibility"
+    "color_change": "Cambia el color",
+    "filter_close": "Cierra los filtros",
+    "filter_open": "Abre los filtros",
+    "filter_plural": "Filtros",
+    "info_close": "Oculta la información",
+    "info_open": "Muestra la información",
+    "remove": "Borra la capa",
+    "toggle_visibility": "Cambia la visibilidad de la capa"
   },
   "map": {
-    "capture_map": "Capture map",
-    "change_basemap_default": "Switch to default basemap",
-    "change_basemap_satellite": "Switch to satellite basemap",
-    "rulers_add": "Add rulers",
-    "rulers_remove": "Remove all rulers",
-    "screenshot": "Map screenshot",
-    "zoom_in": "Zoom in",
-    "zoom_out": "Zoom out"
+    "capture_map": "Captura el mapa",
+    "change_basemap_default": "Cambia al mapa base por defecto",
+    "change_basemap_satellite": "Cambia al mapa base satelital",
+    "rulers_add": "Añade reglas",
+    "rulers_remove": "Borra todas las reglas",
+    "screenshot": "Captura del mapa",
+    "zoom_in": "Acercar",
+    "zoom_out": "Alejar"
   },
   "timebar": {
     "graph": "Graph",
-    "settings_close": "Close timebar settings",
-    "settings_open": "Open timebar settings"
+    "settings_close": "Cerrar opciones del timebar",
+    "settings_open": "Abrir opciones del timebar"
   },
   "vessel": {
-    "callsign": "Callsign",
-    "first_transmission_date": "First transmission date",
-    "flag": "Flag",
+    "callsign": "Callsing",
+    "first_transmission_date": "Fecha primera transmisión",
+    "flag": "Bandera",
     "imo": "IMO",
-    "last_transmission_date": "Last transmission date",
+    "last_transmission_date": "Fecha última transmisión",
     "mmsi": "MMSI",
     "search": {
-      "close": "Close search",
-      "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar or writing filters like:",
-      "filter_open": "Filter search (Coming soon)",
-      "placeholder": "Type to search vessels",
-      "search": "Search vessels"
+      "close": "Cierra la busqueda",
+      "description": "Buscar por nombre de barco o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior o escribiendo filtros como:",
+      "filter_open": "Filtra tu búsqueda (Coming soon)",
+      "placeholder": "Escribe para buscar $t(common.vessel_plural)",
+      "search": "Busca $t(common.vessel_plural)"
     },
-    "tracks": "Vessel Tracks",
-    "transmission_plural": "Transmissions",
-    "transmission": "Transmission"
+    "tracks": "Tracks de barcos",
+    "transmission_plural": "Transmisión",
+    "transmission": "Transmisión"
   }
 }
