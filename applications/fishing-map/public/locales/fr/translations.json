@@ -1,63 +1,10 @@
 {
-  "common": {
-    "context_area_plural": "Calques de contexte",
-    "dismiss": "Fermer",
-    "events": "Évènements",
-    "fishing": "Pêche",
-    "hour": "Heure",
-    "hour_plural": "Heures",
-    "login": "Se connecter",
-    "logout": "Se déconnecter",
-    "more": "Plus",
-    "save": "Enregistrer",
-    "share": "Partager la vue actuelle",
-    "vessel_plural": "Navires",
-    "open_menu": "Ouvrir le menu"
+  "fishing_v4": {
+    "name": "Effort de pêche apparent",
+    "description": "Nous utilisons des données sur l’identité, le type, l’emplacement, la vitesse, la direction, etc, diffusées à l'aide du système AIS (Automatic Identification System) et recueillie via les satellites et les récepteurs terrestres. Nous analysons les données AIS recueillies auprès des navires que nos recherches ont identifiés comme des navires de pêche commerciaux connus ou possibles, et appliquons un algorithme de détection de la pêche pour déterminer l' « activité de pêche apparente » en fonction des changements de vitesse et de direction des navires. L'algorithme classifie chaque point de données diffusées par l'AIS pour ces navires comme étant apparemment de la pêche ou non, ce qui est montré sur notre carte de chaleur de l'activité de pêche."
   },
-  "errors": {
-    "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement"
-  },
-  "layer": {
-    "color_change": "Modifier la couleur",
-    "filter_close": "Fermer les filtres",
-    "filter_open": "Montrer les filtres",
-    "filter_plural": "Filtres",
-    "info_close": "Masquer les infos",
-    "info_open": "Infos",
-    "remove": "Supprimer le calque",
-    "toggle_visibility": "Afficher/Masquer le calque"
-  },
-  "map": {
-    "capture_map": "Enregistrer une image de la carte",
-    "change_basemap_default": "Fond de carte par défaut",
-    "change_basemap_satellite": "Fond de carte satellite",
-    "rulers_add": "Ajouter des mesures",
-    "rulers_remove": "Supprimer toutes les mesures",
-    "screenshot": "Image de la carte",
-    "zoom_in": "Zoomer",
-    "zoom_out": "Dézoomer"
-  },
-  "timebar": {
-    "graph": "Graphique",
-    "settings_close": "Fermer les paramètres de la barre de temps",
-    "settings_open": "Montrer les paramètres de la barre de temps"
-  },
-  "vessel": {
-    "callsign": "Callsign",
-    "first_transmission_date": "Première date de transmission",
-    "flag": "Flag",
-    "imo": "IMO",
-    "last_transmission_date": "Dernière date de transmission",
-    "mmsi": "MMSI",
-    "search": {
-      "close": "Fermer la recherche",
-      "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en cliquant sur l'icône de filtre dans la barre supérieure ou en écrivant des filtres tels que:",
-      "filter_open": "Filtrer la recherche (bientôt disponible)",
-      "placeholder": "Tapez pour rechercher des navires",
-      "search": "Rechercher des navires"
-    },
-    "tracks": "Trajectoires de navire",
-    "transmission_plural": "Transmissions",
-    "transmission": "Transmission"
+  "marine-protected-areas": {
+    "name": "Zones Marines Protégées (MPA)",
+    "description": "Le terme Zones Marines Protégées (MPA) comprend les réserves marines, les zones marines entièrement protégées, les zones \"no-take\", sanctuaires marins, sanctuaires océaniques, parcs marins, zones marines gérées localement, pour n'en citer que quelques-uns. Ces zones ont des niveaux de protection assez différents, et la gamme d'activités autorisées ou interdites à l'intérieur de leurs frontières varie considérablement également. Source: World Database on Protected Areas (WDPA)"
   }
 }
