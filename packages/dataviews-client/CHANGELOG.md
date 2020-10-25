@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 3.3.3
+
+### Patch Changes
+
+- fb707c7: fixed resolveEndpoint bug
+
 ## 3.3.2
 
 ### Patch Changes
