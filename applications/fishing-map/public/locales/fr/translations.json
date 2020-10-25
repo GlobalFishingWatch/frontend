@@ -1,10 +1,63 @@
 {
-  "fishing_v4": {
-    "name": "Apparent Fishing Effort",
-    "description": "We use data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. We analyze AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and apply a fishing detection algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on our fishing activity heat map."
+  "common": {
+    "context_area_plural": "Calques de contexte",
+    "dismiss": "Fermer",
+    "events": "Évènements",
+    "fishing": "Pêche",
+    "hour": "Heure",
+    "hour_plural": "Heures",
+    "login": "Se connecter",
+    "logout": "Se déconnecter",
+    "more": "Plus",
+    "save": "Enregistrer",
+    "share": "Partager la vue actuelle",
+    "vessel_plural": "Navires",
+    "open_menu": "Ouvrir le menu"
   },
-  "marine-protected-areas": {
-    "name": "Marine Protected Areas",
-    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA)"
+  "errors": {
+    "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement"
+  },
+  "layer": {
+    "color_change": "Modifier la couleur",
+    "filter_close": "Fermer les filtres",
+    "filter_open": "Montrer les filtres",
+    "filter_plural": "Filtres",
+    "info_close": "Masquer les infos",
+    "info_open": "Infos",
+    "remove": "Supprimer le calque",
+    "toggle_visibility": "Afficher/Masquer le calque"
+  },
+  "map": {
+    "capture_map": "Enregistrer une image de la carte",
+    "change_basemap_default": "Fond de carte par défaut",
+    "change_basemap_satellite": "Fond de carte satellite",
+    "rulers_add": "Ajouter des mesures",
+    "rulers_remove": "Supprimer toutes les mesures",
+    "screenshot": "Image de la carte",
+    "zoom_in": "Zoomer",
+    "zoom_out": "Dézoomer"
+  },
+  "timebar": {
+    "graph": "Graphique",
+    "settings_close": "Fermer les paramètres de la barre de temps",
+    "settings_open": "Montrer les paramètres de la barre de temps"
+  },
+  "vessel": {
+    "callsign": "Callsign",
+    "first_transmission_date": "Première date de transmission",
+    "flag": "Flag",
+    "imo": "IMO",
+    "last_transmission_date": "Dernière date de transmission",
+    "mmsi": "MMSI",
+    "search": {
+      "close": "Fermer la recherche",
+      "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en cliquant sur l'icône de filtre dans la barre supérieure ou en écrivant des filtres tels que:",
+      "filter_open": "Filtrer la recherche (bientôt disponible)",
+      "placeholder": "Tapez pour rechercher des navires",
+      "search": "Rechercher des navires"
+    },
+    "tracks": "Trajectoires de navire",
+    "transmission_plural": "Transmissions",
+    "transmission": "Transmission"
   }
 }
