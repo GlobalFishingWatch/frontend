@@ -125,7 +125,6 @@ export const useClickedEventConnect = () => {
           ),
         },
         { id: 'filters', value: featuresDataviews.map((dv) => dv.config && dv.config.filter) },
-        // { id: 'limit', value: 11 },
       ],
     }
 
@@ -139,6 +138,7 @@ export const useClickedEventConnect = () => {
       fetch4WingInteractionThunk({
         dataset: mainDataset,
         datasetConfig: datasetConfig as DataviewDatasetConfig,
+        sublayersIndices: features.map((feature) => feature.temporalgrid?.sublayerIndex || 0),
       })
     )
   }

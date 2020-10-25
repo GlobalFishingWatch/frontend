@@ -134,6 +134,8 @@ const MapWrapper = (): React.ReactElement => {
   const { style } = useLayerComposer(generatorsConfig as AnyGeneratorConfig[], globalConfig)
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
+
+  // TODO Move this to its own package
   const layersWithLegend = useMemo(() => {
     if (!style) return []
     return style.layers?.flatMap((layer) => {
@@ -142,7 +144,6 @@ const MapWrapper = (): React.ReactElement => {
         ? layer.metadata.legend
         : [layer.metadata.legend]
 
-      // TODO Move this to its own package
       return sublayerLegendsMetadata.map((sublayerLegendMetadata, sublayerIndex) => {
         const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
         const dataview = dataviews?.find((d) => d.id === id)
@@ -150,7 +151,7 @@ const MapWrapper = (): React.ReactElement => {
           ...sublayerLegendMetadata,
           id: `legend_${id}`,
           color: layer.metadata?.color || dataview?.config?.color || 'red',
-          // TODO Get that from dataview and use i18n
+          // TODO Get that from dataview and use i18n and add cell size info
           label: 'Soy leyenda ✌️',
           unit: t('common.hour_plural', 'hours'),
         }
