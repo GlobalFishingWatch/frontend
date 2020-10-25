@@ -1,8 +1,8 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Switch } from '@globalfishingwatch/ui-components'
 import { LocaleOptions } from 'types'
+import { Switch, SwitchEvent } from '@globalfishingwatch/ui-components'
 import { selectDebugOptions, toggleOption } from './debug.slice'
 import styles from './DebugMenu.module.css'
 
@@ -11,8 +11,8 @@ function DebugMenu() {
   const debugOptions = useSelector(selectDebugOptions)
   const { i18n } = useTranslation()
 
-  const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language === LocaleOptions.es ? LocaleOptions.en : LocaleOptions.es)
+  const toggleLanguage = (lang: LocaleOptions, active: boolean) => {
+    i18n.changeLanguage(active ? LocaleOptions.en : lang)
   }
   return (
     <div className={styles.row}>
@@ -35,8 +35,23 @@ function DebugMenu() {
       </div>
       <p>Displays info on tiles useful for debugging.</p>
       <div className={styles.header}>
-        <Switch active={i18n.language === LocaleOptions.es} onClick={toggleLanguage} />
+        <Switch
+          active={i18n.language === LocaleOptions.es}
+          onClick={(event: SwitchEvent) => {
+            toggleLanguage(LocaleOptions.es, event.active)
+          }}
+        />
         <label htmlFor="option_language">Ver en Español</label>
+      </div>
+      <p>Translations in progress, some literals could be missing.</p>
+      <div className={styles.header}>
+        <Switch
+          active={i18n.language === LocaleOptions.fr}
+          onClick={(event: SwitchEvent) => {
+            toggleLanguage(LocaleOptions.fr, event.active)
+          }}
+        />
+        <label htmlFor="option_language">Voir en Français</label>
       </div>
       <p>Translations in progress, some literals could be missing.</p>
     </div>
