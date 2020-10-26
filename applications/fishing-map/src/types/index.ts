@@ -3,6 +3,7 @@ import { DataviewInstance } from '@globalfishingwatch/api-types'
 export enum LocaleOptions {
   en = 'en',
   es = 'es',
+  fr = 'fr',
 }
 
 export type UrlDataviewInstance = Omit<DataviewInstance, 'dataviewId'> & {

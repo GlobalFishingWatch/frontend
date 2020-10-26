@@ -1,14 +1,19 @@
-import React, { memo } from 'react'
+import React, { MouseEvent, memo } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
 import { TooltipTypes } from '../types/index'
 import styles from './Switch.module.css'
 
+// TODO Maybe a simple way is to have the Switch component wrap an <input type="checkbox"> so that we can use the React native event
+export interface SwitchEvent extends MouseEvent {
+  active: boolean
+}
+
 interface SwitchProps {
   active: boolean
   disabled?: boolean
-  onClick: (event: React.MouseEvent) => void
+  onClick: (event: SwitchEvent) => void
   color?: string
   tooltip?: TooltipTypes
   tooltipPlacement?: Placement
@@ -25,6 +30,14 @@ function Switch(props: SwitchProps) {
     tooltipPlacement = 'top',
     className,
   } = props
+
+  const onClickCallback = (event: React.MouseEvent) => {
+    onClick({
+      ...event,
+      active,
+    })
+  }
+
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
@@ -33,7 +46,7 @@ function Switch(props: SwitchProps) {
         aria-checked={active}
         disabled={disabled}
         {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
-        onClick={onClick}
+        onClick={onClickCallback}
         className={cx(styles.switch, { [styles.customColor]: color }, className)}
         {...(color && { style: { color } })}
       >
