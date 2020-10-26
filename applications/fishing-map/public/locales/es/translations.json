@@ -12,7 +12,7 @@
     "save": "Guardar",
     "share": "Haz click para compartir tu vista actual",
     "vessel_plural": "Embarcaciones",
-    "open_menu": "Abrir menu"
+    "open_menu": "Abrir menú"
   },
   "errors": {
     "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo"

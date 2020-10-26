@@ -35,28 +35,28 @@
     "rulers_remove": "Supprimer toutes les mesures",
     "screenshot": "Image de la carte",
     "zoom_in": "Zoomer",
-    "zoom_out": "Zoom out"
+    "zoom_out": "Dézoomer"
   },
   "timebar": {
-    "graph": "Graph",
-    "settings_close": "Close timebar settings",
-    "settings_open": "Open timebar settings"
+    "graph": "Graphique",
+    "settings_close": "Fermer les paramètres de la barre de temps",
+    "settings_open": "Montrer les paramètres de la barre de temps"
   },
   "vessel": {
     "callsign": "Callsign",
-    "first_transmission_date": "First transmission date",
-    "flag": "Flag",
+    "first_transmission_date": "Première date de transmission",
+    "flag": "Drapeau",
     "imo": "IMO",
-    "last_transmission_date": "Last transmission date",
+    "last_transmission_date": "Dernière date de transmission",
     "mmsi": "MMSI",
     "search": {
-      "close": "Close search",
-      "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar or writing filters like:",
-      "filter_open": "Filter search (Coming soon)",
-      "placeholder": "Type to search vessels",
-      "search": "Search vessels"
+      "close": "Fermer la recherche",
+      "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en cliquant sur l'icône de filtre dans la barre supérieure ou en écrivant des filtres tels que:",
+      "filter_open": "Filtrer la recherche (bientôt disponible)",
+      "placeholder": "Tapez pour rechercher des navires",
+      "search": "Rechercher des navires"
     },
-    "tracks": "Vessel Tracks",
+    "tracks": "Trajectoires de navire",
     "transmission_plural": "Transmissions",
     "transmission": "Transmission"
   }
