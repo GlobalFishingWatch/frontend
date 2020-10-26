@@ -12,7 +12,7 @@ const getExtendedFeatures = (
   features: MapboxGeoJSONFeature[],
   metatada?: ExtendedStyleMeta
 ): ExtendedFeature[] => {
-  const frame = metatada?.layers?.['heatmap-animated']?.timeChunks?.activeChunkFrame
+  const frame = metatada?.temporalgrid?.timeChunks?.activeChunkFrame
 
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
     const generatorType = feature.layer.metadata ? feature.layer.metadata.generatorType : null
@@ -73,7 +73,6 @@ export const useMapClick = (
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
       }
-      console.log(event.features)
       if (event.features && event.features.length) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
         if (extendedFeatures.length) {

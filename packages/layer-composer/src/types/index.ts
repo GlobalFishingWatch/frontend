@@ -67,7 +67,7 @@ export interface ExtendedLayer extends Layer {
 export interface ExtendedStyleMeta {
   generatedAt: string
   interactiveLayerIds?: string[]
-  layers: Record<string, Record<string, any>>
+  temporalgrid: Record<string, any>
 }
 
 /**

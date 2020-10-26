@@ -13,6 +13,7 @@ import {
   useMapHover,
 } from '@globalfishingwatch/react-hooks'
 import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
+import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer/dist/types'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
@@ -92,13 +93,18 @@ const Map = memo(
   }
 )
 
-const MapWrapper = (): React.ReactElement => {
+const MapWrapper = (): React.ReactElement | null => {
   const mapRef = useMapboxRef()
 
   const dispatch = useDispatch()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
+
+  // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
+  // the generatorsConfig (ie the map "layers") and the global configuration
+  const { style } = useLayerComposer(generatorsConfig as AnyGeneratorConfig[], globalConfig)
+
   const { clickedEvent, clickedEventStatus, dispatchClickedEvent } = useClickedEventConnect()
-  const onMapClick = useMapClick(dispatchClickedEvent)
+  const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta)
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const rulersEditing = useSelector(selectEditing)
   const closePopup = useCallback(() => {
@@ -123,13 +129,11 @@ const MapWrapper = (): React.ReactElement => {
   const onMapHover = useMapHover(
     handleHoverEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,
-    mapRef?.current?.getMap()
+    mapRef?.current?.getMap(),
+    undefined,
+    style?.metadata
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
-
-  // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
-  // the generatorsConfig (ie the map "layers") and the global configuration
-  const { style } = useLayerComposer(generatorsConfig as AnyGeneratorConfig[], globalConfig)
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const layersWithLegend = useMemo(() => {
