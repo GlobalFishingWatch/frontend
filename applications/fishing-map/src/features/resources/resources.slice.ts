@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { AsyncReducerStatus } from 'types'
-import { RootState } from 'store'
 import memoize from 'lodash/memoize'
 import { trackValueArrayToSegments, Field } from '@globalfishingwatch/data-transforms'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/api-types'
-import { TRACKS_DATASET_TYPE } from 'features/workspace/workspace.mock'
+import { RootState } from 'store'
+import { AsyncReducerStatus } from 'types'
+import { TRACKS_DATASET_TYPE } from 'data/datasets'
 
 export interface ResourceQuery {
   url: string

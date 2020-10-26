@@ -1,9 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
 import uniqBy from 'lodash/uniqBy'
-import { UrlDataviewInstance } from 'types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import { UrlDataviewInstance } from 'types'
 import { selectWorkspace } from 'features/workspace/workspace.slice'
 import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDataviewInstances } from 'routes/routes.selectors'
@@ -14,7 +14,7 @@ import {
   VESSELS_DATASET_TYPE,
   FISHING_DATASET_TYPE,
   USER_CONTEXT_TYPE,
-} from './workspace.mock'
+} from 'data/datasets'
 
 export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
   Object.entries(dataview.datasetsConfig || {}).flatMap(([id, value]) => {

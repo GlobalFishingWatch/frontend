@@ -9,7 +9,7 @@ import {
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectTimerange } from 'routes/routes.selectors'
-import { FISHING_DATASET_TYPE } from 'features/workspace/workspace.mock'
+import { FISHING_DATASET_TYPE } from 'data/datasets'
 import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import {
   setClickedEvent,

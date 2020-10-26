@@ -1,5 +1,5 @@
-import { TimebarEvents, TimebarGraphs } from 'types'
 import { SelectOption } from '@globalfishingwatch/ui-components'
+import { TimebarEvents, TimebarGraphs } from 'types'
 
 // used when no url data and no workspace data
 export const FALLBACK_VIEWPORT = {
@@ -8,6 +8,7 @@ export const FALLBACK_VIEWPORT = {
   zoom: 3,
 }
 
+export const DEFAULT_WORKSPACE_ID = 31 // 32 is the other one
 export const DEFAULT_WERSION = 'v1'
 
 export const DEFAULT_WORKSPACE = {

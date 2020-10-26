@@ -8,12 +8,12 @@ import {
   ColorBarOption,
   TrackColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
-import useClickedOutside from 'hooks/use-clicked-outside'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
+import useClickedOutside from 'hooks/use-clicked-outside'
 import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
-import { VESSELS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'features/workspace/workspace.mock'
+import { VESSELS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 
 type LayerPanelProps = {

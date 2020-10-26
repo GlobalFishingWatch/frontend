@@ -2,19 +2,19 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { formatInfoField } from 'utils/info'
-import useClickedOutside from 'hooks/use-clicked-outside'
-import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import { Vessel } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
   TrackColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
+import { formatInfoField } from 'utils/info'
+import useClickedOutside from 'hooks/use-clicked-outside'
+import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
-import { VESSELS_DATASET_TYPE } from 'features/workspace/workspace.mock'
+import { VESSELS_DATASET_TYPE } from 'data/datasets'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
@@ -148,7 +148,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         )}
         {infoOpen && (
           <ul className={styles.infoContent}>
-            {dataview.info?.fields.map((field: any) => {
+            {dataview.infoConfig?.fields.map((field: any) => {
               const fieldValue = resource?.data?.[field.id as keyof Vessel]
               if (!fieldValue) return null
               return (
