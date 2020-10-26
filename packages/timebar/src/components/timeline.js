@@ -15,6 +15,7 @@ import {
   isMoreThanADay,
   stickToClosestUnit,
 } from '../utils/internal-utils'
+import { EVENT_SOURCE } from '../constants'
 import Bookmark from './bookmark'
 import TimelineUnits from './timeline-units'
 import Handler from './timeline-handler'
@@ -176,7 +177,7 @@ class Timeline extends PureComponent {
         absoluteStart,
         absoluteEnd
       )
-      onChange(newStartClamped, newEndClamped, dragging === DRAG_END)
+      onChange(newStartClamped, newEndClamped, EVENT_SOURCE.ZOOM_OUT_MOVE, dragging === DRAG_END)
     }
 
     this.requestAnimationFrame = window.requestAnimationFrame(this.onEnterFrame)
@@ -250,7 +251,7 @@ class Timeline extends PureComponent {
         absoluteStart,
         absoluteEnd
       )
-      onChange(newStartClamped, newEndClamped, dragging === DRAG_END)
+      onChange(newStartClamped, newEndClamped, EVENT_SOURCE.SEEK_MOVE, dragging === DRAG_END)
     } else if (isDraggingZoomIn) {
       this.setState({
         handlerMouseX: x,
@@ -265,8 +266,8 @@ class Timeline extends PureComponent {
   }
 
   onMouseUp = (event) => {
-    const { start, end, onChange, onSeekEnd } = this.props
-    const { dragging, outerX, innerStartPx } = this.state
+    const { start, end, onChange } = this.props
+    const { dragging, outerX, innerStartPx, outerDrag } = this.state
 
     if (dragging === null) {
       return
@@ -278,12 +279,6 @@ class Timeline extends PureComponent {
     const x = clientX - outerX
 
     const isHandlerZoomInValid = this.isHandlerZoomInValid(x)
-
-    this.setState({
-      dragging: null,
-      handlerMouseX: null,
-      outerDrag: false,
-    })
 
     let newStart = start
     let newEnd = end
@@ -302,8 +297,22 @@ class Timeline extends PureComponent {
     newStart = stickToClosestUnit(newStart, stickUnit)
     newEnd = stickToClosestUnit(newEnd, stickUnit)
 
-    onChange(newStart, newEnd)
-    onSeekEnd()
+    let source
+    if (outerDrag === true) {
+      source = EVENT_SOURCE.ZOOM_OUT_RELEASE
+    } else if (dragging === DRAG_INNER) {
+      source = EVENT_SOURCE.SEEK_RELEASE
+    } else {
+      source = EVENT_SOURCE.ZOOM_IN_RELEASE
+    }
+
+    onChange(newStart, newEnd, source)
+
+    this.setState({
+      dragging: null,
+      handlerMouseX: null,
+      outerDrag: false,
+    })
   }
 
   render() {
