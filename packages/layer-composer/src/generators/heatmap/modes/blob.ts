@@ -39,8 +39,9 @@ const BASE_PAINT = {
 // this will prevent buffering to happen, but whatever
 export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) {
   const { colorRamp } = getColorRampBaseExpression(config)
-  // const layer: Layer[] = timeChunks.flatMap((timeChunk: TimeChunk, timeChunkIndex: number) => {
-  const pickValueAt = timeChunks.chunks[0].frame.toString()
+  const activeChunk = timeChunks.chunks.find((chunk) => chunk.active)
+  if (!activeChunk) return []
+  const pickValueAt = activeChunk.frame.toString()
   const exprPick = ['coalesce', ['get', pickValueAt], 0]
 
   const paint = { ...BASE_PAINT }
@@ -60,8 +61,8 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk
   paint['heatmap-intensity'][6] = maxIntensity
 
   const chunkMainLayer = getBaseLayer(config)
-  chunkMainLayer.id = timeChunks.chunks[0].id
-  chunkMainLayer.source = timeChunks.chunks[0].id
+  chunkMainLayer.id = activeChunk.id
+  chunkMainLayer.source = activeChunk.id
   chunkMainLayer.paint = paint as any
 
   if (!chunkMainLayer.metadata) return []

@@ -15,7 +15,7 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk
       const exprColorRamp = ['step', exprPick, 'transparent', ...colorRampBaseExpression]
 
       const paint = {
-        'fill-color': exprColorRamp as any,
+        'fill-color': timeChunk.active ? (exprColorRamp as any) : 'rgba(0,0,0,0)',
         'fill-outline-color': 'transparent',
       }
 
@@ -29,7 +29,7 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk
       }
       const chunkLayers: Layer[] = [chunkMainLayer]
 
-      if (config.interactive) {
+      if (config.interactive && timeChunk.active) {
         chunkLayers.push({
           id: `${timeChunk.id}_interaction`,
           source: timeChunk.id,

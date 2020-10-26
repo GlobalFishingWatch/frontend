@@ -9,6 +9,7 @@ export type TimeChunk = {
   dataEnd?: string
   quantizeOffset: number
   frame: number
+  active: boolean
 }
 
 export type TimeChunks = {
@@ -141,6 +142,8 @@ const getTimeChunks = (
     // we will substract every timestamp with this to end up with shorter arrays indexes
     const quantizeOffset = config.getFrame(+chunkStart)
 
+    const activeStartDT = +toDT(activeStart)
+
     const chunk: TimeChunk = {
       start,
       viewEnd,
@@ -148,6 +151,7 @@ const getTimeChunks = (
       quantizeOffset,
       id: `heatmapchunk_${start.slice(0, 13)}_${viewEnd.slice(0, 13)}`,
       frame: toQuantizedFrame(activeStart, quantizeOffset, interval),
+      active: activeStartDT > +chunkStart && activeStartDT <= chunkViewEnd,
     }
     return chunk
   })
@@ -184,6 +188,7 @@ export const getActiveTimeChunks = (
         quantizeOffset: 0,
         id: 'heatmapchunk_10days',
         frame: toQuantizedFrame(activeStart, 0, timeChunks.interval),
+        active: true,
       },
     ]
     return timeChunks

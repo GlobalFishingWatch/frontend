@@ -61,7 +61,7 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk
             'fill-extrusion-color': ramp[ramp.length - 1],
             'fill-extrusion-base': ['*', base, 500],
             'fill-extrusion-height': ['*', height, 500],
-            'fill-extrusion-opacity': 0.9,
+            'fill-extrusion-opacity': timeChunk.active ? 0.9 : 0,
           },
           filter: ['!=', base, height],
         }
