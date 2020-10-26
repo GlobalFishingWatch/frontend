@@ -6,7 +6,6 @@ import { AsyncReducerStatus } from 'types'
 import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
-import { DEFAULT_WORKSPACE_ID } from 'data/config'
 import { selectVersion } from 'routes/routes.selectors'
 
 interface WorkspaceState {
@@ -30,9 +29,12 @@ export const getDatasetByDataview = (dataviews: (Dataview | DataviewInstance)[])
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
-  async (workspaceId: number = DEFAULT_WORKSPACE_ID, { dispatch, getState }) => {
+  async (workspaceId: number, { dispatch, getState }) => {
     const version = selectVersion(getState() as RootState)
-    const workspace = await GFWAPI.fetch<Workspace>(`/${version}/workspaces/${workspaceId}`)
+    const workspace = workspaceId
+      ? await GFWAPI.fetch<Workspace>(`/${version}/workspaces/${workspaceId}`)
+      : await import('./workspace.default').then((m) => m.default)
+
     const dataviews = uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId))
     if (dataviews) {
       await dispatch(fetchDataviewsByIdsThunk(dataviews))
