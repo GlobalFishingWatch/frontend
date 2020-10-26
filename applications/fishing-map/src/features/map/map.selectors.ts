@@ -61,7 +61,8 @@ export const getGeneratorsConfig = createSelector(
     // Collect heatmap animated generators and filter them out from main dataview list
     let generatorsConfig = dataviews.filter((d) => {
       const isAnimatedHeatmap = d.config?.type === Generators.Type.HeatmapAnimated
-      if (isAnimatedHeatmap) {
+      const isVisible = d.config?.visible !== false
+      if (isAnimatedHeatmap && isVisible) {
         animatedHeatmapDataviews.push(d)
       }
       return !isAnimatedHeatmap

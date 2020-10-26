@@ -6,7 +6,9 @@ import styles from './Modal.module.css'
 
 interface ModalProps {
   isOpen: boolean
-  header?: string
+  title?: string
+  header?: boolean
+  contentClassName?: string
   /**
    * Id of the html root selector, normally in CRA 'root'
    */
@@ -16,7 +18,15 @@ interface ModalProps {
 }
 
 function Modal(props: ModalProps) {
-  const { isOpen, onClose, appSelector = 'root', header, children } = props
+  const {
+    isOpen,
+    onClose,
+    appSelector = 'root',
+    header = true,
+    title,
+    contentClassName,
+    children,
+  } = props
   const appElement = useMemo(() => document.getElementById(appSelector), [appSelector])
   if (!appElement) {
     console.warn(`Invalid appSelector (${appSelector}) provided`)
@@ -30,11 +40,19 @@ function Modal(props: ModalProps) {
       isOpen={isOpen}
       onRequestClose={onClose}
     >
-      <div className={cx(styles.header, { [styles.withTitle]: header })}>
-        <h1 className={styles.title}>{header}</h1>
-        <IconButton icon="close" tooltip="Dismiss" tooltipPlacement="left" onClick={onClose} />
+      {header && (
+        <div className={cx(styles.header, { [styles.withTitle]: title })}>
+          <h1 className={styles.title}>{title}</h1>
+          <IconButton icon="close" tooltip="Dismiss" tooltipPlacement="left" onClick={onClose} />
+        </div>
+      )}
+      <div
+        className={cx(styles.content, contentClassName, {
+          [styles.contentNoHeader]: !header,
+        })}
+      >
+        {children}
       </div>
-      <div className={cx(styles.content, { [styles.contentNoHeader]: !header })}>{children}</div>
     </ReactModal>
   )
 }

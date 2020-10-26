@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
-import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import { useSelector } from 'react-redux'
-import useClickedOutside from 'hooks/useClickedOutside'
-import { formatInfoField } from 'utils/info'
+import { useTranslation } from 'react-i18next'
+import useClickedOutside from 'hooks/use-clicked-outside'
+import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import { Vessel } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
   TrackColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
-import styles from 'features/sidebar/common/LayerPanel.module.css'
+import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
-import { VESSELS_DATASET_TYPE } from 'features/workspace/workspace.mock'
+import { VESSELS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'features/workspace/workspace.mock'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 
 type LayerPanelProps = {
@@ -21,6 +21,7 @@ type LayerPanelProps = {
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+  const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url } = resolveDataviewDatasetResource(dataview, VESSELS_DATASET_TYPE)
   const resource = useSelector(selectResourceByUrl<Vessel>(url))
@@ -42,13 +43,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     })
     setColorOpen(false)
   }
-
-  const datasetConfig = dataview.datasetsConfig?.find(
-    (dc: any) => dc?.params.find((p: any) => p.id === 'vesselId')?.value
-  )
-
-  const vesselName = resource?.data?.shipname
-
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
   }
@@ -58,12 +52,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
 
-  const vesselId = datasetConfig?.params.find((p: any) => p.id === 'vesselId')?.value as string
-  const title = vesselName || vesselId || dataview.name
+  const dataset = dataview.datasets?.find((d) => d.type === USER_CONTEXT_TYPE)
+  const title = t(`datasets:${dataset?.id}.name`)
 
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {title && formatInfoField(title, 'name')}
+      {title}
     </h3>
   )
 
@@ -73,7 +67,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         <Switch
           active={layerActive}
           onClick={onToggleLayerActive}
-          tooltip="Toggle layer visibility"
+          tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
           color={dataview.config?.color}
         />
@@ -88,7 +82,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             size="small"
             loading={resource?.status === AsyncReducerStatus.Loading}
             className={styles.actionButton}
-            tooltip={dataview.description}
+            tooltip={t(`datasets:${dataset?.id}.description`)}
             tooltipPlacement="top"
           />
           {layerActive && (
@@ -96,7 +90,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
               size="small"
               style={colorOpen ? {} : { color: dataview.config?.color }}
-              tooltip="Change color"
+              tooltip={t('layer.color_change', 'Change color')}
               tooltipPlacement="top"
               onClick={onToggleColorOpen}
               className={cx(styles.actionButton, styles.expandable, {

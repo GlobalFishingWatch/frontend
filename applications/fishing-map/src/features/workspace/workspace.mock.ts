@@ -15,9 +15,9 @@ const workspace: Workspace = {
   name: 'Default public Fishing Map workspace',
   description: '',
   viewport: {
-    zoom: 4.8,
-    latitude: -48,
-    longitude: -67,
+    zoom: 3.2,
+    latitude: 17,
+    longitude: -10,
   },
   start: '2018-01-01T00:00:00.000Z',
   end: '2019-12-31T00:00:00.000Z',
@@ -36,7 +36,7 @@ const workspace: Workspace = {
       id: 'fishing-1',
       dataviewId: 3,
       config: {
-        filters: ['CHL'],
+        filters: ['ESP'],
       },
     },
     {
@@ -45,7 +45,7 @@ const workspace: Workspace = {
       config: {
         color: '#ff0000',
         colorRamp: 'red',
-        filters: ['ARG'],
+        filters: ['FRA'],
       },
     },
     {

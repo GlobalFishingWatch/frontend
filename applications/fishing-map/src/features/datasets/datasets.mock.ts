@@ -200,7 +200,8 @@ const datasets: Dataset[] = [
     importLogs: '',
     ownerId: 0,
     configuration: null,
-    description: '',
+    description:
+      'We use data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. We analyze AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and apply a fishing detection algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on our fishing activity heat map.',
     startDate: '2018-01-01T00:00:00.000Z',
     endDate: '2019-12-31T00:00:00.000Z',
     unit: 'hours',

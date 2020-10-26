@@ -2,6 +2,7 @@ import React, { memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { AsyncReducerStatus } from 'types'
+import { useTranslation } from 'react-i18next'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -17,11 +18,11 @@ import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer/dist/types
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
-import { selectEditing, moveCurrentRuler } from 'features/map/rulers/rulers.slice'
+import { selectEditing, moveCurrentRuler } from 'features/map/controls/rulers.slice'
+import MapInfo from 'features/map/controls/MapInfo'
+import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ClickPopup, HoverPopup } from './Popup'
-import MapInfo from './MapInfo'
-import MapControls from './MapControls'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import { useMapboxRef } from './map.context'
 import styles from './Map.module.css'
@@ -94,6 +95,7 @@ const Map = memo(
 )
 
 const MapWrapper = (): React.ReactElement | null => {
+  const { t } = useTranslation()
   const mapRef = useMapboxRef()
 
   const dispatch = useDispatch()
@@ -136,6 +138,8 @@ const MapWrapper = (): React.ReactElement | null => {
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
+
+  // TODO Move this to its own package
   const layersWithLegend = useMemo(() => {
     if (!style) return []
     return style.layers?.flatMap((layer) => {
@@ -144,7 +148,6 @@ const MapWrapper = (): React.ReactElement | null => {
         ? layer.metadata.legend
         : [layer.metadata.legend]
 
-      // TODO Move this to its own package
       return sublayerLegendsMetadata.map((sublayerLegendMetadata, sublayerIndex) => {
         const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
         const dataview = dataviews?.find((d) => d.id === id)
@@ -152,9 +155,9 @@ const MapWrapper = (): React.ReactElement | null => {
           ...sublayerLegendMetadata,
           id: `legend_${id}`,
           color: layer.metadata?.color || dataview?.config?.color || 'red',
-          // TODO Get that from dataview
+          // TODO Get that from dataview and use i18n and add cell size info
           label: 'Soy leyenda ✌️',
-          unit: 'hours',
+          unit: t('common.hour_plural', 'hours'),
         }
         const hoveredFeatureForDataview = hoveredEvent?.features?.find(
           (f) => f.temporalgrid?.sublayerIndex === sublayerIndex
@@ -165,7 +168,7 @@ const MapWrapper = (): React.ReactElement | null => {
         return sublayerLegend
       })
     })
-  }, [style, dataviews, hoveredEvent])
+  }, [style, dataviews, hoveredEvent, t])
 
   return (
     <div className={styles.container}>

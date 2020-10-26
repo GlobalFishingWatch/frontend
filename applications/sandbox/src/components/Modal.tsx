@@ -8,7 +8,7 @@ const ModalSection = () => {
   return (
     <Fragment>
       <label>Default modal</label>
-      <Modal header="Im the modal" isOpen={open} onClose={(e) => setOpen(false)}>
+      <Modal title="Im the modal" isOpen={open} onClose={(e) => setOpen(false)}>
         The standard Lorem Ipsum passage, used since the 1500s "Lorem ipsum dolor sit amet,
         consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
         aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip

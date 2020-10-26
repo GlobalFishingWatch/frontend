@@ -1,5 +1,36 @@
 # @globalfishingwatch/ui-components
 
+## 2.4.3
+
+### Patch Changes
+
+- 31ca077: Include active state in switch callback
+
+## 2.4.2
+
+### Patch Changes
+
+- Update tooltip types
+
+## 2.4.1
+
+### Patch Changes
+
+- fix selector priority in screenshot
+
+## 2.4.0
+
+### Minor Changes
+
+- Modal with no header prop
+
+## 2.3.0
+
+### Minor Changes
+
+- 4f18670: New Radio component
+  Support Select direction
+
 ## 2.2.0
 
 ### Minor Changes

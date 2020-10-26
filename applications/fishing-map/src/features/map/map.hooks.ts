@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
+import { Map } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeatureVessel, InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
@@ -9,7 +10,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectTimerange } from 'routes/routes.selectors'
 import { FISHING_DATASET_TYPE } from 'features/workspace/workspace.mock'
-import { selectEditing, editRuler } from 'features/map/rulers/rulers.slice'
+import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import {
   setClickedEvent,
   selectClickedEvent,
@@ -18,6 +19,25 @@ import {
   MAX_TOOLTIP_VESSELS,
 } from './map.slice'
 import { getGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
+
+export function useMapImage(map: Map) {
+  const [image, setImage] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (map) {
+      map.once('render', () => {
+        const canvas = map.getCanvas()
+        setImage(canvas.toDataURL())
+      })
+      // trigger render
+      map.setBearing(map.getBearing())
+    } else {
+      setImage(null)
+    }
+  }, [map])
+
+  return image
+}
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -105,7 +125,6 @@ export const useClickedEventConnect = () => {
           ),
         },
         { id: 'filters', value: featuresDataviews.map((dv) => dv.config && dv.config.filter) },
-        // { id: 'limit', value: 11 },
       ],
     }
 
@@ -119,6 +138,7 @@ export const useClickedEventConnect = () => {
       fetch4WingInteractionThunk({
         dataset: mainDataset,
         datasetConfig: datasetConfig as DataviewDatasetConfig,
+        sublayersIndices: features.map((feature) => feature.temporalgrid?.sublayerIndex || 0),
       })
     )
   }

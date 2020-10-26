@@ -1,5 +1,40 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.12.3
+
+### Patch Changes
+
+- 31ca077: Include active state in switch callback
+- Updated dependencies [31ca077]
+  - @globalfishingwatch/ui-components@2.4.3
+
+## 0.12.2
+
+### Patch Changes
+
+- Update tooltip types
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.4.2
+
+## 0.12.1
+
+### Patch Changes
+
+- fix selector priority in screenshot
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.4.1
+
+## 0.12.0
+
+### Minor Changes
+
+- Modal with no header prop
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.4.0
+
 ## 0.11.4
 
 ### Patch Changes

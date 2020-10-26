@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
-import useClickedOutside from 'hooks/useClickedOutside'
+import { useTranslation } from 'react-i18next'
+import useClickedOutside from 'hooks/use-clicked-outside'
 import { UrlDataviewInstance } from 'types'
+import { getFlagsByIds } from 'utils/flags'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
-import styles from 'features/sidebar/common/LayerPanel.module.css'
+import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getFlagsByIds } from 'data/flags'
+import { FISHING_DATASET_TYPE } from 'features/workspace/workspace.mock'
 import Filters from './HeatmapFilters'
 
 type LayerPanelProps = {
@@ -13,6 +15,7 @@ type LayerPanelProps = {
 }
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+  const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters || [])
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
@@ -36,9 +39,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     setFiltersOpen(false)
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
+
+  const dataset = dataview.datasets?.find((d) => d.type === FISHING_DATASET_TYPE)
+  const datasetName = t(`datasets:${dataset?.id}.name`)
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {dataview.name}
+      {datasetName}
     </h3>
   )
 
@@ -48,12 +54,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         <Switch
           active={layerActive}
           onClick={onToggleLayerActive}
-          tooltip="Toggle layer visibility"
+          tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
           color={dataview.config?.color}
         />
-        {dataview.name && dataview.name.length > 30 ? (
-          <Tooltip content={dataview.name}>{TitleComponent}</Tooltip>
+        {datasetName.length > 24 ? (
+          <Tooltip content={datasetName}>{TitleComponent}</Tooltip>
         ) : (
           TitleComponent
         )}
@@ -66,7 +72,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               className={cx(styles.actionButton, styles.expandable, {
                 [styles.expanded]: filterOpen,
               })}
-              tooltip="Filter"
+              tooltip={
+                filterOpen
+                  ? t('layer.filter_close', 'Close filters')
+                  : t('layer.filter_open', 'Open filters')
+              }
               tooltipPlacement="top"
             />
           )}
@@ -74,14 +84,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             icon="info"
             size="small"
             className={styles.actionButton}
-            tooltip={dataview.description}
+            tooltip={t(`datasets:${dataset?.id}.description`)}
             tooltipPlacement="top"
           />
           <IconButton
             icon="delete"
             size="small"
             className={styles.actionButton}
-            tooltip="Delete"
+            tooltip={t('layer.remove', 'Remove layer')}
             tooltipPlacement="top"
             onClick={onRemoveLayerClick}
           />
@@ -89,7 +99,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       </div>
       {layerActive && fishingFiltersOptions.length > 0 && (
         <div className={styles.properties}>
-          <label>Filters</label>
+          <label>{t('layer.filter_plural', 'Filters')}</label>
           <TagList
             tags={fishingFiltersOptions}
             color={dataview.config?.color}

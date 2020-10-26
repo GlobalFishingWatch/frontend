@@ -1001,11 +1001,3 @@ const flags = [
   },
 ]
 export default flags
-
-export const getFlagById = (id: string) => flags.find((f) => f.id === id)
-export const getFlagsByIds = (ids: string[]) =>
-  ids.flatMap((id) => {
-    const flag = getFlagById(id)
-    if (!flag) return []
-    return flag
-  })

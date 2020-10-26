@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { UrlDataviewInstance } from 'types'
+import { getFlags, getFlagsByIds } from 'utils/flags'
 import { MultiSelect } from '@globalfishingwatch/ui-components'
-import flags, { getFlagsByIds } from 'data/flags'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import styles from './HeatmapFilters.module.css'
 
@@ -15,6 +15,7 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const fishingFilters = dataview.config?.filters
   const fishingFiltersOptions = getFlagsByIds(fishingFilters || [])
+  const flags = useMemo(getFlags, [])
   return (
     <Fragment>
       <MultiSelect

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import React, { useState, useEffect } from 'react'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import Downshift from 'downshift'
-import { formatDate } from 'utils/dates'
+import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -13,6 +14,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectVesselsDatasets, selectTracksDatasets } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'routes/routes.selectors'
+import I18nDate from 'features/i18n/i18nDate'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -23,6 +25,7 @@ import styles from './Search.module.css'
 import SearchEmptyState from './SearchEmptyState'
 
 function Search() {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const urlQuery = useSelector(selectSearchQuery)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -83,19 +86,19 @@ function Search() {
               value={searchQuery}
               autoFocus
               className={styles.input}
-              placeholder="Type to search vessels"
+              placeholder={t('vessel.search.placeholder', 'Type to search vessels')}
             />
             {searchStatus === 'loading' && <Spinner size="small" />}
             <IconButton
               icon="filter-off"
-              tooltip="Filter search (Coming soon)"
+              tooltip={t('vessel.search.filter_open', 'Filter search (Coming soon)')}
               tooltipPlacement="bottom"
             />
             <IconButton
               icon="close"
               onClick={onCloseClick}
               type="border"
-              tooltip="Close search"
+              tooltip={t('vessel.search.close', 'Close search')}
               tooltipPlacement="bottom"
             />
           </div>
@@ -109,9 +112,7 @@ function Search() {
                   mmsi,
                   imo,
                   callsign,
-                  // eslint-disable-next-line @typescript-eslint/camelcase
                   first_transmission_date,
-                  // eslint-disable-next-line @typescript-eslint/camelcase
                   last_transmission_date,
                 } = entry
                 return (
@@ -125,27 +126,26 @@ function Search() {
                     <div className={styles.name}>{shipname || '---'}</div>
                     <div className={styles.properties}>
                       <div className={styles.property}>
-                        <label>Flag</label>
+                        <label>{t('vessel.flag', 'Flag')}</label>
                         <span>{flag || '---'}</span>
                       </div>
                       <div className={styles.property}>
-                        <label>MMSI</label>
+                        <label>{t('vessel.mmsi', 'MMSI')}</label>
                         <span>{mmsi || '---'}</span>
                       </div>
                       <div className={styles.property}>
-                        <label>IMO</label>
+                        <label>{t('vessel.imo', 'IMO')}</label>
                         <span>{imo || '---'}</span>
                       </div>
                       <div className={styles.property}>
-                        <label>Callsign</label>
+                        <label>{t('vessel.callsign', 'Callsign')}</label>
                         <span>{callsign || '---'}</span>
                       </div>
                       <div className={styles.property}>
-                        <label>Transmissions</label>
+                        <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
                         <span>
-                          {`from ${formatDate(first_transmission_date)} to ${formatDate(
-                            last_transmission_date
-                          )}`}
+                          from <I18nDate date={first_transmission_date} /> to{' '}
+                          <I18nDate date={last_transmission_date} />
                         </span>
                       </div>
                     </div>

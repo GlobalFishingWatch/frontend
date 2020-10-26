@@ -1,12 +1,14 @@
 import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
-import styles from 'features/sidebar/common/Sections.module.css'
+import styles from 'features/sidebar/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import LayerPanel from './HeatmapLayerPanel'
 
 function HeatmapsSection(): React.ReactElement {
+  const { t } = useTranslation()
   const dataviews = useSelector(selectTemporalgridDataviews)
   const { removeDataviewInstance } = useDataviewInstancesConnect()
   const onAddClick = useCallback(() => {
@@ -15,7 +17,7 @@ function HeatmapsSection(): React.ReactElement {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>FISHING</h2>
+        <h2 className={styles.sectionTitle}>{t('common.fishing', 'Fishing')}</h2>
         <IconButton
           icon="plus"
           type="border"

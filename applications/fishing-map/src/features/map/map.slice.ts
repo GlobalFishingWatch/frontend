@@ -28,12 +28,22 @@ const initialState: MapState = {
 type Fetch4WingInteractionThunkPayload = {
   dataset: Dataset
   datasetConfig: DataviewDatasetConfig
+  sublayersIndices: number[]
 }
+
+type SublayerVessels = {
+  sublayerIndex: number
+  vessels: ExtendedFeatureVessel[]
+}
+
 export const fetch4WingInteractionThunk = createAsyncThunk(
   'map/fetchInteraction',
-  async ({ dataset, datasetConfig }: Fetch4WingInteractionThunkPayload, { getState, signal }) => {
+  async (
+    { dataset, datasetConfig, sublayersIndices }: Fetch4WingInteractionThunkPayload,
+    { getState, signal }
+  ) => {
     const url = resolveEndpoint(dataset, datasetConfig)
-    let sublayersVessels: ExtendedFeatureVessel[][] = []
+    let sublayersVessels: SublayerVessels[] = []
     if (url) {
       const sublayersVesselsIds = await GFWAPI.fetch<ExtendedFeatureVessel[]>(url, {
         signal,
@@ -42,6 +52,10 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
       if (infoDatasetId) {
         const infoDataset = selectDatasetById(infoDatasetId)(getState() as RootState)
         if (infoDataset) {
+          const flattenedVesselIds = sublayersVesselsIds
+            .map((vs) => vs.slice(0, MAX_TOOLTIP_VESSELS))
+            .flatMap((vs) => vs)
+            .map((v) => v.id)
           const infoDatasetConfig = {
             endpoint: 'carriers-multiple-vessel',
             datasetId: infoDataset.id,
@@ -50,10 +64,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
               { id: 'datasets', value: infoDataset.id },
               {
                 id: 'ids',
-                value: sublayersVesselsIds
-                  .map((vs) => vs.slice(0, MAX_TOOLTIP_VESSELS))
-                  .flatMap((vs) => vs)
-                  .map((v) => v.id),
+                value: flattenedVesselIds,
               },
             ],
           }
@@ -64,12 +75,15 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
               const vesselsInfo = await GFWAPI.fetch<APISearch<Vessel>>(infoUrl, { signal })
               const { entries } = vesselsInfo?.[0]?.results
               if (entries) {
-                sublayersVessels = sublayersVesselsIds.map((sublayerVessels) => {
-                  return sublayerVessels.map((vessel: ExtendedFeatureVessel) => {
-                    const vesselInfo = entries.find((entry: any) => entry.id === vessel.id)
-                    if (!vesselInfo) return vessel
-                    return { ...vessel, ...vesselInfo }
-                  })
+                sublayersVessels = sublayersVesselsIds.map((sublayerVessels, i) => {
+                  return {
+                    sublayerIndex: sublayersIndices[i],
+                    vessels: sublayerVessels.map((vessel: ExtendedFeatureVessel, i: number) => {
+                      const vesselInfo = entries.find((entry: any) => entry.id === vessel.id)
+                      if (!vesselInfo) return vessel
+                      return { ...vessel, ...vesselInfo }
+                    }),
+                  }
                 })
               }
             } catch (e) {
@@ -107,12 +121,14 @@ const slice = createSlice({
       state.status = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
 
-      action.payload.vessels.forEach((sublayerVessels, sublayerIndex) => {
+      action.payload.vessels.forEach((sublayerVessels) => {
         const sublayer = state.clicked?.features?.find(
-          (feature) => feature.temporalgrid && feature.temporalgrid.sublayerIndex === sublayerIndex
+          (feature) =>
+            feature.temporalgrid &&
+            feature.temporalgrid.sublayerIndex === sublayerVessels.sublayerIndex
         )
         if (!sublayer) return
-        sublayer.vessels = sublayerVessels
+        sublayer.vessels = sublayerVessels.vessels
       })
     })
     builder.addCase(fetch4WingInteractionThunk.rejected, (state, action) => {

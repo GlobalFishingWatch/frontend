@@ -174,6 +174,10 @@ export const selectVesselsDataviews = createSelector(
   (dataviews) => dataviews
 )
 
+export const selectActiveVesselsDataviews = createSelector([selectVesselsDataviews], (dataviews) =>
+  dataviews?.filter((d) => d.config?.visible)
+)
+
 export const selectContextAreasDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.UserContext)],
   (dataviews) => dataviews
@@ -182,6 +186,11 @@ export const selectContextAreasDataviews = createSelector(
 export const selectTemporalgridDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.HeatmapAnimated)],
   (dataviews) => dataviews
+)
+
+export const selectActiveTemporalgridDataviews = createSelector(
+  [selectTemporalgridDataviews],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectTemporalgridDatasets = createSelector(

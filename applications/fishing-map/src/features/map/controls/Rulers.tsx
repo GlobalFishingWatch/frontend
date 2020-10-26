@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import {
   toggleRulersEditing,
@@ -12,6 +13,7 @@ import {
 import styles from './Rulers.module.css'
 
 const Rulers = () => {
+  const { t } = useTranslation()
   const editing = useSelector(selectEditing)
   const numRulers = useSelector(selectNumRulers)
 
@@ -32,7 +34,7 @@ const Rulers = () => {
       <IconButton
         icon="ruler"
         type="map-tool"
-        tooltip={editing ? '' : 'Add rulers'}
+        tooltip={editing ? '' : t('map.rulers_add', 'Add rulers')}
         className={cx({ [styles.active]: editing })}
         onClick={onToggleClick}
       >
@@ -42,7 +44,7 @@ const Rulers = () => {
         <IconButton
           icon="close"
           type="map-tool"
-          tooltip="Remove all rulers"
+          tooltip={t('map.rulers_remove', 'Remove all rulers')}
           className={styles.remove}
           onClick={onRemoveClick}
         />

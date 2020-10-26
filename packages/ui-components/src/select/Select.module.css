@@ -41,13 +41,20 @@
 .optionsContainer {
   width: 100%;
   position: absolute !important; /* as needs to overwrite default FixedSizeList behaviour */
-  top: var(--size-M);
   left: 0;
   background: var(--color-white);
   box-shadow: var(--box-shadow);
   max-height: 40rem;
   overflow: auto;
   z-index: 10;
+}
+
+.optionsContainer.bottom {
+  top: var(--size-M);
+}
+
+.optionsContainer.top {
+  bottom: var(--size-M);
 }
 
 .optionItem {

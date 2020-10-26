@@ -67,14 +67,18 @@
   height: calc(100vh - var(--size-L));
 }
 
+.contentNoHeader {
+  height: calc(100vh);
+  padding-top: 0;
+  padding-right: var(--size-L);
+}
+
 @media only screen and (min-width: 720px) {
   .content {
     height: 50rem;
     max-height: calc(100vh - var(--size-L));
   }
-}
-
-.contentNoHeader {
-  padding-top: 0;
-  padding-right: var(--size-L);
+  .contentNoHeader {
+    height: auto;
+  }
 }

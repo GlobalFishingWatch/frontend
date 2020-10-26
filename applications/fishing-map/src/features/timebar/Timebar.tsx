@@ -4,6 +4,7 @@ import TimebarComponent, { TimebarHighlighter } from '@globalfishingwatch/timeba
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
+import TimebarSettings from './TimebarSettings'
 
 const TimebarWrapper = () => {
   const { start, end, dispatchTimeranges } = useTimerangeConnect()
@@ -24,40 +25,43 @@ const TimebarWrapper = () => {
   )
 
   return (
-    <TimebarComponent
-      enablePlayback
-      start={start}
-      end={end}
-      absoluteStart={DEFAULT_WORKSPACE.availableStart}
-      absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
-      onChange={dispatchTimeranges}
-      showLastUpdate={false}
-      onMouseMove={(clientX: number, scale: (arg: number) => Date) => {
-        if (clientX === null) {
-          dispatch(disableHighlightedTime())
-          return
-        }
-        const start = scale(clientX - 10).toISOString()
-        const end = scale(clientX + 10).toISOString()
-        dispatch(setHighlightedTime({ start, end }))
-      }}
-      onBookmarkChange={onBookmarkChange}
-      bookmarkStart={bookmark && bookmark.start}
-      bookmarkEnd={bookmark && bookmark.end}
-    >
-      {() => (
-        <Fragment>
-          {highlightedTime && (
-            <TimebarHighlighter
-              hoverStart={highlightedTime.start}
-              hoverEnd={highlightedTime.end}
-              // activity={timebarMode === TimebarMode.speed ? tracksGraph : null}
-              unit="knots"
-            />
-          )}
-        </Fragment>
-      )}
-    </TimebarComponent>
+    <Fragment>
+      <TimebarComponent
+        enablePlayback
+        start={start}
+        end={end}
+        absoluteStart={DEFAULT_WORKSPACE.availableStart}
+        absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
+        onChange={dispatchTimeranges}
+        showLastUpdate={false}
+        onMouseMove={(clientX: number, scale: (arg: number) => Date) => {
+          if (clientX === null) {
+            dispatch(disableHighlightedTime())
+            return
+          }
+          const start = scale(clientX - 10).toISOString()
+          const end = scale(clientX + 10).toISOString()
+          dispatch(setHighlightedTime({ start, end }))
+        }}
+        onBookmarkChange={onBookmarkChange}
+        bookmarkStart={bookmark && bookmark.start}
+        bookmarkEnd={bookmark && bookmark.end}
+      >
+        {() => (
+          <Fragment>
+            {highlightedTime && (
+              <TimebarHighlighter
+                hoverStart={highlightedTime.start}
+                hoverEnd={highlightedTime.end}
+                // activity={timebarMode === TimebarMode.speed ? tracksGraph : null}
+                unit="knots"
+              />
+            )}
+          </Fragment>
+        )}
+      </TimebarComponent>
+      <TimebarSettings />
+    </Fragment>
   )
 }
 
