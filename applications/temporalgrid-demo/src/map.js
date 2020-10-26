@@ -46,9 +46,9 @@ const TEST_GEO_JSON = {
 
 const Map = React.memo(function Map({ style, onMapClick, onMapHover, onSetMapRef, children }) {
   const [viewport, setViewport] = useState({
-    longitude: -6,
-    latitude: 47,
-    zoom: 4.6424032
+    longitude: 13,
+    latitude: -30,
+    zoom: 1.58
   });
 
   const mapRef = useRef(null)
