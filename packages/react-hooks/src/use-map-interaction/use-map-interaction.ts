@@ -2,12 +2,18 @@ import { useCallback, useEffect, useRef } from 'react'
 import debounce from 'lodash/debounce'
 import isArray from 'lodash/isArray'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer/dist/types'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
 type FeatureStateSource = { source: string; sourceLayer: string }
 
-const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[] => {
+const getExtendedFeatures = (
+  features: MapboxGeoJSONFeature[],
+  metatada?: ExtendedStyleMeta
+): ExtendedFeature[] => {
+  const frame = metatada?.layers?.['heatmap-animated']?.timeChunks?.activeChunkFrame
+
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
     const generatorType = feature.layer.metadata ? feature.layer.metadata.generatorType : null
     const generatorId = feature.layer.metadata ? feature.layer.metadata.generatorId : null
@@ -28,7 +34,6 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
     }
     switch (generatorType) {
       case Generators.Type.HeatmapAnimated:
-        const frame = feature.layer.metadata.frame
         const valuesAtFrame = properties[frame?.toString()] || properties[frame]
         if (valuesAtFrame) {
           let parsed = JSON.parse(valuesAtFrame)
@@ -57,7 +62,10 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
   return extendedFeatures
 }
 
-export const useMapClick = (clickCallback: InteractionEventCallback) => {
+export const useMapClick = (
+  clickCallback: InteractionEventCallback,
+  metadata: ExtendedStyleMeta
+) => {
   const onMapClick = useCallback(
     (event) => {
       if (!clickCallback) return
@@ -65,15 +73,16 @@ export const useMapClick = (clickCallback: InteractionEventCallback) => {
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
       }
+      console.log(event.features)
       if (event.features && event.features.length) {
-        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
+        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
         if (extendedFeatures.length) {
           interactionEvent.features = extendedFeatures
         }
       }
       clickCallback(interactionEvent)
     },
-    [clickCallback]
+    [clickCallback, metadata]
   )
 
   return onMapClick
@@ -86,7 +95,8 @@ export const useMapHover = (
   hoverCallbackImmediate?: InteractionEventCallback,
   hoverCallback?: InteractionEventCallback,
   map?: Map,
-  config?: MapHoverConfig
+  config?: MapHoverConfig,
+  metadata?: ExtendedStyleMeta
 ) => {
   const { debounced = 300 } = config || ({} as MapHoverConfig)
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
@@ -114,7 +124,7 @@ export const useMapHover = (
         latitude: event.lngLat[1],
       }
       if (event.features && event.features.length) {
-        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
+        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
 
         if (extendedFeatures.length) {
           hoverEvent.features = extendedFeatures
@@ -152,7 +162,7 @@ export const useMapHover = (
         hoverCallbackImmediate(hoverEvent)
       }
     },
-    [hoverCallbackImmediate, hoverCallbackDebounced, map]
+    [hoverCallbackImmediate, hoverCallbackDebounced, map, metadata]
   )
 
   return onMapHover

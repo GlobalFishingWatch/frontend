@@ -64,11 +64,18 @@ export interface ExtendedLayer extends Layer {
   metadata?: ExtendedLayerMeta
 }
 
+export interface ExtendedStyleMeta {
+  generatedAt: string
+  interactiveLayerIds?: string[]
+  layers: Record<string, Record<string, any>>
+}
+
 /**
  * A standard Mapbox GL Style with leyer-composer specific metadata
  */
 export interface ExtendedStyle extends Style {
   layers?: ExtendedLayer[]
+  metadata?: ExtendedStyleMeta
 }
 
 /**

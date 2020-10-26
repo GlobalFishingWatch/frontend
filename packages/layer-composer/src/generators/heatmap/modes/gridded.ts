@@ -44,7 +44,6 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk
             generatorType: Type.HeatmapAnimated,
             generatorId: config.id,
             interactive: true,
-            frame: timeChunk.frame,
           },
         })
         chunkLayers.push({

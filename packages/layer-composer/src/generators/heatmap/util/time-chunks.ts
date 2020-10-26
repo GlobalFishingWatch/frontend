@@ -19,6 +19,7 @@ export type TimeChunks = {
   interval: Interval
   activeStart: string
   activeEnd: string
+  activeChunkFrame: number
 }
 
 const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
@@ -126,6 +127,7 @@ const getTimeChunks = (
   activeStart: string
 ) => {
   const config = CONFIG_BY_INTERVAL[interval]
+  let activeChunkFrame = 0
   const chunks: TimeChunk[] = chunkStarts.map((chunkStart) => {
     // end of *usable* tileset is end of year
     // end of *loaded* tileset is end of year + 100 days
@@ -143,6 +145,11 @@ const getTimeChunks = (
     const quantizeOffset = config.getFrame(+chunkStart)
 
     const activeStartDT = +toDT(activeStart)
+    const isActive = activeStartDT > +chunkStart && activeStartDT <= chunkViewEnd
+    const frame = toQuantizedFrame(activeStart, quantizeOffset, interval)
+    if (isActive) {
+      activeChunkFrame = frame
+    }
 
     const chunk: TimeChunk = {
       start,
@@ -150,12 +157,12 @@ const getTimeChunks = (
       dataEnd,
       quantizeOffset,
       id: `heatmapchunk_${start.slice(0, 13)}_${viewEnd.slice(0, 13)}`,
-      frame: toQuantizedFrame(activeStart, quantizeOffset, interval),
-      active: activeStartDT > +chunkStart && activeStartDT <= chunkViewEnd,
+      frame,
+      active: isActive,
     }
     return chunk
   })
-  return chunks
+  return { chunks, activeChunkFrame }
 }
 
 /**
@@ -179,18 +186,21 @@ export const getActiveTimeChunks = (
     delta,
     deltaInDays: Duration.fromMillis(delta).as('days'),
     interval: getInterval(delta),
+    activeChunkFrame: 0,
   }
 
   // ignore any start/end time chunk calculation as for the '10 days' interval the entire tileset is loaded
   if (timeChunks.interval === '10days') {
+    const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
     timeChunks.chunks = [
       {
         quantizeOffset: 0,
         id: 'heatmapchunk_10days',
-        frame: toQuantizedFrame(activeStart, 0, timeChunks.interval),
+        frame,
         active: true,
       },
     ]
+    timeChunks.activeChunkFrame = frame
     return timeChunks
   }
 
@@ -205,13 +215,15 @@ export const getActiveTimeChunks = (
   }
 
   const chunkStarts = getChunkStarts(bufferedActiveStart, bufferedActiveEnd, timeChunks.interval)
-  timeChunks.chunks = getTimeChunks(
+  const { chunks, activeChunkFrame } = getTimeChunks(
     chunkStarts,
     datasetStart,
     datasetEnd,
     timeChunks.interval,
     activeStart
   )
+  timeChunks.chunks = chunks
+  timeChunks.activeChunkFrame = activeChunkFrame
 
   return timeChunks
 }
