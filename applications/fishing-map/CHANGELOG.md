@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.12.3
+
+### Patch Changes
+
+- 31ca077: Include active state in switch callback
+- Updated dependencies [31ca077]
+  - @globalfishingwatch/ui-components@2.4.3
+
 ## 0.12.2
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/fishing-map",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "private": true,
   "scripts": {
     "start": "PORT=3003 react-scripts start",
@@ -20,7 +20,7 @@
     "@globalfishingwatch/react-hooks": "^3.4.3",
     "@globalfishingwatch/react-map-gl": "5.2.7-gfw.3",
     "@globalfishingwatch/timebar": "^1.0.14",
-    "@globalfishingwatch/ui-components": "^2.4.2",
+    "@globalfishingwatch/ui-components": "^2.4.3",
     "@reduxjs/toolkit": "^1.4.0",
     "countryflag": "^4.0.1",
     "dayjs": "^1.8.36",
