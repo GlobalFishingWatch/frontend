@@ -53,8 +53,3 @@ export const selectTimebarVisualisation = selectQueryParam<TimebarVisualisations
 export const selectTimebarEvents = selectQueryParam<TimebarEvents>('timebarEvents')
 export const selectTimebarGraph = selectQueryParam<TimebarGraphs>('timebarGraph')
 export const selectDataviewInstances = selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
-
-export const selectTimerange = createSelector([selectStartQuery, selectEndQuery], (start, end) => ({
-  start,
-  end,
-}))

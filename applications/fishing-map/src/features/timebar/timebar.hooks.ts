@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux'
-import { TimebarVisualisations } from 'types'
 import { useCallback, useEffect } from 'react'
-import { selectTimebarVisualisation, selectTimerange } from 'routes/routes.selectors'
+import { TimebarVisualisations } from 'types'
+import { selectTimebarVisualisation } from 'routes/routes.selectors'
+import { selectTimeRange } from 'features/timebar/timebar.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveTemporalgridDataviews,
@@ -10,10 +11,14 @@ import {
 
 export const useTimerangeConnect = () => {
   const { dispatchQueryParams } = useLocationConnect()
-  const { start, end } = useSelector(selectTimerange)
+  const { start, end } = useSelector(selectTimeRange)
   // TODO needs to be debounced like viewport
-  const dispatchTimerange = (newStart: string, newEnd: string) =>
-    dispatchQueryParams({ start: newStart, end: newEnd })
+  const dispatchTimerange = useCallback(
+    (newStart: string, newEnd: string) => {
+      dispatchQueryParams({ start: newStart, end: newEnd })
+    },
+    [dispatchQueryParams]
+  )
   return { start, end, dispatchTimerange }
 }
 

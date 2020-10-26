@@ -64,6 +64,9 @@ const getUnitLabel = (mUnit, baseUnit, availableWidth) => {
     }
   }
 
+  if (!format) {
+    return mUnit.format()
+  }
   const isFirst = unitFormat.isFirst(mUnit)
   const finalFormat = isFirst && format[2] ? format[2] : format[1]
   return typeof finalFormat === 'function' ? finalFormat(mUnit) : mUnit.format(finalFormat)

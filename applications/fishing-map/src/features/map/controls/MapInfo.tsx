@@ -1,8 +1,8 @@
 import React from 'react'
 import { DateTime } from 'luxon'
-import toFixed from 'utils/toFixed'
 import { ScaleControl } from '@globalfishingwatch/react-map-gl'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
+import toFixed from 'utils/toFixed'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import I18nDate from 'features/i18n/i18nDate'
@@ -14,7 +14,7 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
   const { viewport } = useViewport()
   const { zoom } = viewport
   const { start, end } = useTimerangeConnect()
-  const timeΔ = new Date(end).getTime() - new Date(start).getTime()
+  const timeΔ = start && end ? new Date(end).getTime() - new Date(start).getTime() : 0
   const dateFormat = timeΔ < A_DAY ? DateTime.DATETIME_MED : DateTime.DATE_MED
   return (
     <div className={styles.info}>
@@ -26,9 +26,12 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
           {toFixed(center.latitude, 4)} {toFixed(center.longitude, 4)}
         </div>
       )}
-      <div>
-        <I18nDate date={start} format={dateFormat} /> - <I18nDate date={end} format={dateFormat} />
-      </div>
+      {start && end && (
+        <div>
+          <I18nDate date={start} format={dateFormat} /> -
+          <I18nDate date={end} format={dateFormat} />
+        </div>
+      )}
     </div>
   )
 }

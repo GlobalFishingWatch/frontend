@@ -8,11 +8,11 @@ import { Generators } from '@globalfishingwatch/layer-composer'
 import { DataviewConfig } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from 'types'
 import {
-  selectTimerange,
   selectMapZoomQuery,
   selectMapLatitudeQuery,
   selectMapLongitudeQuery,
 } from 'routes/routes.selectors'
+import { selectTimeRange } from 'features/timebar/timebar.selectors'
 import {
   selectDataviewInstancesResolved,
   selectWorkspaceViewport,
@@ -37,7 +37,7 @@ export const selectViewport = createSelector(
 )
 
 export const selectGlobalGeneratorsConfig = createSelector(
-  [selectViewport, selectTimerange],
+  [selectViewport, selectTimeRange],
   ({ zoom }, { start, end }) => ({
     zoom,
     start,

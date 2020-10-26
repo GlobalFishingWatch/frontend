@@ -4,8 +4,8 @@ const workspace: Workspace = {
   id: 31,
   name: 'Default public Fishing Map workspace',
   description: '',
-  startAt: '2018-01-01T00:00:00.000Z',
-  endAt: '2019-12-31T00:00:00.000Z',
+  startAt: new Date(2019, 0).toISOString(),
+  endAt: new Date(2020, 0).toISOString(),
   viewport: {
     zoom: 3.2,
     latitude: 17,

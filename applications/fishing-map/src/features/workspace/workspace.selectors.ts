@@ -30,6 +30,13 @@ export const selectWorkspaceViewport = createSelector([selectWorkspace], (worksp
   return workspace?.viewport
 })
 
+export const selectWorkspaceTimeRange = createSelector([selectWorkspace], (workspace) => {
+  return {
+    start: workspace?.startAt,
+    end: workspace?.endAt,
+  }
+})
+
 export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace], (workspace) => {
   return workspace?.dataviewInstances
 })

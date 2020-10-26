@@ -8,7 +8,7 @@ import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
-import { selectTimerange } from 'routes/routes.selectors'
+import { selectTimeRange } from 'features/timebar/timebar.selectors'
 import { FISHING_DATASET_TYPE } from 'data/datasets'
 import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import {
@@ -55,7 +55,7 @@ export const useClickedEventConnect = () => {
   const promiseRef = useRef<any>()
 
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
-  const { start, end } = useSelector(selectTimerange)
+  const { start, end } = useSelector(selectTimeRange)
   const rulersEditing = useSelector(selectEditing)
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
