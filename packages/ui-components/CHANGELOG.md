@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.4.3
+
+### Patch Changes
+
+- 31ca077: Include active state in switch callback
+
 ## 2.4.2
 
 ### Patch Changes
