@@ -207,6 +207,8 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   tilesetsStart?: string
   tilesetsEnd?: string
   interactive?: boolean
+  staticStart?: string
+  staticEnd?: string
 }
 
 export type AnyGeneratorConfig =

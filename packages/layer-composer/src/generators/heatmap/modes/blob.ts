@@ -1,6 +1,6 @@
 import zip from 'lodash/zip'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
-import { TimeChunk, toQuantizedFrame } from '../util/time-chunks'
+import { TimeChunks } from '../util/time-chunks'
 import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer from '../util/get-base-layer'
 
@@ -37,12 +37,10 @@ const BASE_PAINT = {
 // Seems like MGL 'heatmap' layer types can be rendered more than once,
 // so when using 'blob' type, we just use the 1st timechunk to render a single layer
 // this will prevent buffering to happen, but whatever
-export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk: TimeChunk) {
-  const intervalInDays = timeChunk.intervalInDays
+export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) {
   const { colorRamp } = getColorRampBaseExpression(config)
   // const layer: Layer[] = timeChunks.flatMap((timeChunk: TimeChunk, timeChunkIndex: number) => {
-  const frame = toQuantizedFrame(config.start, timeChunk.quantizeOffset, timeChunk.interval)
-  const pickValueAt = frame.toString()
+  const pickValueAt = timeChunks.chunks[0].frame.toString()
   const exprPick = ['coalesce', ['get', pickValueAt], 0]
 
   const paint = { ...BASE_PAINT }
@@ -56,18 +54,18 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk
     ...heatmapColorRamp,
   ] as any
   const BASE_BLOB_INTENSITY = 0.5
-  const baseIntensity = BASE_BLOB_INTENSITY / Math.sqrt(Math.sqrt(intervalInDays))
+  const baseIntensity = BASE_BLOB_INTENSITY / Math.sqrt(Math.sqrt(timeChunks.deltaInDays))
   const maxIntensity = baseIntensity * 16
   paint['heatmap-intensity'][4] = baseIntensity
   paint['heatmap-intensity'][6] = maxIntensity
 
   const chunkMainLayer = getBaseLayer(config)
-  chunkMainLayer.id = timeChunk.id
-  chunkMainLayer.source = timeChunk.id
+  chunkMainLayer.id = timeChunks.chunks[0].id
+  chunkMainLayer.source = timeChunks.chunks[0].id
   chunkMainLayer.paint = paint as any
 
   if (!chunkMainLayer.metadata) return []
-  chunkMainLayer.metadata.legend = getLegends(config, intervalInDays)
+  chunkMainLayer.metadata.legend = getLegends(config, timeChunks.deltaInDays)
 
   return [chunkMainLayer]
 }

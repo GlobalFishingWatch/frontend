@@ -1,5 +1,4 @@
 import memoizeOne from 'memoize-one'
-import debounce from 'lodash/debounce'
 import {
   Type,
   HeatmapAnimatedGeneratorConfig,
@@ -13,7 +12,7 @@ import {
   HEATMAP_DEFAULT_MAX_ZOOM,
   HEATMAP_MODE_COMBINATION,
 } from './config'
-import { TimeChunk, getActiveTimeChunks, getDelta } from './util/time-chunks'
+import { TimeChunk, TimeChunks, getActiveTimeChunks, getDelta } from './util/time-chunks'
 import { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
@@ -44,7 +43,7 @@ const toURLArray = (paramName: string, arr: string[]) => {
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
 
-  _getStyleSources = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
+  _getStyleSources = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) => {
     if (!config.start || !config.end || !config.sublayers) {
       throw new Error(
         `Heatmap generator must specify start, end and sublayers parameters in ${config}`
@@ -55,8 +54,8 @@ class HeatmapAnimatedGenerator {
 
     const tilesUrl = `${config.tilesAPI}/${API_ENDPOINTS.tiles}`
 
-    const delta = getDelta(config.start, config.end, timeChunks[0].interval)
-    const breaks = getSublayersBreaks(config, timeChunks[0].intervalInDays)
+    const delta = getDelta(timeChunks.activeStart, timeChunks.activeEnd, timeChunks.interval)
+    const breaks = getSublayersBreaks(config, timeChunks.deltaInDays)
 
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? 'point' : 'rectangle'
     const interactiveSource =
@@ -64,7 +63,7 @@ class HeatmapAnimatedGenerator {
       (config.mode === HeatmapAnimatedMode.Compare || config.mode === HeatmapAnimatedMode.Bivariate)
     const combinationMode = HEATMAP_MODE_COMBINATION[config.mode]
 
-    const sources = timeChunks.flatMap((timeChunk: TimeChunk) => {
+    const sources = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
       const baseSourceParams: Record<string, string> = {
         id: timeChunk.id,
         singleFrame: 'false',
@@ -74,7 +73,7 @@ class HeatmapAnimatedGenerator {
         datasets: toURLArray('datasets', datasets),
         delta: delta.toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
-        interval: timeChunk.interval,
+        interval: timeChunks.interval,
         numDatasets: config.sublayers.length.toString(),
         breaks: JSON.stringify(breaks),
         // TODO only for visible time chunk
@@ -101,14 +100,14 @@ class HeatmapAnimatedGenerator {
     return sources
   }
 
-  _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunk[]) => {
+  _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) => {
     if (
       config.mode === HeatmapAnimatedMode.Compare ||
       config.mode === HeatmapAnimatedMode.Bivariate
     ) {
       return getGriddedLayers(config, timeChunks)
     } else if (config.mode === HeatmapAnimatedMode.Blob) {
-      return getBlobLayer(config, timeChunks[0])
+      return getBlobLayer(config, timeChunks)
     } else if (config.mode === HeatmapAnimatedMode.Extruded) {
       return getExtrudedLayer(config, timeChunks)
     }
@@ -121,8 +120,8 @@ class HeatmapAnimatedGenerator {
     })
 
     const timeChunks = memoizeCache[config.id].getActiveTimeChunks(
-      config.start,
-      config.end,
+      config.staticStart || config.start,
+      config.staticEnd || config.end,
       config.tilesetsStart,
       config.tilesetsEnd
     )
