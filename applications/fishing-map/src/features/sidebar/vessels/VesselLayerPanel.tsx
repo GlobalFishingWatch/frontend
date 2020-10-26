@@ -41,15 +41,18 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const onToggleLayerActive = () => {
     upsertDataviewInstance({
       id: dataview.id,
-      config: { visible: !layerActive, color },
+      config: {
+        visible: !layerActive,
+      },
     })
   }
 
-  const color = dataview?.config?.color
   const changeTrackColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
-      config: { color: color.value },
+      config: {
+        color: color.value,
+      },
     })
     setColorOpen(false)
   }

@@ -24,7 +24,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const onToggleLayerActive = () => {
     upsertDataviewInstance({
       id: dataview.id,
-      config: { visible: !layerActive },
+      config: {
+        visible: !layerActive,
+      },
     })
   }
   const onRemoveLayerClick = () => {

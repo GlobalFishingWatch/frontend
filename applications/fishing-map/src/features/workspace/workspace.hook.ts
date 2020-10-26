@@ -31,6 +31,10 @@ export const useDataviewInstancesConnect = () => {
           return {
             ...urlDataviewInstance,
             ...dataviewInstance,
+            config: {
+              ...urlDataviewInstance.config,
+              ...dataviewInstance.config,
+            },
           }
         })
         dispatchQueryParams({ dataviewInstances })

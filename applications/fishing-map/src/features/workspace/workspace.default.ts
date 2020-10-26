@@ -65,6 +65,7 @@ const workspace: Workspace = {
       id: 'context-layer-1',
       config: {
         color: '#069688',
+        visible: false,
       },
       dataviewId: 93,
     },

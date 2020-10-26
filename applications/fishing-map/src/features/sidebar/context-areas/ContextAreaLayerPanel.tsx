@@ -8,8 +8,8 @@ import {
   ColorBarOption,
   TrackColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
-import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import useClickedOutside from 'hooks/use-clicked-outside'
+import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
@@ -31,15 +31,18 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const onToggleLayerActive = () => {
     upsertDataviewInstance({
       id: dataview.id,
-      config: { visible: !layerActive, color },
+      config: {
+        visible: !layerActive,
+      },
     })
   }
 
-  const color = dataview?.config?.color
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
-      config: { color: color.value },
+      config: {
+        color: color.value,
+      },
     })
     setColorOpen(false)
   }
