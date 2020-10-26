@@ -22,7 +22,7 @@ import { selectResources } from 'features/resources/resources.slice'
 import { FALLBACK_VIEWPORT } from 'data/config'
 import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'features/workspace/workspace.mock'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import { selectRulers } from 'features/map/rulers/rulers.slice'
+import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
 
 export const selectViewport = createSelector(
