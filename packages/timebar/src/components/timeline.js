@@ -185,7 +185,6 @@ class Timeline extends PureComponent {
 
   onMouseDown = (event, dragging) => {
     const { outerX } = this.state
-    const { onSeekStart } = this.props
     const clientX = event.clientX || event.changedTouches[0].clientX
     this.lastX = clientX
     const x = clientX - outerX
@@ -194,8 +193,6 @@ class Timeline extends PureComponent {
       dragging,
       handlerMouseX: x,
     })
-
-    onSeekStart()
   }
 
   throttledMouseMove = throttle((clientX, scale, isDay) => {
@@ -492,8 +489,6 @@ Timeline.propTypes = {
   bookmarkStart: PropTypes.string,
   bookmarkEnd: PropTypes.string,
   showLastUpdate: PropTypes.bool,
-  onSeekStart: PropTypes.func,
-  onSeekEnd: PropTypes.func,
 }
 
 Timeline.defaultProps = {
@@ -503,8 +498,6 @@ Timeline.defaultProps = {
   onBookmarkChange: () => {},
   onMouseLeave: () => {},
   onMouseMove: () => {},
-  onSeekStart: () => {},
-  onSeekEnd: () => {},
   showLastUpdate: true,
 }
 

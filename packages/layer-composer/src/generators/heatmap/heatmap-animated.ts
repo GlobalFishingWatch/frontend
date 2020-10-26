@@ -41,11 +41,6 @@ const toURLArray = (paramName: string, arr: string[]) => {
     .join('&')
 }
 
-const getDebouncedDeltaAndBreaks = debounce((config, intervalInDays, debouncedDelta) => {
-  const debouncedBreaks = getSublayersBreaks(config, intervalInDays)
-  return { debouncedBreaks, debouncedDelta }
-})
-
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
 
@@ -61,11 +56,7 @@ class HeatmapAnimatedGenerator {
     const tilesUrl = `${config.tilesAPI}/${API_ENDPOINTS.tiles}`
 
     const delta = getDelta(config.start, config.end, timeChunks[0].interval)
-    const { debouncedDelta, debouncedBreaks } = getDebouncedDeltaAndBreaks(
-      config,
-      timeChunks[0].intervalInDays,
-      delta
-    ) as any
+    const breaks = getSublayersBreaks(config, timeChunks[0].intervalInDays)
 
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? 'point' : 'rectangle'
     const interactiveSource =
@@ -81,11 +72,12 @@ class HeatmapAnimatedGenerator {
         combinationMode,
         filters: toURLArray('filters', filters),
         datasets: toURLArray('datasets', datasets),
-        delta: debouncedDelta.toString(),
+        delta: delta.toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: timeChunk.interval,
         numDatasets: config.sublayers.length.toString(),
-        breaks: JSON.stringify(debouncedBreaks),
+        breaks: JSON.stringify(breaks),
+        // TODO only for visible time chunk
         interactive: interactiveSource.toString(),
       }
       if (timeChunk.start && timeChunk.dataEnd) {
@@ -96,7 +88,6 @@ class HeatmapAnimatedGenerator {
 
       return sourceParams.map((params: Record<string, string>) => {
         const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)
-        console.log(decodeURI(url.toString()))
         const source = {
           id: params.id,
           type: 'temporalgrid',
