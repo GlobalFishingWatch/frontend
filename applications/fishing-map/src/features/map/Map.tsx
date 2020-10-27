@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { AsyncReducerStatus } from 'types'
 import { useTranslation } from 'react-i18next'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
@@ -14,7 +13,9 @@ import {
   useMapHover,
 } from '@globalfishingwatch/react-hooks'
 import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
+import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer/dist/types'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { AsyncReducerStatus } from 'types'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import { selectEditing, moveCurrentRuler } from 'features/map/controls/rulers.slice'
@@ -93,14 +94,19 @@ const Map = memo(
   }
 )
 
-const MapWrapper = (): React.ReactElement => {
+const MapWrapper = (): React.ReactElement | null => {
   const { t } = useTranslation()
   const mapRef = useMapboxRef()
 
   const dispatch = useDispatch()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
+
+  // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
+  // the generatorsConfig (ie the map "layers") and the global configuration
+  const { style } = useLayerComposer(generatorsConfig as AnyGeneratorConfig[], globalConfig)
+
   const { clickedEvent, clickedEventStatus, dispatchClickedEvent } = useClickedEventConnect()
-  const onMapClick = useMapClick(dispatchClickedEvent)
+  const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta)
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const rulersEditing = useSelector(selectEditing)
   const closePopup = useCallback(() => {
@@ -125,13 +131,10 @@ const MapWrapper = (): React.ReactElement => {
   const onMapHover = useMapHover(
     handleHoverEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,
-    mapRef?.current?.getMap()
+    mapRef?.current?.getMap(),
+    style?.metadata
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
-
-  // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
-  // the generatorsConfig (ie the map "layers") and the global configuration
-  const { style } = useLayerComposer(generatorsConfig as AnyGeneratorConfig[], globalConfig)
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
 

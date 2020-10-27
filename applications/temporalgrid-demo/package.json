@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "@globalfishingwatch/layer-composer": "3.0.0",
-    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.3",
-    "@globalfishingwatch/react-map-gl": "5.2.7-gfw.3",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.4",
+    "@globalfishingwatch/react-map-gl": "5.2.7-gfw.4",
     "@globalfishingwatch/react-hooks": "3.4.3",
     "@globalfishingwatch/timebar": "1.0.14",
     "babel-polyfill": "^6.26.0",

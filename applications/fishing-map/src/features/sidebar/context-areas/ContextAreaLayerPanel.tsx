@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import useClickedOutside from 'hooks/use-clicked-outside'
+import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import { Vessel } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
   TrackColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
-import useClickedOutside from 'hooks/use-clicked-outside'
-import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'

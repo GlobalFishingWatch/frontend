@@ -23,7 +23,7 @@ import { FALLBACK_VIEWPORT } from 'data/config'
 import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'features/workspace/workspace.mock'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
-import { selectHighlightedTime } from 'features/timebar/timebar.slice'
+import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
 
 export const selectViewport = createSelector(
   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery, selectWorkspaceViewport],
@@ -53,8 +53,9 @@ export const getGeneratorsConfig = createSelector(
     selectRulers,
     selectDebugOptions,
     selectHighlightedTime,
+    selectStaticTime,
   ],
-  (dataviews = [], resources, rulers, debugOptions, highlightedTime) => {
+  (dataviews = [], resources, rulers, debugOptions, highlightedTime, staticTime) => {
     const animatedHeatmapDataviews: UrlDataviewInstance[] = []
 
     // Collect heatmap animated generators and filter them out from main dataview list
@@ -104,6 +105,8 @@ export const getGeneratorsConfig = createSelector(
           mode,
           debug: debugOptions.debug,
           debugLabels: debugOptions.debug,
+          staticStart: staticTime?.start,
+          staticEnd: staticTime?.end,
         },
       }
       generatorsConfig.push(mergedLayer)
