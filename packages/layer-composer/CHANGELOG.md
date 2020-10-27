@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.0.0
+
+### Major Changes
+
+- 6b5fdf8: Temporalgrid performance and bugfixes
+
 ## 3.0.0
 
 ### Major Changes
