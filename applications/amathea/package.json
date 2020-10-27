@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/amathea",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
@@ -13,13 +13,13 @@
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.6.0",
     "@globalfishingwatch/api-types": "^1.2.0",
-    "@globalfishingwatch/dataviews-client": "^3.3.2",
-    "@globalfishingwatch/layer-composer": "^3.0.0",
+    "@globalfishingwatch/dataviews-client": "^3.3.4",
+    "@globalfishingwatch/layer-composer": "^4.0.0",
     "@globalfishingwatch/linting": "^1.1.1",
-    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.3",
-    "@globalfishingwatch/react-map-gl": "5.2.7-gfw.3",
-    "@globalfishingwatch/react-hooks": "^3.4.1",
-    "@globalfishingwatch/timebar": "^1.0.13",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.4",
+    "@globalfishingwatch/react-map-gl": "5.2.7-gfw.4",
+    "@globalfishingwatch/react-hooks": "^4.0.0",
+    "@globalfishingwatch/timebar": "^1.1.0",
     "@globalfishingwatch/ui-components": "^2.0.0",
     "@reduxjs/toolkit": "^1.4.0",
     "countryflag": "^4.0.0",

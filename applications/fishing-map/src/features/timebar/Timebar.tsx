@@ -7,7 +7,7 @@ import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } fro
 import TimebarSettings from './TimebarSettings'
 
 const TimebarWrapper = () => {
-  const { start, end, dispatchTimerange } = useTimerangeConnect()
+  const { start, end, dispatchTimeranges } = useTimerangeConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
 
   const dispatch = useDispatch()
@@ -34,7 +34,7 @@ const TimebarWrapper = () => {
         end={end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
-        onChange={dispatchTimerange}
+        onChange={dispatchTimeranges}
         showLastUpdate={false}
         onMouseMove={(clientX: number, scale: (arg: number) => Date) => {
           if (clientX === null) {

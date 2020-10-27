@@ -1,4 +1,4 @@
-/* eslint max-statements: 0 */
+/* eslint max-statements: 0, complexity: 0 */
 import React, {useState, useMemo, useCallback} from 'react';
 import {render} from 'react-dom';
 import { DateTime } from 'luxon'
@@ -11,20 +11,19 @@ import Map from './map';
 import './App.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
-
 export const DEFAULT_SUBLAYERS = [
   {
     id: 0,
     // tileset: 'carriers_v8',
     datasets: 'fishing_v4',
     // filter: ''
-    filter: "flag='ESP'",
+    filter: "flag='CHL'",
     active: true
   },
   {
     id: 1,
     datasets: 'fishing_v4',
-    filter: "flag='FRA'",
+    filter: "flag='ARG'",
     active: true
   },
   {
@@ -93,15 +92,18 @@ const DATAVIEWS = [
   }
 ]
 
+const DEFAULT_TIME = {
+  start: '2018-10-31T00:00:00.000Z',
+  end: '2018-11-10T00:00:00.000Z',
+}
+
 export default function App() {
-  const [time, setTime] = useState({
-    start: '2012-10-01T00:00:00.000Z',
-    end: '2012-11-01T00:00:00.000Z',
-  })
+  const [time, setTime] = useState(DEFAULT_TIME)
+  const [staticTime, setStaticTime] = useState(DEFAULT_TIME)
   const debouncedTime = useDebounce(time, 1000)
 
   const [sublayers, setSublayers] = useState(DEFAULT_SUBLAYERS)
-  const [mode, setMode] = useState('extruded')
+  const [mode, setMode] = useState('compare')
 
   const [showBasemap, setShowBasemap] = useState(true)
   const [animated, setAnimated] = useState(true)
@@ -116,7 +118,10 @@ export default function App() {
 
   const layers = useMemo(
     () => {
-      const generators = [{...DATAVIEWS.find(dv => dv.id === 'background')}, {...DATAVIEWS.find(dv => dv.id === 'eez')}]
+      const generators = [
+        {...DATAVIEWS.find(dv => dv.id === 'background')},
+        // {...DATAVIEWS.find(dv => dv.id === 'eez')}
+      ]
 
       if (showBasemap) {
         generators.push({...DATAVIEWS.find(dv => dv.id === 'basemap')})
@@ -156,6 +161,8 @@ export default function App() {
           // tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1/datasets',
           tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1',
           interactive: true,
+          staticStart: staticTime.start,
+          staticEnd: staticTime.end,
         })
       } else {
         generators.push({
@@ -172,12 +179,18 @@ export default function App() {
       }
     return generators
   },
-    [animated, showBasemap, debug, debugLabels, sublayers, mode, isPlaying]
+    [animated, showBasemap, debug, debugLabels, sublayers, mode, isPlaying, staticTime]
   );
 
   // console.log(layers)
 
   const [mapRef, setMapRef] = useState(null)
+  const globalConfig = useMemo(() => {
+    const finalTime = (animated) ? time: debouncedTime
+    return { ...finalTime }
+  }, [animated, time, debouncedTime])
+
+  const { style } = useLayerComposer(layers, globalConfig)
 
   const clickCallback = useCallback((event) => {
     console.log(event)
@@ -188,16 +201,9 @@ export default function App() {
 
   // TODO useMapInteraction has been removed
   // const { onMapClick, onMapHover } = useMapInteraction(clickCallback, hoverCallback, mapRef)
-  const onMapClick = useMapClick(clickCallback)
-  // const onMapHover = useMapHover(null, hoverCallback, mapRef)
+  const onMapClick = useMapClick(clickCallback, style && style.metadata)
+  const onMapHover = useMapHover(null, hoverCallback, mapRef, null, style && style.metadata)
 
-  const globalConfig = useMemo(() => {
-    const finalTime = (animated) ? time: debouncedTime
-    return { ...finalTime }
-  }, [animated, time, debouncedTime])
-
-  const { style } = useLayerComposer(layers, globalConfig)
-  // console.log(style)
 
   if (mapRef) {
     mapRef.showTileBoundaries = debug
@@ -213,7 +219,7 @@ export default function App() {
     <div className="container">
       {isLoading && <div className="loading">loading</div>}
       <div className="map">
-        {style && <Map style={style} onMapClick={onMapClick}  onSetMapRef={setMapRef} />}
+        {style && <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover} onSetMapRef={setMapRef} />}
       </div>
       <div className="timebar">
         <TimebarComponent
@@ -221,8 +227,11 @@ export default function App() {
           end={time.end}
           absoluteStart={'2012-01-01T00:00:00.000Z'}
           absoluteEnd={'2020-01-01T00:00:00.000Z'}
-          onChange={(start, end) => {
-            setTime({start,end})
+          onChange={(event) => {
+            if (event.source !== 'ZOOM_OUT_MOVE') {
+              setStaticTime({start: event.start, end: event.end})
+            }
+            setTime({start: event.start, end: event.end})
           }}
           enablePlayback
           onTogglePlay={setIsPlaying}

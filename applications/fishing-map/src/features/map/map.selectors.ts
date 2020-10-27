@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { UrlDataviewInstance } from 'types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   AnyGeneratorConfig,
@@ -6,7 +7,6 @@ import {
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { DataviewConfig } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from 'types'
 import {
   selectMapZoomQuery,
   selectMapLatitudeQuery,
@@ -23,7 +23,7 @@ import { FALLBACK_VIEWPORT } from 'data/config'
 import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
-import { selectHighlightedTime } from 'features/timebar/timebar.slice'
+import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
 
 export const selectViewport = createSelector(
   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery, selectWorkspaceViewport],
@@ -53,8 +53,9 @@ export const getGeneratorsConfig = createSelector(
     selectRulers,
     selectDebugOptions,
     selectHighlightedTime,
+    selectStaticTime,
   ],
-  (dataviews = [], resources, rulers, debugOptions, highlightedTime) => {
+  (dataviews = [], resources, rulers, debugOptions, highlightedTime, staticTime) => {
     const animatedHeatmapDataviews: UrlDataviewInstance[] = []
 
     // Collect heatmap animated generators and filter them out from main dataview list
@@ -107,6 +108,8 @@ export const getGeneratorsConfig = createSelector(
           mode,
           debug: debugOptions.debug,
           debugLabels: debugOptions.debug,
+          staticStart: staticTime?.start,
+          staticEnd: staticTime?.end,
         },
       }
       generatorsConfig.push(mergedLayer)
