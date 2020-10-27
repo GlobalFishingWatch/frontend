@@ -1,5 +1,5 @@
 /* eslint max-statements: 0, complexity: 0 */
-import React, {useState, useMemo, useCallback} from 'react';
+import React, {useState, useMemo, useCallback, useRef} from 'react';
 import {render} from 'react-dom';
 import { DateTime } from 'luxon'
 import { Generators } from '@globalfishingwatch/layer-composer';
@@ -7,6 +7,7 @@ import { useLayerComposer, useDebounce, useMapClick, useMapHover } from '@global
 import TimebarComponent from '@globalfishingwatch/timebar';
 import Tilesets from './tilesets';
 import Map from './map';
+import useTilesState from './use-tiles-state'
 
 import './App.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
@@ -204,22 +205,26 @@ export default function App() {
   const onMapClick = useMapClick(clickCallback, style && style.metadata)
   const onMapHover = useMapHover(null, hoverCallback, mapRef, null, style && style.metadata)
 
+  const {
+    onLoad,
+    onLoadComplete,
+    tilesLoading
+  } = useTilesState()
 
   if (mapRef) {
     mapRef.showTileBoundaries = debug
     mapRef.on('idle', () =>  {
       setLoading(false)
     })
-    mapRef.on('dataloading', () =>  {
-      setLoading(true)
-    })
+    mapRef.on('sourcedataloading', onLoad)
+    mapRef.on('sourcedata', onLoadComplete)
   }
 
   return (
     <div className="container">
       {isLoading && <div className="loading">loading</div>}
       <div className="map">
-        {style && <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover} onSetMapRef={setMapRef} />}
+        {style && <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover} onSetMapRef={setMapRef} tiles={tilesLoading} />}
       </div>
       <div className="timebar">
         <TimebarComponent
