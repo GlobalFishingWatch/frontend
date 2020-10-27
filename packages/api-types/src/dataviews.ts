@@ -31,8 +31,16 @@ export interface DataviewDatasetConfig {
 export interface DataviewCreation {
   name: string
   description: string
-  datasets: string[]
   config?: DataviewConfig
+}
+
+export interface DataviewInfoConfigField {
+  id: string
+  type: 'flag' | 'number' | 'date'
+}
+
+export interface DataviewInfoConfig {
+  fields: DataviewInfoConfigField[]
 }
 
 export interface Dataview {
@@ -42,8 +50,8 @@ export interface Dataview {
   createdAt?: string
   updatedAt?: string
   config: DataviewConfig
-  info?: any
   datasets?: Dataset[]
+  infoConfig?: DataviewInfoConfig
   datasetsConfig?: DataviewDatasetConfig[]
 }
 

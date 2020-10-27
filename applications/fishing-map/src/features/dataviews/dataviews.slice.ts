@@ -1,16 +1,21 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'store'
 import memoize from 'lodash/memoize'
-import { AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { Dataview } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
-import dataviews from './dataviews.mock'
+import { AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import { RootState } from 'store'
+import { getDatasetByDataview } from 'features/workspace/workspace.slice'
+import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
-  async (ids: number[], { rejectWithValue }) => {
+  async (ids: number[], { dispatch, rejectWithValue }) => {
     try {
-      // const dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews/${ids.join(',')}`)
+      const dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${ids.join(',')}`)
+      const datasets = getDatasetByDataview(dataviews)
+      if (datasets?.length) {
+        await dispatch(fetchDatasetsByIdsThunk(datasets))
+      }
       return dataviews
     } catch (e) {
       return rejectWithValue(ids.join(','))

@@ -8,11 +8,11 @@ import {
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { DataviewConfig } from '@globalfishingwatch/api-types'
 import {
-  selectTimerange,
   selectMapZoomQuery,
   selectMapLatitudeQuery,
   selectMapLongitudeQuery,
 } from 'routes/routes.selectors'
+import { selectTimeRange } from 'features/timebar/timebar.selectors'
 import {
   selectDataviewInstancesResolved,
   selectWorkspaceViewport,
@@ -20,7 +20,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 import { FALLBACK_VIEWPORT } from 'data/config'
-import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'features/workspace/workspace.mock'
+import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
@@ -37,7 +37,7 @@ export const selectViewport = createSelector(
 )
 
 export const selectGlobalGeneratorsConfig = createSelector(
-  [selectViewport, selectTimerange],
+  [selectViewport, selectTimeRange],
   ({ zoom }, { start, end }) => ({
     zoom,
     start,
@@ -74,6 +74,9 @@ export const getGeneratorsConfig = createSelector(
         const config = dataview.config
         const datasetsConfig = dataview.datasetsConfig
         if (!config || !datasetsConfig || !datasetsConfig.length) return []
+
+        // TODO tilesUrl should be resolved here instead of layer-composer
+        // const { url } = resolveDataviewDatasetResource(dataview, FISHING_DATASET_TYPE)
         const colorRamp =
           animatedHeatmapDataviews.length === 1
             ? 'presence'

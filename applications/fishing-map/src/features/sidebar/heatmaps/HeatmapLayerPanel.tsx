@@ -7,7 +7,7 @@ import { getFlagsByIds } from 'utils/flags'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
 import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { FISHING_DATASET_TYPE } from 'features/workspace/workspace.mock'
+import { FISHING_DATASET_TYPE } from 'data/datasets'
 import Filters from './HeatmapFilters'
 
 type LayerPanelProps = {
@@ -24,7 +24,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const onToggleLayerActive = () => {
     upsertDataviewInstance({
       id: dataview.id,
-      config: { visible: !layerActive },
+      config: {
+        visible: !layerActive,
+      },
     })
   }
   const onRemoveLayerClick = () => {

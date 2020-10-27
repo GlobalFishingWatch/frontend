@@ -24,6 +24,8 @@ const TimebarWrapper = () => {
     [setBookmark]
   )
 
+  if (!start || !end) return null
+
   return (
     <Fragment>
       <TimebarComponent
@@ -44,8 +46,8 @@ const TimebarWrapper = () => {
           dispatch(setHighlightedTime({ start, end }))
         }}
         onBookmarkChange={onBookmarkChange}
-        bookmarkStart={bookmark && bookmark.start}
-        bookmarkEnd={bookmark && bookmark.end}
+        bookmarkStart={bookmark?.start}
+        bookmarkEnd={bookmark?.end}
       >
         {() => (
           <Fragment>

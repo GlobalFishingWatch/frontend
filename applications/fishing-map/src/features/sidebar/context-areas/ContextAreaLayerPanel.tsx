@@ -13,7 +13,7 @@ import {
 import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
-import { VESSELS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'features/workspace/workspace.mock'
+import { VESSELS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 
 type LayerPanelProps = {
@@ -31,15 +31,18 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const onToggleLayerActive = () => {
     upsertDataviewInstance({
       id: dataview.id,
-      config: { visible: !layerActive, color },
+      config: {
+        visible: !layerActive,
+      },
     })
   }
 
-  const color = dataview?.config?.color
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
-      config: { color: color.value },
+      config: {
+        color: color.value,
+      },
     })
     setColorOpen(false)
   }

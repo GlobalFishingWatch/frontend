@@ -6,13 +6,12 @@ export interface UploadResponse {
 export interface EndpointParam {
   id: string
   label: string
-  type: 'enum' | 'boolean' | 'number' | 'string' | 'Date ISO' | 'sql' | '4wings-datasets'
-  description?: string
+  type: 'enum' | 'boolean' | 'number' | 'string' | 'date-iso' | 'sql' | '4wings-datasets'
   enum?: string[]
-  default?: string | boolean | number
+  array?: boolean
   required?: boolean
-  // TODO remove this or enum, but they both do the same
-  values?: any
+  description?: string
+  default?: string | boolean | number
 }
 
 export interface Endpoint {

@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { TimebarVisualisations } from 'types'
 import { useCallback, useEffect } from 'react'
-import { selectTimebarVisualisation, selectTimerange } from 'routes/routes.selectors'
+import { selectTimebarVisualisation } from 'routes/routes.selectors'
+import { selectTimeRange } from 'features/timebar/timebar.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveTemporalgridDataviews,
@@ -12,15 +13,18 @@ import { setStaticTime } from './timebar.slice'
 export const useTimerangeConnect = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useDispatch()
-  const { start, end } = useSelector(selectTimerange)
+  const { start, end } = useSelector(selectTimeRange)
   // TODO needs to be debounced like viewport
-  const dispatchTimeranges = (event: { start: string; end: string; source: string }) => {
-    const range = { start: event.start, end: event.end }
-    if (event.source !== 'ZOOM_OUT_MOVE') {
-      dispatch(setStaticTime(range))
-    }
-    dispatchQueryParams(range)
-  }
+  const dispatchTimeranges = useCallback(
+    (event: { start: string; end: string; source: string }) => {
+      const range = { start: event.start, end: event.end }
+      if (event.source !== 'ZOOM_OUT_MOVE') {
+        dispatch(setStaticTime(range))
+      }
+      dispatchQueryParams(range)
+    },
+    [dispatchQueryParams, dispatch]
+  )
   return { start, end, dispatchTimeranges }
 }
 

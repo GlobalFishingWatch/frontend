@@ -27,6 +27,10 @@ export default (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
         resolvedQuery.set(query.id, query.value.toString())
       }
     })
+    // To avoid duplicating query in every config when we already have the datasetId
+    if (endpoint.query.some((q) => q.id === 'datasets') && !resolvedQuery.get('datasets')) {
+      resolvedQuery.set('datasets', datasetConfig.datasetId)
+    }
     url = `${url}?${resolvedQuery.toString()}`
   } else if (endpoint.query.some((q) => q.id === 'datasets')) {
     // Fallback when no dataset query is defined but we already know which dataset want to search in

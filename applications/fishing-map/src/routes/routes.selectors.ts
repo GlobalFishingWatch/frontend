@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import memoize from 'lodash/memoize'
 import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'store'
 import {
@@ -54,7 +55,8 @@ export const selectTimebarEvents = selectQueryParam<TimebarEvents>('timebarEvent
 export const selectTimebarGraph = selectQueryParam<TimebarGraphs>('timebarGraph')
 export const selectDataviewInstances = selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
 
-export const selectTimerange = createSelector([selectStartQuery, selectEndQuery], (start, end) => ({
-  start,
-  end,
-}))
+export const selectDataviewInstancesById = memoize((id: string) =>
+  createSelector([selectDataviewInstances], (urlDataviewInstances) =>
+    urlDataviewInstances?.find((dataviewInstance) => dataviewInstance.id === id)
+  )
+)

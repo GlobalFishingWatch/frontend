@@ -1,5 +1,5 @@
-import { TimebarEvents, TimebarGraphs } from 'types'
 import { SelectOption } from '@globalfishingwatch/ui-components'
+import { TimebarEvents, TimebarGraphs } from 'types'
 
 // used when no url data and no workspace data
 export const FALLBACK_VIEWPORT = {
@@ -8,16 +8,19 @@ export const FALLBACK_VIEWPORT = {
   zoom: 3,
 }
 
+// TODO use it to retrieve it and store in workspace.default in deploy
+export const DEFAULT_WORKSPACE_ID = 31
 export const DEFAULT_WERSION = 'v1'
 
+// TODO rethink this as most of the values comes from the workspace now
 export const DEFAULT_WORKSPACE = {
   latitude: undefined,
   longitude: undefined,
   zoom: undefined,
   query: undefined,
   sidebarOpen: true,
-  start: new Date(2019, 0, 1).toISOString(),
-  end: new Date(2019, 1, 1).toISOString(),
+  start: undefined,
+  end: undefined,
   availableStart: new Date(2012, 0, 1).toISOString(),
   availableEnd: new Date().toISOString(),
   dataviewInstances: undefined,
