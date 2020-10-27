@@ -1,5 +1,17 @@
 # @globalfishingwatch/react-hooks
 
+## 4.0.0
+
+### Major Changes
+
+- 6b5fdf8: Temporalgrid performance and bugfixes
+
+### Patch Changes
+
+- Updated dependencies [6b5fdf8]
+  - @globalfishingwatch/layer-composer@4.0.0
+  - @globalfishingwatch/dataviews-client@3.3.4
+
 ## 3.4.3
 
 ### Patch Changes
