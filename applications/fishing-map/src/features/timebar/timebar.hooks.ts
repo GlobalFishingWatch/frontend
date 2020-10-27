@@ -14,15 +14,9 @@ export const useTimerangeConnect = () => {
   const dispatch = useDispatch()
   const { start, end } = useSelector(selectTimerange)
   // TODO needs to be debounced like viewport
-  const dispatchTimeranges = (
-    newStart: string,
-    newEnd: string,
-    _: unknown,
-    __: unknown,
-    source: string
-  ) => {
-    const range = { start: newStart, end: newEnd }
-    if (source !== 'ZOOM_OUT_MOVE') {
+  const dispatchTimeranges = (event: { start: string; end: string; source: string }) => {
+    const range = { start: event.start, end: event.end }
+    if (event.source !== 'ZOOM_OUT_MOVE') {
       dispatch(setStaticTime(range))
     }
     dispatchQueryParams(range)

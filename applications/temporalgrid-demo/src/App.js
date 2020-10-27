@@ -227,12 +227,11 @@ export default function App() {
           end={time.end}
           absoluteStart={'2012-01-01T00:00:00.000Z'}
           absoluteEnd={'2020-01-01T00:00:00.000Z'}
-          onChange={(start, end, _, __, source) => {
-            console.log(source)
-            if (source !== 'ZOOM_OUT_MOVE') {
-              setStaticTime({start,end})
+          onChange={(event) => {
+            if (event.source !== 'ZOOM_OUT_MOVE') {
+              setStaticTime({start: event.start, end: event.end})
             }
-            setTime({start,end})
+            setTime({start: event.start, end: event.end})
           }}
           enablePlayback
           onTogglePlay={setIsPlaying}

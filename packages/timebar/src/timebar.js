@@ -12,7 +12,6 @@ import {
   getDeltaDays,
   isMoreThanADay,
 } from './utils/internal-utils'
-import { getHumanizedDates } from './utils'
 import './timebar-settings.module.css'
 import styles from './timebar.module.css'
 import TimeRangeSelector from './components/timerange-selector'
@@ -192,8 +191,12 @@ class Timebar extends Component {
       clampToEnd
     )
     const { onChange } = this.props
-    const { humanizedStart, humanizedEnd } = getHumanizedDates(clampedStart, clampedEnd)
-    onChange(clampedStart, clampedEnd, humanizedStart, humanizedEnd, source)
+    const event = {
+      start: clampedStart,
+      end: clampedEnd,
+      source,
+    }
+    onChange(event)
   }
 
   onPlaybackTick = (newStart, newEnd) => {
