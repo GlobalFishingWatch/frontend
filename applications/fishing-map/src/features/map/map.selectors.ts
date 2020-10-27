@@ -11,6 +11,7 @@ import {
   selectMapZoomQuery,
   selectMapLatitudeQuery,
   selectMapLongitudeQuery,
+  selectBivariate,
 } from 'routes/routes.selectors'
 import { selectTimeRange } from 'features/timebar/timebar.selectors'
 import {
@@ -54,8 +55,9 @@ export const getGeneratorsConfig = createSelector(
     selectDebugOptions,
     selectHighlightedTime,
     selectStaticTime,
+    selectBivariate,
   ],
-  (dataviews = [], resources, rulers, debugOptions, highlightedTime, staticTime) => {
+  (dataviews = [], resources, rulers, debugOptions, highlightedTime, staticTime, bivariate) => {
     const animatedHeatmapDataviews: UrlDataviewInstance[] = []
 
     // Collect heatmap animated generators and filter them out from main dataview list
@@ -75,8 +77,7 @@ export const getGeneratorsConfig = createSelector(
         const datasetsConfig = dataview.datasetsConfig
         if (!config || !datasetsConfig || !datasetsConfig.length) return []
 
-        // TODO tilesUrl should be resolved here instead of layer-composer
-        // const { url } = resolveDataviewDatasetResource(dataview, FISHING_DATASET_TYPE)
+        // TODO Bivariate colorRamp
         const colorRamp =
           animatedHeatmapDataviews.length === 1
             ? 'presence'
@@ -92,7 +93,9 @@ export const getGeneratorsConfig = createSelector(
       })
 
       // Force HeatmapAnimated mode depending on debug options
-      let mode = Generators.HeatmapAnimatedMode.Compare
+      let mode = bivariate
+        ? Generators.HeatmapAnimatedMode.Bivariate
+        : Generators.HeatmapAnimatedMode.Compare
       if (debugOptions.extruded) {
         mode = Generators.HeatmapAnimatedMode.Extruded
       } else if (debugOptions.blob && sublayers.length === 1) {
