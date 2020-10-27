@@ -12,7 +12,12 @@
       "applications/*",
       "linting"
     ],
-    "nohoist": []
+    "nohoist": [
+      "**/@globalfishingwatch/mapbox-gl",
+      "**/@globalfishingwatch/mapbox-gl/**",
+      "**/@globalfishingwatch/react-map-gl",
+      "**/@globalfishingwatch/react-map-gl/**"
+    ]
   },
   "scripts": {
     "start:sandbox": "cross-env CI=true SKIP_PREFLIGHT_CHECK=true lerna run --scope @globalfishingwatchapp/sandbox start",
