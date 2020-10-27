@@ -23,6 +23,7 @@ export type WorkspaceParam =
   | 'timebarVisualisation'
   | 'timebarEvents'
   | 'timebarGraph'
+  | 'bivariate'
 
 export type QueryParams = {
   zoom?: number
@@ -36,6 +37,7 @@ export type QueryParams = {
   timebarVisualisation?: TimebarVisualisations
   timebarEvents?: TimebarEvents
   timebarGraph?: TimebarGraphs
+  bivariate?: boolean
 }
 
 export type MapCoordinates = {

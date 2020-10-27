@@ -16,3 +16,7 @@
   margin: 0;
   text-transform: uppercase;
 }
+
+.sectionButtons > *:not(:last-child) {
+  margin-right: 1rem;
+}

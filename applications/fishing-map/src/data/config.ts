@@ -1,5 +1,5 @@
-import { SelectOption } from '@globalfishingwatch/ui-components'
 import { TimebarEvents, TimebarGraphs } from 'types'
+import { SelectOption } from '@globalfishingwatch/ui-components'
 
 // used when no url data and no workspace data
 export const FALLBACK_VIEWPORT = {
@@ -28,6 +28,7 @@ export const DEFAULT_WORKSPACE = {
   timebarVisualisation: undefined,
   timebarEvents: TimebarEvents.None,
   timebarGraph: TimebarGraphs.None,
+  bivariate: false,
 }
 
 // Params to use replace instead of push for router history to make navigation easier
