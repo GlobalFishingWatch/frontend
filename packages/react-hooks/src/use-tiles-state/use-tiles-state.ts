@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import type { MapSourceDataEvent } from 'mapbox-gl'
 import tilebelt from '@mapbox/tilebelt'
 
 type TilesLoading = {
@@ -6,24 +7,14 @@ type TilesLoading = {
   tiles: Record<string, { count: number; geom: any }>
 }
 
-type LoadEvent = {
-  coord: {
-    canonical: {
-      key: string
-      x: number
-      y: number
-      z: number
-    }
-  }
-}
-export default () => {
+function useTilesState() {
   const [tilesLoading, setTilesLoading] = useState<TilesLoading>({
     loading: false,
     tiles: {},
   })
 
   const onLoad = useCallback(
-    (e: LoadEvent) => {
+    (e: MapSourceDataEvent) => {
       if (e.coord) {
         setTilesLoading((tilesLoading) => {
           const { key, x, y, z } = e.coord.canonical
@@ -34,7 +25,7 @@ export default () => {
             },
             ...rest
           } = tilesLoading.tiles
-          // currentTile.count = currentTile.count +1
+
           return {
             loading: true,
             tiles: {
@@ -52,22 +43,36 @@ export default () => {
   )
 
   const onLoadComplete = useCallback(
-    (e: LoadEvent) => {
+    (e: MapSourceDataEvent) => {
       if (e.coord) {
         setTilesLoading((tilesLoading) => {
           const { key } = e.coord.canonical
           const { [key]: currentTile, ...rest } = tilesLoading.tiles
+
           const otherTilesLoading = Object.keys(rest).length > 0
-          const currentTileLoading = currentTile?.count - 1 > 0
+
+          // TODO debug why sometimes there isn't a currentTile
+          if (!currentTile) {
+            return {
+              loading: otherTilesLoading,
+              tiles: {
+                ...rest,
+              },
+            }
+          }
+
+          const currentTileUpdated = {
+            ...currentTile,
+            count: currentTile.count - 1,
+          }
+
+          const currentTileFinished = currentTileUpdated?.count === 0
           return {
-            loading: otherTilesLoading || currentTileLoading,
+            loading: otherTilesLoading || !currentTileFinished,
             tiles: {
               ...rest,
-              ...(currentTileLoading && {
-                [key]: {
-                  ...currentTile,
-                  count: currentTile.count - 1,
-                },
+              ...(!currentTileFinished && {
+                [key]: currentTileUpdated,
               }),
             },
           }
@@ -83,3 +88,5 @@ export default () => {
     tilesLoading,
   }
 }
+
+export default useTilesState

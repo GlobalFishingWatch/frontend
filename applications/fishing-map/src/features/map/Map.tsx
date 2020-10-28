@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { AsyncReducerStatus, UrlDataviewInstance } from 'types'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -15,7 +16,6 @@ import {
 import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
 import { ExtendedStyleMeta, ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { AsyncReducerStatus, UrlDataviewInstance } from 'types'
 import i18n from 'features/i18n/i18n'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
@@ -134,6 +134,8 @@ const MapWrapper = (): React.ReactElement | null => {
     return 'crosshair'
   }, [])
 
+  // TODO handle also in case of error
+  // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
   const { onLoad, onLoadComplete, tilesLoading } = useTilesState()
 
   useEffect(() => {
