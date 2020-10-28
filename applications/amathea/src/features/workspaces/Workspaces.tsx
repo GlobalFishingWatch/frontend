@@ -45,6 +45,7 @@ function Workspaces(): React.ReactElement {
       <ul>
         {workspacesList && workspacesList.length ? (
           workspacesList.map((workspace) => {
+            if (!(workspace.aoi as AOI)?.bbox) return null
             const [minLng, minLat, maxLng, maxLat] = (workspace.aoi as AOI).bbox
             const { latitude, longitude, zoom } = fitBounds({
               bounds: [
