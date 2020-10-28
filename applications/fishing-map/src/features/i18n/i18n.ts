@@ -20,7 +20,7 @@ i18n
     defaultNS: 'translations',
     fallbackLng: LocaleOptions.en,
     supportedLngs: Object.values(LocaleOptions),
-    debug: process.env.NODE_ENV === 'development',
+    debug: process.env.i18n_DEBUG === 'true',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default,
       // format: (value, format, lng) => {
