@@ -1,6 +1,6 @@
 ---
-"@globalfishingwatch/api-types": mayor
-"@globalfishingwatch/dataviews-client": mayor
+"@globalfishingwatch/api-types": major
+"@globalfishingwatch/dataviews-client": major
 "@globalfishingwatchapp/fishing-map": minor
 ---
 
