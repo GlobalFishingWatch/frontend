@@ -9,10 +9,10 @@
     "login": "Se connecter",
     "logout": "Se déconnecter",
     "more": "Plus",
+    "open_menu": "Ouvrir le menu",
     "save": "Enregistrer",
     "share": "Partager la vue actuelle",
-    "vessel_plural": "Navires",
-    "open_menu": "Ouvrir le menu"
+    "vessel_plural": "Navires"
   },
   "errors": {
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement"
@@ -25,7 +25,11 @@
     "info_close": "Masquer les infos",
     "info_open": "Infos",
     "remove": "Supprimer le calque",
-    "toggle_visibility": "Afficher/Masquer le calque"
+    "toggle_visibility": "Afficher/Masquer le calque",
+    "toggleCombinationMode": {
+      "bivariate": "Show fishing layers in bivariate mode",
+      "compare": "Show fishing layers in comparison mode"
+    }
   },
   "map": {
     "capture_map": "Enregistrer une image de la carte",
@@ -35,7 +39,8 @@
     "rulers_remove": "Supprimer toutes les mesures",
     "screenshot": "Image de la carte",
     "zoom_in": "Zoomer",
-    "zoom_out": "Dézoomer"
+    "zoom_out": "Dézoomer",
+    "loading": "Map loading"
   },
   "timebar": {
     "graph": "Graphique",
