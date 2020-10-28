@@ -54,6 +54,7 @@ export const selectTimebarVisualisation = selectQueryParam<TimebarVisualisations
 export const selectTimebarEvents = selectQueryParam<TimebarEvents>('timebarEvents')
 export const selectTimebarGraph = selectQueryParam<TimebarGraphs>('timebarGraph')
 export const selectDataviewInstances = selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
+export const selectBivariate = selectQueryParam<boolean>('bivariate')
 
 export const selectDataviewInstancesById = memoize((id: string) =>
   createSelector([selectDataviewInstances], (urlDataviewInstances) =>

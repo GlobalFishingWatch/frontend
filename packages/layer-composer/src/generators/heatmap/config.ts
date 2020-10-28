@@ -1,4 +1,4 @@
-import { ColorRampsIds, BivariateColorRampsIds, HeatmapAnimatedMode } from '../types'
+import { ColorRampsIds, HeatmapAnimatedMode } from '../types'
 import { DEFAULT_BACKGROUND_COLOR } from '..'
 import { HeatmapAnimatedCombinationMode } from './types'
 
@@ -49,7 +49,7 @@ const getColorRampByOpacitySteps = (finalColor: string) => {
 
 const DEFAULT_BACKGROUND_TRANSPARENT_COLOR = `rgba(${DEFAULT_BACKGROUND_COLOR.replace(')', ', 0)')}`
 
-export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds | BivariateColorRampsIds, string[]> = {
+export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   fishing: [DEFAULT_BACKGROUND_TRANSPARENT_COLOR, '#3B9088', '#EEFF00', '#ffffff'],
   presence: [
     DEFAULT_BACKGROUND_TRANSPARENT_COLOR,

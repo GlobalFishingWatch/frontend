@@ -270,6 +270,7 @@ export type ColorRampsIds =
   | 'fishing'
   | 'presence'
   | 'reception'
+  | 'bivariate'
   | 'teal'
   | 'magenta'
   | 'lilac'
@@ -279,8 +280,6 @@ export type ColorRampsIds =
   | 'yellow'
   | 'green'
   | 'orange'
-
-export type BivariateColorRampsIds = 'bivariate'
 
 export enum HeatmapAnimatedMode {
   // Pick sublayer with highest value and place across this sublayer's color ramp. Works with 0 - n sublayers
