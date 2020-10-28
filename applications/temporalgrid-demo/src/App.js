@@ -226,7 +226,7 @@ export default function App() {
       <div className="map">
         {style && <Map style={style} onMapClick={onMapClick} onMapHover={onMapHover} onSetMapRef={setMapRef} tiles={tilesLoading} />}
       </div>
-      <div className="timebar">
+      {/* <div className="timebar">
         <TimebarComponent
           start={time.start}
           end={time.end}
@@ -241,7 +241,7 @@ export default function App() {
           enablePlayback
           onTogglePlay={setIsPlaying}
         />
-      </div>
+      </div> */}
       <div className="control-buttons">
         <Tilesets onChange={(newTilesets) => { setSublayers(newTilesets); }} />
         <hr />
