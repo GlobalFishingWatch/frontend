@@ -1,5 +1,14 @@
 # @globalfishingwatchapp/dataviews-editor
 
+## 1.1.5
+
+### Patch Changes
+
+- Updated dependencies [b00dceb]
+- Updated dependencies [33f7ba7]
+  - @globalfishingwatch/dataviews-client@4.0.0
+  - @globalfishingwatch/timebar@1.1.1
+
 ## 1.1.4
 
 ### Patch Changes

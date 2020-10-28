@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/api-types",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Typescript definitions for API responses",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -11,9 +11,7 @@
     "src": "src",
     "dist": "dist"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
