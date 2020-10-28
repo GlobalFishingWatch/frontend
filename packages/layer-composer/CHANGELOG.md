@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.0.1
+
+### Patch Changes
+
+- fix bivariate ramp color ids
+
 ## 4.0.0
 
 ### Major Changes
