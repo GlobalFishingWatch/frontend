@@ -1,5 +1,12 @@
 # @globalfishingwatch/react-hooks
 
+## 4.0.1
+
+### Patch Changes
+
+- Updated dependencies [b00dceb]
+  - @globalfishingwatch/dataviews-client@4.0.0
+
 ## 4.0.0
 
 ### Major Changes

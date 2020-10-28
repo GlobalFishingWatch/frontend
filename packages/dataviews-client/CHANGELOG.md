@@ -1,5 +1,16 @@
 # @globalfishingwatch/dataviews-client
 
+## 4.0.0
+
+### Major Changes
+
+- b00dceb: Update API to use dataviewInstances
+
+### Patch Changes
+
+- Updated dependencies [b00dceb]
+  - @globalfishingwatch/api-types@2.0.0
+
 ## 3.3.4
 
 ### Patch Changes

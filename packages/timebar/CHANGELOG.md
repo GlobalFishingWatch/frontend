@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 1.1.1
+
+### Patch Changes
+
+- 33f7ba7: Fix crash when no date format
+
 ## 1.1.0
 
 ### Minor Changes
