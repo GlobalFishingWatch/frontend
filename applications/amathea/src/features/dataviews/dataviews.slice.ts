@@ -14,7 +14,8 @@ export const fetchDataviewsThunk = createAsyncThunk('dataviews/fetch', async () 
 
 const draftToAPIdataview = (draftDataview: DataviewDraft) => {
   const { dataset, color, colorRamp, steps } = draftDataview
-  const dataview: DataviewCreation = {
+  // TODO remove datasets when updated
+  const dataview: DataviewCreation & { datasets: string[] } = {
     name: dataset.label,
     description: dataset.description,
     datasets: [dataset.id as string],

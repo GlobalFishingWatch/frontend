@@ -68,7 +68,7 @@ function Modal(): React.ReactElement | null {
     ? selectedModal?.title.replace('New', 'Edit').replace('Add', 'Edit')
     : selectedModal?.title
   return selectedModal ? (
-    <GFWModal header={title} isOpen onClose={onCloseClick}>
+    <GFWModal title={title} isOpen onClose={onCloseClick}>
       <Suspense fallback={<Spinner />}>{ComponentModal && <ComponentModal />}</Suspense>
     </GFWModal>
   ) : null

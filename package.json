@@ -46,8 +46,9 @@
     "@types/mapbox-gl": "^1.10.1",
     "@types/node": "^13.13.5",
     "@types/react": "^16.9.34",
+    "@types/react-dom": "^16.9.9",
     "@types/react-map-gl": "^5.2.7",
-    "@types/react-redux": "^7.1.8",
+    "@types/react-redux": "^7.1.9",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
     "@typescript-eslint/parser": "^2.31.0",
     "autoprefixer": "^9.8.0",
@@ -94,8 +95,8 @@
     "@globalfishingwatch/layer-composer": "*",
     "@globalfishingwatch/react-hooks": "*",
     "@globalfishingwatch/ui-components": "*",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react": "^7.0.1",
+    "react-dom": "^17.0.1"
   },
   "husky": {
     "hooks": {

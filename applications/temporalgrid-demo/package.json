@@ -5,15 +5,15 @@
   "dependencies": {
     "@globalfishingwatch/layer-composer": "4.0.1",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.4",
-    "@globalfishingwatch/react-map-gl": "5.2.7-gfw.4",
+    "@globalfishingwatch/react-map-gl": "5.2.9-gfw.1",
     "@globalfishingwatch/react-hooks": "4.0.1",
     "@globalfishingwatch/timebar": "1.1.1",
     "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.6",
     "dayjs": "^1.7.7",
     "qs": "^6.9.3",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "react-scripts": "3.4.1",
     "luxon": "^1.24.1"
   },
