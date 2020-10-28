@@ -11,7 +11,7 @@ import MapScreenshot from 'features/map/controls/MapScreenshot'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import styles from './MapControls.module.css'
 
-const MapControls = (): React.ReactElement => {
+const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactElement => {
   const { t } = useTranslation()
   const [screenshotVisible, setScreenshotVisible] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
@@ -84,6 +84,9 @@ const MapControls = (): React.ReactElement => {
           onClick={switchBasemap}
         ></button>
       </Tooltip>
+      {loading && (
+        <IconButton type="map-tool" tooltip={t('map.loading', 'Map loading')} loading={loading} />
+      )}
     </div>
   )
 }
