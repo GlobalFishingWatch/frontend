@@ -23,6 +23,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
+    "@mapbox/tilebelt": "^1.0.2",
     "@globalfishingwatch/api-client": "^1.6.0",
     "@globalfishingwatch/dataviews-client": "^4.0.0",
     "@globalfishingwatch/layer-composer": "^4.0.0",

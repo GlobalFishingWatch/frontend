@@ -1,13 +1,12 @@
 /* eslint max-statements: 0, complexity: 0 */
-import React, {useState, useMemo, useCallback, useRef} from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {render} from 'react-dom';
 import { DateTime } from 'luxon'
 import { Generators } from '@globalfishingwatch/layer-composer';
-import { useLayerComposer, useDebounce, useMapClick, useMapHover } from '@globalfishingwatch/react-hooks';
+import { useLayerComposer, useDebounce, useMapClick, useMapHover, useTilesState } from '@globalfishingwatch/react-hooks';
 import TimebarComponent from '@globalfishingwatch/timebar';
 import Tilesets from './tilesets';
 import Map from './map';
-import useTilesState from './use-tiles-state'
 
 import './App.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
