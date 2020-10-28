@@ -9,10 +9,10 @@
     "login": "Log in",
     "logout": "Log Out",
     "more": "More",
+    "open_menu": "Open Menu",
     "save": "Save",
     "share": "Click to share the current view",
-    "vessel_plural": "Vessels",
-    "open_menu": "Open Menu"
+    "vessel_plural": "Vessels"
   },
   "errors": {
     "workspaceLoad": "There was an error loading the workspace, please try again later"
@@ -25,7 +25,11 @@
     "info_close": "Hide info",
     "info_open": "Info",
     "remove": "Remove layer",
-    "toggle_visibility": "Toggle layer visibility"
+    "toggle_visibility": "Toggle layer visibility",
+    "toggleCombinationMode": {
+      "bivariate": "Show fishing layers in bivariate mode",
+      "compare": "Show fishing layers in comparison mode"
+    }
   },
   "map": {
     "capture_map": "Capture map",
@@ -35,7 +39,8 @@
     "rulers_remove": "Remove all rulers",
     "screenshot": "Map screenshot",
     "zoom_in": "Zoom in",
-    "zoom_out": "Zoom out"
+    "zoom_out": "Zoom out",
+    "loading": "Map loading"
   },
   "timebar": {
     "graph": "Graph",
