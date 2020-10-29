@@ -109,7 +109,6 @@ export const getGeneratorsConfig = createSelector(
           ...animatedHeatmapDataviews[0].config,
           sublayers,
           mode,
-          tilesAPI: API_GATEWAY,
           debug: debugOptions.debug,
           debugLabels: debugOptions.debug,
           staticStart: staticTime?.start,

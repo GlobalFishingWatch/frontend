@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.14.0
+
+### Minor Changes
+
+- Use .env variables for tiles API url
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.1.0
+
 ## 0.13.1
 
 ### Patch Changes
