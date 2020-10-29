@@ -3,6 +3,8 @@ import { DEFAULT_BACKGROUND_COLOR } from '..'
 import { HeatmapAnimatedCombinationMode } from './types'
 
 export const API_TILES_URL =
+  process.env.API_GATEWAY ||
+  process.env.REACT_APP_API_GATEWAY ||
   process.env.NODE_ENV === 'production'
     ? 'https://fourwings.api.globalfishingwatch.org/v1'
     : 'https://fourwings.api.dev.globalfishingwatch.org/v1'

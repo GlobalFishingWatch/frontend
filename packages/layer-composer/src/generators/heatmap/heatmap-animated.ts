@@ -27,7 +27,6 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   tilesetsStart: '2012-01-01T00:00:00.000Z',
   tilesetsEnd: new Date().toISOString(),
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
-  tilesAPI: API_TILES_URL,
   interactive: true,
 }
 
@@ -52,7 +51,7 @@ class HeatmapAnimatedGenerator {
     const datasets = config.sublayers.map((sublayer) => sublayer.datasets.join(','))
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
 
-    const tilesUrl = `${config.tilesAPI}/${API_ENDPOINTS.tiles}`
+    const tilesUrl = `${config.tilesAPI || API_TILES_URL}/${API_ENDPOINTS.tiles}`
 
     const delta = getDelta(timeChunks.activeStart, timeChunks.activeEnd, timeChunks.interval)
     const breaks = getSublayersBreaks(config, timeChunks.deltaInDays)
