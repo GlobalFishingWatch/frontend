@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.14.1
+
+### Patch Changes
+
+- Fix default 4wings api tiles url
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.1.1
+
 ## 0.14.0
 
 ### Minor Changes

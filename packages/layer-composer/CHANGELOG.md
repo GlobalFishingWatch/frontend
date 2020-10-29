@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.1.1
+
+### Patch Changes
+
+- Fix default 4wings api tiles url
+
 ## 4.1.0
 
 ### Minor Changes
