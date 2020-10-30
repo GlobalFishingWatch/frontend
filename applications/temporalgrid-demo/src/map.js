@@ -26,7 +26,15 @@ const TEST_GEO_JSON = {
   ],
 }
 
-const Map = React.memo(function Map({ style, onMapClick, onMapHover, onSetMapRef, children }) {
+const Map = React.memo(function Map({
+  style,
+  onMapClick,
+  onMapHover,
+  onSetMapRef,
+  children,
+  tiles,
+}) {
+  // console.log(tiles)
   const [viewport, setViewport] = useState({
     longitude: 13,
     latitude: -30,

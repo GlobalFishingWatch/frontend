@@ -35,6 +35,7 @@
     "capture_map": "Capture map",
     "change_basemap_default": "Switch to default basemap",
     "change_basemap_satellite": "Switch to satellite basemap",
+    "loading": "Map loading",
     "rulers_add": "Add rulers",
     "rulers_remove": "Remove all rulers",
     "screenshot": "Map screenshot",
