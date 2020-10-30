@@ -40,6 +40,11 @@ module.exports = {
           },
           {
             pattern:
+              '{features,store,routes,common,components,redux-modules,types,assets,pages,data}',
+            group: 'internal',
+          },
+          {
+            pattern:
               '{features,store,routes,common,components,redux-modules,types,assets,pages,data}/**',
             group: 'internal',
           },

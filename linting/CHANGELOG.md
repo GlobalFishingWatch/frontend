@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 1.5.1
+
+### Patch Changes
+
+- Fix types import order
+
 ## 1.5.0
 
 ### Minor Changes
