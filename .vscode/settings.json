@@ -1,3 +1,11 @@
 {
+  // https://github.com/microsoft/vscode-eslint/issues/784
+  "eslint.workingDirectories": [
+    { "directory": "./applications/amathea", "changeProcessCWD": true },
+    { "directory": "./applications/dataviews-editor", "changeProcessCWD": true },
+    { "directory": "./applications/fishing-map", "changeProcessCWD": true },
+    { "directory": "./applications/sandbox", "changeProcessCWD": true },
+    { "directory": "./applications/temporalgrid-demo", "changeProcessCWD": true }
+  ],
   "typescript.tsdk": "node_modules/typescript/lib"
 }
