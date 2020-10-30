@@ -87,12 +87,12 @@ export const useClickedEventConnect = () => {
     // get temporal grid clicked features and order them by sublayerindex
     const features = event.features
       .filter((feature) => feature.temporalgrid !== undefined)
-      .sort((feature) => feature.temporalgrid!.sublayerIndex || 0)
+      .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
     // get corresponding dataviews
-    const featuresDataviews = features.map(
-      (feature) => temporalgridDataviews[feature.temporalgrid!.sublayerIndex]
-    )
+    const featuresDataviews = features.flatMap((feature) => {
+      return feature.temporalgrid ? temporalgridDataviews[feature.temporalgrid.sublayerIndex] : []
+    })
 
     // get corresponding datasets
     const featuresDataviewsDatasets = featuresDataviews.map((dv) => {
@@ -113,8 +113,8 @@ export const useClickedEventConnect = () => {
         { id: 'z', value: mainFeature.tile.z },
         { id: 'x', value: mainFeature.tile.x },
         { id: 'y', value: mainFeature.tile.y },
-        { id: 'rows', value: mainFeature.temporalgrid!.row },
-        { id: 'cols', value: mainFeature.temporalgrid!.col },
+        { id: 'rows', value: mainFeature.temporalgrid?.row },
+        { id: 'cols', value: mainFeature.temporalgrid?.col },
       ],
       query: [
         { id: 'date-range', value: [start, end].join(',') },

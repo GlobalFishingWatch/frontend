@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from 'store'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { RootState } from 'store'
 
 type RulersSlice = {
   visible: boolean

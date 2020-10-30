@@ -1,11 +1,11 @@
 import { createSlice, createSelector, createAsyncThunk } from '@reduxjs/toolkit'
-import { RootState } from 'store'
-import { AsyncReducerStatus } from 'types'
 import GFWAPI, {
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
+import { RootState } from 'store'
+import { AsyncReducerStatus } from 'types'
 
 interface UserState {
   logged: boolean

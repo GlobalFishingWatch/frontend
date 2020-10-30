@@ -1,5 +1,23 @@
 # @globalfishingwatch/linting
 
+## 1.5.2
+
+### Patch Changes
+
+- Update local defined imports order
+
+## 1.5.1
+
+### Patch Changes
+
+- Fix types import order
+
+## 1.5.0
+
+### Minor Changes
+
+- Update typescript explicit-module-boundary and any types
+
 ## 1.4.0
 
 ### Minor Changes

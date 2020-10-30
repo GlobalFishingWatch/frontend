@@ -2,7 +2,12 @@ import { useEffect, useCallback, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectActive, toggleDebugMenu } from 'features/debug/debug.slice'
 
-const useDebugMenu = () => {
+type DebugMenu = {
+  debugActive: boolean
+  dispatchToggleDebugMenu: () => void
+}
+
+const useDebugMenu = (): DebugMenu => {
   const dispatch = useDispatch()
   const numTimesDebugKeyDown = useRef(0)
   const debugKeyDownInterval = useRef<number>(0)

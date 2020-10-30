@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'store'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   AnyGeneratorConfig,
@@ -7,6 +6,7 @@ import {
   BasemapGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import GFWAPI from '@globalfishingwatch/api-client'
+import { RootState } from 'store'
 import { selectMapZoomQuery, selectTimerange } from 'routes/routes.selectors'
 
 export interface MapState {
