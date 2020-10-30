@@ -35,12 +35,12 @@
     "capture_map": "Captura el mapa",
     "change_basemap_default": "Cambia al mapa base por defecto",
     "change_basemap_satellite": "Cambia al mapa base satelital",
+    "loading": "Map loading",
     "rulers_add": "Añade reglas",
     "rulers_remove": "Borra todas las reglas",
     "screenshot": "Captura del mapa",
     "zoom_in": "Acercar",
-    "zoom_out": "Alejar",
-    "loading": "Map loading"
+    "zoom_out": "Alejar"
   },
   "timebar": {
     "graph": "Graph",
