@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.2.0
+
+### Minor Changes
+
+- bc29371: new useTileState hook
+
 ## 4.1.1
 
 ### Patch Changes

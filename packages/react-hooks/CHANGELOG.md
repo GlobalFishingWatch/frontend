@@ -1,5 +1,16 @@
 # @globalfishingwatch/react-hooks
 
+## 4.1.0
+
+### Minor Changes
+
+- bc29371: new useTileState hook
+
+### Patch Changes
+
+- Updated dependencies [bc29371]
+  - @globalfishingwatch/layer-composer@4.2.0
+
 ## 4.0.1
 
 ### Patch Changes
