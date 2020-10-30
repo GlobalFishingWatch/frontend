@@ -107,7 +107,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "eslint -c .eslintrc.js --fix"
+      "eslint -c ./.eslintrc.js --fix --resolve-plugins-relative-to ."
     ],
     "*.css": [
       "stylelint --fix",

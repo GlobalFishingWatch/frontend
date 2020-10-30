@@ -5,7 +5,7 @@
   "scripts": {
     "start": "PORT=3003 react-scripts start",
     "build": "react-scripts build",
-    "lint": "eslint -c .eslintrc.js src --ext .js,jsx,ts,tsx --fix",
+    "lint": "eslint src -c .eslintrc.js --ext .js,jsx,ts,tsx --fix",
     "test": "CI=true react-scripts test --passWithNoTests",
     "eject": "react-scripts eject",
     "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
@@ -47,6 +47,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.7.6",
     "@babel/preset-react": "^7.7.4",
+    "@globalfishingwatch/linting": "^1.5.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.0.4",
     "@testing-library/user-event": "^12.1.6",
@@ -99,6 +100,7 @@
       "last 1 safari version"
     ]
   },
+  "eslintConfig": {},
   "husky": {
     "hooks": {
       "pre-commit": "yarn lint"

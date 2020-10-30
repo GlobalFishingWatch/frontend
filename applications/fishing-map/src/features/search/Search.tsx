@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import React, { useState, useEffect } from 'react'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'

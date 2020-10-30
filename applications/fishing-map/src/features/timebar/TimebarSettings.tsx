@@ -2,8 +2,8 @@ import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import useClickedOutside from 'hooks/use-clicked-outside'
 import { IconButton, Radio, Select, SelectOption } from '@globalfishingwatch/ui-components/dist'
+import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveTemporalgridDataviews,

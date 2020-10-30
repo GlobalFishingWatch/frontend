@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
-import { RootState } from 'store'
 import { Query } from 'redux-first-router'
+import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { LocationRoute, ROUTE_TYPES, WORKSPACE_EDITOR } from './routes'
