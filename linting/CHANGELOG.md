@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 1.5.2
+
+### Patch Changes
+
+- Update local defined imports order
+
 ## 1.5.1
 
 ### Patch Changes
