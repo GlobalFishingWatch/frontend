@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react'
-import type { MapSourceDataEvent } from 'mapbox-gl'
+import { useCallback, useState, useEffect } from 'react'
+import type { MapSourceDataEvent, Map } from 'mapbox-gl'
 import tilebelt from '@mapbox/tilebelt'
 
 type TilesLoading = {
@@ -7,11 +7,17 @@ type TilesLoading = {
   tiles: Record<string, { count: number; geom: any }>
 }
 
-function useTilesState() {
-  const [tilesLoading, setTilesLoading] = useState<TilesLoading>({
-    loading: false,
-    tiles: {},
-  })
+const tilesInitialState = {
+  loading: false,
+  tiles: {},
+}
+
+function useTilesState(map: Map) {
+  const [tilesLoading, setTilesLoading] = useState<TilesLoading>(tilesInitialState)
+
+  const onIdle = useCallback(() => {
+    setTilesLoading(tilesInitialState)
+  }, [setTilesLoading])
 
   const onLoad = useCallback(
     (e: MapSourceDataEvent) => {
@@ -82,11 +88,15 @@ function useTilesState() {
     [setTilesLoading]
   )
 
-  return {
-    onLoad,
-    onLoadComplete,
-    tilesLoading,
-  }
+  useEffect(() => {
+    if (map) {
+      map.on('sourcedataloading', onLoad)
+      map.on('sourcedata', onLoadComplete)
+      map.on('idle', onIdle)
+    }
+  }, [map, onIdle, onLoad, onLoadComplete])
+
+  return tilesLoading
 }
 
 export default useTilesState
