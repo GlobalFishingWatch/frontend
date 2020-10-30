@@ -9,10 +9,10 @@
     "login": "Login",
     "logout": "Cerrar sesión",
     "more": "Más",
+    "open_menu": "Abrir menú",
     "save": "Guardar",
     "share": "Haz click para compartir tu vista actual",
-    "vessel_plural": "Embarcaciones",
-    "open_menu": "Abrir menú"
+    "vessel_plural": "Embarcaciones"
   },
   "errors": {
     "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo"
@@ -25,7 +25,11 @@
     "info_close": "Oculta la información",
     "info_open": "Muestra la información",
     "remove": "Borra la capa",
-    "toggle_visibility": "Cambia la visibilidad de la capa"
+    "toggle_visibility": "Cambia la visibilidad de la capa",
+    "toggleCombinationMode": {
+      "bivariate": "Show fishing layers in bivariate mode",
+      "compare": "Show fishing layers in comparison mode"
+    }
   },
   "map": {
     "capture_map": "Captura el mapa",
@@ -35,7 +39,8 @@
     "rulers_remove": "Borra todas las reglas",
     "screenshot": "Captura del mapa",
     "zoom_in": "Acercar",
-    "zoom_out": "Alejar"
+    "zoom_out": "Alejar",
+    "loading": "Map loading"
   },
   "timebar": {
     "graph": "Graph",

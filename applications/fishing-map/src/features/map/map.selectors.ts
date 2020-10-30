@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { UrlDataviewInstance } from 'types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   AnyGeneratorConfig,
@@ -7,6 +6,7 @@ import {
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { DataviewConfig } from '@globalfishingwatch/api-types'
+import { UrlDataviewInstance } from 'types'
 import {
   selectMapZoomQuery,
   selectMapLatitudeQuery,

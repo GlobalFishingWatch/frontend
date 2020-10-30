@@ -40,7 +40,12 @@ module.exports = {
           },
           {
             pattern:
-              '{features,store,routes,common,components,redux-modules,types,assets,pages,data}/**',
+              '{features,store,routes,common,components,redux-modules,types,assets,pages,data,hooks,utils}',
+            group: 'internal',
+          },
+          {
+            pattern:
+              '{features,store,routes,common,components,redux-modules,types,assets,pages,data,hooks,utils}/**',
             group: 'internal',
           },
         ],
@@ -54,5 +59,8 @@ module.exports = {
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/FAQ.md#i-am-using-a-rule-from-eslint-core-and-it-doesnt-work-correctly-with-typescript-code
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': ['error'],
+    '@typescript-eslint/explicit-module-boundary-types': 0,
+    '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/camelcase': 0,
   },
 }

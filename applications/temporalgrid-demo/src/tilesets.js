@@ -1,20 +1,38 @@
-import React, {useState, useCallback} from 'react';
-import { DEFAULT_SUBLAYERS } from './App';
+import React, { useState, useCallback } from 'react'
+import { DEFAULT_SUBLAYERS } from './App'
 
 function Sublayer({ index, sublayer, setDatasets, setFilter, setActive }) {
-  return <div className={`tileset ${sublayer.active ? '' : 'disabled'}`}>
-    <span>
-      {index > 0 && <input type="checkbox" checked={sublayer.active} onChange={(event) => setActive(index, event.target.checked)} />}
-    </span>
-    <fieldset>
-      <label htmlFor={`datsets_${index}`} />
-      <input id={`datsets_${index}`} type="text" value={sublayer.datasets} onChange={(event) => setDatasets(index, event.target.value)} />
-    </fieldset>
-    <fieldset>
-      <label htmlFor={`filters_${index}`}>filters</label>
-      <input id={`filters_${index}`} type="text" value={sublayer.filter} onChange={(event) => setFilter(index, event.target.value)} />
-    </fieldset>
-  </div>
+  return (
+    <div className={`tileset ${sublayer.active ? '' : 'disabled'}`}>
+      <span>
+        {index > 0 && (
+          <input
+            type="checkbox"
+            checked={sublayer.active}
+            onChange={(event) => setActive(index, event.target.checked)}
+          />
+        )}
+      </span>
+      <fieldset>
+        <label htmlFor={`datsets_${index}`} />
+        <input
+          id={`datsets_${index}`}
+          type="text"
+          value={sublayer.datasets}
+          onChange={(event) => setDatasets(index, event.target.value)}
+        />
+      </fieldset>
+      <fieldset>
+        <label htmlFor={`filters_${index}`}>filters</label>
+        <input
+          id={`filters_${index}`}
+          type="text"
+          value={sublayer.filter}
+          onChange={(event) => setFilter(index, event.target.value)}
+        />
+      </fieldset>
+    </div>
+  )
 }
 
 export default function Sublayers({ onChange }) {
@@ -36,9 +54,20 @@ export default function Sublayers({ onChange }) {
     updateSublayers(newSublayers)
   })
 
-  return <>
-    {sublayers.map((sublayer, i) => <Sublayer key={i} index={i} sublayer={sublayer} setDatasets={setDatasets} setFilter={setFilter} setActive={setActive} />)}
+  return (
+    <React.Fragment>
+      {sublayers.map((sublayer, i) => (
+        <Sublayer
+          key={i}
+          index={i}
+          sublayer={sublayer}
+          setDatasets={setDatasets}
+          setFilter={setFilter}
+          setActive={setActive}
+        />
+      ))}
 
-    <button onClick={() => onChange(sublayers)}>ok</button>
-  </>
+      <button onClick={() => onChange(sublayers)}>ok</button>
+    </React.Fragment>
+  )
 }

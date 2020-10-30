@@ -5,7 +5,7 @@ export const getVesselDataviewInstance = (
   vessel: { id: string },
   trackDatasets: Dataset[],
   infoDatasets: Dataset[]
-) => {
+): DataviewInstance => {
   const datasetsConfig = [
     ...trackDatasets.map((dataset) => ({
       datasetId: dataset?.id as string,

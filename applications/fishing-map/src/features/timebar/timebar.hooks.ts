@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { TimebarVisualisations } from 'types'
 import { useCallback, useEffect } from 'react'
+import { TimebarVisualisations } from 'types'
 import { selectTimebarVisualisation } from 'routes/routes.selectors'
 import { selectTimeRange } from 'features/timebar/timebar.selectors'
 import { useLocationConnect } from 'routes/routes.hook'

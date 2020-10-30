@@ -2,14 +2,9 @@ import { ColorRampsIds, HeatmapAnimatedMode } from '../types'
 import { DEFAULT_BACKGROUND_COLOR } from '..'
 import { HeatmapAnimatedCombinationMode } from './types'
 
-export const API_TILES_URL =
-  process.env.NODE_ENV === 'production'
-    ? 'https://fourwings.api.globalfishingwatch.org/v1'
-    : 'https://fourwings.api.dev.globalfishingwatch.org/v1'
-
 export const API_ENDPOINTS = {
-  tiles: 'tile/heatmap/{z}/{x}/{y}',
-  statistics: 'statistics',
+  tiles: '4wings/tile/heatmap/{z}/{x}/{y}',
+  statistics: '4wings/statistics',
 }
 
 export const HEATMAP_DEFAULT_MAX_ZOOM = 12

@@ -1,12 +1,12 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { LocaleOptions } from 'types'
 import { Switch, SwitchEvent } from '@globalfishingwatch/ui-components'
+import { LocaleOptions } from 'types'
 import { selectDebugOptions, toggleOption } from './debug.slice'
 import styles from './DebugMenu.module.css'
 
-function DebugMenu() {
+const DebugMenu: React.FC = () => {
   const dispatch = useDispatch()
   const debugOptions = useSelector(selectDebugOptions)
   const { i18n } = useTranslation()

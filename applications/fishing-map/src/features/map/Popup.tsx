@@ -1,9 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { formatInfoField, formatNumber } from 'utils/info'
 import { Popup } from '@globalfishingwatch/react-map-gl'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
+import { formatInfoField, formatNumber } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectTracksDatasets, selectVesselsDatasets } from 'features/workspace/workspace.selectors'
@@ -27,7 +27,7 @@ type ReactPopupAnchor =
   | 'bottom-left'
   | 'bottom-right'
 
-type PopupWrapper = {
+type PopupWrapperProps = {
   tooltipEvent: TooltipEvent
   closeButton?: boolean
   closeOnClick?: boolean
@@ -44,7 +44,7 @@ function PopupWrapper({
   onClose,
   loading = false,
   anchor,
-}: PopupWrapper) {
+}: PopupWrapperProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const trackDatasets = useSelector(selectTracksDatasets)
@@ -139,13 +139,13 @@ export function HoverPopup({ event }: { event: TooltipEvent | null }) {
   return null
 }
 
-type ClickPopup = {
+type ClickPopupProps = {
   event: TooltipEvent | null
   onClose?: () => void
   loading?: boolean
 }
 
-export function ClickPopup({ event, onClose, loading = false }: ClickPopup) {
+export function ClickPopup({ event, onClose, loading = false }: ClickPopupProps) {
   if (event && event.features) {
     return (
       <PopupWrapper

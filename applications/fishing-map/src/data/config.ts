@@ -1,5 +1,7 @@
-import { TimebarEvents, TimebarGraphs } from 'types'
 import { SelectOption } from '@globalfishingwatch/ui-components'
+import { TimebarEvents, TimebarGraphs } from 'types'
+
+export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
 
 // used when no url data and no workspace data
 export const FALLBACK_VIEWPORT = {
