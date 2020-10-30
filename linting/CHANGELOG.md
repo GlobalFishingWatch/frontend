@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 1.5.0
+
+### Minor Changes
+
+- Update typescript explicit-module-boundary and any types
+
 ## 1.4.0
 
 ### Minor Changes
