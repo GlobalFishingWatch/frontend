@@ -35,12 +35,12 @@
     "capture_map": "Enregistrer une image de la carte",
     "change_basemap_default": "Fond de carte par défaut",
     "change_basemap_satellite": "Fond de carte satellite",
+    "loading": "Map loading",
     "rulers_add": "Ajouter des mesures",
     "rulers_remove": "Supprimer toutes les mesures",
     "screenshot": "Image de la carte",
     "zoom_in": "Zoomer",
-    "zoom_out": "Dézoomer",
-    "loading": "Map loading"
+    "zoom_out": "Dézoomer"
   },
   "timebar": {
     "graph": "Graphique",
