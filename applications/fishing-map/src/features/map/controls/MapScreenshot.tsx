@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect, useCallback, useLayoutEffect } from 'react'
-import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { useTranslation } from 'react-i18next'
+import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'

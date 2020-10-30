@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { RootState } from 'store'
-import { AsyncReducerStatus } from 'types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Vessel, APISearch } from '@globalfishingwatch/api-types'
+import { RootState } from 'store'
+import { AsyncReducerStatus } from 'types'
 
 interface SearchState {
   status: AsyncReducerStatus

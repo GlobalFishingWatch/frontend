@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo } from 'react'
-import { UrlDataviewInstance } from 'types'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { MultiSelect } from '@globalfishingwatch/ui-components'
+import { UrlDataviewInstance } from 'types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import styles from './HeatmapFilters.module.css'
 

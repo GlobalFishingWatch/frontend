@@ -27,7 +27,7 @@ type ReactPopupAnchor =
   | 'bottom-left'
   | 'bottom-right'
 
-type PopupWrapper = {
+type PopupWrapperProps = {
   tooltipEvent: TooltipEvent
   closeButton?: boolean
   closeOnClick?: boolean
@@ -44,7 +44,7 @@ function PopupWrapper({
   onClose,
   loading = false,
   anchor,
-}: PopupWrapper) {
+}: PopupWrapperProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const trackDatasets = useSelector(selectTracksDatasets)
@@ -139,13 +139,13 @@ export function HoverPopup({ event }: { event: TooltipEvent | null }) {
   return null
 }
 
-type ClickPopup = {
+type ClickPopupProps = {
   event: TooltipEvent | null
   onClose?: () => void
   loading?: boolean
 }
 
-export function ClickPopup({ event, onClose, loading = false }: ClickPopup) {
+export function ClickPopup({ event, onClose, loading = false }: ClickPopupProps) {
   if (event && event.features) {
     return (
       <PopupWrapper
