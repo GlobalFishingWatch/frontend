@@ -20,7 +20,7 @@ import {
   resolveDataviewDatasetResource,
 } from 'features/workspace/workspace.selectors'
 import { selectResources } from 'features/resources/resources.slice'
-import { FALLBACK_VIEWPORT, API_GATEWAY } from 'data/config'
+import { FALLBACK_VIEWPORT } from 'data/config'
 import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'

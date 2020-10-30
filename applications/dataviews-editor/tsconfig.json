@@ -1,6 +1,7 @@
 {
   "extends": "../../config/tsconfig.json",
   "compilerOptions": {
+    "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
