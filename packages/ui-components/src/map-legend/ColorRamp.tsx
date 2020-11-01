@@ -17,12 +17,14 @@ function ColorRampLegend({
 }: ColorRampLegendProps) {
   const { gridArea, ramp, label, unit, currentValue } = (layer || {}) as LegendLayer
 
+  const skipOddLabels = ramp && ramp.length > 5
+
   const heatmapLegendScale = useMemo(() => {
     if (!ramp) return null
 
     return scaleLinear()
       .range(ramp.map((item, i) => (i * 100) / (ramp.length - 1)))
-      .domain(ramp.map(([value]) => value))
+      .domain(ramp.map(([value]) => value as number))
   }, [ramp])
 
   if (!ramp) return null
@@ -73,14 +75,15 @@ function ColorRampLegend({
       <div className={styles.stepsContainer}>
         {ramp.map(([value], i) => {
           if (value === null) return null
+          if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
           return (
             <span
               className={styles.step}
               style={{ left: `${(i * 100) / (ramp.length - 1)}%` }}
               key={i}
             >
-              {(i === ramp.length - 1 && !isNaN(value) ? '≥ ' : '') +
-                (value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value)}
+              {(i === ramp.length - 1 && !isNaN(value as number) ? '≥ ' : '') +
+                (value >= 1000 ? `${((value as number) / 1000).toFixed(1)}k` : value)}
             </span>
           )
         })}

@@ -24,7 +24,8 @@ const getBreaks = (
   max: number,
   avg: number,
   scalePowExponent = 1,
-  intermediateBreakRatios = [0.25, 0.5, 0.75],
+  // intermediateBreakRatios = [0.25, 0.5, 0.75],
+  numBreaks = 6,
   multiplier = 1
 ) => {
   const roundedMax = roundNumber(max)
@@ -33,6 +34,12 @@ const getBreaks = (
     // TODO Could this be [0, 1] or even omitted?
     .domain([0, 0.5, 1])
     .range([min, avg, roundedMax])
+
+  const numIntermediateBreaks = numBreaks - 3
+  // [0.25, 0.5, 0.75]
+  const intermediateBreakRatios = [...Array(numIntermediateBreaks)].map(
+    (_, i) => (i + 1) / (numIntermediateBreaks + 1)
+  )
 
   const intermediateBreaks = intermediateBreakRatios.map((ratio) => scale(ratio))
   let breaks = [0, min, ...intermediateBreaks, roundedMax]

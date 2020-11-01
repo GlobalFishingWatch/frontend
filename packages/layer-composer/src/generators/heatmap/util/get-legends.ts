@@ -4,6 +4,7 @@ import { HEATMAP_COLOR_RAMPS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import getBreaks from './get-breaks'
 
+// Get color ramps for a config's sublayers
 export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
   // TODO Use ramp from first sublayer
   const colorRampIds =
@@ -17,15 +18,17 @@ export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorCon
   return colorRamps
 }
 
+// Gets MGL layer paint configuration from base color ramp(s)
 export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
   const colorRamps = getSublayersColorRamps(config)
 
   const expressions = colorRamps.map((originalColorRamp, colorRampIndex) => {
-    const legend = [...Array(originalColorRamp.length)].map((_, i) => [
+    const legend = [...Array(originalColorRamp.length)].map((_, bucketIndex) => [
       // offset each dataset by 10 + add actual bucket value
-      colorRampIndex * 10 + i,
-      originalColorRamp[i],
+      colorRampIndex * 10 + bucketIndex,
+      originalColorRamp[bucketIndex],
     ])
+    // TODO use flatMap
     const expr = legend.flat()
     return expr
   })
@@ -37,6 +40,7 @@ export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGenerato
   return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions[0] }
 }
 
+// Gets breaks depending on config (alternative method to stats API)
 export const getSublayersBreaks = (
   config: GlobalHeatmapAnimatedGeneratorConfig,
   intervalInDays: number
@@ -47,13 +51,17 @@ export const getSublayersBreaks = (
   // if (config.mode === HeatmapAnimatedMode.Bivariate) {
   //   throw new Error('breaks generation not working for bivariate yet')
   // }
-  const intermediateBreakRatios = config.mode === HeatmapAnimatedMode.Bivariate ? [] : [0.33, 0.66]
-  return config.sublayers.map(() =>
-    getBreaks(1, 30, 10, 1, intermediateBreakRatios, intervalInDays)
-  )
+  // const intermediateBreakRatios =
+  //   config.mode === HeatmapAnimatedMode.Bivariate ? [] : [0.25, 0.5, 0.75]
+  const ramps = getSublayersColorRamps(config)
+  return config.sublayers.map((_, sublayerIndex) => {
+    const sublayerColorRamp = ramps[sublayerIndex]
+    return getBreaks(1, 100, 30, 1, sublayerColorRamp.length, intervalInDays)
+  })
 }
 
 const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays: number) => {
+  // TODO
   if (config.mode === HeatmapAnimatedMode.Bivariate) {
     return [
       {
@@ -63,22 +71,41 @@ const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays
       },
     ] as any
   }
-  const breaks = getSublayersBreaks(config, intervalInDays)
+  // TODO return bucket index
+  const sublayersBreaks = getSublayersBreaks(config, intervalInDays)
   const ramps = getSublayersColorRamps(config)
-  return breaks.map((sublayerBreaks, sublayerIndex) => {
-    const ramp = ramps[sublayerIndex]
-    const legendRamp = sublayerBreaks.map((break_, breakIndex) => {
-      // TODO Omitting the Zero value hence the +1
-      const rampColor = ramp[breakIndex + 1] as string
-      let rampValue = break_
-      if (config.mode === HeatmapAnimatedMode.Blob) {
-        if (breakIndex === 0) rampValue = 'less'
-        else if (breakIndex === sublayerBreaks.length - 1) rampValue = 'more'
-        else rampValue = null
+  return sublayersBreaks.map((sublayerBreaks, sublayerIndex) => {
+    const sublayerColorRamp = ramps[sublayerIndex]
+    let legendRamp = sublayerColorRamp.flatMap((rampColor, rampColorIndex) => {
+      const isLastColor = rampColorIndex === sublayerColorRamp.length - 1
+      const isFirstColor = rampColorIndex === 0
+
+      const startColor = rampColor
+      const endColor = isLastColor ? startColor : sublayerColorRamp[rampColorIndex + 1]
+
+      const startBucket = isFirstColor
+        ? Number.NEGATIVE_INFINITY
+        : sublayerBreaks[rampColorIndex - 1]
+      const endBucket = isLastColor ? Number.POSITIVE_INFINITY : sublayerBreaks[rampColorIndex]
+      const legendRampItem: [number | null | string, string] = [startBucket, startColor]
+
+      // Omit bucket that goes from -Infinity --> 0. Will have to add an exception if we need a divergent scale
+      if (startBucket === Number.NEGATIVE_INFINITY) {
+        return []
       }
-      const legendRampItem: [number, string] = [rampValue, rampColor]
-      return legendRampItem
+
+      return [legendRampItem]
     })
+
+    if (config.mode === HeatmapAnimatedMode.Blob) {
+      legendRamp = legendRamp.map((legendItem, i) => {
+        let value = null
+        if (i === 0) value = 'less'
+        else if (i === legendRamp.length - 1) value = 'more'
+        return [value, legendItem[1]]
+      })
+    }
+
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
       type: 'colorramp',

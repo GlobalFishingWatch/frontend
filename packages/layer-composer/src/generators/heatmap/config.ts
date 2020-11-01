@@ -26,7 +26,6 @@ export const HEATMAP_MODE_LAYER_TYPE: Record<HeatmapAnimatedMode, string> = {
   [HeatmapAnimatedMode.Extruded]: 'fill-extrusion',
 }
 
-const opacitySteps = [0, 0.2, 0.4, 0.6, 0.8, 1]
 const hex2Rgb = (hex: string) => {
   const cleanHex = hex.replace('#', '')
   const color = {
@@ -37,8 +36,9 @@ const hex2Rgb = (hex: string) => {
   return `${color.r}, ${color.g}, ${color.b}`
 }
 
-const getColorRampByOpacitySteps = (finalColor: string) => {
+const getColorRampByOpacitySteps = (finalColor: string, numSteps = 8) => {
   const color = finalColor.includes('#') ? hex2Rgb(finalColor) : finalColor
+  const opacitySteps = [...Array(numSteps)].map((_, i) => i / (numSteps - 1))
   return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
 }
 
