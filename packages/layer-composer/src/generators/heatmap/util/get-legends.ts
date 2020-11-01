@@ -88,12 +88,6 @@ const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays
         : sublayerBreaks[rampColorIndex - 1]
       const endBucket = isLastColor ? Number.POSITIVE_INFINITY : sublayerBreaks[rampColorIndex]
       const legendRampItem: [number | null | string, string] = [startBucket, startColor]
-
-      // Omit bucket that goes from -Infinity --> 0. Will have to add an exception if we need a divergent scale
-      if (startBucket === Number.NEGATIVE_INFINITY) {
-        return []
-      }
-
       return [legendRampItem]
     })
 
@@ -108,7 +102,7 @@ const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays
 
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
-      type: 'colorramp',
+      type: 'colorramp-discrete',
       ramp: legendRamp,
     }
     return sublayerLegend

@@ -88,6 +88,13 @@
   transform: translateX(0);
 }
 
-.step:last-child {
-  transform: translateX(-100%);
+.discreteSteps {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 1rem;
+}
+
+.discreteStep {
+  flex: 1;
 }

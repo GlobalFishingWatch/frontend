@@ -15,19 +15,22 @@ function ColorRampLegend({
   className = '',
   currentValueClassName = '',
 }: ColorRampLegendProps) {
-  const { gridArea, ramp, label, unit, currentValue } = (layer || {}) as LegendLayer
+  const { gridArea, ramp, label, unit, currentValue, type } = (layer || {}) as LegendLayer
 
-  const skipOddLabels = ramp && ramp.length > 5
+  // Omit bucket that goes from -Infinity --> 0. Will have to add an exception if we need a divergent scale
+  const cleanRamp = ramp?.filter(([value]) => value !== Number.NEGATIVE_INFINITY)
+
+  const skipOddLabels = ramp && ramp.length > 6
 
   const heatmapLegendScale = useMemo(() => {
-    if (!ramp) return null
+    if (!ramp || !cleanRamp) return null
 
     return scaleLinear()
-      .range(ramp.map((item, i) => (i * 100) / (ramp.length - 1)))
-      .domain(ramp.map(([value]) => value as number))
-  }, [ramp])
+      .range(cleanRamp.map((item, i) => (i * 100) / (ramp.length - 1)))
+      .domain(cleanRamp.map(([value]) => value as number))
+  }, [cleanRamp, ramp])
 
-  if (!ramp) return null
+  if (!ramp || !cleanRamp) return null
   return (
     <div className={cx(styles.row, className)}>
       {/* TODO: grab this from meta in generator or external dictionary by keys*/}
@@ -54,7 +57,7 @@ function ColorRampLegend({
       <div
         className={styles.ramp}
         style={{
-          backgroundImage: `linear-gradient(to right, ${ramp
+          backgroundImage: `linear-gradient(to right, ${cleanRamp
             .map(([value, color]) => color)
             .join()})`,
         }}
@@ -71,9 +74,16 @@ function ColorRampLegend({
             {currentValue}
           </span>
         )}
+        {type === 'colorramp-discrete' && (
+          <div className={styles.discreteSteps}>
+            {cleanRamp.map(([value, color], i) => (
+              <span className={styles.discreteStep} key={i} style={{ backgroundColor: color }} />
+            ))}
+          </div>
+        )}
       </div>
       <div className={styles.stepsContainer}>
-        {ramp.map(([value], i) => {
+        {cleanRamp.map(([value], i) => {
           if (value === null) return null
           if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
           return (

@@ -28,7 +28,7 @@ export function MapLegend({ layer, className, currentValueClassName }: MapLegend
   if (layer.type === 'solid') {
     return <Solid layer={layer} className={className} />
   }
-  if (layer.type === 'colorramp') {
+  if (layer.type === 'colorramp' || layer.type === 'colorramp-discrete') {
     return (
       <ColorRamp
         layer={layer}
