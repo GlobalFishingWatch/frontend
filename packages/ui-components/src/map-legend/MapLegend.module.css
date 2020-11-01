@@ -98,3 +98,7 @@
 .discreteStep {
   flex: 1;
 }
+
+.discreteStepSelected {
+  border: 2px solid white;
+}

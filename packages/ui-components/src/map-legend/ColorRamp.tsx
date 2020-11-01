@@ -31,6 +31,14 @@ function ColorRampLegend({
   }, [cleanRamp, ramp])
 
   if (!ramp || !cleanRamp) return null
+
+  const currentBucketIndex = currentValue
+    ? cleanRamp.findIndex(([value], i) => {
+        const max = i < cleanRamp.length - 1 ? cleanRamp[i + 1][0] : Number.POSITIVE_INFINITY
+        return currentValue > (value as number) && currentValue <= (max as number)
+      })
+    : null
+
   return (
     <div className={cx(styles.row, className)}>
       {/* TODO: grab this from meta in generator or external dictionary by keys*/}
@@ -77,7 +85,13 @@ function ColorRampLegend({
         {type === 'colorramp-discrete' && (
           <div className={styles.discreteSteps}>
             {cleanRamp.map(([value, color], i) => (
-              <span className={styles.discreteStep} key={i} style={{ backgroundColor: color }} />
+              <span
+                className={cx(styles.discreteStep, {
+                  [styles.discreteStepSelected]: currentBucketIndex === i,
+                })}
+                key={i}
+                style={{ backgroundColor: color }}
+              />
             ))}
           </div>
         )}
