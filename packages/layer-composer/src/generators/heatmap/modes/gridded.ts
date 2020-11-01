@@ -6,11 +6,15 @@ import { Type } from '../../types'
 import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer from '../util/get-base-layer'
 
-export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) {
+export default function gridded(
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  timeChunks: TimeChunks
+) {
   const { colorRampBaseExpression } = getColorRampBaseExpression(config)
   const layers: Layer[] = timeChunks.chunks.flatMap(
     (timeChunk: TimeChunk, timeChunkIndex: number) => {
       const pickValueAt = timeChunk.frame.toString()
+      // TODO Coalesce to 0 will not work if we use divergent scale (because we would need the value < min value)
       const exprPick = ['coalesce', ['get', pickValueAt], 0]
       const exprColorRamp = ['step', exprPick, 'transparent', ...colorRampBaseExpression]
 

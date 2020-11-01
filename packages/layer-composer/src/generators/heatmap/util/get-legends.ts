@@ -40,38 +40,36 @@ export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGenerato
   return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions[0] }
 }
 
+const STATS_MAX = 100
+const STATS_AVG = 30
+const SCALEPOWEXPONENT = 1
+const STATS_MAX_BIVARIATE = 15
+const STATS_AVG_BIVARIATE = 3
+const SCALEPOWEXPONENT_BIVARIATE = 1.5
+
 // Gets breaks depending on config (alternative method to stats API)
 export const getSublayersBreaks = (
   config: GlobalHeatmapAnimatedGeneratorConfig,
   intervalInDays: number
 ) => {
   // TODO - generate this using updated stats API ?
-  // TODO - in consequence, for each sublayer a different set of breaks should be produced
-  // TODO - BIVARIATE
-  // if (config.mode === HeatmapAnimatedMode.Bivariate) {
-  //   throw new Error('breaks generation not working for bivariate yet')
-  // }
-  // const intermediateBreakRatios =
-  //   config.mode === HeatmapAnimatedMode.Bivariate ? [] : [0.25, 0.5, 0.75]
+  // TODO - For each sublayer a different set of breaks should be produced
   const ramps = getSublayersColorRamps(config)
   return config.sublayers.map((_, sublayerIndex) => {
     const sublayerColorRamp = ramps[sublayerIndex]
-    return getBreaks(1, 100, 30, 1, sublayerColorRamp.length, intervalInDays)
+    const numBreaks = config.mode === HeatmapAnimatedMode.Bivariate ? 4 : sublayerColorRamp.length
+    const max = config.mode === HeatmapAnimatedMode.Bivariate ? STATS_MAX_BIVARIATE : STATS_MAX
+    const avg = config.mode === HeatmapAnimatedMode.Bivariate ? STATS_AVG_BIVARIATE : STATS_AVG
+    const scalePowExponent =
+      config.mode === HeatmapAnimatedMode.Bivariate ? SCALEPOWEXPONENT_BIVARIATE : SCALEPOWEXPONENT
+    return getBreaks(1, max, avg, scalePowExponent, numBreaks, intervalInDays)
   })
 }
 
-const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays: number) => {
-  // TODO
-  if (config.mode === HeatmapAnimatedMode.Bivariate) {
-    return [
-      {
-        id: 'plop',
-        type: 'colorramp',
-        ramp: [],
-      },
-    ] as any
-  }
-  // TODO return bucket index
+const getLegendsCompare = (
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  intervalInDays: number
+) => {
   const sublayersBreaks = getSublayersBreaks(config, intervalInDays)
   const ramps = getSublayersColorRamps(config)
   return sublayersBreaks.map((sublayerBreaks, sublayerIndex) => {
@@ -107,6 +105,28 @@ const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays
     }
     return sublayerLegend
   })
+}
+
+const getLegendsBivariate = (
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  intervalInDays: number
+) => {
+  const sublayersBreaks = getSublayersBreaks(config, intervalInDays)
+  const ramp = HEATMAP_COLOR_RAMPS.bivariate
+  return [
+    {
+      id: config.sublayers[0].id,
+      type: 'bivariate',
+      bivariateRamp: ramp,
+      sublayersBreaks,
+    },
+  ] as any
+}
+
+const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays: number) => {
+  return config.mode === HeatmapAnimatedMode.Bivariate
+    ? getLegendsBivariate(config, intervalInDays)
+    : getLegendsCompare(config, intervalInDays)
 }
 
 export default getLegends

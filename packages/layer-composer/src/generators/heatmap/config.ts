@@ -76,9 +76,17 @@ export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   orange: getColorRampByOpacitySteps('#FFAA0D'),
   // prettier-ignore
   bivariate: [
-    '#274874', '#267C8A', '#26B39F', '#26FFBD',
-    '#66518F', '#3E579A', '#667C9E', '#66FFC2',
+    DEFAULT_BACKGROUND_TRANSPARENT_COLOR,
+    '#244979', '#207D8C', '#17B4A0', '#26FFBD',
+    '#66518F', '#667CA0', '#63B3AD', '#66FFC2',
     '#A659A9', '#A67CB2', '#A6B3BB', '#A6FFC7',
     '#FF64CE', '#FF7CCE', '#FFB3CE', '#FFFFFF',
   ],
+  // bivariate: [
+  //   DEFAULT_BACKGROUND_TRANSPARENT_COLOR,
+  //   '#000', '#267C8A', '#26B39F', 'red',
+  //   '#66518F', '#FFEA00', '#667C9E', '#66FFC2',
+  //   '#A659A9', '#A67CB2', '#FFAA0D', '#A6FFC7',
+  //   'blue', '#FF7CCE', '#FFB3CE', '#FFFFFF',
+  // ],
 }

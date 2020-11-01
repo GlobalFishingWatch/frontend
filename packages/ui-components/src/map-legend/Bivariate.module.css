@@ -1,0 +1,13 @@
+.container {
+  margin-bottom: -50px;
+}
+
+.labels text {
+  fill: var(--color-secondary-blue);
+  font: var(--font-S);
+}
+
+.labels tspan {
+  text-anchor: end;
+}
+

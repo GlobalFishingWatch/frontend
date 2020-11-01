@@ -5,7 +5,7 @@
   min-height: var(--size-M);
 }
 
-.LayerPanel:not(:last-child)::after {
+.LayerPanel:not(:last-child):not(.noBorder)::after {
   content: '';
   position: absolute;
   left: var(--space-S);
