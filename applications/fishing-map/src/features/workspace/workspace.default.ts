@@ -7,9 +7,9 @@ const workspace: Workspace = {
   startAt: new Date(2019, 0).toISOString(),
   endAt: new Date(2020, 0).toISOString(),
   viewport: {
-    zoom: 3.2,
-    latitude: 17,
-    longitude: -10,
+    zoom: 4.4,
+    latitude: 43,
+    longitude: -3,
   },
   dataviewInstances: [
     {
@@ -27,7 +27,7 @@ const workspace: Workspace = {
       id: 'fishing-2',
       config: {
         color: '#ff0000',
-        filters: [],
+        filters: ['FRA'],
         colorRamp: 'red',
       },
       dataviewId: 91,
