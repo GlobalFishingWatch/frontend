@@ -39,7 +39,7 @@
     "redux-first-router-link": "^2.1.1"
   },
   "devDependencies": {
-    "@globalfishingwatch/linting": "^1.5.2",
+    "@globalfishingwatch/linting": "^1.5.3",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -91,10 +91,27 @@
       "last 1 safari version"
     ]
   },
-  "eslintConfig": {},
+  "eslintConfig": {
+    "extends": ["@globalfishingwatch/linting/typescript"],
+    "ignorePatterns": "public/"
+  },
+  "prettier": "@globalfishingwatch/linting/prettier",
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint"
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint -c ./.eslintrc.js --fix"
+    ],
+    "*.css": [
+      "stylelint --fix",
+      "stylelint --syntax=scss --fix"
+    ],
+    "*.scss": [
+      "prettier --write",
+      "stylelint --syntax=scss --fix"
+    ]
   }
 }
