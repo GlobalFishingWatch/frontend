@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Segment } from '@globalfishingwatch/data-transforms'
-import { selectStartQuery, selectEndQuery } from 'routes/routes.selectors'
+import { selectStartQuery, selectEndQuery, selectTimebarGraph } from 'routes/routes.selectors'
 import {
   selectWorkspaceTimeRange,
   selectVesselsDataviews,
@@ -53,5 +53,37 @@ export const selectTracksData = createSelector(
     })
 
     return tracksSegments
+  }
+)
+
+export const selectTracksGraphs = createSelector(
+  [selectVesselsDataviews, selectTimebarGraph, selectResources],
+  (trackDataviews, timebarGraph, resources) => {
+    if (!trackDataviews || !resources) return
+
+    const graphs = trackDataviews.flatMap((dataview) => {
+      const { url } = resolveDataviewDatasetResource(dataview, TRACKS_DATASET_TYPE)
+      if (!url) return []
+      const track = resources[url] as Resource<Segment[]>
+      if (!track?.data) return []
+
+      const segmentsWithCurrentFeature = track.data.map((segment) => {
+        return segment.flatMap((pt) => {
+          const value = (pt as any)[timebarGraph]
+          if (!value) return []
+          return {
+            date: pt.timestamp,
+            value,
+          }
+        })
+      })
+      return {
+        color: dataview.config?.color || '',
+        segmentsWithCurrentFeature,
+        // TODO Figure out this magic value
+        maxValue: 25,
+      }
+    })
+    return graphs
   }
 )
