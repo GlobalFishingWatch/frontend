@@ -22,6 +22,7 @@ COPY ./src /app/src
 COPY ./public /app/public
 COPY ./.eslintignore /app/.eslintignore
 COPY ./.eslintrc.js /app/.eslintrc.js
+COPY ./.prettierrc.js /app/.prettierrc.js
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./tsconfig.json /app/tsconfig.json
 RUN npm run build
