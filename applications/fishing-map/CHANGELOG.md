@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.15.1
+
+### Patch Changes
+
+- 270e372: Fix resolvedEndpoint datasetId duplicated
+- Updated dependencies [270e372]
+  - @globalfishingwatch/dataviews-client@4.0.1
+
 ## 0.15.0
 
 ### Minor Changes

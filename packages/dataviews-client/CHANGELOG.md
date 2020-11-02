@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 4.0.1
+
+### Patch Changes
+
+- 270e372: Fix resolvedEndpoint datasetId duplicated
+
 ## 4.0.0
 
 ### Major Changes
