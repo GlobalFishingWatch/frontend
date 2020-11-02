@@ -57,7 +57,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
             .flatMap((vs) => vs)
             .map((v) => v.id)
           const infoDatasetConfig = {
-            endpoint: 'carriers-multiple-vessel',
+            endpoint: 'carriers-list-vessels',
             datasetId: infoDataset.id,
             params: [],
             query: [

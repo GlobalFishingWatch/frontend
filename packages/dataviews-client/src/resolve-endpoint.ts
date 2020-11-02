@@ -1,7 +1,7 @@
 import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 
 // Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
-export default (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
+const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
   const endpoint = dataset.endpoints?.find((endpoint) => endpoint.id === datasetConfig.endpoint)
   if (!endpoint) return null
 
@@ -28,7 +28,11 @@ export default (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
       }
     })
     // To avoid duplicating query in every config when we already have the datasetId
-    if (endpoint.query.some((q) => q.id === 'datasets') && !resolvedQuery.get('datasets')) {
+    if (
+      endpoint.query.some((q) => q.id === 'datasets') &&
+      !resolvedQuery.toString().includes('datasets') &&
+      datasetConfig.datasetId
+    ) {
       resolvedQuery.set('datasets', datasetConfig.datasetId)
     }
     url = `${url}?${resolvedQuery.toString()}`
@@ -39,3 +43,5 @@ export default (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
 
   return url
 }
+
+export default resolveEndpoint
