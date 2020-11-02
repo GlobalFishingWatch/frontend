@@ -74,9 +74,10 @@ jobs:
         run: |-
           gcloud -q components install beta
 
-      - name: Trigger amathea build
-        run: |-
-          gcloud -q beta builds triggers run --branch=develop ui-amateha-push-develop
+      # Remove comments once we are back to amathea
+      # - name: Trigger amathea build
+      #   run: |-
+      #     gcloud -q beta builds triggers run --branch=develop ui-amateha-push-develop
 
       - name: Trigger fishing-map build
         run: |-
