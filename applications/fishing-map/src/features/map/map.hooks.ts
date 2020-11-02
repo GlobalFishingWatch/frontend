@@ -106,7 +106,6 @@ export const useClickedEventConnect = () => {
 
     // use the first feature/dv for common parameters
     const mainFeature = features[0]
-
     const datasetConfig = {
       endpoint: '4wings-interaction',
       params: [
@@ -124,8 +123,11 @@ export const useClickedEventConnect = () => {
             dataviewDatasets.map((ds: Dataset) => ds.id).join(',')
           ),
         },
-        { id: 'filters', value: featuresDataviews.map((dv) => dv.config && dv.config.filter) },
       ],
+    }
+    const filters = featuresDataviews.flatMap((dv) => dv.config?.filter || [])
+    if (filters?.length) {
+      datasetConfig.query.push({ id: 'filters', value: filters })
     }
 
     // TODO Not sure of this

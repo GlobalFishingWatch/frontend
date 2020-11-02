@@ -1,14 +1,25 @@
 import React, { Fragment, memo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import TimebarComponent, { TimebarHighlighter } from '@globalfishingwatch/timebar'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import TimebarComponent, {
+  TimebarTracks,
+  TimebarActivity,
+  TimebarHighlighter,
+} from '@globalfishingwatch/timebar'
+import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
+import { TimebarVisualisations, TimebarGraphs } from 'types'
+import { selectTimebarGraph } from 'routes/routes.selectors'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
+import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
 
 const TimebarWrapper = () => {
   const { start, end, dispatchTimeranges } = useTimerangeConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
+  const { timebarVisualisation } = useTimebarVisualisation()
+  const timebarGraph = useSelector(selectTimebarGraph)
+  const tracks = useSelector(selectTracksData)
+  const tracksGraph = useSelector(selectTracksGraphs)
 
   const dispatch = useDispatch()
 
@@ -51,6 +62,19 @@ const TimebarWrapper = () => {
       >
         {() => (
           <Fragment>
+            {timebarVisualisation === TimebarVisualisations.Vessel && tracks?.length && (
+              <Fragment>
+                <TimebarTracks key="tracks" tracks={tracks} />
+                {timebarGraph === TimebarGraphs.Speed && (
+                  <TimebarActivity
+                    key="trackActivity"
+                    // opacity={0.4}
+                    // curve="curveBasis"
+                    graphTracks={tracksGraph}
+                  />
+                )}
+              </Fragment>
+            )}
             {highlightedTime && (
               <TimebarHighlighter
                 hoverStart={highlightedTime.start}

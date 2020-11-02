@@ -44,6 +44,12 @@ const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceT
   return response
 }
 
+const handleError = ({ error }: any) => {
+  if (error?.status === 401 && error?.url.includes('globalfishingwatch')) {
+    GFWAPI.refreshAPIToken()
+  }
+}
+
 const getLegendLayers = (
   style?: ExtendedStyle,
   dataviews?: UrlDataviewInstance[],
@@ -165,6 +171,7 @@ const MapWrapper = (): React.ReactElement | null => {
           interactiveLayerIds={rulersEditing ? undefined : style?.metadata?.interactiveLayerIds}
           onClick={onMapClick}
           onHover={onMapHover}
+          onError={handleError}
           transitionDuration={viewport.transitionDuration}
         >
           {clickedEvent && (

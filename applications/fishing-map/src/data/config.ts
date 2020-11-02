@@ -55,6 +55,7 @@ export const sources: SelectOption[] = [
   },
 ]
 
+// TODO translate this
 export const TIMEBAR_EVENT_OPTIONS: SelectOption[] = [
   {
     id: 'all',
@@ -82,6 +83,7 @@ export const TIMEBAR_EVENT_OPTIONS: SelectOption[] = [
   },
 ]
 
+// TODO translate this
 export const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = [
   {
     id: 'speed',
