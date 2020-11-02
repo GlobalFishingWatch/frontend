@@ -19,7 +19,7 @@ const workspace: Workspace = {
     {
       id: 'fishing-1',
       config: {
-        filters: ['ESP'],
+        // filters: ['ESP'],
       },
       dataviewId: 91,
     },
@@ -27,7 +27,7 @@ const workspace: Workspace = {
       id: 'fishing-2',
       config: {
         color: '#ff0000',
-        filters: ['FRA'],
+        filters: [],
         colorRamp: 'red',
       },
       dataviewId: 91,
