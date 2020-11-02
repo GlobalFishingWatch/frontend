@@ -1,14 +1,16 @@
 import React, { Fragment, memo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import TimebarComponent, { TimebarHighlighter } from '@globalfishingwatch/timebar'
+import TimebarComponent, { TimebarTracks, TimebarHighlighter } from '@globalfishingwatch/timebar'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
+import { selectTracksData } from './timebar.selectors'
 
 const TimebarWrapper = () => {
   const { start, end, dispatchTimeranges } = useTimerangeConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
+  const tracks = useSelector(selectTracksData)
 
   const dispatch = useDispatch()
 
@@ -51,6 +53,7 @@ const TimebarWrapper = () => {
       >
         {() => (
           <Fragment>
+            {tracks?.length && <TimebarTracks key="tracks" tracks={tracks} />}
             {highlightedTime && (
               <TimebarHighlighter
                 hoverStart={highlightedTime.start}
