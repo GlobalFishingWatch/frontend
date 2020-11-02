@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
@@ -99,14 +99,18 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           />
         </div>
       </div>
-      {layerActive && fishingFiltersOptions.length > 0 && (
+      {layerActive && (
         <div className={styles.properties}>
-          <label>{t('layer.filter_plural', 'Filters')}</label>
-          <TagList
-            tags={fishingFiltersOptions}
-            color={dataview.config?.color}
-            className={styles.tagList}
-          />
+          {fishingFiltersOptions.length > 0 && (
+            <Fragment>
+              <label>{t('layer.filter_plural', 'Filters')}</label>
+              <TagList
+                tags={fishingFiltersOptions}
+                color={dataview.config?.color}
+                className={styles.tagList}
+              />
+            </Fragment>
+          )}
           <div id={`legend_${dataview.id}`}></div>
         </div>
       )}
