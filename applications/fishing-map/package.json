@@ -84,7 +84,9 @@
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^20.0.0"
   },
-  "eslintConfig": {},
+  "eslintConfig": {
+    "extends": ["@globalfishingwatch/linting/typescript"]
+  },
   "browserslist": {
     "production": [
       ">0.2%",
