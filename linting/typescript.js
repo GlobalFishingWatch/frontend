@@ -55,6 +55,7 @@ module.exports = {
     'react/jsx-fragments': ['error', 'element'],
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/no-var-requires': 0,
+    '@typescript-eslint/no-redeclare': 0,
     // note you must disable the base rule as it can report incorrect errors
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/FAQ.md#i-am-using-a-rule-from-eslint-core-and-it-doesnt-work-correctly-with-typescript-code
     'no-use-before-define': 'off',

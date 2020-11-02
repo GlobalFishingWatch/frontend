@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 1.5.3
+
+### Patch Changes
+
+- Fix missing rule
+
 ## 1.5.2
 
 ### Patch Changes
