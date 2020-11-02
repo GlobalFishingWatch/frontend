@@ -121,7 +121,7 @@ export const selectDataviewInstancesResolved = createSelector(
         const dataviewInstanceWithUrlFilter = {
           ...dataviewInstance,
         }
-        if (dataviewInstance.config.filters && dataviewInstanceWithUrlFilter.config) {
+        if (dataviewInstance.config.filters?.length && dataviewInstanceWithUrlFilter.config) {
           const flags = dataviewInstanceWithUrlFilter.config.filters
           dataviewInstanceWithUrlFilter.config.filter = `flag IN (${flags
             .map((f: string) => `'${f}'`)
