@@ -20,7 +20,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
   async ({ query, datasets }: { query: string; datasets: Dataset[] }) => {
     const dataset = datasets[0]
     const datasetConfig = {
-      endpoint: 'carriers-vessels',
+      endpoint: 'carriers-search-vessels',
       datasetId: dataset.id,
       params: [],
       query: [
