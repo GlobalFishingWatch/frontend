@@ -41,6 +41,7 @@
 .optionsContainer {
   width: 100%;
   position: absolute !important; /* as needs to overwrite default FixedSizeList behaviour */
+  top: var(--size-M);
   left: 0;
   background: var(--color-white);
   box-shadow: var(--box-shadow);
