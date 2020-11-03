@@ -1,4 +1,5 @@
 import { Workspace } from '@globalfishingwatch/api-types'
+import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_VESSEL_DATAVIEW_ID } from 'data/datasets'
 
 const workspace: Workspace = {
   id: 31,
@@ -21,7 +22,7 @@ const workspace: Workspace = {
       config: {
         // filters: ['ESP'],
       },
-      dataviewId: 91,
+      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
     {
       id: 'fishing-2',
@@ -30,14 +31,14 @@ const workspace: Workspace = {
         filters: ['FRA'],
         colorRamp: 'red',
       },
-      dataviewId: 91,
+      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
     {
       id: 'vessel-1',
       config: {
         color: '#F95E5E',
       },
-      dataviewId: 92,
+      dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
       datasetsConfig: [
         {
           params: [

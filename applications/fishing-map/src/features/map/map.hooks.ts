@@ -184,12 +184,13 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       dataview = dataviews.find((dataview) => dataview.id === feature.generatorId)
     }
     if (!dataview) return []
+    const dataset = dataview.datasets?.find((dataset) => dataset.type === FISHING_DATASET_TYPE)
     const tooltipEventFeature: TooltipEventFeature = {
       title: dataview.name || dataview.id.toString(),
       color: dataview.config?.color || 'black',
       // unit: dataview.unit || '',
       value: feature.value,
-      ...(feature.dataset && { dataset: feature.dataset }),
+      ...(dataset && { dataset }),
     }
     if (feature.vessels) {
       tooltipEventFeature.vesselsInfo = {
