@@ -64,7 +64,7 @@
   left: 50%;
   bottom: 2rem;
   height: 1rem;
-  width: 1px;
+  width: 3px;
   z-index: 1;
   background-color: var(--color-white);
 }
@@ -97,8 +97,4 @@
 
 .discreteStep {
   flex: 1;
-}
-
-.discreteStepSelected {
-  border: 2px solid white;
 }

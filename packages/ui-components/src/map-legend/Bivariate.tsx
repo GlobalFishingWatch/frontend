@@ -1,8 +1,8 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
-import { LegendLayerBivariate } from './MapLegend'
 import styles from './Bivariate.module.css'
 import BivariateArrows from './Bivariate-arrows'
+import { LegendLayerBivariate } from './'
 
 type BivariateLegendProps = {
   layer: LegendLayerBivariate
@@ -30,8 +30,7 @@ type BivariateLegendProps = {
 const getBucketIndex = (breaks: number[], value: number) => {
   let currentBucketIndex
   for (let bucketIndex = 0; bucketIndex < breaks.length + 1; bucketIndex++) {
-    const stopValue =
-      breaks[bucketIndex] !== undefined ? breaks[bucketIndex] : Number.POSITIVE_INFINITY
+    const stopValue = breaks?.[bucketIndex] ?? Number.POSITIVE_INFINITY
     if (value <= stopValue) {
       currentBucketIndex = bucketIndex
       break

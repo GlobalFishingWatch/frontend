@@ -38,7 +38,7 @@ export enum Group {
 export interface LayerMetadataLegend extends GeneratorLegend {
   id?: string
   type: 'colorramp' | 'colorramp-discrete' | 'bivariate' | 'solid'
-  gridArea?: number
+  gridArea?: number | string
   ramp?: [number | null | string, string][]
   currentValue?: number
   [key: string]: any

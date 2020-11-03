@@ -2,7 +2,7 @@ import React, { memo, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
 import styles from './MapLegend.module.css'
-import { LegendLayer } from './MapLegend'
+import { LegendLayer } from '.'
 
 type ColorRampLegendProps = {
   layer: LegendLayer
@@ -11,11 +11,11 @@ type ColorRampLegendProps = {
 }
 
 function ColorRampLegend({
-  layer,
+  layer = {} as LegendLayer,
   className = '',
   currentValueClassName = '',
 }: ColorRampLegendProps) {
-  const { gridArea, ramp, label, unit, currentValue, type } = (layer || {}) as LegendLayer
+  const { gridArea, ramp, label, unit, currentValue, type } = layer
 
   // Omit bucket that goes from -Infinity --> 0. Will have to add an exception if we need a divergent scale
   const cleanRamp = ramp?.filter(([value]) => value !== Number.NEGATIVE_INFINITY)
@@ -32,16 +32,15 @@ function ColorRampLegend({
 
   if (!ramp || !cleanRamp) return null
 
-  const currentBucketIndex = currentValue
-    ? cleanRamp.findIndex(([value], i) => {
-        const max = i < cleanRamp.length - 1 ? cleanRamp[i + 1][0] : Number.POSITIVE_INFINITY
-        return currentValue > (value as number) && currentValue <= (max as number)
-      })
-    : null
+  // const currentBucketIndex = currentValue
+  //   ? cleanRamp.findIndex(([value], i) => {
+  //       const max = i < cleanRamp.length - 1 ? cleanRamp[i + 1][0] : Number.POSITIVE_INFINITY
+  //       return currentValue > (value as number) && currentValue <= (max as number)
+  //     })
+  //   : null
 
   return (
     <div className={cx(styles.row, className)}>
-      {/* TODO: grab this from meta in generator or external dictionary by keys*/}
       {label && (
         <p>
           {label}
@@ -52,7 +51,7 @@ function ColorRampLegend({
               {gridArea && (
                 <span>
                   {' '}
-                  by {(gridArea > 100000 ? gridArea / 1000000 : gridArea).toLocaleString('en-EN')}
+                  by {gridArea}
                   {gridArea > 100000 ? 'km' : 'm'}
                   <sup>2</sup>
                 </span>
@@ -87,7 +86,7 @@ function ColorRampLegend({
             {cleanRamp.map(([value, color], i) => (
               <span
                 className={cx(styles.discreteStep, {
-                  [styles.discreteStepSelected]: currentBucketIndex === i,
+                  // [styles.discreteStepSelected]: currentBucketIndex === i,
                 })}
                 key={i}
                 style={{ backgroundColor: color }}

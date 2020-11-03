@@ -1,7 +1,7 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
 import styles from './MapLegend.module.css'
-import { LegendLayer } from './MapLegend'
+import { LegendLayer } from './'
 
 type SolidLegendProps = {
   layer: LegendLayer

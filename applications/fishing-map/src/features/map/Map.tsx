@@ -11,12 +11,11 @@ import {
   useMapClick,
   useMapHover,
   useTilesState,
-  ExtendedFeature,
 } from '@globalfishingwatch/react-hooks'
 import {
   LegendLayer,
   LegendLayerBivariate,
-} from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
+} from '@globalfishingwatch/ui-components/dist/map-legend'
 import { ExtendedStyleMeta, ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { AsyncReducerStatus, UrlDataviewInstance } from 'types'
@@ -69,6 +68,13 @@ const getLegendLayers = (
     return sublayerLegendsMetadata.map((sublayerLegendMetadata, sublayerIndex) => {
       const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
       const dataview = dataviews?.find((d) => d.id === id)
+      let gridArea
+      if (sublayerLegendMetadata.gridArea) {
+        gridArea =
+          sublayerLegendMetadata.gridArea > 100000
+            ? (sublayerLegendMetadata.gridArea as number) / 1000000
+            : sublayerLegendMetadata.gridArea.toLocaleString('en-EN') // TODO: use i18n locale here
+      }
       const sublayerLegend: LegendLayer | LegendLayerBivariate = {
         ...sublayerLegendMetadata,
         id: `legend_${id}`,
@@ -76,10 +82,12 @@ const getLegendLayers = (
         // TODO Get that from dataview and use i18n and add cell size info
         label: 'Soy leyenda ✌️',
         unit: i18n.t('common.hour_plural', 'hours'),
+        // TODO: Define gridArea in heatmap-animated as it comes from stats and is not used here
+        gridArea,
       }
 
       const getHoveredFeatureValueForSublayerIndex = (index: number): number => {
-        const hoveredFeature: ExtendedFeature | undefined = hoveredEvent?.features?.find(
+        const hoveredFeature = hoveredEvent?.features?.find(
           (f) => f.temporalgrid?.sublayerIndex === index
         )
         return hoveredFeature?.value
