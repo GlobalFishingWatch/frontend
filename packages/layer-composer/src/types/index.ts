@@ -45,6 +45,15 @@ export interface LayerMetadataLegend extends GeneratorLegend {
 }
 
 /**
+ * Specialized version of LayerMetadataLegend for bivariate legend
+ */
+export interface LayerMetadataLegendBivariate extends LayerMetadataLegend {
+  currentValues: [number, number]
+  sublayersBreaks: [number[], number[]]
+  bivariateRamp: string[]
+}
+
+/**
  * Set of additional metadata properties added by LayerCompoeser for later use in transformations or to be consumed directly ie (group, legend, etc)
  */
 export interface ExtendedLayerMeta {

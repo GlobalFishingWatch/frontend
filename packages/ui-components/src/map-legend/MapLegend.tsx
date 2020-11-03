@@ -1,6 +1,9 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
-import { LayerMetadataLegend } from '@globalfishingwatch/layer-composer/dist/types'
+import {
+  LayerMetadataLegend,
+  LayerMetadataLegendBivariate,
+} from '@globalfishingwatch/layer-composer/dist/types'
 import Solid from './Solid'
 import ColorRamp from './ColorRamp'
 import Bivariate from './Bivariate'
@@ -11,10 +14,14 @@ export type LegendLayer = LayerMetadataLegend & {
   color: string
 }
 
+export type LegendLayerBivariate = LayerMetadataLegendBivariate & {
+  color: string
+}
+
 interface MapLegendProps {
   className?: string
   currentValueClassName?: string
-  layer: LegendLayer
+  layer: LegendLayer | LegendLayerBivariate
 }
 
 interface MapLegendsProps {
@@ -38,13 +45,14 @@ export function MapLegend({ layer, className, currentValueClassName }: MapLegend
     )
   }
   if (layer.type === 'bivariate') {
-    return <Bivariate layer={layer} className={className} />
+    return <Bivariate layer={layer as LegendLayerBivariate} className={className} />
   }
   return null
 }
 
 function MapLegends(props: MapLegendsProps) {
   const { className, layers } = props
+  console.log(layers)
   return (
     <div className={cx(styles.legend, className)}>
       {layers?.map((layer, index) => (

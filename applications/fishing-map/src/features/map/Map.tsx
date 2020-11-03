@@ -11,8 +11,12 @@ import {
   useMapClick,
   useMapHover,
   useTilesState,
+  ExtendedFeature,
 } from '@globalfishingwatch/react-hooks'
-import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
+import {
+  LegendLayer,
+  LegendLayerBivariate,
+} from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
 import { ExtendedStyleMeta, ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { AsyncReducerStatus, UrlDataviewInstance } from 'types'
@@ -65,7 +69,7 @@ const getLegendLayers = (
     return sublayerLegendsMetadata.map((sublayerLegendMetadata, sublayerIndex) => {
       const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
       const dataview = dataviews?.find((d) => d.id === id)
-      const sublayerLegend: LegendLayer = {
+      const sublayerLegend: LegendLayer | LegendLayerBivariate = {
         ...sublayerLegendMetadata,
         id: `legend_${id}`,
         color: layer.metadata?.color || dataview?.config?.color || 'red',
@@ -73,11 +77,22 @@ const getLegendLayers = (
         label: 'Soy leyenda ✌️',
         unit: i18n.t('common.hour_plural', 'hours'),
       }
-      const hoveredFeatureForDataview = hoveredEvent?.features?.find(
-        (f) => f.temporalgrid?.sublayerIndex === sublayerIndex
-      )
-      if (hoveredFeatureForDataview) {
-        sublayerLegend.currentValue = hoveredFeatureForDataview.value
+
+      const getHoveredFeatureValueForSublayerIndex = (index: number): number => {
+        const hoveredFeature: ExtendedFeature | undefined = hoveredEvent?.features?.find(
+          (f) => f.temporalgrid?.sublayerIndex === index
+        )
+        return hoveredFeature?.value
+      }
+
+      // Both bivariate sublayers come in the same sublayerLegend (see getLegendsBivariate in LC)
+      if (sublayerLegend.type === 'bivariate') {
+        sublayerLegend.currentValues = [
+          getHoveredFeatureValueForSublayerIndex(0),
+          getHoveredFeatureValueForSublayerIndex(1),
+        ]
+      } else {
+        sublayerLegend.currentValue = getHoveredFeatureValueForSublayerIndex(sublayerIndex)
       }
       return sublayerLegend
     })
