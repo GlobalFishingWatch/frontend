@@ -26,6 +26,7 @@ import { selectEditing, moveCurrentRuler } from 'features/map/controls/rulers.sl
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { ClickPopup, HoverPopup } from './Popup'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import { useMapboxRef, useMapboxRefReady } from './map.context'
@@ -64,26 +65,13 @@ const getLegendLayers = (
     const sublayerLegendsMetadata = Array.isArray(layer.metadata.legend)
       ? layer.metadata.legend
       : [layer.metadata.legend]
-
     return sublayerLegendsMetadata.map((sublayerLegendMetadata, sublayerIndex) => {
       const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
       const dataview = dataviews?.find((d) => d.id === id)
-      let gridArea
-      if (sublayerLegendMetadata.gridArea) {
-        gridArea =
-          sublayerLegendMetadata.gridArea > 100000
-            ? (sublayerLegendMetadata.gridArea as number) / 1000000
-            : sublayerLegendMetadata.gridArea.toLocaleString('en-EN') // TODO: use i18n locale here
-      }
       const sublayerLegend: LegendLayer | LegendLayerBivariate = {
         ...sublayerLegendMetadata,
         id: `legend_${id}`,
         color: layer.metadata?.color || dataview?.config?.color || 'red',
-        // TODO Get that from dataview and use i18n and add cell size info
-        label: 'Soy leyenda ✌️',
-        unit: i18n.t('common.hour_plural', 'hours'),
-        // TODO: Define gridArea in heatmap-animated as it comes from stats and is not used here
-        gridArea,
       }
 
       const getHoveredFeatureValueForSublayerIndex = (index: number): number => {
@@ -211,18 +199,36 @@ const MapWrapper = (): React.ReactElement | null => {
         </InteractiveMap>
       )}
       <MapControls loading={tilesLoading.loading} />
-      {layersWithLegend?.map(
-        (legend) =>
-          document.getElementById(legend.id as string) &&
-          createPortal(
+      {layersWithLegend?.map((legend) => {
+        const legendDomElement = document.getElementById(legend.id as string)
+        if (legendDomElement) {
+          const isSquareKm = (legend.gridArea as number) > 50000
+          const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+          const gridAreaFormatted = gridArea
+            ? formatI18nNumber(gridArea, {
+                style: 'unit',
+                unit: isSquareKm ? 'kilometer' : 'meter',
+                unitDisplay: 'short',
+              })
+            : ''
+
+          return createPortal(
             <MapLegend
               layer={legend}
               className={styles.legend}
               currentValueClassName={styles.currentValue}
+              labelComponent={
+                <span className={styles.legendLabel}>
+                  {i18n.t('common.hour_plural', 'hours')} / {gridAreaFormatted}
+                  <sup>2</sup>
+                </span>
+              }
             />,
-            document.getElementById(legend.id as string) as Element
+            legendDomElement
           )
-      )}
+        }
+        return null
+      })}
     </div>
   )
 }

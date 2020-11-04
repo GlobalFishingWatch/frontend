@@ -6,6 +6,11 @@
   background-color: white
 }
 
+.legendLabel {
+  font: var(--font-S);
+  opacity: var(--opacity-secondary);
+}
+
 :global(.mapboxgl-control-container .mapboxgl-ctrl.mapboxgl-ctrl-attrib) {
   padding-right: var(--space-XS);
   padding-bottom: var(--space-XS);
