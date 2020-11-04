@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.2.1
+
+### Patch Changes
+
+- afa2d1b: Bivariate legend
+
 ## 4.2.0
 
 ### Minor Changes

@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/temporalgrid-demo
 
+## 0.7.1
+
+### Patch Changes
+
+- afa2d1b: Bivariate legend
+- Updated dependencies [afa2d1b]
+  - @globalfishingwatch/layer-composer@4.2.1
+
 ## 0.7.0
 
 ### Minor Changes

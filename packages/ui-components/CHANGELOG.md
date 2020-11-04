@@ -1,5 +1,14 @@
 # @globalfishingwatch/ui-components
 
+## 2.4.4
+
+### Patch Changes
+
+- Fix map legend types export
+- afa2d1b: Bivariate legend
+- Updated dependencies [afa2d1b]
+  - @globalfishingwatch/layer-composer@4.2.1
+
 ## 2.4.3
 
 ### Patch Changes
