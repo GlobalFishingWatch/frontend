@@ -40,12 +40,11 @@ export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGenerato
   return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions[0] }
 }
 
-const STATS_MAX = 100
-const STATS_AVG = 30
+// The following values simulate what would return a stats endpoint response
+const STATS_MIN = 1 // Min value for a single day
+const STATS_MAX = 50 // Max value for a single day
+const STATS_AVG = 10 // Avg value for a single day
 const SCALEPOWEXPONENT = 1
-const STATS_MAX_BIVARIATE = 15
-const STATS_AVG_BIVARIATE = 3
-const SCALEPOWEXPONENT_BIVARIATE = 1.5
 
 // Gets breaks depending on config (alternative method to stats API)
 export const getSublayersBreaks = (
@@ -53,16 +52,12 @@ export const getSublayersBreaks = (
   intervalInDays: number
 ) => {
   // TODO - generate this using updated stats API ?
-  // TODO - For each sublayer a different set of breaks should be produced
+  // TODO - For each sublayer a different set of breaks should be produced depending on filters
   const ramps = getSublayersColorRamps(config)
   return config.sublayers.map((_, sublayerIndex) => {
     const sublayerColorRamp = ramps[sublayerIndex]
     const numBreaks = config.mode === HeatmapAnimatedMode.Bivariate ? 4 : sublayerColorRamp.length
-    const max = config.mode === HeatmapAnimatedMode.Bivariate ? STATS_MAX_BIVARIATE : STATS_MAX
-    const avg = config.mode === HeatmapAnimatedMode.Bivariate ? STATS_AVG_BIVARIATE : STATS_AVG
-    const scalePowExponent =
-      config.mode === HeatmapAnimatedMode.Bivariate ? SCALEPOWEXPONENT_BIVARIATE : SCALEPOWEXPONENT
-    return getBreaks(1, max, avg, scalePowExponent, numBreaks, intervalInDays)
+    return getBreaks(STATS_MIN, STATS_MAX, STATS_AVG, SCALEPOWEXPONENT, numBreaks, intervalInDays)
   })
 }
 
