@@ -1,4 +1,4 @@
-import { LayerMetadataLegend } from '../../../types'
+import { LayerMetadataLegend, LegendType } from '../../../types'
 import { HeatmapAnimatedMode, ColorRampsIds } from '../../types'
 import { HEATMAP_COLOR_RAMPS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
@@ -95,7 +95,7 @@ const getLegendsCompare = (
 
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
-      type: 'colorramp-discrete',
+      type: LegendType.ColorRampDiscrete,
       ramp: legendRamp,
     }
     return sublayerLegend
@@ -111,11 +111,11 @@ const getLegendsBivariate = (
   return [
     {
       id: config.sublayers[0].id,
-      type: 'bivariate',
+      type: LegendType.Bivariate,
       bivariateRamp: ramp,
       sublayersBreaks,
     },
-  ] as any
+  ]
 }
 
 const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays: number) => {

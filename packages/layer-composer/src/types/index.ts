@@ -32,12 +32,19 @@ export enum Group {
   Overlay = 'overlay', // Popups, ruler tool, etc
 }
 
+export enum LegendType {
+  ColorRamp = 'colorramp',
+  ColorRampDiscrete = 'colorramp-discrete',
+  Solid = 'solid',
+  Bivariate = 'bivariate',
+}
+
 /**
  * Set of additional metadata properties added by LayerComposer for later use in transformations or to be consumed directly ie (group, legend, etc)
  */
 export interface LayerMetadataLegend extends GeneratorLegend {
   id?: string
-  type: 'colorramp' | 'colorramp-discrete' | 'bivariate' | 'solid'
+  type: LegendType
   gridArea?: number | string
   ramp?: [number | null | string, string][]
   currentValue?: number
@@ -48,6 +55,7 @@ export interface LayerMetadataLegend extends GeneratorLegend {
  * Specialized version of LayerMetadataLegend for bivariate legend
  */
 export interface LayerMetadataLegendBivariate extends LayerMetadataLegend {
+  type: LegendType.Bivariate
   currentValues: [number, number]
   sublayersBreaks: [number[], number[]]
   bivariateRamp: string[]
