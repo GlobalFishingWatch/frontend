@@ -7,6 +7,7 @@ import { LegendLayerBivariate } from './'
 type BivariateLegendProps = {
   layer: LegendLayerBivariate
   className?: string
+  labelComponent?: React.ReactNode
 }
 
 /**
@@ -95,81 +96,84 @@ const BivariateRect = ({
   )
 }
 
-function BivariateLegend({ layer, className }: BivariateLegendProps) {
+function BivariateLegend({ layer, className, labelComponent }: BivariateLegendProps) {
   if (!layer || !layer.bivariateRamp || !layer.sublayersBreaks) return null
   const bivariateBucketIndex = getBivariateValue(
     [layer.currentValues[0] || 0, layer.currentValues[1] || 0],
     layer.sublayersBreaks
   )
   return (
-    <svg
-      className={styles.container}
-      width="184px"
-      height="170px"
-      viewBox="0 0 184 170"
-      version="1.1"
-    >
-      <g stroke="none" fill="none">
-        <g transform="translate(-73, -246)">
-          <g>
-            <g transform="translate(0, 70)">
-              <g transform="translate(93, 176)">
-                <g className={styles.labels}>
-                  <BivariateArrows />
-                  <text>
-                    <tspan x="14" y="68">
-                      {layer.sublayersBreaks[0][0]}
-                    </tspan>
-                  </text>
-                  <text>
-                    <tspan x="28" y="46">
-                      {layer.sublayersBreaks[0][1]}
-                    </tspan>
-                  </text>
-                  <text>
-                    <tspan x="42" y="31">
-                      {layer.sublayersBreaks[0][2]}
-                    </tspan>
-                  </text>
-                  <text>
-                    <tspan x="56" y="15">
-                      {layer.sublayersBreaks[0][3]}
-                    </tspan>
-                  </text>
-                  <text>
-                    <tspan x="28" y="90">
-                      {layer.sublayersBreaks[1][1]}
-                    </tspan>
-                  </text>
-                  <text>
-                    <tspan x="42" y="105">
-                      {layer.sublayersBreaks[1][2]}
-                    </tspan>
-                  </text>
-                  <text>
-                    <tspan x="56" y="120">
-                      {layer.sublayersBreaks[1][3]}
-                    </tspan>
-                  </text>
-                </g>
-                <g transform="translate(81, 62) scale(1, -1) rotate(45) translate(-81, -62) translate(41, 22)">
-                  {layer.bivariateRamp.map((color: string, i: number) => (
-                    <BivariateRect color={color} i={i} key={i} />
-                  ))}
-                  {bivariateBucketIndex && bivariateBucketIndex > 0 && (
-                    <BivariateRect
-                      i={bivariateBucketIndex}
-                      key="highlight"
-                      className={styles.highlighted}
-                    />
-                  )}
+    <div className={styles.container}>
+      {labelComponent}
+      <svg
+        className={cx(styles.svg, className)}
+        width="184px"
+        height="170px"
+        viewBox="0 0 184 170"
+        version="1.1"
+      >
+        <g stroke="none" fill="none">
+          <g transform="translate(-73, -246)">
+            <g>
+              <g transform="translate(0, 70)">
+                <g transform="translate(93, 176)">
+                  <g className={styles.labels}>
+                    <BivariateArrows />
+                    <text>
+                      <tspan x="14" y="68">
+                        {layer.sublayersBreaks[0][0]}
+                      </tspan>
+                    </text>
+                    <text>
+                      <tspan x="28" y="46">
+                        {layer.sublayersBreaks[0][1]}
+                      </tspan>
+                    </text>
+                    <text>
+                      <tspan x="42" y="31">
+                        {layer.sublayersBreaks[0][2]}
+                      </tspan>
+                    </text>
+                    <text>
+                      <tspan x="56" y="15">
+                        {layer.sublayersBreaks[0][3]}
+                      </tspan>
+                    </text>
+                    <text>
+                      <tspan x="28" y="90">
+                        {layer.sublayersBreaks[1][1]}
+                      </tspan>
+                    </text>
+                    <text>
+                      <tspan x="42" y="105">
+                        {layer.sublayersBreaks[1][2]}
+                      </tspan>
+                    </text>
+                    <text>
+                      <tspan x="56" y="120">
+                        {layer.sublayersBreaks[1][3]}
+                      </tspan>
+                    </text>
+                  </g>
+                  <g transform="translate(81, 62) scale(1, -1) rotate(45) translate(-81, -62) translate(41, 22)">
+                    {layer.bivariateRamp.map((color: string, i: number) => (
+                      <BivariateRect color={color} i={i} key={i} />
+                    ))}
+                    {bivariateBucketIndex && bivariateBucketIndex > 0 && (
+                      <BivariateRect
+                        i={bivariateBucketIndex}
+                        key="highlight"
+                        className={styles.highlighted}
+                      />
+                    )}
+                  </g>
                 </g>
               </g>
             </g>
           </g>
         </g>
-      </g>
-    </svg>
+      </svg>
+    </div>
   )
 }
 

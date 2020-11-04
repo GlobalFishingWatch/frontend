@@ -1,5 +1,12 @@
 .container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
   margin-bottom: -50px;
+}
+
+.svg {
+  margin: 0 auto;
 }
 
 .labels text {
