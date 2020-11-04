@@ -113,10 +113,12 @@ ul {
 
 sub {
   vertical-align: sub;
+  font: var(--font-XS);
 }
 
 sup {
   vertical-align: super;
+  font: var(--font-XS);
 }
 
 *:focus {
