@@ -1,20 +1,15 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
-import { LayerMetadataLegend } from '@globalfishingwatch/layer-composer/dist/types'
 import Solid from './Solid'
 import ColorRamp from './ColorRamp'
 import Bivariate from './Bivariate'
 import styles from './MapLegend.module.css'
-
-// TODO unify this with use-map-legend
-export type LegendLayer = LayerMetadataLegend & {
-  color: string
-}
+import { LegendLayer, LegendLayerBivariate } from '.'
 
 interface MapLegendProps {
   className?: string
   currentValueClassName?: string
-  layer: LegendLayer
+  layer: LegendLayer | LegendLayerBivariate
 }
 
 interface MapLegendsProps {
@@ -26,19 +21,19 @@ interface MapLegendsProps {
 export function MapLegend({ layer, className, currentValueClassName }: MapLegendProps) {
   // TODO: include user context and categorical options
   if (layer.type === 'solid') {
-    return <Solid layer={layer} className={className} />
+    return <Solid layer={layer as LegendLayer} className={className} />
   }
-  if (layer.type === 'colorramp') {
+  if (layer.type === 'colorramp' || layer.type === 'colorramp-discrete') {
     return (
       <ColorRamp
-        layer={layer}
+        layer={layer as LegendLayer}
         className={className}
         currentValueClassName={currentValueClassName}
       />
     )
   }
   if (layer.type === 'bivariate') {
-    return <Bivariate layer={layer} className={className} />
+    return <Bivariate layer={layer as LegendLayerBivariate} className={className} />
   }
   return null
 }

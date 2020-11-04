@@ -1,9 +1,10 @@
-import { LayerMetadataLegend } from '../../../types'
+import { LayerMetadataLegend, LegendType } from '../../../types'
 import { HeatmapAnimatedMode, ColorRampsIds } from '../../types'
 import { HEATMAP_COLOR_RAMPS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import getBreaks from './get-breaks'
 
+// Get color ramps for a config's sublayers
 export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
   // TODO Use ramp from first sublayer
   const colorRampIds =
@@ -17,15 +18,17 @@ export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorCon
   return colorRamps
 }
 
+// Gets MGL layer paint configuration from base color ramp(s)
 export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
   const colorRamps = getSublayersColorRamps(config)
 
   const expressions = colorRamps.map((originalColorRamp, colorRampIndex) => {
-    const legend = [...Array(originalColorRamp.length)].map((_, i) => [
+    const legend = [...Array(originalColorRamp.length)].map((_, bucketIndex) => [
       // offset each dataset by 10 + add actual bucket value
-      colorRampIndex * 10 + i,
-      originalColorRamp[i],
+      colorRampIndex * 10 + bucketIndex,
+      originalColorRamp[bucketIndex],
     ])
+    // TODO use flatMap
     const expr = legend.flat()
     return expr
   })
@@ -37,55 +40,88 @@ export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGenerato
   return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions[0] }
 }
 
+// The following values simulate what would return a stats endpoint response
+const STATS_MIN = 1 // Min value for a single day
+const STATS_MAX = 50 // Max value for a single day
+const STATS_AVG = 10 // Avg value for a single day
+const SCALEPOWEXPONENT = 1
+
+// Gets breaks depending on config (alternative method to stats API)
 export const getSublayersBreaks = (
   config: GlobalHeatmapAnimatedGeneratorConfig,
   intervalInDays: number
 ) => {
   // TODO - generate this using updated stats API ?
-  // TODO - in consequence, for each sublayer a different set of breaks should be produced
-  // TODO - BIVARIATE
-  // if (config.mode === HeatmapAnimatedMode.Bivariate) {
-  //   throw new Error('breaks generation not working for bivariate yet')
-  // }
-  const intermediateBreakRatios = config.mode === HeatmapAnimatedMode.Bivariate ? [] : [0.33, 0.66]
-  return config.sublayers.map(() =>
-    getBreaks(1, 30, 10, 1, intermediateBreakRatios, intervalInDays)
-  )
+  // TODO - For each sublayer a different set of breaks should be produced depending on filters
+  const ramps = getSublayersColorRamps(config)
+  return config.sublayers.map((_, sublayerIndex) => {
+    const sublayerColorRamp = ramps[sublayerIndex]
+    const numBreaks = config.mode === HeatmapAnimatedMode.Bivariate ? 4 : sublayerColorRamp.length
+    return getBreaks(STATS_MIN, STATS_MAX, STATS_AVG, SCALEPOWEXPONENT, numBreaks, intervalInDays)
+  })
 }
 
-const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays: number) => {
-  if (config.mode === HeatmapAnimatedMode.Bivariate) {
-    return [
-      {
-        id: 'plop',
-        type: 'colorramp',
-        ramp: [],
-      },
-    ] as any
-  }
-  const breaks = getSublayersBreaks(config, intervalInDays)
+const getLegendsCompare = (
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  intervalInDays: number
+) => {
+  const sublayersBreaks = getSublayersBreaks(config, intervalInDays)
   const ramps = getSublayersColorRamps(config)
-  return breaks.map((sublayerBreaks, sublayerIndex) => {
-    const ramp = ramps[sublayerIndex]
-    const legendRamp = sublayerBreaks.map((break_, breakIndex) => {
-      // TODO Omitting the Zero value hence the +1
-      const rampColor = ramp[breakIndex + 1] as string
-      let rampValue = break_
-      if (config.mode === HeatmapAnimatedMode.Blob) {
-        if (breakIndex === 0) rampValue = 'less'
-        else if (breakIndex === sublayerBreaks.length - 1) rampValue = 'more'
-        else rampValue = null
-      }
-      const legendRampItem: [number, string] = [rampValue, rampColor]
-      return legendRampItem
+  return sublayersBreaks.map((sublayerBreaks, sublayerIndex) => {
+    const sublayerColorRamp = ramps[sublayerIndex]
+    let legendRamp = sublayerColorRamp.flatMap((rampColor, rampColorIndex) => {
+      const isLastColor = rampColorIndex === sublayerColorRamp.length - 1
+      const isFirstColor = rampColorIndex === 0
+
+      const startColor = rampColor
+      const endColor = isLastColor ? startColor : sublayerColorRamp[rampColorIndex + 1]
+
+      const startBucket = isFirstColor
+        ? Number.NEGATIVE_INFINITY
+        : sublayerBreaks[rampColorIndex - 1]
+      const endBucket = isLastColor ? Number.POSITIVE_INFINITY : sublayerBreaks[rampColorIndex]
+      const legendRampItem: [number | null | string, string] = [startBucket, startColor]
+      return [legendRampItem]
     })
+
+    if (config.mode === HeatmapAnimatedMode.Blob) {
+      legendRamp = legendRamp.map((legendItem, i) => {
+        let value = null
+        if (i === 0) value = 'less'
+        else if (i === legendRamp.length - 1) value = 'more'
+        return [value, legendItem[1]]
+      })
+    }
+
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
-      type: 'colorramp',
+      type: LegendType.ColorRampDiscrete,
       ramp: legendRamp,
     }
     return sublayerLegend
   })
+}
+
+const getLegendsBivariate = (
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  intervalInDays: number
+) => {
+  const sublayersBreaks = getSublayersBreaks(config, intervalInDays)
+  const ramp = HEATMAP_COLOR_RAMPS.bivariate
+  return [
+    {
+      id: config.sublayers[0].id,
+      type: LegendType.Bivariate,
+      bivariateRamp: ramp,
+      sublayersBreaks,
+    },
+  ]
+}
+
+const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays: number) => {
+  return config.mode === HeatmapAnimatedMode.Bivariate
+    ? getLegendsBivariate(config, intervalInDays)
+    : getLegendsCompare(config, intervalInDays)
 }
 
 export default getLegends

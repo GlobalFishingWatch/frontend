@@ -13,7 +13,7 @@ const sourceOptions = [{ id: 'ais', label: 'AIS' }]
 
 function Filters({ dataview }: FiltersProps): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const fishingFilters = dataview.config?.filters
+  const fishingFilters = dataview.config?.filters ?? []
   const fishingFiltersOptions = getFlagsByIds(fishingFilters || [])
   const flags = useMemo(getFlags, [])
   return (

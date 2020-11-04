@@ -12,7 +12,10 @@ import {
   useMapHover,
   useTilesState,
 } from '@globalfishingwatch/react-hooks'
-import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
+import {
+  LegendLayer,
+  LegendLayerBivariate,
+} from '@globalfishingwatch/ui-components/dist/map-legend'
 import { ExtendedStyleMeta, ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { AsyncReducerStatus, UrlDataviewInstance } from 'types'
@@ -65,19 +68,39 @@ const getLegendLayers = (
     return sublayerLegendsMetadata.map((sublayerLegendMetadata, sublayerIndex) => {
       const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
       const dataview = dataviews?.find((d) => d.id === id)
-      const sublayerLegend: LegendLayer = {
+      let gridArea
+      if (sublayerLegendMetadata.gridArea) {
+        gridArea =
+          sublayerLegendMetadata.gridArea > 100000
+            ? (sublayerLegendMetadata.gridArea as number) / 1000000
+            : sublayerLegendMetadata.gridArea.toLocaleString('en-EN') // TODO: use i18n locale here
+      }
+      const sublayerLegend: LegendLayer | LegendLayerBivariate = {
         ...sublayerLegendMetadata,
         id: `legend_${id}`,
         color: layer.metadata?.color || dataview?.config?.color || 'red',
         // TODO Get that from dataview and use i18n and add cell size info
         label: 'Soy leyenda ✌️',
         unit: i18n.t('common.hour_plural', 'hours'),
+        // TODO: Define gridArea in heatmap-animated as it comes from stats and is not used here
+        gridArea,
       }
-      const hoveredFeatureForDataview = hoveredEvent?.features?.find(
-        (f) => f.temporalgrid?.sublayerIndex === sublayerIndex
-      )
-      if (hoveredFeatureForDataview) {
-        sublayerLegend.currentValue = hoveredFeatureForDataview.value
+
+      const getHoveredFeatureValueForSublayerIndex = (index: number): number => {
+        const hoveredFeature = hoveredEvent?.features?.find(
+          (f) => f.temporalgrid?.sublayerIndex === index
+        )
+        return hoveredFeature?.value
+      }
+
+      // Both bivariate sublayers come in the same sublayerLegend (see getLegendsBivariate in LC)
+      if (sublayerLegend.type === 'bivariate') {
+        sublayerLegend.currentValues = [
+          getHoveredFeatureValueForSublayerIndex(0),
+          getHoveredFeatureValueForSublayerIndex(1),
+        ]
+      } else {
+        sublayerLegend.currentValue = getHoveredFeatureValueForSublayerIndex(sublayerIndex)
       }
       return sublayerLegend
     })

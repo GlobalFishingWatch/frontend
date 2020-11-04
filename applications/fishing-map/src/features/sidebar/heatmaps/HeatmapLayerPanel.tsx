@@ -1,6 +1,7 @@
 import React, { useState, Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { getFlagsByIds } from 'utils/flags'
@@ -8,6 +9,7 @@ import { UrlDataviewInstance } from 'types'
 import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { FISHING_DATASET_TYPE } from 'data/datasets'
+import { selectBivariate } from 'routes/routes.selectors'
 import Filters from './HeatmapFilters'
 
 type LayerPanelProps = {
@@ -19,6 +21,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [filterOpen, setFiltersOpen] = useState(false)
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters || [])
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
+  const bivariate = useSelector(selectBivariate)
 
   const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
@@ -51,7 +54,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   )
 
   return (
-    <div className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: filterOpen })}>
+    <div
+      className={cx(styles.LayerPanel, {
+        [styles.expandedContainerOpen]: filterOpen,
+        [styles.noBorder]: bivariate,
+      })}
+    >
       <div className={styles.header}>
         <Switch
           active={layerActive}

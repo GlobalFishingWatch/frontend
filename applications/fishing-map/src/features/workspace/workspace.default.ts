@@ -27,9 +27,9 @@ const workspace: Workspace = {
     {
       id: 'fishing-2',
       config: {
-        color: '#ff0000',
+        color: '#FF64CE',
         filters: ['FRA'],
-        colorRamp: 'red',
+        colorRamp: 'magenta',
       },
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },

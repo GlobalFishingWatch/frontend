@@ -26,7 +26,6 @@ export const HEATMAP_MODE_LAYER_TYPE: Record<HeatmapAnimatedMode, string> = {
   [HeatmapAnimatedMode.Extruded]: 'fill-extrusion',
 }
 
-const opacitySteps = [0, 0.2, 0.4, 0.6, 0.8, 1]
 const hex2Rgb = (hex: string) => {
   const cleanHex = hex.replace('#', '')
   const color = {
@@ -37,8 +36,9 @@ const hex2Rgb = (hex: string) => {
   return `${color.r}, ${color.g}, ${color.b}`
 }
 
-const getColorRampByOpacitySteps = (finalColor: string) => {
+const getColorRampByOpacitySteps = (finalColor: string, numSteps = 8) => {
   const color = finalColor.includes('#') ? hex2Rgb(finalColor) : finalColor
+  const opacitySteps = [...Array(numSteps)].map((_, i) => i / (numSteps - 1))
   return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
 }
 
@@ -56,6 +56,16 @@ export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   ],
   reception: ['rgb(255, 69, 115, 1)', '#7b2e8d', '#093b76', DEFAULT_BACKGROUND_TRANSPARENT_COLOR],
   teal: getColorRampByOpacitySteps('#00FFBC'),
+  // teal: [
+  //   DEFAULT_BACKGROUND_TRANSPARENT_COLOR,
+  //   '#FF64CE',
+  //   '#9CA4FF',
+  //   '#FFAE9B',
+  //   '#00EEFF',
+  //   '#FF6854',
+  //   '#FFEA00',
+  //   '#A6FF59',
+  // ],
   magenta: getColorRampByOpacitySteps('#FF64CE'),
   lilac: getColorRampByOpacitySteps('#9CA4FF'),
   salmon: getColorRampByOpacitySteps('#FFAE9B'),
@@ -66,9 +76,17 @@ export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   orange: getColorRampByOpacitySteps('#FFAA0D'),
   // prettier-ignore
   bivariate: [
-    '#274874', '#267C8A', '#26B39F', '#26FFBD',
-    '#66518F', '#3E579A', '#667C9E', '#66FFC2',
+    DEFAULT_BACKGROUND_TRANSPARENT_COLOR,
+    '#244979', '#207D8C', '#17B4A0', '#26FFBD',
+    '#66518F', '#667CA0', '#63B3AD', '#66FFC2',
     '#A659A9', '#A67CB2', '#A6B3BB', '#A6FFC7',
     '#FF64CE', '#FF7CCE', '#FFB3CE', '#FFFFFF',
   ],
+  // bivariate: [
+  //   DEFAULT_BACKGROUND_TRANSPARENT_COLOR,
+  //   '#000', '#267C8A', '#26B39F', 'red',
+  //   '#66518F', '#FFEA00', '#667C9E', '#66FFC2',
+  //   '#A659A9', '#A67CB2', '#FFAA0D', '#A6FFC7',
+  //   'blue', '#FF7CCE', '#FFB3CE', '#FFFFFF',
+  // ],
 }
