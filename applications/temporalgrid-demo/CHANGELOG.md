@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/temporalgrid-demo
 
+## 0.7.3
+
+### Patch Changes
+
+- c26fb07: Allow sublayer visibility toggle
+- Updated dependencies [c26fb07]
+  - @globalfishingwatch/layer-composer@4.4.0
+
 ## 0.7.2
 
 ### Patch Changes

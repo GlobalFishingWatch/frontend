@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.4.0
+
+### Minor Changes
+
+- c26fb07: Allow sublayer visibility toggle
+
 ## 4.3.0
 
 ### Minor Changes

@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.15.4
+
+### Patch Changes
+
+- c26fb07: Allow sublayer visibility toggle
+- Updated dependencies [c26fb07]
+  - @globalfishingwatch/layer-composer@4.4.0
+
 ## 0.15.3
 
 ### Patch Changes
