@@ -101,12 +101,10 @@ export const getGeneratorsConfig = createSelector(
       } else if (debugOptions.blob && sublayers.length === 1) {
         mode = Generators.HeatmapAnimatedMode.Blob
       }
-
       const mergedLayer = {
-        ...animatedHeatmapDataviews[0],
         id: 'mergedAnimatedHeatmap',
         config: {
-          ...animatedHeatmapDataviews[0].config,
+          type: Generators.Type.HeatmapAnimated,
           sublayers,
           mode,
           debug: debugOptions.debug,
