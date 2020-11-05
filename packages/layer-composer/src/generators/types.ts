@@ -263,6 +263,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   datasets: string[]
   filter?: string
   colorRamp: ColorRampsIds
+  visible?: boolean
 }
 
 // ---- Heatmap Generator color ramps types
