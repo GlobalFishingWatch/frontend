@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { DEFAULT_SUBLAYERS } from './App'
 
-function Sublayer({ index, sublayer, setDatasets, setFilter, setActive }) {
+function Sublayer({ index, sublayer, setDatasets, setFilter, setActive, setVisible }) {
   return (
     <div className={`tileset ${sublayer.active ? '' : 'disabled'}`}>
       <span>
@@ -31,6 +31,13 @@ function Sublayer({ index, sublayer, setDatasets, setFilter, setActive }) {
           onChange={(event) => setFilter(index, event.target.value)}
         />
       </fieldset>
+      <span>
+        <input
+          type="checkbox"
+          checked={sublayer.visible}
+          onChange={(event) => setVisible(index, event.target.checked)}
+        />
+      </span>
     </div>
   )
 }
@@ -53,6 +60,11 @@ export default function Sublayers({ onChange }) {
     newSublayers[index].active = active
     updateSublayers(newSublayers)
   })
+  const setVisible = useCallback((index, visible) => {
+    const newSublayers = [...sublayers]
+    newSublayers[index].visible = visible
+    updateSublayers(newSublayers)
+  })
 
   return (
     <React.Fragment>
@@ -64,6 +76,7 @@ export default function Sublayers({ onChange }) {
           setDatasets={setDatasets}
           setFilter={setFilter}
           setActive={setActive}
+          setVisible={setVisible}
         />
       ))}
 

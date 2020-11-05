@@ -12,6 +12,7 @@ import {
 import TimebarComponent from '@globalfishingwatch/timebar'
 import Tilesets from './tilesets'
 import Map from './map'
+import Login from './login'
 
 import './App.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
@@ -22,32 +23,37 @@ export const DEFAULT_SUBLAYERS = [
     // tileset: 'carriers_v8',
     datasets: 'fishing_v4',
     // filter: ''
-    filter: "flag='CHL'",
+    filter: "flag='ESP'",
     active: true,
+    visible: true,
   },
   {
     id: 1,
     datasets: 'fishing_v4',
-    filter: "flag='ARG'",
+    filter: "flag='FRA'",
     active: true,
+    visible: true,
   },
   {
     id: 2,
     datasets: 'fishing_v4',
     filter: "flag='ITA'",
     active: false,
+    visible: true,
   },
   {
     id: 3,
     datasets: 'fishing_v4',
     filter: "flag='GBR'",
     active: false,
+    visible: true,
   },
   {
     id: 4,
     datasets: 'fishing_v4',
     filter: "flag='PRT'",
     active: false,
+    visible: true,
   },
 ]
 
@@ -148,6 +154,7 @@ export default function App() {
             // TODO API should support an array of tilesets for each sublayer
             datasets: sublayer.datasets.split(','),
             filter: sublayer.filter,
+            visible: sublayer.visible,
           }
         })
 
@@ -165,7 +172,7 @@ export default function App() {
         debugLabels,
         // tilesAPI: 'https://fourwings.api.dev.globalfishingwatch.org/v1'
         // tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1/datasets',
-        tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1',
+        // tilesAPI: ' https://fourwings-tile-server-jzzp2ui3wq-uc.a.run.app/v1',
         interactive: true,
         staticStart: staticTime.start,
         staticEnd: staticTime.end,
@@ -205,6 +212,7 @@ export default function App() {
 
   // TODO useMapInteraction has been removed
   // const { onMapClick, onMapHover } = useMapInteraction(clickCallback, hoverCallback, mapRef)
+
   const onMapClick = useMapClick(clickCallback, style && style.metadata)
   const onMapHover = useMapHover(null, hoverCallback, mapRef, null, style && style.metadata)
 
@@ -226,7 +234,7 @@ export default function App() {
           <Map
             style={style}
             onMapClick={onMapClick}
-            onMapHover={onMapHover}
+            // onMapHover={onMapHover}
             onSetMapRef={setMapRef}
           />
         )}
@@ -340,5 +348,5 @@ export default function App() {
 }
 
 export function renderToDom(container) {
-  render(<App />, container)
+  render(<Login />, container)
 }
