@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { LocaleOptions } from 'types'
+import { Locale } from 'types'
 import i18n from './i18n'
 
 type I18Number = string | number
 type I18NumberOptions =
-  | LocaleOptions
+  | Locale
   | (Intl.NumberFormatOptions & {
-      locale?: LocaleOptions
+      locale?: Locale
       unit?: string
       unitDisplay?: 'long' | 'short' | 'narrow'
       notation?: 'standard' | 'scientific' | 'engineering' | 'compact'
@@ -15,7 +15,7 @@ type I18NumberOptions =
 
 export const formatI18nNumber = (
   number: I18Number,
-  options: I18NumberOptions = i18n.language as LocaleOptions
+  options: I18NumberOptions = i18n.language as Locale
 ) => {
   const locale = typeof options === 'object' ? options.locale || i18n.language : options
   const parsedNumber = number === 'string' ? parseFloat(number) : (number as number)
@@ -32,7 +32,7 @@ export const formatI18nNumber = (
 
 export const useI18nNumber = (number: I18Number) => {
   const { i18n } = useTranslation()
-  return formatI18nNumber(number, i18n.language as LocaleOptions)
+  return formatI18nNumber(number, i18n.language as Locale)
 }
 
 const I18nNumber = ({ number }: { number: I18Number }) => {
