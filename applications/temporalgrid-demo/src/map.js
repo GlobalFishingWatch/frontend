@@ -1,5 +1,16 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import MapGL from '@globalfishingwatch/react-map-gl'
+import GFWAPI from '@globalfishingwatch/api-client'
+
+const transformRequest = (url, resourceType) => {
+  const response = { url }
+  if (resourceType === 'Tile' && url.includes('globalfishingwatch')) {
+    response.headers = {
+      Authorization: `Bearer ${GFWAPI.getToken()}`,
+    }
+  }
+  return response
+}
 
 const TEST_GEO_JSON = {
   type: 'FeatureCollection',
@@ -26,19 +37,11 @@ const TEST_GEO_JSON = {
   ],
 }
 
-const Map = React.memo(function Map({
-  style,
-  onMapClick,
-  onMapHover,
-  onSetMapRef,
-  children,
-  tiles,
-}) {
-  // console.log(tiles)
+const Map = React.memo(function Map({ style, onMapClick, onMapHover, onSetMapRef, children }) {
   const [viewport, setViewport] = useState({
-    longitude: 13,
-    latitude: -30,
-    zoom: 1.58,
+    longitude: -4,
+    latitude: 40,
+    zoom: 3.9,
   })
 
   const mapRef = useRef(null)
@@ -99,6 +102,7 @@ const Map = React.memo(function Map({
       onClick={onMapClick}
       onHover={onMapHover}
       interactiveLayerIds={customInteractiveLayerIds}
+      transformRequest={transformRequest}
     >
       {children}
     </MapGL>

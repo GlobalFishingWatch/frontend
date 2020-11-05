@@ -46,6 +46,7 @@ class HeatmapAnimatedGenerator {
     }
     const datasets = config.sublayers.map((sublayer) => sublayer.datasets.join(','))
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
+    const visible = config.sublayers.map((sublayer) => (sublayer.visible === false ? false : true))
 
     const tilesUrl = `${config.tilesAPI || `${API_GATEWAY}/v1`}/${API_ENDPOINTS.tiles}`
 
@@ -66,6 +67,7 @@ class HeatmapAnimatedGenerator {
         combinationMode,
         filters: toURLArray('filters', filters),
         datasets: toURLArray('datasets', datasets),
+        visible: JSON.stringify(visible),
         delta: delta.toString(),
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: timeChunks.interval,

@@ -63,8 +63,7 @@ export const getGeneratorsConfig = createSelector(
     // Collect heatmap animated generators and filter them out from main dataview list
     let generatorsConfig = dataviews.filter((d) => {
       const isAnimatedHeatmap = d.config?.type === Generators.Type.HeatmapAnimated
-      const isVisible = d.config?.visible !== false
-      if (isAnimatedHeatmap && isVisible) {
+      if (isAnimatedHeatmap) {
         animatedHeatmapDataviews.push(d)
       }
       return !isAnimatedHeatmap
@@ -87,6 +86,7 @@ export const getGeneratorsConfig = createSelector(
           datasets: datasetsConfig.map((dc) => dc.datasetId),
           colorRamp,
           filter: config.filter,
+          visible: config.visible,
         }
 
         return sublayer
@@ -101,12 +101,10 @@ export const getGeneratorsConfig = createSelector(
       } else if (debugOptions.blob && sublayers.length === 1) {
         mode = Generators.HeatmapAnimatedMode.Blob
       }
-
       const mergedLayer = {
-        ...animatedHeatmapDataviews[0],
         id: 'mergedAnimatedHeatmap',
         config: {
-          ...animatedHeatmapDataviews[0].config,
+          type: Generators.Type.HeatmapAnimated,
           sublayers,
           mode,
           debug: debugOptions.debug,
