@@ -76,15 +76,10 @@ export const getGeneratorsConfig = createSelector(
         const datasetsConfig = dataview.datasetsConfig
         if (!config || !datasetsConfig || !datasetsConfig.length) return []
 
-        // TODO Bivariate colorRamp
-        const colorRamp =
-          animatedHeatmapDataviews.length === 1
-            ? 'presence'
-            : (config.colorRamp as Generators.ColorRampsIds)
         const sublayer: HeatmapAnimatedGeneratorSublayer = {
           id: dataview.id,
           datasets: datasetsConfig.map((dc) => dc.datasetId),
-          colorRamp,
+          colorRamp: config.colorRamp as Generators.ColorRampsIds,
           filter: config.filter,
           visible: config.visible,
         }

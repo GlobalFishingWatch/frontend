@@ -1,16 +1,21 @@
 import { LayerMetadataLegend, LegendType } from '../../../types'
-import { HeatmapAnimatedMode, ColorRampsIds } from '../../types'
+import { HeatmapAnimatedMode } from '../../types'
 import { HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_COLOR_RAMPS, GRID_AREA_BY_ZOOM_LEVEL } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import getBreaks from './get-breaks'
 
 // Get color ramps for a config's sublayers
 export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
-  // TODO Use ramp from first sublayer
-  const colorRampIds =
-    config.mode === HeatmapAnimatedMode.Bivariate
-      ? ['bivariate' as ColorRampsIds]
-      : config.sublayers.map((s) => s.colorRamp)
+  let colorRampIds = config.sublayers.map((s) => s.colorRamp)
+  const numVisibleSublayers = config.sublayers.filter((s) => s.visible === true).length
+
+  // Force some color ramps depending on config
+  // TODO We might need more flexibility on that
+  if (config.mode === HeatmapAnimatedMode.Bivariate) {
+    colorRampIds = ['bivariate']
+  } else if (numVisibleSublayers === 1) {
+    colorRampIds = ['presence']
+  }
   const colorRamps = colorRampIds.map((colorRampId) => {
     const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampId]
     return originalColorRamp
@@ -56,7 +61,12 @@ export const getSublayersBreaks = (
   const ramps = getSublayersColorRamps(config)
   return config.sublayers.map((_, sublayerIndex) => {
     const sublayerColorRamp = ramps[sublayerIndex]
-    const numBreaks = config.mode === HeatmapAnimatedMode.Bivariate ? 4 : sublayerColorRamp.length
+    const numBreaks =
+      config.mode === HeatmapAnimatedMode.Bivariate
+        ? 4
+        : sublayerColorRamp
+        ? sublayerColorRamp.length
+        : 6
     return getBreaks(STATS_MIN, STATS_MAX, STATS_AVG, SCALEPOWEXPONENT, numBreaks, intervalInDays)
   })
 }
@@ -73,8 +83,9 @@ const getLegendsCompare = (
 ) => {
   const sublayersBreaks = getSublayersBreaks(config, intervalInDays)
   const ramps = getSublayersColorRamps(config)
-  return sublayersBreaks.map((sublayerBreaks, sublayerIndex) => {
+  return sublayersBreaks.flatMap((sublayerBreaks, sublayerIndex) => {
     const sublayerColorRamp = ramps[sublayerIndex]
+    if (!sublayerColorRamp) return []
     let legendRamp = sublayerColorRamp.flatMap((rampColor, rampColorIndex) => {
       const isLastColor = rampColorIndex === sublayerColorRamp.length - 1
       const isFirstColor = rampColorIndex === 0
@@ -106,7 +117,7 @@ const getLegendsCompare = (
       ramp: legendRamp,
       ...(gridArea && { gridArea }),
     }
-    return sublayerLegend
+    return [sublayerLegend]
   })
 }
 
@@ -115,13 +126,12 @@ const getLegendsBivariate = (
   intervalInDays: number
 ) => {
   const sublayersBreaks = getSublayersBreaks(config, intervalInDays)
-  const ramp = HEATMAP_COLOR_RAMPS.bivariate
   const gridArea = getGridAreaByZoom(config.zoom)
   return [
     {
       id: config.sublayers[0].id,
       type: LegendType.Bivariate,
-      bivariateRamp: ramp,
+      bivariateRamp: HEATMAP_COLOR_RAMPS.bivariate,
       sublayersBreaks,
       ...(gridArea && { gridArea }),
     },
