@@ -10,6 +10,7 @@ interface MapLegendProps {
   className?: string
   currentValueClassName?: string
   layer: LegendLayer | LegendLayerBivariate
+  labelComponent?: React.ReactNode
 }
 
 interface MapLegendsProps {
@@ -18,7 +19,12 @@ interface MapLegendsProps {
   layers?: LegendLayer[]
 }
 
-export function MapLegend({ layer, className, currentValueClassName }: MapLegendProps) {
+export function MapLegend({
+  layer,
+  className,
+  currentValueClassName,
+  labelComponent,
+}: MapLegendProps) {
   // TODO: include user context and categorical options
   if (layer.type === 'solid') {
     return <Solid layer={layer as LegendLayer} className={className} />
@@ -29,11 +35,18 @@ export function MapLegend({ layer, className, currentValueClassName }: MapLegend
         layer={layer as LegendLayer}
         className={className}
         currentValueClassName={currentValueClassName}
+        labelComponent={labelComponent}
       />
     )
   }
   if (layer.type === 'bivariate') {
-    return <Bivariate layer={layer as LegendLayerBivariate} className={className} />
+    return (
+      <Bivariate
+        layer={layer as LegendLayerBivariate}
+        className={className}
+        labelComponent={labelComponent}
+      />
+    )
   }
   return null
 }
