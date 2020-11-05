@@ -4,8 +4,7 @@ import {
   AnyGeneratorConfig,
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { Generators } from '@globalfishingwatch/layer-composer'
-import { DataviewConfig } from '@globalfishingwatch/api-types'
+import { GeneratorDataviewConfig, Generators } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from 'types'
 import {
   selectMapZoomQuery,
@@ -125,7 +124,6 @@ export const getGeneratorsConfig = createSelector(
     })
 
     generatorsConfig = generatorsConfig.flatMap((dataview) => {
-      const config: DataviewConfig = { ...dataview.config }
       // Try to retrieve resource if it exists
       let data
       const { url } = resolveDataviewDatasetResource(dataview, TRACKS_DATASET_TYPE)
@@ -133,9 +131,9 @@ export const getGeneratorsConfig = createSelector(
         data = resources[url].data
       }
 
-      const generator: any = {
-        ...config,
+      const generator: GeneratorDataviewConfig = {
         id: dataview.id,
+        ...dataview.config,
         ...(data && { data }),
       }
       // TODO: remove UserContext and use Context

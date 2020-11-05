@@ -13,7 +13,7 @@ import RulersGenerator from './rulers/rulers'
 export { DEFAULT_BACKGROUND_COLOR }
 export { HEATMAP_COLOR_RAMPS } from './heatmap/config'
 
-export default {
+const GeneratorConfig = {
   [Type.Background]: new BackgroundGenerator(),
   [Type.Basemap]: new BaseMapGenerator(),
   [Type.GL]: new GLStyleGenerator(),
@@ -25,3 +25,5 @@ export default {
   [Type.VesselEvents]: new VesselEventsGenerator(),
   [Type.Rulers]: new RulersGenerator(),
 }
+
+export default GeneratorConfig

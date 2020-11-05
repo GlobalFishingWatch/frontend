@@ -1,5 +1,18 @@
 import type { Layer, AnySourceImpl, Style } from 'mapbox-gl'
-import { GeneratorConfig, Type, GeneratorLegend } from '../generators/types'
+import type { DataviewConfig } from '@globalfishingwatch/api-types'
+import {
+  GeneratorConfig,
+  Type,
+  GeneratorLegend,
+  HeatmapAnimatedGeneratorSublayer,
+  ColorRampsIds,
+} from '../generators/types'
+
+export interface GeneratorDataviewConfig extends DataviewConfig<Type> {
+  colorRamp?: ColorRampsIds
+  basemap?: string
+  sublayers?: HeatmapAnimatedGeneratorSublayer[]
+}
 
 export interface Dictionary<T> {
   [key: string]: T

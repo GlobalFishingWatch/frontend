@@ -1,12 +1,13 @@
 import { Dataset, DataviewInstance } from '@globalfishingwatch/api-types'
 import { TrackColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
+import { Generators } from '@globalfishingwatch/layer-composer'
 import { DEFAULT_VESSEL_DATAVIEW_ID } from 'data/datasets'
 
 export const getVesselDataviewInstance = (
   vessel: { id: string },
   trackDatasets: Dataset[],
   infoDatasets: Dataset[]
-): DataviewInstance => {
+): DataviewInstance<Generators.Type> => {
   const datasetsConfig = [
     ...trackDatasets.map((dataset) => ({
       datasetId: dataset?.id as string,
@@ -20,7 +21,7 @@ export const getVesselDataviewInstance = (
     })),
   ]
   console.log('datasetsConfig', datasetsConfig)
-  const vesselDataviewInstance: DataviewInstance = {
+  const vesselDataviewInstance = {
     id: `vessel-${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {

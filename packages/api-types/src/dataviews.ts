@@ -1,18 +1,10 @@
-import type {
-  Type,
-  ColorRampsIds,
-  HeatmapAnimatedGeneratorSublayer,
-} from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Dataset } from '.'
 
-export interface DataviewConfig {
+export interface DataviewConfig<T = any> {
   // TODO use any property from layer-composer here?
-  type?: Type | string
+  type?: T
   color?: string
-  colorRamp?: ColorRampsIds
   visible?: boolean
-  basemap?: string
-  sublayers?: HeatmapAnimatedGeneratorSublayer[]
   [key: string]: any
 }
 
@@ -43,21 +35,21 @@ export interface DataviewInfoConfig {
   fields: DataviewInfoConfigField[]
 }
 
-export interface Dataview {
+export interface Dataview<T = any> {
   id: number
   name: string
   description: string
   createdAt?: string
   updatedAt?: string
-  config: DataviewConfig
+  config: DataviewConfig<T>
   datasets?: Dataset[]
   infoConfig?: DataviewInfoConfig
   datasetsConfig?: DataviewDatasetConfig[]
 }
 
-export interface DataviewInstance extends Partial<Omit<Dataview, 'id' | 'config'>> {
+export interface DataviewInstance<T = any> extends Partial<Omit<Dataview<T>, 'id' | 'config'>> {
   id: string
   dataviewId: number
-  config?: DataviewConfig
+  config?: DataviewConfig<T>
   datasetsConfig?: DataviewDatasetConfig[]
 }
