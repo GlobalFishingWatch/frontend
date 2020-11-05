@@ -1,5 +1,16 @@
 # @globalfishingwatch/ui-components
 
+## 2.5.0
+
+### Minor Changes
+
+- 75cc59c: Fishingmap/legend label
+
+### Patch Changes
+
+- Updated dependencies [75cc59c]
+  - @globalfishingwatch/layer-composer@4.3.0
+
 ## 2.4.4
 
 ### Patch Changes

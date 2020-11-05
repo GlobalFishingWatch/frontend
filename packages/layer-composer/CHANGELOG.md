@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.3.0
+
+### Minor Changes
+
+- 75cc59c: Fishingmap/legend label
+
 ## 4.2.1
 
 ### Patch Changes
