@@ -68,10 +68,22 @@ const getLegendLayers = (
     return sublayerLegendsMetadata.map((sublayerLegendMetadata, sublayerIndex) => {
       const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
       const dataview = dataviews?.find((d) => d.id === id)
+      const isSquareKm = (sublayerLegendMetadata.gridArea as number) > 50000
+      const gridArea = isSquareKm
+        ? (sublayerLegendMetadata.gridArea as number) / 1000000
+        : sublayerLegendMetadata.gridArea
+      const gridAreaFormatted = gridArea
+        ? formatI18nNumber(gridArea, {
+            style: 'unit',
+            unit: isSquareKm ? 'kilometer' : 'meter',
+            unitDisplay: 'short',
+          })
+        : ''
       const sublayerLegend: LegendLayer | LegendLayerBivariate = {
         ...sublayerLegendMetadata,
         id: `legend_${id}`,
         color: layer.metadata?.color || dataview?.config?.color || 'red',
+        label: `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}`,
       }
 
       const getHoveredFeatureValueForSublayerIndex = (index: number): number => {
@@ -202,16 +214,6 @@ const MapWrapper = (): React.ReactElement | null => {
       {layersWithLegend?.map((legend) => {
         const legendDomElement = document.getElementById(legend.id as string)
         if (legendDomElement) {
-          const isSquareKm = (legend.gridArea as number) > 50000
-          const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
-          const gridAreaFormatted = gridArea
-            ? formatI18nNumber(gridArea, {
-                style: 'unit',
-                unit: isSquareKm ? 'kilometer' : 'meter',
-                unitDisplay: 'short',
-              })
-            : ''
-
           return createPortal(
             <MapLegend
               layer={legend}
@@ -219,7 +221,7 @@ const MapWrapper = (): React.ReactElement | null => {
               currentValueClassName={styles.currentValue}
               labelComponent={
                 <span className={styles.legendLabel}>
-                  {i18n.t('common.hour_plural', 'hours')} / {gridAreaFormatted}
+                  {legend.label}
                   <sup>2</sup>
                 </span>
               }
