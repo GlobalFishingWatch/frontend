@@ -1,6 +1,6 @@
 import { LayerMetadataLegend, LegendType } from '../../../types'
 import { HeatmapAnimatedMode, ColorRampsIds } from '../../types'
-import { HEATMAP_COLOR_RAMPS } from '../config'
+import { HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_COLOR_RAMPS, GRID_AREA_BY_ZOOM_LEVEL } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import getBreaks from './get-breaks'
 
@@ -61,6 +61,12 @@ export const getSublayersBreaks = (
   })
 }
 
+const getGridAreaByZoom = (zoom: number): number => {
+  const gridZoom = Math.floor(Math.min(zoom, HEATMAP_DEFAULT_MAX_ZOOM))
+  const gridArea = GRID_AREA_BY_ZOOM_LEVEL[gridZoom]
+  return gridArea
+}
+
 const getLegendsCompare = (
   config: GlobalHeatmapAnimatedGeneratorConfig,
   intervalInDays: number
@@ -92,11 +98,13 @@ const getLegendsCompare = (
         return [value, legendItem[1]]
       })
     }
+    const gridArea = getGridAreaByZoom(config.zoom)
 
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
       type: LegendType.ColorRampDiscrete,
       ramp: legendRamp,
+      ...(gridArea && { gridArea }),
     }
     return sublayerLegend
   })
@@ -108,12 +116,14 @@ const getLegendsBivariate = (
 ) => {
   const sublayersBreaks = getSublayersBreaks(config, intervalInDays)
   const ramp = HEATMAP_COLOR_RAMPS.bivariate
+  const gridArea = getGridAreaByZoom(config.zoom)
   return [
     {
       id: config.sublayers[0].id,
       type: LegendType.Bivariate,
       bivariateRamp: ramp,
       sublayersBreaks,
+      ...(gridArea && { gridArea }),
     },
   ]
 }

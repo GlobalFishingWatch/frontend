@@ -1,5 +1,15 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.15.3
+
+### Patch Changes
+
+- 75cc59c: Fishingmap/legend label
+- Updated dependencies [75cc59c]
+  - @globalfishingwatch/api-types@2.0.1
+  - @globalfishingwatch/layer-composer@4.3.0
+  - @globalfishingwatch/ui-components@2.5.0
+
 ## 0.15.2
 
 ### Patch Changes

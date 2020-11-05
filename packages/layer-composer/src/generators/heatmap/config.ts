@@ -26,6 +26,22 @@ export const HEATMAP_MODE_LAYER_TYPE: Record<HeatmapAnimatedMode, string> = {
   [HeatmapAnimatedMode.Extruded]: 'fill-extrusion',
 }
 
+export const GRID_AREA_BY_ZOOM_LEVEL = [
+  128000000000,
+  32000000000,
+  8000000000,
+  2000000000,
+  500000000,
+  125000000,
+  31250000,
+  7812500,
+  1953125,
+  488281,
+  122070,
+  30518,
+  7629,
+]
+
 const hex2Rgb = (hex: string) => {
   const cleanHex = hex.replace('#', '')
   const color = {

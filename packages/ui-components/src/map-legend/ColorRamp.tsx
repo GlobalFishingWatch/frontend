@@ -8,12 +8,14 @@ type ColorRampLegendProps = {
   layer: LegendLayer
   className?: string
   currentValueClassName?: string
+  labelComponent?: React.ReactNode
 }
 
 function ColorRampLegend({
   layer = {} as LegendLayer,
   className = '',
   currentValueClassName = '',
+  labelComponent = null,
 }: ColorRampLegendProps) {
   const { gridArea, ramp, label, unit, currentValue, type } = layer
 
@@ -34,9 +36,11 @@ function ColorRampLegend({
 
   return (
     <div className={cx(styles.row, className)}>
-      {label && (
+      {labelComponent ? (
+        labelComponent
+      ) : (
         <p>
-          {label}
+          {label && label}
           {unit && (
             <span className={styles.subTitle}>
               {' '}
@@ -45,7 +49,6 @@ function ColorRampLegend({
                 <span>
                   {' '}
                   by {gridArea}
-                  {gridArea > 100000 ? 'km' : 'm'}
                   <sup>2</sup>
                 </span>
               )}

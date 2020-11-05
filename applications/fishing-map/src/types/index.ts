@@ -1,6 +1,6 @@
 import { DataviewInstance } from '@globalfishingwatch/api-types'
 
-export enum LocaleOptions {
+export enum Locale {
   en = 'en',
   es = 'es',
   fr = 'fr',
