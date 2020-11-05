@@ -1,5 +1,11 @@
 # @globalfishingwatch/data-transforms
 
+## 1.0.3
+
+### Patch Changes
+
+- 8cbf187: added the night property to the Field declaration
+
 ## 1.0.2
 
 ### Patch Changes
