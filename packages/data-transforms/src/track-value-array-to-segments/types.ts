@@ -6,6 +6,7 @@ export enum Field {
   fishing = 'fishing',
   speed = 'speed',
   course = 'course',
+  night = 'night',
 }
 
 export type Point = Partial<Record<Field, number | null>>
