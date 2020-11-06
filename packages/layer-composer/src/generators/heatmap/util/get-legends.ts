@@ -28,14 +28,12 @@ export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGenerato
   const colorRamps = getSublayersColorRamps(config)
 
   const expressions = colorRamps.map((originalColorRamp, colorRampIndex) => {
-    const legend = [...Array(originalColorRamp.length)].map((_, bucketIndex) => [
+    const legend = [...Array(originalColorRamp.length)].flatMap((_, bucketIndex) => [
       // offset each dataset by 10 + add actual bucket value
       colorRampIndex * 10 + bucketIndex,
       originalColorRamp[bucketIndex],
     ])
-    // TODO use flatMap
-    const expr = legend.flat()
-    return expr
+    return legend
   })
 
   if (config.mode === HeatmapAnimatedMode.Compare) {

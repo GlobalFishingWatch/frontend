@@ -2,6 +2,7 @@ import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { Generators } from '@globalfishingwatch/layer-composer'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import styles from 'features/sidebar/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -12,7 +13,7 @@ import LayerPanel from './HeatmapLayerPanel'
 function HeatmapsSection(): React.ReactElement {
   const { t } = useTranslation()
   const dataviews = useSelector(selectTemporalgridDataviews)
-  const { removeDataviewInstance } = useDataviewInstancesConnect()
+  const { removeDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const onAddClick = useCallback(() => {
     removeDataviewInstance('fishing-1')
   }, [removeDataviewInstance])
@@ -20,7 +21,24 @@ function HeatmapsSection(): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
   const onToggleCombinationMode = () => {
-    dispatchQueryParams({ bivariate: !bivariate })
+    const newBivariateValue = !bivariate
+    dispatchQueryParams({ bivariate: newBivariateValue })
+    // automatically set 2 first animated heatmaps to visible
+    if (newBivariateValue) {
+      let heatmapAnimatedIndex = 0
+      dataviews?.forEach((dataview) => {
+        if (dataview.config?.type === Generators.Type.HeatmapAnimated) {
+          const visible = heatmapAnimatedIndex < 2
+          upsertDataviewInstance({
+            id: dataview.id,
+            config: {
+              visible,
+            },
+          })
+          heatmapAnimatedIndex++
+        }
+      })
+    }
   }
 
   return (
