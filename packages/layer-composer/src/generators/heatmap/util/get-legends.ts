@@ -57,6 +57,9 @@ export const getSublayersBreaks = (
   // TODO - generate this using updated stats API ?
   // TODO - For each sublayer a different set of breaks should be produced depending on filters
   const ramps = getSublayersColorRamps(config)
+
+  const multiplier = intervalInDays * Math.pow(1 / 4, config.zoom) * 250
+
   return config.sublayers.map((_, sublayerIndex) => {
     const sublayerColorRamp = ramps[sublayerIndex]
     const numBreaks =
@@ -65,7 +68,7 @@ export const getSublayersBreaks = (
         : sublayerColorRamp
         ? sublayerColorRamp.length
         : 6
-    return getBreaks(STATS_MIN, STATS_MAX, STATS_AVG, SCALEPOWEXPONENT, numBreaks, intervalInDays)
+    return getBreaks(STATS_MIN, STATS_MAX, STATS_AVG, SCALEPOWEXPONENT, numBreaks, multiplier)
   })
 }
 
