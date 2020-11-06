@@ -151,6 +151,6 @@ export const getGeneratorsConfig = createSelector(
       id: 'rulers',
       data: rulers,
     }
-    return [...generatorsConfig, rulersConfig] as AnyGeneratorConfig[]
+    return [...generatorsConfig.reverse(), rulersConfig] as AnyGeneratorConfig[]
   }
 )
