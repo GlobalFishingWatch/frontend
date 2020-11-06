@@ -178,6 +178,7 @@ const MapWrapper = (): React.ReactElement | null => {
     <div className={styles.container}>
       {style && (
         <InteractiveMap
+          disableTokenWarning={true}
           ref={mapRef}
           width="100%"
           height="100%"
