@@ -33,42 +33,51 @@ const workspace: Workspace = {
       },
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
-    {
-      id: 'vessel-1',
-      config: {
-        color: '#F95E5E',
-      },
-      dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
-      datasetsConfig: [
-        {
-          params: [
-            {
-              id: 'vesselId',
-              value: '00ba29183-3b86-9e36-cf20-ee340e409521',
-            },
-          ],
-          endpoint: 'carriers-tracks',
-          datasetId: 'fishing-tracks:v20200507',
-        },
-        {
-          params: [
-            {
-              id: 'vesselId',
-              value: '00ba29183-3b86-9e36-cf20-ee340e409521',
-            },
-          ],
-          endpoint: 'carriers-vessel',
-          datasetId: 'test-alias-import-vessels-pipeline:latest',
-        },
-      ],
-    },
+    // {
+    //   id: 'vessel-1',
+    //   config: {
+    //     color: '#F95E5E',
+    //     visible: false,
+    //   },
+    //   dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
+    //   datasetsConfig: [
+    //     {
+    //       params: [
+    //         {
+    //           id: 'vesselId',
+    //           value: '00ba29183-3b86-9e36-cf20-ee340e409521',
+    //         },
+    //       ],
+    //       endpoint: 'carriers-tracks',
+    //       datasetId: 'fishing-tracks:v20200507',
+    //     },
+    //     {
+    //       params: [
+    //         {
+    //           id: 'vesselId',
+    //           value: '00ba29183-3b86-9e36-cf20-ee340e409521',
+    //         },
+    //       ],
+    //       endpoint: 'carriers-vessel',
+    //       datasetId: 'test-alias-import-vessels-pipeline:latest',
+    //     },
+    //   ],
+    // },
+    // {
+    //   id: 'context-layer-1',
+    //   config: {
+    //     color: '#069688',
+    //     visible: false,
+    //   },
+    //   dataviewId: 93,
+    // },
     {
       id: 'context-layer-1',
       config: {
         color: '#069688',
-        visible: false,
+        visible: true,
       },
-      dataviewId: 93,
+      dataviewId: 94,
     },
   ],
   dataviews: [],

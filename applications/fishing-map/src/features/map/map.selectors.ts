@@ -110,39 +110,49 @@ export const getGeneratorsConfig = createSelector(
       generatorsConfig.push(mergedLayer)
     }
 
-    // Collect track generators and inject highligtedTime
-    generatorsConfig = generatorsConfig.map((generator) => {
-      const isTrack = generator.config?.type === Generators.Type.Track
-      if (!isTrack) return generator
-      return {
-        ...generator,
-        config: {
-          ...generator.config,
-          highlightedTime,
-        },
-      }
-    })
-
     generatorsConfig = generatorsConfig.flatMap((dataview) => {
-      // Try to retrieve resource if it exists
-      let data
-      const { url } = resolveDataviewDatasetResource(dataview, TRACKS_DATASET_TYPE)
-      if (url && resources[url]) {
-        data = resources[url].data
-      }
-
       const generator: GeneratorDataviewConfig = {
         id: dataview.id,
         ...dataview.config,
-        ...(data && { data }),
       }
-      // TODO: remove UserContext and use Context
-      if (dataview.config?.type === Generators.Type.UserContext) {
-        const { url } = resolveDataviewDatasetResource(dataview, USER_CONTEXT_TYPE)
-        if (url) {
-          generator.tilesUrl = url
+
+      if (dataview.config?.type === Generators.Type.Track) {
+        // Inject highligtedTime
+        generator.config = {
+          ...generator.config,
+          highlightedTime,
+        }
+        // Try to retrieve resource if it exists
+        const { url } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })
+        if (url && resources[url]) {
+          generator.data = resources[url].data
         }
       }
+
+      if (dataview.config?.type === Generators.Type.Context) {
+        if (Array.isArray(dataview.config.layers)) {
+          const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
+            const { url } = resolveDataviewDatasetResource(dataview, { id: dataset })
+            if (!url) return []
+            return { id, tilesUrl: url }
+          })
+          // Duplicated generators when context dataview have multiple layers
+          return tilesUrls.map(({ id, tilesUrl }) => ({
+            ...generator,
+            id: dataview.id + id,
+            layer: id,
+            tilesUrl,
+          }))
+        } else {
+          generator.id = dataview.id + dataview.config.layers
+          generator.layer = dataview.config.layers
+          const { url } = resolveDataviewDatasetResource(dataview, { type: USER_CONTEXT_TYPE })
+          if (url) {
+            generator.tilesUrl = url
+          }
+        }
+      }
+
       return generator
     })
 

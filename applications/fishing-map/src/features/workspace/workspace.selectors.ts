@@ -186,7 +186,7 @@ export const selectActiveVesselsDataviews = createSelector([selectVesselsDatavie
 )
 
 export const selectContextAreasDataviews = createSelector(
-  [selectDataviewInstancesByType(Generators.Type.UserContext)],
+  [selectDataviewInstancesByType(Generators.Type.Context)],
   (dataviews) => dataviews
 )
 
