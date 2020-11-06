@@ -23,12 +23,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const bivariate = useSelector(selectBivariate)
 
-  const layerActive = dataview?.config?.visible ?? true
+  const layerActive = bivariate ? true : dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
     upsertDataviewInstance({
       id: dataview.id,
       config: {
-        visible: !layerActive,
+        visible: bivariate ? true : !layerActive,
       },
     })
   }
@@ -67,6 +67,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
           color={dataview.config?.color}
+          disabled={bivariate}
         />
         {datasetName.length > 24 ? (
           <Tooltip content={datasetName}>{TitleComponent}</Tooltip>
