@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.4.1
+
+### Patch Changes
+
+- b70a9c0: Fishingmap/bugfixes
+
 ## 4.4.0
 
 ### Minor Changes

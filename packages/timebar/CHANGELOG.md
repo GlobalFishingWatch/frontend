@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 1.1.2
+
+### Patch Changes
+
+- b70a9c0: Fishingmap/bugfixes
+
 ## 1.1.1
 
 ### Patch Changes

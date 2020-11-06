@@ -1,5 +1,14 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.15.5
+
+### Patch Changes
+
+- b70a9c0: Fishingmap/bugfixes
+- Updated dependencies [b70a9c0]
+  - @globalfishingwatch/layer-composer@4.4.1
+  - @globalfishingwatch/timebar@1.1.2
+
 ## 0.15.4
 
 ### Patch Changes
