@@ -85,12 +85,12 @@ export const useClickedEventConnect = () => {
     if (!temporalgridDataviews) return
 
     // get temporal grid clicked features and order them by sublayerindex
-    const features = event.features
+    const temporalGridFeatures = event.features
       .filter((feature) => feature.temporalgrid !== undefined)
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
     // get corresponding dataviews
-    const featuresDataviews = features.flatMap((feature) => {
+    const featuresDataviews = temporalGridFeatures.flatMap((feature) => {
       return feature.temporalgrid ? temporalgridDataviews[feature.temporalgrid.sublayerIndex] : []
     })
 
@@ -104,45 +104,49 @@ export const useClickedEventConnect = () => {
       return datasets || []
     })
 
-    // use the first feature/dv for common parameters
-    const mainFeature = features[0]
-    const datasetConfig = {
-      endpoint: '4wings-interaction',
-      params: [
-        { id: 'z', value: mainFeature.tile.z },
-        { id: 'x', value: mainFeature.tile.x },
-        { id: 'y', value: mainFeature.tile.y },
-        { id: 'rows', value: mainFeature.temporalgrid?.row },
-        { id: 'cols', value: mainFeature.temporalgrid?.col },
-      ],
-      query: [
-        { id: 'date-range', value: [start, end].join(',') },
-        {
-          id: 'datasets',
-          value: featuresDataviewsDatasets.map((dataviewDatasets) =>
-            dataviewDatasets.map((ds: Dataset) => ds.id).join(',')
+    if (temporalGridFeatures?.length) {
+      // use the first feature/dv for common parameters
+      const mainFeature = temporalGridFeatures[0]
+      const datasetConfig = {
+        endpoint: '4wings-interaction',
+        params: [
+          { id: 'z', value: mainFeature.tile?.z },
+          { id: 'x', value: mainFeature.tile?.x },
+          { id: 'y', value: mainFeature.tile?.y },
+          { id: 'rows', value: mainFeature.temporalgrid?.row },
+          { id: 'cols', value: mainFeature.temporalgrid?.col },
+        ],
+        query: [
+          { id: 'date-range', value: [start, end].join(',') },
+          {
+            id: 'datasets',
+            value: featuresDataviewsDatasets.map((dataviewDatasets) =>
+              dataviewDatasets.map((ds: Dataset) => ds.id).join(',')
+            ),
+          },
+        ],
+      }
+      const filters = featuresDataviews.flatMap((dv) => dv.config?.filter || [])
+      if (filters?.length) {
+        datasetConfig.query.push({ id: 'filters', value: filters })
+      }
+
+      // TODO Not sure of this
+      const mainDataset = featuresDataviewsDatasets[0].find(
+        (dataset: Dataset) => dataset.type === FISHING_DATASET_TYPE
+      )
+
+      if (!mainDataset) return
+      promiseRef.current = dispatch(
+        fetch4WingInteractionThunk({
+          dataset: mainDataset,
+          datasetConfig: datasetConfig as DataviewDatasetConfig,
+          sublayersIndices: temporalGridFeatures.map(
+            (feature) => feature.temporalgrid?.sublayerIndex || 0
           ),
-        },
-      ],
+        })
+      )
     }
-    const filters = featuresDataviews.flatMap((dv) => dv.config?.filter || [])
-    if (filters?.length) {
-      datasetConfig.query.push({ id: 'filters', value: filters })
-    }
-
-    // TODO Not sure of this
-    const mainDataset = featuresDataviewsDatasets[0].find(
-      (dataset: Dataset) => dataset.type === FISHING_DATASET_TYPE
-    )
-
-    if (!mainDataset) return
-    promiseRef.current = dispatch(
-      fetch4WingInteractionThunk({
-        dataset: mainDataset,
-        datasetConfig: datasetConfig as DataviewDatasetConfig,
-        sublayersIndices: features.map((feature) => feature.temporalgrid?.sublayerIndex || 0),
-      })
-    )
   }
   return { clickedEvent, clickedEventStatus, dispatchClickedEvent }
 }
