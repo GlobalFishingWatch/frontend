@@ -63,7 +63,6 @@ class Timeline extends PureComponent {
       dragging: null,
     }
     this.graphContainer = null
-    this.isMovingInside = false
   }
 
   componentDidMount() {
@@ -204,7 +203,7 @@ class Timeline extends PureComponent {
   }
 
   onMouseMove = (event) => {
-    const { start, end, absoluteStart, absoluteEnd, onChange, onMouseLeave } = this.props
+    const { start, end, absoluteStart, absoluteEnd, onChange } = this.props
     const { dragging, outerX, innerStartPx, innerEndPx } = this.state
     const clientX = event.clientX || (event.changedTouches && event.changedTouches[0].clientX)
     if (clientX === undefined) {
@@ -213,13 +212,8 @@ class Timeline extends PureComponent {
     const x = clientX - outerX
     const isMovingInside = this.node.contains(event.target) && x > innerStartPx && x < innerEndPx
     if (isMovingInside) {
-      this.isMovingInside = true
       const isDay = !isMoreThanADay(start, end)
       this.throttledMouseMove(x, this.outerScale.invert, isDay)
-    } else if (this.isMovingInside === true) {
-      this.isMovingInside = false
-      onMouseLeave()
-      this.notifyMouseLeave()
     }
 
     const isDraggingInner = dragging === DRAG_INNER
