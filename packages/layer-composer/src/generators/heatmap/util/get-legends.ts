@@ -13,7 +13,7 @@ export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorCon
   // TODO We might need more flexibility on that
   if (config.mode === HeatmapAnimatedMode.Bivariate) {
     colorRampIds = ['bivariate']
-  } else if (numVisibleSublayers === 1) {
+  } else if (numVisibleSublayers === 1 && config.sublayers[0].visible) {
     colorRampIds = ['presence']
   }
   const colorRamps = colorRampIds.map((colorRampId) => {
