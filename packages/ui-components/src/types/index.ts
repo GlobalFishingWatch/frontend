@@ -2,7 +2,7 @@ export type TooltipTypes =
   | React.ReactChild
   | React.ReactChild[]
   | string
-  | object
-  | Array<string | object>
+  | Record<string, unknown>
+  | Array<string | Record<string, unknown>>
   | undefined
   | null

@@ -4,7 +4,7 @@ import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import getBaseLayer from '../util/get-base-layer'
 import { TimeChunk, TimeChunks } from '../util/time-chunks'
 
-export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) {
+function extruded(config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) {
   const layers: any[] = timeChunks.chunks.flatMap(
     (timeChunk: TimeChunk, timeChunkIndex: number) => {
       const chunkMainLayer = getBaseLayer(config)
@@ -73,3 +73,5 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk
   )
   return layers
 }
+
+export default extruded

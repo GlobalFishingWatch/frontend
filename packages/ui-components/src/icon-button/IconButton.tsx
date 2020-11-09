@@ -4,7 +4,7 @@ import { Placement } from 'tippy.js'
 import Icon, { IconType } from '../icon'
 import Tooltip from '../tooltip'
 import Spinner from '../spinner'
-import { TooltipTypes } from '../types/index'
+import { TooltipTypes } from '../types'
 import styles from './IconButton.module.css'
 
 export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'warning'

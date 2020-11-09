@@ -16,8 +16,8 @@ import {
   LegendLayer,
   LegendLayerBivariate,
 } from '@globalfishingwatch/ui-components/dist/map-legend'
-import { ExtendedStyleMeta, ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { ExtendedStyle, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import { AsyncReducerStatus, UrlDataviewInstance } from 'types'
 import i18n from 'features/i18n/i18n'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
