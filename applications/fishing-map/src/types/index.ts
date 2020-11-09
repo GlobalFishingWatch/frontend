@@ -1,4 +1,5 @@
 import { DataviewInstance } from '@globalfishingwatch/api-types'
+import { Generators } from '@globalfishingwatch/layer-composer'
 
 export enum Locale {
   en = 'en',
@@ -6,7 +7,7 @@ export enum Locale {
   fr = 'fr',
 }
 
-export type UrlDataviewInstance = Omit<DataviewInstance, 'dataviewId'> & {
+export type UrlDataviewInstance = Omit<DataviewInstance<Generators.Type>, 'dataviewId'> & {
   dataviewId?: number // making this optional as sometimes we just need to reference the id
   deleted?: boolean // needed when you want to override from url an existing workspace config
 }

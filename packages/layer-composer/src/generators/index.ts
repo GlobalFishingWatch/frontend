@@ -5,6 +5,7 @@ import GLStyleGenerator from './gl/gl'
 import CartoGenerator, { CARTO_FISHING_MAP_API } from './carto-polygons/carto-polygons'
 import HeatmapAnimatedGenerator from './heatmap/heatmap-animated'
 import HeatmapGenerator from './heatmap/heatmap'
+import ContextGenerator from './context/context'
 import UserContextGenerator from './user-context/user-context'
 import TrackGenerator from './track/track'
 import VesselEventsGenerator from './vessel-events/vessel-events'
@@ -13,11 +14,12 @@ import RulersGenerator from './rulers/rulers'
 export { DEFAULT_BACKGROUND_COLOR }
 export { HEATMAP_COLOR_RAMPS } from './heatmap/config'
 
-export default {
+const GeneratorConfig = {
   [Type.Background]: new BackgroundGenerator(),
   [Type.Basemap]: new BaseMapGenerator(),
   [Type.GL]: new GLStyleGenerator(),
   [Type.CartoPolygons]: new CartoGenerator({ baseUrl: CARTO_FISHING_MAP_API }),
+  [Type.Context]: new ContextGenerator(),
   [Type.UserContext]: new UserContextGenerator(),
   [Type.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
   [Type.Heatmap]: new HeatmapGenerator(),
@@ -25,3 +27,5 @@ export default {
   [Type.VesselEvents]: new VesselEventsGenerator(),
   [Type.Rulers]: new RulersGenerator(),
 }
+
+export default GeneratorConfig

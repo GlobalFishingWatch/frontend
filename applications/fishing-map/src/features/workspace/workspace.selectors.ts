@@ -186,7 +186,7 @@ export const selectActiveVesselsDataviews = createSelector([selectVesselsDatavie
 )
 
 export const selectContextAreasDataviews = createSelector(
-  [selectDataviewInstancesByType(Generators.Type.UserContext)],
+  [selectDataviewInstancesByType(Generators.Type.Context)],
   (dataviews) => dataviews
 )
 
@@ -215,13 +215,17 @@ export const getRelatedDatasetByType = (dataset: Dataset, datasetType: DatasetTy
 
 export const resolveDataviewDatasetResource = (
   dataview: UrlDataviewInstance,
-  datasetType: DatasetTypes
+  { type, id }: { type?: DatasetTypes; id?: string }
 ): {
   dataset?: Dataset
   datasetConfig?: DataviewDatasetConfig
   url?: string
 } => {
-  const dataset = dataview.datasets?.find((dataset) => dataset.type === datasetType)
+  if (!type && !id) return {}
+
+  const dataset = type
+    ? dataview.datasets?.find((dataset) => dataset.type === type)
+    : dataview.datasets?.find((dataset) => dataset.id === id)
   if (!dataset) return {}
   const datasetConfig = dataview?.datasetsConfig?.find(
     (datasetConfig) => datasetConfig.datasetId === dataset.id
@@ -244,7 +248,9 @@ export const selectDataviewsResourceQueries = createSelector(
       }
       let trackQuery: any = [] // initialized as empty array to be filter by flatMap if not used
       if (dataview.config.visible === true) {
-        const trackResource = resolveDataviewDatasetResource(dataview, TRACKS_DATASET_TYPE)
+        const trackResource = resolveDataviewDatasetResource(dataview, {
+          type: TRACKS_DATASET_TYPE,
+        })
         if (!trackResource.url || !trackResource.dataset || !trackResource.datasetConfig) {
           return []
         }
@@ -256,7 +262,7 @@ export const selectDataviewsResourceQueries = createSelector(
         }
       }
 
-      const infoResource = resolveDataviewDatasetResource(dataview, VESSELS_DATASET_TYPE)
+      const infoResource = resolveDataviewDatasetResource(dataview, { type: VESSELS_DATASET_TYPE })
       if (!infoResource.url || !infoResource.dataset || !infoResource.datasetConfig) {
         return trackQuery as ResourceQuery
       }

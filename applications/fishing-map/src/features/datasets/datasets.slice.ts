@@ -9,9 +9,13 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
   async (ids: string[], { rejectWithValue }) => {
     try {
-      const datasets = await GFWAPI.fetch<Dataset[]>(
+      let datasets = await GFWAPI.fetch<Dataset[]>(
         `/v1/datasets?ids=${ids.join(',')}&include=endpoints`
       )
+      if (process.env.REACT_APP_USE_DATASETS_MOCK === 'true') {
+        const mockedDatasets = await import('./datasets.mock')
+        datasets = [...datasets, ...mockedDatasets.default]
+      }
       return datasets
     } catch (e) {
       return rejectWithValue(ids.join(','))

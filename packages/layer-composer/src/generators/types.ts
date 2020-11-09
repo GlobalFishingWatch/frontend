@@ -1,9 +1,11 @@
 import { FeatureCollection } from 'geojson'
+import { StringUnitLength } from 'luxon'
 import { Segment } from '@globalfishingwatch/data-transforms'
 
 export enum Type {
   Background = 'BACKGROUND',
   UserContext = 'USER_CONTEXT',
+  Context = 'CONTEXT',
   Basemap = 'BASEMAP',
   CartoPolygons = 'CARTO_POLYGONS',
   GL = 'GL',
@@ -103,6 +105,25 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    * Property to get value to display the ramp
    */
   pickValueAt?: string
+}
+
+/**
+ * Contextual layers provided by GFW
+ */
+export interface ContextGeneratorConfig extends GeneratorConfig {
+  type: Type.Context
+  /**
+   * Id for the layers dictionary, see CONTEXT_LAYERS from /generators/context/context-layers
+   */
+  layer: ContextLayerType
+  /**
+   * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
+   */
+  tilesUrl: string
+  /**
+   * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
+   */
+  color?: StringUnitLength
 }
 
 /**
@@ -217,6 +238,7 @@ export type AnyGeneratorConfig =
   | GlGeneratorConfig
   | CartoPolygonsGeneratorConfig
   | UserContextGeneratorConfig
+  | ContextGeneratorConfig
   | TrackGeneratorConfig
   | VesselEventsGeneratorConfig
   | RulersGeneratorConfig
@@ -227,6 +249,12 @@ export type AnyGeneratorConfig =
 export enum BasemapType {
   Satellite = 'satellite',
   Default = 'basemap_default',
+}
+
+// ---- Generator specific types
+export enum ContextLayerType {
+  EEZ = 'eez-areas',
+  EEZBoundaries = 'eez-boundaries',
 }
 
 export type RawEvent = {

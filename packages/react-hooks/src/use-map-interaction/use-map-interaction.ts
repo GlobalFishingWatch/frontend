@@ -73,7 +73,7 @@ export const useMapClick = (
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
       }
-      if (event.features && event.features.length) {
+      if (event.features?.length) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
         if (extendedFeatures.length) {
           interactionEvent.features = extendedFeatures

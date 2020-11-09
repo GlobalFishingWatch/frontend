@@ -1,6 +1,6 @@
 import type { Style } from 'mapbox-gl'
 
-export default (style: Style) => {
+const getInteractiveIds = (style: Style) => {
   if (!style || !style.layers) return style
   const interactiveLayerIds = style.layers
     .filter((layer) => {
@@ -17,3 +17,5 @@ export default (style: Style) => {
   newStyle.metadata.interactiveLayerIds = interactiveLayerIds
   return newStyle
 }
+
+export default getInteractiveIds

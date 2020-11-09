@@ -32,7 +32,7 @@ type LayerPanelProps = {
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const { url } = resolveDataviewDatasetResource(dataview, VESSELS_DATASET_TYPE)
+  const { url } = resolveDataviewDatasetResource(dataview, { type: VESSELS_DATASET_TYPE })
   const resource = useSelector(selectResourceByUrl<Vessel>(url))
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
