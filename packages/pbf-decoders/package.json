@@ -9,11 +9,12 @@
   "scripts": {
     "clean": "rimraf decoders && mkdirp ./decoders",
     "start": "yarn build",
-    "build": "run-s clean build:pb:vessels:js build:pb:vessels:ts build:pb:4wings-tile:js",
+    "build": "run-s build:pb:vessels:js build:pb:vessels:ts build:pb:4wings-tile:js",
     "build:pb:vessels:js": "pbjs ../../node_modules/tracks-cloud-function/src/proto/vessels.proto -t static-module -w commonjs -o decoders/vessels.js",
     "build:pb:vessels:ts": "pbts decoders/vessels.js -o decoders/vessels.d.ts",
     "build:pb:4wings-tile:js": "pbjs ./proto/4wings-tile.proto -t static-module -w commonjs -o decoders/4wings-tile.js",
-    "prepare": "yarn build"
+    "build:clean": "run-s clean build:pb:vessels:js build:pb:vessels:ts build:pb:4wings-tile:js",
+    "prepare": "yarn build:clean"
   },
   "dependencies": {
     "tracks-cloud-function": "https://github.com/GlobalFishingWatch/api-function-vessels"

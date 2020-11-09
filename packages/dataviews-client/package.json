@@ -27,9 +27,7 @@
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.6.1",
-    "@globalfishingwatch/api-types": "*",
-    "@globalfishingwatch/layer-composer": "^4.0.0",
-    "@globalfishingwatch/pbf": "^1.0.8",
+    "@globalfishingwatch/api-types": "^2.0.2",
     "qs": "^6.9.4"
   },
   "devDependencies": {
