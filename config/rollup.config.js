@@ -21,7 +21,12 @@ const prepareConfig = async (customConfig = {}) => {
     ...defaultConfig,
     ...customConfig,
   }
-  const gfwPackages = await getPackages(__dirname)
+  const gfwPackages = await getPackages(__dirname).then((packages) =>
+    packages.flatMap(({ name }) => {
+      //support relative imports too
+      return name.includes('globalfishingwatchapp') ? [] : [name, `${name}/**/*`]
+    })
+  )
 
   return {
     input: config.input,
@@ -30,7 +35,13 @@ const prepareConfig = async (customConfig = {}) => {
       format: 'es',
       sourcemap: true,
     },
-    external: ['react', 'react-dom', 'countryflag', ...gfwPackages.map(({ name }) => name)],
+    external: [
+      'react',
+      'react-dom',
+      'countryflag',
+      ...gfwPackages,
+      ...(customConfig.external || []),
+    ],
     plugins: [
       // Allow json resolution
       json(),
