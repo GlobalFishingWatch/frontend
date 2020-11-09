@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.0.2
+
+### Patch Changes
+
+- 2d0a2fa: Contextual layers
+
 ## 2.0.1
 
 ### Patch Changes

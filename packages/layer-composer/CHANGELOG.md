@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.5.0
+
+### Minor Changes
+
+- 2d0a2fa: Contextual layers
+
 ## 4.4.1
 
 ### Patch Changes

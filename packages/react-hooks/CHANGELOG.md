@@ -1,5 +1,16 @@
 # @globalfishingwatch/react-hooks
 
+## 4.2.0
+
+### Minor Changes
+
+- 2d0a2fa: Contextual layers
+
+### Patch Changes
+
+- Updated dependencies [2d0a2fa]
+  - @globalfishingwatch/layer-composer@4.5.0
+
 ## 4.1.0
 
 ### Minor Changes
