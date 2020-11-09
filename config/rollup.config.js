@@ -1,5 +1,4 @@
-// import typescript from '@rollup/plugin-typescript'
-import typescript from 'rollup-plugin-typescript2'
+import typescript from '@rollup/plugin-typescript'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import multiInput from 'rollup-plugin-multi-input'
@@ -57,7 +56,7 @@ const prepareConfig = async (customConfig = {}) => {
           sourceMap: true,
           tsconfig: config.tsconfig,
           // rollupCommonJSResolveHack: true,
-          clean: isProduction,
+          // clean: isProduction,
         }),
       // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
       commonjs({}),
