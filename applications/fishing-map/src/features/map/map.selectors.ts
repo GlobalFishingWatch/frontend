@@ -127,9 +127,7 @@ export const getGeneratorsConfig = createSelector(
         if (url && resources[url]) {
           generator.data = resources[url].data
         }
-      }
-
-      if (dataview.config?.type === Generators.Type.Context) {
+      } else if (dataview.config?.type === Generators.Type.Context) {
         if (Array.isArray(dataview.config.layers)) {
           const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
             const { url } = resolveDataviewDatasetResource(dataview, { id: dataset })

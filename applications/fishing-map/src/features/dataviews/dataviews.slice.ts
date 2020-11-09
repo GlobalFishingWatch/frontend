@@ -17,7 +17,6 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         dataviews = [...dataviews, ...mockedDataviews]
       }
       const datasets = getDatasetByDataview(dataviews)
-      // const datasets = getDatasetByDataview(dataviews)
       if (datasets?.length) {
         await dispatch(fetchDatasetsByIdsThunk(datasets))
       }
