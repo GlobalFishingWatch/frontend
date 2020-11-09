@@ -6,5 +6,9 @@
   "marine-protected-areas": {
     "name": "Zones Marines Protégées (MPA)",
     "description": "Le terme Zones Marines Protégées (MPA) comprend les réserves marines, les zones marines entièrement protégées, les zones \"no-take\", sanctuaires marins, sanctuaires océaniques, parcs marins, zones marines gérées localement, pour n'en citer que quelques-uns. Ces zones ont des niveaux de protection assez différents, et la gamme d'activités autorisées ou interdites à l'intérieur de leurs frontières varie considérablement également. Source: World Database on Protected Areas (WDPA)"
+  },
+  "eez-areas": {
+    "name": "EEZ",
+    "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11"
   }
 }
