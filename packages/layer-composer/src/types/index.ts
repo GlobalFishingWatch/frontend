@@ -8,7 +8,7 @@ import {
   ColorRampsIds,
 } from '../generators/types'
 
-export interface GeneratorDataviewConfig extends DataviewConfig<Type> {
+export interface GeneratorDataviewConfig<T = Type> extends DataviewConfig<T> {
   colorRamp?: ColorRampsIds
   basemap?: string
   sublayers?: HeatmapAnimatedGeneratorSublayer[]

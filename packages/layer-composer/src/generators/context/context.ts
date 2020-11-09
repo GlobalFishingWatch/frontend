@@ -73,7 +73,7 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
   }
 }
 
-class UserContextGenerator {
+class ContextGenerator {
   type = Type.Context
 
   _getStyleSources = (config: ContextGeneratorConfig) => {
@@ -131,4 +131,4 @@ class UserContextGenerator {
   }
 }
 
-export default UserContextGenerator
+export default ContextGenerator

@@ -6,15 +6,15 @@ import { AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
 import { getDatasetByDataview } from 'features/workspace/workspace.slice'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
-import mockedDataviews from './dataviews.mock'
 
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
   async (ids: number[], { dispatch, rejectWithValue }) => {
     try {
       let dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${ids.join(',')}`)
-      if (mockedDataviews?.length) {
-        dataviews = [...dataviews, ...mockedDataviews]
+      if (process.env.REACT_APP_USE_DATAVIEWS_MOCK === 'true') {
+        const mockedDataviews = await import('./dataviews.mock')
+        dataviews = [...dataviews, ...mockedDataviews.default]
       }
       const datasets = getDatasetByDataview(dataviews)
       if (datasets?.length) {

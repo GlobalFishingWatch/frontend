@@ -113,7 +113,7 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
 export interface ContextGeneratorConfig extends GeneratorConfig {
   type: Type.Context
   /**
-   * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
+   * Id for the layers dictionary, see CONTEXT_LAYERS from /generators/context/context-layers
    */
   layer: ContextLayerType
   /**
