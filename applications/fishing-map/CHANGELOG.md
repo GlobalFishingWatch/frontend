@@ -1,5 +1,15 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.15.6
+
+### Patch Changes
+
+- 2d0a2fa: Contextual layers
+- Updated dependencies [2d0a2fa]
+  - @globalfishingwatch/api-types@2.0.2
+  - @globalfishingwatch/layer-composer@4.5.0
+  - @globalfishingwatch/react-hooks@4.2.0
+
 ## 0.15.5
 
 ### Patch Changes

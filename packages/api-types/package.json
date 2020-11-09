@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/api-types",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Typescript definitions for API responses",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
