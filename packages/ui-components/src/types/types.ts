@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-types */
 export type TooltipTypes =
   | React.ReactChild
   | React.ReactChild[]
   | string
-  | Record<string, unknown>
-  | Array<string | Record<string, unknown>>
+  | object
+  | Array<string | object>
   | undefined
   | null

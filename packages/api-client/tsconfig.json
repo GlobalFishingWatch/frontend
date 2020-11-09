@@ -5,6 +5,6 @@
     "rootDir": "src",
     "outDir": "dist/",
     "typeRoots": ["../../node_modules/@types"],
-    "declarationDir": "dist/types"
+    "declarationDir": "dist"
   }
 }
