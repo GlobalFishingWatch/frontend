@@ -6,5 +6,9 @@
   "marine-protected-areas": {
     "name": "Áreas Marinas Protegidas",
     "description": "El término Áreas Marinas Protegidas incluye reservas marinas, áreas marinas totalmente protegidas, zonas de veda, santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente, por nombrar algunos. Muchos de estos tienen niveles de protección bastante diferentes, y la gama de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. Fuente: Base de datos mundial sobre áreas protegidas (WDPA)"
+  },
+  "eez-areas": {
+    "name": "EEZ",
+    "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11"
   }
 }
