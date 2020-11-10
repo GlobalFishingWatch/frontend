@@ -3,7 +3,7 @@ import { Type } from '../../types'
 import { HEATMAP_MODE_LAYER_TYPE } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 
-export default function (config: GlobalHeatmapAnimatedGeneratorConfig): ExtendedLayer {
+function getBaseLayers(config: GlobalHeatmapAnimatedGeneratorConfig): ExtendedLayer {
   return {
     id: '_',
     source: '_',
@@ -16,3 +16,5 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig): Extended
     },
   }
 }
+
+export default getBaseLayers

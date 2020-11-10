@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
+import { ExtendedStyle } from '@globalfishingwatch/layer-composer'
 import { InteractionEvent } from '../use-map-interaction'
 import { LegendLayer } from '.'
 

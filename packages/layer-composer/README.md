@@ -43,7 +43,9 @@ Returns the sync glStyle and an array of promises when async layers are loaded w
 String. Mandatory. Use constants stored in the generator.
 
 ```
-import { TYPES } from '@globalfishingwatch/map-components/components/layer-manager'
+import { Generators } from '@globalfishingwatch/layer-composer'
+
+Generators.Types
 ```
 
 ### LayerDefinition.id
@@ -80,8 +82,9 @@ Parameters availables:
 - loading
 
 ```
-import LayerManager, { TYPES } from '@globalfishingwatch/map-components/components/layer-manager'
-import defaultGenerators from '@globalfishingwatch/map-components/components/layer-manager/generators'
+
+import LayerManager, { Generators } from '@globalfishingwatch/layer-composer'
+import defaultGenerators from '@globalfishingwatch/layer-composer/generators'
 
 // optional step as common generators will be used by default
 const generators = { ...defaultGenerators, { custom: new CustomGenerator()} }
@@ -92,15 +95,15 @@ const generators = { ...defaultGenerators, { custom: new CustomGenerator()} }
   }}
   layers={[
     {
-      type: TYPES.BACKGROUND,
+      type: Generators.Types.BACKGROUND,
       color: '#00265c',
     },
     {
-      type: TYPES.BASEMAP,
+      type: Generators.Types.BASEMAP,
       id: 'satellite',
     },
     {
-      type: TYPES.CARTO_POLYGONS,
+      type: Generators.Types.CARTO_POLYGONS,
       id: 'RFMO',
       color: '#ff00ff',
     },
@@ -125,12 +128,12 @@ const generators = { ...defaultGenerators, { custom: new CustomGenerator()} }
 
 ## React Hooks
 
-This library also exposes a React hook to get the mapStyles definition:
+There is a React hook to consume this library to get the mapStyles definition easily in react applications:
 
 ```
-import { useLayerManager} } from '@globalfishingwatch/map-components/components/layer-manager'
+import { useLayerComposer } } from '@globalfishingwatch/react-hooks'
 
-const [mapStyles, loading] = useLayerManager(layers, config)
+const { style, loading} = useLayerManager(layers, config)
 ```
 
 

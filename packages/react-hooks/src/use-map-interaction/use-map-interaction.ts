@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import debounce from 'lodash/debounce'
 import isArray from 'lodash/isArray'
-import { Generators } from '@globalfishingwatch/layer-composer'
-import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer/dist/types'
+import { Generators, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 

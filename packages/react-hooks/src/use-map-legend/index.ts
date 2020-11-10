@@ -1,4 +1,4 @@
-import { LayerMetadataLegend } from '@globalfishingwatch/layer-composer/dist/types'
+import { LayerMetadataLegend } from '@globalfishingwatch/layer-composer'
 
 export { default } from './use-map-legend'
 

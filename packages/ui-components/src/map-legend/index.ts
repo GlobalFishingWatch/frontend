@@ -1,7 +1,7 @@
-import {
+import type {
   LayerMetadataLegend,
   LayerMetadataLegendBivariate,
-} from '@globalfishingwatch/layer-composer/dist/types'
+} from '@globalfishingwatch/layer-composer'
 
 export { default, MapLegend } from './MapLegend'
 export { default as ColorRampLegend } from './ColorRamp'
