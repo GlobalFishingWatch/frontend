@@ -1,5 +1,16 @@
 # @globalfishingwatch/react-hooks
 
+## 4.2.1
+
+### Patch Changes
+
+- Update bundle dependencies
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.6.0
+  - @globalfishingwatch/api-client@1.6.2
+  - @globalfishingwatch/dataviews-client@4.0.2
+
 ## 4.2.0
 
 ### Minor Changes

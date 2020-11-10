@@ -1,5 +1,11 @@
 # @globalfishingwatch/data-transforms
 
+## 1.0.4
+
+### Patch Changes
+
+- Update bundle dependencies
+
 ## 1.0.3
 
 ### Patch Changes

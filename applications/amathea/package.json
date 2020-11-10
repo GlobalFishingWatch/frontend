@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/amathea",
-  "version": "0.13.3",
+  "version": "0.13.4",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
@@ -11,15 +11,15 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@globalfishingwatch/api-client": "^1.6.0",
-    "@globalfishingwatch/api-types": "^2.0.0",
-    "@globalfishingwatch/dataviews-client": "^4.0.0",
-    "@globalfishingwatch/layer-composer": "^4.0.0",
+    "@globalfishingwatch/api-client": "^1.6.2",
+    "@globalfishingwatch/api-types": "^2.0.3",
+    "@globalfishingwatch/dataviews-client": "^4.0.2",
+    "@globalfishingwatch/layer-composer": "^4.6.0",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.5",
     "@globalfishingwatch/react-map-gl": "5.2.9-gfw.2",
-    "@globalfishingwatch/react-hooks": "^4.0.1",
-    "@globalfishingwatch/timebar": "^1.1.1",
-    "@globalfishingwatch/ui-components": "^2.0.0",
+    "@globalfishingwatch/react-hooks": "^4.2.1",
+    "@globalfishingwatch/timebar": "^1.1.3",
+    "@globalfishingwatch/ui-components": "^2.5.1",
     "@reduxjs/toolkit": "^1.4.0",
     "countryflag": "^4.0.0",
     "classnames": "^2.2.6",
@@ -39,7 +39,7 @@
     "redux-first-router-link": "^2.1.1"
   },
   "devDependencies": {
-    "@globalfishingwatch/linting": "^1.5.3",
+    "@globalfishingwatch/linting": "^1.5.4",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -92,7 +92,9 @@
     ]
   },
   "eslintConfig": {
-    "extends": ["@globalfishingwatch/linting/typescript"],
+    "extends": [
+      "@globalfishingwatch/linting/typescript"
+    ],
     "ignorePatterns": "public/"
   },
   "prettier": "@globalfishingwatch/linting/prettier",

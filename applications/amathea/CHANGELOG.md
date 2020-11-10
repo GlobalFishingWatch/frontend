@@ -1,5 +1,20 @@
 # @globalfishingwatchapp/amathea
 
+## 0.13.4
+
+### Patch Changes
+
+- Update bundle dependencies
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.6.0
+  - @globalfishingwatch/api-client@1.6.2
+  - @globalfishingwatch/api-types@2.0.3
+  - @globalfishingwatch/dataviews-client@4.0.2
+  - @globalfishingwatch/react-hooks@4.2.1
+  - @globalfishingwatch/timebar@1.1.3
+  - @globalfishingwatch/ui-components@2.5.1
+
 ## 0.13.3
 
 ### Patch Changes

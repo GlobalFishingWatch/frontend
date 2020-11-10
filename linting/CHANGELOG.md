@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 1.5.4
+
+### Patch Changes
+
+- Update bundle dependencies
+
 ## 1.5.3
 
 ### Patch Changes

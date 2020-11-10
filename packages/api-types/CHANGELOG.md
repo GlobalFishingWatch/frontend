@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.0.3
+
+### Patch Changes
+
+- Update bundle dependencies
+
 ## 2.0.2
 
 ### Patch Changes

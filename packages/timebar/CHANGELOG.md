@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 1.1.3
+
+### Patch Changes
+
+- Update bundle dependencies
+
 ## 1.1.2
 
 ### Patch Changes
