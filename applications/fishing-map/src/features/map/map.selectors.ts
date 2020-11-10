@@ -137,12 +137,12 @@ export const getGeneratorsConfig = createSelector(
           // Duplicated generators when context dataview have multiple layers
           return tilesUrls.map(({ id, tilesUrl }) => ({
             ...generator,
-            id: [dataview.id, id].join('_'),
+            id: `${dataview.id}__${id}`,
             layer: id,
             tilesUrl,
           }))
         } else {
-          generator.id = dataview.id + dataview.config.layers
+          generator.id = `${dataview.id}__${dataview.config.layers}`
           generator.layer = dataview.config.layers
           const { url } = resolveDataviewDatasetResource(dataview, { type: USER_CONTEXT_TYPE })
           if (url) {
