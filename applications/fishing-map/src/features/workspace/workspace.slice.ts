@@ -39,7 +39,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     if (dataviews) {
       await dispatch(fetchDataviewsByIdsThunk(dataviews))
     }
-    const datasets = getDatasetByDataview(workspace.dataviewInstances)
+    const datasets = [
+      ...(workspace.datasets?.map(({ id }) => id as string) || []),
+      ...getDatasetByDataview(workspace.dataviewInstances),
+    ]
     if (datasets?.length) {
       await dispatch(fetchDatasetsByIdsThunk(datasets))
     }

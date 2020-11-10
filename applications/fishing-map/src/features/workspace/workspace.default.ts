@@ -12,6 +12,7 @@ const workspace: Workspace = {
     latitude: 43,
     longitude: -3,
   },
+  datasets: [{ id: 'test-alias-import-vessels-pipeline:latest' }],
   dataviewInstances: [
     {
       id: 'basemap',
