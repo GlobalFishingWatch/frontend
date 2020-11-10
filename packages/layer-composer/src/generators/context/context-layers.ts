@@ -11,7 +11,7 @@ const settledBoundaries = [
   'Unilateral claim (undisputed)',
 ]
 
-const getDefaultContexInteraction = (): Partial<Layer> => {
+const getDefaultContextInteraction = (): Partial<Layer> => {
   return {
     type: 'fill',
     paint: {
@@ -26,7 +26,7 @@ const getDefaultContexInteraction = (): Partial<Layer> => {
   }
 }
 
-const getDefaultContexLine = (color: string): Partial<Layer> => {
+const getDefaultContextLine = (color: string): Partial<Layer> => {
   return {
     type: 'line',
     paint: {
@@ -43,38 +43,38 @@ const getDefaultContexLine = (color: string): Partial<Layer> => {
   }
 }
 
-const getDefaultContexLayersById = (id: string, color: string): Layer[] => {
+const getDefaultContextLayersById = (id: string, color: string): Layer[] => {
   return [
     {
       id: `${id}-interaction`,
-      ...getDefaultContexInteraction(),
+      ...getDefaultContextInteraction(),
     },
     {
       id: `${id}-line`,
-      ...getDefaultContexLine(color),
+      ...getDefaultContextLine(color),
     },
   ]
 }
 
 const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
-  mpa: getDefaultContexLayersById('mpa', '#e5777c'),
-  'wpp-nri': getDefaultContexLayersById('wpp-nri', '#AD1457'),
-  'tuna-rfmo': getDefaultContexLayersById('tuna-rfmo', '#B39DDB'),
+  mpa: getDefaultContextLayersById('mpa', '#e5777c'),
+  'wpp-nri': getDefaultContextLayersById('wpp-nri', '#AD1457'),
+  'tuna-rfmo': getDefaultContextLayersById('tuna-rfmo', '#B39DDB'),
   'eez-areas': [
     {
       id: 'eez-base',
-      ...getDefaultContexInteraction(),
+      ...getDefaultContextInteraction(),
     },
   ],
   'eez-boundaries': [
     {
       id: 'eez_rest_lines',
-      ...getDefaultContexLine('#33B679'),
+      ...getDefaultContextLine('#33B679'),
       filter: ['match', ['get', 'line_type'], settledBoundaries, true, false],
     },
     {
       id: 'eez_special_lines',
-      ...getDefaultContexLine('#33B679'),
+      ...getDefaultContextLine('#33B679'),
       filter: ['match', ['get', 'line_type'], settledBoundaries, true, false],
     },
   ],
