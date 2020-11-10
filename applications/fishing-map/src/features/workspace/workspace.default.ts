@@ -64,21 +64,36 @@ const workspace: Workspace = {
     //     },
     //   ],
     // },
-    // {
-    //   id: 'context-layer-1',
-    //   config: {
-    //     color: '#069688',
-    //     visible: false,
-    //   },
-    //   dataviewId: 93,
-    // },
     {
-      id: 'context-layer-1',
+      id: 'context-layer-mpa',
+      config: {
+        color: '#e5777c',
+        visible: true,
+      },
+      dataviewId: 93,
+    },
+    {
+      id: 'context-layer-rfmo',
+      config: {
+        color: '#6b67e5',
+        visible: false,
+      },
+      dataviewId: 95,
+    },
+    {
+      id: 'context-layer-eez',
       config: {
         color: '#069688',
         visible: true,
       },
       dataviewId: 94,
+    },
+    {
+      id: 'context-layer-wpp-nri',
+      config: {
+        visible: false,
+      },
+      dataviewId: 96,
     },
   ],
   dataviews: [],
