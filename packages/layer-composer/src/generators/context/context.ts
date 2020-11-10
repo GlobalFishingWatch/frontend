@@ -91,6 +91,7 @@ class ContextGenerator {
       },
     ]
   }
+
   _getStyleLayers = (config: ContextGeneratorConfig) => {
     const generatorId = `context-${config.layer}-${config.id}`
     const baseLayers = LAYERS[config.layer]

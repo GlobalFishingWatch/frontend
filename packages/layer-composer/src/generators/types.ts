@@ -255,6 +255,9 @@ export enum BasemapType {
 export enum ContextLayerType {
   EEZ = 'eez-areas',
   EEZBoundaries = 'eez-boundaries',
+  MPA = 'mpa',
+  TunaRfmo = 'tuna-rfmo',
+  WPPNRI = 'wpp-nri',
 }
 
 export type RawEvent = {

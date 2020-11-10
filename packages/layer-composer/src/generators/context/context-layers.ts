@@ -11,49 +11,71 @@ const settledBoundaries = [
   'Unilateral claim (undisputed)',
 ]
 
+const getDefaultContexInteraction = (): Partial<Layer> => {
+  return {
+    type: 'fill',
+    paint: {
+      'fill-color': 'transparent',
+      'fill-outline-color': 'transparent',
+    },
+    layout: {},
+    metadata: {
+      interactive: true,
+      group: Group.OutlinePolygons,
+    },
+  }
+}
+
+const getDefaultContexLine = (color: string): Partial<Layer> => {
+  return {
+    type: 'line',
+    paint: {
+      'line-color': color,
+    },
+    layout: {
+      'line-cap': 'round',
+      'line-join': 'round',
+    },
+    metadata: {
+      interactive: false,
+      group: Group.OutlinePolygonsBackground,
+    },
+  }
+}
+
+const getDefaultContexLayersById = (id: string, color: string): Layer[] => {
+  return [
+    {
+      id: `${id}-interaction`,
+      ...getDefaultContexInteraction(),
+    },
+    {
+      id: `${id}-line`,
+      ...getDefaultContexLine(color),
+    },
+  ]
+}
+
 const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
+  mpa: getDefaultContexLayersById('mpa', '#e5777c'),
+  'wpp-nri': getDefaultContexLayersById('wpp-nri', '#AD1457'),
+  'tuna-rfmo': getDefaultContexLayersById('tuna-rfmo', '#B39DDB'),
   'eez-areas': [
     {
       id: 'eez-base',
-      type: 'fill',
-      paint: {
-        'fill-color': 'transparent',
-        'fill-outline-color': 'transparent',
-      },
-      layout: {},
-      metadata: {
-        interactive: true,
-        group: Group.OutlinePolygonsBackground,
-      },
+      ...getDefaultContexInteraction(),
     },
   ],
   'eez-boundaries': [
     {
       id: 'eez_rest_lines',
-      type: 'line',
+      ...getDefaultContexLine('#33B679'),
       filter: ['match', ['get', 'line_type'], settledBoundaries, true, false],
-      layout: {},
-      paint: {
-        'line-color': '#93c96c',
-      },
-      metadata: {
-        interactive: false,
-        group: Group.OutlinePolygonsBackground,
-      },
     },
     {
       id: 'eez_special_lines',
-      type: 'line',
-      filter: ['match', ['get', 'line_type'], settledBoundaries, false, true],
-      layout: {},
-      paint: {
-        'line-color': '#93c96c',
-        'line-dasharray': [2, 4],
-      },
-      metadata: {
-        interactive: false,
-        group: Group.OutlinePolygonsBackground,
-      },
+      ...getDefaultContexLine('#33B679'),
+      filter: ['match', ['get', 'line_type'], settledBoundaries, true, false],
     },
   ],
 }
