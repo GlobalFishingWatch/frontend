@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-
 import { Group } from '../../types'
 
-export default {
+const layers = {
   cp_rfmo: {
     source: {
       sql:
@@ -113,3 +112,5 @@ export default {
     ],
   },
 }
+
+export default layers

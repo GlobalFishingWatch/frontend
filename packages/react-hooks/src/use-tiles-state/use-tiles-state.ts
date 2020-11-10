@@ -50,9 +50,10 @@ function useTilesState(map: Map) {
 
   const onLoadComplete = useCallback(
     (e: MapSourceDataEvent) => {
-      if (e.coord) {
+      // On error event coord is undefined so we nee to grab the key from the tileId
+      const key = e.coord?.canonical?.key || e.tile?.tileID?.canonical?.key
+      if (key !== undefined) {
         setTilesLoading((tilesLoading) => {
-          const { key } = e.coord.canonical
           const { [key]: currentTile, ...rest } = tilesLoading.tiles
 
           const otherTilesLoading = Object.keys(rest).length > 0
@@ -91,6 +92,7 @@ function useTilesState(map: Map) {
   useEffect(() => {
     if (map) {
       map.on('sourcedataloading', onLoad)
+      map.on('error', onLoadComplete)
       map.on('sourcedata', onLoadComplete)
       map.on('idle', onIdle)
     }

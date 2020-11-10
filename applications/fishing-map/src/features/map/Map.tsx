@@ -115,7 +115,7 @@ const MapWrapper = (): React.ReactElement | null => {
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
-  const { style } = useLayerComposer(generatorsConfig as AnyGeneratorConfig[], globalConfig)
+  const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
   const { clickedEvent, clickedEventStatus, dispatchClickedEvent } = useClickedEventConnect()
   const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta)

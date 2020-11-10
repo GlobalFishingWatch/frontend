@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.7.0
+
+### Minor Changes
+
+- Update context layers dictionary
+
 ## 4.6.0
 
 ### Minor Changes
