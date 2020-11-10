@@ -16,7 +16,6 @@ import {
   LegendLayer,
   LegendLayerBivariate,
 } from '@globalfishingwatch/ui-components/dist/map-legend'
-import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { ExtendedStyle, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import { AsyncReducerStatus, UrlDataviewInstance } from 'types'
 import i18n from 'features/i18n/i18n'
@@ -106,6 +105,7 @@ const getLegendLayers = (
     })
   })
 }
+
 const MapWrapper = (): React.ReactElement | null => {
   const mapRef = useMapboxRef()
   const mapRefReady = useMapboxRefReady()

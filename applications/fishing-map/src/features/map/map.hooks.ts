@@ -204,7 +204,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       color: dataview.config?.color || 'black',
       // unit: dataview.unit || '',
       value: feature.value,
-      properties: {},
+      properties: { ...feature.properties },
       ...(dataset && { dataset }),
     }
     // Insert custom properties by each dataview configuration

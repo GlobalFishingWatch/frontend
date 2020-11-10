@@ -9,7 +9,7 @@ const DEFAULT_LINE_COLOR = 'white'
 const DEFAULT_SOURCE_LAYER = 'main'
 
 const getSourceId = (config: ContextGeneratorConfig) => {
-  return `context-${config.layer}-${config.id}`
+  return `${config.id}-${config.layer}`
 }
 
 const getPaintPropertyByType = (layer: Layer, config: any) => {
@@ -93,7 +93,6 @@ class ContextGenerator {
   }
 
   _getStyleLayers = (config: ContextGeneratorConfig) => {
-    const generatorId = `context-${config.layer}-${config.id}`
     const baseLayers = LAYERS[config.layer]
     if (!baseLayers?.length) {
       throw new Error(`Context layer should specify a valid layer parameter, ${config.layer}`)
@@ -114,8 +113,9 @@ class ContextGenerator {
         paint,
         metadata: {
           ...baseLayer.metadata,
+          layer: config.layer,
           color,
-          generatorId,
+          generatorId: config.id,
         },
       }
     })

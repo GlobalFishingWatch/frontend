@@ -14,8 +14,8 @@ const getExtendedFeatures = (
   const frame = metatada?.temporalgrid?.timeChunks?.activeChunkFrame
 
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
-    const generatorType = feature.layer.metadata ? feature.layer.metadata.generatorType : null
-    const generatorId = feature.layer.metadata ? feature.layer.metadata.generatorId : null
+    const generatorType = feature.layer.metadata?.generatorType ?? null
+    const generatorId = feature.layer.metadata?.generatorId ?? null
     const properties = feature.properties || {}
     const extendedFeature: ExtendedFeature | null = {
       properties,
