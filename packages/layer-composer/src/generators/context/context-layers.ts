@@ -26,7 +26,7 @@ const getDefaultContextInteraction = (): Partial<Layer> => {
   }
 }
 
-const getDefaultContextLine = (color: string): Partial<Layer> => {
+const getDefaultContextLine = (color = 'white'): Partial<Layer> => {
   return {
     type: 'line',
     paint: {
@@ -74,8 +74,12 @@ const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
     },
     {
       id: 'eez_special_lines',
-      ...getDefaultContextLine('#33B679'),
-      filter: ['match', ['get', 'line_type'], settledBoundaries, true, false],
+      ...getDefaultContextLine(),
+      filter: ['match', ['get', 'line_type'], settledBoundaries, false, true],
+      paint: {
+        'line-color': '#33B679',
+        'line-dasharray': [2, 4],
+      },
     },
   ],
 }
