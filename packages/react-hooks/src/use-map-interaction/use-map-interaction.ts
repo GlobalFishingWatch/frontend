@@ -23,7 +23,7 @@ const getExtendedFeatures = (
       generatorId,
       source: feature.source,
       sourceLayer: feature.sourceLayer,
-      id: (feature.id as number) || undefined,
+      id: (feature.id as number) || feature.properties?.gfw_id || undefined,
       value: properties.value || properties.name || properties.id,
       tile: {
         x: (feature as any)._vectorTileFeature._x,
