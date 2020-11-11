@@ -57,16 +57,17 @@ const getDefaultContextLayersById = (id: string, color: string): Layer[] => {
 }
 
 const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
-  mpa: getDefaultContextLayersById('mpa', '#e5777c'),
-  'wpp-nri': getDefaultContextLayersById('wpp-nri', '#AD1457'),
-  'tuna-rfmo': getDefaultContextLayersById('tuna-rfmo', '#B39DDB'),
-  'eez-areas': [
+  [ContextLayerType.MPA]: getDefaultContextLayersById(ContextLayerType.MPA, '#e5777c'),
+  [ContextLayerType.WPPNRI]: getDefaultContextLayersById(ContextLayerType.WPPNRI, '#AD1457'),
+  [ContextLayerType.HighSeas]: getDefaultContextLayersById(ContextLayerType.HighSeas, '#AD1457'),
+  [ContextLayerType.TunaRfmo]: getDefaultContextLayersById(ContextLayerType.TunaRfmo, '#B39DDB'),
+  [ContextLayerType.EEZ]: [
     {
       id: 'eez-base',
       ...getDefaultContextInteraction(),
     },
   ],
-  'eez-boundaries': [
+  [ContextLayerType.EEZBoundaries]: [
     {
       id: 'eez_rest_lines',
       ...getDefaultContextLine('#33B679'),

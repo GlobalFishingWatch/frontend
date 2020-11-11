@@ -95,6 +95,13 @@ const workspace: Workspace = {
       },
       dataviewId: 96,
     },
+    {
+      id: 'context-layer-high-seas',
+      config: {
+        visible: false,
+      },
+      dataviewId: 97,
+    },
   ],
   dataviews: [],
 }

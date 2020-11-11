@@ -254,6 +254,7 @@ export enum BasemapType {
 // ---- Generator specific types
 export enum ContextLayerType {
   EEZ = 'eez-areas',
+  HighSeas = 'high-seas',
   EEZBoundaries = 'eez-boundaries',
   MPA = 'mpa',
   TunaRfmo = 'tuna-rfmo',

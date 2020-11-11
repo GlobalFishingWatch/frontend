@@ -18,5 +18,9 @@
   "wpp-nri": {
     "name": "WPP NRI",
     "description": "The WPP-NRI (Wilayah Pengelolaan Perikanan Negara Republik Indonesia) are fisheries management areas for fishing, conservation, research, and fisheries development which covers inland waters, archipelagic waters, territorial sea, within and outside the exclusive economic zone of Indonesia."
+  },
+  "high-seas": {
+    "name": "High seas",
+    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them."
   }
 }
