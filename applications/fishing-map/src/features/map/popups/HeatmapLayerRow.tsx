@@ -1,46 +1,17 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Anchor } from 'mapbox-gl'
 import { useTranslation } from 'react-i18next'
-import { Popup } from '@globalfishingwatch/react-map-gl'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { Generators } from '@globalfishingwatch/layer-composer'
 import { formatInfoField, formatNumber } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectTracksDatasets, selectVesselsDatasets } from 'features/workspace/workspace.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { TooltipEvent, TooltipEventFeature } from '../map/map.hooks'
+import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
 // t('common.hour')
-
-type ContextTooltipRowProps = {
-  feature: TooltipEventFeature
-}
-
-// TODO: don't use titles here, think how to get the layer id
-const propertyByTitle: Record<string, string> = {
-  EEZ: 'geoname',
-  'Tuna RFMO areas': 'id',
-  'WPP NRI areas': 'region_id',
-  mpa: 'name',
-}
-function ContextTooltipRow({ feature }: ContextTooltipRowProps) {
-  const property = propertyByTitle[feature.title]
-    ? feature.properties[propertyByTitle[feature.title]]
-    : ''
-  return (
-    <div className={styles.popupSection}>
-      <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
-      <div className={styles.popupSectionContent}>
-        <h3 className={styles.popupSectionTitle}>{feature.title}</h3>
-        <div>{property || feature.value}</div>
-      </div>
-    </div>
-  )
-}
 
 type HeatmapTooltipRowProps = {
   feature: TooltipEventFeature
@@ -120,74 +91,4 @@ function HeatmapTooltipRow({ feature, loading }: HeatmapTooltipRowProps) {
   )
 }
 
-type PopupWrapperProps = {
-  tooltipEvent: TooltipEvent
-  closeButton?: boolean
-  closeOnClick?: boolean
-  className: string
-  onClose?: () => void
-  loading?: boolean
-  anchor?: Anchor
-}
-function PopupWrapper({
-  tooltipEvent,
-  closeButton = false,
-  closeOnClick = false,
-  className,
-  onClose,
-  loading = false,
-  anchor,
-}: PopupWrapperProps) {
-  return (
-    <Popup
-      latitude={tooltipEvent.latitude}
-      longitude={tooltipEvent.longitude}
-      closeButton={closeButton}
-      closeOnClick={closeOnClick}
-      onClose={onClose}
-      className={styles.popup}
-      anchor={anchor}
-    >
-      <div className={className}>
-        {tooltipEvent.features.map((feature: TooltipEventFeature, i: number) => {
-          if (feature.type === Generators.Type.HeatmapAnimated) {
-            return <HeatmapTooltipRow key={i} feature={feature} loading={loading} />
-          }
-          if (feature.type === Generators.Type.Context) {
-            return <ContextTooltipRow key={i} feature={feature} />
-          }
-          return null
-        })}
-      </div>
-    </Popup>
-  )
-}
-
-export function HoverPopup({ event }: { event: TooltipEvent | null }) {
-  if (event && event.features) {
-    return <PopupWrapper tooltipEvent={event} className={styles.hover} anchor="top" />
-  }
-  return null
-}
-
-type ClickPopupProps = {
-  event: TooltipEvent | null
-  onClose?: () => void
-  loading?: boolean
-}
-
-export function ClickPopup({ event, onClose, loading = false }: ClickPopupProps) {
-  if (event && event.features) {
-    return (
-      <PopupWrapper
-        tooltipEvent={event}
-        closeButton={true}
-        closeOnClick={false}
-        className={styles.click}
-        onClose={onClose}
-        loading={loading}
-      />
-    )
-  }
-  return null
-}
+export default HeatmapTooltipRow

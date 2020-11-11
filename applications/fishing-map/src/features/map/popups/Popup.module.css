@@ -3,15 +3,15 @@
   pointer-events: all;
 }
 
-.hover {
-  transform: translate(50%, var(--space-M));
+.hover .content {
+  margin: var(--space-S) var(--space-XS);
   background: var(--color-primary-blue);
   color: var(--color-white);
   max-width: 32rem;
 }
 
-.click {
-  background: var(--gradient);
+.click .content {
+  background: var(--color-white);
   color: var(--color-primary-blue);
   box-shadow: var(--box-shadow);
   width: 32rem;
@@ -45,7 +45,7 @@
 }
 
 .popupSectionContent {
-  flex: 1
+  flex: 1;
 }
 
 .popupSectionTitle {
@@ -90,7 +90,6 @@
   background: none;
   padding: 0;
   border: none;
-  margin-top: var(--space-XS);
 }
 
 :global(.mapboxgl-popup .mapboxgl-popup-close-button) {
@@ -100,25 +99,46 @@
   color: currentColor;
   font: var(--font-L);
   line-height: 1;
-  opacity: .5;
+  opacity: 0.5;
   margin: var(--space-XS);
   transition: opacity 150ms linear, background-color 150ms linear;
   z-index: 1;
+}
+
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip),
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip),
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip) {
+  border-bottom-color: white;
+  transform: translateY(1px);
+}
+
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip),
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip),
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip) {
+  border-top-color: white;
+  transform: translateY(-1px);
+}
+
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip) {
+  border-right-color: white;
+}
+
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip) {
+  border-left-color: white;
+}
+
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip) {
+  border: none;
 }
 
 :global(.mapboxgl-popup .mapboxgl-popup-close-button:hover) {
   opacity: 1;
   background-color: var(--color-terthiary-blue);
 }
-
-:global(.mapboxgl-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip),
-:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip),
-:global(.mapboxgl-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip),
-:global(.mapboxgl-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip),
-:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip),
-:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip),
-:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip),
-:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip) {
-  border: none;
-}
-
