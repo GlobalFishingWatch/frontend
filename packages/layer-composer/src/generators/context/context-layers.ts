@@ -57,9 +57,14 @@ const getDefaultContextLayersById = (id: string, color: string): Layer[] => {
 }
 
 const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
-  [ContextLayerType.MPA]: getDefaultContextLayersById(ContextLayerType.MPA, '#e5777c'),
+  [ContextLayerType.MPA]: getDefaultContextLayersById(ContextLayerType.MPA, '#1AFF6B'),
+  [ContextLayerType.MPANoTake]: getDefaultContextLayersById(ContextLayerType.MPANoTake, '#F4511F'),
+  [ContextLayerType.MPARestricted]: getDefaultContextLayersById(
+    ContextLayerType.MPARestricted,
+    '#F09300'
+  ),
   [ContextLayerType.WPPNRI]: getDefaultContextLayersById(ContextLayerType.WPPNRI, '#AD1457'),
-  [ContextLayerType.HighSeas]: getDefaultContextLayersById(ContextLayerType.HighSeas, '#AD1457'),
+  [ContextLayerType.HighSeas]: getDefaultContextLayersById(ContextLayerType.HighSeas, '#4184F4'),
   [ContextLayerType.TunaRfmo]: getDefaultContextLayersById(ContextLayerType.TunaRfmo, '#B39DDB'),
   [ContextLayerType.EEZ]: [
     {

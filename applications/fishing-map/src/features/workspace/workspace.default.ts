@@ -67,10 +67,26 @@ const workspace: Workspace = {
     {
       id: 'context-layer-mpa',
       config: {
-        color: '#e5777c',
+        color: '#1AFF6B',
         visible: true,
       },
-      dataviewId: 93,
+      dataviewId: 98,
+    },
+    {
+      id: 'context-layer-mpa-no-take',
+      config: {
+        color: '#F4511F',
+        visible: false,
+      },
+      dataviewId: 99,
+    },
+    {
+      id: 'context-layer-mpa-restricted',
+      config: {
+        color: '#F09300',
+        visible: false,
+      },
+      dataviewId: 100,
     },
     {
       id: 'context-layer-rfmo',
