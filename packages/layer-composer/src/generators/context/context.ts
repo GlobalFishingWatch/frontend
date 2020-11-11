@@ -31,7 +31,12 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
       ...layer.paint,
       'fill-opacity': opacity,
       'fill-color': fillColor,
-      'fill-outline-color': fillOutlineColor,
+      'fill-outline-color': [
+        'case',
+        ['boolean', ['feature-state', 'hover'], false],
+        'white',
+        fillOutlineColor,
+      ],
     }
     // if (hasSelectedFeatures) {
     //   const { field = 'id', values, fill = {} } = config.selectedFeatures
@@ -87,6 +92,7 @@ class ContextGenerator {
       {
         id: getSourceId(config),
         type: 'vector',
+        promoteId: 'gfw_id',
         tiles: [tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}')],
       },
     ]
