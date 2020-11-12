@@ -1,4 +1,6 @@
 import { Dataset } from '@globalfishingwatch/api-types'
+import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
+
 export { useMapHover, useMapClick } from './use-map-interaction'
 
 export type ExtendedFeatureVessel = {
@@ -11,8 +13,8 @@ export type ExtendedFeature = {
   properties: Record<string, any>
   source: string
   sourceLayer: string
-  generatorType: string | null
   generatorId: string | number | null
+  generatorType: string | null
   id?: number
   value: any
   tile: {
@@ -25,6 +27,7 @@ export type ExtendedFeature = {
     col: number
     row: number
   }
+  generatorContextLayer?: ContextLayerType | null
   vessels?: ExtendedFeatureVessel[]
   dataset?: Dataset
 }

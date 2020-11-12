@@ -54,6 +54,11 @@ const getExtendedFeatures = (
           })
         }
         return []
+      case Generators.Type.Context:
+        return {
+          ...extendedFeature,
+          generatorContextLayer: feature.layer.metadata?.layer,
+        }
       default:
         return extendedFeature
     }
