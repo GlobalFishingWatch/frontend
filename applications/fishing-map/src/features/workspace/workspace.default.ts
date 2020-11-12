@@ -65,12 +65,36 @@ const workspace: Workspace = {
     //   ],
     // },
     {
-      id: 'context-layer-mpa',
+      id: 'context-layer-eez',
       config: {
-        color: '#e5777c',
+        color: '#069688',
         visible: true,
       },
-      dataviewId: 93,
+      dataviewId: 94,
+    },
+    {
+      id: 'context-layer-mpa',
+      config: {
+        color: '#1AFF6B',
+        visible: false,
+      },
+      dataviewId: 98,
+    },
+    {
+      id: 'context-layer-mpa-no-take',
+      config: {
+        color: '#F4511F',
+        visible: false,
+      },
+      dataviewId: 99,
+    },
+    {
+      id: 'context-layer-mpa-restricted',
+      config: {
+        color: '#F09300',
+        visible: false,
+      },
+      dataviewId: 100,
     },
     {
       id: 'context-layer-rfmo',
@@ -81,19 +105,18 @@ const workspace: Workspace = {
       dataviewId: 95,
     },
     {
-      id: 'context-layer-eez',
-      config: {
-        color: '#069688',
-        visible: true,
-      },
-      dataviewId: 94,
-    },
-    {
       id: 'context-layer-wpp-nri',
       config: {
         visible: false,
       },
       dataviewId: 96,
+    },
+    {
+      id: 'context-layer-high-seas',
+      config: {
+        visible: false,
+      },
+      dataviewId: 97,
     },
   ],
   dataviews: [],

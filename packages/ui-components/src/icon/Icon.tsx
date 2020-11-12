@@ -28,6 +28,7 @@ import { ReactComponent as Plus } from '../assets/icons/plus.svg'
 import { ReactComponent as Publish } from '../assets/icons/publish.svg'
 import { ReactComponent as RemoveFromMap } from '../assets/icons/remove-from-map.svg'
 import { ReactComponent as Ruler } from '../assets/icons/ruler.svg'
+import { ReactComponent as Report } from '../assets/icons/report.svg'
 import { ReactComponent as Satellite } from '../assets/icons/satellite.svg'
 import { ReactComponent as Search } from '../assets/icons/search.svg'
 import { ReactComponent as Settings } from '../assets/icons/settings.svg'
@@ -68,6 +69,7 @@ export const IconComponents = {
   publish: Publish,
   'remove-from-map': RemoveFromMap,
   ruler: Ruler,
+  report: Report,
   satellite: Satellite,
   search: Search,
   settings: Settings,

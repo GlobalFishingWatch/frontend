@@ -4,21 +4,21 @@ import { useSelector, useDispatch } from 'react-redux'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
+import useTilesState from '@globalfishingwatch/react-hooks/dist/use-tiles-state'
+import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import {
-  InteractionEventCallback,
-  InteractionEvent,
-  useLayerComposer,
   useMapClick,
   useMapHover,
-  useTilesState,
-} from '@globalfishingwatch/react-hooks'
+  useFeatureState,
+  InteractionEventCallback,
+  InteractionEvent,
+} from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import {
   LegendLayer,
   LegendLayerBivariate,
 } from '@globalfishingwatch/ui-components/dist/map-legend'
-import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { ExtendedStyle, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
-import { AsyncReducerStatus, UrlDataviewInstance } from 'types'
+import { UrlDataviewInstance } from 'types'
 import i18n from 'features/i18n/i18n'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
@@ -27,9 +27,9 @@ import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { ClickPopup, HoverPopup } from './Popup'
+import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
-import { useMapboxRef, useMapboxRefReady } from './map.context'
+import { useMapboxInstance, useMapboxRef } from './map.context'
 import styles from './Map.module.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
@@ -106,9 +106,10 @@ const getLegendLayers = (
     })
   })
 }
+
 const MapWrapper = (): React.ReactElement | null => {
   const mapRef = useMapboxRef()
-  const mapRefReady = useMapboxRefReady()
+  const mapInstance = useMapboxInstance()
 
   const dispatch = useDispatch()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -117,13 +118,19 @@ const MapWrapper = (): React.ReactElement | null => {
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
-  const { clickedEvent, clickedEventStatus, dispatchClickedEvent } = useClickedEventConnect()
-  const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta)
+  const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
+  const { cleanFeatureState } = useFeatureState(mapInstance)
+  const onMapClick = useMapClick(
+    dispatchClickedEvent,
+    style?.metadata as ExtendedStyleMeta,
+    mapInstance
+  )
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const rulersEditing = useSelector(selectEditing)
   const closePopup = useCallback(() => {
+    cleanFeatureState('click')
     dispatchClickedEvent(null)
-  }, [dispatchClickedEvent])
+  }, [cleanFeatureState, dispatchClickedEvent])
 
   const [hoveredEvent, setHoveredEvent] = useState<InteractionEvent | null>(null)
   const handleHoverEvent = useCallback(
@@ -143,10 +150,11 @@ const MapWrapper = (): React.ReactElement | null => {
   const onMapHover = useMapHover(
     handleHoverEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,
-    mapRef?.current?.getMap(),
+    mapInstance,
     style?.metadata
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
+
   const { viewport, onViewportChange } = useViewport()
 
   const { setMapBounds } = useMapBounds()
@@ -165,14 +173,14 @@ const MapWrapper = (): React.ReactElement | null => {
 
   // TODO handle also in case of error
   // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
-  const tilesLoading = useTilesState(mapRefReady ? mapRef.current.getMap() : null)
+  const tilesLoading = useTilesState(mapInstance)
 
   useEffect(() => {
-    if (mapRefReady) {
-      mapRef.current.getMap().showTileBoundaries = debugOptions.debug
+    if (mapInstance) {
+      mapInstance.showTileBoundaries = debugOptions.debug
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapRefReady, debugOptions])
+  }, [mapInstance, debugOptions])
 
   return (
     <div className={styles.container}>
@@ -199,15 +207,19 @@ const MapWrapper = (): React.ReactElement | null => {
           transitionDuration={viewport.transitionDuration}
         >
           {clickedEvent && (
-            <ClickPopup
+            <PopupWrapper
+              type="click"
               event={clickedTooltipEvent}
               onClose={closePopup}
-              loading={clickedEventStatus === AsyncReducerStatus.Loading}
+              closeOnClick={false}
+              closeButton
             />
           )}
           {hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
             hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude &&
-            !clickedEvent && <HoverPopup event={hoveredTooltipEvent} />}
+            !clickedEvent && (
+              <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
+            )}
           <MapInfo center={hoveredEvent} />
         </InteractiveMap>
       )}

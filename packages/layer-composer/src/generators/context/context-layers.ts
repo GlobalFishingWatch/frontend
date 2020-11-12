@@ -26,7 +26,7 @@ const getDefaultContextInteraction = (): Partial<Layer> => {
   }
 }
 
-const getDefaultContextLine = (color: string): Partial<Layer> => {
+const getDefaultContextLine = (color = 'white'): Partial<Layer> => {
   return {
     type: 'line',
     paint: {
@@ -57,16 +57,22 @@ const getDefaultContextLayersById = (id: string, color: string): Layer[] => {
 }
 
 const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
-  mpa: getDefaultContextLayersById('mpa', '#e5777c'),
-  'wpp-nri': getDefaultContextLayersById('wpp-nri', '#AD1457'),
-  'tuna-rfmo': getDefaultContextLayersById('tuna-rfmo', '#B39DDB'),
-  'eez-areas': [
+  [ContextLayerType.MPA]: getDefaultContextLayersById(ContextLayerType.MPA, '#1AFF6B'),
+  [ContextLayerType.MPANoTake]: getDefaultContextLayersById(ContextLayerType.MPANoTake, '#F4511F'),
+  [ContextLayerType.MPARestricted]: getDefaultContextLayersById(
+    ContextLayerType.MPARestricted,
+    '#F09300'
+  ),
+  [ContextLayerType.WPPNRI]: getDefaultContextLayersById(ContextLayerType.WPPNRI, '#AD1457'),
+  [ContextLayerType.HighSeas]: getDefaultContextLayersById(ContextLayerType.HighSeas, '#4184F4'),
+  [ContextLayerType.TunaRfmo]: getDefaultContextLayersById(ContextLayerType.TunaRfmo, '#B39DDB'),
+  [ContextLayerType.EEZ]: [
     {
       id: 'eez-base',
       ...getDefaultContextInteraction(),
     },
   ],
-  'eez-boundaries': [
+  [ContextLayerType.EEZBoundaries]: [
     {
       id: 'eez_rest_lines',
       ...getDefaultContextLine('#33B679'),
@@ -74,8 +80,12 @@ const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
     },
     {
       id: 'eez_special_lines',
-      ...getDefaultContextLine('#33B679'),
-      filter: ['match', ['get', 'line_type'], settledBoundaries, true, false],
+      ...getDefaultContextLine(),
+      filter: ['match', ['get', 'line_type'], settledBoundaries, false, true],
+      paint: {
+        'line-color': '#33B679',
+        'line-dasharray': [2, 4],
+      },
     },
   ],
 }

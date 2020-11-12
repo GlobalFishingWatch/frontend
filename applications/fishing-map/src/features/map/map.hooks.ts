@@ -4,6 +4,7 @@ import { Map } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeatureVessel, InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
@@ -153,9 +154,12 @@ export const useClickedEventConnect = () => {
 
 export type TooltipEventFeature = {
   title: string
+  type?: Type
   color?: string
   unit?: string
+  layer?: ContextLayerType | null
   value: string
+  properties: Record<string, string>
   // TODO decide if we embed the entire dataset or just the id
   dataset?: Dataset
   vesselsInfo?: {
@@ -185,17 +189,42 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
       dataview = temporalgridDataviews?.[feature.temporalgrid?.sublayerIndex]
     } else {
-      dataview = dataviews.find((dataview) => dataview.id === feature.generatorId)
+      dataview = dataviews.find((dataview) => {
+        // Needed to get only the initial part to support multiple generator
+        // from the same dataview, see map.selectors L137
+        const cleanGeneratorId = (feature.generatorId as string)?.split('__')[0]
+        return dataview.id === cleanGeneratorId
+      })
     }
     if (!dataview) return []
+    // TODO include other datasets types
     const dataset = dataview.datasets?.find((dataset) => dataset.type === FISHING_DATASET_TYPE)
+
     const tooltipEventFeature: TooltipEventFeature = {
       title: dataview.name || dataview.id.toString(),
+      type: dataview.config?.type,
       color: dataview.config?.color || 'black',
       // unit: dataview.unit || '',
       value: feature.value,
+      layer: feature.generatorContextLayer,
+      properties: { ...feature.properties },
       ...(dataset && { dataset }),
     }
+    // Insert custom properties by each dataview configuration
+    const properties = dataview.datasetsConfig
+      ? dataview.datasetsConfig.flatMap((datasetConfig) => {
+          if (!datasetConfig.query?.length) return []
+          return datasetConfig.query.flatMap((query) =>
+            query.id === 'properties' ? (query.value as string) : []
+          )
+        })
+      : []
+    properties.forEach((property) => {
+      if (feature.properties[property]) {
+        tooltipEventFeature.properties[property] = feature.properties[property]
+      }
+    })
+
     if (feature.vessels) {
       tooltipEventFeature.vesselsInfo = {
         vessels: feature.vessels.slice(0, MAX_TOOLTIP_VESSELS),

@@ -1,0 +1,179 @@
+.popup {
+  font: var(--font-S);
+  pointer-events: all;
+}
+
+.hover .content {
+  transform: translate(var(--space-XS), var(--space-S));
+  background: var(--color-primary-blue);
+  color: var(--color-white);
+  max-width: 32rem;
+}
+
+.click .content {
+  background: var(--color-white);
+  color: var(--color-primary-blue);
+  box-shadow: var(--box-shadow);
+  width: 32rem;
+}
+
+.popupSection {
+  display: flex;
+  padding: var(--space-XS);
+}
+
+.popupSection:not(:last-child) {
+  border-bottom: none;
+}
+
+.hover .popupSection {
+  border: var(--border-white);
+}
+
+.click .popupSection {
+  padding: var(--space-S);
+  border: var(--border);
+  cursor: default;
+}
+
+.popupSectionColor {
+  display: inline-block;
+  margin-top: var(--space-XS);
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  margin-right: var(--space-XS);
+  border: var(--border);
+}
+
+.popupSectionContent {
+  flex: 1;
+}
+
+.popupSectionTitle {
+  opacity: var(--opacity-secondary);
+}
+
+.loading {
+  min-height: 4rem;
+  padding: var(--space-S);
+}
+
+.vesselsTable {
+  padding-top: var(--space-S);
+}
+
+.vesselsHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.vesselsHeaderLabel {
+  font: var(--font-XS);
+}
+
+.vesselRow {
+  color: currentColor;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+}
+
+.vesselName {
+  flex: 1;
+  text-align: left;
+}
+
+.vesselsMore {
+  opacity: var(--opacity-secondary);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-S);
+}
+
+.hover .row {
+  padding-right: var(--space-S);
+  margin-bottom: var(--space-XS);
+}
+
+.click .row:last-child {
+  margin-bottom: 0;
+}
+
+.rowText {
+  line-height: 1.2;
+}
+
+.rowActions {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-left: var(--space-S);
+}
+
+:global(.mapboxgl-popup .mapboxgl-popup-content) {
+  background: none;
+  padding: 0;
+  border: none;
+}
+
+.hover:global(.mapboxgl-popup .mapboxgl-popup-content) {
+  pointer-events: none;
+}
+
+:global(.mapboxgl-popup .mapboxgl-popup-close-button) {
+  width: var(--size-S);
+  height: var(--size-S);
+  border-radius: 50%;
+  color: currentColor;
+  font: var(--font-L);
+  line-height: 1;
+  opacity: 0.5;
+  margin: var(--space-XS);
+  transition: opacity 150ms linear, background-color 150ms linear;
+  z-index: 1;
+}
+
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip),
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip),
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip) {
+  border-bottom-color: white;
+  transform: translateY(1px);
+}
+
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip),
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip),
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip) {
+  border-top-color: white;
+  transform: translateY(-1px);
+}
+
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip) {
+  border-right-color: white;
+  transform: translateX(1px);
+}
+
+:global(.mapboxgl-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip) {
+  border-left-color: white;
+  transform: translateX(-1px);
+}
+
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip),
+.hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip) {
+  display: none;
+  pointer-events: none;
+}
+
+:global(.mapboxgl-popup .mapboxgl-popup-close-button:hover) {
+  opacity: 1;
+  background-color: var(--color-terthiary-blue);
+}

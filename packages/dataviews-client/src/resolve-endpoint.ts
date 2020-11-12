@@ -8,7 +8,7 @@ const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig)
   const template = endpoint.pathTemplate
 
   let url = template
-  datasetConfig.params.forEach((param) => {
+  datasetConfig.params?.forEach((param) => {
     url = url.replace(`{{${param.id}}}`, param.value as string)
   })
 

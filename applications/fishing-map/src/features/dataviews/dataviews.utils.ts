@@ -20,7 +20,6 @@ export const getVesselDataviewInstance = (
       endpoint: 'carriers-vessel',
     })),
   ]
-  console.log('datasetsConfig', datasetsConfig)
   const vesselDataviewInstance = {
     id: `vessel-${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
