@@ -1,22 +1,25 @@
 import React, { createContext, useRef, useContext, useState, useEffect, useMemo } from 'react'
+import type { Map } from '@globalfishingwatch/mapbox-gl'
 
 const MapStateContext = createContext<any>('')
 
 const MapboxRefProvider: React.FC = ({ children }) => {
   const mapboxRef = useRef()
   const [mapboxRefReady, seMapboxRefReady] = useState(false)
+  const [mapboxInstance, seMapboxInstance] = useState<Map | undefined>()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (mapboxRef.current !== undefined && !mapboxRefReady) {
       seMapboxRefReady(true)
+      seMapboxInstance((mapboxRef.current as any).getMap())
     }
   })
   const context = useMemo(
     () => ({
       mapboxRef,
-      mapboxRefReady,
+      mapboxInstance,
     }),
-    [mapboxRefReady]
+    [mapboxInstance]
   )
   return <MapStateContext.Provider value={context}>{children}</MapStateContext.Provider>
 }
@@ -29,12 +32,12 @@ function useMapboxRef() {
   return context.mapboxRef
 }
 
-function useMapboxRefReady() {
+function useMapboxInstance() {
   const context = useContext(MapStateContext)
   if (context === undefined) {
-    throw new Error('useMapboxRef must be used within a MapboxRefProvider')
+    throw new Error('useMapboxInstance must be used within a MapboxRefProvider')
   }
-  return context.mapboxRefReady
+  return context.mapboxInstance
 }
 
-export { MapboxRefProvider, useMapboxRef, useMapboxRefReady }
+export { MapboxRefProvider, useMapboxRef, useMapboxInstance }
