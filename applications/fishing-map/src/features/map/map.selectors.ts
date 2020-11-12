@@ -95,11 +95,13 @@ export const getGeneratorsConfig = createSelector(
       } else if (debugOptions.blob && sublayers.length === 1) {
         mode = Generators.HeatmapAnimatedMode.Blob
       }
+      const visible = sublayers.some(({ visible }) => visible === true)
       const mergedLayer = {
         id: 'mergedAnimatedHeatmap',
         config: {
           type: Generators.Type.HeatmapAnimated,
           sublayers,
+          visible,
           mode,
           debug: debugOptions.debug,
           debugLabels: debugOptions.debug,
