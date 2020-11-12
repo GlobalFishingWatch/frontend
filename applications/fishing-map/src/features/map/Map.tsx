@@ -17,7 +17,7 @@ import {
   LegendLayerBivariate,
 } from '@globalfishingwatch/ui-components/dist/map-legend'
 import { ExtendedStyle, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
-import { AsyncReducerStatus, UrlDataviewInstance } from 'types'
+import { UrlDataviewInstance } from 'types'
 import i18n from 'features/i18n/i18n'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
@@ -26,7 +26,7 @@ import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { ClickPopup, HoverPopup } from './popups/Popup'
+import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import { useMapboxRef, useMapboxRefReady } from './map.context'
 import styles from './Map.module.css'
@@ -117,7 +117,7 @@ const MapWrapper = (): React.ReactElement | null => {
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
-  const { clickedEvent, clickedEventStatus, dispatchClickedEvent } = useClickedEventConnect()
+  const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
   const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta)
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const rulersEditing = useSelector(selectEditing)
@@ -147,6 +147,7 @@ const MapWrapper = (): React.ReactElement | null => {
     style?.metadata
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
+
   const { viewport, onViewportChange } = useViewport()
 
   const { setMapBounds } = useMapBounds()
@@ -199,15 +200,19 @@ const MapWrapper = (): React.ReactElement | null => {
           transitionDuration={viewport.transitionDuration}
         >
           {clickedEvent && (
-            <ClickPopup
+            <PopupWrapper
+              type="click"
               event={clickedTooltipEvent}
               onClose={closePopup}
-              loading={clickedEventStatus === AsyncReducerStatus.Loading}
+              closeOnClick={false}
+              closeButton
             />
           )}
           {hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
             hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude &&
-            !clickedEvent && <HoverPopup event={hoveredTooltipEvent} />}
+            !clickedEvent && (
+              <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
+            )}
           <MapInfo center={hoveredEvent} />
         </InteractiveMap>
       )}
