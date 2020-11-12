@@ -84,7 +84,7 @@ type ContextTooltipRowProps = {
   showFeaturesDetails: boolean
 }
 
-function ContextTooltipRow({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
+function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const featuresByType = groupBy(features, 'layer')
   return (
     <Fragment>
@@ -104,4 +104,4 @@ function ContextTooltipRow({ features, showFeaturesDetails = false }: ContextToo
   )
 }
 
-export default ContextTooltipRow
+export default ContextTooltipSection

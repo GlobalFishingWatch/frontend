@@ -153,10 +153,12 @@
 
 :global(.mapboxgl-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip) {
   border-right-color: white;
+  transform: translateX(1px);
 }
 
 :global(.mapboxgl-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip) {
   border-left-color: white;
+  transform: translateX(-1px);
 }
 
 .hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip),

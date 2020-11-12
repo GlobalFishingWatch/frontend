@@ -6,8 +6,8 @@ import { Popup } from '@globalfishingwatch/react-map-gl'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { TooltipEvent } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
-import HeatmapTooltipRow from './HeatmapLayerRow'
-import ContextTooltipRow from './ContextLayerRow'
+import HeatmapTooltipRow from './HeatmapLayers'
+import ContextTooltipSection from './ContextLayers'
 
 type PopupWrapperProps = {
   event: TooltipEvent | null
@@ -29,7 +29,10 @@ function PopupWrapper({
 }: PopupWrapperProps) {
   if (!event) return null
 
-  const featureByType = groupBy(event.features, 'type')
+  const featureByType = groupBy(
+    event.features.sort((a, b) => (a.type === Generators.Type.HeatmapAnimated ? -1 : 0)),
+    'type'
+  )
   return (
     <Popup
       latitude={event.latitude}
@@ -43,11 +46,13 @@ function PopupWrapper({
       <div className={styles.content}>
         {Object.entries(featureByType).map(([featureType, features]) => {
           if (featureType === Generators.Type.HeatmapAnimated) {
-            return <HeatmapTooltipRow key={featureType} feature={features[0]} />
+            return features.map((feature, i) => (
+              <HeatmapTooltipRow key={i + feature.title} feature={feature} />
+            ))
           }
           if (featureType === Generators.Type.Context) {
             return (
-              <ContextTooltipRow
+              <ContextTooltipSection
                 key={featureType}
                 features={features}
                 showFeaturesDetails={type === 'click'}
