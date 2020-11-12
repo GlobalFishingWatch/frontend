@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import debounce from 'lodash/debounce'
 import isArray from 'lodash/isArray'
 import { Generators, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
-type FeatureStateSource = { source: string; sourceLayer: string }
+type FeatureStates = 'click' | 'hover'
+type FeatureStateSource = { source: string; sourceLayer: string; state: FeatureStates }
 
 const getExtendedFeatures = (
   features: MapboxGeoJSONFeature[],
@@ -69,7 +70,7 @@ const getExtendedFeatures = (
 let sourcesWithFeatureState: FeatureStateSource[] = []
 export const useFeatureState = (map?: Map) => {
   const cleanFeatureState = useCallback(
-    (state = 'hover') => {
+    (state: FeatureStates = 'hover') => {
       if (map) {
         sourcesWithFeatureState?.forEach((source: FeatureStateSource) => {
           map.removeFeatureState(source, state)
@@ -80,7 +81,7 @@ export const useFeatureState = (map?: Map) => {
   )
 
   const updateFeatureState = useCallback(
-    (extendedFeatures: ExtendedFeature[], state = 'hover') => {
+    (extendedFeatures: ExtendedFeature[], state: FeatureStates = 'hover') => {
       const newSourcesWithClickState: FeatureStateSource[] = extendedFeatures.flatMap(
         (feature: ExtendedFeature) => {
           if (!map || feature.id === undefined) {
@@ -97,18 +98,24 @@ export const useFeatureState = (map?: Map) => {
 
           // Add source to active feature states
           return {
+            state,
+            id: feature.id,
             source: feature.source,
             sourceLayer: feature.sourceLayer,
-            id: feature.id,
           }
         }
       )
-      sourcesWithFeatureState = [...sourcesWithFeatureState, ...newSourcesWithClickState]
+      const previousSources = sourcesWithFeatureState.filter((source) => source.state !== state)
+      sourcesWithFeatureState = [...previousSources, ...newSourcesWithClickState]
     },
     [map]
   )
 
-  return { sourcesWithFeatureState, cleanFeatureState, updateFeatureState }
+  const featureState = useMemo(() => ({ cleanFeatureState, updateFeatureState }), [
+    cleanFeatureState,
+    updateFeatureState,
+  ])
+  return featureState
 }
 
 export const useMapClick = (
