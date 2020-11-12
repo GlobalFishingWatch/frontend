@@ -65,10 +65,18 @@ const workspace: Workspace = {
     //   ],
     // },
     {
+      id: 'context-layer-eez',
+      config: {
+        color: '#069688',
+        visible: true,
+      },
+      dataviewId: 94,
+    },
+    {
       id: 'context-layer-mpa',
       config: {
         color: '#1AFF6B',
-        visible: true,
+        visible: false,
       },
       dataviewId: 98,
     },
@@ -95,14 +103,6 @@ const workspace: Workspace = {
         visible: false,
       },
       dataviewId: 95,
-    },
-    {
-      id: 'context-layer-eez',
-      config: {
-        color: '#069688',
-        visible: true,
-      },
-      dataviewId: 94,
     },
     {
       id: 'context-layer-wpp-nri',

@@ -4,7 +4,7 @@ import { Map } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeatureVessel, InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
-import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
@@ -157,6 +157,7 @@ export type TooltipEventFeature = {
   type?: Type
   color?: string
   unit?: string
+  layer?: ContextLayerType | null
   value: string
   properties: Record<string, string>
   // TODO decide if we embed the entire dataset or just the id
@@ -196,6 +197,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       })
     }
     if (!dataview) return []
+    // TODO include other datasets types
     const dataset = dataview.datasets?.find((dataset) => dataset.type === FISHING_DATASET_TYPE)
 
     const tooltipEventFeature: TooltipEventFeature = {
@@ -204,6 +206,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       color: dataview.config?.color || 'black',
       // unit: dataview.unit || '',
       value: feature.value,
+      layer: feature.generatorContextLayer,
       properties: { ...feature.properties },
       ...(dataset && { dataset }),
     }

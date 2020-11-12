@@ -1,36 +1,106 @@
-import React from 'react'
-import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import React, { Fragment } from 'react'
+// import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import groupBy from 'lodash/groupBy'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 
-// TODO: don't use titles here, think how to get the layer id
-const propertyByTitle: Record<string, string> = {
-  EEZ: 'geoname',
-  'Tuna RFMO areas': 'id',
-  'WPP NRI areas': 'region_id',
-  mpa: 'name',
+const TunaRfmoLinksById: Record<string, string> = {
+  CCSBT: 'https://www.ccsbt.org/',
+  ICCAT: 'https://www.iccat.int/en/',
+  IATTC: 'http://www.iattc.org/',
+  IOTC: 'http://www.iotc.org/',
+  WCPFC: 'http://www.wcpfc.int/',
 }
-function getRowByLayer(feature: TooltipEventFeature) {
-  console.log('getRowByLayer -> feature', feature)
-  const property = propertyByTitle[feature.title]
-    ? feature.properties[propertyByTitle[feature.title]]
-    : ''
-  return <div>{property || feature.value}</div>
+
+function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false) {
+  if (!feature.value) return null
+
+  // ContextLayerType.MPA but enums doesn't work in CRA for now
+  if (feature.layer === 'mpa') {
+    const { wdpa_pid } = feature.properties
+    return (
+      <div className={styles.row} key={wdpa_pid || feature.value}>
+        <span className={styles.rowText}>
+          {feature.value} - {feature.properties.desig}
+        </span>
+        {showFeaturesDetails && (
+          <div className={styles.rowActions}>
+            <IconButton icon="report" tooltip="Report (Coming soon)" size="small" />
+            {wdpa_pid && (
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href={`https://www.protectedplanet.net/${wdpa_pid}`}
+              >
+                <IconButton icon="info" tooltip="See more" size="small" />
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
+  if (feature.layer === 'tuna-rfmo') {
+    const link = TunaRfmoLinksById[feature.value]
+    return (
+      <div className={styles.row} key={feature.value}>
+        <span className={styles.rowText}>{feature.value}</span>
+        {showFeaturesDetails && link && (
+          <div className={styles.rowActions}>
+            <a target="_blank" rel="noreferrer" href={link}>
+              <IconButton icon="info" tooltip="See more" size="small" />
+            </a>
+          </div>
+        )}
+      </div>
+    )
+  }
+  if (feature.layer === 'eez-areas') {
+    const { mrgid } = feature.properties
+    return (
+      <div className={styles.row} key={mrgid}>
+        <span className={styles.rowText}>{feature.value}</span>
+        {showFeaturesDetails && (
+          <div className={styles.rowActions}>
+            <IconButton icon="report" tooltip="Report (Coming soon)" size="small" />
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={`https://www.marineregions.org/eezdetails.php?mrgid=${mrgid}`}
+            >
+              <IconButton icon="info" tooltip="See more" size="small" />
+            </a>
+          </div>
+        )}
+      </div>
+    )
+  }
+  return <div key={feature.value}>{feature.value}</div>
 }
 
 type ContextTooltipRowProps = {
-  feature: TooltipEventFeature
+  features: TooltipEventFeature[]
+  showFeaturesDetails: boolean
 }
 
-function ContextTooltipRow({ feature }: ContextTooltipRowProps) {
+function ContextTooltipRow({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
+  const featuresByType = groupBy(features, 'layer')
   return (
-    <div className={styles.popupSection}>
-      <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
-      <div className={styles.popupSectionContent}>
-        <h3 className={styles.popupSectionTitle}>{feature.title}</h3>
-        {getRowByLayer(feature)}
-      </div>
-    </div>
+    <Fragment>
+      {Object.values(featuresByType).map((featureByType) => (
+        <div key={featureByType[0].title} className={styles.popupSection}>
+          <span
+            className={styles.popupSectionColor}
+            style={{ backgroundColor: featureByType[0].color }}
+          />
+          <div className={styles.popupSectionContent}>
+            <h3 className={styles.popupSectionTitle}>{featureByType[0].title}</h3>
+            {featureByType.map((feature) => getRowByLayer(feature, showFeaturesDetails))}
+          </div>
+        </div>
+      ))}
+    </Fragment>
   )
 }
 

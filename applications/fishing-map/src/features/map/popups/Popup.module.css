@@ -95,6 +95,11 @@
   margin-bottom: var(--space-S);
 }
 
+.hover .row {
+  padding-right: var(--space-S);
+  margin-bottom: var(--space-XS);
+}
+
 .click .row:last-child {
   margin-bottom: 0;
 }

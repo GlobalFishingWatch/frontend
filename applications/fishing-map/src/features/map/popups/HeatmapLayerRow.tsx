@@ -7,7 +7,8 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectTracksDatasets, selectVesselsDatasets } from 'features/workspace/workspace.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { TooltipEventFeature } from 'features/map/map.hooks'
+import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
+import { AsyncReducerStatus } from 'types'
 import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
@@ -15,13 +16,13 @@ import styles from './Popup.module.css'
 
 type HeatmapTooltipRowProps = {
   feature: TooltipEventFeature
-  loading: boolean
 }
-function HeatmapTooltipRow({ feature, loading }: HeatmapTooltipRowProps) {
+function HeatmapTooltipRow({ feature }: HeatmapTooltipRowProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const trackDatasets = useSelector(selectTracksDatasets)
   const searchDatasets = useSelector(selectVesselsDatasets)
+  const { clickedEventStatus } = useClickedEventConnect()
   const onVesselClick = (vessel: { id: string }, feature: TooltipEventFeature) => {
     const trackDatasetByFeature = trackDatasets.filter((trackDataset) =>
       feature.dataset?.relatedDatasets?.some(
@@ -53,7 +54,7 @@ function HeatmapTooltipRow({ feature, loading }: HeatmapTooltipRowProps) {
             count: parseInt(feature.value), // neded to select the plural automatically
           })}
         </div>
-        {loading && (
+        {clickedEventStatus === AsyncReducerStatus.Loading && (
           <div className={styles.loading}>
             <Spinner size="small" />
           </div>
