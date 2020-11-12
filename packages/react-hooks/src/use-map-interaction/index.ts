@@ -1,7 +1,7 @@
 import { Dataset } from '@globalfishingwatch/api-types'
 import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 
-export { useMapHover, useMapClick } from './use-map-interaction'
+export { useMapHover, useMapClick, useFeatureState } from './use-map-interaction'
 
 export type ExtendedFeatureVessel = {
   id: string

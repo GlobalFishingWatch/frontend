@@ -6,6 +6,8 @@ import { API_GATEWAY } from '../../layer-composer'
 import LAYERS from './context-layers'
 
 const DEFAULT_LINE_COLOR = 'white'
+const HIGHLIGHT_LINE_COLOR = 'white'
+const HIGHLIGHT_FILL_COLOR = 'rgba(0, 0, 0, 0.3)'
 const DEFAULT_SOURCE_LAYER = 'main'
 
 const getSourceId = (config: ContextGeneratorConfig) => {
@@ -19,7 +21,12 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
     const linePaint: LinePaint = {
       ...layer.paint,
       'line-opacity': opacity,
-      'line-color': ['case', ['boolean', ['feature-state', 'hover'], false], 'white', color],
+      'line-color': [
+        'case',
+        ['boolean', ['feature-state', 'hover'], false],
+        HIGHLIGHT_LINE_COLOR,
+        color,
+      ],
     }
     return linePaint
   } else if (layer.type === 'fill') {
@@ -30,11 +37,18 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
     const fillPaint: FillPaint = {
       ...layer.paint,
       'fill-opacity': opacity,
-      'fill-color': fillColor,
+      'fill-color': [
+        'case',
+        ['boolean', ['feature-state', 'click'], false],
+        HIGHLIGHT_FILL_COLOR,
+        fillColor,
+      ],
       'fill-outline-color': [
         'case',
         ['boolean', ['feature-state', 'hover'], false],
-        'white',
+        HIGHLIGHT_LINE_COLOR,
+        ['boolean', ['feature-state', 'click'], false],
+        HIGHLIGHT_LINE_COLOR,
         fillOutlineColor,
       ],
     }

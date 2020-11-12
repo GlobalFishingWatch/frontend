@@ -66,12 +66,60 @@ const getExtendedFeatures = (
   return extendedFeatures
 }
 
+let sourcesWithFeatureState: FeatureStateSource[] = []
+export const useFeatureState = (map?: Map) => {
+  const cleanFeatureState = useCallback(
+    (state = 'hover') => {
+      if (map) {
+        sourcesWithFeatureState?.forEach((source: FeatureStateSource) => {
+          map.removeFeatureState(source, state)
+        })
+      }
+    },
+    [map]
+  )
+
+  const updateFeatureState = useCallback(
+    (extendedFeatures: ExtendedFeature[], state = 'hover') => {
+      const newSourcesWithClickState: FeatureStateSource[] = extendedFeatures.flatMap(
+        (feature: ExtendedFeature) => {
+          if (!map || feature.id === undefined) {
+            return []
+          }
+          map.setFeatureState(
+            {
+              source: feature.source,
+              sourceLayer: feature.sourceLayer,
+              id: feature.id,
+            },
+            { [state]: true }
+          )
+
+          // Add source to active feature states
+          return {
+            source: feature.source,
+            sourceLayer: feature.sourceLayer,
+            id: feature.id,
+          }
+        }
+      )
+      sourcesWithFeatureState = [...sourcesWithFeatureState, ...newSourcesWithClickState]
+    },
+    [map]
+  )
+
+  return { sourcesWithFeatureState, cleanFeatureState, updateFeatureState }
+}
+
 export const useMapClick = (
   clickCallback: InteractionEventCallback,
-  metadata: ExtendedStyleMeta
+  metadata: ExtendedStyleMeta,
+  map?: Map
 ) => {
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const onMapClick = useCallback(
     (event) => {
+      cleanFeatureState('click')
       if (!clickCallback) return
       const interactionEvent: InteractionEvent = {
         longitude: event.lngLat[0],
@@ -81,11 +129,12 @@ export const useMapClick = (
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
         if (extendedFeatures.length) {
           interactionEvent.features = extendedFeatures
+          updateFeatureState(extendedFeatures, 'click')
         }
       }
       clickCallback(interactionEvent)
     },
-    [clickCallback, metadata]
+    [cleanFeatureState, clickCallback, metadata, updateFeatureState]
   )
 
   return onMapClick
@@ -103,7 +152,7 @@ export const useMapHover = (
 ) => {
   const { debounced = 300 } = config || ({} as MapHoverConfig)
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
-  const sourcesWithHoverState = useRef<FeatureStateSource[]>([])
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
 
   const hoverCallbackDebounced = useRef<any>(null)
   useEffect(() => {
@@ -117,11 +166,7 @@ export const useMapHover = (
   const onMapHover = useCallback(
     (event) => {
       // Turn all sources with active feature states off
-      if (map) {
-        sourcesWithHoverState.current?.forEach((source: FeatureStateSource) => {
-          map.removeFeatureState({ source: source.source, sourceLayer: source.sourceLayer })
-        })
-      }
+      cleanFeatureState()
       const hoverEvent: InteractionEvent = {
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
@@ -133,28 +178,7 @@ export const useMapHover = (
           hoverEvent.features = extendedFeatures
         }
 
-        const newSourcesWithHoverState: FeatureStateSource[] = extendedFeatures.flatMap(
-          (feature: ExtendedFeature) => {
-            if (!map || feature.id === undefined) {
-              return []
-            }
-            map.setFeatureState(
-              {
-                source: feature.source,
-                sourceLayer: feature.sourceLayer,
-                id: feature.id,
-              },
-              { hover: true }
-            )
-
-            // Add source to active feature states
-            return {
-              source: feature.source,
-              sourceLayer: feature.sourceLayer,
-            }
-          }
-        )
-        sourcesWithHoverState.current = newSourcesWithHoverState
+        updateFeatureState(extendedFeatures, 'hover')
       }
 
       if (hoverCallbackDebounced?.current) {
@@ -165,7 +189,7 @@ export const useMapHover = (
         hoverCallbackImmediate(hoverEvent)
       }
     },
-    [hoverCallbackImmediate, hoverCallbackDebounced, map, metadata]
+    [cleanFeatureState, hoverCallbackImmediate, metadata, updateFeatureState]
   )
 
   return onMapHover
