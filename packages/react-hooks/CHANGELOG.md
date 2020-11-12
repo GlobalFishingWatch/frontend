@@ -1,5 +1,18 @@
 # @globalfishingwatch/react-hooks
 
+## 4.3.0
+
+### Minor Changes
+
+- 82f97f5: New useFeatureState hook
+
+### Patch Changes
+
+- Updated dependencies [82f97f5]
+- Updated dependencies [82f97f5]
+  - @globalfishingwatch/dataviews-client@4.0.3
+  - @globalfishingwatch/layer-composer@4.8.0
+
 ## 4.2.1
 
 ### Patch Changes
