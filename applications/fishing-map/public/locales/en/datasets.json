@@ -9,11 +9,11 @@
   },
   "mpa-no-take": {
     "name": "MPA - No take",
-    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA)"
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA) and NO_TAKE = 'All'"
   },
   "mpa-restricted": {
     "name": "MPA - Restricted",
-    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA)"
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA) and NO_TAKE = 'Part'"
   },
   "eez-areas": {
     "name": "EEZ",
