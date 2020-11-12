@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.8.0
+
+### Minor Changes
+
+- 82f97f5: Update context layers
+
 ## 4.7.0
 
 ### Minor Changes

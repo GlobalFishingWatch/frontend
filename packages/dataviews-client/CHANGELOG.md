@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 4.0.3
+
+### Patch Changes
+
+- 82f97f5: Fix when no params array in dataview
+
 ## 4.0.2
 
 ### Patch Changes

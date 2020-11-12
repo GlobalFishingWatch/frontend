@@ -1,5 +1,13 @@
 # @globalfishingwatch/ui-components
 
+## 2.5.2
+
+### Patch Changes
+
+- 82f97f5: New report ui-component icon
+- Updated dependencies [82f97f5]
+  - @globalfishingwatch/layer-composer@4.8.0
+
 ## 2.5.1
 
 ### Patch Changes
