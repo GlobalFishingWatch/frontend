@@ -3,9 +3,17 @@
     "name": "Esfuerzo de pesca aparente",
     "description": "Utilizamos datos sobre la identidad, el tipo, la ubicación, la velocidad, la dirección y más de una embarcación que se transmiten mediante el Sistema de identificación automática (AIS) y se recopilan a través de satélites y receptores terrestres. Analizamos los datos AIS recopilados de embarcaciones que nuestra investigación ha identificado como embarcaciones de pesca comercial conocidas o posibles, y aplicamos un algoritmo de detección de pesca para determinar la “actividad pesquera aparente” en función de los cambios en la velocidad y dirección de la embarcación. El algoritmo clasifica cada punto de datos de transmisión AIS para estos barcos como aparentemente pescando o no pescando y muestra el primero en nuestro mapa de calor de actividad pesquera."
   },
-  "marine-protected-areas": {
-    "name": "Áreas Marinas Protegidas",
-    "description": "El término Áreas Marinas Protegidas incluye reservas marinas, áreas marinas totalmente protegidas, zonas de veda, santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente, por nombrar algunos. Muchos de estos tienen niveles de protección bastante diferentes, y la gama de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. Fuente: Base de datos mundial sobre áreas protegidas (WDPA)"
+  "mpa-all": {
+    "name": "Marine Protected Areas",
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA)"
+  },
+  "mpa-no-take": {
+    "name": "MPA - No take",
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA) and NO_TAKE = 'All'"
+  },
+  "mpa-restricted": {
+    "name": "MPA - Restricted",
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA) and NO_TAKE = 'Part'"
   },
   "eez-areas": {
     "name": "EEZ",
@@ -18,5 +26,9 @@
   "wpp-nri": {
     "name": "WPP NRI",
     "description": "The WPP-NRI (Wilayah Pengelolaan Perikanan Negara Republik Indonesia) are fisheries management areas for fishing, conservation, research, and fisheries development which covers inland waters, archipelagic waters, territorial sea, within and outside the exclusive economic zone of Indonesia."
+  },
+  "high-seas": {
+    "name": "High seas",
+    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them."
   }
 }
