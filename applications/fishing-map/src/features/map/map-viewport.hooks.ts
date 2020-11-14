@@ -51,7 +51,11 @@ export function useDebouncedViewport(
   // Sync the url with the local state debounced
   useEffect(() => {
     if (debouncedViewport && callback) {
-      callback(debouncedViewport)
+      callback({
+        latitude: debouncedViewport.latitude,
+        longitude: debouncedViewport.longitude,
+        zoom: debouncedViewport.zoom,
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedViewport])
