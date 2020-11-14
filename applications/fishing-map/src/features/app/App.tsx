@@ -7,7 +7,12 @@ import { Modal } from '@globalfishingwatch/ui-components'
 import { AsyncReducerStatus } from 'types'
 import useDebugMenu from 'features/debug/debug.hooks'
 import { MapboxRefProvider } from 'features/map/map.context'
-import { fetchWorkspaceThunk, selectWorkspaceStatus } from 'features/workspace/workspace.slice'
+import {
+  fetchWorkspaceThunk,
+  selectWorkspace,
+  selectWorkspaceCustom,
+  selectWorkspaceStatus,
+} from 'features/workspace/workspace.slice'
 import { selectDataviewsResourceQueries } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { selectWorkspaceId, selectSidebarOpen } from 'routes/routes.selectors'
@@ -37,7 +42,9 @@ function App(): React.ReactElement {
   const [menuOpen, setMenuOpen] = useState(false)
   const logged = useSelector(isUserLogged)
   const workspaceId = useSelector(selectWorkspaceId)
+  const workspaceData = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const workspaceCustom = useSelector(selectWorkspaceCustom)
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 
@@ -50,9 +57,10 @@ function App(): React.ReactElement {
   }, [])
 
   useEffect(() => {
-    if (logged) {
+    if (logged && workspaceData === null) {
       dispatch(fetchWorkspaceThunk(workspaceId))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, logged, workspaceId])
 
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
@@ -67,7 +75,7 @@ function App(): React.ReactElement {
   return (
     <Fragment>
       <Login />
-      {!logged || workspaceStatus !== AsyncReducerStatus.Finished ? (
+      {!logged || (workspaceStatus !== AsyncReducerStatus.Finished && !workspaceCustom) ? (
         <div className={styles.placeholder}>
           <Spinner />
         </div>

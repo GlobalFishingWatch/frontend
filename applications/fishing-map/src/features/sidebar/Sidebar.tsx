@@ -4,9 +4,14 @@ import Sticky from 'react-sticky-el'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Logo } from '@globalfishingwatch/ui-components'
 import { selectUserData, logoutUserThunk } from 'features/user/user.slice'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.slice'
+import {
+  saveCurrentWorkspaceThunk,
+  selectWorkspaceCustom,
+  selectWorkspaceStatus,
+} from 'features/workspace/workspace.slice'
 import Search from 'features/search/Search'
 import { selectSearchQuery } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'types'
 import styles from './Sidebar.module.css'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'
@@ -20,7 +25,14 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const userData = useSelector(selectUserData)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const workspaceCustom = useSelector(selectWorkspaceCustom)
   const initials = `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
+
+  const onShareClick = useCallback(() => {
+    dispatch(saveCurrentWorkspaceThunk())
+  }, [dispatch])
+
   const onLogoutClick = useCallback(() => {
     dispatch(logoutUserThunk())
   }, [dispatch])
@@ -36,6 +48,8 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
         <Logo className={styles.logo} />
         <IconButton
           icon="share"
+          onClick={onShareClick}
+          loading={workspaceStatus === AsyncReducerStatus.Loading && workspaceCustom === true}
           tooltip={t('common.share', 'Click to share the current view')}
           tooltipPlacement="bottom"
         />
