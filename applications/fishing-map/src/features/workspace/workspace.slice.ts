@@ -44,7 +44,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       ? await GFWAPI.fetch<Workspace>(`/${version}/workspaces/${workspaceId}`)
       : await import('./workspace.default').then((m) => m.default)
 
-    const dataviews = uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId))
+    const dataviews = [
+      ...(workspace.dataviews?.map(({ id }) => id as number) || []),
+      ...uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId)),
+    ]
     if (dataviews) {
       await dispatch(fetchDataviewsByIdsThunk(dataviews))
     }

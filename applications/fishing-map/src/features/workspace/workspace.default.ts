@@ -13,6 +13,7 @@ const workspace: Workspace = {
     longitude: -3,
   },
   datasets: [{ id: 'test-alias-import-vessels-pipeline:latest' }],
+  dataviews: [{ id: DEFAULT_VESSEL_DATAVIEW_ID }], // Needed to fetch vessel information
   dataviewInstances: [
     {
       id: 'basemap',
