@@ -10,7 +10,7 @@ import {
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.slice'
 import Search from 'features/search/Search'
-import { selectSearchQuery } from 'routes/routes.selectors'
+import { selectSearchQuery } from 'features/app/app.selectors'
 import { AsyncReducerStatus } from 'types'
 import styles from './Sidebar.module.css'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
@@ -48,6 +48,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
         <Logo className={styles.logo} />
         <IconButton
           icon="share"
+          size="medium"
           onClick={onShareClick}
           loading={workspaceStatus === AsyncReducerStatus.Loading && workspaceCustom === true}
           tooltip={t('common.share', 'Click to share the current view')}
@@ -55,6 +56,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
         />
         {userData ? (
           <IconButton
+            size="medium"
             tooltip={
               <span>
                 {`${userData.firstName} ${userData.lastName}`}
