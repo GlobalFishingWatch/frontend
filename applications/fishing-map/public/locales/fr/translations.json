@@ -1,6 +1,7 @@
 {
   "common": {
     "context_area_plural": "Calques de contexte",
+    "copiedToClipboard": "The link to share this view has been copied to your clipboard",
     "dismiss": "Fermer",
     "events": "Évènements",
     "fishing": "Pêche",
