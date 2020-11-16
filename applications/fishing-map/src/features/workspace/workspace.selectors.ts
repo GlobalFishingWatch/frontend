@@ -28,6 +28,10 @@ export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
 
 export const selectWorkspace = (state: RootState) => state.workspace.data
 
+export const selectWorkspaceId = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.id
+})
+
 export const selectWorkspaceViewport = createSelector([selectWorkspace], (workspace) => {
   return workspace?.viewport
 })

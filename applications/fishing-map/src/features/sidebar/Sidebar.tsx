@@ -1,4 +1,4 @@
-import React, { useCallback, Fragment } from 'react'
+import React, { useCallback, Fragment, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Sticky from 'react-sticky-el'
 import { useTranslation } from 'react-i18next'
@@ -12,6 +12,8 @@ import {
 import Search from 'features/search/Search'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { AsyncReducerStatus } from 'types'
+import copyToTlipboard from 'utils/clipboard'
+import { selectWorkspaceId } from 'routes/routes.selectors'
 import styles from './Sidebar.module.css'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'
@@ -24,7 +26,9 @@ type SidebarProps = {
 function SidebarHeader({ onMenuClick }: SidebarProps) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const [finished, setFinished] = useState(false)
   const userData = useSelector(selectUserData)
+  const workspaceId = useSelector(selectWorkspaceId)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustom = useSelector(selectWorkspaceCustom)
   const initials = `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
@@ -37,6 +41,21 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
     dispatch(logoutUserThunk())
   }, [dispatch])
 
+  useEffect(() => {
+    let id: any
+    if (workspaceStatus === AsyncReducerStatus.Finished && workspaceCustom === true) {
+      setFinished(true)
+      copyToTlipboard(`${window.location.origin}/${workspaceId}`)
+      id = setTimeout(() => setFinished(false), 5000)
+    }
+
+    return () => {
+      if (id) {
+        clearTimeout(id)
+      }
+    }
+  }, [workspaceCustom, workspaceId, workspaceStatus])
+
   return (
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
@@ -47,11 +66,18 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
         />
         <Logo className={styles.logo} />
         <IconButton
-          icon="share"
+          icon={finished ? 'tick' : 'share'}
           size="medium"
           onClick={onShareClick}
           loading={workspaceStatus === AsyncReducerStatus.Loading && workspaceCustom === true}
-          tooltip={t('common.share', 'Click to share the current view')}
+          tooltip={
+            finished
+              ? t(
+                  'common.copiedToClipboard',
+                  'The link to share this view has been copied to your clipboard'
+                )
+              : t('common.share', 'Click to share the current view')
+          }
           tooltipPlacement="bottom"
         />
         {userData ? (
