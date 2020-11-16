@@ -1,6 +1,7 @@
 {
   "common": {
     "context_area_plural": "Context areas",
+    "copiedToClipboard": "The link to share this view has been copied to your clipboard",
     "dismiss": "Dismiss",
     "events": "Events",
     "fishing": "Fishing",
