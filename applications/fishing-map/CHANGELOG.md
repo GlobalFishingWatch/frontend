@@ -1,5 +1,15 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.15.10
+
+### Patch Changes
+
+- a9c2879: Fishingmap/share workspace
+- Updated dependencies [a9c2879]
+  - @globalfishingwatch/api-client@1.6.3
+  - @globalfishingwatch/api-types@2.0.4
+  - @globalfishingwatch/ui-components@2.5.3
+
 ## 0.15.9
 
 ### Patch Changes
