@@ -13,9 +13,10 @@ export interface UpdateQueryParamsAction {
   }
 }
 
-export function updateQueryParams(
+type UpdateLocationOptions = { query?: QueryParams; payload?: any; replaceQuery?: boolean }
+export function updateLocation(
   type: ROUTE_TYPES,
-  { query, payload = {} }: { query: QueryParams; payload: any }
-): UpdateQueryParamsAction {
-  return { type, query, payload }
+  { query = {}, payload = {}, replaceQuery = false }: UpdateLocationOptions = {}
+) {
+  return { type, query, payload, replaceQuery }
 }

@@ -12,12 +12,9 @@ export type UrlDataviewInstance = Omit<DataviewInstance<Generators.Type>, 'datav
   deleted?: boolean // needed when you want to override from url an existing workspace config
 }
 
-export type WorkspaceParam =
-  | 'zoom'
-  | 'latitude'
-  | 'longitude'
-  | 'start'
-  | 'end'
+export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
+export type WorkspaceTimeRangeParam = 'start' | 'end'
+export type WorkspaceStateProperty =
   | 'query'
   | 'sidebarOpen'
   | 'dataviewInstances'
@@ -25,13 +22,14 @@ export type WorkspaceParam =
   | 'timebarEvents'
   | 'timebarGraph'
   | 'bivariate'
+export type WorkspaceParam =
+  | WorkspaceViewportParam
+  | WorkspaceTimeRangeParam
+  | WorkspaceStateProperty
 
-export type QueryParams = {
-  zoom?: number
-  latitude?: number
-  longitude?: number
-  start?: string
-  end?: string
+export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
+export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
+export type WorkspaceState = {
   query?: string
   sidebarOpen?: boolean
   dataviewInstances?: Partial<UrlDataviewInstance[]>
@@ -40,6 +38,7 @@ export type QueryParams = {
   timebarGraph?: TimebarGraphs
   bivariate?: boolean
 }
+export type QueryParams = Partial<WorkspaceViewport> & Partial<WorkspaceTimeRange> & WorkspaceState
 
 export type MapCoordinates = {
   latitude: number

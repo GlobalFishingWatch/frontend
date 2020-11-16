@@ -2,14 +2,8 @@ import { createSelector } from 'reselect'
 import memoize from 'lodash/memoize'
 import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'store'
-import {
-  WorkspaceParam,
-  UrlDataviewInstance,
-  TimebarVisualisations,
-  TimebarGraphs,
-  TimebarEvents,
-} from 'types'
-import { DEFAULT_WORKSPACE, DEFAULT_WERSION } from 'data/config'
+import { WorkspaceParam, UrlDataviewInstance } from 'types'
+import { DEFAULT_WERSION } from 'data/config'
 import { ROUTE_TYPES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
@@ -33,31 +27,21 @@ export const selectWorkspaceId = createSelector(
   (payload) => payload.workspaceId
 )
 
-const selectQueryParam = <T = any>(param: WorkspaceParam) =>
+export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
   createSelector<RootState, Query, T>([selectLocationQuery], (query: any) => {
-    if (query === undefined || query[param] === undefined) {
-      return DEFAULT_WORKSPACE[param]
-    }
-    return query[param]
+    return query?.[param]
   })
 
-export const selectMapZoomQuery = selectQueryParam<number>('zoom')
-export const selectMapLatitudeQuery = selectQueryParam<number>('latitude')
-export const selectMapLongitudeQuery = selectQueryParam<number>('longitude')
-export const selectStartQuery = selectQueryParam<string>('start')
-export const selectEndQuery = selectQueryParam<string>('end')
-export const selectSearchQuery = selectQueryParam<string>('query')
-export const selectSidebarOpen = selectQueryParam<boolean>('sidebarOpen')
-export const selectTimebarVisualisation = selectQueryParam<TimebarVisualisations>(
-  'timebarVisualisation'
+export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')
+export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
+export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
+export const selectUrlStartQuery = selectQueryParam<string>('start')
+export const selectUrlEndQuery = selectQueryParam<string>('end')
+export const selectUrlDataviewInstances = selectQueryParam<UrlDataviewInstance[]>(
+  'dataviewInstances'
 )
-export const selectTimebarEvents = selectQueryParam<TimebarEvents>('timebarEvents')
-export const selectTimebarGraph = selectQueryParam<TimebarGraphs>('timebarGraph')
-export const selectDataviewInstances = selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
-export const selectBivariate = selectQueryParam<boolean>('bivariate')
-
-export const selectDataviewInstancesById = memoize((id: string) =>
-  createSelector([selectDataviewInstances], (urlDataviewInstances) =>
+export const selectUrlDataviewInstancesById = memoize((id: string) =>
+  createSelector([selectUrlDataviewInstances], (urlDataviewInstances) =>
     urlDataviewInstances?.find((dataviewInstance) => dataviewInstance.id === id)
   )
 )

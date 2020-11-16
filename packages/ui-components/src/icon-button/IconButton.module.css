@@ -70,6 +70,11 @@
   height: var(--size-M);
 }
 
+.mediumSize {
+  width: 3.2rem;
+  height: 3.2rem;
+}
+
 .smallSize {
   width: var(--size-S);
   height: var(--size-S);

@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { UrlDataviewInstance } from 'types'
-import { selectDataviewInstances } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
 export const useDataviewInstancesConnect = () => {
-  const urlDataviewInstances = useSelector(selectDataviewInstances)
+  const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const { dispatchQueryParams } = useLocationConnect()
 
   const removeDataviewInstance = useCallback(

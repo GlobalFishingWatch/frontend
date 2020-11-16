@@ -132,7 +132,9 @@ const slice = createSlice({
       })
     })
     builder.addCase(fetch4WingInteractionThunk.rejected, (state, action) => {
-      if (action.error.message !== 'Aborted') {
+      if (action.error.message === 'Aborted') {
+        state.status = AsyncReducerStatus.Idle
+      } else {
         state.status = AsyncReducerStatus.Error
       }
     })

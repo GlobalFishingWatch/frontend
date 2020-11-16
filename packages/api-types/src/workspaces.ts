@@ -1,7 +1,7 @@
-import { Dataset, AOI, Dataview, DataviewInstance } from '.'
+import { AOI, Dataview, DataviewInstance } from '.'
 
-export interface Workspace {
-  id: number
+export interface Workspace<T = unknown> {
+  id: string
   name: string
   description: string
   aoi?: AOI
@@ -12,12 +12,12 @@ export interface Workspace {
   }
   startAt: string
   endAt: string
-  datasets?: Partial<Dataset>[]
+  state?: T
   dataviews?: Partial<Dataview>[]
   dataviewInstances: DataviewInstance[]
 }
 
-export interface WorkspaceUpsert extends Partial<Omit<Workspace, 'aoi' | 'dataviews'>> {
+export interface WorkspaceUpsert<T = any> extends Partial<Omit<Workspace<T>, 'aoi' | 'dataviews'>> {
   aoi?: number
   dataviews?: number[]
 }

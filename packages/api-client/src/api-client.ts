@@ -31,10 +31,11 @@ interface LoginParams {
   refreshToken?: string | null
 }
 
-export type FetchOptions = Partial<RequestInit> & {
+export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   responseType?: ResourceResponseType
   dataset?: boolean
+  body?: T
 }
 
 const processStatus = (response: Response) => {

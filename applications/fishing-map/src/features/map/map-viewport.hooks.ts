@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { ViewportProps } from 'react-map-gl'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { MapCoordinates } from 'types'
-import { selectViewport } from 'features/map/map.selectors'
+import { selectViewport } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapboxRef } from './map.context'
 import { selectBounds, setBounds } from './map.slice'
@@ -51,7 +51,11 @@ export function useDebouncedViewport(
   // Sync the url with the local state debounced
   useEffect(() => {
     if (debouncedViewport && callback) {
-      callback(debouncedViewport)
+      callback({
+        latitude: debouncedViewport.latitude,
+        longitude: debouncedViewport.longitude,
+        zoom: debouncedViewport.zoom,
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedViewport])

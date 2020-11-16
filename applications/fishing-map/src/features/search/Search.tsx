@@ -12,8 +12,9 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectVesselsDatasets, selectTracksDatasets } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { selectSearchQuery } from 'routes/routes.selectors'
+import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
+import { resetWorkspaceSearchQuery } from 'features/workspace/workspace.slice'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -50,6 +51,7 @@ function Search() {
     batch(() => {
       dispatchQueryParams({ query: undefined })
       dispatch(cleanVesselSearchResults())
+      dispatch(resetWorkspaceSearchQuery())
     })
   }
 

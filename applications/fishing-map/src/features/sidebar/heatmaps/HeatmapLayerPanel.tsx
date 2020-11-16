@@ -9,7 +9,7 @@ import { UrlDataviewInstance } from 'types'
 import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { FISHING_DATASET_TYPE } from 'data/datasets'
-import { selectBivariate } from 'routes/routes.selectors'
+import { selectBivariate } from 'features/app/app.selectors'
 import Filters from './HeatmapFilters'
 
 type LayerPanelProps = {

@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { QueryParams } from 'types'
 import { selectCurrentLocation, selectLocationPayload } from 'routes/routes.selectors'
 import { ROUTE_TYPES } from './routes'
-import { updateQueryParams } from './routes.actions'
+import { updateLocation } from './routes.actions'
 
 export const useLocationConnect = () => {
   const dispatch = useDispatch()
@@ -11,13 +11,13 @@ export const useLocationConnect = () => {
   const payload = useSelector(selectLocationPayload)
   const dispatchLocation = useCallback(
     (type: ROUTE_TYPES, customPayload: Record<string, any> = {}) => {
-      dispatch({ type, payload: { ...payload, ...customPayload } })
+      dispatch(updateLocation(type, { payload: { ...payload, ...customPayload } }))
     },
     [dispatch, payload]
   )
   const dispatchQueryParams = useCallback(
     (query: QueryParams) => {
-      dispatch(updateQueryParams(location.type, { query, payload }))
+      dispatch(updateLocation(location.type, { query, payload }))
     },
     [dispatch, location.type, payload]
   )

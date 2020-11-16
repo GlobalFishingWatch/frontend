@@ -3,10 +3,8 @@ import uniqBy from 'lodash/uniqBy'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from 'types'
-import { selectWorkspace } from 'features/workspace/workspace.slice'
+import { UrlDataviewInstance, WorkspaceState } from 'types'
 import { ResourceQuery } from 'features/resources/resources.slice'
-import { selectDataviewInstances } from 'routes/routes.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { selectDataviews } from 'features/dataviews/dataviews.slice'
 import {
@@ -15,6 +13,8 @@ import {
   FISHING_DATASET_TYPE,
   USER_CONTEXT_TYPE,
 } from 'data/datasets'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { RootState } from 'store'
 
 export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
   Object.entries(dataview.datasetsConfig || {}).flatMap(([id, value]) => {
@@ -25,6 +25,12 @@ export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
       label: dataset.name,
     }
   })
+
+export const selectWorkspace = (state: RootState) => state.workspace.data
+
+export const selectWorkspaceId = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.id
+})
 
 export const selectWorkspaceViewport = createSelector([selectWorkspace], (workspace) => {
   return workspace?.viewport
@@ -41,20 +47,15 @@ export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace]
   return workspace?.dataviewInstances
 })
 
-export const selectDataviewInstancesResolved = createSelector(
-  [selectWorkspace, selectDatasets, selectDataviews, selectDataviewInstances],
-  (
-    workspace,
-    datasets,
-    dataviews,
-    urlDataviewInstances = []
-  ): UrlDataviewInstance[] | undefined => {
-    if (!workspace) return
+export const selectDataviewInstancesMerged = createSelector(
+  [selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
+  (workspaceDataviewInstances = [], urlDataviewInstances = []): UrlDataviewInstance[] => {
+    // Split url dataviews by new or just overwriting the workspace to easily grab them later
     const urlDataviews = urlDataviewInstances.reduce<
       Record<'workspace' | 'new', UrlDataviewInstance[]>
     >(
       (acc, urlDataview) => {
-        const isInWorkspace = workspace.dataviewInstances.some(
+        const isInWorkspace = workspaceDataviewInstances?.some(
           (dataviewInstance) => dataviewInstance.id === urlDataview.id
         )
         if (isInWorkspace) {
@@ -66,9 +67,43 @@ export const selectDataviewInstancesResolved = createSelector(
       },
       { workspace: [], new: [] }
     )
-    const dataviewInstances = [...workspace.dataviewInstances, ...urlDataviews.new]
+    const workspaceDataviewInstancesMerged = workspaceDataviewInstances.map(
+      (workspaceDataviewInstance) => {
+        const urlDataviewInstance = urlDataviews.workspace.find(
+          (d) => d.id === workspaceDataviewInstance.id
+        )
+        if (!urlDataviewInstance) return workspaceDataviewInstance
+        return {
+          ...workspaceDataviewInstance,
+          ...urlDataviewInstance,
+          config: {
+            ...workspaceDataviewInstance.config,
+            ...urlDataviewInstance.config,
+          },
+        }
+      }
+    )
+    return [...workspaceDataviewInstancesMerged, ...urlDataviews.new]
+  }
+)
+
+export const selectWorkspaceState = createSelector(
+  [selectWorkspace],
+  (workspace): WorkspaceState => {
+    return workspace?.state || ({} as WorkspaceState)
+  }
+)
+
+export const selectDataviewInstancesResolved = createSelector(
+  [selectDataviewInstancesMerged, selectDatasets, selectDataviews],
+  (dataviewInstances, datasets, dataviews): UrlDataviewInstance[] | undefined => {
+    if (!dataviewInstances) return
     let dataviewInstancesResolved: UrlDataviewInstance[] = dataviewInstances.flatMap(
       (dataviewInstance) => {
+        if (dataviewInstance?.deleted) {
+          return []
+        }
+
         const dataview = dataviews?.find((dataview) => dataview.id === dataviewInstance.dataviewId)
         if (!dataview) {
           console.warn(
@@ -77,16 +112,9 @@ export const selectDataviewInstancesResolved = createSelector(
           return []
         }
 
-        const urlDataview = urlDataviews.workspace.find(
-          (urlDataview) => urlDataview.id === dataviewInstance.id
-        )
-        if (urlDataview?.deleted) {
-          return []
-        }
         const config = {
           ...dataview.config,
           ...dataviewInstance.config,
-          ...urlDataview?.config,
         }
         config.visible = config?.visible ?? true
         const dataviewDatasets: Dataset[] = []

@@ -10,7 +10,7 @@ import {
   selectActiveVesselsDataviews,
 } from 'features/workspace/workspace.selectors'
 import { TIMEBAR_EVENT_OPTIONS, TIMEBAR_GRAPH_OPTIONS } from 'data/config'
-import { selectTimebarEvents, selectTimebarGraph } from 'routes/routes.selectors'
+import { selectTimebarEvents, selectTimebarGraph } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useTimebarVisualisation } from './timebar.hooks'
 import styles from './TimebarSettings.module.css'

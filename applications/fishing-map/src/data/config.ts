@@ -3,30 +3,22 @@ import { TimebarEvents, TimebarGraphs } from 'types'
 
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
 
-// used when no url data and no workspace data
-export const FALLBACK_VIEWPORT = {
-  latitude: 7,
-  longitude: -75,
-  zoom: 3,
-}
-
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const DEFAULT_WORKSPACE_ID = 31
 export const DEFAULT_WERSION = 'v1'
 
-// TODO rethink this as most of the values comes from the workspace now
+// used when no url data and no workspace data
 export const DEFAULT_WORKSPACE = {
-  latitude: undefined,
-  longitude: undefined,
-  zoom: undefined,
+  latitude: 7,
+  longitude: -75,
+  zoom: 3,
   query: undefined,
   sidebarOpen: true,
-  start: undefined,
-  end: undefined,
+  start: new Date(2019, 0, 1).toISOString(),
+  end: new Date().toISOString(),
   availableStart: new Date(2012, 0, 1).toISOString(),
   availableEnd: new Date().toISOString(),
   dataviewInstances: undefined,
-  fishingFilters: [],
   timebarVisualisation: undefined,
   timebarEvents: TimebarEvents.None,
   timebarGraph: TimebarGraphs.None,

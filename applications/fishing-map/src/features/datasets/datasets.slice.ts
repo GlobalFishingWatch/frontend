@@ -8,6 +8,7 @@ import { RootState } from 'store'
 export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
   async (ids: string[], { rejectWithValue }) => {
+    // TODO fetch only not already existing ids
     try {
       let datasets = await GFWAPI.fetch<Dataset[]>(
         `/v1/datasets?ids=${ids.join(',')}&include=endpoints`

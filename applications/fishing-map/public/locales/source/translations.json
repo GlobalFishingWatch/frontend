@@ -1,6 +1,7 @@
 {
   "common": {
     "context_area_plural": "Context areas",
+    "copiedToClipboard": "The link to share this view has been copied to your clipboard",
     "dismiss": "Dismiss",
     "events": "Events",
     "fishing": "Fishing",
@@ -40,8 +41,7 @@
     "rulers_remove": "Remove all rulers",
     "screenshot": "Map screenshot",
     "zoom_in": "Zoom in",
-    "zoom_out": "Zoom out",
-    "loading": "Map loading"
+    "zoom_out": "Zoom out"
   },
   "timebar": {
     "graph": "Graph",

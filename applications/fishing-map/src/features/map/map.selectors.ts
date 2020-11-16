@@ -7,34 +7,15 @@ import {
 import { GeneratorDataviewConfig, Generators } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from 'types'
 import {
-  selectMapZoomQuery,
-  selectMapLatitudeQuery,
-  selectMapLongitudeQuery,
-  selectBivariate,
-} from 'routes/routes.selectors'
-import { selectTimeRange } from 'features/timebar/timebar.selectors'
-import {
   selectDataviewInstancesResolved,
-  selectWorkspaceViewport,
   resolveDataviewDatasetResource,
 } from 'features/workspace/workspace.selectors'
 import { selectResources } from 'features/resources/resources.slice'
-import { FALLBACK_VIEWPORT } from 'data/config'
 import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
-
-export const selectViewport = createSelector(
-  [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery, selectWorkspaceViewport],
-  (zoom, latitude, longitude, workspaceViewport) => {
-    return {
-      zoom: zoom || workspaceViewport?.zoom || FALLBACK_VIEWPORT.zoom,
-      latitude: latitude || workspaceViewport?.latitude || FALLBACK_VIEWPORT.latitude,
-      longitude: longitude || workspaceViewport?.longitude || FALLBACK_VIEWPORT.longitude,
-    }
-  }
-)
+import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
