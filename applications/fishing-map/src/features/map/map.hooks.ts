@@ -9,7 +9,7 @@ import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
-import { selectTimeRange } from 'features/timebar/timebar.selectors'
+import { selectTimeRange } from 'features/app/app.selectors'
 import { FISHING_DATASET_TYPE } from 'data/datasets'
 import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import {

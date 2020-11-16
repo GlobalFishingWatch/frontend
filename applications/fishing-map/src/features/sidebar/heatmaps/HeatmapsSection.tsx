@@ -7,7 +7,7 @@ import { selectTemporalgridDataviews } from 'features/workspace/workspace.select
 import styles from 'features/sidebar/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectBivariate } from 'routes/routes.selectors'
+import { selectBivariate } from 'features/app/app.selectors'
 import LayerPanel from './HeatmapLayerPanel'
 
 function HeatmapsSection(): React.ReactElement {

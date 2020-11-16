@@ -1,23 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Segment } from '@globalfishingwatch/data-transforms'
-import { selectStartQuery, selectEndQuery, selectTimebarGraph } from 'routes/routes.selectors'
+import { selectTimebarGraph } from 'features/app/app.selectors'
 import {
-  selectWorkspaceTimeRange,
   selectVesselsDataviews,
   resolveDataviewDatasetResource,
 } from 'features/workspace/workspace.selectors'
 import { selectResources, Resource } from 'features/resources/resources.slice'
 import { TRACKS_DATASET_TYPE } from 'data/datasets'
-
-export const selectTimeRange = createSelector(
-  [selectStartQuery, selectEndQuery, selectWorkspaceTimeRange],
-  (start, end, workspaceTimerange) => {
-    return {
-      start: start || workspaceTimerange?.start || '',
-      end: end || workspaceTimerange?.end || '',
-    }
-  }
-)
 
 type TimebarTrackSegment = {
   start: number

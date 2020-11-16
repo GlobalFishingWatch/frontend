@@ -9,13 +9,15 @@ import useDebugMenu from 'features/debug/debug.hooks'
 import { MapboxRefProvider } from 'features/map/map.context'
 import {
   fetchWorkspaceThunk,
-  selectWorkspace,
   selectWorkspaceCustom,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.slice'
-import { selectDataviewsResourceQueries } from 'features/workspace/workspace.selectors'
+import {
+  selectWorkspace,
+  selectDataviewsResourceQueries,
+} from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
-import { selectWorkspaceId, selectSidebarOpen } from 'routes/routes.selectors'
+import { selectWorkspaceId } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
@@ -24,6 +26,7 @@ import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import Sidebar from 'features/sidebar/Sidebar'
 import { isUserLogged } from 'features/user/user.slice'
+import { selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 
 import '@globalfishingwatch/ui-components/dist/base.css'
