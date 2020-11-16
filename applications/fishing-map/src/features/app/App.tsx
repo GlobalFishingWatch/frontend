@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
-import { Modal } from '@globalfishingwatch/ui-components'
+import Modal from '@globalfishingwatch/ui-components/dist/modal'
+import Button from '@globalfishingwatch/ui-components/dist/button'
 import { AsyncReducerStatus } from 'types'
 import useDebugMenu from 'features/debug/debug.hooks'
 import { MapboxRefProvider } from 'features/map/map.context'
@@ -26,6 +27,8 @@ import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import Sidebar from 'features/sidebar/Sidebar'
 import { isUserLogged } from 'features/user/user.slice'
+import { HOME } from 'routes/routes'
+import { updateLocation } from 'routes/routes.actions'
 import { selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 
@@ -59,6 +62,16 @@ function App(): React.ReactElement {
     setMenuOpen(true)
   }, [])
 
+  const onUseDefaultWorkspaceClick = useCallback(() => {
+    dispatch(
+      updateLocation(HOME, {
+        payload: { workspaceId: undefined },
+        query: {},
+        replaceQuery: true,
+      })
+    )
+  }, [dispatch])
+
   useEffect(() => {
     if (logged && workspaceData === null) {
       dispatch(fetchWorkspaceThunk(workspaceId))
@@ -80,7 +93,14 @@ function App(): React.ReactElement {
       <Login />
       {!logged || (workspaceStatus !== AsyncReducerStatus.Finished && !workspaceCustom) ? (
         <div className={styles.placeholder}>
-          <Spinner />
+          {workspaceStatus === AsyncReducerStatus.Error ? (
+            <div>
+              <h2>There was an error loading your view</h2>
+              <Button onClick={onUseDefaultWorkspaceClick}>Load default view</Button>
+            </div>
+          ) : (
+            <Spinner />
+          )}
         </div>
       ) : (
         <MapboxRefProvider>
