@@ -1,6 +1,7 @@
 {
   "common": {
     "context_area_plural": "Areas de contexto",
+    "copiedToClipboard": "The link to share this view has been copied to your clipboard",
     "dismiss": "Cancelar",
     "events": "Eventos",
     "fishing": "Pesca",
