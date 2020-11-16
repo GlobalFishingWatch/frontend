@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.5.3
+
+### Patch Changes
+
+- a9c2879: Fishingmap/share workspace
+
 ## 2.5.2
 
 ### Patch Changes

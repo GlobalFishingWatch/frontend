@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.0.4
+
+### Patch Changes
+
+- a9c2879: Fishingmap/share workspace
+
 ## 2.0.3
 
 ### Patch Changes
