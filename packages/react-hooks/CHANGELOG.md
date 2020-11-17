@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 4.3.1
+
+### Patch Changes
+
+- fix removeFeatureState crash
+
 ## 4.3.0
 
 ### Minor Changes
