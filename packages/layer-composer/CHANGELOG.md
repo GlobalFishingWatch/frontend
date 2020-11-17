@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.8.3
+
+### Patch Changes
+
+- restore layers order
+
 ## 4.8.2
 
 ### Patch Changes
