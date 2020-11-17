@@ -24,7 +24,7 @@ export const useWorkspacesAPI = () => {
   }, [dispatch])
 
   const fetchWorkspaceById = useCallback(
-    async (id: number): Promise<Workspace> => {
+    async (id: string): Promise<Workspace> => {
       const { payload }: any = await dispatch(fetchWorkspaceByIdThunk(id))
       return payload
     },
@@ -32,7 +32,7 @@ export const useWorkspacesAPI = () => {
   )
 
   const deleteWorkspace = useCallback(
-    async (id: number): Promise<Workspace> => {
+    async (id: string): Promise<Workspace> => {
       const { payload }: any = await dispatch(deleteWorkspaceThunk(id))
       return payload
     },

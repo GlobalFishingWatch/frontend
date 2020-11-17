@@ -18,9 +18,9 @@ export default function resolveDataviews(
   return dataviews.map((d) => {
     const dataview = { ...d }
     // retrieve workspace dataview that matches dataview so that we can collect overrides
-    const workspaceDataview = dataviewInstances?.find(
-      (workspaceDataview) => workspaceDataview.dataviewId === dataview.id
-    )
+    const workspaceDataview =
+      dataviewInstances?.length &&
+      dataviewInstances.find((workspaceDataview) => workspaceDataview.dataviewId === dataview.id)
 
     if (workspaceDataview) {
       // if workspace dataview exist, we'll overwrite original config

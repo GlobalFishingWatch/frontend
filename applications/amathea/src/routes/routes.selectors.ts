@@ -21,7 +21,7 @@ export const selectLocationPayload = createSelector([selectLocation], ({ payload
 })
 
 export const selectCurrentWorkspaceId = createSelector([selectLocation], ({ payload }) => {
-  return parseInt(payload?.workspaceId)
+  return parseInt(payload?.workspaceId) as any
 })
 
 const selectLocationQuery = createSelector([selectLocation], (location) => {

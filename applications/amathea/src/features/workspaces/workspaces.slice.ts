@@ -17,7 +17,7 @@ export const fetchWorkspacesThunk = createAsyncThunk('workspaces/fetch', async (
 
 export const fetchWorkspaceByIdThunk = createAsyncThunk(
   'workspace/fetchById',
-  async (id: number, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const workspace = await GFWAPI.fetch<Workspace>(
         `/v1/workspaces/${id}?include=aoi,dataviews,dataviews.datasets,dataviews.datasets.endpoints`
@@ -61,7 +61,7 @@ export const updateWorkspaceThunk = createAsyncThunk(
 
 export const deleteWorkspaceThunk = createAsyncThunk(
   'workspaces/delete',
-  async (id: number, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}`, {
         method: 'DELETE',
@@ -73,7 +73,7 @@ export const deleteWorkspaceThunk = createAsyncThunk(
   }
 )
 
-type WorkpaceExtended = Workspace & { color: string }
+export type WorkpaceExtended = Workspace & { color: string }
 
 export type WorkspacesState = AsyncReducer<WorkpaceExtended>
 
@@ -101,7 +101,7 @@ export const selectWorkspaceStatusId = (state: RootState) => state.workspaces.st
 export const selectCurrentWorkspace = createSelector(
   [selectAllWorkspaces, selectCurrentWorkspaceId],
   (workspaces, workspaceId) => {
-    return workspaces.find((workspace) => workspace.id === workspaceId)
+    return workspaces.find((workspace) => workspace.id == workspaceId)
   }
 )
 
