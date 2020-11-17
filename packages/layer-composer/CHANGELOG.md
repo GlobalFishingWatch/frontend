@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.8.2
+
+### Patch Changes
+
+- move default layer order below basemapFill
+
 ## 4.8.1
 
 ### Patch Changes
