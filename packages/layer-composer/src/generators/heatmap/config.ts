@@ -58,7 +58,10 @@ const getColorRampByOpacitySteps = (finalColor: string, numSteps = 8) => {
   return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
 }
 
-const DEFAULT_BACKGROUND_TRANSPARENT_COLOR = `rgba(${DEFAULT_BACKGROUND_COLOR.replace(')', ', 0)')}`
+const DEFAULT_BACKGROUND_TRANSPARENT_COLOR = DEFAULT_BACKGROUND_COLOR.replace(
+  'rgb(',
+  'rgba('
+).replace(')', ', 0)')
 
 export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   fishing: [DEFAULT_BACKGROUND_TRANSPARENT_COLOR, '#3B9088', '#EEFF00', '#ffffff'],

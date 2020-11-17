@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.8.1
+
+### Patch Changes
+
+- Fix heatmap rgba color
+
 ## 4.8.0
 
 ### Minor Changes
