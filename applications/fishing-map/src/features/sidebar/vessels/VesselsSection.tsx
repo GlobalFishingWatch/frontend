@@ -21,6 +21,7 @@ function VesselsSection(): React.ReactElement {
         <IconButton
           icon="search"
           type="border"
+          size="medium"
           tooltip={t('vessel.search.search', 'Search vessels')}
           tooltipPlacement="top"
           onClick={onSearchClick}

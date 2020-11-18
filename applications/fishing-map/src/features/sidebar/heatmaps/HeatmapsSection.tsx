@@ -49,6 +49,7 @@ function HeatmapsSection(): React.ReactElement {
           <IconButton
             icon={bivariate ? 'split' : 'compare'}
             type="border"
+            size="medium"
             tooltip={
               bivariate
                 ? t('layer.toggleCombinationMode.compare', 'Show fishing layers in comparison mode')
@@ -63,6 +64,7 @@ function HeatmapsSection(): React.ReactElement {
           <IconButton
             icon="plus"
             type="border"
+            size="medium"
             tooltip="Add layer"
             tooltipPlacement="top"
             onClick={onAddClick}
