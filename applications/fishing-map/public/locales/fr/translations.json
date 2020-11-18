@@ -23,9 +23,11 @@
     "filter_close": "Fermer les filtres",
     "filter_open": "Montrer les filtres",
     "filter_plural": "Filtres",
+    "flag_state_plural": "Flag States",
     "info_close": "Masquer les infos",
     "info_open": "Infos",
     "remove": "Supprimer le calque",
+    "source_plural": "Sources",
     "toggle_visibility": "Afficher/Masquer le calque",
     "toggleCombinationMode": {
       "bivariate": "Show fishing layers in bivariate mode",
