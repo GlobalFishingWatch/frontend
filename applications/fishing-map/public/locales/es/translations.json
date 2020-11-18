@@ -23,9 +23,11 @@
     "filter_close": "Cierra los filtros",
     "filter_open": "Abre los filtros",
     "filter_plural": "Filtros",
+    "flag_state_plural": "Flag States",
     "info_close": "Oculta la información",
     "info_open": "Muestra la información",
     "remove": "Borra la capa",
+    "source_plural": "Sources",
     "toggle_visibility": "Cambia la visibilidad de la capa",
     "toggleCombinationMode": {
       "bivariate": "Show fishing layers in bivariate mode",
