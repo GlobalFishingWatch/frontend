@@ -11,7 +11,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
     // TODO fetch only not already existing ids
     try {
       let datasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?ids=${ids.join(',')}&include=endpoints`
+        `/v1/datasets?ids=${ids.join(',')}&include=endpoints&cache=false`
       )
       if (process.env.REACT_APP_USE_DATASETS_MOCK === 'true') {
         const mockedDatasets = await import('./datasets.mock')
