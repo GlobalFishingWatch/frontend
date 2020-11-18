@@ -95,7 +95,9 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             style={{ backgroundColor: featureByType[0].color }}
           />
           <div className={styles.popupSectionContent}>
-            <h3 className={styles.popupSectionTitle}>{featureByType[0].title}</h3>
+            {showFeaturesDetails && (
+              <h3 className={styles.popupSectionTitle}>{featureByType[0].title}</h3>
+            )}
             {featureByType.map((feature) => getRowByLayer(feature, showFeaturesDetails))}
           </div>
         </div>
