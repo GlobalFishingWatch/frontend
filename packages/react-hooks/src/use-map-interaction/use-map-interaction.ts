@@ -75,7 +75,7 @@ export const useFeatureState = (map?: Map) => {
         sourcesWithFeatureState?.forEach((source: FeatureStateSource) => {
           const feature = map.getFeatureState(source)
           // https://github.com/mapbox/mapbox-gl-js/issues/9461
-          if (feature.hasOwnProperty(state)) {
+          if (feature?.hasOwnProperty(state)) {
             map.removeFeatureState(source, state)
           }
         })
