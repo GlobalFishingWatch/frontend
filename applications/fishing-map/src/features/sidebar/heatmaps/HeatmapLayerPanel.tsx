@@ -11,6 +11,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { FISHING_DATASET_TYPE } from 'data/datasets'
 import { selectBivariate } from 'features/app/app.selectors'
 import Filters from './HeatmapFilters'
+import { getSourcesSelectedInDataview } from './heatmaps.utils'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -19,6 +20,7 @@ type LayerPanelProps = {
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
+  const sourcesOptions = getSourcesSelectedInDataview(dataview)
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters || [])
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const bivariate = useSelector(selectBivariate)
@@ -109,19 +111,34 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         </div>
       </div>
       {layerActive && (
-        <div className={styles.properties}>
-          {fishingFiltersOptions.length > 0 && (
-            <Fragment>
-              <label>{t('layer.filter_plural', 'Filters')}</label>
-              <TagList
-                tags={fishingFiltersOptions}
-                color={dataview.config?.color}
-                className={styles.tagList}
-              />
-            </Fragment>
-          )}
-          <div id={`legend_${dataview.id}`}></div>
-        </div>
+        <Fragment>
+          <div className={styles.properties}>
+            {sourcesOptions?.length > 0 && (
+              <Fragment>
+                <label>{t('layer.source_plural', 'Sources')}</label>
+                <TagList
+                  tags={sourcesOptions}
+                  color={dataview.config?.color}
+                  className={styles.tagList}
+                />
+              </Fragment>
+            )}
+            <div id={`legend_${dataview.id}`}></div>
+          </div>
+          <div className={styles.properties}>
+            {fishingFiltersOptions.length > 0 && (
+              <Fragment>
+                <label>{t('layer.filter_plural', 'Filters')}</label>
+                <TagList
+                  tags={fishingFiltersOptions}
+                  color={dataview.config?.color}
+                  className={styles.tagList}
+                />
+              </Fragment>
+            )}
+            <div id={`legend_${dataview.id}`}></div>
+          </div>
+        </Fragment>
       )}
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
         {filterOpen && <Filters dataview={dataview} />}
