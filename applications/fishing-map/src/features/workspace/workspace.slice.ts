@@ -127,7 +127,4 @@ const workspaceSlice = createSlice({
 
 export const { resetWorkspaceSearchQuery } = workspaceSlice.actions
 
-export const selectWorkspaceStatus = (state: RootState) => state.workspace.status
-export const selectWorkspaceCustom = (state: RootState) => state.workspace.custom
-
 export default workspaceSlice.reducer

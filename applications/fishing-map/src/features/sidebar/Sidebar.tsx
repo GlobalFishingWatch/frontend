@@ -4,11 +4,11 @@ import Sticky from 'react-sticky-el'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Logo } from '@globalfishingwatch/ui-components'
 import { selectUserData, logoutUserThunk } from 'features/user/user.slice'
+import { saveCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
-  saveCurrentWorkspaceThunk,
   selectWorkspaceCustom,
   selectWorkspaceStatus,
-} from 'features/workspace/workspace.slice'
+} from 'features/workspace/workspace.selectors'
 import Search from 'features/search/Search'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { AsyncReducerStatus } from 'types'

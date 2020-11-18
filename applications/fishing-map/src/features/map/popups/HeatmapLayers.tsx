@@ -16,8 +16,9 @@ import styles from './Popup.module.css'
 
 type HeatmapTooltipRowProps = {
   feature: TooltipEventFeature
+  showFeaturesDetails: boolean
 }
-function HeatmapTooltipRow({ feature }: HeatmapTooltipRowProps) {
+function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const trackDatasets = useSelector(selectTracksDatasets)
@@ -47,12 +48,14 @@ function HeatmapTooltipRow({ feature }: HeatmapTooltipRowProps) {
     <div className={styles.popupSection}>
       <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
       <div className={styles.popupSectionContent}>
-        <h3 className={styles.popupSectionTitle}>{feature.title}</h3>
-        <div>
-          <I18nNumber number={feature.value} />{' '}
-          {t([`common.${feature.unit}`, 'common.hour'], 'hours', {
-            count: parseInt(feature.value), // neded to select the plural automatically
-          })}
+        {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
+        <div className={styles.row}>
+          <span className={styles.rowText}>
+            <I18nNumber number={feature.value} />{' '}
+            {t([`common.${feature.unit}`, 'common.hour'], 'hours', {
+              count: parseInt(feature.value), // neded to select the plural automatically
+            })}
+          </span>
         </div>
         {clickedEventStatus === AsyncReducerStatus.Loading && (
           <div className={styles.loading}>
@@ -65,20 +68,25 @@ function HeatmapTooltipRow({ feature }: HeatmapTooltipRowProps) {
               <label className={styles.vesselsHeaderLabel}>{t('common.vessel_plural')}</label>
               <label className={styles.vesselsHeaderLabel}>{t('common.hour_plural')}</label>
             </div>
-            {feature.vesselsInfo.vessels.map((vessel, i) => (
-              <button
-                key={i}
-                className={styles.vesselRow}
-                onClick={() => {
-                  onVesselClick(vessel, feature)
-                }}
-              >
-                <span className={styles.vesselName}>
-                  {vessel.shipname ? formatInfoField(vessel.shipname, 'name') : vessel.id}
-                </span>
-                <span>{formatNumber(vessel.hours)}</span>
-              </button>
-            ))}
+            {feature.vesselsInfo.vessels.map((vessel, i) => {
+              const vesselLabel = vessel.shipname
+                ? formatInfoField(vessel.shipname, 'name')
+                : vessel.id
+              return (
+                <button
+                  key={i}
+                  className={styles.vesselRow}
+                  onClick={() => {
+                    onVesselClick(vessel, feature)
+                  }}
+                >
+                  <span className={styles.vesselName}>
+                    {vesselLabel.length > 30 ? `${vesselLabel.slice(0, 30)}...` : vesselLabel}
+                  </span>
+                  <span>{formatNumber(vessel.hours)}</span>
+                </button>
+              )
+            })}
             {feature.vesselsInfo.overflow && (
               <div className={styles.vesselsMore}>
                 + {feature.vesselsInfo.numVessels - feature.vesselsInfo.vessels.length}{' '}

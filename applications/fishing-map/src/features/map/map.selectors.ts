@@ -52,13 +52,12 @@ export const getGeneratorsConfig = createSelector(
     // If heatmap animated generators found, merge them into one generator with multiple sublayers
     if (animatedHeatmapDataviews.length) {
       const sublayers = animatedHeatmapDataviews.flatMap((dataview) => {
-        const config = dataview.config
-        const datasetsConfig = dataview.datasetsConfig
+        const { config, datasetsConfig } = dataview
         if (!config || !datasetsConfig || !datasetsConfig.length) return []
-
+        const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
         const sublayer: HeatmapAnimatedGeneratorSublayer = {
           id: dataview.id,
-          datasets: datasetsConfig.map((dc) => dc.datasetId),
+          datasets,
           colorRamp: config.colorRamp as Generators.ColorRampsIds,
           filter: config.filter,
           visible: config.visible,

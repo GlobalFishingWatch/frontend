@@ -47,7 +47,11 @@ function PopupWrapper({
         {Object.entries(featureByType).map(([featureType, features]) => {
           if (featureType === Generators.Type.HeatmapAnimated) {
             return features.map((feature, i) => (
-              <HeatmapTooltipRow key={i + feature.title} feature={feature} />
+              <HeatmapTooltipRow
+                key={i + feature.title}
+                feature={feature}
+                showFeaturesDetails={type === 'click'}
+              />
             ))
           }
           if (featureType === Generators.Type.Context) {

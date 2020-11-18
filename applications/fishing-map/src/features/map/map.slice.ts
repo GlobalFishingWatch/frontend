@@ -42,15 +42,16 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
     { dataset, datasetConfig, sublayersIndices }: Fetch4WingInteractionThunkPayload,
     { getState, signal }
   ) => {
+    const state = getState() as RootState
     const url = resolveEndpoint(dataset, datasetConfig)
-    let sublayersVessels: SublayerVessels[] = []
+    let vesselsInfo: Vessel[] = []
     if (url) {
       const sublayersVesselsIds = await GFWAPI.fetch<ExtendedFeatureVessel[]>(url, {
         signal,
       })
       const infoDatasetId = getRelatedDatasetByType(dataset, VESSELS_DATASET_TYPE)?.id
       if (infoDatasetId) {
-        const infoDataset = selectDatasetById(infoDatasetId)(getState() as RootState)
+        const infoDataset = selectDatasetById(infoDatasetId)(state)
         if (infoDataset) {
           const flattenedVesselIds = sublayersVesselsIds
             .map((vs) => vs.slice(0, MAX_TOOLTIP_VESSELS))
@@ -71,27 +72,24 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
           const infoUrl = resolveEndpoint(infoDataset, infoDatasetConfig)
           if (infoUrl) {
             try {
-              // TODO create search API results response
-              const vesselsInfo = await GFWAPI.fetch<APISearch<Vessel>>(infoUrl, { signal })
-              const { entries } = vesselsInfo?.[0]?.results
-              if (entries) {
-                sublayersVessels = sublayersVesselsIds.map((sublayerVessels, i) => {
-                  return {
-                    sublayerIndex: sublayersIndices[i],
-                    vessels: sublayerVessels.map((vessel: ExtendedFeatureVessel, i: number) => {
-                      const vesselInfo = entries.find((entry: any) => entry.id === vessel.id)
-                      if (!vesselInfo) return vessel
-                      return { ...vessel, ...vesselInfo }
-                    }),
-                  }
-                })
-              }
+              const vesselsInfoResponse = await GFWAPI.fetch<APISearch<Vessel>>(infoUrl, { signal })
+              vesselsInfo = vesselsInfoResponse?.[0]?.results?.entries
             } catch (e) {
               console.warn(e)
             }
           }
         }
       }
+      const sublayersVessels: SublayerVessels[] = sublayersVesselsIds.map((sublayerVessels, i) => {
+        return {
+          sublayerIndex: sublayersIndices[i],
+          vessels: sublayerVessels.map((vessel: ExtendedFeatureVessel) => {
+            const vesselInfo = vesselsInfo?.find((entry: any) => entry.id === vessel.id)
+            if (!vesselInfo) return vessel
+            return { ...vessel, ...vesselInfo }
+          }),
+        }
+      })
       return { vessels: sublayersVessels, dataset }
     }
   }

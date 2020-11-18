@@ -75,6 +75,7 @@
   opacity: 1;
   border-top: var(--border);
   border-bottom: var(--border);
+  z-index: 1;
 }
 
 .selectLabel:not(:first-child) {

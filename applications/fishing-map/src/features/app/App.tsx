@@ -8,13 +8,11 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import { AsyncReducerStatus } from 'types'
 import useDebugMenu from 'features/debug/debug.hooks'
 import { MapboxRefProvider } from 'features/map/map.context'
-import {
-  fetchWorkspaceThunk,
-  selectWorkspaceCustom,
-  selectWorkspaceStatus,
-} from 'features/workspace/workspace.slice'
+import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
   selectWorkspace,
+  selectWorkspaceCustom,
+  selectWorkspaceStatus,
   selectDataviewsResourceQueries,
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'

@@ -3,7 +3,7 @@ import uniqBy from 'lodash/uniqBy'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance, WorkspaceState } from 'types'
+import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
 import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { selectDataviews } from 'features/dataviews/dataviews.slice'
@@ -27,6 +27,8 @@ export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
   })
 
 export const selectWorkspace = (state: RootState) => state.workspace.data
+export const selectWorkspaceStatus = (state: RootState) => state.workspace.status
+export const selectWorkspaceCustom = (state: RootState) => state.workspace.custom
 
 export const selectWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id
@@ -48,8 +50,14 @@ export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace]
 })
 
 export const selectDataviewInstancesMerged = createSelector(
-  [selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
-  (workspaceDataviewInstances = [], urlDataviewInstances = []): UrlDataviewInstance[] => {
+  [selectWorkspaceStatus, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
+  (
+    workspaceStatus,
+    workspaceDataviewInstances = [],
+    urlDataviewInstances = []
+  ): UrlDataviewInstance[] | undefined => {
+    if (workspaceStatus !== AsyncReducerStatus.Finished) return
+
     // Split url dataviews by new or just overwriting the workspace to easily grab them later
     const urlDataviews = urlDataviewInstances.reduce<
       Record<'workspace' | 'new', UrlDataviewInstance[]>
@@ -73,6 +81,8 @@ export const selectDataviewInstancesMerged = createSelector(
           (d) => d.id === workspaceDataviewInstance.id
         )
         if (!urlDataviewInstance) return workspaceDataviewInstance
+        const datasetsConfig =
+          urlDataviewInstance.datasetsConfig || workspaceDataviewInstance.datasetsConfig || []
         return {
           ...workspaceDataviewInstance,
           ...urlDataviewInstance,
@@ -80,9 +90,11 @@ export const selectDataviewInstancesMerged = createSelector(
             ...workspaceDataviewInstance.config,
             ...urlDataviewInstance.config,
           },
+          datasetsConfig,
         }
       }
     )
+
     return [...workspaceDataviewInstancesMerged, ...urlDataviews.new]
   }
 )
@@ -116,21 +128,17 @@ export const selectDataviewInstancesResolved = createSelector(
           ...dataview.config,
           ...dataviewInstance.config,
         }
-        config.visible = config?.visible ?? true
-        const dataviewDatasets: Dataset[] = []
-        const datasetsConfig = dataview.datasetsConfig?.map((datasetConfig) => {
-          const dataset = datasets.find((dataset) => dataset.id === datasetConfig.datasetId)
-          if (dataset) {
-            dataviewDatasets.push(dataset)
-          }
-          const workspaceDataviewDatasetConfig = dataviewInstance.datasetsConfig?.find(
-            (wddc) =>
-              wddc.datasetId === datasetConfig.datasetId && wddc.endpoint === datasetConfig.endpoint
-          )
-          if (!workspaceDataviewDatasetConfig) return datasetConfig
 
-          return { ...datasetConfig, ...workspaceDataviewDatasetConfig }
+        config.visible = config?.visible ?? true
+        const datasetsConfig = dataviewInstance.datasetsConfig?.length
+          ? dataviewInstance.datasetsConfig
+          : dataview.datasetsConfig || []
+
+        const dataviewDatasets: Dataset[] = datasetsConfig.flatMap((datasetConfig) => {
+          const dataset = datasets.find((dataset) => dataset.id === datasetConfig.datasetId)
+          return dataset || []
         })
+
         const resolvedDataview = {
           ...dataview,
           id: dataviewInstance.id as string,
