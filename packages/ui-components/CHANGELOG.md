@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.5.4
+
+### Patch Changes
+
+- 4e68048: make multiselect delete optional
+
 ## 2.5.3
 
 ### Patch Changes
