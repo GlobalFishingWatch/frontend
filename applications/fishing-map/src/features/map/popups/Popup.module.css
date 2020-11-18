@@ -66,6 +66,7 @@
 .vesselsHeader {
   display: flex;
   justify-content: space-between;
+  margin-bottom: var(--space-XS);
 }
 
 .vesselsHeaderLabel {
@@ -77,11 +78,17 @@
   width: 100%;
   cursor: pointer;
   display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-XS);
 }
 
 .vesselName {
   flex: 1;
   text-align: left;
+  max-width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .vesselsMore {
