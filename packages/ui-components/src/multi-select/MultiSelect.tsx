@@ -21,7 +21,7 @@ interface MultiSelectProps {
   options: MultiSelectOption[]
   selectedOptions?: MultiSelectOption[]
   onSelect: MultiSelectOnChange
-  onRemove: MultiSelectOnChange
+  onRemove?: MultiSelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
   className?: string
 }
@@ -59,8 +59,12 @@ function MultiSelect(props: MultiSelectProps) {
 
   const handleRemove = useCallback(
     (option: MultiSelectOption) => {
-      const newOptions = selectedOptions.filter((selectedOption) => selectedOption.id !== option.id)
-      onRemove(option, newOptions)
+      if (onRemove) {
+        const newOptions = selectedOptions.filter(
+          (selectedOption) => selectedOption.id !== option.id
+        )
+        onRemove(option, newOptions)
+      }
     },
     [onRemove, selectedOptions]
   )
@@ -166,7 +170,7 @@ function MultiSelect(props: MultiSelectProps) {
             <TagList
               className={multiSelectStyles.tagList}
               tags={selectedOptions}
-              onRemove={handleRemove}
+              onRemove={onRemove && handleRemove}
             />
           )}
           <InputText
