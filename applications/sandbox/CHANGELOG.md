@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.6.2
+
+### Patch Changes
+
+- e37d269: update dependencies
+
 ## 0.6.1
 
 ### Patch Changes

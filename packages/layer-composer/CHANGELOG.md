@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.9.0
+
+### Minor Changes
+
+- e37d269: fix heatmap datasets
+
 ## 4.8.3
 
 ### Patch Changes

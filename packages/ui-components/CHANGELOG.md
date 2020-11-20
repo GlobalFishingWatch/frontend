@@ -1,5 +1,16 @@
 # @globalfishingwatch/ui-components
 
+## 2.6.0
+
+### Minor Changes
+
+- e37d269: support number step in input
+
+### Patch Changes
+
+- Updated dependencies [e37d269]
+  - @globalfishingwatch/layer-composer@4.9.0
+
 ## 2.5.4
 
 ### Patch Changes
