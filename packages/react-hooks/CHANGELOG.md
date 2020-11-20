@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 4.4.1
+
+### Patch Changes
+
+- update api-client version
+
 ## 4.4.0
 
 ### Minor Changes
