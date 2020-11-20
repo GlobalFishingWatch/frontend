@@ -57,7 +57,14 @@ export default function gridded(
           type: 'line',
           paint: {
             'line-color': 'white',
-            'line-width': ['case', ['boolean', ['feature-state', 'hover'], false], 3, 0],
+            'line-width': [
+              'case',
+              ['boolean', ['feature-state', 'hover'], false],
+              3,
+              ['boolean', ['feature-state', 'click'], false],
+              3,
+              0,
+            ],
           },
           metadata: {
             group: Group.Heatmap,
