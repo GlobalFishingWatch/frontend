@@ -20,7 +20,8 @@ function useLegendComposer(style: ExtendedStyle, currentValues: LegendConfig) {
   const layersWithLegend = useMemo(() => {
     return style
       ? style?.layers
-          ?.flatMap((layer) => {
+          // TODO remove this any
+          ?.flatMap((layer: any) => {
             if (!layer.metadata?.legend) return []
             const currentValue = currentValues[layer.id]
             return {
@@ -138,10 +139,12 @@ const Map = (): React.ReactElement => {
         <IconButton icon="ruler" type="map-tool" tooltip="Open ruler tool (Coming soon)" />
         <IconButton icon="camera" type="map-tool" tooltip="Capture the map (Coming soon)" />
       </div>
-      <div className={styles.mapLegend}>
-        {/* TODO remove this any once the legacy is removed */}
-        <MapLegends layers={legendLayers as any} />
-      </div>
+      {legendLayers && legendLayers.length > 0 && (
+        <div className={styles.mapLegend}>
+          {/* TODO remove this any once the legacy is removed */}
+          <MapLegends className={styles.mapLegends} layers={legendLayers as any} />
+        </div>
+      )}
     </div>
   )
 }
