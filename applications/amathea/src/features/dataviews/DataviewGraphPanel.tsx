@@ -12,7 +12,7 @@ import { selectHiddenDataviews } from 'routes/routes.selectors'
 import { useCurrentWorkspaceConnect, useWorkspacesAPI } from 'features/workspaces/workspaces.hook'
 import styles from './DataviewGraphPanel.module.css'
 import DataviewGraph from './DataviewGraph'
-import { useDraftDataviewConnect } from './dataviews.hook'
+import { useDataviewsAPI, useDraftDataviewConnect } from './dataviews.hook'
 import { DataviewDraft } from './dataviews.slice'
 
 interface DataviewGraphPanelProps {
@@ -25,16 +25,14 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
   const { updateWorkspace } = useWorkspacesAPI()
   const { showModal } = useModalConnect()
   const { setDraftDataview } = useDraftDataviewConnect()
+  const { deleteDataview } = useDataviewsAPI()
   const { dispatchQueryParams } = useLocationConnect()
   const hiddenDataviews = useSelector(selectHiddenDataviews)
-  const datasetId = dataview.datasets?.length ? dataview.datasets[0].id : ''
+  const datasetId = dataview.datasetsConfig?.length ? dataview.datasetsConfig[0].datasetId : ''
   const dataset = useSelector(selectDatasetById(datasetId))
   const color = dataview.config?.color as string
   const unit = dataset?.unit
-  // TODO update dataview and this to match new config structure
-  const flagFilter = (dataview.datasetsConfig as any)?.datasetId?.query?.find(
-    (q: any) => q.id === 'flag'
-  )?.value as string
+  const flagFilter = dataview.config.flagFilter
   const onEditClick = useCallback(() => {
     if (dataset) {
       // TODO USE REAL DATASET ID WHEN SUPPORTING MULTIPLE
@@ -72,11 +70,17 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
           dataviews: workspace.dataviews
             .filter((d) => d.id !== dataview.id)
             .map(({ id }) => id) as any,
+          dataviewInstances: workspace.dataviewInstances.filter(
+            (d) => d.dataviewId !== dataview.id
+          ),
         })
+        if (dataview.config.dataset === 'marine-reserve-user') {
+          await deleteDataview(dataview.id)
+        }
         setDataviewLoadingId(undefined)
       }
     },
-    [updateWorkspace, workspace]
+    [deleteDataview, updateWorkspace, workspace]
   )
 
   const isDataviewHidden = hiddenDataviews.includes(dataview.id)

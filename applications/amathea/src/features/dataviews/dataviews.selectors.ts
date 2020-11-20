@@ -7,8 +7,8 @@ import { DATASET_SOURCE_IDS } from 'data/data'
 import { selectAllDataviews, selectDrafDataviewSource } from './dataviews.slice'
 
 export const selectCurrentWorkspaceDataviews = createSelector(
-  [selectAllDataviews, selectCurrentWorkspace, selectAllDatasets],
-  (dataviews, workspace, datasets) => {
+  [selectAllDataviews, selectCurrentWorkspace],
+  (dataviews, workspace) => {
     return dataviews.filter((dataview) =>
       workspace?.dataviews?.map((d) => d.id).includes(dataview.id)
     )
@@ -17,8 +17,10 @@ export const selectCurrentWorkspaceDataviews = createSelector(
 
 export const selectCurrentWorkspaceDataviewsResolved = createSelector(
   [selectCurrentWorkspaceDataviews, selectCurrentWorkspace],
-  (dataviews, workspace: any) => {
-    return resolveDataviews(dataviews, workspace?.dataviewsConfig)
+  (dataviews, workspace) => {
+    if (!workspace) return
+    const dataviewsResolved = resolveDataviews(dataviews, workspace?.dataviewInstances)
+    return dataviewsResolved
   }
 )
 

@@ -19,7 +19,7 @@ import { DataviewDraftDataset } from './dataviews.slice'
 function NewDataview(): React.ReactElement {
   const [loading, setLoading] = useState(false)
   const { hideModal } = useModalConnect()
-  const { workspace } = useCurrentWorkspaceConnect() as any
+  const { workspace } = useCurrentWorkspaceConnect()
   const { updateWorkspace } = useWorkspacesAPI()
   const { draftDataview, setDraftDataview, resetDraftDataview } = useDraftDataviewConnect()
   const { upsertDataview } = useDataviewsAPI()
@@ -57,39 +57,58 @@ function NewDataview(): React.ReactElement {
     if (draftDataview) {
       setLoading(true)
       let dataview
+      let steps
       if (draftDataview.source?.id === 'user') {
-        let steps
         if (maxRange - minRange > 0) {
           const rampScale = scaleLinear().range([minRange, maxRange]).domain([0, 1])
-          steps = [0, 0.2, 0.4, 0.6, 0.8, 1].map((value) =>
-            parseFloat((rampScale(value) as number).toFixed(1))
-          )
+          const numSteps = 8
+          steps = [...Array(numSteps)]
+            .map((_, i) => parseFloat((i / (numSteps - 1)).toFixed(2)))
+            .map((value) => parseFloat((rampScale(value) as number).toFixed(3)))
         }
         if (!draftDataview.id || steps) {
-          dataview = await upsertDataview({ ...draftDataview, ...(steps && { steps }) })
+          dataview = await upsertDataview({
+            ...draftDataview,
+            ...(steps && { steps }),
+            flagFilter: draftDataview.flagFilter,
+          })
         }
       }
       const dataviewId = draftDataview.id || dataview?.id
-      if (dataviewId && workspace?.id && workspace?.dataviews && workspace?.dataviewsConfig) {
-        // TODO update dataview and this to match new config structure
-        const dataviewConfig = {
-          config: { color: draftDataview.color, colorRamp: draftDataview.colorRamp },
-          datasetsConfig: {
-            datasetId: {
-              query: [{ id: 'flag', value: draftDataview.flagFilter }],
-            },
-          },
+      if (dataviewId && workspace?.id) {
+        const currentDataviewInstance = workspace.dataviewInstances?.find(
+          (d) => d.dataviewId === dataviewId
+        )
+        const config = {
+          color: draftDataview.color,
+          colorRamp: draftDataview.colorRamp,
+          flagFilter: draftDataview.flagFilter,
+          ...(steps && { steps }),
         }
+        const dataviewInstances = currentDataviewInstance
+          ? workspace?.dataviewInstances?.map((dataviewInstance) => {
+              if (dataviewInstance.dataviewId !== dataviewId) return dataviewInstance
+              return {
+                ...dataviewInstance,
+                config,
+              }
+            })
+          : [
+              ...(workspace.dataviewInstances || []),
+              {
+                id: `dv-${dataviewId}`,
+                dataviewId,
+                config,
+              },
+            ]
+        const dataviews = [
+          ...(new Set([...(workspace.dataviews || []).map((d: any) => d.id), dataviewId]) as any),
+        ]
         await updateWorkspace({
           id: workspace.id,
-          dataviews: [
-            ...(new Set([...workspace.dataviews.map((d: any) => d.id), dataviewId]) as any),
-          ],
-          dataviewsConfig: {
-            ...workspace.dataviewsConfig,
-            [dataviewId]: dataviewConfig,
-          },
-        } as any)
+          dataviews,
+          dataviewInstances,
+        })
       }
       setLoading(false)
       resetDraftDataview()
@@ -97,7 +116,7 @@ function NewDataview(): React.ReactElement {
     }
   }
 
-  const isFishingEffortLayer = dataset?.id === 'dgg_fishing_galapagos'
+  const isFishingEffortLayer = dataset && (dataset?.id as string).includes('dgg_fishing')
   const isCustomUserDatashape = dataset?.category === CUSTOM_DATA_SHAPE
   const selectedFlagFilter = FLAG_FILTERS.find((flag) => flag.id === draftDataview?.flagFilter)
   return (

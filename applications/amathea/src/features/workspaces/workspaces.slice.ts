@@ -7,9 +7,12 @@ import { RootState } from 'store'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
 import { selectCurrentWorkspaceId } from 'routes/routes.selectors'
+import { APP_NAME_FILTER } from 'data/config'
 
 export const fetchWorkspacesThunk = createAsyncThunk('workspaces/fetch', async () => {
-  const workspaces = await GFWAPI.fetch<Workspace[]>('/v1/workspaces?include=aoi')
+  const workspaces = await GFWAPI.fetch<Workspace[]>(
+    `/v1/workspaces?include=aoi&app=${APP_NAME_FILTER}`
+  )
   return workspaces.map((workspace, i) => {
     return { ...workspace, color: HeatmapColorBarOptions[i % HeatmapColorBarOptions.length].value }
   })
@@ -19,9 +22,7 @@ export const fetchWorkspaceByIdThunk = createAsyncThunk(
   'workspace/fetchById',
   async (id: string, { rejectWithValue }) => {
     try {
-      const workspace = await GFWAPI.fetch<Workspace>(
-        `/v1/workspaces/${id}?include=aoi,dataviews,dataviews.datasets,dataviews.datasets.endpoints`
-      )
+      const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}?include=aoi,dataviews`)
       return workspace
     } catch (e) {
       return rejectWithValue(id)
@@ -35,9 +36,12 @@ export const createWorkspaceThunk = createAsyncThunk(
     try {
       const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces`, {
         method: 'POST',
-        body: workspaceData as any,
+        body: { ...workspaceData, app: APP_NAME_FILTER } as any,
       })
-      return workspace
+      return {
+        ...workspace,
+        color: HeatmapColorBarOptions[0].value,
+      }
     } catch (e) {
       return rejectWithValue(workspaceData.name)
     }
@@ -101,7 +105,7 @@ export const selectWorkspaceStatusId = (state: RootState) => state.workspaces.st
 export const selectCurrentWorkspace = createSelector(
   [selectAllWorkspaces, selectCurrentWorkspaceId],
   (workspaces, workspaceId) => {
-    return workspaces.find((workspace) => workspace.id == workspaceId)
+    return workspaces.find((workspace) => workspace.id === workspaceId)
   }
 )
 

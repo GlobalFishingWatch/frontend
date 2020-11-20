@@ -22,10 +22,7 @@ export const useDataviewResource = (dataview: Dataview, type = 'stats') => {
   const id = `dataview-${type}-${dataview?.id}`
   const dataviewResource: Resource<GraphData[]> | undefined = useSelector(selectResourceById(id))
   const { fetchResourceById } = useResourcesAPI()
-  // TODO update dataview and this to match new config structure
-  const filter = (dataview?.datasetsConfig as any)?.datasetId?.query?.find(
-    (q: any) => q.id === 'flag'
-  )?.value
+  const filter = dataview?.config?.flagFilter
 
   useEffect(() => {
     const dataset = dataview?.datasets?.find((dataset) => dataset.type === '4wings:v1')
@@ -36,8 +33,9 @@ export const useDataviewResource = (dataview: Dataview, type = 'stats') => {
     const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === `4wings-${type}`)
     if (endpoint) {
       const pathTemplate = endpoint.pathTemplate.replace('{{aoiId}}', '1') + '?proxy=true'
+      const datasetString = `&datasets[0]=${dataset.id}`
       const filterString = filter ? `&filters[0]=flag='${filter}'` : ''
-      url = pathTemplate + filterString
+      url = pathTemplate + datasetString + filterString
     }
     if (url) {
       fetchResourceById({ id, url })
