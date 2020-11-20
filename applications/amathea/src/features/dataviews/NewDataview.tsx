@@ -171,6 +171,7 @@ function NewDataview(): React.ReactElement {
             className={styles.input}
             label="Minimum value"
             type="number"
+            step=".01"
             value={minRange}
             onChange={onStepMinRangeChange}
           />
@@ -178,6 +179,7 @@ function NewDataview(): React.ReactElement {
             className={styles.input}
             label="Maximum value"
             type="number"
+            step=".01"
             value={maxRange}
             onChange={onStepMaxRangeChange}
           />
