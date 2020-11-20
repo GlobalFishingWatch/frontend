@@ -1,4 +1,4 @@
-import { Dataset } from '.'
+import { ApiAppName, Dataset } from '.'
 
 export interface DataviewConfig<T = any> {
   // TODO use any property from layer-composer here?
@@ -20,10 +20,12 @@ export interface DataviewDatasetConfig {
   query?: DataviewDatasetConfigParams[]
 }
 
-export interface DataviewCreation {
+export interface DataviewCreation<T = any> {
   name: string
+  app: ApiAppName
   description: string
-  config?: DataviewConfig
+  config?: DataviewConfig<T>
+  datasetsConfig?: DataviewDatasetConfig[]
 }
 
 export interface DataviewInfoConfigField {
@@ -38,6 +40,7 @@ export interface DataviewInfoConfig {
 export interface Dataview<T = any> {
   id: number
   name: string
+  app: ApiAppName
   description: string
   createdAt?: string
   updatedAt?: string
