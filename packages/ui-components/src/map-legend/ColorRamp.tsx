@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react'
+import React, { Fragment, memo, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
 import styles from './MapLegend.module.css'
@@ -57,50 +57,58 @@ function ColorRampLegend({
           )}
         </p>
       )}
-      <div
-        className={styles.ramp}
-        style={{
-          backgroundImage: `linear-gradient(to right, ${cleanRamp
-            .map(([value, color]) => color)
-            .join()})`,
-        }}
-      >
-        {currentValue && (
-          <span
-            className={cx(styles.currentValue, currentValueClassName)}
+      {cleanRamp?.length > 0 && (
+        <Fragment>
+          <div
+            className={styles.ramp}
             style={{
-              left: heatmapLegendScale
-                ? `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`
-                : 0,
+              backgroundImage: `linear-gradient(to right, ${cleanRamp
+                .map(([value, color]) => color)
+                .join()})`,
             }}
           >
-            {currentValue}
-          </span>
-        )}
-        {type === 'colorramp-discrete' && (
-          <div className={styles.discreteSteps}>
-            {cleanRamp.map(([value, color], i) => (
-              <span className={styles.discreteStep} key={i} style={{ backgroundColor: color }} />
-            ))}
+            {currentValue && (
+              <span
+                className={cx(styles.currentValue, currentValueClassName)}
+                style={{
+                  left: heatmapLegendScale
+                    ? `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`
+                    : 0,
+                }}
+              >
+                {currentValue}
+              </span>
+            )}
+            {type === 'colorramp-discrete' && (
+              <div className={styles.discreteSteps}>
+                {cleanRamp.map(([value, color], i) => (
+                  <span
+                    className={styles.discreteStep}
+                    key={i}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-      <div className={styles.stepsContainer}>
-        {cleanRamp.map(([value], i) => {
-          if (value === null) return null
-          if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
-          return (
-            <span
-              className={styles.step}
-              style={{ left: `${(i * 100) / (ramp.length - 1)}%` }}
-              key={i}
-            >
-              {(i === ramp.length - 1 && !isNaN(value as number) ? '≥ ' : '') +
-                (value >= 1000 ? `${((value as number) / 1000).toFixed(1)}k` : value)}
-            </span>
-          )
-        })}
-      </div>
+          <div className={styles.stepsContainer}>
+            {cleanRamp.map(([value], i) => {
+              if (value === null) return null
+              if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
+              return (
+                <span
+                  className={styles.step}
+                  style={{ left: `${(i * 100) / (ramp.length - 1)}%` }}
+                  key={i}
+                >
+                  {(i === ramp.length - 1 && !isNaN(value as number) ? '≥ ' : '') +
+                    (value >= 1000 ? `${((value as number) / 1000).toFixed(1)}k` : value)}
+                </span>
+              )
+            })}
+          </div>
+        </Fragment>
+      )}
     </div>
   )
 }
