@@ -14,7 +14,7 @@ const getSourceId = (config: ContextGeneratorConfig) => {
   return `${config.id}-${config.layer}`
 }
 
-const getPaintPropertyByType = (layer: Layer, config: any) => {
+const getPaintPropertyByType = (layer: Partial<Layer>, config: any) => {
   const opacity = config.opacity !== undefined ? config.opacity : 1
   if (layer.type === 'line') {
     const color = config.color || (layer.paint as LinePaint)?.['line-color'] || DEFAULT_LINE_COLOR

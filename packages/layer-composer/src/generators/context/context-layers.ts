@@ -1,4 +1,4 @@
-import type { Layer } from 'mapbox-gl'
+import type { FillLayer, Layer, LineLayer } from 'mapbox-gl'
 import { Group } from '../../types'
 import { ContextLayerType } from '../types'
 
@@ -11,7 +11,7 @@ const settledBoundaries = [
   'Unilateral claim (undisputed)',
 ]
 
-const getDefaultContextInteraction = (): Partial<Layer> => {
+const getDefaultContextInteraction = (): Partial<FillLayer> => {
   return {
     type: 'fill',
     paint: {
@@ -26,7 +26,7 @@ const getDefaultContextInteraction = (): Partial<Layer> => {
   }
 }
 
-const getDefaultContextLine = (color = 'white'): Partial<Layer> => {
+const getDefaultContextLine = (color = 'white'): Partial<LineLayer> => {
   return {
     type: 'line',
     paint: {
@@ -43,20 +43,20 @@ const getDefaultContextLine = (color = 'white'): Partial<Layer> => {
   }
 }
 
-const getDefaultContextLayersById = (id: string, color: string): Layer[] => {
+const getDefaultContextLayersById = (id: string, color: string): (LineLayer | FillLayer)[] => {
   return [
     {
       id: `${id}-interaction`,
       ...getDefaultContextInteraction(),
-    },
+    } as FillLayer,
     {
       id: `${id}-line`,
       ...getDefaultContextLine(color),
-    },
+    } as LineLayer,
   ]
 }
 
-const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
+const CONTEXT_LAYERS: Record<ContextLayerType, Partial<Layer>[]> = {
   [ContextLayerType.MPA]: getDefaultContextLayersById(ContextLayerType.MPA, '#1AFF6B'),
   [ContextLayerType.MPANoTake]: getDefaultContextLayersById(ContextLayerType.MPANoTake, '#F4511F'),
   [ContextLayerType.MPARestricted]: getDefaultContextLayersById(

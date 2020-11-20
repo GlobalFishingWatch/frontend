@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types/dist'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
 import {
   selectDataviewInstancesMerged,
   selectWorkspace,
@@ -133,10 +133,10 @@ export const selectCustomWorkspace = createSelector(
     state,
     dataviewInstances
   ): WorkspaceUpsert<WorkspaceState> => {
-    // const { state, aoi, ...rest } = workspace || ({} as Workspace)
     return {
       ...workspace,
       name: `${user?.id}_${Date.now()}`,
+      app: APP_NAME,
       aoi: undefined,
       dataviews: workspace?.dataviews?.map(({ id }) => id as number),
       viewport,

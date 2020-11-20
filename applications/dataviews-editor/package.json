@@ -9,7 +9,7 @@
     "@globalfishingwatch/timebar": "^1.1.3",
     "@reduxjs/toolkit": "^1.4.0",
     "cra-template-typescript": "1.0.3",
-    "react-scripts": "3.4.1"
+    "react-scripts": "4.0.0-next.98"
   },
   "scripts": {
     "start": "BROWSER=none react-scripts start",

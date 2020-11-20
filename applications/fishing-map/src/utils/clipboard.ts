@@ -1,4 +1,4 @@
-function copyToTlipboard(text: string) {
+function copyToClipboard(text: string) {
   const dummy = document.createElement('input')
 
   document.body.appendChild(dummy)
@@ -8,4 +8,4 @@ function copyToTlipboard(text: string) {
   document.body.removeChild(dummy)
 }
 
-export default copyToTlipboard
+export default copyToClipboard

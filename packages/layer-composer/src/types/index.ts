@@ -90,7 +90,7 @@ export interface ExtendedLayerMeta {
 /**
  * A standard Mapbox GL Layer with layer-composer specific metadata
  */
-export interface ExtendedLayer extends Layer {
+export type ExtendedLayer = Layer & {
   metadata?: ExtendedLayerMeta
 }
 
@@ -131,7 +131,7 @@ export interface GeneratorStyles {
   layers: ExtendedLayer[]
   promise?: Promise<GeneratorStyles>
   promises?: Promise<GeneratorStyles>[]
-  metadata?: {}
+  metadata?: Record<string, any>
 }
 
 export type StyleTransformation = (style: ExtendedStyle) => ExtendedStyle

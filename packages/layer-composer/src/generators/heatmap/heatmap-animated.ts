@@ -6,13 +6,14 @@ import {
   HeatmapAnimatedMode,
 } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
-import { API_GATEWAY } from '../../layer-composer'
+import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
 import { TimeChunk, TimeChunks, getActiveTimeChunks, getDelta } from './util/time-chunks'
 import { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
+import { toURLArray } from './util'
 
 export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
@@ -24,15 +25,6 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   tilesetsEnd: new Date().toISOString(),
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
-}
-
-const toURLArray = (paramName: string, arr: string[]) => {
-  return arr
-    .map((element, i) => {
-      if (!element) return ''
-      return `${paramName}[${i}]=${element}`
-    })
-    .join('&')
 }
 
 class HeatmapAnimatedGenerator {
@@ -48,7 +40,9 @@ class HeatmapAnimatedGenerator {
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
     const visible = config.sublayers.map((sublayer) => (sublayer.visible === false ? false : true))
 
-    const tilesUrl = `${config.tilesAPI || `${API_GATEWAY}/v1`}/${API_ENDPOINTS.tiles}`
+    const tilesUrl = `${config.tilesAPI || `${API_GATEWAY}/${API_GATEWAY_VERSION}`}/${
+      API_ENDPOINTS.tiles
+    }`
 
     const delta = getDelta(timeChunks.activeStart, timeChunks.activeEnd, timeChunks.interval)
     const breaks = getSublayersBreaks(config, timeChunks.deltaInDays)

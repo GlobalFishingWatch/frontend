@@ -1,8 +1,11 @@
 import { AOI, Dataview, DataviewInstance } from '.'
 
+export type ApiAppName = 'fishing-map' | 'marine-reserves'
+
 export interface Workspace<T = unknown> {
   id: string
   name: string
+  app: ApiAppName
   description: string
   aoi?: AOI
   viewport: {

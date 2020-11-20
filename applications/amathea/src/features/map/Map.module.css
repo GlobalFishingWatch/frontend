@@ -16,8 +16,13 @@
   margin-bottom: var(--space-XS);
 }
 
-.mapLegend{
+.mapLegend {
   position: absolute;
   left: var(--space-S);
   bottom: var(--space-S);
+}
+
+.mapLegend .mapLegends {
+  padding: var(--space-S);
+  background-color: var(--color-primary-blue);
 }

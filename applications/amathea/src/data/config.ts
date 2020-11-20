@@ -1,3 +1,5 @@
+export const APP_NAME_FILTER = 'marine-reserves'
+
 export const BASE_URL = process.env.NODE_ENV === 'production' ? '/marine-reserves' : ''
 
 export const DEFAULT_WORKSPACE = {

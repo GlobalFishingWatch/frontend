@@ -10,6 +10,7 @@ import fetchStats from './util/fetch-stats'
 import { HEATMAP_COLOR_RAMPS, HEATMAP_DEFAULT_MAX_ZOOM } from './config'
 import { statsByZoom } from './types'
 import getBreaks from './util/get-breaks'
+import { toURLArray } from './util'
 
 type GlobalHeatmapGeneratorConfig = HeatmapGeneratorConfig & GlobalGeneratorConfig
 
@@ -22,6 +23,9 @@ class HeatmapGenerator {
     if (!config.tilesUrl) {
       throw new Error(`Heatmap generator must specify tilesUrl parameters in ${config}`)
     }
+    if (!config.datasets) {
+      throw new Error(`Heatmap generator must specify datasets parameters in ${config}`)
+    }
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
@@ -30,11 +34,12 @@ class HeatmapGenerator {
     )
     url.searchParams.set('geomType', 'rectangle')
     url.searchParams.set('singleFrame', 'true')
+    url.searchParams.set('datasets', toURLArray('datasets', config.datasets))
     if (config.start && config.end) {
       url.searchParams.set('date-range', [config.start, config.end].join(','))
     }
-    if (config.serverSideFilter) {
-      url.searchParams.set('filters', config.serverSideFilter)
+    if (config.filters) {
+      url.searchParams.set('filters', config.filters)
     }
 
     return [
@@ -64,7 +69,7 @@ class HeatmapGenerator {
     } else if (statsByZoom) {
       const { min, max, avg } = statsByZoom
       if (min && max && avg) {
-        stops = getBreaks(min, max, avg, config.scalePowExponent)
+        stops = getBreaks(min, max, avg, config.scalePowExponent, 8)
       }
     }
 
@@ -121,17 +126,17 @@ class HeatmapGenerator {
       return { layers: this._getHeatmapLayers(config) }
     }
 
-    const statsFilters = [config.serverSideFilter, config.statsFilter]
-      .filter((f) => f)
-      .join(' AND ')
+    const statsFilters = [config.filters, config.statsFilter].filter((f) => f).join(' AND ')
     const dateRange = [config.start, config.end].join(',')
-    const statsUrl = isUrlAbsolute(config.statsUrl as string)
-      ? config.statsUrl
-      : API_GATEWAY + config.statsUrl
+    const statsUrl =
+      config.statsUrl && isUrlAbsolute(config.statsUrl as string)
+        ? config.statsUrl
+        : API_GATEWAY + config.statsUrl
+    const url = `${statsUrl}?${toURLArray('datasets', config.datasets)}`
     // use statsError to invalidate cache and try again when it fails
     // also params can't be named as needs to be independant params for memoization
     const statsPromise = memoizeCache[config.id]._fetchStats(
-      statsUrl,
+      url,
       dateRange,
       statsFilters,
       true,

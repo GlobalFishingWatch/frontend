@@ -66,7 +66,7 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
   async (_, { dispatch, getState }) => {
     const state = getState() as RootState
     const mergedWorkspace = selectCustomWorkspace(state)
-    const version = selectVersion(getState() as RootState)
+    const version = selectVersion(state)
     const workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
       `/${version}/workspaces`,
       {

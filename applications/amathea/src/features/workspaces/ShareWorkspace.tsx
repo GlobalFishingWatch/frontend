@@ -12,9 +12,9 @@ function ShareWorkspace(): React.ReactElement {
   // const { workspacesSharedList } = useWorkspacesConnect()
   // TODO: move this to workspace API
   const editors: Editor[] = [
-    { id: 'editor-1', email: 'editor1@gmail.com' },
-    { id: 'editor-2', email: 'editor2@gmail.com' },
-    { id: 'editor-3', email: 'editor3@gmail.com' },
+    { id: 'editor-1', email: 'editor1@mail.com' },
+    { id: 'editor-2', email: 'editor2@mail.com' },
+    { id: 'editor-3', email: 'editor3@mail.com' },
   ]
   return (
     <div className={styles.container}>
