@@ -211,10 +211,11 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   tilesUrl: string
   statsUrl?: string
   scalePowExponent?: number
+  datasets: string[]
   fetchStats?: boolean
+  filters?: string
   statsFilter?: string
   colorRamp?: ColorRampsIds
-  serverSideFilter?: string
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
