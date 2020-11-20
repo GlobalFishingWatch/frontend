@@ -14,10 +14,12 @@ const getSourceId = (config: ContextGeneratorConfig) => {
   return `${config.id}-${config.layer}`
 }
 
-const getPaintPropertyByType = (layer: Partial<Layer>, config: any) => {
+const getPaintPropertyByType = (layer: Layer, config: any) => {
   const opacity = config.opacity !== undefined ? config.opacity : 1
   if (layer.type === 'line') {
-    const color = config.color || (layer.paint as LinePaint)?.['line-color'] || DEFAULT_LINE_COLOR
+    const color = layer.id?.includes('-highlight')
+      ? 'transparent'
+      : config.color || (layer.paint as LinePaint)?.['line-color'] || DEFAULT_LINE_COLOR
     const linePaint: LinePaint = {
       ...layer.paint,
       'line-opacity': opacity,
@@ -25,14 +27,14 @@ const getPaintPropertyByType = (layer: Partial<Layer>, config: any) => {
         'case',
         ['boolean', ['feature-state', 'hover'], false],
         HIGHLIGHT_LINE_COLOR,
+        ['boolean', ['feature-state', 'click'], false],
+        HIGHLIGHT_LINE_COLOR,
         color,
       ],
     }
     return linePaint
   } else if (layer.type === 'fill') {
     const fillColor = config.fillColor || (layer.paint as FillPaint)?.['fill-color']
-    const fillOutlineColor =
-      config.fillOutlineColor || (layer.paint as FillPaint)?.['fill-outline-color']
 
     const fillPaint: FillPaint = {
       ...layer.paint,
@@ -42,14 +44,6 @@ const getPaintPropertyByType = (layer: Partial<Layer>, config: any) => {
         ['boolean', ['feature-state', 'click'], false],
         HIGHLIGHT_FILL_COLOR,
         fillColor,
-      ],
-      'fill-outline-color': [
-        'case',
-        ['boolean', ['feature-state', 'hover'], false],
-        HIGHLIGHT_LINE_COLOR,
-        ['boolean', ['feature-state', 'click'], false],
-        HIGHLIGHT_LINE_COLOR,
-        fillOutlineColor,
       ],
     }
     // if (hasSelectedFeatures) {

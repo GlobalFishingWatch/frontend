@@ -21,7 +21,7 @@ const getDefaultContextInteraction = (): Partial<FillLayer> => {
     layout: {},
     metadata: {
       interactive: true,
-      group: Group.OutlinePolygons,
+      group: Group.OutlinePolygonsBackground,
     },
   }
 }
@@ -38,7 +38,24 @@ const getDefaultContextLine = (color = 'white'): Partial<LineLayer> => {
     },
     metadata: {
       interactive: false,
-      group: Group.OutlinePolygonsBackground,
+      group: Group.OutlinePolygons,
+    },
+  }
+}
+
+const getDefaultContextHighlight = (): Partial<LineLayer> => {
+  return {
+    type: 'line',
+    paint: {
+      'line-color': 'transparent',
+    },
+    layout: {
+      'line-cap': 'round',
+      'line-join': 'round',
+    },
+    metadata: {
+      interactive: true,
+      group: Group.OutlinePolygonsHighlighted,
     },
   }
 }
@@ -53,10 +70,14 @@ const getDefaultContextLayersById = (id: string, color: string): (LineLayer | Fi
       id: `${id}-line`,
       ...getDefaultContextLine(color),
     } as LineLayer,
+    {
+      id: `${id}-highlight`,
+      ...getDefaultContextHighlight(),
+    } as LineLayer,
   ]
 }
 
-const CONTEXT_LAYERS: Record<ContextLayerType, Partial<Layer>[]> = {
+const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
   [ContextLayerType.MPA]: getDefaultContextLayersById(ContextLayerType.MPA, '#1AFF6B'),
   [ContextLayerType.MPANoTake]: getDefaultContextLayersById(ContextLayerType.MPANoTake, '#F4511F'),
   [ContextLayerType.MPARestricted]: getDefaultContextLayersById(
@@ -68,16 +89,20 @@ const CONTEXT_LAYERS: Record<ContextLayerType, Partial<Layer>[]> = {
   [ContextLayerType.TunaRfmo]: getDefaultContextLayersById(ContextLayerType.TunaRfmo, '#B39DDB'),
   [ContextLayerType.EEZ]: [
     {
-      id: 'eez-base',
+      id: 'eez-interaction',
       ...getDefaultContextInteraction(),
-    },
+    } as FillLayer,
+    {
+      id: 'eez-highlight',
+      ...getDefaultContextHighlight(),
+    } as LineLayer,
   ],
   [ContextLayerType.EEZBoundaries]: [
     {
       id: 'eez_rest_lines',
       ...getDefaultContextLine('#33B679'),
       filter: ['match', ['get', 'line_type'], settledBoundaries, true, false],
-    },
+    } as LineLayer,
     {
       id: 'eez_special_lines',
       ...getDefaultContextLine(),
@@ -86,7 +111,7 @@ const CONTEXT_LAYERS: Record<ContextLayerType, Partial<Layer>[]> = {
         'line-color': '#33B679',
         'line-dasharray': [2, 4],
       },
-    },
+    } as LineLayer,
   ],
 }
 
