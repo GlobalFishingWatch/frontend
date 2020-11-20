@@ -1,5 +1,16 @@
 # @globalfishingwatch/react-hooks
 
+## 4.4.0
+
+### Minor Changes
+
+- e37d269: resolve dataviews to generators api update
+
+### Patch Changes
+
+- Updated dependencies [e37d269]
+  - @globalfishingwatch/layer-composer@4.9.0
+
 ## 4.3.2
 
 ### Patch Changes

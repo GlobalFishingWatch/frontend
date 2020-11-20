@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.1.0
+
+### Minor Changes
+
+- e37d269: include app in workspaces and dataviews
+
 ## 2.0.4
 
 ### Patch Changes
