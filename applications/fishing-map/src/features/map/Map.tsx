@@ -17,7 +17,11 @@ import {
   LegendLayer,
   LegendLayerBivariate,
 } from '@globalfishingwatch/ui-components/dist/map-legend'
-import { ExtendedStyle, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
+import {
+  ExtendedStyle,
+  ExtendedStyleMeta,
+  LayerMetadataLegend,
+} from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from 'types'
 import i18n from 'features/i18n/i18n'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
@@ -62,7 +66,7 @@ const getLegendLayers = (
   if (!style) return []
   return style.layers?.flatMap((layer) => {
     if (!layer.metadata?.legend) return []
-    const sublayerLegendsMetadata = Array.isArray(layer.metadata.legend)
+    const sublayerLegendsMetadata: LayerMetadataLegend[] = Array.isArray(layer.metadata.legend)
       ? layer.metadata.legend
       : [layer.metadata.legend]
     return sublayerLegendsMetadata.map((sublayerLegendMetadata, sublayerIndex) => {

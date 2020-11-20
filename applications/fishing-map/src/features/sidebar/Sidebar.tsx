@@ -12,7 +12,7 @@ import {
 import Search from 'features/search/Search'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { AsyncReducerStatus } from 'types'
-import copyToTlipboard from 'utils/clipboard'
+import copyToClipboard from 'utils/clipboard'
 import { selectWorkspaceId } from 'routes/routes.selectors'
 import styles from './Sidebar.module.css'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
@@ -45,7 +45,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
     let id: any
     if (workspaceStatus === AsyncReducerStatus.Finished && workspaceCustom === true) {
       setFinished(true)
-      copyToTlipboard(`${window.location.origin}/${workspaceId}`)
+      copyToClipboard(`${window.location.origin}/${workspaceId}`)
       id = setTimeout(() => setFinished(false), 5000)
     }
 

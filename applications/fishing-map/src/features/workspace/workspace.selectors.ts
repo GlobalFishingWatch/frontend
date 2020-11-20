@@ -50,13 +50,19 @@ export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace]
 })
 
 export const selectDataviewInstancesMerged = createSelector(
-  [selectWorkspaceStatus, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
+  [
+    selectWorkspaceStatus,
+    selectWorkspaceCustom,
+    selectWorkspaceDataviewInstances,
+    selectUrlDataviewInstances,
+  ],
   (
     workspaceStatus,
-    workspaceDataviewInstances = [],
+    workspaceCustom,
+    workspaceDataviewInstances,
     urlDataviewInstances = []
   ): UrlDataviewInstance[] | undefined => {
-    if (workspaceStatus !== AsyncReducerStatus.Finished) return
+    if (!workspaceCustom && workspaceStatus !== AsyncReducerStatus.Finished) return
 
     // Split url dataviews by new or just overwriting the workspace to easily grab them later
     const urlDataviews = urlDataviewInstances.reduce<
@@ -75,7 +81,7 @@ export const selectDataviewInstancesMerged = createSelector(
       },
       { workspace: [], new: [] }
     )
-    const workspaceDataviewInstancesMerged = workspaceDataviewInstances.map(
+    const workspaceDataviewInstancesMerged = (workspaceDataviewInstances || []).map(
       (workspaceDataviewInstance) => {
         const urlDataviewInstance = urlDataviews.workspace.find(
           (d) => d.id === workspaceDataviewInstance.id
