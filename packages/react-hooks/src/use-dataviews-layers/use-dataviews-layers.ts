@@ -1,15 +1,56 @@
 import { useMemo } from 'react'
-import { Resource, Dataview } from '@globalfishingwatch/api-types'
+import {
+  Resource,
+  Dataview,
+  DatasetTypes,
+  Dataset,
+  DataviewDatasetConfig,
+} from '@globalfishingwatch/api-types'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+
+const FISHING_DATASET_TYPE = '4wings:v1'
+const USER_CONTEXT_TYPE = 'user-context-layer:v1'
+
+export const resolveDataviewDatasetResource = (
+  dataview: Dataview,
+  { type, id }: { type?: DatasetTypes; id?: string }
+): {
+  dataset?: Dataset
+  datasetConfig?: DataviewDatasetConfig
+  url?: string
+} => {
+  if (!type && !id) return {}
+
+  const dataset = type
+    ? dataview.datasets?.find((dataset) => dataset.type === type)
+    : dataview.datasets?.find((dataset) => dataset.id === id)
+  if (!dataset) return {}
+  const datasetConfig = dataview?.datasetsConfig?.find(
+    (datasetConfig) => datasetConfig.datasetId === dataset.id
+  )
+  if (!datasetConfig) return {}
+  const url = resolveEndpoint(dataset, datasetConfig)
+  if (!url) return {}
+
+  return { dataset, datasetConfig, url }
+}
 
 export function getGeneratorConfig(dataview: Dataview) {
-  if (dataview.config.type === Generators.Type.UserContext) {
-    const dataset = dataview.datasets?.find((dataset) => dataset.type === 'user-context-layer:v1')
-    const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === 'user-context-tiles')
-    if (endpoint) {
+  switch (dataview.config.type) {
+    // TODO: remove legacy from Amathea context layers as they support ramps
+    case Generators.Type.UserContext: {
+      const { dataset, url } = resolveDataviewDatasetResource(dataview, { type: USER_CONTEXT_TYPE })
+      if (!url) {
+        console.warn(
+          `Missing configuration for ${Generators.Type.UserContext} generator in dataview`,
+          dataview
+        )
+        return
+      }
       return {
         ...dataview.config,
-        tilesUrl: endpoint.pathTemplate,
+        tilesUrl: url,
         metadata: {
           legend: {
             label: dataset?.name,
@@ -17,26 +58,27 @@ export function getGeneratorConfig(dataview: Dataview) {
         },
       }
     }
-  }
-  if (dataview.config.type === Generators.Type.Heatmap) {
-    const dataset = dataview.datasets?.find((dataset) => dataset.type === '4wings:v1')
-    const tilesEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
-    const statsEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-legend')
-
-    if (tilesEndpoint) {
-      const flagFilter = dataview.datasetsConfig
-        ?.find((datasetConfig) => datasetConfig.datasetId === dataset?.id)
-        ?.query?.find((q) => q.id === 'flag')?.value
+    case Generators.Type.Heatmap: {
+      // TODO support multiple urls in resolveDataviewDatasetResource
+      const dataset = dataview.datasets?.find((dataset) => dataset.type === FISHING_DATASET_TYPE)
+      const tilesEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
+      const statsEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-legend')
+      if (!tilesEndpoint) {
+        console.warn('Missing configuration for heatmap generator in dataview', dataview)
+        return
+      }
+      const id = dataset?.id || dataview.id
+      const flagFilter = dataview.config.flagFilter
       const generator = {
-        id: `fourwings-${dataview.id}`,
+        id: `fourwings-${id}`,
         ...dataview.config,
         maxZoom: 8,
-        tileset: dataset?.id as string,
         fetchStats: !dataview.config.steps,
+        datasets: [dataset?.id],
         tilesUrl: tilesEndpoint.pathTemplate,
         statsUrl: statsEndpoint?.pathTemplate,
         // ADHOC for Amathea for now
-        ...(flagFilter && { serverSideFilter: `flag in ('${flagFilter}')` }),
+        ...(flagFilter && { filters: `flag in ('${flagFilter}')` }),
         metadata: {
           color: dataview?.config?.color,
           legend: {
@@ -47,8 +89,10 @@ export function getGeneratorConfig(dataview: Dataview) {
       }
       return generator
     }
+    // TODO: move here Tracks, HeatmapAnimated and Context from fishing map and use this method in both apps
+    default:
+      return dataview.config
   }
-  return dataview.config
 }
 
 /**
