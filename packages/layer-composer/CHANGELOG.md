@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.9.1
+
+### Patch Changes
+
+- improve highlight styles
+
 ## 4.9.0
 
 ### Minor Changes
