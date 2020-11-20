@@ -50,6 +50,7 @@ function HeatmapsSection(): React.ReactElement {
             icon={bivariate ? 'split' : 'compare'}
             type="border"
             size="medium"
+            disabled={dataviews?.length !== 2 ?? true}
             tooltip={
               bivariate
                 ? t('layer.toggleCombinationMode.compare', 'Show fishing layers in comparison mode')

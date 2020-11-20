@@ -19,11 +19,10 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
   // ContextLayerType.MPA but enums doesn't work in CRA for now
   if (feature.layer === 'mpa') {
     const { wdpa_pid } = feature.properties
+    const label = `${feature.value} - ${feature.properties.desig}`
     return (
-      <div className={styles.row} key={wdpa_pid || feature.value}>
-        <span className={styles.rowText}>
-          {feature.value} - {feature.properties.desig}
-        </span>
+      <div className={styles.row} key={label}>
+        <span className={styles.rowText}>{label}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
             <IconButton icon="report" tooltip="Report (Coming soon)" size="small" />
