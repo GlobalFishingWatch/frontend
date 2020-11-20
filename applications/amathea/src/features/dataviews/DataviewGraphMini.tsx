@@ -1,7 +1,7 @@
 import React from 'react'
 import { LineChart, Line, YAxis } from 'recharts'
 import { DateTime } from 'luxon'
-import { Dataview } from '@globalfishingwatch/api-types'
+import { Dataview } from '@globalfishingwatch/api-types/dist'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useDataviewResource } from './dataviews.hook'
 
