@@ -48,6 +48,10 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
     if (url) {
       const sublayersVesselsIds = await GFWAPI.fetch<ExtendedFeatureVessel[]>(url, {
         signal,
+      }).then((vs) => {
+        // TODO remove once the API always return same structure, now for chile and indonesia returns
+        // { data: null, name: 'dataset' }
+        return vs.filter((vs) => Array.isArray(vs))
       })
       const infoDatasetId = getRelatedDatasetByType(dataset, VESSELS_DATASET_TYPE)?.id
       if (infoDatasetId) {

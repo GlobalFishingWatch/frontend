@@ -136,9 +136,31 @@ export const selectDataviewInstancesResolved = createSelector(
         }
 
         config.visible = config?.visible ?? true
-        const datasetsConfig = dataviewInstance.datasetsConfig?.length
-          ? dataviewInstance.datasetsConfig
-          : dataview.datasetsConfig || []
+        const datasetsConfig = (dataview.datasetsConfig || [])?.map((datasetConfig) => {
+          const instanceDatasetConfig = dataviewInstance.datasetsConfig?.find(
+            (instanceDatasetConfig) => {
+              return (
+                datasetConfig.datasetId === instanceDatasetConfig.datasetId &&
+                datasetConfig.endpoint === instanceDatasetConfig.endpoint
+              )
+            }
+          )
+          if (!instanceDatasetConfig) return datasetConfig
+          // using the instance query and params first as the uniqBy from lodash doc says:
+          // the order of result values is determined by the order they occur in the array
+          // so the result will be overriding the default dataview config
+          return {
+            ...datasetConfig,
+            query: uniqBy(
+              [...(instanceDatasetConfig.query || []), ...(datasetConfig.query || [])],
+              'id'
+            ),
+            params: uniqBy(
+              [...(instanceDatasetConfig.params || []), ...(datasetConfig.params || [])],
+              'id'
+            ),
+          }
+        })
 
         const dataviewDatasets: Dataset[] = datasetsConfig.flatMap((datasetConfig) => {
           const dataset = datasets.find((dataset) => dataset.id === datasetConfig.datasetId)

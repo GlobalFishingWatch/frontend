@@ -32,7 +32,7 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
 
   const onRemoveSourceClick: MultiSelectOnChange = (source) => {
     const datasets =
-      dataview.config?.datasets?.filter((datasetId: string) => datasetId !== source.id) || []
+      dataview.config?.datasets?.filter((datasetId: string) => datasetId !== source.id) || null
     upsertDataviewInstance({
       id: dataview.id,
       config: { datasets },
@@ -47,7 +47,7 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
   }
 
   const onRemoveFilterClick: MultiSelectOnChange = (filter, rest) => {
-    const filters = rest?.length ? rest.map((f) => f.id) : []
+    const filters = rest?.length ? rest.map((f) => f.id) : null
     upsertDataviewInstance({
       id: dataview.id,
       config: { filters },

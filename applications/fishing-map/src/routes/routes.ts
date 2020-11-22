@@ -40,7 +40,7 @@ const urlToObjectTransformation: Dictionary<(value: any) => any> = {
 }
 
 const encodeWorkspace = (object: Record<string, unknown>) => {
-  return stringify(object, { encodeValuesOnly: true })
+  return stringify(object, { encodeValuesOnly: true, strictNullHandling: true })
 }
 
 // Extended logic from qs utils decoder to have some keywords parsed
@@ -69,7 +69,12 @@ const decoder = (str: string, decoder?: any, charset?: string) => {
 }
 
 const decodeWorkspace = (queryString: string) => {
-  const parsed = parse(queryString, { arrayLimit: 1000, depth: 20, decoder })
+  const parsed = parse(queryString, {
+    arrayLimit: 1000,
+    depth: 20,
+    decoder,
+    strictNullHandling: true,
+  })
   Object.keys(parsed).forEach((param: string) => {
     const value = parsed[param]
     const transformationFn = urlToObjectTransformation[param]
