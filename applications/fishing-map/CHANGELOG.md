@@ -1,5 +1,19 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.16.0
+
+### Minor Changes
+
+- 7d396a6: segments data-transform utils
+
+### Patch Changes
+
+- 7d396a6: include target icon
+- Updated dependencies [7d396a6]
+- Updated dependencies [7d396a6]
+  - @globalfishingwatch/data-transforms@1.1.0
+  - @globalfishingwatch/ui-components@2.6.1
+
 ## 0.15.15
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @globalfishingwatch/data-transforms
 
+## 1.1.0
+
+### Minor Changes
+
+- 7d396a6: segments data-transform utils
+
 ## 1.0.4
 
 ### Patch Changes
