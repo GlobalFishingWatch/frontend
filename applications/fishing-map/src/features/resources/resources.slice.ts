@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
-import { trackValueArrayToSegments, Field } from '@globalfishingwatch/data-transforms'
+import { Field, Segment, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
@@ -18,6 +18,8 @@ export interface Resource<T = unknown> extends ResourceQuery {
   status: AsyncReducerStatus
   data?: T
 }
+
+export type TrackResourceData = Segment[]
 
 type ResourcesState = Record<any, Resource>
 

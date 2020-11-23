@@ -35,6 +35,7 @@ import { ReactComponent as Settings } from '../assets/icons/settings.svg'
 import { ReactComponent as Share } from '../assets/icons/share.svg'
 import { ReactComponent as Skip } from '../assets/icons/skip.svg'
 import { ReactComponent as Split } from '../assets/icons/split.svg'
+import { ReactComponent as Target } from '../assets/icons/target.svg'
 import { ReactComponent as Tick } from '../assets/icons/tick.svg'
 import { ReactComponent as Upload } from '../assets/icons/upload.svg'
 import { ReactComponent as User } from '../assets/icons/user.svg'
@@ -76,6 +77,7 @@ export const IconComponents = {
   share: Share,
   skip: Skip,
   split: Split,
+  target: Target,
   tick: Tick,
   upload: Upload,
   user: User,

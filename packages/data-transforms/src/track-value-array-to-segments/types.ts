@@ -10,4 +10,5 @@ export enum Field {
 }
 
 export type Point = Partial<Record<Field, number | null>>
+
 export type Segment = Point[]
