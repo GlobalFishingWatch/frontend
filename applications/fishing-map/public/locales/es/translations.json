@@ -22,7 +22,6 @@
     "color_change": "Cambia el color",
     "filter_close": "Cierra los filtros",
     "filter_open": "Abre los filtros",
-    "filter_plural": "Filtros",
     "flag_state_plural": "Flag States",
     "info_close": "Oculta la información",
     "info_open": "Muestra la información",
@@ -32,7 +31,9 @@
     "toggleCombinationMode": {
       "bivariate": "Show fishing layers in bivariate mode",
       "compare": "Show fishing layers in comparison mode"
-    }
+    },
+    "vessel_fit_bounds": "Center map on vessel track",
+    "filter_plural": "Filtros"
   },
   "map": {
     "capture_map": "Captura el mapa",
