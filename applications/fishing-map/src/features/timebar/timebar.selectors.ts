@@ -1,11 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { Segment } from '@globalfishingwatch/data-transforms'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import {
   selectVesselsDataviews,
   resolveDataviewDatasetResource,
 } from 'features/workspace/workspace.selectors'
-import { selectResources, Resource } from 'features/resources/resources.slice'
+import { selectResources, Resource, TrackResourceData } from 'features/resources/resources.slice'
 import { TRACKS_DATASET_TYPE } from 'data/datasets'
 
 type TimebarTrackSegment = {
@@ -26,10 +25,10 @@ export const selectTracksData = createSelector(
     const tracksSegments: TimebarTrack[] = trackDataviews.flatMap((dataview) => {
       const { url } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })
       if (!url) return []
-      const track = resources[url] as Resource<Segment[]>
+      const track = resources[url] as Resource<TrackResourceData>
       if (!track?.data) return []
 
-      const trackSegments: TimebarTrackSegment[] = track.data.map((segment) => {
+      const trackSegments: TimebarTrackSegment[] = track.data?.map((segment) => {
         return {
           start: segment[0].timestamp || 0,
           end: segment[segment.length - 1].timestamp || 0,
@@ -53,10 +52,10 @@ export const selectTracksGraphs = createSelector(
     const graphs = trackDataviews.flatMap((dataview) => {
       const { url } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })
       if (!url) return []
-      const track = resources[url] as Resource<Segment[]>
+      const track = resources[url] as Resource<TrackResourceData>
       if (!track?.data) return []
 
-      const segmentsWithCurrentFeature = track.data.map((segment) => {
+      const segmentsWithCurrentFeature = track.data?.map((segment) => {
         return segment.flatMap((pt) => {
           const value = (pt as any)[timebarGraph]
           if (!value) return []

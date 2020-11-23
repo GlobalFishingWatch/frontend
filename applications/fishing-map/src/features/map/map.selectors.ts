@@ -10,7 +10,7 @@ import {
   selectDataviewInstancesResolved,
   resolveDataviewDatasetResource,
 } from 'features/workspace/workspace.selectors'
-import { selectResources } from 'features/resources/resources.slice'
+import { Resource, selectResources, TrackResourceData } from 'features/resources/resources.slice'
 import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
@@ -107,7 +107,8 @@ export const getGeneratorsConfig = createSelector(
         // Try to retrieve resource if it exists
         const { url } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })
         if (url && resources[url]) {
-          generator.data = resources[url].data
+          const resource = resources[url] as Resource<TrackResourceData>
+          generator.data = resource.data
         }
       } else if (dataview.config?.type === Generators.Type.Context) {
         if (Array.isArray(dataview.config.layers)) {

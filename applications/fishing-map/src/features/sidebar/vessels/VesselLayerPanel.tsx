@@ -1,23 +1,32 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { fitBounds } from 'viewport-mercator-project'
 import { Vessel } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
   TrackColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
+import {
+  Segment,
+  segmentsToBbox,
+  filterSegmentsByTimerange,
+} from '@globalfishingwatch/data-transforms'
 import { formatInfoField } from 'utils/info'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import styles from 'features/sidebar/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
-import { VESSELS_DATASET_TYPE } from 'data/datasets'
+import { TRACKS_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
+import { useMapboxInstance } from 'features/map/map.context'
+import useViewport from 'features/map/map-viewport.hooks'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
 // Translations by feature.unit static keys
 // t('vessel.flag', 'Flag')
@@ -31,11 +40,37 @@ type LayerPanelProps = {
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
+  const mapInstance = useMapboxInstance()
+  const { setMapCoordinates } = useViewport()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { url } = resolveDataviewDatasetResource(dataview, { type: VESSELS_DATASET_TYPE })
+  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })
   const resource = useSelector(selectResourceByUrl<Vessel>(url))
+  const { start, end } = useTimerangeConnect()
+  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
+
+  const onFitBoundsClick = useCallback(() => {
+    if (trackResource?.data) {
+      const filteredSegments = filterSegmentsByTimerange(trackResource?.data, { start, end })
+      const bbox = segmentsToBbox(filteredSegments)
+      const { width, height } = mapInstance?._canvas || {}
+      if (width && height && bbox) {
+        const [minLng, minLat, maxLng, maxLat] = bbox
+        const { latitude, longitude, zoom } = fitBounds({
+          bounds: [
+            [minLng, minLat],
+            [maxLng, maxLat],
+          ],
+          width,
+          height,
+          padding: 60,
+        })
+        setMapCoordinates({ latitude, longitude, zoom })
+      }
+    }
+  }, [mapInstance, setMapCoordinates, trackResource, start, end])
 
   const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
@@ -107,6 +142,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           TitleComponent
         )}
         <div className={cx(styles.actions, { [styles.active]: layerActive })}>
+          <IconButton
+            icon="target"
+            size="small"
+            className={styles.actionButton}
+            tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
+            onClick={onFitBoundsClick}
+            tooltipPlacement="top"
+          />
           <IconButton
             icon="info"
             size="small"
