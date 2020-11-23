@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -18,12 +18,7 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { viewport, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
-  const { bounds, setMapBounds } = useMapBounds()
-
-  useEffect(() => {
-    setMapBounds()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom, latitude, longitude])
+  const { bounds } = useMapBounds()
 
   const onZoomInClick = useCallback(() => {
     setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
