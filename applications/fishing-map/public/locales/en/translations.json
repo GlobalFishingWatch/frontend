@@ -33,7 +33,7 @@
       "compare": "Show fishing layers in comparison mode"
     },
     "filter_plural": "Filters",
-    "vessel_fit_bounds": "Center view on vessel track"
+    "vessel_fit_bounds": "Center map on vessel track"
   },
   "map": {
     "capture_map": "Capture map",
