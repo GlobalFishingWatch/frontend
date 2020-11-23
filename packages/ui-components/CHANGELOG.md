@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.6.1
+
+### Patch Changes
+
+- 7d396a6: include target icon
+
 ## 2.6.0
 
 ### Minor Changes
