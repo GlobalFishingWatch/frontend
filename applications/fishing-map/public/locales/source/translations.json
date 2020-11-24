@@ -1,10 +1,10 @@
 {
   "common": {
+    "activity": "Activity",
     "context_area_plural": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard",
     "dismiss": "Dismiss",
     "events": "Events",
-    "fishing": "Fishing",
     "hour": "Hour",
     "hour_plural": "Hours",
     "login": "Login",
@@ -13,7 +13,8 @@
     "open_menu": "Open Menu",
     "save": "Save",
     "share": "Click to share the current view",
-    "vessel_plural": "Vessels"
+    "vessel_plural": "Vessels",
+    "fishing": "Fishing"
   },
   "errors": {
     "workspaceLoad": "There was an error loading the workspace, please try again later"
@@ -59,6 +60,7 @@
     "fleet": "Fleet",
     "imo": "IMO",
     "last_transmission_date": "Last transmission date",
+    "loading": "Loading vessel track",
     "mmsi": "MMSI",
     "search": {
       "close": "Close search",
