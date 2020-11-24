@@ -30,6 +30,11 @@
   animation: dash-small 1.5s ease-in-out infinite;
 }
 
+.tiny {
+  stroke-width: 1.5;
+  animation: dash-small 1.5s ease-in-out infinite;
+}
+
 @keyframes rotate {
   100% {
     transform: rotate(360deg);
@@ -63,5 +68,20 @@
   100% {
     stroke-dasharray: 35, 60;
     stroke-dashoffset: -54;
+  }
+}
+
+@keyframes dash-tiny {
+  0% {
+    stroke-dasharray: 1, 30;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 17, 30;
+    stroke-dashoffset: -7;
+  }
+  100% {
+    stroke-dasharray: 17, 30;
+    stroke-dashoffset: -27;
   }
 }
