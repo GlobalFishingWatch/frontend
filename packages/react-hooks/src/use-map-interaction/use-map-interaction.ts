@@ -39,7 +39,6 @@ const getExtendedFeatures = (
 
         let parsed = JSON.parse(valuesAtFrame)
         if (extendedFeature.value === 0) break
-        const datasetsIds = feature.layer.metadata?.datasetsIds
 
         if (!isArray(parsed)) parsed = [parsed]
         return parsed.flatMap((value: any, i: number) => {
@@ -47,7 +46,6 @@ const getExtendedFeatures = (
           return [
             {
               ...extendedFeature,
-              datasetsIds,
               temporalgrid: {
                 sublayerIndex: i,
                 col: properties._col,
