@@ -1,7 +1,9 @@
 import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { TrackColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { DEFAULT_VESSEL_DATAVIEW_ID } from 'data/datasets'
+import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_VESSEL_DATAVIEW_ID } from 'data/datasets'
+
+export const DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
 type VesselInstanceDatasets = {
   trackDatasetId: string
@@ -24,7 +26,7 @@ export const getVesselDataviewInstance = (
     },
   ]
   const vesselDataviewInstance = {
-    id: `vessel-${vessel.id}`,
+    id: `${DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       color: TrackColorBarOptions[Math.floor(Math.random() * TrackColorBarOptions.length)].value,

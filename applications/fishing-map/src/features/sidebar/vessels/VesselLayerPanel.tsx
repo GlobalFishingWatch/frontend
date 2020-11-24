@@ -27,6 +27,7 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import { useMapboxInstance } from 'features/map/map.context'
 import useViewport from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 
 // Translations by feature.unit static keys
 // t('vessel.flag', 'Flag')
@@ -97,10 +98,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     deleteDataviewInstance(dataview.id)
   }
 
-  const datasetConfig = dataview.datasetsConfig?.find(
-    (dc: any) => dc?.params.find((p: any) => p.id === 'vesselId')?.value
-  )
-
   const vesselName = resource?.data?.shipname
 
   const onToggleColorOpen = () => {
@@ -116,7 +113,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
 
-  const vesselId = datasetConfig?.params.find((p: any) => p.id === 'vesselId')?.value as string
+  const vesselId = dataview.id.replace(DATAVIEW_INSTANCE_PREFIX, '')
   const title = vesselName || vesselId || dataview.name
 
   const TitleComponent = (
