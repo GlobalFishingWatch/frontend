@@ -44,6 +44,11 @@ export interface DatasetConfiguration {
   [key: string]: unknown
 }
 
+export type RelatedDataset = {
+  id: string
+  type: DatasetTypes
+}
+
 export interface Dataset {
   id: string
   type: DatasetTypes
@@ -63,5 +68,5 @@ export interface Dataset {
   createdAt: string
   endpoints?: Endpoint[]
   configuration: DatasetConfiguration | null
-  relatedDatasets: Partial<Dataset>[] | null
+  relatedDatasets: RelatedDataset[] | null
 }
