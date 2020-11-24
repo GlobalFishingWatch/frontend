@@ -35,3 +35,13 @@ export const getVesselDataviewInstance = (
   }
   return vesselDataviewInstance
 }
+
+export const getHeatmapDataviewInstance = (): DataviewInstance<Generators.Type> => {
+  const vesselDataviewInstance = {
+    id: `fishing-${Date.now()}`,
+    // TODO choose next heatmap color available different from existing dataviews
+    config: {},
+    dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
+  }
+  return vesselDataviewInstance
+}

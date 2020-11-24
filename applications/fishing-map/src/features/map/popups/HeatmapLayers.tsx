@@ -1,14 +1,15 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
+import { ExtendedFeatureVessel } from '@globalfishingwatch/react-hooks'
 import { formatInfoField, formatNumber } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { selectTracksDatasets, selectVesselsDatasets } from 'features/workspace/workspace.selectors'
+import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'types'
+import { TRACKS_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'
 import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
@@ -21,29 +22,20 @@ type HeatmapTooltipRowProps = {
 function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const trackDatasets = useSelector(selectTracksDatasets)
-  const searchDatasets = useSelector(selectVesselsDatasets)
   const { clickedEventStatus } = useClickedEventConnect()
-  const onVesselClick = (vessel: { id: string }, feature: TooltipEventFeature) => {
-    const trackDatasetByFeature = trackDatasets.filter((trackDataset) =>
-      feature.dataset?.relatedDatasets?.some(
-        (featureRelatedDataset) => featureRelatedDataset.id === trackDataset.id
-      )
-    )
-    const searchDatasetByFeature = searchDatasets.filter((trackDataset) =>
-      feature.dataset?.relatedDatasets?.some(
-        (featureRelatedDataset) => featureRelatedDataset.id === trackDataset.id
-      )
-    )
-    const vesselDataviewInstance = getVesselDataviewInstance(
-      vessel,
-      trackDatasetByFeature,
-      searchDatasetByFeature
-    )
-    if (vesselDataviewInstance) {
+
+  const onVesselClick = (vessel: ExtendedFeatureVessel) => {
+    const infoDataset = getRelatedDatasetByType(vessel.dataset, VESSELS_DATASET_TYPE)
+    const trackDataset = getRelatedDatasetByType(vessel.dataset, TRACKS_DATASET_TYPE)
+    if (infoDataset && trackDataset) {
+      const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
+        trackDatasetId: trackDataset.id,
+        infoDatasetId: infoDataset.id,
+      })
       upsertDataviewInstance(vesselDataviewInstance)
     }
   }
+
   return (
     <div className={styles.popupSection}>
       <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
@@ -73,15 +65,12 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
                 ? formatInfoField(vessel.shipname, 'name')
                 : vessel.id
               return (
-                <button
-                  key={i}
-                  className={styles.vesselRow}
-                  onClick={() => {
-                    onVesselClick(vessel, feature)
-                  }}
-                >
+                <button key={i} className={styles.vesselRow} onClick={() => onVesselClick(vessel)}>
                   <span className={styles.vesselName}>
-                    {vesselLabel.length > 30 ? `${vesselLabel.slice(0, 30)}...` : vesselLabel}
+                    {vesselLabel.length > 25 ? `${vesselLabel.slice(0, 25)}...` : vesselLabel}
+                    {vessel.dataset.name && (
+                      <span className={styles.vesselRowLegend}> - {vessel.dataset.name}</span>
+                    )}
                   </span>
                   <span>{formatNumber(vessel.hours)}</span>
                 </button>
