@@ -108,9 +108,13 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
       })
 
       const topHoursVessels = vesselsBySource
-        .flatMap((vs) => vs.flatMap((v) => v))
-        .sort((a, b) => b.hours - a.hours)
-        .slice(0, MAX_TOOLTIP_VESSELS * featuresDataviews.length)
+        .map((source) => {
+          return source
+            .flatMap((source) => source)
+            .sort((a, b) => b.hours - a.hours)
+            .slice(0, MAX_TOOLTIP_VESSELS)
+        })
+        .flatMap((v) => v)
 
       const topHoursVesselsDatasets = uniqBy(
         topHoursVessels.map(({ dataset }) => dataset),
