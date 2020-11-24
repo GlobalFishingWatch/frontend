@@ -7,19 +7,20 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
-import { Vessel } from '@globalfishingwatch/api-types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectVesselsDatasets, selectTracksDatasets } from 'features/workspace/workspace.selectors'
+import { selectVesselsDatasets } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import { resetWorkspaceSearchQuery } from 'features/workspace/workspace.slice'
+import { AsyncReducerStatus } from 'types'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
   cleanVesselSearchResults,
   selectSearchStatus,
+  VesselWithDatasets,
 } from './search.slice'
 import styles from './Search.module.css'
 import SearchEmptyState from './SearchEmptyState'
@@ -33,7 +34,6 @@ function Search() {
   const query = useDebounce(searchQuery, 200)
   const { dispatchQueryParams } = useLocationConnect()
   const searchDatasets = useSelector(selectVesselsDatasets)
-  const trackDatasets = useSelector(selectTracksDatasets)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
 
@@ -59,20 +59,16 @@ function Search() {
     setSearchQuery(e.target.value)
   }
 
-  const onSelectionChange = (selection: Vessel | null) => {
-    if (selection) {
-      const vesselDataviewInstance = getVesselDataviewInstance(
-        selection,
-        // TODO this datasets not are all of them but the response of the selection
-        trackDatasets,
-        searchDatasets
-      )
-      if (vesselDataviewInstance) {
-        batch(() => {
-          upsertDataviewInstance(vesselDataviewInstance)
-          onCloseClick()
-        })
-      }
+  const onSelectionChange = (selection: VesselWithDatasets | null) => {
+    if (selection && selection.dataset && selection.trackDatasetId) {
+      const vesselDataviewInstance = getVesselDataviewInstance(selection, {
+        trackDatasetId: selection.trackDatasetId as string,
+        infoDatasetId: selection.dataset,
+      })
+      batch(() => {
+        upsertDataviewInstance(vesselDataviewInstance)
+        onCloseClick()
+      })
     }
   }
 
@@ -105,7 +101,7 @@ function Search() {
           </div>
           {searchResults && (
             <ul {...getMenuProps()} className={styles.searchResults}>
-              {searchResults[0].results?.entries?.map((entry, index: number) => {
+              {searchResults?.map((entry, index: number) => {
                 const {
                   id,
                   shipname,
@@ -113,6 +109,7 @@ function Search() {
                   mmsi,
                   imo,
                   callsign,
+                  dataset,
                   first_transmission_date,
                   last_transmission_date,
                 } = entry
@@ -126,36 +123,53 @@ function Search() {
                   >
                     <div className={styles.name}>{shipname || '---'}</div>
                     <div className={styles.properties}>
-                      <div className={styles.property}>
-                        <label>{t('vessel.flag', 'Flag')}</label>
-                        <span>{flag || '---'}</span>
-                      </div>
-                      <div className={styles.property}>
-                        <label>{t('vessel.mmsi', 'MMSI')}</label>
-                        <span>{mmsi || '---'}</span>
-                      </div>
-                      <div className={styles.property}>
-                        <label>{t('vessel.imo', 'IMO')}</label>
-                        <span>{imo || '---'}</span>
-                      </div>
-                      <div className={styles.property}>
-                        <label>{t('vessel.callsign', 'Callsign')}</label>
-                        <span>{callsign || '---'}</span>
-                      </div>
-                      <div className={styles.property}>
-                        <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
-                        <span>
-                          from <I18nDate date={first_transmission_date} /> to{' '}
-                          <I18nDate date={last_transmission_date} />
-                        </span>
-                      </div>
+                      {flag && (
+                        <div className={styles.property}>
+                          <label>{t('vessel.flag', 'Flag')}</label>
+                          <span>{flag}</span>
+                        </div>
+                      )}
+                      {mmsi && (
+                        <div className={styles.property}>
+                          <label>{t('vessel.mmsi', 'MMSI')}</label>
+                          <span>{mmsi}</span>
+                        </div>
+                      )}
+                      {imo && (
+                        <div className={styles.property}>
+                          <label>{t('vessel.imo', 'IMO')}</label>
+                          <span>{imo}</span>
+                        </div>
+                      )}
+                      {callsign && (
+                        <div className={styles.property}>
+                          <label>{t('vessel.callsign', 'Callsign')}</label>
+                          <span>{callsign}</span>
+                        </div>
+                      )}
+                      {first_transmission_date && last_transmission_date && (
+                        <div className={styles.property}>
+                          <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
+                          <span>
+                            from <I18nDate date={first_transmission_date} /> to{' '}
+                            <I18nDate date={last_transmission_date} />
+                          </span>
+                        </div>
+                      )}
+
+                      {dataset && (
+                        <div className={styles.property}>
+                          <label>{t('layer.source', 'Source')}</label>
+                          <span>{dataset}</span>
+                        </div>
+                      )}
                     </div>
                   </li>
                 )
               })}
             </ul>
           )}
-          {!searchResults && searchStatus !== 'loading' && <SearchEmptyState />}
+          {!searchResults && searchStatus !== AsyncReducerStatus.Loading && <SearchEmptyState />}
         </div>
       )}
     </Downshift>
