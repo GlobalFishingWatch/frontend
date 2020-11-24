@@ -33,6 +33,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 // t('vessel.imo', 'IMO')
 // t('vessel.first_transmission_date', 'First transmission date')
 // t('vessel.last_transmission_date', 'Last transmission date')
+// t('vessel.fleet', 'Fleet')
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -145,6 +146,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           <IconButton
             icon="target"
             size="small"
+            loading={trackResource?.status === AsyncReducerStatus.Loading}
             className={styles.actionButton}
             tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
             onClick={onFitBoundsClick}
