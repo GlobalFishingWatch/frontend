@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.2.0
+
+### Minor Changes
+
+- update relatedDatasets type definition
+
 ## 2.1.0
 
 ### Minor Changes

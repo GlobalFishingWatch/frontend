@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.7.0
+
+### Minor Changes
+
+- map legend rounded values and spinner sizes
+
 ## 2.6.1
 
 ### Patch Changes

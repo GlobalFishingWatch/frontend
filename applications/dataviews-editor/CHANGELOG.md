@@ -1,5 +1,11 @@
 # @globalfishingwatchapp/dataviews-editor
 
+## 1.1.8
+
+### Patch Changes
+
+- update dependencies
+
 ## 1.1.7
 
 ### Patch Changes

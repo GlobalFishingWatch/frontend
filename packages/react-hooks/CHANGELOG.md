@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 4.4.2
+
+### Patch Changes
+
+- fix heatmapanimated extended empty feature
+
 ## 4.4.1
 
 ### Patch Changes
