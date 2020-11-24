@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -125,6 +125,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     </h3>
   )
 
+  const loading =
+    trackResource?.status === AsyncReducerStatus.Loading ||
+    resource?.status === AsyncReducerStatus.Loading
+
   return (
     <div
       className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: colorOpen || infoOpen })}
@@ -143,47 +147,58 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           TitleComponent
         )}
         <div className={cx(styles.actions, { [styles.active]: layerActive })}>
-          <IconButton
-            icon="target"
-            size="small"
-            loading={trackResource?.status === AsyncReducerStatus.Loading}
-            className={styles.actionButton}
-            tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
-            onClick={onFitBoundsClick}
-            tooltipPlacement="top"
-          />
-          <IconButton
-            icon="info"
-            size="small"
-            loading={resource?.status === AsyncReducerStatus.Loading}
-            className={styles.actionButton}
-            tooltip={
-              infoOpen ? t('layer.info_close', 'Hide info') : t('layer.info_open', 'Show info')
-            }
-            onClick={onToggleInfoOpen}
-            tooltipPlacement="top"
-          />
-          {layerActive && (
+          {loading ? (
             <IconButton
-              icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
+              loading
+              className={styles.loadingIcon}
               size="small"
-              style={colorOpen ? {} : { color: dataview.config?.color }}
-              tooltip={t('layer.color_change', 'Change color')}
-              tooltipPlacement="top"
-              onClick={onToggleColorOpen}
-              className={cx(styles.actionButton, styles.expandable, {
-                [styles.expanded]: colorOpen,
-              })}
+              tooltip={t('vessel.loading', 'Loading vessel track')}
             />
+          ) : (
+            <Fragment>
+              {layerActive && (
+                <Fragment>
+                  <IconButton
+                    icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
+                    size="small"
+                    style={colorOpen ? {} : { color: dataview.config?.color }}
+                    tooltip={t('layer.color_change', 'Change color')}
+                    tooltipPlacement="top"
+                    onClick={onToggleColorOpen}
+                    className={cx(styles.actionButton, styles.expandable, {
+                      [styles.expanded]: colorOpen,
+                    })}
+                  />
+                  <IconButton
+                    icon="target"
+                    size="small"
+                    className={styles.actionButton}
+                    tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
+                    onClick={onFitBoundsClick}
+                    tooltipPlacement="top"
+                  />
+                </Fragment>
+              )}
+              <IconButton
+                icon="info"
+                size="small"
+                className={styles.actionButton}
+                tooltip={
+                  infoOpen ? t('layer.info_close', 'Hide info') : t('layer.info_open', 'Show info')
+                }
+                onClick={onToggleInfoOpen}
+                tooltipPlacement="top"
+              />
+              <IconButton
+                icon="delete"
+                size="small"
+                className={styles.actionButton}
+                tooltip={t('layer.remove', 'Remove layer')}
+                tooltipPlacement="top"
+                onClick={onRemoveLayerClick}
+              />
+            </Fragment>
           )}
-          <IconButton
-            icon="delete"
-            size="small"
-            className={styles.actionButton}
-            tooltip={t('layer.remove', 'Remove layer')}
-            tooltipPlacement="top"
-            onClick={onRemoveLayerClick}
-          />
         </div>
       </div>
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
