@@ -94,6 +94,7 @@ function ColorRampLegend({
           <div className={styles.stepsContainer}>
             {cleanRamp.map(([value], i) => {
               if (value === null) return null
+              const roundValue = Math.floor(value as number)
               if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
               return (
                 <span
@@ -101,8 +102,8 @@ function ColorRampLegend({
                   style={{ left: `${(i * 100) / (ramp.length - 1)}%` }}
                   key={i}
                 >
-                  {(i === ramp.length - 1 && !isNaN(value as number) ? '≥ ' : '') +
-                    (value >= 1000 ? `${((value as number) / 1000).toFixed(1)}k` : value)}
+                  {(i === ramp.length - 1 && !isNaN(roundValue) ? '≥ ' : '') +
+                    (roundValue >= 1000 ? `${(roundValue / 1000).toFixed(1)}k` : roundValue)}
                 </span>
               )
             })}
