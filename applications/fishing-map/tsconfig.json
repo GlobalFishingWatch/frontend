@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "noFallthroughCasesInSwitch": true,
     "target": "es5",
     "lib": [
       "dom",
@@ -13,13 +12,19 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react",
-    "baseUrl": "src"
+    "jsx": "react-jsx",
+    "baseUrl": "src",
+    "typeRoots": [
+      "../../node_modules/@types",
+      "node_modules/@types",
+      "src/@types"
+    ]
   },
   "include": [
     "src"
