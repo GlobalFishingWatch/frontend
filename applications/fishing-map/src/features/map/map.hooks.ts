@@ -3,14 +3,11 @@ import { useRef, useState, useEffect } from 'react'
 import { Map } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeatureVessel, InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
-import { selectTimeRange } from 'features/app/app.selectors'
-import { FISHING_DATASET_TYPE } from 'data/datasets'
 import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import {
   setClickedEvent,
@@ -55,8 +52,6 @@ export const useClickedEventConnect = () => {
   const clickedEventStatus = useSelector(selectClickedEventStatus)
   const promiseRef = useRef<any>()
 
-  const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
-  const { start, end } = useSelector(selectTimeRange)
   const rulersEditing = useSelector(selectEditing)
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
@@ -83,70 +78,13 @@ export const useClickedEventConnect = () => {
 
     dispatch(setClickedEvent(event))
 
-    if (!temporalgridDataviews) return
-
     // get temporal grid clicked features and order them by sublayerindex
     const temporalGridFeatures = event.features
       .filter((feature) => feature.temporalgrid !== undefined)
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
-    // get corresponding dataviews
-    const featuresDataviews = temporalGridFeatures.flatMap((feature) => {
-      return feature.temporalgrid ? temporalgridDataviews[feature.temporalgrid.sublayerIndex] : []
-    })
-
-    // get corresponding datasets
-    const featuresDataviewsDatasets = featuresDataviews.map((dv) => {
-      // TODO We should take into account user selection here (ie a sublayer could have fishing_v4 and another vms:whatever)
-      //     - not just what datasets are available
-      const datasets = dv.datasets?.filter(
-        (dataset: Dataset) => dataset.type === FISHING_DATASET_TYPE
-      )
-      return datasets || []
-    })
-
     if (temporalGridFeatures?.length) {
-      // use the first feature/dv for common parameters
-      const mainFeature = temporalGridFeatures[0]
-      const datasetConfig = {
-        endpoint: '4wings-interaction',
-        params: [
-          { id: 'z', value: mainFeature.tile?.z },
-          { id: 'x', value: mainFeature.tile?.x },
-          { id: 'y', value: mainFeature.tile?.y },
-          { id: 'rows', value: mainFeature.temporalgrid?.row },
-          { id: 'cols', value: mainFeature.temporalgrid?.col },
-        ],
-        query: [
-          { id: 'date-range', value: [start, end].join(',') },
-          {
-            id: 'datasets',
-            value: featuresDataviewsDatasets.map((dataviewDatasets) =>
-              dataviewDatasets.map((ds: Dataset) => ds.id).join(',')
-            ),
-          },
-        ],
-      }
-      const filters = featuresDataviews.flatMap((dv) => dv.config?.filter || [])
-      if (filters?.length) {
-        datasetConfig.query.push({ id: 'filters', value: filters })
-      }
-
-      // TODO Not sure of this
-      const mainDataset = featuresDataviewsDatasets[0].find(
-        (dataset: Dataset) => dataset.type === FISHING_DATASET_TYPE
-      )
-
-      if (!mainDataset) return
-      promiseRef.current = dispatch(
-        fetch4WingInteractionThunk({
-          dataset: mainDataset,
-          datasetConfig: datasetConfig as DataviewDatasetConfig,
-          sublayersIndices: temporalGridFeatures.map(
-            (feature) => feature.temporalgrid?.sublayerIndex || 0
-          ),
-        })
-      )
+      promiseRef.current = dispatch(fetch4WingInteractionThunk(temporalGridFeatures))
     }
   }
   return { clickedEvent, clickedEventStatus, dispatchClickedEvent }
@@ -160,8 +98,6 @@ export type TooltipEventFeature = {
   layer?: ContextLayerType | null
   value: string
   properties: Record<string, string>
-  // TODO decide if we embed the entire dataset or just the id
-  dataset?: Dataset
   vesselsInfo?: {
     overflow: boolean
     numVessels: number
@@ -197,8 +133,6 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       })
     }
     if (!dataview) return []
-    // TODO include other datasets types
-    const dataset = dataview.datasets?.find((dataset) => dataset.type === FISHING_DATASET_TYPE)
 
     const tooltipEventFeature: TooltipEventFeature = {
       title: dataview.name || dataview.id.toString(),
@@ -208,7 +142,6 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       value: feature.value,
       layer: feature.generatorContextLayer,
       properties: { ...feature.properties },
-      ...(dataset && { dataset }),
     }
     // Insert custom properties by each dataview configuration
     const properties = dataview.datasetsConfig

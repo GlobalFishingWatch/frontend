@@ -9,6 +9,7 @@ export const DEFAULT_WERSION = 'v1'
 export const APP_NAME = 'fishing-map'
 
 // used when no url data and no workspace data
+const end = new Date(2019, 11, 31).toISOString()
 export const DEFAULT_WORKSPACE = {
   latitude: 7,
   longitude: -75,
@@ -16,9 +17,9 @@ export const DEFAULT_WORKSPACE = {
   query: undefined,
   sidebarOpen: true,
   start: new Date(2019, 0, 1).toISOString(),
-  end: new Date().toISOString(),
+  end: end,
   availableStart: new Date(2012, 0, 1).toISOString(),
-  availableEnd: new Date().toISOString(),
+  availableEnd: end,
   dataviewInstances: undefined,
   timebarVisualisation: undefined,
   timebarEvents: TimebarEvents.None,

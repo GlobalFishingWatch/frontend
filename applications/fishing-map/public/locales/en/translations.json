@@ -1,5 +1,6 @@
 {
   "common": {
+    "activity": "Activity",
     "context_area_plural": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard",
     "dismiss": "Dismiss",
@@ -26,6 +27,7 @@
     "info_close": "Hide info",
     "info_open": "Info",
     "remove": "Remove layer",
+    "source": "Source",
     "source_plural": "Sources",
     "toggle_visibility": "Toggle layer visibility",
     "toggleCombinationMode": {
@@ -55,6 +57,7 @@
     "callsign": "Callsign",
     "first_transmission_date": "First transmission date",
     "flag": "Flag",
+    "fleet": "Fleet",
     "imo": "IMO",
     "last_transmission_date": "Last transmission date",
     "mmsi": "MMSI",

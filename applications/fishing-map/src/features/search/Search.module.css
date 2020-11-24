@@ -67,6 +67,10 @@
     line-height: 1;
 }
 
+.property span {
+    white-space: nowrap;
+}
+
 .searchResult:hover .properties, .searchResult:hover .properties label {
     cursor: pointer;
     opacity: var(--opacity-primary);

@@ -8,8 +8,8 @@ const workspace: Workspace<WorkspaceState> = {
   app: APP_NAME,
   name: 'Default public Fishing Map workspace',
   description: '',
-  startAt: new Date(2019, 0).toISOString(),
-  endAt: new Date(2020, 0).toISOString(),
+  startAt: new Date(2018, 0).toISOString(),
+  endAt: new Date(2019, 0).toISOString(),
   viewport: {
     zoom: 4.4,
     latitude: 43,

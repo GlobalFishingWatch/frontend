@@ -44,7 +44,7 @@ function HeatmapsSection(): React.ReactElement {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('common.fishing', 'Fishing')}</h2>
+        <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
         <div className={styles.sectionButtons}>
           <IconButton
             icon={bivariate ? 'split' : 'compare'}

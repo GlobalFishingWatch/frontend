@@ -7,11 +7,11 @@ import {
   WorkspaceUpsert,
 } from '@globalfishingwatch/api-types'
 import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
-import { AsyncReducerStatus, WorkspaceState } from 'types'
+import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
 import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
-import { selectVersion } from 'routes/routes.selectors'
+import { selectUrlDataviewInstances, selectVersion } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace } from 'features/app/app.selectors'
@@ -29,7 +29,9 @@ const initialState: WorkspaceSliceState = {
   custom: false,
 }
 
-export const getDatasetByDataview = (dataviews: (Dataview | DataviewInstance)[]) => {
+export const getDatasetByDataview = (
+  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+) => {
   return uniq(
     dataviews?.flatMap((dataviews) => {
       if (!dataviews.datasetsConfig) return []
@@ -41,19 +43,33 @@ export const getDatasetByDataview = (dataviews: (Dataview | DataviewInstance)[])
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
   async (workspaceId: number, { dispatch, getState }) => {
-    const version = selectVersion(getState() as RootState)
+    const state = getState() as RootState
+    const version = selectVersion(state)
+    const urlDataviewInstances = selectUrlDataviewInstances(state)
     const workspace = workspaceId
       ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`)
       : await import('./workspace.default').then((m) => m.default)
 
-    const dataviews = [
+    const dataviewIds = [
       ...(workspace.dataviews?.map(({ id }) => id as number) || []),
       ...uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId)),
     ]
-    if (dataviews) {
-      await dispatch(fetchDataviewsByIdsThunk(dataviews))
+
+    let dataviews = []
+    if (dataviewIds) {
+      const { payload }: any = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
+      if (payload?.length) {
+        dataviews = payload
+      }
     }
-    const datasets = getDatasetByDataview(workspace.dataviewInstances)
+    const dataviewIntances = [
+      ...dataviews,
+      ...(workspace.dataviewInstances || []),
+      ...(urlDataviewInstances || []),
+    ]
+
+    const datasets = getDatasetByDataview(dataviewIntances)
+
     if (datasets?.length) {
       await dispatch(fetchDatasetsByIdsThunk(datasets))
     }

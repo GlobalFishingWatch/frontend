@@ -46,6 +46,8 @@
   opacity: 0;
   transition: opacity 150ms linear;
   line-height: 1;
+  display: flex;
+  align-items: center;
 }
 
 .LayerPanel:hover .actions {
@@ -123,4 +125,8 @@
 
 .infoContentItem {
   margin-right: var(--space-M);
+}
+
+.actions .loadingIcon:hover {
+  cursor: default;
 }

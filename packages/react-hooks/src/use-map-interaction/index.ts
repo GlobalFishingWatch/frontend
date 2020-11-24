@@ -6,6 +6,7 @@ export { useMapHover, useMapClick, useFeatureState } from './use-map-interaction
 export type ExtendedFeatureVessel = {
   id: string
   hours: number
+  dataset: Dataset
   [key: string]: any
 }
 

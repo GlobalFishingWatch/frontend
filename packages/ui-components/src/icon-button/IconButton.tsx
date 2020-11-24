@@ -56,7 +56,11 @@ function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
         {...rest}
       >
         {loading ? (
-          <Spinner size="small" color={spinnerColor} />
+          <Spinner
+            inline
+            size={size === 'tiny' || size === 'small' ? 'tiny' : 'small'}
+            color={spinnerColor}
+          />
         ) : (
           <Fragment>
             {icon && <Icon icon={icon} type={type === 'warning' ? 'warning' : 'default'} />}

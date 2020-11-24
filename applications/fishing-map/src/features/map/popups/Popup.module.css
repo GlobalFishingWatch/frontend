@@ -90,12 +90,17 @@
   margin-bottom: var(--space-XS);
 }
 
+.vesselRowLegend {
+  opacity: var(--opacity-secondary);
+}
+
 .vesselName {
   flex: 1;
   text-align: left;
   height: 2rem;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-right: var(--space-S);
 }
 
 .vesselsMore {

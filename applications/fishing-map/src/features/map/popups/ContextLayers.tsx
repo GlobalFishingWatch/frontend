@@ -29,7 +29,7 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
             {wdpa_pid && (
               <a
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 href={`https://www.protectedplanet.net/${wdpa_pid}`}
               >
                 <IconButton icon="info" tooltip="See more" size="small" />
@@ -47,7 +47,7 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && link && (
           <div className={styles.rowActions}>
-            <a target="_blank" rel="noreferrer" href={link}>
+            <a target="_blank" rel="noopener noreferrer" href={link}>
               <IconButton icon="info" tooltip="See more" size="small" />
             </a>
           </div>
@@ -65,7 +65,7 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
             <IconButton icon="report" tooltip="Report (Coming soon)" size="small" />
             <a
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               href={`https://www.marineregions.org/eezdetails.php?mrgid=${mrgid}`}
             >
               <IconButton icon="info" tooltip="See more" size="small" />
