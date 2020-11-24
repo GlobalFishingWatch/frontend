@@ -27,6 +27,7 @@ export type ExtendedFeature = {
     col: number
     row: number
   }
+  datasetsIds?: string[]
   generatorContextLayer?: ContextLayerType | null
   vessels?: ExtendedFeatureVessel[]
   dataset?: Dataset

@@ -32,6 +32,7 @@ export default function gridded(
         chunkMainLayer.metadata.legend = getLegends(config, timeChunks.deltaInDays)
       }
       const chunkLayers: Layer[] = [chunkMainLayer]
+      const datasetsIds = config.sublayers?.flatMap((sublayer) => sublayer.datasets)
 
       if (config.interactive && timeChunk.active) {
         chunkLayers.push({
@@ -48,6 +49,7 @@ export default function gridded(
             generatorType: Type.HeatmapAnimated,
             generatorId: config.id,
             interactive: true,
+            datasetsIds,
           },
         })
         chunkLayers.push({

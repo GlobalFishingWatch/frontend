@@ -35,26 +35,28 @@ const getExtendedFeatures = (
     switch (generatorType) {
       case Generators.Type.HeatmapAnimated:
         const valuesAtFrame = properties[frame?.toString()] || properties[frame]
-        if (valuesAtFrame) {
-          let parsed = JSON.parse(valuesAtFrame)
-          if (extendedFeature.value === 0) break
-          if (!isArray(parsed)) parsed = [parsed]
-          return parsed.flatMap((value: any, i: number) => {
-            if (value === 0) return []
-            return [
-              {
-                ...extendedFeature,
-                temporalgrid: {
-                  sublayerIndex: i,
-                  col: properties._col,
-                  row: properties._row,
-                },
-                value,
+        if (!valuesAtFrame) return []
+
+        let parsed = JSON.parse(valuesAtFrame)
+        if (extendedFeature.value === 0) break
+        const datasetsIds = feature.layer.metadata?.datasetsIds
+
+        if (!isArray(parsed)) parsed = [parsed]
+        return parsed.flatMap((value: any, i: number) => {
+          if (value === 0) return []
+          return [
+            {
+              ...extendedFeature,
+              datasetsIds,
+              temporalgrid: {
+                sublayerIndex: i,
+                col: properties._col,
+                row: properties._row,
               },
-            ]
-          })
-        }
-        return []
+              value,
+            },
+          ]
+        })
       case Generators.Type.Context:
         return {
           ...extendedFeature,
