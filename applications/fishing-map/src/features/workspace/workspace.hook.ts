@@ -22,24 +22,30 @@ export const useDataviewInstancesConnect = () => {
   // TODO review if this is still needed or we switch to add / update
   const upsertDataviewInstance = useCallback(
     (dataviewInstance: Partial<UrlDataviewInstance>) => {
-      const otherUrlDataviewInstances = (urlDataviewInstances || [])?.filter(
-        (urlDataviewInstance) => urlDataviewInstance.id !== dataviewInstance.id
+      const currentDataviewInstance = urlDataviewInstances?.find(
+        (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
       )
-      const urlDataviewInstance =
-        urlDataviewInstances?.find(
-          (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
-        ) || ({} as UrlDataviewInstance)
-      const dataviewInstanceUpdated = {
-        ...urlDataviewInstance,
-        ...dataviewInstance,
-        config: {
-          ...urlDataviewInstance.config,
-          ...dataviewInstance.config,
-        },
-      } as UrlDataviewInstance
-      dispatchQueryParams({
-        dataviewInstances: [...otherUrlDataviewInstances, dataviewInstanceUpdated],
-      })
+      if (currentDataviewInstance) {
+        const dataviewInstances = urlDataviewInstances.map((urlDataviewInstance) => {
+          if (urlDataviewInstance.id !== dataviewInstance.id) return urlDataviewInstance
+          return {
+            ...urlDataviewInstance,
+            ...dataviewInstance,
+            config: {
+              ...urlDataviewInstance.config,
+              ...dataviewInstance.config,
+            },
+          }
+        })
+        dispatchQueryParams({ dataviewInstances })
+      } else {
+        dispatchQueryParams({
+          dataviewInstances: [
+            ...(urlDataviewInstances || []),
+            dataviewInstance as UrlDataviewInstance,
+          ],
+        })
+      }
     },
     [dispatchQueryParams, urlDataviewInstances]
   )
