@@ -17,7 +17,7 @@
   },
   "eez-areas": {
     "name": "EEZ",
-    "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org"
+    "description": "EEZ stands for Exclusive Economic Zone and is a state’s sovereign waters, which extend 200 nautical miles from the coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org"
   },
   "tuna-rfmo": {
     "name": "Tuna RFMO",
