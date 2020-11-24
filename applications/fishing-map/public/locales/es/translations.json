@@ -1,10 +1,10 @@
 {
   "common": {
+    "activity": "Activity",
     "context_area_plural": "Areas de contexto",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard",
     "dismiss": "Cancelar",
     "events": "Eventos",
-    "fishing": "Pesca",
     "hour": "Hora",
     "hour_plural": "Horas",
     "login": "Login",
@@ -13,7 +13,8 @@
     "open_menu": "Abrir menú",
     "save": "Guardar",
     "share": "Haz click para compartir tu vista actual",
-    "vessel_plural": "Embarcaciones"
+    "vessel_plural": "Embarcaciones",
+    "fishing": "Pesca"
   },
   "errors": {
     "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo"
@@ -26,6 +27,7 @@
     "info_close": "Oculta la información",
     "info_open": "Muestra la información",
     "remove": "Borra la capa",
+    "source": "Source",
     "source_plural": "Sources",
     "toggle_visibility": "Cambia la visibilidad de la capa",
     "toggleCombinationMode": {
@@ -55,8 +57,10 @@
     "callsign": "Callsing",
     "first_transmission_date": "Fecha primera transmisión",
     "flag": "Bandera",
+    "fleet": "Fleet",
     "imo": "IMO",
     "last_transmission_date": "Fecha última transmisión",
+    "loading": "Loading vessel track",
     "mmsi": "MMSI",
     "search": {
       "close": "Cierra la busqueda",
