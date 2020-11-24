@@ -1,10 +1,10 @@
 {
   "common": {
+    "activity": "Activity",
     "context_area_plural": "Calques de contexte",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard",
     "dismiss": "Fermer",
     "events": "Évènements",
-    "fishing": "Pêche",
     "hour": "Heure",
     "hour_plural": "Heures",
     "login": "Se connecter",
@@ -13,7 +13,8 @@
     "open_menu": "Ouvrir le menu",
     "save": "Enregistrer",
     "share": "Partager la vue actuelle",
-    "vessel_plural": "Navires"
+    "vessel_plural": "Navires",
+    "fishing": "Pêche"
   },
   "errors": {
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement"
@@ -26,6 +27,7 @@
     "info_close": "Masquer les infos",
     "info_open": "Infos",
     "remove": "Supprimer le calque",
+    "source": "Source",
     "source_plural": "Sources",
     "toggle_visibility": "Afficher/Masquer le calque",
     "toggleCombinationMode": {
@@ -55,8 +57,10 @@
     "callsign": "Callsign",
     "first_transmission_date": "Première date de transmission",
     "flag": "Drapeau",
+    "fleet": "Fleet",
     "imo": "IMO",
     "last_transmission_date": "Dernière date de transmission",
+    "loading": "Loading vessel track",
     "mmsi": "MMSI",
     "search": {
       "close": "Fermer la recherche",
