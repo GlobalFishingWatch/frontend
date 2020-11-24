@@ -139,10 +139,7 @@ export const selectDataviewInstancesResolved = createSelector(
         const datasetsConfig = (dataview.datasetsConfig || [])?.map((datasetConfig) => {
           const instanceDatasetConfig = dataviewInstance.datasetsConfig?.find(
             (instanceDatasetConfig) => {
-              return (
-                datasetConfig.datasetId === instanceDatasetConfig.datasetId &&
-                datasetConfig.endpoint === instanceDatasetConfig.endpoint
-              )
+              return datasetConfig.endpoint === instanceDatasetConfig.endpoint
             }
           )
           if (!instanceDatasetConfig) return datasetConfig
@@ -151,6 +148,7 @@ export const selectDataviewInstancesResolved = createSelector(
           // so the result will be overriding the default dataview config
           return {
             ...datasetConfig,
+            ...instanceDatasetConfig,
             query: uniqBy(
               [...(instanceDatasetConfig.query || []), ...(datasetConfig.query || [])],
               'id'
@@ -273,7 +271,7 @@ export const selectTemporalgridDatasets = createSelector(
   }
 )
 
-export const getRelatedDatasetByType = (dataset: Dataset, datasetType: DatasetTypes) => {
+export const getRelatedDatasetByType = (dataset?: Dataset, datasetType?: DatasetTypes) => {
   return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)
 }
 
@@ -310,19 +308,19 @@ export const selectDataviewsResourceQueries = createSelector(
       if (dataview.config?.type !== Generators.Type.Track || dataview.deleted) {
         return []
       }
-      let trackQuery: any = [] // initialized as empty array to be filter by flatMap if not used
+
+      let trackQuery: any = [] // initialized as empty array to be filtered by flatMap if not used
       if (dataview.config.visible === true) {
         const trackResource = resolveDataviewDatasetResource(dataview, {
           type: TRACKS_DATASET_TYPE,
         })
-        if (!trackResource.url || !trackResource.dataset || !trackResource.datasetConfig) {
-          return []
-        }
-        trackQuery = {
-          dataviewId: dataview.dataviewId as number,
-          url: trackResource.url,
-          datasetType: trackResource.dataset.type,
-          datasetConfig: trackResource.datasetConfig,
+        if (trackResource.url && trackResource.dataset && trackResource.datasetConfig) {
+          trackQuery = {
+            dataviewId: dataview.dataviewId as number,
+            url: trackResource.url,
+            datasetType: trackResource.dataset.type,
+            datasetConfig: trackResource.datasetConfig,
+          }
         }
       }
 
