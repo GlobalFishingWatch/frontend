@@ -1,6 +1,10 @@
 import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { MultiSelect, MultiSelectOnChange } from '@globalfishingwatch/ui-components'
+import {
+  MultiSelect,
+  MultiSelectOnChange,
+  MultiSelectOption,
+} from '@globalfishingwatch/ui-components'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { UrlDataviewInstance } from 'types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -9,6 +13,11 @@ import { getSourcesOptionsInDataview, getSourcesSelectedInDataview } from './hea
 
 type FiltersProps = {
   dataview: UrlDataviewInstance
+}
+
+const getPlaceholderBySelections = (selections: MultiSelectOption[]): string => {
+  if (!selections?.length) return 'Select an option'
+  return selections.length > 1 ? `${selections.length} selected` : selections[0].label
 }
 
 function Filters({ dataview }: FiltersProps): React.ReactElement {
@@ -54,10 +63,18 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
     })
   }
 
+  const onCleanFilterClick = () => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: { filters: [] },
+    })
+  }
+
   return (
     <Fragment>
       <MultiSelect
         label={t('layer.source_plural', 'Sources')}
+        placeholder={getPlaceholderBySelections(sourcesSelected)}
         options={sourceOptions}
         selectedOptions={sourcesSelected}
         onSelect={onSelectSourceClick}
@@ -65,11 +82,13 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
       />
       <MultiSelect
         label={t('layer.flag_state_plural', 'Flag States')}
+        placeholder={getPlaceholderBySelections(fishingFiltersOptions)}
         options={flags}
         selectedOptions={fishingFiltersOptions}
         className={styles.multiSelect}
         onSelect={onSelectFilterClick}
         onRemove={onRemoveFilterClick}
+        onCleanClick={onCleanFilterClick}
       />
     </Fragment>
   )
