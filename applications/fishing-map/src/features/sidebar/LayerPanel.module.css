@@ -18,7 +18,7 @@
 
 .expandedContainerOpen {
   z-index: 1;
-  filter: var(--filter-drop-shadow);
+  filter: drop-shadow(0 0 1rem rgba(var(--primary-blue-rgb), 0.4));
 }
 
 .header {
@@ -29,7 +29,7 @@
 }
 
 .expandedContainerOpen .header {
-  background-color: var(--color-white);
+  background-color: var(--color-off-white);
 }
 
 .name {
@@ -56,7 +56,7 @@
 
 .active {
   opacity: 1;
-  z-index: 1
+  z-index: 1;
 }
 
 .expandedContainer {
@@ -72,7 +72,7 @@
 .expandedContainerOpen .expandedContainer {
   padding: var(--space-S);
   padding-bottom: var(--space-M);
-  background: var(--color-white);
+  background-color: var(--color-off-white);
   transform: translateY(4.2rem);
   opacity: 1;
   border-top: var(--border);
@@ -96,7 +96,7 @@
   opacity: 1;
 }
 
-.expanded::after{
+.expanded::after {
   position: absolute;
   width: 36%;
   height: 36%;
@@ -104,7 +104,7 @@
   border-right: var(--border);
   top: 100%;
   left: 50%;
-  background-color: var(--color-white);
+  background-color: var(--color-off-white);
   transform: translateX(-50%) rotateZ(-45deg);
   transform-origin: center;
   opacity: 1;
