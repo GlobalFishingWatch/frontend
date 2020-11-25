@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import uniqBy from 'lodash/uniqBy'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Vessel, APISearch } from '@globalfishingwatch/api-types'
@@ -8,7 +9,7 @@ import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
 import { TRACKS_DATASET_TYPE } from 'data/datasets'
 
-export type VesselWithDatasets = Vessel & { dataset: string; trackDatasetId?: string }
+export type VesselWithDatasets = Vessel & { dataset: Dataset; trackDatasetId?: string }
 
 interface SearchState {
   status: AsyncReducerStatus
@@ -46,15 +47,17 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           if (!vessel) return []
 
           const infoDataset = selectDatasetById(dataset)(state)
+          if (!infoDataset) return []
+
           const trackDatasetId = getRelatedDatasetByType(infoDataset, TRACKS_DATASET_TYPE)?.id
           return {
             ...vessel,
-            dataset,
+            dataset: infoDataset,
             trackDatasetId,
           }
         })
       })
-      return resultsFlat
+      return uniqBy(resultsFlat, 'id')
     }
   }
 )

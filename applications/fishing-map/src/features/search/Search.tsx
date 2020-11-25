@@ -63,7 +63,7 @@ function Search() {
     if (selection && selection.dataset && selection.trackDatasetId) {
       const vesselDataviewInstance = getVesselDataviewInstance(selection, {
         trackDatasetId: selection.trackDatasetId as string,
-        infoDatasetId: selection.dataset,
+        infoDatasetId: selection.dataset.id,
       })
       batch(() => {
         upsertDataviewInstance(vesselDataviewInstance)
@@ -157,10 +157,10 @@ function Search() {
                         </div>
                       )}
 
-                      {dataset && (
+                      {dataset?.name && (
                         <div className={styles.property}>
                           <label>{t('layer.source', 'Source')}</label>
-                          <span>{dataset}</span>
+                          <span>{dataset.name}</span>
                         </div>
                       )}
                     </div>
