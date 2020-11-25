@@ -211,9 +211,12 @@ class Timeline extends PureComponent {
     }
     const x = clientX - outerX
     const isMovingInside = this.node.contains(event.target) && x > innerStartPx && x < innerEndPx
-    if (isMovingInside) {
+    const isNodeInside = event.target.contains(this.node)
+    if (isMovingInside || isNodeInside) {
       const isDay = !isMoreThanADay(start, end)
       this.throttledMouseMove(x, this.outerScale.invert, isDay)
+    } else {
+      this.notifyMouseLeave()
     }
 
     const isDraggingInner = dragging === DRAG_INNER
