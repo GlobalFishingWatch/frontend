@@ -67,37 +67,19 @@ const TimebarSettings = () => {
       {optionsPanelOpen && (
         <div className={styles.optionsContainer}>
           {activeHeatmapDataviews && activeHeatmapDataviews.length > 0 && (
-            <div>
-              <Radio
-                active={timebarVisualisation === TimebarVisualisations.Heatmap}
-                onClick={setHeatmapActive}
-              />
-              <span
-                className={cx(styles.option, {
-                  [styles.active]: timebarVisualisation === TimebarVisualisations.Heatmap,
-                })}
-                onClick={setHeatmapActive}
-              >
-                Apparent Fishing Effort
-              </span>
-            </div>
+            <Radio
+              label={t('common.apparentFishing', 'Apparent Fishing Effort')}
+              active={timebarVisualisation === TimebarVisualisations.Heatmap}
+              onClick={setHeatmapActive}
+            />
           )}
           {activeVesselDataviews && activeVesselDataviews.length > 0 && (
             <Fragment>
-              <div>
-                <Radio
-                  active={timebarVisualisation === TimebarVisualisations.Vessel}
-                  onClick={setVesselActive}
-                />
-                <span
-                  className={cx(styles.option, {
-                    [styles.active]: timebarVisualisation === TimebarVisualisations.Vessel,
-                  })}
-                  onClick={setVesselActive}
-                >
-                  {t('vessel.tracks', 'Vessel Tracks')}
-                </span>
-              </div>
+              <Radio
+                label={t('vessel.tracks', 'Vessel Tracks')}
+                active={timebarVisualisation === TimebarVisualisations.Vessel}
+                onClick={setVesselActive}
+              />
               {timebarVisualisation === TimebarVisualisations.Vessel && (
                 <div className={styles.vesselTrackOptions}>
                   <Select

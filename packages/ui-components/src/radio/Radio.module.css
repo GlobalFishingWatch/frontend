@@ -1,3 +1,12 @@
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.inline {
+  display: inline-flex;
+}
+
 .Radio {
   width: 1.4rem;
   height: 1.4rem;
@@ -44,4 +53,17 @@
 .Radio:not(:disabled):not([aria-checked='true']):hover .nib,
 .Radio:not(:disabled):not([aria-checked='true']):focus .nib {
   background-color: var(--color-primary-blue);
+}
+
+.Label {
+  cursor: pointer;
+  font: var(--font-M);
+  margin-left: var(--space-XS);
+  opacity: var(--opacity-secondary);
+  color: var(--color-primary-blue);
+  text-transform: none;
+}
+
+.active {
+  opacity: var(--opacity-primary);
 }
