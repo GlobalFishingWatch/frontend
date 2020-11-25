@@ -17,6 +17,7 @@ interface SelectProps {
   onCleanClick?: (e: React.MouseEvent) => void
   className?: string
   direction?: 'bottom' | 'top'
+  disabled?: boolean
 }
 
 const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOption) => {
@@ -34,6 +35,7 @@ function Select(props: SelectProps) {
     onCleanClick,
     className,
     direction = 'bottom',
+    disabled = false,
   } = props
   const {
     isOpen,
@@ -46,7 +48,7 @@ function Select(props: SelectProps) {
   } = useSelect<SelectOption | null>({
     items: options,
     onSelectedItemChange: ({ selectedItem }) => {
-      if (selectedItem) {
+      if (!disabled && selectedItem) {
         handleChange(selectedItem)
         selectItem(null)
       }
@@ -63,7 +65,9 @@ function Select(props: SelectProps) {
     },
     [onRemove, onSelect, selectedOption]
   )
+
   const hasSelectedOptions = selectedOption !== undefined
+
   return (
     <div>
       <label {...getLabelProps()}>{label}</label>
@@ -100,11 +104,12 @@ function Select(props: SelectProps) {
                     className={cx(styles.optionItem, {
                       [styles.selected]: selected,
                       [styles.highlight]: highlight,
+                      [styles.disabled]: disabled,
                     })}
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    {highlight && <Icon icon={selected ? 'close' : 'tick'} />}
+                    {highlight && !disabled && <Icon icon={selected ? 'close' : 'tick'} />}
                   </li>
                 </Tooltip>
               )

@@ -80,3 +80,7 @@
 .selected {
   background-color: var(--color-terthiary-blue);
 }
+
+.disabled {
+  cursor: default;
+}
