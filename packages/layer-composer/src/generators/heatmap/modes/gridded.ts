@@ -60,13 +60,15 @@ export default function gridded(
             'line-width': [
               'case',
               ['boolean', ['feature-state', 'hover'], false],
-              3,
+              4,
               ['boolean', ['feature-state', 'click'], false],
-              3,
+              4,
               0,
             ],
+            'line-offset': -2,
           },
           metadata: {
+            interactive: false,
             group: Group.Heatmap,
           },
         })

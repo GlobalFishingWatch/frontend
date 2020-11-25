@@ -54,7 +54,7 @@ const getDefaultContextHighlight = (): Partial<LineLayer> => {
       'line-join': 'round',
     },
     metadata: {
-      interactive: true,
+      interactive: false,
       group: Group.OutlinePolygonsHighlighted,
     },
   }
