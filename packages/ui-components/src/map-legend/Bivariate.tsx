@@ -2,7 +2,7 @@ import React, { memo } from 'react'
 import cx from 'classnames'
 import styles from './Bivariate.module.css'
 import BivariateArrows from './Bivariate-arrows'
-import { LegendLayerBivariate } from './'
+import { LegendLayerBivariate, roundLegendNumber, formatLegendValue } from './'
 
 type BivariateLegendProps = {
   layer: LegendLayerBivariate
@@ -121,37 +121,37 @@ function BivariateLegend({ layer, className, labelComponent }: BivariateLegendPr
                     <BivariateArrows />
                     <text>
                       <tspan x="14" y="68">
-                        {layer.sublayersBreaks[0][0]}
+                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[0][0]))}
                       </tspan>
                     </text>
                     <text>
                       <tspan x="28" y="46">
-                        {layer.sublayersBreaks[0][1]}
+                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[0][1]))}
                       </tspan>
                     </text>
                     <text>
                       <tspan x="42" y="31">
-                        {layer.sublayersBreaks[0][2]}
+                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[0][2]))}
                       </tspan>
                     </text>
                     <text>
                       <tspan x="56" y="15">
-                        {layer.sublayersBreaks[0][3]}
+                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[0][3]))}
                       </tspan>
                     </text>
                     <text>
                       <tspan x="28" y="90">
-                        {layer.sublayersBreaks[1][1]}
+                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[1][1]))}
                       </tspan>
                     </text>
                     <text>
                       <tspan x="42" y="105">
-                        {layer.sublayersBreaks[1][2]}
+                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[1][2]))}
                       </tspan>
                     </text>
                     <text>
                       <tspan x="56" y="120">
-                        {layer.sublayersBreaks[1][3]}
+                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[1][3]))}
                       </tspan>
                     </text>
                   </g>

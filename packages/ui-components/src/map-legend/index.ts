@@ -15,3 +15,11 @@ export type LegendLayer = LayerMetadataLegend & {
 export type LegendLayerBivariate = LayerMetadataLegendBivariate & {
   color: string
 }
+
+export const roundLegendNumber = (number: number) => {
+  return number > 1 ? Math.floor(number) : number
+}
+
+export const formatLegendValue = (number: number) => {
+  return number >= 1000 ? `${(number / 1000).toFixed(1)}k` : number
+}

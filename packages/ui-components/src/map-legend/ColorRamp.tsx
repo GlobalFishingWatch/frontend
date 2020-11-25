@@ -2,7 +2,7 @@ import React, { Fragment, memo, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
 import styles from './MapLegend.module.css'
-import { LegendLayer } from '.'
+import { formatLegendValue, LegendLayer, roundLegendNumber } from '.'
 
 type ColorRampLegendProps = {
   layer: LegendLayer
@@ -94,7 +94,8 @@ function ColorRampLegend({
           <div className={styles.stepsContainer}>
             {cleanRamp.map(([value], i) => {
               if (value === null) return null
-              const roundValue = value > 1 ? Math.floor(value as number) : (value as number)
+              const roundValue = roundLegendNumber(value as number)
+              const valueLabel = formatLegendValue(roundValue)
               if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
               return (
                 <span
@@ -102,8 +103,7 @@ function ColorRampLegend({
                   style={{ left: `${(i * 100) / (ramp.length - 1)}%` }}
                   key={i}
                 >
-                  {(i === ramp.length - 1 && !isNaN(roundValue) ? '≥ ' : '') +
-                    (roundValue >= 1000 ? `${(roundValue / 1000).toFixed(1)}k` : roundValue)}
+                  {(i === ramp.length - 1 && !isNaN(roundValue) ? '≥ ' : '') + valueLabel}
                 </span>
               )
             })}
