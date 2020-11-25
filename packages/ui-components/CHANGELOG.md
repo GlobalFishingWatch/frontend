@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.8.0
+
+### Minor Changes
+
+- fix legend values, multiselection interaction, includo radio label
+
 ## 2.7.0
 
 ### Minor Changes

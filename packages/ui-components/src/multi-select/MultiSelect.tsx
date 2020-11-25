@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, memo } from 'react'
+import React, { useCallback, useState, useMemo, memo, Fragment } from 'react'
 import {
   useMultipleSelection,
   useCombobox,
@@ -6,10 +6,9 @@ import {
   UseComboboxStateChangeTypes,
 } from 'downshift'
 import cx from 'classnames'
-import Icon from '../icon'
+import Icon, { IconType } from '../icon'
 import IconButton from '../icon-button'
 import Tooltip from '../tooltip'
-import TagList from '../tag-list'
 import InputText from '../input-text'
 import styles from '../select/Select.module.css'
 import multiSelectStyles from './MultiSelect.module.css'
@@ -26,22 +25,20 @@ interface MultiSelectProps {
   className?: string
 }
 
+const getPlaceholderBySelections = (selections: MultiSelectOption[]): string => {
+  if (!selections?.length) return 'Select an option'
+  return selections.length > 1 ? `${selections.length} selected` : selections[0].label
+}
+
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
   return selectedItems !== null ? selectedItems.some((selected) => selected.id === item.id) : false
 }
 
-const getItemsFiltered = (
-  items: MultiSelectOption[],
-  selectedItems: MultiSelectOption[],
-  filter?: string
-) => {
-  const hasSelectedItems = selectedItems?.length
-  if (!hasSelectedItems && !filter) return items
+const getItemsFiltered = (items: MultiSelectOption[], filter?: string) => {
+  if (!filter) return items
 
-  return items.filter(
-    (item) =>
-      (!hasSelectedItems || selectedItems.every(({ id }) => item.id !== id)) &&
-      (!filter || item.label.toLowerCase().startsWith(filter.toLowerCase()))
+  return (items || []).filter(
+    (item) => !filter || item.label.toLowerCase().startsWith(filter.toLowerCase())
   )
 }
 
@@ -50,7 +47,7 @@ function MultiSelect(props: MultiSelectProps) {
     label = '',
     options,
     selectedOptions = [],
-    placeholder = 'Select an option',
+    placeholder,
     className = '',
     onSelect,
     onRemove,
@@ -89,11 +86,7 @@ function MultiSelect(props: MultiSelectProps) {
   )
 
   const [inputValue, setInputValue] = useState('')
-  const filteredItems = useMemo(() => getItemsFiltered(options, selectedOptions, inputValue), [
-    inputValue,
-    options,
-    selectedOptions,
-  ])
+  const filteredItems = useMemo(() => getItemsFiltered(options, inputValue), [options, inputValue])
 
   const { getDropdownProps } = useMultipleSelection({ selectedItems: selectedOptions })
   const {
@@ -158,6 +151,7 @@ function MultiSelect(props: MultiSelectProps) {
   })
 
   const hasSelectedOptions = selectedOptions && selectedOptions.length > 0
+
   return (
     <div className={className}>
       {label !== undefined && <label {...getLabelProps()}>{label}</label>}
@@ -166,13 +160,6 @@ function MultiSelect(props: MultiSelectProps) {
           className={cx(styles.placeholderContainer, multiSelectStyles.placeholderContainer)}
           {...getComboboxProps()}
         >
-          {hasSelectedOptions && (
-            <TagList
-              className={multiSelectStyles.tagList}
-              tags={selectedOptions}
-              onRemove={onRemove && handleRemove}
-            />
-          )}
           <InputText
             {...getInputProps({
               ...getDropdownProps({
@@ -186,7 +173,7 @@ function MultiSelect(props: MultiSelectProps) {
             })}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder={placeholder}
+            placeholder={placeholder || getPlaceholderBySelections(selectedOptions)}
             className={multiSelectStyles.input}
           />
         </div>
@@ -206,6 +193,14 @@ function MultiSelect(props: MultiSelectProps) {
             filteredItems.length > 0 &&
             filteredItems.map((item, index) => {
               const highlight = highlightedIndex === index
+              const isSelected =
+                hasSelectedOptions && selectedOptions.some(({ id }) => item.id === id)
+              const icon =
+                highlight && isSelected
+                  ? 'close'
+                  : highlight || isSelected
+                  ? 'tick'
+                  : ('' as IconType)
               return (
                 <Tooltip key={item.id} content={item.tooltip} placement="top-start">
                   <li
@@ -215,7 +210,7 @@ function MultiSelect(props: MultiSelectProps) {
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    {highlight && <Icon icon="tick" />}
+                    {icon && <Icon icon={icon} />}
                   </li>
                 </Tooltip>
               )

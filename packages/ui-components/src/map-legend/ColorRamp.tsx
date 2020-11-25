@@ -94,7 +94,7 @@ function ColorRampLegend({
           <div className={styles.stepsContainer}>
             {cleanRamp.map(([value], i) => {
               if (value === null) return null
-              const roundValue = Math.floor(value as number)
+              const roundValue = value > 1 ? Math.floor(value as number) : (value as number)
               if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
               return (
                 <span

@@ -66,12 +66,7 @@ const TimebarWrapper = () => {
               <Fragment>
                 <TimebarTracks key="tracks" tracks={tracks} />
                 {timebarGraph === TimebarGraphs.Speed && (
-                  <TimebarActivity
-                    key="trackActivity"
-                    // opacity={0.4}
-                    // curve="curveBasis"
-                    graphTracks={tracksGraph}
-                  />
+                  <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
                 )}
               </Fragment>
             )}

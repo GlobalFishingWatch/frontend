@@ -127,13 +127,14 @@ Activity.propTypes = {
   graphTracks: PropTypes.arrayOf(
     PropTypes.shape({
       color: PropTypes.string,
-      segmentsWithCurrentFeature: PropTypes.arrayOf(
+      segmentsWithCurrentFeature: PropTypes.array,
+      /* arrayOf but removed as were reporting false positives
         PropTypes.shape({
           id: PropTypes.string,
           date: PropTypes.number,
           value: PropTypes.number,
         })
-      ),
+      */
       maxValue: PropTypes.number,
     })
   ).isRequired,

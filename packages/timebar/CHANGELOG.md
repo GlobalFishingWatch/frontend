@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 1.1.4
+
+### Patch Changes
+
+- fix tooltip date and remove proptypes false warning
+
 ## 1.1.3
 
 ### Patch Changes
