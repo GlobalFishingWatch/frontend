@@ -41,7 +41,9 @@ const TimebarSettings = () => {
     dispatchQueryParams({ timebarEvents: o.id as TimebarEvents })
   }
   const setGraphOption = (o: SelectOption) => {
-    dispatchQueryParams({ timebarGraph: o.id as TimebarGraphs })
+    if (!o.label.includes('Coming soon')) {
+      dispatchQueryParams({ timebarGraph: o.id as TimebarGraphs })
+    }
   }
   const removeEventsOption = () => {
     dispatchQueryParams({ timebarEvents: TimebarEvents.None })
@@ -50,7 +52,6 @@ const TimebarSettings = () => {
     dispatchQueryParams({ timebarGraph: TimebarGraphs.None })
   }
   const expandedContainerRef = useClickedOutside(closeOptions)
-
   if (!timebarVisualisation) return null
   return (
     <div className={styles.container} ref={expandedContainerRef}>
@@ -83,12 +84,14 @@ const TimebarSettings = () => {
               {timebarVisualisation === TimebarVisualisations.Vessel && (
                 <div className={styles.vesselTrackOptions}>
                   <Select
-                    label={t('common.events', 'Events')}
+                    // label={t('common.events', 'Events')}
+                    label="Events (Coming soon)"
                     options={TIMEBAR_EVENT_OPTIONS}
                     selectedOption={TIMEBAR_EVENT_OPTIONS.find((o) => o.id === timebarEvents)}
                     onSelect={setEventsOption}
                     onRemove={removeEventsOption}
                     direction="top"
+                    disabled
                   />
                   <Select
                     label={t('timebar.graph', 'Graph')}
