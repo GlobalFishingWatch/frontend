@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.16.3
+
+### Patch Changes
+
+- fix heatmap animated click interaction
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.9.2
+
 ## 0.16.2
 
 ### Patch Changes

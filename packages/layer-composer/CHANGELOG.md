@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.9.2
+
+### Patch Changes
+
+- fix heatmap animated click interaction
+
 ## 4.9.1
 
 ### Patch Changes
