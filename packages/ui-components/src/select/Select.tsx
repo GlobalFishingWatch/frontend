@@ -98,18 +98,19 @@ function Select(props: SelectProps) {
             options.map((item, index) => {
               const highlight = highlightedIndex === index
               const selected = isItemSelected(selectedOption, item)
+              const itemDisabled = disabled || item.disabled
               return (
                 <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
                   <li
                     className={cx(styles.optionItem, {
                       [styles.selected]: selected,
                       [styles.highlight]: highlight,
-                      [styles.disabled]: disabled,
+                      [styles.disabled]: itemDisabled,
                     })}
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    {highlight && !disabled && <Icon icon={selected ? 'close' : 'tick'} />}
+                    {highlight && !itemDisabled && <Icon icon={selected ? 'close' : 'tick'} />}
                   </li>
                 </Tooltip>
               )

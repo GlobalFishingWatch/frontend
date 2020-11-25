@@ -86,6 +86,7 @@ export const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = [
   {
     id: 'depth',
     label: 'Depth (Coming soon)',
+    disabled: true,
   },
   {
     id: 'none',

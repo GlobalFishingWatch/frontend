@@ -5,6 +5,7 @@ export type SelectOption<T = SelectOptionId> = {
   id: T
   label: string
   tooltip?: string
+  disabled?: boolean
 }
 /**
  * Callback on selecting or removing options
