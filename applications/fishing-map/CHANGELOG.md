@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.16.5
+
+### Patch Changes
+
+- update disabled styles in iconbutton ui-component
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.8.2
+
 ## 0.16.4
 
 ### Patch Changes

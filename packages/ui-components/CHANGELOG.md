@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.8.2
+
+### Patch Changes
+
+- update disabled styles in iconbutton ui-component
+
 ## 2.8.1
 
 ### Patch Changes
