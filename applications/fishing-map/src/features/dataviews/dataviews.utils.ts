@@ -1,5 +1,8 @@
 import { DataviewInstance } from '@globalfishingwatch/api-types'
-import { TrackColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
+import {
+  TrackColorBarOptions,
+  HeatmapColorBarOptions,
+} from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_VESSEL_DATAVIEW_ID } from 'data/datasets'
 
@@ -36,11 +39,17 @@ export const getVesselDataviewInstance = (
   return vesselDataviewInstance
 }
 
-export const getHeatmapDataviewInstance = (): DataviewInstance<Generators.Type> => {
+export const getHeatmapDataviewInstance = (
+  usedRamps: string[] = []
+): DataviewInstance<Generators.Type> => {
+  const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamps.includes(option.id))
+  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : HeatmapColorBarOptions[0]
   const vesselDataviewInstance = {
     id: `fishing-${Date.now()}`,
-    // TODO choose next heatmap color available different from existing dataviews
-    config: {},
+    config: {
+      color: colorOption.value,
+      colorRamp: colorOption.id,
+    },
     dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
   }
   return vesselDataviewInstance

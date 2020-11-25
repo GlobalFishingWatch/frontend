@@ -8,19 +8,23 @@ import styles from 'features/sidebar/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectBivariate } from 'features/app/app.selectors'
+import { getHeatmapDataviewInstance } from 'features/dataviews/dataviews.utils'
 import LayerPanel from './HeatmapLayerPanel'
 
 function HeatmapsSection(): React.ReactElement {
   const { t } = useTranslation()
   const dataviews = useSelector(selectTemporalgridDataviews)
-  const { removeDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
-  const onAddClick = useCallback(() => {
-    removeDataviewInstance('fishing-1')
-  }, [removeDataviewInstance])
-
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
-  const onToggleCombinationMode = () => {
+
+  const onAddClick = useCallback(() => {
+    const usedRamps = dataviews?.flatMap((dataview) => dataview.config?.colorRamp || [])
+    const dataviewInstance = getHeatmapDataviewInstance(usedRamps)
+    upsertDataviewInstance(dataviewInstance)
+  }, [dataviews, upsertDataviewInstance])
+
+  const onToggleCombinationMode = useCallback(() => {
     const newBivariateValue = !bivariate
     dispatchQueryParams({ bivariate: newBivariateValue })
     // automatically set 2 first animated heatmaps to visible
@@ -39,8 +43,17 @@ function HeatmapsSection(): React.ReactElement {
         }
       })
     }
-  }
+  }, [bivariate, dataviews, dispatchQueryParams, upsertDataviewInstance])
 
+  let bivariateTooltip = bivariate
+    ? t('layer.toggleCombinationMode.compare', 'Show fishing layers in comparison mode')
+    : t('layer.toggleCombinationMode.bivariate', 'Show fishing layers in bivariate mode')
+  if (dataviews?.length !== 2) {
+    bivariateTooltip = t(
+      'layer.toggleCombinationMode.disabled',
+      'Bivariate mode is only availabe with two activity layers'
+    )
+  }
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -51,14 +64,7 @@ function HeatmapsSection(): React.ReactElement {
             type="border"
             size="medium"
             disabled={dataviews?.length !== 2 ?? true}
-            tooltip={
-              bivariate
-                ? t('layer.toggleCombinationMode.compare', 'Show fishing layers in comparison mode')
-                : t(
-                    'layer.toggleCombinationMode.bivariate',
-                    'Show fishing layers in bivariate mode'
-                  )
-            }
+            tooltip={bivariateTooltip}
             tooltipPlacement="top"
             onClick={onToggleCombinationMode}
           />
@@ -66,10 +72,9 @@ function HeatmapsSection(): React.ReactElement {
             icon="plus"
             type="border"
             size="medium"
-            tooltip="Add layer"
+            tooltip={t('layer.add', 'Add layer')}
             tooltipPlacement="top"
             onClick={onAddClick}
-            disabled={dataviews && dataviews.length > 0}
           />
         </div>
       </div>
