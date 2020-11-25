@@ -100,10 +100,7 @@ export const getGeneratorsConfig = createSelector(
 
       if (dataview.config?.type === Generators.Type.Track) {
         // Inject highligtedTime
-        generator.config = {
-          ...generator.config,
-          highlightedTime,
-        }
+        generator.highlightedTime = highlightedTime
         // Try to retrieve resource if it exists
         const { url } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })
         if (url && resources[url]) {
@@ -133,7 +130,6 @@ export const getGeneratorsConfig = createSelector(
           }
         }
       }
-
       return generator
     })
 
