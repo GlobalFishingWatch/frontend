@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.16.4
+
+### Patch Changes
+
+- 2a7e6cf: fix bivariate legend values
+- Updated dependencies [2a7e6cf]
+  - @globalfishingwatch/ui-components@2.8.1
+
 ## 0.16.3
 
 ### Patch Changes
