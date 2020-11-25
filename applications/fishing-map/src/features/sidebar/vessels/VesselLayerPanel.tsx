@@ -56,7 +56,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const onFitBoundsClick = useCallback(() => {
     if (trackResource?.data) {
       const filteredSegments = filterSegmentsByTimerange(trackResource?.data, { start, end })
-      const bbox = segmentsToBbox(filteredSegments)
+      const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
       const { width, height } = mapInstance?._canvas || {}
       if (width && height && bbox) {
         const [minLng, minLat, maxLng, maxLat] = bbox
@@ -70,6 +70,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           padding: 60,
         })
         setMapCoordinates({ latitude, longitude, zoom })
+      } else {
+        // TODO use prompt to ask user if wants to update the timerange to fit the track
+        alert('The vessel has no activity in your selected timerange')
       }
     }
   }, [mapInstance, setMapCoordinates, trackResource, start, end])
