@@ -15,13 +15,14 @@ const TunaRfmoLinksById: Record<string, string> = {
 
 function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false) {
   if (!feature.value) return null
+  const { gfw_id } = feature.properties
 
   // ContextLayerType.MPA but enums doesn't work in CRA for now
   if (feature.layer === 'mpa') {
     const { wdpa_pid } = feature.properties
     const label = `${feature.value} - ${feature.properties.desig}`
     return (
-      <div className={styles.row} key={label}>
+      <div className={styles.row} key={label || gfw_id}>
         <span className={styles.rowText}>{label}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
@@ -43,7 +44,7 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
   if (feature.layer === 'tuna-rfmo') {
     const link = TunaRfmoLinksById[feature.value]
     return (
-      <div className={styles.row} key={feature.value}>
+      <div className={styles.row} key={feature.value || gfw_id}>
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && link && (
           <div className={styles.rowActions}>
@@ -58,7 +59,7 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
   if (feature.layer === 'eez-areas') {
     const { mrgid } = feature.properties
     return (
-      <div className={styles.row} key={mrgid}>
+      <div className={styles.row} key={mrgid || gfw_id}>
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
@@ -75,7 +76,7 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
       </div>
     )
   }
-  return <div key={feature.value}>{feature.value}</div>
+  return <div key={feature.value || gfw_id}>{feature.value}</div>
 }
 
 type ContextTooltipRowProps = {
