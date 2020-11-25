@@ -49,9 +49,14 @@ function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
         ref={ref}
-        className={cx(styles.iconButton, styles[type], styles[`${size}Size`], className)}
-        onClick={onClick}
-        disabled={disabled}
+        className={cx(
+          styles.iconButton,
+          styles[type],
+          styles[`${size}Size`],
+          { [styles.disabled]: disabled },
+          className
+        )}
+        onClick={disabled ? undefined : onClick}
         {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
         {...rest}
       >

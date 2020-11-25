@@ -10,12 +10,13 @@
   background-position: center center;
   color: var(--color-primary-blue);
   background-color: transparent;
+  cursor: pointer;
   flex-shrink: 0;
   line-height: 1;
 }
 
-.iconButton:not(:disabled) {
-  cursor: pointer;
+.disabled {
+  cursor: not-allowed;
 }
 
 .iconButton:focus {
