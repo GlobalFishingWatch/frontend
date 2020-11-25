@@ -11,9 +11,9 @@ const workspace: Workspace<WorkspaceState> = {
   startAt: new Date(2018, 0).toISOString(),
   endAt: DEFAULT_WORKSPACE.end,
   viewport: {
-    zoom: 4.4,
-    latitude: 43,
-    longitude: -3,
+    zoom: 1.7,
+    latitude: 12,
+    longitude: 21.7,
   },
   state: {
     // query: 'pepe',
@@ -32,6 +32,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'fishing-1',
       config: {
+        datasets: ['fishing_v4'],
         // filters: ['ESP'],
       },
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
@@ -39,9 +40,18 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'fishing-2',
       config: {
+        datasets: ['chile-fishing:v20200331'],
         color: '#FF64CE',
-        filters: ['FRA'],
         colorRamp: 'magenta',
+      },
+      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
+    },
+    {
+      id: 'fishing-3',
+      config: {
+        datasets: ['indonesia-fishing:v20200320'],
+        color: '#9CA4FF',
+        colorRamp: 'lilac',
       },
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },

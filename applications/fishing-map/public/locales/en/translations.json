@@ -1,11 +1,10 @@
 {
   "common": {
     "activity": "Activity",
+    "apparentFishing": "Apparent Fishing Effort",
     "context_area_plural": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard",
     "dismiss": "Dismiss",
-    "events": "Events",
-    "fishing": "Fishing",
     "hour": "Hour",
     "hour_plural": "Hours",
     "login": "Log in",
@@ -14,12 +13,15 @@
     "open_menu": "Open Menu",
     "save": "Save",
     "share": "Click to share the current view",
-    "vessel_plural": "Vessels"
+    "vessel_plural": "Vessels",
+    "events": "Events",
+    "fishing": "Fishing"
   },
   "errors": {
     "workspaceLoad": "There was an error loading the workspace, please try again later"
   },
   "layer": {
+    "add": "Add layer",
     "color_change": "Change color",
     "filter_close": "Close filters",
     "filter_open": "Open filters",
@@ -32,10 +34,11 @@
     "toggle_visibility": "Toggle layer visibility",
     "toggleCombinationMode": {
       "bivariate": "Show fishing layers in bivariate mode",
-      "compare": "Show fishing layers in comparison mode"
+      "compare": "Show fishing layers in comparison mode",
+      "disabled": "Bivariate mode is only availabe with two activity layers"
     },
-    "filter_plural": "Filters",
-    "vessel_fit_bounds": "Center map on vessel track"
+    "vessel_fit_bounds": "Center map on vessel track",
+    "filter_plural": "Filters"
   },
   "map": {
     "capture_map": "Capture map",
@@ -60,6 +63,7 @@
     "fleet": "Fleet",
     "imo": "IMO",
     "last_transmission_date": "Last transmission date",
+    "loading": "Loading vessel track",
     "mmsi": "MMSI",
     "search": {
       "close": "Close search",
