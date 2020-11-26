@@ -40,7 +40,10 @@ export const getDatasetByDataview = (
   )
 }
 
-const env = process.env.NODE_ENV === 'development' ? 'dev' : ''
+const env =
+  process.env.NODE_ENV === 'development' && process.env.REACT_APP_LOCAL_WORKSPACE !== 'false'
+    ? '.dev'
+    : ''
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
@@ -50,7 +53,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const workspace = workspaceId
       ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`)
-      : ((await import(`./workspace.default.${env}`).then(
+      : ((await import(`./workspace.default${env}`).then(
           (m) => m.default
         )) as Workspace<WorkspaceState>)
 
