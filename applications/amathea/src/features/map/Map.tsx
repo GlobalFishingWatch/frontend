@@ -142,7 +142,11 @@ const Map = (): React.ReactElement => {
       {legendLayers && legendLayers.length > 0 && (
         <div className={styles.mapLegend}>
           {/* TODO remove this any once the legacy is removed */}
-          <MapLegends className={styles.mapLegends} layers={legendLayers as any} />
+          <MapLegends
+            className={styles.mapLegends}
+            layers={legendLayers as any}
+            roundValues={false}
+          />
         </div>
       )}
     </div>

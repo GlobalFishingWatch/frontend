@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from 'react'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Radio, Select, SelectOption } from '@globalfishingwatch/ui-components/dist'

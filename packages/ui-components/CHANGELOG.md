@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.8.3
+
+### Patch Changes
+
+- legends value rounding optional
+
 ## 2.8.2
 
 ### Patch Changes

@@ -1,8 +1,10 @@
-.legend {
+.legends {
   background-color: var(--color-primary-blue);
   min-width: 25rem;
   font: var(--font-S);
   color: var(--color-white);
+  max-height: 21rem;
+  overflow: auto;
 }
 
 /* .row {

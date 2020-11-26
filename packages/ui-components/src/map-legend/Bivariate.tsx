@@ -6,6 +6,7 @@ import { LegendLayerBivariate, roundLegendNumber, formatLegendValue } from './'
 
 type BivariateLegendProps = {
   layer: LegendLayerBivariate
+  roundValues?: boolean
   className?: string
   labelComponent?: React.ReactNode
 }
@@ -96,7 +97,27 @@ const BivariateRect = ({
   )
 }
 
-function BivariateLegend({ layer, className, labelComponent }: BivariateLegendProps) {
+const valuesPositions = [
+  [
+    { x: '14', y: '68' },
+    { x: '28', y: '46' },
+    { x: '42', y: '31' },
+    { x: '56', y: '15' },
+  ],
+  [
+    { x: '', y: '' }, // Not used
+    { x: '28', y: '90' },
+    { x: '42', y: '105' },
+    { x: '56', y: '120' },
+  ],
+]
+
+function BivariateLegend({
+  layer,
+  className,
+  labelComponent,
+  roundValues = true,
+}: BivariateLegendProps) {
   if (!layer || !layer.bivariateRamp || !layer.sublayersBreaks) return null
   const bivariateBucketIndex = getBivariateValue(
     [layer.currentValues[0] || 0, layer.currentValues[1] || 0],
@@ -119,41 +140,20 @@ function BivariateLegend({ layer, className, labelComponent }: BivariateLegendPr
                 <g transform="translate(93, 176)">
                   <g className={styles.labels}>
                     <BivariateArrows />
-                    <text>
-                      <tspan x="14" y="68">
-                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[0][0]))}
-                      </tspan>
-                    </text>
-                    <text>
-                      <tspan x="28" y="46">
-                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[0][1]))}
-                      </tspan>
-                    </text>
-                    <text>
-                      <tspan x="42" y="31">
-                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[0][2]))}
-                      </tspan>
-                    </text>
-                    <text>
-                      <tspan x="56" y="15">
-                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[0][3]))}
-                      </tspan>
-                    </text>
-                    <text>
-                      <tspan x="28" y="90">
-                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[1][1]))}
-                      </tspan>
-                    </text>
-                    <text>
-                      <tspan x="42" y="105">
-                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[1][2]))}
-                      </tspan>
-                    </text>
-                    <text>
-                      <tspan x="56" y="120">
-                        {formatLegendValue(roundLegendNumber(layer.sublayersBreaks[1][3]))}
-                      </tspan>
-                    </text>
+                    {valuesPositions.map((positions, xIndex) =>
+                      positions.map(({ x, y }, yIndex) => {
+                        if (xIndex === 1 && yIndex === 0) return null
+                        const value = layer.sublayersBreaks[xIndex][yIndex]
+                        const roundedValue = roundValues ? roundLegendNumber(value) : value
+                        return (
+                          <text>
+                            <tspan x={x} y={y}>
+                              {formatLegendValue(roundedValue)}
+                            </tspan>
+                          </text>
+                        )
+                      })
+                    )}
                   </g>
                   <g transform="translate(81, 62) scale(1, -1) rotate(45) translate(-81, -62) translate(41, 22)">
                     {layer.bivariateRamp.map((color: string, i: number) => (

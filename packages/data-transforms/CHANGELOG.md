@@ -1,5 +1,11 @@
 # @globalfishingwatch/data-transforms
 
+## 1.1.1
+
+### Patch Changes
+
+- f30bc60: Added elevation & distance from port to Field
+
 ## 1.1.0
 
 ### Minor Changes
