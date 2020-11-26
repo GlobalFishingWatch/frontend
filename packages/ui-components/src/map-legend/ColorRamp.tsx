@@ -7,6 +7,7 @@ import { formatLegendValue, LegendLayer, roundLegendNumber } from '.'
 type ColorRampLegendProps = {
   layer: LegendLayer
   className?: string
+  roundValues?: boolean
   currentValueClassName?: string
   labelComponent?: React.ReactNode
 }
@@ -14,6 +15,7 @@ type ColorRampLegendProps = {
 function ColorRampLegend({
   layer = {} as LegendLayer,
   className = '',
+  roundValues = true,
   currentValueClassName = '',
   labelComponent = null,
 }: ColorRampLegendProps) {
@@ -94,7 +96,9 @@ function ColorRampLegend({
           <div className={styles.stepsContainer}>
             {cleanRamp.map(([value], i) => {
               if (value === null) return null
-              const roundValue = roundLegendNumber(value as number)
+              const roundValue = roundValues
+                ? roundLegendNumber(value as number)
+                : (value as number)
               const valueLabel = formatLegendValue(roundValue)
               if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
               return (
