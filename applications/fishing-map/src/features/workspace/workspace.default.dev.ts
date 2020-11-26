@@ -1,13 +1,15 @@
 import { Workspace } from '@globalfishingwatch/api-types'
+import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
+import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_VESSEL_DATAVIEW_ID } from 'data/datasets'
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
-  id: 'production',
-  app: 'fishing-map',
-  name: 'Default public Fishing Map workspace in production v1',
+  id: 'default',
+  app: APP_NAME,
+  name: 'Default public Fishing Map workspace',
   description: '',
-  startAt: '2019-01-01T00:00:00.000Z',
-  endAt: '2019-12-31T24:00:00.000Z',
+  startAt: new Date(2018, 0).toISOString(),
+  endAt: DEFAULT_WORKSPACE.end,
   viewport: {
     zoom: 1.7,
     latitude: 12,
@@ -21,11 +23,11 @@ const workspace: Workspace<WorkspaceState> = {
     // timebarEvents: '',
     // timebarGraph: '',
   },
-  dataviews: [{ id: 171 }], // Needed to fetch vessel information
+  dataviews: [{ id: DEFAULT_VESSEL_DATAVIEW_ID }], // Needed to fetch vessel information
   dataviewInstances: [
     {
       id: 'basemap',
-      dataviewId: 173,
+      dataviewId: 90,
     },
     {
       id: 'fishing-1',
@@ -33,7 +35,7 @@ const workspace: Workspace<WorkspaceState> = {
         datasets: ['fishing_v4'],
         // filters: ['ESP'],
       },
-      dataviewId: 178,
+      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
     {
       id: 'fishing-2',
@@ -42,7 +44,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#FF64CE',
         colorRamp: 'magenta',
       },
-      dataviewId: 178,
+      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
     {
       id: 'fishing-3',
@@ -51,7 +53,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#9CA4FF',
         colorRamp: 'lilac',
       },
-      dataviewId: 178,
+      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
     {
       id: 'context-layer-eez',
@@ -59,7 +61,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#069688',
         visible: true,
       },
-      dataviewId: 177,
+      dataviewId: 94,
     },
     {
       id: 'context-layer-mpa',
@@ -67,7 +69,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#1AFF6B',
         visible: false,
       },
-      dataviewId: 176,
+      dataviewId: 98,
     },
     {
       id: 'context-layer-mpa-no-take',
@@ -75,7 +77,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#F4511F',
         visible: false,
       },
-      dataviewId: 179,
+      dataviewId: 99,
     },
     {
       id: 'context-layer-mpa-restricted',
@@ -83,7 +85,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#F09300',
         visible: false,
       },
-      dataviewId: 180,
+      dataviewId: 100,
     },
     {
       id: 'context-layer-rfmo',
@@ -91,21 +93,21 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#6b67e5',
         visible: false,
       },
-      dataviewId: 175,
+      dataviewId: 95,
     },
     {
       id: 'context-layer-wpp-nri',
       config: {
         visible: false,
       },
-      dataviewId: 172,
+      dataviewId: 96,
     },
     {
       id: 'context-layer-high-seas',
       config: {
         visible: false,
       },
-      dataviewId: 174,
+      dataviewId: 97,
     },
   ],
 }

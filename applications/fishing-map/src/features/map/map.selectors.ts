@@ -129,6 +129,10 @@ export const getGeneratorsConfig = createSelector(
             generator.tilesUrl = url
           }
         }
+        if (!generator.tilesUrl) {
+          console.warn('Missing tiles url for dataview', dataview)
+          return []
+        }
       }
       return generator
     })
