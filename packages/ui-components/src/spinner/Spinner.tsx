@@ -4,7 +4,7 @@ import styles from './Spinner.module.css'
 
 interface SpinnerProps {
   color?: string
-  size?: 'default' | 'small'
+  size?: 'default' | 'small' | 'tiny'
   className?: string
   inline?: boolean
 }

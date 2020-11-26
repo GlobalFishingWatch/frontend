@@ -1,8 +1,9 @@
 import { createSelector } from 'reselect'
+import memoize from 'lodash/memoize'
 import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'store'
-import { WorkspaceParam } from 'types'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { WorkspaceParam, UrlDataviewInstance } from 'types'
+import { DEFAULT_WERSION } from 'data/config'
 import { ROUTE_TYPES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
@@ -17,31 +18,30 @@ export const selectLocationQuery = createSelector(
 )
 
 export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)
-
-const selectQueryParam = <T = any>(param: WorkspaceParam) =>
-  createSelector<RootState, Query, T>([selectLocationQuery], (query: any) => {
-    if (query === undefined || query[param] === undefined) {
-      return DEFAULT_WORKSPACE[param]
-    }
-    return query[param]
-  })
-
-export const selectMapZoomQuery = selectQueryParam<number>('zoom')
-export const selectMapLatitudeQuery = selectQueryParam<number>('latitude')
-export const selectMapLongitudeQuery = selectQueryParam<number>('longitude')
-export const selectStartQuery = selectQueryParam<string>('start')
-export const selectEndQuery = selectQueryParam<string>('end')
-
-export const selectViewport = createSelector(
-  [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery],
-  (zoom, latitude, longitude) => ({
-    zoom,
-    latitude,
-    longitude,
-  })
+export const selectVersion = createSelector(
+  [selectLocationPayload],
+  (payload) => payload.version || DEFAULT_WERSION
+)
+export const selectWorkspaceId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload.workspaceId
 )
 
-export const selectTimerange = createSelector([selectStartQuery, selectEndQuery], (start, end) => ({
-  start,
-  end,
-}))
+export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
+  createSelector<RootState, Query, T>([selectLocationQuery], (query: any) => {
+    return query?.[param]
+  })
+
+export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')
+export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
+export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
+export const selectUrlStartQuery = selectQueryParam<string>('start')
+export const selectUrlEndQuery = selectQueryParam<string>('end')
+export const selectUrlDataviewInstances = selectQueryParam<UrlDataviewInstance[]>(
+  'dataviewInstances'
+)
+export const selectUrlDataviewInstancesById = memoize((id: string) =>
+  createSelector([selectUrlDataviewInstances], (urlDataviewInstances) =>
+    urlDataviewInstances?.find((dataviewInstance) => dataviewInstance.id === id)
+  )
+)

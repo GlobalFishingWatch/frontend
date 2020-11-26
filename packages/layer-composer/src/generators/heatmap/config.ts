@@ -1,32 +1,47 @@
-import { ColorRampsIds, BivariateColorRampsIds } from '../types'
-import { DEFAULT_BASEMAP_COLOR } from '..'
-import { HeatmapGeomGL, HeatmapGeoms } from './types'
-
-export const API_TILES_URL =
-  process.env.NODE_ENV === 'production'
-    ? 'https://fourwings.api.globalfishingwatch.org/v1'
-    : 'https://fourwings.api.dev.globalfishingwatch.org/v1'
+import { ColorRampsIds, HeatmapAnimatedMode } from '../types'
+import { DEFAULT_BACKGROUND_COLOR } from '..'
+import { HeatmapAnimatedCombinationMode } from './types'
 
 export const API_ENDPOINTS = {
-  tiles: 'tile/heatmap/{z}/{x}/{y}',
-  statistics: 'statistics',
+  tiles: '4wings/tile/heatmap/{z}/{x}/{y}',
+  statistics: '4wings/statistics',
 }
 
 export const HEATMAP_DEFAULT_MAX_ZOOM = 12
-export const HEATMAP_GEOM_TYPES: HeatmapGeoms = {
-  BLOB: 'blob',
-  GRIDDED: 'gridded',
-  EXTRUDED: 'extruded',
+
+export const HEATMAP_MODE_COMBINATION: Record<
+  HeatmapAnimatedMode,
+  HeatmapAnimatedCombinationMode
+> = {
+  [HeatmapAnimatedMode.Compare]: HeatmapAnimatedCombinationMode.Compare,
+  [HeatmapAnimatedMode.Bivariate]: HeatmapAnimatedCombinationMode.Bivariate,
+  [HeatmapAnimatedMode.Blob]: HeatmapAnimatedCombinationMode.Literal,
+  [HeatmapAnimatedMode.Extruded]: HeatmapAnimatedCombinationMode.Cumulative,
 }
 
-export const HEATMAP_DEFAULT_GEOM_TYPE = HEATMAP_GEOM_TYPES.GRIDDED
-export const HEATMAP_GEOM_TYPES_GL_TYPES: HeatmapGeomGL = {
-  [HEATMAP_GEOM_TYPES.BLOB]: 'heatmap',
-  [HEATMAP_GEOM_TYPES.GRIDDED]: 'fill',
-  [HEATMAP_GEOM_TYPES.EXTRUDED]: 'fill-extrusion',
+export const HEATMAP_MODE_LAYER_TYPE: Record<HeatmapAnimatedMode, string> = {
+  [HeatmapAnimatedMode.Compare]: 'fill',
+  [HeatmapAnimatedMode.Bivariate]: 'fill',
+  [HeatmapAnimatedMode.Blob]: 'heatmap',
+  [HeatmapAnimatedMode.Extruded]: 'fill-extrusion',
 }
 
-const opacitySteps = [0, 0.2, 0.4, 0.6, 0.8, 1]
+export const GRID_AREA_BY_ZOOM_LEVEL = [
+  128000000000,
+  32000000000,
+  8000000000,
+  2000000000,
+  500000000,
+  125000000,
+  31250000,
+  7812500,
+  1953125,
+  488281,
+  122070,
+  30518,
+  7629,
+]
+
 const hex2Rgb = (hex: string) => {
   const cleanHex = hex.replace('#', '')
   const color = {
@@ -37,16 +52,39 @@ const hex2Rgb = (hex: string) => {
   return `${color.r}, ${color.g}, ${color.b}`
 }
 
-const getColorRampByOpacitySteps = (finalColor: string) => {
+const getColorRampByOpacitySteps = (finalColor: string, numSteps = 8) => {
   const color = finalColor.includes('#') ? hex2Rgb(finalColor) : finalColor
+  const opacitySteps = [...Array(numSteps)].map((_, i) => i / (numSteps - 1))
   return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
 }
 
-export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds | BivariateColorRampsIds, string[]> = {
-  fishing: [DEFAULT_BASEMAP_COLOR, '#3B9088', '#EEFF00', '#ffffff'],
-  presence: [DEFAULT_BASEMAP_COLOR, '#163F89', '#0F6F97', '#07BBAE', '#00FFC3', '#FFFFFF'],
-  reception: ['rgb(255, 69, 115, 1)', '#7b2e8d', '#093b76', DEFAULT_BASEMAP_COLOR],
+const DEFAULT_BACKGROUND_TRANSPARENT_COLOR = DEFAULT_BACKGROUND_COLOR.replace(
+  'rgb(',
+  'rgba('
+).replace(')', ', 0)')
+
+export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
+  fishing: [DEFAULT_BACKGROUND_TRANSPARENT_COLOR, '#3B9088', '#EEFF00', '#ffffff'],
+  presence: [
+    DEFAULT_BACKGROUND_TRANSPARENT_COLOR,
+    '#163F89',
+    '#0F6F97',
+    '#07BBAE',
+    '#00FFC3',
+    '#FFFFFF',
+  ],
+  reception: ['rgb(255, 69, 115, 1)', '#7b2e8d', '#093b76', DEFAULT_BACKGROUND_TRANSPARENT_COLOR],
   teal: getColorRampByOpacitySteps('#00FFBC'),
+  // teal: [
+  //   DEFAULT_BACKGROUND_TRANSPARENT_COLOR,
+  //   '#FF64CE',
+  //   '#9CA4FF',
+  //   '#FFAE9B',
+  //   '#00EEFF',
+  //   '#FF6854',
+  //   '#FFEA00',
+  //   '#A6FF59',
+  // ],
   magenta: getColorRampByOpacitySteps('#FF64CE'),
   lilac: getColorRampByOpacitySteps('#9CA4FF'),
   salmon: getColorRampByOpacitySteps('#FFAE9B'),
@@ -57,9 +95,17 @@ export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds | BivariateColorRampsIds,
   orange: getColorRampByOpacitySteps('#FFAA0D'),
   // prettier-ignore
   bivariate: [
-    '#274874', '#267C8A', '#26B39F', '#26FFBD',
-    '#66518F', '#3E579A', '#667C9E', '#66FFC2',
+    DEFAULT_BACKGROUND_TRANSPARENT_COLOR,
+    '#244979', '#207D8C', '#17B4A0', '#26FFBD',
+    '#66518F', '#667CA0', '#63B3AD', '#66FFC2',
     '#A659A9', '#A67CB2', '#A6B3BB', '#A6FFC7',
     '#FF64CE', '#FF7CCE', '#FFB3CE', '#FFFFFF',
   ],
+  // bivariate: [
+  //   DEFAULT_BACKGROUND_TRANSPARENT_COLOR,
+  //   '#000', '#267C8A', '#26B39F', 'red',
+  //   '#66518F', '#FFEA00', '#667C9E', '#66FFC2',
+  //   '#A659A9', '#A67CB2', '#FFAA0D', '#A6FFC7',
+  //   'blue', '#FF7CCE', '#FFB3CE', '#FFFFFF',
+  // ],
 }

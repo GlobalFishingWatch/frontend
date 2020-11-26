@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'store'
 import memoize from 'lodash/memoize'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { Resource } from '@globalfishingwatch/dataviews-client'
+import { Resource } from '@globalfishingwatch/api-types'
+import { RootState } from 'store'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { MONTHLY_DATES } from 'data/data'
 

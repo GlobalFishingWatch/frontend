@@ -4,7 +4,10 @@ import { scaleLinear } from 'd3-scale'
 import Select, { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
-import ColorBar, { ColorBarIds } from '@globalfishingwatch/ui-components/dist/color-bar'
+import ColorBar, {
+  HeatmapColorBarIds,
+  HeatmapColorBarOptions,
+} from '@globalfishingwatch/ui-components/dist/color-bar'
 import { DATASET_SOURCE_OPTIONS, FLAG_FILTERS, CUSTOM_DATA_SHAPE } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { useCurrentWorkspaceConnect, useWorkspacesAPI } from 'features/workspaces/workspaces.hook'
@@ -54,32 +57,57 @@ function NewDataview(): React.ReactElement {
     if (draftDataview) {
       setLoading(true)
       let dataview
+      let steps
       if (draftDataview.source?.id === 'user') {
-        let steps
         if (maxRange - minRange > 0) {
           const rampScale = scaleLinear().range([minRange, maxRange]).domain([0, 1])
-          steps = [0, 0.2, 0.4, 0.6, 0.8, 1].map((value) => parseFloat(rampScale(value).toFixed(1)))
+          const numSteps = 8
+          steps = [...Array(numSteps)]
+            .map((_, i) => parseFloat((i / (numSteps - 1)).toFixed(2)))
+            .map((value) => parseFloat((rampScale(value) as number).toFixed(3)))
         }
         if (!draftDataview.id || steps) {
-          dataview = await upsertDataview({ ...draftDataview, ...(steps && { steps }) })
+          dataview = await upsertDataview({
+            ...draftDataview,
+            ...(steps && { steps }),
+            flagFilter: draftDataview.flagFilter,
+          })
         }
       }
       const dataviewId = draftDataview.id || dataview?.id
       if (dataviewId && workspace?.id) {
+        const currentDataviewInstance = workspace.dataviewInstances?.find(
+          (d) => d.dataviewId === dataviewId
+        )
+        const config = {
+          color: draftDataview.color,
+          colorRamp: draftDataview.colorRamp,
+          flagFilter: draftDataview.flagFilter,
+          ...(steps && { steps }),
+        }
+        const dataviewInstances = currentDataviewInstance
+          ? workspace?.dataviewInstances?.map((dataviewInstance) => {
+              if (dataviewInstance.dataviewId !== dataviewId) return dataviewInstance
+              return {
+                ...dataviewInstance,
+                config,
+              }
+            })
+          : [
+              ...(workspace.dataviewInstances || []),
+              {
+                id: `dv-${dataviewId}`,
+                dataviewId,
+                config,
+              },
+            ]
+        const dataviews = [
+          ...(new Set([...(workspace.dataviews || []).map((d: any) => d.id), dataviewId]) as any),
+        ]
         await updateWorkspace({
           id: workspace.id,
-          dataviews: [...(new Set([...workspace.dataviews.map((d) => d.id), dataviewId]) as any)],
-          dataviewsConfig: {
-            ...workspace.dataviewsConfig,
-            [dataviewId]: {
-              config: { color: draftDataview.color, colorRamp: draftDataview.colorRamp },
-              datasetsConfig: {
-                datasetId: {
-                  query: [{ id: 'flag', value: draftDataview.flagFilter }],
-                },
-              },
-            },
-          },
+          dataviews,
+          dataviewInstances,
         })
       }
       setLoading(false)
@@ -88,7 +116,7 @@ function NewDataview(): React.ReactElement {
     }
   }
 
-  const isFishingEffortLayer = dataset?.id === 'dgg_fishing_galapagos'
+  const isFishingEffortLayer = dataset && (dataset?.id as string).includes('dgg_fishing')
   const isCustomUserDatashape = dataset?.category === CUSTOM_DATA_SHAPE
   const selectedFlagFilter = FLAG_FILTERS.find((flag) => flag.id === draftDataview?.flagFilter)
   return (
@@ -118,8 +146,11 @@ function NewDataview(): React.ReactElement {
         <div className={styles.input}>
           <label>Color</label>
           <ColorBar
-            selectedColor={draftDataview?.color as ColorBarIds}
-            onColorClick={(color) => setDraftDataview({ color: color.value, colorRamp: color.id })}
+            colorBarOptions={HeatmapColorBarOptions}
+            selectedColor={draftDataview?.color as HeatmapColorBarIds}
+            onColorClick={(color) =>
+              setDraftDataview({ color: color.value, colorRamp: color.id as HeatmapColorBarIds })
+            }
           />
         </div>
       )}
@@ -140,6 +171,7 @@ function NewDataview(): React.ReactElement {
             className={styles.input}
             label="Minimum value"
             type="number"
+            step=".01"
             value={minRange}
             onChange={onStepMinRangeChange}
           />
@@ -147,6 +179,7 @@ function NewDataview(): React.ReactElement {
             className={styles.input}
             label="Maximum value"
             type="number"
+            step=".01"
             value={maxRange}
             onChange={onStepMaxRangeChange}
           />

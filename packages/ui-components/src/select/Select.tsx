@@ -16,6 +16,8 @@ interface SelectProps {
   onRemove: SelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
   className?: string
+  direction?: 'bottom' | 'top'
+  disabled?: boolean
 }
 
 const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOption) => {
@@ -32,6 +34,8 @@ function Select(props: SelectProps) {
     onRemove,
     onCleanClick,
     className,
+    direction = 'bottom',
+    disabled = false,
   } = props
   const {
     isOpen,
@@ -44,7 +48,7 @@ function Select(props: SelectProps) {
   } = useSelect<SelectOption | null>({
     items: options,
     onSelectedItemChange: ({ selectedItem }) => {
-      if (selectedItem) {
+      if (!disabled && selectedItem) {
         handleChange(selectedItem)
         selectItem(null)
       }
@@ -61,7 +65,9 @@ function Select(props: SelectProps) {
     },
     [onRemove, onSelect, selectedOption]
   )
+
   const hasSelectedOptions = selectedOption !== undefined
+
   return (
     <div>
       <label {...getLabelProps()}>{label}</label>
@@ -86,23 +92,25 @@ function Select(props: SelectProps) {
             {...getToggleButtonProps()}
           ></IconButton>
         </div>
-        <ul {...getMenuProps()} className={styles.optionsContainer}>
+        <ul {...getMenuProps()} className={cx(styles.optionsContainer, styles[direction])}>
           {isOpen &&
             options.length > 0 &&
             options.map((item, index) => {
               const highlight = highlightedIndex === index
               const selected = isItemSelected(selectedOption, item)
+              const itemDisabled = disabled || item.disabled
               return (
                 <Tooltip key={`${item}${index}`} content={item.tooltip} placement="top-start">
                   <li
                     className={cx(styles.optionItem, {
                       [styles.selected]: selected,
                       [styles.highlight]: highlight,
+                      [styles.disabled]: itemDisabled,
                     })}
                     {...getItemProps({ item, index })}
                   >
                     {item.label}
-                    {highlight && <Icon icon={selected ? 'close' : 'tick'} />}
+                    {highlight && !itemDisabled && <Icon icon={selected ? 'close' : 'tick'} />}
                   </li>
                 </Tooltip>
               )

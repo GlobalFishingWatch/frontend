@@ -12,9 +12,10 @@
   --font-XXL: var(--font-regular) 5rem/6.2rem var(--font-family);
 
   /* BASE COLORS */
-  --primary-blue-rgb: 34, 68, 126; /* rgb(34, 68, 126) */
+  --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */
   --danger-red-rgb: 360, 62, 98; /* rgb(360, 62, 98) */
   --gradient-rgb: 229, 240, 242; /* rgb(229, 240, 242) */
+  --off-white-rgb: 242, 247, 248; /* rgb(242, 247, 248) */
   --white-rgb: 255, 255, 255; /* rgb(255, 255, 255) */
 
   /* COLORS */
@@ -25,6 +26,7 @@
   --color-danger-red: rgb(var(--danger-red-rgb));
   --color-danger-secondary-red: rgba(var(--danger-red-rgb), var(--opacity-secondary));
   --color-gradient: rgb(var(--gradient-rgb));
+  --color-off-white: rgb(var(--off-white-rgb));
   --color-white: rgb(var(--white-rgb));
   --gradient: linear-gradient(180deg, var(--color-gradient) 0, var(--color-white) 70rem);
   --color-map-background: #002457;
@@ -43,13 +45,14 @@
   /* UTILS */
   --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
   --border: 1px solid var(--color-border);
+  --border-white: 1px solid rgba(var(--white-rgb), var(--opacity-border));
   --box-shadow-highlight: 0 0 0.2rem 0.2rem var(--color-highlight-blue);
   --transition: all 150ms ease-out;
   --border-radius: 0.3rem;
 
   /* SIZES */
   --size-XS: 2rem;
-  --size-S: 3.2rem;
+  --size-S: 2.8rem;
   --size-M: 4rem;
   --size-L: 6rem;
   --space-XS: 0.5rem;
@@ -112,10 +115,12 @@ ul {
 
 sub {
   vertical-align: sub;
+  font: var(--font-XS);
 }
 
 sup {
   vertical-align: super;
+  font: var(--font-XS);
 }
 
 *:focus {

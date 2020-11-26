@@ -1,6 +1,5 @@
 import { saveAs } from 'file-saver'
-import { vessels } from '@globalfishingwatch/pbf/decoders/vessels'
-import { UserData } from './types'
+import { UserData, ResourceResponseType } from '@globalfishingwatch/api-types'
 import { isUrlAbsolute } from './utils/url'
 
 const API_GATEWAY =
@@ -32,11 +31,11 @@ interface LoginParams {
   refreshToken?: string | null
 }
 
-export type FetchResponseTypes = 'default' | 'text' | 'json' | 'blob' | 'arrayBuffer' | 'vessel'
-export type FetchOptions = Partial<RequestInit> & {
+export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  responseType?: FetchResponseTypes
+  responseType?: ResourceResponseType
   dataset?: boolean
+  body?: T
 }
 
 const processStatus = (response: Response) => {
@@ -252,11 +251,23 @@ export class GFWAPI {
                 return res.text()
               case 'arrayBuffer':
                 return res.arrayBuffer()
-              case 'vessel':
-                return res.arrayBuffer().then((buffer) => {
-                  const track = vessels.Track.decode(new Uint8Array(buffer))
-                  return track.data
-                })
+              case 'vessel': {
+                try {
+                  return import('@globalfishingwatch/pbf/decoders/vessels.js').then(
+                    ({ vessels }) => {
+                      return res.arrayBuffer().then((buffer) => {
+                        const track = vessels.Track.decode(new Uint8Array(buffer))
+                        return track.data
+                      })
+                    }
+                  )
+                } catch (e) {
+                  console.warn(
+                    '@globalfishingwatch/pbf is a mandatory external dependency when using vessel response decoding'
+                  )
+                  throw e
+                }
+              }
               default:
                 return res
             }

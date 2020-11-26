@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import LayerComposer, {
-  Generators,
   sort,
+  Generators,
+  ExtendedStyle,
+  StyleTransformation,
   getInteractiveLayerIds,
 } from '@globalfishingwatch/layer-composer'
-import { ExtendedStyle, StyleTransformation } from '@globalfishingwatch/layer-composer/dist/types'
 
 const applyStyleTransformations = (
   style: ExtendedStyle,

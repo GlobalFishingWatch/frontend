@@ -1,5 +1,132 @@
 # @globalfishingwatchapp/amathea
 
+## 0.13.6
+
+### Patch Changes
+
+- update dependencies
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.7.0
+  - @globalfishingwatch/react-hooks@4.4.2
+  - @globalfishingwatch/api-types@2.2.0
+
+## 0.13.5
+
+### Patch Changes
+
+- e37d269: update dependencies
+- Updated dependencies [e37d269]
+- Updated dependencies [e37d269]
+- Updated dependencies [e37d269]
+- Updated dependencies [e37d269]
+  - @globalfishingwatch/api-types@2.1.0
+  - @globalfishingwatch/ui-components@2.6.0
+  - @globalfishingwatch/react-hooks@4.4.0
+  - @globalfishingwatch/layer-composer@4.9.0
+
+## 0.13.4
+
+### Patch Changes
+
+- Update bundle dependencies
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.6.0
+  - @globalfishingwatch/api-client@1.6.2
+  - @globalfishingwatch/api-types@2.0.3
+  - @globalfishingwatch/dataviews-client@4.0.2
+  - @globalfishingwatch/react-hooks@4.2.1
+  - @globalfishingwatch/timebar@1.1.3
+  - @globalfishingwatch/ui-components@2.5.1
+
+## 0.13.3
+
+### Patch Changes
+
+- Updated dependencies [b00dceb]
+- Updated dependencies [33f7ba7]
+  - @globalfishingwatch/api-types@2.0.0
+  - @globalfishingwatch/dataviews-client@4.0.0
+  - @globalfishingwatch/timebar@1.1.1
+  - @globalfishingwatch/react-hooks@4.0.1
+
+## 0.13.2
+
+### Patch Changes
+
+- Updated dependencies [6b5fdf8]
+  - @globalfishingwatch/layer-composer@4.0.0
+  - @globalfishingwatch/react-hooks@4.0.0
+  - @globalfishingwatch/timebar@1.1.0
+  - @globalfishingwatch/dataviews-client@3.3.4
+
+## 0.13.1
+
+### Patch Changes
+
+- d7bc617: Added extruded mode and merged geomType and combinationMode into mode
+- Updated dependencies [d7bc617]
+  - @globalfishingwatch/layer-composer@3.0.0
+  - @globalfishingwatch/react-hooks@3.4.1
+  - @globalfishingwatch/dataviews-client@3.3.2
+
+## 0.13.0
+
+### Minor Changes
+
+- db69167: Use types from api-types
+
+### Patch Changes
+
+- Updated dependencies [db69167]
+  - @globalfishingwatch/api-client@1.6.0
+  - @globalfishingwatch/dataviews-client@3.3.0
+  - @globalfishingwatch/react-hooks@3.4.0
+
+## 0.12.0
+
+### Minor Changes
+
+- 87dfcf5: animated heatmap legend
+
+### Patch Changes
+
+- Updated dependencies [87dfcf5]
+  - @globalfishingwatch/ui-components@2.0.0
+  - @globalfishingwatch/layer-composer@2.14.0
+  - @globalfishingwatch/react-hooks@3.2.0
+
+## 0.11.1
+
+### Patch Changes
+
+- fae4346: Update types
+- Updated dependencies [fae4346]
+  - @globalfishingwatch/dataviews-client@3.1.1
+  - @globalfishingwatch/layer-composer@2.13.4
+
+## 0.11.0
+
+### Minor Changes
+
+- 394ec60: 4Wings map layer interactions
+
+### Patch Changes
+
+- Updated dependencies [394ec60]
+  - @globalfishingwatch/dataviews-client@3.1.0
+  - @globalfishingwatch/react-hooks@3.1.0
+
+## 0.10.1
+
+### Patch Changes
+
+- Updated dependencies [a6ffee9]
+  - @globalfishingwatch/dataviews-client@3.0.0
+  - @globalfishingwatch/react-hooks@3.0.0
+
 ## 0.10.0
 
 ### Minor Changes

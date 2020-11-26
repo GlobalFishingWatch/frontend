@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
-import ColorBar, { ColorBarOptions } from '@globalfishingwatch/ui-components/src/color-bar'
+import ColorBar, {
+  ColorBarOption,
+  HeatmapColorBarOptions,
+} from '@globalfishingwatch/ui-components/src/color-bar'
 
 const ColorBarSection = () => {
-  const [selectedColor, setSelectedColor] = useState<ColorBarOptions | undefined>()
+  const [selectedColor, setSelectedColor] = useState<ColorBarOption>()
   return (
     <ColorBar
+      colorBarOptions={HeatmapColorBarOptions}
       onColorClick={(color) => setSelectedColor(color)}
-      selectedColor={selectedColor}
-      disabledColors={['#F95E5E', '#21D375']}
+      selectedColor={selectedColor?.id}
     />
   )
 }

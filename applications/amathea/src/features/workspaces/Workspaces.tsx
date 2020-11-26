@@ -4,12 +4,13 @@ import { fitBounds } from 'viewport-mercator-project'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { Workspace, AOI } from '@globalfishingwatch/dataviews-client'
+import { AOI } from '@globalfishingwatch/api-types'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { WORKSPACE_EDITOR } from 'routes/routes'
 import { useMapboxRef } from 'features/map/map.context'
 import styles from './Workspaces.module.css'
 import { useWorkspacesConnect, useWorkspacesAPI } from './workspaces.hook'
+import { WorkpaceExtended } from './workspaces.slice'
 
 function Workspaces(): React.ReactElement {
   const mapRef = useMapboxRef()
@@ -23,7 +24,7 @@ function Workspaces(): React.ReactElement {
   } = useWorkspacesConnect()
 
   const onDeleteClick = useCallback(
-    (workspace: Workspace) => {
+    (workspace: WorkpaceExtended) => {
       const confirmation = window.confirm(
         `Are you sure you want to permanently delete this workspace?\n${workspace.name}`
       )
@@ -45,6 +46,7 @@ function Workspaces(): React.ReactElement {
       <ul>
         {workspacesList && workspacesList.length ? (
           workspacesList.map((workspace) => {
+            if (!(workspace.aoi as AOI)?.bbox) return null
             const [minLng, minLat, maxLng, maxLat] = (workspace.aoi as AOI).bbox
             const { latitude, longitude, zoom } = fitBounds({
               bounds: [
@@ -85,7 +87,6 @@ function Workspaces(): React.ReactElement {
                 <IconButton
                   icon="delete"
                   type="warning"
-                  disabled={workspace.id === 5 || workspace.id === 19}
                   loading={
                     workspaceStatus === 'loading.delete' && workspaceStatusId === workspace.id
                   }

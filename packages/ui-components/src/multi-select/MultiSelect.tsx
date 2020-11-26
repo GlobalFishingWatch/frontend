@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, memo } from 'react'
+import React, { useCallback, useState, useMemo, memo, Fragment } from 'react'
 import {
   useMultipleSelection,
   useCombobox,
@@ -6,52 +6,49 @@ import {
   UseComboboxStateChangeTypes,
 } from 'downshift'
 import cx from 'classnames'
-import Icon from '../icon'
+import Icon, { IconType } from '../icon'
 import IconButton from '../icon-button'
 import Tooltip from '../tooltip'
-import TagList from '../tag-list'
 import InputText from '../input-text'
 import styles from '../select/Select.module.css'
 import multiSelectStyles from './MultiSelect.module.css'
 import { MultiSelectOption, MultiSelectOnChange } from './index'
 
-interface SelectProps {
+interface MultiSelectProps {
   label?: string
   placeholder?: string
   options: MultiSelectOption[]
   selectedOptions?: MultiSelectOption[]
   onSelect: MultiSelectOnChange
-  onRemove: MultiSelectOnChange
+  onRemove?: MultiSelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
   className?: string
+}
+
+const getPlaceholderBySelections = (selections: MultiSelectOption[]): string => {
+  if (!selections?.length) return 'Select an option'
+  return selections.length > 1 ? `${selections.length} selected` : selections[0].label
 }
 
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
   return selectedItems !== null ? selectedItems.some((selected) => selected.id === item.id) : false
 }
 
-const getItemsFiltered = (
-  items: MultiSelectOption[],
-  selectedItems: MultiSelectOption[],
-  filter?: string
-) => {
-  const hasSelectedItems = selectedItems?.length
-  if (!hasSelectedItems && !filter) return items
+const getItemsFiltered = (items: MultiSelectOption[], filter?: string) => {
+  if (!filter) return items
 
-  return items.filter(
-    (item) =>
-      (!hasSelectedItems || selectedItems.every(({ id }) => item.id !== id)) &&
-      (!filter || item.label.toLowerCase().startsWith(filter.toLowerCase()))
+  return (items || []).filter(
+    (item) => !filter || item.label.toLowerCase().startsWith(filter.toLowerCase())
   )
 }
 
-function Select(props: SelectProps) {
+function MultiSelect(props: MultiSelectProps) {
   const {
     label = '',
     options,
     selectedOptions = [],
-    placeholder = 'Select an option',
-    className,
+    placeholder,
+    className = '',
     onSelect,
     onRemove,
     onCleanClick,
@@ -59,8 +56,12 @@ function Select(props: SelectProps) {
 
   const handleRemove = useCallback(
     (option: MultiSelectOption) => {
-      const newOptions = selectedOptions.filter((selectedOption) => selectedOption.id !== option.id)
-      onRemove(option, newOptions)
+      if (onRemove) {
+        const newOptions = selectedOptions.filter(
+          (selectedOption) => selectedOption.id !== option.id
+        )
+        onRemove(option, newOptions)
+      }
     },
     [onRemove, selectedOptions]
   )
@@ -85,11 +86,7 @@ function Select(props: SelectProps) {
   )
 
   const [inputValue, setInputValue] = useState('')
-  const filteredItems = useMemo(() => getItemsFiltered(options, selectedOptions, inputValue), [
-    inputValue,
-    options,
-    selectedOptions,
-  ])
+  const filteredItems = useMemo(() => getItemsFiltered(options, inputValue), [options, inputValue])
 
   const { getDropdownProps } = useMultipleSelection({ selectedItems: selectedOptions })
   const {
@@ -154,62 +151,74 @@ function Select(props: SelectProps) {
   })
 
   const hasSelectedOptions = selectedOptions && selectedOptions.length > 0
+
   return (
-    <div className={cx(styles.container, { [styles.isOpen]: isOpen }, className)}>
-      <label {...getLabelProps()}>{label}</label>
-      <div
-        className={cx(styles.placeholderContainer, multiSelectStyles.placeholderContainer)}
-        {...getComboboxProps()}
-      >
-        {hasSelectedOptions && (
-          <TagList
-            className={multiSelectStyles.tagList}
-            tags={selectedOptions}
-            onRemove={handleRemove}
+    <div className={className}>
+      {label !== undefined && <label {...getLabelProps()}>{label}</label>}
+      <div className={cx(styles.container, { [styles.isOpen]: isOpen })}>
+        <div
+          className={cx(styles.placeholderContainer, multiSelectStyles.placeholderContainer)}
+          {...getComboboxProps()}
+        >
+          <InputText
+            {...getInputProps({
+              ...getDropdownProps({
+                onFocus: () => {
+                  if (!isOpen) {
+                    openMenu()
+                  }
+                },
+                preventKeyAction: isOpen,
+              }),
+            })}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder={placeholder || getPlaceholderBySelections(selectedOptions)}
+            className={multiSelectStyles.input}
           />
-        )}
-        <InputText
-          {...getInputProps({ ...getDropdownProps({ preventKeyAction: isOpen }) })}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder={placeholder}
-          className={multiSelectStyles.input}
-          onFocus={() => openMenu()}
-        />
+        </div>
+        <div className={styles.buttonsContainer}>
+          {onCleanClick !== undefined && hasSelectedOptions && (
+            <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
+          )}
+          <IconButton
+            icon={isOpen ? 'arrow-top' : 'arrow-down'}
+            size="small"
+            aria-label={'toggle menu'}
+            {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
+          ></IconButton>
+        </div>
+        <ul {...getMenuProps()} className={styles.optionsContainer}>
+          {isOpen &&
+            filteredItems.length > 0 &&
+            filteredItems.map((item, index) => {
+              const highlight = highlightedIndex === index
+              const isSelected =
+                hasSelectedOptions && selectedOptions.some(({ id }) => item.id === id)
+              const icon =
+                highlight && isSelected
+                  ? 'close'
+                  : highlight || isSelected
+                  ? 'tick'
+                  : ('' as IconType)
+              return (
+                <Tooltip key={item.id} content={item.tooltip} placement="top-start">
+                  <li
+                    className={cx(styles.optionItem, {
+                      [styles.highlight]: highlight,
+                    })}
+                    {...getItemProps({ item, index })}
+                  >
+                    {item.label}
+                    {icon && <Icon icon={icon} />}
+                  </li>
+                </Tooltip>
+              )
+            })}
+        </ul>
       </div>
-      <div className={styles.buttonsContainer}>
-        {onCleanClick !== undefined && hasSelectedOptions && (
-          <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
-        )}
-        <IconButton
-          icon={isOpen ? 'arrow-top' : 'arrow-down'}
-          size="small"
-          aria-label={'toggle menu'}
-          {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
-        ></IconButton>
-      </div>
-      <ul {...getMenuProps()} className={styles.optionsContainer}>
-        {isOpen &&
-          filteredItems.length > 0 &&
-          filteredItems.map((item, index) => {
-            const highlight = highlightedIndex === index
-            return (
-              <Tooltip key={item.id} content={item.tooltip} placement="top-start">
-                <li
-                  className={cx(styles.optionItem, {
-                    [styles.highlight]: highlight,
-                  })}
-                  {...getItemProps({ item, index })}
-                >
-                  {item.label}
-                  {highlight && <Icon icon="tick" />}
-                </li>
-              </Tooltip>
-            )
-          })}
-      </ul>
     </div>
   )
 }
 
-export default memo(Select)
+export default memo(MultiSelect)

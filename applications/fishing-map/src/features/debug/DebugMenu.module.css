@@ -1,0 +1,11 @@
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.header:not(:first-child) {
+  margin-top: 2rem;
+}
+.header label {
+  margin-left: 1rem;
+}

@@ -3,7 +3,7 @@ import { Group } from '../../types'
 import { Type, BackgroundGeneratorConfig } from '../types'
 import { isConfigVisible } from '../utils'
 
-export const DEFAULT_BASEMAP_COLOR = '#002457'
+export const DEFAULT_BACKGROUND_COLOR = 'rgb(0, 36, 87)'
 
 class BackgroundGenerator {
   type = Type.Background
@@ -16,7 +16,7 @@ class BackgroundGenerator {
         visibility: isConfigVisible(config),
       },
       paint: {
-        'background-color': config.color || DEFAULT_BASEMAP_COLOR,
+        'background-color': config.color || DEFAULT_BACKGROUND_COLOR,
       },
       metadata: {
         group: Group.Background,

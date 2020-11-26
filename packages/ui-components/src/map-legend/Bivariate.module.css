@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-bottom: -50px;
+}
+
+.svg {
+  margin: 0 auto;
+}
+
+.labels text {
+  fill: var(--color-secondary-blue);
+  font: var(--font-S);
+}
+
+.labels tspan {
+  text-anchor: end;
+}
+
+.highlighted {
+  stroke: white;
+  stroke-width: 2;
+}

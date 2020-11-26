@@ -1,3 +1,25 @@
 .container {
   flex: 1;
 }
+
+.legend .currentValue {
+  background-color: white
+}
+
+.legendLabel {
+  font: var(--font-S);
+  opacity: var(--opacity-secondary);
+}
+
+:global(.mapboxgl-control-container .mapboxgl-ctrl.mapboxgl-ctrl-attrib) {
+  padding-right: var(--space-XS);
+  padding-bottom: var(--space-XS);
+  font: var(--font-XS);
+  background: none;
+  color: var(--color-white);
+  opacity: .4;
+}
+
+:global(.mapboxgl-control-container .mapboxgl-ctrl.mapboxgl-ctrl-attrib a) {
+  color: var(--color-white);
+}

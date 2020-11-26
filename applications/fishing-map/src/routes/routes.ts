@@ -3,7 +3,7 @@ import { NOT_FOUND, RoutesMap, redirect, connectRoutes, Options } from 'redux-fi
 import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
-import { QueryParams } from 'types'
+import { QueryParams, UrlDataviewInstance } from 'types'
 import { REPLACE_URL_PARAMS } from 'data/config'
 import { UpdateQueryParamsAction } from './routes.actions'
 
@@ -12,7 +12,7 @@ export type ROUTE_TYPES = typeof HOME
 
 const routesMap: RoutesMap = {
   [HOME]: {
-    path: '/',
+    path: '/:workspaceId?/:version?',
   },
   [NOT_FOUND]: {
     path: '',
@@ -22,19 +22,59 @@ const routesMap: RoutesMap = {
   },
 }
 
+const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
+  const dataviewId = parseInt((dataview.dataviewId as number)?.toString())
+  return {
+    ...dataview,
+    ...(dataviewId && { dataviewId }),
+  }
+}
+
 const urlToObjectTransformation: Dictionary<(value: any) => any> = {
-  latitude: (s) => parseFloat(s),
-  longitude: (s) => parseFloat(s),
-  zoom: (s) => parseFloat(s),
+  latitude: (latitude) => parseFloat(latitude),
+  longitude: (longitude) => parseFloat(longitude),
+  zoom: (zoom) => parseFloat(zoom),
+  dataviewInstances: (dataviewInstances: UrlDataviewInstance[]) => {
+    return dataviewInstances.map(parseDataviewInstance)
+  },
 }
 
 const encodeWorkspace = (object: Record<string, unknown>) => {
-  return stringify(object, { encode: false })
+  return stringify(object, { encodeValuesOnly: true, strictNullHandling: true })
+}
+
+// Extended logic from qs utils decoder to have some keywords parsed
+const decoder = (str: string, decoder?: any, charset?: string) => {
+  const strWithoutPlus = str.replace(/\+/g, ' ')
+  if (charset === 'iso-8859-1') {
+    // unescape never throws, no try...catch needed:
+    return strWithoutPlus.replace(/%[0-9a-f]{2}/gi, unescape)
+  }
+  const keywords: any = {
+    true: true,
+    false: false,
+    null: null,
+    undefined,
+  }
+  if (str in keywords) {
+    return keywords[str]
+  }
+
+  // utf-8
+  try {
+    return decodeURIComponent(strWithoutPlus)
+  } catch (e) {
+    return strWithoutPlus
+  }
 }
 
 const decodeWorkspace = (queryString: string) => {
-  const parsed = parse(queryString, { arrayLimit: 300 })
-
+  const parsed = parse(queryString, {
+    arrayLimit: 1000,
+    depth: 20,
+    decoder,
+    strictNullHandling: true,
+  })
   Object.keys(parsed).forEach((param: string) => {
     const value = parsed[param]
     const transformationFn = urlToObjectTransformation[param]

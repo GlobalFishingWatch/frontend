@@ -1,7 +1,12 @@
 import template from 'lodash/template'
 import { stringify } from 'qs'
-import GFWAPI, { FetchResponseTypes, FetchOptions } from '@globalfishingwatch/api-client'
-import { Dataview, Resource, WorkspaceDataviewConfigDict } from './types'
+import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
+import {
+  Dataview,
+  Resource,
+  DataviewInstance,
+  ResourceResponseType,
+} from '@globalfishingwatch/api-types'
 import resolveDataviews from './resolve-dataviews'
 
 const BASE_URL = '/v1/dataviews'
@@ -62,15 +67,17 @@ export default class DataviewsClient {
   // TODO uniq by URL
   getResources(
     dataviews: Dataview[],
-    workspaceDataviewsConfig: WorkspaceDataviewConfigDict = {}
+    workspaceDataviewInstances: DataviewInstance[]
   ): { resources: Resource[]; promises: Promise<Resource>[] } {
     const resources: Resource[] = []
-    const resolvedDataviews = resolveDataviews(dataviews, workspaceDataviewsConfig)
+    const resolvedDataviews = resolveDataviews(dataviews, workspaceDataviewInstances)
     if (resolvedDataviews) {
       resolvedDataviews.forEach((dataview) => {
         const { datasetsConfig } = dataview
         dataview.datasets?.forEach((dataset) => {
-          const datasetParams = datasetsConfig && datasetsConfig[dataset.id]
+          const datasetParams = datasetsConfig?.find(
+            (datasetConfig) => datasetConfig.datasetId === dataset.id
+          )
           const endpointParamType = datasetParams?.endpoint
 
           dataset.endpoints
@@ -84,7 +91,7 @@ export default class DataviewsClient {
               // template compilation will fail if template needs an override an and override has not been defined
               try {
                 resolvedUrl = pathTemplateCompiled(datasetParams?.params)
-                if (datasetParams?.query.length) {
+                if (datasetParams?.query?.length) {
                   resolvedUrl += `?${stringify(datasetParams?.query)}`
                 }
                 const datasetParam = datasetParams?.params?.find((query) => query.id === 'id')
@@ -118,7 +125,7 @@ export default class DataviewsClient {
       // See existing implementation of this in Track inspector's dataviews thunk:
       // https://github.com/GlobalFishingWatch/track-inspector/blob/develop/src/features/dataviews/dataviews.thunks.ts#L58
       return this._fetch(resource.resolvedUrl, {
-        responseType: resource.responseType as FetchResponseTypes,
+        responseType: resource.responseType as ResourceResponseType,
       }).then((data: unknown) => {
         const resourceWithData = {
           ...resource,

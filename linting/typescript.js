@@ -40,7 +40,12 @@ module.exports = {
           },
           {
             pattern:
-              '{features,store,routes,common,components,redux-modules,types,assets,pages,data}/**',
+              '{features,store,routes,common,components,redux-modules,types,assets,pages,data,hooks,utils}',
+            group: 'internal',
+          },
+          {
+            pattern:
+              '{features,store,routes,common,components,redux-modules,types,assets,pages,data,hooks,utils}/**',
             group: 'internal',
           },
         ],
@@ -50,9 +55,13 @@ module.exports = {
     'react/jsx-fragments': ['error', 'element'],
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/no-var-requires': 0,
+    '@typescript-eslint/no-redeclare': 0,
     // note you must disable the base rule as it can report incorrect errors
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/FAQ.md#i-am-using-a-rule-from-eslint-core-and-it-doesnt-work-correctly-with-typescript-code
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': ['error'],
+    '@typescript-eslint/explicit-module-boundary-types': 0,
+    '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/camelcase': 0,
   },
 }

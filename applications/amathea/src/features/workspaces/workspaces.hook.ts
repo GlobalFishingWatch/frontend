@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { Workspace, WorkspaceUpsert } from '@globalfishingwatch/dataviews-client'
+import { Workspace, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import { selectCurrentWorkspaceDataviewsResolved } from 'features/dataviews/dataviews.selectors'
 import {
   fetchWorkspacesThunk,
@@ -24,7 +24,7 @@ export const useWorkspacesAPI = () => {
   }, [dispatch])
 
   const fetchWorkspaceById = useCallback(
-    async (id: number): Promise<Workspace> => {
+    async (id: string): Promise<Workspace> => {
       const { payload }: any = await dispatch(fetchWorkspaceByIdThunk(id))
       return payload
     },
@@ -32,7 +32,7 @@ export const useWorkspacesAPI = () => {
   )
 
   const deleteWorkspace = useCallback(
-    async (id: number): Promise<Workspace> => {
+    async (id: string): Promise<Workspace> => {
       const { payload }: any = await dispatch(deleteWorkspaceThunk(id))
       return payload
     },

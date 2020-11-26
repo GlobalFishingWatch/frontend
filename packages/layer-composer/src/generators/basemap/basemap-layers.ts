@@ -1,4 +1,4 @@
-import { Layer, AnySourceImpl } from 'mapbox-gl'
+import { Layer } from 'mapbox-gl'
 import { BasemapType } from '../types'
 import { Group, Dictionary } from '../../types'
 
@@ -74,6 +74,7 @@ export const layers: Dictionary<Layer[]> = {
       'source-layer': 'countries',
       paint: {
         'fill-color': DEFAULT_LANDMASS_COLOR,
+        'fill-opacity': 0.99, // This is a trick to allow proper rendering of MGL heatmap layers behind
       },
       metadata: {
         group: Group.BasemapFill,
@@ -82,7 +83,7 @@ export const layers: Dictionary<Layer[]> = {
   ],
 }
 
-export const sources: Dictionary<Record<string, Partial<AnySourceImpl>>> = {
+export const sources: Dictionary<Record<string, Partial<any>>> = {
   [BasemapType.Satellite]: {
     satellite: {
       tiles: [

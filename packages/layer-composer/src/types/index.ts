@@ -1,5 +1,18 @@
 import type { Layer, AnySourceImpl, Style } from 'mapbox-gl'
-import { GeneratorConfig, Type, GeneratorLegend } from '../generators/types'
+import type { DataviewConfig } from '@globalfishingwatch/api-types'
+import {
+  GeneratorConfig,
+  Type,
+  GeneratorLegend,
+  HeatmapAnimatedGeneratorSublayer,
+  ColorRampsIds,
+} from '../generators/types'
+
+export interface GeneratorDataviewConfig<T = Type> extends DataviewConfig<T> {
+  colorRamp?: ColorRampsIds
+  basemap?: string
+  sublayers?: HeatmapAnimatedGeneratorSublayer[]
+}
 
 export interface Dictionary<T> {
   [key: string]: T
@@ -32,14 +45,33 @@ export enum Group {
   Overlay = 'overlay', // Popups, ruler tool, etc
 }
 
+export enum LegendType {
+  ColorRamp = 'colorramp',
+  ColorRampDiscrete = 'colorramp-discrete',
+  Solid = 'solid',
+  Bivariate = 'bivariate',
+}
+
 /**
- * Set of additional metadata properties added by LayerCompoeser for later use in transformations or to be consumed directly ie (group, legend, etc)
+ * Set of additional metadata properties added by LayerComposer for later use in transformations or to be consumed directly ie (group, legend, etc)
  */
 export interface LayerMetadataLegend extends GeneratorLegend {
-  type: 'colorramp' | 'bivariate' | 'solid'
-  gridArea?: number
-  ramp?: [number, string][]
+  id?: string
+  type: LegendType
+  gridArea?: number | string
+  ramp?: [number | null | string, string][]
+  currentValue?: number
   [key: string]: any
+}
+
+/**
+ * Specialized version of LayerMetadataLegend for bivariate legend
+ */
+export interface LayerMetadataLegendBivariate extends LayerMetadataLegend {
+  type: LegendType.Bivariate
+  currentValues: [number, number]
+  sublayersBreaks: [number[], number[]]
+  bivariateRamp: string[]
 }
 
 /**
@@ -49,7 +81,7 @@ export interface ExtendedLayerMeta {
   group?: Group
   generatorId: string
   generatorType: Type
-  legend?: LayerMetadataLegend
+  legend?: LayerMetadataLegend | LayerMetadataLegend[]
   gridArea?: number
   currentValue?: number
   color?: string
@@ -58,8 +90,14 @@ export interface ExtendedLayerMeta {
 /**
  * A standard Mapbox GL Layer with layer-composer specific metadata
  */
-export interface ExtendedLayer extends Layer {
+export type ExtendedLayer = Layer & {
   metadata?: ExtendedLayerMeta
+}
+
+export interface ExtendedStyleMeta {
+  generatedAt: string
+  interactiveLayerIds?: string[]
+  temporalgrid: Record<string, any>
 }
 
 /**
@@ -67,6 +105,7 @@ export interface ExtendedLayer extends Layer {
  */
 export interface ExtendedStyle extends Style {
   layers?: ExtendedLayer[]
+  metadata?: ExtendedStyleMeta
 }
 
 /**
@@ -92,7 +131,7 @@ export interface GeneratorStyles {
   layers: ExtendedLayer[]
   promise?: Promise<GeneratorStyles>
   promises?: Promise<GeneratorStyles>[]
-  metadata?: {}
+  metadata?: Record<string, any>
 }
 
 export type StyleTransformation = (style: ExtendedStyle) => ExtendedStyle

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { useLocationConnect } from 'routes/routes.hook'
 import {
   useWorkspacesAPI,
   useCurrentWorkspaceConnect,
@@ -12,6 +12,7 @@ import {
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { useDataviewsAPI, useDataviewsConnect } from 'features/dataviews/dataviews.hook'
 import DataviewGraphPanel from 'features/dataviews/DataviewGraphPanel'
+import { selectCurrentWorkspaceId } from 'routes/routes.selectors'
 import ResumeColumn from './ResumeColumn'
 import styles from './WorkspaceEditor.module.css'
 
@@ -23,11 +24,11 @@ export default function WorkspaceEditor(): React.ReactElement | null {
   const { fetchWorkspaceById } = useWorkspacesAPI()
   const { dataviews } = useWorkspaceDataviewsConnect()
   const { showModal } = useModalConnect()
-  const { payload } = useLocationConnect()
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
 
   useEffect(() => {
-    if (payload && payload.workspaceId) {
-      fetchWorkspaceById(payload.workspaceId)
+    if (workspaceId) {
+      fetchWorkspaceById(workspaceId)
     }
     fetchDataviews()
     // eslint-disable-next-line react-hooks/exhaustive-deps

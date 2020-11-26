@@ -1,5 +1,186 @@
 # @globalfishingwatch/layer-composer
 
+## 4.9.2
+
+### Patch Changes
+
+- fix heatmap animated click interaction
+
+## 4.9.1
+
+### Patch Changes
+
+- improve highlight styles
+
+## 4.9.0
+
+### Minor Changes
+
+- e37d269: fix heatmap datasets
+
+## 4.8.3
+
+### Patch Changes
+
+- restore layers order
+
+## 4.8.2
+
+### Patch Changes
+
+- move default layer order below basemapFill
+
+## 4.8.1
+
+### Patch Changes
+
+- Fix heatmap rgba color
+
+## 4.8.0
+
+### Minor Changes
+
+- 82f97f5: Update context layers
+
+## 4.7.0
+
+### Minor Changes
+
+- Update context layers dictionary
+
+## 4.6.0
+
+### Minor Changes
+
+- Update context layers dictionary
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/data-transforms@1.0.4
+
+## 4.5.0
+
+### Minor Changes
+
+- 2d0a2fa: Contextual layers
+
+## 4.4.1
+
+### Patch Changes
+
+- b70a9c0: Fishingmap/bugfixes
+
+## 4.4.0
+
+### Minor Changes
+
+- c26fb07: Allow sublayer visibility toggle
+
+## 4.3.0
+
+### Minor Changes
+
+- 75cc59c: Fishingmap/legend label
+
+## 4.2.1
+
+### Patch Changes
+
+- afa2d1b: Bivariate legend
+
+## 4.2.0
+
+### Minor Changes
+
+- bc29371: new useTileState hook
+
+## 4.1.1
+
+### Patch Changes
+
+- Fix default 4wings api tiles url
+
+## 4.1.0
+
+### Minor Changes
+
+- Use .env variables for tiles API url
+
+## 4.0.1
+
+### Patch Changes
+
+- fix bivariate ramp color ids
+
+## 4.0.0
+
+### Major Changes
+
+- 6b5fdf8: Temporalgrid performance and bugfixes
+
+## 3.0.0
+
+### Major Changes
+
+- d7bc617: Added extruded mode and merged geomType and combinationMode into mode
+
+## 2.16.0
+
+### Minor Changes
+
+- 5cb8e42: Layer composer heatmap refacto
+
+## 2.15.0
+
+### Minor Changes
+
+- a40d300: Fishing map blob
+
+## 2.14.1
+
+### Patch Changes
+
+- 9b6c010: Fishing map hover
+
+## 2.14.0
+
+### Minor Changes
+
+- 87dfcf5: animated heatmap legend
+
+## 2.13.4
+
+### Patch Changes
+
+- fae4346: Update types
+
+## 2.13.3
+
+### Patch Changes
+
+- Release fishing-map
+- Updated dependencies [undefined]
+  - @globalfishingwatch/data-transforms@1.0.2
+
+## 2.13.2
+
+### Patch Changes
+
+- 440e403: Fix heatmap transparent outline
+
+## 2.13.1
+
+### Patch Changes
+
+- da23184: Fix heatmap path url
+
+## 2.13.0
+
+### Minor Changes
+
+- 9a356a0: Release fishing-map
+
 ## 2.12.0
 
 ### Minor Changes

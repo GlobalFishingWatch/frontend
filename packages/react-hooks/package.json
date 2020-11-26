@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/react-hooks",
-  "version": "2.9.1",
+  "version": "4.4.2",
   "description": "set of react hooks to easily use pure js libraries",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -11,7 +11,9 @@
     "src": "src",
     "dist": "dist"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
@@ -23,10 +25,13 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@globalfishingwatch/api-client": "^1.5.0",
-    "@globalfishingwatch/dataviews-client": "^2.5.0",
-    "@globalfishingwatch/layer-composer": "^2.11.1",
-    "@globalfishingwatch/mapbox-gl": "latest"
+    "@mapbox/tilebelt": "^1.0.2",
+    "@globalfishingwatch/api-client": "^1.6.3",
+    "@globalfishingwatch/dataviews-client": "^4.0.3",
+    "@globalfishingwatch/layer-composer": "^4.9.0",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.7"
   },
-  "gitHead": "d3257a17acb1bd0880b760492bf936a61da4d8d8"
+  "publishConfig": {
+    "access": "public"
+  }
 }

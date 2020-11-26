@@ -12,6 +12,7 @@ module.exports = {
     'import/no-named-as-default': 0,
     'import/named': 0,
     'import/namespace': 0,
+    'eslintjsx-a11y/accessible-emoji': 0,
     'import/order': [
       'error',
       {

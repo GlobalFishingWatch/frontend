@@ -1,9 +1,6 @@
 import { useMemo } from 'react'
-import {
-  Dataview,
-  WorkspaceDataviewConfigDict,
-  resolveDataviews,
-} from '@globalfishingwatch/dataviews-client'
+import { resolveDataviews } from '@globalfishingwatch/dataviews-client'
+import { Dataview, DataviewInstance } from '@globalfishingwatch/api-types'
 
 /**
  * Gets list of dataviews and those present in the workspace, and applies any view or datasetParams from it (merges dataview.defaultView with dataview.view and workspace's dataview.view).
@@ -12,11 +9,11 @@ import {
  */
 const useWorkspace = (
   dataviews: Dataview[],
-  workspaceDataviews?: WorkspaceDataviewConfigDict
+  dataviewInstances?: DataviewInstance[]
 ): Dataview[] | undefined => {
   const newDataviews = useMemo(() => {
-    return resolveDataviews(dataviews, workspaceDataviews)
-  }, [dataviews, workspaceDataviews])
+    return resolveDataviews(dataviews, dataviewInstances)
+  }, [dataviews, dataviewInstances])
   return newDataviews
 }
 

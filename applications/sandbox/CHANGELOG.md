@@ -1,5 +1,47 @@
 # Change Log
 
+## 0.6.3
+
+### Patch Changes
+
+- update dependencies
+
+## 0.6.2
+
+### Patch Changes
+
+- e37d269: update dependencies
+
+## 0.6.1
+
+### Patch Changes
+
+- Update bundle dependencies
+
+## 0.6.0
+
+### Minor Changes
+
+- Modal with no header prop
+
+## 0.5.0
+
+### Minor Changes
+
+- db69167: Use types from api-types
+
+## 0.4.1
+
+### Patch Changes
+
+- Release fishing-map
+
+## 0.4.0
+
+### Minor Changes
+
+- 9a356a0: Release fishing-map
+
 ## 0.3.1
 
 ### Patch Changes

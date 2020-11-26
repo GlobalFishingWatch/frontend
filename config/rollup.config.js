@@ -1,5 +1,4 @@
-// import typescript from '@rollup/plugin-typescript'
-import typescript from 'rollup-plugin-typescript2'
+import typescript from '@rollup/plugin-typescript'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import multiInput from 'rollup-plugin-multi-input'
@@ -21,7 +20,12 @@ const prepareConfig = async (customConfig = {}) => {
     ...defaultConfig,
     ...customConfig,
   }
-  const gfwPackages = await getPackages(__dirname)
+  const gfwPackages = await getPackages(__dirname).then((packages) =>
+    packages.flatMap(({ name }) => {
+      //support relative imports too
+      return name.includes('globalfishingwatchapp') ? [] : [name, `${name}/**/*`]
+    })
+  )
 
   return {
     input: config.input,
@@ -30,7 +34,13 @@ const prepareConfig = async (customConfig = {}) => {
       format: 'es',
       sourcemap: true,
     },
-    external: ['react', 'react-dom', 'countryflag', ...gfwPackages.map(({ name }) => name)],
+    external: [
+      'react',
+      'react-dom',
+      'countryflag',
+      ...gfwPackages,
+      ...(customConfig.external || []),
+    ],
     plugins: [
       // Allow json resolution
       json(),
@@ -46,7 +56,7 @@ const prepareConfig = async (customConfig = {}) => {
           sourceMap: true,
           tsconfig: config.tsconfig,
           // rollupCommonJSResolveHack: true,
-          clean: isProduction,
+          // clean: isProduction,
         }),
       // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
       commonjs({}),

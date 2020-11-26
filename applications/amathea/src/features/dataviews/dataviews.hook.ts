@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
-import { Dataview, Resource } from '@globalfishingwatch/dataviews-client/dist/types'
+import { Dataview, Resource } from '@globalfishingwatch/api-types'
 import { selectResourceById } from 'features/resources/resources.slice'
 import { useResourcesAPI } from 'features/resources/resources.hook'
 import { GraphData } from 'data/data'
@@ -22,7 +22,7 @@ export const useDataviewResource = (dataview: Dataview, type = 'stats') => {
   const id = `dataview-${type}-${dataview?.id}`
   const dataviewResource: Resource<GraphData[]> | undefined = useSelector(selectResourceById(id))
   const { fetchResourceById } = useResourcesAPI()
-  const filter = dataview?.datasetsConfig?.datasetId?.query?.find((q) => q.id === 'flag')?.value
+  const filter = dataview?.config?.flagFilter
 
   useEffect(() => {
     const dataset = dataview?.datasets?.find((dataset) => dataset.type === '4wings:v1')
@@ -33,8 +33,9 @@ export const useDataviewResource = (dataview: Dataview, type = 'stats') => {
     const endpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === `4wings-${type}`)
     if (endpoint) {
       const pathTemplate = endpoint.pathTemplate.replace('{{aoiId}}', '1') + '?proxy=true'
+      const datasetString = `&datasets[0]=${dataset.id}`
       const filterString = filter ? `&filters[0]=flag='${filter}'` : ''
-      url = pathTemplate + filterString
+      url = pathTemplate + datasetString + filterString
     }
     if (url) {
       fetchResourceById({ id, url })

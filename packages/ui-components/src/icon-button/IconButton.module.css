@@ -10,12 +10,13 @@
   background-position: center center;
   color: var(--color-primary-blue);
   background-color: transparent;
+  cursor: pointer;
   flex-shrink: 0;
   line-height: 1;
 }
 
-.iconButton:not(:disabled) {
-  cursor: pointer;
+.disabled {
+  cursor: not-allowed;
 }
 
 .iconButton:focus {
@@ -56,6 +57,7 @@
 .map-tool {
   color: rgba(var(--white-rgb), var(--opacity-secondary));
   background-color: var(--color-primary-blue);
+  border: var(--border-white);
 }
 
 .map-tool:hover,
@@ -67,6 +69,11 @@
 .defaultSize {
   width: var(--size-M);
   height: var(--size-M);
+}
+
+.mediumSize {
+  width: 3.2rem;
+  height: 3.2rem;
 }
 
 .smallSize {

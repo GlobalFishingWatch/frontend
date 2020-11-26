@@ -1,29 +1,41 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { Dataview, DataviewCreation } from '@globalfishingwatch/dataviews-client'
+import { Dataview, DataviewCreation } from '@globalfishingwatch/api-types'
 import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { RootState } from 'store'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { APP_NAME_FILTER } from 'data/config'
 
 export const fetchDataviewsThunk = createAsyncThunk('dataviews/fetch', async () => {
-  const data = await GFWAPI.fetch<Dataview[]>('/v1/dataviews?include=datasets,datasets.endpoints')
+  const data = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?app=${APP_NAME_FILTER}`)
   return data
 })
 
 const draftToAPIdataview = (draftDataview: DataviewDraft) => {
-  const { dataset, color, colorRamp, steps } = draftDataview
+  const { dataset, color, colorRamp, steps, flagFilter } = draftDataview
+  // TODO remove datasets when updated
   const dataview: DataviewCreation = {
     name: dataset.label,
     description: dataset.description,
-    datasets: [dataset.id as string],
+    app: APP_NAME_FILTER,
     config: {
       type: Generators.Type.UserContext,
       color,
       colorRamp,
+      dataset: 'marine-reserve-user',
       ...(steps && { steps }),
+      ...(flagFilter && { flagFilter }),
     },
+    datasetsConfig: [
+      {
+        datasetId: dataset.id as string,
+        endpoint: 'user-context-tiles',
+        params: [],
+      },
+    ],
   }
   return dataview
 }
@@ -90,6 +102,7 @@ export type DataviewDraft = {
   colorRamp?: Generators.ColorRampsIds
   flagFilter?: string
   steps?: number[]
+  datasetsConfig?: any
 }
 
 export interface DataviewsState extends AsyncReducer<Dataview> {
@@ -117,13 +130,24 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState
 export const { setDraftDataview, resetDraftDataview } = dataviewsSlice.actions
 
 export const {
-  selectAll: selectAllDataviews,
+  selectAll: selectDataviews,
   selectById: selectDataviewById,
 } = entityAdapter.getSelectors<RootState>((state) => state.dataviews)
 
 export const selectDraftDataview = (state: RootState) => state.dataviews.draft
 export const selectDataviewStatus = (state: RootState) => state.dataviews.status
 export const selectDataviewStatusId = (state: RootState) => state.dataviews.statusId
+
+export const selectAllDataviews = createSelector(
+  [selectDataviews, selectAllDatasets],
+  (dataviews, allDatasets) => {
+    return dataviews.map((dataview) => {
+      const dataviewDatasets = dataview.datasetsConfig?.map(({ datasetId }) => datasetId)
+      const datasets = allDatasets.filter((dataset) => dataviewDatasets?.includes(dataset.id))
+      return { ...dataview, datasets }
+    })
+  }
+)
 
 export const selectDrafDataviewSource = createSelector(
   [selectDraftDataview],

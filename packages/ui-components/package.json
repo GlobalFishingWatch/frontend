@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/ui-components",
-  "version": "1.10.0",
+  "version": "2.8.2",
   "description": "Set of react components to consume on the gfw ecosystem",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -11,7 +11,9 @@
     "src": "src",
     "dist": "dist"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
@@ -30,18 +32,22 @@
     "clean": "rimraf dist/*"
   },
   "dependencies": {
+    "@globalfishingwatch/layer-composer": "^4.9.0",
     "@tippyjs/react": "4.1.0",
     "countryflag": "4.0.1",
     "d3-geo": "1.12.0",
     "d3-scale": "^3.2.2",
-    "downshift": "^5.4.3",
+    "downshift": "^6.0.6",
     "react-modal": "^3.11.2",
     "topojson-client": "3.1.0"
   },
   "devDependencies": {
+    "@svgr/webpack": "^5.4.0",
     "@types/react-modal": "^3.10.5",
     "@types/topojson-client": "^3.0.0",
     "ts-node": "^8.10.1"
   },
-  "gitHead": "d3257a17acb1bd0880b760492bf936a61da4d8d8"
+  "publishConfig": {
+    "access": "public"
+  }
 }

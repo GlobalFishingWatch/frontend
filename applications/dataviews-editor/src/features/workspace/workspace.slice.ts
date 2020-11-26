@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Dispatch, createSelector } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { Workspace } from '@globalfishingwatch/dataviews-client'
+import { Workspace } from '@globalfishingwatch/api-types'
 import { RootState } from 'store/store'
 
 type WorkspaceDataview = { id: number }
@@ -9,7 +9,7 @@ type WorkspaceSlice = {
   loaded: boolean
   error: string
   current: {
-    id: number
+    id: string
     dataviews: WorkspaceDataview[]
   }
   list: Workspace[]
@@ -20,7 +20,7 @@ const initialState: WorkspaceSlice = {
   loaded: false,
   error: '',
   current: {
-    id: 1,
+    id: '1',
     dataviews: [] as WorkspaceDataview[],
   },
   list: [] as Workspace[],
@@ -44,7 +44,7 @@ const slice = createSlice({
       state.loaded = false
       state.error = action.payload
     },
-    setWorkspaceId: (state, action: PayloadAction<{ id: number }>) => {
+    setWorkspaceId: (state, action: PayloadAction<{ id: string }>) => {
       state.current.id = action.payload.id
     },
     setWorkspaces: (state, action: PayloadAction<Workspace[]>) => {
@@ -100,6 +100,6 @@ export const selectCurrentWorkspaceDataviews = createSelector(
     if (!currentWorkspace) {
       return dataviews
     }
-    return [...currentWorkspace?.dataviewWorkspaces, ...dataviews]
+    return [...(currentWorkspace as any)?.dataviewWorkspaces, ...dataviews]
   }
 )

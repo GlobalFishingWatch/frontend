@@ -1,27 +1,28 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { Workspace, WorkspaceUpsert } from '@globalfishingwatch/dataviews-client'
-import { ColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
+import { Workspace, WorkspaceUpsert } from '@globalfishingwatch/api-types'
+import { HeatmapColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { RootState } from 'store'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
 import { selectCurrentWorkspaceId } from 'routes/routes.selectors'
+import { APP_NAME_FILTER } from 'data/config'
 
 export const fetchWorkspacesThunk = createAsyncThunk('workspaces/fetch', async () => {
-  const workspaces = await GFWAPI.fetch<Workspace[]>('/v1/workspaces?include=aoi')
+  const workspaces = await GFWAPI.fetch<Workspace[]>(
+    `/v1/workspaces?include=aoi&app=${APP_NAME_FILTER}`
+  )
   return workspaces.map((workspace, i) => {
-    return { ...workspace, color: ColorBarOptions[i % ColorBarOptions.length].value }
+    return { ...workspace, color: HeatmapColorBarOptions[i % HeatmapColorBarOptions.length].value }
   })
 })
 
 export const fetchWorkspaceByIdThunk = createAsyncThunk(
   'workspace/fetchById',
-  async (id: number, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
-      const workspace = await GFWAPI.fetch<Workspace>(
-        `/v1/workspaces/${id}?include=aoi,dataviews,dataviews.datasets,dataviews.datasets.endpoints`
-      )
+      const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}?include=aoi,dataviews`)
       return workspace
     } catch (e) {
       return rejectWithValue(id)
@@ -35,9 +36,12 @@ export const createWorkspaceThunk = createAsyncThunk(
     try {
       const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces`, {
         method: 'POST',
-        body: workspaceData as any,
+        body: { ...workspaceData, app: APP_NAME_FILTER } as any,
       })
-      return workspace
+      return {
+        ...workspace,
+        color: HeatmapColorBarOptions[0].value,
+      }
     } catch (e) {
       return rejectWithValue(workspaceData.name)
     }
@@ -61,7 +65,7 @@ export const updateWorkspaceThunk = createAsyncThunk(
 
 export const deleteWorkspaceThunk = createAsyncThunk(
   'workspaces/delete',
-  async (id: number, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}`, {
         method: 'DELETE',
@@ -73,7 +77,7 @@ export const deleteWorkspaceThunk = createAsyncThunk(
   }
 )
 
-type WorkpaceExtended = Workspace & { color: string }
+export type WorkpaceExtended = Workspace & { color: string }
 
 export type WorkspacesState = AsyncReducer<WorkpaceExtended>
 

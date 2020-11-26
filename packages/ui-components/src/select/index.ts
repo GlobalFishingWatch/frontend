@@ -1,10 +1,11 @@
 export { default } from './Select'
 
 export type SelectOptionId = number | string
-export type SelectOption = {
-  id: SelectOptionId
+export type SelectOption<T = SelectOptionId> = {
+  id: T
   label: string
   tooltip?: string
+  disabled?: boolean
 }
 /**
  * Callback on selecting or removing options

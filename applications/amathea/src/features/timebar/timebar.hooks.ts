@@ -6,7 +6,7 @@ export const useTimerangeConnect = () => {
   const { start, end } = useSelector(selectTimerange)
   const { dispatchQueryParams } = useLocationConnect()
   // TODO needs to be debounced like viewport
-  const dispatchTimerange = (newStart: string, newEnd: string) =>
-    dispatchQueryParams({ start: newStart, end: newEnd })
+  const dispatchTimerange = (event: { start: string; end: string }) =>
+    dispatchQueryParams({ start: event.start, end: event.end })
   return { start, end, dispatchTimerange }
 }

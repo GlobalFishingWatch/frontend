@@ -16,8 +16,8 @@ function Logo(props: LogoProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 240 60"
-      width="240"
+      viewBox="40 0 160 60"
+      width="200"
       height="60"
       className={cx(styles.container, className)}
       aria-label={`Global Fishing Watch ${subBrand}`}

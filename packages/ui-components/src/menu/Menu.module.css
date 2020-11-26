@@ -9,7 +9,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 20;
+  z-index: 100;
   display: flex;
   justify-content: flex-start;
   transition: var(--transition);
@@ -83,6 +83,10 @@
   position: absolute;
   top: var(--space-M);
   right: var(--space-M);
+}
+
+.logo {
+  margin-left: var(--space-M);
 }
 
 .content {

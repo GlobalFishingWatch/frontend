@@ -50,6 +50,15 @@
   z-index: 10;
 }
 
+.optionsContainer.bottom {
+  top: var(--size-M);
+}
+
+.optionsContainer.top {
+  bottom: var(--size-M);
+  top: auto;
+}
+
 .optionItem {
   color: var(--color-secondary-blue);
   line-height: 2rem;
@@ -71,4 +80,8 @@
 
 .selected {
   background-color: var(--color-terthiary-blue);
+}
+
+.disabled {
+  cursor: default;
 }

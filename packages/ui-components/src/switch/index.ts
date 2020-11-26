@@ -1,1 +1,1 @@
-export { default } from './Switch'
+export { default, SwitchEvent } from './Switch'

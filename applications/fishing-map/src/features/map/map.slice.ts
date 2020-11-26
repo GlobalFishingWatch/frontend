@@ -1,63 +1,252 @@
-import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'store'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import uniqBy from 'lodash/uniqBy'
 import {
-  AnyGeneratorConfig,
-  BackgroundGeneratorConfig,
-  BasemapGeneratorConfig,
-} from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { selectMapZoomQuery, selectTimerange } from 'routes/routes.selectors'
+  InteractionEvent,
+  ExtendedFeatureVessel,
+  ExtendedFeature,
+} from '@globalfishingwatch/react-hooks'
+import GFWAPI from '@globalfishingwatch/api-client'
+import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { DataviewDatasetConfig, Dataset, APISearch, Vessel } from '@globalfishingwatch/api-types'
+import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
+import { AsyncReducerStatus } from 'types'
+import { RootState } from 'store'
+import { FISHING_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'
+import {
+  getRelatedDatasetByType,
+  selectTemporalgridDataviews,
+} from 'features/workspace/workspace.selectors'
+import { fetchDatasetsByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
+import { selectTimeRange } from 'features/app/app.selectors'
 
-export interface MapState {
-  generatorsConfig: AnyGeneratorConfig[]
+export const MAX_TOOLTIP_VESSELS = 5
+
+type MapState = {
+  clicked: InteractionEvent | null
+  hovered: InteractionEvent | null
+  status: AsyncReducerStatus
+  bounds?: MiniglobeBounds
 }
 
 const initialState: MapState = {
-  // This is the configuration eventually provided to GFW's Layer Composer in Map.tsx
-  generatorsConfig: [
-    {
-      id: 'background',
-      type: Generators.Type.Background,
-      color: '#274777',
-    } as BackgroundGeneratorConfig,
-    { id: 'satellite', type: Generators.Type.Basemap, visible: true } as BasemapGeneratorConfig,
-  ],
+  clicked: null,
+  hovered: null,
+  status: AsyncReducerStatus.Idle,
 }
 
-export type UpdateGeneratorPayload = {
-  id: string
-  config: Partial<AnyGeneratorConfig>
+type SublayerVessels = {
+  sublayerIndex: number
+  vessels: ExtendedFeatureVessel[]
 }
-// This slice is the part of the store that handles preparing generators configs, that then get passed
-// to Layer Composer, which generates a style object that can be used by Mapbox GL (https://docs.mapbox.com/mapbox-gl-js/style-spec/)
-export const mapSlice = createSlice({
+
+export const fetch4WingInteractionThunk = createAsyncThunk(
+  'map/fetchInteraction',
+  async (
+    temporalGridFeatures: ExtendedFeature[],
+    { getState, signal, dispatch, rejectWithValue }
+  ) => {
+    const state = getState() as RootState
+    const temporalgridDataviews = selectTemporalgridDataviews(state) || []
+    const { start, end } = selectTimeRange(state)
+
+    // get corresponding dataviews
+    const featuresDataviews = temporalGridFeatures.flatMap((feature) => {
+      return feature.temporalgrid ? temporalgridDataviews[feature.temporalgrid.sublayerIndex] : []
+    })
+
+    const fourWingsDataset = featuresDataviews[0].datasets?.find(
+      (d) => d.type === FISHING_DATASET_TYPE
+    ) as Dataset
+
+    // get corresponding datasets
+    const datasets: string[][] = featuresDataviews.map((dv) => {
+      return dv.config?.datasets || []
+    })
+
+    // use the first feature/dv for common parameters
+    const mainFeature = temporalGridFeatures[0]
+    const datasetConfig: DataviewDatasetConfig = {
+      datasetId: fourWingsDataset.id,
+      endpoint: '4wings-interaction',
+      params: [
+        { id: 'z', value: mainFeature.tile?.z },
+        { id: 'x', value: mainFeature.tile?.x },
+        { id: 'y', value: mainFeature.tile?.y },
+        { id: 'rows', value: mainFeature.temporalgrid?.row as number },
+        { id: 'cols', value: mainFeature.temporalgrid?.col as number },
+      ],
+      query: [
+        { id: 'date-range', value: [start, end].join(',') },
+        {
+          id: 'datasets',
+          value: datasets.map((ds) => ds.join(',')),
+        },
+      ],
+    }
+
+    const filters = featuresDataviews.map((dv) => dv.config?.filter || [])
+    if (filters?.length) {
+      datasetConfig.query?.push({ id: 'filters', value: filters })
+    }
+
+    const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
+    if (interactionUrl) {
+      const sublayersVesselsIds = await GFWAPI.fetch<ExtendedFeatureVessel[]>(interactionUrl, {
+        signal,
+      })
+
+      let startingIndex = 0
+      const vesselsBySource: ExtendedFeatureVessel[][][] = featuresDataviews.map((dataview) => {
+        const datasets: string[] = dataview.config?.datasets
+        const newStartingIndex = startingIndex + datasets.length
+        const dataviewVesselsIds = sublayersVesselsIds.slice(startingIndex, newStartingIndex)
+        startingIndex = newStartingIndex
+        return dataviewVesselsIds.map((vessels, i) => {
+          const dataset = selectDatasetById(datasets[i])(state)
+          return vessels.flatMap((vessel: ExtendedFeatureVessel) => ({ ...vessel, dataset }))
+        })
+      })
+
+      const topHoursVessels = vesselsBySource
+        .map((source) => {
+          return source
+            .flatMap((source) => source)
+            .sort((a, b) => b.hours - a.hours)
+            .slice(0, MAX_TOOLTIP_VESSELS)
+        })
+        .flatMap((v) => v)
+
+      const topHoursVesselsDatasets = uniqBy(
+        topHoursVessels.map(({ dataset }) => dataset),
+        'id'
+      )
+
+      // Grab related dataset to fetch info from and prepare tracks
+      const infoDatasets = await Promise.all(
+        topHoursVesselsDatasets.map(async (dataset) => {
+          const infoDatasetId = getRelatedDatasetByType(dataset, VESSELS_DATASET_TYPE)?.id
+          if (infoDatasetId) {
+            let infoDataset = selectDatasetById(infoDatasetId)(state)
+            if (!infoDataset) {
+              // It needs to be request when it hasn't been loaded yet
+              const { payload }: any = await dispatch(fetchDatasetsByIdThunk(infoDatasetId))
+              infoDataset = payload
+            }
+            return infoDataset as Dataset
+          }
+        })
+      )
+
+      let vesselsInfo: Vessel[] = []
+      if (infoDatasets?.length) {
+        const infoDataset = infoDatasets[0]
+        if (infoDataset) {
+          const infoDatasetConfig = {
+            endpoint: 'carriers-list-vessels',
+            datasetId: infoDataset.id,
+            params: [],
+            query: [
+              {
+                id: 'datasets',
+                value: infoDatasets.flatMap((infoDataset) => infoDataset?.id || []),
+              },
+              {
+                id: 'ids',
+                value: topHoursVessels.map((v) => v.id),
+              },
+            ],
+          }
+          const vesselsInfoUrl = resolveEndpoint(infoDataset, infoDatasetConfig)
+
+          if (vesselsInfoUrl) {
+            try {
+              const vesselsInfoResponse = await GFWAPI.fetch<APISearch<Vessel>>(vesselsInfoUrl, {
+                signal,
+              })
+              vesselsInfo = vesselsInfoResponse?.flatMap(
+                (vesselInfoResponse) =>
+                  vesselInfoResponse.results?.entries.flatMap((vesselInfo) => {
+                    if (!vesselInfo?.shipname) return []
+                    return vesselInfo
+                  }) || []
+              )
+            } catch (e) {
+              console.warn(e)
+            }
+          }
+        }
+      }
+
+      const sublayersIndices = temporalGridFeatures.map(
+        (feature) => feature.temporalgrid?.sublayerIndex || 0
+      )
+      const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
+        return {
+          sublayerIndex: sublayersIndices[i],
+          vessels: sublayerVessels
+            .flatMap((vessels) => {
+              return vessels.map((vessel) => {
+                const vesselInfo = vesselsInfo?.find((entry) => entry.id === vessel.id)
+                if (!vesselInfo) return vessel
+                return { ...vesselInfo, ...vessel }
+              })
+            })
+            .sort((a, b) => b.hours - a.hours),
+        }
+      })
+
+      return { vessels: sublayersVessels }
+    }
+  }
+)
+
+const slice = createSlice({
   name: 'map',
   initialState,
   reducers: {
-    updateGenerator: (state, action: PayloadAction<UpdateGeneratorPayload>) => {
-      const { id, config } = action.payload
-      const index = state.generatorsConfig.findIndex((generator) => generator.id === id)
-      if (index !== -1) {
-        Object.assign(state.generatorsConfig[index], config)
+    setClickedEvent: (state, action: PayloadAction<InteractionEvent | null>) => {
+      if (action.payload === null) {
+        state.clicked = null
+        return
       }
+      state.clicked = { ...action.payload }
     },
+    setBounds: (state, action: PayloadAction<MiniglobeBounds>) => {
+      state.bounds = action.payload
+    },
+  },
+
+  extraReducers: (builder) => {
+    builder.addCase(fetch4WingInteractionThunk.pending, (state, action) => {
+      state.status = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetch4WingInteractionThunk.fulfilled, (state, action) => {
+      state.status = AsyncReducerStatus.Finished
+      if (!state.clicked || !state.clicked.features || !action.payload) return
+
+      action.payload.vessels.forEach((sublayerVessels) => {
+        const sublayer = state.clicked?.features?.find(
+          (feature) =>
+            feature.temporalgrid &&
+            feature.temporalgrid.sublayerIndex === sublayerVessels.sublayerIndex
+        )
+        if (!sublayer) return
+        sublayer.vessels = sublayerVessels.vessels
+      })
+    })
+    builder.addCase(fetch4WingInteractionThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.status = AsyncReducerStatus.Idle
+      } else {
+        state.status = AsyncReducerStatus.Error
+      }
+    })
   },
 })
 
-// createSlice generates for us actions that we can use to modify the store by calling dispatch, or using the useDispatch hook
-export const { updateGenerator } = mapSlice.actions
+export const selectClickedEvent = (state: RootState) => state.map.clicked
+export const selectClickedEventStatus = (state: RootState) => state.map.status
+export const selectBounds = (state: RootState) => state.map.bounds
 
-// This is a simple selector that just picks a portion of the stor for consumption by either a component,
-// or a more complex memoized selector. Memoized selectors and/or that need to access several slices,
-// should go into a distiinct [feature].selectors.ts file (use createSelector from RTK)
-export const selectGeneratorsConfig = (state: RootState) => state.map.generatorsConfig
-export const selectGlobalGeneratorsConfig = createSelector(
-  [selectMapZoomQuery, selectTimerange],
-  (zoom, { start, end }) => ({
-    zoom,
-    start,
-    end,
-  })
-)
-
-export default mapSlice.reducer
+export const { setClickedEvent, setBounds } = slice.actions
+export default slice.reducer

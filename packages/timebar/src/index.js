@@ -1,4 +1,6 @@
 export { default } from './timebar'
+export { EVENT_SOURCE } from './constants'
+export { TimelineContext } from './components/timeline'
 export { default as TimebarActivity } from './charts/activity'
 export { default as TimebarEvents } from './charts/events'
 export { default as TimebarVesselEvents } from './charts/vessel-events'

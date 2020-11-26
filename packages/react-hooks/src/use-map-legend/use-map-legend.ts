@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
+import { ExtendedStyle } from '@globalfishingwatch/layer-composer'
 import { InteractionEvent } from '../use-map-interaction'
 import { LegendLayer } from '.'
 
@@ -25,7 +25,7 @@ export function getLegendLayers(
       properties: eventFeature.properties,
     }
   })
-  return layers
+  return layers as LegendLayer[]
 }
 
 function useMapLegend(style?: ExtendedStyle, interactionEvent?: InteractionEvent) {

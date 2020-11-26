@@ -1,8 +1,8 @@
 import React from 'react'
-import { Editor } from 'types'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Button from '@globalfishingwatch/ui-components/dist/button'
+import { Editor } from 'types'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import styles from './ShareWorkspace.module.css'
 // import { useWorkspacesConnect } from './workspaces.hook'
@@ -12,9 +12,9 @@ function ShareWorkspace(): React.ReactElement {
   // const { workspacesSharedList } = useWorkspacesConnect()
   // TODO: move this to workspace API
   const editors: Editor[] = [
-    { id: 'editor-1', email: 'editor1@gmail.com' },
-    { id: 'editor-2', email: 'editor2@gmail.com' },
-    { id: 'editor-3', email: 'editor3@gmail.com' },
+    { id: 'editor-1', email: 'editor1@mail.com' },
+    { id: 'editor-2', email: 'editor2@mail.com' },
+    { id: 'editor-3', email: 'editor3@mail.com' },
   ]
   return (
     <div className={styles.container}>

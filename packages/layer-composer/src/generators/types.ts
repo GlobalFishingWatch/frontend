@@ -1,10 +1,11 @@
 import { FeatureCollection } from 'geojson'
-import { Segment } from './track/segments-to-geojson'
-import { Geoms } from './heatmap/types'
+import { StringUnitLength } from 'luxon'
+import { Segment } from '@globalfishingwatch/data-transforms'
 
 export enum Type {
   Background = 'BACKGROUND',
   UserContext = 'USER_CONTEXT',
+  Context = 'CONTEXT',
   Basemap = 'BASEMAP',
   CartoPolygons = 'CARTO_POLYGONS',
   GL = 'GL',
@@ -30,11 +31,11 @@ export interface GlobalGeneratorConfig {
   token?: string
 }
 
-export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[]
+export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | null
 
 export interface GeneratorLegend {
-  label: string
-  unit: string
+  label?: string
+  unit?: string
 }
 
 export interface GeneratorMetadata {
@@ -107,6 +108,25 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
 }
 
 /**
+ * Contextual layers provided by GFW
+ */
+export interface ContextGeneratorConfig extends GeneratorConfig {
+  type: Type.Context
+  /**
+   * Id for the layers dictionary, see CONTEXT_LAYERS from /generators/context/context-layers
+   */
+  layer: ContextLayerType
+  /**
+   * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
+   */
+  tilesUrl: string
+  /**
+   * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
+   */
+  color?: StringUnitLength
+}
+
+/**
  * Placeholder for a generic set of Mapbox GL layers (consisting of one or more sources and one or mor layers)
  */
 export interface GlGeneratorConfig extends GeneratorConfig {
@@ -138,7 +158,7 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
   /**
    * A GeoJSON made of one or more LineStrings. Features should have `coordinateProperties` set in order to filter by time
    */
-  data: FeatureCollection | Segment[]
+  data: FeatureCollection | Segment[] | null
   /**
    * Progresseively simplify geometries when zooming out for improved performance
    */
@@ -191,26 +211,26 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   tilesUrl: string
   statsUrl?: string
   scalePowExponent?: number
+  datasets: string[]
   fetchStats?: boolean
+  filters?: string
   statsFilter?: string
-  geomType?: Geoms
   colorRamp?: ColorRampsIds
-  serverSideFilter?: string
-  updateColorRampOnTimeChange?: boolean
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: Type.HeatmapAnimated
   sublayers: HeatmapAnimatedGeneratorSublayer[]
-  combinationMode?: CombinationMode
+  mode?: HeatmapAnimatedMode
   tilesAPI?: string
-  geomType?: Geoms
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
   tilesetsStart?: string
   tilesetsEnd?: string
   interactive?: boolean
+  staticStart?: string
+  staticEnd?: string
 }
 
 export type AnyGeneratorConfig =
@@ -219,6 +239,7 @@ export type AnyGeneratorConfig =
   | GlGeneratorConfig
   | CartoPolygonsGeneratorConfig
   | UserContextGeneratorConfig
+  | ContextGeneratorConfig
   | TrackGeneratorConfig
   | VesselEventsGeneratorConfig
   | RulersGeneratorConfig
@@ -229,6 +250,18 @@ export type AnyGeneratorConfig =
 export enum BasemapType {
   Satellite = 'satellite',
   Default = 'basemap_default',
+}
+
+// ---- Generator specific types
+export enum ContextLayerType {
+  EEZ = 'eez-areas',
+  HighSeas = 'high-seas',
+  EEZBoundaries = 'eez-boundaries',
+  MPA = 'mpa',
+  MPANoTake = 'mpa-no-take',
+  MPARestricted = 'mpa-restricted',
+  TunaRfmo = 'tuna-rfmo',
+  WPPNRI = 'wpp-nri',
 }
 
 export type RawEvent = {
@@ -262,9 +295,10 @@ export type Ruler = {
 
 export interface HeatmapAnimatedGeneratorSublayer {
   id: string
-  tilesets: string[]
-  filter: string
+  datasets: string[]
+  filter?: string
   colorRamp: ColorRampsIds
+  visible?: boolean
 }
 
 // ---- Heatmap Generator color ramps types
@@ -272,6 +306,7 @@ export type ColorRampsIds =
   | 'fishing'
   | 'presence'
   | 'reception'
+  | 'bivariate'
   | 'teal'
   | 'magenta'
   | 'lilac'
@@ -282,6 +317,13 @@ export type ColorRampsIds =
   | 'green'
   | 'orange'
 
-export type BivariateColorRampsIds = 'bivariate'
-
-export type CombinationMode = 'add' | 'compare' | 'bivariate' | 'literal'
+export enum HeatmapAnimatedMode {
+  // Pick sublayer with highest value and place across this sublayer's color ramp. Works with 0 - n sublayers
+  Compare = 'compare',
+  // Place values on a 2D bivariate scale where the two axis represent the two sublayers. Works only with 2 sublayers
+  Bivariate = 'bivariate',
+  // Uses a MGL heatmap layer to represent values with smooth translations between grid points. Works only with 1 sublayer
+  Blob = 'blob',
+  // Represents value in 3D stacked bars. Works with 0 - n sublayers
+  Extruded = 'extruded',
+}

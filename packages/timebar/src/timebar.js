@@ -12,7 +12,6 @@ import {
   getDeltaDays,
   isMoreThanADay,
 } from './utils/internal-utils'
-import { getHumanizedDates } from './utils'
 import './timebar-settings.module.css'
 import styles from './timebar.module.css'
 import TimeRangeSelector from './components/timerange-selector'
@@ -23,6 +22,7 @@ import { ReactComponent as IconBookmark } from './icons/bookmark.svg'
 import { ReactComponent as IconBookmarkFilled } from './icons/bookmarkFilled.svg'
 import { ReactComponent as IconMinus } from './icons/minus.svg'
 import { ReactComponent as IconPlus } from './icons/plus.svg'
+import { EVENT_SOURCE } from './constants'
 dayjs.extend(relativeTime)
 dayjs.extend(utc)
 
@@ -90,7 +90,7 @@ class Timebar extends Component {
     const { start, end } = this.props
 
     // TODO stick to day/hour here too
-    this.notifyChange(start, end)
+    this.notifyChange(start, end, EVENT_SOURCE.MOUNT)
   }
 
   static getDerivedStateFromProps(props) {
@@ -113,7 +113,7 @@ class Timebar extends Component {
   }
 
   onTimeRangeSelectorSubmit = (start, end) => {
-    this.notifyChange(start, end)
+    this.notifyChange(start, end, EVENT_SOURCE.TIME_RANGE_SELECTOR)
     this.setState({
       showTimeRangeSelector: false,
     })
@@ -127,7 +127,10 @@ class Timebar extends Component {
     let nextDelta
     let nextUnit = 'day'
 
+    let source
+
     if (zoom === 'in') {
+      source = EVENT_SOURCE.ZOOM_IN_BUTTON
       steps = [365, 32, 30, 7, 1]
       for (let s = 0; s < steps.length; s += 1) {
         const step = steps[s]
@@ -142,6 +145,7 @@ class Timebar extends Component {
         nextUnit = 'hour'
       }
     } else if (zoom === 'out') {
+      source = EVENT_SOURCE.ZOOM_OUT_BUTTON
       steps = [1, 7, 30, 32, 365]
       for (let s = 0; s < steps.length; s += 1) {
         const step = steps[s]
@@ -154,7 +158,7 @@ class Timebar extends Component {
 
       // more than 1 year situation
       if (nextDelta === undefined) {
-        this.notifyChange(absoluteStart, absoluteEnd)
+        this.notifyChange(absoluteStart, absoluteEnd, source)
         return
       }
     }
@@ -175,10 +179,10 @@ class Timebar extends Component {
       absoluteEnd
     )
 
-    this.notifyChange(newStartClamped, newEndClamped)
+    this.notifyChange(newStartClamped, newEndClamped, source)
   }
 
-  notifyChange = (start, end, clampToEnd = false) => {
+  notifyChange = (start, end, source, clampToEnd = false) => {
     const { clampedStart, clampedEnd } = clampToMinAndMax(
       start,
       end,
@@ -187,12 +191,16 @@ class Timebar extends Component {
       clampToEnd
     )
     const { onChange } = this.props
-    const { humanizedStart, humanizedEnd } = getHumanizedDates(clampedStart, clampedEnd)
-    onChange(clampedStart, clampedEnd, humanizedStart, humanizedEnd)
+    const event = {
+      start: clampedStart,
+      end: clampedEnd,
+      source,
+    }
+    onChange(event)
   }
 
   onPlaybackTick = (newStart, newEnd) => {
-    this.notifyChange(newStart, newEnd)
+    this.notifyChange(newStart, newEnd, EVENT_SOURCE.PLAYBACK_FRAME)
   }
 
   onTogglePlay = (isPlaying) => {

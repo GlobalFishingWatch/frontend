@@ -1,7 +1,7 @@
 // import { bindActionCreators } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { Dataset } from '@globalfishingwatch/dataviews-client'
+import { Dataset } from '@globalfishingwatch/api-types'
 import {
   fetchDatasetsThunk,
   deleteDatasetThunk,

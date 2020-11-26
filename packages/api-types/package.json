@@ -1,0 +1,30 @@
+{
+  "name": "@globalfishingwatch/api-types",
+  "version": "2.2.0",
+  "description": "Typescript definitions for API responses",
+  "author": "satellitestudio <contact@satellitestud.io>",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "license": "ISC",
+  "main": "src/index.ts",
+  "typings": "dist",
+  "directories": {
+    "src": "src",
+    "dist": "dist"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  },
+  "scripts": {
+    "start": "rollup -c ./rollup.config.js -w",
+    "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "clean": "rimraf dist/*",
+    "prepare": "yarn build"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

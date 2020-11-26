@@ -4,10 +4,9 @@ import { Group, Dictionary, ExtendedStyle, ExtendedLayer, StyleTransformation } 
 const GROUP_ORDER = [
   Group.Background,
   Group.Basemap,
-  Group.Heatmap,
   Group.OutlinePolygonsBackground,
+  Group.Heatmap,
   Group.OutlinePolygons,
-  Group.OutlinePolygonsHighlighted,
   Group.BasemapFill,
   Group.Default,
   Group.Track,
@@ -15,6 +14,7 @@ const GROUP_ORDER = [
   Group.TrackHighlighted,
   Group.Point,
   Group.BasemapForeground,
+  Group.OutlinePolygonsHighlighted,
   Group.Tool,
   Group.Label,
   Group.Overlay,
@@ -43,16 +43,16 @@ export const convertLegacyGroups = (style: Style): ExtendedStyle => {
   return newStyle
 }
 
-const sort: StyleTransformation = (style) => {
-  const newStyle = { ...style }
-  newStyle.layers = newStyle.layers?.sort((a: ExtendedLayer, b: ExtendedLayer) => {
+const sort: StyleTransformation = (style, order = GROUP_ORDER) => {
+  const layers = style.layers ? [...style.layers] : []
+  const orderedLayers = layers.sort((a: ExtendedLayer, b: ExtendedLayer) => {
     const aGroup = a.metadata?.group || Group.Default
     const bGroup = b.metadata?.group || Group.Default
-    const aPos = GROUP_ORDER.indexOf(aGroup)
-    const bPos = GROUP_ORDER.indexOf(bGroup)
+    const aPos = order.indexOf(aGroup)
+    const bPos = order.indexOf(bGroup)
     return aPos - bPos
   })
-  return newStyle
+  return { ...style, layers: orderedLayers }
 }
 
 export default sort

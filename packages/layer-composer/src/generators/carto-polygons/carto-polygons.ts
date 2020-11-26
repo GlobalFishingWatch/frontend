@@ -141,6 +141,7 @@ class CartoPolygonsGenerator {
       }
 
       glLayer.metadata = {
+        ...config.metadata,
         interactive: true,
         generatorId: config.id,
       }

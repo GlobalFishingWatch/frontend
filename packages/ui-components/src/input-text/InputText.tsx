@@ -10,6 +10,7 @@ type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   className?: string
   label?: string
   type?: InputType
+  step?: string
   inputSize?: InputSize
   inputKey?: string
 }
@@ -21,6 +22,7 @@ function InputText(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
     className,
     label,
     type = 'text',
+    step = 'any',
     inputSize = 'default',
     inputKey = defaultKey,
     ...rest
@@ -31,7 +33,15 @@ function InputText(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
   return (
     <div className={cx(styles.inputText, styles[inputSize], className)}>
       {label && <label htmlFor={label}>{label}</label>}
-      <input key={inputKey} ref={inputRef} id={label} name={label} type={type} {...rest} />
+      <input
+        key={inputKey}
+        ref={inputRef}
+        id={label}
+        name={label}
+        type={type}
+        {...rest}
+        {...(type === 'number' && { step })}
+      />
       {type !== 'text' && type !== 'number' && (
         <Icon
           icon={type}

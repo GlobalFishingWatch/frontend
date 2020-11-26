@@ -15,6 +15,7 @@ import {
   isMoreThanADay,
   stickToClosestUnit,
 } from '../utils/internal-utils'
+import { EVENT_SOURCE } from '../constants'
 import Bookmark from './bookmark'
 import TimelineUnits from './timeline-units'
 import Handler from './timeline-handler'
@@ -62,7 +63,6 @@ class Timeline extends PureComponent {
       dragging: null,
     }
     this.graphContainer = null
-    this.isMovingInside = false
   }
 
   componentDidMount() {
@@ -176,7 +176,7 @@ class Timeline extends PureComponent {
         absoluteStart,
         absoluteEnd
       )
-      onChange(newStartClamped, newEndClamped, dragging === DRAG_END)
+      onChange(newStartClamped, newEndClamped, EVENT_SOURCE.ZOOM_OUT_MOVE, dragging === DRAG_END)
     }
 
     this.requestAnimationFrame = window.requestAnimationFrame(this.onEnterFrame)
@@ -203,7 +203,7 @@ class Timeline extends PureComponent {
   }
 
   onMouseMove = (event) => {
-    const { start, end, absoluteStart, absoluteEnd, onChange, onMouseLeave } = this.props
+    const { start, end, absoluteStart, absoluteEnd, onChange } = this.props
     const { dragging, outerX, innerStartPx, innerEndPx } = this.state
     const clientX = event.clientX || (event.changedTouches && event.changedTouches[0].clientX)
     if (clientX === undefined) {
@@ -211,13 +211,11 @@ class Timeline extends PureComponent {
     }
     const x = clientX - outerX
     const isMovingInside = this.node.contains(event.target) && x > innerStartPx && x < innerEndPx
-    if (isMovingInside) {
-      this.isMovingInside = true
+    const isNodeInside = event.target.contains(this.node)
+    if (isMovingInside || isNodeInside) {
       const isDay = !isMoreThanADay(start, end)
       this.throttledMouseMove(x, this.outerScale.invert, isDay)
-    } else if (this.isMovingInside === true) {
-      this.isMovingInside = false
-      onMouseLeave()
+    } else {
       this.notifyMouseLeave()
     }
 
@@ -247,7 +245,7 @@ class Timeline extends PureComponent {
         absoluteStart,
         absoluteEnd
       )
-      onChange(newStartClamped, newEndClamped, dragging === DRAG_END)
+      onChange(newStartClamped, newEndClamped, EVENT_SOURCE.SEEK_MOVE, dragging === DRAG_END)
     } else if (isDraggingZoomIn) {
       this.setState({
         handlerMouseX: x,
@@ -263,23 +261,18 @@ class Timeline extends PureComponent {
 
   onMouseUp = (event) => {
     const { start, end, onChange } = this.props
-    const { dragging, outerX, innerStartPx } = this.state
+    const { dragging, outerX, innerStartPx, outerDrag } = this.state
 
     if (dragging === null) {
       return
     }
+
     this.context.toggleImmediate(false)
 
     const clientX = event.clientX || (event.changedTouches && event.changedTouches[0].clientX) || 0
     const x = clientX - outerX
 
     const isHandlerZoomInValid = this.isHandlerZoomInValid(x)
-
-    this.setState({
-      dragging: null,
-      handlerMouseX: null,
-      outerDrag: false,
-    })
 
     let newStart = start
     let newEnd = end
@@ -298,7 +291,22 @@ class Timeline extends PureComponent {
     newStart = stickToClosestUnit(newStart, stickUnit)
     newEnd = stickToClosestUnit(newEnd, stickUnit)
 
-    onChange(newStart, newEnd)
+    let source
+    if (outerDrag === true) {
+      source = EVENT_SOURCE.ZOOM_OUT_RELEASE
+    } else if (dragging === DRAG_INNER) {
+      source = EVENT_SOURCE.SEEK_RELEASE
+    } else {
+      source = EVENT_SOURCE.ZOOM_IN_RELEASE
+    }
+
+    onChange(newStart, newEnd, source)
+
+    this.setState({
+      dragging: null,
+      handlerMouseX: null,
+      outerDrag: false,
+    })
   }
 
   render() {

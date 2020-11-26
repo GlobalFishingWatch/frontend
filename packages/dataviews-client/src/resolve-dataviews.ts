@@ -1,48 +1,50 @@
-import { Dataview, WorkspaceDataviewConfigDict, DataviewDatasetConfigDict } from './types'
+import { Dataview, DataviewInstance } from '@globalfishingwatch/api-types'
 
 /**
  * Gets list of dataviews and those present in the workspace, and applies any config or datasetConfig
  * from it (merges dataview.config and workspace's dataviewConfig and datasetConfig).
  * @param dataviews
- * @param workspaceDataviewsConfig
+ * @param dataviewInstances
  */
 export default function resolveDataviews(
   dataviews: Dataview[],
-  workspaceDataviewsConfig?: WorkspaceDataviewConfigDict
+  dataviewInstances?: DataviewInstance[]
 ) {
   if (!dataviews) {
     console.warn('Empty dataviews to resolve')
     return
   }
 
-  return dataviews.map((dataview) => {
-    const newDataview = { ...dataview }
+  return dataviews.map((d) => {
+    const dataview = { ...d }
     // retrieve workspace dataview that matches dataview so that we can collect overrides
-    const workspaceDataview = workspaceDataviewsConfig && workspaceDataviewsConfig[dataview.id]
+    const workspaceDataview =
+      dataviewInstances?.length &&
+      dataviewInstances.find((workspaceDataview) => workspaceDataview.dataviewId === dataview.id)
 
     if (workspaceDataview) {
       // if workspace dataview exist, we'll overwrite original config
       if (workspaceDataview.config) {
-        newDataview.config = {
-          ...newDataview.config,
+        dataview.config = {
+          ...dataview.config,
           ...workspaceDataview.config,
         }
       }
 
-      if (workspaceDataview.datasetsConfig) {
-        const datasetsConfig: DataviewDatasetConfigDict = {}
-        Object.entries(workspaceDataview.datasetsConfig).forEach(([key, value]) => {
-          datasetsConfig[key] = value
-          // TODO once we support multiple datasetsConfig in same dataview
-          // replace default dataviewDatasetsConfig if exists in workspace datasetsConfig
-          // datasetsConfig[key] = {
-          //   ...newDataview.datasetsConfig,
-          //   ...value,
-          // }
+      if (dataview.datasetsConfig && workspaceDataview.datasetsConfig?.length) {
+        dataview.datasetsConfig = dataview.datasetsConfig?.map((datasetConfig) => {
+          const workspaceDatasetConfig = workspaceDataview.datasetsConfig?.find(
+            (workspaceDatasetConfig) => datasetConfig.datasetId === workspaceDatasetConfig.datasetId
+          )
+          if (!workspaceDatasetConfig) return datasetConfig
+          const { datasetId, ...rest } = workspaceDatasetConfig
+          return {
+            ...datasetConfig,
+            ...rest,
+          }
         })
-        newDataview.datasetsConfig = datasetsConfig
       }
     }
-    return newDataview
+    return dataview
   })
 }

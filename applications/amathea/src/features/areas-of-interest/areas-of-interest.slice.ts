@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'store'
 import memoize from 'lodash/memoize'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { AOI } from '@globalfishingwatch/dataviews-client/dist/types'
+import { AOI } from '@globalfishingwatch/api-types'
+import { RootState } from 'store'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 
 export const fetchAOIThunk = createAsyncThunk('aoi/fetch', async () => {

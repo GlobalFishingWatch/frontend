@@ -22,6 +22,9 @@ export const DEFAULT_CONFIG = {
   sprite: 'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites',
 }
 
+export const API_GATEWAY_VERSION =
+  process.env.API_GATEWAY_VERSION || process.env.REACT_APP_API_GATEWAY_VERSION || 'v1'
+
 export const API_GATEWAY =
   process.env.API_GATEWAY ||
   process.env.REACT_APP_API_GATEWAY ||
@@ -66,9 +69,15 @@ class LayerComposer {
   }
 
   _getGeneratorMetadata = (layers: GeneratorStyles[]): Dictionary<any> => {
-    return Object.fromEntries(
+    const metadataLayers = Object.fromEntries(
       layers.filter((layer) => layer.metadata).map((layer) => [layer.id, layer.metadata])
     )
+    const metadata = {
+      generatedAt: new Date(),
+      layers: metadataLayers,
+      temporalgrid: layers.find((layer) => (layer?.metadata as any)?.temporalgrid)?.metadata,
+    }
+    return metadata
   }
 
   // TODO: async generators doesn't go thought this style
@@ -149,10 +158,7 @@ class LayerComposer {
       sprite: this.sprite,
       sources: flatObjectArrays(sources),
       layers: layersDictToArray(layers),
-      metadata: {
-        generatedAt: new Date(),
-        layers: metadata,
-      },
+      metadata,
     }
   }
 

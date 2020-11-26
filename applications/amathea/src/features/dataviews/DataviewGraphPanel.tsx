@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import TagList from '@globalfishingwatch/ui-components/dist/tag-list'
-import { Dataview } from '@globalfishingwatch/dataviews-client'
+import { Dataview } from '@globalfishingwatch/api-types/dist'
 import { DATASET_SOURCE_OPTIONS, FLAG_FILTERS } from 'data/data'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
@@ -12,7 +12,7 @@ import { selectHiddenDataviews } from 'routes/routes.selectors'
 import { useCurrentWorkspaceConnect, useWorkspacesAPI } from 'features/workspaces/workspaces.hook'
 import styles from './DataviewGraphPanel.module.css'
 import DataviewGraph from './DataviewGraph'
-import { useDraftDataviewConnect } from './dataviews.hook'
+import { useDataviewsAPI, useDraftDataviewConnect } from './dataviews.hook'
 import { DataviewDraft } from './dataviews.slice'
 
 interface DataviewGraphPanelProps {
@@ -25,14 +25,14 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
   const { updateWorkspace } = useWorkspacesAPI()
   const { showModal } = useModalConnect()
   const { setDraftDataview } = useDraftDataviewConnect()
+  const { deleteDataview } = useDataviewsAPI()
   const { dispatchQueryParams } = useLocationConnect()
   const hiddenDataviews = useSelector(selectHiddenDataviews)
-  const datasetId = dataview.datasets?.length ? dataview.datasets[0].id : ''
+  const datasetId = dataview.datasetsConfig?.length ? dataview.datasetsConfig[0].datasetId : ''
   const dataset = useSelector(selectDatasetById(datasetId))
   const color = dataview.config?.color as string
   const unit = dataset?.unit
-  const flagFilter = dataview.datasetsConfig?.datasetId?.query?.find((q) => q.id === 'flag')
-    ?.value as string
+  const flagFilter = dataview.config.flagFilter
   const onEditClick = useCallback(() => {
     if (dataset) {
       // TODO USE REAL DATASET ID WHEN SUPPORTING MULTIPLE
@@ -43,7 +43,7 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
         color: color as string,
         colorRamp: dataview.config?.colorRamp,
         steps: dataview.config.steps as number[],
-        source: { id: dataset.source, label: sourceLabel },
+        source: { id: dataset.source as string, label: sourceLabel },
         flagFilter,
         dataset: {
           id: dataset?.id,
@@ -63,18 +63,24 @@ const DataviewGraphPanel: React.FC<DataviewGraphPanelProps> = ({ dataview }) => 
       const confirmation = window.confirm(
         `Are you sure you want to permanently delete this dataview?\n${dataview.name}`
       )
-      if (confirmation && workspace) {
+      if (confirmation && workspace?.dataviews) {
         setDataviewLoadingId(dataview.id)
         await updateWorkspace({
           id: workspace.id,
           dataviews: workspace.dataviews
             .filter((d) => d.id !== dataview.id)
             .map(({ id }) => id) as any,
+          dataviewInstances: workspace.dataviewInstances.filter(
+            (d) => d.dataviewId !== dataview.id
+          ),
         })
+        if (dataview.config.dataset === 'marine-reserve-user') {
+          await deleteDataview(dataview.id)
+        }
         setDataviewLoadingId(undefined)
       }
     },
-    [updateWorkspace, workspace]
+    [deleteDataview, updateWorkspace, workspace]
   )
 
   const isDataviewHidden = hiddenDataviews.includes(dataview.id)

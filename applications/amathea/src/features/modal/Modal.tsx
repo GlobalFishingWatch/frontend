@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useCallback, useMemo } from 'react'
-import { ModalConfigOptions, ModalTypes } from 'types'
 import GFWModal from '@globalfishingwatch/ui-components/dist/modal'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
+import { ModalConfigOptions, ModalTypes } from 'types'
 import { useCurrentWorkspaceConnect } from 'features/workspaces/workspaces.hook'
 import { useDraftDataviewConnect } from 'features/dataviews/dataviews.hook'
 import { useDraftDatasetConnect } from 'features/datasets/datasets.hook'
@@ -68,7 +68,7 @@ function Modal(): React.ReactElement | null {
     ? selectedModal?.title.replace('New', 'Edit').replace('Add', 'Edit')
     : selectedModal?.title
   return selectedModal ? (
-    <GFWModal header={title} isOpen onClose={onCloseClick}>
+    <GFWModal title={title} isOpen onClose={onCloseClick}>
       <Suspense fallback={<Spinner />}>{ComponentModal && <ComponentModal />}</Suspense>
     </GFWModal>
   ) : null

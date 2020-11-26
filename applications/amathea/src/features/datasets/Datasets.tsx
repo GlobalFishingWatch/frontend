@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import { Dataset } from '@globalfishingwatch/dataviews-client'
+import { Dataset } from '@globalfishingwatch/api-types'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useModalConnect } from 'features/modal/modal.hooks'
 import styles from './Datasets.module.css'

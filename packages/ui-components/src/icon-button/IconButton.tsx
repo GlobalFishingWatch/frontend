@@ -1,13 +1,14 @@
-import React, { forwardRef, Fragment, ForwardRefRenderFunction, Ref, memo } from 'react'
+import React, { forwardRef, Fragment, Ref, memo, CSSProperties } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Icon, { IconType } from '../icon'
 import Tooltip from '../tooltip'
 import Spinner from '../spinner'
+import { TooltipTypes } from '../types/types'
 import styles from './IconButton.module.css'
 
 export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'warning'
-export type IconButtonSize = 'default' | 'small' | 'tiny'
+export type IconButtonSize = 'default' | 'medium' | 'small' | 'tiny'
 
 interface IconButtonProps {
   icon?: IconType
@@ -17,9 +18,10 @@ interface IconButtonProps {
   disabled?: boolean
   loading?: boolean
   onClick?: (e: React.MouseEvent) => void
-  tooltip?: React.ReactChild | React.ReactChild[] | string
+  tooltip?: TooltipTypes
   tooltipPlacement?: Placement
   children?: React.ReactNode
+  style?: CSSProperties
 }
 
 const warningVarColor = getComputedStyle(document.documentElement).getPropertyValue(
@@ -47,14 +49,23 @@ function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
         ref={ref}
-        className={cx(styles.iconButton, styles[type], styles[`${size}Size`], className)}
-        onClick={onClick}
-        disabled={disabled}
+        className={cx(
+          styles.iconButton,
+          styles[type],
+          styles[`${size}Size`],
+          { [styles.disabled]: disabled },
+          className
+        )}
+        onClick={disabled ? undefined : onClick}
         {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
         {...rest}
       >
         {loading ? (
-          <Spinner size="small" color={spinnerColor} />
+          <Spinner
+            inline
+            size={size === 'tiny' || size === 'small' ? 'tiny' : 'small'}
+            color={spinnerColor}
+          />
         ) : (
           <Fragment>
             {icon && <Icon icon={icon} type={type === 'warning' ? 'warning' : 'default'} />}

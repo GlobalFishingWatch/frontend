@@ -7,8 +7,15 @@ import {
 } from '@reduxjs/toolkit'
 import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
 import userReducer from './features/user/user.slice'
-import mapReducer from './features/map/map.slice'
+import workspaceReducer from './features/workspace/workspace.slice'
+import datasetsReducer from './features/datasets/datasets.slice'
+import dataviewsReducer from './features/dataviews/dataviews.slice'
+import resourcesReducer from './features/resources/resources.slice'
+import searchReducer from './features/search/search.slice'
 import timebarReducer from './features/timebar/timebar.slice'
+import mapReducer from './features/map/map.slice'
+import rulersReducer from './features/map/controls/rulers.slice'
+import debugReducer from './features/debug/debug.slice'
 
 const {
   reducer: location,
@@ -19,8 +26,15 @@ const {
 
 const rootReducer = combineReducers({
   user: userReducer,
-  map: mapReducer,
+  search: searchReducer,
+  workspace: workspaceReducer,
+  datasets: datasetsReducer,
+  dataviews: dataviewsReducer,
+  resources: resourcesReducer,
   timebar: timebarReducer,
+  map: mapReducer,
+  rulers: rulersReducer,
+  debug: debugReducer,
   location: location,
 })
 
@@ -28,10 +42,29 @@ const rootReducer = combineReducers({
 const defaultMiddlewareOptions: any = {
   // Fix issue with Redux-first-router and RTK (https://stackoverflow.com/questions/59773345/react-toolkit-and-redux-first-router)
   serializableCheck: false,
-  immutableCheck: {},
+  immutableCheck: {
+    ignoredPaths: [
+      // Too big to check for immutability:
+      'resources',
+    ],
+  },
 }
 
 const store = configureStore({
+  devTools: {
+    stateSanitizer: (state: any) => {
+      if (!state.resources) return state
+      const serializedResources = Object.entries(state.resources).map(([key, value]: any) => [
+        key,
+        { ...value, data: 'NOT_SERIALIZED' },
+      ])
+
+      return {
+        ...state,
+        resources: Object.fromEntries(serializedResources),
+      }
+    },
+  },
   reducer: rootReducer,
   middleware: [
     ...getDefaultMiddleware(defaultMiddlewareOptions),
@@ -41,7 +74,8 @@ const store = configureStore({
   enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })
 
-export type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof rootReducer>
+export type AppDispatch = typeof store.dispatch
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   RootState,

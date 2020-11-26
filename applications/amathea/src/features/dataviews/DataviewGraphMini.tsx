@@ -1,7 +1,7 @@
 import React from 'react'
 import { LineChart, Line, YAxis } from 'recharts'
 import { DateTime } from 'luxon'
-import { Dataview } from '@globalfishingwatch/dataviews-client/dist/types'
+import { Dataview } from '@globalfishingwatch/api-types/dist'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useDataviewResource } from './dataviews.hook'
 
@@ -18,7 +18,7 @@ const DataviewGraphMini: React.FC<DataviewGraphMiniProps> = (props) => {
 
   if (!dataviewResource || !dataviewResource.data) return null
 
-  const data = dataviewResource.data.filter((current) => {
+  const data = dataviewResource.data.filter((current: any) => {
     const currentDate = DateTime.fromISO(current.date).startOf('day')
     const startDate = DateTime.fromISO(start).startOf('day')
     const endDate = DateTime.fromISO(end).startOf('day')

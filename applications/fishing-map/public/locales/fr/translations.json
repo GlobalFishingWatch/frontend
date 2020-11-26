@@ -1,0 +1,71 @@
+{
+  "common": {
+    "context_area_plural": "Calques de contexte",
+    "copiedToClipboard": "The link to share this view has been copied to your clipboard",
+    "dismiss": "Fermer",
+    "events": "Évènements",
+    "fishing": "Pêche",
+    "hour": "Heure",
+    "hour_plural": "Heures",
+    "login": "Se connecter",
+    "logout": "Se déconnecter",
+    "more": "Plus",
+    "open_menu": "Ouvrir le menu",
+    "save": "Enregistrer",
+    "share": "Partager la vue actuelle",
+    "vessel_plural": "Navires"
+  },
+  "errors": {
+    "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement"
+  },
+  "layer": {
+    "color_change": "Modifier la couleur",
+    "filter_close": "Fermer les filtres",
+    "filter_open": "Montrer les filtres",
+    "filter_plural": "Filtres",
+    "flag_state_plural": "Flag States",
+    "info_close": "Masquer les infos",
+    "info_open": "Infos",
+    "remove": "Supprimer le calque",
+    "source_plural": "Sources",
+    "toggle_visibility": "Afficher/Masquer le calque",
+    "toggleCombinationMode": {
+      "bivariate": "Show fishing layers in bivariate mode",
+      "compare": "Show fishing layers in comparison mode"
+    }
+  },
+  "map": {
+    "capture_map": "Enregistrer une image de la carte",
+    "change_basemap_default": "Fond de carte par défaut",
+    "change_basemap_satellite": "Fond de carte satellite",
+    "loading": "Map loading",
+    "rulers_add": "Ajouter des mesures",
+    "rulers_remove": "Supprimer toutes les mesures",
+    "screenshot": "Image de la carte",
+    "zoom_in": "Zoomer",
+    "zoom_out": "Dézoomer"
+  },
+  "timebar": {
+    "graph": "Graphique",
+    "settings_close": "Fermer les paramètres de la barre de temps",
+    "settings_open": "Montrer les paramètres de la barre de temps"
+  },
+  "vessel": {
+    "callsign": "Callsign",
+    "first_transmission_date": "Première date de transmission",
+    "flag": "Drapeau",
+    "imo": "IMO",
+    "last_transmission_date": "Dernière date de transmission",
+    "mmsi": "MMSI",
+    "search": {
+      "close": "Fermer la recherche",
+      "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en cliquant sur l'icône de filtre dans la barre supérieure ou en écrivant des filtres tels que:",
+      "filter_open": "Filtrer la recherche (bientôt disponible)",
+      "placeholder": "Tapez pour rechercher des navires",
+      "search": "Rechercher des navires"
+    },
+    "tracks": "Trajectoires de navire",
+    "transmission_plural": "Transmissions",
+    "transmission": "Transmission"
+  }
+}

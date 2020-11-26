@@ -1,5 +1,44 @@
 # @globalfishingwatch/api-client
 
+## 1.6.3
+
+### Patch Changes
+
+- a9c2879: Fishingmap/share workspace
+- Updated dependencies [a9c2879]
+  - @globalfishingwatch/api-types@2.0.4
+
+## 1.6.2
+
+### Patch Changes
+
+- Update bundle dependencies
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.0.3
+  - @globalfishingwatch/pbf@1.0.9
+
+## 1.6.1
+
+### Patch Changes
+
+- Fix build dependencies
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@1.1.1
+
+## 1.6.0
+
+### Minor Changes
+
+- db69167: Use types from api-types
+
+## 1.5.1
+
+### Patch Changes
+
+- Release fishing-map
+- Updated dependencies [undefined]
+  - @globalfishingwatch/pbf@1.0.8
+
 ## 1.5.0
 
 ### Minor Changes

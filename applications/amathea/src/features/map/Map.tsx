@@ -2,13 +2,12 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import Miniglobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
-import MapLegend from '@globalfishingwatch/ui-components/dist/map-legend'
+import MapLegends, { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 // import { useMapHover } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 // import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
-import { ExtendedStyle } from '@globalfishingwatch/layer-composer/dist/types'
-import { LegendLayer } from '@globalfishingwatch/ui-components/dist/map-legend/MapLegend'
+import { ExtendedStyle } from '@globalfishingwatch/layer-composer'
 import { useUserConnect } from 'features/user/user.hook'
 import { useMapboxRef } from './map.context'
 import { useGeneratorsConnect, useViewport } from './map.hooks'
@@ -21,7 +20,8 @@ function useLegendComposer(style: ExtendedStyle, currentValues: LegendConfig) {
   const layersWithLegend = useMemo(() => {
     return style
       ? style?.layers
-          ?.flatMap((layer) => {
+          // TODO remove this any
+          ?.flatMap((layer: any) => {
             if (!layer.metadata?.legend) return []
             const currentValue = currentValues[layer.id]
             return {
@@ -139,9 +139,12 @@ const Map = (): React.ReactElement => {
         <IconButton icon="ruler" type="map-tool" tooltip="Open ruler tool (Coming soon)" />
         <IconButton icon="camera" type="map-tool" tooltip="Capture the map (Coming soon)" />
       </div>
-      <div className={styles.mapLegend}>
-        <MapLegend layers={legendLayers} />
-      </div>
+      {legendLayers && legendLayers.length > 0 && (
+        <div className={styles.mapLegend}>
+          {/* TODO remove this any once the legacy is removed */}
+          <MapLegends className={styles.mapLegends} layers={legendLayers as any} />
+        </div>
+      )}
     </div>
   )
 }

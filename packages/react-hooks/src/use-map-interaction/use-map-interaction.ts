@@ -1,45 +1,65 @@
-import uniqBy from 'lodash/uniqBy'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import debounce from 'lodash/debounce'
-import { isArray } from 'lodash'
-import { useCallback, useState, useEffect, useRef } from 'react'
+import isArray from 'lodash/isArray'
+import { Generators, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
-import { Generators } from '@globalfishingwatch/layer-composer'
-import { ExtendedFeature, InteractionEvent, InteractionEventCallback } from '.'
+import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
-type FeatureStateSource = { source: string; sourceLayer: string }
+type FeatureStates = 'click' | 'hover'
+type FeatureStateSource = { source: string; sourceLayer: string; state: FeatureStates }
 
-const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[] => {
+const getExtendedFeatures = (
+  features: MapboxGeoJSONFeature[],
+  metatada?: ExtendedStyleMeta
+): ExtendedFeature[] => {
+  const frame = metatada?.temporalgrid?.timeChunks?.activeChunkFrame
+
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
-    const generator = feature.layer.metadata ? feature.layer.metadata.generator : null
-    const generatorId = feature.layer.metadata ? feature.layer.metadata.generatorId : null
+    const generatorType = feature.layer.metadata?.generatorType ?? null
+    const generatorId = feature.layer.metadata?.generatorId ?? null
     const properties = feature.properties || {}
     const extendedFeature: ExtendedFeature | null = {
       properties,
-      generator,
+      generatorType,
       generatorId,
       source: feature.source,
       sourceLayer: feature.sourceLayer,
-      id: (feature.id as number) || undefined,
+      id: (feature.id as number) || feature.properties?.gfw_id || undefined,
       value: properties.value || properties.name || properties.id,
+      tile: {
+        x: (feature as any)._vectorTileFeature._x,
+        y: (feature as any)._vectorTileFeature._y,
+        z: (feature as any)._vectorTileFeature._z,
+      },
     }
-    switch (generator) {
+    switch (generatorType) {
       case Generators.Type.HeatmapAnimated:
-        const frame = feature.layer.metadata.frame
-        const valuesAtFrame = properties[frame.toString()]
-        if (valuesAtFrame) {
-          let parsed = JSON.parse(valuesAtFrame)
-          if (extendedFeature.value === 0) break
-          if (!isArray(parsed)) parsed = [parsed]
-          return parsed.map((value: any, i: number) => {
-            return {
+        const valuesAtFrame = properties[frame?.toString()] || properties[frame]
+        if (!valuesAtFrame) return []
+
+        let parsed = JSON.parse(valuesAtFrame)
+        if (extendedFeature.value === 0) break
+
+        if (!isArray(parsed)) parsed = [parsed]
+        return parsed.flatMap((value: any, i: number) => {
+          if (value === 0) return []
+          return [
+            {
               ...extendedFeature,
-              // TODO this should be sublayer id but it has to be carried in GeoJSON feature by aggregator
-              generatorId: i,
+              temporalgrid: {
+                sublayerIndex: i,
+                col: properties._col,
+                row: properties._row,
+              },
               value,
-            }
-          })
+            },
+          ]
+        })
+      case Generators.Type.Context:
+        return {
+          ...extendedFeature,
+          generatorContextLayer: feature.layer.metadata?.layer,
         }
-        return []
       default:
         return extendedFeature
     }
@@ -47,25 +67,85 @@ const getExtendedFeatures = (features: MapboxGeoJSONFeature[]): ExtendedFeature[
   return extendedFeatures
 }
 
-export const useMapClick = (clickCallback: InteractionEventCallback) => {
-  const onMapClick = useCallback(
-    (event) => {
-      if (clickCallback) {
-        clickCallback(null)
-      }
-      if (event.features && event.features.length) {
-        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
-
-        if (extendedFeatures.length) {
-          clickCallback({
-            features: extendedFeatures,
-            longitude: event.lngLat[0],
-            latitude: event.lngLat[1],
-          })
-        }
+let sourcesWithFeatureState: FeatureStateSource[] = []
+export const useFeatureState = (map?: Map) => {
+  const cleanFeatureState = useCallback(
+    (state: FeatureStates = 'hover') => {
+      if (map) {
+        sourcesWithFeatureState?.forEach((source: FeatureStateSource) => {
+          const feature = map.getFeatureState(source)
+          // https://github.com/mapbox/mapbox-gl-js/issues/9461
+          if (feature?.hasOwnProperty(state)) {
+            map.removeFeatureState(source, state)
+          }
+        })
       }
     },
-    [clickCallback]
+    [map]
+  )
+
+  const updateFeatureState = useCallback(
+    (extendedFeatures: ExtendedFeature[], state: FeatureStates = 'hover') => {
+      const newSourcesWithClickState: FeatureStateSource[] = extendedFeatures.flatMap(
+        (feature: ExtendedFeature) => {
+          if (!map || feature.id === undefined) {
+            return []
+          }
+          map.setFeatureState(
+            {
+              source: feature.source,
+              sourceLayer: feature.sourceLayer,
+              id: feature.id,
+            },
+            { [state]: true }
+          )
+
+          // Add source to active feature states
+          return {
+            state,
+            id: feature.id,
+            source: feature.source,
+            sourceLayer: feature.sourceLayer,
+          }
+        }
+      )
+      const previousSources = sourcesWithFeatureState.filter((source) => source.state !== state)
+      sourcesWithFeatureState = [...previousSources, ...newSourcesWithClickState]
+    },
+    [map]
+  )
+
+  const featureState = useMemo(() => ({ cleanFeatureState, updateFeatureState }), [
+    cleanFeatureState,
+    updateFeatureState,
+  ])
+  return featureState
+}
+
+export const useMapClick = (
+  clickCallback: InteractionEventCallback,
+  metadata: ExtendedStyleMeta,
+  map?: Map
+) => {
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
+  const onMapClick = useCallback(
+    (event) => {
+      cleanFeatureState('click')
+      if (!clickCallback) return
+      const interactionEvent: InteractionEvent = {
+        longitude: event.lngLat[0],
+        latitude: event.lngLat[1],
+      }
+      if (event.features?.length) {
+        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
+        if (extendedFeatures.length) {
+          interactionEvent.features = extendedFeatures
+          updateFeatureState(extendedFeatures, 'click')
+        }
+      }
+      clickCallback(interactionEvent)
+    },
+    [cleanFeatureState, clickCallback, metadata, updateFeatureState]
   )
 
   return onMapClick
@@ -75,108 +155,53 @@ type MapHoverConfig = {
   debounced: number
 }
 export const useMapHover = (
-  hoverCallback: InteractionEventCallback,
-  map: Map,
+  hoverCallbackImmediate?: InteractionEventCallback,
+  hoverCallback?: InteractionEventCallback,
+  map?: Map,
+  metadata?: ExtendedStyleMeta,
   config?: MapHoverConfig
 ) => {
-  const { debounced = 500 } = config || ({} as MapHoverConfig)
+  const { debounced = 300 } = config || ({} as MapHoverConfig)
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
-  const [sourcesWithHoverState, setSourcesWithHoverState] = useState<FeatureStateSource[]>([])
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
 
   const hoverCallbackDebounced = useRef<any>(null)
   useEffect(() => {
-    const debouncedFn =
-      debounced > 0
-        ? debounce((e) => {
-            hoverCallback(e)
-          }, debounced)
-        : hoverCallback
+    const debouncedFn = debounce((e) => {
+      if (hoverCallback) hoverCallback(e)
+    }, debounced)
+
     hoverCallbackDebounced.current = debouncedFn
   }, [debounced, hoverCallback])
 
   const onMapHover = useCallback(
     (event) => {
-      if (hoverCallback) hoverCallback(null)
       // Turn all sources with active feature states off
-      if (map) {
-        sourcesWithHoverState.forEach((source: FeatureStateSource) => {
-          map.removeFeatureState({ source: source.source, sourceLayer: source.sourceLayer })
-        })
+      cleanFeatureState()
+      const hoverEvent: InteractionEvent = {
+        longitude: event.lngLat[0],
+        latitude: event.lngLat[1],
       }
-      if (event.features && event.features.length) {
-        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
+      if (event.features?.length) {
+        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
 
-        if (hoverCallbackDebounced && hoverCallbackDebounced.current && extendedFeatures.length) {
-          if (hoverCallbackDebounced.current.cancel) {
-            hoverCallbackDebounced.current.cancel()
-          }
-          hoverCallbackDebounced.current({
-            features: extendedFeatures,
-            longitude: event.lngLat[0],
-            latitude: event.lngLat[1],
-          })
+        if (extendedFeatures.length) {
+          hoverEvent.features = extendedFeatures
         }
 
-        const newSourcesWithHoverState: FeatureStateSource[] = extendedFeatures.flatMap(
-          (feature: ExtendedFeature) => {
-            if (!map || feature.id === undefined) {
-              return []
-            }
-            map.setFeatureState(
-              {
-                source: feature.source,
-                sourceLayer: feature.sourceLayer,
-                id: feature.id,
-              },
-              { hover: true }
-            )
+        updateFeatureState(extendedFeatures, 'hover')
+      }
 
-            // Add source to active feature states
-            return {
-              source: feature.source,
-              sourceLayer: feature.sourceLayer,
-            }
-          }
-        )
-
-        // Updates sources on which to turn feature state off, only if it really changed
-        // this allows keeping the onMapHover reference, avoiding unnecesary map renders
-        const uniqNewSourcesWithHoverState = uniqBy(newSourcesWithHoverState, JSON.stringify)
-        if (
-          JSON.stringify(sourcesWithHoverState) !== JSON.stringify(uniqNewSourcesWithHoverState)
-        ) {
-          setSourcesWithHoverState(newSourcesWithHoverState)
-        }
-      } else {
-        if (hoverCallbackDebounced?.current?.cancel) {
-          hoverCallbackDebounced.current.cancel()
-        }
-        if (hoverCallback) {
-          hoverCallback({
-            longitude: event.lngLat[0],
-            latitude: event.lngLat[1],
-          })
-        }
+      if (hoverCallbackDebounced?.current) {
+        hoverCallbackDebounced.current.cancel()
+        hoverCallbackDebounced.current(hoverEvent)
+      }
+      if (hoverCallbackImmediate) {
+        hoverCallbackImmediate(hoverEvent)
       }
     },
-    [map, hoverCallback, hoverCallbackDebounced, sourcesWithHoverState]
+    [cleanFeatureState, hoverCallbackImmediate, metadata, updateFeatureState]
   )
 
   return onMapHover
 }
-
-const useMapInteraction = (
-  clickCallback: InteractionEventCallback,
-  hoverCallback: InteractionEventCallback,
-  map: Map
-) => {
-  const onMapClick = useMapClick(clickCallback)
-  const onMapHover = useMapHover(hoverCallback, map)
-
-  return {
-    onMapClick,
-    onMapHover,
-  }
-}
-
-export default useMapInteraction

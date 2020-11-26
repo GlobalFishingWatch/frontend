@@ -1,0 +1,20 @@
+{
+  "name": "@globalfishingwatch/data-transforms",
+  "version": "1.1.0",
+  "description": "Utils to decode various data formats",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "rollup -c ./rollup.config.js -w",
+    "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "clean": "rimraf dist/*",
+    "prepare": "yarn build",
+    "prepublishOnly": "yarn build"
+  },
+  "devDependencies": {
+    "@types/geojson": "^7946.0.7"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

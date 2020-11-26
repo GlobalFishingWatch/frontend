@@ -1,21 +1,16 @@
 import flatten from 'lodash/flatten'
 import zip from 'lodash/zip'
-import { scalePow } from 'd3-scale'
 import memoizeOne from 'memoize-one'
 import { Group } from '../../types'
 import { Type, HeatmapGeneratorConfig, GlobalGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache, isUrlAbsolute } from '../../utils'
 import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
-import paintByGeomType from './heatmap-layers-paint'
 import fetchStats from './util/fetch-stats'
-import {
-  HEATMAP_GEOM_TYPES,
-  HEATMAP_COLOR_RAMPS,
-  HEATMAP_GEOM_TYPES_GL_TYPES,
-  HEATMAP_DEFAULT_MAX_ZOOM,
-} from './config'
+import { HEATMAP_COLOR_RAMPS, HEATMAP_DEFAULT_MAX_ZOOM } from './config'
 import { statsByZoom } from './types'
+import getBreaks from './util/get-breaks'
+import { toURLArray } from './util'
 
 type GlobalHeatmapGeneratorConfig = HeatmapGeneratorConfig & GlobalGeneratorConfig
 
@@ -28,19 +23,23 @@ class HeatmapGenerator {
     if (!config.tilesUrl) {
       throw new Error(`Heatmap generator must specify tilesUrl parameters in ${config}`)
     }
+    if (!config.datasets) {
+      throw new Error(`Heatmap generator must specify datasets parameters in ${config}`)
+    }
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
     const url = new URL(
       tilesUrl.replace('{{type}}', 'heatmap').replace(/{{/g, '{').replace(/}}/g, '}')
     )
-    url.searchParams.set('geomType', config.geomType || HEATMAP_GEOM_TYPES.GRIDDED)
+    url.searchParams.set('geomType', 'rectangle')
     url.searchParams.set('singleFrame', 'true')
+    url.searchParams.set('datasets', toURLArray('datasets', config.datasets))
     if (config.start && config.end) {
       url.searchParams.set('date-range', [config.start, config.end].join(','))
     }
-    if (config.serverSideFilter) {
-      url.searchParams.set('filters', config.serverSideFilter)
+    if (config.filters) {
+      url.searchParams.set('filters', config.filters)
     }
 
     return [
@@ -60,9 +59,7 @@ class HeatmapGenerator {
   }
 
   _getHeatmapLayers = (config: GlobalHeatmapGeneratorConfig) => {
-    const geomType = config.geomType || HEATMAP_GEOM_TYPES.GRIDDED
     const colorRampType = config.colorRamp || 'presence'
-    const scalePowExponent = config.scalePowExponent || 1
 
     let stops: number[] = []
     const zoom = Math.min(Math.floor(config.zoom), config.maxZoom || HEATMAP_DEFAULT_MAX_ZOOM)
@@ -72,23 +69,7 @@ class HeatmapGenerator {
     } else if (statsByZoom) {
       const { min, max, avg } = statsByZoom
       if (min && max && avg) {
-        const roundedMax = this._roundNumber(max)
-        const scale = scalePow()
-          .exponent(scalePowExponent)
-          .domain([0, 0.5, 1])
-          .range([min, avg, roundedMax])
-
-        stops = [0, min, scale(0.25), scale(0.5), scale(0.75), roundedMax]
-
-        const prevStepValues: number[] = []
-        stops = stops.map((stop, index) => {
-          let roundValue = this._roundNumber(stop)
-          if (prevStepValues.indexOf(roundValue) > -1) {
-            roundValue = prevStepValues[index - 1] + 1
-          }
-          prevStepValues.push(roundValue)
-          return roundValue
-        })
+        stops = getBreaks(min, max, avg, config.scalePowExponent, 8)
       }
     }
 
@@ -103,7 +84,7 @@ class HeatmapGenerator {
         ? ['interpolate', ['linear'], valueExpression, ...colorRampValues]
         : 'transparent'
     const paint: any = {
-      ...paintByGeomType[geomType],
+      'fill-outline-color': 'transparent',
       'fill-color': colorRamp,
     }
 
@@ -113,7 +94,7 @@ class HeatmapGenerator {
         id: config.id,
         source: config.id,
         'source-layer': 'temporalgrid',
-        type: HEATMAP_GEOM_TYPES_GL_TYPES[geomType],
+        type: 'fill',
         layout: {
           visibility,
         },
@@ -145,17 +126,17 @@ class HeatmapGenerator {
       return { layers: this._getHeatmapLayers(config) }
     }
 
-    const statsFilters = [config.serverSideFilter, config.statsFilter]
-      .filter((f) => f)
-      .join(' AND ')
+    const statsFilters = [config.filters, config.statsFilter].filter((f) => f).join(' AND ')
     const dateRange = [config.start, config.end].join(',')
-    const statsUrl = isUrlAbsolute(config.statsUrl as string)
-      ? config.statsUrl
-      : API_GATEWAY + config.statsUrl
+    const statsUrl =
+      config.statsUrl && isUrlAbsolute(config.statsUrl as string)
+        ? config.statsUrl
+        : API_GATEWAY + config.statsUrl
+    const url = `${statsUrl}?${toURLArray('datasets', config.datasets)}`
     // use statsError to invalidate cache and try again when it fails
     // also params can't be named as needs to be independant params for memoization
     const statsPromise = memoizeCache[config.id]._fetchStats(
-      statsUrl,
+      url,
       dateRange,
       statsFilters,
       true,

@@ -7,9 +7,7 @@ const MenuSection = () => {
   return (
     <Fragment>
       <label>Menu</label>
-      <Menu bgImage="" isOpen={open} onClose={(e) => setOpen(false)} activeLinkId="map-data">
-        Menu toggle
-      </Menu>
+      <Menu bgImage="" isOpen={open} onClose={(e) => setOpen(false)} activeLinkId="map-data" />
       <IconButton icon="plus" onClick={() => setOpen(true)} />
     </Fragment>
   )
