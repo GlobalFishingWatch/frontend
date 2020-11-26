@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.9.3
+
+### Patch Changes
+
+- fix default static heatmap ramp breaks
+
 ## 4.9.2
 
 ### Patch Changes

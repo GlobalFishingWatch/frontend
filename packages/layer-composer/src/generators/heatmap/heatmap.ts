@@ -29,6 +29,7 @@ class HeatmapGenerator {
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
+
     const url = new URL(
       tilesUrl.replace('{{type}}', 'heatmap').replace(/{{/g, '{').replace(/}}/g, '}')
     )
@@ -69,7 +70,7 @@ class HeatmapGenerator {
     } else if (statsByZoom) {
       const { min, max, avg } = statsByZoom
       if (min && max && avg) {
-        stops = getBreaks(min, max, avg, config.scalePowExponent, 8)
+        stops = getBreaks(min, max, avg, config.scalePowExponent, config.steps?.length)
       }
     }
 
