@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/amathea
 
+## 0.13.7
+
+### Patch Changes
+
+- legends value rounding optional
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.8.3
+
 ## 0.13.6
 
 ### Patch Changes

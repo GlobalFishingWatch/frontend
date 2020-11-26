@@ -11,11 +11,10 @@ interface MapLegendProps {
   currentValueClassName?: string
   layer: LegendLayer | LegendLayerBivariate
   labelComponent?: React.ReactNode
+  roundValues?: boolean
 }
 
-interface MapLegendsProps {
-  className?: string
-  currentValueClassName?: string
+interface MapLegendsProps extends Omit<MapLegendProps, 'layer'> {
   layers?: LegendLayer[]
 }
 
@@ -24,6 +23,7 @@ export function MapLegend({
   className,
   currentValueClassName,
   labelComponent,
+  roundValues,
 }: MapLegendProps) {
   // TODO: include user context and categorical options
   if (layer.type === 'solid') {
@@ -34,6 +34,7 @@ export function MapLegend({
       <ColorRamp
         layer={layer as LegendLayer}
         className={className}
+        roundValues={roundValues}
         currentValueClassName={currentValueClassName}
         labelComponent={labelComponent}
       />
@@ -43,6 +44,7 @@ export function MapLegend({
     return (
       <Bivariate
         layer={layer as LegendLayerBivariate}
+        roundValues={roundValues}
         className={className}
         labelComponent={labelComponent}
       />
@@ -52,11 +54,16 @@ export function MapLegend({
 }
 
 function MapLegends(props: MapLegendsProps) {
-  const { className, layers } = props
+  const { className, layers, roundValues, labelComponent } = props
   return (
-    <div className={cx(styles.legend, className)}>
+    <div className={cx(styles.legends, className)}>
       {layers?.map((layer, index) => (
-        <MapLegend layer={layer} key={layer.id || index} />
+        <MapLegend
+          layer={layer}
+          key={layer.id || index}
+          roundValues={roundValues}
+          labelComponent={labelComponent}
+        />
       ))}
     </div>
   )

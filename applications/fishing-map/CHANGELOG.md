@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.16.6
+
+### Patch Changes
+
+- legends value rounding optional
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.8.3
+
 ## 0.16.5
 
 ### Patch Changes
