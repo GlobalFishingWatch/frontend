@@ -66,7 +66,7 @@ function App(): React.ReactElement {
           onToggle={onToggleSidebar}
           aside={<SidebarWrapper />}
           main={<Main />}
-          asideWidth="50%"
+          asideWidth="60rem"
           className="split-container"
         />
       </MapboxRefProvider>
