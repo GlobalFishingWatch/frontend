@@ -7,6 +7,8 @@ export enum Field {
   speed = 'speed',
   course = 'course',
   night = 'night',
+  distanceFromPort = 'distance_from_port',
+  elevation = 'elevation',
 }
 
 export type Point = Partial<Record<Field, number | null>>
