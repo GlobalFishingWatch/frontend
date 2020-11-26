@@ -10,7 +10,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
   async (ids: number[], { rejectWithValue }) => {
     try {
       let dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${ids.join(',')}`)
-      if (process.env.REACT_APP_USE_DATAVIEWS_MOCK === 'true') {
+      if (process.env.REACT_APP_USE_LOCAL_DATAVIEWS === 'true') {
         const mockedDataviews = await import('./dataviews.mock')
         dataviews = [...dataviews, ...mockedDataviews.default]
       }

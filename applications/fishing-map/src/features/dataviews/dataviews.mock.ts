@@ -11,7 +11,7 @@ export const dataviews: Dataview[] = [
   //     color: '#00FFBC',
   //     layers: [
   //       { id: 'eez-areas', dataset: 'eez-areas' },
-  //       { id: 'eez-boundaries', dataset: 'eez-boundaries-shp' },
+  //       { id: 'eez-boundaries', dataset: 'eez-boundaries' },
   //     ],
   //   },
   //   datasetsConfig: [
@@ -25,7 +25,7 @@ export const dataviews: Dataview[] = [
   //       params: [],
   //       query: [{ id: 'properties', value: ['line_type'] }],
   //       endpoint: 'user-context-tiles',
-  //       datasetId: 'eez-boundaries-shp',
+  //       datasetId: 'eez-boundaries',
   //     },
   //   ],
   // },

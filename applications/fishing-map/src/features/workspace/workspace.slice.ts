@@ -40,6 +40,8 @@ export const getDatasetByDataview = (
   )
 }
 
+const env = process.env.NODE_ENV === 'development' ? 'dev' : ''
+
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
   async (workspaceId: number, { dispatch, getState }) => {
@@ -48,7 +50,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const workspace = workspaceId
       ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`)
-      : await import('./workspace.default').then((m) => m.default)
+      : ((await import(`./workspace.default.${env}`).then(
+          (m) => m.default
+        )) as Workspace<WorkspaceState>)
 
     const dataviewIds = [
       ...(workspace.dataviews?.map(({ id }) => id as number) || []),
