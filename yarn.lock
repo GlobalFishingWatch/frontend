@@ -1477,18 +1477,6 @@
     tinyqueue "^2.0.3"
     vt-pbf "^3.1.1"
 
-"@globalfishingwatch/react-map-gl@5.2.9-gfw.2":
-  version "5.2.9-gfw.2"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/react-map-gl/-/react-map-gl-5.2.9-gfw.2.tgz#3e46d50688607890b4d12ab11547401ddc20b1d9"
-  integrity sha512-Is8plkg4vEaqwPSBD+7Ip0+utudmNUIg/z3b9o50RRkqgSMprG67yE9+/EwylXPzKN33GHYtVvUDUBs/C4ON1A==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    "@types/react-map-gl" "^5.2.8"
-    mjolnir.js "^2.4.0"
-    prop-types "^15.7.2"
-    resize-observer-polyfill "^1.5.1"
-    viewport-mercator-project "^6.2.3 || ^7.0.1"
-
 "@globalfishingwatch/react-map-gl@5.2.9-gfw.3", "@globalfishingwatch/react-map-gl@^5.2.9-gfw.3":
   version "5.2.9-gfw.3"
   resolved "https://registry.yarnpkg.com/@globalfishingwatch/react-map-gl/-/react-map-gl-5.2.9-gfw.3.tgz#ae8af53aa8f02cf984ccc743cfc8a15eb911096b"
