@@ -8,12 +8,14 @@ WORKDIR /app
 # Config build args
 ARG REACT_APP_GOOGLE_TAG_MANAGER_KEY=
 ARG REACT_APP_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
+ARG REACT_APP_WORKSPACE_ENV=development
 
 # Install build dependencies
 COPY ./package.json /app
 ENV NODE_ENV=development
 ENV REACT_APP_GOOGLE_TAG_MANAGER_KEY=${REACT_APP_GOOGLE_TAG_MANAGER_KEY}
 ENV REACT_APP_API_GATEWAY=${REACT_APP_API_GATEWAY}
+ENV REACT_APP_WORKSPACE_ENV=${REACT_APP_WORKSPACE_ENV}
 RUN npm install --unsafe-perm
 
 # Build the application assets

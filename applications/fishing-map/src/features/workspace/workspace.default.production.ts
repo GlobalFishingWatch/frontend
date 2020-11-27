@@ -1,4 +1,9 @@
 import { Workspace } from '@globalfishingwatch/api-types'
+import {
+  DEFAULT_BASEMAP_DATAVIEW_ID,
+  DEFAULT_FISHING_DATAVIEW_ID,
+  DEFAULT_VESSEL_DATAVIEW_ID,
+} from 'data/datasets'
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
@@ -13,19 +18,12 @@ const workspace: Workspace<WorkspaceState> = {
     latitude: 12,
     longitude: 21.7,
   },
-  state: {
-    // query: 'pepe',
-    // bivariate: true,
-    // sidebarOpen: false,
-    // timebarVisualisation: '',
-    // timebarEvents: '',
-    // timebarGraph: '',
-  },
-  dataviews: [{ id: 171 }], // Needed to fetch vessel information
+  state: {},
+  dataviews: [{ id: DEFAULT_VESSEL_DATAVIEW_ID }], // Needed to fetch vessel information
   dataviewInstances: [
     {
       id: 'basemap',
-      dataviewId: 173,
+      dataviewId: DEFAULT_BASEMAP_DATAVIEW_ID,
     },
     {
       id: 'fishing-1',
@@ -33,7 +31,7 @@ const workspace: Workspace<WorkspaceState> = {
         datasets: ['fishing_v4'],
         // filters: ['ESP'],
       },
-      dataviewId: 178,
+      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
     {
       id: 'fishing-2',
@@ -42,7 +40,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#FF64CE',
         colorRamp: 'magenta',
       },
-      dataviewId: 178,
+      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
     {
       id: 'fishing-3',
@@ -51,7 +49,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#9CA4FF',
         colorRamp: 'lilac',
       },
-      dataviewId: 178,
+      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
     {
       id: 'context-layer-eez',

@@ -1,6 +1,8 @@
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { TimebarEvents, TimebarGraphs } from 'types'
 
+type ENV = 'development' | 'production'
+export const ENV = (process.env.REACT_APP_WORKSPACE_ENV as ENV) || (process.env.NODE_ENV as ENV)
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
 
 // TODO use it to retrieve it and store in workspace.default in deploy
