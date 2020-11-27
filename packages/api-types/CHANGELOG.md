@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.3.0
+
+### Minor Changes
+
+- update vessels camelCase info response
+
 ## 2.2.0
 
 ### Minor Changes

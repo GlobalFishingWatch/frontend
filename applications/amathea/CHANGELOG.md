@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/amathea
 
+## 0.13.8
+
+### Patch Changes
+
+- update dependencies
+  - @globalfishingwatch/react-hooks@4.4.3
+
 ## 0.13.7
 
 ### Patch Changes

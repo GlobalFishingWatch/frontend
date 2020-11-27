@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 4.4.3
+
+### Patch Changes
+
+- update dependencies
+
 ## 4.4.2
 
 ### Patch Changes
