@@ -3,7 +3,7 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
-} from 'data/datasets'
+} from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
