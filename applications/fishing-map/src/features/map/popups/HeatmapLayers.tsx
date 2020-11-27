@@ -72,7 +72,8 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
                       <span className={styles.vesselRowLegend}> - {vessel.dataset.name}</span>
                     )}
                   </span>
-                  <span>{formatNumber(vessel.hours)}</span>
+                  {/* Using Math.round as is the same method used in aggregate.js from mapbox.gl fork */}
+                  <span>{Math.round(vessel.hours)}</span>
                 </button>
               )
             })}
