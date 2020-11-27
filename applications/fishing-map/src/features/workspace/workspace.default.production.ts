@@ -13,14 +13,7 @@ const workspace: Workspace<WorkspaceState> = {
     latitude: 12,
     longitude: 21.7,
   },
-  state: {
-    // query: 'pepe',
-    // bivariate: true,
-    // sidebarOpen: false,
-    // timebarVisualisation: '',
-    // timebarEvents: '',
-    // timebarGraph: '',
-  },
+  state: {},
   dataviews: [{ id: 171 }], // Needed to fetch vessel information
   dataviewInstances: [
     {
