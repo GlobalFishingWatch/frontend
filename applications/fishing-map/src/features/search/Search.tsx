@@ -15,6 +15,8 @@ import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import { resetWorkspaceSearchQuery } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'types'
+import { getFlagById } from 'utils/flags'
+import { formatInfoField } from 'utils/info'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -106,13 +108,15 @@ function Search() {
                   id,
                   shipname,
                   flag,
+                  fleet,
                   mmsi,
                   imo,
                   callsign,
                   dataset,
-                  first_transmission_date,
-                  last_transmission_date,
+                  firstTransmissionDate,
+                  lastTransmissionDate,
                 } = entry
+                const flagLabel = getFlagById(flag)?.label
                 return (
                   <li
                     {...getItemProps({ item: entry, index })}
@@ -123,10 +127,10 @@ function Search() {
                   >
                     <div className={styles.name}>{shipname || '---'}</div>
                     <div className={styles.properties}>
-                      {flag && (
+                      {flagLabel && (
                         <div className={styles.property}>
                           <label>{t('vessel.flag', 'Flag')}</label>
-                          <span>{flag}</span>
+                          <span>{flagLabel}</span>
                         </div>
                       )}
                       {mmsi && (
@@ -147,12 +151,18 @@ function Search() {
                           <span>{callsign}</span>
                         </div>
                       )}
-                      {first_transmission_date && last_transmission_date && (
+                      {fleet && (
+                        <div className={styles.property}>
+                          <label>{t('vessel.fleet', 'Fleet')}</label>
+                          <span>{formatInfoField(fleet, 'fleet')}</span>
+                        </div>
+                      )}
+                      {firstTransmissionDate && lastTransmissionDate && (
                         <div className={styles.property}>
                           <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
                           <span>
-                            from <I18nDate date={first_transmission_date} /> to{' '}
-                            <I18nDate date={last_transmission_date} />
+                            from <I18nDate date={firstTransmissionDate} /> to{' '}
+                            <I18nDate date={lastTransmissionDate} />
                           </span>
                         </div>
                       )}

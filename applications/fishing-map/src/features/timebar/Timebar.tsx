@@ -64,8 +64,10 @@ const TimebarWrapper = () => {
           <Fragment>
             {timebarVisualisation === TimebarVisualisations.Vessel && tracks?.length && (
               <Fragment>
-                <TimebarTracks key="tracks" tracks={tracks} />
-                {timebarGraph === TimebarGraphs.Speed && (
+                {timebarGraph !== TimebarGraphs.Speed && (
+                  <TimebarTracks key="tracks" tracks={tracks} />
+                )}
+                {timebarGraph === TimebarGraphs.Speed && tracksGraph && (
                   <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
                 )}
               </Fragment>
@@ -74,7 +76,7 @@ const TimebarWrapper = () => {
               <TimebarHighlighter
                 hoverStart={highlightedTime.start}
                 hoverEnd={highlightedTime.end}
-                // activity={timebarMode === TimebarMode.speed ? tracksGraph : null}
+                activity={timebarGraph === TimebarGraphs.Speed && tracksGraph ? tracksGraph : null}
                 unit="knots"
               />
             )}

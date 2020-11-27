@@ -1,10 +1,11 @@
 export interface Vessel {
   id: string
-  shipname: string
-  first_transmission_date: string
-  last_transmission_date: string
-  imo: string
-  mmsi: string
-  callsign: string
   flag: string
+  shipname: string
+  firstTransmissionDate: string
+  lastTransmissionDate: string
+  imo?: string
+  mmsi?: string
+  callsign?: string
+  fleet?: string
 }

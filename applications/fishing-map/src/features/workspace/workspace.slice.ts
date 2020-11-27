@@ -15,12 +15,7 @@ import { selectUrlDataviewInstances, selectVersion } from 'routes/routes.selecto
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace } from 'features/app/app.selectors'
-
-type WorkspaceEnv = 'development' | 'production'
-export const WORKSPACE_ENV =
-  (process.env.REACT_APP_WORKSPACE_ENV as WorkspaceEnv) ||
-  (process.env.NODE_ENV as WorkspaceEnv) ||
-  'production'
+import { getWorkspaceEnv } from 'data/workspaces'
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
@@ -52,9 +47,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const state = getState() as RootState
     const version = selectVersion(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
+    const workspaceEnv = getWorkspaceEnv()
     const workspace = workspaceId
       ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`)
-      : ((await import(`./workspace.default.${WORKSPACE_ENV}`).then(
+      : ((await import(`./workspace.default.${workspaceEnv}`).then(
           (m) => m.default
         )) as Workspace<WorkspaceState>)
 

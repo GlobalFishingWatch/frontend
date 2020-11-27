@@ -4,7 +4,7 @@ import {
   HeatmapColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_VESSEL_DATAVIEW_ID } from 'data/datasets'
+import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_VESSEL_DATAVIEW_ID } from 'data/workspaces'
 
 export const DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 

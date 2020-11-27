@@ -1,8 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import {
-  selectVesselsDataviews,
   resolveDataviewDatasetResource,
+  selectActiveVesselsDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectResources, Resource, TrackResourceData } from 'features/resources/resources.slice'
 import { TRACKS_DATASET_TYPE } from 'data/datasets'
@@ -18,7 +18,7 @@ type TimebarTrack = {
 }
 
 export const selectTracksData = createSelector(
-  [selectVesselsDataviews, selectResources],
+  [selectActiveVesselsDataviews, selectResources],
   (trackDataviews, resources) => {
     if (!trackDataviews || !resources) return
 
@@ -45,9 +45,9 @@ export const selectTracksData = createSelector(
 )
 
 export const selectTracksGraphs = createSelector(
-  [selectVesselsDataviews, selectTimebarGraph, selectResources],
+  [selectActiveVesselsDataviews, selectTimebarGraph, selectResources],
   (trackDataviews, timebarGraph, resources) => {
-    if (!trackDataviews || !resources) return
+    if (!trackDataviews || trackDataviews.length > 2 || !resources) return
 
     const graphs = trackDataviews.flatMap((dataview) => {
       const { url } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })

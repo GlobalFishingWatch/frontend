@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { ExtendedFeatureVessel } from '@globalfishingwatch/react-hooks'
-import { formatInfoField, formatNumber } from 'utils/info'
+import { formatInfoField } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
@@ -72,7 +72,8 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
                       <span className={styles.vesselRowLegend}> - {vessel.dataset.name}</span>
                     )}
                   </span>
-                  <span>{formatNumber(vessel.hours)}</span>
+                  {/* Using Math.round as is the same method used in aggregate.js from mapbox.gl fork */}
+                  <span>{Math.round(vessel.hours)}</span>
                 </button>
               )
             })}
