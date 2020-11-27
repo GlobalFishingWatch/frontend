@@ -55,7 +55,7 @@ const workspace: Workspace<WorkspaceState> = {
       id: 'context-layer-eez',
       config: {
         color: '#069688',
-        visible: true,
+        visible: false,
       },
       dataviewId: 177,
     },
