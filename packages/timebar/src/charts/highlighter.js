@@ -29,14 +29,17 @@ const getCoords = (hoverStart, hoverEnd, outerScale) => {
 const getValuesAtCenter = (activity, centerDate) => {
   if (activity === null) return null
   const centerTime = centerDate.getTime()
+
   return activity.map((track) => {
     if (!track) return null
     if (!track.segmentsWithCurrentFeature) return null
     for (let s = 0; s < track.segmentsWithCurrentFeature.length; s++) {
       const segment = track.segmentsWithCurrentFeature[s]
       const segmentLength = segment.length
-      const segmentStart = segment[0].date
-      const segmentEnd = segment[segmentLength - 1].date
+      const firstSegment = segment[0]
+      const segmentStart = firstSegment && firstSegment.date
+      const latestSegment = segment[segmentLength - 1]
+      const segmentEnd = latestSegment && latestSegment.date
       if (centerDate > segmentStart && centerDate < segmentEnd) {
         for (let i = 0; i < segmentLength; i++) {
           const point = segment[i]

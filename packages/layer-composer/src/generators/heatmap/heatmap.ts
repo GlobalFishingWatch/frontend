@@ -70,7 +70,9 @@ class HeatmapGenerator {
     } else if (statsByZoom) {
       const { min, max, avg } = statsByZoom
       if (min && max && avg) {
-        stops = getBreaks(min, max, avg, config.scalePowExponent, config.steps?.length)
+        // Can't understand why steps as number[] doesn't work
+        const numBreaks: number | undefined = (config.steps as any)?.length
+        stops = getBreaks(min, max, avg, config.scalePowExponent, numBreaks)
       }
     }
 

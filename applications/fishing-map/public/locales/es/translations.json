@@ -52,10 +52,10 @@
   },
   "vessel": {
     "callsign": "Callsing",
-    "first_transmission_date": "Fecha primera transmisión",
+    "firstTransmissionDate": "Fecha primera transmisión",
     "flag": "Bandera",
     "imo": "IMO",
-    "last_transmission_date": "Fecha última transmisión",
+    "lastTransmissionDate": "Fecha última transmisión",
     "mmsi": "MMSI",
     "search": {
       "close": "Cierra la busqueda",

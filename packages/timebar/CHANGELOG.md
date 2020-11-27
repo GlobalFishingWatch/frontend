@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 1.1.5
+
+### Patch Changes
+
+- fix crash on highlight event
+
 ## 1.1.4
 
 ### Patch Changes
