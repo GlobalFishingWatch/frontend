@@ -15,6 +15,7 @@ import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import { resetWorkspaceSearchQuery } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'types'
+import { getFlagById } from 'utils/flags'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -113,6 +114,7 @@ function Search() {
                   first_transmission_date,
                   last_transmission_date,
                 } = entry
+                const flagLabel = getFlagById(flag)?.label
                 return (
                   <li
                     {...getItemProps({ item: entry, index })}
@@ -123,10 +125,10 @@ function Search() {
                   >
                     <div className={styles.name}>{shipname || '---'}</div>
                     <div className={styles.properties}>
-                      {flag && (
+                      {flagLabel && (
                         <div className={styles.property}>
                           <label>{t('vessel.flag', 'Flag')}</label>
-                          <span>{flag}</span>
+                          <span>{flagLabel}</span>
                         </div>
                       )}
                       {mmsi && (
