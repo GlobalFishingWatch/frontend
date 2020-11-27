@@ -16,6 +16,7 @@ import I18nDate from 'features/i18n/i18nDate'
 import { resetWorkspaceSearchQuery } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'types'
 import { getFlagById } from 'utils/flags'
+import { formatInfoField } from 'utils/info'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -107,6 +108,7 @@ function Search() {
                   id,
                   shipname,
                   flag,
+                  fleet,
                   mmsi,
                   imo,
                   callsign,
@@ -147,6 +149,12 @@ function Search() {
                         <div className={styles.property}>
                           <label>{t('vessel.callsign', 'Callsign')}</label>
                           <span>{callsign}</span>
+                        </div>
+                      )}
+                      {fleet && (
+                        <div className={styles.property}>
+                          <label>{t('vessel.fleet', 'Fleet')}</label>
+                          <span>{formatInfoField(fleet, 'fleet')}</span>
                         </div>
                       )}
                       {firstTransmissionDate && lastTransmissionDate && (
