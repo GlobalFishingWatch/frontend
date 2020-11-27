@@ -47,7 +47,7 @@ export const selectTracksData = createSelector(
 export const selectTracksGraphs = createSelector(
   [selectActiveVesselsDataviews, selectTimebarGraph, selectResources],
   (trackDataviews, timebarGraph, resources) => {
-    if (!trackDataviews || !resources) return
+    if (!trackDataviews || trackDataviews.length > 2 || !resources) return
 
     const graphs = trackDataviews.flatMap((dataview) => {
       const { url } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })

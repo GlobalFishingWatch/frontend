@@ -51,7 +51,10 @@ const TimebarSettings = () => {
     dispatchQueryParams({ timebarGraph: TimebarGraphs.None })
   }
   const expandedContainerRef = useClickedOutside(closeOptions)
+
   if (!timebarVisualisation) return null
+
+  const timebarGraphEnabled = activeVesselDataviews && activeVesselDataviews?.length <= 2
   return (
     <div className={styles.container} ref={expandedContainerRef}>
       <IconButton
@@ -92,14 +95,16 @@ const TimebarSettings = () => {
                     direction="top"
                     disabled
                   />
-                  <Select
-                    label={t('timebar.graph', 'Graph')}
-                    options={TIMEBAR_GRAPH_OPTIONS}
-                    selectedOption={TIMEBAR_GRAPH_OPTIONS.find((o) => o.id === timebarGraph)}
-                    onSelect={setGraphOption}
-                    onRemove={removeGraphOption}
-                    direction="top"
-                  />
+                  {timebarGraphEnabled && (
+                    <Select
+                      label={t('timebar.graph', 'Graph')}
+                      options={TIMEBAR_GRAPH_OPTIONS}
+                      selectedOption={TIMEBAR_GRAPH_OPTIONS.find((o) => o.id === timebarGraph)}
+                      onSelect={setGraphOption}
+                      onRemove={removeGraphOption}
+                      direction="top"
+                    />
+                  )}
                 </div>
               )}
             </Fragment>
