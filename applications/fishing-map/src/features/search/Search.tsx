@@ -111,8 +111,8 @@ function Search() {
                   imo,
                   callsign,
                   dataset,
-                  first_transmission_date,
-                  last_transmission_date,
+                  firstTransmissionDate,
+                  lastTransmissionDate,
                 } = entry
                 const flagLabel = getFlagById(flag)?.label
                 return (
@@ -149,12 +149,12 @@ function Search() {
                           <span>{callsign}</span>
                         </div>
                       )}
-                      {first_transmission_date && last_transmission_date && (
+                      {firstTransmissionDate && lastTransmissionDate && (
                         <div className={styles.property}>
                           <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
                           <span>
-                            from <I18nDate date={first_transmission_date} /> to{' '}
-                            <I18nDate date={last_transmission_date} />
+                            from <I18nDate date={firstTransmissionDate} /> to{' '}
+                            <I18nDate date={lastTransmissionDate} />
                           </span>
                         </div>
                       )}

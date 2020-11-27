@@ -32,8 +32,8 @@ import { DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 // Translations by feature.unit static keys
 // t('vessel.flag', 'Flag')
 // t('vessel.imo', 'IMO')
-// t('vessel.first_transmission_date', 'First transmission date')
-// t('vessel.last_transmission_date', 'Last transmission date')
+// t('vessel.firstTransmissionDate', 'First transmission date')
+// t('vessel.lastTransmissionDate', 'Last transmission date')
 // t('vessel.fleet', 'Fleet')
 
 type LayerPanelProps = {

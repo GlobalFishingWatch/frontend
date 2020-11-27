@@ -58,11 +58,11 @@
   },
   "vessel": {
     "callsign": "Callsign",
-    "first_transmission_date": "First transmission date",
+    "firstTransmissionDate": "First transmission date",
     "flag": "Flag",
     "fleet": "Fleet",
     "imo": "IMO",
-    "last_transmission_date": "Last transmission date",
+    "lastTransmissionDate": "Last transmission date",
     "loading": "Loading vessel track",
     "mmsi": "MMSI",
     "search": {
