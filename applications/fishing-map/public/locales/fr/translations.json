@@ -1,14 +1,14 @@
 {
   "common": {
-    "activity": "Activity",
-    "apparentFishing": "Apparent Fishing Effort",
+    "activity": "Activité",
+    "apparentFishing": "Effort de pêche apparent",
     "context_area_plural": "Calques de contexte",
-    "copiedToClipboard": "The link to share this view has been copied to your clipboard",
+    "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers",
     "dismiss": "Fermer",
     "hour": "Heure",
     "hour_plural": "Heures",
-    "login": "Log in",
-    "logout": "Log Out",
+    "login": "Se connecter",
+    "logout": "Déconnexion",
     "more": "Plus",
     "open_menu": "Ouvrir le menu",
     "save": "Enregistrer",
@@ -21,11 +21,11 @@
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement"
   },
   "layer": {
-    "add": "Add layer",
+    "add": "Ajouter un calque",
     "color_change": "Modifier la couleur",
     "filter_close": "Fermer les filtres",
     "filter_open": "Montrer les filtres",
-    "flag_state_plural": "Flag States",
+    "flag_state_plural": "États du Drapeau",
     "info_close": "Masquer les infos",
     "info_open": "Infos",
     "remove": "Supprimer le calque",
@@ -33,18 +33,18 @@
     "source_plural": "Sources",
     "toggle_visibility": "Afficher/Masquer le calque",
     "toggleCombinationMode": {
-      "bivariate": "Show fishing layers in bivariate mode",
-      "compare": "Show fishing layers in comparison mode",
-      "disabled": "Bivariate mode is only availabe with two activity layers"
+      "bivariate": "Afficher les couches de pêche en mode bivarié",
+      "compare": "Afficher les couches de pêche en mode de comparaison",
+      "disabled": "Le mode Bivariat est uniquement disponible avec deux couches d'activité"
     },
-    "vessel_fit_bounds": "Center map on vessel track",
+    "vessel_fit_bounds": "Centrer la carte sur la voie du navire",
     "filter_plural": "Filtres"
   },
   "map": {
     "capture_map": "Enregistrer une image de la carte",
     "change_basemap_default": "Fond de carte par défaut",
     "change_basemap_satellite": "Fond de carte satellite",
-    "loading": "Map loading",
+    "loading": "Chargement de la carte",
     "rulers_add": "Ajouter des mesures",
     "rulers_remove": "Supprimer toutes les mesures",
     "screenshot": "Image de la carte",
@@ -58,12 +58,12 @@
   },
   "vessel": {
     "callsign": "Callsign",
-    "firstTransmissionDate": "First transmission date",
+    "firstTransmissionDate": "Première date de transmission",
     "flag": "Drapeau",
-    "fleet": "Fleet",
+    "fleet": "Flotte",
     "imo": "IMO",
-    "lastTransmissionDate": "Last transmission date",
-    "loading": "Loading vessel track",
+    "lastTransmissionDate": "Dernière date de transmission",
+    "loading": "Chargement de la piste du bateau",
     "mmsi": "MMSI",
     "search": {
       "close": "Fermer la recherche",
