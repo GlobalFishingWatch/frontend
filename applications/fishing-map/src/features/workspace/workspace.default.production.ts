@@ -11,8 +11,8 @@ const workspace: Workspace<WorkspaceState> = {
   app: 'fishing-map',
   name: 'Default public Fishing Map workspace in production v1',
   description: '',
-  startAt: '2019-01-01T00:00:00.000Z',
-  endAt: '2019-12-31T24:00:00.000Z',
+  startAt: '2019-12-01T00:00:00.000Z',
+  endAt: '2019-12-31T23:59:59.999Z',
   viewport: {
     zoom: 1.7,
     latitude: 12,

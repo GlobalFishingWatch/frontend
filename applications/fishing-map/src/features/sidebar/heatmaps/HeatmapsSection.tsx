@@ -46,12 +46,12 @@ function HeatmapsSection(): React.ReactElement {
   }, [bivariate, dataviews, dispatchQueryParams, upsertDataviewInstance])
 
   let bivariateTooltip = bivariate
-    ? t('layer.toggleCombinationMode.compare', 'Show fishing layers in comparison mode')
-    : t('layer.toggleCombinationMode.bivariate', 'Show fishing layers in bivariate mode')
+    ? t('layer.toggleCombinationMode.split', 'Split layers')
+    : t('layer.toggleCombinationMode.combine', 'Combine layers')
   if (dataviews?.length !== 2) {
     bivariateTooltip = t(
       'layer.toggleCombinationMode.disabled',
-      'Bivariate mode is only availabe with two activity layers'
+      'Combine mode is only availabe with two activity layers'
     )
   }
   return (
