@@ -1,38 +1,44 @@
 {
   "common": {
+    "activity": "Activity",
+    "apparentFishing": "Apparent Fishing Effort",
     "context_area_plural": "Areas de contexto",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard",
     "dismiss": "Cancelar",
-    "events": "Eventos",
-    "fishing": "Pesca",
     "hour": "Hora",
     "hour_plural": "Horas",
-    "login": "Login",
-    "logout": "Cerrar sesión",
+    "login": "Log in",
+    "logout": "Log Out",
     "more": "Más",
     "open_menu": "Abrir menú",
     "save": "Guardar",
     "share": "Haz click para compartir tu vista actual",
-    "vessel_plural": "Embarcaciones"
+    "vessel_plural": "Embarcaciones",
+    "events": "Eventos",
+    "fishing": "Pesca"
   },
   "errors": {
     "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo"
   },
   "layer": {
+    "add": "Add layer",
     "color_change": "Cambia el color",
     "filter_close": "Cierra los filtros",
     "filter_open": "Abre los filtros",
-    "filter_plural": "Filtros",
     "flag_state_plural": "Flag States",
     "info_close": "Oculta la información",
     "info_open": "Muestra la información",
     "remove": "Borra la capa",
+    "source": "Source",
     "source_plural": "Sources",
     "toggle_visibility": "Cambia la visibilidad de la capa",
     "toggleCombinationMode": {
       "bivariate": "Show fishing layers in bivariate mode",
-      "compare": "Show fishing layers in comparison mode"
-    }
+      "compare": "Show fishing layers in comparison mode",
+      "disabled": "Bivariate mode is only availabe with two activity layers"
+    },
+    "vessel_fit_bounds": "Center map on vessel track",
+    "filter_plural": "Filtros"
   },
   "map": {
     "capture_map": "Captura el mapa",
@@ -52,10 +58,12 @@
   },
   "vessel": {
     "callsign": "Callsing",
-    "firstTransmissionDate": "Fecha primera transmisión",
+    "firstTransmissionDate": "First transmission date",
     "flag": "Bandera",
+    "fleet": "Fleet",
     "imo": "IMO",
-    "lastTransmissionDate": "Fecha última transmisión",
+    "lastTransmissionDate": "Last transmission date",
+    "loading": "Loading vessel track",
     "mmsi": "MMSI",
     "search": {
       "close": "Cierra la busqueda",
@@ -64,6 +72,7 @@
       "placeholder": "Escribe para buscar $t(common.vessel_plural)",
       "search": "Busca $t(common.vessel_plural)"
     },
+    "source": "Source",
     "tracks": "Tracks de barcos",
     "transmission_plural": "Transmisión",
     "transmission": "Transmisión"
