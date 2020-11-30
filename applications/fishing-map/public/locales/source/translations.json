@@ -7,8 +7,8 @@
     "dismiss": "Dismiss",
     "hour": "Hour",
     "hour_plural": "Hours",
-    "login": "Login",
-    "logout": "Logout",
+    "login": "Log in",
+    "logout": "Log Out",
     "more": "More",
     "open_menu": "Open Menu",
     "save": "Save",
@@ -72,6 +72,7 @@
       "placeholder": "Type to search vessels",
       "search": "Search vessels"
     },
+    "source": "Source",
     "tracks": "Vessel Tracks",
     "transmission_plural": "Transmissions",
     "transmission": "Transmission"

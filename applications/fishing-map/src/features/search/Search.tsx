@@ -169,7 +169,7 @@ function Search() {
 
                       {dataset?.name && (
                         <div className={styles.property}>
-                          <label>{t('layer.source', 'Source')}</label>
+                          <label>{t('vessel.source', 'Source')}</label>
                           <span>{dataset.name}</span>
                         </div>
                       )}

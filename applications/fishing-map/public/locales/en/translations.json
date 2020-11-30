@@ -72,6 +72,7 @@
       "placeholder": "Type to search vessels",
       "search": "Search vessels"
     },
+    "source": "Source",
     "tracks": "Vessel Tracks",
     "transmission_plural": "Transmissions",
     "transmission": "Transmission"
