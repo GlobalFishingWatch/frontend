@@ -33,9 +33,9 @@
     "source_plural": "Sources",
     "toggle_visibility": "Afficher/Masquer le calque",
     "toggleCombinationMode": {
-      "bivariate": "Afficher les couches de pêche en mode bivarié",
-      "compare": "Afficher les couches de pêche en mode de comparaison",
-      "disabled": "Le mode Bivariat est uniquement disponible avec deux couches d'activité"
+      "combine": "Combine layers",
+      "split": "Split layers",
+      "disabled": "Combine mode is only availabe with two activity layers"
     },
     "vessel_fit_bounds": "Centrer la carte sur la voie du navire",
     "filter_plural": "Filtres"
