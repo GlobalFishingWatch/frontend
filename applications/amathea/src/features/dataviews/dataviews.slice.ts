@@ -6,7 +6,7 @@ import { Generators } from '@globalfishingwatch/layer-composer'
 import { RootState } from 'store'
 import { AsyncReducer, createAsyncSlice } from 'features/api/api.slice'
 import { getUserId } from 'features/user/user.slice'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectAllDatasets, selectDatasetStatus } from 'features/datasets/datasets.slice'
 import { APP_NAME_FILTER } from 'data/config'
 
 export const fetchDataviewsThunk = createAsyncThunk('dataviews/fetch', async () => {
@@ -139,8 +139,10 @@ export const selectDataviewStatus = (state: RootState) => state.dataviews.status
 export const selectDataviewStatusId = (state: RootState) => state.dataviews.statusId
 
 export const selectAllDataviews = createSelector(
-  [selectDataviews, selectAllDatasets],
-  (dataviews, allDatasets) => {
+  [selectDataviews, selectAllDatasets, selectDatasetStatus],
+  (dataviews, allDatasets, datasetStatus) => {
+    if (datasetStatus.includes('loading')) return []
+
     return dataviews.map((dataview) => {
       const dataviewDatasets = dataview.datasetsConfig?.map(({ datasetId }) => datasetId)
       const datasets = allDatasets.filter((dataset) => dataviewDatasets?.includes(dataset.id))

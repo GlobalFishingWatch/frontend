@@ -5,6 +5,8 @@ import { selectHiddenDataviews } from 'routes/routes.selectors'
 import { selectAllAOI } from 'features/areas-of-interest/areas-of-interest.slice'
 import { selectCurrentWorkspace, selectAllWorkspaces } from 'features/workspaces/workspaces.slice'
 import { selectCurrentWorkspaceDataviewsResolved } from 'features/dataviews/dataviews.selectors'
+import { selectDatasetStatus } from 'features/datasets/datasets.slice'
+import { selectDataviewStatus } from 'features/dataviews/dataviews.slice'
 import { selectGeneratorsConfig } from './map.slice'
 
 export const getAOIGeneratorsConfig = createSelector(
@@ -43,9 +45,16 @@ export const getAOIGeneratorsConfig = createSelector(
 )
 
 export const getDataviewsGeneratorsConfig = createSelector(
-  [selectCurrentWorkspaceDataviewsResolved, selectHiddenDataviews],
-  (dataviews, hiddenDataviews) => {
+  [
+    selectCurrentWorkspaceDataviewsResolved,
+    selectHiddenDataviews,
+    selectDataviewStatus,
+    selectDatasetStatus,
+  ],
+  (dataviews, hiddenDataviews, dataviewStatus, datasetStatus) => {
+    if (dataviewStatus.includes('loading') || datasetStatus.includes('loading')) return
     if (!dataviews || !dataviews.length) return
+
     const filteredDataviews = dataviews.filter(
       (dataview) =>
         !hiddenDataviews.includes(dataview.id) &&
