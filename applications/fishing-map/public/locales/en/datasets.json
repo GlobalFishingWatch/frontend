@@ -5,11 +5,11 @@
   },
   "mpa-all": {
     "name": "Marine Protected Areas",
-    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA)"
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. UNEP-WCMC and IUCN 2020, Protected Planet: The World Database on Protected Areas (WDPA), September 2020, Cambridge, UK: UNEP-WCMC and IUCN"
   },
   "mpa-no-take": {
     "name": "MPA - No take",
-    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. No Take layer was created using the data available from the Marine Protected Planet WDPA using the filter NO_TAKE = 'All'. Source: World Database on Protected Areas (WDPA)"
+    "description": "MPA stands for Marine Protected Area. A No-take Marine Protected Area is an area of ocean in which the extraction or significant destruction of natural cultural resources, including fish, is prohibited. The MPA - No Take layer was created using the data available from the Protected Planet WDPA using the filter NO_TAKE = 'All'. UNEP-WCMC and IUCN (2020), Protected Planet: The World Database on Protected Areas (WDPA) Online, September 2020, Cambridge, UK: UNEP-WCMC and IUCN"
   },
   "mpa-restricted": {
     "name": "MPA - Restricted",
@@ -17,7 +17,7 @@
   },
   "eez-areas": {
     "name": "EEZ",
-    "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org"
+    "description": "EEZ stands for Exclusive Economic Zone and is a state’s sovereign waters, which extend 200 nautical miles from the coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org"
   },
   "tuna-rfmo": {
     "name": "Tuna RFMO",

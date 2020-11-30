@@ -35,6 +35,7 @@ import { DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 // t('vessel.firstTransmissionDate', 'First transmission date')
 // t('vessel.lastTransmissionDate', 'Last transmission date')
 // t('vessel.fleet', 'Fleet')
+// t('vessel.source', 'Source')
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
