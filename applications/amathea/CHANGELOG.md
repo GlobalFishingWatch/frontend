@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/amathea
 
+## 0.13.9
+
+### Patch Changes
+
+- Updated dependencies
+  - @globalfishingwatch/layer-composer@4.9.4
+
 ## 0.13.8
 
 ### Patch Changes

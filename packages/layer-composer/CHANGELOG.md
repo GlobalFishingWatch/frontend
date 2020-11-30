@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.9.4
+
+### Patch Changes
+
+- fix amathea color ramp steps
+
 ## 4.9.3
 
 ### Patch Changes
