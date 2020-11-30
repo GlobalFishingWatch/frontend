@@ -1,38 +1,44 @@
 {
   "common": {
+    "activity": "Activity",
+    "apparentFishing": "Apparent Fishing Effort",
     "context_area_plural": "Calques de contexte",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard",
     "dismiss": "Fermer",
-    "events": "Évènements",
-    "fishing": "Pêche",
     "hour": "Heure",
     "hour_plural": "Heures",
-    "login": "Se connecter",
-    "logout": "Se déconnecter",
+    "login": "Log in",
+    "logout": "Log Out",
     "more": "Plus",
     "open_menu": "Ouvrir le menu",
     "save": "Enregistrer",
     "share": "Partager la vue actuelle",
-    "vessel_plural": "Navires"
+    "vessel_plural": "Navires",
+    "events": "Évènements",
+    "fishing": "Pêche"
   },
   "errors": {
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement"
   },
   "layer": {
+    "add": "Add layer",
     "color_change": "Modifier la couleur",
     "filter_close": "Fermer les filtres",
     "filter_open": "Montrer les filtres",
-    "filter_plural": "Filtres",
     "flag_state_plural": "Flag States",
     "info_close": "Masquer les infos",
     "info_open": "Infos",
     "remove": "Supprimer le calque",
+    "source": "Source",
     "source_plural": "Sources",
     "toggle_visibility": "Afficher/Masquer le calque",
     "toggleCombinationMode": {
       "bivariate": "Show fishing layers in bivariate mode",
-      "compare": "Show fishing layers in comparison mode"
-    }
+      "compare": "Show fishing layers in comparison mode",
+      "disabled": "Bivariate mode is only availabe with two activity layers"
+    },
+    "vessel_fit_bounds": "Center map on vessel track",
+    "filter_plural": "Filtres"
   },
   "map": {
     "capture_map": "Enregistrer une image de la carte",
@@ -52,10 +58,12 @@
   },
   "vessel": {
     "callsign": "Callsign",
-    "firstTransmissionDate": "Première date de transmission",
+    "firstTransmissionDate": "First transmission date",
     "flag": "Drapeau",
+    "fleet": "Fleet",
     "imo": "IMO",
-    "lastTransmissionDate": "Dernière date de transmission",
+    "lastTransmissionDate": "Last transmission date",
+    "loading": "Loading vessel track",
     "mmsi": "MMSI",
     "search": {
       "close": "Fermer la recherche",
@@ -64,6 +72,7 @@
       "placeholder": "Tapez pour rechercher des navires",
       "search": "Rechercher des navires"
     },
+    "source": "Source",
     "tracks": "Trajectoires de navire",
     "transmission_plural": "Transmissions",
     "transmission": "Transmission"
