@@ -130,3 +130,7 @@
 .actions .loadingIcon:hover {
   cursor: default;
 }
+
+.link {
+  text-decoration: underline;
+}

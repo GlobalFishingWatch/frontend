@@ -223,6 +223,15 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                       <I18nDate date={fieldValue} />
                     ) : field.type === 'flag' ? (
                       <I18nFlag iso={fieldValue} />
+                    ) : field.id === 'mmsi' ? (
+                      <a
+                        className={styles.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        href={`https://www.marinetraffic.com/en/ais/details/ships/${fieldValue}`}
+                      >
+                        {formatInfoField(fieldValue, field.type)}
+                      </a>
                     ) : (
                       formatInfoField(fieldValue, field.type)
                     )}
