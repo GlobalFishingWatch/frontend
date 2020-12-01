@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.4.0
+
+### Minor Changes
+
+- include fishing-map as user permission option
+
 ## 2.3.0
 
 ### Minor Changes

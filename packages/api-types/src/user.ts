@@ -1,6 +1,13 @@
 export interface UserPermission {
   type: 'application' | 'dataset'
-  value: 'map-client' | 'data-portal' | 'carrier-portal' | 'indonesia:*' | 'carriers:*' | 'public'
+  value:
+    | 'map-client'
+    | 'data-portal'
+    | 'carrier-portal'
+    | 'fishing-map'
+    | 'indonesia:*'
+    | 'carriers:*'
+    | 'public'
   action: string
 }
 
