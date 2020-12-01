@@ -4,7 +4,7 @@ import Icon from '../icon'
 import styles from './InputText.module.css'
 
 export type InputSize = 'default' | 'small'
-export type InputType = 'text' | 'email' | 'search' | 'number'
+export type InputType = 'text' | 'email' | 'search' | 'number' | 'date'
 
 type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   className?: string
@@ -42,7 +42,7 @@ function InputText(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
         {...rest}
         {...(type === 'number' && { step })}
       />
-      {type !== 'text' && type !== 'number' && (
+      {(type === 'email' || type === 'search') && (
         <Icon
           icon={type}
           className={styles.icon}
