@@ -4,8 +4,7 @@ import { Group } from '../../types'
 const layers = {
   cp_rfmo: {
     source: {
-      sql:
-        'SELECT the_geom, the_geom_webmercator, cartodb_id, id FROM tuna_rfmos_without_coastlines',
+      sql: 'SELECT the_geom, the_geom_webmercator, cartodb_id, id FROM registry_rfmos',
       type: 'vector',
     },
     layers: [
@@ -26,7 +25,7 @@ const layers = {
   },
   other_rfmos: {
     source: {
-      sql: 'SELECT the_geom, the_geom_webmercator, cartodb_id FROM other_rfmos_without_coastlines',
+      sql: 'SELECT the_geom, the_geom_webmercator, cartodb_id FROM other_rfmos',
       type: 'vector',
     },
     layers: [
