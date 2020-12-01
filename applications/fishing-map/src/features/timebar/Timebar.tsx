@@ -49,12 +49,14 @@ const TimebarWrapper = () => {
         showLastUpdate={false}
         onMouseMove={(clientX: number, scale: (arg: number) => Date) => {
           if (clientX === null) {
-            dispatch(disableHighlightedTime())
-            return
+            if (highlightedTime !== null) {
+              dispatch(disableHighlightedTime())
+            }
+          } else {
+            const start = scale(clientX - 10).toISOString()
+            const end = scale(clientX + 10).toISOString()
+            dispatch(setHighlightedTime({ start, end }))
           }
-          const start = scale(clientX - 10).toISOString()
-          const end = scale(clientX + 10).toISOString()
-          dispatch(setHighlightedTime({ start, end }))
         }}
         onBookmarkChange={onBookmarkChange}
         bookmarkStart={bookmark?.start}
