@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.10.0
+
+### Minor Changes
+
+- change carto layers in layer-composer for cvp
+
 ## 4.9.4
 
 ### Patch Changes
