@@ -24,7 +24,7 @@ import Login from 'features/user/Login'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import Sidebar from 'features/sidebar/Sidebar'
-import { isUserAuthorized, isUserLogged } from 'features/user/user.slice'
+import { isUserAuthorized, isUserLogged, logoutUserThunk } from 'features/user/user.slice'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { selectSidebarOpen } from './app.selectors'
@@ -67,16 +67,6 @@ function App(): React.ReactElement {
     setMenuOpen(true)
   }, [])
 
-  const onUseDefaultWorkspaceClick = useCallback(() => {
-    dispatch(
-      updateLocation(HOME, {
-        payload: { workspaceId: undefined },
-        query: {},
-        replaceQuery: true,
-      })
-    )
-  }, [dispatch])
-
   useEffect(() => {
     if (userLogged && workspaceData === null) {
       dispatch(fetchWorkspaceThunk(workspaceId))
@@ -102,6 +92,13 @@ function App(): React.ReactElement {
       return (
         <ErrorPlaceHolder>
           <h2>We're sorry but your user is not authorized to use this app yet</h2>
+          <Button
+            onClick={() => {
+              dispatch(logoutUserThunk())
+            }}
+          >
+            Logout
+          </Button>
         </ErrorPlaceHolder>
       )
     }
@@ -110,7 +107,19 @@ function App(): React.ReactElement {
       return (
         <ErrorPlaceHolder>
           <h2>There was an error loading your view</h2>
-          <Button onClick={onUseDefaultWorkspaceClick}>Load default view</Button>
+          <Button
+            onClick={() => {
+              dispatch(
+                updateLocation(HOME, {
+                  payload: { workspaceId: undefined },
+                  query: {},
+                  replaceQuery: true,
+                })
+              )
+            }}
+          >
+            Load default view
+          </Button>
         </ErrorPlaceHolder>
       )
     }
@@ -130,9 +139,9 @@ function App(): React.ReactElement {
       <Spinner />
     )
   }, [
+    dispatch,
     onMenuClick,
     onToggle,
-    onUseDefaultWorkspaceClick,
     sidebarOpen,
     userAuthorized,
     userLogged,
