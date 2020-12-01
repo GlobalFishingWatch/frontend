@@ -71,14 +71,16 @@ const LIMITED_ACCESS_USER = process.env.REACT_APP_LIMITED_ACCESS_USER === 'true'
 export const isUserAuthorized = createSelector([isUserLogged, selectUserData], (logged, user) => {
   if (!logged) return false
 
-  return LIMITED_ACCESS_USER
-    ? user?.permissions.find(
-        (permission) =>
-          permission.type === 'application' &&
-          permission.value === 'fishing-map' &&
-          permission.action === 'map.load'
-      ) !== undefined
-    : true
+  if (!LIMITED_ACCESS_USER) return true
+
+  return (
+    user?.permissions.find(
+      (permission) =>
+        permission.type === 'application' &&
+        permission.value === 'fishing-map' &&
+        permission.action === 'map.load'
+    ) !== undefined
+  )
 })
 
 export default userSlice.reducer
