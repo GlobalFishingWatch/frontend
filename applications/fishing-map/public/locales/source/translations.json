@@ -17,6 +17,10 @@
     "events": "Events",
     "fishing": "Fishing"
   },
+  "selects": {
+    "placeholder": "Select an option",
+    "selected": "selected"
+  },
   "errors": {
     "workspaceLoad": "There was an error loading the workspace, please try again later"
   },

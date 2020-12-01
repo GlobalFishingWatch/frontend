@@ -23,9 +23,12 @@ import {
   cleanVesselSearchResults,
   selectSearchStatus,
   VesselWithDatasets,
+  setFilters,
 } from './search.slice'
 import styles from './Search.module.css'
 import SearchEmptyState from './SearchEmptyState'
+import SearchFilters from './SearchFilters'
+import { useSearchFiltersConnect } from './search.hook'
 
 function Search() {
   const { t } = useTranslation()
@@ -33,6 +36,7 @@ function Search() {
   const urlQuery = useSelector(selectSearchQuery)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
+  const { searchFiltersOpen, setSearchFiltersOpen } = useSearchFiltersConnect()
   const query = useDebounce(searchQuery, 200)
   const { dispatchQueryParams } = useLocationConnect()
   const searchDatasets = useSelector(selectVesselsDatasets)
@@ -53,6 +57,7 @@ function Search() {
     batch(() => {
       dispatchQueryParams({ query: undefined })
       dispatch(cleanVesselSearchResults())
+      dispatch(setFilters({}))
       dispatch(resetWorkspaceSearchQuery())
     })
   }
@@ -90,7 +95,15 @@ function Search() {
             {searchStatus === 'loading' && <Spinner size="small" />}
             <IconButton
               icon="filter-off"
-              tooltip={t('vessel.search.filter_open', 'Filter search (Coming soon)')}
+              tooltip={
+                searchFiltersOpen
+                  ? t('vessel.search.filter_close', 'Close search filters')
+                  : t('vessel.search.filter_open', 'Open search filters')
+              }
+              className={cx(styles.actionButton, styles.expandable, {
+                [styles.expanded]: searchFiltersOpen,
+              })}
+              onClick={() => setSearchFiltersOpen(!searchFiltersOpen)}
               tooltipPlacement="bottom"
             />
             <IconButton
@@ -101,6 +114,11 @@ function Search() {
               tooltipPlacement="bottom"
             />
           </div>
+          <SearchFilters
+            className={cx(styles.expandedContainer, {
+              [styles.expandedContainerOpen]: searchFiltersOpen,
+            })}
+          />
           {searchResults && (
             <ul {...getMenuProps()} className={styles.searchResults}>
               {searchResults?.map((entry, index: number) => {

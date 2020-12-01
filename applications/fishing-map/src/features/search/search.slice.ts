@@ -1,24 +1,37 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import uniqBy from 'lodash/uniqBy'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Vessel, APISearch } from '@globalfishingwatch/api-types'
+import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
-import { TRACKS_DATASET_TYPE } from 'data/datasets'
+import { GearType, TRACKS_DATASET_TYPE } from 'data/datasets'
 
 export type VesselWithDatasets = Vessel & { dataset: Dataset; trackDatasetId?: string }
+
+export type SearchFilterKey = 'flags' | 'gearType' | 'startDate' | 'endDate'
+export type SearchFilter = {
+  flags?: MultiSelectOption<string>[]
+  gearTypes?: MultiSelectOption<GearType>[]
+  startDate?: string
+  endDate?: string
+}
 
 interface SearchState {
   status: AsyncReducerStatus
   data: VesselWithDatasets[] | null
+  filtersOpen: boolean
+  filters: SearchFilter
 }
 
 const initialState: SearchState = {
   status: AsyncReducerStatus.Idle,
   data: null,
+  filtersOpen: false,
+  filters: {},
 }
 
 export const fetchVesselSearchThunk = createAsyncThunk(
@@ -66,6 +79,12 @@ const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
+    setFiltersOpen: (state, action: PayloadAction<boolean>) => {
+      state.filtersOpen = action.payload
+    },
+    setFilters: (state, action: PayloadAction<SearchFilter>) => {
+      state.filters = { ...state.filters, ...action.payload }
+    },
     cleanVesselSearchResults: (state) => {
       state.data = null
     },
@@ -86,9 +105,11 @@ const searchSlice = createSlice({
   },
 })
 
-export const { cleanVesselSearchResults } = searchSlice.actions
+export const { setFiltersOpen, setFilters, cleanVesselSearchResults } = searchSlice.actions
 
 export const selectSearchResults = (state: RootState) => state.search.data
 export const selectSearchStatus = (state: RootState) => state.search.status
+export const selectSearchFiltersOpen = (state: RootState) => state.search.filtersOpen
+export const selectSearchFilters = (state: RootState) => state.search.filters
 
 export default searchSlice.reducer
