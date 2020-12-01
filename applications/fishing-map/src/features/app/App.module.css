@@ -9,6 +9,10 @@
   height: 100vh;
 }
 
+.placeholder > div {
+  padding: var(--space-L);
+}
+
 .main {
   height: 100%;
   display: flex;

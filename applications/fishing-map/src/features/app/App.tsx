@@ -1,4 +1,4 @@
-import React, { memo, useState, Fragment, useEffect, useCallback } from 'react'
+import React, { memo, useState, Fragment, useEffect, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -24,13 +24,19 @@ import Login from 'features/user/Login'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import Sidebar from 'features/sidebar/Sidebar'
-import { isUserLogged } from 'features/user/user.slice'
+import { isUserAuthorized, isUserLogged } from 'features/user/user.slice'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 
 import '@globalfishingwatch/ui-components/dist/base.css'
+
+const ErrorPlaceHolder = ({ children }: { children: React.ReactNode }) => (
+  <div className={styles.placeholder}>
+    <div>{children}</div>
+  </div>
+)
 
 const Main = memo(() => (
   <div className={styles.main}>
@@ -44,7 +50,8 @@ function App(): React.ReactElement {
   const sidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
-  const logged = useSelector(isUserLogged)
+  const userLogged = useSelector(isUserLogged)
+  const userAuthorized = useSelector(isUserAuthorized)
   const workspaceId = useSelector(selectWorkspaceId)
   const workspaceData = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -52,9 +59,9 @@ function App(): React.ReactElement {
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 
-  const onToggle = () => {
+  const onToggle = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })
-  }
+  }, [dispatchQueryParams, sidebarOpen])
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -71,11 +78,11 @@ function App(): React.ReactElement {
   }, [dispatch])
 
   useEffect(() => {
-    if (logged && workspaceData === null) {
+    if (userLogged && workspaceData === null) {
       dispatch(fetchWorkspaceThunk(workspaceId))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, logged, workspaceId])
+  }, [dispatch, userLogged, workspaceId])
 
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   useEffect(() => {
@@ -86,32 +93,57 @@ function App(): React.ReactElement {
     }
   }, [dispatch, resourceQueries])
 
+  const Content = useMemo(() => {
+    if (!userLogged) {
+      return <Spinner />
+    }
+
+    if (!userAuthorized) {
+      return (
+        <ErrorPlaceHolder>
+          <h2>We're sorry but your user is not authorized to use this app yet</h2>
+        </ErrorPlaceHolder>
+      )
+    }
+
+    if (workspaceStatus === AsyncReducerStatus.Error) {
+      return (
+        <ErrorPlaceHolder>
+          <h2>There was an error loading your view</h2>
+          <Button onClick={onUseDefaultWorkspaceClick}>Load default view</Button>
+        </ErrorPlaceHolder>
+      )
+    }
+
+    return workspaceStatus === AsyncReducerStatus.Finished || workspaceCustom ? (
+      <MapboxRefProvider>
+        <SplitView
+          isOpen={sidebarOpen}
+          onToggle={onToggle}
+          aside={<Sidebar onMenuClick={onMenuClick} />}
+          main={<Main />}
+          asideWidth="32rem"
+          className="split-container"
+        />
+      </MapboxRefProvider>
+    ) : (
+      <Spinner />
+    )
+  }, [
+    onMenuClick,
+    onToggle,
+    onUseDefaultWorkspaceClick,
+    sidebarOpen,
+    userAuthorized,
+    userLogged,
+    workspaceCustom,
+    workspaceStatus,
+  ])
+
   return (
     <Fragment>
       <Login />
-      {!logged || (workspaceStatus !== AsyncReducerStatus.Finished && !workspaceCustom) ? (
-        <div className={styles.placeholder}>
-          {workspaceStatus === AsyncReducerStatus.Error ? (
-            <div>
-              <h2>There was an error loading your view</h2>
-              <Button onClick={onUseDefaultWorkspaceClick}>Load default view</Button>
-            </div>
-          ) : (
-            <Spinner />
-          )}
-        </div>
-      ) : (
-        <MapboxRefProvider>
-          <SplitView
-            isOpen={sidebarOpen}
-            onToggle={onToggle}
-            aside={<Sidebar onMenuClick={onMenuClick} />}
-            main={<Main />}
-            asideWidth="32rem"
-            className="split-container"
-          />
-        </MapboxRefProvider>
-      )}
+      {Content}
       <Menu
         bgImage={menuBgImage}
         isOpen={menuOpen}
