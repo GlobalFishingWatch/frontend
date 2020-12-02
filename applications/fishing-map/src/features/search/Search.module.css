@@ -134,3 +134,10 @@
   border-bottom: var(--border);
   z-index: 1;
 }
+
+.spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 5rem;
+}

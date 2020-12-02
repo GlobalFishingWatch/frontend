@@ -11,7 +11,6 @@ import {
 export const useSearchFiltersConnect = () => {
   const searchFiltersOpen = useSelector(selectSearchFiltersOpen)
   const searchFilters = useSelector(selectSearchFilters)
-  const hasSearchFilters = Object.values(searchFilters).length > 0
   const dispatch = useDispatch()
 
   const setSearchFiltersOpen = useCallback(
@@ -31,7 +30,6 @@ export const useSearchFiltersConnect = () => {
   return {
     searchFilters,
     searchFiltersOpen,
-    hasSearchFilters,
     setSearchFiltersOpen,
     setSearchFilters,
   }

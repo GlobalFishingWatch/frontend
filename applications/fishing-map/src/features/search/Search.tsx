@@ -24,6 +24,7 @@ import {
   selectSearchStatus,
   VesselWithDatasets,
   setFilters,
+  selectSearchPagination,
 } from './search.slice'
 import styles from './Search.module.css'
 import SearchNoResultsState from './SearchNoResultsState'
@@ -37,17 +38,16 @@ function Search() {
   const urlQuery = useSelector(selectSearchQuery)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
-  const {
-    hasSearchFilters,
-    searchFilters,
-    searchFiltersOpen,
-    setSearchFiltersOpen,
-  } = useSearchFiltersConnect()
+  const { searchFilters, searchFiltersOpen, setSearchFiltersOpen } = useSearchFiltersConnect()
+  const searchPagination = useSelector(selectSearchPagination)
+  console.log('🚀 ~ file: Search.tsx ~ line 44 ~ Search ~ searchPagination', searchPagination)
   const debouncedQuery = useDebounce(searchQuery, 200)
   const { dispatchQueryParams } = useLocationConnect()
   const searchDatasets = useSelector(selectVesselsDatasets)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
+
+  const hasSearchFilters = Object.values(searchFilters).length > 0
 
   useEffect(() => {
     if (debouncedQuery !== '') {
@@ -221,6 +221,11 @@ function Search() {
                   </li>
                 )
               })}
+              {searchPagination.total !== 0 && searchPagination.offset <= searchPagination.total && (
+                <li className={styles.spinner}>
+                  <Spinner inline size="small" />
+                </li>
+              )}
             </ul>
           )}
         </div>

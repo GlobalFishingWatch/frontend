@@ -23,12 +23,18 @@ export type SearchFilter = {
 interface SearchState {
   status: AsyncReducerStatus
   data: VesselWithDatasets[] | null
+  pagination: {
+    total: number
+    offset: number
+  }
   filtersOpen: boolean
   filters: SearchFilter
 }
 
+const paginationInitialState = { total: 0, offset: 0 }
 const initialState: SearchState = {
   status: AsyncReducerStatus.Idle,
+  pagination: paginationInitialState,
   data: null,
   filtersOpen: false,
   filters: {},
@@ -75,7 +81,13 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           }
         })
       })
-      return uniqBy(resultsFlat, 'id')
+      return {
+        data: uniqBy(resultsFlat, 'id'),
+        pagination: {
+          total: searchResults[0].results.total.value,
+          offset: searchResults[0].results.offset,
+        },
+      }
     }
   }
 )
@@ -101,7 +113,8 @@ const searchSlice = createSlice({
     builder.addCase(fetchVesselSearchThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
       if (action.payload) {
-        state.data = action.payload
+        state.data = action.payload.data
+        state.pagination = action.payload.pagination
       }
     })
     builder.addCase(fetchVesselSearchThunk.rejected, (state) => {
@@ -116,5 +129,6 @@ export const selectSearchResults = (state: RootState) => state.search.data
 export const selectSearchStatus = (state: RootState) => state.search.status
 export const selectSearchFiltersOpen = (state: RootState) => state.search.filtersOpen
 export const selectSearchFilters = (state: RootState) => state.search.filters
+export const selectSearchPagination = (state: RootState) => state.search.pagination
 
 export default searchSlice.reducer
