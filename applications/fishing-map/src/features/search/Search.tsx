@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import Downshift from 'downshift'
@@ -40,14 +40,39 @@ function Search() {
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const { searchFilters, searchFiltersOpen, setSearchFiltersOpen } = useSearchFiltersConnect()
   const searchPagination = useSelector(selectSearchPagination)
-  console.log('🚀 ~ file: Search.tsx ~ line 44 ~ Search ~ searchPagination', searchPagination)
   const debouncedQuery = useDebounce(searchQuery, 200)
   const { dispatchQueryParams } = useLocationConnect()
   const searchDatasets = useSelector(selectVesselsDatasets)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
+  const loader = useRef<any>(null)
 
   const hasSearchFilters = Object.values(searchFilters).length > 0
+
+  const handleObserver: IntersectionObserverCallback = (entities) => {
+    console.log('🚀 ~ file: Search.tsx ~ line 53 ~ Search ~ entities', entities)
+    const target = entities[0]
+    if (target.isIntersecting) {
+      console.log('TODO: request new data')
+    }
+  }
+
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: '20px',
+      threshold: 1.0,
+    }
+    const observer = new IntersectionObserver(handleObserver, options)
+    if (loader.current) {
+      observer.observe(loader.current)
+    }
+    // return () => {
+    //   if (observer) {
+    //     observer.disconnect()
+    //   }
+    // }
+  }, [])
 
   useEffect(() => {
     if (debouncedQuery !== '') {
@@ -222,7 +247,7 @@ function Search() {
                 )
               })}
               {searchPagination.total !== 0 && searchPagination.offset <= searchPagination.total && (
-                <li className={styles.spinner}>
+                <li className={styles.spinner} ref={loader}>
                   <Spinner inline size="small" />
                 </li>
               )}
