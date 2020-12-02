@@ -16,8 +16,8 @@ export type SearchFilterKey = 'flags' | 'gearType' | 'startDate' | 'endDate'
 export type SearchFilter = {
   flags?: MultiSelectOption<string>[]
   gearTypes?: MultiSelectOption<GearType>[]
-  startDate?: string
-  endDate?: string
+  firstTransmissionDate?: string
+  lastTransmissionDate?: string
 }
 
 interface SearchState {
@@ -34,9 +34,14 @@ const initialState: SearchState = {
   filters: {},
 }
 
+export type VesselSearchThunk = {
+  query: string
+  datasets: Dataset[]
+}
+
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/fetch',
-  async ({ query, datasets }: { query: string; datasets: Dataset[] }, { getState }) => {
+  async ({ query, datasets }: VesselSearchThunk, { getState }) => {
     const state = getState() as RootState
     const dataset = datasets[0]
     const datasetConfig = {

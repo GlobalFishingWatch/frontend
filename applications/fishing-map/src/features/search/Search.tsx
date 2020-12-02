@@ -37,22 +37,45 @@ function Search() {
   const urlQuery = useSelector(selectSearchQuery)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
-  const { hasSearchFilters, searchFiltersOpen, setSearchFiltersOpen } = useSearchFiltersConnect()
-  const query = useDebounce(searchQuery, 200)
+  const {
+    hasSearchFilters,
+    searchFilters,
+    searchFiltersOpen,
+    setSearchFiltersOpen,
+  } = useSearchFiltersConnect()
+  const debouncedQuery = useDebounce(searchQuery, 200)
   const { dispatchQueryParams } = useLocationConnect()
   const searchDatasets = useSelector(selectVesselsDatasets)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
 
   useEffect(() => {
-    if (query !== '') {
+    if (debouncedQuery !== '') {
+      // Don't use this until bug with shipname responses in API is fixed
+      // const name = `shipname='${debouncedQuery}'`
+      const flags = searchFilters?.flags
+        ? `flag IN (${searchFilters.flags.map((f) => `'${f.id}'`).join(', ')})`
+        : ''
+      const gearTypes = searchFilters?.gearTypes
+        ? `gearType IN (${searchFilters.gearTypes.map((f) => `'${f.id}'`).join(', ')})`
+        : ''
+      const firstTransmissionDate = searchFilters?.firstTransmissionDate
+        ? `firstTransmissionDate > ${searchFilters.firstTransmissionDate}`
+        : ''
+      const lastTransmissionDate = searchFilters?.lastTransmissionDate
+        ? `lastTransmissionDate < ${searchFilters.lastTransmissionDate}`
+        : ''
+      const query = [debouncedQuery, flags, gearTypes, firstTransmissionDate, lastTransmissionDate]
+        .filter((q) => !!q)
+        .join(' AND ')
+      console.log(query)
       batch(() => {
-        dispatchQueryParams({ query })
+        dispatchQueryParams({ query: debouncedQuery })
         dispatch(fetchVesselSearchThunk({ query, datasets: searchDatasets }))
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query])
+  }, [debouncedQuery, searchFilters])
 
   const onCloseClick = () => {
     batch(() => {
