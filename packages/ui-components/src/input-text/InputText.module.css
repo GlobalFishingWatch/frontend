@@ -69,3 +69,8 @@
 .inputText input[type="search"]::-webkit-search-cancel-button{
   display: none;
 }
+
+.inputText input[type="date"]::-webkit-calendar-picker-indicator {
+  /* Awesome thread to explain how to obtain it https://stackoverflow.com/a/43960991 */
+  filter: invert(18%) sepia(99%) saturate(1295%) hue-rotate(201deg) brightness(89%) contrast(96%);
+}

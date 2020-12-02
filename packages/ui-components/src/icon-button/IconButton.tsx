@@ -10,7 +10,7 @@ import styles from './IconButton.module.css'
 export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'warning'
 export type IconButtonSize = 'default' | 'medium' | 'small' | 'tiny'
 
-interface IconButtonProps {
+export interface IconButtonProps {
   icon?: IconType
   type?: IconButtonType
   size?: IconButtonSize
