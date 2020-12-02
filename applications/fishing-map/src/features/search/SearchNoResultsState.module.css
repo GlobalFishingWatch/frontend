@@ -10,17 +10,9 @@
   margin-bottom: var(--space-S);
 }
 
-.emptyState code {
-  font-style: italic;
-}
-
 .vesselImage {
-  height: 14rem;
+  height: auto;
   display: block;
   margin: 0 auto;
-  margin-bottom: var(--space-L);
-}
-
-.inlineIcon {
-  height: 1em;
+  max-width: 100%;
 }

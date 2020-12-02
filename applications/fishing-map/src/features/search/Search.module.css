@@ -1,8 +1,3 @@
-.container {
-  z-index: 0;
-  position: relative;
-}
-
 .expandedContainerOpen {
   z-index: 1;
   filter: var(--filter-drop-shadow);
@@ -12,6 +7,8 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    z-index: 0;
+    position: relative;
 }
 
 .inputContainer {
@@ -20,6 +17,8 @@
     background-color: var(--color-white);
     box-shadow: var(--box-shadow);
     z-index: 1;
+  z-index: 0;
+  position: relative;
 }
 
 .input {
