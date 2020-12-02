@@ -8,6 +8,7 @@ import { getPlaceholderBySelections } from 'features/i18n/utils'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { GearType, GEAR_TYPES } from 'data/datasets'
 import { useSearchFiltersConnect } from './search.hook'
+import styles from './SearchFilters.module.css'
 
 type SearchFiltersProps = {
   className?: string
@@ -28,6 +29,7 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
         placeholder={getPlaceholderBySelections(flags)}
         options={flagOptions}
         selectedOptions={flags}
+        className={styles.row}
         onSelect={(filter) => {
           setSearchFilters({ flags: [...(flags || []), filter] })
         }}
@@ -43,6 +45,7 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
         placeholder={getPlaceholderBySelections(gearTypes)}
         options={GEAR_TYPES}
         selectedOptions={gearTypes}
+        className={styles.row}
         onSelect={(filter: MultiSelectOption<GearType>) => {
           setSearchFilters({ gearTypes: [...(gearTypes || []), filter] })
         }}
@@ -53,16 +56,20 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
           setSearchFilters({ flags: undefined })
         }}
       />
-      <InputText
-        label={t('common.active_after', 'Active after')}
-        type="date"
-        onChange={(e) => setSearchFilters({ startDate: e.target.value })}
-      />
-      <InputText
-        label={t('common.active_before', 'Active Before')}
-        type="date"
-        onChange={(e) => setSearchFilters({ endDate: e.target.value })}
-      />
+      <div className={styles.row}>
+        <InputText
+          label={t('common.active_after', 'Active after')}
+          type="date"
+          onChange={(e) => setSearchFilters({ startDate: e.target.value })}
+        />
+      </div>
+      <div className={styles.row}>
+        <InputText
+          label={t('common.active_before', 'Active Before')}
+          type="date"
+          onChange={(e) => setSearchFilters({ endDate: e.target.value })}
+        />
+      </div>
     </div>
   )
 }
