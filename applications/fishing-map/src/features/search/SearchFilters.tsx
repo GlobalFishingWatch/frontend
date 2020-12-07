@@ -2,11 +2,12 @@ import React, { useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import MultiSelect, { MultiSelectOption } from '@globalfishingwatch/ui-components/dist/multi-select'
-import { InputText } from '@globalfishingwatch/ui-components'
+import InputDate from '@globalfishingwatch/ui-components/dist/input-date'
 import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { GearType, GEAR_TYPES } from 'data/datasets'
+import { DEFAULT_WORKSPACE } from 'data/config'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchFilters.module.css'
 
@@ -17,9 +18,8 @@ type SearchFiltersProps = {
 function SearchFilters({ className = '' }: SearchFiltersProps) {
   const { t } = useTranslation()
   const { searchFilters, setSearchFiltersOpen, setSearchFilters } = useSearchFiltersConnect()
-  const { flags, gearTypes } = searchFilters
+  const { flags, gearTypes, firstTransmissionDate = '', lastTransmissionDate = '' } = searchFilters
   const flagOptions = useMemo(getFlags, [])
-
   const expandedContainerRef = useClickedOutside(() => setSearchFiltersOpen(false))
 
   return (
@@ -57,17 +57,39 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
         }}
       />
       <div className={styles.row}>
-        <InputText
+        <InputDate
+          value={firstTransmissionDate}
+          max={DEFAULT_WORKSPACE.end.slice(0, 10) as string}
+          min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_after', 'Active after')}
-          type="date"
-          onChange={(e) => setSearchFilters({ firstTransmissionDate: e.target.value })}
+          onChange={(e) => {
+            if (e.target.value !== firstTransmissionDate) {
+              setSearchFilters({ firstTransmissionDate: e.target.value })
+            }
+          }}
+          onRemove={() => {
+            if (firstTransmissionDate) {
+              setSearchFilters({ firstTransmissionDate: undefined })
+            }
+          }}
         />
       </div>
       <div className={styles.row}>
-        <InputText
+        <InputDate
+          value={lastTransmissionDate}
+          max={DEFAULT_WORKSPACE.end.slice(0, 10) as string}
+          min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_before', 'Active Before')}
-          type="date"
-          onChange={(e) => setSearchFilters({ lastTransmissionDate: e.target.value })}
+          onChange={(e) => {
+            if (e.target.value !== lastTransmissionDate) {
+              setSearchFilters({ lastTransmissionDate: e.target.value })
+            }
+          }}
+          onRemove={() => {
+            if (lastTransmissionDate) {
+              setSearchFilters({ lastTransmissionDate: undefined })
+            }
+          }}
         />
       </div>
     </div>
