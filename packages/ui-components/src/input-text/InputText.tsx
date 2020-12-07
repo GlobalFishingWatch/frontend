@@ -4,7 +4,7 @@ import Icon from '../icon'
 import styles from './InputText.module.css'
 
 export type InputSize = 'default' | 'small'
-export type InputType = 'text' | 'email' | 'search' | 'number' | 'date'
+export type InputType = 'text' | 'email' | 'search' | 'number'
 
 type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   className?: string
@@ -31,9 +31,10 @@ function InputText(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
   useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
 
   return (
-    <div className={cx(styles.inputText, styles[inputSize], className)}>
+    <div className={cx(styles.container, styles[inputSize], className)}>
       {label && <label htmlFor={label}>{label}</label>}
       <input
+        className={styles.input}
         key={inputKey}
         ref={inputRef}
         id={label}
