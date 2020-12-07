@@ -23,6 +23,7 @@ export type SearchFilter = {
 interface SearchState {
   status: AsyncReducerStatus
   data: VesselWithDatasets[] | null
+  suggestion: string | null
   pagination: {
     total: number
     offset: number
@@ -36,6 +37,7 @@ const initialState: SearchState = {
   status: AsyncReducerStatus.Idle,
   pagination: paginationInitialState,
   data: null,
+  suggestion: null,
   filtersOpen: false,
   filters: {},
 }
@@ -83,6 +85,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       })
       return {
         data: uniqBy(resultsFlat, 'id'),
+        suggestion: 'TODO: fix api', //searchResults[0].results.metadata.suggestion
         pagination: {
           total: searchResults[0].results.total.value,
           offset: searchResults[0].results.offset,
@@ -103,7 +106,7 @@ const searchSlice = createSlice({
       state.filters = { ...state.filters, ...action.payload }
     },
     cleanVesselSearchResults: (state) => {
-      state.data = null
+      state = initialState
     },
   },
   extraReducers: (builder) => {

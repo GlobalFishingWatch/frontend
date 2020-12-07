@@ -60,14 +60,14 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
         <InputText
           label={t('common.active_after', 'Active after')}
           type="date"
-          onChange={(e) => setSearchFilters({ startDate: e.target.value })}
+          onChange={(e) => setSearchFilters({ firstTransmissionDate: e.target.value })}
         />
       </div>
       <div className={styles.row}>
         <InputText
           label={t('common.active_before', 'Active Before')}
           type="date"
-          onChange={(e) => setSearchFilters({ endDate: e.target.value })}
+          onChange={(e) => setSearchFilters({ lastTransmissionDate: e.target.value })}
         />
       </div>
     </div>

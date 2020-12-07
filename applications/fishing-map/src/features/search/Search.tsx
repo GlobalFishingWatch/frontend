@@ -77,7 +77,10 @@ function Search() {
   useEffect(() => {
     if (debouncedQuery !== '') {
       // Don't use this until bug with shipname responses in API is fixed
-      // const name = `shipname='${debouncedQuery}'`
+      // const fieldsToSearchIn = ['shipname', 'mmsi', 'imo']
+      // const fieldsQuery = fieldsToSearchIn
+      //   .map((field) => `${field}='${debouncedQuery}'`)
+      //   .join(' OR ')
       const flags = searchFilters?.flags
         ? `flag IN (${searchFilters.flags.map((f) => `'${f.id}'`).join(', ')})`
         : ''
@@ -143,7 +146,7 @@ function Search() {
             />
             {searchStatus === 'loading' && <Spinner size="small" />}
             <IconButton
-              icon={searchFiltersOpen || hasSearchFilters ? 'filter-on' : 'filter-off'}
+              icon={searchFiltersOpen ? 'close' : hasSearchFilters ? 'filter-on' : 'filter-off'}
               tooltip={
                 searchFiltersOpen
                   ? t('vessel.search.filter_close', 'Close search filters')
@@ -155,13 +158,15 @@ function Search() {
               onClick={() => setSearchFiltersOpen(!searchFiltersOpen)}
               tooltipPlacement="bottom"
             />
-            <IconButton
-              icon="close"
-              onClick={onCloseClick}
-              type="border"
-              tooltip={t('vessel.search.close', 'Close search')}
-              tooltipPlacement="bottom"
-            />
+            {searchFiltersOpen === false && (
+              <IconButton
+                icon="close"
+                onClick={onCloseClick}
+                type="border"
+                tooltip={t('vessel.search.close', 'Close search')}
+                tooltipPlacement="bottom"
+              />
+            )}
           </div>
           <SearchFilters className={cx(styles.expandedContainer)} />
           {!searchResults?.length &&
