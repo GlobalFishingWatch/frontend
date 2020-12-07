@@ -48,15 +48,25 @@ function Workspaces(): React.ReactElement {
           workspacesList.map((workspace) => {
             if (!(workspace.aoi as AOI)?.bbox) return null
             const [minLng, minLat, maxLng, maxLat] = (workspace.aoi as AOI).bbox
-            const { latitude, longitude, zoom } = fitBounds({
-              bounds: [
-                [minLng, minLat],
-                [maxLng, maxLat],
-              ],
-              width: mapRef.current?._width,
-              height: mapRef.current?._height,
-              padding: 60,
-            })
+            let query = {}
+            if (minLng && minLat && maxLng && maxLat) {
+              try {
+                const { latitude, longitude, zoom } = fitBounds({
+                  bounds: [
+                    [minLng, minLat],
+                    [maxLng, maxLat],
+                  ],
+                  width: mapRef.current?._width,
+                  height: mapRef.current?._height,
+                  padding: 60,
+                })
+                if (latitude && longitude && zoom) {
+                  query = { latitude, longitude, zoom }
+                }
+              } catch (e) {
+                console.warn(e)
+              }
+            }
             return (
               <li className={styles.listItem} key={workspace.id}>
                 <Link
@@ -64,7 +74,7 @@ function Workspaces(): React.ReactElement {
                   to={{
                     type: WORKSPACE_EDITOR,
                     payload: { workspaceId: workspace.id },
-                    query: { latitude, longitude, zoom },
+                    query,
                   }}
                 >
                   <span className={styles.colorBar} style={{ backgroundColor: workspace.color }} />
