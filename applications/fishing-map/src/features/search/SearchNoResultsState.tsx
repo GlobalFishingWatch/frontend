@@ -1,12 +1,17 @@
 import React from 'react'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import vesselImage from 'assets/images/vessel-side@2x.png'
 import styles from './SearchNoResultsState.module.css'
 
-function SearchNoResultsState() {
+type SearchNoResultsProps = {
+  className?: string
+}
+
+function SearchNoResultsState({ className = '' }: SearchNoResultsProps) {
   const { t } = useTranslation()
   return (
-    <div className={styles.emptyState}>
+    <div className={cx(styles.emptyState, className)}>
       <div>
         <img src={vesselImage} alt="vessel" className={styles.vesselImage} />
         <p>

@@ -67,7 +67,7 @@
     "mmsi": "MMSI",
     "search": {
       "close": "Close search",
-      "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar or writing filters like:",
+      "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar.",
       "filter_open": "Open search filters",
       "filter_close": "Close search filters",
       "placeholder": "Type to search vessels",
