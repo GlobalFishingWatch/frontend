@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { batch, useDispatch, useSelector } from 'react-redux'
+import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
 import Downshift from 'downshift'
 import { useTranslation } from 'react-i18next'
@@ -25,6 +26,7 @@ import {
   VesselWithDatasets,
   setFilters,
   selectSearchPagination,
+  RESULTS_PER_PAGE,
 } from './search.slice'
 import styles from './Search.module.css'
 import SearchNoResultsState from './SearchNoResultsState'
@@ -45,62 +47,65 @@ function Search() {
   const searchDatasets = useSelector(selectVesselsDatasets)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
-  const loader = useRef<any>(null)
+
+  const fetchResults = useCallback(
+    (offset = 0) => {
+      if (searchStatus !== AsyncReducerStatus.Loading) {
+        // Don't use this until bug with shipname responses in API is fixed
+        // const fieldsToSearchIn = ['shipname', 'mmsi', 'imo']
+        // const fieldsQuery = fieldsToSearchIn
+        //   .map((field) => `${field}='${debouncedQuery}'`)
+        //   .join(' OR ')
+        const flags = searchFilters?.flags
+          ? `flag IN (${searchFilters.flags.map((f) => `'${f.id}'`).join(', ')})`
+          : ''
+        const gearTypes = searchFilters?.gearTypes
+          ? `gearType IN (${searchFilters.gearTypes.map((f) => `'${f.id}'`).join(', ')})`
+          : ''
+        const firstTransmissionDate = searchFilters?.firstTransmissionDate
+          ? `firstTransmissionDate > ${searchFilters.firstTransmissionDate}`
+          : ''
+        const lastTransmissionDate = searchFilters?.lastTransmissionDate
+          ? `lastTransmissionDate < ${searchFilters.lastTransmissionDate}`
+          : ''
+        const query = [
+          debouncedQuery,
+          flags,
+          gearTypes,
+          firstTransmissionDate,
+          lastTransmissionDate,
+        ]
+          .filter((q) => !!q)
+          .join(' AND ')
+
+        batch(() => {
+          dispatchQueryParams({ query: debouncedQuery })
+          dispatch(fetchVesselSearchThunk({ query, datasets: searchDatasets, offset }))
+        })
+      }
+    },
+    [debouncedQuery, dispatch, dispatchQueryParams, searchDatasets, searchFilters]
+  )
+
+  const handleChange = useCallback(
+    (entry: IntersectionObserverEntry) => {
+      const { offset, total } = searchPagination
+      if (entry.isIntersecting) {
+        if (offset <= total) {
+          console.log(entry)
+          fetchResults(offset + RESULTS_PER_PAGE)
+        }
+      }
+    },
+    [fetchResults, searchPagination]
+  )
+  const [ref] = useIntersectionObserver(handleChange, { rootMargin: '100px' })
 
   const hasSearchFilters = Object.values(searchFilters).length > 0
 
-  const handleObserver: IntersectionObserverCallback = (entities) => {
-    console.log('🚀 ~ file: Search.tsx ~ line 53 ~ Search ~ entities', entities)
-    const target = entities[0]
-    if (target.isIntersecting) {
-      console.log('TODO: request new data')
-    }
-  }
-
-  useEffect(() => {
-    const options = {
-      root: null,
-      rootMargin: '20px',
-      threshold: 1.0,
-    }
-    const observer = new IntersectionObserver(handleObserver, options)
-    if (loader.current) {
-      observer.observe(loader.current)
-    }
-    // return () => {
-    //   if (observer) {
-    //     observer.disconnect()
-    //   }
-    // }
-  }, [])
-
   useEffect(() => {
     if (debouncedQuery !== '') {
-      // Don't use this until bug with shipname responses in API is fixed
-      // const fieldsToSearchIn = ['shipname', 'mmsi', 'imo']
-      // const fieldsQuery = fieldsToSearchIn
-      //   .map((field) => `${field}='${debouncedQuery}'`)
-      //   .join(' OR ')
-      const flags = searchFilters?.flags
-        ? `flag IN (${searchFilters.flags.map((f) => `'${f.id}'`).join(', ')})`
-        : ''
-      const gearTypes = searchFilters?.gearTypes
-        ? `gearType IN (${searchFilters.gearTypes.map((f) => `'${f.id}'`).join(', ')})`
-        : ''
-      const firstTransmissionDate = searchFilters?.firstTransmissionDate
-        ? `firstTransmissionDate > ${searchFilters.firstTransmissionDate}`
-        : ''
-      const lastTransmissionDate = searchFilters?.lastTransmissionDate
-        ? `lastTransmissionDate < ${searchFilters.lastTransmissionDate}`
-        : ''
-      const query = [debouncedQuery, flags, gearTypes, firstTransmissionDate, lastTransmissionDate]
-        .filter((q) => !!q)
-        .join(' AND ')
-      console.log(query)
-      batch(() => {
-        dispatchQueryParams({ query: debouncedQuery })
-        dispatch(fetchVesselSearchThunk({ query, datasets: searchDatasets }))
-      })
+      fetchResults()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery, searchFilters])
@@ -176,7 +181,7 @@ function Search() {
               <SearchEmptyState />
             ))}
           {searchResults && searchResults.length > 0 && (
-            <ul {...getMenuProps()} className={styles.searchResults}>
+            <ul id="scroll-root" {...getMenuProps()} className={styles.searchResults}>
               {searchResults?.map((entry, index: number) => {
                 const {
                   id,
@@ -252,7 +257,7 @@ function Search() {
                 )
               })}
               {searchPagination.total !== 0 && searchPagination.offset <= searchPagination.total && (
-                <li className={styles.spinner} ref={loader}>
+                <li className={styles.spinner} ref={ref}>
                   <Spinner inline size="small" />
                 </li>
               )}

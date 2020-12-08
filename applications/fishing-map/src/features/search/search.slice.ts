@@ -10,6 +10,8 @@ import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
 import { GearType, TRACKS_DATASET_TYPE } from 'data/datasets'
 
+export const RESULTS_PER_PAGE = 20
+
 export type VesselWithDatasets = Vessel & { dataset: Dataset; trackDatasetId?: string }
 
 export type SearchFilterKey = 'flags' | 'gearType' | 'startDate' | 'endDate'
@@ -44,20 +46,24 @@ const initialState: SearchState = {
 
 export type VesselSearchThunk = {
   query: string
+  offset: number
   datasets: Dataset[]
 }
 
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/fetch',
-  async ({ query, datasets }: VesselSearchThunk, { getState }) => {
+  async ({ query, datasets, offset }: VesselSearchThunk, { getState }) => {
     const state = getState() as RootState
     const dataset = datasets[0]
+    const currentResults = selectSearchResults(state)
     const datasetConfig = {
       endpoint: 'carriers-search-vessels',
       datasetId: dataset.id,
       params: [],
       query: [
         { id: 'datasets', value: datasets.map((d) => d.id) },
+        { id: 'limit', value: RESULTS_PER_PAGE },
+        { id: 'offset', value: offset },
         { id: 'query', value: query },
       ],
     }
@@ -83,15 +89,23 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           }
         })
       })
+      const uniqResults = uniqBy(resultsFlat, 'id')
       return {
-        data: uniqBy(resultsFlat, 'id'),
+        data: offset > 0 && currentResults ? currentResults.concat(uniqResults) : uniqResults,
         suggestion: 'TODO: fix api', //searchResults[0].results.metadata.suggestion
         pagination: {
           total: searchResults[0].results.total.value,
-          offset: searchResults[0].results.offset,
+          offset: searchResults[0].results.offset + offset,
         },
       }
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const state = getState() as RootState
+      const status = selectSearchStatus(state)
+      return !status || status !== AsyncReducerStatus.Loading
+    },
   }
 )
 
