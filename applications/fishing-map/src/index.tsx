@@ -7,6 +7,14 @@ import * as serviceWorker from './serviceWorker'
 
 import './features/i18n/i18n'
 
+async function loadPolyfills() {
+  if (typeof window.IntersectionObserver === 'undefined') {
+    await import('intersection-observer')
+  }
+}
+
+loadPolyfills()
+
 render(
   <React.StrictMode>
     <Provider store={store}>
