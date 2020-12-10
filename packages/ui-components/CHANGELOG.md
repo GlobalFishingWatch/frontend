@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.9.2
+
+### Patch Changes
+
+- fix letter spacing in submenu
+
 ## 2.9.1
 
 ### Patch Changes
