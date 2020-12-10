@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.8.4
+
+### Patch Changes
+
+- render static header with no laguages selector
+
 ## 2.8.3
 
 ### Patch Changes

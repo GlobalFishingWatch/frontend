@@ -68,9 +68,10 @@ const navigation = [
 interface HeaderProps {
   mini?: boolean
   inverted?: boolean
+  languages?: boolean
 }
 
-function Header({ mini = false, inverted = false }: HeaderProps) {
+function Header({ mini = false, inverted = false, languages = true }: HeaderProps) {
   return (
     <div className={`gfw-header-container ${inverted ? 'gfw-header-container-inverted' : ''}`}>
       <header className="gfw-header">
@@ -118,17 +119,19 @@ function Header({ mini = false, inverted = false }: HeaderProps) {
                     </li>
                   )
               )}
-              <li role="menuitem" id="bablic-languages-container" style={{ display: 'none' }}>
-                <a id="bablic-languages-title" href="#" aria-haspopup="true">
-                  Languages
-                </a>
-                <input
-                  name="accordion-toggle-languages"
-                  className="accordion-toggle"
-                  type="checkbox"
-                />
-                <ul role="menu" id="bablic-languages" className="nav-list-sub-menu"></ul>
-              </li>
+              {languages && (
+                <li role="menuitem" id="bablic-languages-container" style={{ display: 'none' }}>
+                  <a id="bablic-languages-title" href="#" aria-haspopup="true">
+                    Languages
+                  </a>
+                  <input
+                    name="accordion-toggle-languages"
+                    className="accordion-toggle"
+                    type="checkbox"
+                  />
+                  <ul role="menu" id="bablic-languages" className="nav-list-sub-menu"></ul>
+                </li>
+              )}
               <li key="donate" role="menuitem" className="highlight-btn">
                 <a href="https://globalfishingwatch.org/donate/" aria-haspopup="true">
                   Donate
