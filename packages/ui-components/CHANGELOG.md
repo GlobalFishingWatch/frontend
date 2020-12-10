@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.8.5
+
+### Patch Changes
+
+- fix header link a11y
+
 ## 2.8.4
 
 ### Patch Changes
