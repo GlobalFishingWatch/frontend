@@ -9,6 +9,10 @@ const navigation = [
     childs: [
       { link: 'https://globalfishingwatch.org/our-map/', label: 'Our map' },
       { link: 'https://globalfishingwatch.org/join/', label: 'Map sign up' },
+      {
+        link: 'https://globalfishingwatch.org/carrier-vessel-portal/',
+        label: 'Carrier Vessel Portal',
+      },
       { link: 'https://globalfishingwatch.org/map-and-data/technology/', label: 'How it works' },
       { link: 'https://globalfishingwatch.org/faqs/', label: 'Help hub' },
       { link: 'https://globalfishingwatch.org/datasets-and-code/', label: 'Datasets and code' },
@@ -47,7 +51,6 @@ const navigation = [
         label: 'Share your story',
       },
       { link: 'https://globalfishingwatch.org/join/', label: 'Newsletter sign up' },
-      { link: 'https://globalfishingwatch.force.com/gfw', label: 'Discussion forum' },
       { link: 'https://globalfishingwatch.org/work-for-us/', label: 'Work for us' },
       { link: 'https://globalfishingwatch.org/contact-us', label: 'Contact us' },
     ],
