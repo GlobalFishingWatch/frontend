@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.9.1
+
+### Patch Changes
+
+- fix static headers
+
 ## 2.9.0
 
 ### Minor Changes
