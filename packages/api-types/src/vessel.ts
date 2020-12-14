@@ -9,3 +9,8 @@ export interface Vessel {
   callsign?: string
   fleet?: string
 }
+
+export interface VesselSearch extends Vessel {
+  dataset: string
+  source: string // Label of the dataset
+}
