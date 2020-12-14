@@ -51,7 +51,7 @@ export type VesselSearchThunk = {
 
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/fetch',
-  async ({ query, datasets, offset }: VesselSearchThunk, { getState }) => {
+  async ({ query, datasets, offset }: VesselSearchThunk, { getState, signal }) => {
     const state = getState() as RootState
     const dataset = datasets[0]
     const currentResults = selectSearchResults(state)
@@ -73,6 +73,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(
         'http://localhost:8080' + url,
         {
+          signal,
           local: true,
         }
       )
@@ -101,13 +102,6 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         },
       }
     }
-  },
-  {
-    condition: (_, { getState }) => {
-      const state = getState() as RootState
-      const status = selectSearchStatus(state)
-      return !status || status !== AsyncReducerStatus.Loading
-    },
   }
 )
 
@@ -141,8 +135,12 @@ const searchSlice = createSlice({
         state.pagination = action.payload.pagination
       }
     })
-    builder.addCase(fetchVesselSearchThunk.rejected, (state) => {
-      state.status = AsyncReducerStatus.Error
+    builder.addCase(fetchVesselSearchThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.status = AsyncReducerStatus.Idle
+      } else {
+        state.status = AsyncReducerStatus.Error
+      }
     })
   },
 })

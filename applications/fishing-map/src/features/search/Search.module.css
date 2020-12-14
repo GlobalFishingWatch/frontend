@@ -30,6 +30,7 @@
   z-index: 1;
   z-index: 0;
   position: relative;
+  border-bottom: var(--border);
 }
 
 .input {
@@ -154,5 +155,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 5rem;
+  height: 15rem;
+}
+
+.error {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
