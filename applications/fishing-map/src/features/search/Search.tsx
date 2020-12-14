@@ -51,11 +51,10 @@ function Search() {
   const fetchResults = useCallback(
     (offset = 0) => {
       if (searchStatus !== AsyncReducerStatus.Loading) {
-        // Don't use this until bug with shipname responses in API is fixed
-        // const fieldsToSearchIn = ['shipname', 'mmsi', 'imo']
-        // const fieldsQuery = fieldsToSearchIn
-        //   .map((field) => `${field}='${debouncedQuery}'`)
-        //   .join(' OR ')
+        const fieldsToSearchIn = ['shipname', 'mmsi', 'imo']
+        const fieldsQuery = fieldsToSearchIn
+          .map((field) => `${field}='${debouncedQuery.toUpperCase()}'`) // toUpperCase as workaround for results in API
+          .join(' OR ')
         const flags = searchFilters?.flags
           ? `flag IN (${searchFilters.flags.map((f) => `'${f.id}'`).join(', ')})`
           : ''
@@ -69,7 +68,7 @@ function Search() {
           ? `lastTransmissionDate < ${searchFilters.lastTransmissionDate}`
           : ''
         const query = [
-          debouncedQuery,
+          `(${fieldsQuery})`,
           flags,
           gearTypes,
           firstTransmissionDate,
@@ -84,22 +83,21 @@ function Search() {
         })
       }
     },
-    [debouncedQuery, dispatch, dispatchQueryParams, searchDatasets, searchFilters]
+    [debouncedQuery, dispatch, dispatchQueryParams, searchDatasets, searchFilters, searchStatus]
   )
 
-  const handleChange = useCallback(
+  const handleIntersection = useCallback(
     (entry: IntersectionObserverEntry) => {
       const { offset, total } = searchPagination
       if (entry.isIntersecting) {
-        if (offset <= total) {
-          console.log(entry)
+        if (offset <= total && total > RESULTS_PER_PAGE) {
           fetchResults(offset + RESULTS_PER_PAGE)
         }
       }
     },
     [fetchResults, searchPagination]
   )
-  const [ref] = useIntersectionObserver(handleChange, { rootMargin: '100px' })
+  const [ref] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
   const hasSearchFilters = Object.values(searchFilters).length > 0
 
@@ -112,10 +110,9 @@ function Search() {
 
   const onCloseClick = () => {
     batch(() => {
-      dispatchQueryParams({ query: undefined })
       dispatch(cleanVesselSearchResults())
-      dispatch(setFilters({}))
       dispatch(resetWorkspaceSearchQuery())
+      dispatchQueryParams({ query: undefined })
     })
   }
 
@@ -256,11 +253,13 @@ function Search() {
                   </li>
                 )
               })}
-              {searchPagination.total !== 0 && searchPagination.offset <= searchPagination.total && (
-                <li className={styles.spinner} ref={ref}>
-                  <Spinner inline size="small" />
-                </li>
-              )}
+              {searchPagination.total !== 0 &&
+                searchPagination.total > RESULTS_PER_PAGE &&
+                searchPagination.offset <= searchPagination.total && (
+                  <li className={styles.spinner} ref={ref}>
+                    <Spinner inline size="small" />
+                  </li>
+                )}
             </ul>
           )}
         </div>

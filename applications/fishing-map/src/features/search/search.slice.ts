@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import uniqBy from 'lodash/uniqBy'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { Dataset, Vessel, APISearch } from '@globalfishingwatch/api-types'
+import { Dataset, Vessel, APISearch, VesselSearch } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
@@ -57,7 +56,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     const dataset = datasets[0]
     const currentResults = selectSearchResults(state)
     const datasetConfig = {
-      endpoint: 'carriers-search-vessels',
+      endpoint: 'carriers-advanced-search-vessels',
       datasetId: dataset.id,
       params: [],
       query: [
@@ -67,35 +66,38 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         { id: 'query', value: query },
       ],
     }
+
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
-      const searchResults = await GFWAPI.fetch<APISearch<Vessel>>(url)
-      const largerResult = Math.max(...searchResults.map(({ results }) => results.limit))
-      const resultsFlat = Array.from(Array(largerResult).keys()).flatMap((index) => {
-        // Flat them in order of results so for examplen when requesting 3 datasets the list will be
-        // dataset1[0], dataset2[0], dataset3[0], dataset1[1], dataset2[1], dataset3[1]
-        return searchResults.flatMap(({ dataset, results }) => {
-          const vessel = results.entries[index]
-          if (!vessel) return []
+      // const searchResults = await GFWAPI.fetch<APISearch<Vessel>>(url)
+      const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(
+        'http://localhost:8080' + url,
+        {
+          local: true,
+        }
+      )
+      const vesselsWithDataset = searchResults.entries.flatMap((vessel) => {
+        if (!vessel) return []
 
-          const infoDataset = selectDatasetById(dataset)(state)
-          if (!infoDataset) return []
+        const infoDataset = selectDatasetById(vessel.dataset)(state)
+        if (!infoDataset) return []
 
-          const trackDatasetId = getRelatedDatasetByType(infoDataset, TRACKS_DATASET_TYPE)?.id
-          return {
-            ...vessel,
-            dataset: infoDataset,
-            trackDatasetId,
-          }
-        })
+        const trackDatasetId = getRelatedDatasetByType(infoDataset, TRACKS_DATASET_TYPE)?.id
+        return {
+          ...vessel,
+          dataset: infoDataset,
+          trackDatasetId,
+        }
       })
-      const uniqResults = uniqBy(resultsFlat, 'id')
       return {
-        data: offset > 0 && currentResults ? currentResults.concat(uniqResults) : uniqResults,
-        suggestion: 'TODO: fix api', //searchResults[0].results.metadata.suggestion
+        data:
+          offset > 0 && currentResults
+            ? currentResults.concat(vesselsWithDataset)
+            : vesselsWithDataset,
+        suggestion: searchResults.metadata?.suggestion,
         pagination: {
-          total: searchResults[0].results.total.value,
-          offset: searchResults[0].results.offset + offset,
+          total: searchResults.total.value,
+          offset: searchResults.offset + offset,
         },
       }
     }
@@ -120,7 +122,12 @@ const searchSlice = createSlice({
       state.filters = { ...state.filters, ...action.payload }
     },
     cleanVesselSearchResults: (state) => {
-      state = initialState
+      state.status = initialState.status
+      state.suggestion = initialState.suggestion
+      state.data = initialState.data
+      state.pagination = paginationInitialState
+      state.filtersOpen = initialState.filtersOpen
+      state.filters = initialState.filters
     },
   },
   extraReducers: (builder) => {
