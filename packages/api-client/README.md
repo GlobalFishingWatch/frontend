@@ -130,6 +130,15 @@ try {
 }
 ```
 
+### Use it locally
+
+Send `local:true` in the FetchOptions and ensure you have the following .env variables
+```
+REACT_APP_LOCAL_API_USER_ID=
+REACT_APP_LOCAL_API_USER_TYPE=
+REACT_APP_LOCAL_API_USER_EMAIL=
+```
+
 ## FAQ
 
 <details>
