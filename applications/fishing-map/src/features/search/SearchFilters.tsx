@@ -1,13 +1,14 @@
 import React, { useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import MultiSelect, { MultiSelectOption } from '@globalfishingwatch/ui-components/dist/multi-select'
+import { useSelector } from 'react-redux'
+import MultiSelect from '@globalfishingwatch/ui-components/dist/multi-select'
 import InputDate from '@globalfishingwatch/ui-components/dist/input-date'
 import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import useClickedOutside from 'hooks/use-clicked-outside'
-import { GearType, GEAR_TYPES } from 'data/datasets'
 import { DEFAULT_WORKSPACE } from 'data/config'
+import { selectVesselsDatasets } from 'features/workspace/workspace.selectors'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchFilters.module.css'
 
@@ -18,8 +19,12 @@ type SearchFiltersProps = {
 function SearchFilters({ className = '' }: SearchFiltersProps) {
   const { t } = useTranslation()
   const { searchFilters, setSearchFiltersOpen, setSearchFilters } = useSearchFiltersConnect()
-  const { flags, gearTypes, firstTransmissionDate = '', lastTransmissionDate = '' } = searchFilters
+  const { flags, sources, firstTransmissionDate = '', lastTransmissionDate = '' } = searchFilters
   const flagOptions = useMemo(getFlags, [])
+  const searchDatasets = useSelector(selectVesselsDatasets)
+  const sourceOptions = useMemo(() => searchDatasets.map(({ id, name }) => ({ id, label: name })), [
+    searchDatasets,
+  ])
   const expandedContainerRef = useClickedOutside(() => setSearchFiltersOpen(false))
 
   return (
@@ -40,22 +45,22 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
           setSearchFilters({ flags: undefined })
         }}
       />
-      {/* <MultiSelect
-        label={t('layer.gear_type_plural', 'Gear types')}
-        placeholder={getPlaceholderBySelections(gearTypes)}
-        options={GEAR_TYPES}
-        selectedOptions={gearTypes}
+      <MultiSelect
+        label={t('layer.source_plural', 'Sources')}
+        placeholder={getPlaceholderBySelections(sources)}
+        options={sourceOptions}
+        selectedOptions={sources}
         className={styles.row}
-        onSelect={(filter: MultiSelectOption<GearType>) => {
-          setSearchFilters({ gearTypes: [...(gearTypes || []), filter] })
+        onSelect={(filter) => {
+          setSearchFilters({ sources: [...(sources || []), filter] })
         }}
         onRemove={(filter, rest) => {
-          setSearchFilters({ gearTypes: rest as MultiSelectOption<GearType>[] })
+          setSearchFilters({ sources: rest })
         }}
         onCleanClick={() => {
-          setSearchFilters({ flags: undefined })
+          setSearchFilters({ sources: undefined })
         }}
-      /> */}
+      />
       <div className={styles.row}>
         <InputDate
           value={firstTransmissionDate}

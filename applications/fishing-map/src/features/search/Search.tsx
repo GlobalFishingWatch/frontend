@@ -50,15 +50,23 @@ function Search() {
 
   const fetchResults = useCallback(
     (offset = 0) => {
-      const fieldsToSearchIn = ['shipname', 'mmsi', 'imo']
+      const sourceIds = searchFilters?.sources?.map((source) => source.id)
+      const sources = sourceIds
+        ? searchDatasets.filter(({ id }) => sourceIds.includes(id))
+        : searchDatasets
+      const fieldsAllowed = Array.from(new Set(sources.flatMap((source) => source.fieldsAllowed)))
+      const fieldsToSearchIn = ['shipname']
+      const fieldsOptionalToSearchIn = ['mmsi', 'imo']
+      fieldsOptionalToSearchIn.forEach((field) => {
+        if (fieldsAllowed.includes(field)) {
+          fieldsToSearchIn.push(field)
+        }
+      })
       const fieldsQuery = fieldsToSearchIn
         .map((field) => `${field}='${debouncedQuery.toUpperCase()}'`) // toUpperCase as workaround for results in API
         .join(' OR ')
       const flags = searchFilters?.flags
         ? `flag IN (${searchFilters.flags.map((f) => `'${f.id}'`).join(', ')})`
-        : ''
-      const gearTypes = searchFilters?.gearTypes
-        ? `gearType IN (${searchFilters.gearTypes.map((f) => `'${f.id}'`).join(', ')})`
         : ''
       const firstTransmissionDate = searchFilters?.firstTransmissionDate
         ? `firstTransmissionDate > '${searchFilters.firstTransmissionDate}'`
@@ -66,22 +74,14 @@ function Search() {
       const lastTransmissionDate = searchFilters?.lastTransmissionDate
         ? `lastTransmissionDate < '${searchFilters.lastTransmissionDate}'`
         : ''
-      const query = [
-        `(${fieldsQuery})`,
-        flags,
-        gearTypes,
-        firstTransmissionDate,
-        lastTransmissionDate,
-      ]
+      const query = [`(${fieldsQuery})`, flags, firstTransmissionDate, lastTransmissionDate]
         .filter((q) => !!q)
         .join(' AND ')
 
       if (promiseRef.current) {
         promiseRef.current.abort()
       }
-      promiseRef.current = dispatch(
-        fetchVesselSearchThunk({ query, datasets: searchDatasets, offset })
-      )
+      promiseRef.current = dispatch(fetchVesselSearchThunk({ query, datasets: sources, offset }))
     },
     [debouncedQuery, dispatch, searchDatasets, searchFilters]
   )

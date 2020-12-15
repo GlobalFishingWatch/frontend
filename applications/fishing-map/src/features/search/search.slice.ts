@@ -7,7 +7,7 @@ import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
-import { GearType, TRACKS_DATASET_TYPE } from 'data/datasets'
+import { TRACKS_DATASET_TYPE } from 'data/datasets'
 
 export const RESULTS_PER_PAGE = 20
 
@@ -16,7 +16,7 @@ export type VesselWithDatasets = Vessel & { dataset: Dataset; trackDatasetId?: s
 export type SearchFilterKey = 'flags' | 'gearType' | 'startDate' | 'endDate'
 export type SearchFilter = {
   flags?: MultiSelectOption<string>[]
-  gearTypes?: MultiSelectOption<GearType>[]
+  sources?: MultiSelectOption<string>[]
   firstTransmissionDate?: string
   lastTransmissionDate?: string
 }
@@ -70,13 +70,9 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
       // const searchResults = await GFWAPI.fetch<APISearch<Vessel>>(url)
-      const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(
-        'http://localhost:8080' + url,
-        {
-          signal,
-          local: true,
-        }
-      )
+      const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(url, {
+        signal,
+      })
       const vesselsWithDataset = searchResults.entries.flatMap((vessel) => {
         if (!vessel) return []
 
