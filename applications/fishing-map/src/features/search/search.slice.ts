@@ -82,9 +82,10 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           operator: '=',
           condition: (field: string) => fieldsAllowed.includes(field),
         },
-      ].filter(({ field, condition }) => (condition ? condition(field) : true))
+      ]
 
       const querySearch = querySearchFields
+        .filter(({ field, condition }) => (condition ? condition(field) : true))
         .map(
           ({ field, operator, transformation }) =>
             `${field} ${operator} '${transformation ? transformation(query) : query}'`
@@ -93,26 +94,33 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
       const queryFiltersFields = [
         {
+          value: filters.flags,
           field: 'flag',
           operator: 'IN',
-          transformation: (): string => `(${filters.flags?.map((f) => `'${f.id}'`).join(', ')})`,
+          condition: (value: any) => value !== undefined,
+          transformation: (value: any): string =>
+            `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
         },
         {
+          value: filters?.firstTransmissionDate,
           field: 'firstTransmissionDate',
           operator: '>=',
-          condition: () => filters?.firstTransmissionDate !== undefined,
+          condition: (value: any) => value !== undefined,
         },
         {
+          value: filters?.lastTransmissionDate,
           field: 'lastTransmissionDate',
           operator: '<=',
-          condition: () => filters?.lastTransmissionDate !== undefined,
+          condition: (value: any) => value !== undefined,
         },
-      ].filter(({ condition }) => (condition ? condition() : true))
+      ]
 
-      const queryFilters = queryFiltersFields.map(
-        ({ field, operator, transformation }) =>
-          `${field} ${operator} '${transformation ? transformation() : query}'`
-      )
+      const queryFilters = queryFiltersFields
+        .filter(({ value, condition }) => (condition ? condition(value) : true))
+        .map(
+          ({ field, operator, transformation, value }) =>
+            `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
+        )
 
       advancedQuery = [`(${querySearch})`, ...queryFilters].join(' AND ')
     }
