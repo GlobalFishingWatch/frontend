@@ -24,14 +24,14 @@ import {
   cleanVesselSearchResults,
   selectSearchStatus,
   VesselWithDatasets,
-  selectSearchPagination,
   RESULTS_PER_PAGE,
+  checkSearchFiltersEnabled,
 } from './search.slice'
 import styles from './Search.module.css'
 import SearchNoResultsState from './SearchNoResultsState'
 import SearchEmptyState from './SearchEmptyState'
 import SearchFilters from './SearchFilters'
-import { useSearchFiltersConnect } from './search.hook'
+import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
 
 function Search() {
   const { t } = useTranslation()
@@ -40,12 +40,13 @@ function Search() {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const { searchFilters, searchFiltersOpen, setSearchFiltersOpen } = useSearchFiltersConnect()
-  const searchPagination = useSelector(selectSearchPagination)
+  const { searchPagination, searchSuggestion } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 400)
   const { dispatchQueryParams } = useLocationConnect()
   const searchDatasets = useSelector(selectVesselsDatasets)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
+  const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const promiseRef = useRef<any>()
 
   const fetchResults = useCallback(
@@ -54,34 +55,19 @@ function Search() {
       const sources = sourceIds
         ? searchDatasets.filter(({ id }) => sourceIds.includes(id))
         : searchDatasets
-      const fieldsAllowed = Array.from(new Set(sources.flatMap((source) => source.fieldsAllowed)))
-      const fieldsToSearchIn = ['shipname']
-      const fieldsOptionalToSearchIn = ['mmsi', 'imo']
-      fieldsOptionalToSearchIn.forEach((field) => {
-        if (fieldsAllowed.includes(field)) {
-          fieldsToSearchIn.push(field)
-        }
-      })
-      const fieldsQuery = fieldsToSearchIn
-        .map((field) => `${field}='${debouncedQuery.toUpperCase()}'`) // toUpperCase as workaround for results in API
-        .join(' OR ')
-      const flags = searchFilters?.flags
-        ? `flag IN (${searchFilters.flags.map((f) => `'${f.id}'`).join(', ')})`
-        : ''
-      const firstTransmissionDate = searchFilters?.firstTransmissionDate
-        ? `firstTransmissionDate > '${searchFilters.firstTransmissionDate}'`
-        : ''
-      const lastTransmissionDate = searchFilters?.lastTransmissionDate
-        ? `lastTransmissionDate < '${searchFilters.lastTransmissionDate}'`
-        : ''
-      const query = [`(${fieldsQuery})`, flags, firstTransmissionDate, lastTransmissionDate]
-        .filter((q) => !!q)
-        .join(' AND ')
 
       if (promiseRef.current) {
         promiseRef.current.abort()
       }
-      promiseRef.current = dispatch(fetchVesselSearchThunk({ query, datasets: sources, offset }))
+
+      promiseRef.current = dispatch(
+        fetchVesselSearchThunk({
+          query: debouncedQuery,
+          filters: searchFilters,
+          datasets: sources,
+          offset,
+        })
+      )
     },
     [debouncedQuery, dispatch, searchDatasets, searchFilters]
   )
@@ -98,8 +84,6 @@ function Search() {
     [fetchResults, searchPagination]
   )
   const [ref] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
-
-  const hasSearchFilters = Object.values(searchFilters).length > 0
 
   useEffect(() => {
     if (debouncedQuery === '') {
@@ -120,6 +104,12 @@ function Search() {
       dispatch(resetWorkspaceSearchQuery())
       dispatchQueryParams({ query: undefined })
     })
+  }
+
+  const onSuggestionClick = () => {
+    if (searchSuggestion) {
+      setSearchQuery(searchSuggestion)
+    }
   }
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,8 +175,18 @@ function Search() {
             ) : searchStatus === AsyncReducerStatus.Error ? (
               <p className={styles.error}>Something went wrong 🙈</p>
             ) : null)}
-          {searchResults && searchResults.length > 0 && (
-            <ul id="scroll-root" {...getMenuProps()} className={styles.searchResults}>
+          {((searchResults && searchResults.length > 0) || searchSuggestion) && (
+            <ul {...getMenuProps()} className={styles.searchResults}>
+              {searchSuggestion && searchSuggestion !== searchQuery && (
+                <li className={cx(styles.searchSuggestion)}>
+                  {t('search.suggestion', 'Did you mean')}{' '}
+                  <button onClick={onSuggestionClick} className={styles.suggestion}>
+                    {' '}
+                    {searchSuggestion}{' '}
+                  </button>{' '}
+                  ?
+                </li>
+              )}
               {searchResults?.map((entry, index: number) => {
                 const {
                   id,

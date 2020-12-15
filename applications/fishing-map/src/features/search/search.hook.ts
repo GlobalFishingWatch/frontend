@@ -4,9 +4,17 @@ import {
   SearchFilter,
   selectSearchFilters,
   selectSearchFiltersOpen,
+  selectSearchPagination,
+  selectSearchSuggestion,
   setFilters,
   setFiltersOpen,
 } from './search.slice'
+
+export const useSearchConnect = () => {
+  const searchPagination = useSelector(selectSearchPagination)
+  const searchSuggestion = useSelector(selectSearchSuggestion)
+  return { searchPagination, searchSuggestion }
+}
 
 export const useSearchFiltersConnect = () => {
   const searchFiltersOpen = useSelector(selectSearchFiltersOpen)

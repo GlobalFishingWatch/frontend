@@ -46,33 +46,95 @@ const initialState: SearchState = {
 export type VesselSearchThunk = {
   query: string
   offset: number
+  filters: SearchFilter
   datasets: Dataset[]
+}
+
+export function checkSearchFiltersEnabled(filters: SearchFilter): boolean {
+  return Object.values(filters).filter((f) => !!f).length > 0
 }
 
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/fetch',
-  async ({ query, datasets, offset }: VesselSearchThunk, { getState, signal }) => {
+  async ({ query, filters, datasets, offset }: VesselSearchThunk, { getState, signal }) => {
     const state = getState() as RootState
     const dataset = datasets[0]
     const currentResults = selectSearchResults(state)
+    let advancedQuery
+    if (checkSearchFiltersEnabled(filters)) {
+      const fieldsAllowed = Array.from(
+        new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
+      )
+
+      const querySearchFields = [
+        {
+          field: 'shipname',
+          operator: 'LIKE',
+          transformation: (value: string) => `%${value.toUpperCase()}%`,
+        },
+        {
+          field: 'mmsi',
+          operator: '=',
+          condition: (field: string) => fieldsAllowed.includes(field),
+        },
+        {
+          field: 'imo',
+          operator: '=',
+          condition: (field: string) => fieldsAllowed.includes(field),
+        },
+      ].filter(({ field, condition }) => (condition ? condition(field) : true))
+
+      const querySearch = querySearchFields
+        .map(
+          ({ field, operator, transformation }) =>
+            `${field} ${operator} '${transformation ? transformation(query) : query}'`
+        )
+        .join(' OR ')
+
+      const queryFiltersFields = [
+        {
+          field: 'flag',
+          operator: 'IN',
+          transformation: (): string => `(${filters.flags?.map((f) => `'${f.id}'`).join(', ')})`,
+        },
+        {
+          field: 'firstTransmissionDate',
+          operator: '>=',
+          condition: () => filters?.firstTransmissionDate !== undefined,
+        },
+        {
+          field: 'lastTransmissionDate',
+          operator: '<=',
+          condition: () => filters?.lastTransmissionDate !== undefined,
+        },
+      ].filter(({ condition }) => (condition ? condition() : true))
+
+      const queryFilters = queryFiltersFields.map(
+        ({ field, operator, transformation }) =>
+          `${field} ${operator} '${transformation ? transformation() : query}'`
+      )
+
+      advancedQuery = [`(${querySearch})`, ...queryFilters].join(' AND ')
+    }
+
     const datasetConfig = {
-      endpoint: 'carriers-advanced-search-vessels',
+      endpoint: advancedQuery ? 'carriers-advanced-search-vessels' : 'carriers-search-vessels',
       datasetId: dataset.id,
       params: [],
       query: [
         { id: 'datasets', value: datasets.map((d) => d.id) },
         { id: 'limit', value: RESULTS_PER_PAGE },
         { id: 'offset', value: offset },
-        { id: 'query', value: query },
+        { id: 'query', value: advancedQuery || query },
       ],
     }
 
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
-      // const searchResults = await GFWAPI.fetch<APISearch<Vessel>>(url)
       const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(url, {
         signal,
       })
+
       const vesselsWithDataset = searchResults.entries.flatMap((vessel) => {
         if (!vessel) return []
 
@@ -86,6 +148,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           trackDatasetId,
         }
       })
+
       return {
         data:
           offset > 0 && currentResults
@@ -128,6 +191,7 @@ const searchSlice = createSlice({
       state.status = AsyncReducerStatus.Finished
       if (action.payload) {
         state.data = action.payload.data
+        state.suggestion = action.payload.suggestion
         state.pagination = action.payload.pagination
       }
     })
@@ -147,6 +211,7 @@ export const selectSearchResults = (state: RootState) => state.search.data
 export const selectSearchStatus = (state: RootState) => state.search.status
 export const selectSearchFiltersOpen = (state: RootState) => state.search.filtersOpen
 export const selectSearchFilters = (state: RootState) => state.search.filters
+export const selectSearchSuggestion = (state: RootState) => state.search.suggestion
 export const selectSearchPagination = (state: RootState) => state.search.pagination
 
 export default searchSlice.reducer

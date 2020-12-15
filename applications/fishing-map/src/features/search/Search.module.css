@@ -95,6 +95,20 @@
   white-space: nowrap;
 }
 
+.searchSuggestion {
+  display: flex;
+  padding: var(--space-S);
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+}
+
+.suggestion {
+  margin: 0 3px;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .searchResult:hover .properties,
 .searchResult:hover .properties label {
   cursor: pointer;
