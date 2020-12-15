@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.10.0
+
+### Minor Changes
+
+- d3685955: datepicker component
+
 ## 2.9.2
 
 ### Patch Changes
