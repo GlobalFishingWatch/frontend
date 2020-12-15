@@ -140,6 +140,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           onClick={onToggleLayerActive}
           tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
+          className={styles.switch}
           color={dataview.config?.color}
         />
         {title && title.length > 30 ? (
@@ -147,7 +148,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         ) : (
           TitleComponent
         )}
-        <div className={cx(styles.actions, { [styles.active]: layerActive })}>
+        <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
           {loading ? (
             <IconButton
               loading

@@ -1,6 +1,7 @@
 import React, { useCallback, Fragment, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Sticky from 'react-sticky-el'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Logo } from '@globalfishingwatch/ui-components'
 import { selectUserData, logoutUserThunk } from 'features/user/user.slice'
@@ -61,6 +62,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
       <div className={styles.sidebarHeader}>
         <IconButton
           icon="menu"
+          className="print-hidden"
           tooltip={t('common.open_menu', 'Open menu')}
           onClick={onMenuClick}
         />
@@ -68,6 +70,7 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
         <IconButton
           icon={finished ? 'tick' : 'share'}
           size="medium"
+          className="print-hidden"
           onClick={onShareClick}
           loading={workspaceStatus === AsyncReducerStatus.Loading && workspaceCustom === true}
           tooltip={
@@ -93,14 +96,19 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
               </span>
             }
             tooltipPlacement="bottom"
-            className={styles.userBtn}
+            className={cx('print-hidden', styles.userBtn)}
             onClick={onLogoutClick}
             icon="logout"
           >
             {initials}
           </IconButton>
         ) : (
-          <IconButton icon="user" tooltip={t('common.login', 'Login')} tooltipPlacement="bottom" />
+          <IconButton
+            icon="user"
+            className="print-hidden"
+            tooltip={t('common.login', 'Login')}
+            tooltipPlacement="bottom"
+          />
         )}
       </div>
     </Sticky>

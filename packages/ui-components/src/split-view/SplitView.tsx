@@ -40,7 +40,7 @@ function SplitView(props: SplitViewProps) {
   return (
     <div className={cx(styles.container, { [styles.isOpen]: internalOpen }, className)}>
       <aside className={styles.aside} style={{ width: asideWidth }}>
-        <button className={styles.toggleBtn} onClick={handleClick}>
+        <button className={cx('print-hidden', styles.toggleBtn)} onClick={handleClick}>
           <Icon icon={internalOpen ? 'arrow-left' : 'arrow-right'} />
         </button>
         {aside}

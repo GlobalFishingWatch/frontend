@@ -27,7 +27,9 @@ import Sidebar from 'features/sidebar/Sidebar'
 import { isUserAuthorized, isUserLogged, logoutUserThunk } from 'features/user/user.slice'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
+import { setPrintStyles } from 'utils/dom'
 import { selectSidebarOpen } from './app.selectors'
+import { useScreenshotConnect } from './app.hooks'
 import styles from './App.module.css'
 
 import '@globalfishingwatch/ui-components/dist/base.css'
@@ -56,6 +58,7 @@ function App(): React.ReactElement {
   const workspaceData = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustom = useSelector(selectWorkspaceCustom)
+  const { screenshotMode } = useScreenshotConnect()
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 
@@ -66,6 +69,15 @@ function App(): React.ReactElement {
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
   }, [])
+
+  useEffect(() => {
+    if (screenshotMode) {
+      setPrintStyles(true)
+    }
+    return () => {
+      setPrintStyles(false)
+    }
+  }, [screenshotMode])
 
   useEffect(() => {
     if (userLogged && workspaceData === null) {

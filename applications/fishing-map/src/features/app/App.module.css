@@ -18,3 +18,9 @@
   display: flex;
   flex-direction: column;
 }
+
+@media print {
+  :global(.print-hidden) {
+    display: none !important;
+  }
+}

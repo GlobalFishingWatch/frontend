@@ -31,6 +31,13 @@
   margin-right: auto;
 }
 
+@media print {
+  .logo {
+    margin-left: var(--space-S);
+  }
+}
+
+
 .userBtn svg {
   display: none;
 }

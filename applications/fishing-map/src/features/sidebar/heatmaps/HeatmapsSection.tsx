@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -58,7 +59,7 @@ function HeatmapsSection(): React.ReactElement {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
-        <div className={styles.sectionButtons}>
+        <div className={cx('print-hidden', styles.sectionButtons)}>
           <IconButton
             icon={bivariate ? 'split' : 'compare'}
             type="border"

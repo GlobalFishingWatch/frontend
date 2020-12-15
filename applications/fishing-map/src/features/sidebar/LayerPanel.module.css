@@ -134,3 +134,14 @@
 .link {
   text-decoration: underline;
 }
+
+@media print {
+  .switch {
+    width: 1.4rem !important;
+  }
+
+  .switch > span {
+    display: none !important;
+  }
+}
+

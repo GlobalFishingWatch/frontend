@@ -24,6 +24,7 @@ function VesselsSection(): React.ReactElement {
           size="medium"
           tooltip={t('vessel.search.search', 'Search vessels')}
           tooltipPlacement="top"
+          className="print-hidden"
           onClick={onSearchClick}
         />
       </div>

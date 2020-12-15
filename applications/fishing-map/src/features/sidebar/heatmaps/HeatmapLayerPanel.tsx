@@ -72,6 +72,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
           color={dataview.config?.color}
+          className={styles.switch}
           disabled={bivariate}
         />
         {datasetName.length > 24 ? (
@@ -79,7 +80,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         ) : (
           TitleComponent
         )}
-        <div className={cx(styles.actions, { [styles.active]: layerActive })}>
+        <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
           {layerActive && (
             <IconButton
               icon={filterOpen ? 'filter-on' : 'filter-off'}

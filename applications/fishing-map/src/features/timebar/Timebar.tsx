@@ -38,7 +38,7 @@ const TimebarWrapper = () => {
   if (!start || !end) return null
 
   return (
-    <Fragment>
+    <div className="print-hidden">
       <TimebarComponent
         enablePlayback
         start={start}
@@ -86,7 +86,7 @@ const TimebarWrapper = () => {
         )}
       </TimebarComponent>
       <TimebarSettings />
-    </Fragment>
+    </div>
   )
 }
 

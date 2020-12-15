@@ -22,7 +22,7 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
         {zoom > 3 && <ScaleControl maxWidth={100} unit="nautical" />}
       </div>
       {center && (
-        <div>
+        <div className="print-hidden">
           {toFixed(center.latitude, 4)} {toFixed(center.longitude, 4)}
         </div>
       )}

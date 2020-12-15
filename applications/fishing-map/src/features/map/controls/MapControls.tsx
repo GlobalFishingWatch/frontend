@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -9,12 +9,13 @@ import { selectDataviewInstancesResolved } from 'features/workspace/workspace.se
 import Rulers from 'features/map/controls/Rulers'
 import MapScreenshot from 'features/map/controls/MapScreenshot'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
+import { useScreenshotConnect } from 'features/app/app.hooks'
 import styles from './MapControls.module.css'
 
 const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactElement => {
   const { t } = useTranslation()
-  const [screenshotVisible, setScreenshotVisible] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
+  const { screenshotMode, setScreenshotMode } = useScreenshotConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { viewport, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
@@ -46,42 +47,44 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
   return (
     <div className={styles.mapControls}>
       <MiniGlobe size={60} viewportThickness={3} bounds={bounds} center={{ latitude, longitude }} />
-      <IconButton
-        icon="plus"
-        type="map-tool"
-        tooltip={t('map.zoom_in', 'Zoom in')}
-        onClick={onZoomInClick}
-      />
-      <IconButton
-        icon="minus"
-        type="map-tool"
-        tooltip={t('map.zoom_out', 'Zoom out')}
-        onClick={onZoomOutClick}
-      />
-      <Rulers />
-      <IconButton
-        icon="camera"
-        type="map-tool"
-        tooltip={t('map.capture_map', 'Capture map')}
-        onClick={() => setScreenshotVisible(true)}
-      />
-      <MapScreenshot visible={screenshotVisible} setMapDownloadVisible={setScreenshotVisible} />
-      <Tooltip
-        content={
-          currentBasemap === Generators.BasemapType.Default
-            ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
-            : t('map.change_basemap_default', 'Switch to default basemap')
-        }
-        placement="left"
-      >
-        <button
-          className={cx(styles.basemapSwitcher, styles[currentBasemap])}
-          onClick={switchBasemap}
-        ></button>
-      </Tooltip>
-      {loading && (
-        <IconButton type="map-tool" tooltip={t('map.loading', 'Map loading')} loading={loading} />
-      )}
+      <div className={cx('print-hidden', styles.controlsNested)}>
+        <IconButton
+          icon="plus"
+          type="map-tool"
+          tooltip={t('map.zoom_in', 'Zoom in')}
+          onClick={onZoomInClick}
+        />
+        <IconButton
+          icon="minus"
+          type="map-tool"
+          tooltip={t('map.zoom_out', 'Zoom out')}
+          onClick={onZoomOutClick}
+        />
+        <Rulers />
+        <IconButton
+          icon="camera"
+          type="map-tool"
+          tooltip={t('map.capture_map', 'Capture map')}
+          onClick={() => setScreenshotMode(true)}
+        />
+        <MapScreenshot visible={screenshotMode} setMapDownloadVisible={setScreenshotMode} />
+        <Tooltip
+          content={
+            currentBasemap === Generators.BasemapType.Default
+              ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
+              : t('map.change_basemap_default', 'Switch to default basemap')
+          }
+          placement="left"
+        >
+          <button
+            className={cx(styles.basemapSwitcher, styles[currentBasemap])}
+            onClick={switchBasemap}
+          ></button>
+        </Tooltip>
+        {loading && (
+          <IconButton type="map-tool" tooltip={t('map.loading', 'Map loading')} loading={loading} />
+        )}
+      </div>
     </div>
   )
 }
