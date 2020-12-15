@@ -163,13 +163,11 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
               const vesselsInfoResponse = await GFWAPI.fetch<APISearch<Vessel>>(vesselsInfoUrl, {
                 signal,
               })
-              vesselsInfo = vesselsInfoResponse?.flatMap(
-                (vesselInfoResponse) =>
-                  vesselInfoResponse.results?.entries.flatMap((vesselInfo) => {
-                    if (!vesselInfo?.shipname) return []
-                    return vesselInfo
-                  }) || []
-              )
+              vesselsInfo =
+                vesselsInfoResponse.entries?.flatMap((vesselInfo) => {
+                  if (!vesselInfo?.shipname) return []
+                  return vesselInfo
+                }) || []
             } catch (e) {
               console.warn(e)
             }

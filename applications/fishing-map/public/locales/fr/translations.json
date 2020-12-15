@@ -67,7 +67,7 @@
     "mmsi": "MMSI",
     "search": {
       "close": "Fermer la recherche",
-      "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en cliquant sur l'icône de filtre dans la barre supérieure ou en écrivant des filtres tels que:",
+      "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en cliquant sur l'icône de filtre dans la barre supérieure.",
       "filter_open": "Filtrer la recherche (bientôt disponible)",
       "placeholder": "Tapez pour rechercher des navires",
       "search": "Rechercher des navires"

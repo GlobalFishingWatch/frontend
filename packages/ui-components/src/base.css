@@ -44,6 +44,7 @@
 
   /* UTILS */
   --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
+  --color-veil: rgba(var(--primary-blue-rgb), var(--opacity-secondary));
   --border: 1px solid var(--color-border);
   --border-white: 1px solid rgba(var(--white-rgb), var(--opacity-border));
   --box-shadow-highlight: 0 0 0.2rem 0.2rem var(--color-highlight-blue);

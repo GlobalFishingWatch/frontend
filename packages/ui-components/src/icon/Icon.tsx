@@ -1,4 +1,4 @@
-import React, { useMemo, memo } from 'react'
+import React, { memo } from 'react'
 import { Placement } from 'tippy.js'
 import cx from 'classnames'
 import Tooltip from '../tooltip'
@@ -6,6 +6,7 @@ import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
 import { ReactComponent as ArrowLeft } from '../assets/icons/arrow-left.svg'
 import { ReactComponent as ArrowRight } from '../assets/icons/arrow-right.svg'
 import { ReactComponent as ArrowTop } from '../assets/icons/arrow-top.svg'
+import { ReactComponent as Calendar } from '../assets/icons/calendar.svg'
 import { ReactComponent as Camera } from '../assets/icons/camera.svg'
 import { ReactComponent as Close } from '../assets/icons/close.svg'
 import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
@@ -48,6 +49,7 @@ export const IconComponents = {
   'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
   'arrow-top': ArrowTop,
+  calendar: Calendar,
   camera: Camera,
   close: Close,
   'color-picker': ColorPicker,

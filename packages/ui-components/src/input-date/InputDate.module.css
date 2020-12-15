@@ -1,0 +1,44 @@
+.input::-webkit-calendar-picker-indicator {
+  font-size: 18px;
+  margin-bottom: 7px;
+  outline: none;
+  opacity: 0;
+  z-index: 1;
+}
+
+.input:placeholder-shown {
+  border-bottom: 1px solid var(--color-secondary-blue);
+}
+
+.input:disabled {
+  border-bottom: var(--border);
+  opacity: var(--opacity-secondary);
+  cursor: not-allowed;
+}
+
+.input:invalid {
+  border-bottom: 1px solid var(--color-danger-red);
+}
+
+.input::placeholder {
+  color: var(--color-secondary-blue);
+}
+
+.input:focus::placeholder {
+  color: var(--color-primary-blue);
+}
+
+.input::-webkit-calendar-picker-indicator:hover {
+  cursor: pointer;
+}
+
+.actionsContainer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.action {
+  pointer-events: all;
+}

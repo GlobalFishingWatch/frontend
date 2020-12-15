@@ -1,23 +1,15 @@
 import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  MultiSelect,
-  MultiSelectOnChange,
-  MultiSelectOption,
-} from '@globalfishingwatch/ui-components'
+import { MultiSelect, MultiSelectOnChange } from '@globalfishingwatch/ui-components'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { UrlDataviewInstance } from 'types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { getPlaceholderBySelections } from 'features/i18n/utils'
 import styles from './HeatmapFilters.module.css'
 import { getSourcesOptionsInDataview, getSourcesSelectedInDataview } from './heatmaps.utils'
 
 type FiltersProps = {
   dataview: UrlDataviewInstance
-}
-
-const getPlaceholderBySelections = (selections: MultiSelectOption[]): string => {
-  if (!selections?.length) return 'Select an option'
-  return selections.length > 1 ? `${selections.length} selected` : selections[0].label
 }
 
 function Filters({ dataview }: FiltersProps): React.ReactElement {

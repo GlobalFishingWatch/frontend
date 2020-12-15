@@ -1,7 +1,6 @@
 export { default } from './Select'
 
-export type SelectOptionId = number | string
-export type SelectOption<T = SelectOptionId> = {
+export type SelectOption<T = any> = {
   id: T
   label: string
   tooltip?: string

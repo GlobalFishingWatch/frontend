@@ -67,7 +67,7 @@
     "mmsi": "MMSI",
     "search": {
       "close": "Cierra la busqueda",
-      "description": "Buscar por nombre de barco o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior o escribiendo filtros como:",
+      "description": "Buscar por nombre de barco o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior.",
       "filter_open": "Filtra tu búsqueda (Coming soon)",
       "placeholder": "Escribe para buscar $t(common.vessel_plural)",
       "search": "Busca $t(common.vessel_plural)"
