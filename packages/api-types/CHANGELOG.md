@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.4.1
+
+### Patch Changes
+
+- d3685955: update dataset types
+
 ## 2.4.0
 
 ### Minor Changes
