@@ -40,7 +40,7 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
           setSearchFilters({ flags: undefined })
         }}
       />
-      <MultiSelect
+      {/* <MultiSelect
         label={t('layer.gear_type_plural', 'Gear types')}
         placeholder={getPlaceholderBySelections(gearTypes)}
         options={GEAR_TYPES}
@@ -55,7 +55,7 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
         onCleanClick={() => {
           setSearchFilters({ flags: undefined })
         }}
-      />
+      /> */}
       <div className={styles.row}>
         <InputDate
           value={firstTransmissionDate}

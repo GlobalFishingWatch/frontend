@@ -61,10 +61,10 @@ function Search() {
         ? `gearType IN (${searchFilters.gearTypes.map((f) => `'${f.id}'`).join(', ')})`
         : ''
       const firstTransmissionDate = searchFilters?.firstTransmissionDate
-        ? `firstTransmissionDate > ${searchFilters.firstTransmissionDate}`
+        ? `firstTransmissionDate > '${searchFilters.firstTransmissionDate}'`
         : ''
       const lastTransmissionDate = searchFilters?.lastTransmissionDate
-        ? `lastTransmissionDate < ${searchFilters.lastTransmissionDate}`
+        ? `lastTransmissionDate < '${searchFilters.lastTransmissionDate}'`
         : ''
       const query = [
         `(${fieldsQuery})`,
