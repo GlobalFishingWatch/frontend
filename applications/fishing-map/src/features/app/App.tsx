@@ -58,7 +58,6 @@ function App(): React.ReactElement {
   const workspaceData = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustom = useSelector(selectWorkspaceCustom)
-  const { screenshotMode } = useScreenshotConnect()
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 
@@ -69,15 +68,6 @@ function App(): React.ReactElement {
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
   }, [])
-
-  useEffect(() => {
-    if (screenshotMode) {
-      setPrintStyles(true)
-    }
-    return () => {
-      setPrintStyles(false)
-    }
-  }, [screenshotMode])
 
   useEffect(() => {
     if (userLogged && workspaceData === null) {

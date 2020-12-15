@@ -7,7 +7,6 @@ import { Generators } from '@globalfishingwatch/layer-composer'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import Rulers from 'features/map/controls/Rulers'
-import MapScreenshot from 'features/map/controls/MapScreenshot'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import { useScreenshotConnect } from 'features/app/app.hooks'
 import styles from './MapControls.module.css'
@@ -15,7 +14,7 @@ import styles from './MapControls.module.css'
 const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactElement => {
   const { t } = useTranslation()
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
-  const { screenshotMode, setScreenshotMode } = useScreenshotConnect()
+  const { setScreenshotMode } = useScreenshotConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { viewport, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
@@ -46,7 +45,13 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
 
   return (
     <div className={styles.mapControls}>
-      <MiniGlobe size={60} viewportThickness={3} bounds={bounds} center={{ latitude, longitude }} />
+      <MiniGlobe
+        className={styles.miniglobe}
+        size={60}
+        viewportThickness={3}
+        bounds={bounds}
+        center={{ latitude, longitude }}
+      />
       <div className={cx('print-hidden', styles.controlsNested)}>
         <IconButton
           icon="plus"
@@ -67,7 +72,6 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
           tooltip={t('map.capture_map', 'Capture map')}
           onClick={() => setScreenshotMode(true)}
         />
-        <MapScreenshot visible={screenshotMode} setMapDownloadVisible={setScreenshotMode} />
         <Tooltip
           content={
             currentBasemap === Generators.BasemapType.Default

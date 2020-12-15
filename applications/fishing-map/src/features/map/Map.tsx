@@ -29,6 +29,7 @@ import { selectDataviewInstancesResolved } from 'features/workspace/workspace.se
 import { selectEditing, moveCurrentRuler } from 'features/map/controls/rulers.slice'
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
+import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import PopupWrapper from './popups/PopupWrapper'
@@ -188,6 +189,7 @@ const MapWrapper = (): React.ReactElement | null => {
 
   return (
     <div className={styles.container}>
+      <MapScreenshot />
       {style && (
         <InteractiveMap
           disableTokenWarning={true}

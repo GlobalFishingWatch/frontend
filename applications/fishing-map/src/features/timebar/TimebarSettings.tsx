@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Radio, Select, SelectOption } from '@globalfishingwatch/ui-components/dist'
@@ -56,7 +57,7 @@ const TimebarSettings = () => {
 
   const timebarGraphEnabled = activeVesselDataviews && activeVesselDataviews?.length <= 2
   return (
-    <div className={styles.container} ref={expandedContainerRef}>
+    <div className={cx('print-hidden', styles.container)} ref={expandedContainerRef}>
       <IconButton
         icon={optionsPanelOpen ? 'close' : 'settings'}
         type="map-tool"
