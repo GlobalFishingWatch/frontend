@@ -10,12 +10,22 @@ import styles from './MapInfo.module.css'
 
 const A_DAY = 1000 * 60 * 60 * 24
 
-const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
-  const { viewport } = useViewport()
-  const { zoom } = viewport
+export const TimelineDatesRange = () => {
   const { start, end } = useTimerangeConnect()
   const timeΔ = start && end ? new Date(end).getTime() - new Date(start).getTime() : 0
   const dateFormat = timeΔ < A_DAY ? DateTime.DATETIME_MED : DateTime.DATE_MED
+  if (!start || !end) return null
+  return (
+    <div>
+      <I18nDate date={start} format={dateFormat} /> -
+      <I18nDate date={end} format={dateFormat} />
+    </div>
+  )
+}
+
+const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
+  const { viewport } = useViewport()
+  const { zoom } = viewport
   return (
     <div className={styles.info}>
       <div className={styles.scale}>
@@ -26,12 +36,7 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
           {toFixed(center.latitude, 4)} {toFixed(center.longitude, 4)}
         </div>
       )}
-      {start && end && (
-        <div>
-          <I18nDate date={start} format={dateFormat} /> -
-          <I18nDate date={end} format={dateFormat} />
-        </div>
-      )}
+      <TimelineDatesRange />
     </div>
   )
 }

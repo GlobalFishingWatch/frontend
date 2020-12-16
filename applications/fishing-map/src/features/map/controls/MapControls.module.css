@@ -5,7 +5,7 @@
   position: absolute;
   right: var(--space-S);
   top: var(--space-S);
-  z-index: 100000;
+  z-index: 1;
 }
 
 

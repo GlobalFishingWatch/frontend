@@ -23,4 +23,8 @@
   :global(.print-hidden) {
     display: none !important;
   }
+  @page {
+    size: landscape;
+    margin: 0;
+  }
 }

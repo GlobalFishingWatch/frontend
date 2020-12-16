@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { memo, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useMapImage } from 'features/map/map.hooks'
 import { useScreenshotConnect } from 'features/app/app.hooks'
 // import { setPrintStyles } from 'utils/dom'
@@ -11,28 +12,40 @@ function MapScreenshot() {
   const imgMap = useMapImage(screenshotMode ? mapboxRef.current?.getMap() : null)
 
   useEffect(() => {
-    let afterPrint: any
     if (screenshotMode && imgMap) {
-      afterPrint = window.addEventListener('afterprint', () => {
-        setScreenshotMode(false)
-      })
-      // setPrintStyles(true)
       window.print()
     }
+  }, [imgMap, screenshotMode])
+
+  useEffect(() => {
+    const afterPrintCb = () => setScreenshotMode(false)
+    const afterPrint: any = window.addEventListener('afterprint', afterPrintCb)
+
+    // if (window.matchMedia) {
+    //   const mediaQueryList = window.matchMedia('print')
+    //   mediaQueryList.addEventListener('change', function (mql) {
+    //     if (!mql.matches) {
+    //       afterPrintCb()
+    //     }
+    //   })
+    // }
     return () => {
-      if (afterPrint) {
-        window.removeEventListener('afterprint', afterPrint)
-      }
+      window.removeEventListener('afterprint', afterPrint)
     }
-  }, [imgMap, screenshotMode, setScreenshotMode])
+  }, [setScreenshotMode])
 
   if (!screenshotMode || !imgMap) return null
 
-  return (
+  // insert the image just below the canvas
+  const canvasDomElement = document.querySelector('.mapboxgl-canvas-container')
+  if (!canvasDomElement) return null
+
+  return createPortal(
     <div className={styles.screenshot}>
       <img className={styles.screenshotImg} src={imgMap} alt="map screenshot" />
-    </div>
+    </div>,
+    canvasDomElement
   )
 }
 
-export default MapScreenshot
+export default memo(MapScreenshot)
