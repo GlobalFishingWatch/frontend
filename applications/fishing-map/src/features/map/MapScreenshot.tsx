@@ -1,18 +1,31 @@
-import React, { memo, useEffect } from 'react'
+import React, { Fragment, memo, useEffect, useLayoutEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useMapImage } from 'features/map/map.hooks'
 import { useScreenshotConnect } from 'features/app/app.hooks'
 // import { setPrintStyles } from 'utils/dom'
+import { getCSSVarValue } from 'utils/dom'
 import { useMapboxRef } from './map.context'
 import styles from './Map.module.css'
 
 function MapScreenshot() {
   const { screenshotMode, setScreenshotMode } = useScreenshotConnect()
   const mapboxRef = useMapboxRef()
+  const documentFocus = useRef<boolean>(true)
+  const printSize = useRef<{ width: string; height: string }>({ width: '17in', height: '17in' })
   const imgMap = useMapImage(screenshotMode ? mapboxRef.current?.getMap() : null)
 
+  useLayoutEffect(() => {
+    const pixelPerInch = window.devicePixelRatio * 96
+    const baseSize = parseInt(getCSSVarValue('--base-font-size')) || 10
+    const timebarSize = parseFloat(getCSSVarValue('--timebar-size') || '7.2') * baseSize
+    printSize.current = {
+      width: `${window.innerWidth / pixelPerInch}in`,
+      height: `${(window.innerHeight - timebarSize) / pixelPerInch}in`,
+    }
+  }, [])
+
   useEffect(() => {
-    if (screenshotMode && imgMap) {
+    if (screenshotMode && imgMap && documentFocus.current === true) {
       window.print()
     }
   }, [imgMap, screenshotMode])
@@ -64,9 +77,15 @@ function MapScreenshot() {
   if (!canvasDomElement) return null
 
   return createPortal(
-    <div className={styles.screenshot}>
-      <img className={styles.screenshotImg} src={imgMap} alt="map screenshot" />
-    </div>,
+    <Fragment>
+      <img className={styles.screenshot} src={imgMap} alt="map screenshot" />
+      <style>
+        {`@page {
+          size: ${printSize.current.width} ${printSize.current.height};
+          margin: 0;
+        }`}
+      </style>
+    </Fragment>,
     canvasDomElement
   )
 }

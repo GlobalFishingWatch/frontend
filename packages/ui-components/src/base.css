@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
 
 :root {
+  --base-font-size: 10px;
+
   /* FONTS */
   --font-family: 'Roboto', sans-serif;
   --font-regular: 400;
@@ -64,7 +66,7 @@
 
 html {
   height: 100%;
-  font-size: 10px;
+  font-size: var(--base-font-size, 10px);
   -moz-osx-font-smoothing: auto;
   -webkit-font-smoothing: antialiased;
 }

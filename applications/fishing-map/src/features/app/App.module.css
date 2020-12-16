@@ -1,3 +1,8 @@
+:global(:root) {
+  --print-width: 17in;
+  --print-height: 10in;
+}
+
 :global(#root) {
   height: 100%;
 }
@@ -20,11 +25,16 @@
 }
 
 @media print {
+  :global(*) {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
   :global(.print-hidden) {
     display: none !important;
   }
+
   @page {
-    size: landscape;
     margin: 0;
   }
 }
