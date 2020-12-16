@@ -34,6 +34,29 @@ function MapScreenshot() {
     }
   }, [setScreenshotMode])
 
+  useEffect(() => {
+    const enableScreenshotMode = () => {
+      setScreenshotMode(true)
+      documentFocus.current = false
+    }
+    const disableScreenshotMode = () => {
+      setScreenshotMode(false)
+      documentFocus.current = true
+    }
+    const onMouseEnter = document.addEventListener('mouseenter', disableScreenshotMode)
+    const onMouseLeave = document.addEventListener('mouseleave', enableScreenshotMode)
+    const onKeyDown = document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P')) {
+        enableScreenshotMode()
+      }
+    })
+    return () => {
+      document.removeEventListener('mouselenter', onMouseEnter as any)
+      document.removeEventListener('mouseleave', onMouseLeave as any)
+      document.removeEventListener('keydown', onKeyDown as any)
+    }
+  }, [setScreenshotMode])
+
   if (!screenshotMode || !imgMap) return null
 
   // insert the image just below the canvas
