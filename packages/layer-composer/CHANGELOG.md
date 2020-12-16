@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.10.1
+
+### Patch Changes
+
+- fix breaks number with optional param
+
 ## 4.10.0
 
 ### Minor Changes
