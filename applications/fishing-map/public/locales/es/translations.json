@@ -53,6 +53,9 @@
     "zoom_in": "Acercar",
     "zoom_out": "Alejar"
   },
+  "search": {
+    "suggestion": "Did you mean"
+  },
   "selects": {
     "placeholder": "Select an option",
     "selected": "selected"
@@ -67,10 +70,13 @@
     "firstTransmissionDate": "Fecha primera transmisión",
     "flag": "Bandera",
     "fleet": "Flota",
+    "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Fecha última transmisión",
+    "lengthRange": "Length range",
     "loading": "Cargando track de buque",
     "mmsi": "MMSI",
+    "reegisteredGearyType": "Registered Gear Type",
     "search": {
       "close": "Cierra la busqueda",
       "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar.",
@@ -83,6 +89,7 @@
     "source": "Fuente",
     "tracks": "Tracks de barcos",
     "transmission_plural": "Transmisión",
+    "widthRange": "Width range",
     "transmission": "Transmisión"
   }
 }
