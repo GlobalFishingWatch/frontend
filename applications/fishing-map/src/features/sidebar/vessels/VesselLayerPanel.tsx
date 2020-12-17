@@ -34,6 +34,10 @@ import { DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 // t('vessel.imo', 'IMO')
 // t('vessel.firstTransmissionDate', 'First transmission date')
 // t('vessel.lastTransmissionDate', 'Last transmission date')
+// t('vessel.registeredGearType', 'Registered Gear Type')
+// t('vessel.widthRange', 'Width range')
+// t('vessel.lengthRange', 'Length range')
+// t('vessel.grossTonnageRange', 'Gross Tonnage range')
 // t('vessel.fleet', 'Fleet')
 // t('vessel.source', 'Source')
 
