@@ -33,8 +33,4 @@
   :global(.print-hidden) {
     display: none !important;
   }
-
-  @page {
-    margin: 0;
-  }
 }
