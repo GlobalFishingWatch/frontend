@@ -76,7 +76,7 @@
     "lengthRange": "Length range",
     "loading": "Chargement de la piste du bateau",
     "mmsi": "MMSI",
-    "reegisteredGearyType": "Registered Gear Type",
+    "registeredGearType": "Registered Gear Type",
     "search": {
       "close": "Fermer la recherche",
       "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar.",
