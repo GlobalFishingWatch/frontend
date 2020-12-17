@@ -53,6 +53,9 @@
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
+  "search": {
+    "suggestion": "Did you mean"
+  },
   "selects": {
     "placeholder": "Select an option",
     "selected": "selected"
@@ -67,10 +70,13 @@
     "firstTransmissionDate": "Première date de transmission",
     "flag": "Drapeau",
     "fleet": "Flotte",
+    "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Dernière date de transmission",
+    "lengthRange": "Length range",
     "loading": "Chargement de la piste du bateau",
     "mmsi": "MMSI",
+    "reegisteredGearyType": "Registered Gear Type",
     "search": {
       "close": "Fermer la recherche",
       "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar.",
@@ -83,6 +89,7 @@
     "source": "Source",
     "tracks": "Trajectoires de navire",
     "transmission_plural": "Transmissions",
+    "widthRange": "Width range",
     "transmission": "Transmission"
   }
 }
