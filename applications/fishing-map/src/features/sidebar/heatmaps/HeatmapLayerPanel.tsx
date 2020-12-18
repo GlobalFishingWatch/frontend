@@ -13,6 +13,7 @@ import { selectBivariate } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import Filters from './HeatmapFilters'
 import { getSourcesSelectedInDataview } from './heatmaps.utils'
+import HeatmapInfoModal from './HeatmapInfoModal'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -21,6 +22,7 @@ type LayerPanelProps = {
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
+  const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const sourcesOptions = getSourcesSelectedInDataview(dataview)
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters || [])
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
@@ -43,6 +45,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   const onToggleFilterOpen = () => {
     setFiltersOpen(!filterOpen)
+  }
+
+  const onInfoLayerClick = () => {
+    setModalInfoOpen(true)
   }
 
   const closeExpandedContainer = () => {
@@ -101,8 +107,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             icon="info"
             size="small"
             className={styles.actionButton}
-            tooltip={t(`datasets:${dataset?.id}.description`)}
+            tooltip={t(`layer.seeDescription`, 'Click to see layer description')}
             tooltipPlacement="top"
+            onClick={onInfoLayerClick}
           />
           <IconButton
             icon="delete"
@@ -142,6 +149,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
         {filterOpen && <Filters dataview={dataview} />}
       </div>
+      <HeatmapInfoModal
+        dataview={dataview}
+        isOpen={modalInfoOpen}
+        onClose={() => setModalInfoOpen(false)}
+      />
     </div>
   )
 }

@@ -1,0 +1,8 @@
+.modalContent {
+  padding: 0;
+}
+
+.content {
+  padding: var(--space-L);
+  line-height: 1.8;
+}

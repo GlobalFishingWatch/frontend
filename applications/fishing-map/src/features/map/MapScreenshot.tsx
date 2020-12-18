@@ -59,7 +59,8 @@ function MapScreenshot() {
     const onMouseEnter = document.addEventListener('mouseenter', disableScreenshotMode)
     const onMouseLeave = document.addEventListener('mouseleave', enableScreenshotMode)
     const onKeyDown = document.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P')) {
+      // if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P')) {
+      if (e.key === 'p' || e.key === 'P') {
         enableScreenshotMode()
       }
     })

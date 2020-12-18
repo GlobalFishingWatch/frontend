@@ -42,6 +42,7 @@ function Tabs({ activeTab, tabs, onTabClick }: TabsProps) {
         return (
           // eslint-disable-next-line jsx-a11y/role-supports-aria-props
           <div
+            key={tab.id}
             id={tab.id}
             role="tabpanel"
             aria-expanded={tabSelected}
