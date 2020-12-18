@@ -135,7 +135,6 @@ export const selectCustomWorkspace = createSelector(
   ): WorkspaceUpsert<WorkspaceState> => {
     return {
       ...workspace,
-      name: `user_${user?.id}_${Date.now()}`,
       app: APP_NAME,
       aoi: undefined,
       dataviews: workspace?.dataviews?.map(({ id }) => id as number),
