@@ -1,11 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { BBox } from '@turf/turf'
 import InteractiveMap from '@globalfishingwatch/react-map-gl'
-import oceanAreas, {
-  getOceanAreaName,
-  searchOceanAreas,
-  AreaProperties,
-} from '@globalfishingwatch/ocean-areas'
+import oceanAreas, { getOceanAreaName, searchOceanAreas } from '@globalfishingwatch/ocean-areas'
 
 export const OceanAreas = () => {
   const mapRef = useRef<any>(null)
@@ -16,15 +12,10 @@ export const OceanAreas = () => {
   })
 
   const [query, setQuery] = useState('')
-  const areasMatchingQuery = useRef([] as AreaProperties[])
+  const areasMatching = query ? searchOceanAreas(query) : []
 
-  useEffect(() => {
-    console.log(query)
-
-    areasMatchingQuery.current = searchOceanAreas(query)
-  }, [query])
-
-  const fitBounds = (bounds: BBox) => {
+  const fitBounds = (bounds?: BBox) => {
+    if (!bounds) return
     if (mapRef.current && mapRef.current?.getMap) {
       mapRef.current.getMap().fitBounds([
         [bounds[0], bounds[1]],
@@ -92,13 +83,13 @@ export const OceanAreas = () => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
-      {areasMatchingQuery &&
-        areasMatchingQuery.current.map((area) => (
-          <button
-            style={{ display: 'block', cursor: 'pointer' }}
-            onClick={() => fitBounds(area.bounds)}
-          >{`${area.type} - ${area.name}`}</button>
-        ))}
+      {areasMatching?.map((area, index) => (
+        <button
+          key={`${area.properties.name}-${index}`}
+          style={{ display: 'block', cursor: 'pointer' }}
+          onClick={() => fitBounds(area.properties.bounds)}
+        >{`${area.properties.type} - ${area.properties.name}`}</button>
+      ))}
     </div>
   )
 }

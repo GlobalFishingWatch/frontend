@@ -48,6 +48,6 @@ hr {
 
 .map > div{
   display: block;
-  width: 1280px !important;
-  height: 800px !important;
+  width: 100% !important;
+  height: 70vh !important;
 }

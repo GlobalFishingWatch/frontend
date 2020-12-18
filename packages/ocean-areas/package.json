@@ -28,7 +28,8 @@
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
   "dependencies": {
-    "@turf/turf": "^5.1.6"
+    "@turf/turf": "^5.1.6",
+    "match-sorter": "^6.0.2"
   },
   "peerDependencies": {},
   "devDependencies": {
