@@ -56,8 +56,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
 
-  const dataset = dataview.datasets?.find((d) => d.type === FISHING_DATASET_TYPE)
-  const datasetName = t(`datasets:${dataset?.id}.name`)
+  const datasetName = t(`common.apparentFishing`)
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
       {datasetName}
