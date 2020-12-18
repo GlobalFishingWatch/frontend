@@ -6,16 +6,16 @@
     "apparentFishing": "Esfuerzo de pesca aparente",
     "context_area_plural": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles",
-    "dismiss": "Cancelar",
     "hour": "Hora",
     "hour_plural": "Horas",
     "login": "Iniciar sesión",
     "logout": "Cerrar Sessión",
     "more": "Más",
     "open_menu": "Abrir menú",
-    "save": "Guardar",
     "share": "Haz click para compartir tu vista actual",
     "vessel_plural": "Embarcaciones",
+    "dismiss": "Cancelar",
+    "save": "Guardar",
     "events": "Eventos",
     "fishing": "Pesca"
   },
@@ -31,6 +31,7 @@
     "info_close": "Oculta la información",
     "info_open": "Muestra la información",
     "remove": "Borra la capa",
+    "seeDescription": "Click to see layer description",
     "source_plural": "Fuentes",
     "toggle_visibility": "Cambia la visibilidad de la capa",
     "toggleCombinationMode": {
@@ -49,9 +50,12 @@
     "loading": "Cargando el mapa",
     "rulers_add": "Añade reglas",
     "rulers_remove": "Borra todas las reglas",
-    "screenshot": "Captura del mapa",
     "zoom_in": "Acercar",
-    "zoom_out": "Alejar"
+    "zoom_out": "Alejar",
+    "screenshot": "Captura del mapa"
+  },
+  "search": {
+    "suggestion": "Did you mean"
   },
   "selects": {
     "placeholder": "Select an option",
@@ -67,10 +71,13 @@
     "firstTransmissionDate": "Fecha primera transmisión",
     "flag": "Bandera",
     "fleet": "Flota",
+    "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Fecha última transmisión",
+    "lengthRange": "Length range",
     "loading": "Cargando track de buque",
     "mmsi": "MMSI",
+    "registeredGearType": "Registered Gear Type",
     "search": {
       "close": "Cierra la busqueda",
       "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar.",
@@ -83,6 +90,7 @@
     "source": "Fuente",
     "tracks": "Tracks de barcos",
     "transmission_plural": "Transmisión",
+    "widthRange": "Width range",
     "transmission": "Transmisión"
   }
 }
