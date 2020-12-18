@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.11.0
+
+### Minor Changes
+
+- new Tabs component
+
 ## 2.10.1
 
 ### Patch Changes
