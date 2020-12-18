@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.17.0
+
+### Minor Changes
+
+- new Tabs component
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.11.0
+
 ## 0.16.11
 
 ### Patch Changes
