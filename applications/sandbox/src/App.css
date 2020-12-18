@@ -45,3 +45,9 @@ hr {
   border-top: 1px solid var(--color-primary-blue);
   margin: 2rem;
 }
+
+.map > div{
+  display: block;
+  width: 1280px !important;
+  height: 800px !important;
+}

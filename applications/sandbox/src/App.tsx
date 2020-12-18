@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, NavLink } from 'react-router-do
 import Components from './pages/Components'
 import SplitViewPage from './pages/SplitView'
 import ApiClient from './pages/ApiClient'
+import OceanAreas from './pages/OceanAreas'
 import LayerComposer from './pages/LayerComposer'
 import './App.css'
 import '@globalfishingwatch/ui-components/src/base.css'
@@ -18,6 +19,7 @@ function App() {
           <NavLink to="/split-view">Split view</NavLink>
           <NavLink to="/layer-composer">Layer Composer</NavLink>
           <NavLink to="/api-client">Api Client</NavLink>
+          <NavLink to="/ocean-areas">Ocean Areas</NavLink>
         </nav>
         <div className="content">
           <Switch>
@@ -25,6 +27,7 @@ function App() {
             <Route path="/ui-components" component={Components} />
             <Route path="/split-view" component={SplitViewPage} />
             <Route path="/api-client" component={ApiClient} />
+            <Route path="/ocean-areas" component={OceanAreas} />
             <Route path="/layer-composer" component={LayerComposer} />
             <Route component={Home} />
           </Switch>
