@@ -1,28 +1,11 @@
-import React, { forwardRef, Fragment, Ref, memo, CSSProperties } from 'react'
+import React, { forwardRef, Fragment, Ref, memo } from 'react'
 import cx from 'classnames'
-import { Placement } from 'tippy.js'
-import Icon, { IconType } from '../icon'
+import Icon from '../icon'
 import Tooltip from '../tooltip'
 import Spinner from '../spinner'
-import { TooltipTypes } from '../types/types'
 import styles from './IconButton.module.css'
+import { IconButtonProps } from '.'
 
-export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'warning'
-export type IconButtonSize = 'default' | 'medium' | 'small' | 'tiny'
-
-export interface IconButtonProps {
-  icon?: IconType
-  type?: IconButtonType
-  size?: IconButtonSize
-  className?: string
-  disabled?: boolean
-  loading?: boolean
-  onClick?: (e: React.MouseEvent) => void
-  tooltip?: TooltipTypes
-  tooltipPlacement?: Placement
-  children?: React.ReactNode
-  style?: CSSProperties
-}
 
 const warningVarColor = getComputedStyle(document.documentElement).getPropertyValue(
   '--color-danger-red'
