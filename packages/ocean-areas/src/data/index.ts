@@ -1,5 +1,5 @@
 import { FeatureCollection, Geometry } from 'geojson'
-import { OceanAreaProperties } from '.'
+import { OceanAreaProperties } from '..'
 
 const oceanAreas: FeatureCollection<Geometry, OceanAreaProperties> = {
   type: 'FeatureCollection',

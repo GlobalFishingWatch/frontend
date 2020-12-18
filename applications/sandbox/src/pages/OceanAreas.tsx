@@ -1,7 +1,9 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { BBox } from '@turf/turf'
 import InteractiveMap from '@globalfishingwatch/react-map-gl'
-import oceanAreas, { getOceanAreaName, searchOceanAreas } from '@globalfishingwatch/ocean-areas'
+import { getOceanAreaName, OceanArea, searchOceanAreas } from '@globalfishingwatch/ocean-areas'
+// In projects we could use '@globalfishingwatch/ocean-areas/dist/data' but doesn't work in the sandbox
+import oceanAreas from 'data/ocean-areas'
 
 export const OceanAreas = () => {
   const mapRef = useRef<any>(null)
@@ -12,7 +14,28 @@ export const OceanAreas = () => {
   })
 
   const [query, setQuery] = useState('')
-  const areasMatching = query ? searchOceanAreas(query) : []
+  const [currentArea, setCurrentArea] = useState<string | undefined>()
+  const [areasMatching, setAreasMatching] = useState<OceanArea[] | undefined>()
+
+  useEffect(() => {
+    if (query) {
+      searchOceanAreas(query).then((areas: OceanArea[]) => {
+        setAreasMatching(areas)
+      })
+    } else {
+      setAreasMatching([])
+    }
+  }, [query])
+
+  useEffect(() => {
+    getOceanAreaName({
+      latitude: viewport.latitude,
+      longitude: viewport.longitude,
+      zoom: viewport.zoom,
+    }).then((name) => {
+      setCurrentArea(name)
+    })
+  }, [viewport])
 
   const fitBounds = (bounds?: BBox) => {
     if (!bounds) return
@@ -56,12 +79,6 @@ export const OceanAreas = () => {
       },
     ],
   }
-
-  const currentArea = getOceanAreaName({
-    latitude: viewport.latitude,
-    longitude: viewport.longitude,
-    zoom: viewport.zoom,
-  })
 
   return (
     <div className="map">

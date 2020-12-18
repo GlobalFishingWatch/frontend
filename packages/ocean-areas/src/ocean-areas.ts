@@ -7,23 +7,21 @@ import {
   bbox,
 } from '@turf/turf'
 import { matchSorter } from 'match-sorter'
-import oceanAreas from './ocean-areas-data'
 import { OceanArea, OceanAreaProperties } from '.'
 
 const MIN_ZOOM_TO_PREFER_EEZS = 4
 const MAX_RESULTS_NUMBER = 10
 
-const searchOceanAreas = (query: string): OceanArea[] => {
-  const matchingFeatures = matchSorter(oceanAreas.features, query, {
-    keys: ['properties.name'],
-    threshold: matchSorter.rankings.CONTAINS,
-  })
-  return matchingFeatures
-    .map((feature) => ({
-      ...feature,
+const searchOceanAreas = async (query: string): Promise<OceanArea[]> => {
+  const oceanAreas = await import('./data').then((areas) => areas.default)
+  const matchingFeatures = matchSorter(oceanAreas.features, query, { keys: ['properties.name'] })
+  return matchingFeatures.slice(0, MAX_RESULTS_NUMBER).map((feature) => ({
+    ...feature,
+    properties: {
+      ...feature.properties,
       bounds: bbox(feature as any),
-    }))
-    .slice(0, MAX_RESULTS_NUMBER)
+    },
+  }))
 }
 
 export interface OceanAreaParams {
@@ -31,7 +29,9 @@ export interface OceanAreaParams {
   longitude: number
   zoom: number
 }
-const getOceanAreaName = ({ latitude, longitude, zoom }: OceanAreaParams) => {
+
+const getOceanAreaName = async ({ latitude, longitude, zoom }: OceanAreaParams) => {
+  const oceanAreas = await import('./data').then((areas) => areas.default)
   let selectedArea: OceanAreaProperties | undefined
   const point = turfPoint([longitude, latitude])
   const matchingAreas = oceanAreas.features.flatMap((feature) => {
