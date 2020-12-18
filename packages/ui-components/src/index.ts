@@ -28,6 +28,7 @@ export { default as Select, SelectOption, SelectOnChange, SelectOnRemove } from 
 export { default as SplitView } from './split-view'
 export { default as Spinner } from './spinner'
 export { default as Switch, SwitchEvent } from './switch'
+export { default as Tabs } from './tabs'
 export { default as Tag } from './tag'
 export { default as TagList } from './tag-list'
 export { default as Tooltip } from './tooltip'

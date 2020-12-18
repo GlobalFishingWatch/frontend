@@ -1,0 +1,37 @@
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+}
+
+.tab {
+  flex: 1;
+}
+
+.tabButton {
+  flex: 1;
+  min-width: auto;
+  width: 100%;
+}
+
+.tabActive {
+  background-color: transparent;
+}
+
+.container .header .tabActive:hover {
+  background-color: transparent;
+}
+
+.container .header .tabActive:focus {
+  box-shadow: none;
+  background-color: transparent;
+}
+
+.content {
+  display: none;
+}
+
+.contentActive {
+  display: block;
+}
