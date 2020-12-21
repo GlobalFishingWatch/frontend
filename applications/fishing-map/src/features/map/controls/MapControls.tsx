@@ -10,6 +10,7 @@ import Rulers from 'features/map/controls/Rulers'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import { useScreenshotConnect } from 'features/app/app.hooks'
 import styles from './MapControls.module.css'
+import MapSearch from './MapSearch'
 
 const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactElement => {
   const { t } = useTranslation()
@@ -53,6 +54,7 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
         center={{ latitude, longitude }}
       />
       <div className={cx('print-hidden', styles.controlsNested)}>
+        <MapSearch />
         <IconButton
           icon="plus"
           type="map-tool"
