@@ -8,13 +8,14 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import Rulers from 'features/map/controls/Rulers'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
-import { useScreenshotConnect } from 'features/app/app.hooks'
+import { useScreenshotConnect, useScreenshotLoadingConnect } from 'features/app/app.hooks'
 import styles from './MapControls.module.css'
 
 const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactElement => {
   const { t } = useTranslation()
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
   const { setScreenshotMode } = useScreenshotConnect()
+  const { screenshotLoading } = useScreenshotLoadingConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { viewport, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
@@ -23,6 +24,7 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
   const onZoomInClick = useCallback(() => {
     setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
   }, [latitude, longitude, setMapCoordinates, zoom])
+
   const onZoomOutClick = useCallback(() => {
     setMapCoordinates({ latitude, longitude, zoom: Math.max(1, zoom - 1) })
   }, [latitude, longitude, setMapCoordinates, zoom])
@@ -69,6 +71,7 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
         <IconButton
           icon="camera"
           type="map-tool"
+          loading={screenshotLoading}
           tooltip={t('map.capture_map', 'Capture map')}
           onClick={() => setScreenshotMode(true)}
         />
