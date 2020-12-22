@@ -7,13 +7,13 @@ import {
   bbox,
 } from '@turf/turf'
 import { matchSorter } from 'match-sorter'
+import oceanAreas from './data'
 import { OceanArea, OceanAreaProperties } from '.'
 
 const MIN_ZOOM_TO_PREFER_EEZS = 4
 const MAX_RESULTS_NUMBER = 10
 
-const searchOceanAreas = async (query: string): Promise<OceanArea[]> => {
-  const oceanAreas = await import('./data').then((areas) => areas.default)
+const searchOceanAreas = (query: string): OceanArea[] => {
   const matchingFeatures = matchSorter(oceanAreas.features, query, { keys: ['properties.name'] })
   return matchingFeatures.slice(0, MAX_RESULTS_NUMBER).map((feature) => ({
     ...feature,
@@ -30,8 +30,7 @@ export interface OceanAreaParams {
   zoom: number
 }
 
-const getOceanAreaName = async ({ latitude, longitude, zoom }: OceanAreaParams) => {
-  const oceanAreas = await import('./data').then((areas) => areas.default)
+const getOceanAreaName = ({ latitude, longitude, zoom }: OceanAreaParams) => {
   let selectedArea: OceanAreaProperties | undefined
   const point = turfPoint([longitude, latitude])
   const matchingAreas = oceanAreas.features.flatMap((feature) => {
