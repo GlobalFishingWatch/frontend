@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.17.1
+
+### Patch Changes
+
+- make ocean-areas functions syncronous
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ocean-areas@0.1.0
+
 ## 0.17.0
 
 ### Minor Changes
