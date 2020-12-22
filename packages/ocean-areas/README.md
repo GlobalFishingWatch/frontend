@@ -22,12 +22,12 @@ npm i @globalfishingwatch/ocean-areas --save
 
 ```js
 import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
-const areas = await searchOceanAreas('coco island')
+const areas = searchOceanAreas('coco island')
 ```
 
 ### Get name of an ocean area by coordinates
 
 ```js
 import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
-const areas = await getOceanAreaName({ latitude: 40, longitude: 12, zoom: 3 })
+const areas = getOceanAreaName({ latitude: 40, longitude: 12, zoom: 3 })
 ```

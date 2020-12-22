@@ -26,8 +26,8 @@ const MapSearch = () => {
           [bounds[0], bounds[1]],
           [bounds[2], bounds[3]],
         ],
-        width: mapRef.current.getMap()._canvas.width,
-        height: mapRef.current.getMap()._canvas.height,
+        width: mapRef.current?.getMap()._canvas.width,
+        height: mapRef.current?.getMap()._canvas.height,
         padding: 60,
       })
       setMapCoordinates({ latitude, longitude, zoom })
@@ -40,9 +40,7 @@ const MapSearch = () => {
       setAreasMatching([])
     } else {
       setQuery(inputValue)
-      searchOceanAreas(inputValue).then((areas: OceanArea[]) => {
-        setAreasMatching(areas)
-      })
+      setAreasMatching(searchOceanAreas(inputValue))
     }
   }
 

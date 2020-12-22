@@ -7,8 +7,7 @@ import {
   WorkspaceUpsert,
 } from '@globalfishingwatch/api-types'
 import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
-import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
-import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState, WorkspaceViewport } from 'types'
+import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
 import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
@@ -17,8 +16,6 @@ import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace } from 'features/app/app.selectors'
 import { getWorkspaceEnv } from 'data/workspaces'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
@@ -89,22 +86,6 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
   async (_, { dispatch, getState }) => {
     const state = getState() as RootState
     const mergedWorkspace = selectCustomWorkspace(state)
-    const areaName = await getOceanAreaName(mergedWorkspace.viewport as WorkspaceViewport)
-    const dateFormat = pickDateFormatByRange(
-      mergedWorkspace.startAt as string,
-      mergedWorkspace.endAt as string
-    )
-    const start = formatI18nDate(mergedWorkspace.startAt as string, {
-      format: dateFormat,
-    })
-      .replace(',', '')
-      .replace('.', '')
-    const end = formatI18nDate(mergedWorkspace.endAt as string, {
-      format: dateFormat,
-    })
-      .replace(',', '')
-      .replace('.', '')
-    mergedWorkspace.name = `From ${start} to ${end} near ${areaName}`
 
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
       let workspaceUpdated
