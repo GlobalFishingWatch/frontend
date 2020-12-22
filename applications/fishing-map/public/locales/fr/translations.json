@@ -6,16 +6,16 @@
     "apparentFishing": "Effort de pêche apparent",
     "context_area_plural": "Calques de contexte",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers",
-    "dismiss": "Fermer",
     "hour": "Heure",
     "hour_plural": "Heures",
     "login": "Se connecter",
     "logout": "Déconnexion",
     "more": "Plus",
     "open_menu": "Ouvrir le menu",
-    "save": "Enregistrer",
     "share": "Partager la vue actuelle",
     "vessel_plural": "Navires",
+    "dismiss": "Fermer",
+    "save": "Enregistrer",
     "events": "Évènements",
     "fishing": "Pêche"
   },
@@ -31,6 +31,7 @@
     "info_close": "Masquer les infos",
     "info_open": "Infos",
     "remove": "Supprimer le calque",
+    "seeDescription": "Click to see layer description",
     "source_plural": "Sources",
     "toggle_visibility": "Afficher/Masquer le calque",
     "toggleCombinationMode": {
@@ -49,9 +50,12 @@
     "loading": "Chargement de la carte",
     "rulers_add": "Ajouter des mesures",
     "rulers_remove": "Supprimer toutes les mesures",
-    "screenshot": "Image de la carte",
     "zoom_in": "Zoomer",
-    "zoom_out": "Dézoomer"
+    "zoom_out": "Dézoomer",
+    "screenshot": "Image de la carte"
+  },
+  "search": {
+    "suggestion": "Did you mean"
   },
   "selects": {
     "placeholder": "Select an option",
@@ -67,10 +71,13 @@
     "firstTransmissionDate": "Première date de transmission",
     "flag": "Drapeau",
     "fleet": "Flotte",
+    "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Dernière date de transmission",
+    "lengthRange": "Length range",
     "loading": "Chargement de la piste du bateau",
     "mmsi": "MMSI",
+    "registeredGearType": "Registered Gear Type",
     "search": {
       "close": "Fermer la recherche",
       "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar.",
@@ -83,6 +90,7 @@
     "source": "Source",
     "tracks": "Trajectoires de navire",
     "transmission_plural": "Transmissions",
+    "widthRange": "Width range",
     "transmission": "Transmission"
   }
 }

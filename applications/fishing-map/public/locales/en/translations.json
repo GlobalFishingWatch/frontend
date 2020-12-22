@@ -6,16 +6,16 @@
     "apparentFishing": "Apparent Fishing Effort",
     "context_area_plural": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard",
-    "dismiss": "Dismiss",
     "hour": "Hour",
     "hour_plural": "Hours",
     "login": "Log in",
     "logout": "Log Out",
     "more": "More",
     "open_menu": "Open Menu",
-    "save": "Save",
     "share": "Click to share the current view",
     "vessel_plural": "Vessels",
+    "dismiss": "Dismiss",
+    "save": "Save",
     "events": "Events",
     "fishing": "Fishing"
   },
@@ -31,6 +31,7 @@
     "info_close": "Hide info",
     "info_open": "Info",
     "remove": "Remove layer",
+    "seeDescription": "Click to see layer description",
     "source_plural": "Sources",
     "toggle_visibility": "Toggle layer visibility",
     "toggleCombinationMode": {
@@ -49,9 +50,9 @@
     "loading": "Map loading",
     "rulers_add": "Add rulers",
     "rulers_remove": "Remove all rulers",
-    "screenshot": "Map screenshot",
     "zoom_in": "Zoom in",
-    "zoom_out": "Zoom out"
+    "zoom_out": "Zoom out",
+    "screenshot": "Map screenshot"
   },
   "search": {
     "suggestion": "Did you mean"
