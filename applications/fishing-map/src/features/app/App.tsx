@@ -1,4 +1,4 @@
-import React, { memo, useState, Fragment, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, Fragment, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -8,20 +8,14 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import { AsyncReducerStatus } from 'types'
 import useDebugMenu from 'features/debug/debug.hooks'
 import { MapboxRefProvider } from 'features/map/map.context'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import {
-  selectWorkspace,
-  selectWorkspaceCustom,
-  selectWorkspaceStatus,
-  selectDataviewsResourceQueries,
-} from 'features/workspace/workspace.selectors'
-import { fetchResourceThunk } from 'features/resources/resources.slice'
-import { selectWorkspaceId } from 'routes/routes.selectors'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { selectLocationType, selectWorkspaceId } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
 import Login from 'features/user/Login'
 import Map from 'features/map/Map'
+import MapWorkspacesList from 'features/map-workspaces-list/MapWorkspacesList'
 import Timebar from 'features/timebar/Timebar'
 import Sidebar from 'features/sidebar/Sidebar'
 import { isUserAuthorized, isUserLogged, logoutUserThunk } from 'features/user/user.slice'
@@ -38,12 +32,22 @@ const ErrorPlaceHolder = ({ children }: { children: React.ReactNode }) => (
   </div>
 )
 
-const Main = memo(() => (
-  <div className={styles.main}>
-    <Map />
-    <Timebar />
-  </div>
-))
+const Main = () => {
+  const workspaceId = useSelector(selectWorkspaceId)
+  const locationType = useSelector(selectLocationType)
+  return (
+    <div className={styles.main}>
+      {workspaceId || locationType === HOME ? (
+        <Fragment>
+          <Map />
+          <Timebar />
+        </Fragment>
+      ) : (
+        <MapWorkspacesList />
+      )}
+    </div>
+  )
+}
 
 function App(): React.ReactElement {
   const dispatch = useDispatch()
@@ -52,10 +56,7 @@ function App(): React.ReactElement {
   const [menuOpen, setMenuOpen] = useState(false)
   const userLogged = useSelector(isUserLogged)
   const userAuthorized = useSelector(isUserAuthorized)
-  const workspaceId = useSelector(selectWorkspaceId)
-  const workspaceData = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const workspaceCustom = useSelector(selectWorkspaceCustom)
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 
@@ -66,22 +67,6 @@ function App(): React.ReactElement {
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
   }, [])
-
-  useEffect(() => {
-    if (userLogged && workspaceData === null) {
-      dispatch(fetchWorkspaceThunk(workspaceId))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, userLogged, workspaceId])
-
-  const resourceQueries = useSelector(selectDataviewsResourceQueries)
-  useEffect(() => {
-    if (resourceQueries) {
-      resourceQueries.forEach((resourceQuery) => {
-        dispatch(fetchResourceThunk(resourceQuery))
-      })
-    }
-  }, [dispatch, resourceQueries])
 
   const Content = useMemo(() => {
     if (!userLogged) {
@@ -124,7 +109,7 @@ function App(): React.ReactElement {
       )
     }
 
-    return workspaceStatus === AsyncReducerStatus.Finished || workspaceCustom ? (
+    return (
       <MapboxRefProvider>
         <SplitView
           isOpen={sidebarOpen}
@@ -135,19 +120,8 @@ function App(): React.ReactElement {
           className="split-container"
         />
       </MapboxRefProvider>
-    ) : (
-      <Spinner />
     )
-  }, [
-    dispatch,
-    onMenuClick,
-    onToggle,
-    sidebarOpen,
-    userAuthorized,
-    userLogged,
-    workspaceCustom,
-    workspaceStatus,
-  ])
+  }, [dispatch, onMenuClick, onToggle, sidebarOpen, userAuthorized, userLogged, workspaceStatus])
 
   return (
     <Fragment>

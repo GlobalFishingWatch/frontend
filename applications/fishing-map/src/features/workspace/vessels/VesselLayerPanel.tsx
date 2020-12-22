@@ -17,7 +17,7 @@ import {
 import { formatInfoField } from 'utils/info'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
-import styles from 'features/sidebar/LayerPanel.module.css'
+import styles from 'features/workspace/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
 import { TRACKS_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'

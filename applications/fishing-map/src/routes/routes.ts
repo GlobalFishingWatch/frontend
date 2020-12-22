@@ -8,11 +8,23 @@ import { REPLACE_URL_PARAMS } from 'data/config'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const HOME = 'HOME'
-export type ROUTE_TYPES = typeof HOME
+export const WORKSPACE = 'WORKSPACE'
+export const WORKSPACES_LIST = 'WORKSPACES_LIST'
+export const USER = 'USER'
+export type ROUTE_TYPES = typeof HOME | typeof USER | typeof WORKSPACES_LIST | typeof WORKSPACE
 
 const routesMap: RoutesMap = {
   [HOME]: {
-    path: '/:workspaceId?/:version?',
+    path: '/',
+  },
+  [WORKSPACES_LIST]: {
+    path: '/:category',
+  },
+  [WORKSPACE]: {
+    path: '/:category/:workspaceId?',
+  },
+  [USER]: {
+    path: '/user',
   },
   [NOT_FOUND]: {
     path: '',

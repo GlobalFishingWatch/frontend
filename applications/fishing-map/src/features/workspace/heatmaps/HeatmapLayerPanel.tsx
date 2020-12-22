@@ -6,7 +6,7 @@ import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-com
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { getFlagsByIds } from 'utils/flags'
 import { UrlDataviewInstance } from 'types'
-import styles from 'features/sidebar/LayerPanel.module.css'
+import styles from 'features/workspace/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariate } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselsDataviews } from 'features/workspace/workspace.selectors'
-import styles from 'features/sidebar/Sections.module.css'
+import styles from 'features/workspace/Sections.module.css'
 import LayerPanel from './VesselLayerPanel'
 
 function VesselsSection(): React.ReactElement {

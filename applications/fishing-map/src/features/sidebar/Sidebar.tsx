@@ -1,9 +1,11 @@
-import React, { useCallback, Fragment, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import Link from 'redux-first-router-link'
 import Sticky from 'react-sticky-el'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { IconButton, Logo } from '@globalfishingwatch/ui-components'
+import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { selectUserData, logoutUserThunk } from 'features/user/user.slice'
 import { saveCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
@@ -14,11 +16,12 @@ import Search from 'features/search/Search'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { AsyncReducerStatus } from 'types'
 import copyToClipboard from 'utils/clipboard'
-import { selectWorkspaceId } from 'routes/routes.selectors'
+import { selectLocationType, selectWorkspaceId } from 'routes/routes.selectors'
+import { USER, WORKSPACES_LIST } from 'routes/routes'
+import User from 'features/user/User'
+import Workspace from 'features/workspace/Workspace'
+import WorkspacesList from 'features/workspaces-list/WorkspacesList'
 import styles from './Sidebar.module.css'
-import HeatmapsSection from './heatmaps/HeatmapsSection'
-import VesselsSection from './vessels/VesselsSection'
-import ContextArea from './context-areas/ContextAreaSection'
 
 type SidebarProps = {
   onMenuClick: () => void
@@ -115,32 +118,66 @@ function SidebarHeader({ onMenuClick }: SidebarProps) {
   )
 }
 
+function CategoryTabs() {
+  return (
+    <ul>
+      <li>
+        <Link
+          to={{
+            type: WORKSPACES_LIST,
+            payload: { workspaceId: undefined, category: 'fishing-map' },
+            query: {},
+            replaceQuery: true,
+          }}
+        >
+          FISHING SECTION
+        </Link>
+      </li>
+      <li>
+        <Link
+          to={{
+            type: WORKSPACES_LIST,
+            // TODO: extract categories to config.ts
+            payload: { workspaceId: undefined, category: 'marine-reserves' },
+            query: {},
+            replaceQuery: true,
+          }}
+        >
+          MARINE RESERVES SECTION
+        </Link>
+      </li>
+      <li>
+        <Link to={{ type: USER, payload: {}, query: {}, replaceQuery: true }}>USER SECTION</Link>
+      </li>
+    </ul>
+  )
+}
+
 function Sidebar({ onMenuClick }: SidebarProps) {
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
   const searchQuery = useSelector(selectSearchQuery)
-  const { t } = useTranslation()
+  const locationType = useSelector(selectLocationType)
+
+  const sidebarComponent = useMemo(() => {
+    if (locationType === USER) {
+      return <User />
+    }
+    if (locationType === WORKSPACES_LIST) {
+      return <WorkspacesList />
+    }
+    // TODO: show loading when datasets and dataviews pending
+    return <Workspace />
+  }, [locationType])
 
   if (searchQuery !== undefined) {
     return <Search />
   }
-
   return (
-    <div className="scrollContainer">
-      <SidebarHeader onMenuClick={onMenuClick} />
-      {workspaceStatus === 'error' ? (
-        <div className={styles.placeholder}>
-          {t(
-            'errors.workspaceLoad',
-            'There was an error loading the workspace, please try again later'
-          )}
-        </div>
-      ) : (
-        <Fragment>
-          <HeatmapsSection />
-          <VesselsSection />
-          <ContextArea />
-        </Fragment>
-      )}
+    <div className={styles.container}>
+      <CategoryTabs />
+      <div className="scrollContainer">
+        <SidebarHeader onMenuClick={onMenuClick} />
+        {sidebarComponent}
+      </div>
     </div>
   )
 }

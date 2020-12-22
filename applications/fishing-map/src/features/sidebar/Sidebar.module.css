@@ -1,3 +1,7 @@
+.container {
+  /* display: flex; */
+}
+
 :global(.sticky) {
   background-color: var(--color-white);
   box-shadow: var(--box-shadow);
@@ -8,15 +12,6 @@
   height: 100%;
   overflow-y: auto;
   padding-bottom: var(--space-L);
-}
-
-.placeholder {
-  height: calc(100% - 5.4rem);
-  display: flex;
-  flex: 1;
-  align-items: center;
-  padding: var(--space-M);
-  text-align: center;
 }
 
 .sidebarHeader {

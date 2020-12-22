@@ -223,9 +223,6 @@ const MapWrapper = (): React.ReactElement | null => {
           interactiveLayerIds={rulersEditing ? undefined : style?.metadata?.interactiveLayerIds}
           onClick={onMapClick}
           onHover={onMapHover}
-          onLoad={() => {
-            console.log('loaded')
-          }}
           onError={handleError}
           transitionDuration={viewport.transitionDuration}
         >

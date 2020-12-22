@@ -1,0 +1,10 @@
+
+
+.placeholder {
+  height: calc(100% - 5.4rem);
+  display: flex;
+  flex: 1;
+  align-items: center;
+  padding: var(--space-M);
+  text-align: center;
+}
