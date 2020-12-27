@@ -7,12 +7,12 @@ import { WORKSPACE } from 'routes/routes'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'types'
 import { fetchWorkspacesThunk, selectWorkspaceListStatus } from './workspaces-list.slice'
-import { selectWorkspaceByCategory } from './workspaces-list.selectors'
+import { selectCurrentWorkspaces } from './workspaces-list.selectors'
 
 function WorkspacesList() {
   const userLogged = useSelector(isUserLogged)
   const locationCategory = useSelector(selectLocationCategory)
-  const workspaces = useSelector(selectWorkspaceByCategory(locationCategory))
+  const workspaces = useSelector(selectCurrentWorkspaces)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
 
   const dispatch = useDispatch()

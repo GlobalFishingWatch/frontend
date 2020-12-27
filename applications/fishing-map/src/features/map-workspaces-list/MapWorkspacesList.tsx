@@ -1,12 +1,16 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import { useSelector } from 'react-redux'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client/dist/api-client'
-import { Generators } from '@globalfishingwatch/layer-composer'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
-import { useMapboxRef } from 'features/map/map.context'
 import useViewport from 'features/map/map-viewport.hooks'
 import MapControls from 'features/map/controls/MapControls'
+import { useLocationConnect } from 'routes/routes.hook'
+import { WORKSPACE } from 'routes/routes'
+import { selectLocationCategory } from 'routes/routes.selectors'
+import { selectMapWorkspacesListGenerators } from './map-workspaces-list.selectors'
 import styles from './MapWorkspacesList.module.css'
+
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const mapOptions = {
@@ -29,26 +33,37 @@ const handleError = ({ error }: any) => {
     GFWAPI.refreshAPIToken()
   }
 }
-const basemap: Generators.BasemapGeneratorConfig = {
-  id: 'landmass',
-  type: Generators.Type.Basemap,
-  basemap: Generators.BasemapType.Default,
-}
-
-const generatorsConfig = [basemap]
 
 const MapWorkspacesList = (): React.ReactElement | null => {
-  const mapRef = useMapboxRef()
+  const generatorsConfig = useSelector(selectMapWorkspacesListGenerators)
+  const locationCategory = useSelector(selectLocationCategory)
   const { style } = useLayerComposer(generatorsConfig)
+  const { dispatchLocation } = useLocationConnect()
 
   const { viewport, onViewportChange } = useViewport()
+
+  const onClick = useCallback(
+    (e: any) => {
+      const workspace = e.features.find((feature: any) => feature.properties.type === 'workspace')
+      if (workspace) {
+        dispatchLocation(
+          WORKSPACE,
+          {
+            category: locationCategory,
+            workspaceId: workspace.properties.id,
+          },
+          true
+        )
+      }
+    },
+    [dispatchLocation, locationCategory]
+  )
 
   return (
     <div className={styles.container}>
       {style && (
         <InteractiveMap
           disableTokenWarning={true}
-          ref={mapRef}
           width="100%"
           height="100%"
           latitude={viewport.latitude}
@@ -58,8 +73,9 @@ const MapWorkspacesList = (): React.ReactElement | null => {
           mapStyle={style}
           mapOptions={mapOptions}
           transformRequest={transformRequest}
-          // onClick={onMapClick}
+          onClick={onClick}
           onError={handleError}
+          interactiveLayerIds={style?.metadata?.interactiveLayerIds}
           transitionDuration={viewport.transitionDuration}
         ></InteractiveMap>
       )}
