@@ -17,14 +17,14 @@ const routesMap: RoutesMap = {
   [HOME]: {
     path: '/',
   },
+  [USER]: {
+    path: '/user',
+  },
   [WORKSPACES_LIST]: {
     path: '/:category',
   },
   [WORKSPACE]: {
     path: '/:category/:workspaceId?',
-  },
-  [USER]: {
-    path: '/user',
   },
   [NOT_FOUND]: {
     path: '',
