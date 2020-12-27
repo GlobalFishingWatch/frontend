@@ -21,6 +21,7 @@ import { USER, WORKSPACES_LIST } from 'routes/routes'
 import User from 'features/user/User'
 import Workspace from 'features/workspace/Workspace'
 import WorkspacesList from 'features/workspaces-list/WorkspacesList'
+import { WorkspaceCategories } from 'data/workspaces'
 import styles from './Sidebar.module.css'
 
 type SidebarProps = {
@@ -125,7 +126,7 @@ function CategoryTabs() {
         <Link
           to={{
             type: WORKSPACES_LIST,
-            payload: { workspaceId: undefined, category: 'fishing-map' },
+            payload: { workspaceId: undefined, category: WorkspaceCategories.FishingActivity },
             query: {},
             replaceQuery: true,
           }}
@@ -137,8 +138,7 @@ function CategoryTabs() {
         <Link
           to={{
             type: WORKSPACES_LIST,
-            // TODO: extract categories to config.ts
-            payload: { workspaceId: undefined, category: 'marine-reserves' },
+            payload: { workspaceId: undefined, category: WorkspaceCategories.MarinReserves },
             query: {},
             replaceQuery: true,
           }}

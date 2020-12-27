@@ -8,6 +8,11 @@ export function getWorkspaceEnv(): WorkspaceEnv {
   return WORKSPACE_ENV
 }
 
+export enum WorkspaceCategories {
+  FishingActivity = 'fishing-map',
+  MarinReserves = 'marine-reserves',
+}
+
 export const DEFAULT_BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
 export const DEFAULT_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 92 : 171
 export const DEFAULT_FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178

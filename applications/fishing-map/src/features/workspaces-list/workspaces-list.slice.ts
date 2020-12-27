@@ -23,6 +23,8 @@ export const { selectAll: selectWorkspaces, selectById } = entityAdapter.getSele
   (state) => state.workspaces
 )
 
+export const selectWorkspaceListStatus = (state: RootState) => state.workspaces.status
+
 export const selectWorkspaceById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
 )
