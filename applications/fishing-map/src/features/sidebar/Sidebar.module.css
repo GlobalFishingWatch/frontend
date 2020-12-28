@@ -1,5 +1,6 @@
 .container {
-  /* display: flex; */
+  display: flex;
+  height: 100vh;
 }
 
 :global(.sticky) {
@@ -12,12 +13,15 @@
   height: 100%;
   overflow-y: auto;
   padding-bottom: var(--space-L);
+  width: 100%;
 }
 
 .sidebarHeader {
   display: flex;
   align-items: center;
-  padding-right: var(--space-S);
+  padding: 0 var(--space-S);
+  border-bottom: var(--border);
+  height: 5.2rem;
 }
 
 .logo {
@@ -30,16 +34,4 @@
   .logo {
     margin-left: var(--space-S);
   }
-}
-
-.userBtn svg {
-  display: none;
-}
-
-.userBtn:hover {
-  font-size: 0;
-}
-
-.userBtn:hover svg {
-  display: unset;
 }

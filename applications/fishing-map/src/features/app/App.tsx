@@ -19,7 +19,7 @@ import MapWorkspacesList from 'features/map-workspaces-list/MapWorkspacesList'
 import Timebar from 'features/timebar/Timebar'
 import Sidebar from 'features/sidebar/Sidebar'
 import { isUserAuthorized, isUserLogged, logoutUserThunk } from 'features/user/user.slice'
-import { HOME } from 'routes/routes'
+import { HOME, WORKSPACE } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -57,6 +57,7 @@ function App(): React.ReactElement {
   const userLogged = useSelector(isUserLogged)
   const userAuthorized = useSelector(isUserAuthorized)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const locationType = useSelector(selectLocationType)
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 
@@ -116,12 +117,21 @@ function App(): React.ReactElement {
           onToggle={onToggle}
           aside={<Sidebar onMenuClick={onMenuClick} />}
           main={<Main />}
-          asideWidth="32rem"
+          asideWidth={locationType === WORKSPACE || locationType === HOME ? '37rem' : '50%'}
           className="split-container"
         />
       </MapboxRefProvider>
     )
-  }, [dispatch, onMenuClick, onToggle, sidebarOpen, userAuthorized, userLogged, workspaceStatus])
+  }, [
+    dispatch,
+    locationType,
+    onMenuClick,
+    onToggle,
+    sidebarOpen,
+    userAuthorized,
+    userLogged,
+    workspaceStatus,
+  ])
 
   return (
     <Fragment>

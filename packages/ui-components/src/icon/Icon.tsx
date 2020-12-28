@@ -8,6 +8,11 @@ import { ReactComponent as ArrowRight } from '../assets/icons/arrow-right.svg'
 import { ReactComponent as ArrowTop } from '../assets/icons/arrow-top.svg'
 import { ReactComponent as Calendar } from '../assets/icons/calendar.svg'
 import { ReactComponent as Camera } from '../assets/icons/camera.svg'
+import { ReactComponent as CategoryCountryPortals } from '../assets/icons/category-country-portals.svg'
+import { ReactComponent as CategoryFishing } from '../assets/icons/category-fishing.svg'
+import { ReactComponent as CategoryMarineReserves } from '../assets/icons/category-marine-reserves.svg'
+import { ReactComponent as CategoryNews } from '../assets/icons/category-news.svg'
+import { ReactComponent as CategoryReports } from '../assets/icons/category-reports.svg'
 import { ReactComponent as Close } from '../assets/icons/close.svg'
 import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
 import { ReactComponent as ColorPickerFilled } from '../assets/icons/color-picker-filled.svg'
@@ -51,6 +56,11 @@ export const IconComponents = {
   'arrow-top': ArrowTop,
   calendar: Calendar,
   camera: Camera,
+  'category-country-portals': CategoryCountryPortals,
+  'category-fishing': CategoryFishing,
+  'category-marine-reserves': CategoryMarineReserves,
+  'category-news': CategoryNews,
+  'category-reports': CategoryReports,
   close: Close,
   'color-picker': ColorPicker,
   'color-picker-filled': ColorPickerFilled,
