@@ -1,0 +1,14 @@
+.container > div {
+    padding: var(--space-M);
+    border-bottom: var(--border);
+}
+
+.userInfo {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.secondary {
+    opacity: var(--opacity-secondary);
+}

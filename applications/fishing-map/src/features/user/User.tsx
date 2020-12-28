@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import { logoutUserThunk, selectUserData } from './user.slice'
+import styles from './User.module.css'
 
 function User() {
   const { t } = useTranslation()
@@ -15,13 +16,23 @@ function User() {
 
   if (!userData) return null
   return (
-    <div>
-      <h3>User</h3>
-      <p>{`${userData.firstName} ${userData.lastName || ''}`}</p>
-      <p>{userData.email}</p>
-      <Button type="secondary" onClick={onLogoutClick}>
-        <span>{t('common.logout', 'Log out')}</span>
-      </Button>
+    <div className={styles.container}>
+      <div className={styles.userInfo}>
+        <div>
+          <label>User</label>
+          <p>{`${userData.firstName} ${userData.lastName || ''}`}</p>
+          <p className={styles.secondary}>{userData.email}</p>
+        </div>
+        <Button type="secondary" onClick={onLogoutClick}>
+          <span>{t('common.logout', 'Log out')}</span>
+        </Button>
+      </div>
+      <div className={styles.views}>
+        <label>Your private views</label>
+      </div>
+      <div className={styles.views}>
+        <label>Yopur latest saved views</label>
+      </div>
     </div>
   )
 }
