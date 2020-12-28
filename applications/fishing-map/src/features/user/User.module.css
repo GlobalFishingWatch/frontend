@@ -1,9 +1,6 @@
-.container > div {
+.userInfo {
     padding: var(--space-M);
     border-bottom: var(--border);
-}
-
-.userInfo {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -11,4 +8,25 @@
 
 .secondary {
     opacity: var(--opacity-secondary);
+}
+
+.views {
+    padding: var(--space-M) 0 var(--space-M) var(--space-M);
+}
+
+.workspace {
+    padding: var(--space-XS) var(--space-XS) var(--space-XS) 0;
+}
+
+.workspace:not(:last-child) {
+    border-bottom: var(--border);
+}
+
+.workspaceLink {
+    display: flex;
+    align-items: center;
+}
+
+.workspaceTitle {
+    flex: 1;
 }

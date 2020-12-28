@@ -65,7 +65,7 @@ function SidebarHeader() {
             finished
               ? t(
                   'common.copiedToClipboard',
-                  'The link to share this view has been copied to your clipboard'
+                  'The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.'
                 )
               : t('common.share', 'Click to share the current view')
           }
