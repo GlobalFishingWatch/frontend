@@ -1,55 +1,77 @@
-import React, { Fragment, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
+import { fetchGoogleSheetsData } from 'google-sheets-mapper'
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { isUserLogged } from 'features/user/user.slice'
-import { WORKSPACE } from 'routes/routes'
 import { selectLocationCategory } from 'routes/routes.selectors'
-import { AsyncReducerStatus } from 'types'
-import { fetchWorkspacesThunk, selectWorkspaceListStatus } from './workspaces-list.slice'
-import { selectCurrentWorkspaces } from './workspaces-list.selectors'
+import { WORKSPACE } from 'routes/routes'
+import styles from './WorkspacesList.module.css'
+
+type ViewData = {
+  title: string
+  description: string
+  img: string
+  cta: string
+  workspace: string
+}
 
 function WorkspacesList() {
-  const userLogged = useSelector(isUserLogged)
   const locationCategory = useSelector(selectLocationCategory)
-  const workspaces = useSelector(selectCurrentWorkspaces)
-  const workspacesStatus = useSelector(selectWorkspaceListStatus)
+  const userFriendlyCategory = locationCategory.replace('-', ' ')
+  const [viewsData, setViewsData] = useState<ViewData[]>([])
 
-  const dispatch = useDispatch()
   useEffect(() => {
-    if (userLogged) {
-      dispatch(fetchWorkspacesThunk(locationCategory))
+    const fetchData = async () => {
+      setViewsData([])
+      try {
+        await fetchGoogleSheetsData({
+          apiKey: process.env.REACT_APP_GOOGLE_API_KEY as string,
+          sheetId: process.env.REACT_APP_GOOGLE_SHEETS_ID as string,
+          sheetsNames: [locationCategory],
+        }).then((response) => {
+          setViewsData(response[0].data as ViewData[])
+        })
+      } catch (error) {
+        console.warn(error)
+      }
     }
-  }, [dispatch, locationCategory, userLogged])
+    fetchData()
+  }, [locationCategory])
 
   return (
-    <Fragment>
-      <h2>Workspaces list</h2>
-      {workspacesStatus === AsyncReducerStatus.Loading ? (
-        <Spinner />
+    <div className={styles.container}>
+      <label>{userFriendlyCategory}</label>
+      {viewsData.length === 0 ? (
+        <Spinner size="small" />
       ) : (
         <ul>
-          {workspaces.map((workspace) => {
+          {viewsData.map((view) => {
             return (
-              <li key={workspace.id}>
-                <Link
-                  to={{
-                    type: WORKSPACE,
-                    payload: {
-                      category: locationCategory,
-                      workspaceId: workspace.id,
-                    },
-                    query: {},
-                  }}
-                >
-                  {workspace.name}
-                </Link>
+              <li className={styles.workspace} key={view.title}>
+                <img className={styles.image} alt={view.title} src={view.img} />
+                <div className={styles.info}>
+                  <h3 className={styles.title}>{view.title}</h3>
+                  <p className={styles.description}>{view.description}</p>
+                  <Link
+                    className={styles.link}
+                    to={{
+                      type: WORKSPACE,
+                      payload: {
+                        category: locationCategory,
+                        workspaceId: view.workspace,
+                      },
+                      query: {},
+                    }}
+                  >
+                    {view.cta}
+                  </Link>
+                </div>
               </li>
             )
           })}
         </ul>
       )}
-    </Fragment>
+    </div>
   )
 }
 export default WorkspacesList

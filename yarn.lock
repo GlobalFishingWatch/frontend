@@ -11182,6 +11182,11 @@ gonzales-pe@^4.3.0:
   dependencies:
     minimist "^1.2.5"
 
+google-sheets-mapper@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/google-sheets-mapper/-/google-sheets-mapper-1.0.1.tgz#2376cc3c83646b155c5679079645b4e544521583"
+  integrity sha512-0GMKtzKp8I/ZEQI6e6N8/1L4Ha0jCIglXp7oLxdRkrk0Rm34fEPdB7P1LsrNXrQAUn2YiWpfL20Q9VkU0vj4xw==
+
 got@^7.0.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/got/-/got-7.1.0.tgz#05450fd84094e6bbea56f451a43a9c289166385a"

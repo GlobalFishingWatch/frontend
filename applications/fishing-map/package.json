@@ -28,6 +28,7 @@
     "countryflag": "^4.0.1",
     "dayjs": "^1.8.36",
     "file-saver": "^2.0.2",
+    "google-sheets-mapper": "^1.0.1",
     "html2canvas": "^1.0.0-rc.7",
     "i18next": "^19.8.3",
     "i18next-browser-languagedetector": "^6.0.1",
