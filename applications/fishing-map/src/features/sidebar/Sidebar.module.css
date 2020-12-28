@@ -3,35 +3,9 @@
   height: 100vh;
 }
 
-:global(.sticky) {
-  background-color: var(--color-white);
-  box-shadow: var(--box-shadow);
-  z-index: 1;
-}
-
 :global(.scrollContainer) {
   height: 100%;
   overflow-y: auto;
   padding-bottom: var(--space-L);
   width: 100%;
-}
-
-.sidebarHeader {
-  display: flex;
-  align-items: center;
-  padding: 0 var(--space-S);
-  border-bottom: var(--border);
-  height: 5.2rem;
-}
-
-.logo {
-  width: 18rem;
-  height: auto;
-  margin-right: auto;
-}
-
-@media print {
-  .logo {
-    margin-left: var(--space-S);
-  }
 }
