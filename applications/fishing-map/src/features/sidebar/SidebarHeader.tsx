@@ -12,8 +12,13 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'types'
 import copyToClipboard from 'utils/clipboard'
-import { selectLocationCategory, selectWorkspaceId } from 'routes/routes.selectors'
+import {
+  selectLocationCategory,
+  selectLocationType,
+  selectWorkspaceId,
+} from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
+import { WORKSPACE } from 'routes/routes'
 import styles from './SidebarHeader.module.css'
 
 function SidebarHeader() {
@@ -23,6 +28,7 @@ function SidebarHeader() {
   const workspaceId = useSelector(selectWorkspaceId)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustom = useSelector(selectWorkspaceCustom)
+  const locationType = useSelector(selectLocationType)
   const locationCategory = useSelector(selectLocationCategory)
 
   const onShareClick = useCallback(() => {
@@ -55,22 +61,24 @@ function SidebarHeader() {
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
         <Logo className={styles.logo} subBrand={getSubBrand()} />
-        <IconButton
-          icon={finished ? 'tick' : 'share'}
-          size="medium"
-          className="print-hidden"
-          onClick={onShareClick}
-          loading={workspaceStatus === AsyncReducerStatus.Loading && workspaceCustom === true}
-          tooltip={
-            finished
-              ? t(
-                  'common.copiedToClipboard',
-                  'The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.'
-                )
-              : t('common.share', 'Click to share the current view')
-          }
-          tooltipPlacement="bottom"
-        />
+        {locationType === WORKSPACE && (
+          <IconButton
+            icon={finished ? 'tick' : 'share'}
+            size="medium"
+            className="print-hidden"
+            onClick={onShareClick}
+            loading={workspaceStatus === AsyncReducerStatus.Loading && workspaceCustom === true}
+            tooltip={
+              finished
+                ? t(
+                    'common.copiedToClipboard',
+                    'The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.'
+                  )
+                : t('common.share', 'Click to share the current view')
+            }
+            tooltipPlacement="bottom"
+          />
+        )}
       </div>
     </Sticky>
   )
