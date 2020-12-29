@@ -13,6 +13,7 @@ import {
 } from 'features/workspaces-list/workspaces-list.slice'
 import { WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
+import { APP_NAME } from 'data/config'
 import styles from './User.module.css'
 import { isUserLogged, logoutUserThunk, selectUserData } from './user.slice'
 
@@ -26,7 +27,7 @@ function User() {
 
   useEffect(() => {
     if (userLogged) {
-      dispatch(fetchWorkspacesThunk(WorkspaceCategories.FishingActivity))
+      dispatch(fetchWorkspacesThunk(APP_NAME))
     }
   }, [dispatch, userLogged])
 
@@ -68,6 +69,7 @@ function User() {
                       to={{
                         type: WORKSPACE,
                         payload: {
+                          // TODO change to workspace category (save in API)
                           category: WorkspaceCategories.FishingActivity,
                           workspaceId: workspace.id,
                         },

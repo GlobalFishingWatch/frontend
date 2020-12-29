@@ -9,7 +9,7 @@ export function getWorkspaceEnv(): WorkspaceEnv {
 }
 
 export enum WorkspaceCategories {
-  FishingActivity = 'fishing-map',
+  FishingActivity = 'fishing-activity',
   MarineReserves = 'marine-reserves',
   CountryPortals = 'country-portals',
 }
