@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.10.2
+
+### Patch Changes
+
+- dont force presence color ramp
+
 ## 4.10.1
 
 ### Patch Changes
