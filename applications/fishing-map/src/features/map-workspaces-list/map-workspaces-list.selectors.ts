@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { AnyLayer, Generators } from '@globalfishingwatch/layer-composer'
 import { selectCurrentWorkspaces } from 'features/workspaces-list/workspaces-list.selectors'
 
 const basemap: Generators.BasemapGeneratorConfig = {
@@ -46,7 +46,7 @@ export const selectWorkspacesListGenerators = createSelector(
             metadata: {
               interactive: true,
             },
-          },
+          } as AnyLayer,
         ],
       }
       return generator

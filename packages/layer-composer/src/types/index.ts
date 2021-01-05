@@ -1,4 +1,16 @@
-import type { Layer, AnySourceImpl, Style } from 'mapbox-gl'
+import type {
+  AnySourceImpl,
+  BackgroundLayer,
+  CircleLayer,
+  FillExtrusionLayer,
+  FillLayer,
+  HeatmapLayer,
+  HillshadeLayer,
+  LineLayer,
+  RasterLayer,
+  Style,
+  SymbolLayer,
+} from 'mapbox-gl'
 import type { DataviewConfig } from '@globalfishingwatch/api-types'
 import {
   GeneratorConfig,
@@ -87,17 +99,28 @@ export interface ExtendedLayerMeta {
   color?: string
 }
 
+export type AnyLayer =
+  | BackgroundLayer
+  | CircleLayer
+  | FillExtrusionLayer
+  | FillLayer
+  | HeatmapLayer
+  | HillshadeLayer
+  | LineLayer
+  | RasterLayer
+  | SymbolLayer
+
 /**
  * A standard Mapbox GL Layer with layer-composer specific metadata
  */
-export type ExtendedLayer = Layer & {
+export type ExtendedLayer = AnyLayer & {
   metadata?: ExtendedLayerMeta
 }
 
 export interface ExtendedStyleMeta {
-  generatedAt: string
+  generatedAt?: string
   interactiveLayerIds?: string[]
-  temporalgrid: Record<string, any>
+  temporalgrid?: Record<string, any>
 }
 
 /**

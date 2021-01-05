@@ -1,6 +1,6 @@
-import type { Style } from 'mapbox-gl'
+import { ExtendedStyle } from '../../types'
 
-const getInteractiveIds = (style: Style) => {
+const getInteractiveIds = (style: ExtendedStyle) => {
   if (!style || !style.layers) return style
   const interactiveLayerIds = style.layers
     .filter((layer) => {
