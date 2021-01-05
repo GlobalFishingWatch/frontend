@@ -20,7 +20,7 @@ import {
 import { WORKSPACE, HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace } from 'features/app/app.selectors'
-import { getWorkspaceEnv } from 'data/workspaces'
+import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
@@ -133,7 +133,7 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
 
     const workspaceUpdated = await saveWorkspace()
     const locationType = selectLocationType(state)
-    const locationCategory = selectLocationCategory(state)
+    const locationCategory = selectLocationCategory(state) || WorkspaceCategories.FishingActivity
     if (workspaceUpdated) {
       dispatch(
         updateLocation(locationType === HOME ? WORKSPACE : locationType, {
@@ -141,7 +141,11 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
             category: locationCategory,
             workspaceId: workspaceUpdated.id,
           },
-          query: {},
+          query: {
+            latitude: workspaceUpdated.viewport.latitude,
+            longitude: workspaceUpdated.viewport.longitude,
+            zoom: workspaceUpdated.viewport.zoom,
+          },
           replaceQuery: true,
         })
       )

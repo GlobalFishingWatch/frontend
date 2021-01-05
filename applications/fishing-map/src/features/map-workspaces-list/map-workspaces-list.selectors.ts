@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { AnyLayer, Generators } from '@globalfishingwatch/layer-composer'
-import { selectCurrentWorkspaces } from 'features/workspaces-list/workspaces-list.selectors'
+import { selectHighlightedWorkspacesMerged } from 'features/workspaces-list/workspaces-list.selectors'
 
 const basemap: Generators.BasemapGeneratorConfig = {
   id: 'landmass',
@@ -9,9 +9,9 @@ const basemap: Generators.BasemapGeneratorConfig = {
 }
 
 export const selectWorkspacesListGenerators = createSelector(
-  [selectCurrentWorkspaces],
+  [selectHighlightedWorkspacesMerged],
   (workspaces) => {
-    if (!workspaces.length) return
+    if (!workspaces?.length) return
 
     const workspaceGenerators = workspaces.flatMap((workspace) => {
       if (!workspace.viewport) {

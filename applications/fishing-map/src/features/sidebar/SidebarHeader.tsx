@@ -18,7 +18,7 @@ import {
   selectWorkspaceId,
 } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
-import { WORKSPACE } from 'routes/routes'
+import { HOME, WORKSPACE } from 'routes/routes'
 import styles from './SidebarHeader.module.css'
 
 function SidebarHeader() {
@@ -61,7 +61,7 @@ function SidebarHeader() {
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
         <Logo className={styles.logo} subBrand={getSubBrand()} />
-        {locationType === WORKSPACE && (
+        {(locationType === WORKSPACE || locationType === HOME) && (
           <IconButton
             icon={finished ? 'tick' : 'share'}
             size="medium"

@@ -15,6 +15,15 @@ type CategoryTabsProps = {
   onMenuClick: () => void
 }
 
+function getLinkToCategory(category: WorkspaceCategories) {
+  return {
+    type: WORKSPACES_LIST,
+    payload: { workspaceId: undefined, category },
+    query: {},
+    replaceQuery: true,
+  }
+}
+
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t } = useTranslation()
   const locationType = useSelector(selectLocationType)
@@ -37,14 +46,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             locationCategory === WorkspaceCategories.FishingActivity || locationType === HOME,
         })}
       >
-        <Link
-          to={{
-            type: WORKSPACES_LIST,
-            payload: { workspaceId: undefined, category: WorkspaceCategories.FishingActivity },
-            query: {},
-            replaceQuery: true,
-          }}
-        >
+        <Link to={getLinkToCategory(WorkspaceCategories.FishingActivity)}>
           <Icon icon="category-fishing" />
         </Link>
       </li>
@@ -53,14 +55,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           [styles.current]: locationCategory === WorkspaceCategories.MarineReserves,
         })}
       >
-        <Link
-          to={{
-            type: WORKSPACES_LIST,
-            payload: { workspaceId: undefined, category: WorkspaceCategories.MarineReserves },
-            query: {},
-            replaceQuery: true,
-          }}
-        >
+        <Link to={getLinkToCategory(WorkspaceCategories.MarineReserves)}>
           <Icon icon="category-marine-reserves" />
         </Link>
       </li>
@@ -69,14 +64,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           [styles.current]: locationCategory === WorkspaceCategories.CountryPortals,
         })}
       >
-        <Link
-          to={{
-            type: WORKSPACES_LIST,
-            payload: { workspaceId: undefined, category: WorkspaceCategories.CountryPortals },
-            query: {},
-            replaceQuery: true,
-          }}
-        >
+        <Link to={getLinkToCategory(WorkspaceCategories.CountryPortals)}>
           <Icon icon="category-country-portals" />
         </Link>
       </li>
