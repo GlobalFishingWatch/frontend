@@ -9,7 +9,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'types'
-import { isUserLogged } from 'features/user/user.slice'
+import { isUserLogged } from 'features/user/user.selectors'
 import { selectWorkspaceId } from 'routes/routes.selectors'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'

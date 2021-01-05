@@ -9,20 +9,20 @@ import { AsyncReducerStatus } from 'types'
 import {
   fetchWorkspacesThunk,
   selectWorkspaceListStatus,
-  selectWorkspaces,
 } from 'features/workspaces-list/workspaces-list.slice'
 import { WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
 import { APP_NAME } from 'data/config'
 import styles from './User.module.css'
-import { isUserLogged, logoutUserThunk, selectUserData } from './user.slice'
+import { logoutUserThunk, selectUserData } from './user.slice'
+import { isUserLogged, selectUserWorkspaces } from './user.selectors'
 
 function User() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
-  const workspaces = useSelector(selectWorkspaces)
+  const workspaces = useSelector(selectUserWorkspaces)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
 
   useEffect(() => {
@@ -58,30 +58,27 @@ function User() {
           <Spinner size="small" />
         ) : (
           <ul>
-            {[...workspaces]
-              .reverse()
-              .slice(0, 10)
-              .map((workspace) => {
-                return (
-                  <li className={styles.workspace} key={workspace.id}>
-                    <Link
-                      className={styles.workspaceLink}
-                      to={{
-                        type: WORKSPACE,
-                        payload: {
-                          // TODO change to workspace category (save in API)
-                          category: WorkspaceCategories.FishingActivity,
-                          workspaceId: workspace.id,
-                        },
-                        query: {},
-                      }}
-                    >
-                      <span className={styles.workspaceTitle}>{workspace.name}</span>
-                      <IconButton icon="arrow-right" />
-                    </Link>
-                  </li>
-                )
-              })}
+            {workspaces?.map((workspace) => {
+              return (
+                <li className={styles.workspace} key={workspace.id}>
+                  <Link
+                    className={styles.workspaceLink}
+                    to={{
+                      type: WORKSPACE,
+                      payload: {
+                        // TODO change to workspace category (save in API)
+                        category: WorkspaceCategories.FishingActivity,
+                        workspaceId: workspace.id,
+                      },
+                      query: {},
+                    }}
+                  >
+                    <span className={styles.workspaceTitle}>{workspace.name}</span>
+                    <IconButton icon="arrow-right" />
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
         )}
       </div>

@@ -20,8 +20,7 @@
   },
   "scripts": {
     "start": "yarn json-schema && rollup -c ./rollup.config.js -w",
-    "build-backup": "yarn clean && yarn json-schema && cross-env NODE_ENV=production rollup -c rollup.config.js",
-    "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "build": "yarn clean && yarn json-schema && cross-env NODE_ENV=production rollup -c rollup.config.js",
     "clean": "rimraf dist/*",
     "prepare": "yarn build",
     "prepublishOnly": "yarn build",

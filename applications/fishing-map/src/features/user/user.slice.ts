@@ -1,4 +1,4 @@
-import { createSlice, createSelector, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import GFWAPI, {
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
@@ -59,28 +59,5 @@ const userSlice = createSlice({
 export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
-
-export const isUserLogged = createSelector(
-  [selectUserStatus, selectUserLogged],
-  (status, logged) => {
-    return status === 'finished' && logged
-  }
-)
-
-const LIMITED_ACCESS_USER = process.env.REACT_APP_LIMITED_ACCESS_USER === 'true'
-export const isUserAuthorized = createSelector([isUserLogged, selectUserData], (logged, user) => {
-  if (!logged) return false
-
-  if (!LIMITED_ACCESS_USER) return true
-
-  return (
-    user?.permissions.find(
-      (permission) =>
-        permission.type === 'application' &&
-        permission.value === 'fishing-map' &&
-        permission.action === 'map.load'
-    ) !== undefined
-  )
-})
 
 export default userSlice.reducer
