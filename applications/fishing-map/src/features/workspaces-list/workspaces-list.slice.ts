@@ -17,8 +17,8 @@ export type HighlightedWorkspace = {
   id: string
   name: string
   description: string
-  img: string
-  cta: string
+  img?: string
+  cta?: string
   viewport?: WorkspaceViewport
 }
 

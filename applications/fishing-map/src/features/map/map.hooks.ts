@@ -9,6 +9,10 @@ import {
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
+import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
+import { USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
+import { useLocationConnect } from 'routes/routes.hook'
+import { getGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
 import {
   setClickedEvent,
   selectClickedEvent,
@@ -16,7 +20,6 @@ import {
   fetch4WingInteractionThunk,
   MAX_TOOLTIP_VESSELS,
 } from './map.slice'
-import { getGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
 
 export function useMapImage(map: Map) {
   const [image, setImage] = useState<string | null>(null)
@@ -41,20 +44,40 @@ export function useMapImage(map: Map) {
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
   return {
-    globalConfig: useSelector(selectGlobalGeneratorsConfig),
     generatorsConfig: useSelector(getGeneratorsConfig),
+    globalConfig: useSelector(selectGlobalGeneratorsConfig),
   }
 }
 
 export const useClickedEventConnect = () => {
   const dispatch = useDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
+  const locationType = useSelector(selectLocationType)
+  const locationCategory = useSelector(selectLocationCategory)
   const clickedEventStatus = useSelector(selectClickedEventStatus)
+  const { dispatchLocation } = useLocationConnect()
   const promiseRef = useRef<any>()
 
   const rulersEditing = useSelector(selectEditing)
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
+    if (locationType === USER || locationType === WORKSPACES_LIST) {
+      const workspace = event?.features?.find(
+        (feature: any) => feature.properties.type === 'workspace'
+      )
+      if (workspace) {
+        dispatchLocation(
+          WORKSPACE,
+          {
+            category: locationCategory,
+            workspaceId: workspace.properties.id,
+          },
+          true
+        )
+        return
+      }
+    }
+
     if (rulersEditing === true && event) {
       dispatch(
         editRuler({

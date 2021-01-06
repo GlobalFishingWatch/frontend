@@ -1,7 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Workspace } from '@globalfishingwatch/api-types/dist'
 import { WorkspaceCategories } from 'data/workspaces'
-import { selectLocationCategory } from 'routes/routes.selectors'
+import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
+import { USER } from 'routes/routes'
+import { selectUserWorkspaces } from 'features/user/user.selectors'
 import {
   HighlightedWorkspace,
   selectHighlightedWorkspaces,
@@ -31,5 +33,12 @@ export const selectCurrentHighlightedWorkspaces = createSelector(
 
       return { ...workspace, viewport: apiWorkspace.viewport }
     })
+  }
+)
+
+export const selectCurrentWorkspacesList = createSelector(
+  [selectLocationType, selectCurrentHighlightedWorkspaces, selectUserWorkspaces],
+  (locationType, highlightedWorkspaces, userWorkspaces): HighlightedWorkspace[] | undefined => {
+    return locationType === USER ? userWorkspaces : highlightedWorkspaces
   }
 )

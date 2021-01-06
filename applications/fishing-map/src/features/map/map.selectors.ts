@@ -4,18 +4,21 @@ import {
   AnyGeneratorConfig,
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { GeneratorDataviewConfig, Generators } from '@globalfishingwatch/layer-composer'
+import { GeneratorDataviewConfig, Generators, AnyLayer } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
   resolveDataviewDatasetResource,
 } from 'features/workspace/workspace.selectors'
+import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import { Resource, selectResources, TrackResourceData } from 'features/resources/resources.slice'
 import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
+import { selectLocationType } from 'routes/routes.selectors'
+import { HOME, WORKSPACE } from 'routes/routes'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
@@ -27,7 +30,7 @@ export const selectGlobalGeneratorsConfig = createSelector(
   })
 )
 
-export const getGeneratorsConfig = createSelector(
+export const getWorkspaceGeneratorsConfig = createSelector(
   [
     selectDataviewInstancesResolved,
     selectResources,
@@ -143,5 +146,75 @@ export const getGeneratorsConfig = createSelector(
       data: rulers,
     }
     return [...generatorsConfig.reverse(), rulersConfig] as AnyGeneratorConfig[]
+  }
+)
+
+export const selectWorkspacesListGenerators = createSelector(
+  [selectCurrentWorkspacesList],
+  (workspaces) => {
+    if (!workspaces?.length) return
+
+    const workspaceGenerators = workspaces.flatMap((workspace) => {
+      if (!workspace.viewport) {
+        return []
+      }
+      const { latitude, longitude } = workspace.viewport
+      const generator: Generators.GlGeneratorConfig = {
+        id: workspace.id,
+        type: Generators.Type.GL,
+        sources: [
+          {
+            type: 'geojson',
+            data: {
+              type: 'Feature',
+              properties: { id: workspace.id, label: workspace.name, type: 'workspace' },
+              geometry: {
+                type: 'Point',
+                coordinates: [longitude, latitude],
+              },
+            },
+          },
+        ],
+        layers: [
+          {
+            type: 'circle',
+            layout: {},
+            paint: {
+              'circle-color': '#fff',
+              'circle-stroke-color': '#088',
+              'circle-radius': 10,
+            },
+            metadata: {
+              interactive: true,
+            },
+          } as AnyLayer,
+        ],
+      }
+      return generator
+    })
+    return workspaceGenerators.length ? workspaceGenerators : undefined
+  }
+)
+
+const basemap: Generators.BasemapGeneratorConfig = {
+  id: 'landmass',
+  type: Generators.Type.Basemap,
+  basemap: Generators.BasemapType.Default,
+}
+
+export const selectMapWorkspacesListGenerators = createSelector(
+  [selectWorkspacesListGenerators],
+  (workspaceGenerators): AnyGeneratorConfig[] => {
+    if (!workspaceGenerators) return [basemap]
+    return [basemap, ...workspaceGenerators]
+  }
+)
+
+export const getGeneratorsConfig = createSelector(
+  [selectLocationType, getWorkspaceGeneratorsConfig, selectMapWorkspacesListGenerators],
+  (locationType, workspaceGenerators, workspaceListGenerators) => {
+    return locationType === HOME || locationType === WORKSPACE
+      ? workspaceGenerators
+      : workspaceListGenerators
   }
 )

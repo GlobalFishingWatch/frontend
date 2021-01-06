@@ -9,13 +9,12 @@ import { AsyncReducerStatus } from 'types'
 import useDebugMenu from 'features/debug/debug.hooks'
 import { MapboxRefProvider } from 'features/map/map.context'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { selectLocationType, selectWorkspaceId } from 'routes/routes.selectors'
+import { selectLocationType } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
 import Login from 'features/user/Login'
 import Map from 'features/map/Map'
-import MapWorkspacesList from 'features/map-workspaces-list/MapWorkspacesList'
 import Timebar from 'features/timebar/Timebar'
 import Sidebar from 'features/sidebar/Sidebar'
 import { logoutUserThunk } from 'features/user/user.slice'
@@ -34,18 +33,11 @@ const ErrorPlaceHolder = ({ children }: { children: React.ReactNode }) => (
 )
 
 const Main = () => {
-  const workspaceId = useSelector(selectWorkspaceId)
   const locationType = useSelector(selectLocationType)
   return (
     <div className={styles.main}>
-      {workspaceId || locationType === HOME ? (
-        <Fragment>
-          <Map />
-          <Timebar />
-        </Fragment>
-      ) : (
-        <MapWorkspacesList />
-      )}
+      <Map />
+      {(locationType === HOME || locationType === WORKSPACE) && <Timebar />}
     </div>
   )
 }
