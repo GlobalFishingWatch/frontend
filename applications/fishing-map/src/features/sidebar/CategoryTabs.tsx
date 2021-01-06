@@ -3,8 +3,8 @@ import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Icon from '@globalfishingwatch/ui-components/dist/icon'
+import { Locale } from 'types'
 import { WorkspaceCategories } from 'data/workspaces'
 import { HOME, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
@@ -25,7 +25,7 @@ function getLinkToCategory(category: WorkspaceCategories) {
 }
 
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const locationType = useSelector(selectLocationType)
   const locationCategory = useSelector(selectLocationCategory)
   const userData = useSelector(selectUserData)
@@ -33,10 +33,14 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
 
+  const toggleLanguage = (lang: Locale) => {
+    i18n.changeLanguage(lang)
+  }
+
   return (
     <ul className={cx('print-hidden', styles.CategoryTabs)}>
       <li className={styles.tab} onClick={onMenuClick}>
-        <span>
+        <span className={styles.tabContent}>
           <Icon icon="menu" />
         </span>
       </li>
@@ -46,7 +50,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             locationCategory === WorkspaceCategories.FishingActivity || locationType === HOME,
         })}
       >
-        <Link to={getLinkToCategory(WorkspaceCategories.FishingActivity)}>
+        <Link
+          className={styles.tabContent}
+          to={getLinkToCategory(WorkspaceCategories.FishingActivity)}
+        >
           <Icon icon="category-fishing" />
         </Link>
       </li>
@@ -55,7 +62,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           [styles.current]: locationCategory === WorkspaceCategories.MarineReserves,
         })}
       >
-        <Link to={getLinkToCategory(WorkspaceCategories.MarineReserves)}>
+        <Link
+          className={styles.tabContent}
+          to={getLinkToCategory(WorkspaceCategories.MarineReserves)}
+        >
           <Icon icon="category-marine-reserves" />
         </Link>
       </li>
@@ -64,27 +74,58 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           [styles.current]: locationCategory === WorkspaceCategories.CountryPortals,
         })}
       >
-        <Link to={getLinkToCategory(WorkspaceCategories.CountryPortals)}>
+        <Link
+          className={styles.tabContent}
+          to={getLinkToCategory(WorkspaceCategories.CountryPortals)}
+        >
           <Icon icon="category-country-portals" />
         </Link>
       </li>
       <div className={styles.separator}></div>
+      <li className={cx(styles.tab, styles.languageToggle)}>
+        <button className={styles.tabContent}>
+          <Icon icon="language" />
+        </button>
+        <ul className={styles.languages}>
+          <li>
+            <button
+              onClick={() => toggleLanguage(Locale.en)}
+              className={cx(styles.language, {
+                [styles.currentLanguage]: i18n.language === Locale.en,
+              })}
+            >
+              English
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => toggleLanguage(Locale.es)}
+              className={cx(styles.language, {
+                [styles.currentLanguage]: i18n.language === Locale.es,
+              })}
+            >
+              Español
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => toggleLanguage(Locale.fr)}
+              className={cx(styles.language, {
+                [styles.currentLanguage]: i18n.language === Locale.fr,
+              })}
+            >
+              Français
+            </button>
+          </li>
+        </ul>
+      </li>
       <li
         className={cx(styles.tab, {
           [styles.current]: locationType === USER,
         })}
       >
         <Link to={{ type: USER, payload: {}, query: {}, replaceQuery: true }}>
-          {userData ? (
-            initials
-          ) : (
-            <IconButton
-              icon="user"
-              className="print-hidden"
-              tooltip={t('common.login', 'Login')}
-              tooltipPlacement="bottom"
-            />
-          )}
+          {userData ? initials : <Icon icon="user" className="print-hidden" />}
         </Link>
       </li>
     </ul>

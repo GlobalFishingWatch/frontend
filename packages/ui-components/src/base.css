@@ -102,6 +102,10 @@ a:visited {
   text-decoration: none;
 }
 
+button {
+  color: inherit;
+}
+
 ol,
 ul {
   list-style: none;
