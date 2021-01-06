@@ -24,15 +24,16 @@ export type HighlightedWorkspace = {
 
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
   'workspaces/fetchHighlighted',
-  async (category: string, { getState, dispatch }) => {
+  async (_, { getState, dispatch }) => {
     const workspaceStatus = selectWorkspaceListStatus(getState() as RootState)
     const apiWorkspaces = selectWorkspaces(getState() as RootState)
     const workspaces = await fetchGoogleSheetsData({
       apiKey: process.env.REACT_APP_GOOGLE_API_KEY as string,
       sheetId: process.env.REACT_APP_GOOGLE_SHEETS_ID as string,
-      sheetsNames: [category],
     }).then((response) => {
-      return response[0].data as HighlightedWorkspace[]
+      return Object.fromEntries(
+        response.map(({ id, data }) => [id, data as HighlightedWorkspace[]])
+      )
     })
     if (workspaceStatus !== AsyncReducerStatus.Finished || !apiWorkspaces) {
       dispatch(fetchWorkspacesThunk(APP_NAME))
@@ -44,7 +45,7 @@ export const fetchHighlightWorkspacesThunk = createAsyncThunk(
 export interface WorkspacesState extends AsyncReducer<Workspace> {
   highlighted: {
     status: AsyncReducerStatus
-    data: HighlightedWorkspace[] | undefined
+    data: Record<string, HighlightedWorkspace[]> | undefined
   }
 }
 

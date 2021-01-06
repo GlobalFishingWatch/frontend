@@ -21,10 +21,11 @@ export const selectCurrentWorkspaces = createSelector(
   }
 )
 
-export const selectHighlightedWorkspacesMerged = createSelector(
-  [selectHighlightedWorkspaces, selectWorkspaces],
-  (highlightedWorkspaces, apiWorkspaces): HighlightedWorkspace[] | undefined => {
-    return highlightedWorkspaces?.map((workspace) => {
+export const selectCurrentHighlightedWorkspaces = createSelector(
+  [selectLocationCategory, selectHighlightedWorkspaces, selectWorkspaces],
+  (locationCategory, highlightedWorkspaces, apiWorkspaces): HighlightedWorkspace[] | undefined => {
+    const workspaces = highlightedWorkspaces?.[locationCategory]
+    return workspaces?.map((workspace) => {
       const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
       if (!apiWorkspace) return workspace
 

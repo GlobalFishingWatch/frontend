@@ -6,7 +6,7 @@ import { selectLocationCategory } from 'routes/routes.selectors'
 import { WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'types'
 import styles from './WorkspacesList.module.css'
-import { selectHighlightedWorkspacesMerged } from './workspaces-list.selectors'
+import { selectCurrentHighlightedWorkspaces } from './workspaces-list.selectors'
 import {
   fetchHighlightWorkspacesThunk,
   selectHighlightedWorkspacesStatus,
@@ -16,12 +16,15 @@ function WorkspacesList() {
   const dispatch = useDispatch()
   const locationCategory = useSelector(selectLocationCategory)
   const userFriendlyCategory = locationCategory.replace('-', ' ')
-  const highlightedWorkspaces = useSelector(selectHighlightedWorkspacesMerged)
+  const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
 
   useEffect(() => {
-    dispatch(fetchHighlightWorkspacesThunk(locationCategory))
-  }, [dispatch, locationCategory])
+    if (highlightedWorkspacesStatus !== AsyncReducerStatus.Finished) {
+      dispatch(fetchHighlightWorkspacesThunk())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className={styles.container}>
