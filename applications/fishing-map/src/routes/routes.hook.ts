@@ -9,17 +9,20 @@ export const useLocationConnect = () => {
   const dispatch = useDispatch()
   const location = useSelector(selectCurrentLocation)
   const payload = useSelector(selectLocationPayload)
+
   const dispatchLocation = useCallback(
-    (type: ROUTE_TYPES, customPayload: Record<string, any> = {}) => {
-      dispatch(updateLocation(type, { payload: { ...payload, ...customPayload } }))
+    (type: ROUTE_TYPES, customPayload: Record<string, any> = {}, replaceQuery = false) => {
+      dispatch(updateLocation(type, { payload: { ...payload, ...customPayload }, replaceQuery }))
     },
     [dispatch, payload]
   )
+
   const dispatchQueryParams = useCallback(
-    (query: QueryParams) => {
-      dispatch(updateLocation(location.type, { query, payload }))
+    (query: QueryParams, replaceQuery = false) => {
+      dispatch(updateLocation(location.type, { query, payload, replaceQuery }))
     },
     [dispatch, location.type, payload]
   )
+
   return { location, payload, dispatchLocation, dispatchQueryParams }
 }

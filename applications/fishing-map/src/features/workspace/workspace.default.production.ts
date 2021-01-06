@@ -19,6 +19,7 @@ const workspace: Workspace<WorkspaceState> = {
     longitude: 21.7,
   },
   state: {},
+  ownerId: 0,
   dataviews: [{ id: DEFAULT_VESSEL_DATAVIEW_ID }], // Needed to fetch vessel information
   dataviewInstances: [
     {

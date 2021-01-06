@@ -2,7 +2,7 @@ import memoizeOne from 'memoize-one'
 import { FeatureCollection, Feature, LineString, Point } from 'geojson'
 import length from '@turf/length'
 import greatCircle from '@turf/great-circle'
-import { Layer } from 'mapbox-gl'
+import { Layer, SymbolLayout } from 'mapbox-gl'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { Dictionary, Group } from '../../types'
 import { Type, RulersGeneratorConfig, Ruler } from '../types'
@@ -30,9 +30,10 @@ const makeRulerGeometry = (ruler: Ruler): Feature<LineString> => {
   const finalFeature =
     lengthKm < 100
       ? rawFeature
-      : (greatCircle([start.longitude, start.latitude], [end.longitude, end.latitude]) as Feature<
-          LineString
-        >)
+      : (greatCircle(
+          [start.longitude, start.latitude],
+          [end.longitude, end.latitude]
+        ) as Feature<LineString>)
 
   finalFeature.properties = {}
   finalFeature.properties.label = `${lengthKmFormatted}km - ${lengthNmiFormatted}nmi`
@@ -144,7 +145,7 @@ class RulersGenerator {
             ['literal', ['Roboto Mono Light']],
           ],
           'text-size': ['case', ['==', ['get', 'isNew'], true], 13, 12],
-        },
+        } as SymbolLayout,
         paint: {
           'text-color': COLOR,
         },

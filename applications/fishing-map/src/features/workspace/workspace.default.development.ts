@@ -23,6 +23,7 @@ const workspace: Workspace<WorkspaceState> = {
     // timebarEvents: '',
     // timebarGraph: '',
   },
+  ownerId: 0,
   dataviews: [{ id: DEFAULT_VESSEL_DATAVIEW_ID }], // Needed to fetch vessel information
   dataviewInstances: [
     {

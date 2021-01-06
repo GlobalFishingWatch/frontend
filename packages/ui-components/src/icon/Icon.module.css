@@ -1,8 +1,3 @@
-.icon {
-  width: var(--size-XS);
-  height: var(--size-XS);
-}
-
 .default path {
   fill: currentColor;
 }

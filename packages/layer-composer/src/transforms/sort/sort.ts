@@ -1,4 +1,4 @@
-import type { Style, Layer } from 'mapbox-gl'
+import type { Style } from 'mapbox-gl'
 import { Group, Dictionary, ExtendedStyle, ExtendedLayer, StyleTransformation } from '../../types'
 
 const GROUP_ORDER = [
@@ -29,11 +29,11 @@ const GROUP_FROM_LEGACY: Dictionary<Group> = {
   tools: Group.Overlay,
 }
 
-export const convertLegacyGroups = (style: Style): ExtendedStyle => {
+export const convertLegacyGroups = (style: ExtendedStyle): ExtendedStyle => {
   const newStyle = { ...style }
   newStyle.layers =
     newStyle.layers &&
-    newStyle.layers.map((layer: Layer) => {
+    newStyle.layers.map((layer) => {
       const legacyGroup = layer.metadata && layer.metadata['mapbox:group']
       if (legacyGroup) {
         layer.metadata.group = GROUP_FROM_LEGACY[legacyGroup]

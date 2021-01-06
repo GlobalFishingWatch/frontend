@@ -8,6 +8,7 @@ import { RootState } from 'store'
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
   async (ids: number[], { rejectWithValue }) => {
+    // TODO fetch new dataviews only
     try {
       let dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${ids.join(',')}`)
       if (process.env.REACT_APP_USE_LOCAL_DATAVIEWS === 'true') {

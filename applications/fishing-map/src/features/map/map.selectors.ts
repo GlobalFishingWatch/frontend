@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { CircleLayer } from 'mapbox-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   AnyGeneratorConfig,
@@ -10,12 +11,15 @@ import {
   selectDataviewInstancesResolved,
   resolveDataviewDatasetResource,
 } from 'features/workspace/workspace.selectors'
+import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import { Resource, selectResources, TrackResourceData } from 'features/resources/resources.slice'
 import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
+import { selectLocationType } from 'routes/routes.selectors'
+import { HOME, WORKSPACE } from 'routes/routes'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
@@ -27,7 +31,7 @@ export const selectGlobalGeneratorsConfig = createSelector(
   })
 )
 
-export const getGeneratorsConfig = createSelector(
+export const getWorkspaceGeneratorsConfig = createSelector(
   [
     selectDataviewInstancesResolved,
     selectResources,
@@ -143,5 +147,94 @@ export const getGeneratorsConfig = createSelector(
       data: rulers,
     }
     return [...generatorsConfig.reverse(), rulersConfig] as AnyGeneratorConfig[]
+  }
+)
+
+export const WORKSPACE_GENERATOR_ID = 'workspace_points'
+export const selectWorkspacesListGenerator = createSelector(
+  [selectCurrentWorkspacesList],
+  (workspaces) => {
+    if (!workspaces?.length) return
+
+    const generator: Generators.GlGeneratorConfig = {
+      id: WORKSPACE_GENERATOR_ID,
+      type: Generators.Type.GL,
+      sources: [
+        {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: workspaces.flatMap((workspace) => {
+              if (!workspace.viewport) {
+                return []
+              }
+
+              const { latitude, longitude } = workspace.viewport
+              return {
+                type: 'Feature',
+                properties: { id: workspace.id, label: workspace.name, type: 'workspace' },
+                geometry: {
+                  type: 'Point',
+                  coordinates: [longitude, latitude],
+                },
+              }
+            }),
+          },
+        },
+      ],
+      layers: [
+        {
+          type: 'circle',
+          layout: {},
+          paint: {
+            'circle-color': '#ffffff',
+            'circle-opacity': 0.2,
+            'circle-radius': 14,
+          },
+          metadata: {
+            interactive: true,
+          },
+        } as CircleLayer,
+        {
+          type: 'circle',
+          layout: {},
+          paint: {
+            'circle-color': '#ffffff',
+            'circle-stroke-color': '#002358',
+            'circle-stroke-opacity': 1,
+            'circle-stroke-width': 1,
+            'circle-radius': 8,
+          },
+          metadata: {
+            interactive: false,
+          },
+        } as CircleLayer,
+      ],
+    }
+
+    return generator
+  }
+)
+
+const basemap: Generators.BasemapGeneratorConfig = {
+  id: 'landmass',
+  type: Generators.Type.Basemap,
+  basemap: Generators.BasemapType.Default,
+}
+
+export const selectMapWorkspacesListGenerators = createSelector(
+  [selectWorkspacesListGenerator],
+  (workspaceGenerator): AnyGeneratorConfig[] => {
+    if (!workspaceGenerator) return [basemap]
+    return [basemap, workspaceGenerator]
+  }
+)
+
+export const getGeneratorsConfig = createSelector(
+  [selectLocationType, getWorkspaceGeneratorsConfig, selectMapWorkspacesListGenerators],
+  (locationType, workspaceGenerators, workspaceListGenerators) => {
+    return locationType === HOME || locationType === WORKSPACE
+      ? workspaceGenerators
+      : workspaceListGenerators
   }
 )

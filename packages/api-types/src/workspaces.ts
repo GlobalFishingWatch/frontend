@@ -20,6 +20,7 @@ export interface Workspace<T = unknown> {
   state?: T
   dataviews?: Partial<Dataview>[]
   dataviewInstances: DataviewInstance[]
+  ownerId: number
 }
 
 export interface WorkspaceUpsert<T = any> extends Partial<Omit<Workspace<T>, 'aoi' | 'dataviews'>> {

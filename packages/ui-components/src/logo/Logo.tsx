@@ -3,7 +3,7 @@ import cx from 'classnames'
 import styles from './Logo.module.css'
 
 export type LogoTypes = 'default' | 'invert'
-export type SubBrands = 'Marine Reserves' | 'Carrier Vessels'
+export type SubBrands = 'Marine Reserves' | 'Carrier Vessels' | 'Country Portal'
 
 interface LogoProps {
   type?: LogoTypes

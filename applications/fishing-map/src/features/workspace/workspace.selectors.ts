@@ -30,7 +30,7 @@ export const selectWorkspace = (state: RootState) => state.workspace.data
 export const selectWorkspaceStatus = (state: RootState) => state.workspace.status
 export const selectWorkspaceCustom = (state: RootState) => state.workspace.custom
 
-export const selectWorkspaceId = createSelector([selectWorkspace], (workspace) => {
+export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id
 })
 

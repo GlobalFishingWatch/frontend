@@ -1,5 +1,5 @@
-import { Layer } from 'mapbox-gl'
-import { Dictionary } from './types'
+import { AnyLayer } from 'mapbox-gl'
+import { Dictionary, ExtendedLayer } from './types'
 
 export function isUrlAbsolute(url: string) {
   if (!url) {
@@ -26,7 +26,7 @@ export const flatObjectArrays = (object = {} as any) => {
   return objectParsed
 }
 
-export const layersDictToArray = (layers: Dictionary<Layer>) =>
+export const layersDictToArray = (layers: Dictionary<ExtendedLayer>) =>
   Object.values(layers).flatMap((layerGroup) => layerGroup)
 
 type AnyFunc = (...args: any[]) => any

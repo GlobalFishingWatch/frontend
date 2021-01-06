@@ -10,7 +10,7 @@ import {
 } from '@globalfishingwatch/ui-components/dist/color-bar'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
-import styles from 'features/sidebar/LayerPanel.module.css'
+import styles from 'features/workspace/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
 import { VESSELS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'

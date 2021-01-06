@@ -37,7 +37,7 @@ const BASE_PAINT = {
 // Seems like MGL 'heatmap' layer types can be rendered more than once,
 // so when using 'blob' type, we just use the 1st timechunk to render a single layer
 // this will prevent buffering to happen, but whatever
-export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) {
+const blob = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) => {
   const { colorRamp } = getColorRampBaseExpression(config)
   const activeChunk = timeChunks.chunks.find((chunk) => chunk.active)
   if (!activeChunk) return []
@@ -70,3 +70,5 @@ export default function (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk
 
   return [chunkMainLayer]
 }
+
+export default blob

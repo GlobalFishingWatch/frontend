@@ -11,11 +11,16 @@ import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
 import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
-import { selectUrlDataviewInstances, selectVersion } from 'routes/routes.selectors'
-import { HOME } from 'routes/routes'
+import {
+  selectLocationCategory,
+  selectLocationType,
+  selectUrlDataviewInstances,
+  selectVersion,
+} from 'routes/routes.selectors'
+import { WORKSPACE, HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace } from 'features/app/app.selectors'
-import { getWorkspaceEnv } from 'data/workspaces'
+import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
@@ -43,16 +48,25 @@ export const getDatasetByDataview = (
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
-  async (workspaceId: number, { dispatch, getState }) => {
+  async (workspaceId: string, { dispatch, getState }) => {
     const state = getState() as RootState
     const version = selectVersion(state)
+    const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const workspaceEnv = getWorkspaceEnv()
-    const workspace = workspaceId
+
+    let workspace = workspaceId
       ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`)
-      : ((await import(`./workspace.default.${workspaceEnv}`).then(
-          (m) => m.default
-        )) as Workspace<WorkspaceState>)
+      : null
+    if (!workspace && locationType === HOME) {
+      workspace = (await import(`./workspace.default.${workspaceEnv}`).then(
+        (m) => m.default
+      )) as Workspace<WorkspaceState>
+    }
+
+    if (!workspace) {
+      return
+    }
 
     const dataviewIds = [
       ...(workspace.dataviews?.map(({ id }) => id as number) || []),
@@ -76,6 +90,17 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
     if (datasets?.length) {
       await dispatch(fetchDatasetsByIdsThunk(datasets))
+    }
+
+    const locationCategory = selectLocationCategory(state)
+    if (workspace.viewport && locationType !== HOME) {
+      dispatch(
+        updateLocation(locationType, {
+          payload: { category: locationCategory, workspaceId: workspace.id },
+          query: { ...workspace.viewport },
+          replaceQuery: true,
+        })
+      )
     }
     return workspace
   }
@@ -107,11 +132,20 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
     }
 
     const workspaceUpdated = await saveWorkspace()
+    const locationType = selectLocationType(state)
+    const locationCategory = selectLocationCategory(state) || WorkspaceCategories.FishingActivity
     if (workspaceUpdated) {
       dispatch(
-        updateLocation(HOME, {
-          payload: { workspaceId: workspaceUpdated.id },
-          query: {},
+        updateLocation(locationType === HOME ? WORKSPACE : locationType, {
+          payload: {
+            category: locationCategory,
+            workspaceId: workspaceUpdated.id,
+          },
+          query: {
+            latitude: workspaceUpdated.viewport.latitude,
+            longitude: workspaceUpdated.viewport.longitude,
+            zoom: workspaceUpdated.viewport.zoom,
+          },
           replaceQuery: true,
         })
       )
