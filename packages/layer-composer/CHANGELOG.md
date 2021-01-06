@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.10.3
+
+### Patch Changes
+
+- 2d0cdffa: fix typings
+
 ## 4.10.2
 
 ### Patch Changes
