@@ -24,7 +24,6 @@ import {
   WorkspaceState,
   WorkspaceStateProperty,
 } from 'types'
-import { selectUserData } from 'features/user/user.slice'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 
@@ -121,21 +120,13 @@ export const selectWorkspaceAppState = createSelector(
 
 export const selectCustomWorkspace = createSelector(
   [
-    selectUserData,
     selectWorkspace,
     selectViewport,
     selectTimeRange,
     selectWorkspaceAppState,
     selectDataviewInstancesMerged,
   ],
-  (
-    user,
-    workspace,
-    viewport,
-    timerange,
-    state,
-    dataviewInstances
-  ): WorkspaceUpsert<WorkspaceState> => {
+  (workspace, viewport, timerange, state, dataviewInstances): WorkspaceUpsert<WorkspaceState> => {
     const areaName = getOceanAreaName(viewport)
     const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
     const start = formatI18nDate(timerange.start as string, {

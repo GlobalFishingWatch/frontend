@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
@@ -24,6 +24,7 @@ function User() {
   const userData = useSelector(selectUserData)
   const workspaces = useSelector(selectUserWorkspaces)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
+  const [logoutLoading, setLogoutLoading] = useState(false)
 
   useEffect(() => {
     if (userLogged && workspacesStatus !== AsyncReducerStatus.Finished) {
@@ -33,6 +34,7 @@ function User() {
   }, [])
 
   const onLogoutClick = useCallback(() => {
+    setLogoutLoading(true)
     dispatch(logoutUserThunk())
   }, [dispatch])
 
@@ -46,7 +48,12 @@ function User() {
           <p>{`${userData.firstName} ${userData.lastName || ''}`}</p>
           <p className={styles.secondary}>{userData.email}</p>
         </div>
-        <Button type="secondary" onClick={onLogoutClick}>
+        <Button
+          type="secondary"
+          loading={logoutLoading}
+          disabled={logoutLoading}
+          onClick={onLogoutClick}
+        >
           <span>{t('common.logout', 'Log out')}</span>
         </Button>
       </div>
