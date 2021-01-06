@@ -12,7 +12,11 @@ import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
-import { getGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
+import {
+  getGeneratorsConfig,
+  selectGlobalGeneratorsConfig,
+  WORKSPACE_GENERATOR_ID,
+} from './map.selectors'
 import {
   setClickedEvent,
   selectClickedEvent,
@@ -114,7 +118,7 @@ export const useClickedEventConnect = () => {
 }
 
 export type TooltipEventFeature = {
-  title: string
+  title?: string
   type?: Type
   color?: string
   unit?: string
@@ -137,7 +141,7 @@ export type TooltipEvent = {
 export const useMapTooltip = (event?: InteractionEvent | null) => {
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
-  if (!event || !event.features || !dataviews) return null
+  if (!event || !event.features) return null
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     let dataview
     if (feature.generatorType === Generators.Type.HeatmapAnimated) {
@@ -148,14 +152,26 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
       dataview = temporalgridDataviews?.[feature.temporalgrid?.sublayerIndex]
     } else {
-      dataview = dataviews.find((dataview) => {
+      dataview = dataviews?.find((dataview) => {
         // Needed to get only the initial part to support multiple generator
         // from the same dataview, see map.selectors L137
         const cleanGeneratorId = (feature.generatorId as string)?.split('__')[0]
         return dataview.id === cleanGeneratorId
       })
     }
-    if (!dataview) return []
+
+    if (!dataview) {
+      // Not needed to create a dataview just for the workspaces list interaction
+      if ((feature.generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
+        const tooltipWorkspaceFeature: TooltipEventFeature = {
+          type: Generators.Type.GL,
+          value: feature.properties.label,
+          properties: {},
+        }
+        return tooltipWorkspaceFeature
+      }
+      return []
+    }
 
     const tooltipEventFeature: TooltipEventFeature = {
       title: dataview.name || dataview.id.toString(),

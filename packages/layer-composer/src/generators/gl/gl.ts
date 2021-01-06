@@ -21,7 +21,7 @@ class GlStyleGenerator {
           ...layout,
           ...glLayer.layout,
         },
-        metadata: glLayer.metadata || {},
+        metadata: { ...glLayer.metadata, generatorId: config.id },
       })) || []
     )
   }

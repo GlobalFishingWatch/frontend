@@ -26,10 +26,11 @@ function User() {
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
 
   useEffect(() => {
-    if (userLogged) {
+    if (userLogged && workspacesStatus !== AsyncReducerStatus.Finished) {
       dispatch(fetchWorkspacesThunk(APP_NAME))
     }
-  }, [dispatch, userLogged])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onLogoutClick = useCallback(() => {
     dispatch(logoutUserThunk())

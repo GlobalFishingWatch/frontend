@@ -149,6 +149,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
   }
 )
 
+export const WORKSPACE_GENERATOR_ID = 'workspace_point'
 export const selectWorkspacesListGenerators = createSelector(
   [selectCurrentWorkspacesList],
   (workspaces) => {
@@ -160,7 +161,7 @@ export const selectWorkspacesListGenerators = createSelector(
       }
       const { latitude, longitude } = workspace.viewport
       const generator: Generators.GlGeneratorConfig = {
-        id: workspace.id,
+        id: `${WORKSPACE_GENERATOR_ID}_${workspace.id}`,
         type: Generators.Type.GL,
         sources: [
           {
@@ -192,6 +193,7 @@ export const selectWorkspacesListGenerators = createSelector(
       }
       return generator
     })
+
     return workspaceGenerators.length ? workspaceGenerators : undefined
   }
 )
