@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectLocationCategory } from 'routes/routes.selectors'
-import { WORKSPACE } from 'routes/routes'
+import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'types'
 import styles from './WorkspacesList.module.css'
 import { selectCurrentHighlightedWorkspaces } from './workspaces-list.selectors'
@@ -34,19 +34,24 @@ function WorkspacesList() {
       ) : (
         <ul>
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
-            return (
-              <li key={highlightedWorkspace.name}>
-                <Link
-                  className={styles.workspace}
-                  to={{
+            const linkTo =
+              highlightedWorkspace.id === 'default'
+                ? {
+                    type: HOME,
+                    payload: {},
+                    query: {},
+                  }
+                : {
                     type: WORKSPACE,
                     payload: {
                       category: locationCategory,
                       workspaceId: highlightedWorkspace.id,
                     },
                     query: {},
-                  }}
-                >
+                  }
+            return (
+              <li key={highlightedWorkspace.name}>
+                <Link className={styles.workspace} to={linkTo}>
                   <img
                     className={styles.image}
                     alt={highlightedWorkspace.name}
