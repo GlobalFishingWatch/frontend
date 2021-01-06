@@ -33,7 +33,7 @@ function getLinkToCategory(category: WorkspaceCategories) {
 }
 
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const locationType = useSelector(selectLocationType)
   const locationCategory = useSelector(selectLocationCategory)
   const userData = useSelector(selectUserData)
