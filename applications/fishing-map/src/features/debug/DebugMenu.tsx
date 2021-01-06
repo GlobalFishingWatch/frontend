@@ -34,26 +34,6 @@ const DebugMenu: React.FC = () => {
         <label htmlFor="option_debug">Debug tiles</label>
       </div>
       <p>Displays info on tiles useful for debugging.</p>
-      <div className={styles.header}>
-        <Switch
-          active={i18n.language === Locale.es}
-          onClick={(event: SwitchEvent) => {
-            toggleLanguage(Locale.es, event.active)
-          }}
-        />
-        <label htmlFor="option_language">Ver en Español</label>
-      </div>
-      <p>Translations in progress, some literals could be missing.</p>
-      <div className={styles.header}>
-        <Switch
-          active={i18n.language === Locale.fr}
-          onClick={(event: SwitchEvent) => {
-            toggleLanguage(Locale.fr, event.active)
-          }}
-        />
-        <label htmlFor="option_language">Voir en Français</label>
-      </div>
-      <p>Translations in progress, some literals could be missing.</p>
     </div>
   )
 }
