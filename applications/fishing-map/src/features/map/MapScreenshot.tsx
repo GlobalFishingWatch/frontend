@@ -127,7 +127,7 @@ function MapScreenshot() {
       <img className={styles.screenshot} src={imgMap} alt="map screenshot" />
       <style>
         {`@page {
-          size: ${printSize.current?.width} ${printSize.current?.height};
+          size: ${printSize.current?.width.in} ${printSize.current?.height.in};
           margin: 0;
         }`}
       </style>
