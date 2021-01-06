@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.4.2
+
+### Patch Changes
+
+- 2d0cdffa: include ownerId in workspace
+
 ## 2.4.1
 
 ### Patch Changes

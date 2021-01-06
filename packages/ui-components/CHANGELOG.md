@@ -1,5 +1,13 @@
 # @globalfishingwatch/ui-components
 
+## 2.11.1
+
+### Patch Changes
+
+- 2d0cdffa: add icons
+- Updated dependencies [2d0cdffa]
+  - @globalfishingwatch/layer-composer@4.10.3
+
 ## 2.11.0
 
 ### Minor Changes
