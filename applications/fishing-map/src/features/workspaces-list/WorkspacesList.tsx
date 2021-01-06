@@ -32,29 +32,29 @@ function WorkspacesList() {
         <ul>
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
             return (
-              <li className={styles.workspace} key={highlightedWorkspace.name}>
-                <img
-                  className={styles.image}
-                  alt={highlightedWorkspace.name}
-                  src={highlightedWorkspace.img}
-                />
-                <div className={styles.info}>
-                  <h3 className={styles.title}>{highlightedWorkspace.name}</h3>
-                  <p className={styles.description}>{highlightedWorkspace.description}</p>
-                  <Link
-                    className={styles.link}
-                    to={{
-                      type: WORKSPACE,
-                      payload: {
-                        category: locationCategory,
-                        workspaceId: highlightedWorkspace.id,
-                      },
-                      query: {},
-                    }}
-                  >
-                    {highlightedWorkspace.cta}
-                  </Link>
-                </div>
+              <li key={highlightedWorkspace.name}>
+                <Link
+                  className={styles.workspace}
+                  to={{
+                    type: WORKSPACE,
+                    payload: {
+                      category: locationCategory,
+                      workspaceId: highlightedWorkspace.id,
+                    },
+                    query: {},
+                  }}
+                >
+                  <img
+                    className={styles.image}
+                    alt={highlightedWorkspace.name}
+                    src={highlightedWorkspace.img}
+                  />
+                  <div className={styles.info}>
+                    <h3 className={styles.title}>{highlightedWorkspace.name}</h3>
+                    <p className={styles.description}>{highlightedWorkspace.description}</p>
+                    <span className={styles.link}>{highlightedWorkspace.cta}</span>
+                  </div>
+                </Link>
               </li>
             )
           })}

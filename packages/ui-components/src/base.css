@@ -75,6 +75,7 @@ body {
   height: 100%;
   font: var(--font-M);
   color: var(--color-primary-blue);
+  overflow-anchor: auto;
 }
 
 /* * {

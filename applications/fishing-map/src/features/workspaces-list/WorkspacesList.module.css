@@ -1,42 +1,45 @@
 .container {
-    padding: var(--space-M);
+  padding: var(--space-M);
 }
 
 .workspace {
-    display: flex;
-    margin-top: var(--space-M);
-    gap: var(--space-S)
+  display: flex;
+  margin-top: var(--space-M);
 }
 
 .image {
-    width: 18rem;
-    height: 15rem;
-    object-fit: cover;
-    border-radius: var(--border-radius);
-    background-color: var(--color-terthiary-blue);
-    flex: none;
+  width: 18rem;
+  height: 15rem;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+  background-color: var(--color-terthiary-blue);
+  flex: none;
 }
 
 .info {
-    display: flex;
-    flex-direction: column;
-    height: 15rem;
+  display: flex;
+  flex-direction: column;
+  height: 15rem;
+  margin-left: var(--space-S);
 }
 
 .title {
-    font: var(--font-L);
-    flex: none;
+  font: var(--font-L);
+  flex: none;
 }
 
 .description {
-    text-overflow: ellipsis;
-    flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .link,
 .link:visited {
-    font: var(--font-XS);
-    color: var(--color-danger-red);
-    text-transform: uppercase;
-    flex: none;
+  font: var(--font-XS);
+  color: var(--color-danger-red);
+  text-transform: uppercase;
+  flex: none;
+  margin-top: auto;
 }
