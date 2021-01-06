@@ -11,6 +11,12 @@ import { selectLocationCategory, selectLocationType } from 'routes/routes.select
 import { selectUserData } from 'features/user/user.slice'
 import styles from './CategoryTabs.module.css'
 
+const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
+  latitude: 3,
+  longitude: -7,
+  zoom: 0.1,
+}
+
 type CategoryTabsProps = {
   onMenuClick: () => void
 }
@@ -19,7 +25,9 @@ function getLinkToCategory(category: WorkspaceCategories) {
   return {
     type: WORKSPACES_LIST,
     payload: { workspaceId: undefined, category },
-    query: {},
+    query: {
+      ...DEFAULT_WORKSPACE_LIST_VIEWPORT,
+    },
     replaceQuery: true,
   }
 }
@@ -124,7 +132,14 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           [styles.current]: locationType === USER,
         })}
       >
-        <Link to={{ type: USER, payload: {}, query: {}, replaceQuery: true }}>
+        <Link
+          to={{
+            type: USER,
+            payload: {},
+            query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
+            replaceQuery: true,
+          }}
+        >
           {userData ? initials : <Icon icon="user" className="print-hidden" />}
         </Link>
       </li>
