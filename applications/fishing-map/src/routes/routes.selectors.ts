@@ -4,7 +4,7 @@ import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'store'
 import { WorkspaceParam, UrlDataviewInstance } from 'types'
 import { DEFAULT_VERSION } from 'data/config'
-import { ROUTE_TYPES } from './routes'
+import { HOME, ROUTE_TYPES, WORKSPACE } from './routes'
 
 const selectLocation = (state: RootState) => state.location
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
@@ -15,6 +15,11 @@ export const selectCurrentLocation = createSelector([selectLocation], ({ type, r
 export const selectLocationType = createSelector(
   [selectLocation],
   (location) => location.type as ROUTE_TYPES
+)
+
+export const isWorkspaceLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === WORKSPACE || locationType === HOME
 )
 
 export const selectLocationQuery = createSelector(

@@ -18,8 +18,7 @@ import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
-import { selectLocationType } from 'routes/routes.selectors'
-import { HOME, WORKSPACE } from 'routes/routes'
+import { isWorkspaceLocation } from 'routes/routes.selectors'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
@@ -231,10 +230,8 @@ export const selectMapWorkspacesListGenerators = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [selectLocationType, getWorkspaceGeneratorsConfig, selectMapWorkspacesListGenerators],
-  (locationType, workspaceGenerators, workspaceListGenerators) => {
-    return locationType === HOME || locationType === WORKSPACE
-      ? workspaceGenerators
-      : workspaceListGenerators
+  [isWorkspaceLocation, getWorkspaceGeneratorsConfig, selectMapWorkspacesListGenerators],
+  (showWorkspaceDetail, workspaceGenerators, workspaceListGenerators) => {
+    return showWorkspaceDetail ? workspaceGenerators : workspaceListGenerators
   }
 )

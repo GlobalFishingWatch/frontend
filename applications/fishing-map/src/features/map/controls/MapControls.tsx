@@ -9,14 +9,12 @@ import { selectDataviewInstancesResolved } from 'features/workspace/workspace.se
 import Rulers from 'features/map/controls/Rulers'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import { useScreenshotConnect, useScreenshotLoadingConnect } from 'features/app/app.hooks'
-import { selectLocationType } from 'routes/routes.selectors'
-import { WORKSPACE } from 'routes/routes'
+import { isWorkspaceLocation } from 'routes/routes.selectors'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
 
 const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactElement => {
   const { t } = useTranslation()
-  const locationType = useSelector(selectLocationType)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
   const { setScreenshotMode } = useScreenshotConnect()
   const { screenshotLoading } = useScreenshotLoadingConnect()
@@ -48,7 +46,7 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
       },
     })
   }
-  const extendedControls = locationType === WORKSPACE
+  const extendedControls = useSelector(isWorkspaceLocation)
   return (
     <div className={styles.mapControls}>
       <MiniGlobe

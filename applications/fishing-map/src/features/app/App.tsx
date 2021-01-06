@@ -9,7 +9,7 @@ import { AsyncReducerStatus } from 'types'
 import useDebugMenu from 'features/debug/debug.hooks'
 import { MapboxRefProvider } from 'features/map/map.context'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { selectLocationType } from 'routes/routes.selectors'
+import { isWorkspaceLocation } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
@@ -19,7 +19,7 @@ import Timebar from 'features/timebar/Timebar'
 import Sidebar from 'features/sidebar/Sidebar'
 import { logoutUserThunk } from 'features/user/user.slice'
 import { isUserAuthorized, isUserLogged } from 'features/user/user.selectors'
-import { HOME, WORKSPACE } from 'routes/routes'
+import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -33,11 +33,11 @@ const ErrorPlaceHolder = ({ children }: { children: React.ReactNode }) => (
 )
 
 const Main = () => {
-  const locationType = useSelector(selectLocationType)
+  const showTimebar = useSelector(isWorkspaceLocation)
   return (
     <div className={styles.main}>
       <Map />
-      {(locationType === HOME || locationType === WORKSPACE) && <Timebar />}
+      {showTimebar && <Timebar />}
     </div>
   )
 }
@@ -50,7 +50,7 @@ function App(): React.ReactElement {
   const userLogged = useSelector(isUserLogged)
   const userAuthorized = useSelector(isUserAuthorized)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const locationType = useSelector(selectLocationType)
+  const narrowSidebar = useSelector(isWorkspaceLocation)
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 
@@ -110,14 +110,14 @@ function App(): React.ReactElement {
           onToggle={onToggle}
           aside={<Sidebar onMenuClick={onMenuClick} />}
           main={<Main />}
-          asideWidth={locationType === WORKSPACE || locationType === HOME ? '37rem' : '50%'}
+          asideWidth={narrowSidebar ? '37rem' : '50%'}
           className="split-container"
         />
       </MapboxRefProvider>
     )
   }, [
     dispatch,
-    locationType,
+    narrowSidebar,
     onMenuClick,
     onToggle,
     sidebarOpen,

@@ -13,12 +13,11 @@ import {
 import { AsyncReducerStatus } from 'types'
 import copyToClipboard from 'utils/clipboard'
 import {
+  isWorkspaceLocation,
   selectLocationCategory,
-  selectLocationType,
   selectWorkspaceId,
 } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
-import { HOME, WORKSPACE } from 'routes/routes'
 import styles from './SidebarHeader.module.css'
 
 function SidebarHeader() {
@@ -28,8 +27,8 @@ function SidebarHeader() {
   const workspaceId = useSelector(selectWorkspaceId)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustom = useSelector(selectWorkspaceCustom)
-  const locationType = useSelector(selectLocationType)
   const locationCategory = useSelector(selectLocationCategory)
+  const showShareButton = useSelector(isWorkspaceLocation)
 
   const onShareClick = useCallback(() => {
     dispatch(saveCurrentWorkspaceThunk())
@@ -61,7 +60,7 @@ function SidebarHeader() {
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
         <Logo className={styles.logo} subBrand={getSubBrand()} />
-        {(locationType === WORKSPACE || locationType === HOME) && (
+        {showShareButton && (
           <IconButton
             icon={finished ? 'tick' : 'share'}
             size="medium"
