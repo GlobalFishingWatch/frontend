@@ -1,10 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { CircleLayer } from 'mapbox-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   AnyGeneratorConfig,
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { GeneratorDataviewConfig, Generators, AnyLayer } from '@globalfishingwatch/layer-composer'
+import { GeneratorDataviewConfig, Generators } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
@@ -149,52 +150,69 @@ export const getWorkspaceGeneratorsConfig = createSelector(
   }
 )
 
-export const WORKSPACE_GENERATOR_ID = 'workspace_point'
-export const selectWorkspacesListGenerators = createSelector(
+export const WORKSPACE_GENERATOR_ID = 'workspace_points'
+export const selectWorkspacesListGenerator = createSelector(
   [selectCurrentWorkspacesList],
   (workspaces) => {
     if (!workspaces?.length) return
 
-    const workspaceGenerators = workspaces.flatMap((workspace) => {
-      if (!workspace.viewport) {
-        return []
-      }
-      const { latitude, longitude } = workspace.viewport
-      const generator: Generators.GlGeneratorConfig = {
-        id: `${WORKSPACE_GENERATOR_ID}_${workspace.id}`,
-        type: Generators.Type.GL,
-        sources: [
-          {
-            type: 'geojson',
-            data: {
-              type: 'Feature',
-              properties: { id: workspace.id, label: workspace.name, type: 'workspace' },
-              geometry: {
-                type: 'Point',
-                coordinates: [longitude, latitude],
-              },
-            },
-          },
-        ],
-        layers: [
-          {
-            type: 'circle',
-            layout: {},
-            paint: {
-              'circle-color': '#fff',
-              'circle-stroke-color': '#088',
-              'circle-radius': 10,
-            },
-            metadata: {
-              interactive: true,
-            },
-          } as AnyLayer,
-        ],
-      }
-      return generator
-    })
+    const generator: Generators.GlGeneratorConfig = {
+      id: WORKSPACE_GENERATOR_ID,
+      type: Generators.Type.GL,
+      sources: [
+        {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: workspaces.flatMap((workspace) => {
+              if (!workspace.viewport) {
+                return []
+              }
 
-    return workspaceGenerators.length ? workspaceGenerators : undefined
+              const { latitude, longitude } = workspace.viewport
+              return {
+                type: 'Feature',
+                properties: { id: workspace.id, label: workspace.name, type: 'workspace' },
+                geometry: {
+                  type: 'Point',
+                  coordinates: [longitude, latitude],
+                },
+              }
+            }),
+          },
+        },
+      ],
+      layers: [
+        {
+          type: 'circle',
+          layout: {},
+          paint: {
+            'circle-color': '#ffffff',
+            'circle-opacity': 0.2,
+            'circle-radius': 14,
+          },
+          metadata: {
+            interactive: true,
+          },
+        } as CircleLayer,
+        {
+          type: 'circle',
+          layout: {},
+          paint: {
+            'circle-color': '#ffffff',
+            'circle-stroke-color': '#002358',
+            'circle-stroke-opacity': 1,
+            'circle-stroke-width': 1,
+            'circle-radius': 8,
+          },
+          metadata: {
+            interactive: false,
+          },
+        } as CircleLayer,
+      ],
+    }
+
+    return generator
   }
 )
 
@@ -205,10 +223,10 @@ const basemap: Generators.BasemapGeneratorConfig = {
 }
 
 export const selectMapWorkspacesListGenerators = createSelector(
-  [selectWorkspacesListGenerators],
-  (workspaceGenerators): AnyGeneratorConfig[] => {
-    if (!workspaceGenerators) return [basemap]
-    return [basemap, ...workspaceGenerators]
+  [selectWorkspacesListGenerator],
+  (workspaceGenerator): AnyGeneratorConfig[] => {
+    if (!workspaceGenerator) return [basemap]
+    return [basemap, workspaceGenerator]
   }
 )
 
