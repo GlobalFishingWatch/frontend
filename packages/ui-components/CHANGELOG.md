@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.11.2
+
+### Patch Changes
+
+- use https for gfw menu logo
+
 ## 2.11.1
 
 ### Patch Changes

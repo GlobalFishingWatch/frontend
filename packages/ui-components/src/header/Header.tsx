@@ -79,7 +79,7 @@ function Header({ mini = false, inverted = false, languages = true }: HeaderProp
     <div className={`gfw-header-container ${inverted ? 'gfw-header-container-inverted' : ''}`}>
       <header className="gfw-header">
         <div className="white-bg"></div>
-        <a className="app-logo" href="http://globalfishingwatch.org">
+        <a className="app-logo" href="https://globalfishingwatch.org">
           <span className="screen-reader-only">Home</span>
         </a>
         <a className="screen-reader-only" href="#main">
