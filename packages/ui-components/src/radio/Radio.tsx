@@ -28,7 +28,9 @@ function Radio(props: RadioProps) {
   } = props
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
-      <div className={cx(styles.container, { [styles.inline]: !label })}>
+      <div
+        className={cx(styles.container, { [styles.inline]: !label, [styles.disabled]: disabled })}
+      >
         <button
           type="button"
           role="radio"

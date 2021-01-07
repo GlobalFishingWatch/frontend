@@ -53,8 +53,6 @@ const TimebarSettings = () => {
   }
   const expandedContainerRef = useClickedOutside(closeOptions)
 
-  if (!timebarVisualisation) return null
-
   const timebarGraphEnabled = activeVesselDataviews && activeVesselDataviews?.length <= 2
   return (
     <div className={cx('print-hidden', styles.container)} ref={expandedContainerRef}>
@@ -70,21 +68,30 @@ const TimebarSettings = () => {
       />
       {optionsPanelOpen && (
         <div className={styles.optionsContainer}>
-          {activeHeatmapDataviews && activeHeatmapDataviews.length > 0 && (
+          <Radio
+            label={t('common.apparentFishing', 'Apparent Fishing Effort')}
+            active={timebarVisualisation === TimebarVisualisations.Heatmap}
+            disabled={!activeHeatmapDataviews?.length}
+            tooltip={
+              !activeHeatmapDataviews?.length
+                ? 'Select at least one apparent fishing effort layer'
+                : 'Show fishing hours graph'
+            }
+            onClick={setHeatmapActive}
+          />
+          <Fragment>
             <Radio
-              label={t('common.apparentFishing', 'Apparent Fishing Effort')}
-              active={timebarVisualisation === TimebarVisualisations.Heatmap}
-              onClick={setHeatmapActive}
+              label={t('vessel.tracks', 'Vessel Tracks')}
+              active={timebarVisualisation === TimebarVisualisations.Vessel}
+              disabled={!activeVesselDataviews?.length}
+              tooltip={
+                !activeVesselDataviews?.length ? 'Select at least one vessel' : 'Show tracks graph'
+              }
+              onClick={setVesselActive}
             />
-          )}
-          {activeVesselDataviews && activeVesselDataviews.length > 0 && (
-            <Fragment>
-              <Radio
-                label={t('vessel.tracks', 'Vessel Tracks')}
-                active={timebarVisualisation === TimebarVisualisations.Vessel}
-                onClick={setVesselActive}
-              />
-              {timebarVisualisation === TimebarVisualisations.Vessel && (
+            {timebarVisualisation === TimebarVisualisations.Vessel &&
+              activeVesselDataviews &&
+              activeVesselDataviews.length > 0 && (
                 <div className={styles.vesselTrackOptions}>
                   <Select
                     // label={t('common.events', 'Events')}
@@ -108,8 +115,7 @@ const TimebarSettings = () => {
                   )}
                 </div>
               )}
-            </Fragment>
-          )}
+          </Fragment>
         </div>
       )}
     </div>
