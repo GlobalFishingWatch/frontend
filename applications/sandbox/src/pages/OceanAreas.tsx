@@ -85,7 +85,6 @@ export const OceanAreas = () => {
         height="100%"
         mapStyle={style}
         onViewportChange={setViewport}
-        mapOptions={{ hash: true }}
         {...viewport}
       ></InteractiveMap>
       <p>{currentArea}</p>

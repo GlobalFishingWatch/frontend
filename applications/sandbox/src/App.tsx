@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { BrowserRouter as Router, Switch, Route, NavLink } from 'react-router-dom'
+import { HashRouter as Router, Switch, Route, NavLink } from 'react-router-dom'
 import Components from './pages/Components'
 import SplitViewPage from './pages/SplitView'
 import ApiClient from './pages/ApiClient'
