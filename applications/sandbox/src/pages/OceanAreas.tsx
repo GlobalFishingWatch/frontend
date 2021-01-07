@@ -19,22 +19,19 @@ export const OceanAreas = () => {
 
   useEffect(() => {
     if (query) {
-      searchOceanAreas(query).then((areas: OceanArea[]) => {
-        setAreasMatching(areas)
-      })
+      setAreasMatching(searchOceanAreas(query))
     } else {
       setAreasMatching([])
     }
   }, [query])
 
   useEffect(() => {
-    getOceanAreaName({
+    const name = getOceanAreaName({
       latitude: viewport.latitude,
       longitude: viewport.longitude,
       zoom: viewport.zoom,
-    }).then((name) => {
-      setCurrentArea(name)
     })
+    setCurrentArea(name)
   }, [viewport])
 
   const fitBounds = (bounds?: BBox) => {

@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
 import React from 'react'
 import { Provider } from 'react-redux'
 import * as serviceWorker from './serviceWorker'
@@ -6,7 +6,7 @@ import { store } from './app/store'
 import App from './App'
 import './index.css'
 
-ReactDOM.render(
+render(
   <React.StrictMode>
     <Provider store={store}>
       <App />
