@@ -24,7 +24,7 @@ function Workspace() {
   const workspaceId = useSelector(selectWorkspaceId)
 
   useEffect(() => {
-    if (userLogged && workspaceStatus !== AsyncReducerStatus.Loading) {
+    if (userLogged && workspaceStatus === AsyncReducerStatus.Idle) {
       dispatch(fetchWorkspaceThunk(workspaceId as string))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
