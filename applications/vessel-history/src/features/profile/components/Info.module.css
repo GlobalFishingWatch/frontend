@@ -1,0 +1,100 @@
+.Info {
+  width: 100%;
+  max-width: var(--desktop-max-width);
+  margin: -5rem auto 0;
+  position: relative;
+  z-index: 10;
+}
+
+.Info .generalInfo {
+  margin-bottom: .2rem;
+  background: var(--secondary-background-color);
+  padding: 3rem 3rem 2rem;
+}
+
+.Info .generalInfo .title {
+  display: flex;
+}
+
+.Info .generalInfo .title h1 {
+  margin: 0 1rem;
+  font-size: var(--extra-large-font-size);
+  font-weight: var(--bold);
+  flex: 1;
+}
+
+.Info .generalInfo .properties {
+  margin-top: 2rem;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 1rem;
+}
+
+.Info .generalInfo .properties .property {
+  margin-bottom: 1rem;
+  line-height: 2.5rem;
+}
+
+.Info .generalInfo .properties .property.__newLine {
+  grid-column-start: 1;
+}
+
+.Info .generalInfo .properties .label {
+  display: block;
+  font-weight: var(--bold);
+}
+
+.Info .latestData {
+  display: flex
+}
+
+.Info .latestData .latestPosition, .Info .latestData .latestPort {
+  margin-bottom: .2rem;
+  background: var(--secondary-background-color);
+  padding: 3rem;
+  display: flex;
+  flex: 1;
+}
+
+.Info .latestData .latestPort {
+  margin-left: .2rem;
+}
+
+.info {
+  margin-left: 3rem;
+}
+
+.Info .latestData .info h2 {
+  font-size: var(--large-font-size);
+  font-weight: var(--bold);
+  color: var(--cta-color);
+  margin-bottom: 1rem;
+}
+
+.Info .latestData .data {
+  display: block;
+  line-height: 2.5rem;
+}
+
+.Info .latestData .icon {
+  margin-right: 1rem;
+}
+
+@media only screen and (max-width: 720px) {
+  .Info {
+    margin: 0;
+  }
+
+  .Info .generalInfo .properties {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .Info .generalInfo .properties .property.__flag {
+    grid-column: unset;
+  }
+
+  .Info .latestData {
+    display: unset
+  }
+}
