@@ -10,7 +10,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
-import { USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
+import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   getGeneratorsConfig,
@@ -70,12 +70,15 @@ export const useClickedEventConnect = () => {
         (feature: any) => feature.properties.type === 'workspace'
       )
       if (workspace) {
+        const isDefaultWorkspace = workspace.properties.id === 'default'
         dispatchLocation(
-          WORKSPACE,
-          {
-            category: locationCategory,
-            workspaceId: workspace.properties.id,
-          },
+          isDefaultWorkspace ? HOME : WORKSPACE,
+          isDefaultWorkspace
+            ? {}
+            : {
+                category: locationCategory,
+                workspaceId: workspace.properties.id,
+              },
           true
         )
         return

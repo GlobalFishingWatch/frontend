@@ -12,7 +12,6 @@ import {
 } from 'features/workspaces-list/workspaces-list.slice'
 import { WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
-import { APP_NAME } from 'data/config'
 import styles from './User.module.css'
 import { logoutUserThunk, selectUserData } from './user.slice'
 import { isUserLogged, selectUserWorkspaces } from './user.selectors'
@@ -28,7 +27,7 @@ function User() {
 
   useEffect(() => {
     if (userLogged && workspacesStatus !== AsyncReducerStatus.Finished) {
-      dispatch(fetchWorkspacesThunk(APP_NAME))
+      dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

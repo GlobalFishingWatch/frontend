@@ -35,6 +35,12 @@ const initialState: WorkspaceSliceState = {
   custom: false,
 }
 
+export const getDefaultWorkspace = () => {
+  const workspaceEnv = getWorkspaceEnv()
+  const workspace = import(`./workspace.default.${workspaceEnv}`).then((m) => m.default)
+  return workspace as Promise<Workspace<WorkspaceState>>
+}
+
 export const getDatasetByDataview = (
   dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
 ) => {
@@ -53,15 +59,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const version = selectVersion(state)
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
-    const workspaceEnv = getWorkspaceEnv()
 
     let workspace = workspaceId
       ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`)
       : null
     if (!workspace && locationType === HOME) {
-      workspace = (await import(`./workspace.default.${workspaceEnv}`).then(
-        (m) => m.default
-      )) as Workspace<WorkspaceState>
+      workspace = await getDefaultWorkspace()
     }
 
     if (!workspace) {
