@@ -1,0 +1,47 @@
+.homeContainer header {
+    height: 70px;
+    background: #fff;
+    box-shadow: 0 1px 2px 0 rgba(22, 63, 137, 0.2), 0 2px 10px 0 rgba(1, 37, 91, 0.15);
+}
+
+.homeContainer header button {
+    float: right;
+    margin-top: 10px;
+}
+
+.homeContainer h2 {
+    color: rgba(34, 68, 126, 0.65);
+    font-family: Roboto;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 20px;
+    margin: 20px 15px 0px;
+}
+
+.searchbar {
+    height: 70px;
+    width: 100%;
+    background-color: lightgray;
+}
+
+.searchbar input {
+    height: 100%;
+    width: calc(100% - 55px);
+    opacity: 0.65;
+    color: #22447E;
+    font-family: Roboto;
+    background: transparent;
+    padding: 0px 3%;
+    font-size: 16px;
+    letter-spacing: 0;
+    line-height: 20px;
+    border: 0;
+}
+
+.searchButton {
+    background: rgba(22, 63, 137, 0.1);
+}
+
+.offlineVessels {
+    padding: 15px;
+}
