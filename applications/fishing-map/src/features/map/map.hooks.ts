@@ -162,7 +162,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
 
     if (!dataview) {
       // Not needed to create a dataview just for the workspaces list interaction
-      if ((feature.generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
+      if (feature.generatorId && (feature.generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
           type: Generators.Type.GL,
           value: feature.properties.label,
