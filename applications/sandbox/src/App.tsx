@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import { HashRouter as Router, Switch, Route, NavLink } from 'react-router-dom'
+import BivariateLegends from 'pages/BivariateLegends'
 import Components from './pages/Components'
 import SplitViewPage from './pages/SplitView'
 import ApiClient from './pages/ApiClient'
@@ -20,6 +21,7 @@ function App() {
           <NavLink to="/layer-composer">Layer Composer</NavLink>
           <NavLink to="/api-client">Api Client</NavLink>
           <NavLink to="/ocean-areas">Ocean Areas</NavLink>
+          <NavLink to="/bivariate-legends">Bivariate Legends</NavLink>
         </nav>
         <div className="content">
           <Switch>
@@ -28,6 +30,7 @@ function App() {
             <Route path="/split-view" component={SplitViewPage} />
             <Route path="/api-client" component={ApiClient} />
             <Route path="/ocean-areas" component={OceanAreas} />
+            <Route path="/bivariate-legends" component={BivariateLegends} />
             <Route path="/layer-composer" component={LayerComposer} />
             <Route component={Home} />
           </Switch>
