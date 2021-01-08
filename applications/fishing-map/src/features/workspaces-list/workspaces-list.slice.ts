@@ -21,7 +21,7 @@ export const fetchWorkspacesThunk = createAsyncThunk(
   async ({ app = APP_NAME, ids, userId }: fetchWorkspacesThunkParams) => {
     const workspacesParams = { app, ids, ownerId: userId }
     const workspaces = await GFWAPI.fetch<Workspace[]>(
-      `/v1/workspaces?${stringify(workspacesParams)}`
+      `/v1/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
     )
 
     if (ids?.includes(DEFAULT_WORKSPACE_ID)) {
