@@ -93,13 +93,12 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
                 onClick={switchBasemap}
               ></button>
             </Tooltip>
-            {loading && (
-              <IconButton
-                type="map-tool"
-                tooltip={t('map.loading', 'Map loading')}
-                loading={loading}
-              />
-            )}
+            <IconButton
+              type="map-tool"
+              tooltip={t('map.loading', 'Map loading')}
+              loading={loading}
+              className={cx(styles.loadingBtn, { [styles.visible]: loading })}
+            />
           </Fragment>
         )}
       </div>
