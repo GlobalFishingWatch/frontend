@@ -26,7 +26,7 @@ function User() {
   const [logoutLoading, setLogoutLoading] = useState(false)
 
   useEffect(() => {
-    if (userLogged && workspacesStatus !== AsyncReducerStatus.Finished) {
+    if (userLogged) {
       dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,8 +73,7 @@ function User() {
                     to={{
                       type: WORKSPACE,
                       payload: {
-                        // TODO change to workspace category (save in API)
-                        category: WorkspaceCategories.FishingActivity,
+                        category: workspace.category || WorkspaceCategories.FishingActivity,
                         workspaceId: workspace.id,
                       },
                       query: {},
