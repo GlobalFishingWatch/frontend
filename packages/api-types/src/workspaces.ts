@@ -13,6 +13,7 @@ export interface Workspace<T = unknown> {
   name: string
   app: ApiAppName
   description: string
+  category?: string
   aoi?: AOI
   viewport: WorkspaceViewport
   startAt: string
