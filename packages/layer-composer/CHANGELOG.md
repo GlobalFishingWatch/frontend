@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.10.4
+
+### Patch Changes
+
+- d160e84a: support different order group for heatmap layers
+
 ## 4.10.3
 
 ### Patch Changes
