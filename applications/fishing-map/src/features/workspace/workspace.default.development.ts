@@ -114,6 +114,15 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: 97,
     },
+    // {
+    //   id: 'salinity-for-caribe',
+    //   config: {
+    //     visible: true,
+    //     color: '#FFAE9B',
+    //     colorRamp: 'salmon',
+    //   },
+    //   dataviewId: 80,
+    // },
   ],
 }
 

@@ -13,7 +13,8 @@ import { isUserLogged } from 'features/user/user.selectors'
 import { selectWorkspaceId } from 'routes/routes.selectors'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'
-import ContextArea from './context-areas/ContextAreaSection'
+import EnvironmentalSection from './environmental/EnvironmentalSection'
+import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
 
 function Workspace() {
@@ -55,7 +56,8 @@ function Workspace() {
     <Fragment>
       <HeatmapsSection />
       <VesselsSection />
-      <ContextArea />
+      <EnvironmentalSection />
+      <ContextAreaSection />
     </Fragment>
   )
 }
