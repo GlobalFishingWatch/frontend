@@ -15,9 +15,9 @@ const workspace: Workspace<WorkspaceState> = {
   startAt: new Date(2018, 0).toISOString(),
   endAt: DEFAULT_WORKSPACE.end,
   viewport: {
-    zoom: 1.7,
-    latitude: 12,
-    longitude: 21.7,
+    zoom: 0,
+    latitude: 30,
+    longitude: -37,
   },
   state: {
     // query: 'pepe',

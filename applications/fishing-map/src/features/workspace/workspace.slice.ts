@@ -37,7 +37,9 @@ const initialState: WorkspaceSliceState = {
 
 export const getDefaultWorkspace = () => {
   const workspaceEnv = getWorkspaceEnv()
-  const workspace = import(`./workspace.default.${workspaceEnv}`).then((m) => m.default)
+  const workspace = import(`../../data/default-workspaces/workspace.${workspaceEnv}`).then(
+    (m) => m.default
+  )
   return workspace as Promise<Workspace<WorkspaceState>>
 }
 
