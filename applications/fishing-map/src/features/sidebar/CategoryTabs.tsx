@@ -4,11 +4,14 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import Icon from '@globalfishingwatch/ui-components/dist/icon'
+import GFWAPI from '@globalfishingwatch/api-client'
+import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { Locale } from 'types'
 import { WorkspaceCategories } from 'data/workspaces'
 import { HOME, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { selectUserData } from 'features/user/user.slice'
+import { isGuestUser } from 'features/user/user.selectors'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
@@ -33,7 +36,8 @@ function getLinkToCategory(category: WorkspaceCategories) {
 }
 
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const guestUser = useSelector(isGuestUser)
   const locationType = useSelector(selectLocationType)
   const locationCategory = useSelector(selectLocationCategory)
   const userData = useSelector(selectUserData)
@@ -132,16 +136,24 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           [styles.current]: locationType === USER,
         })}
       >
-        <Link
-          to={{
-            type: USER,
-            payload: {},
-            query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
-            replaceQuery: true,
-          }}
-        >
-          {userData ? initials : <Icon icon="user" className="print-hidden" />}
-        </Link>
+        {guestUser ? (
+          <Tooltip content={t('common.login', 'Log in')}>
+            <a href={GFWAPI.getLoginUrl(window.location.toString())}>
+              <Icon icon="user" />
+            </a>
+          </Tooltip>
+        ) : (
+          <Link
+            to={{
+              type: USER,
+              payload: {},
+              query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
+              replaceQuery: true,
+            }}
+          >
+            {userData ? initials : <Icon icon="user" className="print-hidden" />}
+          </Link>
+        )}
       </li>
     </ul>
   )

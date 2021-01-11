@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useCallback, useMemo } from 'react'
+import React, { useState, Fragment, useCallback, useMemo, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -13,11 +13,10 @@ import { isWorkspaceLocation } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
-import Login from 'features/user/Login'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import Sidebar from 'features/sidebar/Sidebar'
-import { logoutUserThunk } from 'features/user/user.slice'
+import { logoutUserThunk, fetchUserThunk } from 'features/user/user.slice'
 import { isUserAuthorized, isUserLogged } from 'features/user/user.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
@@ -53,6 +52,10 @@ function App(): React.ReactElement {
   const narrowSidebar = useSelector(isWorkspaceLocation)
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
+
+  useEffect(() => {
+    dispatch(fetchUserThunk())
+  }, [dispatch])
 
   const onToggle = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })
@@ -128,7 +131,6 @@ function App(): React.ReactElement {
 
   return (
     <Fragment>
-      <Login />
       {Content}
       <Menu
         bgImage={menuBgImage}

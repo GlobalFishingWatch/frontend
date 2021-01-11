@@ -6,6 +6,9 @@ import GFWAPI, {
 import { UserData } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
+import { selectPrevLocation } from 'routes/routes.selectors'
+import { updateLocation } from 'routes/routes.actions'
+import { HOME, ROUTE_TYPES, USER } from 'routes/routes'
 
 interface UserState {
   logged: boolean
@@ -19,19 +22,50 @@ const initialState: UserState = {
   data: null,
 }
 
-export const fetchUserThunk = createAsyncThunk('user/fetch', async () => {
-  const accessToken = getAccessTokenFromUrl()
-  if (accessToken) {
-    removeAccessTokenFromUrl()
-  }
-  const user = await GFWAPI.login({ accessToken })
-  return user
-})
+export const GUEST_USER_TYPE = 'guest'
 
-export const logoutUserThunk = createAsyncThunk('user/logout', async () => {
-  await GFWAPI.logout()
-  return true
-})
+export const fetchGuestUser = async () => {
+  const permissions = await fetch(
+    `${GFWAPI.getBaseUrl()}/auth/acl/permissions/anonymous`
+  ).then((r) => r.json())
+  const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions }
+  return user
+}
+
+export const fetchUserThunk = createAsyncThunk(
+  'user/fetch',
+  async ({ guest }: { guest: boolean } = { guest: false }) => {
+    if (guest) {
+      return await fetchGuestUser()
+    }
+    const accessToken = getAccessTokenFromUrl()
+    if (accessToken) {
+      removeAccessTokenFromUrl()
+    }
+
+    try {
+      return await GFWAPI.login({ accessToken })
+    } catch (e) {
+      return await fetchGuestUser()
+    }
+  }
+)
+
+export const logoutUserThunk = createAsyncThunk(
+  'user/logout',
+  async (_, { dispatch, getState }) => {
+    await GFWAPI.logout()
+    await dispatch(fetchUserThunk({ guest: true }))
+    // const prevLocation = selectPrevLocation(getState() as RootState)
+    // dispatch(
+    //   updateLocation(prevLocation.type === USER ? HOME : (prevLocation.type as ROUTE_TYPES), {
+    //     payload: prevLocation.payload,
+    //     query: prevLocation.query,
+    //     replaceQuery: true,
+    //   })
+    // )
+  }
+)
 
 const userSlice = createSlice({
   name: 'user',
