@@ -6,11 +6,13 @@ import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
   selectWorkspaceStatus,
   selectDataviewsResourceQueries,
+  selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'types'
 import { isUserLogged } from 'features/user/user.selectors'
-import { selectWorkspaceId } from 'routes/routes.selectors'
+import { selectLocationType, selectWorkspaceId } from 'routes/routes.selectors'
+import { HOME } from 'routes/routes'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
@@ -22,11 +24,15 @@ function Workspace() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const userLogged = useSelector(isUserLogged)
+  const locationType = useSelector(selectLocationType)
   const workspaceId = useSelector(selectWorkspaceId)
+  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
 
   useEffect(() => {
-    if (userLogged && workspaceStatus === AsyncReducerStatus.Idle) {
-      dispatch(fetchWorkspaceThunk(workspaceId as string))
+    if (userLogged) {
+      if (locationType === HOME || currentWorkspaceId !== workspaceId) {
+        dispatch(fetchWorkspaceThunk(workspaceId as string))
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLogged, workspaceId])
