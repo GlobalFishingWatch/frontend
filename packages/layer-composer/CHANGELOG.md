@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.11.0
+
+### Minor Changes
+
+- interactive heatmap layer with featureState
+
 ## 4.10.4
 
 ### Patch Changes
