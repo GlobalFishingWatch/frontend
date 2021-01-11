@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { Spinner } from '@globalfishingwatch/ui-components'
@@ -34,6 +35,7 @@ function WorkspacesList() {
       ) : (
         <ul>
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
+            const active = highlightedWorkspace?.id !== undefined
             const linkTo =
               highlightedWorkspace.id === 'default'
                 ? {
@@ -51,7 +53,7 @@ function WorkspacesList() {
                   }
             return (
               <li key={highlightedWorkspace.name}>
-                <Link className={styles.workspace} to={linkTo}>
+                <Link className={cx(styles.workspace, { [styles.disabled]: !active })} to={linkTo}>
                   <img
                     className={styles.image}
                     alt={highlightedWorkspace.name}

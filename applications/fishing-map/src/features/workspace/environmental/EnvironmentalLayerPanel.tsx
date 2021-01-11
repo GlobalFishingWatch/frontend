@@ -119,9 +119,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           />
         )}
       </div>
-      <div className={styles.properties}>
-        <div id={`legend_${dataview.id}`}></div>
-      </div>
+      {layerActive && (
+        <div className={styles.properties}>
+          <div id={`legend_${dataview.id}`}></div>
+        </div>
+      )}
     </div>
   )
 }

@@ -103,9 +103,10 @@ const getLegendLayers = (
       }
 
       const generatorType = layer.metadata?.generatorType
+
       if (generatorType === Generators.Type.Heatmap) {
         const value = hoveredEvent?.features?.find(
-          (f) => f.generatorType === Generators.Type.Heatmap
+          (f) => f.generatorId === layer.metadata?.generatorId
         )?.value
         if (value) {
           sublayerLegend.currentValue = value
@@ -179,6 +180,9 @@ const MapWrapper = (): React.ReactElement | null => {
     style?.metadata
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
+  const onMouseOut = useCallback(() => {
+    // setHoveredEvent(null)
+  }, [])
 
   const { viewport, onViewportChange } = useViewport()
 
@@ -192,6 +196,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const layersWithLegend = getLegendLayers(style, dataviews, hoveredEvent)
 
   const debugOptions = useSelector(selectDebugOptions)
+
   const getRulersCursor = useCallback(() => {
     return 'crosshair'
   }, [])
@@ -216,7 +221,7 @@ const MapWrapper = (): React.ReactElement | null => {
   }, [mapRef.current])
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} onMouseOut={onMouseOut}>
       <MapScreenshot />
       {style && (
         <InteractiveMap

@@ -180,7 +180,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       title: dataview.name || dataview.id.toString(),
       type: dataview.config?.type,
       color: dataview.config?.color || 'black',
-      // unit: dataview.unit || '',
+      unit: feature.unit,
       value: feature.value,
       layer: feature.generatorContextLayer,
       properties: { ...feature.properties },

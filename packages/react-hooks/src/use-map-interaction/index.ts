@@ -18,6 +18,7 @@ export type ExtendedFeature = {
   generatorType: string | null
   id?: number
   value: any
+  unit?: string
   tile: {
     x: number
     y: number
