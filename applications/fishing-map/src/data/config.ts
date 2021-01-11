@@ -4,8 +4,7 @@ import { TimebarEvents, TimebarGraphs } from 'types'
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
 
 // TODO use it to retrieve it and store in workspace.default in deploy
-export const DEFAULT_WORKSPACE_ID = 31
-export const DEFAULT_WERSION = 'v1'
+export const DEFAULT_VERSION = 'v1'
 export const APP_NAME = 'fishing-map'
 
 // used when no url data and no workspace data
@@ -25,6 +24,7 @@ export const DEFAULT_WORKSPACE = {
   timebarEvents: TimebarEvents.None,
   timebarGraph: TimebarGraphs.None,
   bivariate: false,
+  version: DEFAULT_VERSION,
 }
 
 // Params to use replace instead of push for router history to make navigation easier

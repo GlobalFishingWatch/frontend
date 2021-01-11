@@ -53,6 +53,9 @@ export const createAsyncSlice = <T, U>({
     }),
     reducers,
     extraReducers: (builder) => {
+      if (extraReducers) {
+        extraReducers(builder)
+      }
       if (fetchThunk) {
         builder.addCase(fetchThunk.pending, (state: any) => {
           state.status = AsyncReducerStatus.Loading

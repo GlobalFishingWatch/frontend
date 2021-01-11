@@ -1,3 +1,5 @@
+export const DEFAULT_WORKSPACE_ID = 'default'
+
 export type WorkspaceEnv = 'development' | 'production'
 export const WORKSPACE_ENV =
   (process.env.REACT_APP_WORKSPACE_ENV as WorkspaceEnv) ||
@@ -6,6 +8,12 @@ export const WORKSPACE_ENV =
 
 export function getWorkspaceEnv(): WorkspaceEnv {
   return WORKSPACE_ENV
+}
+
+export enum WorkspaceCategories {
+  FishingActivity = 'fishing-activity',
+  MarineReserves = 'marine-reserves',
+  CountryPortals = 'country-portals',
 }
 
 export const DEFAULT_BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173

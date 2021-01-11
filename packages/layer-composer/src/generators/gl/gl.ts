@@ -5,22 +5,25 @@ class GlStyleGenerator {
   type = Type.GL
 
   _getStyleSources = (config: GlGeneratorConfig) => {
-    return config.sources.map((glSource: any) => ({ id: `${config.id}`, ...glSource }))
+    return config.sources?.map((glSource: any) => ({ id: `${config.id}`, ...glSource })) || []
   }
 
   _getStyleLayers = (config: GlGeneratorConfig) => {
     const layout = {
       visibility: isConfigVisible(config),
     }
-    return config.layers.map((glLayer: any, i: number) => ({
-      id: `${config.id}-${i}`,
-      source: config.id,
-      ...glLayer,
-      layout: {
-        ...layout,
-        ...glLayer.layout,
-      },
-    }))
+    return (
+      config.layers?.map((glLayer: any, i: number) => ({
+        id: `${config.id}-${i}`,
+        source: config.id,
+        ...glLayer,
+        layout: {
+          ...layout,
+          ...glLayer.layout,
+        },
+        metadata: { ...glLayer.metadata, generatorId: config.id },
+      })) || []
+    )
   }
 
   getStyle = (layer: GlGeneratorConfig) => {

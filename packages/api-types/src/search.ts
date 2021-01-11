@@ -13,9 +13,4 @@ export interface SearchResult<T = any> {
   }
 }
 
-export interface SearchEntry<T = any> {
-  dataset: string
-  results: SearchResult<T>
-}
-
-export type APISearch<T> = SearchEntry<T>[]
+export type APISearch<T> = SearchResult<T>

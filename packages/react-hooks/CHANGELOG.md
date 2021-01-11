@@ -1,5 +1,13 @@
 # @globalfishingwatch/react-hooks
 
+## 4.4.4
+
+### Patch Changes
+
+- 2d0cdffa: match layer-composer version
+- Updated dependencies [2d0cdffa]
+  - @globalfishingwatch/layer-composer@4.10.3
+
 ## 4.4.3
 
 ### Patch Changes

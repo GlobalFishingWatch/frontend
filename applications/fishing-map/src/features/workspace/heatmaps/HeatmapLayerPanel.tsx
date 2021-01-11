@@ -6,13 +6,13 @@ import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-com
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { getFlagsByIds } from 'utils/flags'
 import { UrlDataviewInstance } from 'types'
-import styles from 'features/sidebar/LayerPanel.module.css'
+import styles from 'features/workspace/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { FISHING_DATASET_TYPE } from 'data/datasets'
 import { selectBivariate } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import Filters from './HeatmapFilters'
 import { getSourcesSelectedInDataview } from './heatmaps.utils'
+import HeatmapInfoModal from './HeatmapInfoModal'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -21,6 +21,7 @@ type LayerPanelProps = {
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
+  const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const sourcesOptions = getSourcesSelectedInDataview(dataview)
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters || [])
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
@@ -45,13 +46,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     setFiltersOpen(!filterOpen)
   }
 
+  const onInfoLayerClick = () => {
+    setModalInfoOpen(true)
+  }
+
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
 
-  const dataset = dataview.datasets?.find((d) => d.type === FISHING_DATASET_TYPE)
-  const datasetName = t(`datasets:${dataset?.id}.name`)
+  const datasetName = t(`common.apparentFishing`)
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
       {datasetName}
@@ -72,6 +76,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
           color={dataview.config?.color}
+          className={styles.switch}
           disabled={bivariate}
         />
         {datasetName.length > 24 ? (
@@ -79,7 +84,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         ) : (
           TitleComponent
         )}
-        <div className={cx(styles.actions, { [styles.active]: layerActive })}>
+        <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
           {layerActive && (
             <IconButton
               icon={filterOpen ? 'filter-on' : 'filter-off'}
@@ -100,8 +105,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             icon="info"
             size="small"
             className={styles.actionButton}
-            tooltip={t(`datasets:${dataset?.id}.description`)}
+            tooltip={t(`layer.seeDescription`, 'Click to see layer description')}
             tooltipPlacement="top"
+            onClick={onInfoLayerClick}
           />
           <IconButton
             icon="delete"
@@ -141,6 +147,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
         {filterOpen && <Filters dataview={dataview} />}
       </div>
+      <HeatmapInfoModal
+        dataview={dataview}
+        isOpen={modalInfoOpen}
+        onClose={() => setModalInfoOpen(false)}
+      />
     </div>
   )
 }

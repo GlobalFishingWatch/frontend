@@ -31,9 +31,10 @@ function InputText(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
   useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
 
   return (
-    <div className={cx(styles.inputText, styles[inputSize], className)}>
+    <div className={cx(styles.container, styles[inputSize], className)}>
       {label && <label htmlFor={label}>{label}</label>}
       <input
+        className={styles.input}
         key={inputKey}
         ref={inputRef}
         id={label}
@@ -42,7 +43,7 @@ function InputText(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
         {...rest}
         {...(type === 'number' && { step })}
       />
-      {type !== 'text' && type !== 'number' && (
+      {(type === 'email' || type === 'search') && (
         <Icon
           icon={type}
           className={styles.icon}

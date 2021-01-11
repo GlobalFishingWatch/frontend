@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselsDataviews } from 'features/workspace/workspace.selectors'
-import styles from 'features/sidebar/Sections.module.css'
+import styles from 'features/workspace/Sections.module.css'
 import LayerPanel from './VesselLayerPanel'
 
 function VesselsSection(): React.ReactElement {
@@ -24,6 +24,7 @@ function VesselsSection(): React.ReactElement {
           size="medium"
           tooltip={t('vessel.search.search', 'Search vessels')}
           tooltipPlacement="top"
+          className="print-hidden"
           onClick={onSearchClick}
         />
       </div>

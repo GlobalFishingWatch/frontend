@@ -36,6 +36,7 @@ export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
   responseType?: ResourceResponseType
   dataset?: boolean
   body?: T
+  local?: boolean
 }
 
 const processStatus = (response: Response) => {
@@ -221,6 +222,7 @@ export class GFWAPI {
           responseType = 'json',
           signal,
           dataset = this.dataset,
+          local = false,
         } = options
         if (this.debug) {
           console.log(`GFWAPI: Fetching url: ${url}`)
@@ -235,6 +237,14 @@ export class GFWAPI {
           headers: {
             ...headers,
             ...(responseType === 'json' && { 'Content-Type': 'application/json' }),
+            ...(local && {
+              'x-gateway-url': API_GATEWAY,
+              user: JSON.stringify({
+                id: process.env.REACT_APP_LOCAL_API_USER_ID,
+                type: process.env.REACT_APP_LOCAL_API_USER_TYPE,
+                email: process.env.REACT_APP_LOCAL_API_USER_EMAIL,
+              }),
+            }),
             Authorization: `Bearer ${this.getToken()}`,
           },
         })

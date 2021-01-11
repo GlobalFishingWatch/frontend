@@ -21,11 +21,11 @@ All of them availables with the `@globalfishingwatch/` prefix:
 
 |                                       |                                                               |
 | ------------------------------------- | ------------------------------------------------------------- |
-| [amathea](amathea)                    | Marine reserve areas proyect                                  |
-| [fishing-map](fishing-map)            | Version 3.0 of the fishing map project                        |
-| [temporalgrid-demo](temporalgrid-demo)| CRA to show how new custom mapbox-gl format development goes  |
-| [dataviews-editor](dataviews-editor)  | Simple interface to edit dataviews                            |
-| [sandbox](sandbox)                    | Playground to use packages without releasing                  |
+| [amathea](applications/amathea)                    | Marine reserve areas proyect                                  |
+| [fishing-map](applications/fishing-map)            | Version 3.0 of the fishing map project                        |
+| [temporalgrid-demo](applications/temporalgrid-demo)| CRA to show how new custom mapbox-gl format development goes  |
+| [dataviews-editor](applications/dataviews-editor)  | Simple interface to edit dataviews                            |
+| [sandbox](applications/sandbox)                    | Playground to use packages without releasing                  |
 
 ## Other utils
 

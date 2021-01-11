@@ -5,9 +5,17 @@
   position: absolute;
   right: var(--space-S);
   top: var(--space-S);
+  z-index: 1;
 }
 
-.mapControls > * {
+.controlsNested {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mapControls > *,
+.controlsNested > * {
   margin-bottom: var(--space-XS);
 }
 
@@ -28,4 +36,14 @@
 
 .basemapSwitcher.satellite {
   background-image: url('../../../assets/images/basemap-default.jpg');
+}
+
+.loadingBtn {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s 0.5s;
+}
+
+.visible {
+  opacity: 1;
 }

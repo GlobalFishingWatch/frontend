@@ -1,10 +1,11 @@
 import React, { useCallback } from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
-import styles from 'features/sidebar/Sections.module.css'
+import styles from 'features/workspace/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectBivariate } from 'features/app/app.selectors'
@@ -58,7 +59,7 @@ function HeatmapsSection(): React.ReactElement {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
-        <div className={styles.sectionButtons}>
+        <div className={cx('print-hidden', styles.sectionButtons)}>
           <IconButton
             icon={bivariate ? 'split' : 'compare'}
             type="border"

@@ -1,5 +1,67 @@
 # @globalfishingwatch/ui-components
 
+## 2.11.2
+
+### Patch Changes
+
+- use https for gfw menu logo
+
+## 2.11.1
+
+### Patch Changes
+
+- 2d0cdffa: add icons
+- Updated dependencies [2d0cdffa]
+  - @globalfishingwatch/layer-composer@4.10.3
+
+## 2.11.0
+
+### Minor Changes
+
+- new Tabs component
+
+## 2.10.1
+
+### Patch Changes
+
+- support miniglobe classes
+
+## 2.10.0
+
+### Minor Changes
+
+- d3685955: datepicker component
+
+## 2.9.2
+
+### Patch Changes
+
+- fix letter spacing in submenu
+
+## 2.9.1
+
+### Patch Changes
+
+- fix static headers
+
+## 2.9.0
+
+### Minor Changes
+
+- update menu links
+
+## 2.8.5
+
+### Patch Changes
+
+- fix header link a11y
+
+## 2.8.4
+
+### Patch Changes
+
+- render static header with no laguages selector
+
 ## 2.8.3
 
 ### Patch Changes

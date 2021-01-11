@@ -1,5 +1,13 @@
 # @globalfishingwatch/api-client
 
+## 1.6.4
+
+### Patch Changes
+
+- d3685955: support local requests
+- Updated dependencies [d3685955]
+  - @globalfishingwatch/api-types@2.4.1
+
 ## 1.6.3
 
 ### Patch Changes

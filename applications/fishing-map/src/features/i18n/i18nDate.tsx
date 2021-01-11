@@ -1,13 +1,20 @@
 import React, { Fragment } from 'react'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 import { useTranslation } from 'react-i18next'
+import { Locale } from 'types'
+import i18n from './i18n'
 
 type Dates = {
   date: string
   format?: DateTimeFormatOptions
 }
 
-export const formatI18nDate = (date: string, locale: string, format = DateTime.DATE_MED) => {
+type formatI18DateParams = { format?: DateTimeFormatOptions; locale?: Locale }
+
+export const formatI18nDate = (
+  date: string,
+  { format = DateTime.DATE_MED, locale = i18n.language as Locale }: formatI18DateParams = {}
+) => {
   return `${DateTime.fromISO(date).toUTC().setLocale(locale).toLocaleString(format)}${
     format === DateTime.DATETIME_MED ? ' UTC' : ''
   }`
@@ -15,7 +22,7 @@ export const formatI18nDate = (date: string, locale: string, format = DateTime.D
 
 export const useI18nDate = (date: string, format = DateTime.DATE_MED) => {
   const { i18n } = useTranslation()
-  return formatI18nDate(date, i18n.language, format)
+  return formatI18nDate(date, { format, locale: i18n.language as Locale })
 }
 
 const I18nDate = ({ date, format = DateTime.DATE_MED }: Dates) => {

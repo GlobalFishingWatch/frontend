@@ -1,5 +1,50 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.17.2
+
+### Patch Changes
+
+- 2d0cdffa: update dependencies
+- Updated dependencies [2d0cdffa]
+- Updated dependencies [2d0cdffa]
+- Updated dependencies [2d0cdffa]
+- Updated dependencies [2d0cdffa]
+  - @globalfishingwatch/layer-composer@4.10.3
+  - @globalfishingwatch/api-types@2.4.2
+  - @globalfishingwatch/react-hooks@4.4.4
+  - @globalfishingwatch/ui-components@2.11.1
+
+## 0.17.1
+
+### Patch Changes
+
+- make ocean-areas functions syncronous
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ocean-areas@0.1.0
+
+## 0.17.0
+
+### Minor Changes
+
+- new Tabs component
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.11.0
+
+## 0.16.11
+
+### Patch Changes
+
+- d3685955: update dependencies
+- Updated dependencies [d3685955]
+- Updated dependencies [d3685955]
+- Updated dependencies [d3685955]
+  - @globalfishingwatch/api-client@1.6.4
+  - @globalfishingwatch/ui-components@2.10.0
+  - @globalfishingwatch/api-types@2.4.1
+
 ## 0.16.10
 
 ### Patch Changes

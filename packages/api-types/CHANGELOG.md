@@ -1,5 +1,23 @@
 # @globalfishingwatch/api-types
 
+## 2.5.0
+
+### Minor Changes
+
+- include workspace category
+
+## 2.4.2
+
+### Patch Changes
+
+- 2d0cdffa: include ownerId in workspace
+
+## 2.4.1
+
+### Patch Changes
+
+- d3685955: update dataset types
+
 ## 2.4.0
 
 ### Minor Changes

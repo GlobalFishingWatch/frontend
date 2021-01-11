@@ -9,6 +9,10 @@ const navigation = [
     childs: [
       { link: 'https://globalfishingwatch.org/our-map/', label: 'Our map' },
       { link: 'https://globalfishingwatch.org/join/', label: 'Map sign up' },
+      {
+        link: 'https://globalfishingwatch.org/carrier-vessel-portal/',
+        label: 'Carrier Vessel Portal',
+      },
       { link: 'https://globalfishingwatch.org/map-and-data/technology/', label: 'How it works' },
       { link: 'https://globalfishingwatch.org/faqs/', label: 'Help hub' },
       { link: 'https://globalfishingwatch.org/datasets-and-code/', label: 'Datasets and code' },
@@ -47,7 +51,6 @@ const navigation = [
         label: 'Share your story',
       },
       { link: 'https://globalfishingwatch.org/join/', label: 'Newsletter sign up' },
-      { link: 'https://globalfishingwatch.force.com/gfw', label: 'Discussion forum' },
       { link: 'https://globalfishingwatch.org/work-for-us/', label: 'Work for us' },
       { link: 'https://globalfishingwatch.org/contact-us', label: 'Contact us' },
     ],
@@ -68,14 +71,17 @@ const navigation = [
 interface HeaderProps {
   mini?: boolean
   inverted?: boolean
+  languages?: boolean
 }
 
-function Header({ mini = false, inverted = false }: HeaderProps) {
+function Header({ mini = false, inverted = false, languages = true }: HeaderProps) {
   return (
     <div className={`gfw-header-container ${inverted ? 'gfw-header-container-inverted' : ''}`}>
       <header className="gfw-header">
         <div className="white-bg"></div>
-        <a className="app-logo" href="http://globalfishingwatch.org" />
+        <a className="app-logo" href="https://globalfishingwatch.org">
+          <span className="screen-reader-only">Home</span>
+        </a>
         <a className="screen-reader-only" href="#main">
           Skip navigation links
         </a>
@@ -118,17 +124,19 @@ function Header({ mini = false, inverted = false }: HeaderProps) {
                     </li>
                   )
               )}
-              <li role="menuitem" id="bablic-languages-container" style={{ display: 'none' }}>
-                <a id="bablic-languages-title" href="#" aria-haspopup="true">
-                  Languages
-                </a>
-                <input
-                  name="accordion-toggle-languages"
-                  className="accordion-toggle"
-                  type="checkbox"
-                />
-                <ul role="menu" id="bablic-languages" className="nav-list-sub-menu"></ul>
-              </li>
+              {languages && (
+                <li role="menuitem" id="bablic-languages-container" style={{ display: 'none' }}>
+                  <a id="bablic-languages-title" href="#" aria-haspopup="true">
+                    Languages
+                  </a>
+                  <input
+                    name="accordion-toggle-languages"
+                    className="accordion-toggle"
+                    type="checkbox"
+                  />
+                  <ul role="menu" id="bablic-languages" className="nav-list-sub-menu"></ul>
+                </li>
+              )}
               <li key="donate" role="menuitem" className="highlight-btn">
                 <a href="https://globalfishingwatch.org/donate/" aria-haspopup="true">
                   Donate

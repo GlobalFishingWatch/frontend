@@ -18,11 +18,12 @@ interface MiniglobeProps {
   center: MiniglobeCenter
   bounds?: MiniglobeBounds
   size?: number
+  className?: string
   viewportThickness?: number
 }
 
 function MiniGlobe(props: MiniglobeProps) {
-  const { bounds, center = defaultCenter, size = 40, viewportThickness = 4 } = props
+  const { bounds, center = defaultCenter, size = 40, viewportThickness = 4, className = '' } = props
 
   const projection = useMemo(() => {
     const { latitude, longitude } = center
@@ -141,6 +142,7 @@ function MiniGlobe(props: MiniglobeProps) {
       viewBox={`0 0 ${size} ${size}`}
       aria-hidden="true"
       focusable="false"
+      className={className}
     >
       <circle className={styles.globe} cx={size / 2} cy={size / 2} r={size / 2} />
       {worldComponent}

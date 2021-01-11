@@ -1,44 +1,11 @@
-:global(.sticky) {
-  background-color: var(--color-white);
-  box-shadow: var(--box-shadow);
-  z-index: 1;
+.container {
+  display: flex;
+  height: 100vh;
 }
 
 :global(.scrollContainer) {
   height: 100%;
   overflow-y: auto;
   padding-bottom: var(--space-L);
-}
-
-.placeholder {
-  height: calc(100% - 5.4rem);
-  display: flex;
-  flex: 1;
-  align-items: center;
-  padding: var(--space-M);
-  text-align: center;
-}
-
-.sidebarHeader {
-  display: flex;
-  align-items: center;
-  padding-right: var(--space-S);
-}
-
-.logo {
-  width: 18rem;
-  height: auto;
-  margin-right: auto;
-}
-
-.userBtn svg {
-  display: none;
-}
-
-.userBtn:hover {
-  font-size: 0;
-}
-
-.userBtn:hover svg {
-  display: unset;
+  width: 100%;
 }

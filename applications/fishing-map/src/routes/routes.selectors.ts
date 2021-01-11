@@ -3,8 +3,9 @@ import memoize from 'lodash/memoize'
 import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'store'
 import { WorkspaceParam, UrlDataviewInstance } from 'types'
-import { DEFAULT_WERSION } from 'data/config'
-import { ROUTE_TYPES } from './routes'
+import { DEFAULT_VERSION } from 'data/config'
+import { WorkspaceCategories } from 'data/workspaces'
+import { HOME, ROUTE_TYPES, WORKSPACE } from './routes'
 
 const selectLocation = (state: RootState) => state.location
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
@@ -12,25 +13,41 @@ export const selectCurrentLocation = createSelector([selectLocation], ({ type, r
   return { type: type as ROUTE_TYPES, ...routeMap }
 })
 
+export const selectLocationType = createSelector(
+  [selectLocation],
+  (location) => location.type as ROUTE_TYPES
+)
+
+export const isWorkspaceLocation = createSelector(
+  [selectLocationType],
+  (locationType) => locationType === WORKSPACE || locationType === HOME
+)
+
 export const selectLocationQuery = createSelector(
   [selectLocation],
   (location) => location.query as Query
-)
-
-export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)
-export const selectVersion = createSelector(
-  [selectLocationPayload],
-  (payload) => payload.version || DEFAULT_WERSION
-)
-export const selectWorkspaceId = createSelector(
-  [selectLocationPayload],
-  (payload) => payload.workspaceId
 )
 
 export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
   createSelector<RootState, Query, T>([selectLocationQuery], (query: any) => {
     return query?.[param]
   })
+
+export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)
+export const selectVersion = createSelector(
+  [selectQueryParam('version')],
+  (version: string) => version || DEFAULT_VERSION
+)
+
+export const selectWorkspaceId = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.workspaceId
+)
+
+export const selectLocationCategory = createSelector(
+  [selectLocationPayload],
+  (payload) => payload?.category as WorkspaceCategories
+)
 
 export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')
 export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')

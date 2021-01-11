@@ -1,25 +1,26 @@
 .emptyState {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding: var(--space-M);
-    color: var(--color-secondary-blue);
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: var(--space-M);
+  color: var(--color-secondary-blue);
 }
 
 .emptyState p:not(:last-child) {
-    margin-bottom: var(--space-S);
+  margin-bottom: var(--space-S);
 }
 
 .emptyState code {
-    font-style: italic;
+  font-style: italic;
 }
 
 .vesselImage {
-    height: 14rem;
-    display: block;
-    margin: 0 auto;
+  height: 14rem;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: var(--space-L);
 }
 
 .inlineIcon {
-    height: 1em;
+  height: 1em;
 }

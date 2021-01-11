@@ -69,4 +69,5 @@ export interface Dataset {
   endpoints?: Endpoint[]
   configuration: DatasetConfiguration | null
   relatedDatasets: RelatedDataset[] | null
+  fieldsAllowed: string[]
 }

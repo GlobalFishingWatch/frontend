@@ -7,14 +7,10 @@ import getBreaks from './get-breaks'
 // Get color ramps for a config's sublayers
 export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
   let colorRampIds = config.sublayers.map((s) => s.colorRamp)
-  const numVisibleSublayers = config.sublayers.filter((s) => s.visible === true).length
 
-  // Force some color ramps depending on config
-  // TODO We might need more flexibility on that
+  // Force bivariate color ramp depending on config
   if (config.mode === HeatmapAnimatedMode.Bivariate) {
     colorRampIds = ['bivariate']
-  } else if (numVisibleSublayers === 1 && config.sublayers[0].visible) {
-    colorRampIds = ['presence']
   }
   const colorRamps = colorRampIds.map((colorRampId) => {
     const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampId]

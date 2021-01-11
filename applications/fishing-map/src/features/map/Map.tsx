@@ -29,6 +29,7 @@ import { selectDataviewInstancesResolved } from 'features/workspace/workspace.se
 import { selectEditing, moveCurrentRuler } from 'features/map/controls/rulers.slice'
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
+import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import PopupWrapper from './popups/PopupWrapper'
@@ -36,6 +37,12 @@ import useViewport, { useMapBounds } from './map-viewport.hooks'
 import { useMapboxInstance, useMapboxRef } from './map.context'
 import styles from './Map.module.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+
+declare global {
+  interface Window {
+    gfwmap: InteractiveMap
+  }
+}
 
 const mapOptions = {
   customAttribution: 'Global Fishing Watch 2020',
@@ -186,8 +193,17 @@ const MapWrapper = (): React.ReactElement | null => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapInstance, debugOptions])
 
+  useEffect(() => {
+    if (mapRef.current) {
+      // Used for the screeenshot callback for the 'idle' event to generate the image once loaded
+      window.gfwmap = mapRef.current.getMap()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapRef.current])
+
   return (
     <div className={styles.container}>
+      <MapScreenshot />
       {style && (
         <InteractiveMap
           disableTokenWarning={true}

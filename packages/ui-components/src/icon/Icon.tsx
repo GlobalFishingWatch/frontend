@@ -1,4 +1,4 @@
-import React, { useMemo, memo } from 'react'
+import React, { memo } from 'react'
 import { Placement } from 'tippy.js'
 import cx from 'classnames'
 import Tooltip from '../tooltip'
@@ -6,7 +6,13 @@ import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
 import { ReactComponent as ArrowLeft } from '../assets/icons/arrow-left.svg'
 import { ReactComponent as ArrowRight } from '../assets/icons/arrow-right.svg'
 import { ReactComponent as ArrowTop } from '../assets/icons/arrow-top.svg'
+import { ReactComponent as Calendar } from '../assets/icons/calendar.svg'
 import { ReactComponent as Camera } from '../assets/icons/camera.svg'
+import { ReactComponent as CategoryCountryPortals } from '../assets/icons/category-country-portals.svg'
+import { ReactComponent as CategoryFishing } from '../assets/icons/category-fishing.svg'
+import { ReactComponent as CategoryMarineReserves } from '../assets/icons/category-marine-reserves.svg'
+import { ReactComponent as CategoryNews } from '../assets/icons/category-news.svg'
+import { ReactComponent as CategoryReports } from '../assets/icons/category-reports.svg'
 import { ReactComponent as Close } from '../assets/icons/close.svg'
 import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
 import { ReactComponent as ColorPickerFilled } from '../assets/icons/color-picker-filled.svg'
@@ -20,6 +26,7 @@ import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
 import { ReactComponent as Graph } from '../assets/icons/graph.svg'
 import { ReactComponent as Home } from '../assets/icons/home.svg'
 import { ReactComponent as Info } from '../assets/icons/info.svg'
+import { ReactComponent as Language } from '../assets/icons/language.svg'
 import { ReactComponent as Layers } from '../assets/icons/layers.svg'
 import { ReactComponent as Logout } from '../assets/icons/logout.svg'
 import { ReactComponent as Menu } from '../assets/icons/menu.svg'
@@ -48,7 +55,13 @@ export const IconComponents = {
   'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
   'arrow-top': ArrowTop,
+  calendar: Calendar,
   camera: Camera,
+  'category-country-portals': CategoryCountryPortals,
+  'category-fishing': CategoryFishing,
+  'category-marine-reserves': CategoryMarineReserves,
+  'category-news': CategoryNews,
+  'category-reports': CategoryReports,
   close: Close,
   'color-picker': ColorPicker,
   'color-picker-filled': ColorPickerFilled,
@@ -63,6 +76,7 @@ export const IconComponents = {
   home: Home,
   info: Info,
   logout: Logout,
+  language: Language,
   layers: Layers,
   menu: Menu,
   minus: Minus,

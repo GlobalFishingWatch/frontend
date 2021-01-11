@@ -1,0 +1,18 @@
+.emptyState {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: var(--space-M);
+  color: var(--color-secondary-blue);
+}
+
+.emptyState p:not(:last-child) {
+  margin-bottom: var(--space-S);
+}
+
+.vesselImage {
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}

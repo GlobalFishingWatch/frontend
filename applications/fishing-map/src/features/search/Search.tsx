@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { batch, useDispatch, useSelector } from 'react-redux'
+import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
 import Downshift from 'downshift'
 import { useTranslation } from 'react-i18next'
@@ -23,9 +24,14 @@ import {
   cleanVesselSearchResults,
   selectSearchStatus,
   VesselWithDatasets,
+  RESULTS_PER_PAGE,
+  checkSearchFiltersEnabled,
 } from './search.slice'
 import styles from './Search.module.css'
+import SearchNoResultsState from './SearchNoResultsState'
 import SearchEmptyState from './SearchEmptyState'
+import SearchFilters from './SearchFilters'
+import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
 
 function Search() {
   const { t } = useTranslation()
@@ -33,28 +39,77 @@ function Search() {
   const urlQuery = useSelector(selectSearchQuery)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
-  const query = useDebounce(searchQuery, 200)
+  const { searchFilters, searchFiltersOpen, setSearchFiltersOpen } = useSearchFiltersConnect()
+  const { searchPagination, searchSuggestion } = useSearchConnect()
+  const debouncedQuery = useDebounce(searchQuery, 400)
   const { dispatchQueryParams } = useLocationConnect()
   const searchDatasets = useSelector(selectVesselsDatasets)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
+  const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
+  const promiseRef = useRef<any>()
+
+  const fetchResults = useCallback(
+    (offset = 0) => {
+      const sourceIds = searchFilters?.sources?.map((source) => source.id)
+      const sources = sourceIds
+        ? searchDatasets.filter(({ id }) => sourceIds.includes(id))
+        : searchDatasets
+
+      if (promiseRef.current) {
+        promiseRef.current.abort()
+      }
+
+      promiseRef.current = dispatch(
+        fetchVesselSearchThunk({
+          query: debouncedQuery,
+          filters: searchFilters,
+          datasets: sources,
+          offset,
+        })
+      )
+    },
+    [debouncedQuery, dispatch, searchDatasets, searchFilters]
+  )
+
+  const handleIntersection = useCallback(
+    (entry: IntersectionObserverEntry) => {
+      const { offset, total } = searchPagination
+      if (entry.isIntersecting) {
+        if (offset <= total && total > RESULTS_PER_PAGE) {
+          fetchResults(offset + RESULTS_PER_PAGE)
+        }
+      }
+    },
+    [fetchResults, searchPagination]
+  )
+  const [ref] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
   useEffect(() => {
-    if (query !== '') {
+    if (debouncedQuery === '') {
       batch(() => {
-        dispatchQueryParams({ query })
-        dispatch(fetchVesselSearchThunk({ query, datasets: searchDatasets }))
+        dispatch(cleanVesselSearchResults())
+        dispatch(resetWorkspaceSearchQuery())
       })
+    } else {
+      fetchResults()
     }
+    dispatchQueryParams({ query: debouncedQuery })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query])
+  }, [debouncedQuery, searchFilters])
 
   const onCloseClick = () => {
     batch(() => {
-      dispatchQueryParams({ query: undefined })
       dispatch(cleanVesselSearchResults())
       dispatch(resetWorkspaceSearchQuery())
+      dispatchQueryParams({ query: undefined })
     })
+  }
+
+  const onSuggestionClick = () => {
+    if (searchSuggestion) {
+      setSearchQuery(searchSuggestion)
+    }
   }
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +132,7 @@ function Search() {
   return (
     <Downshift onChange={onSelectionChange} itemToString={(item) => (item ? item.shipname : '')}>
       {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, selectedItem }) => (
-        <div className={styles.search}>
+        <div className={cx(styles.search, { [styles.expandedContainerOpen]: searchFiltersOpen })}>
           <div className={styles.inputContainer}>
             <InputText
               {...getInputProps()}
@@ -89,20 +144,49 @@ function Search() {
             />
             {searchStatus === 'loading' && <Spinner size="small" />}
             <IconButton
-              icon="filter-off"
-              tooltip={t('vessel.search.filter_open', 'Filter search (Coming soon)')}
+              icon={searchFiltersOpen ? 'close' : hasSearchFilters ? 'filter-on' : 'filter-off'}
+              tooltip={
+                searchFiltersOpen
+                  ? t('vessel.search.filter_close', 'Close search filters')
+                  : t('vessel.search.filter_open', 'Open search filters')
+              }
+              className={cx(styles.expandable, {
+                [styles.expanded]: searchFiltersOpen,
+              })}
+              onClick={() => setSearchFiltersOpen(!searchFiltersOpen)}
               tooltipPlacement="bottom"
             />
-            <IconButton
-              icon="close"
-              onClick={onCloseClick}
-              type="border"
-              tooltip={t('vessel.search.close', 'Close search')}
-              tooltipPlacement="bottom"
-            />
+            {searchFiltersOpen === false && (
+              <IconButton
+                icon="close"
+                onClick={onCloseClick}
+                type="border"
+                tooltip={t('vessel.search.close', 'Close search')}
+                tooltipPlacement="bottom"
+              />
+            )}
           </div>
-          {searchResults && (
+          <SearchFilters className={cx(styles.expandedContainer)} />
+          {!searchResults?.length &&
+            (searchStatus === AsyncReducerStatus.Finished ? (
+              <SearchNoResultsState />
+            ) : searchStatus === AsyncReducerStatus.Idle ? (
+              <SearchEmptyState />
+            ) : searchStatus === AsyncReducerStatus.Error ? (
+              <p className={styles.error}>Something went wrong 🙈</p>
+            ) : null)}
+          {((searchResults && searchResults.length > 0) || searchSuggestion) && (
             <ul {...getMenuProps()} className={styles.searchResults}>
+              {searchSuggestion && searchSuggestion !== searchQuery && (
+                <li className={cx(styles.searchSuggestion)}>
+                  {t('search.suggestion', 'Did you mean')}{' '}
+                  <button onClick={onSuggestionClick} className={styles.suggestion}>
+                    {' '}
+                    {searchSuggestion}{' '}
+                  </button>{' '}
+                  ?
+                </li>
+              )}
               {searchResults?.map((entry, index: number) => {
                 const {
                   id,
@@ -177,9 +261,17 @@ function Search() {
                   </li>
                 )
               })}
+              {searchPagination.total !== 0 &&
+              searchPagination.total > RESULTS_PER_PAGE &&
+              searchPagination.offset <= searchPagination.total ? (
+                <li className={styles.spinner} ref={ref}>
+                  <Spinner inline size="small" />
+                </li>
+              ) : (
+                <SearchNoResultsState />
+              )}
             </ul>
           )}
-          {!searchResults && searchStatus !== AsyncReducerStatus.Loading && <SearchEmptyState />}
         </div>
       )}
     </Downshift>

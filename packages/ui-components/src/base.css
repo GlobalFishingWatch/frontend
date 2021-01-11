@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
 
 :root {
+  --base-font-size: 10px;
+
   /* FONTS */
   --font-family: 'Roboto', sans-serif;
   --font-regular: 400;
@@ -44,6 +46,7 @@
 
   /* UTILS */
   --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
+  --color-veil: rgba(var(--primary-blue-rgb), var(--opacity-secondary));
   --border: 1px solid var(--color-border);
   --border-white: 1px solid rgba(var(--white-rgb), var(--opacity-border));
   --box-shadow-highlight: 0 0 0.2rem 0.2rem var(--color-highlight-blue);
@@ -63,7 +66,7 @@
 
 html {
   height: 100%;
-  font-size: 10px;
+  font-size: var(--base-font-size, 10px);
   -moz-osx-font-smoothing: auto;
   -webkit-font-smoothing: antialiased;
 }
@@ -72,6 +75,7 @@ body {
   height: 100%;
   font: var(--font-M);
   color: var(--color-primary-blue);
+  overflow-anchor: auto;
 }
 
 /* * {
@@ -96,6 +100,10 @@ a,
 a:visited {
   color: inherit;
   text-decoration: none;
+}
+
+button {
+  color: inherit;
 }
 
 ol,

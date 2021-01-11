@@ -48,7 +48,7 @@ function PopupWrapper({
           if (featureType === Generators.Type.HeatmapAnimated) {
             return features.map((feature, i) => (
               <HeatmapTooltipRow
-                key={i + feature.title}
+                key={i + (feature.title as string)}
                 feature={feature}
                 showFeaturesDetails={type === 'click'}
               />
@@ -62,6 +62,13 @@ function PopupWrapper({
                 showFeaturesDetails={type === 'click'}
               />
             )
+          }
+          if (featureType === Generators.Type.GL) {
+            return features.map((feature, i) => (
+              <div key={feature.value || i} className={styles.popupSection}>
+                {feature.value}
+              </div>
+            ))
           }
           return null
         })}

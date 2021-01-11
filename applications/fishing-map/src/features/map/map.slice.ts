@@ -22,6 +22,7 @@ import { selectTimeRange } from 'features/app/app.selectors'
 export const MAX_TOOLTIP_VESSELS = 5
 
 type MapState = {
+  screenshotMode: boolean
   clicked: InteractionEvent | null
   hovered: InteractionEvent | null
   status: AsyncReducerStatus
@@ -29,6 +30,7 @@ type MapState = {
 }
 
 const initialState: MapState = {
+  screenshotMode: false,
   clicked: null,
   hovered: null,
   status: AsyncReducerStatus.Idle,
@@ -163,13 +165,11 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
               const vesselsInfoResponse = await GFWAPI.fetch<APISearch<Vessel>>(vesselsInfoUrl, {
                 signal,
               })
-              vesselsInfo = vesselsInfoResponse?.flatMap(
-                (vesselInfoResponse) =>
-                  vesselInfoResponse.results?.entries.flatMap((vesselInfo) => {
-                    if (!vesselInfo?.shipname) return []
-                    return vesselInfo
-                  }) || []
-              )
+              vesselsInfo =
+                vesselsInfoResponse.entries?.flatMap((vesselInfo) => {
+                  if (!vesselInfo?.shipname) return []
+                  return vesselInfo
+                }) || []
             } catch (e) {
               console.warn(e)
             }

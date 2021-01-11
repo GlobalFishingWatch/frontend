@@ -17,7 +17,7 @@ import {
 import { formatInfoField } from 'utils/info'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
-import styles from 'features/sidebar/LayerPanel.module.css'
+import styles from 'features/workspace/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
 import { TRACKS_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'
@@ -34,6 +34,10 @@ import { DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 // t('vessel.imo', 'IMO')
 // t('vessel.firstTransmissionDate', 'First transmission date')
 // t('vessel.lastTransmissionDate', 'Last transmission date')
+// t('vessel.registeredGearType', 'Registered Gear Type')
+// t('vessel.widthRange', 'Width range')
+// t('vessel.lengthRange', 'Length range')
+// t('vessel.grossTonnageRange', 'Gross Tonnage range')
 // t('vessel.fleet', 'Fleet')
 // t('vessel.source', 'Source')
 
@@ -140,6 +144,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           onClick={onToggleLayerActive}
           tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
+          className={styles.switch}
           color={dataview.config?.color}
         />
         {title && title.length > 30 ? (
@@ -147,7 +152,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         ) : (
           TitleComponent
         )}
-        <div className={cx(styles.actions, { [styles.active]: layerActive })}>
+        <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
           {loading ? (
             <IconButton
               loading

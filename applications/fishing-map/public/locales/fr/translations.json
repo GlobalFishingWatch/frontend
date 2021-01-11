@@ -1,19 +1,21 @@
 {
   "common": {
+    "active_after": "Active after",
+    "active_before": "Active Before",
     "activity": "Activité",
     "apparentFishing": "Effort de pêche apparent",
     "context_area_plural": "Calques de contexte",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers",
-    "dismiss": "Fermer",
     "hour": "Heure",
     "hour_plural": "Heures",
     "login": "Se connecter",
     "logout": "Déconnexion",
     "more": "Plus",
     "open_menu": "Ouvrir le menu",
-    "save": "Enregistrer",
     "share": "Partager la vue actuelle",
     "vessel_plural": "Navires",
+    "dismiss": "Fermer",
+    "save": "Enregistrer",
     "events": "Évènements",
     "fishing": "Pêche"
   },
@@ -25,19 +27,20 @@
     "color_change": "Modifier la couleur",
     "filter_close": "Fermer les filtres",
     "filter_open": "Montrer les filtres",
-    "flag_state_plural": "États du Drapeau",
+    "flag_state_plural": "États du Pavillon",
     "info_close": "Masquer les infos",
     "info_open": "Infos",
     "remove": "Supprimer le calque",
-    "source": "Source",
+    "seeDescription": "Click to see layer description",
     "source_plural": "Sources",
     "toggle_visibility": "Afficher/Masquer le calque",
     "toggleCombinationMode": {
-      "bivariate": "Afficher les couches de pêche en mode bivarié",
-      "compare": "Afficher les couches de pêche en mode de comparaison",
-      "disabled": "Le mode Bivariat est uniquement disponible avec deux couches d'activité"
+      "combine": "Combine layers",
+      "disabled": "Combine mode is only availabe with two activity layers",
+      "split": "Split layers"
     },
     "vessel_fit_bounds": "Centrer la carte sur la voie du navire",
+    "source": "Source",
     "filter_plural": "Filtres"
   },
   "map": {
@@ -47,9 +50,16 @@
     "loading": "Chargement de la carte",
     "rulers_add": "Ajouter des mesures",
     "rulers_remove": "Supprimer toutes les mesures",
-    "screenshot": "Image de la carte",
     "zoom_in": "Zoomer",
-    "zoom_out": "Dézoomer"
+    "zoom_out": "Dézoomer",
+    "screenshot": "Image de la carte"
+  },
+  "search": {
+    "suggestion": "Did you mean"
+  },
+  "selects": {
+    "placeholder": "Select an option",
+    "selected": "selected"
   },
   "timebar": {
     "graph": "Graphique",
@@ -61,20 +71,26 @@
     "firstTransmissionDate": "Première date de transmission",
     "flag": "Drapeau",
     "fleet": "Flotte",
+    "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Dernière date de transmission",
+    "lengthRange": "Length range",
     "loading": "Chargement de la piste du bateau",
     "mmsi": "MMSI",
+    "registeredGearType": "Registered Gear Type",
     "search": {
       "close": "Fermer la recherche",
-      "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en cliquant sur l'icône de filtre dans la barre supérieure ou en écrivant des filtres tels que:",
-      "filter_open": "Filtrer la recherche (bientôt disponible)",
+      "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar.",
+      "filter_close": "Close search filters",
+      "filter_open": "Open search filters",
+      "no_results": "Can't find the vessel you are looking for? Try using MMSI, IMO or IRCS",
       "placeholder": "Tapez pour rechercher des navires",
       "search": "Rechercher des navires"
     },
     "source": "Source",
     "tracks": "Trajectoires de navire",
     "transmission_plural": "Transmissions",
+    "widthRange": "Width range",
     "transmission": "Transmission"
   }
 }
