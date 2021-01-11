@@ -181,7 +181,7 @@ const MapWrapper = (): React.ReactElement | null => {
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
   const onMouseOut = useCallback(() => {
-    // setHoveredEvent(null)
+    setHoveredEvent(null)
   }, [])
 
   const { viewport, onViewportChange } = useViewport()
