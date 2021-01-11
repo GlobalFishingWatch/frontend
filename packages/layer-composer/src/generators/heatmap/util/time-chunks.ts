@@ -1,6 +1,6 @@
 import { DateTime, Duration } from 'luxon'
 
-type Interval = '10days' | 'day' | 'hour'
+export type Interval = '10days' | 'day' | 'hour'
 
 export type TimeChunk = {
   id: string
@@ -27,7 +27,7 @@ const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
 // Buffer size relative to active time delta
 const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2
 
-const CONFIG_BY_INTERVAL: Record<Interval, Record<string, Function>> = {
+const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   hour: {
     isValid: (duration: Duration): boolean => {
       return duration.as('days') < 5
@@ -47,6 +47,9 @@ const CONFIG_BY_INTERVAL: Record<Interval, Record<string, Function>> = {
     getFrame: (start: number) => {
       return Math.floor(start / 1000 / 60 / 60)
     },
+    getDate: (frame: number) => {
+      return new Date(frame * 1000 * 60 * 60)
+    },
   },
   day: {
     isValid: (duration: Duration): boolean => {
@@ -65,10 +68,16 @@ const CONFIG_BY_INTERVAL: Record<Interval, Record<string, Function>> = {
     getFrame: (start: number) => {
       return Math.floor(start / 1000 / 60 / 60 / 24)
     },
+    getDate: (frame: number) => {
+      return new Date(frame * 1000 * 60 * 60 * 24)
+    },
   },
   '10days': {
     getFrame: (start: number) => {
       return Math.floor(start / 1000 / 60 / 60 / 24 / 10)
+    },
+    getDate: (frame: number) => {
+      return new Date(frame * 1000 * 60 * 60 * 24 * 10)
     },
   },
 }
@@ -233,6 +242,12 @@ const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interv
   const ms = new Date(date).getTime()
   const frame = config.getFrame(ms)
   return frame - quantizeOffset
+}
+
+export const frameToDate = (frame: number, quantizeOffset: number, interval: Interval) => {
+  const offsetedFrame = frame + quantizeOffset
+  const config = CONFIG_BY_INTERVAL[interval]
+  return config.getDate(offsetedFrame)
 }
 
 export const getDelta = (start: string, end: string, interval: Interval) => {
