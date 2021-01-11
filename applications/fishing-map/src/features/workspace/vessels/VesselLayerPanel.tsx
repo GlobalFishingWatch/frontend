@@ -62,7 +62,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     if (trackResource?.data) {
       const filteredSegments = filterSegmentsByTimerange(trackResource?.data, { start, end })
       const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
-      const { width, height } = mapInstance?._canvas || {}
+      const { width, height } = (mapInstance as any)._canvas || {}
       if (width && height && bbox) {
         const [minLng, minLat, maxLng, maxLat] = bbox
         const { latitude, longitude, zoom } = fitBounds({

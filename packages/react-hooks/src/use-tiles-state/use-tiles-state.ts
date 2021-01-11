@@ -12,7 +12,7 @@ const tilesInitialState = {
   tiles: {},
 }
 
-function useTilesState(map: Map) {
+function useTilesState(map?: Map) {
   const [tilesLoading, setTilesLoading] = useState<TilesLoading>(tilesInitialState)
 
   const onIdle = useCallback(() => {
