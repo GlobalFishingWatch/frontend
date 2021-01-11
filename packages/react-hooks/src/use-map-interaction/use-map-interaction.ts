@@ -10,13 +10,14 @@ type FeatureStateSource = { source: string; sourceLayer: string; state: FeatureS
 
 const getExtendedFeatures = (
   features: MapboxGeoJSONFeature[],
-  metatada?: ExtendedStyleMeta
+  metadata?: ExtendedStyleMeta
 ): ExtendedFeature[] => {
-  const frame = metatada?.temporalgrid?.timeChunks?.activeChunkFrame
+  const frame = metadata?.temporalgrid?.timeChunks?.activeChunkFrame
 
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
     const generatorType = feature.layer.metadata?.generatorType ?? null
     const generatorId = feature.layer.metadata?.generatorId ?? null
+    const unit = feature.layer?.metadata?.legend?.unit ?? null
     const properties = feature.properties || {}
     const extendedFeature: ExtendedFeature | null = {
       properties,
@@ -26,6 +27,7 @@ const getExtendedFeatures = (
       sourceLayer: feature.sourceLayer,
       id: (feature.id as number) || feature.properties?.gfw_id || undefined,
       value: properties.value || properties.name || properties.id,
+      unit,
       tile: {
         x: (feature as any)._vectorTileFeature._x,
         y: (feature as any)._vectorTileFeature._y,
