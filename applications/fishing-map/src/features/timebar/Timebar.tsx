@@ -5,6 +5,7 @@ import TimebarComponent, {
   TimebarTracks,
   TimebarActivity,
   TimebarHighlighter,
+  TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
 import { useTilesState } from '@globalfishingwatch/react-hooks'
 import { frameToDate, Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
@@ -41,7 +42,7 @@ const TimebarWrapper = () => {
   const mapInstance = useMapboxInstance()
   const tilesLoading = useTilesState(mapInstance).loading
 
-  const [activityStream, setActivityStream] = useState()
+  const [stackedActivity, setStackedActivity] = useState<any>()
   useEffect(() => {
     console.log(tilesLoading)
     if (!mapInstance || tilesLoading) return
@@ -91,24 +92,31 @@ const TimebarWrapper = () => {
         if (!values[frameIndex]) {
           values[frameIndex] = {
             // TODO
-            date: frameToDate(frameIndex, timechunks.chunks[0].quantizeOffset, timechunks.interval),
+            date: frameToDate(
+              frameIndex,
+              timechunks.chunks[0].quantizeOffset,
+              timechunks.interval
+            ).getTime(),
             // TODO
-            sublayers: [0, 0, 0, 0],
+            0: 0,
+            1: 0,
+            2: 0,
           }
         }
 
         let parsed = JSON.parse(valuesAtFrame)
         if (!Array.isArray(parsed)) parsed = [parsed]
         ;(parsed as number[]).forEach((value, sublayerIndex) => {
-          values[frameIndex].sublayers[sublayerIndex] += value
+          values[frameIndex][sublayerIndex] += value
         })
       }
     })
     console.log(values)
+    setStackedActivity(values)
   }, [mapInstance, tilesLoading])
 
   if (!start || !end) return null
-
+  console.log(timebarVisualisation, stackedActivity)
   return (
     <div className="print-hidden">
       <TimebarComponent
@@ -136,6 +144,9 @@ const TimebarWrapper = () => {
       >
         {() => (
           <Fragment>
+            {timebarVisualisation === TimebarVisualisations.Heatmap && stackedActivity && (
+              <TimebarStackedActivity key="stackedActivity" data={stackedActivity} />
+            )}
             {timebarVisualisation === TimebarVisualisations.Vessel && tracks?.length && (
               <Fragment>
                 {timebarGraph !== TimebarGraphs.Speed && (
