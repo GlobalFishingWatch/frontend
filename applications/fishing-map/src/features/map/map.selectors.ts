@@ -5,7 +5,7 @@ import {
   AnyGeneratorConfig,
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { GeneratorDataviewConfig, Generators } from '@globalfishingwatch/layer-composer'
+import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
@@ -13,7 +13,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import { Resource, selectResources, TrackResourceData } from 'features/resources/resources.slice'
-import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
+import { FISHING_DATASET_TYPE, TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
@@ -96,7 +96,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
     }
 
     generatorsConfig = generatorsConfig.flatMap((dataview) => {
-      const generator: GeneratorDataviewConfig = {
+      let generator: GeneratorDataviewConfig = {
         id: dataview.id,
         ...dataview.config,
       }
@@ -135,6 +135,30 @@ export const getWorkspaceGeneratorsConfig = createSelector(
         if (!generator.tilesUrl) {
           console.warn('Missing tiles url for dataview', dataview)
           return []
+        }
+      } else if (dataview.config?.type === Generators.Type.Heatmap) {
+        // TODO: use the getGeneratorConfig package function here
+        const dataset = dataview.datasets?.find((dataset) => dataset.type === FISHING_DATASET_TYPE)
+        const tilesEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
+        const statsEndpoint = dataset?.endpoints?.find(
+          (endpoint) => endpoint.id === '4wings-legend'
+        )
+        generator = {
+          ...generator,
+          maxZoom: 8,
+          fetchStats: !dataview.config.steps,
+          datasets: [dataset?.id],
+          tilesUrl: tilesEndpoint?.pathTemplate,
+          statsUrl: statsEndpoint?.pathTemplate,
+          metadata: {
+            color: dataview?.config?.color,
+            group: Group.OutlinePolygonsBackground,
+            interactive: true,
+            legend: {
+              label: dataset?.name,
+              unit: dataset?.unit,
+            },
+          },
         }
       }
       return generator

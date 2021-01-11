@@ -54,7 +54,7 @@ function PopupWrapper({
               />
             ))
           }
-          if (featureType === Generators.Type.Context) {
+          if (featureType === Generators.Type.Context || featureType === Generators.Type.Heatmap) {
             return (
               <ContextTooltipSection
                 key={featureType}
