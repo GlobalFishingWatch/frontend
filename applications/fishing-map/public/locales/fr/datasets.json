@@ -38,5 +38,9 @@
   "high-seas": {
     "name": "Poches de haute mer",
     "description": "Les hautes mers sont n'importe quelle zone de l'océan au-delà des zones économiques exclusives (EEZ). Les poches en haute mer sont des zones totalement fermées par les ZEE. Ces poches peuvent être difficiles à distinguer des multiples juridictions EEZ qui les entourent, donc nous avons une couche qui les met en évidence."
+  },
+  "dgg_salinity_caribe": {
+    "name": "Average salinity (Caribe)",
+    "description": "Sea Surface Salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from North to South and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons."
   }
 }
