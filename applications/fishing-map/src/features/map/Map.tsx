@@ -221,7 +221,7 @@ const MapWrapper = (): React.ReactElement | null => {
   }, [mapRef.current])
 
   return (
-    <div className={styles.container} onMouseOut={onMouseOut}>
+    <div className={styles.container}>
       <MapScreenshot />
       {style && (
         <InteractiveMap
@@ -243,6 +243,7 @@ const MapWrapper = (): React.ReactElement | null => {
           onClick={onMapClick}
           onHover={onMapHover}
           onError={handleError}
+          onMouseOut={onMouseOut}
           transitionDuration={viewport.transitionDuration}
         >
           {clickedEvent && (
