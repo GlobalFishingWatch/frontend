@@ -116,7 +116,7 @@ class HeatmapGenerator {
           generatorType: Type.Heatmap,
           gridArea: statsByZoom && statsByZoom.area,
           currentlyAt: pickValueAt,
-          group: Group.Heatmap,
+          group: config.metadata?.group || Group.Heatmap,
         },
       },
     ]
