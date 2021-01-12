@@ -8,12 +8,12 @@
     "copiedToClipboard": "The link to share this view has been copied to your clipboard",
     "hour": "Hour",
     "hour_plural": "Hours",
-    "login": "Log in",
     "logout": "Log Out",
     "more": "More",
-    "open_menu": "Open Menu",
     "share": "Click to share the current view",
     "vessel_plural": "Vessels",
+    "login": "Log in",
+    "open_menu": "Open Menu",
     "dismiss": "Dismiss",
     "save": "Save",
     "events": "Events",
@@ -24,6 +24,7 @@
   },
   "layer": {
     "add": "Add layer",
+    "addDisabled": "Adding layers is disabled when layers are combined",
     "color_change": "Change color",
     "filter_close": "Close filters",
     "filter_open": "Open filters",
@@ -50,11 +51,13 @@
     "loading": "Map loading",
     "rulers_add": "Add rulers",
     "rulers_remove": "Remove all rulers",
+    "search": "Search areas",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out",
     "screenshot": "Map screenshot"
   },
   "search": {
+    "close": "Close search",
     "suggestion": "Did you mean"
   },
   "selects": {

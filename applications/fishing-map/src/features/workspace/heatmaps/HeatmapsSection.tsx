@@ -23,7 +23,6 @@ function HeatmapsSection(): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
-
   const heatmapSublayersAddedIndex = useSelector(selectHeatmapSublayersAddedIndex)
 
   const onAddClick = useCallback(() => {
@@ -60,9 +59,13 @@ function HeatmapsSection(): React.ReactElement {
   if (dataviews?.length !== 2) {
     bivariateTooltip = t(
       'layer.toggleCombinationMode.disabled',
-      'Combine mode is only availabe with two activity layers'
+      'Combine mode is only available with two activity layers'
     )
   }
+
+  const addTooltip = bivariate
+    ? t('layer.addDisabled', 'Adding layers is disabled when layers are combined')
+    : t('layer.add', 'Add layer')
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -81,7 +84,8 @@ function HeatmapsSection(): React.ReactElement {
             icon="plus"
             type="border"
             size="medium"
-            tooltip={t('layer.add', 'Add layer')}
+            disabled={bivariate}
+            tooltip={addTooltip}
             tooltipPlacement="top"
             onClick={onAddClick}
           />
