@@ -16,11 +16,12 @@ import HeatmapInfoModal from './HeatmapInfoModal'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
+  isAdded: boolean
 }
 
-function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+function LayerPanel({ dataview, isAdded }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const [filterOpen, setFiltersOpen] = useState(false)
+  const [filterOpen, setFiltersOpen] = useState(isAdded === undefined ? false : isAdded)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const sourcesOptions = getSourcesSelectedInDataview(dataview)
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters || [])
