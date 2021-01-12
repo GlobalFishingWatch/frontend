@@ -44,6 +44,7 @@ const getPathContainers = (data, graphHeight, overallScale) => {
     // TODO
     .keys([0, 1, 2])
 
+  // TODO this breaks when arrays are not continuous ie when zoomed in a lot
   const series = stackLayout(data)
   console.log(series)
 
@@ -104,6 +105,7 @@ const StackedActivity = ({ data, colors }) => {
     return getPathContainers(data, graphHeight, overallScale)
   }, [data, graphHeight, overallScale])
 
+  console.log(pathContainers)
   return (
     <svg width={outerWidth} height={graphHeight}>
       <g
