@@ -22,8 +22,14 @@ import { updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace } from 'features/app/app.selectors'
 import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 
+export type ApiError = {
+  status?: number // HHTP error codes
+  message?: string
+}
+
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
+  error: ApiError
   data: Workspace<WorkspaceState> | null
   // used to identify when someone shared its own version of the workspace
   custom: boolean
@@ -31,6 +37,7 @@ interface WorkspaceSliceState {
 
 const initialState: WorkspaceSliceState = {
   status: AsyncReducerStatus.Idle,
+  error: {},
   data: null,
   custom: false,
 }
@@ -56,58 +63,62 @@ export const getDatasetByDataview = (
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
-  async (workspaceId: string, { dispatch, getState }) => {
+  async (workspaceId: string, { dispatch, getState, rejectWithValue }) => {
     const state = getState() as RootState
     const version = selectVersion(state)
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
 
-    let workspace = workspaceId
-      ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`)
-      : null
-    if (!workspace && locationType === HOME) {
-      workspace = await getDefaultWorkspace()
-    }
-
-    if (!workspace) {
-      return
-    }
-
-    const dataviewIds = [
-      ...(workspace.dataviews?.map(({ id }) => id as number) || []),
-      ...uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId)),
-    ]
-
-    let dataviews = []
-    if (dataviewIds) {
-      const { payload }: any = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
-      if (payload?.length) {
-        dataviews = payload
+    try {
+      let workspace = workspaceId
+        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`)
+        : null
+      if (!workspace && locationType === HOME) {
+        workspace = await getDefaultWorkspace()
       }
-    }
-    const dataviewIntances = [
-      ...dataviews,
-      ...(workspace.dataviewInstances || []),
-      ...(urlDataviewInstances || []),
-    ]
 
-    const datasets = getDatasetByDataview(dataviewIntances)
+      if (!workspace) {
+        return
+      }
 
-    if (datasets?.length) {
-      await dispatch(fetchDatasetsByIdsThunk(datasets))
-    }
+      const dataviewIds = [
+        ...(workspace.dataviews?.map(({ id }) => id as number) || []),
+        ...uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId)),
+      ]
 
-    const locationCategory = selectLocationCategory(state)
-    if (workspace.viewport && locationType !== HOME) {
-      dispatch(
-        updateLocation(locationType, {
-          payload: { category: locationCategory, workspaceId: workspace.id },
-          query: { ...workspace.viewport },
-          replaceQuery: true,
-        })
-      )
+      let dataviews = []
+      if (dataviewIds) {
+        const { payload }: any = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
+        if (payload?.length) {
+          dataviews = payload
+        }
+      }
+      const dataviewIntances = [
+        ...dataviews,
+        ...(workspace.dataviewInstances || []),
+        ...(urlDataviewInstances || []),
+      ]
+
+      const datasets = getDatasetByDataview(dataviewIntances)
+
+      if (datasets?.length) {
+        await dispatch(fetchDatasetsByIdsThunk(datasets))
+      }
+
+      const locationCategory = selectLocationCategory(state)
+      if (workspace.viewport && locationType !== HOME) {
+        dispatch(
+          updateLocation(locationType, {
+            payload: { category: locationCategory, workspaceId: workspace.id },
+            query: { ...workspace.viewport },
+            replaceQuery: true,
+          })
+        )
+      }
+      return workspace
+    } catch (e) {
+      return rejectWithValue(e as ApiError)
     }
-    return workspace
   }
 )
 
@@ -179,8 +190,9 @@ const workspaceSlice = createSlice({
         state.data = action.payload
       }
     })
-    builder.addCase(fetchWorkspaceThunk.rejected, (state) => {
+    builder.addCase(fetchWorkspaceThunk.rejected, (state, action) => {
       state.status = AsyncReducerStatus.Error
+      state.error = action.payload as ApiError
     })
     builder.addCase(saveCurrentWorkspaceThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading

@@ -28,6 +28,7 @@ export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
 
 export const selectWorkspace = (state: RootState) => state.workspace.data
 export const selectWorkspaceStatus = (state: RootState) => state.workspace.status
+export const selectWorkspaceError = (state: RootState) => state.workspace.error
 export const selectWorkspaceCustom = (state: RootState) => state.workspace.custom
 
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
