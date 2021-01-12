@@ -53,9 +53,19 @@ export const fetchUserThunk = createAsyncThunk(
 
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
-  async (_, { dispatch, getState }) => {
-    await GFWAPI.logout()
+  async ({ redirect }: { redirect: boolean }, { dispatch, getState }) => {
+    try {
+      await GFWAPI.logout()
+    } catch (e) {
+      console.warn(e)
+    }
+    if (redirect) {
+      window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+      return
+    }
+
     await dispatch(fetchUserThunk({ guest: true }))
+
     // const prevLocation = selectPrevLocation(getState() as RootState)
     // dispatch(
     //   updateLocation(prevLocation.type === USER ? HOME : (prevLocation.type as ROUTE_TYPES), {

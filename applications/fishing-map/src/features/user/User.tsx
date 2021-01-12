@@ -34,7 +34,7 @@ function User() {
 
   const onLogoutClick = useCallback(() => {
     setLogoutLoading(true)
-    dispatch(logoutUserThunk())
+    dispatch(logoutUserThunk({ redirect: false }))
   }, [dispatch])
 
   if (!userData) return null

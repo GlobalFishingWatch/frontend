@@ -20,6 +20,9 @@
     "fishing": "Fishing"
   },
   "errors": {
+    "notAllowed": "You need access to this view",
+    "requestAcess": "Ask for access, or switch to an account with access",
+    "workspaceNotFound": "The view you request was not found",
     "workspaceLoad": "There was an error loading the workspace, please try again later"
   },
   "layer": {
