@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Layer } from 'mapbox-gl'
 import TimebarComponent, {
@@ -14,6 +14,7 @@ import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/t
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
+import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
@@ -46,9 +47,15 @@ const TimebarWrapper = () => {
   useEffect(() => {
     console.log(tilesLoading)
     if (!mapInstance || tilesLoading) return
+
+    let style: any
+    try {
+      style = mapInstance.getStyle()
+    } catch (e) {
+      console.log(e)
+    }
     // Get interactive layer(s) from the heatmap animated layers
-    console.log(mapInstance.getStyle().layers)
-    const heatmapInteractiveLayers = (mapInstance.getStyle().layers as Layer[]).filter(
+    const heatmapInteractiveLayers = (style.layers as Layer[]).filter(
       (layer) =>
         layer.metadata?.generatorType === Generators.Type.HeatmapAnimated &&
         layer.metadata?.interactive === true
@@ -91,9 +98,9 @@ const TimebarWrapper = () => {
         if (!valuesAtFrame) continue
         if (!values[frameIndex]) {
           values[frameIndex] = {
-            // TODO
             date: frameToDate(
               frameIndex,
+              // TODO
               timechunks.chunks[0].quantizeOffset,
               timechunks.interval
             ).getTime(),
@@ -114,6 +121,11 @@ const TimebarWrapper = () => {
     console.log(values)
     setStackedActivity(values)
   }, [mapInstance, tilesLoading])
+
+  const dataviews = useSelector(selectTemporalgridDataviews)
+  const heatmapSublayerColors = useMemo(() => {
+    return dataviews?.map((dataview) => dataview.config?.color)
+  }, [dataviews])
 
   if (!start || !end) return null
   console.log(timebarVisualisation, stackedActivity)
@@ -145,7 +157,11 @@ const TimebarWrapper = () => {
         {() => (
           <Fragment>
             {timebarVisualisation === TimebarVisualisations.Heatmap && stackedActivity && (
-              <TimebarStackedActivity key="stackedActivity" data={stackedActivity} />
+              <TimebarStackedActivity
+                key="stackedActivity"
+                data={stackedActivity}
+                colors={heatmapSublayerColors}
+              />
             )}
             {timebarVisualisation === TimebarVisualisations.Vessel && tracks?.length && (
               <Fragment>

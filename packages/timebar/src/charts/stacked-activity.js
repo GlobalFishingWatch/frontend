@@ -92,7 +92,7 @@ const getPathContainers = (data, graphHeight, overallScale) => {
   // })
 }
 
-const StackedActivity = ({ data }) => {
+const StackedActivity = ({ data, colors }) => {
   const { immediate } = useContext(ImmediateContext)
   const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(TimelineContext)
 
@@ -116,7 +116,7 @@ const StackedActivity = ({ data }) => {
           <path
             key={sublayerIndex}
             d={pathContainer.path}
-            fill="red"
+            fill={colors ? colors[sublayerIndex] : '#ff00ff'}
             // fillOpacity={opacity}
           />
         ))}
@@ -132,10 +132,12 @@ StackedActivity.propTypes = {
       sublayers: PropTypes.arrayOf(PropTypes.number),
     })
   ),
+  colors: PropTypes.arrayOf(PropTypes.string),
 }
 
 StackedActivity.defaultProps = {
   data: [],
+  colors: [],
 }
 
 export default StackedActivity
