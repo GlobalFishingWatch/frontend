@@ -39,7 +39,6 @@ function App(): React.ReactElement {
   const [menuOpen, setMenuOpen] = useState(false)
   const userLogged = useSelector(isUserLogged)
   const userAuthorized = useSelector(isUserAuthorized)
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
   const narrowSidebar = useSelector(isWorkspaceLocation)
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
@@ -88,16 +87,7 @@ function App(): React.ReactElement {
         />
       </MapboxRefProvider>
     )
-  }, [
-    dispatch,
-    narrowSidebar,
-    onMenuClick,
-    onToggle,
-    sidebarOpen,
-    userAuthorized,
-    userLogged,
-    workspaceStatus,
-  ])
+  }, [dispatch, narrowSidebar, onMenuClick, onToggle, sidebarOpen, userAuthorized, userLogged])
 
   return (
     <Fragment>

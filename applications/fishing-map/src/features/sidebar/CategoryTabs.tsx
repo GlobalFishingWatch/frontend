@@ -101,7 +101,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         </button>
         <ul className={styles.languages}>
           {LocaleLabels.map(({ id, label }) => (
-            <li>
+            <li key={id}>
               <button
                 onClick={() => toggleLanguage(id)}
                 className={cx(styles.language, {
