@@ -8,9 +8,9 @@ import oceanAreas from 'data/ocean-areas'
 export const OceanAreas = () => {
   const mapRef = useRef<any>(null)
   const [viewport, setViewport] = useState({
-    longitude: -4,
-    latitude: 40,
-    zoom: 3.9,
+    longitude: -15,
+    latitude: 28,
+    zoom: 4,
   })
 
   const [query, setQuery] = useState('')
@@ -19,7 +19,8 @@ export const OceanAreas = () => {
 
   useEffect(() => {
     if (query) {
-      setAreasMatching(searchOceanAreas(query))
+      const areas = searchOceanAreas(query)
+      setAreasMatching(areas)
     } else {
       setAreasMatching([])
     }

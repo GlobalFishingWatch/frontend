@@ -9,9 +9,11 @@ All of them availables with the `@globalfishingwatch/` prefix:
 |                                               |                                                                              |
 | --------------------------------------------- | ---------------------------------------------------------------------------- |
 | [api-client](packages/api-client)             | JS library to simplify GFW API login and resources fetch                     |
-| [dataviews-client](packages/dataviews-client) | api-client wrapper to fetch and edit dataviews and associated datasets/data  |
+| [api-types](packages/api-types)               | API typescript schema definitions                                            |
+| [data-transforms](packages/data-transforms)   | Set ot shared tools for data transformations                                 |
+| [dataviews-client](packages/dataviews-client) | Api-client wrapper to fetch and edit dataviews and associated datasets/data  |
 | [layer-composer](packages/layer-composer)     | Orchestrates various Layer Generators to generate a Mapbox GL Style document |
-| [data-transform](packages/data-transforms)    | Shared utils to data transfromation                                          |
+| [ocean-areas](packages/ocean-areas)           | Small library to get ocean area / eez names by viewport or by text search    |
 | [pbf-decoders](packages/pbf-decoders)         | PBF custom responses parsers                                                 |
 | [react-hooks](packages/react-hooks)           | Set of hooks to use libraries easily in react                                |
 | [timebar](packages/timebar)                   | Timebar component, not many more to say                                      |
