@@ -26,11 +26,10 @@
   padding: 3.5rem 3rem 3rem;
 }
 
-h2 {
+.title {
   font-size: var(--timebar-extra-large-font-size);
   line-height: var(--timebar-extra-large-font-size);
   margin: 0 0 2rem;
-  letter-spacing: 0.1rem;
 }
 
 .selectorsContainer {
