@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useCallback, useMemo, useEffect } from 'react'
+import React, { useState, Fragment, useCallback, useMemo, useEffect, Suspense } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -79,14 +79,16 @@ function App(): React.ReactElement {
 
     return (
       <MapboxRefProvider>
-        <SplitView
-          isOpen={sidebarOpen}
-          onToggle={onToggle}
-          aside={<Sidebar onMenuClick={onMenuClick} />}
-          main={<Main />}
-          asideWidth={narrowSidebar ? '37rem' : '50%'}
-          className="split-container"
-        />
+        <Suspense fallback={null}>
+          <SplitView
+            isOpen={sidebarOpen}
+            onToggle={onToggle}
+            aside={<Sidebar onMenuClick={onMenuClick} />}
+            main={<Main />}
+            asideWidth={narrowSidebar ? '37rem' : '50%'}
+            className="split-container"
+          />
+        </Suspense>
       </MapboxRefProvider>
     )
   }, [dispatch, narrowSidebar, onMenuClick, onToggle, sidebarOpen, userAuthorized, userLogged])
