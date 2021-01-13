@@ -5,8 +5,8 @@ import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
 import { ResourceQuery } from 'features/resources/resources.slice'
-import { selectDatasets } from 'features/datasets/datasets.slice'
-import { selectDataviews } from 'features/dataviews/dataviews.slice'
+import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
+import { selectDataviews, selectDataviewsStatus } from 'features/dataviews/dataviews.slice'
 import {
   TRACKS_DATASET_TYPE,
   VESSELS_DATASET_TYPE,
@@ -30,6 +30,21 @@ export const selectWorkspace = (state: RootState) => state.workspace.data
 export const selectWorkspaceStatus = (state: RootState) => state.workspace.status
 export const selectWorkspaceError = (state: RootState) => state.workspace.error
 export const selectWorkspaceCustom = (state: RootState) => state.workspace.custom
+
+export const isWorkspacePublic = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.public === true || workspace?.id.includes('-public')
+})
+
+export const isWorkspaceLoading = createSelector(
+  [selectWorkspaceStatus, selectDatasetsStatus, selectDataviewsStatus],
+  (workspaceStatus, datasetsStatus, dataviewsStatus) => {
+    return (
+      workspaceStatus === AsyncReducerStatus.Loading ||
+      datasetsStatus === AsyncReducerStatus.Loading ||
+      dataviewsStatus === AsyncReducerStatus.Loading
+    )
+  }
+)
 
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id

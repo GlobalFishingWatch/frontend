@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import uniq from 'lodash/uniq'
 import {
   Workspace,
@@ -21,15 +21,11 @@ import { WORKSPACE, HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace } from 'features/app/app.selectors'
 import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
-
-export type ApiError = {
-  status?: number // HHTP error codes
-  message?: string
-}
+import { AsyncError } from 'utils/async-slice'
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
-  error: ApiError
+  error: AsyncError
   data: Workspace<WorkspaceState> | null
   // used to identify when someone shared its own version of the workspace
   custom: boolean
@@ -102,7 +98,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       const datasets = getDatasetByDataview(dataviewIntances)
 
       if (datasets?.length) {
-        await dispatch(fetchDatasetsByIdsThunk(datasets))
+        const { error, payload }: any = await dispatch(fetchDatasetsByIdsThunk(datasets))
+        if (error) {
+          return rejectWithValue(payload)
+        }
       }
 
       const locationCategory = selectLocationCategory(state)
@@ -117,7 +116,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
       return workspace
     } catch (e) {
-      return rejectWithValue(e as ApiError)
+      return rejectWithValue(e as AsyncError)
     }
   }
 )
@@ -192,7 +191,7 @@ const workspaceSlice = createSlice({
     })
     builder.addCase(fetchWorkspaceThunk.rejected, (state, action) => {
       state.status = AsyncReducerStatus.Error
-      state.error = action.payload as ApiError
+      state.error = action.payload as AsyncError
     })
     builder.addCase(saveCurrentWorkspaceThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
@@ -203,6 +202,7 @@ const workspaceSlice = createSlice({
       if (action.payload) {
         state.data = action.payload
       }
+      state.custom = false
     })
     builder.addCase(saveCurrentWorkspaceThunk.rejected, (state) => {
       state.status = AsyncReducerStatus.Finished

@@ -10,6 +10,7 @@ import {
   selectDataviewsResourceQueries,
   selectCurrentWorkspaceId,
   selectWorkspaceError,
+  isWorkspaceLoading,
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'types'
@@ -101,8 +102,9 @@ function WorkspaceError(): React.ReactElement {
 }
 
 function Workspace() {
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
   const dispatch = useDispatch()
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const workspaceLoading = useSelector(isWorkspaceLoading)
   const userLogged = useSelector(isUserLogged)
   const locationType = useSelector(selectLocationType)
   const workspaceId = useSelector(selectWorkspaceId)
@@ -126,7 +128,7 @@ function Workspace() {
     }
   }, [dispatch, resourceQueries])
 
-  if (workspaceStatus === AsyncReducerStatus.Loading) {
+  if (workspaceLoading) {
     return (
       <div className={styles.placeholder}>
         <Spinner />
