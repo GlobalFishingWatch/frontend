@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'

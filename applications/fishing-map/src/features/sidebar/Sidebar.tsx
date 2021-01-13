@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { Suspense, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import Search from 'features/search/Search'
 import { selectSearchQuery } from 'features/app/app.selectors'
@@ -34,13 +34,15 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     return <Search />
   }
   return (
-    <div className={styles.container}>
-      <CategoryTabs onMenuClick={onMenuClick} />
-      <div className="scrollContainer">
-        <SidebarHeader />
-        {sidebarComponent}
+    <Suspense fallback={null}>
+      <div className={styles.container}>
+        <CategoryTabs onMenuClick={onMenuClick} />
+        <div className="scrollContainer">
+          <SidebarHeader />
+          {sidebarComponent}
+        </div>
       </div>
-    </div>
+    </Suspense>
   )
 }
 
