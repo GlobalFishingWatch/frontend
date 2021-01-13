@@ -18,10 +18,6 @@
   padding: var(--space-L);
 }
 
-.link {
-  text-decoration: underline;
-}
-
 .main {
   height: 100%;
   display: flex;
