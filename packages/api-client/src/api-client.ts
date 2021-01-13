@@ -310,7 +310,6 @@ export class GFWAPI {
               localStorage.removeItem(this.storageKeys.token)
               localStorage.removeItem(this.storageKeys.refreshToken)
               e.refreshError = true
-              e.message = e.message || 'No refresh token'
               throw e
             }
           }
