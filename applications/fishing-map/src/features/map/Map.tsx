@@ -222,17 +222,17 @@ const MapWrapper = (): React.ReactElement | null => {
 
   return (
     <div className={styles.container}>
-      <MapScreenshot />
+      {<MapScreenshot map={mapRef.current?.getMap()} />}
       {style && (
         <InteractiveMap
           disableTokenWarning={true}
           ref={mapRef}
           width="100%"
           height="100%"
+          zoom={viewport.zoom}
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
-          zoom={viewport.zoom}
           onViewportChange={onViewportChange}
           mapStyle={style}
           mapOptions={mapOptions}

@@ -118,7 +118,7 @@ export type ExtendedLayer = AnyLayer & {
 }
 
 export interface ExtendedStyleMeta {
-  generatedAt?: string
+  generatedAt?: number
   interactiveLayerIds?: string[]
   temporalgrid?: Record<string, any>
 }
