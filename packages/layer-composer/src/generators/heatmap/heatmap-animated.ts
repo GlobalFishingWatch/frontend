@@ -128,6 +128,7 @@ class HeatmapAnimatedGenerator {
       layers: this._getStyleLayers(finalConfig, timeChunks),
       metadata: {
         temporalgrid: true,
+        numSublayers: config.sublayers.length,
         timeChunks,
       },
     }

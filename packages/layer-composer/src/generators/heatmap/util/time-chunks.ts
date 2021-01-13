@@ -15,6 +15,7 @@ export type TimeChunk = {
 export type TimeChunks = {
   chunks: TimeChunk[]
   delta: number
+  deltaInIntervalUnits: number
   deltaInDays: number
   interval: Interval
   activeStart: string
@@ -179,13 +180,15 @@ export const getActiveTimeChunks = (
   datasetEnd: string
 ): TimeChunks => {
   const delta = +toDT(activeEnd) - +toDT(activeStart)
+  const interval = getInterval(delta)
   const timeChunks: TimeChunks = {
     activeStart,
     activeEnd,
     chunks: [],
     delta,
+    deltaInIntervalUnits: CONFIG_BY_INTERVAL[interval].getFrame(delta),
     deltaInDays: Duration.fromMillis(delta).as('days'),
-    interval: getInterval(delta),
+    interval,
     activeChunkFrame: 0,
   }
 
