@@ -4,6 +4,12 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { Locale } from 'types'
 
+export const LocaleLabels = [
+  { id: Locale.en, label: 'English' },
+  { id: Locale.es, label: 'Español' },
+  { id: Locale.fr, label: 'Français' },
+]
+
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend

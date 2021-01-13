@@ -12,6 +12,7 @@ import { HOME, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
+import { LocaleLabels } from 'features/i18n/i18n'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
@@ -99,36 +100,18 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <Icon icon="language" />
         </button>
         <ul className={styles.languages}>
-          <li>
-            <button
-              onClick={() => toggleLanguage(Locale.en)}
-              className={cx(styles.language, {
-                [styles.currentLanguage]: i18n.language === Locale.en,
-              })}
-            >
-              English
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => toggleLanguage(Locale.es)}
-              className={cx(styles.language, {
-                [styles.currentLanguage]: i18n.language === Locale.es,
-              })}
-            >
-              Español
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => toggleLanguage(Locale.fr)}
-              className={cx(styles.language, {
-                [styles.currentLanguage]: i18n.language === Locale.fr,
-              })}
-            >
-              Français
-            </button>
-          </li>
+          {LocaleLabels.map(({ id, label }) => (
+            <li>
+              <button
+                onClick={() => toggleLanguage(id)}
+                className={cx(styles.language, {
+                  [styles.currentLanguage]: i18n.language === id,
+                })}
+              >
+                {label}
+              </button>
+            </li>
+          ))}
         </ul>
       </li>
       <li
