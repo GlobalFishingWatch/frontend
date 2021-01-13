@@ -24,6 +24,7 @@
   cursor: not-allowed;
 }
 
+a.button, a.button:visited,
 .default {
   height: var(--size-M);
   color: var(--color-white);
