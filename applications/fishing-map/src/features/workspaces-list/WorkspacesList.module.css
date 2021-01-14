@@ -7,6 +7,11 @@
   margin-top: var(--space-M);
 }
 
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .image {
   width: 18rem;
   height: 15rem;

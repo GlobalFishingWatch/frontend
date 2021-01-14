@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 4.5.0
+
+### Minor Changes
+
+- include unit in useMapInteraction feature
+
 ## 4.4.4
 
 ### Patch Changes

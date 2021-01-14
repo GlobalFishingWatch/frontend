@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.5.0
+
+### Minor Changes
+
+- include workspace category
+
 ## 2.4.2
 
 ### Patch Changes

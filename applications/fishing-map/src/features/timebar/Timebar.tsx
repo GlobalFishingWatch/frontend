@@ -11,7 +11,11 @@ import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
-import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
+import {
+  hasStaticHeatmapLayersActive,
+  selectTracksData,
+  selectTracksGraphs,
+} from './timebar.selectors'
 
 const TimebarWrapper = () => {
   const { start, end, dispatchTimeranges } = useTimerangeConnect()
@@ -20,6 +24,7 @@ const TimebarWrapper = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
+  const staticHeatmapLayersActive = useSelector(hasStaticHeatmapLayersActive)
 
   const dispatch = useDispatch()
 
@@ -40,7 +45,7 @@ const TimebarWrapper = () => {
   return (
     <div className="print-hidden">
       <TimebarComponent
-        enablePlayback
+        enablePlayback={!staticHeatmapLayersActive}
         start={start}
         end={end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}

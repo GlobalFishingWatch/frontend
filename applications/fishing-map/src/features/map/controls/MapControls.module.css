@@ -8,7 +8,6 @@
   z-index: 1;
 }
 
-
 .controlsNested {
   display: flex;
   flex-direction: column;
@@ -37,4 +36,14 @@
 
 .basemapSwitcher.satellite {
   background-image: url('../../../assets/images/basemap-default.jpg');
+}
+
+.loadingBtn {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s 0.5s;
+}
+
+.visible {
+  opacity: 1;
 }

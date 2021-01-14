@@ -22,7 +22,7 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
     const { wdpa_pid } = feature.properties
     const label = `${feature.value} - ${feature.properties.desig}`
     return (
-      <div className={styles.row} key={label || gfw_id}>
+      <div className={styles.row} key={`${label}-${gfw_id}`}>
         <span className={styles.rowText}>{label}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
@@ -44,7 +44,7 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
   if (feature.layer === 'tuna-rfmo') {
     const link = TunaRfmoLinksById[feature.value]
     return (
-      <div className={styles.row} key={feature.value || gfw_id}>
+      <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && link && (
           <div className={styles.rowActions}>
@@ -59,7 +59,7 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
   if (feature.layer === 'eez-areas') {
     const { mrgid } = feature.properties
     return (
-      <div className={styles.row} key={mrgid || gfw_id}>
+      <div className={styles.row} key={`${mrgid}-${gfw_id}`}>
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
@@ -88,8 +88,8 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
   const featuresByType = groupBy(features, 'layer')
   return (
     <Fragment>
-      {Object.values(featuresByType).map((featureByType) => (
-        <div key={featureByType[0].title} className={styles.popupSection}>
+      {Object.values(featuresByType).map((featureByType, index) => (
+        <div key={`${featureByType[0].title}-${index}`} className={styles.popupSection}>
           <span
             className={styles.popupSectionColor}
             style={{ backgroundColor: featureByType[0].color }}

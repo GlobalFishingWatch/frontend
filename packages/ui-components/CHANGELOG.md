@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.11.3
+
+### Patch Changes
+
+- 4f8269c2: [WIP] Polish 🇵🇱
+
 ## 2.11.2
 
 ### Patch Changes

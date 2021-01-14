@@ -4,6 +4,7 @@ import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'store'
 import { WorkspaceParam, UrlDataviewInstance } from 'types'
 import { DEFAULT_VERSION } from 'data/config'
+import { WorkspaceCategories } from 'data/workspaces'
 import { HOME, ROUTE_TYPES, WORKSPACE } from './routes'
 
 const selectLocation = (state: RootState) => state.location
@@ -45,7 +46,7 @@ export const selectWorkspaceId = createSelector(
 
 export const selectLocationCategory = createSelector(
   [selectLocationPayload],
-  (payload) => payload?.category
+  (payload) => payload?.category as WorkspaceCategories
 )
 
 export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')

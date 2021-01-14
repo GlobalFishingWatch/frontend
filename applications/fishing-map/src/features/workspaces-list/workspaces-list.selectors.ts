@@ -29,6 +29,7 @@ export const selectCurrentHighlightedWorkspaces = createSelector(
     const workspaces = highlightedWorkspaces?.[locationCategory]
     return workspaces?.map((workspace) => {
       const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
+
       if (!apiWorkspace) return workspace
 
       return { ...workspace, viewport: apiWorkspace.viewport }
