@@ -70,7 +70,7 @@ const getPathContainers = (data, graphHeight, overallScale) => {
       path: areaLayout(s),
     }
   })
-  console.log(layouted)
+  // console.log(layouted)
 
   return layouted
 
@@ -105,7 +105,6 @@ const StackedActivity = ({ data, colors }) => {
     return getPathContainers(data, graphHeight, overallScale)
   }, [data, graphHeight, overallScale])
 
-  console.log(pathContainers)
   return (
     <svg width={outerWidth} height={graphHeight}>
       <g

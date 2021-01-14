@@ -15,6 +15,7 @@ const aggregateCell = (
   numSublayers: number
 ) => {
   // Raw values come as a single string (MVT limitation), turn into an array of ints first
+  /// TODO MUST BE IN TOOLS
   const rawValuesArr: number[] = rawValues.split(',').map((v) => parseInt(v))
 
   // First two values for a cell are the overall start and end time offsets for all the cell values (in days/hours/10days from start of time)
@@ -30,17 +31,20 @@ const aggregateCell = (
   // Where we should stop looking up, using the current timebar delta
   const endAt = startAt + delta * numSublayers
 
+  const rawValuesArrSlice = rawValuesArr.slice(startAt, endAt)
+
   // One aggregated value per sublayer
   const values = new Array(numSublayers).fill(0)
 
-  for (let i = startAt; i < endAt; i++) {
+  for (let i = 0; i < rawValuesArrSlice.length; i++) {
     const sublayerIndex = i % numSublayers
-    const rawValue = rawValuesArr[i]
+    const rawValue = rawValuesArrSlice[i]
     if (rawValue) {
       values[sublayerIndex] += rawValue
     }
   }
 
+  /// TODO MUST BE IN TOOLS
   // Raw 4w API values come without decimals, multiplied by 100
   const VALUE_MULTIPLIER = 100
   const realValues = values.map((v) => v / VALUE_MULTIPLIER)
@@ -50,12 +54,12 @@ const aggregateCell = (
 
 const getExtendedFeatures = (
   features: MapboxGeoJSONFeature[],
-  metatada?: ExtendedStyleMeta
+  metadata?: ExtendedStyleMeta
 ): ExtendedFeature[] => {
-  const timeChunks = metatada?.temporalgrid?.timeChunks
+  const timeChunks = metadata?.temporalgrid?.timeChunks
   const frame = timeChunks?.activeChunkFrame
   const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active)
-  const numSublayers = metatada?.temporalgrid?.numSublayers
+  const numSublayers = metadata?.temporalgrid?.numSublayers
 
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
     const generatorType = feature.layer.metadata?.generatorType ?? null

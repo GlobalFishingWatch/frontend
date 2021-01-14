@@ -7,6 +7,7 @@ export type TimeChunk = {
   start?: string
   viewEnd?: string
   dataEnd?: string
+  framesDelta: number
   quantizeOffset: number
   frame: number
   active: boolean
@@ -165,6 +166,7 @@ const getTimeChunks = (
       start,
       viewEnd,
       dataEnd,
+      framesDelta: config.getFrame(+chunkDataEnd - +chunkStart),
       quantizeOffset,
       id: `heatmapchunk_${start.slice(0, 13)}_${viewEnd.slice(0, 13)}`,
       frame,
@@ -204,12 +206,17 @@ export const getActiveTimeChunks = (
   // ignore any start/end time chunk calculation as for the '10 days' interval the entire tileset is loaded
   if (timeChunks.interval === '10days') {
     const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
+    // TODO
+    console.log(datasetStart, datasetEnd)
+    console.log(toDT(datasetStart))
+    console.log(+toDT(datasetStart))
     timeChunks.chunks = [
       {
         quantizeOffset: 0,
         id: 'heatmapchunk_10days',
         frame,
         active: true,
+        framesDelta: CONFIG_BY_INTERVAL[interval].getFrame(+toDT(datasetEnd) - +toDT(datasetStart)),
       },
     ]
     timeChunks.activeChunkFrame = frame
@@ -251,6 +258,10 @@ export const frameToDate = (frame: number, quantizeOffset: number, interval: Int
   const offsetedFrame = frame + quantizeOffset
   const config = CONFIG_BY_INTERVAL[interval]
   return config.getDate(offsetedFrame)
+}
+
+export const quantizeOffsetToDate = (quantizeOffset: number, interval: Interval) => {
+  return frameToDate(0, quantizeOffset, interval)
 }
 
 export const getDelta = (start: string, end: string, interval: Interval) => {

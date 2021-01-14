@@ -8,7 +8,7 @@ import TimebarComponent, {
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
 import { useTilesState } from '@globalfishingwatch/react-hooks'
-import { frameToDate, Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
+import { frameToDate, Generators, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { useMapboxInstance } from 'features/map/map.context'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
@@ -45,7 +45,6 @@ const TimebarWrapper = () => {
 
   const [stackedActivity, setStackedActivity] = useState<any>()
   useEffect(() => {
-    console.log(tilesLoading)
     if (!mapInstance || tilesLoading) return
 
     let style: any
@@ -54,6 +53,8 @@ const TimebarWrapper = () => {
     } catch (e) {
       console.log(e)
     }
+
+    if (!style) return
     // Get interactive layer(s) from the heatmap animated layers
     const heatmapInteractiveLayers = (style.layers as Layer[]).filter(
       (layer) =>
@@ -80,46 +81,56 @@ const TimebarWrapper = () => {
     console.log(performance.now() - n)
     console.log(allFeaturesWithStyle)
 
-    // TODO multiple layers
+    // TODO Pick active timechunk layers or handle multiple layers?
 
     const timechunks = mapInstance.getStyle().metadata?.temporalgrid?.timeChunks as TimeChunks
     console.log(timechunks)
 
-    // TODO calculate this in generator
-    // const numChunkFrames = timechunks.chunks[0].numChunkFrames
-    const numChunkFrames = 400
+    const metadata = style.metadata
+    const timeChunks = metadata?.temporalgrid?.timeChunks
+    const activeTimeChunk: TimeChunk = timeChunks?.chunks.find((c: any) => c.active)
+    const numSublayers = metadata?.temporalgrid?.numSublayers
+    const chunkQuantizeOffset = activeTimeChunk.quantizeOffset
+    const numChunkFrames = activeTimeChunk.framesDelta
+    console.log(numChunkFrames)
 
-    const values: any[] = []
+    n = performance.now()
+    let valuesByFrame: any[] = new Array(numChunkFrames).fill(null)
+    valuesByFrame = valuesByFrame.map(() => new Array(numSublayers).fill(0))
 
     allFeaturesWithStyle.forEach((feature) => {
-      for (let frameIndex = 0; frameIndex < numChunkFrames; frameIndex++) {
-        if (!feature.properties) continue
-        const valuesAtFrame = feature.properties[frameIndex]
-        if (!valuesAtFrame) continue
-        if (!values[frameIndex]) {
-          values[frameIndex] = {
-            date: frameToDate(
-              frameIndex,
-              // TODO
-              timechunks.chunks[0].quantizeOffset,
-              timechunks.interval
-            ).getTime(),
-            // TODO
-            0: 0,
-            1: 0,
-            2: 0,
-          }
-        }
+      if (!feature.properties) return
+      const rawValues: string = feature.properties.rawValues
+      const rawValuesArr: number[] = rawValues.split(',').map((v) => parseInt(v))
+      const minCellOffset = rawValuesArr[0]
+      const startAt = 2
+      const endAt = rawValuesArr.length - 1 - startAt
+      const rawValuesArrSlice = rawValuesArr.slice(startAt, endAt)
+      let currentFrameIndex = minCellOffset - chunkQuantizeOffset
 
-        let parsed = JSON.parse(valuesAtFrame)
-        if (!Array.isArray(parsed)) parsed = [parsed]
-        ;(parsed as number[]).forEach((value, sublayerIndex) => {
-          values[frameIndex][sublayerIndex] += value
-        })
+      for (let i = 0; i < rawValuesArrSlice.length; i++) {
+        const sublayerIndex = i % numSublayers
+        const rawValue = rawValuesArrSlice[i]
+
+        valuesByFrame[currentFrameIndex][sublayerIndex] += rawValue
+
+        if (sublayerIndex === numSublayers - 1) {
+          currentFrameIndex++
+        }
       }
     })
-    console.log(values)
-    setStackedActivity(values)
+
+    valuesByFrame = valuesByFrame.map((frameValues, frameIndex) => {
+      return {
+        date: frameToDate(frameIndex, chunkQuantizeOffset, timechunks.interval).getTime(),
+        ...frameValues,
+      }
+    })
+    console.log(performance.now() - n)
+    console.log(valuesByFrame)
+    setStackedActivity(valuesByFrame)
+    // TODO load at vp change
+    // TODO only load when timebar graph is selected
   }, [mapInstance, tilesLoading])
 
   const dataviews = useSelector(selectTemporalgridDataviews)
@@ -128,7 +139,7 @@ const TimebarWrapper = () => {
   }, [dataviews])
 
   if (!start || !end) return null
-  console.log(timebarVisualisation, stackedActivity)
+  // console.log(timebarVisualisation, stackedActivity)
   return (
     <div className="print-hidden">
       <TimebarComponent
