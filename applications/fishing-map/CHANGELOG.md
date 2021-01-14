@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.17.5
+
+### Patch Changes
+
+- 4f8269c2: [WIP] Polish 🇵🇱
+- Updated dependencies [4f8269c2]
+  - @globalfishingwatch/ui-components@2.11.3
+
 ## 0.17.4
 
 ### Patch Changes
