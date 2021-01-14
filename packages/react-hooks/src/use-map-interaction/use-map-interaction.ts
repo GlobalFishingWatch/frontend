@@ -19,7 +19,7 @@ const aggregateCell = (
 
   // First two values for a cell are the overall start and end time offsets for all the cell values (in days/hours/10days from start of time)
   const minCellOffset = rawValuesArr[0]
-  const maxCellOffset = rawValuesArr[1]
+  // const maxCellOffset = rawValuesArr[1]
 
   // When we should start counting in terms of days/hours/10days from start of time
   const startOffset = quantizeOffset + frame
@@ -93,8 +93,8 @@ const getExtendedFeatures = (
               ...extendedFeature,
               temporalgrid: {
                 sublayerIndex: i,
-                col: properties._col,
-                row: properties._row,
+                col: properties._col as number,
+                row: properties._row as number,
               },
               value,
             },
