@@ -8,12 +8,12 @@
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers",
     "hour": "Heure",
     "hour_plural": "Heures",
-    "login": "Se connecter",
     "logout": "Déconnexion",
     "more": "Plus",
-    "open_menu": "Ouvrir le menu",
     "share": "Partager la vue actuelle",
     "vessel_plural": "Navires",
+    "login": "Se connecter",
+    "open_menu": "Ouvrir le menu",
     "dismiss": "Fermer",
     "save": "Enregistrer",
     "events": "Évènements",
@@ -50,11 +50,13 @@
     "loading": "Chargement de la carte",
     "rulers_add": "Ajouter des mesures",
     "rulers_remove": "Supprimer toutes les mesures",
+    "search": "Search areas",
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer",
     "screenshot": "Image de la carte"
   },
   "search": {
+    "close": "Close search",
     "suggestion": "Did you mean"
   },
   "selects": {
@@ -64,7 +66,11 @@
   "timebar": {
     "graph": "Graphique",
     "settings_close": "Fermer les paramètres de la barre de temps",
-    "settings_open": "Montrer les paramètres de la barre de temps"
+    "settings_open": "Montrer les paramètres de la barre de temps",
+    "showTracks": "Show tracks graph",
+    "showFishingEffort": "Show fishing hours graph",
+    "tracksDisabled": "Select at least one vessel",
+    "fishingEffortDisabled": "Select at least one apparent fishing effort layer"
   },
   "vessel": {
     "callsign": "Callsign",
