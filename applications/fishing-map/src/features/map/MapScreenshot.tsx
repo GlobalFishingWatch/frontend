@@ -66,7 +66,7 @@ function MapScreenshot({ map }: { map: Map }) {
     }
     return () => {
       if (map) {
-        map.on('idle', handleIdle)
+        map.off('idle', handleIdle)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
