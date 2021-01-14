@@ -36,6 +36,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
         <div className={styles.placeholder}>
           <h2>We're sorry but your user is not authorized to use this app yet</h2>
           <Button
+            className={styles.errorBtn}
             onClick={async () => {
               dispatch(logoutUserThunk({ redirectToLogin: true }))
             }}
@@ -64,7 +65,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
         <CategoryTabs onMenuClick={onMenuClick} />
         <div className="scrollContainer">
           <SidebarHeader />
-          {userLogged ? sidebarComponent : <Spinner />}
+          {sidebarComponent}
         </div>
       </div>
     </Suspense>

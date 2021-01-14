@@ -19,6 +19,7 @@ const workspace: Workspace<WorkspaceState> = {
     latitude: 30,
     longitude: -37,
   },
+  public: true,
   state: {
     // query: 'pepe',
     // bivariate: true,

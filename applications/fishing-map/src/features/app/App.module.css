@@ -7,17 +7,6 @@
   height: 100%;
 }
 
-.placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-
-.placeholder > div {
-  padding: var(--space-L);
-}
-
 .main {
   height: 100%;
   display: flex;
