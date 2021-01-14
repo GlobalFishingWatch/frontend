@@ -15,12 +15,14 @@ import { getSourcesSelectedInDataview } from './heatmaps.utils'
 import HeatmapInfoModal from './HeatmapInfoModal'
 
 type LayerPanelProps = {
+  index: number
+  isOpen: boolean
   dataview: UrlDataviewInstance
 }
 
-function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const [filterOpen, setFiltersOpen] = useState(false)
+  const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const sourcesOptions = getSourcesSelectedInDataview(dataview)
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters || [])
@@ -28,7 +30,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
 
-  const layerActive = bivariate ? true : dataview?.config?.visible ?? true
+  const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
     upsertDataviewInstance({
       id: dataview.id,
@@ -37,8 +39,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       },
     })
   }
+
   const onRemoveLayerClick = () => {
-    dispatchQueryParams({ bivariate: false })
+    if (index < 2) {
+      dispatchQueryParams({ bivariate: false })
+    }
     deleteDataviewInstance(dataview.id)
   }
 

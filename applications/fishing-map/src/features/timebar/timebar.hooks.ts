@@ -7,7 +7,7 @@ import {
   selectActiveTemporalgridDataviews,
   selectActiveVesselsDataviews,
 } from 'features/workspace/workspace.selectors'
-import { setStaticTime } from './timebar.slice'
+import { setStaticTime, selectHasChangedSettingsOnce, changeSettings } from './timebar.slice'
 
 export const useTimerangeConnect = () => {
   const { dispatchQueryParams } = useLocationConnect()
@@ -28,35 +28,50 @@ export const useTimerangeConnect = () => {
 }
 
 export const useTimebarVisualisation = () => {
+  const dispatch = useDispatch()
   const activeHeatmapDataviews = useSelector(selectActiveTemporalgridDataviews)
   const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
+  const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
+
   const { dispatchQueryParams } = useLocationConnect()
   const dispatchTimebarVisualisation = useCallback(
-    (timebarVisualisation: TimebarVisualisations | undefined) => {
+    (timebarVisualisation: TimebarVisualisations | undefined, automated = false) => {
       dispatchQueryParams({ timebarVisualisation: timebarVisualisation })
+      if (!automated) {
+        dispatch(changeSettings())
+      }
     },
-    [dispatchQueryParams]
+    [dispatchQueryParams, dispatch]
   )
 
-  // Automates the selection based on current active layers
-  const getUpdatedTimebarVisualization = () => {
-    if (activeHeatmapDataviews?.length) {
-      return timebarVisualisation ? timebarVisualisation : TimebarVisualisations.Heatmap
-    }
-    if (activeVesselDataviews?.length) {
-      return TimebarVisualisations.Vessel
-    }
-    return undefined
-  }
-
   useEffect(() => {
-    const newTimebarVisualisation = getUpdatedTimebarVisualization()
-    if (newTimebarVisualisation !== timebarVisualisation) {
-      dispatchTimebarVisualisation(newTimebarVisualisation)
+    if (timebarVisualisation === TimebarVisualisations.Heatmap) {
+      // fallback to vessels if heatmap = 0 (only if at least 1 vessel is available)
+      if (
+        (!activeHeatmapDataviews || activeHeatmapDataviews.length === 0) &&
+        activeVesselDataviews?.length
+      ) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeHeatmapDataviews, activeVesselDataviews])
+
+  useEffect(() => {
+    if (timebarVisualisation !== TimebarVisualisations.Vessel) {
+      // switch to vessel if track shown "for the first time"
+      if (!hasChangedSettingsOnce && activeVesselDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
+      }
+    } else {
+      // fallback to heatmap if vessel = 0
+      if (!activeVesselDataviews || activeVesselDataviews.length === 0) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeVesselDataviews, hasChangedSettingsOnce])
 
   return { timebarVisualisation, dispatchTimebarVisualisation }
 }

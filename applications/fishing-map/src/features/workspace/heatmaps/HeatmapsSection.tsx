@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -14,16 +14,21 @@ import LayerPanel from './HeatmapLayerPanel'
 
 function HeatmapsSection(): React.ReactElement {
   const { t } = useTranslation()
+  const [heatmapSublayersAddedIndex, setHeatmapSublayersAddedIndex] = useState<number | undefined>()
   const dataviews = useSelector(selectTemporalgridDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
+  const supportBivariateToggle =
+    dataviews?.filter((dataview) => dataview?.config?.visible)?.length === 2
 
   const onAddClick = useCallback(() => {
+    setHeatmapSublayersAddedIndex(dataviews ? dataviews.length : 0)
+    dispatchQueryParams({ bivariate: false })
     const usedRamps = dataviews?.flatMap((dataview) => dataview.config?.colorRamp || [])
     const dataviewInstance = getHeatmapDataviewInstance(usedRamps)
     upsertDataviewInstance(dataviewInstance)
-  }, [dataviews, upsertDataviewInstance])
+  }, [dispatchQueryParams, dataviews, upsertDataviewInstance])
 
   const onToggleCombinationMode = useCallback(() => {
     const newBivariateValue = !bivariate
@@ -49,12 +54,13 @@ function HeatmapsSection(): React.ReactElement {
   let bivariateTooltip = bivariate
     ? t('layer.toggleCombinationMode.split', 'Split layers')
     : t('layer.toggleCombinationMode.combine', 'Combine layers')
-  if (dataviews?.length !== 2) {
+  if (!supportBivariateToggle) {
     bivariateTooltip = t(
       'layer.toggleCombinationMode.disabled',
-      'Combine mode is only availabe with two activity layers'
+      'Combine mode is only available with two activity layers'
     )
   }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -64,7 +70,7 @@ function HeatmapsSection(): React.ReactElement {
             icon={bivariate ? 'split' : 'compare'}
             type="border"
             size="medium"
-            disabled={dataviews?.length !== 2 ?? true}
+            disabled={!supportBivariateToggle}
             tooltip={bivariateTooltip}
             tooltipPlacement="top"
             onClick={onToggleCombinationMode}
@@ -79,8 +85,13 @@ function HeatmapsSection(): React.ReactElement {
           />
         </div>
       </div>
-      {dataviews?.map((dataview) => (
-        <LayerPanel key={dataview.id} dataview={dataview} />
+      {dataviews?.map((dataview, index) => (
+        <LayerPanel
+          key={dataview.id}
+          dataview={dataview}
+          index={index}
+          isOpen={index === heatmapSublayersAddedIndex}
+        />
       ))}
     </div>
   )
