@@ -78,8 +78,8 @@ function MapScreenshot({ map }: { map: Map }) {
   const canvasDomElement = document.querySelector('.mapboxgl-canvas-container')
   if (!canvasDomElement) return null
   const size = isPrintSupported
-    ? 'landscape'
-    : `${printSize.current?.width.in} ${printSize.current?.height.in}`
+    ? `${printSize.current?.width.in} ${printSize.current?.height.in}`
+    : 'landscape'
   return createPortal(
     <Fragment>
       <img className={styles.screenshot} src={screenshotImage} alt="map screenshot" />

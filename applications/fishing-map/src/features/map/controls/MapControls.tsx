@@ -9,7 +9,6 @@ import { selectDataviewInstancesResolved } from 'features/workspace/workspace.se
 import Rulers from 'features/map/controls/Rulers'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
-import { isPrintSupported } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
 
@@ -28,14 +27,6 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
   const onZoomOutClick = useCallback(() => {
     setMapCoordinates({ latitude, longitude, zoom: Math.max(1, zoom - 1) })
   }, [latitude, longitude, setMapCoordinates, zoom])
-
-  const onPrintClick = useCallback(() => {
-    if (isPrintSupported) {
-      window.print()
-    } else {
-      alert(t('error.printNoSupported', 'Print feature only available in Chrome for now'))
-    }
-  }, [t])
 
   const basemapDataviewInstance = resolvedDataviewInstances?.find(
     (d) => d.config?.type === Generators.Type.Basemap
@@ -84,7 +75,7 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
               type="map-tool"
               disabled={loading}
               tooltip={loading ? t('map.loading', 'Loading') : t('map.capture_map', 'Capture map')}
-              onClick={onPrintClick}
+              onClick={window.print}
             />
             <Tooltip
               content={
