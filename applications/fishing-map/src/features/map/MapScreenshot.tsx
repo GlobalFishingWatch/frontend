@@ -1,7 +1,6 @@
-import React, { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { getParser } from 'bowser'
-import debounce from 'lodash/debounce'
 import { Map } from 'mapbox-gl'
 import { getCSSVarValue } from 'utils/dom'
 import styles from './Map.module.css'
@@ -42,7 +41,7 @@ function MapScreenshot({ map }: { map: Map }) {
   const [screenshotImage, setScreenshotImage] = useState<string | null>(null)
   const printSize = useRef<{ width: PrintSize; height: PrintSize } | undefined>()
 
-  useLayoutEffect(() => {
+  const updatePrintSize = useCallback(() => {
     const pixelPerInch = window.devicePixelRatio * 96
     const baseSize = parseInt(getCSSVarValue('--base-font-size')) || 10
     const timebarSize = parseFloat(getCSSVarValue('--timebar-size') || '7.2') * baseSize
@@ -59,23 +58,52 @@ function MapScreenshot({ map }: { map: Map }) {
     }
   }, [])
 
-  useEffect(() => {
-    const handleIdle = debounce(() => {
-      getMapImage(map).then((image) => {
-        setScreenshotImage(image)
-      })
-    }, 800)
-
+  useLayoutEffect(() => {
     if (map) {
-      map.on('idle', handleIdle)
+      updatePrintSize()
     }
-    return () => {
-      if (map) {
-        map.off('idle', handleIdle)
+  }, [map, updatePrintSize])
+
+  const generateScrenshotImage = useCallback(() => {
+    console.log('generating')
+    updatePrintSize()
+    return getMapImage(map)
+      .then((image) => {
+        setScreenshotImage(image)
+        return true
+      })
+      .catch((e) => {
+        console.warn(e)
+        setScreenshotImage('')
+        return false
+      })
+  }, [map, updatePrintSize])
+
+  useEffect(() => {
+    let beforeprint: any
+    let beforeprintMedia: any
+    const mediaQueryList = window.matchMedia ? window.matchMedia('print') : null
+    const mediaQueryCb = (mql: any) => {
+      if (mql.matches) {
+        generateScrenshotImage()
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map])
+    if (map) {
+      if (mediaQueryList) {
+        beforeprintMedia = mediaQueryList.addEventListener('change', mediaQueryCb)
+      } else {
+        beforeprint = window.addEventListener('beforeprint', generateScrenshotImage)
+      }
+    }
+    return () => {
+      if (beforeprint) {
+        window.removeEventListener('beforeprint', beforeprint)
+      }
+      if (beforeprintMedia && mediaQueryList) {
+        mediaQueryList.removeEventListener('change', mediaQueryCb)
+      }
+    }
+  }, [map, generateScrenshotImage])
 
   if (!screenshotImage) return null
 
@@ -99,4 +127,4 @@ function MapScreenshot({ map }: { map: Map }) {
   )
 }
 
-export default memo(MapScreenshot)
+export default MapScreenshot
