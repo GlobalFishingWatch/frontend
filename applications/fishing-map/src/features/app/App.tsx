@@ -1,10 +1,8 @@
-import React, { useState, Fragment, useCallback, useMemo, useEffect, Suspense } from 'react'
+import React, { useState, Fragment, useCallback, useEffect, Suspense } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
-import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
-import Button from '@globalfishingwatch/ui-components/dist/button'
 import useDebugMenu from 'features/debug/debug.hooks'
 import { MapboxRefProvider } from 'features/map/map.context'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
@@ -14,10 +12,9 @@ import DebugMenu from 'features/debug/DebugMenu'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import Sidebar from 'features/sidebar/Sidebar'
-import { logoutUserThunk, fetchUserThunk } from 'features/user/user.slice'
-import { isUserAuthorized, isUserLogged } from 'features/user/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'types'
+import { fetchUserThunk } from 'features/user/user.slice'
 import { selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 
@@ -39,8 +36,6 @@ function App(): React.ReactElement {
   const sidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
-  const userLogged = useSelector(isUserLogged)
-  const userAuthorized = useSelector(isUserAuthorized)
   const narrowSidebar = useSelector(isWorkspaceLocation)
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
@@ -57,27 +52,8 @@ function App(): React.ReactElement {
     setMenuOpen(true)
   }, [])
 
-  const Content = useMemo(() => {
-    if (!userLogged) {
-      return <Spinner />
-    }
-
-    if (!userAuthorized) {
-      return (
-        <div className={styles.placeholder}>
-          <h2>We're sorry but your user is not authorized to use this app yet</h2>
-          <Button
-            onClick={() => {
-              dispatch(logoutUserThunk())
-            }}
-          >
-            Logout
-          </Button>
-        </div>
-      )
-    }
-
-    return (
+  return (
+    <Fragment>
       <MapboxRefProvider>
         <Suspense fallback={null}>
           <SplitView
@@ -90,12 +66,6 @@ function App(): React.ReactElement {
           />
         </Suspense>
       </MapboxRefProvider>
-    )
-  }, [dispatch, narrowSidebar, onMenuClick, onToggle, sidebarOpen, userAuthorized, userLogged])
-
-  return (
-    <Fragment>
-      {Content}
       <Menu
         bgImage={menuBgImage}
         isOpen={menuOpen}

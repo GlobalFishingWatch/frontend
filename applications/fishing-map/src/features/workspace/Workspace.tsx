@@ -61,8 +61,7 @@ function WorkspaceError(): React.ReactElement {
               type="secondary"
               size="small"
               onClick={async () => {
-                await dispatch(logoutUserThunk())
-                window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+                await dispatch(logoutUserThunk({ redirectToLogin: true }))
               }}
             >
               {t('errors.switchAccount', 'Switch account') as string}

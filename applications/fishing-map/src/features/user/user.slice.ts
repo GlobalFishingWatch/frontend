@@ -6,9 +6,6 @@ import GFWAPI, {
 import { UserData } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
-import { selectPrevLocation } from 'routes/routes.selectors'
-import { updateLocation } from 'routes/routes.actions'
-import { HOME, ROUTE_TYPES, USER } from 'routes/routes'
 
 interface UserState {
   logged: boolean
@@ -53,23 +50,15 @@ export const fetchUserThunk = createAsyncThunk(
 
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
-  async (_, { dispatch, getState }) => {
+  async ({ redirectToLogin }: { redirectToLogin: boolean } = { redirectToLogin: false }) => {
     try {
       await GFWAPI.logout()
     } catch (e) {
       console.warn(e)
     }
-
-    await dispatch(fetchUserThunk({ guest: true }))
-
-    // const prevLocation = selectPrevLocation(getState() as RootState)
-    // dispatch(
-    //   updateLocation(prevLocation.type === USER ? HOME : (prevLocation.type as ROUTE_TYPES), {
-    //     payload: prevLocation.payload,
-    //     query: prevLocation.query,
-    //     replaceQuery: true,
-    //   })
-    // )
+    if (redirectToLogin) {
+      window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+    }
   }
 )
 
