@@ -44,7 +44,7 @@ export const getHeatmapDataviewInstance = (
 ): DataviewInstance<Generators.Type> => {
   const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamps.includes(option.id))
   const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : HeatmapColorBarOptions[0]
-  const vesselDataviewInstance = {
+  const heatmapDataviewInstance = {
     id: `fishing-${Date.now()}`,
     config: {
       color: colorOption.value,
@@ -52,5 +52,5 @@ export const getHeatmapDataviewInstance = (
     },
     dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
   }
-  return vesselDataviewInstance
+  return heatmapDataviewInstance
 }
