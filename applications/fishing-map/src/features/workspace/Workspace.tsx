@@ -41,7 +41,7 @@ function WorkspaceError(): React.ReactElement {
       </div>
     </div>
   )
-  if (error.status === 401) {
+  if (error.status === 401 || error.status === 403) {
     return (
       <ErrorPlaceHolder title={t('errors.privateView', 'This is a private view')}>
         {guestUser ? (
