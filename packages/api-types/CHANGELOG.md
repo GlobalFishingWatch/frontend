@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.5.1
+
+### Patch Changes
+
+- include public in workspace types definition
+
 ## 2.5.0
 
 ### Minor Changes

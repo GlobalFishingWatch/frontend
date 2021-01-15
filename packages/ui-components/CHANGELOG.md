@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.11.5
+
+### Patch Changes
+
+- support button href links
+
 ## 2.11.4
 
 ### Patch Changes
