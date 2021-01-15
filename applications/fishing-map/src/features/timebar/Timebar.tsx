@@ -172,6 +172,7 @@ const TimebarWrapper = () => {
                 key="stackedActivity"
                 data={stackedActivity}
                 colors={heatmapSublayerColors}
+                numSublayers={dataviews?.length}
               />
             )}
             {timebarVisualisation === TimebarVisualisations.Vessel && tracks?.length && (
