@@ -1,5 +1,5 @@
 import { Workspace } from '@globalfishingwatch/api-types'
-import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
+import { APP_NAME, DEFAULT_WORKSPACE, PUBLIC_SUFIX } from 'data/config'
 import {
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
@@ -8,7 +8,7 @@ import {
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
-  id: DEFAULT_WORKSPACE_ID,
+  id: `${DEFAULT_WORKSPACE_ID}-${PUBLIC_SUFIX}`,
   app: APP_NAME,
   name: 'Default public Fishing Map workspace',
   description: '',

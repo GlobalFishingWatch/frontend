@@ -38,6 +38,11 @@ const initialState: WorkspaceSliceState = {
   custom: false,
 }
 
+type RejectedActionPayload = {
+  workspace: Workspace<WorkspaceState>
+  error: AsyncError
+}
+
 export const getDefaultWorkspace = () => {
   const workspaceEnv = getWorkspaceEnv()
   const workspace = import(`../../data/default-workspaces/workspace.${workspaceEnv}`).then(
@@ -76,14 +81,13 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       if (!workspace) {
         return
       }
-
       const dataviewIds = [
         ...(workspace.dataviews?.map(({ id }) => id as number) || []),
         ...uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId)),
       ]
 
       let dataviews = []
-      if (dataviewIds) {
+      if (dataviewIds?.length) {
         const { payload }: any = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
         if (payload?.length) {
           dataviews = payload
@@ -100,7 +104,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       if (datasets?.length) {
         const { error, payload }: any = await dispatch(fetchDatasetsByIdsThunk(datasets))
         if (error) {
-          return rejectWithValue(payload)
+          return rejectWithValue({ workspace, error: payload })
         }
       }
 
@@ -116,7 +120,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
       return workspace
     } catch (e) {
-      return rejectWithValue(e as AsyncError)
+      return rejectWithValue({ error: e as AsyncError })
     }
   }
 )
@@ -190,8 +194,14 @@ const workspaceSlice = createSlice({
       }
     })
     builder.addCase(fetchWorkspaceThunk.rejected, (state, action) => {
+      const { workspace, error } = action.payload as RejectedActionPayload
       state.status = AsyncReducerStatus.Error
-      state.error = action.payload as AsyncError
+      if (workspace) {
+        state.data = workspace
+      }
+      if (error) {
+        state.error = error
+      }
     })
     builder.addCase(saveCurrentWorkspaceThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading

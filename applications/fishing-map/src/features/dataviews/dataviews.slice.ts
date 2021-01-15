@@ -51,6 +51,6 @@ export const selectDataviewById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
 )
 
-export const selectDataviewsStatus = (state: RootState) => state.datasets.status
+export const selectDataviewsStatus = (state: RootState) => state.dataviews.status
 
 export default dataviewsSlice.reducer

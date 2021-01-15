@@ -18,7 +18,7 @@ import { isGuestUser, isUserLogged } from 'features/user/user.selectors'
 import { selectLocationType, selectWorkspaceId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
-import { logoutUserThunk } from 'features/user/user.slice'
+import { logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
@@ -29,6 +29,7 @@ function WorkspaceError(): React.ReactElement {
   const error = useSelector(selectWorkspaceError)
   const workspaceId = useSelector(selectWorkspaceId)
   const guestUser = useSelector(isGuestUser)
+  const userData = useSelector(selectUserData)
   const { t } = useTranslation()
   const dispatch = useDispatch()
 
@@ -54,9 +55,11 @@ function WorkspaceError(): React.ReactElement {
             >
               {t('errors.requestAccess', 'Request access') as string}
             </Button>
-            <p className={styles.logged}>
-              {t('common.loggedAs', 'Logged as')} joseangel@globalfishingwatch.org
-            </p>
+            {userData?.email && (
+              <p className={styles.logged}>
+                {t('common.loggedAs', 'Logged as')} {userData.email}
+              </p>
+            )}
             <Button
               type="secondary"
               size="small"

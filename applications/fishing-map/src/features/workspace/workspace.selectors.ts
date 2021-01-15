@@ -15,6 +15,7 @@ import {
 } from 'data/datasets'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { RootState } from 'store'
+import { PUBLIC_SUFIX } from 'data/config'
 
 export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
   Object.entries(dataview.datasetsConfig || {}).flatMap(([id, value]) => {
@@ -32,7 +33,7 @@ export const selectWorkspaceError = (state: RootState) => state.workspace.error
 export const selectWorkspaceCustom = (state: RootState) => state.workspace.custom
 
 export const isWorkspacePublic = createSelector([selectWorkspace], (workspace) => {
-  return workspace?.public === true || workspace?.id.includes('-public')
+  return workspace?.id.slice(-PUBLIC_SUFIX.length) === PUBLIC_SUFIX
 })
 
 export const isWorkspaceLoading = createSelector(
