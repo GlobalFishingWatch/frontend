@@ -1,5 +1,6 @@
 import React, { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { getParser } from 'bowser'
 import debounce from 'lodash/debounce'
 import { Map } from 'mapbox-gl'
 import { getCSSVarValue } from 'utils/dom'
@@ -16,8 +17,12 @@ type PrintSize = {
   in: string
 }
 
-const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)
-export const isPrintSupported = isChrome
+const browser = getParser(window.navigator.userAgent)
+const isPrintSupported = browser.satisfies({
+  chrome: '>22',
+  opera: '>30',
+  edge: '>79',
+})
 
 export const getMapImage = (map: Map): Promise<string> => {
   return new Promise((resolve, reject) => {
