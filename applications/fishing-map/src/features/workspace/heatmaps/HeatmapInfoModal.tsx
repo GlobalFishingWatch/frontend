@@ -50,7 +50,7 @@ function HeatmapInfoModal({
       {isSingleTab ? (
         tabs[0]?.content
       ) : (
-        <Tabs activeTab={activeTab.id} tabs={tabs} onTabClick={(tab: Tab) => setActiveTab(tab)} />
+        <Tabs activeTab={activeTab?.id} tabs={tabs} onTabClick={(tab: Tab) => setActiveTab(tab)} />
       )}
     </Modal>
   )

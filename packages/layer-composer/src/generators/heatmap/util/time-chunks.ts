@@ -210,13 +210,14 @@ export const getActiveTimeChunks = (
     console.log(datasetStart, datasetEnd)
     console.log(toDT(datasetStart))
     console.log(+toDT(datasetStart))
+    const config = CONFIG_BY_INTERVAL['10days']
     timeChunks.chunks = [
       {
         quantizeOffset: 0,
         id: 'heatmapchunk_10days',
         frame,
         active: true,
-        framesDelta: CONFIG_BY_INTERVAL[interval].getFrame(+toDT(datasetEnd) - +toDT(datasetStart)),
+        framesDelta: config.getFrame(+toDT(datasetEnd)),
       },
     ]
     timeChunks.activeChunkFrame = frame
