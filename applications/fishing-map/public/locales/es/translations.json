@@ -6,13 +6,16 @@
     "apparentFishing": "Esfuerzo de pesca aparente",
     "context_area_plural": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles",
+    "environment": "Environment",
     "hour": "Hora",
     "hour_plural": "Horas",
+    "loggedAs": "Logged as",
+    "login": "Iniciar sesión",
     "logout": "Cerrar Sessión",
     "more": "Más",
+    "seeDefault": "See default view",
     "share": "Haz click para compartir tu vista actual",
     "vessel_plural": "Embarcaciones",
-    "login": "Iniciar sesión",
     "open_menu": "Abrir menú",
     "dismiss": "Cancelar",
     "save": "Guardar",
@@ -20,7 +23,12 @@
     "fishing": "Pesca"
   },
   "errors": {
-    "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo"
+    "pageNotFound": "Page not found",
+    "privateView": "This is a private view",
+    "requestAccess": "Request access",
+    "switchAccount": "Switch account",
+    "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo",
+    "workspaceNotFound": "The view you request was not found"
   },
   "layer": {
     "add": "Añadir capa",
@@ -64,13 +72,13 @@
     "selected": "selected"
   },
   "timebar": {
+    "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graph",
     "settings_close": "Cerrar opciones del timebar",
     "settings_open": "Abrir opciones del timebar",
-    "showTracks": "Show tracks graph",
     "showFishingEffort": "Show fishing hours graph",
-    "tracksDisabled": "Select at least one vessel",
-    "fishingEffortDisabled": "Select at least one apparent fishing effort layer"
+    "showTracks": "Show tracks graph",
+    "tracksDisabled": "Select at least one vessel"
   },
   "vessel": {
     "callsign": "Callsing",
