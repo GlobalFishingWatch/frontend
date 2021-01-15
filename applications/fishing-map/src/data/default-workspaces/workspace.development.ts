@@ -38,7 +38,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'fishing-1',
       config: {
-        datasets: ['fishing_v4'],
+        datasets: [`${PUBLIC_SUFIX}-fishing_v4`],
         // filters: ['ESP'],
       },
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
