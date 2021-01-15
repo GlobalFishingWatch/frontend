@@ -6,13 +6,16 @@
     "apparentFishing": "Effort de pêche apparent",
     "context_area_plural": "Calques de contexte",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers",
+    "environment": "Environment",
     "hour": "Heure",
     "hour_plural": "Heures",
+    "loggedAs": "Logged as",
+    "login": "Se connecter",
     "logout": "Déconnexion",
     "more": "Plus",
+    "seeDefault": "See default view",
     "share": "Partager la vue actuelle",
     "vessel_plural": "Navires",
-    "login": "Se connecter",
     "open_menu": "Ouvrir le menu",
     "dismiss": "Fermer",
     "save": "Enregistrer",
@@ -20,7 +23,12 @@
     "fishing": "Pêche"
   },
   "errors": {
-    "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement"
+    "pageNotFound": "Page not found",
+    "privateView": "This is a private view",
+    "requestAccess": "Request access",
+    "switchAccount": "Switch account",
+    "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement",
+    "workspaceNotFound": "The view you request was not found"
   },
   "layer": {
     "add": "Ajouter un calque",
@@ -64,13 +72,13 @@
     "selected": "selected"
   },
   "timebar": {
+    "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graphique",
     "settings_close": "Fermer les paramètres de la barre de temps",
     "settings_open": "Montrer les paramètres de la barre de temps",
-    "showTracks": "Show tracks graph",
     "showFishingEffort": "Show fishing hours graph",
-    "tracksDisabled": "Select at least one vessel",
-    "fishingEffortDisabled": "Select at least one apparent fishing effort layer"
+    "showTracks": "Show tracks graph",
+    "tracksDisabled": "Select at least one vessel"
   },
   "vessel": {
     "callsign": "Callsign",
