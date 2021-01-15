@@ -9,15 +9,17 @@ import TimebarComponent, {
 } from '@globalfishingwatch/timebar'
 import { useTilesState } from '@globalfishingwatch/react-hooks'
 import { frameToDate, Generators, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
+import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useMapboxInstance } from 'features/map/map.context'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
-import { selectTimebarGraph } from 'features/app/app.selectors'
+import { selectTimebarGraph, selectViewport } from 'features/app/app.selectors'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
+import styles from './Timebar.module.css'
 
 const TimebarWrapper = () => {
   const { start, end, dispatchTimeranges } = useTimerangeConnect()
@@ -26,6 +28,7 @@ const TimebarWrapper = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
+  const urlViewport = useSelector(selectViewport)
 
   const dispatch = useDispatch()
 
@@ -45,13 +48,14 @@ const TimebarWrapper = () => {
 
   const [stackedActivity, setStackedActivity] = useState<any>()
   useEffect(() => {
-    if (!mapInstance || tilesLoading) return
+    if (!mapInstance || tilesLoading || timebarVisualisation !== TimebarVisualisations.Heatmap)
+      return
 
     let style: any
     try {
       style = mapInstance.getStyle()
     } catch (e) {
-      console.log(e)
+      // console.log(e)
     }
 
     if (!style) return
@@ -61,30 +65,16 @@ const TimebarWrapper = () => {
         layer.metadata?.generatorType === Generators.Type.HeatmapAnimated &&
         layer.metadata?.interactive === true
     )
-    // .map((l) => l.id)
-    console.log(heatmapInteractiveLayers)
     if (!heatmapInteractiveLayers.length) return
     let n = 0
-    //n = performance.now()
-    // const sourceName = heatmapInteractiveLayers[0].source as string
-    // // TODO work over several sources
-    // const allFeatures = mapInstance.querySourceFeatures(sourceName, {
-    //   sourceLayer: 'temporalgrid_interactive',
-    // })
-    // console.log(performance.now() - n)
-    // console.log(allFeatures)
-
     n = performance.now()
     const allFeaturesWithStyle = mapInstance.queryRenderedFeatures(undefined, {
       layers: heatmapInteractiveLayers.map((l) => l.id),
     })
-    console.log(performance.now() - n)
-    console.log(allFeaturesWithStyle)
+    console.log('queryRenderedFeatures', performance.now() - n)
 
-    // TODO Pick active timechunk layers or handle multiple layers?
-
+    // TODO Pick active timechunk layers or handle multiple timechunks?
     const timechunks = mapInstance.getStyle().metadata?.temporalgrid?.timeChunks as TimeChunks
-    console.log(timechunks)
 
     const metadata = style.metadata
     const timeChunks = metadata?.temporalgrid?.timeChunks
@@ -92,7 +82,6 @@ const TimebarWrapper = () => {
     const numSublayers = metadata?.temporalgrid?.numSublayers
     const chunkQuantizeOffset = activeTimeChunk.quantizeOffset
     const numChunkFrames = activeTimeChunk.framesDelta
-    console.log(numChunkFrames)
 
     n = performance.now()
     let valuesByFrame: any[] = new Array(numChunkFrames).fill(null)
@@ -126,12 +115,9 @@ const TimebarWrapper = () => {
         ...frameValues,
       }
     })
-    console.log(performance.now() - n)
-    console.log(valuesByFrame)
+    console.log('compute graph', performance.now() - n)
     setStackedActivity(valuesByFrame)
-    // TODO load at vp change
-    // TODO only load when timebar graph is selected
-  }, [mapInstance, tilesLoading])
+  }, [mapInstance, tilesLoading, timebarVisualisation, urlViewport])
 
   const dataviews = useSelector(selectTemporalgridDataviews)
   const heatmapSublayerColors = useMemo(() => {
@@ -168,12 +154,21 @@ const TimebarWrapper = () => {
         {() => (
           <Fragment>
             {timebarVisualisation === TimebarVisualisations.Heatmap && stackedActivity && (
-              <TimebarStackedActivity
-                key="stackedActivity"
-                data={stackedActivity}
-                colors={heatmapSublayerColors}
-                numSublayers={dataviews?.length}
-              />
+              <Fragment>
+                {stackedActivity && (
+                  <TimebarStackedActivity
+                    key="stackedActivity"
+                    data={stackedActivity}
+                    colors={heatmapSublayerColors}
+                    numSublayers={dataviews?.length}
+                  />
+                )}
+                {tilesLoading && (
+                  <div className={styles.loading}>
+                    <Spinner color="white" size="small" />
+                  </div>
+                )}
+              </Fragment>
             )}
             {timebarVisualisation === TimebarVisualisations.Vessel && tracks?.length && (
               <Fragment>

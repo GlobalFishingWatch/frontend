@@ -206,10 +206,6 @@ export const getActiveTimeChunks = (
   // ignore any start/end time chunk calculation as for the '10 days' interval the entire tileset is loaded
   if (timeChunks.interval === '10days') {
     const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
-    // TODO
-    console.log(datasetStart, datasetEnd)
-    console.log(toDT(datasetStart))
-    console.log(+toDT(datasetStart))
     const config = CONFIG_BY_INTERVAL['10days']
     timeChunks.chunks = [
       {
@@ -217,7 +213,7 @@ export const getActiveTimeChunks = (
         id: 'heatmapchunk_10days',
         frame,
         active: true,
-        framesDelta: config.getFrame(+toDT(datasetEnd)),
+        framesDelta: config.getFrame(+toDT(datasetEnd)), // We assume that at 10days it starts 1 jan 1970
       },
     ]
     timeChunks.activeChunkFrame = frame
