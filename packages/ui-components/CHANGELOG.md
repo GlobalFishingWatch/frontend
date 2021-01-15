@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.11.4
+
+### Patch Changes
+
+- fix tabs crash when no activeTab
+
 ## 2.11.3
 
 ### Patch Changes
