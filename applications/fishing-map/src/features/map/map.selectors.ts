@@ -10,6 +10,7 @@ import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
   resolveDataviewDatasetResource,
+  selectWorkspaceError,
 } from 'features/workspace/workspace.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import { Resource, selectResources, TrackResourceData } from 'features/resources/resources.slice'
@@ -254,8 +255,14 @@ export const selectMapWorkspacesListGenerators = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [isWorkspaceLocation, getWorkspaceGeneratorsConfig, selectMapWorkspacesListGenerators],
-  (showWorkspaceDetail, workspaceGenerators, workspaceListGenerators) => {
+  [
+    selectWorkspaceError,
+    isWorkspaceLocation,
+    getWorkspaceGeneratorsConfig,
+    selectMapWorkspacesListGenerators,
+  ],
+  (workspaceError, showWorkspaceDetail, workspaceGenerators, workspaceListGenerators) => {
+    if (workspaceError.status === 401) return [basemap]
     return showWorkspaceDetail ? workspaceGenerators : workspaceListGenerators
   }
 )

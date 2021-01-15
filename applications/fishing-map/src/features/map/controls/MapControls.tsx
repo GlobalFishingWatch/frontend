@@ -8,7 +8,6 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import Rulers from 'features/map/controls/Rulers'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
-import { useScreenshotConnect, useScreenshotLoadingConnect } from 'features/app/app.hooks'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
@@ -16,8 +15,6 @@ import MapSearch from './MapSearch'
 const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactElement => {
   const { t } = useTranslation()
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
-  const { setScreenshotMode } = useScreenshotConnect()
-  const { screenshotLoading } = useScreenshotLoadingConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { viewport, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
@@ -76,9 +73,9 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
             <IconButton
               icon="camera"
               type="map-tool"
-              loading={screenshotLoading}
-              tooltip={t('map.capture_map', 'Capture map')}
-              onClick={() => setScreenshotMode(true)}
+              disabled={loading}
+              tooltip={loading ? t('map.loading', 'Loading') : t('map.capture_map', 'Capture map')}
+              onClick={window.print}
             />
             <Tooltip
               content={

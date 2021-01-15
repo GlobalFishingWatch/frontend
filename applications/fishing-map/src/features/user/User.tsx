@@ -10,10 +10,11 @@ import {
   fetchWorkspacesThunk,
   selectWorkspaceListStatus,
 } from 'features/workspaces-list/workspaces-list.slice'
-import { WORKSPACE } from 'routes/routes'
+import { HOME, WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
+import { updateLocation } from 'routes/routes.actions'
 import styles from './User.module.css'
-import { logoutUserThunk, selectUserData } from './user.slice'
+import { fetchUserThunk, logoutUserThunk, selectUserData } from './user.slice'
 import { isUserLogged, selectUserWorkspaces } from './user.selectors'
 
 function User() {
@@ -26,15 +27,17 @@ function User() {
   const [logoutLoading, setLogoutLoading] = useState(false)
 
   useEffect(() => {
-    if (userLogged) {
+    if (userLogged && userData?.id) {
       dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [dispatch, userData?.id, userLogged])
 
-  const onLogoutClick = useCallback(() => {
+  const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
-    dispatch(logoutUserThunk())
+    await dispatch(logoutUserThunk())
+    await dispatch(fetchUserThunk({ guest: true }))
+    setLogoutLoading(false)
+    dispatch(updateLocation(HOME, { replaceQuery: true }))
   }, [dispatch])
 
   if (!userData) return null

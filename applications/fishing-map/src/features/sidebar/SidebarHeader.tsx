@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Sticky from 'react-sticky-el'
 import { useTranslation } from 'react-i18next'
@@ -7,6 +7,7 @@ import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { SubBrands } from '@globalfishingwatch/ui-components/dist/logo/Logo'
 import { saveCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
+  isWorkspacePublic,
   selectWorkspaceCustom,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
@@ -28,26 +29,32 @@ function SidebarHeader() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustom = useSelector(selectWorkspaceCustom)
   const locationCategory = useSelector(selectLocationCategory)
+  const workspacePublic = useSelector(isWorkspacePublic)
   const showShareButton = useSelector(isWorkspaceLocation)
+  const timeoutRef = useRef<any>()
 
-  const onShareClick = useCallback(() => {
-    dispatch(saveCurrentWorkspaceThunk())
-  }, [dispatch])
+  const onWorkspaceShareFinish = useCallback((stringToClipboard: string) => {
+    setFinished(true)
+    copyToClipboard(stringToClipboard)
+    timeoutRef.current = setTimeout(() => setFinished(false), 6000)
+  }, [])
+
+  const onShareClick = useCallback(async () => {
+    if (!workspacePublic) {
+      await dispatch(saveCurrentWorkspaceThunk())
+      onWorkspaceShareFinish(`${window.location.origin}/${workspaceId}`)
+    } else {
+      onWorkspaceShareFinish(window.location.href)
+    }
+  }, [dispatch, onWorkspaceShareFinish, workspaceId, workspacePublic])
 
   useEffect(() => {
-    let id: any
-    if (workspaceStatus === AsyncReducerStatus.Finished && workspaceCustom === true) {
-      setFinished(true)
-      copyToClipboard(`${window.location.origin}/${workspaceId}`)
-      id = setTimeout(() => setFinished(false), 5000)
-    }
-
     return () => {
-      if (id) {
-        clearTimeout(id)
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
       }
     }
-  }, [workspaceCustom, workspaceId, workspaceStatus])
+  }, [])
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined

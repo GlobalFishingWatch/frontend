@@ -14,6 +14,7 @@ export interface Workspace<T = unknown> {
   app: ApiAppName
   description: string
   category?: string
+  public?: boolean
   aoi?: AOI
   viewport: WorkspaceViewport
   startAt: string
