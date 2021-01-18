@@ -20,7 +20,7 @@ const aggregateCell = (
 
   // First two values for a cell are the overall start and end time offsets for all the cell values (in days/hours/10days from start of time)
   const minCellOffset = rawValuesArr[0]
-  const maxCellOffset = rawValuesArr[1]
+  // const maxCellOffset = rawValuesArr[1]
 
   // When we should start counting in terms of days/hours/10days from start of time
   const startOffset = quantizeOffset + frame
@@ -64,6 +64,7 @@ const getExtendedFeatures = (
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
     const generatorType = feature.layer.metadata?.generatorType ?? null
     const generatorId = feature.layer.metadata?.generatorId ?? null
+    const unit = feature.layer?.metadata?.legend?.unit ?? null
     const properties = feature.properties || {}
     const extendedFeature: ExtendedFeature | null = {
       properties,
@@ -73,6 +74,7 @@ const getExtendedFeatures = (
       sourceLayer: feature.sourceLayer,
       id: (feature.id as number) || feature.properties?.gfw_id || undefined,
       value: properties.value || properties.name || properties.id,
+      unit,
       tile: {
         x: (feature as any)._vectorTileFeature._x,
         y: (feature as any)._vectorTileFeature._y,
@@ -97,8 +99,8 @@ const getExtendedFeatures = (
               ...extendedFeature,
               temporalgrid: {
                 sublayerIndex: i,
-                col: properties._col,
-                row: properties._row,
+                col: properties._col as number,
+                row: properties._row as number,
               },
               value,
             },

@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
@@ -10,27 +10,25 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectBivariate } from 'features/app/app.selectors'
 import { getHeatmapDataviewInstance } from 'features/dataviews/dataviews.utils'
-import {
-  selectHeatmapSublayersAddedIndex,
-  setHeatmapSublayersAddedIndex,
-} from 'features/app/app.slice'
 import LayerPanel from './HeatmapLayerPanel'
 
 function HeatmapsSection(): React.ReactElement {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const [heatmapSublayersAddedIndex, setHeatmapSublayersAddedIndex] = useState<number | undefined>()
   const dataviews = useSelector(selectTemporalgridDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
-  const heatmapSublayersAddedIndex = useSelector(selectHeatmapSublayersAddedIndex)
+  const supportBivariateToggle =
+    dataviews?.filter((dataview) => dataview?.config?.visible)?.length === 2
 
   const onAddClick = useCallback(() => {
+    setHeatmapSublayersAddedIndex(dataviews ? dataviews.length : 0)
+    dispatchQueryParams({ bivariate: false })
     const usedRamps = dataviews?.flatMap((dataview) => dataview.config?.colorRamp || [])
     const dataviewInstance = getHeatmapDataviewInstance(usedRamps)
-    dispatch(setHeatmapSublayersAddedIndex(dataviews ? dataviews.length : 0))
     upsertDataviewInstance(dataviewInstance)
-  }, [dispatch, dataviews, upsertDataviewInstance])
+  }, [dispatchQueryParams, dataviews, upsertDataviewInstance])
 
   const onToggleCombinationMode = useCallback(() => {
     const newBivariateValue = !bivariate
@@ -56,16 +54,13 @@ function HeatmapsSection(): React.ReactElement {
   let bivariateTooltip = bivariate
     ? t('layer.toggleCombinationMode.split', 'Split layers')
     : t('layer.toggleCombinationMode.combine', 'Combine layers')
-  if (dataviews?.length !== 2) {
+  if (!supportBivariateToggle) {
     bivariateTooltip = t(
       'layer.toggleCombinationMode.disabled',
       'Combine mode is only available with two activity layers'
     )
   }
 
-  const addTooltip = bivariate
-    ? t('layer.addDisabled', 'Adding layers is disabled when layers are combined')
-    : t('layer.add', 'Add layer')
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -75,7 +70,7 @@ function HeatmapsSection(): React.ReactElement {
             icon={bivariate ? 'split' : 'compare'}
             type="border"
             size="medium"
-            disabled={dataviews?.length !== 2 ?? true}
+            disabled={!supportBivariateToggle}
             tooltip={bivariateTooltip}
             tooltipPlacement="top"
             onClick={onToggleCombinationMode}
@@ -84,8 +79,7 @@ function HeatmapsSection(): React.ReactElement {
             icon="plus"
             type="border"
             size="medium"
-            disabled={bivariate}
-            tooltip={addTooltip}
+            tooltip={t('layer.add', 'Add layer')}
             tooltipPlacement="top"
             onClick={onAddClick}
           />
@@ -95,7 +89,8 @@ function HeatmapsSection(): React.ReactElement {
         <LayerPanel
           key={dataview.id}
           dataview={dataview}
-          isAdded={index === heatmapSublayersAddedIndex}
+          index={index}
+          isOpen={index === heatmapSublayersAddedIndex}
         />
       ))}
     </div>

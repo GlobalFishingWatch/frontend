@@ -252,6 +252,12 @@ export const selectContextAreasDataviews = createSelector(
   (dataviews) => dataviews
 )
 
+export const selectEnvironmentalDataviews = createSelector(
+  // TODO: use explicit categories here instead of generic layer-composer type
+  [selectDataviewInstancesByType(Generators.Type.Heatmap)],
+  (dataviews) => dataviews
+)
+
 export const selectTemporalgridDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.HeatmapAnimated)],
   (dataviews) => dataviews

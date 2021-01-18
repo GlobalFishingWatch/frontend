@@ -18,7 +18,11 @@ import { selectTemporalgridDataviews } from 'features/workspace/workspace.select
 import { useCurrentTimeChunkId, useMapStyle } from 'features/map/map.hooks'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
-import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
+import {
+  selectTracksData,
+  selectTracksGraphs,
+  hasStaticHeatmapLayersActive,
+} from './timebar.selectors'
 import styles from './Timebar.module.css'
 
 const TimebarWrapper = () => {
@@ -29,6 +33,7 @@ const TimebarWrapper = () => {
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
   const urlViewport = useSelector(selectViewport)
+  const staticHeatmapLayersActive = useSelector(hasStaticHeatmapLayersActive)
 
   const dispatch = useDispatch()
 
@@ -134,7 +139,7 @@ const TimebarWrapper = () => {
   return (
     <div className="print-hidden">
       <TimebarComponent
-        enablePlayback
+        enablePlayback={!staticHeatmapLayersActive}
         start={start}
         end={end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}

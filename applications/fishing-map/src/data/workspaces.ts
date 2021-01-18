@@ -1,3 +1,5 @@
+export const DEFAULT_WORKSPACE_ID = 'default'
+
 export type WorkspaceEnv = 'development' | 'production'
 export const WORKSPACE_ENV =
   (process.env.REACT_APP_WORKSPACE_ENV as WorkspaceEnv) ||

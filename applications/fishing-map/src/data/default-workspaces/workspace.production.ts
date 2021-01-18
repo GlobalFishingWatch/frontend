@@ -1,22 +1,24 @@
 import { Workspace } from '@globalfishingwatch/api-types'
+import { APP_NAME } from 'data/config'
 import {
   DEFAULT_BASEMAP_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
+  DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
-  id: 'production',
-  app: 'fishing-map',
+  id: DEFAULT_WORKSPACE_ID,
+  app: APP_NAME,
   name: 'Default public Fishing Map workspace in production v1',
   description: '',
   startAt: '2019-12-01T00:00:00.000Z',
   endAt: '2019-12-31T23:59:59.999Z',
   viewport: {
-    zoom: 1.7,
-    latitude: 12,
-    longitude: 21.7,
+    zoom: 0,
+    latitude: 30,
+    longitude: -37,
   },
   state: {},
   ownerId: 0,

@@ -1,17 +1,36 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
 import { fetchGoogleSheetsData } from 'google-sheets-mapper'
+import { stringify } from 'qs'
 import { Workspace } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
 import { APP_NAME } from 'data/config'
 import { AsyncReducerStatus, WorkspaceViewport } from 'types'
+import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
 
-export const fetchWorkspacesThunk = createAsyncThunk('workspaces/fetch', async (app: string) => {
-  const workspaces = await GFWAPI.fetch<Workspace[]>(`/v1/workspaces?app=${app}`)
-  return workspaces
-})
+type fetchWorkspacesThunkParams = {
+  app?: string
+  ids?: string[]
+  userId?: number
+}
+export const fetchWorkspacesThunk = createAsyncThunk(
+  'workspaces/fetch',
+  async ({ app = APP_NAME, ids, userId }: fetchWorkspacesThunkParams) => {
+    const workspacesParams = { app, ids, ownerId: userId }
+    const workspaces = await GFWAPI.fetch<Workspace[]>(
+      `/v1/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
+    )
+
+    if (ids?.includes(DEFAULT_WORKSPACE_ID)) {
+      const defaultWorkspace = await getDefaultWorkspace()
+      return [...workspaces, defaultWorkspace]
+    }
+    return workspaces
+  }
+)
 
 export type HighlightedWorkspace = {
   id: string
@@ -24,9 +43,7 @@ export type HighlightedWorkspace = {
 
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
   'workspaces/fetchHighlighted',
-  async (_, { getState, dispatch }) => {
-    const workspaceStatus = selectWorkspaceListStatus(getState() as RootState)
-    const apiWorkspaces = selectWorkspaces(getState() as RootState)
+  async (_, { dispatch }) => {
     const workspaces = await fetchGoogleSheetsData({
       apiKey: process.env.REACT_APP_GOOGLE_API_KEY as string,
       sheetId: process.env.REACT_APP_GOOGLE_SHEETS_ID as string,
@@ -35,9 +52,12 @@ export const fetchHighlightWorkspacesThunk = createAsyncThunk(
         response.map(({ id, data }) => [id, data as HighlightedWorkspace[]])
       )
     })
-    if (workspaceStatus !== AsyncReducerStatus.Finished || !apiWorkspaces) {
-      dispatch(fetchWorkspacesThunk(APP_NAME))
-    }
+
+    const workspacesIds = Object.values(workspaces).flatMap((workspaces) =>
+      workspaces.flatMap((w) => w.id || [])
+    )
+
+    dispatch(fetchWorkspacesThunk({ ids: workspacesIds }))
     return workspaces
   }
 )

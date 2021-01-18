@@ -2,7 +2,9 @@ import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { IconButton, Radio, Select, SelectOption } from '@globalfishingwatch/ui-components/dist'
+import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import Radio from '@globalfishingwatch/ui-components/dist/radio'
+import Select, { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 import {
@@ -74,8 +76,11 @@ const TimebarSettings = () => {
             disabled={!activeHeatmapDataviews?.length}
             tooltip={
               !activeHeatmapDataviews?.length
-                ? 'Select at least one apparent fishing effort layer'
-                : 'Show fishing hours graph'
+                ? t(
+                    'timebar.fishingEffortDisabled',
+                    'Select at least one apparent fishing effort layer'
+                  )
+                : t('timebar.showFishingEffort', 'Show fishing hours graph')
             }
             onClick={setHeatmapActive}
           />
@@ -85,7 +90,9 @@ const TimebarSettings = () => {
               active={timebarVisualisation === TimebarVisualisations.Vessel}
               disabled={!activeVesselDataviews?.length}
               tooltip={
-                !activeVesselDataviews?.length ? 'Select at least one vessel' : 'Show tracks graph'
+                !activeVesselDataviews?.length
+                  ? t('timebar.tracksDisabled', 'Select at least one apparent fishing effort layer')
+                  : t('timebar.showTracks', 'Show tracks graph')
               }
               onClick={setVesselActive}
             />

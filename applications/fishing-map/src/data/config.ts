@@ -4,7 +4,6 @@ import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
 
 // TODO use it to retrieve it and store in workspace.default in deploy
-export const DEFAULT_WORKSPACE_ID = 31
 export const DEFAULT_VERSION = 'v1'
 export const APP_NAME = 'fishing-map'
 

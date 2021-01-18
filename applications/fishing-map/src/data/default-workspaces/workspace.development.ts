@@ -1,19 +1,23 @@
 import { Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
-import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_VESSEL_DATAVIEW_ID } from 'data/workspaces'
+import {
+  DEFAULT_FISHING_DATAVIEW_ID,
+  DEFAULT_VESSEL_DATAVIEW_ID,
+  DEFAULT_WORKSPACE_ID,
+} from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
-  id: 'default',
+  id: DEFAULT_WORKSPACE_ID,
   app: APP_NAME,
   name: 'Default public Fishing Map workspace',
   description: '',
   startAt: new Date(2018, 0).toISOString(),
   endAt: DEFAULT_WORKSPACE.end,
   viewport: {
-    zoom: 1.7,
-    latitude: 12,
-    longitude: 21.7,
+    zoom: 0,
+    latitude: 30,
+    longitude: -37,
   },
   state: {
     // query: 'pepe',
@@ -110,6 +114,15 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: 97,
     },
+    // {
+    //   id: 'salinity-for-caribe',
+    //   config: {
+    //     visible: true,
+    //     color: '#FFAE9B',
+    //     colorRamp: 'salmon',
+    //   },
+    //   dataviewId: 80,
+    // },
   ],
 }
 

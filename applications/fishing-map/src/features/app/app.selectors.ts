@@ -16,6 +16,7 @@ import {
   selectUrlEndQuery,
   selectUrlStartQuery,
   selectQueryParam,
+  selectLocationCategory,
 } from 'routes/routes.selectors'
 import {
   TimebarEvents,
@@ -123,10 +124,18 @@ export const selectCustomWorkspace = createSelector(
     selectWorkspace,
     selectViewport,
     selectTimeRange,
+    selectLocationCategory,
     selectWorkspaceAppState,
     selectDataviewInstancesMerged,
   ],
-  (workspace, viewport, timerange, state, dataviewInstances): WorkspaceUpsert<WorkspaceState> => {
+  (
+    workspace,
+    viewport,
+    timerange,
+    category,
+    state,
+    dataviewInstances
+  ): WorkspaceUpsert<WorkspaceState> => {
     const areaName = getOceanAreaName(viewport)
     const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
     const start = formatI18nDate(timerange.start as string, {
@@ -145,6 +154,7 @@ export const selectCustomWorkspace = createSelector(
       ...workspace,
       name,
       app: APP_NAME,
+      category,
       aoi: undefined,
       dataviews: workspace?.dataviews?.map(({ id }) => id as number),
       viewport,
