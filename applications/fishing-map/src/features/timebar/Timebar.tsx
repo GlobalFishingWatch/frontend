@@ -1,6 +1,5 @@
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Layer } from 'mapbox-gl'
 import TimebarComponent, {
   TimebarTracks,
   TimebarActivity,
@@ -8,7 +7,7 @@ import TimebarComponent, {
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
 import { useTilesState } from '@globalfishingwatch/react-hooks'
-import { frameToDate, Generators, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
+import { frameToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useMapboxInstance } from 'features/map/map.context'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
@@ -16,6 +15,7 @@ import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph, selectViewport } from 'features/app/app.selectors'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
+import { useCurrentTimeChunkId, useMapStyle } from 'features/map/map.hooks'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
@@ -45,43 +45,46 @@ const TimebarWrapper = () => {
   )
   const mapInstance = useMapboxInstance()
   const tilesLoading = useTilesState(mapInstance).loading
+  const currentTimeChunkId = useCurrentTimeChunkId()
+  const mapStyle = useMapStyle()
 
   const [stackedActivity, setStackedActivity] = useState<any>()
   useEffect(() => {
-    if (!mapInstance || tilesLoading || timebarVisualisation !== TimebarVisualisations.Heatmap)
+    if (
+      !mapInstance ||
+      !mapStyle ||
+      tilesLoading ||
+      timebarVisualisation !== TimebarVisualisations.Heatmap
+    )
       return
 
-    let style: any
-    try {
-      style = mapInstance.getStyle()
-    } catch (e) {
-      // console.log(e)
-    }
-
-    if (!style) return
-    // Get interactive layer(s) from the heatmap animated layers
-    const heatmapInteractiveLayers = (style.layers as Layer[]).filter(
-      (layer) =>
-        layer.metadata?.generatorType === Generators.Type.HeatmapAnimated &&
-        layer.metadata?.interactive === true
-    )
-    if (!heatmapInteractiveLayers.length) return
-    let n = 0
-    n = performance.now()
-    const allFeaturesWithStyle = mapInstance.queryRenderedFeatures(undefined, {
-      layers: heatmapInteractiveLayers.map((l) => l.id),
-    })
-    console.log('queryRenderedFeatures', performance.now() - n)
-
-    // TODO Pick active timechunk layers or handle multiple timechunks?
-    const timechunks = mapInstance.getStyle().metadata?.temporalgrid?.timeChunks as TimeChunks
-
-    const metadata = style.metadata
-    const timeChunks = metadata?.temporalgrid?.timeChunks
-    const activeTimeChunk: TimeChunk = timeChunks?.chunks.find((c: any) => c.active)
-    const numSublayers = metadata?.temporalgrid?.numSublayers
+    const temporalgrid = mapStyle.metadata?.temporalgrid
+    if (!temporalgrid) return
+    const numSublayers = temporalgrid.numSublayers
+    const timeChunks = temporalgrid.timeChunks as TimeChunks
+    const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
     const chunkQuantizeOffset = activeTimeChunk.quantizeOffset
     const numChunkFrames = activeTimeChunk.framesDelta
+
+    let n = 0
+    n = performance.now()
+
+    // Getting features within viewport - it's somehow faster to use querySource with a crude viewport filter, than using queryRendered
+    const [boundsSW, boundsNE] = mapInstance.getBounds().toArray()
+    const allFeaturesWithStyle = mapInstance
+      .querySourceFeatures(currentTimeChunkId, {
+        sourceLayer: 'temporalgrid_interactive',
+      })
+      .filter((f) => {
+        const coord = (f.geometry as any).coordinates[0][0]
+        return (
+          coord[0] > boundsSW[0] &&
+          coord[0] < boundsNE[0] &&
+          coord[1] > boundsSW[1] &&
+          coord[1] < boundsNE[1]
+        )
+      })
+    // console.log('querySourceFeatures', performance.now() - n)
 
     n = performance.now()
     let valuesByFrame: any[] = new Array(numChunkFrames).fill(null)
@@ -111,13 +114,15 @@ const TimebarWrapper = () => {
 
     valuesByFrame = valuesByFrame.map((frameValues, frameIndex) => {
       return {
-        date: frameToDate(frameIndex, chunkQuantizeOffset, timechunks.interval).getTime(),
+        date: frameToDate(frameIndex, chunkQuantizeOffset, timeChunks.interval).getTime(),
         ...frameValues,
       }
     })
-    console.log('compute graph', performance.now() - n)
+    // console.log('compute graph', performance.now() - n)
     setStackedActivity(valuesByFrame)
-  }, [mapInstance, tilesLoading, timebarVisualisation, urlViewport])
+    // While mapStyle is needed inside the useEffect, we don't want the component to rerender everytime a new instance is generated
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapInstance, currentTimeChunkId, tilesLoading, timebarVisualisation, urlViewport])
 
   const dataviews = useSelector(selectTemporalgridDataviews)
   const heatmapSublayerColors = useMemo(() => {

@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useRef, useState, useEffect } from 'react'
 import { Map } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeatureVessel, InteractionEvent } from '@globalfishingwatch/react-hooks'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import {
   selectDataviewInstancesResolved,
@@ -24,6 +24,7 @@ import {
   fetch4WingInteractionThunk,
   MAX_TOOLTIP_VESSELS,
 } from './map.slice'
+import { useMapboxInstance } from './map.context'
 
 export function useMapImage(map: Map) {
   const [image, setImage] = useState<string | null>(null)
@@ -212,4 +213,25 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
     longitude: event.longitude,
     features: tooltipEventFeatures,
   }
+}
+
+export const useMapStyle = () => {
+  const mapInstance = useMapboxInstance()
+  if (!mapInstance) return null
+
+  let style: any
+  try {
+    style = mapInstance.getStyle()
+  } catch (e) {
+    return null
+  }
+
+  return style
+}
+
+export const useCurrentTimeChunkId = () => {
+  const style = useMapStyle()
+  const currentTimeChunks = style?.metadata?.temporalgrid?.timeChunks as TimeChunks
+  const currentTimeChunkId = currentTimeChunks?.activeId
+  return currentTimeChunkId
 }
