@@ -1,52 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import debounce from 'lodash/debounce'
-import {
-  Generators,
-  ExtendedStyleMeta,
-  getCellValues,
-  getRealValues,
-} from '@globalfishingwatch/layer-composer'
+import { Generators, ExtendedStyleMeta, aggregateCell } from '@globalfishingwatch/layer-composer'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
 type FeatureStates = 'click' | 'hover'
 type FeatureStateSource = { source: string; sourceLayer: string; state: FeatureStates }
-
-const aggregateCell = (
-  rawValues: string,
-  frame: number,
-  delta: number,
-  quantizeOffset: number,
-  numSublayers: number
-) => {
-  const { values, minCellOffset } = getCellValues(rawValues)
-
-  // When we should start counting in terms of days/hours/10days from start of time
-  const startOffset = quantizeOffset + frame
-
-  // Where we sould start looking up in the array (minCellOffset, maxCellOffset, sublayer0valueAt0, sublayer1valueAt0, sublayer0valueAt1, sublayer1valueAt1, ...)
-  const startAt = 2 + (startOffset - minCellOffset) * numSublayers
-
-  // Where we should stop looking up, using the current timebar delta
-  const endAt = startAt + delta * numSublayers
-
-  const rawValuesArrSlice = values.slice(startAt, endAt)
-
-  // One aggregated value per sublayer
-  const aggregatedValues = new Array(numSublayers).fill(0)
-
-  for (let i = 0; i < rawValuesArrSlice.length; i++) {
-    const sublayerIndex = i % numSublayers
-    const rawValue = rawValuesArrSlice[i]
-    if (rawValue) {
-      aggregatedValues[sublayerIndex] += rawValue
-    }
-  }
-
-  const realValues = getRealValues(aggregatedValues)
-
-  return realValues
-}
 
 const getExtendedFeatures = (
   features: MapboxGeoJSONFeature[],
@@ -86,7 +45,7 @@ const getExtendedFeatures = (
           activeTimeChunk.quantizeOffset,
           numSublayers
         )
-        if (!values.filter((v) => v > 0).length) return []
+        if (!values || !values.filter((v) => v > 0).length) return []
 
         return values.flatMap((value: any, i: number) => {
           if (value === 0) return []

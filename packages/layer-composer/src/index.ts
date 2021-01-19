@@ -10,4 +10,4 @@ export {
   frameToDate,
   quantizeOffsetToDate,
 } from './generators/heatmap/util/time-chunks'
-export { getCellValues, getRealValues } from './generators/heatmap/util/fourwings'
+export { getCellValues, getRealValues, aggregateCell } from './generators/heatmap/util/fourwings'
