@@ -7,7 +7,12 @@ import TimebarComponent, {
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
 import { useTilesState } from '@globalfishingwatch/react-hooks'
-import { frameToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
+import {
+  frameToDate,
+  getCellValues,
+  TimeChunk,
+  TimeChunks,
+} from '@globalfishingwatch/layer-composer'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useMapboxInstance } from 'features/map/map.context'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
@@ -98,11 +103,10 @@ const TimebarWrapper = () => {
     allFeaturesWithStyle.forEach((feature) => {
       if (!feature.properties) return
       const rawValues: string = feature.properties.rawValues
-      const rawValuesArr: number[] = rawValues.split(',').map((v) => parseInt(v))
-      const minCellOffset = rawValuesArr[0]
+      const { values, minCellOffset } = getCellValues(rawValues)
       const startAt = 2
-      const endAt = rawValuesArr.length - 1 - startAt
-      const rawValuesArrSlice = rawValuesArr.slice(startAt, endAt)
+      const endAt = values.length - 1 - startAt
+      const rawValuesArrSlice = values.slice(startAt, endAt)
       let currentFrameIndex = minCellOffset - chunkQuantizeOffset
 
       for (let i = 0; i < rawValuesArrSlice.length; i++) {

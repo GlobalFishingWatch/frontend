@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import debounce from 'lodash/debounce'
-import { Generators, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
+import {
+  Generators,
+  ExtendedStyleMeta,
+  getCellValues,
+  getRealValues,
+} from '@globalfishingwatch/layer-composer'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
@@ -14,13 +19,7 @@ const aggregateCell = (
   quantizeOffset: number,
   numSublayers: number
 ) => {
-  // Raw values come as a single string (MVT limitation), turn into an array of ints first
-  /// TODO MUST BE IN TOOLS
-  const rawValuesArr: number[] = rawValues.split(',').map((v) => parseInt(v))
-
-  // First two values for a cell are the overall start and end time offsets for all the cell values (in days/hours/10days from start of time)
-  const minCellOffset = rawValuesArr[0]
-  // const maxCellOffset = rawValuesArr[1]
+  const { values, minCellOffset } = getCellValues(rawValues)
 
   // When we should start counting in terms of days/hours/10days from start of time
   const startOffset = quantizeOffset + frame
@@ -31,23 +30,20 @@ const aggregateCell = (
   // Where we should stop looking up, using the current timebar delta
   const endAt = startAt + delta * numSublayers
 
-  const rawValuesArrSlice = rawValuesArr.slice(startAt, endAt)
+  const rawValuesArrSlice = values.slice(startAt, endAt)
 
   // One aggregated value per sublayer
-  const values = new Array(numSublayers).fill(0)
+  const aggregatedValues = new Array(numSublayers).fill(0)
 
   for (let i = 0; i < rawValuesArrSlice.length; i++) {
     const sublayerIndex = i % numSublayers
     const rawValue = rawValuesArrSlice[i]
     if (rawValue) {
-      values[sublayerIndex] += rawValue
+      aggregatedValues[sublayerIndex] += rawValue
     }
   }
 
-  /// TODO MUST BE IN TOOLS
-  // Raw 4w API values come without decimals, multiplied by 100
-  const VALUE_MULTIPLIER = 100
-  const realValues = values.map((v) => v / VALUE_MULTIPLIER)
+  const realValues = getRealValues(aggregatedValues)
 
   return realValues
 }
