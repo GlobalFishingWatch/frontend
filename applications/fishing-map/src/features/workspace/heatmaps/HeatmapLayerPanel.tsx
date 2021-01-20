@@ -126,26 +126,38 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
       </div>
       {layerActive && (
         <div className={styles.properties}>
-          {sourcesOptions?.length > 0 && (
-            <Fragment>
-              <label>{t('layer.source_plural', 'Sources')}</label>
-              <TagList
-                tags={sourcesOptions}
-                color={dataview.config?.color}
-                className={styles.tagList}
-              />
-            </Fragment>
-          )}
-          {fishingFiltersOptions.length > 0 && (
-            <Fragment>
-              <label>{t('layer.flag_state_plural', 'Flag States')}</label>
-              <TagList
-                tags={fishingFiltersOptions}
-                color={dataview.config?.color}
-                className={styles.tagList}
-              />
-            </Fragment>
-          )}
+          <div className={styles.filters}>
+            {sourcesOptions?.length > 0 && (
+              <div className={styles.filter}>
+                <label>{t('layer.source_plural', 'Sources')}</label>
+                <TagList
+                  tags={sourcesOptions}
+                  color={dataview.config?.color}
+                  className={styles.tagList}
+                />
+              </div>
+            )}
+            {fishingFiltersOptions.length > 0 && (
+              <div className={styles.filter}>
+                <label>{t('layer.flag_state_plural', 'Flag States')}</label>
+                <TagList
+                  tags={fishingFiltersOptions}
+                  color={dataview.config?.color}
+                  className={styles.tagList}
+                />
+              </div>
+            )}
+            {gearTypesSelected.length > 0 && (
+              <div className={styles.filter}>
+                <label>{t('layer.gearType_plural', 'Gear types')}</label>
+                <TagList
+                  tags={gearTypesSelected}
+                  color={dataview.config?.color}
+                  className={styles.tagList}
+                />
+              </div>
+            )}
+          </div>
           <div id={`legend_${dataview.id}`}></div>
         </div>
       )}

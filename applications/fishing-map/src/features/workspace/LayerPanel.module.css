@@ -114,6 +114,15 @@
   padding: 0 var(--space-S) var(--space-S);
 }
 
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.filter:not(:last-of-type) {
+  margin-right: var(--space-M);
+}
+
 .tagList {
   width: 100%;
 }
