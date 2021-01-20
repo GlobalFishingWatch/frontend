@@ -118,7 +118,10 @@ function Workspace() {
 
   useEffect(() => {
     if (userLogged) {
-      if (locationType === HOME || currentWorkspaceId !== workspaceId) {
+      if (
+        (locationType === HOME && workspaceStatus !== AsyncReducerStatus.Finished) ||
+        (locationType !== HOME && currentWorkspaceId !== workspaceId)
+      ) {
         dispatch(fetchWorkspaceThunk(workspaceId as string))
       }
     }
