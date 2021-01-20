@@ -23,3 +23,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.iconWarning {
+  margin: 0 0.45rem;
+  cursor: default;
+}
