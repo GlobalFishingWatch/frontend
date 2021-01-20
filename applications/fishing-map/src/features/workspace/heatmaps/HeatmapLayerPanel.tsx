@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -11,7 +11,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariate } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import Filters from './HeatmapFilters'
-import { getSourcesSelectedInDataview } from './heatmaps.utils'
+import { getGearTypesSelectedInDataview, getSourcesSelectedInDataview } from './heatmaps.utils'
 import HeatmapInfoModal from './HeatmapInfoModal'
 
 type LayerPanelProps = {
@@ -25,7 +25,8 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const sourcesOptions = getSourcesSelectedInDataview(dataview)
-  const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters || [])
+  const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
+  const gearTypesSelected = getGearTypesSelectedInDataview(dataview)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
@@ -60,7 +61,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
 
-  const datasetName = t(`common.apparentFishing`)
+  const datasetName = t(`common.apparentFishing`, 'Apparent Fishing Effort')
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
       {datasetName}

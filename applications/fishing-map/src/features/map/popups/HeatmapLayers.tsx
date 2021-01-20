@@ -57,8 +57,12 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
         {feature.vesselsInfo && (
           <div className={styles.vesselsTable}>
             <div className={styles.vesselsHeader}>
-              <label className={styles.vesselsHeaderLabel}>{t('common.vessel_plural')}</label>
-              <label className={styles.vesselsHeaderLabel}>{t('common.hour_plural')}</label>
+              <label className={styles.vesselsHeaderLabel}>
+                {t('common.vessel_plural', 'Vessels')}
+              </label>
+              <label className={styles.vesselsHeaderLabel}>
+                {t('common.hour_plural', 'hours')}
+              </label>
             </div>
             {feature.vesselsInfo.vessels.map((vessel, i) => {
               const vesselLabel = vessel.shipname

@@ -47,7 +47,7 @@ function WorkspaceError(): React.ReactElement {
       <ErrorPlaceHolder title={t('errors.privateView', 'This is a private view')}>
         {guestUser ? (
           <Button href={GFWAPI.getLoginUrl(window.location.toString())}>
-            {t('common.login', 'Login') as string}
+            {t('common.login', 'Log in') as string}
           </Button>
         ) : (
           <Fragment>
