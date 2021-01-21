@@ -34,14 +34,25 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
   const flags = useMemo(getFlags, [])
 
   const datasetsWithoutgGeartype = getNotSupportedGearTypesDatasets(dataview)
+
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
     const datasets = [...(dataview.config?.datasets || []), source.id]
-    // We have to remove the geartype if it is not supported by the datasets selecion
-    const gearTypeOptions = getCommonGearTypesInDataview({ ...dataview, datasets })
-    const supportGearTypeFilter = gearTypeOptions.length > 0
     const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
-    if (!supportGearTypeFilter && filters['geartype']) {
-      delete filters['geartype']
+    if (filters['geartype']) {
+      const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
+      const newGearTypeOptions = getCommonGearTypesInDataview(newDataview)
+      const supportGearTypeFilter = newGearTypeOptions.length > 0
+      const newGearTypeSelection = newGearTypeOptions?.filter((geartype) =>
+        dataview.config?.filters?.geartype?.includes(geartype.id)
+      )
+
+      // We have to remove the geartype if it is not supported by the datasets selecion
+      if (!supportGearTypeFilter) {
+        delete filters['geartype']
+        // or keep only the options that every dataset have in common
+      } else if (!newGearTypeSelection?.length !== dataview.config?.filters?.geartype?.length) {
+        filters.geartype = newGearTypeSelection.map(({ id }) => id)
+      }
     }
     upsertDataviewInstance({
       id: dataview.id,
@@ -99,6 +110,7 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
         defaultValue: 'Not supported by',
       })
     : ''
+
   return (
     <Fragment>
       <MultiSelect
