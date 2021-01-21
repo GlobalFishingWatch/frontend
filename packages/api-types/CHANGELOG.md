@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.6.0
+
+### Minor Changes
+
+- af016529: aoi id and dataset schema types
+
 ## 2.5.1
 
 ### Patch Changes
