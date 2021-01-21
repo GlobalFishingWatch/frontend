@@ -74,7 +74,9 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
               icon="camera"
               type="map-tool"
               disabled={loading}
-              tooltip={loading ? t('map.loading', 'Loading') : t('map.capture_map', 'Capture map')}
+              tooltip={
+                loading ? t('map.loading', 'Map loading') : t('map.capture_map', 'Capture map')
+              }
               onClick={window.print}
             />
             <Tooltip

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, memo, Fragment } from 'react'
+import React, { useCallback, useState, useMemo, memo } from 'react'
 import {
   useMultipleSelection,
   useCombobox,
@@ -19,6 +19,8 @@ interface MultiSelectProps {
   placeholder?: string
   options: MultiSelectOption[]
   selectedOptions?: MultiSelectOption[]
+  disabled?: boolean
+  disabledMsg?: string
   onSelect: MultiSelectOnChange
   onRemove?: MultiSelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
@@ -52,6 +54,8 @@ function MultiSelect(props: MultiSelectProps) {
     onSelect,
     onRemove,
     onCleanClick,
+    disabled = false,
+    disabledMsg = '',
   } = props
 
   const handleRemove = useCallback(
@@ -154,10 +158,29 @@ function MultiSelect(props: MultiSelectProps) {
 
   return (
     <div className={className}>
-      {label !== undefined && <label {...getLabelProps()}>{label}</label>}
-      <div className={cx(styles.container, { [styles.isOpen]: isOpen })}>
+      <div className={styles.labelContainer}>
+        {label !== undefined && (
+          <label {...getLabelProps()} className={cx({ [styles.disabled]: disabled })}>
+            {label}
+          </label>
+        )}
+        {disabled && disabledMsg && (
+          <IconButton
+            size="small"
+            type="warning"
+            icon="warning"
+            tooltip={disabledMsg}
+            className={multiSelectStyles.iconWarning}
+          />
+        )}
+      </div>
+      <div
+        className={cx(styles.container, { [styles.isOpen]: isOpen, [styles.notAllowed]: disabled })}
+      >
         <div
-          className={cx(styles.placeholderContainer, multiSelectStyles.placeholderContainer)}
+          className={cx(styles.placeholderContainer, multiSelectStyles.placeholderContainer, {
+            [styles.disabled]: disabled,
+          })}
           {...getComboboxProps()}
         >
           <InputText
@@ -181,12 +204,14 @@ function MultiSelect(props: MultiSelectProps) {
           {onCleanClick !== undefined && hasSelectedOptions && (
             <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
           )}
-          <IconButton
-            icon={isOpen ? 'arrow-top' : 'arrow-down'}
-            size="small"
-            aria-label={'toggle menu'}
-            {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
-          ></IconButton>
+          {!disabled && (
+            <IconButton
+              icon={isOpen ? 'arrow-top' : 'arrow-down'}
+              size="small"
+              aria-label={'toggle menu'}
+              {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
+            ></IconButton>
+          )}
         </div>
         <ul {...getMenuProps()} className={styles.optionsContainer}>
           {isOpen &&

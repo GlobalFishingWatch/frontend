@@ -105,7 +105,7 @@ function Select(props: SelectProps) {
                     className={cx(styles.optionItem, {
                       [styles.selected]: selected,
                       [styles.highlight]: highlight,
-                      [styles.disabled]: itemDisabled,
+                      [styles.notAllowed]: itemDisabled,
                     })}
                     {...getItemProps({ item, index })}
                   >

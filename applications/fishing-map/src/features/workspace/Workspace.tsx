@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -26,6 +26,7 @@ import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
 
 function WorkspaceError(): React.ReactElement {
+  const [logoutLoading, setLogoutLoading] = useState(false)
   const error = useSelector(selectWorkspaceError)
   const workspaceId = useSelector(selectWorkspaceId)
   const guestUser = useSelector(isGuestUser)
@@ -46,7 +47,7 @@ function WorkspaceError(): React.ReactElement {
       <ErrorPlaceHolder title={t('errors.privateView', 'This is a private view')}>
         {guestUser ? (
           <Button href={GFWAPI.getLoginUrl(window.location.toString())}>
-            {t('common.login', 'Login') as string}
+            {t('common.login', 'Log in') as string}
           </Button>
         ) : (
           <Fragment>
@@ -63,8 +64,11 @@ function WorkspaceError(): React.ReactElement {
             <Button
               type="secondary"
               size="small"
+              loading={logoutLoading}
               onClick={async () => {
+                setLogoutLoading(true)
                 await dispatch(logoutUserThunk({ redirectToLogin: true }))
+                setLogoutLoading(false)
               }}
             >
               {t('errors.switchAccount', 'Switch account') as string}
@@ -114,7 +118,10 @@ function Workspace() {
 
   useEffect(() => {
     if (userLogged) {
-      if (locationType === HOME || currentWorkspaceId !== workspaceId) {
+      if (
+        (locationType === HOME && workspaceStatus !== AsyncReducerStatus.Finished) ||
+        (locationType !== HOME && currentWorkspaceId !== workspaceId)
+      ) {
         dispatch(fetchWorkspaceThunk(workspaceId as string))
       }
     }

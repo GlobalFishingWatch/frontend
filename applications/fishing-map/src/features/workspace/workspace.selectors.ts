@@ -197,16 +197,20 @@ export const selectDataviewInstancesResolved = createSelector(
     // resolved array filters to url filters
     dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
       if (dataviewInstance.config?.type === Generators.Type.HeatmapAnimated) {
-        const dataviewInstanceWithUrlFilter = {
-          ...dataviewInstance,
+        const { filters } = dataviewInstance.config
+        if (filters) {
+          const sqlFilters = Object.keys(filters).flatMap((filterKey) => {
+            if (!filters[filterKey]) return []
+            const filterValues = Array.isArray(filters[filterKey])
+              ? filters[filterKey]
+              : [filters[filterKey]]
+            return `${filterKey} IN (${filterValues.map((f: string) => `'${f}'`).join(', ')})`
+          })
+          if (sqlFilters.length) {
+            dataviewInstance.config.filter = sqlFilters.join(' AND ')
+          }
         }
-        if (dataviewInstance.config.filters?.length && dataviewInstanceWithUrlFilter.config) {
-          const flags = dataviewInstanceWithUrlFilter.config.filters
-          dataviewInstanceWithUrlFilter.config.filter = `flag IN (${flags
-            .map((f: string) => `'${f}'`)
-            .join(', ')})`
-        }
-        return dataviewInstanceWithUrlFilter
+        return dataviewInstance
       }
       return dataviewInstance
     })

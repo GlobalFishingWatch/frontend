@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -11,7 +11,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariate } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import Filters from './HeatmapFilters'
-import { getSourcesSelectedInDataview } from './heatmaps.utils'
+import { getGearTypesSelectedInDataview, getSourcesSelectedInDataview } from './heatmaps.utils'
 import HeatmapInfoModal from './HeatmapInfoModal'
 
 type LayerPanelProps = {
@@ -25,7 +25,8 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const sourcesOptions = getSourcesSelectedInDataview(dataview)
-  const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters || [])
+  const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
+  const gearTypesSelected = getGearTypesSelectedInDataview(dataview)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
@@ -60,7 +61,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
 
-  const datasetName = t(`common.apparentFishing`)
+  const datasetName = t(`common.apparentFishing`, 'Apparent Fishing Effort')
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
       {datasetName}
@@ -126,26 +127,38 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
       </div>
       {layerActive && (
         <div className={styles.properties}>
-          {sourcesOptions?.length > 0 && (
-            <Fragment>
-              <label>{t('layer.source_plural', 'Sources')}</label>
-              <TagList
-                tags={sourcesOptions}
-                color={dataview.config?.color}
-                className={styles.tagList}
-              />
-            </Fragment>
-          )}
-          {fishingFiltersOptions.length > 0 && (
-            <Fragment>
-              <label>{t('layer.flag_state_plural', 'Flag States')}</label>
-              <TagList
-                tags={fishingFiltersOptions}
-                color={dataview.config?.color}
-                className={styles.tagList}
-              />
-            </Fragment>
-          )}
+          <div className={styles.filters}>
+            {sourcesOptions?.length > 0 && (
+              <div className={styles.filter}>
+                <label>{t('layer.source_plural', 'Sources')}</label>
+                <TagList
+                  tags={sourcesOptions}
+                  color={dataview.config?.color}
+                  className={styles.tagList}
+                />
+              </div>
+            )}
+            {fishingFiltersOptions.length > 0 && (
+              <div className={styles.filter}>
+                <label>{t('layer.flag_state_plural', 'Flag States')}</label>
+                <TagList
+                  tags={fishingFiltersOptions}
+                  color={dataview.config?.color}
+                  className={styles.tagList}
+                />
+              </div>
+            )}
+            {gearTypesSelected.length > 0 && (
+              <div className={styles.filter}>
+                <label>{t('layer.gearType_plural', 'Gear types')}</label>
+                <TagList
+                  tags={gearTypesSelected}
+                  color={dataview.config?.color}
+                  className={styles.tagList}
+                />
+              </div>
+            )}
+          </div>
           <div id={`legend_${dataview.id}`}></div>
         </div>
       )}
