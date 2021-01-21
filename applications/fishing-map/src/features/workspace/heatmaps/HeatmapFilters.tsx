@@ -107,7 +107,7 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
   const disabledGearTypeTooltip = disabledGearType
     ? t('errors.notSupportedBy', {
         list: datasetsWithoutgGeartype?.map((d) => d.name).join(','),
-        defaultValue: 'Not supported by',
+        defaultValue: 'Not supported by {{list}}',
       })
     : ''
 
@@ -122,7 +122,7 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
         onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
       />
       <MultiSelect
-        label={t('layer.flag_state_plural', 'Flag States')}
+        label={t('layer.flagState_plural', 'Flag States')}
         placeholder={getPlaceholderBySelections(fishingFiltersOptions)}
         options={flags}
         selectedOptions={fishingFiltersOptions}

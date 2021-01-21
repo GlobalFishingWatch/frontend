@@ -76,7 +76,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         <Switch
           active={layerActive}
           onClick={onToggleLayerActive}
-          tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
+          tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
           className={styles.switch}
           color={dataview.config?.color}

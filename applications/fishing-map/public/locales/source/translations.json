@@ -5,14 +5,14 @@
     "activity": "Activity",
     "apparentFishing": "Apparent Fishing Effort",
     "context_area_plural": "Context areas",
-    "copiedToClipboard": "The link to share this view has been copied to your clipboard",
+    "copiedToClipboard": "The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.",
     "environment": "Environment",
     "hour": "Hour",
-    "hour_plural": "Hours",
+    "hour_plural": "hours",
     "loggedAs": "Logged as",
     "login": "Log in",
-    "logout": "Log Out",
-    "more": "More",
+    "logout": "Log out",
+    "more": "more",
     "seeDefault": "See default view",
     "share": "Click to share the current view",
     "vessel_plural": "Vessels",
@@ -34,24 +34,24 @@
   "layer": {
     "add": "Add layer",
     "color_change": "Change color",
-    "filter_close": "Close filters",
-    "filter_open": "Open filters",
-    "flag_state_plural": "Flag States",
+    "filterClose": "Close filters",
+    "filterOpen": "Open filters",
+    "flagState_plural": "Flag States",
     "gearType_plural": "Gear types",
-    "info_close": "Hide info",
-    "info_open": "Info",
+    "infoClose": "Hide info",
+    "infoOpen": "Show info",
     "remove": "Remove layer",
     "seeDescription": "Click to see layer description",
+    "source": "Source",
     "source_plural": "Sources",
-    "toggle_visibility": "Toggle layer visibility",
     "toggleCombinationMode": {
       "combine": "Combine layers",
-      "disabled": "Combine mode is only availabe with two activity layers",
+      "disabled": "Combine mode is only available with two activity layers",
       "split": "Split layers"
     },
-    "vessel_fit_bounds": "Center map on vessel track",
-    "source": "Source",
-    "filter_plural": "Filters"
+    "toggleVisibility": "Toggle layer visibility",
+    "vessel_fit_bounds": "Center view on vessel track",
+    "filterPpen": "Open filters"
   },
   "map": {
     "capture_map": "Capture map",
@@ -62,12 +62,18 @@
     "rulers_remove": "Remove all rulers",
     "search": "Search areas",
     "zoom_in": "Zoom in",
-    "zoom_out": "Zoom out",
-    "screenshot": "Map screenshot"
+    "zoom_out": "Zoom out"
   },
   "search": {
     "close": "Close search",
-    "suggestion": "Did you mean"
+    "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
+    "filterClose": "Close search filters",
+    "filterOpen": "Open search filters",
+    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or IRCS",
+    "notAllowed": "The available datasets don't allow searching vessels",
+    "placeholder": "Type to search vessels",
+    "suggestion": "Did you mean",
+    "vessels": "Search vessels"
   },
   "selects": {
     "placeholder": "Select an option",
@@ -94,15 +100,6 @@
     "loading": "Loading vessel track",
     "mmsi": "MMSI",
     "registeredGearType": "Registered Gear Type",
-    "search": {
-      "close": "Close search",
-      "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar.",
-      "filter_close": "Close search filters",
-      "filter_open": "Open search filters",
-      "no_results": "Can't find the vessel you are looking for? Try using MMSI, IMO or IRCS",
-      "placeholder": "Type to search vessels",
-      "search": "Search vessels"
-    },
     "source": "Source",
     "tracks": "Vessel Tracks",
     "transmission_plural": "Transmissions",

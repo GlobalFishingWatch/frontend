@@ -79,7 +79,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
         <Switch
           active={layerActive}
           onClick={onToggleLayerActive}
-          tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
+          tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
           color={dataview.config?.color}
           className={styles.switch}
@@ -101,8 +101,8 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
               })}
               tooltip={
                 filterOpen
-                  ? t('layer.filter_close', 'Close filters')
-                  : t('layer.filter_open', 'Open filters')
+                  ? t('layer.filterClose', 'Close filters')
+                  : t('layer.filterOpen', 'Open filters')
               }
               tooltipPlacement="top"
             />
@@ -140,7 +140,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
             )}
             {fishingFiltersOptions.length > 0 && (
               <div className={styles.filter}>
-                <label>{t('layer.flag_state_plural', 'Flag States')}</label>
+                <label>{t('layer.flagState_plural', 'Flag States')}</label>
                 <TagList
                   tags={fishingFiltersOptions}
                   color={dataview.config?.color}

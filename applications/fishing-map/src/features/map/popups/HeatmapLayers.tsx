@@ -13,7 +13,7 @@ import { TRACKS_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'
 import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
-// t('common.hour')
+// t('common.hour', 'Hour')
 
 type HeatmapTooltipRowProps = {
   feature: TooltipEventFeature
@@ -84,7 +84,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
             {feature.vesselsInfo.overflow && (
               <div className={styles.vesselsMore}>
                 + {feature.vesselsInfo.numVessels - feature.vesselsInfo.vessels.length}{' '}
-                {t('common.more')}
+                {t('common.more', 'more')}
               </div>
             )}
           </div>
