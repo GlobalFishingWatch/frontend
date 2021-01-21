@@ -4,38 +4,60 @@ import { FISHING_DATASET_TYPE } from 'data/datasets'
 import { UrlDataviewInstance } from 'types'
 import { capitalize } from 'utils/shared'
 
-export const getNotSupportedGearTypesDatasets = (dataview: UrlDataviewInstance) => {
-  const datasetsWithoutGearTypeSupport = dataview?.datasets?.flatMap((dataset) => {
-    const hasGeartype = dataset.schema?.geartype?.enum !== undefined
+type DatasetSchema = 'geartype' | 'fleet'
+
+export const getSupportedSchemaFieldsDatasets = (
+  dataview: UrlDataviewInstance,
+  schema: DatasetSchema
+) => {
+  const datasetsWithSchemaFieldsSupport = dataview?.datasets?.flatMap((dataset) => {
+    const hasSchemaFields = dataset.schema?.[schema]?.enum !== undefined
+    return hasSchemaFields ? dataset : []
+  })
+  return datasetsWithSchemaFieldsSupport
+}
+
+export const getNotSupportedSchemaFieldsDatasets = (
+  dataview: UrlDataviewInstance,
+  schema: DatasetSchema
+) => {
+  const datasetsWithoutSchemaFieldsSupport = dataview?.datasets?.flatMap((dataset) => {
+    const hasSchemaFields = dataset.schema?.[schema]?.enum !== undefined
     const datasetSelected = dataview.config?.datasets.includes(dataset.id)
-    if (!datasetSelected || hasGeartype) {
+    if (!datasetSelected || hasSchemaFields) {
       return []
     }
     return dataset
   })
-  return datasetsWithoutGearTypeSupport
+  return datasetsWithoutSchemaFieldsSupport
 }
 
-export const getCommonGearTypesInDataview = (dataview: UrlDataviewInstance) => {
+export const getCommonSchemaFieldsInDataview = (
+  dataview: UrlDataviewInstance,
+  schema: DatasetSchema
+) => {
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets.includes(dataset.id)
   )
-  const geartypes = activeDatasets?.map((d) => d.schema?.geartype?.enum || [])
-  const commonGeartypes = geartypes
-    ? intersection(...geartypes).map((geartype) => ({
-        id: geartype,
-        label: capitalize(lowerCase(geartype)),
+  const schemaFields = activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
+  const commonSchemaFields = schemaFields
+    ? intersection(...schemaFields).map((field) => ({
+        id: field,
+        label: capitalize(lowerCase(field)),
       }))
     : []
-  return commonGeartypes
+  return commonSchemaFields
 }
 
-export const getGearTypesSelectedInDataview = (dataview: UrlDataviewInstance) => {
-  const gearTypeOptions = getCommonGearTypesInDataview(dataview)
-  const gearTypeSelected = gearTypeOptions?.filter((geartype) =>
-    dataview.config?.filters?.geartype?.includes(geartype.id)
+export const getSchemaFieldsSelectedInDataview = (
+  dataview: UrlDataviewInstance,
+  schema: DatasetSchema
+) => {
+  const options = getCommonSchemaFieldsInDataview(dataview, schema)
+  const optionsSelected = options?.filter((option) =>
+    dataview.config?.filters?.[schema]?.includes(option.id)
   )
-  return gearTypeSelected
+  return optionsSelected
 }
 
 export const getSourcesOptionsInDataview = (
