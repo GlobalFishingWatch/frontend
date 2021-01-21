@@ -4,12 +4,12 @@ import IconButton from '@globalfishingwatch/ui-components/src/icon-button/IconBu
 import styles from './VesselListItem.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
 
-interface LoaderProps {
+interface ListItemProps {
   saved?: boolean
   vessel: any
 }
 
-const VesselListItem: React.FC<LoaderProps> = (props): React.ReactElement => {
+const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   return (
     <div className={styles.vesselItem}>
       {props.saved && (
@@ -46,10 +46,12 @@ const VesselListItem: React.FC<LoaderProps> = (props): React.ReactElement => {
           <label>IMO</label>
           12345
         </div>
-        <div>
-          <label>SAVED ON</label>
-          2020/08/01
-        </div>
+        {props.saved && (
+          <div>
+            <label>SAVED ON</label>
+            2020/08/01
+          </div>
+        )}
       </div>
     </div>
   )

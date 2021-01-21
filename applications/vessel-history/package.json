@@ -13,7 +13,7 @@
     "deploy": "gh-pages -d build"
   },
   "dependencies": {
-    "@globalfishingwatch/api-client": "^1.6.4",
+    "@globalfishingwatch/api-client": "^1.2.4",
     "@globalfishingwatch/api-types": "^2.4.1",
     "@globalfishingwatch/data-transforms": "^1.1.0",
     "@globalfishingwatch/dataviews-client": "^4.0.3",

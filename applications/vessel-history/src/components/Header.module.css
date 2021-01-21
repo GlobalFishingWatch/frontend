@@ -1,0 +1,48 @@
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  margin: 0 auto;
+  max-width: var(--desktop-max-width);
+}
+
+.logoIconContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logoIconText {
+  margin-top: -3px;
+  margin-left: 1rem;
+  color: #163F89;
+  font-weight: 500;
+}
+
+.logoIconContainer::after {
+  content: 'ALPHA';
+  position: absolute;
+  bottom: -1px;
+  right: 0;
+  display: block;
+  font-size: 1.1rem;
+  text-decoration: none;
+  color: var(--primary-text-color);
+}
+
+.actionBtn {
+  border: none;
+  border-radius: .3rem;
+  background-color: var(--primary-text-color);
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: var(--white);
+  font-size: var(--small-font-size);
+  line-height: var(--small-font-size);
+  padding: 1.3rem 3rem;
+  height: 4.2rem;
+  flex-shrink: 0;
+  cursor: pointer;
+}

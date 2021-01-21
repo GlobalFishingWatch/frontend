@@ -12,7 +12,6 @@ import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { AppActions, AppState } from 'types/redux.types'
-//import { AppState, AppActions } from 'types/redux.types'
 //import { vesselInfoThunk } from 'features/vessels/vessels.thunks'
 import { UpdateQueryParamsAction } from './routes.actions'
 import { getLocationType, selectLocationQuery } from './routes.selectors'
@@ -26,28 +25,7 @@ export const PROFILE = 'PROFILE'
 const thunk = async (
   dispatch: Dispatch<AppActions | NavigationAction>,
   getState: StateGetter<AppState>
-) => {
-  const locationType = getLocationType(getState())
-  const logged = false //await checkUserLoggedThunk(dispatch, getState)
-  if (logged) {
-    const query = selectLocationQuery(getState())
-    if (locationType === LOGIN || (query && (query.state || query['access-token']))) {
-      const prevQueryState: any = query && query.state ? parse(window.atob(query.state)) : {}
-      dispatch(
-        redirect({
-          type: HOME,
-          query: { ...prevQueryState, 'access-token': undefined, state: undefined },
-        })
-      )
-    }
-    // TODO:
-    //preFetchThunks.forEach((thunk) => thunk(dispatch, getState))
-  } else {
-    if (locationType !== LOGIN) {
-      dispatch(redirect({ type: LOGIN }))
-    }
-  }
-}
+) => null
 
 const routesMap: RoutesMap = {
   [HOME]: {
@@ -59,7 +37,7 @@ const routesMap: RoutesMap = {
     thunk,
   },
   [PROFILE]: {
-    path: '/profile',
+    path: '/profile/:vesselID',
     thunk,
   },
   [NOT_FOUND]: {

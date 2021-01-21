@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import geobuf from 'geobuf'
 import Pbf from 'pbf'
 import GFWAPI from '@globalfishingwatch/api-client'
-import Map from '@globalfishingwatch/map-components/components/map'
+import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
 import styles from './Map.module.css'
 
 function fetchTrack(vesselId) {
@@ -40,7 +40,7 @@ function MapWrapper({ vesselID, setLastPosition }) {
 
   return (
     <div className={styles.Map}>
-      <Map tracks={tracks} onAttributionsChange={onAttributionsChange} />
+      <InteractiveMap tracks={tracks} onAttributionsChange={onAttributionsChange} />
       <div className={styles.attributions}>
         {attributionsVisible === true && (
           <span
