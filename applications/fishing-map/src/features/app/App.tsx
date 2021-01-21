@@ -57,7 +57,7 @@ function App(): React.ReactElement {
     if (userLogged) {
       if (
         (locationType === HOME && workspaceStatus !== AsyncReducerStatus.Finished) ||
-        (locationType !== WORKSPACE && currentWorkspaceId !== workspaceId)
+        (locationType === WORKSPACE && currentWorkspaceId !== workspaceId)
       ) {
         dispatch(fetchWorkspaceThunk(workspaceId as string))
       }
