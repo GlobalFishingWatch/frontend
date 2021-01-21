@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.12.0
+
+### Minor Changes
+
+- af016529: support disabled multiselect component
+
 ## 2.11.5
 
 ### Patch Changes
