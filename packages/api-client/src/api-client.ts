@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver'
-import { UserData, ResourceResponseType } from '@globalfishingwatch/api-types'
+import { UserData, ResourceResponseType, ResourceRequestType } from '@globalfishingwatch/api-types'
 import { isUrlAbsolute } from './utils/url'
 
 const API_GATEWAY =
@@ -34,6 +34,7 @@ interface LoginParams {
 export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   responseType?: ResourceResponseType
+  requestType?: ResourceRequestType
   dataset?: boolean
   body?: T
   local?: boolean
@@ -226,6 +227,7 @@ export class GFWAPI {
           body = null,
           headers = {},
           responseType = 'json',
+          requestType = 'json',
           signal,
           dataset = this.dataset,
           local = false,
@@ -239,10 +241,10 @@ export class GFWAPI {
         const data = await fetch(fetchUrl, {
           method,
           signal,
-          ...(body && { body: JSON.stringify(body) }),
+          ...(requestType === 'json' ? body && { body: JSON.stringify(body) } : body && { body }),
           headers: {
             ...headers,
-            ...(responseType === 'json' && { 'Content-Type': 'application/json' }),
+            ...(requestType === 'json' && { 'Content-Type': 'application/json' }),
             ...(local && {
               'x-gateway-url': API_GATEWAY,
               user: JSON.stringify({
