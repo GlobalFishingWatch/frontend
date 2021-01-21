@@ -23,6 +23,7 @@
     "fishing": "Pêche"
   },
   "errors": {
+    "notSupportedBy": "Not supported by {{list}}",
     "pageNotFound": "Page not found",
     "privateView": "This is a private view",
     "requestAccess": "Request access",
@@ -36,6 +37,7 @@
     "filter_close": "Fermer les filtres",
     "filter_open": "Montrer les filtres",
     "flag_state_plural": "États du Pavillon",
+    "gearType_plural": "Gear types",
     "info_close": "Masquer les infos",
     "info_open": "Infos",
     "remove": "Supprimer le calque",
