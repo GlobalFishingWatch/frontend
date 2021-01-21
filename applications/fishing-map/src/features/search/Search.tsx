@@ -10,10 +10,7 @@ import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import {
-  selectVesselsDatasets,
-  selectWorkspaceStatus,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
@@ -38,7 +35,7 @@ import SearchPlaceholder, {
   SearchNoResultsState,
   SearchEmptyState,
 } from './SearchPlaceholders'
-import { isSearchAllowed } from './search.selectors'
+import { isSearchAllowed, selectAllowedVesselsDatasets } from './search.selectors'
 
 function Search() {
   const { t } = useTranslation()
@@ -50,7 +47,7 @@ function Search() {
   const { searchPagination, searchSuggestion } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 400, { leading: true })
   const { dispatchQueryParams } = useLocationConnect()
-  const searchDatasets = useSelector(selectVesselsDatasets)
+  const searchDatasets = useSelector(selectAllowedVesselsDatasets)
   const searchAllowed = useSelector(isSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)

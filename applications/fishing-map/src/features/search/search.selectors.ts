@@ -6,9 +6,9 @@ import { selectVesselsDatasets } from 'features/workspace/workspace.selectors'
 export const selectAllowedVesselsDatasets = createSelector(
   [selectVesselsDatasets, selectUserData],
   (datasets, userData) => {
-    if (!userData || true) return
+    if (!userData || !datasets?.length) return
     const datasetsWithPermissions = datasets.filter((dataset) => {
-      const permission = { type: 'dataset', value: dataset.id, action: 'read' }
+      const permission = { type: 'dataset', value: dataset.id, action: 'search' }
       return checkExistPermissionInList(userData?.permissions, permission)
     })
     return datasetsWithPermissions

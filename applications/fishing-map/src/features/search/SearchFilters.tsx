@@ -8,9 +8,9 @@ import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { selectVesselsDatasets } from 'features/workspace/workspace.selectors'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchFilters.module.css'
+import { selectAllowedVesselsDatasets } from './search.selectors'
 
 type SearchFiltersProps = {
   className?: string
@@ -21,7 +21,7 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
   const { searchFilters, setSearchFiltersOpen, setSearchFilters } = useSearchFiltersConnect()
   const { flags, sources, firstTransmissionDate = '', lastTransmissionDate = '' } = searchFilters
   const flagOptions = useMemo(getFlags, [])
-  const searchDatasets = useSelector(selectVesselsDatasets)
+  const searchDatasets = useSelector(selectAllowedVesselsDatasets)
   const sourceOptions = useMemo(
     () => searchDatasets?.map(({ id, name }) => ({ id, label: name })),
     [searchDatasets]
