@@ -1,19 +1,19 @@
 {
   "common": {
-    "active_after": "Active after",
-    "active_before": "Active Before",
+    "active_after": "Activo después de",
+    "active_before": "Activo antes",
     "activity": "Actividad",
     "apparentFishing": "Esfuerzo de pesca aparente",
     "context_area_plural": "Areas de contexto",
-    "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles",
-    "environment": "Environment",
+    "copiedToClipboard": "The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.",
+    "environment": "Entorno",
     "hour": "Hora",
-    "hour_plural": "Horas",
-    "loggedAs": "Logged as",
+    "hour_plural": "hours",
+    "loggedAs": "Registrado como",
     "login": "Iniciar sesión",
-    "logout": "Cerrar Sessión",
-    "more": "Más",
-    "seeDefault": "See default view",
+    "logout": "Log out",
+    "more": "more",
+    "seeDefault": "Ver vista por defecto",
     "share": "Haz click para compartir tu vista actual",
     "vessel_plural": "Embarcaciones",
     "open_menu": "Abrir menú",
@@ -23,33 +23,35 @@
     "fishing": "Pesca"
   },
   "errors": {
-    "pageNotFound": "Page not found",
-    "privateView": "This is a private view",
-    "requestAccess": "Request access",
-    "switchAccount": "Switch account",
+    "notSupportedBy": "No soportado por {{list}}",
+    "pageNotFound": "Página no encontrada",
+    "privateView": "Esta es una vista privada",
+    "requestAccess": "Solicitar acceso",
+    "switchAccount": "Cambiar cuenta",
     "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo",
-    "workspaceNotFound": "The view you request was not found"
+    "workspaceNotFound": "La vista que solicitó no se encontró"
   },
   "layer": {
     "add": "Añadir capa",
     "color_change": "Cambia el color",
-    "filter_close": "Cierra los filtros",
-    "filter_open": "Abre los filtros",
-    "flag_state_plural": "Estados de bandera",
-    "info_close": "Oculta la información",
-    "info_open": "Muestra la información",
+    "filterClose": "Close filters",
+    "filterOpen": "Open filters",
+    "flagState_plural": "Flag States",
+    "gearType_plural": "Tipos de equipo",
+    "infoClose": "Hide info",
+    "infoOpen": "Show info",
     "remove": "Borra la capa",
-    "seeDescription": "Click to see layer description",
-    "source_plural": "Fuentes",
-    "toggle_visibility": "Cambia la visibilidad de la capa",
-    "toggleCombinationMode": {
-      "combine": "Combine layers",
-      "disabled": "Combine mode is only availabe with two activity layers",
-      "split": "Split layers"
-    },
-    "vessel_fit_bounds": "Centrar mapa en el track del buque",
+    "seeDescription": "Haga clic para ver la descripción de la capa",
     "source": "Fuente",
-    "filter_plural": "Filtros"
+    "source_plural": "Fuentes",
+    "toggleCombinationMode": {
+      "combine": "Combinar capas",
+      "disabled": "Combine mode is only available with two activity layers",
+      "split": "Dividir capas"
+    },
+    "toggleVisibility": "Toggle layer visibility",
+    "vessel_fit_bounds": "Center view on vessel track",
+    "filterPpen": "Open filters"
   },
   "map": {
     "capture_map": "Captura el mapa",
@@ -58,27 +60,33 @@
     "loading": "Cargando el mapa",
     "rulers_add": "Añade reglas",
     "rulers_remove": "Borra todas las reglas",
-    "search": "Search areas",
+    "search": "Buscar áreas",
     "zoom_in": "Acercar",
-    "zoom_out": "Alejar",
-    "screenshot": "Captura del mapa"
+    "zoom_out": "Alejar"
   },
   "search": {
-    "close": "Close search",
-    "suggestion": "Did you mean"
+    "close": "Cierra la busqueda",
+    "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
+    "filterClose": "Close search filters",
+    "filterOpen": "Open search filters",
+    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or IRCS",
+    "notAllowed": "The available datasets don't allow searching vessels",
+    "placeholder": "Type to search vessels",
+    "suggestion": "Quiso decir",
+    "vessels": "Search vessels"
   },
   "selects": {
-    "placeholder": "Select an option",
-    "selected": "selected"
+    "placeholder": "Seleccione una opción",
+    "selected": "seleccionado"
   },
   "timebar": {
-    "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
+    "fishingEffortDisabled": "Seleccione al menos una capa aparente de esfuerzo de pesca",
     "graph": "Graph",
     "settings_close": "Cerrar opciones del timebar",
     "settings_open": "Abrir opciones del timebar",
-    "showFishingEffort": "Show fishing hours graph",
-    "showTracks": "Show tracks graph",
-    "tracksDisabled": "Select at least one vessel"
+    "showFishingEffort": "Mostrar gráfico de horas de pesca",
+    "showTracks": "Mostrar gráfico de pistas",
+    "tracksDisabled": "Seleccione al menos un buque"
   },
   "vessel": {
     "callsign": "Callsing",
@@ -88,19 +96,10 @@
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Fecha última transmisión",
-    "lengthRange": "Length range",
+    "lengthRange": "Rango de longitud",
     "loading": "Cargando track de buque",
     "mmsi": "MMSI",
-    "registeredGearType": "Registered Gear Type",
-    "search": {
-      "close": "Cierra la busqueda",
-      "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar.",
-      "filter_close": "Close search filters",
-      "filter_open": "Open search filters",
-      "no_results": "Can't find the vessel you are looking for? Try using MMSI, IMO or IRCS",
-      "placeholder": "Escribe para buscar $t(common.vessel_plural)",
-      "search": "Busca $t(common.vessel_plural)"
-    },
+    "registeredGearType": "Tipo de equipo registrado",
     "source": "Fuente",
     "tracks": "Tracks de barcos",
     "transmission_plural": "Transmisión",
