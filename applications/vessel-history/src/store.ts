@@ -5,6 +5,7 @@ import {
   combineReducers,
   getDefaultMiddleware,
 } from '@reduxjs/toolkit'
+import vessels from 'features/vessels/vessels.slice'
 import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
 
 const {
@@ -16,6 +17,7 @@ const {
 
 const rootReducer = combineReducers({
   //user: userReducer,
+  vessels,
   location: location,
 })
 

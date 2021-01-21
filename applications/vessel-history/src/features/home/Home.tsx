@@ -37,29 +37,34 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     }
   }
 
-  const fetchData = (query: string) => {
+  const fetchData = async (query: string) => {
     //const { query, resultsOffset, resultsTotal } = this.state
 
     //if (resultsTotal !== 0 && resultsOffset >= resultsTotal) return
     setSearching(true)
-    GFWAPI.fetch(`/vessels?query=${query}&limit=${resultsPerRequest}&offset=${0}`)
+    const newVessels = await GFWAPI.fetch<any>(
+      `/vessels?query=${query}&limit=${resultsPerRequest}&offset=${0}`
+    )
       .then((json: any) => {
         const resultVessels = json.entries
         setSearching(false)
-        /*const totalVessels = resultVessels.concat(this.state.vessels)
-        this.setState((prevState) => ({
-          vessels: totalVessels,
-          tip: json.entries.length > 0 ? `${json.total.value} matching results` : 'No results',
-          resultsTotal: json.total,
-          resultsOffset: (prevState.resultsOffset += json.entries.length),
-        }))*/
+        const totalVessels = resultVessels.concat(vessels)
+        console.log(totalVessels)
+        /*this.setState((prevState) => ({
+        vessels: totalVessels,
+        tip: json.entries.length > 0 ? `${json.total.value} matching results` : 'No results',
+        resultsTotal: json.total,
+        resultsOffset: (prevState.resultsOffset += json.entries.length),
+      }))*/
+        return totalVessels
       })
       .catch((error) => {
         setSearching(false)
         /*this.setState({
-          tip: this.tips.connectionError,
-        })*/
+        tip: this.tips.connectionError,
+      })*/
       })
+    setVessels(newVessels)
   }
 
   return (
@@ -79,6 +84,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             placeholder="Search vessels by name, MMSI, IMO"
             aria-label="Search vessels"
             className={styles.input}
+            onKeyDown={(e) => updateQuery(e)}
             onChange={(e) => updateQuery(e)}
           />
           {!query && (
@@ -94,9 +100,19 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
           <div>
             <h2>OFFLINE ACCESS</h2>
             <div className={styles.offlineVessels}>
-              <VesselListItem vessel={null} />
               <VesselListItem saved={true} vessel={null} />
-              <VesselListItem vessel={null} />
+              <VesselListItem saved={true} vessel={null} />
+              <VesselListItem saved={true} vessel={null} />
+            </div>
+          </div>
+        )}
+        {query && (
+          <div>
+            <h2>VESSELS FOUND</h2>
+            <div className={styles.offlineVessels}>
+              {vessels.map((vessel) => (
+                <VesselListItem vessel={vessel} />
+              ))}
             </div>
           </div>
         )}

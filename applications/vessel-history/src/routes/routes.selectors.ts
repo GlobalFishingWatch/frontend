@@ -21,8 +21,13 @@ export const selectLocationQuery = createSelector([selectLocation], (location) =
 })
 
 export const getLocationType = createSelector([selectLocation], (location) => {
-  console.log(location)
-  return 'HOME' //location.type
+  return location.type
+})
+
+export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)
+
+export const selectVesselId = createSelector([selectLocationPayload], (payload) => {
+  return payload.vesselID
 })
 
 export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
