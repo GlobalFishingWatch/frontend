@@ -22,15 +22,16 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
   const { flags, sources, firstTransmissionDate = '', lastTransmissionDate = '' } = searchFilters
   const flagOptions = useMemo(getFlags, [])
   const searchDatasets = useSelector(selectVesselsDatasets)
-  const sourceOptions = useMemo(() => searchDatasets.map(({ id, name }) => ({ id, label: name })), [
-    searchDatasets,
-  ])
+  const sourceOptions = useMemo(
+    () => searchDatasets?.map(({ id, name }) => ({ id, label: name })),
+    [searchDatasets]
+  )
   const expandedContainerRef = useClickedOutside(() => setSearchFiltersOpen(false))
 
   return (
     <div className={cx(className)} ref={expandedContainerRef}>
       <MultiSelect
-        label={t('layer.flag_state_plural', 'Flag States')}
+        label={t('layer.flagState_plural', 'Flag States')}
         placeholder={getPlaceholderBySelections(flags)}
         options={flagOptions}
         selectedOptions={flags}
@@ -45,22 +46,24 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
           setSearchFilters({ flags: undefined })
         }}
       />
-      <MultiSelect
-        label={t('layer.source_plural', 'Sources')}
-        placeholder={getPlaceholderBySelections(sources)}
-        options={sourceOptions}
-        selectedOptions={sources}
-        className={styles.row}
-        onSelect={(filter) => {
-          setSearchFilters({ sources: [...(sources || []), filter] })
-        }}
-        onRemove={(filter, rest) => {
-          setSearchFilters({ sources: rest })
-        }}
-        onCleanClick={() => {
-          setSearchFilters({ sources: undefined })
-        }}
-      />
+      {sourceOptions && sourceOptions.length > 0 && (
+        <MultiSelect
+          label={t('layer.source_plural', 'Sources')}
+          placeholder={getPlaceholderBySelections(sources)}
+          options={sourceOptions}
+          selectedOptions={sources}
+          className={styles.row}
+          onSelect={(filter) => {
+            setSearchFilters({ sources: [...(sources || []), filter] })
+          }}
+          onRemove={(filter, rest) => {
+            setSearchFilters({ sources: rest })
+          }}
+          onCleanClick={() => {
+            setSearchFilters({ sources: undefined })
+          }}
+        />
+      )}
       <div className={styles.row}>
         <InputDate
           value={firstTransmissionDate}

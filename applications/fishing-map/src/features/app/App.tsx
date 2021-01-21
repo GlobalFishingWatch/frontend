@@ -5,20 +5,24 @@ import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import useDebugMenu from 'features/debug/debug.hooks'
 import { MapboxRefProvider } from 'features/map/map.context'
-import { isWorkspaceLocation } from 'routes/routes.selectors'
+import { isWorkspaceLocation, selectLocationType, selectWorkspaceId } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import Sidebar from 'features/sidebar/Sidebar'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import {
+  selectCurrentWorkspaceId,
+  selectWorkspaceStatus,
+} from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'types'
 import { fetchUserThunk } from 'features/user/user.slice'
-import { selectSidebarOpen } from './app.selectors'
+import { isUserLogged } from 'features/user/user.selectors'
+import { HOME, WORKSPACE } from 'routes/routes'
+import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import styles from './App.module.css'
-
-import '@globalfishingwatch/ui-components/dist/base.css'
+import { selectSidebarOpen } from './app.selectors'
 
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
@@ -36,6 +40,11 @@ function App(): React.ReactElement {
   const sidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
+  const userLogged = useSelector(isUserLogged)
+  const locationType = useSelector(selectLocationType)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const workspaceId = useSelector(selectWorkspaceId)
+  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const narrowSidebar = useSelector(isWorkspaceLocation)
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
@@ -43,6 +52,18 @@ function App(): React.ReactElement {
   useEffect(() => {
     dispatch(fetchUserThunk())
   }, [dispatch])
+
+  useEffect(() => {
+    if (userLogged) {
+      if (
+        (locationType === HOME && workspaceStatus !== AsyncReducerStatus.Finished) ||
+        (locationType !== WORKSPACE && currentWorkspaceId !== workspaceId)
+      ) {
+        dispatch(fetchWorkspaceThunk(workspaceId as string))
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLogged, workspaceId])
 
   const onToggle = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })

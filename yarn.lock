@@ -6107,6 +6107,14 @@ attr-accept@^2.2.1:
   resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-2.2.2.tgz#646613809660110749e92f2c10833b70968d929b"
   integrity sha512-7prDjvt9HmqiZ0cl5CRjtS84sEyhsHP2coDkaZKRKVfCDo9s7iw7ChVmar78Gu9pC4SoR/28wFu/G5JJhTnqEg==
 
+auth-middleware@GlobalFishingWatch/auth-middleware#develop:
+  version "1.0.0"
+  uid "5e8e2fa8bdea22a454f66da259ef6a0cb99a0ab2"
+  resolved "https://codeload.github.com/GlobalFishingWatch/auth-middleware/tar.gz/5e8e2fa8bdea22a454f66da259ef6a0cb99a0ab2"
+  dependencies:
+    request "^2.88.0"
+    request-promise "^4.2.5"
+
 "auth-middleware@git://github.com/GlobalFishingWatch/auth-middleware.git#develop":
   version "1.0.0"
   resolved "git://github.com/GlobalFishingWatch/auth-middleware.git#5e8e2fa8bdea22a454f66da259ef6a0cb99a0ab2"

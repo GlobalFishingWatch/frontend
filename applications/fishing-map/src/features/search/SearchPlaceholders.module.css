@@ -1,6 +1,7 @@
 .emptyState {
   display: flex;
   align-items: center;
+  justify-content: center;
   height: 100%;
   padding: var(--space-M);
   color: var(--color-secondary-blue);
@@ -20,6 +21,14 @@
   margin: 0 auto;
   margin-bottom: var(--space-L);
 }
+
+.noResultsImage {
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
 
 .inlineIcon {
   height: 1em;
