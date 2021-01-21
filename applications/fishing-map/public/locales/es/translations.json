@@ -23,6 +23,7 @@
     "fishing": "Pesca"
   },
   "errors": {
+    "notSupportedBy": "Not supported by {{list}}",
     "pageNotFound": "Page not found",
     "privateView": "This is a private view",
     "requestAccess": "Request access",
@@ -36,6 +37,7 @@
     "filter_close": "Cierra los filtros",
     "filter_open": "Abre los filtros",
     "flag_state_plural": "Estados de bandera",
+    "gearType_plural": "Gear types",
     "info_close": "Oculta la información",
     "info_open": "Muestra la información",
     "remove": "Borra la capa",
