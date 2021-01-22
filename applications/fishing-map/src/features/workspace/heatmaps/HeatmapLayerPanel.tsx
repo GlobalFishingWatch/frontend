@@ -11,7 +11,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariate } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import Filters from './HeatmapFilters'
-import { getGearTypesSelectedInDataview, getSourcesSelectedInDataview } from './heatmaps.utils'
+import { getSchemaFieldsSelectedInDataview, getSourcesSelectedInDataview } from './heatmaps.utils'
 import HeatmapInfoModal from './HeatmapInfoModal'
 
 type LayerPanelProps = {
@@ -26,7 +26,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const sourcesOptions = getSourcesSelectedInDataview(dataview)
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
-  const gearTypesSelected = getGearTypesSelectedInDataview(dataview)
+  const gearTypesSelected = getSchemaFieldsSelectedInDataview(dataview, 'geartype')
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
