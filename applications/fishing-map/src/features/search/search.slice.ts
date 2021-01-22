@@ -54,6 +54,11 @@ export function checkSearchFiltersEnabled(filters: SearchFilter): boolean {
   return Object.values(filters).filter((f) => !!f).length > 0
 }
 
+export function checkAdvanceSearchFiltersEnabled(filters: SearchFilter): boolean {
+  const { sources, ...rest } = filters
+  return Object.values(rest).filter((f) => !!f).length > 0
+}
+
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/fetch',
   async ({ query, filters, datasets, offset }: VesselSearchThunk, { getState, signal }) => {
@@ -61,7 +66,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     const dataset = datasets[0]
     const currentResults = selectSearchResults(state)
     let advancedQuery
-    if (checkSearchFiltersEnabled(filters)) {
+    if (checkAdvanceSearchFiltersEnabled(filters)) {
       const fieldsAllowed = Array.from(
         new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
       )

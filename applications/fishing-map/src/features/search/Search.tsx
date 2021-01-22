@@ -45,7 +45,7 @@ function Search() {
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const { searchFilters, searchFiltersOpen, setSearchFiltersOpen } = useSearchFiltersConnect()
   const { searchPagination, searchSuggestion } = useSearchConnect()
-  const debouncedQuery = useDebounce(searchQuery, 400, { leading: true })
+  const debouncedQuery = useDebounce(searchQuery, 600)
   const { dispatchQueryParams } = useLocationConnect()
   const searchDatasets = useSelector(selectAllowedVesselsDatasets)
   const searchAllowed = useSelector(isSearchAllowed)
