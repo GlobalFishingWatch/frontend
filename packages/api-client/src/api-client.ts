@@ -233,7 +233,7 @@ export class GFWAPI {
           local = false,
         } = options
         if (this.debug) {
-          console.log(`GFWAPI: Fetching url: ${url}`)
+          console.log(`GFWAPI: Fetching URL: ${url}`)
         }
         const fetchUrl = isUrlAbsolute(url)
           ? url
@@ -241,7 +241,7 @@ export class GFWAPI {
         const data = await fetch(fetchUrl, {
           method,
           signal,
-          ...(requestType === 'json' ? body && { body: JSON.stringify(body) } : body && { body }),
+          ...(body && { body: requestType === 'json' ? JSON.stringify(body) : body }),
           headers: {
             ...headers,
             ...(requestType === 'json' && { 'Content-Type': 'application/json' }),
