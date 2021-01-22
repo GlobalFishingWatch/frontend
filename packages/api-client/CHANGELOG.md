@@ -1,5 +1,13 @@
 # @globalfishingwatch/api-client
 
+## 1.6.5
+
+### Patch Changes
+
+- 761a331c: added requestType to the fetch api
+- Updated dependencies [761a331c]
+  - @globalfishingwatch/api-types@2.6.1
+
 ## 1.6.4
 
 ### Patch Changes

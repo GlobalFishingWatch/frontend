@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.6.1
+
+### Patch Changes
+
+- 761a331c: added requestType to the fetch api
+
 ## 2.6.0
 
 ### Minor Changes
