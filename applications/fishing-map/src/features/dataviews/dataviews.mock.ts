@@ -2,30 +2,66 @@ import { Dataview } from '@globalfishingwatch/api-types/dist'
 
 export const dataviews: Dataview[] = [
   // {
-  //   id: 1234,
-  //   name: 'Area geometries for eez',
-  //   description:
-  //     'Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11.',
+  //   id: 92,
+  //   name: 'Apparent fishing effort',
+  //   description: '',
+  //   app: 'fishing-map',
   //   config: {
-  //     type: 'CONTEXT',
+  //     type: 'HEATMAP_ANIMATED',
   //     color: '#00FFBC',
-  //     layers: [
-  //       { id: 'eez-areas', dataset: 'eez-areas' },
-  //       { id: 'eez-boundaries', dataset: 'eez-boundaries' },
-  //     ],
+  //     datasets: ['fishing_v5'],
+  //     colorRamp: 'teal',
   //   },
   //   datasetsConfig: [
   //     {
-  //       params: [],
-  //       query: [{ id: 'properties', value: ['geoname', 'mrgid'] }],
-  //       endpoint: 'user-context-tiles',
-  //       datasetId: 'eez-areas',
+  //       params: [
+  //         {
+  //           id: 'type',
+  //           value: 'heatmap',
+  //         },
+  //       ],
+  //       endpoint: '4wings-tiles',
+  //       datasetId: 'fishing_v5',
   //     },
   //     {
-  //       params: [],
-  //       query: [{ id: 'properties', value: ['line_type'] }],
-  //       endpoint: 'user-context-tiles',
-  //       datasetId: 'eez-boundaries',
+  //       params: [
+  //         {
+  //           id: 'type',
+  //           value: 'heatmap',
+  //         },
+  //       ],
+  //       endpoint: '4wings-tiles',
+  //       datasetId: 'chile-fishing:v20200331',
+  //     },
+  //     {
+  //       params: [
+  //         {
+  //           id: 'type',
+  //           value: 'heatmap',
+  //         },
+  //       ],
+  //       endpoint: '4wings-tiles',
+  //       datasetId: 'indonesia-fishing:v20200320',
+  //     },
+  //     {
+  //       params: [
+  //         {
+  //           id: 'type',
+  //           value: 'heatmap',
+  //         },
+  //       ],
+  //       endpoint: '4wings-tiles',
+  //       datasetId: 'peru-fishing:v20200324',
+  //     },
+  //     {
+  //       params: [
+  //         {
+  //           id: 'type',
+  //           value: 'heatmap',
+  //         },
+  //       ],
+  //       endpoint: '4wings-tiles',
+  //       datasetId: 'panama-fishing:v20200331',
   //     },
   //   ],
   // },

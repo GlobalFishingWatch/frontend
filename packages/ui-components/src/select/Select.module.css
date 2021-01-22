@@ -12,6 +12,16 @@
   color: var(--color-primary-blue);
 }
 
+.labelContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.labelIconWarning {
+  margin: 0 0.9rem;
+}
+
 .placeholderShown {
   color: var(--color-secondary-blue);
 }
@@ -82,6 +92,10 @@
   background-color: var(--color-terthiary-blue);
 }
 
+.notAllowed {
+  cursor: not-allowed;
+}
+
 .disabled {
-  cursor: default;
+  pointer-events: none;
 }

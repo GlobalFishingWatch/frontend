@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.11.1
+
+### Patch Changes
+
+- include generatedAt date.now() value
+
 ## 4.11.0
 
 ### Minor Changes

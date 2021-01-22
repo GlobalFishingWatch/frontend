@@ -75,6 +75,7 @@ class LayerComposer {
       layers.filter((layer) => layer.metadata).map((layer) => [layer.id, layer.metadata])
     )
     const metadata = {
+      generatedAt: Date.now(),
       layers: metadataLayers,
       temporalgrid: layers.find((layer) => layer?.metadata?.temporalgrid)?.metadata,
     }

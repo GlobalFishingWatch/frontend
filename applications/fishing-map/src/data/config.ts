@@ -6,6 +6,7 @@ export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const DEFAULT_VERSION = 'v1'
 export const APP_NAME = 'fishing-map'
+export const PUBLIC_SUFIX = 'public'
 
 // used when no url data and no workspace data
 const end = new Date(2019, 11, 31).toISOString()

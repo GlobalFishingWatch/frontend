@@ -1,5 +1,20 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.17.7
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.11.1
+
+## 0.17.6
+
+### Patch Changes
+
+- fix tabs crash when no activeTab
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.11.4
+
 ## 0.17.5
 
 ### Patch Changes

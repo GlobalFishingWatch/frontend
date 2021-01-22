@@ -5,15 +5,17 @@ import Link from 'redux-first-router-link'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'types'
 import {
   fetchWorkspacesThunk,
   selectWorkspaceListStatus,
 } from 'features/workspaces-list/workspaces-list.slice'
-import { WORKSPACE } from 'routes/routes'
+import { HOME, WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
+import { updateLocation } from 'routes/routes.actions'
 import styles from './User.module.css'
-import { logoutUserThunk, selectUserData } from './user.slice'
+import { fetchUserThunk, GUEST_USER_TYPE, logoutUserThunk, selectUserData } from './user.slice'
 import { isUserLogged, selectUserWorkspaces } from './user.selectors'
 
 function User() {
@@ -26,18 +28,34 @@ function User() {
   const [logoutLoading, setLogoutLoading] = useState(false)
 
   useEffect(() => {
-    if (userLogged) {
+    if (userLogged && userData?.id) {
       dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [dispatch, userData?.id, userLogged])
 
-  const onLogoutClick = useCallback(() => {
+  useEffect(() => {
+    if (userData?.type === GUEST_USER_TYPE) {
+      window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+    }
+  }, [userData?.type])
+
+  const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
-    dispatch(logoutUserThunk())
+    await dispatch(logoutUserThunk())
+    await dispatch(fetchUserThunk({ guest: true }))
+    setLogoutLoading(false)
+    dispatch(updateLocation(HOME, { replaceQuery: true }))
   }, [dispatch])
 
-  if (!userData) return null
+  if (!userLogged || !userData) return null
+
+  if (!userLogged || !userData || userData?.type === GUEST_USER_TYPE) {
+    return (
+      <div className={styles.container}>
+        <Spinner />
+      </div>
+    )
+  }
 
   return (
     <div className={styles.container}>

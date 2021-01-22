@@ -1,7 +1,7 @@
 import { FeatureCollection, LineString, Feature } from 'geojson'
 import { Segment } from '@globalfishingwatch/data-transforms'
 
-export default (segments: Segment[]) => {
+const segmentsToGeojson = (segments: Segment[]) => {
   const geoJSON: FeatureCollection = {
     type: 'FeatureCollection',
     features: [],
@@ -30,3 +30,5 @@ export default (segments: Segment[]) => {
 
   return geoJSON
 }
+
+export default segmentsToGeojson

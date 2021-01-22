@@ -49,12 +49,22 @@ export type RelatedDataset = {
   type: DatasetTypes
 }
 
+export type DatasetSchema = {
+  type: 'number' | 'string'
+  maxLength: number
+  minLength: number
+  enum: string[]
+  minimum: number
+  maximum: number
+}
+
 export interface Dataset {
   id: string
   type: DatasetTypes
   alias: string[] | null
   name: string
   description: string
+  schema?: Record<string, DatasetSchema>
   category?: string
   subcategory?: string
   source?: string
