@@ -37,7 +37,7 @@
     "filterClose": "Fermer les filtres",
     "filterOpen": "Ouvrir les filtres",
     "flagState_plural": "États du Drapeau",
-    "fleet_plural": "Fleets",
+    "fleet_plural": "Flottes",
     "gearType_plural": "Types d'équipement",
     "infoClose": "Masquer les infos",
     "infoOpen": "Afficher les infos",
@@ -76,7 +76,7 @@
     "vessels": "Rechercher des vaisseaux"
   },
   "selects": {
-    "allSelected": "All",
+    "allSelected": "Tous",
     "selected": "slectionns",
     "placeholder": "Sélectionnez une option"
   },
@@ -100,7 +100,7 @@
     "lengthRange": "Plage de longueur",
     "loading": "Chargement de la piste du bateau",
     "mmsi": "MMSI",
-    "origin": "Origin",
+    "origin": "Origine",
     "registeredGearType": "Type d'équipement enregistré",
     "source": "Source",
     "tracks": "Trajectoires de navire",
