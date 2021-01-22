@@ -51,7 +51,6 @@
     },
     "toggleVisibility": "Activer/désactiver la visibilité de la couche",
     "vessel_fit_bounds": "Vue centrée sur la piste du navire",
-    "filterPpen": "Ouvrir les filtres"
   },
   "map": {
     "capture_map": "Enregistrer une image de la carte",

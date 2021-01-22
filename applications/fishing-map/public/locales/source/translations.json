@@ -37,12 +37,12 @@
     "filterClose": "Close filters",
     "filterOpen": "Open filters",
     "flagState_plural": "Flag States",
+    "fleet_plural": "Fleets",
     "gearType_plural": "Gear types",
     "infoClose": "Hide info",
     "infoOpen": "Show info",
     "remove": "Remove layer",
     "seeDescription": "Click to see layer description",
-    "source": "Source",
     "source_plural": "Sources",
     "toggleCombinationMode": {
       "combine": "Combine layers",
@@ -51,7 +51,7 @@
     },
     "toggleVisibility": "Toggle layer visibility",
     "vessel_fit_bounds": "Center view on vessel track",
-    "filterPpen": "Open filters"
+    "source": "Source"
   },
   "map": {
     "capture_map": "Capture map",
@@ -76,8 +76,9 @@
     "vessels": "Search vessels"
   },
   "selects": {
-    "placeholder": "Select an option",
-    "selected": "selected"
+    "allSelected": "All",
+    "selected": "selected",
+    "placeholder": "Select an option"
   },
   "timebar": {
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
@@ -99,6 +100,7 @@
     "lengthRange": "Length range",
     "loading": "Loading vessel track",
     "mmsi": "MMSI",
+    "origin": "Origin",
     "registeredGearType": "Registered Gear Type",
     "source": "Source",
     "tracks": "Vessel Tracks",
