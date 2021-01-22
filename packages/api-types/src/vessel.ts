@@ -8,6 +8,7 @@ export interface Vessel {
   mmsi?: string
   callsign?: string
   fleet?: string
+  origin?: string
 }
 
 export interface VesselSearch extends Vessel {

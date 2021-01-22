@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.6.2
+
+### Patch Changes
+
+- include vessel origin api type
+
 ## 2.6.1
 
 ### Patch Changes
