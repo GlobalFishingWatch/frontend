@@ -17,6 +17,8 @@ export type SearchFilterKey = 'flags' | 'gearType' | 'startDate' | 'endDate'
 export type SearchFilter = {
   flags?: MultiSelectOption<string>[]
   sources?: MultiSelectOption<string>[]
+  fleets?: MultiSelectOption<string>[]
+  origins?: MultiSelectOption<string>[]
   firstTransmissionDate?: string
   lastTransmissionDate?: string
 }
@@ -66,6 +68,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     const dataset = datasets[0]
     const currentResults = selectSearchResults(state)
     let advancedQuery
+
     if (checkAdvanceSearchFiltersEnabled(filters)) {
       const fieldsAllowed = Array.from(
         new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
@@ -102,7 +105,20 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           value: filters.flags,
           field: 'flag',
           operator: 'IN',
-          condition: (value: any) => value !== undefined,
+          transformation: (value: any): string =>
+            `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+        },
+        {
+          value: filters.fleets,
+          field: 'fleet',
+          operator: 'IN',
+          transformation: (value: any): string =>
+            `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+        },
+        {
+          value: filters.origins,
+          field: 'origin',
+          operator: 'IN',
           transformation: (value: any): string =>
             `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
         },
@@ -110,18 +126,16 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           value: filters?.firstTransmissionDate,
           field: 'firstTransmissionDate',
           operator: '>=',
-          condition: (value: any) => value !== undefined,
         },
         {
           value: filters?.lastTransmissionDate,
           field: 'lastTransmissionDate',
           operator: '<=',
-          condition: (value: any) => value !== undefined,
         },
       ]
 
       const queryFilters = queryFiltersFields
-        .filter(({ value, condition }) => (condition ? condition(value) : true))
+        .filter(({ value }) => value !== undefined)
         .map(
           ({ field, operator, transformation, value }) =>
             `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`

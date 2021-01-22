@@ -161,7 +161,7 @@ function Search() {
               className={styles.input}
               placeholder={t('search.placeholder', 'Type to search vessels')}
             />
-            {searchStatus === 'loading' && <Spinner size="small" />}
+            {searchStatus === 'loading' && <Spinner className={styles.textSpinner} size="small" />}
             {searchAllowed && (
               <IconButton
                 icon={searchFiltersOpen ? 'close' : hasSearchFilters ? 'filter-on' : 'filter-off'}
