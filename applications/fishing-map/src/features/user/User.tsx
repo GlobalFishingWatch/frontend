@@ -5,6 +5,7 @@ import Link from 'redux-first-router-link'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'types'
 import {
   fetchWorkspacesThunk,
@@ -14,7 +15,7 @@ import { HOME, WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
 import { updateLocation } from 'routes/routes.actions'
 import styles from './User.module.css'
-import { fetchUserThunk, logoutUserThunk, selectUserData } from './user.slice'
+import { fetchUserThunk, GUEST_USER_TYPE, logoutUserThunk, selectUserData } from './user.slice'
 import { isUserLogged, selectUserWorkspaces } from './user.selectors'
 
 function User() {
@@ -32,6 +33,12 @@ function User() {
     }
   }, [dispatch, userData?.id, userLogged])
 
+  useEffect(() => {
+    if (userData?.type === GUEST_USER_TYPE) {
+      window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+    }
+  }, [userData?.type])
+
   const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
     await dispatch(logoutUserThunk())
@@ -40,7 +47,15 @@ function User() {
     dispatch(updateLocation(HOME, { replaceQuery: true }))
   }, [dispatch])
 
-  if (!userData) return null
+  if (!userLogged || !userData) return null
+
+  if (!userLogged || !userData || userData?.type === GUEST_USER_TYPE) {
+    return (
+      <div className={styles.container}>
+        <Spinner />
+      </div>
+    )
+  }
 
   return (
     <div className={styles.container}>

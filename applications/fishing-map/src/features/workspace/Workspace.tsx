@@ -4,21 +4,21 @@ import { useDispatch, useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import Search from 'features/search/Search'
 import {
   selectWorkspaceStatus,
   selectDataviewsResourceQueries,
-  selectCurrentWorkspaceId,
   selectWorkspaceError,
   isWorkspaceLoading,
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'types'
-import { isGuestUser, isUserLogged } from 'features/user/user.selectors'
-import { selectLocationType, selectWorkspaceId } from 'routes/routes.selectors'
+import { isGuestUser } from 'features/user/user.selectors'
+import { selectWorkspaceId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { logoutUserThunk, selectUserData } from 'features/user/user.slice'
+import { selectSearchQuery } from 'features/app/app.selectors'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
@@ -109,24 +109,9 @@ function WorkspaceError(): React.ReactElement {
 
 function Workspace() {
   const dispatch = useDispatch()
+  const searchQuery = useSelector(selectSearchQuery)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceLoading = useSelector(isWorkspaceLoading)
-  const userLogged = useSelector(isUserLogged)
-  const locationType = useSelector(selectLocationType)
-  const workspaceId = useSelector(selectWorkspaceId)
-  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
-
-  useEffect(() => {
-    if (userLogged) {
-      if (
-        (locationType === HOME && workspaceStatus !== AsyncReducerStatus.Finished) ||
-        (locationType !== HOME && currentWorkspaceId !== workspaceId)
-      ) {
-        dispatch(fetchWorkspaceThunk(workspaceId as string))
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged, workspaceId])
 
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   useEffect(() => {
@@ -147,6 +132,10 @@ function Workspace() {
 
   if (workspaceStatus === AsyncReducerStatus.Error) {
     return <WorkspaceError />
+  }
+
+  if (searchQuery !== undefined) {
+    return <Search />
   }
 
   return (
