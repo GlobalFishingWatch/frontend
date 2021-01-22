@@ -22,6 +22,7 @@ import { updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace } from 'features/app/app.selectors'
 import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 import { AsyncError } from 'utils/async-slice'
+import { selectWorkspaceStatus } from './workspace.selectors'
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
@@ -122,6 +123,13 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     } catch (e) {
       return rejectWithValue({ error: e as AsyncError })
     }
+  },
+  {
+    condition: (workspaceId, { getState }) => {
+      const workspaceStatus = selectWorkspaceStatus(getState() as RootState)
+      // Fetched already in progress, don't need to re-fetch
+      return workspaceStatus !== AsyncReducerStatus.Loading
+    },
   }
 )
 

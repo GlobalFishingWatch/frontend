@@ -9,7 +9,7 @@ import {
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
-  id: `${DEFAULT_WORKSPACE_ID}-${PUBLIC_SUFIX}`,
+  id: DEFAULT_WORKSPACE_ID,
   app: APP_NAME,
   name: 'Default public Fishing Map workspace in production v1',
   description: '',

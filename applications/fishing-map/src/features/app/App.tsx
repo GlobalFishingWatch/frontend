@@ -21,6 +21,7 @@ import { fetchUserThunk } from 'features/user/user.slice'
 import { isUserLogged } from 'features/user/user.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import styles from './App.module.css'
 import { selectSidebarOpen } from './app.selectors'
 
@@ -42,8 +43,7 @@ function App(): React.ReactElement {
   const [menuOpen, setMenuOpen] = useState(false)
   const userLogged = useSelector(isUserLogged)
   const locationType = useSelector(selectLocationType)
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const workspaceId = useSelector(selectWorkspaceId)
+  const urlWorkspaceId = useSelector(selectWorkspaceId)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const narrowSidebar = useSelector(isWorkspaceLocation)
 
@@ -53,17 +53,14 @@ function App(): React.ReactElement {
     dispatch(fetchUserThunk())
   }, [dispatch])
 
+  const homeNeedsFetch = locationType === HOME && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
+  const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
   useEffect(() => {
-    if (userLogged) {
-      if (
-        (locationType === HOME && workspaceStatus !== AsyncReducerStatus.Finished) ||
-        (locationType === WORKSPACE && currentWorkspaceId !== workspaceId)
-      ) {
-        dispatch(fetchWorkspaceThunk(workspaceId as string))
-      }
+    if (userLogged && (homeNeedsFetch || hasWorkspaceIdChanged)) {
+      dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged, workspaceId])
+  }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
 
   const onToggle = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })
