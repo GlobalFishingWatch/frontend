@@ -28,6 +28,7 @@ interface SearchState {
   data: VesselWithDatasets[] | null
   suggestion: string | null
   pagination: {
+    loading: boolean
     total: number
     offset: number
   }
@@ -35,7 +36,7 @@ interface SearchState {
   filters: SearchFilter
 }
 
-const paginationInitialState = { total: 0, offset: 0 }
+const paginationInitialState = { total: 0, offset: 0, loading: false }
 const initialState: SearchState = {
   status: AsyncReducerStatus.Idle,
   pagination: paginationInitialState,
@@ -183,6 +184,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             : vesselsWithDataset,
         suggestion: searchResults.metadata?.suggestion,
         pagination: {
+          loading: false,
           total: searchResults.total.value,
           offset: searchResults.offset + offset,
         },
@@ -213,8 +215,9 @@ const searchSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchVesselSearchThunk.pending, (state) => {
+    builder.addCase(fetchVesselSearchThunk.pending, (state, action) => {
       state.status = AsyncReducerStatus.Loading
+      state.pagination.loading = action.meta.arg.offset > 0
     })
     builder.addCase(fetchVesselSearchThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
@@ -226,7 +229,7 @@ const searchSlice = createSlice({
     })
     builder.addCase(fetchVesselSearchThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
-        state.status = AsyncReducerStatus.Idle
+        state.status = AsyncReducerStatus.Aborted
       } else {
         state.status = AsyncReducerStatus.Error
       }

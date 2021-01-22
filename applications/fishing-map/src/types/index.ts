@@ -51,6 +51,7 @@ export type MapCoordinates = {
 
 export enum AsyncReducerStatus {
   Idle = 'idle',
+  Aborted = 'aborted',
   Loading = 'loading',
   Finished = 'finished',
   Error = 'error',

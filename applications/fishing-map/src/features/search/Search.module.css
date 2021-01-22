@@ -102,6 +102,9 @@
   padding: var(--space-S);
   background-color: var(--color-white);
   box-shadow: var(--box-shadow);
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .suggestion {
