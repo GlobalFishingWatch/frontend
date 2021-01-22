@@ -187,13 +187,15 @@ const searchSlice = createSlice({
     setFilters: (state, action: PayloadAction<SearchFilter>) => {
       state.filters = { ...state.filters, ...action.payload }
     },
+    resetFilters: (state) => {
+      state.filters = initialState.filters
+      state.filtersOpen = initialState.filtersOpen
+    },
     cleanVesselSearchResults: (state) => {
       state.status = initialState.status
       state.suggestion = initialState.suggestion
       state.data = initialState.data
       state.pagination = paginationInitialState
-      state.filtersOpen = initialState.filtersOpen
-      state.filters = initialState.filters
     },
   },
   extraReducers: (builder) => {
@@ -218,7 +220,12 @@ const searchSlice = createSlice({
   },
 })
 
-export const { setFiltersOpen, setFilters, cleanVesselSearchResults } = searchSlice.actions
+export const {
+  setFiltersOpen,
+  setFilters,
+  resetFilters,
+  cleanVesselSearchResults,
+} = searchSlice.actions
 
 export const selectSearchResults = (state: RootState) => state.search.data
 export const selectSearchStatus = (state: RootState) => state.search.status

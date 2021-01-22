@@ -26,6 +26,7 @@ import {
   VesselWithDatasets,
   RESULTS_PER_PAGE,
   checkSearchFiltersEnabled,
+  resetFilters,
 } from './search.slice'
 import styles from './Search.module.css'
 import SearchFilters from './SearchFilters'
@@ -108,6 +109,7 @@ function Search() {
 
   const onCloseClick = () => {
     batch(() => {
+      dispatch(resetFilters())
       dispatch(cleanVesselSearchResults())
       dispatch(resetWorkspaceSearchQuery())
       dispatchQueryParams({ query: undefined })
