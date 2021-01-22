@@ -40,15 +40,15 @@
     "description": "Los High Seas son cualquier área del océano más allá de las Zonas Económicas Exclusivas (EEZ). Estos bolsillos pueden ser difíciles de distinguir de las múltiples jurisdicciones de la ZEE que los rodean, por lo que tenemos una capa que los resalta."
   },
   "dgg_salinity_caribe": {
-    "name": "Salinity",
+    "name": "Salinidad",
     "description": "Salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones."
   },
   "dgg_water_temperature_caribe": {
-    "name": "Sea surface temperature",
+    "name": "Temperatura de la superficie del mar",
     "description": "La temperatura de la superficie marina de interpolación óptima de 1/4° NOAA (o OISST diario) es un análisis construido combinando observaciones de diferentes plataformas (satélites, buques, boyas y Argo flotan en una red global regular. Un mapa SST espacialmente completo se produce interpolando para llenar lagunas. La metodología incluye el ajuste sesgado de las observaciones satelitales y navales (referenciado a las boyas) para compensar las diferencias de plataforma y sesgo de los sensores."
   },
   "dgg_chlorophyl_caribe": {
-    "name": "Chlorophyll concentration",
+    "name": "Concentración de clorofilo",
     "description": "La clorofila-a es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas."
   }
 }
