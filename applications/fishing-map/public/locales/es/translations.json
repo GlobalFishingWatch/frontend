@@ -37,7 +37,7 @@
     "filterClose": "Cerrar filtros",
     "filterOpen": "Abrir filtros",
     "flagState_plural": "Estados de bandera",
-    "fleet_plural": "Fleets",
+    "fleet_plural": "Flotas",
     "gearType_plural": "Tipos de equipo",
     "infoClose": "Ocultar info",
     "infoOpen": "Mostrar info",
@@ -76,7 +76,7 @@
     "vessels": "Buscar buques"
   },
   "selects": {
-    "allSelected": "All",
+    "allSelected": "Todos",
     "selected": "seleccionado",
     "placeholder": "Seleccione una opción"
   },
@@ -100,7 +100,7 @@
     "lengthRange": "Rango de longitud",
     "loading": "Cargando track de buque",
     "mmsi": "MMSI",
-    "origin": "Origin",
+    "origin": "Origen",
     "registeredGearType": "Tipo de equipo registrado",
     "source": "Fuente",
     "tracks": "Tracks de barcos",
