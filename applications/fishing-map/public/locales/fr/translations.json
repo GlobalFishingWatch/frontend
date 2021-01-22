@@ -37,12 +37,12 @@
     "filterClose": "Fermer les filtres",
     "filterOpen": "Ouvrir les filtres",
     "flagState_plural": "États du Drapeau",
+    "fleet_plural": "Flottes",
     "gearType_plural": "Types d'équipement",
     "infoClose": "Masquer les infos",
     "infoOpen": "Afficher les infos",
     "remove": "Supprimer le calque",
     "seeDescription": "Cliquez pour voir la description de la couche",
-    "source": "Source",
     "source_plural": "Sources",
     "toggleCombinationMode": {
       "combine": "Combiner les couches",
@@ -51,6 +51,7 @@
     },
     "toggleVisibility": "Activer/désactiver la visibilité de la couche",
     "vessel_fit_bounds": "Vue centrée sur la piste du navire",
+    "source": "Source"
   },
   "map": {
     "capture_map": "Enregistrer une image de la carte",
@@ -75,8 +76,9 @@
     "vessels": "Rechercher des vaisseaux"
   },
   "selects": {
-    "placeholder": "Sélectionnez une option",
-    "selected": "slectionns"
+    "allSelected": "Tous",
+    "selected": "slectionns",
+    "placeholder": "Sélectionnez une option"
   },
   "timebar": {
     "fishingEffortDisabled": "Sélectionnez au moins une couche apparente d'effort de pêche",
@@ -98,6 +100,7 @@
     "lengthRange": "Plage de longueur",
     "loading": "Chargement de la piste du bateau",
     "mmsi": "MMSI",
+    "origin": "Origine",
     "registeredGearType": "Type d'équipement enregistré",
     "source": "Source",
     "tracks": "Trajectoires de navire",
