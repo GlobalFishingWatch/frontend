@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.12.1
+
+### Patch Changes
+
+- 88482842: Include ids in ui-buttons
+
 ## 2.12.0
 
 ### Minor Changes
