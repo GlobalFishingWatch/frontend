@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.17.8
+
+### Patch Changes
+
+- 88482842: Include ids in ui-buttons
+- Updated dependencies [88482842]
+  - @globalfishingwatch/ui-components@2.12.1
+
 ## 0.17.7
 
 ### Patch Changes
