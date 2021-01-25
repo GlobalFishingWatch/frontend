@@ -1,14 +1,24 @@
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { MiniGlobe, IconButton, Tooltip } from '@globalfishingwatch/ui-components/dist'
+import {
+  MiniGlobe,
+  IconButton,
+  Tooltip,
+  Modal,
+  Spinner,
+  Button,
+} from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import Rulers from 'features/map/controls/Rulers'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
+import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
+import setInlineStyles, { setPrintStyles } from 'utils/dom'
+import { isPrintSupported } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
 
@@ -20,8 +30,24 @@ const MapControls = ({
   onMouseEnter: () => void
 }): React.ReactElement => {
   const { t } = useTranslation()
+  const [modalOpen, setModalOpen] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const domElement = useRef<HTMLElement>()
+  const {
+    loading,
+    downloadImage,
+    previewImage,
+    previewImageLoading,
+    generatePreviewImage,
+  } = useDownloadDomElementAsImage(domElement.current, false)
+
+  useEffect(() => {
+    if (!domElement.current) {
+      domElement.current = document.getElementById('root') as HTMLElement
+    }
+  }, [])
+
   const { viewport, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
   const { bounds } = useMapBounds()
@@ -33,6 +59,30 @@ const MapControls = ({
   const onZoomOutClick = useCallback(() => {
     setMapCoordinates({ latitude, longitude, zoom: Math.max(1, zoom - 1) })
   }, [latitude, longitude, setMapCoordinates, zoom])
+
+  const onScreenshotClick = useCallback(() => {
+    if (domElement.current) {
+      setInlineStyles(domElement.current)
+      setPrintStyles(true)
+      generatePreviewImage()
+      setModalOpen(true)
+    }
+  }, [generatePreviewImage])
+
+  const handleModalClose = useCallback(() => {
+    setPrintStyles(false)
+    setModalOpen(false)
+  }, [])
+
+  const onPDFDownloadClick = useCallback(() => {
+    handleModalClose()
+    setTimeout(window.print, 200)
+  }, [handleModalClose])
+
+  const onImageDownloadClick = useCallback(async () => {
+    await downloadImage()
+    handleModalClose()
+  }, [downloadImage, handleModalClose])
 
   const basemapDataviewInstance = resolvedDataviewInstances?.find(
     (d) => d.config?.type === Generators.Type.Basemap
@@ -79,11 +129,14 @@ const MapControls = ({
             <IconButton
               icon="camera"
               type="map-tool"
-              disabled={loading}
+              loading={loading}
+              disabled={mapLoading || loading}
               tooltip={
-                loading ? t('map.loading', 'Map loading') : t('map.capture_map', 'Capture map')
+                mapLoading || loading
+                  ? t('map.captureMapLoading', 'Please wait until map loads')
+                  : t('map.captureMap', 'Capture map')
               }
-              onClick={window.print}
+              onClick={onScreenshotClick}
             />
             <Tooltip
               content={
@@ -107,6 +160,39 @@ const MapControls = ({
           </Fragment>
         )}
       </div>
+      <Modal
+        title="Screenshot preview"
+        isOpen={modalOpen}
+        onClose={handleModalClose}
+        contentClassName={styles.previewContainer}
+      >
+        <div className={styles.previewPlaceholder}>
+          {previewImageLoading ? (
+            <Spinner />
+          ) : (
+            <img className={styles.previewImage} src={previewImage} alt="screenshot preview" />
+          )}
+        </div>
+        <div className={styles.previewFooter}>
+          <Button id="dismiss-preview-download" onClick={handleModalClose} type="secondary">
+            Dismiss
+          </Button>
+          <div>
+            {isPrintSupported && (
+              <Button
+                id="pdf-preview-download"
+                onClick={onPDFDownloadClick}
+                className={styles.printBtn}
+              >
+                Print PDF
+              </Button>
+            )}
+            <Button id="image-preview-download" loading={loading} onClick={onImageDownloadClick}>
+              Download image
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }

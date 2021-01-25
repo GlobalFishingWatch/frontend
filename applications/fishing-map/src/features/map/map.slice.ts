@@ -22,7 +22,6 @@ import { selectTimeRange } from 'features/app/app.selectors'
 export const MAX_TOOLTIP_VESSELS = 5
 
 type MapState = {
-  screenshotMode: boolean
   clicked: InteractionEvent | null
   hovered: InteractionEvent | null
   status: AsyncReducerStatus
@@ -30,7 +29,6 @@ type MapState = {
 }
 
 const initialState: MapState = {
-  screenshotMode: false,
   clicked: null,
   hovered: null,
   status: AsyncReducerStatus.Idle,

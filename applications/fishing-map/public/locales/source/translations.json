@@ -54,7 +54,8 @@
     "source": "Source"
   },
   "map": {
-    "capture_map": "Capture map",
+    "captureMap": "Capture map",
+    "captureMapLoading": "Please wait until map loads",
     "change_basemap_default": "Switch to default basemap",
     "change_basemap_satellite": "Switch to satellite basemap",
     "loading": "Map loading",
