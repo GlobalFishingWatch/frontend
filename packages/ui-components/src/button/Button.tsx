@@ -9,6 +9,7 @@ export type ButtonType = 'default' | 'secondary'
 export type ButtonSize = 'default' | 'small'
 
 interface ButtonProps {
+  id?: string
   type?: ButtonType
   size?: ButtonSize
   disabled?: boolean
@@ -23,6 +24,7 @@ interface ButtonProps {
 
 function Button(props: ButtonProps) {
   const {
+    id,
     type = 'default',
     size = 'default',
     disabled = false,
@@ -42,6 +44,7 @@ function Button(props: ButtonProps) {
         </a>
       ) : (
         <button
+          id={id}
           className={cx(styles.button, styles[type], styles[size], className)}
           onClick={(e) => !loading && onClick && onClick(e)}
           disabled={disabled}
