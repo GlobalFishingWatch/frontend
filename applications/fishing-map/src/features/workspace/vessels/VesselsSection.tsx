@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -17,7 +18,7 @@ function VesselsSection(): React.ReactElement {
     dispatchQueryParams({ query: '' })
   }, [dispatchQueryParams])
   return (
-    <div className={styles.container}>
+    <div className={cx(styles.container, { 'print-hidden': !dataviews?.length })}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.vessel_plural', 'Vessels')}</h2>
         <IconButton
