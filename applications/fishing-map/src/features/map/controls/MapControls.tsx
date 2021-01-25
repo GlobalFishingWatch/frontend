@@ -133,7 +133,7 @@ const MapControls = ({
               disabled={mapLoading || loading}
               tooltip={
                 mapLoading || loading
-                  ? t('map.captureMapLoading', 'Please wait until map loads')
+                  ? t('map.mapLoadingWait', 'Please wait until map loads')
                   : t('map.captureMap', 'Capture map')
               }
               onClick={onScreenshotClick}
