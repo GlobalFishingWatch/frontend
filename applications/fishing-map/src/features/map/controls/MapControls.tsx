@@ -12,7 +12,13 @@ import { isWorkspaceLocation } from 'routes/routes.selectors'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
 
-const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactElement => {
+const MapControls = ({
+  mapLoading = false,
+  onMouseEnter,
+}: {
+  mapLoading?: boolean
+  onMouseEnter: () => void
+}): React.ReactElement => {
   const { t } = useTranslation()
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -45,7 +51,7 @@ const MapControls = ({ loading = false }: { loading?: boolean }): React.ReactEle
   }
   const extendedControls = useSelector(isWorkspaceLocation)
   return (
-    <div className={styles.mapControls}>
+    <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
       <MiniGlobe
         className={styles.miniglobe}
         size={60}
