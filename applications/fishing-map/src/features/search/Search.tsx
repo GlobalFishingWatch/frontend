@@ -27,6 +27,7 @@ import {
   RESULTS_PER_PAGE,
   checkSearchFiltersEnabled,
   resetFilters,
+  setSuggestionClicked,
 } from './search.slice'
 import styles from './Search.module.css'
 import SearchFilters from './SearchFilters'
@@ -45,7 +46,7 @@ function Search() {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const { searchFilters, searchFiltersOpen, setSearchFiltersOpen } = useSearchFiltersConnect()
-  const { searchPagination, searchSuggestion } = useSearchConnect()
+  const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 600)
   const { dispatchQueryParams } = useLocationConnect()
   const searchDatasets = useSelector(selectAllowedVesselsDatasets)
@@ -95,6 +96,9 @@ function Search() {
   const [ref] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
   useEffect(() => {
+    if (searchSuggestionClicked) {
+      dispatch(setSuggestionClicked(false))
+    }
     if (debouncedQuery === '') {
       batch(() => {
         dispatch(cleanVesselSearchResults())
@@ -118,6 +122,7 @@ function Search() {
 
   const onSuggestionClick = () => {
     if (searchSuggestion) {
+      dispatch(setSuggestionClicked(true))
       setSearchQuery(searchSuggestion)
     }
   }
@@ -194,12 +199,12 @@ function Search() {
               />
             )}
           </div>
+          <SearchFilters className={cx(styles.expandedContainer)} />
           {searchStatus === AsyncReducerStatus.Loading &&
           searchPagination.loading === false ? null : searchAllowed ? (
             <Fragment>
-              <SearchFilters className={cx(styles.expandedContainer)} />
               <ul {...getMenuProps()} className={styles.searchResults}>
-                {searchSuggestion && searchSuggestion !== searchQuery && (
+                {searchSuggestion && searchSuggestion !== searchQuery && !searchSuggestionClicked && (
                   <li className={cx(styles.searchSuggestion)}>
                     {t('search.suggestion', 'Did you mean')}{' '}
                     <button onClick={onSuggestionClick} className={styles.suggestion}>

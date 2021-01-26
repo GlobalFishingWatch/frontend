@@ -27,6 +27,7 @@ interface SearchState {
   status: AsyncReducerStatus
   data: VesselWithDatasets[] | null
   suggestion: string | null
+  suggestionClicked: boolean
   pagination: {
     loading: boolean
     total: number
@@ -42,6 +43,7 @@ const initialState: SearchState = {
   pagination: paginationInitialState,
   data: null,
   suggestion: null,
+  suggestionClicked: false,
   filtersOpen: false,
   filters: {},
 }
@@ -197,19 +199,23 @@ const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    setFiltersOpen: (state, action: PayloadAction<boolean>) => {
-      state.filtersOpen = action.payload
-    },
     setFilters: (state, action: PayloadAction<SearchFilter>) => {
       state.filters = { ...state.filters, ...action.payload }
+    },
+    setFiltersOpen: (state, action: PayloadAction<boolean>) => {
+      state.filtersOpen = action.payload
     },
     resetFilters: (state) => {
       state.filters = initialState.filters
       state.filtersOpen = initialState.filtersOpen
     },
+    setSuggestionClicked: (state, action: PayloadAction<boolean>) => {
+      state.suggestionClicked = action.payload
+    },
     cleanVesselSearchResults: (state) => {
       state.status = initialState.status
       state.suggestion = initialState.suggestion
+      state.suggestionClicked = false
       state.data = initialState.data
       state.pagination = paginationInitialState
     },
@@ -238,9 +244,10 @@ const searchSlice = createSlice({
 })
 
 export const {
-  setFiltersOpen,
   setFilters,
+  setFiltersOpen,
   resetFilters,
+  setSuggestionClicked,
   cleanVesselSearchResults,
 } = searchSlice.actions
 
@@ -249,6 +256,7 @@ export const selectSearchStatus = (state: RootState) => state.search.status
 export const selectSearchFiltersOpen = (state: RootState) => state.search.filtersOpen
 export const selectSearchFilters = (state: RootState) => state.search.filters
 export const selectSearchSuggestion = (state: RootState) => state.search.suggestion
+export const selectSearchSuggestionClicked = (state: RootState) => state.search.suggestionClicked
 export const selectSearchPagination = (state: RootState) => state.search.pagination
 
 export default searchSlice.reducer
