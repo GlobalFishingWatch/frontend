@@ -96,6 +96,7 @@ const TimebarWrapper = () => {
       })
     // console.log('querySourceFeatures', performance.now() - n)
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     n = performance.now()
     let valuesByFrame: any[] = new Array(numChunkFrames).fill(null)
     valuesByFrame = valuesByFrame.map(() => new Array(numSublayers).fill(0))

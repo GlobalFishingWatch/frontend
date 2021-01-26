@@ -25,7 +25,8 @@ export const aggregateCell = (
   frame: number,
   delta: number,
   quantizeOffset: number,
-  numSublayers: number
+  numSublayers: number,
+  debug = false
 ) => {
   const { values, minCellOffset, maxCellOffset } = getCellValues(rawValues)
 
@@ -55,6 +56,12 @@ export const aggregateCell = (
     }
   }
   const realValues = getRealValues(aggregatedValues)
-
+  if (debug) {
+    console.log(rawValues, frame, delta, quantizeOffset, numSublayers)
+    console.log(values, minCellOffset, maxCellOffset)
+    console.log(startOffset, endOffset, cellStartOffset, cellEndOffset, startAt, endAt)
+    console.log(realValues)
+    debugger
+  }
   return realValues
 }

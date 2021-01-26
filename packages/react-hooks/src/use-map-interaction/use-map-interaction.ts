@@ -9,7 +9,8 @@ type FeatureStateSource = { source: string; sourceLayer: string; state: FeatureS
 
 const getExtendedFeatures = (
   features: MapboxGeoJSONFeature[],
-  metadata?: ExtendedStyleMeta
+  metadata?: ExtendedStyleMeta,
+  debug = false
 ): ExtendedFeature[] => {
   const timeChunks = metadata?.temporalgrid?.timeChunks
   const frame = timeChunks?.activeChunkFrame
@@ -43,7 +44,8 @@ const getExtendedFeatures = (
           frame,
           timeChunks.deltaInIntervalUnits,
           activeTimeChunk.quantizeOffset,
-          numSublayers
+          numSublayers,
+          debug
         )
         if (!values || !values.filter((v) => v > 0).length) return []
 
@@ -143,7 +145,12 @@ export const useMapClick = (
         latitude: event.lngLat[1],
       }
       if (event.features?.length) {
-        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
+        console.log(event.features)
+        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
+          event.features,
+          metadata,
+          true
+        )
         if (extendedFeatures.length) {
           interactionEvent.features = extendedFeatures
           updateFeatureState(extendedFeatures, 'click')

@@ -66,7 +66,7 @@ class HeatmapAnimatedGenerator {
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: timeChunks.interval,
         numDatasets: config.sublayers.length.toString(),
-        breaks: JSON.stringify(breaks),
+        breaks: JSON.stringify(breaks.map((sublayerBreaks) => sublayerBreaks.map((b) => b * 100))),
         // TODO only for visible time chunk
         interactive: interactiveSource.toString(),
       }
@@ -77,6 +77,7 @@ class HeatmapAnimatedGenerator {
       const sourceParams = [baseSourceParams]
 
       return sourceParams.map((params: Record<string, string>) => {
+        console.log(params)
         const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)
         const source = {
           id: params.id,
