@@ -32,7 +32,7 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
   return (
     <div className={styles.info}>
       <div className={styles.scale}>
-        {zoom > 3 && <ScaleControl maxWidth={100} unit="nautical" />}
+        {zoom > 2 && <ScaleControl maxWidth={100} unit="nautical" />}
       </div>
       {center && (
         <div className="print-hidden">

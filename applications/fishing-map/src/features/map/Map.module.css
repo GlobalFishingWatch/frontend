@@ -45,10 +45,9 @@
   padding-bottom: var(--space-XS);
   font: var(--font-XS);
   background: none;
-  color: var(--color-white);
-  opacity: 0.4;
+  color: rgba(255,255,255, 0.4);
 }
 
 :global(.mapboxgl-control-container .mapboxgl-ctrl.mapboxgl-ctrl-attrib a) {
-  color: var(--color-white);
+  color: rgba(255,255,255, 0.4);
 }

@@ -153,6 +153,7 @@
   }
   .switch {
     width: 1.4rem !important;
+    transition: none;
   }
   .switch > span {
     display: none !important;
@@ -169,6 +170,7 @@
 
 :global(.printing) .switch {
   width: 1.4rem !important;
+  transition: none;
 }
 
 :global(.printing) .switch > span {
