@@ -8,10 +8,15 @@ import {
 } from '@reduxjs/toolkit'
 import { AsyncReducerStatus } from 'types'
 
+export type AsyncError = {
+  status?: number // HHTP error codes
+  message?: string
+}
+
 export type AsyncReducer<T = any> = {
   ids: (number | string)[]
   entities: Dictionary<T>
-  error: string
+  error: AsyncError
   status: AsyncReducerStatus
   statusId: number | string | null
 }
@@ -19,7 +24,7 @@ export type AsyncReducer<T = any> = {
 export const asyncInitialState: AsyncReducer = {
   status: AsyncReducerStatus.Idle,
   statusId: null,
-  error: '',
+  error: {},
   ids: [],
   entities: {},
 }
@@ -64,9 +69,9 @@ export const createAsyncSlice = <T, U>({
           state.status = AsyncReducerStatus.Finished
           entityAdapter.upsertMany(state, action.payload)
         })
-        builder.addCase(fetchThunk.rejected, (state: any) => {
+        builder.addCase(fetchThunk.rejected, (state: any, action) => {
           state.status = AsyncReducerStatus.Error
-          state.error = 'Error fetching resources'
+          state.error = action.payload
         })
       }
       if (fetchByIdThunk) {
@@ -82,7 +87,7 @@ export const createAsyncSlice = <T, U>({
         builder.addCase(fetchByIdThunk.rejected, (state: any, action) => {
           state.status = AsyncReducerStatus.Error
           state.statusId = null
-          state.error = `Error fetching resource id: ${action.payload}`
+          state.error = action.payload
         })
       }
     },

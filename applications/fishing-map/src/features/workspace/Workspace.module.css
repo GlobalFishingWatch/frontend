@@ -1,9 +1,21 @@
 .placeholder {
-  height: calc(100% - 5.4rem);
-  display: flex;
+  height: calc(100% - 5.2rem);
   flex: 1;
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--space-M);
   text-align: center;
+}
+
+.errorTitle {
+  font: var(--font-L);
+  line-height: 1;
+  margin-bottom: var(--space-S);
+}
+
+.logged {
+  color: var(--color-secondary-blue);
+  margin-top: var(--space-M);
+  margin-bottom: var(--space-S);
 }

@@ -11,7 +11,7 @@ const DATASETS_CACHE = true
 
 export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
-  async (ids: string[], { rejectWithValue }) => {
+  async (ids: string[], { dispatch, rejectWithValue }) => {
     // TODO fetch only not already existing ids
     try {
       const initialDatasets = await GFWAPI.fetch<Dataset[]>(
@@ -33,7 +33,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       }
       return datasets
     } catch (e) {
-      return rejectWithValue(ids.join(','))
+      return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   }
 )
@@ -47,7 +47,7 @@ export const fetchDatasetsByIdThunk = createAsyncThunk(
       )
       return dataset
     } catch (e) {
-      return rejectWithValue(id)
+      return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
     }
   }
 )
@@ -69,5 +69,7 @@ export const { selectAll: selectDatasets, selectById } = entityAdapter.getSelect
 export const selectDatasetById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
 )
+
+export const selectDatasetsStatus = (state: RootState) => state.datasets.status
 
 export default datasetSlice.reducer

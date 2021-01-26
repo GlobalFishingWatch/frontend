@@ -15,13 +15,9 @@ type HeatmapInfoModalProps = {
   dataview: UrlDataviewInstance
 }
 
-function HeatmapInfoModal({
-  isOpen = false,
-  onClose,
-  dataview,
-}: HeatmapInfoModalProps): React.ReactElement {
+function HeatmapInfoModal({ isOpen = false, onClose, dataview }: HeatmapInfoModalProps) {
   const { t } = useTranslation()
-  const tabs = (dataview.datasets || []).flatMap((dataset) => {
+  const tabs = dataview.datasets?.flatMap((dataset) => {
     if (!dataview.config?.datasets?.includes(dataset.id)) {
       return []
     }
@@ -38,8 +34,12 @@ function HeatmapInfoModal({
     }
   })
 
-  const isSingleTab = tabs.length === 1
-  const [activeTab, setActiveTab] = useState<Tab>(tabs[0])
+  const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
+
+  if (!tabs?.length) return null
+
+  const isSingleTab = tabs?.length === 1
+
   return (
     <Modal
       title={isSingleTab ? `${dataview.name} - ${tabs[0].title}` : dataview.name}
@@ -50,7 +50,7 @@ function HeatmapInfoModal({
       {isSingleTab ? (
         tabs[0]?.content
       ) : (
-        <Tabs activeTab={activeTab?.id} tabs={tabs} onTabClick={(tab: Tab) => setActiveTab(tab)} />
+        <Tabs tabs={tabs} activeTab={activeTab?.id} onTabClick={(tab: Tab) => setActiveTab(tab)} />
       )}
     </Modal>
   )

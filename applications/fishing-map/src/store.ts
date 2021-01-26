@@ -6,7 +6,6 @@ import {
   getDefaultMiddleware,
 } from '@reduxjs/toolkit'
 import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
-import appReducer from './features/app/app.slice'
 import userReducer from './features/user/user.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
 import workspacesReducer from './features/workspaces-list/workspaces-list.slice'
@@ -27,7 +26,6 @@ const {
 } = connectedRoutes
 
 const rootReducer = combineReducers({
-  app: appReducer,
   user: userReducer,
   search: searchReducer,
   workspace: workspaceReducer,

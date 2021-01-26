@@ -1,18 +1,21 @@
 {
   "common": {
-    "active_after": "Active after",
-    "active_before": "Active Before",
+    "active_after": "Actif après",
+    "active_before": "Actif avant",
     "activity": "Activité",
     "apparentFishing": "Effort de pêche apparent",
     "context_area_plural": "Calques de contexte",
-    "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers",
+    "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers. Vous pouvez trouver toutes vos vues enregistrées dans votre zone utilisateur.",
+    "environment": "Environnement",
     "hour": "Heure",
-    "hour_plural": "Heures",
+    "hour_plural": "heures",
+    "loggedAs": "Connecté en tant que",
+    "login": "Se connecter",
     "logout": "Déconnexion",
-    "more": "Plus",
+    "more": "plus",
+    "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
     "vessel_plural": "Navires",
-    "login": "Se connecter",
     "open_menu": "Ouvrir le menu",
     "dismiss": "Fermer",
     "save": "Enregistrer",
@@ -20,28 +23,35 @@
     "fishing": "Pêche"
   },
   "errors": {
-    "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement"
+    "notSupportedBy": "Non pris en charge par {{list}}",
+    "pageNotFound": "Page introuvable",
+    "privateView": "Ceci est une vue privée",
+    "requestAccess": "Demander l'accès",
+    "switchAccount": "Changer de compte",
+    "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement",
+    "workspaceNotFound": "La vue demandée n'a pas été trouvée"
   },
   "layer": {
     "add": "Ajouter un calque",
     "color_change": "Modifier la couleur",
-    "filter_close": "Fermer les filtres",
-    "filter_open": "Montrer les filtres",
-    "flag_state_plural": "États du Pavillon",
-    "info_close": "Masquer les infos",
-    "info_open": "Infos",
+    "filterClose": "Fermer les filtres",
+    "filterOpen": "Ouvrir les filtres",
+    "flagState_plural": "États du Drapeau",
+    "gearType_plural": "Types d'équipement",
+    "infoClose": "Masquer les infos",
+    "infoOpen": "Afficher les infos",
     "remove": "Supprimer le calque",
-    "seeDescription": "Click to see layer description",
-    "source_plural": "Sources",
-    "toggle_visibility": "Afficher/Masquer le calque",
-    "toggleCombinationMode": {
-      "combine": "Combine layers",
-      "disabled": "Combine mode is only availabe with two activity layers",
-      "split": "Split layers"
-    },
-    "vessel_fit_bounds": "Centrer la carte sur la voie du navire",
+    "seeDescription": "Cliquez pour voir la description de la couche",
     "source": "Source",
-    "filter_plural": "Filtres"
+    "source_plural": "Sources",
+    "toggleCombinationMode": {
+      "combine": "Combiner les couches",
+      "disabled": "Le mode de combinaison est uniquement disponible avec deux couches d'activité",
+      "split": "Couches divisées"
+    },
+    "toggleVisibility": "Activer/désactiver la visibilité de la couche",
+    "vessel_fit_bounds": "Vue centrée sur la piste du navire",
+    "filterPpen": "Ouvrir les filtres"
   },
   "map": {
     "capture_map": "Enregistrer une image de la carte",
@@ -50,27 +60,33 @@
     "loading": "Chargement de la carte",
     "rulers_add": "Ajouter des mesures",
     "rulers_remove": "Supprimer toutes les mesures",
-    "search": "Search areas",
+    "search": "Rechercher des zones",
     "zoom_in": "Zoomer",
-    "zoom_out": "Dézoomer",
-    "screenshot": "Image de la carte"
+    "zoom_out": "Dézoomer"
   },
   "search": {
-    "close": "Close search",
-    "suggestion": "Did you mean"
+    "close": "Fermer la recherche",
+    "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en appuyant sur l'icône de filtre dans la barre du haut",
+    "filterClose": "Fermer les filtres de recherche",
+    "filterOpen": "Ouvrir les filtres de recherche",
+    "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez ? Essayez d'utiliser MMSI, IMO ou IRCS",
+    "notAllowed": "Les jeux de données disponibles n'autorisent pas les vaisseaux de recherche",
+    "placeholder": "Tapez pour rechercher des vaisseaux",
+    "suggestion": "Vouliez-vous dire",
+    "vessels": "Rechercher des vaisseaux"
   },
   "selects": {
-    "placeholder": "Select an option",
-    "selected": "selected"
+    "placeholder": "Sélectionnez une option",
+    "selected": "slectionns"
   },
   "timebar": {
+    "fishingEffortDisabled": "Sélectionnez au moins une couche apparente d'effort de pêche",
     "graph": "Graphique",
     "settings_close": "Fermer les paramètres de la barre de temps",
     "settings_open": "Montrer les paramètres de la barre de temps",
-    "showTracks": "Show tracks graph",
-    "showFishingEffort": "Show fishing hours graph",
-    "tracksDisabled": "Select at least one vessel",
-    "fishingEffortDisabled": "Select at least one apparent fishing effort layer"
+    "showFishingEffort": "Afficher le graphique des heures de pêche",
+    "showTracks": "Afficher le graphe des pistes",
+    "tracksDisabled": "Sélectionnez au moins un vaisseau"
   },
   "vessel": {
     "callsign": "Callsign",
@@ -80,19 +96,10 @@
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Dernière date de transmission",
-    "lengthRange": "Length range",
+    "lengthRange": "Plage de longueur",
     "loading": "Chargement de la piste du bateau",
     "mmsi": "MMSI",
-    "registeredGearType": "Registered Gear Type",
-    "search": {
-      "close": "Fermer la recherche",
-      "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar.",
-      "filter_close": "Close search filters",
-      "filter_open": "Open search filters",
-      "no_results": "Can't find the vessel you are looking for? Try using MMSI, IMO or IRCS",
-      "placeholder": "Tapez pour rechercher des navires",
-      "search": "Rechercher des navires"
-    },
+    "registeredGearType": "Type d'équipement enregistré",
     "source": "Source",
     "tracks": "Trajectoires de navire",
     "transmission_plural": "Transmissions",

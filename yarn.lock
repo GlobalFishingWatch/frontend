@@ -6156,6 +6156,14 @@ attr-accept@^2.2.1:
   resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-2.2.2.tgz#646613809660110749e92f2c10833b70968d929b"
   integrity sha512-7prDjvt9HmqiZ0cl5CRjtS84sEyhsHP2coDkaZKRKVfCDo9s7iw7ChVmar78Gu9pC4SoR/28wFu/G5JJhTnqEg==
 
+auth-middleware@GlobalFishingWatch/auth-middleware#develop:
+  version "1.0.0"
+  uid "5e8e2fa8bdea22a454f66da259ef6a0cb99a0ab2"
+  resolved "https://codeload.github.com/GlobalFishingWatch/auth-middleware/tar.gz/5e8e2fa8bdea22a454f66da259ef6a0cb99a0ab2"
+  dependencies:
+    request "^2.88.0"
+    request-promise "^4.2.5"
+
 "auth-middleware@git://github.com/GlobalFishingWatch/auth-middleware.git#develop":
   version "1.0.0"
   resolved "git://github.com/GlobalFishingWatch/auth-middleware.git#5e8e2fa8bdea22a454f66da259ef6a0cb99a0ab2"
@@ -6641,6 +6649,11 @@ bowser@2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.9.0.tgz#3bed854233b419b9a7422d9ee3e85504373821c9"
   integrity sha512-2ld76tuLBNFekRgmJfT2+3j5MIrP6bFict8WAIT3beq+srz1gcKNAdNKMqHqauQt63NmAa88HfP1/Ypa9Er3HA==
+
+bowser@^2.11.0:
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.11.0.tgz#5ca3c35757a7aa5771500c70a73a9f91ef420a8f"
+  integrity sha512-AlcaJBi/pqqJBIQ8U9Mcpc9i8Aqxn88Skv5d+xBX006BY5u8N3mGLHa5Lgppa7L/HfwgwLgZ6NYs+Ag6uUmJRA==
 
 boxen@^1.3.0:
   version "1.3.0"

@@ -2,10 +2,12 @@ import React, { useEffect } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
+import { useTranslation } from 'react-i18next'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'types'
+import { WorkspaceCategories } from 'data/workspaces'
 import styles from './WorkspacesList.module.css'
 import { selectCurrentHighlightedWorkspaces } from './workspaces-list.selectors'
 import {
@@ -14,18 +16,32 @@ import {
 } from './workspaces-list.slice'
 
 function WorkspacesList() {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const locationCategory = useSelector(selectLocationCategory)
   const userFriendlyCategory = locationCategory.replace('-', ' ')
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
+  const validCategory = Object.values(WorkspaceCategories).includes(locationCategory)
 
   useEffect(() => {
-    if (highlightedWorkspacesStatus !== AsyncReducerStatus.Finished) {
+    if (validCategory && highlightedWorkspacesStatus !== AsyncReducerStatus.Finished) {
       dispatch(fetchHighlightWorkspacesThunk())
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [validCategory])
+
+  if (!validCategory) {
+    return (
+      <div className={styles.placeholder}>
+        <h2>{t('errors.pageNotFound', 'Page not found')}</h2>
+        <p>🙈</p>
+        <Link className={styles.linkButton} to={{ type: HOME, replaceQuery: true }}>
+          {t('common.seeDefault', 'See default view')}
+        </Link>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.container}>

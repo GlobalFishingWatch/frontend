@@ -1,7 +1,7 @@
 import type { GeoJSON } from 'geojson'
 
 export interface AOI {
-  id: number
+  id: string
   name: string
   area: number
   geometry?: GeoJSON

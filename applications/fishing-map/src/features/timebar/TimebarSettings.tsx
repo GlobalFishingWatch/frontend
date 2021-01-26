@@ -91,7 +91,7 @@ const TimebarSettings = () => {
               disabled={!activeVesselDataviews?.length}
               tooltip={
                 !activeVesselDataviews?.length
-                  ? t('timebar.tracksDisabled', 'Select at least one apparent fishing effort layer')
+                  ? t('timebar.tracksDisabled', 'Select at least one vessel')
                   : t('timebar.showTracks', 'Show tracks graph')
               }
               onClick={setVesselActive}
