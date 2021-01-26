@@ -18,6 +18,14 @@
   background-color: white;
 }
 
+:global(.printing) .screenshot {
+  display: block !important;
+}
+
+:global(.printing) .legend .currentValue {
+  display: none
+}
+
 @media print {
   .screenshot {
     display: block;

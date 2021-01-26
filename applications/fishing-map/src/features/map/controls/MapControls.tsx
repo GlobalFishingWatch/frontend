@@ -17,7 +17,7 @@ import Rulers from 'features/map/controls/Rulers'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
-import setInlineStyles, { setPrintStyles } from 'utils/dom'
+import setInlineStyles from 'utils/dom'
 import { isPrintSupported } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
@@ -62,15 +62,17 @@ const MapControls = ({
 
   const onScreenshotClick = useCallback(() => {
     if (domElement.current) {
+      domElement.current.classList.add('printing')
       setInlineStyles(domElement.current)
-      setPrintStyles(true)
       generatePreviewImage()
       setModalOpen(true)
     }
   }, [generatePreviewImage])
 
   const handleModalClose = useCallback(() => {
-    setPrintStyles(false)
+    if (domElement.current) {
+      domElement.current.classList.remove('printing')
+    }
     setModalOpen(false)
   }, [])
 
@@ -109,7 +111,7 @@ const MapControls = ({
         bounds={bounds}
         center={{ latitude, longitude }}
       />
-      <div className={cx('print-hidden', styles.controlsNested)}>
+      <div className={styles.controlsNested}>
         {extendedControls && <MapSearch />}
         <IconButton
           icon="plus"
