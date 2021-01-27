@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.11.2
+
+### Patch Changes
+
+- support context layers attribution
+
 ## 4.11.1
 
 ### Patch Changes
