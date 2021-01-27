@@ -114,23 +114,31 @@ export const getWorkspaceGeneratorsConfig = createSelector(
       } else if (dataview.config?.type === Generators.Type.Context) {
         if (Array.isArray(dataview.config.layers)) {
           const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
-            const { url } = resolveDataviewDatasetResource(dataview, { id: dataset })
+            const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(dataview, {
+              id: dataset,
+            })
             if (!url) return []
-            return { id, tilesUrl: url }
+            return { id, tilesUrl: url, attribution: resolvedDataset?.source }
           })
           // Duplicated generators when context dataview have multiple layers
-          return tilesUrls.map(({ id, tilesUrl }) => ({
+          return tilesUrls.map(({ id, tilesUrl, attribution }) => ({
             ...generator,
             id: `${dataview.id}__${id}`,
             layer: id,
+            attribution,
             tilesUrl,
           }))
         } else {
           generator.id = `${dataview.id}__${dataview.config.layers}`
           generator.layer = dataview.config.layers
-          const { url } = resolveDataviewDatasetResource(dataview, { type: USER_CONTEXT_TYPE })
+          const { dataset, url } = resolveDataviewDatasetResource(dataview, {
+            type: USER_CONTEXT_TYPE,
+          })
           if (url) {
             generator.tilesUrl = url
+          }
+          if (dataset?.source) {
+            generator.attribution = dataset.source
           }
         }
         if (!generator.tilesUrl) {

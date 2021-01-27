@@ -102,6 +102,7 @@ class ContextGenerator {
         type: 'vector',
         promoteId: 'gfw_id',
         tiles: [tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}')],
+        ...(config.attribution && { attribution: config.attribution }),
       },
     ]
   }
