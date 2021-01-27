@@ -9,6 +9,7 @@ import { getLocationType } from 'routes/routes.selectors'
 import { LOGIN, PROFILE } from 'routes/routes'
 import { BASE_URL } from 'data/constants'
 import Profile from 'features/profile/Profile'
+import Splash from 'components/Splash'
 
 GFWAPI.setConfig({ dataset: process.env.REACT_APP_DATASET || 'carriers:v20200820' })
 
@@ -32,4 +33,4 @@ function App() {
   )
 }
 
-export default App
+export default Splash(App)

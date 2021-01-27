@@ -1,0 +1,8 @@
+.splashContainer {
+    background-color: var(--white);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image: url('../assets/images/splash-screen-image@2x.png');
+    width: 572px;
+    height: 514px;
+}
