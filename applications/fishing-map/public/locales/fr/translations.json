@@ -54,7 +54,8 @@
     "source": "Source"
   },
   "map": {
-    "captureMap": "Enregistrer une image de la carte",
+    "captureMap": "Capturer la carte",
+    "mapLoadingWait": "Veuillez patienter jusqu'à ce que la carte soit chargée",
     "change_basemap_default": "Fond de carte par défaut",
     "change_basemap_satellite": "Fond de carte satellite",
     "loading": "Chargement de la carte",
