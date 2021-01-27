@@ -33,4 +33,4 @@ function App() {
   )
 }
 
-export default Splash(App)
+export default Splash()(App)
