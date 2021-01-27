@@ -33,7 +33,7 @@
   },
   "layer": {
     "add": "Añadir capa",
-    "color_change": "Cambia el color",
+    "color_change": "Cambiar color",
     "filterClose": "Cerrar filtros",
     "filterOpen": "Abrir filtros",
     "flagState_plural": "Estados de bandera",
