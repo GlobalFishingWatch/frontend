@@ -16,7 +16,7 @@ import {
   getRelatedDatasetByType,
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
-import { fetchDatasetsByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
+import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectTimeRange } from 'features/app/app.selectors'
 
 export const MAX_TOOLTIP_VESSELS = 5
@@ -129,7 +129,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
             let infoDataset = selectDatasetById(infoDatasetId)(state)
             if (!infoDataset) {
               // It needs to be request when it hasn't been loaded yet
-              const { payload }: any = await dispatch(fetchDatasetsByIdThunk(infoDatasetId))
+              const { payload }: any = await dispatch(fetchDatasetByIdThunk(infoDatasetId))
               infoDataset = payload
             }
             return infoDataset as Dataset
