@@ -1,17 +1,14 @@
-import React from 'react'
-import GFWAPI from '@globalfishingwatch/api-client'
-import useGFWLogin from '@globalfishingwatch/react-hooks/dist/use-login'
+import React, {memo} from 'react'
+import cx from 'classnames'
+import vesselHistoryLogo from '../assets/images/splash-screen-image@2x.png'
+// import { ReactComponent as GFWLogo } from '../assets/gfw_logo.svg'
 import styles from './Splash.module.css'
 
-function Splash(Component: React.ComponentType) {
-  return function (props: React.ComponentProps<typeof Component>): JSX.Element {
-    const { loading } = useGFWLogin(GFWAPI)
-    return (
-      <React.Fragment>
-        {loading && <div className={styles.splashContainer}></div>}
-        {!loading && <Component {...props} />}
-      </React.Fragment>
-    );
-  };
+function Splash() {
+  return (
+    <div className={cx(styles.centered, styles.splash)}>
+      <img src={vesselHistoryLogo} alt="Vessel History" />
+    </div>
+  )
 }
-export default Splash
+export default memo(Splash)

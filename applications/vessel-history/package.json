@@ -2,7 +2,7 @@
   "name": "@globalfishingwatchapp/vessel-history",
   "version": "0.0.1",
   "author": "satellitestudio <contact@satellitestud.io>",
-  "homepage": "http://globalfishingwatch.io/frontend",
+  "homepage": "http://globalfishingwatch.io/vessel-history",
   "private": true,
   "scripts": {
     "start": "react-app-rewired start",

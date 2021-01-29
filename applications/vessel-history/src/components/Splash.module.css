@@ -1,8 +1,38 @@
-.splashContainer {
-    background-color: var(--white);
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-image: url('../assets/images/splash-screen-image@2x.png');
-    width: 572px;
-    height: 514px;
+.centered {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.splash {
+  color: var(--primary-text-color);
+  font-size: 3px;
+  text-indent: -99999999em;
+  position: relative;
+  transform: translateZ(0);
+}
+.splash::before,
+.splash::after {
+  position: absolute;
+  content: '';
+}
+.splash::before {
+  width: 50%;
+  height: 100%;
+  background: var(--white);
+  border-radius: 10em 0 0 10em;
+  box-shadow: 0 0 0 1px var(--white);
+  top: 0;
+  left: 0;
+  transform-origin: 5em 5em;
+  animation: load2 2s infinite ease 1.5s;
+}
+.splash::after {
+  width: 50%;
+  height: 100%;
+  background: var(--white);
+  top: 0;
+  left: 50%;
+  transform-origin: 0 5em;
+  animation: load2 2s infinite ease;
 }

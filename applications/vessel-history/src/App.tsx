@@ -23,6 +23,9 @@ function App() {
 
   const locationType = useSelector(getLocationType)
 
+  if (loading || true) {
+    return <Splash />
+  }
   if (locationType === PROFILE) {
     return <Profile />
   }
@@ -33,4 +36,4 @@ function App() {
   )
 }
 
-export default Splash(App)
+export default App
