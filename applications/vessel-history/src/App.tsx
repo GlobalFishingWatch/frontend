@@ -23,7 +23,7 @@ function App() {
 
   const locationType = useSelector(getLocationType)
 
-  if (loading || true) {
+  if (loading) {
     return <Splash />
   }
   if (locationType === PROFILE) {
