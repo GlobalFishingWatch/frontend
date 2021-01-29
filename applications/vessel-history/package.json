@@ -5,7 +5,7 @@
   "homepage": "http://globalfishingwatch.io/frontend",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3000 && react-scripts start",
     "build": "react-scripts build",
     "test": "CI=true react-scripts test --passWithNoTests",
     "eject": "react-scripts eject",
@@ -97,6 +97,25 @@
       "@globalfishingwatch/linting/typescript"
     ],
     "ignorePatterns": "public/"
+  },
+  "prettier": "@globalfishingwatch/linting/prettier",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint -c ./.eslintrc.js --fix"
+    ],
+    "*.css": [
+      "stylelint --fix",
+      "stylelint --syntax=scss --fix"
+    ],
+    "*.scss": [
+      "prettier --write",
+      "stylelint --syntax=scss --fix"
+    ]
   },
   "browserslist": {
     "production": [
