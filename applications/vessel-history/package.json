@@ -2,10 +2,9 @@
   "name": "@globalfishingwatchapp/vessel-history",
   "version": "0.0.1",
   "author": "satellitestudio <contact@satellitestud.io>",
-  "homepage": "http://globalfishingwatch.io/frontend",
   "private": true,
   "scripts": {
-    "start": "PORT=3000 && react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "CI=true react-scripts test --passWithNoTests",
     "eject": "react-scripts eject",
