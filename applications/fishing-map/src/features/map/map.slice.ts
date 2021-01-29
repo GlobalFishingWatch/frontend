@@ -11,7 +11,7 @@ import { DataviewDatasetConfig, Dataset, APISearch, Vessel } from '@globalfishin
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
 import { AsyncReducerStatus } from 'types'
 import { RootState } from 'store'
-import { FISHING_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'
+import { FOURWINGS_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'
 import {
   getRelatedDatasetByType,
   selectTemporalgridDataviews,
@@ -55,7 +55,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
     })
 
     const fourWingsDataset = featuresDataviews[0].datasets?.find(
-      (d) => d.type === FISHING_DATASET_TYPE
+      (d) => d.type === FOURWINGS_DATASET_TYPE
     ) as Dataset
 
     // get corresponding datasets

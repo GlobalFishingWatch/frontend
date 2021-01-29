@@ -14,7 +14,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import { Resource, selectResources, TrackResourceData } from 'features/resources/resources.slice'
-import { FISHING_DATASET_TYPE, TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
+import { FOURWINGS_DATASET_TYPE, TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
@@ -147,7 +147,9 @@ export const getWorkspaceGeneratorsConfig = createSelector(
         }
       } else if (dataview.config?.type === Generators.Type.Heatmap) {
         // TODO: use the getGeneratorConfig package function here
-        const dataset = dataview.datasets?.find((dataset) => dataset.type === FISHING_DATASET_TYPE)
+        const dataset = dataview.datasets?.find(
+          (dataset) => dataset.type === FOURWINGS_DATASET_TYPE
+        )
         const tilesEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
         const statsEndpoint = dataset?.endpoints?.find(
           (endpoint) => endpoint.id === '4wings-legend'

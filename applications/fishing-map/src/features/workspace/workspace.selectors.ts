@@ -10,7 +10,7 @@ import { selectDataviews, selectDataviewsStatus } from 'features/dataviews/datav
 import {
   TRACKS_DATASET_TYPE,
   VESSELS_DATASET_TYPE,
-  FISHING_DATASET_TYPE,
+  FOURWINGS_DATASET_TYPE,
   USER_CONTEXT_TYPE,
 } from 'data/datasets'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
@@ -221,7 +221,7 @@ export const selectDataviewInstancesResolved = createSelector(
 type DatasetTypes =
   | typeof TRACKS_DATASET_TYPE
   | typeof VESSELS_DATASET_TYPE
-  | typeof FISHING_DATASET_TYPE
+  | typeof FOURWINGS_DATASET_TYPE
   | typeof USER_CONTEXT_TYPE
 export const selectDatasetsByType = (type: DatasetTypes) => {
   return createSelector([selectDatasets], (datasets) => {
