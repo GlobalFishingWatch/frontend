@@ -25,6 +25,10 @@ export const isUserAuthorized = createSelector([isUserLogged, selectUserData], (
   )
 })
 
+export const selectUserId = createSelector([selectUserData], (userData) => {
+  return userData?.id
+})
+
 export const selectUserWorkspaces = createSelector(
   [selectUserData, selectWorkspaces],
   (userData, workspaces) => {

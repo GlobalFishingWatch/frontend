@@ -11,6 +11,7 @@ import { USER, WORKSPACES_LIST } from 'routes/routes'
 import User from 'features/user/User'
 import Workspace from 'features/workspace/Workspace'
 import WorkspacesList from 'features/workspaces-list/WorkspacesList'
+import NewDataset from 'features/datasets/NewDataset'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -63,6 +64,8 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     <Suspense fallback={null}>
       <div className={styles.container}>
         <CategoryTabs onMenuClick={onMenuClick} />
+        {/* New dataset modal is used in user and workspace pages*/}
+        <NewDataset />
         <div className="scrollContainer">
           <SidebarHeader />
           {sidebarComponent}

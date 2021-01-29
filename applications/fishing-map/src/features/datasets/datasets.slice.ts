@@ -1,12 +1,14 @@
-import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
 import uniqBy from 'lodash/uniqBy'
 import without from 'lodash/without'
-import { Dataset } from '@globalfishingwatch/api-types'
+import kebabCase from 'lodash/kebabCase'
+import { Dataset, UploadResponse } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
 
+export const DATASETS_USER_SOURCE_ID = 'user'
 const DATASETS_CACHE = true
 
 export const fetchDatasetByIdThunk = createAsyncThunk(
@@ -50,16 +52,71 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
     }
   }
 )
+export type CreateDataset = { dataset: Partial<Dataset>; file: File }
+export const createDatasetThunk = createAsyncThunk(
+  'datasets/create',
+  async ({ dataset, file }: CreateDataset) => {
+    const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
+      method: 'POST',
+      body: { contentType: file.type } as any,
+    })
+    await fetch(url, { method: 'PUT', body: file })
+    const datasetWithFilePath = {
+      ...dataset,
+      id: kebabCase(dataset.name),
+      source: DATASETS_USER_SOURCE_ID,
+      configuration: {
+        ...dataset.configuration,
+        filePath: path,
+      },
+    }
+    const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
+      method: 'POST',
+      body: datasetWithFilePath as any,
+    })
+    return createdDataset
+  }
+)
 
-export type ResourcesState = AsyncReducer<Dataset>
+export const deleteDatasetThunk = createAsyncThunk(
+  'datasets/delete',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}`, {
+        method: 'DELETE',
+      })
+      return { ...dataset, id }
+    } catch (e) {
+      return rejectWithValue(id)
+    }
+  }
+)
 
-const { slice: datasetSlice, entityAdapter } = createAsyncSlice<ResourcesState, Dataset>({
+export interface DatasetsState extends AsyncReducer<Dataset> {
+  newDatasetModal: boolean
+}
+const initialState: DatasetsState = {
+  ...asyncInitialState,
+  newDatasetModal: false,
+}
+
+const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
   name: 'datasets',
+  initialState,
+  reducers: {
+    setNewDatasetModal: (state, action: PayloadAction<boolean>) => {
+      state.newDatasetModal = action.payload
+    },
+  },
   thunks: {
     fetchThunk: fetchDatasetsByIdsThunk,
     fetchByIdThunk: fetchDatasetByIdThunk,
+    createThunk: createDatasetThunk,
+    deleteThunk: deleteDatasetThunk,
   },
 })
+
+export const { resetNewDataset, setNewDatasetData, setNewDatasetModal } = datasetSlice.actions
 
 export const {
   selectAll: selectDatasets,
@@ -72,5 +129,6 @@ export const selectDatasetById = memoize((id: string) =>
 )
 
 export const selectDatasetsStatus = (state: RootState) => state.datasets.status
+export const selectNewDatasetModal = (state: RootState) => state.datasets.newDatasetModal
 
 export default datasetSlice.reducer
