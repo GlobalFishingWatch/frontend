@@ -1,35 +1,4 @@
 steps:
-  # Push production image to GCR
-  - name: 'gcr.io/kaniko-project/executor:latest'
-    args:
-      [
-          '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-          '--cache=true',
-          '--build-arg',
-          'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
-          '--build-arg',
-          'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
-          '--build-arg',
-          'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
-          '--build-arg',
-          'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
-          '--target',
-          'build',
-          '-f',
-          './applications/vessel-history/Dockerfile',
-          '-c',
-          './applications/vessel-history',
-      ]
-
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      [
-        'run',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-        'npm',
-        'test',
-      ]
-
   - name: 'gcr.io/kaniko-project/executor:latest'
     args:
       [
