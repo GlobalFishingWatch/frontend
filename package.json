@@ -25,6 +25,7 @@
     "build": "lerna run build --scope @globalfishingwatch/*",
     "test": "lerna run test --scope @globalfishingwatch/*",
     "test:prepare": "lerna run prepare --scope @globalfishingwatch/*",
+    "test:vessel-history": "cross-env lerna run test --scope @globalfishingwatchapp/vessel-history",
     "changesets": "yarn changeset && yarn changeset version",
     "release": "lerna publish",
     "release:ci": "yarn test:prepare && lerna publish from-package -y --no-verify-access --ignore-scripts",
