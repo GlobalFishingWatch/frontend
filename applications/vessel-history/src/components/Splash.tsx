@@ -1,8 +1,8 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
-import vesselHistoryLogo from '../assets/images/splash-screen-image@2x.png'
-import tmtLogo from '../assets/images/tmt_logo_final_full_colour.webp'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
+import vesselHistoryLogo from '../assets/images/splash-screen-image@2x.png'
+import tmtLogo from '../assets/images/tmt_logo_final_full_colour@2x.png'
 import styles from './Splash.module.css'
 
 function Splash() {
