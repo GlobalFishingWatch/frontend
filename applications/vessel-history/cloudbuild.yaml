@@ -39,6 +39,14 @@ steps:
           './applications/vessel-history',
       ]
 
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+        [
+            'push',
+            'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
+        ]
+
+
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
