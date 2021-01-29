@@ -4,7 +4,9 @@ import { DebounceInput } from 'react-debounce-input'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import GFWAPI from '@globalfishingwatch/api-client'
+import { Spinner } from '@globalfishingwatch/ui-components'
 import { logoutUserThunk } from 'features/user/user.slice'
+import { Vessel } from 'types'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import styles from './Home.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
@@ -20,7 +22,7 @@ interface LoaderProps {
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const dispatch = useDispatch()
   const [searching, setSearching] = useState(false)
-  const [vessels, setVessels] = useState([])
+  const [vessels, setVessels] = useState<Array<Vessel>>([])
   const [query, setQuery] = useState('')
   const minimumCharacters = 3
   const resultsPerRequest = 25
@@ -49,7 +51,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       `/vessels?query=${query}&limit=${resultsPerRequest}&offset=${0}`
     )
       .then((json: any) => {
-        const resultVessels = json.entries
+        const resultVessels: Array<Vessel> = json.entries
         setSearching(false)
         const totalVessels = resultVessels.concat(vessels)
         console.log(totalVessels)
@@ -63,29 +65,33 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       })
       .catch((error) => {
         setSearching(false)
+        return vessels
         /*this.setState({
         tip: this.tips.connectionError,
       })*/
       })
+    console.log(newVessels)
     setVessels(newVessels)
   }
 
   return (
     <div className={styles.homeContainer}>
-      <header>
-        <Logo></Logo>
-        <IconButton type="default" size="default" icon="settings"></IconButton>
-        <IconButton
-          type="default"
-          size="default"
-          icon="logout"
-          onClick={async () => {
-            dispatch(logoutUserThunk({ redirectToLogin: true }))
-          }}
-        ></IconButton>
-      </header>
+      {!query && (
+        <header>
+          <Logo className={styles.logo}></Logo>
+          <IconButton
+            type="default"
+            size="default"
+            icon="logout"
+            onClick={async () => {
+              dispatch(logoutUserThunk({ redirectToLogin: true }))
+            }}
+          ></IconButton>
+          <IconButton type="default" size="default" icon="settings"></IconButton>
+        </header>
+      )}
       <div>
-        <div className={styles.searchbar}>
+        <div className={styles.searchbar + ` ${query ? styles.searching : ''}`}>
           <DebounceInput
             debounceTimeout={500}
             autoFocus
@@ -109,19 +115,15 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         {!query && (
           <div>
             <h2>OFFLINE ACCESS</h2>
-            <div className={styles.offlineVessels}>
-              <VesselListItem saved={true} vessel={null} />
-              <VesselListItem saved={true} vessel={null} />
-              <VesselListItem saved={true} vessel={null} />
-            </div>
+            <div className={styles.offlineVessels}></div>
           </div>
         )}
         {query && (
           <div>
-            <h2>VESSELS FOUND</h2>
+            {searching && <Spinner className={styles.loader}></Spinner>}
             <div className={styles.offlineVessels}>
-              {vessels.map((vessel) => (
-                <VesselListItem vessel={vessel} />
+              {vessels.map((vessel, index) => (
+                <VesselListItem key={index} vessel={vessel} />
               ))}
             </div>
           </div>

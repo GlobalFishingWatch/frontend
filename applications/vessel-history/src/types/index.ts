@@ -21,49 +21,40 @@ export type MapCoordinates = {
   longitude: number
   zoom: number
 }
+export interface Flag {
+  start: string
+  end: string
+  value: string
+}
 
-export declare type VesselPoint = {
+export interface Mmsi {
+  start: string
+  end: string
+  value: string
+}
+export interface Callsign {
+  start: string
+  end: string
+  value: string
+}
+export interface Extra {
   id: string
+  label: string
+  value: string
+}
+export interface Vessel {
+  id: string
+  vesselId: string
   type: string
-  action: ActionType | string
-  position: {
-    lng?: number
-    lon?: number
-    lat: number
-  }
-  fishing: boolean
-  timestamp: number
-  distanceFromPort: number
-  speed: number
-  course: number
-  elevation: number
-  hour: number
-}
-
-export enum ActionType {
-  untracked = 'untracked',
-  selected = 'selected',
-  fishing = 'fishing',
-  notfishing = 'notfishing',
-  transiting = 'transiting',
-  dredging = 'dredging',
-  nondredging = 'nondredging',
-  transporting = 'transporting',
-  discharging = 'discharging',
-}
-
-export type TrackColor = {
-  [A in ActionType | string]: string
-}
-
-export const TRACK_COLORS: TrackColor = {
-  [ActionType.untracked]: '#8091AB',
-  [ActionType.selected]: '#ffffff',
-  [ActionType.fishing]: '#FFD714',
-  [ActionType.notfishing]: '#FDA16F',
-  [ActionType.transiting]: '#01FE6A',
-  [ActionType.dredging]: '#00ffbc',
-  [ActionType.nondredging]: '#ff64ce',
-  [ActionType.transporting]: '#00eeff',
-  [ActionType.discharging]: '#9da4ff',
+  ssvid: string
+  name: string
+  imo: string
+  flags: Flag[]
+  authorizations: any[]
+  mmsi: Mmsi[]
+  callsign: Callsign[]
+  extra: Extra[]
+  dataset: string
+  firstTransmissionDate: string
+  lastTransmissionDate: string
 }

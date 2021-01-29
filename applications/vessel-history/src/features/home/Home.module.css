@@ -1,3 +1,7 @@
+.logo {
+    margin: 7px 0 0 20px;
+}
+
 .homeContainer header {
     height: 70px;
     background: #fff;
@@ -6,16 +10,17 @@
 
 .homeContainer header button {
     float: right;
-    margin-top: 10px;
+    margin-top: 18px;
+    margin-right: 5px;
 }
 
 .homeContainer h2 {
     color: rgba(34, 68, 126, 0.65);
-    font-family: Roboto;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
     font-size: 14px;
     letter-spacing: 0;
     line-height: 20px;
-    margin: 20px 15px 0px;
+    margin: 20px 15px 0;
 }
 
 .searchbar {
@@ -29,13 +34,27 @@
     width: calc(100% - 55px);
     opacity: 0.65;
     color: #22447E;
-    font-family: Roboto;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
     background: transparent;
-    padding: 0px 3%;
+    padding: 0 3%;
     font-size: 16px;
     letter-spacing: 0;
     line-height: 20px;
     border: 0;
+}
+
+.searchbar.searching {
+    background: #fff;
+    box-shadow: 0 1px 2px 0 rgba(22, 63, 137, 0.2), 0 2px 10px 0 rgba(1, 37, 91, 0.15)
+}
+
+.searching input {
+    background: #fff;
+    width: calc(100%);
+    opacity: 1;
+    font-size: 21px;
+    letter-spacing: 0;
+    line-height: 24px;
 }
 
 .searchButton {
@@ -44,4 +63,8 @@
 
 .offlineVessels {
     padding: 15px;
+}
+
+.loader {
+    margin-top: 50px;
 }
