@@ -1,6 +1,8 @@
-.centered {
+.container {
   height: 100%;
+  padding: 5vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -35,4 +37,25 @@
   left: 50%;
   transform-origin: 0 5em;
   animation: load2 2s infinite ease;
+}
+.vhLogo {
+  padding: 0;
+  display: block;
+  margin: 5vh auto;
+  max-height: 100%;
+  max-width: 100%;
+}
+.secondary {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.gfwLogo {
+  max-height: 80%;
+  max-width: 80%;
+}
+.tmtLogo {
+  max-height: 50%;
+  max-width: 50%;
 }

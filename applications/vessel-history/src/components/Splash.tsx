@@ -1,13 +1,18 @@
-import React, {memo} from 'react'
+import React, { memo } from 'react'
 import cx from 'classnames'
 import vesselHistoryLogo from '../assets/images/splash-screen-image@2x.png'
-// import { ReactComponent as GFWLogo } from '../assets/gfw_logo.svg'
+import tmtLogo from '../assets/images/tmt_logo_final_full_colour.webp'
+import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import styles from './Splash.module.css'
 
 function Splash() {
   return (
-    <div className={cx(styles.centered, styles.splash)}>
-      <img src={vesselHistoryLogo} alt="Vessel History" />
+    <div className={cx(styles.container, styles.splash)}>
+      <img src={vesselHistoryLogo} className={styles.vhLogo} alt="Vessel History" />
+      <div className={styles.secondary}>
+        <img src={tmtLogo} className={styles.tmtLogo} alt="Trygg Mat Tracking" />
+        <Logo className={styles.gfwLogo} />
+      </div>
     </div>
   )
 }
