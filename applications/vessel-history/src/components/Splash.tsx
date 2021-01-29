@@ -7,8 +7,10 @@ import styles from './Splash.module.css'
 
 function Splash() {
   return (
-    <div className={cx(styles.container, styles.splash)}>
-      <img src={vesselHistoryLogo} className={styles.vhLogo} alt="Vessel History" />
+    <div className={styles.container}>
+      <div className={styles.splash}>
+        <img src={vesselHistoryLogo} className={styles.vhLogo} alt="Vessel History" />
+      </div>
       <div className={styles.secondary}>
         <img src={tmtLogo} className={styles.tmtLogo} alt="Trygg Mat Tracking" />
         <Logo className={styles.gfwLogo} />
