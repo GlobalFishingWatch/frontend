@@ -1,6 +1,5 @@
 import React from 'react'
-import Logo from '@globalfishingwatch/ui-components/src/logo'
-import IconButton from '@globalfishingwatch/ui-components/src/icon-button/IconButton'
+import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import styles from './VesselListItem.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
 

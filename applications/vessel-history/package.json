@@ -5,12 +5,11 @@
   "homepage": "http://globalfishingwatch.io/frontend",
   "private": true,
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test --env=jsdom",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "CI=true react-scripts test --passWithNoTests",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.2.4",
