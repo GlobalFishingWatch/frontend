@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 import cx from 'classnames'
 import dayjs from 'dayjs'
 import { ReactComponent as EncounterEventIcon } from 'assets/icons/encounterEvent.svg'
@@ -57,11 +57,11 @@ class Event extends Component {
     if (event.type === 'encounter' && event.encounter) {
       const carrierVessel = event.encounter.vessel
       eventIcon = <EncounterEventIcon />
-      eventTitle = (
-        <Link to={`/profile/${carrierVessel.id}`} className={styles.link}>
-          {carrierVessel.name}
-        </Link>
-      )
+      // eventTitle = (
+      //   <Link to={`/profile/${carrierVessel.id}`} className={styles.link}>
+      //     {carrierVessel.name}
+      //   </Link>
+      // )
     } else if (event.type === 'port') {
       eventIcon = <PortEventIcon />
       eventTitle = event.port.name || event.port.id

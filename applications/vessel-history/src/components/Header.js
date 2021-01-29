@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 import { ReactComponent as IconLogo } from 'assets/logo.svg'
 import styles from './Header.module.css'
 // import * as serviceWorker from 'serviceWorker.js'
@@ -43,10 +43,11 @@ const Header = () => {
   // }, [])
   return (
     <header className={styles.header}>
-      <Link to={`/`} className={styles.logoIconContainer}>
+      {/* <Link to={`/`} className={styles.logoIconContainer}>
         <IconLogo className={styles.logoIcon} />
         <span className={styles.logoIconText}>Port Inspector App</span>
-      </Link>
+      </Link> */}
+      <IconLogo className={styles.logoIcon} />
 
       {/* {showInstall && (
         <button className={styles.actionBtn} onClick={onInstallClick}>
