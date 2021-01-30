@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/ui-components",
-  "version": "2.10.1",
+  "version": "2.12.0",
   "description": "Set of react components to consume on the gfw ecosystem",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -19,20 +19,21 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "scripts": {
-    "start": "run-p start:js start:css",
+    "start": "run-p prerender start:js start:css",
     "start:js": "rollup -c ./rollup.config.js -w",
     "start:css": "postcss src/base.css -o dist/base.css -w",
     "build": "yarn clean && run-p build:js build:css build:css-min",
     "build:js": "cross-env NODE_ENV=production rollup -c rollup.config.js",
     "build:css": "postcss src/base.css -o dist/base.css",
     "build:css-min": "cross-env NODE_ENV=production postcss src/base.css -o dist/base.min.css ",
+    "prerender": "run-s prerender:build prerender:copy",
     "prerender:build": "ts-node -P tsconfig.tsnode.json src/header/render-html.tsx",
     "prerender:copy": "cp -r src/header/html dist/header",
-    "prepare": "yarn build && yarn prerender:build && yarn prerender:copy",
+    "prepare": "yarn build && yarn prerender",
     "clean": "rimraf dist/*"
   },
   "dependencies": {
-    "@globalfishingwatch/layer-composer": "^4.9.0",
+    "@globalfishingwatch/layer-composer": "^4.11.0",
     "@tippyjs/react": "4.1.0",
     "countryflag": "4.0.1",
     "d3-geo": "1.12.0",

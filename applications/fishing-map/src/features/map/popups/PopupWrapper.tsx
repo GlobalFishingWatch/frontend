@@ -7,6 +7,7 @@ import { Generators } from '@globalfishingwatch/layer-composer'
 import { TooltipEvent } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 import HeatmapTooltipRow from './HeatmapLayers'
+import EnviromentalTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 
 type PopupWrapperProps = {
@@ -48,7 +49,7 @@ function PopupWrapper({
           if (featureType === Generators.Type.HeatmapAnimated) {
             return features.map((feature, i) => (
               <HeatmapTooltipRow
-                key={i + feature.title}
+                key={i + (feature.title as string)}
                 feature={feature}
                 showFeaturesDetails={type === 'click'}
               />
@@ -62,6 +63,22 @@ function PopupWrapper({
                 showFeaturesDetails={type === 'click'}
               />
             )
+          }
+          if (featureType === Generators.Type.Heatmap) {
+            return (
+              <EnviromentalTooltipSection
+                key={featureType}
+                features={features}
+                showFeaturesDetails={type === 'click'}
+              />
+            )
+          }
+          if (featureType === Generators.Type.GL) {
+            return features.map((feature, i) => (
+              <div key={feature.value || i} className={styles.popupSection}>
+                {feature.value}
+              </div>
+            ))
           }
           return null
         })}

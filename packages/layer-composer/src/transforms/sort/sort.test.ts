@@ -1,5 +1,5 @@
 import { Layer, Style } from 'mapbox-gl'
-import { ExtendedLayer, Group } from '../../types'
+import { ExtendedLayer, ExtendedStyle, Group } from '../../types'
 import sort, { convertLegacyGroups } from './sort'
 
 type MockStyle = Omit<Style, 'layers'> & { layers: Partial<Layer>[] }
@@ -56,7 +56,7 @@ const mock: MockStyle = {
 }
 
 test('sort according to order', async () => {
-  const sortedStyle = sort(convertLegacyGroups(mock as Style))
+  const sortedStyle = sort(convertLegacyGroups(mock as ExtendedStyle))
   const sortedIds = sortedStyle.layers?.map((l: ExtendedLayer) => l.id)
 
   expect(sortedIds?.join('|')).toMatch('background|fishing|eez|rfmo|custom|basemapLabels|rulers')

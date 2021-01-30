@@ -1,6 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useRef, useState, useEffect } from 'react'
-import { Map } from '@globalfishingwatch/mapbox-gl'
+import { useRef } from 'react'
 import { ExtendedFeatureVessel, InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
@@ -9,6 +8,14 @@ import {
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
+import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
+import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
+import { useLocationConnect } from 'routes/routes.hook'
+import {
+  getGeneratorsConfig,
+  selectGlobalGeneratorsConfig,
+  WORKSPACE_GENERATOR_ID,
+} from './map.selectors'
 import {
   setClickedEvent,
   selectClickedEvent,
@@ -16,45 +23,48 @@ import {
   fetch4WingInteractionThunk,
   MAX_TOOLTIP_VESSELS,
 } from './map.slice'
-import { getGeneratorsConfig, selectGlobalGeneratorsConfig } from './map.selectors'
-
-export function useMapImage(map: Map) {
-  const [image, setImage] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (map) {
-      map.once('render', () => {
-        const canvas = map.getCanvas()
-        setImage(canvas.toDataURL())
-      })
-      // trigger render
-      map.setBearing(map.getBearing())
-    } else {
-      setImage(null)
-    }
-  }, [map])
-
-  return image
-}
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
   return {
-    globalConfig: useSelector(selectGlobalGeneratorsConfig),
     generatorsConfig: useSelector(getGeneratorsConfig),
+    globalConfig: useSelector(selectGlobalGeneratorsConfig),
   }
 }
 
 export const useClickedEventConnect = () => {
   const dispatch = useDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
+  const locationType = useSelector(selectLocationType)
+  const locationCategory = useSelector(selectLocationCategory)
   const clickedEventStatus = useSelector(selectClickedEventStatus)
+  const { dispatchLocation } = useLocationConnect()
   const promiseRef = useRef<any>()
 
   const rulersEditing = useSelector(selectEditing)
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
+    if (locationType === USER || locationType === WORKSPACES_LIST) {
+      const workspace = event?.features?.find(
+        (feature: any) => feature.properties.type === 'workspace'
+      )
+      if (workspace) {
+        const isDefaultWorkspace = workspace.properties.id === 'default'
+        dispatchLocation(
+          isDefaultWorkspace ? HOME : WORKSPACE,
+          isDefaultWorkspace
+            ? {}
+            : {
+                category: locationCategory,
+                workspaceId: workspace.properties.id,
+              },
+          true
+        )
+        return
+      }
+    }
+
     if (rulersEditing === true && event) {
       dispatch(
         editRuler({
@@ -91,7 +101,7 @@ export const useClickedEventConnect = () => {
 }
 
 export type TooltipEventFeature = {
-  title: string
+  title?: string
   type?: Type
   color?: string
   unit?: string
@@ -114,7 +124,7 @@ export type TooltipEvent = {
 export const useMapTooltip = (event?: InteractionEvent | null) => {
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
-  if (!event || !event.features || !dataviews) return null
+  if (!event || !event.features) return null
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     let dataview
     if (feature.generatorType === Generators.Type.HeatmapAnimated) {
@@ -125,20 +135,32 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
       dataview = temporalgridDataviews?.[feature.temporalgrid?.sublayerIndex]
     } else {
-      dataview = dataviews.find((dataview) => {
+      dataview = dataviews?.find((dataview) => {
         // Needed to get only the initial part to support multiple generator
         // from the same dataview, see map.selectors L137
         const cleanGeneratorId = (feature.generatorId as string)?.split('__')[0]
         return dataview.id === cleanGeneratorId
       })
     }
-    if (!dataview) return []
+
+    if (!dataview) {
+      // Not needed to create a dataview just for the workspaces list interaction
+      if (feature.generatorId && (feature.generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
+        const tooltipWorkspaceFeature: TooltipEventFeature = {
+          type: Generators.Type.GL,
+          value: feature.properties.label,
+          properties: {},
+        }
+        return tooltipWorkspaceFeature
+      }
+      return []
+    }
 
     const tooltipEventFeature: TooltipEventFeature = {
       title: dataview.name || dataview.id.toString(),
       type: dataview.config?.type,
       color: dataview.config?.color || 'black',
-      // unit: dataview.unit || '',
+      unit: feature.unit,
       value: feature.value,
       layer: feature.generatorContextLayer,
       properties: { ...feature.properties },

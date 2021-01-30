@@ -1,4 +1,4 @@
-import { createSlice, createSelector, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import GFWAPI, {
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
@@ -19,19 +19,48 @@ const initialState: UserState = {
   data: null,
 }
 
-export const fetchUserThunk = createAsyncThunk('user/fetch', async () => {
-  const accessToken = getAccessTokenFromUrl()
-  if (accessToken) {
-    removeAccessTokenFromUrl()
-  }
-  const user = await GFWAPI.login({ accessToken })
-  return user
-})
+export const GUEST_USER_TYPE = 'guest'
 
-export const logoutUserThunk = createAsyncThunk('user/logout', async () => {
-  await GFWAPI.logout()
-  return true
-})
+export const fetchGuestUser = async () => {
+  const permissions = await fetch(
+    `${GFWAPI.getBaseUrl()}/auth/acl/permissions/anonymous`
+  ).then((r) => r.json())
+  const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions }
+  return user
+}
+
+export const fetchUserThunk = createAsyncThunk(
+  'user/fetch',
+  async ({ guest }: { guest: boolean } = { guest: false }) => {
+    if (guest) {
+      return await fetchGuestUser()
+    }
+    const accessToken = getAccessTokenFromUrl()
+    if (accessToken) {
+      removeAccessTokenFromUrl()
+    }
+
+    try {
+      return await GFWAPI.login({ accessToken })
+    } catch (e) {
+      return await fetchGuestUser()
+    }
+  }
+)
+
+export const logoutUserThunk = createAsyncThunk(
+  'user/logout',
+  async ({ redirectToLogin }: { redirectToLogin: boolean } = { redirectToLogin: false }) => {
+    try {
+      await GFWAPI.logout()
+    } catch (e) {
+      console.warn(e)
+    }
+    if (redirectToLogin) {
+      window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+    }
+  }
+)
 
 const userSlice = createSlice({
   name: 'user',
@@ -59,28 +88,5 @@ const userSlice = createSlice({
 export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
-
-export const isUserLogged = createSelector(
-  [selectUserStatus, selectUserLogged],
-  (status, logged) => {
-    return status === 'finished' && logged
-  }
-)
-
-const LIMITED_ACCESS_USER = process.env.REACT_APP_LIMITED_ACCESS_USER === 'true'
-export const isUserAuthorized = createSelector([isUserLogged, selectUserData], (logged, user) => {
-  if (!logged) return false
-
-  if (!LIMITED_ACCESS_USER) return true
-
-  return (
-    user?.permissions.find(
-      (permission) =>
-        permission.type === 'application' &&
-        permission.value === 'fishing-map' &&
-        permission.action === 'map.load'
-    ) !== undefined
-  )
-})
 
 export default userSlice.reducer

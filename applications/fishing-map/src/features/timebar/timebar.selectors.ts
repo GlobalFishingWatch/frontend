@@ -3,6 +3,7 @@ import { selectTimebarGraph } from 'features/app/app.selectors'
 import {
   resolveDataviewDatasetResource,
   selectActiveVesselsDataviews,
+  selectEnvironmentalDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectResources, Resource, TrackResourceData } from 'features/resources/resources.slice'
 import { TRACKS_DATASET_TYPE } from 'data/datasets'
@@ -17,6 +18,13 @@ type TimebarTrack = {
   color: string
 }
 
+export const hasStaticHeatmapLayersActive = createSelector(
+  [selectEnvironmentalDataviews],
+  (staticHeatmapDataviews) => {
+    if (!staticHeatmapDataviews) return false
+    return staticHeatmapDataviews.some((d) => d.config?.visible === true)
+  }
+)
 export const selectTracksData = createSelector(
   [selectActiveVesselsDataviews, selectResources],
   (trackDataviews, resources) => {

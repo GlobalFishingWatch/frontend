@@ -1,6 +1,3 @@
-## Sandbox to test packages
+# Sandbox to test packages
 
-set .env with to have it running with lerna
-```
-CI=true
-```
+Check it out online in [https://globalfishingwatch.io/frontend](https://globalfishingwatch.io/frontend)

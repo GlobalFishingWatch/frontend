@@ -20,6 +20,7 @@ import {
 import {
   ExtendedStyle,
   ExtendedStyleMeta,
+  Generators,
   LayerMetadataLegend,
 } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from 'types'
@@ -37,6 +38,12 @@ import useViewport, { useMapBounds } from './map-viewport.hooks'
 import { useMapboxInstance, useMapboxRef } from './map.context'
 import styles from './Map.module.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+
+declare global {
+  interface Window {
+    gfwmap: InteractiveMap
+  }
+}
 
 const mapOptions = {
   customAttribution: 'Global Fishing Watch 2020',
@@ -74,38 +81,52 @@ const getLegendLayers = (
       const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
       const dataview = dataviews?.find((d) => d.id === id)
       const isSquareKm = (sublayerLegendMetadata.gridArea as number) > 50000
-      const gridArea = isSquareKm
-        ? (sublayerLegendMetadata.gridArea as number) / 1000000
-        : sublayerLegendMetadata.gridArea
-      const gridAreaFormatted = gridArea
-        ? formatI18nNumber(gridArea, {
-            style: 'unit',
-            unit: isSquareKm ? 'kilometer' : 'meter',
-            unitDisplay: 'short',
-          })
-        : ''
+      let label = sublayerLegendMetadata.unit
+      if (!label) {
+        const gridArea = isSquareKm
+          ? (sublayerLegendMetadata.gridArea as number) / 1000000
+          : sublayerLegendMetadata.gridArea
+        const gridAreaFormatted = gridArea
+          ? formatI18nNumber(gridArea, {
+              style: 'unit',
+              unit: isSquareKm ? 'kilometer' : 'meter',
+              unitDisplay: 'short',
+            })
+          : ''
+        label = `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}`
+      }
       const sublayerLegend: LegendLayer | LegendLayerBivariate = {
         ...sublayerLegendMetadata,
         id: `legend_${id}`,
         color: layer.metadata?.color || dataview?.config?.color || 'red',
-        label: `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}`,
+        label,
       }
 
-      const getHoveredFeatureValueForSublayerIndex = (index: number): number => {
-        const hoveredFeature = hoveredEvent?.features?.find(
-          (f) => f.temporalgrid?.sublayerIndex === index
-        )
-        return hoveredFeature?.value
-      }
+      const generatorType = layer.metadata?.generatorType
 
-      // Both bivariate sublayers come in the same sublayerLegend (see getLegendsBivariate in LC)
-      if (sublayerLegend.type === 'bivariate') {
-        sublayerLegend.currentValues = [
-          getHoveredFeatureValueForSublayerIndex(0),
-          getHoveredFeatureValueForSublayerIndex(1),
-        ]
-      } else {
-        sublayerLegend.currentValue = getHoveredFeatureValueForSublayerIndex(sublayerIndex)
+      if (generatorType === Generators.Type.Heatmap) {
+        const value = hoveredEvent?.features?.find(
+          (f) => f.generatorId === layer.metadata?.generatorId
+        )?.value
+        if (value) {
+          sublayerLegend.currentValue = value
+        }
+      } else if (generatorType === Generators.Type.HeatmapAnimated) {
+        const getHoveredFeatureValueForSublayerIndex = (index: number): number => {
+          const hoveredFeature = hoveredEvent?.features?.find(
+            (f) => f.temporalgrid?.sublayerIndex === index
+          )
+          return hoveredFeature?.value
+        }
+        // Both bivariate sublayers come in the same sublayerLegend (see getLegendsBivariate in LC)
+        if (sublayerLegend.type === 'bivariate') {
+          sublayerLegend.currentValues = [
+            getHoveredFeatureValueForSublayerIndex(0),
+            getHoveredFeatureValueForSublayerIndex(1),
+          ]
+        } else {
+          sublayerLegend.currentValue = getHoveredFeatureValueForSublayerIndex(sublayerIndex)
+        }
       }
       return sublayerLegend
     })
@@ -159,6 +180,9 @@ const MapWrapper = (): React.ReactElement | null => {
     style?.metadata
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
+  const onMouseOut = useCallback(() => {
+    setHoveredEvent(null)
+  }, [])
 
   const { viewport, onViewportChange } = useViewport()
 
@@ -172,6 +196,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const layersWithLegend = getLegendLayers(style, dataviews, hoveredEvent)
 
   const debugOptions = useSelector(selectDebugOptions)
+
   const getRulersCursor = useCallback(() => {
     return 'crosshair'
   }, [])
@@ -187,19 +212,27 @@ const MapWrapper = (): React.ReactElement | null => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapInstance, debugOptions])
 
+  useEffect(() => {
+    if (mapRef.current) {
+      // Used for the screeenshot callback for the 'idle' event to generate the image once loaded
+      window.gfwmap = mapRef.current.getMap()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapRef.current])
+
   return (
     <div className={styles.container}>
-      <MapScreenshot />
+      {<MapScreenshot map={mapRef.current?.getMap()} />}
       {style && (
         <InteractiveMap
           disableTokenWarning={true}
           ref={mapRef}
           width="100%"
           height="100%"
+          zoom={viewport.zoom}
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
-          zoom={viewport.zoom}
           onViewportChange={onViewportChange}
           mapStyle={style}
           mapOptions={mapOptions}
@@ -210,6 +243,7 @@ const MapWrapper = (): React.ReactElement | null => {
           onClick={onMapClick}
           onHover={onMapHover}
           onError={handleError}
+          onMouseOut={onMouseOut}
           transitionDuration={viewport.transitionDuration}
         >
           {clickedEvent && (
@@ -241,7 +275,7 @@ const MapWrapper = (): React.ReactElement | null => {
               labelComponent={
                 <span className={styles.legendLabel}>
                   {legend.label}
-                  <sup>2</sup>
+                  {legend.gridArea && <sup>2</sup>}
                 </span>
               }
             />,

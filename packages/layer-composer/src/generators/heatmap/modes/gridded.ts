@@ -1,4 +1,4 @@
-import { Layer } from 'mapbox-gl'
+import { Layer, SymbolLayout } from 'mapbox-gl'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { TimeChunk, TimeChunks } from '../util/time-chunks'
 import { Group } from '../../../types'
@@ -103,11 +103,11 @@ export default function gridded(
           source: timeChunk.id,
           'source-layer': 'temporalgrid',
           layout: {
-            'text-field': exprDebugText as any,
+            'text-field': exprDebugText,
             'text-font': ['Roboto Mono Light'],
             'text-size': 8,
             'text-allow-overlap': true,
-          },
+          } as SymbolLayout,
           paint: {
             'text-halo-color': 'hsl(320, 0%, 100%)',
             'text-halo-width': 2,

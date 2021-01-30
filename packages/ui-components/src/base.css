@@ -75,6 +75,7 @@ body {
   height: 100%;
   font: var(--font-M);
   color: var(--color-primary-blue);
+  overflow-anchor: auto;
 }
 
 /* * {
@@ -99,6 +100,10 @@ a,
 a:visited {
   color: inherit;
   text-decoration: none;
+}
+
+button {
+  color: inherit;
 }
 
 ol,

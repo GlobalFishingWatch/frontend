@@ -1,5 +1,76 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.17.7
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.11.1
+
+## 0.17.6
+
+### Patch Changes
+
+- fix tabs crash when no activeTab
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.11.4
+
+## 0.17.5
+
+### Patch Changes
+
+- 4f8269c2: [WIP] Polish 🇵🇱
+- Updated dependencies [4f8269c2]
+  - @globalfishingwatch/ui-components@2.11.3
+
+## 0.17.4
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.11.0
+
+## 0.17.3
+
+### Patch Changes
+
+- d160e84a: update dependencies
+- Updated dependencies [d160e84a]
+  - @globalfishingwatch/layer-composer@4.10.4
+
+## 0.17.2
+
+### Patch Changes
+
+- 2d0cdffa: update dependencies
+- Updated dependencies [2d0cdffa]
+- Updated dependencies [2d0cdffa]
+- Updated dependencies [2d0cdffa]
+- Updated dependencies [2d0cdffa]
+  - @globalfishingwatch/layer-composer@4.10.3
+  - @globalfishingwatch/api-types@2.4.2
+  - @globalfishingwatch/react-hooks@4.4.4
+  - @globalfishingwatch/ui-components@2.11.1
+
+## 0.17.1
+
+### Patch Changes
+
+- make ocean-areas functions syncronous
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ocean-areas@0.1.0
+
+## 0.17.0
+
+### Minor Changes
+
+- new Tabs component
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.11.0
+
 ## 0.16.11
 
 ### Patch Changes

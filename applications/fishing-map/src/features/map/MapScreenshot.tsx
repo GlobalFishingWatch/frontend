@@ -1,87 +1,96 @@
-import React, { Fragment, memo, useEffect, useLayoutEffect, useRef } from 'react'
+import React, { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { useMapImage } from 'features/map/map.hooks'
-import { useScreenshotConnect } from 'features/app/app.hooks'
-// import { setPrintStyles } from 'utils/dom'
+import { getParser } from 'bowser'
+import debounce from 'lodash/debounce'
+import { Map } from 'mapbox-gl'
 import { getCSSVarValue } from 'utils/dom'
-import { useMapboxRef } from './map.context'
 import styles from './Map.module.css'
 
-function MapScreenshot() {
-  const { screenshotMode, setScreenshotMode } = useScreenshotConnect()
-  const mapboxRef = useMapboxRef()
-  const documentFocus = useRef<boolean>(true)
-  const printSize = useRef<{ width: string; height: string }>({ width: '17in', height: '17in' })
-  const imgMap = useMapImage(screenshotMode ? mapboxRef.current?.getMap() : null)
+declare global {
+  interface Window {
+    chrome: any
+  }
+}
+
+type PrintSize = {
+  px: number
+  in: string
+}
+
+const browser = getParser(window.navigator.userAgent)
+const isPrintSupported = browser.satisfies({
+  chrome: '>22',
+  opera: '>30',
+  edge: '>79',
+})
+
+export const getMapImage = (map: Map): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    if (!map) {
+      reject('No map instance found')
+    }
+    map.once('render', () => {
+      const canvas = map.getCanvas()
+      resolve(canvas.toDataURL())
+    })
+    // trigger render
+    ;(map as any)._render()
+  })
+}
+
+function MapScreenshot({ map }: { map: Map }) {
+  const [screenshotImage, setScreenshotImage] = useState<string | null>(null)
+  const printSize = useRef<{ width: PrintSize; height: PrintSize } | undefined>()
 
   useLayoutEffect(() => {
     const pixelPerInch = window.devicePixelRatio * 96
     const baseSize = parseInt(getCSSVarValue('--base-font-size')) || 10
     const timebarSize = parseFloat(getCSSVarValue('--timebar-size') || '7.2') * baseSize
+    const height = window.innerHeight - timebarSize
     printSize.current = {
-      width: `${window.innerWidth / pixelPerInch}in`,
-      height: `${(window.innerHeight - timebarSize) / pixelPerInch}in`,
+      width: {
+        px: window.innerWidth,
+        in: `${window.innerWidth / pixelPerInch}in`,
+      },
+      height: {
+        in: `${height / pixelPerInch}in`,
+        px: height,
+      },
     }
   }, [])
 
   useEffect(() => {
-    if (screenshotMode && imgMap && documentFocus.current === true) {
-      window.print()
+    const handleIdle = debounce(() => {
+      getMapImage(map).then((image) => {
+        setScreenshotImage(image)
+      })
+    }, 800)
+
+    if (map) {
+      map.on('idle', handleIdle)
     }
-  }, [imgMap, screenshotMode])
-
-  useEffect(() => {
-    const afterPrintCb = () => setScreenshotMode(false)
-    const afterPrint: any = window.addEventListener('afterprint', afterPrintCb)
-
-    // if (window.matchMedia) {
-    //   const mediaQueryList = window.matchMedia('print')
-    //   mediaQueryList.addEventListener('change', function (mql) {
-    //     if (!mql.matches) {
-    //       afterPrintCb()
-    //     }
-    //   })
-    // }
     return () => {
-      window.removeEventListener('afterprint', afterPrint)
-    }
-  }, [setScreenshotMode])
-
-  useEffect(() => {
-    const enableScreenshotMode = () => {
-      setScreenshotMode(true)
-      documentFocus.current = false
-    }
-    const disableScreenshotMode = () => {
-      setScreenshotMode(false)
-      documentFocus.current = true
-    }
-    const onMouseEnter = document.addEventListener('mouseenter', disableScreenshotMode)
-    const onMouseLeave = document.addEventListener('mouseleave', enableScreenshotMode)
-    const onKeyDown = document.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P')) {
-        enableScreenshotMode()
+      if (map) {
+        map.off('idle', handleIdle)
       }
-    })
-    return () => {
-      document.removeEventListener('mouselenter', onMouseEnter as any)
-      document.removeEventListener('mouseleave', onMouseLeave as any)
-      document.removeEventListener('keydown', onKeyDown as any)
     }
-  }, [setScreenshotMode])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map])
 
-  if (!screenshotMode || !imgMap) return null
+  if (!screenshotImage) return null
 
   // insert the image just below the canvas
   const canvasDomElement = document.querySelector('.mapboxgl-canvas-container')
   if (!canvasDomElement) return null
-
+  const size = isPrintSupported
+    ? `${printSize.current?.width.in} ${printSize.current?.height.in}`
+    : 'landscape'
   return createPortal(
     <Fragment>
-      <img className={styles.screenshot} src={imgMap} alt="map screenshot" />
+      <img className={styles.screenshot} src={screenshotImage} alt="map screenshot" />
       <style>
         {`@page {
-          size: ${printSize.current.width} ${printSize.current.height};
+          size: ${size};
           margin: 0;
         }`}
       </style>

@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types/dist'
+import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
 import {
   selectDataviewInstancesMerged,
@@ -15,6 +16,7 @@ import {
   selectUrlEndQuery,
   selectUrlStartQuery,
   selectQueryParam,
+  selectLocationCategory,
 } from 'routes/routes.selectors'
 import {
   TimebarEvents,
@@ -23,7 +25,8 @@ import {
   WorkspaceState,
   WorkspaceStateProperty,
 } from 'types'
-import { selectUserData } from 'features/user/user.slice'
+import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 
 export const selectViewport = createSelector(
   [
@@ -118,25 +121,41 @@ export const selectWorkspaceAppState = createSelector(
 
 export const selectCustomWorkspace = createSelector(
   [
-    selectUserData,
     selectWorkspace,
     selectViewport,
     selectTimeRange,
+    selectLocationCategory,
     selectWorkspaceAppState,
     selectDataviewInstancesMerged,
   ],
   (
-    user,
     workspace,
     viewport,
     timerange,
+    category,
     state,
     dataviewInstances
   ): WorkspaceUpsert<WorkspaceState> => {
+    const areaName = getOceanAreaName(viewport)
+    const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
+    const start = formatI18nDate(timerange.start as string, {
+      format: dateFormat,
+    })
+      .replace(',', '')
+      .replace('.', '')
+    const end = formatI18nDate(timerange.end as string, {
+      format: dateFormat,
+    })
+      .replace(',', '')
+      .replace('.', '')
+
+    const name = `From ${start} to ${end} near ${areaName}`
     return {
       ...workspace,
-      name: `user_${user?.id}_${Date.now()}`,
+      name,
       app: APP_NAME,
+      public: true,
+      category,
       aoi: undefined,
       dataviews: workspace?.dataviews?.map(({ id }) => id as number),
       viewport,

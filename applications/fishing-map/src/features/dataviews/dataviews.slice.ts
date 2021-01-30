@@ -8,6 +8,7 @@ import { RootState } from 'store'
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
   async (ids: number[], { rejectWithValue }) => {
+    // TODO fetch new dataviews only
     try {
       let dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${ids.join(',')}`)
       if (process.env.REACT_APP_USE_LOCAL_DATAVIEWS === 'true') {
@@ -16,7 +17,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
       }
       return dataviews
     } catch (e) {
-      return rejectWithValue(ids.join(','))
+      return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   }
 )
@@ -27,7 +28,7 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
       const dataview = await GFWAPI.fetch<Dataview>(`/v1/dataviews/${id}`)
       return dataview
     } catch (e) {
-      return rejectWithValue(id)
+      return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
     }
   }
 )
@@ -49,5 +50,7 @@ export const { selectAll: selectDataviews, selectById } = entityAdapter.getSelec
 export const selectDataviewById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
 )
+
+export const selectDataviewsStatus = (state: RootState) => state.dataviews.status
 
 export default dataviewsSlice.reducer

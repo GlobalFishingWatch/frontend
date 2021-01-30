@@ -1,4 +1,4 @@
-import { Style, AnySourceImpl, Layer } from 'mapbox-gl'
+import { Style, AnySourceImpl, Layer, SymbolPaint, AnyPaint } from 'mapbox-gl'
 import Generators from './generators'
 import { flatObjectArrays, layersDictToArray } from './utils'
 import {
@@ -7,6 +7,8 @@ import {
   LayerComposerOptions,
   GeneratorStyles,
   Generator,
+  ExtendedStyle,
+  ExtendedStyleMeta,
 } from './types'
 import {
   GeneratorConfig,
@@ -68,14 +70,14 @@ class LayerComposer {
     )
   }
 
-  _getGeneratorMetadata = (layers: GeneratorStyles[]): Dictionary<any> => {
+  _getGeneratorMetadata = (layers: GeneratorStyles[]): ExtendedStyleMeta => {
     const metadataLayers = Object.fromEntries(
       layers.filter((layer) => layer.metadata).map((layer) => [layer.id, layer.metadata])
     )
     const metadata = {
-      generatedAt: new Date(),
+      generatedAt: Date.now(),
       layers: metadataLayers,
-      temporalgrid: layers.find((layer) => (layer?.metadata as any)?.temporalgrid)?.metadata,
+      temporalgrid: layers.find((layer) => layer?.metadata?.temporalgrid)?.metadata,
     }
     return metadata
   }
@@ -93,7 +95,7 @@ class LayerComposer {
         newLayer.layout = {}
       }
       if (!newLayer.paint) {
-        newLayer.paint = {}
+        newLayer.paint = {} as AnyPaint
       }
       if (!newLayer.metadata) {
         newLayer.metadata = {
@@ -114,7 +116,10 @@ class LayerComposer {
         if (newLayer.type !== 'symbol') {
           const propName = `${newLayer.type}-opacity`
           const currentOpacity = (newLayer.paint as any)[propName] || 1
-          ;(newLayer.paint as any)[propName] = currentOpacity * generatorConfig.opacity
+          const paint = {
+            [propName]: currentOpacity * generatorConfig.opacity,
+          }
+          newLayer.paint = { ...newLayer.paint, ...paint }
         }
       }
       return newLayer
@@ -151,7 +156,7 @@ class LayerComposer {
   }
 
   // Latest step in the workflow which compose the output needed for mapbox-gl
-  _getStyleJson(sources = {}, layers = {}, metadata = {}): Style {
+  _getStyleJson(sources = {}, layers = {}, metadata = {}): ExtendedStyle {
     return {
       version: this.version,
       glyphs: this.glyphs,

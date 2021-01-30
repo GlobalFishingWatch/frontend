@@ -3,6 +3,10 @@
   align-items: center;
 }
 
+.container.disabled {
+  cursor: not-allowed;
+}
+
 .inline {
   display: inline-flex;
 }
@@ -20,10 +24,6 @@
 
 .Radio:focus {
   box-shadow: var(--box-shadow-highlight);
-}
-
-.Radio:disabled {
-  cursor: not-allowed;
 }
 
 .Radio .nib {
@@ -62,6 +62,10 @@
   opacity: var(--opacity-secondary);
   color: var(--color-primary-blue);
   text-transform: none;
+}
+
+.disabled .Label {
+  pointer-events: none;
 }
 
 .active {

@@ -1,5 +1,49 @@
 # @globalfishingwatch/ui-components
 
+## 2.12.0
+
+### Minor Changes
+
+- af016529: support disabled multiselect component
+
+## 2.11.5
+
+### Patch Changes
+
+- support button href links
+
+## 2.11.4
+
+### Patch Changes
+
+- fix tabs crash when no activeTab
+
+## 2.11.3
+
+### Patch Changes
+
+- 4f8269c2: [WIP] Polish 🇵🇱
+
+## 2.11.2
+
+### Patch Changes
+
+- use https for gfw menu logo
+
+## 2.11.1
+
+### Patch Changes
+
+- 2d0cdffa: add icons
+- Updated dependencies [2d0cdffa]
+  - @globalfishingwatch/layer-composer@4.10.3
+
+## 2.11.0
+
+### Minor Changes
+
+- new Tabs component
+
 ## 2.10.1
 
 ### Patch Changes

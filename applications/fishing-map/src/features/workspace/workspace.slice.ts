@@ -11,14 +11,21 @@ import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
 import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
-import { selectUrlDataviewInstances, selectVersion } from 'routes/routes.selectors'
-import { HOME } from 'routes/routes'
+import {
+  selectLocationCategory,
+  selectLocationType,
+  selectUrlDataviewInstances,
+  selectVersion,
+} from 'routes/routes.selectors'
+import { WORKSPACE, HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace } from 'features/app/app.selectors'
-import { getWorkspaceEnv } from 'data/workspaces'
+import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
+import { AsyncError } from 'utils/async-slice'
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
+  error: AsyncError
   data: Workspace<WorkspaceState> | null
   // used to identify when someone shared its own version of the workspace
   custom: boolean
@@ -26,8 +33,22 @@ interface WorkspaceSliceState {
 
 const initialState: WorkspaceSliceState = {
   status: AsyncReducerStatus.Idle,
+  error: {},
   data: null,
   custom: false,
+}
+
+type RejectedActionPayload = {
+  workspace: Workspace<WorkspaceState>
+  error: AsyncError
+}
+
+export const getDefaultWorkspace = () => {
+  const workspaceEnv = getWorkspaceEnv()
+  const workspace = import(`../../data/default-workspaces/workspace.${workspaceEnv}`).then(
+    (m) => m.default
+  )
+  return workspace as Promise<Workspace<WorkspaceState>>
 }
 
 export const getDatasetByDataview = (
@@ -43,41 +64,64 @@ export const getDatasetByDataview = (
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
-  async (workspaceId: number, { dispatch, getState }) => {
+  async (workspaceId: string, { dispatch, getState, rejectWithValue }) => {
     const state = getState() as RootState
     const version = selectVersion(state)
+    const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
-    const workspaceEnv = getWorkspaceEnv()
-    const workspace = workspaceId
-      ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`)
-      : ((await import(`./workspace.default.${workspaceEnv}`).then(
-          (m) => m.default
-        )) as Workspace<WorkspaceState>)
 
-    const dataviewIds = [
-      ...(workspace.dataviews?.map(({ id }) => id as number) || []),
-      ...uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId)),
-    ]
-
-    let dataviews = []
-    if (dataviewIds) {
-      const { payload }: any = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
-      if (payload?.length) {
-        dataviews = payload
+    try {
+      let workspace = workspaceId
+        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`)
+        : null
+      if (!workspace && locationType === HOME) {
+        workspace = await getDefaultWorkspace()
       }
-    }
-    const dataviewIntances = [
-      ...dataviews,
-      ...(workspace.dataviewInstances || []),
-      ...(urlDataviewInstances || []),
-    ]
 
-    const datasets = getDatasetByDataview(dataviewIntances)
+      if (!workspace) {
+        return
+      }
+      const dataviewIds = [
+        ...(workspace.dataviews?.map(({ id }) => id as number) || []),
+        ...uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId)),
+      ]
 
-    if (datasets?.length) {
-      await dispatch(fetchDatasetsByIdsThunk(datasets))
+      let dataviews = []
+      if (dataviewIds?.length) {
+        const { payload }: any = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
+        if (payload?.length) {
+          dataviews = payload
+        }
+      }
+      const dataviewIntances = [
+        ...dataviews,
+        ...(workspace.dataviewInstances || []),
+        ...(urlDataviewInstances || []),
+      ]
+
+      const datasets = getDatasetByDataview(dataviewIntances)
+
+      if (datasets?.length) {
+        const { error, payload }: any = await dispatch(fetchDatasetsByIdsThunk(datasets))
+        if (error) {
+          return rejectWithValue({ workspace, error: payload })
+        }
+      }
+
+      const locationCategory = selectLocationCategory(state)
+      if (workspace.viewport && locationType !== HOME) {
+        dispatch(
+          updateLocation(locationType, {
+            payload: { category: locationCategory, workspaceId: workspace.id },
+            query: { ...workspace.viewport },
+            replaceQuery: true,
+          })
+        )
+      }
+      return workspace
+    } catch (e) {
+      return rejectWithValue({ error: e as AsyncError })
     }
-    return workspace
   }
 )
 
@@ -86,21 +130,45 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
   async (_, { dispatch, getState }) => {
     const state = getState() as RootState
     const mergedWorkspace = selectCustomWorkspace(state)
-    const version = selectVersion(state)
-    const workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
-      `/${version}/workspaces`,
-      {
-        method: 'POST',
-        body: mergedWorkspace,
-      } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
-    )
-    dispatch(
-      updateLocation(HOME, {
-        payload: { workspaceId: workspaceUpdated.id },
-        query: {},
-        replaceQuery: true,
-      })
-    )
+
+    const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
+      let workspaceUpdated
+      try {
+        const version = selectVersion(state)
+        const name = tries > 0 ? mergedWorkspace.name + `_${tries}` : mergedWorkspace.name
+        workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces`, {
+          method: 'POST',
+          body: { ...mergedWorkspace, name },
+        } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
+      } catch (e) {
+        // Means we already have a workspace with this name
+        if (e.status === 400) {
+          return await saveWorkspace(tries + 1)
+        }
+        throw e
+      }
+      return workspaceUpdated
+    }
+
+    const workspaceUpdated = await saveWorkspace()
+    const locationType = selectLocationType(state)
+    const locationCategory = selectLocationCategory(state) || WorkspaceCategories.FishingActivity
+    if (workspaceUpdated) {
+      dispatch(
+        updateLocation(locationType === HOME ? WORKSPACE : locationType, {
+          payload: {
+            category: locationCategory,
+            workspaceId: workspaceUpdated.id,
+          },
+          query: {
+            latitude: workspaceUpdated.viewport.latitude,
+            longitude: workspaceUpdated.viewport.longitude,
+            zoom: workspaceUpdated.viewport.zoom,
+          },
+          replaceQuery: true,
+        })
+      )
+    }
     return workspaceUpdated
   }
 )
@@ -125,8 +193,15 @@ const workspaceSlice = createSlice({
         state.data = action.payload
       }
     })
-    builder.addCase(fetchWorkspaceThunk.rejected, (state) => {
+    builder.addCase(fetchWorkspaceThunk.rejected, (state, action) => {
+      const { workspace, error } = action.payload as RejectedActionPayload
       state.status = AsyncReducerStatus.Error
+      if (workspace) {
+        state.data = workspace
+      }
+      if (error) {
+        state.error = error
+      }
     })
     builder.addCase(saveCurrentWorkspaceThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
@@ -137,6 +212,7 @@ const workspaceSlice = createSlice({
       if (action.payload) {
         state.data = action.payload
       }
+      state.custom = false
     })
     builder.addCase(saveCurrentWorkspaceThunk.rejected, (state) => {
       state.status = AsyncReducerStatus.Finished

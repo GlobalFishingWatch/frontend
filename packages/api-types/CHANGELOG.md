@@ -1,5 +1,29 @@
 # @globalfishingwatch/api-types
 
+## 2.6.0
+
+### Minor Changes
+
+- af016529: aoi id and dataset schema types
+
+## 2.5.1
+
+### Patch Changes
+
+- include public in workspace types definition
+
+## 2.5.0
+
+### Minor Changes
+
+- include workspace category
+
+## 2.4.2
+
+### Patch Changes
+
+- 2d0cdffa: include ownerId in workspace
+
 ## 2.4.1
 
 ### Patch Changes

@@ -2,15 +2,13 @@
   "name": "@globalfishingwatchapp/vessel-history",
   "version": "0.0.1",
   "author": "satellitestudio <contact@satellitestud.io>",
-  "homepage": "http://globalfishingwatch.io/vessel-history",
   "private": true,
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test --env=jsdom",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "CI=true react-scripts test --passWithNoTests",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.2.4",
@@ -71,6 +69,7 @@
     "@typescript-eslint/eslint-plugin": "^4.6.1",
     "@typescript-eslint/parser": "^4.6.1",
     "@typescript-eslint/scope-manager": "^4.6.0",
+    "babel-eslint": "^10.1.0",
     "eslint": "7.12.1",
     "eslint-config-prettier": "6.15.0",
     "eslint-config-react-app": "6.0.0",
@@ -91,6 +90,31 @@
     "stylelint-config-css-modules": "^2.2.0",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^20.0.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@globalfishingwatch/linting/typescript"
+    ],
+    "ignorePatterns": "public/"
+  },
+  "prettier": "@globalfishingwatch/linting/prettier",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint -c ./.eslintrc.js --fix"
+    ],
+    "*.css": [
+      "stylelint --fix",
+      "stylelint --syntax=scss --fix"
+    ],
+    "*.scss": [
+      "prettier --write",
+      "stylelint --syntax=scss --fix"
+    ]
   },
   "browserslist": {
     "production": [

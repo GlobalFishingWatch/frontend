@@ -2,6 +2,7 @@ import React, { memo } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
+import { TooltipTypes } from '../types/types'
 import styles from './Radio.module.css'
 
 interface RadioProps {
@@ -9,7 +10,7 @@ interface RadioProps {
   label?: string
   disabled?: boolean
   onClick: (event: React.MouseEvent) => void
-  tooltip?: React.ReactChild | React.ReactChild[] | string
+  tooltip?: TooltipTypes
   tooltipPlacement?: Placement
   className?: string
   labelClassname?: string
@@ -28,7 +29,9 @@ function Radio(props: RadioProps) {
   } = props
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
-      <div className={cx(styles.container, { [styles.inline]: !label })}>
+      <div
+        className={cx(styles.container, { [styles.inline]: !label, [styles.disabled]: disabled })}
+      >
         <button
           type="button"
           role="radio"

@@ -1,5 +1,35 @@
 # @globalfishingwatch/layer-composer
 
+## 4.11.1
+
+### Patch Changes
+
+- include generatedAt date.now() value
+
+## 4.11.0
+
+### Minor Changes
+
+- interactive heatmap layer with featureState
+
+## 4.10.4
+
+### Patch Changes
+
+- d160e84a: support different order group for heatmap layers
+
+## 4.10.3
+
+### Patch Changes
+
+- 2d0cdffa: fix typings
+
+## 4.10.2
+
+### Patch Changes
+
+- dont force presence color ramp
+
 ## 4.10.1
 
 ### Patch Changes

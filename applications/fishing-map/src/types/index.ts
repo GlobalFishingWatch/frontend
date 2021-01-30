@@ -22,6 +22,7 @@ export type WorkspaceStateProperty =
   | 'timebarEvents'
   | 'timebarGraph'
   | 'bivariate'
+  | 'version'
 export type WorkspaceParam =
   | WorkspaceViewportParam
   | WorkspaceTimeRangeParam
@@ -37,6 +38,7 @@ export type WorkspaceState = {
   timebarEvents?: TimebarEvents
   timebarGraph?: TimebarGraphs
   bivariate?: boolean
+  version?: string
 }
 export type QueryParams = Partial<WorkspaceViewport> & Partial<WorkspaceTimeRange> & WorkspaceState
 

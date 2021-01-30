@@ -1,5 +1,6 @@
 import { FeatureCollection } from 'geojson'
 import { StringUnitLength } from 'luxon'
+import { AnySourceData, Layer } from 'mapbox-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
 
 export enum Type {
@@ -130,9 +131,10 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
  * Placeholder for a generic set of Mapbox GL layers (consisting of one or more sources and one or mor layers)
  */
 export interface GlGeneratorConfig extends GeneratorConfig {
+  id: string
   type: Type.GL
-  sources?: any
-  layers?: any
+  sources?: AnySourceData[]
+  layers?: Layer[]
 }
 
 /**

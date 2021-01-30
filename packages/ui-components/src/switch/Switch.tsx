@@ -1,14 +1,10 @@
-import React, { MouseEvent, memo } from 'react'
+import React, { memo } from 'react'
 import cx from 'classnames'
 import { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
 import { TooltipTypes } from '../types/types'
 import styles from './Switch.module.css'
-
-// TODO Maybe a simple way is to have the Switch component wrap an <input type="checkbox"> so that we can use the React native event
-export interface SwitchEvent extends MouseEvent {
-  active: boolean
-}
+import { SwitchEvent } from '.'
 
 interface SwitchProps {
   active: boolean

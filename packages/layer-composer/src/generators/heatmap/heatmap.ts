@@ -116,6 +116,28 @@ class HeatmapGenerator {
           generatorType: Type.Heatmap,
           gridArea: statsByZoom && statsByZoom.area,
           currentlyAt: pickValueAt,
+          group: config.metadata?.group || Group.Heatmap,
+        },
+      },
+      {
+        id: `${config.id}_interaction`,
+        source: config.id,
+        'source-layer': 'temporalgrid',
+        type: 'line',
+        paint: {
+          'line-color': 'white',
+          'line-width': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            4,
+            ['boolean', ['feature-state', 'click'], false],
+            4,
+            0,
+          ],
+          'line-offset': -2,
+        },
+        metadata: {
+          interactive: false,
           group: Group.Heatmap,
         },
       },

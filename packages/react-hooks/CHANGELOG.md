@@ -1,5 +1,19 @@
 # @globalfishingwatch/react-hooks
 
+## 4.5.0
+
+### Minor Changes
+
+- include unit in useMapInteraction feature
+
+## 4.4.4
+
+### Patch Changes
+
+- 2d0cdffa: match layer-composer version
+- Updated dependencies [2d0cdffa]
+  - @globalfishingwatch/layer-composer@4.10.3
+
 ## 4.4.3
 
 ### Patch Changes

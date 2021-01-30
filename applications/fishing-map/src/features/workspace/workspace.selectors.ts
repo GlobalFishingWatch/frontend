@@ -5,8 +5,8 @@ import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
 import { ResourceQuery } from 'features/resources/resources.slice'
-import { selectDatasets } from 'features/datasets/datasets.slice'
-import { selectDataviews } from 'features/dataviews/dataviews.slice'
+import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
+import { selectDataviews, selectDataviewsStatus } from 'features/dataviews/dataviews.slice'
 import {
   TRACKS_DATASET_TYPE,
   VESSELS_DATASET_TYPE,
@@ -15,6 +15,7 @@ import {
 } from 'data/datasets'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { RootState } from 'store'
+import { PUBLIC_SUFIX } from 'data/config'
 
 export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
   Object.entries(dataview.datasetsConfig || {}).flatMap(([id, value]) => {
@@ -28,9 +29,25 @@ export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
 
 export const selectWorkspace = (state: RootState) => state.workspace.data
 export const selectWorkspaceStatus = (state: RootState) => state.workspace.status
+export const selectWorkspaceError = (state: RootState) => state.workspace.error
 export const selectWorkspaceCustom = (state: RootState) => state.workspace.custom
 
-export const selectWorkspaceId = createSelector([selectWorkspace], (workspace) => {
+export const isWorkspacePublic = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.id.slice(-PUBLIC_SUFIX.length) === PUBLIC_SUFIX
+})
+
+export const isWorkspaceLoading = createSelector(
+  [selectWorkspaceStatus, selectDatasetsStatus, selectDataviewsStatus],
+  (workspaceStatus, datasetsStatus, dataviewsStatus) => {
+    return (
+      workspaceStatus === AsyncReducerStatus.Loading ||
+      datasetsStatus === AsyncReducerStatus.Loading ||
+      dataviewsStatus === AsyncReducerStatus.Loading
+    )
+  }
+)
+
+export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id
 })
 
@@ -180,16 +197,20 @@ export const selectDataviewInstancesResolved = createSelector(
     // resolved array filters to url filters
     dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
       if (dataviewInstance.config?.type === Generators.Type.HeatmapAnimated) {
-        const dataviewInstanceWithUrlFilter = {
-          ...dataviewInstance,
+        const { filters } = dataviewInstance.config
+        if (filters) {
+          const sqlFilters = Object.keys(filters).flatMap((filterKey) => {
+            if (!filters[filterKey]) return []
+            const filterValues = Array.isArray(filters[filterKey])
+              ? filters[filterKey]
+              : [filters[filterKey]]
+            return `${filterKey} IN (${filterValues.map((f: string) => `'${f}'`).join(', ')})`
+          })
+          if (sqlFilters.length) {
+            dataviewInstance.config.filter = sqlFilters.join(' AND ')
+          }
         }
-        if (dataviewInstance.config.filters?.length && dataviewInstanceWithUrlFilter.config) {
-          const flags = dataviewInstanceWithUrlFilter.config.filters
-          dataviewInstanceWithUrlFilter.config.filter = `flag IN (${flags
-            .map((f: string) => `'${f}'`)
-            .join(', ')})`
-        }
-        return dataviewInstanceWithUrlFilter
+        return dataviewInstance
       }
       return dataviewInstance
     })
@@ -249,6 +270,12 @@ export const selectActiveVesselsDataviews = createSelector([selectVesselsDatavie
 
 export const selectContextAreasDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.Context)],
+  (dataviews) => dataviews
+)
+
+export const selectEnvironmentalDataviews = createSelector(
+  // TODO: use explicit categories here instead of generic layer-composer type
+  [selectDataviewInstancesByType(Generators.Type.Heatmap)],
   (dataviews) => dataviews
 )
 
