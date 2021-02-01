@@ -10,13 +10,13 @@ const CELL_VALUES_START_INDEX = 3
 // Values from the 4wings API in intArray form can't be floats, so they are multiplied by a factor, here we get back to the original value
 const VALUE_MULTIPLIER = 100
 
-const getLastDigit = (num) => parseInt(num.toString().slice(-1))
+const getLastDigit = (num: number) => parseInt(num.toString().slice(-1))
 // In order for setFeatureState to work correctly, generate unique IDs across viewport-visible tiles:
 // concatenate last x/z digits and cell increment index (goal is to get numbers as small as possible)
-const generateUniqueId = (x, y, cellId) =>
+const generateUniqueId = (x: number, y: number, cellId: number) =>
   parseInt([getLastDigit(x), getLastDigit(y), cellId].join(''))
 
-const getCellCoords = (tileBBox, cell, numCols) => {
+const getCellCoords = (tileBBox: any, cell: number, numCols: number) => {
   const col = cell % numCols
   const row = Math.floor(cell / numCols)
   const [minX, minY, maxX, maxY] = tileBBox
@@ -30,7 +30,13 @@ const getCellCoords = (tileBBox, cell, numCols) => {
   }
 }
 
-const getPointFeature = (tileBBox, cell, numCols, numRows, addMeta) => {
+const getPointFeature = (
+  tileBBox: any,
+  cell: number,
+  numCols: number,
+  numRows: number,
+  addMeta: boolean
+): any => {
   const [minX, minY] = tileBBox
   const { col, row, width, height } = getCellCoords(tileBBox, cell, numCols)
 
@@ -54,7 +60,13 @@ const getPointFeature = (tileBBox, cell, numCols, numRows, addMeta) => {
   }
 }
 
-const getRectangleFeature = (tileBBox, cell, numCols, numRows, addMeta) => {
+const getRectangleFeature = (
+  tileBBox: any,
+  cell: number,
+  numCols: number,
+  numRows: number,
+  addMeta: boolean
+): any => {
   const [minX, minY] = tileBBox
   const { col, row, width, height } = getCellCoords(tileBBox, cell, numCols)
 
@@ -88,7 +100,23 @@ const getRectangleFeature = (tileBBox, cell, numCols, numRows, addMeta) => {
   }
 }
 
-const getFeature = ({ geomType, tileBBox, cell, numCols, numRows, id, addMeta }) => {
+const getFeature = ({
+  geomType,
+  tileBBox,
+  cell,
+  numCols,
+  numRows,
+  id,
+  addMeta,
+}: {
+  geomType: string
+  tileBBox: any
+  cell: number
+  numCols: number
+  numRows: number
+  id: string
+  addMeta: boolean
+}) => {
   const feature =
     geomType === 'point'
       ? getPointFeature(tileBBox, cell, numCols, numRows, addMeta)
@@ -99,7 +127,11 @@ const getFeature = ({ geomType, tileBBox, cell, numCols, numRows, id, addMeta })
   return feature
 }
 
-const writeValueToFeature = (quantizedTail, valueToWrite, feature) => {
+const writeValueToFeature = (
+  quantizedTail: number,
+  valueToWrite: string | number,
+  feature: any
+) => {
   const propertiesKey = quantizedTail.toString()
   if (valueToWrite !== undefined) feature.properties[propertiesKey] = valueToWrite
 }
@@ -125,7 +157,7 @@ const writeValueToFeature = (quantizedTail, valueToWrite, feature) => {
 //                                            |
 //                                       undefined
 //
-const getBucketIndex = (breaks, value) => {
+const getBucketIndex = (breaks: number[], value: number) => {
   let currentBucketIndex
   for (let bucketIndex = 0; bucketIndex < breaks.length + 1; bucketIndex++) {
     const stopValue =
@@ -141,12 +173,16 @@ const getBucketIndex = (breaks, value) => {
   return currentBucketIndex
 }
 
-const getAddValue = (realValuesSum, breaks) => {
+const getAddValue = (realValuesSum: number, breaks: number[][]) => {
   if (realValuesSum === 0) return undefined
   return breaks ? getBucketIndex(breaks[0], realValuesSum) : realValuesSum
 }
 
-const getCompareValue = (datasetsHighestRealValue, datasetsHighestRealValueIndex, breaks) => {
+const getCompareValue = (
+  datasetsHighestRealValue: number,
+  datasetsHighestRealValueIndex: number,
+  breaks: number[][]
+) => {
   if (datasetsHighestRealValue === 0) return undefined
   if (breaks) {
     // offset each dataset by 10 + add actual bucket value
@@ -160,7 +196,7 @@ const getCompareValue = (datasetsHighestRealValue, datasetsHighestRealValueIndex
   }
 }
 
-const getBivariateValue = (realValues, breaks) => {
+const getBivariateValue = (realValues: number[], breaks: number[][]) => {
   if (realValues[0] === 0 && realValues[1] === 0) return undefined
   if (breaks) {
     //  y: datasetB
@@ -192,17 +228,17 @@ const getBivariateValue = (realValues, breaks) => {
   }
 }
 
-const getLiteralValues = (realValues, numDatasets) => {
+const getLiteralValues = (realValues: number[], numDatasets: number) => {
   if (numDatasets === 1) return realValues
   return `[${realValues.join(',')}]`
 }
 
-const getCumulativeValue = (realValuesSum, cumulativeValuesPaddedStrings) => {
+const getCumulativeValue = (realValuesSum: number, cumulativeValuesPaddedStrings: string[]) => {
   if (realValuesSum === 0) return undefined
   return cumulativeValuesPaddedStrings.join('')
 }
 
-const aggregate = (intArray, options) => {
+const aggregate = (intArray: number[], options: any) => {
   const {
     quantizeOffset = 0,
     tileBBox,
@@ -251,13 +287,11 @@ const aggregate = (intArray, options) => {
   let aggregating = Array(numDatasets).fill([])
   let currentAggregatedValues = Array(numDatasets).fill(0)
 
-  let currentFeatureIndex = 0
   let currentFeature
   let currentFeatureInteractive
   let currentFeatureCell
   let currentFeatureMinTimestamp
   let currentFeatureMaxTimestamp
-  let currentFeatureTimestampDelta
   let featureBufferValuesPos = 0
   let head
   let tail
@@ -288,15 +322,15 @@ const aggregate = (intArray, options) => {
       startOffset = value
     } else if (indexInCell === CELL_END_INDEX) {
       endOffset = value
-      end = start + CELL_VALUES_START_INDEX + (endOffset - startOffset + 1) * numDatasets
+      end =
+        (start as number) +
+        CELL_VALUES_START_INDEX +
+        (endOffset - (startOffset as number) + 1) * numDatasets
     }
     indexInCell++
-    if (i === end - 1) {
-      // if (cellNum === 7958) {
-      //     console.log(intArray.slice(start, end + 1))
-      // }
+    if (i === (end as number) - 1) {
       indexInCell = 0
-      const original = intArray.slice(start, end + 1)
+      const original = intArray.slice(start, (end as number) + 1)
       const padded = new Array(delta * numDatasets).fill(0)
       original[FEATURE_CELLS_START_INDEX] = endOffset + delta
       const merged = original.concat(padded)
@@ -313,7 +347,7 @@ const aggregate = (intArray, options) => {
       if (i % 2 === 0) {
         currentFeatureCell = value
       } else {
-        const uniqueId = generateUniqueId(x, y, currentFeatureCell)
+        const uniqueId = generateUniqueId(x, y, currentFeatureCell as number)
         const featureParams = {
           geomType,
           tileBBox,
@@ -322,7 +356,7 @@ const aggregate = (intArray, options) => {
           numRows,
           id: uniqueId,
         }
-        currentFeature = getFeature(featureParams)
+        currentFeature = getFeature(featureParams as any)
         currentFeature.properties.value = value / VALUE_MULTIPLIER
         features.push(currentFeature)
       }
@@ -334,7 +368,6 @@ const aggregate = (intArray, options) => {
       currentFeatureMinTimestamp = featureIntArray[CELL_START_INDEX]
       currentFeatureMaxTimestamp = featureIntArray[CELL_END_INDEX]
       head = currentFeatureMinTimestamp
-      currentFeatureTimestampDelta = currentFeatureMaxTimestamp - currentFeatureMinTimestamp
       const uniqueId = generateUniqueId(x, y, currentFeatureCell)
       const featureParams = {
         geomType,
@@ -345,9 +378,9 @@ const aggregate = (intArray, options) => {
         id: uniqueId,
         addMeta: true,
       }
-      currentFeature = getFeature(featureParams)
+      currentFeature = getFeature(featureParams as any)
       if (interactive) {
-        currentFeatureInteractive = getFeature({ ...featureParams, addMeta: true })
+        currentFeatureInteractive = getFeature({ ...featureParams, addMeta: true } as any)
       }
 
       if (currentFeature.properties._col === 48 && currentFeature.properties._row === 70) {
@@ -408,15 +441,6 @@ const aggregate = (intArray, options) => {
 
         const quantizedTail = tail - quantizeOffset
 
-        if (
-          currentFeature.properties._col === 48 &&
-          currentFeature.properties._row === 70 &&
-          datasetIndex === numDatasets - 1
-        ) {
-          // console.log(featureIntArray)
-          // console.log(value, realValueAtFrameForDataset, datasetsHighestRealValue)
-          // console.log(head, tail, quantizedTail, value, realValueAtFrameForDataset)
-        }
         if (quantizedTail >= 0 && datasetIndex === numDatasets - 1) {
           let finalValue
 
@@ -427,7 +451,7 @@ const aggregate = (intArray, options) => {
           if (combinationMode === 'compare') {
             finalValue = getCompareValue(
               datasetsHighestRealValue,
-              datasetsHighestRealValueIndex,
+              datasetsHighestRealValueIndex as number,
               breaks
             )
           } else if (combinationMode === 'add') {
@@ -440,7 +464,7 @@ const aggregate = (intArray, options) => {
             finalValue = getCumulativeValue(realValuesSum, cumulativeValuesPaddedStrings)
           }
           // console.log(quantizedTail, finalValue, currentFeature)
-          writeValueToFeature(quantizedTail, finalValue, currentFeature)
+          writeValueToFeature(quantizedTail, finalValue as string | number, currentFeature)
         }
 
         if (datasetIndex === numDatasets - 1) {
@@ -463,7 +487,6 @@ const aggregate = (intArray, options) => {
         featuresInteractive.push(currentFeatureInteractive)
       }
 
-      currentFeatureTimestampDelta = 0
       featureBufferValuesPos = 0
 
       datasetsHighestRealValue = Number.NEGATIVE_INFINITY
@@ -473,12 +496,11 @@ const aggregate = (intArray, options) => {
       aggregating = Array(numDatasets).fill([])
       currentAggregatedValues = Array(numDatasets).fill(0)
 
-      currentFeatureIndex++
       continue
     }
   }
   // console.log(performance.now()- t)
-  const geoJSONs = {
+  const geoJSONs: any = {
     main: {
       type: 'FeatureCollection',
       features,
