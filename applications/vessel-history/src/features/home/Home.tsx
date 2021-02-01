@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import GFWAPI from '@globalfishingwatch/api-client'
+import { logoutUserThunk } from 'features/user/user.slice'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import styles from './Home.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
@@ -16,6 +18,7 @@ interface LoaderProps {
 }
 
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
+  const dispatch = useDispatch()
   const [searching, setSearching] = useState(false)
   const [vessels, setVessels] = useState([])
   const [query, setQuery] = useState('')
@@ -72,7 +75,14 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       <header>
         <Logo></Logo>
         <IconButton type="default" size="default" icon="settings"></IconButton>
-        <IconButton type="default" size="default" icon="logout"></IconButton>
+        <IconButton
+          type="default"
+          size="default"
+          icon="logout"
+          onClick={async () => {
+            dispatch(logoutUserThunk({ redirectToLogin: true }))
+          }}
+        ></IconButton>
       </header>
       <div>
         <div className={styles.searchbar}>
