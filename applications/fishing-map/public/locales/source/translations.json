@@ -18,6 +18,7 @@
     "name": "Name",
     "seeDefault": "See default view",
     "share": "Click to share the current view",
+    "update": "Update",
     "vessel_plural": "Vessels",
     "open_menu": "Open Menu",
     "dismiss": "Dismiss",
@@ -26,7 +27,13 @@
     "fishing": "Fishing"
   },
   "dataset": {
+    "dragActive": "Drop the file here ...",
+    "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
+    "edit": "Edit dataset",
+    "file": "File",
+    "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
     "new": "New dataset",
+    "remove": "Remove dataset",
     "uploadNew": "Upload new dataset"
   },
   "errors": {
@@ -117,8 +124,8 @@
     "transmission": "Transmission"
   },
   "workspace": {
-    "title": "Workspace",
+    "new": "New Workspace",
     "title_plural": "Workspaces",
-    "new": "New Workspace"
+    "title": "Workspace"
   }
 }

@@ -6,9 +6,9 @@ import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 // import Select from '@globalfishingwatch/ui-components/dist/select'
-import { ReactComponent as ZipIcon } from 'assets/zip.svg'
+import { ReactComponent as FilesIcon } from 'assets/icons/files-supported.svg'
 import { USER_CONTEXT_TYPE } from 'data/datasets'
-import { useDatasetsAPI, useNewDatasetModalConnect } from './datasets.hook'
+import { useDatasetsAPI, useDatasetModalConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 
 interface DatasetConfigProps {
@@ -113,6 +113,7 @@ interface DatasetFileProps {
 }
 
 const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' }) => {
+  const { t } = useTranslation()
   const onDropAccepted = useCallback(
     (files) => {
       onFileLoaded(files[0])
@@ -120,26 +121,32 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' 
     [onFileLoaded]
   )
   const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
-    accept: '.zip, .json',
+    accept: '.zip, .geojson, .json',
     onDropAccepted,
   })
   return (
     <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
-      <ZipIcon />
+      <FilesIcon />
       <input {...getInputProps()} />
       {acceptedFiles.length ? (
-        <p className={styles.fileText}>File: {acceptedFiles[0].name}</p>
+        <p className={styles.fileText}>
+          {t('dataset.file', 'File')}: {acceptedFiles[0].name}
+        </p>
       ) : isDragActive ? (
-        <p className={styles.fileText}>Drop the file here ...</p>
+        <p className={styles.fileText}>{t('dataset.dragActive', 'Drop the file here ...')}</p>
       ) : (
         <p className={styles.fileText}>
-          Drop a compressed shapefile here
-          <br />
-          or click to select it.
+          {t('dataset.dragFilePlaceholder', {
+            defaultValue:
+              'Drag and drop a compressed shapefile or geojson here or click to select it',
+            interpolation: { escapeValue: false, useRawValueToEscape: true },
+          })}
         </p>
       )}
       {fileRejections.length > 0 && (
-        <p className={cx(styles.fileText, styles.warning)}>(Only .zip files are allowed)</p>
+        <p className={cx(styles.fileText, styles.warning)}>
+          {t('dataset.fileNotAllowed', '(Only .zip or .geojson files are allowed)')}
+        </p>
       )}
     </div>
   )
@@ -155,7 +162,7 @@ export type DatasetMetadata = {
 
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
-  const { newDatasetModal, dispatchNewDatasetModal } = useNewDatasetModalConnect()
+  const { datasetModal, dispatchDatasetModal } = useDatasetModalConnect()
 
   const [file, setFile] = useState<File | undefined>()
   const [loading, setLoading] = useState(false)
@@ -186,13 +193,13 @@ function NewDataset(): React.ReactElement {
   const onClose = async () => {
     setLoading(false)
     setMetadata(undefined)
-    dispatchNewDatasetModal(false)
+    dispatchDatasetModal(undefined)
   }
 
   return (
     <Modal
       title={t('dataset.uploadNew', 'Upload new dataset')}
-      isOpen={newDatasetModal}
+      isOpen={datasetModal === 'new'}
       contentClassName={styles.modalContainer}
       onClose={onClose}
     >

@@ -85,6 +85,25 @@ export const createDatasetThunk = createAsyncThunk(
   }
 )
 
+export const updateDatasetThunk = createAsyncThunk(
+  'datasets/update',
+  async (partialDataset: Partial<Dataset>) => {
+    const updatedDataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${partialDataset.id}`, {
+      method: 'PATCH',
+      body: partialDataset as any,
+    })
+    return updatedDataset
+  },
+  {
+    condition: (partialDataset) => {
+      if (!partialDataset || !partialDataset.id) {
+        console.warn('To update the dataset you need the id')
+        return false
+      }
+    },
+  }
+)
+
 export const deleteDatasetThunk = createAsyncThunk(
   'datasets/delete',
   async (id: string, { rejectWithValue }) => {
@@ -99,31 +118,41 @@ export const deleteDatasetThunk = createAsyncThunk(
   }
 )
 
+export type DatasetModals = 'new' | 'edit' | undefined
 export interface DatasetsState extends AsyncReducer<Dataset> {
-  newDatasetModal: boolean
+  datasetModal: DatasetModals
+  editingDatasetId: string | undefined
 }
 const initialState: DatasetsState = {
   ...asyncInitialState,
-  newDatasetModal: false,
+  datasetModal: undefined,
+  editingDatasetId: undefined,
 }
 
 const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
   name: 'datasets',
   initialState,
   reducers: {
-    setNewDatasetModal: (state, action: PayloadAction<boolean>) => {
-      state.newDatasetModal = action.payload
+    setDatasetModal: (state, action: PayloadAction<DatasetModals>) => {
+      if (state.datasetModal === 'edit' && action.payload === undefined) {
+        state.editingDatasetId = undefined
+      }
+      state.datasetModal = action.payload
+    },
+    setEditingDatasetId: (state, action: PayloadAction<string>) => {
+      state.editingDatasetId = action.payload
     },
   },
   thunks: {
     fetchThunk: fetchDatasetsByIdsThunk,
     fetchByIdThunk: fetchDatasetByIdThunk,
+    updateThunk: updateDatasetThunk,
     createThunk: createDatasetThunk,
     deleteThunk: deleteDatasetThunk,
   },
 })
 
-export const { resetNewDataset, setNewDatasetData, setNewDatasetModal } = datasetSlice.actions
+export const { setDatasetModal, setEditingDatasetId } = datasetSlice.actions
 
 export const {
   selectAll: selectDatasets,
@@ -137,6 +166,7 @@ export const selectDatasetById = memoize((id: string) =>
 
 export const selectDatasetsStatus = (state: RootState) => state.datasets.status
 export const selectDatasetsStatusId = (state: RootState) => state.datasets.statusId
-export const selectNewDatasetModal = (state: RootState) => state.datasets.newDatasetModal
+export const selectEditingDatasetId = (state: RootState) => state.datasets.editingDatasetId
+export const selectDatasetModal = (state: RootState) => state.datasets.datasetModal
 
 export default datasetSlice.reducer

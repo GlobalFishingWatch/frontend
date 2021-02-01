@@ -83,6 +83,7 @@
 .fileText {
   line-height: 1.2;
   margin-top: var(--space-S);
+  max-width: 30rem;
 }
 
 .shortSelect {

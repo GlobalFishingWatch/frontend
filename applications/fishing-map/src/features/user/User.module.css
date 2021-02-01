@@ -1,5 +1,11 @@
 .container {
   height: calc(100% - 5.2rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.spinner {
+  flex: 1;
 }
 
 .userInfo {

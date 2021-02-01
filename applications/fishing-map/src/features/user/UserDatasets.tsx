@@ -4,15 +4,29 @@ import { useDispatch, useSelector } from 'react-redux'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { Dataset } from '@globalfishingwatch/api-types'
-import { useNewDatasetModalConnect } from 'features/datasets/datasets.hook'
+import EditDataset from 'features/datasets/EditDataset'
+import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import { deleteDatasetThunk, selectDatasetsStatusId } from 'features/datasets/datasets.slice'
 import styles from './User.module.css'
 
 function UserDatasets({ datasets }: { datasets: Dataset[] }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const { dispatchNewDatasetModal } = useNewDatasetModalConnect()
+  const {
+    datasetModal,
+    editingDatasetId,
+    dispatchDatasetModal,
+    dispatchEditingDatasetId,
+  } = useDatasetModalConnect()
   const datasetStatusId = useSelector(selectDatasetsStatusId)
+
+  const onEditClick = useCallback(
+    async (dataset: Dataset) => {
+      dispatchEditingDatasetId(dataset.id)
+      dispatchDatasetModal('edit')
+    },
+    [dispatchDatasetModal, dispatchEditingDatasetId]
+  )
 
   const onDeleteClick = useCallback(
     async (dataset: Dataset) => {
@@ -28,9 +42,10 @@ function UserDatasets({ datasets }: { datasets: Dataset[] }) {
 
   return (
     <div className={styles.views}>
+      {datasetModal === 'edit' && editingDatasetId !== undefined && <EditDataset />}
       <div className={styles.viewsHeader}>
         <label>Your latest datasets</label>
-        <Button onClick={() => dispatchNewDatasetModal(true)}>
+        <Button type="secondary" onClick={() => dispatchDatasetModal('new')}>
           {t('dataset.new', 'New dataset') as string}
         </Button>
       </div>
@@ -42,10 +57,15 @@ function UserDatasets({ datasets }: { datasets: Dataset[] }) {
               <div>
                 <IconButton icon="info" tooltip={dataset.description} />
                 <IconButton
+                  icon="edit"
+                  tooltip={t('dataset.edit', 'Edit dataset')}
+                  onClick={() => onEditClick(dataset)}
+                />
+                <IconButton
                   icon="delete"
                   type="warning"
                   loading={dataset.id === datasetStatusId}
-                  tooltip="Remove dataset"
+                  tooltip={t('dataset.remove', 'Remove dataset')}
                   onClick={() => onDeleteClick(dataset)}
                 />
               </div>

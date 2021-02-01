@@ -81,9 +81,9 @@ function User() {
       {/* <div className={styles.views}>
         <label>Your private views</label>
       </div> */}
-      {workspacesStatus === AsyncReducerStatus.Loading ||
-      datasetsStatus === AsyncReducerStatus.Loading ? (
-        <Spinner size="small" />
+      {workspacesStatus !== AsyncReducerStatus.Finished ||
+      datasetsStatus !== AsyncReducerStatus.Finished ? (
+        <Spinner size="small" className={styles.spinner} />
       ) : (
         <Fragment>
           <UserWorkspaces workspaces={workspaces} />

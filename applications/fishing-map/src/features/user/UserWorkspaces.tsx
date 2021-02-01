@@ -12,8 +12,10 @@ function UserWorkspaces({ workspaces }: { workspaces: Workspace[] }) {
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
-        <label>{t('common.workspaces', 'Workspaces')}</label>
-        <Button disabled>{t('workspaces.new', 'New Workspace') as string}</Button>
+        <label>{t('workspace.title_plural', 'Workspaces')}</label>
+        <Button type="secondary" disabled tooltip="Coming soon">
+          {t('workspace.new', 'New Workspace') as string}
+        </Button>
       </div>
       <ul>
         {workspaces?.map((workspace) => {

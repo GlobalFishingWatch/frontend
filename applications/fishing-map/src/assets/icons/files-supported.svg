@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="115" height="64">
+  <g fill="none" fill-rule="evenodd">
+    <g>
+      <g>
+        <g>
+          <g>
+            <path stroke="#163F89" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M68 41V1h34.5L114 12.5V63H68v-5"/>
+            <path stroke="#163F89" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M102.5 1L114 12.5h-11.5zM64 41h41v17H64z"/>
+            <text fill="#163F89" font-family="Roboto-Regular, Roboto" font-size="12" transform="translate(64 1)">
+              <tspan x="3.1" y="53">.JSON</tspan>
+            </text>
+          </g>
+          <g>
+            <path stroke="#163F89" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M5 41V1h47a2 2 0 012 2v13.7a2 2 0 01-.9 1.6L51 19.7h0V63H5v-5"/>
+            <path stroke="#163F89" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M5 41V1h43v62H5v-5"/>
+            <path stroke="#163F89" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M37.5 4h5v10h-5z"/>
+            <path stroke="#163F89" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M39.5 11h1v1h-1zM39.5 1h1v4h-1zM1 41h36v17H1z"/>
+            <path fill="#163F89" fill-rule="nonzero" d="M7.5 54L8 54l.2-.5c0-.2 0-.3-.2-.4-.1-.2-.3-.2-.5-.2s-.4 0-.5.2l-.2.4.2.5.5.2zm8.5 0v-1h-5l4.8-6.7v-.8h-6v.9h4.6l-4.6 6.8v.8H16zm2.7 0v-8.5h-1V54h1zm3.3 0v-3.3h2c1 0 1.7-.3 2.3-.7.5-.5.7-1.1.7-2 0-.7-.2-1.3-.8-1.8-.5-.5-1.2-.7-2.2-.7H21V54H22zm2-4.3h-2v-3.3h2.1c.6 0 1 .2 1.3.5.3.3.5.7.5 1.2s-.2 1-.5 1.2c-.3.3-.8.4-1.4.4z"/>
+            <path stroke="#163F89" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M40 14.5v2M40 19.5v2M40 24.5v2"/>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -5,25 +5,38 @@ import { Dataset } from '@globalfishingwatch/api-types/dist'
 import {
   CreateDataset,
   createDatasetThunk,
+  DatasetModals,
   deleteDatasetThunk,
-  selectNewDatasetModal,
-  setNewDatasetModal,
+  selectDatasetModal,
+  selectEditingDatasetId,
+  setDatasetModal,
+  setEditingDatasetId,
+  updateDatasetThunk,
 } from './datasets.slice'
 
-export const useNewDatasetModalConnect = () => {
+export const useDatasetModalConnect = () => {
   const dispatch = useDispatch()
-  const newDatasetModal = useSelector(selectNewDatasetModal)
+  const datasetModal = useSelector(selectDatasetModal)
+  const editingDatasetId = useSelector(selectEditingDatasetId)
 
-  const dispatchNewDatasetModal = useCallback(
-    (modalOpen: boolean) => {
-      dispatch(setNewDatasetModal(modalOpen))
+  const dispatchDatasetModal = useCallback(
+    (datasetModal: DatasetModals) => {
+      dispatch(setDatasetModal(datasetModal))
+    },
+    [dispatch]
+  )
+  const dispatchEditingDatasetId = useCallback(
+    (id: string) => {
+      dispatch(setEditingDatasetId(id))
     },
     [dispatch]
   )
 
   return {
-    newDatasetModal,
-    dispatchNewDatasetModal,
+    datasetModal,
+    dispatchDatasetModal,
+    editingDatasetId,
+    dispatchEditingDatasetId,
   }
 }
 
@@ -38,6 +51,14 @@ export const useDatasetsAPI = () => {
     [dispatch]
   )
 
+  const dispatchUpdateDataset = useCallback(
+    async (updatedDataset: Partial<Dataset>): Promise<Dataset> => {
+      const { payload }: any = await dispatch(updateDatasetThunk(updatedDataset))
+      return payload
+    },
+    [dispatch]
+  )
+
   const dispatchDeleteDataset = useCallback(
     (id: string) => {
       dispatch(deleteDatasetThunk(id))
@@ -45,5 +66,5 @@ export const useDatasetsAPI = () => {
     [dispatch]
   )
 
-  return { dispatchCreateDataset, dispatchDeleteDataset }
+  return { dispatchCreateDataset, dispatchUpdateDataset, dispatchDeleteDataset }
 }
