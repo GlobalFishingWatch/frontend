@@ -7,12 +7,8 @@ import TimebarComponent, {
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
 import { useTilesState } from '@globalfishingwatch/react-hooks'
-import {
-  frameToDate,
-  getCellValues,
-  TimeChunk,
-  TimeChunks,
-} from '@globalfishingwatch/layer-composer'
+import { frameToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
+import { getCellValues } from '@globalfishingwatch/fourwings-aggregate'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useMapboxInstance } from 'features/map/map.context'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'

@@ -3,8 +3,8 @@ export const getCellValues = (rawValues: string) => {
   const values: number[] = rawValues.split(',').map((v) => parseInt(v))
 
   // First two values for a cell are the overall start and end time offsets for all the cell values (in days/hours/10days from start of time)
-  const minCellOffset = values[0]
-  const maxCellOffset = values[1]
+  const minCellOffset = values[1]
+  const maxCellOffset = values[2]
 
   return { values, minCellOffset, maxCellOffset }
 }
@@ -17,7 +17,7 @@ export const getRealValues = (rawValues: number[]) => {
 }
 
 export const getCellArrayIndex = (minCellOffset: number, numSublayers: number, offset: number) => {
-  return 2 + (offset - minCellOffset) * numSublayers
+  return 3 + (offset - minCellOffset) * numSublayers
 }
 
 export const aggregateCell = (
@@ -56,12 +56,6 @@ export const aggregateCell = (
     }
   }
   const realValues = getRealValues(aggregatedValues)
-  if (debug) {
-    console.log(rawValues, frame, delta, quantizeOffset, numSublayers)
-    console.log(values, minCellOffset, maxCellOffset)
-    console.log(startOffset, endOffset, cellStartOffset, cellEndOffset, startAt, endAt)
-    console.log(realValues)
-    debugger
-  }
+
   return realValues
 }

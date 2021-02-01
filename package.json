@@ -95,6 +95,7 @@
     "@globalfishingwatch/layer-composer": "*",
     "@globalfishingwatch/react-hooks": "*",
     "@globalfishingwatch/ui-components": "*",
+    "@globalfishingwatch/fourwings-aggregate": "*",
     "react": "^7.0.1",
     "react-dom": "^17.0.1"
   },

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import debounce from 'lodash/debounce'
-import { Generators, ExtendedStyleMeta, aggregateCell } from '@globalfishingwatch/layer-composer'
+import { Generators, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
+import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
