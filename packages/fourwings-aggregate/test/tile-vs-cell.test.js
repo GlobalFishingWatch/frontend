@@ -39,4 +39,5 @@ const featAggTileRawCellFrame = aggregateCell(
   true
 )
 
-tap.equal(featAggTileCellFrame[0] / 100, featAggTileRawCellFrame[0])
+const datasetIndex = 0
+tap.equal(getRealValue(featAggTileCellFrame[datasetIndex]), featAggTileRawCellFrame[datasetIndex])

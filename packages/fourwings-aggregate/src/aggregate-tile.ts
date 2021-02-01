@@ -382,12 +382,6 @@ const aggregate = (intArray: number[], options: any) => {
         currentFeatureInteractive = getFeature({ ...featureParams, addMeta: true } as any)
       }
 
-      if (currentFeature.properties._col === 48 && currentFeature.properties._row === 70) {
-        // console.log(featureIntArray)
-        // console.log(value, realValueAtFrameForDataset, datasetsHighestRealValue)
-        // console.log(head, tail, quantizedTail, value, realValueAtFrameForDataset)
-      }
-
       for (let i = 3; i < featureIntArray.length; i++) {
         const value = featureIntArray[i]
 
