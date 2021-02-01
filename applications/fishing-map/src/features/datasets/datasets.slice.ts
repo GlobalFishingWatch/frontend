@@ -3,6 +3,7 @@ import memoize from 'lodash/memoize'
 import uniqBy from 'lodash/uniqBy'
 import without from 'lodash/without'
 import kebabCase from 'lodash/kebabCase'
+import { stringify } from 'qs'
 import { Dataset, UploadResponse } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
@@ -27,19 +28,25 @@ export const fetchDatasetByIdThunk = createAsyncThunk(
 
 export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
-  async (ids: string[], { dispatch, rejectWithValue, getState }) => {
+  async (ids: string[] = [], { dispatch, rejectWithValue, getState }) => {
     const existingIds = selectIds(getState() as RootState) as string[]
     const uniqIds = Array.from(new Set([...ids, ...existingIds]))
     try {
+      const workspacesParams = {
+        ...(uniqIds?.length && { ids: uniqIds }),
+        include: 'endpoints',
+        cache: DATASETS_CACHE,
+      }
       const initialDatasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?ids=${uniqIds.join(',')}&include=endpoints&cache=${DATASETS_CACHE}`
+        `/v1/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
       )
       const relatedDatasetsIds = initialDatasets.flatMap(
         (dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || []
       )
       const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...ids).join(',')
+      const relatedWorkspaceParams = { ...workspacesParams, ids: uniqRelatedDatasetsIds }
       const relatedDatasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?ids=${uniqRelatedDatasetsIds}&include=endpoints&cache=${DATASETS_CACHE}`
+        `/v1/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`
       )
       let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
       if (process.env.REACT_APP_USE_DATASETS_MOCK === 'true') {
@@ -129,6 +136,7 @@ export const selectDatasetById = memoize((id: string) =>
 )
 
 export const selectDatasetsStatus = (state: RootState) => state.datasets.status
+export const selectDatasetsStatusId = (state: RootState) => state.datasets.statusId
 export const selectNewDatasetModal = (state: RootState) => state.datasets.newDatasetModal
 
 export default datasetSlice.reducer

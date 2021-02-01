@@ -4,8 +4,10 @@
     "active_before": "Active Before",
     "activity": "Activity",
     "apparentFishing": "Apparent Fishing Effort",
+    "confirm": "Confirm",
     "context_area_plural": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.",
+    "description": "Description",
     "environment": "Environment",
     "hour": "Hour",
     "hour_plural": "hours",
@@ -13,6 +15,7 @@
     "login": "Log in",
     "logout": "Log out",
     "more": "more",
+    "name": "Name",
     "seeDefault": "See default view",
     "share": "Click to share the current view",
     "vessel_plural": "Vessels",
@@ -21,6 +24,10 @@
     "save": "Save",
     "events": "Events",
     "fishing": "Fishing"
+  },
+  "dataset": {
+    "new": "New dataset",
+    "uploadNew": "Upload new dataset"
   },
   "errors": {
     "notSupportedBy": "Not supported by {{list}}",
@@ -55,10 +62,10 @@
   },
   "map": {
     "captureMap": "Capture map",
-    "mapLoadingWait": "Please wait until map loads",
     "change_basemap_default": "Switch to default basemap",
     "change_basemap_satellite": "Switch to satellite basemap",
     "loading": "Map loading",
+    "mapLoadingWait": "Please wait until map loads",
     "rulers_add": "Add rulers",
     "rulers_remove": "Remove all rulers",
     "search": "Search areas",
@@ -108,5 +115,10 @@
     "transmission_plural": "Transmissions",
     "widthRange": "Width range",
     "transmission": "Transmission"
+  },
+  "workspace": {
+    "title": "Workspace",
+    "title_plural": "Workspaces",
+    "new": "New Workspace"
   }
 }

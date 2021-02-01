@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Button from '@globalfishingwatch/ui-components/dist/button'
@@ -11,6 +11,8 @@ import {
 } from 'features/workspaces-list/workspaces-list.slice'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
+import { selectUserDatasets } from 'features/datasets/datasets.selectors'
+import { fetchDatasetsByIdsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import styles from './User.module.css'
 import { fetchUserThunk, GUEST_USER_TYPE, logoutUserThunk, selectUserData } from './user.slice'
 import { isUserLogged, selectUserWorkspaces } from './user.selectors'
@@ -22,6 +24,8 @@ function User() {
   const dispatch = useDispatch()
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
+  const datasets = useSelector(selectUserDatasets)
+  const datasetsStatus = useSelector(selectDatasetsStatus)
   const workspaces = useSelector(selectUserWorkspaces)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
   const [logoutLoading, setLogoutLoading] = useState(false)
@@ -29,6 +33,7 @@ function User() {
   useEffect(() => {
     if (userLogged && userData?.id) {
       dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
+      dispatch(fetchDatasetsByIdsThunk([]))
     }
   }, [dispatch, userData?.id, userLogged])
 
@@ -76,12 +81,15 @@ function User() {
       {/* <div className={styles.views}>
         <label>Your private views</label>
       </div> */}
-      {workspacesStatus === AsyncReducerStatus.Loading ? (
+      {workspacesStatus === AsyncReducerStatus.Loading ||
+      datasetsStatus === AsyncReducerStatus.Loading ? (
         <Spinner size="small" />
       ) : (
-        <UserWorkspaces workspaces={workspaces} />
+        <Fragment>
+          <UserWorkspaces workspaces={workspaces} />
+          <UserDatasets datasets={datasets} />
+        </Fragment>
       )}
-      <UserDatasets datasets={[]} />
     </div>
   )
 }

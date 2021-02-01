@@ -1,4 +1,6 @@
 import Link from 'redux-first-router-link'
+import { useTranslation } from 'react-i18next'
+import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { Workspace } from '@globalfishingwatch/api-types'
 import { WORKSPACE } from 'routes/routes'
@@ -6,9 +8,13 @@ import { WorkspaceCategories } from 'data/workspaces'
 import styles from './User.module.css'
 
 function UserWorkspaces({ workspaces }: { workspaces: Workspace[] }) {
+  const { t } = useTranslation()
   return (
     <div className={styles.views}>
-      <label>Your latest saved views</label>
+      <div className={styles.viewsHeader}>
+        <label>{t('common.workspaces', 'Workspaces')}</label>
+        <Button disabled>{t('workspaces.new', 'New Workspace') as string}</Button>
+      </div>
       <ul>
         {workspaces?.map((workspace) => {
           return (

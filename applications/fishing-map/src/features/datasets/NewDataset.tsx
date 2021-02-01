@@ -6,8 +6,8 @@ import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 // import Select from '@globalfishingwatch/ui-components/dist/select'
-import { Dataset } from '@globalfishingwatch/api-types/dist'
 import { ReactComponent as ZipIcon } from 'assets/zip.svg'
+import { USER_CONTEXT_TYPE } from 'data/datasets'
 import { useDatasetsAPI, useNewDatasetModalConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 
@@ -31,12 +31,13 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
         className={styles.input}
         onChange={(e) => onDatasetFieldChange({ name: e.target.value })}
       />
-      {/* <InputText
+      <InputText
         inputSize="small"
         label={t('common.description', 'Description')}
         className={styles.input}
-        onChange={(e) => console.log(e.target.value)}
+        onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
       />
+      {/*
       <Select
         label={t('dataset.typeOfFeatures', 'Type of features')}
         options={[]}
@@ -144,8 +145,13 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' 
   )
 }
 
-export type DatasetTypes = 'points' | 'lines' | 'geometries'
-export type NewDatasetType = Partial<Dataset> & { type?: DatasetTypes }
+export type DatasetCustomTypes = 'points' | 'lines' | 'geometries'
+export type DatasetMetadata = {
+  name: string
+  description?: string
+  type: typeof USER_CONTEXT_TYPE
+  properties?: { type?: DatasetCustomTypes }
+}
 
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
@@ -153,12 +159,16 @@ function NewDataset(): React.ReactElement {
 
   const [file, setFile] = useState<File | undefined>()
   const [loading, setLoading] = useState(false)
-  const [metadata, setMetadata] = useState<{ name: string } | undefined>()
-  // const { dispatchCreateDataset } = useDatasetsAPI()
+  const [metadata, setMetadata] = useState<DatasetMetadata | undefined>()
+  const { dispatchCreateDataset } = useDatasetsAPI()
 
   const onFileLoaded = (file: File) => {
     setFile(file)
-    setMetadata({ name: file.name.split(',')[0] })
+    setMetadata((metadata) => ({
+      ...metadata,
+      name: file.name.split('.')[0],
+      type: USER_CONTEXT_TYPE,
+    }))
   }
 
   const onDatasetFieldChange = (field: any) => {
@@ -166,11 +176,11 @@ function NewDataset(): React.ReactElement {
   }
 
   const onConfirmClick = async () => {
-    setLoading(true)
-    // await dispatchCreateDataset({ ...newDataset, file })
-    setTimeout(() => {
+    if (file) {
+      setLoading(true)
+      await dispatchCreateDataset({ dataset: { ...metadata }, file })
       onClose()
-    }, 2000)
+    }
   }
 
   const onClose = async () => {
@@ -181,7 +191,7 @@ function NewDataset(): React.ReactElement {
 
   return (
     <Modal
-      title={t('datasets.uploadNew', 'Upload new dataset')}
+      title={t('dataset.uploadNew', 'Upload new dataset')}
       isOpen={newDatasetModal}
       contentClassName={styles.modalContainer}
       onClose={onClose}
@@ -194,7 +204,7 @@ function NewDataset(): React.ReactElement {
       </div>
       <div className={styles.modalFooter}>
         <Button
-          disabled={!file}
+          disabled={!file || !metadata?.name || !metadata?.description}
           className={styles.saveBtn}
           onClick={onConfirmClick}
           loading={loading}
