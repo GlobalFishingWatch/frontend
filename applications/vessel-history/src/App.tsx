@@ -20,7 +20,6 @@ function App() {
     window.location.href = GFWAPI.getLoginUrl(location)
   }
 
-  //const search = useSelector(getLocationSearch)
   const locationType = useSelector(getLocationType)
 
   if (loading) {
