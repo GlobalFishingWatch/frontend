@@ -1,14 +1,13 @@
-const FEATURE_ROW_INDEX = 0
-const FEATURE_COL_INDEX = 1
-const FEATURE_CELLS_START_INDEX = 2
-
-const CELL_NUM_INDEX = 0
-const CELL_START_INDEX = 1
-const CELL_END_INDEX = 2
-const CELL_VALUES_START_INDEX = 3
-
-// Values from the 4wings API in intArray form can't be floats, so they are multiplied by a factor, here we get back to the original value
-const VALUE_MULTIPLIER = 100
+import {
+  FEATURE_ROW_INDEX,
+  FEATURE_COL_INDEX,
+  FEATURE_CELLS_START_INDEX,
+  CELL_NUM_INDEX,
+  CELL_START_INDEX,
+  CELL_END_INDEX,
+  CELL_VALUES_START_INDEX,
+  VALUE_MULTIPLIER,
+} from './constants'
 
 const getLastDigit = (num: number) => parseInt(num.toString().slice(-1))
 // In order for setFeatureState to work correctly, generate unique IDs across viewport-visible tiles:
