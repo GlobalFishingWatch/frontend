@@ -1,69 +1,64 @@
 import { Provider } from 'react-redux'
 import React from 'react'
-import renderer from 'react-test-renderer'
 import { render } from '@testing-library/react'
 import useGFWLogin from '@globalfishingwatch/react-hooks/dist/use-login'
 import store from './store'
 import App from './App'
 
 jest.mock('@globalfishingwatch/react-hooks/dist/use-login')
+jest.useFakeTimers()
 
-beforeEach(() => {
-  useGFWLogin.mockClear()
-})
+describe('<App />', () => {
+  const assignMock = jest.fn()
+  const mockGFWLogin: jest.Mock = useGFWLogin as jest.Mock
+  delete window['location']
+  window.location = { assign: assignMock }
 
-const assignMock = jest.fn()
-delete window.location
-window.location = { assign: assignMock }
-
-afterEach(() => {
-  assignMock.mockClear()
-})
-
-it('renders splash screen while loading', () => {
-  useGFWLogin.mockReturnValue({
+  const gfwLoginDefault = {
     loading: true,
     logged: false,
     user: null,
     error: null,
-  })
-  const tree = renderer
-    .create(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    )
-    .toJSON()
-  expect(tree).toMatchSnapshot()
-})
+  }
 
-it('redirects to login screen when not logged', () => {
-  useGFWLogin.mockReturnValue({
-    loading: false,
-    logged: false,
-    user: null,
-    error: null,
+  afterEach(() => {
+    jest.clearAllMocks()
   })
-  const tree = renderer.create(
-    <Provider store={store}>
-      <App />
-    </Provider>
-  )
-  expect(assignMock).toHaveBeenCalled()
-})
-it('renders home screen when not loading', () => {
-  useGFWLogin.mockReturnValue({
-    loading: false,
-    logged: true,
-    user: null,
-    error: null,
-  })
-  const tree = renderer
-    .create(
+
+  it('renders splash screen while loading', () => {
+    mockGFWLogin.mockReturnValue(gfwLoginDefault)
+    const component = render(
       <Provider store={store}>
         <App />
       </Provider>
     )
-    .toJSON()
-  expect(tree).toMatchSnapshot()
+
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000)
+    expect(component.asFragment()).toMatchSnapshot()
+  })
+
+  it('redirects to login screen when not logged', () => {
+    mockGFWLogin.mockReturnValue({ ...gfwLoginDefault, loading: false })
+    render(
+      <Provider store={store}>
+        <App />
+      </Provider>
+    )
+    expect(assignMock).toHaveBeenCalled()
+  })
+  it('renders home screen when not loading', () => {
+    mockGFWLogin.mockReturnValue({
+      ...gfwLoginDefault,
+      loading: false,
+      logged: true,
+    })
+    const component = render(
+      <Provider store={store}>
+        <App />
+      </Provider>
+    )
+    jest.runAllTimers()
+    component.rerender()
+    expect(component.asFragment()).toMatchSnapshot()
+  })
 })
