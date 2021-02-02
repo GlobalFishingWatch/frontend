@@ -7,6 +7,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "CI=true react-scripts test --passWithNoTests",
+    "test:watch": "react-scripts test --passWithNoTests",
+    "test:coverage": "CI=true react-scripts test --passWithNoTests --coverage",
     "eject": "react-scripts eject",
     "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
   },
@@ -126,6 +128,17 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/types/**/*.*"
     ]
   }
 }
