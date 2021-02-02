@@ -17,7 +17,7 @@ function App() {
   const { loading, logged } = useGFWLogin(GFWAPI)
   if (!loading && !logged) {
     const location = window.location.origin + BASE_URL
-    window.location.href = GFWAPI.getLoginUrl(location)
+    window.location.assign(GFWAPI.getLoginUrl(location))
   }
 
   const locationType = useSelector(getLocationType)
