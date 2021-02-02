@@ -1,4 +1,4 @@
-import { Style, AnySourceImpl, Layer, SymbolPaint, AnyPaint } from 'mapbox-gl'
+import { AnySourceImpl, Layer, AnyPaint } from '@globalfishingwatch/mapbox-gl'
 import Generators from './generators'
 import { flatObjectArrays, layersDictToArray } from './utils'
 import {

@@ -1,4 +1,4 @@
-import { Layer } from 'mapbox-gl'
+import { Layer } from '@globalfishingwatch/mapbox-gl'
 import { BasemapType } from '../types'
 import { Group, Dictionary } from '../../types'
 
@@ -96,7 +96,6 @@ export const sources: Dictionary<Record<string, Partial<any>>> = {
     },
   },
   [BasemapType.Default]: {
-    // eslint-disable-next-line @typescript-eslint/camelcase
     basemap_default: {
       type: 'vector',
       tiles: ['https://storage.googleapis.com/public-tiles/basemap/default/{z}/{x}/{y}.pbf'],

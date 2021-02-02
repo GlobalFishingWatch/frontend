@@ -1,4 +1,3 @@
-import { AnyLayer } from 'mapbox-gl'
 import { Dictionary, ExtendedLayer } from './types'
 
 export function isUrlAbsolute(url: string) {

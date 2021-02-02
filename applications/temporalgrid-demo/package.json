@@ -5,8 +5,8 @@
   "dependencies": {
     "@globalfishingwatch/layer-composer": "^4.11.1",
     "@globalfishingwatch/react-hooks": "4.5.0",
-    "@globalfishingwatch/react-map-gl": "^5.2.9-gfw.7",
-    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.12",
+    "@globalfishingwatch/react-map-gl": "^5.2.9-gfw.9",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.14",
     "@globalfishingwatch/pbf": "^1.0.9",
     "@globalfishingwatch/timebar": "1.1.6",
     "@mapbox/tilebelt": "^1.0.2",
