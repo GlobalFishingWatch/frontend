@@ -1,56 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import debounce from 'lodash/debounce'
 import { Generators, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
+import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
 type FeatureStates = 'click' | 'hover'
 type FeatureStateSource = { source: string; sourceLayer: string; state: FeatureStates }
 
-const aggregateCell = (
-  rawValues: string,
-  frame: number,
-  delta: number,
-  quantizeOffset: number,
-  numSublayers: number
-) => {
-  // Raw values come as a single string (MVT limitation), turn into an array of ints first
-  const rawValuesArr: number[] = rawValues.split(',').map((v) => parseInt(v))
-
-  // First two values for a cell are the overall start and end time offsets for all the cell values (in days/hours/10days from start of time)
-  const minCellOffset = rawValuesArr[0]
-  // const maxCellOffset = rawValuesArr[1]
-
-  // When we should start counting in terms of days/hours/10days from start of time
-  const startOffset = quantizeOffset + frame
-
-  // Where we sould start looking up in the array (minCellOffset, maxCellOffset, sublayer0valueAt0, sublayer1valueAt0, sublayer0valueAt1, sublayer1valueAt1, ...)
-  const startAt = 2 + (startOffset - minCellOffset) * numSublayers
-
-  // Where we should stop looking up, using the current timebar delta
-  const endAt = startAt + delta * numSublayers
-
-  // One aggregated value per sublayer
-  const values = new Array(numSublayers).fill(0)
-
-  for (let i = startAt; i < endAt; i++) {
-    const sublayerIndex = i % numSublayers
-    const rawValue = rawValuesArr[i]
-    if (rawValue) {
-      values[sublayerIndex] += rawValue
-    }
-  }
-
-  // Raw 4w API values come without decimals, multiplied by 100
-  const VALUE_MULTIPLIER = 100
-  const realValues = values.map((v) => v / VALUE_MULTIPLIER)
-
-  return realValues
-}
-
 const getExtendedFeatures = (
   features: MapboxGeoJSONFeature[],
-  metadata?: ExtendedStyleMeta
+  metadata?: ExtendedStyleMeta,
+  debug = false
 ): ExtendedFeature[] => {
   const timeChunks = metadata?.temporalgrid?.timeChunks
   const frame = timeChunks?.activeChunkFrame
@@ -84,9 +45,10 @@ const getExtendedFeatures = (
           frame,
           timeChunks.deltaInIntervalUnits,
           activeTimeChunk.quantizeOffset,
-          numSublayers
+          numSublayers,
+          debug
         )
-        if (!values.filter((v) => v > 0).length) return []
+        if (!values || !values.filter((v) => v > 0).length) return []
 
         return values.flatMap((value: any, i: number) => {
           if (value === 0) return []
@@ -184,7 +146,12 @@ export const useMapClick = (
         latitude: event.lngLat[1],
       }
       if (event.features?.length) {
-        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
+        console.log(event.features)
+        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
+          event.features,
+          metadata,
+          true
+        )
         if (extendedFeatures.length) {
           interactionEvent.features = extendedFeatures
           updateFeatureState(extendedFeatures, 'click')

@@ -1,4 +1,4 @@
-import { Layer, SymbolLayout } from 'mapbox-gl'
+import { Layer, SymbolLayout } from '@globalfishingwatch/mapbox-gl'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { TimeChunk, TimeChunks } from '../util/time-chunks'
 import { Group } from '../../../types'

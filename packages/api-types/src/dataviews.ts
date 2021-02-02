@@ -5,6 +5,7 @@ export interface DataviewConfig<T = any> {
   type?: T
   color?: string
   visible?: boolean
+  filters?: Record<string, any>
   [key: string]: any
 }
 

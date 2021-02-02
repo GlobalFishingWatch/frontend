@@ -1,5 +1,5 @@
 import { Workspace } from '@globalfishingwatch/api-types'
-import { APP_NAME } from 'data/config'
+import { APP_NAME, PUBLIC_SUFIX } from 'data/config'
 import {
   DEFAULT_BASEMAP_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
@@ -20,6 +20,7 @@ const workspace: Workspace<WorkspaceState> = {
     latitude: 30,
     longitude: -37,
   },
+  public: true,
   state: {},
   ownerId: 0,
   dataviews: [{ id: DEFAULT_VESSEL_DATAVIEW_ID }], // Needed to fetch vessel information
@@ -31,7 +32,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'fishing-1',
       config: {
-        datasets: ['fishing_v4'],
+        datasets: [`${PUBLIC_SUFIX}-fishing_v4`],
         // filters: ['ESP'],
       },
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,

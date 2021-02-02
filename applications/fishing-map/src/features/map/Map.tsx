@@ -201,6 +201,19 @@ const MapWrapper = (): React.ReactElement | null => {
     return 'crosshair'
   }, [])
 
+  const getCursor = useCallback(
+    (state) => {
+      // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
+      if (state.isHovering && hoveredTooltipEvent) {
+        return 'pointer'
+      } else if (state.isDragging) {
+        return 'grabbing'
+      }
+      return 'grab'
+    },
+    [hoveredTooltipEvent]
+  )
+
   // TODO handle also in case of error
   // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
   const tilesLoading = useTilesState(mapInstance)
@@ -222,23 +235,23 @@ const MapWrapper = (): React.ReactElement | null => {
 
   return (
     <div className={styles.container}>
-      <MapScreenshot />
+      {<MapScreenshot map={mapRef.current?.getMap()} />}
       {style && (
         <InteractiveMap
           disableTokenWarning={true}
           ref={mapRef}
           width="100%"
           height="100%"
+          zoom={viewport.zoom}
           latitude={viewport.latitude}
           longitude={viewport.longitude}
           pitch={debugOptions.extruded ? 40 : 0}
-          zoom={viewport.zoom}
           onViewportChange={onViewportChange}
           mapStyle={style}
           mapOptions={mapOptions}
           transformRequest={transformRequest}
           onResize={setMapBounds}
-          getCursor={rulersEditing ? getRulersCursor : undefined}
+          getCursor={rulersEditing ? getRulersCursor : getCursor}
           interactiveLayerIds={rulersEditing ? undefined : style?.metadata?.interactiveLayerIds}
           onClick={onMapClick}
           onHover={onMapHover}

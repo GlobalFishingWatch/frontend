@@ -1,4 +1,4 @@
-import type { FillLayer, Layer, LineLayer } from 'mapbox-gl'
+import type { FillLayer, Layer, LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
 import { ContextLayerType } from '../types'
 

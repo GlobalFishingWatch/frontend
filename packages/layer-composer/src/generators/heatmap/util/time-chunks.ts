@@ -1,12 +1,13 @@
 import { DateTime, Duration } from 'luxon'
 
-type Interval = '10days' | 'day' | 'hour'
+export type Interval = '10days' | 'day' | 'hour'
 
 export type TimeChunk = {
   id: string
   start?: string
   viewEnd?: string
   dataEnd?: string
+  framesDelta: number
   quantizeOffset: number
   frame: number
   active: boolean
@@ -21,6 +22,7 @@ export type TimeChunks = {
   activeStart: string
   activeEnd: string
   activeChunkFrame: number
+  activeId: string
 }
 
 const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
@@ -28,7 +30,7 @@ const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
 // Buffer size relative to active time delta
 const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2
 
-const CONFIG_BY_INTERVAL: Record<Interval, Record<string, Function>> = {
+const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   hour: {
     isValid: (duration: Duration): boolean => {
       return duration.as('days') < 5
@@ -48,6 +50,9 @@ const CONFIG_BY_INTERVAL: Record<Interval, Record<string, Function>> = {
     getFrame: (start: number) => {
       return Math.floor(start / 1000 / 60 / 60)
     },
+    getDate: (frame: number) => {
+      return new Date(frame * 1000 * 60 * 60)
+    },
   },
   day: {
     isValid: (duration: Duration): boolean => {
@@ -66,10 +71,16 @@ const CONFIG_BY_INTERVAL: Record<Interval, Record<string, Function>> = {
     getFrame: (start: number) => {
       return Math.floor(start / 1000 / 60 / 60 / 24)
     },
+    getDate: (frame: number) => {
+      return new Date(frame * 1000 * 60 * 60 * 24)
+    },
   },
   '10days': {
     getFrame: (start: number) => {
       return Math.floor(start / 1000 / 60 / 60 / 24 / 10)
+    },
+    getDate: (frame: number) => {
+      return new Date(frame * 1000 * 60 * 60 * 24 * 10)
     },
   },
 }
@@ -129,6 +140,7 @@ const getTimeChunks = (
 ) => {
   const config = CONFIG_BY_INTERVAL[interval]
   let activeChunkFrame = 0
+  let activeId = ''
   const chunks: TimeChunk[] = chunkStarts.map((chunkStart) => {
     // end of *usable* tileset is end of year
     // end of *loaded* tileset is end of year + 100 days
@@ -148,22 +160,25 @@ const getTimeChunks = (
     const activeStartDT = +toDT(activeStart)
     const isActive = activeStartDT > +chunkStart && activeStartDT <= chunkViewEnd
     const frame = toQuantizedFrame(activeStart, quantizeOffset, interval)
+    const id = `heatmapchunk_${start.slice(0, 13)}_${viewEnd.slice(0, 13)}`
     if (isActive) {
       activeChunkFrame = frame
+      activeId = id
     }
 
     const chunk: TimeChunk = {
       start,
       viewEnd,
       dataEnd,
+      framesDelta: config.getFrame(+chunkDataEnd - +chunkStart),
       quantizeOffset,
-      id: `heatmapchunk_${start.slice(0, 13)}_${viewEnd.slice(0, 13)}`,
+      id,
       frame,
       active: isActive,
     }
     return chunk
   })
-  return { chunks, activeChunkFrame }
+  return { chunks, activeChunkFrame, activeId }
 }
 
 /**
@@ -190,20 +205,25 @@ export const getActiveTimeChunks = (
     deltaInDays: Duration.fromMillis(delta).as('days'),
     interval,
     activeChunkFrame: 0,
+    activeId: '',
   }
 
   // ignore any start/end time chunk calculation as for the '10 days' interval the entire tileset is loaded
   if (timeChunks.interval === '10days') {
     const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
+    const config = CONFIG_BY_INTERVAL['10days']
+    const id = 'heatmapchunk_10days'
     timeChunks.chunks = [
       {
         quantizeOffset: 0,
-        id: 'heatmapchunk_10days',
+        id,
         frame,
         active: true,
+        framesDelta: config.getFrame(+toDT(datasetEnd)), // We assume that at 10days it starts 1 jan 1970
       },
     ]
     timeChunks.activeChunkFrame = frame
+    timeChunks.activeId = id
     return timeChunks
   }
 
@@ -218,7 +238,7 @@ export const getActiveTimeChunks = (
   }
 
   const chunkStarts = getChunkStarts(bufferedActiveStart, bufferedActiveEnd, timeChunks.interval)
-  const { chunks, activeChunkFrame } = getTimeChunks(
+  const { chunks, activeChunkFrame, activeId } = getTimeChunks(
     chunkStarts,
     datasetStart,
     datasetEnd,
@@ -227,6 +247,7 @@ export const getActiveTimeChunks = (
   )
   timeChunks.chunks = chunks
   timeChunks.activeChunkFrame = activeChunkFrame
+  timeChunks.activeId = activeId
 
   return timeChunks
 }
@@ -236,6 +257,16 @@ const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interv
   const ms = new Date(date).getTime()
   const frame = config.getFrame(ms)
   return frame - quantizeOffset
+}
+
+export const frameToDate = (frame: number, quantizeOffset: number, interval: Interval) => {
+  const offsetedFrame = frame + quantizeOffset
+  const config = CONFIG_BY_INTERVAL[interval]
+  return config.getDate(offsetedFrame)
+}
+
+export const quantizeOffsetToDate = (quantizeOffset: number, interval: Interval) => {
+  return frameToDate(0, quantizeOffset, interval)
 }
 
 export const getDelta = (start: string, end: string, interval: Interval) => {

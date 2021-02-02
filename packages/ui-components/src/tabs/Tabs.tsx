@@ -11,7 +11,7 @@ interface TabsProps {
 }
 
 function Tabs({ activeTab, tabs, onTabClick }: TabsProps) {
-  const activeTabId = activeTab || tabs?.[0].id
+  const activeTabId = activeTab || tabs?.[0]?.id
   return (
     <div className={styles.container}>
       <ul className={styles.header} role="tablist">

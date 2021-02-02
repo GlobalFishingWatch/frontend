@@ -1,5 +1,23 @@
 # @globalfishingwatch/ui-components
 
+## 2.12.0
+
+### Minor Changes
+
+- af016529: support disabled multiselect component
+
+## 2.11.5
+
+### Patch Changes
+
+- support button href links
+
+## 2.11.4
+
+### Patch Changes
+
+- fix tabs crash when no activeTab
+
 ## 2.11.3
 
 ### Patch Changes

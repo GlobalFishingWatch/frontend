@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 1.1.6
+
+### Patch Changes
+
+- fix h2 styles
+
 ## 1.1.5
 
 ### Patch Changes

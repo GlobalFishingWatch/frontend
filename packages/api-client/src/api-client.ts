@@ -167,12 +167,18 @@ export class GFWAPI {
     if (this.status !== 'refreshingToken') {
       this.status = 'refreshingToken'
       try {
-        const { token } = await this.getTokenWithRefreshToken(this.getRefreshToken())
+        const refreshToken = this.getRefreshToken()
+        if (!refreshToken) {
+          throw new Error('No refresh token')
+        }
+        const { token } = await this.getTokenWithRefreshToken(refreshToken)
         this.setToken(token)
         this.status = 'idle'
         return token
       } catch (e) {
         this.status = 'idle'
+        e.status = 401
+        throw e
       }
     }
   }

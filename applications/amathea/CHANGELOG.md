@@ -1,5 +1,11 @@
 # @globalfishingwatchapp/amathea
 
+## 0.13.11
+
+### Patch Changes
+
+- update dependencies
+
 ## 0.13.10
 
 ### Patch Changes

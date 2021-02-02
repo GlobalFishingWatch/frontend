@@ -1,20 +1,20 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
-import { selectUserStatus, selectUserLogged, selectUserData } from './user.slice'
+import { AsyncReducerStatus } from 'types'
+import { selectUserStatus, selectUserLogged, selectUserData, GUEST_USER_TYPE } from './user.slice'
+
+export const isGuestUser = createSelector([selectUserData], (userData) => {
+  return userData?.type === GUEST_USER_TYPE
+})
 
 export const isUserLogged = createSelector(
   [selectUserStatus, selectUserLogged],
   (status, logged) => {
-    return status === 'finished' && logged
+    return status === AsyncReducerStatus.Finished && logged
   }
 )
 
-const LIMITED_ACCESS_USER = process.env.REACT_APP_LIMITED_ACCESS_USER === 'true'
 export const isUserAuthorized = createSelector([isUserLogged, selectUserData], (logged, user) => {
-  if (!logged) return false
-
-  if (!LIMITED_ACCESS_USER) return true
-
   return (
     user?.permissions.find(
       (permission) =>

@@ -1,8 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useRef, useState, useEffect } from 'react'
-import { Map } from '@globalfishingwatch/mapbox-gl'
+import { useRef } from 'react'
 import { ExtendedFeatureVessel, InteractionEvent } from '@globalfishingwatch/react-hooks'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import {
   selectDataviewInstancesResolved,
@@ -24,25 +23,7 @@ import {
   fetch4WingInteractionThunk,
   MAX_TOOLTIP_VESSELS,
 } from './map.slice'
-
-export function useMapImage(map: Map) {
-  const [image, setImage] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (map) {
-      map.once('render', () => {
-        const canvas = map.getCanvas()
-        setImage(canvas.toDataURL())
-      })
-      // trigger render
-      map.setBearing(map.getBearing())
-    } else {
-      setImage(null)
-    }
-  }, [map])
-
-  return image
-}
+import { useMapboxInstance } from './map.context'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -215,4 +196,25 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
     longitude: event.longitude,
     features: tooltipEventFeatures,
   }
+}
+
+export const useMapStyle = () => {
+  const mapInstance = useMapboxInstance()
+  if (!mapInstance) return null
+
+  let style: any
+  try {
+    style = mapInstance.getStyle()
+  } catch (e) {
+    return null
+  }
+
+  return style
+}
+
+export const useCurrentTimeChunkId = () => {
+  const style = useMapStyle()
+  const currentTimeChunks = style?.metadata?.temporalgrid?.timeChunks as TimeChunks
+  const currentTimeChunkId = currentTimeChunks?.activeId
+  return currentTimeChunkId
 }

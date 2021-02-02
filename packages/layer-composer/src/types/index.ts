@@ -10,7 +10,7 @@ import type {
   RasterLayer,
   Style,
   SymbolLayer,
-} from 'mapbox-gl'
+} from '@globalfishingwatch/mapbox-gl'
 import type { DataviewConfig } from '@globalfishingwatch/api-types'
 import {
   GeneratorConfig,
@@ -118,7 +118,7 @@ export type ExtendedLayer = AnyLayer & {
 }
 
 export interface ExtendedStyleMeta {
-  generatedAt?: string
+  generatedAt?: number
   interactiveLayerIds?: string[]
   temporalgrid?: Record<string, any>
 }

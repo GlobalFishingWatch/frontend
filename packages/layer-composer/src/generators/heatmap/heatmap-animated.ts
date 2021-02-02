@@ -66,7 +66,7 @@ class HeatmapAnimatedGenerator {
         quantizeOffset: timeChunk.quantizeOffset.toString(),
         interval: timeChunks.interval,
         numDatasets: config.sublayers.length.toString(),
-        breaks: JSON.stringify(breaks),
+        breaks: JSON.stringify(breaks.map((sublayerBreaks) => sublayerBreaks.map((b) => b * 100))),
         // TODO only for visible time chunk
         interactive: interactiveSource.toString(),
       }
@@ -77,6 +77,7 @@ class HeatmapAnimatedGenerator {
       const sourceParams = [baseSourceParams]
 
       return sourceParams.map((params: Record<string, string>) => {
+        console.log(params)
         const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)
         const source = {
           id: params.id,
@@ -110,20 +111,19 @@ class HeatmapAnimatedGenerator {
       getActiveTimeChunks: memoizeOne(getActiveTimeChunks),
     })
 
-    const timeChunks = memoizeCache[config.id].getActiveTimeChunks(
-      config.staticStart || config.start,
-      config.staticEnd || config.end,
-      config.tilesetsStart,
-      config.tilesetsEnd
-    )
-
     const finalConfig = {
       ...DEFAULT_CONFIG,
       ...config,
     }
+    const timeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
+      finalConfig.staticStart || finalConfig.start,
+      finalConfig.staticEnd || finalConfig.end,
+      finalConfig.tilesetsStart,
+      finalConfig.tilesetsEnd
+    )
 
     return {
-      id: config.id,
+      id: finalConfig.id,
       sources: this._getStyleSources(finalConfig, timeChunks),
       layers: this._getStyleLayers(finalConfig, timeChunks),
       metadata: {

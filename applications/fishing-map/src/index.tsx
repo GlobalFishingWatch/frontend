@@ -6,6 +6,7 @@ import store from './store'
 import * as serviceWorker from './serviceWorker'
 
 import './features/i18n/i18n'
+import '@globalfishingwatch/ui-components/dist/base.css'
 
 async function loadPolyfills() {
   if (typeof window.IntersectionObserver === 'undefined') {

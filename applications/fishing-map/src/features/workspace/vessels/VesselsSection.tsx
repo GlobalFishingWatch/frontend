@@ -5,12 +5,14 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselsDataviews } from 'features/workspace/workspace.selectors'
 import styles from 'features/workspace/Sections.module.css'
+import { isSearchAllowed } from 'features/search/search.selectors'
 import LayerPanel from './VesselLayerPanel'
 
 function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
+  const searchAllowed = useSelector(isSearchAllowed)
   const onSearchClick = useCallback(() => {
     dispatchQueryParams({ query: '' })
   }, [dispatchQueryParams])
@@ -22,7 +24,12 @@ function VesselsSection(): React.ReactElement {
           icon="search"
           type="border"
           size="medium"
-          tooltip={t('vessel.search.search', 'Search vessels')}
+          disabled={!searchAllowed}
+          tooltip={
+            searchAllowed
+              ? t('search.vessels', 'Search vessels')
+              : t('search.notAllowed', 'Search not allowed')
+          }
           tooltipPlacement="top"
           className="print-hidden"
           onClick={onSearchClick}

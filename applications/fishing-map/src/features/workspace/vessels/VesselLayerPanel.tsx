@@ -62,7 +62,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     if (trackResource?.data) {
       const filteredSegments = filterSegmentsByTimerange(trackResource?.data, { start, end })
       const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
-      const { width, height } = mapInstance?._canvas || {}
+      const { width, height } = (mapInstance as any)._canvas || {}
       if (width && height && bbox) {
         const [minLng, minLat, maxLng, maxLat] = bbox
         const { latitude, longitude, zoom } = fitBounds({
@@ -142,7 +142,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         <Switch
           active={layerActive}
           onClick={onToggleLayerActive}
-          tooltip={t('layer.toggle_visibility', 'Toggle layer visibility')}
+          tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
           tooltipPlacement="top"
           className={styles.switch}
           color={dataview.config?.color}
@@ -190,7 +190,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 size="small"
                 className={styles.actionButton}
                 tooltip={
-                  infoOpen ? t('layer.info_close', 'Hide info') : t('layer.info_open', 'Show info')
+                  infoOpen ? t('layer.infoClose', 'Hide info') : t('layer.infoOpen', 'Show info')
                 }
                 onClick={onToggleInfoOpen}
                 tooltipPlacement="top"

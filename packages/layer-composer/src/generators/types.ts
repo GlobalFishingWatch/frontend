@@ -1,6 +1,6 @@
 import { FeatureCollection } from 'geojson'
 import { StringUnitLength } from 'luxon'
-import { AnySourceData, Layer } from 'mapbox-gl'
+import { AnySourceData, Layer } from '@globalfishingwatch/mapbox-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
 
 export enum Type {
