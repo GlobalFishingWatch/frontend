@@ -6,6 +6,7 @@ import {
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
@@ -14,7 +15,6 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import { Resource, selectResources, TrackResourceData } from 'features/resources/resources.slice'
-import { FISHING_DATASET_TYPE, TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
@@ -106,7 +106,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
         // Inject highligtedTime
         generator.highlightedTime = highlightedTime
         // Try to retrieve resource if it exists
-        const { url } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })
+        const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
         if (url && resources[url]) {
           const resource = resources[url] as Resource<TrackResourceData>
           generator.data = resource.data
@@ -132,7 +132,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
           generator.id = `${dataview.id}__${dataview.config.layers}`
           generator.layer = dataview.config.layers
           const { dataset, url } = resolveDataviewDatasetResource(dataview, {
-            type: USER_CONTEXT_TYPE,
+            type: DatasetTypes.Context,
           })
           if (url) {
             generator.tilesUrl = url
@@ -147,7 +147,9 @@ export const getWorkspaceGeneratorsConfig = createSelector(
         }
       } else if (dataview.config?.type === Generators.Type.Heatmap) {
         // TODO: use the getGeneratorConfig package function here
-        const dataset = dataview.datasets?.find((dataset) => dataset.type === FISHING_DATASET_TYPE)
+        const dataset = dataview.datasets?.find(
+          (dataset) => dataset.type === DatasetTypes.Fourwings
+        )
         const tilesEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
         const statsEndpoint = dataset?.endpoints?.find(
           (endpoint) => endpoint.id === '4wings-legend'

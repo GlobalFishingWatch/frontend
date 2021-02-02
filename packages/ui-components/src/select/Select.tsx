@@ -33,7 +33,7 @@ function Select(props: SelectProps) {
     onSelect,
     onRemove,
     onCleanClick,
-    className,
+    className = '',
     direction = 'bottom',
     disabled = false,
   } = props
