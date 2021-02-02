@@ -110,7 +110,9 @@ const TimebarWrapper = () => {
         const sublayerIndex = i % numSublayers
         const rawValue = rawValuesArrSlice[i]
 
-        valuesByFrame[currentFrameIndex][sublayerIndex] += rawValue
+        if (valuesByFrame[currentFrameIndex]?.[sublayerIndex]) {
+          valuesByFrame[currentFrameIndex][sublayerIndex] += rawValue
+        }
 
         if (sublayerIndex === numSublayers - 1) {
           currentFrameIndex++
