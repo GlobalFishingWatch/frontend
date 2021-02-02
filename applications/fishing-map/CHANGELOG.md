@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.18.0
+
+### Minor Changes
+
+- TimebarStackedActivity
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/timebar@1.2.0
+
 ## 0.17.10
 
 ### Patch Changes
