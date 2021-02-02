@@ -2,17 +2,11 @@ import { createSelector } from '@reduxjs/toolkit'
 import uniqBy from 'lodash/uniqBy'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
 import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { selectDataviews, selectDataviewsStatus } from 'features/dataviews/dataviews.slice'
-import {
-  TRACKS_DATASET_TYPE,
-  VESSELS_DATASET_TYPE,
-  FOURWINGS_DATASET_TYPE,
-  USER_CONTEXT_TYPE,
-} from 'data/datasets'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { RootState } from 'store'
 import { PUBLIC_SUFIX } from 'data/config'
@@ -218,11 +212,6 @@ export const selectDataviewInstancesResolved = createSelector(
   }
 )
 
-type DatasetTypes =
-  | typeof TRACKS_DATASET_TYPE
-  | typeof VESSELS_DATASET_TYPE
-  | typeof FOURWINGS_DATASET_TYPE
-  | typeof USER_CONTEXT_TYPE
 export const selectDatasetsByType = (type: DatasetTypes) => {
   return createSelector([selectDatasets], (datasets) => {
     return uniqBy(
@@ -241,13 +230,13 @@ export const selectDatasetsByType = (type: DatasetTypes) => {
 }
 
 export const selectVesselsDatasets = createSelector(
-  [selectDatasetsByType(VESSELS_DATASET_TYPE)],
+  [selectDatasetsByType(DatasetTypes.Vessels)],
   (datasets) => {
     return datasets
   }
 )
 export const selectTracksDatasets = createSelector(
-  [selectDatasetsByType(TRACKS_DATASET_TYPE)],
+  [selectDatasetsByType(DatasetTypes.Tracks)],
   (datasets) => {
     return datasets
   }
@@ -339,7 +328,7 @@ export const selectDataviewsResourceQueries = createSelector(
       let trackQuery: any = [] // initialized as empty array to be filtered by flatMap if not used
       if (dataview.config.visible === true) {
         const trackResource = resolveDataviewDatasetResource(dataview, {
-          type: TRACKS_DATASET_TYPE,
+          type: DatasetTypes.Tracks,
         })
         if (trackResource.url && trackResource.dataset && trackResource.datasetConfig) {
           trackQuery = {
@@ -351,7 +340,7 @@ export const selectDataviewsResourceQueries = createSelector(
         }
       }
 
-      const infoResource = resolveDataviewDatasetResource(dataview, { type: VESSELS_DATASET_TYPE })
+      const infoResource = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
       if (!infoResource.url || !infoResource.dataset || !infoResource.datasetConfig) {
         return trackQuery as ResourceQuery
       }

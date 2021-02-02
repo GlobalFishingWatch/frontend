@@ -1,13 +1,18 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { Dataset, Vessel, APISearch, VesselSearch } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetTypes,
+  Vessel,
+  APISearch,
+  VesselSearch,
+} from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
-import { TRACKS_DATASET_TYPE } from 'data/datasets'
 
 export const RESULTS_PER_PAGE = 20
 
@@ -171,7 +176,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         const infoDataset = selectDatasetById(vessel.dataset)(state)
         if (!infoDataset) return []
 
-        const trackDatasetId = getRelatedDatasetByType(infoDataset, TRACKS_DATASET_TYPE)?.id
+        const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
         return {
           ...vessel,
           dataset: infoDataset,

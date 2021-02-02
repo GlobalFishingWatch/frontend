@@ -7,11 +7,16 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { DataviewDatasetConfig, Dataset, APISearch, Vessel } from '@globalfishingwatch/api-types'
+import {
+  DataviewDatasetConfig,
+  Dataset,
+  APISearch,
+  Vessel,
+  DatasetTypes,
+} from '@globalfishingwatch/api-types'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
 import { AsyncReducerStatus } from 'types'
 import { RootState } from 'store'
-import { FOURWINGS_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'
 import {
   getRelatedDatasetByType,
   selectTemporalgridDataviews,
@@ -55,7 +60,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
     })
 
     const fourWingsDataset = featuresDataviews[0].datasets?.find(
-      (d) => d.type === FOURWINGS_DATASET_TYPE
+      (d) => d.type === DatasetTypes.Fourwings
     ) as Dataset
 
     // get corresponding datasets
@@ -124,7 +129,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
       // Grab related dataset to fetch info from and prepare tracks
       const infoDatasets = await Promise.all(
         topHoursVesselsDatasets.map(async (dataset) => {
-          const infoDatasetId = getRelatedDatasetByType(dataset, VESSELS_DATASET_TYPE)?.id
+          const infoDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id
           if (infoDatasetId) {
             let infoDataset = selectDatasetById(infoDatasetId)(state)
             if (!infoDataset) {

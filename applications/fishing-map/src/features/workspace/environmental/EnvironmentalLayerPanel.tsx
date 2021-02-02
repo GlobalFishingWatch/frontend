@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Vessel } from '@globalfishingwatch/api-types'
+import { Vessel, DatasetTypes } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
@@ -13,7 +13,6 @@ import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import styles from 'features/workspace/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
-import { VESSELS_DATASET_TYPE, FOURWINGS_DATASET_TYPE } from 'data/datasets'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 
 type LayerPanelProps = {
@@ -23,7 +22,7 @@ type LayerPanelProps = {
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { url } = resolveDataviewDatasetResource(dataview, { type: VESSELS_DATASET_TYPE })
+  const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
   const resource = useSelector(selectResourceByUrl<Vessel>(url))
   const [colorOpen, setColorOpen] = useState(false)
 
@@ -56,7 +55,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
 
-  const dataset = dataview.datasets?.find((d) => d.type === FOURWINGS_DATASET_TYPE)
+  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
   const title = t(`datasets:${dataset?.id}.name`)
 
   const TitleComponent = (

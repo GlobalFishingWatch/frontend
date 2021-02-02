@@ -6,8 +6,8 @@ import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 // import Select from '@globalfishingwatch/ui-components/dist/select'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { ReactComponent as FilesIcon } from 'assets/icons/files-supported.svg'
-import { USER_CONTEXT_TYPE } from 'data/datasets'
 import { useDatasetsAPI, useDatasetModalConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 
@@ -156,7 +156,7 @@ export type DatasetCustomTypes = 'points' | 'lines' | 'geometries'
 export type DatasetMetadata = {
   name: string
   description?: string
-  type: typeof USER_CONTEXT_TYPE
+  type: DatasetTypes.Context
   properties?: { type?: DatasetCustomTypes }
 }
 
@@ -174,7 +174,7 @@ function NewDataset(): React.ReactElement {
     setMetadata((metadata) => ({
       ...metadata,
       name: file.name.split('.')[0],
-      type: USER_CONTEXT_TYPE,
+      type: DatasetTypes.Context,
     }))
   }
 

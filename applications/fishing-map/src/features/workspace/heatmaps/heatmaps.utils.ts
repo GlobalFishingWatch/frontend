@@ -1,9 +1,9 @@
-import { FOURWINGS_DATASET_TYPE } from 'data/datasets'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from 'types'
 
 export const getSourcesOptionsInDataview = (
   dataview: UrlDataviewInstance,
-  datasetType = FOURWINGS_DATASET_TYPE
+  datasetType = DatasetTypes.Fourwings
 ) => {
   const datasets = dataview?.datasets?.filter((d) => d.type === datasetType)
   const sourceOptions = datasets?.map((d) => ({ id: d.id, label: d.name })) || []
@@ -12,7 +12,7 @@ export const getSourcesOptionsInDataview = (
 
 export const getSourcesSelectedInDataview = (
   dataview: UrlDataviewInstance,
-  datasetType = FOURWINGS_DATASET_TYPE
+  datasetType = DatasetTypes.Fourwings
 ) => {
   const sourceOptions = getSourcesOptionsInDataview(dataview, datasetType)
   const sourcesSelected = sourceOptions.filter((sourceOption) =>
