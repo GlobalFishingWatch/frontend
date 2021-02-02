@@ -22,10 +22,7 @@ function App() {
 
   // Splash screen is shown at least one second
   useEffect(() => {
-    const timer = setTimeout(() => {
-      console.log('timeout setMinLoading')
-      setMinLoading(false)
-    }, SPLASH_TIMEOUT)
+    const timer = setTimeout(() => setMinLoading(false), SPLASH_TIMEOUT)
     return () => clearTimeout(timer)
   }, [])
 
