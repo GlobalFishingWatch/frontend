@@ -1444,11 +1444,6 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
-"@globalfishingwatch/api-types@2.6.1":
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/api-types/-/api-types-2.6.1.tgz#998738c9d943e18c9baea22a9723718062bc6fdb"
-  integrity sha512-PJ/4z4ABBxzxYnjsEvt76zvb6er7nO/E95yho63DdGgON/3ycWaZTDp4UOu9N2aVcQnwCw8EkUSm6MsH9v6QZQ==
-
 "@globalfishingwatch/map-convert@github:GlobalFishingWatch/map-convert":
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
