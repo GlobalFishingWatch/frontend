@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.12.3
+
+### Patch Changes
+
+- ef4092a3: Support i18next translation as children in ui-button components
+
 ## 2.12.2
 
 ### Patch Changes

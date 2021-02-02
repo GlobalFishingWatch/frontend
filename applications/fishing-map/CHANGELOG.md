@@ -1,5 +1,14 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.17.10
+
+### Patch Changes
+
+- ef4092a3: Support i18next translation as children in ui-button components
+- Updated dependencies [ef4092a3]
+  - @globalfishingwatch/api-types@2.7.0
+  - @globalfishingwatch/ui-components@2.12.3
+
 ## 0.17.9
 
 ### Patch Changes

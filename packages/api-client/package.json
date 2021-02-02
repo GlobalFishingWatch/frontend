@@ -28,7 +28,7 @@
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
   "dependencies": {
-    "@globalfishingwatch/api-types": "^2.6.1",
+    "@globalfishingwatch/api-types": "^2.7.0",
     "file-saver": "^2.0.2"
   },
   "peerDependencies": {
