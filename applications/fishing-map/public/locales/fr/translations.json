@@ -4,8 +4,10 @@
     "active_before": "Actif avant",
     "activity": "Activité",
     "apparentFishing": "Effort de pêche apparent",
+    "confirm": "Confirm",
     "context_area_plural": "Calques de contexte",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers. Vous pouvez trouver toutes vos vues enregistrées dans votre zone utilisateur.",
+    "description": "Description",
     "environment": "Environnement",
     "hour": "Heure",
     "hour_plural": "heures",
@@ -13,14 +15,26 @@
     "login": "Se connecter",
     "logout": "Déconnexion",
     "more": "plus",
+    "name": "Name",
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
+    "update": "Update",
     "vessel_plural": "Navires",
     "open_menu": "Ouvrir le menu",
     "dismiss": "Fermer",
     "save": "Enregistrer",
     "events": "Évènements",
     "fishing": "Pêche"
+  },
+  "dataset": {
+    "dragActive": "Drop the file here ...",
+    "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
+    "edit": "Edit dataset",
+    "file": "File",
+    "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
+    "new": "New dataset",
+    "remove": "Remove dataset",
+    "uploadNew": "Upload new dataset"
   },
   "errors": {
     "notSupportedBy": "Non pris en charge par {{list}}",
@@ -55,10 +69,10 @@
   },
   "map": {
     "captureMap": "Capturer la carte",
-    "mapLoadingWait": "Veuillez patienter jusqu'à ce que la carte soit chargée",
     "change_basemap_default": "Fond de carte par défaut",
     "change_basemap_satellite": "Fond de carte satellite",
     "loading": "Chargement de la carte",
+    "mapLoadingWait": "Veuillez patienter jusqu'à ce que la carte soit chargée",
     "rulers_add": "Ajouter des mesures",
     "rulers_remove": "Supprimer toutes les mesures",
     "search": "Rechercher des zones",
@@ -108,5 +122,10 @@
     "transmission_plural": "Transmissions",
     "widthRange": "Width range",
     "transmission": "Transmission"
+  },
+  "workspace": {
+    "new": "New Workspace",
+    "title_plural": "Workspaces",
+    "title": "Workspace"
   }
 }
