@@ -1,5 +1,5 @@
 import { SelectOption } from '@globalfishingwatch/ui-components'
-import { TimebarEvents, TimebarGraphs } from 'types'
+import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
 
@@ -21,7 +21,7 @@ export const DEFAULT_WORKSPACE = {
   availableStart: new Date(2012, 0, 1).toISOString(),
   availableEnd: end,
   dataviewInstances: undefined,
-  timebarVisualisation: undefined,
+  timebarVisualisation: TimebarVisualisations.Heatmap,
   timebarEvents: TimebarEvents.None,
   timebarGraph: TimebarGraphs.None,
   bivariate: false,

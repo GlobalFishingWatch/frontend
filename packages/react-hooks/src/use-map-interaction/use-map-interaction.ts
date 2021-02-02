@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import debounce from 'lodash/debounce'
-import isArray from 'lodash/isArray'
 import { Generators, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
+import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
@@ -10,9 +10,13 @@ type FeatureStateSource = { source: string; sourceLayer: string; state: FeatureS
 
 const getExtendedFeatures = (
   features: MapboxGeoJSONFeature[],
-  metadata?: ExtendedStyleMeta
+  metadata?: ExtendedStyleMeta,
+  debug = false
 ): ExtendedFeature[] => {
-  const frame = metadata?.temporalgrid?.timeChunks?.activeChunkFrame
+  const timeChunks = metadata?.temporalgrid?.timeChunks
+  const frame = timeChunks?.activeChunkFrame
+  const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active)
+  const numSublayers = metadata?.temporalgrid?.numSublayers
 
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
     const generatorType = feature.layer.metadata?.generatorType ?? null
@@ -36,22 +40,25 @@ const getExtendedFeatures = (
     }
     switch (generatorType) {
       case Generators.Type.HeatmapAnimated:
-        const valuesAtFrame = properties[frame?.toString()] || properties[frame]
-        if (!valuesAtFrame) return []
+        const values = aggregateCell(
+          properties.rawValues,
+          frame,
+          timeChunks.deltaInIntervalUnits,
+          activeTimeChunk.quantizeOffset,
+          numSublayers,
+          debug
+        )
+        if (!values || !values.filter((v) => v > 0).length) return []
 
-        let parsed = JSON.parse(valuesAtFrame)
-        if (extendedFeature.value === 0) break
-
-        if (!isArray(parsed)) parsed = [parsed]
-        return parsed.flatMap((value: any, i: number) => {
+        return values.flatMap((value: any, i: number) => {
           if (value === 0) return []
           return [
             {
               ...extendedFeature,
               temporalgrid: {
                 sublayerIndex: i,
-                col: properties._col,
-                row: properties._row,
+                col: properties._col as number,
+                row: properties._row as number,
               },
               value,
             },
@@ -139,7 +146,12 @@ export const useMapClick = (
         latitude: event.lngLat[1],
       }
       if (event.features?.length) {
-        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
+        console.log(event.features)
+        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
+          event.features,
+          metadata,
+          true
+        )
         if (extendedFeatures.length) {
           interactionEvent.features = extendedFeatures
           updateFeatureState(extendedFeatures, 'click')

@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
-import { Anchor } from 'mapbox-gl'
 import groupBy from 'lodash/groupBy'
+import { Anchor } from '@globalfishingwatch/mapbox-gl'
 import { Popup } from '@globalfishingwatch/react-map-gl'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { TooltipEvent } from 'features/map/map.hooks'

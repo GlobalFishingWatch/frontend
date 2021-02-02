@@ -72,7 +72,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
                 <button key={i} className={styles.vesselRow} onClick={() => onVesselClick(vessel)}>
                   <span className={styles.vesselName}>
                     {vesselLabel.length > 25 ? `${vesselLabel.slice(0, 25)}...` : vesselLabel}
-                    {vessel.dataset.name && (
+                    {vessel.dataset && vessel.dataset.name && (
                       <span className={styles.vesselRowLegend}> - {vessel.dataset.name}</span>
                     )}
                   </span>

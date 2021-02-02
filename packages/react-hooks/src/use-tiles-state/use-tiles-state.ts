@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react'
-import type { MapSourceDataEvent, Map } from 'mapbox-gl'
 import tilebelt from '@mapbox/tilebelt'
+import type { MapSourceDataEvent, Map } from '@globalfishingwatch/mapbox-gl'
 
 type TilesLoading = {
   loading: boolean
@@ -12,7 +12,7 @@ const tilesInitialState = {
   tiles: {},
 }
 
-function useTilesState(map: Map) {
+function useTilesState(map?: Map) {
   const [tilesLoading, setTilesLoading] = useState<TilesLoading>(tilesInitialState)
 
   const onIdle = useCallback(() => {

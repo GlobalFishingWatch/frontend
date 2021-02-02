@@ -10,7 +10,7 @@ import type {
   RasterLayer,
   Style,
   SymbolLayer,
-} from 'mapbox-gl'
+} from '@globalfishingwatch/mapbox-gl'
 import type { DataviewConfig } from '@globalfishingwatch/api-types'
 import {
   GeneratorConfig,

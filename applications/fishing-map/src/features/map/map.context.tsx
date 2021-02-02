@@ -1,12 +1,17 @@
 import React, { createContext, useRef, useContext, useState, useEffect, useMemo } from 'react'
 import type { Map } from '@globalfishingwatch/mapbox-gl'
 
-const MapStateContext = createContext<any>('')
+type MapStateContextPayload = {
+  mapboxRef?: any
+  mapboxInstance?: Map
+}
+
+const MapStateContext = createContext<MapStateContextPayload>({})
 
 const MapboxRefProvider: React.FC = ({ children }) => {
   const mapboxRef = useRef()
   const [mapboxRefReady, seMapboxRefReady] = useState(false)
-  const [mapboxInstance, seMapboxInstance] = useState<Map | undefined>()
+  const [mapboxInstance, seMapboxInstance] = useState<Map>()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (mapboxRef.current !== undefined && !mapboxRefReady) {

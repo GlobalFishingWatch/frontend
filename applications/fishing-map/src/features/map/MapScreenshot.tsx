@@ -2,7 +2,7 @@ import React, { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } f
 import { createPortal } from 'react-dom'
 import { getParser } from 'bowser'
 import debounce from 'lodash/debounce'
-import { Map } from 'mapbox-gl'
+import { Map } from '@globalfishingwatch/mapbox-gl'
 import { getCSSVarValue } from 'utils/dom'
 import styles from './Map.module.css'
 

@@ -1,4 +1,4 @@
-import { Layer, Style } from 'mapbox-gl'
+import { Layer, Style } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedLayer, ExtendedStyle, Group } from '../../types'
 import sort, { convertLegacyGroups } from './sort'
 
