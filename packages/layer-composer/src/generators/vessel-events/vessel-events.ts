@@ -1,6 +1,6 @@
 import { FeatureCollection } from 'geojson'
-import { GeoJSONSourceRaw } from 'mapbox-gl'
 import memoizeOne from 'memoize-one'
+import { GeoJSONSourceRaw } from '@globalfishingwatch/mapbox-gl'
 import { Group, Dictionary } from '../../types'
 import {
   Type,

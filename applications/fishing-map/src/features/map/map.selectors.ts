@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { CircleLayer } from 'mapbox-gl'
+import { CircleLayer } from '@globalfishingwatch/mapbox-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   AnyGeneratorConfig,

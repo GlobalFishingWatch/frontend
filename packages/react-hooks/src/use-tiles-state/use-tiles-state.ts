@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react'
-import type { MapSourceDataEvent, Map } from 'mapbox-gl'
 import tilebelt from '@mapbox/tilebelt'
+import type { MapSourceDataEvent, Map } from '@globalfishingwatch/mapbox-gl'
 
 type TilesLoading = {
   loading: boolean

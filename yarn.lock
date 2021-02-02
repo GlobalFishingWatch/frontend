@@ -4963,7 +4963,7 @@
   dependencies:
     "@types/geojson" "*"
 
-"@types/mapbox-gl@^1.10.1", "@types/mapbox-gl@^1.12.8":
+"@types/mapbox-gl@^1.12.8":
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/@types/mapbox-gl/-/mapbox-gl-1.13.0.tgz#914836d0ea5d1a433252c8debeef75d410c3d062"
   integrity sha512-z5YxncrARfKaJXzkhy4qS0cOldMfGIXq5yOPQcU9S12/xjAe3m66scftYlV1E10Em5QGdW2xahBb3CPk/dDcqA==
@@ -5061,7 +5061,7 @@
   dependencies:
     "@types/react" "^16"
 
-"@types/react-map-gl@^5.2.7", "@types/react-map-gl@^5.2.9":
+"@types/react-map-gl@^5.2.9":
   version "5.2.9"
   resolved "https://registry.yarnpkg.com/@types/react-map-gl/-/react-map-gl-5.2.9.tgz#67e00d96e3035d792f55a4266b08dbee11d06dd2"
   integrity sha512-DbN7irrx9OEfDTK9TNOyTjWgz4/TOJXyY9EDDmHQC1Ne7KW6QCbOt6vKD+StMYjdO1CfkayjM1n4/CeyTHw0BA==
