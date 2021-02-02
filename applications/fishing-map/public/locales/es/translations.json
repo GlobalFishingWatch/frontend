@@ -4,8 +4,10 @@
     "active_before": "Activo antes",
     "activity": "Actividad",
     "apparentFishing": "Esfuerzo de pesca aparente",
+    "confirm": "Confirm",
     "context_area_plural": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles. Puedes encontrar todas las vistas guardadas en tu área de usuario.",
+    "description": "Description",
     "environment": "Entorno",
     "hour": "Hora",
     "hour_plural": "horas",
@@ -13,14 +15,26 @@
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
     "more": "más",
+    "name": "Name",
     "seeDefault": "Ver vista por defecto",
     "share": "Haz click para compartir tu vista actual",
+    "update": "Update",
     "vessel_plural": "Embarcaciones",
     "open_menu": "Abrir menú",
     "dismiss": "Cancelar",
     "save": "Guardar",
     "events": "Eventos",
     "fishing": "Pesca"
+  },
+  "dataset": {
+    "dragActive": "Drop the file here ...",
+    "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
+    "edit": "Edit dataset",
+    "file": "File",
+    "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
+    "new": "New dataset",
+    "remove": "Remove dataset",
+    "uploadNew": "Upload new dataset"
   },
   "errors": {
     "notSupportedBy": "No soportado por {{list}}",
@@ -55,10 +69,10 @@
   },
   "map": {
     "captureMap": "Capturar el mapa",
-    "mapLoadingWait": "Por favor espere a que cargue el mapa",
     "change_basemap_default": "Cambia al mapa base por defecto",
     "change_basemap_satellite": "Cambia al mapa base satelital",
     "loading": "Cargando el mapa",
+    "mapLoadingWait": "Por favor espere a que cargue el mapa",
     "rulers_add": "Añade reglas",
     "rulers_remove": "Borra todas las reglas",
     "search": "Buscar áreas",
@@ -108,5 +122,10 @@
     "transmission_plural": "Transmisión",
     "widthRange": "Width range",
     "transmission": "Transmisión"
+  },
+  "workspace": {
+    "new": "New Workspace",
+    "title_plural": "Workspaces",
+    "title": "Workspace"
   }
 }
