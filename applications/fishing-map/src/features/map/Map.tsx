@@ -180,9 +180,12 @@ const MapWrapper = (): React.ReactElement | null => {
     style?.metadata
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
-  const onMouseOut = useCallback(() => {
+
+  const resetHoverState = useCallback(() => {
     setHoveredEvent(null)
-  }, [])
+    setHoveredDebouncedEvent(null)
+    cleanFeatureState()
+  }, [cleanFeatureState])
 
   const { viewport, onViewportChange } = useViewport()
 
@@ -256,7 +259,7 @@ const MapWrapper = (): React.ReactElement | null => {
           onClick={onMapClick}
           onHover={onMapHover}
           onError={handleError}
-          onMouseOut={onMouseOut}
+          onMouseOut={resetHoverState}
           transitionDuration={viewport.transitionDuration}
         >
           {clickedEvent && (
@@ -276,7 +279,7 @@ const MapWrapper = (): React.ReactElement | null => {
           <MapInfo center={hoveredEvent} />
         </InteractiveMap>
       )}
-      <MapControls loading={tilesLoading.loading} />
+      <MapControls onMouseEnter={resetHoverState} mapLoading={tilesLoading.loading} />
       {layersWithLegend?.map((legend) => {
         const legendDomElement = document.getElementById(legend.id as string)
         if (legendDomElement) {

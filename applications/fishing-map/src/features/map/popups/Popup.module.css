@@ -143,6 +143,12 @@
   border: none;
 }
 
+
+:global(.printing .mapboxgl-popup) {
+  display: none !important;
+}
+
+
 @media print {
   :global(.mapboxgl-popup) {
     display: none !important;

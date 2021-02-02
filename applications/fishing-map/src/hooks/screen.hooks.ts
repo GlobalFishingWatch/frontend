@@ -3,12 +3,14 @@ import { saveAs } from 'file-saver'
 import setInlineStyles from 'utils/dom'
 
 export const useDownloadDomElementAsImage = (
-  domElement: HTMLElement | null,
+  domElement: HTMLElement | undefined,
   autoDownload = true,
   fileName?: string
 ) => {
   const [error, setError] = useState<string | null>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [previewImage, setPreviewImage] = useState<string>('')
+  const [previewImageLoading, setPreviewImageLoading] = useState(false)
   const [finished, setFinished] = useState<boolean>(false)
   const html2canvasRef = useRef<any>(null)
 
@@ -31,8 +33,20 @@ export const useDownloadDomElementAsImage = (
       }
     } catch (e) {
       console.warn(e)
+      throw e
     }
   }, [domElement])
+
+  const generatePreviewImage = useCallback(async () => {
+    try {
+      setPreviewImageLoading(true)
+      const canvas = await getCanvas()
+      setPreviewImage(canvas.toDataURL())
+      setPreviewImageLoading(false)
+    } catch (e) {
+      setPreviewImageLoading(false)
+    }
+  }, [getCanvas])
 
   const downloadImage = useCallback(
     async (fileName = `GFW-fishingmap-${new Date().toLocaleString()}.png`) => {
@@ -80,5 +94,14 @@ export const useDownloadDomElementAsImage = (
     }
   }, [downloadImage, domElement, autoDownload, fileName])
 
-  return { loading, error, finished, downloadImage, getCanvas }
+  return {
+    loading,
+    error,
+    finished,
+    downloadImage,
+    getCanvas,
+    previewImage,
+    generatePreviewImage,
+    previewImageLoading,
+  }
 }

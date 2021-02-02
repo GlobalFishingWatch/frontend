@@ -6,13 +6,13 @@ import Spinner from '../spinner'
 import styles from './IconButton.module.css'
 import { IconButtonProps } from '.'
 
-
 const warningVarColor = getComputedStyle(document.documentElement).getPropertyValue(
   '--color-danger-red'
 )
 
 function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
   const {
+    id,
     type = 'default',
     size = 'default',
     disabled = false,
@@ -31,6 +31,7 @@ function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
+        id={id}
         ref={ref}
         className={cx(
           styles.iconButton,

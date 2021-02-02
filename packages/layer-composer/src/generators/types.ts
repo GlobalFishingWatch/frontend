@@ -118,6 +118,10 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    */
   layer: ContextLayerType
   /**
+   * Contains the attribution to be displayed when the map is showing the layer.
+   */
+  attribution?: string
+  /**
    * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
    */
   tilesUrl: string

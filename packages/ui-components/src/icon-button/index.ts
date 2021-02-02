@@ -9,6 +9,7 @@ export type IconButtonType = 'default' | 'invert' | 'border' | 'map-tool' | 'war
 export type IconButtonSize = 'default' | 'medium' | 'small' | 'tiny'
 
 export interface IconButtonProps {
+  id?: string
   icon?: IconType
   type?: IconButtonType
   size?: IconButtonSize

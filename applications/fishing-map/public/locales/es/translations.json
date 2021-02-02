@@ -33,16 +33,16 @@
   },
   "layer": {
     "add": "Añadir capa",
-    "color_change": "Cambia el color",
+    "color_change": "Cambiar color",
     "filterClose": "Cerrar filtros",
     "filterOpen": "Abrir filtros",
     "flagState_plural": "Estados de bandera",
+    "fleet_plural": "Flotas",
     "gearType_plural": "Tipos de equipo",
     "infoClose": "Ocultar info",
     "infoOpen": "Mostrar info",
     "remove": "Borra la capa",
     "seeDescription": "Haga clic para ver la descripción de la capa",
-    "source": "Fuente",
     "source_plural": "Fuentes",
     "toggleCombinationMode": {
       "combine": "Combinar capas",
@@ -51,10 +51,11 @@
     },
     "toggleVisibility": "Cambiar visibilidad de la capa",
     "vessel_fit_bounds": "Centrar vista en la pista de barcos",
-    "filterPpen": "Abrir filtros"
+    "source": "Fuente"
   },
   "map": {
-    "capture_map": "Captura el mapa",
+    "captureMap": "Capturar el mapa",
+    "mapLoadingWait": "Por favor espere a que cargue el mapa",
     "change_basemap_default": "Cambia al mapa base por defecto",
     "change_basemap_satellite": "Cambia al mapa base satelital",
     "loading": "Cargando el mapa",
@@ -76,8 +77,9 @@
     "vessels": "Buscar buques"
   },
   "selects": {
-    "placeholder": "Seleccione una opción",
-    "selected": "seleccionado"
+    "allSelected": "Todos",
+    "selected": "seleccionado",
+    "placeholder": "Seleccione una opción"
   },
   "timebar": {
     "fishingEffortDisabled": "Seleccione al menos una capa aparente de esfuerzo de pesca",
@@ -99,6 +101,7 @@
     "lengthRange": "Rango de longitud",
     "loading": "Cargando track de buque",
     "mmsi": "MMSI",
+    "origin": "Origen",
     "registeredGearType": "Tipo de equipo registrado",
     "source": "Fuente",
     "tracks": "Tracks de barcos",

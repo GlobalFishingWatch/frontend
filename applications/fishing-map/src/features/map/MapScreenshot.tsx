@@ -18,7 +18,7 @@ type PrintSize = {
 }
 
 const browser = getParser(window.navigator.userAgent)
-const isPrintSupported = browser.satisfies({
+export const isPrintSupported = browser.satisfies({
   chrome: '>22',
   opera: '>30',
   edge: '>79',

@@ -2,11 +2,10 @@
   position: absolute;
   bottom: var(--space-XS);
   left: var(--space-XS);
-  color: var(--color-white);
+  color: rgba(255,255,255, 0.4);
   font: var(--font-XS);
   text-transform: uppercase;
   font-weight: bold;
-  opacity: .4;
 }
 
 .scale {
@@ -14,15 +13,14 @@
   position: absolute;
   left: var(--space-XS);
   bottom: var(--space-XS);
-  color: var(--color-white);
 }
 
 .scale :global(.mapboxgl-ctrl-scale) {
   font: var(--font-XS);
   background: none;
-  color: var(--color-white);
-  border-color: var(--color-white);
+  color: rgba(255,255,255, 0.4);
   border-left: none;
   border-right: none;
+  border-color: rgba(255,255,255, 0.4);
 }
 

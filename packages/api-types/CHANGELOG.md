@@ -1,5 +1,17 @@
 # @globalfishingwatch/api-types
 
+## 2.6.2
+
+### Patch Changes
+
+- include vessel origin api type
+
+## 2.6.1
+
+### Patch Changes
+
+- 761a331c: added requestType to the fetch api
+
 ## 2.6.0
 
 ### Minor Changes

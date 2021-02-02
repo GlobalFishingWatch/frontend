@@ -1,5 +1,17 @@
 # @globalfishingwatch/ui-components
 
+## 2.12.2
+
+### Patch Changes
+
+- 25302d60: hide remove value when no value in input-date
+
+## 2.12.1
+
+### Patch Changes
+
+- 88482842: Include ids in ui-buttons
+
 ## 2.12.0
 
 ### Minor Changes

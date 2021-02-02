@@ -17,6 +17,8 @@ export type SearchFilterKey = 'flags' | 'gearType' | 'startDate' | 'endDate'
 export type SearchFilter = {
   flags?: MultiSelectOption<string>[]
   sources?: MultiSelectOption<string>[]
+  fleets?: MultiSelectOption<string>[]
+  origins?: MultiSelectOption<string>[]
   firstTransmissionDate?: string
   lastTransmissionDate?: string
 }
@@ -25,7 +27,9 @@ interface SearchState {
   status: AsyncReducerStatus
   data: VesselWithDatasets[] | null
   suggestion: string | null
+  suggestionClicked: boolean
   pagination: {
+    loading: boolean
     total: number
     offset: number
   }
@@ -33,12 +37,13 @@ interface SearchState {
   filters: SearchFilter
 }
 
-const paginationInitialState = { total: 0, offset: 0 }
+const paginationInitialState = { total: 0, offset: 0, loading: false }
 const initialState: SearchState = {
   status: AsyncReducerStatus.Idle,
   pagination: paginationInitialState,
   data: null,
   suggestion: null,
+  suggestionClicked: false,
   filtersOpen: false,
   filters: {},
 }
@@ -54,6 +59,11 @@ export function checkSearchFiltersEnabled(filters: SearchFilter): boolean {
   return Object.values(filters).filter((f) => !!f).length > 0
 }
 
+export function checkAdvanceSearchFiltersEnabled(filters: SearchFilter): boolean {
+  const { sources, ...rest } = filters
+  return Object.values(rest).filter((f) => !!f).length > 0
+}
+
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/fetch',
   async ({ query, filters, datasets, offset }: VesselSearchThunk, { getState, signal }) => {
@@ -61,7 +71,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     const dataset = datasets[0]
     const currentResults = selectSearchResults(state)
     let advancedQuery
-    if (checkSearchFiltersEnabled(filters)) {
+
+    if (checkAdvanceSearchFiltersEnabled(filters)) {
       const fieldsAllowed = Array.from(
         new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
       )
@@ -97,7 +108,20 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           value: filters.flags,
           field: 'flag',
           operator: 'IN',
-          condition: (value: any) => value !== undefined,
+          transformation: (value: any): string =>
+            `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+        },
+        {
+          value: filters.fleets,
+          field: 'fleet',
+          operator: 'IN',
+          transformation: (value: any): string =>
+            `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+        },
+        {
+          value: filters.origins,
+          field: 'origin',
+          operator: 'IN',
           transformation: (value: any): string =>
             `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
         },
@@ -105,18 +129,16 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           value: filters?.firstTransmissionDate,
           field: 'firstTransmissionDate',
           operator: '>=',
-          condition: (value: any) => value !== undefined,
         },
         {
           value: filters?.lastTransmissionDate,
           field: 'lastTransmissionDate',
           operator: '<=',
-          condition: (value: any) => value !== undefined,
         },
       ]
 
       const queryFilters = queryFiltersFields
-        .filter(({ value, condition }) => (condition ? condition(value) : true))
+        .filter(({ value }) => value !== undefined)
         .map(
           ({ field, operator, transformation, value }) =>
             `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
@@ -164,6 +186,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             : vesselsWithDataset,
         suggestion: searchResults.metadata?.suggestion,
         pagination: {
+          loading: false,
           total: searchResults.total.value,
           offset: searchResults.offset + offset,
         },
@@ -176,24 +199,31 @@ const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
+    setFilters: (state, action: PayloadAction<SearchFilter>) => {
+      state.filters = { ...state.filters, ...action.payload }
+    },
     setFiltersOpen: (state, action: PayloadAction<boolean>) => {
       state.filtersOpen = action.payload
     },
-    setFilters: (state, action: PayloadAction<SearchFilter>) => {
-      state.filters = { ...state.filters, ...action.payload }
+    resetFilters: (state) => {
+      state.filters = initialState.filters
+      state.filtersOpen = initialState.filtersOpen
+    },
+    setSuggestionClicked: (state, action: PayloadAction<boolean>) => {
+      state.suggestionClicked = action.payload
     },
     cleanVesselSearchResults: (state) => {
       state.status = initialState.status
       state.suggestion = initialState.suggestion
+      state.suggestionClicked = false
       state.data = initialState.data
       state.pagination = paginationInitialState
-      state.filtersOpen = initialState.filtersOpen
-      state.filters = initialState.filters
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchVesselSearchThunk.pending, (state) => {
+    builder.addCase(fetchVesselSearchThunk.pending, (state, action) => {
       state.status = AsyncReducerStatus.Loading
+      state.pagination.loading = action.meta.arg.offset > 0
     })
     builder.addCase(fetchVesselSearchThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
@@ -205,7 +235,7 @@ const searchSlice = createSlice({
     })
     builder.addCase(fetchVesselSearchThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
-        state.status = AsyncReducerStatus.Idle
+        state.status = AsyncReducerStatus.Aborted
       } else {
         state.status = AsyncReducerStatus.Error
       }
@@ -213,13 +243,20 @@ const searchSlice = createSlice({
   },
 })
 
-export const { setFiltersOpen, setFilters, cleanVesselSearchResults } = searchSlice.actions
+export const {
+  setFilters,
+  setFiltersOpen,
+  resetFilters,
+  setSuggestionClicked,
+  cleanVesselSearchResults,
+} = searchSlice.actions
 
 export const selectSearchResults = (state: RootState) => state.search.data
 export const selectSearchStatus = (state: RootState) => state.search.status
 export const selectSearchFiltersOpen = (state: RootState) => state.search.filtersOpen
 export const selectSearchFilters = (state: RootState) => state.search.filters
 export const selectSearchSuggestion = (state: RootState) => state.search.suggestion
+export const selectSearchSuggestionClicked = (state: RootState) => state.search.suggestionClicked
 export const selectSearchPagination = (state: RootState) => state.search.pagination
 
 export default searchSlice.reducer

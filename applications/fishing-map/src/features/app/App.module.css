@@ -3,6 +3,10 @@
   --print-height: 10in;
 }
 
+:global(.printing .print-hidden) {
+  display: none !important;
+}
+
 :global(#root) {
   height: 100%;
 }
