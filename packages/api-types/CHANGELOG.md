@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.7.1
+
+### Patch Changes
+
+- fix main api-types package.json
+
 ## 2.7.0
 
 ### Minor Changes

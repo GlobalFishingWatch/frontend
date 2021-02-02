@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.6.4",
-    "@globalfishingwatch/api-types": "^2.7.0",
+    "@globalfishingwatch/api-types": "^2.7.1",
     "@globalfishingwatch/data-transforms": "^1.1.0",
     "@globalfishingwatch/dataviews-client": "^4.0.3",
     "@globalfishingwatch/layer-composer": "4.11.2",
