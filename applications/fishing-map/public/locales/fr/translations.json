@@ -4,10 +4,10 @@
     "active_before": "Actif avant",
     "activity": "Activité",
     "apparentFishing": "Effort de pêche apparent",
-    "confirm": "Confirm",
+    "confirm": "Valider",
     "context_area_plural": "Calques de contexte",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers. Vous pouvez trouver toutes vos vues enregistrées dans votre zone utilisateur.",
-    "description": "Description",
+    "description": "Libellé",
     "environment": "Environnement",
     "hour": "Heure",
     "hour_plural": "heures",
@@ -15,10 +15,10 @@
     "login": "Se connecter",
     "logout": "Déconnexion",
     "more": "plus",
-    "name": "Name",
+    "name": "Nom",
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
-    "update": "Update",
+    "update": "Mise à jour",
     "vessel_plural": "Navires",
     "open_menu": "Ouvrir le menu",
     "dismiss": "Fermer",
@@ -27,16 +27,21 @@
     "fishing": "Pêche"
   },
   "dataset": {
-    "dragActive": "Drop the file here ...",
-    "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
-    "edit": "Edit dataset",
-    "file": "File",
-    "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
-    "new": "New dataset",
+    "add": "Ajouter un jeu de données",
+    "dragActive": "Déposez le fichier ici ...",
+    "dragFilePlaceholder": "Glissez et déposez un fichier de forme compressé ou un géojson ici ou cliquez pour le sélectionner",
+    "edit": "Modifier le jeu de données",
+    "emptyState": "Vos jeux de données apparaîtront ici",
+    "file": "Fichier",
+    "fileNotAllowed": "(Seuls les fichiers .zip ou .geojson sont autorisés)",
+    "new": "Nouveau jeu de données",
     "remove": "Remove dataset",
-    "uploadNew": "Upload new dataset"
+    "title_plural": "Datasets",
+    "uploadNewContex": "Télécharger de nouvelles zones contextuelles",
+    "uploadNewDataLayer": "Télécharger une nouvelle couche de données"
   },
   "errors": {
+    "generic": "Quelque chose s'est mal passé, veuillez réessayer ou contacter:",
     "notSupportedBy": "Non pris en charge par {{list}}",
     "pageNotFound": "Page introuvable",
     "privateView": "Ceci est une vue privée",
@@ -124,8 +129,9 @@
     "transmission": "Transmission"
   },
   "workspace": {
-    "new": "New Workspace",
+    "emptyState": "Vos espaces de travail apparaîtront ici",
+    "new": "Nouvel espace de travail",
     "title_plural": "Workspaces",
-    "title": "Workspace"
+    "title": "Espace de travail"
   }
 }
