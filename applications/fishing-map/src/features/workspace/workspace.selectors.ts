@@ -102,7 +102,7 @@ export const selectDataviewInstancesMerged = createSelector(
       }
     )
 
-    return [...workspaceDataviewInstancesMerged, ...urlDataviews.new]
+    return [...urlDataviews.new, ...workspaceDataviewInstancesMerged]
   }
 )
 
@@ -257,7 +257,7 @@ export const selectContextAreasDataviews = createSelector(
   (contextDataviews, userContextDataviews) => {
     if (!userContextDataviews) return contextDataviews
     if (!contextDataviews) return userContextDataviews
-    return [...contextDataviews, ...userContextDataviews]
+    return [...userContextDataviews, ...contextDataviews]
   }
 )
 
