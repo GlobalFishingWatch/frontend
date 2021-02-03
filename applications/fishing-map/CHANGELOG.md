@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.19.1
+
+### Patch Changes
+
+- 058d14b7: Return api erros in api-client
+- 54737510: Fix sidabar z-index
+- Updated dependencies [058d14b7]
+- Updated dependencies [54737510]
+  - @globalfishingwatch/api-client@1.6.6
+  - @globalfishingwatch/ui-components@2.12.4
+
 ## 0.19.0
 
 ### Minor Changes
