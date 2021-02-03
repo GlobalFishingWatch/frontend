@@ -1,8 +1,19 @@
 .container {
-  display: flex
+  display: flex;
+  max-height: 20rem;
+  z-index: 20;
+  overflow-y: auto;
+}
+
+.loadingPlaceholder {
+  height: 5rem;
+}
+
+
+.dataset {
+  cursor: pointer;
 }
 
 .create {
-  cursor: pointer;
   text-decoration: underline;
 }

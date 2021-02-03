@@ -43,7 +43,9 @@ function ContextAreaSection(): React.ReactElement {
             render={(attrs) => {
               return (
                 <div className={styles.tooltipContent} tabIndex={-1} {...attrs}>
-                  <NewDatasetTooltip />
+                  {newDatasetOpen && (
+                    <NewDatasetTooltip onSelect={() => setNewDatasetOpen(false)} />
+                  )}
                   <div className={styles.tooltipArrow} data-popper-arrow></div>
                 </div>
               )

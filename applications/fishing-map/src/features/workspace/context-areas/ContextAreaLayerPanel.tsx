@@ -8,6 +8,7 @@ import {
   ColorBarOption,
   TrackColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
+import { Generators } from '@globalfishingwatch/layer-composer'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import styles from 'features/workspace/LayerPanel.module.css'
@@ -21,7 +22,7 @@ type LayerPanelProps = {
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
   const resource = useSelector(selectResourceByUrl<Vessel>(url))
   const [colorOpen, setColorOpen] = useState(false)
@@ -34,6 +35,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         visible: !layerActive,
       },
     })
+  }
+
+  const onRemoveClick = () => {
+    deleteDataviewInstance(dataview.id)
   }
 
   const changeColor = (color: ColorBarOption) => {
@@ -55,7 +60,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
-  const title = t(`datasets:${dataset?.id}.name`)
+  const isCustomUserLayer = dataview.config?.type === Generators.Type.UserContext
+  const title = isCustomUserLayer ? dataset?.name : t(`datasets:${dataset?.id}.name`)
+  const description = isCustomUserLayer
+    ? dataset?.description
+    : t(`datasets:${dataset?.id}.description`)
 
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
@@ -90,7 +99,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             size="small"
             loading={resource?.status === AsyncReducerStatus.Loading}
             className={styles.actionButton}
-            tooltip={t(`datasets:${dataset?.id}.description`)}
+            tooltip={description}
             tooltipPlacement="top"
           />
           {layerActive && (
@@ -104,6 +113,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               className={cx(styles.actionButton, styles.expandable, {
                 [styles.expanded]: colorOpen,
               })}
+            />
+          )}
+          {isCustomUserLayer && (
+            <IconButton
+              icon="delete"
+              size="small"
+              tooltip={t('layer.remove', 'Remove layer')}
+              tooltipPlacement="top"
+              onClick={onRemoveClick}
+              className={cx(styles.actionButton)}
             />
           )}
         </div>

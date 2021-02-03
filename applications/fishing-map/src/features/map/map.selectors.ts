@@ -111,7 +111,10 @@ export const getWorkspaceGeneratorsConfig = createSelector(
           const resource = resources[url] as Resource<TrackResourceData>
           generator.data = resource.data
         }
-      } else if (dataview.config?.type === Generators.Type.Context) {
+      } else if (
+        dataview.config?.type === Generators.Type.Context ||
+        dataview.config?.type === Generators.Type.UserContext
+      ) {
         if (Array.isArray(dataview.config.layers)) {
           const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
             const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(dataview, {
