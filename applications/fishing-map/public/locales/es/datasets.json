@@ -20,19 +20,19 @@
     "description": "Esta capa de Global Fishing Watch utiliza los datos proporcionados por el Ministerio de Producción del Gobierno peruano, Sector de Pesca (PRODUCE). El permiso para incluir datos peruanos exigió que se implementara un retraso de 10 días para la publicación. Los datos se recogen utilizando su Sistema de Monitorización de Buques (VMS) a través de satélites y receptores terrestres, y contiene un tipo de engranaje de identidad, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos desarrollados para los datos AIS para identificar la actividad y las conductas de la pesca. El algoritmo clasifica cada punto de datos de emisión de estos buques como una pesca aparentemente o no pesca y muestra la primera en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. VMS transmite datos de forma muy diferente a AIS y puede dar diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algoritmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor puede mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” o “esfuerzo pesquero”, como “aparente” en lugar de seguro. La información de Any/all Global Fishing Watch sobre “aparente actividad de pesca” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y técnicas de clasificación automatizadas."
   },
   "public-mpa-all": {
-    "name": "Áreas Marinas Protegidas",
+    "name": "Marine Protected Areas (WDPA)",
     "description": "El término Áreas Marinas Protegidas incluye reservas marinas, áreas marinas totalmente protegidas, zonas de veda, santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente, por nombrar algunos. Muchos de estos tienen niveles de protección bastante diferentes, y la gama de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. Fuente: Base de datos mundial sobre áreas protegidas (WDPA)"
   },
   "public-mpa-no-take": {
-    "name": "MPA - Sin tomar",
+    "name": "MPA - No take (WDPA)",
     "description": "El término Áreas Marinas Protegidas incluye reservas marinas, áreas marinas totalmente protegidas, zonas sin tomar santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente, por nombrar algunos. Muchos de ellos tienen niveles de protección muy diferentes y el abanico de actividades permitidas o prohibidas dentro de sus fronteras también varía considerablemente. No se creó ninguna capa de Toma utilizando los datos disponibles en el Planeta Marino Protegido WDPA usando el filtro NO_TAKE = 'Todos'. Fuente: Base de datos mundial sobre áreas protegidas (WDPA)"
   },
   "public-mpa-restricted": {
-    "name": "MPA - Restringido",
+    "name": "MPA - Restricted (WDPA)",
     "description": "El término Áreas Marinas Protegidas incluye reservas marinas, áreas marinas totalmente protegidas, zonas sin tomar santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente, por nombrar algunos. Muchos de ellos tienen niveles de protección muy diferentes y el abanico de actividades permitidas o prohibidas dentro de sus fronteras también varía considerablemente. No se creó ninguna capa de Toma utilizando los datos disponibles en el Planeta Marino Protegido WDPA usando el filtro NO_TAKE = 'Parte'. Fuente: Base de datos mundial sobre áreas protegidas (WDPA)"
   },
   "public-eez-areas": {
-    "name": "EEZ",
+    "name": "EEZ (marineregions.org)",
     "description": "Instituto Marino de Flandes (2019). Geobase de datos de Límites Marítimos: Límites Marítimos y Zonas Económicas Exclusivas (200NM), versión 11. Fuente: marineregions.org"
   },
   "public-tuna-rfmo": {
