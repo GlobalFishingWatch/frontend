@@ -2,6 +2,7 @@ import { Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME, PUBLIC_SUFIX } from 'data/config'
 import {
   DEFAULT_BASEMAP_DATAVIEW_ID,
+  DEFAULT_CONTEXT_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
   DEFAULT_WORKSPACE_ID,
@@ -23,7 +24,7 @@ const workspace: Workspace<WorkspaceState> = {
   public: true,
   state: {},
   ownerId: 0,
-  dataviews: [{ id: DEFAULT_VESSEL_DATAVIEW_ID }], // Needed to fetch vessel information
+  dataviews: [{ id: DEFAULT_VESSEL_DATAVIEW_ID }, { id: DEFAULT_CONTEXT_DATAVIEW_ID }], // Needed to fetch vessel information
   dataviewInstances: [
     {
       id: 'basemap',

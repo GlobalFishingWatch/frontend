@@ -102,11 +102,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
       const datasets = getDatasetByDataview(dataviewIntances)
 
-      if (datasets?.length) {
-        const { error, payload }: any = await dispatch(fetchDatasetsByIdsThunk(datasets))
-        if (error) {
-          return rejectWithValue({ workspace, error: payload })
-        }
+      const { error, payload }: any = await dispatch(fetchDatasetsByIdsThunk(datasets))
+      if (error) {
+        return rejectWithValue({ workspace, error: payload })
       }
 
       const locationCategory = selectLocationCategory(state)

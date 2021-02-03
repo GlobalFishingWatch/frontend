@@ -10,14 +10,14 @@ import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-s
 import { RootState } from 'store'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
-const DATASETS_CACHE = true
+export const DATASETS_CACHE = true
 
 export const fetchDatasetByIdThunk = createAsyncThunk(
   'datasets/fetchById',
   async (id: string, { rejectWithValue }) => {
     try {
       const dataset = await GFWAPI.fetch<Dataset>(
-        `/v1/datasets/${id}?include=endpoints&cahe=${DATASETS_CACHE}`
+        `/v1/datasets/${id}?include=endpoints&cache=${DATASETS_CACHE}`
       )
       return dataset
     } catch (e) {
@@ -28,9 +28,9 @@ export const fetchDatasetByIdThunk = createAsyncThunk(
 
 export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
-  async (ids: string[] = [], { dispatch, rejectWithValue, getState }) => {
+  async (ids: string[] = [], { rejectWithValue, getState }) => {
     const existingIds = selectIds(getState() as RootState) as string[]
-    const uniqIds = Array.from(new Set([...ids, ...existingIds]))
+    const uniqIds = ids?.length ? Array.from(new Set([...ids, ...existingIds])) : []
     try {
       const workspacesParams = {
         ...(uniqIds?.length && { ids: uniqIds }),
@@ -59,40 +59,53 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
     }
   }
 )
+
+export const fetchAllDatasetsThunk = createAsyncThunk('datasets/all', async (_, { dispatch }) => {
+  return dispatch(fetchDatasetsByIdsThunk([]))
+})
+
 export type CreateDataset = { dataset: Partial<Dataset>; file: File }
 export const createDatasetThunk = createAsyncThunk(
   'datasets/create',
-  async ({ dataset, file }: CreateDataset) => {
-    const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
-      method: 'POST',
-      body: { contentType: file.type } as any,
-    })
-    await fetch(url, { method: 'PUT', body: file })
-    const datasetWithFilePath = {
-      ...dataset,
-      id: kebabCase(dataset.name),
-      source: DATASETS_USER_SOURCE_ID,
-      configuration: {
-        ...dataset.configuration,
-        filePath: path,
-      },
+  async ({ dataset, file }: CreateDataset, { rejectWithValue }) => {
+    try {
+      const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
+        method: 'POST',
+        body: { contentType: file.type } as any,
+      })
+      await fetch(url, { method: 'PUT', body: file })
+      const datasetWithFilePath = {
+        ...dataset,
+        id: `${kebabCase(dataset.name)}-${Date.now()}`,
+        source: DATASETS_USER_SOURCE_ID,
+        configuration: {
+          ...dataset.configuration,
+          filePath: path,
+        },
+      }
+      const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
+        method: 'POST',
+        body: datasetWithFilePath as any,
+      })
+      return createdDataset
+    } catch (e) {
+      return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
-    const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
-      method: 'POST',
-      body: datasetWithFilePath as any,
-    })
-    return createdDataset
   }
 )
 
 export const updateDatasetThunk = createAsyncThunk(
   'datasets/update',
-  async (partialDataset: Partial<Dataset>) => {
-    const updatedDataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${partialDataset.id}`, {
-      method: 'PATCH',
-      body: partialDataset as any,
-    })
-    return updatedDataset
+  async (partialDataset: Partial<Dataset>, { rejectWithValue }) => {
+    try {
+      const updatedDataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${partialDataset.id}`, {
+        method: 'PATCH',
+        body: partialDataset as any,
+      })
+      return updatedDataset
+    } catch (e) {
+      return rejectWithValue({ status: e.status || e.code, message: e.message })
+    }
   },
   {
     condition: (partialDataset) => {
@@ -113,7 +126,7 @@ export const deleteDatasetThunk = createAsyncThunk(
       })
       return { ...dataset, id }
     } catch (e) {
-      return rejectWithValue(id)
+      return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
   }
 )
@@ -122,11 +135,13 @@ export type DatasetModals = 'new' | 'edit' | undefined
 export interface DatasetsState extends AsyncReducer<Dataset> {
   datasetModal: DatasetModals
   editingDatasetId: string | undefined
+  allDatasetsRequested: boolean
 }
 const initialState: DatasetsState = {
   ...asyncInitialState,
   datasetModal: undefined,
   editingDatasetId: undefined,
+  allDatasetsRequested: false,
 }
 
 const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
@@ -142,6 +157,11 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
     setEditingDatasetId: (state, action: PayloadAction<string>) => {
       state.editingDatasetId = action.payload
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchAllDatasetsThunk.fulfilled, (state) => {
+      state.allDatasetsRequested = true
+    })
   },
   thunks: {
     fetchThunk: fetchDatasetsByIdsThunk,
@@ -166,7 +186,9 @@ export const selectDatasetById = memoize((id: string) =>
 
 export const selectDatasetsStatus = (state: RootState) => state.datasets.status
 export const selectDatasetsStatusId = (state: RootState) => state.datasets.statusId
+export const selectDatasetsError = (state: RootState) => state.datasets.error
 export const selectEditingDatasetId = (state: RootState) => state.datasets.editingDatasetId
+export const selectAllDatasetsRequested = (state: RootState) => state.datasets.allDatasetsRequested
 export const selectDatasetModal = (state: RootState) => state.datasets.datasetModal
 
 export default datasetSlice.reducer

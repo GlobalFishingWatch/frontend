@@ -2,12 +2,15 @@ import React, { useState, useCallback } from 'react'
 import cx from 'classnames'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
+import lowerCase from 'lodash/lowerCase'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 // import Select from '@globalfishingwatch/ui-components/dist/select'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { ReactComponent as FilesIcon } from 'assets/icons/files-supported.svg'
+import { capitalize } from 'utils/shared'
+import { SUPPORT_EMAIL } from 'data/config'
 import { useDatasetsAPI, useDatasetModalConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 
@@ -166,6 +169,7 @@ function NewDataset(): React.ReactElement {
 
   const [file, setFile] = useState<File | undefined>()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const [metadata, setMetadata] = useState<DatasetMetadata | undefined>()
   const { dispatchCreateDataset } = useDatasetsAPI()
 
@@ -173,7 +177,7 @@ function NewDataset(): React.ReactElement {
     setFile(file)
     setMetadata((metadata) => ({
       ...metadata,
-      name: file.name.split('.')[0],
+      name: capitalize(lowerCase(file.name.split('.')[0])),
       type: DatasetTypes.Context,
     }))
   }
@@ -185,8 +189,15 @@ function NewDataset(): React.ReactElement {
   const onConfirmClick = async () => {
     if (file) {
       setLoading(true)
-      await dispatchCreateDataset({ dataset: { ...metadata }, file })
-      onClose()
+      const { error } = await dispatchCreateDataset({ dataset: { ...metadata }, file })
+      setLoading(false)
+      if (error) {
+        setError(
+          `${t('errors.generic', 'Something went wrong, try again or contact:')} ${SUPPORT_EMAIL}`
+        )
+      } else {
+        onClose()
+      }
     }
   }
 
@@ -198,7 +209,7 @@ function NewDataset(): React.ReactElement {
 
   return (
     <Modal
-      title={t('dataset.uploadNew', 'Upload new dataset')}
+      title={t('dataset.uploadNewContex', 'Upload new context areas')}
       isOpen={datasetModal === 'new'}
       contentClassName={styles.modalContainer}
       onClose={onClose}
@@ -210,6 +221,7 @@ function NewDataset(): React.ReactElement {
         )}
       </div>
       <div className={styles.modalFooter}>
+        {error && <span className={styles.errorMsg}>{error}</span>}
         <Button
           disabled={!file || !metadata?.name || !metadata?.description}
           className={styles.saveBtn}

@@ -2,6 +2,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { Dataset } from '@globalfishingwatch/api-types/dist'
+import { AsyncError } from 'utils/async-slice'
 import {
   CreateDataset,
   createDatasetThunk,
@@ -44,17 +45,25 @@ export const useDatasetsAPI = () => {
   const dispatch = useDispatch()
 
   const dispatchCreateDataset = useCallback(
-    async (createDataset: CreateDataset): Promise<Dataset> => {
-      const { payload }: any = await dispatch(createDatasetThunk(createDataset))
-      return payload
+    async (createDataset: CreateDataset): Promise<{ payload?: Dataset; error?: AsyncError }> => {
+      const { payload, error }: any = await dispatch(createDatasetThunk(createDataset))
+      if (error) {
+        return { error: payload }
+      }
+      return { payload }
     },
     [dispatch]
   )
 
   const dispatchUpdateDataset = useCallback(
-    async (updatedDataset: Partial<Dataset>): Promise<Dataset> => {
-      const { payload }: any = await dispatch(updateDatasetThunk(updatedDataset))
-      return payload
+    async (
+      updatedDataset: Partial<Dataset>
+    ): Promise<{ payload?: Dataset; error?: AsyncError }> => {
+      const { payload, error }: any = await dispatch(updateDatasetThunk(updatedDataset))
+      if (error) {
+        return { error: payload }
+      }
+      return { payload }
     },
     [dispatch]
   )

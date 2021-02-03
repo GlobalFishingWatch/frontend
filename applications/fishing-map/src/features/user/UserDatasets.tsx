@@ -4,12 +4,22 @@ import { useDispatch, useSelector } from 'react-redux'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { Dataset } from '@globalfishingwatch/api-types'
+import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import EditDataset from 'features/datasets/EditDataset'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
-import { deleteDatasetThunk, selectDatasetsStatusId } from 'features/datasets/datasets.slice'
+import {
+  deleteDatasetThunk,
+  selectDatasetsStatus,
+  selectDatasetsStatusId,
+} from 'features/datasets/datasets.slice'
+import { AsyncReducerStatus } from 'types'
 import styles from './User.module.css'
+import { selectUserDatasets } from './user.selectors'
 
-function UserDatasets({ datasets }: { datasets: Dataset[] }) {
+function UserDatasets() {
+  const datasets = useSelector(selectUserDatasets)
+  const datasetsStatus = useSelector(selectDatasetsStatus)
+  const datasetStatusId = useSelector(selectDatasetsStatusId)
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const {
@@ -18,7 +28,6 @@ function UserDatasets({ datasets }: { datasets: Dataset[] }) {
     dispatchDatasetModal,
     dispatchEditingDatasetId,
   } = useDatasetModalConnect()
-  const datasetStatusId = useSelector(selectDatasetsStatusId)
 
   const onEditClick = useCallback(
     async (dataset: Dataset) => {
@@ -40,39 +49,53 @@ function UserDatasets({ datasets }: { datasets: Dataset[] }) {
     [dispatch]
   )
 
+  const loading = datasetsStatus === AsyncReducerStatus.Loading
+
   return (
     <div className={styles.views}>
       {datasetModal === 'edit' && editingDatasetId !== undefined && <EditDataset />}
       <div className={styles.viewsHeader}>
-        <label>Your latest datasets</label>
-        <Button type="secondary" onClick={() => dispatchDatasetModal('new')}>
+        <label>{t('dataset.title_plural', 'Datasets')}</label>
+        <Button disabled={loading} type="secondary" onClick={() => dispatchDatasetModal('new')}>
           {t('dataset.new', 'New dataset') as string}
         </Button>
       </div>
-      <ul>
-        {datasets?.map((dataset) => {
-          return (
-            <li className={styles.dataset} key={dataset.id}>
-              {dataset.name}
-              <div>
-                <IconButton icon="info" tooltip={dataset.description} />
-                <IconButton
-                  icon="edit"
-                  tooltip={t('dataset.edit', 'Edit dataset')}
-                  onClick={() => onEditClick(dataset)}
-                />
-                <IconButton
-                  icon="delete"
-                  type="warning"
-                  loading={dataset.id === datasetStatusId}
-                  tooltip={t('dataset.remove', 'Remove dataset')}
-                  onClick={() => onDeleteClick(dataset)}
-                />
-              </div>
-            </li>
-          )
-        })}
-      </ul>
+      {loading ? (
+        <div className={styles.placeholder}>
+          <Spinner size="small" />
+        </div>
+      ) : (
+        <ul>
+          {datasets && datasets.length > 0 ? (
+            datasets?.map((dataset) => {
+              return (
+                <li className={styles.dataset} key={dataset.id}>
+                  {dataset.name}
+                  <div>
+                    <IconButton icon="info" tooltip={dataset.description} />
+                    <IconButton
+                      icon="edit"
+                      tooltip={t('dataset.edit', 'Edit dataset')}
+                      onClick={() => onEditClick(dataset)}
+                    />
+                    <IconButton
+                      icon="delete"
+                      type="warning"
+                      loading={dataset.id === datasetStatusId}
+                      tooltip={t('dataset.remove', 'Remove dataset')}
+                      onClick={() => onDeleteClick(dataset)}
+                    />
+                  </div>
+                </li>
+              )
+            })
+          ) : (
+            <div className={styles.placeholder}>
+              {t('dataset.emptyState', 'Your datasets will appear here')}
+            </div>
+          )}
+        </ul>
+      )}
     </div>
   )
 }

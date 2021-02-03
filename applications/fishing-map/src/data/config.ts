@@ -1,6 +1,8 @@
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 
+export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
+
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
 
 // TODO use it to retrieve it and store in workspace.default in deploy

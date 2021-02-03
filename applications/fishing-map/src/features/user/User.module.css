@@ -56,3 +56,11 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.placeholder {
+  height: 15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-secondary-blue)
+}

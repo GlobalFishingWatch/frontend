@@ -79,7 +79,7 @@ export const createAsyncSlice = <T, U>({
       }
       if (fetchByIdThunk) {
         builder.addCase(fetchByIdThunk.pending, (state: any, action) => {
-          state.status = AsyncReducerStatus.Loading
+          state.status = AsyncReducerStatus.LoadingItem
           state.statusId = action.meta.arg
         })
         builder.addCase(fetchByIdThunk.fulfilled, (state: any, action) => {
@@ -96,7 +96,7 @@ export const createAsyncSlice = <T, U>({
 
       if (createThunk) {
         builder.addCase(createThunk.pending, (state: any) => {
-          state.status = 'loading.create'
+          state.status = AsyncReducerStatus.LoadingCreate
         })
         builder.addCase(createThunk.fulfilled, (state: any, action) => {
           state.status = 'finished'
@@ -104,12 +104,12 @@ export const createAsyncSlice = <T, U>({
         })
         builder.addCase(createThunk.rejected, (state: any, action) => {
           state.status = 'error'
-          state.error = `Error adding resource ${action.payload}`
+          state.error = action.payload
         })
       }
       if (updateThunk) {
         builder.addCase(updateThunk.pending, (state: any, action) => {
-          state.status = 'loading.update'
+          state.status = AsyncReducerStatus.LoadingUpdate
           state.statusId = action.meta.arg.id
         })
         builder.addCase(updateThunk.fulfilled, (state: any, action) => {
@@ -120,12 +120,12 @@ export const createAsyncSlice = <T, U>({
         builder.addCase(updateThunk.rejected, (state: any, action) => {
           state.status = 'error'
           state.statusId = null
-          state.error = `Error updating resource ${action.payload}`
+          state.error = action.payload
         })
       }
       if (deleteThunk) {
         builder.addCase(deleteThunk.pending, (state: any, action) => {
-          state.status = 'loading.delete'
+          state.status = AsyncReducerStatus.LoadingDelete
           state.statusId = action.meta.arg
         })
         builder.addCase(deleteThunk.fulfilled, (state: any, action) => {
@@ -136,7 +136,7 @@ export const createAsyncSlice = <T, U>({
         builder.addCase(deleteThunk.rejected, (state: any, action) => {
           state.status = 'error'
           state.statusId = null
-          state.error = `Error removing resource ${action.payload}`
+          state.error = action.payload
         })
       }
     },

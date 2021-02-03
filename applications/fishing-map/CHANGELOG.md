@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.19.0
+
+### Minor Changes
+
+- layer composer frameToDate
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.12.0
+
 ## 0.18.0
 
 ### Minor Changes

@@ -34,11 +34,17 @@
 .modalFooter {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .modalContainer {
   display: flex;
   flex-direction: column;
+}
+
+.errorMsg {
+  flex: 1;
+  color: var(--color-danger-red);
 }
 
 .modalContent {

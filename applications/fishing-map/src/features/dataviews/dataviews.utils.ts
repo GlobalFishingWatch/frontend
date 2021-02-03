@@ -4,7 +4,11 @@ import {
   HeatmapColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_VESSEL_DATAVIEW_ID } from 'data/workspaces'
+import {
+  DEFAULT_CONTEXT_DATAVIEW_ID,
+  DEFAULT_FISHING_DATAVIEW_ID,
+  DEFAULT_VESSEL_DATAVIEW_ID,
+} from 'data/workspaces'
 
 export const DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
@@ -53,4 +57,27 @@ export const getHeatmapDataviewInstance = (
     dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
   }
   return heatmapDataviewInstance
+}
+
+export const getContextDataviewInstance = (
+  datasetId: string,
+  usedColors: string[] = []
+): DataviewInstance<Generators.Type> => {
+  const notUsedOptions = TrackColorBarOptions.filter((option) => !usedColors.includes(option.id))
+  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
+  const contextDataviewInstance = {
+    id: `context-${Date.now()}`,
+    config: {
+      color: colorOption.value,
+    },
+    dataviewId: DEFAULT_CONTEXT_DATAVIEW_ID,
+    datasetsConfig: [
+      {
+        datasetId,
+        params: [],
+        endpoint: 'user-context-tiles',
+      },
+    ],
+  }
+  return contextDataviewInstance
 }
