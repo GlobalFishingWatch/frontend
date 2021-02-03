@@ -7,15 +7,18 @@ import { Dataset } from '@globalfishingwatch/api-types'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import EditDataset from 'features/datasets/EditDataset'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
-import { deleteDatasetThunk, selectDatasetsStatusId } from 'features/datasets/datasets.slice'
+import {
+  deleteDatasetThunk,
+  selectDatasetsStatus,
+  selectDatasetsStatusId,
+} from 'features/datasets/datasets.slice'
 import { AsyncReducerStatus } from 'types'
 import styles from './User.module.css'
 import { selectUserDatasets } from './user.selectors'
-import { selectUserDatasetsStatus } from './user.slice'
 
 function UserDatasets() {
   const datasets = useSelector(selectUserDatasets)
-  const userDatasetsStatus = useSelector(selectUserDatasetsStatus)
+  const datasetsStatus = useSelector(selectDatasetsStatus)
   const datasetStatusId = useSelector(selectDatasetsStatusId)
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -46,7 +49,7 @@ function UserDatasets() {
     [dispatch]
   )
 
-  const loading = userDatasetsStatus === AsyncReducerStatus.Loading
+  const loading = datasetsStatus === AsyncReducerStatus.Loading
 
   return (
     <div className={styles.views}>

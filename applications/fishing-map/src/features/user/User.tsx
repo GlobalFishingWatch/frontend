@@ -4,19 +4,16 @@ import { useTranslation } from 'react-i18next'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
+import {
+  fetchWorkspacesThunk,
+  selectWorkspaceListStatus,
+} from 'features/workspaces-list/workspaces-list.slice'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
+import { fetchAllDatasetsThunk, selectAllDatasetsRequested } from 'features/datasets/datasets.slice'
 import { AsyncReducerStatus } from 'types'
 import styles from './User.module.css'
-import {
-  fetchUserDatasetsThunk,
-  fetchUserThunk,
-  GUEST_USER_TYPE,
-  logoutUserThunk,
-  selectUserData,
-  selectUserDatasetsStatus,
-} from './user.slice'
+import { fetchUserThunk, GUEST_USER_TYPE, logoutUserThunk, selectUserData } from './user.slice'
 import { isUserLogged } from './user.selectors'
 import UserWorkspaces from './UserWorkspaces'
 import UserDatasets from './UserDatasets'
@@ -26,18 +23,20 @@ function User() {
   const dispatch = useDispatch()
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
-  const userDatasetStatus = useSelector(selectUserDatasetsStatus)
+  const allDatasetsRequested = useSelector(selectAllDatasetsRequested)
+  const workspaceListStatus = useSelector(selectWorkspaceListStatus)
   const [logoutLoading, setLogoutLoading] = useState(false)
 
   useEffect(() => {
     if (userLogged && userData?.id) {
-      dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
-      if (userDatasetStatus === AsyncReducerStatus.Idle) {
-        dispatch(fetchUserDatasetsThunk())
+      if (workspaceListStatus === AsyncReducerStatus.Idle) {
+        dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
+      }
+      if (!allDatasetsRequested) {
+        dispatch(fetchAllDatasetsThunk())
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, userData?.id, userLogged])
+  }, [dispatch, userData?.id, userLogged, workspaceListStatus, allDatasetsRequested])
 
   useEffect(() => {
     if (userData?.type === GUEST_USER_TYPE) {

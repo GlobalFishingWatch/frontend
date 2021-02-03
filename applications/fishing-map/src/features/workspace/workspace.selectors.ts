@@ -5,9 +5,8 @@ import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DatasetTypes, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
 import { ResourceQuery } from 'features/resources/resources.slice'
-import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
-import { selectDatasets } from 'features/datasets/datasets.selectors'
-import { selectDataviews, selectDataviewsStatus } from 'features/dataviews/dataviews.slice'
+import { selectDatasets } from 'features/datasets/datasets.slice'
+import { selectDataviews } from 'features/dataviews/dataviews.slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { RootState } from 'store'
 import { PUBLIC_SUFIX } from 'data/config'
@@ -30,17 +29,6 @@ export const selectWorkspaceCustom = (state: RootState) => state.workspace.custo
 export const isWorkspacePublic = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id.slice(-PUBLIC_SUFIX.length) === PUBLIC_SUFIX
 })
-
-export const isWorkspaceLoading = createSelector(
-  [selectWorkspaceStatus, selectDatasetsStatus, selectDataviewsStatus],
-  (workspaceStatus, datasetsStatus, dataviewsStatus) => {
-    return (
-      workspaceStatus !== AsyncReducerStatus.Finished ||
-      datasetsStatus === AsyncReducerStatus.Loading ||
-      dataviewsStatus === AsyncReducerStatus.Loading
-    )
-  }
-)
 
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id

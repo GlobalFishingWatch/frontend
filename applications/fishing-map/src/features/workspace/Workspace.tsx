@@ -9,7 +9,6 @@ import {
   selectWorkspaceStatus,
   selectDataviewsResourceQueries,
   selectWorkspaceError,
-  isWorkspaceLoading,
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'types'
@@ -112,7 +111,6 @@ function Workspace() {
   const dispatch = useDispatch()
   const searchQuery = useSelector(selectSearchQuery)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const workspaceLoading = useSelector(isWorkspaceLoading)
 
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   useEffect(() => {
@@ -123,7 +121,10 @@ function Workspace() {
     }
   }, [dispatch, resourceQueries])
 
-  if (workspaceLoading) {
+  if (
+    workspaceStatus === AsyncReducerStatus.Idle ||
+    workspaceStatus === AsyncReducerStatus.Loading
+  ) {
     return (
       <div className={styles.placeholder}>
         <Spinner />

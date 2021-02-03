@@ -59,6 +59,11 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
     }
   }
 )
+
+export const fetchAllDatasetsThunk = createAsyncThunk('datasets/all', async (_, { dispatch }) => {
+  return dispatch(fetchDatasetsByIdsThunk([]))
+})
+
 export type CreateDataset = { dataset: Partial<Dataset>; file: File }
 export const createDatasetThunk = createAsyncThunk(
   'datasets/create',
@@ -130,11 +135,13 @@ export type DatasetModals = 'new' | 'edit' | undefined
 export interface DatasetsState extends AsyncReducer<Dataset> {
   datasetModal: DatasetModals
   editingDatasetId: string | undefined
+  allDatasetsRequested: boolean
 }
 const initialState: DatasetsState = {
   ...asyncInitialState,
   datasetModal: undefined,
   editingDatasetId: undefined,
+  allDatasetsRequested: false,
 }
 
 const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
@@ -151,6 +158,11 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
       state.editingDatasetId = action.payload
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchAllDatasetsThunk.fulfilled, (state) => {
+      state.allDatasetsRequested = true
+    })
+  },
   thunks: {
     fetchThunk: fetchDatasetsByIdsThunk,
     fetchByIdThunk: fetchDatasetByIdThunk,
@@ -163,7 +175,7 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
 export const { setDatasetModal, setEditingDatasetId } = datasetSlice.actions
 
 export const {
-  selectAll: selectWorkspaceDatasets,
+  selectAll: selectDatasets,
   selectById,
   selectIds,
 } = entityAdapter.getSelectors<RootState>((state) => state.datasets)
@@ -176,6 +188,7 @@ export const selectDatasetsStatus = (state: RootState) => state.datasets.status
 export const selectDatasetsStatusId = (state: RootState) => state.datasets.statusId
 export const selectDatasetsError = (state: RootState) => state.datasets.error
 export const selectEditingDatasetId = (state: RootState) => state.datasets.editingDatasetId
+export const selectAllDatasetsRequested = (state: RootState) => state.datasets.allDatasetsRequested
 export const selectDatasetModal = (state: RootState) => state.datasets.datasetModal
 
 export default datasetSlice.reducer

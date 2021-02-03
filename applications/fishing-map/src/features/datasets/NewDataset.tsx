@@ -190,12 +190,14 @@ function NewDataset(): React.ReactElement {
     if (file) {
       setLoading(true)
       const { error } = await dispatchCreateDataset({ dataset: { ...metadata }, file })
+      setLoading(false)
       if (error) {
         setError(
           `${t('errors.generic', 'Something went wrong, try again or contact:')} ${SUPPORT_EMAIL}`
         )
+      } else {
+        onClose()
       }
-      setLoading(false)
     }
   }
 

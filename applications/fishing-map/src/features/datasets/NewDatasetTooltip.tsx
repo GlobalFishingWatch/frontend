@@ -8,10 +8,14 @@ import { selectContextAreasDataviews } from 'features/workspace/workspace.select
 import { getContextDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { AsyncReducerStatus } from 'types'
-import { fetchUserDatasetsThunk, selectUserDatasetsStatus } from 'features/user/user.slice'
 import { selectUserDatasets } from 'features/user/user.selectors'
 import { useDatasetModalConnect } from './datasets.hook'
 import styles from './NewDatasetTooltip.module.css'
+import {
+  fetchAllDatasetsThunk,
+  selectAllDatasetsRequested,
+  selectDatasetsStatus,
+} from './datasets.slice'
 
 function NewDatasetTooltip({ onSelect }: { onSelect?: (dataset: Dataset) => void }) {
   const { t } = useTranslation()
@@ -20,13 +24,14 @@ function NewDatasetTooltip({ onSelect }: { onSelect?: (dataset: Dataset) => void
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const datasets = useSelector(selectUserDatasets)
   const dataviews = useSelector(selectContextAreasDataviews)
-  const datasetsStatus = useSelector(selectUserDatasetsStatus)
+  const datasetsStatus = useSelector(selectDatasetsStatus)
+  const allDatasetsRequested = useSelector(selectAllDatasetsRequested)
 
   useEffect(() => {
-    if (datasetsStatus === AsyncReducerStatus.Idle) {
-      dispatch(fetchUserDatasetsThunk())
+    if (!allDatasetsRequested) {
+      dispatch(fetchAllDatasetsThunk())
     }
-  }, [datasetsStatus, dispatch])
+  }, [allDatasetsRequested, dispatch])
 
   const onAddNewClick = async () => {
     dispatchDatasetModal('new')

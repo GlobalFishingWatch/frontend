@@ -3,32 +3,20 @@ import GFWAPI, {
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
-import { Dataset, UserData } from '@globalfishingwatch/api-types'
+import { UserData } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
-import { DATASETS_CACHE } from 'features/datasets/datasets.slice'
-import { AsyncError } from 'utils/async-slice'
 
 interface UserState {
   logged: boolean
   status: AsyncReducerStatus
   data: UserData | null
-  datasets: {
-    status: AsyncReducerStatus
-    data: Dataset[] | undefined
-    error: AsyncError | undefined
-  }
 }
 
 const initialState: UserState = {
   logged: false,
   status: AsyncReducerStatus.Idle,
   data: null,
-  datasets: {
-    status: AsyncReducerStatus.Idle,
-    data: undefined,
-    error: undefined,
-  },
 }
 
 export const GUEST_USER_TYPE = 'guest'
@@ -74,20 +62,6 @@ export const logoutUserThunk = createAsyncThunk(
   }
 )
 
-export const fetchUserDatasetsThunk = createAsyncThunk(
-  'user/datasets',
-  async (_, { rejectWithValue }) => {
-    try {
-      const datasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?include=endpoints&cache=${DATASETS_CACHE}`
-      )
-      return datasets
-    } catch (e) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
-    }
-  }
-)
-
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -104,16 +78,6 @@ const userSlice = createSlice({
     builder.addCase(fetchUserThunk.rejected, (state) => {
       state.status = AsyncReducerStatus.Error
     })
-    builder.addCase(fetchUserDatasetsThunk.pending, (state) => {
-      state.datasets.status = AsyncReducerStatus.Loading
-    })
-    builder.addCase(fetchUserDatasetsThunk.fulfilled, (state, action) => {
-      state.datasets.status = AsyncReducerStatus.Finished
-      state.datasets.data = action.payload
-    })
-    builder.addCase(fetchUserDatasetsThunk.rejected, (state) => {
-      state.datasets.status = AsyncReducerStatus.Error
-    })
     builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.logged = false
       state.data = null
@@ -123,8 +87,6 @@ const userSlice = createSlice({
 
 export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
-export const selectAllUserDatasets = (state: RootState) => state.user.datasets.data
-export const selectUserDatasetsStatus = (state: RootState) => state.user.datasets.status
 export const selectUserLogged = (state: RootState) => state.user.logged
 
 export default userSlice.reducer

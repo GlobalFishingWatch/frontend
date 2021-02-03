@@ -1,13 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { selectDatasets } from 'features/datasets/datasets.slice'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'types'
-import {
-  selectUserStatus,
-  selectUserLogged,
-  selectAllUserDatasets,
-  GUEST_USER_TYPE,
-  selectUserData,
-} from './user.slice'
+import { selectUserStatus, selectUserLogged, GUEST_USER_TYPE, selectUserData } from './user.slice'
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE
@@ -43,6 +38,6 @@ export const selectUserWorkspaces = createSelector(
 )
 
 export const selectUserDatasets = createSelector(
-  [selectAllUserDatasets, selectUserId],
+  [selectDatasets, selectUserId],
   (datasets, userId) => datasets?.filter((d) => d.ownerId === userId)
 )
