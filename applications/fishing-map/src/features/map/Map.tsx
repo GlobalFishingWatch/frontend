@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
+import type { Map } from '@globalfishingwatch/mapbox-gl'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import useTilesState from '@globalfishingwatch/react-hooks/dist/use-tiles-state'
@@ -219,7 +220,7 @@ const MapWrapper = (): React.ReactElement | null => {
 
   // TODO handle also in case of error
   // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
-  const tilesLoading = useTilesState(mapInstance)
+  const tilesLoading = useTilesState(mapInstance as Map)
 
   useEffect(() => {
     if (mapInstance) {

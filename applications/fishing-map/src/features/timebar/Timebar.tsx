@@ -1,5 +1,6 @@
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import type { Map } from '@globalfishingwatch/mapbox-gl'
 import TimebarComponent, {
   TimebarTracks,
   TimebarActivity,
@@ -50,7 +51,7 @@ const TimebarWrapper = () => {
     [setBookmark]
   )
   const mapInstance = useMapboxInstance()
-  const tilesLoading = useTilesState(mapInstance).loading
+  const tilesLoading = useTilesState(mapInstance as Map).loading
   const currentTimeChunkId = useCurrentTimeChunkId()
   const mapStyle = useMapStyle()
 
