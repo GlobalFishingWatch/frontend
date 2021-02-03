@@ -44,7 +44,7 @@ function NewDatasetTooltip({ onSelect }: { onSelect?: (dataset: Dataset) => void
 
   return (
     <div className={styles.container}>
-      <ul>
+      <ul className={styles.listContainer}>
         <li className={cx(styles.dataset, styles.create)} onClick={onAddNewClick}>
           {t('dataset.uploadNewContex', 'Upload new context areas')}
         </li>
