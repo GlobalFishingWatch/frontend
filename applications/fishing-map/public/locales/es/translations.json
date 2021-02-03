@@ -4,10 +4,10 @@
     "active_before": "Activo antes",
     "activity": "Actividad",
     "apparentFishing": "Esfuerzo de pesca aparente",
-    "confirm": "Confirm",
+    "confirm": "Confirmar",
     "context_area_plural": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles. Puedes encontrar todas las vistas guardadas en tu área de usuario.",
-    "description": "Description",
+    "description": "Descripción",
     "environment": "Entorno",
     "hour": "Hora",
     "hour_plural": "horas",
@@ -15,10 +15,10 @@
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
     "more": "más",
-    "name": "Name",
+    "name": "Nombre",
     "seeDefault": "Ver vista por defecto",
     "share": "Haz click para compartir tu vista actual",
-    "update": "Update",
+    "update": "Actualizar",
     "vessel_plural": "Embarcaciones",
     "open_menu": "Abrir menú",
     "dismiss": "Cancelar",
@@ -27,16 +27,21 @@
     "fishing": "Pesca"
   },
   "dataset": {
-    "dragActive": "Drop the file here ...",
-    "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
-    "edit": "Edit dataset",
-    "file": "File",
-    "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
-    "new": "New dataset",
+    "add": "Añadir conjunto de datos",
+    "dragActive": "Soltar el archivo aquí ...",
+    "dragFilePlaceholder": "Arrastra y suelta un archivo comprimido o geojson aquí o haz clic para seleccionarlo",
+    "edit": "Editar conjunto de datos",
+    "emptyState": "Sus conjuntos de datos aparecerán aquí",
+    "file": "Fichero",
+    "fileNotAllowed": "(Sólo se permiten archivos .zip o .geojson)",
+    "new": "Nuevo conjunto de datos",
     "remove": "Remove dataset",
-    "uploadNew": "Upload new dataset"
+    "title_plural": "Datasets",
+    "uploadNewContex": "Subir nuevas áreas de contexto",
+    "uploadNewDataLayer": "Subir nueva capa de datos"
   },
   "errors": {
+    "generic": "Algo salió mal, inténtalo de nuevo o contacta:",
     "notSupportedBy": "No soportado por {{list}}",
     "pageNotFound": "Página no encontrada",
     "privateView": "Esta es una vista privada",
@@ -124,8 +129,9 @@
     "transmission": "Transmisión"
   },
   "workspace": {
-    "new": "New Workspace",
-    "title_plural": "Workspaces",
-    "title": "Workspace"
+    "emptyState": "Sus áreas de trabajo aparecerán aquí",
+    "new": "Nuevo espacio de trabajo",
+    "title_plural": "Espacios de trabajo",
+    "title": "Espacio de trabajo"
   }
 }
