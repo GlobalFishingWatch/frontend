@@ -77,7 +77,6 @@ class HeatmapAnimatedGenerator {
       const sourceParams = [baseSourceParams]
 
       return sourceParams.map((params: Record<string, string>) => {
-        console.log(params)
         const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)
         const source = {
           id: params.id,

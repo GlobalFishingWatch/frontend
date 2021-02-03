@@ -19,6 +19,7 @@ import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import { selectSearchQuery } from 'features/app/app.selectors'
+import { SUPPORT_EMAIL } from 'data/config'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
@@ -52,7 +53,7 @@ function WorkspaceError(): React.ReactElement {
         ) : (
           <Fragment>
             <Button
-              href={`mailto:support@globalfishingwatch.org?subject=Requesting access for ${workspaceId} view`}
+              href={`mailto:${SUPPORT_EMAIL}?subject=Requesting access for ${workspaceId} view`}
             >
               {t('errors.requestAccess', 'Request access') as string}
             </Button>

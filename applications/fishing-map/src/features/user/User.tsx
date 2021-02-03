@@ -1,21 +1,23 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { AsyncReducerStatus } from 'types'
-import {
-  fetchWorkspacesThunk,
-  selectWorkspaceListStatus,
-} from 'features/workspaces-list/workspaces-list.slice'
+import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
-import { selectUserDatasets } from 'features/datasets/datasets.selectors'
-import { fetchDatasetsByIdsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
+import { AsyncReducerStatus } from 'types'
 import styles from './User.module.css'
-import { fetchUserThunk, GUEST_USER_TYPE, logoutUserThunk, selectUserData } from './user.slice'
-import { isUserLogged, selectUserWorkspaces } from './user.selectors'
+import {
+  fetchUserDatasetsThunk,
+  fetchUserThunk,
+  GUEST_USER_TYPE,
+  logoutUserThunk,
+  selectUserData,
+  selectUserDatasetsStatus,
+} from './user.slice'
+import { isUserLogged } from './user.selectors'
 import UserWorkspaces from './UserWorkspaces'
 import UserDatasets from './UserDatasets'
 
@@ -24,17 +26,17 @@ function User() {
   const dispatch = useDispatch()
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
-  const datasets = useSelector(selectUserDatasets)
-  const datasetsStatus = useSelector(selectDatasetsStatus)
-  const workspaces = useSelector(selectUserWorkspaces)
-  const workspacesStatus = useSelector(selectWorkspaceListStatus)
+  const userDatasetStatus = useSelector(selectUserDatasetsStatus)
   const [logoutLoading, setLogoutLoading] = useState(false)
 
   useEffect(() => {
     if (userLogged && userData?.id) {
       dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
-      dispatch(fetchDatasetsByIdsThunk([]))
+      if (userDatasetStatus === AsyncReducerStatus.Idle) {
+        dispatch(fetchUserDatasetsThunk())
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, userData?.id, userLogged])
 
   useEffect(() => {
@@ -46,9 +48,9 @@ function User() {
   const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
     await dispatch(logoutUserThunk())
+    dispatch(updateLocation(HOME, { replaceQuery: true }))
     await dispatch(fetchUserThunk({ guest: true }))
     setLogoutLoading(false)
-    dispatch(updateLocation(HOME, { replaceQuery: true }))
   }, [dispatch])
 
   if (!userLogged || !userData) return null
@@ -78,18 +80,8 @@ function User() {
           <span>{t('common.logout', 'Log out')}</span>
         </Button>
       </div>
-      {/* <div className={styles.views}>
-        <label>Your private views</label>
-      </div> */}
-      {workspacesStatus !== AsyncReducerStatus.Finished ||
-      datasetsStatus !== AsyncReducerStatus.Finished ? (
-        <Spinner size="small" className={styles.spinner} />
-      ) : (
-        <Fragment>
-          <UserWorkspaces workspaces={workspaces} />
-          <UserDatasets datasets={datasets} />
-        </Fragment>
-      )}
+      <UserWorkspaces />
+      <UserDatasets />
     </div>
   )
 }
