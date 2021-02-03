@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.12.4
+
+### Patch Changes
+
+- 54737510: Fix sidabar z-index
+
 ## 2.12.3
 
 ### Patch Changes

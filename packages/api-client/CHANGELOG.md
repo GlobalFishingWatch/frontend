@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-client
 
+## 1.6.6
+
+### Patch Changes
+
+- 058d14b7: Return api erros in api-client
+
 ## 1.6.5
 
 ### Patch Changes
