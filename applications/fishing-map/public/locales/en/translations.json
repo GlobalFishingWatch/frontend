@@ -27,16 +27,21 @@
     "fishing": "Fishing"
   },
   "dataset": {
+    "add": "Add dataset",
     "dragActive": "Drop the file here ...",
     "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
     "edit": "Edit dataset",
+    "emptyState": "Your datasets will appear here",
     "file": "File",
     "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
     "new": "New dataset",
     "remove": "Remove dataset",
-    "uploadNew": "Upload new dataset"
+    "title_plural": "Datasets",
+    "uploadNewContex": "Upload new context areas",
+    "uploadNewDataLayer": "Upload new data layer"
   },
   "errors": {
+    "generic": "Something went wrong, try again or contact:",
     "notSupportedBy": "Not supported by {{list}}",
     "pageNotFound": "Page not found",
     "privateView": "This is a private view",
@@ -124,6 +129,7 @@
     "transmission": "Transmission"
   },
   "workspace": {
+    "emptyState": "Your workspaces will appear here",
     "new": "New Workspace",
     "title_plural": "Workspaces",
     "title": "Workspace"
