@@ -38,7 +38,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     setVessels([])
     if (query.length >= minimumCharacters) {
       fetchData(query)
-    } else {
     }
   }
 
@@ -54,23 +53,12 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         const resultVessels: Array<Vessel> = json.entries
         setSearching(false)
         const totalVessels = resultVessels.concat(vessels)
-        console.log(totalVessels)
-        /*this.setState((prevState) => ({
-        vessels: totalVessels,
-        tip: json.entries.length > 0 ? `${json.total.value} matching results` : 'No results',
-        resultsTotal: json.total,
-        resultsOffset: (prevState.resultsOffset += json.entries.length),
-      }))*/
         return totalVessels
       })
       .catch((error) => {
         setSearching(false)
         return vessels
-        /*this.setState({
-        tip: this.tips.connectionError,
-      })*/
       })
-    console.log(newVessels)
     setVessels(newVessels)
   }
 
