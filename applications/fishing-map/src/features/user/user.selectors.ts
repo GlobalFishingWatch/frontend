@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { selectDatasets } from 'features/datasets/datasets.slice'
+import { selectContextAreasDataviews } from 'features/workspace/workspace.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'types'
 import { selectUserStatus, selectUserLogged, GUEST_USER_TYPE, selectUserData } from './user.slice'
@@ -40,4 +41,14 @@ export const selectUserWorkspaces = createSelector(
 export const selectUserDatasets = createSelector(
   [selectDatasets, selectUserId],
   (datasets, userId) => datasets?.filter((d) => d.ownerId === userId)
+)
+
+export const selectUserDatasetsNotUsed = createSelector(
+  [selectUserDatasets, selectContextAreasDataviews],
+  (datasets, dataviews) => {
+    const dataviewDatasets = dataviews?.flatMap(
+      (dataview) => dataview.datasets?.flatMap(({ id }) => id || []) || []
+    )
+    return datasets.filter(({ id }) => !dataviewDatasets?.includes(id))
+  }
 )

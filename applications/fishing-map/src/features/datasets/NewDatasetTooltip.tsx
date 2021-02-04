@@ -8,7 +8,7 @@ import { selectContextAreasDataviews } from 'features/workspace/workspace.select
 import { getContextDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { AsyncReducerStatus } from 'types'
-import { selectUserDatasets } from 'features/user/user.selectors'
+import { selectUserDatasetsNotUsed } from 'features/user/user.selectors'
 import { useDatasetModalConnect } from './datasets.hook'
 import styles from './NewDatasetTooltip.module.css'
 import {
@@ -22,7 +22,7 @@ function NewDatasetTooltip({ onSelect }: { onSelect?: (dataset: Dataset) => void
   const dispatch = useDispatch()
   const { dispatchDatasetModal } = useDatasetModalConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const datasets = useSelector(selectUserDatasets)
+  const datasets = useSelector(selectUserDatasetsNotUsed)
   const dataviews = useSelector(selectContextAreasDataviews)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const allDatasetsRequested = useSelector(selectAllDatasetsRequested)
@@ -54,9 +54,9 @@ function NewDatasetTooltip({ onSelect }: { onSelect?: (dataset: Dataset) => void
           {t('dataset.uploadNewContex', 'Upload new context areas')}
         </li>
         {datasetsStatus === AsyncReducerStatus.Loading ? (
-          <div className={styles.loadingPlaceholder}>
+          <li className={styles.loadingPlaceholder}>
             <Spinner size="small" />
-          </div>
+          </li>
         ) : (
           datasets?.map((dataset) => (
             <li key={dataset.id} className={styles.dataset} onClick={() => onSelectClick(dataset)}>
