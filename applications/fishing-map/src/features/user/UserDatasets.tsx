@@ -40,13 +40,16 @@ function UserDatasets() {
   const onDeleteClick = useCallback(
     async (dataset: Dataset) => {
       const confirmation = window.confirm(
-        `Are you sure you want to permanently delete this dataset?\n${dataset.name}`
+        `${t(
+          'dataset.confirmRemove',
+          'Are you sure you want to permanently delete this dataset?'
+        )}\n${dataset.name}`
       )
       if (confirmation) {
         dispatch(deleteDatasetThunk(dataset.id))
       }
     },
-    [dispatch]
+    [dispatch, t]
   )
 
   const loading = datasetsStatus === AsyncReducerStatus.Loading
