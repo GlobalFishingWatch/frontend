@@ -1,5 +1,17 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.20.0
+
+### Minor Changes
+
+- 781fce16: export getTimeSeries from fourwings-aggregate
+
+### Patch Changes
+
+- Updated dependencies [781fce16]
+  - @globalfishingwatch/fourwings-aggregate@1.1.0
+  - @globalfishingwatch/layer-composer@4.13.0
+
 ## 0.19.1
 
 ### Patch Changes
