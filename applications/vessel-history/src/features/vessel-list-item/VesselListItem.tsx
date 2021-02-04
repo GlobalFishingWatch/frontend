@@ -1,6 +1,6 @@
 import React from 'react'
 import Logo from '@globalfishingwatch/ui-components/src/logo'
-import IconButton from '@globalfishingwatch/ui-components/src/icon-button/IconButton'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import { Extra, Vessel } from 'types'
 import { getFlagById } from 'utils/flags'
 import styles from './VesselListItem.module.css'

@@ -6,7 +6,6 @@ import Spinner from '../spinner'
 import styles from './IconButton.module.css'
 import { IconButtonProps } from '.'
 
-
 const warningVarColor = getComputedStyle(document.documentElement).getPropertyValue(
   '--color-danger-red'
 )
