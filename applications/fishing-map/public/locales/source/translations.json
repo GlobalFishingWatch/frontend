@@ -35,10 +35,12 @@
     "emptyState": "Your datasets will appear here",
     "file": "File",
     "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
+    "importing": "Dataset is being imported",
     "new": "New dataset",
     "remove": "Remove dataset",
     "title_plural": "Datasets",
     "uploadNewContex": "Upload new context areas",
+    "uploadError": "There was an error uploading your dataset",
     "uploadNewDataLayer": "Upload new data layer"
   },
   "errors": {

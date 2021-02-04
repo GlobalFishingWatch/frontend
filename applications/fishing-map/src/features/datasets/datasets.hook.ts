@@ -8,6 +8,7 @@ import {
   createDatasetThunk,
   DatasetModals,
   deleteDatasetThunk,
+  fetchDatasetByIdThunk,
   selectDatasetModal,
   selectEditingDatasetId,
   setDatasetModal,
@@ -44,6 +45,17 @@ export const useDatasetModalConnect = () => {
 export const useDatasetsAPI = () => {
   const dispatch = useDispatch()
 
+  const dispatchFetchDataset = useCallback(
+    async (id: string): Promise<{ payload?: Dataset; error?: AsyncError }> => {
+      const { payload, error }: any = await dispatch(fetchDatasetByIdThunk(id))
+      if (error) {
+        return { error: payload }
+      }
+      return { payload }
+    },
+    [dispatch]
+  )
+
   const dispatchCreateDataset = useCallback(
     async (createDataset: CreateDataset): Promise<{ payload?: Dataset; error?: AsyncError }> => {
       const { payload, error }: any = await dispatch(createDatasetThunk(createDataset))
@@ -75,5 +87,10 @@ export const useDatasetsAPI = () => {
     [dispatch]
   )
 
-  return { dispatchCreateDataset, dispatchUpdateDataset, dispatchDeleteDataset }
+  return {
+    dispatchFetchDataset,
+    dispatchCreateDataset,
+    dispatchUpdateDataset,
+    dispatchDeleteDataset,
+  }
 }

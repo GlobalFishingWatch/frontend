@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import { Dataset } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetStatus } from '@globalfishingwatch/api-types'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import EditDataset from 'features/datasets/EditDataset'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
@@ -71,11 +71,27 @@ function UserDatasets() {
         <ul>
           {datasets && datasets.length > 0 ? (
             datasets?.map((dataset) => {
+              const datasetError = dataset.status === DatasetStatus.Error
+              const datasetImporting = dataset.status === DatasetStatus.Importing
+              let infoTooltip = dataset?.description
+              if (datasetImporting) {
+                infoTooltip = t('dataset.importing', 'Dataset is being imported')
+              }
+              if (datasetError) {
+                infoTooltip = `${t(
+                  'errors.uploadError',
+                  'There was an error uploading your dataset'
+                )} - ${dataset.importLogs}`
+              }
               return (
                 <li className={styles.dataset} key={dataset.id}>
                   {dataset.name}
                   <div>
-                    <IconButton icon="info" tooltip={dataset.description} />
+                    <IconButton
+                      icon={datasetError ? 'warning' : 'info'}
+                      type={datasetError ? 'warning' : 'default'}
+                      tooltip={infoTooltip}
+                    />
                     <IconButton
                       icon="edit"
                       tooltip={t('dataset.edit', 'Edit dataset')}

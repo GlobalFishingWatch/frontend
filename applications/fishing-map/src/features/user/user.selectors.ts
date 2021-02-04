@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { DatasetStatus } from '@globalfishingwatch/api-types/dist'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { selectContextAreasDataviews } from 'features/workspace/workspace.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
@@ -49,6 +50,8 @@ export const selectUserDatasetsNotUsed = createSelector(
     const dataviewDatasets = dataviews?.flatMap(
       (dataview) => dataview.datasets?.flatMap(({ id }) => id || []) || []
     )
-    return datasets.filter(({ id }) => !dataviewDatasets?.includes(id))
+    return datasets.filter(
+      ({ id, status }) => !dataviewDatasets?.includes(id) && status !== DatasetStatus.Error
+    )
   }
 )
