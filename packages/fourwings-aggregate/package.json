@@ -23,7 +23,7 @@
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
     "clean": "rimraf dist/*",
     "prepare": "yarn build",
-    "test": "tap test/*.test.mjs"
+    "test": "yarn build && tap test/*.test.mjs"
   },
   "directories": {
     "src": "src",
