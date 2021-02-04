@@ -58,10 +58,39 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     setColorOpen(false)
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
+  const isCustomUserLayer = dataview.config?.type === Generators.Type.UserContext
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
-  const isCustomUserLayer = dataview.config?.type === Generators.Type.UserContext
-  const title = isCustomUserLayer ? dataset?.name : t(`datasets:${dataset?.id}.name`)
+  if (!dataset) {
+    return (
+      <div className={cx(styles.LayerPanel, 'print-hidden')}>
+        <div className={styles.header}>
+          <h3 className={cx(styles.name)}>{dataview.datasetsConfig?.[0].datasetId}</h3>
+          <div className={cx('print-hidden', styles.actions)}>
+            <IconButton
+              icon="warning"
+              type="warning"
+              size="small"
+              className={styles.actionButton}
+              tooltip={t('errors.datasetNotFound', 'Dataset not found')}
+              tooltipPlacement="top"
+            />
+            {isCustomUserLayer && (
+              <IconButton
+                icon="delete"
+                size="small"
+                tooltip={t('layer.remove', 'Remove layer')}
+                tooltipPlacement="top"
+                onClick={onRemoveClick}
+                className={cx(styles.actionButton)}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+  const title = isCustomUserLayer ? dataset?.name || dataset?.id : t(`datasets:${dataset?.id}.name`)
   const description = isCustomUserLayer
     ? dataset?.description
     : t(`datasets:${dataset?.id}.description`)

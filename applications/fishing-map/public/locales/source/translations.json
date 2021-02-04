@@ -41,6 +41,7 @@
     "uploadNewDataLayer": "Upload new data layer"
   },
   "errors": {
+    "datasetNotFound": "Dataset not found",
     "generic": "Something went wrong, try again or contact:",
     "notSupportedBy": "Not supported by {{list}}",
     "pageNotFound": "Page not found",
