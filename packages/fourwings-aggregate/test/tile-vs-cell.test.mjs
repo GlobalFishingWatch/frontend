@@ -1,6 +1,6 @@
 import tap from 'tap'
-import tile from './tiles/test323'
-import { aggregateTile, aggregateCell } from '@globalfishingwatch/fourwings-aggregate';
+import tile from './tiles/test323.mjs'
+import { aggregateTile, aggregateCell, getRealValue } from '@globalfishingwatch/fourwings-aggregate';
 
 const FRAME = 5
 const BASE_CONFIG = {
@@ -21,7 +21,6 @@ const BASE_CONFIG = {
   datasets: "datasets[0]=fishing_v4&datasets[1]=chile-fishing:v20200331&datasets[2]=indonesia-fishing:v20200320",
   "date-range": "2019-01-01T00:00:00.000Z,2020-04-10T00:00:00.000Z"
 }
-
 
 const agg = aggregateTile(tile, BASE_CONFIG)
 const featAggTileCell = agg.main.features.find(f => f.properties._col === 48 && f.properties._row === 70)

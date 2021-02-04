@@ -1,7 +1,7 @@
 import { performance } from 'perf_hooks'
 import tap from 'tap'
-import { aggregateTile } from '..'
-import bigtile from './tiles/bigtile' 
+import { aggregateTile } from '../dist/index.js'
+import bigtile from './tiles/bigtile.mjs'
 
 const BASE_CONFIG = {
   breaks: [[0, 100, 500, 1000, 1500, 3000]],
@@ -288,7 +288,7 @@ for (var i = 0; i < 20; i++) {
     visible: [true, true, true],
   })
   const delta = performance.now() - t
-  console.log(delta)
+  // console.log(delta)
   sum += delta
 }
 
