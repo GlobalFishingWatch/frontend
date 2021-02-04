@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
 import lowerCase from 'lodash/lowerCase'
+import { useSelector } from 'react-redux'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
@@ -11,7 +12,8 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { ReactComponent as FilesIcon } from 'assets/icons/files-supported.svg'
 import { capitalize } from 'utils/shared'
 import { SUPPORT_EMAIL } from 'data/config'
-import { useDatasetsAPI, useDatasetModalConnect } from './datasets.hook'
+import { selectLocationType } from 'routes/routes.selectors'
+import { useDatasetsAPI, useDatasetModalConnect, useNewDatasetConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 
 interface DatasetConfigProps {
@@ -166,11 +168,13 @@ export type DatasetMetadata = {
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
   const { datasetModal, dispatchDatasetModal } = useDatasetModalConnect()
+  const { addNewDatasetToWorkspace } = useNewDatasetConnect()
 
   const [file, setFile] = useState<File | undefined>()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [metadata, setMetadata] = useState<DatasetMetadata | undefined>()
+  const locationType = useSelector(selectLocationType)
   const { dispatchCreateDataset } = useDatasetsAPI()
 
   const onFileLoaded = (file: File) => {
@@ -189,13 +193,16 @@ function NewDataset(): React.ReactElement {
   const onConfirmClick = async () => {
     if (file) {
       setLoading(true)
-      const { error } = await dispatchCreateDataset({ dataset: { ...metadata }, file })
+      const { payload, error } = await dispatchCreateDataset({ dataset: { ...metadata }, file })
       setLoading(false)
       if (error) {
         setError(
           `${t('errors.generic', 'Something went wrong, try again or contact:')} ${SUPPORT_EMAIL}`
         )
       } else {
+        if (locationType === 'HOME' || locationType === 'WORKSPACE') {
+          addNewDatasetToWorkspace(payload)
+        }
         onClose()
       }
     }

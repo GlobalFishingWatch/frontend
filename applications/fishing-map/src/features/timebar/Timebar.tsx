@@ -72,9 +72,6 @@ const TimebarWrapper = () => {
     const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
     const chunkQuantizeOffset = activeTimeChunk.quantizeOffset
 
-    let n = 0
-    n = performance.now()
-
     // Getting features within viewport - it's somehow faster to use querySource with a crude viewport filter, than using queryRendered
     const [boundsSW, boundsNE] = mapInstance.getBounds().toArray()
     const allFeaturesWithStyle = mapInstance

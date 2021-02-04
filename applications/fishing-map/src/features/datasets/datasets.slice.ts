@@ -10,15 +10,12 @@ import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-s
 import { RootState } from 'store'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
-export const DATASETS_CACHE = true
 
 export const fetchDatasetByIdThunk = createAsyncThunk(
   'datasets/fetchById',
   async (id: string, { rejectWithValue }) => {
     try {
-      const dataset = await GFWAPI.fetch<Dataset>(
-        `/v1/datasets/${id}?include=endpoints&cache=${DATASETS_CACHE}`
-      )
+      const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}?include=endpoints`)
       return dataset
     } catch (e) {
       return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
@@ -35,7 +32,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       const workspacesParams = {
         ...(uniqIds?.length && { ids: uniqIds }),
         include: 'endpoints',
-        cache: DATASETS_CACHE,
+        // cache: false,
       }
       const initialDatasets = await GFWAPI.fetch<Dataset[]>(
         `/v1/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
