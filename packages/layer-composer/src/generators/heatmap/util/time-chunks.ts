@@ -7,7 +7,6 @@ export type TimeChunk = {
   start?: string
   viewEnd?: string
   dataEnd?: string
-  framesDelta: number
   quantizeOffset: number
   frame: number
   active: boolean
@@ -170,7 +169,6 @@ const getTimeChunks = (
       start,
       viewEnd,
       dataEnd,
-      framesDelta: config.getFrame(+chunkDataEnd - +chunkStart),
       quantizeOffset,
       id,
       frame,
@@ -219,7 +217,6 @@ export const getActiveTimeChunks = (
         id,
         frame,
         active: true,
-        framesDelta: config.getFrame(+toDT(datasetEnd)), // We assume that at 10days it starts 1 jan 1970
       },
     ]
     timeChunks.activeChunkFrame = frame

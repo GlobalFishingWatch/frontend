@@ -8,8 +8,8 @@ import TimebarComponent, {
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
 import { useTilesState } from '@globalfishingwatch/react-hooks'
-import { frameToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
-import { getCellValues } from '@globalfishingwatch/fourwings-aggregate'
+import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
+import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useMapboxInstance } from 'features/map/map.context'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
@@ -71,7 +71,6 @@ const TimebarWrapper = () => {
     const timeChunks = temporalgrid.timeChunks as TimeChunks
     const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
     const chunkQuantizeOffset = activeTimeChunk.quantizeOffset
-    const numChunkFrames = activeTimeChunk.framesDelta
 
     let n = 0
     n = performance.now()
@@ -92,43 +91,17 @@ const TimebarWrapper = () => {
         )
       })
     // console.log('querySourceFeatures', performance.now() - n)
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    n = performance.now()
-    let valuesByFrame: any[] = new Array(numChunkFrames).fill(null)
-    valuesByFrame = valuesByFrame.map(() => new Array(numSublayers).fill(0))
-
-    allFeaturesWithStyle.forEach((feature) => {
-      if (!feature.properties) return
-      const rawValues: string = feature.properties.rawValues
-      const { values, minCellOffset } = getCellValues(rawValues)
-      const startAt = 2
-      const endAt = values.length - 1 - startAt
-      const rawValuesArrSlice = values.slice(startAt, endAt)
-      let currentFrameIndex = minCellOffset - chunkQuantizeOffset
-
-      for (let i = 0; i < rawValuesArrSlice.length; i++) {
-        const sublayerIndex = i % numSublayers
-        const rawValue = rawValuesArrSlice[i]
-
-        if (valuesByFrame[currentFrameIndex]?.[sublayerIndex]) {
-          valuesByFrame[currentFrameIndex][sublayerIndex] += rawValue
-        }
-
-        if (sublayerIndex === numSublayers - 1) {
-          currentFrameIndex++
-        }
-      }
-    })
-
-    valuesByFrame = valuesByFrame.map((frameValues, frameIndex) => {
-      return {
-        date: frameToDate(frameIndex, chunkQuantizeOffset, timeChunks.interval).getTime(),
-        ...frameValues,
-      }
-    })
+    // n = performance.now()
+    const values = getTimeSeries(
+      allFeaturesWithStyle as any,
+      numSublayers,
+      chunkQuantizeOffset
+    ).map((frameValues) => ({
+      ...frameValues,
+      date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
+    }))
     // console.log('compute graph', performance.now() - n)
-    setStackedActivity(valuesByFrame)
+    setStackedActivity(values)
     // While mapStyle is needed inside the useEffect, we don't want the component to rerender everytime a new instance is generated
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapInstance, currentTimeChunkId, tilesLoading, timebarVisualisation, urlViewport])
@@ -139,7 +112,6 @@ const TimebarWrapper = () => {
   }, [dataviews])
 
   if (!start || !end) return null
-  // console.log(timebarVisualisation, stackedActivity)
   return (
     <div className="print-hidden">
       <TimebarComponent
