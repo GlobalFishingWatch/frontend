@@ -41,9 +41,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   }
 
   const fetchData = async (query: string) => {
-    //const { query, resultsOffset, resultsTotal } = this.state
-
-    //if (resultsTotal !== 0 && resultsOffset >= resultsTotal) return
     setSearching(true)
     const newVessels = await GFWAPI.fetch<any>(
       `/vessels?query=${query}&limit=${resultsPerRequest}&offset=${0}`

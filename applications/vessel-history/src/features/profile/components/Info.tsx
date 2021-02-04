@@ -25,7 +25,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const vesselID = props.vesselID
   const [vessel, setVessel] = useState(null)
   const vessels = useSelector(selectVessels)
-  //const vessel = vessels && vessels[vesselID] ? vessels[vesselID] : null
   useMemo(() => {
     GFWAPI.fetch(`/vessels/${vesselID}`)
       .then((json: any) => {
@@ -33,18 +32,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       })
       .catch((error) => console.log(error))
   }, [vesselID])
-
-  /*const seeEventOnGFWMap = () => {
-    const GFWMapUrl = process.env.REACT_APP_GFW_VESSEL_MAP
-    const tileSet = process.env.REACT_APP_GFW_TILESET
-    const zoom = 6
-    const parameters = {
-      zoom,
-      vessels: [[vessel.id, tileSet]],
-    }
-    const paramsPlainText = JSON.stringify(parameters)
-    window.open(`${GFWMapUrl}?paramsPlainText=${paramsPlainText}`, '_blank')
-  }*/
 
   const { lastPosition, lastPortVisit } = props
 

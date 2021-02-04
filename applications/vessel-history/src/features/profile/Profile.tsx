@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { selectVesselId } from 'routes/routes.selectors'
-import { selectVessels } from 'features/vessels/vessels.slice'
 import MapWrapper from './components/MapWrapper'
 import Info from './components/Info'
 import styles from './Profile.module.css'

@@ -12,11 +12,9 @@ const {
   reducer: location,
   middleware: routerMiddleware,
   enhancer: routerEnhancer,
-  // initialDispatch,
 } = connectedRoutes
 
 const rootReducer = combineReducers({
-  //user: userReducer,
   vessels,
   location: location,
 })
