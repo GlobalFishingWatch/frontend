@@ -156,8 +156,8 @@ const MapControls = ({
             <IconButton
               type="map-tool"
               tooltip={t('map.loading', 'Map loading')}
-              loading={loading}
-              className={cx(styles.loadingBtn, { [styles.visible]: loading })}
+              loading={mapLoading}
+              className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
             />
           </Fragment>
         )}

@@ -90,16 +90,18 @@ const TimebarWrapper = () => {
       })
     // console.log('querySourceFeatures', performance.now() - n)
     // n = performance.now()
-    const values = getTimeSeries(
-      allFeaturesWithStyle as any,
-      numSublayers,
-      chunkQuantizeOffset
-    ).map((frameValues) => ({
-      ...frameValues,
-      date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
-    }))
-    // console.log('compute graph', performance.now() - n)
-    setStackedActivity(values)
+    if (allFeaturesWithStyle?.length) {
+      const values = getTimeSeries(
+        allFeaturesWithStyle as any,
+        numSublayers,
+        chunkQuantizeOffset
+      ).map((frameValues) => ({
+        ...frameValues,
+        date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
+      }))
+      // console.log('compute graph', performance.now() - n)
+      setStackedActivity(values)
+    }
     // While mapStyle is needed inside the useEffect, we don't want the component to rerender everytime a new instance is generated
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapInstance, currentTimeChunkId, tilesLoading, timebarVisualisation, urlViewport])
