@@ -62,8 +62,9 @@ const TimebarWrapper = () => {
       !mapStyle ||
       tilesLoading ||
       timebarVisualisation !== TimebarVisualisations.Heatmap
-    )
+    ) {
       return
+    }
 
     const temporalgrid = mapStyle.metadata?.temporalgrid
     if (!temporalgrid) return

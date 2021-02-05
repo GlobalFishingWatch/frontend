@@ -35,6 +35,7 @@
     "emptyState": "Your datasets will appear here",
     "file": "File",
     "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
+    "hint": "Find out more about the supported formats",
     "importing": "Dataset is being imported",
     "new": "New dataset",
     "remove": "Remove dataset",
@@ -45,12 +46,14 @@
   },
   "errors": {
     "datasetNotFound": "Dataset not found",
+    "datasetNotValid": "It seems to be something wrong with your file",
     "generic": "Something went wrong, try again or contact:",
     "notSupportedBy": "Not supported by {{list}}",
     "pageNotFound": "Page not found",
     "privateView": "This is a private view",
     "requestAccess": "Request access",
     "switchAccount": "Switch account",
+    "uploadError": "There was an error uploading your dataset",
     "workspaceLoad": "There was an error loading the workspace, please try again later",
     "workspaceNotFound": "The view you request was not found"
   },

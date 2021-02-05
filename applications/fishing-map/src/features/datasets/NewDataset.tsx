@@ -4,6 +4,7 @@ import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
 import lowerCase from 'lodash/lowerCase'
 import { useSelector } from 'react-redux'
+import type { FeatureCollectionWithFilename } from 'shpjs'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
@@ -13,6 +14,7 @@ import { ReactComponent as FilesIcon } from 'assets/icons/files-supported.svg'
 import { capitalize } from 'utils/shared'
 import { SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
+import { blobToArrayBuffer, blobToText } from 'utils/files'
 import { useDatasetsAPI, useDatasetModalConnect, useNewDatasetConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 
@@ -162,7 +164,11 @@ export type DatasetMetadata = {
   name: string
   description?: string
   type: DatasetTypes.Context
-  properties?: { type?: DatasetCustomTypes }
+  configuration?: {
+    file?: string
+    type?: DatasetCustomTypes
+    format?: 'geojson'
+  }
 }
 
 function NewDataset(): React.ReactElement {
@@ -177,14 +183,53 @@ function NewDataset(): React.ReactElement {
   const locationType = useSelector(selectLocationType)
   const { dispatchCreateDataset } = useDatasetsAPI()
 
-  const onFileLoaded = (file: File) => {
-    setFile(file)
-    setMetadata((metadata) => ({
-      ...metadata,
-      name: capitalize(lowerCase(file.name.split('.')[0])),
-      type: DatasetTypes.Context,
-    }))
-  }
+  const onFileLoaded = useCallback(
+    async (file: File) => {
+      setLoading(true)
+      if (error) {
+        setError('')
+      }
+      const isZip = file.type === 'application/zip'
+      const isGeojson =
+        !isZip && (file.type === 'application/json' || file.name.includes('.geojson'))
+      let geojson: FeatureCollectionWithFilename | undefined = undefined
+      if (isZip) {
+        try {
+          const shpjs = await import('shpjs').then((module) => module.default)
+          const fileData = await blobToArrayBuffer(file)
+          // TODO support multiple files in shapefile
+          geojson = (await shpjs(fileData)) as FeatureCollectionWithFilename
+        } catch (e) {
+          console.warn('Error reading file:', e)
+        }
+      } else {
+        const fileData = await blobToText(file)
+        try {
+          geojson = JSON.parse(fileData)
+        } catch (e) {
+          console.warn('Error reading file:', e)
+        }
+      }
+      if (geojson !== undefined) {
+        setFile(file)
+        setMetadata((metadata) => ({
+          ...metadata,
+          name: capitalize(lowerCase(file.name.split('.')[0])),
+          type: DatasetTypes.Context,
+          configuration: {
+            // TODO when supporting multiple files upload
+            // ...(geojson?.fileName && { file: geojson.fileName }),
+            ...(isGeojson && { format: 'geojson' }),
+          },
+        }))
+      } else {
+        setFile(undefined)
+        setError(t('errors.datasetNotValid', 'It seems to be something wrong with your file'))
+      }
+      setLoading(false)
+    },
+    [error, t]
+  )
 
   const onDatasetFieldChange = (field: any) => {
     setMetadata({ ...metadata, ...field })
@@ -209,6 +254,7 @@ function NewDataset(): React.ReactElement {
   }
 
   const onClose = async () => {
+    setError('')
     setLoading(false)
     setMetadata(undefined)
     dispatchDatasetModal(undefined)
@@ -228,7 +274,14 @@ function NewDataset(): React.ReactElement {
         )}
       </div>
       <div className={styles.modalFooter}>
-        {error && <span className={styles.errorMsg}>{error}</span>}
+        <div className={styles.footerMsg}>
+          {error && <span className={styles.errorMsg}>{error}</span>}
+          <span className={styles.hint}>
+            <a href="https://globalfishingwatch.org/faqs/" target="_blank" rel="noreferrer">
+              {t('dataset.hint', 'Find out more about the supported formats')}
+            </a>
+          </span>
+        </div>
         <Button
           disabled={!file || !metadata?.name || !metadata?.description}
           className={styles.saveBtn}
