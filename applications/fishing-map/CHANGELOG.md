@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.21.0
+
+### Minor Changes
+
+- 44f8bcee: define DatasetStatus as enum
+
+### Patch Changes
+
+- Updated dependencies [44f8bcee]
+  - @globalfishingwatch/api-types@2.8.0
+
 ## 0.20.0
 
 ### Minor Changes
