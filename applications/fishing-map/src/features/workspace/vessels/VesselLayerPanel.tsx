@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useContext, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -14,6 +14,7 @@ import {
   segmentsToBbox,
   filterSegmentsByTimerange,
 } from '@globalfishingwatch/data-transforms'
+import { _MapContext } from '@globalfishingwatch/react-map-gl'
 import { formatInfoField } from 'utils/info'
 import { UrlDataviewInstance } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -23,7 +24,6 @@ import { resolveDataviewDatasetResource } from 'features/workspace/workspace.sel
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
-import { useMapboxInstance } from 'features/map/map.context'
 import useViewport from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
@@ -51,7 +51,7 @@ type LayerPanelProps = {
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const mapInstance = useMapboxInstance()
+  const { map } = useContext(_MapContext)
   const { setMapCoordinates } = useViewport()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
@@ -66,7 +66,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     if (trackResource?.data) {
       const filteredSegments = filterSegmentsByTimerange(trackResource?.data, { start, end })
       const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
-      const { width, height } = (mapInstance as any)._canvas || {}
+      const { width, height } = (map as any)._canvas || {}
       if (width && height && bbox) {
         const [minLng, minLat, maxLng, maxLat] = bbox
         const { latitude, longitude, zoom } = fitBounds({
@@ -84,7 +84,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         alert('The vessel has no activity in your selected timerange')
       }
     }
-  }, [mapInstance, setMapCoordinates, trackResource, start, end])
+  }, [map, setMapCoordinates, trackResource, start, end])
 
   const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {

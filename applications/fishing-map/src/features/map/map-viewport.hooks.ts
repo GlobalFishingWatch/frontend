@@ -1,16 +1,15 @@
 import { useDispatch } from 'react-redux'
-import { useCallback } from 'react'
+import { useContext, useCallback } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
 import { atom, useRecoilState } from 'recoil'
 import debounce from 'lodash/debounce'
-import { ViewportProps } from '@globalfishingwatch/react-map-gl'
+import { ViewportProps, _MapContext } from '@globalfishingwatch/react-map-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
-import { useMapboxInstance, useMapboxRef } from './map.context'
 
 type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>
 type UseViewport = {
@@ -62,12 +61,11 @@ const boundsState = atom<MiniglobeBounds | undefined>({
 })
 
 export function useMapBounds() {
-  const mapRef = useMapboxRef()
+  const { map } = useContext(_MapContext)
   const [bounds, setBounds] = useRecoilState(boundsState)
   const setMapBounds = useCallback(() => {
-    const mapboxRef = mapRef?.current?.getMap()
-    if (mapboxRef) {
-      const rawBounds = mapboxRef.getBounds()
+    if (map) {
+      const rawBounds = map.getBounds()
       if (rawBounds) {
         setBounds({
           north: rawBounds.getNorth() as number,
@@ -77,7 +75,7 @@ export function useMapBounds() {
         })
       }
     }
-  }, [mapRef, setBounds])
+  }, [map, setBounds])
   return { bounds, setMapBounds }
 }
 
@@ -87,19 +85,18 @@ type FitBoundsParams = {
   padding?: number
 }
 export function useMapFitBounds() {
-  const mapInstance = useMapboxInstance()
+  const { map } = useContext(_MapContext)
   const { setMapCoordinates } = useViewport()
 
   const fitMapBounds = useCallback(
     (bounds: [number, number, number, number], params: FitBoundsParams = {}) => {
       const { mapWidth, mapHeight, padding = 60 } = params
       const width =
-        mapWidth ||
-        (mapInstance ? parseInt(mapInstance.getCanvas().style.width) : window.innerWidth / 2)
+        mapWidth || (map ? parseInt(map.getCanvas().style.width) : window.innerWidth / 2)
       const height =
         mapHeight ||
-        (mapInstance
-          ? parseInt(mapInstance.getCanvas().style.height)
+        (map
+          ? parseInt(map.getCanvas().style.height)
           : window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT)
       const { latitude, longitude, zoom } = fitBounds({
         bounds: [
@@ -112,7 +109,7 @@ export function useMapFitBounds() {
       })
       setMapCoordinates({ latitude, longitude, zoom })
     },
-    [mapInstance, setMapCoordinates]
+    [map, setMapCoordinates]
   )
   return fitMapBounds
 }

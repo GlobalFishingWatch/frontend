@@ -6,12 +6,6 @@ import { Map } from '@globalfishingwatch/mapbox-gl'
 import { getCSSVarValue } from 'utils/dom'
 import styles from './Map.module.css'
 
-declare global {
-  interface Window {
-    chrome: any
-  }
-}
-
 type PrintSize = {
   px: number
   in: string
@@ -40,7 +34,7 @@ export const getMapImage = (map: Map): Promise<string> => {
   })
 }
 
-function MapScreenshot({ map }: { map: Map }) {
+function MapScreenshot({ map }: { map?: Map }) {
   const [screenshotImage, setScreenshotImage] = useState<string | null>(null)
   const printSize = useRef<{ width: PrintSize; height: PrintSize } | undefined>()
 
@@ -63,9 +57,11 @@ function MapScreenshot({ map }: { map: Map }) {
 
   useEffect(() => {
     const handleIdle = debounce(() => {
-      getMapImage(map).then((image) => {
-        setScreenshotImage(image)
-      })
+      if (map) {
+        getMapImage(map).then((image) => {
+          setScreenshotImage(image)
+        })
+      }
     }, 800)
 
     if (map) {
