@@ -4,8 +4,10 @@
     "active_before": "Active Before",
     "activity": "Activity",
     "apparentFishing": "Apparent Fishing Effort",
+    "confirm": "Confirm",
     "context_area_plural": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.",
+    "description": "Description",
     "environment": "Environment",
     "hour": "Hour",
     "hour_plural": "hours",
@@ -13,14 +15,26 @@
     "login": "Log in",
     "logout": "Log out",
     "more": "more",
+    "name": "Name",
     "seeDefault": "See default view",
     "share": "Click to share the current view",
+    "update": "Update",
     "vessel_plural": "Vessels",
     "open_menu": "Open Menu",
     "dismiss": "Dismiss",
     "save": "Save",
     "events": "Events",
     "fishing": "Fishing"
+  },
+  "dataset": {
+    "dragActive": "Drop the file here ...",
+    "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
+    "edit": "Edit dataset",
+    "file": "File",
+    "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
+    "new": "New dataset",
+    "remove": "Remove dataset",
+    "uploadNew": "Upload new dataset"
   },
   "errors": {
     "notSupportedBy": "Not supported by {{list}}",
@@ -37,12 +51,12 @@
     "filterClose": "Close filters",
     "filterOpen": "Open filters",
     "flagState_plural": "Flag States",
+    "fleet_plural": "Fleets",
     "gearType_plural": "Gear types",
     "infoClose": "Hide info",
     "infoOpen": "Show info",
     "remove": "Remove layer",
     "seeDescription": "Click to see layer description",
-    "source": "Source",
     "source_plural": "Sources",
     "toggleCombinationMode": {
       "combine": "Combine layers",
@@ -51,13 +65,14 @@
     },
     "toggleVisibility": "Toggle layer visibility",
     "vessel_fit_bounds": "Center view on vessel track",
-    "filterPpen": "Open filters"
+    "source": "Source"
   },
   "map": {
-    "capture_map": "Capture map",
+    "captureMap": "Capture map",
     "change_basemap_default": "Switch to default basemap",
     "change_basemap_satellite": "Switch to satellite basemap",
     "loading": "Map loading",
+    "mapLoadingWait": "Please wait until map loads",
     "rulers_add": "Add rulers",
     "rulers_remove": "Remove all rulers",
     "search": "Search areas",
@@ -76,8 +91,9 @@
     "vessels": "Search vessels"
   },
   "selects": {
-    "placeholder": "Select an option",
-    "selected": "selected"
+    "allSelected": "All",
+    "selected": "selected",
+    "placeholder": "Select an option"
   },
   "timebar": {
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
@@ -99,11 +115,17 @@
     "lengthRange": "Length range",
     "loading": "Loading vessel track",
     "mmsi": "MMSI",
+    "origin": "Origin",
     "registeredGearType": "Registered Gear Type",
     "source": "Source",
     "tracks": "Vessel Tracks",
     "transmission_plural": "Transmissions",
     "widthRange": "Width range",
     "transmission": "Transmission"
+  },
+  "workspace": {
+    "new": "New Workspace",
+    "title_plural": "Workspaces",
+    "title": "Workspace"
   }
 }

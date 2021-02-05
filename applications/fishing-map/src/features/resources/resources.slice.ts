@@ -5,7 +5,6 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'types'
-import { TRACKS_DATASET_TYPE } from 'data/datasets'
 
 export interface ResourceQuery {
   url: string
@@ -28,7 +27,7 @@ const initialState: ResourcesState = {}
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
   async (resource: ResourceQuery) => {
-    const isTrackResource = resource.datasetType === TRACKS_DATASET_TYPE
+    const isTrackResource = resource.datasetType === DatasetTypes.Tracks
     const responseType =
       isTrackResource &&
       resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)

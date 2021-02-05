@@ -4,8 +4,10 @@
     "active_before": "Activo antes",
     "activity": "Actividad",
     "apparentFishing": "Esfuerzo de pesca aparente",
+    "confirm": "Confirm",
     "context_area_plural": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles. Puedes encontrar todas las vistas guardadas en tu área de usuario.",
+    "description": "Description",
     "environment": "Entorno",
     "hour": "Hora",
     "hour_plural": "horas",
@@ -13,14 +15,26 @@
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
     "more": "más",
+    "name": "Name",
     "seeDefault": "Ver vista por defecto",
     "share": "Haz click para compartir tu vista actual",
+    "update": "Update",
     "vessel_plural": "Embarcaciones",
     "open_menu": "Abrir menú",
     "dismiss": "Cancelar",
     "save": "Guardar",
     "events": "Eventos",
     "fishing": "Pesca"
+  },
+  "dataset": {
+    "dragActive": "Drop the file here ...",
+    "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
+    "edit": "Edit dataset",
+    "file": "File",
+    "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
+    "new": "New dataset",
+    "remove": "Remove dataset",
+    "uploadNew": "Upload new dataset"
   },
   "errors": {
     "notSupportedBy": "No soportado por {{list}}",
@@ -33,16 +47,16 @@
   },
   "layer": {
     "add": "Añadir capa",
-    "color_change": "Cambia el color",
+    "color_change": "Cambiar color",
     "filterClose": "Cerrar filtros",
     "filterOpen": "Abrir filtros",
     "flagState_plural": "Estados de bandera",
+    "fleet_plural": "Flotas",
     "gearType_plural": "Tipos de equipo",
     "infoClose": "Ocultar info",
     "infoOpen": "Mostrar info",
     "remove": "Borra la capa",
     "seeDescription": "Haga clic para ver la descripción de la capa",
-    "source": "Fuente",
     "source_plural": "Fuentes",
     "toggleCombinationMode": {
       "combine": "Combinar capas",
@@ -51,13 +65,14 @@
     },
     "toggleVisibility": "Cambiar visibilidad de la capa",
     "vessel_fit_bounds": "Centrar vista en la pista de barcos",
-    "filterPpen": "Abrir filtros"
+    "source": "Fuente"
   },
   "map": {
-    "capture_map": "Captura el mapa",
+    "captureMap": "Capturar el mapa",
     "change_basemap_default": "Cambia al mapa base por defecto",
     "change_basemap_satellite": "Cambia al mapa base satelital",
     "loading": "Cargando el mapa",
+    "mapLoadingWait": "Por favor espere a que cargue el mapa",
     "rulers_add": "Añade reglas",
     "rulers_remove": "Borra todas las reglas",
     "search": "Buscar áreas",
@@ -76,8 +91,9 @@
     "vessels": "Buscar buques"
   },
   "selects": {
-    "placeholder": "Seleccione una opción",
-    "selected": "seleccionado"
+    "allSelected": "Todos",
+    "selected": "seleccionado",
+    "placeholder": "Seleccione una opción"
   },
   "timebar": {
     "fishingEffortDisabled": "Seleccione al menos una capa aparente de esfuerzo de pesca",
@@ -99,11 +115,17 @@
     "lengthRange": "Rango de longitud",
     "loading": "Cargando track de buque",
     "mmsi": "MMSI",
+    "origin": "Origen",
     "registeredGearType": "Tipo de equipo registrado",
     "source": "Fuente",
     "tracks": "Tracks de barcos",
     "transmission_plural": "Transmisión",
     "widthRange": "Width range",
     "transmission": "Transmisión"
+  },
+  "workspace": {
+    "new": "New Workspace",
+    "title_plural": "Workspaces",
+    "title": "Workspace"
   }
 }

@@ -8,13 +8,12 @@ import { getFlags, getFlagsByIds } from 'utils/flags'
 import { UrlDataviewInstance } from 'types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import styles from './HeatmapFilters.module.css'
 import {
-  getCommonGearTypesInDataview,
-  getNotSupportedGearTypesDatasets,
-  getSourcesOptionsInDataview,
-  getSourcesSelectedInDataview,
-} from './heatmaps.utils'
+  getFiltersBySchema,
+  getCommonSchemaFieldsInDataview,
+} from 'features/datasets/datasets.utils'
+import styles from './HeatmapFilters.module.css'
+import { getSourcesOptionsInDataview, getSourcesSelectedInDataview } from './heatmaps.utils'
 
 type FiltersProps = {
   dataview: UrlDataviewInstance
@@ -26,32 +25,45 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
 
   const sourceOptions = getSourcesOptionsInDataview(dataview)
   const sourcesSelected = getSourcesSelectedInDataview(dataview)
-  const gearTypeOptions = getCommonGearTypesInDataview(dataview)
-  const gearTypeSelected = gearTypeOptions?.filter((geartype) =>
-    dataview.config?.filters?.geartype?.includes(geartype.id)
-  )
-  const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
+
+  const flagOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
   const flags = useMemo(getFlags, [])
 
-  const datasetsWithoutgGeartype = getNotSupportedGearTypesDatasets(dataview)
+  const gearTypeFilters = getFiltersBySchema(dataview, 'geartype')
+  const fleetFilters = getFiltersBySchema(dataview, 'fleet')
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
     const datasets = [...(dataview.config?.datasets || []), source.id]
     const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
+
+    const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
     if (filters['geartype']) {
-      const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
-      const newGearTypeOptions = getCommonGearTypesInDataview(newDataview)
-      const supportGearTypeFilter = newGearTypeOptions.length > 0
-      const newGearTypeSelection = newGearTypeOptions?.filter((geartype) =>
+      const newGeartypeOptions = getCommonSchemaFieldsInDataview(newDataview, 'geartype')
+      const newGeartypeSelection = newGeartypeOptions?.filter((geartype) =>
         dataview.config?.filters?.geartype?.includes(geartype.id)
       )
 
       // We have to remove the geartype if it is not supported by the datasets selecion
-      if (!supportGearTypeFilter) {
+      if (newGeartypeOptions.length === 0) {
         delete filters['geartype']
         // or keep only the options that every dataset have in common
-      } else if (!newGearTypeSelection?.length !== dataview.config?.filters?.geartype?.length) {
-        filters.geartype = newGearTypeSelection.map(({ id }) => id)
+      } else if (!newGeartypeSelection?.length !== dataview.config?.filters?.geartype?.length) {
+        filters.geartype = newGeartypeSelection.map(({ id }) => id)
+      }
+    }
+
+    if (filters['fleet']) {
+      const newFleetOptions = getCommonSchemaFieldsInDataview(newDataview, 'fleet')
+      const newFleetSelection = newFleetOptions?.filter((geartype) =>
+        dataview.config?.filters?.geartype?.includes(geartype.id)
+      )
+
+      // We have to remove the geartype if it is not supported by the datasets selecion
+      if (newFleetOptions.length === 0) {
+        delete filters['fleet']
+        // or keep only the options that every dataset have in common
+      } else if (!newFleetSelection?.length !== dataview.config?.filters?.geartype?.length) {
+        filters.fleet = newFleetSelection.map(({ id }) => id)
       }
     }
     upsertDataviewInstance({
@@ -103,46 +115,56 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
     })
   }
 
-  const disabledGearType = datasetsWithoutgGeartype && datasetsWithoutgGeartype.length > 0
-  const disabledGearTypeTooltip = disabledGearType
-    ? t('errors.notSupportedBy', {
-        list: datasetsWithoutgGeartype?.map((d) => d.name).join(','),
-        defaultValue: 'Not supported by {{list}}',
-      })
-    : ''
-
   return (
     <Fragment>
-      <MultiSelect
-        label={t('layer.source_plural', 'Sources')}
-        placeholder={getPlaceholderBySelections(sourcesSelected)}
-        options={sourceOptions}
-        selectedOptions={sourcesSelected}
-        onSelect={onSelectSourceClick}
-        onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
-      />
+      {sourceOptions && sourceOptions?.length > 1 && (
+        <MultiSelect
+          label={t('layer.source_plural', 'Sources')}
+          placeholder={getPlaceholderBySelections(sourcesSelected)}
+          options={sourceOptions}
+          selectedOptions={sourcesSelected}
+          onSelect={onSelectSourceClick}
+          onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
+        />
+      )}
       <MultiSelect
         label={t('layer.flagState_plural', 'Flag States')}
-        placeholder={getPlaceholderBySelections(fishingFiltersOptions)}
+        placeholder={getPlaceholderBySelections(flagOptions)}
         options={flags}
-        selectedOptions={fishingFiltersOptions}
+        selectedOptions={flagOptions}
         className={styles.multiSelect}
         onSelect={(selection) => onSelectFilterClick('flag', selection)}
         onRemove={(selection, rest) => onRemoveFilterClick('flag', rest)}
         onCleanClick={() => onCleanFilterClick('flag')}
       />
-      <MultiSelect
-        disabled={disabledGearType}
-        disabledMsg={disabledGearTypeTooltip}
-        label={t('layer.gearType_plural', 'Gear types')}
-        placeholder={getPlaceholderBySelections(gearTypeSelected)}
-        options={gearTypeOptions}
-        selectedOptions={gearTypeSelected}
-        className={styles.multiSelect}
-        onSelect={(selection) => onSelectFilterClick('geartype', selection)}
-        onRemove={(selection, rest) => onRemoveFilterClick('geartype', rest)}
-        onCleanClick={() => onCleanFilterClick('geartype')}
-      />
+      {gearTypeFilters.active && (
+        <MultiSelect
+          disabled={gearTypeFilters.disabled}
+          disabledMsg={gearTypeFilters.tooltip}
+          label={t('layer.gearType_plural', 'Gear types')}
+          placeholder={getPlaceholderBySelections(gearTypeFilters.optionsSelected)}
+          options={gearTypeFilters.options}
+          selectedOptions={gearTypeFilters.optionsSelected}
+          className={styles.multiSelect}
+          onSelect={(selection) => onSelectFilterClick('geartype', selection)}
+          onRemove={(selection, rest) => onRemoveFilterClick('geartype', rest)}
+          onCleanClick={() => onCleanFilterClick('geartype')}
+        />
+      )}
+      {fleetFilters.active && (
+        <MultiSelect
+          disabled={fleetFilters.disabled}
+          disabledMsg={fleetFilters.tooltip}
+          label={t('vessel.fleet', 'Fleet')}
+          placeholder={getPlaceholderBySelections(fleetFilters.optionsSelected)}
+          options={fleetFilters.options}
+          selectedOptions={fleetFilters.optionsSelected}
+          className={styles.multiSelect}
+          onSelect={(selection) => onSelectFilterClick('fleet', selection)}
+          onRemove={(selection, rest) => onRemoveFilterClick('fleet', rest)}
+          onCleanClick={() => onCleanFilterClick('fleet')}
+        />
+      )}
     </Fragment>
   )
 }

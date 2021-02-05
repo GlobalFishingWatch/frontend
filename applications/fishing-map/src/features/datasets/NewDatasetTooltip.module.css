@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  max-height: 30rem;
+  z-index: 20;
+  overflow-y: auto;
+}
+
+.loadingPlaceholder {
+  height: 5rem;
+}
+
+.listContainer {
+  padding: var(--space-S);
+  padding-right: 0;
+}
+
+.dataset {
+  cursor: pointer;
+  padding: var(--space-XS);
+  padding-right: var(--space-M);
+}
+
+.dataset:not(:last-of-type) {
+  border-bottom: var(--border);
+}
+
+.create {
+  color: var(--color-secondary-blue);
+  text-decoration: underline;
+}

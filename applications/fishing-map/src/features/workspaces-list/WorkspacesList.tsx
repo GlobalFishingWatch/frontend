@@ -7,7 +7,7 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'types'
-import { WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_KEY, WorkspaceCategories } from 'data/workspaces'
 import styles from './WorkspacesList.module.css'
 import { selectCurrentHighlightedWorkspaces } from './workspaces-list.selectors'
 import {
@@ -53,7 +53,7 @@ function WorkspacesList() {
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
             const active = highlightedWorkspace?.id !== undefined
             const linkTo =
-              highlightedWorkspace.id === 'default'
+              highlightedWorkspace.id === DEFAULT_WORKSPACE_KEY
                 ? {
                     type: HOME,
                     payload: {},

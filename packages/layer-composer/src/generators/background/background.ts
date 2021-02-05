@@ -1,4 +1,4 @@
-import { Layer } from 'mapbox-gl'
+import { Layer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
 import { Type, BackgroundGeneratorConfig } from '../types'
 import { isConfigVisible } from '../utils'

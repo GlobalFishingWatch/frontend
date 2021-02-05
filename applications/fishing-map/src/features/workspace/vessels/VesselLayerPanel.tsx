@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { fitBounds } from 'viewport-mercator-project'
-import { Vessel } from '@globalfishingwatch/api-types'
+import { DatasetTypes, Vessel } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
@@ -20,7 +20,6 @@ import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import styles from 'features/workspace/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
-import { TRACKS_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
@@ -50,8 +49,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const mapInstance = useMapboxInstance()
   const { setMapCoordinates } = useViewport()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const { url } = resolveDataviewDatasetResource(dataview, { type: VESSELS_DATASET_TYPE })
-  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })
+  const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
+  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
   const resource = useSelector(selectResourceByUrl<Vessel>(url))
   const { start, end } = useTimerangeConnect()
   const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
@@ -62,7 +61,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     if (trackResource?.data) {
       const filteredSegments = filterSegmentsByTimerange(trackResource?.data, { start, end })
       const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
-      const { width, height } = mapInstance?._canvas || {}
+      const { width, height } = (mapInstance as any)._canvas || {}
       if (width && height && bbox) {
         const [minLng, minLat, maxLng, maxLat] = bbox
         const { latitude, longitude, zoom } = fitBounds({

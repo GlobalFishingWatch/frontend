@@ -6,6 +6,7 @@ import {
   selectSearchFiltersOpen,
   selectSearchPagination,
   selectSearchSuggestion,
+  selectSearchSuggestionClicked,
   setFilters,
   setFiltersOpen,
 } from './search.slice'
@@ -13,7 +14,8 @@ import {
 export const useSearchConnect = () => {
   const searchPagination = useSelector(selectSearchPagination)
   const searchSuggestion = useSelector(selectSearchSuggestion)
-  return { searchPagination, searchSuggestion }
+  const searchSuggestionClicked = useSelector(selectSearchSuggestionClicked)
+  return { searchPagination, searchSuggestion, searchSuggestionClicked }
 }
 
 export const useSearchFiltersConnect = () => {

@@ -145,12 +145,35 @@
 }
 
 @media print {
+  .tagList > li > div {
+    border: var(--border);
+  }
+  .tagList > li *::after {
+    background-color: transparent;
+  }
   .switch {
     width: 1.4rem !important;
+    transition: none;
   }
-
   .switch > span {
     display: none !important;
   }
+}
+
+:global(.printing) .tagList > li > div {
+  border: var(--border);
+}
+
+:global(.printing) .tagList > li *::after {
+  background-color: transparent;
+}
+
+:global(.printing) .switch {
+  width: 1.4rem !important;
+  transition: none;
+}
+
+:global(.printing) .switch > span {
+  display: none !important;
 }
 

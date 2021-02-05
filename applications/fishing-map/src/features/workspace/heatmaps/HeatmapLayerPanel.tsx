@@ -10,9 +10,10 @@ import styles from 'features/workspace/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariate } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { getSchemaFieldsSelectedInDataview } from 'features/datasets/datasets.utils'
 import Filters from './HeatmapFilters'
-import { getGearTypesSelectedInDataview, getSourcesSelectedInDataview } from './heatmaps.utils'
 import HeatmapInfoModal from './HeatmapInfoModal'
+import { getSourcesSelectedInDataview } from './heatmaps.utils'
 
 type LayerPanelProps = {
   index: number
@@ -26,7 +27,8 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const sourcesOptions = getSourcesSelectedInDataview(dataview)
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
-  const gearTypesSelected = getGearTypesSelectedInDataview(dataview)
+  const gearTypesSelected = getSchemaFieldsSelectedInDataview(dataview, 'geartype')
+  const fleetsSelected = getSchemaFieldsSelectedInDataview(dataview, 'fleet')
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
@@ -153,6 +155,16 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
                 <label>{t('layer.gearType_plural', 'Gear types')}</label>
                 <TagList
                   tags={gearTypesSelected}
+                  color={dataview.config?.color}
+                  className={styles.tagList}
+                />
+              </div>
+            )}
+            {fleetsSelected.length > 0 && (
+              <div className={styles.filter}>
+                <label>{t('layer.fleet_plural', 'Fleets')}</label>
+                <TagList
+                  tags={fleetsSelected}
                   color={dataview.config?.color}
                   className={styles.tagList}
                 />

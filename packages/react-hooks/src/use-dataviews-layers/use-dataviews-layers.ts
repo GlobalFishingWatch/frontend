@@ -9,9 +9,6 @@ import {
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 
-const FISHING_DATASET_TYPE = '4wings:v1'
-const USER_CONTEXT_TYPE = 'user-context-layer:v1'
-
 export const resolveDataviewDatasetResource = (
   dataview: Dataview,
   { type, id }: { type?: DatasetTypes; id?: string }
@@ -40,7 +37,9 @@ export function getGeneratorConfig(dataview: Dataview) {
   switch (dataview.config.type) {
     // TODO: remove legacy from Amathea context layers as they support ramps
     case Generators.Type.UserContext: {
-      const { dataset, url } = resolveDataviewDatasetResource(dataview, { type: USER_CONTEXT_TYPE })
+      const { dataset, url } = resolveDataviewDatasetResource(dataview, {
+        type: DatasetTypes.Context,
+      })
       if (!url) {
         console.warn(
           `Missing configuration for ${Generators.Type.UserContext} generator in dataview`,
@@ -60,7 +59,7 @@ export function getGeneratorConfig(dataview: Dataview) {
     }
     case Generators.Type.Heatmap: {
       // TODO support multiple urls in resolveDataviewDatasetResource
-      const dataset = dataview.datasets?.find((dataset) => dataset.type === FISHING_DATASET_TYPE)
+      const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
       const tilesEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
       const statsEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-legend')
       if (!tilesEndpoint) {

@@ -2,6 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { ExtendedFeatureVessel } from '@globalfishingwatch/react-hooks'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { formatInfoField } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
@@ -9,7 +10,6 @@ import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'types'
-import { TRACKS_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'
 import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
@@ -25,8 +25,8 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
   const { clickedEventStatus } = useClickedEventConnect()
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
-    const infoDataset = getRelatedDatasetByType(vessel.dataset, VESSELS_DATASET_TYPE)
-    const trackDataset = getRelatedDatasetByType(vessel.dataset, TRACKS_DATASET_TYPE)
+    const infoDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Vessels)
+    const trackDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks)
     if (infoDataset && trackDataset) {
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
         trackDatasetId: trackDataset.id,
@@ -72,7 +72,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
                 <button key={i} className={styles.vesselRow} onClick={() => onVesselClick(vessel)}>
                   <span className={styles.vesselName}>
                     {vesselLabel.length > 25 ? `${vesselLabel.slice(0, 25)}...` : vesselLabel}
-                    {vessel.dataset.name && (
+                    {vessel.dataset && vessel.dataset.name && (
                       <span className={styles.vesselRowLegend}> - {vessel.dataset.name}</span>
                     )}
                   </span>

@@ -4,8 +4,10 @@
     "active_before": "Actif avant",
     "activity": "Activité",
     "apparentFishing": "Effort de pêche apparent",
+    "confirm": "Confirm",
     "context_area_plural": "Calques de contexte",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers. Vous pouvez trouver toutes vos vues enregistrées dans votre zone utilisateur.",
+    "description": "Description",
     "environment": "Environnement",
     "hour": "Heure",
     "hour_plural": "heures",
@@ -13,14 +15,26 @@
     "login": "Se connecter",
     "logout": "Déconnexion",
     "more": "plus",
+    "name": "Name",
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
+    "update": "Update",
     "vessel_plural": "Navires",
     "open_menu": "Ouvrir le menu",
     "dismiss": "Fermer",
     "save": "Enregistrer",
     "events": "Évènements",
     "fishing": "Pêche"
+  },
+  "dataset": {
+    "dragActive": "Drop the file here ...",
+    "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
+    "edit": "Edit dataset",
+    "file": "File",
+    "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
+    "new": "New dataset",
+    "remove": "Remove dataset",
+    "uploadNew": "Upload new dataset"
   },
   "errors": {
     "notSupportedBy": "Non pris en charge par {{list}}",
@@ -37,12 +51,12 @@
     "filterClose": "Fermer les filtres",
     "filterOpen": "Ouvrir les filtres",
     "flagState_plural": "États du Drapeau",
+    "fleet_plural": "Flottes",
     "gearType_plural": "Types d'équipement",
     "infoClose": "Masquer les infos",
     "infoOpen": "Afficher les infos",
     "remove": "Supprimer le calque",
     "seeDescription": "Cliquez pour voir la description de la couche",
-    "source": "Source",
     "source_plural": "Sources",
     "toggleCombinationMode": {
       "combine": "Combiner les couches",
@@ -51,13 +65,14 @@
     },
     "toggleVisibility": "Activer/désactiver la visibilité de la couche",
     "vessel_fit_bounds": "Vue centrée sur la piste du navire",
-    "filterPpen": "Ouvrir les filtres"
+    "source": "Source"
   },
   "map": {
-    "capture_map": "Enregistrer une image de la carte",
+    "captureMap": "Capturer la carte",
     "change_basemap_default": "Fond de carte par défaut",
     "change_basemap_satellite": "Fond de carte satellite",
     "loading": "Chargement de la carte",
+    "mapLoadingWait": "Veuillez patienter jusqu'à ce que la carte soit chargée",
     "rulers_add": "Ajouter des mesures",
     "rulers_remove": "Supprimer toutes les mesures",
     "search": "Rechercher des zones",
@@ -76,8 +91,9 @@
     "vessels": "Rechercher des vaisseaux"
   },
   "selects": {
-    "placeholder": "Sélectionnez une option",
-    "selected": "slectionns"
+    "allSelected": "Tous",
+    "selected": "slectionns",
+    "placeholder": "Sélectionnez une option"
   },
   "timebar": {
     "fishingEffortDisabled": "Sélectionnez au moins une couche apparente d'effort de pêche",
@@ -99,11 +115,17 @@
     "lengthRange": "Plage de longueur",
     "loading": "Chargement de la piste du bateau",
     "mmsi": "MMSI",
+    "origin": "Origine",
     "registeredGearType": "Type d'équipement enregistré",
     "source": "Source",
     "tracks": "Trajectoires de navire",
     "transmission_plural": "Transmissions",
     "widthRange": "Width range",
     "transmission": "Transmission"
+  },
+  "workspace": {
+    "new": "New Workspace",
+    "title_plural": "Workspaces",
+    "title": "Workspace"
   }
 }

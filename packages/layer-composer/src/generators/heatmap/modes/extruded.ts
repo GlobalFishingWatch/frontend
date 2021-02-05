@@ -28,7 +28,7 @@ function extruded(config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: Time
         layout: {
           'text-field': [
             'to-string',
-            ['*', ['to-number', ['slice', ['get', pickValueAt], 0, 4]], 1],
+            ['*', ['to-number', ['slice', ['get', pickValueAt], 0, 6]], 1],
           ],
           'text-font': ['Roboto Mono Light'],
           'text-size': 8,
@@ -46,9 +46,9 @@ function extruded(config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: Time
       const baseSlice = ['slice', ['get', pickValueAt]]
       const extrudedLayers = config.sublayers.map((sublayer, sublayerIndex) => {
         const ramp = HEATMAP_COLOR_RAMPS[sublayer.colorRamp]
-        const baseStartIndex = 4 * (sublayerIndex - 1)
-        const heightStartIndex = 4 * sublayerIndex
-        const heightEndIndex = 4 * (sublayerIndex + 1)
+        const baseStartIndex = 6 * (sublayerIndex - 1)
+        const heightStartIndex = 6 * sublayerIndex
+        const heightEndIndex = 6 * (sublayerIndex + 1)
         const base =
           sublayerIndex === 0 ? 0 : ['to-number', [...baseSlice, baseStartIndex, heightStartIndex]]
         const height = ['to-number', [...baseSlice, heightStartIndex, heightEndIndex]]
@@ -59,8 +59,8 @@ function extruded(config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: Time
           'source-layer': 'temporalgrid',
           paint: {
             'fill-extrusion-color': ramp[ramp.length - 1],
-            'fill-extrusion-base': ['*', base, 500],
-            'fill-extrusion-height': ['*', height, 500],
+            'fill-extrusion-base': ['*', base, 50],
+            'fill-extrusion-height': ['*', height, 50],
             'fill-extrusion-opacity': timeChunk.active ? 0.9 : 0,
           },
           filter: ['!=', base, height],

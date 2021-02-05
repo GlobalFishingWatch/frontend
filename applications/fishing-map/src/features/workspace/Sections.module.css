@@ -1,5 +1,8 @@
 .container {
   padding: var(--space-XS) 0;
+}
+
+.container:not(:last-of-type) {
   border-bottom: var(--border);
 }
 
@@ -19,4 +22,27 @@
 
 .sectionButtons > *:not(:last-child) {
   margin-right: 1rem;
+}
+
+.tooltipArrow,
+.tooltipArrow::before {
+  position: absolute;
+  left: -2px;
+  width: 8px;
+  height: 8px;
+  z-index: 1;
+  border-left: var(--border);
+  background-color: var(--color-white);
+}
+
+.tooltipArrow::before {
+  content: '';
+  transform: rotate(45deg);
+  background: var(--color-white);
+}
+
+.tooltipContent {
+  background-color: var(--color-white);
+  border: var(--border);
+  box-shadow: var(--box-shadow);
 }

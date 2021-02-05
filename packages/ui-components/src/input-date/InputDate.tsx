@@ -16,7 +16,7 @@ export type InputDateProps = React.InputHTMLAttributes<HTMLInputElement> & {
 const defaultKey = Date.now().toString()
 
 function InputDate(props: InputDateProps, forwardedRef: Ref<HTMLInputElement>) {
-  const { className, label, max, min, step, onRemove, ...rest } = props
+  const { className, value, label, max, min, step, onRemove, ...rest } = props
   const inputRef = useRef<HTMLInputElement>(null)
   useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
 
@@ -25,6 +25,7 @@ function InputDate(props: InputDateProps, forwardedRef: Ref<HTMLInputElement>) {
       {label && <label htmlFor={label}>{label}</label>}
       <input
         type="date"
+        value={value}
         key={label || defaultKey}
         className={styles.input}
         ref={inputRef}
@@ -36,7 +37,9 @@ function InputDate(props: InputDateProps, forwardedRef: Ref<HTMLInputElement>) {
         {...rest}
       />
       <div className={styles.actionsContainer}>
-        {onRemove && <IconButton icon="delete" className={styles.action} onClick={onRemove} />}
+        {onRemove && value && (
+          <IconButton icon="delete" className={styles.action} onClick={onRemove} />
+        )}
         <IconButton
           icon="calendar"
           type={!inputRef.current || inputRef.current.validity.valid ? 'default' : 'warning'}

@@ -12,6 +12,7 @@ const warningVarColor = getComputedStyle(document.documentElement).getPropertyVa
 
 function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
   const {
+    id,
     type = 'default',
     size = 'default',
     disabled = false,
@@ -30,6 +31,7 @@ function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       <button
+        id={id}
         ref={ref}
         className={cx(
           styles.iconButton,

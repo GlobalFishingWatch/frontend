@@ -1,4 +1,3 @@
-import type { Style } from 'mapbox-gl'
 import { Group, Dictionary, ExtendedStyle, ExtendedLayer, StyleTransformation } from '../../types'
 
 const GROUP_ORDER = [

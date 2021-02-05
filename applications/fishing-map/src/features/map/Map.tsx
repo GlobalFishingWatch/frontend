@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
+import type { Map } from '@globalfishingwatch/mapbox-gl'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import useTilesState from '@globalfishingwatch/react-hooks/dist/use-tiles-state'
@@ -180,9 +181,12 @@ const MapWrapper = (): React.ReactElement | null => {
     style?.metadata
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
-  const onMouseOut = useCallback(() => {
+
+  const resetHoverState = useCallback(() => {
     setHoveredEvent(null)
-  }, [])
+    setHoveredDebouncedEvent(null)
+    cleanFeatureState()
+  }, [cleanFeatureState])
 
   const { viewport, onViewportChange } = useViewport()
 
@@ -201,9 +205,22 @@ const MapWrapper = (): React.ReactElement | null => {
     return 'crosshair'
   }, [])
 
+  const getCursor = useCallback(
+    (state) => {
+      // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
+      if (state.isHovering && hoveredTooltipEvent) {
+        return 'pointer'
+      } else if (state.isDragging) {
+        return 'grabbing'
+      }
+      return 'grab'
+    },
+    [hoveredTooltipEvent]
+  )
+
   // TODO handle also in case of error
   // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
-  const tilesLoading = useTilesState(mapInstance)
+  const tilesLoading = useTilesState(mapInstance as Map)
 
   useEffect(() => {
     if (mapInstance) {
@@ -238,12 +255,12 @@ const MapWrapper = (): React.ReactElement | null => {
           mapOptions={mapOptions}
           transformRequest={transformRequest}
           onResize={setMapBounds}
-          getCursor={rulersEditing ? getRulersCursor : undefined}
+          getCursor={rulersEditing ? getRulersCursor : getCursor}
           interactiveLayerIds={rulersEditing ? undefined : style?.metadata?.interactiveLayerIds}
           onClick={onMapClick}
           onHover={onMapHover}
           onError={handleError}
-          onMouseOut={onMouseOut}
+          onMouseOut={resetHoverState}
           transitionDuration={viewport.transitionDuration}
         >
           {clickedEvent && (
@@ -263,7 +280,7 @@ const MapWrapper = (): React.ReactElement | null => {
           <MapInfo center={hoveredEvent} />
         </InteractiveMap>
       )}
-      <MapControls loading={tilesLoading.loading} />
+      <MapControls onMouseEnter={resetHoverState} mapLoading={tilesLoading.loading} />
       {layersWithLegend?.map((legend) => {
         const legendDomElement = document.getElementById(legend.id as string)
         if (legendDomElement) {

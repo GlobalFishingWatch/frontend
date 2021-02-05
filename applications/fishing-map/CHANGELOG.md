@@ -1,5 +1,75 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.20.0
+
+### Minor Changes
+
+- 781fce16: export getTimeSeries from fourwings-aggregate
+
+### Patch Changes
+
+- Updated dependencies [781fce16]
+  - @globalfishingwatch/fourwings-aggregate@1.1.0
+  - @globalfishingwatch/layer-composer@4.13.0
+
+## 0.19.1
+
+### Patch Changes
+
+- 058d14b7: Return api erros in api-client
+- 54737510: Fix sidabar z-index
+- Updated dependencies [058d14b7]
+- Updated dependencies [54737510]
+  - @globalfishingwatch/api-client@1.6.6
+  - @globalfishingwatch/ui-components@2.12.4
+
+## 0.19.0
+
+### Minor Changes
+
+- layer composer frameToDate
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.12.0
+
+## 0.18.0
+
+### Minor Changes
+
+- TimebarStackedActivity
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/timebar@1.2.0
+
+## 0.17.10
+
+### Patch Changes
+
+- ef4092a3: Support i18next translation as children in ui-button components
+- Updated dependencies [ef4092a3]
+  - @globalfishingwatch/api-types@2.7.0
+  - @globalfishingwatch/ui-components@2.12.3
+
+## 0.17.9
+
+### Patch Changes
+
+- support context layers attribution
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.11.2
+
+## 0.17.8
+
+### Patch Changes
+
+- 88482842: Include ids in ui-buttons
+- Updated dependencies [88482842]
+  - @globalfishingwatch/ui-components@2.12.1
+
 ## 0.17.7
 
 ### Patch Changes

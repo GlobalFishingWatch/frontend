@@ -54,7 +54,8 @@
   background-color: transparent;
   cursor: pointer;
   border-left: 0.1rem solid transparent;
-  transition: background-color 150ms linear, box-shadow 150ms linear, border-left 150ms linear;
+  border-right: 0.5rem solid transparent;
+  transition: background-color 150ms linear, box-shadow 150ms linear, border 150ms linear;
 }
 
 .searchResult:hover,
@@ -62,6 +63,7 @@
   background-color: var(--color-white);
   box-shadow: var(--box-shadow);
   border-left: 0.5rem solid var(--color-secondary-blue);
+  border-right: 0.1rem solid transparent;
 }
 
 .searchResult:not(:last-child)::after {
@@ -100,6 +102,9 @@
   padding: var(--space-S);
   background-color: var(--color-white);
   box-shadow: var(--box-shadow);
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .suggestion {
@@ -162,7 +167,7 @@
   opacity: 1;
   border-top: var(--border);
   border-bottom: var(--border);
-  z-index: 1;
+  z-index: 2;
 }
 
 .spinner {
@@ -170,6 +175,10 @@
   align-items: center;
   justify-content: center;
   height: 15rem;
+}
+
+.textSpinner {
+  margin-right: 0.2rem;
 }
 
 .error {

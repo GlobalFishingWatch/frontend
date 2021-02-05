@@ -22,3 +22,10 @@
 .tooltip :global(.tippy-arrow) {
   display: none;
 }
+
+@media print {
+  .tooltip  {
+    display: none !important;
+  }
+}
+

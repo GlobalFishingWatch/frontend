@@ -1,5 +1,23 @@
 # @globalfishingwatch/layer-composer
 
+## 4.13.0
+
+### Minor Changes
+
+- 781fce16: export getTimeSeries from fourwings-aggregate
+
+## 4.12.0
+
+### Minor Changes
+
+- layer composer frameToDate
+
+## 4.11.2
+
+### Patch Changes
+
+- support context layers attribution
+
 ## 4.11.1
 
 ### Patch Changes

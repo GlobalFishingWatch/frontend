@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver'
-import { UserData, ResourceResponseType } from '@globalfishingwatch/api-types'
+import { UserData, ResourceResponseType, ResourceRequestType } from '@globalfishingwatch/api-types'
 import { isUrlAbsolute } from './utils/url'
 
 const API_GATEWAY =
@@ -34,15 +34,28 @@ interface LoginParams {
 export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   responseType?: ResourceResponseType
+  requestType?: ResourceRequestType
   dataset?: boolean
   body?: T
   local?: boolean
 }
 
-const processStatus = (response: Response) => {
-  return response.status >= 200 && response.status < 300
-    ? Promise.resolve(response)
-    : Promise.reject({ status: response.status, message: response.statusText })
+const processStatus = (response: Response): Promise<Response> => {
+  return new Promise((resolve, reject) => {
+    if (response.status >= 200 && response.status < 300) {
+      return resolve(response)
+    }
+    try {
+      parseJSON(response).then((r) => {
+        return reject({
+          status: r.statusCode || response.status,
+          message: r.message || r.error || response.statusText,
+        })
+      })
+    } catch (e) {
+      return reject({ status: response.status, message: response.statusText })
+    }
+  })
 }
 
 const parseJSON = (response: Response) => response.json()
@@ -226,12 +239,13 @@ export class GFWAPI {
           body = null,
           headers = {},
           responseType = 'json',
+          requestType = 'json',
           signal,
           dataset = this.dataset,
           local = false,
         } = options
         if (this.debug) {
-          console.log(`GFWAPI: Fetching url: ${url}`)
+          console.log(`GFWAPI: Fetching URL: ${url}`)
         }
         const fetchUrl = isUrlAbsolute(url)
           ? url
@@ -239,10 +253,10 @@ export class GFWAPI {
         const data = await fetch(fetchUrl, {
           method,
           signal,
-          ...(body && { body: JSON.stringify(body) }),
+          ...(body && { body: requestType === 'json' ? JSON.stringify(body) : body }),
           headers: {
             ...headers,
-            ...(responseType === 'json' && { 'Content-Type': 'application/json' }),
+            ...(requestType === 'json' && { 'Content-Type': 'application/json' }),
             ...(local && {
               'x-gateway-url': API_GATEWAY,
               user: JSON.stringify({

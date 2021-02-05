@@ -43,9 +43,12 @@ export const createAsyncSlice = <T, U>({
   thunks?: {
     fetchThunk?: any
     fetchByIdThunk?: any
+    createThunk?: any
+    updateThunk?: any
+    deleteThunk?: any
   }
 }) => {
-  const { fetchThunk, fetchByIdThunk } = thunks
+  const { fetchThunk, fetchByIdThunk, createThunk, updateThunk, deleteThunk } = thunks
   const entityAdapter = createEntityAdapter<U>()
   const slice = createSlice({
     name,
@@ -76,7 +79,7 @@ export const createAsyncSlice = <T, U>({
       }
       if (fetchByIdThunk) {
         builder.addCase(fetchByIdThunk.pending, (state: any, action) => {
-          state.status = AsyncReducerStatus.Loading
+          state.status = AsyncReducerStatus.LoadingItem
           state.statusId = action.meta.arg
         })
         builder.addCase(fetchByIdThunk.fulfilled, (state: any, action) => {
@@ -86,6 +89,52 @@ export const createAsyncSlice = <T, U>({
         })
         builder.addCase(fetchByIdThunk.rejected, (state: any, action) => {
           state.status = AsyncReducerStatus.Error
+          state.statusId = null
+          state.error = action.payload
+        })
+      }
+
+      if (createThunk) {
+        builder.addCase(createThunk.pending, (state: any) => {
+          state.status = AsyncReducerStatus.LoadingCreate
+        })
+        builder.addCase(createThunk.fulfilled, (state: any, action) => {
+          state.status = 'finished'
+          entityAdapter.upsertOne(state, action.payload)
+        })
+        builder.addCase(createThunk.rejected, (state: any, action) => {
+          state.status = 'error'
+          state.error = action.payload
+        })
+      }
+      if (updateThunk) {
+        builder.addCase(updateThunk.pending, (state: any, action) => {
+          state.status = AsyncReducerStatus.LoadingUpdate
+          state.statusId = action.meta.arg.id
+        })
+        builder.addCase(updateThunk.fulfilled, (state: any, action) => {
+          state.status = 'finished'
+          state.statusId = null
+          entityAdapter.upsertOne(state, action.payload)
+        })
+        builder.addCase(updateThunk.rejected, (state: any, action) => {
+          state.status = 'error'
+          state.statusId = null
+          state.error = action.payload
+        })
+      }
+      if (deleteThunk) {
+        builder.addCase(deleteThunk.pending, (state: any, action) => {
+          state.status = AsyncReducerStatus.LoadingDelete
+          state.statusId = action.meta.arg
+        })
+        builder.addCase(deleteThunk.fulfilled, (state: any, action) => {
+          state.status = 'finished'
+          state.statusId = null
+          entityAdapter.removeOne(state, action.payload.id)
+        })
+        builder.addCase(deleteThunk.rejected, (state: any, action) => {
+          state.status = 'error'
           state.statusId = null
           state.error = action.payload
         })

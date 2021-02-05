@@ -18,6 +18,10 @@
   margin-right: auto;
 }
 
+:global(.printing) .logo {
+  margin-left: var(--space-S);
+}
+
 @media print {
   .logo {
     margin-left: var(--space-S);
