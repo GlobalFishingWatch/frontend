@@ -35,7 +35,12 @@ export enum DatasetTypes {
   Download = 'data-download:v1',
 }
 
-export type DatasetStatus = 'done' | 'importing' | 'error'
+export enum DatasetStatus {
+  Done = 'done',
+  Importing = 'importing',
+  Error = 'error',
+}
+
 export interface DatasetConfiguration {
   index?: string
   filePath?: string

@@ -6,7 +6,7 @@ import {
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
@@ -120,7 +120,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
             const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(dataview, {
               id: dataset,
             })
-            if (!url) return []
+            if (!url || resolvedDataset?.status !== DatasetStatus.Done) return []
             return { id, tilesUrl: url, attribution: resolvedDataset?.source }
           })
           // Duplicated generators when context dataview have multiple layers
@@ -137,6 +137,9 @@ export const getWorkspaceGeneratorsConfig = createSelector(
           const { dataset, url } = resolveDataviewDatasetResource(dataview, {
             type: DatasetTypes.Context,
           })
+          if (dataset?.status !== DatasetStatus.Done) {
+            return []
+          }
           if (url) {
             generator.tilesUrl = url
           }

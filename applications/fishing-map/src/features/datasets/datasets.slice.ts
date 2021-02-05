@@ -10,14 +10,13 @@ import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-s
 import { RootState } from 'store'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
-export const DATASETS_CACHE = true
 
 export const fetchDatasetByIdThunk = createAsyncThunk(
   'datasets/fetchById',
   async (id: string, { rejectWithValue }) => {
     try {
       const dataset = await GFWAPI.fetch<Dataset>(
-        `/v1/datasets/${id}?include=endpoints&cache=${DATASETS_CACHE}`
+        `/v1/datasets/${id}?include=endpoints&cache=false`
       )
       return dataset
     } catch (e) {
@@ -35,7 +34,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       const workspacesParams = {
         ...(uniqIds?.length && { ids: uniqIds }),
         include: 'endpoints',
-        cache: DATASETS_CACHE,
+        cache: process.env.NODE_ENV !== 'development',
       }
       const initialDatasets = await GFWAPI.fetch<Dataset[]>(
         `/v1/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
@@ -71,7 +70,9 @@ export const createDatasetThunk = createAsyncThunk(
     try {
       const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
         method: 'POST',
-        body: { contentType: file.type } as any,
+        body: {
+          contentType: dataset.configuration?.format === 'geojson' ? 'application/json' : file.type,
+        } as any,
       })
       await fetch(url, { method: 'PUT', body: file })
       const datasetWithFilePath = {
