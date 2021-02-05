@@ -90,20 +90,25 @@ function UserDatasets() {
                     <IconButton
                       icon={datasetError ? 'warning' : 'info'}
                       type={datasetError ? 'warning' : 'default'}
+                      loading={datasetImporting}
                       tooltip={infoTooltip}
                     />
-                    <IconButton
-                      icon="edit"
-                      tooltip={t('dataset.edit', 'Edit dataset')}
-                      onClick={() => onEditClick(dataset)}
-                    />
-                    <IconButton
-                      icon="delete"
-                      type="warning"
-                      loading={dataset.id === datasetStatusId}
-                      tooltip={t('dataset.remove', 'Remove dataset')}
-                      onClick={() => onDeleteClick(dataset)}
-                    />
+                    {!datasetImporting && !datasetError && (
+                      <IconButton
+                        icon="edit"
+                        tooltip={t('dataset.edit', 'Edit dataset')}
+                        onClick={() => onEditClick(dataset)}
+                      />
+                    )}
+                    {!datasetImporting && (
+                      <IconButton
+                        icon="delete"
+                        type="warning"
+                        loading={dataset.id === datasetStatusId}
+                        tooltip={t('dataset.remove', 'Remove dataset')}
+                        onClick={() => onDeleteClick(dataset)}
+                      />
+                    )}
                   </div>
                 </li>
               )
