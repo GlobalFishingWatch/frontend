@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.8.0
+
+### Minor Changes
+
+- 44f8bcee: define DatasetStatus as enum
+
 ## 2.7.1
 
 ### Patch Changes
