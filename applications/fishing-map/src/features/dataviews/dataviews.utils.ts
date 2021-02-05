@@ -63,7 +63,7 @@ export const getContextDataviewInstance = (
   datasetId: string,
   usedColors: string[] = []
 ): DataviewInstance<Generators.Type> => {
-  const notUsedOptions = TrackColorBarOptions.filter((option) => !usedColors.includes(option.id))
+  const notUsedOptions = TrackColorBarOptions.filter((option) => !usedColors.includes(option.value))
   const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
   const contextDataviewInstance = {
     id: `context-${Date.now()}`,
