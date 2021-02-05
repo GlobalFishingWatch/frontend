@@ -192,7 +192,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         suggestion: searchResults.metadata?.suggestion,
         pagination: {
           loading: false,
-          total: searchResults.total.value,
+          total: searchResults.total?.value,
           offset: searchResults.offset + offset,
         },
       }
