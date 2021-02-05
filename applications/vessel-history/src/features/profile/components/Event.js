@@ -57,11 +57,6 @@ class Event extends Component {
     if (event.type === 'encounter' && event.encounter) {
       const carrierVessel = event.encounter.vessel
       eventIcon = <EncounterEventIcon />
-      // eventTitle = (
-      //   <Link to={`/profile/${carrierVessel.id}`} className={styles.link}>
-      //     {carrierVessel.name}
-      //   </Link>
-      // )
     } else if (event.type === 'port') {
       eventIcon = <PortEventIcon />
       eventTitle = event.port.name || event.port.id
@@ -88,11 +83,6 @@ class Event extends Component {
             <span className={styles.data}>{this.getEventDuration(event.start, event.end)}</span>
           </div>
         </div>
-        {/* <button
-          title="EVENT INFO"
-          className={styles.infoButtton}
-          onClick={this.toggleInfo}
-        ></button> */}
         <MapButtton secondary link={this.seeEventOnGFWMap} />
       </li>
     )
