@@ -14,7 +14,7 @@ import { ReactComponent as FilesIcon } from 'assets/icons/files-supported.svg'
 import { capitalize } from 'utils/shared'
 import { SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
-import { blobToArrayBuffer, blobToText } from 'utils/files'
+import { readBlobAs } from 'utils/files'
 import { useDatasetsAPI, useDatasetModalConnect, useNewDatasetConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 
@@ -186,9 +186,7 @@ function NewDataset(): React.ReactElement {
   const onFileLoaded = useCallback(
     async (file: File) => {
       setLoading(true)
-      if (error) {
-        setError('')
-      }
+      setError('')
       const isZip = file.type === 'application/zip'
       const isGeojson =
         !isZip && (file.type === 'application/json' || file.name.includes('.geojson'))
@@ -196,25 +194,28 @@ function NewDataset(): React.ReactElement {
       if (isZip) {
         try {
           const shpjs = await import('shpjs').then((module) => module.default)
-          const fileData = await blobToArrayBuffer(file)
+          const fileData = await readBlobAs(file, 'arrayBuffer')
           // TODO support multiple files in shapefile
           geojson = (await shpjs(fileData)) as FeatureCollectionWithFilename
         } catch (e) {
           console.warn('Error reading file:', e)
         }
       } else {
-        const fileData = await blobToText(file)
+        const fileData = await readBlobAs(file, 'text')
         try {
           geojson = JSON.parse(fileData)
         } catch (e) {
           console.warn('Error reading file:', e)
         }
       }
+      const name =
+        file.name.lastIndexOf('.') > 0 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name
       if (geojson !== undefined) {
         setFile(file)
+        debugger
         setMetadata((metadata) => ({
           ...metadata,
-          name: capitalize(lowerCase(file.name.split('.')[0])),
+          name: capitalize(lowerCase(name)),
           type: DatasetTypes.Context,
           configuration: {
             // TODO when supporting multiple files upload
@@ -228,7 +229,7 @@ function NewDataset(): React.ReactElement {
       }
       setLoading(false)
     },
-    [error, t]
+    [t]
   )
 
   const onDatasetFieldChange = (field: any) => {

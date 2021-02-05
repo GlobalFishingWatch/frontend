@@ -14,7 +14,7 @@ import {
   selectDatasetsStatus,
 } from './datasets.slice'
 
-function NewDatasetTooltip({ onSelect }: { onSelect?: (dataset: Dataset) => void }) {
+function NewDatasetTooltip({ onSelect }: { onSelect?: (dataset?: Dataset) => void }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { dispatchDatasetModal } = useDatasetModalConnect()
@@ -31,6 +31,9 @@ function NewDatasetTooltip({ onSelect }: { onSelect?: (dataset: Dataset) => void
 
   const onAddNewClick = async () => {
     dispatchDatasetModal('new')
+    if (onSelect) {
+      onSelect()
+    }
   }
 
   const onSelectClick = async (dataset: any) => {

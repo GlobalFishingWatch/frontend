@@ -1,27 +1,23 @@
-export const blobToText = (blob: Blob): Promise<string> => {
+export function readBlobAs(blob: Blob, format: 'text' | 'arrayBuffer'): Promise<string>
+export function readBlobAs(blob: Blob, format: 'text' | 'arrayBuffer'): Promise<ArrayBuffer>
+export function readBlobAs(blob: Blob, format: 'text' | 'arrayBuffer'): any {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onloadend = () => {
       if (reader.result) {
-        resolve(reader.result as string)
+        if (format === 'text') {
+          resolve(reader.result as string)
+        } else {
+          resolve(reader.result as ArrayBuffer)
+        }
       } else {
         reject('no reader result')
       }
     }
-    reader.readAsText(blob)
-  })
-}
-
-export const blobToArrayBuffer = (blob: Blob): Promise<ArrayBuffer> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      if (reader.result) {
-        resolve(reader.result as ArrayBuffer)
-      } else {
-        reject('no reader result')
-      }
+    if (format === 'text') {
+      reader.readAsText(blob)
+    } else {
+      reader.readAsArrayBuffer(blob)
     }
-    reader.readAsArrayBuffer(blob)
   })
 }
