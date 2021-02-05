@@ -36,7 +36,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const fetchData = async (query: string) => {
     setSearching(true)
     const newVessels = await GFWAPI.fetch<any>(
-      `/v1/vessels/search?datasets=public-global-vessels%3Av20190502&limit=${resultsPerRequest}&offset=${0}&query=${query}`
+      `/v1/vessels/search?datasets=public-global-vessels%3Av20190502&limit=${resultsPerRequest}&offset=${0}&query=${encodeURIComponent(
+        query
+      )}`
     )
       .then((json: any) => {
         const resultVessels: Array<Vessel> = json.entries
