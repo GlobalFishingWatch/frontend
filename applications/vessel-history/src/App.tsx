@@ -10,8 +10,6 @@ import Profile from 'features/profile/Profile'
 import Splash from 'components/Splash'
 import './App.css'
 
-GFWAPI.setConfig({ dataset: process.env.REACT_APP_DATASET || 'carriers:v20200820' })
-
 function App() {
   const { loading, logged } = useGFWLogin(GFWAPI)
   const [minLoading, setMinLoading] = useState(true)

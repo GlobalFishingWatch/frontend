@@ -21,40 +21,35 @@ export type MapCoordinates = {
   longitude: number
   zoom: number
 }
-export interface Flag {
-  start: string
-  end: string
-  value: string
+
+export interface OtherCallsign {
+  counter: number
+  name: string
 }
 
-export interface Mmsi {
-  start: string
-  end: string
-  value: string
+export interface OtherImo {
+  counter: number
+  name: string
 }
-export interface Callsign {
-  start: string
-  end: string
-  value: string
+
+export interface OtherShipname {
+  counter: number
+  name: string
 }
-export interface Extra {
-  id: string
-  label: string
-  value: string
-}
+
 export interface Vessel {
   id: string
-  vesselId: string
-  type: string
-  ssvid: string
-  name: string
-  imo: string
-  flags: Flag[]
-  authorizations: any[]
-  mmsi: Mmsi[]
-  callsign: Callsign[]
-  extra: Extra[]
+  callsign: string
+  firstTransmissionDate: Date
+  flag: string
+  imo?: any
+  lastTransmissionDate: Date
+  mmsi: string
+  otherCallsigns: OtherCallsign[]
+  otherImos: OtherImo[]
+  otherShipnames: OtherShipname[]
+  shipname: string
+  source: string
   dataset: string
-  firstTransmissionDate: string
-  lastTransmissionDate: string
+  vesselMatchId: string
 }

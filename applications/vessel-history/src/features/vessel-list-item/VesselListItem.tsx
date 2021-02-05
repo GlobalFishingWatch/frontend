@@ -1,7 +1,7 @@
 import React from 'react'
 import Logo from '@globalfishingwatch/ui-components/src/logo'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { Extra, Vessel } from 'types'
+import { Vessel } from 'types'
 import { getFlagById } from 'utils/flags'
 import styles from './VesselListItem.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
@@ -15,21 +15,8 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   if (!vessel) {
     return <div></div>
   }
-  const getGearType = (vessel: Vessel): string => {
-    if (vessel.extra) {
-      const foundGearType = vessel.extra.find((extraData: Extra) => {
-        if (extraData.id === 'gear_type') {
-          return true
-        }
-        return false
-      })
-      if (foundGearType) {
-        return foundGearType.value
-      }
-    }
-    return ''
-  }
-  const flagLabel = getFlagById(vessel.flags[0]?.value)?.label
+
+  const flagLabel = getFlagById(vessel.flag)?.label
   return (
     <div className={styles.vesselItem}>
       {props.saved && (
@@ -40,16 +27,16 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
           className={styles.deleteSaved}
         ></IconButton>
       )}
-      <h3>{vessel?.name}</h3>
+      <h3>{vessel?.shipname}</h3>
       <div className={styles.identifiers}>
         <div>
           <label>FLAG</label>
           {flagLabel}
         </div>
-        {vessel.mmsi && vessel.mmsi.length && (
+        {vessel.mmsi && (
           <div>
             <label>MMSI</label>
-            {vessel.mmsi[0].value}
+            {vessel.mmsi}
           </div>
         )}
         {vessel.imo && vessel.imo !== '0' && (
@@ -58,20 +45,10 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
             {vessel.imo}
           </div>
         )}
-        {vessel.callsign && vessel.callsign.length && (
+        {vessel.callsign && (
           <div>
             <label>CALLSIGN</label>
-            {vessel.callsign[0].value}
-          </div>
-        )}
-        <div>
-          <label>TYPE</label>
-          {vessel.type || 'Unknown'}
-        </div>
-        {getGearType(vessel) && (
-          <div>
-            <label>GEAR TYPE</label>
-            {getGearType(vessel)}
+            {vessel.callsign}
           </div>
         )}
         <div>
