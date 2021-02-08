@@ -1,8 +1,11 @@
 import React, { Fragment } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import groupBy from 'lodash/groupBy'
+import { useDispatch } from 'react-redux'
+import { Dispatch } from 'redux'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { TooltipEventFeature } from 'features/map/map.hooks'
+import { toggleReport } from '../map.slice'
 import styles from './Popup.module.css'
 
 const TunaRfmoLinksById: Record<string, string> = {
@@ -13,7 +16,11 @@ const TunaRfmoLinksById: Record<string, string> = {
   WCPFC: 'http://www.wcpfc.int/',
 }
 
-function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false) {
+function getRowByLayer(
+  feature: TooltipEventFeature,
+  dispatch: Dispatch,
+  showFeaturesDetails = false
+) {
   if (!feature.value) return null
   const { gfw_id } = feature.properties
 
@@ -63,7 +70,12 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
-            <IconButton icon="report" tooltip="Report (Coming soon)" size="small" />
+            <IconButton
+              onClick={() => dispatch(toggleReport())}
+              icon="report"
+              tooltip="Report (alpha feature)"
+              size="small"
+            />
             <a
               target="_blank"
               rel="noopener noreferrer"
@@ -86,6 +98,7 @@ type ContextTooltipRowProps = {
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const featuresByType = groupBy(features, 'layer')
+  const dispatch = useDispatch()
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => (
@@ -98,7 +111,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             {showFeaturesDetails && (
               <h3 className={styles.popupSectionTitle}>{featureByType[0].title}</h3>
             )}
-            {featureByType.map((feature) => getRowByLayer(feature, showFeaturesDetails))}
+            {featureByType.map((feature) => getRowByLayer(feature, dispatch, showFeaturesDetails))}
           </div>
         </div>
       ))}

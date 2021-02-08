@@ -68,6 +68,7 @@ const getExtendedFeatures = (
         return {
           ...extendedFeature,
           generatorContextLayer: feature.layer.metadata?.layer,
+          geometry: feature.geometry,
         }
       default:
         return extendedFeature
@@ -146,7 +147,6 @@ export const useMapClick = (
         latitude: event.lngLat[1],
       }
       if (event.features?.length) {
-        console.log(event.features)
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
           event.features,
           metadata,
