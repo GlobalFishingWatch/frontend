@@ -16,6 +16,7 @@
     "logout": "Log out",
     "more": "more",
     "name": "Name",
+    "presence": "Fishing presence",
     "seeDefault": "See default view",
     "share": "Click to share the current view",
     "update": "Update",
@@ -132,6 +133,7 @@
     "source": "Source",
     "tracks": "Vessel Tracks",
     "transmission_plural": "Transmissions",
+    "vesselType_plural": "Vessel types",
     "widthRange": "Width range",
     "transmission": "Transmission"
   },
