@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.21.2
+
+### Patch Changes
+
+- fix typo in Track DatasetType
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.8.1
+
 ## 0.21.1
 
 ### Patch Changes

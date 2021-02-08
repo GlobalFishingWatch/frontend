@@ -46,10 +46,7 @@ type SublayerVessels = {
 
 export const fetch4WingInteractionThunk = createAsyncThunk(
   'map/fetchInteraction',
-  async (
-    temporalGridFeatures: ExtendedFeature[],
-    { getState, signal, dispatch, rejectWithValue }
-  ) => {
+  async (temporalGridFeatures: ExtendedFeature[], { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const temporalgridDataviews = selectTemporalgridDataviews(state) || []
     const { start, end } = selectTimeRange(state)
