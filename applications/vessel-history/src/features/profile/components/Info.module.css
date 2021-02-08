@@ -1,0 +1,29 @@
+
+.infoContainer {
+  padding: 8px;
+
+}
+.identifiers{
+  overflow: hidden;
+  color: #22447E;
+}
+
+.identifiers div{
+  float: left;
+  width: 50%;
+  opacity: 0.65;
+  color: #163F89;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 16px;
+  padding: 7px;
+}
+
+.identifiers div label{
+  opacity: 0.8;
+}
+
+.saveButton{
+  width: 100%;
+}

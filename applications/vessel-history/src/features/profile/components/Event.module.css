@@ -1,0 +1,93 @@
+.Event {
+  display: grid;
+  grid-template-columns:  3.6rem 1fr 1fr 3.6rem;
+  grid-gap: 1rem;
+  padding: 1rem 1rem 1rem 0;
+  align-items: center;
+}
+
+.Event:not(:last-child) {
+  border-bottom: .1rem solid var(--border-color);
+}
+
+.Event .secondaryInfo {
+  display: grid;
+  grid-template-columns:  1fr 1fr;
+  grid-gap: 1rem;
+}
+
+.Event .column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.Event .column .label {
+  font-size: var(--extra-small-font-size);
+  font-weight: var(--medium);
+  color: var(--secondary-text-color);
+  text-transform: uppercase;
+}
+
+.Event .column .data {
+  font-weight: var(--bold);
+}
+
+.infoButtton {
+  border: none;
+  border-radius: 50%;
+  background-color: var(--white);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="17"><path fill="%2322447E" fill-rule="evenodd" d="M5.07 14.92l-.16.68c-.65.26-1.17.44-1.56.54-.39.1-.72.16-1 .16-.56 0-.98-.15-1.27-.44a1.5 1.5 0 0 1-.42-1.09c0-.16.01-.33.04-.5.03-.19.07-.4.14-.68l1.12-4.5.17-.8c.05-.29.08-.53.08-.72 0-.4-.07-.66-.2-.8-.13-.13-.4-.2-.8-.2a9.58 9.58 0 0 0-1.21.2l.16-.67c.55-.25 1.05-.43 1.48-.55a4.2 4.2 0 0 1 1.04-.18c.58 0 1 .14 1.27.41.26.28.39.65.39 1.12a4.3 4.3 0 0 1-.17 1.17l-1.14 4.51-.18.82c-.05.26-.08.48-.08.65 0 .4.09.68.27.83.18.14.47.22.88.22a4.47 4.47 0 0 0 1.15-.18zm.76-13.56c0 .4-.14.75-.4 1.05-.26.3-.58.45-.97.45-.36 0-.68-.14-.94-.42a1.47 1.47 0 0 1 0-2c.26-.3.58-.44.94-.44.4 0 .73.14.98.4.26.28.39.6.39.96z" opacity=".5"/></svg>');
+  height: 3.6rem;
+  width: 3.6rem;
+  flex-shrink: 0;
+  cursor: pointer;
+  display: none;
+}
+
+.infoButtton:hover, .infoButtton:focus {
+  background-color: var(--border-color);
+  outline: none;
+}
+
+.link {
+  display: block;
+  text-decoration: none;
+  color: var(--primary-text-color);
+  transition: all 300ms linear;
+}
+
+.link:not(:last-child) {
+  border-bottom: .1rem solid var(--border-color);
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+@media only screen and (max-width: 720px) {
+  .Event {
+    padding: 2rem 1rem 2rem 0;
+    grid-template-columns:  3.6rem 1fr 3.6rem;
+    grid-row-gap: 2rem;
+  }
+
+  .Event .secondaryInfo {
+    grid-row-start: 2;
+    grid-column-start: 2;
+    grid-column-end: span 3;
+    grid-template-columns:  2fr 1fr;
+  }
+
+  .Event .secondaryInfo.hidden {
+    display: none;
+  }
+
+  .infoButtton {
+    display: unset;
+    width: 4.2rem;
+    height: 4.2rem;
+  }
+}

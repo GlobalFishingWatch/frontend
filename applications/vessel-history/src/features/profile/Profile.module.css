@@ -1,0 +1,20 @@
+.tabsHeader {
+    display: flex;
+    background: linear-gradient(180deg, #E5F0F2 0%, #FFF 100%);
+}
+.tabsHeader button {
+    flex: 1 1 auto;
+    height: 50px;
+    background: rgba(22,63,137, 0.1);
+    color: #163F89;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.15px;
+    line-height: 14px;
+    text-align: center;
+    border-right: 1px solid #fff;
+    cursor: pointer;
+}
+.tabsHeader button:last-child {
+    border: none;
+}
