@@ -50,6 +50,7 @@
     "viewport-mercator-project": "^7.0.1"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.12.13",
     "@globalfishingwatch/linting": "^1.5.4",
     "@testing-library/jest-dom": "^5.11.5",
     "@testing-library/react": "^11.1.0",
@@ -93,6 +94,9 @@
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^20.0.0"
   },
+  "resolutions": {
+    "**/babel-loader": "8.1.0"
+  },
   "eslintConfig": {
     "extends": [
       "@globalfishingwatch/linting/typescript"
@@ -128,17 +132,6 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
-    ]
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.js$": "babel-jest"
-    },
-    "transformIgnorePatterns": [
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
-      "!src/types/**/*.*"
     ]
   }
 }
