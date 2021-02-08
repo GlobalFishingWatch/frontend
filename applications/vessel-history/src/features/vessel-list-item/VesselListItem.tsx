@@ -4,7 +4,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { Extra, Vessel } from 'types'
 import { getFlagById } from 'utils/flags'
 import styles from './VesselListItem.module.css'
-import '@globalfishingwatch/ui-components/dist/base.css'
+
 interface ListItemProps {
   saved?: boolean
   vessel: Vessel

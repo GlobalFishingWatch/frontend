@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import maxBy from 'lodash/maxBy'
 import GFWAPI from '@globalfishingwatch/api-client'
-import Loader from 'components/Loader'
+import { Spinner } from '@globalfishingwatch/ui-components'
 import styles from './RecentActivity.module.css'
 import Event from './Event'
 
@@ -197,7 +197,7 @@ class RecentActivity extends Component {
         </Fragment>
       )
     } else if (state === 'loading') {
-      content = <Loader />
+      content = <Spinner />
     } else if (state === 'no-results') {
       content = 'No recent activity found'
     }
