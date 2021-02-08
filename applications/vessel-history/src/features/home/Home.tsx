@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
@@ -23,6 +23,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const [searching, setSearching] = useState(false)
   const [vessels, setVessels] = useState<Array<Vessel>>([])
   const [query, setQuery] = useState('')
+
   const minimumCharacters = 3
   const resultsPerRequest = 25
   const tips = {
@@ -32,30 +33,34 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     connectionError: 'Ups! something went wrong :/',
   }
 
-  const updateQuery = (e: any) => {
-    setQuery(e.target.value)
-    setVessels([])
-    if (query.length >= minimumCharacters) {
-      fetchData(query)
-    }
-  }
-
   const fetchData = async (query: string) => {
     setSearching(true)
     const newVessels = await GFWAPI.fetch<any>(
-      `/vessels?query=${query}&limit=${resultsPerRequest}&offset=${0}`
+      `/v1/vessels/search?datasets=public-global-vessels%3Av20190502&limit=${resultsPerRequest}&offset=${0}&query=${encodeURIComponent(
+        query
+      )}`
     )
       .then((json: any) => {
         const resultVessels: Array<Vessel> = json.entries
         setSearching(false)
-        const totalVessels = resultVessels.concat(vessels)
-        return totalVessels
+        return resultVessels
       })
       .catch((error) => {
         setSearching(false)
         return vessels
       })
     setVessels(newVessels)
+  }
+
+  useEffect(() => {
+    setVessels([])
+    if (query.length >= minimumCharacters) {
+      fetchData(query)
+    }
+  }, [query])
+
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value)
   }
 
   return (
@@ -84,8 +89,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             placeholder="Search vessels by name, MMSI, IMO"
             aria-label="Search vessels"
             className={styles.input}
-            onKeyDown={(e) => updateQuery(e)}
-            onChange={(e) => updateQuery(e)}
+            onChange={onInputChange}
           />
           {!query && (
             <IconButton
@@ -105,11 +109,13 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         {query && (
           <div>
             {searching && <Spinner className={styles.loader}></Spinner>}
-            <div className={styles.offlineVessels}>
-              {vessels.map((vessel, index) => (
-                <VesselListItem key={index} vessel={vessel} />
-              ))}
-            </div>
+            {!searching && (
+              <div className={styles.offlineVessels}>
+                {vessels.map((vessel, index) => (
+                  <VesselListItem key={index} vessel={vessel} />
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
