@@ -16,6 +16,7 @@
     "logout": "Déconnexion",
     "more": "plus",
     "name": "Nom",
+    "presence": "Fishing presence",
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
     "update": "Mise à jour",
@@ -132,6 +133,7 @@
     "source": "Source",
     "tracks": "Trajectoires de navire",
     "transmission_plural": "Transmissions",
+    "vesselType_plural": "Vessel types",
     "widthRange": "Width range",
     "transmission": "Transmission"
   },
