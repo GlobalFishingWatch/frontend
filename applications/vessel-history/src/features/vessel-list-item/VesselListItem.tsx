@@ -1,5 +1,4 @@
 import React from 'react'
-import Logo from '@globalfishingwatch/ui-components/src/logo'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { Vessel } from 'types'
 import { getFlagById } from 'utils/flags'
