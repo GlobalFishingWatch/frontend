@@ -15,6 +15,7 @@ interface SelectProps {
   onSelect: SelectOnChange
   onRemove: SelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
+  containerClassName?: string
   className?: string
   direction?: 'bottom' | 'top'
   disabled?: boolean
@@ -33,6 +34,7 @@ function Select(props: SelectProps) {
     onSelect,
     onRemove,
     onCleanClick,
+    containerClassName = '',
     className = '',
     direction = 'bottom',
     disabled = false,
@@ -69,7 +71,7 @@ function Select(props: SelectProps) {
   const hasSelectedOptions = selectedOption !== undefined
 
   return (
-    <div>
+    <div className={containerClassName}>
       <label {...getLabelProps()}>{label}</label>
       <div
         className={cx(
