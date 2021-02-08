@@ -8,7 +8,7 @@ import type { FeatureCollectionWithFilename } from 'shpjs'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-// import Select from '@globalfishingwatch/ui-components/dist/select'
+import Select, { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { ReactComponent as FilesIcon } from 'assets/icons/files-supported.svg'
 import { capitalize } from 'utils/shared'
@@ -18,17 +18,31 @@ import { readBlobAs } from 'utils/files'
 import { useDatasetsAPI, useDatasetModalConnect, useNewDatasetConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 
+const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection) => {
+  if (!geojson?.features) return []
+  const uniqueProperties = Object.keys(
+    geojson.features.reduce(function (acc, { properties }) {
+      return { ...acc, ...properties }
+    }, {})
+  )
+  return uniqueProperties
+}
+
 interface DatasetConfigProps {
   className?: string
   onDatasetFieldChange: (field: any) => void
-  metadata: {
-    name: string
-  }
+  fileData: FeatureCollectionWithFilename
+  metadata: DatasetMetadata
 }
 
 const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
-  const { metadata, className = '', onDatasetFieldChange } = props
+  const { metadata, fileData, className = '', onDatasetFieldChange } = props
   const { t } = useTranslation()
+  const geojsonProperties = extractPropertiesFromGeojson(fileData)
+  const colorByOptions = geojsonProperties.map((property) => ({
+    id: property,
+    label: capitalize(property),
+  }))
   return (
     <div className={cx(styles.datasetConfig, className)}>
       <InputText
@@ -80,36 +94,58 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           console.log('removed', removed)
         }}
         direction="top"
-      />
+      /> */}
       <div className={styles.row}>
         <label className={styles.selectLabel}>
           {t('dataset.colorByValue', 'Color features by value')}
         </label>
         <Select
           className={styles.selectShort}
-          options={[]}
-          selectedOption={undefined}
+          containerClassName={styles.selectContainer}
+          options={colorByOptions}
+          selectedOption={metadata.configuration?.colorBy}
           onSelect={(selected) => {
-            console.log('selected', selected)
+            // TODO: pre-populate min and max values depending on selection
+            onDatasetFieldChange({ colorBy: selected })
           }}
-          onRemove={(removed) => {
-            console.log('removed', removed)
+          onRemove={() => {
+            onDatasetFieldChange({ colorBy: undefined })
           }}
           direction="top"
         />
         <InputText
           inputSize="small"
+          type="number"
+          step="0.1"
+          value={metadata.configuration?.colorValues?.min}
           placeholder={t('common.min', 'Min')}
           className={styles.shortInput}
-          onChange={(e) => console.log(e.target.value)}
+          onChange={(e) =>
+            onDatasetFieldChange({
+              colorValues: {
+                min: parseFloat(e.target.value),
+                max: metadata.configuration?.colorValues?.max,
+              },
+            })
+          }
         />
         <InputText
           inputSize="small"
+          type="number"
+          step="0.1"
           placeholder={t('common.max', 'Max')}
+          value={metadata.configuration?.colorValues?.max}
           className={styles.shortInput}
-          onChange={(e) => console.log(e.target.value)}
+          onChange={(e) =>
+            onDatasetFieldChange({
+              colorValues: {
+                min: metadata.configuration?.colorValues?.min,
+                max: parseFloat(e.target.value),
+              },
+            })
+          }
         />
-      </div> */}
+      </div>
     </div>
   )
 }
@@ -160,15 +196,18 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' 
 }
 
 export type DatasetCustomTypes = 'points' | 'lines' | 'geometries'
+export type DatasetMetadataConfiguration = {
+  file?: string
+  type?: DatasetCustomTypes
+  format?: 'geojson'
+  colorBy?: SelectOption
+  colorValues?: { min: number; max: number }
+}
 export type DatasetMetadata = {
   name: string
   description?: string
   type: DatasetTypes.Context
-  configuration?: {
-    file?: string
-    type?: DatasetCustomTypes
-    format?: 'geojson'
-  }
+  configuration?: DatasetMetadataConfiguration
 }
 
 function NewDataset(): React.ReactElement {
@@ -177,6 +216,7 @@ function NewDataset(): React.ReactElement {
   const { addNewDatasetToWorkspace } = useNewDatasetConnect()
 
   const [file, setFile] = useState<File | undefined>()
+  const [fileData, setFileData] = useState<FeatureCollectionWithFilename | undefined>()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [metadata, setMetadata] = useState<DatasetMetadata | undefined>()
@@ -187,6 +227,7 @@ function NewDataset(): React.ReactElement {
     async (file: File) => {
       setLoading(true)
       setError('')
+      setFile(file)
       const isZip = file.type === 'application/zip'
       const isGeojson =
         !isZip && (file.type === 'application/json' || file.name.includes('.geojson'))
@@ -211,8 +252,7 @@ function NewDataset(): React.ReactElement {
       const name =
         file.name.lastIndexOf('.') > 0 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name
       if (geojson !== undefined) {
-        setFile(file)
-        debugger
+        setFileData(geojson)
         setMetadata((metadata) => ({
           ...metadata,
           name: capitalize(lowerCase(name)),
@@ -224,7 +264,7 @@ function NewDataset(): React.ReactElement {
           },
         }))
       } else {
-        setFile(undefined)
+        setFileData(undefined)
         setError(t('errors.datasetNotValid', 'It seems to be something wrong with your file'))
       }
       setLoading(false)
@@ -232,8 +272,18 @@ function NewDataset(): React.ReactElement {
     [t]
   )
 
-  const onDatasetFieldChange = (field: any) => {
-    setMetadata({ ...metadata, ...field })
+  const onDatasetFieldChange = (field: DatasetMetadata | DatasetMetadataConfiguration) => {
+    const newMetadata =
+      field.hasOwnProperty('name') || field.hasOwnProperty('description')
+        ? { ...metadata, ...(field as DatasetMetadata) }
+        : {
+            ...(metadata as DatasetMetadata),
+            configuration: {
+              ...metadata?.configuration,
+              ...(field as DatasetMetadataConfiguration),
+            },
+          }
+    setMetadata(newMetadata)
   }
 
   const onConfirmClick = async () => {
@@ -270,8 +320,12 @@ function NewDataset(): React.ReactElement {
     >
       <div className={styles.modalContent}>
         <DatasetFile onFileLoaded={onFileLoaded} />
-        {file && metadata && (
-          <DatasetConfig metadata={metadata} onDatasetFieldChange={onDatasetFieldChange} />
+        {fileData && metadata && (
+          <DatasetConfig
+            fileData={fileData}
+            metadata={metadata}
+            onDatasetFieldChange={onDatasetFieldChange}
+          />
         )}
       </div>
       <div className={styles.modalFooter}>
