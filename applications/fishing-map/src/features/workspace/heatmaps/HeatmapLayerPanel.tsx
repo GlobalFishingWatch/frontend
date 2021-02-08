@@ -11,6 +11,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariate } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getSchemaFieldsSelectedInDataview } from 'features/datasets/datasets.utils'
+import { DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
 import Filters from './HeatmapFilters'
 import HeatmapInfoModal from './HeatmapInfoModal'
 import { getSourcesSelectedInDataview } from './heatmaps.utils'
@@ -29,6 +30,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
   const gearTypesSelected = getSchemaFieldsSelectedInDataview(dataview, 'geartype')
   const fleetsSelected = getSchemaFieldsSelectedInDataview(dataview, 'fleet')
+  const vesselsSelected = getSchemaFieldsSelectedInDataview(dataview, 'vessel_type')
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
@@ -63,7 +65,10 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   }
   const expandedContainerRef = useClickedOutside(closeExpandedContainer)
 
-  const datasetName = t(`common.apparentFishing`, 'Apparent Fishing Effort')
+  const datasetName =
+    dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID
+      ? t(`common.presence`, 'Fishing presence')
+      : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
       {datasetName}
@@ -165,6 +170,16 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
                 <label>{t('layer.fleet_plural', 'Fleets')}</label>
                 <TagList
                   tags={fleetsSelected}
+                  color={dataview.config?.color}
+                  className={styles.tagList}
+                />
+              </div>
+            )}
+            {vesselsSelected.length > 0 && (
+              <div className={styles.filter}>
+                <label>{t('vessel.vesselType_plural', 'Vessel Types')}</label>
+                <TagList
+                  tags={vesselsSelected}
                   color={dataview.config?.color}
                   className={styles.tagList}
                 />

@@ -5,7 +5,7 @@ import { UrlDataviewInstance } from 'types'
 import { capitalize } from 'utils/shared'
 import i18n from 'features/i18n/i18n'
 
-export type DatasetSchema = 'geartype' | 'fleet' | 'origin'
+export type DatasetSchema = 'geartype' | 'fleet' | 'origin' | 'vessel_type'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: DatasetSchema) => {

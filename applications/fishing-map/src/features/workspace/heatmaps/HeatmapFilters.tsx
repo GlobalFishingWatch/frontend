@@ -31,6 +31,7 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
 
   const gearTypeFilters = getFiltersBySchema(dataview, 'geartype')
   const fleetFilters = getFiltersBySchema(dataview, 'fleet')
+  const vesselFilters = getFiltersBySchema(dataview, 'vessel_type')
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
     const datasets = [...(dataview.config?.datasets || []), source.id]
@@ -163,6 +164,20 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
           onSelect={(selection) => onSelectFilterClick('fleet', selection)}
           onRemove={(selection, rest) => onRemoveFilterClick('fleet', rest)}
           onCleanClick={() => onCleanFilterClick('fleet')}
+        />
+      )}
+      {vesselFilters.active && (
+        <MultiSelect
+          disabled={vesselFilters.disabled}
+          disabledMsg={vesselFilters.tooltip}
+          label={t('vessel.vesselType_plural', 'Vessel types')}
+          placeholder={getPlaceholderBySelections(vesselFilters.optionsSelected)}
+          options={vesselFilters.options}
+          selectedOptions={vesselFilters.optionsSelected}
+          className={styles.multiSelect}
+          onSelect={(selection) => onSelectFilterClick('vessel_type', selection)}
+          onRemove={(selection, rest) => onRemoveFilterClick('vessel_type', rest)}
+          onCleanClick={() => onCleanFilterClick('vessel_type')}
         />
       )}
     </Fragment>
