@@ -6,6 +6,7 @@ import { DatasetTypes, DatasetStatus, Vessel } from '@globalfishingwatch/api-typ
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
+  HeatmapColorBarOptions,
   TrackColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Generators } from '@globalfishingwatch/layer-composer'
@@ -50,6 +51,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       id: dataview.id,
       config: {
         color: color.value,
+        colorRamp: color.id,
       },
     })
     setColorOpen(false)
@@ -65,6 +67,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const isCustomUserLayer = dataview.config?.type === Generators.Type.UserContext
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
+
+  // TODO remove this once we have the env category ready
+  const isEnviromentalLayerUsedAsContextTemporally =
+    dataset?.configuration?.propertyToInclude && dataset?.configuration?.propertyToIncludeRange
 
   useEffect(() => {
     let timeOut: any
@@ -188,10 +194,19 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           )}
         </div>
       </div>
+      {isEnviromentalLayerUsedAsContextTemporally && (
+        <div className={styles.properties}>
+          <div id={`legend_${dataview.id}`}></div>
+        </div>
+      )}
       <div className={styles.expandedContainer} ref={expandedContainerRef}>
         {colorOpen && (
           <ColorBar
-            colorBarOptions={TrackColorBarOptions}
+            colorBarOptions={
+              isEnviromentalLayerUsedAsContextTemporally
+                ? HeatmapColorBarOptions
+                : TrackColorBarOptions
+            }
             selectedColor={dataview.config?.color}
             onColorClick={changeColor}
           />

@@ -3,8 +3,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { Dataset } from '@globalfishingwatch/api-types/dist'
 import { AsyncError } from 'utils/async-slice'
-import { selectContextAreasDataviews } from 'features/workspace/workspace.selectors'
-import { getContextDataviewInstance } from 'features/dataviews/dataviews.utils'
+import {
+  selectContextAreasDataviews,
+  selectEnvironmentalDataviews,
+} from 'features/workspace/workspace.selectors'
+import {
+  getContextDataviewInstance,
+  getEnvironmentalDataviewInstance,
+} from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   CreateDataset,
@@ -20,16 +26,30 @@ import {
 } from './datasets.slice'
 
 export const useNewDatasetConnect = () => {
-  const dataviews = useSelector(selectContextAreasDataviews)
+  const contextDataviews = useSelector(selectContextAreasDataviews)
+  const enviromentalDataviews = useSelector(selectEnvironmentalDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const usedColors = dataviews?.flatMap((dataview) => dataview.config?.color || [])
 
   const addNewDatasetToWorkspace = useCallback(
-    (dataset) => {
-      const dataviewInstance = getContextDataviewInstance(dataset.id, usedColors)
-      upsertDataviewInstance(dataviewInstance)
+    (dataset: Dataset) => {
+      let dataviewInstance
+      const datasetType =
+        dataset.configuration?.propertyToInclude && dataset.configuration?.propertyToIncludeRange
+          ? 'enviromental'
+          : 'context'
+
+      if (datasetType === 'context') {
+        const usedColors = contextDataviews?.flatMap((dataview) => dataview.config?.color || [])
+        dataviewInstance = getContextDataviewInstance(dataset.id, usedColors)
+      } else {
+        const usedRamps = enviromentalDataviews?.flatMap((dataview) => dataview.config?.color || [])
+        dataviewInstance = getEnvironmentalDataviewInstance(dataset.id, usedRamps)
+      }
+      if (dataviewInstance) {
+        upsertDataviewInstance(dataviewInstance)
+      }
     },
-    [upsertDataviewInstance, usedColors]
+    [contextDataviews, enviromentalDataviews, upsertDataviewInstance]
   )
 
   return { addNewDatasetToWorkspace }
