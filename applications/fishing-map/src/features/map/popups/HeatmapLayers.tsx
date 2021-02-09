@@ -26,7 +26,13 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
     const infoDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Vessels)
+    if (!infoDataset) {
+      console.warn('Missing info related dataset for', vessel)
+    }
     const trackDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks)
+    if (!trackDataset) {
+      console.warn('Missing track related dataset for', vessel)
+    }
     if (infoDataset && trackDataset) {
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
         trackDatasetId: trackDataset.id,

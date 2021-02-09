@@ -29,8 +29,8 @@ export enum DatasetTypes {
   Vessels = 'carriers-vessels:v1',
   Events = 'carriers-events:v1',
   Ports = 'carriers-ports:v1',
+  Tracks = 'carriers-tracks:v1',
   Fourwings = '4wings:v1',
-  Tracks = 'user-tracks:v1',
   Context = 'user-context-layer:v1',
   Download = 'data-download:v1',
 }

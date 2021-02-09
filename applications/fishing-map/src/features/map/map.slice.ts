@@ -7,13 +7,7 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import {
-  DataviewDatasetConfig,
-  Dataset,
-  APISearch,
-  Vessel,
-  DatasetTypes,
-} from '@globalfishingwatch/api-types'
+import { DataviewDatasetConfig, Dataset, Vessel, DatasetTypes } from '@globalfishingwatch/api-types'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
 import { AsyncReducerStatus } from 'types'
 import { RootState } from 'store'
@@ -46,10 +40,7 @@ type SublayerVessels = {
 
 export const fetch4WingInteractionThunk = createAsyncThunk(
   'map/fetchInteraction',
-  async (
-    temporalGridFeatures: ExtendedFeature[],
-    { getState, signal, dispatch, rejectWithValue }
-  ) => {
+  async (temporalGridFeatures: ExtendedFeature[], { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const temporalgridDataviews = selectTemporalgridDataviews(state) || []
     const { start, end } = selectTimeRange(state)
@@ -165,11 +156,11 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
 
           if (vesselsInfoUrl) {
             try {
-              const vesselsInfoResponse = await GFWAPI.fetch<APISearch<Vessel>>(vesselsInfoUrl, {
+              const vesselsInfoResponse = await GFWAPI.fetch<Vessel[]>(vesselsInfoUrl, {
                 signal,
               })
               vesselsInfo =
-                vesselsInfoResponse.entries?.flatMap((vesselInfo) => {
+                vesselsInfoResponse?.flatMap((vesselInfo) => {
                   if (!vesselInfo?.shipname) return []
                   return vesselInfo
                 }) || []

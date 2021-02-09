@@ -1,11 +1,9 @@
-import {
-  booleanPointInPolygon,
-  explode,
-  nearest,
-  point as turfPoint,
-  distance,
-  bbox,
-} from '@turf/turf'
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+import explode from '@turf/explode'
+import nearest from '@turf/nearest-point'
+import { point as turfPoint } from '@turf/helpers'
+import distance from '@turf/distance'
+import bbox from '@turf/bbox'
 import { matchSorter } from 'match-sorter'
 import oceanAreas from './data'
 import { OceanArea, OceanAreaProperties } from '.'
