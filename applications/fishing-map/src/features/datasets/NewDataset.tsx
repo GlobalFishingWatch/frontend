@@ -194,7 +194,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' 
     [onFileLoaded]
   )
   const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
-    accept: '.zip, .geojson, .json',
+    accept: '.zip, .json',
     onDropAccepted,
   })
   return (
@@ -218,7 +218,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' 
       )}
       {fileRejections.length > 0 && (
         <p className={cx(styles.fileText, styles.warning)}>
-          {t('dataset.fileNotAllowed', '(Only .zip or .geojson files are allowed)')}
+          {t('dataset.fileNotAllowed', '(Only .zip or geo.json files are allowed)')}
         </p>
       )}
     </div>
@@ -251,8 +251,7 @@ function NewDataset(): React.ReactElement {
       setError('')
       setFile(file)
       const isZip = file.type === 'application/zip'
-      const isGeojson =
-        !isZip && (file.type === 'application/json' || file.name.includes('.geojson'))
+      const isGeojson = !isZip && file.type === 'application/json'
       let geojson: FeatureCollectionWithFilename | undefined = undefined
       if (isZip) {
         try {
