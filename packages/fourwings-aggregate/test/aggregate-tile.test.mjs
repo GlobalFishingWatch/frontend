@@ -263,6 +263,7 @@ tap.equal(
 // perf test
 
 let sum = 0
+const geojson_layers = []
 for (var i = 0; i < 20; i++) {
   const t = performance.now()
   const geojson = aggregateTile(bigtile, {
@@ -287,9 +288,23 @@ for (var i = 0; i < 20; i++) {
     interactive: true,
     visible: [true, true, true],
   })
+  geojson_layers.push(geojson?.main?.features ?? [])
   const delta = performance.now() - t
   // console.log(delta)
   sum += delta
 }
-
 console.log('avg:', sum / 20)
+
+const features = geojson_layers.reduce((p, c) => [...p, ...c], [])
+
+const fbyid = features.reduce(
+  (previous, current) => ({
+    ...previous,
+    [current.id]: [...(previous[current.id] ?? []), ...[current]],
+  }),
+  {}
+)
+const repeatedIds = Object.keys(fbyid)
+  .filter((id) => fbyid[id].length > 1)
+  .map((id) => ({ id, duplicates: fbyid[id].length }))
+console.log(repeatedIds)
