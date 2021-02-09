@@ -111,7 +111,7 @@ const MapControls = ({
         bounds={bounds}
         center={{ latitude, longitude }}
       />
-      <div className={styles.controlsNested}>
+      <div className={cx('print-hidden', styles.controlsNested)}>
         {extendedControls && <MapSearch />}
         <IconButton
           icon="plus"
