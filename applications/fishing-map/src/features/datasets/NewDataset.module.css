@@ -87,7 +87,6 @@
   flex-direction: column;
 }
 
-
 .dropFiles:hover {
   border-style: solid;
 }
@@ -102,7 +101,12 @@
   max-width: 30rem;
 }
 
-.shortSelect {
+.selectContainer {
+  flex: 1;
+}
+
+.shortSelect,
+.shortSelect:hover {
   width: 15rem;
 }
 

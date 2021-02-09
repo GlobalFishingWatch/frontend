@@ -41,11 +41,16 @@ export enum DatasetStatus {
   Error = 'error',
 }
 
+export type DatasetCustomTypes = 'points' | 'lines' | 'geometries'
 export interface DatasetConfiguration {
   index?: string
   filePath?: string
-  propertyToInclude?: string
   srid?: number
+  file?: string
+  type?: DatasetCustomTypes
+  format?: 'geojson'
+  propertyToInclude?: string
+  propertyToIncludeRange?: { min: number; max: number }
   [key: string]: unknown
 }
 

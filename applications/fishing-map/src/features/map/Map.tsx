@@ -75,6 +75,7 @@ const getLegendLayers = (
   if (!style) return []
   return style.layers?.flatMap((layer) => {
     if (!layer.metadata?.legend) return []
+
     const sublayerLegendsMetadata: LayerMetadataLegend[] = Array.isArray(layer.metadata.legend)
       ? layer.metadata.legend
       : [layer.metadata.legend]
@@ -128,6 +129,9 @@ const getLegendLayers = (
         } else {
           sublayerLegend.currentValue = getHoveredFeatureValueForSublayerIndex(sublayerIndex)
         }
+      } else if (generatorType === Generators.Type.UserContext) {
+        // TODO use dataset propertyToInclude value
+        sublayerLegend.label = ''
       }
       return sublayerLegend
     })
@@ -144,6 +148,7 @@ const MapWrapper = (): React.ReactElement | null => {
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
+  console.log(style)
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
   const { cleanFeatureState } = useFeatureState(mapInstance)
