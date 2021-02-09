@@ -53,8 +53,6 @@ const MapControls = ({
   const { latitude, longitude, zoom } = viewport
   const { bounds } = useMapBounds()
 
-  console.log(getOceanAreaName(viewport))
-
   const onZoomInClick = useCallback(() => {
     setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
   }, [latitude, longitude, setMapCoordinates, zoom])

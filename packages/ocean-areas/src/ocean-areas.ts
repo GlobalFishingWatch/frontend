@@ -8,7 +8,8 @@ import { matchSorter } from 'match-sorter'
 import oceanAreas from './data'
 import { OceanArea, OceanAreaProperties } from '.'
 
-const MIN_ZOOM_TO_PREFER_EEZS = 4
+const MIN_ZOOM_NOT_GLOBAL = 3
+const MIN_ZOOM_TO_PREFER_EEZS = 5
 const MAX_RESULTS_NUMBER = 10
 
 const searchOceanAreas = (query: string): OceanArea[] => {
@@ -22,45 +23,56 @@ const searchOceanAreas = (query: string): OceanArea[] => {
   }))
 }
 
-export interface OceanAreaParams {
+interface LatLon {
   latitude: number
   longitude: number
+}
+
+interface Viewport extends LatLon {
   zoom: number
 }
 
-const getOceanAreaName = ({ latitude, longitude, zoom }: OceanAreaParams) => {
-  let selectedArea: OceanAreaProperties | undefined
+// Returns all overlapping areas, ordered from smallest to biggest
+// If no overlapping area found, returns only the closest area
+const getOceanAreas = ({ latitude, longitude }: LatLon): OceanAreaProperties[] => {
   const point = turfPoint([longitude, latitude])
-  const matchingAreas = oceanAreas.features.flatMap((feature) => {
-    return booleanPointInPolygon(point, feature as any) ? feature.properties : []
-  })
-
-  console.log(matchingAreas)
-
+  const matchingAreas = oceanAreas.features
+    .flatMap((feature) => {
+      return booleanPointInPolygon(point, feature as any) ? feature.properties : []
+    })
+    .sort((featureA, featureB) => {
+      return featureA.area - featureB.area
+    })
   if (!matchingAreas.length) {
-    const filteredFeatures = oceanAreas.features
-      .filter((feature) =>
-        zoom >= MIN_ZOOM_TO_PREFER_EEZS
-          ? feature.properties.type === 'EEZ'
-          : feature.properties.type !== 'EEZ'
-      )
-      .map((feature) => ({
-        ...feature,
-        distance: distance(point, nearest(point, explode(feature as any))),
-      }))
+    const filteredFeatures = oceanAreas.features.map((feature) => ({
+      ...feature,
+      distance: distance(point, nearest(point, explode(feature as any))),
+    }))
     const closestFeature = filteredFeatures.sort((featureA, featureB) => {
       return featureA.distance - featureB.distance
-    })[0]
-    selectedArea = closestFeature.properties
-  } else {
-    if (zoom >= MIN_ZOOM_TO_PREFER_EEZS) {
-      const matchingEEZ = matchingAreas.find((area) => area.type === 'EEZ')
-      selectedArea = matchingEEZ || matchingAreas[0]
-    } else {
-      selectedArea = matchingAreas.find((area) => area.type !== 'EEZ')
-    }
+    })[0].properties
+    return [closestFeature]
   }
-  return selectedArea?.name
+  return matchingAreas
+}
+
+const getOceanAreaName = ({ latitude, longitude, zoom }: Viewport, combineWithEEZ?: boolean) => {
+  if (zoom <= MIN_ZOOM_NOT_GLOBAL) {
+    return 'Global'
+  }
+  const areas = getOceanAreas({ latitude, longitude })
+  const ocean = areas.find((area) => area.type !== 'EEZ')
+  const eez = areas.find((area) => area.type === 'EEZ')
+
+  if (!combineWithEEZ) {
+    return eez && zoom > MIN_ZOOM_TO_PREFER_EEZS ? eez?.name : ocean?.name
+  }
+
+  const name = [ocean, eez]
+    .filter(Boolean)
+    .map((f) => f!.name)
+    .join(', ')
+  return name
 }
 
 export { getOceanAreaName, searchOceanAreas, OceanAreaProperties }
