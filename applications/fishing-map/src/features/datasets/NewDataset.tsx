@@ -8,8 +8,8 @@ import type { FeatureCollectionWithFilename } from 'shpjs'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import Select, { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import Select from '@globalfishingwatch/ui-components/dist/select'
+import { DatasetConfiguration, DatasetTypes } from '@globalfishingwatch/api-types'
 import { ReactComponent as FilesIcon } from 'assets/icons/files-supported.svg'
 import { capitalize } from 'utils/shared'
 import { SUPPORT_EMAIL } from 'data/config'
@@ -26,6 +26,25 @@ const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection) => {
     }, {})
   )
   return uniqueProperties
+}
+
+const getPropertyRangeValuesFromGeojson = (
+  geojson: GeoJSON.FeatureCollection,
+  property: string
+) => {
+  if (!geojson?.features) return
+  const propertyRange = geojson.features.reduce(
+    function (acc, { properties }) {
+      const value = properties?.[property]
+      if (!value) return acc
+      return {
+        min: value < acc.min ? value : acc.min,
+        max: value > acc.max ? value : acc.max,
+      }
+    },
+    { min: 0, max: 0 }
+  )
+  return propertyRange
 }
 
 interface DatasetConfigProps {
@@ -103,13 +122,24 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           className={styles.selectShort}
           containerClassName={styles.selectContainer}
           options={colorByOptions}
-          selectedOption={metadata.configuration?.colorBy}
+          selectedOption={colorByOptions.find(
+            ({ id }) => id === metadata.configuration?.propertyToInclude
+          )}
           onSelect={(selected) => {
             // TODO: pre-populate min and max values depending on selection
-            onDatasetFieldChange({ colorBy: selected })
+            onDatasetFieldChange({ propertyToInclude: selected.id })
+            const propertyRange = getPropertyRangeValuesFromGeojson(fileData, selected.id)
+            if (propertyRange) {
+              onDatasetFieldChange({
+                propertyToIncludeRange: {
+                  min: propertyRange.min,
+                  max: propertyRange.max,
+                },
+              })
+            }
           }}
           onRemove={() => {
-            onDatasetFieldChange({ colorBy: undefined })
+            onDatasetFieldChange({ propertyToInclude: undefined })
           }}
           direction="top"
         />
@@ -117,14 +147,14 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           inputSize="small"
           type="number"
           step="0.1"
-          value={metadata.configuration?.colorValues?.min}
+          value={metadata.configuration?.propertyToIncludeRange?.min}
           placeholder={t('common.min', 'Min')}
           className={styles.shortInput}
           onChange={(e) =>
             onDatasetFieldChange({
-              colorValues: {
+              propertyToIncludeRange: {
                 min: parseFloat(e.target.value),
-                max: metadata.configuration?.colorValues?.max,
+                max: metadata.configuration?.propertyToIncludeRange?.max,
               },
             })
           }
@@ -134,12 +164,12 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           type="number"
           step="0.1"
           placeholder={t('common.max', 'Max')}
-          value={metadata.configuration?.colorValues?.max}
+          value={metadata.configuration?.propertyToIncludeRange?.max}
           className={styles.shortInput}
           onChange={(e) =>
             onDatasetFieldChange({
-              colorValues: {
-                min: metadata.configuration?.colorValues?.min,
+              propertyToIncludeRange: {
+                min: metadata.configuration?.propertyToIncludeRange?.min,
                 max: parseFloat(e.target.value),
               },
             })
@@ -195,19 +225,11 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' 
   )
 }
 
-export type DatasetCustomTypes = 'points' | 'lines' | 'geometries'
-export type DatasetMetadataConfiguration = {
-  file?: string
-  type?: DatasetCustomTypes
-  format?: 'geojson'
-  colorBy?: SelectOption
-  colorValues?: { min: number; max: number }
-}
 export type DatasetMetadata = {
   name: string
   description?: string
   type: DatasetTypes.Context
-  configuration?: DatasetMetadataConfiguration
+  configuration?: DatasetConfiguration
 }
 
 function NewDataset(): React.ReactElement {
@@ -272,18 +294,21 @@ function NewDataset(): React.ReactElement {
     [t]
   )
 
-  const onDatasetFieldChange = (field: DatasetMetadata | DatasetMetadataConfiguration) => {
-    const newMetadata =
-      field.hasOwnProperty('name') || field.hasOwnProperty('description')
-        ? { ...metadata, ...(field as DatasetMetadata) }
-        : {
-            ...(metadata as DatasetMetadata),
-            configuration: {
-              ...metadata?.configuration,
-              ...(field as DatasetMetadataConfiguration),
-            },
-          }
-    setMetadata(newMetadata)
+  const onDatasetFieldChange = (field: DatasetMetadata | DatasetConfiguration) => {
+    // TODO insert fields validation here
+    setMetadata((meta) => {
+      const newMetadata =
+        field.hasOwnProperty('name') || field.hasOwnProperty('description')
+          ? { ...meta, ...(field as DatasetMetadata) }
+          : {
+              ...(meta as DatasetMetadata),
+              configuration: {
+                ...meta?.configuration,
+                ...(field as DatasetConfiguration),
+              },
+            }
+      return newMetadata
+    })
   }
 
   const onConfirmClick = async () => {
@@ -295,7 +320,7 @@ function NewDataset(): React.ReactElement {
         setError(
           `${t('errors.generic', 'Something went wrong, try again or contact:')} ${SUPPORT_EMAIL}`
         )
-      } else {
+      } else if (payload) {
         if (locationType === 'HOME' || locationType === 'WORKSPACE') {
           addNewDatasetToWorkspace(payload)
         }
