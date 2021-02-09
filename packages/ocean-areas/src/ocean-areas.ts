@@ -37,6 +37,8 @@ const getOceanAreaName = ({ latitude, longitude, zoom }: OceanAreaParams) => {
     return booleanPointInPolygon(point, feature as any) ? feature.properties : []
   })
 
+  console.log(matchingAreas)
+
   if (!matchingAreas.length) {
     const filteredFeatures = oceanAreas.features
       .filter((feature) =>

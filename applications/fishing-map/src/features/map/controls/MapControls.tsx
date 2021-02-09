@@ -11,6 +11,7 @@ import {
   Button,
 } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import Rulers from 'features/map/controls/Rulers'
@@ -51,6 +52,8 @@ const MapControls = ({
   const { viewport, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
   const { bounds } = useMapBounds()
+
+  console.log(getOceanAreaName(viewport))
 
   const onZoomInClick = useCallback(() => {
     setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
