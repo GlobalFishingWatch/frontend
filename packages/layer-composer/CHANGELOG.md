@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.13.2
+
+### Patch Changes
+
+- 0180dd0b: not rename generatorId in user-context
+
 ## 4.13.1
 
 ### Patch Changes

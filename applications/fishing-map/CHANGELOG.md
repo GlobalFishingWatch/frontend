@@ -1,5 +1,19 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.21.3
+
+### Patch Changes
+
+- a9e66b1c: move metadata configuration to dataset types definition
+- 1a264bea: support className for select container
+- 0180dd0b: not rename generatorId in user-context
+- Updated dependencies [a9e66b1c]
+- Updated dependencies [1a264bea]
+- Updated dependencies [0180dd0b]
+  - @globalfishingwatch/api-types@2.8.2
+  - @globalfishingwatch/ui-components@2.12.5
+  - @globalfishingwatch/layer-composer@4.13.2
+
 ## 0.21.2
 
 ### Patch Changes

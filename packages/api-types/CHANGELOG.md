@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.8.2
+
+### Patch Changes
+
+- a9e66b1c: move metadata configuration to dataset types definition
+
 ## 2.8.1
 
 ### Patch Changes
