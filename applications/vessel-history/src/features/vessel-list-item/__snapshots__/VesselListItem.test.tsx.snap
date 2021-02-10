@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<VesselListItem /> does not show source API in production environment 1`] = `
+<DocumentFragment>
+  <div
+    class="vesselItem"
+  >
+    <h3>
+      DON TITO
+    </h3>
+    <div
+      class="identifiers"
+    >
+      <div>
+        <label>
+          FLAG
+        </label>
+        Chile
+      </div>
+      <div>
+        <label>
+          MMSI
+        </label>
+        725000410
+      </div>
+      <div>
+        <label>
+          CALLSIGN
+        </label>
+        CB5527
+      </div>
+      <div>
+        <label>
+          TRANSMISSIONS
+        </label>
+        from 2012-01-19T14:24:39Z to 2020-12-13T23:51:36Z
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`<VesselListItem /> shows source API in environments others than production 1`] = `
+<DocumentFragment>
+  <div
+    class="vesselItem"
+  >
+    <h3>
+      DON TITO
+    </h3>
+    <div
+      class="identifiers"
+    >
+      <div>
+        <label>
+          FLAG
+        </label>
+        Chile
+      </div>
+      <div>
+        <label>
+          MMSI
+        </label>
+        725000410
+      </div>
+      <div>
+        <label>
+          CALLSIGN
+        </label>
+        CB5527
+      </div>
+      <div>
+        <label>
+          SOURCE
+        </label>
+        GFW+TMT
+      </div>
+      <div>
+        <label>
+          TRANSMISSIONS
+        </label>
+        from 2012-01-19T14:24:39Z to 2020-12-13T23:51:36Z
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
