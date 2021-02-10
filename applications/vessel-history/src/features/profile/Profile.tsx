@@ -1,33 +1,102 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { selectVesselId } from 'routes/routes.selectors'
+import GFWAPI from '@globalfishingwatch/api-client'
+import { IconButton, Tabs } from '@globalfishingwatch/ui-components'
+import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
+import { selectDataset, selectTmtId, selectVesselId } from 'routes/routes.selectors'
+import { Vessel } from 'types'
 import MapWrapper from './components/MapWrapper'
 import Info from './components/Info'
 import styles from './Profile.module.css'
-import RecentActivity from './components/RecentActivity'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const vesselID = useSelector(selectVesselId)
+  const tmtID = useSelector(selectTmtId)
+  const dataset = useSelector(selectDataset)
   console.log(vesselID)
   const [lastPortVisit, setLastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition, setLastPosition] = useState(null)
   const [selectedTab, setSelectedTab] = useState(1)
+  const [searching, setSearching] = useState(false)
+  const [vessel, setVessel] = useState(null)
+
+  const tabs: Tab[] = [
+    {
+      id: 'info',
+      title: 'INFO',
+      content: <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />,
+    },
+    {
+      id: 'activity',
+      title: 'ACTIVITY',
+      content: <div />,
+    },
+    {
+      id: 'map',
+      title: 'MAP',
+      content: <MapWrapper vesselID={vesselID} setLastPosition={setLastPosition} />,
+    },
+  ]
+
+  const fetchGFWData = async (id: string, dataset: string) => {
+    const url = `/v1/vessels/${id}?datasets=${dataset}`
+    console.log(url)
+    const tmtData = await GFWAPI.fetch<any>(url)
+      .then((json: any) => {
+        setVessel(json)
+        return null
+      })
+      .catch((error) => {
+        return error
+      })
+  }
+  const fetchTMTData = async (id: string) => {
+    const url = `/v1/vessel-history/${id}`
+    console.log(url)
+    const tmtData = await GFWAPI.fetch<any>(url)
+      .then((json: any) => {
+        setVessel(json)
+        return null
+      })
+      .catch((error) => {
+        return error
+      })
+  }
+  useEffect(() => {
+    if (vesselID && dataset) {
+      fetchGFWData(vesselID, dataset)
+    }
+    if (tmtID) {
+      fetchTMTData(tmtID)
+    }
+  }, [])
+  const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
 
   return (
     <Fragment>
-      <div className={styles.tabsHeader}>
-        <button onClick={() => setSelectedTab(1)}>INFO</button>
-        <button onClick={() => setSelectedTab(2)}>ACTIVITY</button>
-        <button onClick={() => setSelectedTab(3)}>MAP</button>
-      </div>
-      <div className={styles.tabsContent}>
-        {selectedTab === 1 && (
-          <Info vesselID={vesselID} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
+      <header className={styles.header}>
+        <IconButton
+          type="border"
+          size="default"
+          icon="arrow-left"
+          className={styles.backButton}
+          onClick={async () => {
+            return
+          }}
+        ></IconButton>
+        {vessel && (
+          <h1>
+            Vessel Name
+            <p>+4 previous names</p>
+          </h1>
         )}
-        {selectedTab === 2 && (
-          <RecentActivity vesselID={vesselID} setLastPortVisit={setLastPortVisit} />
-        )}
-        {selectedTab === 3 && <MapWrapper vesselID={vesselID} setLastPosition={setLastPosition} />}
+      </header>
+      <div className={styles.profileContainer}>
+        <Tabs
+          tabs={tabs}
+          activeTab={activeTab?.id}
+          onTabClick={(tab: Tab) => setActiveTab(tab)}
+        ></Tabs>
       </div>
     </Fragment>
   )

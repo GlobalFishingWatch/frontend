@@ -58,3 +58,94 @@ export enum VesselAPISource {
   TMT = 'TMT',
   GFW = 'GFW',
 }
+export interface BuiltYear {
+  value: string
+  firstSeen: Date
+  endDate: Date
+}
+
+export interface Flag {
+  value: string
+  firstSeen: Date
+  endDate?: Date
+}
+
+export interface Gt {
+  value: string
+  firstSeen: Date
+  endDate?: any
+}
+
+export interface Imo {
+  value: string
+  firstSeen: Date
+  endDate?: any
+}
+
+export interface Loa {
+  value: string
+  firstSeen: Date
+  endDate?: any
+}
+
+export interface Name {
+  value: string
+  firstSeen: Date
+  endDate?: Date
+}
+
+export interface Irc {
+  value: string
+  firstSeen: Date
+  endDate?: any
+}
+
+export interface VesselType {
+  value: string
+  firstSeen: Date
+  endDate?: any
+}
+
+export interface Depth {
+  value: string
+  firstSeen: Date
+  endDate?: any
+}
+
+export interface ValueList {
+  builtYear: BuiltYear[]
+  flag: Flag[]
+  gt: Gt[]
+  imo: Imo[]
+  loa: Loa[]
+  mmsi: any[]
+  name: Name[]
+  ircs: Irc[]
+  vesselType: VesselType[]
+  gear: any[]
+  depth: Depth[]
+}
+
+export interface VesselOwnership {
+  value: string
+  firstSeen?: Date
+  endDate?: Date
+}
+
+export interface VesselOperation {
+  value: string
+  firstSeen?: Date
+  endDate?: Date
+}
+
+export interface RelationList {
+  vesselOwnership: VesselOwnership[]
+  vesselOperations: VesselOperation[]
+}
+
+export interface TMTDetail {
+  vesselMatchId: string
+  valueList: ValueList
+  relationList: RelationList
+  authorisationList: any[]
+}

@@ -27,7 +27,15 @@ export const getLocationType = createSelector([selectLocation], (location) => {
 export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)
 
 export const selectVesselId = createSelector([selectLocationPayload], (payload) => {
-  return payload.vesselID
+  return payload.vesselID !== 'NA' ? payload.vesselID : null
+})
+
+export const selectTmtId = createSelector([selectLocationPayload], (payload) => {
+  return payload.tmtID !== 'NA' ? payload.tmtID : null
+})
+
+export const selectDataset = createSelector([selectLocationPayload], (payload) => {
+  return payload.dataset
 })
 
 export const selectQueryParam = <T = any>(param: WorkspaceParam) =>

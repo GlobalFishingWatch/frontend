@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useMemo, useState } from 'react'
+import React, { Component, Fragment, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
@@ -16,22 +16,13 @@ import MapButtton from './MapButtton'
 import styles from './Info.module.css'
 
 interface InfoProps {
-  vesselID: string
+  vessel: string | null
   lastPosition: any
   lastPortVisit: any
 }
 
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
-  const vesselID = props.vesselID
-  const [vessel, setVessel] = useState(null)
-  const vessels = useSelector(selectVessels)
-  useMemo(() => {
-    GFWAPI.fetch(`/vessels/${vesselID}`)
-      .then((json: any) => {
-        setVessel(json)
-      })
-      .catch((error) => console.log(error))
-  }, [vesselID])
+  const vessel = props.vessel
 
   const { lastPosition, lastPortVisit } = props
 
