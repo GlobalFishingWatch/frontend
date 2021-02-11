@@ -35,7 +35,6 @@ interface Viewport extends LatLon {
 // Returns all overlapping areas, ordered from smallest to biggest
 // If no overlapping area found, returns only the closest area
 const getOceanAreas = ({ latitude, longitude }: LatLon): OceanAreaProperties[] => {
-  console.log(latitude, longitude)
   const point = turfPoint([longitude, latitude])
   const matchingAreas = oceanAreas.features
     .flatMap((feature) => {
@@ -55,7 +54,6 @@ const getOceanAreas = ({ latitude, longitude }: LatLon): OceanAreaProperties[] =
     })[0].properties
     return [closestFeature]
   }
-  console.log(matchingAreas)
   return matchingAreas
 }
 
