@@ -1,5 +1,15 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.21.4
+
+### Patch Changes
+
+- e75d429f: Fishingmap/ocean areas miniglobe
+- Updated dependencies [e75d429f]
+- Updated dependencies [7fb1dfcc]
+  - @globalfishingwatch/ocean-areas@0.1.1
+  - @globalfishingwatch/timebar@1.2.1
+
 ## 0.21.3
 
 ### Patch Changes
