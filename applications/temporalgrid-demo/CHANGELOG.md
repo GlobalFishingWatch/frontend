@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/temporalgrid-demo
 
+## 0.7.30
+
+### Patch Changes
+
+- Updated dependencies [7fb1dfcc]
+  - @globalfishingwatch/timebar@1.2.1
+
 ## 0.7.29
 
 ### Patch Changes
