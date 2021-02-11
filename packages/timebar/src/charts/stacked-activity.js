@@ -7,7 +7,8 @@ import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { TimelineContext } from '../components/timeline'
 
-const MARGIN_BOTTOM = 10
+const MARGIN_BOTTOM = 20
+const MARGIN_TOP = 5
 
 const getPathContainers = (data, graphHeight, overallScale, numSublayers) => {
   if (!data) return []
@@ -55,10 +56,10 @@ const StackedActivity = ({ data, colors, numSublayers }) => {
       >
         {pathContainers.map((pathContainer, sublayerIndex) => (
           <Fragment key={sublayerIndex}>
-            <g key="top" transform={`scale(1, -1) translate(0, ${-middleY}) `}>
+            <g key="top" transform={`scale(1, -1) translate(0, ${-middleY - MARGIN_TOP}) `}>
               <path d={pathContainer.path} fill={colors ? colors[sublayerIndex] : '#ff00ff'} />
             </g>
-            <g key="bottom" transform={`translate(0, ${middleY})`}>
+            <g key="bottom" transform={`translate(0, ${middleY + MARGIN_TOP})`}>
               <path d={pathContainer.path} fill={colors ? colors[sublayerIndex] : '#ff00ff'} />
             </g>
           </Fragment>
