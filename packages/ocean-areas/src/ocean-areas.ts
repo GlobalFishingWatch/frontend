@@ -35,6 +35,7 @@ interface Viewport extends LatLon {
 // Returns all overlapping areas, ordered from smallest to biggest
 // If no overlapping area found, returns only the closest area
 const getOceanAreas = ({ latitude, longitude }: LatLon): OceanAreaProperties[] => {
+  console.log(latitude, longitude)
   const point = turfPoint([longitude, latitude])
   const matchingAreas = oceanAreas.features
     .flatMap((feature) => {
@@ -43,6 +44,7 @@ const getOceanAreas = ({ latitude, longitude }: LatLon): OceanAreaProperties[] =
     .sort((featureA, featureB) => {
       return featureA.area - featureB.area
     })
+
   if (!matchingAreas.length) {
     const filteredFeatures = oceanAreas.features.map((feature) => ({
       ...feature,
@@ -53,6 +55,7 @@ const getOceanAreas = ({ latitude, longitude }: LatLon): OceanAreaProperties[] =
     })[0].properties
     return [closestFeature]
   }
+  console.log(matchingAreas)
   return matchingAreas
 }
 
@@ -61,8 +64,8 @@ const getOceanAreaName = ({ latitude, longitude, zoom }: Viewport, combineWithEE
     return 'Global'
   }
   const areas = getOceanAreas({ latitude, longitude })
-  const ocean = areas.find((area) => area.type !== 'EEZ')
-  const eez = areas.find((area) => area.type === 'EEZ')
+  const ocean = areas.find((area) => area.type !== 'eez')
+  const eez = areas.find((area) => area.type === 'eez')
 
   if (!combineWithEEZ) {
     return eez && zoom > MIN_ZOOM_TO_PREFER_EEZS ? eez?.name : ocean?.name
