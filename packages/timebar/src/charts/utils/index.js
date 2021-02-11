@@ -1,7 +1,8 @@
 export const getTrackY = (numTracks, trackIndex, graphHeight) => {
-  const Y_TRACK_SPACE = 14
-  const totalHeightOffset = ((numTracks - 1) * Y_TRACK_SPACE) / 2
-  const startY = -8 + graphHeight / 2
-  const y = startY + trackIndex * Y_TRACK_SPACE - totalHeightOffset
+  const MARGIN_BOTTOM = 10
+  const MARGIN_TOP = 5
+  const finalHeight = graphHeight - MARGIN_BOTTOM - MARGIN_TOP
+  const heightPerTrack = finalHeight / numTracks
+  const y = heightPerTrack * trackIndex + heightPerTrack / 2
   return y
 }
