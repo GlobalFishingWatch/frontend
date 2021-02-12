@@ -13,7 +13,6 @@ const Profile: React.FC = (props): React.ReactElement => {
   const vesselID = useSelector(selectVesselId)
   const tmtID = useSelector(selectTmtId)
   const dataset = useSelector(selectDataset)
-  console.log(vesselID)
   const [lastPortVisit, setLastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition, setLastPosition] = useState(null)
   const [selectedTab, setSelectedTab] = useState(1)
@@ -40,7 +39,6 @@ const Profile: React.FC = (props): React.ReactElement => {
 
   const fetchGFWData = async (id: string, dataset: string) => {
     const url = `/v1/vessels/${id}?datasets=${dataset}`
-    console.log(url)
     const tmtData = await GFWAPI.fetch<any>(url)
       .then((json: any) => {
         setVessel(json)
@@ -52,7 +50,6 @@ const Profile: React.FC = (props): React.ReactElement => {
   }
   const fetchTMTData = async (id: string) => {
     const url = `/v1/vessel-history/${id}`
-    console.log(url)
     const tmtData = await GFWAPI.fetch<any>(url)
       .then((json: any) => {
         setVessel(json)
@@ -69,7 +66,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     if (tmtID) {
       fetchTMTData(tmtID)
     }
-  }, [])
+  }, [vesselID, tmtID, dataset])
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
 
   return (
