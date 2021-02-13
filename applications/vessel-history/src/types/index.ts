@@ -27,16 +27,6 @@ export interface OtherCallsign {
   name: string
 }
 
-export interface OtherImo {
-  counter: number
-  name: string
-}
-
-export interface OtherShipname {
-  counter: number
-  name: string
-}
-
 export interface Vessel {
   id: string
   callsign: string
@@ -148,4 +138,34 @@ export interface TMTDetail {
   valueList: ValueList
   relationList: RelationList
   authorisationList: any[]
+}
+export interface OtherImo {
+  counter: number
+  name: string
+}
+
+export interface OtherShipname {
+  counter: number
+  name: string
+}
+
+export type GFWDetail = {
+  callsign: string
+  firstTransmissionDate: Date
+  flag: string
+  id: string
+  imo?: any
+  lastTransmissionDate: Date
+  mmsi: string
+  otherCallsigns: OtherCallsign[]
+  otherImos: OtherImo[]
+  otherShipnames: OtherShipname[]
+  shipname: string
+  source: string
+  dataset: string
+}
+
+export type VesselInfo = {
+  gfwData: GFWDetail | null
+  tmtData: TMTDetail | null
 }

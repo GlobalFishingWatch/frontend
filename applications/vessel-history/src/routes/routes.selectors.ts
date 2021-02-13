@@ -38,6 +38,13 @@ export const selectDataset = createSelector([selectLocationPayload], (payload) =
   return payload.dataset
 })
 
+export const selectVesselProfileId = createSelector(
+  [selectDataset, selectVesselId, selectTmtId],
+  (dataset, vesselID, tmtID) => {
+    return `${dataset}_${vesselID}_${tmtID}`
+  }
+)
+
 export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
   createSelector([selectLocationQuery], (query: any) => {
     if (query === undefined || query[param] === undefined) {

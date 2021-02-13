@@ -12,6 +12,7 @@ import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { AppActions, AppState } from 'types/redux.types'
+import { vesselInfoThunk } from 'features/vessels/vessels.thunks'
 import { UpdateQueryParamsAction } from './routes.actions'
 import { getLocationType, selectLocationQuery } from './routes.selectors'
 
@@ -19,6 +20,14 @@ export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
 export const PROFILE = 'PROFILE'
 
+const preFetchThunks = [vesselInfoThunk]
+
+const profileThunk = async (
+  dispatch: Dispatch<AppActions | NavigationAction>,
+  getState: StateGetter<AppState>
+) => {
+  vesselInfoThunk(dispatch, getState)
+}
 const thunk = async (
   dispatch: Dispatch<AppActions | NavigationAction>,
   getState: StateGetter<AppState>
@@ -35,7 +44,7 @@ const routesMap: RoutesMap = {
   },
   [PROFILE]: {
     path: '/profile/:dataset/:vesselID/:tmtID',
-    thunk,
+    thunk: profileThunk,
   },
   [NOT_FOUND]: {
     path: '',

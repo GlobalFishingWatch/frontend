@@ -5,6 +5,7 @@ import { IconButton, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { selectDataset, selectTmtId, selectVesselId } from 'routes/routes.selectors'
 import { Vessel } from 'types'
+import { getVesselInfo } from 'features/vessels/vessels.selectors'
 import MapWrapper from './components/MapWrapper'
 import Info from './components/Info'
 import styles from './Profile.module.css'
@@ -17,8 +18,8 @@ const Profile: React.FC = (props): React.ReactElement => {
   const [lastPosition, setLastPosition] = useState(null)
   const [selectedTab, setSelectedTab] = useState(1)
   const [searching, setSearching] = useState(false)
-  const [vessel, setVessel] = useState(null)
 
+  const vessel = useSelector(getVesselInfo)
   const tabs: Tab[] = [
     {
       id: 'info',
@@ -36,37 +37,6 @@ const Profile: React.FC = (props): React.ReactElement => {
       content: <MapWrapper vesselID={vesselID} setLastPosition={setLastPosition} />,
     },
   ]
-
-  const fetchGFWData = async (id: string, dataset: string) => {
-    const url = `/v1/vessels/${id}?datasets=${dataset}`
-    const tmtData = await GFWAPI.fetch<any>(url)
-      .then((json: any) => {
-        setVessel(json)
-        return null
-      })
-      .catch((error) => {
-        return error
-      })
-  }
-  const fetchTMTData = async (id: string) => {
-    const url = `/v1/vessel-history/${id}`
-    const tmtData = await GFWAPI.fetch<any>(url)
-      .then((json: any) => {
-        setVessel(json)
-        return null
-      })
-      .catch((error) => {
-        return error
-      })
-  }
-  useEffect(() => {
-    if (vesselID && dataset) {
-      fetchGFWData(vesselID, dataset)
-    }
-    if (tmtID) {
-      fetchTMTData(tmtID)
-    }
-  }, [vesselID, tmtID, dataset])
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
 
   return (

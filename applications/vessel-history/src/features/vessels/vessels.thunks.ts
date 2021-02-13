@@ -1,30 +1,64 @@
 import { Dispatch } from 'redux'
 import { StateGetter } from 'redux-first-router'
+import { useSelector } from 'react-redux'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AppState } from 'types/redux.types'
-import { selectVessel } from 'routes/routes.selectors'
-import { setVesselInfo, VesselInfo } from 'features/vessels/vessels.slice'
+import {
+  selectDataset,
+  selectTmtId,
+  selectVessel,
+  selectVesselId,
+  selectVesselProfileId,
+} from 'routes/routes.selectors'
+import { selectVessels, setVesselInfo } from 'features/vessels/vessels.slice'
+import { GFWDetail, TMTDetail, VesselInfo } from './../../types/index'
 
-// TODO to be finished when the api is ready
-const fetchVesselInfo = async (id: string) => {
-  const url = `/v1/vessels/${id}`
-  const data: VesselInfo = await GFWAPI.fetch<any>(url).then((r) => {
-    console.log('-------------- VESSEL INFO -----------------')
-    console.log(r)
+const fetchGFWData = async (id: string, dataset: string) => {
+  const url = `/v1/vessels/${id}?datasets=${dataset}`
+  const gfwData: GFWDetail | null = await GFWAPI.fetch<any>(url)
+    .then((data: GFWDetail) => {
+      return data
+    })
+    .catch((error) => {
+      return null
+    })
 
-    return r
-  })
+  return gfwData
+}
+const fetchTMTData = async (id: string) => {
+  const url = `/v1/vessel-history/${id}`
+  const tmtData: TMTDetail | null = await GFWAPI.fetch<any>(url)
+    .then((data: TMTDetail) => {
+      return data
+    })
+    .catch((error) => {
+      return null
+    })
 
-  return data
+  return tmtData
+}
+const fetchVesselInfo = async (vesselID: string, tmtID: string, dataset: string) => {
+  const gfwData = vesselID && dataset ? await fetchGFWData(vesselID, dataset) : null
+  const tmtData = tmtID ? await fetchTMTData(tmtID) : null
+
+  return {
+    gfwData,
+    tmtData,
+  } as VesselInfo
 }
 
 // TODO to be finished when the api is ready
 export const vesselInfoThunk = async (dispatch: Dispatch, getState: StateGetter<AppState>) => {
   const state = getState()
-  const id = selectVessel(state)
-  if (!id || id === 'NA') return null
+  const vesselID = selectVesselId(state)
+  const tmtID = selectTmtId(state)
+  const dataset = selectDataset(state)
+  const id = selectVesselProfileId(state)
+  const data = await fetchVesselInfo(vesselID, tmtID, dataset)
+  const vessels = selectVessels(state)
 
-  const data = await fetchVesselInfo(id)
+  if (vessels[id]) return
+
   try {
     dispatch(
       setVesselInfo({
@@ -34,6 +68,5 @@ export const vesselInfoThunk = async (dispatch: Dispatch, getState: StateGetter<
     )
   } catch (e) {
     console.error(e)
-    //dispatch(fetchTrackError({ id, error: e }))
   }
 }

@@ -12,11 +12,12 @@ import { ReactComponent as LocationIcon } from 'assets/icons/location.svg'
 import { ReactComponent as SpeedIcon } from 'assets/icons/speed.svg'
 import { ReactComponent as BearingIcon } from 'assets/icons/bearing.svg'
 import { ReactComponent as PortIcon } from 'assets/icons/port.svg'
+import { VesselInfo } from 'types'
 import MapButtton from './MapButtton'
 import styles from './Info.module.css'
 
 interface InfoProps {
-  vessel: string | null
+  vessel: VesselInfo | null
   lastPosition: any
   lastPortVisit: any
 }
@@ -86,9 +87,11 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             </div>
           </div>
         )}
-        <Button className={styles.saveButton} type="secondary">
-          SAVE VESSEL FOR OFFLINE VIEW
-        </Button>
+        {vessel && (
+          <Button className={styles.saveButton} type="secondary">
+            SAVE VESSEL FOR OFFLINE VIEW
+          </Button>
+        )}
       </div>
     </Fragment>
   )
