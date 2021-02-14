@@ -9,7 +9,11 @@ import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import Select from '@globalfishingwatch/ui-components/dist/select'
-import { DatasetConfiguration, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  AnyDatasetConfiguration,
+  DatasetTypes,
+  EnviromentalDatasetConfiguration,
+} from '@globalfishingwatch/api-types'
 import { ReactComponent as FilesIcon } from 'assets/icons/files-supported.svg'
 import { capitalize } from 'utils/shared'
 import { SUPPORT_EMAIL } from 'data/config'
@@ -49,7 +53,7 @@ const getPropertyRangeValuesFromGeojson = (
 
 interface DatasetConfigProps {
   className?: string
-  onDatasetFieldChange: (field: any) => void
+  onDatasetFieldChange: (field: DatasetMetadata | AnyDatasetConfiguration) => void
   fileData: FeatureCollectionWithFilename
   metadata: DatasetMetadata
 }
@@ -62,6 +66,8 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
     id: property,
     label: capitalize(property),
   }))
+  const { min, max } =
+    (metadata.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange || {}
   return (
     <div className={cx(styles.datasetConfig, className)}>
       <InputText
@@ -147,14 +153,16 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           inputSize="small"
           type="number"
           step="0.1"
-          value={metadata.configuration?.propertyToIncludeRange?.min}
+          value={min}
           placeholder={t('common.min', 'Min')}
           className={styles.shortInput}
           onChange={(e) =>
             onDatasetFieldChange({
               propertyToIncludeRange: {
                 min: parseFloat(e.target.value),
-                max: metadata.configuration?.propertyToIncludeRange?.max,
+                max:
+                  (metadata.configuration as EnviromentalDatasetConfiguration)
+                    ?.propertyToIncludeRange?.max || parseFloat(e.target.value),
               },
             })
           }
@@ -164,12 +172,12 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           type="number"
           step="0.1"
           placeholder={t('common.max', 'Max')}
-          value={metadata.configuration?.propertyToIncludeRange?.max}
+          value={max}
           className={styles.shortInput}
           onChange={(e) =>
             onDatasetFieldChange({
               propertyToIncludeRange: {
-                min: metadata.configuration?.propertyToIncludeRange?.min,
+                min: min || 0,
                 max: parseFloat(e.target.value),
               },
             })
@@ -229,7 +237,7 @@ export type DatasetMetadata = {
   name: string
   description?: string
   type: DatasetTypes.Context
-  configuration?: DatasetConfiguration
+  configuration?: AnyDatasetConfiguration
 }
 
 function NewDataset(): React.ReactElement {
@@ -293,9 +301,10 @@ function NewDataset(): React.ReactElement {
     [t]
   )
 
-  const onDatasetFieldChange = (field: DatasetMetadata | DatasetConfiguration) => {
+  const onDatasetFieldChange = (field: DatasetMetadata | AnyDatasetConfiguration) => {
     // TODO insert fields validation here
     setMetadata((meta) => {
+      let error = ''
       const newMetadata =
         field.hasOwnProperty('name') || field.hasOwnProperty('description')
           ? { ...meta, ...(field as DatasetMetadata) }
@@ -303,9 +312,18 @@ function NewDataset(): React.ReactElement {
               ...(meta as DatasetMetadata),
               configuration: {
                 ...meta?.configuration,
-                ...(field as DatasetConfiguration),
+                ...(field as AnyDatasetConfiguration),
               },
             }
+      const { min, max } =
+        (newMetadata.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
+        {}
+      console.log(max)
+      console.log(min)
+      if (min && max && min >= max) {
+        error = t('errors.invalidRange', 'Min has to be lower than max value')
+      }
+      setError(error)
       return newMetadata
     })
   }

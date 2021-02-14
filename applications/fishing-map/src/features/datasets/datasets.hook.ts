@@ -33,12 +33,12 @@ export const useNewDatasetConnect = () => {
   const addNewDatasetToWorkspace = useCallback(
     (dataset: Dataset) => {
       let dataviewInstance
-      const datasetType =
+      const layerType =
         dataset.configuration?.propertyToInclude && dataset.configuration?.propertyToIncludeRange
           ? 'enviromental'
           : 'context'
 
-      if (datasetType === 'context') {
+      if (layerType === 'context') {
         const usedColors = contextDataviews?.flatMap((dataview) => dataview.config?.color || [])
         dataviewInstance = getContextDataviewInstance(dataset.id, usedColors)
       } else {

@@ -7,7 +7,11 @@ import {
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
-import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  DatasetStatus,
+  DatasetTypes,
+  EnviromentalDatasetConfiguration,
+} from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
@@ -150,11 +154,14 @@ export const getWorkspaceGeneratorsConfig = createSelector(
             generator.attribution = dataset.source
           }
           if (dataview.config?.type === Generators.Type.UserContext) {
+            // TODO: remove and distinguish properly between context and env layers
             if (
               dataset.configuration?.propertyToInclude &&
               dataset.configuration?.propertyToIncludeRange
             ) {
-              const { min, max } = dataset.configuration?.propertyToIncludeRange
+              const { min, max } =
+                (dataset.configuration as EnviromentalDatasetConfiguration)
+                  ?.propertyToIncludeRange || {}
               const rampScale = scaleLinear().range([min, max]).domain([0, 1])
               const numSteps = 8
               const steps = [...Array(numSteps)]

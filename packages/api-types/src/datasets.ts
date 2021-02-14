@@ -49,10 +49,15 @@ export interface DatasetConfiguration {
   file?: string
   type?: DatasetCustomTypes
   format?: 'geojson'
-  propertyToInclude?: string
-  propertyToIncludeRange?: { min: number; max: number }
   [key: string]: unknown
 }
+
+export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {
+  propertyToInclude: string
+  propertyToIncludeRange: { min: number; max: number }
+}
+
+export type AnyDatasetConfiguration = DatasetConfiguration | EnviromentalDatasetConfiguration
 
 export type RelatedDataset = {
   id: string
@@ -87,7 +92,7 @@ export interface Dataset {
   endDate?: string
   createdAt: string
   endpoints?: Endpoint[]
-  configuration: DatasetConfiguration | null
+  configuration: AnyDatasetConfiguration | null
   relatedDatasets: RelatedDataset[] | null
   fieldsAllowed: string[]
 }

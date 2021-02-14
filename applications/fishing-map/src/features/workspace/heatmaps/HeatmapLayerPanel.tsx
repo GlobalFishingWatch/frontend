@@ -177,7 +177,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
             )}
             {vesselsSelected.length > 0 && (
               <div className={styles.filter}>
-                <label>{t('vessel.vesselType_plural', 'Vessel Types')}</label>
+                <label>{t('vessel.vesselType_plural', 'Vessel types')}</label>
                 <TagList
                   tags={vesselsSelected}
                   color={dataview.config?.color}
