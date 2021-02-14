@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.22.0
+
+### Minor Changes
+
+- split dataset configuration types definition
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.9.0
+
 ## 0.21.4
 
 ### Patch Changes

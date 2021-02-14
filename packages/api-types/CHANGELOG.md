@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.9.0
+
+### Minor Changes
+
+- split dataset configuration types definition
+
 ## 2.8.2
 
 ### Patch Changes
