@@ -1,0 +1,47 @@
+.expandedContainer {
+  min-width: 32rem;
+  transform: translate(-5px, -5px);
+  transition: transform 150ms ease-out, opacity 150ms linear;
+  opacity: 0;
+}
+
+.expandedContainerTop {
+  transform: translate(-5px, 5px);
+}
+
+.expandedContainerOpen {
+  padding: var(--space-S);
+  padding-bottom: var(--space-M);
+  background-color: var(--color-off-white);
+  opacity: 1;
+  border-top: var(--border);
+  border-bottom: var(--border);
+  z-index: 100;
+}
+
+.tooltipArrow,
+.tooltipArrow::before {
+  position: absolute;
+  left: 2px !important;
+  top: -3px !important;
+  width: 8px;
+  height: 8px;
+  z-index: 1;
+}
+
+.tooltipArrow::before {
+  content: '';
+  transform: rotate(45deg);
+  border-top: var(--border);
+  border-left: var(--border);
+  background-color: var(--color-off-white);
+}
+
+.tooltipArrowTop {
+  top: auto !important;
+  bottom: -7px !important;
+}
+
+.tooltipArrowTop::before {
+  transform: rotate(225deg);
+}
