@@ -18,6 +18,7 @@ import { resetWorkspaceSearchQuery } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'types'
 import { getFlagById } from 'utils/flags'
 import { formatInfoField } from 'utils/info'
+import ExpandedContainer from 'features/workspace/ExpandedContainer'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -175,19 +176,24 @@ function Search() {
               <Spinner className={styles.textSpinner} size="small" />
             )}
             {searchAllowed && (
-              <IconButton
-                icon={searchFiltersOpen ? 'close' : hasSearchFilters ? 'filter-on' : 'filter-off'}
-                tooltip={
-                  searchFiltersOpen
-                    ? t('search.filterClose', 'Close search filters')
-                    : t('search.filterOpen', 'Open search filters')
-                }
-                className={cx(styles.expandable, {
-                  [styles.expanded]: searchFiltersOpen,
-                })}
-                onClick={() => setSearchFiltersOpen(!searchFiltersOpen)}
-                tooltipPlacement="bottom"
-              />
+              <ExpandedContainer
+                visible={searchFiltersOpen}
+                onClickOutside={() => setSearchFiltersOpen(false)}
+                className={styles.expandedContainer}
+                arrowClassName={styles.expandedArrow}
+                component={<SearchFilters />}
+              >
+                <IconButton
+                  icon={searchFiltersOpen ? 'close' : hasSearchFilters ? 'filter-on' : 'filter-off'}
+                  tooltip={
+                    searchFiltersOpen
+                      ? t('search.filterClose', 'Close search filters')
+                      : t('search.filterOpen', 'Open search filters')
+                  }
+                  onClick={() => setSearchFiltersOpen(!searchFiltersOpen)}
+                  tooltipPlacement="bottom"
+                />
+              </ExpandedContainer>
             )}
             {searchFiltersOpen === false && (
               <IconButton
@@ -199,7 +205,6 @@ function Search() {
               />
             )}
           </div>
-          <SearchFilters className={cx(styles.expandedContainer)} />
           {searchStatus === AsyncReducerStatus.Loading &&
           searchPagination.loading === false ? null : searchAllowed ? (
             <Fragment>

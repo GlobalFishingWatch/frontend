@@ -6,7 +6,6 @@ import MultiSelect from '@globalfishingwatch/ui-components/dist/multi-select'
 import InputDate from '@globalfishingwatch/ui-components/dist/input-date'
 import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import useClickedOutside from 'hooks/use-clicked-outside'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { getFiltersBySchema, SchemaFieldDataview } from 'features/datasets/datasets.utils'
 import { useSearchFiltersConnect } from './search.hook'
@@ -19,7 +18,7 @@ type SearchFiltersProps = {
 
 function SearchFilters({ className = '' }: SearchFiltersProps) {
   const { t } = useTranslation()
-  const { searchFilters, setSearchFiltersOpen, setSearchFilters } = useSearchFiltersConnect()
+  const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
   const {
     flags,
     sources,
@@ -49,10 +48,8 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
   const fleetFilters = getFiltersBySchema(dataview, 'fleet')
   const originFilters = getFiltersBySchema(dataview, 'origin')
 
-  const expandedContainerRef = useClickedOutside(() => setSearchFiltersOpen(false))
-
   return (
-    <div className={cx(className)} ref={expandedContainerRef}>
+    <div className={cx(className)}>
       {sourceOptions && sourceOptions.length > 0 && (
         <MultiSelect
           label={t('layer.source_plural', 'Sources')}

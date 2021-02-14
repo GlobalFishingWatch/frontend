@@ -10,13 +10,13 @@ import {
   TrackColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import useClickedOutside from 'hooks/use-clicked-outside'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import styles from 'features/workspace/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import { useDatasetsAPI } from 'features/datasets/datasets.hook'
+import ExpandedContainer from '../ExpandedContainer'
 
 const DATASET_REFRESH_TIMEOUT = 10000
 
@@ -63,7 +63,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const closeExpandedContainer = () => {
     setColorOpen(false)
   }
-  const expandedContainerRef = useClickedOutside(closeExpandedContainer)
+
   const isCustomUserLayer = dataview.config?.type === Generators.Type.UserContext
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
@@ -170,17 +170,31 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             tooltipPlacement="top"
           />
           {layerActive && (
-            <IconButton
-              icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
-              size="small"
-              style={colorOpen ? {} : { color: dataview.config?.color }}
-              tooltip={t('layer.color_change', 'Change color')}
-              tooltipPlacement="top"
-              onClick={onToggleColorOpen}
-              className={cx(styles.actionButton, styles.expandable, {
-                [styles.expanded]: colorOpen,
-              })}
-            />
+            <ExpandedContainer
+              visible={colorOpen}
+              onClickOutside={closeExpandedContainer}
+              component={
+                <ColorBar
+                  colorBarOptions={
+                    isEnviromentalLayerUsedAsContextTemporally
+                      ? HeatmapColorBarOptions
+                      : TrackColorBarOptions
+                  }
+                  selectedColor={dataview.config?.color}
+                  onColorClick={changeColor}
+                />
+              }
+            >
+              <IconButton
+                icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
+                size="small"
+                style={colorOpen ? {} : { color: dataview.config?.color }}
+                tooltip={t('layer.color_change', 'Change color')}
+                tooltipPlacement="top"
+                onClick={onToggleColorOpen}
+                className={cx(styles.actionButton)}
+              />
+            </ExpandedContainer>
           )}
           {isCustomUserLayer && (
             <IconButton
@@ -199,19 +213,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           <div id={`legend_${dataview.id}`}></div>
         </div>
       )}
-      <div className={styles.expandedContainer} ref={expandedContainerRef}>
-        {colorOpen && (
-          <ColorBar
-            colorBarOptions={
-              isEnviromentalLayerUsedAsContextTemporally
-                ? HeatmapColorBarOptions
-                : TrackColorBarOptions
-            }
-            selectedColor={dataview.config?.color}
-            onColorClick={changeColor}
-          />
-        )}
-      </div>
     </div>
   )
 }

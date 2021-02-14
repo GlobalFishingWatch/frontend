@@ -19,22 +19,22 @@ const popperOptions: Partial<Options> = {
       name: 'flip',
       enabled: false,
     },
-    {
-      name: 'sameWidth',
-      enabled: true,
-      phase: 'beforeWrite',
-      requires: ['computeStyles'],
-      fn: ({ state }) => {
-        // state.styles.popper.width = `${state.rects.reference.width}px`
-        state.styles.popper.left = '0px'
-      },
-      effect: ({ state }) => {
-        state.elements.popper.style.left = '0px'
-        // state.elements.popper.style.width = `${
-        //   state.elements.reference.getBoundingClientRect().width
-        // }px`
-      },
-    },
+    // {
+    //   name: 'sameWidth',
+    //   enabled: true,
+    //   phase: 'beforeWrite',
+    //   requires: ['computeStyles'],
+    //   fn: ({ state }) => {
+    //     // state.styles.popper.width = `${state.rects.reference.width}px`
+    //     state.styles.popper.left = '0px'
+    //   },
+    //   effect: ({ state }) => {
+    //     state.elements.popper.style.left = '0px'
+    //     // state.elements.popper.style.width = `${
+    //     //   state.elements.reference.getBoundingClientRect().width
+    //     // }px`
+    //   },
+    // },
   ],
 }
 

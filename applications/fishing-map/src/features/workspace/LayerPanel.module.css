@@ -44,6 +44,7 @@
 
 .actions {
   opacity: 0;
+  z-index: 2;
   transition: opacity 150ms linear;
   line-height: 1;
   display: flex;
@@ -59,55 +60,8 @@
   z-index: 1;
 }
 
-.expandedContainer {
-  width: 100%;
-  position: absolute;
-  left: 0;
-  top: 1px;
-  transform: translateY(0);
-  transition: transform 150ms ease-out, opacity 150ms linear;
-  opacity: 0;
-}
-
-.expandedContainerOpen .expandedContainer {
-  padding: var(--space-S);
-  padding-bottom: var(--space-M);
-  background-color: var(--color-off-white);
-  transform: translateY(4.2rem);
-  opacity: 1;
-  border-top: var(--border);
-  border-bottom: var(--border);
-  z-index: 1;
-}
-
 .selectLabel:not(:first-child) {
   margin-top: var(--space-S);
-}
-
-.expandable::after {
-  content: '';
-  opacity: 0;
-  transform: translateX(-50%) translateY(-50%) rotateZ(-45deg);
-  transition: transform 150ms ease-out, opacity 150ms linear;
-}
-
-.expanded {
-  position: relative;
-  opacity: 1;
-}
-
-.expanded::after {
-  position: absolute;
-  width: 36%;
-  height: 36%;
-  border-top: var(--border);
-  border-right: var(--border);
-  top: 100%;
-  left: 50%;
-  background-color: var(--color-off-white);
-  transform: translateX(-50%) rotateZ(-45deg);
-  transform-origin: center;
-  opacity: 1;
 }
 
 .properties {
@@ -176,4 +130,3 @@
 :global(.printing) .switch > span {
   display: none !important;
 }
-
