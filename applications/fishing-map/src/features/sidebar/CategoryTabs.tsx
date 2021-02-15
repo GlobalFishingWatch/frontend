@@ -3,7 +3,7 @@ import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import Icon from '@globalfishingwatch/ui-components/dist/icon'
+import Icon, { IconType } from '@globalfishingwatch/ui-components/dist/icon'
 import GFWAPI from '@globalfishingwatch/api-client'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { Locale } from 'types'
@@ -13,6 +13,7 @@ import { selectLocationCategory, selectLocationType } from 'routes/routes.select
 import { selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
 import { LocaleLabels } from 'features/i18n/i18n'
+import { selectHighlightedWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
@@ -39,6 +40,18 @@ function getLinkToCategory(category: WorkspaceCategories) {
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t, i18n } = useTranslation()
   const guestUser = useSelector(isGuestUser)
+  const highlightedWorkspaces = useSelector(selectHighlightedWorkspaces)
+  const availableCategories = highlightedWorkspaces
+    ? Object.entries(highlightedWorkspaces)
+        .filter(([category, entries]) => {
+          const hasEntries = entries.length > 0
+          const isInSupportedCategories = Object.values(WorkspaceCategories).includes(
+            category as WorkspaceCategories
+          )
+          return hasEntries && isInSupportedCategories
+        })
+        .map(([category]) => category)
+    : []
   const locationType = useSelector(selectLocationType)
   const locationCategory = useSelector(selectLocationCategory)
   const userData = useSelector(selectUserData)
@@ -57,43 +70,23 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <Icon icon="menu" />
         </span>
       </li>
-      <li
-        className={cx(styles.tab, {
-          [styles.current]:
-            locationCategory === WorkspaceCategories.FishingActivity || locationType === HOME,
-        })}
-      >
-        <Link
-          className={styles.tabContent}
-          to={getLinkToCategory(WorkspaceCategories.FishingActivity)}
+      {availableCategories.map((category, index) => (
+        <li
+          key={category}
+          className={cx(styles.tab, {
+            [styles.current]:
+              locationCategory === (category as WorkspaceCategories) ||
+              (index === 0 && locationType === HOME),
+          })}
         >
-          <Icon icon="category-fishing" />
-        </Link>
-      </li>
-      <li
-        className={cx(styles.tab, {
-          [styles.current]: locationCategory === WorkspaceCategories.MarineReserves,
-        })}
-      >
-        <Link
-          className={styles.tabContent}
-          to={getLinkToCategory(WorkspaceCategories.MarineReserves)}
-        >
-          <Icon icon="category-marine-reserves" />
-        </Link>
-      </li>
-      <li
-        className={cx(styles.tab, {
-          [styles.current]: locationCategory === WorkspaceCategories.CountryPortals,
-        })}
-      >
-        <Link
-          className={styles.tabContent}
-          to={getLinkToCategory(WorkspaceCategories.CountryPortals)}
-        >
-          <Icon icon="category-country-portals" />
-        </Link>
-      </li>
+          <Link
+            className={styles.tabContent}
+            to={getLinkToCategory(category as WorkspaceCategories)}
+          >
+            <Icon icon={`category-${category}` as IconType} />
+          </Link>
+        </li>
+      ))}
       <div className={styles.separator}></div>
       <li className={cx(styles.tab, styles.languageToggle)}>
         <button className={styles.tabContent}>

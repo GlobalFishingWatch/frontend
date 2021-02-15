@@ -58,7 +58,7 @@ export const IconComponents = {
   calendar: Calendar,
   camera: Camera,
   'category-country-portals': CategoryCountryPortals,
-  'category-fishing': CategoryFishing,
+  'category-fishing-activity': CategoryFishing,
   'category-marine-reserves': CategoryMarineReserves,
   'category-news': CategoryNews,
   'category-reports': CategoryReports,

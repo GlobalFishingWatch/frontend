@@ -22,6 +22,7 @@ import { isUserLogged } from 'features/user/user.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import styles from './App.module.css'
 import { selectSidebarOpen } from './app.selectors'
 
@@ -51,6 +52,10 @@ function App(): React.ReactElement {
 
   useEffect(() => {
     dispatch(fetchUserThunk())
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(fetchHighlightWorkspacesThunk())
   }, [dispatch])
 
   const homeNeedsFetch = locationType === HOME && currentWorkspaceId !== DEFAULT_WORKSPACE_ID

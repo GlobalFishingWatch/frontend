@@ -1,37 +1,26 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import cx from 'classnames'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { selectLocationCategory } from 'routes/routes.selectors'
+import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'types'
-import { DEFAULT_WORKSPACE_KEY, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_KEY } from 'data/workspaces'
 import styles from './WorkspacesList.module.css'
 import { selectCurrentHighlightedWorkspaces } from './workspaces-list.selectors'
-import {
-  fetchHighlightWorkspacesThunk,
-  selectHighlightedWorkspacesStatus,
-} from './workspaces-list.slice'
+import { selectHighlightedWorkspacesStatus } from './workspaces-list.slice'
 
 function WorkspacesList() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
   const locationCategory = useSelector(selectLocationCategory)
   const userFriendlyCategory = locationCategory.replace('-', ' ')
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
-  const validCategory = Object.values(WorkspaceCategories).includes(locationCategory)
+  const validCategory = useSelector(isValidLocationCategory)
 
-  useEffect(() => {
-    if (validCategory && highlightedWorkspacesStatus !== AsyncReducerStatus.Finished) {
-      dispatch(fetchHighlightWorkspacesThunk())
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [validCategory])
-
-  if (!validCategory) {
+  if (highlightedWorkspacesStatus === AsyncReducerStatus.Finished && !validCategory) {
     return (
       <div className={styles.placeholder}>
         <h2>{t('errors.pageNotFound', 'Page not found')}</h2>
