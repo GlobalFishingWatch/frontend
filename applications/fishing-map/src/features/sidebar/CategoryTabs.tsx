@@ -13,7 +13,7 @@ import { selectLocationCategory, selectLocationType } from 'routes/routes.select
 import { selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
 import { LocaleLabels } from 'features/i18n/i18n'
-import { selectHighlightedWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
+import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
@@ -40,20 +40,9 @@ function getLinkToCategory(category: WorkspaceCategories) {
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t, i18n } = useTranslation()
   const guestUser = useSelector(isGuestUser)
-  const highlightedWorkspaces = useSelector(selectHighlightedWorkspaces)
-  const availableCategories = highlightedWorkspaces
-    ? Object.entries(highlightedWorkspaces)
-        .filter(([category, entries]) => {
-          const hasEntries = entries.length > 0
-          const isInSupportedCategories = Object.values(WorkspaceCategories).includes(
-            category as WorkspaceCategories
-          )
-          return hasEntries && isInSupportedCategories
-        })
-        .map(([category]) => category)
-    : []
   const locationType = useSelector(selectLocationType)
   const locationCategory = useSelector(selectLocationCategory)
+  const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
   const initials = userData
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
@@ -70,7 +59,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <Icon icon="menu" />
         </span>
       </li>
-      {availableCategories.map((category, index) => (
+      {availableCategories?.map((category, index) => (
         <li
           key={category}
           className={cx(styles.tab, {

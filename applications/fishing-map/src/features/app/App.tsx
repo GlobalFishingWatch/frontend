@@ -46,6 +46,7 @@ function App(): React.ReactElement {
   const locationType = useSelector(selectLocationType)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
+  // const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const narrowSidebar = useSelector(isWorkspaceLocation)
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
@@ -58,7 +59,25 @@ function App(): React.ReactElement {
     dispatch(fetchHighlightWorkspacesThunk())
   }, [dispatch])
 
-  const homeNeedsFetch = locationType === HOME && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
+  const isHomeLocation = locationType === HOME
+  // TODO: decide if we want to redirect when only one category is supported and
+  // we want to hide the default workspace
+  // const onlyOneCategorySupported = availableCategories?.length === 1
+  // const categorySupportedNotFishing =
+  //   availableCategories?.[0] === WorkspaceCategories.FishingActivity
+
+  // useEffect(() => {
+  //   if (isHomeLocation && onlyOneCategorySupported && !categorySupportedNotFishing) {
+  //     dispatchLocation(
+  //       WORKSPACES_LIST,
+  //       { category: availableCategories?.[0] as WorkspaceCategories },
+  //       true
+  //     )
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isHomeLocation, onlyOneCategorySupported])
+
+  const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
   useEffect(() => {
     if (userLogged && (homeNeedsFetch || hasWorkspaceIdChanged)) {
