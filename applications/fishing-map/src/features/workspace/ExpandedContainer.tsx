@@ -31,13 +31,16 @@ function ExpandedContainer({
   className = '',
   arrowClassName = '',
 }: ExpandedContainerProps) {
-  const config = { tension: 200, friction: 15 }
-  const initialStyles = { opacity: 0.4, transform: 'scaleY(0) translate(-5px, -5px)' }
+  const config = { tension: 300, friction: 50, velocity: 40 }
+  const initialStyles = { transform: 'translate(-5px, -20px)' }
   const [props, setSpring] = useSpring(() => initialStyles)
-  const onMount = useCallback(() => {
+  const onMount = useCallback(({ popper }) => {
+    const { y, height } = popper.getBoundingClientRect()
+    if (y + height >= window.innerHeight) {
+      popper.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
+    }
     setSpring({
-      opacity: 1,
-      transform: 'scaleY(1) translate(-5px, -5px)',
+      transform: 'translateY(-5px, -5px)',
       onRest: function () {
         return
       },
@@ -60,7 +63,7 @@ function ExpandedContainer({
       animation={true}
       onMount={onMount}
       onHide={onHide}
-      placement="bottom-end"
+      placement="bottom-start"
       popperOptions={popperOptions}
       onClickOutside={onClickOutside}
       render={(attrs) => {
