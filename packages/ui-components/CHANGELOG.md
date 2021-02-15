@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.12.6
+
+### Patch Changes
+
+- fix svg logo size for screenshot
+
 ## 2.12.5
 
 ### Patch Changes

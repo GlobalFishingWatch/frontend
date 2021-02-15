@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.22.1
+
+### Patch Changes
+
+- fix svg logo size for screenshot
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.12.6
+
 ## 0.22.0
 
 ### Minor Changes
