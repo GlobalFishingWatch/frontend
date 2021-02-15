@@ -1,6 +1,7 @@
 .expandedContainer {
   min-width: 32rem;
   transform: translate(-5px, -5px);
+  transform-origin: top;
   transition: transform 150ms ease-out, opacity 150ms linear;
   opacity: 0;
 }

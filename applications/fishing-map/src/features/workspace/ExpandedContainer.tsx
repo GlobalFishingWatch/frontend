@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 import Tippy from '@tippyjs/react'
+import { useSpring, animated } from 'react-spring'
 import { Options } from '@popperjs/core'
 import styles from './ExpandedContainer.module.css'
 
@@ -19,22 +20,6 @@ const popperOptions: Partial<Options> = {
       name: 'flip',
       enabled: false,
     },
-    // {
-    //   name: 'sameWidth',
-    //   enabled: true,
-    //   phase: 'beforeWrite',
-    //   requires: ['computeStyles'],
-    //   fn: ({ state }) => {
-    //     // state.styles.popper.width = `${state.rects.reference.width}px`
-    //     state.styles.popper.left = '0px'
-    //   },
-    //   effect: ({ state }) => {
-    //     state.elements.popper.style.left = '0px'
-    //     // state.elements.popper.style.width = `${
-    //     //   state.elements.reference.getBoundingClientRect().width
-    //     // }px`
-    //   },
-    // },
   ],
 }
 
@@ -46,18 +31,43 @@ function ExpandedContainer({
   className = '',
   arrowClassName = '',
 }: ExpandedContainerProps) {
+  const config = { tension: 200, friction: 15 }
+  const initialStyles = { opacity: 0.4, transform: 'scaleY(0) translate(-5px, -5px)' }
+  const [props, setSpring] = useSpring(() => initialStyles)
+  const onMount = useCallback(() => {
+    setSpring({
+      opacity: 1,
+      transform: 'scaleY(1) translate(-5px, -5px)',
+      onRest: function () {
+        return
+      },
+      config,
+    })
+  }, [])
+
+  const onHide = useCallback(({ unmount }) => {
+    setSpring({
+      ...initialStyles,
+      onRest: unmount,
+      config: { ...config, clamp: true },
+    })
+  }, [])
+
   return (
     <Tippy
       interactive
-      // appendTo="parent"
       visible={visible}
+      animation={true}
+      onMount={onMount}
+      onHide={onHide}
       placement="bottom-end"
       popperOptions={popperOptions}
       onClickOutside={onClickOutside}
       render={(attrs) => {
         const topPlacement = attrs['data-placement'] === 'top'
         return (
-          <div
+          <animated.div
+            style={props}
             className={cx(
               styles.expandedContainer,
               {
@@ -70,21 +80,23 @@ function ExpandedContainer({
             {...attrs}
           >
             {visible && component}
-            <div
-              className={cx(
-                styles.tooltipArrow,
-                {
-                  [styles.tooltipArrowTop]: topPlacement,
-                },
-                arrowClassName
-              )}
-              data-popper-arrow
-            ></div>
-          </div>
+            {visible && (
+              <div
+                className={cx(
+                  styles.tooltipArrow,
+                  {
+                    [styles.tooltipArrowTop]: topPlacement,
+                  },
+                  arrowClassName
+                )}
+                data-popper-arrow
+              ></div>
+            )}
+          </animated.div>
         )
       }}
     >
-      {children}
+      <span tabIndex={0}>{children}</span>
     </Tippy>
   )
 }
