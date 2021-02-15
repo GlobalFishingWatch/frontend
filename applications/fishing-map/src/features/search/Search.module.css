@@ -20,7 +20,7 @@
 }
 
 .expandedArrow {
-  left: 0 !important;
+  left: -5px !important;
 }
 
 .expandedArrow::before {

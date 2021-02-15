@@ -17,11 +17,22 @@ interface ExpandedContainerProps {
 const popperOptions: Partial<Options> = {
   modifiers: [
     {
+      // To avoid the default 5px margin popper leaves between popper and reference
+      // https://popper.js.org/docs/v2/modifiers/prevent-overflow/#padding
+      name: 'preventOverflow',
+      options: {
+        padding: 0,
+      },
+    },
+    {
       name: 'flip',
       enabled: false,
     },
   ],
 }
+
+const config = { tension: 300, friction: 50, velocity: 40 }
+const initialStyles = { transform: 'translate(0, -20px)' }
 
 function ExpandedContainer({
   visible,
@@ -31,30 +42,35 @@ function ExpandedContainer({
   className = '',
   arrowClassName = '',
 }: ExpandedContainerProps) {
-  const config = { tension: 300, friction: 50, velocity: 40 }
-  const initialStyles = { transform: 'translate(-5px, -20px)' }
   const [props, setSpring] = useSpring(() => initialStyles)
-  const onMount = useCallback(({ popper }) => {
-    const { y, height } = popper.getBoundingClientRect()
-    if (y + height >= window.innerHeight) {
-      popper.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
-    }
-    setSpring({
-      transform: 'translateY(-5px, -5px)',
-      onRest: function () {
-        return
-      },
-      config,
-    })
-  }, [])
 
-  const onHide = useCallback(({ unmount }) => {
-    setSpring({
-      ...initialStyles,
-      onRest: unmount,
-      config: { ...config, clamp: true },
-    })
-  }, [])
+  const onMount = useCallback(
+    ({ popper }) => {
+      const { y, height } = popper.getBoundingClientRect()
+      if (y + height >= window.innerHeight) {
+        popper.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
+      }
+      setSpring({
+        transform: 'translateY(0, -5px)',
+        onRest: function () {
+          return
+        },
+        config,
+      })
+    },
+    [setSpring]
+  )
+
+  const onHide = useCallback(
+    ({ unmount }) => {
+      setSpring({
+        ...initialStyles,
+        onRest: unmount,
+        config: { ...config, clamp: true },
+      })
+    },
+    [setSpring]
+  )
 
   return (
     <Tippy
@@ -63,7 +79,7 @@ function ExpandedContainer({
       animation={true}
       onMount={onMount}
       onHide={onHide}
-      placement="bottom-start"
+      placement="bottom-end"
       popperOptions={popperOptions}
       onClickOutside={onClickOutside}
       render={(attrs) => {

@@ -1,6 +1,6 @@
 .expandedContainer {
-  min-width: 32rem;
-  transform: translate(-5px, -5px);
+  min-width: 31.8rem;
+  transform: translate(0, -5px);
   transform-origin: top;
   transition: transform 150ms ease-out, opacity 150ms linear;
   opacity: 0;
@@ -23,7 +23,6 @@
 .tooltipArrow,
 .tooltipArrow::before {
   position: absolute;
-  left: 2px !important;
   top: -3px !important;
   width: 8px;
   height: 8px;
