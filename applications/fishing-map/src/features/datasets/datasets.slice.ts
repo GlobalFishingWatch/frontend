@@ -4,7 +4,7 @@ import uniqBy from 'lodash/uniqBy'
 import without from 'lodash/without'
 import kebabCase from 'lodash/kebabCase'
 import { stringify } from 'qs'
-import { Dataset, UploadResponse } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetCategory, UploadResponse } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
@@ -77,6 +77,7 @@ export const createDatasetThunk = createAsyncThunk(
       await fetch(url, { method: 'PUT', body: file })
       const datasetWithFilePath = {
         ...dataset,
+        description: dataset.description || dataset.name,
         id: `${kebabCase(dataset.name)}-${Date.now()}`,
         source: DATASETS_USER_SOURCE_ID,
         configuration: {
@@ -135,12 +136,14 @@ export const deleteDatasetThunk = createAsyncThunk(
 export type DatasetModals = 'new' | 'edit' | undefined
 export interface DatasetsState extends AsyncReducer<Dataset> {
   datasetModal: DatasetModals
+  datasetCategory: DatasetCategory
   editingDatasetId: string | undefined
   allDatasetsRequested: boolean
 }
 const initialState: DatasetsState = {
   ...asyncInitialState,
   datasetModal: undefined,
+  datasetCategory: DatasetCategory.Context,
   editingDatasetId: undefined,
   allDatasetsRequested: false,
 }
@@ -154,6 +157,9 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
         state.editingDatasetId = undefined
       }
       state.datasetModal = action.payload
+    },
+    setDatasetCategory: (state, action: PayloadAction<DatasetCategory>) => {
+      state.datasetCategory = action.payload
     },
     setEditingDatasetId: (state, action: PayloadAction<string>) => {
       state.editingDatasetId = action.payload
@@ -173,7 +179,7 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
   },
 })
 
-export const { setDatasetModal, setEditingDatasetId } = datasetSlice.actions
+export const { setDatasetModal, setDatasetCategory, setEditingDatasetId } = datasetSlice.actions
 
 export const {
   selectAll: selectDatasets,
@@ -191,5 +197,6 @@ export const selectDatasetsError = (state: RootState) => state.datasets.error
 export const selectEditingDatasetId = (state: RootState) => state.datasets.editingDatasetId
 export const selectAllDatasetsRequested = (state: RootState) => state.datasets.allDatasetsRequested
 export const selectDatasetModal = (state: RootState) => state.datasets.datasetModal
+export const selectDatasetCategory = (state: RootState) => state.datasets.datasetCategory
 
 export default datasetSlice.reducer

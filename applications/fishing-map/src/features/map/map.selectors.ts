@@ -8,6 +8,7 @@ import {
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
 import {
+  DatasetCategory,
   DatasetStatus,
   DatasetTypes,
   EnviromentalDatasetConfiguration,
@@ -153,22 +154,16 @@ export const getWorkspaceGeneratorsConfig = createSelector(
           if (dataset?.source) {
             generator.attribution = dataset.source
           }
-          if (dataview.config?.type === Generators.Type.UserContext) {
-            // TODO: remove and distinguish properly between context and env layers
-            if (
-              dataset.configuration?.propertyToInclude &&
-              dataset.configuration?.propertyToIncludeRange
-            ) {
-              const { min, max } =
-                (dataset.configuration as EnviromentalDatasetConfiguration)
-                  ?.propertyToIncludeRange || {}
-              const rampScale = scaleLinear().range([min, max]).domain([0, 1])
-              const numSteps = 8
-              const steps = [...Array(numSteps)]
-                .map((_, i) => parseFloat((i / (numSteps - 1)).toFixed(2)))
-                .map((value) => parseFloat((rampScale(value) as number).toFixed(3)))
-              generator.steps = steps
-            }
+          if (dataset.category === DatasetCategory.Environment) {
+            const { min, max } =
+              (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
+              {}
+            const rampScale = scaleLinear().range([min, max]).domain([0, 1])
+            const numSteps = 8
+            const steps = [...Array(numSteps)]
+              .map((_, i) => parseFloat((i / (numSteps - 1)).toFixed(2)))
+              .map((value) => parseFloat((rampScale(value) as number).toFixed(3)))
+            generator.steps = steps
           }
         }
         if (!generator.tilesUrl) {

@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import { DatasetCategory } from '@globalfishingwatch/api-types'
 import { selectContextAreasDataviews } from 'features/workspace/workspace.selectors'
 import styles from 'features/workspace/Sections.module.css'
 import { isGuestUser } from 'features/user/user.selectors'
@@ -38,13 +39,18 @@ function ContextAreaSection(): React.ReactElement {
             onClickOutside={() => {
               setNewDatasetOpen(false)
             }}
-            component={<NewDatasetTooltip onSelect={() => setNewDatasetOpen(false)} />}
+            component={
+              <NewDatasetTooltip
+                datasetCategory={DatasetCategory.Context}
+                onSelect={() => setNewDatasetOpen(false)}
+              />
+            }
           >
             <IconButton
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('dataset.add', 'Add dataset')}
+              tooltip={t('dataset.addContext', 'Add context dataset')}
               tooltipPlacement="top"
               className="print-hidden"
               onClick={onAddClick}

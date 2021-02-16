@@ -30,7 +30,8 @@
     "fishing": "Fishing"
   },
   "dataset": {
-    "add": "Add dataset",
+    "addContext": "Add context dataset",
+    "addEnvironment": "Add environment dataset",
     "colorByValue": "Color features by value",
     "confirmRemove": "Are you sure you want to permanently delete this dataset?",
     "dragActive": "Drop the file here ...",
@@ -44,6 +45,7 @@
     "new": "New dataset",
     "remove": "Remove dataset",
     "title_plural": "Datasets",
+    "uploadNewEnviroment": "Upload new environment dataset",
     "uploadNewContex": "Upload new context areas",
     "uploadError": "There was an error uploading your dataset",
     "uploadLogin": "You need to log in to upload datasets",

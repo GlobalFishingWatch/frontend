@@ -6,16 +6,15 @@ import { DatasetTypes, DatasetStatus, Vessel } from '@globalfishingwatch/api-typ
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
-  HeatmapColorBarOptions,
   TrackColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
-import { Generators } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
 import styles from 'features/workspace/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import { useDatasetsAPI } from 'features/datasets/datasets.hook'
+import { selectUserId } from 'features/user/user.selectors'
 import ExpandedContainer from '../ExpandedContainer'
 
 const DATASET_REFRESH_TIMEOUT = 10000
@@ -28,6 +27,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchFetchDataset } = useDatasetsAPI()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
+  const userId = useSelector(selectUserId)
   const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
   const resource = useSelector(selectResourceByUrl<Vessel>(url))
   const [colorOpen, setColorOpen] = useState(false)
@@ -64,13 +64,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     setColorOpen(false)
   }
 
-  const isCustomUserLayer = dataview.config?.type === Generators.Type.UserContext
-
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
-
-  // TODO remove this once we have the env category ready
-  const isEnviromentalLayerUsedAsContextTemporally =
-    dataset?.configuration?.propertyToInclude && dataset?.configuration?.propertyToIncludeRange
+  const isCustomUserLayer = dataset?.ownerId === userId
 
   useEffect(() => {
     let timeOut: any
@@ -175,11 +170,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               onClickOutside={closeExpandedContainer}
               component={
                 <ColorBar
-                  colorBarOptions={
-                    isEnviromentalLayerUsedAsContextTemporally
-                      ? HeatmapColorBarOptions
-                      : TrackColorBarOptions
-                  }
+                  colorBarOptions={TrackColorBarOptions}
                   selectedColor={dataview.config?.color}
                   onColorClick={changeColor}
                 />
@@ -208,11 +199,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           )}
         </div>
       </div>
-      {isEnviromentalLayerUsedAsContextTemporally && (
-        <div className={styles.properties}>
-          <div id={`legend_${dataview.id}`}></div>
-        </div>
-      )}
     </div>
   )
 }

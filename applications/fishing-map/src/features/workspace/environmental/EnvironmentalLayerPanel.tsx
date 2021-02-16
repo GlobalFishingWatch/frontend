@@ -13,6 +13,7 @@ import styles from 'features/workspace/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
+import { selectUserId } from 'features/user/user.selectors'
 import ExpandedContainer from '../ExpandedContainer'
 
 type LayerPanelProps = {
@@ -21,9 +22,10 @@ type LayerPanelProps = {
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
   const resource = useSelector(selectResourceByUrl<Vessel>(url))
+  const userId = useSelector(selectUserId)
   const [colorOpen, setColorOpen] = useState(false)
 
   const layerActive = dataview?.config?.visible ?? true
@@ -54,9 +56,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     setColorOpen(false)
   }
 
-  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  const title = t(`datasets:${dataset?.id}.name`)
+  const onRemoveClick = () => {
+    deleteDataviewInstance(dataview.id)
+  }
 
+  const dataset = dataview.datasets?.find(
+    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
+  )
+  const isCustomUserLayer = dataset?.ownerId === userId
+
+  const title = isCustomUserLayer ? dataset?.name || dataset?.id : t(`datasets:${dataset?.id}.name`)
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
       {title}
@@ -115,6 +124,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 className={styles.actionButton}
               />
             </ExpandedContainer>
+          )}
+          {isCustomUserLayer && (
+            <IconButton
+              icon="delete"
+              size="small"
+              tooltip={t('layer.remove', 'Remove layer')}
+              tooltipPlacement="top"
+              onClick={onRemoveClick}
+              className={cx(styles.actionButton)}
+            />
           )}
         </div>
       </div>

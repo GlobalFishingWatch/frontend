@@ -1,15 +1,16 @@
 // import { bindActionCreators } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
-import { Dataset } from '@globalfishingwatch/api-types/dist'
+import { Dataset, DatasetCategory } from '@globalfishingwatch/api-types/dist'
 import { AsyncError } from 'utils/async-slice'
 import {
   selectContextAreasDataviews,
   selectEnvironmentalDataviews,
+  selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
 import {
   getContextDataviewInstance,
-  getEnvironmentalDataviewInstance,
+  getEnvironmentDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -18,8 +19,10 @@ import {
   DatasetModals,
   deleteDatasetThunk,
   fetchDatasetByIdThunk,
+  selectDatasetCategory,
   selectDatasetModal,
   selectEditingDatasetId,
+  setDatasetCategory,
   setDatasetModal,
   setEditingDatasetId,
   updateDatasetThunk,
@@ -27,29 +30,27 @@ import {
 
 export const useNewDatasetConnect = () => {
   const contextDataviews = useSelector(selectContextAreasDataviews)
+  const activityDataviews = useSelector(selectTemporalgridDataviews)
   const enviromentalDataviews = useSelector(selectEnvironmentalDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const addNewDatasetToWorkspace = useCallback(
     (dataset: Dataset) => {
       let dataviewInstance
-      const layerType =
-        dataset.configuration?.propertyToInclude && dataset.configuration?.propertyToIncludeRange
-          ? 'enviromental'
-          : 'context'
-
-      if (layerType === 'context') {
+      if (dataset.category === DatasetCategory.Context) {
         const usedColors = contextDataviews?.flatMap((dataview) => dataview.config?.color || [])
         dataviewInstance = getContextDataviewInstance(dataset.id, usedColors)
       } else {
-        const usedRamps = enviromentalDataviews?.flatMap((dataview) => dataview.config?.color || [])
-        dataviewInstance = getEnvironmentalDataviewInstance(dataset.id, usedRamps)
+        const usedRamps = [...(enviromentalDataviews || []), ...(activityDataviews || [])].flatMap(
+          (dataview) => dataview.config?.colorRamp || []
+        )
+        dataviewInstance = getEnvironmentDataviewInstance(dataset.id, usedRamps)
       }
       if (dataviewInstance) {
         upsertDataviewInstance(dataviewInstance)
       }
     },
-    [contextDataviews, enviromentalDataviews, upsertDataviewInstance]
+    [contextDataviews, enviromentalDataviews, activityDataviews, upsertDataviewInstance]
   )
 
   return { addNewDatasetToWorkspace }
@@ -58,6 +59,7 @@ export const useNewDatasetConnect = () => {
 export const useDatasetModalConnect = () => {
   const dispatch = useDispatch()
   const datasetModal = useSelector(selectDatasetModal)
+  const datasetCategory = useSelector(selectDatasetCategory)
   const editingDatasetId = useSelector(selectEditingDatasetId)
 
   const dispatchDatasetModal = useCallback(
@@ -66,6 +68,14 @@ export const useDatasetModalConnect = () => {
     },
     [dispatch]
   )
+
+  const dispatchDatasetCategory = useCallback(
+    (datasetCategory: DatasetCategory) => {
+      dispatch(setDatasetCategory(datasetCategory))
+    },
+    [dispatch]
+  )
+
   const dispatchEditingDatasetId = useCallback(
     (id: string) => {
       dispatch(setEditingDatasetId(id))
@@ -75,7 +85,9 @@ export const useDatasetModalConnect = () => {
 
   return {
     datasetModal,
+    datasetCategory,
     dispatchDatasetModal,
+    dispatchDatasetCategory,
     editingDatasetId,
     dispatchEditingDatasetId,
   }

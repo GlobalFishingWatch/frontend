@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
-import { Dataview } from '@globalfishingwatch/api-types'
+import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
+import { DEFAULT_ENVIRONMENT_DATAVIEW_ID } from 'data/workspaces'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
@@ -28,7 +29,13 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         const mockedDataviews = await import('./dataviews.mock')
         dataviews = [...dataviews, ...mockedDataviews.default]
       }
-      return dataviews
+      // TODO: remove workaround once the API supports dataview category
+      return dataviews.map((d) => {
+        if (d.id === 79 || d.id === 80 || d.id === 84 || d.id === DEFAULT_ENVIRONMENT_DATAVIEW_ID) {
+          return { ...d, category: DataviewCategory.Environment }
+        }
+        return d
+      })
     } catch (e) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }

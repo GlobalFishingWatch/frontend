@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import { DatasetCategory } from '@globalfishingwatch/api-types'
 import { selectEnvironmentalDataviews } from 'features/workspace/workspace.selectors'
 import styles from 'features/workspace/Sections.module.css'
 import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
@@ -42,13 +43,18 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
             onClickOutside={() => {
               setNewDatasetOpen(false)
             }}
-            component={<NewDatasetTooltip onSelect={() => setNewDatasetOpen(false)} />}
+            component={
+              <NewDatasetTooltip
+                datasetCategory={DatasetCategory.Environment}
+                onSelect={() => setNewDatasetOpen(false)}
+              />
+            }
           >
             <IconButton
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('dataset.add', 'Add dataset')}
+              tooltip={t('dataset.addEnvironmental', 'Add environmental dataset')}
               tooltipPlacement="top"
               className="print-hidden"
               onClick={onAddClick}
