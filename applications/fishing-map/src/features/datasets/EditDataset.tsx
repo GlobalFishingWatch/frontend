@@ -1,26 +1,40 @@
 import React, { useState } from 'react'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
+import { DatasetCategory, EnviromentalDatasetConfiguration } from '@globalfishingwatch/api-types'
 import { useDatasetsAPI, useDatasetModalConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 import { selectDatasetById } from './datasets.slice'
 
-export type EditDatasetMetadata = {
+export type EditDatasetMetadata = Pick<
+  EnviromentalDatasetConfiguration,
+  'propertyToInclude' | 'propertyToIncludeRange'
+> & {
   name?: string
   description?: string
 }
 
 function EditDataset(): React.ReactElement {
   const { t } = useTranslation()
-  const { editingDatasetId, datasetModal, dispatchDatasetModal } = useDatasetModalConnect()
+  const {
+    datasetCategory,
+    datasetModal,
+    editingDatasetId,
+    dispatchDatasetModal,
+  } = useDatasetModalConnect()
   const dataset = useSelector(selectDatasetById(editingDatasetId as string))
   const [loading, setLoading] = useState(false)
   const [metadata, setMetadata] = useState<EditDatasetMetadata | undefined>({
     name: dataset?.name,
     description: dataset?.description,
+    propertyToInclude: (dataset?.configuration as EnviromentalDatasetConfiguration)
+      ?.propertyToInclude,
+    propertyToIncludeRange: (dataset?.configuration as EnviromentalDatasetConfiguration)
+      ?.propertyToIncludeRange,
   })
 
   const { dispatchUpdateDataset } = useDatasetsAPI()
@@ -32,7 +46,17 @@ function EditDataset(): React.ReactElement {
   const onUpdateClick = async () => {
     if (metadata) {
       setLoading(true)
-      await dispatchUpdateDataset({ id: editingDatasetId, ...metadata })
+      const updatedDataset = {
+        id: editingDatasetId,
+        name: metadata.name,
+        description: metadata.description,
+        configuration: {
+          ...dataset?.configuration,
+          propertyToInclude: metadata.propertyToInclude,
+          propertyToIncludeRange: metadata.propertyToIncludeRange,
+        },
+      }
+      await dispatchUpdateDataset(updatedDataset)
       onClose()
     }
   }
@@ -43,9 +67,20 @@ function EditDataset(): React.ReactElement {
     dispatchDatasetModal(undefined)
   }
 
+  const hasChangedName = metadata?.name && metadata?.name !== dataset?.name
+  const hasChangedPropertyToInclude =
+    metadata?.propertyToInclude &&
+    metadata?.propertyToInclude !==
+      (dataset?.configuration as EnviromentalDatasetConfiguration)?.propertyToInclude
+  const hasChangedPropertyToIncludeRange =
+    metadata?.propertyToIncludeRange &&
+    metadata?.propertyToIncludeRange !==
+      (dataset?.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange
+
   const allowUpdate =
-    (metadata?.name && metadata?.name !== dataset?.name) ||
-    (metadata?.description && metadata?.description !== dataset?.description)
+    hasChangedName || hasChangedPropertyToInclude || hasChangedPropertyToIncludeRange
+
+  const { min, max } = metadata?.propertyToIncludeRange || {}
 
   return (
     <Modal
@@ -69,6 +104,51 @@ function EditDataset(): React.ReactElement {
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
         />
+        {datasetCategory === DatasetCategory.Environment && (
+          <div className={styles.row}>
+            <InputText
+              value={metadata?.propertyToInclude}
+              inputSize="small"
+              label={t('dataset.colorByValue', 'Color features by value')}
+              className={cx(styles.input, styles.inputFullWidth)}
+              onChange={(e) => onDatasetFieldChange({ propertyToInclude: e.target.value })}
+            />
+            <InputText
+              inputSize="small"
+              type="number"
+              step="0.1"
+              value={min}
+              label={t('common.min', 'Min')}
+              placeholder={t('common.min', 'Min')}
+              className={styles.shortInput}
+              onChange={(e) =>
+                onDatasetFieldChange({
+                  propertyToIncludeRange: {
+                    min: e.target.value && parseFloat(e.target.value),
+                    max: metadata?.propertyToIncludeRange?.max,
+                  },
+                })
+              }
+            />
+            <InputText
+              inputSize="small"
+              type="number"
+              step="0.1"
+              label={t('common.max', 'Max')}
+              placeholder={t('common.max', 'Max')}
+              value={max}
+              className={styles.shortInput}
+              onChange={(e) =>
+                onDatasetFieldChange({
+                  propertyToIncludeRange: {
+                    min: metadata?.propertyToIncludeRange?.min,
+                    max: e.target.value && parseFloat(e.target.value),
+                  },
+                })
+              }
+            />
+          </div>
+        )}
       </div>
       <div className={styles.modalFooter}>
         <Button
