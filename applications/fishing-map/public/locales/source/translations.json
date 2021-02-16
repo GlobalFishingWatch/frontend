@@ -46,6 +46,7 @@
     "title_plural": "Datasets",
     "uploadNewContex": "Upload new context areas",
     "uploadError": "There was an error uploading your dataset",
+    "uploadLogin": "You need to log in to upload datasets",
     "uploadNewDataLayer": "Upload new data layer"
   },
   "errors": {
