@@ -1,11 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { batch, useDispatch, useSelector } from 'react-redux'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import { Dataset, DatasetStatus } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import EditDataset from 'features/datasets/EditDataset'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import {
   deleteDatasetThunk,
@@ -14,27 +13,40 @@ import {
 } from 'features/datasets/datasets.slice'
 import { AsyncReducerStatus } from 'types'
 import styles from './User.module.css'
-import { selectUserDatasets } from './user.selectors'
+import { selectUserDatasetsByCategory } from './user.selectors'
 
-function UserDatasets() {
-  const datasets = useSelector(selectUserDatasets)
+interface UserDatasetsProps {
+  datasetCategory: DatasetCategory
+}
+
+function UserDatasets({ datasetCategory }: UserDatasetsProps) {
+  const datasets = useSelector(selectUserDatasetsByCategory(datasetCategory))
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const datasetStatusId = useSelector(selectDatasetsStatusId)
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const {
-    datasetModal,
-    editingDatasetId,
     dispatchDatasetModal,
+    dispatchDatasetCategory,
     dispatchEditingDatasetId,
   } = useDatasetModalConnect()
 
+  const onNewDatasetClick = useCallback(async () => {
+    batch(() => {
+      dispatchDatasetModal('new')
+      dispatchDatasetCategory(datasetCategory)
+    })
+  }, [datasetCategory, dispatchDatasetModal, dispatchDatasetCategory])
+
   const onEditClick = useCallback(
     async (dataset: Dataset) => {
-      dispatchEditingDatasetId(dataset.id)
-      dispatchDatasetModal('edit')
+      batch(() => {
+        dispatchDatasetModal('edit')
+        dispatchEditingDatasetId(dataset.id)
+        dispatchDatasetCategory(datasetCategory)
+      })
     },
-    [dispatchDatasetModal, dispatchEditingDatasetId]
+    [datasetCategory, dispatchDatasetModal, dispatchDatasetCategory, dispatchEditingDatasetId]
   )
 
   const onDeleteClick = useCallback(
@@ -56,10 +68,13 @@ function UserDatasets() {
 
   return (
     <div className={styles.views}>
-      {datasetModal === 'edit' && editingDatasetId !== undefined && <EditDataset />}
       <div className={styles.viewsHeader}>
-        <label>{t('dataset.title_plural', 'Datasets')}</label>
-        <Button disabled={loading} type="secondary" onClick={() => dispatchDatasetModal('new')}>
+        <label>
+          {datasetCategory === DatasetCategory.Context
+            ? t('common.context_area_plural', 'Context areas')
+            : t('common.environment', 'Environment')}
+        </label>
+        <Button disabled={loading} type="secondary" onClick={onNewDatasetClick}>
           {t('dataset.new', 'New dataset') as string}
         </Button>
       </div>

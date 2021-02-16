@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import GFWAPI from '@globalfishingwatch/api-client'
+import { DatasetCategory } from '@globalfishingwatch/api-types/dist'
+import EditDataset from 'features/datasets/EditDataset'
 import {
   fetchWorkspacesThunk,
   selectWorkspaceListStatus,
@@ -12,6 +14,7 @@ import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { fetchAllDatasetsThunk, selectAllDatasetsRequested } from 'features/datasets/datasets.slice'
 import { AsyncReducerStatus } from 'types'
+import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import styles from './User.module.css'
 import { fetchUserThunk, GUEST_USER_TYPE, logoutUserThunk, selectUserData } from './user.slice'
 import { isUserLogged } from './user.selectors'
@@ -23,6 +26,7 @@ function User() {
   const dispatch = useDispatch()
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
+  const { datasetModal, editingDatasetId } = useDatasetModalConnect()
   const allDatasetsRequested = useSelector(selectAllDatasetsRequested)
   const workspaceListStatus = useSelector(selectWorkspaceListStatus)
   const [logoutLoading, setLogoutLoading] = useState(false)
@@ -80,7 +84,9 @@ function User() {
         </Button>
       </div>
       <UserWorkspaces />
-      <UserDatasets />
+      <UserDatasets datasetCategory={DatasetCategory.Environment} />
+      <UserDatasets datasetCategory={DatasetCategory.Context} />
+      {datasetModal === 'edit' && editingDatasetId !== undefined && <EditDataset />}
     </div>
   )
 }
