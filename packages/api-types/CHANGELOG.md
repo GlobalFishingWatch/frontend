@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.10.0
+
+### Minor Changes
+
+- 66e35ff4: Dataset and Dataviews category types
+
 ## 2.9.0
 
 ### Minor Changes
