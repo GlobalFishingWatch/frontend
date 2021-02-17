@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.22.2
+
+### Patch Changes
+
+- 4a10aebb: Rename fishing-activity category icon to match names from spreadsheets
+- Updated dependencies [4a10aebb]
+  - @globalfishingwatch/ui-components@2.12.7
+
 ## 0.22.1
 
 ### Patch Changes
