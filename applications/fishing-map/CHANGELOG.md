@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.23.0
+
+### Minor Changes
+
+- 66e35ff4: Dataset and Dataviews category types
+
+### Patch Changes
+
+- Updated dependencies [66e35ff4]
+  - @globalfishingwatch/api-types@2.10.0
+
 ## 0.22.2
 
 ### Patch Changes
