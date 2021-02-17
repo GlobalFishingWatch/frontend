@@ -1,5 +1,11 @@
 # @globalfishingwatch/fourwings-aggregate
 
+## 1.1.2
+
+### Patch Changes
+
+- Fixed unique cell id for highlight
+
 ## 1.1.1
 
 ### Patch Changes
