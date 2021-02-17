@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import Tippy from '@tippyjs/react/headless'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import { DatasetCategory } from '@globalfishingwatch/api-types'
 import { selectContextAreasDataviews } from 'features/workspace/workspace.selectors'
-import styles from 'features/workspace/Sections.module.css'
+import styles from 'features/workspace/shared/Sections.module.css'
 import { isGuestUser } from 'features/user/user.selectors'
 import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
+import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import LayerPanel from './ContextAreaLayerPanel'
 
 function ContextAreaSection(): React.ReactElement {
@@ -28,39 +29,33 @@ function ContextAreaSection(): React.ReactElement {
             type="border"
             size="medium"
             disabled
-            tooltip={t('dataset.add', 'Add dataset')}
+            tooltip={t('dataset.uploadLogin', 'You need to log in to upload datasets')}
             tooltipPlacement="top"
             className="print-hidden"
           />
         ) : (
-          <Tippy
-            interactive
+          <TooltipContainer
             visible={newDatasetOpen}
-            placement="right"
             onClickOutside={() => {
               setNewDatasetOpen(false)
             }}
-            render={(attrs) => {
-              return (
-                <div className={styles.tooltipContent} tabIndex={-1} {...attrs}>
-                  {newDatasetOpen && (
-                    <NewDatasetTooltip onSelect={() => setNewDatasetOpen(false)} />
-                  )}
-                  <div className={styles.tooltipArrow} data-popper-arrow></div>
-                </div>
-              )
-            }}
+            component={
+              <NewDatasetTooltip
+                datasetCategory={DatasetCategory.Context}
+                onSelect={() => setNewDatasetOpen(false)}
+              />
+            }
           >
             <IconButton
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('dataset.add', 'Add dataset')}
+              tooltip={t('dataset.addContext', 'Add context dataset')}
               tooltipPlacement="top"
               className="print-hidden"
               onClick={onAddClick}
             />
-          </Tippy>
+          </TooltipContainer>
         )}
       </div>
       {dataviews?.map((dataview) => (

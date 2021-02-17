@@ -5,16 +5,16 @@ import { UrlDataviewInstance } from 'types'
 import { capitalize } from 'utils/shared'
 import i18n from 'features/i18n/i18n'
 
-export type DatasetSchema = 'geartype' | 'fleet' | 'origin' | 'vessel_type'
+export type SupportedDatasetSchema = 'geartype' | 'fleet' | 'origin' | 'vessel_type'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
-export const datasetHasSchemaFields = (dataset: Dataset, schema: DatasetSchema) => {
+export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
   return dataset.schema?.[schema]?.enum !== undefined && dataset.schema?.[schema].enum.length > 0
 }
 
 export const getSupportedSchemaFieldsDatasets = (
   dataview: SchemaFieldDataview,
-  schema: DatasetSchema
+  schema: SupportedDatasetSchema
 ) => {
   const datasetsWithSchemaFieldsSupport = dataview?.datasets?.flatMap((dataset) => {
     const hasSchemaFields = datasetHasSchemaFields(dataset, schema)
@@ -25,7 +25,7 @@ export const getSupportedSchemaFieldsDatasets = (
 
 export const getNotSupportedSchemaFieldsDatasets = (
   dataview: SchemaFieldDataview,
-  schema: DatasetSchema
+  schema: SupportedDatasetSchema
 ) => {
   const datasetsWithoutSchemaFieldsSupport = dataview?.datasets?.flatMap((dataset) => {
     const hasSchemaFields = datasetHasSchemaFields(dataset, schema)
@@ -40,7 +40,7 @@ export const getNotSupportedSchemaFieldsDatasets = (
 
 export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,
-  schema: DatasetSchema
+  schema: SupportedDatasetSchema
 ) => {
   const activeDatasets = dataview?.datasets?.filter((dataset) =>
     dataview.config?.datasets?.includes(dataset.id)
@@ -58,7 +58,7 @@ export const getCommonSchemaFieldsInDataview = (
 
 export const getSchemaFieldsSelectedInDataview = (
   dataview: SchemaFieldDataview,
-  schema: DatasetSchema
+  schema: SupportedDatasetSchema
 ) => {
   const options = getCommonSchemaFieldsInDataview(dataview, schema)
   const optionsSelected = options?.filter((option) =>
@@ -67,7 +67,10 @@ export const getSchemaFieldsSelectedInDataview = (
   return optionsSelected
 }
 
-export const getFiltersBySchema = (dataview: SchemaFieldDataview, schema: DatasetSchema) => {
+export const getFiltersBySchema = (
+  dataview: SchemaFieldDataview,
+  schema: SupportedDatasetSchema
+) => {
   const datasetsWithSchema = getSupportedSchemaFieldsDatasets(dataview, schema)
   const datasetsWithSchemaIds = datasetsWithSchema?.map(({ id }) => id)
   const active = dataview.config?.datasets?.some((dataset: string) =>

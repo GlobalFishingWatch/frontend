@@ -13,9 +13,23 @@
   margin-bottom: var(--space-M);
 }
 
+.inputFullWidth {
+  flex: 1;
+}
+
 .shortInput {
   width: var(--size-L);
+  margin-left: var(--space-S);
   margin-right: var(--space-S);
+}
+
+.mediumInput {
+  width: 10rem;
+  margin-left: var(--space-S);
+  margin-right: var(--space-S);
+}
+
+.noLabelInput {
   margin-top: auto;
   margin-bottom: 0;
 }

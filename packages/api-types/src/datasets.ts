@@ -73,6 +73,11 @@ export type DatasetSchema = {
   maximum: number
 }
 
+export enum DatasetCategory {
+  Context = 'context',
+  Environment = 'environment',
+}
+
 export interface Dataset {
   id: string
   type: DatasetTypes
@@ -80,7 +85,7 @@ export interface Dataset {
   name: string
   description: string
   schema?: Record<string, DatasetSchema>
-  category?: string
+  category?: DatasetCategory
   subcategory?: string
   source?: string
   status: DatasetStatus

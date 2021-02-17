@@ -2,7 +2,12 @@ import { createSelector } from '@reduxjs/toolkit'
 import uniqBy from 'lodash/uniqBy'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { Dataset, DatasetTypes, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetTypes,
+  DataviewCategory,
+  DataviewDatasetConfig,
+} from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
 import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDatasets } from 'features/datasets/datasets.slice'
@@ -240,6 +245,12 @@ export const selectDataviewInstancesByType = (type: Generators.Type) => {
   })
 }
 
+export const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
+  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
+    return dataviews?.filter((dataview) => dataview.category === category)
+  })
+}
+
 export const selectVesselsDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.Track)],
   (dataviews) => dataviews
@@ -250,20 +261,14 @@ export const selectActiveVesselsDataviews = createSelector([selectVesselsDatavie
 )
 
 export const selectContextAreasDataviews = createSelector(
-  [
-    selectDataviewInstancesByType(Generators.Type.Context),
-    selectDataviewInstancesByType(Generators.Type.UserContext),
-  ],
-  (contextDataviews, userContextDataviews) => {
-    if (!userContextDataviews) return contextDataviews
-    if (!contextDataviews) return userContextDataviews
-    return [...userContextDataviews, ...contextDataviews]
+  [selectDataviewInstancesByCategory(DataviewCategory.Context)],
+  (contextDataviews) => {
+    return contextDataviews
   }
 )
 
 export const selectEnvironmentalDataviews = createSelector(
-  // TODO: use explicit categories here instead of generic layer-composer type
-  [selectDataviewInstancesByType(Generators.Type.Heatmap)],
+  [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
   (dataviews) => dataviews
 )
 

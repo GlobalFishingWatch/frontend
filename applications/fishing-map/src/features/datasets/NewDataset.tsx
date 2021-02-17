@@ -11,6 +11,7 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import Select from '@globalfishingwatch/ui-components/dist/select'
 import {
   AnyDatasetConfiguration,
+  DatasetCategory,
   DatasetTypes,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
@@ -53,13 +54,14 @@ const getPropertyRangeValuesFromGeojson = (
 
 interface DatasetConfigProps {
   className?: string
+  datasetCategory: DatasetCategory
   onDatasetFieldChange: (field: DatasetMetadata | AnyDatasetConfiguration) => void
   fileData: FeatureCollectionWithFilename
   metadata: DatasetMetadata
 }
 
 const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
-  const { metadata, fileData, className = '', onDatasetFieldChange } = props
+  const { metadata, fileData, className = '', datasetCategory, onDatasetFieldChange } = props
   const { t } = useTranslation()
   const geojsonProperties = extractPropertiesFromGeojson(fileData)
   const colorByOptions = geojsonProperties.map((property) => ({
@@ -120,70 +122,72 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
         }}
         direction="top"
       /> */}
-      <div className={styles.row}>
-        <label className={styles.selectLabel}>
-          {t('dataset.colorByValue', 'Color features by value')}
-        </label>
-        <Select
-          className={styles.selectShort}
-          containerClassName={styles.selectContainer}
-          options={colorByOptions}
-          selectedOption={colorByOptions.find(
-            ({ id }) => id === metadata.configuration?.propertyToInclude
-          )}
-          onSelect={(selected) => {
-            // TODO: pre-populate min and max values depending on selection
-            onDatasetFieldChange({ propertyToInclude: selected.id })
-            const propertyRange = getPropertyRangeValuesFromGeojson(fileData, selected.id)
-            if (propertyRange) {
+      {datasetCategory === DatasetCategory.Environment && (
+        <div className={styles.row}>
+          <label className={styles.selectLabel}>
+            {t('dataset.colorByValue', 'Color features by value')}
+          </label>
+          <Select
+            className={styles.selectShort}
+            containerClassName={styles.selectContainer}
+            options={colorByOptions}
+            selectedOption={colorByOptions.find(
+              ({ id }) => id === metadata.configuration?.propertyToInclude
+            )}
+            onSelect={(selected) => {
+              // TODO: pre-populate min and max values depending on selection
+              onDatasetFieldChange({ propertyToInclude: selected.id })
+              const propertyRange = getPropertyRangeValuesFromGeojson(fileData, selected.id)
+              if (propertyRange) {
+                onDatasetFieldChange({
+                  propertyToIncludeRange: {
+                    min: propertyRange.min,
+                    max: propertyRange.max,
+                  },
+                })
+              }
+            }}
+            onRemove={() => {
+              onDatasetFieldChange({ propertyToInclude: undefined })
+            }}
+            direction="top"
+          />
+          <InputText
+            inputSize="small"
+            type="number"
+            step="0.1"
+            value={min}
+            placeholder={t('common.min', 'Min')}
+            className={cx(styles.shortInput, styles.noLabelInput)}
+            onChange={(e) =>
               onDatasetFieldChange({
                 propertyToIncludeRange: {
-                  min: propertyRange.min,
-                  max: propertyRange.max,
+                  min: e.target.value && parseFloat(e.target.value),
+                  max:
+                    (metadata.configuration as EnviromentalDatasetConfiguration)
+                      ?.propertyToIncludeRange?.max || parseFloat(e.target.value),
                 },
               })
             }
-          }}
-          onRemove={() => {
-            onDatasetFieldChange({ propertyToInclude: undefined })
-          }}
-          direction="top"
-        />
-        <InputText
-          inputSize="small"
-          type="number"
-          step="0.1"
-          value={min}
-          placeholder={t('common.min', 'Min')}
-          className={styles.shortInput}
-          onChange={(e) =>
-            onDatasetFieldChange({
-              propertyToIncludeRange: {
-                min: parseFloat(e.target.value),
-                max:
-                  (metadata.configuration as EnviromentalDatasetConfiguration)
-                    ?.propertyToIncludeRange?.max || parseFloat(e.target.value),
-              },
-            })
-          }
-        />
-        <InputText
-          inputSize="small"
-          type="number"
-          step="0.1"
-          placeholder={t('common.max', 'Max')}
-          value={max}
-          className={styles.shortInput}
-          onChange={(e) =>
-            onDatasetFieldChange({
-              propertyToIncludeRange: {
-                min: min || 0,
-                max: parseFloat(e.target.value),
-              },
-            })
-          }
-        />
-      </div>
+          />
+          <InputText
+            inputSize="small"
+            type="number"
+            step="0.1"
+            placeholder={t('common.max', 'Max')}
+            value={max}
+            className={cx(styles.shortInput, styles.noLabelInput)}
+            onChange={(e) =>
+              onDatasetFieldChange({
+                propertyToIncludeRange: {
+                  min: min || 0,
+                  max: e.target.value && parseFloat(e.target.value),
+                },
+              })
+            }
+          />
+        </div>
+      )}
     </div>
   )
 }
@@ -242,7 +246,7 @@ export type DatasetMetadata = {
 
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
-  const { datasetModal, dispatchDatasetModal } = useDatasetModalConnect()
+  const { datasetModal, datasetCategory, dispatchDatasetModal } = useDatasetModalConnect()
   const { addNewDatasetToWorkspace } = useNewDatasetConnect()
 
   const [file, setFile] = useState<File | undefined>()
@@ -286,6 +290,7 @@ function NewDataset(): React.ReactElement {
           ...metadata,
           name: capitalize(lowerCase(name)),
           type: DatasetTypes.Context,
+          category: datasetCategory,
           configuration: {
             // TODO when supporting multiple files upload
             // ...(geojson?.fileName && { file: geojson.fileName }),
@@ -298,7 +303,7 @@ function NewDataset(): React.ReactElement {
       }
       setLoading(false)
     },
-    [t]
+    [t, datasetCategory]
   )
 
   const onDatasetFieldChange = (field: DatasetMetadata | AnyDatasetConfiguration) => {
@@ -318,8 +323,6 @@ function NewDataset(): React.ReactElement {
       const { min, max } =
         (newMetadata.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
         {}
-      console.log(max)
-      console.log(min)
       if (min && max && min >= max) {
         error = t('errors.invalidRange', 'Min has to be lower than max value')
       }
@@ -355,7 +358,11 @@ function NewDataset(): React.ReactElement {
 
   return (
     <Modal
-      title={t('dataset.uploadNewContex', 'Upload new context areas')}
+      title={
+        datasetCategory === DatasetCategory.Context
+          ? t('dataset.uploadNewContex', 'Upload new context areas')
+          : t('dataset.uploadNewEnviroment', 'Upload new environment dataset')
+      }
       isOpen={datasetModal === 'new'}
       contentClassName={styles.modalContainer}
       onClose={onClose}
@@ -366,6 +373,7 @@ function NewDataset(): React.ReactElement {
           <DatasetConfig
             fileData={fileData}
             metadata={metadata}
+            datasetCategory={datasetCategory}
             onDatasetFieldChange={onDatasetFieldChange}
           />
         )}
@@ -380,7 +388,7 @@ function NewDataset(): React.ReactElement {
           </span>
         </div>
         <Button
-          disabled={!file || !metadata?.name || !metadata?.description}
+          disabled={!file || !metadata?.name}
           className={styles.saveBtn}
           onClick={onConfirmClick}
           loading={loading}
