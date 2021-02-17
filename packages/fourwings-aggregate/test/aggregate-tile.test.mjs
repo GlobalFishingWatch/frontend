@@ -261,7 +261,7 @@ tap.equal(
 )
 
 // test unique id for highlightedFeature
-tap.equal(generateUniqueId(0,0,1234), '001234')
+tap.equal(generateUniqueId(0,0,1234), 111234)
 
 
 // perf test

@@ -36,4 +36,4 @@ const getLastDigit = (num: number) => parseInt(num.toString().slice(-1))
 // In order for setFeatureState to work correctly, generate unique IDs across viewport-visible tiles:
 // concatenate last x/z digits and cell increment index (goal is to get numbers as small as possible)
 export const generateUniqueId = (x: number, y: number, cellId: number) =>
-  [getLastDigit(x), getLastDigit(y), cellId].join('')
+  parseInt([getLastDigit(x) + 1, getLastDigit(y) + 1, cellId].join(''))
