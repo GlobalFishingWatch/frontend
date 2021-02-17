@@ -23,6 +23,24 @@ export const selectCurrentWorkspaces = createSelector(
   }
 )
 
+export const selectAvailableWorkspacesCategories = createSelector(
+  [selectHighlightedWorkspaces],
+  (highlightedWorkspaces) => {
+    return (
+      highlightedWorkspaces &&
+      Object.entries(highlightedWorkspaces)
+        .filter(([category, entries]) => {
+          const hasEntries = entries.length > 0
+          const isInSupportedCategories = Object.values(WorkspaceCategories).includes(
+            category as WorkspaceCategories
+          )
+          return hasEntries && isInSupportedCategories
+        })
+        .map(([category]) => category as WorkspaceCategories)
+    )
+  }
+)
+
 export const selectCurrentHighlightedWorkspaces = createSelector(
   [selectLocationCategory, selectHighlightedWorkspaces, selectWorkspaces],
   (locationCategory, highlightedWorkspaces, apiWorkspaces): HighlightedWorkspace[] | undefined => {
