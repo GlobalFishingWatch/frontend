@@ -29,13 +29,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         const mockedDataviews = await import('./dataviews.mock')
         dataviews = [...dataviews, ...mockedDataviews.default]
       }
-      // TODO: remove workaround once the API supports dataview category
-      return dataviews.map((d) => {
-        if (d.id === 79 || d.id === 80 || d.id === 84 || d.id === DEFAULT_ENVIRONMENT_DATAVIEW_ID) {
-          return { ...d, category: DataviewCategory.Environment }
-        }
-        return d
-      })
+      return dataviews
     } catch (e) {
       return rejectWithValue({ status: e.status || e.code, message: e.message })
     }
