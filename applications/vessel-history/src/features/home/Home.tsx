@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
+import cx from 'classnames'
 import { useDispatch } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
@@ -7,6 +8,7 @@ import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
 import { logoutUserThunk } from 'features/user/user.slice'
 import { Vessel } from 'types'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
+import SearchPlaceholder, { SearchNoResultsState } from '../search/SearchPlaceholders'
 import styles from './Home.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
 
@@ -79,8 +81,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
           <IconButton type="default" size="default" icon="settings"></IconButton>
         </header>
       )}
-      <div>
-        <div className={styles.searchbar + ` ${query ? styles.searching : ''}`}>
+      <div className={styles.search}>
+        <div className={cx(styles.searchbar, query ? styles.searching : '', styles.inputContainer)}>
           <DebounceInput
             debounceTimeout={500}
             autoFocus
@@ -107,16 +109,23 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
           </div>
         )}
         {query && (
-          <div>
-            {searching && <Spinner className={styles.loader}></Spinner>}
-            {!searching && (
-              <div className={styles.offlineVessels}>
-                {vessels.map((vessel, index) => (
-                  <VesselListItem key={index} vessel={vessel} />
-                ))}
-              </div>
-            )}
-          </div>
+          <Fragment>
+            <ul className={styles.searchResults}>
+              {searching && (
+                <SearchPlaceholder>
+                  <Spinner className={styles.loader}></Spinner>
+                </SearchPlaceholder>
+              )}
+              {!searching && vessels.length > 0 && (
+                <div className={styles.offlineVessels}>
+                  {vessels.map((vessel, index) => (
+                    <VesselListItem key={index} vessel={vessel} />
+                  ))}
+                </div>
+              )}
+              {!searching && vessels.length == 0 && <SearchNoResultsState />}
+            </ul>
+          </Fragment>
         )}
       </div>
     </div>
