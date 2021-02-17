@@ -2,6 +2,7 @@ import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import formatcoords from 'formatcoords'
 import {
   MiniGlobe,
   IconButton,
@@ -11,6 +12,7 @@ import {
   Button,
 } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import Rulers from 'features/map/controls/Rulers'
@@ -18,9 +20,28 @@ import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
+import { MapCoordinates } from 'types'
+import { toFixed } from 'utils/shared'
 import { isPrintSupported } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
+
+const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
+  const [showDMS, setShowDMS] = useState(true)
+  return (
+    <div className={styles.miniGlobeInfo} onClick={() => setShowDMS(!showDMS)}>
+      <div className={styles.miniGlobeInfoTitle}>{getOceanAreaName(viewport, true)}</div>
+      <div>
+        {showDMS
+          ? formatcoords(viewport.latitude, viewport.longitude).format('DDMMssX', {
+              latLonSeparator: '',
+              decimalPlaces: 2,
+            })
+          : `${toFixed(viewport.latitude, 4)},${toFixed(viewport.longitude, 4)}`}
+      </div>
+    </div>
+  )
+}
 
 const MapControls = ({
   mapLoading = false,
@@ -31,6 +52,7 @@ const MapControls = ({
 }): React.ReactElement => {
   const { t } = useTranslation()
   const [modalOpen, setModalOpen] = useState(false)
+  const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const domElement = useRef<HTMLElement>()
@@ -103,64 +125,72 @@ const MapControls = ({
   }
   const extendedControls = useSelector(isWorkspaceLocation)
   return (
-    <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
-      <MiniGlobe
-        className={styles.miniglobe}
-        size={60}
-        viewportThickness={3}
-        bounds={bounds}
-        center={{ latitude, longitude }}
-      />
-      <div className={styles.controlsNested}>
-        {extendedControls && <MapSearch />}
-        <IconButton
-          icon="plus"
-          type="map-tool"
-          tooltip={t('map.zoom_in', 'Zoom in')}
-          onClick={onZoomInClick}
-        />
-        <IconButton
-          icon="minus"
-          type="map-tool"
-          tooltip={t('map.zoom_out', 'Zoom out')}
-          onClick={onZoomOutClick}
-        />
-        {extendedControls && (
-          <Fragment>
-            <Rulers />
-            <IconButton
-              icon="camera"
-              type="map-tool"
-              loading={loading}
-              disabled={mapLoading || loading}
-              tooltip={
-                mapLoading || loading
-                  ? t('map.mapLoadingWait', 'Please wait until map loads')
-                  : t('map.captureMap', 'Capture map')
-              }
-              onClick={onScreenshotClick}
-            />
-            <Tooltip
-              content={
-                currentBasemap === Generators.BasemapType.Default
-                  ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
-                  : t('map.change_basemap_default', 'Switch to default basemap')
-              }
-              placement="left"
-            >
-              <button
-                className={cx(styles.basemapSwitcher, styles[currentBasemap])}
-                onClick={switchBasemap}
-              ></button>
-            </Tooltip>
-            <IconButton
-              type="map-tool"
-              tooltip={t('map.loading', 'Map loading')}
-              loading={mapLoading}
-              className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
-            />
-          </Fragment>
-        )}
+    <Fragment>
+      <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
+        <div
+          onMouseEnter={() => setMiniGlobeHovered(true)}
+          onMouseLeave={() => setMiniGlobeHovered(false)}
+        >
+          <MiniGlobe
+            className={styles.miniglobe}
+            size={60}
+            viewportThickness={3}
+            bounds={bounds}
+            center={{ latitude, longitude }}
+          />
+          {miniGlobeHovered && <MiniGlobeInfo viewport={viewport} />}
+        </div>
+        <div className={cx('print-hidden', styles.controlsNested)}>
+          {extendedControls && <MapSearch />}
+          <IconButton
+            icon="plus"
+            type="map-tool"
+            tooltip={t('map.zoom_in', 'Zoom in')}
+            onClick={onZoomInClick}
+          />
+          <IconButton
+            icon="minus"
+            type="map-tool"
+            tooltip={t('map.zoom_out', 'Zoom out')}
+            onClick={onZoomOutClick}
+          />
+          {extendedControls && (
+            <Fragment>
+              <Rulers />
+              <IconButton
+                icon="camera"
+                type="map-tool"
+                loading={loading}
+                disabled={mapLoading || loading}
+                tooltip={
+                  mapLoading || loading
+                    ? t('map.mapLoadingWait', 'Please wait until map loads')
+                    : t('map.captureMap', 'Capture map')
+                }
+                onClick={onScreenshotClick}
+              />
+              <Tooltip
+                content={
+                  currentBasemap === Generators.BasemapType.Default
+                    ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
+                    : t('map.change_basemap_default', 'Switch to default basemap')
+                }
+                placement="left"
+              >
+                <button
+                  className={cx(styles.basemapSwitcher, styles[currentBasemap])}
+                  onClick={switchBasemap}
+                ></button>
+              </Tooltip>
+              <IconButton
+                type="map-tool"
+                tooltip={t('map.loading', 'Map loading')}
+                loading={mapLoading}
+                className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
+              />
+            </Fragment>
+          )}
+        </div>
       </div>
       <Modal
         title="Screenshot preview"
@@ -195,7 +225,7 @@ const MapControls = ({
           </div>
         </div>
       </Modal>
-    </div>
+    </Fragment>
   )
 }
 

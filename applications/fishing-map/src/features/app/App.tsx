@@ -22,6 +22,7 @@ import { isUserLogged } from 'features/user/user.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import styles from './App.module.css'
 import { selectSidebarOpen } from './app.selectors'
 
@@ -45,6 +46,7 @@ function App(): React.ReactElement {
   const locationType = useSelector(selectLocationType)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
+  // const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const narrowSidebar = useSelector(isWorkspaceLocation)
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
@@ -53,7 +55,29 @@ function App(): React.ReactElement {
     dispatch(fetchUserThunk())
   }, [dispatch])
 
-  const homeNeedsFetch = locationType === HOME && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
+  useEffect(() => {
+    dispatch(fetchHighlightWorkspacesThunk())
+  }, [dispatch])
+
+  const isHomeLocation = locationType === HOME
+  // TODO: decide if we want to redirect when only one category is supported and
+  // we want to hide the default workspace
+  // const onlyOneCategorySupported = availableCategories?.length === 1
+  // const categorySupportedNotFishing =
+  //   availableCategories?.[0] === WorkspaceCategories.FishingActivity
+
+  // useEffect(() => {
+  //   if (isHomeLocation && onlyOneCategorySupported && !categorySupportedNotFishing) {
+  //     dispatchLocation(
+  //       WORKSPACES_LIST,
+  //       { category: availableCategories?.[0] as WorkspaceCategories },
+  //       true
+  //     )
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isHomeLocation, onlyOneCategorySupported])
+
+  const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
   useEffect(() => {
     if (userLogged && (homeNeedsFetch || hasWorkspaceIdChanged)) {

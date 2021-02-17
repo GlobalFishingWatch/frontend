@@ -14,8 +14,11 @@
     "loggedAs": "Logged as",
     "login": "Log in",
     "logout": "Log out",
+    "max": "Max",
+    "min": "Min",
     "more": "more",
     "name": "Name",
+    "presence": "Fishing presence",
     "seeDefault": "See default view",
     "share": "Click to share the current view",
     "update": "Update",
@@ -27,7 +30,9 @@
     "fishing": "Fishing"
   },
   "dataset": {
-    "add": "Add dataset",
+    "addContext": "Add context dataset",
+    "addEnvironment": "Add environment dataset",
+    "colorByValue": "Color features by value",
     "confirmRemove": "Are you sure you want to permanently delete this dataset?",
     "dragActive": "Drop the file here ...",
     "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
@@ -40,14 +45,17 @@
     "new": "New dataset",
     "remove": "Remove dataset",
     "title_plural": "Datasets",
+    "uploadNewEnviroment": "Upload new environment dataset",
     "uploadNewContex": "Upload new context areas",
     "uploadError": "There was an error uploading your dataset",
+    "uploadLogin": "You need to log in to upload datasets",
     "uploadNewDataLayer": "Upload new data layer"
   },
   "errors": {
     "datasetNotFound": "Dataset not found",
     "datasetNotValid": "It seems to be something wrong with your file",
     "generic": "Something went wrong, try again or contact:",
+    "invalidRange": "Min has to be lower than max value",
     "notSupportedBy": "Not supported by {{list}}",
     "pageNotFound": "Page not found",
     "privateView": "This is a private view",
@@ -132,6 +140,7 @@
     "source": "Source",
     "tracks": "Vessel Tracks",
     "transmission_plural": "Transmissions",
+    "vesselType_plural": "Vessel types",
     "widthRange": "Width range",
     "transmission": "Transmission"
   },

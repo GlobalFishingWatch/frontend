@@ -76,7 +76,8 @@ steps:
           '--platform',
           'managed',
           '--set-env-vars',
-          'BASIC_AUTH=$_BASIC_AUTH',
+          'BASIC_AUTH=$_BASIC_AUTH,
+           NODE_ENV=$_NODE_ENV',
           '--allow-unauthenticated',
       ]
 

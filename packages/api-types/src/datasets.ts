@@ -41,13 +41,23 @@ export enum DatasetStatus {
   Error = 'error',
 }
 
+export type DatasetCustomTypes = 'points' | 'lines' | 'geometries'
 export interface DatasetConfiguration {
   index?: string
   filePath?: string
-  propertyToInclude?: string
   srid?: number
+  file?: string
+  type?: DatasetCustomTypes
+  format?: 'geojson'
   [key: string]: unknown
 }
+
+export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {
+  propertyToInclude: string
+  propertyToIncludeRange: { min: number; max: number }
+}
+
+export type AnyDatasetConfiguration = DatasetConfiguration | EnviromentalDatasetConfiguration
 
 export type RelatedDataset = {
   id: string
@@ -63,6 +73,11 @@ export type DatasetSchema = {
   maximum: number
 }
 
+export enum DatasetCategory {
+  Context = 'context',
+  Environment = 'environment',
+}
+
 export interface Dataset {
   id: string
   type: DatasetTypes
@@ -70,7 +85,7 @@ export interface Dataset {
   name: string
   description: string
   schema?: Record<string, DatasetSchema>
-  category?: string
+  category?: DatasetCategory
   subcategory?: string
   source?: string
   status: DatasetStatus
@@ -82,7 +97,7 @@ export interface Dataset {
   endDate?: string
   createdAt: string
   endpoints?: Endpoint[]
-  configuration: DatasetConfiguration | null
+  configuration: AnyDatasetConfiguration | null
   relatedDatasets: RelatedDataset[] | null
   fieldsAllowed: string[]
 }

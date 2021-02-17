@@ -1,10 +1,17 @@
 // import { bindActionCreators } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
-import { useCallback } from 'react'
-import { Dataset } from '@globalfishingwatch/api-types/dist'
+import { useCallback, useEffect } from 'react'
+import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types/dist'
 import { AsyncError } from 'utils/async-slice'
-import { selectContextAreasDataviews } from 'features/workspace/workspace.selectors'
-import { getContextDataviewInstance } from 'features/dataviews/dataviews.utils'
+import {
+  selectContextAreasDataviews,
+  selectEnvironmentalDataviews,
+  selectTemporalgridDataviews,
+} from 'features/workspace/workspace.selectors'
+import {
+  getContextDataviewInstance,
+  getEnvironmentDataviewInstance,
+} from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   CreateDataset,
@@ -12,24 +19,40 @@ import {
   DatasetModals,
   deleteDatasetThunk,
   fetchDatasetByIdThunk,
+  selectDatasetCategory,
   selectDatasetModal,
   selectEditingDatasetId,
+  setDatasetCategory,
   setDatasetModal,
   setEditingDatasetId,
   updateDatasetThunk,
 } from './datasets.slice'
 
+const DATASET_REFRESH_TIMEOUT = 10000
+
 export const useNewDatasetConnect = () => {
-  const dataviews = useSelector(selectContextAreasDataviews)
+  const contextDataviews = useSelector(selectContextAreasDataviews)
+  const activityDataviews = useSelector(selectTemporalgridDataviews)
+  const enviromentalDataviews = useSelector(selectEnvironmentalDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const usedColors = dataviews?.flatMap((dataview) => dataview.config?.color || [])
 
   const addNewDatasetToWorkspace = useCallback(
-    (dataset) => {
-      const dataviewInstance = getContextDataviewInstance(dataset.id, usedColors)
-      upsertDataviewInstance(dataviewInstance)
+    (dataset: Dataset) => {
+      let dataviewInstance
+      if (dataset.category === DatasetCategory.Context) {
+        const usedColors = contextDataviews?.flatMap((dataview) => dataview.config?.color || [])
+        dataviewInstance = getContextDataviewInstance(dataset.id, usedColors)
+      } else {
+        const usedRamps = [...(enviromentalDataviews || []), ...(activityDataviews || [])].flatMap(
+          (dataview) => dataview.config?.colorRamp || []
+        )
+        dataviewInstance = getEnvironmentDataviewInstance(dataset.id, usedRamps)
+      }
+      if (dataviewInstance) {
+        upsertDataviewInstance(dataviewInstance)
+      }
     },
-    [upsertDataviewInstance, usedColors]
+    [contextDataviews, enviromentalDataviews, activityDataviews, upsertDataviewInstance]
   )
 
   return { addNewDatasetToWorkspace }
@@ -38,6 +61,7 @@ export const useNewDatasetConnect = () => {
 export const useDatasetModalConnect = () => {
   const dispatch = useDispatch()
   const datasetModal = useSelector(selectDatasetModal)
+  const datasetCategory = useSelector(selectDatasetCategory)
   const editingDatasetId = useSelector(selectEditingDatasetId)
 
   const dispatchDatasetModal = useCallback(
@@ -46,6 +70,14 @@ export const useDatasetModalConnect = () => {
     },
     [dispatch]
   )
+
+  const dispatchDatasetCategory = useCallback(
+    (datasetCategory: DatasetCategory) => {
+      dispatch(setDatasetCategory(datasetCategory))
+    },
+    [dispatch]
+  )
+
   const dispatchEditingDatasetId = useCallback(
     (id: string) => {
       dispatch(setEditingDatasetId(id))
@@ -55,7 +87,9 @@ export const useDatasetModalConnect = () => {
 
   return {
     datasetModal,
+    datasetCategory,
     dispatchDatasetModal,
+    dispatchDatasetCategory,
     editingDatasetId,
     dispatchEditingDatasetId,
   }
@@ -112,4 +146,21 @@ export const useDatasetsAPI = () => {
     dispatchUpdateDataset,
     dispatchDeleteDataset,
   }
+}
+
+export const useAutoRefreshImportingDataset = (dataset?: Dataset) => {
+  const { dispatchFetchDataset } = useDatasetsAPI()
+  useEffect(() => {
+    let timeOut: any
+    if (dataset && dataset.status === DatasetStatus.Importing) {
+      timeOut = setTimeout(() => {
+        dispatchFetchDataset(dataset.id)
+      }, DATASET_REFRESH_TIMEOUT)
+    }
+    return () => {
+      if (timeOut) {
+        clearTimeout(timeOut)
+      }
+    }
+  }, [dataset, dispatchFetchDataset])
 }

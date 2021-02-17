@@ -1,6 +1,6 @@
 import React, { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { getParser } from 'bowser'
+// import { getParser } from 'bowser'
 import debounce from 'lodash/debounce'
 import { Map } from '@globalfishingwatch/mapbox-gl'
 import { getCSSVarValue } from 'utils/dom'
@@ -17,12 +17,14 @@ type PrintSize = {
   in: string
 }
 
-const browser = getParser(window.navigator.userAgent)
-export const isPrintSupported = browser.satisfies({
-  chrome: '>22',
-  opera: '>30',
-  edge: '>79',
-})
+// TODO: review why it isn't always render propertly, disabled for now
+export const isPrintSupported = false
+// const browser = getParser(window.navigator.userAgent)
+// export const isPrintSupported = browser.satisfies({
+//   chrome: '>22',
+//   opera: '>30',
+//   edge: '>79',
+// })
 
 export const getMapImage = (map: Map): Promise<string> => {
   return new Promise((resolve, reject) => {

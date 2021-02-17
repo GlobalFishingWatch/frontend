@@ -3,6 +3,7 @@ import { BBox, Feature, Geometry } from 'geojson'
 export interface OceanAreaProperties {
   type: string
   name: string
+  area: number
   mrgid?: string
   bounds?: BBox
 }

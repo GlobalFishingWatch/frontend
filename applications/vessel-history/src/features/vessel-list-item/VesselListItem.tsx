@@ -2,6 +2,8 @@ import React from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { Vessel } from 'types'
 import { getFlagById } from 'utils/flags'
+import { getVesselAPISource } from 'utils/vessel'
+import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
 import styles from './VesselListItem.module.css'
 
 interface ListItemProps {
@@ -16,6 +18,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   }
 
   const flagLabel = getFlagById(vessel.flag)?.label
+  const sourceAPI = getVesselAPISource(vessel)
   return (
     <div className={styles.vesselItem}>
       {props.saved && (
@@ -48,6 +51,12 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
           <div>
             <label>CALLSIGN</label>
             {vessel.callsign}
+          </div>
+        )}
+        {SHOW_VESSEL_API_SOURCE && (
+          <div>
+            <label>SOURCE</label>
+            {sourceAPI.join('+')}
           </div>
         )}
         <div>

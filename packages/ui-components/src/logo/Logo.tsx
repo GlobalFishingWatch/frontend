@@ -1,9 +1,9 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
 import styles from './Logo.module.css'
+import { SubBrands } from '.'
 
 export type LogoTypes = 'default' | 'invert'
-export type SubBrands = 'Marine Reserves' | 'Carrier Vessels' | 'Country Portal'
 
 interface LogoProps {
   type?: LogoTypes
@@ -16,9 +16,9 @@ function Logo(props: LogoProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="40 0 160 60"
-      width="200"
-      height="60"
+      viewBox="30 0 180 60"
+      width="222"
+      height="66"
       className={cx(styles.container, className)}
       aria-label={`Global Fishing Watch ${subBrand}`}
     >

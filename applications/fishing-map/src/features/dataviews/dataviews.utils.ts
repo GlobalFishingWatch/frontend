@@ -1,10 +1,11 @@
-import { DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   TrackColorBarOptions,
   HeatmapColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
+  DEFAULT_ENVIRONMENT_DATAVIEW_ID,
   DEFAULT_CONTEXT_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
@@ -59,6 +60,31 @@ export const getHeatmapDataviewInstance = (
   return heatmapDataviewInstance
 }
 
+export const getEnvironmentDataviewInstance = (
+  datasetId: string,
+  usedRamp: string[] = []
+): DataviewInstance<Generators.Type> => {
+  const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamp.includes(option.id))
+  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
+  const contextDataviewInstance = {
+    id: `environmental-${Date.now()}`,
+    category: DataviewCategory.Environment,
+    config: {
+      color: colorOption.value,
+      colorRamp: colorOption.id,
+    },
+    dataviewId: DEFAULT_ENVIRONMENT_DATAVIEW_ID,
+    datasetsConfig: [
+      {
+        datasetId,
+        params: [],
+        endpoint: 'user-context-tiles',
+      },
+    ],
+  }
+  return contextDataviewInstance
+}
+
 export const getContextDataviewInstance = (
   datasetId: string,
   usedColors: string[] = []
@@ -67,6 +93,7 @@ export const getContextDataviewInstance = (
   const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
   const contextDataviewInstance = {
     id: `context-${Date.now()}`,
+    category: DataviewCategory.Context,
     config: {
       color: colorOption.value,
     },

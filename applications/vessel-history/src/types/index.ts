@@ -40,10 +40,10 @@ export interface OtherShipname {
 export interface Vessel {
   id: string
   callsign: string
-  firstTransmissionDate: Date
+  firstTransmissionDate: string
   flag: string
   imo?: any
-  lastTransmissionDate: Date
+  lastTransmissionDate: string
   mmsi: string
   otherCallsigns: OtherCallsign[]
   otherImos: OtherImo[]
@@ -52,4 +52,9 @@ export interface Vessel {
   source: string
   dataset: string
   vesselMatchId: string
+}
+
+export enum VesselAPISource {
+  TMT = 'TMT',
+  GFW = 'GFW',
 }

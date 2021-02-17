@@ -15,9 +15,8 @@ import {
   filterSegmentsByTimerange,
 } from '@globalfishingwatch/data-transforms'
 import { formatInfoField } from 'utils/info'
-import useClickedOutside from 'hooks/use-clicked-outside'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
-import styles from 'features/workspace/LayerPanel.module.css'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
@@ -27,6 +26,7 @@ import { useMapboxInstance } from 'features/map/map.context'
 import useViewport from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
+import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 
 // Translations by feature.unit static keys
 // t('vessel.flag', 'Flag')
@@ -118,7 +118,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     setColorOpen(false)
     setInfoOpen(false)
   }
-  const expandedContainerRef = useClickedOutside(closeExpandedContainer)
 
   const vesselId = dataview.id.replace(DATAVIEW_INSTANCE_PREFIX, '')
   const title = vesselName || vesselId || dataview.name
@@ -163,17 +162,27 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             <Fragment>
               {layerActive && (
                 <Fragment>
-                  <IconButton
-                    icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
-                    size="small"
-                    style={colorOpen ? {} : { color: dataview.config?.color }}
-                    tooltip={t('layer.color_change', 'Change color')}
-                    tooltipPlacement="top"
-                    onClick={onToggleColorOpen}
-                    className={cx(styles.actionButton, styles.expandable, {
-                      [styles.expanded]: colorOpen,
-                    })}
-                  />
+                  <ExpandedContainer
+                    visible={colorOpen}
+                    onClickOutside={closeExpandedContainer}
+                    component={
+                      <ColorBar
+                        colorBarOptions={TrackColorBarOptions}
+                        selectedColor={dataview.config?.color}
+                        onColorClick={changeTrackColor}
+                      />
+                    }
+                  >
+                    <IconButton
+                      icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
+                      size="small"
+                      style={colorOpen ? {} : { color: dataview.config?.color }}
+                      tooltip={t('layer.color_change', 'Change color')}
+                      tooltipPlacement="top"
+                      onClick={onToggleColorOpen}
+                      className={styles.actionButton}
+                    />
+                  </ExpandedContainer>
                   <IconButton
                     icon="target"
                     size="small"
@@ -184,16 +193,52 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                   />
                 </Fragment>
               )}
-              <IconButton
-                icon="info"
-                size="small"
-                className={styles.actionButton}
-                tooltip={
-                  infoOpen ? t('layer.infoClose', 'Hide info') : t('layer.infoOpen', 'Show info')
+              <ExpandedContainer
+                visible={infoOpen}
+                onClickOutside={closeExpandedContainer}
+                component={
+                  <ul className={styles.infoContent}>
+                    {dataview.infoConfig?.fields.map((field: any) => {
+                      const fieldValue = resource?.data?.[field.id as keyof Vessel]
+                      if (!fieldValue) return null
+                      return (
+                        <li key={field.id} className={styles.infoContentItem}>
+                          <label>{t(`vessel.${field.id}`)}</label>
+                          <span>
+                            {field.type === 'date' ? (
+                              <I18nDate date={fieldValue} />
+                            ) : field.type === 'flag' ? (
+                              <I18nFlag iso={fieldValue} />
+                            ) : field.id === 'mmsi' ? (
+                              <a
+                                className={styles.link}
+                                target="_blank"
+                                rel="noreferrer"
+                                href={`https://www.marinetraffic.com/en/ais/details/ships/${fieldValue}`}
+                              >
+                                {formatInfoField(fieldValue, field.type)}
+                              </a>
+                            ) : (
+                              formatInfoField(fieldValue, field.type)
+                            )}
+                          </span>
+                        </li>
+                      )
+                    })}
+                  </ul>
                 }
-                onClick={onToggleInfoOpen}
-                tooltipPlacement="top"
-              />
+              >
+                <IconButton
+                  icon="info"
+                  size="small"
+                  className={styles.actionButton}
+                  tooltip={
+                    infoOpen ? t('layer.infoClose', 'Hide info') : t('layer.infoOpen', 'Show info')
+                  }
+                  onClick={onToggleInfoOpen}
+                  tooltipPlacement="top"
+                />
+              </ExpandedContainer>
               <IconButton
                 icon="delete"
                 size="small"
@@ -205,46 +250,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             </Fragment>
           )}
         </div>
-      </div>
-      <div className={styles.expandedContainer} ref={expandedContainerRef}>
-        {colorOpen && (
-          <ColorBar
-            colorBarOptions={TrackColorBarOptions}
-            selectedColor={dataview.config?.color}
-            onColorClick={changeTrackColor}
-          />
-        )}
-        {infoOpen && (
-          <ul className={styles.infoContent}>
-            {dataview.infoConfig?.fields.map((field: any) => {
-              const fieldValue = resource?.data?.[field.id as keyof Vessel]
-              if (!fieldValue) return null
-              return (
-                <li key={field.id} className={styles.infoContentItem}>
-                  <label>{t(`vessel.${field.id}`)}</label>
-                  <span>
-                    {field.type === 'date' ? (
-                      <I18nDate date={fieldValue} />
-                    ) : field.type === 'flag' ? (
-                      <I18nFlag iso={fieldValue} />
-                    ) : field.id === 'mmsi' ? (
-                      <a
-                        className={styles.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        href={`https://www.marinetraffic.com/en/ais/details/ships/${fieldValue}`}
-                      >
-                        {formatInfoField(fieldValue, field.type)}
-                      </a>
-                    ) : (
-                      formatInfoField(fieldValue, field.type)
-                    )}
-                  </span>
-                </li>
-              )
-            })}
-          </ul>
-        )}
       </div>
     </div>
   )

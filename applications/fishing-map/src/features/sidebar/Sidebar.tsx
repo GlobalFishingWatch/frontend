@@ -12,6 +12,8 @@ import User from 'features/user/User'
 import Workspace from 'features/workspace/Workspace'
 import WorkspacesList from 'features/workspaces-list/WorkspacesList'
 import NewDataset from 'features/datasets/NewDataset'
+import { AsyncReducerStatus } from 'types'
+import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -25,10 +27,11 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const locationType = useSelector(selectLocationType)
   const userLogged = useSelector(isUserLogged)
   const userAuthorized = useSelector(isUserAuthorized)
+  const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
   const dispatch = useDispatch()
 
   const sidebarComponent = useMemo(() => {
-    if (!userLogged) {
+    if (!userLogged || highlightedWorkspacesStatus === AsyncReducerStatus.Loading) {
       return <Spinner />
     }
     // TODO remove once public release and permissions to use map in anonymous user
@@ -55,7 +58,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       return <WorkspacesList />
     }
     return <Workspace />
-  }, [dispatch, locationType, userAuthorized, userLogged])
+  }, [dispatch, locationType, userAuthorized, userLogged, highlightedWorkspacesStatus])
 
   if (searchQuery !== undefined) {
     return <Search />

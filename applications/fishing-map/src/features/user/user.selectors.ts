@@ -1,7 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DatasetStatus } from '@globalfishingwatch/api-types/dist'
+import { DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { selectDatasets } from 'features/datasets/datasets.slice'
-import { selectContextAreasDataviews } from 'features/workspace/workspace.selectors'
+import {
+  selectContextAreasDataviews,
+  selectEnvironmentalDataviews,
+} from 'features/workspace/workspace.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'types'
 import { selectUserStatus, selectUserLogged, GUEST_USER_TYPE, selectUserData } from './user.slice'
@@ -44,14 +47,25 @@ export const selectUserDatasets = createSelector(
   (datasets, userId) => datasets?.filter((d) => d.ownerId === userId)
 )
 
-export const selectUserDatasetsNotUsed = createSelector(
-  [selectUserDatasets, selectContextAreasDataviews],
-  (datasets, dataviews) => {
-    const dataviewDatasets = dataviews?.flatMap(
-      (dataview) => dataview.datasets?.flatMap(({ id }) => id || []) || []
-    )
-    return datasets.filter(
-      ({ id, status }) => !dataviewDatasets?.includes(id) && status !== DatasetStatus.Error
-    )
-  }
-)
+export const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
+  createSelector([selectUserDatasets], (datasets) =>
+    datasets?.filter((d) => d.category === datasetCategory)
+  )
+
+export const selectUserDatasetsNotUsed = (datasetCategory: DatasetCategory) => {
+  const dataviewsSelector =
+    datasetCategory === DatasetCategory.Context
+      ? selectContextAreasDataviews
+      : selectEnvironmentalDataviews
+  return createSelector(
+    [selectUserDatasetsByCategory(datasetCategory), dataviewsSelector],
+    (datasets, dataviews) => {
+      const dataviewDatasets = dataviews?.flatMap(
+        (dataview) => dataview.datasets?.flatMap(({ id }) => id || []) || []
+      )
+      return datasets.filter(
+        ({ id, status }) => !dataviewDatasets?.includes(id) && status !== DatasetStatus.Error
+      )
+    }
+  )
+}

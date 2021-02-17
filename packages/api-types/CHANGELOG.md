@@ -1,5 +1,23 @@
 # @globalfishingwatch/api-types
 
+## 2.10.0
+
+### Minor Changes
+
+- 66e35ff4: Dataset and Dataviews category types
+
+## 2.9.0
+
+### Minor Changes
+
+- split dataset configuration types definition
+
+## 2.8.2
+
+### Patch Changes
+
+- a9e66b1c: move metadata configuration to dataset types definition
+
 ## 2.8.1
 
 ### Patch Changes

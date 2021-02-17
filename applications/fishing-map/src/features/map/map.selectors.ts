@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { scaleLinear } from 'd3-scale'
 import { CircleLayer } from '@globalfishingwatch/mapbox-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
@@ -6,7 +7,12 @@ import {
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
-import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  DatasetCategory,
+  DatasetStatus,
+  DatasetTypes,
+  EnviromentalDatasetConfiguration,
+} from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
@@ -132,7 +138,9 @@ export const getWorkspaceGeneratorsConfig = createSelector(
             tilesUrl,
           }))
         } else {
-          generator.id = `${dataview.id}__${dataview.config.layers}`
+          generator.id = dataview.config.layers
+            ? `${dataview.id}__${dataview.config.layers}`
+            : dataview.id
           generator.layer = dataview.config.layers
           const { dataset, url } = resolveDataviewDatasetResource(dataview, {
             type: DatasetTypes.Context,
@@ -145,6 +153,17 @@ export const getWorkspaceGeneratorsConfig = createSelector(
           }
           if (dataset?.source) {
             generator.attribution = dataset.source
+          }
+          if (dataset.category === DatasetCategory.Environment) {
+            const { min, max } =
+              (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
+              {}
+            const rampScale = scaleLinear().range([min, max]).domain([0, 1])
+            const numSteps = 8
+            const steps = [...Array(numSteps)]
+              .map((_, i) => parseFloat((i / (numSteps - 1)).toFixed(2)))
+              .map((value) => parseFloat((rampScale(value) as number).toFixed(3)))
+            generator.steps = steps
           }
         }
         if (!generator.tilesUrl) {

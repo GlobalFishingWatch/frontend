@@ -3,15 +3,15 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
-import useClickedOutside from 'hooks/use-clicked-outside'
 import { getFlagsByIds } from 'utils/flags'
 import { UrlDataviewInstance } from 'types'
-import styles from 'features/workspace/LayerPanel.module.css'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariate } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getSchemaFieldsSelectedInDataview } from 'features/datasets/datasets.utils'
 import { DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
+import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import Filters from './HeatmapFilters'
 import HeatmapInfoModal from './HeatmapInfoModal'
 import { getSourcesSelectedInDataview } from './heatmaps.utils'
@@ -63,7 +63,6 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
   }
-  const expandedContainerRef = useClickedOutside(closeExpandedContainer)
 
   const datasetName =
     dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID
@@ -99,20 +98,24 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
           {layerActive && (
-            <IconButton
-              icon={filterOpen ? 'filter-on' : 'filter-off'}
-              size="small"
-              onClick={onToggleFilterOpen}
-              className={cx(styles.actionButton, styles.expandable, {
-                [styles.expanded]: filterOpen,
-              })}
-              tooltip={
-                filterOpen
-                  ? t('layer.filterClose', 'Close filters')
-                  : t('layer.filterOpen', 'Open filters')
-              }
-              tooltipPlacement="top"
-            />
+            <ExpandedContainer
+              visible={filterOpen}
+              onClickOutside={closeExpandedContainer}
+              component={<Filters dataview={dataview} />}
+            >
+              <IconButton
+                icon={filterOpen ? 'filter-on' : 'filter-off'}
+                size="small"
+                onClick={onToggleFilterOpen}
+                className={styles.actionButton}
+                tooltip={
+                  filterOpen
+                    ? t('layer.filterClose', 'Close filters')
+                    : t('layer.filterOpen', 'Open filters')
+                }
+                tooltipPlacement="top"
+              />
+            </ExpandedContainer>
           )}
           <IconButton
             icon="info"
@@ -177,7 +180,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
             )}
             {vesselsSelected.length > 0 && (
               <div className={styles.filter}>
-                <label>{t('vessel.vesselType_plural', 'Vessel Types')}</label>
+                <label>{t('vessel.vesselType_plural', 'Vessel types')}</label>
                 <TagList
                   tags={vesselsSelected}
                   color={dataview.config?.color}
@@ -189,9 +192,6 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
           <div id={`legend_${dataview.id}`}></div>
         </div>
       )}
-      <div className={styles.expandedContainer} ref={expandedContainerRef}>
-        {filterOpen && <Filters dataview={dataview} />}
-      </div>
       <HeatmapInfoModal
         dataview={dataview}
         isOpen={modalInfoOpen}

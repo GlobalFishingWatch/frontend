@@ -13,9 +13,23 @@
   margin-bottom: var(--space-M);
 }
 
+.inputFullWidth {
+  flex: 1;
+}
+
 .shortInput {
   width: var(--size-L);
+  margin-left: var(--space-S);
   margin-right: var(--space-S);
+}
+
+.mediumInput {
+  width: 10rem;
+  margin-left: var(--space-S);
+  margin-right: var(--space-S);
+}
+
+.noLabelInput {
   margin-top: auto;
   margin-bottom: 0;
 }
@@ -87,7 +101,6 @@
   flex-direction: column;
 }
 
-
 .dropFiles:hover {
   border-style: solid;
 }
@@ -102,7 +115,12 @@
   max-width: 30rem;
 }
 
-.shortSelect {
+.selectContainer {
+  flex: 1;
+}
+
+.shortSelect,
+.shortSelect:hover {
   width: 15rem;
 }
 

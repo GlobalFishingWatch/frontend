@@ -49,6 +49,11 @@ export const selectLocationCategory = createSelector(
   (payload) => payload?.category as WorkspaceCategories
 )
 
+export const isValidLocationCategory = createSelector(
+  [selectLocationCategory],
+  (locationCategory) => Object.values(WorkspaceCategories).includes(locationCategory)
+)
+
 export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')
 export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')

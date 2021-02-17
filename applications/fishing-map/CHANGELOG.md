@@ -1,5 +1,67 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.23.0
+
+### Minor Changes
+
+- 66e35ff4: Dataset and Dataviews category types
+
+### Patch Changes
+
+- Updated dependencies [66e35ff4]
+  - @globalfishingwatch/api-types@2.10.0
+
+## 0.22.2
+
+### Patch Changes
+
+- 4a10aebb: Rename fishing-activity category icon to match names from spreadsheets
+- Updated dependencies [4a10aebb]
+  - @globalfishingwatch/ui-components@2.12.7
+
+## 0.22.1
+
+### Patch Changes
+
+- fix svg logo size for screenshot
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.12.6
+
+## 0.22.0
+
+### Minor Changes
+
+- split dataset configuration types definition
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.9.0
+
+## 0.21.4
+
+### Patch Changes
+
+- e75d429f: Fishingmap/ocean areas miniglobe
+- Updated dependencies [e75d429f]
+- Updated dependencies [7fb1dfcc]
+  - @globalfishingwatch/ocean-areas@0.1.1
+  - @globalfishingwatch/timebar@1.2.1
+
+## 0.21.3
+
+### Patch Changes
+
+- a9e66b1c: move metadata configuration to dataset types definition
+- 1a264bea: support className for select container
+- 0180dd0b: not rename generatorId in user-context
+- Updated dependencies [a9e66b1c]
+- Updated dependencies [1a264bea]
+- Updated dependencies [0180dd0b]
+  - @globalfishingwatch/api-types@2.8.2
+  - @globalfishingwatch/ui-components@2.12.5
+  - @globalfishingwatch/layer-composer@4.13.2
+
 ## 0.21.2
 
 ### Patch Changes

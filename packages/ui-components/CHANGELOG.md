@@ -1,5 +1,25 @@
 # @globalfishingwatch/ui-components
 
+## 2.12.7
+
+### Patch Changes
+
+- 4a10aebb: Rename fishing-activity category icon to match names from spreadsheets
+
+## 2.12.6
+
+### Patch Changes
+
+- fix svg logo size for screenshot
+
+## 2.12.5
+
+### Patch Changes
+
+- 1a264bea: support className for select container
+- Updated dependencies [0180dd0b]
+  - @globalfishingwatch/layer-composer@4.13.2
+
 ## 2.12.4
 
 ### Patch Changes

@@ -3,8 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Sticky from 'react-sticky-el'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import Logo from '@globalfishingwatch/ui-components/dist/logo'
-import { SubBrands } from '@globalfishingwatch/ui-components/dist/logo/Logo'
+import Logo, { SubBrands } from '@globalfishingwatch/ui-components/dist/logo'
 import { saveCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
   isWorkspacePublic,
@@ -58,8 +57,8 @@ function SidebarHeader() {
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
-    if (locationCategory === WorkspaceCategories.MarineReserves) subBrand = 'Marine Reserves'
-    if (locationCategory === WorkspaceCategories.CountryPortals) subBrand = 'Country Portal'
+    if (locationCategory === WorkspaceCategories.MarineReserves) subBrand = SubBrands.MarinReserves
+    if (locationCategory === WorkspaceCategories.CountryPortals) subBrand = SubBrands.CountryPortal
     return subBrand
   }, [locationCategory])
 
