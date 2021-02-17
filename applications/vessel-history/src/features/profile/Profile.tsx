@@ -5,7 +5,6 @@ import { IconButton, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { selectDataset, selectTmtId, selectVesselId } from 'routes/routes.selectors'
 import { Vessel } from 'types'
-import MapWrapper from './components/MapWrapper'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 
@@ -28,12 +27,12 @@ const Profile: React.FC = (props): React.ReactElement => {
     {
       id: 'activity',
       title: 'ACTIVITY',
-      content: <div />,
+      content: <div>Comming Soon!</div>,
     },
     {
       id: 'map',
       title: 'MAP',
-      content: <MapWrapper vesselID={vesselID} setLastPosition={setLastPosition} />,
+      content: <div>Comming Soon!</div>,
     },
   ]
 
