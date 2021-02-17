@@ -6,6 +6,7 @@ import {
   getDefaultMiddleware,
 } from '@reduxjs/toolkit'
 import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
+import titleReducer from './routes/title'
 import userReducer from './features/user/user.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
 import workspacesReducer from './features/workspaces-list/workspaces-list.slice'
@@ -38,6 +39,7 @@ const rootReducer = combineReducers({
   rulers: rulersReducer,
   debug: debugReducer,
   location: location,
+  title: titleReducer,
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
