@@ -120,7 +120,7 @@ function EditDataset(): React.ReactElement {
               value={min}
               label={t('common.min', 'Min')}
               placeholder={t('common.min', 'Min')}
-              className={styles.shortInput}
+              className={styles.mediumInput}
               onChange={(e) =>
                 onDatasetFieldChange({
                   propertyToIncludeRange: {
@@ -137,7 +137,7 @@ function EditDataset(): React.ReactElement {
               label={t('common.max', 'Max')}
               placeholder={t('common.max', 'Max')}
               value={max}
-              className={styles.shortInput}
+              className={styles.mediumInput}
               onChange={(e) =>
                 onDatasetFieldChange({
                   propertyToIncludeRange: {

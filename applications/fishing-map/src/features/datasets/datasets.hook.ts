@@ -1,7 +1,7 @@
 // import { bindActionCreators } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
-import { useCallback } from 'react'
-import { Dataset, DatasetCategory } from '@globalfishingwatch/api-types/dist'
+import { useCallback, useEffect } from 'react'
+import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types/dist'
 import { AsyncError } from 'utils/async-slice'
 import {
   selectContextAreasDataviews,
@@ -27,6 +27,8 @@ import {
   setEditingDatasetId,
   updateDatasetThunk,
 } from './datasets.slice'
+
+const DATASET_REFRESH_TIMEOUT = 10000
 
 export const useNewDatasetConnect = () => {
   const contextDataviews = useSelector(selectContextAreasDataviews)
@@ -144,4 +146,21 @@ export const useDatasetsAPI = () => {
     dispatchUpdateDataset,
     dispatchDeleteDataset,
   }
+}
+
+export const useAutoRefreshImportingDataset = (dataset?: Dataset) => {
+  const { dispatchFetchDataset } = useDatasetsAPI()
+  useEffect(() => {
+    let timeOut: any
+    if (dataset && dataset.status === DatasetStatus.Importing) {
+      timeOut = setTimeout(() => {
+        dispatchFetchDataset(dataset.id)
+      }, DATASET_REFRESH_TIMEOUT)
+    }
+    return () => {
+      if (timeOut) {
+        clearTimeout(timeOut)
+      }
+    }
+  }, [dataset, dispatchFetchDataset])
 }

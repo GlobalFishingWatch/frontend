@@ -1,23 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes, DatasetStatus, Vessel } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DatasetStatus } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
   TrackColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
-import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
-import styles from 'features/workspace/LayerPanel.module.css'
+import { UrlDataviewInstance } from 'types'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
-import { selectResourceByUrl } from 'features/resources/resources.slice'
-import { useDatasetsAPI } from 'features/datasets/datasets.hook'
+import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { selectUserId } from 'features/user/user.selectors'
-import ExpandedContainer from '../ExpandedContainer'
-
-const DATASET_REFRESH_TIMEOUT = 10000
+import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import DatasetNotFound from '../shared/DatasetNotFound'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -25,11 +22,8 @@ type LayerPanelProps = {
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const { dispatchFetchDataset } = useDatasetsAPI()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
-  const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
-  const resource = useSelector(selectResourceByUrl<Vessel>(url))
   const [colorOpen, setColorOpen] = useState(false)
 
   const layerActive = dataview?.config?.visible ?? true
@@ -67,48 +61,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
   const isCustomUserLayer = dataset?.ownerId === userId
 
-  useEffect(() => {
-    let timeOut: any
-    if (dataset && dataset.status === DatasetStatus.Importing) {
-      timeOut = setTimeout(() => {
-        dispatchFetchDataset(dataset.id)
-      }, DATASET_REFRESH_TIMEOUT)
-    }
-    return () => {
-      if (timeOut) {
-        clearTimeout(timeOut)
-      }
-    }
-  }, [dataset, dispatchFetchDataset])
+  useAutoRefreshImportingDataset(dataset)
 
   if (!dataset) {
-    return (
-      <div className={cx(styles.LayerPanel, 'print-hidden')}>
-        <div className={styles.header}>
-          <h3 className={cx(styles.name)}>{dataview.datasetsConfig?.[0].datasetId}</h3>
-          <div className={cx('print-hidden', styles.actions)}>
-            <IconButton
-              icon="warning"
-              type="warning"
-              size="small"
-              className={styles.actionButton}
-              tooltip={t('errors.datasetNotFound', 'Dataset not found')}
-              tooltipPlacement="top"
-            />
-            {isCustomUserLayer && (
-              <IconButton
-                icon="delete"
-                size="small"
-                tooltip={t('layer.remove', 'Remove layer')}
-                tooltipPlacement="top"
-                onClick={onRemoveClick}
-                className={cx(styles.actionButton)}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-    )
+    return <DatasetNotFound dataview={dataview} />
   }
   const title = isCustomUserLayer ? dataset?.name || dataset?.id : t(`datasets:${dataset?.id}.name`)
   const TitleComponent = (
@@ -119,7 +75,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   const datasetImporting = dataset.status === DatasetStatus.Importing
   const datasetError = dataset.status === DatasetStatus.Error
-  const resourceLoading = resource?.status === AsyncReducerStatus.Loading
   let infoTooltip = isCustomUserLayer
     ? dataset?.description
     : t(`datasets:${dataset?.id}.description`)
@@ -159,7 +114,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             icon={datasetError ? 'warning' : 'info'}
             type={datasetError ? 'warning' : 'default'}
             size="small"
-            loading={resourceLoading || datasetImporting}
+            loading={datasetImporting}
             className={styles.actionButton}
             tooltip={infoTooltip}
             tooltipPlacement="top"

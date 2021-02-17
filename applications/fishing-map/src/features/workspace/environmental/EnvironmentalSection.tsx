@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { DatasetCategory } from '@globalfishingwatch/api-types'
 import { selectEnvironmentalDataviews } from 'features/workspace/workspace.selectors'
-import styles from 'features/workspace/Sections.module.css'
+import styles from 'features/workspace/shared/Sections.module.css'
 import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
 import { isGuestUser } from 'features/user/user.selectors'
-import TooltipContainer from '../TooltipContainer'
+import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import LayerPanel from './EnvironmentalLayerPanel'
 
 function EnvironmentalLayerSection(): React.ReactElement | null {

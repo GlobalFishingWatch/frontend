@@ -16,7 +16,7 @@ import {
 } from '@globalfishingwatch/data-transforms'
 import { formatInfoField } from 'utils/info'
 import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
-import styles from 'features/workspace/LayerPanel.module.css'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
@@ -26,7 +26,7 @@ import { useMapboxInstance } from 'features/map/map.context'
 import useViewport from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
-import ExpandedContainer from '../ExpandedContainer'
+import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 
 // Translations by feature.unit static keys
 // t('vessel.flag', 'Flag')

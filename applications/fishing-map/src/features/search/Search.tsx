@@ -18,7 +18,7 @@ import { resetWorkspaceSearchQuery } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'types'
 import { getFlagById } from 'utils/flags'
 import { formatInfoField } from 'utils/info'
-import ExpandedContainer from 'features/workspace/ExpandedContainer'
+import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
