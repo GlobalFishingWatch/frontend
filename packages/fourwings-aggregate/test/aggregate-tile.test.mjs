@@ -1,6 +1,6 @@
 import { performance } from 'perf_hooks'
 import tap from 'tap'
-import { aggregateTile } from '../dist/index.js'
+import { aggregateTile, generateUniqueId } from '../dist/index.js'
 import bigtile from './tiles/bigtile.mjs'
 
 const BASE_CONFIG = {
@@ -260,6 +260,10 @@ tap.equal(
   '1;8400'
 )
 
+// test unique id for highlightedFeature
+tap.equal(generateUniqueId(0,0,1234), 111234)
+
+
 // perf test
 
 let sum = 0
@@ -291,5 +295,4 @@ for (var i = 0; i < 20; i++) {
   // console.log(delta)
   sum += delta
 }
-
 console.log('avg:', sum / 20)
