@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.12.8
+
+### Patch Changes
+
+- include header mini with no languages html
+
 ## 2.12.7
 
 ### Patch Changes
