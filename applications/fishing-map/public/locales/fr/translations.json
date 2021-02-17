@@ -14,8 +14,11 @@
     "loggedAs": "Connecté en tant que",
     "login": "Se connecter",
     "logout": "Déconnexion",
+    "max": "Max",
+    "min": "Min",
     "more": "plus",
     "name": "Nom",
+    "presence": "Fishing presence",
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
     "update": "Mise à jour",
@@ -27,7 +30,9 @@
     "fishing": "Pêche"
   },
   "dataset": {
-    "add": "Ajouter un jeu de données",
+    "addContext": "Add context dataset",
+    "addEnvironment": "Add environment dataset",
+    "colorByValue": "Color features by value",
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement ce jeu de données ?",
     "dragActive": "Déposez le fichier ici ...",
     "dragFilePlaceholder": "Glissez et déposez un fichier de forme compressé ou un géojson ici ou cliquez pour le sélectionner",
@@ -40,14 +45,17 @@
     "new": "Nouveau jeu de données",
     "remove": "Remove dataset",
     "title_plural": "Datasets",
+    "uploadNewEnviroment": "Upload new environment dataset",
     "uploadNewContex": "Télécharger de nouvelles zones contextuelles",
     "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
+    "uploadLogin": "You need to log in to upload datasets",
     "uploadNewDataLayer": "Télécharger une nouvelle couche de données"
   },
   "errors": {
     "datasetNotFound": "Jeu de données introuvable",
     "datasetNotValid": "Il semble y avoir un problème avec votre fichier",
     "generic": "Quelque chose s'est mal passé, veuillez réessayer ou contacter:",
+    "invalidRange": "Min has to be lower than max value",
     "notSupportedBy": "Non pris en charge par {{list}}",
     "pageNotFound": "Page introuvable",
     "privateView": "Ceci est une vue privée",
@@ -132,6 +140,7 @@
     "source": "Source",
     "tracks": "Trajectoires de navire",
     "transmission_plural": "Transmissions",
+    "vesselType_plural": "Vessel types",
     "widthRange": "Width range",
     "transmission": "Transmission"
   },
