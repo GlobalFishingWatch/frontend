@@ -7,22 +7,20 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { DataviewDatasetConfig, Dataset, APISearch, Vessel } from '@globalfishingwatch/api-types'
+import { DataviewDatasetConfig, Dataset, Vessel, DatasetTypes } from '@globalfishingwatch/api-types'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
 import { AsyncReducerStatus } from 'types'
 import { RootState } from 'store'
-import { FISHING_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'
 import {
   getRelatedDatasetByType,
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
-import { fetchDatasetsByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
+import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectTimeRange } from 'features/app/app.selectors'
 
 export const MAX_TOOLTIP_VESSELS = 5
 
 type MapState = {
-  screenshotMode: boolean
   clicked: InteractionEvent | null
   hovered: InteractionEvent | null
   status: AsyncReducerStatus
@@ -30,7 +28,6 @@ type MapState = {
 }
 
 const initialState: MapState = {
-  screenshotMode: false,
   clicked: null,
   hovered: null,
   status: AsyncReducerStatus.Idle,
@@ -43,10 +40,7 @@ type SublayerVessels = {
 
 export const fetch4WingInteractionThunk = createAsyncThunk(
   'map/fetchInteraction',
-  async (
-    temporalGridFeatures: ExtendedFeature[],
-    { getState, signal, dispatch, rejectWithValue }
-  ) => {
+  async (temporalGridFeatures: ExtendedFeature[], { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const temporalgridDataviews = selectTemporalgridDataviews(state) || []
     const { start, end } = selectTimeRange(state)
@@ -57,7 +51,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
     })
 
     const fourWingsDataset = featuresDataviews[0].datasets?.find(
-      (d) => d.type === FISHING_DATASET_TYPE
+      (d) => d.type === DatasetTypes.Fourwings
     ) as Dataset
 
     // get corresponding datasets
@@ -126,12 +120,12 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
       // Grab related dataset to fetch info from and prepare tracks
       const infoDatasets = await Promise.all(
         topHoursVesselsDatasets.map(async (dataset) => {
-          const infoDatasetId = getRelatedDatasetByType(dataset, VESSELS_DATASET_TYPE)?.id
+          const infoDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id
           if (infoDatasetId) {
             let infoDataset = selectDatasetById(infoDatasetId)(state)
             if (!infoDataset) {
               // It needs to be request when it hasn't been loaded yet
-              const { payload }: any = await dispatch(fetchDatasetsByIdThunk(infoDatasetId))
+              const { payload }: any = await dispatch(fetchDatasetByIdThunk(infoDatasetId))
               infoDataset = payload
             }
             return infoDataset as Dataset
@@ -162,11 +156,11 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
 
           if (vesselsInfoUrl) {
             try {
-              const vesselsInfoResponse = await GFWAPI.fetch<APISearch<Vessel>>(vesselsInfoUrl, {
+              const vesselsInfoResponse = await GFWAPI.fetch<Vessel[]>(vesselsInfoUrl, {
                 signal,
               })
               vesselsInfo =
-                vesselsInfoResponse.entries?.flatMap((vesselInfo) => {
+                vesselsInfoResponse?.flatMap((vesselInfo) => {
                   if (!vesselInfo?.shipname) return []
                   return vesselInfo
                 }) || []

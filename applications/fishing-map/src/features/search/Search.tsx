@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef, Fragment } from 'react'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
@@ -10,7 +10,7 @@ import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectVesselsDatasets } from 'features/workspace/workspace.selectors'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
@@ -18,6 +18,7 @@ import { resetWorkspaceSearchQuery } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'types'
 import { getFlagById } from 'utils/flags'
 import { formatInfoField } from 'utils/info'
+import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -26,12 +27,18 @@ import {
   VesselWithDatasets,
   RESULTS_PER_PAGE,
   checkSearchFiltersEnabled,
+  resetFilters,
+  setSuggestionClicked,
 } from './search.slice'
 import styles from './Search.module.css'
-import SearchNoResultsState from './SearchNoResultsState'
-import SearchEmptyState from './SearchEmptyState'
 import SearchFilters from './SearchFilters'
 import { useSearchConnect, useSearchFiltersConnect } from './search.hook'
+import SearchPlaceholder, {
+  SearchNotAllowed,
+  SearchNoResultsState,
+  SearchEmptyState,
+} from './SearchPlaceholders'
+import { isSearchAllowed, selectAllowedVesselsDatasets } from './search.selectors'
 
 function Search() {
   const { t } = useTranslation()
@@ -40,34 +47,38 @@ function Search() {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const { searchFilters, searchFiltersOpen, setSearchFiltersOpen } = useSearchFiltersConnect()
-  const { searchPagination, searchSuggestion } = useSearchConnect()
-  const debouncedQuery = useDebounce(searchQuery, 400)
+  const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
+  const debouncedQuery = useDebounce(searchQuery, 600)
   const { dispatchQueryParams } = useLocationConnect()
-  const searchDatasets = useSelector(selectVesselsDatasets)
+  const searchDatasets = useSelector(selectAllowedVesselsDatasets)
+  const searchAllowed = useSelector(isSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
   const promiseRef = useRef<any>()
 
   const fetchResults = useCallback(
     (offset = 0) => {
-      const sourceIds = searchFilters?.sources?.map((source) => source.id)
-      const sources = sourceIds
-        ? searchDatasets.filter(({ id }) => sourceIds.includes(id))
-        : searchDatasets
+      if (searchDatasets?.length) {
+        const sourceIds = searchFilters?.sources?.map((source) => source.id)
+        const sources = sourceIds
+          ? searchDatasets.filter(({ id }) => sourceIds.includes(id))
+          : searchDatasets
 
-      if (promiseRef.current) {
-        promiseRef.current.abort()
+        if (promiseRef.current) {
+          promiseRef.current.abort()
+        }
+
+        promiseRef.current = dispatch(
+          fetchVesselSearchThunk({
+            query: debouncedQuery,
+            filters: searchFilters,
+            datasets: sources,
+            offset,
+          })
+        )
       }
-
-      promiseRef.current = dispatch(
-        fetchVesselSearchThunk({
-          query: debouncedQuery,
-          filters: searchFilters,
-          datasets: sources,
-          offset,
-        })
-      )
     },
     [debouncedQuery, dispatch, searchDatasets, searchFilters]
   )
@@ -86,6 +97,9 @@ function Search() {
   const [ref] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
   useEffect(() => {
+    if (searchSuggestionClicked) {
+      dispatch(setSuggestionClicked(false))
+    }
     if (debouncedQuery === '') {
       batch(() => {
         dispatch(cleanVesselSearchResults())
@@ -96,10 +110,11 @@ function Search() {
     }
     dispatchQueryParams({ query: debouncedQuery })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery, searchFilters])
+  }, [debouncedQuery, searchFilters, searchDatasets])
 
   const onCloseClick = () => {
     batch(() => {
+      dispatch(resetFilters())
       dispatch(cleanVesselSearchResults())
       dispatch(resetWorkspaceSearchQuery())
       dispatchQueryParams({ query: undefined })
@@ -108,6 +123,7 @@ function Search() {
 
   const onSuggestionClick = () => {
     if (searchSuggestion) {
+      dispatch(setSuggestionClicked(true))
       setSearchQuery(searchSuggestion)
     }
   }
@@ -129,6 +145,19 @@ function Search() {
     }
   }
 
+  if (workspaceStatus !== AsyncReducerStatus.Finished) {
+    return (
+      <SearchPlaceholder>
+        <Spinner />
+      </SearchPlaceholder>
+    )
+  }
+
+  const hasMoreResults =
+    searchPagination.total !== 0 &&
+    searchPagination.total > RESULTS_PER_PAGE &&
+    searchPagination.offset <= searchPagination.total
+
   return (
     <Downshift onChange={onSelectionChange} itemToString={(item) => (item ? item.shipname : '')}>
       {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, selectedItem }) => (
@@ -139,138 +168,155 @@ function Search() {
               onChange={onInputChange}
               value={searchQuery}
               autoFocus
+              disabled={!searchAllowed}
               className={styles.input}
-              placeholder={t('vessel.search.placeholder', 'Type to search vessels')}
+              placeholder={t('search.placeholder', 'Type to search vessels')}
             />
-            {searchStatus === 'loading' && <Spinner size="small" />}
-            <IconButton
-              icon={searchFiltersOpen ? 'close' : hasSearchFilters ? 'filter-on' : 'filter-off'}
-              tooltip={
-                searchFiltersOpen
-                  ? t('vessel.search.filter_close', 'Close search filters')
-                  : t('vessel.search.filter_open', 'Open search filters')
-              }
-              className={cx(styles.expandable, {
-                [styles.expanded]: searchFiltersOpen,
-              })}
-              onClick={() => setSearchFiltersOpen(!searchFiltersOpen)}
-              tooltipPlacement="bottom"
-            />
+            {searchStatus === AsyncReducerStatus.Loading && (
+              <Spinner className={styles.textSpinner} size="small" />
+            )}
+            {searchAllowed && (
+              <ExpandedContainer
+                visible={searchFiltersOpen}
+                onClickOutside={() => setSearchFiltersOpen(false)}
+                className={styles.expandedContainer}
+                arrowClassName={styles.expandedArrow}
+                component={<SearchFilters />}
+              >
+                <IconButton
+                  icon={searchFiltersOpen ? 'close' : hasSearchFilters ? 'filter-on' : 'filter-off'}
+                  tooltip={
+                    searchFiltersOpen
+                      ? t('search.filterClose', 'Close search filters')
+                      : t('search.filterOpen', 'Open search filters')
+                  }
+                  onClick={() => setSearchFiltersOpen(!searchFiltersOpen)}
+                  tooltipPlacement="bottom"
+                />
+              </ExpandedContainer>
+            )}
             {searchFiltersOpen === false && (
               <IconButton
                 icon="close"
                 onClick={onCloseClick}
                 type="border"
-                tooltip={t('vessel.search.close', 'Close search')}
+                tooltip={t('search.close', 'Close search')}
                 tooltipPlacement="bottom"
               />
             )}
           </div>
-          <SearchFilters className={cx(styles.expandedContainer)} />
-          {!searchResults?.length &&
-            (searchStatus === AsyncReducerStatus.Finished ? (
-              <SearchNoResultsState />
-            ) : searchStatus === AsyncReducerStatus.Idle ? (
-              <SearchEmptyState />
-            ) : searchStatus === AsyncReducerStatus.Error ? (
-              <p className={styles.error}>Something went wrong 🙈</p>
-            ) : null)}
-          {((searchResults && searchResults.length > 0) || searchSuggestion) && (
-            <ul {...getMenuProps()} className={styles.searchResults}>
-              {searchSuggestion && searchSuggestion !== searchQuery && (
-                <li className={cx(styles.searchSuggestion)}>
-                  {t('search.suggestion', 'Did you mean')}{' '}
-                  <button onClick={onSuggestionClick} className={styles.suggestion}>
-                    {' '}
-                    {searchSuggestion}{' '}
-                  </button>{' '}
-                  ?
-                </li>
-              )}
-              {searchResults?.map((entry, index: number) => {
-                const {
-                  id,
-                  shipname,
-                  flag,
-                  fleet,
-                  mmsi,
-                  imo,
-                  callsign,
-                  dataset,
-                  firstTransmissionDate,
-                  lastTransmissionDate,
-                } = entry
-                const flagLabel = getFlagById(flag)?.label
-                return (
-                  <li
-                    {...getItemProps({ item: entry, index })}
-                    className={cx(styles.searchResult, {
-                      [styles.highlighted]: highlightedIndex === index,
-                    })}
-                    key={id}
-                  >
-                    <div className={styles.name}>{shipname || '---'}</div>
-                    <div className={styles.properties}>
-                      {flagLabel && (
-                        <div className={styles.property}>
-                          <label>{t('vessel.flag', 'Flag')}</label>
-                          <span>{flagLabel}</span>
-                        </div>
-                      )}
-                      {mmsi && (
-                        <div className={styles.property}>
-                          <label>{t('vessel.mmsi', 'MMSI')}</label>
-                          <span>{mmsi}</span>
-                        </div>
-                      )}
-                      {imo && (
-                        <div className={styles.property}>
-                          <label>{t('vessel.imo', 'IMO')}</label>
-                          <span>{imo}</span>
-                        </div>
-                      )}
-                      {callsign && (
-                        <div className={styles.property}>
-                          <label>{t('vessel.callsign', 'Callsign')}</label>
-                          <span>{callsign}</span>
-                        </div>
-                      )}
-                      {fleet && (
-                        <div className={styles.property}>
-                          <label>{t('vessel.fleet', 'Fleet')}</label>
-                          <span>{formatInfoField(fleet, 'fleet')}</span>
-                        </div>
-                      )}
-                      {firstTransmissionDate && lastTransmissionDate && (
-                        <div className={styles.property}>
-                          <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
-                          <span>
-                            from <I18nDate date={firstTransmissionDate} /> to{' '}
-                            <I18nDate date={lastTransmissionDate} />
-                          </span>
-                        </div>
-                      )}
-
-                      {dataset?.name && (
-                        <div className={styles.property}>
-                          <label>{t('vessel.source', 'Source')}</label>
-                          <span>{dataset.name}</span>
-                        </div>
-                      )}
-                    </div>
+          {searchStatus === AsyncReducerStatus.Loading &&
+          searchPagination.loading === false ? null : searchAllowed ? (
+            <Fragment>
+              <ul {...getMenuProps()} className={styles.searchResults}>
+                {searchSuggestion && searchSuggestion !== searchQuery && !searchSuggestionClicked && (
+                  <li className={cx(styles.searchSuggestion)}>
+                    {t('search.suggestion', 'Did you mean')}{' '}
+                    <button onClick={onSuggestionClick} className={styles.suggestion}>
+                      {' '}
+                      {searchSuggestion}{' '}
+                    </button>{' '}
+                    ?
                   </li>
-                )
-              })}
-              {searchPagination.total !== 0 &&
-              searchPagination.total > RESULTS_PER_PAGE &&
-              searchPagination.offset <= searchPagination.total ? (
-                <li className={styles.spinner} ref={ref}>
-                  <Spinner inline size="small" />
-                </li>
-              ) : (
-                <SearchNoResultsState />
-              )}
-            </ul>
+                )}
+                {searchResults?.map((entry, index: number) => {
+                  const {
+                    id,
+                    shipname,
+                    flag,
+                    fleet,
+                    mmsi,
+                    imo,
+                    callsign,
+                    origin,
+                    dataset,
+                    firstTransmissionDate,
+                    lastTransmissionDate,
+                  } = entry
+                  const flagLabel = getFlagById(flag)?.label
+                  return (
+                    <li
+                      {...getItemProps({ item: entry, index })}
+                      className={cx(styles.searchResult, {
+                        [styles.highlighted]: highlightedIndex === index,
+                      })}
+                      key={id}
+                    >
+                      <div className={styles.name}>{shipname || '---'}</div>
+                      <div className={styles.properties}>
+                        {flagLabel && (
+                          <div className={styles.property}>
+                            <label>{t('vessel.flag', 'Flag')}</label>
+                            <span>{flagLabel}</span>
+                          </div>
+                        )}
+                        {mmsi && (
+                          <div className={styles.property}>
+                            <label>{t('vessel.mmsi', 'MMSI')}</label>
+                            <span>{mmsi}</span>
+                          </div>
+                        )}
+                        {imo && (
+                          <div className={styles.property}>
+                            <label>{t('vessel.imo', 'IMO')}</label>
+                            <span>{imo}</span>
+                          </div>
+                        )}
+                        {callsign && (
+                          <div className={styles.property}>
+                            <label>{t('vessel.callsign', 'Callsign')}</label>
+                            <span>{callsign}</span>
+                          </div>
+                        )}
+                        {fleet && (
+                          <div className={styles.property}>
+                            <label>{t('vessel.fleet', 'Fleet')}</label>
+                            <span>{formatInfoField(fleet, 'fleet')}</span>
+                          </div>
+                        )}
+                        {origin && (
+                          <div className={styles.property}>
+                            <label>{t('vessel.origin', 'Origin')}</label>
+                            <span>{formatInfoField(origin, 'fleet')}</span>
+                          </div>
+                        )}
+                        {firstTransmissionDate && lastTransmissionDate && (
+                          <div className={styles.property}>
+                            <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
+                            <span>
+                              from <I18nDate date={firstTransmissionDate} /> to{' '}
+                              <I18nDate date={lastTransmissionDate} />
+                            </span>
+                          </div>
+                        )}
+
+                        {dataset?.name && (
+                          <div className={styles.property}>
+                            <label>{t('vessel.source', 'Source')}</label>
+                            <span>{dataset.name}</span>
+                          </div>
+                        )}
+                      </div>
+                    </li>
+                  )
+                })}
+                {hasMoreResults && (
+                  <li className={styles.spinner} ref={ref}>
+                    <Spinner inline size="small" />
+                  </li>
+                )}
+
+                {searchStatus === AsyncReducerStatus.Idle && <SearchEmptyState />}
+                {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
+                  <SearchNoResultsState />
+                )}
+                {searchStatus === AsyncReducerStatus.Error && (
+                  <p className={styles.error}>Something went wrong 🙈</p>
+                )}
+              </ul>
+            </Fragment>
+          ) : (
+            <SearchNotAllowed />
           )}
         </div>
       )}

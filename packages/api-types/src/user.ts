@@ -13,10 +13,10 @@ export interface UserPermission {
 
 export interface UserData {
   id: number
-  email: string
-  firstName: string
-  lastName: string
-  photo: string
+  email?: string
+  firstName?: string
+  lastName?: string
+  photo?: string
   type: string
-  permissions: [UserPermission]
+  permissions: UserPermission[]
 }

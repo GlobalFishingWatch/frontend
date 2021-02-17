@@ -2,7 +2,7 @@ import React from 'react'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 import { ScaleControl } from '@globalfishingwatch/react-map-gl'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
-import toFixed from 'utils/toFixed'
+import { toFixed } from 'utils/shared'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useViewport from 'features/map/map-viewport.hooks'
 import I18nDate from 'features/i18n/i18nDate'
@@ -32,7 +32,7 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
   return (
     <div className={styles.info}>
       <div className={styles.scale}>
-        {zoom > 3 && <ScaleControl maxWidth={100} unit="nautical" />}
+        {zoom > 2 && <ScaleControl maxWidth={100} unit="nautical" />}
       </div>
       {center && (
         <div className="print-hidden">

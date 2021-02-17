@@ -1,5 +1,22 @@
 # @globalfishingwatchapp/amathea
 
+## 0.14.0
+
+### Minor Changes
+
+- layer composer frameToDate
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.12.0
+
+## 0.13.11
+
+### Patch Changes
+
+- update dependencies
+
 ## 0.13.10
 
 ### Patch Changes

@@ -1,0 +1,93 @@
+.RecentActivity {
+  width: 100%;
+  max-width: var(--desktop-max-width);
+  margin: 5rem auto;
+  padding-left: 3rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header h2 {
+  font-size: var(--large-font-size);
+  font-weight: var(--bold);
+}
+
+.eventTypeSelector {
+  display: flex;
+  flex-direction: column;
+  margin-right: 2rem;
+}
+
+.eventTypeSelector .label {
+  font-size: var(--extra-small-font-size);
+  color: var(--secondary-text-color);
+  font-weight: var(--medium);
+  text-transform: uppercase;
+  padding: .5rem;
+}
+
+.eventTypeSelector select {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  font-weight: var(--medium);
+  color: var(--primary-text-color);
+  background-color: var(--secondary-background-color);
+  width: 15rem;
+  padding: .5rem 0;
+  height: 3rem;
+  border: none;
+}
+
+.eventTypeSelector select:focus {
+  outline: none;
+}
+
+.loading {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: var(--secondary-text-color);
+  font-size: var(--small-font-size);
+}
+
+.pagination button {
+  border: none;
+  border-radius: 50%;
+  width: 3.6rem;
+  height: 3.6rem;
+  background-color: var(--white);
+  background: center center no-repeat url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="13" height="8"><path fill="none" fill-rule="nonzero" stroke="%2322447E" stroke-linecap="round" stroke-width="1.4" d="M11.5 1.5l-5 5-5-5"/></svg>');
+  cursor: pointer;
+  margin: 0 1rem;
+}
+
+.pagination button:hover, .pagination button:focus {
+  background-color: var(--border-color);
+  outline: none;
+}
+
+.pagination button.previousPage {
+  transform: rotate(180deg)
+}
+
+@media only screen and (max-width: 720px) {
+  .RecentActivity {
+    padding: 1rem 0 1rem 1rem;
+  }
+
+  .pagination button {
+    width: 4.2rem;
+    height: 4.2rem;
+  }
+}

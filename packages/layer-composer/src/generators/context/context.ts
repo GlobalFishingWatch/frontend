@@ -1,4 +1,4 @@
-import { Layer, CirclePaint, LinePaint, FillPaint } from 'mapbox-gl'
+import { Layer, CirclePaint, LinePaint, FillPaint } from '@globalfishingwatch/mapbox-gl'
 import { Type, ContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { isConfigVisible } from '../utils'
@@ -102,6 +102,7 @@ class ContextGenerator {
         type: 'vector',
         promoteId: 'gfw_id',
         tiles: [tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}')],
+        ...(config.attribution && { attribution: config.attribution }),
       },
     ]
   }

@@ -28,12 +28,4 @@ export const getCSSVarValue = (property: string) => {
   return window.getComputedStyle(document.body).getPropertyValue(property)
 }
 
-export const setPrintStyles = (active: boolean) => {
-  const replaceRegex = active ? /@media print/gi : /@media screen/gi
-  const replaceText = active ? '@media screen' : '@media print'
-  Array.prototype.forEach.call(document.getElementsByTagName('style'), function (style) {
-    style.innerText = style.innerText.replace(replaceRegex, replaceText)
-  })
-}
-
 export default setInlineStyles

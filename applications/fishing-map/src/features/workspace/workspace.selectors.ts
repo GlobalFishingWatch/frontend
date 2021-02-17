@@ -2,19 +2,19 @@ import { createSelector } from '@reduxjs/toolkit'
 import uniqBy from 'lodash/uniqBy'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetTypes,
+  DataviewCategory,
+  DataviewDatasetConfig,
+} from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
 import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { selectDataviews } from 'features/dataviews/dataviews.slice'
-import {
-  TRACKS_DATASET_TYPE,
-  VESSELS_DATASET_TYPE,
-  FISHING_DATASET_TYPE,
-  USER_CONTEXT_TYPE,
-} from 'data/datasets'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { RootState } from 'store'
+import { PUBLIC_SUFIX } from 'data/config'
 
 export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
   Object.entries(dataview.datasetsConfig || {}).flatMap(([id, value]) => {
@@ -28,7 +28,12 @@ export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
 
 export const selectWorkspace = (state: RootState) => state.workspace.data
 export const selectWorkspaceStatus = (state: RootState) => state.workspace.status
+export const selectWorkspaceError = (state: RootState) => state.workspace.error
 export const selectWorkspaceCustom = (state: RootState) => state.workspace.custom
+
+export const isWorkspacePublic = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.id.slice(-PUBLIC_SUFIX.length) === PUBLIC_SUFIX
+})
 
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id
@@ -81,6 +86,7 @@ export const selectDataviewInstancesMerged = createSelector(
       },
       { workspace: [], new: [] }
     )
+
     const workspaceDataviewInstancesMerged = (workspaceDataviewInstances || []).map(
       (workspaceDataviewInstance) => {
         const urlDataviewInstance = urlDataviews.workspace.find(
@@ -101,7 +107,7 @@ export const selectDataviewInstancesMerged = createSelector(
       }
     )
 
-    return [...workspaceDataviewInstancesMerged, ...urlDataviews.new]
+    return [...urlDataviews.new, ...workspaceDataviewInstancesMerged]
   }
 )
 
@@ -134,31 +140,33 @@ export const selectDataviewInstancesResolved = createSelector(
           ...dataview.config,
           ...dataviewInstance.config,
         }
-
         config.visible = config?.visible ?? true
-        const datasetsConfig = (dataview.datasetsConfig || [])?.map((datasetConfig) => {
-          const instanceDatasetConfig = dataviewInstance.datasetsConfig?.find(
-            (instanceDatasetConfig) => {
-              return datasetConfig.endpoint === instanceDatasetConfig.endpoint
-            }
-          )
-          if (!instanceDatasetConfig) return datasetConfig
-          // using the instance query and params first as the uniqBy from lodash doc says:
-          // the order of result values is determined by the order they occur in the array
-          // so the result will be overriding the default dataview config
-          return {
-            ...datasetConfig,
-            ...instanceDatasetConfig,
-            query: uniqBy(
-              [...(instanceDatasetConfig.query || []), ...(datasetConfig.query || [])],
-              'id'
-            ),
-            params: uniqBy(
-              [...(instanceDatasetConfig.params || []), ...(datasetConfig.params || [])],
-              'id'
-            ),
-          }
-        })
+        const datasetsConfig =
+          dataview.datasetsConfig && dataview.datasetsConfig.length > 0
+            ? dataview.datasetsConfig?.map((datasetConfig) => {
+                const instanceDatasetConfig = dataviewInstance.datasetsConfig?.find(
+                  (instanceDatasetConfig) => {
+                    return datasetConfig.endpoint === instanceDatasetConfig.endpoint
+                  }
+                )
+                if (!instanceDatasetConfig) return datasetConfig
+                // using the instance query and params first as the uniqBy from lodash doc says:
+                // the order of result values is determined by the order they occur in the array
+                // so the result will be overriding the default dataview config
+                return {
+                  ...datasetConfig,
+                  ...instanceDatasetConfig,
+                  query: uniqBy(
+                    [...(instanceDatasetConfig.query || []), ...(datasetConfig.query || [])],
+                    'id'
+                  ),
+                  params: uniqBy(
+                    [...(instanceDatasetConfig.params || []), ...(datasetConfig.params || [])],
+                    'id'
+                  ),
+                }
+              })
+            : dataviewInstance.datasetsConfig || []
 
         const dataviewDatasets: Dataset[] = datasetsConfig.flatMap((datasetConfig) => {
           const dataset = datasets.find((dataset) => dataset.id === datasetConfig.datasetId)
@@ -180,16 +188,20 @@ export const selectDataviewInstancesResolved = createSelector(
     // resolved array filters to url filters
     dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
       if (dataviewInstance.config?.type === Generators.Type.HeatmapAnimated) {
-        const dataviewInstanceWithUrlFilter = {
-          ...dataviewInstance,
+        const { filters } = dataviewInstance.config
+        if (filters) {
+          const sqlFilters = Object.keys(filters).flatMap((filterKey) => {
+            if (!filters[filterKey]) return []
+            const filterValues = Array.isArray(filters[filterKey])
+              ? filters[filterKey]
+              : [filters[filterKey]]
+            return `${filterKey} IN (${filterValues.map((f: string) => `'${f}'`).join(', ')})`
+          })
+          if (sqlFilters.length) {
+            dataviewInstance.config.filter = sqlFilters.join(' AND ')
+          }
         }
-        if (dataviewInstance.config.filters?.length && dataviewInstanceWithUrlFilter.config) {
-          const flags = dataviewInstanceWithUrlFilter.config.filters
-          dataviewInstanceWithUrlFilter.config.filter = `flag IN (${flags
-            .map((f: string) => `'${f}'`)
-            .join(', ')})`
-        }
-        return dataviewInstanceWithUrlFilter
+        return dataviewInstance
       }
       return dataviewInstance
     })
@@ -197,11 +209,6 @@ export const selectDataviewInstancesResolved = createSelector(
   }
 )
 
-type DatasetTypes =
-  | typeof TRACKS_DATASET_TYPE
-  | typeof VESSELS_DATASET_TYPE
-  | typeof FISHING_DATASET_TYPE
-  | typeof USER_CONTEXT_TYPE
 export const selectDatasetsByType = (type: DatasetTypes) => {
   return createSelector([selectDatasets], (datasets) => {
     return uniqBy(
@@ -220,13 +227,13 @@ export const selectDatasetsByType = (type: DatasetTypes) => {
 }
 
 export const selectVesselsDatasets = createSelector(
-  [selectDatasetsByType(VESSELS_DATASET_TYPE)],
+  [selectDatasetsByType(DatasetTypes.Vessels)],
   (datasets) => {
     return datasets
   }
 )
 export const selectTracksDatasets = createSelector(
-  [selectDatasetsByType(TRACKS_DATASET_TYPE)],
+  [selectDatasetsByType(DatasetTypes.Tracks)],
   (datasets) => {
     return datasets
   }
@@ -235,6 +242,12 @@ export const selectTracksDatasets = createSelector(
 export const selectDataviewInstancesByType = (type: Generators.Type) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
+  })
+}
+
+export const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
+  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
+    return dataviews?.filter((dataview) => dataview.category === category)
   })
 }
 
@@ -248,7 +261,14 @@ export const selectActiveVesselsDataviews = createSelector([selectVesselsDatavie
 )
 
 export const selectContextAreasDataviews = createSelector(
-  [selectDataviewInstancesByType(Generators.Type.Context)],
+  [selectDataviewInstancesByCategory(DataviewCategory.Context)],
+  (contextDataviews) => {
+    return contextDataviews
+  }
+)
+
+export const selectEnvironmentalDataviews = createSelector(
+  [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
   (dataviews) => dataviews
 )
 
@@ -312,7 +332,7 @@ export const selectDataviewsResourceQueries = createSelector(
       let trackQuery: any = [] // initialized as empty array to be filtered by flatMap if not used
       if (dataview.config.visible === true) {
         const trackResource = resolveDataviewDatasetResource(dataview, {
-          type: TRACKS_DATASET_TYPE,
+          type: DatasetTypes.Tracks,
         })
         if (trackResource.url && trackResource.dataset && trackResource.datasetConfig) {
           trackQuery = {
@@ -324,7 +344,7 @@ export const selectDataviewsResourceQueries = createSelector(
         }
       }
 
-      const infoResource = resolveDataviewDatasetResource(dataview, { type: VESSELS_DATASET_TYPE })
+      const infoResource = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
       if (!infoResource.url || !infoResource.dataset || !infoResource.datasetConfig) {
         return trackQuery as ResourceQuery
       }

@@ -3,19 +3,12 @@
   --print-height: 10in;
 }
 
+:global(.printing .print-hidden) {
+  display: none !important;
+}
+
 :global(#root) {
   height: 100%;
-}
-
-.placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-
-.placeholder > div {
-  padding: var(--space-L);
 }
 
 .main {

@@ -2,6 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { ExtendedFeatureVessel } from '@globalfishingwatch/react-hooks'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { formatInfoField } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
@@ -9,11 +10,10 @@ import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'types'
-import { TRACKS_DATASET_TYPE, VESSELS_DATASET_TYPE } from 'data/datasets'
 import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
-// t('common.hour')
+// t('common.hour', 'Hour')
 
 type HeatmapTooltipRowProps = {
   feature: TooltipEventFeature
@@ -25,8 +25,14 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
   const { clickedEventStatus } = useClickedEventConnect()
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
-    const infoDataset = getRelatedDatasetByType(vessel.dataset, VESSELS_DATASET_TYPE)
-    const trackDataset = getRelatedDatasetByType(vessel.dataset, TRACKS_DATASET_TYPE)
+    const infoDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Vessels)
+    if (!infoDataset) {
+      console.warn('Missing info related dataset for', vessel)
+    }
+    const trackDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks)
+    if (!trackDataset) {
+      console.warn('Missing track related dataset for', vessel)
+    }
     if (infoDataset && trackDataset) {
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
         trackDatasetId: trackDataset.id,
@@ -57,8 +63,12 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
         {feature.vesselsInfo && (
           <div className={styles.vesselsTable}>
             <div className={styles.vesselsHeader}>
-              <label className={styles.vesselsHeaderLabel}>{t('common.vessel_plural')}</label>
-              <label className={styles.vesselsHeaderLabel}>{t('common.hour_plural')}</label>
+              <label className={styles.vesselsHeaderLabel}>
+                {t('common.vessel_plural', 'Vessels')}
+              </label>
+              <label className={styles.vesselsHeaderLabel}>
+                {t('common.hour_plural', 'hours')}
+              </label>
             </div>
             {feature.vesselsInfo.vessels.map((vessel, i) => {
               const vesselLabel = vessel.shipname
@@ -68,7 +78,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
                 <button key={i} className={styles.vesselRow} onClick={() => onVesselClick(vessel)}>
                   <span className={styles.vesselName}>
                     {vesselLabel.length > 25 ? `${vesselLabel.slice(0, 25)}...` : vesselLabel}
-                    {vessel.dataset.name && (
+                    {vessel.dataset && vessel.dataset.name && (
                       <span className={styles.vesselRowLegend}> - {vessel.dataset.name}</span>
                     )}
                   </span>
@@ -80,7 +90,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
             {feature.vesselsInfo.overflow && (
               <div className={styles.vesselsMore}>
                 + {feature.vesselsInfo.numVessels - feature.vesselsInfo.vessels.length}{' '}
-                {t('common.more')}
+                {t('common.more', 'more')}
               </div>
             )}
           </div>

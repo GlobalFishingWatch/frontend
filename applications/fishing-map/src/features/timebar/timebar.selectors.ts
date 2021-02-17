@@ -1,11 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import {
   resolveDataviewDatasetResource,
   selectActiveVesselsDataviews,
+  selectEnvironmentalDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectResources, Resource, TrackResourceData } from 'features/resources/resources.slice'
-import { TRACKS_DATASET_TYPE } from 'data/datasets'
 
 type TimebarTrackSegment = {
   start: number
@@ -17,13 +18,20 @@ type TimebarTrack = {
   color: string
 }
 
+export const hasStaticHeatmapLayersActive = createSelector(
+  [selectEnvironmentalDataviews],
+  (staticHeatmapDataviews) => {
+    if (!staticHeatmapDataviews) return false
+    return staticHeatmapDataviews.some((d) => d.config?.visible === true)
+  }
+)
 export const selectTracksData = createSelector(
   [selectActiveVesselsDataviews, selectResources],
   (trackDataviews, resources) => {
     if (!trackDataviews || !resources) return
 
     const tracksSegments: TimebarTrack[] = trackDataviews.flatMap((dataview) => {
-      const { url } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })
+      const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
       if (!url) return []
       const track = resources[url] as Resource<TrackResourceData>
       if (!track?.data) return []
@@ -50,7 +58,7 @@ export const selectTracksGraphs = createSelector(
     if (!trackDataviews || trackDataviews.length > 2 || !resources) return
 
     const graphs = trackDataviews.flatMap((dataview) => {
-      const { url } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })
+      const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
       if (!url) return []
       const track = resources[url] as Resource<TrackResourceData>
       if (!track?.data) return []

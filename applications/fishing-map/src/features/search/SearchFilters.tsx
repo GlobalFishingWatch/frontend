@@ -6,11 +6,11 @@ import MultiSelect from '@globalfishingwatch/ui-components/dist/multi-select'
 import InputDate from '@globalfishingwatch/ui-components/dist/input-date'
 import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import useClickedOutside from 'hooks/use-clicked-outside'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { selectVesselsDatasets } from 'features/workspace/workspace.selectors'
+import { getFiltersBySchema, SchemaFieldDataview } from 'features/datasets/datasets.utils'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchFilters.module.css'
+import { selectAllowedVesselsDatasets } from './search.selectors'
 
 type SearchFiltersProps = {
   className?: string
@@ -18,19 +18,102 @@ type SearchFiltersProps = {
 
 function SearchFilters({ className = '' }: SearchFiltersProps) {
   const { t } = useTranslation()
-  const { searchFilters, setSearchFiltersOpen, setSearchFilters } = useSearchFiltersConnect()
-  const { flags, sources, firstTransmissionDate = '', lastTransmissionDate = '' } = searchFilters
+  const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
+  const {
+    flags,
+    sources,
+    fleets,
+    origins,
+    firstTransmissionDate = '',
+    lastTransmissionDate = '',
+  } = searchFilters
   const flagOptions = useMemo(getFlags, [])
-  const searchDatasets = useSelector(selectVesselsDatasets)
-  const sourceOptions = useMemo(() => searchDatasets.map(({ id, name }) => ({ id, label: name })), [
-    searchDatasets,
-  ])
-  const expandedContainerRef = useClickedOutside(() => setSearchFiltersOpen(false))
+  const searchDatasets = useSelector(selectAllowedVesselsDatasets)
+  const sourceOptions = useMemo(
+    () => searchDatasets?.map(({ id, name }) => ({ id, label: name })),
+    [searchDatasets]
+  )
+
+  const dataview = {
+    config: {
+      datasets: sources?.map(({ id }) => id),
+      filters: {
+        fleet: fleets?.map(({ id }) => id),
+        origin: origins?.map(({ id }) => id),
+      },
+    },
+    datasets: searchDatasets,
+  } as SchemaFieldDataview
+
+  const fleetFilters = getFiltersBySchema(dataview, 'fleet')
+  const originFilters = getFiltersBySchema(dataview, 'origin')
 
   return (
-    <div className={cx(className)} ref={expandedContainerRef}>
+    <div className={cx(className)}>
+      {sourceOptions && sourceOptions.length > 0 && (
+        <MultiSelect
+          label={t('layer.source_plural', 'Sources')}
+          placeholder={getPlaceholderBySelections(sources)}
+          options={sourceOptions}
+          selectedOptions={sources}
+          className={styles.row}
+          onSelect={(filter) => {
+            setSearchFilters({ sources: [...(sources || []), filter] })
+          }}
+          onRemove={(filter, rest) => {
+            setSearchFilters({ sources: rest })
+          }}
+          onCleanClick={() => {
+            setSearchFilters({ sources: undefined })
+          }}
+        />
+      )}
+      {fleetFilters.active && (
+        <div className={styles.row}>
+          <MultiSelect
+            disabled={fleetFilters.disabled}
+            disabledMsg={fleetFilters.tooltip}
+            label={t('vessel.fleet', 'Fleet')}
+            placeholder={getPlaceholderBySelections(fleetFilters.optionsSelected)}
+            options={fleetFilters.options}
+            selectedOptions={fleetFilters.optionsSelected}
+            className={styles.multiSelect}
+            onSelect={(filter) => {
+              setSearchFilters({ fleets: [...(fleets || []), filter] })
+            }}
+            onRemove={(filter, rest) => {
+              setSearchFilters({ fleets: rest })
+            }}
+            onCleanClick={() => {
+              setSearchFilters({ fleets: undefined })
+            }}
+          />
+        </div>
+      )}
+      {originFilters.active && (
+        <div className={styles.row}>
+          <MultiSelect
+            disabled={originFilters.disabled}
+            disabledMsg={originFilters.tooltip}
+            label={t('vessel.origin', 'Origin')}
+            placeholder={getPlaceholderBySelections(originFilters.optionsSelected)}
+            options={originFilters.options}
+            selectedOptions={originFilters.optionsSelected}
+            className={styles.multiSelect}
+            onSelect={(filter) => {
+              setSearchFilters({ origins: [...(origins || []), filter] })
+            }}
+            onRemove={(filter, rest) => {
+              setSearchFilters({ origins: rest })
+            }}
+            onCleanClick={() => {
+              setSearchFilters({ origins: undefined })
+            }}
+          />
+        </div>
+      )}
       <MultiSelect
-        label={t('layer.flag_state_plural', 'Flag States')}
+        label={t('layer.flagState_plural', 'Flag States')}
         placeholder={getPlaceholderBySelections(flags)}
         options={flagOptions}
         selectedOptions={flags}
@@ -43,22 +126,6 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
         }}
         onCleanClick={() => {
           setSearchFilters({ flags: undefined })
-        }}
-      />
-      <MultiSelect
-        label={t('layer.source_plural', 'Sources')}
-        placeholder={getPlaceholderBySelections(sources)}
-        options={sourceOptions}
-        selectedOptions={sources}
-        className={styles.row}
-        onSelect={(filter) => {
-          setSearchFilters({ sources: [...(sources || []), filter] })
-        }}
-        onRemove={(filter, rest) => {
-          setSearchFilters({ sources: rest })
-        }}
-        onCleanClick={() => {
-          setSearchFilters({ sources: undefined })
         }}
       />
       <div className={styles.row}>

@@ -1,10 +1,11 @@
 import { ApiAppName, Dataset } from '.'
 
-export interface DataviewConfig<T = any> {
+export interface DataviewConfig<Type = any> {
   // TODO use any property from layer-composer here?
-  type?: T
+  type?: Type
   color?: string
   visible?: boolean
+  filters?: Record<string, any>
   [key: string]: any
 }
 
@@ -37,22 +38,29 @@ export interface DataviewInfoConfig {
   fields: DataviewInfoConfigField[]
 }
 
-export interface Dataview<T = any> {
+export enum DataviewCategory {
+  Context = 'context',
+  Environment = 'environment',
+}
+
+export interface Dataview<Type = any, Category = DataviewCategory> {
   id: number
   name: string
   app: ApiAppName
   description: string
+  category?: Category
   createdAt?: string
   updatedAt?: string
-  config: DataviewConfig<T>
+  config: DataviewConfig<Type>
   datasets?: Dataset[]
   infoConfig?: DataviewInfoConfig
   datasetsConfig?: DataviewDatasetConfig[]
 }
 
-export interface DataviewInstance<T = any> extends Partial<Omit<Dataview<T>, 'id' | 'config'>> {
+export interface DataviewInstance<Type = any>
+  extends Partial<Omit<Dataview<Type>, 'id' | 'config'>> {
   id: string
   dataviewId: number
-  config?: DataviewConfig<T>
+  config?: DataviewConfig<Type>
   datasetsConfig?: DataviewDatasetConfig[]
 }

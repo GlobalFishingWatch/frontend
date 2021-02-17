@@ -9,11 +9,13 @@ type Range = {
 type TimebarSlice = {
   highlightedTime: Range | null
   staticTime: Range | null
+  hasChangedSettingsOnce: boolean
 }
 
 const initialState: TimebarSlice = {
   highlightedTime: null,
   staticTime: null,
+  hasChangedSettingsOnce: false,
 }
 
 const slice = createSlice({
@@ -29,11 +31,21 @@ const slice = createSlice({
     setStaticTime: (state, action: PayloadAction<Range>) => {
       state.staticTime = action.payload
     },
+    changeSettings: (state) => {
+      state.hasChangedSettingsOnce = true
+    },
   },
 })
 
-export const { setHighlightedTime, disableHighlightedTime, setStaticTime } = slice.actions
+export const {
+  setHighlightedTime,
+  disableHighlightedTime,
+  setStaticTime,
+  changeSettings,
+} = slice.actions
 export default slice.reducer
 
 export const selectHighlightedTime = (state: RootState) => state.timebar.highlightedTime
 export const selectStaticTime = (state: RootState) => state.timebar.staticTime
+export const selectHasChangedSettingsOnce = (state: RootState) =>
+  state.timebar.hasChangedSettingsOnce

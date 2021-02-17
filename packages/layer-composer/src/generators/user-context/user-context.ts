@@ -22,7 +22,7 @@ class UserContextGenerator {
     ]
   }
   _getStyleLayers = (config: UserContextGeneratorConfig) => {
-    const generatorId = `user-context-${config.id}`
+    const generatorId = config.id
 
     let paint: any = {
       'line-color': config.color,

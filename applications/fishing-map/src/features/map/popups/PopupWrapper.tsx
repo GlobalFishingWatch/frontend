@@ -1,12 +1,13 @@
 import React from 'react'
 import cx from 'classnames'
-import { Anchor } from 'mapbox-gl'
 import groupBy from 'lodash/groupBy'
+import { Anchor } from '@globalfishingwatch/mapbox-gl'
 import { Popup } from '@globalfishingwatch/react-map-gl'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { TooltipEvent } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 import HeatmapTooltipRow from './HeatmapLayers'
+import EnviromentalTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 
 type PopupWrapperProps = {
@@ -57,6 +58,15 @@ function PopupWrapper({
           if (featureType === Generators.Type.Context) {
             return (
               <ContextTooltipSection
+                key={featureType}
+                features={features}
+                showFeaturesDetails={type === 'click'}
+              />
+            )
+          }
+          if (featureType === Generators.Type.Heatmap) {
+            return (
+              <EnviromentalTooltipSection
                 key={featureType}
                 features={features}
                 showFeaturesDetails={type === 'click'}

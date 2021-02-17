@@ -25,28 +25,57 @@ export interface Endpoint {
   query: EndpointParam[]
 }
 
-export type DatasetTypes =
-  | 'carriers-tracks:v1'
-  | 'carriers-vessels:v1'
-  | 'carriers-events:v1'
-  | 'carriers-ports:v1'
-  | '4wings:v1'
-  | 'user-tracks:v1'
-  | 'user-context-layer:v1'
-  | 'data-download:v1'
+export enum DatasetTypes {
+  Vessels = 'carriers-vessels:v1',
+  Events = 'carriers-events:v1',
+  Ports = 'carriers-ports:v1',
+  Tracks = 'carriers-tracks:v1',
+  Fourwings = '4wings:v1',
+  Context = 'user-context-layer:v1',
+  Download = 'data-download:v1',
+}
 
-export type DatasetStatus = 'done' | 'importing' | 'error'
+export enum DatasetStatus {
+  Done = 'done',
+  Importing = 'importing',
+  Error = 'error',
+}
+
+export type DatasetCustomTypes = 'points' | 'lines' | 'geometries'
 export interface DatasetConfiguration {
   index?: string
   filePath?: string
-  propertyToInclude?: string
   srid?: number
+  file?: string
+  type?: DatasetCustomTypes
+  format?: 'geojson'
   [key: string]: unknown
 }
+
+export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {
+  propertyToInclude: string
+  propertyToIncludeRange: { min: number; max: number }
+}
+
+export type AnyDatasetConfiguration = DatasetConfiguration | EnviromentalDatasetConfiguration
 
 export type RelatedDataset = {
   id: string
   type: DatasetTypes
+}
+
+export type DatasetSchema = {
+  type: 'number' | 'string'
+  maxLength: number
+  minLength: number
+  enum: string[]
+  minimum: number
+  maximum: number
+}
+
+export enum DatasetCategory {
+  Context = 'context',
+  Environment = 'environment',
 }
 
 export interface Dataset {
@@ -55,7 +84,8 @@ export interface Dataset {
   alias: string[] | null
   name: string
   description: string
-  category?: string
+  schema?: Record<string, DatasetSchema>
+  category?: DatasetCategory
   subcategory?: string
   source?: string
   status: DatasetStatus
@@ -67,7 +97,7 @@ export interface Dataset {
   endDate?: string
   createdAt: string
   endpoints?: Endpoint[]
-  configuration: DatasetConfiguration | null
+  configuration: AnyDatasetConfiguration | null
   relatedDatasets: RelatedDataset[] | null
   fieldsAllowed: string[]
 }

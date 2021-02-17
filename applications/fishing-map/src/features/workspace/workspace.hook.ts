@@ -41,8 +41,8 @@ export const useDataviewInstancesConnect = () => {
       } else {
         dispatchQueryParams({
           dataviewInstances: [
-            ...(urlDataviewInstances || []),
             dataviewInstance as UrlDataviewInstance,
+            ...(urlDataviewInstances || []),
           ],
         })
       }

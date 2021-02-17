@@ -1,5 +1,204 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.23.0
+
+### Minor Changes
+
+- 66e35ff4: Dataset and Dataviews category types
+
+### Patch Changes
+
+- Updated dependencies [66e35ff4]
+  - @globalfishingwatch/api-types@2.10.0
+
+## 0.22.2
+
+### Patch Changes
+
+- 4a10aebb: Rename fishing-activity category icon to match names from spreadsheets
+- Updated dependencies [4a10aebb]
+  - @globalfishingwatch/ui-components@2.12.7
+
+## 0.22.1
+
+### Patch Changes
+
+- fix svg logo size for screenshot
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.12.6
+
+## 0.22.0
+
+### Minor Changes
+
+- split dataset configuration types definition
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.9.0
+
+## 0.21.4
+
+### Patch Changes
+
+- e75d429f: Fishingmap/ocean areas miniglobe
+- Updated dependencies [e75d429f]
+- Updated dependencies [7fb1dfcc]
+  - @globalfishingwatch/ocean-areas@0.1.1
+  - @globalfishingwatch/timebar@1.2.1
+
+## 0.21.3
+
+### Patch Changes
+
+- a9e66b1c: move metadata configuration to dataset types definition
+- 1a264bea: support className for select container
+- 0180dd0b: not rename generatorId in user-context
+- Updated dependencies [a9e66b1c]
+- Updated dependencies [1a264bea]
+- Updated dependencies [0180dd0b]
+  - @globalfishingwatch/api-types@2.8.2
+  - @globalfishingwatch/ui-components@2.12.5
+  - @globalfishingwatch/layer-composer@4.13.2
+
+## 0.21.2
+
+### Patch Changes
+
+- fix typo in Track DatasetType
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.8.1
+
+## 0.21.1
+
+### Patch Changes
+
+- match latest versions
+- Updated dependencies [undefined]
+  - @globalfishingwatch/fourwings-aggregate@1.1.1
+  - @globalfishingwatch/layer-composer@4.13.1
+  - @globalfishingwatch/react-hooks@4.5.1
+
+## 0.21.0
+
+### Minor Changes
+
+- 44f8bcee: define DatasetStatus as enum
+
+### Patch Changes
+
+- Updated dependencies [44f8bcee]
+  - @globalfishingwatch/api-types@2.8.0
+
+## 0.20.0
+
+### Minor Changes
+
+- 781fce16: export getTimeSeries from fourwings-aggregate
+
+### Patch Changes
+
+- Updated dependencies [781fce16]
+  - @globalfishingwatch/fourwings-aggregate@1.1.0
+  - @globalfishingwatch/layer-composer@4.13.0
+
+## 0.19.1
+
+### Patch Changes
+
+- 058d14b7: Return api erros in api-client
+- 54737510: Fix sidabar z-index
+- Updated dependencies [058d14b7]
+- Updated dependencies [54737510]
+  - @globalfishingwatch/api-client@1.6.6
+  - @globalfishingwatch/ui-components@2.12.4
+
+## 0.19.0
+
+### Minor Changes
+
+- layer composer frameToDate
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.12.0
+
+## 0.18.0
+
+### Minor Changes
+
+- TimebarStackedActivity
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/timebar@1.2.0
+
+## 0.17.10
+
+### Patch Changes
+
+- ef4092a3: Support i18next translation as children in ui-button components
+- Updated dependencies [ef4092a3]
+  - @globalfishingwatch/api-types@2.7.0
+  - @globalfishingwatch/ui-components@2.12.3
+
+## 0.17.9
+
+### Patch Changes
+
+- support context layers attribution
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.11.2
+
+## 0.17.8
+
+### Patch Changes
+
+- 88482842: Include ids in ui-buttons
+- Updated dependencies [88482842]
+  - @globalfishingwatch/ui-components@2.12.1
+
+## 0.17.7
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.11.1
+
+## 0.17.6
+
+### Patch Changes
+
+- fix tabs crash when no activeTab
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.11.4
+
+## 0.17.5
+
+### Patch Changes
+
+- 4f8269c2: [WIP] Polish 🇵🇱
+- Updated dependencies [4f8269c2]
+  - @globalfishingwatch/ui-components@2.11.3
+
+## 0.17.4
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.11.0
+
+## 0.17.3
+
+### Patch Changes
+
+- d160e84a: update dependencies
+- Updated dependencies [d160e84a]
+  - @globalfishingwatch/layer-composer@4.10.4
+
 ## 0.17.2
 
 ### Patch Changes

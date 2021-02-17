@@ -1,5 +1,23 @@
 # @globalfishingwatch/timebar
 
+## 1.2.1
+
+### Patch Changes
+
+- 7fb1dfcc: graph tweaks
+
+## 1.2.0
+
+### Minor Changes
+
+- TimebarStackedActivity
+
+## 1.1.6
+
+### Patch Changes
+
+- fix h2 styles
+
 ## 1.1.5
 
 ### Patch Changes

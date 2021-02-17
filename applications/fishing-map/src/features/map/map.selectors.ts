@@ -1,19 +1,26 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { CircleLayer } from 'mapbox-gl'
+import { scaleLinear } from 'd3-scale'
+import { CircleLayer } from '@globalfishingwatch/mapbox-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   AnyGeneratorConfig,
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { GeneratorDataviewConfig, Generators } from '@globalfishingwatch/layer-composer'
+import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
+import {
+  DatasetCategory,
+  DatasetStatus,
+  DatasetTypes,
+  EnviromentalDatasetConfiguration,
+} from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
   resolveDataviewDatasetResource,
+  selectWorkspaceError,
 } from 'features/workspace/workspace.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import { Resource, selectResources, TrackResourceData } from 'features/resources/resources.slice'
-import { TRACKS_DATASET_TYPE, USER_CONTEXT_TYPE } from 'data/datasets'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
@@ -96,7 +103,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
     }
 
     generatorsConfig = generatorsConfig.flatMap((dataview) => {
-      const generator: GeneratorDataviewConfig = {
+      let generator: GeneratorDataviewConfig = {
         id: dataview.id,
         ...dataview.config,
       }
@@ -105,36 +112,89 @@ export const getWorkspaceGeneratorsConfig = createSelector(
         // Inject highligtedTime
         generator.highlightedTime = highlightedTime
         // Try to retrieve resource if it exists
-        const { url } = resolveDataviewDatasetResource(dataview, { type: TRACKS_DATASET_TYPE })
+        const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
         if (url && resources[url]) {
           const resource = resources[url] as Resource<TrackResourceData>
           generator.data = resource.data
         }
-      } else if (dataview.config?.type === Generators.Type.Context) {
+      } else if (
+        dataview.config?.type === Generators.Type.Context ||
+        dataview.config?.type === Generators.Type.UserContext
+      ) {
         if (Array.isArray(dataview.config.layers)) {
           const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
-            const { url } = resolveDataviewDatasetResource(dataview, { id: dataset })
-            if (!url) return []
-            return { id, tilesUrl: url }
+            const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(dataview, {
+              id: dataset,
+            })
+            if (!url || resolvedDataset?.status !== DatasetStatus.Done) return []
+            return { id, tilesUrl: url, attribution: resolvedDataset?.source }
           })
           // Duplicated generators when context dataview have multiple layers
-          return tilesUrls.map(({ id, tilesUrl }) => ({
+          return tilesUrls.map(({ id, tilesUrl, attribution }) => ({
             ...generator,
             id: `${dataview.id}__${id}`,
             layer: id,
+            attribution,
             tilesUrl,
           }))
         } else {
-          generator.id = `${dataview.id}__${dataview.config.layers}`
+          generator.id = dataview.config.layers
+            ? `${dataview.id}__${dataview.config.layers}`
+            : dataview.id
           generator.layer = dataview.config.layers
-          const { url } = resolveDataviewDatasetResource(dataview, { type: USER_CONTEXT_TYPE })
+          const { dataset, url } = resolveDataviewDatasetResource(dataview, {
+            type: DatasetTypes.Context,
+          })
+          if (dataset?.status !== DatasetStatus.Done) {
+            return []
+          }
           if (url) {
             generator.tilesUrl = url
+          }
+          if (dataset?.source) {
+            generator.attribution = dataset.source
+          }
+          if (dataset.category === DatasetCategory.Environment) {
+            const { min, max } =
+              (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
+              {}
+            const rampScale = scaleLinear().range([min, max]).domain([0, 1])
+            const numSteps = 8
+            const steps = [...Array(numSteps)]
+              .map((_, i) => parseFloat((i / (numSteps - 1)).toFixed(2)))
+              .map((value) => parseFloat((rampScale(value) as number).toFixed(3)))
+            generator.steps = steps
           }
         }
         if (!generator.tilesUrl) {
           console.warn('Missing tiles url for dataview', dataview)
           return []
+        }
+      } else if (dataview.config?.type === Generators.Type.Heatmap) {
+        // TODO: use the getGeneratorConfig package function here
+        const dataset = dataview.datasets?.find(
+          (dataset) => dataset.type === DatasetTypes.Fourwings
+        )
+        const tilesEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
+        const statsEndpoint = dataset?.endpoints?.find(
+          (endpoint) => endpoint.id === '4wings-legend'
+        )
+        generator = {
+          ...generator,
+          maxZoom: 8,
+          fetchStats: !dataview.config.steps,
+          datasets: [dataset?.id],
+          tilesUrl: tilesEndpoint?.pathTemplate,
+          statsUrl: statsEndpoint?.pathTemplate,
+          metadata: {
+            color: dataview?.config?.color,
+            group: Group.OutlinePolygonsBackground,
+            interactive: true,
+            legend: {
+              label: dataset?.name,
+              unit: dataset?.unit,
+            },
+          },
         }
       }
       return generator
@@ -230,8 +290,14 @@ export const selectMapWorkspacesListGenerators = createSelector(
 )
 
 export const getGeneratorsConfig = createSelector(
-  [isWorkspaceLocation, getWorkspaceGeneratorsConfig, selectMapWorkspacesListGenerators],
-  (showWorkspaceDetail, workspaceGenerators, workspaceListGenerators) => {
+  [
+    selectWorkspaceError,
+    isWorkspaceLocation,
+    getWorkspaceGeneratorsConfig,
+    selectMapWorkspacesListGenerators,
+  ],
+  (workspaceError, showWorkspaceDetail, workspaceGenerators, workspaceListGenerators) => {
+    if (workspaceError.status === 401) return [basemap]
     return showWorkspaceDetail ? workspaceGenerators : workspaceListGenerators
   }
 )

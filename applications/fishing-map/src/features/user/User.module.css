@@ -1,32 +1,66 @@
+.container {
+  height: calc(100% - 5.2rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.spinner {
+  flex: 1;
+}
+
 .userInfo {
-    padding: var(--space-M);
-    border-bottom: var(--border);
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
+  padding: var(--space-M);
+  border-bottom: var(--border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
 }
 
 .secondary {
-    opacity: var(--opacity-secondary);
+  opacity: var(--opacity-secondary);
 }
 
 .views {
-    padding: var(--space-M) 0 var(--space-M) var(--space-M);
+  padding: var(--space-M) 0 var(--space-M) var(--space-M);
 }
 
+.viewsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: var(--space-M);
+  margin-bottom: var(--space-S);
+}
+
+.dataset,
 .workspace {
-    padding: var(--space-XS) var(--space-XS) var(--space-XS) 0;
+  padding: var(--space-XS) var(--space-XS) 0 0;
 }
 
+.dataset,
 .workspace:not(:last-child) {
-    border-bottom: var(--border);
+  border-bottom: var(--border);
 }
 
 .workspaceLink {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .workspaceTitle {
-    flex: 1;
+  flex: 1;
+}
+
+.dataset {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.placeholder {
+  height: 15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-secondary-blue)
 }

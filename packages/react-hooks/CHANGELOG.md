@@ -1,5 +1,20 @@
 # @globalfishingwatch/react-hooks
 
+## 4.5.1
+
+### Patch Changes
+
+- match latest versions
+- Updated dependencies [undefined]
+  - @globalfishingwatch/fourwings-aggregate@1.1.1
+  - @globalfishingwatch/layer-composer@4.13.1
+
+## 4.5.0
+
+### Minor Changes
+
+- include unit in useMapInteraction feature
+
 ## 4.4.4
 
 ### Patch Changes

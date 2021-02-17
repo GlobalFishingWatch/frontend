@@ -1,43 +1,38 @@
-import React, { useState, Fragment, useCallback, useMemo } from 'react'
+import React, { useState, Fragment, useCallback, useEffect, Suspense } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
-import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
-import Button from '@globalfishingwatch/ui-components/dist/button'
-import { AsyncReducerStatus } from 'types'
 import useDebugMenu from 'features/debug/debug.hooks'
 import { MapboxRefProvider } from 'features/map/map.context'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { isWorkspaceLocation } from 'routes/routes.selectors'
+import { isWorkspaceLocation, selectLocationType, selectWorkspaceId } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
-import Login from 'features/user/Login'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import Sidebar from 'features/sidebar/Sidebar'
-import { logoutUserThunk } from 'features/user/user.slice'
-import { isUserAuthorized, isUserLogged } from 'features/user/user.selectors'
-import { HOME } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
-import { selectSidebarOpen } from './app.selectors'
+import {
+  selectCurrentWorkspaceId,
+  selectWorkspaceStatus,
+} from 'features/workspace/workspace.selectors'
+import { AsyncReducerStatus } from 'types'
+import { fetchUserThunk } from 'features/user/user.slice'
+import { isUserLogged } from 'features/user/user.selectors'
+import { HOME, WORKSPACE } from 'routes/routes'
+import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import styles from './App.module.css'
-
-import '@globalfishingwatch/ui-components/dist/base.css'
-
-const ErrorPlaceHolder = ({ children }: { children: React.ReactNode }) => (
-  <div className={styles.placeholder}>
-    <div>{children}</div>
-  </div>
-)
+import { selectSidebarOpen } from './app.selectors'
 
 const Main = () => {
-  const showTimebar = useSelector(isWorkspaceLocation)
+  const workspaceLocation = useSelector(isWorkspaceLocation)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
   return (
     <div className={styles.main}>
       <Map />
-      {showTimebar && <Timebar />}
+      {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />}
     </div>
   )
 }
@@ -48,11 +43,48 @@ function App(): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const userLogged = useSelector(isUserLogged)
-  const userAuthorized = useSelector(isUserAuthorized)
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const locationType = useSelector(selectLocationType)
+  const urlWorkspaceId = useSelector(selectWorkspaceId)
+  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
+  // const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const narrowSidebar = useSelector(isWorkspaceLocation)
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
+
+  useEffect(() => {
+    dispatch(fetchUserThunk())
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(fetchHighlightWorkspacesThunk())
+  }, [dispatch])
+
+  const isHomeLocation = locationType === HOME
+  // TODO: decide if we want to redirect when only one category is supported and
+  // we want to hide the default workspace
+  // const onlyOneCategorySupported = availableCategories?.length === 1
+  // const categorySupportedNotFishing =
+  //   availableCategories?.[0] === WorkspaceCategories.FishingActivity
+
+  // useEffect(() => {
+  //   if (isHomeLocation && onlyOneCategorySupported && !categorySupportedNotFishing) {
+  //     dispatchLocation(
+  //       WORKSPACES_LIST,
+  //       { category: availableCategories?.[0] as WorkspaceCategories },
+  //       true
+  //     )
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isHomeLocation, onlyOneCategorySupported])
+
+  const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
+  const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
+  useEffect(() => {
+    if (userLogged && (homeNeedsFetch || hasWorkspaceIdChanged)) {
+      dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
 
   const onToggle = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })
@@ -62,74 +94,20 @@ function App(): React.ReactElement {
     setMenuOpen(true)
   }, [])
 
-  const Content = useMemo(() => {
-    if (!userLogged) {
-      return <Spinner />
-    }
-
-    if (!userAuthorized) {
-      return (
-        <ErrorPlaceHolder>
-          <h2>We're sorry but your user is not authorized to use this app yet</h2>
-          <Button
-            onClick={() => {
-              dispatch(logoutUserThunk())
-            }}
-          >
-            Logout
-          </Button>
-        </ErrorPlaceHolder>
-      )
-    }
-
-    if (workspaceStatus === AsyncReducerStatus.Error) {
-      return (
-        <ErrorPlaceHolder>
-          <h2>There was an error loading your view</h2>
-          <Button
-            onClick={() => {
-              dispatch(
-                updateLocation(HOME, {
-                  payload: { workspaceId: undefined },
-                  query: {},
-                  replaceQuery: true,
-                })
-              )
-            }}
-          >
-            Load default view
-          </Button>
-        </ErrorPlaceHolder>
-      )
-    }
-
-    return (
-      <MapboxRefProvider>
-        <SplitView
-          isOpen={sidebarOpen}
-          onToggle={onToggle}
-          aside={<Sidebar onMenuClick={onMenuClick} />}
-          main={<Main />}
-          asideWidth={narrowSidebar ? '37rem' : '50%'}
-          className="split-container"
-        />
-      </MapboxRefProvider>
-    )
-  }, [
-    dispatch,
-    narrowSidebar,
-    onMenuClick,
-    onToggle,
-    sidebarOpen,
-    userAuthorized,
-    userLogged,
-    workspaceStatus,
-  ])
-
   return (
     <Fragment>
-      <Login />
-      {Content}
+      <MapboxRefProvider>
+        <Suspense fallback={null}>
+          <SplitView
+            isOpen={sidebarOpen}
+            onToggle={onToggle}
+            aside={<Sidebar onMenuClick={onMenuClick} />}
+            main={<Main />}
+            asideWidth={narrowSidebar ? '37rem' : '50%'}
+            className="split-container"
+          />
+        </Suspense>
+      </MapboxRefProvider>
       <Menu
         bgImage={menuBgImage}
         isOpen={menuOpen}

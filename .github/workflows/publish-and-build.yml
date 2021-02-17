@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: publish-npm
     steps:
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      - uses: google-github-actions/setup-gcloud@master
         with:
           version: '286.0.0'
           service_account_email: ${{ secrets.RUN_SA_EMAIL }}
@@ -84,3 +84,6 @@ jobs:
         run: |-
           gcloud -q beta builds triggers run --branch=develop ui-fishing-map-push-develop
 
+      - name: Trigger vessel-history build
+        run: |-
+          gcloud -q beta builds triggers run --branch=develop ui-vessel-history-push-to-develop

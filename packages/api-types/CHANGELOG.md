@@ -1,5 +1,71 @@
 # @globalfishingwatch/api-types
 
+## 2.10.0
+
+### Minor Changes
+
+- 66e35ff4: Dataset and Dataviews category types
+
+## 2.9.0
+
+### Minor Changes
+
+- split dataset configuration types definition
+
+## 2.8.2
+
+### Patch Changes
+
+- a9e66b1c: move metadata configuration to dataset types definition
+
+## 2.8.1
+
+### Patch Changes
+
+- fix typo in Track DatasetType
+
+## 2.8.0
+
+### Minor Changes
+
+- 44f8bcee: define DatasetStatus as enum
+
+## 2.7.1
+
+### Patch Changes
+
+- fix main api-types package.json
+
+## 2.7.0
+
+### Minor Changes
+
+- include datasetType enum
+
+## 2.6.2
+
+### Patch Changes
+
+- include vessel origin api type
+
+## 2.6.1
+
+### Patch Changes
+
+- 761a331c: added requestType to the fetch api
+
+## 2.6.0
+
+### Minor Changes
+
+- af016529: aoi id and dataset schema types
+
+## 2.5.1
+
+### Patch Changes
+
+- include public in workspace types definition
+
 ## 2.5.0
 
 ### Minor Changes

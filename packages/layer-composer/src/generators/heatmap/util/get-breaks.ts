@@ -42,7 +42,7 @@ const getBreaks = (
   )
 
   const intermediateBreaks = intermediateBreakRatios.map((ratio) => scale(ratio))
-  let breaks = [0, min, ...intermediateBreaks, roundedMax]
+  let breaks: number[] = [0, min, ...intermediateBreaks, roundedMax]
 
   // Avoid repeating values
   const prevStepValues: number[] = []

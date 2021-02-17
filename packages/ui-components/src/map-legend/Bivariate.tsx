@@ -141,12 +141,12 @@ function BivariateLegend({
                   <g className={styles.labels}>
                     <BivariateArrows />
                     {valuesPositions.map((positions, xIndex) =>
-                      positions.map(({ x, y }, yIndex) => {
+                      positions?.map(({ x, y }, yIndex) => {
                         if (xIndex === 1 && yIndex === 0) return null
-                        const value = layer.sublayersBreaks[xIndex][yIndex]
+                        const value = layer.sublayersBreaks?.[xIndex]?.[yIndex]
                         const roundedValue = roundValues ? roundLegendNumber(value) : value
                         return (
-                          <text>
+                          <text key={value}>
                             <tspan x={x} y={y}>
                               {formatLegendValue(roundedValue)}
                             </tspan>
@@ -157,7 +157,7 @@ function BivariateLegend({
                   </g>
                   <g transform="translate(81, 62) scale(1, -1) rotate(45) translate(-81, -62) translate(41, 22)">
                     {layer.bivariateRamp.map((color: string, i: number) => (
-                      <BivariateRect color={color} i={i} key={i} />
+                      <BivariateRect color={color} i={i} key={color} />
                     ))}
                     {bivariateBucketIndex && bivariateBucketIndex > 0 && (
                       <BivariateRect

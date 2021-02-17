@@ -1,5 +1,73 @@
 # @globalfishingwatch/ui-components
 
+## 2.12.7
+
+### Patch Changes
+
+- 4a10aebb: Rename fishing-activity category icon to match names from spreadsheets
+
+## 2.12.6
+
+### Patch Changes
+
+- fix svg logo size for screenshot
+
+## 2.12.5
+
+### Patch Changes
+
+- 1a264bea: support className for select container
+- Updated dependencies [0180dd0b]
+  - @globalfishingwatch/layer-composer@4.13.2
+
+## 2.12.4
+
+### Patch Changes
+
+- 54737510: Fix sidabar z-index
+
+## 2.12.3
+
+### Patch Changes
+
+- ef4092a3: Support i18next translation as children in ui-button components
+
+## 2.12.2
+
+### Patch Changes
+
+- 25302d60: hide remove value when no value in input-date
+
+## 2.12.1
+
+### Patch Changes
+
+- 88482842: Include ids in ui-buttons
+
+## 2.12.0
+
+### Minor Changes
+
+- af016529: support disabled multiselect component
+
+## 2.11.5
+
+### Patch Changes
+
+- support button href links
+
+## 2.11.4
+
+### Patch Changes
+
+- fix tabs crash when no activeTab
+
+## 2.11.3
+
+### Patch Changes
+
+- 4f8269c2: [WIP] Polish 🇵🇱
+
 ## 2.11.2
 
 ### Patch Changes
