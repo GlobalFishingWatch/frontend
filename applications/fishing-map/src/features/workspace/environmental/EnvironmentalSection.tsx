@@ -20,9 +20,6 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
     setNewDatasetOpen(true)
   }, [])
 
-  if (!dataviews?.length) {
-    return null
-  }
   return (
     <div className={styles.container}>
       <div className={styles.header}>
