@@ -19,6 +19,14 @@
 | ---------------------------- | ------ | ------ |
 | Default (used on new layers) | 125    | 223    |
 
+### Marine Reserves - Caribe
+
+| Layer name             | Dev id | Pro id |
+| ---------------------- | ------ | ------ |
+| Sea surface for Caribe | 79     | 223    |
+| Salinity for Caribe    | 80     | 225    |
+| Chlorophyll for Caribe | 84     | 226    |
+
 ## Activity
 
 | Layer name                     | Dev id | Pro id |
