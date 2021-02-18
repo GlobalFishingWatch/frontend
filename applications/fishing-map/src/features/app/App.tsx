@@ -9,9 +9,10 @@ import { isWorkspaceLocation, selectLocationType, selectWorkspaceId } from 'rout
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
+import Sidebar from 'features/sidebar/Sidebar'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
-import Sidebar from 'features/sidebar/Sidebar'
+import Footer from 'features/footer/Footer'
 import {
   selectCurrentWorkspaceId,
   selectWorkspaceStatus,
@@ -33,6 +34,7 @@ const Main = () => {
     <div className={styles.main}>
       <Map />
       {workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished && <Timebar />}
+      <Footer />
     </div>
   )
 }

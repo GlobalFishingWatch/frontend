@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
+import cx from 'classnames'
 import { ReactComponent as IconDrag } from '../icons/drag.svg'
 import styles from './timeline-handler.module.css'
 
@@ -10,7 +10,7 @@ const Handler = (props) => (
     onTouchStart={props.onMouseDown}
     type="button"
     title="Drag to change the time range"
-    className={classNames(styles.handler, {
+    className={cx(styles.handler, {
       [styles._immediate]: props.dragging === true,
     })}
     style={{ left: props.dragging === true ? props.mouseX : props.x }}

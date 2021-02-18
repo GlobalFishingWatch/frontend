@@ -95,7 +95,10 @@ class Timebar extends Component {
 
   static getDerivedStateFromProps(props) {
     // let absolute end run through the end of the day
-    const absoluteEnd = dayjs(props.absoluteEnd).utc().endOf('day').toISOString()
+    const absoluteEnd = dayjs(props.absoluteEnd)
+      .utc()
+      .endOf('day')
+      .toISOString()
     return {
       absoluteEnd,
     }
@@ -167,7 +170,9 @@ class Timebar extends Component {
     const middleMs = getTime(start) + (getTime(end) - getTime(start)) / 2
     const offsetMs = (nextDelta * unitOffsetMs) / 2
     const newStartMs = middleMs - offsetMs
-    const mNewStart = dayjs(newStartMs).utc().startOf(nextUnit)
+    const mNewStart = dayjs(newStartMs)
+      .utc()
+      .startOf(nextUnit)
     const newEnd = mNewStart.add(nextDelta, nextUnit).toISOString()
 
     const deltaMs = nextDelta * unitOffsetMs
@@ -258,7 +263,7 @@ class Timebar extends Component {
             />
           )}
 
-          <div className={styles.timeActions}>
+          <div className={cx('print-hidden', styles.timeActions)}>
             {showTimeRangeSelector && (
               <TimeRangeSelector
                 start={start}
@@ -269,7 +274,7 @@ class Timebar extends Component {
                 onDiscard={this.toggleTimeRangeSelector}
               />
             )}
-            <div className={styles.timeRangeContainer}>
+            <div className={cx('print-hidden', styles.timeRangeContainer)}>
               <button
                 type="button"
                 title="Select a time range"
@@ -283,13 +288,13 @@ class Timebar extends Component {
             <button
               type="button"
               title="Bookmark current time range"
-              className={cx(styles.uiButton, styles.bookmark)}
+              className={cx('print-hidden', styles.uiButton, styles.bookmark)}
               onClick={this.setBookmark}
               disabled={immediate || bookmarkDisabled === true}
             >
               {hasBookmark ? <IconBookmarkFilled /> : <IconBookmark />}
             </button>
-            <div className={styles.timeScale}>
+            <div className={cx('print-hidden', styles.timeScale)}>
               <button
                 type="button"
                 title="Zoom out"
