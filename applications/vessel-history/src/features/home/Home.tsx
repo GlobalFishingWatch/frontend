@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useDispatch } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
@@ -8,7 +8,7 @@ import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
 import { logoutUserThunk } from 'features/user/user.slice'
 import { Vessel } from 'types'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
-import SearchPlaceholder, { SearchNoResultsState } from '../search/SearchPlaceholders'
+import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
 import styles from './Home.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
 
@@ -28,16 +28,10 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const minimumCharacters = 3
   const resultsPerRequest = 25
-  const tips = {
-    intial: 'Try searching for any name or UVI:XXXXXX',
-    searching: 'Searching...',
-    insuficientCharacters: `Type at least ${minimumCharacters} characters`,
-    connectionError: 'Ups! something went wrong :/',
-  }
 
-  const fetchData = async (query: string) => {
+  const fetchData = useCallback(async (query: string) => {
     setSearching(true)
-    const newVessels = await GFWAPI.fetch<any>(
+    GFWAPI.fetch<any>(
       `/v1/vessels/search?datasets=public-global-vessels%3Av20190502&limit=${resultsPerRequest}&offset=${0}&query=${encodeURIComponent(
         query
       )}`
@@ -45,21 +39,20 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       .then((json: any) => {
         const resultVessels: Array<Vessel> = json.entries
         setSearching(false)
-        return resultVessels
+        setVessels(resultVessels)
       })
       .catch((error) => {
         setSearching(false)
-        return vessels
+        console.warn(error)
       })
-    setVessels(newVessels)
-  }
+  }, [])
 
   useEffect(() => {
     setVessels([])
     if (query.length >= minimumCharacters) {
       fetchData(query)
     }
-  }, [query])
+  }, [query, fetchData])
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value)
@@ -123,7 +116,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   ))}
                 </div>
               )}
-              {!searching && vessels.length == 0 && <SearchNoResultsState />}
+              {!searching && vessels.length === 0 && <SearchNoResultsState />}
             </ul>
           </Fragment>
         )}
