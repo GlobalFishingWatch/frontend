@@ -21,10 +21,14 @@ class HeatmapGenerator {
 
   _getStyleSources = (config: GlobalHeatmapGeneratorConfig) => {
     if (!config.tilesUrl) {
-      throw new Error(`Heatmap generator must specify tilesUrl parameters in ${config}`)
+      throw new Error(
+        `Heatmap generator must specify tilesUrl parameters in ${JSON.stringify(config)}`
+      )
     }
     if (!config.datasets) {
-      throw new Error(`Heatmap generator must specify datasets parameters in ${config}`)
+      throw new Error(
+        `Heatmap generator must specify datasets parameters in ${JSON.stringify(config)}`
+      )
     }
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl

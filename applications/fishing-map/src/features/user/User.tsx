@@ -70,7 +70,7 @@ function User() {
     <div className={styles.container}>
       <div className={styles.userInfo}>
         <div>
-          <label>User</label>
+          <label>{t('common.user', 'User')}</label>
           <p>{`${userData.firstName} ${userData.lastName || ''}`}</p>
           <p className={styles.secondary}>{userData.email}</p>
         </div>

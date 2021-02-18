@@ -21,11 +21,43 @@
 
 ### Marine Reserves - Caribe
 
-| Layer name             | Dev id | Pro id |
-| ---------------------- | ------ | ------ |
-| Sea surface for Caribe | 79     | 223    |
-| Salinity for Caribe    | 80     | 225    |
-| Chlorophyll for Caribe | 84     | 226    |
+| Layer name                          | Dev id | Pro id |
+| ----------------------------------- | ------ | ------ |
+| Sea surface tempoerature for Caribe | 79     | 223    |
+| Salinity for Caribe                 | 80     | 225    |
+| Chlorophyll for Caribe              | 84     | 226    |
+
+### Marine Reserves - Galapagos
+
+| Layer name                             | Dev id | Pro id |
+| -------------------------------------- | ------ | ------ |
+| Salinity for Galapagos                 | 126    | 227    |
+| Sea surface tempoerature for Galapagos | 128    | 228    |
+| Chlorophyll for Galapagos              | 127    | 229    |
+
+### Marine Reserves - Tristan
+
+| Layer name                           | Dev id | Pro id |
+| ------------------------------------ | ------ | ------ |
+| Salinity for Tristan                 | 131    | 234    |
+| Sea surface tempoerature for Tristan | 129    | 232    |
+| Chlorophyll for Tristan              | 130    | 233    |
+
+### Marine Reserves - Ascension
+
+| Layer name                             | Dev id | Pro id |
+| -------------------------------------- | ------ | ------ |
+| Salinity for Ascension                 | 134    | 237    |
+| Sea surface tempoerature for Ascension | 132    | 235    |
+| Chlorophyll for Ascension              | 133    | 236    |
+
+### Marine Reserves - Palau
+
+| Layer name                        | Dev id | Pro id |
+| --------------------------------- | ------ | ------ |
+| Salinity for Palau                | 137    | 240    |
+| Sea surface temperature for Palau | 135    | 238    |
+| Chlorophyll for Palau             | 136    | 239    |
 
 ## Activity
 
