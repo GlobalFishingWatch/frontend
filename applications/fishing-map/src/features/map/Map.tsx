@@ -46,10 +46,6 @@ declare global {
   }
 }
 
-const mapOptions = {
-  customAttribution: 'Global Fishing Watch 2020',
-}
-
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceType: string) => {
   const response: MapRequest = { url }
@@ -256,7 +252,6 @@ const MapWrapper = (): React.ReactElement | null => {
           pitch={debugOptions.extruded ? 40 : 0}
           onViewportChange={onViewportChange}
           mapStyle={style}
-          mapOptions={mapOptions}
           transformRequest={transformRequest}
           onResize={setMapBounds}
           getCursor={rulersEditing ? getRulersCursor : getCursor}
