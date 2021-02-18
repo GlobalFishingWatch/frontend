@@ -20,7 +20,7 @@ export const isUserLogged = createSelector(
   }
 )
 
-export const isUserAuthorized = createSelector([isUserLogged, selectUserData], (logged, user) => {
+export const isUserAuthorized = createSelector([selectUserData], (user) => {
   return (
     user?.permissions.find(
       (permission) =>
