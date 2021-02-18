@@ -1,4 +1,5 @@
 import React from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectLocationCategory } from 'routes/routes.selectors'
@@ -40,7 +41,7 @@ const getFooterPartners = (category: WorkspaceCategories) => {
 function Footer(): React.ReactElement {
   const locationCategory = useSelector(selectLocationCategory)
   return (
-    <footer className={styles.footer}>
+    <footer className={cx('print-hidden', styles.footer)}>
       {getFooterPartners(locationCategory)}
       <span className={styles.text}>© Global Fishing Watch {new Date().getFullYear()}</span>
     </footer>
