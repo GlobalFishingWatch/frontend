@@ -27,9 +27,9 @@ exports[`<App /> renders splash screen while loading 1`] = `
       <svg
         aria-label="Global Fishing Watch "
         class="Logo-module_container__3qEvx gfwLogo"
-        height="60"
-        viewBox="40 0 160 60"
-        width="200"
+        height="66"
+        viewBox="30 0 180 60"
+        width="222"
         xmlns="http://www.w3.org/2000/svg"
       >
         <g
