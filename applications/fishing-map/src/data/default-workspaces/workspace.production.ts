@@ -44,24 +44,6 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
     {
-      id: 'fishing-2',
-      config: {
-        datasets: ['chile-fishing:v20200331'],
-        color: '#FF64CE',
-        colorRamp: 'magenta',
-      },
-      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
-    },
-    {
-      id: 'fishing-3',
-      config: {
-        datasets: ['indonesia-fishing:v20200320'],
-        color: '#9CA4FF',
-        colorRamp: 'lilac',
-      },
-      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
-    },
-    {
       id: 'context-layer-eez',
       config: {
         color: '#069688',
