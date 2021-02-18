@@ -1,5 +1,5 @@
 import { Workspace } from '@globalfishingwatch/api-types'
-import { APP_NAME, PUBLIC_SUFIX } from 'data/config'
+import { APP_NAME } from 'data/config'
 import {
   DEFAULT_BASEMAP_DATAVIEW_ID,
   DEFAULT_CONTEXT_DATAVIEW_ID,
@@ -38,7 +38,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'fishing-1',
       config: {
-        datasets: [`${PUBLIC_SUFIX}-fishing_v4`],
+        // datasets: [`${PUBLIC_SUFIX}-fishing_v4`],
         // filters: ['ESP'],
       },
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
