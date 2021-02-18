@@ -1,7 +1,7 @@
 .container {
   position: absolute;
   right: 2rem;
-  bottom: 1.7rem;
+  bottom: var(--space-L);
   z-index: 100;
 }
 

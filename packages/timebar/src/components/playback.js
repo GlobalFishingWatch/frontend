@@ -33,7 +33,9 @@ class Playback extends Component {
     const baseStepWithSpeed = BASE_STEP * SPEED_STEPS[speedStep]
     const startMs = new Date(start).getTime()
     const endMs = new Date(end).getTime()
-    const scale = scaleLinear().range([0, 1]).domain([startMs, endMs])
+    const scale = scaleLinear()
+      .range([0, 1])
+      .domain([startMs, endMs])
     const step = scale.invert(baseStepWithSpeed) - startMs
     return step
   })
@@ -151,7 +153,7 @@ class Playback extends Component {
 
     return (
       <div
-        className={cx(styles.playbackActions, {
+        className={cx('print-hidden', styles.playbackActions, {
           [styles.playbackActionsActive]: playing,
         })}
       >

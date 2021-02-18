@@ -113,7 +113,7 @@ const TimebarWrapper = () => {
 
   if (!start || !end) return null
   return (
-    <div className="print-hidden">
+    <div>
       <TimebarComponent
         enablePlayback={!staticHeatmapLayersActive}
         start={start}
