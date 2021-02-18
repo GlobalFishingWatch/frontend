@@ -44,26 +44,8 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'fishing-1',
       config: {
-        datasets: [`fishing_v5`],
+        // datasets: [`fishing_v5`],
         // filters: { flag: ['ESP'] },
-      },
-      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
-    },
-    {
-      id: 'fishing-2',
-      config: {
-        datasets: ['chile-fishing:v20200331'],
-        color: '#FF64CE',
-        colorRamp: 'magenta',
-      },
-      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
-    },
-    {
-      id: 'fishing-3',
-      config: {
-        datasets: ['indonesia-fishing:v20200320'],
-        color: '#9CA4FF',
-        colorRamp: 'lilac',
       },
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
