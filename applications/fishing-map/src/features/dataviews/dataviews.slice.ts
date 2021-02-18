@@ -1,10 +1,9 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
-import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
+import { Dataview } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
-import { DEFAULT_ENVIRONMENT_DATAVIEW_ID } from 'data/workspaces'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',

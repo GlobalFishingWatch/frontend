@@ -29,7 +29,7 @@
     "@globalfishingwatch/dataviews-client": "^4.0.3",
     "@globalfishingwatch/fourwings-aggregate": "^1.1.1",
     "@globalfishingwatch/layer-composer": "^4.13.1",
-    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.14",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.16",
     "@mapbox/tilebelt": "^1.0.2"
   },
   "publishConfig": {

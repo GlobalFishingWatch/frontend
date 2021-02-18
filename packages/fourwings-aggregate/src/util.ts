@@ -31,3 +31,9 @@ export const getRealValues = (rawValues: number[]) => {
 export const getCellArrayIndex = (minCellOffset: number, numSublayers: number, offset: number) => {
   return CELL_VALUES_START_INDEX + (offset - minCellOffset) * numSublayers
 }
+
+const getLastDigit = (num: number) => parseInt(num.toString().slice(-1))
+// In order for setFeatureState to work correctly, generate unique IDs across viewport-visible tiles:
+// concatenate last x/z digits and cell increment index (goal is to get numbers as small as possible)
+export const generateUniqueId = (x: number, y: number, cellId: number) =>
+  parseInt([getLastDigit(x) + 1, getLastDigit(y) + 1, cellId].join(''))

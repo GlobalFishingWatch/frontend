@@ -1,9 +1,11 @@
 import React, { Suspense, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Button from '@globalfishingwatch/ui-components/dist/button'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { logoutUserThunk } from 'features/user/user.slice'
-import { isUserAuthorized, isUserLogged } from 'features/user/user.selectors'
+import { isGuestUser, isUserAuthorized, isUserLogged } from 'features/user/user.selectors'
 import Search from 'features/search/Search'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { selectLocationType } from 'routes/routes.selectors'
@@ -23,8 +25,10 @@ type SidebarProps = {
 }
 
 function Sidebar({ onMenuClick }: SidebarProps) {
+  const { t } = useTranslation()
   const searchQuery = useSelector(selectSearchQuery)
   const locationType = useSelector(selectLocationType)
+  const guestUser = useSelector(isGuestUser)
   const userLogged = useSelector(isUserLogged)
   const userAuthorized = useSelector(isUserAuthorized)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
@@ -38,15 +42,28 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     if (!userAuthorized) {
       return (
         <div className={styles.placeholder}>
-          <h2>We're sorry but your user is not authorized to use this app yet</h2>
-          <Button
-            className={styles.errorBtn}
-            onClick={async () => {
-              dispatch(logoutUserThunk({ redirectToLogin: true }))
-            }}
-          >
-            Logout
-          </Button>
+          {guestUser ? (
+            <h2>You need to login to see this view</h2>
+          ) : (
+            <h2>We're sorry but your user is not authorized to use this app yet</h2>
+          )}
+          {guestUser ? (
+            <Button
+              className={styles.errorBtn}
+              href={GFWAPI.getLoginUrl(window.location.toString())}
+            >
+              {t('common.login', 'Log in') as string}
+            </Button>
+          ) : (
+            <Button
+              className={styles.errorBtn}
+              onClick={async () => {
+                dispatch(logoutUserThunk({ redirectToLogin: true }))
+              }}
+            >
+              Logout
+            </Button>
+          )}
         </div>
       )
     }
@@ -58,7 +75,15 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       return <WorkspacesList />
     }
     return <Workspace />
-  }, [dispatch, locationType, userAuthorized, userLogged, highlightedWorkspacesStatus])
+  }, [
+    dispatch,
+    locationType,
+    userAuthorized,
+    userLogged,
+    highlightedWorkspacesStatus,
+    guestUser,
+    t,
+  ])
 
   if (searchQuery !== undefined) {
     return <Search />

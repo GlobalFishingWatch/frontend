@@ -13,6 +13,10 @@ const componentsList = [
   { component: <Header />, path: 'src/header/html/header.html' },
   { component: <Header languages={false} />, path: 'src/header/html/header-no-languages.html' },
   { component: <Header mini />, path: 'src/header/html/header-mini.html' },
+  {
+    component: <Header mini languages={false} />,
+    path: 'src/header/html/header-mini-no-languages.html',
+  },
   { component: <Header inverted />, path: 'src/header/html/header-inverted.html' },
   {
     component: <Header inverted languages={false} />,
