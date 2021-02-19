@@ -155,7 +155,7 @@ class TrackGenerator {
       layout: { visibility },
       paint: {
         'line-color': config.color || DEFAULT_TRACK_COLOR,
-        'line-opacity': 0.9,
+        'line-opacity': config.opacity || 0.9,
       },
       metadata: {
         group: Group.Track,
