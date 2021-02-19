@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.11.0
+
+### Minor Changes
+
+- f05adeef: update dataviews category enum
+
 ## 2.10.0
 
 ### Minor Changes
