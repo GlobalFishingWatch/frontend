@@ -1,11 +1,15 @@
 .Bookmark {
   box-sizing: border-box;
   position: absolute;
-  bottom: -2.8rem;
+  bottom: var(--timebar-size);
   display: flex;
   margin-bottom: 0.5rem;
   transition: var(--timebar-hover-transition);
   user-select: none;
+}
+
+.bottomPlacement {
+  bottom: -2.8rem;
 }
 
 .Bookmark._immediate {

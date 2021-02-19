@@ -317,10 +317,12 @@ class Timeline extends PureComponent {
       absoluteEnd,
       bookmarkStart,
       bookmarkEnd,
+      bookmarkPlacement,
       onChange,
       onBookmarkChange,
       showLastUpdate,
     } = this.props
+    console.log(bookmarkPlacement)
     const {
       dragging,
       handlerMouseX,
@@ -370,6 +372,7 @@ class Timeline extends PureComponent {
               scale={this.outerScale}
               bookmarkStart={bookmarkStart}
               bookmarkEnd={bookmarkEnd}
+              placement={bookmarkPlacement}
               minX={relativeOffsetX}
               maxX={outerWidth}
               onDelete={() => {
@@ -487,12 +490,14 @@ Timeline.propTypes = {
   onBookmarkChange: PropTypes.func,
   bookmarkStart: PropTypes.string,
   bookmarkEnd: PropTypes.string,
+  bookmarkPlacement: PropTypes.string,
   showLastUpdate: PropTypes.bool,
 }
 
 Timeline.defaultProps = {
   bookmarkStart: null,
   bookmarkEnd: null,
+  bookmarkPlacement: 'top',
   children: () => {},
   onBookmarkChange: () => {},
   onMouseLeave: () => {},

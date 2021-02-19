@@ -12,7 +12,17 @@ const MIN_WIDTH = 32
 const MIN_WIDTH_WITH_OVERFLOW_ARROWS = 52
 const COMPACT_MAX_WIDTH = 240
 
-const Bookmark = ({ scale, bookmarkStart, bookmarkEnd, minX, maxX, onSelect, onDelete }) => {
+const Bookmark = ({
+  placement,
+  scale,
+  bookmarkStart,
+  bookmarkEnd,
+  minX,
+  maxX,
+  onSelect,
+  onDelete,
+}) => {
+  console.log(placement)
   const { immediate } = useContext(ImmediateContext)
 
   const x = scale(new Date(bookmarkStart))
@@ -47,6 +57,7 @@ const Bookmark = ({ scale, bookmarkStart, bookmarkEnd, minX, maxX, onSelect, onD
   return (
     <div
       className={classNames(styles.Bookmark, {
+        [styles.bottomPlacement]: placement === 'bottom',
         [styles._overflowingLeft]: overflowingLeft,
         [styles._overflowingRight]: overflowingRight,
         [styles._compact]: compact,
@@ -81,6 +92,7 @@ const Bookmark = ({ scale, bookmarkStart, bookmarkEnd, minX, maxX, onSelect, onD
 }
 
 Bookmark.propTypes = {
+  placement: PropTypes.string,
   bookmarkStart: PropTypes.string.isRequired,
   bookmarkEnd: PropTypes.string.isRequired,
   scale: PropTypes.func.isRequired,
@@ -88,6 +100,10 @@ Bookmark.propTypes = {
   maxX: PropTypes.number.isRequired,
   onSelect: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+}
+
+Bookmark.defaultProps = {
+  placement: 'top',
 }
 
 export default Bookmark
