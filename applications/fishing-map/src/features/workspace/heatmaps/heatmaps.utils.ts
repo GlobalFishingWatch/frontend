@@ -1,5 +1,12 @@
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
 import { UrlDataviewInstance } from 'types'
+
+export const isFishingDataview = (dataview: UrlDataviewInstance) =>
+  dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID
+
+export const isPresenceDataview = (dataview: UrlDataviewInstance) =>
+  dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID
 
 export const getSourcesOptionsInDataview = (
   dataview: UrlDataviewInstance,

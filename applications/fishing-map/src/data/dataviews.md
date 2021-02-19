@@ -23,6 +23,8 @@
 
 | Layer name                          | Dev id | Pro id |
 | ----------------------------------- | ------ | ------ |
+| SAR match 2019 for Caribe           | 138    | 242    |
+| SAR not match 2019 for Caribe       | 139    | 243    |
 | Sea surface tempoerature for Caribe | 79     | 223    |
 | Salinity for Caribe                 | 80     | 225    |
 | Chlorophyll for Caribe              | 84     | 226    |
