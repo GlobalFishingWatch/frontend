@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.24.0
+
+### Minor Changes
+
+- Allows showing tooltips in tags
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.13.0
+
 ## 0.23.0
 
 ### Minor Changes

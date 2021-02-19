@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.13.0
+
+### Minor Changes
+
+- Allows showing tooltips in tags
+
 ## 2.12.8
 
 ### Patch Changes
