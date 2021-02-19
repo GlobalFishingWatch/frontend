@@ -29,7 +29,8 @@
     "dismiss": "Fermer",
     "save": "Enregistrer",
     "events": "Évènements",
-    "fishing": "Pêche"
+    "fishing": "Pêche",
+    "country_plural": "countries"
   },
   "dataset": {
     "addContext": "Ajouter un jeu de données contextuel",
@@ -107,7 +108,7 @@
     "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en appuyant sur l'icône de filtre dans la barre du haut",
     "filterClose": "Fermer les filtres de recherche",
     "filterOpen": "Ouvrir les filtres de recherche",
-    "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez ? Essayez d'utiliser MMSI, IMO ou Callsign",
+    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign",
     "notAllowed": "Les jeux de données disponibles n'autorisent pas les vaisseaux de recherche",
     "placeholder": "Tapez pour rechercher des vaisseaux",
     "suggestion": "Vouliez-vous dire",
