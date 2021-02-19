@@ -1,5 +1,11 @@
 # @globalfishingwatchapp/temporalgrid-demo
 
+## 0.7.31
+
+### Patch Changes
+
+- fix crash on api auth errors
+
 ## 0.7.30
 
 ### Patch Changes

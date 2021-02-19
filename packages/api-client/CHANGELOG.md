@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-client
 
+## 1.6.7
+
+### Patch Changes
+
+- fix crash on api auth errors
+
 ## 1.6.6
 
 ### Patch Changes

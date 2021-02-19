@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/dataviews-editor
 
+## 1.1.11
+
+### Patch Changes
+
+- fix crash on api auth errors
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-client@1.6.7
+
 ## 1.1.10
 
 ### Patch Changes
