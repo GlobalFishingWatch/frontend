@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
+import { TagItem } from '@globalfishingwatch/ui-components/dist/tag-list'
 import { getFlagsByIds } from 'utils/flags'
 import { UrlDataviewInstance } from 'types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -26,7 +27,20 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
-  const sourcesOptions = getSourcesSelectedInDataview(dataview)
+  let sourcesOptions: TagItem[] = getSourcesSelectedInDataview(dataview)
+  const nonVmsSources = sourcesOptions.filter((source) => !source.label.includes('VMS'))
+  const vmsSources = sourcesOptions.filter((source) => source.label.includes('VMS'))
+  if (vmsSources?.length > 1) {
+    sourcesOptions = [
+      ...nonVmsSources,
+      {
+        id: 'vms-grouped',
+        label: `VMS (${vmsSources.length} ${t('common.country_plural', 'countries')})`,
+        tooltip: vmsSources.map((source) => source.label).join(', '),
+      },
+    ]
+  }
+
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
   const gearTypesSelected = getSchemaFieldsSelectedInDataview(dataview, 'geartype')
   const fleetsSelected = getSchemaFieldsSelectedInDataview(dataview, 'fleet')
