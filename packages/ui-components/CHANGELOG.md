@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.13.1
+
+### Patch Changes
+
+- f8739817: Fix tabs component typo
+
 ## 2.13.0
 
 ### Minor Changes
