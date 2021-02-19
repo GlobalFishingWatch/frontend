@@ -322,7 +322,6 @@ class Timeline extends PureComponent {
       onBookmarkChange,
       showLastUpdate,
     } = this.props
-    console.log(bookmarkPlacement)
     const {
       dragging,
       handlerMouseX,

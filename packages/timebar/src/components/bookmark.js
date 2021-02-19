@@ -22,7 +22,6 @@ const Bookmark = ({
   onSelect,
   onDelete,
 }) => {
-  console.log(placement)
   const { immediate } = useContext(ImmediateContext)
 
   const x = scale(new Date(bookmarkStart))

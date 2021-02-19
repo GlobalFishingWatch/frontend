@@ -227,7 +227,6 @@ class Timebar extends Component {
       maximumRange,
       maximumRangeUnit,
     } = this.props
-    console.log(bookmarkPlacement)
     const { immediate } = this.state
 
     // state.absoluteEnd overrides the value set in props.absoluteEnd - see getDerivedStateFromProps
