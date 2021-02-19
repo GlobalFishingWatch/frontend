@@ -13,9 +13,9 @@ export const PUBLIC_SUFIX = 'public'
 // used when no url data and no workspace data
 const end = new Date(2019, 11, 31).toISOString()
 export const DEFAULT_WORKSPACE = {
-  latitude: 7,
-  longitude: -75,
-  zoom: 3,
+  latitude: 15,
+  longitude: 21,
+  zoom: 0,
   query: undefined,
   sidebarOpen: true,
   start: new Date(2019, 0, 1).toISOString(),
