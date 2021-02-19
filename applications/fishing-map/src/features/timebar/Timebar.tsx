@@ -136,6 +136,7 @@ const TimebarWrapper = () => {
         onBookmarkChange={onBookmarkChange}
         bookmarkStart={bookmark?.start}
         bookmarkEnd={bookmark?.end}
+        bookmarkPlacement="bottom"
       >
         {() => (
           <Fragment>

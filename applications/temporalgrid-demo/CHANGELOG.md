@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- fix crash on api auth errors
+- @globalfishingwatch/timebar@1.3.0
 
 ## 0.7.30
 

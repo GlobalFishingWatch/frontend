@@ -383,7 +383,6 @@ export class GFWAPI {
             console.log(`GFWAPI: access-token valid, tokens ready`)
           }
         } catch (e) {
-          console.log(e)
           if (!this.getToken() && !this.getRefreshToken()) {
             const msg = isUnauthorizedError(e)
               ? 'Invalid access token'

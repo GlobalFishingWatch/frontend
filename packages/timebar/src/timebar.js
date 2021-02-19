@@ -220,12 +220,14 @@ class Timebar extends Component {
       absoluteStart,
       bookmarkStart,
       bookmarkEnd,
+      bookmarkPlacement,
       enablePlayback,
       minimumRange,
       minimumRangeUnit,
       maximumRange,
       maximumRangeUnit,
     } = this.props
+    console.log(bookmarkPlacement)
     const { immediate } = this.state
 
     // state.absoluteEnd overrides the value set in props.absoluteEnd - see getDerivedStateFromProps
@@ -332,6 +334,7 @@ class Timebar extends Component {
             onBookmarkChange={this.props.onBookmarkChange}
             bookmarkStart={bookmarkStart}
             bookmarkEnd={bookmarkEnd}
+            bookmarkPlacement={bookmarkPlacement}
             showLastUpdate={this.props.showLastUpdate}
           />
         </div>
@@ -347,6 +350,7 @@ Timebar.propTypes = {
   children: PropTypes.func,
   bookmarkStart: PropTypes.string,
   bookmarkEnd: PropTypes.string,
+  bookmarkPlacement: PropTypes.string,
   onMouseLeave: PropTypes.func,
   onMouseMove: PropTypes.func,
   onBookmarkChange: PropTypes.func,
@@ -369,6 +373,7 @@ Timebar.defaultProps = {
   children: () => {},
   onMouseLeave: () => {},
   onMouseMove: () => {},
+  bookmarkPlacement: 'top',
   onBookmarkChange: () => {},
   minimumRange: null,
   minimumRangeUnit: 'day',

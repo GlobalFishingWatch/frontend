@@ -81,6 +81,14 @@
   width: 100%;
 }
 
+.hidden {
+  display: none;
+}
+
+.megedTagList {
+  width: 100%;
+}
+
 .infoContent {
   display: flex;
   flex-wrap: wrap;
@@ -112,6 +120,14 @@
   .switch > span {
     display: none !important;
   }
+}
+
+:global(.printing) .tagList {
+  display: flex;
+}
+
+:global(.printing) .mergedTagList {
+  display: none;
 }
 
 :global(.printing) .tagList > li > div {
