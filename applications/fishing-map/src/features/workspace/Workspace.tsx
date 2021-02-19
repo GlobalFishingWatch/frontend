@@ -9,16 +9,18 @@ import {
   selectWorkspaceStatus,
   selectDataviewsResourceQueries,
   selectWorkspaceError,
+  selectWorkspace,
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'types'
 import { isGuestUser } from 'features/user/user.selectors'
-import { selectWorkspaceId } from 'routes/routes.selectors'
+import { selectLocationCategory, selectWorkspaceId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { SUPPORT_EMAIL } from 'data/config'
+import { WorkspaceCategories } from 'data/workspaces'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
@@ -110,7 +112,9 @@ function WorkspaceError(): React.ReactElement {
 function Workspace() {
   const dispatch = useDispatch()
   const searchQuery = useSelector(selectSearchQuery)
+  const workspace = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const locationCategory = useSelector(selectLocationCategory)
 
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
   useEffect(() => {
@@ -142,6 +146,9 @@ function Workspace() {
 
   return (
     <Fragment>
+      {locationCategory === WorkspaceCategories.MarineReserves && workspace?.name && (
+        <h2 className={styles.title}>{workspace.name}</h2>
+      )}
       <HeatmapsSection />
       <VesselsSection />
       <EnvironmentalSection />
