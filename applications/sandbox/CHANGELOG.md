@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.6.4
+
+### Patch Changes
+
+- fix crash on api auth errors
+
 ## 0.6.3
 
 ### Patch Changes

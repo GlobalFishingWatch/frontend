@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/amathea",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "private": true,
   "homepage": "/marine-reserves",
   "scripts": {
@@ -12,7 +12,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@globalfishingwatch/api-client": "^1.6.3",
+    "@globalfishingwatch/api-client": "^1.6.7",
     "@globalfishingwatch/api-types": "^2.7.1",
     "@globalfishingwatch/dataviews-client": "^4.0.3",
     "@globalfishingwatch/layer-composer": "^4.12.0",
