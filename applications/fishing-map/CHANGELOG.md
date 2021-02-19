@@ -5,8 +5,10 @@
 ### Patch Changes
 
 - fix crash on api auth errors
-- Updated dependencies [undefined]
   - @globalfishingwatch/api-client@1.6.7
+- "move timebar bookmark to bottom"
+  - @globalfishingwatch/timebar@1.3.0
+  - @globalfishingwatch/ui-components@2.13.2
 
 ## 0.25.0
 
