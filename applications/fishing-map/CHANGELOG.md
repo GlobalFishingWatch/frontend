@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.25.2
+
+### Patch Changes
+
+- remove missing log
+- Updated dependencies [undefined]
+  - @globalfishingwatch/timebar@1.3.1
+
 ## 0.25.1
 
 ### Patch Changes

@@ -32,9 +32,9 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const sourcesOptions: TagItem[] = getSourcesSelectedInDataview(dataview)
-  let mergedSourceOptions
   const nonVmsSources = sourcesOptions.filter((source) => !source.label.includes('VMS'))
   const vmsSources = sourcesOptions.filter((source) => source.label.includes('VMS'))
+  let mergedSourceOptions: TagItem[] = []
   if (vmsSources?.length > 1) {
     mergedSourceOptions = [
       ...nonVmsSources,
@@ -179,9 +179,11 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
                 <TagList
                   tags={sourcesOptions}
                   color={dataview.config?.color}
-                  className={cx(styles.tagList, { [styles.hidden]: mergedSourceOptions })}
+                  className={cx(styles.tagList, {
+                    [styles.hidden]: mergedSourceOptions?.length > 0,
+                  })}
                 />
-                {mergedSourceOptions && (
+                {mergedSourceOptions.length > 0 && (
                   <TagList
                     tags={mergedSourceOptions}
                     color={dataview.config?.color}
