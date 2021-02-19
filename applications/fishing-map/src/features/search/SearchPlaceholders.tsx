@@ -26,7 +26,7 @@ export function SearchNoResultsState({ className = '' }: SearchPlaceholderProps)
       <p>
         {t(
           'search.noResults',
-          "Can't find the vessel you are looking for? Try using MMSI, IMO or IRCS"
+          "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
         )}
       </p>
     </SearchPlaceholder>
