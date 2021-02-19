@@ -3,6 +3,8 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
+import { TagItem } from '@globalfishingwatch/ui-components/dist/tag-list'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getFlagsByIds } from 'utils/flags'
 import { UrlDataviewInstance } from 'types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -10,11 +12,14 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariate } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getSchemaFieldsSelectedInDataview } from 'features/datasets/datasets.utils'
-import { DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import Filters from './HeatmapFilters'
 import HeatmapInfoModal from './HeatmapInfoModal'
-import { getSourcesSelectedInDataview } from './heatmaps.utils'
+import {
+  getSourcesSelectedInDataview,
+  isFishingDataview,
+  isPresenceDataview,
+} from './heatmaps.utils'
 
 type LayerPanelProps = {
   index: number
@@ -26,7 +31,20 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
-  const sourcesOptions = getSourcesSelectedInDataview(dataview)
+  let sourcesOptions: TagItem[] = getSourcesSelectedInDataview(dataview)
+  const nonVmsSources = sourcesOptions.filter((source) => !source.label.includes('VMS'))
+  const vmsSources = sourcesOptions.filter((source) => source.label.includes('VMS'))
+  if (vmsSources?.length > 1) {
+    sourcesOptions = [
+      ...nonVmsSources,
+      {
+        id: 'vms-grouped',
+        label: `VMS (${vmsSources.length} ${t('common.country_plural', 'countries')})`,
+        tooltip: vmsSources.map((source) => source.label).join(', '),
+      },
+    ]
+  }
+
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
   const gearTypesSelected = getSchemaFieldsSelectedInDataview(dataview, 'geartype')
   const fleetsSelected = getSchemaFieldsSelectedInDataview(dataview, 'fleet')
@@ -64,10 +82,16 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
     setFiltersOpen(false)
   }
 
-  const datasetName =
-    dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID
+  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
+  let datasetName = dataset ? t(`datasets:${dataset?.id}.name`) : dataview.name || ''
+  const fishignDataview = isFishingDataview(dataview)
+  const presenceDataview = isPresenceDataview(dataview)
+  if (fishignDataview || presenceDataview) {
+    datasetName = presenceDataview
       ? t(`common.presence`, 'Fishing presence')
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
+  }
+  const showInfoModal = isFishingDataview(dataview)
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
       {datasetName}
@@ -97,7 +121,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && (
+          {layerActive && fishignDataview && (
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
@@ -117,14 +141,24 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
               />
             </ExpandedContainer>
           )}
-          <IconButton
-            icon="info"
-            size="small"
-            className={styles.actionButton}
-            tooltip={t(`layer.seeDescription`, 'Click to see layer description')}
-            tooltipPlacement="top"
-            onClick={onInfoLayerClick}
-          />
+          {showInfoModal ? (
+            <IconButton
+              icon="info"
+              size="small"
+              className={styles.actionButton}
+              tooltip={t(`layer.seeDescription`, 'Click to see layer description')}
+              tooltipPlacement="top"
+              onClick={onInfoLayerClick}
+            />
+          ) : (
+            <IconButton
+              icon="info"
+              size="small"
+              className={styles.actionButton}
+              tooltip={dataset?.id ? t(`datasets:${dataset.id}.description`) : ''}
+              tooltipPlacement="top"
+            />
+          )}
           <IconButton
             icon="delete"
             size="small"

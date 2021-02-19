@@ -41,6 +41,7 @@ export interface DataviewInfoConfig {
 export enum DataviewCategory {
   Context = 'context',
   Environment = 'environment',
+  Activity = 'activity',
 }
 
 export interface Dataview<Type = any, Category = DataviewCategory> {

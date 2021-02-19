@@ -1,5 +1,30 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.25.0
+
+### Minor Changes
+
+- f05adeef: update dataviews category enum
+
+### Patch Changes
+
+- f8739817: Fix tabs component typo
+- Updated dependencies [f8739817]
+- Updated dependencies [f05adeef]
+  - @globalfishingwatch/ui-components@2.13.1
+  - @globalfishingwatch/api-types@2.11.0
+
+## 0.24.0
+
+### Minor Changes
+
+- Allows showing tooltips in tags
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.13.0
+
 ## 0.23.0
 
 ### Minor Changes

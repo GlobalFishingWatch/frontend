@@ -1,8 +1,13 @@
+import { Placement } from 'tippy.js'
+import { TooltipTypes } from '../types/types'
+
 export { default } from './TagList'
 
 export type TagItem = {
   id: string | number
   label: string
+  tooltip?: TooltipTypes
+  tooltipPlacement?: Placement
 }
 /**
  * Callback on tag removal

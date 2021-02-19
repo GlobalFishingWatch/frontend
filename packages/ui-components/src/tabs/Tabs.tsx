@@ -52,7 +52,6 @@ function Tabs({ activeTab, tabs, onTabClick }: TabsProps) {
           </div>
         )
       })}
-      )
     </div>
   )
 }

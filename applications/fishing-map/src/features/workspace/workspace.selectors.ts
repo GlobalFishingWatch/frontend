@@ -273,7 +273,7 @@ export const selectEnvironmentalDataviews = createSelector(
 )
 
 export const selectTemporalgridDataviews = createSelector(
-  [selectDataviewInstancesByType(Generators.Type.HeatmapAnimated)],
+  [selectDataviewInstancesByCategory(DataviewCategory.Activity)],
   (dataviews) => dataviews
 )
 
