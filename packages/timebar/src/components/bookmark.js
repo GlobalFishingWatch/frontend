@@ -57,7 +57,7 @@ const Bookmark = ({ scale, bookmarkStart, bookmarkEnd, minX, maxX, onSelect, onD
     >
       <button
         type="button"
-        title="Go to time range bookmark"
+        title="Go to your bookmarked time range"
         className={styles.main}
         onClick={onSelect}
       >

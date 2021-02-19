@@ -1,7 +1,7 @@
 .Bookmark {
   box-sizing: border-box;
   position: absolute;
-  bottom: var(--timebar-size);
+  bottom: -2.8rem;
   display: flex;
   margin-bottom: 0.5rem;
   transition: var(--timebar-hover-transition);
@@ -13,10 +13,10 @@
 }
 
 .Bookmark button {
-  background: var(--timebar-ui-btn-color-faded);
+  background: var(--timebar-ui-btn-color);
   border: none;
   padding: 0;
-  height: 3rem;
+  height: 2.2rem;
   cursor: pointer;
 }
 
