@@ -29,7 +29,8 @@
     "dismiss": "Cancelar",
     "save": "Guardar",
     "events": "Eventos",
-    "fishing": "Pesca"
+    "fishing": "Pesca",
+    "country_plural": "countries"
   },
   "dataset": {
     "addContext": "Añadir conjunto de datos de contexto",
@@ -107,7 +108,7 @@
     "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
     "filterClose": "Cerrar filtros de búsqueda",
     "filterOpen": "Abrir filtros de búsqueda",
-    "noResults": "¿No encuentras el buque que estás buscando? Prueba usando MMSI, IMO o Callsign",
+    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign",
     "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques",
     "placeholder": "Tipo para buscar vasos",
     "suggestion": "Quiso decir",
