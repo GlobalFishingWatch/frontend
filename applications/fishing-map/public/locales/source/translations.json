@@ -107,7 +107,7 @@
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
     "filterClose": "Close search filters",
     "filterOpen": "Open search filters",
-    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or IRCS",
+    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign",
     "notAllowed": "The available datasets don't allow searching vessels",
     "placeholder": "Type to search vessels",
     "suggestion": "Did you mean",
