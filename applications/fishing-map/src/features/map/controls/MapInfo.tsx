@@ -1,4 +1,5 @@
 import React from 'react'
+import cx from 'classnames'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 import { ScaleControl } from '@globalfishingwatch/react-map-gl'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
@@ -19,9 +20,8 @@ export const TimelineDatesRange = () => {
   const dateFormat = pickDateFormatByRange(start, end)
   if (!start || !end) return null
   return (
-    <div>
-      <I18nDate date={start} format={dateFormat} /> -
-      <I18nDate date={end} format={dateFormat} />
+    <div className={styles.dateRange}>
+      <I18nDate date={start} format={dateFormat} /> - <I18nDate date={end} format={dateFormat} />
     </div>
   )
 }
@@ -31,14 +31,16 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
   const { zoom } = viewport
   return (
     <div className={styles.info}>
-      <div className={styles.scale}>
-        {zoom > 2 && <ScaleControl maxWidth={100} unit="nautical" />}
-      </div>
-      {center && (
-        <div className="print-hidden">
-          {toFixed(center.latitude, 4)} {toFixed(center.longitude, 4)}
+      <div className={styles.flex}>
+        <div className={styles.scale}>
+          {zoom > 2 && <ScaleControl maxWidth={100} unit="nautical" />}
         </div>
-      )}
+        {center && (
+          <div className={cx('print-hidden', styles.mouseCoordinates)}>
+            {toFixed(center.latitude, 4)} {toFixed(center.longitude, 4)}
+          </div>
+        )}
+      </div>
       <TimelineDatesRange />
     </div>
   )
