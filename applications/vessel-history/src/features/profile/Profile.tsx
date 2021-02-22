@@ -52,8 +52,10 @@ const Profile: React.FC = (props): React.ReactElement => {
         ></IconButton>
         {vessel && (
           <h1>
-            Vessel Name
-            <p>+4 previous names</p>
+            {vessel.getName().value}
+            {vessel.gfwData?.otherShipnames && vessel.gfwData?.otherShipnames.length && (
+              <p>+{vessel.gfwData?.otherShipnames.length} previous names</p>
+            )}
           </h1>
         )}
       </header>

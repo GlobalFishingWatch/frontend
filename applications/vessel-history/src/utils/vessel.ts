@@ -6,3 +6,10 @@ export function getVesselAPISource(vessel: Vessel): VesselAPISource[] {
   if (vessel.vesselMatchId) source.push(VesselAPISource.TMT)
   return source
 }
+
+export function getVesselValueSource(gfwValue: any, tmtValue: any): VesselAPISource[] {
+  const source = []
+  if (gfwValue) source.push(VesselAPISource.GFW)
+  if (tmtValue) source.push(VesselAPISource.TMT)
+  return source
+}

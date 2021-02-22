@@ -10,8 +10,8 @@ import {
   selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
-import { selectVessels, setVesselInfo } from 'features/vessels/vessels.slice'
-import { GFWDetail, TMTDetail, VesselInfo } from './../../types/index'
+import { IVesselInfo, selectVessels, setVesselInfo } from 'features/vessels/vessels.slice'
+import { GFWDetail, TMTDetail } from './../../types/index'
 
 const fetchGFWData = async (id: string, dataset: string) => {
   const url = `/v1/vessels/${id}?datasets=${dataset}`
@@ -44,7 +44,7 @@ const fetchVesselInfo = async (vesselID: string, tmtID: string, dataset: string)
   return {
     gfwData,
     tmtData,
-  } as VesselInfo
+  } as IVesselInfo
 }
 
 // TODO to be finished when the api is ready

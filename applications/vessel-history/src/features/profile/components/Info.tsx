@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import { Button } from '@globalfishingwatch/ui-components'
-import { VesselInfo } from 'types'
+// eslint-disable-next-line import/order
+import { VesselInfo } from 'classes/vessel.class'
 import styles from './Info.module.css'
 
 interface InfoProps {
@@ -21,15 +22,15 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
           <div className={styles.identifiers}>
             <div>
               <label>Type</label>
-              <span>Fishing Vessel</span>
+              <span>{vessel.getType().value}</span>
             </div>
             <div>
               <label>FLAG</label>
-              <span>Chinese Taipei</span>
+              <span>{vessel.getFlag().value}</span>
             </div>
             <div>
               <label>MMSI</label>
-              <span>31306526</span>
+              <span>{vessel.getMMSI().value}</span>
             </div>
             <div>
               <label>CALLSIGN</label>

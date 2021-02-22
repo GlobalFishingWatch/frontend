@@ -164,8 +164,3 @@ export type GFWDetail = {
   source: string
   dataset: string
 }
-
-export type VesselInfo = {
-  gfwData: GFWDetail | null
-  tmtData: TMTDetail | null
-}
