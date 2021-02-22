@@ -23,20 +23,6 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const staticTime = useSelector(selectStaticTime)
   const dataviews = useSelector(selectTemporalgridDataviews) || []
-  const dataview = dataviews
-    .filter(
-      (dataview) =>
-        dataview?.config?.visible &&
-        dataview.config.datasets.includes('fishing_v5') &&
-        dataview.config.datasets.includes('chile-fishing:v20200331')
-    )
-    .shift()
-  const dataset = dataview?.datasets.filter((d) => d?.type === DatasetTypes.Fourwings)
-  console.log(dataview?.config?.filters)
-  console.log(dataview?.config.datasets)
-  console.log(staticTime)
-  // const filters = dataviews.map(dataview)
-  const isAvailable = dataviews.length > 0
 
   const onCloseClick = () => {
     batch(() => {
@@ -50,7 +36,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('common.' + type, type)}</h2>
+        <h2 className={styles.sectionTitle}>{t('common.report', 'Report')}</h2>
         <div className={cx('print-hidden', sectionStyles.sectionButtons)}>
           <IconButton
             icon="close"
@@ -62,11 +48,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
         </div>
       </div>
       <div className={styles.content}>
-        {isAvailable &&
-          dataviews?.map((dataview, index) => (
-            <ReportLayerPanel key={dataview.id} dataview={dataview} index={index} />
-          ))}
-        <FishingActivity>{staticTime}</FishingActivity>
+        <FishingActivity dataviews={dataviews} staticTime={staticTime} />
       </div>
       <div className={styles.footer}>
         <Button
