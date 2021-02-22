@@ -26,6 +26,13 @@ function FishingActivity({
     'A fishing activity report for the selected date ranges and filters will be generated and sent to your email account'
   )
 
+  const reportNotAvailable = t(
+    'report.notAvailable',
+    'Report is not available for the current ' +
+      'layers, you need to enable fishing effort layer ' +
+      'or event layers to generate the report.'
+  )
+
   return (
     <Fragment>
       <div>
@@ -36,6 +43,7 @@ function FishingActivity({
           dataviews?.map((dataview, index) => (
             <ReportLayerPanel key={dataview.id} dataview={dataview} index={index} />
           ))}
+        {!isAvailable && <Fragment>{reportNotAvailable}</Fragment>}
       </div>
       <p>
         {reportDescription}: {userData?.email}
