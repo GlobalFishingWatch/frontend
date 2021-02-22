@@ -29,6 +29,7 @@
     "@tippyjs/react": "^4.2.0",
     "auth-middleware": "GlobalFishingWatch/auth-middleware#develop",
     "bowser": "^2.11.0",
+    "classnames": "^2.2.6",
     "countryflag": "^4.0.1",
     "d3-scale": "^3.2.3",
     "dayjs": "^1.8.36",
@@ -55,7 +56,7 @@
     "redux-first-router": "^2.1.5",
     "redux-first-router-link": "^2.1.1",
     "shpjs": "^3.6.3",
-    "typescript": "^4.1.2",
+    "typescript": "^4.1.5",
     "viewport-mercator-project": "^7.0.1"
   },
   "devDependencies": {
