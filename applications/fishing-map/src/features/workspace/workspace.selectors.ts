@@ -8,7 +8,8 @@ import {
   DataviewCategory,
   DataviewDatasetConfig,
 } from '@globalfishingwatch/api-types'
-import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
+import { UrlDataviewInstance, WorkspaceState } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { selectDataviews } from 'features/dataviews/dataviews.slice'

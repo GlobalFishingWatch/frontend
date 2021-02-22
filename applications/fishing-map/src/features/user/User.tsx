@@ -13,7 +13,7 @@ import {
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { fetchAllDatasetsThunk, selectAllDatasetsRequested } from 'features/datasets/datasets.slice'
-import { AsyncReducerStatus } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import styles from './User.module.css'
 import { fetchUserThunk, GUEST_USER_TYPE, logoutUserThunk, selectUserData } from './user.slice'

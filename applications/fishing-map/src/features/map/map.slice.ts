@@ -9,7 +9,7 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { DataviewDatasetConfig, Dataset, Vessel, DatasetTypes } from '@globalfishingwatch/api-types'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
-import { AsyncReducerStatus } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { RootState } from 'store'
 import {
   getRelatedDatasetByType,

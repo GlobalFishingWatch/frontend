@@ -10,7 +10,7 @@ import {
   selectWorkspaceCustom,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { AsyncReducerStatus } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import copyToClipboard from 'utils/clipboard'
 import {
   isWorkspaceLocation,

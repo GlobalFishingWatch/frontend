@@ -3036,7 +3036,7 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@reduxjs/toolkit@^1.4.0":
+"@reduxjs/toolkit@^1.5.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-1.5.0.tgz#1025c1ccb224d1fc06d8d98a61f6717d57e6d477"
   integrity sha512-E/FUraRx+8guw9Hlg/Ja8jI/hwCrmIKed8Annt9YsZw3BQp+F24t5I5b2OWR6pkEHY4hn1BgP08FrTZFRKsdaQ==
@@ -6252,7 +6252,6 @@ attr-accept@^2.2.1:
 
 auth-middleware@GlobalFishingWatch/auth-middleware#develop:
   version "1.0.0"
-  uid "5e8e2fa8bdea22a454f66da259ef6a0cb99a0ab2"
   resolved "https://codeload.github.com/GlobalFishingWatch/auth-middleware/tar.gz/5e8e2fa8bdea22a454f66da259ef6a0cb99a0ab2"
   dependencies:
     request "^2.88.0"

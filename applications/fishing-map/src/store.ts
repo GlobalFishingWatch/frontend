@@ -1,10 +1,4 @@
-import {
-  configureStore,
-  ThunkAction,
-  Action,
-  combineReducers,
-  getDefaultMiddleware,
-} from '@reduxjs/toolkit'
+import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
 import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
 import titleReducer from './routes/title.reducer'
 import userReducer from './features/user/user.slice'
@@ -70,11 +64,10 @@ const store = configureStore({
     },
   },
   reducer: rootReducer,
-  middleware: [
-    ...getDefaultMiddleware(defaultMiddlewareOptions),
-    routerQueryMiddleware,
-    routerMiddleware,
-  ],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware(defaultMiddlewareOptions)
+      .concat(routerQueryMiddleware)
+      .concat(routerMiddleware),
   enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })
 

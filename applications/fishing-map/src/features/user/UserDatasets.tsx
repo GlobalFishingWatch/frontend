@@ -11,7 +11,7 @@ import {
   selectDatasetsStatus,
   selectDatasetsStatusId,
 } from 'features/datasets/datasets.slice'
-import { AsyncReducerStatus } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './User.module.css'
 import { selectUserDatasetsByCategory } from './user.selectors'
 
