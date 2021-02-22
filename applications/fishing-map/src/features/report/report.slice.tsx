@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import { DateTime } from 'luxon'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Report } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { SearchFilter } from 'features/search/search.slice'
 import { AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { RootState } from 'store'
 
@@ -28,8 +28,8 @@ export const createReportThunk = createAsyncThunk<
 >('report/create', async (createReport: CreateReport, { rejectWithValue }) => {
   try {
     const { dateRange, filters, datasets } = createReport
-    const fromDate = dateRange.start
-    const toDate = dateRange.end
+    const fromDate = DateTime.fromISO(dateRange.start).toUTC().toISODate()
+    const toDate = DateTime.fromISO(dateRange.end).toUTC().toISODate()
 
     const queryFiltersFields = [
       {
@@ -81,7 +81,7 @@ export const createReportThunk = createAsyncThunk<
       type: 'detail',
       timeGroup: 'none',
       filters: queryFilters,
-      datasets: datasets.map((d) => d.id),
+      datasets: datasets,
       dateRange: [fromDate, toDate],
     }
     const createdReport = await GFWAPI.fetch<Report>('/v1/reports', {
