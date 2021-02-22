@@ -28,6 +28,7 @@ export const DEFAULT_WORKSPACE = {
   timebarGraph: TimebarGraphs.None,
   bivariate: false,
   version: DEFAULT_VERSION,
+  report: undefined,
 }
 
 // Params to use replace instead of push for router history to make navigation easier
