@@ -4,11 +4,12 @@ import { useSelector } from 'react-redux'
 import { selectUserData } from 'features/user/user.slice'
 import { UrlDataviewInstance } from 'types'
 import ReportLayerPanel from './ReportLayerPanel'
+import { DateRange } from './report.slice'
 
 type FishingActivityProps = {
   className?: string
   dataviews: UrlDataviewInstance[]
-  staticTime: Range | null
+  staticTime: DateRange | null
 }
 
 function FishingActivity({
@@ -29,9 +30,6 @@ function FishingActivity({
     <Fragment>
       <div>
         <h1>{t('report.fishingActivityByEEZ', 'Fishing Activity by EEZ')}</h1>
-        <p>
-          {reportDescription}: {userData?.email}
-        </p>
       </div>
       <div>
         {isAvailable &&
@@ -39,6 +37,9 @@ function FishingActivity({
             <ReportLayerPanel key={dataview.id} dataview={dataview} index={index} />
           ))}
       </div>
+      <p>
+        {reportDescription}: {userData?.email}
+      </p>
     </Fragment>
   )
 }
