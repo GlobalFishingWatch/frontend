@@ -7,13 +7,6 @@ on:
     paths-ignore:
       - '.changesets/**/*.md'
 
-# on:
-#   workflow_run:
-#     workflows: ["Prepare changesets"]
-#     branches: [develop]
-#     types:
-#       - completed
-
 jobs:
   publish-npm:
     name: Publish to NPM
@@ -57,6 +50,11 @@ jobs:
         run: yarn release:ci
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+
+      - name: Sleep for 120 seconds to ensure npm packages are discoverables
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '120s'
 
   trigger-gcloud-build:
     name: Trigger gcloud builds
