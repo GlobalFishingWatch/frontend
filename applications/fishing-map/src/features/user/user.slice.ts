@@ -5,7 +5,7 @@ import GFWAPI, {
 } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
-import { AsyncReducerStatus } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 interface UserState {
   logged: boolean

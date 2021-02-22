@@ -17,13 +17,13 @@ import {
   selectCurrentWorkspaceId,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { AsyncReducerStatus } from 'types'
 import { fetchUserThunk } from 'features/user/user.slice'
 import { isUserLogged } from 'features/user/user.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './App.module.css'
 import { selectSidebarOpen } from './app.selectors'
 

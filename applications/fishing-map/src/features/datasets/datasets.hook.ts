@@ -13,6 +13,7 @@ import {
   getEnvironmentDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   CreateDataset,
   createDatasetThunk,

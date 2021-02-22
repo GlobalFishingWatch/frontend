@@ -6,7 +6,7 @@ import kebabCase from 'lodash/kebabCase'
 import { stringify } from 'qs'
 import { Dataset, DatasetCategory, UploadResponse } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import { asyncInitialState, AsyncReducer, createAsyncSlice, AsyncError } from 'utils/async-slice'
 import { RootState } from 'store'
 
 export const DATASETS_USER_SOURCE_ID = 'user'

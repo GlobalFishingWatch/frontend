@@ -6,7 +6,18 @@ import {
   createEntityAdapter,
   Dictionary,
 } from '@reduxjs/toolkit'
-import { AsyncReducerStatus } from 'types'
+
+export enum AsyncReducerStatus {
+  Idle = 'idle',
+  Aborted = 'aborted',
+  Loading = 'loading',
+  LoadingItem = 'loading.item',
+  LoadingCreate = 'loading.create',
+  LoadingUpdate = 'loading.update',
+  LoadingDelete = 'loading.delete',
+  Finished = 'finished',
+  Error = 'error',
+}
 
 export type AsyncError = {
   status?: number // HHTP error codes
