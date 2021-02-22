@@ -10,7 +10,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { RootState } from 'store'
-import { AsyncReducerStatus } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
 

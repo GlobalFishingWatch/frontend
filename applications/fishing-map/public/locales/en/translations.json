@@ -29,7 +29,8 @@
     "dismiss": "Dismiss",
     "save": "Save",
     "events": "Events",
-    "fishing": "Fishing"
+    "fishing": "Fishing",
+    "country_plural": "countries"
   },
   "dataset": {
     "addContext": "Add context dataset",

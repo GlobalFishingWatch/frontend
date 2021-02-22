@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.13.2
+
+### Patch Changes
+
+- "move timebar bookmark to bottom"
+
 ## 2.13.1
 
 ### Patch Changes

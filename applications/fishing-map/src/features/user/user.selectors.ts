@@ -6,7 +6,7 @@ import {
   selectEnvironmentalDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
-import { AsyncReducerStatus } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserStatus, selectUserLogged, GUEST_USER_TYPE, selectUserData } from './user.slice'
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {

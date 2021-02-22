@@ -7,7 +7,7 @@ import {
   WorkspaceUpsert,
 } from '@globalfishingwatch/api-types'
 import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
-import { AsyncReducerStatus, UrlDataviewInstance, WorkspaceState } from 'types'
+import { UrlDataviewInstance, WorkspaceState } from 'types'
 import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
@@ -21,7 +21,7 @@ import { WORKSPACE, HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace } from 'features/app/app.selectors'
 import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
-import { AsyncError } from 'utils/async-slice'
+import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
 interface WorkspaceSliceState {

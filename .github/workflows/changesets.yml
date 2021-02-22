@@ -28,3 +28,6 @@ jobs:
         uses: changesets/action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clean unused package-lock.json
+        run: rm -rf package-lock.json

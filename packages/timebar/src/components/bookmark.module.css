@@ -8,15 +8,19 @@
   user-select: none;
 }
 
+.bottomPlacement {
+  bottom: -2.8rem;
+}
+
 .Bookmark._immediate {
   transition: none;
 }
 
 .Bookmark button {
-  background: var(--timebar-ui-btn-color-faded);
+  background: var(--timebar-ui-btn-color);
   border: none;
   padding: 0;
-  height: 3rem;
+  height: 2.2rem;
   cursor: pointer;
 }
 

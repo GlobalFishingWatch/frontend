@@ -31,11 +31,12 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
-  let sourcesOptions: TagItem[] = getSourcesSelectedInDataview(dataview)
+  const sourcesOptions: TagItem[] = getSourcesSelectedInDataview(dataview)
   const nonVmsSources = sourcesOptions.filter((source) => !source.label.includes('VMS'))
   const vmsSources = sourcesOptions.filter((source) => source.label.includes('VMS'))
+  let mergedSourceOptions: TagItem[] = []
   if (vmsSources?.length > 1) {
-    sourcesOptions = [
+    mergedSourceOptions = [
       ...nonVmsSources,
       {
         id: 'vms-grouped',
@@ -178,8 +179,17 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
                 <TagList
                   tags={sourcesOptions}
                   color={dataview.config?.color}
-                  className={styles.tagList}
+                  className={cx(styles.tagList, {
+                    [styles.hidden]: mergedSourceOptions?.length > 0,
+                  })}
                 />
+                {mergedSourceOptions.length > 0 && (
+                  <TagList
+                    tags={mergedSourceOptions}
+                    color={dataview.config?.color}
+                    className={styles.mergedTagList}
+                  />
+                )}
               </div>
             )}
             {fishingFiltersOptions.length > 0 && (

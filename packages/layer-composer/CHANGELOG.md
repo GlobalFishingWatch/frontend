@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.13.3
+
+### Patch Changes
+
+- 41e9c20b: Added opacity option to track layer
+
 ## 4.13.2
 
 ### Patch Changes

@@ -174,6 +174,10 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
    */
   color?: string
   /**
+   * Sets the opacity for the track line
+   */
+  opacity?: number
+  /**
    * Sets a portion of the track to highlight visually
    */
   highlightedTime?: {

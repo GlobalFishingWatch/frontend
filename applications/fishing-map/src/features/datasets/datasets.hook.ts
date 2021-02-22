@@ -13,6 +13,7 @@ import {
   getEnvironmentDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   CreateDataset,
   createDatasetThunk,
@@ -96,26 +97,28 @@ export const useDatasetModalConnect = () => {
 }
 
 export const useDatasetsAPI = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const dispatchFetchDataset = useCallback(
     async (id: string): Promise<{ payload?: Dataset; error?: AsyncError }> => {
-      const { payload, error }: any = await dispatch(fetchDatasetByIdThunk(id))
-      if (error) {
-        return { error: payload }
+      const action = await dispatch(fetchDatasetByIdThunk(id))
+      if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+        return { payload: action.payload }
+      } else {
+        return { error: action.payload }
       }
-      return { payload }
     },
     [dispatch]
   )
 
   const dispatchCreateDataset = useCallback(
     async (createDataset: CreateDataset): Promise<{ payload?: Dataset; error?: AsyncError }> => {
-      const { payload, error }: any = await dispatch(createDatasetThunk(createDataset))
-      if (error) {
-        return { error: payload }
+      const action = await dispatch(createDatasetThunk(createDataset))
+      if (createDatasetThunk.fulfilled.match(action)) {
+        return { payload: action.payload }
+      } else {
+        return { error: action.payload }
       }
-      return { payload }
     },
     [dispatch]
   )
@@ -124,11 +127,12 @@ export const useDatasetsAPI = () => {
     async (
       updatedDataset: Partial<Dataset>
     ): Promise<{ payload?: Dataset; error?: AsyncError }> => {
-      const { payload, error }: any = await dispatch(updateDatasetThunk(updatedDataset))
-      if (error) {
-        return { error: payload }
+      const action = await dispatch(updateDatasetThunk(updatedDataset))
+      if (updateDatasetThunk.fulfilled.match(action)) {
+        return { payload: action.payload }
+      } else {
+        return { error: action.payload }
       }
-      return { payload }
     },
     [dispatch]
   )
