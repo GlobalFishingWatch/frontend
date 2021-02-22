@@ -1,10 +1,10 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@1.3.0/schema.json",
-  "changelog": "@changesets/cli/changelog",
-  "commit": false,
+  "$schema": "https://unpkg.com/@changesets/config@1.5.0/schema.json",
+  "changelog": ["@changesets/changelog-github", { "repo": "GlobalFishingWatch/frontend" }],
+  "ignore": [],
   "linked": [],
+  "commit": false,
   "access": "restricted",
   "baseBranch": "develop",
-  "updateInternalDependencies": "patch",
-  "ignore": []
+  "updateInternalDependencies": "patch"
 }
