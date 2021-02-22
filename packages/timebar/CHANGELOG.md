@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 1.3.2
+
+### Patch Changes
+
+- [`dfbe0d10`](https://github.com/GlobalFishingWatch/frontend/commit/dfbe0d1044a43281b641856670de66f53a652d2b) [#331](https://github.com/GlobalFishingWatch/frontend/pull/331) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - Improve stacked-activity chart
+
 ## 1.3.1
 
 ### Patch Changes
