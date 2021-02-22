@@ -81,7 +81,7 @@
   width: 100%;
 }
 
-.hidden {
+.tagList.hidden {
   display: none;
 }
 
