@@ -27,6 +27,7 @@ const getExtendedFeatures = (
       properties,
       generatorType,
       generatorId,
+      layerId: feature.layer.id,
       source: feature.source,
       sourceLayer: feature.sourceLayer,
       id: (feature.id as number) || feature.properties?.gfw_id || undefined,
@@ -144,9 +145,9 @@ export const useMapClick = (
       const interactionEvent: InteractionEvent = {
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
+        point: event.point,
       }
       if (event.features?.length) {
-        console.log(event.features)
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
           event.features,
           metadata,
@@ -193,6 +194,7 @@ export const useMapHover = (
       // Turn all sources with active feature states off
       cleanFeatureState()
       const hoverEvent: InteractionEvent = {
+        point: event.point,
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
       }

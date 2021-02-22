@@ -7,6 +7,7 @@
     "confirm": "Confirm",
     "context_area_plural": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.",
+    "country_plural": "countries",
     "description": "Description",
     "environment": "Environment",
     "hour": "Hour",
@@ -19,6 +20,7 @@
     "more": "more",
     "name": "Name",
     "presence": "Fishing presence",
+    "report": "Report",
     "seeDefault": "See default view",
     "share": "Click to share the current view",
     "update": "Update",
@@ -29,8 +31,7 @@
     "dismiss": "Dismiss",
     "save": "Save",
     "events": "Events",
-    "fishing": "Fishing",
-    "country_plural": "countries"
+    "fishing": "Fishing"
   },
   "dataset": {
     "addContext": "Add context dataset",
@@ -102,6 +103,12 @@
     "search": "Search areas",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
+  },
+  "report": {
+    "close": "Close report",
+    "fishingActivityByEEZ": "Fishing Activity by EEZ",
+    "fishingActivityByEEZDescription": "A fishing activity report for the selected date ranges and filters will be generated and sent to your email account",
+    "generate": "Generate"
   },
   "search": {
     "close": "Close search",

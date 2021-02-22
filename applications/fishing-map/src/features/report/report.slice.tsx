@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import { FeatureCollection } from 'geojson'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Dataset } from '@globalfishingwatch/api-types/dist'
 import { SearchFilter } from 'features/search/search.slice'
@@ -16,11 +17,6 @@ type Report = {
   status: 'not-started'
 }
 
-type GeometryPolygon = {
-  type: 'Polygon'
-  coordinates: [[[number, number]]]
-}
-
 export type DateRange = {
   start: string
   end: string
@@ -33,7 +29,7 @@ export type ReportThunk = {
   dateRange: DateRange
   filters: SearchFilter
   datasets: Dataset[]
-  geometry: GeometryPolygon
+  geometry: FeatureCollection
 }
 
 export const createReportThunk = createAsyncThunk<

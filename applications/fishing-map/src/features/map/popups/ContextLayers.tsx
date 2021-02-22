@@ -1,8 +1,12 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useCallback } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import groupBy from 'lodash/groupBy'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
+import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { TooltipEventFeature } from 'features/map/map.hooks'
+import { useMapboxInstance } from '../map.context'
+import { selectClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
 
 const TunaRfmoLinksById: Record<string, string> = {
@@ -13,12 +17,19 @@ const TunaRfmoLinksById: Record<string, string> = {
   WCPFC: 'http://www.wcpfc.int/',
 }
 
-function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false) {
+interface FeatureRowProps {
+  feature: TooltipEventFeature
+  showFeaturesDetails: boolean
+  onReportClick?: (feature: TooltipEventFeature) => void
+}
+
+function FeatureRow({ feature, showFeaturesDetails = false, onReportClick }: FeatureRowProps) {
+  const { t } = useTranslation()
   if (!feature.value) return null
   const { gfw_id } = feature.properties
 
   // ContextLayerType.MPA but enums doesn't work in CRA for now
-  if (feature.layer === 'mpa') {
+  if (feature.contextLayer === 'mpa') {
     const { wdpa_pid } = feature.properties
     const label = `${feature.value} - ${feature.properties.desig}`
     return (
@@ -26,7 +37,12 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
         <span className={styles.rowText}>{label}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
-            <IconButton icon="report" tooltip="Report (Coming soon)" size="small" />
+            <IconButton
+              icon="report"
+              tooltip={t('common.report', 'Report')}
+              onClick={() => onReportClick && onReportClick(feature)}
+              size="small"
+            />
             {wdpa_pid && (
               <a
                 target="_blank"
@@ -41,7 +57,7 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
       </div>
     )
   }
-  if (feature.layer === 'tuna-rfmo') {
+  if (feature.contextLayer === 'tuna-rfmo') {
     const link = TunaRfmoLinksById[feature.value]
     return (
       <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
@@ -56,14 +72,19 @@ function getRowByLayer(feature: TooltipEventFeature, showFeaturesDetails = false
       </div>
     )
   }
-  if (feature.layer === 'eez-areas') {
+  if (feature.contextLayer === 'eez-areas') {
     const { mrgid } = feature.properties
     return (
       <div className={styles.row} key={`${mrgid}-${gfw_id}`}>
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
-            <IconButton icon="report" tooltip="Report (Coming soon)" size="small" />
+            <IconButton
+              icon="report"
+              tooltip={t('common.report', 'Report')}
+              onClick={() => onReportClick && onReportClick(feature)}
+              size="small"
+            />
             <a
               target="_blank"
               rel="noopener noreferrer"
@@ -85,6 +106,32 @@ type ContextTooltipRowProps = {
 }
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
+  const mapInstance = useMapboxInstance()
+  const clickedEvent = useSelector(selectClickedEvent)
+  const onReportClick = useCallback(
+    (feature: TooltipEventFeature) => {
+      if (!mapInstance || !clickedEvent) {
+        console.warn(`No map ${mapInstance ? 'clicked event' : 'map instance'} instance found`)
+        return
+      }
+      const intersectionOptions = { layers: [feature.layerId] }
+      const boundaries = mapInstance.queryRenderedFeatures(
+        clickedEvent.point as any,
+        intersectionOptions
+      )
+      const geometry = {
+        type: 'FeatureCollection',
+        features: boundaries.map(({ geometry }, id) => ({
+          id,
+          type: 'Feature',
+          geometry,
+        })),
+      }
+      console.log('GEOMETRY')
+      console.log(geometry)
+    },
+    [mapInstance]
+  )
   const featuresByType = groupBy(features, 'layer')
   return (
     <Fragment>
@@ -98,7 +145,13 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             {showFeaturesDetails && (
               <h3 className={styles.popupSectionTitle}>{featureByType[0].title}</h3>
             )}
-            {featureByType.map((feature) => getRowByLayer(feature, showFeaturesDetails))}
+            {featureByType.map((feature) => (
+              <FeatureRow
+                feature={feature}
+                showFeaturesDetails={showFeaturesDetails}
+                onReportClick={onReportClick}
+              />
+            ))}
           </div>
         </div>
       ))}

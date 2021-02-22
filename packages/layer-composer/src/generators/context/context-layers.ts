@@ -89,22 +89,22 @@ const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
   [ContextLayerType.TunaRfmo]: getDefaultContextLayersById(ContextLayerType.TunaRfmo, '#B39DDB'),
   [ContextLayerType.EEZ]: [
     {
-      id: 'eez-interaction',
+      id: 'eez_interaction_',
       ...getDefaultContextInteraction(),
     } as FillLayer,
     {
-      id: 'eez-highlight',
+      id: 'eez_highlight_',
       ...getDefaultContextHighlight(),
     } as LineLayer,
   ],
   [ContextLayerType.EEZBoundaries]: [
     {
-      id: 'eez_rest_lines',
+      id: 'eez_rest_lines_',
       ...getDefaultContextLine('#33B679'),
       filter: ['match', ['get', 'line_type'], settledBoundaries, true, false],
     } as LineLayer,
     {
-      id: 'eez_special_lines',
+      id: 'eez_special_lines_',
       ...getDefaultContextLine(),
       filter: ['match', ['get', 'line_type'], settledBoundaries, false, true],
       paint: {

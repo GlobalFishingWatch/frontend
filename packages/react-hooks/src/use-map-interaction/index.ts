@@ -1,5 +1,6 @@
 import { Dataset } from '@globalfishingwatch/api-types'
 import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { PointerEvent } from '@globalfishingwatch/react-map-gl'
 
 export { useMapHover, useMapClick, useFeatureState } from './use-map-interaction'
 
@@ -12,6 +13,7 @@ export type ExtendedFeatureVessel = {
 
 export type ExtendedFeature = {
   properties: Record<string, any>
+  layerId: string
   source: string
   sourceLayer: string
   generatorId: string | number | null
@@ -40,4 +42,5 @@ export type InteractionEvent = {
   features?: ExtendedFeature[]
   latitude: number
   longitude: number
+  point: Pick<PointerEvent, 'point'>
 }
