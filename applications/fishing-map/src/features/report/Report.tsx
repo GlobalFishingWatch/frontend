@@ -11,6 +11,7 @@ import { selectStaticTime } from 'features/timebar/timebar.slice'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import styles from './Report.module.css'
 import FishingActivity from './FishingActivity'
+import ReportLayerPanel from './ReportLayerPanel'
 
 type ReportPanelProps = {
   type: string
@@ -35,6 +36,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   console.log(dataview?.config.datasets)
   console.log(staticTime)
   // const filters = dataviews.map(dataview)
+  const isAvailable = dataviews.length > 0
 
   const onCloseClick = () => {
     batch(() => {
@@ -60,6 +62,10 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
         </div>
       </div>
       <div className={styles.content}>
+        {isAvailable &&
+          dataviews?.map((dataview, index) => (
+            <ReportLayerPanel key={dataview.id} dataview={dataview} index={index} />
+          ))}
         <FishingActivity>{staticTime}</FishingActivity>
       </div>
       <div className={styles.footer}>
