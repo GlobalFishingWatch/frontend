@@ -11,19 +11,23 @@ import { RootState } from 'store'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 
-export const fetchDatasetByIdThunk = createAsyncThunk(
-  'datasets/fetchById',
-  async (id: string, { rejectWithValue }) => {
-    try {
-      const dataset = await GFWAPI.fetch<Dataset>(
-        `/v1/datasets/${id}?include=endpoints&cache=false`
-      )
-      return dataset
-    } catch (e) {
-      return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
-    }
+export const fetchDatasetByIdThunk = createAsyncThunk<
+  Dataset,
+  string,
+  {
+    rejectValue: AsyncError
   }
-)
+>('datasets/fetchById', async (id: string, { rejectWithValue }) => {
+  try {
+    const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}?include=endpoints&cache=false`)
+    return dataset
+  } catch (e) {
+    return rejectWithValue({
+      status: e.status || e.code,
+      message: `${id} - ${e.message}`,
+    })
+  }
+})
 
 export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
@@ -64,41 +68,50 @@ export const fetchAllDatasetsThunk = createAsyncThunk('datasets/all', async (_, 
 })
 
 export type CreateDataset = { dataset: Partial<Dataset>; file: File }
-export const createDatasetThunk = createAsyncThunk(
-  'datasets/create',
-  async ({ dataset, file }: CreateDataset, { rejectWithValue }) => {
-    try {
-      const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
-        method: 'POST',
-        body: {
-          contentType: dataset.configuration?.format === 'geojson' ? 'application/json' : file.type,
-        } as any,
-      })
-      await fetch(url, { method: 'PUT', body: file })
-      const datasetWithFilePath = {
-        ...dataset,
-        description: dataset.description || dataset.name,
-        id: `${kebabCase(dataset.name)}-${Date.now()}`,
-        source: DATASETS_USER_SOURCE_ID,
-        configuration: {
-          ...dataset.configuration,
-          filePath: path,
-        },
-      }
-      const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
-        method: 'POST',
-        body: datasetWithFilePath as any,
-      })
-      return createdDataset
-    } catch (e) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
-    }
+export const createDatasetThunk = createAsyncThunk<
+  Dataset,
+  CreateDataset,
+  {
+    rejectValue: AsyncError
   }
-)
+>('datasets/create', async ({ dataset, file }, { rejectWithValue }) => {
+  try {
+    const { url, path } = await GFWAPI.fetch<UploadResponse>('/v1/upload', {
+      method: 'POST',
+      body: {
+        contentType: dataset.configuration?.format === 'geojson' ? 'application/json' : file.type,
+      } as any,
+    })
+    await fetch(url, { method: 'PUT', body: file })
+    const datasetWithFilePath = {
+      ...dataset,
+      description: dataset.description || dataset.name,
+      id: `${kebabCase(dataset.name)}-${Date.now()}`,
+      source: DATASETS_USER_SOURCE_ID,
+      configuration: {
+        ...dataset.configuration,
+        filePath: path,
+      },
+    }
+    const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
+      method: 'POST',
+      body: datasetWithFilePath as any,
+    })
+    return createdDataset
+  } catch (e) {
+    return rejectWithValue({ status: e.status || e.code, message: e.message })
+  }
+})
 
-export const updateDatasetThunk = createAsyncThunk(
+export const updateDatasetThunk = createAsyncThunk<
+  Dataset,
+  Partial<Dataset>,
+  {
+    rejectValue: AsyncError
+  }
+>(
   'datasets/update',
-  async (partialDataset: Partial<Dataset>, { rejectWithValue }) => {
+  async (partialDataset, { rejectWithValue }) => {
     try {
       const updatedDataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${partialDataset.id}`, {
         method: 'PATCH',
@@ -119,19 +132,22 @@ export const updateDatasetThunk = createAsyncThunk(
   }
 )
 
-export const deleteDatasetThunk = createAsyncThunk(
-  'datasets/delete',
-  async (id: string, { rejectWithValue }) => {
-    try {
-      const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}`, {
-        method: 'DELETE',
-      })
-      return { ...dataset, id }
-    } catch (e) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
-    }
+export const deleteDatasetThunk = createAsyncThunk<
+  Dataset,
+  string,
+  {
+    rejectValue: AsyncError
   }
-)
+>('datasets/delete', async (id: string, { rejectWithValue }) => {
+  try {
+    const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${id}`, {
+      method: 'DELETE',
+    })
+    return { ...dataset, id }
+  } catch (e) {
+    return rejectWithValue({ status: e.status || e.code, message: e.message })
+  }
+})
 
 export type DatasetModals = 'new' | 'edit' | undefined
 export interface DatasetsState extends AsyncReducer<Dataset> {
