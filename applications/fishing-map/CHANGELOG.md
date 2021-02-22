@@ -1,5 +1,30 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.25.3
+
+### Patch Changes
+
+- Updated dependencies [41e9c20b]
+  - @globalfishingwatch/layer-composer@4.13.3
+
+## 0.25.2
+
+### Patch Changes
+
+- remove missing log
+- Updated dependencies [undefined]
+  - @globalfishingwatch/timebar@1.3.1
+
+## 0.25.1
+
+### Patch Changes
+
+- fix crash on api auth errors
+  - @globalfishingwatch/api-client@1.6.7
+- "move timebar bookmark to bottom"
+  - @globalfishingwatch/timebar@1.3.0
+  - @globalfishingwatch/ui-components@2.13.2
+
 ## 0.25.0
 
 ### Minor Changes

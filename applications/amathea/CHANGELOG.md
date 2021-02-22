@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/amathea
 
+## 0.14.1
+
+### Patch Changes
+
+- fix crash on api auth errors
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-client@1.6.7
+
 ## 0.14.0
 
 ### Minor Changes

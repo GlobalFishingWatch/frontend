@@ -43,7 +43,7 @@ function Modal(props: ModalProps) {
       {header && (
         <div className={cx(styles.header, { [styles.withTitle]: title })}>
           <h1 className={styles.title}>{title}</h1>
-          <IconButton icon="close" tooltip="Dismiss" tooltipPlacement="left" onClick={onClose} />
+          <IconButton icon="close" onClick={onClose} />
         </div>
       )}
       <div

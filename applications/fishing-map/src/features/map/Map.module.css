@@ -23,7 +23,7 @@
 }
 
 :global(.printing) .legend .currentValue {
-  display: none
+  display: none;
 }
 
 @media print {
@@ -31,7 +31,7 @@
     display: block;
   }
   .legend .currentValue {
-    display: none
+    display: none;
   }
 }
 
@@ -45,9 +45,11 @@
   padding-bottom: var(--space-XS);
   font: var(--font-XS);
   background: none;
-  color: rgba(255,255,255, 0.4);
+  color: var(--color-white);
+  opacity: var(--opacity-secondary);
 }
 
 :global(.mapboxgl-control-container .mapboxgl-ctrl.mapboxgl-ctrl-attrib a) {
-  color: rgba(255,255,255, 0.4);
+  color: var(--color-white);
+  opacity: var(--opacity-secondary);
 }

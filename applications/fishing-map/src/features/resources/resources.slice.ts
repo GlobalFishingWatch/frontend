@@ -4,7 +4,7 @@ import { Field, Segment, trackValueArrayToSegments } from '@globalfishingwatch/d
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
-import { AsyncReducerStatus } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export interface ResourceQuery {
   url: string

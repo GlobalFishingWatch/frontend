@@ -41,19 +41,25 @@ export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
 }
 
 const processStatus = (response: Response): Promise<Response> => {
-  return new Promise((resolve, reject) => {
-    if (response.status >= 200 && response.status < 300) {
-      return resolve(response)
-    }
+  return new Promise(async (resolve, reject) => {
+    const { status, statusText } = response
     try {
-      parseJSON(response).then((r) => {
-        return reject({
-          status: r.statusCode || response.status,
-          message: r.message || r.error || response.statusText,
+      if (response.status >= 200 && response.status < 300) {
+        return resolve(response)
+      }
+      let authError
+      if (response.status >= 400 && response.status < 500) {
+        authError = await response.text().then((text) => {
+          try {
+            return JSON.parse(text)?.error
+          } catch (e) {
+            return response.statusText
+          }
         })
-      })
+      }
+      return reject({ status, message: authError || statusText })
     } catch (e) {
-      return reject({ status: response.status, message: response.statusText })
+      return reject({ status, message: statusText })
     }
   })
 }
