@@ -1,0 +1,63 @@
+.container {
+  padding: var(--space-XS) 0;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: space-between;
+}
+
+.container:not(:last-of-type) {
+  border-bottom: var(--border);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-XS) var(--space-S);
+}
+
+.sectionTitle {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.sectionButtons > *:not(:last-child) {
+  margin-right: 1rem;
+}
+.content {
+  padding: var(--space-XS) var(--space-S);
+  flex-grow: 1;
+}
+.footer {
+  display: flex;
+  align-items: right;
+  justify-content: space-between;
+  padding: var(--space-XS) var(--space-S);
+}
+.errorBtn {
+  margin-top: var(--space-M);
+}
+.expandedContainerOpen {
+  position: relative;
+  z-index: 1;
+  filter: var(--filter-drop-shadow);
+}
+
+.expandedContainerOpen::after {
+  content: '';
+  position: absolute;
+  top: 6rem;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--color-veil);
+}
+
+.expandedContainer {
+  background-color: var(--color-white);
+  width: 36.9rem;
+}
