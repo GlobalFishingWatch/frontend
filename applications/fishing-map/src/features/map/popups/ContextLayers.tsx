@@ -1,10 +1,12 @@
 import React, { Fragment, useCallback } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import groupBy from 'lodash/groupBy'
-import { useSelector } from 'react-redux'
+import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { TooltipEventFeature } from 'features/map/map.hooks'
+import { useLocationConnect } from 'routes/routes.hook'
+import { setReportGeometry } from 'features/report/report.slice'
 import { useMapboxInstance } from '../map.context'
 import { selectClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
@@ -108,6 +110,9 @@ type ContextTooltipRowProps = {
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const mapInstance = useMapboxInstance()
   const clickedEvent = useSelector(selectClickedEvent)
+  const { dispatchQueryParams } = useLocationConnect()
+  const dispatch = useDispatch()
+
   const onReportClick = useCallback(
     (feature: TooltipEventFeature) => {
       if (!mapInstance || !clickedEvent) {
@@ -127,10 +132,12 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
           geometry,
         })),
       }
-      console.log('GEOMETRY')
-      console.log(geometry)
+      batch(() => {
+        dispatch(setReportGeometry(geometry))
+        dispatchQueryParams({ report: 'fishing-activity' })
+      })
     },
-    [mapInstance]
+    [mapInstance, dispatchQueryParams]
   )
   const featuresByType = groupBy(features, 'layer')
   return (
@@ -145,8 +152,9 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             {showFeaturesDetails && (
               <h3 className={styles.popupSectionTitle}>{featureByType[0].title}</h3>
             )}
-            {featureByType.map((feature) => (
+            {featureByType.map((feature, index) => (
               <FeatureRow
+                key={index}
                 feature={feature}
                 showFeaturesDetails={showFeaturesDetails}
                 onReportClick={onReportClick}

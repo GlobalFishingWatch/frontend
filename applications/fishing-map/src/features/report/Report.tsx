@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { batch, useDispatch, useSelector } from 'react-redux'
@@ -15,7 +15,13 @@ import {
 import styles from './Report.module.css'
 import FishingActivity from './FishingActivity'
 import ReportLayerPanel from './ReportLayerPanel'
-import { createReportThunk, DateRange } from './report.slice'
+import {
+  CreateReport,
+  createReportThunk,
+  DateRange,
+  selectReportGeometry,
+  selectReportStatus,
+} from './report.slice'
 
 type ReportPanelProps = {
   type: string
@@ -28,52 +34,41 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const staticTime = useSelector(selectStaticTime)
   const dataviews = useSelector(selectTemporalgridDataviews) || []
+  const reportGeometry = useSelector(selectReportGeometry)
+  const reportStatus = useSelector(selectReportStatus)
 
-  if (!staticTime) {
-    return <Fragment />
-  }
-  const dateRange: DateRange = staticTime
+  const isAvailable = dataviews.length > 0
+  const isEnabled = !loading && isAvailable
+
   const onCloseClick = () => {
     batch(() => {
       dispatch(resetWorkspaceReportQuery())
       dispatchQueryParams({ report: undefined })
     })
   }
-
-  const mockedGeometry: GeoJSON.Polygon = {
-    type: 'Polygon',
-    coordinates: [
-      [
-        [0.164794921875, 38.53097889440024],
-        [4.482421875, 38.53097889440024],
-        [4.482421875, 40.111688665595956],
-        [0.164794921875, 40.111688665595956],
-        [0.164794921875, 38.53097889440024],
-      ],
-    ],
-  }
-
-  const onGenerateClick = async () => {
+  console.log(reportStatus)
+  console.log(reportGeometry)
+  const onGenerateClick = useCallback(async () => {
     setLoading(true)
-    batch(() => {
-      dataviews.forEach(async (dataview) => {
-        const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
-          .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
-          .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
+    const createReports: CreateReport[] = dataviews.map((dataview) => {
+      const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
+        .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
+        .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
 
-        const result = await dispatch(
-          createReportThunk({
-            name: `${dataview.name} - ${t('common.report', 'Report')}`,
-            dateRange: dateRange,
-            filters: dataview.config?.filters || [],
-            datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
-            geometry: mockedGeometry,
-          })
-        )
-        console.log(result)
-      })
+      return {
+        name: `${dataview.name} - ${t('common.report', 'Report')}`,
+        dateRange: staticTime as DateRange,
+        filters: dataview.config?.filters || [],
+        datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
+        geometry: reportGeometry as GeoJSON.FeatureCollection,
+      }
     })
+    dispatch(createReportThunk(createReports))
     setLoading(false)
+  }, [dataviews, staticTime, reportGeometry, dispatch])
+
+  if (!staticTime) {
+    return <Fragment />
   }
 
   return (
@@ -94,7 +89,12 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
         <FishingActivity dataviews={dataviews} staticTime={staticTime} />
       </div>
       <div className={styles.footer}>
-        <Button className={styles.saveBtn} onClick={onGenerateClick} loading={loading}>
+        <Button
+          className={styles.saveBtn}
+          onClick={onGenerateClick}
+          loading={loading}
+          disabled={!isEnabled}
+        >
           {t('report.generate', 'Generate Report')}
         </Button>
       </div>
