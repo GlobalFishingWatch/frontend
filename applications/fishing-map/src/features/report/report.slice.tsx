@@ -111,7 +111,6 @@ export interface ReportState extends AsyncReducer<Report> {
   dialog: {
     isOpen: boolean
     geometry: GeoJSON.FeatureCollection | undefined
-    status: AsyncReducerStatus
   }
 }
 
@@ -120,7 +119,6 @@ const initialState: ReportState = {
   dialog: {
     isOpen: false,
     geometry: undefined,
-    status: AsyncReducerStatus.Idle,
   },
 }
 
@@ -141,21 +139,6 @@ const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ReportState, Rep
   thunks: {
     createThunk: createReportThunk,
   },
-  // extraReducers: (builder) => {
-  //   builder.addCase(createReportThunk.pending, (state) => {
-  //     state.dialog.status = AsyncReducerStatus.Loading
-  //   })
-  //   builder.addCase(createReportThunk.fulfilled, (state, action) => {
-  //     state.dialog.status = AsyncReducerStatus.Finished
-  //   })
-  //   builder.addCase(createReportThunk.rejected, (state, action) => {
-  //     if (action.error.message === 'Aborted') {
-  //       state.dialog.status = AsyncReducerStatus.Idle
-  //     } else {
-  //       state.dialog.status = AsyncReducerStatus.Error
-  //     }
-  //   })
-  // },
 })
 
 export const { toggleReportDialog, clearReportGeometry, setReportGeometry } = reportsSlice.actions

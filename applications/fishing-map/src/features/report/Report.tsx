@@ -12,8 +12,9 @@ import {
   getRelatedDatasetByType,
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
+import { selectUserData } from 'features/user/user.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Report.module.css'
-import FishingActivity from './FishingActivity'
 import ReportLayerPanel from './ReportLayerPanel'
 import {
   CreateReport,
@@ -36,9 +37,21 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   const dataviews = useSelector(selectTemporalgridDataviews) || []
   const reportGeometry = useSelector(selectReportGeometry)
   const reportStatus = useSelector(selectReportStatus)
-
+  const userData = useSelector(selectUserData)
   const isAvailable = dataviews.length > 0
   const isEnabled = !loading && isAvailable
+
+  const reportDescription = t(
+    'report.fishingActivityByEEZDescription',
+    'A fishing activity report for the selected date ranges and filters will be generated and sent to your email account'
+  )
+
+  const reportNotAvailable = t(
+    'report.notAvailable',
+    'Report is not available for the current ' +
+      'layers, you need to enable fishing effort layer ' +
+      'or event layers to generate the report.'
+  )
 
   const onCloseClick = () => {
     batch(() => {
@@ -46,8 +59,6 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
       dispatchQueryParams({ report: undefined })
     })
   }
-  console.log(reportStatus)
-  console.log(reportGeometry)
   const onGenerateClick = useCallback(async () => {
     setLoading(true)
     const createReports: CreateReport[] = dataviews.map((dataview) => {
@@ -74,7 +85,9 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('common.report', 'Report')}</h2>
+        <h2 className={styles.sectionTitle}>
+          {t('report.fishingActivityReport', 'Fishing Activity Report')}
+        </h2>
         <div className={cx('print-hidden', sectionStyles.sectionButtons)}>
           <IconButton
             icon="close"
@@ -86,17 +99,48 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
         </div>
       </div>
       <div className={styles.content}>
-        <FishingActivity dataviews={dataviews} staticTime={staticTime} />
+        {reportStatus === AsyncReducerStatus.Idle && (
+          <Fragment>
+            <div className={styles.description}>
+              {reportDescription}: {userData?.email}
+            </div>
+            <div>
+              {isAvailable &&
+                dataviews?.map((dataview, index) => (
+                  <ReportLayerPanel key={dataview.id} dataview={dataview} index={index} />
+                ))}
+              {!isAvailable && <Fragment>{reportNotAvailable}</Fragment>}
+            </div>
+          </Fragment>
+        )}
+        {reportStatus === AsyncReducerStatus.Finished && (
+          <p className={styles.success}>
+            {t(
+              'report.successfullMessage',
+              "The report was created successfully, you'll receive it by email soon."
+            )}
+          </p>
+        )}
+        {reportStatus === AsyncReducerStatus.Error && (
+          <p className={styles.error}>{t('report.errorMessage', 'Something went wrong')} 🙈</p>
+        )}
       </div>
       <div className={styles.footer}>
-        <Button
-          className={styles.saveBtn}
-          onClick={onGenerateClick}
-          loading={loading}
-          disabled={!isEnabled}
-        >
-          {t('report.generate', 'Generate Report')}
-        </Button>
+        {reportStatus === AsyncReducerStatus.Idle && (
+          <Button
+            className={styles.saveBtn}
+            onClick={onGenerateClick}
+            loading={loading}
+            disabled={!isEnabled}
+          >
+            {t('report.send', 'Send Report')}
+          </Button>
+        )}
+        {reportStatus === AsyncReducerStatus.Finished && (
+          <Button className={styles.saveBtn} onClick={onCloseClick}>
+            {t('report.backToMap', 'Go back to Map')}
+          </Button>
+        )}
       </div>
     </div>
   )
