@@ -1,5 +1,14 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.25.5
+
+### Patch Changes
+
+- Updated dependencies [[`35125a3e`](https://github.com/GlobalFishingWatch/frontend/commit/35125a3edf7af17e98e42e45055b8c7e07e177bc), [`1599ff95`](https://github.com/GlobalFishingWatch/frontend/commit/1599ff954ec1c2d8142e869eeb5749a999135eba), [`348ce272`](https://github.com/GlobalFishingWatch/frontend/commit/348ce272bd50730db5ad794c80f8b62750a64a90)]:
+  - @globalfishingwatch/timebar@1.3.3
+  - @globalfishingwatch/react-hooks@4.6.0
+  - @globalfishingwatch/layer-composer@4.14.0
+
 ## 0.25.4
 
 ### Patch Changes
