@@ -2,8 +2,8 @@ import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 
 export const useI18nFlag = (iso: string) => {
-  const { t } = useTranslation()
-  return t(`flags:${iso}`)
+  const { t } = useTranslation('flags')
+  return t(iso as any)
 }
 
 const I18nFlag = ({ iso }: { iso: string }) => {
