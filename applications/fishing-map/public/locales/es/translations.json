@@ -7,6 +7,7 @@
     "confirm": "Confirmar",
     "context_area_plural": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles. Puedes encontrar todas las vistas guardadas en tu área de usuario.",
+    "country_plural": "paises",
     "description": "Descripción",
     "environment": "Entorno",
     "hour": "Hora",
@@ -29,8 +30,7 @@
     "dismiss": "Cancelar",
     "save": "Guardar",
     "events": "Eventos",
-    "fishing": "Pesca",
-    "country_plural": "paises"
+    "fishing": "Pesca"
   },
   "dataset": {
     "addContext": "Añadir conjunto de datos de contexto",
@@ -47,7 +47,7 @@
     "importing": "Se está importando el conjunto de datos",
     "new": "Nuevo conjunto de datos",
     "remove": "Remove dataset",
-    "uploadLogin": "Necesitas iniciar sesión para subir conjuntos de datos",
+    "uploadLogin": "You need to <1>login</1> to upload datasets",
     "uploadNewContex": "Subir nuevas áreas de contexto",
     "uploadNewEnviroment": "Subir nuevo conjunto de datos de entorno",
     "addEnvironment": "Añadir conjunto de datos de entorno",
