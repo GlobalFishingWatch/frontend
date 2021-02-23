@@ -47,7 +47,7 @@
     "importing": "Dataset is being imported",
     "new": "New dataset",
     "remove": "Remove dataset",
-    "uploadLogin": "You need to log in to upload datasets",
+    "uploadLogin": "You need to <1>log in</1> to upload datasets",
     "uploadNewContex": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset",
     "addEnvironment": "Add environment dataset",
