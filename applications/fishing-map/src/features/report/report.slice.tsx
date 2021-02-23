@@ -1,49 +1,87 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { FeatureCollection } from 'geojson'
+import { DateTime } from 'luxon'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { Dataset } from '@globalfishingwatch/api-types/dist'
-import { SearchFilter } from 'features/search/search.slice'
-import { AsyncError } from 'utils/async-slice'
-
-type Report = {
-  id: string
-  name: string
-  userId: number
-  userType: string
-  completedDate?: string
-  startedDate: string
-  downloaded: boolean
-  createdAt: string
-  status: 'not-started'
-}
+import { Report } from '@globalfishingwatch/api-types'
+import { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import { RootState } from 'store'
 
 export type DateRange = {
   start: string
   end: string
 }
 
-export type ReportThunk = {
+export type CreateReport = {
   name: string
-  type: 'detail'
-  timeGroup: 'none'
   dateRange: DateRange
-  filters: SearchFilter
-  datasets: Dataset[]
-  geometry: FeatureCollection
+  filters: Record<string, any>
+  datasets: string[]
+  geometry: GeoJSON.FeatureCollection
 }
 
 export const createReportThunk = createAsyncThunk<
   Report,
-  ReportThunk,
+  CreateReport,
   {
     rejectValue: AsyncError
   }
->('report/create', async (reportArguments: ReportThunk, { rejectWithValue }) => {
+>('report/create', async (createReport: CreateReport, { rejectWithValue }) => {
   try {
-    const fromDate = reportArguments.dateRange.start
-    const toDate = reportArguments.dateRange.end
+    const { dateRange, filters, datasets } = createReport
+    const fromDate = DateTime.fromISO(dateRange.start).toUTC().toISODate()
+    const toDate = DateTime.fromISO(dateRange.end).toUTC().toISODate()
+
+    const queryFiltersFields = [
+      {
+        value: filters.flags,
+        field: 'flag',
+        operator: 'IN',
+        transformation: (value: any): string =>
+          `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+      },
+      {
+        value: filters.fleets,
+        field: 'fleet',
+        operator: 'IN',
+        transformation: (value: any): string =>
+          `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+      },
+      {
+        value: filters.origins,
+        field: 'origin',
+        operator: 'IN',
+        transformation: (value: any): string =>
+          `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+      },
+      {
+        value: filters.geartype,
+        field: 'geartype',
+        operator: 'IN',
+        transformation: (value: any): string =>
+          `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+      },
+      {
+        value: filters.vessel_type,
+        field: 'vessel_type',
+        operator: 'IN',
+        transformation: (value: any): string =>
+          `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+      },
+    ]
+
+    const queryFilters = queryFiltersFields
+      .filter(({ value }) => value !== undefined)
+      .map(
+        ({ field, operator, transformation, value }) =>
+          `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
+      )
+
     const payload = {
-      ...reportArguments,
+      ...createReport,
+      type: 'detail',
+      timeGroup: 'none',
+      filters: queryFilters,
+      datasets: datasets,
       dateRange: [fromDate, toDate],
     }
     const createdReport = await GFWAPI.fetch<Report>('/v1/reports', {
@@ -55,3 +93,15 @@ export const createReportThunk = createAsyncThunk<
     return rejectWithValue({ status: e.status || e.code, message: e.message })
   }
 })
+
+export type ReportState = AsyncReducer<Report>
+const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ReportState, Report>({
+  name: 'report',
+  thunks: {
+    createThunk: createReportThunk,
+  },
+})
+
+export const selectReportStatus = (state: RootState) => state.report.status
+
+export default reportsSlice.reducer

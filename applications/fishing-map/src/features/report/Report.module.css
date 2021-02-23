@@ -38,9 +38,11 @@
   justify-content: space-between;
   padding: var(--space-XS) var(--space-S);
 }
-.errorBtn {
-  margin-top: var(--space-M);
+.saveBtn {
+  margin-top: auto;
+  align-self: flex-end;
 }
+
 .expandedContainerOpen {
   position: relative;
   z-index: 1;
