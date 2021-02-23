@@ -3,11 +3,15 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
+import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { resetWorkspaceReportQuery } from 'features/workspace/workspace.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
-import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
+import {
+  getRelatedDatasetByType,
+  selectTemporalgridDataviews,
+} from 'features/workspace/workspace.selectors'
 import styles from './Report.module.css'
 import FishingActivity from './FishingActivity'
 import ReportLayerPanel from './ReportLayerPanel'
@@ -53,13 +57,16 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
     setLoading(true)
     batch(() => {
       dataviews.forEach(async (dataview) => {
+        const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
+          .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
+          .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
+
         const result = await dispatch(
           createReportThunk({
             name: `${dataview.name} - ${t('common.report', 'Report')}`,
             dateRange: dateRange,
             filters: dataview.config?.filters || [],
-            // @todo FIX datasets names throwing 500 with these
-            datasets: dataview?.config?.datasets || [],
+            datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
             geometry: mockedGeometry,
           })
         )
