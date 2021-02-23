@@ -1,6 +1,6 @@
 import React, { Fragment, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { area, stack, stackOffsetSilhouette, stackOrderAscending, curveStepAfter } from 'd3-shape'
+import { area, stack, stackOffsetSilhouette, curveStepAfter } from 'd3-shape'
 import { scaleLinear } from 'd3-scale'
 import { max } from 'd3-array'
 import ImmediateContext from '../immediateContext'
@@ -16,7 +16,6 @@ const getPathContainers = (data, graphHeight, overallScale, numSublayers) => {
   const stackLayout = stack()
     .keys(Array.from(Array(numSublayers).keys()))
     .offset(stackOffsetSilhouette)
-    .order(stackOrderAscending)
 
   const series = stackLayout(data)
 
