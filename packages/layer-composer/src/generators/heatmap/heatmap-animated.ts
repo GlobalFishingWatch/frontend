@@ -4,6 +4,7 @@ import {
   HeatmapAnimatedGeneratorConfig,
   MergedGeneratorConfig,
   HeatmapAnimatedMode,
+  HeatmapAnimatedGeneratorSublayer,
 } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
@@ -18,6 +19,9 @@ import { toURLArray } from './util'
 export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
 >
+
+const getSubLayersVisible = (sublayers: HeatmapAnimatedGeneratorSublayer[]) =>
+  sublayers.map((sublayer) => (sublayer.visible === false ? false : true))
 
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   mode: HeatmapAnimatedMode.Compare,
@@ -38,7 +42,7 @@ class HeatmapAnimatedGenerator {
     }
     const datasets = config.sublayers.map((sublayer) => sublayer.datasets.join(','))
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
-    const visible = config.sublayers.map((sublayer) => (sublayer.visible === false ? false : true))
+    const visible = getSubLayersVisible(config.sublayers)
 
     const tilesUrl = `${config.tilesAPI || `${API_GATEWAY}/${API_GATEWAY_VERSION}`}/${
       API_ENDPOINTS.tiles
@@ -128,6 +132,7 @@ class HeatmapAnimatedGenerator {
       metadata: {
         temporalgrid: true,
         numSublayers: config.sublayers.length,
+        visibleSublayers: getSubLayersVisible(config.sublayers),
         timeChunks,
       },
     }
