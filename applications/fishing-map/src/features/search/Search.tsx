@@ -244,30 +244,22 @@ function Search() {
                     >
                       <div className={styles.name}>{shipname || '---'}</div>
                       <div className={styles.properties}>
-                        {flagLabel && (
-                          <div className={styles.property}>
-                            <label>{t('vessel.flag', 'Flag')}</label>
-                            <span>{flagLabel}</span>
-                          </div>
-                        )}
-                        {mmsi && (
-                          <div className={styles.property}>
-                            <label>{t('vessel.mmsi', 'MMSI')}</label>
-                            <span>{mmsi}</span>
-                          </div>
-                        )}
-                        {imo && (
-                          <div className={styles.property}>
-                            <label>{t('vessel.imo', 'IMO')}</label>
-                            <span>{imo}</span>
-                          </div>
-                        )}
-                        {callsign && (
-                          <div className={styles.property}>
-                            <label>{t('vessel.callsign', 'Callsign')}</label>
-                            <span>{callsign}</span>
-                          </div>
-                        )}
+                        <div className={styles.property}>
+                          <label>{t('vessel.flag', 'Flag')}</label>
+                          <span>{flagLabel || '---'}</span>
+                        </div>
+                        <div className={styles.property}>
+                          <label>{t('vessel.mmsi', 'MMSI')}</label>
+                          <span>{mmsi || '---'}</span>
+                        </div>
+                        <div className={styles.property}>
+                          <label>{t('vessel.imo', 'IMO')}</label>
+                          <span>{imo || '---'}</span>
+                        </div>
+                        <div className={styles.property}>
+                          <label>{t('vessel.callsign', 'Callsign')}</label>
+                          <span>{callsign || '---'}</span>
+                        </div>
                         {fleet && (
                           <div className={styles.property}>
                             <label>{t('vessel.fleet', 'Fleet')}</label>
