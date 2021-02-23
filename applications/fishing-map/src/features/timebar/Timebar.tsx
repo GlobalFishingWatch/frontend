@@ -171,7 +171,13 @@ const TimebarWrapper = () => {
               <TimebarHighlighter
                 hoverStart={highlightedTime.start}
                 hoverEnd={highlightedTime.end}
-                activity={timebarGraph === TimebarGraphs.Speed && tracksGraph ? tracksGraph : null}
+                activity={
+                  timebarVisualisation === TimebarVisualisations.Vessel &&
+                  timebarGraph === TimebarGraphs.Speed &&
+                  tracksGraph
+                    ? tracksGraph
+                    : null
+                }
                 unit="knots"
               />
             )}
