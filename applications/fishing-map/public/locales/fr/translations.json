@@ -47,7 +47,7 @@
     "importing": "Le jeu de données est en cours d'importation",
     "new": "Nouveau jeu de données",
     "remove": "Remove dataset",
-    "uploadLogin": "You need to <1>login</1> to upload datasets",
+    "uploadLogin": "Vous devez <1>vous connecter</1> pour télécharger des jeux de données",
     "uploadNewContex": "Télécharger de nouvelles zones contextuelles",
     "uploadNewEnviroment": "Charger un nouveau jeu de données d'environnement",
     "addEnvironment": "Ajouter un jeu de données d'environnement",

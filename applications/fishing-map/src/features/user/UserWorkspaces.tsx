@@ -7,7 +7,7 @@ import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-list.slice'
-import { AsyncReducerStatus } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './User.module.css'
 import { selectUserWorkspaces } from './user.selectors'
 

@@ -15,7 +15,7 @@ import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import { resetWorkspaceSearchQuery } from 'features/workspace/workspace.slice'
-import { AsyncReducerStatus } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { getFlagById } from 'utils/flags'
 import { formatInfoField } from 'utils/info'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
@@ -97,9 +97,6 @@ function Search() {
   const [ref] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
   useEffect(() => {
-    if (searchSuggestionClicked) {
-      dispatch(setSuggestionClicked(false))
-    }
     if (debouncedQuery === '') {
       batch(() => {
         dispatch(cleanVesselSearchResults())
@@ -130,6 +127,9 @@ function Search() {
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
+    if (e.target.value !== searchQuery && searchSuggestionClicked) {
+      dispatch(setSuggestionClicked(false))
+    }
   }
 
   const onSelectionChange = (selection: VesselWithDatasets | null) => {
@@ -209,16 +209,19 @@ function Search() {
           searchPagination.loading === false ? null : searchAllowed ? (
             <Fragment>
               <ul {...getMenuProps()} className={styles.searchResults}>
-                {searchSuggestion && searchSuggestion !== searchQuery && !searchSuggestionClicked && (
-                  <li className={cx(styles.searchSuggestion)}>
-                    {t('search.suggestion', 'Did you mean')}{' '}
-                    <button onClick={onSuggestionClick} className={styles.suggestion}>
-                      {' '}
-                      {searchSuggestion}{' '}
-                    </button>{' '}
-                    ?
-                  </li>
-                )}
+                {searchQuery &&
+                  searchSuggestion &&
+                  searchSuggestion !== searchQuery &&
+                  !searchSuggestionClicked && (
+                    <li className={cx(styles.searchSuggestion)}>
+                      {t('search.suggestion', 'Did you mean')}{' '}
+                      <button onClick={onSuggestionClick} className={styles.suggestion}>
+                        {' '}
+                        {searchSuggestion}{' '}
+                      </button>{' '}
+                      ?
+                    </li>
+                  )}
                 {searchResults?.map((entry, index: number) => {
                   const {
                     id,
@@ -244,30 +247,22 @@ function Search() {
                     >
                       <div className={styles.name}>{shipname || '---'}</div>
                       <div className={styles.properties}>
-                        {flagLabel && (
-                          <div className={styles.property}>
-                            <label>{t('vessel.flag', 'Flag')}</label>
-                            <span>{flagLabel}</span>
-                          </div>
-                        )}
-                        {mmsi && (
-                          <div className={styles.property}>
-                            <label>{t('vessel.mmsi', 'MMSI')}</label>
-                            <span>{mmsi}</span>
-                          </div>
-                        )}
-                        {imo && (
-                          <div className={styles.property}>
-                            <label>{t('vessel.imo', 'IMO')}</label>
-                            <span>{imo}</span>
-                          </div>
-                        )}
-                        {callsign && (
-                          <div className={styles.property}>
-                            <label>{t('vessel.callsign', 'Callsign')}</label>
-                            <span>{callsign}</span>
-                          </div>
-                        )}
+                        <div className={styles.property}>
+                          <label>{t('vessel.flag', 'Flag')}</label>
+                          <span>{flagLabel || '---'}</span>
+                        </div>
+                        <div className={styles.property}>
+                          <label>{t('vessel.mmsi', 'MMSI')}</label>
+                          <span>{mmsi || '---'}</span>
+                        </div>
+                        <div className={styles.property}>
+                          <label>{t('vessel.imo', 'IMO')}</label>
+                          <span>{imo || '---'}</span>
+                        </div>
+                        <div className={styles.property}>
+                          <label>{t('vessel.callsign', 'Callsign')}</label>
+                          <span>{callsign || '---'}</span>
+                        </div>
                         {fleet && (
                           <div className={styles.property}>
                             <label>{t('vessel.fleet', 'Fleet')}</label>

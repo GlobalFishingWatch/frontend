@@ -12,7 +12,7 @@ import {
   selectWorkspace,
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
-import { AsyncReducerStatus } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGuestUser } from 'features/user/user.selectors'
 import { selectLocationCategory, selectWorkspaceId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'

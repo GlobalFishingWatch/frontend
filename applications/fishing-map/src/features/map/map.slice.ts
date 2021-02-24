@@ -9,8 +9,8 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { DataviewDatasetConfig, Dataset, Vessel, DatasetTypes } from '@globalfishingwatch/api-types'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
-import { AsyncReducerStatus } from 'types'
-import { RootState } from 'store'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { AppDispatch, RootState } from 'store'
 import {
   getRelatedDatasetByType,
   selectTemporalgridDataviews,
@@ -38,7 +38,13 @@ type SublayerVessels = {
   vessels: ExtendedFeatureVessel[]
 }
 
-export const fetch4WingInteractionThunk = createAsyncThunk(
+export const fetch4WingInteractionThunk = createAsyncThunk<
+  { vessels: SublayerVessels[] } | undefined,
+  ExtendedFeature[],
+  {
+    dispatch: AppDispatch
+  }
+>(
   'map/fetchInteraction',
   async (temporalGridFeatures: ExtendedFeature[], { getState, signal, dispatch }) => {
     const state = getState() as RootState
@@ -125,10 +131,12 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
             let infoDataset = selectDatasetById(infoDatasetId)(state)
             if (!infoDataset) {
               // It needs to be request when it hasn't been loaded yet
-              const { payload }: any = await dispatch(fetchDatasetByIdThunk(infoDatasetId))
-              infoDataset = payload
+              const action = await dispatch(fetchDatasetByIdThunk(infoDatasetId))
+              if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+                infoDataset = action.payload
+              }
             }
-            return infoDataset as Dataset
+            return infoDataset
           }
         })
       )
@@ -159,8 +167,13 @@ export const fetch4WingInteractionThunk = createAsyncThunk(
               const vesselsInfoResponse = await GFWAPI.fetch<Vessel[]>(vesselsInfoUrl, {
                 signal,
               })
+              // TODO remove entries once the API is stable
+              const vesselsInfoList: Vessel[] =
+                !vesselsInfoResponse.entries || typeof vesselsInfoResponse.entries === 'function'
+                  ? vesselsInfoResponse
+                  : (vesselsInfoResponse as any)?.entries
               vesselsInfo =
-                vesselsInfoResponse?.flatMap((vesselInfo) => {
+                vesselsInfoList?.flatMap((vesselInfo) => {
                   if (!vesselInfo?.shipname) return []
                   return vesselInfo
                 }) || []

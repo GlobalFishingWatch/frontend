@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { Dataset, DatasetCategory } from '@globalfishingwatch/api-types'
-import { AsyncReducerStatus } from 'types'
-import { selectUserDatasetsNotUsed } from 'features/user/user.selectors'
+import GFWAPI from '@globalfishingwatch/api-client'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { isGuestUser, selectUserDatasetsNotUsed } from 'features/user/user.selectors'
 import { useDatasetModalConnect, useNewDatasetConnect } from './datasets.hook'
 import styles from './NewDatasetTooltip.module.css'
 import {
@@ -25,6 +26,7 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
   const { dispatchDatasetModal, dispatchDatasetCategory } = useDatasetModalConnect()
   const { addNewDatasetToWorkspace } = useNewDatasetConnect()
   const datasets = useSelector(selectUserDatasetsNotUsed(datasetCategory))
+  const guestuser = useSelector(isGuestUser)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const allDatasetsRequested = useSelector(selectAllDatasetsRequested)
 
@@ -49,6 +51,24 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
     if (onSelect) {
       onSelect(dataset)
     }
+  }
+
+  if (guestuser) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.contentPlaceholder}>
+          <p>
+            <Trans i18nKey="dataset.uploadLogin">
+              You need to
+              <a className={styles.link} href={GFWAPI.getLoginUrl(window.location.toString())}>
+                login
+              </a>
+              to upload datasets
+            </Trans>
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (

@@ -4,10 +4,15 @@ import { fetchGoogleSheetsData } from 'google-sheets-mapper'
 import { stringify } from 'qs'
 import { Workspace } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import {
+  AsyncReducerStatus,
+  asyncInitialState,
+  AsyncReducer,
+  createAsyncSlice,
+} from 'utils/async-slice'
 import { RootState } from 'store'
 import { APP_NAME } from 'data/config'
-import { AsyncReducerStatus, WorkspaceViewport } from 'types'
+import { WorkspaceViewport } from 'types'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
 

@@ -47,7 +47,7 @@
     "importing": "Se está importando el conjunto de datos",
     "new": "Nuevo conjunto de datos",
     "remove": "Remove dataset",
-    "uploadLogin": "You need to <1>login</1> to upload datasets",
+    "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir conjuntos de datos",
     "uploadNewContex": "Subir nuevas áreas de contexto",
     "uploadNewEnviroment": "Subir nuevo conjunto de datos de entorno",
     "addEnvironment": "Añadir conjunto de datos de entorno",

@@ -15,7 +15,8 @@ import {
   filterSegmentsByTimerange,
 } from '@globalfishingwatch/data-transforms'
 import { formatInfoField } from 'utils/info'
-import { UrlDataviewInstance, AsyncReducerStatus } from 'types'
+import { UrlDataviewInstance } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
@@ -203,7 +204,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                       if (!fieldValue) return null
                       return (
                         <li key={field.id} className={styles.infoContentItem}>
-                          <label>{t(`vessel.${field.id}`)}</label>
+                          <label>{t(`vessel.${field.id}` as any)}</label>
                           <span>
                             {field.type === 'date' ? (
                               <I18nDate date={fieldValue} />

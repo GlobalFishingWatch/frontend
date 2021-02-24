@@ -1,5 +1,17 @@
 # @globalfishingwatch/layer-composer
 
+## 4.14.0
+
+### Minor Changes
+
+- [`348ce272`](https://github.com/GlobalFishingWatch/frontend/commit/348ce272bd50730db5ad794c80f8b62750a64a90) [#333](https://github.com/GlobalFishingWatch/frontend/pull/333) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - store visibleSublayers in heatmap metadata
+
+## 4.13.3
+
+### Patch Changes
+
+- 41e9c20b: Added opacity option to track layer
+
 ## 4.13.2
 
 ### Patch Changes

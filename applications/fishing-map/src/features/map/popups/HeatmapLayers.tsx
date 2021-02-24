@@ -9,7 +9,7 @@ import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
-import { AsyncReducerStatus } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
@@ -50,7 +50,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
         <div className={styles.row}>
           <span className={styles.rowText}>
             <I18nNumber number={feature.value} />{' '}
-            {t([`common.${feature.unit}`, 'common.hour'], 'hours', {
+            {t([`common.${feature.unit}` as any, 'common.hour'], 'hours', {
               count: parseInt(feature.value), // neded to select the plural automatically
             })}
           </span>
