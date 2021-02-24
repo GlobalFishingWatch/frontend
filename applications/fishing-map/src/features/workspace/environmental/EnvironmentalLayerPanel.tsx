@@ -70,7 +70,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     return <DatasetNotFound dataview={dataview} />
   }
 
-  const title = isCustomUserLayer ? dataset?.name || dataset?.id : t(`datasets:${dataset?.id}.name`)
+  const title = isCustomUserLayer
+    ? dataset?.name || dataset?.id
+    : t(`datasets:${dataset?.id}.name` as any)
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
       {title}
@@ -81,7 +83,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const datasetError = dataset.status === DatasetStatus.Error
   let infoTooltip = isCustomUserLayer
     ? dataset?.description
-    : t(`datasets:${dataset?.id}.description`)
+    : t(`datasets:${dataset?.id}.description` as any)
   if (datasetImporting) {
     infoTooltip = t('dataset.importing', 'Dataset is being imported')
   }

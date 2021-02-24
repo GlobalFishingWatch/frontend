@@ -169,7 +169,9 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
               })
               // TODO remove entries once the API is stable
               const vesselsInfoList: Vessel[] =
-                (vesselsInfoResponse as any)?.entries || vesselsInfoResponse
+                !vesselsInfoResponse.entries || typeof vesselsInfoResponse.entries === 'function'
+                  ? vesselsInfoResponse
+                  : (vesselsInfoResponse as any)?.entries
               vesselsInfo =
                 vesselsInfoList?.flatMap((vesselInfo) => {
                   if (!vesselInfo?.shipname) return []

@@ -35,6 +35,7 @@ const TimebarWrapper = () => {
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
   const urlViewport = useSelector(selectViewport)
+  const temporalGridDataviews = useSelector(selectTemporalgridDataviews)
   const staticHeatmapLayersActive = useSelector(hasStaticHeatmapLayersActive)
 
   const dispatch = useDispatch()
@@ -91,25 +92,38 @@ const TimebarWrapper = () => {
     // console.log('querySourceFeatures', performance.now() - n)
     // n = performance.now()
     if (allFeaturesWithStyle?.length) {
+      const visibleTemporalGridDataviews = (temporalGridDataviews || [])?.map(
+        (dataview) => dataview.config?.visible ?? false
+      )
       const values = getTimeSeries(
         allFeaturesWithStyle as any,
         numSublayers,
         chunkQuantizeOffset
-      ).map((frameValues) => ({
-        ...frameValues,
-        date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
-      }))
+      ).map((frameValues) => {
+        // Ideally we don't have the features not visible in 4wings but we have them
+        // so this needs to be filtered by the current active ones
+        const activeFrameValues = Object.fromEntries(
+          Object.entries(frameValues).map(([key, value]) => {
+            const cleanValue =
+              key === 'frame' || visibleTemporalGridDataviews[parseInt(key)] === true ? value : 0
+            return [key, cleanValue]
+          })
+        )
+        return {
+          ...activeFrameValues,
+          date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
+        }
+      })
       // console.log('compute graph', performance.now() - n)
       setStackedActivity(values)
     }
+
     // While mapStyle is needed inside the useEffect, we don't want the component to rerender everytime a new instance is generated
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapInstance, currentTimeChunkId, tilesLoading, timebarVisualisation, urlViewport])
 
   const dataviews = useSelector(selectTemporalgridDataviews)
-  const heatmapSublayerColors = useMemo(() => {
-    return dataviews?.map((dataview) => dataview.config?.color)
-  }, [dataviews])
+  const dataviewsColors = dataviews?.map((dataview) => dataview.config?.color)
 
   if (!start || !end) return null
   return (
@@ -146,7 +160,7 @@ const TimebarWrapper = () => {
                   <TimebarStackedActivity
                     key="stackedActivity"
                     data={stackedActivity}
-                    colors={heatmapSublayerColors}
+                    colors={dataviewsColors}
                     numSublayers={dataviews?.length}
                   />
                 )}
@@ -171,7 +185,13 @@ const TimebarWrapper = () => {
               <TimebarHighlighter
                 hoverStart={highlightedTime.start}
                 hoverEnd={highlightedTime.end}
-                activity={timebarGraph === TimebarGraphs.Speed && tracksGraph ? tracksGraph : null}
+                activity={
+                  timebarVisualisation === TimebarVisualisations.Vessel &&
+                  timebarGraph === TimebarGraphs.Speed &&
+                  tracksGraph
+                    ? tracksGraph
+                    : null
+                }
                 unit="knots"
               />
             )}

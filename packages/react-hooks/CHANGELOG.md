@@ -1,5 +1,16 @@
 # @globalfishingwatch/react-hooks
 
+## 4.6.0
+
+### Minor Changes
+
+- [`1599ff95`](https://github.com/GlobalFishingWatch/frontend/commit/1599ff954ec1c2d8142e869eeb5749a999135eba) [#333](https://github.com/GlobalFishingWatch/frontend/pull/333) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - fix map interaction with non visible heatmap layers
+
+### Patch Changes
+
+- Updated dependencies [[`348ce272`](https://github.com/GlobalFishingWatch/frontend/commit/348ce272bd50730db5ad794c80f8b62750a64a90)]:
+  - @globalfishingwatch/layer-composer@4.14.0
+
 ## 4.5.1
 
 ### Patch Changes

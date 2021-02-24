@@ -9,6 +9,18 @@
   height: 5rem;
 }
 
+.contentPlaceholder {
+  padding: var(--space-S);
+  max-width: 30rem;
+  min-height: 5rem;
+  display: flex;
+  align-items: center;
+}
+
+.link {
+  text-decoration: underline;
+}
+
 .listContainer {
   padding: var(--space-S);
   padding-right: 0;

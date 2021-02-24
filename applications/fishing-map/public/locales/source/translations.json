@@ -7,6 +7,7 @@
     "confirm": "Confirm",
     "context_area_plural": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.",
+    "country_plural": "countries",
     "description": "Description",
     "environment": "Environment",
     "hour": "Hour",
@@ -29,8 +30,7 @@
     "dismiss": "Dismiss",
     "save": "Save",
     "events": "Events",
-    "fishing": "Fishing",
-    "country_plural": "countries"
+    "fishing": "Fishing"
   },
   "dataset": {
     "addContext": "Add context dataset",
@@ -47,7 +47,7 @@
     "importing": "Dataset is being imported",
     "new": "New dataset",
     "remove": "Remove dataset",
-    "uploadLogin": "You need to log in to upload datasets",
+    "uploadLogin": "You need to <1>login</1> to upload datasets",
     "uploadNewContex": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset",
     "addEnvironment": "Add environment dataset",
