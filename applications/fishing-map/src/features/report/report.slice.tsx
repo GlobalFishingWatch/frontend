@@ -111,6 +111,7 @@ export interface ReportState extends AsyncReducer<Report> {
   dialog: {
     isOpen: boolean
     geometry: GeoJSON.FeatureCollection | undefined
+    areaName: string
   }
 }
 
@@ -119,6 +120,7 @@ const initialState: ReportState = {
   dialog: {
     isOpen: false,
     geometry: undefined,
+    areaName: '',
   },
 }
 
@@ -131,9 +133,15 @@ const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ReportState, Rep
     },
     clearReportGeometry: (state) => {
       state.dialog.geometry = undefined
+      state.dialog.areaName = ''
+      state.status = AsyncReducerStatus.Idle
     },
-    setReportGeometry: (state, action: PayloadAction<GeoJSON.FeatureCollection | undefined>) => {
-      state.dialog.geometry = action.payload
+    setReportGeometry: (
+      state,
+      action: PayloadAction<{ geometry: GeoJSON.FeatureCollection | undefined; areaName: string }>
+    ) => {
+      state.dialog.geometry = action.payload.geometry
+      state.dialog.areaName = action.payload.areaName
     },
   },
   thunks: {
@@ -144,6 +152,7 @@ const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ReportState, Rep
 export const { toggleReportDialog, clearReportGeometry, setReportGeometry } = reportsSlice.actions
 
 export const selectReportGeometry = (state: RootState) => state.report.dialog.geometry
+export const selectReportAreaName = (state: RootState) => state.report.dialog.areaName
 export const selectReportStatus = (state: RootState) => state.report.status
 
 export default reportsSlice.reducer

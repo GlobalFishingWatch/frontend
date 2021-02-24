@@ -133,7 +133,12 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         })),
       }
       batch(() => {
-        dispatch(setReportGeometry(geometry))
+        dispatch(
+          setReportGeometry({
+            geometry,
+            areaName: boundaries.map((b) => b.properties?.geoname ?? []).join(', '),
+          })
+        )
         dispatchQueryParams({ report: 'fishing-activity' })
       })
     },

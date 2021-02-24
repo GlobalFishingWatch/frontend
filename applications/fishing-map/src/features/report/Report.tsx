@@ -2,8 +2,10 @@ import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { batch, useDispatch, useSelector } from 'react-redux'
-import { Button, IconButton } from '@globalfishingwatch/ui-components'
+import { DateTime } from 'luxon'
+import { Button, IconButton, Spinner, TagList } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { TagItem } from '@globalfishingwatch/ui-components/dist/tag-list'
 import { resetWorkspaceReportQuery } from 'features/workspace/workspace.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
@@ -14,14 +16,18 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import layerPanelstyles from 'features/workspace/shared/LayerPanel.module.css'
 import styles from './Report.module.css'
 import ReportLayerPanel from './ReportLayerPanel'
 import {
+  clearReportGeometry,
   CreateReport,
   createReportThunk,
   DateRange,
+  selectReportAreaName,
   selectReportGeometry,
   selectReportStatus,
+  setReportGeometry,
 } from './report.slice'
 
 type ReportPanelProps = {
@@ -36,6 +42,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   const staticTime = useSelector(selectStaticTime)
   const dataviews = useSelector(selectTemporalgridDataviews) || []
   const reportGeometry = useSelector(selectReportGeometry)
+  const reportAreaName = useSelector(selectReportAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
   const isAvailable = dataviews.length > 0
@@ -56,6 +63,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   const onCloseClick = () => {
     batch(() => {
       dispatch(resetWorkspaceReportQuery())
+      dispatch(clearReportGeometry(undefined))
       dispatchQueryParams({ report: undefined })
     })
   }
@@ -81,7 +89,26 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   if (!staticTime) {
     return <Fragment />
   }
-
+  const dateRangeItems: TagItem[] = [
+    {
+      id: 'start',
+      label: DateTime.fromISO(staticTime?.start).toUTC().toISODate(),
+      tooltip: DateTime.fromISO(staticTime?.start).toUTC().toISODate(),
+    },
+    {
+      id: 'end',
+      label: DateTime.fromISO(staticTime?.end).toUTC().toISODate(),
+      tooltip: DateTime.fromISO(staticTime?.end).toUTC().toISODate(),
+    },
+  ]
+  const areaItems: TagItem[] = [
+    {
+      id: 'area',
+      label: reportAreaName.length > 35 ? `${reportAreaName.slice(0, 35)}...` : reportAreaName,
+      tooltip: reportAreaName,
+    },
+  ]
+  console.log(reportStatus)
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -104,20 +131,38 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
             <div className={styles.description}>
               {reportDescription}: {userData?.email}
             </div>
-            <div>
-              {isAvailable &&
-                dataviews?.map((dataview, index) => (
-                  <ReportLayerPanel key={dataview.id} dataview={dataview} index={index} />
-                ))}
-              {!isAvailable && <Fragment>{reportNotAvailable}</Fragment>}
+            <div className={layerPanelstyles.properties}>
+              <div className={layerPanelstyles.filters}>
+                <div className={layerPanelstyles.filter}>
+                  <label>{t('report.dateRange', 'Date Range')}</label>
+                  <TagList tags={dateRangeItems} className={layerPanelstyles.tagList} />
+                </div>
+                <div className={layerPanelstyles.filter}>
+                  <label>{t('report.area', 'Area')}</label>
+                  <TagList tags={areaItems} className={layerPanelstyles.tagList} />
+                </div>
+              </div>
             </div>
+            {isAvailable &&
+              dataviews?.map((dataview, index) => (
+                <ReportLayerPanel key={dataview.id} dataview={dataview} index={index} />
+              ))}
+            {!isAvailable && <Fragment>{reportNotAvailable}</Fragment>}
+          </Fragment>
+        )}
+        {reportStatus === AsyncReducerStatus.LoadingCreate && (
+          <Fragment>
+            <p className={styles.loading}>
+              {t('report.generating', "We are generating the report for you, it'll be ready soon.")}
+            </p>
+            <Spinner />
           </Fragment>
         )}
         {reportStatus === AsyncReducerStatus.Finished && (
           <p className={styles.success}>
             {t(
               'report.successfullMessage',
-              "The report was created successfully, you'll receive it by email soon."
+              "The report was sent successfully, you'll receive it by email soon."
             )}
           </p>
         )}

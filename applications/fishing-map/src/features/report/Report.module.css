@@ -5,6 +5,7 @@
   align-items: stretch;
   align-content: stretch;
   justify-content: space-between;
+  height: 100%;
 }
 
 .container:not(:last-of-type) {
@@ -32,6 +33,7 @@
 .content {
   padding: var(--space-XS) var(--space-S);
   flex-grow: 1;
+  margin-bottom: auto;
 }
 .footer {
   display: flex;
@@ -42,6 +44,7 @@
 .saveBtn {
   margin-top: auto;
   align-self: flex-end;
+  margin-left: auto;
 }
 
 .expandedContainerOpen {
@@ -63,4 +66,18 @@
 .expandedContainer {
   background-color: var(--color-white);
   width: 36.9rem;
+}
+
+.description {
+  font-size: small;
+  margin-bottom: var(--space-M);
+}
+
+.success,
+.error {
+  display: block;
+  opacity: 0.5;
+  margin-bottom: 1.2rem;
+  min-height: 2rem;
+  line-height: 2rem;
 }
