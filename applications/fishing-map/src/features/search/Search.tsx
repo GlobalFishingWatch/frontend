@@ -97,9 +97,6 @@ function Search() {
   const [ref] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
   useEffect(() => {
-    if (searchSuggestionClicked) {
-      dispatch(setSuggestionClicked(false))
-    }
     if (debouncedQuery === '') {
       batch(() => {
         dispatch(cleanVesselSearchResults())
@@ -130,6 +127,9 @@ function Search() {
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
+    if (e.target.value !== searchQuery && searchSuggestionClicked) {
+      dispatch(setSuggestionClicked(false))
+    }
   }
 
   const onSelectionChange = (selection: VesselWithDatasets | null) => {
@@ -209,16 +209,19 @@ function Search() {
           searchPagination.loading === false ? null : searchAllowed ? (
             <Fragment>
               <ul {...getMenuProps()} className={styles.searchResults}>
-                {searchSuggestion && searchSuggestion !== searchQuery && !searchSuggestionClicked && (
-                  <li className={cx(styles.searchSuggestion)}>
-                    {t('search.suggestion', 'Did you mean')}{' '}
-                    <button onClick={onSuggestionClick} className={styles.suggestion}>
-                      {' '}
-                      {searchSuggestion}{' '}
-                    </button>{' '}
-                    ?
-                  </li>
-                )}
+                {searchQuery &&
+                  searchSuggestion &&
+                  searchSuggestion !== searchQuery &&
+                  !searchSuggestionClicked && (
+                    <li className={cx(styles.searchSuggestion)}>
+                      {t('search.suggestion', 'Did you mean')}{' '}
+                      <button onClick={onSuggestionClick} className={styles.suggestion}>
+                        {' '}
+                        {searchSuggestion}{' '}
+                      </button>{' '}
+                      ?
+                    </li>
+                  )}
                 {searchResults?.map((entry, index: number) => {
                   const {
                     id,
