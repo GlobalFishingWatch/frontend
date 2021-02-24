@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { Map } from '@globalfishingwatch/mapbox-gl'
 import TimebarComponent, {
