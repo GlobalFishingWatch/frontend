@@ -11,6 +11,7 @@ import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
+import { WorkspaceCategories } from 'data/workspaces'
 import {
   getGeneratorsConfig,
   selectGlobalGeneratorsConfig,
@@ -57,7 +58,8 @@ export const useClickedEventConnect = () => {
           isDefaultWorkspace
             ? {}
             : {
-                category: locationCategory,
+                // TODO: grab category from workspace and use it before the fishing fallback
+                category: locationCategory || WorkspaceCategories.FishingActivity,
                 workspaceId: workspace.properties.id,
               },
           true
