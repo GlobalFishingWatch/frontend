@@ -47,7 +47,7 @@
     "importing": "Se está importando el conjunto de datos",
     "new": "Nuevo conjunto de datos",
     "remove": "Remove dataset",
-    "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir conjuntos de datos",
+    "uploadLogin": "You need to <1>login</1> to upload datasets",
     "uploadNewContex": "Subir nuevas áreas de contexto",
     "uploadNewEnviroment": "Subir nuevo conjunto de datos de entorno",
     "addEnvironment": "Añadir conjunto de datos de entorno",
@@ -65,6 +65,7 @@
     "privateView": "Esta es una vista privada",
     "requestAccess": "Solicitar acceso",
     "switchAccount": "Cambiar cuenta",
+    "trackLoading": "There was an error loading the vessel track",
     "uploadError": "Hubo un error al cargar su conjunto de datos",
     "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo",
     "workspaceNotFound": "La vista que solicitó no se encontró"
@@ -151,6 +152,7 @@
   "workspace": {
     "emptyState": "Sus áreas de trabajo aparecerán aquí",
     "new": "Nuevo espacio de trabajo",
+    "save": "Click to save the current view",
     "title_plural": "Espacios de trabajo",
     "title": "Espacio de trabajo"
   }
