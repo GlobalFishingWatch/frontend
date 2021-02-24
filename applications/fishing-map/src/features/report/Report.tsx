@@ -16,7 +16,6 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import layerPanelstyles from 'features/workspace/shared/LayerPanel.module.css'
 import styles from './Report.module.css'
 import ReportLayerPanel from './ReportLayerPanel'
 import {
@@ -27,8 +26,8 @@ import {
   selectReportAreaName,
   selectReportGeometry,
   selectReportStatus,
-  setReportGeometry,
 } from './report.slice'
+import ReportFilter from './ReportFilter'
 
 type ReportPanelProps = {
   type: string
@@ -120,7 +119,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
             icon="close"
             onClick={onCloseClick}
             type="border"
-            tooltip={t('report.close', 'Close report')}
+            tooltip={t('report.close', 'Close')}
             tooltipPlacement="bottom"
           />
         </div>
@@ -131,18 +130,8 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
             <div className={styles.description}>
               {reportDescription}: {userData?.email}
             </div>
-            <div className={layerPanelstyles.properties}>
-              <div className={layerPanelstyles.filters}>
-                <div className={layerPanelstyles.filter}>
-                  <label>{t('report.dateRange', 'Date Range')}</label>
-                  <TagList tags={dateRangeItems} className={layerPanelstyles.tagList} />
-                </div>
-                <div className={layerPanelstyles.filter}>
-                  <label>{t('report.area', 'Area')}</label>
-                  <TagList tags={areaItems} className={layerPanelstyles.tagList} />
-                </div>
-              </div>
-            </div>
+            <ReportFilter label={t('report.dateRange', 'Date Range')} taglist={dateRangeItems} />
+            <ReportFilter label={t('report.area', 'Area')} taglist={areaItems} />
             {isAvailable &&
               dataviews?.map((dataview, index) => (
                 <ReportLayerPanel key={dataview.id} dataview={dataview} index={index} />
@@ -152,10 +141,15 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
         )}
         {reportStatus === AsyncReducerStatus.LoadingCreate && (
           <Fragment>
-            <p className={styles.loading}>
-              {t('report.generating', "We are generating the report for you, it'll be ready soon.")}
-            </p>
-            <Spinner />
+            <div className={styles.loading}>
+              <div>
+                {t(
+                  'report.generating',
+                  "We are generating the report for you, it'll be ready soon."
+                )}
+              </div>
+              <Spinner />
+            </div>
           </Fragment>
         )}
         {reportStatus === AsyncReducerStatus.Finished && (
@@ -171,6 +165,11 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
         )}
       </div>
       <div className={styles.footer}>
+        {[AsyncReducerStatus.Finished, AsyncReducerStatus.Error].includes(reportStatus) && (
+          <Button className={styles.saveBtn} onClick={onCloseClick} type="secondary">
+            {t('report.close', 'Close')}
+          </Button>
+        )}
         {reportStatus === AsyncReducerStatus.Idle && (
           <Button
             className={styles.saveBtn}
@@ -178,12 +177,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
             loading={loading}
             disabled={!isEnabled}
           >
-            {t('report.send', 'Send Report')}
-          </Button>
-        )}
-        {reportStatus === AsyncReducerStatus.Finished && (
-          <Button className={styles.saveBtn} onClick={onCloseClick}>
-            {t('report.backToMap', 'Go back to Map')}
+            {t('common.confirm', 'Confirm')}
           </Button>
         )}
       </div>
