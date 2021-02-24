@@ -50,7 +50,7 @@ export function useDebouncedViewport(
 
   // Sync the url with the local state debounced
   useEffect(() => {
-    if (debouncedViewport && callback) {
+    if (debouncedViewport && typeof callback === 'function') {
       callback({
         latitude: debouncedViewport.latitude,
         longitude: debouncedViewport.longitude,
