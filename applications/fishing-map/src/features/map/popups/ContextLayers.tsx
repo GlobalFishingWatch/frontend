@@ -142,7 +142,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         dispatchQueryParams({ report: 'fishing-activity' })
       })
     },
-    [mapInstance, dispatchQueryParams]
+    [mapInstance, clickedEvent, dispatchQueryParams, dispatch]
   )
   const featuresByType = groupBy(features, 'layer')
   return (

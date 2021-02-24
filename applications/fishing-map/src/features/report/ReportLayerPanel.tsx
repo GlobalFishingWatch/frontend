@@ -51,7 +51,6 @@ function ReportLayerPanel({ dataview, index }: LayerPanelProps): React.ReactElem
       ? t(`common.presence`, 'Fishing presence')
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
-  const showInfoModal = isFishingDataview(dataview)
   const TitleComponent = <h3 className={styles.name}>{datasetName}</h3>
   return (
     <div

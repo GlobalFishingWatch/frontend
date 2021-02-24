@@ -124,7 +124,7 @@ const initialState: ReportState = {
   },
 }
 
-const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ReportState, Report>({
+const { slice: reportsSlice } = createAsyncSlice<ReportState, Report>({
   name: 'report',
   initialState,
   reducers: {

@@ -1,9 +1,9 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { Button, IconButton, Spinner, TagList } from '@globalfishingwatch/ui-components'
+import { Button, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { TagItem } from '@globalfishingwatch/ui-components/dist/tag-list'
 import { resetWorkspaceReportQuery } from 'features/workspace/workspace.slice'
@@ -66,7 +66,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
       dispatchQueryParams({ report: undefined })
     })
   }
-  const onGenerateClick = useCallback(async () => {
+  const onGenerateClick = async () => {
     setLoading(true)
     const createReports: CreateReport[] = dataviews.map((dataview) => {
       const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
@@ -83,7 +83,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
     })
     dispatch(createReportThunk(createReports))
     setLoading(false)
-  }, [dataviews, staticTime, reportGeometry, dispatch])
+  }
 
   if (!staticTime) {
     return <Fragment />
@@ -107,7 +107,6 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
       tooltip: reportAreaName,
     },
   ]
-  console.log(reportStatus)
   return (
     <div className={styles.container}>
       <div className={styles.header}>
