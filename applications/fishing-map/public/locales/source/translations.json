@@ -65,6 +65,7 @@
     "privateView": "This is a private view",
     "requestAccess": "Request access",
     "switchAccount": "Switch account",
+    "trackLoading": "There was an error loading the vessel track",
     "uploadError": "There was an error uploading your dataset",
     "workspaceLoad": "There was an error loading the workspace, please try again later",
     "workspaceNotFound": "The view you request was not found"
@@ -151,6 +152,7 @@
   "workspace": {
     "emptyState": "Your workspaces will appear here",
     "new": "New Workspace",
+    "save": "Click to save the current view",
     "title_plural": "Workspaces",
     "title": "Workspace"
   }
