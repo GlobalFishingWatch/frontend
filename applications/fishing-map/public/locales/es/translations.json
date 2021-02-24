@@ -7,6 +7,7 @@
     "confirm": "Confirmar",
     "context_area_plural": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles. Puedes encontrar todas las vistas guardadas en tu área de usuario.",
+    "country_plural": "paises",
     "description": "Descripción",
     "environment": "Entorno",
     "hour": "Hora",
@@ -29,8 +30,7 @@
     "dismiss": "Cancelar",
     "save": "Guardar",
     "events": "Eventos",
-    "fishing": "Pesca",
-    "country_plural": "paises"
+    "fishing": "Pesca"
   },
   "dataset": {
     "addContext": "Añadir conjunto de datos de contexto",
