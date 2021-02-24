@@ -47,7 +47,7 @@
     "importing": "Le jeu de données est en cours d'importation",
     "new": "Nouveau jeu de données",
     "remove": "Remove dataset",
-    "uploadLogin": "Vous devez <1>vous connecter</1> pour télécharger des jeux de données",
+    "uploadLogin": "You need to <1>login</1> to upload datasets",
     "uploadNewContex": "Télécharger de nouvelles zones contextuelles",
     "uploadNewEnviroment": "Charger un nouveau jeu de données d'environnement",
     "addEnvironment": "Ajouter un jeu de données d'environnement",
@@ -65,6 +65,7 @@
     "privateView": "Ceci est une vue privée",
     "requestAccess": "Demander l'accès",
     "switchAccount": "Changer de compte",
+    "trackLoading": "There was an error loading the vessel track",
     "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement",
     "workspaceNotFound": "La vue demandée n'a pas été trouvée"
@@ -151,6 +152,7 @@
   "workspace": {
     "emptyState": "Vos espaces de travail apparaîtront ici",
     "new": "Nouvel espace de travail",
+    "save": "Click to save the current view",
     "title_plural": "Workspaces",
     "title": "Espace de travail"
   }
