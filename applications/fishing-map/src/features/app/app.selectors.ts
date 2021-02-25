@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types/dist'
-import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
 import {
   selectDataviewInstancesMerged,
@@ -25,8 +24,6 @@ import {
   WorkspaceState,
   WorkspaceStateProperty,
 } from 'types'
-import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
-import { formatI18nDate } from 'features/i18n/i18nDate'
 
 export const selectViewport = createSelector(
   [
@@ -136,23 +133,8 @@ export const selectCustomWorkspace = createSelector(
     state,
     dataviewInstances
   ): WorkspaceUpsert<WorkspaceState> => {
-    const areaName = getOceanAreaName(viewport)
-    const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
-    const start = formatI18nDate(timerange.start as string, {
-      format: dateFormat,
-    })
-      .replace(',', '')
-      .replace('.', '')
-    const end = formatI18nDate(timerange.end as string, {
-      format: dateFormat,
-    })
-      .replace(',', '')
-      .replace('.', '')
-
-    const name = `From ${start} to ${end} near ${areaName}`
     return {
       ...workspace,
-      name,
       app: APP_NAME,
       public: true,
       category,

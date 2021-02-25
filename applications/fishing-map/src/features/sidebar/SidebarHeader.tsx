@@ -1,59 +1,117 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import Sticky from 'react-sticky-el'
+import React, { Fragment, useCallback } from 'react'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import Sticky from 'react-sticky-el'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Logo, { SubBrands } from '@globalfishingwatch/ui-components/dist/logo'
+import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 import { saveCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
-  isWorkspacePublic,
   selectWorkspaceCustom,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import copyToClipboard from 'utils/clipboard'
 import {
   isWorkspaceLocation,
   selectLocationCategory,
-  selectWorkspaceId,
+  selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
 import styles from './SidebarHeader.module.css'
+import { useClipboardNotification } from './sidebar.hooks'
 
-function SidebarHeader() {
-  const dispatch = useDispatch()
+function SaveWorkspaceButton() {
   const { t } = useTranslation()
-  const [finished, setFinished] = useState(false)
-  const workspaceId = useSelector(selectWorkspaceId)
+  const dispatch = useAppDispatch()
+  const viewport = useSelector(selectViewport)
+  const timerange = useSelector(selectTimeRange)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustom = useSelector(selectWorkspaceCustom)
-  const locationCategory = useSelector(selectLocationCategory)
-  const workspacePublic = useSelector(isWorkspacePublic)
-  const showShareButton = useSelector(isWorkspaceLocation)
-  const timeoutRef = useRef<any>()
+  const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
 
-  const onWorkspaceShareFinish = useCallback((stringToClipboard: string) => {
-    setFinished(true)
-    copyToClipboard(stringToClipboard)
-    timeoutRef.current = setTimeout(() => setFinished(false), 6000)
-  }, [])
+  const onSaveClick = async () => {
+    const areaName = getOceanAreaName(viewport)
+    const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
+    const start = formatI18nDate(timerange.start as string, {
+      format: dateFormat,
+    })
+      .replace(',', '')
+      .replace('.', '')
+    const end = formatI18nDate(timerange.end as string, {
+      format: dateFormat,
+    })
+      .replace(',', '')
+      .replace('.', '')
 
-  const onShareClick = useCallback(async () => {
-    if (!workspacePublic) {
-      await dispatch(saveCurrentWorkspaceThunk())
-      onWorkspaceShareFinish(`${window.location.origin}/${workspaceId}`)
-    } else {
-      onWorkspaceShareFinish(window.location.href)
-    }
-  }, [dispatch, onWorkspaceShareFinish, workspaceId, workspacePublic])
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
+    const defaultName = `From ${start} to ${end} near ${areaName}`
+    const name = prompt(t('workspace.nameInput', 'Workspace name'), defaultName)
+    if (name) {
+      const action = await dispatch(saveCurrentWorkspaceThunk(name))
+      if (saveCurrentWorkspaceThunk.fulfilled.match(action)) {
+        const workspaceId = action.payload?.id
+        if (workspaceId) {
+          copyToClipboard(`${window.location.origin}/${workspaceId}`)
+        }
+      } else {
+        console.warn('Error saving workspace', action.payload)
       }
     }
-  }, [])
+  }
+
+  return (
+    <IconButton
+      icon={showClipboardNotification ? 'tick' : 'save'}
+      size="medium"
+      className="print-hidden"
+      onClick={onSaveClick}
+      loading={workspaceStatus === AsyncReducerStatus.Loading && workspaceCustom === true}
+      tooltip={
+        showClipboardNotification
+          ? t('workspace.saved', "The workspace was saved and it's available in your user profile")
+          : t('workspace.save', 'Save this workspace')
+      }
+      tooltipPlacement="bottom"
+    />
+  )
+}
+
+function ShareWorkspaceButton() {
+  const { t } = useTranslation()
+
+  const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
+
+  const onShareClick = useCallback(() => {
+    copyToClipboard(window.location.href)
+  }, [copyToClipboard])
+
+  return (
+    <IconButton
+      icon={showClipboardNotification ? 'tick' : 'share'}
+      size="medium"
+      className="print-hidden"
+      onClick={onShareClick}
+      tooltip={
+        showClipboardNotification
+          ? t(
+              'common.copiedToClipboard',
+              'The link to share this view has been copied to your clipboard'
+            )
+          : t('common.share', 'Share the current view')
+      }
+      tooltipPlacement="bottom"
+    />
+  )
+}
+
+function SidebarHeader() {
+  const locationCategory = useSelector(selectLocationCategory)
+  const showInteractionButtons = useSelector(isWorkspaceLocation)
+  const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
+  const showSaveButton = urlDataviewInstances?.length > 0
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
@@ -66,23 +124,11 @@ function SidebarHeader() {
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
         <Logo className={styles.logo} subBrand={getSubBrand()} />
-        {showShareButton && (
-          <IconButton
-            icon={finished ? 'tick' : 'share'}
-            size="medium"
-            className="print-hidden"
-            onClick={onShareClick}
-            loading={workspaceStatus === AsyncReducerStatus.Loading && workspaceCustom === true}
-            tooltip={
-              finished
-                ? t(
-                    'common.copiedToClipboard',
-                    'The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.'
-                  )
-                : t('common.share', 'Click to share the current view')
-            }
-            tooltipPlacement="bottom"
-          />
+        {showInteractionButtons && (
+          <Fragment>
+            {showSaveButton && <SaveWorkspaceButton />}
+            <ShareWorkspaceButton />
+          </Fragment>
         )}
       </div>
     </Sticky>

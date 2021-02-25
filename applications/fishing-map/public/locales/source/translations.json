@@ -6,7 +6,7 @@
     "apparentFishing": "Apparent Fishing Effort",
     "confirm": "Confirm",
     "context_area_plural": "Context areas",
-    "copiedToClipboard": "The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.",
+    "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "countries",
     "description": "Description",
     "environment": "Environment",
@@ -21,7 +21,7 @@
     "name": "Name",
     "presence": "Fishing presence",
     "seeDefault": "See default view",
-    "share": "Click to share the current view",
+    "share": "Share the current view",
     "update": "Update",
     "user": "User",
     "userProfile": "User profile",
@@ -155,9 +155,10 @@
   },
   "workspace": {
     "emptyState": "Your workspaces will appear here",
+    "nameInput": "Workspace name",
     "new": "New Workspace",
-    "save": "Click to save the current view",
-    "saved": "Current view was saved and it's available in your user profile",
+    "save": "Save the current view",
+    "saved": "Current workspace was saved and it's available in your user profile",
     "title_plural": "Workspaces",
     "title": "Workspace"
   }

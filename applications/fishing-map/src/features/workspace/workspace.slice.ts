@@ -133,7 +133,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
 export const saveCurrentWorkspaceThunk = createAsyncThunk(
   'workspace/saveCurrent',
-  async (_, { dispatch, getState }) => {
+  async (defaultName: string, { dispatch, getState }) => {
     const state = getState() as RootState
     const mergedWorkspace = selectCustomWorkspace(state)
 
@@ -141,7 +141,7 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
       let workspaceUpdated
       try {
         const version = selectVersion(state)
-        const name = tries > 0 ? mergedWorkspace.name + `_${tries}` : mergedWorkspace.name
+        const name = tries > 0 ? defaultName + `_${tries}` : defaultName
         workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces`, {
           method: 'POST',
           body: { ...mergedWorkspace, name },
