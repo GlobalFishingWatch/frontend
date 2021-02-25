@@ -43,7 +43,6 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       })
       .catch((error) => {
         setSearching(false)
-        console.warn(error)
       })
   }, [])
 

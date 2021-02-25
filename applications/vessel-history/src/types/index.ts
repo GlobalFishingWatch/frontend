@@ -101,14 +101,32 @@ export interface Depth {
   firstSeen: Date
   endDate?: any
 }
+export interface Mmsi {
+  value: string
+  firstSeen: Date
+  endDate?: Date | null
+}
 
+export type AnyValueList =
+  | BuiltYear
+  | Flag
+  | Gt
+  | Imo
+  | Loa
+  | Mmsi
+  | Name
+  | Irc
+  | VesselType
+  | Depth
+  | VesselOwnership
+  | VesselOperation
 export interface ValueList {
   builtYear: BuiltYear[]
   flag: Flag[]
   gt: Gt[]
   imo: Imo[]
   loa: Loa[]
-  mmsi: any[]
+  mmsi: Mmsi[]
   name: Name[]
   ircs: Irc[]
   vesselType: VesselType[]
@@ -133,11 +151,17 @@ export interface RelationList {
   vesselOperations: VesselOperation[]
 }
 
+export interface AuthorizationList {
+  source: string
+  startDate: Date
+  endDate?: Date
+}
+
 export interface TMTDetail {
   vesselMatchId: string
   valueList: ValueList
   relationList: RelationList
-  authorisationList: any[]
+  authorisationList: AuthorizationList[]
 }
 export interface OtherImo {
   counter: number
@@ -149,13 +173,15 @@ export interface OtherShipname {
   name: string
 }
 
+export type AnyHistoricValue = OtherCallsign | OtherShipname | OtherImo
+
 export type GFWDetail = {
   callsign: string
-  firstTransmissionDate: Date
+  firstTransmissionDate: string
   flag: string
   id: string
   imo?: any
-  lastTransmissionDate: Date
+  lastTransmissionDate: string
   mmsi: string
   otherCallsigns: OtherCallsign[]
   otherImos: OtherImo[]

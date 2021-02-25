@@ -3,6 +3,7 @@ import { Button } from '@globalfishingwatch/ui-components'
 // eslint-disable-next-line import/order
 import { VesselInfo } from 'classes/vessel.class'
 import styles from './Info.module.css'
+import InfoField from './InfoField'
 
 interface InfoProps {
   vessel: VesselInfo | null
@@ -20,61 +21,28 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       <div className={styles.infoContainer}>
         {vessel && (
           <div className={styles.identifiers}>
-            <div>
-              <label>Type</label>
-              <span>{vessel.getType().value}</span>
+            <InfoField label={'Name'} field={vessel.getName()}></InfoField>
+            <InfoField label={'Type'} field={vessel.getType()}></InfoField>
+            <InfoField label={'FLAG'} field={vessel.getFlag()}></InfoField>
+            <InfoField label={'MMSI'} field={vessel.getMMSI()}></InfoField>
+            <InfoField label={'CALLSIGN'} field={vessel.getCallsign()}></InfoField>
+            <InfoField label={'GEAR TYPE'} field={vessel.getGearType()}></InfoField>
+            <InfoField label={'LENGTH'} field={vessel.getLength()}></InfoField>
+            <InfoField label={'GROSS TONNAGE'} field={vessel.getGrossTonnage()}></InfoField>
+            <InfoField label={'DEPTH'} field={vessel.getDepth()}></InfoField>
+            <div className={styles.identifierField}>
+              <label>AUTHORIZATIONS</label>
+              {vessel.getAuthorisations().map((auth) => (
+                <p key={auth}>{auth}</p>
+              ))}
+              {!vessel.getAuthorisations().length && <p>No authorizations found</p>}
             </div>
-            <div>
-              <label>FLAG</label>
-              <span>{vessel.getFlag().value}</span>
-            </div>
-            <div>
-              <label>MMSI</label>
-              <span>{vessel.getMMSI().value}</span>
-            </div>
-            <div>
-              <label>CALLSIGN</label>
-              <span>407201</span>
-            </div>
-            <div>
-              <label>GEAR TYPE</label>
-              <span>Longline Tuna</span>
-            </div>
-            <div>
-              <label>LENGTH</label>
-              <span>19.4</span>
-            </div>
-            <div>
-              <label>GROSS TONNAGE</label>
-              <span>68</span>
-            </div>
-            <div>
-              <label>DEPTH</label>
-              <span>6</span>
-            </div>
-            <div>
-              <label>AUTORIZATIONS</label>
-              <span>CCSBT</span>
-              <br />
-              <span>ICCAT</span>
-              <br />
-              <span>IOTC</span>
-              <br />
-            </div>
-            <div>
-              <label>BUILT</label>
-              <span>Ulsan, 1996</span>
-            </div>
-            <div>
-              <label>OWNER</label>
-              <span>NENG DE OCEAN COMPANY LTD</span>
-            </div>
-            <div>
-              <label>OPERATOR</label>
-              <span>NENG DE OCEAN COMPANY LTD</span>
-            </div>
+            <InfoField label={'BUILT'} field={vessel.getBuiltYear()}></InfoField>
+            <InfoField label={'OWNER'} field={vessel.getOwner()}></InfoField>
+            <InfoField label={'OPERATOR'} field={vessel.getOperator()}></InfoField>
           </div>
         )}
+        <br />
         {vessel && (
           <Button className={styles.saveButton} type="secondary">
             SAVE VESSEL FOR OFFLINE VIEW

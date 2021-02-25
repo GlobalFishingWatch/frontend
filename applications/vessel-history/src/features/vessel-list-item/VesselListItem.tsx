@@ -14,7 +14,6 @@ interface ListItemProps {
 
 const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   const vessel = props.vessel
-  console.log(vessel)
   if (!vessel) {
     return <div></div>
   }
