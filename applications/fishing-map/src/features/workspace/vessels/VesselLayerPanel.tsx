@@ -133,6 +133,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     trackResource?.status === AsyncReducerStatus.Loading ||
     resource?.status === AsyncReducerStatus.Loading
 
+  const trackError = trackResource?.status === AsyncReducerStatus.Error
+
   return (
     <div
       className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: colorOpen || infoOpen })}
@@ -185,10 +187,15 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                     />
                   </ExpandedContainer>
                   <IconButton
-                    icon="target"
                     size="small"
+                    icon={trackError ? 'warning' : 'target'}
+                    type={trackError ? 'warning' : 'default'}
                     className={styles.actionButton}
-                    tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
+                    tooltip={
+                      trackError
+                        ? t('errors.trackLoading', 'There was an error loading the vessel track')
+                        : t('layer.vessel_fit_bounds', 'Center view on vessel track')
+                    }
                     onClick={onFitBoundsClick}
                     tooltipPlacement="top"
                   />

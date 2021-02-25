@@ -130,16 +130,20 @@
     "tracksDisabled": "Select at least one vessel"
   },
   "vessel": {
+    "beam": "Beam",
     "callsign": "Callsign",
+    "capacity": "Capacity",
     "firstTransmissionDate": "First transmission date",
     "flag": "Flag",
     "fleet": "Fleet",
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Last transmission date",
+    "length": "Length",
     "lengthRange": "Length range",
     "loading": "Loading vessel track",
     "mmsi": "MMSI",
+    "nationalId": "National Id",
     "origin": "Origin",
     "registeredGearType": "Registered Gear Type",
     "source": "Source",
@@ -153,6 +157,7 @@
     "emptyState": "Your workspaces will appear here",
     "new": "New Workspace",
     "save": "Click to save the current view",
+    "saved": "Current view was saved and it's available in your user profile",
     "title_plural": "Workspaces",
     "title": "Workspace"
   }

@@ -57,13 +57,18 @@ const TimebarWrapper = () => {
   const mapStyle = useMapStyle()
 
   const [stackedActivity, setStackedActivity] = useState<any>()
+
+  const visibleTemporalGridDataviews = useMemo(
+    () => (temporalGridDataviews || [])?.map((dataview) => dataview.config?.visible ?? false),
+    [temporalGridDataviews]
+  )
+
   useEffect(() => {
-    if (
-      !mapInstance ||
-      !mapStyle ||
-      tilesLoading ||
-      timebarVisualisation !== TimebarVisualisations.Heatmap
-    ) {
+    if (!mapInstance || !mapStyle || timebarVisualisation !== TimebarVisualisations.Heatmap) {
+      return
+    }
+    if (tilesLoading || !visibleTemporalGridDataviews?.length) {
+      setStackedActivity(undefined)
       return
     }
 
@@ -91,10 +96,8 @@ const TimebarWrapper = () => {
       })
     // console.log('querySourceFeatures', performance.now() - n)
     // n = performance.now()
+
     if (allFeaturesWithStyle?.length) {
-      const visibleTemporalGridDataviews = (temporalGridDataviews || [])?.map(
-        (dataview) => dataview.config?.visible ?? false
-      )
       const values = getTimeSeries(
         allFeaturesWithStyle as any,
         numSublayers,
@@ -116,11 +119,20 @@ const TimebarWrapper = () => {
       })
       // console.log('compute graph', performance.now() - n)
       setStackedActivity(values)
+    } else {
+      setStackedActivity(undefined)
     }
 
     // While mapStyle is needed inside the useEffect, we don't want the component to rerender everytime a new instance is generated
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapInstance, currentTimeChunkId, tilesLoading, timebarVisualisation, urlViewport])
+  }, [
+    mapInstance,
+    currentTimeChunkId,
+    tilesLoading,
+    timebarVisualisation,
+    urlViewport,
+    visibleTemporalGridDataviews,
+  ])
 
   const dataviews = useSelector(selectTemporalgridDataviews)
   const dataviewsColors = dataviews?.map((dataview) => dataview.config?.color)
@@ -154,7 +166,7 @@ const TimebarWrapper = () => {
       >
         {() => (
           <Fragment>
-            {timebarVisualisation === TimebarVisualisations.Heatmap && stackedActivity && (
+            {timebarVisualisation === TimebarVisualisations.Heatmap && (
               <Fragment>
                 {stackedActivity && (
                   <TimebarStackedActivity
