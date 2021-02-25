@@ -1,22 +1,14 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
-import GFWAPI from '@globalfishingwatch/api-client'
 import { IconButton, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
-import { selectDataset, selectTmtId, selectVesselId } from 'routes/routes.selectors'
-import { Vessel } from 'types'
 import { getVesselInfo } from 'features/vessels/vessels.selectors'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 
 const Profile: React.FC = (props): React.ReactElement => {
-  const vesselID = useSelector(selectVesselId)
-  const tmtID = useSelector(selectTmtId)
-  const dataset = useSelector(selectDataset)
   const [lastPortVisit, setLastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition, setLastPosition] = useState(null)
-  const [selectedTab, setSelectedTab] = useState(1)
-  const [searching, setSearching] = useState(false)
 
   const vessel = useSelector(getVesselInfo)
   const tabs: Tab[] = [
