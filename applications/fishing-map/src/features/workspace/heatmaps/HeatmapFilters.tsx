@@ -176,9 +176,9 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
           options={originFilters.options}
           selectedOptions={originFilters.optionsSelected}
           className={styles.multiSelect}
-          onSelect={(selection) => onSelectFilterClick('vessel_type', selection)}
-          onRemove={(selection, rest) => onRemoveFilterClick('vessel_type', rest)}
-          onCleanClick={() => onCleanFilterClick('vessel_type')}
+          onSelect={(selection) => onSelectFilterClick('origin', selection)}
+          onRemove={(selection, rest) => onRemoveFilterClick('origin', rest)}
+          onCleanClick={() => onCleanFilterClick('origin')}
         />
       )}
       {vesselFilters.active && (
