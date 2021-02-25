@@ -47,7 +47,7 @@
     "importing": "Le jeu de données est en cours d'importation",
     "new": "Nouveau jeu de données",
     "remove": "Remove dataset",
-    "uploadLogin": "You need to <1>login</1> to upload datasets",
+    "uploadLogin": "Vous devez <1>login</1> pour télécharger des jeux de données",
     "uploadNewContex": "Télécharger de nouvelles zones contextuelles",
     "uploadNewEnviroment": "Charger un nouveau jeu de données d'environnement",
     "addEnvironment": "Ajouter un jeu de données d'environnement",
@@ -65,7 +65,7 @@
     "privateView": "Ceci est une vue privée",
     "requestAccess": "Demander l'accès",
     "switchAccount": "Changer de compte",
-    "trackLoading": "There was an error loading the vessel track",
+    "trackLoading": "Une erreur s'est produite lors du chargement de la piste du vaisseau",
     "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement",
     "workspaceNotFound": "La vue demandée n'a pas été trouvée"
@@ -130,16 +130,20 @@
     "tracksDisabled": "Sélectionnez au moins un vaisseau"
   },
   "vessel": {
+    "beam": "Beam",
     "callsign": "Callsign",
+    "capacity": "Capacity",
     "firstTransmissionDate": "Première date de transmission",
     "flag": "Drapeau",
     "fleet": "Flotte",
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Dernière date de transmission",
+    "length": "Length",
     "lengthRange": "Plage de longueur",
     "loading": "Chargement de la piste du bateau",
     "mmsi": "MMSI",
+    "nationalId": "National Id",
     "origin": "Origine",
     "registeredGearType": "Type d'équipement enregistré",
     "source": "Source",
@@ -152,7 +156,8 @@
   "workspace": {
     "emptyState": "Vos espaces de travail apparaîtront ici",
     "new": "Nouvel espace de travail",
-    "save": "Click to save the current view",
+    "save": "Cliquez pour enregistrer la vue actuelle",
+    "saved": "Current view was saved and it's available in your user profile",
     "title_plural": "Workspaces",
     "title": "Espace de travail"
   }
