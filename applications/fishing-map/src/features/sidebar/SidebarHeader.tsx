@@ -7,6 +7,7 @@ import Logo, { SubBrands } from '@globalfishingwatch/ui-components/dist/logo'
 import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 import { saveCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
+  selectWorkspace,
   selectWorkspaceCustom,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
@@ -16,7 +17,7 @@ import {
   selectLocationCategory,
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
-import { WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -32,22 +33,27 @@ function SaveWorkspaceButton() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustom = useSelector(selectWorkspaceCustom)
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
+  const workspace = useSelector(selectWorkspace)
 
   const onSaveClick = async () => {
-    const areaName = getOceanAreaName(viewport)
-    const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
-    const start = formatI18nDate(timerange.start as string, {
-      format: dateFormat,
-    })
-      .replace(',', '')
-      .replace('.', '')
-    const end = formatI18nDate(timerange.end as string, {
-      format: dateFormat,
-    })
-      .replace(',', '')
-      .replace('.', '')
+    const isDefaultWorkspace = workspace?.id === DEFAULT_WORKSPACE_ID
+    let defaultName = workspace?.name
+    if (isDefaultWorkspace) {
+      const areaName = getOceanAreaName(viewport)
+      const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
+      const start = formatI18nDate(timerange.start as string, {
+        format: dateFormat,
+      })
+        .replace(',', '')
+        .replace('.', '')
+      const end = formatI18nDate(timerange.end as string, {
+        format: dateFormat,
+      })
+        .replace(',', '')
+        .replace('.', '')
 
-    const defaultName = `From ${start} to ${end} near ${areaName}`
+      defaultName = `From ${start} to ${end} near ${areaName}`
+    }
     const name = prompt(t('workspace.nameInput', 'Workspace name'), defaultName)
     if (name) {
       const action = await dispatch(saveCurrentWorkspaceThunk(name))
