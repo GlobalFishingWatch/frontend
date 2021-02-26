@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment, useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
@@ -117,7 +117,8 @@ function SidebarHeader() {
   const locationCategory = useSelector(selectLocationCategory)
   const showInteractionButtons = useSelector(isWorkspaceLocation)
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
-  const showSaveButton = urlDataviewInstances?.length > 0
+  const initialUrlDataviewInstances = useRef(urlDataviewInstances)
+  const hasDataviewInstancesChanged = initialUrlDataviewInstances.current !== urlDataviewInstances
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
@@ -132,7 +133,7 @@ function SidebarHeader() {
         <Logo className={styles.logo} subBrand={getSubBrand()} />
         {showInteractionButtons && (
           <Fragment>
-            {showSaveButton && <SaveWorkspaceButton />}
+            {hasDataviewInstancesChanged && <SaveWorkspaceButton />}
             <ShareWorkspaceButton />
           </Fragment>
         )}
