@@ -26,17 +26,17 @@ import { selectWorkspaceStatus } from './workspace.selectors'
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
+  // used to identify when someone saves its own version of the workspace
+  customStatus: AsyncReducerStatus
   error: AsyncError
   data: Workspace<WorkspaceState> | null
-  // used to identify when someone shared its own version of the workspace
-  custom: boolean
 }
 
 const initialState: WorkspaceSliceState = {
   status: AsyncReducerStatus.Idle,
+  customStatus: AsyncReducerStatus.Idle,
   error: {},
   data: null,
-  custom: false,
 }
 
 type RejectedActionPayload = {
@@ -210,19 +210,16 @@ const workspaceSlice = createSlice({
       }
     })
     builder.addCase(saveCurrentWorkspaceThunk.pending, (state) => {
-      state.status = AsyncReducerStatus.Loading
-      state.custom = true
+      state.customStatus = AsyncReducerStatus.Loading
     })
     builder.addCase(saveCurrentWorkspaceThunk.fulfilled, (state, action) => {
-      state.status = AsyncReducerStatus.Finished
+      state.customStatus = AsyncReducerStatus.Finished
       if (action.payload) {
         state.data = action.payload
       }
-      state.custom = false
     })
     builder.addCase(saveCurrentWorkspaceThunk.rejected, (state) => {
-      state.status = AsyncReducerStatus.Finished
-      state.custom = false
+      state.customStatus = AsyncReducerStatus.Error
     })
   },
 })

@@ -8,8 +8,7 @@ import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 import { saveCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
   selectWorkspace,
-  selectWorkspaceCustom,
-  selectWorkspaceStatus,
+  selectWorkspaceCustomStatus,
 } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
@@ -30,8 +29,7 @@ function SaveWorkspaceButton() {
   const dispatch = useAppDispatch()
   const viewport = useSelector(selectViewport)
   const timerange = useSelector(selectTimeRange)
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const workspaceCustom = useSelector(selectWorkspaceCustom)
+  const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
   const workspace = useSelector(selectWorkspace)
 
@@ -74,7 +72,7 @@ function SaveWorkspaceButton() {
       size="medium"
       className="print-hidden"
       onClick={onSaveClick}
-      loading={workspaceStatus === AsyncReducerStatus.Loading && workspaceCustom === true}
+      loading={workspaceCustomStatus === AsyncReducerStatus.Loading}
       tooltip={
         showClipboardNotification
           ? t('workspace.saved', "The workspace was saved and it's available in your user profile")

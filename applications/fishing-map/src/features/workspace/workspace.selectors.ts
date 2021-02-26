@@ -29,8 +29,8 @@ export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
 
 export const selectWorkspace = (state: RootState) => state.workspace.data
 export const selectWorkspaceStatus = (state: RootState) => state.workspace.status
+export const selectWorkspaceCustomStatus = (state: RootState) => state.workspace.customStatus
 export const selectWorkspaceError = (state: RootState) => state.workspace.error
-export const selectWorkspaceCustom = (state: RootState) => state.workspace.custom
 
 export const isWorkspacePublic = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id.slice(-PUBLIC_SUFIX.length) === PUBLIC_SUFIX
@@ -58,17 +58,21 @@ export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace]
 export const selectDataviewInstancesMerged = createSelector(
   [
     selectWorkspaceStatus,
-    selectWorkspaceCustom,
+    selectWorkspaceCustomStatus,
     selectWorkspaceDataviewInstances,
     selectUrlDataviewInstances,
   ],
   (
     workspaceStatus,
-    workspaceCustom,
+    workspaceCustomStatus,
     workspaceDataviewInstances,
     urlDataviewInstances = []
   ): UrlDataviewInstance[] | undefined => {
-    if (!workspaceCustom && workspaceStatus !== AsyncReducerStatus.Finished) return
+    if (
+      workspaceCustomStatus === AsyncReducerStatus.Loading &&
+      workspaceStatus !== AsyncReducerStatus.Finished
+    )
+      return
 
     // Split url dataviews by new or just overwriting the workspace to easily grab them later
     const urlDataviews = urlDataviewInstances.reduce<
