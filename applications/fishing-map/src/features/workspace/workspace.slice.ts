@@ -179,55 +179,6 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
   }
 )
 
-export const updateWorkspaceNameThunk = createAsyncThunk<
-  Workspace,
-  Partial<Workspace>,
-  {
-    rejectValue: AsyncError
-  }
->(
-  'workspaces/update',
-  async (partialWorkspace, { rejectWithValue }) => {
-    try {
-      const updatedWorkspace = await GFWAPI.fetch<Workspace>(
-        `/v1/workspaces/${partialWorkspace.id}`,
-        {
-          method: 'PATCH',
-          body: { name: partialWorkspace.name } as any,
-        }
-      )
-      return updatedWorkspace
-    } catch (e) {
-      return rejectWithValue({ status: e.status || e.code, message: e.message })
-    }
-  },
-  {
-    condition: (partialWorkspace) => {
-      if (!partialWorkspace || !partialWorkspace.id) {
-        console.warn('To update the workspace you need the id')
-        return false
-      }
-    },
-  }
-)
-
-export const deleteWorkspaceThunk = createAsyncThunk<
-  Workspace,
-  string,
-  {
-    rejectValue: AsyncError
-  }
->('workspaces/delete', async (id: string, { rejectWithValue }) => {
-  try {
-    const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}`, {
-      method: 'DELETE',
-    })
-    return { ...workspace, id }
-  } catch (e) {
-    return rejectWithValue({ status: e.status || e.code, message: e.message })
-  }
-})
-
 const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
@@ -270,18 +221,6 @@ const workspaceSlice = createSlice({
       state.custom = false
     })
     builder.addCase(saveCurrentWorkspaceThunk.rejected, (state) => {
-      state.status = AsyncReducerStatus.Finished
-      state.custom = false
-    })
-    builder.addCase(updateWorkspaceNameThunk.pending, (state) => {
-      state.status = AsyncReducerStatus.Loading
-      state.custom = true
-    })
-    builder.addCase(updateWorkspaceNameThunk.fulfilled, (state) => {
-      state.status = AsyncReducerStatus.Finished
-      state.custom = false
-    })
-    builder.addCase(updateWorkspaceNameThunk.rejected, (state) => {
       state.status = AsyncReducerStatus.Finished
       state.custom = false
     })

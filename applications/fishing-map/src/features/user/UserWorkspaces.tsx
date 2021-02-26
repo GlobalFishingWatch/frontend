@@ -9,33 +9,34 @@ import { Workspace } from '@globalfishingwatch/api-types/dist'
 import { WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
 import {
-  fetchWorkspacesThunk,
+  deleteWorkspaceThunk,
   selectWorkspaceListStatus,
+  selectWorkspaceListStatusId,
+  updateWorkspaceThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { deleteWorkspaceThunk, updateWorkspaceNameThunk } from 'features/workspace/workspace.slice'
 import styles from './User.module.css'
 import { selectUserWorkspaces } from './user.selectors'
-import { selectUserData } from './user.slice'
 
 function UserWorkspaces() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const userData = useSelector(selectUserData)
   const workspaces = useSelector(selectUserWorkspaces)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
+  const workspacesStatusId = useSelector(selectWorkspaceListStatusId)
 
   const loading = workspacesStatus === AsyncReducerStatus.Loading
+  const updateLoading = workspacesStatus === AsyncReducerStatus.LoadingUpdate
+  const deleteLoading = workspacesStatus === AsyncReducerStatus.LoadingDelete
 
   const onEditClick = useCallback(
     async (workspace: Workspace) => {
       const name = prompt(t('workspace.nameInput', 'Workspace name'), workspace.name)
       if (name) {
-        await dispatch(updateWorkspaceNameThunk({ id: workspace.id, name }))
-        dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
+        await dispatch(updateWorkspaceThunk({ id: workspace.id, name }))
       }
     },
-    [dispatch, t, userData]
+    [dispatch, t]
   )
 
   const onDeleteClick = useCallback(
@@ -48,10 +49,9 @@ function UserWorkspaces() {
       )
       if (confirmation) {
         await dispatch(deleteWorkspaceThunk(workspace.id))
-        dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
       }
     },
-    [dispatch, t, userData]
+    [dispatch, t]
   )
 
   return (
@@ -88,12 +88,14 @@ function UserWorkspaces() {
                   </Link>
                   <IconButton
                     icon="edit"
+                    loading={workspace.id === workspacesStatusId && updateLoading}
                     tooltip={t('workspace.editName', 'Edit workspace name')}
                     onClick={() => onEditClick(workspace)}
                   />
                   <IconButton
                     icon="delete"
                     type="warning"
+                    loading={workspace.id === workspacesStatusId && deleteLoading}
                     tooltip={t('workspace.remove', 'Remove workspace')}
                     onClick={() => onDeleteClick(workspace)}
                   />
