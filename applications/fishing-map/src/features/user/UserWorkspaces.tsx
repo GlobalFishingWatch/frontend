@@ -33,26 +33,29 @@ function UserWorkspaces() {
       ) : (
         <ul>
           {workspaces && workspaces?.length > 0 ? (
-            workspaces.map((workspace) => {
-              return (
-                <li className={styles.workspace} key={workspace.id}>
-                  <Link
-                    className={styles.workspaceLink}
-                    to={{
-                      type: WORKSPACE,
-                      payload: {
-                        category: workspace.category || WorkspaceCategories.FishingActivity,
-                        workspaceId: workspace.id,
-                      },
-                      query: {},
-                    }}
-                  >
-                    <span className={styles.workspaceTitle}>{workspace.name}</span>
-                    <IconButton icon="arrow-right" />
-                  </Link>
-                </li>
-              )
-            })
+            workspaces
+              .slice()
+              .reverse()
+              .map((workspace) => {
+                return (
+                  <li className={styles.workspace} key={workspace.id}>
+                    <Link
+                      className={styles.workspaceLink}
+                      to={{
+                        type: WORKSPACE,
+                        payload: {
+                          category: workspace.category || WorkspaceCategories.FishingActivity,
+                          workspaceId: workspace.id,
+                        },
+                        query: {},
+                      }}
+                    >
+                      <span className={styles.workspaceTitle}>{workspace.name}</span>
+                      <IconButton icon="arrow-right" />
+                    </Link>
+                  </li>
+                )
+              })
           ) : (
             <div className={styles.placeholder}>
               {t('workspace.emptyState', 'Your workspaces will appear here')}
