@@ -11,7 +11,7 @@ import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
-import { WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import {
   getGeneratorsConfig,
   selectGlobalGeneratorsConfig,
@@ -52,7 +52,7 @@ export const useClickedEventConnect = () => {
         (feature: any) => feature.properties.type === 'workspace'
       )
       if (workspace) {
-        const isDefaultWorkspace = workspace.properties.id === 'default'
+        const isDefaultWorkspace = workspace.properties.id === DEFAULT_WORKSPACE_ID
         dispatchLocation(
           isDefaultWorkspace ? HOME : WORKSPACE,
           isDefaultWorkspace
