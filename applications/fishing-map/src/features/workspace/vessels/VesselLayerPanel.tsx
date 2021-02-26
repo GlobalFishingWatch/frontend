@@ -40,6 +40,10 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 // t('vessel.grossTonnageRange', 'Gross Tonnage range')
 // t('vessel.fleet', 'Fleet')
 // t('vessel.source', 'Source')
+// t('vessel.nationalId', 'National Id')
+// t('vessel.length', 'Length')
+// t('vessel.beam', 'Beam')
+// t('vessel.capacity', 'Capacity')
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -122,10 +126,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   const vesselId = dataview.id.replace(DATAVIEW_INSTANCE_PREFIX, '')
   const title = vesselName || vesselId || dataview.name
+  const formattedTitle = title && formatInfoField(title, 'name')
 
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {title && formatInfoField(title, 'name')}
+      {formattedTitle}
     </h3>
   )
 
@@ -148,8 +153,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           className={styles.switch}
           color={dataview.config?.color}
         />
-        {title && title.length > 30 ? (
-          <Tooltip content={title}>{TitleComponent}</Tooltip>
+        {title && title.length > 20 ? (
+          <Tooltip content={formattedTitle}>{TitleComponent}</Tooltip>
         ) : (
           TitleComponent
         )}
