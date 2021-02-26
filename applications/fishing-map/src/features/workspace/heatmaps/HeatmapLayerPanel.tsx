@@ -84,7 +84,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   }
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  let datasetName = dataset ? t(`datasets:${dataset?.id}.name`) : dataview.name || ''
+  let datasetName = dataset ? t(`datasets:${dataset?.id}.name` as any) : dataview.name || ''
   const fishignDataview = isFishingDataview(dataview)
   const presenceDataview = isPresenceDataview(dataview)
   if (fishignDataview || presenceDataview) {
@@ -156,7 +156,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
               icon="info"
               size="small"
               className={styles.actionButton}
-              tooltip={dataset?.id ? t(`datasets:${dataset.id}.description`) : ''}
+              tooltip={dataset?.id ? t(`datasets:${dataset.id}.description` as any) : ''}
               tooltipPlacement="top"
             />
           )}

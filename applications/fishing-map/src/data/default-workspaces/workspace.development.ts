@@ -58,14 +58,6 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: 94,
     },
     {
-      id: 'context-layer-mpa',
-      config: {
-        color: '#1AFF6B',
-        visible: false,
-      },
-      dataviewId: 98,
-    },
-    {
       id: 'context-layer-mpa-no-take',
       config: {
         color: '#F4511F',
@@ -80,6 +72,14 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
       dataviewId: 100,
+    },
+    {
+      id: 'context-layer-mpa',
+      config: {
+        color: '#1AFF6B',
+        visible: false,
+      },
+      dataviewId: 98,
     },
     {
       id: 'context-layer-rfmo',

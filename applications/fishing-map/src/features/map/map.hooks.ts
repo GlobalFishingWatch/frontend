@@ -11,6 +11,7 @@ import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
+import { WorkspaceCategories } from 'data/workspaces'
 import {
   getGeneratorsConfig,
   selectGlobalGeneratorsConfig,
@@ -57,7 +58,8 @@ export const useClickedEventConnect = () => {
           isDefaultWorkspace
             ? {}
             : {
-                category: locationCategory,
+                // TODO: grab category from workspace and use it before the fishing fallback
+                category: locationCategory || WorkspaceCategories.FishingActivity,
                 workspaceId: workspace.properties.id,
               },
           true
@@ -88,10 +90,9 @@ export const useClickedEventConnect = () => {
     }
 
     dispatch(setClickedEvent(event))
-
     // get temporal grid clicked features and order them by sublayerindex
     const temporalGridFeatures = event.features
-      .filter((feature) => feature.temporalgrid !== undefined)
+      .filter((feature) => feature.temporalgrid !== undefined && feature.temporalgrid.visible)
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
     if (temporalGridFeatures?.length) {
@@ -130,12 +131,13 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     let dataview
     if (feature.generatorType === Generators.Type.HeatmapAnimated) {
-      if (!feature.temporalgrid || feature.temporalgrid.sublayerIndex === undefined) {
+      const { temporalgrid } = feature
+      if (!temporalgrid || temporalgrid.sublayerIndex === undefined || !temporalgrid.visible) {
         return []
       }
 
       // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
-      dataview = temporalgridDataviews?.[feature.temporalgrid?.sublayerIndex]
+      dataview = temporalgridDataviews?.[temporalgrid?.sublayerIndex]
     } else {
       dataview = dataviews?.find((dataview) => {
         // Needed to get only the initial part to support multiple generator

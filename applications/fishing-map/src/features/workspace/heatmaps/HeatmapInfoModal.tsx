@@ -25,10 +25,10 @@ function HeatmapInfoModal({ isOpen = false, onClose, dataview }: HeatmapInfoModa
     if (!datasetId) return []
     return {
       id: datasetId,
-      title: t(`datasets:${removeDatasetVersion(dataset?.id)}.name`),
+      title: t(`datasets:${removeDatasetVersion(dataset?.id)}.name` as any),
       content: (
         <p className={styles.content}>
-          {t(`datasets:${removeDatasetVersion(dataset?.id)}.description`)}
+          {t(`datasets:${removeDatasetVersion(dataset?.id)}.description` as any)}
         </p>
       ),
     }

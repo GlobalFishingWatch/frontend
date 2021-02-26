@@ -23,9 +23,15 @@ interface FeatureRowProps {
   feature: TooltipEventFeature
   showFeaturesDetails: boolean
   onReportClick?: (feature: TooltipEventFeature) => void
+  index: number
 }
 
-function FeatureRow({ feature, showFeaturesDetails = false, onReportClick }: FeatureRowProps) {
+function FeatureRow({
+  feature,
+  showFeaturesDetails = false,
+  onReportClick,
+  index = Date.now(),
+}: FeatureRowProps) {
   const { t } = useTranslation()
   if (!feature.value) return null
   const { gfw_id } = feature.properties
@@ -35,7 +41,7 @@ function FeatureRow({ feature, showFeaturesDetails = false, onReportClick }: Fea
     const { wdpa_pid } = feature.properties
     const label = `${feature.value} - ${feature.properties.desig}`
     return (
-      <div className={styles.row} key={`${label}-${gfw_id}`}>
+      <div className={styles.row} key={`${index}-${label}-${gfw_id}`}>
         <span className={styles.rowText}>{label}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
@@ -62,7 +68,7 @@ function FeatureRow({ feature, showFeaturesDetails = false, onReportClick }: Fea
   if (feature.contextLayer === 'tuna-rfmo') {
     const link = TunaRfmoLinksById[feature.value]
     return (
-      <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
+      <div className={styles.row} key={`${index}-${feature.value}-${gfw_id}`}>
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && link && (
           <div className={styles.rowActions}>
@@ -77,7 +83,7 @@ function FeatureRow({ feature, showFeaturesDetails = false, onReportClick }: Fea
   if (feature.contextLayer === 'eez-areas') {
     const { mrgid } = feature.properties
     return (
-      <div className={styles.row} key={`${mrgid}-${gfw_id}`}>
+      <div className={styles.row} key={`${index}-${mrgid}-${gfw_id}`}>
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
@@ -99,7 +105,7 @@ function FeatureRow({ feature, showFeaturesDetails = false, onReportClick }: Fea
       </div>
     )
   }
-  return <div key={feature.value || gfw_id}>{feature.value}</div>
+  return <div key={`${index}-${feature.value || gfw_id}`}>{feature.value}</div>
 }
 
 type ContextTooltipRowProps = {
@@ -159,7 +165,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             )}
             {featureByType.map((feature, index) => (
               <FeatureRow
-                key={index}
+                index={index}
                 feature={feature}
                 showFeaturesDetails={showFeaturesDetails}
                 onReportClick={onReportClick}

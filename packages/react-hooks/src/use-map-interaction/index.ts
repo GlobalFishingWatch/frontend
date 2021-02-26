@@ -28,6 +28,7 @@ export type ExtendedFeature = {
   }
   temporalgrid?: {
     sublayerIndex: number
+    visible: boolean
     col: number
     row: number
   }

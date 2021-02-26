@@ -1167,6 +1167,15 @@
     "@manypkg/get-packages" "^1.0.1"
     semver "^5.4.1"
 
+"@changesets/changelog-github@^0.2.8":
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@changesets/changelog-github/-/changelog-github-0.2.8.tgz#b17569205e5e8da65cc9a3ceb16e2c78f0463236"
+  integrity sha512-XO/6J/EvndQ+SOhRLvWUun5DLnuTmukpjhtFbHbQSNzzGvRUIyQ2//v6R5sgcazDGLoJixP7MaATEhYeppf+Cg==
+  dependencies:
+    "@changesets/get-github-info" "^0.4.5"
+    "@changesets/types" "^3.0.0"
+    dotenv "^8.1.0"
+
 "@changesets/cli@^2.14.1":
   version "2.14.1"
   resolved "https://registry.yarnpkg.com/@changesets/cli/-/cli-2.14.1.tgz#ef6ba9f69e4dd5f6cde4220e032200e3039a52f8"
@@ -1233,6 +1242,14 @@
     chalk "^2.1.0"
     fs-extra "^7.0.1"
     semver "^5.4.1"
+
+"@changesets/get-github-info@^0.4.5":
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/@changesets/get-github-info/-/get-github-info-0.4.5.tgz#53d46e03f7794cd439e6530dce1029cc149cd313"
+  integrity sha512-tknjYi9ti3AIbGrDHfeJ1bBbXJi/FdV6AWH0oA4JFrCRe2IoczAJo2MeU+3banQx5TlL1fOTeUOM1YAK+sJB2g==
+  dependencies:
+    dataloader "^1.4.0"
+    node-fetch "^2.5.0"
 
 "@changesets/get-release-plan@^2.0.1":
   version "2.0.1"
@@ -8771,6 +8788,11 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
+dataloader@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/dataloader/-/dataloader-1.4.0.tgz#bca11d867f5d3f1b9ed9f737bd15970c65dff5c8"
+  integrity sha512-68s5jYdlvasItOJnCuI2Q9s4q98g0pCyL3HrcKJu8KNugUl8ahgmZYg38ysLTgQjjXX3H8CJLkAvWrclWfcalw==
+
 dateformat@^3.0.0:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
@@ -9332,7 +9354,7 @@ dotenv-expand@5.1.0:
   resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-5.1.0.tgz#3fbaf020bfd794884072ea26b1e9791d45a629f0"
   integrity sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==
 
-dotenv@8.2.0, dotenv@^8.2.0:
+dotenv@8.2.0, dotenv@^8.1.0, dotenv@^8.2.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
   integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==

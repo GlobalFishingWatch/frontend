@@ -1,6 +1,6 @@
 import React, { Fragment, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { area, stack, curveStepAfter } from 'd3-shape'
+import { area, stack, stackOffsetSilhouette, curveStepAfter } from 'd3-shape'
 import { scaleLinear } from 'd3-scale'
 import { max } from 'd3-array'
 import ImmediateContext from '../immediateContext'
@@ -13,13 +13,15 @@ const MARGIN_TOP = 5
 const getPathContainers = (data, graphHeight, overallScale, numSublayers) => {
   if (!data) return []
 
-  const stackLayout = stack().keys(Array.from(Array(numSublayers).keys()))
+  const stackLayout = stack()
+    .keys(Array.from(Array(numSublayers).keys()))
+    .offset(stackOffsetSilhouette)
 
   const series = stackLayout(data)
 
   const y = scaleLinear()
     .domain([0, max(series, (d) => max(d, (d) => d[1]))])
-    .range([0, graphHeight / 2 - MARGIN_BOTTOM / 2])
+    .range([MARGIN_TOP, graphHeight / 2 - MARGIN_BOTTOM / 2])
 
   const areaLayout = area()
     .x((d) => overallScale(d.data.date))
@@ -55,14 +57,9 @@ const StackedActivity = ({ data, colors, numSublayers }) => {
         }}
       >
         {pathContainers.map((pathContainer, sublayerIndex) => (
-          <Fragment key={sublayerIndex}>
-            <g key="top" transform={`scale(1, -1) translate(0, ${-middleY - MARGIN_TOP}) `}>
-              <path d={pathContainer.path} fill={colors ? colors[sublayerIndex] : '#ff00ff'} />
-            </g>
-            <g key="bottom" transform={`translate(0, ${middleY + MARGIN_TOP})`}>
-              <path d={pathContainer.path} fill={colors ? colors[sublayerIndex] : '#ff00ff'} />
-            </g>
-          </Fragment>
+          <g key={sublayerIndex} transform={`translate(0, ${middleY})`}>
+            <path d={pathContainer.path} fill={colors ? colors[sublayerIndex] : '#ff00ff'} />
+          </g>
         ))}
       </g>
     </svg>

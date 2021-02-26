@@ -50,7 +50,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
         <div className={styles.row}>
           <span className={styles.rowText}>
             <I18nNumber number={feature.value} />{' '}
-            {t([`common.${feature.unit}`, 'common.hour'], 'hours', {
+            {t([`common.${feature.unit}` as any, 'common.hour'], 'hours', {
               count: parseInt(feature.value), // neded to select the plural automatically
             })}
           </span>

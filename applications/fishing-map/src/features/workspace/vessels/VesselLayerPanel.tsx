@@ -40,6 +40,10 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 // t('vessel.grossTonnageRange', 'Gross Tonnage range')
 // t('vessel.fleet', 'Fleet')
 // t('vessel.source', 'Source')
+// t('vessel.nationalId', 'National Id')
+// t('vessel.length', 'Length')
+// t('vessel.beam', 'Beam')
+// t('vessel.capacity', 'Capacity')
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -122,16 +126,19 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   const vesselId = dataview.id.replace(DATAVIEW_INSTANCE_PREFIX, '')
   const title = vesselName || vesselId || dataview.name
+  const formattedTitle = title && formatInfoField(title, 'name')
 
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {title && formatInfoField(title, 'name')}
+      {formattedTitle}
     </h3>
   )
 
   const loading =
     trackResource?.status === AsyncReducerStatus.Loading ||
     resource?.status === AsyncReducerStatus.Loading
+
+  const trackError = trackResource?.status === AsyncReducerStatus.Error
 
   return (
     <div
@@ -146,8 +153,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           className={styles.switch}
           color={dataview.config?.color}
         />
-        {title && title.length > 30 ? (
-          <Tooltip content={title}>{TitleComponent}</Tooltip>
+        {title && title.length > 20 ? (
+          <Tooltip content={formattedTitle}>{TitleComponent}</Tooltip>
         ) : (
           TitleComponent
         )}
@@ -185,10 +192,15 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                     />
                   </ExpandedContainer>
                   <IconButton
-                    icon="target"
                     size="small"
+                    icon={trackError ? 'warning' : 'target'}
+                    type={trackError ? 'warning' : 'default'}
                     className={styles.actionButton}
-                    tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
+                    tooltip={
+                      trackError
+                        ? t('errors.trackLoading', 'There was an error loading the vessel track')
+                        : t('layer.vessel_fit_bounds', 'Center view on vessel track')
+                    }
                     onClick={onFitBoundsClick}
                     tooltipPlacement="top"
                   />
@@ -204,7 +216,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                       if (!fieldValue) return null
                       return (
                         <li key={field.id} className={styles.infoContentItem}>
-                          <label>{t(`vessel.${field.id}`)}</label>
+                          <label>{t(`vessel.${field.id}` as any)}</label>
                           <span>
                             {field.type === 'date' ? (
                               <I18nDate date={fieldValue} />

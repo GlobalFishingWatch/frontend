@@ -35,6 +35,7 @@ const TimebarWrapper = () => {
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
   const urlViewport = useSelector(selectViewport)
+  const temporalGridDataviews = useSelector(selectTemporalgridDataviews)
   const staticHeatmapLayersActive = useSelector(hasStaticHeatmapLayersActive)
 
   const dispatch = useDispatch()
@@ -56,13 +57,18 @@ const TimebarWrapper = () => {
   const mapStyle = useMapStyle()
 
   const [stackedActivity, setStackedActivity] = useState<any>()
+
+  const visibleTemporalGridDataviews = useMemo(
+    () => (temporalGridDataviews || [])?.map((dataview) => dataview.config?.visible ?? false),
+    [temporalGridDataviews]
+  )
+
   useEffect(() => {
-    if (
-      !mapInstance ||
-      !mapStyle ||
-      tilesLoading ||
-      timebarVisualisation !== TimebarVisualisations.Heatmap
-    ) {
+    if (!mapInstance || !mapStyle || timebarVisualisation !== TimebarVisualisations.Heatmap) {
+      return
+    }
+    if (tilesLoading || !visibleTemporalGridDataviews?.length) {
+      setStackedActivity(undefined)
       return
     }
 
@@ -75,41 +81,65 @@ const TimebarWrapper = () => {
 
     // Getting features within viewport - it's somehow faster to use querySource with a crude viewport filter, than using queryRendered
     const [boundsSW, boundsNE] = mapInstance.getBounds().toArray()
+    const leftWorldCopy = boundsNE[0] >= 180
+    const rightWorldCopy = boundsSW[0] <= -180
     const allFeaturesWithStyle = mapInstance
       .querySourceFeatures(currentTimeChunkId, {
         sourceLayer: 'temporalgrid_interactive',
       })
       .filter((f) => {
-        const coord = (f.geometry as any).coordinates[0][0]
+        const [lon, lat] = (f.geometry as any).coordinates[0][0]
+        const rightOffset = rightWorldCopy && lon > 0 ? -360 : 0
+        const leftOffset = leftWorldCopy && lon < 0 ? 360 : 0
         return (
-          coord[0] > boundsSW[0] &&
-          coord[0] < boundsNE[0] &&
-          coord[1] > boundsSW[1] &&
-          coord[1] < boundsNE[1]
+          lon + rightOffset + leftOffset > boundsSW[0] &&
+          lon + rightOffset + leftOffset < boundsNE[0] &&
+          lat > boundsSW[1] &&
+          lat < boundsNE[1]
         )
       })
     // console.log('querySourceFeatures', performance.now() - n)
     // n = performance.now()
+
     if (allFeaturesWithStyle?.length) {
       const values = getTimeSeries(
         allFeaturesWithStyle as any,
         numSublayers,
         chunkQuantizeOffset
-      ).map((frameValues) => ({
-        ...frameValues,
-        date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
-      }))
+      ).map((frameValues) => {
+        // Ideally we don't have the features not visible in 4wings but we have them
+        // so this needs to be filtered by the current active ones
+        const activeFrameValues = Object.fromEntries(
+          Object.entries(frameValues).map(([key, value]) => {
+            const cleanValue =
+              key === 'frame' || visibleTemporalGridDataviews[parseInt(key)] === true ? value : 0
+            return [key, cleanValue]
+          })
+        )
+        return {
+          ...activeFrameValues,
+          date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
+        }
+      })
       // console.log('compute graph', performance.now() - n)
       setStackedActivity(values)
+    } else {
+      setStackedActivity(undefined)
     }
+
     // While mapStyle is needed inside the useEffect, we don't want the component to rerender everytime a new instance is generated
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapInstance, currentTimeChunkId, tilesLoading, timebarVisualisation, urlViewport])
+  }, [
+    mapInstance,
+    currentTimeChunkId,
+    tilesLoading,
+    timebarVisualisation,
+    urlViewport,
+    visibleTemporalGridDataviews,
+  ])
 
   const dataviews = useSelector(selectTemporalgridDataviews)
-  const heatmapSublayerColors = useMemo(() => {
-    return dataviews?.map((dataview) => dataview.config?.color)
-  }, [dataviews])
+  const dataviewsColors = dataviews?.map((dataview) => dataview.config?.color)
 
   if (!start || !end) return null
   return (
@@ -140,13 +170,13 @@ const TimebarWrapper = () => {
       >
         {() => (
           <Fragment>
-            {timebarVisualisation === TimebarVisualisations.Heatmap && stackedActivity && (
+            {timebarVisualisation === TimebarVisualisations.Heatmap && (
               <Fragment>
                 {stackedActivity && (
                   <TimebarStackedActivity
                     key="stackedActivity"
                     data={stackedActivity}
-                    colors={heatmapSublayerColors}
+                    colors={dataviewsColors}
                     numSublayers={dataviews?.length}
                   />
                 )}
@@ -171,7 +201,13 @@ const TimebarWrapper = () => {
               <TimebarHighlighter
                 hoverStart={highlightedTime.start}
                 hoverEnd={highlightedTime.end}
-                activity={timebarGraph === TimebarGraphs.Speed && tracksGraph ? tracksGraph : null}
+                activity={
+                  timebarVisualisation === TimebarVisualisations.Vessel &&
+                  timebarGraph === TimebarGraphs.Speed &&
+                  tracksGraph
+                    ? tracksGraph
+                    : null
+                }
                 unit="knots"
               />
             )}
