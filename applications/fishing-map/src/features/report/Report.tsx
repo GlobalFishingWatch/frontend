@@ -124,20 +124,19 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
         </div>
       </div>
       <div className={styles.content}>
-        {reportStatus === AsyncReducerStatus.Idle && (
+        {isAvailable && reportStatus === AsyncReducerStatus.Idle && (
           <Fragment>
             <div className={styles.description}>
               {reportDescription}: {userData?.email}
             </div>
             <ReportFilter label={t('report.dateRange', 'Date Range')} taglist={dateRangeItems} />
             <ReportFilter label={t('report.area', 'Area')} taglist={areaItems} />
-            {isAvailable &&
-              dataviews?.map((dataview, index) => (
-                <ReportLayerPanel key={dataview.id} dataview={dataview} index={index} />
-              ))}
-            {!isAvailable && <Fragment>{reportNotAvailable}</Fragment>}
+            {dataviews?.map((dataview, index) => (
+              <ReportLayerPanel key={dataview.id} dataview={dataview} index={index} />
+            ))}
           </Fragment>
         )}
+        {!isAvailable && <Fragment>{reportNotAvailable}</Fragment>}
         {reportStatus === AsyncReducerStatus.LoadingCreate && (
           <Fragment>
             <div className={styles.loading}>
@@ -164,12 +163,13 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
         )}
       </div>
       <div className={styles.footer}>
-        {[AsyncReducerStatus.Finished, AsyncReducerStatus.Error].includes(reportStatus) && (
+        {(!isAvailable ||
+          [AsyncReducerStatus.Finished, AsyncReducerStatus.Error].includes(reportStatus)) && (
           <Button className={styles.saveBtn} onClick={onCloseClick} type="secondary">
             {t('report.close', 'Close')}
           </Button>
         )}
-        {reportStatus === AsyncReducerStatus.Idle && (
+        {isAvailable && reportStatus === AsyncReducerStatus.Idle && (
           <Button
             className={styles.saveBtn}
             onClick={onGenerateClick}
