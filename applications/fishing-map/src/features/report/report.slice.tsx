@@ -1,5 +1,6 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
+import type { GeoJSON } from 'geojson'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Report } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
@@ -25,7 +26,7 @@ export type CreateReport = {
   geometry: GeoJSON.FeatureCollection
 }
 
-const createSingleReportThunk = createAsyncThunk<
+export const createSingleReportThunk = createAsyncThunk<
   Report,
   CreateReport,
   {
