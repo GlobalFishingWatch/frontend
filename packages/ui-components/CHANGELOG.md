@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.13.3
+
+### Patch Changes
+
+- [`4e8ee291`](https://github.com/GlobalFishingWatch/frontend/commit/4e8ee29171eed49ce43bfd0607128da4888846df) [#340](https://github.com/GlobalFishingWatch/frontend/pull/340) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - new save icon
+
 ## 2.13.2
 
 ### Patch Changes
