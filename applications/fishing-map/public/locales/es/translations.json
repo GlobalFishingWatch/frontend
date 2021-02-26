@@ -6,7 +6,7 @@
     "apparentFishing": "Esfuerzo de pesca aparente",
     "confirm": "Confirmar",
     "context_area_plural": "Areas de contexto",
-    "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles. Puedes encontrar todas las vistas guardadas en tu área de usuario.",
+    "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "paises",
     "description": "Descripción",
     "environment": "Entorno",
@@ -21,7 +21,7 @@
     "name": "Nombre",
     "presence": "Presencia de pesca",
     "seeDefault": "Ver vista por defecto",
-    "share": "Haz click para compartir tu vista actual",
+    "share": "Share the current view",
     "update": "Actualizar",
     "user": "Usuario",
     "userProfile": "Perfil de usuario",
@@ -155,10 +155,14 @@
   },
   "workspace": {
     "emptyState": "Sus áreas de trabajo aparecerán aquí",
+    "nameInput": "Workspace name",
     "new": "Nuevo espacio de trabajo",
-    "save": "Haga clic para guardar la vista actual",
-    "saved": "Current view was saved and it's available in your user profile",
+    "save": "Save the current view",
+    "saved": "Current workspace was saved and it's available in your user profile",
     "title_plural": "Espacios de trabajo",
-    "title": "Espacio de trabajo"
+    "title": "Espacio de trabajo",
+    "remove": "Remove workspace",
+    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
+    "editName": "Edit workspace name"
   }
 }
