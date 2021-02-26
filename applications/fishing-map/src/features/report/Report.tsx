@@ -85,6 +85,11 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
     setLoading(false)
   }
 
+  // TODO Remove this when report geometry is obtained from
+  // the selected point in the location query
+  if (!reportAreaName) {
+    onCloseClick()
+  }
   if (!staticTime) {
     return <Fragment />
   }
