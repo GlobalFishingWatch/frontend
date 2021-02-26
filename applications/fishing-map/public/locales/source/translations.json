@@ -160,6 +160,9 @@
     "save": "Save the current view",
     "saved": "Current workspace was saved and it's available in your user profile",
     "title_plural": "Workspaces",
-    "title": "Workspace"
+    "title": "Workspace",
+    "remove": "Remove workspace",
+    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
+    "editName": "Edit workspace name"
   }
 }

@@ -36,6 +36,7 @@
 .dataset,
 .workspace {
   padding: var(--space-XS) var(--space-XS) 0 0;
+  display: flex;
 }
 
 .dataset,
@@ -45,6 +46,7 @@
 
 .workspaceLink {
   display: flex;
+  flex: 1;
   align-items: center;
 }
 
