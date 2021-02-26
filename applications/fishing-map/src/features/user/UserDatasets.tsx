@@ -115,15 +115,13 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
                         onClick={() => onEditClick(dataset)}
                       />
                     )}
-                    {!datasetImporting && (
-                      <IconButton
-                        icon="delete"
-                        type="warning"
-                        loading={dataset.id === datasetStatusId}
-                        tooltip={t('dataset.remove', 'Remove dataset')}
-                        onClick={() => onDeleteClick(dataset)}
-                      />
-                    )}
+                    <IconButton
+                      icon="delete"
+                      type="warning"
+                      loading={dataset.id === datasetStatusId}
+                      tooltip={t('dataset.remove', 'Remove dataset')}
+                      onClick={() => onDeleteClick(dataset)}
+                    />
                   </div>
                 </li>
               )

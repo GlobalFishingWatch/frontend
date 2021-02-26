@@ -96,7 +96,7 @@ export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   // prettier-ignore
   bivariate: [
     DEFAULT_BACKGROUND_TRANSPARENT_COLOR,
-    '#244979', '#207D8C', '#17B4A0', '#26FFBD',
+    '#113869', '#207D8C', '#17B4A0', '#26FFBD',
     '#66518F', '#667CA0', '#63B3AD', '#66FFC2',
     '#A659A9', '#A67CB2', '#A6B3BB', '#A6FFC7',
     '#FF64CE', '#FF7CCE', '#FFB3CE', '#FFFFFF',

@@ -48,7 +48,7 @@
     "importing": "Dataset is being imported",
     "new": "New dataset",
     "remove": "Remove dataset",
-    "uploadLogin": "You need to log in to upload datasets",
+    "uploadLogin": "You need to <1>login</1> to upload datasets",
     "uploadNewContex": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset",
     "addEnvironment": "Add environment dataset",
@@ -66,6 +66,7 @@
     "privateView": "This is a private view",
     "requestAccess": "Request access",
     "switchAccount": "Switch account",
+    "trackLoading": "There was an error loading the vessel track",
     "uploadError": "There was an error uploading your dataset",
     "workspaceLoad": "There was an error loading the workspace, please try again later",
     "workspaceNotFound": "The view you request was not found"
@@ -136,16 +137,20 @@
     "tracksDisabled": "Select at least one vessel"
   },
   "vessel": {
+    "beam": "Beam",
     "callsign": "Callsign",
+    "capacity": "Capacity",
     "firstTransmissionDate": "First transmission date",
     "flag": "Flag",
     "fleet": "Fleet",
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Last transmission date",
+    "length": "Length",
     "lengthRange": "Length range",
     "loading": "Loading vessel track",
     "mmsi": "MMSI",
+    "nationalId": "National Id",
     "origin": "Origin",
     "registeredGearType": "Registered Gear Type",
     "source": "Source",
@@ -158,6 +163,8 @@
   "workspace": {
     "emptyState": "Your workspaces will appear here",
     "new": "New Workspace",
+    "save": "Click to save the current view",
+    "saved": "Current view was saved and it's available in your user profile",
     "title_plural": "Workspaces",
     "title": "Workspace"
   }

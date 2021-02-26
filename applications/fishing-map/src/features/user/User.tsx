@@ -6,14 +6,10 @@ import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DatasetCategory } from '@globalfishingwatch/api-types/dist'
 import EditDataset from 'features/datasets/EditDataset'
-import {
-  fetchWorkspacesThunk,
-  selectWorkspaceListStatus,
-} from 'features/workspaces-list/workspaces-list.slice'
+import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
-import { fetchAllDatasetsThunk, selectAllDatasetsRequested } from 'features/datasets/datasets.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import styles from './User.module.css'
 import { fetchUserThunk, GUEST_USER_TYPE, logoutUserThunk, selectUserData } from './user.slice'
@@ -27,20 +23,17 @@ function User() {
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
   const { datasetModal, editingDatasetId } = useDatasetModalConnect()
-  const allDatasetsRequested = useSelector(selectAllDatasetsRequested)
-  const workspaceListStatus = useSelector(selectWorkspaceListStatus)
   const [logoutLoading, setLogoutLoading] = useState(false)
 
   useEffect(() => {
     if (userLogged && userData?.id) {
-      if (workspaceListStatus === AsyncReducerStatus.Idle) {
-        dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
-      }
-      if (!allDatasetsRequested) {
-        dispatch(fetchAllDatasetsThunk())
-      }
+      dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
     }
-  }, [dispatch, userData?.id, userLogged, workspaceListStatus, allDatasetsRequested])
+  }, [dispatch, userData?.id, userLogged])
+
+  useEffect(() => {
+    dispatch(fetchAllDatasetsThunk())
+  }, [dispatch])
 
   useEffect(() => {
     if (userData?.type === GUEST_USER_TYPE) {

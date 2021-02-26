@@ -7,6 +7,7 @@
     "confirm": "Confirmar",
     "context_area_plural": "Areas de contexto",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles. Puedes encontrar todas las vistas guardadas en tu área de usuario.",
+    "country_plural": "paises",
     "description": "Descripción",
     "environment": "Entorno",
     "hour": "Hora",
@@ -29,8 +30,7 @@
     "dismiss": "Cancelar",
     "save": "Guardar",
     "events": "Eventos",
-    "fishing": "Pesca",
-    "country_plural": "paises"
+    "fishing": "Pesca"
   },
   "dataset": {
     "addContext": "Añadir conjunto de datos de contexto",
@@ -47,7 +47,7 @@
     "importing": "Se está importando el conjunto de datos",
     "new": "Nuevo conjunto de datos",
     "remove": "Remove dataset",
-    "uploadLogin": "Necesitas iniciar sesión para subir conjuntos de datos",
+    "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir conjuntos de datos",
     "uploadNewContex": "Subir nuevas áreas de contexto",
     "uploadNewEnviroment": "Subir nuevo conjunto de datos de entorno",
     "addEnvironment": "Añadir conjunto de datos de entorno",
@@ -65,6 +65,7 @@
     "privateView": "Esta es una vista privada",
     "requestAccess": "Solicitar acceso",
     "switchAccount": "Cambiar cuenta",
+    "trackLoading": "Se ha producido un error al cargar la pista del buque",
     "uploadError": "Hubo un error al cargar su conjunto de datos",
     "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo",
     "workspaceNotFound": "La vista que solicitó no se encontró"
@@ -129,16 +130,20 @@
     "tracksDisabled": "Seleccione al menos un buque"
   },
   "vessel": {
+    "beam": "Beam",
     "callsign": "Callsing",
+    "capacity": "Capacity",
     "firstTransmissionDate": "Fecha primera transmisión",
     "flag": "Bandera",
     "fleet": "Flota",
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Fecha última transmisión",
+    "length": "Length",
     "lengthRange": "Rango de longitud",
     "loading": "Cargando track de buque",
     "mmsi": "MMSI",
+    "nationalId": "National Id",
     "origin": "Origen",
     "registeredGearType": "Tipo de equipo registrado",
     "source": "Fuente",
@@ -151,6 +156,8 @@
   "workspace": {
     "emptyState": "Sus áreas de trabajo aparecerán aquí",
     "new": "Nuevo espacio de trabajo",
+    "save": "Haga clic para guardar la vista actual",
+    "saved": "Current view was saved and it's available in your user profile",
     "title_plural": "Espacios de trabajo",
     "title": "Espacio de trabajo"
   }
