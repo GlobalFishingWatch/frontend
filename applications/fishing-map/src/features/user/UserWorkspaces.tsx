@@ -35,7 +35,7 @@ function UserWorkspaces() {
         dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
       }
     },
-    [dispatch, t]
+    [dispatch, t, userData]
   )
 
   const onDeleteClick = useCallback(
@@ -51,7 +51,7 @@ function UserWorkspaces() {
         dispatch(fetchWorkspacesThunk({ userId: userData?.id }))
       }
     },
-    [dispatch, t]
+    [dispatch, t, userData]
   )
 
   return (
