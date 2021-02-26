@@ -8,7 +8,7 @@ import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { setReportGeometry } from 'features/report/report.slice'
 import { useMapboxInstance } from '../map.context'
-import { selectClickedEvent } from '../map.slice'
+import { selectClickedEvent, toggleReport } from '../map.slice'
 import styles from './Popup.module.css'
 
 const TunaRfmoLinksById: Record<string, string> = {
@@ -33,6 +33,8 @@ function FeatureRow({
   index = Date.now(),
 }: FeatureRowProps) {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
+
   if (!feature.value) return null
   const { gfw_id } = feature.properties
 
@@ -91,6 +93,7 @@ function FeatureRow({
               icon="report"
               tooltip={t('common.report', 'Report')}
               onClick={() => onReportClick && onReportClick(feature)}
+              // onClick={() => dispatch(toggleReport())}
               size="small"
             />
             <a

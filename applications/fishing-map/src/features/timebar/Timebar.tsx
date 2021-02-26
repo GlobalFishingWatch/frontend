@@ -1,6 +1,9 @@
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import type { Map } from '@globalfishingwatch/mapbox-gl'
+import type { Geometry, Polygon, MultiPolygon } from 'geojson'
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+import simplify from '@turf/simplify'
+import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import TimebarComponent, {
   TimebarTracks,
   TimebarActivity,
@@ -8,7 +11,12 @@ import TimebarComponent, {
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
 import { useTilesState } from '@globalfishingwatch/react-hooks'
-import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
+import {
+  Generators,
+  quantizeOffsetToDate,
+  TimeChunk,
+  TimeChunks,
+} from '@globalfishingwatch/layer-composer'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useMapboxInstance } from 'features/map/map.context'
@@ -18,6 +26,7 @@ import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph, selectViewport } from 'features/app/app.selectors'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import { useCurrentTimeChunkId, useMapStyle } from 'features/map/map.hooks'
+import { selectClickedEvent, selectReport } from 'features/map/map.slice'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -26,6 +35,37 @@ import {
   hasStaticHeatmapLayersActive,
 } from './timebar.selectors'
 import styles from './Timebar.module.css'
+
+const filterByViewport = (
+  features: MapboxGeoJSONFeature[],
+  boundsSW: number[],
+  boundsNE: number[]
+) => {
+  const leftWorldCopy = boundsNE[0] >= 180
+  const rightWorldCopy = boundsSW[0] <= -180
+  return features.filter((f) => {
+    const [lon, lat] = (f.geometry as any).coordinates[0][0]
+    const rightOffset = rightWorldCopy && lon > 0 ? -360 : 0
+    const leftOffset = leftWorldCopy && lon < 0 ? 360 : 0
+    return (
+      lon + rightOffset + leftOffset > boundsSW[0] &&
+      lon + rightOffset + leftOffset < boundsNE[0] &&
+      lat > boundsSW[1] &&
+      lat < boundsNE[1]
+    )
+  })
+}
+
+const filterByPolygon = (features: MapboxGeoJSONFeature[], polygon: Geometry) => {
+  // const n = performance.now()
+  const simplifiedPoly = simplify(polygon as Polygon | MultiPolygon, { tolerance: 0.1 })
+  const filtered = features.filter((f) => {
+    const coord = (f.geometry as any).coordinates[0][0]
+    return booleanPointInPolygon(coord, simplifiedPoly as Polygon | MultiPolygon)
+  })
+  // console.log('filter: ', performance.now() - n)
+  return filtered
+}
 
 const TimebarWrapper = () => {
   const { start, end, dispatchTimeranges } = useTimerangeConnect()
@@ -56,6 +96,8 @@ const TimebarWrapper = () => {
   const currentTimeChunkId = useCurrentTimeChunkId()
   const mapStyle = useMapStyle()
 
+  const clickedEvent = useSelector(selectClickedEvent)
+  const report = useSelector(selectReport)
   const [stackedActivity, setStackedActivity] = useState<any>()
 
   const visibleTemporalGridDataviews = useMemo(
@@ -71,7 +113,6 @@ const TimebarWrapper = () => {
       setStackedActivity(undefined)
       return
     }
-
     const temporalgrid = mapStyle.metadata?.temporalgrid
     if (!temporalgrid) return
     const numSublayers = temporalgrid.numSublayers
@@ -81,60 +122,53 @@ const TimebarWrapper = () => {
 
     // Getting features within viewport - it's somehow faster to use querySource with a crude viewport filter, than using queryRendered
     const [boundsSW, boundsNE] = mapInstance.getBounds().toArray()
-    const leftWorldCopy = boundsNE[0] >= 180
-    const rightWorldCopy = boundsSW[0] <= -180
-    const allFeaturesWithStyle = mapInstance
-      .querySourceFeatures(currentTimeChunkId, {
-        sourceLayer: 'temporalgrid_interactive',
-      })
-      .filter((f) => {
-        const [lon, lat] = (f.geometry as any).coordinates[0][0]
-        const rightOffset = rightWorldCopy && lon > 0 ? -360 : 0
-        const leftOffset = leftWorldCopy && lon < 0 ? 360 : 0
-        return (
-          lon + rightOffset + leftOffset > boundsSW[0] &&
-          lon + rightOffset + leftOffset < boundsNE[0] &&
-          lat > boundsSW[1] &&
-          lat < boundsNE[1]
-        )
-      })
+    const allFeatures = mapInstance.querySourceFeatures(currentTimeChunkId, {
+      sourceLayer: 'temporalgrid_interactive',
+    })
     // console.log('querySourceFeatures', performance.now() - n)
     // n = performance.now()
+    const clickedContext = clickedEvent?.features?.find(
+      (f) => f.generatorType === Generators.Type.Context && f.geometry
+    )
+    let filteredFeatures = []
+    if (clickedContext && report) {
+      filteredFeatures = filterByPolygon(allFeatures, clickedContext.geometry as Geometry)
+    } else {
+      filteredFeatures = filterByViewport(allFeatures, boundsSW, boundsNE)
+    }
 
-    if (allFeaturesWithStyle?.length) {
-      const values = getTimeSeries(
-        allFeaturesWithStyle as any,
-        numSublayers,
-        chunkQuantizeOffset
-      ).map((frameValues) => {
-        // Ideally we don't have the features not visible in 4wings but we have them
-        // so this needs to be filtered by the current active ones
-        const activeFrameValues = Object.fromEntries(
-          Object.entries(frameValues).map(([key, value]) => {
-            const cleanValue =
-              key === 'frame' || visibleTemporalGridDataviews[parseInt(key)] === true ? value : 0
-            return [key, cleanValue]
-          })
-        )
-        return {
-          ...activeFrameValues,
-          date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
+    if (filteredFeatures?.length > 0) {
+      const values = getTimeSeries(filteredFeatures as any, numSublayers, chunkQuantizeOffset).map(
+        (frameValues) => {
+          // Ideally we don't have the features not visible in 4wings but we have them
+          // so this needs to be filtered by the current active ones
+          const activeFrameValues = Object.fromEntries(
+            Object.entries(frameValues).map(([key, value]) => {
+              const cleanValue =
+                key === 'frame' || visibleTemporalGridDataviews[parseInt(key)] === true ? value : 0
+              return [key, cleanValue]
+            })
+          )
+          return {
+            ...activeFrameValues,
+            date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
+          }
         }
-      })
+      )
       // console.log('compute graph', performance.now() - n)
       setStackedActivity(values)
     } else {
       setStackedActivity(undefined)
     }
-
     // While mapStyle is needed inside the useEffect, we don't want the component to rerender everytime a new instance is generated
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    report,
     mapInstance,
     currentTimeChunkId,
     tilesLoading,
-    timebarVisualisation,
     urlViewport,
+    timebarVisualisation,
     visibleTemporalGridDataviews,
   ])
 
