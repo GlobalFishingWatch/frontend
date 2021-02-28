@@ -54,9 +54,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
 
   const reportNotAvailable = t(
     'report.notAvailable',
-    'Report is not available for the current ' +
-      'layers, you need to enable fishing effort layer ' +
-      'or event layers to generate the report.'
+    `Report is not available for the current layers, you need to enable fishing effort layer or event layers to generate the report.`
   )
 
   const onCloseClick = () => {

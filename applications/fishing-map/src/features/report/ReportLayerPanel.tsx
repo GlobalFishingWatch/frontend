@@ -45,7 +45,7 @@ function ReportLayerPanel({ dataview, index }: LayerPanelProps): React.ReactElem
   const presenceDataview = isPresenceDataview(dataview)
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
 
-  let datasetName = dataset ? t(`datasets:${dataset?.id}.name`) : dataview.name || ''
+  let datasetName = dataset ? t(`datasets:${dataset?.id}.name` as any) : dataview.name || ''
   if (fishignDataview || presenceDataview) {
     datasetName = presenceDataview
       ? t(`common.presence`, 'Fishing presence')
@@ -53,12 +53,7 @@ function ReportLayerPanel({ dataview, index }: LayerPanelProps): React.ReactElem
   }
   const TitleComponent = <h3 className={styles.name}>{datasetName}</h3>
   return (
-    <div
-      className={cx(styles.LayerPanel, {
-        [styles.expandedContainerOpen]: false,
-        [styles.noBorder]: false,
-      })}
-    >
+    <div className={cx(styles.LayerPanel)}>
       <div className={styles.header}>
         {datasetName.length > 24 ? (
           <Tooltip content={datasetName}>{TitleComponent}</Tooltip>

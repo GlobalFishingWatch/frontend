@@ -106,9 +106,16 @@
     "zoom_out": "Zoom out"
   },
   "report": {
+    "area": "Area",
     "close": "Close report",
-    "fishingActivityByEEZ": "Fishing Activity by EEZ",
+    "dateRange": "Date Range",
+    "errorMessage": "Something went wrong",
     "fishingActivityByEEZDescription": "A fishing activity report for the selected date ranges and filters will be generated and sent to your email account",
+    "fishingActivityReport": "Fishing Activity Report",
+    "generating": "We are generating the report for you, it'll be ready soon.",
+    "notAvailable": "missing_translation",
+    "successfullMessage": "The report was sent successfully, you'll receive it by email soon.",
+    "fishingActivityByEEZ": "Fishing Activity by EEZ",
     "generate": "Generate"
   },
   "search": {
@@ -163,9 +170,9 @@
   "workspace": {
     "emptyState": "Your workspaces will appear here",
     "new": "New Workspace",
+    "title_plural": "Workspaces",
     "save": "Click to save the current view",
     "saved": "Current view was saved and it's available in your user profile",
-    "title_plural": "Workspaces",
     "title": "Workspace"
   }
 }
