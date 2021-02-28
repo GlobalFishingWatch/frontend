@@ -60,6 +60,13 @@ export const selectWorkspaceStateProperty = (property: WorkspaceStateProperty) =
     }
   )
 
+export const selectReportQuery = createSelector(
+  [selectWorkspaceStateProperty('report')],
+  (report): string => {
+    return report
+  }
+)
+
 export const selectSearchQuery = createSelector(
   [selectWorkspaceStateProperty('query')],
   (query): string => {

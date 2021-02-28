@@ -107,7 +107,8 @@ export type TooltipEventFeature = {
   type?: Type
   color?: string
   unit?: string
-  layer?: ContextLayerType | null
+  layerId: string
+  contextLayer?: ContextLayerType | null
   value: string
   properties: Record<string, string>
   vesselsInfo?: {
@@ -150,6 +151,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       // Not needed to create a dataview just for the workspaces list interaction
       if (feature.generatorId && (feature.generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
+          layerId: feature.layerId as string,
           type: Generators.Type.GL,
           value: feature.properties.label,
           properties: {},
@@ -165,7 +167,8 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       color: dataview.config?.color || 'black',
       unit: feature.unit,
       value: feature.value,
-      layer: feature.generatorContextLayer,
+      layerId: feature.layerId,
+      contextLayer: feature.generatorContextLayer,
       properties: { ...feature.properties },
     }
     // Insert custom properties by each dataview configuration
@@ -194,6 +197,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
   })
   if (!tooltipEventFeatures.length) return null
   return {
+    point: event.point,
     latitude: event.latitude,
     longitude: event.longitude,
     features: tooltipEventFeatures,

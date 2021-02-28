@@ -188,6 +188,11 @@ const workspaceSlice = createSlice({
         state.data.state.query = undefined
       }
     },
+    resetWorkspaceReportQuery(state) {
+      if (state.data?.state) {
+        state.data.state.report = undefined
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaceThunk.pending, (state) => {
@@ -224,6 +229,6 @@ const workspaceSlice = createSlice({
   },
 })
 
-export const { resetWorkspaceSearchQuery } = workspaceSlice.actions
+export const { resetWorkspaceSearchQuery, resetWorkspaceReportQuery } = workspaceSlice.actions
 
 export default workspaceSlice.reducer
