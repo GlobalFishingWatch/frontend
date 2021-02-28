@@ -15,6 +15,7 @@ import Timebar from 'features/timebar/Timebar'
 import Footer from 'features/footer/Footer'
 import {
   selectCurrentWorkspaceId,
+  selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { fetchUserThunk } from 'features/user/user.slice'
@@ -48,6 +49,7 @@ function App(): React.ReactElement {
   const locationType = useSelector(selectLocationType)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
+  const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   // const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const narrowSidebar = useSelector(isWorkspaceLocation)
 
@@ -82,7 +84,11 @@ function App(): React.ReactElement {
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
   useEffect(() => {
-    if (userLogged && (homeNeedsFetch || hasWorkspaceIdChanged)) {
+    if (
+      userLogged &&
+      workspaceCustomStatus !== AsyncReducerStatus.Loading &&
+      (homeNeedsFetch || hasWorkspaceIdChanged)
+    ) {
       dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

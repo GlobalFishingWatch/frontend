@@ -66,7 +66,7 @@ export const getEnvironmentDataviewInstance = (
 ): DataviewInstance<Generators.Type> => {
   const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamp.includes(option.id))
   const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
-  const contextDataviewInstance = {
+  const environmentalDataviewInstance = {
     id: `environmental-${Date.now()}`,
     category: DataviewCategory.Environment,
     config: {
@@ -82,7 +82,7 @@ export const getEnvironmentDataviewInstance = (
       },
     ],
   }
-  return contextDataviewInstance
+  return environmentalDataviewInstance
 }
 
 export const getContextDataviewInstance = (
