@@ -168,15 +168,15 @@
     "transmission": "Transmission"
   },
   "workspace": {
+    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
+    "editName": "Edit workspace name",
     "emptyState": "Your workspaces will appear here",
     "nameInput": "Workspace name",
     "new": "New Workspace",
+    "remove": "Remove workspace",
     "save": "Save the current view",
     "saved": "Current view was saved and it's available in your user profile",
     "title_plural": "Workspaces",
-    "title": "Workspace",
-    "remove": "Remove workspace",
-    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
-    "editName": "Edit workspace name"
+    "title": "Workspace"
   }
 }

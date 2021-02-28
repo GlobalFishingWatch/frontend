@@ -28,6 +28,7 @@ import {
   selectReportStatus,
 } from './report.slice'
 import ReportFilter from './ReportFilter'
+import ReportGraphWrapper from './ReportGraphWrapper'
 
 type ReportPanelProps = {
   type: string
@@ -140,6 +141,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
           </Fragment>
         )}
         {!isAvailable && <Fragment>{reportNotAvailable}</Fragment>}
+        <ReportGraphWrapper />
         {reportStatus === AsyncReducerStatus.LoadingCreate && (
           <Fragment>
             <div className={styles.loading}>

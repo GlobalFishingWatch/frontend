@@ -1,8 +1,5 @@
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import type { Geometry, Polygon, MultiPolygon } from 'geojson'
-import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import simplify from '@turf/simplify'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import TimebarComponent, {
   TimebarTracks,
@@ -11,12 +8,7 @@ import TimebarComponent, {
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
 import { useTilesState } from '@globalfishingwatch/react-hooks'
-import {
-  Generators,
-  quantizeOffsetToDate,
-  TimeChunk,
-  TimeChunks,
-} from '@globalfishingwatch/layer-composer'
+import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useMapboxInstance } from 'features/map/map.context'
@@ -26,7 +18,7 @@ import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph, selectViewport } from 'features/app/app.selectors'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import { useCurrentTimeChunkId, useMapStyle } from 'features/map/map.hooks'
-import { selectClickedEvent, selectReport } from 'features/map/map.slice'
+import { selectReport } from 'features/map/map.slice'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -54,17 +46,6 @@ const filterByViewport = (
       lat < boundsNE[1]
     )
   })
-}
-
-const filterByPolygon = (features: MapboxGeoJSONFeature[], polygon: Geometry) => {
-  // const n = performance.now()
-  const simplifiedPoly = simplify(polygon as Polygon | MultiPolygon, { tolerance: 0.1 })
-  const filtered = features.filter((f) => {
-    const coord = (f.geometry as any).coordinates[0][0]
-    return booleanPointInPolygon(coord, simplifiedPoly as Polygon | MultiPolygon)
-  })
-  // console.log('filter: ', performance.now() - n)
-  return filtered
 }
 
 const TimebarWrapper = () => {
@@ -96,7 +77,6 @@ const TimebarWrapper = () => {
   const currentTimeChunkId = useCurrentTimeChunkId()
   const mapStyle = useMapStyle()
 
-  const clickedEvent = useSelector(selectClickedEvent)
   const report = useSelector(selectReport)
   const [stackedActivity, setStackedActivity] = useState<any>()
 
@@ -127,16 +107,7 @@ const TimebarWrapper = () => {
     })
     // console.log('querySourceFeatures', performance.now() - n)
     // n = performance.now()
-    const clickedContext = clickedEvent?.features?.find(
-      (f) => f.generatorType === Generators.Type.Context && f.geometry
-    )
-    let filteredFeatures = []
-    if (clickedContext && report) {
-      filteredFeatures = filterByPolygon(allFeatures, clickedContext.geometry as Geometry)
-    } else {
-      filteredFeatures = filterByViewport(allFeatures, boundsSW, boundsNE)
-    }
-
+    const filteredFeatures = filterByViewport(allFeatures, boundsSW, boundsNE)
     if (filteredFeatures?.length > 0) {
       const values = getTimeSeries(filteredFeatures as any, numSublayers, chunkQuantizeOffset).map(
         (frameValues) => {

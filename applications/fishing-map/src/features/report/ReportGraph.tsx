@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React from 'react'
 import {
   ResponsiveContainer,
   LineChart,
@@ -10,15 +10,17 @@ import {
 } from 'recharts'
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
-import { Dataview } from '@globalfishingwatch/api-types'
-import { GraphData } from 'data/data'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import './DataviewGraph.module.css'
-import { useDataviewResource } from './dataviews.hook'
+import './ReportGraph.module.css'
 
-interface DataviewGraphProps {
-  dataview: Dataview
-  graphColor: string
+export interface GraphData {
+  date: string
+  value: number
+}
+
+interface ReportGraphProps {
+  timeseries: GraphData[]
+  graphColor?: string
   graphUnit?: string
 }
 
@@ -32,14 +34,13 @@ const formatDates = (tick: string, withYear = false) => {
   return tickDate.month === 1 || withYear ? tickDate.toFormat('LLL yy') : tickDate.toFormat('LLL')
 }
 
-const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
-  const { dataview, graphColor, graphUnit = '' } = props
+const ReportGraph: React.FC<ReportGraphProps> = (props) => {
+  const { timeseries, graphColor, graphUnit = '' } = props
   const { start, end } = useTimerangeConnect()
-  const { dataviewResource } = useDataviewResource(dataview)
 
-  if (!dataviewResource || !dataviewResource.data) return null
+  if (!timeseries) return null
 
-  const data = dataviewResource.data.filter((current: any) => {
+  const data = timeseries.filter((current: any) => {
     const currentDate = DateTime.fromISO(current.date).startOf('day')
     const startDate = DateTime.fromISO(start).startOf('day')
     const endDate = DateTime.fromISO(end).startOf('day')
@@ -80,7 +81,7 @@ const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
         />
         <Tooltip
           labelFormatter={(label) => formatDates(label as string, true)}
-          formatter={(value) => [`${(value as number).toFixed(2)} ${graphUnit}`, '']}
+          formatter={(value: number) => [`${(value as number).toFixed(2)} ${graphUnit}`, '']}
           separator=""
         />
         <Line
@@ -95,4 +96,4 @@ const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
   )
 }
 
-export default memo(DataviewGraph)
+export default ReportGraph
