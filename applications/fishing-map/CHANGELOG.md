@@ -1,5 +1,17 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.26.0
+
+### Minor Changes
+
+- [`c33e3caa`](https://github.com/GlobalFishingWatch/frontend/commit/c33e3caa4d0efbea3d0ce9ab49af6dc7491b282a) [#343](https://github.com/GlobalFishingWatch/frontend/pull/343) Thanks [@rdgfuentes](https://github.com/rdgfuentes)! - send clicked point in extended feature
+
+### Patch Changes
+
+- Updated dependencies [[`c33e3caa`](https://github.com/GlobalFishingWatch/frontend/commit/c33e3caa4d0efbea3d0ce9ab49af6dc7491b282a), [`c33e3caa`](https://github.com/GlobalFishingWatch/frontend/commit/c33e3caa4d0efbea3d0ce9ab49af6dc7491b282a)]:
+  - @globalfishingwatch/react-hooks@4.7.0
+  - @globalfishingwatch/api-types@2.12.0
+
 ## 0.25.6
 
 ### Patch Changes
