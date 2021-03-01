@@ -4,18 +4,13 @@ import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import simplify from '@turf/simplify'
 import { useSelector } from 'react-redux'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
-import {
-  Generators,
-  quantizeOffsetToDate,
-  TimeChunk,
-  TimeChunks,
-} from '@globalfishingwatch/layer-composer'
+import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
-import { selectClickedEvent } from 'features/map/map.slice'
 import { useMapboxInstance } from 'features/map/map.context'
 import { useCurrentTimeChunkId, useMapStyle } from 'features/map/map.hooks'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
-import ReportGraph from './ReportGraph'
+import AnalysisGraph from './AnalysisGraph'
+import { selectAnalysisGeometry } from './analysis.slice'
 
 const filterByPolygon = (features: MapboxGeoJSONFeature[], polygon: Geometry) => {
   // const n = performance.now()
@@ -28,11 +23,11 @@ const filterByPolygon = (features: MapboxGeoJSONFeature[], polygon: Geometry) =>
   return filtered
 }
 
-function ReportGraphWrapper() {
+function AnalysisGraphWrapper() {
   const temporalGridDataviews = useSelector(selectTemporalgridDataviews)
-  const clickedEvent = useSelector(selectClickedEvent)
   const mapInstance = useMapboxInstance()
   const currentTimeChunkId = useCurrentTimeChunkId()
+  const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const mapStyle = useMapStyle()
   const temporalgrid = mapStyle.metadata?.temporalgrid
   if (!temporalgrid) return null
@@ -44,12 +39,12 @@ function ReportGraphWrapper() {
   const allFeatures = mapInstance?.querySourceFeatures(currentTimeChunkId, {
     sourceLayer: 'temporalgrid_interactive',
   })
-  const clickedContext = clickedEvent?.features?.find(
-    (f) => f.generatorType === Generators.Type.Context && f.geometry
-  )
   let filteredFeatures
-  if (allFeatures && clickedContext) {
-    filteredFeatures = filterByPolygon(allFeatures, clickedContext.geometry as Geometry)
+  if (allFeatures && analysisAreaFeature) {
+    filteredFeatures = filterByPolygon(allFeatures, analysisAreaFeature.geometry)
+  }
+  if (!filteredFeatures) {
+    return null
   }
   const visibleTemporalGridDataviews = temporalGridDataviews?.map(
     (dataview) => dataview.config?.visible ?? false
@@ -64,8 +59,7 @@ function ReportGraphWrapper() {
       }
     }
   )
-  console.log(values)
-  return <ReportGraph timeseries={values} />
+  return <AnalysisGraph timeseries={values} />
 }
 
-export default ReportGraphWrapper
+export default AnalysisGraphWrapper

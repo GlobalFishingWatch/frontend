@@ -4,13 +4,13 @@ import { TagList } from '@globalfishingwatch/ui-components'
 import { TagItem } from '@globalfishingwatch/ui-components/dist/tag-list'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
-type ReportFilterProps = {
+type AnalysisFilterProps = {
   label: string
   taglist: TagItem[]
   color?: string
 }
 
-function ReportFilter({ label, taglist, color = '' }: ReportFilterProps): React.ReactElement {
+function AnalysisFilter({ label, taglist, color = '' }: AnalysisFilterProps): React.ReactElement {
   return (
     <div className={cx(styles.LayerPanel)}>
       <div className={styles.properties}>
@@ -25,4 +25,4 @@ function ReportFilter({ label, taglist, color = '' }: ReportFilterProps): React.
   )
 }
 
-export default ReportFilter
+export default AnalysisFilter

@@ -16,19 +16,20 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import styles from './Report.module.css'
-import ReportLayerPanel from './ReportLayerPanel'
+import styles from './Analysis.module.css'
+import ReportLayerPanel from './AnalysisLayerPanel'
 import {
-  clearReportGeometry,
+  clearAnalysisGeometry,
   CreateReport,
   createReportThunk,
   DateRange,
-  selectReportAreaName,
-  selectReportGeometry,
+  ReportGeometry,
+  selectAnalysisAreaName,
+  selectAnalysisGeometry,
   selectReportStatus,
-} from './report.slice'
-import ReportFilter from './ReportFilter'
-import ReportGraphWrapper from './ReportGraphWrapper'
+} from './analysis.slice'
+import ReportFilter from './AnalysisFilter'
+import ReportGraphWrapper from './AnalysisGraphWrapper'
 
 type ReportPanelProps = {
   type: string
@@ -41,27 +42,27 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const staticTime = useSelector(selectStaticTime)
   const dataviews = useSelector(selectTemporalgridDataviews) || []
-  const reportGeometry = useSelector(selectReportGeometry)
-  const reportAreaName = useSelector(selectReportAreaName)
+  const reportGeometry = useSelector(selectAnalysisGeometry)
+  const reportAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
   const isAvailable = dataviews.length > 0
   const isEnabled = !loading && isAvailable
 
   const reportDescription = t(
-    'report.fishingActivityByEEZDescription',
+    'analysis.emailDescription',
     'A fishing activity report for the selected date ranges and filters will be generated and sent to your email account'
   )
 
   const reportNotAvailable = t(
-    'report.notAvailable',
+    'analysis.notAvailable',
     `Report is not available for the current layers, you need to enable fishing effort layer or event layers to generate the report.`
   )
 
   const onCloseClick = () => {
     batch(() => {
       dispatch(resetWorkspaceReportQuery())
-      dispatch(clearReportGeometry(undefined))
+      dispatch(clearAnalysisGeometry(undefined))
       dispatchQueryParams({ report: undefined })
     })
   }
@@ -77,7 +78,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
         dateRange: staticTime as DateRange,
         filters: dataview.config?.filters || [],
         datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
-        geometry: reportGeometry as GeoJSON.FeatureCollection,
+        geometry: reportGeometry as ReportGeometry,
       }
     })
     dispatch(createReportThunk(createReports))
@@ -114,15 +115,13 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>
-          {t('report.fishingActivityReport', 'Fishing Activity Report')}
-        </h2>
+        <h2 className={styles.sectionTitle}>{t('analysis.title', 'Analysis')}</h2>
         <div className={cx('print-hidden', sectionStyles.sectionButtons)}>
           <IconButton
             icon="close"
             onClick={onCloseClick}
             type="border"
-            tooltip={t('report.close', 'Close')}
+            tooltip={t('analysis.close', 'Close')}
             tooltipPlacement="bottom"
           />
         </div>
@@ -133,8 +132,8 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
             <div className={styles.description}>
               {reportDescription}: {userData?.email}
             </div>
-            <ReportFilter label={t('report.dateRange', 'Date Range')} taglist={dateRangeItems} />
-            <ReportFilter label={t('report.area', 'Area')} taglist={areaItems} />
+            <ReportFilter label={t('analysis.dateRange', 'Date Range')} taglist={dateRangeItems} />
+            <ReportFilter label={t('analysis.area', 'Area')} taglist={areaItems} />
             {dataviews?.map((dataview, index) => (
               <ReportLayerPanel key={dataview.id} dataview={dataview} index={index} />
             ))}
@@ -147,7 +146,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
             <div className={styles.loading}>
               <div>
                 {t(
-                  'report.generating',
+                  'analysis.generating',
                   "We are generating the report for you, it'll be ready soon."
                 )}
               </div>
@@ -158,20 +157,20 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
         {reportStatus === AsyncReducerStatus.Finished && (
           <p className={styles.success}>
             {t(
-              'report.successfullMessage',
+              'analysis.successfullMessage',
               "The report was sent successfully, you'll receive it by email soon."
             )}
           </p>
         )}
         {reportStatus === AsyncReducerStatus.Error && (
-          <p className={styles.error}>{t('report.errorMessage', 'Something went wrong')} 🙈</p>
+          <p className={styles.error}>{t('analysis.errorMessage', 'Something went wrong')} 🙈</p>
         )}
       </div>
       <div className={styles.footer}>
         {(!isAvailable ||
           [AsyncReducerStatus.Finished, AsyncReducerStatus.Error].includes(reportStatus)) && (
           <Button className={styles.saveBtn} onClick={onCloseClick} type="secondary">
-            {t('report.close', 'Close')}
+            {t('analysis.close', 'Close')}
           </Button>
         )}
         {isAvailable && reportStatus === AsyncReducerStatus.Idle && (

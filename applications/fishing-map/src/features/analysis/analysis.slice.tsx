@@ -1,6 +1,6 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import type { GeoJSON } from 'geojson'
+import type { Feature, Polygon } from 'geojson'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Report } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
@@ -18,12 +18,14 @@ export type DateRange = {
   end: string
 }
 
+export type ReportGeometry = Feature<Polygon>
+
 export type CreateReport = {
   name: string
   dateRange: DateRange
   filters: Record<string, any>
   datasets: string[]
-  geometry: GeoJSON.FeatureCollection
+  geometry: ReportGeometry
 }
 
 export const createSingleReportThunk = createAsyncThunk<
@@ -110,7 +112,7 @@ export const createReportThunk = createAsyncThunk(
 
 export interface ReportState extends AsyncReducer<Report> {
   area: {
-    geometry: GeoJSON.FeatureCollection | undefined
+    geometry: ReportGeometry | undefined
     name: string
     id: string
   }
@@ -125,18 +127,18 @@ const initialState: ReportState = {
   },
 }
 
-const { slice: reportsSlice } = createAsyncSlice<ReportState, Report>({
+const { slice: analysisSlice } = createAsyncSlice<ReportState, Report>({
   name: 'report',
   initialState,
   reducers: {
-    clearReportGeometry: (state) => {
+    clearAnalysisGeometry: (state) => {
       state.area.geometry = undefined
       state.area.name = ''
       state.status = AsyncReducerStatus.Idle
     },
-    setReportGeometry: (
+    setAnalysisGeometry: (
       state,
-      action: PayloadAction<{ geometry: GeoJSON.FeatureCollection | undefined; name: string }>
+      action: PayloadAction<{ geometry: ReportGeometry | undefined; name: string }>
     ) => {
       state.area.geometry = action.payload.geometry
       state.area.name = action.payload.name
@@ -147,11 +149,11 @@ const { slice: reportsSlice } = createAsyncSlice<ReportState, Report>({
   },
 })
 
-export const { clearReportGeometry, setReportGeometry } = reportsSlice.actions
+export const { clearAnalysisGeometry, setAnalysisGeometry } = analysisSlice.actions
 
-export const selectReportGeometry = (state: RootState) => state.report.area.geometry
-export const selectReportAreaName = (state: RootState) => state.report.area.name
-export const selectReportAreaId = (state: RootState) => state.report.area.id
-export const selectReportStatus = (state: RootState) => state.report.status
+export const selectAnalysisGeometry = (state: RootState) => state.analysis.area.geometry
+export const selectAnalysisAreaName = (state: RootState) => state.analysis.area.name
+export const selectAnalysisAreaId = (state: RootState) => state.analysis.area.id
+export const selectReportStatus = (state: RootState) => state.analysis.status
 
-export default reportsSlice.reducer
+export default analysisSlice.reducer

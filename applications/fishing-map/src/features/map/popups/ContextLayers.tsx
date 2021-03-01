@@ -8,7 +8,7 @@ import { Feature, Polygon } from 'geojson'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
-import { setReportGeometry } from 'features/report/report.slice'
+import { setAnalysisGeometry } from 'features/analysis/analysis.slice'
 import { useMapboxInstance } from '../map.context'
 import { selectClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
@@ -161,7 +161,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
 
       batch(() => {
         dispatch(
-          setReportGeometry({
+          setAnalysisGeometry({
             geometry: contextAreaGeometry,
             name: feature.properties.value,
           })

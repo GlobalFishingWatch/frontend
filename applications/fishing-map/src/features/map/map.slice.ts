@@ -25,14 +25,12 @@ type MapState = {
   hovered: InteractionEvent | null
   status: AsyncReducerStatus
   bounds?: MiniglobeBounds
-  report: boolean
 }
 
 const initialState: MapState = {
   clicked: null,
   hovered: null,
   status: AsyncReducerStatus.Idle,
-  report: false,
 }
 
 type SublayerVessels = {
@@ -216,13 +214,9 @@ const slice = createSlice({
     setClickedEvent: (state, action: PayloadAction<InteractionEvent | null>) => {
       if (action.payload === null) {
         state.clicked = null
-        state.report = false
         return
       }
       state.clicked = { ...action.payload }
-    },
-    toggleReport: (state) => {
-      state.report = !state.report
     },
     setBounds: (state, action: PayloadAction<MiniglobeBounds>) => {
       state.bounds = action.payload
@@ -259,8 +253,7 @@ const slice = createSlice({
 
 export const selectClickedEvent = (state: RootState) => state.map.clicked
 export const selectClickedEventStatus = (state: RootState) => state.map.status
-export const selectReport = (state: RootState) => state.map.report
 export const selectBounds = (state: RootState) => state.map.bounds
 
-export const { setClickedEvent, toggleReport, setBounds } = slice.actions
+export const { setClickedEvent, setBounds } = slice.actions
 export default slice.reducer

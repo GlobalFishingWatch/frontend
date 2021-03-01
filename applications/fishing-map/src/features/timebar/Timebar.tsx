@@ -18,7 +18,6 @@ import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph, selectViewport } from 'features/app/app.selectors'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import { useCurrentTimeChunkId, useMapStyle } from 'features/map/map.hooks'
-import { selectReport } from 'features/map/map.slice'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -77,7 +76,6 @@ const TimebarWrapper = () => {
   const currentTimeChunkId = useCurrentTimeChunkId()
   const mapStyle = useMapStyle()
 
-  const report = useSelector(selectReport)
   const [stackedActivity, setStackedActivity] = useState<any>()
 
   const visibleTemporalGridDataviews = useMemo(
@@ -134,7 +132,6 @@ const TimebarWrapper = () => {
     // While mapStyle is needed inside the useEffect, we don't want the component to rerender everytime a new instance is generated
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    report,
     mapInstance,
     currentTimeChunkId,
     tilesLoading,

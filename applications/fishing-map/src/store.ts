@@ -12,7 +12,7 @@ import timebarReducer from './features/timebar/timebar.slice'
 import mapReducer from './features/map/map.slice'
 import rulersReducer from './features/map/controls/rulers.slice'
 import debugReducer from './features/debug/debug.slice'
-import reportReducer from './features/report/report.slice'
+import analysisReducer from './features/analysis/analysis.slice'
 
 const {
   reducer: location,
@@ -35,7 +35,7 @@ const rootReducer = combineReducers({
   debug: debugReducer,
   location: location,
   title: titleReducer,
-  report: reportReducer,
+  analysis: analysisReducer,
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK

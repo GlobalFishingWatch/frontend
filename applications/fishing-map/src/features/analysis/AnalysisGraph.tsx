@@ -11,14 +11,14 @@ import {
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import './ReportGraph.module.css'
+import './AnalysisGraph.module.css'
 
 export interface GraphData {
   date: string
   value: number
 }
 
-interface ReportGraphProps {
+interface AnalysisGraphProps {
   timeseries: GraphData[]
   graphColor?: string
   graphUnit?: string
@@ -34,7 +34,7 @@ const formatDates = (tick: string, withYear = false) => {
   return tickDate.month === 1 || withYear ? tickDate.toFormat('LLL yy') : tickDate.toFormat('LLL')
 }
 
-const ReportGraph: React.FC<ReportGraphProps> = (props) => {
+const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
   const { timeseries, graphColor, graphUnit = '' } = props
   const { start, end } = useTimerangeConnect()
 
@@ -96,4 +96,4 @@ const ReportGraph: React.FC<ReportGraphProps> = (props) => {
   )
 }
 
-export default ReportGraph
+export default AnalysisGraph

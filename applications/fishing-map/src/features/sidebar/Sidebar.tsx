@@ -16,7 +16,7 @@ import WorkspacesList from 'features/workspaces-list/WorkspacesList'
 import NewDataset from 'features/datasets/NewDataset'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
-import Report from 'features/report/Report'
+import Analysis from 'features/analysis/Analysis'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -92,7 +92,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   }
 
   if (reportQuery !== undefined) {
-    return <Report type={reportQuery} />
+    return <Analysis type={reportQuery} />
   }
 
   return (

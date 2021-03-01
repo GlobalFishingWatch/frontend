@@ -105,17 +105,16 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
-  "report": {
+  "analysis": {
     "area": "Area",
-    "close": "Close report",
+    "close": "Close analysis",
     "dateRange": "Date Range",
     "errorMessage": "Something went wrong",
-    "fishingActivityByEEZDescription": "A fishing activity report for the selected date ranges and filters will be generated and sent to your email account",
-    "fishingActivityReport": "Fishing Activity Report",
+    "emailDescription": "A report for the selected date ranges and filters will be generated and sent to your email account",
+    "title": "Analysis",
     "generating": "We are generating the report for you, it'll be ready soon.",
     "notAvailable": "missing_translation",
     "successfullMessage": "The report was sent successfully, you'll receive it by email soon.",
-    "fishingActivityByEEZ": "Fishing Activity by EEZ",
     "generate": "Generate"
   },
   "search": {
