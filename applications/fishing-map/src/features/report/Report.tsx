@@ -16,8 +16,8 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import ReportLayerPanel from '../workspace/shared/ReportLayerPanel'
 import styles from './Report.module.css'
-import ReportLayerPanel from './ReportLayerPanel'
 import {
   clearReportGeometry,
   CreateReport,

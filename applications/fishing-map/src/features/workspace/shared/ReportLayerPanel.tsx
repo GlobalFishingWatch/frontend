@@ -7,12 +7,12 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from 'types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getFlagsByIds } from 'utils/flags'
-import { getSchemaFieldsSelectedInDataview } from 'features/datasets/datasets.utils'
 import {
   getSourcesSelectedInDataview,
   isFishingDataview,
   isPresenceDataview,
 } from 'features/workspace/heatmaps/heatmaps.utils'
+import DatasetSchemaField from './DatasetSchemaField'
 
 type LayerPanelProps = {
   index: number
@@ -37,9 +37,6 @@ function ReportLayerPanel({ dataview, index }: LayerPanelProps): React.ReactElem
   }
 
   const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
-  const gearTypesSelected = getSchemaFieldsSelectedInDataview(dataview, 'geartype')
-  const fleetsSelected = getSchemaFieldsSelectedInDataview(dataview, 'fleet')
-  const vesselsSelected = getSchemaFieldsSelectedInDataview(dataview, 'vessel_type')
 
   const fishignDataview = isFishingDataview(dataview)
   const presenceDataview = isPresenceDataview(dataview)
@@ -92,36 +89,21 @@ function ReportLayerPanel({ dataview, index }: LayerPanelProps): React.ReactElem
               />
             </div>
           )}
-          {gearTypesSelected.length > 0 && (
-            <div className={styles.filter}>
-              <label>{t('layer.gearType_plural', 'Gear types')}</label>
-              <TagList
-                tags={gearTypesSelected}
-                color={dataview.config?.color}
-                className={styles.tagList}
-              />
-            </div>
-          )}
-          {fleetsSelected.length > 0 && (
-            <div className={styles.filter}>
-              <label>{t('layer.fleet_plural', 'Fleets')}</label>
-              <TagList
-                tags={fleetsSelected}
-                color={dataview.config?.color}
-                className={styles.tagList}
-              />
-            </div>
-          )}
-          {vesselsSelected.length > 0 && (
-            <div className={styles.filter}>
-              <label>{t('vessel.vesselType_plural', 'Vessel types')}</label>
-              <TagList
-                tags={vesselsSelected}
-                color={dataview.config?.color}
-                className={styles.tagList}
-              />
-            </div>
-          )}
+          <DatasetSchemaField
+            dataview={dataview}
+            field={'geartype'}
+            label={t('layer.gearType_plural', 'Gear types')}
+          />
+          <DatasetSchemaField
+            dataview={dataview}
+            field={'fleet'}
+            label={t('layer.fleet_plural', 'Fleets')}
+          />
+          <DatasetSchemaField
+            dataview={dataview}
+            field={'vessel_type'}
+            label={t('vessel.vesselType_plural', 'Vessel types')}
+          />
         </div>
       </div>
     </div>
