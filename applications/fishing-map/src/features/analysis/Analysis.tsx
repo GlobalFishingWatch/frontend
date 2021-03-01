@@ -16,8 +16,8 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import AnalysisLayerPanel from './AnalysisLayerPanel'
 import styles from './Analysis.module.css'
-import ReportLayerPanel from './AnalysisLayerPanel'
 import {
   clearAnalysisGeometry,
   CreateReport,
@@ -46,7 +46,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   const reportAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
-  const isAvailable = dataviews.length > 0
+  const isAvailable = dataviews.filter((dataview) => dataview?.config?.visible ?? true).length > 0
   const isEnabled = !loading && isAvailable
 
   const reportDescription = t(
@@ -135,7 +135,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
             <ReportFilter label={t('analysis.dateRange', 'Date Range')} taglist={dateRangeItems} />
             <ReportFilter label={t('analysis.area', 'Area')} taglist={areaItems} />
             {dataviews?.map((dataview, index) => (
-              <ReportLayerPanel key={dataview.id} dataview={dataview} index={index} />
+              <AnalysisLayerPanel key={dataview.id} dataview={dataview} index={index} />
             ))}
           </Fragment>
         )}
