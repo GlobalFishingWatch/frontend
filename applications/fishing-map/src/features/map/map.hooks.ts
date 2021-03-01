@@ -47,6 +47,7 @@ export const useClickedEventConnect = () => {
   const rulersEditing = useSelector(selectEditing)
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
+    // Used on workspaces-list or user panel to go to the workspace detail page
     if (locationType === USER || locationType === WORKSPACES_LIST) {
       const workspace = event?.features?.find(
         (feature: any) => feature.properties.type === 'workspace'
@@ -90,6 +91,7 @@ export const useClickedEventConnect = () => {
     }
 
     dispatch(setClickedEvent(event))
+    console.log(event)
     // get temporal grid clicked features and order them by sublayerindex
     const temporalGridFeatures = event.features
       .filter((feature) => feature.temporalgrid !== undefined && feature.temporalgrid.visible)
@@ -107,6 +109,8 @@ export type TooltipEventFeature = {
   type?: Type
   color?: string
   unit?: string
+  source: string
+  sourceLayer: string
   layerId: string
   contextLayer?: ContextLayerType | null
   value: string
@@ -151,6 +155,8 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       // Not needed to create a dataview just for the workspaces list interaction
       if (feature.generatorId && (feature.generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
+          source: feature.source,
+          sourceLayer: feature.sourceLayer,
           layerId: feature.layerId as string,
           type: Generators.Type.GL,
           value: feature.properties.label,
@@ -167,6 +173,8 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       color: dataview.config?.color || 'black',
       unit: feature.unit,
       value: feature.value,
+      source: feature.source,
+      sourceLayer: feature.sourceLayer,
       layerId: feature.layerId,
       contextLayer: feature.generatorContextLayer,
       properties: { ...feature.properties },

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React from 'react'
 import type { Geometry, Polygon, MultiPolygon } from 'geojson'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import simplify from '@turf/simplify'

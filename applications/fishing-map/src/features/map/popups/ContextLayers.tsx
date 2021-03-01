@@ -3,12 +3,14 @@ import React, { Fragment, useCallback } from 'react'
 import groupBy from 'lodash/groupBy'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import union from '@turf/union'
+import { Feature, Polygon } from 'geojson'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { setReportGeometry } from 'features/report/report.slice'
 import { useMapboxInstance } from '../map.context'
-import { selectClickedEvent, toggleReport } from '../map.slice'
+import { selectClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
 
 const TunaRfmoLinksById: Record<string, string> = {
@@ -33,7 +35,6 @@ function FeatureRow({
   index = Date.now(),
 }: FeatureRowProps) {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
 
   if (!feature.value) return null
   const { gfw_id } = feature.properties
@@ -72,13 +73,19 @@ function FeatureRow({
     return (
       <div className={styles.row} key={`${index}-${feature.value}-${gfw_id}`}>
         <span className={styles.rowText}>{feature.value}</span>
-        {showFeaturesDetails && link && (
-          <div className={styles.rowActions}>
+        <div className={styles.rowActions}>
+          <IconButton
+            icon="report"
+            tooltip={t('common.report', 'Report')}
+            onClick={() => onReportClick && onReportClick(feature)}
+            size="small"
+          />
+          {showFeaturesDetails && link && (
             <a target="_blank" rel="noopener noreferrer" href={link}>
               <IconButton icon="info" tooltip="See more" size="small" />
             </a>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     )
   }
@@ -93,7 +100,6 @@ function FeatureRow({
               icon="report"
               tooltip={t('common.report', 'Report')}
               onClick={() => onReportClick && onReportClick(feature)}
-              // onClick={() => dispatch(toggleReport())}
               size="small"
             />
             <a
@@ -128,24 +134,36 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         console.warn(`No map ${mapInstance ? 'clicked event' : 'map instance'} instance found`)
         return
       }
-      const intersectionOptions = { layers: [feature.layerId] }
-      const boundaries = mapInstance.queryRenderedFeatures(
-        clickedEvent.point as any,
-        intersectionOptions
-      )
-      const geometry = {
-        type: 'FeatureCollection',
-        features: boundaries.map(({ geometry }, id) => ({
-          id,
-          type: 'Feature',
-          geometry,
-        })),
+      if (!feature.properties?.gfw_id) {
+        console.warn('No gfw_id available in the feature to analyze', feature)
+        return
       }
+
+      // TODO: validate if queryRenderedFeatures returns the entire geometry even being out of the viewport
+      // const intersectionOptions = { layers: [feature.layerId] }
+      // const contextAreaFeatures = mapInstance.queryRenderedFeatures(
+      //   clickedEvent.point as any,
+      //   intersectionOptions
+      // )
+      const contextAreaFeatures = mapInstance.querySourceFeatures(feature.source, {
+        sourceLayer: feature.sourceLayer,
+        filter: ['==', 'gfw_id', feature.properties?.gfw_id],
+      })
+      const contextAreaGeometry = contextAreaFeatures.reduce((acc, { geometry, properties }) => {
+        const featureGeometry: Feature<Polygon> = {
+          type: 'Feature',
+          geometry: geometry as Polygon,
+          properties,
+        }
+        if (!acc?.type) return featureGeometry
+        return union(acc, featureGeometry, { properties }) as Feature<Polygon>
+      }, {} as Feature<Polygon>)
+
       batch(() => {
         dispatch(
           setReportGeometry({
-            geometry,
-            areaName: boundaries.map((b) => b.properties?.geoname ?? []).join(', '),
+            geometry: contextAreaGeometry,
+            name: feature.properties.value,
           })
         )
         dispatchQueryParams({ report: 'fishing-activity' })

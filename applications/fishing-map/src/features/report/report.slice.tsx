@@ -109,19 +109,19 @@ export const createReportThunk = createAsyncThunk(
 )
 
 export interface ReportState extends AsyncReducer<Report> {
-  dialog: {
-    isOpen: boolean
+  area: {
     geometry: GeoJSON.FeatureCollection | undefined
-    areaName: string
+    name: string
+    id: string
   }
 }
 
 const initialState: ReportState = {
   ...asyncInitialState,
-  dialog: {
-    isOpen: false,
+  area: {
     geometry: undefined,
-    areaName: '',
+    name: '',
+    id: '',
   },
 }
 
@@ -129,20 +129,17 @@ const { slice: reportsSlice } = createAsyncSlice<ReportState, Report>({
   name: 'report',
   initialState,
   reducers: {
-    toggleReportDialog: (state) => {
-      state.dialog.isOpen = !state.dialog.isOpen
-    },
     clearReportGeometry: (state) => {
-      state.dialog.geometry = undefined
-      state.dialog.areaName = ''
+      state.area.geometry = undefined
+      state.area.name = ''
       state.status = AsyncReducerStatus.Idle
     },
     setReportGeometry: (
       state,
-      action: PayloadAction<{ geometry: GeoJSON.FeatureCollection | undefined; areaName: string }>
+      action: PayloadAction<{ geometry: GeoJSON.FeatureCollection | undefined; name: string }>
     ) => {
-      state.dialog.geometry = action.payload.geometry
-      state.dialog.areaName = action.payload.areaName
+      state.area.geometry = action.payload.geometry
+      state.area.name = action.payload.name
     },
   },
   thunks: {
@@ -150,10 +147,11 @@ const { slice: reportsSlice } = createAsyncSlice<ReportState, Report>({
   },
 })
 
-export const { toggleReportDialog, clearReportGeometry, setReportGeometry } = reportsSlice.actions
+export const { clearReportGeometry, setReportGeometry } = reportsSlice.actions
 
-export const selectReportGeometry = (state: RootState) => state.report.dialog.geometry
-export const selectReportAreaName = (state: RootState) => state.report.dialog.areaName
+export const selectReportGeometry = (state: RootState) => state.report.area.geometry
+export const selectReportAreaName = (state: RootState) => state.report.area.name
+export const selectReportAreaId = (state: RootState) => state.report.area.id
 export const selectReportStatus = (state: RootState) => state.report.status
 
 export default reportsSlice.reducer

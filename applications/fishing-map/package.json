@@ -29,6 +29,7 @@
     "@tippyjs/react": "^4.2.0",
     "@turf/boolean-point-in-polygon": "^6.3.0",
     "@turf/simplify": "^6.3.0",
+    "@turf/union": "^6.3.0",
     "auth-middleware": "GlobalFishingWatch/auth-middleware#develop",
     "bowser": "^2.11.0",
     "classnames": "^2.2.6",

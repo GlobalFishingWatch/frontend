@@ -70,6 +70,7 @@ const getExtendedFeatures = (
       case Generators.Type.Context:
         return {
           ...extendedFeature,
+          gfwId: feature.properties?.gfw_id,
           generatorContextLayer: feature.layer.metadata?.layer,
           geometry: feature.geometry,
         }
