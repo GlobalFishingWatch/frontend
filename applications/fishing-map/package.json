@@ -141,5 +141,15 @@
       "prettier --write",
       "stylelint --syntax=scss --fix"
     ]
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "transformIgnorePatterns": [],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/types/**/*.*"
+    ]
   }
 }
