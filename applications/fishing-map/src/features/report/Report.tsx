@@ -44,7 +44,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   const reportAreaName = useSelector(selectReportAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
-  const isAvailable = dataviews.length > 0
+  const isAvailable = dataviews.filter((dataview) => dataview?.config?.visible ?? true).length > 0
   const isEnabled = !loading && isAvailable
 
   const reportDescription = t(
