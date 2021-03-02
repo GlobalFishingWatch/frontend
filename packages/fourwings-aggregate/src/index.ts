@@ -8,3 +8,4 @@ export {
   getCellArrayIndex,
   generateUniqueId,
 } from './util'
+export { VALUE_MULTIPLIER } from './constants'
