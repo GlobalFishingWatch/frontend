@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import type { Geometry, Polygon, MultiPolygon } from 'geojson'
 import booleanContains from '@turf/boolean-contains'
 import booleanOverlap from '@turf/boolean-overlap'
 import simplify from '@turf/simplify'
 import { useSelector } from 'react-redux'
-import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
+import { getTimeSeries, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { useMapboxInstance } from 'features/map/map.context'
@@ -49,7 +49,7 @@ function AnalysisGraphWrapper() {
   const currentTimeChunkId = useCurrentTimeChunkId()
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const mapStyle = useMapStyle()
-  const temporalgrid = mapStyle.metadata?.temporalgrid
+  const temporalgrid = mapStyle?.metadata?.temporalgrid
   if (!temporalgrid) return null
 
   const numSublayers = temporalgrid.numSublayers
@@ -64,6 +64,7 @@ function AnalysisGraphWrapper() {
     overlapping: [] as MapboxGeoJSONFeature[],
   }
   if (allFeatures && analysisAreaFeature) {
+    // TODO: move this UI blocker to a worker
     filteredFeatures = filterByPolygon(allFeatures, analysisAreaFeature.geometry)
   }
   if (!filteredFeatures.contained?.length || !filteredFeatures.overlapping?.length) {
@@ -72,7 +73,7 @@ function AnalysisGraphWrapper() {
   const visibleTemporalGridDataviews = temporalGridDataviews?.map(
     (dataview) => dataview.config?.visible ?? false
   )
-  const values = getTimeSeries(
+  const valuesContained = getTimeSeries(
     filteredFeatures.contained as any,
     numSublayers,
     chunkQuantizeOffset
@@ -84,7 +85,7 @@ function AnalysisGraphWrapper() {
       ).toISOString(),
     }
   })
-  const valuesOverlaps = getTimeSeries(
+  const valuesOverlapping = getTimeSeries(
     [...filteredFeatures.contained, ...filteredFeatures.overlapping] as any,
     numSublayers,
     chunkQuantizeOffset
@@ -96,11 +97,18 @@ function AnalysisGraphWrapper() {
       ).toISOString(),
     }
   })
+
+  const timeseries = valuesOverlapping.map(({ value, date }) => {
+    const min = valuesContained.find((overlap) => overlap.date === date)?.value
+    return {
+      date,
+      min: min ? min / VALUE_MULTIPLIER : 0,
+      max: value / VALUE_MULTIPLIER,
+    }
+  })
+
   return (
-    <Fragment>
-      <AnalysisGraph timeseries={values} />
-      <AnalysisGraph timeseries={valuesOverlaps} />
-    </Fragment>
+    <AnalysisGraph timeseries={timeseries} graphColor={temporalGridDataviews?.[0]?.config?.color} />
   )
 }
 
