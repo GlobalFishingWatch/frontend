@@ -26,7 +26,7 @@ import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './App.module.css'
-import { selectSidebarOpen } from './app.selectors'
+import { selectReportQuery, selectSidebarOpen } from './app.selectors'
 
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
@@ -50,8 +50,10 @@ function App(): React.ReactElement {
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
+  const reportQuery = useSelector(selectReportQuery)
   // const availableCategories = useSelector(selectAvailableWorkspacesCategories)
-  const narrowSidebar = useSelector(isWorkspaceLocation)
+  const workspaceLocation = useSelector(isWorkspaceLocation)
+  const narrowSidebar = workspaceLocation && !reportQuery
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 
