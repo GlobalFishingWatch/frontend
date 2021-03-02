@@ -1,18 +1,18 @@
 import React from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { TagList, Tooltip } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { TagItem } from '@globalfishingwatch/ui-components/dist/tag-list'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from 'types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { getFlagsByIds } from 'utils/flags'
-import {
-  getSourcesSelectedInDataview,
-  isFishingDataview,
-  isPresenceDataview,
-} from 'features/workspace/heatmaps/heatmaps.utils'
+import { isFishingDataview, isPresenceDataview } from 'features/workspace/heatmaps/heatmaps.utils'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
+import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
+import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
+import { selectAnalysisAreaName } from './analysis.slice'
+import AnalysisFilter from './AnalysisFilter'
 
 type LayerPanelProps = {
   index: number
@@ -21,23 +21,7 @@ type LayerPanelProps = {
 
 function ReportLayerPanel({ dataview, index }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const sourcesOptions: TagItem[] = getSourcesSelectedInDataview(dataview)
-  const nonVmsSources = sourcesOptions.filter((source) => !source.label.includes('VMS'))
-  const vmsSources = sourcesOptions.filter((source) => source.label.includes('VMS'))
-  let mergedSourceOptions: TagItem[] = []
-  if (vmsSources?.length > 1) {
-    mergedSourceOptions = [
-      ...nonVmsSources,
-      {
-        id: 'vms-grouped',
-        label: `VMS (${vmsSources.length} ${t('common.country_plural', 'countries')})`,
-        tooltip: vmsSources.map((source) => source.label).join(', '),
-      },
-    ]
-  }
-
-  const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
-
+  const analysisAreaName = useSelector(selectAnalysisAreaName)
   const fishignDataview = isFishingDataview(dataview)
   const presenceDataview = isPresenceDataview(dataview)
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
@@ -48,10 +32,21 @@ function ReportLayerPanel({ dataview, index }: LayerPanelProps): React.ReactElem
       ? t(`common.presence`, 'Fishing presence')
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
-  const TitleComponent = <h3 className={styles.name}>{datasetName}</h3>
+  const TitleComponent = <p className={styles.dataset}>{datasetName}</p>
+
+  const areaItems: TagItem[] = [
+    {
+      id: 'area',
+      label:
+        analysisAreaName.length > 35 ? `${analysisAreaName.slice(0, 35)}...` : analysisAreaName,
+      tooltip: analysisAreaName,
+    },
+  ]
+
   return (
     <div className={cx(styles.LayerPanel)}>
       <div className={styles.header}>
+        <label>{t('dataset.title', 'Dataset')}</label>
         {datasetName.length > 24 ? (
           <Tooltip content={datasetName}>{TitleComponent}</Tooltip>
         ) : (
@@ -60,35 +55,8 @@ function ReportLayerPanel({ dataview, index }: LayerPanelProps): React.ReactElem
       </div>
       <div className={styles.properties}>
         <div className={styles.filters}>
-          {sourcesOptions?.length > 0 && (
-            <div className={styles.filter}>
-              <label>{t('layer.source_plural', 'Sources')}</label>
-              <TagList
-                tags={sourcesOptions}
-                color={dataview.config?.color}
-                className={cx(styles.tagList, {
-                  [styles.hidden]: mergedSourceOptions?.length > 0,
-                })}
-              />
-              {mergedSourceOptions.length > 0 && (
-                <TagList
-                  tags={mergedSourceOptions}
-                  color={dataview.config?.color}
-                  className={styles.mergedTagList}
-                />
-              )}
-            </div>
-          )}
-          {fishingFiltersOptions.length > 0 && (
-            <div className={styles.filter}>
-              <label>{t('layer.flagState_plural', 'Flag States')}</label>
-              <TagList
-                tags={fishingFiltersOptions}
-                color={dataview.config?.color}
-                className={styles.tagList}
-              />
-            </div>
-          )}
+          <DatasetFilterSource dataview={dataview} />
+          <DatasetFlagField dataview={dataview} />
           <DatasetSchemaField
             dataview={dataview}
             field={'geartype'}
@@ -105,6 +73,7 @@ function ReportLayerPanel({ dataview, index }: LayerPanelProps): React.ReactElem
             label={t('vessel.vesselType_plural', 'Vessel types')}
           />
         </div>
+        <AnalysisFilter label={t('analysis.area', 'Area')} taglist={areaItems} />
       </div>
     </div>
   )

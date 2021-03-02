@@ -42,6 +42,10 @@
   cursor: pointer;
 }
 
+.dataset {
+  color: var(--color-secondary-blue);
+}
+
 .actions {
   opacity: 0;
   z-index: 2;

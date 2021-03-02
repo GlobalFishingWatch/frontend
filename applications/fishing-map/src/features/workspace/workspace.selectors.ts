@@ -69,10 +69,11 @@ export const selectDataviewInstancesMerged = createSelector(
     urlDataviewInstances = []
   ): UrlDataviewInstance[] | undefined => {
     if (
-      workspaceCustomStatus === AsyncReducerStatus.Loading &&
+      workspaceCustomStatus === AsyncReducerStatus.Loading ||
       workspaceStatus !== AsyncReducerStatus.Finished
-    )
+    ) {
       return
+    }
 
     // Split url dataviews by new or just overwriting the workspace to easily grab them later
     const urlDataviews = urlDataviewInstances.reduce<
