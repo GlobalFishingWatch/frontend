@@ -39,6 +39,7 @@
   height: 1rem;
   border-radius: 0.5rem;
   display: inline-flex;
+  border: var(--border);
   background-color: currentColor;
   margin-right: 0.5rem;
 }

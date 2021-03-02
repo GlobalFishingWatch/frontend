@@ -65,14 +65,13 @@ const AnalysisGraphTooltip = (props: any) => {
   if (active && payload && payload.length) {
     const formattedLabel = DateTime.fromISO(label).toLocaleString({ locale: i18n.language })
     const formattedValues = payload.filter(({ dataKey }) => dataKey === 'avg')
-    console.log(payload)
     return (
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
         <ul>
-          {formattedValues.map(({ value, payload, color, unit }) => {
+          {formattedValues.map(({ dataKey, value, payload, color, unit }) => {
             return (
-              <li className={styles.tooltipValue}>
+              <li key={dataKey} className={styles.tooltipValue}>
                 <span className={styles.tooltipValueDot} style={{ color }}></span>
                 {formatTooltipValue(value, payload, unit)}
               </li>

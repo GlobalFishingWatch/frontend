@@ -29,11 +29,7 @@ import {
 } from './analysis.slice'
 import AnalysisGraphWrapper from './AnalysisGraphWrapper'
 
-type ReportPanelProps = {
-  type: string
-}
-
-function Report({ type }: ReportPanelProps): React.ReactElement {
+function Analysis() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const timeoutRef = useRef<NodeJS.Timeout>()
@@ -81,14 +77,15 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
     }
   }, [])
 
-  // TODO Remove this when report geometry is obtained from
-  // the analysised point in the location query
-  if (!analysisAreaName) {
-    onCloseClick()
-  }
+  useEffect(() => {
+    if (!analysisAreaName) {
+      onCloseClick()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (!staticTime) {
-    return <Fragment />
+    return null
   }
 
   return (
@@ -153,4 +150,4 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
   )
 }
 
-export default Report
+export default Analysis

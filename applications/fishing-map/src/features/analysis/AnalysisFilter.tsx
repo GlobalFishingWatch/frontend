@@ -12,15 +12,9 @@ type AnalysisFilterProps = {
 
 function AnalysisFilter({ label, taglist, color = '' }: AnalysisFilterProps): React.ReactElement {
   return (
-    <div className={cx(styles.LayerPanel)}>
-      <div className={styles.properties}>
-        <div className={styles.filters}>
-          <div className={styles.filter}>
-            <label>{label}</label>
-            <TagList tags={taglist} color={color} className={cx(styles.tagList)} />
-          </div>
-        </div>
-      </div>
+    <div className={styles.filter}>
+      <label>{label}</label>
+      <TagList tags={taglist} color={color} className={cx(styles.tagList)} />
     </div>
   )
 }

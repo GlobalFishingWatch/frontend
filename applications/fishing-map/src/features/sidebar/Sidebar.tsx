@@ -92,7 +92,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   }
 
   if (reportQuery !== undefined) {
-    return <Analysis type={reportQuery} />
+    return <Analysis />
   }
 
   return (

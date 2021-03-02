@@ -1,5 +1,4 @@
 .container {
-  padding: var(--space-XS) 0;
   display: flex;
   flex-flow: column nowrap;
   align-items: stretch;
@@ -16,7 +15,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-XS) var(--space-S);
+  padding: var(--space-XS) var(--space-S) var(--space-XS) var(--space-M);
   border-bottom: var(--border);
 }
 
@@ -70,5 +69,5 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-XS) var(--space-S);
+  padding: var(--space-M);
 }
