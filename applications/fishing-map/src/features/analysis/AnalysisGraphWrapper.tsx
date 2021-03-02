@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import type { Geometry, Polygon, MultiPolygon } from 'geojson'
-import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+import booleanContains from '@turf/boolean-contains'
+import booleanOverlap from '@turf/boolean-overlap'
 import simplify from '@turf/simplify'
 import { useSelector } from 'react-redux'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
@@ -12,13 +13,32 @@ import { selectTemporalgridDataviews } from 'features/workspace/workspace.select
 import AnalysisGraph from './AnalysisGraph'
 import { selectAnalysisGeometry } from './analysis.slice'
 
+// TODO review performance issues
 const filterByPolygon = (features: MapboxGeoJSONFeature[], polygon: Geometry) => {
   // const n = performance.now()
   const simplifiedPoly = simplify(polygon as Polygon | MultiPolygon, { tolerance: 0.1 })
-  const filtered = features.filter((f) => {
-    const coord = (f.geometry as any).coordinates[0][0]
-    return booleanPointInPolygon(coord, simplifiedPoly as Polygon | MultiPolygon)
-  })
+  const filtered = features.reduce(
+    (acc, feature) => {
+      const isContained =
+        simplifiedPoly.type === 'MultiPolygon'
+          ? simplifiedPoly.coordinates.some((coordinates) =>
+              booleanContains({ type: 'Polygon', coordinates }, feature.geometry as Polygon)
+            )
+          : booleanContains(simplifiedPoly, feature.geometry as Polygon)
+
+      if (isContained) {
+        acc.contained.push(feature)
+      } else {
+        const overlaps = booleanOverlap(feature.geometry as Polygon, simplifiedPoly)
+        if (overlaps) {
+          acc.overlapping.push(feature)
+        }
+      }
+
+      return acc
+    },
+    { contained: [] as MapboxGeoJSONFeature[], overlapping: [] as MapboxGeoJSONFeature[] }
+  )
   // console.log('filter: ', performance.now() - n)
   return filtered
 }
@@ -39,27 +59,49 @@ function AnalysisGraphWrapper() {
   const allFeatures = mapInstance?.querySourceFeatures(currentTimeChunkId, {
     sourceLayer: 'temporalgrid_interactive',
   })
-  let filteredFeatures
+  let filteredFeatures = {
+    contained: [] as MapboxGeoJSONFeature[],
+    overlapping: [] as MapboxGeoJSONFeature[],
+  }
   if (allFeatures && analysisAreaFeature) {
     filteredFeatures = filterByPolygon(allFeatures, analysisAreaFeature.geometry)
   }
-  if (!filteredFeatures) {
+  if (!filteredFeatures.contained?.length || !filteredFeatures.overlapping?.length) {
     return null
   }
   const visibleTemporalGridDataviews = temporalGridDataviews?.map(
     (dataview) => dataview.config?.visible ?? false
   )
-  const values = getTimeSeries(filteredFeatures as any, numSublayers, chunkQuantizeOffset).map(
-    (frameValues) => {
-      return {
-        value: frameValues[0],
-        date: new Date(
-          quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime()
-        ).toISOString(),
-      }
+  const values = getTimeSeries(
+    filteredFeatures.contained as any,
+    numSublayers,
+    chunkQuantizeOffset
+  ).map((frameValues) => {
+    return {
+      value: frameValues[0],
+      date: new Date(
+        quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime()
+      ).toISOString(),
     }
+  })
+  const valuesOverlaps = getTimeSeries(
+    [...filteredFeatures.contained, ...filteredFeatures.overlapping] as any,
+    numSublayers,
+    chunkQuantizeOffset
+  ).map((frameValues) => {
+    return {
+      value: frameValues[0],
+      date: new Date(
+        quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime()
+      ).toISOString(),
+    }
+  })
+  return (
+    <Fragment>
+      <AnalysisGraph timeseries={values} />
+      <AnalysisGraph timeseries={valuesOverlaps} />
+    </Fragment>
   )
-  return <AnalysisGraph timeseries={values} />
 }
 
 export default AnalysisGraphWrapper

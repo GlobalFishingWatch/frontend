@@ -91,7 +91,6 @@ export const useClickedEventConnect = () => {
     }
 
     dispatch(setClickedEvent(event))
-    console.log(event)
     // get temporal grid clicked features and order them by sublayerindex
     const temporalGridFeatures = event.features
       .filter((feature) => feature.temporalgrid !== undefined && feature.temporalgrid.visible)
