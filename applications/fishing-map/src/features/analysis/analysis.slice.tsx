@@ -131,6 +131,9 @@ const { slice: analysisSlice } = createAsyncSlice<ReportState, Report>({
   name: 'report',
   initialState,
   reducers: {
+    resetReportStatus: (state) => {
+      state.status = AsyncReducerStatus.Idle
+    },
     clearAnalysisGeometry: (state) => {
       state.area.geometry = undefined
       state.area.name = ''
@@ -149,7 +152,11 @@ const { slice: analysisSlice } = createAsyncSlice<ReportState, Report>({
   },
 })
 
-export const { clearAnalysisGeometry, setAnalysisGeometry } = analysisSlice.actions
+export const {
+  resetReportStatus,
+  clearAnalysisGeometry,
+  setAnalysisGeometry,
+} = analysisSlice.actions
 
 export const selectAnalysisGeometry = (state: RootState) => state.analysis.area.geometry
 export const selectAnalysisAreaName = (state: RootState) => state.analysis.area.name

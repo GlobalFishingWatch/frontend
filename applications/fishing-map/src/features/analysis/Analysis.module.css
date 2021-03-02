@@ -30,59 +30,45 @@
 .sectionButtons > *:not(:last-child) {
   margin-right: 1rem;
 }
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  flex: 1;
+}
+
 .content {
-  padding: var(--space-XS) var(--space-S);
-  flex-grow: 1;
+  flex: 1;
   margin-bottom: auto;
 }
-.footer {
-  display: flex;
-  align-items: right;
-  justify-content: space-between;
-  padding: var(--space-XS) var(--space-S);
-}
+
 .saveBtn {
   margin-top: auto;
   align-self: flex-end;
   margin-left: auto;
 }
 
-.expandedContainerOpen {
-  position: relative;
-  z-index: 1;
-  filter: var(--filter-drop-shadow);
+.placeholder {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  padding: var(--space-M);
 }
 
-.expandedContainerOpen::after {
-  content: '';
-  position: absolute;
-  top: 6rem;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-color: var(--color-veil);
+.graph {
+  padding: var(--space-M);
 }
 
-.expandedContainer {
-  background-color: var(--color-white);
-  width: 36.9rem;
-}
-
-.description {
-  font-size: small;
-  margin-bottom: var(--space-M);
-}
-
-.loading,
-.success,
 .error {
-  height: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  opacity: 0.8;
+  flex: 1;
+  color: var(--color-danger-red);
+  font: var(--font-S);
 }
-.loading div {
-  height: auto;
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-XS) var(--space-S);
 }

@@ -1,11 +1,9 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useRef } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { batch, useDispatch, useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
-import { Button, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import { TagItem } from '@globalfishingwatch/ui-components/dist/tag-list'
 import { resetWorkspaceReportQuery } from 'features/workspace/workspace.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
@@ -24,12 +22,12 @@ import {
   createReportThunk,
   DateRange,
   ReportGeometry,
+  resetReportStatus,
   selectAnalysisAreaName,
   selectAnalysisGeometry,
   selectReportStatus,
 } from './analysis.slice'
-import ReportFilter from './AnalysisFilter'
-import ReportGraphWrapper from './AnalysisGraphWrapper'
+import AnalysisGraphWrapper from './AnalysisGraphWrapper'
 
 type ReportPanelProps = {
   type: string
@@ -38,26 +36,15 @@ type ReportPanelProps = {
 function Report({ type }: ReportPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const [loading, setLoading] = useState(false)
+  const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const staticTime = useSelector(selectStaticTime)
   const dataviews = useSelector(selectTemporalgridDataviews) || []
-  const reportGeometry = useSelector(selectAnalysisGeometry)
-  const reportAreaName = useSelector(selectAnalysisAreaName)
+  const analysisGeometry = useSelector(selectAnalysisGeometry)
+  const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
-  const isAvailable = dataviews.filter((dataview) => dataview?.config?.visible ?? true).length > 0
-  const isEnabled = !loading && isAvailable
-
-  const reportDescription = t(
-    'analysis.emailDescription',
-    'A fishing activity report for the selected date ranges and filters will be generated and sent to your email account'
-  )
-
-  const reportNotAvailable = t(
-    'analysis.notAvailable',
-    `Report is not available for the current layers, you need to enable fishing effort layer or event layers to generate the report.`
-  )
+  const hasAnalysisLayers = dataviews?.filter(({ config }) => config?.visible === true)?.length > 0
 
   const onCloseClick = () => {
     batch(() => {
@@ -66,8 +53,7 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
       dispatchQueryParams({ report: undefined })
     })
   }
-  const onGenerateClick = async () => {
-    setLoading(true)
+  const onDownloadClick = async () => {
     const createReports: CreateReport[] = dataviews.map((dataview) => {
       const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
         .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
@@ -78,40 +64,33 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
         dateRange: staticTime as DateRange,
         filters: dataview.config?.filters || [],
         datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
-        geometry: reportGeometry as ReportGeometry,
+        geometry: analysisGeometry as ReportGeometry,
       }
     })
-    dispatch(createReportThunk(createReports))
-    setLoading(false)
+    await dispatch(createReportThunk(createReports))
+    timeoutRef.current = setTimeout(() => {
+      dispatch(resetReportStatus(undefined))
+    }, 5000)
   }
 
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
+
   // TODO Remove this when report geometry is obtained from
-  // the selected point in the location query
-  if (!reportAreaName) {
+  // the analysised point in the location query
+  if (!analysisAreaName) {
     onCloseClick()
   }
+
   if (!staticTime) {
     return <Fragment />
   }
-  const dateRangeItems: TagItem[] = [
-    {
-      id: 'start',
-      label: DateTime.fromISO(staticTime?.start).toUTC().toISODate(),
-      tooltip: DateTime.fromISO(staticTime?.start).toUTC().toISODate(),
-    },
-    {
-      id: 'end',
-      label: DateTime.fromISO(staticTime?.end).toUTC().toISODate(),
-      tooltip: DateTime.fromISO(staticTime?.end).toUTC().toISODate(),
-    },
-  ]
-  const areaItems: TagItem[] = [
-    {
-      id: 'area',
-      label: reportAreaName.length > 35 ? `${reportAreaName.slice(0, 35)}...` : reportAreaName,
-      tooltip: reportAreaName,
-    },
-  ]
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -126,63 +105,49 @@ function Report({ type }: ReportPanelProps): React.ReactElement {
           />
         </div>
       </div>
-      <div className={styles.content}>
-        {isAvailable && reportStatus === AsyncReducerStatus.Idle && (
-          <Fragment>
-            <div className={styles.description}>
-              {reportDescription}: {userData?.email}
-            </div>
-            <ReportFilter label={t('analysis.dateRange', 'Date Range')} taglist={dateRangeItems} />
-            <ReportFilter label={t('analysis.area', 'Area')} taglist={areaItems} />
-            {dataviews?.map((dataview, index) => (
-              <AnalysisLayerPanel key={dataview.id} dataview={dataview} index={index} />
-            ))}
-          </Fragment>
-        )}
-        {!isAvailable && <Fragment>{reportNotAvailable}</Fragment>}
-        <ReportGraphWrapper />
-        {reportStatus === AsyncReducerStatus.LoadingCreate && (
-          <Fragment>
-            <div className={styles.loading}>
-              <div>
-                {t(
-                  'analysis.generating',
-                  "We are generating the report for you, it'll be ready soon."
-                )}
-              </div>
-              <Spinner />
-            </div>
-          </Fragment>
-        )}
-        {reportStatus === AsyncReducerStatus.Finished && (
-          <p className={styles.success}>
+      <div className={styles.contentContainer}>
+        <div className={styles.content}>
+          {hasAnalysisLayers ? (
+            <Fragment>
+              {dataviews?.map((dataview, index) => (
+                <AnalysisLayerPanel key={dataview.id} dataview={dataview} index={index} />
+              ))}
+            </Fragment>
+          ) : (
+            <p className={styles.placeholder}>
+              {t('analysis.empty', 'Your selected datasets will appear here')}
+            </p>
+          )}
+          <div className={styles.graph}>
+            <AnalysisGraphWrapper />
+          </div>
+          <p className={styles.placeholder}>
             {t(
-              'analysis.successfullMessage',
-              "The report was sent successfully, you'll receive it by email soon."
-            )}
+              'analysis.disclaimer',
+              'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email'
+            )}{' '}
+            {userData?.email && `(${userData.email})`}
           </p>
-        )}
-        {reportStatus === AsyncReducerStatus.Error && (
-          <p className={styles.error}>{t('analysis.errorMessage', 'Something went wrong')} 🙈</p>
-        )}
-      </div>
-      <div className={styles.footer}>
-        {(!isAvailable ||
-          [AsyncReducerStatus.Finished, AsyncReducerStatus.Error].includes(reportStatus)) && (
-          <Button className={styles.saveBtn} onClick={onCloseClick} type="secondary">
-            {t('analysis.close', 'Close')}
-          </Button>
-        )}
-        {isAvailable && reportStatus === AsyncReducerStatus.Idle && (
+        </div>
+        <div className={styles.footer}>
+          <p className={styles.error}>
+            {reportStatus === AsyncReducerStatus.Error
+              ? `${t('analysis.errorMessage', 'Something went wrong')} 🙈`
+              : ''}
+          </p>
           <Button
             className={styles.saveBtn}
-            onClick={onGenerateClick}
-            loading={loading}
-            disabled={!isEnabled}
+            onClick={onDownloadClick}
+            loading={reportStatus === AsyncReducerStatus.LoadingCreate}
+            disabled={!hasAnalysisLayers || reportStatus === AsyncReducerStatus.Finished}
           >
-            {t('common.confirm', 'Confirm')}
+            {reportStatus === AsyncReducerStatus.Finished ? (
+              <Icon icon="tick" />
+            ) : (
+              t('analysis.download', 'Download report')
+            )}
           </Button>
-        )}
+        </div>
       </div>
     </div>
   )
