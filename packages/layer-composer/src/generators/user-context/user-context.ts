@@ -50,6 +50,7 @@ class UserContextGenerator {
       },
       metadata: {
         color: config.color,
+        interactive: true,
         generatorId,
         legend: {
           type: config.steps ? 'colorramp' : 'solid',
