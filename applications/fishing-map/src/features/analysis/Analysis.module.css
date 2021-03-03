@@ -75,11 +75,15 @@
   min-height: 24rem;
 }
 
-.error {
+.footerMsg {
   display: flex;
   flex: 1;
-  color: var(--color-danger-red);
   font: var(--font-S);
+  color: var(--color-secondary-blue);
+}
+
+.error {
+  color: var(--color-danger-red);
 }
 
 .footer {

@@ -181,15 +181,23 @@ function Analysis() {
             <p className={styles.placeholder}>
               {t(
                 'analysis.disclaimer',
-                'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email'
-              )}{' '}
-              {userData?.email && `(${userData?.email})`}
+                'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
+              )}
             </p>
           </div>
           <div className={styles.footer}>
-            <p className={styles.error}>
+            <p
+              className={cx(styles.footerMsg, {
+                [styles.error]: reportStatus === AsyncReducerStatus.Error,
+              })}
+            >
               {reportStatus === AsyncReducerStatus.Error
                 ? `${t('analysis.errorMessage', 'Something went wrong')} 🙈`
+                : ''}
+              {reportStatus === AsyncReducerStatus.Finished
+                ? `${t('analysis.completed', 'The report will be in your email soon')} (${
+                    userData?.email
+                  })`
                 : ''}
             </p>
             <Button

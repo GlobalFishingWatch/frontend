@@ -2,7 +2,8 @@
   "analysis": {
     "area": "Area",
     "close": "Close analysis",
-    "disclaimer": "The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email",
+    "completed": "The report will be in your email soon",
+    "disclaimer": "The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.",
     "download": "Download report",
     "empty": "Your selected datasets will appear here",
     "errorMessage": "Something went wrong",
@@ -62,11 +63,11 @@
     "importing": "Dataset is being imported",
     "new": "New dataset",
     "remove": "Remove dataset",
+    "title": "Dataset",
     "uploadLogin": "You need to <1>login</1> to upload datasets",
     "uploadNewContex": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset",
     "addEnvironment": "Add environment dataset",
-    "title": "Dataset",
     "title_plural": "Datasets",
     "uploadError": "There was an error uploading your dataset",
     "uploadNewDataLayer": "Upload new data layer"
@@ -98,6 +99,7 @@
     "infoOpen": "Show info",
     "remove": "Remove layer",
     "seeDescription": "Click to see layer description",
+    "source": "Source",
     "source_plural": "Sources",
     "toggleCombinationMode": {
       "combine": "Combine layers",
@@ -105,8 +107,7 @@
       "split": "Split layers"
     },
     "toggleVisibility": "Toggle layer visibility",
-    "vessel_fit_bounds": "Center view on vessel track",
-    "source": "Source"
+    "vessel_fit_bounds": "Center view on vessel track"
   },
   "map": {
     "captureMap": "Capture map",
