@@ -51,61 +51,61 @@ export enum VesselAPISource {
 }
 export interface BuiltYear {
   value: string
-  firstSeen: Date
+  firstSeen: string
   endDate: Date
 }
 
 export interface Flag {
   value: string
-  firstSeen: Date
-  endDate?: Date
+  firstSeen: string
+  endDate?: string
 }
 
 export interface Gt {
   value: string
-  firstSeen: Date
+  firstSeen: string
   endDate?: any
 }
 
 export interface Imo {
   value: string
-  firstSeen: Date
+  firstSeen: string
   endDate?: any
 }
 
 export interface Loa {
   value: string
-  firstSeen: Date
+  firstSeen: string
   endDate?: any
 }
 
 export interface Name {
   value: string
-  firstSeen: Date
-  endDate?: Date
+  firstSeen: string
+  endDate?: string
 }
 
 export interface Irc {
   value: string
-  firstSeen: Date
+  firstSeen: string
   endDate?: any
 }
 
 export interface VesselType {
   value: string
-  firstSeen: Date
+  firstSeen: string
   endDate?: any
 }
 
 export interface Depth {
   value: string
-  firstSeen: Date
+  firstSeen: string
   endDate?: any
 }
 export interface Mmsi {
   value: string
-  firstSeen: Date
-  endDate?: Date | null
+  firstSeen: string
+  endDate?: string | null
 }
 
 export type AnyValueList =
@@ -137,14 +137,14 @@ export interface ValueList {
 
 export interface VesselOwnership {
   value: string
-  firstSeen?: Date
-  endDate?: Date
+  firstSeen?: string
+  endDate?: string
 }
 
 export interface VesselOperation {
   value: string
-  firstSeen?: Date
-  endDate?: Date
+  firstSeen?: string
+  endDate?: string
 }
 
 export interface RelationList {
@@ -155,7 +155,7 @@ export interface RelationList {
 export interface AuthorizationList {
   source: string
   startDate: Date
-  endDate?: Date
+  endDate?: string
 }
 
 export interface TMTDetail {
