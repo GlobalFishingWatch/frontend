@@ -1,5 +1,17 @@
 # @globalfishingwatch/react-hooks
 
+## 4.8.0
+
+### Minor Changes
+
+- support highlighted feature states
+
+### Patch Changes
+
+- Updated dependencies [[`729322ab`](https://github.com/GlobalFishingWatch/frontend/commit/729322ab540c4ad807cb3bba1c2b344eb265ed89)]:
+  - @globalfishingwatch/layer-composer@4.14.2
+  - @globalfishingwatch/fourwings-aggregate@1.2.0
+
 ## 4.7.0
 
 ### Minor Changes

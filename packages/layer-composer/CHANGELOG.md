@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.14.2
+
+### Patch Changes
+
+- highlight style in context areas
+
 ## 4.14.1
 
 ### Patch Changes
