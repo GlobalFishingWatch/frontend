@@ -6,7 +6,7 @@ import { fitBounds } from 'viewport-mercator-project'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { OceanArea, searchOceanAreas } from '@globalfishingwatch/ocean-areas'
-import { useMapboxRef } from '../map.context'
+import { useMapboxInstance } from '../map.context'
 import useViewport from '../map-viewport.hooks'
 import styles from './MapSearch.module.css'
 
@@ -15,7 +15,7 @@ const MapSearch = () => {
   const [query, setQuery] = useState<string>('')
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
-  const mapRef = useMapboxRef()
+  const mapInstance = useMapboxInstance()
 
   const { setMapCoordinates } = useViewport()
 
@@ -27,8 +27,8 @@ const MapSearch = () => {
           [bounds[0], bounds[1]],
           [bounds[2], bounds[3]],
         ],
-        width: mapRef.current?.getMap()._canvas.width,
-        height: mapRef.current?.getMap()._canvas.height,
+        width: (mapInstance as any)._canvas.width,
+        height: (mapInstance as any)._canvas.height,
         padding: 60,
       })
       setMapCoordinates({ latitude, longitude, zoom })

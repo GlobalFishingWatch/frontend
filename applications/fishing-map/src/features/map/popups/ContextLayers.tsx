@@ -1,11 +1,12 @@
 import React, { Fragment, useCallback } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import groupBy from 'lodash/groupBy'
-import { batch } from 'react-redux'
+import { batch, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
+import { setClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
 
 const TunaRfmoLinksById: Record<string, string> = {
@@ -113,6 +114,7 @@ type ContextTooltipRowProps = {
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const { dispatchQueryParams } = useLocationConnect()
+  const dispatch = useDispatch()
 
   const onReportClick = useCallback(
     (feature: TooltipEventFeature) => {
@@ -128,11 +130,10 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             sourceId: feature.source,
           },
         })
-        // TODO decide if we keep the tooltip open or not
-        // dispatch(setClickedEvent(null))
+        dispatch(setClickedEvent(null))
       })
     },
-    [dispatchQueryParams]
+    [dispatch, dispatchQueryParams]
   )
 
   const featuresByType = groupBy(features, 'layer')

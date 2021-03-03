@@ -25,9 +25,7 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
       'line-opacity': opacity,
       'line-color': [
         'case',
-        ['boolean', ['feature-state', 'hover'], false],
-        HIGHLIGHT_LINE_COLOR,
-        ['boolean', ['feature-state', 'click'], false],
+        ['boolean', ['feature-state', ['hover', 'click', 'highlight']], false],
         HIGHLIGHT_LINE_COLOR,
         color,
       ],
@@ -41,7 +39,7 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
       'fill-opacity': opacity,
       'fill-color': [
         'case',
-        ['boolean', ['feature-state', 'click'], false],
+        ['boolean', ['feature-state', ['click', 'highlight']], false],
         HIGHLIGHT_FILL_COLOR,
         fillColor,
       ],

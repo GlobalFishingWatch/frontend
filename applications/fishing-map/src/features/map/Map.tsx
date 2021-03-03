@@ -185,7 +185,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const resetHoverState = useCallback(() => {
     setHoveredEvent(null)
     setHoveredDebouncedEvent(null)
-    cleanFeatureState()
+    cleanFeatureState('hover')
   }, [cleanFeatureState])
 
   const { viewport, onViewportChange } = useViewport()

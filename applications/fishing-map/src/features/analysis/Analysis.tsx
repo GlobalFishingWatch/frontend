@@ -1,7 +1,8 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState, useLayoutEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import union from '@turf/union'
+import bbox from '@turf/bbox'
 import { Feature, Polygon } from 'geojson'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import type { Map } from '@globalfishingwatch/mapbox-gl'
@@ -9,6 +10,7 @@ import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-compon
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import useTilesState from '@globalfishingwatch/react-hooks/dist/use-tiles-state'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
+import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
@@ -21,6 +23,7 @@ import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectAnalysisQuery } from 'features/app/app.selectors'
 import { useMapboxInstance } from 'features/map/map.context'
+import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import styles from './Analysis.module.css'
 import {
@@ -41,12 +44,15 @@ function Analysis() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const dispatch = useDispatch()
   const mapInstance = useMapboxInstance()
+  const fitMapBounds = useMapFitBounds()
+  const { setMapCoordinates } = useViewport()
   const tilesLoading = useTilesState(mapInstance as Map).loading
   const debouncedTilesLoading = useDebounce(tilesLoading, 600)
   const analysisQuery = useSelector(selectAnalysisQuery)
   const [sourceLoaded, setSourceLoaded] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(mapInstance)
   const staticTime = useSelector(selectStaticTime)
   const dataviews = useSelector(selectTemporalgridDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
@@ -54,6 +60,13 @@ function Analysis() {
   const userData = useSelector(selectUserData)
   const hasAnalysisLayers = dataviews?.filter(({ config }) => config?.visible === true)?.length > 0
   const { areaId, sourceId } = analysisQuery
+
+  useLayoutEffect(() => {
+    // We have to go to zoom 0 to load every geometry to be able to fitBounds later
+    const viewport = { latitude: 0, longitude: 0, zoom: 0 }
+    setMapCoordinates(viewport)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     const sourceCallback = () => {
@@ -63,7 +76,8 @@ function Analysis() {
       }
     }
 
-    if (mapInstance && sourceId) {
+    if (mapInstance && sourceId && areaId) {
+      setSourceLoaded(false)
       mapInstance.on('idle', sourceCallback)
     }
 
@@ -72,7 +86,7 @@ function Analysis() {
         mapInstance.off('idle', sourceCallback)
       }
     }
-  }, [mapInstance, sourceId])
+  }, [mapInstance, sourceId, areaId])
 
   useEffect(() => {
     if (sourceLoaded && mapInstance) {
@@ -81,6 +95,7 @@ function Analysis() {
         filter: ['==', 'gfw_id', parseInt(areaId)],
       })
       if (contextAreaFeatures.length > 0) {
+        cleanFeatureState('highlight')
         const contextAreaFeatureMerged = contextAreaFeatures.reduce(
           (acc, { geometry, properties }) => {
             const featureGeometry: Feature<Polygon> = {
@@ -100,10 +115,15 @@ function Analysis() {
             name: name || value,
           })
         )
+        const bounds = bbox(contextAreaFeatureMerged) as [number, number, number, number]
+        fitMapBounds(bounds, 10)
+        const featureState = { source: sourceId, sourceLayer: 'main', id: areaId }
+        updateFeatureState([featureState], 'highlight')
       } else {
         console.warn('No feature for analysis found')
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, mapInstance, areaId, sourceId, sourceLoaded])
 
   const onCloseClick = () => {
@@ -172,7 +192,7 @@ function Analysis() {
               </p>
             )}
             <div className={styles.graph}>
-              {debouncedTilesLoading && !analysisGeometry ? (
+              {!sourceLoaded || (debouncedTilesLoading && !analysisGeometry) ? (
                 <Spinner className={styles.spinner} />
               ) : (
                 <AnalysisGraphWrapper />
