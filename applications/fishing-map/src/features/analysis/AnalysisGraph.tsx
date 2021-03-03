@@ -11,7 +11,6 @@ import {
 } from 'recharts'
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
 import styles from './AnalysisGraph.module.css'
@@ -89,22 +88,16 @@ const AnalysisGraphTooltip = (props: any) => {
 
 const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
   const { timeseries, graphColor = '#163f89', graphUnit = 'hours' } = props
-  const { start, end } = useTimerangeConnect()
 
   if (!timeseries) return null
 
-  const data = timeseries.filter((current: any) => {
-    const currentDate = DateTime.fromISO(current.date)
-    const startDate = DateTime.fromISO(start)
-    const endDate = DateTime.fromISO(end)
-    return currentDate >= startDate && currentDate < endDate
-  })
-
-  const dataMax: number = data.length
-    ? data.reduce((prev: GraphData, curr: GraphData) => (curr.max > prev.max ? curr : prev)).max
+  const dataMax: number = timeseries.length
+    ? timeseries.reduce((prev: GraphData, curr: GraphData) => (curr.max > prev.max ? curr : prev))
+        .max
     : 0
-  const dataMin: number = data.length
-    ? data.reduce((prev: GraphData, curr: GraphData) => (curr.min < prev.min ? curr : prev)).min
+  const dataMin: number = timeseries.length
+    ? timeseries.reduce((prev: GraphData, curr: GraphData) => (curr.min < prev.min ? curr : prev))
+        .min
     : 0
 
   const domainPadding = (dataMax - dataMin) / 8
@@ -113,7 +106,7 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
     Math.ceil(dataMax + domainPadding),
   ]
 
-  const dataFormated = data.map(({ date, min, max }) => ({
+  const dataFormated = timeseries.map(({ date, min, max }) => ({
     date,
     range: [min, max],
     avg: (min + max) / 2,

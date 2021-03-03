@@ -56,14 +56,23 @@
 
 .graph {
   padding: var(--space-M);
+  min-height: 28rem;
 }
 
 .spinner {
-  height: 28rem;
+  height: 24rem;
 }
 
 .spinnerFull {
   height: 100vh;
+}
+
+.emptyDataPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-secondary-blue);
+  min-height: 24rem;
 }
 
 .error {

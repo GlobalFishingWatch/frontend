@@ -1,118 +1,149 @@
-import React from 'react'
-import type { Geometry, Polygon, MultiPolygon } from 'geojson'
-import booleanContains from '@turf/boolean-contains'
-import booleanOverlap from '@turf/boolean-overlap'
-import simplify from '@turf/simplify'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import createAnalysisWorker from 'workerize-loader!./Analysis.worker'
+import { Feature, Geometry } from 'geojson'
+import { DateTime } from 'luxon'
 import { getTimeSeries, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
-import { MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
+import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { useMapboxInstance } from 'features/map/map.context'
 import { useCurrentTimeChunkId, useMapStyle } from 'features/map/map.hooks'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
-import AnalysisGraph from './AnalysisGraph'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import * as AnalysisWorker from './Analysis.worker'
+import AnalysisGraph, { GraphData } from './AnalysisGraph'
 import { selectAnalysisGeometry } from './analysis.slice'
+import styles from './Analysis.module.css'
 
-// TODO review performance issues
-const filterByPolygon = (features: MapboxGeoJSONFeature[], polygon: Geometry) => {
-  // const n = performance.now()
-  const simplifiedPoly = simplify(polygon as Polygon | MultiPolygon, { tolerance: 0.1 })
-  const filtered = features.reduce(
-    (acc, feature) => {
-      const isContained =
-        simplifiedPoly.type === 'MultiPolygon'
-          ? simplifiedPoly.coordinates.some((coordinates) =>
-              booleanContains({ type: 'Polygon', coordinates }, feature.geometry as Polygon)
-            )
-          : booleanContains(simplifiedPoly, feature.geometry as Polygon)
-
-      if (isContained) {
-        acc.contained.push(feature)
-      } else {
-        // TODO try to get the % of overlapping to use it in the value calculation
-        const overlaps = booleanOverlap(feature.geometry as Polygon, simplifiedPoly)
-        if (overlaps) {
-          acc.overlapping.push(feature)
-        }
-      }
-
-      return acc
-    },
-    { contained: [] as MapboxGeoJSONFeature[], overlapping: [] as MapboxGeoJSONFeature[] }
-  )
-  // console.log('filter: ', performance.now() - n)
-  return filtered
-}
+const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 
 function AnalysisGraphWrapper() {
   const temporalGridDataviews = useSelector(selectTemporalgridDataviews)
   const mapInstance = useMapboxInstance()
+  const { start, end } = useTimerangeConnect()
   const currentTimeChunkId = useCurrentTimeChunkId()
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const mapStyle = useMapStyle()
+  const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
+  const [sourceLoaded, setSourceLoaded] = useState(false)
+  const [timeseries, setTimeseries] = useState<GraphData[] | undefined>()
   const temporalgrid = mapStyle?.metadata?.temporalgrid
-  if (!temporalgrid) return null
+  const numSublayers = temporalgrid?.numSublayers
+  const timeChunks = temporalgrid?.timeChunks as TimeChunks
+  const interval = temporalgrid?.timeChunks?.interval
 
-  const numSublayers = temporalgrid.numSublayers
-  const timeChunks = temporalgrid.timeChunks as TimeChunks
-  const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
-  const chunkQuantizeOffset = activeTimeChunk.quantizeOffset
-  const allFeatures = mapInstance?.querySourceFeatures(currentTimeChunkId, {
-    sourceLayer: 'temporalgrid_interactive',
-  })
+  useEffect(() => {
+    const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
+    const chunkQuantizeOffset = activeTimeChunk?.quantizeOffset
 
-  let filteredFeatures = {
-    contained: [] as MapboxGeoJSONFeature[],
-    overlapping: [] as MapboxGeoJSONFeature[],
-  }
+    const updateTimeseries = async (
+      allFeatures: GeoJSON.Feature<GeoJSON.Geometry>[],
+      analysisAreaFeature: Feature<Geometry>
+    ) => {
+      setGeneratingTimeseries(true)
+      const filteredFeatures = await filterByPolygon(allFeatures, analysisAreaFeature.geometry)
+      const valuesContained = getTimeSeries(
+        (filteredFeatures.contained || []) as any,
+        numSublayers,
+        chunkQuantizeOffset
+      ).map((frameValues) => {
+        return {
+          value: frameValues[0],
+          date: new Date(
+            quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime()
+          ).toISOString(),
+        }
+      })
 
-  if (allFeatures?.length && analysisAreaFeature?.geometry) {
-    // TODO: move this UI blocker to a worker
-    // TODO: snapshot this when fitBounds ends and don't re-run on every map change
-    filteredFeatures = filterByPolygon(allFeatures, analysisAreaFeature.geometry)
-  }
+      const allFilteredFeatues = [
+        ...(filteredFeatures.contained || []),
+        ...(filteredFeatures.overlapping || []),
+      ]
+      const valuesOverlapping = getTimeSeries(
+        allFilteredFeatues as any,
+        numSublayers,
+        chunkQuantizeOffset
+      ).map((frameValues) => {
+        return {
+          value: frameValues[0],
+          date: new Date(
+            quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime()
+          ).toISOString(),
+        }
+      })
 
-  const valuesContained = getTimeSeries(
-    (filteredFeatures.contained || []) as any,
-    numSublayers,
-    chunkQuantizeOffset
-  ).map((frameValues) => {
-    return {
-      value: frameValues[0],
-      date: new Date(
-        quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime()
-      ).toISOString(),
+      const timeseries = valuesOverlapping.map(({ value, date }) => {
+        const min = valuesContained.find((overlap) => overlap.date === date)?.value
+        return {
+          date,
+          min: min ? min / VALUE_MULTIPLIER : 0,
+          max: value / VALUE_MULTIPLIER,
+        }
+      })
+      setTimeseries(timeseries)
+      setGeneratingTimeseries(false)
     }
-  })
 
-  const allFilteredFeatues = [
-    ...(filteredFeatures.contained || []),
-    ...(filteredFeatures.overlapping || []),
-  ]
-  const valuesOverlapping = getTimeSeries(
-    allFilteredFeatues as any,
-    numSublayers,
-    chunkQuantizeOffset
-  ).map((frameValues) => {
-    return {
-      value: frameValues[0],
-      date: new Date(
-        quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime()
-      ).toISOString(),
-    }
-  })
+    if (sourceLoaded) {
+      const allFeatures = mapInstance
+        ?.querySourceFeatures(currentTimeChunkId, {
+          sourceLayer: 'temporalgrid_interactive',
+        })
+        .map(({ properties, geometry }) => ({ type: 'Feature' as any, properties, geometry }))
 
-  const timeseries = valuesOverlapping.map(({ value, date }) => {
-    const min = valuesContained.find((overlap) => overlap.date === date)?.value
-    return {
-      date,
-      min: min ? min / VALUE_MULTIPLIER : 0,
-      max: value / VALUE_MULTIPLIER,
+      if (allFeatures?.length && analysisAreaFeature) {
+        updateTimeseries(allFeatures, analysisAreaFeature)
+      } else {
+        setGeneratingTimeseries(false)
+      }
+    } else {
+      setTimeseries(undefined)
     }
-  })
+  }, [sourceLoaded, mapInstance, analysisAreaFeature, numSublayers, timeChunks, currentTimeChunkId])
+
+  useEffect(() => {
+    const sourceCallback = () => {
+      if (
+        mapInstance?.getSource(currentTimeChunkId) &&
+        mapInstance?.isSourceLoaded(currentTimeChunkId)
+      ) {
+        setSourceLoaded(true)
+        setGeneratingTimeseries(true)
+        mapInstance.off('idle', sourceCallback)
+      }
+    }
+
+    if (mapInstance && interval) {
+      setSourceLoaded(false)
+      mapInstance.on('idle', sourceCallback)
+    }
+
+    return () => {
+      if (mapInstance) {
+        mapInstance.off('idle', sourceCallback)
+      }
+    }
+  }, [mapInstance, interval, currentTimeChunkId])
+
+  const timeSeriesFiltered = useMemo(() => {
+    return timeseries?.filter((current: any) => {
+      const currentDate = DateTime.fromISO(current.date)
+      const startDate = DateTime.fromISO(start)
+      const endDate = DateTime.fromISO(end)
+      return currentDate >= startDate && currentDate < endDate
+    })
+  }, [timeseries, start, end])
+
+  if (!sourceLoaded || generatingTimeseries) return <Spinner className={styles.spinner} />
+
+  if (!timeSeriesFiltered) return <p className={styles.emptyDataPlaceholder}>No data available</p>
 
   return (
-    <AnalysisGraph timeseries={timeseries} graphColor={temporalGridDataviews?.[0]?.config?.color} />
+    <AnalysisGraph
+      timeseries={timeSeriesFiltered}
+      graphColor={temporalGridDataviews?.[0]?.config?.color}
+    />
   )
 }
 
