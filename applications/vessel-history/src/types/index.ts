@@ -6,6 +6,7 @@ export type WorkspaceParam =
   | 'end'
   | 'vessel'
   | 'timebarMode'
+  | 'q'
 
 export type QueryParams = {
   [query in WorkspaceParam]?: string | number | boolean | null

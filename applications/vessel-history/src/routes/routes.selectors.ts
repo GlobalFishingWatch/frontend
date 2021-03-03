@@ -1,9 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { RouteObject } from 'redux-first-router'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
 import { AppState } from 'types/redux.types'
+import { ROUTE_TYPES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
+export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
+  const routeMap = routesMap[type] as RouteObject
+  return { type: type as ROUTE_TYPES, ...routeMap }
+})
 
 export const DEFAULT_WORKSPACE: AppState = {
   //workspaceDataviews: DEFAULT_DATAVIEWS,

@@ -20,6 +20,8 @@ export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
 export const PROFILE = 'PROFILE'
 
+export type ROUTE_TYPES = typeof HOME | typeof PROFILE
+
 const preFetchThunks = [vesselInfoThunk]
 
 const profileThunk = async (
