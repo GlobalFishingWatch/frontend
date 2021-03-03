@@ -39,12 +39,14 @@ const formatDates = (tick: string) => {
 }
 
 const formatTooltipValue = (value: number, payload: any, unit: string) => {
-  if (!value || !payload?.range) {
+  if (value === undefined || !payload?.range) {
     return null
   }
   const difference = payload.range[1] - value
-  const imprecision = (difference / value) * 100
-  return `${formatI18nNumber(value.toFixed())} ${unit ? unit : ''} ± ${imprecision.toFixed()}%`
+  const imprecision = value > 0 && (difference / value) * 100
+  const valueLabel = `${formatI18nNumber(value.toFixed())} ${unit ? unit : ''}`
+  const imprecisionLabel = imprecision ? ` ± ${imprecision.toFixed()}%` : ''
+  return valueLabel + imprecisionLabel
 }
 
 type AnalysisGraphTooltipProps = {
@@ -138,7 +140,7 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
         />
         <Tooltip content={<AnalysisGraphTooltip />} />
         <Line
-          type="linear"
+          type="monotone"
           dataKey="avg"
           unit={graphUnit}
           dot={false}
@@ -146,7 +148,14 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
           strokeWidth={2}
           isAnimationActive={false}
         />
-        <Area dataKey="range" activeDot={false} fill={graphColor} stroke="none" fillOpacity={0.2} />
+        <Area
+          type="monotone"
+          dataKey="range"
+          activeDot={false}
+          fill={graphColor}
+          stroke="none"
+          fillOpacity={0.2}
+        />
       </ComposedChart>
     </ResponsiveContainer>
   )
