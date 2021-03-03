@@ -30,7 +30,9 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
           className={styles.deleteSaved}
         ></IconButton>
       )}
-      <Link to={['profile', vessel.dataset ?? 'NA', vessel.id ?? 'NA', vessel.vesselMatchId]}>
+      <Link
+        to={['profile', vessel.dataset ?? 'NA', vessel.id ?? 'NA', vessel.vesselMatchId ?? 'NA']}
+      >
         <h3>{vessel?.shipname}</h3>
       </Link>
       <div className={styles.identifiers}>
