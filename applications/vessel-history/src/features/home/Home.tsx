@@ -51,7 +51,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   useEffect(() => {
     setVessels([])
-    if (query.length >= minimumCharacters) {
+    if (query?.length >= minimumCharacters) {
       fetchData(query)
     }
   }, [query, fetchData])
