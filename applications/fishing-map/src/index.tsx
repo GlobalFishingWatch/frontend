@@ -1,6 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
+import { RecoilRoot } from 'recoil'
 import App from 'features/app/App'
 import store from './store'
 import * as serviceWorker from './serviceWorker'
@@ -18,9 +19,11 @@ loadPolyfills()
 
 render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <RecoilRoot>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
 )

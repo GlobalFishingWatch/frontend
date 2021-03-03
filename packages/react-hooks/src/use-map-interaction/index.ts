@@ -19,7 +19,7 @@ export type ExtendedFeature = {
   sourceLayer: string
   generatorId: string | number | null
   generatorType: string | null
-  id?: number
+  id: string
   value: any
   unit?: string
   tile: {
