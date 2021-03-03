@@ -53,7 +53,7 @@ steps:
     - 'pipefail'
     - '-c'
     - |-
-      export BRANCH_NORMALIZED=${BRANCH_NAME//\//-}
+      export _BRANCH_NORMALIZED=${BRANCH_NAME//\//-}
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
@@ -61,7 +61,7 @@ steps:
         'beta',
         'run',
         'deploy',
-        'fishing-map-$BRANCH_NORMALIZED',
+        'fishing-map-$_BRANCH_NORMALIZED',
         '--project',
         '$_RUN_PROJECT',
         '--image',
