@@ -6,8 +6,8 @@ import { AuthorizationList } from './../types/index'
 
 export interface HistoricValue {
   data: string
-  start: Date | null
-  end: Date | null
+  start: DateTime | null
+  end: DateTime | null
 }
 export interface InfoValue {
   data: string | null
@@ -44,10 +44,10 @@ export class VesselInfo {
         const value: HistoricValue = {
           data: historicValue.value,
           start: historicValue.firstSeen
-            ? DateTime.fromISO(historicValue.firstSeen).toUTC().toJSDate()
+            ? DateTime.fromISO(historicValue.firstSeen, { zone: 'UTC' })
             : null,
           end: historicValue.endDate
-            ? DateTime.fromISO(historicValue.endDate).toUTC().toJSDate()
+            ? DateTime.fromISO(historicValue.endDate, { zone: 'UTC' })
             : null,
         }
         return value
@@ -56,10 +56,10 @@ export class VesselInfo {
       dataValues.push({
         data: gfwValue,
         start: gfwData?.firstTransmissionDate
-          ? DateTime.fromISO(gfwData?.firstTransmissionDate).toUTC().toJSDate()
+          ? DateTime.fromISO(gfwData?.firstTransmissionDate, { zone: 'UTC' })
           : null,
         end: gfwData?.lastTransmissionDate
-          ? DateTime.fromISO(gfwData?.lastTransmissionDate).toUTC().toJSDate()
+          ? DateTime.fromISO(gfwData?.lastTransmissionDate, { zone: 'UTC' })
           : null,
       })
     }
@@ -71,10 +71,10 @@ export class VesselInfo {
           dataValues.push({
             data: value.name,
             start: gfwData?.firstTransmissionDate
-              ? DateTime.fromISO(gfwData?.firstTransmissionDate).toUTC().toJSDate()
+              ? DateTime.fromISO(gfwData?.firstTransmissionDate, { zone: 'UTC' })
               : null,
             end: gfwData?.lastTransmissionDate
-              ? DateTime.fromISO(gfwData?.lastTransmissionDate).toUTC().toJSDate()
+              ? DateTime.fromISO(gfwData?.lastTransmissionDate, { zone: 'UTC' })
               : null,
           })
         })
