@@ -21,6 +21,7 @@ import {
   TimebarEvents,
   TimebarGraphs,
   TimebarVisualisations,
+  WorkspaceAnalysis,
   WorkspaceState,
   WorkspaceStateProperty,
 } from 'types'
@@ -60,10 +61,10 @@ export const selectWorkspaceStateProperty = (property: WorkspaceStateProperty) =
     }
   )
 
-export const selectReportQuery = createSelector(
-  [selectWorkspaceStateProperty('report')],
-  (report): string => {
-    return report
+export const selectAnalysisQuery = createSelector(
+  [selectWorkspaceStateProperty('analysis')],
+  (analysis): WorkspaceAnalysis => {
+    return analysis
   }
 )
 
@@ -111,15 +112,14 @@ export const selectTimebarGraph = createSelector(
 
 export const selectWorkspaceAppState = createSelector(
   [
-    selectSearchQuery,
     selectBivariate,
     selectSidebarOpen,
     selectTimebarVisualisation,
     selectTimebarEvents,
     selectTimebarGraph,
   ],
-  (search, bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph) => {
-    return { search, bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph }
+  (bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph) => {
+    return { bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph }
   }
 )
 

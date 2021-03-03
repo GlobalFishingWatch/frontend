@@ -144,9 +144,9 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
           dataKey="avg"
           unit={graphUnit}
           dot={false}
+          isAnimationActive={false}
           stroke={graphColor}
           strokeWidth={2}
-          isAnimationActive={false}
         />
         <Area
           type="monotone"
@@ -155,6 +155,7 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
           fill={graphColor}
           stroke="none"
           fillOpacity={0.2}
+          isAnimationActive={false}
         />
       </ComposedChart>
     </ResponsiveContainer>

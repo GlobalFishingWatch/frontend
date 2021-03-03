@@ -1,19 +1,26 @@
-import React, { Fragment, useEffect, useRef } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import union from '@turf/union'
+import { Feature, Polygon } from 'geojson'
 import { batch, useDispatch, useSelector } from 'react-redux'
-import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+import type { Map } from '@globalfishingwatch/mapbox-gl'
+import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import { resetWorkspaceReportQuery } from 'features/workspace/workspace.slice'
+import useTilesState from '@globalfishingwatch/react-hooks/dist/use-tiles-state'
+import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
 import {
   getRelatedDatasetByType,
   selectTemporalgridDataviews,
+  selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { selectAnalysisQuery } from 'features/app/app.selectors'
+import { useMapboxInstance } from 'features/map/map.context'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import styles from './Analysis.module.css'
 import {
@@ -23,32 +30,89 @@ import {
   DateRange,
   ReportGeometry,
   resetReportStatus,
-  selectAnalysisAreaName,
   selectAnalysisGeometry,
   selectReportStatus,
+  setAnalysisGeometry,
 } from './analysis.slice'
 import AnalysisGraphWrapper from './AnalysisGraphWrapper'
 
 function Analysis() {
   const { t } = useTranslation()
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
   const dispatch = useDispatch()
+  const mapInstance = useMapboxInstance()
+  const tilesLoading = useTilesState(mapInstance as Map).loading
+  const debouncedTilesLoading = useDebounce(tilesLoading, 600)
+  const analysisQuery = useSelector(selectAnalysisQuery)
+  const [sourceLoaded, setSourceLoaded] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const staticTime = useSelector(selectStaticTime)
   const dataviews = useSelector(selectTemporalgridDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
-  const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
   const hasAnalysisLayers = dataviews?.filter(({ config }) => config?.visible === true)?.length > 0
+  const { areaId, sourceId } = analysisQuery
+
+  useEffect(() => {
+    const sourceCallback = () => {
+      if (mapInstance?.getSource(sourceId) && mapInstance?.isSourceLoaded(sourceId)) {
+        setSourceLoaded(true)
+        mapInstance.off('idle', sourceCallback)
+      }
+    }
+
+    if (mapInstance && sourceId) {
+      mapInstance.on('idle', sourceCallback)
+    }
+
+    return () => {
+      if (mapInstance) {
+        mapInstance.off('idle', sourceCallback)
+      }
+    }
+  }, [mapInstance, sourceId])
+
+  useEffect(() => {
+    if (sourceLoaded && mapInstance) {
+      const contextAreaFeatures = mapInstance?.querySourceFeatures(sourceId, {
+        sourceLayer: 'main', // Our layers always uses 'main' as the source layer
+        filter: ['==', 'gfw_id', parseInt(areaId)],
+      })
+      if (contextAreaFeatures.length > 0) {
+        const contextAreaFeatureMerged = contextAreaFeatures.reduce(
+          (acc, { geometry, properties }) => {
+            const featureGeometry: Feature<Polygon> = {
+              type: 'Feature',
+              geometry: geometry as Polygon,
+              properties,
+            }
+            if (!acc?.type) return featureGeometry
+            return union(acc, featureGeometry, { properties }) as Feature<Polygon>
+          },
+          {} as Feature<Polygon>
+        )
+        const { name, value } = contextAreaFeatureMerged.properties || {}
+        dispatch(
+          setAnalysisGeometry({
+            geometry: contextAreaFeatureMerged,
+            name: name || value,
+          })
+        )
+      } else {
+        console.warn('No feature for analysis found')
+      }
+    }
+  }, [dispatch, mapInstance, areaId, sourceId, sourceLoaded])
 
   const onCloseClick = () => {
     batch(() => {
-      dispatch(resetWorkspaceReportQuery())
       dispatch(clearAnalysisGeometry(undefined))
-      dispatchQueryParams({ report: undefined })
+      dispatchQueryParams({ analysis: undefined })
     })
   }
+
   const onDownloadClick = async () => {
     const createReports: CreateReport[] = dataviews.map((dataview) => {
       const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
@@ -77,17 +141,6 @@ function Analysis() {
     }
   }, [])
 
-  useEffect(() => {
-    if (!analysisAreaName) {
-      onCloseClick()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  if (!staticTime) {
-    return null
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -102,50 +155,58 @@ function Analysis() {
           />
         </div>
       </div>
-      <div className={styles.contentContainer}>
-        <div className={styles.content}>
-          {hasAnalysisLayers ? (
-            <Fragment>
-              {dataviews?.map((dataview, index) => (
-                <AnalysisLayerPanel key={dataview.id} dataview={dataview} index={index} />
-              ))}
-            </Fragment>
-          ) : (
-            <p className={styles.placeholder}>
-              {t('analysis.empty', 'Your selected datasets will appear here')}
-            </p>
-          )}
-          <div className={styles.graph}>
-            <AnalysisGraphWrapper />
-          </div>
-          <p className={styles.placeholder}>
-            {t(
-              'analysis.disclaimer',
-              'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email'
-            )}{' '}
-            {userData?.email && `(${userData.email})`}
-          </p>
-        </div>
-        <div className={styles.footer}>
-          <p className={styles.error}>
-            {reportStatus === AsyncReducerStatus.Error
-              ? `${t('analysis.errorMessage', 'Something went wrong')} 🙈`
-              : ''}
-          </p>
-          <Button
-            className={styles.saveBtn}
-            onClick={onDownloadClick}
-            loading={reportStatus === AsyncReducerStatus.LoadingCreate}
-            disabled={!hasAnalysisLayers || reportStatus === AsyncReducerStatus.Finished}
-          >
-            {reportStatus === AsyncReducerStatus.Finished ? (
-              <Icon icon="tick" />
+      {workspaceStatus !== AsyncReducerStatus.Finished ? (
+        <Spinner className={styles.spinnerFull} />
+      ) : (
+        <div className={styles.contentContainer}>
+          <div className={styles.content}>
+            {hasAnalysisLayers ? (
+              <Fragment>
+                {dataviews?.map((dataview, index) => (
+                  <AnalysisLayerPanel key={dataview.id} dataview={dataview} index={index} />
+                ))}
+              </Fragment>
             ) : (
-              t('analysis.download', 'Download report')
+              <p className={styles.placeholder}>
+                {t('analysis.empty', 'Your selected datasets will appear here')}
+              </p>
             )}
-          </Button>
+            <div className={styles.graph}>
+              {debouncedTilesLoading && !analysisGeometry ? (
+                <Spinner className={styles.spinner} />
+              ) : (
+                <AnalysisGraphWrapper />
+              )}
+            </div>
+            <p className={styles.placeholder}>
+              {t(
+                'analysis.disclaimer',
+                'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email'
+              )}{' '}
+              {userData?.email && `(${userData?.email})`}
+            </p>
+          </div>
+          <div className={styles.footer}>
+            <p className={styles.error}>
+              {reportStatus === AsyncReducerStatus.Error
+                ? `${t('analysis.errorMessage', 'Something went wrong')} 🙈`
+                : ''}
+            </p>
+            <Button
+              className={styles.saveBtn}
+              onClick={onDownloadClick}
+              loading={reportStatus === AsyncReducerStatus.LoadingCreate}
+              disabled={!hasAnalysisLayers || reportStatus === AsyncReducerStatus.Finished}
+            >
+              {reportStatus === AsyncReducerStatus.Finished ? (
+                <Icon icon="tick" />
+              ) : (
+                t('analysis.download', 'Download report')
+              )}
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

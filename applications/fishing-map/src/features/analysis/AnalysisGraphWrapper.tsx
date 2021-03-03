@@ -29,6 +29,7 @@ const filterByPolygon = (features: MapboxGeoJSONFeature[], polygon: Geometry) =>
       if (isContained) {
         acc.contained.push(feature)
       } else {
+        // TODO try to get the % of overlapping to use it in the value calculation
         const overlaps = booleanOverlap(feature.geometry as Polygon, simplifiedPoly)
         if (overlaps) {
           acc.overlapping.push(feature)
@@ -59,22 +60,20 @@ function AnalysisGraphWrapper() {
   const allFeatures = mapInstance?.querySourceFeatures(currentTimeChunkId, {
     sourceLayer: 'temporalgrid_interactive',
   })
+
   let filteredFeatures = {
     contained: [] as MapboxGeoJSONFeature[],
     overlapping: [] as MapboxGeoJSONFeature[],
   }
-  if (allFeatures && analysisAreaFeature) {
+
+  if (allFeatures?.length && analysisAreaFeature?.geometry) {
     // TODO: move this UI blocker to a worker
+    // TODO: snapshot this when fitBounds ends and don't re-run on every map change
     filteredFeatures = filterByPolygon(allFeatures, analysisAreaFeature.geometry)
   }
-  if (!filteredFeatures.contained?.length || !filteredFeatures.overlapping?.length) {
-    return null
-  }
-  const visibleTemporalGridDataviews = temporalGridDataviews?.map(
-    (dataview) => dataview.config?.visible ?? false
-  )
+
   const valuesContained = getTimeSeries(
-    filteredFeatures.contained as any,
+    (filteredFeatures.contained || []) as any,
     numSublayers,
     chunkQuantizeOffset
   ).map((frameValues) => {
@@ -85,8 +84,13 @@ function AnalysisGraphWrapper() {
       ).toISOString(),
     }
   })
+
+  const allFilteredFeatues = [
+    ...(filteredFeatures.contained || []),
+    ...(filteredFeatures.overlapping || []),
+  ]
   const valuesOverlapping = getTimeSeries(
-    [...filteredFeatures.contained, ...filteredFeatures.overlapping] as any,
+    allFilteredFeatues as any,
     numSublayers,
     chunkQuantizeOffset
   ).map((frameValues) => {

@@ -7,7 +7,7 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import { logoutUserThunk } from 'features/user/user.slice'
 import { isGuestUser, isUserAuthorized, isUserLogged } from 'features/user/user.selectors'
 import Search from 'features/search/Search'
-import { selectReportQuery, selectSearchQuery } from 'features/app/app.selectors'
+import { selectAnalysisQuery, selectSearchQuery } from 'features/app/app.selectors'
 import { selectLocationType } from 'routes/routes.selectors'
 import { USER, WORKSPACES_LIST } from 'routes/routes'
 import User from 'features/user/User'
@@ -28,7 +28,7 @@ type SidebarProps = {
 function Sidebar({ onMenuClick }: SidebarProps) {
   const { t } = useTranslation()
   const searchQuery = useSelector(selectSearchQuery)
-  const reportQuery = useSelector(selectReportQuery)
+  const analysisQuery = useSelector(selectAnalysisQuery)
   const locationType = useSelector(selectLocationType)
   const guestUser = useSelector(isGuestUser)
   const userLogged = useSelector(isUserLogged)
@@ -91,7 +91,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     return <Search />
   }
 
-  if (reportQuery !== undefined) {
+  if (analysisQuery !== undefined) {
     return <Analysis />
   }
 

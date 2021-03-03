@@ -1,16 +1,11 @@
 import React, { Fragment, useCallback } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import groupBy from 'lodash/groupBy'
-import { batch, useDispatch, useSelector } from 'react-redux'
+import { batch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import union from '@turf/union'
-import { Feature, Polygon } from 'geojson'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
-import { setAnalysisGeometry } from 'features/analysis/analysis.slice'
-import { useMapboxInstance } from '../map.context'
-import { selectClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
 
 const TunaRfmoLinksById: Record<string, string> = {
@@ -34,7 +29,7 @@ function FeatureRow({ feature, showFeaturesDetails = false, onReportClick }: Fea
   const { gfw_id } = feature.properties
 
   // ContextLayerType.MPA but enums doesn't work in CRA for now
-  if (feature.contextLayer === 'mpa') {
+  if (['mpa', 'mpa-restricted', 'mpa-no-take'].includes(feature.contextLayer as string)) {
     const { wdpa_pid } = feature.properties
     const label = `${feature.value} - ${feature.properties.desig}`
     return (
@@ -117,54 +112,29 @@ type ContextTooltipRowProps = {
 }
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
-  const mapInstance = useMapboxInstance()
-  const clickedEvent = useSelector(selectClickedEvent)
   const { dispatchQueryParams } = useLocationConnect()
-  const dispatch = useDispatch()
 
   const onReportClick = useCallback(
     (feature: TooltipEventFeature) => {
-      if (!mapInstance || !clickedEvent) {
-        console.warn(`No map ${mapInstance ? 'clicked event' : 'map instance'} instance found`)
-        return
-      }
       if (!feature.properties?.gfw_id) {
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
 
-      // TODO: validate if queryRenderedFeatures returns the entire geometry even being out of the viewport
-      // const intersectionOptions = { layers: [feature.layerId] }
-      // const contextAreaFeatures = mapInstance.queryRenderedFeatures(
-      //   clickedEvent.point as any,
-      //   intersectionOptions
-      // )
-      const contextAreaFeatures = mapInstance.querySourceFeatures(feature.source, {
-        sourceLayer: feature.sourceLayer,
-        filter: ['==', 'gfw_id', feature.properties?.gfw_id],
-      })
-      const contextAreaGeometry = contextAreaFeatures.reduce((acc, { geometry, properties }) => {
-        const featureGeometry: Feature<Polygon> = {
-          type: 'Feature',
-          geometry: geometry as Polygon,
-          properties,
-        }
-        if (!acc?.type) return featureGeometry
-        return union(acc, featureGeometry, { properties }) as Feature<Polygon>
-      }, {} as Feature<Polygon>)
-
       batch(() => {
-        dispatch(
-          setAnalysisGeometry({
-            geometry: contextAreaGeometry,
-            name: feature.properties.value,
-          })
-        )
-        dispatchQueryParams({ report: 'fishing-activity' })
+        dispatchQueryParams({
+          analysis: {
+            areaId: feature.properties?.gfw_id,
+            sourceId: feature.source,
+          },
+        })
+        // TODO decide if we keep the tooltip open or not
+        // dispatch(setClickedEvent(null))
       })
     },
-    [mapInstance, clickedEvent, dispatchQueryParams, dispatch]
+    [dispatchQueryParams]
   )
+
   const featuresByType = groupBy(features, 'layer')
   return (
     <Fragment>

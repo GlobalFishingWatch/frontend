@@ -58,6 +58,14 @@
   padding: var(--space-M);
 }
 
+.spinner {
+  height: 28rem;
+}
+
+.spinnerFull {
+  height: 100vh;
+}
+
 .error {
   display: flex;
   flex: 1;

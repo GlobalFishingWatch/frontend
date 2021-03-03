@@ -39,7 +39,7 @@ function AnalysisLayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     {
       id: 'area',
       label:
-        analysisAreaName.length > 35 ? `${analysisAreaName.slice(0, 35)}...` : analysisAreaName,
+        analysisAreaName?.length > 35 ? `${analysisAreaName?.slice(0, 35)}...` : analysisAreaName,
       tooltip: analysisAreaName,
     },
   ]
