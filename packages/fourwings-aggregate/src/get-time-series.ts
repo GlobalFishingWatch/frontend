@@ -8,6 +8,10 @@ type Feature = {
 }
 
 const getTimeSeries = (features: Feature[], numSublayers: number, quantizeOffset = 0) => {
+  if (!features || !features.length) {
+    return []
+  }
+
   let minFrame = Number.POSITIVE_INFINITY
   let maxFrame = Number.NEGATIVE_INFINITY
 
