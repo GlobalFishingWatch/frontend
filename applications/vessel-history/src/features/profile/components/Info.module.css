@@ -5,6 +5,8 @@
 .identifiers {
   overflow: hidden;
   color: #22447e;
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .identifierField {

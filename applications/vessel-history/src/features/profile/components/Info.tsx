@@ -21,15 +21,51 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
       <div className={styles.infoContainer}>
         {vessel && (
           <div className={styles.identifiers}>
-            <InfoField label={'Name'} field={vessel.getName()}></InfoField>
-            <InfoField label={'Type'} field={vessel.getType()}></InfoField>
-            <InfoField label={'FLAG'} field={vessel.getFlag()}></InfoField>
-            <InfoField label={'MMSI'} field={vessel.getMMSI()}></InfoField>
-            <InfoField label={'CALLSIGN'} field={vessel.getCallsign()}></InfoField>
-            <InfoField label={'GEAR TYPE'} field={vessel.getGearType()}></InfoField>
-            <InfoField label={'LENGTH'} field={vessel.getLength()}></InfoField>
-            <InfoField label={'GROSS TONNAGE'} field={vessel.getGrossTonnage()}></InfoField>
-            <InfoField label={'DEPTH'} field={vessel.getDepth()}></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'Name'}
+              field={vessel.getName()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'Type'}
+              field={vessel.getType()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'FLAG'}
+              field={vessel.getFlag()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'MMSI'}
+              field={vessel.getMMSI()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'CALLSIGN'}
+              field={vessel.getCallsign()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'GEAR TYPE'}
+              field={vessel.getGearType()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'LENGTH'}
+              field={vessel.getLength()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'GROSS TONNAGE'}
+              field={vessel.getGrossTonnage()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'DEPTH'}
+              field={vessel.getDepth()}
+            ></InfoField>
             <div className={styles.identifierField}>
               <label>AUTHORIZATIONS</label>
               {vessel.getAuthorisations().map((auth) => (
@@ -37,9 +73,21 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               ))}
               {!vessel.getAuthorisations().length && <p>No authorizations found</p>}
             </div>
-            <InfoField label={'BUILT'} field={vessel.getBuiltYear()}></InfoField>
-            <InfoField label={'OWNER'} field={vessel.getOwner()}></InfoField>
-            <InfoField label={'OPERATOR'} field={vessel.getOperator()}></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'BUILT'}
+              field={vessel.getBuiltYear()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'OWNER'}
+              field={vessel.getOwner()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'OPERATOR'}
+              field={vessel.getOperator()}
+            ></InfoField>
           </div>
         )}
         <br />
