@@ -46,7 +46,14 @@ steps:
         '-c',
         './applications/fishing-map',
       ]
-
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+    - '-eEuo'
+    - 'pipefail'
+    - '-c'
+    - |-
+      export BRANCH_NORMALIZED=${BRANCH_NAME//\//-}
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
@@ -54,7 +61,7 @@ steps:
         'beta',
         'run',
         'deploy',
-        'fishing-map-$BRANCH_NAME',
+        'fishing-map-$BRANCH_NORMALIZED',
         '--project',
         '$_RUN_PROJECT',
         '--image',
