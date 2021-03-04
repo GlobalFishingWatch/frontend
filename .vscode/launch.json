@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
       {
+        "name": "Debug CRA Tests - Fishing Map",
+        "type": "node",
+        "request": "launch",
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
+        "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
+        "cwd": "${workspaceRoot}/applications/fishing-map",
+        "protocol": "inspector",
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen"
+      },
+      {
         "name": "Debug CRA Tests - Vessel History",
         "type": "node",
         "request": "launch",

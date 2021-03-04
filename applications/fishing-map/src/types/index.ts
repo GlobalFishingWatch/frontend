@@ -23,6 +23,7 @@ export type WorkspaceStateProperty =
   | 'timebarGraph'
   | 'bivariate'
   | 'version'
+  | 'report'
 export type WorkspaceParam =
   | WorkspaceViewportParam
   | WorkspaceTimeRangeParam
@@ -31,6 +32,7 @@ export type WorkspaceParam =
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
 export type WorkspaceState = {
+  report?: string
   query?: string
   sidebarOpen?: boolean
   dataviewInstances?: Partial<UrlDataviewInstance[]>

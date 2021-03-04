@@ -6,7 +6,7 @@
     "apparentFishing": "Apparent Fishing Effort",
     "confirm": "Confirm",
     "context_area_plural": "Context areas",
-    "copiedToClipboard": "The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.",
+    "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "countries",
     "description": "Description",
     "environment": "Environment",
@@ -20,8 +20,9 @@
     "more": "more",
     "name": "Name",
     "presence": "Fishing presence",
+    "report": "Report",
     "seeDefault": "See default view",
-    "share": "Click to share the current view",
+    "share": "Share the current view",
     "update": "Update",
     "user": "User",
     "userProfile": "User profile",
@@ -104,6 +105,19 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
+  "report": {
+    "area": "Area",
+    "close": "Close report",
+    "dateRange": "Date Range",
+    "errorMessage": "Something went wrong",
+    "fishingActivityByEEZDescription": "A fishing activity report for the selected date ranges and filters will be generated and sent to your email account",
+    "fishingActivityReport": "Fishing Activity Report",
+    "generating": "We are generating the report for you, it'll be ready soon.",
+    "notAvailable": "missing_translation",
+    "successfullMessage": "The report was sent successfully, you'll receive it by email soon.",
+    "fishingActivityByEEZ": "Fishing Activity by EEZ",
+    "generate": "Generate"
+  },
   "search": {
     "close": "Close search",
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
@@ -130,16 +144,20 @@
     "tracksDisabled": "Select at least one vessel"
   },
   "vessel": {
+    "beam": "Beam",
     "callsign": "Callsign",
+    "capacity": "Capacity",
     "firstTransmissionDate": "First transmission date",
     "flag": "Flag",
     "fleet": "Fleet",
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Last transmission date",
+    "length": "Length",
     "lengthRange": "Length range",
     "loading": "Loading vessel track",
     "mmsi": "MMSI",
+    "nationalId": "National Id",
     "origin": "Origin",
     "registeredGearType": "Registered Gear Type",
     "source": "Source",
@@ -151,9 +169,14 @@
   },
   "workspace": {
     "emptyState": "Your workspaces will appear here",
+    "nameInput": "Workspace name",
     "new": "New Workspace",
-    "save": "Click to save the current view",
+    "save": "Save the current view",
+    "saved": "Current view was saved and it's available in your user profile",
     "title_plural": "Workspaces",
-    "title": "Workspace"
+    "title": "Workspace",
+    "remove": "Remove workspace",
+    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
+    "editName": "Edit workspace name"
   }
 }
