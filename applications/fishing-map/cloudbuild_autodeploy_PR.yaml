@@ -62,26 +62,16 @@ steps:
         '-c',
         './applications/fishing-map',
       ]
-  # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
     args:
-      [
-        'beta',
-        'run',
-        'deploy',
-        'fishing-map-${BRANCH_NAME//\//-}',
-        '--project',
-        '$_RUN_PROJECT',
-        '--image',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
-        '--region',
-        '$_RUN_REGION',
-        '--platform',
-        'managed',
-        '--set-env-vars',
-        'BASIC_AUTH=$_BASIC_AUTH',
-        '--allow-unauthenticated',
-      ]
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        gcloud beta run deploy fishing-map-${BRANCH_NAME//\//-} --project $_RUN_PROJECT \
+        --image gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA \
+        --region $_RUN_REGION --platform managed --set-env-vars BASIC_AUTH=$_BASIC_AUTH --allow-unauthenticated
 
 images:
   - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA'
