@@ -28,7 +28,7 @@ export interface OtherCallsign {
   name: string
 }
 
-export interface Vessel {
+export interface Vessel2 {
   id: string
   callsign: string
   firstTransmissionDate: string
@@ -48,6 +48,11 @@ export interface Vessel {
 export enum VesselAPISource {
   TMT = 'TMT',
   GFW = 'GFW',
+}
+export interface ValueItem {
+  value: string
+  firstSeen?: string
+  endDate?: string
 }
 export interface BuiltYear {
   value: string
