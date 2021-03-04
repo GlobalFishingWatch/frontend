@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.14.4
+
+### Patch Changes
+
+- fix highlight typo
+
 ## 4.14.3
 
 ### Patch Changes
