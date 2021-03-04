@@ -1,5 +1,11 @@
 # @globalfishingwatch/fourwings-aggregate
 
+## 1.2.0
+
+### Minor Changes
+
+- [`729322ab`](https://github.com/GlobalFishingWatch/frontend/commit/729322ab540c4ad807cb3bba1c2b344eb265ed89) [#348](https://github.com/GlobalFishingWatch/frontend/pull/348) Thanks [@j8seangel](https://github.com/j8seangel)! - expose value_multiplier
+
 ## 1.1.3
 
 ### Patch Changes
