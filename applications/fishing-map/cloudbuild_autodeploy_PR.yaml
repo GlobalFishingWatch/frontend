@@ -70,7 +70,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        gcloud beta run deploy fishing-map-`echo $BRANCH_NAME | sed -r 's,/,-,g'` --project $_RUN_PROJECT --image gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA \
+        gcloud beta run deploy fishing-map-`echo $BRANCH_NAME | sed -r 's,/,-,g' | awk '{print tolower($0)}'` --project $_RUN_PROJECT --image gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA \
         --region $_RUN_REGION --platform managed --set-env-vars BASIC_AUTH=$_BASIC_AUTH --allow-unauthenticated
 
 images:
