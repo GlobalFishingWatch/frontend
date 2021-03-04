@@ -11,7 +11,7 @@ import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
-import { WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import {
   getGeneratorsConfig,
   selectGlobalGeneratorsConfig,
@@ -52,7 +52,7 @@ export const useClickedEventConnect = () => {
         (feature: any) => feature.properties.type === 'workspace'
       )
       if (workspace) {
-        const isDefaultWorkspace = workspace.properties.id === 'default'
+        const isDefaultWorkspace = workspace.properties.id === DEFAULT_WORKSPACE_ID
         dispatchLocation(
           isDefaultWorkspace ? HOME : WORKSPACE,
           isDefaultWorkspace
@@ -107,7 +107,8 @@ export type TooltipEventFeature = {
   type?: Type
   color?: string
   unit?: string
-  layer?: ContextLayerType | null
+  layerId: string
+  contextLayer?: ContextLayerType | null
   value: string
   properties: Record<string, string>
   vesselsInfo?: {
@@ -150,6 +151,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       // Not needed to create a dataview just for the workspaces list interaction
       if (feature.generatorId && (feature.generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
+          layerId: feature.layerId as string,
           type: Generators.Type.GL,
           value: feature.properties.label,
           properties: {},
@@ -165,7 +167,8 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       color: dataview.config?.color || 'black',
       unit: feature.unit,
       value: feature.value,
-      layer: feature.generatorContextLayer,
+      layerId: feature.layerId,
+      contextLayer: feature.generatorContextLayer,
       properties: { ...feature.properties },
     }
     // Insert custom properties by each dataview configuration
@@ -194,6 +197,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
   })
   if (!tooltipEventFeatures.length) return null
   return {
+    point: event.point,
     latitude: event.latitude,
     longitude: event.longitude,
     features: tooltipEventFeatures,

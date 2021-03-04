@@ -31,6 +31,7 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
 
   const gearTypeFilters = getFiltersBySchema(dataview, 'geartype')
   const fleetFilters = getFiltersBySchema(dataview, 'fleet')
+  const originFilters = getFiltersBySchema(dataview, 'origin')
   const vesselFilters = getFiltersBySchema(dataview, 'vessel_type')
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
@@ -164,6 +165,20 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
           onSelect={(selection) => onSelectFilterClick('fleet', selection)}
           onRemove={(selection, rest) => onRemoveFilterClick('fleet', rest)}
           onCleanClick={() => onCleanFilterClick('fleet')}
+        />
+      )}
+      {originFilters.active && (
+        <MultiSelect
+          disabled={originFilters.disabled}
+          disabledMsg={originFilters.tooltip}
+          label={t('vessel.origin', 'Origin')}
+          placeholder={getPlaceholderBySelections(originFilters.optionsSelected)}
+          options={originFilters.options}
+          selectedOptions={originFilters.optionsSelected}
+          className={styles.multiSelect}
+          onSelect={(selection) => onSelectFilterClick('origin', selection)}
+          onRemove={(selection, rest) => onRemoveFilterClick('origin', rest)}
+          onCleanClick={() => onCleanFilterClick('origin')}
         />
       )}
       {vesselFilters.active && (

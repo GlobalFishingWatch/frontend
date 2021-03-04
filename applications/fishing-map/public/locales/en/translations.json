@@ -6,7 +6,7 @@
     "apparentFishing": "Apparent Fishing Effort",
     "confirm": "Confirm",
     "context_area_plural": "Context areas",
-    "copiedToClipboard": "The link to share this view has been copied to your clipboard. You can find all your saved views in your user area.",
+    "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "countries",
     "description": "Description",
     "environment": "Environment",
@@ -21,7 +21,7 @@
     "name": "Name",
     "presence": "Fishing presence",
     "seeDefault": "See default view",
-    "share": "Click to share the current view",
+    "share": "Share the current view",
     "update": "Update",
     "user": "User",
     "userProfile": "User profile",
@@ -65,6 +65,7 @@
     "privateView": "This is a private view",
     "requestAccess": "Request access",
     "switchAccount": "Switch account",
+    "trackLoading": "There was an error loading the vessel track",
     "uploadError": "There was an error uploading your dataset",
     "workspaceLoad": "There was an error loading the workspace, please try again later",
     "workspaceNotFound": "The view you request was not found"
@@ -129,16 +130,20 @@
     "tracksDisabled": "Select at least one vessel"
   },
   "vessel": {
+    "beam": "Beam",
     "callsign": "Callsign",
+    "capacity": "Capacity",
     "firstTransmissionDate": "First transmission date",
     "flag": "Flag",
     "fleet": "Fleet",
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Last transmission date",
+    "length": "Length",
     "lengthRange": "Length range",
     "loading": "Loading vessel track",
     "mmsi": "MMSI",
+    "nationalId": "National Id",
     "origin": "Origin",
     "registeredGearType": "Registered Gear Type",
     "source": "Source",
@@ -150,8 +155,14 @@
   },
   "workspace": {
     "emptyState": "Your workspaces will appear here",
+    "nameInput": "Workspace name",
     "new": "New Workspace",
+    "save": "Save the current view",
+    "saved": "Current workspace was saved and it's available in your user profile",
     "title_plural": "Workspaces",
-    "title": "Workspace"
+    "title": "Workspace",
+    "remove": "Remove workspace",
+    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
+    "editName": "Edit workspace name"
   }
 }

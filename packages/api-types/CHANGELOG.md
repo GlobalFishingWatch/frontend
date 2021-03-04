@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.12.0
+
+### Minor Changes
+
+- [`c33e3caa`](https://github.com/GlobalFishingWatch/frontend/commit/c33e3caa4d0efbea3d0ce9ab49af6dc7491b282a) [#343](https://github.com/GlobalFishingWatch/frontend/pull/343) Thanks [@rdgfuentes](https://github.com/rdgfuentes)! - reports types
+
 ## 2.11.0
 
 ### Minor Changes
