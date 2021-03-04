@@ -65,7 +65,7 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     entrypoint: "/bin/bash"
     # Replace all hyphens in the build ID with OHIO.
-    args: ["-c", "_tmpvar=`echo $BRANCH_NAME | sed -r 's,-,OHIO,g'`; echo $_NORMAL_BRANCH_NAME"]
+    args: ["-c", "_tmpvar=`echo $BRANCH_NAME | sed -r 's,/,-,g'`; echo $_NORMAL_BRANCH_NAME"]
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
