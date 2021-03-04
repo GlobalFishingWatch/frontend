@@ -62,34 +62,21 @@ steps:
         '-c',
         './applications/fishing-map',
       ]
-  - name: "gcr.io/cloud-builders/docker"
-    entrypoint: "/bin/bash"
-    # Replace all hyphens in the build ID with OHIO.
-    args: ["-c", "_tmpvar=`echo $BRANCH_NAME | sed -r 's,/,-,g'`; echo $_NORMAL_BRANCH_NAME"]
-  # Deploy to the appropriate environment
+
   - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
     args:
-      [
-        'beta',
-        'run',
-        'deploy',
-        'fishing-map-$_NORMAL_BRANCH_NAME',
-        '--project',
-        '$_RUN_PROJECT',
-        '--image',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
-        '--region',
-        '$_RUN_REGION',
-        '--platform',
-        'managed',
-        '--set-env-vars',
-        'BASIC_AUTH=$_BASIC_AUTH',
-        '--allow-unauthenticated',
-      ]
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        _tmpvar=`echo $BRANCH_NAME | sed -r 's,/,-,g'`
+        gcloud beta run deploy fishing-map-$_NORMAL_BRANCH_NAME --project $_RUN_PROJECT --image gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA \
+        --region $_RUN_REGION --platform managed --set-env-vars BASIC_AUTH=$_BASIC_AUTH --allow-unauthenticated
 
 images:
   - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA'
 
 timeout: 1800s
 substitutions:
-    _NORMAL_BRANCH_NAME: $_tmpvar
+  _NORMAL_BRANCH_NAME: $_tmpvar
