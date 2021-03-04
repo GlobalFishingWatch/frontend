@@ -23,7 +23,7 @@ const InfoFieldHistoric: React.FC<ListItemProps> = ({
   const [modalOpen, setModalOpen] = useState(isOpen)
   const toggleModalOpen = useCallback(() => {
     setModalOpen(!modalOpen)
-  }, [])
+  }, [modalOpen])
 
   const formatedDate = (date: DateTime | null) => {
     return date ? [date.toLocaleString(DateTime.DATETIME_MED), 'UTC'].join(' ') : ''

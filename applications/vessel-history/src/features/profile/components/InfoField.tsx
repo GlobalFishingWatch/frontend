@@ -1,6 +1,4 @@
-import { start } from 'repl'
 import React, { useCallback, useState } from 'react'
-import { Icon, Modal } from '@globalfishingwatch/ui-components'
 // eslint-disable-next-line import/order
 import { HistoricValue, VesselInfoValue } from 'classes/vessel.class'
 import styles from './Info.module.css'

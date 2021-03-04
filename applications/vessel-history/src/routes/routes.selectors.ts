@@ -51,7 +51,7 @@ export const selectVesselProfileId = createSelector(
   }
 )
 
-export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
+export const selectQueryParam = (param: WorkspaceParam) =>
   createSelector([selectLocationQuery], (query: any) => {
     if (query === undefined || query[param] === undefined) {
       return DEFAULT_WORKSPACE[param]

@@ -1,8 +1,14 @@
 import { DateTime } from 'luxon'
-import { AnyHistoricValue, AnyValueList, GFWDetail, TMTDetail, VesselAPISource } from 'types'
+import {
+  AnyHistoricValue,
+  AnyValueList,
+  GFWDetail,
+  TMTDetail,
+  VesselAPISource,
+  AuthorizationList,
+} from 'types'
 import { getFlagById } from 'utils/flags'
 import { getVesselValueSource } from 'utils/vessel'
-import { AuthorizationList } from './../types/index'
 
 export interface HistoricValue {
   data: string
@@ -64,7 +70,7 @@ export class VesselInfo {
       })
     }
     if (gfwHistoricValue && gfwHistoricValue.length) {
-      const sortedValues = gfwHistoricValue
+      gfwHistoricValue
         .slice()
         .sort((a: AnyHistoricValue, b: AnyHistoricValue) => a.counter - b.counter)
         .forEach((value: AnyHistoricValue) => {

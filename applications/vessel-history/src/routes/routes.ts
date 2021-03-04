@@ -14,15 +14,12 @@ import { RootState } from 'store'
 import { AppActions, AppState } from 'types/redux.types'
 import { vesselInfoThunk } from 'features/vessels/vessels.thunks'
 import { UpdateQueryParamsAction } from './routes.actions'
-import { getLocationType, selectLocationQuery } from './routes.selectors'
 
 export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
 export const PROFILE = 'PROFILE'
 
 export type ROUTE_TYPES = typeof HOME | typeof PROFILE
-
-const preFetchThunks = [vesselInfoThunk]
 
 const profileThunk = async (
   dispatch: Dispatch<AppActions | NavigationAction>,
