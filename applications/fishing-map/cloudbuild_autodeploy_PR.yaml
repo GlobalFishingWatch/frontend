@@ -6,7 +6,15 @@ steps:
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
         '--cache=true',
         '--build-arg',
+        'REACT_APP_GOOGLE_API_KEY=$_REACT_APP_GOOGLE_API_KEY',
+        '--build-arg',
+        'REACT_APP_GOOGLE_SHEETS_ID=$_REACT_APP_GOOGLE_SHEETS_ID',
+        '--build-arg',
         'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
+        '--build-arg',
+        'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
+        '--build-arg',
+        'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV',
         '--build-arg',
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
@@ -34,7 +42,15 @@ steps:
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
         '--cache=true',
         '--build-arg',
+        'REACT_APP_GOOGLE_API_KEY=$_REACT_APP_GOOGLE_API_KEY',
+        '--build-arg',
+        'REACT_APP_GOOGLE_SHEETS_ID=$_REACT_APP_GOOGLE_SHEETS_ID',
+        '--build-arg',
         'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
+        '--build-arg',
+        'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
+        '--build-arg',
+        'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV',
         '--build-arg',
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
@@ -49,11 +65,11 @@ steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:
-    - '-eEuo'
-    - 'pipefail'
-    - '-c'
-    - |-
-      export _BRANCH_NORMALIZED=${BRANCH_NAME//\//-}
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        export _BRANCH_NORMALIZED=${BRANCH_NAME//\//-}
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
