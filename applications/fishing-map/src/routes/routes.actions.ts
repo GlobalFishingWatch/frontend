@@ -1,5 +1,7 @@
-import { QueryParams } from 'types'
+import { AppDispatch, RootState } from 'store'
+import { QueryParams, WorkspaceViewport } from 'types'
 import { ROUTE_TYPES } from './routes'
+import { selectCurrentLocation, selectLocationPayload } from './routes.selectors'
 
 export interface UpdateQueryParamsAction {
   type: ROUTE_TYPES
@@ -20,3 +22,14 @@ export function updateLocation(
 ) {
   return { type, query, payload, replaceQuery }
 }
+
+const updateUrlViewport: any = (dispatch: AppDispatch, getState: () => RootState) => {
+  return (viewport: WorkspaceViewport) => {
+    const state = getState()
+    const location = selectCurrentLocation(state)
+    const payload = selectLocationPayload(state)
+    dispatch(updateLocation(location.type, { query: { ...viewport }, payload }))
+  }
+}
+
+export { updateUrlViewport }

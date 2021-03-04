@@ -1,14 +1,14 @@
-import { useSelector } from 'react-redux'
-import { useCallback, useEffect, useLayoutEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useCallback, useLayoutEffect } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
 import { atom, useRecoilState } from 'recoil'
+import debounce from 'lodash/debounce'
 import { ViewportProps } from '@globalfishingwatch/react-map-gl'
-import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { MapCoordinates } from 'types'
 import { selectViewport } from 'features/app/app.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_VIEWPORT } from 'data/config'
+import { updateUrlViewport } from 'routes/routes.actions'
 import { useMapboxInstance, useMapboxRef } from './map.context'
 
 type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>
@@ -18,17 +18,29 @@ type UseViewport = {
   setMapCoordinates: (viewport: SetMapCoordinatesArgs) => void
 }
 
+const URL_VIEWPORT_DEBOUNCED_TIME = 1000
+
 const viewportState = atom<MapCoordinates>({
   key: 'mapViewport',
-  default: DEFAULT_VIEWPORT,
+  default: DEFAULT_VIEWPORT as MapCoordinates,
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      const dispatch = useDispatch()
+      const updateUrlViewportDebounced = debounce(
+        dispatch(updateUrlViewport),
+        URL_VIEWPORT_DEBOUNCED_TIME
+      )
+      onSet((viewport) => {
+        const { latitude, longitude, zoom } = viewport as MapCoordinates
+        updateUrlViewportDebounced({ latitude, longitude, zoom })
+      })
+    },
+  ],
 })
 
-export function useDebouncedViewport(
-  urlViewport: MapCoordinates,
-  callback: (viewport: MapCoordinates) => void
-): UseViewport {
+export default function useViewport(): UseViewport {
+  const urlViewport = useSelector(selectViewport)
   const [viewport, setViewport] = useRecoilState(viewportState)
-  const debouncedViewport = useDebounce<MapCoordinates>(viewport, 1000)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useLayoutEffect(() => setViewport(urlViewport), [])
@@ -47,18 +59,6 @@ export function useDebouncedViewport(
     },
     [setViewport]
   )
-
-  // Sync the url with the local state debounced
-  useEffect(() => {
-    if (debouncedViewport && typeof callback === 'function') {
-      callback({
-        latitude: debouncedViewport.latitude,
-        longitude: debouncedViewport.longitude,
-        zoom: debouncedViewport.zoom,
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedViewport])
 
   return { viewport, onViewportChange, setMapCoordinates }
 }
@@ -108,11 +108,4 @@ export function useMapFitBounds() {
     [mapInstance, setMapCoordinates]
   )
   return fitMapBounds
-}
-
-export default function useViewport(): UseViewport {
-  const { dispatchQueryParams } = useLocationConnect()
-  const urlViewport = useSelector(selectViewport)
-  const callback = useCallback((viewport) => dispatchQueryParams(viewport), [dispatchQueryParams])
-  return useDebouncedViewport(urlViewport, callback)
 }
