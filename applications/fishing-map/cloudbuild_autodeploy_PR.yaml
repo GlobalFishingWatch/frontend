@@ -94,4 +94,4 @@ steps:
 images:
   - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA'
 
-timeout: 900s
+timeout: 1800s
