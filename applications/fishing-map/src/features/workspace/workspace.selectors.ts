@@ -283,6 +283,14 @@ export const selectTemporalgridDataviews = createSelector(
   (dataviews) => dataviews
 )
 
+export const selectHasAnalysisLayersVisible = createSelector(
+  [selectTemporalgridDataviews],
+  (dataviews) => {
+    const visibleDataviews = dataviews?.filter(({ config }) => config?.visible === true)
+    return visibleDataviews && visibleDataviews.length > 0
+  }
+)
+
 export const selectActiveTemporalgridDataviews = createSelector(
   [selectTemporalgridDataviews],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)

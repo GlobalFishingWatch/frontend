@@ -1,11 +1,12 @@
 import React, { Fragment, useCallback } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import groupBy from 'lodash/groupBy'
-import { batch, useDispatch } from 'react-redux'
+import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectHasAnalysisLayersVisible } from 'features/workspace/workspace.selectors'
 import { setClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
 
@@ -21,9 +22,15 @@ interface FeatureRowProps {
   feature: TooltipEventFeature
   showFeaturesDetails: boolean
   onReportClick?: (feature: TooltipEventFeature) => void
+  reportEnabled?: boolean
 }
 
-function FeatureRow({ feature, showFeaturesDetails = false, onReportClick }: FeatureRowProps) {
+function FeatureRow({
+  feature,
+  showFeaturesDetails = false,
+  onReportClick,
+  reportEnabled = true,
+}: FeatureRowProps) {
   const { t } = useTranslation()
 
   if (!feature.value) return null
@@ -40,7 +47,12 @@ function FeatureRow({ feature, showFeaturesDetails = false, onReportClick }: Fea
           <div className={styles.rowActions}>
             <IconButton
               icon="report"
-              tooltip={t('common.report', 'Report')}
+              disabled={!reportEnabled}
+              tooltip={
+                reportEnabled
+                  ? t('common.report', 'Report')
+                  : t('analysis.noActivityLayers', 'No activity layers active')
+              }
               onClick={() => onReportClick && onReportClick(feature)}
               size="small"
             />
@@ -66,6 +78,7 @@ function FeatureRow({ feature, showFeaturesDetails = false, onReportClick }: Fea
         <div className={styles.rowActions}>
           <IconButton
             icon="report"
+            disabled={!reportEnabled}
             tooltip={t('common.report', 'Report')}
             onClick={() => onReportClick && onReportClick(feature)}
             size="small"
@@ -88,6 +101,7 @@ function FeatureRow({ feature, showFeaturesDetails = false, onReportClick }: Fea
           <div className={styles.rowActions}>
             <IconButton
               icon="report"
+              disabled={!reportEnabled}
               tooltip={t('common.report', 'Report')}
               onClick={() => onReportClick && onReportClick(feature)}
               size="small"
@@ -114,6 +128,7 @@ type ContextTooltipRowProps = {
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const { dispatchQueryParams } = useLocationConnect()
+  const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const dispatch = useDispatch()
 
   const onReportClick = useCallback(
@@ -155,6 +170,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                 feature={feature}
                 showFeaturesDetails={showFeaturesDetails}
                 onReportClick={onReportClick}
+                reportEnabled={hasAnalysisLayers}
               />
             ))}
           </div>

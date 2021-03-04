@@ -16,6 +16,7 @@ import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
 import {
   getRelatedDatasetByType,
+  selectHasAnalysisLayersVisible,
   selectTemporalgridDataviews,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
@@ -58,7 +59,7 @@ function Analysis() {
   const analysisGeometry = useSelector(selectAnalysisGeometry)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
-  const hasAnalysisLayers = dataviews?.filter(({ config }) => config?.visible === true)?.length > 0
+  const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const { areaId, sourceId } = analysisQuery
 
   useLayoutEffect(() => {
