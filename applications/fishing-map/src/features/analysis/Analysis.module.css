@@ -59,11 +59,11 @@
   min-height: 28rem;
 }
 
-.spinner {
+.graph.spinner {
   height: 24rem;
 }
 
-.spinnerFull {
+.container.spinnerFull {
   height: 100vh;
 }
 

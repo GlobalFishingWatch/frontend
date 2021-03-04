@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.14.5
+
+### Patch Changes
+
+- fix highted areas color
+
 ## 4.14.4
 
 ### Patch Changes
