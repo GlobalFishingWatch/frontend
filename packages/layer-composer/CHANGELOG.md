@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.14.3
+
+### Patch Changes
+
+- fix feature state context styles
+
 ## 4.14.2
 
 ### Patch Changes
