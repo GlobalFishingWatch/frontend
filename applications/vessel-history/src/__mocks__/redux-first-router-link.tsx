@@ -1,13 +1,6 @@
-import React, { ReactElement, Fragment } from 'react'
+import * as React from 'react'
 
-const Link = ({ to, children }: { to: any; children: ReactElement }): ReactElement => {
-  const toURL = JSON.stringify(to)
-
-  return (
-    <Fragment>
-      <a href={toURL}>{children}</a>
-    </Fragment>
-  )
-}
+const Link = (props: any) => <a {...props}>{props?.children}</a>
+Link.displayName = 'Connect(Link)'
 
 export default Link
