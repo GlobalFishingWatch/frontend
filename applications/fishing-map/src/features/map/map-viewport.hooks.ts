@@ -94,13 +94,15 @@ export function useMapFitBounds() {
 
   const fitMapBounds = useCallback(
     (bounds: [number, number, number, number], padding = 60) => {
+      const width = mapInstance ? parseInt(mapInstance.getCanvas().style.width) : 1280
+      const height = mapInstance ? parseInt(mapInstance.getCanvas().style.height) : 860
       const { latitude, longitude, zoom } = fitBounds({
         bounds: [
           [bounds[0], bounds[1]],
           [bounds[2], bounds[3]],
         ],
-        width: (mapInstance as any)._canvas.width,
-        height: (mapInstance as any)._canvas.height,
+        width,
+        height,
         padding,
       })
       setMapCoordinates({ latitude, longitude, zoom })
