@@ -1481,6 +1481,11 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
+"@globalfishingwatch/fourwings-aggregate@1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/fourwings-aggregate/-/fourwings-aggregate-1.1.3.tgz#24468ac030a699c76f8bab70e512777f30ff5973"
+  integrity sha512-a5xU3lHSnvs0lCffV7e2+PqUcOQYSKKn9fawPGHJXD0HWClX9z3c69dCx7Y1+Gfeslg0mn8QuKY/CNnjWGckCQ==
+
 "@globalfishingwatch/layer-composer@4.9.4":
   version "4.9.4"
   resolved "https://registry.yarnpkg.com/@globalfishingwatch/layer-composer/-/layer-composer-4.9.4.tgz#023a26385d53bb2a669e8ff03c209e9c5a20a818"
@@ -4871,6 +4876,11 @@
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@types/d3-format/-/d3-format-1.4.1.tgz#1e657a219e4b1e3931508a610d570bdec8ecdd9d"
   integrity sha512-ss9G2snEKmp2In5Z3T0Jpqv8QaDBc2xHltBw83KjnV5B5w+Iwphbvq5ph/Xnu4d03fmmsdt+o1aWch379rxIbA==
+
+"@types/d3-format@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/d3-format/-/d3-format-2.0.0.tgz#607d261cb268f0a027f100575491031539a40ee6"
+  integrity sha512-uagdkftxnGkO4pZw5jEYOM5ZnZOEsh7z8j11Qxk85UkB2RzfUUxRl7R9VvvJZHwKn8l+x+rpS77Nusq7FkFmIg==
 
 "@types/d3-geo@^1":
   version "1.12.1"
