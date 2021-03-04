@@ -14,8 +14,6 @@ interface InfoProps {
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const vessel = props.vessel
 
-  const { lastPosition, lastPortVisit } = props
-
   return (
     <Fragment>
       <div className={styles.infoContainer}>

@@ -1,4 +1,4 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Vessel } from '@globalfishingwatch/api-types'
 import { GFWDetail, TMTDetail, VesselAPISource } from 'types'

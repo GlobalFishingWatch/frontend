@@ -10,8 +10,8 @@ import Info from './components/Info'
 import styles from './Profile.module.css'
 
 const Profile: React.FC = (props): React.ReactElement => {
-  const [lastPortVisit, setLastPortVisit] = useState({ label: '', coordinates: null })
-  const [lastPosition, setLastPosition] = useState(null)
+  const [lastPortVisit] = useState({ label: '', coordinates: null })
+  const [lastPosition] = useState(null)
   const q = useSelector(selectQueryParam('q'))
 
   const vessel = useSelector(getVesselInfo)

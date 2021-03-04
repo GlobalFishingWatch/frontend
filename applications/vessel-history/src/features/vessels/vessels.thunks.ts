@@ -1,12 +1,10 @@
 import { Dispatch } from 'redux'
 import { StateGetter } from 'redux-first-router'
-import { useSelector } from 'react-redux'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AppState } from 'types/redux.types'
 import {
   selectDataset,
   selectTmtId,
-  selectVessel,
   selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'

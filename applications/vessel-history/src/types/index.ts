@@ -57,7 +57,7 @@ export interface ValueItem {
 export interface BuiltYear {
   value: string
   firstSeen: string
-  endDate: Date
+  endDate: string
 }
 
 export interface Flag {
@@ -159,7 +159,7 @@ export interface RelationList {
 
 export interface AuthorizationList {
   source: string
-  startDate: Date
+  startDate: string
   endDate?: string
 }
 
