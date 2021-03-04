@@ -34,6 +34,7 @@ function PopupWrapper({
     event.features.sort((a, b) => (a.type === Generators.Type.HeatmapAnimated ? -1 : 0)),
     'type'
   )
+
   return (
     <Popup
       latitude={event.latitude}
@@ -43,6 +44,7 @@ function PopupWrapper({
       onClose={onClose}
       className={cx(styles.popup, styles[type], className)}
       anchor={anchor}
+      captureClick
     >
       <div className={styles.content}>
         {Object.entries(featureByType).map(([featureType, features]) => {

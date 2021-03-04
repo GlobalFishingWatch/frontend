@@ -108,11 +108,15 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
 
       const locationCategory = selectLocationCategory(state)
+      const dataviewInstances = selectUrlDataviewInstances(state)
       if (workspace.viewport && locationType !== HOME) {
         dispatch(
           updateLocation(locationType, {
             payload: { category: locationCategory, workspaceId: workspace.id },
-            query: { ...workspace.viewport },
+            query: {
+              ...workspace.viewport,
+              dataviewInstances,
+            },
             replaceQuery: true,
           })
         )
