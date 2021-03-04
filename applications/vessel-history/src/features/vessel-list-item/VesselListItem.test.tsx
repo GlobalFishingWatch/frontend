@@ -8,6 +8,7 @@ jest.mock('data/constants', () => ({
     return mockShowSourceAPI() // set some default value
   },
 }))
+jest.mock('redux-first-router-link')
 
 describe('<VesselListItem />', () => {
   const vessel: Vessel = {
