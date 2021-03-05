@@ -34,9 +34,18 @@ const tickFormatter = (tick: number) => {
   return format(formatter)(tick)
 }
 
-const formatDates = (tick: string) => {
-  const tickDate = DateTime.fromISO(tick)
-  return tickDate.toFormat('d LLL yy')
+const formatDateTicks = (tick: string, timeChunkInterval: Interval) => {
+  const date = DateTime.fromISO(tick).toUTC()
+  let formattedTick = ''
+  switch (timeChunkInterval) {
+    case 'hour':
+      formattedTick = date.setLocale(i18n.language).toFormat("ccc', 'DD T")
+      break
+    default:
+      formattedTick = date.setLocale(i18n.language).toFormat("ccc', 'DD")
+      break
+  }
+  return formattedTick
 }
 
 const formatTooltipValue = (value: number, payload: any, unit: string) => {
@@ -47,7 +56,9 @@ const formatTooltipValue = (value: number, payload: any, unit: string) => {
   const imprecision = value > 0 && (difference / value) * 100
   const valueLabel = `${formatI18nNumber(value.toFixed())} ${unit ? unit : ''}`
   const imprecisionLabel =
-    imprecision && imprecision.toFixed() !== '0' ? ` ± ${imprecision.toFixed()}%` : ''
+    imprecision && imprecision.toFixed() !== '0' && value.toFixed() !== '0'
+      ? ` ± ${imprecision.toFixed()}%`
+      : ''
   return valueLabel + imprecisionLabel
 }
 
@@ -68,21 +79,19 @@ type AnalysisGraphTooltipProps = {
 const AnalysisGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
   if (active && payload && payload.length) {
+    const date = DateTime.fromISO(label).toUTC()
     let formattedLabel = ''
     switch (timeChunkInterval) {
       case '10days':
-        const timeRangeStart = DateTime.fromISO(label).setLocale(i18n.language).toFormat('DDD')
-        const timeRangeEnd = DateTime.fromISO(label)
-          .plus({ days: 9 })
-          .setLocale(i18n.language)
-          .toFormat('DDD')
+        const timeRangeStart = date.setLocale(i18n.language).toFormat('DDD')
+        const timeRangeEnd = date.plus({ days: 9 }).setLocale(i18n.language).toFormat('DDD')
         formattedLabel = `${timeRangeStart} - ${timeRangeEnd}`
         break
       case 'day':
-        formattedLabel = DateTime.fromISO(label).setLocale(i18n.language).toFormat("ccc', 'DDD")
+        formattedLabel = date.setLocale(i18n.language).toFormat("ccc', 'DDD")
         break
       default:
-        formattedLabel = DateTime.fromISO(label).setLocale(i18n.language).toFormat("ccc', 'DDD T")
+        formattedLabel = date.setLocale(i18n.language).toFormat("ccc', 'DDD T")
         break
     }
     const formattedValues = payload.filter(({ dataKey }) => dataKey === 'avg')
@@ -144,7 +153,7 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
         <XAxis
           dataKey="date"
           interval="preserveStartEnd"
-          tickFormatter={(tick: string) => formatDates(tick)}
+          tickFormatter={(tick: string) => formatDateTicks(tick, timeChunkInterval)}
           axisLine={paddedDomain[0] === 0}
         />
         <YAxis
