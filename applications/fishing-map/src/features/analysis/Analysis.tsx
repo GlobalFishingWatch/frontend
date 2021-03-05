@@ -122,6 +122,12 @@ function Analysis() {
         updateFeatureState([featureState], 'highlight')
       } else {
         console.warn('No feature for analysis found')
+        dispatch(
+          setAnalysisGeometry({
+            geometry: undefined,
+            name: 'Not found 🙈',
+          })
+        )
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -165,7 +171,7 @@ function Analysis() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('analysis.title', 'Analysis')}</h2>
+        <h2 className={styles.sectionTitle}>{t('analysis.title', 'Analysis (Experimental)')}</h2>
         <div className={cx('print-hidden', sectionStyles.sectionButtons)}>
           <IconButton
             icon="close"

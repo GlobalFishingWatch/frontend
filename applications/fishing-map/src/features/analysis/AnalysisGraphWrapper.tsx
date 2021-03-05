@@ -137,7 +137,9 @@ function AnalysisGraphWrapper() {
 
   if (!sourceLoaded || generatingTimeseries) return <Spinner className={styles.spinner} />
 
-  if (!timeSeriesFiltered) return <p className={styles.emptyDataPlaceholder}>No data available</p>
+  if (!timeSeriesFiltered?.length) {
+    return <p className={styles.emptyDataPlaceholder}>No data available</p>
+  }
 
   return (
     <AnalysisGraph
