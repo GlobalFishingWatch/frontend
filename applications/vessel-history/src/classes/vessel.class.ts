@@ -1,12 +1,19 @@
-import { AnyHistoricValue, AnyValueList, GFWDetail, TMTDetail, VesselAPISource } from 'types'
+import { DateTime } from 'luxon'
+import {
+  AnyHistoricValue,
+  AnyValueList,
+  GFWDetail,
+  TMTDetail,
+  VesselAPISource,
+  AuthorizationList,
+} from 'types'
 import { getFlagById } from 'utils/flags'
 import { getVesselValueSource } from 'utils/vessel'
-import { AuthorizationList } from './../types/index'
 
 export interface HistoricValue {
   data: string
-  start: Date | null
-  end: Date | null
+  start: DateTime | null
+  end: DateTime | null
 }
 export interface InfoValue {
   data: string | null
@@ -40,31 +47,41 @@ export class VesselInfo {
     }
     const dataValues =
       tmtValue?.map((historicValue: AnyValueList) => {
-        console.log(historicValue.firstSeen)
         const value: HistoricValue = {
           data: historicValue.value,
-          start: historicValue.firstSeen ? new Date(historicValue.firstSeen) : null,
-          end: historicValue.endDate ? new Date(historicValue.endDate) : null,
+          start: historicValue.firstSeen
+            ? DateTime.fromISO(historicValue.firstSeen, { zone: 'UTC' })
+            : null,
+          end: historicValue.endDate
+            ? DateTime.fromISO(historicValue.endDate, { zone: 'UTC' })
+            : null,
         }
         return value
       }) || []
     if (gfwValue) {
       dataValues.push({
         data: gfwValue,
-        start: gfwData?.firstTransmissionDate ? new Date(gfwData?.firstTransmissionDate) : null,
-        end: gfwData?.lastTransmissionDate ? new Date(gfwData?.lastTransmissionDate) : null,
+        start: gfwData?.firstTransmissionDate
+          ? DateTime.fromISO(gfwData?.firstTransmissionDate, { zone: 'UTC' })
+          : null,
+        end: gfwData?.lastTransmissionDate
+          ? DateTime.fromISO(gfwData?.lastTransmissionDate, { zone: 'UTC' })
+          : null,
       })
     }
     if (gfwHistoricValue && gfwHistoricValue.length) {
-      console.log(gfwHistoricValue)
-      const sortedValues = gfwHistoricValue
+      gfwHistoricValue
         .slice()
         .sort((a: AnyHistoricValue, b: AnyHistoricValue) => a.counter - b.counter)
         .forEach((value: AnyHistoricValue) => {
           dataValues.push({
             data: value.name,
-            start: gfwData?.firstTransmissionDate ? new Date(gfwData?.firstTransmissionDate) : null,
-            end: gfwData?.lastTransmissionDate ? new Date(gfwData?.lastTransmissionDate) : null,
+            start: gfwData?.firstTransmissionDate
+              ? DateTime.fromISO(gfwData?.firstTransmissionDate, { zone: 'UTC' })
+              : null,
+            end: gfwData?.lastTransmissionDate
+              ? DateTime.fromISO(gfwData?.lastTransmissionDate, { zone: 'UTC' })
+              : null,
           })
         })
     }

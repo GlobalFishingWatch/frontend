@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { FeatureCollection } from '@turf/helpers'
 import { GFWDetail, TMTDetail } from 'types'
 import { RootState } from '../../store'
 

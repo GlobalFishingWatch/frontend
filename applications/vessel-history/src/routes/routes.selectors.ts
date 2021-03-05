@@ -1,9 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { RouteObject } from 'redux-first-router'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
 import { AppState } from 'types/redux.types'
+import { ROUTE_TYPES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
+export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
+  const routeMap = routesMap[type] as RouteObject
+  return { type: type as ROUTE_TYPES, ...routeMap }
+})
 
 export const DEFAULT_WORKSPACE: AppState = {
   //workspaceDataviews: DEFAULT_DATAVIEWS,
@@ -45,7 +51,7 @@ export const selectVesselProfileId = createSelector(
   }
 )
 
-export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
+export const selectQueryParam = (param: WorkspaceParam) =>
   createSelector([selectLocationQuery], (query: any) => {
     if (query === undefined || query[param] === undefined) {
       return DEFAULT_WORKSPACE[param]
