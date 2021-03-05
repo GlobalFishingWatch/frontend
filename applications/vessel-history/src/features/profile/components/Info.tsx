@@ -1,103 +1,99 @@
-import React, { Component, Fragment, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
-import PropTypes from 'prop-types'
-import cx from 'classnames'
-import countryflag from 'countryflag'
-import GFWAPI from '@globalfishingwatch/api-client'
-import MiniGlobe, { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
-import { Button, Icon, Logo } from '@globalfishingwatch/ui-components'
-import CountryFlag from '@globalfishingwatch/ui-components/dist/countryflag'
-import { selectVessels } from 'features/vessels/vessels.slice'
-import { ReactComponent as LocationIcon } from 'assets/icons/location.svg'
-import { ReactComponent as SpeedIcon } from 'assets/icons/speed.svg'
-import { ReactComponent as BearingIcon } from 'assets/icons/bearing.svg'
-import { ReactComponent as PortIcon } from 'assets/icons/port.svg'
-import MapButtton from './MapButtton'
+import React, { Fragment } from 'react'
+import { Button } from '@globalfishingwatch/ui-components'
+// eslint-disable-next-line import/order
+import { VesselInfo } from 'classes/vessel.class'
 import styles from './Info.module.css'
+import InfoField from './InfoField'
 
 interface InfoProps {
-  vesselID: string
+  vessel: VesselInfo | null
   lastPosition: any
   lastPortVisit: any
 }
 
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
-  const vesselID = props.vesselID
-  const [vessel, setVessel] = useState(null)
-  const vessels = useSelector(selectVessels)
-  useMemo(() => {
-    GFWAPI.fetch(`/vessels/${vesselID}`)
-      .then((json: any) => {
-        setVessel(json)
-      })
-      .catch((error) => console.log(error))
-  }, [vesselID])
-
-  const { lastPosition, lastPortVisit } = props
+  const vessel = props.vessel
 
   return (
     <Fragment>
       <div className={styles.infoContainer}>
         {vessel && (
           <div className={styles.identifiers}>
-            <div>
-              <label>Type</label>
-              <span>Fishing Vessel</span>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'Name'}
+              field={vessel.getName()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'Type'}
+              field={vessel.getType()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'FLAG'}
+              field={vessel.getFlag()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'MMSI'}
+              field={vessel.getMMSI()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'CALLSIGN'}
+              field={vessel.getCallsign()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'GEAR TYPE'}
+              field={vessel.getGearType()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'LENGTH'}
+              field={vessel.getLength()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'GROSS TONNAGE'}
+              field={vessel.getGrossTonnage()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'DEPTH'}
+              field={vessel.getDepth()}
+            ></InfoField>
+            <div className={styles.identifierField}>
+              <label>AUTHORIZATIONS</label>
+              {vessel.getAuthorisations().map((auth) => (
+                <p key={auth}>{auth}</p>
+              ))}
+              {!vessel.getAuthorisations().length && <p>No authorizations found</p>}
             </div>
-            <div>
-              <label>FLAG</label>
-              <span>Chinese Taipei</span>
-            </div>
-            <div>
-              <label>MMSI</label>
-              <span>31306526</span>
-            </div>
-            <div>
-              <label>CALLSIGN</label>
-              <span>407201</span>
-            </div>
-            <div>
-              <label>GEAR TYPE</label>
-              <span>Longline Tuna</span>
-            </div>
-            <div>
-              <label>LENGTH</label>
-              <span>19.4</span>
-            </div>
-            <div>
-              <label>GROSS TONNAGE</label>
-              <span>68</span>
-            </div>
-            <div>
-              <label>DEPTH</label>
-              <span>6</span>
-            </div>
-            <div>
-              <label>AUTORIZATIONS</label>
-              <span>CCSBT</span>
-              <br />
-              <span>ICCAT</span>
-              <br />
-              <span>IOTC</span>
-              <br />
-            </div>
-            <div>
-              <label>BUILT</label>
-              <span>Ulsan, 1996</span>
-            </div>
-            <div>
-              <label>OWNER</label>
-              <span>NENG DE OCEAN COMPANY LTD</span>
-            </div>
-            <div>
-              <label>OPERATOR</label>
-              <span>NENG DE OCEAN COMPANY LTD</span>
-            </div>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'BUILT'}
+              field={vessel.getBuiltYear()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'OWNER'}
+              field={vessel.getOwner()}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.getName().value?.data ?? ''}
+              label={'OPERATOR'}
+              field={vessel.getOperator()}
+            ></InfoField>
           </div>
         )}
-        <Button className={styles.saveButton} type="secondary">
-          SAVE VESSEL FOR OFFLINE VIEW
-        </Button>
+        <br />
+        {vessel && (
+          <Button className={styles.saveButton} type="secondary">
+            SAVE VESSEL FOR OFFLINE VIEW
+          </Button>
+        )}
       </div>
     </Fragment>
   )

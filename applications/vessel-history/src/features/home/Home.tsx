@@ -1,6 +1,6 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -10,6 +10,8 @@ import { logoutUserThunk } from 'features/user/user.slice'
 import { Vessel } from 'types'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
+import { selectQueryParam } from 'routes/routes.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 import styles from './Home.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
 
@@ -25,7 +27,8 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const dispatch = useDispatch()
   const [searching, setSearching] = useState(false)
   const [vessels, setVessels] = useState<Array<Vessel>>([])
-  const [query, setQuery] = useState('')
+  const query = useSelector(selectQueryParam('q'))
+  const { dispatchQueryParams } = useLocationConnect()
 
   const minimumCharacters = 3
   const resultsPerRequest = 25
@@ -44,19 +47,18 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       })
       .catch((error) => {
         setSearching(false)
-        console.warn(error)
       })
   }, [])
 
   useEffect(() => {
     setVessels([])
-    if (query.length >= minimumCharacters) {
+    if (query?.length >= minimumCharacters) {
       fetchData(query)
     }
   }, [query, fetchData])
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
+    dispatchQueryParams({ q: e.target.value })
   }
 
   return (
@@ -86,6 +88,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             aria-label="Search vessels"
             className={styles.input}
             onChange={onInputChange}
+            value={query}
           />
           {!query && (
             <IconButton

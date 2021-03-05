@@ -1,33 +1,65 @@
 import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { selectVesselId } from 'routes/routes.selectors'
-import MapWrapper from './components/MapWrapper'
+import Link from 'redux-first-router-link'
+import { IconButton, Tabs } from '@globalfishingwatch/ui-components'
+import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
+import { getVesselInfo } from 'features/vessels/vessels.selectors'
+import { HOME } from 'routes/routes'
+import { selectQueryParam } from 'routes/routes.selectors'
 import Info from './components/Info'
 import styles from './Profile.module.css'
-import RecentActivity from './components/RecentActivity'
 
 const Profile: React.FC = (props): React.ReactElement => {
-  const vesselID = useSelector(selectVesselId)
-  console.log(vesselID)
-  const [lastPortVisit, setLastPortVisit] = useState({ label: '', coordinates: null })
-  const [lastPosition, setLastPosition] = useState(null)
-  const [selectedTab, setSelectedTab] = useState(1)
+  const [lastPortVisit] = useState({ label: '', coordinates: null })
+  const [lastPosition] = useState(null)
+  const q = useSelector(selectQueryParam('q'))
+
+  const vessel = useSelector(getVesselInfo)
+  const tabs: Tab[] = [
+    {
+      id: 'info',
+      title: 'INFO',
+      content: <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />,
+    },
+    {
+      id: 'activity',
+      title: 'ACTIVITY',
+      content: <div>Comming Soon!</div>,
+    },
+    {
+      id: 'map',
+      title: 'MAP',
+      content: <div>Comming Soon!</div>,
+    },
+  ]
+  const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
 
   return (
     <Fragment>
-      <div className={styles.tabsHeader}>
-        <button onClick={() => setSelectedTab(1)}>INFO</button>
-        <button onClick={() => setSelectedTab(2)}>ACTIVITY</button>
-        <button onClick={() => setSelectedTab(3)}>MAP</button>
-      </div>
-      <div className={styles.tabsContent}>
-        {selectedTab === 1 && (
-          <Info vesselID={vesselID} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
+      <header className={styles.header}>
+        <Link to={{ type: HOME, replaceQuery: true, query: { q } }}>
+          <IconButton
+            type="border"
+            size="default"
+            icon="arrow-left"
+            className={styles.backButton}
+          />
+        </Link>
+        {vessel && (
+          <h1>
+            {vessel.getName().value?.data}
+            {vessel.getName().value?.historic?.length && (
+              <p>+{vessel.gfwData?.otherShipnames.length} previous names</p>
+            )}
+          </h1>
         )}
-        {selectedTab === 2 && (
-          <RecentActivity vesselID={vesselID} setLastPortVisit={setLastPortVisit} />
-        )}
-        {selectedTab === 3 && <MapWrapper vesselID={vesselID} setLastPosition={setLastPosition} />}
+      </header>
+      <div className={styles.profileContainer}>
+        <Tabs
+          tabs={tabs}
+          activeTab={activeTab?.id}
+          onTabClick={(tab: Tab) => setActiveTab(tab)}
+        ></Tabs>
       </div>
     </Fragment>
   )
