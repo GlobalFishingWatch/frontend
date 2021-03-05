@@ -35,7 +35,9 @@ const InfoFieldHistoric: React.FC<ListItemProps> = ({
 
   return (
     <Fragment>
-      <div onClick={toggleModalOpen}>{`+${historic.length + 1} previous ${label}s`}</div>
+      <button className={styles.moreValues} onClick={toggleModalOpen}>{`+${
+        historic.length + 1
+      } previous ${label}s`}</button>
 
       {historic.length && (
         <Modal

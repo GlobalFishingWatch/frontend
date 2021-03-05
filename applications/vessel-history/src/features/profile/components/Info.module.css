@@ -26,6 +26,10 @@
   opacity: 0.8;
 }
 
+.moreValues {
+  display: block;
+}
+
 .saveButton {
   width: 100%;
 }
