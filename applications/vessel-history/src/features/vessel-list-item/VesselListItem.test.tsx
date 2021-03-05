@@ -23,7 +23,7 @@ describe('<VesselListItem />', () => {
     otherShipnames: [],
     shipname: 'DON TITO',
     source: 'AIS',
-    dataset: 'public-global-fishing-vessels:v20201001',
+    dataset: 'mocked-dataset-for-test',
     vesselMatchId: '6dd26b05-c055-5b5a-b396-2cc6503fdd4c',
   }
 
