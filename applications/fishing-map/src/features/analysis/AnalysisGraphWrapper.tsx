@@ -143,6 +143,7 @@ function AnalysisGraphWrapper() {
     <AnalysisGraph
       timeseries={timeSeriesFiltered}
       graphColor={temporalGridDataviews?.[0]?.config?.color}
+      timeChunkInterval={timeChunks?.interval}
     />
   )
 }
