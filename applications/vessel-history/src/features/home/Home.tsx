@@ -5,6 +5,7 @@ import { DebounceInput } from 'react-debounce-input'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
+import { BASE_DATASET } from 'data/constants'
 import { logoutUserThunk } from 'features/user/user.slice'
 import { Vessel } from 'types'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
@@ -35,9 +36,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const fetchData = useCallback(async (query: string) => {
     setSearching(true)
     GFWAPI.fetch<any>(
-      `/v1/vessels/search?datasets=public-global-vessels%3Av20190502&limit=${resultsPerRequest}&offset=${0}&query=${encodeURIComponent(
-        query
-      )}`
+      `/v1/vessels/search?datasets=${encodeURIComponent(
+        BASE_DATASET
+      )}&limit=${resultsPerRequest}&offset=${0}&query=${encodeURIComponent(query)}`
     )
       .then((json: any) => {
         const resultVessels: Array<Vessel> = json.entries
