@@ -87,8 +87,11 @@ const MapControls = ({
     if (domElement.current) {
       domElement.current.classList.add('printing')
       setInlineStyles(domElement.current)
-      generatePreviewImage()
-      setModalOpen(true)
+      // leave some time to apply the styles
+      setTimeout(() => {
+        generatePreviewImage()
+        setModalOpen(true)
+      }, 100)
     }
   }, [generatePreviewImage])
 
