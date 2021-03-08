@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState, useLayoutEffect } from 'react'
+import React, { Fragment, useEffect, useRef, useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import union from '@turf/union'
@@ -24,7 +24,8 @@ import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectAnalysisQuery } from 'features/app/app.selectors'
 import { useMapboxInstance } from 'features/map/map.context'
-import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { useMapFeatures } from 'features/map/map.hooks'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import styles from './Analysis.module.css'
 import {
@@ -46,11 +47,9 @@ function Analysis() {
   const dispatch = useDispatch()
   const mapInstance = useMapboxInstance()
   const fitMapBounds = useMapFitBounds()
-  const { setMapCoordinates } = useViewport()
   const tilesLoading = useTilesState(mapInstance as Map).loading
   const debouncedTilesLoading = useDebounce(tilesLoading, 600)
   const analysisQuery = useSelector(selectAnalysisQuery)
-  const [sourceLoaded, setSourceLoaded] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { updateFeatureState, cleanFeatureState } = useFeatureState(mapInstance)
@@ -61,42 +60,22 @@ function Analysis() {
   const userData = useSelector(selectUserData)
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const { areaId, sourceId } = analysisQuery
-
-  useLayoutEffect(() => {
-    // We have to go to zoom 0 to load every geometry to be able to fitBounds later
-    const viewport = { latitude: 0, longitude: 0, zoom: 0 }
-    setMapCoordinates(viewport)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    const sourceCallback = () => {
-      if (mapInstance?.getSource(sourceId) && mapInstance?.isSourceLoaded(sourceId)) {
-        setSourceLoaded(true)
-        mapInstance.off('idle', sourceCallback)
-      }
-    }
-
-    if (mapInstance && sourceId && areaId) {
-      setSourceLoaded(false)
-      mapInstance.on('idle', sourceCallback)
-    }
-
-    return () => {
-      if (mapInstance) {
-        mapInstance.off('idle', sourceCallback)
-      }
-    }
-  }, [mapInstance, sourceId, areaId])
+  const filter = useMemo(() => ['==', 'gfw_id', parseInt(areaId)], [areaId])
+  const { features: contextAreaFeatures, sourceLoaded } = useMapFeatures({
+    sourceId,
+    filter,
+    cacheKey: areaId,
+  })
 
   useEffect(() => {
-    if (sourceLoaded && mapInstance) {
-      const contextAreaFeatures = mapInstance?.querySourceFeatures(sourceId, {
-        sourceLayer: 'main', // Our layers always uses 'main' as the source layer
-        filter: ['==', 'gfw_id', parseInt(areaId)],
-      })
-      if (contextAreaFeatures.length > 0) {
-        cleanFeatureState('highlight')
+    cleanFeatureState('highlight')
+    const featureState = { source: sourceId, sourceLayer: 'main', id: areaId }
+    updateFeatureState([featureState], 'highlight')
+  }, [areaId, cleanFeatureState, sourceId, updateFeatureState])
+
+  useEffect(() => {
+    if (sourceLoaded) {
+      if (contextAreaFeatures && contextAreaFeatures.length > 0) {
         const contextAreaFeatureMerged = contextAreaFeatures.reduce(
           (acc, { geometry, properties }) => {
             const featureGeometry: Feature<Polygon> = {
@@ -109,17 +88,13 @@ function Analysis() {
           },
           {} as Feature<Polygon>
         )
-        const { name, value } = contextAreaFeatureMerged.properties || {}
+        const { name, value, id } = contextAreaFeatureMerged.properties || {}
         dispatch(
           setAnalysisGeometry({
             geometry: contextAreaFeatureMerged,
-            name: name || value,
+            name: name || id || value,
           })
         )
-        const bounds = bbox(contextAreaFeatureMerged) as [number, number, number, number]
-        fitMapBounds(bounds, 10)
-        const featureState = { source: sourceId, sourceLayer: 'main', id: areaId }
-        updateFeatureState([featureState], 'highlight')
       } else {
         console.warn('No feature for analysis found')
         dispatch(
@@ -130,8 +105,14 @@ function Analysis() {
         )
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, mapInstance, areaId, sourceId, sourceLoaded])
+  }, [contextAreaFeatures, dispatch, sourceLoaded])
+
+  useEffect(() => {
+    if (analysisGeometry) {
+      const bounds = bbox(analysisGeometry) as [number, number, number, number]
+      fitMapBounds(bounds, 10)
+    }
+  }, [analysisGeometry, fitMapBounds])
 
   const onCloseClick = () => {
     batch(() => {

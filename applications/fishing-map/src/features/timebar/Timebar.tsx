@@ -1,23 +1,24 @@
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
+import type { MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import TimebarComponent, {
   TimebarTracks,
   TimebarActivity,
   TimebarHighlighter,
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
-import { useTilesState } from '@globalfishingwatch/react-hooks'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
-import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { useMapboxInstance } from 'features/map/map.context'
+import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
-import { selectTimebarGraph, selectViewport } from 'features/app/app.selectors'
+import { selectTimebarGraph } from 'features/app/app.selectors'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
-import { useCurrentTimeChunkId, useMapStyle } from 'features/map/map.hooks'
+import { useCurrentTimeChunkId, useMapFeatures, useMapStyle } from 'features/map/map.hooks'
+import { useMapBounds } from 'features/map/map-viewport.hooks'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -27,22 +28,22 @@ import {
 } from './timebar.selectors'
 import styles from './Timebar.module.css'
 
-const filterByViewport = (
-  features: MapboxGeoJSONFeature[],
-  boundsSW: number[],
-  boundsNE: number[]
-) => {
-  const leftWorldCopy = boundsNE[0] >= 180
-  const rightWorldCopy = boundsSW[0] <= -180
+const filterByViewport = (features: MapboxGeoJSONFeature[], bounds: MiniglobeBounds) => {
+  if (!bounds) {
+    return []
+  }
+  const { north, east, south, west } = bounds
+  const leftWorldCopy = east >= 180
+  const rightWorldCopy = west <= -180
   return features.filter((f) => {
     const [lon, lat] = (f.geometry as any).coordinates[0][0]
     const rightOffset = rightWorldCopy && lon > 0 ? -360 : 0
     const leftOffset = leftWorldCopy && lon < 0 ? 360 : 0
     return (
-      lon + rightOffset + leftOffset > boundsSW[0] &&
-      lon + rightOffset + leftOffset < boundsNE[0] &&
-      lat > boundsSW[1] &&
-      lat < boundsNE[1]
+      lon + rightOffset + leftOffset > west &&
+      lon + rightOffset + leftOffset < east &&
+      lat > south &&
+      lat < north
     )
   })
 }
@@ -54,7 +55,6 @@ const TimebarWrapper = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
-  const urlViewport = useSelector(selectViewport)
   const temporalGridDataviews = useSelector(selectTemporalgridDataviews)
   const staticHeatmapLayersActive = useSelector(hasStaticHeatmapLayersActive)
 
@@ -71,8 +71,7 @@ const TimebarWrapper = () => {
     },
     [setBookmark]
   )
-  const mapInstance = useMapboxInstance()
-  const tilesLoading = useTilesState(mapInstance as Map).loading
+
   const currentTimeChunkId = useCurrentTimeChunkId()
   const mapStyle = useMapStyle()
 
@@ -83,32 +82,40 @@ const TimebarWrapper = () => {
     [temporalGridDataviews]
   )
 
+  const { features: cellFeatures, sourceLoaded } = useMapFeatures({
+    sourceId: currentTimeChunkId,
+    sourceLayer: 'temporalgrid_interactive',
+  })
+  const [loading, setLoading] = useState(sourceLoaded)
+
+  const { bounds } = useMapBounds()
+  const debouncedBounds = useDebounce(bounds, 600)
+
   useEffect(() => {
-    if (!mapInstance || !mapStyle || timebarVisualisation !== TimebarVisualisations.Heatmap) {
-      return
-    }
-    if (tilesLoading || !visibleTemporalGridDataviews?.length) {
+    if (
+      timebarVisualisation !== TimebarVisualisations.Heatmap ||
+      !visibleTemporalGridDataviews?.length
+    ) {
       setStackedActivity(undefined)
       return
     }
-    const temporalgrid = mapStyle.metadata?.temporalgrid
-    if (!temporalgrid) return
-    const numSublayers = temporalgrid.numSublayers
-    const timeChunks = temporalgrid.timeChunks as TimeChunks
-    const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
-    const chunkQuantizeOffset = activeTimeChunk.quantizeOffset
 
-    // Getting features within viewport - it's somehow faster to use querySource with a crude viewport filter, than using queryRendered
-    const [boundsSW, boundsNE] = mapInstance.getBounds().toArray()
-    const allFeatures = mapInstance.querySourceFeatures(currentTimeChunkId, {
-      sourceLayer: 'temporalgrid_interactive',
-    })
-    // console.log('querySourceFeatures', performance.now() - n)
-    // n = performance.now()
-    const filteredFeatures = filterByViewport(allFeatures, boundsSW, boundsNE)
-    if (filteredFeatures?.length > 0) {
-      const values = getTimeSeries(filteredFeatures as any, numSublayers, chunkQuantizeOffset).map(
-        (frameValues) => {
+    if (cellFeatures?.length && debouncedBounds) {
+      const temporalgrid = mapStyle?.metadata?.temporalgrid
+      if (!temporalgrid) return
+      // TODO: think about having an custom useMapFeatures just for cells
+      const numSublayers = temporalgrid.numSublayers
+      const timeChunks = temporalgrid.timeChunks as TimeChunks
+      const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
+      const chunkQuantizeOffset = activeTimeChunk.quantizeOffset
+
+      const filteredFeatures = filterByViewport(cellFeatures, debouncedBounds)
+      if (filteredFeatures?.length > 0) {
+        const values = getTimeSeries(
+          filteredFeatures as any,
+          numSublayers,
+          chunkQuantizeOffset
+        ).map((frameValues) => {
           // Ideally we don't have the features not visible in 4wings but we have them
           // so this needs to be filtered by the current active ones
           const activeFrameValues = Object.fromEntries(
@@ -122,26 +129,29 @@ const TimebarWrapper = () => {
             ...activeFrameValues,
             date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
           }
-        }
-      )
-      // console.log('compute graph', performance.now() - n)
-      setStackedActivity(values)
-    } else {
-      setStackedActivity(undefined)
+        })
+        // console.log('compute graph', performance.now() - n)
+        setStackedActivity(values)
+      } else {
+        setStackedActivity(undefined)
+      }
     }
-    // While mapStyle is needed inside the useEffect, we don't want the component to rerender everytime a new instance is generated
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    mapInstance,
-    currentTimeChunkId,
-    tilesLoading,
-    urlViewport,
+    cellFeatures,
+    debouncedBounds,
+    mapStyle.metadata?.temporalgrid,
+    sourceLoaded,
     timebarVisualisation,
     visibleTemporalGridDataviews,
   ])
 
   const dataviews = useSelector(selectTemporalgridDataviews)
   const dataviewsColors = dataviews?.map((dataview) => dataview.config?.color)
+
+  // Using an effect to ensure the blur loading is removed once the component has been rendered
+  useEffect(() => {
+    setLoading(sourceLoaded)
+  }, [sourceLoaded])
 
   if (!start || !end) return null
   return (
@@ -172,22 +182,15 @@ const TimebarWrapper = () => {
       >
         {() => (
           <Fragment>
-            {timebarVisualisation === TimebarVisualisations.Heatmap && (
-              <Fragment>
-                {stackedActivity && (
-                  <TimebarStackedActivity
-                    key="stackedActivity"
-                    data={stackedActivity}
-                    colors={dataviewsColors}
-                    numSublayers={dataviews?.length}
-                  />
-                )}
-                {tilesLoading && (
-                  <div className={styles.loading}>
-                    <Spinner color="white" size="small" />
-                  </div>
-                )}
-              </Fragment>
+            {timebarVisualisation === TimebarVisualisations.Heatmap && stackedActivity && (
+              <div className={cx({ [styles.loading]: !loading })}>
+                <TimebarStackedActivity
+                  key="stackedActivity"
+                  data={stackedActivity}
+                  colors={dataviewsColors}
+                  numSublayers={dataviews?.length}
+                />
+              </div>
             )}
             {timebarVisualisation === TimebarVisualisations.Vessel && tracks?.length && (
               <Fragment>

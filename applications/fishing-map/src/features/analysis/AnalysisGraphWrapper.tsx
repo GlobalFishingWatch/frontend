@@ -7,8 +7,7 @@ import { DateTime } from 'luxon'
 import { getTimeSeries, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { useMapboxInstance } from 'features/map/map.context'
-import { useCurrentTimeChunkId, useMapStyle } from 'features/map/map.hooks'
+import { useCurrentTimeChunkId, useMapFeatures, useMapStyle } from 'features/map/map.hooks'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import * as AnalysisWorker from './Analysis.worker'
@@ -20,18 +19,21 @@ const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 
 function AnalysisGraphWrapper() {
   const temporalGridDataviews = useSelector(selectTemporalgridDataviews)
-  const mapInstance = useMapboxInstance()
   const { start, end } = useTimerangeConnect()
   const currentTimeChunkId = useCurrentTimeChunkId()
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const mapStyle = useMapStyle()
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
-  const [sourceLoaded, setSourceLoaded] = useState(false)
   const [timeseries, setTimeseries] = useState<GraphData[] | undefined>()
   const temporalgrid = mapStyle?.metadata?.temporalgrid
   const numSublayers = temporalgrid?.numSublayers
   const timeChunks = temporalgrid?.timeChunks as TimeChunks
   const interval = temporalgrid?.timeChunks?.interval
+  const { features: cellFeatures, sourceLoaded } = useMapFeatures({
+    sourceId: currentTimeChunkId,
+    sourceLayer: 'temporalgrid_interactive',
+    cacheKey: interval,
+  })
 
   useEffect(() => {
     const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
@@ -85,12 +87,12 @@ function AnalysisGraphWrapper() {
       setGeneratingTimeseries(false)
     }
 
-    if (sourceLoaded) {
-      const allFeatures = mapInstance
-        ?.querySourceFeatures(currentTimeChunkId, {
-          sourceLayer: 'temporalgrid_interactive',
-        })
-        .map(({ properties, geometry }) => ({ type: 'Feature' as any, properties, geometry }))
+    if (cellFeatures && cellFeatures.length > 0) {
+      const allFeatures = cellFeatures.map(({ properties, geometry }) => ({
+        type: 'Feature' as any,
+        properties,
+        geometry,
+      }))
 
       if (allFeatures?.length && analysisAreaFeature) {
         updateTimeseries(allFeatures, analysisAreaFeature)
@@ -100,31 +102,7 @@ function AnalysisGraphWrapper() {
     } else {
       setTimeseries(undefined)
     }
-  }, [sourceLoaded, mapInstance, analysisAreaFeature, numSublayers, timeChunks, currentTimeChunkId])
-
-  useEffect(() => {
-    const sourceCallback = () => {
-      if (
-        mapInstance?.getSource(currentTimeChunkId) &&
-        mapInstance?.isSourceLoaded(currentTimeChunkId)
-      ) {
-        setSourceLoaded(true)
-        setGeneratingTimeseries(true)
-        mapInstance.off('idle', sourceCallback)
-      }
-    }
-
-    if (mapInstance && interval) {
-      setSourceLoaded(false)
-      mapInstance.on('idle', sourceCallback)
-    }
-
-    return () => {
-      if (mapInstance) {
-        mapInstance.off('idle', sourceCallback)
-      }
-    }
-  }, [mapInstance, interval, currentTimeChunkId])
+  }, [analysisAreaFeature, numSublayers, timeChunks, currentTimeChunkId, cellFeatures])
 
   const timeSeriesFiltered = useMemo(() => {
     return timeseries?.filter((current: any) => {
