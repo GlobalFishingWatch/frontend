@@ -32,6 +32,7 @@
     "@turf/boolean-contains": "^6.3.0",
     "@turf/boolean-overlap": "^6.3.0",
     "@turf/boolean-point-in-polygon": "^6.3.0",
+    "@turf/center": "^6.3.0",
     "@turf/simplify": "^6.3.0",
     "@turf/union": "^6.3.0",
     "auth-middleware": "GlobalFishingWatch/auth-middleware#develop",

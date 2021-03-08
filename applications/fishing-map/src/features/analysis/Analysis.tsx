@@ -171,7 +171,10 @@ function Analysis() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.sectionTitle}>{t('analysis.title', 'Analysis (Experimental)')}</h2>
+        <h2 className={styles.sectionTitle}>
+          {t('analysis.title', 'Analysis')}
+          <span className={styles.error}> Experimental</span>
+        </h2>
         <div className={cx('print-hidden', sectionStyles.sectionButtons)}>
           <IconButton
             icon="close"

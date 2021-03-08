@@ -8,7 +8,7 @@
     "empty": "Your selected datasets will appear here",
     "errorMessage": "Something went wrong",
     "noActivityLayers": "No activity layers active",
-    "title": "Analysis (Experimental)",
+    "title": "Analysis",
     "generating": "We are generating the report for you, it'll be ready soon.",
     "successfullMessage": "The report was sent successfully, you'll receive it by email soon.",
     "dateRange": "Date Range",
