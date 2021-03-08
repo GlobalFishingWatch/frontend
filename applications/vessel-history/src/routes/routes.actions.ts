@@ -1,10 +1,11 @@
 import { QueryParams } from 'types'
-import { HOME } from './routes'
+import { ROUTE_TYPES } from './routes'
 
 export interface UpdateQueryParamsAction {
-  type: typeof HOME
+  type: ROUTE_TYPES
   query: QueryParams
   replaceQuery?: boolean
+  payload?: any
   meta?: {
     location: {
       kind: string
@@ -12,6 +13,10 @@ export interface UpdateQueryParamsAction {
   }
 }
 
-export function updateQueryParams(query: QueryParams): UpdateQueryParamsAction {
-  return { type: HOME, query }
+type UpdateLocationOptions = { query?: QueryParams; payload?: any; replaceQuery?: boolean }
+export function updateLocation(
+  type: ROUTE_TYPES,
+  { query = {}, payload = {}, replaceQuery = false }: UpdateLocationOptions = {}
+) {
+  return { type, query, payload, replaceQuery }
 }

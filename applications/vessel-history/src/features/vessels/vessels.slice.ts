@@ -1,47 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { FeatureCollection } from '@turf/helpers'
+import { GFWDetail, TMTDetail } from 'types'
 import { RootState } from '../../store'
+
+export type IVesselInfo = {
+  gfwData: GFWDetail | null
+  tmtData: TMTDetail | null
+}
 
 interface Dictionary<T> {
   [Key: string]: T
 }
 
-export type VesselDynamicField = {
-  start: string
-  end: string
-  value: string
-}
-
-export type Vessel = {
-  id: string
-  name: string
-  imo?: string
-  flags?: VesselDynamicField[]
-  lastFlag?: string
-  mmsi?: VesselDynamicField[]
-  lastMMSI?: string
-}
-export type CoordinateProperties = {
-  id: string
-  type: string
-  coordinateProperties: {
-    times: number[]
-  }
-}
-
-export type TrackGeometry = FeatureCollection<any, CoordinateProperties>
-
-export interface VesselInfo {
-  id: string
-  shipname?: string
-  callsign: string
-  flag?: string
-  mmsi: string
-  imo?: string
-}
-
 type VesselsSlice = {
-  vessels: Dictionary<VesselInfo>
+  vessels: Dictionary<IVesselInfo>
   events: Dictionary<any>
 }
 
@@ -54,7 +25,7 @@ const slice = createSlice({
   name: 'vessels',
   initialState,
   reducers: {
-    setVesselInfo: (state, action: PayloadAction<{ id: string; data: VesselInfo }>) => {
+    setVesselInfo: (state, action: PayloadAction<{ id: string; data: IVesselInfo }>) => {
       state.vessels[action.payload.id] = action.payload.data
     },
 

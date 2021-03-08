@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { Vessel } from 'types'
 import { getFlagById } from 'utils/flags'
@@ -29,7 +30,11 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
           className={styles.deleteSaved}
         ></IconButton>
       )}
-      <h3>{vessel?.shipname}</h3>
+      <Link
+        to={['profile', vessel.dataset ?? 'NA', vessel.id ?? 'NA', vessel.vesselMatchId ?? 'NA']}
+      >
+        <h3>{vessel?.shipname}</h3>
+      </Link>
       <div className={styles.identifiers}>
         <div>
           <label>FLAG</label>
