@@ -1,12 +1,11 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { useCallback, useLayoutEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { useCallback } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
 import { atom, useRecoilState } from 'recoil'
 import debounce from 'lodash/debounce'
 import { ViewportProps } from '@globalfishingwatch/react-map-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { MapCoordinates } from 'types'
-import { selectViewport } from 'features/app/app.selectors'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { useMapboxInstance, useMapboxRef } from './map.context'
@@ -39,11 +38,7 @@ const viewportState = atom<MapCoordinates>({
 })
 
 export default function useViewport(): UseViewport {
-  const urlViewport = useSelector(selectViewport)
   const [viewport, setViewport] = useRecoilState(viewportState)
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useLayoutEffect(() => setViewport(urlViewport), [])
 
   const setMapCoordinates = useCallback(
     (viewport: SetMapCoordinatesArgs) => {
