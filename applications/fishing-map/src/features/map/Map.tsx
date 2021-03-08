@@ -58,7 +58,10 @@ const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceT
 }
 
 const handleError = ({ error }: any) => {
-  if (error?.status === 401 && error?.url.includes('globalfishingwatch')) {
+  if (
+    (error?.status === 401 || error?.status === 403) &&
+    error?.url.includes('globalfishingwatch')
+  ) {
     GFWAPI.refreshAPIToken()
   }
 }
