@@ -118,6 +118,24 @@ function FeatureRow({
       </div>
     )
   }
+  if (feature.contextLayer === 'wpp-nri') {
+    return (
+      <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
+        <span className={styles.rowText}>{feature.value}</span>
+        {showFeaturesDetails && (
+          <div className={styles.rowActions}>
+            <IconButton
+              icon="report"
+              disabled={!reportEnabled}
+              tooltip={t('common.report', 'Report')}
+              onClick={() => onReportClick && onReportClick(feature)}
+              size="small"
+            />
+          </div>
+        )}
+      </div>
+    )
+  }
   return <div key={`${feature.value || gfw_id}`}>{feature.value}</div>
 }
 
