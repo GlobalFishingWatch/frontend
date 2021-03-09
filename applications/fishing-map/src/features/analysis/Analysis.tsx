@@ -67,10 +67,13 @@ function Analysis() {
   })
 
   useEffect(() => {
-    cleanFeatureState('highlight')
-    const featureState = { source: sourceId, sourceLayer: 'main', id: areaId }
-    updateFeatureState([featureState], 'highlight')
-  }, [areaId, cleanFeatureState, sourceId, updateFeatureState])
+    if (sourceLoaded) {
+      cleanFeatureState('highlight')
+      const featureState = { source: sourceId, sourceLayer: 'main', id: areaId }
+      updateFeatureState([featureState], 'highlight')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areaId, sourceId, sourceLoaded])
 
   useEffect(() => {
     if (sourceLoaded) {
@@ -126,6 +129,7 @@ function Analysis() {
   }, [analysisBounds])
 
   const onCloseClick = () => {
+    cleanFeatureState('highlight')
     batch(() => {
       dispatch(clearAnalysisGeometry(undefined))
       dispatchQueryParams({ analysis: undefined })
