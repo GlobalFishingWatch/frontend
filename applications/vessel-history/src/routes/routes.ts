@@ -43,7 +43,7 @@ const routesMap: RoutesMap = {
   },
   [PROFILE]: {
     path: '/profile/:dataset/:vesselID/:tmtID',
-    thunk: profileThunk,
+    // thunk: profileThunk,
   },
   [NOT_FOUND]: {
     path: '',

@@ -3,18 +3,24 @@ import { useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { IconButton, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
-import { getVesselInfo } from 'features/vessels/vessels.selectors'
+import { selectQueryParam, selectVesselProfileId } from 'routes/routes.selectors'
+// import { getVesselInfo } from 'features/vessels/vessels.selectors'
 import { HOME } from 'routes/routes'
-import { selectQueryParam } from 'routes/routes.selectors'
+import { selectVesselById } from 'features/vessels/vessels.slice'
+import { useTranslation } from 'utils/i18n'
+import { VesselWithHistory } from 'types'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 
 const Profile: React.FC = (props): React.ReactElement => {
+  const { t } = useTranslation()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
   const q = useSelector(selectQueryParam('q'))
+  const vesselProfileId = useSelector(selectVesselProfileId)
 
-  const vessel = useSelector(getVesselInfo)
+  const vessel: VesselWithHistory = useSelector(selectVesselById(vesselProfileId))
+
   const tabs: Tab[] = [
     {
       id: 'info',
@@ -24,12 +30,12 @@ const Profile: React.FC = (props): React.ReactElement => {
     {
       id: 'activity',
       title: 'ACTIVITY',
-      content: <div>Comming Soon!</div>,
+      content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
     },
     {
       id: 'map',
       title: 'MAP',
-      content: <div>Comming Soon!</div>,
+      content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
     },
   ]
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
@@ -47,9 +53,12 @@ const Profile: React.FC = (props): React.ReactElement => {
         </Link>
         {vessel && (
           <h1>
-            {vessel.getName().value?.data}
-            {vessel.getName().value?.historic?.length && (
-              <p>+{vessel.gfwData?.otherShipnames.length} previous names</p>
+            {vessel.shipname}
+            {vessel.history.shipname.byDate.length && (
+              <p>
+                +{vessel.history.shipname.byDate.length}{' '}
+                {t('vessel.previousNames', 'previous names')}
+              </p>
             )}
           </h1>
         )}

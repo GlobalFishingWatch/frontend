@@ -1,70 +1,72 @@
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Vessel } from '@globalfishingwatch/api-types/dist'
-import { TMTDetail, ValueItem, ValueList } from 'types'
+import { TMTDetail, ValueItem, VesselWithHistory } from 'types'
 import { VesselSourceId } from 'types/vessel'
 import { VesselAPIThunk } from '../vessels.slice'
 
 interface TMTVesselSourceId extends VesselSourceId {
   id: string
 }
-type MappingTMTValueToVesselType = {
-  from: keyof ValueList
-  to: keyof Vessel
-}
 
-const mapTMTtoVesselField: MappingTMTValueToVesselType[] = [
-  {
-    from: 'ircs',
-    to: 'callsign',
-  },
-  {
-    from: 'mmsi',
-    to: 'mmsi',
-  },
-  {
-    to: 'flag',
-    from: 'flag',
-  },
-  {
-    to: 'imo',
-    from: 'imo',
-  },
-  {
-    to: 'shipname',
-    from: 'name',
-  },
-]
-const extractValue: (valueItem: ValueItem[]) => string = (valueItem: ValueItem[]) => {
-  return valueItem.shift()?.value || ''
-}
-
-function typedKeys<T>(o: T): (keyof T)[] {
-  // type cast should be safe because that's what really Object.keys() does
-  return Object.keys(o) as (keyof T)[]
+const sortValuesByFirstSeen = (a: ValueItem, b: ValueItem) =>
+  (a.firstSeen || '') >= (b.firstSeen || '') ? 1 : -1
+const extractValue: (valueItem: ValueItem[]) => string | undefined = (valueItem: ValueItem[]) => {
+  return valueItem.shift()?.value || undefined
 }
 
 const toVessel: (data: TMTDetail) => Vessel = (data: TMTDetail) => {
   const {
     vesselMatchId,
-    valueList, //: { builtYear, flag, gt, imo, loa, mmsi, name, ircs, vesselType, gear, depth },
+    valueList,
     relationList: { vesselOperations, vesselOwnership },
     authorisationList,
   } = data
+  const emptyHistory = { byDate: [], byCount: [] }
 
-  const values: Vessel = typedKeys<ValueList>(valueList) //Object.keys(valueList)
-    .reduce((previous, current) => {
-      const key =
-        mapTMTtoVesselField.filter((mapping) => mapping.from === current).shift()?.to ?? current
-      return {
-        ...previous,
-        [key]: extractValue(valueList[current] as ValueItem[]),
-      }
-    }, {})
-  // (field) => ({[field]: extractValue(valueList[field] as ValueItem[])}))
-  return {
-    ...values,
+  const vessel: VesselWithHistory = {
     id: vesselMatchId,
+    shipname: extractValue(valueList.name) || '',
+    mmsi: extractValue(valueList.mmsi as ValueItem[]),
+    imo: extractValue(valueList.imo),
+    callsign: extractValue(valueList.ircs),
+    flag: extractValue(valueList.flag) || '',
+    type: extractValue(valueList.vesselType),
+    gearType: extractValue(valueList.gear),
+    length: extractValue(valueList.loa),
+    depth: extractValue(valueList.depth),
+    grossTonnage: extractValue(valueList.gt),
+    owner: extractValue(vesselOwnership),
+    operator: extractValue(vesselOperations),
+    builtYear: extractValue(valueList.builtYear),
+    authorizations: authorisationList.map((auth) => auth.source) ?? [],
+    firstTransmissionDate: '',
+    lastTransmissionDate: '',
+    origin: '',
+    history: {
+      callsign: {
+        byCount: [],
+        byDate: valueList.ircs.sort(sortValuesByFirstSeen),
+      },
+      imo: {
+        byCount: [],
+        byDate: valueList.imo.sort(sortValuesByFirstSeen),
+      },
+      shipname: {
+        byCount: [],
+        byDate: valueList.name.sort(sortValuesByFirstSeen),
+      },
+      mmsi: {
+        byCount: [],
+        byDate: valueList.mmsi.sort(sortValuesByFirstSeen),
+      },
+      owner: {
+        byCount: [],
+        byDate: data.relationList.vesselOwnership.sort(sortValuesByFirstSeen),
+      },
+      flag: emptyHistory,
+    },
   }
+  return vessel
 }
 const vesselThunk: VesselAPIThunk = {
   fetchById: async ({ id = '' }: TMTVesselSourceId) => {
@@ -74,8 +76,7 @@ const vesselThunk: VesselAPIThunk = {
       })
     }
     const url = `/v1/vessel-history/${id}`
-    const data: Vessel = await GFWAPI.fetch<TMTDetail>(url).then(toVessel)
-    return data
+    return await GFWAPI.fetch<TMTDetail>(url).then(toVessel)
   },
 }
 

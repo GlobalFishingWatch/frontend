@@ -2,20 +2,20 @@ import React, { Fragment, useCallback, useState } from 'react'
 import { DateTime } from 'luxon'
 import { Modal } from '@globalfishingwatch/ui-components'
 // eslint-disable-next-line import/order
-import { HistoricValue } from 'classes/vessel.class'
+import { ValueItem } from 'types'
 import styles from './Info.module.css'
 
 interface ListItemProps {
-  current: HistoricValue
-  historic: HistoricValue[]
+  current: ValueItem
+  history: ValueItem[]
   isOpen: boolean
   label: string
   vesselName: string
 }
 
-const InfoFieldHistoric: React.FC<ListItemProps> = ({
+const InfoFieldHistory: React.FC<ListItemProps> = ({
   current,
-  historic,
+  history,
   isOpen,
   label,
   vesselName,
@@ -29,17 +29,17 @@ const InfoFieldHistoric: React.FC<ListItemProps> = ({
     return date ? [date.toLocaleString(DateTime.DATETIME_MED), 'UTC'].join(' ') : ''
   }
 
-  if (historic.length < 1) {
+  if (history.length < 1) {
     return <div></div>
   }
 
   return (
     <Fragment>
       <button className={styles.moreValues} onClick={toggleModalOpen}>{`+${
-        historic.length + 1
+        history.length + 1
       } previous ${label}s`}</button>
 
-      {historic.length && (
+      {history.length && (
         <Modal
           title={label + ' History for ' + vesselName}
           isOpen={modalOpen}
@@ -56,17 +56,17 @@ const InfoFieldHistoric: React.FC<ListItemProps> = ({
               <label>CURRENT TIME RANGE</label>
               <div>Since {formatedDate(current.start)}</div>
             </div>
-            {historic.map((historicValue: HistoricValue, index) => (
+            {history.map((historyValue: historyValue, index) => (
               <Fragment key={index}>
                 <div className={styles.identifierField}>
                   <label>{label}</label>
-                  <div>{historicValue.data}</div>
+                  <div>{historyValue.data}</div>
                 </div>
                 <div className={styles.identifierField}>
                   <label>Time Range</label>
                   <div>
-                    {historicValue.start && <div>From {formatedDate(historicValue.start)}</div>}
-                    {historicValue.end && <div>To {formatedDate(historicValue.end)}</div>}
+                    {historyValue.start && <div>From {formatedDate(historyValue.start)}</div>}
+                    {historyValue.end && <div>To {formatedDate(historyValue.end)}</div>}
                   </div>
                 </div>
               </Fragment>
@@ -78,4 +78,4 @@ const InfoFieldHistoric: React.FC<ListItemProps> = ({
   )
 }
 
-export default InfoFieldHistoric
+export default InfoFieldHistory

@@ -1,42 +1,48 @@
 import React, { useCallback, useState } from 'react'
 // eslint-disable-next-line import/order
 import { HistoricValue, VesselInfoValue } from 'classes/vessel.class'
+import { ValueItem } from 'types'
 import styles from './Info.module.css'
-import InfoFieldHistoric from './InfoFieldHistoric'
+import InfoFieldHistory from './InfoFieldHistory'
 
 interface ListItemProps {
   label: string
-  field: VesselInfoValue
+  value: string
+  valuesHistory: ValueItem[]
   vesselName: string
 }
 
-const InfoField: React.FC<ListItemProps> = ({ field, label, vesselName }): React.ReactElement => {
+const InfoField: React.FC<ListItemProps> = ({
+  value = '',
+  label,
+  valuesHistory,
+  vesselName,
+}): React.ReactElement => {
   const [modalOpen, setModalOpen] = useState(false)
-  const displachOpenModal = useCallback((field: VesselInfoValue) => {
+  const displachOpenModal = useCallback(() => {
     setModalOpen(true)
   }, [])
 
-  if (!field.value?.data) {
+  if (!value) {
     return <div></div>
   }
 
-  const current: HistoricValue = {
-    data: field.value?.data,
-    start: field.value.historic.slice().shift()?.end || null,
-    end: null,
+  const current: ValueItem = {
+    value,
+    firstSeen: valuesHistory.slice().shift()?.endDate,
   }
   return (
     <div className={styles.identifierField}>
       <label>{label}</label>
-      <div onClick={() => displachOpenModal(field)}>
-        {field.value?.data}
-        <InfoFieldHistoric
+      <div onClick={() => displachOpenModal()}>
+        {value}
+        <InfoFieldHistory
           current={current}
           label={label}
-          historic={field.value.historic}
+          history={valuesHistory}
           isOpen={modalOpen}
           vesselName={vesselName}
-        ></InfoFieldHistoric>
+        ></InfoFieldHistory>
       </div>
     </div>
   )

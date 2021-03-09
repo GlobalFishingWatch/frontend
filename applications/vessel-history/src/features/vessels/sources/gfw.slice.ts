@@ -1,6 +1,6 @@
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Vessel } from '@globalfishingwatch/api-types/dist'
-import { GFWDetail } from 'types'
+import { FieldValueCounter, GFWDetail, VesselWithHistory } from 'types'
 import { VesselSourceId } from 'types/vessel'
 import { VesselAPIThunk } from '../vessels.slice'
 
@@ -8,9 +8,27 @@ interface GFWVesselSourceId extends VesselSourceId {
   id: string
   dataset: string
 }
-const toVessel: (data: GFWDetail) => Vessel = (data: GFWDetail) => {
+const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail) => {
+  const emptyHistory = { byDate: [], byCount: [] }
   return {
     ...data,
+    history: {
+      callsign: {
+        byCount: data.otherCallsigns,
+        byDate: [],
+      },
+      imo: {
+        byCount: data.otherImos,
+        byDate: [],
+      },
+      shipname: {
+        byCount: data.otherShipnames,
+        byDate: [],
+      },
+      mmsi: emptyHistory,
+      owner: emptyHistory,
+      flag: emptyHistory,
+    },
   }
 }
 const vesselThunk: VesselAPIThunk = {
@@ -21,8 +39,7 @@ const vesselThunk: VesselAPIThunk = {
       })
     }
     const url = `/v1/vessels/${id}?datasets=${dataset}`
-    const data: Vessel = await GFWAPI.fetch<GFWDetail>(url).then(toVessel)
-    return data
+    return await GFWAPI.fetch<GFWDetail>(url).then(toVessel)
   },
 }
 

@@ -1,3 +1,5 @@
+import { Vessel } from '@globalfishingwatch/api-types/dist'
+
 export type WorkspaceParam =
   | 'zoom'
   | 'latitude'
@@ -17,101 +19,52 @@ export type CoordinatePosition = {
   longitude: number
 }
 
-export type MapCoordinates = {
-  latitude: number
-  longitude: number
+export interface MapCoordinates extends CoordinatePosition {
   zoom: number
 }
 
-export interface OtherCallsign {
+export interface FieldValueCounter<T = string> {
   counter: number
-  name: string
+  name: T
 }
 
-export interface Vessel2 {
-  id: string
-  callsign: string
-  firstTransmissionDate: string
-  flag: string
-  imo?: any
-  lastTransmissionDate: string
-  mmsi: string
-  otherCallsigns: OtherCallsign[]
-  otherImos: OtherImo[]
-  otherShipnames: OtherShipname[]
-  shipname: string
-  source: string
-  dataset: string
-  vesselMatchId: string
+export interface VesselFieldHistory<T> {
+  byDate: ValueItem<T>[]
+  byCount: FieldValueCounter<T>[]
+}
+
+export interface VesselFieldsHistory {
+  callsign: VesselFieldHistory<string>
+  mmsi: VesselFieldHistory<string>
+  imo: VesselFieldHistory<string>
+  shipname: VesselFieldHistory<string>
+  owner: VesselFieldHistory<string>
+  flag: VesselFieldHistory<string>
+}
+
+export interface VesselWithHistory extends Vessel {
+  history: VesselFieldsHistory
 }
 
 export enum VesselAPISource {
   TMT = 'TMT',
   GFW = 'GFW',
 }
-export interface ValueItem {
-  value: string
+export interface ValueItem<T = string> {
+  value: T
   firstSeen?: string
   endDate?: string
 }
-export interface BuiltYear {
-  value: string
-  firstSeen: string
-  endDate: string
-}
-
-export interface Flag {
-  value: string
-  firstSeen: string
-  endDate?: string
-}
-
-export interface Gt {
-  value: string
-  firstSeen: string
-  endDate?: any
-}
-
-export interface Imo {
-  value: string
-  firstSeen: string
-  endDate?: any
-}
-
-export interface Loa {
-  value: string
-  firstSeen: string
-  endDate?: any
-}
-
-export interface Name {
-  value: string
-  firstSeen: string
-  endDate?: string
-}
-
-export interface Irc {
-  value: string
-  firstSeen: string
-  endDate?: any
-}
-
-export interface VesselType {
-  value: string
-  firstSeen: string
-  endDate?: any
-}
-
-export interface Depth {
-  value: string
-  firstSeen: string
-  endDate?: any
-}
-export interface Mmsi {
-  value: string
-  firstSeen: string
-  endDate?: string | null
-}
+export type BuiltYear = ValueItem
+export type Flag = ValueItem
+export type Gt = ValueItem
+export type Imo = ValueItem
+export type Loa = ValueItem
+export type Name = ValueItem
+export type Irc = ValueItem
+export type VesselType = ValueItem
+export type Depth = ValueItem
+export type Mmsi = ValueItem
 
 export type AnyValueList =
   | BuiltYear
@@ -140,17 +93,9 @@ export interface ValueList {
   depth: Depth[]
 }
 
-export interface VesselOwnership {
-  value: string
-  firstSeen?: string
-  endDate?: string
-}
+export type VesselOwnership = ValueItem
 
-export interface VesselOperation {
-  value: string
-  firstSeen?: string
-  endDate?: string
-}
+export type VesselOperation = ValueItem
 
 export interface RelationList {
   vesselOwnership: VesselOwnership[]
@@ -169,15 +114,10 @@ export interface TMTDetail {
   relationList: RelationList
   authorisationList: AuthorizationList[]
 }
-export interface OtherImo {
-  counter: number
-  name: string
-}
 
-export interface OtherShipname {
-  counter: number
-  name: string
-}
+export type OtherCallsign = FieldValueCounter<string>
+export type OtherShipname = FieldValueCounter<string>
+export type OtherImo = FieldValueCounter<string>
 
 export type AnyHistoricValue = OtherCallsign | OtherShipname | OtherImo
 

@@ -9,6 +9,15 @@ export interface Vessel {
   callsign?: string
   fleet?: string
   origin?: string
+  type?: string
+  gearType?: string
+  length?: string
+  depth?: string
+  grossTonnage?: string
+  owner?: string
+  operator?: string
+  builtYear?: string
+  authorizations: string[]
 }
 
 export interface VesselSearch extends Vessel {
