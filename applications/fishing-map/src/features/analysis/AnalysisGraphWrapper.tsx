@@ -7,7 +7,8 @@ import { DateTime } from 'luxon'
 import { getTimeSeries, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { useCurrentTimeChunkId, useMapFeatures, useMapStyle } from 'features/map/map.hooks'
+import { useMapStyle } from 'features/map/map.hooks'
+import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import * as AnalysisWorker from './Analysis.worker'
@@ -20,25 +21,21 @@ const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 function AnalysisGraphWrapper() {
   const temporalGridDataviews = useSelector(selectTemporalgridDataviews)
   const { start, end } = useTimerangeConnect()
-  const currentTimeChunkId = useCurrentTimeChunkId()
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
-  const mapStyle = useMapStyle()
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
   const [timeseries, setTimeseries] = useState<GraphData[] | undefined>()
+  const mapStyle = useMapStyle()
   const temporalgrid = mapStyle?.metadata?.temporalgrid
   const numSublayers = temporalgrid?.numSublayers
   const timeChunks = temporalgrid?.timeChunks as TimeChunks
   const interval = temporalgrid?.timeChunks?.interval
-  const { features: cellFeatures, sourceLoaded } = useMapFeatures({
-    sourceId: currentTimeChunkId,
-    sourceLayer: 'temporalgrid_interactive',
+  const { features: cellFeatures, sourceLoaded } = useMapTemporalgridFeatures({
     cacheKey: interval,
   })
+  const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
+  const chunkQuantizeOffset = activeTimeChunk?.quantizeOffset
 
   useEffect(() => {
-    const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
-    const chunkQuantizeOffset = activeTimeChunk?.quantizeOffset
-
     const updateTimeseries = async (
       allFeatures: GeoJSON.Feature<GeoJSON.Geometry>[],
       analysisAreaFeature: Feature<Geometry>
@@ -52,9 +49,7 @@ function AnalysisGraphWrapper() {
       ).map((frameValues) => {
         return {
           value: frameValues[0],
-          date: new Date(
-            quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime()
-          ).toISOString(),
+          date: new Date(quantizeOffsetToDate(frameValues.frame, interval).getTime()).toISOString(),
         }
       })
 
@@ -69,9 +64,7 @@ function AnalysisGraphWrapper() {
       ).map((frameValues) => {
         return {
           value: frameValues[0],
-          date: new Date(
-            quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime()
-          ).toISOString(),
+          date: new Date(quantizeOffsetToDate(frameValues.frame, interval).getTime()).toISOString(),
         }
       })
 
@@ -102,7 +95,7 @@ function AnalysisGraphWrapper() {
     } else {
       setTimeseries(undefined)
     }
-  }, [analysisAreaFeature, numSublayers, timeChunks, currentTimeChunkId, cellFeatures])
+  }, [analysisAreaFeature, numSublayers, interval, cellFeatures, chunkQuantizeOffset])
 
   const timeSeriesFiltered = useMemo(() => {
     return timeseries?.filter((current: any) => {
@@ -123,7 +116,7 @@ function AnalysisGraphWrapper() {
     <AnalysisGraph
       timeseries={timeSeriesFiltered}
       graphColor={temporalGridDataviews?.[0]?.config?.color}
-      timeChunkInterval={timeChunks?.interval}
+      timeChunkInterval={interval}
     />
   )
 }

@@ -5,11 +5,8 @@ import union from '@turf/union'
 import bbox from '@turf/bbox'
 import { Feature, Polygon } from 'geojson'
 import { batch, useDispatch, useSelector } from 'react-redux'
-import type { Map } from '@globalfishingwatch/mapbox-gl'
 import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import useTilesState from '@globalfishingwatch/react-hooks/dist/use-tiles-state'
-import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
@@ -25,7 +22,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectAnalysisQuery } from 'features/app/app.selectors'
 import { useMapboxInstance } from 'features/map/map.context'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { useMapFeatures } from 'features/map/map.hooks'
+import { useMapFeatures } from 'features/map/map-features.hooks'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import styles from './Analysis.module.css'
 import {
@@ -35,6 +32,7 @@ import {
   DateRange,
   ReportGeometry,
   resetReportStatus,
+  selectAnalysisAreaName,
   selectAnalysisGeometry,
   selectReportStatus,
   setAnalysisGeometry,
@@ -47,8 +45,6 @@ function Analysis() {
   const dispatch = useDispatch()
   const mapInstance = useMapboxInstance()
   const fitMapBounds = useMapFitBounds()
-  const tilesLoading = useTilesState(mapInstance as Map).loading
-  const debouncedTilesLoading = useDebounce(tilesLoading, 600)
   const analysisQuery = useSelector(selectAnalysisQuery)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
@@ -56,6 +52,7 @@ function Analysis() {
   const staticTime = useSelector(selectStaticTime)
   const dataviews = useSelector(selectTemporalgridDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
+  const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
@@ -89,12 +86,15 @@ function Analysis() {
           {} as Feature<Polygon>
         )
         const { name, value, id } = contextAreaFeatureMerged.properties || {}
-        dispatch(
-          setAnalysisGeometry({
-            geometry: contextAreaFeatureMerged,
-            name: name || id || value,
-          })
-        )
+        const areaName = name || id || value
+        if (areaName !== analysisAreaName) {
+          dispatch(
+            setAnalysisGeometry({
+              geometry: contextAreaFeatureMerged,
+              name: name || id || value,
+            })
+          )
+        }
       } else {
         console.warn('No feature for analysis found')
         dispatch(
@@ -105,6 +105,7 @@ function Analysis() {
         )
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contextAreaFeatures, dispatch, sourceLoaded])
 
   useEffect(() => {
@@ -183,7 +184,7 @@ function Analysis() {
               </p>
             )}
             <div className={styles.graph}>
-              {!sourceLoaded || (debouncedTilesLoading && !analysisGeometry) ? (
+              {!sourceLoaded || !analysisGeometry ? (
                 <Spinner className={styles.spinner} />
               ) : (
                 <AnalysisGraphWrapper />
