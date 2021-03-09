@@ -118,7 +118,7 @@ function FeatureRow({
       </div>
     )
   }
-  if (feature.contextLayer === 'wpp-nri') {
+  if (feature.contextLayer === 'wpp-nri' || feature.contextLayer === 'high-seas') {
     return (
       <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
         <span className={styles.rowText}>{feature.value}</span>
