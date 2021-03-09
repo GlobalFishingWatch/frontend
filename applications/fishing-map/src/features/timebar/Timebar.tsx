@@ -1,7 +1,6 @@
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import type { MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import TimebarComponent, {
   TimebarTracks,
   TimebarActivity,
@@ -11,14 +10,15 @@ import TimebarComponent, {
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
-import { useCurrentTimeChunkId, useMapFeatures, useMapStyle } from 'features/map/map.hooks'
+import { useMapStyle } from 'features/map/map.hooks'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
+import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
+import { filterByViewport } from 'features/map/map.utils'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -27,26 +27,6 @@ import {
   hasStaticHeatmapLayersActive,
 } from './timebar.selectors'
 import styles from './Timebar.module.css'
-
-const filterByViewport = (features: MapboxGeoJSONFeature[], bounds: MiniglobeBounds) => {
-  if (!bounds) {
-    return []
-  }
-  const { north, east, south, west } = bounds
-  const leftWorldCopy = east >= 180
-  const rightWorldCopy = west <= -180
-  return features.filter((f) => {
-    const [lon, lat] = (f.geometry as any).coordinates[0][0]
-    const rightOffset = rightWorldCopy && lon > 0 ? -360 : 0
-    const leftOffset = leftWorldCopy && lon < 0 ? 360 : 0
-    return (
-      lon + rightOffset + leftOffset > west &&
-      lon + rightOffset + leftOffset < east &&
-      lat > south &&
-      lat < north
-    )
-  })
-}
 
 const TimebarWrapper = () => {
   const { start, end, dispatchTimeranges } = useTimerangeConnect()
@@ -72,9 +52,7 @@ const TimebarWrapper = () => {
     [setBookmark]
   )
 
-  const currentTimeChunkId = useCurrentTimeChunkId()
   const mapStyle = useMapStyle()
-
   const [stackedActivity, setStackedActivity] = useState<any>()
 
   const visibleTemporalGridDataviews = useMemo(
@@ -82,11 +60,7 @@ const TimebarWrapper = () => {
     [temporalGridDataviews]
   )
 
-  const { features: cellFeatures, sourceLoaded } = useMapFeatures({
-    sourceId: currentTimeChunkId,
-    sourceLayer: 'temporalgrid_interactive',
-  })
-  const [loading, setLoading] = useState(sourceLoaded)
+  const { features: cellFeatures, sourceLoaded } = useMapTemporalgridFeatures()
 
   const { bounds } = useMapBounds()
   const debouncedBounds = useDebounce(bounds, 600)
@@ -139,7 +113,7 @@ const TimebarWrapper = () => {
   }, [
     cellFeatures,
     debouncedBounds,
-    mapStyle.metadata?.temporalgrid,
+    mapStyle?.metadata?.temporalgrid,
     sourceLoaded,
     timebarVisualisation,
     visibleTemporalGridDataviews,
@@ -149,6 +123,7 @@ const TimebarWrapper = () => {
   const dataviewsColors = dataviews?.map((dataview) => dataview.config?.color)
 
   // Using an effect to ensure the blur loading is removed once the component has been rendered
+  const [loading, setLoading] = useState(sourceLoaded)
   useEffect(() => {
     setLoading(sourceLoaded)
   }, [sourceLoaded])
