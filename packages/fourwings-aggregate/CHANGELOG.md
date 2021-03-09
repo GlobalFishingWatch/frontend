@@ -6,6 +6,12 @@
 
 - [`729322ab`](https://github.com/GlobalFishingWatch/frontend/commit/729322ab540c4ad807cb3bba1c2b344eb265ed89) [#348](https://github.com/GlobalFishingWatch/frontend/pull/348) Thanks [@j8seangel](https://github.com/j8seangel)! - expose value_multiplier
 
+## 1.1.4
+
+### Patch Changes
+
+- [`1ca132a9`](https://github.com/GlobalFishingWatch/frontend/commit/1ca132a9520e2f8b3c531e30c232fe1dfba006b2) [#354](https://github.com/GlobalFishingWatch/frontend/pull/354) Thanks [@nerik](https://github.com/nerik)! - fixed low level of activity at the bottom of the tiles
+
 ## 1.1.3
 
 ### Patch Changes

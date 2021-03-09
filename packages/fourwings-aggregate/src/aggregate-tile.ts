@@ -1,3 +1,12 @@
+/* See reference on intArray format: https://docs.google.com/drawings/d/17a4yVGSKcYtTP3IdClngKediMRBkM8gwg2IiBXUspys/edit
+[numRows, numColumns,
+    cell0Index, cell0StartFrame, cell0EndFrame
+      cell0Sublayer0Frame0, cell0Sublayer1Frame0, ..., cell0Sublayer0FrameF, cell0Sublayer1FrameF,
+      ...,
+      cellCSublayer0Frame0, cellCSublayer1Frame0, ..., cellCSublayer0FrameF, cellCSublayer1FrameF,
+]
+*/
+
 import {
   FEATURE_ROW_INDEX,
   FEATURE_COL_INDEX,
@@ -301,32 +310,29 @@ const aggregate = (intArray: number[], options: any) => {
 
   const featureIntArrays = []
   let cellNum
-  let startOffset
-  let endOffset
-  let start
-  let end
+  let startFrame = 0
+  let endFrame = 0
+  let startIndex = 0
+  let endIndex = 0
   let indexInCell = 0
 
   for (let i = FEATURE_CELLS_START_INDEX; i < intArray.length; i++) {
     const value = intArray[i]
     if (indexInCell === CELL_NUM_INDEX) {
-      start = i
+      startIndex = i
       cellNum = value
     } else if (indexInCell === CELL_START_INDEX) {
-      startOffset = value
+      startFrame = value
     } else if (indexInCell === CELL_END_INDEX) {
-      endOffset = value
-      end =
-        (start as number) +
-        CELL_VALUES_START_INDEX +
-        (endOffset - (startOffset as number) + 1) * numDatasets
+      endFrame = value
+      endIndex = startIndex + CELL_VALUES_START_INDEX + (endFrame - startFrame + 1) * numDatasets
     }
     indexInCell++
-    if (i === (end as number) - 1) {
+    if (i === endIndex - 1) {
       indexInCell = 0
-      const original = intArray.slice(start, (end as number) + 1)
+      const original = intArray.slice(startIndex, endIndex)
       const padded = new Array(delta * numDatasets).fill(0)
-      original[FEATURE_CELLS_START_INDEX] = endOffset + delta
+      original[FEATURE_CELLS_START_INDEX] = endFrame + delta
       const merged = original.concat(padded)
       featureIntArrays.push(merged)
     }
@@ -377,7 +383,7 @@ const aggregate = (intArray: number[], options: any) => {
         currentFeatureInteractive = getFeature({ ...featureParams, addMeta: true } as any)
       }
 
-      for (let i = 3; i < featureIntArray.length; i++) {
+      for (let i = CELL_VALUES_START_INDEX; i < featureIntArray.length; i++) {
         const value = featureIntArray[i]
 
         // when we are looking at ts 0 and delta is 10, we are in fact looking at the aggregation of day -9
