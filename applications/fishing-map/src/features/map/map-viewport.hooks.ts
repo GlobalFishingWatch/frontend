@@ -85,8 +85,12 @@ export function useMapFitBounds() {
 
   const fitMapBounds = useCallback(
     (bounds: [number, number, number, number], padding = 60) => {
-      const width = mapInstance ? parseInt(mapInstance.getCanvas().style.width) : 1280
-      const height = mapInstance ? parseInt(mapInstance.getCanvas().style.height) : 860
+      const width = mapInstance
+        ? parseInt(mapInstance.getCanvas().style.width)
+        : window.innerWidth / 2
+      const height = mapInstance
+        ? parseInt(mapInstance.getCanvas().style.height)
+        : window.innerHeight / 2
       const { latitude, longitude, zoom } = fitBounds({
         bounds: [
           [bounds[0], bounds[1]],

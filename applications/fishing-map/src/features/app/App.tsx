@@ -25,7 +25,7 @@ import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import useViewport from 'features/map/map-viewport.hooks'
+import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import styles from './App.module.css'
 import { selectAnalysisQuery, selectSidebarOpen, selectViewport } from './app.selectors'
@@ -53,18 +53,24 @@ function App(): React.ReactElement {
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const analysisQuery = useSelector(selectAnalysisQuery)
-  // const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
   const narrowSidebar = workspaceLocation && !analysisQuery
   const urlViewport = useSelector(selectViewport)
 
+  const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
 
   useLayoutEffect(() => {
-    // In the first load of analysis we need to ensure the geometry is loaded
-    const viewport = isAnalysing ? { latitude: 0, longitude: 0, zoom: 0 } : urlViewport
-    setMapCoordinates(viewport)
+    if (isAnalysing) {
+      if (analysisQuery.bounds) {
+        fitMapBounds(analysisQuery.bounds, 0)
+      } else {
+        setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
+      }
+    } else {
+      setMapCoordinates(urlViewport)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

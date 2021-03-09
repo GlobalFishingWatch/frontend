@@ -34,6 +34,7 @@ export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
 export type WorkspaceAnalysis = {
   areaId: string
   sourceId: string
+  bounds?: [number, number, number, number]
 }
 export type WorkspaceState = {
   query?: string

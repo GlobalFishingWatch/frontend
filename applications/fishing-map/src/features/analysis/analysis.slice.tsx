@@ -113,6 +113,7 @@ export const createReportThunk = createAsyncThunk(
 export interface ReportState extends AsyncReducer<Report> {
   area: {
     geometry: ReportGeometry | undefined
+    bounds: [number, number, number, number] | undefined // minX, minY, maxX, maxY
     name: string
     id: string
   }
@@ -122,6 +123,7 @@ const initialState: ReportState = {
   ...asyncInitialState,
   area: {
     geometry: undefined,
+    bounds: undefined,
     name: '',
     id: '',
   },
@@ -137,13 +139,19 @@ const { slice: analysisSlice } = createAsyncSlice<ReportState, Report>({
     clearAnalysisGeometry: (state) => {
       state.area.geometry = undefined
       state.area.name = ''
+      state.area.bounds = undefined
       state.status = AsyncReducerStatus.Idle
     },
     setAnalysisGeometry: (
       state,
-      action: PayloadAction<{ geometry: ReportGeometry | undefined; name: string }>
+      action: PayloadAction<{
+        geometry: ReportGeometry | undefined
+        name: string
+        bounds: [number, number, number, number]
+      }>
     ) => {
       state.area.geometry = action.payload.geometry
+      state.area.bounds = action.payload.bounds
       state.area.name = action.payload.name
     },
   },
@@ -159,6 +167,7 @@ export const {
 } = analysisSlice.actions
 
 export const selectAnalysisGeometry = (state: RootState) => state.analysis.area.geometry
+export const selectAnalysisBounds = (state: RootState) => state.analysis.area.bounds
 export const selectAnalysisAreaName = (state: RootState) => state.analysis.area.name
 export const selectAnalysisAreaId = (state: RootState) => state.analysis.area.id
 export const selectReportStatus = (state: RootState) => state.analysis.status

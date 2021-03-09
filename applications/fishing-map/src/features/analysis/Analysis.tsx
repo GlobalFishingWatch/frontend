@@ -32,6 +32,7 @@ import {
   DateRange,
   ReportGeometry,
   resetReportStatus,
+  selectAnalysisBounds,
   selectAnalysisAreaName,
   selectAnalysisGeometry,
   selectReportStatus,
@@ -52,6 +53,7 @@ function Analysis() {
   const staticTime = useSelector(selectStaticTime)
   const dataviews = useSelector(selectTemporalgridDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
+  const analysisBounds = useSelector(selectAnalysisBounds)
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
@@ -88,10 +90,12 @@ function Analysis() {
         const { name, value, id } = contextAreaFeatureMerged.properties || {}
         const areaName = name || id || value
         if (areaName !== analysisAreaName) {
+          const bounds = bbox(contextAreaFeatureMerged) as [number, number, number, number]
           dispatch(
             setAnalysisGeometry({
               geometry: contextAreaFeatureMerged,
               name: name || id || value,
+              bounds,
             })
           )
         }
@@ -109,11 +113,17 @@ function Analysis() {
   }, [contextAreaFeatures, dispatch, sourceLoaded])
 
   useEffect(() => {
-    if (analysisGeometry) {
-      const bounds = bbox(analysisGeometry) as [number, number, number, number]
-      fitMapBounds(bounds, 10)
+    if (analysisBounds) {
+      fitMapBounds(analysisBounds, 10)
+      dispatchQueryParams({
+        analysis: {
+          ...analysisQuery,
+          bounds: analysisBounds,
+        },
+      })
     }
-  }, [analysisGeometry, fitMapBounds])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [analysisBounds])
 
   const onCloseClick = () => {
     batch(() => {
