@@ -47,9 +47,10 @@ function AnalysisGraphWrapper() {
         numSublayers,
         chunkQuantizeOffset
       ).map((frameValues) => {
+        const { frame, ...rest } = frameValues
         return {
-          value: frameValues[0],
-          date: new Date(quantizeOffsetToDate(frameValues.frame, interval).getTime()).toISOString(),
+          values: Object.values(rest) as number[],
+          date: quantizeOffsetToDate(frame, interval).toISOString(),
         }
       })
 
@@ -62,18 +63,21 @@ function AnalysisGraphWrapper() {
         numSublayers,
         chunkQuantizeOffset
       ).map((frameValues) => {
+        const { frame, ...rest } = frameValues
         return {
-          value: frameValues[0],
-          date: new Date(quantizeOffsetToDate(frameValues.frame, interval).getTime()).toISOString(),
+          values: Object.values(rest) as number[],
+          date: quantizeOffsetToDate(frame, interval).toISOString(),
         }
       })
 
-      const timeseries = valuesOverlapping.map(({ value, date }) => {
-        const min = valuesContained.find((overlap) => overlap.date === date)?.value
+      const timeseries = valuesOverlapping.map(({ values, date }) => {
+        const minValues = valuesContained.find((overlap) => overlap.date === date)?.values
         return {
           date,
-          min: min ? min / VALUE_MULTIPLIER : 0,
-          max: value / VALUE_MULTIPLIER,
+          min: minValues
+            ? minValues.map((min) => min / VALUE_MULTIPLIER)
+            : new Array(values.length).fill(0),
+          max: values.map((value) => value / VALUE_MULTIPLIER),
         }
       })
       setTimeseries(timeseries)
@@ -108,14 +112,20 @@ function AnalysisGraphWrapper() {
 
   if (!sourceLoaded || generatingTimeseries) return <Spinner className={styles.spinner} />
 
-  if (!timeSeriesFiltered?.length) {
+  const datasets = temporalGridDataviews?.map((dataview) => ({
+    id: dataview.id,
+    color: dataview.config?.color,
+    unit: dataview.datasets?.[0].unit,
+  }))
+
+  if (!datasets || !timeSeriesFiltered?.length) {
     return <p className={styles.emptyDataPlaceholder}>No data available</p>
   }
 
   return (
     <AnalysisGraph
+      datasets={datasets}
       timeseries={timeSeriesFiltered}
-      graphColor={temporalGridDataviews?.[0]?.config?.color}
       timeChunkInterval={interval}
     />
   )
