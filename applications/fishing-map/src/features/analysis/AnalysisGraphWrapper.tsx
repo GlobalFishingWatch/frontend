@@ -7,6 +7,7 @@ import { DateTime } from 'luxon'
 import { getTimeSeries, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
+import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useMapStyle } from 'features/map/map.hooks'
 import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
@@ -32,6 +33,7 @@ function AnalysisGraphWrapper() {
   const { features: cellFeatures, sourceLoaded } = useMapTemporalgridFeatures({
     cacheKey: interval,
   })
+  const debouncedSourceLoaded = useDebounce(sourceLoaded, 600)
   const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
   const chunkQuantizeOffset = activeTimeChunk?.quantizeOffset
 
@@ -85,6 +87,7 @@ function AnalysisGraphWrapper() {
     }
 
     if (cellFeatures && cellFeatures.length > 0) {
+      setGeneratingTimeseries(true)
       const allFeatures = cellFeatures.map(({ properties, geometry }) => ({
         type: 'Feature' as any,
         properties,
@@ -110,7 +113,7 @@ function AnalysisGraphWrapper() {
     })
   }, [timeseries, start, end])
 
-  if (!sourceLoaded || generatingTimeseries) return <Spinner className={styles.spinner} />
+  if (!debouncedSourceLoaded || generatingTimeseries) return <Spinner className={styles.spinner} />
 
   const datasets = temporalGridDataviews?.map((dataview) => ({
     id: dataview.id,
@@ -118,8 +121,12 @@ function AnalysisGraphWrapper() {
     unit: dataview.datasets?.[0].unit,
   }))
 
-  if (!datasets || !timeSeriesFiltered?.length) {
+  if (!datasets) {
     return <p className={styles.emptyDataPlaceholder}>No data available</p>
+  }
+
+  if (!timeSeriesFiltered?.length) {
+    return <p className={styles.emptyDataPlaceholder}>There was an error, try reloading the page</p>
   }
 
   return (
