@@ -23,6 +23,8 @@ import { selectAnalysisQuery } from 'features/app/app.selectors'
 import { useMapboxInstance } from 'features/map/map.context'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useMapFeatures } from 'features/map/map-features.hooks'
+import { UrlDataviewInstance } from 'types'
+import { getFlagsByIds } from 'utils/flags'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import styles from './Analysis.module.css'
 import {
@@ -39,6 +41,61 @@ import {
   setAnalysisGeometry,
 } from './analysis.slice'
 import AnalysisGraphWrapper from './AnalysisGraphWrapper'
+
+const sortStrings = (a: string, b: string) => a.localeCompare(b)
+
+const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
+  const commonProperties: string[] = []
+  let title = ''
+
+  if (dataviews?.length > 0) {
+    const firstDataviewDatasets = dataviews[0].config?.datasets
+      ?.slice()
+      .sort(sortStrings)
+      .join(', ')
+    const firstDataviewFlags = dataviews[0].config?.filters?.flag
+      ?.slice()
+      .sort(sortStrings)
+      .join(', ')
+    console.log(firstDataviewFlags)
+
+    if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
+      commonProperties.push('dataset')
+      title += dataviews[0].name
+    }
+
+    if (
+      dataviews?.every((dataview) => {
+        const datasets = dataview.config?.datasets?.slice().sort(sortStrings).join(', ')
+        return datasets === firstDataviewDatasets
+      })
+    ) {
+      commonProperties.push('source')
+      const datasets = dataviews[0].datasets?.filter((d) =>
+        dataviews[0].config?.datasets?.includes(d.id)
+      )
+      title += ` (${datasets?.map((d) => d.name).join(', ')})`
+    }
+    title += ' evolution'
+
+    if (
+      dataviews?.every((dataview) => {
+        const flags = dataview.config?.filters?.flag?.slice().sort(sortStrings).join(', ')
+
+        return flags === firstDataviewFlags
+      })
+    ) {
+      console.log('flag is equal')
+
+      commonProperties.push('flag')
+      const flags = getFlagsByIds(dataviews[0].config?.filters?.flag || [])
+      if (firstDataviewFlags)
+        title += ` by vessels flagged by ${flags?.map((d) => d.label).join(', ')}`
+    }
+  }
+
+  return { title, commonProperties }
+}
 
 function Analysis() {
   const { t } = useTranslation()
@@ -65,6 +122,8 @@ function Analysis() {
     filter,
     cacheKey: areaId,
   })
+
+  const { title, commonProperties } = getCommonProperties(dataviews)
 
   useEffect(() => {
     if (sourceLoaded) {
@@ -188,9 +247,17 @@ function Analysis() {
           <div className={styles.content}>
             {hasAnalysisLayers ? (
               <Fragment>
-                {dataviews?.map((dataview, index) => (
-                  <AnalysisLayerPanel key={dataview.id} dataview={dataview} index={index} />
-                ))}
+                <h3 className={styles.commonTitle}>{title + ` in ${analysisAreaName}.`}</h3>
+                <div className={styles.layerPanels}>
+                  {dataviews?.map((dataview, index) => (
+                    <AnalysisLayerPanel
+                      key={dataview.id}
+                      dataview={dataview}
+                      index={index}
+                      hiddenProperties={commonProperties}
+                    />
+                  ))}
+                </div>
               </Fragment>
             ) : (
               <p className={styles.placeholder}>
