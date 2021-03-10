@@ -11,6 +11,8 @@ import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
 import layerPanelStyles from 'features/workspace/shared/LayerPanel.module.css'
 import styles from './AnalysisLayerPanel.module.css'
 
+const allAvailableProperties = ['dataset', 'source', 'flag']
+
 type LayerPanelProps = {
   index: number
   dataview: UrlDataviewInstance
@@ -31,11 +33,12 @@ function AnalysisLayerPanel({ dataview, hiddenProperties }: LayerPanelProps): Re
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
   const TitleComponent = <p className={styles.dataset}>{datasetName}</p>
+  const showDot = !allAvailableProperties.every((property) => hiddenProperties?.includes(property))
 
   return (
     <div className={cx(styles.row)}>
       <div className={styles.content}>
-        <span className={styles.dot} style={{ color: dataview.config?.color }}></span>
+        {showDot && <span className={styles.dot} style={{ color: dataview.config?.color }} />}
         {!hiddenProperties?.includes('dataset') && (
           <div className={layerPanelStyles.filter}>
             <label>{t('dataset.title', 'Dataset')}</label>

@@ -33,7 +33,6 @@ export function filterByPolygon(
   cells: Feature[],
   polygon: Polygon | MultiPolygon
 ): FilteredPolygons {
-  const t0 = performance.now()
   const filtered = cells.reduce(
     (acc, cell) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -63,7 +62,5 @@ export function filterByPolygon(
     },
     { contained: [] as Feature[], overlapping: [] as Feature[] }
   )
-  const t1 = performance.now()
-  console.log(t1 - t0)
   return filtered
 }

@@ -268,12 +268,14 @@ function Analysis() {
                 <AnalysisGraphWrapper />
               )}
             </div>
-            <p className={styles.placeholder}>
-              {t(
-                'analysis.disclaimer',
-                'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
-              )}
-            </p>
+            {sourceLoaded && analysisGeometry && (
+              <p className={styles.placeholder}>
+                {t(
+                  'analysis.disclaimer',
+                  'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
+                )}
+              </p>
+            )}
           </div>
           <div className={styles.footer}>
             <p

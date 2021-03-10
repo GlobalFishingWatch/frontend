@@ -132,12 +132,8 @@ function AnalysisGraphWrapper() {
     unit: dataview.datasets?.[0].unit,
   }))
 
-  if (!datasets) {
+  if (!datasets || !timeSeriesFiltered?.length) {
     return <p className={styles.emptyDataPlaceholder}>No data available</p>
-  }
-
-  if (!timeSeriesFiltered?.length) {
-    return <p className={styles.emptyDataPlaceholder}>There was an error, try reloading the page</p>
   }
 
   return (
