@@ -14,7 +14,6 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
-import { resetWorkspaceSearchQuery } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getFlagById } from 'utils/flags'
 import { formatInfoField } from 'utils/info'
@@ -100,7 +99,6 @@ function Search() {
     if (debouncedQuery === '') {
       batch(() => {
         dispatch(cleanVesselSearchResults())
-        dispatch(resetWorkspaceSearchQuery())
       })
     } else {
       fetchResults()
@@ -113,7 +111,6 @@ function Search() {
     batch(() => {
       dispatch(resetFilters())
       dispatch(cleanVesselSearchResults())
-      dispatch(resetWorkspaceSearchQuery())
       dispatchQueryParams({ query: undefined })
     })
   }

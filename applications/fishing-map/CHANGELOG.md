@@ -1,5 +1,56 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.27.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.15.0
+  - @globalfishingwatch/react-hooks@4.9.1
+  - @globalfishingwatch/ui-components@2.13.7
+
+## 0.27.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.5
+  - @globalfishingwatch/react-hooks@4.8.3
+  - @globalfishingwatch/ui-components@2.13.6
+
+## 0.27.2
+
+### Patch Changes
+
+- fix highlight typo
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.4
+  - @globalfishingwatch/react-hooks@4.8.2
+  - @globalfishingwatch/ui-components@2.13.5
+
+## 0.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.3
+  - @globalfishingwatch/react-hooks@4.8.1
+  - @globalfishingwatch/ui-components@2.13.4
+
+## 0.27.0
+
+### Minor Changes
+
+- support highlighted feature states
+
+### Patch Changes
+
+- Updated dependencies [[`729322ab`](https://github.com/GlobalFishingWatch/frontend/commit/729322ab540c4ad807cb3bba1c2b344eb265ed89)]:
+  - @globalfishingwatch/layer-composer@4.14.2
+  - @globalfishingwatch/react-hooks@4.8.0
+  - @globalfishingwatch/fourwings-aggregate@1.2.0
+
 ## 0.26.0
 
 ### Minor Changes

@@ -2,7 +2,7 @@ import { AsyncThunkAction, Dispatch } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Report, ReportStatus } from '@globalfishingwatch/api-types/dist'
 import { AsyncError } from 'utils/async-slice'
-import { createSingleReportThunk, CreateReport, DateRange } from './report.slice'
+import { createSingleReportThunk, CreateReport, DateRange } from './analysis.slice'
 
 jest.mock('@globalfishingwatch/api-client')
 

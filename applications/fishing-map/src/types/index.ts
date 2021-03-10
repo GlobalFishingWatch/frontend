@@ -16,6 +16,7 @@ export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
 export type WorkspaceStateProperty =
   | 'query'
+  | 'analysis'
   | 'sidebarOpen'
   | 'dataviewInstances'
   | 'timebarVisualisation'
@@ -23,7 +24,6 @@ export type WorkspaceStateProperty =
   | 'timebarGraph'
   | 'bivariate'
   | 'version'
-  | 'report'
 export type WorkspaceParam =
   | WorkspaceViewportParam
   | WorkspaceTimeRangeParam
@@ -31,10 +31,15 @@ export type WorkspaceParam =
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
+export type WorkspaceAnalysis = {
+  areaId: string
+  sourceId: string
+  bounds?: [number, number, number, number]
+}
 export type WorkspaceState = {
-  report?: string
   query?: string
   sidebarOpen?: boolean
+  analysis?: WorkspaceAnalysis
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   timebarVisualisation?: TimebarVisualisations
   timebarEvents?: TimebarEvents

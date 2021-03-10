@@ -3,7 +3,7 @@ import { Type, ContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
-import LAYERS from './context-layers'
+import LAYERS, { HIGHLIGHT_SUFIX } from './context-layers'
 
 const DEFAULT_LINE_COLOR = 'white'
 const HIGHLIGHT_LINE_COLOR = 'white'
@@ -17,7 +17,7 @@ const getSourceId = (config: ContextGeneratorConfig) => {
 const getPaintPropertyByType = (layer: Layer, config: any) => {
   const opacity = config.opacity !== undefined ? config.opacity : 1
   if (layer.type === 'line') {
-    const color = layer.id?.includes('-highlight')
+    const color = layer.id?.includes(HIGHLIGHT_SUFIX)
       ? 'transparent'
       : config.color || (layer.paint as LinePaint)?.['line-color'] || DEFAULT_LINE_COLOR
     const linePaint: LinePaint = {
@@ -43,6 +43,8 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
         'case',
         ['boolean', ['feature-state', 'click'], false],
         HIGHLIGHT_FILL_COLOR,
+        ['boolean', ['feature-state', 'highlight'], false],
+        HIGHLIGHT_FILL_COLOR,
         fillColor,
       ],
     }
@@ -67,21 +69,6 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
       'circle-radius': circleRadius,
       'circle-stroke-color': circleStrokeColor,
     }
-
-    // if (hasSelectedFeatures) {
-    //   const { field = 'id', values, fallback = {} } = config.selectedFeatures
-    //   const {
-    //     color = 'rgba(50, 139, 169, 0.3)',
-    //     opacity = 1,
-    //     strokeColor = 'rgba(0,0,0,0)',
-    //     strokeWidth = 0,
-    //   } = fallback
-    //   const matchFilter = ['match', ['get', field], values]
-    //   paint[`circle-color`] = [...matchFilter, circleColor, color]
-    //   paint['circle-opacity'] = [...matchFilter, circleOpacity, opacity]
-    //   paint['circle-stroke-color'] = [...matchFilter, circleStrokeColor, strokeColor]
-    //   paint['circle-stroke-width'] = [...matchFilter, circleStrokeWidth, strokeWidth]
-    // }
     return circlePaint
   }
 }

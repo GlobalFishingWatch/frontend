@@ -46,6 +46,10 @@ const urlToObjectTransformation: Dictionary<(value: any) => any> = {
   latitude: (latitude) => parseFloat(latitude),
   longitude: (longitude) => parseFloat(longitude),
   zoom: (zoom) => parseFloat(zoom),
+  analysis: (analysis) => ({
+    ...analysis,
+    bounds: analysis.bounds?.map((bound: string) => parseFloat(bound)),
+  }),
   dataviewInstances: (dataviewInstances: UrlDataviewInstance[]) => {
     return dataviewInstances.map(parseDataviewInstance)
   },

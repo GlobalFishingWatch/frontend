@@ -1,4 +1,20 @@
 {
+  "analysis": {
+    "area": "Area",
+    "close": "Close analysis",
+    "completed": "The report will be in your email soon",
+    "disclaimer": "The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.",
+    "download": "Download report",
+    "empty": "Your selected datasets will appear here",
+    "errorMessage": "Something went wrong",
+    "noActivityLayers": "No activity layers active",
+    "title": "Analysis",
+    "generating": "We are generating the report for you, it'll be ready soon.",
+    "successfullMessage": "The report was sent successfully, you'll receive it by email soon.",
+    "dateRange": "Date Range",
+    "emailDescription": "A report for the selected date ranges and filters will be generated and sent to your email account",
+    "generate": "Generate"
+  },
   "common": {
     "active_after": "Active after",
     "active_before": "Active Before",
@@ -48,6 +64,7 @@
     "importing": "Dataset is being imported",
     "new": "New dataset",
     "remove": "Remove dataset",
+    "title": "Dataset",
     "uploadLogin": "You need to <1>login</1> to upload datasets",
     "uploadNewContex": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset",
@@ -83,6 +100,7 @@
     "infoOpen": "Show info",
     "remove": "Remove layer",
     "seeDescription": "Click to see layer description",
+    "source": "Source",
     "source_plural": "Sources",
     "toggleCombinationMode": {
       "combine": "Combine layers",
@@ -90,8 +108,7 @@
       "split": "Split layers"
     },
     "toggleVisibility": "Toggle layer visibility",
-    "vessel_fit_bounds": "Center view on vessel track",
-    "source": "Source"
+    "vessel_fit_bounds": "Center view on vessel track"
   },
   "map": {
     "captureMap": "Capture map",
@@ -104,19 +121,6 @@
     "search": "Search areas",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
-  },
-  "report": {
-    "area": "Area",
-    "close": "Close report",
-    "dateRange": "Date Range",
-    "errorMessage": "Something went wrong",
-    "fishingActivityByEEZDescription": "A fishing activity report for the selected date ranges and filters will be generated and sent to your email account",
-    "fishingActivityReport": "Fishing Activity Report",
-    "generating": "We are generating the report for you, it'll be ready soon.",
-    "notAvailable": "missing_translation",
-    "successfullMessage": "The report was sent successfully, you'll receive it by email soon.",
-    "fishingActivityByEEZ": "Fishing Activity by EEZ",
-    "generate": "Generate"
   },
   "search": {
     "close": "Close search",
@@ -168,15 +172,15 @@
     "transmission": "Transmission"
   },
   "workspace": {
+    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
+    "editName": "Edit workspace name",
     "emptyState": "Your workspaces will appear here",
     "nameInput": "Workspace name",
     "new": "New Workspace",
+    "remove": "Remove workspace",
     "save": "Save the current view",
     "saved": "Current view was saved and it's available in your user profile",
     "title_plural": "Workspaces",
-    "title": "Workspace",
-    "remove": "Remove workspace",
-    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
-    "editName": "Edit workspace name"
+    "title": "Workspace"
   }
 }

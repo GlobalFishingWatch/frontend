@@ -108,11 +108,15 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
 
       const locationCategory = selectLocationCategory(state)
+      const dataviewInstances = selectUrlDataviewInstances(state)
       if (workspace.viewport && locationType !== HOME) {
         dispatch(
           updateLocation(locationType, {
             payload: { category: locationCategory, workspaceId: workspace.id },
-            query: { ...workspace.viewport },
+            query: {
+              ...workspace.viewport,
+              dataviewInstances,
+            },
             replaceQuery: true,
           })
         )
@@ -182,18 +186,7 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
 const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
-  reducers: {
-    resetWorkspaceSearchQuery(state) {
-      if (state.data?.state) {
-        state.data.state.query = undefined
-      }
-    },
-    resetWorkspaceReportQuery(state) {
-      if (state.data?.state) {
-        state.data.state.report = undefined
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaceThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
@@ -228,7 +221,5 @@ const workspaceSlice = createSlice({
     })
   },
 })
-
-export const { resetWorkspaceSearchQuery, resetWorkspaceReportQuery } = workspaceSlice.actions
 
 export default workspaceSlice.reducer

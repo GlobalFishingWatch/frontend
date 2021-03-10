@@ -1,5 +1,35 @@
 # @globalfishingwatch/layer-composer
 
+## 4.15.0
+
+### Minor Changes
+
+- expose temporal grid source layer id
+
+## 4.14.5
+
+### Patch Changes
+
+- fix highted areas color
+
+## 4.14.4
+
+### Patch Changes
+
+- fix highlight typo
+
+## 4.14.3
+
+### Patch Changes
+
+- fix feature state context styles
+
+## 4.14.2
+
+### Patch Changes
+
+- highlight style in context areas
+
 ## 4.14.1
 
 ### Patch Changes
