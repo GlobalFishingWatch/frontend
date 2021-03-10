@@ -1,13 +1,16 @@
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment, useCallback, useContext } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import groupBy from 'lodash/groupBy'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { _MapContext } from '@globalfishingwatch/react-map-gl'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectHasAnalysisLayersVisible } from 'features/workspace/workspace.selectors'
 import { setClickedEvent } from '../map.slice'
+import { useMapboxInstance } from '../map.context'
 import styles from './Popup.module.css'
 
 const TunaRfmoLinksById: Record<string, string> = {
@@ -32,6 +35,17 @@ function FeatureRow({
   reportEnabled = true,
 }: FeatureRowProps) {
   const { t } = useTranslation()
+  const context = useContext(_MapContext)
+
+  const handleReportClick = useCallback(
+    (ev: React.MouseEvent<Element, MouseEvent>) => {
+      context.eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
+      if (onReportClick) {
+        onReportClick(feature)
+      }
+    },
+    [context.eventManager, feature, onReportClick]
+  )
 
   if (!feature.value) return null
   const { gfw_id } = feature.properties
@@ -53,7 +67,7 @@ function FeatureRow({
                   ? t('common.report', 'Report')
                   : t('analysis.noActivityLayers', 'No activity layers active')
               }
-              onClick={() => onReportClick && onReportClick(feature)}
+              onClick={handleReportClick}
               size="small"
             />
             {wdpa_pid && (
@@ -80,7 +94,7 @@ function FeatureRow({
             icon="report"
             disabled={!reportEnabled}
             tooltip={t('common.report', 'Report')}
-            onClick={() => onReportClick && onReportClick(feature)}
+            onClick={handleReportClick}
             size="small"
           />
           {showFeaturesDetails && link && (
@@ -103,7 +117,7 @@ function FeatureRow({
               icon="report"
               disabled={!reportEnabled}
               tooltip={t('common.report', 'Report')}
-              onClick={() => onReportClick && onReportClick(feature)}
+              onClick={handleReportClick}
               size="small"
             />
             <a
@@ -128,7 +142,7 @@ function FeatureRow({
               icon="report"
               disabled={!reportEnabled}
               tooltip={t('common.report', 'Report')}
-              onClick={() => onReportClick && onReportClick(feature)}
+              onClick={handleReportClick}
               size="small"
             />
           </div>
@@ -145,9 +159,11 @@ type ContextTooltipRowProps = {
 }
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
+  const dispatch = useDispatch()
+  const mapInstance = useMapboxInstance()
+  const { cleanFeatureState } = useFeatureState(mapInstance)
   const { dispatchQueryParams } = useLocationConnect()
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
-  const dispatch = useDispatch()
 
   const onReportClick = useCallback(
     (feature: TooltipEventFeature) => {
@@ -164,9 +180,10 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
           },
         })
         dispatch(setClickedEvent(null))
+        cleanFeatureState('click')
       })
     },
-    [dispatch, dispatchQueryParams]
+    [cleanFeatureState, dispatch, dispatchQueryParams]
   )
 
   const featuresByType = groupBy(features, 'layer')
