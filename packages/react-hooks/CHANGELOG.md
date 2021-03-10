@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 4.9.0
+
+### Minor Changes
+
+- simpler version of use-tiles-state hook just for loading boolean
+
 ## 4.8.3
 
 ### Patch Changes

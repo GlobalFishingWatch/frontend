@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/temporalgrid-demo
 
+## 0.7.40
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/react-hooks@4.9.0
+
 ## 0.7.39
 
 ### Patch Changes
