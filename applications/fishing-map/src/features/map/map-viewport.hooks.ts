@@ -79,18 +79,24 @@ export function useMapBounds() {
   return { bounds, setMapBounds }
 }
 
+type FitBoundsParams = {
+  mapWidth?: number
+  mapHeight?: number
+  padding?: number
+}
 export function useMapFitBounds() {
   const mapInstance = useMapboxInstance()
   const { setMapCoordinates } = useViewport()
 
   const fitMapBounds = useCallback(
-    (bounds: [number, number, number, number], padding = 60) => {
-      const width = mapInstance
-        ? parseInt(mapInstance.getCanvas().style.width)
-        : window.innerWidth / 2
-      const height = mapInstance
-        ? parseInt(mapInstance.getCanvas().style.height)
-        : window.innerHeight / 2
+    (bounds: [number, number, number, number], params: FitBoundsParams = {}) => {
+      const { mapWidth, mapHeight, padding = 60 } = params
+      const width =
+        mapWidth ||
+        (mapInstance ? parseInt(mapInstance.getCanvas().style.width) : window.innerWidth / 2)
+      const height =
+        mapHeight ||
+        (mapInstance ? parseInt(mapInstance.getCanvas().style.height) : window.innerHeight)
       const { latitude, longitude, zoom } = fitBounds({
         bounds: [
           [bounds[0], bounds[1]],

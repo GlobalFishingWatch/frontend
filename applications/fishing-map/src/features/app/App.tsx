@@ -64,7 +64,7 @@ function App(): React.ReactElement {
   useLayoutEffect(() => {
     if (isAnalysing) {
       if (analysisQuery.bounds) {
-        fitMapBounds(analysisQuery.bounds, 0)
+        fitMapBounds(analysisQuery.bounds, { padding: 0 })
       } else {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }

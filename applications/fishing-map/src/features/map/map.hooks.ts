@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useRef } from 'react'
+import { Geometry } from 'geojson'
 import { ExtendedFeatureVessel, InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
@@ -112,6 +113,7 @@ export type TooltipEventFeature = {
   sourceLayer: string
   layerId: string
   contextLayer?: ContextLayerType | null
+  geometry?: Geometry
   value: string
   properties: Record<string, string>
   vesselsInfo?: {
@@ -174,6 +176,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       value: feature.value,
       source: feature.source,
       sourceLayer: feature.sourceLayer,
+      geometry: feature.geometry,
       layerId: feature.layerId,
       contextLayer: feature.generatorContextLayer,
       properties: { ...feature.properties },

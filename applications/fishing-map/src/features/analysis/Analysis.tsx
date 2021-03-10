@@ -117,7 +117,7 @@ function Analysis() {
 
   useEffect(() => {
     if (analysisBounds) {
-      fitMapBounds(analysisBounds, 10)
+      fitMapBounds(analysisBounds, { padding: 10 })
       dispatchQueryParams({
         analysis: {
           ...analysisQuery,

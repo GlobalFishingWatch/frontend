@@ -3,6 +3,7 @@ import React, { Fragment, useCallback, useContext } from 'react'
 import groupBy from 'lodash/groupBy'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import bbox from '@turf/bbox'
 import { _MapContext } from '@globalfishingwatch/react-map-gl'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
@@ -11,6 +12,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectHasAnalysisLayersVisible } from 'features/workspace/workspace.selectors'
 import { setClickedEvent } from '../map.slice'
 import { useMapboxInstance } from '../map.context'
+import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './Popup.module.css'
 
 const TunaRfmoLinksById: Record<string, string> = {
@@ -161,6 +163,7 @@ type ContextTooltipRowProps = {
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const dispatch = useDispatch()
   const mapInstance = useMapboxInstance()
+  const fitMapBounds = useMapFitBounds()
   const { cleanFeatureState } = useFeatureState(mapInstance)
   const { dispatchQueryParams } = useLocationConnect()
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
@@ -171,7 +174,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
-
+      const bounds = bbox(feature.geometry) as [number, number, number, number]
       batch(() => {
         dispatchQueryParams({
           analysis: {
@@ -180,10 +183,20 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
           },
         })
         dispatch(setClickedEvent(null))
+
         cleanFeatureState('click')
       })
+      // Analysis already does it on page reload but to avoid waiting
+      // this moves the map to the same position
+      if (bounds) {
+        const boundsParams = {
+          padding: 10,
+          mapWidth: window.innerWidth / 2,
+        }
+        fitMapBounds(bounds, boundsParams)
+      }
     },
-    [cleanFeatureState, dispatch, dispatchQueryParams]
+    [cleanFeatureState, dispatch, dispatchQueryParams, fitMapBounds]
   )
 
   const featuresByType = groupBy(features, 'layer')
