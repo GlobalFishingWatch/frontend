@@ -2,8 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import createAnalysisWorker from 'workerize-loader!./Analysis.worker'
-import { Feature, Geometry } from 'geojson'
+import { MultiPolygon, Polygon } from 'geojson'
 import { DateTime } from 'luxon'
+import simplify from '@turf/simplify'
+import bbox from '@turf/bbox'
 import { getTimeSeries, getRealValue } from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -37,13 +39,24 @@ function AnalysisGraphWrapper() {
   const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
   const chunkQuantizeOffset = activeTimeChunk?.quantizeOffset
 
+  const simplifiedGeometry = useMemo(() => {
+    if (!analysisAreaFeature) return null
+    const simplifiedGeometry = simplify(analysisAreaFeature?.geometry as Polygon | MultiPolygon, {
+      tolerance: 0.1,
+    })
+    // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
+    // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
+    simplifiedGeometry.bbox = bbox(simplifiedGeometry)
+    return simplifiedGeometry
+  }, [analysisAreaFeature])
+
   useEffect(() => {
     const updateTimeseries = async (
       allFeatures: GeoJSON.Feature<GeoJSON.Geometry>[],
-      analysisAreaFeature: Feature<Geometry>
+      geometry: Polygon | MultiPolygon
     ) => {
       setGeneratingTimeseries(true)
-      const filteredFeatures = await filterByPolygon(allFeatures, analysisAreaFeature.geometry)
+      const filteredFeatures = await filterByPolygon(allFeatures, geometry)
       const valuesContained = getTimeSeries(
         (filteredFeatures.contained || []) as any,
         numSublayers,
@@ -56,12 +69,12 @@ function AnalysisGraphWrapper() {
         }
       })
 
-      const allFilteredFeatues = [
+      const allFilteredFeatures = [
         ...(filteredFeatures.contained || []),
         ...(filteredFeatures.overlapping || []),
       ]
       const valuesOverlapping = getTimeSeries(
-        allFilteredFeatues as any,
+        allFilteredFeatures as any,
         numSublayers,
         chunkQuantizeOffset
       ).map((frameValues) => {
@@ -92,15 +105,15 @@ function AnalysisGraphWrapper() {
         geometry,
       }))
 
-      if (allFeatures?.length && analysisAreaFeature) {
-        updateTimeseries(allFeatures, analysisAreaFeature)
+      if (allFeatures?.length && simplifiedGeometry) {
+        updateTimeseries(allFeatures, simplifiedGeometry)
       } else {
         setGeneratingTimeseries(false)
       }
     } else {
       setTimeseries(undefined)
     }
-  }, [analysisAreaFeature, numSublayers, interval, cellFeatures, chunkQuantizeOffset])
+  }, [simplifiedGeometry, numSublayers, interval, cellFeatures, chunkQuantizeOffset])
 
   const timeSeriesFiltered = useMemo(() => {
     return timeseries?.filter((current: any) => {
