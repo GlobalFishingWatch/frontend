@@ -57,7 +57,6 @@ const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
       ?.slice()
       .sort(sortStrings)
       .join(', ')
-    console.log(firstDataviewFlags)
 
     if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
       commonProperties.push('dataset')
@@ -85,8 +84,6 @@ const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
         return flags === firstDataviewFlags
       })
     ) {
-      console.log('flag is equal')
-
       commonProperties.push('flag')
       const flags = getFlagsByIds(dataviews[0].config?.filters?.flag || [])
       if (firstDataviewFlags)

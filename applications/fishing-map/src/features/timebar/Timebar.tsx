@@ -55,6 +55,7 @@ const TimebarWrapper = () => {
   )
 
   const mapStyle = useMapStyle()
+  const temporalgrid = mapStyle?.metadata?.temporalgrid
   const [stackedActivity, setStackedActivity] = useState<any>()
 
   const visibleTemporalGridDataviews = useMemo(
@@ -62,10 +63,9 @@ const TimebarWrapper = () => {
     [temporalGridDataviews]
   )
 
-  const { features: cellFeatures, sourceLoaded } = useMapTemporalgridFeatures()
-
   const { bounds } = useMapBounds()
-  const debouncedBounds = useDebounce(bounds, 600)
+  const { features: cellFeatures, sourceLoaded } = useMapTemporalgridFeatures()
+  const debouncedBounds = useDebounce(bounds, 400)
 
   useEffect(() => {
     if (
@@ -76,9 +76,7 @@ const TimebarWrapper = () => {
       return
     }
 
-    if (cellFeatures?.length && debouncedBounds) {
-      const temporalgrid = mapStyle?.metadata?.temporalgrid
-      if (!temporalgrid) return
+    if (cellFeatures?.length && debouncedBounds && temporalgrid) {
       // TODO: think about having an custom useMapFeatures just for cells
       const numSublayers = temporalgrid.numSublayers
       const timeChunks = temporalgrid.timeChunks as TimeChunks
@@ -115,7 +113,7 @@ const TimebarWrapper = () => {
   }, [
     cellFeatures,
     debouncedBounds,
-    mapStyle?.metadata?.temporalgrid,
+    temporalgrid,
     sourceLoaded,
     timebarVisualisation,
     visibleTemporalGridDataviews,
