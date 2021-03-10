@@ -1,11 +1,4 @@
 .loading {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  width: 100%;
-  height: 100%;
-  background: var(--color-secondary-blue);
-  align-items: center;
-  justify-content: center;
+  filter: blur(5px);
+  opacity: 0.5;
 }

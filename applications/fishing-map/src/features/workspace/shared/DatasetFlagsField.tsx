@@ -7,14 +7,22 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type DatasetFlagFieldProps = {
   dataview: UrlDataviewInstance
+  showWhenEmpty?: boolean
 }
 
-function DatasetFlagField({ dataview }: DatasetFlagFieldProps) {
+function DatasetFlagField({ dataview, showWhenEmpty = false }: DatasetFlagFieldProps) {
   const { t } = useTranslation()
-  const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
+  let fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
 
   if (!fishingFiltersOptions?.length) {
-    return null
+    if (showWhenEmpty) {
+      fishingFiltersOptions = [
+        {
+          id: 'all',
+          label: 'All',
+        },
+      ]
+    } else return null
   }
 
   return (

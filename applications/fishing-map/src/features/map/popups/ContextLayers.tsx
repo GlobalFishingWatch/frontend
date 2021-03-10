@@ -1,13 +1,20 @@
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment, useCallback, useContext } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import groupBy from 'lodash/groupBy'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import bbox from '@turf/bbox'
+import { _MapContext } from '@globalfishingwatch/react-map-gl'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectHasAnalysisLayersVisible } from 'features/workspace/workspace.selectors'
+import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
+import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { setClickedEvent } from '../map.slice'
+import { useMapboxInstance } from '../map.context'
+import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './Popup.module.css'
 
 const TunaRfmoLinksById: Record<string, string> = {
@@ -32,6 +39,17 @@ function FeatureRow({
   reportEnabled = true,
 }: FeatureRowProps) {
   const { t } = useTranslation()
+  const context = useContext(_MapContext)
+
+  const handleReportClick = useCallback(
+    (ev: React.MouseEvent<Element, MouseEvent>) => {
+      context.eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
+      if (onReportClick) {
+        onReportClick(feature)
+      }
+    },
+    [context.eventManager, feature, onReportClick]
+  )
 
   if (!feature.value) return null
   const { gfw_id } = feature.properties
@@ -53,7 +71,7 @@ function FeatureRow({
                   ? t('common.report', 'Report')
                   : t('analysis.noActivityLayers', 'No activity layers active')
               }
-              onClick={() => onReportClick && onReportClick(feature)}
+              onClick={handleReportClick}
               size="small"
             />
             {wdpa_pid && (
@@ -80,7 +98,7 @@ function FeatureRow({
             icon="report"
             disabled={!reportEnabled}
             tooltip={t('common.report', 'Report')}
-            onClick={() => onReportClick && onReportClick(feature)}
+            onClick={handleReportClick}
             size="small"
           />
           {showFeaturesDetails && link && (
@@ -103,7 +121,7 @@ function FeatureRow({
               icon="report"
               disabled={!reportEnabled}
               tooltip={t('common.report', 'Report')}
-              onClick={() => onReportClick && onReportClick(feature)}
+              onClick={handleReportClick}
               size="small"
             />
             <a
@@ -118,6 +136,24 @@ function FeatureRow({
       </div>
     )
   }
+  if (feature.contextLayer === 'wpp-nri' || feature.contextLayer === 'high-seas') {
+    return (
+      <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
+        <span className={styles.rowText}>{feature.value}</span>
+        {showFeaturesDetails && (
+          <div className={styles.rowActions}>
+            <IconButton
+              icon="report"
+              disabled={!reportEnabled}
+              tooltip={t('common.report', 'Report')}
+              onClick={handleReportClick}
+              size="small"
+            />
+          </div>
+        )}
+      </div>
+    )
+  }
   return <div key={`${feature.value || gfw_id}`}>{feature.value}</div>
 }
 
@@ -127,9 +163,12 @@ type ContextTooltipRowProps = {
 }
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
+  const dispatch = useDispatch()
+  const mapInstance = useMapboxInstance()
+  const fitMapBounds = useMapFitBounds()
+  const { cleanFeatureState } = useFeatureState(mapInstance)
   const { dispatchQueryParams } = useLocationConnect()
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
-  const dispatch = useDispatch()
 
   const onReportClick = useCallback(
     (feature: TooltipEventFeature) => {
@@ -137,7 +176,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
-
+      const bounds = bbox(feature.geometry) as [number, number, number, number]
       batch(() => {
         dispatchQueryParams({
           analysis: {
@@ -146,9 +185,21 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
           },
         })
         dispatch(setClickedEvent(null))
+
+        cleanFeatureState('click')
       })
+      // Analysis already does it on page reload but to avoid waiting
+      // this moves the map to the same position
+      if (bounds) {
+        const boundsParams = {
+          padding: 10,
+          mapWidth: window.innerWidth / 2,
+          mapHeight: window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT,
+        }
+        fitMapBounds(bounds, boundsParams)
+      }
     },
-    [dispatch, dispatchQueryParams]
+    [cleanFeatureState, dispatch, dispatchQueryParams, fitMapBounds]
   )
 
   const featuresByType = groupBy(features, 'layer')

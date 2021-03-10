@@ -6,6 +6,8 @@ import { Type } from '../../types'
 import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer from '../util/get-base-layer'
 
+export const TEMPORALGRID_SOURCE_LAYER = 'temporalgrid_interactive'
+
 export default function gridded(
   config: GlobalHeatmapAnimatedGeneratorConfig,
   timeChunks: TimeChunks
@@ -37,7 +39,7 @@ export default function gridded(
         chunkLayers.push({
           id: `${timeChunk.id}_interaction`,
           source: timeChunk.id,
-          'source-layer': 'temporalgrid_interactive',
+          'source-layer': TEMPORALGRID_SOURCE_LAYER,
           type: 'fill',
           paint: {
             'fill-color': 'pink',
@@ -53,7 +55,7 @@ export default function gridded(
         chunkLayers.push({
           id: `${timeChunk.id}_interaction_hover`,
           source: timeChunk.id,
-          'source-layer': 'temporalgrid_interactive',
+          'source-layer': TEMPORALGRID_SOURCE_LAYER,
           type: 'line',
           paint: {
             'line-color': 'white',

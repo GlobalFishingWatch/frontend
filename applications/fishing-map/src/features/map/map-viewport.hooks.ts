@@ -1,14 +1,15 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { useCallback, useLayoutEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { useCallback } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
 import { atom, useRecoilState } from 'recoil'
 import debounce from 'lodash/debounce'
 import { ViewportProps } from '@globalfishingwatch/react-map-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { MapCoordinates } from 'types'
-import { selectViewport } from 'features/app/app.selectors'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
+import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
+import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { useMapboxInstance, useMapboxRef } from './map.context'
 
 type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>
@@ -39,26 +40,18 @@ const viewportState = atom<MapCoordinates>({
 })
 
 export default function useViewport(): UseViewport {
-  const urlViewport = useSelector(selectViewport)
   const [viewport, setViewport] = useRecoilState(viewportState)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useLayoutEffect(() => setViewport(urlViewport), [])
+  const setMapCoordinates = useCallback((viewport: SetMapCoordinatesArgs) => {
+    setViewport({ ...viewport })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  const setMapCoordinates = useCallback(
-    (viewport: SetMapCoordinatesArgs) => {
-      setViewport({ ...viewport })
-    },
-    [setViewport]
-  )
-
-  const onViewportChange = useCallback(
-    (viewport: ViewportProps) => {
-      const { latitude, longitude, zoom } = viewport
-      setViewport({ latitude, longitude, zoom })
-    },
-    [setViewport]
-  )
+  const onViewportChange = useCallback((viewport: ViewportProps) => {
+    const { latitude, longitude, zoom } = viewport
+    setViewport({ latitude, longitude, zoom })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return { viewport, onViewportChange, setMapCoordinates }
 }
@@ -88,14 +81,26 @@ export function useMapBounds() {
   return { bounds, setMapBounds }
 }
 
+type FitBoundsParams = {
+  mapWidth?: number
+  mapHeight?: number
+  padding?: number
+}
 export function useMapFitBounds() {
   const mapInstance = useMapboxInstance()
   const { setMapCoordinates } = useViewport()
 
   const fitMapBounds = useCallback(
-    (bounds: [number, number, number, number], padding = 60) => {
-      const width = mapInstance ? parseInt(mapInstance.getCanvas().style.width) : 1280
-      const height = mapInstance ? parseInt(mapInstance.getCanvas().style.height) : 860
+    (bounds: [number, number, number, number], params: FitBoundsParams = {}) => {
+      const { mapWidth, mapHeight, padding = 60 } = params
+      const width =
+        mapWidth ||
+        (mapInstance ? parseInt(mapInstance.getCanvas().style.width) : window.innerWidth / 2)
+      const height =
+        mapHeight ||
+        (mapInstance
+          ? parseInt(mapInstance.getCanvas().style.height)
+          : window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT)
       const { latitude, longitude, zoom } = fitBounds({
         bounds: [
           [bounds[0], bounds[1]],

@@ -1,8 +1,4 @@
-import type { Geometry, Polygon, MultiPolygon } from 'geojson'
-import simplify from '@turf/simplify'
-import booleanContains from '@turf/boolean-contains'
-// import booleanOverlap from '@turf/boolean-overlap'
-import center from '@turf/center'
+import type { Polygon, MultiPolygon, BBox } from 'geojson'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 
 type Feature = GeoJSON.Feature<GeoJSON.Geometry>
@@ -11,26 +7,53 @@ export type FilteredPolygons = {
   overlapping: Feature[]
 }
 
-export function filterByPolygon(cells: Feature[], polygon: Geometry): FilteredPolygons {
-  // const t0 = performance.now()
+function isBboxContained(container: BBox, cell: BBox) {
+  if (cell[0] < container[0]) {
+    return false
+  }
+  if (cell[2] > container[2]) {
+    return false
+  }
+  if (cell[1] < container[1]) {
+    return false
+  }
+  if (cell[3] > container[3]) {
+    return false
+  }
+  return true
+}
 
-  const simplifiedPoly = simplify(polygon as Polygon | MultiPolygon, { tolerance: 0.1 })
+function isCellInPolygon(cellGeometry: Polygon, polygon: Polygon) {
+  return cellGeometry?.coordinates[0].every((cellCorner) =>
+    booleanPointInPolygon(cellCorner, polygon)
+  )
+}
+
+export function filterByPolygon(
+  cells: Feature[],
+  polygon: Polygon | MultiPolygon
+): FilteredPolygons {
   const filtered = cells.reduce(
     (acc, cell) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [[minX, minY], [maxX], [_, maxY]] = (cell.geometry as Polygon).coordinates[0]
+      const cellBbox: BBox = [minX, minY, maxX, maxY]
+      const bboxContained = isBboxContained(polygon.bbox as BBox, cellBbox)
       const isContained =
-        simplifiedPoly.type === 'MultiPolygon'
-          ? simplifiedPoly.coordinates.some((coordinates) =>
-              booleanContains({ type: 'Polygon', coordinates }, cell.geometry as Polygon)
+        bboxContained && polygon.type === 'MultiPolygon'
+          ? polygon.coordinates.some((coordinates) =>
+              isCellInPolygon(cell.geometry as Polygon, { type: 'Polygon', coordinates })
             )
-          : booleanContains(simplifiedPoly, cell.geometry as Polygon)
+          : isCellInPolygon(cell.geometry as Polygon, polygon as Polygon)
 
       if (isContained) {
         acc.contained.push(cell)
       } else {
-        // TODO try to get the % of overlapping to use it in the value calculation
-        // const overlaps = booleanOverlap(cell.geometry as Polygon, simplifiedPoly)
-        const cellCenter = center(cell.geometry as Polygon)
-        const overlaps = booleanPointInPolygon(cellCenter, simplifiedPoly)
+        const center = {
+          type: 'Point' as const,
+          coordinates: [(minX + maxX) / 2, (minY + maxY) / 2],
+        }
+        const overlaps = booleanPointInPolygon(center, polygon)
         if (overlaps) {
           acc.overlapping.push(cell)
         }
@@ -39,8 +62,5 @@ export function filterByPolygon(cells: Feature[], polygon: Geometry): FilteredPo
     },
     { contained: [] as Feature[], overlapping: [] as Feature[] }
   )
-
-  // const t1 = performance.now()
-  // console.log(`Call to filterByPolygon took ${t1 - t0} milliseconds.`)
   return filtered
 }

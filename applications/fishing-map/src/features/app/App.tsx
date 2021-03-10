@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useCallback, useEffect, Suspense } from 'react'
+import React, { useState, Fragment, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
@@ -25,8 +25,10 @@ import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import styles from './App.module.css'
-import { selectAnalysisQuery, selectSidebarOpen } from './app.selectors'
+import { selectAnalysisQuery, selectSidebarOpen, selectViewport } from './app.selectors'
 
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
@@ -51,9 +53,26 @@ function App(): React.ReactElement {
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const analysisQuery = useSelector(selectAnalysisQuery)
-  // const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const workspaceLocation = useSelector(isWorkspaceLocation)
+  const isAnalysing = useSelector(selectIsAnalyzing)
   const narrowSidebar = workspaceLocation && !analysisQuery
+  const urlViewport = useSelector(selectViewport)
+
+  const fitMapBounds = useMapFitBounds()
+  const { setMapCoordinates } = useViewport()
+
+  useLayoutEffect(() => {
+    if (isAnalysing) {
+      if (analysisQuery.bounds) {
+        fitMapBounds(analysisQuery.bounds, { padding: 10 })
+      } else {
+        setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
+      }
+    } else {
+      setMapCoordinates(urlViewport)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 

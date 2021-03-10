@@ -1,15 +1,12 @@
-import React, { Fragment, useEffect, useRef, useState, useLayoutEffect } from 'react'
+import React, { Fragment, useEffect, useRef, useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import union from '@turf/union'
 import bbox from '@turf/bbox'
 import { Feature, Polygon } from 'geojson'
 import { batch, useDispatch, useSelector } from 'react-redux'
-import type { Map } from '@globalfishingwatch/mapbox-gl'
 import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import useTilesState from '@globalfishingwatch/react-hooks/dist/use-tiles-state'
-import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
@@ -24,7 +21,10 @@ import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectAnalysisQuery } from 'features/app/app.selectors'
 import { useMapboxInstance } from 'features/map/map.context'
-import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { useMapFeatures } from 'features/map/map-features.hooks'
+import { UrlDataviewInstance } from 'types'
+import { getFlagsByIds } from 'utils/flags'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import styles from './Analysis.module.css'
 import {
@@ -34,11 +34,65 @@ import {
   DateRange,
   ReportGeometry,
   resetReportStatus,
+  selectAnalysisBounds,
+  selectAnalysisAreaName,
   selectAnalysisGeometry,
   selectReportStatus,
   setAnalysisGeometry,
 } from './analysis.slice'
 import AnalysisGraphWrapper from './AnalysisGraphWrapper'
+
+const sortStrings = (a: string, b: string) => a.localeCompare(b)
+
+const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
+  const commonProperties: string[] = []
+  let title = ''
+
+  if (dataviews?.length > 0) {
+    const firstDataviewDatasets = dataviews[0].config?.datasets
+      ?.slice()
+      .sort(sortStrings)
+      .join(', ')
+    const firstDataviewFlags = dataviews[0].config?.filters?.flag
+      ?.slice()
+      .sort(sortStrings)
+      .join(', ')
+
+    if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
+      commonProperties.push('dataset')
+      title += dataviews[0].name
+    }
+
+    if (
+      dataviews?.every((dataview) => {
+        const datasets = dataview.config?.datasets?.slice().sort(sortStrings).join(', ')
+        return datasets === firstDataviewDatasets
+      })
+    ) {
+      commonProperties.push('source')
+      const datasets = dataviews[0].datasets?.filter((d) =>
+        dataviews[0].config?.datasets?.includes(d.id)
+      )
+      title += ` (${datasets?.map((d) => d.name).join(', ')})`
+    }
+    title += ' evolution'
+
+    if (
+      dataviews?.every((dataview) => {
+        const flags = dataview.config?.filters?.flag?.slice().sort(sortStrings).join(', ')
+
+        return flags === firstDataviewFlags
+      })
+    ) {
+      commonProperties.push('flag')
+      const flags = getFlagsByIds(dataviews[0].config?.filters?.flag || [])
+      if (firstDataviewFlags)
+        title += ` by vessels flagged by ${flags?.map((d) => d.label).join(', ')}`
+    }
+  }
+
+  return { title, commonProperties }
+}
 
 function Analysis() {
   const { t } = useTranslation()
@@ -46,57 +100,40 @@ function Analysis() {
   const dispatch = useDispatch()
   const mapInstance = useMapboxInstance()
   const fitMapBounds = useMapFitBounds()
-  const { setMapCoordinates } = useViewport()
-  const tilesLoading = useTilesState(mapInstance as Map).loading
-  const debouncedTilesLoading = useDebounce(tilesLoading, 600)
   const analysisQuery = useSelector(selectAnalysisQuery)
-  const [sourceLoaded, setSourceLoaded] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { updateFeatureState, cleanFeatureState } = useFeatureState(mapInstance)
   const staticTime = useSelector(selectStaticTime)
   const dataviews = useSelector(selectTemporalgridDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
+  const analysisBounds = useSelector(selectAnalysisBounds)
+  const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const { areaId, sourceId } = analysisQuery
+  const filter = useMemo(() => ['==', 'gfw_id', parseInt(areaId)], [areaId])
+  const { features: contextAreaFeatures, sourceLoaded } = useMapFeatures({
+    sourceId,
+    filter,
+    cacheKey: areaId,
+  })
 
-  useLayoutEffect(() => {
-    // We have to go to zoom 0 to load every geometry to be able to fitBounds later
-    const viewport = { latitude: 0, longitude: 0, zoom: 0 }
-    setMapCoordinates(viewport)
+  const { title, commonProperties } = getCommonProperties(dataviews)
+
+  useEffect(() => {
+    if (sourceLoaded) {
+      cleanFeatureState('highlight')
+      const featureState = { source: sourceId, sourceLayer: 'main', id: areaId }
+      updateFeatureState([featureState], 'highlight')
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [areaId, sourceId, sourceLoaded])
 
   useEffect(() => {
-    const sourceCallback = () => {
-      if (mapInstance?.getSource(sourceId) && mapInstance?.isSourceLoaded(sourceId)) {
-        setSourceLoaded(true)
-        mapInstance.off('idle', sourceCallback)
-      }
-    }
-
-    if (mapInstance && sourceId && areaId) {
-      setSourceLoaded(false)
-      mapInstance.on('idle', sourceCallback)
-    }
-
-    return () => {
-      if (mapInstance) {
-        mapInstance.off('idle', sourceCallback)
-      }
-    }
-  }, [mapInstance, sourceId, areaId])
-
-  useEffect(() => {
-    if (sourceLoaded && mapInstance) {
-      const contextAreaFeatures = mapInstance?.querySourceFeatures(sourceId, {
-        sourceLayer: 'main', // Our layers always uses 'main' as the source layer
-        filter: ['==', 'gfw_id', parseInt(areaId)],
-      })
-      if (contextAreaFeatures.length > 0) {
-        cleanFeatureState('highlight')
+    if (sourceLoaded) {
+      if (contextAreaFeatures && contextAreaFeatures.length > 0) {
         const contextAreaFeatureMerged = contextAreaFeatures.reduce(
           (acc, { geometry, properties }) => {
             const featureGeometry: Feature<Polygon> = {
@@ -109,17 +146,18 @@ function Analysis() {
           },
           {} as Feature<Polygon>
         )
-        const { name, value } = contextAreaFeatureMerged.properties || {}
-        dispatch(
-          setAnalysisGeometry({
-            geometry: contextAreaFeatureMerged,
-            name: name || value,
-          })
-        )
-        const bounds = bbox(contextAreaFeatureMerged) as [number, number, number, number]
-        fitMapBounds(bounds, 10)
-        const featureState = { source: sourceId, sourceLayer: 'main', id: areaId }
-        updateFeatureState([featureState], 'highlight')
+        const { name, value, id } = contextAreaFeatureMerged.properties || {}
+        const areaName = name || id || value
+        if (areaName !== analysisAreaName) {
+          const bounds = bbox(contextAreaFeatureMerged) as [number, number, number, number]
+          dispatch(
+            setAnalysisGeometry({
+              geometry: contextAreaFeatureMerged,
+              name: name || id || value,
+              bounds,
+            })
+          )
+        }
       } else {
         console.warn('No feature for analysis found')
         dispatch(
@@ -131,9 +169,23 @@ function Analysis() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, mapInstance, areaId, sourceId, sourceLoaded])
+  }, [contextAreaFeatures, dispatch, sourceLoaded])
+
+  useEffect(() => {
+    if (analysisBounds) {
+      fitMapBounds(analysisBounds, { padding: 10 })
+      dispatchQueryParams({
+        analysis: {
+          ...analysisQuery,
+          bounds: analysisBounds,
+        },
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [analysisBounds])
 
   const onCloseClick = () => {
+    cleanFeatureState('highlight')
     batch(() => {
       dispatch(clearAnalysisGeometry(undefined))
       dispatchQueryParams({ analysis: undefined })
@@ -192,9 +244,17 @@ function Analysis() {
           <div className={styles.content}>
             {hasAnalysisLayers ? (
               <Fragment>
-                {dataviews?.map((dataview, index) => (
-                  <AnalysisLayerPanel key={dataview.id} dataview={dataview} index={index} />
-                ))}
+                <h3 className={styles.commonTitle}>{title + ` in ${analysisAreaName}.`}</h3>
+                <div className={styles.layerPanels}>
+                  {dataviews?.map((dataview, index) => (
+                    <AnalysisLayerPanel
+                      key={dataview.id}
+                      dataview={dataview}
+                      index={index}
+                      hiddenProperties={commonProperties}
+                    />
+                  ))}
+                </div>
               </Fragment>
             ) : (
               <p className={styles.placeholder}>
@@ -202,18 +262,20 @@ function Analysis() {
               </p>
             )}
             <div className={styles.graph}>
-              {!sourceLoaded || (debouncedTilesLoading && !analysisGeometry) ? (
+              {!sourceLoaded || !analysisGeometry ? (
                 <Spinner className={styles.spinner} />
               ) : (
                 <AnalysisGraphWrapper />
               )}
             </div>
-            <p className={styles.placeholder}>
-              {t(
-                'analysis.disclaimer',
-                'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
-              )}
-            </p>
+            {sourceLoaded && analysisGeometry && (
+              <p className={styles.placeholder}>
+                {t(
+                  'analysis.disclaimer',
+                  'The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.'
+                )}
+              </p>
+            )}
           </div>
           <div className={styles.footer}>
             <p

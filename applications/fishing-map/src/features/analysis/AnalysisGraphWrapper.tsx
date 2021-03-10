@@ -2,13 +2,16 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import createAnalysisWorker from 'workerize-loader!./Analysis.worker'
-import { Feature, Geometry } from 'geojson'
+import { MultiPolygon, Polygon } from 'geojson'
 import { DateTime } from 'luxon'
-import { getTimeSeries, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
+import simplify from '@turf/simplify'
+import bbox from '@turf/bbox'
+import { getTimeSeries, getRealValue } from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { useMapboxInstance } from 'features/map/map.context'
-import { useCurrentTimeChunkId, useMapStyle } from 'features/map/map.hooks'
+import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
+import { useMapStyle } from 'features/map/map.hooks'
+import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import * as AnalysisWorker from './Analysis.worker'
@@ -20,111 +23,97 @@ const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 
 function AnalysisGraphWrapper() {
   const temporalGridDataviews = useSelector(selectTemporalgridDataviews)
-  const mapInstance = useMapboxInstance()
   const { start, end } = useTimerangeConnect()
-  const currentTimeChunkId = useCurrentTimeChunkId()
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
-  const mapStyle = useMapStyle()
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
-  const [sourceLoaded, setSourceLoaded] = useState(false)
   const [timeseries, setTimeseries] = useState<GraphData[] | undefined>()
+  const mapStyle = useMapStyle()
   const temporalgrid = mapStyle?.metadata?.temporalgrid
   const numSublayers = temporalgrid?.numSublayers
   const timeChunks = temporalgrid?.timeChunks as TimeChunks
   const interval = temporalgrid?.timeChunks?.interval
+  const { features: cellFeatures, sourceLoaded } = useMapTemporalgridFeatures({
+    cacheKey: interval,
+  })
+  const debouncedSourceLoaded = useDebounce(sourceLoaded, 600)
+  const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
+  const chunkQuantizeOffset = activeTimeChunk?.quantizeOffset
+
+  const simplifiedGeometry = useMemo(() => {
+    if (!analysisAreaFeature) return null
+    const simplifiedGeometry = simplify(analysisAreaFeature?.geometry as Polygon | MultiPolygon, {
+      tolerance: 0.1,
+    })
+    // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
+    // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
+    simplifiedGeometry.bbox = bbox(simplifiedGeometry)
+    return simplifiedGeometry
+  }, [analysisAreaFeature])
 
   useEffect(() => {
-    const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
-    const chunkQuantizeOffset = activeTimeChunk?.quantizeOffset
-
     const updateTimeseries = async (
       allFeatures: GeoJSON.Feature<GeoJSON.Geometry>[],
-      analysisAreaFeature: Feature<Geometry>
+      geometry: Polygon | MultiPolygon
     ) => {
       setGeneratingTimeseries(true)
-      const filteredFeatures = await filterByPolygon(allFeatures, analysisAreaFeature.geometry)
+      const filteredFeatures = await filterByPolygon(allFeatures, geometry)
       const valuesContained = getTimeSeries(
         (filteredFeatures.contained || []) as any,
         numSublayers,
         chunkQuantizeOffset
       ).map((frameValues) => {
+        const { frame, ...rest } = frameValues
         return {
-          value: frameValues[0],
-          date: new Date(
-            quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime()
-          ).toISOString(),
+          values: Object.values(rest) as number[],
+          date: quantizeOffsetToDate(frame, interval).toISOString(),
         }
       })
 
-      const allFilteredFeatues = [
+      const featuresContainedAndOverlapping = [
         ...(filteredFeatures.contained || []),
         ...(filteredFeatures.overlapping || []),
       ]
-      const valuesOverlapping = getTimeSeries(
-        allFilteredFeatues as any,
+      const valuesContainedAndOverlapping = getTimeSeries(
+        featuresContainedAndOverlapping as any,
         numSublayers,
         chunkQuantizeOffset
       ).map((frameValues) => {
+        const { frame, ...rest } = frameValues
         return {
-          value: frameValues[0],
-          date: new Date(
-            quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime()
-          ).toISOString(),
+          values: Object.values(rest) as number[],
+          date: quantizeOffsetToDate(frame, interval).toISOString(),
         }
       })
 
-      const timeseries = valuesOverlapping.map(({ value, date }) => {
-        const min = valuesContained.find((overlap) => overlap.date === date)?.value
+      const timeseries = valuesContainedAndOverlapping.map(({ values, date }) => {
+        const minValues = valuesContained.find((overlap) => overlap.date === date)?.values
         return {
           date,
-          min: min ? min / VALUE_MULTIPLIER : 0,
-          max: value / VALUE_MULTIPLIER,
+          min: minValues ? minValues.map(getRealValue) : new Array(values.length).fill(0),
+          max: values.map(getRealValue),
         }
       })
       setTimeseries(timeseries)
       setGeneratingTimeseries(false)
     }
 
-    if (sourceLoaded) {
-      const allFeatures = mapInstance
-        ?.querySourceFeatures(currentTimeChunkId, {
-          sourceLayer: 'temporalgrid_interactive',
-        })
-        .map(({ properties, geometry }) => ({ type: 'Feature' as any, properties, geometry }))
+    if (cellFeatures && cellFeatures.length > 0) {
+      setGeneratingTimeseries(true)
+      const allFeatures = cellFeatures.map(({ properties, geometry }) => ({
+        type: 'Feature' as any,
+        properties,
+        geometry,
+      }))
 
-      if (allFeatures?.length && analysisAreaFeature) {
-        updateTimeseries(allFeatures, analysisAreaFeature)
+      if (allFeatures?.length && simplifiedGeometry) {
+        updateTimeseries(allFeatures, simplifiedGeometry)
       } else {
         setGeneratingTimeseries(false)
       }
     } else {
       setTimeseries(undefined)
     }
-  }, [sourceLoaded, mapInstance, analysisAreaFeature, numSublayers, timeChunks, currentTimeChunkId])
-
-  useEffect(() => {
-    const sourceCallback = () => {
-      if (
-        mapInstance?.getSource(currentTimeChunkId) &&
-        mapInstance?.isSourceLoaded(currentTimeChunkId)
-      ) {
-        setSourceLoaded(true)
-        setGeneratingTimeseries(true)
-        mapInstance.off('idle', sourceCallback)
-      }
-    }
-
-    if (mapInstance && interval) {
-      setSourceLoaded(false)
-      mapInstance.on('idle', sourceCallback)
-    }
-
-    return () => {
-      if (mapInstance) {
-        mapInstance.off('idle', sourceCallback)
-      }
-    }
-  }, [mapInstance, interval, currentTimeChunkId])
+  }, [simplifiedGeometry, numSublayers, interval, cellFeatures, chunkQuantizeOffset])
 
   const timeSeriesFiltered = useMemo(() => {
     return timeseries?.filter((current: any) => {
@@ -135,17 +124,23 @@ function AnalysisGraphWrapper() {
     })
   }, [timeseries, start, end])
 
-  if (!sourceLoaded || generatingTimeseries) return <Spinner className={styles.spinner} />
+  if (!debouncedSourceLoaded || generatingTimeseries) return <Spinner className={styles.spinner} />
 
-  if (!timeSeriesFiltered?.length) {
+  const datasets = temporalGridDataviews?.map((dataview) => ({
+    id: dataview.id,
+    color: dataview.config?.color,
+    unit: dataview.datasets?.[0].unit,
+  }))
+
+  if (!datasets || !timeSeriesFiltered?.length) {
     return <p className={styles.emptyDataPlaceholder}>No data available</p>
   }
 
   return (
     <AnalysisGraph
+      datasets={datasets}
       timeseries={timeSeriesFiltered}
-      graphColor={temporalGridDataviews?.[0]?.config?.color}
-      timeChunkInterval={timeChunks?.interval}
+      timeChunkInterval={interval}
     />
   )
 }

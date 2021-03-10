@@ -1,8 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useRef } from 'react'
-import { ExtendedFeatureVessel, InteractionEvent } from '@globalfishingwatch/react-hooks'
+import { Geometry } from 'geojson'
+import {
+  ExtendedFeatureVessel,
+  InteractionEvent,
+  useTilesLoading,
+} from '@globalfishingwatch/react-hooks'
 import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { Style } from '@globalfishingwatch/mapbox-gl'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
@@ -112,6 +118,7 @@ export type TooltipEventFeature = {
   sourceLayer: string
   layerId: string
   contextLayer?: ContextLayerType | null
+  geometry?: Geometry
   value: string
   properties: Record<string, string>
   vesselsInfo?: {
@@ -174,6 +181,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       value: feature.value,
       source: feature.source,
       sourceLayer: feature.sourceLayer,
+      geometry: feature.geometry,
       layerId: feature.layerId,
       contextLayer: feature.generatorContextLayer,
       properties: { ...feature.properties },
@@ -213,9 +221,13 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
 
 export const useMapStyle = () => {
   const mapInstance = useMapboxInstance()
+  // Used to ensure the style is refreshed on load finish
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const tilesLoading = useTilesLoading(mapInstance)
+
   if (!mapInstance) return null
 
-  let style: any
+  let style: Style
   try {
     style = mapInstance.getStyle()
   } catch (e) {

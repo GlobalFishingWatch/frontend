@@ -10,6 +10,8 @@ import {
   Area,
 } from 'recharts'
 import { format } from 'd3-format'
+import min from 'lodash/min'
+import max from 'lodash/max'
 import { DateTime } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -18,14 +20,17 @@ import styles from './AnalysisGraph.module.css'
 
 export interface GraphData {
   date: string
-  min: number
-  max: number
+  min: number[]
+  max: number[]
 }
 
 interface AnalysisGraphProps {
   timeseries: GraphData[]
-  graphColor?: string
-  graphUnit?: string
+  datasets: {
+    id: string
+    color?: string
+    unit?: string
+  }[]
   timeChunkInterval?: Interval
 }
 
@@ -52,7 +57,9 @@ const formatTooltipValue = (value: number, payload: any, unit: string) => {
   if (value === undefined || !payload?.range) {
     return null
   }
-  const difference = payload.range[1] - value
+  const index = payload.avg?.findIndex((avg: number) => avg === value)
+  const range = payload.range?.[index]
+  const difference = range ? range[1] - value : 0
   const imprecision = value > 0 && (difference / value) * 100
   const valueLabel = `${formatI18nNumber(value.toFixed())} ${unit ? unit : ''}`
   const imprecisionLabel =
@@ -65,6 +72,7 @@ const formatTooltipValue = (value: number, payload: any, unit: string) => {
 type AnalysisGraphTooltipProps = {
   active: boolean
   payload: {
+    name: string
     dataKey: string
     label: string
     value: number
@@ -78,6 +86,7 @@ type AnalysisGraphTooltipProps = {
 
 const AnalysisGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
+
   if (active && payload && payload.length) {
     const date = DateTime.fromISO(label).toUTC()
     let formattedLabel = ''
@@ -94,14 +103,14 @@ const AnalysisGraphTooltip = (props: any) => {
         formattedLabel = date.setLocale(i18n.language).toFormat("ccc', 'DDD T")
         break
     }
-    const formattedValues = payload.filter(({ dataKey }) => dataKey === 'avg')
+    const formattedValues = payload.filter(({ name }) => name === 'line')
     return (
       <div className={styles.tooltipContainer}>
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
         <ul>
-          {formattedValues.map(({ dataKey, value, payload, color, unit }) => {
+          {formattedValues.map(({ value, payload, color, unit }, index) => {
             return (
-              <li key={dataKey} className={styles.tooltipValue}>
+              <li key={index} className={styles.tooltipValue}>
                 <span className={styles.tooltipValueDot} style={{ color }}></span>
                 {formatTooltipValue(value, payload, unit)}
               </li>
@@ -116,22 +125,15 @@ const AnalysisGraphTooltip = (props: any) => {
 }
 
 const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
-  const {
-    timeseries,
-    graphColor = '#163f89',
-    graphUnit = 'hours',
-    timeChunkInterval = '10days',
-  } = props
+  const { timeseries, timeChunkInterval = '10days', datasets } = props
 
   if (!timeseries) return null
 
-  const dataMax: number = timeseries.length
-    ? timeseries.reduce((prev: GraphData, curr: GraphData) => (curr.max > prev.max ? curr : prev))
-        .max
-    : 0
   const dataMin: number = timeseries.length
-    ? timeseries.reduce((prev: GraphData, curr: GraphData) => (curr.min < prev.min ? curr : prev))
-        .min
+    ? (min(timeseries.flatMap(({ min }) => min)) as number)
+    : 0
+  const dataMax: number = timeseries.length
+    ? (max(timeseries.flatMap(({ max }) => max)) as number)
     : 0
 
   const domainPadding = (dataMax - dataMin) / 8
@@ -140,11 +142,15 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
     Math.ceil(dataMax + domainPadding),
   ]
 
-  const dataFormated = timeseries.map(({ date, min, max }) => ({
-    date,
-    range: [min, max],
-    avg: (min + max) / 2,
-  }))
+  const dataFormated = timeseries.map(({ date, min, max }) => {
+    const range = min.map((m, i) => [m, max[i]])
+    const avg = min.map((m, i) => (m + max[i]) / 2)
+    return {
+      date: date,
+      range,
+      avg,
+    }
+  })
 
   return (
     <ResponsiveContainer width="100%" height={240}>
@@ -166,24 +172,32 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
           tickCount={4}
         />
         <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={timeChunkInterval} />} />
-        <Line
-          type="monotone"
-          dataKey="avg"
-          unit={graphUnit}
-          dot={false}
-          isAnimationActive={false}
-          stroke={graphColor}
-          strokeWidth={2}
-        />
-        <Area
-          type="monotone"
-          dataKey="range"
-          activeDot={false}
-          fill={graphColor}
-          stroke="none"
-          fillOpacity={0.2}
-          isAnimationActive={false}
-        />
+        {datasets.map(({ id, color, unit }, index) => (
+          <Line
+            key={`${id}-line`}
+            name="line"
+            type="monotone"
+            dataKey={(data) => data.avg[index]}
+            unit={unit}
+            dot={false}
+            isAnimationActive={false}
+            stroke={color}
+            strokeWidth={2}
+          />
+        ))}
+        {datasets.map(({ id, color }, index) => (
+          <Area
+            key={`${id}-area`}
+            name="area"
+            type="monotone"
+            dataKey={(data) => data.range[index]}
+            activeDot={false}
+            fill={color}
+            stroke="none"
+            fillOpacity={0.2}
+            isAnimationActive={false}
+          />
+        ))}
       </ComposedChart>
     </ResponsiveContainer>
   )

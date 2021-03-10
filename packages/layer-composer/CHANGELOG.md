@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.15.0
+
+### Minor Changes
+
+- expose temporal grid source layer id
+
 ## 4.14.5
 
 ### Patch Changes

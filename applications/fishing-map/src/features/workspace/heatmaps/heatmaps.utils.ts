@@ -14,7 +14,7 @@ export const getSourcesOptionsInDataview = (
 ) => {
   const datasets = dataview?.datasets?.filter((d) => d.type === datasetType)
   const sourceOptions = datasets?.map((d) => ({ id: d.id, label: d.name })) || []
-  return sourceOptions
+  return sourceOptions.sort((a, b) => a.label.localeCompare(b.label))
 }
 
 export const getSourcesSelectedInDataview = (
