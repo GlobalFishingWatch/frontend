@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useMapboxInstance } from './map.context'
 import { useCurrentTimeChunkId } from './map.hooks'
 
@@ -98,7 +99,7 @@ export const useMapTemporalgridFeatures = ({ cacheKey }: { cacheKey?: string } =
 
   return useMapFeatures({
     sourceId: currentTimeChunkId,
-    sourceLayer: 'temporalgrid_interactive',
+    sourceLayer: TEMPORALGRID_SOURCE_LAYER,
     cacheKey,
   })
 }

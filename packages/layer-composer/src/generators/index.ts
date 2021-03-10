@@ -13,6 +13,7 @@ import RulersGenerator from './rulers/rulers'
 
 export { DEFAULT_BACKGROUND_COLOR }
 export { HEATMAP_COLOR_RAMPS } from './heatmap/config'
+export { TEMPORALGRID_SOURCE_LAYER } from './heatmap/modes/gridded'
 
 const GeneratorConfig = {
   [Type.Background]: new BackgroundGenerator(),
