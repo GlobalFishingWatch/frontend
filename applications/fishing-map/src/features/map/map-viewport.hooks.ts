@@ -8,6 +8,8 @@ import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
+import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
+import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { useMapboxInstance, useMapboxRef } from './map.context'
 
 type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>
@@ -96,7 +98,9 @@ export function useMapFitBounds() {
         (mapInstance ? parseInt(mapInstance.getCanvas().style.width) : window.innerWidth / 2)
       const height =
         mapHeight ||
-        (mapInstance ? parseInt(mapInstance.getCanvas().style.height) : window.innerHeight)
+        (mapInstance
+          ? parseInt(mapInstance.getCanvas().style.height)
+          : window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT)
       const { latitude, longitude, zoom } = fitBounds({
         bounds: [
           [bounds[0], bounds[1]],
