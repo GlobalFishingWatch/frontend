@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import createAnalysisWorker from 'workerize-loader!./Analysis.worker'
 import { Feature, Geometry } from 'geojson'
 import { DateTime } from 'luxon'
-import { getTimeSeries, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
+import { getTimeSeries, getRealValue } from '@globalfishingwatch/fourwings-aggregate'
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
@@ -76,10 +76,8 @@ function AnalysisGraphWrapper() {
         const minValues = valuesContained.find((overlap) => overlap.date === date)?.values
         return {
           date,
-          min: minValues
-            ? minValues.map((min) => min / VALUE_MULTIPLIER)
-            : new Array(values.length).fill(0),
-          max: values.map((value) => value / VALUE_MULTIPLIER),
+          min: minValues ? minValues.map(getRealValue) : new Array(values.length).fill(0),
+          max: values.map(getRealValue),
         }
       })
       setTimeseries(timeseries)
