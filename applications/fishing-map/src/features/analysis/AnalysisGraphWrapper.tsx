@@ -69,12 +69,12 @@ function AnalysisGraphWrapper() {
         }
       })
 
-      const allFilteredFeatures = [
+      const featuresContainedAndOverlapping = [
         ...(filteredFeatures.contained || []),
         ...(filteredFeatures.overlapping || []),
       ]
-      const valuesOverlapping = getTimeSeries(
-        allFilteredFeatures as any,
+      const valuesContainedAndOverlapping = getTimeSeries(
+        featuresContainedAndOverlapping as any,
         numSublayers,
         chunkQuantizeOffset
       ).map((frameValues) => {
@@ -85,7 +85,7 @@ function AnalysisGraphWrapper() {
         }
       })
 
-      const timeseries = valuesOverlapping.map(({ values, date }) => {
+      const timeseries = valuesContainedAndOverlapping.map(({ values, date }) => {
         const minValues = valuesContained.find((overlap) => overlap.date === date)?.values
         return {
           date,
