@@ -11,8 +11,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
 import Sidebar from 'features/sidebar/Sidebar'
 import Map from 'features/map/Map'
-import Timebar from 'features/timebar/Timebar'
-import Footer from 'features/footer/Footer'
+import Timebar, { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
+import Footer, { FOOTER_HEIGHT } from 'features/footer/Footer'
 import {
   selectCurrentWorkspaceId,
   selectWorkspaceCustomStatus,
@@ -64,7 +64,10 @@ function App(): React.ReactElement {
   useLayoutEffect(() => {
     if (isAnalysing) {
       if (analysisQuery.bounds) {
-        fitMapBounds(analysisQuery.bounds, { padding: 0 })
+        fitMapBounds(analysisQuery.bounds, {
+          padding: 10,
+          mapHeight: window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT,
+        })
       } else {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }

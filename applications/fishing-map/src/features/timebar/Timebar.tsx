@@ -28,6 +28,8 @@ import {
 } from './timebar.selectors'
 import styles from './Timebar.module.css'
 
+export const TIMEBAR_HEIGHT = 72
+
 const TimebarWrapper = () => {
   const { start, end, dispatchTimeranges } = useTimerangeConnect()
   const highlightedTime = useSelector(selectHighlightedTime)

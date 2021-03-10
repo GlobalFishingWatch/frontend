@@ -10,6 +10,8 @@ import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-in
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectHasAnalysisLayersVisible } from 'features/workspace/workspace.selectors'
+import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
+import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { setClickedEvent } from '../map.slice'
 import { useMapboxInstance } from '../map.context'
 import { useMapFitBounds } from '../map-viewport.hooks'
@@ -192,6 +194,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         const boundsParams = {
           padding: 10,
           mapWidth: window.innerWidth / 2,
+          mapHeight: window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT,
         }
         fitMapBounds(bounds, boundsParams)
       }
