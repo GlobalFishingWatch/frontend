@@ -1,5 +1,14 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.27.5
+
+### Patch Changes
+
+- fix useTilesLoading
+
+- Updated dependencies []:
+  - @globalfishingwatch/react-hooks@4.9.2
+
 ## 0.27.4
 
 ### Patch Changes

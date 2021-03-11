@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 4.9.2
+
+### Patch Changes
+
+- fix useTilesLoading
+
 ## 4.9.1
 
 ### Patch Changes
