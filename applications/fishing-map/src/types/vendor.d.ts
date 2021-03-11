@@ -12,8 +12,3 @@ declare module 'workerize-loader!*' {
   function createInstance<T>(): Workerized<T>
   export = createInstance
 }
-
-declare module '@globalfishingwatch/react-map-gl/dist/esm/components/map-context' {
-  import { _MapContext } from '@globalfishingwatch/react-map-gl'
-  export = _MapContext as any
-}

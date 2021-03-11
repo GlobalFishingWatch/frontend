@@ -1,9 +1,8 @@
-import React, { useCallback, useState, useEffect, useContext } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
-import type { Map } from '@globalfishingwatch/mapbox-gl'
-import { InteractiveMap, MapRequest, _MapContext } from '@globalfishingwatch/react-map-gl'
+import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import useTilesLoading from '@globalfishingwatch/react-hooks/dist/use-tiles-loading'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
@@ -24,6 +23,7 @@ import {
   Generators,
   LayerMetadataLegend,
 } from '@globalfishingwatch/layer-composer'
+import useMapInstance from 'features/map/map-context.hooks'
 import { UrlDataviewInstance } from 'types'
 import i18n from 'features/i18n/i18n'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
@@ -131,7 +131,7 @@ const getLegendLayers = (
 }
 
 const MapWrapper = (): React.ReactElement | null => {
-  const { map } = useContext(_MapContext)
+  const map = useMapInstance()
 
   const dispatch = useDispatch()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -141,12 +141,8 @@ const MapWrapper = (): React.ReactElement | null => {
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
-  const { cleanFeatureState } = useFeatureState(map as Map)
-  const onMapClick = useMapClick(
-    dispatchClickedEvent,
-    style?.metadata as ExtendedStyleMeta,
-    map as Map
-  )
+  const { cleanFeatureState } = useFeatureState(map)
+  const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const rulersEditing = useSelector(selectEditing)
   const closePopup = useCallback(() => {
@@ -172,7 +168,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const onMapHover = useMapHover(
     handleHoverEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,
-    map as Map,
+    map,
     style?.metadata
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
@@ -215,7 +211,7 @@ const MapWrapper = (): React.ReactElement | null => {
 
   // TODO handle also in case of error
   // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
-  const tilesLoading = useTilesLoading(map as Map)
+  const tilesLoading = useTilesLoading(map)
 
   useEffect(() => {
     if (map) {
@@ -233,7 +229,7 @@ const MapWrapper = (): React.ReactElement | null => {
 
   return (
     <div className={styles.container}>
-      {<MapScreenshot map={map as Map} />}
+      {<MapScreenshot map={map} />}
       {style && (
         <InteractiveMap
           disableTokenWarning={true}

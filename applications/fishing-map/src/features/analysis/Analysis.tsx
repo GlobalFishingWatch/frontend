@@ -20,7 +20,7 @@ import {
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectAnalysisQuery } from 'features/app/app.selectors'
-import { useMapboxInstance } from 'features/map/map.context'
+import useMapInstance from 'features/map/map-context.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useMapFeatures } from 'features/map/map-features.hooks'
 import { UrlDataviewInstance } from 'types'
@@ -98,12 +98,11 @@ function Analysis() {
   const { t } = useTranslation()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const dispatch = useDispatch()
-  const mapInstance = useMapboxInstance()
   const fitMapBounds = useMapFitBounds()
   const analysisQuery = useSelector(selectAnalysisQuery)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
-  const { updateFeatureState, cleanFeatureState } = useFeatureState(mapInstance)
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
   const staticTime = useSelector(selectStaticTime)
   const dataviews = useSelector(selectTemporalgridDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)

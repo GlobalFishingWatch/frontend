@@ -1,10 +1,9 @@
-import React, { Fragment, useCallback, useContext } from 'react'
+import React, { Fragment, useCallback } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import groupBy from 'lodash/groupBy'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import bbox from '@turf/bbox'
-import { _MapContext } from '@globalfishingwatch/react-map-gl'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { TooltipEventFeature } from 'features/map/map.hooks'
@@ -12,8 +11,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectHasAnalysisLayersVisible } from 'features/workspace/workspace.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
+import useMapInstance, { useMapContext } from 'features/map/map-context.hooks'
 import { setClickedEvent } from '../map.slice'
-import { useMapboxInstance } from '../map.context'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './Popup.module.css'
 
@@ -39,7 +38,7 @@ function FeatureRow({
   reportEnabled = true,
 }: FeatureRowProps) {
   const { t } = useTranslation()
-  const context = useContext(_MapContext)
+  const context = useMapContext()
 
   const handleReportClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>) => {
@@ -164,9 +163,8 @@ type ContextTooltipRowProps = {
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const dispatch = useDispatch()
-  const mapInstance = useMapboxInstance()
   const fitMapBounds = useMapFitBounds()
-  const { cleanFeatureState } = useFeatureState(mapInstance)
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchQueryParams } = useLocationConnect()
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
 

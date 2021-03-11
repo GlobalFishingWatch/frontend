@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useContext, useRef } from 'react'
 import { Geometry } from 'geojson'
+import { useRef } from 'react'
 import {
   ExtendedFeatureVessel,
   InteractionEvent,
@@ -9,7 +9,6 @@ import {
 import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Style } from '@globalfishingwatch/mapbox-gl'
-import { _MapContext } from '@globalfishingwatch/react-map-gl'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
@@ -19,6 +18,7 @@ import { selectLocationCategory, selectLocationType } from 'routes/routes.select
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import useMapInstance from 'features/map/map-context.hooks'
 import {
   getGeneratorsConfig,
   selectGlobalGeneratorsConfig,
@@ -220,7 +220,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
 }
 
 export const useMapStyle = () => {
-  const { map } = useContext(_MapContext)
+  const map = useMapInstance()
   // Used to ensure the style is refreshed on load finish
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const tilesLoading = useTilesLoading(map)

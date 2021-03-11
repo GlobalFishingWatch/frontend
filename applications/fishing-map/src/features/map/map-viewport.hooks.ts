@@ -1,15 +1,16 @@
 import { useDispatch } from 'react-redux'
-import { useContext, useCallback } from 'react'
+import { useCallback } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
 import { atom, useRecoilState } from 'recoil'
 import debounce from 'lodash/debounce'
-import { ViewportProps, _MapContext } from '@globalfishingwatch/react-map-gl'
+import { ViewportProps } from '@globalfishingwatch/react-map-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
+import useMapInstance from './map-context.hooks'
 
 type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>
 type UseViewport = {
@@ -61,7 +62,7 @@ const boundsState = atom<MiniglobeBounds | undefined>({
 })
 
 export function useMapBounds() {
-  const { map } = useContext(_MapContext)
+  const map = useMapInstance()
   const [bounds, setBounds] = useRecoilState(boundsState)
   const setMapBounds = useCallback(() => {
     if (map) {
@@ -85,7 +86,7 @@ type FitBoundsParams = {
   padding?: number
 }
 export function useMapFitBounds() {
-  const { map } = useContext(_MapContext)
+  const map = useMapInstance()
   const { setMapCoordinates } = useViewport()
 
   const fitMapBounds = useCallback(
