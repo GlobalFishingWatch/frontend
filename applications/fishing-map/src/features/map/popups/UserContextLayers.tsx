@@ -1,11 +1,13 @@
 import React, { Fragment, useCallback } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import groupBy from 'lodash/groupBy'
-import { batch } from 'react-redux'
+import { batch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
+import { CONTEXT_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
+import { selectHasAnalysisLayersVisible } from 'features/workspace/workspace.selectors'
 import styles from './Popup.module.css'
 
 type UserContextLayersProps = {
@@ -16,6 +18,7 @@ type UserContextLayersProps = {
 function ContextTooltipSection({ features, showFeaturesDetails = false }: UserContextLayersProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
+  const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
 
   const onReportClick = useCallback(
     (feature: TooltipEventFeature) => {
@@ -53,17 +56,20 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
             )}
             {featureByType.map((feature) => {
               const { gfw_id } = feature.properties
+              const isContextArea = feature.layerId.includes(CONTEXT_LAYER_PREFIX)
               return (
                 <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
                   <span className={styles.rowText}>{feature.value}</span>
                   {showFeaturesDetails && (
                     <div className={styles.rowActions}>
-                      <IconButton
-                        icon="report"
-                        tooltip={t('common.report', 'Report')}
-                        onClick={() => onReportClick && onReportClick(feature)}
-                        size="small"
-                      />
+                      {hasAnalysisLayers && isContextArea && (
+                        <IconButton
+                          icon="report"
+                          tooltip={t('common.report', 'Report')}
+                          onClick={() => onReportClick && onReportClick(feature)}
+                          size="small"
+                        />
+                      )}
                     </div>
                   )}
                 </div>
