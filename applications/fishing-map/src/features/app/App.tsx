@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
+import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
-import { MapboxRefProvider } from 'features/map/map.context'
 import { isWorkspaceLocation, selectLocationType, selectWorkspaceId } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -125,7 +125,8 @@ function App(): React.ReactElement {
 
   return (
     <Fragment>
-      <MapboxRefProvider>
+      {/* Value as null as there is no needed to set a default value but Typescript complains */}
+      <MapContext.Provider value={null as any}>
         <Suspense fallback={null}>
           <SplitView
             isOpen={sidebarOpen}
@@ -136,7 +137,7 @@ function App(): React.ReactElement {
             className="split-container"
           />
         </Suspense>
-      </MapboxRefProvider>
+      </MapContext.Provider>
       <Menu
         bgImage={menuBgImage}
         isOpen={menuOpen}

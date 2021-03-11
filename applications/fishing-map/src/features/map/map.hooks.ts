@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useRef } from 'react'
 import { Geometry } from 'geojson'
+import { useRef } from 'react'
 import {
   ExtendedFeatureVessel,
   InteractionEvent,
@@ -18,6 +18,7 @@ import { selectLocationCategory, selectLocationType } from 'routes/routes.select
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import useMapInstance from 'features/map/map-context.hooks'
 import {
   getGeneratorsConfig,
   selectGlobalGeneratorsConfig,
@@ -30,7 +31,6 @@ import {
   fetch4WingInteractionThunk,
   MAX_TOOLTIP_VESSELS,
 } from './map.slice'
-import { useMapboxInstance } from './map.context'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -220,16 +220,16 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
 }
 
 export const useMapStyle = () => {
-  const mapInstance = useMapboxInstance()
+  const map = useMapInstance()
   // Used to ensure the style is refreshed on load finish
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const tilesLoading = useTilesLoading(mapInstance)
+  const tilesLoading = useTilesLoading(map)
 
-  if (!mapInstance) return null
+  if (!map) return null
 
   let style: Style
   try {
-    style = mapInstance.getStyle()
+    style = map.getStyle()
   } catch (e) {
     return null
   }

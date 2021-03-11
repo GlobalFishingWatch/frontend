@@ -2,12 +2,10 @@ import React, { memo, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
-import { fitBounds } from 'viewport-mercator-project'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { OceanArea, searchOceanAreas } from '@globalfishingwatch/ocean-areas'
-import { useMapboxInstance } from '../map.context'
-import useViewport from '../map-viewport.hooks'
+import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './MapSearch.module.css'
 
 const MapSearch = () => {
@@ -15,23 +13,13 @@ const MapSearch = () => {
   const [query, setQuery] = useState<string>('')
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
-  const mapInstance = useMapboxInstance()
 
-  const { setMapCoordinates } = useViewport()
+  const fitBounds = useMapFitBounds()
 
   const onSelectResult = ({ selectedItem }: UseComboboxStateChange<OceanArea>) => {
-    const bounds = selectedItem?.properties.bounds
+    const bounds = selectedItem?.properties.bounds as [number, number, number, number]
     if (bounds) {
-      const { latitude, longitude, zoom } = fitBounds({
-        bounds: [
-          [bounds[0], bounds[1]],
-          [bounds[2], bounds[3]],
-        ],
-        width: (mapInstance as any)._canvas.width,
-        height: (mapInstance as any)._canvas.height,
-        padding: 60,
-      })
-      setMapCoordinates({ latitude, longitude, zoom })
+      fitBounds(bounds)
     }
   }
 

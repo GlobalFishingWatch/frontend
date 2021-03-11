@@ -2,7 +2,6 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
-import type { Map } from '@globalfishingwatch/mapbox-gl'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import useTilesLoading from '@globalfishingwatch/react-hooks/dist/use-tiles-loading'
@@ -24,6 +23,7 @@ import {
   Generators,
   LayerMetadataLegend,
 } from '@globalfishingwatch/layer-composer'
+import useMapInstance from 'features/map/map-context.hooks'
 import { UrlDataviewInstance } from 'types'
 import i18n from 'features/i18n/i18n'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
@@ -36,15 +36,8 @@ import { selectDebugOptions } from 'features/debug/debug.slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
-import { useMapboxInstance, useMapboxRef } from './map.context'
 import styles from './Map.module.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
-
-declare global {
-  interface Window {
-    gfwmap: InteractiveMap
-  }
-}
 
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceType: string) => {
@@ -138,8 +131,7 @@ const getLegendLayers = (
 }
 
 const MapWrapper = (): React.ReactElement | null => {
-  const mapRef = useMapboxRef()
-  const mapInstance = useMapboxInstance()
+  const map = useMapInstance()
 
   const dispatch = useDispatch()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -149,12 +141,8 @@ const MapWrapper = (): React.ReactElement | null => {
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
-  const { cleanFeatureState } = useFeatureState(mapInstance)
-  const onMapClick = useMapClick(
-    dispatchClickedEvent,
-    style?.metadata as ExtendedStyleMeta,
-    mapInstance
-  )
+  const { cleanFeatureState } = useFeatureState(map)
+  const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const rulersEditing = useSelector(selectEditing)
   const closePopup = useCallback(() => {
@@ -180,7 +168,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const onMapHover = useMapHover(
     handleHoverEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,
-    mapInstance,
+    map,
     style?.metadata
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
@@ -223,30 +211,28 @@ const MapWrapper = (): React.ReactElement | null => {
 
   // TODO handle also in case of error
   // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
-  const tilesLoading = useTilesLoading(mapInstance as Map)
+  const tilesLoading = useTilesLoading(map)
 
   useEffect(() => {
-    if (mapInstance) {
-      mapInstance.showTileBoundaries = debugOptions.debug
+    if (map) {
+      map.showTileBoundaries = debugOptions.debug
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapInstance, debugOptions])
+  }, [map, debugOptions])
 
   useEffect(() => {
-    if (mapRef.current) {
-      // Used for the screeenshot callback for the 'idle' event to generate the image once loaded
-      window.gfwmap = mapRef.current.getMap()
+    if (map) {
+      map.showTileBoundaries = debugOptions.debug
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapRef.current])
+  }, [map, debugOptions])
 
   return (
     <div className={styles.container}>
-      {<MapScreenshot map={mapRef.current?.getMap()} />}
+      {<MapScreenshot map={map} />}
       {style && (
         <InteractiveMap
           disableTokenWarning={true}
-          ref={mapRef}
           width="100%"
           height="100%"
           zoom={viewport.zoom}
