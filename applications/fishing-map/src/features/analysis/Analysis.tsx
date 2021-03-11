@@ -243,7 +243,9 @@ function Analysis() {
           <div className={styles.content}>
             {hasAnalysisLayers ? (
               <Fragment>
-                <h3 className={styles.commonTitle}>{title + ` in ${analysisAreaName}.`}</h3>
+                <h3 className={styles.commonTitle}>
+                  {`${title}${analysisAreaName ? ` in ${analysisAreaName}` : ''}.`}
+                </h3>
                 <div className={styles.layerPanels}>
                   {dataviews?.map((dataview, index) => (
                     <AnalysisLayerPanel
