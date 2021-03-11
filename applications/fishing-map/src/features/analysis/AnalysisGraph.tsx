@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -13,10 +13,13 @@ import { format } from 'd3-format'
 import min from 'lodash/min'
 import max from 'lodash/max'
 import { DateTime } from 'luxon'
+import { useDispatch } from 'react-redux'
+import debounce from 'lodash/debounce'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
 import styles from './AnalysisGraph.module.css'
+import { setCurrentChunk } from './analysis.slice'
 
 export interface GraphData {
   date: string
@@ -82,26 +85,40 @@ type AnalysisGraphTooltipProps = {
   }[]
   label: string
   timeChunkInterval: Interval
+  onMouseMove: (start: DateTime, end: DateTime) => void
 }
 
 const AnalysisGraphTooltip = (props: any) => {
-  const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
+  const {
+    active,
+    payload,
+    label,
+    timeChunkInterval,
+    onMouseMove,
+  } = props as AnalysisGraphTooltipProps
 
   if (active && payload && payload.length) {
     const date = DateTime.fromISO(label).toUTC()
     let formattedLabel = ''
+    let dateEnd: DateTime
     switch (timeChunkInterval) {
       case '10days':
         const timeRangeStart = date.setLocale(i18n.language).toFormat('DDD')
-        const timeRangeEnd = date.plus({ days: 9 }).setLocale(i18n.language).toFormat('DDD')
+        dateEnd = date.plus({ days: 9 })
+        const timeRangeEnd = dateEnd.setLocale(i18n.language).toFormat('DDD')
         formattedLabel = `${timeRangeStart} - ${timeRangeEnd}`
         break
       case 'day':
+        dateEnd = date.plus({ days: 1 })
         formattedLabel = date.setLocale(i18n.language).toFormat("ccc', 'DDD")
         break
       default:
+        dateEnd = date.plus({ hours: 1 })
         formattedLabel = date.setLocale(i18n.language).toFormat("ccc', 'DDD T")
         break
+    }
+    if (date && dateEnd) {
+      onMouseMove(date, dateEnd)
     }
     const formattedValues = payload.filter(({ name }) => name === 'line')
     return (
@@ -126,6 +143,27 @@ const AnalysisGraphTooltip = (props: any) => {
 
 const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
   const { timeseries, timeChunkInterval = '10days', datasets } = props
+  const dispatch = useDispatch()
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const updateCurrentChunk = useCallback(
+    debounce((start, end) => {
+      if (timeChunkInterval === 'hour') {
+        dispatch(
+          setCurrentChunk({
+            start: start.toISO(),
+            end: end.toISO(),
+          })
+        )
+      }
+    }, 400),
+    []
+  )
+
+  const onMouseLeave = useCallback(() => {
+    updateCurrentChunk.cancel()
+    dispatch(setCurrentChunk(undefined))
+  }, [dispatch, updateCurrentChunk])
 
   if (!timeseries) return null
 
@@ -154,7 +192,11 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
 
   return (
     <ResponsiveContainer width="100%" height={240}>
-      <ComposedChart data={dataFormated} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
+      <ComposedChart
+        data={dataFormated}
+        margin={{ top: 15, right: 20, left: -20, bottom: -10 }}
+        onMouseLeave={onMouseLeave}
+      >
         <CartesianGrid vertical={false} />
         <XAxis
           dataKey="date"
@@ -171,7 +213,14 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
           tickLine={false}
           tickCount={4}
         />
-        <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={timeChunkInterval} />} />
+        <Tooltip
+          content={
+            <AnalysisGraphTooltip
+              timeChunkInterval={timeChunkInterval}
+              onMouseMove={updateCurrentChunk}
+            />
+          }
+        />
         {datasets.map(({ id, color, unit }, index) => (
           <Line
             key={`${id}-line`}

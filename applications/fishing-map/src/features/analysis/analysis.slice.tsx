@@ -110,6 +110,7 @@ export const createReportThunk = createAsyncThunk(
   }
 )
 
+type CurrentChunk = { start: string; end: string }
 export interface ReportState extends AsyncReducer<Report> {
   area: {
     geometry: ReportGeometry | undefined
@@ -117,6 +118,7 @@ export interface ReportState extends AsyncReducer<Report> {
     name: string
     id: string
   }
+  currentChunk?: CurrentChunk
 }
 
 const initialState: ReportState = {
@@ -127,12 +129,16 @@ const initialState: ReportState = {
     name: '',
     id: '',
   },
+  currentChunk: undefined,
 }
 
 const { slice: analysisSlice } = createAsyncSlice<ReportState, Report>({
   name: 'report',
   initialState,
   reducers: {
+    setCurrentChunk: (state, action: PayloadAction<CurrentChunk>) => {
+      state.currentChunk = action.payload
+    },
     resetReportStatus: (state) => {
       state.status = AsyncReducerStatus.Idle
     },
@@ -161,6 +167,7 @@ const { slice: analysisSlice } = createAsyncSlice<ReportState, Report>({
 })
 
 export const {
+  setCurrentChunk,
   resetReportStatus,
   clearAnalysisGeometry,
   setAnalysisGeometry,
@@ -171,5 +178,6 @@ export const selectAnalysisBounds = (state: RootState) => state.analysis.area.bo
 export const selectAnalysisAreaName = (state: RootState) => state.analysis.area.name
 export const selectAnalysisAreaId = (state: RootState) => state.analysis.area.id
 export const selectReportStatus = (state: RootState) => state.analysis.status
+export const selectCurrentChunk = (state: RootState) => state.analysis.currentChunk
 
 export default analysisSlice.reducer

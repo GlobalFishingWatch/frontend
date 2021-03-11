@@ -7,6 +7,8 @@ import {
   selectEnvironmentalDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectResources, Resource, TrackResourceData } from 'features/resources/resources.slice'
+import { selectCurrentChunk } from 'features/analysis/analysis.slice'
+import { selectStaticTime } from './timebar.slice'
 
 type TimebarTrackSegment = {
   start: number
@@ -17,6 +19,16 @@ type TimebarTrack = {
   segments: TimebarTrackSegment[]
   color: string
 }
+
+export const selectStaticTimeWithCurrentChunk = createSelector(
+  [selectStaticTime, selectCurrentChunk],
+  (staticTime, currentChunk) => {
+    return {
+      start: currentChunk?.start || staticTime?.start,
+      end: currentChunk?.end || staticTime?.end,
+    }
+  }
+)
 
 export const hasStaticHeatmapLayersActive = createSelector(
   [selectEnvironmentalDataviews],

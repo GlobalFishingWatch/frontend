@@ -23,9 +23,10 @@ import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces
 import { Resource, selectResources, TrackResourceData } from 'features/resources/resources.slice'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
-import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
+import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
+import { selectStaticTimeWithCurrentChunk } from 'features/timebar/timebar.selectors'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
@@ -44,7 +45,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
     selectRulers,
     selectDebugOptions,
     selectHighlightedTime,
-    selectStaticTime,
+    selectStaticTimeWithCurrentChunk,
     selectBivariate,
   ],
   (dataviews = [], resources, rulers, debugOptions, highlightedTime, staticTime, bivariate) => {
