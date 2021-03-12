@@ -174,9 +174,12 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       }
       return []
     }
-
+    const title =
+      dataview.category === 'context' && dataview.config?.type === Generators.Type.UserContext
+        ? dataview.datasets?.[0]?.name
+        : dataview.name || dataview.id.toString()
     const tooltipEventFeature: TooltipEventFeature = {
-      title: dataview.name || dataview.id.toString(),
+      title,
       type: dataview.config?.type,
       color: dataview.config?.color || 'black',
       unit: feature.unit,
