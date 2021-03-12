@@ -21,6 +21,7 @@ import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
   getGeneratorsConfig,
+  MULTILAYER_SEPARATOR,
   selectGlobalGeneratorsConfig,
   WORKSPACE_GENERATOR_ID,
 } from './map.selectors'
@@ -138,6 +139,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
   if (!event || !event.features) return null
+
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     let dataview
     if (feature.generatorType === Generators.Type.HeatmapAnimated) {
@@ -152,7 +154,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       dataview = dataviews?.find((dataview) => {
         // Needed to get only the initial part to support multiple generator
         // from the same dataview, see map.selectors L137
-        const cleanGeneratorId = (feature.generatorId as string)?.split('__')[0]
+        const cleanGeneratorId = (feature.generatorId as string)?.split(MULTILAYER_SEPARATOR)[0]
         return dataview.id === cleanGeneratorId
       })
     }
@@ -210,6 +212,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
     }
     return tooltipEventFeature
   })
+
   if (!tooltipEventFeatures.length) return null
   return {
     point: event.point,

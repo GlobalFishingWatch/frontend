@@ -8,6 +8,7 @@ import { batch, useDispatch, useSelector } from 'react-redux'
 import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
@@ -124,7 +125,11 @@ function Analysis() {
   useEffect(() => {
     if (sourceLoaded) {
       cleanFeatureState('highlight')
-      const featureState = { source: sourceId, sourceLayer: 'main', id: areaId }
+      const featureState = {
+        source: sourceId,
+        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+        id: areaId,
+      }
       updateFeatureState([featureState], 'highlight')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
