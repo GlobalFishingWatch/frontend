@@ -200,7 +200,8 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
     [cleanFeatureState, dispatch, dispatchQueryParams, fitMapBounds]
   )
 
-  const featuresByType = groupBy(features, 'layer')
+  const featuresByType = groupBy(features, 'layerId')
+
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => (

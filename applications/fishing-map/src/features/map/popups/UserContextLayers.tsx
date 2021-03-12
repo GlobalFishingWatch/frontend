@@ -41,7 +41,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
     [dispatchQueryParams]
   )
 
-  const featuresByType = groupBy(features, 'layer')
+  const featuresByType = groupBy(features, 'layerId')
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => (
