@@ -62,9 +62,10 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
                   <span className={styles.rowText}>{feature.value}</span>
                   {showFeaturesDetails && (
                     <div className={styles.rowActions}>
-                      {hasAnalysisLayers && isContextArea && (
+                      {isContextArea && (
                         <IconButton
                           icon="report"
+                          disabled={!hasAnalysisLayers}
                           tooltip={t('common.report', 'Report')}
                           onClick={() => onReportClick && onReportClick(feature)}
                           size="small"
