@@ -5,7 +5,7 @@ import { atom, useRecoilState } from 'recoil'
 import debounce from 'lodash/debounce'
 import { ViewportProps } from '@globalfishingwatch/react-map-gl'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { MapCoordinates } from 'types'
+import { Bbox, MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
@@ -90,7 +90,7 @@ export function useMapFitBounds() {
   const { setMapCoordinates } = useViewport()
 
   const fitMapBounds = useCallback(
-    (bounds: [number, number, number, number], params: FitBoundsParams = {}) => {
+    (bounds: Bbox, params: FitBoundsParams = {}) => {
       const { mapWidth, mapHeight, padding = 60 } = params
       const width =
         mapWidth || (map ? parseInt(map.getCanvas().style.width) : window.innerWidth / 2)

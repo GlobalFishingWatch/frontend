@@ -14,7 +14,7 @@ import {
   filterSegmentsByTimerange,
 } from '@globalfishingwatch/data-transforms'
 import { formatInfoField } from 'utils/info'
-import { UrlDataviewInstance } from 'types'
+import { Bbox, UrlDataviewInstance } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -64,7 +64,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       const filteredSegments = filterSegmentsByTimerange(trackResource?.data, { start, end })
       const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
       if (bbox) {
-        fitBounds(bbox as [number, number, number, number])
+        fitBounds(bbox as Bbox)
       } else {
         // TODO use prompt to ask user if wants to update the timerange to fit the track
         alert('The vessel has no activity in your selected timerange')

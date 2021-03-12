@@ -24,7 +24,7 @@ import { selectAnalysisQuery } from 'features/app/app.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useMapFeatures } from 'features/map/map-features.hooks'
-import { UrlDataviewInstance } from 'types'
+import { Bbox, UrlDataviewInstance } from 'types'
 import { getFlagsByIds } from 'utils/flags'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import styles from './Analysis.module.css'
@@ -153,7 +153,7 @@ function Analysis() {
         const { name, value, id } = contextAreaFeatureMerged.properties || {}
         const areaName = name || id || value
         if (areaName !== analysisAreaName) {
-          const bounds = bbox(contextAreaFeatureMerged) as [number, number, number, number]
+          const bounds = bbox(contextAreaFeatureMerged) as Bbox
           dispatch(
             setAnalysisGeometry({
               geometry: contextAreaFeatureMerged,

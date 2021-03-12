@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
+import React, { useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'

@@ -12,6 +12,7 @@ import { selectHasAnalysisLayersVisible } from 'features/workspace/workspace.sel
 import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import useMapInstance, { useMapContext } from 'features/map/map-context.hooks'
+import { Bbox } from 'types'
 import { setClickedEvent } from '../map.slice'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './Popup.module.css'
@@ -174,7 +175,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
-      const bounds = bbox(feature.geometry) as [number, number, number, number]
+      const bounds = bbox(feature.geometry) as Bbox
       batch(() => {
         dispatchQueryParams({
           analysis: {
