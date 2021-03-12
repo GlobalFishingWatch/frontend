@@ -3,6 +3,8 @@ import cx from 'classnames'
 import { useSelector, useDispatch, batch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import useMapInstance from '../map-context.hooks'
 import {
   toggleRulersEditing,
   resetRulers,
@@ -16,11 +18,15 @@ const Rulers = () => {
   const { t } = useTranslation()
   const editing = useSelector(selectEditing)
   const numRulers = useSelector(selectNumRulers)
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
 
   const dispatch = useDispatch()
   const onToggleClick = useCallback(() => {
     dispatch(toggleRulersEditing())
-  }, [dispatch])
+    if (editing) {
+      cleanFeatureState('click')
+    }
+  }, [cleanFeatureState, dispatch, editing])
 
   const onRemoveClick = useCallback(() => {
     batch(() => {

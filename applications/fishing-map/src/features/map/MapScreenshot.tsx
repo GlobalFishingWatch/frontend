@@ -2,9 +2,11 @@ import React, { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } f
 import { createPortal } from 'react-dom'
 // import { getParser } from 'bowser'
 import debounce from 'lodash/debounce'
+import { useSelector } from 'react-redux'
 import { Map } from '@globalfishingwatch/mapbox-gl'
 import { getCSSVarValue } from 'utils/dom'
 import styles from './Map.module.css'
+import { selectEditing } from './controls/rulers.slice'
 
 type PrintSize = {
   px: number
@@ -36,6 +38,7 @@ export const getMapImage = (map: Map): Promise<string> => {
 
 function MapScreenshot({ map }: { map?: Map }) {
   const [screenshotImage, setScreenshotImage] = useState<string | null>(null)
+  const rulersEditing = useSelector(selectEditing)
   const printSize = useRef<{ width: PrintSize; height: PrintSize } | undefined>()
 
   useLayoutEffect(() => {
@@ -64,7 +67,7 @@ function MapScreenshot({ map }: { map?: Map }) {
       }
     }, 800)
 
-    if (map) {
+    if (map && !rulersEditing) {
       map.on('idle', handleIdle)
     }
     return () => {
@@ -73,7 +76,7 @@ function MapScreenshot({ map }: { map?: Map }) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map])
+  }, [map, rulersEditing])
 
   if (!screenshotImage) return null
 
