@@ -7,6 +7,7 @@ export {
   TrackColorBarValues,
 } from './color-bar'
 export { default as CountryFlag } from './countryflag'
+export { default as Choice } from './choice'
 export { default as Header } from './header'
 export { default as Icon, IconType } from './icon'
 export { default as IconButton } from './icon-button'

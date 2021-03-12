@@ -1,4 +1,5 @@
 import React from 'react'
+import ChoicesSection from 'components/Choices'
 import LogosSection from '../components/Logos'
 import ButtonsSection from '../components/Buttons'
 import ColorBarSection from '../components/ColorBar'
@@ -64,6 +65,10 @@ const ComponentsPage = () => {
       <section>
         <h2>Inputs</h2>
         <InputsSection />
+      </section>
+      <section>
+        <h2>Choice</h2>
+        <ChoicesSection />
       </section>
       <section>
         <h2>Modals</h2>
