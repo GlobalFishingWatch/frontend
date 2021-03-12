@@ -8,9 +8,10 @@ interface ChoiceProps {
   options: ChoiceOption[]
   activeOption?: string
   onOptionClick?: (option: ChoiceOption, e: React.MouseEvent) => void
+  size?: 'default' | 'small'
 }
 
-function Choice({ activeOption, options, onOptionClick }: ChoiceProps) {
+function Choice({ activeOption, options, onOptionClick, size = 'default' }: ChoiceProps) {
   const activeOptionId = activeOption || options?.[0]?.id
   const optionWidth = 100 / options.length
   const activeOptionLeft = options.findIndex((option) => option.id === activeOption) * optionWidth
@@ -31,6 +32,7 @@ function Choice({ activeOption, options, onOptionClick }: ChoiceProps) {
               className={cx(styles.optionButton, { [styles.optionActive]: optionSelected })}
               type="secondary"
               onClick={(e) => onOptionClick && onOptionClick(option, e)}
+              size={size}
             >
               {option.title}
             </Button>

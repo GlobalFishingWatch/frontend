@@ -32,6 +32,12 @@ const ChoicesSection = () => {
   return (
     <Fragment>
       <Choice options={choiceOptions} onOptionClick={onOptionClick} activeOption={activeOption} />
+      <Choice
+        options={choiceOptions}
+        onOptionClick={onOptionClick}
+        activeOption={activeOption}
+        size="small"
+      />
     </Fragment>
   )
 }
