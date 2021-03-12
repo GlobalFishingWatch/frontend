@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.27.6
+
+### Patch Changes
+
+- Updated dependencies [[`a607f131`](https://github.com/GlobalFishingWatch/frontend/commit/a607f13101520a9c1571a36cb8198b7af04d10ea)]:
+  - @globalfishingwatch/ocean-areas@0.1.2
+  - @globalfishingwatch/ui-components@2.14.0
+
 ## 0.27.5
 
 ### Patch Changes
