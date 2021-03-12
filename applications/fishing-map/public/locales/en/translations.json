@@ -42,7 +42,7 @@
     "edit": "Edit dataset",
     "emptyState": "Your datasets will appear here",
     "file": "File",
-    "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
+    "fileNotAllowed": "(Only .zip or .json files are allowed)",
     "hint": "Find out more about the supported formats",
     "importing": "Dataset is being imported",
     "new": "New dataset",
