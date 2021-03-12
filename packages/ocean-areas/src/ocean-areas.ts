@@ -41,7 +41,8 @@ const getOceanAreas = ({ latitude, longitude }: LatLon): OceanAreaProperties[] =
       return booleanPointInPolygon(point, feature as any) ? feature.properties : []
     })
     .sort((featureA, featureB) => {
-      return featureA.area - featureB.area
+      if (featureA.area && featureB.area) return featureA.area - featureB.area
+      else return -1
     })
 
   if (!matchingAreas.length) {
