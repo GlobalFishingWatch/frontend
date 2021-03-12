@@ -124,20 +124,18 @@ function App(): React.ReactElement {
   }, [])
 
   return (
-    <Fragment>
-      {/* Value as null as there is no needed to set a default value but Typescript complains */}
-      <MapContext.Provider value={null as any}>
-        <Suspense fallback={null}>
-          <SplitView
-            isOpen={sidebarOpen}
-            onToggle={onToggle}
-            aside={<Sidebar onMenuClick={onMenuClick} />}
-            main={<Main />}
-            asideWidth={narrowSidebar ? '37rem' : '50%'}
-            className="split-container"
-          />
-        </Suspense>
-      </MapContext.Provider>
+    /* Value as null as there is no needed to set a default value but Typescript complains */
+    <MapContext.Provider value={null as any}>
+      <Suspense fallback={null}>
+        <SplitView
+          isOpen={sidebarOpen}
+          onToggle={onToggle}
+          aside={<Sidebar onMenuClick={onMenuClick} />}
+          main={<Main />}
+          asideWidth={narrowSidebar ? '37rem' : '50%'}
+          className="split-container"
+        />
+      </Suspense>
       <Menu
         bgImage={menuBgImage}
         isOpen={menuOpen}
@@ -151,7 +149,7 @@ function App(): React.ReactElement {
       >
         <DebugMenu />
       </Modal>
-    </Fragment>
+    </MapContext.Provider>
   )
 }
 
