@@ -5,15 +5,15 @@ import GLStyleGenerator from './gl/gl'
 import CartoGenerator, { CARTO_FISHING_MAP_API } from './carto-polygons/carto-polygons'
 import HeatmapAnimatedGenerator from './heatmap/heatmap-animated'
 import HeatmapGenerator from './heatmap/heatmap'
-import ContextGenerator from './context/context'
+import ContextGenerator, { DEFAULT_CONTEXT_SOURCE_LAYER } from './context/context'
 import UserContextGenerator from './user-context/user-context'
 import TrackGenerator from './track/track'
 import VesselEventsGenerator from './vessel-events/vessel-events'
 import RulersGenerator from './rulers/rulers'
 
-export { DEFAULT_BACKGROUND_COLOR }
 export { HEATMAP_COLOR_RAMPS } from './heatmap/config'
 export { TEMPORALGRID_SOURCE_LAYER } from './heatmap/modes/gridded'
+export { DEFAULT_BACKGROUND_COLOR, DEFAULT_CONTEXT_SOURCE_LAYER }
 
 const GeneratorConfig = {
   [Type.Background]: new BackgroundGenerator(),
