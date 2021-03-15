@@ -62,10 +62,12 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   }
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  let datasetName = dataset ? t(`datasets:${dataset?.id}.name` as any) : dataview.name || ''
-  const fishignDataview = isFishingDataview(dataview)
+  let datasetName = dataset
+    ? t(`datasets:${dataset?.id?.split(':')[0]}.name` as any)
+    : dataview.name || ''
+  const fishingDataview = isFishingDataview(dataview)
   const presenceDataview = isPresenceDataview(dataview)
-  if (fishignDataview || presenceDataview) {
+  if (fishingDataview || presenceDataview) {
     datasetName = presenceDataview
       ? t(`common.presence`, 'Fishing presence')
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
@@ -100,7 +102,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && fishignDataview && (
+          {layerActive && fishingDataview && (
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
