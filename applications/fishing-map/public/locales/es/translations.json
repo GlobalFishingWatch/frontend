@@ -1,11 +1,27 @@
 {
+  "analysis": {
+    "area": "Area",
+    "close": "Close analysis",
+    "completed": "The report will be in your email soon",
+    "disclaimer": "The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.",
+    "download": "Download report",
+    "empty": "Your selected datasets will appear here",
+    "errorMessage": "Something went wrong",
+    "noActivityLayers": "No activity layers active",
+    "title": "Analysis",
+    "generating": "We are generating the report for you, it'll be ready soon.",
+    "successfullMessage": "The report was sent successfully, you'll receive it by email soon.",
+    "dateRange": "Date Range",
+    "emailDescription": "A report for the selected date ranges and filters will be generated and sent to your email account",
+    "generate": "Generate"
+  },
   "common": {
     "active_after": "Activo después de",
     "active_before": "Activo antes",
-    "activity": "Actividad",
+    "activity": "Actividad de embarcaciones",
     "apparentFishing": "Esfuerzo de pesca aparente",
     "confirm": "Confirmar",
-    "context_area_plural": "Areas de contexto",
+    "context_area_plural": "Areas de gestión",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "paises",
     "description": "Descripción",
@@ -20,6 +36,7 @@
     "more": "más",
     "name": "Nombre",
     "presence": "Presencia de pesca",
+    "report": "Report",
     "seeDefault": "Ver vista por defecto",
     "share": "Share the current view",
     "update": "Actualizar",
@@ -47,6 +64,7 @@
     "importing": "Se está importando el conjunto de datos",
     "new": "Nuevo conjunto de datos",
     "remove": "Remove dataset",
+    "title": "Dataset",
     "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir conjuntos de datos",
     "uploadNewContex": "Subir nuevas áreas de contexto",
     "uploadNewEnviroment": "Subir nuevo conjunto de datos de entorno",
@@ -82,6 +100,7 @@
     "infoOpen": "Mostrar info",
     "remove": "Borra la capa",
     "seeDescription": "Haga clic para ver la descripción de la capa",
+    "source": "Fuente",
     "source_plural": "Fuentes",
     "toggleCombinationMode": {
       "combine": "Combinar capas",
@@ -89,8 +108,7 @@
       "split": "Dividir capas"
     },
     "toggleVisibility": "Cambiar visibilidad de la capa",
-    "vessel_fit_bounds": "Centrar vista en la pista de barcos",
-    "source": "Fuente"
+    "vessel_fit_bounds": "Centrar vista en la pista de barcos"
   },
   "map": {
     "captureMap": "Capturar el mapa",
@@ -154,15 +172,15 @@
     "transmission": "Transmisión"
   },
   "workspace": {
+    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
+    "editName": "Edit workspace name",
     "emptyState": "Sus áreas de trabajo aparecerán aquí",
     "nameInput": "Workspace name",
     "new": "Nuevo espacio de trabajo",
-    "save": "Save the current view",
-    "saved": "Current workspace was saved and it's available in your user profile",
-    "title_plural": "Espacios de trabajo",
-    "title": "Espacio de trabajo",
     "remove": "Remove workspace",
-    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
-    "editName": "Edit workspace name"
+    "save": "Save the current view",
+    "saved": "Current view was saved and it's available in your user profile",
+    "title_plural": "Espacios de trabajo",
+    "title": "Espacio de trabajo"
   }
 }
