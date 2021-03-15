@@ -27,15 +27,11 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
         return
       }
 
-      batch(() => {
-        dispatchQueryParams({
-          analysis: {
-            areaId: feature.properties?.gfw_id,
-            sourceId: feature.source,
-          },
-        })
-        // TODO decide if we keep the tooltip open or not
-        // dispatch(setClickedEvent(null))
+      dispatchQueryParams({
+        analysis: {
+          areaId: feature.properties?.gfw_id,
+          sourceId: feature.source,
+        },
       })
     },
     [dispatchQueryParams]
