@@ -365,7 +365,7 @@ function NewDataset(): React.ReactElement {
     <Modal
       title={
         datasetCategory === DatasetCategory.Context
-          ? t('dataset.uploadNewContex', 'Upload new context areas')
+          ? t('dataset.uploadNewContext', 'Upload new context areas')
           : t('dataset.uploadNewEnviroment', 'Upload new environment dataset')
       }
       isOpen={datasetModal === 'new'}
