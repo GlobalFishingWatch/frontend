@@ -40,6 +40,7 @@ export interface DataviewInfoConfig {
 
 export enum DataviewCategory {
   Context = 'context',
+  Events = 'events',
   Environment = 'environment',
   Activity = 'activity',
 }
