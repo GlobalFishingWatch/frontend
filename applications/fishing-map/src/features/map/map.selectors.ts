@@ -198,6 +198,10 @@ export const getWorkspaceGeneratorsConfig = createSelector(
             },
           },
         }
+      } else if (dataview.config?.type === Generators.Type.TileCluster) {
+        // TODO remove this hardcoded endpoint and replace by dataset
+        generator.tilesUrl =
+          'https://spike-clusterbuster-jzzp2ui3wq-uc.a.run.app/points/{z}/{x}/{y}/tile.mvt?type=encounter'
       }
       return generator
     })
