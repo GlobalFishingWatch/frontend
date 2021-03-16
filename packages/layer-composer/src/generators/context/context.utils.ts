@@ -16,6 +16,8 @@ export const getLinePaintWithFeatureState = (
       HIGHLIGHT_LINE_COLOR,
       ['boolean', ['feature-state', 'click'], false],
       HIGHLIGHT_LINE_COLOR,
+      ['boolean', ['feature-state', 'highlight'], false],
+      HIGHLIGHT_LINE_COLOR,
       color,
     ],
   }
