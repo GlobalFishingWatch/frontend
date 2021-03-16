@@ -1,5 +1,11 @@
 # @globalfishingwatch/fourwings-aggregate
 
+## 1.2.1
+
+### Patch Changes
+
+- [`55796c7a`](https://github.com/GlobalFishingWatch/frontend/commit/55796c7a0a0b9972d3b7f8631566091dd0b74809) [#360](https://github.com/GlobalFishingWatch/frontend/pull/360) Thanks [@j8seangel](https://github.com/j8seangel)! - fix crash when no rawValues in aggregateCell
+
 ## 1.2.0
 
 ### Minor Changes
