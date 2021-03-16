@@ -26,6 +26,7 @@
     "country_plural": "countries",
     "description": "Description",
     "environment": "Environment",
+    "events": "Events",
     "hour": "Hour",
     "hour_plural": "hours",
     "loggedAs": "Logged as",
@@ -47,7 +48,6 @@
     "open_menu": "Open Menu",
     "dismiss": "Dismiss",
     "save": "Save",
-    "events": "Events",
     "fishing": "Fishing",
     "unknown": "Unknown"
   },

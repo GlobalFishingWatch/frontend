@@ -50,6 +50,10 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
     },
     {
+      id: 'encounter-events',
+      dataviewId: 1,
+    },
+    {
       id: 'context-layer-eez',
       config: {
         color: '#069688',
