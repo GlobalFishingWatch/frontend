@@ -25,23 +25,23 @@
   },
   "public-mpa-all": {
     "name": "Zones Marines Protégées (WDPA)",
-    "description": "Le terme Zones Marines Protégées (MPA) comprend les réserves marines, les zones marines entièrement protégées, les zones \"no-take\", sanctuaires marins, sanctuaires océaniques, parcs marins, zones marines gérées localement, pour n'en citer que quelques-uns. Ces zones ont des niveaux de protection assez différents, et la gamme d'activités autorisées ou interdites à l'intérieur de leurs frontières varie considérablement également. Source: World Database on Protected Areas (WDPA)"
+    "description": "Le terme Aires Marines Protégées comprend les réserves marines, les zones marines entièrement protégées, les zones de non-prise, les sanctuaires marins, les sanctuaires océaniques, les parcs marins, les zones maritimes gérées localement, pour n'en citer que quelques-uns. Bon nombre d'entre eux ont des niveaux de protection tout à fait différents et la gamme d'activités autorisées ou interdites à l'intérieur de leurs frontières varie également considérablement. Source: Base de données mondiale sur les zones protégées (WDPA)"
   },
   "public-mpa-no-take": {
     "name": "MPA - Pas de prise (WDPA)",
-    "description": "Le terme Zones Marines Protégées comprend les réserves maritimes, les zones marines entièrement protégées, les zones de non-prise, sanctuaires marins, sanctuaires océaniques, parcs marins, zones maritimes gérées localement, pour n'en citer que quelques-uns. Bon nombre d'entre eux ont des niveaux de protection tout à fait différents et la gamme d'activités autorisées ou interdites à l'intérieur de leurs frontières varie considérablement également. Aucune couche Take n'a été créée en utilisant les données disponibles dans la WDPA de la Planète Marine Protégée en utilisant le filtre NO_TAKE = 'Tout'. Source: Base de données mondiale sur les zones protégées (WDPA)"
+    "description": "Le terme Aires Marines Protégées comprend les réserves marines, les zones marines entièrement protégées, les zones de non-prise, les sanctuaires marins, les sanctuaires océaniques, les parcs marins, les zones maritimes gérées localement, pour n'en citer que quelques-uns. Bon nombre d'entre eux ont des niveaux de protection tout à fait différents et la gamme d'activités autorisées ou interdites à l'intérieur de leurs frontières varie également considérablement. La couche Pêche Interdite a été créée en utilisant les données disponibles dans la WDPA Protected Planet en utilisant le filtre NO_TAKE = 'Tout'. Source: Base de données mondiale sur les zones protégées (WDPA)"
   },
   "public-mpa-restricted": {
     "name": "MPA - Restreint (WDPA)",
-    "description": "Le terme Zones Marines Protégées comprend les réserves maritimes, les zones marines entièrement protégées, les zones de non-prise, sanctuaires marins, sanctuaires océaniques, parcs marins, zones maritimes gérées localement, pour n'en citer que quelques-uns. Bon nombre d'entre eux ont des niveaux de protection tout à fait différents et la gamme d'activités autorisées ou interdites à l'intérieur de leurs frontières varie considérablement également. Aucune couche Take n'a été créée en utilisant les données disponibles dans la WDPA de la Planète Protégée Marine en utilisant le filtre NO_TAKE = 'Parti'. Source: Base de données mondiale sur les zones protégées (WDPA)"
+    "description": "Le terme Aires Marines Protégées comprend les réserves marines, les zones marines entièrement protégées, les zones de non-prise, les sanctuaires marins, les sanctuaires océaniques, les parcs marins, les zones maritimes gérées localement, pour n'en citer que quelques-uns. Bon nombre d'entre eux ont des niveaux de protection tout à fait différents et la gamme d'activités autorisées ou interdites à l'intérieur de leurs frontières varie également considérablement. La couche Pêche Restreinte a été créée en utilisant les données disponibles dans la WDPA de la Planète Protégée Marine en utilisant le filtre NO_TAKE = 'Partiel'. Source: Base de données mondiale sur les zones protégées (WDPA)"
   },
   "public-eez-areas": {
-    "name": "EEZ (marineregions.org)",
+    "name": "ZEE",
     "description": "Institut maritime flamand (2019). Base de données des frontières maritimes : Frontières maritimes et zones économiques exclusives (200NM), version 11. Source: marineregions.org"
   },
   "public-tuna-rfmo": {
     "name": "ORGP thon",
-    "description": "La RFMO est synonyme de Regional Fishery Management Organization. Ces organisations sont des organisations internationales formées par des pays ayant un intérêt commun à gérer ou à conserver les stocks halieutiques d’une zone. Certains RFMOs gèrent tous les stocks de poissons trouvés dans une zone spécifique, alors que d'autres se concentrent sur des espèces hautement migratoires particulières, notamment le thon, dans de vastes zones géographiques. La couche du FMO sur la carte mondiale de surveillance de la pêche comprend actuellement les cinq ORGR du thon."
+    "description": "ORGP signifie Organisation régionale de gestion de la pêche. Ces organisations sont des organisations internationales formées par des pays ayant un intérêt commun à gérer ou à conserver les stocks halieutiques d’une zone. Certains ORGP gèrent tous les stocks de poissons dans une zone spécifique, tandis que d'autres se concentrent sur des espèces hautement migratoires particulières, notamment le thon, dans de vastes zones géographiques. La couche ORGP sur la carte mondiale de surveillance de la pêche comprend actuellement les cinq ORGP concernant le thon."
   },
   "public-wpp-nri": {
     "name": "WPP NRI",
@@ -49,7 +49,7 @@
   },
   "public-high-seas": {
     "name": "Poches de haute mer",
-    "description": "Les hautes mers sont n'importe quelle zone de l'océan au-delà des zones économiques exclusives (EEZ). Les poches en haute mer sont des zones totalement fermées par les ZEE. Ces poches peuvent être difficiles à distinguer des multiples juridictions EEZ qui les entourent, donc nous avons une couche qui les met en évidence."
+    "description": "La haute mer est l'océan au-delà des zones économiques exclusives (EEZ). Les poches de haute mer sont des zones totalement entourées par les ZEE. Ces poches peuvent être difficiles à distinguer des multiples juridictions EEZ qui les entourent, aussi nous avons une couche qui les met en évidence."
   },
   "dgg_salinity_caribe": {
     "name": "Salinité",

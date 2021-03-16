@@ -1,12 +1,28 @@
 {
+  "analysis": {
+    "close": "Cerrar análisis",
+    "completed": "El informe estará en su correo electrónico pronto",
+    "disclaimer": "Los datos mostrados arriba deben ser tomados como una estimación. Haga clic en el botón de abajo si necesita una análisis más preciso, incluyendo la lista de las embarcaciones involucradas, y se la enviaremos a su correo electrónico.",
+    "download": "Descargar informe",
+    "empty": "Your selected datasets will appear here",
+    "errorMessage": "Ha habido un error",
+    "noActivityLayers": "Ninguna capa de actividad se encuentra activa",
+    "title": "Analysis",
+    "area": "Área",
+    "generating": "Estamos generando el informe para ti, estará listo pronto.",
+    "successfullMessage": "El informe ha sido enviado con éxito, lo recibirás pronto por correo electrónico.",
+    "dateRange": "Intervalo de fechas",
+    "emailDescription": "Se generará un informe para los intervalos de fechas y filtros seleccionados y se enviará a tu cuenta de correo electrónico",
+    "generate": "Generar"
+  },
   "common": {
     "active_after": "Activo después de",
     "active_before": "Activo antes",
-    "activity": "Actividad",
+    "activity": "Actividad de embarcaciones",
     "apparentFishing": "Esfuerzo de pesca aparente",
     "confirm": "Confirmar",
-    "context_area_plural": "Areas de contexto",
-    "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
+    "context_area_plural": "Areas de gestión",
+    "copiedToClipboard": "El enlace para compartir este mapa ha sido copiado al portapapeles.",
     "country_plural": "paises",
     "description": "Descripción",
     "environment": "Entorno",
@@ -20,8 +36,9 @@
     "more": "más",
     "name": "Nombre",
     "presence": "Presencia de pesca",
+    "report": "Informe",
     "seeDefault": "Ver vista por defecto",
-    "share": "Share the current view",
+    "share": "Comparte el mapa actual",
     "update": "Actualizar",
     "user": "Usuario",
     "userProfile": "Perfil de usuario",
@@ -41,12 +58,15 @@
     "dragFilePlaceholder": "Arrastra y suelta un archivo comprimido o geojson aquí o haz clic para seleccionarlo",
     "edit": "Editar conjunto de datos",
     "emptyState": "Sus conjuntos de datos aparecerán aquí",
+    "featuresNameField": "Features name field",
     "file": "Fichero",
-    "fileNotAllowed": "(Sólo se permiten archivos .zip o .geojson)",
+    "fileNotAllowed": "(Only .zip or .json files are allowed)",
     "hint": "Más información sobre los formatos soportados",
     "importing": "Se está importando el conjunto de datos",
     "new": "Nuevo conjunto de datos",
+    "notUploadedYet": "No context layers uploaded yet",
     "remove": "Remove dataset",
+    "title": "Dataset",
     "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir conjuntos de datos",
     "uploadNewContext": "Subir nuevas áreas de contexto",
     "uploadNewEnviroment": "Subir nuevo conjunto de datos de entorno",
@@ -82,6 +102,7 @@
     "infoOpen": "Mostrar info",
     "remove": "Borra la capa",
     "seeDescription": "Haga clic para ver la descripción de la capa",
+    "source": "Fuente",
     "source_plural": "Fuentes",
     "toggleCombinationMode": {
       "combine": "Combinar capas",
@@ -89,8 +110,7 @@
       "split": "Dividir capas"
     },
     "toggleVisibility": "Cambiar visibilidad de la capa",
-    "vessel_fit_bounds": "Centrar vista en la pista de barcos",
-    "source": "Fuente"
+    "vessel_fit_bounds": "Centrar vista en la pista de barcos"
   },
   "map": {
     "captureMap": "Capturar el mapa",
@@ -132,7 +152,7 @@
   "vessel": {
     "beam": "Beam",
     "callsign": "Callsing",
-    "capacity": "Capacity",
+    "capacity": "Capacidad",
     "firstTransmissionDate": "Fecha primera transmisión",
     "flag": "Bandera",
     "fleet": "Flota",
@@ -143,7 +163,7 @@
     "lengthRange": "Rango de longitud",
     "loading": "Cargando track de buque",
     "mmsi": "MMSI",
-    "nationalId": "National Id",
+    "nationalId": "Identificación Nacional",
     "origin": "Origen",
     "registeredGearType": "Tipo de equipo registrado",
     "source": "Fuente",
@@ -154,15 +174,15 @@
     "transmission": "Transmisión"
   },
   "workspace": {
+    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
+    "editName": "Edit workspace name",
     "emptyState": "Sus áreas de trabajo aparecerán aquí",
     "nameInput": "Workspace name",
     "new": "Nuevo espacio de trabajo",
-    "save": "Save the current view",
-    "saved": "Current workspace was saved and it's available in your user profile",
-    "title_plural": "Espacios de trabajo",
-    "title": "Espacio de trabajo",
     "remove": "Remove workspace",
-    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
-    "editName": "Edit workspace name"
+    "save": "Guardar el mapa actual",
+    "saved": "Current view was saved and it's available in your user profile",
+    "title_plural": "Espacios de trabajo",
+    "title": "Espacio de trabajo"
   }
 }
