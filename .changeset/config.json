@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@1.5.0/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "GlobalFishingWatch/frontend" }],
+  "changelog": "@changesets/cli/changelog",
   "ignore": [],
   "linked": [],
   "commit": false,
