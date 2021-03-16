@@ -12,6 +12,8 @@ import {
 } from 'data/workspaces'
 
 export const DATAVIEW_INSTANCE_PREFIX = 'vessel-'
+export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
+export const CONTEXT_LAYER_PREFIX = 'context-'
 
 type VesselInstanceDatasets = {
   trackDatasetId: string
@@ -67,7 +69,7 @@ export const getEnvironmentDataviewInstance = (
   const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamp.includes(option.id))
   const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
   const environmentalDataviewInstance = {
-    id: `environmental-${Date.now()}`,
+    id: `${ENVIRONMENTAL_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Environment,
     config: {
       color: colorOption.value,
@@ -92,7 +94,7 @@ export const getContextDataviewInstance = (
   const notUsedOptions = TrackColorBarOptions.filter((option) => !usedColors.includes(option.value))
   const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
   const contextDataviewInstance = {
-    id: `context-${Date.now()}`,
+    id: `${CONTEXT_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Context,
     config: {
       color: colorOption.value,

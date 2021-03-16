@@ -9,6 +9,7 @@ import styles from './Popup.module.css'
 import HeatmapTooltipRow from './HeatmapLayers'
 import EnviromentalTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
+import UserContextTooltipSection from './UserContextLayers'
 
 type PopupWrapperProps = {
   event: TooltipEvent | null
@@ -56,6 +57,15 @@ function PopupWrapper({
                 showFeaturesDetails={type === 'click'}
               />
             ))
+          }
+          if (featureType === Generators.Type.UserContext) {
+            return (
+              <UserContextTooltipSection
+                key={featureType}
+                features={features}
+                showFeaturesDetails={type === 'click'}
+              />
+            )
           }
           if (featureType === Generators.Type.Context) {
             return (

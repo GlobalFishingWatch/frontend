@@ -153,13 +153,14 @@ const MapWrapper = (): React.ReactElement | null => {
   const [hoveredEvent, setHoveredEvent] = useState<InteractionEvent | null>(null)
   const handleHoverEvent = useCallback(
     (event) => {
-      setHoveredEvent(event)
-      if (rulersEditing === true) {
+      if (rulersEditing) {
         const center = {
           longitude: event.longitude,
           latitude: event.latitude,
         }
         dispatch(moveCurrentRuler(center))
+      } else {
+        setHoveredEvent(event)
       }
     },
     [dispatch, rulersEditing]
