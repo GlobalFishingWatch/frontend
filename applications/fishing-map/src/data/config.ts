@@ -11,7 +11,7 @@ export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
 
 // used when no url data and no workspace data
-const end = new Date(2019, 11, 31).toISOString()
+const end = new Date().toISOString()
 export const DEFAULT_VIEWPORT = {
   latitude: 15,
   longitude: 21,
