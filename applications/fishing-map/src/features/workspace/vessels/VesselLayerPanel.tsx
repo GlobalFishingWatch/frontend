@@ -24,7 +24,7 @@ import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
+import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 
 // Translations by feature.unit static keys
@@ -110,7 +110,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     setInfoOpen(false)
   }
 
-  const vesselId = dataview.id.replace(DATAVIEW_INSTANCE_PREFIX, '')
+  const vesselId = dataview.id.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, '')
   const title = vesselName || vesselId || dataview.name
   const formattedTitle = title && formatInfoField(title, 'name')
 

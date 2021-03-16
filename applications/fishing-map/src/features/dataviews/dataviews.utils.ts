@@ -9,9 +9,10 @@ import {
   DEFAULT_CONTEXT_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
+  DEFAULT_VESSEL_EVENTS_DATAVIEW_ID,
 } from 'data/workspaces'
 
-export const DATAVIEW_INSTANCE_PREFIX = 'vessel-'
+export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
 type VesselInstanceDatasets = {
   trackDatasetId: string
@@ -34,7 +35,7 @@ export const getVesselDataviewInstance = (
     },
   ]
   const vesselDataviewInstance = {
-    id: `${DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
+    id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       color: TrackColorBarOptions[Math.floor(Math.random() * TrackColorBarOptions.length)].value,
@@ -42,6 +43,28 @@ export const getVesselDataviewInstance = (
     datasetsConfig,
   }
   return vesselDataviewInstance
+}
+
+export const VESSEL_EVENTS_DATAVIEW_INSTANCE_PREFIX = 'vessel_events-'
+export const getVesselEventsDataviewInstance = (
+  vessel: { id: string },
+  eventsDatasetId: string
+): DataviewInstance<Generators.Type> => {
+  const datasetsConfig = [
+    {
+      datasetId: eventsDatasetId,
+      query: [{ id: 'vessels', value: vessel.id }],
+      params: [],
+      endpoint: 'carriers-events',
+    },
+  ]
+  const vesselEventsDataviewInstance = {
+    id: `${VESSEL_EVENTS_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
+    dataviewId: DEFAULT_VESSEL_EVENTS_DATAVIEW_ID,
+    config: {},
+    datasetsConfig,
+  }
+  return vesselEventsDataviewInstance
 }
 
 export const getHeatmapDataviewInstance = (

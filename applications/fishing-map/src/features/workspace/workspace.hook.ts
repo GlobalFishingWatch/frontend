@@ -19,33 +19,33 @@ export const useDataviewInstancesConnect = () => {
     [dispatchQueryParams, urlDataviewInstances]
   )
 
-  // TODO review if this is still needed or we switch to add / update
   const upsertDataviewInstance = useCallback(
-    (dataviewInstance: Partial<UrlDataviewInstance>) => {
-      const currentDataviewInstance = urlDataviewInstances?.find(
-        (urlDataviewInstance) => urlDataviewInstance.id === dataviewInstance.id
-      )
-      if (currentDataviewInstance) {
-        const dataviewInstances = urlDataviewInstances.map((urlDataviewInstance) => {
-          if (urlDataviewInstance.id !== dataviewInstance.id) return urlDataviewInstance
-          return {
-            ...urlDataviewInstance,
-            ...dataviewInstance,
-            config: {
-              ...urlDataviewInstance.config,
-              ...dataviewInstance.config,
-            },
-          }
-        })
-        dispatchQueryParams({ dataviewInstances })
-      } else {
-        dispatchQueryParams({
-          dataviewInstances: [
-            dataviewInstance as UrlDataviewInstance,
-            ...(urlDataviewInstances || []),
-          ],
-        })
-      }
+    (dataviewInstance_: Partial<UrlDataviewInstance> | Partial<UrlDataviewInstance>[]) => {
+      const newDataviewInstances = Array.isArray(dataviewInstance_)
+        ? dataviewInstance_
+        : [dataviewInstance_]
+
+      const updatedDataviewInstances = (urlDataviewInstances || []).map((urlDataviewInstance) => {
+        const newDataviewInstanceIndex = newDataviewInstances.findIndex(
+          (d) => d.id === urlDataviewInstance.id
+        )
+        const newDataviewInstance = newDataviewInstances.splice(newDataviewInstanceIndex, 1)[0]
+        if (!newDataviewInstance) return urlDataviewInstance
+        return {
+          ...urlDataviewInstance,
+          ...newDataviewInstance,
+          config: {
+            ...urlDataviewInstance.config,
+            ...newDataviewInstance.config,
+          },
+        }
+      })
+
+      const upsertedDataviewInstances = [
+        ...updatedDataviewInstances,
+        ...(newDataviewInstances as UrlDataviewInstance[]),
+      ]
+      dispatchQueryParams({ dataviewInstances: upsertedDataviewInstances })
     },
     [dispatchQueryParams, urlDataviewInstances]
   )

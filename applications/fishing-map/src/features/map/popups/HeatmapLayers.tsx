@@ -1,15 +1,20 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { ExtendedFeatureVessel } from '@globalfishingwatch/react-hooks'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { formatInfoField } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import {
+  getVesselDataviewInstance,
+  getVesselEventsDataviewInstance,
+} from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { selectDatasets } from 'features/datasets/datasets.slice'
 import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
@@ -23,22 +28,36 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { clickedEventStatus } = useClickedEventConnect()
+  const allDatasets = useSelector(selectDatasets)
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
-    const infoDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Vessels)
-    if (!infoDataset) {
+    const vesselRelatedDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Vessels)
+    if (!vesselRelatedDataset) {
       console.warn('Missing info related dataset for', vessel)
     }
-    const trackDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks)
-    if (!trackDataset) {
+    const trackRelatedDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks)
+    if (!trackRelatedDataset) {
       console.warn('Missing track related dataset for', vessel)
     }
-    if (infoDataset && trackDataset) {
+
+    if (vesselRelatedDataset && trackRelatedDataset) {
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        trackDatasetId: trackDataset.id,
-        infoDatasetId: infoDataset.id,
+        trackDatasetId: trackRelatedDataset.id,
+        infoDatasetId: vesselRelatedDataset.id,
       })
-      upsertDataviewInstance(vesselDataviewInstance)
+      const newDataviewInstances = [vesselDataviewInstance]
+      const vesselDatasetId = vesselRelatedDataset.id
+      const vesselDataset = allDatasets.find((dataset) => dataset.id === vesselDatasetId)
+      const eventsRelatedDataset = getRelatedDatasetByType(vesselDataset, DatasetTypes.Events)
+
+      if (eventsRelatedDataset) {
+        const vesselEventsDataviewInstance = getVesselEventsDataviewInstance(
+          vessel,
+          eventsRelatedDataset.id
+        )
+        newDataviewInstances.push(vesselEventsDataviewInstance)
+      }
+      upsertDataviewInstance(newDataviewInstances)
     }
   }
 
