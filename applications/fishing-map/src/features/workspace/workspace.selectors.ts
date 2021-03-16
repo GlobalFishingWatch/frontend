@@ -56,22 +56,13 @@ export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace]
 })
 
 export const selectDataviewInstancesMerged = createSelector(
-  [
-    selectWorkspaceStatus,
-    selectWorkspaceCustomStatus,
-    selectWorkspaceDataviewInstances,
-    selectUrlDataviewInstances,
-  ],
+  [selectWorkspaceStatus, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
   (
     workspaceStatus,
-    workspaceCustomStatus,
     workspaceDataviewInstances,
     urlDataviewInstances = []
   ): UrlDataviewInstance[] | undefined => {
-    if (
-      workspaceCustomStatus === AsyncReducerStatus.Loading ||
-      workspaceStatus !== AsyncReducerStatus.Finished
-    ) {
+    if (workspaceStatus !== AsyncReducerStatus.Finished) {
       return
     }
 

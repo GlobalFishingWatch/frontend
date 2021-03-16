@@ -62,6 +62,21 @@ export const selectUrlEndQuery = selectQueryParam<string>('end')
 export const selectUrlDataviewInstances = selectQueryParam<UrlDataviewInstance[]>(
   'dataviewInstances'
 )
+
+export const selectUrlViewport = createSelector(
+  [selectUrlMapZoomQuery, selectUrlMapLatitudeQuery, selectUrlMapLongitudeQuery],
+  (zoom, latitude, longitude) => {
+    return { zoom, latitude, longitude }
+  }
+)
+
+export const selectUrlTimeRange = createSelector(
+  [selectUrlStartQuery, selectUrlEndQuery],
+  (start, end) => {
+    return { start, end }
+  }
+)
+
 export const selectUrlDataviewInstancesById = memoize((id: string) =>
   createSelector([selectUrlDataviewInstances], (urlDataviewInstances) =>
     urlDataviewInstances?.find((dataviewInstance) => dataviewInstance.id === id)
