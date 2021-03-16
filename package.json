@@ -28,7 +28,8 @@
     "test:vessel-history": "cross-env lerna run test --scope @globalfishingwatchapp/vessel-history",
     "changesets": "yarn changeset && yarn changeset version",
     "release": "lerna publish",
-    "release:ci": "lerna publish from-package -y --no-verify-access",
+    "release:prepare": "lerna run --scope @globalfishingwatch/data-transforms build",
+    "release:ci": "yarn release:prepare && lerna publish from-package -y --no-verify-access",
     "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn",
     "clean:packages": "lerna run clean --parallel --scope @globalfishingwatch/*"
   },
