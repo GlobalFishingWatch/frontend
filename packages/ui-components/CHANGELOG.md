@@ -1,5 +1,18 @@
 # @globalfishingwatch/ui-components
 
+## 2.14.1
+
+### Patch Changes
+
+- Updated dependencies [[`f7b017f0`](https://github.com/GlobalFishingWatch/frontend/commit/f7b017f0c72bd1f90e6a984ff5c26e524d7d735a)]:
+  - @globalfishingwatch/layer-composer@4.16.0
+
+## 2.14.0
+
+### Minor Changes
+
+- [`a607f131`](https://github.com/GlobalFishingWatch/frontend/commit/a607f13101520a9c1571a36cb8198b7af04d10ea) [#358](https://github.com/GlobalFishingWatch/frontend/pull/358) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - UI components / add choice component
+
 ## 2.13.7
 
 ### Patch Changes

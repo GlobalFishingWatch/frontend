@@ -1,6 +1,7 @@
 import flatten from 'lodash/flatten'
 import zip from 'lodash/zip'
 import memoizeOne from 'memoize-one'
+import type { FillLayer, LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
 import { Type, HeatmapGeneratorConfig, GlobalGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache, isUrlAbsolute } from '../../utils'
@@ -63,7 +64,7 @@ class HeatmapGenerator {
     return rounded
   }
 
-  _getHeatmapLayers = (config: GlobalHeatmapGeneratorConfig) => {
+  _getHeatmapLayers = (config: GlobalHeatmapGeneratorConfig): [FillLayer, LineLayer] => {
     const colorRampType = config.colorRamp || 'presence'
 
     let stops: number[] = []

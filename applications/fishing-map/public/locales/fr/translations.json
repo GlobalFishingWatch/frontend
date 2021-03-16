@@ -68,7 +68,7 @@
     "remove": "Remove dataset",
     "title": "Dataset",
     "uploadLogin": "Vous devez <1>login</1> pour télécharger des jeux de données",
-    "uploadNewContext": "Upload new context areas",
+    "uploadNewContext": "Télécharger de nouvelles zones contextuelles",
     "uploadNewEnviroment": "Charger un nouveau jeu de données d'environnement",
     "addEnvironment": "Ajouter un jeu de données d'environnement",
     "title_plural": "Datasets",

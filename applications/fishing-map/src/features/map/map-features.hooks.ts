@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
-import { useMapboxInstance } from './map.context'
+import useMapInstance from 'features/map/map-context.hooks'
 import { useCurrentTimeChunkId } from './map.hooks'
 
 export const useMapSourceLoaded = (sourceId: string, cacheKey?: string) => {
-  const mapInstance = useMapboxInstance()
+  const map = useMapInstance()
   const [sourceLoaded, setSourceLoaded] = useState(false)
 
   useEffect(() => {
@@ -21,48 +21,48 @@ export const useMapSourceLoaded = (sourceId: string, cacheKey?: string) => {
     }
 
     if (!cacheKey) {
-      if (mapInstance && sourceLoaded) {
-        mapInstance.on('sourcedataloading', sourceLoadingCallback)
+      if (map && sourceLoaded) {
+        map.on('sourcedataloading', sourceLoadingCallback)
       }
     }
 
     return () => {
-      if (mapInstance) {
-        mapInstance.off('sourcedataloading', sourceLoadingCallback)
+      if (map) {
+        map.off('sourcedataloading', sourceLoadingCallback)
       }
     }
-  }, [cacheKey, mapInstance, sourceId, sourceLoaded])
+  }, [cacheKey, map, sourceId, sourceLoaded])
 
   useEffect(() => {
     const sourceCallback = () => {
-      if (mapInstance?.getSource(sourceId) && mapInstance?.isSourceLoaded(sourceId)) {
+      if (map?.getSource(sourceId) && map?.isSourceLoaded(sourceId)) {
         setSourceLoaded(true)
-        mapInstance.off('idle', sourceCallback)
+        map.off('idle', sourceCallback)
       }
     }
 
     const sourceErrorCallback = (errorEvent: any) => {
       if (
         errorEvent.sourceId === sourceId &&
-        mapInstance?.getSource(sourceId) &&
-        mapInstance?.isSourceLoaded(sourceId)
+        map?.getSource(sourceId) &&
+        map?.isSourceLoaded(sourceId)
       ) {
         setSourceLoaded(true)
       }
     }
 
-    if (mapInstance && sourceId && !sourceLoaded) {
-      mapInstance.on('idle', sourceCallback)
-      mapInstance.on('error', sourceErrorCallback)
+    if (map && sourceId && !sourceLoaded) {
+      map.on('idle', sourceCallback)
+      map.on('error', sourceErrorCallback)
     }
 
     return () => {
-      if (mapInstance) {
-        mapInstance.off('idle', sourceCallback)
-        mapInstance.off('error', sourceErrorCallback)
+      if (map) {
+        map.off('idle', sourceCallback)
+        map.off('error', sourceErrorCallback)
       }
     }
-  }, [mapInstance, sourceId, sourceLoaded])
+  }, [map, sourceId, sourceLoaded])
 
   return sourceLoaded
 }
@@ -78,18 +78,18 @@ export const useMapFeatures = ({
   cacheKey?: string
   filter?: any[]
 }) => {
-  const mapInstance = useMapboxInstance()
+  const map = useMapInstance()
   const sourceLoaded = useMapSourceLoaded(sourceId, cacheKey)
 
   const features = useMemo(() => {
     if (sourceLoaded) {
-      const features = mapInstance?.querySourceFeatures(sourceId, {
+      const features = map?.querySourceFeatures(sourceId, {
         sourceLayer: sourceLayer,
         ...(filter && { filter }),
       })
       return features
     }
-  }, [sourceLoaded, mapInstance, sourceId, sourceLayer, filter])
+  }, [sourceLoaded, map, sourceId, sourceLayer, filter])
 
   return { features, sourceLoaded }
 }

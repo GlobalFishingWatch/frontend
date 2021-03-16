@@ -19,7 +19,7 @@ import {
 } from 'routes/routes.selectors'
 import { WORKSPACE, HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
-import { selectCustomWorkspace } from 'features/app/app.selectors'
+import { selectAnalysisQuery, selectCustomWorkspace } from 'features/app/app.selectors'
 import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
@@ -109,6 +109,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
       const locationCategory = selectLocationCategory(state)
       const dataviewInstances = selectUrlDataviewInstances(state)
+      const analysis = selectAnalysisQuery(state)
       if (workspace.viewport && locationType !== HOME) {
         dispatch(
           updateLocation(locationType, {
@@ -116,6 +117,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
             query: {
               ...workspace.viewport,
               dataviewInstances,
+              analysis,
             },
             replaceQuery: true,
           })

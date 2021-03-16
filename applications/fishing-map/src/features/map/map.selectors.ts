@@ -27,6 +27,8 @@ import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timeba
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 
+export const MULTILAYER_SEPARATOR = '__'
+
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
   ({ zoom }, { start, end }) => ({
@@ -132,14 +134,14 @@ export const getWorkspaceGeneratorsConfig = createSelector(
           // Duplicated generators when context dataview have multiple layers
           return tilesUrls.map(({ id, tilesUrl, attribution }) => ({
             ...generator,
-            id: `${dataview.id}__${id}`,
+            id: `${dataview.id}${MULTILAYER_SEPARATOR}${id}`,
             layer: id,
             attribution,
             tilesUrl,
           }))
         } else {
           generator.id = dataview.config.layers
-            ? `${dataview.id}__${dataview.config.layers}`
+            ? `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers}`
             : dataview.id
           generator.layer = dataview.config.layers
           const { dataset, url } = resolveDataviewDatasetResource(dataview, {

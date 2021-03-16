@@ -1,6 +1,7 @@
 import { scaleLinear, scalePow } from 'd3-scale'
 import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
+import type { LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
 import { Type, TrackGeneratorConfig, GlobalGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
@@ -56,7 +57,10 @@ const getHighlightedData = (
   return filteredData
 }
 
-const getHighlightedLayer = (id: string, { group = Group.TrackHighlighted, paint = {} } = {}) => {
+const getHighlightedLayer = (
+  id: string,
+  { group = Group.TrackHighlighted, paint = {} } = {}
+): LineLayer => {
   return {
     id,
     type: 'line',
@@ -146,9 +150,9 @@ class TrackGenerator {
     return sources
   }
 
-  _getStyleLayers = (config: TrackGeneratorConfig & GlobalGeneratorConfig) => {
+  _getStyleLayers = (config: TrackGeneratorConfig & GlobalGeneratorConfig): LineLayer[] => {
     const visibility = isConfigVisible(config)
-    const layer = {
+    const layer: LineLayer = {
       id: config.id,
       source: config.id,
       type: 'line',

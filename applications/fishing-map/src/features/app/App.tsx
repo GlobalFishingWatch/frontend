@@ -1,10 +1,10 @@
-import React, { useState, Fragment, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
+import React, { useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
+import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
-import { MapboxRefProvider } from 'features/map/map.context'
 import { isWorkspaceLocation, selectLocationType, selectWorkspaceId } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -124,19 +124,18 @@ function App(): React.ReactElement {
   }, [])
 
   return (
-    <Fragment>
-      <MapboxRefProvider>
-        <Suspense fallback={null}>
-          <SplitView
-            isOpen={sidebarOpen}
-            onToggle={onToggle}
-            aside={<Sidebar onMenuClick={onMenuClick} />}
-            main={<Main />}
-            asideWidth={narrowSidebar ? '37rem' : '50%'}
-            className="split-container"
-          />
-        </Suspense>
-      </MapboxRefProvider>
+    /* Value as null as there is no needed to set a default value but Typescript complains */
+    <MapContext.Provider value={null as any}>
+      <Suspense fallback={null}>
+        <SplitView
+          isOpen={sidebarOpen}
+          onToggle={onToggle}
+          aside={<Sidebar onMenuClick={onMenuClick} />}
+          main={<Main />}
+          asideWidth={narrowSidebar ? '37rem' : '50%'}
+          className="split-container"
+        />
+      </Suspense>
       <Menu
         bgImage={menuBgImage}
         isOpen={menuOpen}
@@ -150,7 +149,7 @@ function App(): React.ReactElement {
       >
         <DebugMenu />
       </Modal>
-    </Fragment>
+    </MapContext.Provider>
   )
 }
 

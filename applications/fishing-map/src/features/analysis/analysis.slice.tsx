@@ -12,6 +12,7 @@ import {
   createAsyncSlice,
 } from 'utils/async-slice'
 import { RootState } from 'store'
+import { Bbox } from 'types'
 
 export type DateRange = {
   start: string
@@ -113,7 +114,7 @@ export const createReportThunk = createAsyncThunk(
 export interface ReportState extends AsyncReducer<Report> {
   area: {
     geometry: ReportGeometry | undefined
-    bounds: [number, number, number, number] | undefined // minX, minY, maxX, maxY
+    bounds: Bbox | undefined
     name: string
     id: string
   }

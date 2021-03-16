@@ -8,6 +8,7 @@ import { batch, useDispatch, useSelector } from 'react-redux'
 import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
@@ -20,10 +21,10 @@ import {
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectAnalysisQuery } from 'features/app/app.selectors'
-import { useMapboxInstance } from 'features/map/map.context'
+import useMapInstance from 'features/map/map-context.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useMapFeatures } from 'features/map/map-features.hooks'
-import { UrlDataviewInstance } from 'types'
+import { Bbox, UrlDataviewInstance } from 'types'
 import { getFlagsByIds } from 'utils/flags'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import styles from './Analysis.module.css'
@@ -98,12 +99,11 @@ function Analysis() {
   const { t } = useTranslation()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const dispatch = useDispatch()
-  const mapInstance = useMapboxInstance()
   const fitMapBounds = useMapFitBounds()
   const analysisQuery = useSelector(selectAnalysisQuery)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
-  const { updateFeatureState, cleanFeatureState } = useFeatureState(mapInstance)
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
   const staticTime = useSelector(selectStaticTime)
   const dataviews = useSelector(selectTemporalgridDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
@@ -125,7 +125,11 @@ function Analysis() {
   useEffect(() => {
     if (sourceLoaded) {
       cleanFeatureState('highlight')
-      const featureState = { source: sourceId, sourceLayer: 'main', id: areaId }
+      const featureState = {
+        source: sourceId,
+        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+        id: areaId,
+      }
       updateFeatureState([featureState], 'highlight')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -149,7 +153,7 @@ function Analysis() {
         const { name, value, id } = contextAreaFeatureMerged.properties || {}
         const areaName = name || id || value
         if (areaName !== analysisAreaName) {
-          const bounds = bbox(contextAreaFeatureMerged) as [number, number, number, number]
+          const bounds = bbox(contextAreaFeatureMerged) as Bbox
           dispatch(
             setAnalysisGeometry({
               geometry: contextAreaFeatureMerged,
@@ -244,7 +248,9 @@ function Analysis() {
           <div className={styles.content}>
             {hasAnalysisLayers ? (
               <Fragment>
-                <h3 className={styles.commonTitle}>{title + ` in ${analysisAreaName}.`}</h3>
+                <h3 className={styles.commonTitle}>
+                  {`${title}${analysisAreaName ? ` in ${analysisAreaName}` : ''}.`}
+                </h3>
                 <div className={styles.layerPanels}>
                   {dataviews?.map((dataview, index) => (
                     <AnalysisLayerPanel

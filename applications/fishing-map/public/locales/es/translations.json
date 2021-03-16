@@ -68,7 +68,7 @@
     "remove": "Remove dataset",
     "title": "Dataset",
     "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir conjuntos de datos",
-    "uploadNewContext": "Upload new context areas",
+    "uploadNewContext": "Subir nuevas áreas de contexto",
     "uploadNewEnviroment": "Subir nuevo conjunto de datos de entorno",
     "addEnvironment": "Añadir conjunto de datos de entorno",
     "title_plural": "Datasets",

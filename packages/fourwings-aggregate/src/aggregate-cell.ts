@@ -8,6 +8,8 @@ const aggregateCell = (
   numSublayers: number,
   debug = false
 ) => {
+  if (!rawValues) return null
+
   const { values, minCellOffset, maxCellOffset } = getCellValues(rawValues)
 
   // When we should start counting in terms of days/hours/10days from start of time
