@@ -124,7 +124,6 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           onRemove={() => {
             onDatasetFieldChange({ propertyToInclude: undefined })
           }}
-          direction="top"
         />
       )}
       {datasetCategory === DatasetCategory.Environment && (
@@ -155,7 +154,6 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
             onRemove={() => {
               onDatasetFieldChange({ propertyToInclude: undefined })
             }}
-            direction="top"
           />
           <InputText
             inputSize="small"
