@@ -2,16 +2,24 @@ import { Dataview } from '@globalfishingwatch/api-types/dist'
 
 export const dataviews: Dataview[] = [
   // {
-  //   id: 92,
+  //   id: 1,
   //   name: 'Apparent fishing effort',
   //   description: '',
   //   app: 'fishing-map',
   //   config: {
   //     type: 'HEATMAP_ANIMATED',
   //     color: '#00FFBC',
-  //     datasets: ['fishing_v5'],
+  //     datasets: [
+  //       'public-global-fishing-effort:v20201001',
+  //       'chile-fishing:v20200331',
+  //       'indonesia-fishing:v20200320',
+  //       'panama-fishing:v20200331',
+  //       'peru-fishing:v20200324',
+  //     ],
   //     colorRamp: 'teal',
   //   },
+  //   infoConfig: undefined,
+  //   category: DataviewCategory.Activity,
   //   datasetsConfig: [
   //     {
   //       params: [
@@ -21,7 +29,7 @@ export const dataviews: Dataview[] = [
   //         },
   //       ],
   //       endpoint: '4wings-tiles',
-  //       datasetId: 'fishing_v5',
+  //       datasetId: 'public-global-fishing-effort:v20201001',
   //     },
   //     {
   //       params: [
