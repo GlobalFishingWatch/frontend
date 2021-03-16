@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.13.0
+
+### Minor Changes
+
+- f9b53836: new dataview category type for events
+
 ## 2.12.1
 
 ### Patch Changes

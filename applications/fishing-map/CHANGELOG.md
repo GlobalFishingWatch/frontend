@@ -6,6 +6,12 @@
 
 - Updated dependencies []:
   - @globalfishingwatch/api-types@2.12.1
+- Updated dependencies [ce98aa73]
+- Updated dependencies [f9b53836]
+  - @globalfishingwatch/layer-composer@4.17.0
+  - @globalfishingwatch/api-types@2.13.0
+  - @globalfishingwatch/react-hooks@4.9.4
+  - @globalfishingwatch/ui-components@2.14.2
 
 ## 0.27.7
 

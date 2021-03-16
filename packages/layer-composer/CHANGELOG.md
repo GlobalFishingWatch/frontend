@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.17.0
+
+### Minor Changes
+
+- ce98aa73: new tile cluster generator
+
 ## 4.16.0
 
 ### Minor Changes
