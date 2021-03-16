@@ -269,6 +269,11 @@ export const selectEnvironmentalDataviews = createSelector(
   (dataviews) => dataviews
 )
 
+export const selectEventsDataviews = createSelector(
+  [selectDataviewInstancesByCategory(DataviewCategory.Events)],
+  (dataviews) => dataviews
+)
+
 export const selectTemporalgridDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Activity)],
   (dataviews) => dataviews
