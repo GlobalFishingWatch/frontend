@@ -42,12 +42,14 @@
     "update": "Mise à jour",
     "user": "Utilisateur",
     "userProfile": "Profil de l'utilisateur",
+    "vessel": "Vessel",
     "vessel_plural": "Navires",
     "open_menu": "Ouvrir le menu",
     "dismiss": "Fermer",
     "save": "Enregistrer",
     "events": "Évènements",
-    "fishing": "Pêche"
+    "fishing": "Pêche",
+    "unknown": "Unknown"
   },
   "dataset": {
     "addContext": "Ajouter un jeu de données contextuel",
@@ -68,7 +70,7 @@
     "remove": "Remove dataset",
     "title": "Dataset",
     "uploadLogin": "Vous devez <1>login</1> pour télécharger des jeux de données",
-    "uploadNewContext": "Télécharger de nouvelles zones contextuelles",
+    "uploadNewContext": "Upload new context areas",
     "uploadNewEnviroment": "Charger un nouveau jeu de données d'environnement",
     "addEnvironment": "Ajouter un jeu de données d'environnement",
     "title_plural": "Datasets",
@@ -171,7 +173,8 @@
     "transmission_plural": "Transmissions",
     "vesselType_plural": "Types de navires",
     "widthRange": "Width range",
-    "transmission": "Transmission"
+    "transmission": "Transmission",
+    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}"
   },
   "workspace": {
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",
