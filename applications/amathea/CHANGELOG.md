@@ -1,5 +1,14 @@
 # @globalfishingwatchapp/amathea
 
+## 0.14.8
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.1
+  - @globalfishingwatch/react-hooks@4.9.5
+  - @globalfishingwatch/ui-components@2.14.3
+
 ## 0.14.7
 
 ### Patch Changes

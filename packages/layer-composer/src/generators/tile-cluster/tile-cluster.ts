@@ -49,7 +49,8 @@ class TileClusterGenerator {
           visibility: isConfigVisible(config),
         },
         metadata: {
-          interative: true,
+          interactive: true,
+          generatorId: config.id,
         },
       },
       {
@@ -67,6 +68,9 @@ class TileClusterGenerator {
         paint: {
           'text-color': '#163f89',
         },
+        metadata: {
+          generatorId: config.id,
+        },
       },
       {
         id: 'unclustered-point',
@@ -82,6 +86,10 @@ class TileClusterGenerator {
           'circle-radius': 8,
           'circle-stroke-width': 1,
           'circle-stroke-color': '#fff',
+        },
+        metadata: {
+          interactive: true,
+          generatorId: config.id,
         },
       },
     ]

@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.17.1
+
+### Patch Changes
+
+- tile-cluster fix generatorId and mark interactive
+
 ## 4.17.0
 
 ### Minor Changes
