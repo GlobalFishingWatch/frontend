@@ -45,7 +45,7 @@ const geojson = aggregateTile(bigtile, {
   quantizeOffset: 15340,
   geomType: 'rectangle',
   delta: 31,
-  numDatasets: 2,
+  sublayerCount: 2,
   interval: 'day',
   breaks: [
     [0, 31, 186, 310, 930],
@@ -53,11 +53,11 @@ const geojson = aggregateTile(bigtile, {
   ],
   // "breaks":[[0,31,186],[0,31,186]],
   // "breaks":[[0,31,186,310,930]],
-  // "combinationMode":"compare",
-  combinationMode: 'compare',
+  // "sublayerCombinationMode":"max",
+  sublayerCombinationMode: 'max',
   tileBBox: [-22.5, 40.97989806962013, 0, 55.77657301866769],
   interactive: true,
-  visible: [true, true, true],
+  sublayerVisibility: [true, true, true],
 })
 
 let sum = 0

@@ -2,16 +2,16 @@ import tap from 'tap'
 import { aggregateTile, aggregateCell, getRealValue } from '@globalfishingwatch/fourwings-aggregate'
 
 const BASE_CONFIG = {
-  combinationMode: 'add',
+  sublayerCombinationMode: 'add',
   delta: 72,
   geomType: 'rectangle',
   interactive: true,
   interval: '10days',
-  numDatasets: 1,
+  sublayerCount: 1,
   quantizeOffset: 0,
   singleFrame: false,
   tileBBox: [90, -11.178401873711792, 101.25, 0],
-  visible: [true],
+  sublayerVisibility: [true],
   x: 24,
   y: 16,
   z: 5,
@@ -44,7 +44,7 @@ const firstFeatureInteractiveRawCellFrame = aggregateCell(
   TEST_FRAME,
   BASE_CONFIG.delta,
   BASE_CONFIG.quantizeOffset,
-  BASE_CONFIG.numDatasets,
+  BASE_CONFIG.sublayerCount,
   true
 )
 const lastFeatureInteractiveRawCellFrame = aggregateCell(
@@ -52,7 +52,7 @@ const lastFeatureInteractiveRawCellFrame = aggregateCell(
   TEST_FRAME,
   BASE_CONFIG.delta,
   BASE_CONFIG.quantizeOffset,
-  BASE_CONFIG.numDatasets,
+  BASE_CONFIG.sublayerCount,
   true
 )
 

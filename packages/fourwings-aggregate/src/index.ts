@@ -8,3 +8,10 @@ export {
   getCellArrayIndex,
   generateUniqueId,
 } from './util'
+export {
+  GeomType,
+  SublayerCombinationMode,
+  AggregationOperation,
+  TileAggregationParams,
+  TileAggregationSourceParams,
+} from './types'

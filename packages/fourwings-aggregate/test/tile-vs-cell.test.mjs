@@ -12,15 +12,15 @@ const BASE_CONFIG = {
   delta: 35,
   geomType: 'gridded',
   interval: 'day',
-  combinationMode: 'literal',
-  numDatasets: 3,
+  sublayerCombinationMode: 'literal',
+  sublayerCount: 3,
   quantizeOffset: 17897,
   singleFrame: false,
   tileBBox: [-22.5, -21.943045533438177, 0, 0],
   x: 3,
   y: 2,
   z: 3,
-  visible: [true, true, true],
+  sublayerVisibility: [true, true, true],
   interactive: true,
   datasets:
     'datasets[0]=fishing_v4&datasets[1]=chile-fishing:v20200331&datasets[2]=indonesia-fishing:v20200320',
@@ -43,7 +43,7 @@ const featAggTileRawCellFrame = aggregateCell(
   FRAME,
   BASE_CONFIG.delta,
   BASE_CONFIG.quantizeOffset,
-  BASE_CONFIG.numDatasets,
+  BASE_CONFIG.sublayerCount,
   true
 )
 

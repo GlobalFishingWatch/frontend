@@ -18,6 +18,7 @@ import {
   VALUE_MULTIPLIER,
 } from './constants'
 import { generateUniqueId } from './util'
+import { FeatureParams, GeomType, SublayerCombinationMode, TileAggregationParams } from './types'
 
 const getCellCoords = (tileBBox: any, cell: number, numCols: number) => {
   const col = cell % numCols
@@ -33,13 +34,8 @@ const getCellCoords = (tileBBox: any, cell: number, numCols: number) => {
   }
 }
 
-const getPointFeature = (
-  tileBBox: any,
-  cell: number,
-  numCols: number,
-  numRows: number,
-  addMeta: boolean
-): any => {
+const getPointFeature = (featureParams: FeatureParams): any => {
+  const { tileBBox, cell, numCols, numRows, addMeta } = featureParams
   const [minX, minY] = tileBBox
   const { col, row, width, height } = getCellCoords(tileBBox, cell, numCols)
 
@@ -63,13 +59,8 @@ const getPointFeature = (
   }
 }
 
-const getRectangleFeature = (
-  tileBBox: any,
-  cell: number,
-  numCols: number,
-  numRows: number,
-  addMeta: boolean
-): any => {
+const getRectangleFeature = (featureParams: FeatureParams): any => {
+  const { tileBBox, cell, numCols, numRows, addMeta } = featureParams
   const [minX, minY] = tileBBox
   const { col, row, width, height } = getCellCoords(tileBBox, cell, numCols)
 
@@ -103,29 +94,13 @@ const getRectangleFeature = (
   }
 }
 
-const getFeature = ({
-  geomType,
-  tileBBox,
-  cell,
-  numCols,
-  numRows,
-  id,
-  addMeta,
-}: {
-  geomType: string
-  tileBBox: any
-  cell: number
-  numCols: number
-  numRows: number
-  id: string
-  addMeta: boolean
-}) => {
+const getFeature = (featureParams: FeatureParams) => {
   const feature =
-    geomType === 'point'
-      ? getPointFeature(tileBBox, cell, numCols, numRows, addMeta)
-      : getRectangleFeature(tileBBox, cell, numCols, numRows, addMeta)
+    featureParams.geomType === GeomType.point
+      ? getPointFeature(featureParams)
+      : getRectangleFeature(featureParams)
 
-  feature.id = id
+  feature.id = featureParams.id
 
   return feature
 }
@@ -176,7 +151,7 @@ const getBucketIndex = (breaks: number[], value: number) => {
   return currentBucketIndex
 }
 
-const getAddValue = (realValuesSum: number, breaks: number[][]) => {
+const getAddValue = (realValuesSum: number, breaks?: number[][]) => {
   if (realValuesSum === 0) return undefined
   return breaks ? getBucketIndex(breaks[0], realValuesSum) : realValuesSum
 }
@@ -184,7 +159,7 @@ const getAddValue = (realValuesSum: number, breaks: number[][]) => {
 const getCompareValue = (
   datasetsHighestRealValue: number,
   datasetsHighestRealValueIndex: number,
-  breaks: number[][]
+  breaks?: number[][]
 ) => {
   if (datasetsHighestRealValue === 0) return undefined
   if (breaks) {
@@ -199,7 +174,7 @@ const getCompareValue = (
   }
 }
 
-const getBivariateValue = (realValues: number[], breaks: number[][]) => {
+const getBivariateValue = (realValues: number[], breaks?: number[][]) => {
   if (realValues[0] === 0 && realValues[1] === 0) return undefined
   if (breaks) {
     //  y: datasetB
@@ -231,8 +206,8 @@ const getBivariateValue = (realValues: number[], breaks: number[][]) => {
   }
 }
 
-const getLiteralValues = (realValues: number[], numDatasets: number) => {
-  if (numDatasets === 1) return realValues
+const getLiteralValues = (realValues: number[], sublayerCount: number) => {
+  if (sublayerCount === 1) return realValues
   return `[${realValues.join(',')}]`
 }
 
@@ -241,45 +216,50 @@ const getCumulativeValue = (realValuesSum: number, cumulativeValuesPaddedStrings
   return cumulativeValuesPaddedStrings.join('')
 }
 
-const aggregate = (intArray: number[], options: any) => {
+const aggregate = (intArray: number[], options: TileAggregationParams) => {
   const {
     quantizeOffset = 0,
     tileBBox,
-    delta = 30,
-    geomType = 'rectangle',
-    singleFrame,
-    interactive,
-    breaks,
     x,
     y,
     z,
-    numDatasets,
-    combinationMode,
-    visible,
+    delta = 30,
+    geomType = GeomType.rectangle,
+    singleFrame,
+    interactive,
+    sublayerBreaks,
+    sublayerCount,
+    sublayerCombinationMode,
+    sublayerVisibility,
   } = options
-
+  console.log(sublayerCombinationMode)
   if (
-    breaks &&
-    breaks.length !== numDatasets &&
-    (combinationMode === 'compare' || combinationMode === 'bivariate')
+    sublayerBreaks &&
+    sublayerBreaks.length !== sublayerCount &&
+    (sublayerCombinationMode === SublayerCombinationMode.max ||
+      sublayerCombinationMode === SublayerCombinationMode.bivariate)
   ) {
     throw new Error(
       'must provide as many breaks arrays as number of datasets when using compare and bivariate modes'
     )
   }
-  if (breaks && breaks.length !== 1 && combinationMode === 'add') {
+  if (
+    sublayerBreaks &&
+    sublayerBreaks.length !== 1 &&
+    sublayerCombinationMode === SublayerCombinationMode.add
+  ) {
     throw new Error('add combinationMode requires one and only one breaks array')
   }
-  if (combinationMode === 'bivariate') {
-    if (numDatasets !== 2)
+  if (sublayerCombinationMode === SublayerCombinationMode.bivariate) {
+    if (sublayerCount !== 2)
       throw new Error('bivariate combinationMode requires exactly two datasets')
-    if (breaks) {
-      if (breaks.length !== 2)
+    if (sublayerBreaks) {
+      if (sublayerBreaks.length !== 2)
         throw new Error('bivariate combinationMode requires exactly two breaks array')
-      if (breaks[0].length !== breaks[1].length)
+      if (sublayerBreaks[0].length !== sublayerBreaks[1].length)
         throw new Error('bivariate breaks arrays must have the same length')
       // TODO This might change if we want bivariate with more or less than 16 classes
-      if (breaks[0].length !== 4 || breaks[1].length !== 4)
+      if (sublayerBreaks[0].length !== 4 || sublayerBreaks[1].length !== 4)
         throw new Error('each bivariate breaks array require exactly 4 values')
     }
   }
@@ -287,8 +267,8 @@ const aggregate = (intArray: number[], options: any) => {
   const features = []
   const featuresInteractive = []
 
-  let aggregating = Array(numDatasets).fill([])
-  let currentAggregatedValues = Array(numDatasets).fill(0)
+  let aggregating = Array(sublayerCount).fill([])
+  let currentAggregatedValues = Array(sublayerCount).fill(0)
 
   let currentFeature
   let currentFeatureInteractive
@@ -325,13 +305,13 @@ const aggregate = (intArray: number[], options: any) => {
       startFrame = value
     } else if (indexInCell === CELL_END_INDEX) {
       endFrame = value
-      endIndex = startIndex + CELL_VALUES_START_INDEX + (endFrame - startFrame + 1) * numDatasets
+      endIndex = startIndex + CELL_VALUES_START_INDEX + (endFrame - startFrame + 1) * sublayerCount
     }
     indexInCell++
     if (i === endIndex - 1) {
       indexInCell = 0
       const original = intArray.slice(startIndex, endIndex)
-      const padded = new Array(delta * numDatasets).fill(0)
+      const padded = new Array(delta * sublayerCount).fill(0)
       original[FEATURE_CELLS_START_INDEX] = endFrame + delta
       const merged = original.concat(padded)
       featureIntArrays.push(merged)
@@ -351,12 +331,12 @@ const aggregate = (intArray: number[], options: any) => {
         const featureParams = {
           geomType,
           tileBBox,
-          cell: currentFeatureCell,
+          cell: currentFeatureCell as number,
           numCols,
           numRows,
           id: uniqueId,
         }
-        currentFeature = getFeature(featureParams as any)
+        currentFeature = getFeature(featureParams)
         currentFeature.properties.value = value / VALUE_MULTIPLIER
         features.push(currentFeature)
       }
@@ -378,9 +358,9 @@ const aggregate = (intArray: number[], options: any) => {
         id: uniqueId,
         addMeta: true,
       }
-      currentFeature = getFeature(featureParams as any)
+      currentFeature = getFeature(featureParams)
       if (interactive) {
-        currentFeatureInteractive = getFeature({ ...featureParams, addMeta: true } as any)
+        currentFeatureInteractive = getFeature({ ...featureParams, addMeta: true })
       }
 
       for (let i = CELL_VALUES_START_INDEX; i < featureIntArray.length; i++) {
@@ -391,7 +371,7 @@ const aggregate = (intArray: number[], options: any) => {
 
         // gets index of dataset, knowing that after headers values go
         // dataset1, dataset2, dataset1, dataset2, ...
-        const datasetIndex = featureBufferValuesPos % numDatasets
+        const datasetIndex = featureBufferValuesPos % sublayerCount
 
         // collect value for this dataset
         aggregating[datasetIndex].push(value)
@@ -403,65 +383,68 @@ const aggregate = (intArray: number[], options: any) => {
 
         // collect "working" value, ie value at head by substracting tail value
         let realValueAtFrameForDataset = 0
-        if (visible[datasetIndex]) {
+        if (sublayerVisibility[datasetIndex]) {
           realValueAtFrameForDataset = currentAggregatedValues[datasetIndex] + value - tailValue
         }
         currentAggregatedValues[datasetIndex] = realValueAtFrameForDataset
 
         // Compute mode-specific values
-        if (combinationMode === 'compare') {
+        if (sublayerCombinationMode === SublayerCombinationMode.max) {
           if (realValueAtFrameForDataset > datasetsHighestRealValue) {
             datasetsHighestRealValue = realValueAtFrameForDataset
             datasetsHighestRealValueIndex = datasetIndex
           }
         }
-        if (combinationMode === 'add' || combinationMode === 'cumulative') {
+        if (
+          sublayerCombinationMode === SublayerCombinationMode.add ||
+          sublayerCombinationMode === SublayerCombinationMode.cumulative
+        ) {
           realValuesSum += realValueAtFrameForDataset
         }
-        if (combinationMode === 'cumulative') {
+        if (sublayerCombinationMode === SublayerCombinationMode.cumulative) {
           const cumulativeValuePaddedString = Math.round(realValuesSum).toString().padStart(6, '0')
           cumulativeValuesPaddedStrings.push(cumulativeValuePaddedString)
         }
-        if (combinationMode === 'literal') {
+        if (sublayerCombinationMode === SublayerCombinationMode.literal) {
           // literalValuesStr += Math.floor(realValueAtFrameForDataset * 100) / 100
           // Just rounding is faster - revise if decimals are needed
           // Use ceil to avoid values being 'mute' when very close to zero
           // Update: use .round to avoid discrepancies betwen interaction and total ammount
           literalValuesStr += Math.round(realValueAtFrameForDataset)
-          if (datasetIndex < numDatasets - 1) {
+          if (datasetIndex < sublayerCount - 1) {
             literalValuesStr += ','
           }
         }
 
         const quantizedTail = tail - quantizeOffset
 
-        if (quantizedTail >= 0 && datasetIndex === numDatasets - 1) {
+        if (quantizedTail >= 0 && datasetIndex === sublayerCount - 1) {
           let finalValue
 
-          if (combinationMode === 'literal') {
+          if (sublayerCombinationMode === SublayerCombinationMode.literal) {
             literalValuesStr += ']'
           }
           // TODO add 'single' mode
-          if (combinationMode === 'compare') {
+          if (sublayerCombinationMode === SublayerCombinationMode.max) {
             finalValue = getCompareValue(
               datasetsHighestRealValue,
               datasetsHighestRealValueIndex as number,
-              breaks
+              sublayerBreaks
             )
-          } else if (combinationMode === 'add') {
-            finalValue = getAddValue(realValuesSum, breaks)
-          } else if (combinationMode === 'bivariate') {
-            finalValue = getBivariateValue(currentAggregatedValues, breaks)
-          } else if (combinationMode === 'literal') {
+          } else if (sublayerCombinationMode === SublayerCombinationMode.add) {
+            finalValue = getAddValue(realValuesSum, sublayerBreaks)
+          } else if (sublayerCombinationMode === SublayerCombinationMode.bivariate) {
+            finalValue = getBivariateValue(currentAggregatedValues, sublayerBreaks)
+          } else if (sublayerCombinationMode === SublayerCombinationMode.literal) {
             finalValue = literalValuesStr
-          } else if (combinationMode === 'cumulative') {
+          } else if (sublayerCombinationMode === SublayerCombinationMode.cumulative) {
             finalValue = getCumulativeValue(realValuesSum, cumulativeValuesPaddedStrings)
           }
           // console.log(quantizedTail, finalValue, currentFeature)
           writeValueToFeature(quantizedTail, finalValue as string | number, currentFeature)
         }
 
-        if (datasetIndex === numDatasets - 1) {
+        if (datasetIndex === sublayerCount - 1) {
           // When all dataset values have been collected for this frame, we can move to next frame
           head++
 
@@ -487,8 +470,8 @@ const aggregate = (intArray: number[], options: any) => {
       realValuesSum = 0
       cumulativeValuesPaddedStrings = []
 
-      aggregating = Array(numDatasets).fill([])
-      currentAggregatedValues = Array(numDatasets).fill(0)
+      aggregating = Array(sublayerCount).fill([])
+      currentAggregatedValues = Array(sublayerCount).fill(0)
 
       continue
     }

@@ -1,4 +1,5 @@
 import memoizeOne from 'memoize-one'
+import { GeomType, TileAggregationSourceParams } from '@globalfishingwatch/fourwings-aggregate'
 import {
   Type,
   HeatmapAnimatedGeneratorConfig,
@@ -22,6 +23,25 @@ export type GlobalHeatmapAnimatedGeneratorConfig = Required<
 
 const getSubLayersVisible = (sublayers: HeatmapAnimatedGeneratorSublayer[]) =>
   sublayers.map((sublayer) => (sublayer.visible === false ? false : true))
+
+const serializeBaseSourceParams = (params: any) => {
+  const serialized = {
+    ...params,
+    singleFrame: params.singleFrame ? 'true' : 'false',
+    filters: toURLArray('filters', params.filters),
+    datasets: toURLArray('datasets', params.datasets),
+    delta: params.delta.toString(),
+    quantizeOffset: params.quantizeOffset.toString(),
+    sublayerVisibility: JSON.stringify(params.sublayerVisibility),
+    sublayerCount: params.sublayerCount.toString(),
+    sublayerBreaks: JSON.stringify(params.sublayerBreaks),
+    interactive: params.interactive ? 'true' : 'false',
+  }
+  if (params['date-range']) {
+    serialized['date-range'] = params['date-range'].join(',')
+  }
+  return serialized
+}
 
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   mode: HeatmapAnimatedMode.Compare,
@@ -51,34 +71,34 @@ class HeatmapAnimatedGenerator {
     const delta = getDelta(timeChunks.activeStart, timeChunks.activeEnd, timeChunks.interval)
     const breaks = getSublayersBreaks(config, timeChunks.deltaInDays)
 
-    const geomType = config.mode === HeatmapAnimatedMode.Blob ? 'point' : 'rectangle'
+    const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
     const interactiveSource =
       config.interactive &&
       (config.mode === HeatmapAnimatedMode.Compare || config.mode === HeatmapAnimatedMode.Bivariate)
-    const combinationMode = HEATMAP_MODE_COMBINATION[config.mode]
+    const sublayerCombinationMode = HEATMAP_MODE_COMBINATION[config.mode]
 
     const sources = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
-      const baseSourceParams: Record<string, string> = {
+      const baseSourceParams_: TileAggregationSourceParams = {
         id: timeChunk.id,
-        singleFrame: 'false',
+        singleFrame: false,
         geomType,
-        combinationMode,
-        filters: toURLArray('filters', filters),
-        datasets: toURLArray('datasets', datasets),
-        visible: JSON.stringify(visible),
-        delta: delta.toString(),
-        quantizeOffset: timeChunk.quantizeOffset.toString(),
-        interval: timeChunks.interval,
-        numDatasets: config.sublayers.length.toString(),
-        breaks: JSON.stringify(breaks.map((sublayerBreaks) => sublayerBreaks.map((b) => b * 100))),
-        // TODO only for visible time chunk
-        interactive: interactiveSource.toString(),
+        delta,
+        quantizeOffset: timeChunk.quantizeOffset,
+        interval: timeChunks.interval as string,
+        filters,
+        datasets,
+        sublayerCombinationMode,
+        sublayerVisibility: visible,
+        sublayerCount: config.sublayers.length,
+        sublayerBreaks: breaks.map((sublayerBreaks) => sublayerBreaks.map((b) => b * 100)),
+        interactive: interactiveSource,
       }
       if (timeChunk.start && timeChunk.dataEnd) {
-        baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd].join(',')
+        baseSourceParams_['date-range'] = [timeChunk.start, timeChunk.dataEnd]
       }
+      const serializedBaseSourceParams = serializeBaseSourceParams(baseSourceParams_)
 
-      const sourceParams = [baseSourceParams]
+      const sourceParams = [serializedBaseSourceParams]
 
       return sourceParams.map((params: Record<string, string>) => {
         const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)
