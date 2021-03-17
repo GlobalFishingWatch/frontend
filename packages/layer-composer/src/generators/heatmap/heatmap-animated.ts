@@ -15,7 +15,7 @@ import { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
-import { toURLArray } from './util'
+import { getSourceId, toURLArray } from './util'
 
 export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
@@ -79,7 +79,7 @@ class HeatmapAnimatedGenerator {
 
     const sources = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
       const baseSourceParams_: TileAggregationSourceParams = {
-        id: timeChunk.id,
+        id: getSourceId(config, timeChunk),
         singleFrame: false,
         geomType,
         delta,

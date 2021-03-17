@@ -5,6 +5,7 @@ import { Group } from '../../../types'
 import { Type } from '../../types'
 import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer from '../util/get-base-layer'
+import { getLayerId, getSourceId } from '../util'
 
 export const TEMPORALGRID_SOURCE_LAYER = 'temporalgrid_interactive'
 
@@ -26,8 +27,8 @@ export default function gridded(
       }
 
       const chunkMainLayer = getBaseLayer(config)
-      chunkMainLayer.id = timeChunk.id
-      chunkMainLayer.source = timeChunk.id
+      chunkMainLayer.id = getLayerId(config, timeChunk)
+      chunkMainLayer.source = getSourceId(config, timeChunk)
       chunkMainLayer.paint = paint
       // only add legend metadata for first time chunk
       if (timeChunkIndex === 0 && chunkMainLayer.metadata) {
@@ -37,8 +38,8 @@ export default function gridded(
 
       if (config.interactive && timeChunk.active) {
         chunkLayers.push({
-          id: `${timeChunk.id}_interaction`,
-          source: timeChunk.id,
+          id: getLayerId(config, timeChunk, 'interaction'),
+          source: getSourceId(config, timeChunk),
           'source-layer': TEMPORALGRID_SOURCE_LAYER,
           type: 'fill',
           paint: {
@@ -53,8 +54,8 @@ export default function gridded(
           },
         })
         chunkLayers.push({
-          id: `${timeChunk.id}_interaction_hover`,
-          source: timeChunk.id,
+          id: getLayerId(config, timeChunk, 'interaction_hover'),
+          source: getSourceId(config, timeChunk),
           'source-layer': TEMPORALGRID_SOURCE_LAYER,
           type: 'line',
           paint: {
@@ -84,8 +85,8 @@ export default function gridded(
           'rgba(255,255,0,1)',
         ]
         chunkLayers.push({
-          id: `${timeChunk.id}_debug`,
-          source: timeChunk.id,
+          id: getLayerId(config, timeChunk, 'debug'),
+          source: getSourceId(config, timeChunk),
           'source-layer': 'temporalgrid',
           type: 'fill',
           paint: {
@@ -100,9 +101,9 @@ export default function gridded(
       if (config.debugLabels) {
         const exprDebugText = ['case', ['>', exprPick, 0], ['to-string', exprPick], '']
         chunkLayers.push({
-          id: `${timeChunk.id}_debug_labels`,
+          id: getLayerId(config, timeChunk, 'debug_labels'),
           type: 'symbol',
-          source: timeChunk.id,
+          source: getSourceId(config, timeChunk),
           'source-layer': 'temporalgrid',
           layout: {
             'text-field': exprDebugText,

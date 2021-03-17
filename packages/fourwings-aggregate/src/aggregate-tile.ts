@@ -232,7 +232,6 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
     sublayerCombinationMode,
     sublayerVisibility,
   } = options
-  console.log(sublayerCombinationMode)
   if (
     sublayerBreaks &&
     sublayerBreaks.length !== sublayerCount &&
