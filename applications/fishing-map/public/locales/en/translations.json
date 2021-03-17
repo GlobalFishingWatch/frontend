@@ -47,7 +47,8 @@
     "dismiss": "Dismiss",
     "save": "Save",
     "events": "Events",
-    "fishing": "Fishing"
+    "fishing": "Fishing",
+    "unknown": "Unknown"
   },
   "dataset": {
     "addContext": "Add context dataset",
@@ -171,7 +172,8 @@
     "transmission_plural": "Transmissions",
     "vesselType_plural": "Vessel types",
     "widthRange": "Width range",
-    "transmission": "Transmission"
+    "transmission": "Transmission",
+    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}"
   },
   "workspace": {
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",

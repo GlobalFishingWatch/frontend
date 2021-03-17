@@ -170,11 +170,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
                 !vesselsInfoResponse.entries || typeof vesselsInfoResponse.entries === 'function'
                   ? vesselsInfoResponse
                   : (vesselsInfoResponse as any)?.entries
-              vesselsInfo =
-                vesselsInfoList?.flatMap((vesselInfo) => {
-                  if (!vesselInfo?.shipname) return []
-                  return vesselInfo
-                }) || []
+              vesselsInfo = vesselsInfoList || []
             } catch (e) {
               console.warn(e)
             }
