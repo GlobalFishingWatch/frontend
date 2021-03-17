@@ -10,7 +10,7 @@ import UserContextGenerator from './user-context/user-context'
 import TrackGenerator from './track/track'
 import VesselEventsGenerator from './vessel-events/vessel-events'
 import RulersGenerator from './rulers/rulers'
-import TileClusterGenerator from './tiles-cluster/tiles-cluster'
+import TileClusterGenerator from './tile-cluster/tile-cluster'
 
 export { HEATMAP_COLOR_RAMPS } from './heatmap/config'
 export { TEMPORALGRID_SOURCE_LAYER } from './heatmap/modes/gridded'
