@@ -3,6 +3,7 @@ import { Type, TileClusterGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
+import { Group } from '../..'
 
 class TileClusterGenerator {
   type = Type.TileCluster
@@ -51,6 +52,7 @@ class TileClusterGenerator {
         metadata: {
           interactive: true,
           generatorId: config.id,
+          group: Group.Tool,
         },
       },
       {
@@ -70,6 +72,7 @@ class TileClusterGenerator {
         },
         metadata: {
           generatorId: config.id,
+          group: Group.Tool,
         },
       },
       {

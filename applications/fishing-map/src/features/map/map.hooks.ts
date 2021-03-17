@@ -11,6 +11,7 @@ import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
+import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
@@ -52,6 +53,7 @@ export const useClickedEventConnect = () => {
   const locationCategory = useSelector(selectLocationCategory)
   const clickedEventStatus = useSelector(selectClickedEventStatus)
   const { dispatchLocation } = useLocationConnect()
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { setMapCoordinates } = useViewport()
   const promiseRef = useRef<any>()
 
@@ -101,6 +103,7 @@ export const useClickedEventConnect = () => {
           longitude: lng,
           zoom: expansionZoom,
         })
+        cleanFeatureState('click')
         return
       }
     }
@@ -159,6 +162,25 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
   if (!event || !event.features) return null
+
+  const clusterFeature = event.features.find(
+    (f) => f.generatorType === Generators.Type.TileCluster && parseInt(f.properties.count) > 1
+  )
+
+  // We don't want to show anything else when hovering a cluster point
+  if (clusterFeature) {
+    return {
+      point: event.point,
+      latitude: event.latitude,
+      longitude: event.longitude,
+      features: [
+        {
+          type: clusterFeature.generatorType,
+          properties: clusterFeature.properties,
+        } as TooltipEventFeature,
+      ],
+    }
+  }
 
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     let dataview
