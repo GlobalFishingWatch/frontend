@@ -9,6 +9,7 @@ import {
 import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Style } from '@globalfishingwatch/mapbox-gl'
+import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
@@ -32,6 +33,7 @@ import {
   fetch4WingInteractionThunk,
   MAX_TOOLTIP_VESSELS,
 } from './map.slice'
+import useViewport from './map-viewport.hooks'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -49,6 +51,7 @@ export const useClickedEventConnect = () => {
   const locationCategory = useSelector(selectLocationCategory)
   const clickedEventStatus = useSelector(selectClickedEventStatus)
   const { dispatchLocation } = useLocationConnect()
+  const { setMapCoordinates } = useViewport()
   const promiseRef = useRef<any>()
 
   const rulersEditing = useSelector(selectEditing)
@@ -84,6 +87,21 @@ export const useClickedEventConnect = () => {
         })
       )
       return
+    }
+
+    const clusterFeature = event?.features?.find(
+      (f) => f.generatorType === Generators.Type.TileCluster
+    )
+    if (clusterFeature?.properties?.expansionZoom) {
+      const { count, expansionZoom, lat, lng } = clusterFeature.properties
+      if (count > 1) {
+        setMapCoordinates({
+          latitude: lat,
+          longitude: lng,
+          zoom: expansionZoom,
+        })
+        return
+      }
     }
 
     if (promiseRef.current) {

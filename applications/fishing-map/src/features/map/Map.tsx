@@ -59,6 +59,7 @@ const handleError = ({ error }: any) => {
   }
 }
 
+// TODO: move this to shared package
 const getLegendLayers = (
   style?: ExtendedStyle,
   dataviews?: UrlDataviewInstance[],
@@ -201,7 +202,10 @@ const MapWrapper = (): React.ReactElement | null => {
     (state) => {
       // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
       if (state.isHovering && hoveredTooltipEvent) {
-        return 'pointer'
+        const isCluster = hoveredTooltipEvent.features.find(
+          (f) => f.type === Generators.Type.TileCluster && parseInt(f.properties.count) > 1
+        )
+        return isCluster ? 'zoom-in' : 'pointer'
       } else if (state.isDragging) {
         return 'grabbing'
       }
