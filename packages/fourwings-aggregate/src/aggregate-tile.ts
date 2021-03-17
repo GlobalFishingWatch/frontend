@@ -82,6 +82,7 @@ const getRectangleFeature = (
     ? {
         _col: col,
         _row: row,
+        values: [],
       }
     : {}
 
@@ -137,6 +138,21 @@ const writeValueToFeature = (
 ) => {
   const propertiesKey = quantizedTail.toString()
   if (valueToWrite !== undefined) feature.properties[propertiesKey] = valueToWrite
+  if (valueToWrite !== undefined) {
+    const BUCKETS = [
+      { r: 0, g: 0, b: 0, a: 0 },
+      { r: 1, g: 0.1, b: 0, a: 1 },
+      { r: 1, g: 0.2, b: 0, a: 1 },
+      { r: 1, g: 0.3, b: 0, a: 1 },
+      { r: 1, g: 0.4, b: 0, a: 1 },
+      { r: 1, g: 0.5, b: 0, a: 1 },
+      { r: 1, g: 0.6, b: 0, a: 1 },
+      { r: 1, g: 0.7, b: 0, a: 1 },
+      { r: 1, g: 0.8, b: 0, a: 1 },
+      { r: 1, g: 0.9, b: 0, a: 1 },
+    ]
+    feature.properties.values[quantizedTail - 1500] = BUCKETS[valueToWrite]
+  }
 }
 
 // Given breaks [[0, 10, 20, 30], [-15, -5, 0, 5, 15]]:
