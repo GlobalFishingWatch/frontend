@@ -42,12 +42,14 @@
     "update": "Actualizar",
     "user": "Usuario",
     "userProfile": "Perfil de usuario",
+    "vessel": "Vessel",
     "vessel_plural": "Embarcaciones",
     "open_menu": "Abrir menú",
     "dismiss": "Cancelar",
     "save": "Guardar",
     "events": "Eventos",
-    "fishing": "Pesca"
+    "fishing": "Pesca",
+    "unknown": "Unknown"
   },
   "dataset": {
     "addContext": "Añadir conjunto de datos de contexto",
@@ -68,7 +70,7 @@
     "remove": "Remove dataset",
     "title": "Dataset",
     "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir conjuntos de datos",
-    "uploadNewContext": "Subir nuevas áreas de contexto",
+    "uploadNewContext": "Upload new context areas",
     "uploadNewEnviroment": "Subir nuevo conjunto de datos de entorno",
     "addEnvironment": "Añadir conjunto de datos de entorno",
     "title_plural": "Datasets",
@@ -171,7 +173,8 @@
     "transmission_plural": "Transmisión",
     "vesselType_plural": "Tipos de buque",
     "widthRange": "Width range",
-    "transmission": "Transmisión"
+    "transmission": "Transmisión",
+    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}"
   },
   "workspace": {
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",
