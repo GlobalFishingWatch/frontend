@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.12.1
+
+### Patch Changes
+
+- include registeredGearType in vessel types
+
 ## 2.12.0
 
 ### Minor Changes
