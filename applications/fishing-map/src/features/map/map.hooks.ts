@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
 import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   ExtendedFeatureVessel,
   InteractionEvent,
@@ -154,6 +155,7 @@ export type TooltipEvent = {
 }
 
 export const useMapTooltip = (event?: InteractionEvent | null) => {
+  const { t } = useTranslation()
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
   if (!event || !event.features) return null
@@ -192,10 +194,18 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       }
       return []
     }
-    const title =
-      dataview.category === 'context' && dataview.config?.type === Generators.Type.UserContext
-        ? dataview.datasets?.[0]?.name
-        : dataview.name || dataview.id.toString()
+
+    let title = dataview.name || dataview.id.toString()
+    if (dataview.category === DataviewCategory.Context) {
+      const dataset = dataview.datasets?.[0]
+      if (dataset) {
+        if (dataview.config?.type === Generators.Type.UserContext) {
+          title = dataset.name
+        } else {
+          title = t(`datasets:${dataset.id}.name` as any) as string
+        }
+      }
+    }
     const tooltipEventFeature: TooltipEventFeature = {
       title,
       type: dataview.config?.type,
