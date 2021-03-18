@@ -18,7 +18,13 @@ import {
   VALUE_MULTIPLIER,
 } from './constants'
 import { generateUniqueId } from './util'
-import { FeatureParams, GeomType, SublayerCombinationMode, TileAggregationParams } from './types'
+import {
+  AggregationOperation,
+  FeatureParams,
+  GeomType,
+  SublayerCombinationMode,
+  TileAggregationParams,
+} from './types'
 
 const getCellCoords = (tileBBox: any, cell: number, numCols: number) => {
   const col = cell % numCols
@@ -151,7 +157,7 @@ const getBucketIndex = (breaks: number[], value: number) => {
   return currentBucketIndex
 }
 
-const getAddValue = (realValuesSum: number, breaks?: number[][]) => {
+const getValue = (realValuesSum: number, breaks?: number[][]) => {
   if (realValuesSum === 0) return undefined
   return breaks ? getBucketIndex(breaks[0], realValuesSum) : realValuesSum
 }
@@ -231,7 +237,11 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
     sublayerCount,
     sublayerCombinationMode,
     sublayerVisibility,
+    aggregationOperation,
   } = options
+  if (sublayerCombinationMode === SublayerCombinationMode.none && sublayerCount > 1) {
+    throw new Error('Multiple sublayers but no proper combinaaetion mode set')
+  }
   if (
     sublayerBreaks &&
     sublayerBreaks.length !== sublayerCount &&
@@ -384,6 +394,10 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
         let realValueAtFrameForDataset = 0
         if (sublayerVisibility[datasetIndex]) {
           realValueAtFrameForDataset = currentAggregatedValues[datasetIndex] + value - tailValue
+          if (aggregationOperation === AggregationOperation.avg) {
+            realValueAtFrameForDataset =
+              realValueAtFrameForDataset / aggregating[datasetIndex].length
+          }
         }
         currentAggregatedValues[datasetIndex] = realValueAtFrameForDataset
 
@@ -423,15 +437,17 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
           if (sublayerCombinationMode === SublayerCombinationMode.literal) {
             literalValuesStr += ']'
           }
-          // TODO add 'single' mode
-          if (sublayerCombinationMode === SublayerCombinationMode.max) {
+
+          if (sublayerCombinationMode === SublayerCombinationMode.none) {
+            finalValue = getValue(realValueAtFrameForDataset, sublayerBreaks)
+          } else if (sublayerCombinationMode === SublayerCombinationMode.max) {
             finalValue = getCompareValue(
               datasetsHighestRealValue,
               datasetsHighestRealValueIndex as number,
               sublayerBreaks
             )
           } else if (sublayerCombinationMode === SublayerCombinationMode.add) {
-            finalValue = getAddValue(realValuesSum, sublayerBreaks)
+            finalValue = getValue(realValuesSum, sublayerBreaks)
           } else if (sublayerCombinationMode === SublayerCombinationMode.bivariate) {
             finalValue = getBivariateValue(currentAggregatedValues, sublayerBreaks)
           } else if (sublayerCombinationMode === SublayerCombinationMode.literal) {

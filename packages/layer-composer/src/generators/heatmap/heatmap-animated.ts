@@ -1,5 +1,9 @@
 import memoizeOne from 'memoize-one'
-import { GeomType, TileAggregationSourceParams } from '@globalfishingwatch/fourwings-aggregate'
+import {
+  GeomType,
+  TileAggregationSourceParams,
+  AggregationOperation,
+} from '@globalfishingwatch/fourwings-aggregate'
 import {
   Type,
   HeatmapAnimatedGeneratorConfig,
@@ -34,11 +38,13 @@ const serializeBaseSourceParams = (params: any) => {
     quantizeOffset: params.quantizeOffset.toString(),
     sublayerVisibility: JSON.stringify(params.sublayerVisibility),
     sublayerCount: params.sublayerCount.toString(),
-    sublayerBreaks: JSON.stringify(params.sublayerBreaks),
     interactive: params.interactive ? 'true' : 'false',
   }
   if (params['date-range']) {
     serialized['date-range'] = params['date-range'].join(',')
+  }
+  if (params.sublayerBreaks) {
+    serialized.sublayerBreaks = JSON.stringify(params.sublayerBreaks)
   }
   return serialized
 }
@@ -50,6 +56,7 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
   interval: 'auto',
+  aggregationOperation: AggregationOperation.sum,
 }
 
 class HeatmapAnimatedGenerator {
@@ -79,7 +86,7 @@ class HeatmapAnimatedGenerator {
     const sublayerCombinationMode = HEATMAP_MODE_COMBINATION[config.mode]
 
     const sources = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
-      const baseSourceParams_: TileAggregationSourceParams = {
+      const baseSourceParams: TileAggregationSourceParams = {
         id: getSourceId(config, timeChunk),
         singleFrame: false,
         geomType,
@@ -88,16 +95,18 @@ class HeatmapAnimatedGenerator {
         interval: timeChunks.interval as string,
         filters,
         datasets,
+        aggregationOperation: config.aggregationOperation,
         sublayerCombinationMode,
         sublayerVisibility: visible,
         sublayerCount: config.sublayers.length,
-        sublayerBreaks: breaks.map((sublayerBreaks) => sublayerBreaks.map((b) => b * 100)),
+        // sublayerBreaks: breaks.map((sublayerBreaks) => sublayerBreaks.map((b) => b * 100)),
         interactive: interactiveSource,
       }
       if (timeChunk.start && timeChunk.dataEnd) {
-        baseSourceParams_['date-range'] = [timeChunk.start, timeChunk.dataEnd]
+        baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd]
       }
-      const serializedBaseSourceParams = serializeBaseSourceParams(baseSourceParams_)
+      const serializedBaseSourceParams = serializeBaseSourceParams(baseSourceParams)
+      console.log(baseSourceParams, serializedBaseSourceParams)
 
       const sourceParams = [serializedBaseSourceParams]
 
@@ -119,7 +128,8 @@ class HeatmapAnimatedGenerator {
   _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) => {
     if (
       config.mode === HeatmapAnimatedMode.Compare ||
-      config.mode === HeatmapAnimatedMode.Bivariate
+      config.mode === HeatmapAnimatedMode.Bivariate ||
+      config.mode === HeatmapAnimatedMode.Single
     ) {
       return getGriddedLayers(config, timeChunks)
     } else if (config.mode === HeatmapAnimatedMode.Blob) {
@@ -139,6 +149,7 @@ class HeatmapAnimatedGenerator {
       ...DEFAULT_CONFIG,
       ...config,
     }
+    // console.log(finalConfig)
     const timeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
       finalConfig.staticStart || finalConfig.start,
       finalConfig.staticEnd || finalConfig.end,

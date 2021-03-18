@@ -6,6 +6,7 @@ export enum GeomType {
 }
 
 export enum SublayerCombinationMode {
+  none = 'none',
   // Add all sublayer raw values
   add = 'add',
   // Returns a bucket index depending on sublayer with highest value + position on sublayer color ramp

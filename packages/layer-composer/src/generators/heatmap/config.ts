@@ -10,6 +10,7 @@ export const API_ENDPOINTS = {
 export const HEATMAP_DEFAULT_MAX_ZOOM = 12
 
 export const HEATMAP_MODE_COMBINATION: Record<HeatmapAnimatedMode, SublayerCombinationMode> = {
+  [HeatmapAnimatedMode.Single]: SublayerCombinationMode.none,
   [HeatmapAnimatedMode.Compare]: SublayerCombinationMode.max,
   [HeatmapAnimatedMode.Bivariate]: SublayerCombinationMode.bivariate,
   [HeatmapAnimatedMode.Blob]: SublayerCombinationMode.literal,
@@ -17,6 +18,7 @@ export const HEATMAP_MODE_COMBINATION: Record<HeatmapAnimatedMode, SublayerCombi
 }
 
 export const HEATMAP_MODE_LAYER_TYPE: Record<HeatmapAnimatedMode, string> = {
+  [HeatmapAnimatedMode.Single]: 'fill',
   [HeatmapAnimatedMode.Compare]: 'fill',
   [HeatmapAnimatedMode.Bivariate]: 'fill',
   [HeatmapAnimatedMode.Blob]: 'heatmap',

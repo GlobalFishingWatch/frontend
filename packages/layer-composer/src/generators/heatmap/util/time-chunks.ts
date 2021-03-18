@@ -1,4 +1,4 @@
-import { DateTime, Duration } from 'luxon'
+import { DateTime, Duration, Interval as LuxonInterval } from 'luxon'
 
 export type Interval = 'month' | '10days' | 'day' | 'hour'
 export type IntervalOption = 'auto' | Interval
@@ -81,6 +81,21 @@ const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     },
     getDate: (frame: number) => {
       return new Date(frame * 1000 * 60 * 60 * 24 * 10)
+    },
+  },
+  month: {
+    getFrame: (start: number) => {
+      return Math.floor(
+        LuxonInterval.fromDateTimes(
+          DateTime.fromMillis(0).toUTC(),
+          DateTime.fromMillis(start).toUTC()
+        ).toDuration('month').months
+      )
+    },
+    getDate: (frame: number) => {
+      const year = 1970 + Math.floor(frame / 12)
+      const month = frame % 12
+      return new Date(Date.UTC(year, month, 1))
     },
   },
 }
@@ -225,6 +240,20 @@ export const getActiveTimeChunks = (
     timeChunks.activeChunkFrame = frame
     timeChunks.activeId = id
     return timeChunks
+  } else if (timeChunks.interval === 'month') {
+    const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
+    const id = 'heatmapchunk_month'
+    timeChunks.chunks = [
+      {
+        quantizeOffset: 0,
+        id,
+        frame,
+        active: true,
+      },
+    ]
+    timeChunks.activeChunkFrame = frame
+    timeChunks.activeId = id
+    return timeChunks
   }
 
   // calculate start and end taking some buffer into account to proactively load time chunks
@@ -254,6 +283,7 @@ export const getActiveTimeChunks = (
 
 const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interval) => {
   const config = CONFIG_BY_INTERVAL[interval]
+  // TODO Use Luxon to use UTC!!!!
   const ms = new Date(date).getTime()
   const frame = config.getFrame(ms)
   return frame - quantizeOffset
