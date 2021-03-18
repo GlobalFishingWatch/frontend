@@ -94,7 +94,12 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
                 ? formatInfoField(vessel.shipname, 'name')
                 : vessel.id
               return (
-                <button key={i} className={styles.vesselRow} onClick={() => onVesselClick(vessel)}>
+                <button
+                  key={i}
+                  className={styles.vesselRow}
+                  aria-label={`vessel-info-${vessel.id}`}
+                  onClick={() => onVesselClick(vessel)}
+                >
                   <span className={styles.vesselName}>
                     {vesselLabel.length > 25 ? `${vesselLabel.slice(0, 25)}...` : vesselLabel}
                     {vessel.dataset && vessel.dataset.name && (
