@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HeatmapTooltipRow renders vessel info in tooltip 1`] = `
+<div>
+  <div
+    class="popupSection"
+  >
+    <span
+      class="popupSectionColor"
+      style="background-color: cyan;"
+    />
+    <div
+      class="popupSectionContent"
+    >
+      <h3
+        class="popupSectionTitle"
+      >
+        Some tooltip title
+      </h3>
+      <div
+        class="row"
+      >
+        <span
+          class="rowText"
+        >
+          7,654
+           
+          common.meters
+          common.hour
+        </span>
+      </div>
+      <div
+        class="vesselsTable"
+      >
+        <div
+          class="vesselsHeader"
+        >
+          <label
+            class="vesselsHeaderLabel"
+          >
+            common.vessel_plural
+          </label>
+          <label
+            class="vesselsHeaderLabel"
+          >
+            common.hour_plural
+          </label>
+        </div>
+        <button
+          class="vesselRow"
+        >
+          <span
+            class="vesselName"
+          >
+            Grand Test
+            <span
+              class="vesselRowLegend"
+            >
+               - 
+              Port Events (AIS)
+            </span>
+          </span>
+          <span>
+            12
+          </span>
+        </button>
+        <button
+          class="vesselRow"
+        >
+          <span
+            class="vesselName"
+          >
+            Santa Partner
+            <span
+              class="vesselRowLegend"
+            >
+               - 
+              Port Events (AIS)
+            </span>
+          </span>
+          <span>
+            20
+          </span>
+        </button>
+        <div
+          class="vesselsMore"
+        >
+          + 
+          3
+           
+          common.more
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
