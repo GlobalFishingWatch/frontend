@@ -140,6 +140,7 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
                 <button
                   key={i}
                   disabled={!interactionAllowed || !hasDatasets}
+                  aria-label={`vessel-info-${vessel.id}`}
                   className={styles.vesselRow}
                   onClick={() => onVesselClick(vessel)}
                 >
