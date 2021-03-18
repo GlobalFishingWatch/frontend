@@ -10,6 +10,7 @@
     "lint:js": "eslint src -c .eslintrc.js --ext .js,jsx,ts,tsx --fix",
     "lint:css": "stylelint ./src/**/*.{css,scss,sass} --config .stylelintrc.js --fix",
     "test": "CI=true react-scripts test --passWithNoTests",
+    "test:watch": "react-scripts test --passWithNoTests",
     "test:deps": "depcheck",
     "eject": "react-scripts eject",
     "serve": "serve -s build",
