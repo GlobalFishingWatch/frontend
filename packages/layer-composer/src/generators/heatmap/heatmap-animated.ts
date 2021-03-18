@@ -49,6 +49,7 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   tilesetsEnd: new Date().toISOString(),
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
+  interval: 'auto',
 }
 
 class HeatmapAnimatedGenerator {
@@ -142,7 +143,8 @@ class HeatmapAnimatedGenerator {
       finalConfig.staticStart || finalConfig.start,
       finalConfig.staticEnd || finalConfig.end,
       finalConfig.tilesetsStart,
-      finalConfig.tilesetsEnd
+      finalConfig.tilesetsEnd,
+      finalConfig.interval
     )
 
     return {

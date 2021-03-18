@@ -2,6 +2,7 @@ import { FeatureCollection } from 'geojson'
 import { StringUnitLength } from 'luxon'
 import { AnySourceData, Layer } from '@globalfishingwatch/mapbox-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
+import { IntervalOption } from './heatmap/util/time-chunks'
 
 export enum Type {
   Background = 'BACKGROUND',
@@ -242,6 +243,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   interactive?: boolean
   staticStart?: string
   staticEnd?: string
+  interval?: IntervalOption
 }
 
 export type AnyGeneratorConfig =

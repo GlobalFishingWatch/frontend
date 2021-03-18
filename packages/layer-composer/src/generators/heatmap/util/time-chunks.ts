@@ -1,6 +1,7 @@
 import { DateTime, Duration } from 'luxon'
 
-export type Interval = '10days' | 'day' | 'hour'
+export type Interval = 'month' | '10days' | 'day' | 'hour'
+export type IntervalOption = 'auto' | Interval
 
 export type TimeChunk = {
   id: string
@@ -190,18 +191,20 @@ export const getActiveTimeChunks = (
   activeStart: string,
   activeEnd: string,
   datasetStart: string,
-  datasetEnd: string
+  datasetEnd: string,
+  interval_?: IntervalOption
 ): TimeChunks => {
   const delta = +toDT(activeEnd) - +toDT(activeStart)
-  const interval = getInterval(delta)
+  const finalInterval: Interval =
+    !interval_ || interval_ === 'auto' ? getInterval(delta) : (interval_ as Interval)
   const timeChunks: TimeChunks = {
     activeStart,
     activeEnd,
     chunks: [],
     delta,
-    deltaInIntervalUnits: CONFIG_BY_INTERVAL[interval].getFrame(delta),
+    deltaInIntervalUnits: CONFIG_BY_INTERVAL[finalInterval].getFrame(delta),
     deltaInDays: Duration.fromMillis(delta).as('days'),
-    interval,
+    interval: finalInterval,
     activeChunkFrame: 0,
     activeId: '',
   }
