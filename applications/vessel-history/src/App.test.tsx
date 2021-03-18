@@ -16,7 +16,12 @@ render(
 )
 
 describe('<App />', () => {
-  const mockUser: jest.Mock = useUser as jest.Mock
+  const assignMock = jest.fn()
+  const mockGFWLogin: jest.Mock = useGFWLogin as jest.Mock
+  Object.defineProperty(window, 'location', {
+    writable: true,
+    value: { assign: assignMock },
+  })
 
   const gfwLoginDefault = {
     loading: true,
