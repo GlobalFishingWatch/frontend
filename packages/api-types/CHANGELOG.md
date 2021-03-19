@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.14.0
+
+### Minor Changes
+
+- new events types definitions
+
 ## 2.13.0
 
 ### Minor Changes
