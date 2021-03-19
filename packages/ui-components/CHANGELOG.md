@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.14.5
+
+### Patch Changes
+
+- support target blank for button link
+
 ## 2.14.4
 
 ### Patch Changes
