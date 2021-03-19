@@ -31,6 +31,7 @@ import { ReactComponent as Layers } from '../assets/icons/layers.svg'
 import { ReactComponent as Logout } from '../assets/icons/logout.svg'
 import { ReactComponent as Menu } from '../assets/icons/menu.svg'
 import { ReactComponent as Minus } from '../assets/icons/minus.svg'
+import { ReactComponent as Pin } from '../assets/icons/pin.svg'
 import { ReactComponent as Plus } from '../assets/icons/plus.svg'
 import { ReactComponent as Publish } from '../assets/icons/publish.svg'
 import { ReactComponent as RemoveFromMap } from '../assets/icons/remove-from-map.svg'
@@ -81,6 +82,7 @@ export const IconComponents = {
   layers: Layers,
   menu: Menu,
   minus: Minus,
+  pin: Pin,
   plus: Plus,
   publish: Publish,
   'remove-from-map': RemoveFromMap,
