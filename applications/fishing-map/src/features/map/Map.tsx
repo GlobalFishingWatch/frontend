@@ -38,6 +38,7 @@ import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+import { SliceInteractionEvent } from './map.slice'
 
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceType: string) => {
@@ -151,7 +152,7 @@ const MapWrapper = (): React.ReactElement | null => {
     dispatchClickedEvent(null)
   }, [cleanFeatureState, dispatchClickedEvent])
 
-  const [hoveredEvent, setHoveredEvent] = useState<InteractionEvent | null>(null)
+  const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
   const handleHoverEvent = useCallback(
     (event) => {
       if (rulersEditing) {
@@ -166,7 +167,9 @@ const MapWrapper = (): React.ReactElement | null => {
     },
     [dispatch, rulersEditing]
   )
-  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<InteractionEvent | null>(null)
+  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
+    null
+  )
   const onMapHover = useMapHover(
     handleHoverEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,

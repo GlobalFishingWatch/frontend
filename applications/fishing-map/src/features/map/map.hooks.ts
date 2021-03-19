@@ -10,7 +10,7 @@ import {
 import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Style } from '@globalfishingwatch/mapbox-gl'
-import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
+import { ApiEvent, DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import {
   selectDataviewInstancesResolved,
@@ -31,9 +31,12 @@ import {
 import {
   setClickedEvent,
   selectClickedEvent,
-  selectClickedEventStatus,
   fetch4WingInteractionThunk,
   MAX_TOOLTIP_VESSELS,
+  fetchEcounterEventThunk,
+  SliceInteractionEvent,
+  selectFourWingsStatus,
+  selectApiEventStatus,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 
@@ -51,11 +54,13 @@ export const useClickedEventConnect = () => {
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
   const locationCategory = useSelector(selectLocationCategory)
-  const clickedEventStatus = useSelector(selectClickedEventStatus)
+  const fourWingsStatus = useSelector(selectFourWingsStatus)
+  const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { setMapCoordinates } = useViewport()
-  const promiseRef = useRef<any>()
+  const fourWingsPromiseRef = useRef<any>()
+  const eventsPromiseRef = useRef<any>()
 
   const rulersEditing = useSelector(selectEditing)
 
@@ -108,8 +113,12 @@ export const useClickedEventConnect = () => {
       }
     }
 
-    if (promiseRef.current) {
-      promiseRef.current.abort()
+    if (fourWingsPromiseRef.current) {
+      fourWingsPromiseRef.current.abort()
+    }
+
+    if (eventsPromiseRef.current) {
+      eventsPromiseRef.current.abort()
     }
 
     if (!event || !event.features) {
@@ -119,20 +128,28 @@ export const useClickedEventConnect = () => {
       return
     }
 
-    dispatch(setClickedEvent(event))
+    dispatch(setClickedEvent(event as SliceInteractionEvent))
+
     // get temporal grid clicked features and order them by sublayerindex
     const temporalGridFeatures = event.features
       .filter((feature) => feature.temporalgrid !== undefined && feature.temporalgrid.visible)
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
-
     if (temporalGridFeatures?.length) {
-      promiseRef.current = dispatch(fetch4WingInteractionThunk(temporalGridFeatures))
+      fourWingsPromiseRef.current = dispatch(fetch4WingInteractionThunk(temporalGridFeatures))
+    }
+
+    const encounterFeature = event.features.find(
+      (f) => f.generatorType === Generators.Type.TileCluster
+    )
+    if (encounterFeature) {
+      eventsPromiseRef.current = dispatch(fetchEcounterEventThunk(encounterFeature))
     }
   }
-  return { clickedEvent, clickedEventStatus, dispatchClickedEvent }
+  return { clickedEvent, fourWingsStatus, apiEventStatus, dispatchClickedEvent }
 }
 
 export type TooltipEventFeature = {
+  id?: string
   title?: string
   type?: Type
   color?: string
@@ -149,6 +166,7 @@ export type TooltipEventFeature = {
     numVessels: number
     vessels: ExtendedFeatureVessel[]
   }
+  event?: ApiEvent
 }
 
 export type TooltipEvent = {
@@ -157,7 +175,7 @@ export type TooltipEvent = {
   features: TooltipEventFeature[]
 }
 
-export const useMapTooltip = (event?: InteractionEvent | null) => {
+export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
   const { t } = useTranslation()
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
@@ -232,8 +250,10 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       title,
       type: dataview.config?.type,
       color: dataview.config?.color || 'black',
+      id: feature.id,
       unit: feature.unit,
       value: feature.value,
+      event: feature.event,
       source: feature.source,
       sourceLayer: feature.sourceLayer,
       geometry: feature.geometry,

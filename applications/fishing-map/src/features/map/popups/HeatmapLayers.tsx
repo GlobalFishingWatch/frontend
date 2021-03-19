@@ -22,7 +22,7 @@ type HeatmapTooltipRowProps = {
 function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { clickedEventStatus } = useClickedEventConnect()
+  const { fourWingsStatus } = useClickedEventConnect()
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
     const infoDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Vessels)
@@ -55,7 +55,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
             })}
           </span>
         </div>
-        {clickedEventStatus === AsyncReducerStatus.Loading && (
+        {fourWingsStatus === AsyncReducerStatus.Loading && (
           <div className={styles.loading}>
             <Spinner size="small" />
           </div>
