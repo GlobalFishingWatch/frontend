@@ -13,7 +13,7 @@ import {
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
-export const DATAVIEW_INSTANCE_PREFIX = 'vessel-'
+export const VESSEL_LAYER_PREFIX = 'vessel-'
 export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
 
@@ -38,7 +38,7 @@ export const getVesselDataviewInstance = (
     },
   ]
   const vesselDataviewInstance = {
-    id: `${DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
+    id: `${VESSEL_LAYER_PREFIX}${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       // TODO pick a not used color

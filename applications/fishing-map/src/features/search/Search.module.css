@@ -59,6 +59,17 @@
   border-right: 0.1rem solid transparent;
 }
 
+.selected {
+  background: var(--color-terthiary-blue);
+  pointer-events: none;
+}
+
+.alreadyAddedMsg {
+  display: flex;
+  align-items: center;
+  font: var(--font-S);
+}
+
 .searchResult:not(:last-child)::after {
   content: '';
   position: absolute;

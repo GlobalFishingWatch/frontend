@@ -135,6 +135,10 @@
     "zoom_out": "Zoom out"
   },
   "search": {
+    "title": "Search",
+    "basic": "Basic",
+    "advanced": "Advanced",
+    "mainQueryLabel": "Name, IMO or MMSI",
     "close": "Close search",
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
     "filterClose": "Close search filters",
@@ -143,7 +147,8 @@
     "notAllowed": "The available datasets don't allow searching vessels",
     "placeholder": "Type to search vessels",
     "suggestion": "Did you mean",
-    "vessels": "Search vessels"
+    "vessels": "Search vessels",
+    "vesselAlreadyInWorksace": "Vessel already added. Close search to see it."
   },
   "selects": {
     "allSelected": "All",

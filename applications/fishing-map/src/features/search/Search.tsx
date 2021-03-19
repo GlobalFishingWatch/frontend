@@ -8,12 +8,15 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
-import { Choice } from '@globalfishingwatch/ui-components'
+import { Choice, Icon } from '@globalfishingwatch/ui-components'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import {
+  selectVesselsDataviews,
+  selectWorkspaceStatus,
+} from 'features/workspace/workspace.selectors'
+import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -55,6 +58,7 @@ function Search() {
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
+  const vesselDataviews = useSelector(selectVesselsDataviews)
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const promiseRef = useRef<any>()
@@ -139,7 +143,6 @@ function Search() {
       })
       batch(() => {
         upsertDataviewInstance(vesselDataviewInstance)
-        onCloseClick()
       })
     }
   }
@@ -152,11 +155,11 @@ function Search() {
   const searchOptions = [
     {
       id: 'basic',
-      title: 'basic',
+      title: t('search.basic', 'Basic'),
     },
     {
       id: 'advanced',
-      title: 'advanced',
+      title: t('search.advanced', 'Advanced'),
     },
   ]
   const [activeSearchOption, setActiveSearchOption] = useState<string>(
@@ -179,7 +182,7 @@ function Search() {
       {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, selectedItem }) => (
         <div className={styles.search}>
           <div className={styles.header}>
-            <label className={styles.title}>Search</label>
+            <label className={styles.title}>{t('search.title', 'Search')}</label>
             <Choice
               options={searchOptions}
               activeOption={activeSearchOption}
@@ -200,7 +203,7 @@ function Search() {
                 {...getInputProps()}
                 onChange={onInputChange}
                 value={searchQuery}
-                label={'Name, IMO or MMSI'}
+                label={t('search.mainQueryLabel', 'Name, IMO or MMSI')}
                 autoFocus
                 disabled={!searchAllowed}
                 className={styles.input}
@@ -242,61 +245,72 @@ function Search() {
                       lastTransmissionDate,
                     } = entry
                     const flagLabel = getFlagById(flag)?.label
+                    const isInWorkspace = vesselDataviews?.some(
+                      (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
+                    )
                     return (
                       <li
                         {...getItemProps({ item: entry, index })}
                         className={cx(styles.searchResult, {
                           [styles.highlighted]: highlightedIndex === index,
+                          [styles.selected]: isInWorkspace,
                         })}
                         key={id}
                       >
-                        <div className={styles.name}>{shipname || '---'}</div>
-                        <div className={styles.properties}>
-                          <div className={styles.property}>
-                            <label>{t('vessel.flag', 'Flag')}</label>
-                            <span>{flagLabel || '---'}</span>
-                          </div>
-                          <div className={styles.property}>
-                            <label>{t('vessel.mmsi', 'MMSI')}</label>
-                            <span>{mmsi || '---'}</span>
-                          </div>
-                          <div className={styles.property}>
-                            <label>{t('vessel.imo', 'IMO')}</label>
-                            <span>{imo || '---'}</span>
-                          </div>
-                          <div className={styles.property}>
-                            <label>{t('vessel.callsign', 'Callsign')}</label>
-                            <span>{callsign || '---'}</span>
-                          </div>
-                          {fleet && (
+                        <Fragment>
+                          <div className={styles.name}>{shipname || '---'}</div>
+                          <div className={styles.properties}>
                             <div className={styles.property}>
-                              <label>{t('vessel.fleet', 'Fleet')}</label>
-                              <span>{formatInfoField(fleet, 'fleet')}</span>
+                              <label>{t('vessel.flag', 'Flag')}</label>
+                              <span>{flagLabel || '---'}</span>
                             </div>
-                          )}
-                          {origin && (
                             <div className={styles.property}>
-                              <label>{t('vessel.origin', 'Origin')}</label>
-                              <span>{formatInfoField(origin, 'fleet')}</span>
+                              <label>{t('vessel.mmsi', 'MMSI')}</label>
+                              <span>{mmsi || '---'}</span>
                             </div>
-                          )}
-                          {firstTransmissionDate && lastTransmissionDate && (
                             <div className={styles.property}>
-                              <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
-                              <span>
-                                from <I18nDate date={firstTransmissionDate} /> to{' '}
-                                <I18nDate date={lastTransmissionDate} />
-                              </span>
+                              <label>{t('vessel.imo', 'IMO')}</label>
+                              <span>{imo || '---'}</span>
                             </div>
-                          )}
-
-                          {dataset?.name && (
                             <div className={styles.property}>
-                              <label>{t('vessel.source', 'Source')}</label>
-                              <span>{dataset.name}</span>
+                              <label>{t('vessel.callsign', 'Callsign')}</label>
+                              <span>{callsign || '---'}</span>
                             </div>
+                            {fleet && (
+                              <div className={styles.property}>
+                                <label>{t('vessel.fleet', 'Fleet')}</label>
+                                <span>{formatInfoField(fleet, 'fleet')}</span>
+                              </div>
+                            )}
+                            {origin && (
+                              <div className={styles.property}>
+                                <label>{t('vessel.origin', 'Origin')}</label>
+                                <span>{formatInfoField(origin, 'fleet')}</span>
+                              </div>
+                            )}
+                            {firstTransmissionDate && lastTransmissionDate && (
+                              <div className={styles.property}>
+                                <label>{t('vessel.transmission_plural', 'Transmissions')}</label>
+                                <span>
+                                  from <I18nDate date={firstTransmissionDate} /> to{' '}
+                                  <I18nDate date={lastTransmissionDate} />
+                                </span>
+                              </div>
+                            )}
+                            {dataset?.name && (
+                              <div className={styles.property}>
+                                <label>{t('vessel.source', 'Source')}</label>
+                                <span>{dataset.name}</span>
+                              </div>
+                            )}
+                          </div>
+                          {isInWorkspace && (
+                            <span className={styles.alreadyAddedMsg}>
+                              <Icon icon="tick" />
+                              {t('search.vesselAlreadyInWorksace', 'Vessel already in workspace')}
+                            </span>
                           )}
-                        </div>
+                        </Fragment>
                       </li>
                     )
                   })}
