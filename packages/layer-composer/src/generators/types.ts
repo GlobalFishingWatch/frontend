@@ -132,6 +132,7 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
   color?: StringUnitLength
 }
 
+export type TilClusterEventType = 'encounter' | 'loitering' | 'port'
 /**
  * Layers created by user uploading their own shapefile
  */
@@ -145,6 +146,15 @@ export interface TileClusterGeneratorConfig extends GeneratorConfig {
    * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
    */
   tilesUrl: string
+  /**
+   * List of types supported by the API
+   */
+  eventTypes: TilClusterEventType | TilClusterEventType[]
+  /**
+   * List of datasets to retrieve the data from
+   * // TODO review if we could support multiples
+   */
+  dataset: string
 }
 
 /**
