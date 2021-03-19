@@ -1,30 +1,47 @@
 import { AnyLayer } from '@globalfishingwatch/mapbox-gl'
-import { Type, TileClusterGeneratorConfig } from '../types'
+import { Type, TileClusterGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
 import { Group } from '../..'
 
+export type GlobalTileClusterGeneratorConfig = Required<
+  MergedGeneratorConfig<TileClusterGeneratorConfig>
+>
+
 class TileClusterGenerator {
   type = Type.TileCluster
 
-  _getStyleSources = (config: TileClusterGeneratorConfig) => {
+  _getStyleSources = (config: GlobalTileClusterGeneratorConfig) => {
     if (!config.tilesUrl) {
       throw new Error(`Tile Cluster layer should specify tilesUrl ${JSON.stringify(config)}`)
     }
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
+    const url = new URL(tilesUrl)
+    url.searchParams.set('datasets', config.dataset)
+    if (config.start && config.end) {
+      url.searchParams.set('dateRange', [config.start, config.end].join(','))
+    }
+    if (config.eventTypes) {
+      url.searchParams.set(
+        'types',
+        Array.isArray(config.eventTypes) ? config.eventTypes.join(',') : config.eventTypes
+      )
+    }
+
     return [
       {
         id: config.id,
         type: 'vector',
-        tiles: [tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}')],
+        promoteId: 'event_id',
+        tiles: [decodeURI(url.toString())],
       },
     ]
   }
 
-  _getStyleLayers = (config: TileClusterGeneratorConfig): AnyLayer[] => {
+  _getStyleLayers = (config: GlobalTileClusterGeneratorConfig): AnyLayer[] => {
     const layers = [
       {
         id: 'clusters',
@@ -99,7 +116,7 @@ class TileClusterGenerator {
     return layers as AnyLayer[]
   }
 
-  getStyle = (config: TileClusterGeneratorConfig) => {
+  getStyle = (config: GlobalTileClusterGeneratorConfig) => {
     return {
       id: config.id,
       sources: this._getStyleSources(config),

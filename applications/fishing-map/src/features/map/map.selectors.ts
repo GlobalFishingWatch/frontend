@@ -199,9 +199,11 @@ export const getWorkspaceGeneratorsConfig = createSelector(
           },
         }
       } else if (dataview.config?.type === Generators.Type.TileCluster) {
+        generator.dataset = 'carriers-clusterbuster'
+        generator.eventTypes = ['encounter']
         // TODO remove this hardcoded endpoint and replace by dataset
         generator.tilesUrl =
-          'https://spike-clusterbuster-jzzp2ui3wq-uc.a.run.app/points/{z}/{x}/{y}/tile.mvt?type=encounter'
+          'https://gateway.api.dev.globalfishingwatch.org/v1/cluster/events/{z}/{x}/{y}/tile.mvt'
       }
       return generator
     })
