@@ -8,6 +8,7 @@ import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { getFiltersBySchema, SchemaFieldDataview } from 'features/datasets/datasets.utils'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchFilters.module.css'
 import { selectAllowedVesselsDatasets } from './search.selectors'
@@ -18,15 +19,20 @@ type SearchFiltersProps = {
 
 function SearchFilters({ className = '' }: SearchFiltersProps) {
   const { t } = useTranslation()
+  const { start, end } = useTimerangeConnect()
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
   const {
     flags,
     sources,
     fleets,
     origins,
-    firstTransmissionDate = '',
-    lastTransmissionDate = '',
+    firstTransmissionDate,
+    lastTransmissionDate,
   } = searchFilters
+  const firstTransmissionValue =
+    firstTransmissionDate === undefined ? start.split('T')[0] : firstTransmissionDate
+  const lastTransmissionValue =
+    lastTransmissionDate === undefined ? end.split('T')[0] : lastTransmissionDate
   const flagOptions = useMemo(getFlags, [])
   const searchDatasets = useSelector(selectAllowedVesselsDatasets)
   const sourceOptions = useMemo(
@@ -130,7 +136,7 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
       />
       <div className={styles.row}>
         <InputDate
-          value={firstTransmissionDate}
+          value={firstTransmissionValue}
           max={DEFAULT_WORKSPACE.end.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_after', 'Active after')}
@@ -141,14 +147,14 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
           }}
           onRemove={() => {
             if (firstTransmissionDate) {
-              setSearchFilters({ firstTransmissionDate: undefined })
+              setSearchFilters({ firstTransmissionDate: '' })
             }
           }}
         />
       </div>
       <div className={styles.row}>
         <InputDate
-          value={lastTransmissionDate}
+          value={lastTransmissionValue}
           max={DEFAULT_WORKSPACE.end.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_before', 'Active Before')}
@@ -159,7 +165,7 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
           }}
           onRemove={() => {
             if (lastTransmissionDate) {
-              setSearchFilters({ lastTransmissionDate: undefined })
+              setSearchFilters({ lastTransmissionDate: '' })
             }
           }}
         />
