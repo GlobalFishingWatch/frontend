@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.14.1
+
+### Patch Changes
+
+- update start and end api event types
+
 ## 2.14.0
 
 ### Minor Changes
