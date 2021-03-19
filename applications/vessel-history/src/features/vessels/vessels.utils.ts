@@ -1,17 +1,19 @@
 import { typedKeys } from 'utils/shared'
-import { VesselAPISource, VesselWithHistory } from 'types'
+import { VesselAPISource, VesselFieldsHistory, VesselWithHistory } from 'types'
 
 type VesselFieldKey = keyof VesselWithHistory
 
+export const formatVesselProfileId = (dataset: string, gfwId: string, tmtId: string) => {
+  return `${dataset}_${gfwId}_${tmtId}`
+}
 const getFieldPriority = (field: VesselFieldKey): VesselAPISource[] => {
-  console.log(field as string)
   return [VesselAPISource.TMT, VesselAPISource.GFW]
 }
 
-const getPriorityzedFieldValue = (
+const getPriorityzedFieldValue = <T = any>(
   field: VesselFieldKey,
-  dataValues: { source: VesselAPISource; value: any }[]
-): any[] => {
+  dataValues: { source: VesselAPISource; value: T }[]
+): T[] => {
   const fieldPriority = getFieldPriority(field)
   return dataValues
     .filter(({ value }) => value !== null && value !== undefined)
@@ -32,24 +34,23 @@ const priorityzeFieldValue = (
 
 const mergeHistoryFields = (
   field: VesselFieldKey,
-  dataValues: { source: VesselAPISource; value: any }[]
-): string => {
-  return getPriorityzedFieldValue(field, dataValues)
-    .reduce(
-      (acc, current) => ({
-        byCount: acc.byCount.concat(current.byCount),
-        byDate: acc.byDate.concat(current.byDate),
-      }),
-      { byCount: [], byDate: [] }
-    )
-    .join('')
-}
-
-const mergeFieldThunk = (field: VesselFieldKey) => {
-  if (field.toString() === 'history') {
-    return mergeHistoryFields
-  }
-  return priorityzeFieldValue
+  dataValues: { source: VesselAPISource; value: VesselFieldsHistory }[]
+) => {
+  const fieldValues = getPriorityzedFieldValue<VesselFieldsHistory>(field, dataValues)
+  return (fieldValues || []).reduce(
+    (acc, current) =>
+      typedKeys<VesselFieldsHistory>(current as VesselFieldsHistory).reduce(
+        (history, field) => ({
+          ...history,
+          [field]: {
+            byCount: (acc[field]?.byCount || []).concat(current[field].byCount),
+            byDate: (acc[field]?.byDate || []).concat(current[field].byDate),
+          },
+        }),
+        { ...acc }
+      ),
+    {} as VesselFieldsHistory
+  )
 }
 
 export const mergeVesselFromSources = (
@@ -60,18 +61,27 @@ export const mergeVesselFromSources = (
 ): VesselWithHistory => {
   const vessel = vesselData.slice().shift()?.vessel
   if (vessel) {
-    return typedKeys<VesselWithHistory>(vessel).reduce((acc, key) => {
-      const mergeField = mergeFieldThunk(key)
-      const value = mergeField(
-        key,
-        vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
-      )
+    const result = typedKeys<VesselWithHistory>(vessel).reduce((acc, key) => {
+      const value =
+        key.toString() === 'history'
+          ? mergeHistoryFields(
+              key,
+              vesselData.map((data) => ({
+                source: data.source,
+                value: data.vessel[key] as VesselFieldsHistory,
+              }))
+            )
+          : priorityzeFieldValue(
+              key,
+              vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
+            )
 
       return {
         ...acc,
         [key]: value,
       }
     }, {}) as VesselWithHistory
+    return result
   } else {
     throw new Error('No vessel data to merge')
   }

@@ -15,8 +15,6 @@ import {
   // selectVessels,
   // setVesselInfo,
 } from 'features/vessels/vessels.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { AppDispatch } from 'store'
 import { VesselAPISource } from './../../types/index'
 
 // const fetchGFWData = async (id: string, dataset: string) => {
@@ -57,24 +55,9 @@ import { VesselAPISource } from './../../types/index'
 export const vesselInfoThunk = async (dispatch: Dispatch, getState: StateGetter<AppState>) => {
   const state = getState()
   const id = selectVesselProfileId(state)
-  const fetchVessel: FetchVessel[] = [
-    {
-      source: VesselAPISource.GFW,
-      sourceId: {
-        id: selectVesselId(state),
-        dataset: selectDataset(state),
-      },
-    },
-    {
-      source: VesselAPISource.TMT,
-      sourceId: {
-        id: selectTmtId(state),
-      },
-    },
-  ]
   // const dispatch = useAppDispatch()
 
-  await dispatch(fetchVesselByIdThunk(fetchVessel))
+  // await dispatch({type: } fetchVesselByIdThunk(id))
   // const vessels = selectVessels(state)
 
   // if (vessels[id]) return

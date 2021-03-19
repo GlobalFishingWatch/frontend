@@ -1,18 +1,17 @@
-import React, { Fragment, useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { Fragment, useState, useEffect, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { IconButton, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { selectQueryParam, selectVesselProfileId } from 'routes/routes.selectors'
-// import { getVesselInfo } from 'features/vessels/vessels.selectors'
 import { HOME } from 'routes/routes'
-import { selectVesselById } from 'features/vessels/vessels.slice'
+import { fetchVesselByIdThunk, selectVesselById } from 'features/vessels/vessels.slice'
 import { useTranslation } from 'utils/i18n'
-import { VesselWithHistory } from 'types'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 
 const Profile: React.FC = (props): React.ReactElement => {
+  const dispatch = useDispatch()
   const { t } = useTranslation()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
@@ -21,32 +20,37 @@ const Profile: React.FC = (props): React.ReactElement => {
 
   const vessel = useSelector(selectVesselById(vesselProfileId))
 
-  const tabs: Tab[] = [
-    {
-      id: 'info',
-      title: 'INFO',
-      content: vessel ? (
-        <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
-      ) : (
-        <Fragment />
-      ),
-    },
-    {
-      id: 'activity',
-      title: 'ACTIVITY',
-      content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
-    },
-    {
-      id: 'map',
-      title: 'MAP',
-      content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
-    },
-  ]
+  useEffect(() => {
+    dispatch(fetchVesselByIdThunk(vesselProfileId))
+  }, [dispatch, vesselProfileId])
+
+  const tabs: Tab[] = useMemo(
+    () => [
+      {
+        id: 'info',
+        title: 'INFO',
+        content: vessel ? (
+          <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
+        ) : (
+          <Fragment />
+        ),
+      },
+      {
+        id: 'activity',
+        title: 'ACTIVITY',
+        content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
+      },
+      {
+        id: 'map',
+        title: 'MAP',
+        content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
+      },
+    ],
+    [t, vessel, lastPosition, lastPortVisit]
+  )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
-  if (!vessel) {
-    return <Fragment />
-  }
+
   return (
     <Fragment>
       <header className={styles.header}>

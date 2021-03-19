@@ -80,32 +80,45 @@ export type FetchVessel = {
   sourceId: VesselSourceId
 }
 
-export const fetchVesselByIdThunk = createAsyncThunk<
-  VesselWithHistory,
-  FetchVessel[],
-  {
-    rejectValue: AsyncError
+export const fetchVesselByIdThunk = createAsyncThunk(
+  'vessels/fetchById',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const [dataset, gfwId, tmtId] = id.split('_')
+      const vesselsToFetch: FetchVessel[] = [
+        {
+          source: VesselAPISource.GFW,
+          sourceId: {
+            id: gfwId,
+            dataset: dataset,
+          },
+        },
+        {
+          source: VesselAPISource.TMT,
+          sourceId: {
+            id: tmtId,
+          },
+        },
+      ]
+      const vessels = await Promise.all(
+        vesselsToFetch.map(async ({ source, sourceId }) => ({
+          source,
+          vessel: await getVesselFromSourceAPI(source).fetchById(sourceId),
+        }))
+      )
+      return {
+        ...mergeVesselFromSources(vessels),
+        id,
+      }
+    } catch (e) {
+      return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
+    }
   }
->('vessels/fetchById', async (vesselsToFetch: FetchVessel[], { rejectWithValue }) => {
-  try {
-    const vessels = await Promise.all(
-      vesselsToFetch.map(async ({ source, sourceId }) => ({
-        source,
-        vessel: await getVesselFromSourceAPI(source).fetchById(sourceId),
-      }))
-    )
-
-    return mergeVesselFromSources(vessels)
-  } catch (e) {
-    return rejectWithValue({
-      status: e.status || e.code,
-      message: e.message,
-    })
-  }
-})
+)
 
 const { slice: vesselsSlice, entityAdapter } = createAsyncSlice<VesselState, VesselWithHistory>({
   name: 'vessels',
+  initialState,
   thunks: {
     fetchByIdThunk: fetchVesselByIdThunk,
   },
