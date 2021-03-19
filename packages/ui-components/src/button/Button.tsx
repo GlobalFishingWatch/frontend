@@ -21,6 +21,7 @@ interface ButtonProps {
   tooltipPlacement?: Placement
   onClick?: (e: React.MouseEvent) => void
   href?: string
+  target?: string
 }
 
 function Button(props: ButtonProps) {
@@ -36,11 +37,16 @@ function Button(props: ButtonProps) {
     tooltipPlacement = 'auto',
     onClick,
     href,
+    target,
   } = props
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
       {href !== undefined ? (
-        <a href={href} className={cx(styles.button, styles[type], styles[size], className)}>
+        <a
+          href={href}
+          className={cx(styles.button, styles[type], styles[size], className)}
+          target={target}
+        >
           {children}
         </a>
       ) : (
