@@ -62,6 +62,7 @@
 
 - Updated dependencies [ce98aa73]
   - @globalfishingwatch/layer-composer@4.17.0
+- [`1eb0a62f`](https://github.com/GlobalFishingWatch/frontend/commit/1eb0a62f65f350f87d9047f8fc9c635d04f55f08) [#373](https://github.com/GlobalFishingWatch/frontend/pull/373) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - update choice component
 
 ## 2.14.1
 
