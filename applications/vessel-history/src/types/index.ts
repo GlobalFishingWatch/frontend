@@ -135,4 +135,5 @@ export type GFWDetail = {
   shipname: string
   source: string
   dataset: string
+  geartype: string
 }

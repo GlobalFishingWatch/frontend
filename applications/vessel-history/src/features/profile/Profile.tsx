@@ -50,7 +50,6 @@ const Profile: React.FC = (props): React.ReactElement => {
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
-
   return (
     <Fragment>
       <header className={styles.header}>

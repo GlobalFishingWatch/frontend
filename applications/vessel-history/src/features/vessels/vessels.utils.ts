@@ -25,11 +25,11 @@ const getPriorityzedFieldValue = <T = any>(
     .map(({ value }) => value)
 }
 
-const priorityzeFieldValue = (
+const priorityzeFieldValue = <T>(
   field: VesselFieldKey,
-  dataValues: { source: VesselAPISource; value: any }[]
-): string => {
-  return getPriorityzedFieldValue(field, dataValues).slice(0, 1).join('')
+  dataValues: { source: VesselAPISource; value: T }[]
+) => {
+  return getPriorityzedFieldValue(field, dataValues).slice(0, 1).shift() as T
 }
 
 const mergeHistoryFields = (
@@ -59,9 +59,11 @@ export const mergeVesselFromSources = (
     vessel: VesselWithHistory
   }[]
 ): VesselWithHistory => {
-  const vessel = vesselData.slice().shift()?.vessel
-  if (vessel) {
-    const result = typedKeys<VesselWithHistory>(vessel).reduce((acc, key) => {
+  const allFields = Array.from(
+    new Set(vesselData.map((v) => typedKeys<VesselWithHistory>(v.vessel)).flat())
+  )
+  if (allFields.length) {
+    const result = allFields.reduce((acc, key) => {
       const value =
         key.toString() === 'history'
           ? mergeHistoryFields(
@@ -75,7 +77,6 @@ export const mergeVesselFromSources = (
               key,
               vesselData.map((data) => ({ source: data.source, value: data.vessel[key] }))
             )
-
       return {
         ...acc,
         [key]: value,
