@@ -18,7 +18,7 @@ function Choice({ activeOption, options, onOptionClick, size = 'default' }: Choi
     left: number
   }>({ width: 0, left: 0 })
 
-  const activeRef = useRef<HTMLLIElement>()
+  const activeRef = useRef<HTMLLIElement | null>(null)
 
   const onOptionClickHandle = (option: ChoiceOption, e: React.MouseEvent) => {
     activeRef.current = e.currentTarget.parentElement as HTMLLIElement
@@ -50,7 +50,7 @@ function Choice({ activeOption, options, onOptionClick, size = 'default' }: Choi
               aria-controls={option.id}
               tabIndex={index}
               aria-checked={optionSelected}
-              ref={optionSelected ? activeRef : undefined}
+              ref={optionSelected ? activeRef : null}
             >
               <Button
                 className={cx(styles.optionButton, { [styles.optionActive]: optionSelected })}
