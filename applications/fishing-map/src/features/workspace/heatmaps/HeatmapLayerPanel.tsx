@@ -2,24 +2,20 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Switch, IconButton, TagList, Tooltip } from '@globalfishingwatch/ui-components'
-import { TagItem } from '@globalfishingwatch/ui-components/dist/tag-list'
+import { Switch, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getFlagsByIds } from 'utils/flags'
 import { UrlDataviewInstance } from 'types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariate } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { getSchemaFieldsSelectedInDataview } from 'features/datasets/datasets.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import DatasetFilterSource from '../shared/DatasetSourceField'
+import DatasetFlagField from '../shared/DatasetFlagsField'
+import DatasetSchemaField from '../shared/DatasetSchemaField'
 import Filters from './HeatmapFilters'
 import HeatmapInfoModal from './HeatmapInfoModal'
-import {
-  getSourcesSelectedInDataview,
-  isFishingDataview,
-  isPresenceDataview,
-} from './heatmaps.utils'
+import { isFishingDataview, isPresenceDataview } from './heatmaps.utils'
 
 type LayerPanelProps = {
   index: number
@@ -31,25 +27,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
-  const sourcesOptions: TagItem[] = getSourcesSelectedInDataview(dataview)
-  const nonVmsSources = sourcesOptions.filter((source) => !source.label.includes('VMS'))
-  const vmsSources = sourcesOptions.filter((source) => source.label.includes('VMS'))
-  let mergedSourceOptions: TagItem[] = []
-  if (vmsSources?.length > 1) {
-    mergedSourceOptions = [
-      ...nonVmsSources,
-      {
-        id: 'vms-grouped',
-        label: `VMS (${vmsSources.length} ${t('common.country_plural', 'countries')})`,
-        tooltip: vmsSources.map((source) => source.label).join(', '),
-      },
-    ]
-  }
 
-  const fishingFiltersOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
-  const gearTypesSelected = getSchemaFieldsSelectedInDataview(dataview, 'geartype')
-  const fleetsSelected = getSchemaFieldsSelectedInDataview(dataview, 'fleet')
-  const vesselsSelected = getSchemaFieldsSelectedInDataview(dataview, 'vessel_type')
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
@@ -84,10 +62,12 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   }
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  let datasetName = dataset ? t(`datasets:${dataset?.id}.name` as any) : dataview.name || ''
-  const fishignDataview = isFishingDataview(dataview)
+  let datasetName = dataset
+    ? t(`datasets:${dataset?.id?.split(':')[0]}.name` as any)
+    : dataview.name || ''
+  const fishingDataview = isFishingDataview(dataview)
   const presenceDataview = isPresenceDataview(dataview)
-  if (fishignDataview || presenceDataview) {
+  if (fishingDataview || presenceDataview) {
     datasetName = presenceDataview
       ? t(`common.presence`, 'Fishing presence')
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
@@ -122,7 +102,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && fishignDataview && (
+          {layerActive && fishingDataview && (
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
@@ -173,65 +153,25 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
       {layerActive && (
         <div className={styles.properties}>
           <div className={styles.filters}>
-            {sourcesOptions?.length > 0 && (
-              <div className={styles.filter}>
-                <label>{t('layer.source_plural', 'Sources')}</label>
-                <TagList
-                  tags={sourcesOptions}
-                  color={dataview.config?.color}
-                  className={cx(styles.tagList, {
-                    [styles.hidden]: mergedSourceOptions?.length > 0,
-                  })}
-                />
-                {mergedSourceOptions.length > 0 && (
-                  <TagList
-                    tags={mergedSourceOptions}
-                    color={dataview.config?.color}
-                    className={styles.mergedTagList}
-                  />
-                )}
-              </div>
-            )}
-            {fishingFiltersOptions.length > 0 && (
-              <div className={styles.filter}>
-                <label>{t('layer.flagState_plural', 'Flag States')}</label>
-                <TagList
-                  tags={fishingFiltersOptions}
-                  color={dataview.config?.color}
-                  className={styles.tagList}
-                />
-              </div>
-            )}
-            {gearTypesSelected.length > 0 && (
-              <div className={styles.filter}>
-                <label>{t('layer.gearType_plural', 'Gear types')}</label>
-                <TagList
-                  tags={gearTypesSelected}
-                  color={dataview.config?.color}
-                  className={styles.tagList}
-                />
-              </div>
-            )}
-            {fleetsSelected.length > 0 && (
-              <div className={styles.filter}>
-                <label>{t('layer.fleet_plural', 'Fleets')}</label>
-                <TagList
-                  tags={fleetsSelected}
-                  color={dataview.config?.color}
-                  className={styles.tagList}
-                />
-              </div>
-            )}
-            {vesselsSelected.length > 0 && (
-              <div className={styles.filter}>
-                <label>{t('vessel.vesselType_plural', 'Vessel types')}</label>
-                <TagList
-                  tags={vesselsSelected}
-                  color={dataview.config?.color}
-                  className={styles.tagList}
-                />
-              </div>
-            )}
+            <div className={styles.filters}>
+              <DatasetFilterSource dataview={dataview} />
+              <DatasetFlagField dataview={dataview} />
+              <DatasetSchemaField
+                dataview={dataview}
+                field={'geartype'}
+                label={t('layer.gearType_plural', 'Gear types')}
+              />
+              <DatasetSchemaField
+                dataview={dataview}
+                field={'fleet'}
+                label={t('layer.fleet_plural', 'Fleets')}
+              />
+              <DatasetSchemaField
+                dataview={dataview}
+                field={'vessel_type'}
+                label={t('vessel.vesselType_plural', 'Vessel types')}
+              />
+            </div>
           </div>
           <div id={`legend_${dataview.id}`}></div>
         </div>

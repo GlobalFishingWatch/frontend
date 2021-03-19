@@ -19,7 +19,7 @@ import {
 } from 'routes/routes.selectors'
 import { WORKSPACE, HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
-import { selectCustomWorkspace } from 'features/app/app.selectors'
+import { selectAnalysisQuery, selectCustomWorkspace } from 'features/app/app.selectors'
 import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
@@ -108,11 +108,17 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
 
       const locationCategory = selectLocationCategory(state)
+      const dataviewInstances = selectUrlDataviewInstances(state)
+      const analysis = selectAnalysisQuery(state)
       if (workspace.viewport && locationType !== HOME) {
         dispatch(
           updateLocation(locationType, {
             payload: { category: locationCategory, workspaceId: workspace.id },
-            query: { ...workspace.viewport },
+            query: {
+              ...workspace.viewport,
+              dataviewInstances,
+              analysis,
+            },
             replaceQuery: true,
           })
         )
@@ -182,18 +188,7 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
 const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
-  reducers: {
-    resetWorkspaceSearchQuery(state) {
-      if (state.data?.state) {
-        state.data.state.query = undefined
-      }
-    },
-    resetWorkspaceReportQuery(state) {
-      if (state.data?.state) {
-        state.data.state.report = undefined
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaceThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
@@ -228,7 +223,5 @@ const workspaceSlice = createSlice({
     })
   },
 })
-
-export const { resetWorkspaceSearchQuery, resetWorkspaceReportQuery } = workspaceSlice.actions
 
 export default workspaceSlice.reducer

@@ -3,12 +3,18 @@ import React, { Fragment, useCallback } from 'react'
 import groupBy from 'lodash/groupBy'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import bbox from '@turf/bbox'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
-import { setReportGeometry } from 'features/report/report.slice'
-import { useMapboxInstance } from '../map.context'
-import { selectClickedEvent } from '../map.slice'
+import { selectHasAnalysisLayersVisible } from 'features/workspace/workspace.selectors'
+import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
+import { FOOTER_HEIGHT } from 'features/footer/Footer'
+import useMapInstance, { useMapContext } from 'features/map/map-context.hooks'
+import { Bbox } from 'types'
+import { setClickedEvent } from '../map.slice'
+import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './Popup.module.css'
 
 const TunaRfmoLinksById: Record<string, string> = {
@@ -23,32 +29,49 @@ interface FeatureRowProps {
   feature: TooltipEventFeature
   showFeaturesDetails: boolean
   onReportClick?: (feature: TooltipEventFeature) => void
-  index: number
+  reportEnabled?: boolean
 }
 
 function FeatureRow({
   feature,
   showFeaturesDetails = false,
   onReportClick,
-  index = Date.now(),
+  reportEnabled = true,
 }: FeatureRowProps) {
   const { t } = useTranslation()
+  const context = useMapContext()
+
+  const handleReportClick = useCallback(
+    (ev: React.MouseEvent<Element, MouseEvent>) => {
+      context.eventManager.once('click', (e: any) => e.stopPropagation(), ev.target)
+      if (onReportClick) {
+        onReportClick(feature)
+      }
+    },
+    [context.eventManager, feature, onReportClick]
+  )
+
   if (!feature.value) return null
   const { gfw_id } = feature.properties
 
   // ContextLayerType.MPA but enums doesn't work in CRA for now
-  if (feature.contextLayer === 'mpa') {
+  if (['mpa', 'mpa-restricted', 'mpa-no-take'].includes(feature.contextLayer as string)) {
     const { wdpa_pid } = feature.properties
     const label = `${feature.value} - ${feature.properties.desig}`
     return (
-      <div className={styles.row} key={`${index}-${label}-${gfw_id}`}>
+      <div className={styles.row} key={`${label}-${gfw_id}`}>
         <span className={styles.rowText}>{label}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
             <IconButton
               icon="report"
-              tooltip={t('common.report', 'Report')}
-              onClick={() => onReportClick && onReportClick(feature)}
+              disabled={!reportEnabled}
+              tooltip={
+                reportEnabled
+                  ? t('common.report', 'Report')
+                  : t('analysis.noActivityLayers', 'No activity layers active')
+              }
+              onClick={handleReportClick}
               size="small"
             />
             {wdpa_pid && (
@@ -68,29 +91,37 @@ function FeatureRow({
   if (feature.contextLayer === 'tuna-rfmo') {
     const link = TunaRfmoLinksById[feature.value]
     return (
-      <div className={styles.row} key={`${index}-${feature.value}-${gfw_id}`}>
+      <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
         <span className={styles.rowText}>{feature.value}</span>
-        {showFeaturesDetails && link && (
-          <div className={styles.rowActions}>
+        <div className={styles.rowActions}>
+          <IconButton
+            icon="report"
+            disabled={!reportEnabled}
+            tooltip={t('common.report', 'Report')}
+            onClick={handleReportClick}
+            size="small"
+          />
+          {showFeaturesDetails && link && (
             <a target="_blank" rel="noopener noreferrer" href={link}>
               <IconButton icon="info" tooltip="See more" size="small" />
             </a>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     )
   }
   if (feature.contextLayer === 'eez-areas') {
     const { mrgid } = feature.properties
     return (
-      <div className={styles.row} key={`${index}-${mrgid}-${gfw_id}`}>
+      <div className={styles.row} key={`${mrgid}-${gfw_id}`}>
         <span className={styles.rowText}>{feature.value}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
             <IconButton
               icon="report"
+              disabled={!reportEnabled}
               tooltip={t('common.report', 'Report')}
-              onClick={() => onReportClick && onReportClick(feature)}
+              onClick={handleReportClick}
               size="small"
             />
             <a
@@ -105,7 +136,25 @@ function FeatureRow({
       </div>
     )
   }
-  return <div key={`${index}-${feature.value || gfw_id}`}>{feature.value}</div>
+  if (feature.contextLayer === 'wpp-nri' || feature.contextLayer === 'high-seas') {
+    return (
+      <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
+        <span className={styles.rowText}>{feature.value}</span>
+        {showFeaturesDetails && (
+          <div className={styles.rowActions}>
+            <IconButton
+              icon="report"
+              disabled={!reportEnabled}
+              tooltip={t('common.report', 'Report')}
+              onClick={handleReportClick}
+              size="small"
+            />
+          </div>
+        )}
+      </div>
+    )
+  }
+  return <div key={`${feature.value || gfw_id}`}>{feature.value}</div>
 }
 
 type ContextTooltipRowProps = {
@@ -114,43 +163,46 @@ type ContextTooltipRowProps = {
 }
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
-  const mapInstance = useMapboxInstance()
-  const clickedEvent = useSelector(selectClickedEvent)
-  const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useDispatch()
+  const fitMapBounds = useMapFitBounds()
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
+  const { dispatchQueryParams } = useLocationConnect()
+  const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
 
   const onReportClick = useCallback(
     (feature: TooltipEventFeature) => {
-      if (!mapInstance || !clickedEvent) {
-        console.warn(`No map ${mapInstance ? 'clicked event' : 'map instance'} instance found`)
+      if (!feature.properties?.gfw_id) {
+        console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
-      const intersectionOptions = { layers: [feature.layerId] }
-      const boundaries = mapInstance.queryRenderedFeatures(
-        clickedEvent.point as any,
-        intersectionOptions
-      )
-      const geometry = {
-        type: 'FeatureCollection',
-        features: boundaries.map(({ geometry }, id) => ({
-          id,
-          type: 'Feature',
-          geometry,
-        })),
-      }
+      const bounds = bbox(feature.geometry) as Bbox
       batch(() => {
-        dispatch(
-          setReportGeometry({
-            geometry,
-            areaName: boundaries.map((b) => b.properties?.geoname ?? []).join(', '),
-          })
-        )
-        dispatchQueryParams({ report: 'fishing-activity' })
+        dispatchQueryParams({
+          analysis: {
+            areaId: feature.properties?.gfw_id,
+            sourceId: feature.source,
+          },
+        })
+        dispatch(setClickedEvent(null))
+
+        cleanFeatureState('click')
       })
+      // Analysis already does it on page reload but to avoid waiting
+      // this moves the map to the same position
+      if (bounds) {
+        const boundsParams = {
+          padding: 10,
+          mapWidth: window.innerWidth / 2,
+          mapHeight: window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT,
+        }
+        fitMapBounds(bounds, boundsParams)
+      }
     },
-    [mapInstance, clickedEvent, dispatchQueryParams, dispatch]
+    [cleanFeatureState, dispatch, dispatchQueryParams, fitMapBounds]
   )
-  const featuresByType = groupBy(features, 'layer')
+
+  const featuresByType = groupBy(features, 'layerId')
+
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => (
@@ -165,10 +217,11 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             )}
             {featureByType.map((feature, index) => (
               <FeatureRow
-                index={index}
+                key={feature.properties?.value + index}
                 feature={feature}
                 showFeaturesDetails={showFeaturesDetails}
                 onReportClick={onReportClick}
+                reportEnabled={hasAnalysisLayers}
               />
             ))}
           </div>

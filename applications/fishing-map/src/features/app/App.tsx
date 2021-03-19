@@ -1,10 +1,10 @@
-import React, { useState, Fragment, useCallback, useEffect, Suspense } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
+import { useSelector } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
+import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
-import { MapboxRefProvider } from 'features/map/map.context'
 import { isWorkspaceLocation, selectLocationType, selectWorkspaceId } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -25,8 +25,11 @@ import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import styles from './App.module.css'
-import { selectSidebarOpen } from './app.selectors'
+import { selectAnalysisQuery, selectSidebarOpen, selectViewport } from './app.selectors'
+import { useAppDispatch } from './app.hooks'
 
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
@@ -41,7 +44,7 @@ const Main = () => {
 }
 
 function App(): React.ReactElement {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -50,8 +53,27 @@ function App(): React.ReactElement {
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
-  // const availableCategories = useSelector(selectAvailableWorkspacesCategories)
-  const narrowSidebar = useSelector(isWorkspaceLocation)
+  const analysisQuery = useSelector(selectAnalysisQuery)
+  const workspaceLocation = useSelector(isWorkspaceLocation)
+  const isAnalysing = useSelector(selectIsAnalyzing)
+  const narrowSidebar = workspaceLocation && !analysisQuery
+  const urlViewport = useSelector(selectViewport)
+
+  const fitMapBounds = useMapFitBounds()
+  const { setMapCoordinates } = useViewport()
+
+  useLayoutEffect(() => {
+    if (isAnalysing) {
+      if (analysisQuery.bounds) {
+        fitMapBounds(analysisQuery.bounds, { padding: 10 })
+      } else {
+        setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
+      }
+    } else {
+      setMapCoordinates(urlViewport)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 
@@ -84,12 +106,18 @@ function App(): React.ReactElement {
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
   useEffect(() => {
+    const fetchWorkspace = async () => {
+      const action = await dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
+      if (fetchWorkspaceThunk.fulfilled.match(action) && action.payload?.viewport) {
+        setMapCoordinates(action.payload.viewport)
+      }
+    }
     if (
       userLogged &&
       workspaceCustomStatus !== AsyncReducerStatus.Loading &&
       (homeNeedsFetch || hasWorkspaceIdChanged)
     ) {
-      dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
+      fetchWorkspace()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
@@ -103,19 +131,18 @@ function App(): React.ReactElement {
   }, [])
 
   return (
-    <Fragment>
-      <MapboxRefProvider>
-        <Suspense fallback={null}>
-          <SplitView
-            isOpen={sidebarOpen}
-            onToggle={onToggle}
-            aside={<Sidebar onMenuClick={onMenuClick} />}
-            main={<Main />}
-            asideWidth={narrowSidebar ? '37rem' : '50%'}
-            className="split-container"
-          />
-        </Suspense>
-      </MapboxRefProvider>
+    /* Value as null as there is no needed to set a default value but Typescript complains */
+    <MapContext.Provider value={null as any}>
+      <Suspense fallback={null}>
+        <SplitView
+          isOpen={sidebarOpen}
+          onToggle={onToggle}
+          aside={<Sidebar onMenuClick={onMenuClick} />}
+          main={<Main />}
+          asideWidth={narrowSidebar ? '37rem' : '50%'}
+          className="split-container"
+        />
+      </Suspense>
       <Menu
         bgImage={menuBgImage}
         isOpen={menuOpen}
@@ -129,7 +156,7 @@ function App(): React.ReactElement {
       >
         <DebugMenu />
       </Modal>
-    </Fragment>
+    </MapContext.Provider>
   )
 }
 

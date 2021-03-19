@@ -32,6 +32,11 @@
   padding-right: var(--space-M);
 }
 
+.empty {
+  cursor: default;
+  color: var(--color-secondary-blue);
+}
+
 .dataset:not(:last-of-type) {
   border-bottom: var(--border);
 }

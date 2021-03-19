@@ -8,7 +8,6 @@ import {
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import { DataviewDatasetConfig, Dataset, Vessel, DatasetTypes } from '@globalfishingwatch/api-types'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
 import {
@@ -24,7 +23,6 @@ type MapState = {
   clicked: InteractionEvent | null
   hovered: InteractionEvent | null
   status: AsyncReducerStatus
-  bounds?: MiniglobeBounds
 }
 
 const initialState: MapState = {
@@ -172,11 +170,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
                 !vesselsInfoResponse.entries || typeof vesselsInfoResponse.entries === 'function'
                   ? vesselsInfoResponse
                   : (vesselsInfoResponse as any)?.entries
-              vesselsInfo =
-                vesselsInfoList?.flatMap((vesselInfo) => {
-                  if (!vesselInfo?.shipname) return []
-                  return vesselInfo
-                }) || []
+              vesselsInfo = vesselsInfoList || []
             } catch (e) {
               console.warn(e)
             }
@@ -218,9 +212,6 @@ const slice = createSlice({
       }
       state.clicked = { ...action.payload }
     },
-    setBounds: (state, action: PayloadAction<MiniglobeBounds>) => {
-      state.bounds = action.payload
-    },
   },
 
   extraReducers: (builder) => {
@@ -253,7 +244,6 @@ const slice = createSlice({
 
 export const selectClickedEvent = (state: RootState) => state.map.clicked
 export const selectClickedEventStatus = (state: RootState) => state.map.status
-export const selectBounds = (state: RootState) => state.map.bounds
 
-export const { setClickedEvent, setBounds } = slice.actions
+export const { setClickedEvent } = slice.actions
 export default slice.reducer

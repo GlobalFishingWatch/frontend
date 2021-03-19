@@ -1,5 +1,41 @@
 # @globalfishingwatch/layer-composer
 
+## 4.16.0
+
+### Minor Changes
+
+- [`f7b017f0`](https://github.com/GlobalFishingWatch/frontend/commit/f7b017f0c72bd1f90e6a984ff5c26e524d7d735a) [#360](https://github.com/GlobalFishingWatch/frontend/pull/360) Thanks [@j8seangel](https://github.com/j8seangel)! - set user context layers as interactive
+
+## 4.15.0
+
+### Minor Changes
+
+- expose temporal grid source layer id
+
+## 4.14.5
+
+### Patch Changes
+
+- fix highted areas color
+
+## 4.14.4
+
+### Patch Changes
+
+- fix highlight typo
+
+## 4.14.3
+
+### Patch Changes
+
+- fix feature state context styles
+
+## 4.14.2
+
+### Patch Changes
+
+- highlight style in context areas
+
 ## 4.14.1
 
 ### Patch Changes

@@ -53,7 +53,7 @@ export const getCommonSchemaFieldsInDataview = (
         label: capitalize(lowerCase(field)),
       }))
     : []
-  return commonSchemaFields
+  return commonSchemaFields.sort((a, b) => a.label.localeCompare(b.label))
 }
 
 export const getSchemaFieldsSelectedInDataview = (

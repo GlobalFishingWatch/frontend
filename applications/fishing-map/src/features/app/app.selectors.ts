@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types/dist'
+import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
 import {
   selectDataviewInstancesMerged,
@@ -9,30 +9,23 @@ import {
   selectWorkspaceViewport,
 } from 'features/workspace/workspace.selectors'
 import {
-  selectUrlMapZoomQuery,
-  selectUrlMapLatitudeQuery,
-  selectUrlMapLongitudeQuery,
-  selectUrlEndQuery,
-  selectUrlStartQuery,
   selectQueryParam,
+  selectUrlViewport,
+  selectUrlTimeRange,
   selectLocationCategory,
 } from 'routes/routes.selectors'
 import {
   TimebarEvents,
   TimebarGraphs,
   TimebarVisualisations,
+  WorkspaceAnalysis,
   WorkspaceState,
   WorkspaceStateProperty,
 } from 'types'
 
 export const selectViewport = createSelector(
-  [
-    selectUrlMapZoomQuery,
-    selectUrlMapLatitudeQuery,
-    selectUrlMapLongitudeQuery,
-    selectWorkspaceViewport,
-  ],
-  (zoom, latitude, longitude, workspaceViewport) => {
+  [selectUrlViewport, selectWorkspaceViewport],
+  ({ zoom, latitude, longitude }, workspaceViewport) => {
     return {
       zoom: zoom || workspaceViewport?.zoom || DEFAULT_WORKSPACE.zoom,
       latitude: latitude || workspaceViewport?.latitude || DEFAULT_WORKSPACE.latitude,
@@ -42,8 +35,8 @@ export const selectViewport = createSelector(
 )
 
 export const selectTimeRange = createSelector(
-  [selectUrlStartQuery, selectUrlEndQuery, selectWorkspaceTimeRange],
-  (start, end, workspaceTimerange) => {
+  [selectUrlTimeRange, selectWorkspaceTimeRange],
+  ({ start, end }, workspaceTimerange) => {
     return {
       start: start || workspaceTimerange?.start || DEFAULT_WORKSPACE.start,
       end: end || workspaceTimerange?.end || DEFAULT_WORKSPACE.end,
@@ -60,10 +53,10 @@ export const selectWorkspaceStateProperty = (property: WorkspaceStateProperty) =
     }
   )
 
-export const selectReportQuery = createSelector(
-  [selectWorkspaceStateProperty('report')],
-  (report): string => {
-    return report
+export const selectAnalysisQuery = createSelector(
+  [selectWorkspaceStateProperty('analysis')],
+  (analysis): WorkspaceAnalysis => {
+    return analysis
   }
 )
 
@@ -111,15 +104,14 @@ export const selectTimebarGraph = createSelector(
 
 export const selectWorkspaceAppState = createSelector(
   [
-    selectSearchQuery,
     selectBivariate,
     selectSidebarOpen,
     selectTimebarVisualisation,
     selectTimebarEvents,
     selectTimebarGraph,
   ],
-  (search, bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph) => {
-    return { search, bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph }
+  (bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph) => {
+    return { bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph }
   }
 )
 

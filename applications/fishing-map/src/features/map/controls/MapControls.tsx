@@ -22,6 +22,7 @@ import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
 import { MapCoordinates } from 'types'
 import { toFixed } from 'utils/shared'
+import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { isPrintSupported } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
@@ -127,6 +128,7 @@ const MapControls = ({
     })
   }
   const extendedControls = useSelector(isWorkspaceLocation)
+  const isAnalyzing = useSelector(selectIsAnalyzing)
   return (
     <Fragment>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
@@ -159,32 +161,36 @@ const MapControls = ({
           />
           {extendedControls && (
             <Fragment>
-              <Rulers />
-              <IconButton
-                icon="camera"
-                type="map-tool"
-                loading={loading}
-                disabled={mapLoading || loading}
-                tooltip={
-                  mapLoading || loading
-                    ? t('map.mapLoadingWait', 'Please wait until map loads')
-                    : t('map.captureMap', 'Capture map')
-                }
-                onClick={onScreenshotClick}
-              />
-              <Tooltip
-                content={
-                  currentBasemap === Generators.BasemapType.Default
-                    ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
-                    : t('map.change_basemap_default', 'Switch to default basemap')
-                }
-                placement="left"
-              >
-                <button
-                  className={cx(styles.basemapSwitcher, styles[currentBasemap])}
-                  onClick={switchBasemap}
-                ></button>
-              </Tooltip>
+              {!isAnalyzing && <Rulers />}
+              {!isAnalyzing && (
+                <IconButton
+                  icon="camera"
+                  type="map-tool"
+                  loading={loading}
+                  disabled={mapLoading || loading}
+                  tooltip={
+                    mapLoading || loading
+                      ? t('map.mapLoadingWait', 'Please wait until map loads')
+                      : t('map.captureMap', 'Capture map')
+                  }
+                  onClick={onScreenshotClick}
+                />
+              )}
+              {!isAnalyzing && (
+                <Tooltip
+                  content={
+                    currentBasemap === Generators.BasemapType.Default
+                      ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
+                      : t('map.change_basemap_default', 'Switch to default basemap')
+                  }
+                  placement="left"
+                >
+                  <button
+                    className={cx(styles.basemapSwitcher, styles[currentBasemap])}
+                    onClick={switchBasemap}
+                  ></button>
+                </Tooltip>
+              )}
               <IconButton
                 type="map-tool"
                 tooltip={t('map.loading', 'Map loading')}

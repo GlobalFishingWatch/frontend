@@ -9,6 +9,8 @@ import LogoGoogle from 'assets/images/partner-logos/google@2x.png'
 import LogoDonaBertarelli from 'assets/images/partner-logos/dona-bertarelli@2x.png'
 import styles from './Footer.module.css'
 
+export const FOOTER_HEIGHT = 24
+
 const getFooterPartners = (category: WorkspaceCategories) => {
   switch (category) {
     case WorkspaceCategories.MarineReserves:

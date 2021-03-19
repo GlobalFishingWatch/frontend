@@ -18,6 +18,7 @@ export interface Vessel {
   operator?: string
   builtYear?: string
   authorizations: string[]
+  registeredGearType?: string
 }
 
 export interface VesselSearch extends Vessel {

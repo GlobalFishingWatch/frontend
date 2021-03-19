@@ -76,19 +76,23 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
       <ul className={styles.listContainer}>
         <li className={cx(styles.dataset, styles.create)} onClick={onAddNewClick}>
           {datasetCategory === DatasetCategory.Context
-            ? t('dataset.uploadNewContex', 'Upload new context areas')
+            ? t('dataset.uploadNewContext', 'Upload new context areas')
             : t('dataset.uploadNewEnviroment', 'Upload new environment dataset')}
         </li>
         {datasetsStatus === AsyncReducerStatus.Loading ? (
           <li className={styles.loadingPlaceholder}>
             <Spinner size="small" />
           </li>
-        ) : (
-          datasets?.map((dataset) => (
+        ) : datasets?.length > 0 ? (
+          datasets.map((dataset) => (
             <li key={dataset.id} className={styles.dataset} onClick={() => onSelectClick(dataset)}>
               {dataset.name}
             </li>
           ))
+        ) : (
+          <li className={cx(styles.dataset, styles.empty)}>
+            {t('dataset.notUploadedYet', 'No context layers uploaded yet')}
+          </li>
         )}
       </ul>
     </div>

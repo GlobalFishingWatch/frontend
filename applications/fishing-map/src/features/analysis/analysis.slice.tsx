@@ -1,6 +1,6 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import type { GeoJSON } from 'geojson'
+import type { Feature, Polygon } from 'geojson'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Report } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
@@ -12,18 +12,21 @@ import {
   createAsyncSlice,
 } from 'utils/async-slice'
 import { RootState } from 'store'
+import { Bbox } from 'types'
 
 export type DateRange = {
   start: string
   end: string
 }
 
+export type ReportGeometry = Feature<Polygon>
+
 export type CreateReport = {
   name: string
   dateRange: DateRange
   filters: Record<string, any>
   datasets: string[]
-  geometry: GeoJSON.FeatureCollection
+  geometry: ReportGeometry
 }
 
 export const createSingleReportThunk = createAsyncThunk<
@@ -109,40 +112,48 @@ export const createReportThunk = createAsyncThunk(
 )
 
 export interface ReportState extends AsyncReducer<Report> {
-  dialog: {
-    isOpen: boolean
-    geometry: GeoJSON.FeatureCollection | undefined
-    areaName: string
+  area: {
+    geometry: ReportGeometry | undefined
+    bounds: Bbox | undefined
+    name: string
+    id: string
   }
 }
 
 const initialState: ReportState = {
   ...asyncInitialState,
-  dialog: {
-    isOpen: false,
+  area: {
     geometry: undefined,
-    areaName: '',
+    bounds: undefined,
+    name: '',
+    id: '',
   },
 }
 
-const { slice: reportsSlice } = createAsyncSlice<ReportState, Report>({
+const { slice: analysisSlice } = createAsyncSlice<ReportState, Report>({
   name: 'report',
   initialState,
   reducers: {
-    toggleReportDialog: (state) => {
-      state.dialog.isOpen = !state.dialog.isOpen
-    },
-    clearReportGeometry: (state) => {
-      state.dialog.geometry = undefined
-      state.dialog.areaName = ''
+    resetReportStatus: (state) => {
       state.status = AsyncReducerStatus.Idle
     },
-    setReportGeometry: (
+    clearAnalysisGeometry: (state) => {
+      state.area.geometry = undefined
+      state.area.name = ''
+      state.area.bounds = undefined
+      state.status = AsyncReducerStatus.Idle
+    },
+    setAnalysisGeometry: (
       state,
-      action: PayloadAction<{ geometry: GeoJSON.FeatureCollection | undefined; areaName: string }>
+      action: PayloadAction<{
+        geometry: ReportGeometry | undefined
+        name: string
+        bounds: [number, number, number, number]
+      }>
     ) => {
-      state.dialog.geometry = action.payload.geometry
-      state.dialog.areaName = action.payload.areaName
+      state.area.geometry = action.payload.geometry
+      state.area.bounds = action.payload.bounds
+      state.area.name = action.payload.name
     },
   },
   thunks: {
@@ -150,10 +161,16 @@ const { slice: reportsSlice } = createAsyncSlice<ReportState, Report>({
   },
 })
 
-export const { toggleReportDialog, clearReportGeometry, setReportGeometry } = reportsSlice.actions
+export const {
+  resetReportStatus,
+  clearAnalysisGeometry,
+  setAnalysisGeometry,
+} = analysisSlice.actions
 
-export const selectReportGeometry = (state: RootState) => state.report.dialog.geometry
-export const selectReportAreaName = (state: RootState) => state.report.dialog.areaName
-export const selectReportStatus = (state: RootState) => state.report.status
+export const selectAnalysisGeometry = (state: RootState) => state.analysis.area.geometry
+export const selectAnalysisBounds = (state: RootState) => state.analysis.area.bounds
+export const selectAnalysisAreaName = (state: RootState) => state.analysis.area.name
+export const selectAnalysisAreaId = (state: RootState) => state.analysis.area.id
+export const selectReportStatus = (state: RootState) => state.analysis.status
 
-export default reportsSlice.reducer
+export default analysisSlice.reducer

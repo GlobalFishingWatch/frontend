@@ -1,8 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux'
+import { Geometry } from 'geojson'
 import { useRef } from 'react'
-import { ExtendedFeatureVessel, InteractionEvent } from '@globalfishingwatch/react-hooks'
+import {
+  ExtendedFeatureVessel,
+  InteractionEvent,
+  useTilesLoading,
+} from '@globalfishingwatch/react-hooks'
 import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { Style } from '@globalfishingwatch/mapbox-gl'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
@@ -12,8 +18,10 @@ import { selectLocationCategory, selectLocationType } from 'routes/routes.select
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import useMapInstance from 'features/map/map-context.hooks'
 import {
   getGeneratorsConfig,
+  MULTILAYER_SEPARATOR,
   selectGlobalGeneratorsConfig,
   WORKSPACE_GENERATOR_ID,
 } from './map.selectors'
@@ -24,7 +32,6 @@ import {
   fetch4WingInteractionThunk,
   MAX_TOOLTIP_VESSELS,
 } from './map.slice'
-import { useMapboxInstance } from './map.context'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -47,6 +54,7 @@ export const useClickedEventConnect = () => {
   const rulersEditing = useSelector(selectEditing)
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
+    // Used on workspaces-list or user panel to go to the workspace detail page
     if (locationType === USER || locationType === WORKSPACES_LIST) {
       const workspace = event?.features?.find(
         (feature: any) => feature.properties.type === 'workspace'
@@ -107,8 +115,11 @@ export type TooltipEventFeature = {
   type?: Type
   color?: string
   unit?: string
+  source: string
+  sourceLayer: string
   layerId: string
   contextLayer?: ContextLayerType | null
+  geometry?: Geometry
   value: string
   properties: Record<string, string>
   vesselsInfo?: {
@@ -128,6 +139,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
   if (!event || !event.features) return null
+
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     let dataview
     if (feature.generatorType === Generators.Type.HeatmapAnimated) {
@@ -142,7 +154,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       dataview = dataviews?.find((dataview) => {
         // Needed to get only the initial part to support multiple generator
         // from the same dataview, see map.selectors L137
-        const cleanGeneratorId = (feature.generatorId as string)?.split('__')[0]
+        const cleanGeneratorId = (feature.generatorId as string)?.split(MULTILAYER_SEPARATOR)[0]
         return dataview.id === cleanGeneratorId
       })
     }
@@ -151,6 +163,8 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       // Not needed to create a dataview just for the workspaces list interaction
       if (feature.generatorId && (feature.generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
+          source: feature.source,
+          sourceLayer: feature.sourceLayer,
           layerId: feature.layerId as string,
           type: Generators.Type.GL,
           value: feature.properties.label,
@@ -160,13 +174,19 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       }
       return []
     }
-
+    const title =
+      dataview.category === 'context' && dataview.config?.type === Generators.Type.UserContext
+        ? dataview.datasets?.[0]?.name
+        : dataview.name || dataview.id.toString()
     const tooltipEventFeature: TooltipEventFeature = {
-      title: dataview.name || dataview.id.toString(),
+      title,
       type: dataview.config?.type,
       color: dataview.config?.color || 'black',
       unit: feature.unit,
       value: feature.value,
+      source: feature.source,
+      sourceLayer: feature.sourceLayer,
+      geometry: feature.geometry,
       layerId: feature.layerId,
       contextLayer: feature.generatorContextLayer,
       properties: { ...feature.properties },
@@ -195,6 +215,7 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
     }
     return tooltipEventFeature
   })
+
   if (!tooltipEventFeatures.length) return null
   return {
     point: event.point,
@@ -205,12 +226,16 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
 }
 
 export const useMapStyle = () => {
-  const mapInstance = useMapboxInstance()
-  if (!mapInstance) return null
+  const map = useMapInstance()
+  // Used to ensure the style is refreshed on load finish
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const tilesLoading = useTilesLoading(map)
 
-  let style: any
+  if (!map) return null
+
+  let style: Style
   try {
-    style = mapInstance.getStyle()
+    style = map.getStyle()
   } catch (e) {
     return null
   }

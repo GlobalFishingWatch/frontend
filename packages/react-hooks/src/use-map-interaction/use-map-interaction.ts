@@ -5,8 +5,8 @@ import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
-type FeatureStates = 'click' | 'hover'
-type FeatureStateSource = { source: string; sourceLayer: string; state: FeatureStates }
+type FeatureStates = 'click' | 'hover' | 'highlight'
+type FeatureStateSource = { source: string; sourceLayer: string; id: string; state?: FeatureStates }
 
 const getExtendedFeatures = (
   features: MapboxGeoJSONFeature[],
@@ -70,7 +70,9 @@ const getExtendedFeatures = (
       case Generators.Type.Context:
         return {
           ...extendedFeature,
+          gfwId: feature.properties?.gfw_id,
           generatorContextLayer: feature.layer.metadata?.layer,
+          geometry: feature.geometry,
         }
       default:
         return extendedFeature
@@ -97,30 +99,28 @@ export const useFeatureState = (map?: Map) => {
   )
 
   const updateFeatureState = useCallback(
-    (extendedFeatures: ExtendedFeature[], state: FeatureStates = 'hover') => {
-      const newSourcesWithClickState: FeatureStateSource[] = extendedFeatures.flatMap(
-        (feature: ExtendedFeature) => {
-          if (!map || feature.id === undefined) {
-            return []
-          }
-          map.setFeatureState(
-            {
-              source: feature.source,
-              sourceLayer: feature.sourceLayer,
-              id: feature.id,
-            },
-            { [state]: true }
-          )
-
-          // Add source to active feature states
-          return {
-            state,
-            id: feature.id,
+    (extendedFeatures: FeatureStateSource[], state: FeatureStates = 'hover') => {
+      const newSourcesWithClickState: FeatureStateSource[] = extendedFeatures.flatMap((feature) => {
+        if (!map || feature.id === undefined) {
+          return []
+        }
+        map.setFeatureState(
+          {
             source: feature.source,
             sourceLayer: feature.sourceLayer,
-          }
+            id: feature.id,
+          },
+          { [state]: true }
+        )
+
+        // Add source to active feature states
+        return {
+          state,
+          id: feature.id,
+          source: feature.source,
+          sourceLayer: feature.sourceLayer,
         }
-      )
+      })
       const previousSources = sourcesWithFeatureState.filter((source) => source.state !== state)
       sourcesWithFeatureState = [...previousSources, ...newSourcesWithClickState]
     },

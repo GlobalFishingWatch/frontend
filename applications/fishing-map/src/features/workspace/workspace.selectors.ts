@@ -56,23 +56,15 @@ export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace]
 })
 
 export const selectDataviewInstancesMerged = createSelector(
-  [
-    selectWorkspaceStatus,
-    selectWorkspaceCustomStatus,
-    selectWorkspaceDataviewInstances,
-    selectUrlDataviewInstances,
-  ],
+  [selectWorkspaceStatus, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
   (
     workspaceStatus,
-    workspaceCustomStatus,
     workspaceDataviewInstances,
     urlDataviewInstances = []
   ): UrlDataviewInstance[] | undefined => {
-    if (
-      workspaceCustomStatus === AsyncReducerStatus.Loading &&
-      workspaceStatus !== AsyncReducerStatus.Finished
-    )
+    if (workspaceStatus !== AsyncReducerStatus.Finished) {
       return
+    }
 
     // Split url dataviews by new or just overwriting the workspace to easily grab them later
     const urlDataviews = urlDataviewInstances.reduce<
@@ -280,6 +272,14 @@ export const selectEnvironmentalDataviews = createSelector(
 export const selectTemporalgridDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Activity)],
   (dataviews) => dataviews
+)
+
+export const selectHasAnalysisLayersVisible = createSelector(
+  [selectTemporalgridDataviews],
+  (dataviews) => {
+    const visibleDataviews = dataviews?.filter(({ config }) => config?.visible === true)
+    return visibleDataviews && visibleDataviews.length > 0
+  }
 )
 
 export const selectActiveTemporalgridDataviews = createSelector(

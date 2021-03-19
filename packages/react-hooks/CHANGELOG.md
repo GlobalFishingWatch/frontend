@@ -1,5 +1,65 @@
 # @globalfishingwatch/react-hooks
 
+## 4.9.3
+
+### Patch Changes
+
+- Updated dependencies [[`55796c7a`](https://github.com/GlobalFishingWatch/frontend/commit/55796c7a0a0b9972d3b7f8631566091dd0b74809), [`f7b017f0`](https://github.com/GlobalFishingWatch/frontend/commit/f7b017f0c72bd1f90e6a984ff5c26e524d7d735a)]:
+  - @globalfishingwatch/fourwings-aggregate@1.2.1
+  - @globalfishingwatch/layer-composer@4.16.0
+
+## 4.9.2
+
+### Patch Changes
+
+- fix useTilesLoading
+
+## 4.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.15.0
+
+## 4.9.0
+
+### Minor Changes
+
+- simpler version of use-tiles-state hook just for loading boolean
+
+## 4.8.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.5
+
+## 4.8.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.4
+
+## 4.8.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.3
+
+## 4.8.0
+
+### Minor Changes
+
+- support highlighted feature states
+
+### Patch Changes
+
+- Updated dependencies [[`729322ab`](https://github.com/GlobalFishingWatch/frontend/commit/729322ab540c4ad807cb3bba1c2b344eb265ed89)]:
+  - @globalfishingwatch/layer-composer@4.14.2
+  - @globalfishingwatch/fourwings-aggregate@1.2.0
+
 ## 4.7.0
 
 ### Minor Changes

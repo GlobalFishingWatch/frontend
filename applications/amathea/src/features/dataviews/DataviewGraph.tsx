@@ -7,7 +7,6 @@ import {
   YAxis,
   Tooltip,
   Line,
-  AxisDomain,
 } from 'recharts'
 import { format } from 'd3-format'
 import { DateTime } from 'luxon'
@@ -56,7 +55,7 @@ const DataviewGraph: React.FC<DataviewGraphProps> = (props) => {
         .value
     : 0
   const domainPadding = (dataMax - dataMin) / 4
-  const paddedDomain: [AxisDomain, AxisDomain] = [
+  const paddedDomain: [number, number] = [
     Math.max(0, Math.floor(dataMin - domainPadding)),
     Math.ceil(dataMax + domainPadding),
   ]

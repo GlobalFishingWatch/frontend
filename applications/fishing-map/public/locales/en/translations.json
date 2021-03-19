@@ -1,17 +1,33 @@
 {
+  "analysis": {
+    "close": "Close analysis",
+    "completed": "The report will be in your email soon",
+    "disclaimer": "The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.",
+    "download": "Download report",
+    "empty": "Your selected datasets will appear here",
+    "errorMessage": "Something went wrong",
+    "noActivityLayers": "No activity layers active",
+    "title": "Analysis",
+    "area": "Area",
+    "generating": "We are generating the report for you, it'll be ready soon.",
+    "successfullMessage": "The report was sent successfully, you'll receive it by email soon.",
+    "dateRange": "Date Range",
+    "emailDescription": "A report for the selected date ranges and filters will be generated and sent to your email account",
+    "generate": "Generate"
+  },
   "common": {
     "active_after": "Active after",
     "active_before": "Active Before",
-    "activity": "Activity",
+    "activity": "Vessel activity",
     "apparentFishing": "Apparent Fishing Effort",
     "confirm": "Confirm",
-    "context_area_plural": "Context areas",
+    "context_area_plural": "Management areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "countries",
     "description": "Description",
     "environment": "Environment",
     "hour": "Hour",
-    "hour_plural": "hours",
+    "hour_plural": "Hours",
     "loggedAs": "Logged as",
     "login": "Log in",
     "logout": "Log out",
@@ -20,8 +36,9 @@
     "more": "more",
     "name": "Name",
     "presence": "Fishing presence",
+    "report": "Report",
     "seeDefault": "See default view",
-    "share": "Share the current view",
+    "share": "Share map",
     "update": "Update",
     "user": "User",
     "userProfile": "User profile",
@@ -30,7 +47,8 @@
     "dismiss": "Dismiss",
     "save": "Save",
     "events": "Events",
-    "fishing": "Fishing"
+    "fishing": "Fishing",
+    "unknown": "Unknown"
   },
   "dataset": {
     "addContext": "Add context dataset",
@@ -41,14 +59,17 @@
     "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
     "edit": "Edit dataset",
     "emptyState": "Your datasets will appear here",
+    "featuresNameField": "Features name field",
     "file": "File",
-    "fileNotAllowed": "(Only .zip or .geojson files are allowed)",
+    "fileNotAllowed": "(Only .zip or .json files are allowed)",
     "hint": "Find out more about the supported formats",
     "importing": "Dataset is being imported",
     "new": "New dataset",
+    "notUploadedYet": "No context layers uploaded yet",
     "remove": "Remove dataset",
+    "title": "Dataset",
     "uploadLogin": "You need to <1>login</1> to upload datasets",
-    "uploadNewContex": "Upload new context areas",
+    "uploadNewContext": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset",
     "addEnvironment": "Add environment dataset",
     "title_plural": "Datasets",
@@ -67,7 +88,7 @@
     "switchAccount": "Switch account",
     "trackLoading": "There was an error loading the vessel track",
     "uploadError": "There was an error uploading your dataset",
-    "workspaceLoad": "There was an error loading the workspace, please try again later",
+    "workspaceLoad": "There was an error loading the workspace. Please try again later.",
     "workspaceNotFound": "The view you request was not found"
   },
   "layer": {
@@ -82,6 +103,7 @@
     "infoOpen": "Show info",
     "remove": "Remove layer",
     "seeDescription": "Click to see layer description",
+    "source": "Source",
     "source_plural": "Sources",
     "toggleCombinationMode": {
       "combine": "Combine layers",
@@ -89,24 +111,23 @@
       "split": "Split layers"
     },
     "toggleVisibility": "Toggle layer visibility",
-    "vessel_fit_bounds": "Center view on vessel track",
-    "source": "Source"
+    "vessel_fit_bounds": "Center view on vessel track"
   },
   "map": {
-    "captureMap": "Capture map",
+    "captureMap": "Map screenshot",
     "change_basemap_default": "Switch to default basemap",
     "change_basemap_satellite": "Switch to satellite basemap",
-    "loading": "Map loading",
+    "loading": "Loading map",
     "mapLoadingWait": "Please wait until map loads",
-    "rulers_add": "Add rulers",
-    "rulers_remove": "Remove all rulers",
+    "rulers_add": "Measure distance",
+    "rulers_remove": "Remove measured distances",
     "search": "Search areas",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
   "search": {
     "close": "Close search",
-    "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
+    "description": "Search by vessel name or identification code (like IMO, MMSI, VMS ID, etc). You can narrow your search by pressing the filter icon in the top menu bar",
     "filterClose": "Close search filters",
     "filterOpen": "Open search filters",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign",
@@ -131,7 +152,7 @@
   },
   "vessel": {
     "beam": "Beam",
-    "callsign": "Callsign",
+    "callsign": "Call sign",
     "capacity": "Capacity",
     "firstTransmissionDate": "First transmission date",
     "flag": "Flag",
@@ -151,18 +172,19 @@
     "transmission_plural": "Transmissions",
     "vesselType_plural": "Vessel types",
     "widthRange": "Width range",
-    "transmission": "Transmission"
+    "transmission": "Transmission",
+    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}"
   },
   "workspace": {
+    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
+    "editName": "Edit workspace name",
     "emptyState": "Your workspaces will appear here",
     "nameInput": "Workspace name",
     "new": "New Workspace",
-    "save": "Save the current view",
-    "saved": "Current workspace was saved and it's available in your user profile",
-    "title_plural": "Workspaces",
-    "title": "Workspace",
     "remove": "Remove workspace",
-    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
-    "editName": "Edit workspace name"
+    "save": "Save the current view",
+    "saved": "Current view was saved and it's available in your user profile",
+    "title_plural": "Workspaces",
+    "title": "Workspace"
   }
 }

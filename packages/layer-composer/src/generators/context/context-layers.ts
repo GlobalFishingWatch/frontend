@@ -2,6 +2,8 @@ import type { FillLayer, Layer, LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
 import { ContextLayerType } from '../types'
 
+export const HIGHLIGHT_SUFIX = '_highlight'
+
 const settledBoundaries = [
   '200 NM',
   'Treaty',
@@ -63,15 +65,15 @@ const getDefaultContextHighlight = (): Partial<LineLayer> => {
 const getDefaultContextLayersById = (id: string, color: string): (LineLayer | FillLayer)[] => {
   return [
     {
-      id: `${id}-interaction`,
+      id: `${id}_interaction`,
       ...getDefaultContextInteraction(),
     } as FillLayer,
     {
-      id: `${id}-line`,
+      id: `${id}_line`,
       ...getDefaultContextLine(color),
     } as LineLayer,
     {
-      id: `${id}-highlight`,
+      id: `${id}${HIGHLIGHT_SUFIX}`,
       ...getDefaultContextHighlight(),
     } as LineLayer,
   ]
@@ -93,7 +95,7 @@ const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
       ...getDefaultContextInteraction(),
     } as FillLayer,
     {
-      id: 'eez_highlight_',
+      id: `eez${HIGHLIGHT_SUFIX}_`,
       ...getDefaultContextHighlight(),
     } as LineLayer,
   ],

@@ -7,7 +7,7 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import { logoutUserThunk } from 'features/user/user.slice'
 import { isGuestUser, isUserAuthorized, isUserLogged } from 'features/user/user.selectors'
 import Search from 'features/search/Search'
-import { selectReportQuery, selectSearchQuery } from 'features/app/app.selectors'
+import { selectSearchQuery } from 'features/app/app.selectors'
 import { selectLocationType } from 'routes/routes.selectors'
 import { USER, WORKSPACES_LIST } from 'routes/routes'
 import User from 'features/user/User'
@@ -16,7 +16,8 @@ import WorkspacesList from 'features/workspaces-list/WorkspacesList'
 import NewDataset from 'features/datasets/NewDataset'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
-import Report from 'features/report/Report'
+import Analysis from 'features/analysis/Analysis'
+import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -27,8 +28,8 @@ type SidebarProps = {
 
 function Sidebar({ onMenuClick }: SidebarProps) {
   const { t } = useTranslation()
+  const isAnalyzing = useSelector(selectIsAnalyzing)
   const searchQuery = useSelector(selectSearchQuery)
-  const reportQuery = useSelector(selectReportQuery)
   const locationType = useSelector(selectLocationType)
   const guestUser = useSelector(isGuestUser)
   const userLogged = useSelector(isUserLogged)
@@ -91,8 +92,8 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     return <Search />
   }
 
-  if (reportQuery !== undefined) {
-    return <Report type={reportQuery} />
+  if (isAnalyzing) {
+    return <Analysis />
   }
 
   return (

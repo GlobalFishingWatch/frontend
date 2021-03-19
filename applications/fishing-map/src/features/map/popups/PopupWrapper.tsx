@@ -9,6 +9,7 @@ import styles from './Popup.module.css'
 import HeatmapTooltipRow from './HeatmapLayers'
 import EnviromentalTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
+import UserContextTooltipSection from './UserContextLayers'
 
 type PopupWrapperProps = {
   event: TooltipEvent | null
@@ -34,6 +35,7 @@ function PopupWrapper({
     event.features.sort((a, b) => (a.type === Generators.Type.HeatmapAnimated ? -1 : 0)),
     'type'
   )
+
   return (
     <Popup
       latitude={event.latitude}
@@ -43,6 +45,7 @@ function PopupWrapper({
       onClose={onClose}
       className={cx(styles.popup, styles[type], className)}
       anchor={anchor}
+      captureClick
     >
       <div className={styles.content}>
         {Object.entries(featureByType).map(([featureType, features]) => {
@@ -54,6 +57,15 @@ function PopupWrapper({
                 showFeaturesDetails={type === 'click'}
               />
             ))
+          }
+          if (featureType === Generators.Type.UserContext) {
+            return (
+              <UserContextTooltipSection
+                key={featureType}
+                features={features}
+                showFeaturesDetails={type === 'click'}
+              />
+            )
           }
           if (featureType === Generators.Type.Context) {
             return (
