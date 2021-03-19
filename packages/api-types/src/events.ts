@@ -87,8 +87,8 @@ export interface ApiEvent {
   id: string
   type: EventTypes
   vessel: EventVessel
-  start: number
-  end: number
+  start: number | string // Depends on timestamp format API param
+  end: number | string // Depends on timestamp format API param
   rfmos: string[]
   eezs: string[]
   nextPort?: EventNextPort
