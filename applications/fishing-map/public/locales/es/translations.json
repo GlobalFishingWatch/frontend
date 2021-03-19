@@ -49,7 +49,7 @@
     "save": "Guardar",
     "events": "Eventos",
     "fishing": "Pesca",
-    "unknown": "Unknown"
+    "unknown": "Desconocido"
   },
   "dataset": {
     "addContext": "Añadir conjunto de datos de contexto",
@@ -174,7 +174,7 @@
     "vesselType_plural": "Tipos de buque",
     "widthRange": "Width range",
     "transmission": "Transmisión",
-    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}"
+    "unkwownVesselByGeartype": "{{gearType}} $t(common.unknown)"
   },
   "workspace": {
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",

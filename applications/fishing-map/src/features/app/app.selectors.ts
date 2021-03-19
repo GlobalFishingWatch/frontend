@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types/dist'
+import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
 import {
   selectDataviewInstancesMerged,
@@ -9,12 +9,9 @@ import {
   selectWorkspaceViewport,
 } from 'features/workspace/workspace.selectors'
 import {
-  selectUrlMapZoomQuery,
-  selectUrlMapLatitudeQuery,
-  selectUrlMapLongitudeQuery,
-  selectUrlEndQuery,
-  selectUrlStartQuery,
   selectQueryParam,
+  selectUrlViewport,
+  selectUrlTimeRange,
   selectLocationCategory,
 } from 'routes/routes.selectors'
 import {
@@ -27,13 +24,8 @@ import {
 } from 'types'
 
 export const selectViewport = createSelector(
-  [
-    selectUrlMapZoomQuery,
-    selectUrlMapLatitudeQuery,
-    selectUrlMapLongitudeQuery,
-    selectWorkspaceViewport,
-  ],
-  (zoom, latitude, longitude, workspaceViewport) => {
+  [selectUrlViewport, selectWorkspaceViewport],
+  ({ zoom, latitude, longitude }, workspaceViewport) => {
     return {
       zoom: zoom || workspaceViewport?.zoom || DEFAULT_WORKSPACE.zoom,
       latitude: latitude || workspaceViewport?.latitude || DEFAULT_WORKSPACE.latitude,
@@ -43,8 +35,8 @@ export const selectViewport = createSelector(
 )
 
 export const selectTimeRange = createSelector(
-  [selectUrlStartQuery, selectUrlEndQuery, selectWorkspaceTimeRange],
-  (start, end, workspaceTimerange) => {
+  [selectUrlTimeRange, selectWorkspaceTimeRange],
+  ({ start, end }, workspaceTimerange) => {
     return {
       start: start || workspaceTimerange?.start || DEFAULT_WORKSPACE.start,
       end: end || workspaceTimerange?.end || DEFAULT_WORKSPACE.end,

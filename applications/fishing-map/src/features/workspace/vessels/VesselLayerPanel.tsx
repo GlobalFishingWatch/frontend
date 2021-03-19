@@ -13,7 +13,7 @@ import {
   segmentsToBbox,
   filterSegmentsByTimerange,
 } from '@globalfishingwatch/data-transforms'
-import { formatInfoField } from 'utils/info'
+import { formatInfoField, getVesselLabel } from 'utils/info'
 import { Bbox, UrlDataviewInstance } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -96,8 +96,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     deleteDataviewInstance(dataview.id)
   }
 
-  const vesselName = resource?.data?.shipname
-
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
   }
@@ -110,13 +108,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     setInfoOpen(false)
   }
 
-  const vesselId = dataview.id.replace(DATAVIEW_INSTANCE_PREFIX, '')
-  const title = vesselName || vesselId || dataview.name
-  const formattedTitle = title && formatInfoField(title, 'name')
-
+  const vesselLabel = resource?.data && getVesselLabel(resource.data)
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {formattedTitle}
+      {vesselLabel}
     </h3>
   )
 
@@ -139,8 +134,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           className={styles.switch}
           color={dataview.config?.color}
         />
-        {title && title.length > 20 ? (
-          <Tooltip content={formattedTitle}>{TitleComponent}</Tooltip>
+        {vesselLabel && vesselLabel.length > 20 ? (
+          <Tooltip content={vesselLabel}>{TitleComponent}</Tooltip>
         ) : (
           TitleComponent
         )}

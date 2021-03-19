@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
@@ -29,6 +29,7 @@ import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import styles from './App.module.css'
 import { selectAnalysisQuery, selectSidebarOpen, selectViewport } from './app.selectors'
+import { useAppDispatch } from './app.hooks'
 
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
@@ -43,7 +44,7 @@ const Main = () => {
 }
 
 function App(): React.ReactElement {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -105,12 +106,18 @@ function App(): React.ReactElement {
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
   useEffect(() => {
+    const fetchWorkspace = async () => {
+      const action = await dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
+      if (fetchWorkspaceThunk.fulfilled.match(action) && action.payload?.viewport) {
+        setMapCoordinates(action.payload.viewport)
+      }
+    }
     if (
       userLogged &&
       workspaceCustomStatus !== AsyncReducerStatus.Loading &&
       (homeNeedsFetch || hasWorkspaceIdChanged)
     ) {
-      dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
+      fetchWorkspace()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])

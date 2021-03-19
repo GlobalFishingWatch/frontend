@@ -83,6 +83,8 @@ export const createDatasetThunk = createAsyncThunk<
       } as any,
     })
     await fetch(url, { method: 'PUT', body: file })
+    // API needs to have the value in lowercase
+    const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
     const datasetWithFilePath = {
       ...dataset,
       description: dataset.description || dataset.name,
@@ -90,6 +92,7 @@ export const createDatasetThunk = createAsyncThunk<
       source: DATASETS_USER_SOURCE_ID,
       configuration: {
         ...dataset.configuration,
+        ...(propertyToInclude && { propertyToInclude }),
         filePath: path,
       },
     }

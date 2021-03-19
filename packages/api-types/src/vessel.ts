@@ -9,6 +9,7 @@ export interface Vessel {
   callsign?: string
   fleet?: string
   origin?: string
+  registeredGearType?: string
 }
 
 export interface VesselSearch extends Vessel {
