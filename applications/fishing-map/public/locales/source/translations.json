@@ -93,7 +93,8 @@
     "workspaceNotFound": "The view you request was not found"
   },
   "event": {
-    "seeInCVP": "See in Carrier Vessel Portal"
+    "seeInCVP": "See in Carrier Vessel Portal",
+    "noData": "No data available"
   },
   "layer": {
     "add": "Add layer",
@@ -156,6 +157,8 @@
   },
   "vessel": {
     "beam": "Beam",
+    "carrier": "Carrier",
+    "donor": "Donor vessel",
     "callsign": "Callsign",
     "capacity": "Capacity",
     "firstTransmissionDate": "First transmission date",

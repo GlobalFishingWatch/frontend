@@ -117,12 +117,28 @@
   margin-bottom: var(--space-XS);
 }
 
+.rowColum {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
 .hover .row:last-child {
   margin-bottom: 0;
 }
 
 .click .row:last-child {
   margin-bottom: 0;
+}
+
+.centered {
+  display: flex;
+  align-items: center;
+}
+
+.rowTitle {
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
 }
 
 .rowText {
