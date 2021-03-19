@@ -19,13 +19,17 @@ const Profile: React.FC = (props): React.ReactElement => {
   const q = useSelector(selectQueryParam('q'))
   const vesselProfileId = useSelector(selectVesselProfileId)
 
-  const vessel: VesselWithHistory = useSelector(selectVesselById(vesselProfileId))
+  const vessel = useSelector(selectVesselById(vesselProfileId))
 
   const tabs: Tab[] = [
     {
       id: 'info',
       title: 'INFO',
-      content: <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />,
+      content: vessel ? (
+        <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
+      ) : (
+        <Fragment />
+      ),
     },
     {
       id: 'activity',
@@ -38,8 +42,11 @@ const Profile: React.FC = (props): React.ReactElement => {
       content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
     },
   ]
-  const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
 
+  const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
+  if (!vessel) {
+    return <Fragment />
+  }
   return (
     <Fragment>
       <header className={styles.header}>

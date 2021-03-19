@@ -12,6 +12,7 @@ const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail) => {
   const emptyHistory = { byDate: [], byCount: [] }
   return {
     ...data,
+    authorizations: [],
     history: {
       callsign: {
         byCount: data.otherCallsigns,

@@ -22,69 +22,81 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'Name'}
-              field={vessel.shipname}
+              value={vessel.shipname}
+              valuesHistory={vessel.history.shipname.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'Type'}
-              field={vessel.type ?? ''}
+              value={vessel.type ?? ''}
+              valuesHistory={[]}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'FLAG'}
-              field={vessel.getFlag()}
+              value={vessel.flag}
+              valuesHistory={vessel.history.flag.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'MMSI'}
-              field={vessel.getMMSI()}
+              value={vessel.mmsi ?? ''}
+              valuesHistory={vessel.history.mmsi.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'CALLSIGN'}
-              field={vessel.getCallsign()}
+              value={vessel.callsign ?? ''}
+              valuesHistory={vessel.history.callsign.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'GEAR TYPE'}
-              field={vessel.getGearType()}
+              value={vessel.gearType ?? ''}
+              valuesHistory={[]}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'LENGTH'}
-              field={vessel.getLength()}
+              value={vessel.length ?? ''}
+              valuesHistory={[]}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'GROSS TONNAGE'}
-              field={vessel.getGrossTonnage()}
+              value={vessel.grossTonnage ?? ''}
+              valuesHistory={[]}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'DEPTH'}
-              field={vessel.getDepth()}
+              value={vessel.depth ?? ''}
+              valuesHistory={[]}
             ></InfoField>
             <div className={styles.identifierField}>
               <label>AUTHORIZATIONS</label>
-              {vessel.getAuthorisations().map((auth) => (
+              {vessel.authorizations.map((auth) => (
                 <p key={auth}>{auth}</p>
               ))}
-              {!vessel.getAuthorisations().length && <p>No authorizations found</p>}
+              {!vessel.authorizations.length && <p>No authorizations found</p>}
             </div>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'BUILT'}
-              field={vessel.getBuiltYear()}
+              value={vessel.builtYear ?? ''}
+              valuesHistory={[]}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'OWNER'}
-              field={vessel.getOwner()}
+              value={vessel.owner ?? ''}
+              valuesHistory={vessel.history.owner.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'OPERATOR'}
-              field={vessel.getOperator()}
+              value={vessel.operator ?? ''}
+              valuesHistory={[]}
             ></InfoField>
           </div>
         )}

@@ -14,7 +14,7 @@ const extractValue: (valueItem: ValueItem[]) => string | undefined = (valueItem:
   return valueItem.shift()?.value || undefined
 }
 
-const toVessel: (data: TMTDetail) => Vessel = (data: TMTDetail) => {
+const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
   const {
     vesselMatchId,
     valueList,

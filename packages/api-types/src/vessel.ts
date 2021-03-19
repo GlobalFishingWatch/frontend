@@ -24,4 +24,5 @@ export interface Vessel {
 export interface VesselSearch extends Vessel {
   dataset: string
   source: string // Label of the dataset
+  vesselMatchId: string
 }

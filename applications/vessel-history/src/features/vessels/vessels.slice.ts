@@ -65,7 +65,7 @@ export interface VesselAPIThunk {
   fetchById(id: VesselSourceId): Promise<VesselWithHistory>
 }
 
-const getVesselAPIThunkBySource: (source: VesselAPISource) => VesselAPIThunk = (
+const getVesselFromSourceAPI: (source: VesselAPISource) => VesselAPIThunk = (
   source: VesselAPISource
 ) => {
   const thunks = {
@@ -91,7 +91,7 @@ export const fetchVesselByIdThunk = createAsyncThunk<
     const vessels = await Promise.all(
       vesselsToFetch.map(async ({ source, sourceId }) => ({
         source,
-        vessel: await getVesselAPIThunkBySource(source).fetchById(sourceId),
+        vessel: await getVesselFromSourceAPI(source).fetchById(sourceId),
       }))
     )
 
@@ -105,7 +105,7 @@ export const fetchVesselByIdThunk = createAsyncThunk<
 })
 
 const { slice: vesselsSlice, entityAdapter } = createAsyncSlice<VesselState, VesselWithHistory>({
-  name: 'vessel',
+  name: 'vessels',
   thunks: {
     fetchByIdThunk: fetchVesselByIdThunk,
   },
@@ -124,7 +124,7 @@ export const selectVesselById = memoize((id: string) =>
     //   ?.sourceId
 
     // const id = [gfwId?.dataset ?? 'NA', gfwId?.id ?? 'NA', tmtId?.id ?? 'NA'].join('/')
-    selectById(state, id)
+    return selectById(state, id)
   })
 )
 
@@ -149,7 +149,7 @@ export const selectVesselById = memoize((id: string) =>
 //   },
 // })
 
-// export const selectVessels = (state: RootState) => state.vessels.entities
+export const selectVessels = (state: RootState) => state.vessels.entities
 
 // export const {
 //   setFilters,

@@ -1,6 +1,4 @@
 import React, { useCallback, useState } from 'react'
-// eslint-disable-next-line import/order
-import { HistoricValue, VesselInfoValue } from 'classes/vessel.class'
 import { ValueItem } from 'types'
 import styles from './Info.module.css'
 import InfoFieldHistory from './InfoFieldHistory'

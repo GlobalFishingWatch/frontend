@@ -25,8 +25,12 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
     setModalOpen(!modalOpen)
   }, [modalOpen])
 
-  const formatedDate = (date: DateTime | null) => {
-    return date ? [date.toLocaleString(DateTime.DATETIME_MED), 'UTC'].join(' ') : ''
+  const formatedDate = (date: string | null = null) => {
+    return date
+      ? [DateTime.fromISO(date, { zone: 'UTC' }).toLocaleString(DateTime.DATETIME_MED), 'UTC'].join(
+          ' '
+        )
+      : ''
   }
 
   if (history.length < 1) {
@@ -50,23 +54,25 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
           <div>
             <div className={styles.identifierField}>
               <label>{label}</label>
-              <div>{current.data}</div>
+              <div>{current.value}</div>
             </div>
             <div className={styles.identifierField}>
               <label>CURRENT TIME RANGE</label>
-              <div>Since {formatedDate(current.start)}</div>
+              <div>Since {formatedDate(current.firstSeen)}</div>
             </div>
-            {history.map((historyValue: historyValue, index) => (
+            {history.map((historyValue: ValueItem, index) => (
               <Fragment key={index}>
                 <div className={styles.identifierField}>
                   <label>{label}</label>
-                  <div>{historyValue.data}</div>
+                  <div>{historyValue.value}</div>
                 </div>
                 <div className={styles.identifierField}>
                   <label>Time Range</label>
                   <div>
-                    {historyValue.start && <div>From {formatedDate(historyValue.start)}</div>}
-                    {historyValue.end && <div>To {formatedDate(historyValue.end)}</div>}
+                    {historyValue.firstSeen && (
+                      <div>From {formatedDate(historyValue.firstSeen)}</div>
+                    )}
+                    {historyValue.endDate && <div>To {formatedDate(historyValue.endDate)}</div>}
                   </div>
                 </div>
               </Fragment>
