@@ -3,12 +3,10 @@ import { useCallback } from 'react'
 import {
   SearchFilter,
   selectSearchFilters,
-  selectSearchFiltersOpen,
   selectSearchPagination,
   selectSearchSuggestion,
   selectSearchSuggestionClicked,
   setFilters,
-  setFiltersOpen,
 } from './search.slice'
 
 export const useSearchConnect = () => {
@@ -19,16 +17,8 @@ export const useSearchConnect = () => {
 }
 
 export const useSearchFiltersConnect = () => {
-  const searchFiltersOpen = useSelector(selectSearchFiltersOpen)
   const searchFilters = useSelector(selectSearchFilters)
   const dispatch = useDispatch()
-
-  const setSearchFiltersOpen = useCallback(
-    (open: boolean) => {
-      dispatch(setFiltersOpen(open))
-    },
-    [dispatch]
-  )
 
   const setSearchFilters = useCallback(
     (filter: SearchFilter) => {
@@ -39,8 +29,6 @@ export const useSearchFiltersConnect = () => {
 
   return {
     searchFilters,
-    searchFiltersOpen,
-    setSearchFiltersOpen,
     setSearchFilters,
   }
 }
