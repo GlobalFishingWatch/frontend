@@ -92,6 +92,9 @@
     "workspaceLoad": "There was an error loading the workspace, please try again later",
     "workspaceNotFound": "The view you request was not found"
   },
+  "event": {
+    "seeInCVP": "See in Carrier Vessel Portal"
+  },
   "layer": {
     "add": "Add layer",
     "color_change": "Change color",
