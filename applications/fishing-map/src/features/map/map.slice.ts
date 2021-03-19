@@ -7,7 +7,13 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { DataviewDatasetConfig, Dataset, Vessel, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  DataviewDatasetConfig,
+  Dataset,
+  Vessel,
+  DatasetTypes,
+  ApiEvent,
+} from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
 import {
@@ -19,16 +25,27 @@ import { selectTimeRange } from 'features/app/app.selectors'
 
 export const MAX_TOOLTIP_VESSELS = 5
 
+export type SliceExtendedFeature = ExtendedFeature & {
+  event?: ApiEvent
+}
+
+// Extends the default extendedEvent including event and vessels information from API
+export type SliceInteractionEvent = Omit<InteractionEvent, 'features'> & {
+  features: SliceExtendedFeature[]
+}
+
 type MapState = {
-  clicked: InteractionEvent | null
-  hovered: InteractionEvent | null
-  status: AsyncReducerStatus
+  clicked: SliceInteractionEvent | null
+  hovered: SliceInteractionEvent | null
+  fourWingsStatus: AsyncReducerStatus
+  apiEventStatus: AsyncReducerStatus
 }
 
 const initialState: MapState = {
   clicked: null,
   hovered: null,
-  status: AsyncReducerStatus.Idle,
+  fourWingsStatus: AsyncReducerStatus.Idle,
+  apiEventStatus: AsyncReducerStatus.Idle,
 }
 
 type SublayerVessels = {
@@ -200,12 +217,29 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
     }
   }
 )
+export const fetchEcounterEventThunk = createAsyncThunk<
+  ApiEvent | undefined,
+  ExtendedFeature,
+  {
+    dispatch: AppDispatch
+  }
+>('map/fetchEncounterEvent', async (eventFeature, { signal }) => {
+  // TODO use dataset endpoint instead of hardcoded v0 endpoint
+  const eventUrl = `https://gateway.api.dev.globalfishingwatch.org/datasets/carriers:v20201201/events/${eventFeature.id}`
+  const event = await GFWAPI.fetch<ApiEvent>(eventUrl, {
+    signal,
+  })
+  if (event) {
+    return event
+  }
+  return
+})
 
 const slice = createSlice({
   name: 'map',
   initialState,
   reducers: {
-    setClickedEvent: (state, action: PayloadAction<InteractionEvent | null>) => {
+    setClickedEvent: (state, action: PayloadAction<SliceInteractionEvent | null>) => {
       if (action.payload === null) {
         state.clicked = null
         return
@@ -216,10 +250,10 @@ const slice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(fetch4WingInteractionThunk.pending, (state, action) => {
-      state.status = AsyncReducerStatus.Loading
+      state.fourWingsStatus = AsyncReducerStatus.Loading
     })
     builder.addCase(fetch4WingInteractionThunk.fulfilled, (state, action) => {
-      state.status = AsyncReducerStatus.Finished
+      state.fourWingsStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
 
       action.payload.vessels.forEach((sublayerVessels) => {
@@ -234,16 +268,35 @@ const slice = createSlice({
     })
     builder.addCase(fetch4WingInteractionThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
-        state.status = AsyncReducerStatus.Idle
+        state.fourWingsStatus = AsyncReducerStatus.Idle
       } else {
-        state.status = AsyncReducerStatus.Error
+        state.fourWingsStatus = AsyncReducerStatus.Error
+      }
+    })
+    builder.addCase(fetchEcounterEventThunk.pending, (state, action) => {
+      state.apiEventStatus = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchEcounterEventThunk.fulfilled, (state, action) => {
+      state.apiEventStatus = AsyncReducerStatus.Finished
+      if (!state.clicked || !state.clicked.features || !action.payload) return
+      const feature = state.clicked?.features?.find((feature) => feature.id && action.meta.arg.id)
+      if (feature) {
+        feature.event = action.payload
+      }
+    })
+    builder.addCase(fetchEcounterEventThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.apiEventStatus = AsyncReducerStatus.Idle
+      } else {
+        state.apiEventStatus = AsyncReducerStatus.Error
       }
     })
   },
 })
 
 export const selectClickedEvent = (state: RootState) => state.map.clicked
-export const selectClickedEventStatus = (state: RootState) => state.map.status
+export const selectFourWingsStatus = (state: RootState) => state.map.fourWingsStatus
+export const selectApiEventStatus = (state: RootState) => state.map.apiEventStatus
 
 export const { setClickedEvent } = slice.actions
 export default slice.reducer
