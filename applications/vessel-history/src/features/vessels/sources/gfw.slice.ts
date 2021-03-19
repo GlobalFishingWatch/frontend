@@ -7,7 +7,7 @@ interface GFWVesselSourceId extends VesselSourceId {
   id: string
   dataset: string
 }
-const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail) => {
+export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail) => {
   const emptyHistory = { byDate: [], byCount: [] }
   return {
     id: data.id,
@@ -23,6 +23,10 @@ const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail) => {
     history: {
       callsign: {
         byCount: data.otherCallsigns,
+        byDate: [],
+      },
+      gearType: {
+        byCount: [],
         byDate: [],
       },
       imo: {

@@ -6,6 +6,7 @@ type VesselFieldKey = keyof VesselWithHistory
 export const formatVesselProfileId = (dataset: string, gfwId: string, tmtId: string) => {
   return `${dataset}_${gfwId}_${tmtId}`
 }
+
 const getFieldPriority = (field: VesselFieldKey): VesselAPISource[] => {
   return [VesselAPISource.TMT, VesselAPISource.GFW]
 }
@@ -18,7 +19,7 @@ const getPriorityzedFieldValue = <T = any>(
   return dataValues
     .filter(({ value }) => value !== null && value !== undefined)
     .map((dataValue) => ({
-      ...dataValue,
+      value: dataValue.value,
       priority: fieldPriority.indexOf(dataValue.source),
     }))
     .sort((a, b) => (a.priority < b.priority ? 1 : -1))

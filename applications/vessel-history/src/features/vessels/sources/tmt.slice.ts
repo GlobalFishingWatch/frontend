@@ -9,12 +9,12 @@ interface TMTVesselSourceId extends VesselSourceId {
 }
 
 const sortValuesByFirstSeen = (a: ValueItem, b: ValueItem) =>
-  (a.firstSeen || '') >= (b.firstSeen || '') ? 1 : -1
+  (a.firstSeen || '') >= (b.firstSeen || '') ? -1 : 1
 const extractValue: (valueItem: ValueItem[]) => string | undefined = (valueItem: ValueItem[]) => {
   return valueItem.shift()?.value || undefined
 }
 
-const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
+export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
   const {
     vesselMatchId,
     valueList,
@@ -50,6 +50,10 @@ const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
       imo: {
         byCount: [],
         byDate: valueList.imo.sort(sortValuesByFirstSeen),
+      },
+      gearType: {
+        byCount: [],
+        byDate: valueList.gear.sort(sortValuesByFirstSeen),
       },
       shipname: {
         byCount: [],
