@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.14.4
+
+### Patch Changes
+
+- add pin icon
+
 ## 2.14.3
 
 ### Patch Changes
