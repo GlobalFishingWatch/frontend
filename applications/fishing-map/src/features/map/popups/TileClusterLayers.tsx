@@ -14,10 +14,9 @@ import { selectTimeRange } from 'features/app/app.selectors'
 import { formatInfoField } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
+import { CARRIER_PORTAL_URL } from 'data/config'
 import useViewport from '../map-viewport.hooks'
 import styles from './Popup.module.css'
-
-const CVP_LINK = 'https://carrier-portal.dev.globalfishingwatch.org/carrier-portal'
 
 type UserContextLayersProps = {
   features: TooltipEventFeature[]
@@ -50,15 +49,19 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
   return (
     <Fragment>
       {features.map((feature, index) => {
+        // workaround using another dataset from v0 until the events API is ready to fetch events by id
+        // same than map.slice, it should use just feauture.event.dataset.id
+        const eventDataset = getRelatedDatasetByType(feature.event?.dataset, DatasetTypes.Events)
+          ?.id
         const linkParams = {
           ...viewport,
-          dataset: 'carriers:v20201201', // TODO remove hardcoded dataset here
+          dataset: eventDataset,
           vessel: feature.event?.vessel?.id,
           ...(feature.event && { timestamp: new Date(feature.event.start).getTime() }),
           start,
           end,
         }
-        const urlLink = `${CVP_LINK}/?${stringify(linkParams)}`
+        const urlLink = `${CARRIER_PORTAL_URL}/?${stringify(linkParams)}`
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
             <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
