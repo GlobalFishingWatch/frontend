@@ -48,6 +48,7 @@ export const useGeneratorsConnect = () => {
 }
 
 export const useClickedEventConnect = () => {
+  const map = useMapInstance()
   const dispatch = useDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
@@ -55,8 +56,9 @@ export const useClickedEventConnect = () => {
   const fourWingsStatus = useSelector(selectFourWingsStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
-  const { cleanFeatureState } = useFeatureState(useMapInstance())
+  const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
+  const tilesLoading = useTilesLoading(map)
   const fourWingsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
@@ -101,12 +103,14 @@ export const useClickedEventConnect = () => {
     if (clusterFeature?.properties?.expansionZoom) {
       const { count, expansionZoom, lat, lng } = clusterFeature.properties
       if (count > 1) {
-        setMapCoordinates({
-          latitude: lat,
-          longitude: lng,
-          zoom: expansionZoom,
-        })
-        cleanFeatureState('click')
+        if (!tilesLoading) {
+          setMapCoordinates({
+            latitude: lat,
+            longitude: lng,
+            zoom: expansionZoom,
+          })
+          cleanFeatureState('click')
+        }
         return
       }
     }

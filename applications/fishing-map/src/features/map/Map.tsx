@@ -201,6 +201,10 @@ const MapWrapper = (): React.ReactElement | null => {
     return 'crosshair'
   }, [])
 
+  // TODO handle also in case of error
+  // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
+  const tilesLoading = useTilesLoading(map)
+
   const getCursor = useCallback(
     (state) => {
       // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
@@ -208,18 +212,17 @@ const MapWrapper = (): React.ReactElement | null => {
         const isCluster = hoveredTooltipEvent.features.find(
           (f) => f.type === Generators.Type.TileCluster && parseInt(f.properties.count) > 1
         )
-        return isCluster ? 'zoom-in' : 'pointer'
+        if (isCluster) {
+          return tilesLoading ? 'progress' : 'zoom-in'
+        }
+        return 'pointer'
       } else if (state.isDragging) {
         return 'grabbing'
       }
       return 'grab'
     },
-    [hoveredTooltipEvent]
+    [hoveredTooltipEvent, tilesLoading]
   )
-
-  // TODO handle also in case of error
-  // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
-  const tilesLoading = useTilesLoading(map)
 
   useEffect(() => {
     if (map) {

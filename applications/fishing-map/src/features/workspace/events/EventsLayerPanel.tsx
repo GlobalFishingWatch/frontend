@@ -9,7 +9,6 @@ import { UrlDataviewInstance } from 'types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import DatasetNotFound from '../shared/DatasetNotFound'
-// import DatasetNotFound from '../shared/DatasetNotFound'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -42,9 +41,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     </h3>
   )
 
-  const infoTooltip = dataset
-    ? t(`datasets:${dataset?.id}.description` as any)
-    : 'TODO: use real dataset from API here'
+  const infoTooltip = t(`datasets:${dataset?.id}.description` as any)
 
   return (
     <div
