@@ -85,7 +85,7 @@ const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   },
   month: {
     getFrame: (start: number) => {
-      Math.floor(
+      return Math.floor(
         LuxonInterval.fromDateTimes(
           DateTime.fromMillis(0).toUTC(),
           DateTime.fromMillis(start).toUTC()
@@ -253,7 +253,6 @@ export const getActiveTimeChunks = (
     ]
     timeChunks.activeChunkFrame = frame
     timeChunks.activeId = id
-    console.log(timeChunks)
     return timeChunks
   }
 

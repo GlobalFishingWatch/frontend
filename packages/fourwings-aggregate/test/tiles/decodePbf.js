@@ -15,6 +15,6 @@ const decodeProto = (data) => {
   return intArray && intArray.data
 }
 
-const data = fs.readFileSync('./env.pbf')
+const data = fs.readFileSync('./env2.pbf')
 const int16ArrayBuffer = decodeProto(data)
 console.log(JSON.stringify(int16ArrayBuffer))
