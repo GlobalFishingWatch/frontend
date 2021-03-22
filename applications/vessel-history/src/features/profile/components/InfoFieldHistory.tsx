@@ -1,7 +1,6 @@
 import React, { Fragment, useCallback, useState } from 'react'
 import { DateTime } from 'luxon'
 import { Modal } from '@globalfishingwatch/ui-components'
-// eslint-disable-next-line import/order
 import { useTranslation } from 'utils/i18n'
 import { ValueItem } from 'types'
 import styles from './Info.module.css'

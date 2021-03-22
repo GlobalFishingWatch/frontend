@@ -1,5 +1,4 @@
 import GFWAPI from '@globalfishingwatch/api-client'
-import { Vessel } from '@globalfishingwatch/api-types/dist'
 import { TMTDetail, ValueItem, VesselWithHistory } from 'types'
 import { VesselSourceId } from 'types/vessel'
 import { VesselAPIThunk } from '../vessels.slice'
