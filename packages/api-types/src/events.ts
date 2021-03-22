@@ -3,7 +3,13 @@ export interface PointCoordinate {
   lon: number
 }
 
-export type EventTypes = 'encounter' | 'fishing' | 'gap' | 'port' | 'loitering'
+export enum EventTypes {
+  Encounter = 'encounter',
+  Fishing = 'fishing',
+  Gap = 'gap',
+  Port = 'port',
+  Loitering = 'loitering',
+}
 
 export interface EventNextPort {
   id: string
@@ -11,7 +17,11 @@ export interface EventNextPort {
   label: string
 }
 
-export type EventVesselTypeEnum = 'carrier' | 'fishing'
+export enum EventVesselTypeEnum {
+  Carrier = 'carrier',
+  Fishing = 'fishing',
+}
+
 export interface EventVessel {
   id: string
   ssvid: string
@@ -41,7 +51,11 @@ export interface EncounterEventAuthorizations {
   authorized: boolean
 }
 
-export type AuthorizationOptions = 'authorized' | 'partially' | 'unmatched'
+export enum AuthorizationOptions {
+  Authorized = 'authorized',
+  Partially = 'partially',
+  Unmatched = 'unmatched',
+}
 export interface EncounterEvent {
   /**
    * Median distance to the other vessel across the encounter, in kilometers
