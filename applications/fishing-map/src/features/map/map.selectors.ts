@@ -199,11 +199,14 @@ export const getWorkspaceGeneratorsConfig = createSelector(
           },
         }
       } else if (dataview.config?.type === Generators.Type.TileCluster) {
-        generator.dataset = 'carriers-clusterbuster'
-        generator.eventTypes = ['encounter']
-        // TODO remove this hardcoded endpoint and replace by dataset
-        generator.tilesUrl =
-          'https://gateway.api.dev.globalfishingwatch.org/v1/cluster/events/{z}/{x}/{y}/tile.mvt'
+        const { dataset, url } = resolveDataviewDatasetResource(dataview, {
+          type: DatasetTypes.Events,
+        })
+        if (!dataset || !url) {
+          console.warn('No dataset config for TileCluster generator', dataview)
+          return []
+        }
+        generator.tilesUrl = url
       }
       return generator
     })
