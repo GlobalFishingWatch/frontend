@@ -1,5 +1,4 @@
 import type { Geometry } from 'geojson'
-import { Dataset } from '@globalfishingwatch/api-types'
 import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { PointerEvent } from '@globalfishingwatch/react-map-gl'
 
@@ -27,7 +26,6 @@ export type ExtendedFeature = {
     row: number
   }
   generatorContextLayer?: ContextLayerType | null
-  dataset?: Dataset
   geometry?: Geometry
 }
 
