@@ -37,3 +37,7 @@
 .historyRange {
   font-size: 12px;
 }
+.historyItem {
+  display: flex;
+  flex-flow: row nowrap;
+}
