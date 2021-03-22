@@ -8,6 +8,7 @@ import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { UrlDataviewInstance } from 'types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import DatasetNotFound from '../shared/DatasetNotFound'
 // import DatasetNotFound from '../shared/DatasetNotFound'
 
 type LayerPanelProps = {
@@ -28,19 +29,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     })
   }
 
-  const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
-  )
+  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Events)
 
-  // TODO ensure we use dataset
-  // if (!dataset) {
-  //   return <DatasetNotFound dataview={dataview} />
-  // }
+  if (!dataset) {
+    return <DatasetNotFound dataview={dataview} />
+  }
 
-  const title = dataset ? t(`datasets:${dataset?.id}.name` as any) : 'WIP: encounters'
+  const title = t(`datasets:${dataset?.id}.name` as any)
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {title}
+      {t(`datasets:${dataset?.id}.name` as any)}
     </h3>
   )
 

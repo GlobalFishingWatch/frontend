@@ -234,7 +234,10 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
     }
 
     let title = dataview.name || dataview.id.toString()
-    if (dataview.category === DataviewCategory.Context) {
+    if (
+      dataview.category === DataviewCategory.Context ||
+      dataview.category === DataviewCategory.Events
+    ) {
       const dataset = dataview.datasets?.[0]
       if (dataset) {
         if (dataview.config?.type === Generators.Type.UserContext) {

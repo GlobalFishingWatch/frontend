@@ -3,6 +3,7 @@ import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
 import {
   DEFAULT_CONTEXT_DATAVIEW_ID,
   DEFAULT_ENVIRONMENT_DATAVIEW_ID,
+  DEFAULT_EVENTS_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
   DEFAULT_WORKSPACE_ID,
@@ -51,7 +52,7 @@ const workspace: Workspace<WorkspaceState> = {
     },
     {
       id: 'encounter-events',
-      dataviewId: 1,
+      dataviewId: DEFAULT_EVENTS_DATAVIEW_ID,
     },
     {
       id: 'context-layer-eez',
