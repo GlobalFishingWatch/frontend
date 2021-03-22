@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 4.0.4
+
+### Patch Changes
+
+- fix resolve-endpoint decodeUrl
+
 ## 4.0.3
 
 ### Patch Changes
