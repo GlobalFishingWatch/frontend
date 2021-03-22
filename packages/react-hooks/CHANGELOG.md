@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 4.10.0
+
+### Minor Changes
+
+- move ExtendedFeatureVessel to app responsability
+
 ## 4.9.6
 
 ### Patch Changes
