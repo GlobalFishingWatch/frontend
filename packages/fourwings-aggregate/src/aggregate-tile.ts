@@ -278,6 +278,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
 
   let aggregating = Array(sublayerCount).fill([])
   let currentAggregatedValues = Array(sublayerCount).fill(0)
+  let currentAggregatedValuesLength = 0
 
   let currentFeature
   let currentFeatureInteractive
@@ -305,6 +306,10 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
   let endIndex = 0
   let indexInCell = 0
 
+  // We need to pad with n values (n === delta) to generate "overflow" frames
+  // in the case of a sum, add zeroes which will get added to the running sunm with no effect
+  // in the case of avg, us NaN as a flag to not take the value into account
+  const padValue = aggregationOperation === AggregationOperation.avg ? NaN : 0
   for (let i = FEATURE_CELLS_START_INDEX; i < intArray.length; i++) {
     const value = intArray[i]
     if (indexInCell === CELL_NUM_INDEX) {
@@ -320,7 +325,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
     if (i === endIndex - 1) {
       indexInCell = 0
       const original = intArray.slice(startIndex, endIndex)
-      const padded = new Array(delta * sublayerCount).fill(0)
+      const padded = new Array(delta * sublayerCount).fill(padValue)
       original[FEATURE_CELLS_START_INDEX] = endFrame + delta
       const merged = original.concat(padded)
       featureIntArrays.push(merged)
@@ -387,20 +392,26 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
         let tailValue = 0
         if (tail > currentFeatureMinTimestamp) {
           tailValue = aggregating[datasetIndex].shift()
+        } else {
+          currentAggregatedValuesLength++
         }
 
         // collect "working" value, ie value at head by substracting tail value
         let realValueAtFrameForDataset = 0
         let realValueAtFrameForDatasetWorkingValue = 0
         if (sublayerVisibility[datasetIndex]) {
-          realValueAtFrameForDatasetWorkingValue =
-            currentAggregatedValues[datasetIndex] + value - tailValue
-
           if (aggregationOperation === AggregationOperation.avg) {
+            // if isNan, value is just for padding - stop incrementing running sum (just remove tail)
+            // and take into account one less frame to compute teh avg
+            realValueAtFrameForDatasetWorkingValue = isNaN(value)
+              ? currentAggregatedValues[datasetIndex] - tailValue
+              : currentAggregatedValues[datasetIndex] + value - tailValue
+            if (isNaN(value)) currentAggregatedValuesLength--
             realValueAtFrameForDataset =
-              realValueAtFrameForDatasetWorkingValue / aggregating[datasetIndex].length
+              realValueAtFrameForDatasetWorkingValue / currentAggregatedValuesLength
           } else {
-            realValueAtFrameForDataset = realValueAtFrameForDatasetWorkingValue
+            realValueAtFrameForDataset = realValueAtFrameForDatasetWorkingValue =
+              currentAggregatedValues[datasetIndex] + value - tailValue
           }
         }
         currentAggregatedValues[datasetIndex] = realValueAtFrameForDatasetWorkingValue

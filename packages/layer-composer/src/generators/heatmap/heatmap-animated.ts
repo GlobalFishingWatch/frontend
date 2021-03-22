@@ -99,14 +99,15 @@ class HeatmapAnimatedGenerator {
         sublayerCombinationMode,
         sublayerVisibility: visible,
         sublayerCount: config.sublayers.length,
+        // TODO : import const 100/make configurable
         // sublayerBreaks: breaks.map((sublayerBreaks) => sublayerBreaks.map((b) => b * 100)),
+        sublayerBreaks: breaks,
         interactive: interactiveSource,
       }
       if (timeChunk.start && timeChunk.dataEnd) {
         baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd]
       }
       const serializedBaseSourceParams = serializeBaseSourceParams(baseSourceParams)
-      console.log(baseSourceParams, serializedBaseSourceParams)
 
       const sourceParams = [serializedBaseSourceParams]
 
