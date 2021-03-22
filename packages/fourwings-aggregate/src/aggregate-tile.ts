@@ -328,7 +328,6 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
   }
 
   // const t = performance.now()
-  // console.log(x, y, z, intArray)
 
   if (singleFrame) {
     for (let i = 2; i < intArray.length; i++) {
@@ -392,14 +391,19 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
 
         // collect "working" value, ie value at head by substracting tail value
         let realValueAtFrameForDataset = 0
+        let realValueAtFrameForDatasetWorkingValue = 0
         if (sublayerVisibility[datasetIndex]) {
-          realValueAtFrameForDataset = currentAggregatedValues[datasetIndex] + value - tailValue
+          realValueAtFrameForDatasetWorkingValue =
+            currentAggregatedValues[datasetIndex] + value - tailValue
+
           if (aggregationOperation === AggregationOperation.avg) {
             realValueAtFrameForDataset =
-              realValueAtFrameForDataset / aggregating[datasetIndex].length
+              realValueAtFrameForDatasetWorkingValue / aggregating[datasetIndex].length
+          } else {
+            realValueAtFrameForDataset = realValueAtFrameForDatasetWorkingValue
           }
         }
-        currentAggregatedValues[datasetIndex] = realValueAtFrameForDataset
+        currentAggregatedValues[datasetIndex] = realValueAtFrameForDatasetWorkingValue
 
         // Compute mode-specific values
         if (sublayerCombinationMode === SublayerCombinationMode.max) {

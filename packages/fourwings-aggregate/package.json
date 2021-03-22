@@ -24,7 +24,7 @@
     "clean": "rimraf dist/*",
     "prepare": "yarn build",
     "test": "yarn build && tap test/*.test.mjs",
-    "test:watch": "tap test/aggregate-tile.test.mjs"
+    "test:watch": "tap test/aggregation-modes.test.mjs"
   },
   "directories": {
     "src": "src",
