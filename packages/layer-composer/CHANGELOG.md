@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.17.2
+
+### Patch Changes
+
+- make params optional in tile-cluster
+
 ## 4.17.1
 
 ### Patch Changes

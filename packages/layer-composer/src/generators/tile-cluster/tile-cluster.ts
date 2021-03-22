@@ -19,8 +19,10 @@ class TileClusterGenerator {
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
-    const url = new URL(tilesUrl)
-    url.searchParams.set('datasets', config.dataset)
+    const url = new URL(tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}'))
+    if (config.dataset) {
+      url.searchParams.set('datasets', config.dataset)
+    }
     if (config.start && config.end) {
       url.searchParams.set('dateRange', [config.start, config.end].join(','))
     }

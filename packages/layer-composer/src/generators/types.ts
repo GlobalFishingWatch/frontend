@@ -147,14 +147,13 @@ export interface TileClusterGeneratorConfig extends GeneratorConfig {
    */
   tilesUrl: string
   /**
-   * List of types supported by the API
+   * List of types supported by the API, optional to allow using resolved url params directly (eg: using resolve-endpoints)
    */
-  eventTypes: TilClusterEventType | TilClusterEventType[]
+  eventTypes?: TilClusterEventType | TilClusterEventType[]
   /**
-   * List of datasets to retrieve the data from
-   * // TODO review if we could support multiples
+   * List of datasets to retrieve the data from, optional to allow using resolved url params directly (eg: using resolve-endpoints)
    */
-  dataset: string
+  dataset?: string
 }
 
 /**
