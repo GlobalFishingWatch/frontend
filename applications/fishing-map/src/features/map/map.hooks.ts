@@ -6,7 +6,7 @@ import { InteractionEvent, useTilesLoading } from '@globalfishingwatch/react-hoo
 import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Style } from '@globalfishingwatch/mapbox-gl'
-import { ApiEvent, DataviewCategory } from '@globalfishingwatch/api-types/dist'
+import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import {
   selectDataviewInstancesResolved,
@@ -34,6 +34,7 @@ import {
   selectFourWingsStatus,
   selectApiEventStatus,
   ExtendedFeatureVessel,
+  ExtendedFeatureEvent,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 
@@ -163,7 +164,7 @@ export type TooltipEventFeature = {
     numVessels: number
     vessels: ExtendedFeatureVessel[]
   }
-  event?: ApiEvent
+  event?: ExtendedFeatureEvent
 }
 
 export type TooltipEvent = {
@@ -173,7 +174,6 @@ export type TooltipEvent = {
 }
 
 export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
-  console.log(event)
   const { t } = useTranslation()
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)

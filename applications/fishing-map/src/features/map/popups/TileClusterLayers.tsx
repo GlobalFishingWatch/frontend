@@ -5,16 +5,15 @@ import { stringify } from 'qs'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import { EventVessel } from '@globalfishingwatch/api-types/dist'
+import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types/dist'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectTimeRange } from 'features/app/app.selectors'
 import { formatInfoField } from 'utils/info'
-import { DEFAULT_VESSEL_DATAVIEW_ID } from 'data/workspaces'
-import { selectDataviewById } from 'features/dataviews/dataviews.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
 import useViewport from '../map-viewport.hooks'
 import styles from './Popup.module.css'
 
@@ -28,19 +27,13 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { apiEventStatus } = useClickedEventConnect()
-  const defaultVesselDataview = useSelector(selectDataviewById(DEFAULT_VESSEL_DATAVIEW_ID))
   const { start, end } = useSelector(selectTimeRange)
   const { viewport } = useViewport()
 
   const onPinClick = (vessel: EventVessel, feature: TooltipEventFeature) => {
-    // TODO: READ dataset from this dataview and obtain related datasets instead of using the default ones
-    const trackDatasetId = defaultVesselDataview?.datasetsConfig?.find(
-      (config) => config.endpoint === 'carriers-tracks'
-    )?.datasetId
-
-    const infoDatasetId = defaultVesselDataview?.datasetsConfig?.find(
-      (config) => config.endpoint === 'carriers-vessel'
-    )?.datasetId
+    const dataset = feature.event?.dataset
+    const trackDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Tracks)?.id
+    const infoDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id
 
     if (trackDatasetId && infoDatasetId) {
       const vesselDataviewInstance = getVesselDataviewInstance(

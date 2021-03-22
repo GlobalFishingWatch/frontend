@@ -14,6 +14,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
 import {
   getRelatedDatasetByType,
+  selectEventsDataviews,
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
@@ -28,8 +29,10 @@ export type ExtendedFeatureVessel = {
   [key: string]: any
 }
 
+export type ExtendedFeatureEvent = ApiEvent & { dataset: Dataset }
+
 export type SliceExtendedFeature = ExtendedFeature & {
-  event?: ApiEvent
+  event?: ExtendedFeatureEvent
   vessels?: ExtendedFeatureVessel[]
 }
 
@@ -222,19 +225,29 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
   }
 )
 export const fetchEcounterEventThunk = createAsyncThunk<
-  ApiEvent | undefined,
+  ExtendedFeatureEvent | undefined,
   ExtendedFeature,
   {
     dispatch: AppDispatch
   }
->('map/fetchEncounterEvent', async (eventFeature, { signal }) => {
-  // TODO use dataset endpoint instead of hardcoded v0 endpoint
-  const eventUrl = `https://gateway.api.dev.globalfishingwatch.org/datasets/carriers:v20201201/events/${eventFeature.id}`
-  const event = await GFWAPI.fetch<ApiEvent>(eventUrl, {
-    signal,
-  })
-  if (event) {
-    return event
+>('map/fetchEncounterEvent', async (eventFeature, { signal, getState }) => {
+  const state = getState() as RootState
+  const eventDataviews = selectEventsDataviews(state) || []
+  const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
+  const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  if (dataset) {
+    // workaround using another dataset from v0 until the events API is ready to fetch events by id
+    const eventDataset = getRelatedDatasetByType(dataset, DatasetTypes.Events)
+    if (eventDataset) {
+      // TODO use v1 dataset endpoint instead of hardcoded v0 when ready
+      const eventUrl = `https://gateway.api.dev.globalfishingwatch.org/datasets/${eventDataset.id}/events/${eventFeature.id}`
+      const event = await GFWAPI.fetch<ApiEvent>(eventUrl, {
+        signal,
+      })
+      if (event) {
+        return { ...event, dataset }
+      }
+    }
   }
   return
 })
