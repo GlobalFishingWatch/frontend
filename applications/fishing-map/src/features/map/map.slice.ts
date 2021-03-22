@@ -1,10 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import uniqBy from 'lodash/uniqBy'
-import {
-  InteractionEvent,
-  ExtendedFeatureVessel,
-  ExtendedFeature,
-} from '@globalfishingwatch/react-hooks'
+import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import {
@@ -25,8 +21,16 @@ import { selectTimeRange } from 'features/app/app.selectors'
 
 export const MAX_TOOLTIP_VESSELS = 5
 
+export type ExtendedFeatureVessel = {
+  id: string
+  hours: number
+  dataset: Dataset
+  [key: string]: any
+}
+
 export type SliceExtendedFeature = ExtendedFeature & {
   event?: ApiEvent
+  vessels?: ExtendedFeatureVessel[]
 }
 
 // Extends the default extendedEvent including event and vessels information from API

@@ -5,13 +5,6 @@ import { PointerEvent } from '@globalfishingwatch/react-map-gl'
 
 export { useMapHover, useMapClick, useFeatureState } from './use-map-interaction'
 
-export type ExtendedFeatureVessel = {
-  id: string
-  hours: number
-  dataset: Dataset
-  [key: string]: any
-}
-
 export type ExtendedFeature = {
   properties: Record<string, any>
   layerId: string
@@ -34,7 +27,6 @@ export type ExtendedFeature = {
     row: number
   }
   generatorContextLayer?: ContextLayerType | null
-  vessels?: ExtendedFeatureVessel[]
   dataset?: Dataset
   geometry?: Geometry
 }

@@ -2,11 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  ExtendedFeatureVessel,
-  InteractionEvent,
-  useTilesLoading,
-} from '@globalfishingwatch/react-hooks'
+import { InteractionEvent, useTilesLoading } from '@globalfishingwatch/react-hooks'
 import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Style } from '@globalfishingwatch/mapbox-gl'
@@ -37,6 +33,7 @@ import {
   SliceInteractionEvent,
   selectFourWingsStatus,
   selectApiEventStatus,
+  ExtendedFeatureVessel,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 
@@ -176,6 +173,7 @@ export type TooltipEvent = {
 }
 
 export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
+  console.log(event)
   const { t } = useTranslation()
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)

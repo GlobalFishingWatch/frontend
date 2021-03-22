@@ -24,7 +24,6 @@ import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 
 // Translations by feature.unit static keys
