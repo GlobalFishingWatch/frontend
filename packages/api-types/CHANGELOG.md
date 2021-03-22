@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.14.2
+
+### Patch Changes
+
+- fix registeredGearType release
+
 ## 2.14.1
 
 ### Patch Changes
