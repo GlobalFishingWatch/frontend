@@ -1,7 +1,6 @@
 import React from 'react'
 import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
-// import { Vessel } from 'types'
 import { VesselSearch as Vessel } from '@globalfishingwatch/api-types/dist'
 import { getFlagById } from 'utils/flags'
 import { getVesselAPISource } from 'utils/vessel'

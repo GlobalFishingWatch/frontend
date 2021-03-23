@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import { Button } from '@globalfishingwatch/ui-components'
-// eslint-disable-next-line import/order
 import { VesselWithHistory } from 'types'
 import styles from './Info.module.css'
 import InfoField from './InfoField'
