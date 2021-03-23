@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
@@ -15,6 +15,7 @@ import { formatInfoField } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
 import { CARRIER_PORTAL_URL } from 'data/config'
+import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import useViewport from '../map-viewport.hooks'
 import styles from './Popup.module.css'
 
@@ -28,6 +29,17 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
   const { apiEventStatus } = useClickedEventConnect()
   const { start, end } = useSelector(selectTimeRange)
   const { viewport } = useViewport()
+  const {
+    carrierLatest,
+    carrierLatestStatus,
+    dispatchFetchLatestCarrier,
+  } = useCarrierLatestConnect()
+
+  useEffect(() => {
+    if (!carrierLatest) {
+      dispatchFetchLatestCarrier()
+    }
+  }, [carrierLatest, dispatchFetchLatestCarrier])
 
   const onPinClick = (vessel: EventVessel, feature: TooltipEventFeature) => {
     const dataset = feature.event?.dataset
@@ -49,18 +61,32 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
   return (
     <Fragment>
       {features.map((feature, index) => {
-        // workaround to link carrier portal dataset from v0 from configuration in relatedDataset
-        const eventDataset = getRelatedDatasetByType(feature.event?.dataset, DatasetTypes.Events)
-          ?.id
         const linkParams = {
           ...viewport,
-          dataset: eventDataset,
+          dataset: carrierLatest?.id,
           vessel: feature.event?.vessel?.id,
           ...(feature.event && { timestamp: new Date(feature.event.start).getTime() }),
           start,
           end,
         }
+        const isEventInDatasetRange =
+          feature.event !== undefined &&
+          carrierLatest?.endDate !== undefined &&
+          carrierLatest?.startDate !== undefined &&
+          feature.event.start >= carrierLatest.startDate &&
+          feature.event.end <= carrierLatest.endDate
+
         const urlLink = `${CARRIER_PORTAL_URL}/?${stringify(linkParams)}`
+        let linkTooltip = ''
+        if (carrierLatestStatus === AsyncReducerStatus.Error) {
+          linkTooltip = t('errors.latestCarrierNotFound', 'Latest carrier dataset not found')
+        }
+        if (carrierLatestStatus === AsyncReducerStatus.Finished && !isEventInDatasetRange) {
+          linkTooltip = t(
+            'event.notInCVP',
+            'This event happened outside the timerange of the Carrier Vessel Portal data'
+          )
+        }
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
             <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
@@ -72,7 +98,7 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
                     <Spinner size="small" />
                   </div>
                 ) : feature.event ? (
-                  <div>
+                  <div className={styles.rowContainer}>
                     <span className={styles.rowText}>
                       <I18nDate date={feature.event?.start as string} />
                     </span>
@@ -115,7 +141,18 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
                       </div>
                     )}
                     <div className={styles.row}>
-                      <Button href={urlLink} target="_blank">
+                      <Button
+                        href={urlLink}
+                        target="_blank"
+                        size="small"
+                        className={styles.btnLarge}
+                        disabled={
+                          carrierLatestStatus === AsyncReducerStatus.Loading ||
+                          !isEventInDatasetRange
+                        }
+                        tooltip={linkTooltip}
+                        loading={carrierLatestStatus === AsyncReducerStatus.Loading}
+                      >
                         {t('event.seeInCVP', 'See in Carrier Vessel Portal')}
                       </Button>
                     </div>

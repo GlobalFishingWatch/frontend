@@ -30,6 +30,7 @@
     "hour": "Hour",
     "hour_plural": "hours",
     "loggedAs": "Logged as",
+    "loading": "Loading",
     "login": "Log in",
     "logout": "Log out",
     "max": "Max",
@@ -83,6 +84,7 @@
     "generic": "Something went wrong, try again or contact:",
     "invalidRange": "Min has to be lower than max value",
     "notSupportedBy": "Not supported by {{list}}",
+    "latestCarrierNotFound": "Latest carrier dataset not found",
     "pageNotFound": "Page not found",
     "privateView": "This is a private view",
     "requestAccess": "Request access",
@@ -93,6 +95,7 @@
     "workspaceNotFound": "The view you request was not found"
   },
   "event": {
+    "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
     "seeInCVP": "See in Carrier Vessel Portal",
     "noData": "No data available"
   },
