@@ -18,22 +18,29 @@
   box-shadow: var(--box-shadow-highlight);
 }
 
-.button:disabled {
-  color: var(--color-secondary-blue);
-  background-color: var(--color-terthiary-blue);
-  cursor: not-allowed;
-}
-
-a.button, a.button:visited,
+a.button,
+a.button:visited,
 .default {
   height: var(--size-M);
   color: var(--color-white);
   background-color: var(--color-primary-blue);
 }
 
+a.button.linkDisabled,
+.button:disabled {
+  color: var(--color-secondary-blue);
+  background-color: var(--color-terthiary-blue);
+  cursor: not-allowed;
+}
+
 .default:not(:disabled):hover,
 .default:not(:disabled):focus {
   background-color: var(--color-primary-blue-hover);
+}
+
+a.button.linkDisabled:hover,
+a.button.linkDisabled:focus {
+  background-color: var(--color-terthiary-blue);
 }
 
 .secondary {
@@ -45,6 +52,11 @@ a.button, a.button:visited,
 .secondary:not(:disabled):focus {
   color: var(--color-primary-blue);
   background-color: var(--color-border);
+}
+
+a.button.secondary.linkDisabled:hover,
+a.button.secondary.linkDisabled:focus {
+  background-color: var(--color-secondary-blue);
 }
 
 .small {

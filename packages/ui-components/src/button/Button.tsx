@@ -44,10 +44,19 @@ function Button(props: ButtonProps) {
       {href !== undefined ? (
         <a
           href={href}
-          className={cx(styles.button, styles[type], styles[size], className)}
+          className={cx(styles.button, styles[type], styles[size], className, {
+            [styles.linkDisabled]: disabled,
+          })}
           target={target}
         >
-          {children}
+          {loading ? (
+            <Spinner
+              size="small"
+              color={type === 'default' ? (disabled ? '#22447e' : 'white') : undefined}
+            />
+          ) : (
+            children
+          )}
         </a>
       ) : (
         <button
@@ -57,7 +66,10 @@ function Button(props: ButtonProps) {
           disabled={disabled}
         >
           {loading ? (
-            <Spinner size="small" color={type === 'default' ? 'white' : undefined} />
+            <Spinner
+              size="small"
+              color={type === 'default' ? (disabled ? '#22447e' : 'white') : undefined}
+            />
           ) : (
             children
           )}
