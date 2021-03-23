@@ -251,6 +251,43 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
     }
   }
 )
+
+// TODO: remove this workaound once the api returns the same format for every event
+const parseClusterEvent = (
+  clusterEvent: TempClusterBusterEvent,
+  eventFeature: ExtendedFeature
+): ApiEvent => {
+  const vessel = clusterEvent.event_vessels.find(
+    (v) => v.id === clusterEvent.vessel_id
+  ) as EventVessel
+  const encounterVessel = clusterEvent.event_vessels.find(
+    (v) => v.id === clusterEvent.event_info?.encountered_vessel_id
+  ) as EventVessel
+  const event = {
+    position: {
+      lat: eventFeature.properties?.lat as number,
+      lon: eventFeature.properties?.lng as number,
+    },
+    id: clusterEvent.event_id,
+    type: clusterEvent.event_type,
+    vessel,
+    start: clusterEvent.event_start,
+    end: clusterEvent.event_end,
+    rfmos: clusterEvent.event_info?.regions?.rfmo,
+    eezs: clusterEvent.event_info?.regions?.eez,
+    encounter: {
+      vessel: encounterVessel,
+      authorized: clusterEvent.event_info.is_authorized,
+      medianDistanceKilometers: clusterEvent.event_info.median_distance_km,
+      medianSpeedKnots: clusterEvent.event_info.median_speed_knots,
+      authorizationStatus: clusterEvent.event_info.authorization_status,
+      regionAuthorizations: [],
+      vesselAuthorizations: [],
+    },
+  }
+  return event
+}
+
 export const fetchEcounterEventThunk = createAsyncThunk<
   ExtendedFeatureEvent | undefined,
   ExtendedFeature,
@@ -272,34 +309,7 @@ export const fetchEcounterEventThunk = createAsyncThunk<
     if (url) {
       const clusterEvent = await GFWAPI.fetch<TempClusterBusterEvent>(url, { signal })
       if (clusterEvent) {
-        const vessel = clusterEvent.event_vessels.find(
-          (v) => v.id === clusterEvent.vessel_id
-        ) as EventVessel
-        const encounterVessel = clusterEvent.event_vessels.find(
-          (v) => v.id === clusterEvent.event_info?.encountered_vessel_id
-        ) as EventVessel
-        const event: ApiEvent = {
-          position: {
-            lat: eventFeature.properties?.lat as number,
-            lon: eventFeature.properties?.lng as number,
-          },
-          id: clusterEvent.event_id,
-          type: clusterEvent.event_type,
-          vessel,
-          start: clusterEvent.event_start,
-          end: clusterEvent.event_end,
-          rfmos: clusterEvent.event_info?.regions?.rfmo,
-          eezs: clusterEvent.event_info?.regions?.eez,
-          encounter: {
-            vessel: encounterVessel,
-            authorized: clusterEvent.event_info.is_authorized,
-            medianDistanceKilometers: clusterEvent.event_info.median_distance_km,
-            medianSpeedKnots: clusterEvent.event_info.median_speed_knots,
-            authorizationStatus: clusterEvent.event_info.authorization_status,
-            regionAuthorizations: [],
-            vesselAuthorizations: [],
-          },
-        }
+        const event = parseClusterEvent(clusterEvent, eventFeature)
         return { ...event, dataset }
       }
     } else {
