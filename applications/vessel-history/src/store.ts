@@ -27,7 +27,6 @@ const defaultMiddlewareOptions: any = {
     ignoredPaths: [
       // Too big to check for immutability:
       'resources',
-      // 'vesse ls',
     ],
   },
 }
@@ -42,7 +41,6 @@ const store = configureStore({
   enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })
 
-// export type RootState = ReturnType<typeof store.getState>
 export type RootState = ReturnType<typeof rootReducer>
 export type AppDispatch = typeof store.dispatch
 export type AppThunk<ReturnType = void> = ThunkAction<
