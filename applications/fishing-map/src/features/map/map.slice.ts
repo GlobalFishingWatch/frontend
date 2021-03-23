@@ -8,7 +8,10 @@ import {
   Dataset,
   Vessel,
   DatasetTypes,
+  EventVessel,
   ApiEvent,
+  AuthorizationOptions,
+  EventTypes,
 } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
@@ -27,6 +30,30 @@ export type ExtendedFeatureVessel = {
   hours: number
   dataset: Dataset
   [key: string]: any
+}
+
+type TempClusterBusterEvent = {
+  event_id: string
+  event_type: EventTypes
+  vessel_id: string
+  event_start: string
+  event_end: string
+  event_info: {
+    regions: {
+      eez: string[]
+      fao: string[]
+      rfmo: string[]
+    }
+    elevation_m: number
+    is_authorized: boolean
+    median_distance_km: number
+    median_speed_knots: number
+    authorization_status: AuthorizationOptions
+    distance_from_port_m: number
+    distance_from_shore_m: number
+    encountered_vessel_id: string
+  }
+  event_vessels: EventVessel[]
 }
 
 export type ExtendedFeatureEvent = ApiEvent & { dataset: Dataset }
@@ -236,17 +263,47 @@ export const fetchEcounterEventThunk = createAsyncThunk<
   const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
   const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   if (dataset) {
-    // workaround using another dataset from v0 until the events API is ready to fetch events by id
-    const eventDataset = getRelatedDatasetByType(dataset, DatasetTypes.Events)
-    if (eventDataset) {
-      // TODO use v1 dataset endpoint instead of hardcoded v0 when ready
-      const eventUrl = `https://gateway.api.dev.globalfishingwatch.org/datasets/${eventDataset.id}/events/${eventFeature.id}`
-      const event = await GFWAPI.fetch<ApiEvent>(eventUrl, {
-        signal,
-      })
-      if (event) {
+    const datasetConfig = {
+      datasetId: dataset.id,
+      endpoint: 'carriers-events-detail',
+      params: [{ id: 'eventId', value: eventFeature.id }],
+    }
+    const url = resolveEndpoint(dataset, datasetConfig)
+    if (url) {
+      const clusterEvent = await GFWAPI.fetch<TempClusterBusterEvent>(url, { signal })
+      if (clusterEvent) {
+        const vessel = clusterEvent.event_vessels.find(
+          (v) => v.id === clusterEvent.vessel_id
+        ) as EventVessel
+        const encounterVessel = clusterEvent.event_vessels.find(
+          (v) => v.id === clusterEvent.event_info?.encountered_vessel_id
+        ) as EventVessel
+        const event: ApiEvent = {
+          position: {
+            lat: eventFeature.properties?.lat as number,
+            lon: eventFeature.properties?.lng as number,
+          },
+          id: clusterEvent.event_id,
+          type: clusterEvent.event_type,
+          vessel,
+          start: clusterEvent.event_start,
+          end: clusterEvent.event_end,
+          rfmos: clusterEvent.event_info?.regions?.rfmo,
+          eezs: clusterEvent.event_info?.regions?.eez,
+          encounter: {
+            vessel: encounterVessel,
+            authorized: clusterEvent.event_info.is_authorized,
+            medianDistanceKilometers: clusterEvent.event_info.median_distance_km,
+            medianSpeedKnots: clusterEvent.event_info.median_speed_knots,
+            authorizationStatus: clusterEvent.event_info.authorization_status,
+            regionAuthorizations: [],
+            vesselAuthorizations: [],
+          },
+        }
         return { ...event, dataset }
       }
+    } else {
+      console.warn('Missing url for endpoints', dataset, datasetConfig)
     }
   }
   return

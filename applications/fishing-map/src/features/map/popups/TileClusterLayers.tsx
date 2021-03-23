@@ -49,8 +49,7 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
   return (
     <Fragment>
       {features.map((feature, index) => {
-        // workaround using another dataset from v0 until the events API is ready to fetch events by id
-        // same than map.slice, it should use just feauture.event.dataset.id
+        // workaround to link carrier portal dataset from v0 from configuration in relatedDataset
         const eventDataset = getRelatedDatasetByType(feature.event?.dataset, DatasetTypes.Events)
           ?.id
         const linkParams = {
