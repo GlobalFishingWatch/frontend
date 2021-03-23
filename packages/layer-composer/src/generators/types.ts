@@ -246,6 +246,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   staticEnd?: string
   interval?: IntervalOption
   aggregationOperation?: AggregationOperation
+  breaksMultiplier?: number
 }
 
 export type AnyGeneratorConfig =

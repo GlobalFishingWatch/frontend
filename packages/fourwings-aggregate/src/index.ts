@@ -15,3 +15,4 @@ export {
   TileAggregationParams,
   TileAggregationSourceParams,
 } from './types'
+export { VALUE_MULTIPLIER } from './constants'

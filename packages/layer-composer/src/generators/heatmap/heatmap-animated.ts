@@ -3,6 +3,7 @@ import {
   GeomType,
   TileAggregationSourceParams,
   AggregationOperation,
+  VALUE_MULTIPLIER,
 } from '@globalfishingwatch/fourwings-aggregate'
 import {
   Type,
@@ -57,6 +58,7 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   interactive: true,
   interval: 'auto',
   aggregationOperation: AggregationOperation.sum,
+  breaksMultiplier: VALUE_MULTIPLIER,
 }
 
 class HeatmapAnimatedGenerator {
@@ -101,9 +103,9 @@ class HeatmapAnimatedGenerator {
         sublayerCombinationMode,
         sublayerVisibility: visible,
         sublayerCount: config.sublayers.length,
-        // TODO : import const 100/make configurable
-        // sublayerBreaks: breaks.map((sublayerBreaks) => sublayerBreaks.map((b) => b * 100)),
-        sublayerBreaks: breaks,
+        sublayerBreaks: breaks.map((sublayerBreaks) =>
+          sublayerBreaks.map((b) => b * config.breaksMultiplier)
+        ),
         interactive: interactiveSource,
       }
       if (timeChunk.start && timeChunk.dataEnd) {
