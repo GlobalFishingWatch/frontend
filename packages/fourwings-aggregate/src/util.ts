@@ -20,11 +20,12 @@ export const getCellValues = (rawValues: string | number[]) => {
   return { values, minCellOffset, maxCellOffset }
 }
 
-export const getRealValue = (rawValue: number) => rawValue / VALUE_MULTIPLIER
+export const getRealValue = (rawValue: number, multiplier = VALUE_MULTIPLIER) =>
+  rawValue / multiplier
 
-export const getRealValues = (rawValues: number[]) => {
+export const getRealValues = (rawValues: number[], multiplier = VALUE_MULTIPLIER) => {
   // Raw 4w API values come without decimals, multiplied by 100
-  const realValues = rawValues.map(getRealValue)
+  const realValues = rawValues.map((sublayerValue) => getRealValue(sublayerValue, multiplier))
   return realValues
 }
 

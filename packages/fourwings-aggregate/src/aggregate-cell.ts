@@ -1,3 +1,5 @@
+import { VALUE_MULTIPLIER } from './constants'
+import { AggregationOperation } from './types'
 import { getCellValues, getCellArrayIndex, getRealValues } from './util'
 
 const aggregateCell = (
@@ -6,7 +8,8 @@ const aggregateCell = (
   delta: number,
   quantizeOffset: number,
   numSublayers: number,
-  debug = false
+  aggregationOperation = AggregationOperation.sum,
+  multiplier = VALUE_MULTIPLIER
 ) => {
   if (!rawValues) return null
 
@@ -28,16 +31,22 @@ const aggregateCell = (
   const rawValuesArrSlice = values.slice(startAt, endAt)
 
   // One aggregated value per sublayer
-  const aggregatedValues = new Array(numSublayers).fill(0)
+  let aggregatedValues = new Array(numSublayers).fill(0)
 
+  let numValues = 0
   for (let i = 0; i < rawValuesArrSlice.length; i++) {
     const sublayerIndex = i % numSublayers
     const rawValue = rawValuesArrSlice[i]
-    if (rawValue) {
+    if (rawValue !== null && rawValue !== undefined) {
       aggregatedValues[sublayerIndex] += rawValue
+      if (sublayerIndex === 0) numValues++
     }
   }
-  const realValues = getRealValues(aggregatedValues)
+  if (aggregationOperation === AggregationOperation.avg) {
+    aggregatedValues = aggregatedValues.map((sublayerValue) => sublayerValue / numValues)
+  }
+
+  const realValues = getRealValues(aggregatedValues, multiplier)
 
   return realValues
 }

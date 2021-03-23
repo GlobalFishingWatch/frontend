@@ -43,8 +43,7 @@ const featAggTileRawCellFrame = aggregateCell(
   FRAME,
   BASE_CONFIG.delta,
   BASE_CONFIG.quantizeOffset,
-  BASE_CONFIG.sublayerCount,
-  true
+  BASE_CONFIG.sublayerCount
 )
 
 const datasetIndex = 0

@@ -82,7 +82,9 @@ class HeatmapAnimatedGenerator {
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
     const interactiveSource =
       config.interactive &&
-      (config.mode === HeatmapAnimatedMode.Compare || config.mode === HeatmapAnimatedMode.Bivariate)
+      (config.mode === HeatmapAnimatedMode.Compare ||
+        config.mode === HeatmapAnimatedMode.Bivariate ||
+        config.mode === HeatmapAnimatedMode.Single)
     const sublayerCombinationMode = HEATMAP_MODE_COMBINATION[config.mode]
 
     const sources = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
