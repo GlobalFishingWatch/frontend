@@ -71,7 +71,7 @@ class TileClusterGenerator {
         metadata: {
           interactive: true,
           generatorId: config.id,
-          group: Group.Tool,
+          group: Group.Cluster,
         },
       },
       {
@@ -82,8 +82,9 @@ class TileClusterGenerator {
         filter: ['>', ['get', 'count'], 1],
         layout: {
           'text-size': 14,
+          'text-offset': [0, 0.13],
           'text-field': ['get', 'count'],
-          'text-font': ['Roboto Mono Light'],
+          'text-font': ['Roboto Medium'],
           visibility: isConfigVisible(config),
         },
         paint: {
@@ -91,11 +92,11 @@ class TileClusterGenerator {
         },
         metadata: {
           generatorId: config.id,
-          group: Group.Tool,
+          group: Group.Cluster,
         },
       },
       {
-        id: 'unclustered-point',
+        id: 'unclustered_point',
         type: 'circle',
         source: config.id,
         'source-layer': 'points',
@@ -105,13 +106,28 @@ class TileClusterGenerator {
         },
         paint: {
           'circle-color': config.color || '#FAE9A0',
-          'circle-radius': 8,
+          'circle-radius': 10,
           'circle-stroke-width': 1,
           'circle-stroke-color': '#fff',
         },
         metadata: {
           interactive: true,
           generatorId: config.id,
+          group: Group.Cluster,
+        },
+      },
+      {
+        id: 'unclustered_point_icon',
+        source: config.id,
+        'source-layer': 'points',
+        type: 'symbol',
+        filter: ['==', ['get', 'count'], 1],
+        layout: {
+          visibility: isConfigVisible(config),
+          'icon-image': 'carrier_portal_encounter',
+        },
+        metadata: {
+          group: Group.Cluster,
         },
       },
     ]

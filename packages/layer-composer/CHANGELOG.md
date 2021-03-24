@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.17.3
+
+### Patch Changes
+
+- polish tile cluster generator
+
 ## 4.17.2
 
 ### Patch Changes
