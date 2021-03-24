@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.15.0
+
+### Minor Changes
+
+- match latest versions
+
 ## 2.14.2
 
 ### Patch Changes

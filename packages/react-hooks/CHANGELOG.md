@@ -1,5 +1,17 @@
 # @globalfishingwatch/react-hooks
 
+## 4.11.0
+
+### Minor Changes
+
+- match latest versions
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@4.1.0
+  - @globalfishingwatch/layer-composer@4.18.0
+
 ## 4.10.1
 
 ### Patch Changes

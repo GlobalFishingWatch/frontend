@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.18.0
+
+### Minor Changes
+
+- match latest versions
+
 ## 4.17.3
 
 ### Patch Changes

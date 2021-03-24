@@ -1,5 +1,16 @@
 # @globalfishingwatch/dataviews-client
 
+## 4.1.0
+
+### Minor Changes
+
+- match latest versions
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.15.0
+
 ## 4.0.4
 
 ### Patch Changes
