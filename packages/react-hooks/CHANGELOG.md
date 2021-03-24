@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 4.10.0
+
+### Minor Changes
+
+- [`d99bf5f3`](https://github.com/GlobalFishingWatch/frontend/commit/d99bf5f30bceed021ac990a0de8b4e992189be73) [#375](https://github.com/GlobalFishingWatch/frontend/pull/375) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - define endpoints enum
+
 ## 4.9.3
 
 ### Patch Changes

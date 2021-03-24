@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.27.9
+
+### Patch Changes
+
+- Updated dependencies [[`d99bf5f3`](https://github.com/GlobalFishingWatch/frontend/commit/d99bf5f30bceed021ac990a0de8b4e992189be73)]:
+  - @globalfishingwatch/api-types@2.13.0
+  - @globalfishingwatch/react-hooks@4.10.0
+
 ## 0.27.8
 
 ### Patch Changes
