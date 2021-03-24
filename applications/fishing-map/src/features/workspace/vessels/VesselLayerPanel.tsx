@@ -46,14 +46,16 @@ type LayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
+const showDebugVesselId = process.env.NODE_ENV === 'development'
+
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
-  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
-  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
-  const resource = useSelector(selectResourceByUrl<Vessel>(url))
   const { start, end } = useTimerangeConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
+  const { url: infoUrl } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
+  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
+  const infoResource = useSelector(selectResourceByUrl<Vessel>(infoUrl))
   const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
@@ -107,17 +109,23 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     setInfoOpen(false)
   }
 
-  const vesselLabel = resource?.data && getVesselLabel(resource.data)
+  const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
+  const vesselId = showDebugVesselId
+    ? (infoResource?.datasetConfig?.params?.find((p) => p.id === 'vesselId')?.value as string) || ''
+    : ''
+  const vesselTitle = vesselLabel || vesselId
+
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {vesselLabel}
+      {vesselTitle}
     </h3>
   )
 
   const loading =
     trackResource?.status === AsyncReducerStatus.Loading ||
-    resource?.status === AsyncReducerStatus.Loading
+    infoResource?.status === AsyncReducerStatus.Loading
 
+  const infoError = infoResource?.status === AsyncReducerStatus.Error
   const trackError = trackResource?.status === AsyncReducerStatus.Error
 
   return (
@@ -133,8 +141,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           className={styles.switch}
           color={dataview.config?.color}
         />
-        {vesselLabel && vesselLabel.length > 20 ? (
-          <Tooltip content={vesselLabel}>{TitleComponent}</Tooltip>
+        {vesselTitle && vesselTitle.length > 20 ? (
+          <Tooltip content={vesselTitle}>{TitleComponent}</Tooltip>
         ) : (
           TitleComponent
         )}
@@ -192,7 +200,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 component={
                   <ul className={styles.infoContent}>
                     {dataview.infoConfig?.fields.map((field: any) => {
-                      const fieldValue = resource?.data?.[field.id as keyof Vessel]
+                      const fieldValue = infoResource?.data?.[field.id as keyof Vessel]
                       if (!fieldValue) return null
                       return (
                         <li key={field.id} className={styles.infoContentItem}>
@@ -222,11 +230,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 }
               >
                 <IconButton
-                  icon="info"
                   size="small"
+                  icon={infoError ? 'warning' : 'target'}
+                  type={infoError ? 'warning' : 'default'}
                   className={styles.actionButton}
                   tooltip={
-                    infoOpen ? t('layer.infoClose', 'Hide info') : t('layer.infoOpen', 'Show info')
+                    infoError
+                      ? t('errors.vesselLoading', 'There was an error loading the vessel details')
+                      : infoOpen
+                      ? t('layer.infoClose', 'Hide info')
+                      : t('layer.infoOpen', 'Show info')
                   }
                   onClick={onToggleInfoOpen}
                   tooltipPlacement="top"
