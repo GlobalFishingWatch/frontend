@@ -7,7 +7,13 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { DataviewDatasetConfig, Dataset, Vessel, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  DataviewDatasetConfig,
+  Dataset,
+  Vessel,
+  DatasetTypes,
+  EndpointId,
+} from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
 import {
@@ -67,7 +73,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
     const mainFeature = temporalGridFeatures[0]
     const datasetConfig: DataviewDatasetConfig = {
       datasetId: fourWingsDataset.id,
-      endpoint: '4wings-interaction',
+      endpoint: EndpointId.FourwingsInteraction,
       params: [
         { id: 'z', value: mainFeature.tile?.z },
         { id: 'x', value: mainFeature.tile?.x },
@@ -144,7 +150,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
         const infoDataset = infoDatasets[0]
         if (infoDataset) {
           const infoDatasetConfig = {
-            endpoint: 'carriers-list-vessels',
+            endpoint: EndpointId.VesselList,
             datasetId: infoDataset.id,
             params: [],
             query: [

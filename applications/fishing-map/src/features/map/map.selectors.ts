@@ -11,6 +11,7 @@ import {
   DatasetCategory,
   DatasetStatus,
   DatasetTypes,
+  EndpointId,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from 'types'
@@ -177,9 +178,11 @@ export const getWorkspaceGeneratorsConfig = createSelector(
         const dataset = dataview.datasets?.find(
           (dataset) => dataset.type === DatasetTypes.Fourwings
         )
-        const tilesEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
+        const tilesEndpoint = dataset?.endpoints?.find(
+          (endpoint) => endpoint.id === EndpointId.FourwingsTiles
+        )
         const statsEndpoint = dataset?.endpoints?.find(
-          (endpoint) => endpoint.id === '4wings-legend'
+          (endpoint) => endpoint.id === EndpointId.FourwingsLegend
         )
         generator = {
           ...generator,
