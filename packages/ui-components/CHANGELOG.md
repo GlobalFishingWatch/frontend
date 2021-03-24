@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.14.8
+
+### Patch Changes
+
+- fix disabled button
+
 ## 2.14.7
 
 ### Patch Changes

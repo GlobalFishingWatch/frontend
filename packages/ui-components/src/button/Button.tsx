@@ -41,12 +41,10 @@ function Button(props: ButtonProps) {
   } = props
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
-      {href !== undefined ? (
+      {href !== undefined && !disabled ? (
         <a
           href={href}
-          className={cx(styles.button, styles[type], styles[size], className, {
-            [styles.linkDisabled]: disabled,
-          })}
+          className={cx(styles.button, styles[type], styles[size], className)}
           target={target}
         >
           {loading ? (
@@ -61,9 +59,10 @@ function Button(props: ButtonProps) {
       ) : (
         <button
           id={id}
-          className={cx(styles.button, styles[type], styles[size], className)}
-          onClick={(e) => !loading && onClick && onClick(e)}
-          disabled={disabled}
+          className={cx(styles.button, styles[type], styles[size], className, {
+            [styles.disabled]: disabled,
+          })}
+          onClick={(e) => !loading && !disabled && onClick && onClick(e)}
         >
           {loading ? (
             <Spinner

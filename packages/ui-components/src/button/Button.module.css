@@ -26,21 +26,15 @@ a.button:visited,
   background-color: var(--color-primary-blue);
 }
 
-a.button.linkDisabled,
-.button:disabled {
+.button.disabled {
   color: var(--color-secondary-blue);
   background-color: var(--color-terthiary-blue);
   cursor: not-allowed;
 }
 
-.default:not(:disabled):hover,
-.default:not(:disabled):focus {
+.default:not(.disabled):hover,
+.default:not(.disabled):focus {
   background-color: var(--color-primary-blue-hover);
-}
-
-a.button.linkDisabled:hover,
-a.button.linkDisabled:focus {
-  background-color: var(--color-terthiary-blue);
 }
 
 .secondary {
@@ -48,15 +42,10 @@ a.button.linkDisabled:focus {
   background-color: var(--color-terthiary-blue);
 }
 
-.secondary:not(:disabled):hover,
-.secondary:not(:disabled):focus {
+.secondary:not(.disabled):hover,
+.secondary:not(.disabled):focus {
   color: var(--color-primary-blue);
   background-color: var(--color-border);
-}
-
-a.button.secondary.linkDisabled:hover,
-a.button.secondary.linkDisabled:focus {
-  background-color: var(--color-secondary-blue);
 }
 
 .small {
