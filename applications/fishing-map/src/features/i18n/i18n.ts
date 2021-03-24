@@ -25,7 +25,7 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     backend: {
-      loadPath: `${pathPrefix}/locales/{{lng}}/{{ns}}.json`,
+      loadPath: `/${pathPrefix}/locales/{{lng}}/{{ns}}.json`,
     },
     ns: ['translations', 'flags', 'datasets'],
     defaultNS: 'translations',
