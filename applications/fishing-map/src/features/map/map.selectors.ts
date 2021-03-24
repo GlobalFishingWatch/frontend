@@ -17,7 +17,6 @@ import {
 import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
-  resolveDataviewDatasetResource,
   selectWorkspaceError,
 } from 'features/workspace/workspace.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
@@ -27,6 +26,7 @@ import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
+import { resolveDataviewDatasetResource } from 'features/resources/resources.selectors'
 
 export const MULTILAYER_SEPARATOR = '__'
 
@@ -40,6 +40,7 @@ export const selectGlobalGeneratorsConfig = createSelector(
   })
 )
 
+// TODO merge this with getDataviewsGeneratorConfigs user-dataviews-layer package
 export const getWorkspaceGeneratorsConfig = createSelector(
   [
     selectDataviewInstancesResolved,

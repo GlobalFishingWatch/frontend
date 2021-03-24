@@ -35,12 +35,12 @@ export const DEFAULT_WORKSPACE = {
 }
 
 export enum ThinningLevels {
-  Aggresive = 'aggresive',
+  Aggressive = 'aggressive',
   Default = 'default',
 }
 
 export const THINNING_LEVELS = {
-  [ThinningLevels.Aggresive]: {
+  [ThinningLevels.Aggressive]: {
     distanceFishing: 1000,
     bearingValFishing: 5,
     changeSpeedFishing: 200,

@@ -1,14 +1,10 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
-import { stringify } from 'qs'
 import { Field, Segment, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { isGuestUser } from 'features/user/user.selectors'
-import { selectDebugOptions } from 'features/debug/debug.slice'
-import { ThinningLevels, THINNING_LEVELS } from 'data/config'
 
 export interface ResourceQuery {
   url: string
@@ -30,24 +26,15 @@ const initialState: ResourcesState = {}
 
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
-  async (resource: ResourceQuery, { getState }) => {
-    const state = getState() as RootState
-    const guestUser = isGuestUser(state)
-    const { thinning } = selectDebugOptions(state)
+  async (resource: ResourceQuery) => {
     const isTrackResource = resource.datasetType === DatasetTypes.Tracks
     const responseType =
       isTrackResource &&
       resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
         ? 'vessel'
         : 'json'
-    let url = resource.url
-    if (isTrackResource && thinning) {
-      const thinningParams = guestUser
-        ? THINNING_LEVELS[ThinningLevels.Aggresive]
-        : THINNING_LEVELS[ThinningLevels.Default]
-      url = url.concat(`&${stringify(thinningParams)}`)
-    }
-    const data = await GFWAPI.fetch(url, { responseType }).then((data) => {
+
+    const data = await GFWAPI.fetch(resource.url, { responseType }).then((data) => {
       // TODO Replace with enum?
       if (isTrackResource) {
         const fields = (resource.datasetConfig.query?.find((q) => q.id === 'fields')
