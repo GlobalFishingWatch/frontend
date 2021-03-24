@@ -66,6 +66,7 @@ export const selectUrlDataviewInstances = selectQueryParam<UrlDataviewInstance[]
 export const selectUrlViewport = createSelector(
   [selectUrlMapZoomQuery, selectUrlMapLatitudeQuery, selectUrlMapLongitudeQuery],
   (zoom, latitude, longitude) => {
+    if (!zoom && !latitude && !longitude) return
     return { zoom, latitude, longitude }
   }
 )

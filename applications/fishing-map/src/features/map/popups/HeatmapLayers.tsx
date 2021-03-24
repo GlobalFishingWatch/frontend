@@ -1,7 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { ExtendedFeatureVessel } from '@globalfishingwatch/react-hooks'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getVesselLabel } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -9,6 +8,7 @@ import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
+import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Popup.module.css'
 
@@ -22,7 +22,7 @@ type HeatmapTooltipRowProps = {
 function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { clickedEventStatus } = useClickedEventConnect()
+  const { fourWingsStatus } = useClickedEventConnect()
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
     const infoDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Vessels)
@@ -55,7 +55,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
             })}
           </span>
         </div>
-        {clickedEventStatus === AsyncReducerStatus.Loading && (
+        {fourWingsStatus === AsyncReducerStatus.Loading && (
           <div className={styles.loading}>
             <Spinner size="small" />
           </div>

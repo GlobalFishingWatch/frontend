@@ -20,6 +20,9 @@ import {
   DatasetModals,
   deleteDatasetThunk,
   fetchDatasetByIdThunk,
+  fetchLastestCarrierDatasetThunk,
+  selectCarrierLatestDataset,
+  selectCarrierLatestDatasetStatus,
   selectDatasetCategory,
   selectDatasetModal,
   selectEditingDatasetId,
@@ -149,6 +152,30 @@ export const useDatasetsAPI = () => {
     dispatchCreateDataset,
     dispatchUpdateDataset,
     dispatchDeleteDataset,
+  }
+}
+
+export const useCarrierLatestConnect = () => {
+  const dispatch = useAppDispatch()
+  const carrierLatest = useSelector(selectCarrierLatestDataset)
+  const carrierLatestStatus = useSelector(selectCarrierLatestDatasetStatus)
+
+  const dispatchFetchLatestCarrier = useCallback(async (): Promise<{
+    payload?: Dataset
+    error?: AsyncError
+  }> => {
+    const action = await dispatch(fetchLastestCarrierDatasetThunk())
+    if (fetchLastestCarrierDatasetThunk.fulfilled.match(action)) {
+      return { payload: action.payload }
+    } else {
+      return { error: action.payload }
+    }
+  }, [dispatch])
+
+  return {
+    carrierLatest,
+    carrierLatestStatus,
+    dispatchFetchLatestCarrier,
   }
 }
 

@@ -94,21 +94,21 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           dataviews = payload
         }
       }
-      const dataviewIntances = [
+      const dataviewInstances = [
         ...dataviews,
         ...(workspace.dataviewInstances || []),
         ...(urlDataviewInstances || []),
       ]
 
-      const datasets = getDatasetByDataview(dataviewIntances)
+      const datasets = getDatasetByDataview(dataviewInstances)
 
       const { error, payload }: any = await dispatch(fetchDatasetsByIdsThunk(datasets))
+
       if (error) {
         return rejectWithValue({ workspace, error: payload })
       }
 
       const locationCategory = selectLocationCategory(state)
-      const dataviewInstances = selectUrlDataviewInstances(state)
       const analysis = selectAnalysisQuery(state)
       if (workspace.viewport && locationType !== HOME) {
         dispatch(
@@ -116,7 +116,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
             payload: { category: locationCategory, workspaceId: workspace.id },
             query: {
               ...workspace.viewport,
-              dataviewInstances,
+              dataviewInstances: urlDataviewInstances,
               analysis,
             },
             replaceQuery: true,

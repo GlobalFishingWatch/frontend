@@ -202,6 +202,15 @@ export const getWorkspaceGeneratorsConfig = createSelector(
             },
           },
         }
+      } else if (dataview.config?.type === Generators.Type.TileCluster) {
+        const { dataset, url } = resolveDataviewDatasetResource(dataview, {
+          type: DatasetTypes.Events,
+        })
+        if (!dataset || !url) {
+          console.warn('No dataset config for TileCluster generator', dataview)
+          return []
+        }
+        generator.tilesUrl = url
       }
       return generator
     })

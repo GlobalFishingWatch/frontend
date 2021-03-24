@@ -23,6 +23,7 @@ import { WorkspaceCategories } from 'data/workspaces'
 import { selectDataviewsResourceQueries } from 'features/resources/resources.selectors'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'
+import EventsSection from './events/EventsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
@@ -151,6 +152,7 @@ function Workspace() {
       )}
       <HeatmapsSection />
       <VesselsSection />
+      <EventsSection />
       <EnvironmentalSection />
       <ContextAreaSection />
     </Fragment>

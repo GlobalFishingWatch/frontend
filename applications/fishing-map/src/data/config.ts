@@ -4,6 +4,8 @@ import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
+export const CARRIER_PORTAL_URL =
+  process.env.REACT_APP_CARRIER_PORTAL_URL || 'https://carrier-portal.dev.globalfishingwatch.org'
 
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const DEFAULT_VERSION = 'v1'
