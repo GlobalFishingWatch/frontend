@@ -231,7 +231,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               >
                 <IconButton
                   size="small"
-                  icon={infoError ? 'warning' : 'target'}
+                  icon={infoError ? 'warning' : 'info'}
                   type={infoError ? 'warning' : 'default'}
                   className={styles.actionButton}
                   tooltip={
