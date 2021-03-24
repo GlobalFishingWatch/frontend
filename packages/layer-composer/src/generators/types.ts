@@ -132,7 +132,7 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
   color?: StringUnitLength
 }
 
-export type TilClusterEventType = 'encounter' | 'loitering' | 'port'
+export type TileClusterEventType = 'encounter' | 'loitering' | 'port'
 /**
  * Layers created by user uploading their own shapefile
  */
@@ -149,7 +149,7 @@ export interface TileClusterGeneratorConfig extends GeneratorConfig {
   /**
    * List of types supported by the API, optional to allow using resolved url params directly (eg: using resolve-endpoints)
    */
-  eventTypes?: TilClusterEventType | TilClusterEventType[]
+  eventTypes?: TileClusterEventType | TileClusterEventType[]
   /**
    * List of datasets to retrieve the data from, optional to allow using resolved url params directly (eg: using resolve-endpoints)
    */

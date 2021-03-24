@@ -34,11 +34,14 @@ import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
-import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 import { SliceInteractionEvent } from './map.slice'
+import { useMapSourceLoaded } from './map-features.hooks'
+
+import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceType: string) => {
@@ -204,6 +207,7 @@ const MapWrapper = (): React.ReactElement | null => {
   // TODO handle also in case of error
   // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
   const tilesLoading = useTilesLoading(map)
+  const encounterSourceLoaded = useMapSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
 
   const getCursor = useCallback(
     (state) => {
@@ -213,7 +217,7 @@ const MapWrapper = (): React.ReactElement | null => {
           (f) => f.type === Generators.Type.TileCluster && parseInt(f.properties.count) > 1
         )
         if (isCluster) {
-          return tilesLoading ? 'progress' : 'zoom-in'
+          return encounterSourceLoaded ? 'zoom-in' : 'progress'
         }
         return 'pointer'
       } else if (state.isDragging) {
@@ -221,7 +225,7 @@ const MapWrapper = (): React.ReactElement | null => {
       }
       return 'grab'
     },
-    [hoveredTooltipEvent, tilesLoading]
+    [hoveredTooltipEvent, encounterSourceLoaded]
   )
 
   useEffect(() => {

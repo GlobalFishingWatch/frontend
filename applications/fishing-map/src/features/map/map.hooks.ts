@@ -8,6 +8,7 @@ import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/
 import { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
@@ -29,7 +30,7 @@ import {
   selectClickedEvent,
   fetch4WingInteractionThunk,
   MAX_TOOLTIP_VESSELS,
-  fetchEcounterEventThunk,
+  fetchEncounterEventThunk,
   SliceInteractionEvent,
   selectFourWingsStatus,
   selectApiEventStatus,
@@ -37,6 +38,7 @@ import {
   ExtendedFeatureEvent,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
+import { useMapSourceLoaded } from './map-features.hooks'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -58,7 +60,7 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
-  const tilesLoading = useTilesLoading(map)
+  const encounterSourceLoaded = useMapSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
   const fourWingsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
@@ -103,7 +105,7 @@ export const useClickedEventConnect = () => {
     if (clusterFeature?.properties?.expansionZoom) {
       const { count, expansionZoom, lat, lng } = clusterFeature.properties
       if (count > 1) {
-        if (!tilesLoading) {
+        if (encounterSourceLoaded) {
           setMapCoordinates({
             latitude: lat,
             longitude: lng,
@@ -144,7 +146,7 @@ export const useClickedEventConnect = () => {
       (f) => f.generatorType === Generators.Type.TileCluster
     )
     if (encounterFeature) {
-      eventsPromiseRef.current = dispatch(fetchEcounterEventThunk(encounterFeature))
+      eventsPromiseRef.current = dispatch(fetchEncounterEventThunk(encounterFeature))
     }
   }
   return { clickedEvent, fourWingsStatus, apiEventStatus, dispatchClickedEvent }

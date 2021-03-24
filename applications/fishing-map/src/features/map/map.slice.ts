@@ -32,7 +32,8 @@ export type ExtendedFeatureVessel = {
   [key: string]: any
 }
 
-type TempClusterBusterEvent = {
+// TODO remove this once the cluster events follow the same API events format
+type TemporalClusterBusterEvent = {
   event_id: string
   event_type: EventTypes
   vessel_id: string
@@ -254,7 +255,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
 
 // TODO: remove this workaound once the api returns the same format for every event
 const parseClusterEvent = (
-  clusterEvent: TempClusterBusterEvent,
+  clusterEvent: TemporalClusterBusterEvent,
   eventFeature: ExtendedFeature
 ): ApiEvent => {
   const vessel = clusterEvent.event_vessels.find(
@@ -288,7 +289,7 @@ const parseClusterEvent = (
   return event
 }
 
-export const fetchEcounterEventThunk = createAsyncThunk<
+export const fetchEncounterEventThunk = createAsyncThunk<
   ExtendedFeatureEvent | undefined,
   ExtendedFeature,
   {
@@ -307,7 +308,7 @@ export const fetchEcounterEventThunk = createAsyncThunk<
     }
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
-      const clusterEvent = await GFWAPI.fetch<TempClusterBusterEvent>(url, { signal })
+      const clusterEvent = await GFWAPI.fetch<TemporalClusterBusterEvent>(url, { signal })
       if (clusterEvent) {
         const event = parseClusterEvent(clusterEvent, eventFeature)
         return { ...event, dataset }
@@ -357,10 +358,10 @@ const slice = createSlice({
         state.fourWingsStatus = AsyncReducerStatus.Error
       }
     })
-    builder.addCase(fetchEcounterEventThunk.pending, (state, action) => {
+    builder.addCase(fetchEncounterEventThunk.pending, (state, action) => {
       state.apiEventStatus = AsyncReducerStatus.Loading
     })
-    builder.addCase(fetchEcounterEventThunk.fulfilled, (state, action) => {
+    builder.addCase(fetchEncounterEventThunk.fulfilled, (state, action) => {
       state.apiEventStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
       const feature = state.clicked?.features?.find((feature) => feature.id && action.meta.arg.id)
@@ -368,7 +369,7 @@ const slice = createSlice({
         feature.event = action.payload
       }
     })
-    builder.addCase(fetchEcounterEventThunk.rejected, (state, action) => {
+    builder.addCase(fetchEncounterEventThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
         state.apiEventStatus = AsyncReducerStatus.Idle
       } else {

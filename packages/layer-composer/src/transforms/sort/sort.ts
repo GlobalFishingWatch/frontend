@@ -14,6 +14,7 @@ const GROUP_ORDER = [
   Group.Point,
   Group.BasemapForeground,
   Group.OutlinePolygonsHighlighted,
+  Group.Cluster,
   Group.Tool,
   Group.Label,
   Group.Overlay,
