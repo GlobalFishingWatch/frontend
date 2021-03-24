@@ -158,7 +158,8 @@ export const deleteDatasetThunk = createAsyncThunk<
   }
 })
 
-const LATEST_CARRIER_DATASET_ID = 'carrier:latest'
+const LATEST_CARRIER_DATASET_ID =
+  process.env.NODE_ENV === 'development' ? 'carriers:dev' : 'carriers:latest'
 export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
   Dataset,
   undefined,
