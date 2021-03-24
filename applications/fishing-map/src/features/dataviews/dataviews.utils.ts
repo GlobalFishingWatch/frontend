@@ -1,4 +1,4 @@
-import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
 import {
   TrackColorBarOptions,
   HeatmapColorBarOptions,
@@ -29,12 +29,12 @@ export const getVesselDataviewInstance = (
     {
       datasetId: trackDatasetId,
       params: [{ id: 'vesselId', value: vessel.id }],
-      endpoint: 'carriers-tracks',
+      endpoint: EndpointId.Tracks,
     },
     {
       datasetId: infoDatasetId,
       params: [{ id: 'vesselId', value: vessel.id }],
-      endpoint: 'carriers-vessel',
+      endpoint: EndpointId.Vessel,
     },
   ]
   const vesselDataviewInstance = {
@@ -83,7 +83,7 @@ export const getEnvironmentDataviewInstance = (
       {
         datasetId,
         params: [],
-        endpoint: 'user-context-tiles',
+        endpoint: EndpointId.UserContextTiles,
       },
     ],
   }

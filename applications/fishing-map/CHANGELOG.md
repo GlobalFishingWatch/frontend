@@ -89,6 +89,9 @@
   - @globalfishingwatch/layer-composer@4.17.1
   - @globalfishingwatch/react-hooks@4.9.5
   - @globalfishingwatch/ui-components@2.14.3
+- Updated dependencies [[`d99bf5f3`](https://github.com/GlobalFishingWatch/frontend/commit/d99bf5f30bceed021ac990a0de8b4e992189be73)]:
+  - @globalfishingwatch/api-types@2.13.0
+  - @globalfishingwatch/react-hooks@4.10.0
 
 ## 0.27.8
 

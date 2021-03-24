@@ -1,16 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
 import uniqBy from 'lodash/uniqBy'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import {
-  Dataset,
-  DatasetTypes,
-  DataviewCategory,
-  DataviewDatasetConfig,
-} from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance, WorkspaceState } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { selectDataviews } from 'features/dataviews/dataviews.slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
@@ -304,69 +297,3 @@ export const selectTemporalgridDatasets = createSelector(
 export const getRelatedDatasetByType = (dataset?: Dataset, datasetType?: DatasetTypes) => {
   return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)
 }
-
-export const resolveDataviewDatasetResource = (
-  dataview: UrlDataviewInstance,
-  { type, id }: { type?: DatasetTypes; id?: string }
-): {
-  dataset?: Dataset
-  datasetConfig?: DataviewDatasetConfig
-  url?: string
-} => {
-  if (!type && !id) return {}
-
-  const dataset = type
-    ? dataview.datasets?.find((dataset) => dataset.type === type)
-    : dataview.datasets?.find((dataset) => dataset.id === id)
-  if (!dataset) return {}
-  const datasetConfig = dataview?.datasetsConfig?.find(
-    (datasetConfig) => datasetConfig.datasetId === dataset.id
-  )
-  if (!datasetConfig) return {}
-  const url = resolveEndpoint(dataset, datasetConfig)
-  if (!url) return {}
-
-  return { dataset, datasetConfig, url }
-}
-
-export const selectDataviewsResourceQueries = createSelector(
-  [selectDataviewInstancesResolved],
-  (dataviewInstances) => {
-    if (!dataviewInstances) return
-
-    const resourceQueries: ResourceQuery[] = dataviewInstances.flatMap((dataview) => {
-      if (dataview.config?.type !== Generators.Type.Track || dataview.deleted) {
-        return []
-      }
-
-      let trackQuery: any = [] // initialized as empty array to be filtered by flatMap if not used
-      if (dataview.config.visible === true) {
-        const trackResource = resolveDataviewDatasetResource(dataview, {
-          type: DatasetTypes.Tracks,
-        })
-        if (trackResource.url && trackResource.dataset && trackResource.datasetConfig) {
-          trackQuery = {
-            dataviewId: dataview.dataviewId as number,
-            url: trackResource.url,
-            datasetType: trackResource.dataset.type,
-            datasetConfig: trackResource.datasetConfig,
-          }
-        }
-      }
-
-      const infoResource = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
-      if (!infoResource.url || !infoResource.dataset || !infoResource.datasetConfig) {
-        return trackQuery as ResourceQuery
-      }
-      const infoQuery: ResourceQuery = {
-        dataviewId: dataview.dataviewId as number,
-        url: infoResource.url,
-        datasetType: infoResource.dataset.type,
-        datasetConfig: infoResource.datasetConfig,
-      }
-      return [trackQuery, infoQuery]
-    })
-
-    return resourceQueries
-  }
-)

@@ -12,6 +12,7 @@ import {
   ApiEvent,
   AuthorizationOptions,
   EventTypes,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
@@ -119,7 +120,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
     const mainFeature = temporalGridFeatures[0]
     const datasetConfig: DataviewDatasetConfig = {
       datasetId: fourWingsDataset.id,
-      endpoint: '4wings-interaction',
+      endpoint: EndpointId.FourwingsInteraction,
       params: [
         { id: 'z', value: mainFeature.tile?.z },
         { id: 'x', value: mainFeature.tile?.x },
@@ -196,7 +197,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
         const infoDataset = infoDatasets[0]
         if (infoDataset) {
           const infoDatasetConfig = {
-            endpoint: 'carriers-list-vessels',
+            endpoint: EndpointId.VesselList,
             datasetId: infoDataset.id,
             params: [],
             query: [

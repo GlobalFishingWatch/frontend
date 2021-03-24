@@ -5,6 +5,7 @@ import {
   DatasetTypes,
   Dataset,
   DataviewDatasetConfig,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
@@ -60,8 +61,12 @@ export function getGeneratorConfig(dataview: Dataview) {
     case Generators.Type.Heatmap: {
       // TODO support multiple urls in resolveDataviewDatasetResource
       const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
-      const tilesEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
-      const statsEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-legend')
+      const tilesEndpoint = dataset?.endpoints?.find(
+        (endpoint) => endpoint.id === EndpointId.FourwingsTiles
+      )
+      const statsEndpoint = dataset?.endpoints?.find(
+        (endpoint) => endpoint.id === EndpointId.FourwingsLegend
+      )
       if (!tilesEndpoint) {
         console.warn('Missing configuration for heatmap generator in dataview', dataview)
         return
