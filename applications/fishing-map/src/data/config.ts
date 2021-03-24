@@ -34,6 +34,34 @@ export const DEFAULT_WORKSPACE = {
   version: DEFAULT_VERSION,
 }
 
+export enum ThinningLevels {
+  Aggressive = 'aggressive',
+  Default = 'default',
+}
+
+export const THINNING_LEVELS = {
+  [ThinningLevels.Aggressive]: {
+    distanceFishing: 1000,
+    bearingValFishing: 5,
+    changeSpeedFishing: 200,
+    minAccuracyFishing: 50,
+    distanceTransit: 2000,
+    bearingValTransit: 5,
+    changeSpeedTransit: 200,
+    minAccuracyTransit: 100,
+  },
+  [ThinningLevels.Default]: {
+    distanceFishing: 500,
+    bearingValFishing: 1,
+    changeSpeedFishing: 200,
+    minAccuracyFishing: 30,
+    distanceTransit: 500,
+    bearingValTransit: 1,
+    changeSpeedTransit: 200,
+    minAccuracyTransit: 30,
+  },
+}
+
 // Params to use replace instead of push for router history to make navigation easier
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
 

@@ -33,6 +33,14 @@ const DebugMenu: React.FC = () => {
           <label htmlFor="option_debug">Debug tiles</label>
         </div>
         <p>Displays info on tiles useful for debugging.</p>
+        <div className={styles.header}>
+          <Switch
+            active={debugOptions.thinning}
+            onClick={() => dispatch(toggleOption('thinning'))}
+          />
+          <label htmlFor="option_debug">Track thinning</label>
+        </div>
+        <p>Don't send any thinning param to tracks API to debug original resolution</p>
       </section>
       <hr className={styles.separation} />
       <section>

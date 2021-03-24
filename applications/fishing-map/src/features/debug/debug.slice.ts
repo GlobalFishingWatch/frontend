@@ -12,6 +12,7 @@ const initialState: UserState = {
     blob: false,
     extruded: false,
     debug: false,
+    thinning: true,
   },
 }
 

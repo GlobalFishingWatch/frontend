@@ -33,6 +33,7 @@ export const fetchResourceThunk = createAsyncThunk(
       resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
         ? 'vessel'
         : 'json'
+
     const data = await GFWAPI.fetch(resource.url, { responseType }).then((data) => {
       // TODO Replace with enum?
       if (isTrackResource) {
