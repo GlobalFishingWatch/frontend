@@ -18,6 +18,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
+import i18n from 'features/i18n/i18n'
 import I18nDate from 'features/i18n/i18nDate'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getFlagById } from 'utils/flags'
@@ -43,6 +44,17 @@ import SearchPlaceholder, {
 } from './SearchPlaceholders'
 import { isSearchAllowed, selectAllowedVesselsDatasets } from './search.selectors'
 
+const searchOptions = [
+  {
+    id: 'basic',
+    title: i18n.t('search.basic', 'Basic'),
+  },
+  {
+    id: 'advanced',
+    title: i18n.t('search.advanced', 'Advanced'),
+  },
+]
+
 function Search() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -59,6 +71,9 @@ function Search() {
   const searchStatus = useSelector(selectSearchStatus)
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
+  const [activeSearchOption, setActiveSearchOption] = useState<string>(
+    hasSearchFilters ? searchOptions[1].id : searchOptions[0].id
+  )
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const promiseRef = useRef<any>()
@@ -111,7 +126,7 @@ function Search() {
     }
     dispatchQueryParams({ query: debouncedQuery })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery, searchFilters, searchDatasets])
+  }, [debouncedQuery, searchFilters, searchDatasets, activeSearchOption])
 
   const onCloseClick = () => {
     batch(() => {
@@ -152,19 +167,6 @@ function Search() {
     searchPagination.total > RESULTS_PER_PAGE &&
     searchPagination.offset <= searchPagination.total
 
-  const searchOptions = [
-    {
-      id: 'basic',
-      title: t('search.basic', 'Basic'),
-    },
-    {
-      id: 'advanced',
-      title: t('search.advanced', 'Advanced'),
-    },
-  ]
-  const [activeSearchOption, setActiveSearchOption] = useState<string>(
-    hasSearchFilters ? searchOptions[1].id : searchOptions[0].id
-  )
   const onSearchOptionChange = (option: ChoiceOption, e: React.MouseEvent<Element, MouseEvent>) => {
     setActiveSearchOption(option.id)
   }
