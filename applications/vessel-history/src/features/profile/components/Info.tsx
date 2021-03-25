@@ -28,7 +28,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               vesselName={vessel.shipname ?? ''}
               label={'Type'}
               value={vessel.type ?? ''}
-              valuesHistory={[]}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
@@ -52,25 +51,21 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               vesselName={vessel.shipname ?? ''}
               label={'GEAR TYPE'}
               value={vessel.gearType ?? ''}
-              valuesHistory={[]}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'LENGTH'}
               value={vessel.length ?? ''}
-              valuesHistory={[]}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'GROSS TONNAGE'}
               value={vessel.grossTonnage ?? ''}
-              valuesHistory={[]}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={'DEPTH'}
               value={vessel.depth ?? ''}
-              valuesHistory={[]}
             ></InfoField>
             <div className={styles.identifierField}>
               <label>AUTHORIZATIONS</label>
@@ -83,7 +78,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               vesselName={vessel.shipname ?? ''}
               label={'BUILT'}
               value={vessel.builtYear ?? ''}
-              valuesHistory={[]}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
@@ -95,7 +89,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               vesselName={vessel.shipname ?? ''}
               label={'OPERATOR'}
               value={vessel.operator ?? ''}
-              valuesHistory={[]}
             ></InfoField>
           </div>
         )}

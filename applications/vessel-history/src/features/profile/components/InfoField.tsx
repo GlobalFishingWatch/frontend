@@ -6,14 +6,14 @@ import InfoFieldHistory from './InfoFieldHistory'
 interface ListItemProps {
   label: string
   value: string
-  valuesHistory: ValueItem[]
+  valuesHistory?: ValueItem[]
   vesselName: string
 }
 
 const InfoField: React.FC<ListItemProps> = ({
   value = '',
   label,
-  valuesHistory,
+  valuesHistory = [],
   vesselName,
 }): React.ReactElement => {
   const [modalOpen, setModalOpen] = useState(false)
