@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.15.2
+
+### Patch Changes
+
+- update dependencies
+
 ## 2.15.0
 
 ### Minor Changes
