@@ -150,14 +150,28 @@ export const selectContextAreasDataviews = createSelector(
   }
 )
 
+export const selectActiveContextAreasDataviews = createSelector(
+  [selectContextAreasDataviews],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
+
 export const selectEnvironmentalDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
   (dataviews) => dataviews
 )
 
+export const selectActiveEnvironmentalDataviews = createSelector(
+  [selectEnvironmentalDataviews],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
+
 export const selectEventsDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Events)],
   (dataviews) => dataviews
+)
+
+export const selectActiveEventsDataviews = createSelector([selectEventsDataviews], (dataviews) =>
+  dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectTemporalgridDataviews = createSelector(
@@ -176,6 +190,29 @@ export const selectHasAnalysisLayersVisible = createSelector(
 export const selectActiveTemporalgridDataviews = createSelector(
   [selectTemporalgridDataviews],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectActiveDataviews = createSelector(
+  [
+    selectActiveTemporalgridDataviews,
+    selectActiveVesselsDataviews,
+    selectActiveEventsDataviews,
+    selectActiveEnvironmentalDataviews,
+    selectActiveContextAreasDataviews,
+  ],
+  (
+    activeTemporalgridDataviews,
+    activeVesselsDataviews,
+    activeEventsDataviews,
+    activeEnvironmentalDataviews,
+    activeContextAreasDataviews
+  ) => [
+    ...(activeTemporalgridDataviews || []),
+    ...(activeVesselsDataviews || []),
+    ...(activeEventsDataviews || []),
+    ...(activeEnvironmentalDataviews || []),
+    ...(activeContextAreasDataviews || []),
+  ]
 )
 
 export const selectTemporalgridDatasets = createSelector(
