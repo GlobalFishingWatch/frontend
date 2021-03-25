@@ -1,4 +1,4 @@
-import { Vessel } from '@globalfishingwatch/api-types/dist'
+import { Vessel } from '@globalfishingwatch/api-types'
 
 export type WorkspaceParam =
   | 'zoom'

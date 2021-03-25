@@ -1,4 +1,4 @@
-import { VesselSearch } from '@globalfishingwatch/api-types/dist'
+import { VesselSearch } from '@globalfishingwatch/api-types'
 import { VesselAPISource } from 'types'
 
 export function getVesselAPISource(vessel: VesselSearch): VesselAPISource[] {
