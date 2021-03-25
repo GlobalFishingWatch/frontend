@@ -29,10 +29,10 @@ type FeedbackData = {
   url?: string
 }
 
-const FEEDBACK_SPREADSHEET_ID = 'USE_ENV'
-const FEEDBACK_SHEET_ID = 'USE_ENV'
-const FEEDBACK_CLIENT_EMAIL = 'USE_ENV'
-const FEEDBACK_PRIVATE_KEY = 'USE_ENV'
+const FEEDBACK_SPREADSHEET_ID = process.env.REACT_APP_FEEDBACK_SPREADSHEET_ID || ''
+const FEEDBACK_SHEET_ID = process.env.REACT_APP_FEEDBACK_SHEET_ID || ''
+const FEEDBACK_CLIENT_EMAIL = process.env.REACT_APP_FEEDBACK_CLIENT_EMAIL || ''
+const FEEDBACK_PRIVATE_KEY = process.env.REACT_APP_FEEDBACK_PRIVATE_KEY || ''
 
 function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   const { t } = useTranslation()
