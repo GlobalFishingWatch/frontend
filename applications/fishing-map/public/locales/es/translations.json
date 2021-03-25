@@ -135,9 +135,9 @@
     "zoom_out": "Alejar"
   },
   "search": {
-    "title": "Buscar",
-    "basic": "Básico",
-    "advanced": "Avanzado",
+    "title": "Búsqueda",
+    "basic": "Básica",
+    "advanced": "Advanzada",
     "mainQueryLabel": "Nombre, IMO o MMSI",
     "close": "Cierra la busqueda",
     "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
@@ -148,7 +148,7 @@
     "placeholder": "Tipo para buscar vasos",
     "suggestion": "Quiso decir",
     "vessels": "Buscar buques",
-    "vesselAlreadyInWorksace": "Buque ya añadido. Cierra la búsqueda para verlo."
+    "vesselAlreadyInWorksace": "El buque ya está añadido. Cierra la búsqueda para verlo."
   },
   "selects": {
     "allSelected": "Todos",

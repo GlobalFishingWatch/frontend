@@ -62,12 +62,12 @@ export type VesselSearchThunk = {
 }
 
 export function checkSearchFiltersEnabled(filters: SearchFilter): boolean {
-  return Object.values(filters).filter((f) => !!f).length > 0
+  return Object.values(filters).filter((f) => f !== undefined).length > 0
 }
 
 export function checkAdvanceSearchFiltersEnabled(filters: SearchFilter): boolean {
   const { sources, ...rest } = filters
-  return Object.values(rest).filter((f) => !!f).length > 0
+  return Object.values(rest).filter((f) => f !== undefined).length > 0
 }
 
 export const fetchVesselSearchThunk = createAsyncThunk(
