@@ -57,7 +57,7 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
   interval: 'auto',
-  aggregationOperation: AggregationOperation.sum,
+  aggregationOperation: AggregationOperation.Sum,
   breaksMultiplier: VALUE_MULTIPLIER,
 }
 

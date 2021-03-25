@@ -38,13 +38,13 @@ const featAggTileCellFrame = JSON.parse(featAggTileCell.properties[FRAME])
 const featAggTileRawCell = agg.interactive.features.find(
   (f) => f.properties._col === 48 && f.properties._row === 70
 )
-const featAggTileRawCellFrame = aggregateCell(
-  JSON.stringify(featAggTileRawCell.properties.rawValues),
-  FRAME,
-  BASE_CONFIG.delta,
-  BASE_CONFIG.quantizeOffset,
-  BASE_CONFIG.sublayerCount
-)
+const featAggTileRawCellFrame = aggregateCell({
+  rawValues: JSON.stringify(featAggTileRawCell.properties.rawValues),
+  frame: FRAME,
+  delta: BASE_CONFIG.delta,
+  quantizeOffset: BASE_CONFIG.quantizeOffset,
+  sublayerCount: BASE_CONFIG.sublayerCount,
+})
 
 const datasetIndex = 0
 tap.equal(getRealValue(featAggTileCellFrame[datasetIndex]), featAggTileRawCellFrame[datasetIndex])

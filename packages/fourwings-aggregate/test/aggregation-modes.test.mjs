@@ -26,15 +26,15 @@ const BASE_CONFIG = {
 const aggTest = [1, 1,  0, 15340,15355,4200,200,100,0,0,1200,0,0,0,0,300,200,100,0,0,12300]
 
 const aggCell = (cell, frame, delta) => {
-  const featAggTileRawCellFrame = aggregateCell(
-    JSON.stringify(cell.properties.rawValues),
+  const featAggTileRawCellFrame = aggregateCell({
+    rawValues: JSON.stringify(cell.properties.rawValues),
     frame,
     delta,
-    BASE_CONFIG.quantizeOffset,
-    BASE_CONFIG.sublayerCount,
-    'avg',
-    1
-  )
+    quantizeOffset: BASE_CONFIG.quantizeOffset,
+    sublayerCount: BASE_CONFIG.sublayerCount,
+    aggregationOperation: 'avg',
+    multiplier: 1,
+  })
   return featAggTileRawCellFrame[0]
 }
 const tile = aggregateTile(aggTest, BASE_CONFIG)

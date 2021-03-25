@@ -6,23 +6,23 @@ export enum GeomType {
 }
 
 export enum SublayerCombinationMode {
-  none = 'none',
+  None = 'none',
   // Add all sublayer raw values
-  add = 'add',
+  Add = 'add',
   // Returns a bucket index depending on sublayer with highest value + position on sublayer color ramp
-  max = 'max',
+  Max = 'max',
   // Returns a bucket index depending on a 2D color ramp
-  bivariate = 'bivariate',
+  Bivariate = 'bivariate',
   // Returns raw values that can be decoded with JSON.parse (number or array of numbers). Used for interaction layer
-  literal = 'literal',
+  Literal = 'literal',
   // Returns raw values as a string in the format AAAABBBBCCCC (where A, B, C, 3 sublayers), and where BBBB is
   // sublayer 0 + sublayer 1 and CCCC is sublayer 0 + sublayer 1 + sublayer 2. Used for extruded layer.
-  cumulative = 'cumulative',
+  Cumulative = 'cumulative',
 }
 
 export enum AggregationOperation {
-  sum = 'sum',
-  avg = 'avg',
+  Sum = 'sum',
+  Avg = 'avg',
 }
 
 export type BaseTileAggregationParams = {
@@ -63,6 +63,16 @@ export interface TileAggregationSourceParams extends BaseTileAggregationParams {
   filters: string[]
   datasets: string[]
   ['date-range']?: [string, string]
+}
+
+export type CellAggregationParams = {
+  rawValues: string
+  frame: number
+  delta: number
+  quantizeOffset: number
+  sublayerCount: number
+  aggregationOperation?: AggregationOperation
+  multiplier?: number
 }
 
 export type FeatureParams = {

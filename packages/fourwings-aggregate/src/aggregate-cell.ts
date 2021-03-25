@@ -1,16 +1,16 @@
 import { VALUE_MULTIPLIER } from './constants'
-import { AggregationOperation } from './types'
+import { AggregationOperation, CellAggregationParams } from './types'
 import { getCellValues, getCellArrayIndex, getRealValues } from './util'
 
-const aggregateCell = (
-  rawValues: string,
-  frame: number,
-  delta: number,
-  quantizeOffset: number,
-  numSublayers: number,
-  aggregationOperation = AggregationOperation.sum,
-  multiplier = VALUE_MULTIPLIER
-) => {
+const aggregateCell = ({
+  rawValues,
+  frame,
+  delta,
+  quantizeOffset,
+  sublayerCount,
+  aggregationOperation = AggregationOperation.Sum,
+  multiplier = VALUE_MULTIPLIER,
+}: CellAggregationParams) => {
   if (!rawValues) return null
 
   const { values, minCellOffset, maxCellOffset } = getCellValues(rawValues)
@@ -25,24 +25,24 @@ const aggregateCell = (
   const cellEndOffset = Math.min(endOffset, maxCellOffset)
 
   // Where we sould start looking up in the array (minCellOffset, maxCellOffset, sublayer0valueAt0, sublayer1valueAt0, sublayer0valueAt1, sublayer1valueAt1, ...)
-  const startAt = getCellArrayIndex(minCellOffset, numSublayers, cellStartOffset)
-  const endAt = getCellArrayIndex(minCellOffset, numSublayers, cellEndOffset)
+  const startAt = getCellArrayIndex(minCellOffset, sublayerCount, cellStartOffset)
+  const endAt = getCellArrayIndex(minCellOffset, sublayerCount, cellEndOffset)
 
   const rawValuesArrSlice = values.slice(startAt, endAt)
 
   // One aggregated value per sublayer
-  let aggregatedValues = new Array(numSublayers).fill(0)
+  let aggregatedValues = new Array(sublayerCount).fill(0)
 
   let numValues = 0
   for (let i = 0; i < rawValuesArrSlice.length; i++) {
-    const sublayerIndex = i % numSublayers
+    const sublayerIndex = i % sublayerCount
     const rawValue = rawValuesArrSlice[i]
     if (rawValue !== null && rawValue !== undefined) {
       aggregatedValues[sublayerIndex] += rawValue
       if (sublayerIndex === 0) numValues++
     }
   }
-  if (aggregationOperation === AggregationOperation.avg) {
+  if (aggregationOperation === AggregationOperation.Avg) {
     aggregatedValues = aggregatedValues.map((sublayerValue) => sublayerValue / numValues)
   }
 

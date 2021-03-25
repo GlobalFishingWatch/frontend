@@ -207,11 +207,11 @@ export const getActiveTimeChunks = (
   activeEnd: string,
   datasetStart: string,
   datasetEnd: string,
-  interval_?: IntervalOption
+  interval?: IntervalOption
 ): TimeChunks => {
   const delta = +toDT(activeEnd) - +toDT(activeStart)
   const finalInterval: Interval =
-    !interval_ || interval_ === 'auto' ? getInterval(delta) : (interval_ as Interval)
+    !interval || interval === 'auto' ? getInterval(delta) : (interval as Interval)
   const timeChunks: TimeChunks = {
     activeStart,
     activeEnd,

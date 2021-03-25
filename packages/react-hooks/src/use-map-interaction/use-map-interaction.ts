@@ -41,14 +41,13 @@ const getExtendedFeatures = (
     }
     switch (generatorType) {
       case Generators.Type.HeatmapAnimated:
-        const values = aggregateCell(
-          properties.rawValues,
+        const values = aggregateCell({
+          rawValues: properties.rawValues,
           frame,
-          timeChunks.deltaInIntervalUnits,
-          activeTimeChunk.quantizeOffset,
-          numSublayers,
-          debug
-        )
+          delta: timeChunks.deltaInIntervalUnits,
+          quantizeOffset: activeTimeChunk.quantizeOffset,
+          sublayerCount: numSublayers,
+        })
         if (!values || !values.filter((v) => v > 0).length) return []
 
         const visibleSublayers = metadata?.temporalgrid?.visibleSublayers as boolean[]

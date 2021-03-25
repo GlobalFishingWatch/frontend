@@ -40,8 +40,7 @@ const getCellCoords = (tileBBox: any, cell: number, numCols: number) => {
   }
 }
 
-const getPointFeature = (featureParams: FeatureParams): any => {
-  const { tileBBox, cell, numCols, numRows, addMeta } = featureParams
+const getPointFeature = ({ tileBBox, cell, numCols, numRows, addMeta }: FeatureParams): any => {
   const [minX, minY] = tileBBox
   const { col, row, width, height } = getCellCoords(tileBBox, cell, numCols)
 
@@ -65,8 +64,7 @@ const getPointFeature = (featureParams: FeatureParams): any => {
   }
 }
 
-const getRectangleFeature = (featureParams: FeatureParams): any => {
-  const { tileBBox, cell, numCols, numRows, addMeta } = featureParams
+const getRectangleFeature = ({ tileBBox, cell, numCols, numRows, addMeta }: FeatureParams): any => {
   const [minX, minY] = tileBBox
   const { col, row, width, height } = getCellCoords(tileBBox, cell, numCols)
 
@@ -239,14 +237,14 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
     sublayerVisibility,
     aggregationOperation,
   } = options
-  if (sublayerCombinationMode === SublayerCombinationMode.none && sublayerCount > 1) {
-    throw new Error('Multiple sublayers but no proper combinaaetion mode set')
+  if (sublayerCombinationMode === SublayerCombinationMode.None && sublayerCount > 1) {
+    throw new Error('Multiple sublayers but no proper combination mode set')
   }
   if (
     sublayerBreaks &&
     sublayerBreaks.length !== sublayerCount &&
-    (sublayerCombinationMode === SublayerCombinationMode.max ||
-      sublayerCombinationMode === SublayerCombinationMode.bivariate)
+    (sublayerCombinationMode === SublayerCombinationMode.Max ||
+      sublayerCombinationMode === SublayerCombinationMode.Bivariate)
   ) {
     throw new Error(
       'must provide as many breaks arrays as number of datasets when using compare and bivariate modes'
@@ -255,11 +253,11 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
   if (
     sublayerBreaks &&
     sublayerBreaks.length !== 1 &&
-    sublayerCombinationMode === SublayerCombinationMode.add
+    sublayerCombinationMode === SublayerCombinationMode.Add
   ) {
     throw new Error('add combinationMode requires one and only one breaks array')
   }
-  if (sublayerCombinationMode === SublayerCombinationMode.bivariate) {
+  if (sublayerCombinationMode === SublayerCombinationMode.Bivariate) {
     if (sublayerCount !== 2)
       throw new Error('bivariate combinationMode requires exactly two datasets')
     if (sublayerBreaks) {
@@ -309,7 +307,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
   // We need to pad with n values (n === delta) to generate "overflow" frames
   // in the case of a sum, add zeroes which will get added to the running sunm with no effect
   // in the case of avg, us NaN as a flag to not take the value into account
-  const padValue = aggregationOperation === AggregationOperation.avg ? NaN : 0
+  const padValue = aggregationOperation === AggregationOperation.Avg ? NaN : 0
   for (let i = FEATURE_CELLS_START_INDEX; i < intArray.length; i++) {
     const value = intArray[i]
     if (indexInCell === CELL_NUM_INDEX) {
@@ -400,7 +398,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
         let realValueAtFrameForDataset = 0
         let realValueAtFrameForDatasetWorkingValue = 0
         if (sublayerVisibility[datasetIndex]) {
-          if (aggregationOperation === AggregationOperation.avg) {
+          if (aggregationOperation === AggregationOperation.Avg) {
             // if isNan, value is just for padding - stop incrementing running sum (just remove tail)
             // and take into account one less frame to compute teh avg
             realValueAtFrameForDatasetWorkingValue = isNaN(value)
@@ -417,23 +415,23 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
         currentAggregatedValues[datasetIndex] = realValueAtFrameForDatasetWorkingValue
 
         // Compute mode-specific values
-        if (sublayerCombinationMode === SublayerCombinationMode.max) {
+        if (sublayerCombinationMode === SublayerCombinationMode.Max) {
           if (realValueAtFrameForDataset > datasetsHighestRealValue) {
             datasetsHighestRealValue = realValueAtFrameForDataset
             datasetsHighestRealValueIndex = datasetIndex
           }
         }
         if (
-          sublayerCombinationMode === SublayerCombinationMode.add ||
-          sublayerCombinationMode === SublayerCombinationMode.cumulative
+          sublayerCombinationMode === SublayerCombinationMode.Add ||
+          sublayerCombinationMode === SublayerCombinationMode.Cumulative
         ) {
           realValuesSum += realValueAtFrameForDataset
         }
-        if (sublayerCombinationMode === SublayerCombinationMode.cumulative) {
+        if (sublayerCombinationMode === SublayerCombinationMode.Cumulative) {
           const cumulativeValuePaddedString = Math.round(realValuesSum).toString().padStart(6, '0')
           cumulativeValuesPaddedStrings.push(cumulativeValuePaddedString)
         }
-        if (sublayerCombinationMode === SublayerCombinationMode.literal) {
+        if (sublayerCombinationMode === SublayerCombinationMode.Literal) {
           // literalValuesStr += Math.floor(realValueAtFrameForDataset * 100) / 100
           // Just rounding is faster - revise if decimals are needed
           // Use ceil to avoid values being 'mute' when very close to zero
@@ -449,25 +447,25 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
         if (quantizedTail >= 0 && datasetIndex === sublayerCount - 1) {
           let finalValue
 
-          if (sublayerCombinationMode === SublayerCombinationMode.literal) {
+          if (sublayerCombinationMode === SublayerCombinationMode.Literal) {
             literalValuesStr += ']'
           }
 
-          if (sublayerCombinationMode === SublayerCombinationMode.none) {
+          if (sublayerCombinationMode === SublayerCombinationMode.None) {
             finalValue = getValue(realValueAtFrameForDataset, sublayerBreaks)
-          } else if (sublayerCombinationMode === SublayerCombinationMode.max) {
+          } else if (sublayerCombinationMode === SublayerCombinationMode.Max) {
             finalValue = getCompareValue(
               datasetsHighestRealValue,
               datasetsHighestRealValueIndex as number,
               sublayerBreaks
             )
-          } else if (sublayerCombinationMode === SublayerCombinationMode.add) {
+          } else if (sublayerCombinationMode === SublayerCombinationMode.Add) {
             finalValue = getValue(realValuesSum, sublayerBreaks)
-          } else if (sublayerCombinationMode === SublayerCombinationMode.bivariate) {
+          } else if (sublayerCombinationMode === SublayerCombinationMode.Bivariate) {
             finalValue = getBivariateValue(currentAggregatedValues, sublayerBreaks)
-          } else if (sublayerCombinationMode === SublayerCombinationMode.literal) {
+          } else if (sublayerCombinationMode === SublayerCombinationMode.Literal) {
             finalValue = literalValuesStr
-          } else if (sublayerCombinationMode === SublayerCombinationMode.cumulative) {
+          } else if (sublayerCombinationMode === SublayerCombinationMode.Cumulative) {
             finalValue = getCumulativeValue(realValuesSum, cumulativeValuesPaddedStrings)
           }
           // console.log(quantizedTail, finalValue, currentFeature)
