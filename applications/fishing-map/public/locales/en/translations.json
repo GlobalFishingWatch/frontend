@@ -30,6 +30,7 @@
     "hour": "Hour",
     "hour_plural": "Hours",
     "loggedAs": "Logged as",
+    "loading": "Loading",
     "login": "Log in",
     "logout": "Log out",
     "max": "Max",
@@ -40,15 +41,16 @@
     "report": "Report",
     "seeDefault": "See default view",
     "share": "Share map",
-    "unknown": "Unknown",
     "update": "Update",
+    "user": "User",
+    "userProfile": "User profile",
     "vessel": "Vessel",
     "vessel_plural": "Vessels",
-    "loading": "Loading",
     "open_menu": "Open Menu",
     "dismiss": "Dismiss",
     "save": "Save",
-    "fishing": "Fishing"
+    "fishing": "Fishing",
+    "unknown": "Unknown"
   },
   "dataset": {
     "addContext": "Add context dataset",
@@ -81,22 +83,22 @@
     "datasetNotValid": "It seems to be something wrong with your file",
     "generic": "Something went wrong, try again or contact:",
     "invalidRange": "Min has to be lower than max value",
-    "latestCarrierNotFound": "Latest carrier dataset not found",
     "notSupportedBy": "Not supported by {{list}}",
+    "latestCarrierNotFound": "Latest carrier dataset not found",
     "pageNotFound": "Page not found",
     "privateView": "This is a private view",
     "requestAccess": "Request access",
     "switchAccount": "Switch account",
+    "vesselLoading": "There was an error loading the vessel details track",
     "trackLoading": "There was an error loading the vessel track",
     "uploadError": "There was an error uploading your dataset",
-    "vesselLoading": "There was an error loading the vessel details track",
     "workspaceLoad": "There was an error loading the workspace. Please try again later.",
     "workspaceNotFound": "The view you request was not found"
   },
   "event": {
-    "noData": "No data available",
     "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
-    "seeInCVP": "See in Carrier Vessel Portal"
+    "seeInCVP": "See in Carrier Vessel Portal",
+    "noData": "No data available"
   },
   "layer": {
     "add": "Add layer",
@@ -133,20 +135,20 @@
     "zoom_out": "Zoom out"
   },
   "search": {
-    "advanced": "Advanced",
+    "title": "Search",
     "basic": "Basic",
+    "advanced": "Advanced",
+    "mainQueryLabel": "Name, IMO or MMSI",
     "close": "Close search",
     "description": "Search by vessel name or identification code (like IMO, MMSI, VMS ID, etc). You can narrow your search by pressing the filter icon in the top menu bar",
-    "mainQueryLabel": "Name, IMO or MMSI",
+    "filterClose": "Close search filters",
+    "filterOpen": "Open search filters",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign",
     "notAllowed": "The available datasets don't allow searching vessels",
     "placeholder": "Type to search vessels",
     "suggestion": "Did you mean",
-    "title": "Search",
-    "vesselAlreadyInWorksace": "Vessel already added. Close search to see it.",
     "vessels": "Search vessels",
-    "filterClose": "Close search filters",
-    "filterOpen": "Open search filters"
+    "vesselAlreadyInWorksace": "Vessel already added. Close search to see it."
   },
   "selects": {
     "allSelected": "All",
@@ -162,18 +164,12 @@
     "showTracks": "Show tracks graph",
     "tracksDisabled": "Select at least one vessel"
   },
-  "user": {
-    "groupMissing": "Do you belong to a user group that doesn’t appear here? <1>Request access</1>.",
-    "groups": "User Groups",
-    "profile": "User profile",
-    "title": "User"
-  },
   "vessel": {
     "beam": "Beam",
-    "callsign": "Call sign",
-    "capacity": "Capacity",
     "carrier": "Carrier",
     "donor": "Donor vessel",
+    "callsign": "Call sign",
+    "capacity": "Capacity",
     "firstTransmissionDate": "First transmission date",
     "flag": "Flag",
     "fleet": "Fleet",
@@ -190,10 +186,10 @@
     "source": "Source",
     "tracks": "Vessel Tracks",
     "transmission_plural": "Transmissions",
-    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
     "vesselType_plural": "Vessel types",
     "widthRange": "Width range",
-    "transmission": "Transmission"
+    "transmission": "Transmission",
+    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}"
   },
   "workspace": {
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",
