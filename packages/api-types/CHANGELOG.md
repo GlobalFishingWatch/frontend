@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 2.16.0
+
+### Minor Changes
+
+- d6bc4dc6: include user groups types definition
+
 ## 2.15.0
 
 ### Minor Changes
