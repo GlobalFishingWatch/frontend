@@ -43,14 +43,14 @@ const firstFeatureInteractiveRawCellFrame = aggregateCell({
   rawValues: JSON.stringify(firstFeatureInteractive.properties.rawValues),
   frame: TEST_FRAME,
   delta: BASE_CONFIG.delta,
-  qquantizeOffset: BASE_CONFIG.quantizeOffset,
+  quantizeOffset: BASE_CONFIG.quantizeOffset,
   sublayerCount: BASE_CONFIG.sublayerCount,
 })
 const lastFeatureInteractiveRawCellFrame = aggregateCell({
   rawValues: JSON.stringify(lastFeatureInteractive.properties.rawValues),
   frame: TEST_FRAME,
   delta: BASE_CONFIG.delta,
-  qquantizeOffset: BASE_CONFIG.quantizeOffset,
+  quantizeOffset: BASE_CONFIG.quantizeOffset,
   sublayerCount: BASE_CONFIG.sublayerCount,
 })
 
