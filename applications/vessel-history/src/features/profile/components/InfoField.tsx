@@ -20,10 +20,7 @@ const InfoField: React.FC<ListItemProps> = ({
   const displachOpenModal = useCallback(() => {
     setModalOpen(true)
   }, [])
-
-  if (!value) {
-    return <div></div>
-  }
+  const defaultEmptyValue = '-'
 
   const current: ValueItem = {
     value,
@@ -33,7 +30,7 @@ const InfoField: React.FC<ListItemProps> = ({
     <div className={styles.identifierField}>
       <label>{label}</label>
       <div onClick={() => displachOpenModal()}>
-        {value}
+        {value.length > 0 ? value : defaultEmptyValue}
         <InfoFieldHistory
           current={current}
           label={label}

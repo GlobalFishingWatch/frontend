@@ -5,7 +5,7 @@ import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-s
 import { VesselSourceId } from 'types/vessel'
 import gfwThunk from 'features/vessels/sources/gfw.slice'
 import tmtThunk from 'features/vessels/sources/tmt.slice'
-import { RootState } from '../../store'
+import { RootState } from 'store'
 import { mergeVesselFromSources } from './vessels.utils'
 
 export type VesselState = AsyncReducer<VesselWithHistory>
