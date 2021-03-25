@@ -130,3 +130,5 @@ export const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = [
     label: 'None',
   },
 ]
+
+export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeatmap'

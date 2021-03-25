@@ -163,7 +163,7 @@ class HeatmapAnimatedGenerator {
       finalConfig.interval
     )
 
-    return {
+    const style = {
       id: finalConfig.id,
       sources: this._getStyleSources(finalConfig, timeChunks),
       layers: this._getStyleLayers(finalConfig, timeChunks),
@@ -172,8 +172,11 @@ class HeatmapAnimatedGenerator {
         numSublayers: config.sublayers.length,
         visibleSublayers: getSubLayersVisible(config.sublayers),
         timeChunks,
+        aggregationOperation: finalConfig.aggregationOperation,
+        multiplier: finalConfig.breaksMultiplier,
       },
     }
+    return style
   }
 }
 

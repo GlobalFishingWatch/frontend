@@ -12,7 +12,15 @@ const aggregateCell = ({
   multiplier = VALUE_MULTIPLIER,
 }: CellAggregationParams) => {
   if (!rawValues) return null
-
+  console.log(
+    rawValues,
+    frame,
+    delta,
+    quantizeOffset,
+    sublayerCount,
+    aggregationOperation,
+    multiplier
+  )
   const { values, minCellOffset, maxCellOffset } = getCellValues(rawValues)
 
   // When we should start counting in terms of days/hours/10days from start of time

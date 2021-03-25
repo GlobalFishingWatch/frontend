@@ -6,6 +6,7 @@ import {
   AnyGeneratorConfig,
   HeatmapAnimatedGeneratorConfig,
   HeatmapAnimatedGeneratorSublayer,
+  HeatmapAnimatedMode,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
 import {
@@ -29,6 +30,7 @@ import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timeba
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { resolveDataviewDatasetResource } from 'features/resources/resources.selectors'
+import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from 'data/config'
 
 export const MULTILAYER_SEPARATOR = '__'
 
@@ -70,7 +72,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
       const sublayers = animatedHeatmapDataviews.flatMap((dataview) => {
         const { config, datasetsConfig } = dataview
         if (!config || !datasetsConfig || !datasetsConfig.length) return []
-        const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
+        const datasets = config.datasets || datasetsConfig.map((dc: any) => dc.datasetId)
         const sublayer: HeatmapAnimatedGeneratorSublayer = {
           id: dataview.id,
           datasets,
@@ -93,7 +95,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
       }
       const visible = sublayers.some(({ visible }) => visible === true)
       const mergedLayer = {
-        id: 'mergedAnimatedHeatmap',
+        id: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
         config: {
           type: Generators.Type.HeatmapAnimated,
           sublayers,
@@ -187,6 +189,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
         const statsEndpoint = dataset?.endpoints?.find(
           (endpoint) => endpoint.id === EndpointId.FourwingsLegend
         )
+        // console.log(dataview.config.steps)
         generator = {
           ...generator,
           maxZoom: 8,
@@ -231,7 +234,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
       }
       const sublayer = {
         id: 'lalalala',
-        colorRamp: 'lilac' as ColorRampsIds,
+        colorRamp: 'lilac' as Generators.ColorRampsIds,
         datasets: ['fd-water-temperature-palau'],
         filter: '',
         active: true,
@@ -243,11 +246,11 @@ export const getWorkspaceGeneratorsConfig = createSelector(
         id: 'sea-surface-temp-palau',
         type: Generators.Type.HeatmapAnimated,
         sublayers: [sublayer],
-        mode: 'single',
-        aggregationOperation: AggregationOperation.Avg,
+        mode: HeatmapAnimatedMode.Single,
         interactive: true,
         interval: 'month',
         tilesAPI: 'https://dev-api-fourwings-tiler-jzzp2ui3wq-uc.a.run.app/v1',
+        aggregationOperation: AggregationOperation.Avg,
         breaksMultiplier: 1,
       }
       return gen

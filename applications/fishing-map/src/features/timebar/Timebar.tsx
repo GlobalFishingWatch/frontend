@@ -11,7 +11,7 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { DEFAULT_WORKSPACE, MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
@@ -55,7 +55,8 @@ const TimebarWrapper = () => {
   )
 
   const mapStyle = useMapStyle()
-  const temporalgrid = mapStyle?.metadata?.temporalgrid
+  const temporalgrid =
+    mapStyle?.metadata?.generatorsMetadata[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
   const [stackedActivity, setStackedActivity] = useState<any>()
 
   const visibleTemporalGridDataviews = useMemo(

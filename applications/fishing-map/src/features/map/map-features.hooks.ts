@@ -95,6 +95,8 @@ export const useMapFeatures = ({
 }
 
 export const useMapTemporalgridFeatures = ({ cacheKey }: { cacheKey?: string } = {}) => {
+  // TODO rethink this to include generator id
+  // + expose source generation logic from LC
   const currentTimeChunkId = useCurrentTimeChunkId()
 
   return useMapFeatures({

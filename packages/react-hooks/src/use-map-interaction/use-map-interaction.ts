@@ -13,11 +13,6 @@ const getExtendedFeatures = (
   metadata?: ExtendedStyleMeta,
   debug = false
 ): ExtendedFeature[] => {
-  const timeChunks = metadata?.temporalgrid?.timeChunks
-  const frame = timeChunks?.activeChunkFrame
-  const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active)
-  const numSublayers = metadata?.temporalgrid?.numSublayers
-
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
     const generatorType = feature.layer.metadata?.generatorType ?? null
     const generatorId = feature.layer.metadata?.generatorId ?? null
@@ -39,18 +34,25 @@ const getExtendedFeatures = (
         z: (feature as any)._vectorTileFeature._z,
       },
     }
+    const generatorMetadata = (metadata?.generatorsMetadata || {})[generatorId]
     switch (generatorType) {
       case Generators.Type.HeatmapAnimated:
+        const timeChunks = generatorMetadata?.timeChunks
+        const frame = timeChunks?.activeChunkFrame
+        const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active)
+        const numSublayers = generatorMetadata?.numSublayers
         const values = aggregateCell({
           rawValues: properties.rawValues,
           frame,
           delta: timeChunks.deltaInIntervalUnits,
           quantizeOffset: activeTimeChunk.quantizeOffset,
           sublayerCount: numSublayers,
+          aggregationOperation: generatorMetadata?.aggregationOperation,
+          multiplier: generatorMetadata?.multiplier,
         })
         if (!values || !values.filter((v: number) => v > 0).length) return []
 
-        const visibleSublayers = metadata?.temporalgrid?.visibleSublayers as boolean[]
+        const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
         return values.flatMap((value: any, i: number) => {
           if (value === 0) return []
           return [

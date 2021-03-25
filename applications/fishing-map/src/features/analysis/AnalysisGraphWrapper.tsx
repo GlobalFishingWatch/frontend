@@ -14,6 +14,7 @@ import { useMapStyle } from 'features/map/map.hooks'
 import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from 'data/config'
 import * as AnalysisWorker from './Analysis.worker'
 import AnalysisGraph, { GraphData } from './AnalysisGraph'
 import { selectAnalysisGeometry } from './analysis.slice'
@@ -28,7 +29,8 @@ function AnalysisGraphWrapper() {
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
   const [timeseries, setTimeseries] = useState<GraphData[] | undefined>()
   const mapStyle = useMapStyle()
-  const temporalgrid = mapStyle?.metadata?.temporalgrid
+  const temporalgrid =
+    mapStyle?.metadata?.generatorsMetadata[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
   const numSublayers = temporalgrid?.numSublayers
   const timeChunks = temporalgrid?.timeChunks as TimeChunks
   const interval = temporalgrid?.timeChunks?.interval

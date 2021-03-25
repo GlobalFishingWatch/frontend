@@ -67,6 +67,7 @@ export const useClickedEventConnect = () => {
   const rulersEditing = useSelector(selectEditing)
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
+    console.log(event)
     // Used on workspaces-list or user panel to go to the workspace detail page
     if (locationType === USER || locationType === WORKSPACES_LIST) {
       const workspace = event?.features?.find(
