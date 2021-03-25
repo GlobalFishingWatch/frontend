@@ -48,7 +48,7 @@ const getExtendedFeatures = (
           quantizeOffset: activeTimeChunk.quantizeOffset,
           sublayerCount: numSublayers,
         })
-        if (!values || !values.filter((v) => v > 0).length) return []
+        if (!values || !values.filter((v: number) => v > 0).length) return []
 
         const visibleSublayers = metadata?.temporalgrid?.visibleSublayers as boolean[]
         return values.flatMap((value: any, i: number) => {

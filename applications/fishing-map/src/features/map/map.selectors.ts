@@ -4,6 +4,7 @@ import { CircleLayer } from '@globalfishingwatch/mapbox-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   AnyGeneratorConfig,
+  HeatmapAnimatedGeneratorConfig,
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
@@ -14,6 +15,7 @@ import {
   EndpointId,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
+import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
@@ -220,7 +222,38 @@ export const getWorkspaceGeneratorsConfig = createSelector(
       id: 'rulers',
       data: rulers,
     }
-    return [...generatorsConfig.reverse(), rulersConfig] as AnyGeneratorConfig[]
+
+    const generators = [...generatorsConfig.reverse(), rulersConfig] as AnyGeneratorConfig[]
+
+    const generators_ = generators.map((generator) => {
+      if (generator.id !== 'sea-surface-temp-palau') {
+        return generator
+      }
+      const sublayer = {
+        id: 'lalalala',
+        colorRamp: 'lilac' as ColorRampsIds,
+        datasets: ['fd-water-temperature-palau'],
+        filter: '',
+        active: true,
+        visible: true,
+        breaks: [28, 28.2, 28.4, 28.6, 28.8, 29, 29.2, 29.4],
+        breaksMultiplier: 1,
+      }
+      const gen: HeatmapAnimatedGeneratorConfig = {
+        id: 'sea-surface-temp-palau',
+        type: Generators.Type.HeatmapAnimated,
+        sublayers: [sublayer],
+        mode: 'single',
+        aggregationOperation: AggregationOperation.Avg,
+        interactive: true,
+        interval: 'month',
+        tilesAPI: 'https://dev-api-fourwings-tiler-jzzp2ui3wq-uc.a.run.app/v1',
+        breaksMultiplier: 1,
+      }
+      return gen
+    })
+
+    return generators_ as AnyGeneratorConfig[]
   }
 )
 

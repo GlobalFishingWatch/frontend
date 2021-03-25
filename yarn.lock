@@ -1514,7 +1514,7 @@
   resolved "https://registry.yarnpkg.com/@globalfishingwatch/fourwings-aggregate/-/fourwings-aggregate-1.1.4.tgz#449f8e5c01f0f5028cabe5895dab4d46d9bbe845"
   integrity sha512-+bPEYb+EewU8LxffpSpCG4Bh0p+7gY+uG+ZrKXL9s0cMezWNtnhgKrXgIkPLeDNHomQLB2QPHggQ3XB15kBCuw==
 
-"@globalfishingwatch/fourwings-aggregate@1.2.1", "@globalfishingwatch/fourwings-aggregate@^1.2.1":
+"@globalfishingwatch/fourwings-aggregate@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@globalfishingwatch/fourwings-aggregate/-/fourwings-aggregate-1.2.1.tgz#99490dbea73e2ce20ee25556db65e91b2c211ff2"
   integrity sha512-nJYlRjDcNmjWlA12sd+ZmKcJKJl0Z3tfwR0S2PdLNFzj7HxfsZAbqt31zAg8MDMzSlQlX7PzmuoBLGEKGt2Qwg==
