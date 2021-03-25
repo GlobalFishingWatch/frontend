@@ -34,9 +34,13 @@ import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
+import { SliceInteractionEvent } from './map.slice'
+import { useMapSourceLoaded } from './map-features.hooks'
+
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 // TODO: Abstract this away
@@ -59,6 +63,7 @@ const handleError = ({ error }: any) => {
   }
 }
 
+// TODO: move this to shared package
 const getLegendLayers = (
   style?: ExtendedStyle,
   dataviews?: UrlDataviewInstance[],
@@ -150,7 +155,7 @@ const MapWrapper = (): React.ReactElement | null => {
     dispatchClickedEvent(null)
   }, [cleanFeatureState, dispatchClickedEvent])
 
-  const [hoveredEvent, setHoveredEvent] = useState<InteractionEvent | null>(null)
+  const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
   const handleHoverEvent = useCallback(
     (event) => {
       if (rulersEditing) {
@@ -165,7 +170,9 @@ const MapWrapper = (): React.ReactElement | null => {
     },
     [dispatch, rulersEditing]
   )
-  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<InteractionEvent | null>(null)
+  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
+    null
+  )
   const onMapHover = useMapHover(
     handleHoverEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,
@@ -197,22 +204,29 @@ const MapWrapper = (): React.ReactElement | null => {
     return 'crosshair'
   }, [])
 
+  // TODO handle also in case of error
+  // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
+  const tilesLoading = useTilesLoading(map)
+  const encounterSourceLoaded = useMapSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+
   const getCursor = useCallback(
     (state) => {
       // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
       if (state.isHovering && hoveredTooltipEvent) {
+        const isCluster = hoveredTooltipEvent.features.find(
+          (f) => f.type === Generators.Type.TileCluster && parseInt(f.properties.count) > 1
+        )
+        if (isCluster) {
+          return encounterSourceLoaded ? 'zoom-in' : 'progress'
+        }
         return 'pointer'
       } else if (state.isDragging) {
         return 'grabbing'
       }
       return 'grab'
     },
-    [hoveredTooltipEvent]
+    [hoveredTooltipEvent, encounterSourceLoaded]
   )
-
-  // TODO handle also in case of error
-  // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
-  const tilesLoading = useTilesLoading(map)
 
   useEffect(() => {
     if (map) {

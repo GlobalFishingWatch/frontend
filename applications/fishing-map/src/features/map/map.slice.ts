@@ -1,17 +1,24 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import uniqBy from 'lodash/uniqBy'
-import {
-  InteractionEvent,
-  ExtendedFeatureVessel,
-  ExtendedFeature,
-} from '@globalfishingwatch/react-hooks'
+import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { DataviewDatasetConfig, Dataset, Vessel, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  DataviewDatasetConfig,
+  Dataset,
+  Vessel,
+  DatasetTypes,
+  EventVessel,
+  ApiEvent,
+  AuthorizationOptions,
+  EventTypes,
+  EndpointId,
+} from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
 import {
   getRelatedDatasetByType,
+  selectEventsDataviews,
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
@@ -19,16 +26,62 @@ import { selectTimeRange } from 'features/app/app.selectors'
 
 export const MAX_TOOLTIP_VESSELS = 5
 
+export type ExtendedFeatureVessel = {
+  id: string
+  hours: number
+  dataset: Dataset
+  [key: string]: any
+}
+
+// TODO remove this once the cluster events follow the same API events format
+type TemporalClusterBusterEvent = {
+  event_id: string
+  event_type: EventTypes
+  vessel_id: string
+  event_start: string
+  event_end: string
+  event_info: {
+    regions: {
+      eez: string[]
+      fao: string[]
+      rfmo: string[]
+    }
+    elevation_m: number
+    is_authorized: boolean
+    median_distance_km: number
+    median_speed_knots: number
+    authorization_status: AuthorizationOptions
+    distance_from_port_m: number
+    distance_from_shore_m: number
+    encountered_vessel_id: string
+  }
+  event_vessels: EventVessel[]
+}
+
+export type ExtendedFeatureEvent = ApiEvent & { dataset: Dataset }
+
+export type SliceExtendedFeature = ExtendedFeature & {
+  event?: ExtendedFeatureEvent
+  vessels?: ExtendedFeatureVessel[]
+}
+
+// Extends the default extendedEvent including event and vessels information from API
+export type SliceInteractionEvent = Omit<InteractionEvent, 'features'> & {
+  features: SliceExtendedFeature[]
+}
+
 type MapState = {
-  clicked: InteractionEvent | null
-  hovered: InteractionEvent | null
-  status: AsyncReducerStatus
+  clicked: SliceInteractionEvent | null
+  hovered: SliceInteractionEvent | null
+  fourWingsStatus: AsyncReducerStatus
+  apiEventStatus: AsyncReducerStatus
 }
 
 const initialState: MapState = {
   clicked: null,
   hovered: null,
-  status: AsyncReducerStatus.Idle,
+  fourWingsStatus: AsyncReducerStatus.Idle,
+  apiEventStatus: AsyncReducerStatus.Idle,
 }
 
 type SublayerVessels = {
@@ -67,7 +120,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
     const mainFeature = temporalGridFeatures[0]
     const datasetConfig: DataviewDatasetConfig = {
       datasetId: fourWingsDataset.id,
-      endpoint: '4wings-interaction',
+      endpoint: EndpointId.FourwingsInteraction,
       params: [
         { id: 'z', value: mainFeature.tile?.z },
         { id: 'x', value: mainFeature.tile?.x },
@@ -144,7 +197,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
         const infoDataset = infoDatasets[0]
         if (infoDataset) {
           const infoDatasetConfig = {
-            endpoint: 'carriers-list-vessels',
+            endpoint: EndpointId.VesselList,
             datasetId: infoDataset.id,
             params: [],
             query: [
@@ -170,11 +223,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
                 !vesselsInfoResponse.entries || typeof vesselsInfoResponse.entries === 'function'
                   ? vesselsInfoResponse
                   : (vesselsInfoResponse as any)?.entries
-              vesselsInfo =
-                vesselsInfoList?.flatMap((vesselInfo) => {
-                  if (!vesselInfo?.shipname) return []
-                  return vesselInfo
-                }) || []
+              vesselsInfo = vesselsInfoList || []
             } catch (e) {
               console.warn(e)
             }
@@ -205,11 +254,78 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
   }
 )
 
+// TODO: remove this workaound once the api returns the same format for every event
+const parseClusterEvent = (
+  clusterEvent: TemporalClusterBusterEvent,
+  eventFeature: ExtendedFeature
+): ApiEvent => {
+  const vessel = clusterEvent.event_vessels.find(
+    (v) => v.id === clusterEvent.vessel_id
+  ) as EventVessel
+  const encounterVessel = clusterEvent.event_vessels.find(
+    (v) => v.id === clusterEvent.event_info?.encountered_vessel_id
+  ) as EventVessel
+  const event = {
+    position: {
+      lat: eventFeature.properties?.lat as number,
+      lon: eventFeature.properties?.lng as number,
+    },
+    id: clusterEvent.event_id,
+    type: clusterEvent.event_type,
+    vessel,
+    start: clusterEvent.event_start,
+    end: clusterEvent.event_end,
+    rfmos: clusterEvent.event_info?.regions?.rfmo,
+    eezs: clusterEvent.event_info?.regions?.eez,
+    encounter: {
+      vessel: encounterVessel,
+      authorized: clusterEvent.event_info.is_authorized,
+      medianDistanceKilometers: clusterEvent.event_info.median_distance_km,
+      medianSpeedKnots: clusterEvent.event_info.median_speed_knots,
+      authorizationStatus: clusterEvent.event_info.authorization_status,
+      regionAuthorizations: [],
+      vesselAuthorizations: [],
+    },
+  }
+  return event
+}
+
+export const fetchEncounterEventThunk = createAsyncThunk<
+  ExtendedFeatureEvent | undefined,
+  ExtendedFeature,
+  {
+    dispatch: AppDispatch
+  }
+>('map/fetchEncounterEvent', async (eventFeature, { signal, getState }) => {
+  const state = getState() as RootState
+  const eventDataviews = selectEventsDataviews(state) || []
+  const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
+  const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  if (dataset) {
+    const datasetConfig = {
+      datasetId: dataset.id,
+      endpoint: 'carriers-events-detail',
+      params: [{ id: 'eventId', value: eventFeature.id }],
+    }
+    const url = resolveEndpoint(dataset, datasetConfig)
+    if (url) {
+      const clusterEvent = await GFWAPI.fetch<TemporalClusterBusterEvent>(url, { signal })
+      if (clusterEvent) {
+        const event = parseClusterEvent(clusterEvent, eventFeature)
+        return { ...event, dataset }
+      }
+    } else {
+      console.warn('Missing url for endpoints', dataset, datasetConfig)
+    }
+  }
+  return
+})
+
 const slice = createSlice({
   name: 'map',
   initialState,
   reducers: {
-    setClickedEvent: (state, action: PayloadAction<InteractionEvent | null>) => {
+    setClickedEvent: (state, action: PayloadAction<SliceInteractionEvent | null>) => {
       if (action.payload === null) {
         state.clicked = null
         return
@@ -220,10 +336,10 @@ const slice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(fetch4WingInteractionThunk.pending, (state, action) => {
-      state.status = AsyncReducerStatus.Loading
+      state.fourWingsStatus = AsyncReducerStatus.Loading
     })
     builder.addCase(fetch4WingInteractionThunk.fulfilled, (state, action) => {
-      state.status = AsyncReducerStatus.Finished
+      state.fourWingsStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
 
       action.payload.vessels.forEach((sublayerVessels) => {
@@ -238,16 +354,35 @@ const slice = createSlice({
     })
     builder.addCase(fetch4WingInteractionThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
-        state.status = AsyncReducerStatus.Idle
+        state.fourWingsStatus = AsyncReducerStatus.Idle
       } else {
-        state.status = AsyncReducerStatus.Error
+        state.fourWingsStatus = AsyncReducerStatus.Error
+      }
+    })
+    builder.addCase(fetchEncounterEventThunk.pending, (state, action) => {
+      state.apiEventStatus = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchEncounterEventThunk.fulfilled, (state, action) => {
+      state.apiEventStatus = AsyncReducerStatus.Finished
+      if (!state.clicked || !state.clicked.features || !action.payload) return
+      const feature = state.clicked?.features?.find((feature) => feature.id && action.meta.arg.id)
+      if (feature) {
+        feature.event = action.payload
+      }
+    })
+    builder.addCase(fetchEncounterEventThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.apiEventStatus = AsyncReducerStatus.Idle
+      } else {
+        state.apiEventStatus = AsyncReducerStatus.Error
       }
     })
   },
 })
 
 export const selectClickedEvent = (state: RootState) => state.map.clicked
-export const selectClickedEventStatus = (state: RootState) => state.map.status
+export const selectFourWingsStatus = (state: RootState) => state.map.fourWingsStatus
+export const selectApiEventStatus = (state: RootState) => state.map.apiEventStatus
 
 export const { setClickedEvent } = slice.actions
 export default slice.reducer

@@ -1,14 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
 import { useRef } from 'react'
-import {
-  ExtendedFeatureVessel,
-  InteractionEvent,
-  useTilesLoading,
-} from '@globalfishingwatch/react-hooks'
+import { useTranslation } from 'react-i18next'
+import { InteractionEvent, useTilesLoading } from '@globalfishingwatch/react-hooks'
 import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Style } from '@globalfishingwatch/mapbox-gl'
+import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
+import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import {
   selectDataviewInstancesResolved,
   selectTemporalgridDataviews,
@@ -28,10 +28,17 @@ import {
 import {
   setClickedEvent,
   selectClickedEvent,
-  selectClickedEventStatus,
   fetch4WingInteractionThunk,
   MAX_TOOLTIP_VESSELS,
+  fetchEncounterEventThunk,
+  SliceInteractionEvent,
+  selectFourWingsStatus,
+  selectApiEventStatus,
+  ExtendedFeatureVessel,
+  ExtendedFeatureEvent,
 } from './map.slice'
+import useViewport from './map-viewport.hooks'
+import { useMapSourceLoaded } from './map-features.hooks'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -43,13 +50,19 @@ export const useGeneratorsConnect = () => {
 }
 
 export const useClickedEventConnect = () => {
+  const map = useMapInstance()
   const dispatch = useDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
   const locationCategory = useSelector(selectLocationCategory)
-  const clickedEventStatus = useSelector(selectClickedEventStatus)
+  const fourWingsStatus = useSelector(selectFourWingsStatus)
+  const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
-  const promiseRef = useRef<any>()
+  const { cleanFeatureState } = useFeatureState(map)
+  const { setMapCoordinates } = useViewport()
+  const encounterSourceLoaded = useMapSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const fourWingsPromiseRef = useRef<any>()
+  const eventsPromiseRef = useRef<any>()
 
   const rulersEditing = useSelector(selectEditing)
 
@@ -86,8 +99,30 @@ export const useClickedEventConnect = () => {
       return
     }
 
-    if (promiseRef.current) {
-      promiseRef.current.abort()
+    const clusterFeature = event?.features?.find(
+      (f) => f.generatorType === Generators.Type.TileCluster
+    )
+    if (clusterFeature?.properties?.expansionZoom) {
+      const { count, expansionZoom, lat, lng } = clusterFeature.properties
+      if (count > 1) {
+        if (encounterSourceLoaded) {
+          setMapCoordinates({
+            latitude: lat,
+            longitude: lng,
+            zoom: expansionZoom,
+          })
+          cleanFeatureState('click')
+        }
+        return
+      }
+    }
+
+    if (fourWingsPromiseRef.current) {
+      fourWingsPromiseRef.current.abort()
+    }
+
+    if (eventsPromiseRef.current) {
+      eventsPromiseRef.current.abort()
     }
 
     if (!event || !event.features) {
@@ -97,20 +132,28 @@ export const useClickedEventConnect = () => {
       return
     }
 
-    dispatch(setClickedEvent(event))
+    dispatch(setClickedEvent(event as SliceInteractionEvent))
+
     // get temporal grid clicked features and order them by sublayerindex
     const temporalGridFeatures = event.features
       .filter((feature) => feature.temporalgrid !== undefined && feature.temporalgrid.visible)
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
-
     if (temporalGridFeatures?.length) {
-      promiseRef.current = dispatch(fetch4WingInteractionThunk(temporalGridFeatures))
+      fourWingsPromiseRef.current = dispatch(fetch4WingInteractionThunk(temporalGridFeatures))
+    }
+
+    const encounterFeature = event.features.find(
+      (f) => f.generatorType === Generators.Type.TileCluster
+    )
+    if (encounterFeature) {
+      eventsPromiseRef.current = dispatch(fetchEncounterEventThunk(encounterFeature))
     }
   }
-  return { clickedEvent, clickedEventStatus, dispatchClickedEvent }
+  return { clickedEvent, fourWingsStatus, apiEventStatus, dispatchClickedEvent }
 }
 
 export type TooltipEventFeature = {
+  id?: string
   title?: string
   type?: Type
   color?: string
@@ -127,6 +170,7 @@ export type TooltipEventFeature = {
     numVessels: number
     vessels: ExtendedFeatureVessel[]
   }
+  event?: ExtendedFeatureEvent
 }
 
 export type TooltipEvent = {
@@ -135,10 +179,30 @@ export type TooltipEvent = {
   features: TooltipEventFeature[]
 }
 
-export const useMapTooltip = (event?: InteractionEvent | null) => {
+export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
+  const { t } = useTranslation()
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
   if (!event || !event.features) return null
+
+  const clusterFeature = event.features.find(
+    (f) => f.generatorType === Generators.Type.TileCluster && parseInt(f.properties.count) > 1
+  )
+
+  // We don't want to show anything else when hovering a cluster point
+  if (clusterFeature) {
+    return {
+      point: event.point,
+      latitude: event.latitude,
+      longitude: event.longitude,
+      features: [
+        {
+          type: clusterFeature.generatorType,
+          properties: clusterFeature.properties,
+        } as TooltipEventFeature,
+      ],
+    }
+  }
 
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     let dataview
@@ -174,16 +238,29 @@ export const useMapTooltip = (event?: InteractionEvent | null) => {
       }
       return []
     }
-    const title =
-      dataview.category === 'context' && dataview.config?.type === Generators.Type.UserContext
-        ? dataview.datasets?.[0]?.name
-        : dataview.name || dataview.id.toString()
+
+    let title = dataview.name || dataview.id.toString()
+    if (
+      dataview.category === DataviewCategory.Context ||
+      dataview.category === DataviewCategory.Events
+    ) {
+      const dataset = dataview.datasets?.[0]
+      if (dataset) {
+        if (dataview.config?.type === Generators.Type.UserContext) {
+          title = dataset.name
+        } else {
+          title = t(`datasets:${dataset.id}.name` as any) as string
+        }
+      }
+    }
     const tooltipEventFeature: TooltipEventFeature = {
       title,
       type: dataview.config?.type,
       color: dataview.config?.color || 'black',
+      id: feature.id,
       unit: feature.unit,
       value: feature.value,
+      event: feature.event,
       source: feature.source,
       sourceLayer: feature.sourceLayer,
       geometry: feature.geometry,

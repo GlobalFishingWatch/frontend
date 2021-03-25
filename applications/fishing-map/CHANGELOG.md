@@ -1,5 +1,126 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.28.0
+
+### Minor Changes
+
+- match latest versions
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.15.0
+  - @globalfishingwatch/dataviews-client@4.1.0
+  - @globalfishingwatch/layer-composer@4.18.0
+  - @globalfishingwatch/react-hooks@4.11.0
+  - @globalfishingwatch/ui-components@2.15.0
+
+## 0.27.20
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.3
+  - @globalfishingwatch/react-hooks@4.10.1
+  - @globalfishingwatch/ui-components@2.14.9
+
+## 0.27.19
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.14.8
+
+## 0.27.18
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.14.7
+
+## 0.27.17
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/react-hooks@4.10.0
+
+## 0.27.16
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.14.2
+
+## 0.27.15
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@4.0.4
+
+## 0.27.14
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.2
+  - @globalfishingwatch/react-hooks@4.9.6
+  - @globalfishingwatch/ui-components@2.14.6
+
+## 0.27.13
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.14.5
+
+## 0.27.12
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.14.1
+
+## 0.27.11
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.14.4
+
+## 0.27.10
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.14.0
+
+## 0.27.9
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.1
+  - @globalfishingwatch/react-hooks@4.9.5
+  - @globalfishingwatch/ui-components@2.14.3
+- Updated dependencies [[`d99bf5f3`](https://github.com/GlobalFishingWatch/frontend/commit/d99bf5f30bceed021ac990a0de8b4e992189be73)]:
+  - @globalfishingwatch/api-types@2.13.0
+  - @globalfishingwatch/react-hooks@4.10.0
+
+## 0.27.8
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/api-types@2.12.1
+- Updated dependencies [ce98aa73]
+- Updated dependencies [f9b53836]
+  - @globalfishingwatch/layer-composer@4.17.0
+  - @globalfishingwatch/api-types@2.13.0
+  - @globalfishingwatch/react-hooks@4.9.4
+  - @globalfishingwatch/ui-components@2.14.2
+
 ## 0.27.7
 
 ### Patch Changes

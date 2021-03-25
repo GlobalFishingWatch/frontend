@@ -11,12 +11,12 @@ import {
   DatasetCategory,
   DatasetStatus,
   DatasetTypes,
+  EndpointId,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
-  resolveDataviewDatasetResource,
   selectWorkspaceError,
 } from 'features/workspace/workspace.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
@@ -26,6 +26,7 @@ import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
+import { resolveDataviewDatasetResource } from 'features/resources/resources.selectors'
 
 export const MULTILAYER_SEPARATOR = '__'
 
@@ -39,6 +40,7 @@ export const selectGlobalGeneratorsConfig = createSelector(
   })
 )
 
+// TODO merge this with getDataviewsGeneratorConfigs user-dataviews-layer package
 export const getWorkspaceGeneratorsConfig = createSelector(
   [
     selectDataviewInstancesResolved,
@@ -177,9 +179,11 @@ export const getWorkspaceGeneratorsConfig = createSelector(
         const dataset = dataview.datasets?.find(
           (dataset) => dataset.type === DatasetTypes.Fourwings
         )
-        const tilesEndpoint = dataset?.endpoints?.find((endpoint) => endpoint.id === '4wings-tiles')
+        const tilesEndpoint = dataset?.endpoints?.find(
+          (endpoint) => endpoint.id === EndpointId.FourwingsTiles
+        )
         const statsEndpoint = dataset?.endpoints?.find(
-          (endpoint) => endpoint.id === '4wings-legend'
+          (endpoint) => endpoint.id === EndpointId.FourwingsLegend
         )
         generator = {
           ...generator,
@@ -198,6 +202,15 @@ export const getWorkspaceGeneratorsConfig = createSelector(
             },
           },
         }
+      } else if (dataview.config?.type === Generators.Type.TileCluster) {
+        const { dataset, url } = resolveDataviewDatasetResource(dataview, {
+          type: DatasetTypes.Events,
+        })
+        if (!dataset || !url) {
+          console.warn('No dataset config for TileCluster generator', dataview)
+          return []
+        }
+        generator.tilesUrl = url
       }
       return generator
     })

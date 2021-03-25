@@ -10,8 +10,8 @@ export const filterByViewport = (features: MapboxGeoJSONFeature[], bounds: Minig
   const rightWorldCopy = west <= -180
   return features.filter((f) => {
     const [lon, lat] = (f.geometry as any).coordinates[0][0]
-    const rightOffset = rightWorldCopy && lon > 0 ? -360 : 0
-    const leftOffset = leftWorldCopy && lon < 0 ? 360 : 0
+    const rightOffset = rightWorldCopy && !leftWorldCopy && lon > 0 ? -360 : 0
+    const leftOffset = leftWorldCopy && !rightWorldCopy && lon < 0 ? 360 : 0
     return (
       lon + rightOffset + leftOffset > west &&
       lon + rightOffset + leftOffset < east &&

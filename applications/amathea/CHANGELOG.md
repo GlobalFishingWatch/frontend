@@ -1,5 +1,54 @@
 # @globalfishingwatchapp/amathea
 
+## 0.14.11
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.15.0
+  - @globalfishingwatch/dataviews-client@4.1.0
+  - @globalfishingwatch/layer-composer@4.18.0
+  - @globalfishingwatch/react-hooks@4.11.0
+  - @globalfishingwatch/ui-components@2.15.0
+
+## 0.14.10
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.3
+  - @globalfishingwatch/react-hooks@4.10.1
+  - @globalfishingwatch/ui-components@2.14.9
+
+## 0.14.9
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.2
+  - @globalfishingwatch/react-hooks@4.9.6
+  - @globalfishingwatch/ui-components@2.14.6
+
+## 0.14.8
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.1
+  - @globalfishingwatch/react-hooks@4.9.5
+  - @globalfishingwatch/ui-components@2.14.3
+
+## 0.14.7
+
+### Patch Changes
+
+- Updated dependencies [ce98aa73]
+- Updated dependencies [f9b53836]
+  - @globalfishingwatch/layer-composer@4.17.0
+  - @globalfishingwatch/api-types@2.13.0
+  - @globalfishingwatch/react-hooks@4.9.4
+  - @globalfishingwatch/ui-components@2.14.2
+
 ## 0.14.6
 
 ### Patch Changes

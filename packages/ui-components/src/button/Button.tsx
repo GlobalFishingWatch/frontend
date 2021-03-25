@@ -21,6 +21,7 @@ interface ButtonProps {
   tooltipPlacement?: Placement
   onClick?: (e: React.MouseEvent) => void
   href?: string
+  target?: string
 }
 
 function Button(props: ButtonProps) {
@@ -36,22 +37,38 @@ function Button(props: ButtonProps) {
     tooltipPlacement = 'auto',
     onClick,
     href,
+    target,
   } = props
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
-      {href !== undefined ? (
-        <a href={href} className={cx(styles.button, styles[type], styles[size], className)}>
-          {children}
+      {href !== undefined && !disabled ? (
+        <a
+          href={href}
+          className={cx(styles.button, styles[type], styles[size], className)}
+          target={target}
+        >
+          {loading ? (
+            <Spinner
+              size="small"
+              color={type === 'default' ? (disabled ? '#22447e' : 'white') : undefined}
+            />
+          ) : (
+            children
+          )}
         </a>
       ) : (
         <button
           id={id}
-          className={cx(styles.button, styles[type], styles[size], className)}
-          onClick={(e) => !loading && onClick && onClick(e)}
-          disabled={disabled}
+          className={cx(styles.button, styles[type], styles[size], className, {
+            [styles.disabled]: disabled,
+          })}
+          onClick={(e) => !loading && !disabled && onClick && onClick(e)}
         >
           {loading ? (
-            <Spinner size="small" color={type === 'default' ? 'white' : undefined} />
+            <Spinner
+              size="small"
+              color={type === 'default' ? (disabled ? '#22447e' : 'white') : undefined}
+            />
           ) : (
             children
           )}

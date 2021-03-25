@@ -26,9 +26,11 @@
     "country_plural": "countries",
     "description": "Description",
     "environment": "Environment",
+    "events": "Events",
     "hour": "Hour",
     "hour_plural": "hours",
     "loggedAs": "Logged as",
+    "loading": "Loading",
     "login": "Log in",
     "logout": "Log out",
     "max": "Max",
@@ -42,12 +44,13 @@
     "update": "Update",
     "user": "User",
     "userProfile": "User profile",
+    "vessel": "Vessel",
     "vessel_plural": "Vessels",
     "open_menu": "Open Menu",
     "dismiss": "Dismiss",
     "save": "Save",
-    "events": "Events",
-    "fishing": "Fishing"
+    "fishing": "Fishing",
+    "unknown": "Unknown"
   },
   "dataset": {
     "addContext": "Add context dataset",
@@ -81,14 +84,21 @@
     "generic": "Something went wrong, try again or contact:",
     "invalidRange": "Min has to be lower than max value",
     "notSupportedBy": "Not supported by {{list}}",
+    "latestCarrierNotFound": "Latest carrier dataset not found",
     "pageNotFound": "Page not found",
     "privateView": "This is a private view",
     "requestAccess": "Request access",
     "switchAccount": "Switch account",
+    "vesselLoading": "There was an error loading the vessel details track",
     "trackLoading": "There was an error loading the vessel track",
     "uploadError": "There was an error uploading your dataset",
     "workspaceLoad": "There was an error loading the workspace, please try again later",
     "workspaceNotFound": "The view you request was not found"
+  },
+  "event": {
+    "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
+    "seeInCVP": "See in Carrier Vessel Portal",
+    "noData": "No data available"
   },
   "layer": {
     "add": "Add layer",
@@ -151,6 +161,8 @@
   },
   "vessel": {
     "beam": "Beam",
+    "carrier": "Carrier",
+    "donor": "Donor vessel",
     "callsign": "Callsign",
     "capacity": "Capacity",
     "firstTransmissionDate": "First transmission date",
@@ -171,7 +183,8 @@
     "transmission_plural": "Transmissions",
     "vesselType_plural": "Vessel types",
     "widthRange": "Width range",
-    "transmission": "Transmission"
+    "transmission": "Transmission",
+    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}"
   },
   "workspace": {
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",

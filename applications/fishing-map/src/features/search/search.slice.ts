@@ -7,6 +7,7 @@ import {
   Vessel,
   APISearch,
   VesselSearch,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { RootState } from 'store'
@@ -153,7 +154,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     }
 
     const datasetConfig = {
-      endpoint: advancedQuery ? 'carriers-advanced-search-vessels' : 'carriers-search-vessels',
+      endpoint: advancedQuery ? EndpointId.VesselAdvancedSearch : EndpointId.VesselSearch,
       datasetId: dataset.id,
       params: [],
       query: [

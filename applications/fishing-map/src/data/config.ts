@@ -4,6 +4,8 @@ import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
+export const CARRIER_PORTAL_URL =
+  process.env.REACT_APP_CARRIER_PORTAL_URL || 'https://carrier-portal.dev.globalfishingwatch.org'
 
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const DEFAULT_VERSION = 'v1'
@@ -32,6 +34,34 @@ export const DEFAULT_WORKSPACE = {
   bivariate: false,
   analysis: undefined,
   version: DEFAULT_VERSION,
+}
+
+export enum ThinningLevels {
+  Aggressive = 'aggressive',
+  Default = 'default',
+}
+
+export const THINNING_LEVELS = {
+  [ThinningLevels.Aggressive]: {
+    distanceFishing: 1000,
+    bearingValFishing: 5,
+    changeSpeedFishing: 200,
+    minAccuracyFishing: 50,
+    distanceTransit: 2000,
+    bearingValTransit: 5,
+    changeSpeedTransit: 200,
+    minAccuracyTransit: 100,
+  },
+  [ThinningLevels.Default]: {
+    distanceFishing: 500,
+    bearingValFishing: 1,
+    changeSpeedFishing: 200,
+    minAccuracyFishing: 30,
+    distanceTransit: 500,
+    bearingValTransit: 1,
+    changeSpeedTransit: 200,
+    minAccuracyTransit: 30,
+  },
 }
 
 // Params to use replace instead of push for router history to make navigation easier

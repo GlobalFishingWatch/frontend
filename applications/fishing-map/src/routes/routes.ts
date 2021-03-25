@@ -2,6 +2,7 @@ import { Dispatch } from 'redux'
 import { NOT_FOUND, RoutesMap, redirect, connectRoutes, Options } from 'redux-first-router'
 import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
+import { invert, isObject, transform } from 'lodash'
 import { RootState } from 'store'
 import { QueryParams, UrlDataviewInstance } from 'types'
 import { REPLACE_URL_PARAMS } from 'data/config'
@@ -34,6 +35,25 @@ const routesMap: RoutesMap = {
   },
 }
 
+const PARAMS_TO_ABBREVIATED = {
+  dataviewInstances: 'dvIn',
+  datasetsConfig: 'dsC',
+  datasets: 'dss',
+  endpoint: 'ept',
+  datasetId: 'dsId',
+  dataviewId: 'dvId',
+  params: 'pms',
+  config: 'cfg',
+}
+const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
+
+const deepReplaceKeys = (obj: Dictionary<any>, keysMap: Dictionary<string>) => {
+  return transform(obj, (result: any, value, key) => {
+    const newKey = keysMap[key] || key
+    result[newKey] = isObject(value) ? deepReplaceKeys(value, keysMap) : value
+  })
+}
+
 const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   const dataviewId = parseInt((dataview.dataviewId as number)?.toString())
   return {
@@ -55,12 +75,17 @@ const urlToObjectTransformation: Dictionary<(value: any) => any> = {
   },
 }
 
-const encodeWorkspace = (object: Record<string, unknown>) => {
-  return stringify(object, { encodeValuesOnly: true, strictNullHandling: true })
+const stringifyWorkspace = (object: Record<string, unknown>) => {
+  const objectWithAbbr = deepReplaceKeys(object, PARAMS_TO_ABBREVIATED)
+  const stringified = stringify(objectWithAbbr, {
+    encodeValuesOnly: true,
+    strictNullHandling: true,
+  })
+  return stringified
 }
 
 // Extended logic from qs utils decoder to have some keywords parsed
-const decoder = (str: string, decoder?: any, charset?: string) => {
+const decoder = (str: string, decoder?: any, charset?: string, type?: string) => {
   const strWithoutPlus = str.replace(/\+/g, ' ')
   if (charset === 'iso-8859-1') {
     // unescape never throws, no try...catch needed:
@@ -84,7 +109,7 @@ const decoder = (str: string, decoder?: any, charset?: string) => {
   }
 }
 
-const decodeWorkspace = (queryString: string) => {
+const parseWorkspace = (queryString: string) => {
   const parsed = parse(queryString, {
     arrayLimit: 1000,
     depth: 20,
@@ -98,13 +123,14 @@ const decodeWorkspace = (queryString: string) => {
       parsed[param] = transformationFn(value)
     }
   })
-  return parsed
+  const parsedWithAbbr = deepReplaceKeys(parsed, ABBREVIATED_TO_PARAMS)
+  return parsedWithAbbr
 }
 
 const routesOptions: Options = {
   querySerializer: {
-    stringify: encodeWorkspace,
-    parse: decodeWorkspace,
+    stringify: stringifyWorkspace,
+    parse: parseWorkspace,
   },
 }
 
