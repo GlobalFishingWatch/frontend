@@ -30,7 +30,6 @@
     "hour": "Heure",
     "hour_plural": "heures",
     "loggedAs": "Connecté en tant que",
-    "loading": "En cours de chargement",
     "login": "Se connecter",
     "logout": "Déconnexion",
     "max": "Max.",
@@ -41,16 +40,15 @@
     "report": "Rapporter",
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
+    "unknown": "Inconnu",
     "update": "Mise à jour",
-    "user": "Utilisateur",
-    "userProfile": "Profil de l'utilisateur",
     "vessel": "Navire",
     "vessel_plural": "Navires",
+    "loading": "En cours de chargement",
     "open_menu": "Ouvrir le menu",
     "dismiss": "Fermer",
     "save": "Enregistrer",
-    "fishing": "Pêche",
-    "unknown": "Inconnu"
+    "fishing": "Pêche"
   },
   "dataset": {
     "addContext": "Ajouter un jeu de données contextuel",
@@ -83,22 +81,22 @@
     "datasetNotValid": "Il semble y avoir un problème avec votre fichier",
     "generic": "Quelque chose s'est mal passé, veuillez réessayer ou contacter:",
     "invalidRange": "Le minimum doit être inférieur à la valeur max",
-    "notSupportedBy": "Non pris en charge par {{list}}",
     "latestCarrierNotFound": "Dernier jeu de données opérateur introuvable",
+    "notSupportedBy": "Non pris en charge par {{list}}",
     "pageNotFound": "Page introuvable",
     "privateView": "Ceci est une vue privée",
     "requestAccess": "Demander l'accès",
     "switchAccount": "Changer de compte",
-    "vesselLoading": "Une erreur s'est produite lors du chargement de la piste des détails du vaisseau",
     "trackLoading": "Une erreur s'est produite lors du chargement de la piste du vaisseau",
     "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
+    "vesselLoading": "Une erreur s'est produite lors du chargement de la piste des détails du vaisseau",
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement",
     "workspaceNotFound": "La vue demandée n'a pas été trouvée"
   },
   "event": {
+    "noData": "Aucune donnée disponible",
     "notInCVP": "Cet événement s'est produit en dehors de la plage horaire des données du Portail du Transporteur",
-    "seeInCVP": "Voir dans le Portail du Transporteur",
-    "noData": "Aucune donnée disponible"
+    "seeInCVP": "Voir dans le Portail du Transporteur"
   },
   "layer": {
     "add": "Ajouter un calque",
@@ -135,20 +133,20 @@
     "zoom_out": "Dézoomer"
   },
   "search": {
-    "title": "Chercher",
-    "basic": "Basique",
     "advanced": "Avancé",
-    "mainQueryLabel": "Nom, IMO ou MMSI",
+    "basic": "Basique",
     "close": "Fermer la recherche",
     "description": "Recherche par nom de navire ou code d'identification (OMI, MMSI, VMS ID, etc). Vous pouvez affiner votre recherche en cliquant sur l'icône de filtre dans la barre supérieure.",
-    "filterClose": "Fermer les filtres de recherche",
-    "filterOpen": "Ouvrir les filtres de recherche",
+    "mainQueryLabel": "Nom, IMO ou MMSI",
     "noResults": "Vous ne trouvez pas le vaisseau que vous recherchez ? Essayez d'utiliser MMSI, IMO ou Callsign",
     "notAllowed": "Les jeux de données disponibles n'autorisent pas les vaisseaux de recherche",
     "placeholder": "Tapez pour rechercher des vaisseaux",
     "suggestion": "Vouliez-vous dire",
+    "title": "Chercher",
+    "vesselAlreadyInWorksace": "Navire déjà ajouté. Fermer la recherche pour le voir.",
     "vessels": "Rechercher des vaisseaux",
-    "vesselAlreadyInWorksace": "Navire déjà ajouté. Fermer la recherche pour le voir."
+    "filterClose": "Fermer les filtres de recherche",
+    "filterOpen": "Ouvrir les filtres de recherche"
   },
   "selects": {
     "allSelected": "Tous",
@@ -164,12 +162,18 @@
     "showTracks": "Afficher le graphe des pistes",
     "tracksDisabled": "Sélectionnez au moins un vaisseau"
   },
+  "user": {
+    "groupMissing": "Do you belong to a user group that doesn’t appear here? <1>Request access</1>.",
+    "groups": "User Groups",
+    "profile": "User profile",
+    "title": "User"
+  },
   "vessel": {
     "beam": "Rayon",
-    "carrier": "Transporteur",
-    "donor": "Vaisseau du donateur",
     "callsign": "Indicatif",
     "capacity": "Capacité",
+    "carrier": "Transporteur",
+    "donor": "Vaisseau du donateur",
     "firstTransmissionDate": "Début de transmission",
     "flag": "Drapeau",
     "fleet": "Flotte",
@@ -186,10 +190,10 @@
     "source": "Source",
     "tracks": "Trajectoires de navire",
     "transmission_plural": "Transmissions",
+    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
     "vesselType_plural": "Types de navires",
     "widthRange": "Width range",
-    "transmission": "Transmission",
-    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}"
+    "transmission": "Transmission"
   },
   "workspace": {
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement cet espace de travail ?",
