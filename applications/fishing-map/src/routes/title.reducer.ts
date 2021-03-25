@@ -13,7 +13,7 @@ const titleReducer = (state = DEFAULT, action: PayloadAction<{ category?: string
     case HOME:
       return DEFAULT
     case USER:
-      return `${PREFIX} | ${i18n.t('common.userProfile', 'User profile')}`
+      return `${PREFIX} | ${i18n.t('user.profile', 'User profile')}`
     case WORKSPACE:
     case WORKSPACES_LIST: {
       const parsedCategory = capitalize(lowerCase(action.payload.category))
