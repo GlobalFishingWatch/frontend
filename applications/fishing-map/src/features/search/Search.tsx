@@ -77,6 +77,7 @@ function Search() {
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const promiseRef = useRef<any>()
+  const scrollRef = useRef<HTMLDivElement | null>(null)
 
   const fetchResults = useCallback(
     (offset = 0) => {
@@ -168,7 +169,11 @@ function Search() {
     searchPagination.offset <= searchPagination.total
 
   const onSearchOptionChange = (option: ChoiceOption, e: React.MouseEvent<Element, MouseEvent>) => {
-    setActiveSearchOption(option.id)
+    if (option.id === activeSearchOption && scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      setActiveSearchOption(option.id)
+    }
   }
 
   if (workspaceStatus !== AsyncReducerStatus.Finished) {
@@ -199,7 +204,7 @@ function Search() {
               tooltipPlacement="bottom"
             />
           </div>
-          <div className={styles.scrollContainer}>
+          <div ref={scrollRef} className={styles.scrollContainer}>
             <div className={styles.form}>
               <InputText
                 {...getInputProps()}
