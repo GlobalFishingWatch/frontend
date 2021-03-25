@@ -135,10 +135,10 @@
     "zoom_out": "Dézoomer"
   },
   "search": {
-    "title": "Search",
-    "basic": "Basic",
-    "advanced": "Advanced",
-    "mainQueryLabel": "Name, IMO or MMSI",
+    "title": "Chercher",
+    "basic": "Basique",
+    "advanced": "Avancé",
+    "mainQueryLabel": "Nom, IMO ou MMSI",
     "close": "Fermer la recherche",
     "description": "Recherche par nom de navire ou code d'identification (OMI, MMSI, VMS ID, etc). Vous pouvez affiner votre recherche en cliquant sur l'icône de filtre dans la barre supérieure.",
     "filterClose": "Fermer les filtres de recherche",
@@ -148,7 +148,7 @@
     "placeholder": "Tapez pour rechercher des vaisseaux",
     "suggestion": "Vouliez-vous dire",
     "vessels": "Rechercher des vaisseaux",
-    "vesselAlreadyInWorksace": "Vessel already added. Close search to see it."
+    "vesselAlreadyInWorksace": "Navire déjà ajouté. Fermer la recherche pour le voir."
   },
   "selects": {
     "allSelected": "Tous",
