@@ -26,18 +26,9 @@ export const selectCurrentWorkspaces = createSelector(
 export const selectAvailableWorkspacesCategories = createSelector(
   [selectHighlightedWorkspaces],
   (highlightedWorkspaces) => {
-    return (
-      highlightedWorkspaces &&
-      Object.entries(highlightedWorkspaces)
-        .filter(([category, entries]) => {
-          const hasEntries = entries.length > 0
-          const isInSupportedCategories = Object.values(WorkspaceCategories).includes(
-            category as WorkspaceCategories
-          )
-          return hasEntries && isInSupportedCategories
-        })
-        .map(([category]) => category as WorkspaceCategories)
-    )
+    return highlightedWorkspaces?.filter(({ workspaces }) => {
+      return workspaces.length > 0
+    })
   }
 )
 
@@ -53,8 +44,8 @@ export const selectCurrentHighlightedWorkspaces = createSelector(
     highlightedWorkspaces,
     apiWorkspaces
   ): HighlightedWorkspaceMerged[] | undefined => {
-    const workspaces = highlightedWorkspaces?.[locationCategory]
-    return workspaces?.map((workspace) => {
+    const highlighted = highlightedWorkspaces?.find(({ title }) => title === locationCategory)
+    return highlighted?.workspaces?.map((workspace) => {
       const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
 
       if (!apiWorkspace) return workspace

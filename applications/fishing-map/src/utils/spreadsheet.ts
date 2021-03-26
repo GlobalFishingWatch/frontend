@@ -15,5 +15,6 @@ export const loadSpreadsheetDoc = async (id: string) => {
     client_email: FEEDBACK_CLIENT_EMAIL,
     private_key: FEEDBACK_PRIVATE_KEY,
   })
+  await spreadsheetDoc.loadInfo()
   return spreadsheetDoc
 }

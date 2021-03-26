@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
-import { fetchGoogleSheetsData } from 'google-sheets-mapper'
 import { stringify } from 'qs'
 import { Workspace } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -13,9 +12,10 @@ import {
 } from 'utils/async-slice'
 import { RootState } from 'store'
 import { APP_NAME } from 'data/config'
+import { WorkspaceState } from 'types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
-import { WorkspaceState } from 'types'
+import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 
 type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategories>
 
@@ -48,20 +48,34 @@ export type HighlightedWorkspace = {
   cta?: string
 }
 
+const WORKSPACES_SPREADSHEET_ID = process.env.REACT_APP_WORKSPACES_SPREADSHEET_ID
+
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
   'workspaces/fetchHighlighted',
   async (_, { dispatch }) => {
-    const workspaces = await fetchGoogleSheetsData({
-      apiKey: process.env.REACT_APP_GOOGLE_API_KEY as string,
-      sheetId: process.env.REACT_APP_GOOGLE_SHEETS_ID as string,
-    }).then((response) => {
-      return Object.fromEntries(
-        response.map(({ id, data }) => [id, data as HighlightedWorkspace[]])
-      )
-    })
+    const workspacesSpreadsheetDoc = await loadSpreadsheetDoc(WORKSPACES_SPREADSHEET_ID as string)
+    const workspaces = await Promise.all(
+      workspacesSpreadsheetDoc.sheetsByIndex
+        .filter((sheet) =>
+          Object.values(WorkspaceCategories).includes(sheet.title as WorkspaceCategories)
+        )
+        .map(async (sheet) => {
+          const rows = await sheet.getRows()
+          return {
+            title: sheet.title as WorkspaceCategories,
+            workspaces: rows.map((row) => ({
+              name: row.name,
+              description: row.description,
+              img: row.img,
+              cta: row.cta,
+              id: row.id,
+            })),
+          }
+        })
+    )
 
-    const workspacesIds = Object.values(workspaces).flatMap((workspaces) =>
-      workspaces.flatMap((w) => w.id || [])
+    const workspacesIds = workspaces.flatMap(({ workspaces }) =>
+      workspaces.flatMap(({ id }) => id || [])
     )
 
     dispatch(fetchWorkspacesThunk({ ids: workspacesIds }))
@@ -118,7 +132,7 @@ export const deleteWorkspaceThunk = createAsyncThunk<
 export interface WorkspacesState extends AsyncReducer<AppWorkspace> {
   highlighted: {
     status: AsyncReducerStatus
-    data: Record<string, HighlightedWorkspace[]> | undefined
+    data: { title: string; workspaces: HighlightedWorkspace[] }[] | undefined
   }
 }
 

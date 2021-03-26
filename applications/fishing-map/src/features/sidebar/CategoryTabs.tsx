@@ -72,20 +72,19 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             <Icon icon="menu" />
           </span>
         </li>
-        {availableCategories?.map((category, index) => (
+        {availableCategories?.map(({ title }, index) => (
           <li
-            key={category}
+            key={title}
             className={cx(styles.tab, {
               [styles.current]:
-                locationCategory === (category as WorkspaceCategories) ||
-                (index === 0 && locationType === HOME),
+                locationCategory === title || (index === 0 && locationType === HOME),
             })}
           >
             <Link
               className={styles.tabContent}
-              to={getLinkToCategory(category as WorkspaceCategories)}
+              to={getLinkToCategory(title as WorkspaceCategories)}
             >
-              <Icon icon={`category-${category}` as IconType} />
+              <Icon icon={`category-${title}` as IconType} />
             </Link>
           </li>
         ))}
