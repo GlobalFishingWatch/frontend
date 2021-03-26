@@ -10,6 +10,8 @@ import { selectActiveDataviews } from 'features/workspace/workspace.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/heatmaps/heatmaps.utils'
 import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
 import { validateEmail } from 'utils/shared'
+import { selectLocationType } from 'routes/routes.selectors'
+import { HOME, WORKSPACE } from 'routes/routes'
 import styles from './FeedbackModal.module.css'
 
 type FeedbackModalProps = {
@@ -37,32 +39,15 @@ const FEEDBACK_PRIVATE_KEY = process.env.REACT_APP_FEEDBACK_PRIVATE_KEY || ''
 function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   const { t } = useTranslation()
   const doc = new GoogleSpreadsheet(FEEDBACK_SPREADSHEET_ID)
+  const activeDataviews = useSelector(selectActiveDataviews)
+  const locationType = useSelector(selectLocationType)
+  const userData = useSelector(selectUserData)
   const [loading, setLoading] = useState(false)
   const [suficientData, setSuficientData] = useState(false)
   const [feedbackData, setFeedbackData] = useState<FeedbackData>({
     url: window.location.href,
     date: new Date().toString(),
   })
-  const activeDataviews = useSelector(selectActiveDataviews)
-  const userData = useSelector(selectUserData)
-  const datasetOptions = activeDataviews.flatMap((dataview) => {
-    if (dataview.config?.type === Generators.Type.HeatmapAnimated) {
-      return getSourcesSelectedInDataview(dataview)
-    } else {
-      return {
-        id: dataview.id,
-        label: t(`datasets:${dataview.datasets?.[0].id.split(':')[0]}.name` as any),
-      }
-    }
-  })
-
-  const onNameChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
-    setFeedbackData({ ...feedbackData, name: target.value })
-  }
-
-  const onEmailChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
-    setFeedbackData({ ...feedbackData, email: target.value })
-  }
 
   useEffect(() => {
     const name = userData ? `${userData.firstName} ${userData.lastName || ''}` : ''
@@ -74,6 +59,42 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData])
+
+  useEffect(() => {
+    const { description, name, email } = feedbackData
+    const hasMandatoryData =
+      description !== undefined &&
+      description !== '' &&
+      name !== undefined &&
+      name !== '' &&
+      validateEmail(email || '')
+    setSuficientData(hasMandatoryData)
+  }, [feedbackData, userData])
+
+  const datasetOptions = activeDataviews.flatMap((dataview) => {
+    if (dataview.config?.type === Generators.Type.HeatmapAnimated) {
+      const sourcesInDataview = getSourcesSelectedInDataview(dataview)
+      return sourcesInDataview.map((source) => {
+        return {
+          id: source.id,
+          label: t(`datasets:${source.id.split(':')[0]}.name` as any),
+        }
+      })
+    } else {
+      return {
+        id: dataview.id,
+        label: t(`datasets:${dataview.datasets?.[0]?.id.split(':')[0]}.name` as any),
+      }
+    }
+  })
+
+  const onNameChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    setFeedbackData({ ...feedbackData, name: target.value })
+  }
+
+  const onEmailChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    setFeedbackData({ ...feedbackData, email: target.value })
+  }
 
   const onInstitutionChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
     setFeedbackData({ ...feedbackData, institution: target.value })
@@ -99,17 +120,6 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   const onDescriptionChange = ({ target }: ChangeEvent<HTMLTextAreaElement>) => {
     setFeedbackData({ ...feedbackData, description: target.value })
   }
-
-  useEffect(() => {
-    const { description, name, email } = feedbackData
-    const hasMandatoryData =
-      description !== undefined &&
-      description !== '' &&
-      name !== undefined &&
-      name !== '' &&
-      validateEmail(email || '')
-    setSuficientData(hasMandatoryData)
-  }, [feedbackData, userData])
 
   const sendFeedback = async () => {
     try {
@@ -169,15 +179,18 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
             />
           </div>
           <div className={styles.column}>
-            <Select
-              label={t('feedback.dataset', '---')}
-              options={datasetOptions}
-              selectedOption={datasetOptions.find(
-                (option) => option.label === feedbackData.dataset
-              )}
-              onSelect={onSelectDataset}
-              onRemove={onRemoveDataset}
-            />
+            {locationType === WORKSPACE ||
+              (locationType === HOME && (
+                <Select
+                  label={t('feedback.dataset', '---')}
+                  options={datasetOptions}
+                  selectedOption={datasetOptions.find(
+                    (option) => option.label === feedbackData.dataset
+                  )}
+                  onSelect={onSelectDataset}
+                  onRemove={onRemoveDataset}
+                />
+              ))}
             <label>{t('feedback.issue', '---')}</label>
             <textarea
               onChange={onDescriptionChange}
