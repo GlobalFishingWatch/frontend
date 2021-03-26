@@ -17,7 +17,7 @@ export interface Vessel {
   owner?: string
   operator?: string
   builtYear?: string
-  authorizations: string[]
+  authorizations?: string[]
   registeredGearType?: string
 }
 

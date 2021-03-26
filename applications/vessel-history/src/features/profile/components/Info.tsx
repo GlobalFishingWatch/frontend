@@ -69,10 +69,10 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             ></InfoField>
             <div className={styles.identifierField}>
               <label>AUTHORIZATIONS</label>
-              {vessel.authorizations.map((auth) => (
+              {vessel.authorizations?.map((auth) => (
                 <p key={auth}>{auth}</p>
               ))}
-              {!vessel.authorizations.length && <p>No authorizations found</p>}
+              {!vessel.authorizations?.length && <p>No authorizations found</p>}
             </div>
             <InfoField
               vesselName={vessel.shipname ?? ''}
