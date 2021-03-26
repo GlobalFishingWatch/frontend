@@ -1,8 +1,8 @@
-import React, { ChangeEvent, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
-import { Button, InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { selectActiveDataviews } from 'features/workspace/workspace.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/heatmaps/heatmaps.utils'
@@ -109,37 +109,8 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     label: t(`feedback.${roleId}` as any),
   }))
 
-  const onNameChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
-    setFeedbackData({ ...feedbackData, name: target.value })
-  }
-
-  const onEmailChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
-    setFeedbackData({ ...feedbackData, email: target.value })
-  }
-
-  const onInstitutionChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
-    setFeedbackData({ ...feedbackData, institution: target.value })
-  }
-
-  const onSelectRole = (option: SelectOption) => {
-    setFeedbackData({ ...feedbackData, role: option.label })
-  }
-
-  const onRemoveRole = () => {
-    setFeedbackData({ ...feedbackData, role: '' })
-  }
-
-  const onSelectDataset = (option: SelectOption) => {
-    setFeedbackData({ ...feedbackData, dataset: option.label })
-  }
-
-  const onRemoveDataset = () => {
-    setFeedbackData({ ...feedbackData, dataset: '' })
-  }
-
-  // const [description, setDescription] = useState('')
-  const onDescriptionChange = ({ target }: ChangeEvent<HTMLTextAreaElement>) => {
-    setFeedbackData({ ...feedbackData, description: target.value })
+  const onFieldChange = (field: keyof FeedbackData, value: string) => {
+    setFeedbackData({ ...feedbackData, [field]: value })
   }
 
   const sendFeedback = async () => {
@@ -174,13 +145,13 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
         <div className={styles.form}>
           <div className={styles.column}>
             <InputText
-              onChange={onNameChange}
+              onChange={({ target }) => onFieldChange('name', target.value)}
               value={feedbackData.name || ''}
               label={t('common.name', 'Name')}
               placeholder={t('common.name', 'Name')}
             />
             <InputText
-              onChange={onEmailChange}
+              onChange={({ target }) => onFieldChange('email', target.value)}
               value={feedbackData.email || ''}
               label={t('feedback.email', 'E-mail address')}
               placeholder={t('feedback.email', 'E-mail address')}
@@ -189,11 +160,11 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
               label={`${t('feedback.role', 'Role')} (${t('feedback.optional', 'Optional')})`}
               options={roleOptions}
               selectedOption={roleOptions.find((option) => option.label === feedbackData.role)}
-              onSelect={onSelectRole}
-              onRemove={onRemoveRole}
+              onSelect={(option) => onFieldChange('role', option.label)}
+              onRemove={() => onFieldChange('role', '')}
             />
             <InputText
-              onChange={onInstitutionChange}
+              onChange={({ target }) => onFieldChange('institution', target.value)}
               value={feedbackData.institution || ''}
               label={`${t('feedback.institution', 'Institution/Organization')} (${t(
                 'feedback.optional',
@@ -211,13 +182,13 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
                   selectedOption={datasetOptions.find(
                     (option) => option.label === feedbackData.dataset
                   )}
-                  onSelect={onSelectDataset}
-                  onRemove={onRemoveDataset}
+                  onSelect={(option) => onFieldChange('dataset', option.label)}
+                  onRemove={() => onFieldChange('dataset', '')}
                 />
               ))}
             <label>{t('feedback.issue', 'What issue are you having?')}</label>
             <textarea
-              onChange={onDescriptionChange}
+              onChange={({ target }) => onFieldChange('description', target.value)}
               value={feedbackData.description || ''}
               className={styles.textarea}
               placeholder={t('common.description', 'Description')}
