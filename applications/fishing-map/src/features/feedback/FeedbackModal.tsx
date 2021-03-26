@@ -152,7 +152,6 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       console.warn('Feedback service account email/key/id missing')
       return
     } else {
-      console.log(FEEDBACK_SPREADSHEET_ID, FEEDBACK_PRIVATE_KEY, FEEDBACK_CLIENT_EMAIL)
       try {
         setLoading(true)
         await feedbackSpreadsheetDoc.useServiceAccountAuth({
