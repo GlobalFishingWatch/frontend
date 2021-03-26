@@ -162,13 +162,12 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
         // loads document properties and worksheets
         await feedbackSpreadsheetDoc.loadInfo()
         const sheet = feedbackSpreadsheetDoc.sheetsById[FEEDBACK_SHEET_ID]
-        const result = await sheet.addRow(feedbackData)
-        console.log(result)
-
+        await sheet.addRow(feedbackData)
         setLoading(false)
         setFeedbackData({})
         onClose()
       } catch (e) {
+        setLoading(false)
         console.error('Error: ', e)
       }
     }
