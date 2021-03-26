@@ -64,7 +64,10 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   })
 
   useEffect(() => {
-    const name = userData ? `${userData.firstName} ${userData.lastName || ''}` : ''
+    const name =
+      userData && userData.type !== GUEST_USER_TYPE
+        ? `${userData.firstName} ${userData.lastName || ''}`
+        : ''
     setFeedbackData({
       ...feedbackData,
       userId: userData?.id || GUEST_USER_TYPE,
