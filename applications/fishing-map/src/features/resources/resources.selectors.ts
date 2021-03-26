@@ -5,11 +5,10 @@ import {
   DataviewDatasetConfig,
   EndpointId,
 } from '@globalfishingwatch/api-types'
-import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
-import { UrlDataviewInstance } from 'types'
 import { isGuestUser } from 'features/user/user.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ThinningLevels, THINNING_LEVELS } from 'data/config'

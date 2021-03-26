@@ -13,8 +13,8 @@ import {
   segmentsToBbox,
   filterSegmentsByTimerange,
 } from '@globalfishingwatch/data-transforms'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { formatInfoField, getVesselLabel } from 'utils/info'
-import { Bbox, UrlDataviewInstance } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -25,6 +25,7 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import { Bbox } from 'types'
 
 // Translations by feature.unit static keys
 // t('vessel.flag', 'Flag')

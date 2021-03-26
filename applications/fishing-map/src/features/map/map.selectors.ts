@@ -14,7 +14,7 @@ import {
   EndpointId,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from 'types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   selectDataviewInstancesResolved,
   selectWorkspaceError,

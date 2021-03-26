@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Tabs, { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
-import { UrlDataviewInstance } from 'types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from './HeatmapInfoModal.module.css'
 
 function removeDatasetVersion(datasetId: string) {
