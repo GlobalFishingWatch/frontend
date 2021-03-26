@@ -58,10 +58,13 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   const userData = useSelector(selectUserData)
   const [loading, setLoading] = useState(false)
   const [suficientData, setSuficientData] = useState(false)
-  const [feedbackData, setFeedbackData] = useState<FeedbackData>({
+
+  const initialFeedbackState = {
     url: window.location.href,
     date: new Date().toString(),
-  })
+  }
+
+  const [feedbackData, setFeedbackData] = useState<FeedbackData>(initialFeedbackState)
 
   useEffect(() => {
     const name =
@@ -86,7 +89,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       name !== '' &&
       validateEmail(email || '')
     setSuficientData(hasMandatoryData)
-  }, [feedbackData, userData])
+  }, [feedbackData])
 
   const datasetOptions = activeDataviews.flatMap((dataview) => {
     if (dataview.config?.type === Generators.Type.HeatmapAnimated) {
@@ -126,7 +129,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     setFeedbackData({ ...feedbackData, role: option.label })
   }
 
-  const onRemoveRole = (option: SelectOption) => {
+  const onRemoveRole = () => {
     setFeedbackData({ ...feedbackData, role: '' })
   }
 
@@ -134,7 +137,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     setFeedbackData({ ...feedbackData, dataset: option.label })
   }
 
-  const onRemoveDataset = (option: SelectOption) => {
+  const onRemoveDataset = () => {
     setFeedbackData({ ...feedbackData, dataset: '' })
   }
 
@@ -149,7 +152,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       FEEDBACK_PRIVATE_KEY === undefined ||
       FEEDBACK_CLIENT_EMAIL === undefined
     ) {
-      console.warn('Feedback service account email/key/id missing')
+      console.error('Feedback service account email/key/id missing')
       return
     } else {
       try {
@@ -161,9 +164,14 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
         // loads document properties and worksheets
         await feedbackSpreadsheetDoc.loadInfo()
         const sheet = feedbackSpreadsheetDoc.sheetsById[FEEDBACK_SHEET_ID]
+        setFeedbackData({
+          ...feedbackData,
+          url: window.location.href,
+          date: new Date().toString(),
+        })
         await sheet.addRow(feedbackData)
         setLoading(false)
-        setFeedbackData({})
+        setFeedbackData(initialFeedbackState)
         onClose()
       } catch (e) {
         setLoading(false)
@@ -194,6 +202,13 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
               label={t('feedback.email', 'E-mail address')}
               placeholder={t('feedback.email', 'E-mail address')}
             />
+            <Select
+              label={`${t('feedback.role', 'Role')} (${t('feedback.optional', 'Optional')})`}
+              options={roleOptions}
+              selectedOption={roleOptions.find((option) => option.label === feedbackData.role)}
+              onSelect={onSelectRole}
+              onRemove={onRemoveRole}
+            />
             <InputText
               onChange={onInstitutionChange}
               value={feedbackData.institution || ''}
@@ -202,13 +217,6 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
                 'Optional'
               )})`}
               placeholder={t('feedback.institution', 'Institution/Organization')}
-            />
-            <Select
-              label={`${t('feedback.role', 'Role')} (${t('feedback.optional', 'Optional')})`}
-              options={roleOptions}
-              selectedOption={roleOptions.find((option) => option.label === feedbackData.role)}
-              onSelect={onSelectRole}
-              onRemove={onRemoveRole}
             />
           </div>
           <div className={styles.column}>
