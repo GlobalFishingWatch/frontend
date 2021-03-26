@@ -11,6 +11,7 @@ interface ListItemProps {
   isOpen: boolean
   label: string
   vesselName: string
+  onClose?: () => void
 }
 
 const InfoFieldHistory: React.FC<ListItemProps> = ({
@@ -19,20 +20,17 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
   isOpen,
   label,
   vesselName,
+  onClose = () => void 0,
 }): React.ReactElement => {
   const { t } = useTranslation()
-  const [modalOpen, setModalOpen] = useState(isOpen)
-  const toggleModalOpen = useCallback(() => {
-    setModalOpen(!modalOpen)
-  }, [modalOpen])
 
-  const formatedDate = (date: string | null = null) => {
+  const formatedDate = useCallback((date: string | null = null) => {
     return date
       ? [DateTime.fromISO(date, { zone: 'UTC' }).toLocaleString(DateTime.DATETIME_MED), 'UTC'].join(
           ' '
         )
       : ''
-  }
+  }, [])
 
   if (history.length < 1) {
     return <div></div>
@@ -40,18 +38,11 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
 
   return (
     <Fragment>
-      <button className={styles.moreValues} onClick={toggleModalOpen}>{`+${history.length} ${t(
-        'common.previous',
-        'previous'
-      )} ${t(`common.${label}Plural`, `${label}s`)}`}</button>
-
       {history.length && (
         <Modal
-          title={label + ' History for ' + vesselName}
-          isOpen={modalOpen}
-          onClose={() => {
-            setModalOpen(false)
-          }}
+          title={t('vessel.historyLabelByField', label + ' History for ' + vesselName)}
+          isOpen={isOpen}
+          onClose={onClose}
         >
           <div>
             <div className={styles.historyItem}>
