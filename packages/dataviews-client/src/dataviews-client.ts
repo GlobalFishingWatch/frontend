@@ -6,6 +6,7 @@ import {
   Resource,
   DataviewInstance,
   ResourceResponseType,
+  Dataset,
 } from '@globalfishingwatch/api-types'
 import resolveDataviews from './resolve-dataviews'
 
@@ -66,11 +67,12 @@ export default class DataviewsClient {
   // TODO support for a list of already downloaded resources
   // TODO uniq by URL
   getResources(
+    workspaceDataviewInstances: DataviewInstance[],
     dataviews: Dataview[],
-    workspaceDataviewInstances: DataviewInstance[]
+    datasets: Dataset[]
   ): { resources: Resource[]; promises: Promise<Resource>[] } {
     const resources: Resource[] = []
-    const resolvedDataviews = resolveDataviews(dataviews, workspaceDataviewInstances)
+    const resolvedDataviews = resolveDataviews(workspaceDataviewInstances, dataviews, datasets)
     if (resolvedDataviews) {
       resolvedDataviews.forEach((dataview) => {
         const { datasetsConfig } = dataview
