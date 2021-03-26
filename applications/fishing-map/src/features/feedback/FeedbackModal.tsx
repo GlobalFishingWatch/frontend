@@ -199,11 +199,14 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
             <InputText
               onChange={onInstitutionChange}
               value={feedbackData.institution || ''}
-              label={`${t('feedback.institution', '---')} (${t('feedback.optional', 'Optional')})`}
-              placeholder={t('feedback.institution', '---')}
+              label={`${t('feedback.institution', 'Institution/Organization')} (${t(
+                'feedback.optional',
+                'Optional'
+              )})`}
+              placeholder={t('feedback.institution', 'Institution/Organization')}
             />
             <Select
-              label={`${t('feedback.role', '---')} (${t('feedback.optional', 'Optional')})`}
+              label={`${t('feedback.role', 'Role')} (${t('feedback.optional', 'Optional')})`}
               options={roleOptions}
               selectedOption={roleOptions.find((option) => option.label === feedbackData.role)}
               onSelect={onSelectRole}
@@ -214,7 +217,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
             {locationType === WORKSPACE ||
               (locationType === HOME && (
                 <Select
-                  label={t('feedback.dataset', '---')}
+                  label={t('feedback.dataset', 'Dataset you are providing feedback for')}
                   options={datasetOptions}
                   selectedOption={datasetOptions.find(
                     (option) => option.label === feedbackData.dataset
@@ -223,20 +226,29 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
                   onRemove={onRemoveDataset}
                 />
               ))}
-            <label>{t('feedback.issue', '---')}</label>
+            <label>{t('feedback.issue', 'What issue are you having?')}</label>
             <textarea
               onChange={onDescriptionChange}
               value={feedbackData.description || ''}
               className={styles.textarea}
-              placeholder={t('common.description', '---')}
+              placeholder={t('common.description', 'Description')}
             ></textarea>
           </div>
         </div>
 
-        <p className={styles.intro}>{t('feedback.intro', '---')}</p>
+        <p className={styles.intro}>
+          {t(
+            'feedback.intro',
+            'Global Fishing Watch is constantly working to improve our data. With billions of positions and hundreds of thousands of vessel to review, and an entire ocean of activity, we will inevitably have some vessels and activities misclassified. Feedback from you can help us identify where we most need to improve our data. We will endeavour to address your feedback.'
+          )}
+        </p>
         <div className={styles.footer}>
           <Button
-            tooltip={!suficientData ? t('feedback.insuficientData', '---') : ''}
+            tooltip={
+              !suficientData
+                ? t('feedback.insuficientData', 'Please fill in all mandatory fields')
+                : ''
+            }
             disabled={loading || !suficientData}
             onClick={sendFeedback}
             loading={loading}
