@@ -1,42 +1,53 @@
 import React, { useCallback, useState } from 'react'
-// eslint-disable-next-line import/order
-import { HistoricValue, VesselInfoValue } from 'classes/vessel.class'
+import { ValueItem } from 'types'
+import { useTranslation } from 'utils/i18n'
 import styles from './Info.module.css'
-import InfoFieldHistoric from './InfoFieldHistoric'
+import InfoFieldHistory from './InfoFieldHistory'
 
 interface ListItemProps {
   label: string
-  field: VesselInfoValue
+  value: string
+  valuesHistory?: ValueItem[]
   vesselName: string
 }
 
-const InfoField: React.FC<ListItemProps> = ({ field, label, vesselName }): React.ReactElement => {
+const InfoField: React.FC<ListItemProps> = ({
+  value = '',
+  label,
+  valuesHistory = [],
+  vesselName,
+}): React.ReactElement => {
+  const { t } = useTranslation()
+
   const [modalOpen, setModalOpen] = useState(false)
-  const displachOpenModal = useCallback((field: VesselInfoValue) => {
-    setModalOpen(true)
-  }, [])
+  const openModal = useCallback(() => setModalOpen(true), [])
+  const closeModal = useCallback(() => setModalOpen(false), [])
 
-  if (!field.value?.data) {
-    return <div></div>
-  }
+  const defaultEmptyValue = '-'
 
-  const current: HistoricValue = {
-    data: field.value?.data,
-    start: field.value.historic.slice().shift()?.end || null,
-    end: null,
+  const current: ValueItem = {
+    value,
+    firstSeen: valuesHistory.slice().shift()?.endDate,
   }
   return (
     <div className={styles.identifierField}>
       <label>{label}</label>
-      <div onClick={() => displachOpenModal(field)}>
-        {field.value?.data}
-        <InfoFieldHistoric
+      <div>
+        <div onClick={openModal}>{value.length > 0 ? value : defaultEmptyValue}</div>
+        {valuesHistory.length > 0 && (
+          <button className={styles.moreValues} onClick={openModal}>{`+${valuesHistory.length} ${t(
+            'common.previous',
+            'previous'
+          )} ${t(`common.${label}Plural`, `${label}s`)}`}</button>
+        )}
+        <InfoFieldHistory
           current={current}
           label={label}
-          historic={field.value.historic}
+          history={valuesHistory}
           isOpen={modalOpen}
+          onClose={closeModal}
           vesselName={vesselName}
-        ></InfoFieldHistoric>
+        ></InfoFieldHistory>
       </div>
     </div>
   )
