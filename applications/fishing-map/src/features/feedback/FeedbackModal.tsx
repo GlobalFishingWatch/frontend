@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { GoogleSpreadsheet } from 'google-spreadsheet'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { Button, InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
@@ -11,6 +10,7 @@ import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
 import { validateEmail } from 'utils/shared'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
+import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import styles from './FeedbackModal.module.css'
 
 type FeedbackModalProps = {
@@ -30,10 +30,8 @@ type FeedbackData = {
   url?: string
 }
 
+const FEEDBACK_SHEET_TITLE = 'new feedback'
 const FEEDBACK_SPREADSHEET_ID = process.env.REACT_APP_FEEDBACK_SPREADSHEET_ID || ''
-const FEEDBACK_SHEET_ID = '0'
-const FEEDBACK_CLIENT_EMAIL = process.env.REACT_APP_FEEDBACK_CLIENT_EMAIL
-const FEEDBACK_PRIVATE_KEY = process.env.REACT_APP_FEEDBACK_PRIVATE_KEY
 
 export const FEEDBACK_ROLE_IDS = [
   'watch',
@@ -48,8 +46,6 @@ export const FEEDBACK_ROLE_IDS = [
   'GFW',
   'other',
 ]
-
-const feedbackSpreadsheetDoc = new GoogleSpreadsheet(FEEDBACK_SPREADSHEET_ID)
 
 function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   const { t } = useTranslation()
@@ -147,36 +143,24 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   }
 
   const sendFeedback = async () => {
-    if (
-      FEEDBACK_SPREADSHEET_ID === undefined ||
-      FEEDBACK_PRIVATE_KEY === undefined ||
-      FEEDBACK_CLIENT_EMAIL === undefined
-    ) {
-      console.error('Feedback service account email/key/id missing')
-      return
-    } else {
-      try {
-        setLoading(true)
-        await feedbackSpreadsheetDoc.useServiceAccountAuth({
-          client_email: FEEDBACK_CLIENT_EMAIL,
-          private_key: FEEDBACK_PRIVATE_KEY,
-        })
-        // loads document properties and worksheets
-        await feedbackSpreadsheetDoc.loadInfo()
-        const sheet = feedbackSpreadsheetDoc.sheetsById[FEEDBACK_SHEET_ID]
-        setFeedbackData({
-          ...feedbackData,
-          url: window.location.href,
-          date: new Date().toString(),
-        })
-        await sheet.addRow(feedbackData)
-        setLoading(false)
-        setFeedbackData(initialFeedbackState)
-        onClose()
-      } catch (e) {
-        setLoading(false)
-        console.error('Error: ', e)
-      }
+    setLoading(true)
+    try {
+      const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(FEEDBACK_SPREADSHEET_ID)
+      // loads document properties and worksheets
+      await feedbackSpreadsheetDoc.loadInfo()
+      const sheet = feedbackSpreadsheetDoc.sheetsByTitle[FEEDBACK_SHEET_TITLE]
+      setFeedbackData({
+        ...feedbackData,
+        url: window.location.href,
+        date: new Date().toString(),
+      })
+      await sheet.addRow(feedbackData)
+      setLoading(false)
+      setFeedbackData(initialFeedbackState)
+      onClose()
+    } catch (e) {
+      setLoading(false)
+      console.error('Error: ', e)
     }
   }
 
