@@ -30,7 +30,6 @@
     "hour": "Hora",
     "hour_plural": "horas",
     "loggedAs": "Registrado como",
-    "loading": "Cargando",
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
     "max": "Máx",
@@ -41,16 +40,15 @@
     "report": "Informe",
     "seeDefault": "Ver vista por defecto",
     "share": "Comparte el mapa actual",
+    "unknown": "Desconocido",
     "update": "Actualizar",
-    "user": "User",
-    "userProfile": "User profile",
     "vessel": "Buque",
     "vessel_plural": "Embarcaciones",
+    "loading": "Cargando",
     "open_menu": "Abrir menú",
     "dismiss": "Cancelar",
     "save": "Guardar",
-    "fishing": "Pesca",
-    "unknown": "Desconocido"
+    "fishing": "Pesca"
   },
   "dataset": {
     "addContext": "Añadir conjunto de datos de contexto",
@@ -83,22 +81,22 @@
     "datasetNotValid": "Parece que algo falló en tu archivo",
     "generic": "Algo salió mal, inténtalo de nuevo o contacta:",
     "invalidRange": "Mínimo debe ser menor que el valor máximo",
-    "notSupportedBy": "No soportado por {{list}}",
     "latestCarrierNotFound": "Último conjunto de datos de transportista no encontrado",
+    "notSupportedBy": "No soportado por {{list}}",
     "pageNotFound": "Página no encontrada",
     "privateView": "Esta es una vista privada",
     "requestAccess": "Solicitar acceso",
     "switchAccount": "Cambiar cuenta",
-    "vesselLoading": "Se ha producido un error al cargar el seguimiento de detalles del buque",
     "trackLoading": "Se ha producido un error al cargar la pista del buque",
     "uploadError": "Hubo un error al cargar su conjunto de datos",
+    "vesselLoading": "Se ha producido un error al cargar el seguimiento de detalles del buque",
     "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo",
     "workspaceNotFound": "La vista que solicitó no se encontró"
   },
   "event": {
+    "noData": "No hay datos disponibles",
     "notInCVP": "Este evento ocurrió fuera del intervalo de tiempo de los datos del Portal del Buque Carrier",
-    "seeInCVP": "Ver en el Portal de Buque de Carrier",
-    "noData": "No hay datos disponibles"
+    "seeInCVP": "Ver en el Portal de Buque de Carrier"
   },
   "layer": {
     "add": "Añadir capa",
@@ -135,20 +133,20 @@
     "zoom_out": "Alejar"
   },
   "search": {
-    "title": "Buscar",
-    "basic": "Básico",
     "advanced": "Avanzado",
-    "mainQueryLabel": "Nombre, IMO o MMSI",
+    "basic": "Básico",
     "close": "Cierra la busqueda",
     "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
-    "filterClose": "Cerrar filtros de búsqueda",
-    "filterOpen": "Abrir filtros de búsqueda",
+    "mainQueryLabel": "Nombre, IMO o MMSI",
     "noResults": "¿No encuentras el buque que estás buscando? Intenta usar MMSI, IMO o Callsign",
     "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques",
     "placeholder": "Tipo para buscar vasos",
     "suggestion": "Quiso decir",
+    "title": "Buscar",
+    "vesselAlreadyInWorksace": "Buque ya añadido. Cierra la búsqueda para verlo.",
     "vessels": "Buscar buques",
-    "vesselAlreadyInWorksace": "Buque ya añadido. Cierra la búsqueda para verlo."
+    "filterClose": "Cerrar filtros de búsqueda",
+    "filterOpen": "Abrir filtros de búsqueda"
   },
   "selects": {
     "allSelected": "Todos",
@@ -164,12 +162,18 @@
     "showTracks": "Mostrar gráfico de pistas",
     "tracksDisabled": "Seleccione al menos un buque"
   },
+  "user": {
+    "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
+    "groups": "User Groups",
+    "profile": "User profile",
+    "title": "User"
+  },
   "vessel": {
     "beam": "Rayo",
-    "carrier": "Transportista",
-    "donor": "Buque de donante",
     "callsign": "Callsing",
     "capacity": "Capacidad",
+    "carrier": "Transportista",
+    "donor": "Buque de donante",
     "firstTransmissionDate": "Fecha primera transmisión",
     "flag": "Bandera",
     "fleet": "Flota",
@@ -186,10 +190,10 @@
     "source": "Fuente",
     "tracks": "Tracks de barcos",
     "transmission_plural": "Transmisión",
+    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
     "vesselType_plural": "Tipos de buque",
     "widthRange": "Width range",
-    "transmission": "Transmisión",
-    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}"
+    "transmission": "Transmisión"
   },
   "workspace": {
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
