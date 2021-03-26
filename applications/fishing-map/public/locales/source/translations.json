@@ -257,6 +257,17 @@
     "issue": "What issue are you having?",
     "send": "Send",
     "email": "E-mail address",
-    "insuficientData": "Please fill in all mandatory fields"
+    "insuficientData": "Please fill in all mandatory fields",
+    "watch": "Watch officer",
+    "analyst": "Analyst",
+    "navy": "Navy or coast guard",
+    "fisheries": "Fisheries enforcement or compliance officer",
+    "ngo": "Non-governmental organization",
+    "scientist": "Scientist",
+    "journalist": "Journalist",
+    "student": "Student",
+    "general": "General public",
+    "GFW": "Global Fishing Watch staff",
+    "other": "Other"
   }
 }

@@ -5,7 +5,6 @@ import { GoogleSpreadsheet } from 'google-spreadsheet'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { Button, InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { FEEDBACK_ROLE_OPTIONS } from 'data/config'
 import { selectActiveDataviews } from 'features/workspace/workspace.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/heatmaps/heatmaps.utils'
 import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
@@ -32,13 +31,28 @@ type FeedbackData = {
 }
 
 const FEEDBACK_SPREADSHEET_ID = process.env.REACT_APP_FEEDBACK_SPREADSHEET_ID || ''
-const FEEDBACK_SHEET_ID = process.env.REACT_APP_FEEDBACK_SHEET_ID || ''
-const FEEDBACK_CLIENT_EMAIL = process.env.REACT_APP_FEEDBACK_CLIENT_EMAIL || ''
-const FEEDBACK_PRIVATE_KEY = process.env.REACT_APP_FEEDBACK_PRIVATE_KEY || ''
+const FEEDBACK_SHEET_ID = '0'
+const FEEDBACK_CLIENT_EMAIL = process.env.REACT_APP_FEEDBACK_CLIENT_EMAIL
+const FEEDBACK_PRIVATE_KEY = process.env.REACT_APP_FEEDBACK_PRIVATE_KEY
+
+export const FEEDBACK_ROLE_IDS = [
+  'watch',
+  'analyst',
+  'navy',
+  'fisheries',
+  'ngo',
+  'scientist',
+  'journalist',
+  'student',
+  'general',
+  'GFW',
+  'other',
+]
+
+const feedbackSpreadsheetDoc = new GoogleSpreadsheet(FEEDBACK_SPREADSHEET_ID)
 
 function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   const { t } = useTranslation()
-  const doc = new GoogleSpreadsheet(FEEDBACK_SPREADSHEET_ID)
   const activeDataviews = useSelector(selectActiveDataviews)
   const locationType = useSelector(selectLocationType)
   const userData = useSelector(selectUserData)
@@ -88,6 +102,11 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     }
   })
 
+  const roleOptions = FEEDBACK_ROLE_IDS.map((roleId) => ({
+    id: roleId,
+    label: t(`feedback.${roleId}` as any),
+  }))
+
   const onNameChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
     setFeedbackData({ ...feedbackData, name: target.value })
   }
@@ -122,21 +141,33 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   }
 
   const sendFeedback = async () => {
-    try {
-      setLoading(true)
-      await doc.useServiceAccountAuth({
-        client_email: FEEDBACK_CLIENT_EMAIL,
-        private_key: FEEDBACK_PRIVATE_KEY,
-      })
-      // loads document properties and worksheets
-      await doc.loadInfo()
-      const sheet = doc.sheetsById[FEEDBACK_SHEET_ID]
-      await sheet.addRow(feedbackData)
-      setLoading(false)
-      setFeedbackData({})
-      onClose()
-    } catch (e) {
-      console.error('Error: ', e)
+    if (
+      FEEDBACK_SPREADSHEET_ID === undefined ||
+      FEEDBACK_PRIVATE_KEY === undefined ||
+      FEEDBACK_CLIENT_EMAIL === undefined
+    ) {
+      console.warn('Feedback service account email/key/id missing')
+      return
+    } else {
+      console.log(FEEDBACK_SPREADSHEET_ID, FEEDBACK_PRIVATE_KEY, FEEDBACK_CLIENT_EMAIL)
+      try {
+        setLoading(true)
+        await feedbackSpreadsheetDoc.useServiceAccountAuth({
+          client_email: FEEDBACK_CLIENT_EMAIL,
+          private_key: FEEDBACK_PRIVATE_KEY,
+        })
+        // loads document properties and worksheets
+        await feedbackSpreadsheetDoc.loadInfo()
+        const sheet = feedbackSpreadsheetDoc.sheetsById[FEEDBACK_SHEET_ID]
+        const result = await sheet.addRow(feedbackData)
+        console.log(result)
+
+        setLoading(false)
+        setFeedbackData({})
+        onClose()
+      } catch (e) {
+        console.error('Error: ', e)
+      }
     }
   }
 
@@ -170,10 +201,8 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
             />
             <Select
               label={`${t('feedback.role', '---')} (${t('feedback.optional', 'Optional')})`}
-              options={FEEDBACK_ROLE_OPTIONS}
-              selectedOption={FEEDBACK_ROLE_OPTIONS.find(
-                (option) => option.label === feedbackData.role
-              )}
+              options={roleOptions}
+              selectedOption={roleOptions.find((option) => option.label === feedbackData.role)}
               onSelect={onSelectRole}
               onRemove={onRemoveRole}
             />
