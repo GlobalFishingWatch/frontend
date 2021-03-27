@@ -206,31 +206,28 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                       return (
                         <li key={field.id} className={styles.infoContentItem}>
                           <label>{t(`vessel.${field.id}` as any)}</label>
-
-                          {fieldValues.map((fieldValue, i) =>
-                            (
-                              <span>
-                                {field.type === 'date' ? (
-                                  <I18nDate date={fieldValue} />
-                                ) : field.type === 'flag' ? (
-                                  <I18nFlag iso={fieldValue} />
-                                ) : field.id === 'mmsi' ? (
-                                  <a
-                                    className={styles.link}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    href={`https://www.marinetraffic.com/en/ais/details/ships/${fieldValue}`}
-                                  >
-                                    {formatInfoField(fieldValue, field.type)}
-                                  </a>
-                                ) : (
-                                  formatInfoField(fieldValue, field.type)
-                                )}
-                                {/* Field values separator */}
-                                {i < fieldValues.length - 1 ? ', ' : ''}
-                              </span>
-                            ).join(', ')
-                          )}
+                          {fieldValues.map((fieldValue, i) => (
+                            <span>
+                              {field.type === 'date' ? (
+                                <I18nDate date={fieldValue} />
+                              ) : field.type === 'flag' ? (
+                                <I18nFlag iso={fieldValue} />
+                              ) : field.id === 'mmsi' ? (
+                                <a
+                                  className={styles.link}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  href={`https://www.marinetraffic.com/en/ais/details/ships/${fieldValue}`}
+                                >
+                                  {formatInfoField(fieldValue, field.type)}
+                                </a>
+                              ) : (
+                                formatInfoField(fieldValue, field.type)
+                              )}
+                              {/* Field values separator */}
+                              {i < fieldValues.length - 1 ? ', ' : ''}
+                            </span>
+                          ))}
                         </li>
                       )
                     })}
