@@ -1,6 +1,13 @@
 import uniqBy from 'lodash/uniqBy'
-import { Dataset, Dataview, DataviewInstance } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetTypes,
+  Dataview,
+  DataviewDatasetConfig,
+  DataviewInstance,
+} from '@globalfishingwatch/api-types'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { resolveEndpoint } from '.'
 
 export type UrlDataviewInstance<T = Generators.Type> = Omit<DataviewInstance<T>, 'dataviewId'> & {
   dataviewId?: number // making this optional as sometimes we just need to reference the id
@@ -50,6 +57,30 @@ export const mergeWorkspaceUrlDataviewInstances = (
   )
 
   return [...urlDataviews.new, ...workspaceDataviewInstancesMerged]
+}
+
+export const resolveDataviewDatasetResource = (
+  dataview: UrlDataviewInstance,
+  { type, id }: { type?: DatasetTypes; id?: string }
+): {
+  dataset?: Dataset
+  datasetConfig?: DataviewDatasetConfig
+  url?: string
+} => {
+  if (!type && !id) return {}
+
+  const dataset = type
+    ? dataview.datasets?.find((dataset) => dataset.type === type)
+    : dataview.datasets?.find((dataset) => dataset.id === id)
+  if (!dataset) return {}
+  const datasetConfig = dataview?.datasetsConfig?.find(
+    (datasetConfig) => datasetConfig.datasetId === dataset.id
+  )
+  if (!datasetConfig) return {}
+  const url = resolveEndpoint(dataset, datasetConfig)
+  if (!url) return {}
+
+  return { dataset, datasetConfig, url }
 }
 
 /**

@@ -13,12 +13,14 @@ import {
   segmentsToBbox,
   filterSegmentsByTimerange,
 } from '@globalfishingwatch/data-transforms'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  UrlDataviewInstance,
+  resolveDataviewDatasetResource,
+} from '@globalfishingwatch/dataviews-client'
 import { formatInfoField, getVesselLabel } from 'utils/info'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { resolveDataviewDatasetResource } from 'features/resources/resources.selectors'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'

@@ -14,7 +14,10 @@ import {
   EndpointId,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  UrlDataviewInstance,
+  resolveDataviewDatasetResource,
+} from '@globalfishingwatch/dataviews-client'
 import {
   selectDataviewInstancesResolved,
   selectWorkspaceError,
@@ -26,7 +29,6 @@ import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
-import { resolveDataviewDatasetResource } from 'features/resources/resources.selectors'
 
 export const MULTILAYER_SEPARATOR = '__'
 

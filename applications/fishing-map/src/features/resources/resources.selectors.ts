@@ -1,41 +1,12 @@
 import { createSelector } from 'reselect'
-import {
-  Dataset,
-  DatasetTypes,
-  DataviewDatasetConfig,
-  EndpointId,
-} from '@globalfishingwatch/api-types'
-import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import { isGuestUser } from 'features/user/user.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ThinningLevels, THINNING_LEVELS } from 'data/config'
-
-export const resolveDataviewDatasetResource = (
-  dataview: UrlDataviewInstance,
-  { type, id }: { type?: DatasetTypes; id?: string }
-): {
-  dataset?: Dataset
-  datasetConfig?: DataviewDatasetConfig
-  url?: string
-} => {
-  if (!type && !id) return {}
-
-  const dataset = type
-    ? dataview.datasets?.find((dataset) => dataset.type === type)
-    : dataview.datasets?.find((dataset) => dataset.id === id)
-  if (!dataset) return {}
-  const datasetConfig = dataview?.datasetsConfig?.find(
-    (datasetConfig) => datasetConfig.datasetId === dataset.id
-  )
-  if (!datasetConfig) return {}
-  const url = resolveEndpoint(dataset, datasetConfig)
-  if (!url) return {}
-
-  return { dataset, datasetConfig, url }
-}
 
 export const selectDataviewsResourceQueries = createSelector(
   [selectDataviewInstancesResolved, isGuestUser, selectDebugOptions],

@@ -1,12 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import {
   selectActiveVesselsDataviews,
   selectEnvironmentalDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectResources, Resource, TrackResourceData } from 'features/resources/resources.slice'
-import { resolveDataviewDatasetResource } from 'features/resources/resources.selectors'
 
 type TimebarTrackSegment = {
   start: number

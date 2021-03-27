@@ -1,41 +1,13 @@
 import { useMemo } from 'react'
+import { Resource, DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
 import {
-  Resource,
-  Dataview,
-  DatasetTypes,
-  Dataset,
-  DataviewDatasetConfig,
-  EndpointId,
-} from '@globalfishingwatch/api-types'
+  UrlDataviewInstance,
+  resolveDataviewDatasetResource,
+} from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 
-export const resolveDataviewDatasetResource = (
-  dataview: Dataview,
-  { type, id }: { type?: DatasetTypes; id?: string }
-): {
-  dataset?: Dataset
-  datasetConfig?: DataviewDatasetConfig
-  url?: string
-} => {
-  if (!type && !id) return {}
-
-  const dataset = type
-    ? dataview.datasets?.find((dataset) => dataset.type === type)
-    : dataview.datasets?.find((dataset) => dataset.id === id)
-  if (!dataset) return {}
-  const datasetConfig = dataview?.datasetsConfig?.find(
-    (datasetConfig) => datasetConfig.datasetId === dataset.id
-  )
-  if (!datasetConfig) return {}
-  const url = resolveEndpoint(dataset, datasetConfig)
-  if (!url) return {}
-
-  return { dataset, datasetConfig, url }
-}
-
-export function getGeneratorConfig(dataview: Dataview) {
-  switch (dataview.config.type) {
+export function getGeneratorConfig(dataview: UrlDataviewInstance) {
+  switch (dataview.config?.type) {
     // TODO: remove legacy from Amathea context layers as they support ramps
     case Generators.Type.UserContext: {
       const { dataset, url } = resolveDataviewDatasetResource(dataview, {
@@ -72,12 +44,12 @@ export function getGeneratorConfig(dataview: Dataview) {
         return
       }
       const id = dataset?.id || dataview.id
-      const flagFilter = dataview.config.flagFilter
+      const flagFilter = dataview.config?.flagFilter
       const generator = {
         id: `fourwings-${id}`,
         ...dataview.config,
         maxZoom: 8,
-        fetchStats: !dataview.config.steps,
+        fetchStats: !dataview.config?.steps,
         datasets: [dataset?.id],
         tilesUrl: tilesEndpoint.pathTemplate,
         statsUrl: statsEndpoint?.pathTemplate,
@@ -108,11 +80,14 @@ export function getGeneratorConfig(dataview: Dataview) {
  * @param resources
  */
 
-export function getDataviewsGeneratorConfigs(dataviews: Dataview[], resources?: Resource[]) {
+export function getDataviewsGeneratorConfigs(
+  dataviews: UrlDataviewInstance[],
+  resources?: Resource[]
+) {
   return dataviews.flatMap((dataview) => {
     const generatedUidComponents: (string | number | undefined)[] = [
       dataview.id,
-      dataview.name.replace(/ /g, '_'),
+      dataview.name?.replace(/ /g, '_'),
     ]
 
     const dataviewResource = resources?.find((resource) => {
@@ -148,7 +123,7 @@ export function getDataviewsGeneratorConfigs(dataviews: Dataview[], resources?: 
   }) as Generators.AnyGeneratorConfig[]
 }
 
-function useDataviewsGeneratorConfigs(dataviews: Dataview[], resources?: Resource[]) {
+function useDataviewsGeneratorConfigs(dataviews: UrlDataviewInstance[], resources?: Resource[]) {
   const generators = useMemo(() => {
     return getDataviewsGeneratorConfigs(dataviews, resources)
   }, [dataviews, resources])
