@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import { DateTime } from 'luxon'
 import { Modal } from '@globalfishingwatch/ui-components'
 import { useTranslation } from 'utils/i18n'
