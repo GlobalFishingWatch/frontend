@@ -16,6 +16,7 @@ export interface UpdateQueryParamsAction {
 }
 
 type UpdateLocationOptions = { query?: QueryParams; payload?: any; replaceQuery?: boolean }
+
 export function updateLocation(
   type: ROUTE_TYPES,
   { query = {}, payload = {}, replaceQuery = false }: UpdateLocationOptions = {}
@@ -23,6 +24,18 @@ export function updateLocation(
   return { type, query, payload, replaceQuery }
 }
 
+const cleanQueryLocation = () => {
+  return (dispatch: AppDispatch, getState: () => unknown) => {
+    const state = getState() as RootState
+    const location = selectCurrentLocation(state)
+    const payload = selectLocationPayload(state)
+    return dispatch(
+      updateLocation(location.type, { query: undefined, payload, replaceQuery: true })
+    )
+  }
+}
+
+// Why this works the other way around ? with the dispatch and getState firt in params ??
 const updateUrlViewport: any = (dispatch: AppDispatch, getState: () => RootState) => {
   return (viewport: WorkspaceViewport) => {
     const state = getState()
@@ -32,4 +45,4 @@ const updateUrlViewport: any = (dispatch: AppDispatch, getState: () => RootState
   }
 }
 
-export { updateUrlViewport }
+export { cleanQueryLocation, updateUrlViewport }

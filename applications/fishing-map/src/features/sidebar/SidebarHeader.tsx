@@ -1,69 +1,111 @@
-import React, { Fragment, useCallback, useRef } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Logo, { SubBrands } from '@globalfishingwatch/ui-components/dist/logo'
 import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
-import { saveCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
+import GFWAPI from '@globalfishingwatch/api-client'
+import {
+  saveCurrentWorkspaceThunk,
+  updatedCurrentWorkspaceThunk,
+} from 'features/workspace/workspace.slice'
 import {
   selectWorkspace,
   selectWorkspaceCustomStatus,
+  selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import {
-  isWorkspaceLocation,
-  selectLocationCategory,
-  selectUrlDataviewInstances,
-} from 'routes/routes.selectors'
+import { isWorkspaceLocation, selectLocationCategory } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
+import { selectUserData } from 'features/user/user.slice'
+import { isGuestUser } from 'features/user/user.selectors'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
 function SaveWorkspaceButton() {
+  const [loginLink, setLoginLink] = useState('')
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const guestUser = useSelector(isGuestUser)
   const viewport = useSelector(selectViewport)
   const timerange = useSelector(selectTimeRange)
+  const userData = useSelector(selectUserData)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
   const workspace = useSelector(selectWorkspace)
 
-  const onSaveClick = async () => {
-    const isDefaultWorkspace = workspace?.id === DEFAULT_WORKSPACE_ID
-    let defaultName = workspace?.name
-    if (isDefaultWorkspace) {
-      const areaName = getOceanAreaName(viewport)
-      const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
-      const start = formatI18nDate(timerange.start as string, {
-        format: dateFormat,
-      })
-        .replace(',', '')
-        .replace('.', '')
-      const end = formatI18nDate(timerange.end as string, {
-        format: dateFormat,
-      })
-        .replace(',', '')
-        .replace('.', '')
+  const isOwnerWorkspace = workspace?.ownerId === userData?.id
+  const isDefaultWorkspace = workspace?.id === DEFAULT_WORKSPACE_ID
 
-      defaultName = `From ${start} to ${end} near ${areaName}`
-    }
-    const name = prompt(t('workspace.nameInput', 'Workspace name'), defaultName)
-    if (name) {
-      const action = await dispatch(saveCurrentWorkspaceThunk(name))
-      if (saveCurrentWorkspaceThunk.fulfilled.match(action)) {
-        const workspaceId = action.payload?.id
-        if (workspaceId) {
-          copyToClipboard(`${window.location.origin}/${workspaceId}`)
-        }
+  const onSaveClick = async () => {
+    if (!showClipboardNotification) {
+      let dispatchedAction
+      if (workspace && isOwnerWorkspace) {
+        dispatchedAction = await dispatch(updatedCurrentWorkspaceThunk(workspace.id))
       } else {
-        console.warn('Error saving workspace', action.payload)
+        const areaName = getOceanAreaName(viewport)
+        const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
+        const start = formatI18nDate(timerange.start as string, {
+          format: dateFormat,
+        })
+          .replace(',', '')
+          .replace('.', '')
+        const end = formatI18nDate(timerange.end as string, {
+          format: dateFormat,
+        })
+          .replace(',', '')
+          .replace('.', '')
+
+        const defaultName = isDefaultWorkspace
+          ? `From ${start} to ${end} ${areaName ? `near ${areaName}` : ''}`
+          : workspace?.name
+        const name = prompt(t('workspace.nameInput', 'Workspace name'), defaultName)
+        if (name) {
+          dispatchedAction = await dispatch(saveCurrentWorkspaceThunk(name))
+        }
+      }
+      if (dispatchedAction) {
+        if (
+          saveCurrentWorkspaceThunk.fulfilled.match(dispatchedAction) ||
+          updatedCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)
+        ) {
+          copyToClipboard(window.location.href)
+        } else {
+          console.warn('Error saving workspace', dispatchedAction.payload)
+        }
       }
     }
+  }
+
+  if (!workspace || workspaceStatus === AsyncReducerStatus.Loading) {
+    return null
+  }
+
+  if (guestUser) {
+    return (
+      <IconButton
+        icon={loginLink ? 'user' : 'save'}
+        size="medium"
+        disabled={!loginLink}
+        tooltip={t('workspace.saveLogin', 'You need to login to save views')}
+        tooltipPlacement="bottom"
+        onClick={() => {
+          window.location.href = loginLink
+        }}
+        onMouseEnter={() => {
+          setLoginLink(GFWAPI.getLoginUrl(window.location.toString()))
+        }}
+        onMouseLeave={() => {
+          setLoginLink('')
+        }}
+      />
+    )
   }
 
   return (
@@ -114,9 +156,6 @@ function ShareWorkspaceButton() {
 function SidebarHeader() {
   const locationCategory = useSelector(selectLocationCategory)
   const showInteractionButtons = useSelector(isWorkspaceLocation)
-  const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
-  const initialUrlDataviewInstances = useRef(urlDataviewInstances)
-  const hasDataviewInstancesChanged = initialUrlDataviewInstances.current !== urlDataviewInstances
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
@@ -131,7 +170,7 @@ function SidebarHeader() {
         <Logo className={styles.logo} subBrand={getSubBrand()} />
         {showInteractionButtons && (
           <Fragment>
-            {hasDataviewInstancesChanged && <SaveWorkspaceButton />}
+            <SaveWorkspaceButton />
             <ShareWorkspaceButton />
           </Fragment>
         )}
