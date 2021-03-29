@@ -1,5 +1,75 @@
 # @globalfishingwatch/ui-components
 
+## 2.15.2
+
+### Patch Changes
+
+- update dependencies
+
+## 2.15.0
+
+### Minor Changes
+
+- match latest versions
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.18.0
+
+## 2.14.9
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.3
+
+## 2.14.8
+
+### Patch Changes
+
+- fix disabled button
+
+## 2.14.7
+
+### Patch Changes
+
+- support disabled button as link
+
+## 2.14.6
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.2
+
+## 2.14.5
+
+### Patch Changes
+
+- support target blank for button link
+
+## 2.14.4
+
+### Patch Changes
+
+- add pin icon
+
+## 2.14.3
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.1
+
+## 2.14.2
+
+### Patch Changes
+
+- Updated dependencies [ce98aa73]
+  - @globalfishingwatch/layer-composer@4.17.0
+- [`1eb0a62f`](https://github.com/GlobalFishingWatch/frontend/commit/1eb0a62f65f350f87d9047f8fc9c635d04f55f08) [#373](https://github.com/GlobalFishingWatch/frontend/pull/373) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - update choice component
+
 ## 2.14.1
 
 ### Patch Changes

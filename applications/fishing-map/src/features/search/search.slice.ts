@@ -7,6 +7,7 @@ import {
   Vessel,
   APISearch,
   VesselSearch,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { RootState } from 'store'
@@ -61,12 +62,12 @@ export type VesselSearchThunk = {
 }
 
 export function checkSearchFiltersEnabled(filters: SearchFilter): boolean {
-  return Object.values(filters).filter((f) => !!f).length > 0
+  return Object.values(filters).filter((f) => f !== undefined).length > 0
 }
 
 export function checkAdvanceSearchFiltersEnabled(filters: SearchFilter): boolean {
   const { sources, ...rest } = filters
-  return Object.values(rest).filter((f) => !!f).length > 0
+  return Object.values(rest).filter((f) => f !== undefined).length > 0
 }
 
 export const fetchVesselSearchThunk = createAsyncThunk(
@@ -153,7 +154,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     }
 
     const datasetConfig = {
-      endpoint: advancedQuery ? 'carriers-advanced-search-vessels' : 'carriers-search-vessels',
+      endpoint: advancedQuery ? EndpointId.VesselAdvancedSearch : EndpointId.VesselSearch,
       datasetId: dataset.id,
       params: [],
       query: [

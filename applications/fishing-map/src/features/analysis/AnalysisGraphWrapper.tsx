@@ -12,7 +12,7 @@ import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useMapStyle } from 'features/map/map.hooks'
 import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
-import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
+import { selectActiveTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import * as AnalysisWorker from './Analysis.worker'
 import AnalysisGraph, { GraphData } from './AnalysisGraph'
@@ -22,7 +22,7 @@ import styles from './Analysis.module.css'
 const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 
 function AnalysisGraphWrapper() {
-  const temporalGridDataviews = useSelector(selectTemporalgridDataviews)
+  const temporalGridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const { start, end } = useTimerangeConnect()
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)

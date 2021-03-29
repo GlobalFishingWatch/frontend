@@ -25,7 +25,7 @@ export const fetchGuestUser = async () => {
   const permissions = await fetch(
     `${GFWAPI.getBaseUrl()}/auth/acl/permissions/anonymous`
   ).then((r) => r.json())
-  const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions }
+  const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions, groups: [] }
   return user
 }
 

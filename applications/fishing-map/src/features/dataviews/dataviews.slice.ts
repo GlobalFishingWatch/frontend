@@ -50,7 +50,7 @@ export const {
   selectIds,
 } = entityAdapter.getSelectors<RootState>((state) => state.dataviews)
 
-export const selectDataviewById = memoize((id: string) =>
+export const selectDataviewById = memoize((id: number) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
 )
 

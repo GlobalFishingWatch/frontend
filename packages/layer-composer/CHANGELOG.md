@@ -1,5 +1,35 @@
 # @globalfishingwatch/layer-composer
 
+## 4.18.0
+
+### Minor Changes
+
+- match latest versions
+
+## 4.17.3
+
+### Patch Changes
+
+- polish tile cluster generator
+
+## 4.17.2
+
+### Patch Changes
+
+- make params optional in tile-cluster
+
+## 4.17.1
+
+### Patch Changes
+
+- tile-cluster fix generatorId and mark interactive
+
+## 4.17.0
+
+### Minor Changes
+
+- ce98aa73: new tile cluster generator
+
 ## 4.16.0
 
 ### Minor Changes

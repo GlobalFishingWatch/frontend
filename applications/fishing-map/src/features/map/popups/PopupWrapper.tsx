@@ -7,6 +7,7 @@ import { Generators } from '@globalfishingwatch/layer-composer'
 import { TooltipEvent } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 import HeatmapTooltipRow from './HeatmapLayers'
+import TileClusterRow from './TileClusterLayers'
 import EnviromentalTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 import UserContextTooltipSection from './UserContextLayers'
@@ -75,6 +76,9 @@ function PopupWrapper({
                 showFeaturesDetails={type === 'click'}
               />
             )
+          }
+          if (featureType === Generators.Type.TileCluster && type === 'click') {
+            return <TileClusterRow key={featureType} features={features} />
           }
           if (featureType === Generators.Type.Heatmap) {
             return (

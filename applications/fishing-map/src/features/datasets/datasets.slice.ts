@@ -6,7 +6,13 @@ import kebabCase from 'lodash/kebabCase'
 import { stringify } from 'qs'
 import { Dataset, DatasetCategory, UploadResponse } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { asyncInitialState, AsyncReducer, createAsyncSlice, AsyncError } from 'utils/async-slice'
+import {
+  asyncInitialState,
+  AsyncReducer,
+  createAsyncSlice,
+  AsyncError,
+  AsyncReducerStatus,
+} from 'utils/async-slice'
 import { RootState } from 'store'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
@@ -83,6 +89,8 @@ export const createDatasetThunk = createAsyncThunk<
       } as any,
     })
     await fetch(url, { method: 'PUT', body: file })
+    // API needs to have the value in lowercase
+    const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
     const datasetWithFilePath = {
       ...dataset,
       description: dataset.description || dataset.name,
@@ -90,6 +98,7 @@ export const createDatasetThunk = createAsyncThunk<
       source: DATASETS_USER_SOURCE_ID,
       configuration: {
         ...dataset.configuration,
+        ...(propertyToInclude && { propertyToInclude }),
         filePath: path,
       },
     }
@@ -149,19 +158,47 @@ export const deleteDatasetThunk = createAsyncThunk<
   }
 })
 
+const LATEST_CARRIER_DATASET_ID =
+  process.env.NODE_ENV === 'development' ? 'carriers:dev' : 'carriers:latest'
+export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
+  Dataset,
+  undefined,
+  {
+    rejectValue: AsyncError
+  }
+>('datasets/fetchLatestCarrier', async (_, { rejectWithValue }) => {
+  try {
+    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${LATEST_CARRIER_DATASET_ID}`)
+    return dataset
+  } catch (e) {
+    return rejectWithValue({
+      status: e.status || e.code,
+      message: `${LATEST_CARRIER_DATASET_ID} - ${e.message}`,
+    })
+  }
+})
+
 export type DatasetModals = 'new' | 'edit' | undefined
 export interface DatasetsState extends AsyncReducer<Dataset> {
   datasetModal: DatasetModals
   datasetCategory: DatasetCategory
   editingDatasetId: string | undefined
   allDatasetsRequested: boolean
+  carrierLatest: {
+    status: AsyncReducerStatus
+    dataset: Dataset | undefined
+  }
 }
 const initialState: DatasetsState = {
   ...asyncInitialState,
   datasetModal: undefined,
   datasetCategory: DatasetCategory.Context,
-  editingDatasetId: undefined,
   allDatasetsRequested: false,
+  editingDatasetId: undefined,
+  carrierLatest: {
+    status: AsyncReducerStatus.Idle,
+    dataset: undefined,
+  },
 }
 
 const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
@@ -184,6 +221,18 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
   extraReducers: (builder) => {
     builder.addCase(fetchAllDatasetsThunk.fulfilled, (state) => {
       state.allDatasetsRequested = true
+    })
+    builder.addCase(fetchLastestCarrierDatasetThunk.pending, (state) => {
+      state.carrierLatest.status = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchLastestCarrierDatasetThunk.fulfilled, (state, action) => {
+      state.carrierLatest.status = AsyncReducerStatus.Finished
+      if (action.payload) {
+        state.carrierLatest.dataset = action.payload
+      }
+    })
+    builder.addCase(fetchLastestCarrierDatasetThunk.rejected, (state) => {
+      state.carrierLatest.status = AsyncReducerStatus.Error
     })
   },
   thunks: {
@@ -213,6 +262,9 @@ export const selectDatasetsError = (state: RootState) => state.datasets.error
 export const selectEditingDatasetId = (state: RootState) => state.datasets.editingDatasetId
 export const selectAllDatasetsRequested = (state: RootState) => state.datasets.allDatasetsRequested
 export const selectDatasetModal = (state: RootState) => state.datasets.datasetModal
+export const selectCarrierLatestDataset = (state: RootState) => state.datasets.carrierLatest.dataset
+export const selectCarrierLatestDatasetStatus = (state: RootState) =>
+  state.datasets.carrierLatest.status
 export const selectDatasetCategory = (state: RootState) => state.datasets.datasetCategory
 
 export default datasetSlice.reducer

@@ -1,5 +1,8 @@
 .Choice {
   position: relative;
+}
+
+.list {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -7,6 +10,7 @@
   border-radius: var(--size-M);
   border: var(--border);
   padding: 0.2rem;
+  min-width: min-content;
 }
 
 .activeChip {
@@ -19,7 +23,7 @@
   border-radius: var(--size-M);
   background-color: var(--color-terthiary-blue);
   z-index: 0;
-  transition: left 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
 }
 
 .option {

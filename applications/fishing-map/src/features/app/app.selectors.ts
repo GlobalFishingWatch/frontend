@@ -25,11 +25,12 @@ import {
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
-  ({ zoom, latitude, longitude }, workspaceViewport) => {
+  (urlViewport, workspaceViewport) => {
     return {
-      zoom: zoom || workspaceViewport?.zoom || DEFAULT_WORKSPACE.zoom,
-      latitude: latitude || workspaceViewport?.latitude || DEFAULT_WORKSPACE.latitude,
-      longitude: longitude || workspaceViewport?.longitude || DEFAULT_WORKSPACE.longitude,
+      zoom: urlViewport?.zoom || workspaceViewport?.zoom || DEFAULT_WORKSPACE.zoom,
+      latitude: urlViewport?.latitude || workspaceViewport?.latitude || DEFAULT_WORKSPACE.latitude,
+      longitude:
+        urlViewport?.longitude || workspaceViewport?.longitude || DEFAULT_WORKSPACE.longitude,
     }
   }
 )

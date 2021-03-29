@@ -13,18 +13,17 @@ import {
   segmentsToBbox,
   filterSegmentsByTimerange,
 } from '@globalfishingwatch/data-transforms'
-import { formatInfoField } from 'utils/info'
+import { formatInfoField, getVesselLabel } from 'utils/info'
 import { Bbox, UrlDataviewInstance } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { resolveDataviewDatasetResource } from 'features/workspace/workspace.selectors'
+import { resolveDataviewDatasetResource } from 'features/resources/resources.selectors'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 
 // Translations by feature.unit static keys
@@ -47,14 +46,16 @@ type LayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
+const showDebugVesselId = process.env.NODE_ENV === 'development'
+
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
-  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
-  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
-  const resource = useSelector(selectResourceByUrl<Vessel>(url))
   const { start, end } = useTimerangeConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
+  const { url: infoUrl } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
+  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
+  const infoResource = useSelector(selectResourceByUrl<Vessel>(infoUrl))
   const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
@@ -96,8 +97,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     deleteDataviewInstance(dataview.id)
   }
 
-  const vesselName = resource?.data?.shipname
-
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
   }
@@ -110,20 +109,23 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     setInfoOpen(false)
   }
 
-  const vesselId = dataview.id.replace(DATAVIEW_INSTANCE_PREFIX, '')
-  const title = vesselName || vesselId || dataview.name
-  const formattedTitle = title && formatInfoField(title, 'name')
+  const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
+  const vesselId = showDebugVesselId
+    ? (infoResource?.datasetConfig?.params?.find((p) => p.id === 'vesselId')?.value as string) || ''
+    : ''
+  const vesselTitle = vesselLabel || vesselId
 
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {formattedTitle}
+      {vesselTitle}
     </h3>
   )
 
   const loading =
     trackResource?.status === AsyncReducerStatus.Loading ||
-    resource?.status === AsyncReducerStatus.Loading
+    infoResource?.status === AsyncReducerStatus.Loading
 
+  const infoError = infoResource?.status === AsyncReducerStatus.Error
   const trackError = trackResource?.status === AsyncReducerStatus.Error
 
   return (
@@ -139,8 +141,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           className={styles.switch}
           color={dataview.config?.color}
         />
-        {title && title.length > 20 ? (
-          <Tooltip content={formattedTitle}>{TitleComponent}</Tooltip>
+        {vesselTitle && vesselTitle.length > 20 ? (
+          <Tooltip content={vesselTitle}>{TitleComponent}</Tooltip>
         ) : (
           TitleComponent
         )}
@@ -198,29 +200,34 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 component={
                   <ul className={styles.infoContent}>
                     {dataview.infoConfig?.fields.map((field: any) => {
-                      const fieldValue = resource?.data?.[field.id as keyof Vessel]
-                      if (!fieldValue) return null
+                      const value = infoResource?.data?.[field.id as keyof Vessel]
+                      if (!value) return null
+                      const fieldValues = Array.isArray(value) ? value : [value]
                       return (
                         <li key={field.id} className={styles.infoContentItem}>
                           <label>{t(`vessel.${field.id}` as any)}</label>
-                          <span>
-                            {field.type === 'date' ? (
-                              <I18nDate date={fieldValue} />
-                            ) : field.type === 'flag' ? (
-                              <I18nFlag iso={fieldValue} />
-                            ) : field.id === 'mmsi' ? (
-                              <a
-                                className={styles.link}
-                                target="_blank"
-                                rel="noreferrer"
-                                href={`https://www.marinetraffic.com/en/ais/details/ships/${fieldValue}`}
-                              >
-                                {formatInfoField(fieldValue, field.type)}
-                              </a>
-                            ) : (
-                              formatInfoField(fieldValue, field.type)
-                            )}
-                          </span>
+                          {fieldValues.map((fieldValue, i) => (
+                            <span>
+                              {field.type === 'date' ? (
+                                <I18nDate date={fieldValue} />
+                              ) : field.type === 'flag' ? (
+                                <I18nFlag iso={fieldValue} />
+                              ) : field.id === 'mmsi' ? (
+                                <a
+                                  className={styles.link}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  href={`https://www.marinetraffic.com/en/ais/details/ships/${fieldValue}`}
+                                >
+                                  {formatInfoField(fieldValue, field.type)}
+                                </a>
+                              ) : (
+                                formatInfoField(fieldValue, field.type)
+                              )}
+                              {/* Field values separator */}
+                              {i < fieldValues.length - 1 ? ', ' : ''}
+                            </span>
+                          ))}
                         </li>
                       )
                     })}
@@ -228,11 +235,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 }
               >
                 <IconButton
-                  icon="info"
                   size="small"
+                  icon={infoError ? 'warning' : 'info'}
+                  type={infoError ? 'warning' : 'default'}
                   className={styles.actionButton}
                   tooltip={
-                    infoOpen ? t('layer.infoClose', 'Hide info') : t('layer.infoOpen', 'Show info')
+                    infoError
+                      ? t('errors.vesselLoading', 'There was an error loading the vessel details')
+                      : infoOpen
+                      ? t('layer.infoClose', 'Hide info')
+                      : t('layer.infoOpen', 'Show info')
                   }
                   onClick={onToggleInfoOpen}
                   tooltipPlacement="top"

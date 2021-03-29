@@ -1,0 +1,30 @@
+import React from 'react'
+import cx from 'classnames'
+import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
+import { selectEventsDataviews } from 'features/workspace/workspace.selectors'
+import styles from 'features/workspace/shared/Sections.module.css'
+import LayerPanel from './EventsLayerPanel'
+
+function EnvironmentalLayerSection(): React.ReactElement | null {
+  const { t } = useTranslation()
+  const dataviews = useSelector(selectEventsDataviews)
+  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+
+  if (!dataviews || dataviews.length === 0) {
+    return null
+  }
+
+  return (
+    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
+      <div className={styles.header}>
+        <h2 className={styles.sectionTitle}>{t('common.events', 'Events')}</h2>
+      </div>
+      {dataviews?.map((dataview) => (
+        <LayerPanel key={dataview.id} dataview={dataview} />
+      ))}
+    </div>
+  )
+}
+
+export default EnvironmentalLayerSection

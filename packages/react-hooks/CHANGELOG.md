@@ -1,5 +1,52 @@
 # @globalfishingwatch/react-hooks
 
+## 4.11.0
+
+### Minor Changes
+
+- match latest versions
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@4.1.0
+  - @globalfishingwatch/layer-composer@4.18.0
+
+## 4.10.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.3
+
+## 4.10.0
+
+### Minor Changes
+
+- move ExtendedFeatureVessel to app responsability
+
+## 4.9.6
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.2
+
+## 4.9.5
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.1
+
+## 4.9.4
+
+### Patch Changes
+
+- Updated dependencies [ce98aa73]
+  - @globalfishingwatch/layer-composer@4.17.0
+- [`d99bf5f3`](https://github.com/GlobalFishingWatch/frontend/commit/d99bf5f30bceed021ac990a0de8b4e992189be73) [#375](https://github.com/GlobalFishingWatch/frontend/pull/375) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - define endpoints enum
+
 ## 4.9.3
 
 ### Patch Changes

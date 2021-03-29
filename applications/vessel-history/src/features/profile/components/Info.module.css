@@ -26,10 +26,18 @@
   opacity: 0.8;
 }
 
+.moreValues {
+  display: block;
+}
+
 .saveButton {
   width: 100%;
 }
 
 .historyRange {
   font-size: 12px;
+}
+.historyItem {
+  display: flex;
+  flex-flow: row nowrap;
 }

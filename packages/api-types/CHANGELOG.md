@@ -1,5 +1,54 @@
 # @globalfishingwatch/api-types
 
+## 2.17.0
+
+### Minor Changes
+
+- 328e7234: extend vessel interface with additional fields
+
+## 2.16.0
+
+### Minor Changes
+
+- d6bc4dc6: include user groups types definition
+
+## 2.15.0
+
+### Minor Changes
+
+- match latest versions
+
+## 2.14.2
+
+### Patch Changes
+
+- fix registeredGearType release
+
+## 2.14.1
+
+### Patch Changes
+
+- update start and end api event types
+
+## 2.14.0
+
+### Minor Changes
+
+- new events types definitions
+
+## 2.13.0
+
+### Minor Changes
+
+- f9b53836: new dataview category type for events
+- [`d99bf5f3`](https://github.com/GlobalFishingWatch/frontend/commit/d99bf5f30bceed021ac990a0de8b4e992189be73) [#375](https://github.com/GlobalFishingWatch/frontend/pull/375) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - define endpoints enum
+
+## 2.12.1
+
+### Patch Changes
+
+- include registeredGearType in vessel types
+
 ## 2.12.0
 
 ### Minor Changes
