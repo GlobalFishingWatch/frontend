@@ -9,12 +9,7 @@
 }
 
 .userInfo {
-  padding: var(--space-M);
   border-bottom: var(--border);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
 }
 
 .secondary {
