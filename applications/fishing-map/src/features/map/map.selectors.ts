@@ -55,6 +55,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
       aggregationMode,
       highlightedTime,
       timeRange: staticTime,
+      debug: debugOptions.blob,
     }
 
     const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
