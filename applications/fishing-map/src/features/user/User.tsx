@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import GFWAPI from '@globalfishingwatch/api-client'
@@ -11,6 +11,7 @@ import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
+import { SUPPORT_EMAIL } from 'data/config'
 import styles from './User.module.css'
 import { fetchUserThunk, GUEST_USER_TYPE, logoutUserThunk, selectUserData } from './user.slice'
 import { isUserLogged } from './user.selectors'
@@ -63,7 +64,7 @@ function User() {
     <div className={styles.container}>
       <div className={styles.userInfo}>
         <div>
-          <label>{t('common.user', 'User')}</label>
+          <label>{t('user.title', 'User')}</label>
           <p>{`${userData.firstName} ${userData.lastName || ''}`}</p>
           <p className={styles.secondary}>{userData.email}</p>
         </div>
@@ -75,6 +76,21 @@ function User() {
         >
           <span>{t('common.logout', 'Log out')}</span>
         </Button>
+      </div>
+      <div className={styles.views}>
+        <label>{t('user.groups', 'User Groups')}</label>
+        {userData.groups && <p className={styles.textSpaced}>{userData.groups.join(', ')}</p>}
+        <p className={styles.missingGroup}>
+          <Trans i18nKey="user.groupMissing">
+            Do you belong to a user group that doesn’t appear here?{' '}
+            <a
+              className={styles.link}
+              href={`mailto:${SUPPORT_EMAIL}?subject=Requesting access in user group`}
+            >
+              Request access
+            </a>
+          </Trans>
+        </p>
       </div>
       <UserWorkspaces />
       <UserDatasets datasetCategory={DatasetCategory.Environment} />

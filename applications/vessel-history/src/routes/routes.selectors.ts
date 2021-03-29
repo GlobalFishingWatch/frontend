@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { RouteObject } from 'redux-first-router'
+import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
 import { AppState } from 'types/redux.types'
@@ -46,9 +47,7 @@ export const selectDataset = createSelector([selectLocationPayload], (payload) =
 
 export const selectVesselProfileId = createSelector(
   [selectDataset, selectVesselId, selectTmtId],
-  (dataset, vesselID, tmtID) => {
-    return `${dataset}_${vesselID}_${tmtID}`
-  }
+  formatVesselProfileId
 )
 
 export const selectQueryParam = (param: WorkspaceParam) =>

@@ -5,8 +5,8 @@ import {
   combineReducers,
   getDefaultMiddleware,
 } from '@reduxjs/toolkit'
-import vessels from 'features/vessels/vessels.slice'
-import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
+import connectedRoutes, { routerQueryMiddleware } from 'routes/routes'
+import vesselsReducer from 'features/vessels/vessels.slice'
 
 const {
   reducer: location,
@@ -15,7 +15,7 @@ const {
 } = connectedRoutes
 
 const rootReducer = combineReducers({
-  vessels,
+  vessels: vesselsReducer,
   location: location,
 })
 
@@ -27,7 +27,6 @@ const defaultMiddlewareOptions: any = {
     ignoredPaths: [
       // Too big to check for immutability:
       'resources',
-      'vessels',
     ],
   },
 }
@@ -42,7 +41,8 @@ const store = configureStore({
   enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })
 
-export type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof rootReducer>
+export type AppDispatch = typeof store.dispatch
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   RootState,

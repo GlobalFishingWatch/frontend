@@ -5,9 +5,9 @@ import { DebounceInput } from 'react-debounce-input'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
+import { VesselSearch } from '@globalfishingwatch/api-types'
 import { BASE_DATASET } from 'data/constants'
 import { logoutUserThunk } from 'features/user/user.slice'
-import { Vessel } from 'types'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
 import { selectQueryParam } from 'routes/routes.selectors'
@@ -26,7 +26,7 @@ interface LoaderProps {
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const dispatch = useDispatch()
   const [searching, setSearching] = useState(false)
-  const [vessels, setVessels] = useState<Array<Vessel>>([])
+  const [vessels, setVessels] = useState<Array<VesselSearch>>([])
   const query = useSelector(selectQueryParam('q'))
   const { dispatchQueryParams } = useLocationConnect()
 
@@ -41,7 +41,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
       )}&limit=${resultsPerRequest}&offset=${0}&query=${encodeURIComponent(query)}`
     )
       .then((json: any) => {
-        const resultVessels: Array<Vessel> = json.entries
+        const resultVessels: Array<VesselSearch> = json.entries
         setSearching(false)
         setVessels(resultVessels)
       })

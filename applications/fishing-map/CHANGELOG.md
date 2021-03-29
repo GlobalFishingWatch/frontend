@@ -1,5 +1,27 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.28.3
+
+### Patch Changes
+
+- Updated dependencies [328e7234]
+  - @globalfishingwatch/api-types@2.17.0
+
+## 0.28.2
+
+### Patch Changes
+
+- Updated dependencies [d6bc4dc6]
+  - @globalfishingwatch/api-types@2.16.0
+
+## 0.28.1
+
+### Patch Changes
+
+- update dependencies
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.15.2
+
 ## 0.28.0
 
 ### Minor Changes
@@ -107,6 +129,10 @@
 - Updated dependencies [[`d99bf5f3`](https://github.com/GlobalFishingWatch/frontend/commit/d99bf5f30bceed021ac990a0de8b4e992189be73)]:
   - @globalfishingwatch/api-types@2.13.0
   - @globalfishingwatch/react-hooks@4.10.0
+- [`1eb0a62f`](https://github.com/GlobalFishingWatch/frontend/commit/1eb0a62f65f350f87d9047f8fc9c635d04f55f08) [#373](https://github.com/GlobalFishingWatch/frontend/pull/373) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - update choice component
+
+- Updated dependencies [[`1eb0a62f`](https://github.com/GlobalFishingWatch/frontend/commit/1eb0a62f65f350f87d9047f8fc9c635d04f55f08)]:
+  - @globalfishingwatch/ui-components@2.15.0
 
 ## 0.27.8
 
