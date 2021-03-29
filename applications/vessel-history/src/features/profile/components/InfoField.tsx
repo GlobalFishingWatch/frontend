@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ValueItem } from 'types'
-import { useTranslation } from 'utils/i18n'
 import styles from './Info.module.css'
 import InfoFieldHistory from './InfoFieldHistory'
 
@@ -38,7 +38,7 @@ const InfoField: React.FC<ListItemProps> = ({
           <button className={styles.moreValues} onClick={openModal}>{`+${valuesHistory.length} ${t(
             'common.previous',
             'previous'
-          )} ${t(`common.${label}Plural`, `${label}s`)}`}</button>
+          )} ${t(`${label}Plural`, `${label}s`)}`}</button>
         )}
         <InfoFieldHistory
           current={current}

@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback } from 'react'
 import { DateTime } from 'luxon'
+import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
-import { useTranslation } from 'utils/i18n'
 import { ValueItem } from 'types'
 import styles from './Info.module.css'
 

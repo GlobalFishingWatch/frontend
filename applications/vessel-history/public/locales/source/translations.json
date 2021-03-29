@@ -1,11 +1,15 @@
 {
   "common": {
+    "activity": "ACTIVITY",
     "commingSoon": "Comming Soon!",
     "currentTimeRange": "CURRENT TIME RANGE",
     "from": "From",
+    "info": "INFO",
+    "map": "MAP",
     "previous": "previous",
     "since": "Since",
-    "timeRange": "Time Range"
+    "timeRange": "Time Range",
+    "Plural": "missing_translation"
   },
   "search": {
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
