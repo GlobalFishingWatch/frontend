@@ -19,12 +19,15 @@ export const DEFAULT_VIEWPORT = {
   longitude: 21,
   zoom: 0,
 }
-export const DEFAULT_WORKSPACE = {
-  ...DEFAULT_VIEWPORT,
-  query: undefined,
-  sidebarOpen: true,
+export const DEFAULT_TIME_RANGE = {
   start: new Date(2019, 0, 1).toISOString(),
   end: end,
+}
+export const DEFAULT_WORKSPACE = {
+  ...DEFAULT_VIEWPORT,
+  ...DEFAULT_TIME_RANGE,
+  query: undefined,
+  sidebarOpen: true,
   availableStart: new Date(2012, 0, 1).toISOString(),
   availableEnd: end,
   dataviewInstances: undefined,
