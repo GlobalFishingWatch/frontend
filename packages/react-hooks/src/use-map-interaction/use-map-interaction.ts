@@ -16,7 +16,16 @@ const getExtendedFeatures = (
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
     const generatorType = feature.layer.metadata?.generatorType ?? null
     const generatorId = feature.layer.metadata?.generatorId ?? null
-    const unit = feature.layer?.metadata?.legend?.unit ?? null
+
+    // TODO: if no generatorMetadata is found, fallback to feature.layer.metadata, but the former should be prefered
+    let generatorMetadata
+    if (metadata?.generatorsMetadata && metadata?.generatorsMetadata[generatorId]) {
+      generatorMetadata = metadata?.generatorsMetadata[generatorId]
+    } else {
+      generatorMetadata = feature.layer.metadata
+    }
+
+    const unit = generatorMetadata?.legend?.unit ?? null
     const properties = feature.properties || {}
     const extendedFeature: ExtendedFeature | null = {
       properties,
@@ -34,7 +43,6 @@ const getExtendedFeatures = (
         z: (feature as any)._vectorTileFeature._z,
       },
     }
-    const generatorMetadata = (metadata?.generatorsMetadata || {})[generatorId]
     switch (generatorType) {
       case Generators.Type.HeatmapAnimated:
         const timeChunks = generatorMetadata?.timeChunks

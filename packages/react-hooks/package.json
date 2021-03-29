@@ -27,9 +27,9 @@
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.6.3",
     "@globalfishingwatch/dataviews-client": "^4.1.0",
-    "@globalfishingwatch/fourwings-aggregate": "^1.2.1",
+    "@globalfishingwatch/fourwings-aggregate": "2.0.0",
     "@globalfishingwatch/layer-composer": "4.18.0",
-    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.19",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.20",
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^10.0.0",

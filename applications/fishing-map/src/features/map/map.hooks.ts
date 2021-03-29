@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { InteractionEvent, useTilesLoading } from '@globalfishingwatch/react-hooks'
 import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { Style } from '@globalfishingwatch/mapbox-gl'
+import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
@@ -19,6 +19,7 @@ import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
+import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from 'data/config'
 import {
   getGeneratorsConfig,
   MULTILAYER_SEPARATOR,
@@ -153,6 +154,7 @@ export const useClickedEventConnect = () => {
   return { clickedEvent, fourWingsStatus, apiEventStatus, dispatchClickedEvent }
 }
 
+// TODO this could extend ExtendedFeature
 export type TooltipEventFeature = {
   id?: string
   title?: string
@@ -172,6 +174,7 @@ export type TooltipEventFeature = {
     vessels: ExtendedFeatureVessel[]
   }
   event?: ExtendedFeatureEvent
+  category: DataviewCategory
 }
 
 export type TooltipEvent = {
@@ -207,7 +210,7 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
 
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     let dataview
-    if (feature.generatorType === Generators.Type.HeatmapAnimated) {
+    if (feature.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID) {
       const { temporalgrid } = feature
       if (!temporalgrid || temporalgrid.sublayerIndex === undefined || !temporalgrid.visible) {
         return []
@@ -234,6 +237,8 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
           type: Generators.Type.GL,
           value: feature.properties.label,
           properties: {},
+          // TODO: I have no idea wwhat to put here
+          category: DataviewCategory.Context,
         }
         return tooltipWorkspaceFeature
       }
@@ -258,15 +263,8 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
       title,
       type: dataview.config?.type,
       color: dataview.config?.color || 'black',
-      id: feature.id,
-      unit: feature.unit,
-      value: feature.value,
-      event: feature.event,
-      source: feature.source,
-      sourceLayer: feature.sourceLayer,
-      geometry: feature.geometry,
-      layerId: feature.layerId,
-      contextLayer: feature.generatorContextLayer,
+      category: dataview.category || DataviewCategory.Context,
+      ...feature,
       properties: { ...feature.properties },
     }
     // Insert custom properties by each dataview configuration

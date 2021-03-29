@@ -1,13 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { scaleLinear } from 'd3-scale'
-import { CircleLayer } from '@globalfishingwatch/mapbox-gl'
+import type { CircleLayer } from '@globalfishingwatch/mapbox-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
-import {
-  AnyGeneratorConfig,
-  HeatmapAnimatedGeneratorConfig,
-  HeatmapAnimatedGeneratorSublayer,
-  HeatmapAnimatedMode,
-} from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
 import {
   DatasetCategory,
@@ -73,7 +67,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
         const { config, datasetsConfig } = dataview
         if (!config || !datasetsConfig || !datasetsConfig.length) return []
         const datasets = config.datasets || datasetsConfig.map((dc: any) => dc.datasetId)
-        const sublayer: HeatmapAnimatedGeneratorSublayer = {
+        const sublayer: Generators.HeatmapAnimatedGeneratorSublayer = {
           id: dataview.id,
           datasets,
           colorRamp: config.colorRamp as Generators.ColorRampsIds,
@@ -201,6 +195,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
             color: dataview?.config?.color,
             group: Group.OutlinePolygonsBackground,
             interactive: true,
+            // TODO this must be added to HeatmapAnimated as well
             legend: {
               label: dataset?.name,
               unit: dataset?.unit,
@@ -226,7 +221,10 @@ export const getWorkspaceGeneratorsConfig = createSelector(
       data: rulers,
     }
 
-    const generators = [...generatorsConfig.reverse(), rulersConfig] as AnyGeneratorConfig[]
+    const generators = [
+      ...generatorsConfig.reverse(),
+      rulersConfig,
+    ] as Generators.AnyGeneratorConfig[]
 
     const generators_ = generators.map((generator) => {
       if (generator.id !== 'sea-surface-temp-palau') {
@@ -242,21 +240,26 @@ export const getWorkspaceGeneratorsConfig = createSelector(
         breaks: [28, 28.2, 28.4, 28.6, 28.8, 29, 29.2, 29.4],
         breaksMultiplier: 1,
       }
-      const gen: HeatmapAnimatedGeneratorConfig = {
+      const gen: Generators.HeatmapAnimatedGeneratorConfig = {
         id: 'sea-surface-temp-palau',
         type: Generators.Type.HeatmapAnimated,
         sublayers: [sublayer],
-        mode: HeatmapAnimatedMode.Single,
+        mode: Generators.HeatmapAnimatedMode.Single,
         interactive: true,
         interval: 'month',
         tilesAPI: 'https://dev-api-fourwings-tiler-jzzp2ui3wq-uc.a.run.app/v1',
         aggregationOperation: AggregationOperation.Avg,
         breaksMultiplier: 1,
+        metadata: {
+          legend: {
+            unit: '℃',
+          },
+        },
       }
       return gen
     })
 
-    return generators_ as AnyGeneratorConfig[]
+    return generators_ as Generators.AnyGeneratorConfig[]
   }
 )
 
@@ -334,7 +337,7 @@ const basemap: Generators.BasemapGeneratorConfig = {
 
 export const selectMapWorkspacesListGenerators = createSelector(
   [selectWorkspacesListGenerator],
-  (workspaceGenerator): AnyGeneratorConfig[] => {
+  (workspaceGenerator): Generators.AnyGeneratorConfig[] => {
     if (!workspaceGenerator) return [basemap]
     return [basemap, workspaceGenerator]
   }
