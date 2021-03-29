@@ -3,7 +3,6 @@ import { DateTime } from 'luxon'
 import type { Feature, Polygon } from 'geojson'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Report } from '@globalfishingwatch/api-types'
-import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   AsyncError,
   asyncInitialState,
@@ -43,57 +42,59 @@ export const createSingleReportThunk = createAsyncThunk<
 
     const queryFiltersFields = [
       {
-        value: filters.flags,
+        value: filters.flag,
         field: 'flag',
         operator: 'IN',
         transformation: (value: any): string =>
-          `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+          `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
       },
       {
-        value: filters.fleets,
+        value: filters.fleet,
         field: 'fleet',
         operator: 'IN',
         transformation: (value: any): string =>
-          `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+          `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
       },
       {
-        value: filters.origins,
+        value: filters.origin,
         field: 'origin',
         operator: 'IN',
         transformation: (value: any): string =>
-          `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+          `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
       },
       {
         value: filters.geartype,
         field: 'geartype',
         operator: 'IN',
         transformation: (value: any): string =>
-          `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+          `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
       },
       {
         value: filters.vessel_type,
         field: 'vessel_type',
         operator: 'IN',
         transformation: (value: any): string =>
-          `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+          `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
       },
     ]
 
     const queryFilters = queryFiltersFields
-      .filter(({ value }) => value !== undefined)
+      .filter(({ value }) => value && value !== undefined)
       .map(
         ({ field, operator, transformation, value }) =>
           `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
       )
+      .join(' AND ')
 
     const payload = {
       ...createReport,
       type: 'detail',
       timeGroup: 'none',
-      filters: queryFilters,
+      filters: [queryFilters],
       datasets: datasets,
       dateRange: [fromDate, toDate],
     }
+
     const createdReport = await GFWAPI.fetch<Report>('/v1/reports', {
       method: 'POST',
       body: payload as any,
