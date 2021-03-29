@@ -5,5 +5,9 @@ export {
   UrlDataviewInstance,
   mergeWorkspaceUrlDataviewInstances,
 } from './resolve-dataviews'
-export { getGeneratorConfig, getDataviewsGeneratorConfigs } from './resolve-dataviews-generators'
+export {
+  getGeneratorConfig,
+  getDataviewsGeneratorConfigs,
+  MULTILAYER_SEPARATOR,
+} from './resolve-dataviews-generators'
 export { default as resolveEndpoint } from './resolve-endpoint'

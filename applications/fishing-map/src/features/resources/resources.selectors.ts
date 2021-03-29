@@ -1,8 +1,7 @@
 import { createSelector } from 'reselect'
-import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EndpointId, Resource } from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { ResourceQuery } from 'features/resources/resources.slice'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import { isGuestUser } from 'features/user/user.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
@@ -13,7 +12,7 @@ export const selectDataviewsResourceQueries = createSelector(
   (dataviewInstances, guestUser, { thinning }) => {
     if (!dataviewInstances) return
 
-    const resourceQueries: ResourceQuery[] = dataviewInstances.flatMap((dataview) => {
+    const resourceQueries: Resource[] = dataviewInstances.flatMap((dataview) => {
       if (dataview.config?.type !== Generators.Type.Track || dataview.deleted) {
         return []
       }
@@ -49,9 +48,9 @@ export const selectDataviewsResourceQueries = createSelector(
 
       const infoResource = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
       if (!infoResource.url || !infoResource.dataset || !infoResource.datasetConfig) {
-        return trackQuery as ResourceQuery
+        return trackQuery as Resource
       }
-      const infoQuery: ResourceQuery = {
+      const infoQuery: Resource = {
         dataviewId: dataview.dataviewId as number,
         url: infoResource.url,
         datasetType: infoResource.dataset.type,

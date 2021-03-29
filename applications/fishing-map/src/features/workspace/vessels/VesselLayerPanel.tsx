@@ -2,7 +2,7 @@ import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes, Vessel } from '@globalfishingwatch/api-types'
+import { DatasetTypes, ResourceStatus, Vessel } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
@@ -18,7 +18,6 @@ import {
   resolveDataviewDatasetResource,
 } from '@globalfishingwatch/dataviews-client'
 import { formatInfoField, getVesselLabel } from 'utils/info'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
@@ -125,11 +124,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   )
 
   const loading =
-    trackResource?.status === AsyncReducerStatus.Loading ||
-    infoResource?.status === AsyncReducerStatus.Loading
+    trackResource?.status === ResourceStatus.Loading ||
+    infoResource?.status === ResourceStatus.Loading
 
-  const infoError = infoResource?.status === AsyncReducerStatus.Error
-  const trackError = trackResource?.status === AsyncReducerStatus.Error
+  const infoError = infoResource?.status === ResourceStatus.Error
+  const trackError = trackResource?.status === ResourceStatus.Error
 
   return (
     <div
