@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
+import { TEMPORALGRID_SOURCE_LAYER, TimeChunks } from '@globalfishingwatch/layer-composer'
 import useMapInstance from 'features/map/map-context.hooks'
-import { useCurrentTimeChunkId } from './map.hooks'
+import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from 'data/config'
+import { useGeneratorStyleMetadata } from './map.hooks'
 
 export const useMapSourceLoaded = (sourceId: string, cacheKey?: string) => {
   const map = useMapInstance()
@@ -95,9 +96,11 @@ export const useMapFeatures = ({
 }
 
 export const useMapTemporalgridFeatures = ({ cacheKey }: { cacheKey?: string } = {}) => {
-  // TODO rethink this to include generator id
-  // + expose source generation logic from LC
-  const currentTimeChunkId = useCurrentTimeChunkId()
+  const mergedActivityGenMetadata = useGeneratorStyleMetadata(
+    MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
+  )
+  const currentTimeChunks = mergedActivityGenMetadata.timeChunks as TimeChunks
+  const currentTimeChunkId = currentTimeChunks?.activeSourceId
 
   return useMapFeatures({
     sourceId: currentTimeChunkId,

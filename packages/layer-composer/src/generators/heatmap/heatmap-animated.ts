@@ -91,7 +91,7 @@ class HeatmapAnimatedGenerator {
 
     const sources = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
       const baseSourceParams: TileAggregationSourceParams = {
-        id: getSourceId(config, timeChunk),
+        id: getSourceId(config.id, timeChunk),
         singleFrame: false,
         geomType,
         delta,
@@ -156,6 +156,7 @@ class HeatmapAnimatedGenerator {
     }
     // console.log(finalConfig)
     const timeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
+      finalConfig.id,
       finalConfig.staticStart || finalConfig.start,
       finalConfig.staticEnd || finalConfig.end,
       finalConfig.tilesetsStart,

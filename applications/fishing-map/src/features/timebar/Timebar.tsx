@@ -15,7 +15,7 @@ import { DEFAULT_WORKSPACE, MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
-import { useMapStyle } from 'features/map/map.hooks'
+import { useGeneratorStyleMetadata } from 'features/map/map.hooks'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
 import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { filterByViewport } from 'features/map/map.utils'
@@ -54,9 +54,7 @@ const TimebarWrapper = () => {
     [setBookmark]
   )
 
-  const mapStyle = useMapStyle()
-  const temporalgrid =
-    mapStyle?.metadata?.generatorsMetadata[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
+  const temporalgrid = useGeneratorStyleMetadata(MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
   const [stackedActivity, setStackedActivity] = useState<any>()
 
   const visibleTemporalGridDataviews = useMemo(

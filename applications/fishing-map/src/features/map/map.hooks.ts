@@ -319,9 +319,7 @@ export const useMapStyle = () => {
   return style
 }
 
-export const useCurrentTimeChunkId = () => {
+export const useGeneratorStyleMetadata = (generatorId: string) => {
   const style = useMapStyle()
-  const currentTimeChunks = style?.metadata?.temporalgrid?.timeChunks as TimeChunks
-  const currentTimeChunkId = currentTimeChunks?.activeId
-  return currentTimeChunkId
+  return style?.metadata?.generatorsMetadata[generatorId] || {}
 }

@@ -1,4 +1,3 @@
-import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { TimeChunk } from './time-chunks'
 
 export const toURLArray = (paramName: string, arr: string[]) => {
@@ -10,14 +9,10 @@ export const toURLArray = (paramName: string, arr: string[]) => {
     .join('&')
 }
 
-export const getSourceId = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunk: TimeChunk) => {
-  return `${config.id}-${timeChunk.id}`
+export const getSourceId = (baseId: string, timeChunk: TimeChunk) => {
+  return `${baseId}-${timeChunk.id}`
 }
 
-export const getLayerId = (
-  config: GlobalHeatmapAnimatedGeneratorConfig,
-  timeChunk: TimeChunk,
-  suffix = ''
-) => {
-  return `${getSourceId(config, timeChunk)}-${suffix}`
+export const getLayerId = (baseId: string, timeChunk: TimeChunk, suffix = '') => {
+  return `${getSourceId(baseId, timeChunk)}-${suffix}`
 }

@@ -10,7 +10,7 @@ import { getTimeSeries, getRealValue } from '@globalfishingwatch/fourwings-aggre
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
-import { useMapStyle } from 'features/map/map.hooks'
+import { useGeneratorStyleMetadata } from 'features/map/map.hooks'
 import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/workspace/workspace.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -28,9 +28,7 @@ function AnalysisGraphWrapper() {
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
   const [timeseries, setTimeseries] = useState<GraphData[] | undefined>()
-  const mapStyle = useMapStyle()
-  const temporalgrid =
-    mapStyle?.metadata?.generatorsMetadata[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
+  const temporalgrid = useGeneratorStyleMetadata(MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
   const numSublayers = temporalgrid?.numSublayers
   const timeChunks = temporalgrid?.timeChunks as TimeChunks
   const interval = temporalgrid?.timeChunks?.interval
