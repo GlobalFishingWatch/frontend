@@ -44,6 +44,10 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: 90,
     },
     {
+      id: 'palau',
+      dataviewId: 1,
+    },
+    {
       id: 'fishing-1',
       config: {
         // datasets: [`fishing_v5`],
