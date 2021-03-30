@@ -1,5 +1,13 @@
 # @globalfishingwatch/dataviews-client
 
+## 5.0.1
+
+### Patch Changes
+
+- fix generators type export
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.18.1
+
 ## 5.0.0
 
 ### Major Changes
