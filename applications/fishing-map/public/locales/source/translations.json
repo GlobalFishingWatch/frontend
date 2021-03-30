@@ -13,7 +13,8 @@
     "successfullMessage": "The report was sent successfully, you'll receive it by email soon.",
     "dateRange": "Date Range",
     "emailDescription": "A report for the selected date ranges and filters will be generated and sent to your email account",
-    "generate": "Generate"
+    "generate": "Generate",
+    "timeRangeTooLong": "Reports are only allowed for time ranges up to one year"
   },
   "common": {
     "active_after": "Active after",
