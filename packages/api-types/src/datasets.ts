@@ -43,6 +43,8 @@ export enum DatasetTypes {
   Ports = 'carriers-ports:v1',
   Tracks = 'carriers-tracks:v1',
   Fourwings = '4wings:v1',
+  // TODO: remove once merged with the above in API
+  FourwingsFD = '4wings-fd:v1',
   Context = 'user-context-layer:v1',
   Download = 'data-download:v1',
 }
