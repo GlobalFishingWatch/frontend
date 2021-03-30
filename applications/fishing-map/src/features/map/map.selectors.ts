@@ -26,7 +26,6 @@ export const selectGlobalGeneratorsConfig = createSelector(
   })
 )
 
-// TODO merge this with getDataviewsGeneratorConfigs user-dataviews-layer package
 export const getWorkspaceGeneratorsConfig = createSelector(
   [
     selectDataviewInstancesResolved,
@@ -43,16 +42,16 @@ export const getWorkspaceGeneratorsConfig = createSelector(
       return !isAnimatedHeatmap
     })
 
-    let aggregationMode: Generators.HeatmapAnimatedMode = bivariate
+    let heatmapAnimatedMode: Generators.HeatmapAnimatedMode = bivariate
       ? Generators.HeatmapAnimatedMode.Bivariate
       : Generators.HeatmapAnimatedMode.Compare
     if (debugOptions.extruded) {
-      aggregationMode = Generators.HeatmapAnimatedMode.Extruded
+      heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Extruded
     } else if (debugOptions.blob && animatedHeatmapDataviews.length === 1) {
-      aggregationMode = Generators.HeatmapAnimatedMode.Blob
+      heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Blob
     }
     const generatorOptions = {
-      aggregationMode,
+      heatmapAnimatedMode,
       highlightedTime,
       timeRange: staticTime,
       debug: debugOptions.blob,
@@ -60,12 +59,12 @@ export const getWorkspaceGeneratorsConfig = createSelector(
 
     const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
 
-    const rulersConfig = {
+    const rulersGeneratorConfig = {
       type: Generators.Type.Rulers,
       id: 'rulers',
       data: rulers,
     }
-    return [...generatorsConfig.reverse(), rulersConfig] as AnyGeneratorConfig[]
+    return [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
   }
 )
 

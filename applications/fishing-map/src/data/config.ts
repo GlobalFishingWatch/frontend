@@ -13,14 +13,18 @@ export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
 
 // used when no url data and no workspace data
-const end = new Date().toISOString()
+const now = new Date()
+const end = new Date(
+  Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes())
+).toISOString()
+
 export const DEFAULT_VIEWPORT = {
   latitude: 15,
   longitude: 21,
   zoom: 0,
 }
 export const DEFAULT_TIME_RANGE = {
-  start: new Date(2019, 0, 1).toISOString(),
+  start: new Date(Date.UTC(2019, 0, 1)).toISOString(),
   end: end,
 }
 export const DEFAULT_WORKSPACE = {
@@ -28,7 +32,7 @@ export const DEFAULT_WORKSPACE = {
   ...DEFAULT_TIME_RANGE,
   query: undefined,
   sidebarOpen: true,
-  availableStart: new Date(2012, 0, 1).toISOString(),
+  availableStart: new Date(Date.UTC(2012, 0, 1)).toISOString(),
   availableEnd: end,
   dataviewInstances: undefined,
   timebarVisualisation: TimebarVisualisations.Heatmap,

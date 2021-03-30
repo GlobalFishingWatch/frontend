@@ -31,7 +31,7 @@ export const selectTracksData = createSelector(
     if (!trackDataviews || !resources) return
 
     const tracksSegments: TimebarTrack[] = trackDataviews.flatMap((dataview) => {
-      const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
+      const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       if (!url) return []
       const track = resources[url] as Resource<TrackResourceData>
       if (!track?.data) return []
@@ -58,7 +58,7 @@ export const selectTracksGraphs = createSelector(
     if (!trackDataviews || trackDataviews.length > 2 || !resources) return
 
     const graphs = trackDataviews.flatMap((dataview) => {
-      const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
+      const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       if (!url) return []
       const track = resources[url] as Resource<TrackResourceData>
       if (!track?.data) return []

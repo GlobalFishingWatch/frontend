@@ -14,6 +14,12 @@ export type UrlDataviewInstance<T = Generators.Type> = Omit<DataviewInstance<T>,
   deleted?: boolean // needed when you want to override from url an existing workspace config
 }
 
+/**
+ * Detects newly instanciated dataviews in workspaceDataviewInstances
+ * @param workspaceDataviewInstances
+ * @param urlDataviewInstances
+ * @returns
+ */
 export const mergeWorkspaceUrlDataviewInstances = (
   workspaceDataviewInstances: DataviewInstance<any>[],
   urlDataviewInstances: UrlDataviewInstance[]
@@ -61,17 +67,16 @@ export const mergeWorkspaceUrlDataviewInstances = (
 
 export const resolveDataviewDatasetResource = (
   dataview: UrlDataviewInstance,
-  { type, id }: { type?: DatasetTypes; id?: string }
+  typeOrId: DatasetTypes | string
 ): {
   dataset?: Dataset
   datasetConfig?: DataviewDatasetConfig
   url?: string
 } => {
-  if (!type && !id) return {}
-
-  const dataset = type
-    ? dataview.datasets?.find((dataset) => dataset.type === type)
-    : dataview.datasets?.find((dataset) => dataset.id === id)
+  const isType = Object.values(DatasetTypes).includes(typeOrId as any)
+  const dataset = isType
+    ? dataview.datasets?.find((dataset) => dataset.type === typeOrId)
+    : dataview.datasets?.find((dataset) => dataset.id === typeOrId)
   if (!dataset) return {}
   const datasetConfig = dataview?.datasetsConfig?.find(
     (datasetConfig) => datasetConfig.datasetId === dataset.id

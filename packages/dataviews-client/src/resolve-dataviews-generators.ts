@@ -16,7 +16,7 @@ export const MULTILAYER_SEPARATOR = '__'
 
 type DataviewsGeneratorConfigsParams = {
   debug?: boolean
-  aggregationMode?: Generators.HeatmapAnimatedMode
+  heatmapAnimatedMode?: Generators.HeatmapAnimatedMode
   timeRange?: { start: string; end: string }
   highlightedTime?: { start: string; end: string }
 }
@@ -33,103 +33,111 @@ export function getGeneratorConfig(
     id: dataview.id,
     ...dataview.config,
   }
-  if (dataview.config?.type === Generators.Type.Track) {
-    // Inject highligtedTime
-    if (highlightedTime) {
-      generator.highlightedTime = highlightedTime
-    }
-    // Try to retrieve resource if it exists
-    const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
-    if (url && resources?.[url]) {
-      const resource = resources?.[url] as Resource<TrackResourceData>
-      generator.data = resource.data
-    }
-  } else if (
-    dataview.config?.type === Generators.Type.Context ||
-    dataview.config?.type === Generators.Type.UserContext
-  ) {
-    if (Array.isArray(dataview.config.layers)) {
-      const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
-        const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(dataview, {
-          id: dataset,
-        })
-        if (!url || resolvedDataset?.status !== DatasetStatus.Done) return []
-        return { id, tilesUrl: url, attribution: resolvedDataset?.source }
-      })
-      // Duplicated generators when context dataview have multiple layers
-      return tilesUrls.map(({ id, tilesUrl, attribution }) => ({
-        ...generator,
-        id: `${dataview.id}${MULTILAYER_SEPARATOR}${id}`,
-        layer: id,
-        attribution,
-        tilesUrl,
-      }))
-    } else {
-      generator.id = dataview.config.layers
-        ? `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers}`
-        : dataview.id
-      generator.layer = dataview.config.layers
-      const { dataset, url } = resolveDataviewDatasetResource(dataview, {
-        type: DatasetTypes.Context,
-      })
-      if (dataset?.status !== DatasetStatus.Done) {
+
+  switch (dataview.config?.type) {
+    case Generators.Type.TileCluster:
+      const { dataset: tileClusterDataset, url: tileClusterUrl } = resolveDataviewDatasetResource(
+        dataview,
+        DatasetTypes.Events
+      )
+      if (!tileClusterDataset || !tileClusterUrl) {
+        console.warn('No dataset config for TileCluster generator', dataview)
         return []
       }
-      if (url) {
-        generator.tilesUrl = url
+      generator.tilesUrl = tileClusterUrl
+      break
+
+    case Generators.Type.Track:
+      // Inject highligtedTime
+      if (highlightedTime) {
+        generator.highlightedTime = highlightedTime
       }
-      if (dataset?.source) {
-        generator.attribution = dataset.source
+      // Try to retrieve resource if it exists
+      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+      if (trackUrl && resources?.[trackUrl]) {
+        const resource = resources?.[trackUrl] as Resource<TrackResourceData>
+        generator.data = resource.data
       }
-      if (dataset.category === DatasetCategory.Environment) {
-        const { min, max } =
-          (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange || {}
-        const rampScale = scaleLinear().range([min, max]).domain([0, 1])
-        const numSteps = 8
-        const steps = [...Array(numSteps)]
-          .map((_, i) => parseFloat((i / (numSteps - 1)).toFixed(2)))
-          .map((value) => parseFloat((rampScale(value) as number).toFixed(3)))
-        generator.steps = steps
-      }
-    }
-    if (!generator.tilesUrl) {
-      console.warn('Missing tiles url for dataview', dataview)
-      return []
-    }
-  } else if (dataview.config?.type === Generators.Type.Heatmap) {
-    const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
-    const tilesEndpoint = dataset?.endpoints?.find(
-      (endpoint) => endpoint.id === EndpointId.FourwingsTiles
-    )
-    const statsEndpoint = dataset?.endpoints?.find(
-      (endpoint) => endpoint.id === EndpointId.FourwingsLegend
-    )
-    generator = {
-      ...generator,
-      maxZoom: 8,
-      fetchStats: !dataview.config.steps,
-      datasets: [dataset?.id],
-      tilesUrl: tilesEndpoint?.pathTemplate,
-      statsUrl: statsEndpoint?.pathTemplate,
-      metadata: {
-        color: dataview?.config?.color,
-        group: Group.OutlinePolygonsBackground,
-        interactive: true,
-        legend: {
-          label: dataset?.name,
-          unit: dataset?.unit,
+      break
+    case Generators.Type.Heatmap:
+      const heatmapDataset = dataview.datasets?.find(
+        (dataset) => dataset.type === DatasetTypes.Fourwings
+      )
+      const tilesEndpoint = heatmapDataset?.endpoints?.find(
+        (endpoint) => endpoint.id === EndpointId.FourwingsTiles
+      )
+      const statsEndpoint = heatmapDataset?.endpoints?.find(
+        (endpoint) => endpoint.id === EndpointId.FourwingsLegend
+      )
+      generator = {
+        ...generator,
+        maxZoom: 8,
+        fetchStats: !dataview.config.steps,
+        datasets: [heatmapDataset?.id],
+        tilesUrl: tilesEndpoint?.pathTemplate,
+        statsUrl: statsEndpoint?.pathTemplate,
+        metadata: {
+          color: dataview?.config?.color,
+          group: Group.OutlinePolygonsBackground,
+          interactive: true,
+          legend: {
+            label: heatmapDataset?.name,
+            unit: heatmapDataset?.unit,
+          },
         },
-      },
-    }
-  } else if (dataview.config?.type === Generators.Type.TileCluster) {
-    const { dataset, url } = resolveDataviewDatasetResource(dataview, {
-      type: DatasetTypes.Events,
-    })
-    if (!dataset || !url) {
-      console.warn('No dataset config for TileCluster generator', dataview)
-      return []
-    }
-    generator.tilesUrl = url
+      }
+      break
+    case Generators.Type.Context:
+    case Generators.Type.UserContext:
+      if (Array.isArray(dataview.config.layers)) {
+        const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
+          const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(
+            dataview,
+            dataset
+          )
+          if (!url || resolvedDataset?.status !== DatasetStatus.Done) return []
+          return { id, tilesUrl: url, attribution: resolvedDataset?.source }
+        })
+        // Duplicated generators when context dataview have multiple layers
+        return tilesUrls.map(({ id, tilesUrl, attribution }) => ({
+          ...generator,
+          id: `${dataview.id}${MULTILAYER_SEPARATOR}${id}`,
+          layer: id,
+          attribution,
+          tilesUrl,
+        }))
+      } else {
+        generator.id = dataview.config.layers
+          ? `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers}`
+          : dataview.id
+        generator.layer = dataview.config.layers
+        const { dataset, url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Context)
+        if (dataset?.status !== DatasetStatus.Done) {
+          return []
+        }
+        if (url) {
+          generator.tilesUrl = url
+        }
+        if (dataset?.source) {
+          generator.attribution = dataset.source
+        }
+        if (dataset.category === DatasetCategory.Environment) {
+          const { min, max } =
+            (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
+            {}
+          const rampScale = scaleLinear().range([min, max]).domain([0, 1])
+          const numSteps = 8
+          const steps = [...Array(numSteps)]
+            .map((_, i) => parseFloat((i / (numSteps - 1)).toFixed(2)))
+            .map((value) => parseFloat((rampScale(value) as number).toFixed(3)))
+          generator.steps = steps
+        }
+      }
+      if (!generator.tilesUrl) {
+        console.warn('Missing tiles url for dataview', dataview)
+        return []
+      }
+      break
   }
   return generator
 }
@@ -149,7 +157,7 @@ export function getDataviewsGeneratorConfigs(
   params: DataviewsGeneratorConfigsParams,
   resources?: Record<string, Resource>
 ) {
-  const { debug = false, aggregationMode = Generators.HeatmapAnimatedMode.Compare, timeRange } =
+  const { debug = false, heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Compare, timeRange } =
     params || {}
 
   const animatedHeatmapDataviews: UrlDataviewInstance[] = []
@@ -187,7 +195,7 @@ export function getDataviewsGeneratorConfigs(
         type: Generators.Type.HeatmapAnimated,
         sublayers,
         visible,
-        mode: aggregationMode,
+        mode: heatmapAnimatedMode,
         debug,
         debugLabels: debug,
         staticStart: timeRange?.start,

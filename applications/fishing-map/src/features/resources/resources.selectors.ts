@@ -33,9 +33,7 @@ export const selectDataviewsResourceQueries = createSelector(
             return { ...datasetConfig, query: [...(datasetConfig.query || []), ...thinningQuery] }
           })
         }
-        const trackResource = resolveDataviewDatasetResource(dataview, {
-          type: DatasetTypes.Tracks,
-        })
+        const trackResource = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
         if (trackResource.url && trackResource.dataset && trackResource.datasetConfig) {
           trackQuery = {
             dataviewId: dataview.dataviewId as number,
@@ -46,7 +44,7 @@ export const selectDataviewsResourceQueries = createSelector(
         }
       }
 
-      const infoResource = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
+      const infoResource = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
       if (!infoResource.url || !infoResource.dataset || !infoResource.datasetConfig) {
         return trackQuery as Resource
       }
