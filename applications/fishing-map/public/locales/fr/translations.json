@@ -205,6 +205,7 @@
     "remove": "Supprimer l'espace de travail",
     "save": "Enregistrer la vue actuelle",
     "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil utilisateur",
+    "saveLogin": "You need to login to save views",
     "title_plural": "Workspaces",
     "title": "Espace de travail"
   }
