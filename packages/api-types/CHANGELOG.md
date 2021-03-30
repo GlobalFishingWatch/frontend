@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 3.0.0
+
+### Major Changes
+
+- d2501b54: move fishing-map logic into dataview-client
+
 ## 2.17.0
 
 ### Minor Changes
