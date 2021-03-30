@@ -6,10 +6,10 @@ import {
   DataviewDatasetConfig,
   DataviewInstance,
 } from '@globalfishingwatch/api-types'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { resolveEndpoint } from '.'
 
-export type UrlDataviewInstance<T = Generators.Type> = Omit<DataviewInstance<T>, 'dataviewId'> & {
+export type UrlDataviewInstance<T = Type> = Omit<DataviewInstance<T>, 'dataviewId'> & {
   dataviewId?: number // making this optional as sometimes we just need to reference the id
   deleted?: boolean // needed when you want to override from url an existing workspace config
 }
@@ -164,7 +164,7 @@ export default function resolveDataviews(
 
   // resolved array filters to url filters
   dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
-    if (dataviewInstance.config?.type === Generators.Type.HeatmapAnimated) {
+    if (dataviewInstance.config?.type === Type.HeatmapAnimated) {
       const { filters } = dataviewInstance.config
       if (filters) {
         const sqlFilters = Object.keys(filters).flatMap((filterKey) => {

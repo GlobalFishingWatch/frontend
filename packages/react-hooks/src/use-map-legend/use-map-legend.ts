@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { ExtendedStyle, Generators, LayerMetadataLegend } from '@globalfishingwatch/layer-composer'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   LegendLayer,
   LegendLayerBivariate,
