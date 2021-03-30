@@ -205,6 +205,7 @@
     "remove": "Eliminar área de trabajo",
     "save": "Guardar el mapa actual",
     "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
+    "saveLogin": "You need to login to save views",
     "title_plural": "Espacios de trabajo",
     "title": "Espacio de trabajo"
   }
