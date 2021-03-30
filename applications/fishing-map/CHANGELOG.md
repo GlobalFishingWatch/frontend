@@ -1,5 +1,18 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.28.5
+
+### Patch Changes
+
+- 6badcfe5: Update use-legends hook to match fishing-map latest changes
+- f164fc6d: Support mouseEnter and mouseLeave in IconButton
+- Updated dependencies [6badcfe5]
+- Updated dependencies [f164fc6d]
+- Updated dependencies [df1cb0cc]
+  - @globalfishingwatch/react-hooks@5.1.0
+  - @globalfishingwatch/ui-components@2.16.0
+  - @globalfishingwatch/api-types@3.1.0
+
 ## 0.28.4
 
 ### Patch Changes
