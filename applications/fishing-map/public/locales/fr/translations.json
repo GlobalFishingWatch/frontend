@@ -13,7 +13,8 @@
     "successfullMessage": "Le rapport a été envoyé avec succès, vous le recevrez bientôt par courriel.",
     "dateRange": "Date Range",
     "emailDescription": "Un rapport pour les plages de dates et les filtres sélectionnés sera généré et envoyé à votre compte de messagerie",
-    "generate": "Générer"
+    "generate": "Générer",
+    "timeRangeTooLong": "Reports are only allowed for time ranges up to one year"
   },
   "common": {
     "active_after": "Actif après",
