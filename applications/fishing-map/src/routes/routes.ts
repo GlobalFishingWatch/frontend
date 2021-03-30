@@ -117,14 +117,15 @@ const parseWorkspace = (queryString: string) => {
     decoder,
     strictNullHandling: true,
   })
-  Object.keys(parsed).forEach((param: string) => {
-    const value = parsed[param]
+  const parsedWithAbbr = deepReplaceKeys(parsed, ABBREVIATED_TO_PARAMS)
+  Object.keys(parsedWithAbbr).forEach((param: string) => {
+    const value = parsedWithAbbr[param]
     const transformationFn = urlToObjectTransformation[param]
     if (value && transformationFn) {
-      parsed[param] = transformationFn(value)
+      parsedWithAbbr[param] = transformationFn(value)
     }
   })
-  const parsedWithAbbr = deepReplaceKeys(parsed, ABBREVIATED_TO_PARAMS)
+
   return parsedWithAbbr
 }
 
