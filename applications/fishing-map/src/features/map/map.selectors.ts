@@ -3,8 +3,10 @@ import type { CircleLayer } from '@globalfishingwatch/mapbox-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/dataviews-client'
-import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import {
+  getDataviewsGeneratorConfigs,
+  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+} from '@globalfishingwatch/dataviews-client'
 import {
   selectDataviewInstancesResolved,
   selectWorkspaceError,
@@ -16,7 +18,6 @@ import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
-import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
 
 export const selectGlobalGeneratorsConfig = createSelector(
@@ -74,40 +75,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
       rulersGeneratorConfig,
     ] as AnyGeneratorConfig[]
 
-    const generators_ = generators.map((generator) => {
-      if (generator.id !== 'sea-surface-temp-palau') {
-        return generator
-      }
-      const sublayer = {
-        id: 'lalalala',
-        colorRamp: 'lilac' as Generators.ColorRampsIds,
-        datasets: ['fd-water-temperature-palau'],
-        filter: '',
-        active: true,
-        visible: true,
-        breaks: [28, 28.2, 28.4, 28.6, 28.8, 29, 29.2, 29.4],
-        breaksMultiplier: 1,
-      }
-      const gen: Generators.HeatmapAnimatedGeneratorConfig = {
-        id: 'sea-surface-temp-palau',
-        type: Generators.Type.HeatmapAnimated,
-        sublayers: [sublayer],
-        mode: Generators.HeatmapAnimatedMode.Single,
-        interactive: true,
-        interval: 'month',
-        tilesAPI: 'https://dev-api-fourwings-tiler-jzzp2ui3wq-uc.a.run.app/v1',
-        aggregationOperation: AggregationOperation.Avg,
-        breaksMultiplier: 1,
-        metadata: {
-          legend: {
-            unit: '℃',
-          },
-        },
-      }
-      return gen
-    })
-
-    return generators_ as AnyGeneratorConfig[]
+    return generators
   }
 )
 
