@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
-import { UrlDataviewInstance } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 

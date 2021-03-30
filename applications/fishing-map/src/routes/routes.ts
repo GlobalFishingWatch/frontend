@@ -3,8 +3,9 @@ import { NOT_FOUND, RoutesMap, redirect, connectRoutes, Options } from 'redux-fi
 import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { invert, isObject, transform } from 'lodash'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store'
-import { QueryParams, UrlDataviewInstance } from 'types'
+import { QueryParams } from 'types'
 import { REPLACE_URL_PARAMS } from 'data/config'
 import { UpdateQueryParamsAction } from './routes.actions'
 
@@ -116,14 +117,15 @@ const parseWorkspace = (queryString: string) => {
     decoder,
     strictNullHandling: true,
   })
-  Object.keys(parsed).forEach((param: string) => {
-    const value = parsed[param]
+  const parsedWithAbbr = deepReplaceKeys(parsed, ABBREVIATED_TO_PARAMS)
+  Object.keys(parsedWithAbbr).forEach((param: string) => {
+    const value = parsedWithAbbr[param]
     const transformationFn = urlToObjectTransformation[param]
     if (value && transformationFn) {
-      parsed[param] = transformationFn(value)
+      parsedWithAbbr[param] = transformationFn(value)
     }
   })
-  const parsedWithAbbr = deepReplaceKeys(parsed, ABBREVIATED_TO_PARAMS)
+
   return parsedWithAbbr
 }
 
