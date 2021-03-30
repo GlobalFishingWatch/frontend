@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import GFWAPI from '@globalfishingwatch/api-client'
