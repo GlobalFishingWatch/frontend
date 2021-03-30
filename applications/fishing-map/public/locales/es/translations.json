@@ -13,7 +13,8 @@
     "successfullMessage": "El informe ha sido enviado con éxito, lo recibirás pronto por correo electrónico.",
     "dateRange": "Intervalo de fechas",
     "emailDescription": "Se generará un informe para los intervalos de fechas y filtros seleccionados y se enviará a tu cuenta de correo electrónico",
-    "generate": "Generar"
+    "generate": "Generar",
+    "timeRangeTooLong": "Reports are only allowed for time ranges up to one year"
   },
   "common": {
     "active_after": "Activo después de",
