@@ -15,7 +15,7 @@ import {
   selectTemporalgridDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
-import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
+import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
@@ -23,6 +23,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import {
   getGeneratorsConfig,
   selectGlobalGeneratorsConfig,
+  WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
 } from './map.selectors'
 import {
@@ -54,7 +55,6 @@ export const useClickedEventConnect = () => {
   const dispatch = useDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
-  const locationCategory = useSelector(selectLocationCategory)
   const fourWingsStatus = useSelector(selectFourWingsStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
@@ -70,7 +70,7 @@ export const useClickedEventConnect = () => {
     // Used on workspaces-list or user panel to go to the workspace detail page
     if (locationType === USER || locationType === WORKSPACES_LIST) {
       const workspace = event?.features?.find(
-        (feature: any) => feature.properties.type === 'workspace'
+        (feature: any) => feature.properties.type === WORKSPACES_POINTS_TYPE
       )
       if (workspace) {
         const isDefaultWorkspace = workspace.properties.id === DEFAULT_WORKSPACE_ID
@@ -79,14 +79,16 @@ export const useClickedEventConnect = () => {
           isDefaultWorkspace
             ? {}
             : {
-                // TODO: grab category from workspace and use it before the fishing fallback
-                category: locationCategory || WorkspaceCategories.FishingActivity,
+                category:
+                  workspace.properties?.category && workspace.properties.category !== 'null'
+                    ? workspace.properties.category
+                    : WorkspaceCategories.FishingActivity,
                 workspaceId: workspace.properties.id,
               },
           true
         )
         if (workspace.properties.viewport) {
-          const { latitude, longitude, zoom } = workspace.properties?.viewport
+          const { latitude, longitude, zoom } = workspace.properties.viewport
           setMapCoordinates({ latitude, longitude, zoom })
         }
         return
