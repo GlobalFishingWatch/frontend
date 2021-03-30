@@ -1,5 +1,12 @@
 # @globalfishingwatch/api-client
 
+## 1.6.8
+
+### Patch Changes
+
+- Updated dependencies [d2501b54]
+  - @globalfishingwatch/api-types@3.0.0
+
 ## 1.6.7
 
 ### Patch Changes
