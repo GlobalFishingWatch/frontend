@@ -7,9 +7,14 @@ import {
   DatasetStatus,
   DatasetCategory,
   EnviromentalDatasetConfiguration,
+  DataviewCategory,
 } from '@globalfishingwatch/api-types'
 import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
-import { HeatmapAnimatedGeneratorSublayer } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import type {
+  ColorRampsIds,
+  HeatmapAnimatedGeneratorSublayer,
+} from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { resolveDataviewDatasetResource, UrlDataviewInstance } from './resolve-dataviews'
 
 export const MULTILAYER_SEPARATOR = '__'
@@ -17,10 +22,10 @@ export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeat
 
 type DataviewsGeneratorConfigsParams = {
   debug?: boolean
-  heatmapAnimatedMode?: Generators.HeatmapAnimatedMode
   timeRange?: { start: string; end: string }
   highlightedTime?: { start: string; end: string }
   mergedActivityGeneratorId?: string
+  heatmapAnimatedMode?: Generators.HeatmapAnimatedMode
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
@@ -30,14 +35,15 @@ export function getGeneratorConfig(
   params?: DataviewsGeneratorConfigsParams,
   resources?: DataviewsGeneratorResource
 ) {
-  const { highlightedTime } = params || {}
+  const { debug = false, timeRange, highlightedTime } = params || {}
+
   let generator: GeneratorDataviewConfig = {
     id: dataview.id,
     ...dataview.config,
   }
 
   switch (dataview.config?.type) {
-    case Generators.Type.TileCluster:
+    case Generators.Type.TileCluster: {
       const { dataset: tileClusterDataset, url: tileClusterUrl } = resolveDataviewDatasetResource(
         dataview,
         DatasetTypes.Events
@@ -48,8 +54,8 @@ export function getGeneratorConfig(
       }
       generator.tilesUrl = tileClusterUrl
       break
-
-    case Generators.Type.Track:
+    }
+    case Generators.Type.Track: {
       // Inject highligtedTime
       if (highlightedTime) {
         generator.highlightedTime = highlightedTime
@@ -61,7 +67,8 @@ export function getGeneratorConfig(
         generator.data = resource.data
       }
       break
-    case Generators.Type.Heatmap:
+    }
+    case Generators.Type.Heatmap: {
       const heatmapDataset = dataview.datasets?.find(
         (dataset) => dataset.type === DatasetTypes.Fourwings
       )
@@ -89,8 +96,53 @@ export function getGeneratorConfig(
         },
       }
       break
+    }
+    case Generators.Type.HeatmapAnimated: {
+      const isEnvironmentLayer = dataview.category === DataviewCategory.Environment
+      let environmentalConfig: Partial<Generators.HeatmapAnimatedGeneratorConfig> = {}
+      if (isEnvironmentLayer) {
+        const datasets =
+          dataview.config.datasets || dataview.datasetsConfig?.map((dc) => dc.datasetId)
+        const sublayers: Generators.HeatmapAnimatedGeneratorSublayer[] = [
+          {
+            id: generator.id,
+            colorRamp: dataview.config?.colorRamp as ColorRampsIds,
+            visible: dataview.config?.visible ?? true,
+            breaks: dataview.config?.breaks,
+            datasets,
+          },
+        ]
+
+        environmentalConfig = {
+          sublayers,
+          mode: Generators.HeatmapAnimatedMode.Single,
+          aggregationOperation: AggregationOperation.Avg,
+          interactive: true,
+          interval: 'month',
+          breaksMultiplier: 1,
+          // TODO remove and grab from dataset config here
+          tilesAPI: 'https://dev-api-fourwings-tiler-jzzp2ui3wq-uc.a.run.app/v1',
+        }
+      }
+
+      generator = {
+        ...generator,
+        ...environmentalConfig,
+      }
+
+      const visible = generator.sublayers?.some(({ visible }) => visible === true)
+      generator = {
+        ...generator,
+        visible,
+        debug,
+        debugLabels: debug,
+        staticStart: timeRange?.start,
+        staticEnd: timeRange?.end,
+      }
+      break
+    }
     case Generators.Type.Context:
-    case Generators.Type.UserContext:
+    case Generators.Type.UserContext: {
       if (Array.isArray(dataview.config.layers)) {
         const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
           const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(
@@ -140,6 +192,7 @@ export function getGeneratorConfig(
         return []
       }
       break
+    }
   }
   return generator
 }
@@ -159,23 +212,22 @@ export function getDataviewsGeneratorConfigs(
   params: DataviewsGeneratorConfigsParams,
   resources?: Record<string, Resource>
 ) {
-  const { debug = false, heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Compare, timeRange } =
-    params || {}
+  const { heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Compare } = params || {}
 
-  const animatedHeatmapDataviews: UrlDataviewInstance[] = []
+  const activityDataviews: UrlDataviewInstance[] = []
 
   // Collect heatmap animated generators and filter them out from main dataview list
-  let generatorsConfig = dataviews.filter((d) => {
-    const isAnimatedHeatmap = d.config?.type === Generators.Type.HeatmapAnimated
-    if (isAnimatedHeatmap) {
-      animatedHeatmapDataviews.push(d)
+  const dataviewsFiltered = dataviews.filter((d) => {
+    const isActivityDataview = d.category === DataviewCategory.Activity
+    if (isActivityDataview) {
+      activityDataviews.push(d)
     }
-    return !isAnimatedHeatmap
+    return !isActivityDataview
   })
 
   // If heatmap animated generators found, merge them into one generator with multiple sublayers
-  if (animatedHeatmapDataviews.length) {
-    const sublayers = animatedHeatmapDataviews.flatMap((dataview) => {
+  if (activityDataviews.length) {
+    const activitySublayers = activityDataviews.flatMap((dataview) => {
       const { config, datasetsConfig } = dataview
       if (!config || !datasetsConfig || !datasetsConfig.length) return []
       const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
@@ -190,24 +242,18 @@ export function getDataviewsGeneratorConfigs(
       return sublayer
     })
 
-    const visible = sublayers.some(({ visible }) => visible === true)
-    const mergedLayer = {
-      id: params.mergedActivityGeneratorId || 'mergedAnimatedHeatmap',
+    const activityDataview = {
+      id: params.mergedActivityGeneratorId || MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
       config: {
         type: Generators.Type.HeatmapAnimated,
-        sublayers,
-        visible,
+        sublayers: activitySublayers,
         mode: heatmapAnimatedMode,
-        debug,
-        debugLabels: debug,
-        staticStart: timeRange?.start,
-        staticEnd: timeRange?.end,
       },
     }
-    generatorsConfig.push(mergedLayer)
+    dataviewsFiltered.push(activityDataview)
   }
 
-  generatorsConfig = generatorsConfig.flatMap((dataview) => {
+  const generatorsConfig = dataviewsFiltered.flatMap((dataview) => {
     return getGeneratorConfig(dataview, params, resources)
   })
 
