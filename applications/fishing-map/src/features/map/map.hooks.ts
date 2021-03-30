@@ -170,7 +170,7 @@ export type TooltipEventFeature = {
   source: string
   sourceLayer: string
   layerId: string
-  contextLayer?: ContextLayerType | null
+  generatorContextLayer?: ContextLayerType | null
   geometry?: Geometry
   value: string
   properties: Record<string, string>
