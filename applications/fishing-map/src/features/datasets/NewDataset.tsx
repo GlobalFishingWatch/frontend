@@ -265,7 +265,12 @@ function NewDataset(): React.ReactElement {
       setLoading(true)
       setError('')
       setFile(file)
-      const isZip = file.type === 'application/zip'
+      console.log(file)
+      const isZip =
+        file.type === 'application/zip' ||
+        file.type === 'application/x-zip-compressed' ||
+        file.type === 'application/octet-stream' ||
+        file.type === 'multipart/x-zip'
       const isGeojson = !isZip && file.type === 'application/json'
       let geojson: FeatureCollectionWithFilename | undefined = undefined
       if (isZip) {
