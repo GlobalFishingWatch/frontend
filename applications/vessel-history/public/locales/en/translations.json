@@ -4,13 +4,14 @@
     "commingSoon": "coming soon!",
     "currentTimeRange": "current time range",
     "from": "from",
-    "historyFor": "history for",
     "info": "info",
     "map": "map",
-    "previous": "previous",
+    "offlineAccess": "offline access",
     "since": "since",
     "timeRange": "time range",
-    "to": "to"
+    "to": "to",
+    "historyFor": "history for",
+    "previous": "previous"
   },
   "search": {
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",

@@ -2,6 +2,7 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
+import { useTranslation } from 'react-i18next'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
@@ -24,6 +25,7 @@ interface LoaderProps {
 }
 
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const [searching, setSearching] = useState(false)
   const [vessels, setVessels] = useState<Array<VesselSearch>>([])
@@ -101,7 +103,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         </div>
         {!query && (
           <div>
-            <h2>OFFLINE ACCESS</h2>
+            <h2>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
             <div className={styles.offlineVessels}></div>
           </div>
         )}

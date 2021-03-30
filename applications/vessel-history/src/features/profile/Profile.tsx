@@ -28,7 +28,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     () => [
       {
         id: 'info',
-        title: `${t('common.info', 'INFO')}`,
+        title: t('common.info', 'INFO').toLocaleUpperCase(),
         content: vessel ? (
           <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
         ) : (
@@ -37,12 +37,12 @@ const Profile: React.FC = (props): React.ReactElement => {
       },
       {
         id: 'activity',
-        title: t('common.activity', 'ACTIVITY'),
+        title: t('common.activity', 'ACTIVITY').toLocaleUpperCase(),
         content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
       },
       {
         id: 'map',
-        title: t('common.map', 'MAP'),
+        title: t('common.map', 'MAP').toLocaleUpperCase(),
         content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
       },
     ],
@@ -50,6 +50,13 @@ const Profile: React.FC = (props): React.ReactElement => {
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
+
+  const defaultPreviousNames = useMemo(() => {
+    return `+${vessel?.history.shipname.byDate.length} previous ${t(
+      `vessel.names` as any,
+      'names'
+    ).toLocaleUpperCase()}`
+  }, [vessel, t])
 
   return (
     <Fragment>
@@ -67,8 +74,10 @@ const Profile: React.FC = (props): React.ReactElement => {
             {vessel.shipname}
             {vessel.history.shipname.byDate.length && (
               <p>
-                +{vessel.history.shipname.byDate.length}{' '}
-                {t('vessel.previousNames', 'previous names')}
+                {`${t('vessel.plusPreviousValuesByField', defaultPreviousNames, {
+                  quantity: vessel.history.shipname.byDate.length,
+                  fieldLabel: t(`vessel.names` as any, 'names').toLocaleUpperCase(),
+                })}`}
               </p>
             )}
           </h1>

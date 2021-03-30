@@ -4,13 +4,13 @@
     "commingSoon": "muy pronto!",
     "currentTimeRange": "período actual",
     "from": "desde",
-    "historyFor": "historial para",
     "info": "info",
     "map": "mapa",
-    "previous": "anteriones",
     "since": "desde",
     "timeRange": "período",
-    "to": "hasta"
+    "to": "hasta",
+    "historyFor": "historial para",
+    "previous": "anteriones"
   },
   "search": {
     "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",

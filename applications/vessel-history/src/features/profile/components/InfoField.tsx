@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ValueItem } from 'types'
-import i18n from 'features/i18n/i18n'
 import styles from './Info.module.css'
 import InfoFieldHistory from './InfoFieldHistory'
 
