@@ -8,18 +8,18 @@ export interface WorkspaceViewport {
   longitude: number
 }
 
-export interface Workspace<T = unknown> {
+export interface Workspace<State = unknown, Category = string> {
   id: string
   name: string
   app: ApiAppName
   description: string
-  category?: string
+  category?: Category
   public?: boolean
   aoi?: AOI
   viewport: WorkspaceViewport
   startAt: string
   endAt: string
-  state?: T
+  state?: State
   dataviews?: Partial<Dataview>[]
   dataviewInstances: DataviewInstance[]
   ownerId: number

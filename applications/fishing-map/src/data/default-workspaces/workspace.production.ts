@@ -7,6 +7,7 @@ import {
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
   DEFAULT_WORKSPACE_ID,
+  WorkspaceCategories,
 } from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
@@ -15,6 +16,7 @@ const workspace: Workspace<WorkspaceState> = {
   app: APP_NAME,
   name: 'Default public Fishing Map workspace in production v1',
   description: '',
+  category: WorkspaceCategories.FishingActivity,
   startAt: '2019-12-01T00:00:00.000Z',
   endAt: '2019-12-31T23:59:59.999Z',
   viewport: {

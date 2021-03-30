@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.18.1
+
+### Patch Changes
+
+- fix generators type export
+
 ## 4.18.0
 
 ### Minor Changes

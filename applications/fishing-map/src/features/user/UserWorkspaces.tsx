@@ -15,12 +15,14 @@ import {
   updateWorkspaceThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import useViewport from 'features/map/map-viewport.hooks'
 import styles from './User.module.css'
 import { selectUserWorkspaces } from './user.selectors'
 
 function UserWorkspaces() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const { setMapCoordinates } = useViewport()
   const workspaces = useSelector(selectUserWorkspaces)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
   const workspacesStatusId = useSelector(selectWorkspaceListStatusId)
@@ -37,6 +39,15 @@ function UserWorkspaces() {
       }
     },
     [dispatch, t]
+  )
+
+  const onWorkspaceClick = useCallback(
+    (workspace: Workspace) => {
+      if (workspace.viewport) {
+        setMapCoordinates(workspace.viewport)
+      }
+    },
+    [setMapCoordinates]
   )
 
   const onDeleteClick = useCallback(
@@ -82,6 +93,7 @@ function UserWorkspaces() {
                       },
                       query: {},
                     }}
+                    onClick={() => onWorkspaceClick(workspace)}
                   >
                     <span className={styles.workspaceTitle}>{workspace.name}</span>
                     <IconButton icon="arrow-right" />

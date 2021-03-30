@@ -14,7 +14,7 @@ import TileClusterGenerator from './tile-cluster/tile-cluster'
 
 export { HEATMAP_COLOR_RAMPS } from './heatmap/config'
 export { TEMPORALGRID_SOURCE_LAYER } from './heatmap/modes/gridded'
-export { DEFAULT_BACKGROUND_COLOR, DEFAULT_CONTEXT_SOURCE_LAYER }
+export { DEFAULT_BACKGROUND_COLOR, DEFAULT_CONTEXT_SOURCE_LAYER, Type as GeneratorType }
 
 const GeneratorConfig = {
   [Type.Background]: new BackgroundGenerator(),
