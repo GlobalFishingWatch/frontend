@@ -1,15 +1,16 @@
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment, useCallback, useMemo } from 'react'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
 import { ValueItem } from 'types'
+import { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
 
 interface ListItemProps {
   current: ValueItem
   history: ValueItem[]
   isOpen: boolean
-  label: string
+  label: VesselFieldLabel
   vesselName: string
   onClose?: () => void
 }
@@ -32,6 +33,10 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
       : ''
   }, [])
 
+  const defaultTitle = useMemo(() => {
+    return `${label} History for ${vesselName}`
+  }, [label, vesselName])
+
   if (history.length < 1) {
     return <div></div>
   }
@@ -40,14 +45,17 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
     <Fragment>
       {history.length && (
         <Modal
-          title={t('vessel.historyLabelByField', label + ' History for ' + vesselName)}
+          title={`${t('vessel.historyLabelByField', defaultTitle, {
+            label: t(`vessel.${label}` as any, label),
+            vesselName,
+          })}`}
           isOpen={isOpen}
           onClose={onClose}
         >
           <div>
             <div className={styles.historyItem}>
               <div className={styles.identifierField}>
-                <label>{label}</label>
+                <label>{t(`vessel.${label}` as any, label)}</label>
                 <div>{current.value}</div>
               </div>
               <div className={styles.identifierField}>
@@ -61,7 +69,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
             {history.map((historyValue: ValueItem, index) => (
               <div className={styles.historyItem} key={index}>
                 <div className={styles.identifierField}>
-                  <label>{label}</label>
+                  <label>{t(`vessel.${label}` as any, label)}</label>
                   <div>{historyValue.value}</div>
                 </div>
                 <div className={styles.identifierField}>
@@ -72,7 +80,11 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
                         {t('common.from', 'From')} {formatedDate(historyValue.firstSeen)}
                       </div>
                     )}
-                    {historyValue.endDate && <div>To {formatedDate(historyValue.endDate)}</div>}
+                    {historyValue.endDate && (
+                      <div>
+                        {t('common.to', 'To')} {formatedDate(historyValue.endDate)}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@globalfishingwatch/ui-components'
 import { VesselWithHistory } from 'types'
 import styles from './Info.module.css'
-import InfoField from './InfoField'
+import InfoField, { VesselFieldLabel } from './InfoField'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -12,6 +13,7 @@ interface InfoProps {
 
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const vessel = props.vessel
+  const { t } = useTranslation()
 
   return (
     <Fragment>
@@ -20,74 +22,76 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
           <div className={styles.identifiers}>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={'Name'}
+              label={VesselFieldLabel.name}
               value={vessel.shipname}
               valuesHistory={vessel.history.shipname.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={'Type'}
+              label={VesselFieldLabel.type}
               value={vessel.type ?? ''}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={'FLAG'}
+              label={VesselFieldLabel.flag}
               value={vessel.flag}
               valuesHistory={vessel.history.flag.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={'MMSI'}
+              label={VesselFieldLabel.mmsi}
               value={vessel.mmsi ?? ''}
               valuesHistory={vessel.history.mmsi.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={'CALLSIGN'}
+              label={VesselFieldLabel.callsign}
               value={vessel.callsign ?? ''}
               valuesHistory={vessel.history.callsign.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={'GEAR TYPE'}
+              label={VesselFieldLabel.gearType}
               value={vessel.gearType ?? ''}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={'LENGTH'}
+              label={VesselFieldLabel.length}
               value={vessel.length ?? ''}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={'GROSS TONNAGE'}
+              label={VesselFieldLabel.grossTonnage}
               value={vessel.grossTonnage ?? ''}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={'DEPTH'}
+              label={VesselFieldLabel.depth}
               value={vessel.depth ?? ''}
             ></InfoField>
             <div className={styles.identifierField}>
-              <label>AUTHORIZATIONS</label>
+              <label>{t('vessel.authorizationPlural', 'authorizations')}</label>
               {vessel.authorizations?.map((auth) => (
                 <p key={auth}>{auth}</p>
               ))}
-              {!vessel.authorizations?.length && <p>No authorizations found</p>}
+              {!vessel.authorizations?.length && (
+                <p>{t('vessel.noAuthorizations', 'No authorizations found')}</p>
+              )}
             </div>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={'BUILT'}
+              label={VesselFieldLabel.builtYear}
               value={vessel.builtYear ?? ''}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={'OWNER'}
+              label={VesselFieldLabel.owner}
               value={vessel.owner ?? ''}
               valuesHistory={vessel.history.owner.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={'OPERATOR'}
+              label={VesselFieldLabel.operator}
               value={vessel.operator ?? ''}
             ></InfoField>
           </div>
@@ -95,7 +99,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         <br />
         {vessel && (
           <Button className={styles.saveButton} type="secondary">
-            SAVE VESSEL FOR OFFLINE VIEW
+            {t('vessel.saveForOfflineView', 'SAVE VESSEL FOR OFFLINE VIEW')}
           </Button>
         )}
       </div>
