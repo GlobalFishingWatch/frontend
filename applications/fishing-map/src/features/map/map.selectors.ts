@@ -15,6 +15,7 @@ import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
+import { WorkspaceCategories } from 'data/workspaces'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
@@ -68,6 +69,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
   }
 )
 
+export const WORKSPACES_POINTS_TYPE = 'workspace'
 export const WORKSPACE_GENERATOR_ID = 'workspace_points'
 export const selectWorkspacesListGenerator = createSelector(
   [selectCurrentWorkspacesList],
@@ -93,7 +95,8 @@ export const selectWorkspacesListGenerator = createSelector(
                 properties: {
                   id: workspace.id,
                   label: workspace.name,
-                  type: 'workspace',
+                  type: WORKSPACES_POINTS_TYPE,
+                  category: workspace.category || WorkspaceCategories.FishingActivity,
                   latitude,
                   longitude,
                   zoom,
