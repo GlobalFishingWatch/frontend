@@ -8,6 +8,7 @@ import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/
 import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import { MULTILAYER_SEPARATOR } from '@globalfishingwatch/dataviews-client'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import {
   selectDataviewInstancesResolved,
@@ -22,7 +23,6 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from 'data/config'
 import {
   getGeneratorsConfig,
-  MULTILAYER_SEPARATOR,
   selectGlobalGeneratorsConfig,
   WORKSPACE_GENERATOR_ID,
 } from './map.selectors'

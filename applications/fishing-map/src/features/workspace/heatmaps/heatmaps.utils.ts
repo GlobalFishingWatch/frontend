@@ -1,6 +1,6 @@
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
-import { UrlDataviewInstance } from 'types'
 
 export const isFishingDataview = (dataview: UrlDataviewInstance) =>
   dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID

@@ -1,32 +1,22 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { scaleLinear } from 'd3-scale'
 import type { CircleLayer } from '@globalfishingwatch/mapbox-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
-import {
-  DatasetCategory,
-  DatasetStatus,
-  DatasetTypes,
-  EndpointId,
-  EnviromentalDatasetConfiguration,
-} from '@globalfishingwatch/api-types'
+import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { Generators } from '@globalfishingwatch/layer-composer'
+import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/dataviews-client'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { UrlDataviewInstance } from 'types'
 import {
   selectDataviewInstancesResolved,
   selectWorkspaceError,
 } from 'features/workspace/workspace.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
-import { Resource, selectResources, TrackResourceData } from 'features/resources/resources.slice'
+import { selectResources } from 'features/resources/resources.slice'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
 import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
-import { resolveDataviewDatasetResource } from 'features/resources/resources.selectors'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from 'data/config'
-
-export const MULTILAYER_SEPARATOR = '__'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
@@ -38,7 +28,6 @@ export const selectGlobalGeneratorsConfig = createSelector(
   })
 )
 
-// TODO merge this with getDataviewsGeneratorConfigs user-dataviews-layer package
 export const getWorkspaceGeneratorsConfig = createSelector(
   [
     selectDataviewInstancesResolved,
@@ -50,172 +39,30 @@ export const getWorkspaceGeneratorsConfig = createSelector(
     selectBivariate,
   ],
   (dataviews = [], resources, rulers, debugOptions, highlightedTime, staticTime, bivariate) => {
-    const animatedHeatmapDataviews: UrlDataviewInstance[] = []
-
-    // Collect heatmap animated generators and filter them out from main dataview list
-    let generatorsConfig = dataviews.filter((d) => {
+    const animatedHeatmapDataviews = dataviews.filter((d) => {
       const isAnimatedHeatmap = d.config?.type === Generators.Type.HeatmapAnimated
-      if (isAnimatedHeatmap) {
-        animatedHeatmapDataviews.push(d)
-      }
       return !isAnimatedHeatmap
     })
 
-    // If heatmap animated generators found, merge them into one generator with multiple sublayers
-    if (animatedHeatmapDataviews.length) {
-      const sublayers = animatedHeatmapDataviews.flatMap((dataview) => {
-        const { config, datasetsConfig } = dataview
-        if (!config || !datasetsConfig || !datasetsConfig.length) return []
-        const datasets = config.datasets || datasetsConfig.map((dc: any) => dc.datasetId)
-        const sublayer: Generators.HeatmapAnimatedGeneratorSublayer = {
-          id: dataview.id,
-          datasets,
-          colorRamp: config.colorRamp as Generators.ColorRampsIds,
-          filter: config.filter,
-          visible: config.visible,
-        }
-
-        return sublayer
-      })
-
-      // Force HeatmapAnimated mode depending on debug options
-      let mode = bivariate
-        ? Generators.HeatmapAnimatedMode.Bivariate
-        : Generators.HeatmapAnimatedMode.Compare
-      if (debugOptions.extruded) {
-        mode = Generators.HeatmapAnimatedMode.Extruded
-      } else if (debugOptions.blob && sublayers.length === 1) {
-        mode = Generators.HeatmapAnimatedMode.Blob
-      }
-      const visible = sublayers.some(({ visible }) => visible === true)
-      const mergedLayer = {
-        id: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
-        config: {
-          type: Generators.Type.HeatmapAnimated,
-          sublayers,
-          visible,
-          mode,
-          debug: debugOptions.debug,
-          debugLabels: debugOptions.debug,
-          staticStart: staticTime?.start,
-          staticEnd: staticTime?.end,
-        },
-      }
-      generatorsConfig.push(mergedLayer)
+    let heatmapAnimatedMode: Generators.HeatmapAnimatedMode = bivariate
+      ? Generators.HeatmapAnimatedMode.Bivariate
+      : Generators.HeatmapAnimatedMode.Compare
+    if (debugOptions.extruded) {
+      heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Extruded
+    } else if (debugOptions.blob && animatedHeatmapDataviews.length === 1) {
+      heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Blob
+    }
+    const generatorOptions = {
+      heatmapAnimatedMode,
+      highlightedTime,
+      timeRange: staticTime,
+      debug: debugOptions.blob,
+      mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
     }
 
-    generatorsConfig = generatorsConfig.flatMap((dataview) => {
-      let generator: GeneratorDataviewConfig = {
-        id: dataview.id,
-        ...dataview.config,
-      }
+    const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
 
-      if (dataview.config?.type === Generators.Type.Track) {
-        // Inject highligtedTime
-        generator.highlightedTime = highlightedTime
-        // Try to retrieve resource if it exists
-        const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
-        if (url && resources[url]) {
-          const resource = resources[url] as Resource<TrackResourceData>
-          generator.data = resource.data
-        }
-      } else if (
-        dataview.config?.type === Generators.Type.Context ||
-        dataview.config?.type === Generators.Type.UserContext
-      ) {
-        if (Array.isArray(dataview.config.layers)) {
-          const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
-            const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(dataview, {
-              id: dataset,
-            })
-            if (!url || resolvedDataset?.status !== DatasetStatus.Done) return []
-            return { id, tilesUrl: url, attribution: resolvedDataset?.source }
-          })
-          // Duplicated generators when context dataview have multiple layers
-          return tilesUrls.map(({ id, tilesUrl, attribution }) => ({
-            ...generator,
-            id: `${dataview.id}${MULTILAYER_SEPARATOR}${id}`,
-            layer: id,
-            attribution,
-            tilesUrl,
-          }))
-        } else {
-          generator.id = dataview.config.layers
-            ? `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers}`
-            : dataview.id
-          generator.layer = dataview.config.layers
-          const { dataset, url } = resolveDataviewDatasetResource(dataview, {
-            type: DatasetTypes.Context,
-          })
-          if (dataset?.status !== DatasetStatus.Done) {
-            return []
-          }
-          if (url) {
-            generator.tilesUrl = url
-          }
-          if (dataset?.source) {
-            generator.attribution = dataset.source
-          }
-          if (dataset.category === DatasetCategory.Environment) {
-            const { min, max } =
-              (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
-              {}
-            const rampScale = scaleLinear().range([min, max]).domain([0, 1])
-            const numSteps = 8
-            const steps = [...Array(numSteps)]
-              .map((_, i) => parseFloat((i / (numSteps - 1)).toFixed(2)))
-              .map((value) => parseFloat((rampScale(value) as number).toFixed(3)))
-            generator.steps = steps
-          }
-        }
-        if (!generator.tilesUrl) {
-          console.warn('Missing tiles url for dataview', dataview)
-          return []
-        }
-      } else if (dataview.config?.type === Generators.Type.Heatmap) {
-        // TODO: use the getGeneratorConfig package function here
-        const dataset = dataview.datasets?.find(
-          (dataset) => dataset.type === DatasetTypes.Fourwings
-        )
-        const tilesEndpoint = dataset?.endpoints?.find(
-          (endpoint) => endpoint.id === EndpointId.FourwingsTiles
-        )
-        const statsEndpoint = dataset?.endpoints?.find(
-          (endpoint) => endpoint.id === EndpointId.FourwingsLegend
-        )
-        // console.log(dataview.config.steps)
-        generator = {
-          ...generator,
-          maxZoom: 8,
-          fetchStats: !dataview.config.steps,
-          datasets: [dataset?.id],
-          tilesUrl: tilesEndpoint?.pathTemplate,
-          statsUrl: statsEndpoint?.pathTemplate,
-          metadata: {
-            color: dataview?.config?.color,
-            group: Group.OutlinePolygonsBackground,
-            interactive: true,
-            // TODO this must be added to HeatmapAnimated as well
-            legend: {
-              label: dataset?.name,
-              unit: dataset?.unit,
-            },
-          },
-        }
-      } else if (dataview.config?.type === Generators.Type.TileCluster) {
-        const { dataset, url } = resolveDataviewDatasetResource(dataview, {
-          type: DatasetTypes.Events,
-        })
-        if (!dataset || !url) {
-          console.warn('No dataset config for TileCluster generator', dataview)
-          return []
-        }
-        generator.tilesUrl = url
-      }
-      return generator
-    })
-
-    const rulersConfig = {
+    const rulersGeneratorConfig = {
       type: Generators.Type.Rulers,
       id: 'rulers',
       data: rulers,
@@ -223,7 +70,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
 
     const generators = [
       ...generatorsConfig.reverse(),
-      rulersConfig,
+      rulersGeneratorConfig,
     ] as Generators.AnyGeneratorConfig[]
 
     const generators_ = generators.map((generator) => {

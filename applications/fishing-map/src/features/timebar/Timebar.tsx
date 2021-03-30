@@ -140,7 +140,7 @@ const TimebarWrapper = () => {
         showLastUpdate={false}
         onMouseMove={(clientX: number, scale: (arg: number) => Date) => {
           if (clientX === null) {
-            if (highlightedTime !== null) {
+            if (highlightedTime !== undefined) {
               dispatch(disableHighlightedTime())
             }
           } else {

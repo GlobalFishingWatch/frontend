@@ -1,5 +1,17 @@
 # @globalfishingwatch/react-hooks
 
+## 5.0.0
+
+### Major Changes
+
+- d2501b54: move fishing-map logic into dataview-client
+
+### Patch Changes
+
+- Updated dependencies [d2501b54]
+  - @globalfishingwatch/dataviews-client@5.0.0
+  - @globalfishingwatch/api-client@1.6.8
+
 ## 4.11.0
 
 ### Minor Changes
