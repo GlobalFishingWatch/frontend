@@ -139,8 +139,6 @@ export const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = [
   },
 ]
 
-export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeatmap'
-
 export const POPUP_CATEGORY_ORDER = [
   DataviewCategory.Activity,
   DataviewCategory.Events,

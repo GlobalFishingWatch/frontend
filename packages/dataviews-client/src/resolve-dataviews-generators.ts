@@ -13,6 +13,7 @@ import { HeatmapAnimatedGeneratorSublayer } from '@globalfishingwatch/layer-comp
 import { resolveDataviewDatasetResource, UrlDataviewInstance } from './resolve-dataviews'
 
 export const MULTILAYER_SEPARATOR = '__'
+export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeatmap'
 
 type DataviewsGeneratorConfigsParams = {
   debug?: boolean

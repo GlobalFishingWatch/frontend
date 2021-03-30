@@ -3,12 +3,15 @@ import { Geometry } from 'geojson'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { InteractionEvent, useTilesLoading } from '@globalfishingwatch/react-hooks'
-import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
+import { Generators } from '@globalfishingwatch/layer-composer'
+import {
+  MULTILAYER_SEPARATOR,
+  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+} from '@globalfishingwatch/dataviews-client'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
-import { MULTILAYER_SEPARATOR } from '@globalfishingwatch/dataviews-client'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import {
   selectDataviewInstancesResolved,
@@ -20,7 +23,6 @@ import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
-import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from 'data/config'
 import {
   getGeneratorsConfig,
   selectGlobalGeneratorsConfig,

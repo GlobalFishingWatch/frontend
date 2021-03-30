@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { TEMPORALGRID_SOURCE_LAYER, TimeChunks } from '@globalfishingwatch/layer-composer'
+import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import useMapInstance from 'features/map/map-context.hooks'
-import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from 'data/config'
 import { useGeneratorStyleMetadata } from './map.hooks'
 
 export const useMapSourceLoaded = (sourceId: string, cacheKey?: string) => {
