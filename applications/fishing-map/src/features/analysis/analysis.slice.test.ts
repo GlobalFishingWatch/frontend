@@ -40,34 +40,37 @@ describe('Reports Slice', () => {
       api.fetch.mockResolvedValue(result)
 
       arg = {
-        name: `foo bar report`,
-
+        datasets: ['public-fishing-tracks:v20190502'],
         dateRange: {
           // Using dates in ART timezone that converted to UTC
-          // should fasll in the next day (2012-01-01)
+          // should fall in the next day (2012-01-01)
           // to ensure we are performing the conversion
           start: '2011-12-31T21:00:00-0300',
           end: '2012-12-31T21:00:00-0300',
         } as DateRange,
         filters: {
-          flags: [{ id: 'CHI' }, { id: 'ARG' }],
-          fleets: [{ id: 'large-fleet' }],
-          origins: [{ id: 'some' }, { id: 'origin' }],
-          geartype: [{ id: 'gear' }, { id: 'types' }],
-          vessel_type: [{ id: 'vessel' }, { id: 'types' }],
+          flag: ['CHI', 'ARG'],
+          fleet: ['large-fleet'],
+          origin: ['some', 'origin'],
+          geartype: ['gear', 'types'],
+          vessel_type: ['vessel', 'types'],
         },
-        datasets: ['public-fishing-tracks:v20190502'],
         geometry: {
-          type: 'FeatureCollection',
-          features: [
-            {
-              type: 'Feature',
-              geometry: { type: 'Point', coordinates: [0, 0] },
-              properties: { id: 1 },
-            },
-          ],
+          type: 'Feature',
+          geometry: {
+            coordinates: [
+              [
+                [0, 0],
+                [0, 0],
+              ],
+            ],
+            type: 'Polygon',
+          },
+          properties: { id: 1 },
         },
+        name: 'foo bar report',
       }
+
       result = {
         id: '9d34df2f-87df-4d5b-baae-1dbb57eda64f',
         name: 'report',
@@ -93,21 +96,20 @@ describe('Reports Slice', () => {
             datasets: ['public-fishing-tracks:v20190502'],
             dateRange: ['2012-01-01', '2013-01-01'],
             filters: [
-              "flag IN ('CHI', 'ARG')",
-              "fleet IN ('large-fleet')",
-              "origin IN ('some', 'origin')",
-              "geartype IN ('gear', 'types')",
-              "vessel_type IN ('vessel', 'types')",
+              "flag IN ('CHI', 'ARG') AND fleet IN ('large-fleet') AND origin IN ('some', 'origin') AND geartype IN ('gear', 'types') AND vessel_type IN ('vessel', 'types')",
             ],
             geometry: {
-              features: [
-                {
-                  geometry: { coordinates: [0, 0], type: 'Point' },
-                  properties: { id: 1 },
-                  type: 'Feature',
-                },
-              ],
-              type: 'FeatureCollection',
+              type: 'Feature',
+              geometry: {
+                coordinates: [
+                  [
+                    [0, 0],
+                    [0, 0],
+                  ],
+                ],
+                type: 'Polygon',
+              },
+              properties: { id: 1 },
             },
             name: 'foo bar report',
             timeGroup: 'none',
@@ -122,21 +124,24 @@ describe('Reports Slice', () => {
             datasets: ['public-fishing-tracks:v20190502'],
             dateRange: { end: '2012-12-31T21:00:00-0300', start: '2011-12-31T21:00:00-0300' },
             filters: {
-              flags: [{ id: 'CHI' }, { id: 'ARG' }],
-              fleets: [{ id: 'large-fleet' }],
-              geartype: [{ id: 'gear' }, { id: 'types' }],
-              origins: [{ id: 'some' }, { id: 'origin' }],
-              vessel_type: [{ id: 'vessel' }, { id: 'types' }],
+              flag: ['CHI', 'ARG'],
+              fleet: ['large-fleet'],
+              origin: ['some', 'origin'],
+              geartype: ['gear', 'types'],
+              vessel_type: ['vessel', 'types'],
             },
             geometry: {
-              features: [
-                {
-                  geometry: { coordinates: [0, 0], type: 'Point' },
-                  properties: { id: 1 },
-                  type: 'Feature',
-                },
-              ],
-              type: 'FeatureCollection',
+              type: 'Feature',
+              geometry: {
+                coordinates: [
+                  [
+                    [0, 0],
+                    [0, 0],
+                  ],
+                ],
+                type: 'Polygon',
+              },
+              properties: { id: 1 },
             },
             name: 'foo bar report',
           },
@@ -145,6 +150,7 @@ describe('Reports Slice', () => {
         },
         type: 'report/createsingle/fulfilled',
       }
+
       expect(api.fetch).toHaveBeenCalledWith(...expectedParams)
       expect(actual).toEqual(expectedResult)
     })

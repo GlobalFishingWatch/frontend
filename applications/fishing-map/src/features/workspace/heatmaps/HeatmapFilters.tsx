@@ -4,8 +4,8 @@ import MultiSelect, {
   MultiSelectOnChange,
   MultiSelectOption,
 } from '@globalfishingwatch/ui-components/dist/multi-select'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getFlags, getFlagsByIds } from 'utils/flags'
-import { UrlDataviewInstance } from 'types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import {

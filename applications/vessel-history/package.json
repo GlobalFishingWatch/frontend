@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/vessel-history",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
   "scripts": {
@@ -13,14 +13,14 @@
     "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
-    "@globalfishingwatch/api-client": "^1.2.4",
-    "@globalfishingwatch/api-types": "^2.17.0",
+    "@globalfishingwatch/api-client": "^1.6.8",
+    "@globalfishingwatch/api-types": "^3.0.0",
     "@globalfishingwatch/data-transforms": "^1.1.0",
-    "@globalfishingwatch/dataviews-client": "^4.1.0",
+    "@globalfishingwatch/dataviews-client": "^5.0.0",
     "@globalfishingwatch/layer-composer": "4.18.0",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.18",
     "@globalfishingwatch/pbf": "^1.0.9",
-    "@globalfishingwatch/react-hooks": "^4.11.0",
+    "@globalfishingwatch/react-hooks": "^5.0.0",
     "@globalfishingwatch/react-map-gl": "5.2.9-gfw.13",
     "@globalfishingwatch/timebar": "^1.1.5",
     "@globalfishingwatch/ui-components": "^2.15.0",
