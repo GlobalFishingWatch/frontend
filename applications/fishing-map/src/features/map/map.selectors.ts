@@ -87,10 +87,17 @@ export const selectWorkspacesListGenerator = createSelector(
                 return []
               }
 
-              const { latitude, longitude } = workspace.viewport
+              const { latitude, longitude, zoom } = workspace.viewport
               return {
                 type: 'Feature',
-                properties: { id: workspace.id, label: workspace.name, type: 'workspace' },
+                properties: {
+                  id: workspace.id,
+                  label: workspace.name,
+                  type: 'workspace',
+                  latitude,
+                  longitude,
+                  zoom,
+                },
                 geometry: {
                   type: 'Point',
                   coordinates: [longitude, latitude],
