@@ -265,7 +265,6 @@ function NewDataset(): React.ReactElement {
       setLoading(true)
       setError('')
       setFile(file)
-      console.log(file)
       const isZip =
         file.type === 'application/zip' ||
         file.type === 'application/x-zip-compressed' ||
