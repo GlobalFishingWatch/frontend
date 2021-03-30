@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 5.1.0
+
+### Minor Changes
+
+- 6badcfe5: Update use-legends hook to match fishing-map latest changes
+
 ## 5.0.0
 
 ### Major Changes

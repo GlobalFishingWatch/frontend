@@ -67,6 +67,10 @@ a.linkButton,
   overflow: hidden;
 }
 
+.description a {
+  text-decoration: underline;
+}
+
 .link,
 .link:visited {
   font: var(--font-XS);

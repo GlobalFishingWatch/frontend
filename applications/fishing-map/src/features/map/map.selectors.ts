@@ -17,6 +17,7 @@ import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timeba
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from 'data/config'
+import { WorkspaceCategories } from 'data/workspaces'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
@@ -71,7 +72,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
     const generators = [
       ...generatorsConfig.reverse(),
       rulersGeneratorConfig,
-    ] as Generators.AnyGeneratorConfig[]
+    ] as AnyGeneratorConfig[]
 
     const generators_ = generators.map((generator) => {
       if (generator.id !== 'sea-surface-temp-palau') {
@@ -106,10 +107,11 @@ export const getWorkspaceGeneratorsConfig = createSelector(
       return gen
     })
 
-    return generators_ as Generators.AnyGeneratorConfig[]
+    return generators_ as AnyGeneratorConfig[]
   }
 )
 
+export const WORKSPACES_POINTS_TYPE = 'workspace'
 export const WORKSPACE_GENERATOR_ID = 'workspace_points'
 export const selectWorkspacesListGenerator = createSelector(
   [selectCurrentWorkspacesList],
@@ -129,10 +131,18 @@ export const selectWorkspacesListGenerator = createSelector(
                 return []
               }
 
-              const { latitude, longitude } = workspace.viewport
+              const { latitude, longitude, zoom } = workspace.viewport
               return {
                 type: 'Feature',
-                properties: { id: workspace.id, label: workspace.name, type: 'workspace' },
+                properties: {
+                  id: workspace.id,
+                  label: workspace.name,
+                  type: WORKSPACES_POINTS_TYPE,
+                  category: workspace.category || WorkspaceCategories.FishingActivity,
+                  latitude,
+                  longitude,
+                  zoom,
+                },
                 geometry: {
                   type: 'Point',
                   coordinates: [longitude, latitude],

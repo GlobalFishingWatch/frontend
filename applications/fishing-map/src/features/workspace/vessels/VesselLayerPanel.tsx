@@ -209,7 +209,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                         <li key={field.id} className={styles.infoContentItem}>
                           <label>{t(`vessel.${field.id}` as any)}</label>
                           {fieldValues.map((fieldValue, i) => (
-                            <span>
+                            <span key={fieldValue}>
                               {field.type === 'date' ? (
                                 <I18nDate date={fieldValue} />
                               ) : field.type === 'flag' ? (

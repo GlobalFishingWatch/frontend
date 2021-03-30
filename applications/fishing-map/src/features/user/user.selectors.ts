@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import orderBy from 'lodash/orderBy'
 import { DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -38,7 +39,11 @@ export const selectUserId = createSelector([selectUserData], (userData) => {
 export const selectUserWorkspaces = createSelector(
   [selectUserData, selectWorkspaces],
   (userData, workspaces) => {
-    return workspaces?.filter((workspace) => workspace.ownerId === userData?.id).reverse()
+    return orderBy(
+      workspaces?.filter((workspace) => workspace.ownerId === userData?.id),
+      'createdAt',
+      'desc'
+    )
   }
 )
 

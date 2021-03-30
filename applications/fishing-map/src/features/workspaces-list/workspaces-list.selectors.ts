@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { Workspace } from '@globalfishingwatch/api-types/dist'
+import { Workspace, WorkspaceViewport } from '@globalfishingwatch/api-types/dist'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { USER } from 'routes/routes'
@@ -41,23 +41,40 @@ export const selectAvailableWorkspacesCategories = createSelector(
   }
 )
 
+type HighlightedWorkspaceMerged = HighlightedWorkspace & {
+  viewport?: WorkspaceViewport
+  category?: WorkspaceCategories
+}
+
 export const selectCurrentHighlightedWorkspaces = createSelector(
   [selectLocationCategory, selectHighlightedWorkspaces, selectWorkspaces],
-  (locationCategory, highlightedWorkspaces, apiWorkspaces): HighlightedWorkspace[] | undefined => {
+  (
+    locationCategory,
+    highlightedWorkspaces,
+    apiWorkspaces
+  ): HighlightedWorkspaceMerged[] | undefined => {
     const workspaces = highlightedWorkspaces?.[locationCategory]
     return workspaces?.map((workspace) => {
       const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
 
       if (!apiWorkspace) return workspace
 
-      return { ...workspace, viewport: apiWorkspace.viewport }
+      return {
+        ...workspace,
+        viewport: apiWorkspace.viewport,
+        category: apiWorkspace.category as WorkspaceCategories,
+      }
     })
   }
 )
 
 export const selectCurrentWorkspacesList = createSelector(
   [selectLocationType, selectCurrentHighlightedWorkspaces, selectUserWorkspaces],
-  (locationType, highlightedWorkspaces, userWorkspaces): HighlightedWorkspace[] | undefined => {
+  (
+    locationType,
+    highlightedWorkspaces,
+    userWorkspaces
+  ): HighlightedWorkspaceMerged[] | undefined => {
     return locationType === USER ? userWorkspaces : highlightedWorkspaces
   }
 )
