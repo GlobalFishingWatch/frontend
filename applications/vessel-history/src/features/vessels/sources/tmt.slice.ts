@@ -7,8 +7,8 @@ interface TMTVesselSourceId extends VesselSourceId {
   id: string
 }
 
-const sortValuesByFirstSeen = (a: ValueItem, b: ValueItem) =>
-  (a.firstSeen || '') >= (b.firstSeen || '') ? -1 : 1
+const sortValuesByDate = (a: ValueItem, b: ValueItem) =>
+  (a.firstSeen || a.endDate || '') >= (b.firstSeen || b.endDate || '') ? -1 : 1
 const extractValue: (valueItem: ValueItem[]) => string | undefined = (valueItem: ValueItem[]) => {
   return valueItem.shift()?.value || undefined
 }
@@ -21,51 +21,82 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     authorisationList,
   } = data
   const emptyHistory = { byDate: [], byCount: [] }
+  const vesselHistory = {
+    builtYear: {
+      byCount: [],
+      byDate: valueList.builtYear.sort(sortValuesByDate),
+    },
+    callsign: {
+      byCount: [],
+      byDate: valueList.ircs.sort(sortValuesByDate),
+    },
+    depth: {
+      byCount: [],
+      byDate: valueList.depth.sort(sortValuesByDate),
+    },
+    flag: {
+      byCount: [],
+      byDate: valueList.flag.sort(sortValuesByDate),
+    },
+    imo: {
+      byCount: [],
+      byDate: valueList.imo.sort(sortValuesByDate),
+    },
+    gearType: {
+      byCount: [],
+      byDate: valueList.gear.sort(sortValuesByDate),
+    },
+    grossTonnage: {
+      byCount: [],
+      byDate: valueList.gt.sort(sortValuesByDate),
+    },
+    shipname: {
+      byCount: [],
+      byDate: valueList.name.sort(sortValuesByDate),
+    },
+    length: {
+      byCount: [],
+      byDate: valueList.loa.sort(sortValuesByDate),
+    },
+    mmsi: {
+      byCount: [],
+      byDate: valueList.mmsi.sort(sortValuesByDate),
+    },
+    owner: {
+      byCount: [],
+      byDate: data.relationList.vesselOwnership.sort(sortValuesByDate),
+    },
+    vesselType: {
+      byCount: [],
+      byDate: valueList.vesselType.sort(sortValuesByDate),
+    },
+    operator: {
+      byCount: [],
+      byDate: data.relationList.vesselOperations.sort(sortValuesByDate),
+    },
+  }
 
   const vessel: VesselWithHistory = {
     id: vesselMatchId,
-    shipname: extractValue(valueList.name) || '',
-    mmsi: extractValue(valueList.mmsi as ValueItem[]),
-    imo: extractValue(valueList.imo),
-    callsign: extractValue(valueList.ircs),
-    flag: extractValue(valueList.flag) || '',
-    type: extractValue(valueList.vesselType),
-    gearType: extractValue(valueList.gear),
-    length: extractValue(valueList.loa),
-    depth: extractValue(valueList.depth),
-    grossTonnage: extractValue(valueList.gt),
-    owner: extractValue(vesselOwnership),
-    operator: extractValue(vesselOperations),
-    builtYear: extractValue(valueList.builtYear),
+    shipname: extractValue(vesselHistory.shipname.byDate) || '',
+    mmsi: extractValue(vesselHistory.mmsi.byDate as ValueItem[]),
+    imo: extractValue(vesselHistory.imo.byDate),
+    callsign: extractValue(vesselHistory.callsign.byDate),
+    flag: extractValue(vesselHistory.flag.byDate) || '',
+    type: extractValue(vesselHistory.vesselType.byDate),
+    gearType: extractValue(vesselHistory.gearType.byDate),
+    length: extractValue(vesselHistory.length.byDate),
+    depth: extractValue(vesselHistory.depth.byDate),
+    grossTonnage: extractValue(vesselHistory.grossTonnage.byDate),
+    owner: extractValue(vesselHistory.owner.byDate),
+    operator: extractValue(vesselHistory.operator.byDate),
+    builtYear: extractValue(vesselHistory.builtYear.byDate),
     authorizations: authorisationList.map((auth) => auth.source) ?? [],
     firstTransmissionDate: '',
     lastTransmissionDate: '',
     origin: '',
     history: {
-      callsign: {
-        byCount: [],
-        byDate: valueList.ircs.sort(sortValuesByFirstSeen),
-      },
-      imo: {
-        byCount: [],
-        byDate: valueList.imo.sort(sortValuesByFirstSeen),
-      },
-      gearType: {
-        byCount: [],
-        byDate: valueList.gear.sort(sortValuesByFirstSeen),
-      },
-      shipname: {
-        byCount: [],
-        byDate: valueList.name.sort(sortValuesByFirstSeen),
-      },
-      mmsi: {
-        byCount: [],
-        byDate: valueList.mmsi.sort(sortValuesByFirstSeen),
-      },
-      owner: {
-        byCount: [],
-        byDate: data.relationList.vesselOwnership.sort(sortValuesByFirstSeen),
-      },
+      ...vesselHistory,
       flag: emptyHistory,
     },
   }
