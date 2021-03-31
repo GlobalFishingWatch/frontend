@@ -96,7 +96,12 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     lastTransmissionDate: '',
     origin: '',
     history: {
-      ...vesselHistory,
+      gearType: vesselHistory.gearType,
+      callsign: vesselHistory.callsign,
+      imo: vesselHistory.imo,
+      mmsi: vesselHistory.mmsi,
+      owner: vesselHistory.owner,
+      shipname: vesselHistory.shipname,
       flag: emptyHistory,
     },
   }
