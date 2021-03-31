@@ -42,3 +42,6 @@
   display: flex;
   flex-flow: row nowrap;
 }
+.rangeLabel {
+  text-transform: capitalize;
+}

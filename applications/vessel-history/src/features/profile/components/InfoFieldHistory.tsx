@@ -1,8 +1,8 @@
-import React, { Fragment, useCallback, useMemo } from 'react'
-import { DateTime } from 'luxon'
+import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
 import { ValueItem } from 'types'
+import I18nDate from 'features/i18n/i18nDate'
 import { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
 
@@ -25,17 +25,17 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
 }): React.ReactElement => {
   const { t } = useTranslation()
 
-  const formatedDate = useCallback((date: string | null = null) => {
-    return date
-      ? [DateTime.fromISO(date, { zone: 'UTC' }).toLocaleString(DateTime.DATETIME_MED), 'UTC'].join(
-          ' '
-        )
-      : ''
-  }, [])
-
   const defaultTitle = useMemo(() => {
     return `${label} History for ${vesselName}`
   }, [label, vesselName])
+
+  const since = useMemo(
+    () =>
+      current?.firstSeen ??
+      history.slice(0, 1)?.shift()?.endDate ??
+      history.slice(0, 1)?.shift()?.firstSeen,
+    [current, history]
+  )
 
   if (history.length < 1) {
     return <div></div>
@@ -61,8 +61,8 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
               <div className={styles.identifierField}>
                 <label>{t('common.currentTimeRange', 'CURRENT TIME RANGE')}</label>
                 <div>
-                  {t('common.since', 'Since')}{' '}
-                  {formatedDate(current.firstSeen ?? history.slice(0, 1)?.shift()?.endDate)}
+                  <span className={styles.rangeLabel}>{t('common.since', 'Since')}: </span>
+                  <span className={styles.rangeValue}>{since && <I18nDate date={since} />}</span>
                 </div>
               </div>
             </div>
@@ -77,12 +77,18 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
                   <div>
                     {historyValue.firstSeen && (
                       <div>
-                        {t('common.from', 'From')} {formatedDate(historyValue.firstSeen)}
+                        <span className={styles.rangeLabel}>{t('common.from', 'From')}: </span>
+                        <span className={styles.rangeValue}>
+                          <I18nDate date={historyValue.firstSeen} />
+                        </span>
                       </div>
                     )}
                     {historyValue.endDate && (
                       <div>
-                        {t('common.to', 'To')} {formatedDate(historyValue.endDate)}
+                        <span className={styles.rangeLabel}>{t('common.to', 'To')}: </span>
+                        <span className={styles.rangeValue}>
+                          <I18nDate date={historyValue.endDate} />
+                        </span>
                       </div>
                     )}
                   </div>
