@@ -1,5 +1,18 @@
 # @globalfishingwatch/ui-components
 
+## 2.16.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.18.1
+
+## 2.16.0
+
+### Minor Changes
+
+- f164fc6d: Support mouseEnter and mouseLeave in IconButton
+
 ## 2.15.2
 
 ### Patch Changes

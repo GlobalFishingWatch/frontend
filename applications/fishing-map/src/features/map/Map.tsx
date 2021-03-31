@@ -11,21 +11,12 @@ import {
   useMapHover,
   useFeatureState,
   InteractionEventCallback,
-  InteractionEvent,
 } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
-import {
-  LegendLayer,
-  LegendLayerBivariate,
-} from '@globalfishingwatch/ui-components/dist/map-legend'
-import {
-  ExtendedStyle,
-  ExtendedStyleMeta,
-  Generators,
-  LayerMetadataLegend,
-} from '@globalfishingwatch/layer-composer'
+import { ExtendedStyleMeta, Generators } from '@globalfishingwatch/layer-composer'
+import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
 import useMapInstance from 'features/map/map-context.hooks'
-import { UrlDataviewInstance } from 'types'
 import i18n from 'features/i18n/i18n'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import { selectEditing, moveCurrentRuler } from 'features/map/controls/rulers.slice'
@@ -33,7 +24,6 @@ import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
@@ -61,78 +51,6 @@ const handleError = ({ error }: any) => {
   ) {
     GFWAPI.refreshAPIToken()
   }
-}
-
-// TODO: move this to shared package
-const getLegendLayers = (
-  style?: ExtendedStyle,
-  dataviews?: UrlDataviewInstance[],
-  hoveredEvent?: InteractionEvent | null
-) => {
-  if (!style) return []
-  return style.layers?.flatMap((layer) => {
-    if (!layer.metadata?.legend) return []
-
-    const sublayerLegendsMetadata: LayerMetadataLegend[] = Array.isArray(layer.metadata.legend)
-      ? layer.metadata.legend
-      : [layer.metadata.legend]
-    return sublayerLegendsMetadata.map((sublayerLegendMetadata, sublayerIndex) => {
-      const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
-      const dataview = dataviews?.find((d) => d.id === id)
-      const isSquareKm = (sublayerLegendMetadata.gridArea as number) > 50000
-      let label = sublayerLegendMetadata.unit
-      if (!label) {
-        const gridArea = isSquareKm
-          ? (sublayerLegendMetadata.gridArea as number) / 1000000
-          : sublayerLegendMetadata.gridArea
-        const gridAreaFormatted = gridArea
-          ? formatI18nNumber(gridArea, {
-              style: 'unit',
-              unit: isSquareKm ? 'kilometer' : 'meter',
-              unitDisplay: 'short',
-            })
-          : ''
-        label = `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}`
-      }
-      const sublayerLegend: LegendLayer | LegendLayerBivariate = {
-        ...sublayerLegendMetadata,
-        id: `legend_${id}`,
-        color: layer.metadata?.color || dataview?.config?.color || 'red',
-        label,
-      }
-
-      const generatorType = layer.metadata?.generatorType
-
-      if (generatorType === Generators.Type.Heatmap) {
-        const value = hoveredEvent?.features?.find(
-          (f) => f.generatorId === layer.metadata?.generatorId
-        )?.value
-        if (value) {
-          sublayerLegend.currentValue = value
-        }
-      } else if (generatorType === Generators.Type.HeatmapAnimated) {
-        const getHoveredFeatureValueForSublayerIndex = (index: number): number => {
-          const hoveredFeature = hoveredEvent?.features?.find(
-            (f) => f.temporalgrid?.sublayerIndex === index
-          )
-          return hoveredFeature?.value
-        }
-        // Both bivariate sublayers come in the same sublayerLegend (see getLegendsBivariate in LC)
-        if (sublayerLegend.type === 'bivariate') {
-          sublayerLegend.currentValues = [
-            getHoveredFeatureValueForSublayerIndex(0),
-            getHoveredFeatureValueForSublayerIndex(1),
-          ]
-        } else {
-          sublayerLegend.currentValue = getHoveredFeatureValueForSublayerIndex(sublayerIndex)
-        }
-      } else if (generatorType === Generators.Type.UserContext) {
-        // TODO use dataset propertyToInclude value
-        sublayerLegend.label = ''
-      }
-      return sublayerLegend
-    })
-  })
 }
 
 const MapWrapper = (): React.ReactElement | null => {
@@ -196,7 +114,23 @@ const MapWrapper = (): React.ReactElement | null => {
   }, [viewport])
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
-  const layersWithLegend = getLegendLayers(style, dataviews, hoveredEvent)
+  const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
+  const legendsTranslated = mapLegends?.map((legend) => {
+    const isSquareKm = (legend.gridArea as number) > 50000
+    let label = legend.unit
+    if (!label) {
+      const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+      const gridAreaFormatted = gridArea
+        ? formatI18nNumber(gridArea, {
+            style: 'unit',
+            unit: isSquareKm ? 'kilometer' : 'meter',
+            unitDisplay: 'short',
+          })
+        : ''
+      label = `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}`
+    }
+    return { ...legend, label }
+  })
 
   const debugOptions = useSelector(selectDebugOptions)
 
@@ -284,7 +218,7 @@ const MapWrapper = (): React.ReactElement | null => {
         </InteractiveMap>
       )}
       <MapControls onMouseEnter={resetHoverState} mapLoading={tilesLoading} />
-      {layersWithLegend?.map((legend) => {
+      {legendsTranslated?.map((legend) => {
         const legendDomElement = document.getElementById(legend.id as string)
         if (legendDomElement) {
           return createPortal(

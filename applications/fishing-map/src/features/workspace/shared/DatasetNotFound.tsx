@@ -2,8 +2,8 @@ import React from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { UrlDataviewInstance } from 'types'
 import { useDataviewInstancesConnect } from '../workspace.hook'
 
 function DatasetNotFound({ dataview }: { dataview: UrlDataviewInstance }) {

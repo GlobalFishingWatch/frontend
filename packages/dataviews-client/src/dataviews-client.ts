@@ -6,6 +6,8 @@ import {
   Resource,
   DataviewInstance,
   ResourceResponseType,
+  Dataset,
+  DataviewDatasetConfig,
 } from '@globalfishingwatch/api-types'
 import resolveDataviews from './resolve-dataviews'
 
@@ -66,11 +68,12 @@ export default class DataviewsClient {
   // TODO support for a list of already downloaded resources
   // TODO uniq by URL
   getResources(
+    workspaceDataviewInstances: DataviewInstance[],
     dataviews: Dataview[],
-    workspaceDataviewInstances: DataviewInstance[]
+    datasets: Dataset[]
   ): { resources: Resource[]; promises: Promise<Resource>[] } {
     const resources: Resource[] = []
-    const resolvedDataviews = resolveDataviews(dataviews, workspaceDataviewInstances)
+    const resolvedDataviews = resolveDataviews(workspaceDataviewInstances, dataviews, datasets)
     if (resolvedDataviews) {
       resolvedDataviews.forEach((dataview) => {
         const { datasetsConfig } = dataview
@@ -78,45 +81,51 @@ export default class DataviewsClient {
           const datasetParams = datasetsConfig?.find(
             (datasetConfig) => datasetConfig.datasetId === dataset.id
           )
-          const endpointParamType = datasetParams?.endpoint
+          if (datasetParams) {
+            const endpointParamType = datasetParams?.endpoint
 
-          dataset.endpoints
-            ?.filter((endpoint) => endpoint.downloadable && endpoint.id === endpointParamType)
-            .forEach((endpoint) => {
-              // TODO: include query params here too
-              const pathTemplateCompiled = template(endpoint.pathTemplate, {
-                interpolate: /{{([\s\S]+?)}}/g,
-              })
-              let resolvedUrl: string
-              // template compilation will fail if template needs an override an and override has not been defined
-              try {
-                resolvedUrl = pathTemplateCompiled(datasetParams?.params)
-                if (datasetParams?.query?.length) {
-                  resolvedUrl += `?${stringify(datasetParams?.query)}`
-                }
-                const datasetParam = datasetParams?.params?.find((query) => query.id === 'id')
-                const binaryQuery = datasetParams?.query?.find((query) => query.id === 'binary')
-                const formatQuery = datasetParams?.query?.find((query) => query.id === 'format')
-                resources.push({
-                  dataviewId: dataview.id,
-                  type: dataset.type,
-                  datasetId: dataset.id,
-                  resolvedUrl,
-                  responseType:
-                    binaryQuery?.value === true
-                      ? dataset.type?.includes('track') && formatQuery?.value === 'valueArray'
-                        ? 'vessel'
-                        : 'arrayBuffer'
-                      : 'json',
-                  datasetParamId: datasetParam?.id as string,
+            dataset.endpoints
+              ?.filter((endpoint) => endpoint.downloadable && endpoint.id === endpointParamType)
+              .forEach((endpoint) => {
+                // TODO: include query params here too
+                const pathTemplateCompiled = template(endpoint.pathTemplate, {
+                  interpolate: /{{([\s\S]+?)}}/g,
                 })
-              } catch (e) {
-                console.error('Could not use pathTemplate, maybe a datasetParam is missing?')
-                console.error('dataview:', dataview.id, dataview.name)
-                console.error('pathTemplate:', endpoint.pathTemplate)
-                console.error('datasetParams:', datasetParams)
-              }
-            })
+                let resolvedUrl: string
+                // template compilation will fail if template needs an override an and override has not been defined
+                try {
+                  resolvedUrl = pathTemplateCompiled(datasetParams?.params)
+                  if (datasetParams?.query?.length) {
+                    resolvedUrl += `?${stringify(datasetParams?.query)}`
+                  }
+                  const binaryQuery = datasetParams?.query?.find((query) => query.id === 'binary')
+                  const formatQuery = datasetParams?.query?.find((query) => query.id === 'format')
+                  resources.push({
+                    dataviewId: dataview.id,
+                    datasetType: dataset.type,
+                    datasetId: dataset.id,
+                    responseType:
+                      binaryQuery?.value === true
+                        ? dataset.type?.includes('track') && formatQuery?.value === 'valueArray'
+                          ? 'vessel'
+                          : 'arrayBuffer'
+                        : 'json',
+                    url: resolvedUrl,
+                    datasetConfig: datasetParams,
+                  })
+                } catch (e) {
+                  console.error(
+                    'Could not use pathTemplate, maybe a datasetParam endpoint config is missing?'
+                  )
+                  console.error('dataview:', dataview.id, dataview.name)
+                  console.error('pathTemplate:', endpoint.pathTemplate)
+                  console.error('datasetParams:', datasetParams)
+                }
+              })
+          } else {
+            console.error('Could not find datasetParams')
+            console.error('datasetParams:', datasetParams)
+          }
         })
       })
     }
@@ -124,7 +133,7 @@ export default class DataviewsClient {
       // TODO Do appropriate stuff when datasetParams have valuesArray or binary (tracks)
       // See existing implementation of this in Track inspector's dataviews thunk:
       // https://github.com/GlobalFishingWatch/track-inspector/blob/develop/src/features/dataviews/dataviews.thunks.ts#L58
-      return this._fetch(resource.resolvedUrl, {
+      return this._fetch(resource.url, {
         responseType: resource.responseType as ResourceResponseType,
       }).then((data: unknown) => {
         const resourceWithData = {

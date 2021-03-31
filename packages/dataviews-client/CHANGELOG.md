@@ -1,5 +1,25 @@
 # @globalfishingwatch/dataviews-client
 
+## 5.0.1
+
+### Patch Changes
+
+- fix generators type export
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.18.1
+
+## 5.0.0
+
+### Major Changes
+
+- d2501b54: move fishing-map logic into dataview-client
+
+### Patch Changes
+
+- Updated dependencies [d2501b54]
+  - @globalfishingwatch/api-types@3.0.0
+  - @globalfishingwatch/api-client@1.6.8
+
 ## 4.1.0
 
 ### Minor Changes

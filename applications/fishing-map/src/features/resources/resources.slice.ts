@@ -1,24 +1,9 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
-import { Field, Segment, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
+import { Field, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { DataviewDatasetConfig, DatasetTypes } from '@globalfishingwatch/api-types'
+import { Resource, ResourceStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
-import { AsyncReducerStatus } from 'utils/async-slice'
-
-export interface ResourceQuery {
-  url: string
-  dataviewId: number
-  datasetConfig: DataviewDatasetConfig
-  datasetType: DatasetTypes
-}
-
-export interface Resource<T = unknown> extends ResourceQuery {
-  status: AsyncReducerStatus
-  data?: T
-}
-
-export type TrackResourceData = Segment[]
 
 type ResourcesState = Record<any, Resource>
 
@@ -26,7 +11,7 @@ const initialState: ResourcesState = {}
 
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
-  async (resource: ResourceQuery) => {
+  async (resource: Resource) => {
     const isTrackResource = resource.datasetType === DatasetTypes.Tracks
     const responseType =
       isTrackResource &&
@@ -50,10 +35,10 @@ export const fetchResourceThunk = createAsyncThunk(
     }
   },
   {
-    condition: (resource: ResourceQuery, { getState }) => {
+    condition: (resource: Resource, { getState }) => {
       const { resources } = getState() as RootState
       const { status } = resources[resource.url] || {}
-      return !status || (status !== 'loading' && status !== 'finished')
+      return !status || (status !== ResourceStatus.Loading && status !== ResourceStatus.Finished)
     },
   }
 )
@@ -65,15 +50,15 @@ const resourcesSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchResourceThunk.pending, (state, action) => {
       const resource = action.meta.arg
-      state[resource.url] = { status: AsyncReducerStatus.Loading, ...resource }
+      state[resource.url] = { status: ResourceStatus.Loading, ...resource }
     })
     builder.addCase(fetchResourceThunk.fulfilled, (state, action) => {
       const { url } = action.payload
-      state[url] = { status: AsyncReducerStatus.Finished, ...action.payload }
+      state[url] = { status: ResourceStatus.Finished, ...action.payload }
     })
     builder.addCase(fetchResourceThunk.rejected, (state, action) => {
       const { url } = action.meta.arg
-      state[url].status = AsyncReducerStatus.Error
+      state[url].status = ResourceStatus.Error
     })
   },
 })

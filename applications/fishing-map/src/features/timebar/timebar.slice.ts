@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { DEFAULT_TIME_RANGE } from 'data/config'
 import { RootState } from 'store'
 
 type Range = {
@@ -7,14 +8,14 @@ type Range = {
 }
 
 type TimebarSlice = {
-  highlightedTime: Range | null
-  staticTime: Range | null
+  highlightedTime: Range | undefined
+  staticTime: Range
   hasChangedSettingsOnce: boolean
 }
 
 const initialState: TimebarSlice = {
-  highlightedTime: null,
-  staticTime: null,
+  highlightedTime: undefined,
+  staticTime: DEFAULT_TIME_RANGE,
   hasChangedSettingsOnce: false,
 }
 
@@ -26,7 +27,7 @@ const slice = createSlice({
       state.highlightedTime = action.payload
     },
     disableHighlightedTime: (state) => {
-      state.highlightedTime = null
+      state.highlightedTime = undefined
     },
     setStaticTime: (state, action: PayloadAction<Range>) => {
       state.staticTime = action.payload

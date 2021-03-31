@@ -7,7 +7,8 @@ import {
   WorkspaceUpsert,
 } from '@globalfishingwatch/api-types'
 import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
-import { UrlDataviewInstance, WorkspaceState } from 'types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { WorkspaceState } from 'types'
 import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
@@ -17,8 +18,8 @@ import {
   selectUrlDataviewInstances,
   selectVersion,
 } from 'routes/routes.selectors'
-import { WORKSPACE, HOME } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
+import { HOME, WORKSPACE } from 'routes/routes'
+import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
 import { selectAnalysisQuery, selectCustomWorkspace } from 'features/app/app.selectors'
 import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
@@ -172,14 +173,30 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
             category: locationCategory,
             workspaceId: workspaceUpdated.id,
           },
-          query: {
-            latitude: workspaceUpdated.viewport.latitude,
-            longitude: workspaceUpdated.viewport.longitude,
-            zoom: workspaceUpdated.viewport.zoom,
-          },
           replaceQuery: true,
         })
       )
+    }
+    return workspaceUpdated
+  }
+)
+
+export const updatedCurrentWorkspaceThunk = createAsyncThunk(
+  'workspace/updatedCurrent',
+  async (workspaceId: string, { dispatch, getState }) => {
+    const state = getState() as RootState
+    const version = selectVersion(state)
+    const workspace = selectCustomWorkspace(state)
+
+    const workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
+      `/${version}/workspaces/${workspaceId}`,
+      {
+        method: 'PATCH',
+        body: workspace,
+      } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
+    )
+    if (workspaceUpdated) {
+      dispatch(cleanQueryLocation())
     }
     return workspaceUpdated
   }
@@ -219,6 +236,18 @@ const workspaceSlice = createSlice({
       }
     })
     builder.addCase(saveCurrentWorkspaceThunk.rejected, (state) => {
+      state.customStatus = AsyncReducerStatus.Error
+    })
+    builder.addCase(updatedCurrentWorkspaceThunk.pending, (state) => {
+      state.customStatus = AsyncReducerStatus.Loading
+    })
+    builder.addCase(updatedCurrentWorkspaceThunk.fulfilled, (state, action) => {
+      state.customStatus = AsyncReducerStatus.Finished
+      if (action.payload) {
+        state.data = action.payload
+      }
+    })
+    builder.addCase(updatedCurrentWorkspaceThunk.rejected, (state) => {
       state.customStatus = AsyncReducerStatus.Error
     })
   },

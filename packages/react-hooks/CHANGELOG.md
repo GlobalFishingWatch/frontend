@@ -1,5 +1,32 @@
 # @globalfishingwatch/react-hooks
 
+## 5.1.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@5.0.1
+  - @globalfishingwatch/layer-composer@4.18.1
+  - @globalfishingwatch/ui-components@2.16.1
+
+## 5.1.0
+
+### Minor Changes
+
+- 6badcfe5: Update use-legends hook to match fishing-map latest changes
+
+## 5.0.0
+
+### Major Changes
+
+- d2501b54: move fishing-map logic into dataview-client
+
+### Patch Changes
+
+- Updated dependencies [d2501b54]
+  - @globalfishingwatch/dataviews-client@5.0.0
+  - @globalfishingwatch/api-client@1.6.8
+
 ## 4.11.0
 
 ### Minor Changes

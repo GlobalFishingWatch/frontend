@@ -1,11 +1,13 @@
-import React, { Fragment, useEffect, useRef, useMemo } from 'react'
+import React, { Fragment, useEffect, useRef, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import union from '@turf/union'
 import bbox from '@turf/bbox'
 import { Feature, Polygon } from 'geojson'
 import { batch, useDispatch, useSelector } from 'react-redux'
+import { DateTime } from 'luxon'
 import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
@@ -24,8 +26,9 @@ import { selectAnalysisQuery } from 'features/app/app.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useMapFeatures } from 'features/map/map-features.hooks'
-import { Bbox, UrlDataviewInstance } from 'types'
+import { Bbox } from 'types'
 import { getFlagsByIds } from 'utils/flags'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import styles from './Analysis.module.css'
 import {
@@ -98,6 +101,7 @@ const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
 function Analysis() {
   const { t } = useTranslation()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const { start, end } = useTimerangeConnect()
   const dispatch = useDispatch()
   const fitMapBounds = useMapFitBounds()
   const analysisQuery = useSelector(selectAnalysisQuery)
@@ -108,6 +112,7 @@ function Analysis() {
   const dataviews = useSelector(selectActiveTemporalgridDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
   const analysisBounds = useSelector(selectAnalysisBounds)
+
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
@@ -121,6 +126,15 @@ function Analysis() {
   })
 
   const { title, commonProperties } = getCommonProperties(dataviews)
+
+  const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
+
+  useEffect(() => {
+    const startDateTime = DateTime.fromISO(start)
+    const endDateTime = DateTime.fromISO(end)
+    const duration = endDateTime.diff(startDateTime, 'years')
+    setTimeRangeTooLong(duration.years > 1)
+  }, [start, end])
 
   useEffect(() => {
     if (sourceLoaded) {
@@ -302,7 +316,20 @@ function Analysis() {
               className={styles.saveBtn}
               onClick={onDownloadClick}
               loading={reportStatus === AsyncReducerStatus.LoadingCreate}
-              disabled={!hasAnalysisLayers || reportStatus === AsyncReducerStatus.Finished}
+              tooltip={
+                timeRangeTooLong
+                  ? t(
+                      'analysis.timeRangeTooLong',
+                      'Reports are only allowed for time ranges up to a year'
+                    )
+                  : ''
+              }
+              tooltipPlacement="top"
+              disabled={
+                timeRangeTooLong ||
+                !hasAnalysisLayers ||
+                reportStatus === AsyncReducerStatus.Finished
+              }
             >
               {reportStatus === AsyncReducerStatus.Finished ? (
                 <Icon icon="tick" />

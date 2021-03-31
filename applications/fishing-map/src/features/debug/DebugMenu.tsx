@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { selectLocationQuery } from 'routes/routes.selectors'
-import { selectDebugOptions, toggleOption } from './debug.slice'
+import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
 import styles from './DebugMenu.module.css'
 
 const DebugMenu: React.FC = () => {
@@ -13,7 +13,10 @@ const DebugMenu: React.FC = () => {
     <div className={styles.row}>
       <section>
         <div className={styles.header}>
-          <Switch active={debugOptions.blob} onClick={() => dispatch(toggleOption('blob'))} />
+          <Switch
+            active={debugOptions.blob}
+            onClick={() => dispatch(toggleOption(DebugOption.Blob))}
+          />
           <label htmlFor="option_blob">[experimental] Smooth heatmap style</label>
         </div>
         <p>
@@ -23,20 +26,23 @@ const DebugMenu: React.FC = () => {
         <div className={styles.header}>
           <Switch
             active={debugOptions.extruded}
-            onClick={() => dispatch(toggleOption('extruded'))}
+            onClick={() => dispatch(toggleOption(DebugOption.Extruded))}
           />
           <label htmlFor="option_extruded">[experimental] Stacked 3D bars</label>
         </div>
         <p>Renders fishing activity as stacked 3D bars. Will disable interaction on this layer.</p>
         <div className={styles.header}>
-          <Switch active={debugOptions.debug} onClick={() => dispatch(toggleOption('debug'))} />
+          <Switch
+            active={debugOptions.debug}
+            onClick={() => dispatch(toggleOption(DebugOption.Debug))}
+          />
           <label htmlFor="option_debug">Debug tiles</label>
         </div>
         <p>Displays info on tiles useful for debugging.</p>
         <div className={styles.header}>
           <Switch
             active={debugOptions.thinning}
-            onClick={() => dispatch(toggleOption('thinning'))}
+            onClick={() => dispatch(toggleOption(DebugOption.Thinning))}
           />
           <label htmlFor="option_debug">Track thinning</label>
         </div>

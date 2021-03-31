@@ -13,9 +13,11 @@ import {
 } from 'utils/async-slice'
 import { RootState } from 'store'
 import { APP_NAME } from 'data/config'
-import { WorkspaceViewport } from 'types'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
+import { WorkspaceState } from 'types'
+
+type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategories>
 
 type fetchWorkspacesThunkParams = {
   app?: string
@@ -26,7 +28,7 @@ export const fetchWorkspacesThunk = createAsyncThunk(
   'workspaces/fetch',
   async ({ app = APP_NAME, ids, userId }: fetchWorkspacesThunkParams) => {
     const workspacesParams = { app, ids, ownerId: userId }
-    const workspaces = await GFWAPI.fetch<Workspace[]>(
+    const workspaces = await GFWAPI.fetch<AppWorkspace[]>(
       `/v1/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
     )
 
@@ -44,7 +46,6 @@ export type HighlightedWorkspace = {
   description: string
   img?: string
   cta?: string
-  viewport?: WorkspaceViewport
 }
 
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
@@ -114,7 +115,7 @@ export const deleteWorkspaceThunk = createAsyncThunk<
   }
 })
 
-export interface WorkspacesState extends AsyncReducer<Workspace> {
+export interface WorkspacesState extends AsyncReducer<AppWorkspace> {
   highlighted: {
     status: AsyncReducerStatus
     data: Record<string, HighlightedWorkspace[]> | undefined
@@ -129,7 +130,7 @@ const initialState: WorkspacesState = {
   },
 }
 
-const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesState, Workspace>({
+const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesState, AppWorkspace>({
   name: 'workspaces',
   initialState,
   thunks: {

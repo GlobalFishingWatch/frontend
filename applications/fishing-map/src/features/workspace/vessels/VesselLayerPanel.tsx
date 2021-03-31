@@ -2,7 +2,7 @@ import React, { Fragment, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes, Vessel } from '@globalfishingwatch/api-types'
+import { DatasetTypes, ResourceStatus, Vessel } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
@@ -13,18 +13,20 @@ import {
   segmentsToBbox,
   filterSegmentsByTimerange,
 } from '@globalfishingwatch/data-transforms'
+import {
+  UrlDataviewInstance,
+  resolveDataviewDatasetResource,
+} from '@globalfishingwatch/dataviews-client'
 import { formatInfoField, getVesselLabel } from 'utils/info'
-import { Bbox, UrlDataviewInstance } from 'types'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { resolveDataviewDatasetResource } from 'features/resources/resources.selectors'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import { Bbox } from 'types'
 
 // Translations by feature.unit static keys
 // t('vessel.flag', 'Flag')
@@ -53,8 +55,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const fitBounds = useMapFitBounds()
   const { start, end } = useTimerangeConnect()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const { url: infoUrl } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Vessels })
-  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
+  const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
   const infoResource = useSelector(selectResourceByUrl<Vessel>(infoUrl))
   const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const [colorOpen, setColorOpen] = useState(false)
@@ -122,11 +124,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   )
 
   const loading =
-    trackResource?.status === AsyncReducerStatus.Loading ||
-    infoResource?.status === AsyncReducerStatus.Loading
+    trackResource?.status === ResourceStatus.Loading ||
+    infoResource?.status === ResourceStatus.Loading
 
-  const infoError = infoResource?.status === AsyncReducerStatus.Error
-  const trackError = trackResource?.status === AsyncReducerStatus.Error
+  const infoError = infoResource?.status === ResourceStatus.Error
+  const trackError = trackResource?.status === ResourceStatus.Error
 
   return (
     <div
@@ -207,7 +209,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                         <li key={field.id} className={styles.infoContentItem}>
                           <label>{t(`vessel.${field.id}` as any)}</label>
                           {fieldValues.map((fieldValue, i) => (
-                            <span>
+                            <span key={fieldValue}>
                               {field.type === 'date' ? (
                                 <I18nDate date={fieldValue} />
                               ) : field.type === 'flag' ? (
