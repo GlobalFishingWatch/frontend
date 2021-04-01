@@ -53,7 +53,7 @@ const Profile: React.FC = (props): React.ReactElement => {
 
   const defaultPreviousNames = useMemo(() => {
     return `+${vessel?.history.shipname.byDate.length} previous ${t(
-      `vessel.names` as any,
+      `vessel.namePlural` as any,
       'names'
     ).toLocaleUpperCase()}`
   }, [vessel, t])
@@ -74,10 +74,10 @@ const Profile: React.FC = (props): React.ReactElement => {
             {vessel.shipname}
             {vessel.history.shipname.byDate.length && (
               <p>
-                {`${t('vessel.plusPreviousValuesByField', defaultPreviousNames, {
+                {t('vessel.plusPreviousValuesByField', defaultPreviousNames, {
                   quantity: vessel.history.shipname.byDate.length,
-                  fieldLabel: t(`vessel.names` as any, 'names').toLocaleUpperCase(),
-                })}`}
+                  fieldLabel: t(`vessel.namePlural` as any, 'names').toLocaleUpperCase(),
+                })}
               </p>
             )}
           </h1>
