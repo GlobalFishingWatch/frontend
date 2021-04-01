@@ -1,0 +1,57 @@
+{
+  "common": {
+    "activity": "activity",
+    "commingSoon": "coming soon!",
+    "currentTimeRange": "current time range",
+    "from": "from",
+    "info": "info",
+    "map": "map",
+    "offlineAccess": "offline access",
+    "since": "since",
+    "timeRange": "time range",
+    "to": "to",
+    "historyFor": "history for",
+    "previous": "previous"
+  },
+  "search": {
+    "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
+    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign",
+    "notAllowed": "Search not allowed"
+  },
+  "selects": {
+    "allSelected": "All",
+    "selected": "selected"
+  },
+  "vessel": {
+    "authorizationPlural": "authorizations",
+    "historyLabelByField": "{{label}} history for {{vesselName}}",
+    "noAuthorizations": "No authorizations found",
+    "plusPreviousValuesByField": "+{{quantity}} previous {{fieldLabel}}",
+    "previousNames": "previous names",
+    "saveForOfflineView": "save vessel for offline view",
+    "builtYear": "built year",
+    "callsign": "callsign",
+    "depth": "depth",
+    "flag": "flag",
+    "gearType": "gear type",
+    "grossTonnage": "gross tonnage",
+    "length": "length",
+    "mmsi": "mmsi",
+    "name": "name",
+    "operator": "operator",
+    "owner": "owner",
+    "type": "type",
+    "grossTonnagePlural": "gross tonnages",
+    "builtYearPlural": "built years",
+    "callsignPlural": "callsigns",
+    "depthPlural": "depths",
+    "flagPlural": "flags",
+    "gearTypePlural": "gear types",
+    "lengthPlural": "lengths",
+    "mmsiPlural": "mmsis",
+    "namePlural": "names",
+    "operatorPlural": "operators",
+    "ownerPlural": "owners",
+    "typePlural": "types"
+  }
+}
