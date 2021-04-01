@@ -28,26 +28,26 @@ export enum VesselFieldLabel {
 }
 
 enum VesselFieldLabelPlural {
-  names = 'names',
-  flags = 'flags',
-  shipnames = 'shipnames',
-  firstTransmissionDates = 'firstTransmissionDates',
-  lastTransmissionDates = 'lastTransmissionDates',
-  imos = 'imos',
-  mmsis = 'mmsis',
-  callsigns = 'callsigns',
-  fleets = 'fleets',
-  origins = 'origins',
-  types = 'types',
-  gearTypes = 'gearTypes',
-  lengths = 'lengths',
-  depths = 'depths',
-  grossTonnages = 'grossTonnages',
-  owners = 'owners',
-  operators = 'operators',
-  builtYears = 'builtYears',
-  authorizations = 'authorizations',
-  registeredGearTypes = 'registeredGearTypes',
+  name = 'namePlural',
+  flag = 'flagPlural',
+  shipname = 'shipnamePlural',
+  firstTransmissionDate = 'firstTransmissionDatePlural',
+  lastTransmissionDate = 'lastTransmissionDatePlural',
+  imo = 'imoPlural',
+  mmsi = 'mmsiPlural',
+  callsign = 'callsignPlural',
+  fleet = 'fleetPlural',
+  origin = 'originPlural',
+  type = 'typePlural',
+  gearType = 'gearTypePlural',
+  length = 'lengthPlural',
+  depth = 'depthPlural',
+  grossTonnage = 'grossTonnagePlural',
+  owner = 'ownerPlural',
+  operator = 'operatorPlural',
+  builtYear = 'builtYearPlural',
+  authorizations = 'authorizationPlural',
+  registeredGearType = 'registeredGearTypePlural',
 }
 interface ListItemProps {
   label: VesselFieldLabel
@@ -74,8 +74,8 @@ const InfoField: React.FC<ListItemProps> = ({
     firstSeen: valuesHistory.slice().shift()?.endDate,
   }
   const labelPlural: VesselFieldLabelPlural = useMemo(() => {
-    const key = (label === 'authorizations' ? label : `${label}s`) as VesselFieldLabelPlural
-    return t(`vessel.${key}` as any, key)
+    const plural = VesselFieldLabelPlural[label as keyof typeof VesselFieldLabelPlural]
+    return t(`vessel.${plural}` as any, `${label}s`)
   }, [t, label])
 
   const defaultValue = useMemo(() => {
@@ -89,10 +89,10 @@ const InfoField: React.FC<ListItemProps> = ({
         <div onClick={openModal}>{value.length > 0 ? value : defaultEmptyValue}</div>
         {valuesHistory.length > 0 && (
           <button className={styles.moreValues} onClick={openModal}>
-            {`${t('vessel.plusPreviousValuesByField', defaultValue, {
+            {t('vessel.plusPreviousValuesByField', defaultValue, {
               quantity: valuesHistory.length,
               fieldLabel: labelPlural.toLocaleUpperCase(),
-            })}`}
+            })}
           </button>
         )}
         <InfoFieldHistory

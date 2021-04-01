@@ -45,10 +45,10 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
     <Fragment>
       {history.length && (
         <Modal
-          title={`${t('vessel.historyLabelByField', defaultTitle, {
+          title={t('vessel.historyLabelByField', defaultTitle, {
             label: t(`vessel.${label}` as any, label),
             vesselName,
-          })}`}
+          })}
           isOpen={isOpen}
           onClose={onClose}
         >

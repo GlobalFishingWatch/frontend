@@ -24,9 +24,9 @@
   },
   "vessel": {
     "authorizationPlural": "authorizations",
-    "historyLabelByField": "{{label}} $t(common.historyFor) {{vesselName}}",
+    "historyLabelByField": "{{label}} history for {{vesselName}}",
     "noAuthorizations": "No authorizations found",
-    "plusPreviousValuesByField": "+{{quantity}} $t(common.previous) {{fieldLabel}}",
+    "plusPreviousValuesByField": "+{{quantity}} previous {{fieldLabel}}",
     "saveForOfflineView": "save vessel for offline view",
     "previousNames": "previous names",
     "builtYear": "built year",
