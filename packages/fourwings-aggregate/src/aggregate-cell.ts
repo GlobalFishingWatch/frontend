@@ -36,7 +36,7 @@ const aggregateCell = ({
   for (let i = 0; i < rawValuesArrSlice.length; i++) {
     const sublayerIndex = i % sublayerCount
     const rawValue = rawValuesArrSlice[i]
-    if (rawValue !== null && rawValue !== undefined) {
+    if (rawValue !== null && rawValue !== undefined && !isNaN(rawValue)) {
       aggregatedValues[sublayerIndex] += rawValue
       if (sublayerIndex === 0) numValues++
     }
