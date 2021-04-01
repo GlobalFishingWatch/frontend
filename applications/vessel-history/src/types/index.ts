@@ -139,3 +139,9 @@ export type GFWDetail = {
   geartype: string
   normalized_shipname: string
 }
+
+export enum Locale {
+  en = 'en',
+  es = 'es',
+  fr = 'fr',
+}

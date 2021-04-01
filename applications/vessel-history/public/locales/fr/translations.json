@@ -24,11 +24,11 @@
   },
   "vessel": {
     "authorizationPlural": "authorizations",
-    "historyLabelByField": "{{label}} hisrtory for {{vesselName}}",
+    "historyLabelByField": "{{label}} history for {{vesselName}}",
     "noAuthorizations": "No authorizations found",
     "plusPreviousValuesByField": "+{{quantity}} previous {{fieldLabel}}",
-    "saveForOfflineView": "save vessel for offline view",
     "previousNames": "previous names",
+    "saveForOfflineView": "save vessel for offline view",
     "builtYear": "built year",
     "callsign": "callsign",
     "depth": "depth",

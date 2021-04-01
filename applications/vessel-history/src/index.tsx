@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import * as serviceWorker from './serviceWorker'
 import store from './store'
 import App from './App'
+import './features/i18n/i18n'
 import './index.css'
 
 render(

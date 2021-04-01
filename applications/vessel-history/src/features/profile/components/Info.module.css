@@ -31,6 +31,7 @@
 }
 
 .saveButton {
+  text-transform: uppercase;
   width: 100%;
 }
 
@@ -40,4 +41,7 @@
 .historyItem {
   display: flex;
   flex-flow: row nowrap;
+}
+.rangeLabel {
+  text-transform: capitalize;
 }
