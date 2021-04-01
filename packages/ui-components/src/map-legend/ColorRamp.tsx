@@ -78,7 +78,7 @@ function ColorRampLegend({
                     : 0,
                 }}
               >
-                {currentValue}
+                {currentValue.toFixed(2)}
               </span>
             )}
             {type === 'colorramp-discrete' && (

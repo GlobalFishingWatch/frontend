@@ -174,7 +174,7 @@ export type TooltipEventFeature = {
   layerId: string
   generatorContextLayer?: ContextLayerType | null
   geometry?: Geometry
-  value: string
+  value: string // TODO Why not a number?
   properties: Record<string, string>
   vesselsInfo?: {
     overflow: boolean

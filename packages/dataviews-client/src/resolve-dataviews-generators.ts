@@ -101,7 +101,9 @@ export function getGeneratorConfig(
       const isEnvironmentLayer = dataview.category === DataviewCategory.Environment
       let environmentalConfig: Partial<Generators.HeatmapAnimatedGeneratorConfig> = {}
       if (isEnvironmentLayer) {
-        const datasets =
+        // TODO not exactly sure how to retrieve dataset properly
+        const dataset = dataview?.datasets && dataview?.datasets[0]
+        const datasetsIds =
           dataview.config.datasets || dataview.datasetsConfig?.map((dc) => dc.datasetId)
         const sublayers: Generators.HeatmapAnimatedGeneratorSublayer[] = [
           {
@@ -109,7 +111,7 @@ export function getGeneratorConfig(
             colorRamp: dataview.config?.colorRamp as ColorRampsIds,
             visible: dataview.config?.visible ?? true,
             breaks: dataview.config?.breaks,
-            datasets,
+            datasets: datasetsIds,
           },
         ]
 
@@ -118,10 +120,16 @@ export function getGeneratorConfig(
           mode: Generators.HeatmapAnimatedMode.Single,
           aggregationOperation: AggregationOperation.Avg,
           interactive: true,
-          interval: 'month',
-          breaksMultiplier: 1,
+          interval: dataview.config?.interval || 'month',
+          breaksMultiplier: dataview.config?.breaskMultiplier || 1,
           // TODO remove and grab from dataset config here
           tilesAPI: 'https://dev-api-fourwings-tiler-jzzp2ui3wq-uc.a.run.app/v1',
+          metadata: {
+            legend: {
+              label: dataset?.name,
+              unit: dataset?.unit,
+            },
+          },
         }
       }
 

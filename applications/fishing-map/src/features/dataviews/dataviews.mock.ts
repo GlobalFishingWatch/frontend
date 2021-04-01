@@ -9,9 +9,11 @@ export const dataviews: Dataview[] = [
     app: 'fishing-map',
     config: {
       type: 'HEATMAP_ANIMATED',
-      color: '#00FFBC',
-      colorRamp: 'teal',
+      color: '#ff0000',
+      colorRamp: 'red',
       breaks: [28, 28.4, 28.6, 28.8, 29, 29.3, 29.6, 30],
+      interval: 'month',
+      breaksMultiplier: 1,
     },
     category: DataviewCategory.Environment,
     datasetsConfig: [

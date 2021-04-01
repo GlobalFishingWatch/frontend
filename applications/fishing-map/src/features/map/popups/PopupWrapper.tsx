@@ -10,7 +10,7 @@ import { POPUP_CATEGORY_ORDER } from 'data/config'
 import styles from './Popup.module.css'
 import HeatmapTooltipRow from './HeatmapLayers'
 import TileClusterRow from './TileClusterLayers'
-import EnviromentalTooltipSection from './EnvironmentLayers'
+import EnvironmentTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 import UserContextTooltipSection from './UserContextLayers'
 
@@ -69,7 +69,7 @@ function PopupWrapper({
               else return null
             case DataviewCategory.Environment:
               return (
-                <EnviromentalTooltipSection
+                <EnvironmentTooltipSection
                   key={featureCategory}
                   features={features}
                   showFeaturesDetails={type === 'click'}
