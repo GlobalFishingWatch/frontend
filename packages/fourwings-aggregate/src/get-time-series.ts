@@ -47,6 +47,8 @@ const getTimeSeries = (features: Feature[], numSublayers: number, quantizeOffset
     }
   }
 
+  console.log(finalValues)
+
   return finalValues
 }
 

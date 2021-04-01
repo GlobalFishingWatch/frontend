@@ -13,7 +13,7 @@ import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { useGeneratorStyleMetadata } from 'features/map/map.hooks'
 import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
-import { selectActiveTemporalgridDataviews } from 'features/workspace/workspace.selectors'
+import { selectActiveActivityDataviews } from 'features/workspace/workspace.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import * as AnalysisWorker from './Analysis.worker'
 import AnalysisGraph, { GraphData } from './AnalysisGraph'
@@ -23,7 +23,7 @@ import styles from './Analysis.module.css'
 const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 
 function AnalysisGraphWrapper() {
-  const temporalGridDataviews = useSelector(selectActiveTemporalgridDataviews)
+  const temporalGridDataviews = useSelector(selectActiveActivityDataviews)
   const { start, end } = useTimerangeConnect()
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
@@ -35,6 +35,7 @@ function AnalysisGraphWrapper() {
   const { features: cellFeatures, sourceLoaded } = useMapTemporalgridFeatures({
     cacheKey: interval,
   })
+  // console.log(cellFeatures)
   const debouncedSourceLoaded = useDebounce(sourceLoaded, 600)
   const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
   const chunkQuantizeOffset = activeTimeChunk?.quantizeOffset

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { TEMPORALGRID_SOURCE_LAYER, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import useMapInstance from 'features/map/map-context.hooks'
-import { useGeneratorStyleMetadata } from './map.hooks'
+import { useGeneratorStyleMetadata, useMapStyle } from './map.hooks'
 
 export const useMapSourceLoaded = (sourceId: string, cacheKey?: string) => {
   const map = useMapInstance()
@@ -81,6 +81,7 @@ export const useMapFeatures = ({
 }) => {
   const map = useMapInstance()
   const sourceLoaded = useMapSourceLoaded(sourceId, cacheKey)
+  console.log(sourceId, sourceLayer, sourceLoaded, useMapStyle())
 
   const features = useMemo(() => {
     if (sourceLoaded) {
@@ -88,6 +89,7 @@ export const useMapFeatures = ({
         sourceLayer: sourceLayer,
         ...(filter && { filter }),
       })
+      console.log(features)
       return features
     }
   }, [sourceLoaded, map, sourceId, sourceLayer, filter])

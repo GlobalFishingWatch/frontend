@@ -16,7 +16,7 @@ import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
 import {
   getRelatedDatasetByType,
-  selectActiveTemporalgridDataviews,
+  selectActiveActivityDataviews,
   selectHasAnalysisLayersVisible,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
@@ -121,7 +121,7 @@ function Analysis() {
   const { dispatchQueryParams } = useLocationConnect()
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
   const staticTime = useSelector(selectStaticTime)
-  const dataviews = useSelector(selectActiveTemporalgridDataviews) || []
+  const dataviews = useSelector(selectActiveActivityDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
   const analysisBounds = useSelector(selectAnalysisBounds)
 

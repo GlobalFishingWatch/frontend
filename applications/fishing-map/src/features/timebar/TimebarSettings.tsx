@@ -8,7 +8,7 @@ import Select, { SelectOption } from '@globalfishingwatch/ui-components/dist/sel
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 import {
-  selectActiveTemporalgridDataviews,
+  selectActiveActivityDataviews,
   selectActiveVesselsDataviews,
 } from 'features/workspace/workspace.selectors'
 import { TIMEBAR_EVENT_OPTIONS, TIMEBAR_GRAPH_OPTIONS } from 'data/config'
@@ -20,7 +20,7 @@ import styles from './TimebarSettings.module.css'
 const TimebarSettings = () => {
   const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
-  const activeHeatmapDataviews = useSelector(selectActiveTemporalgridDataviews)
+  const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
   const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
   const timebarEvents = useSelector(selectTimebarEvents)
   const timebarGraph = useSelector(selectTimebarGraph)

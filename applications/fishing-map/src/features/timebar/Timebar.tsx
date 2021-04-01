@@ -16,7 +16,7 @@ import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/t
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
-import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
+import { selectActivityDataviews } from 'features/workspace/workspace.selectors'
 import { useGeneratorStyleMetadata } from 'features/map/map.hooks'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
 import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
@@ -43,7 +43,7 @@ const TimebarWrapper = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
-  const temporalGridDataviews = useSelector(selectTemporalgridDataviews)
+  const temporalGridDataviews = useSelector(selectActivityDataviews)
   const staticHeatmapLayersActive = useSelector(hasStaticHeatmapLayersActive)
 
   const dispatch = useDispatch()
@@ -124,8 +124,7 @@ const TimebarWrapper = () => {
     visibleTemporalGridDataviews,
   ])
 
-  const dataviews = useSelector(selectTemporalgridDataviews)
-  const dataviewsColors = dataviews?.map((dataview) => dataview.config?.color)
+  const dataviewsColors = temporalGridDataviews?.map((dataview) => dataview.config?.color)
 
   // Using an effect to ensure the blur loading is removed once the component has been rendered
   const [loading, setLoading] = useState(sourceLoaded)
@@ -169,7 +168,7 @@ const TimebarWrapper = () => {
                   key="stackedActivity"
                   data={stackedActivity}
                   colors={dataviewsColors}
-                  numSublayers={dataviews?.length}
+                  numSublayers={temporalGridDataviews?.length}
                 />
               </div>
             )}

@@ -15,7 +15,7 @@ import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-in
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import {
   selectDataviewInstancesResolved,
-  selectTemporalgridDataviews,
+  selectActivityDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import { selectLocationType } from 'routes/routes.selectors'
@@ -194,7 +194,7 @@ export type TooltipEvent = {
 export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
   const { t } = useTranslation()
   const dataviews = useSelector(selectDataviewInstancesResolved)
-  const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
+  const temporalgridDataviews = useSelector(selectActivityDataviews)
   if (!event || !event.features) return null
 
   const clusterFeature = event.features.find(
