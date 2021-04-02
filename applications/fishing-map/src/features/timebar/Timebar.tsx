@@ -19,7 +19,7 @@ import { selectTimebarGraph } from 'features/app/app.selectors'
 import { selectActivityDataviews } from 'features/workspace/workspace.selectors'
 import { useGeneratorStyleMetadata } from 'features/map/map.hooks'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
-import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
+import { useActivityTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { filterByViewport } from 'features/map/map.utils'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
@@ -69,7 +69,7 @@ const TimebarWrapper = () => {
   )
 
   const { bounds } = useMapBounds()
-  const { features: cellFeatures, sourceLoaded } = useMapTemporalgridFeatures()
+  const { features: cellFeatures, sourceLoaded } = useActivityTemporalgridFeatures()
   const debouncedBounds = useDebounce(bounds, 400)
 
   useEffect(() => {

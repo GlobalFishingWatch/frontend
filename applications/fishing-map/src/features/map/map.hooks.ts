@@ -24,7 +24,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
-  getGeneratorsConfig,
+  selectGeneratorsConfig,
   selectGlobalGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
@@ -48,7 +48,7 @@ import { useMapSourceLoaded } from './map-features.hooks'
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
   return {
-    generatorsConfig: useSelector(getGeneratorsConfig),
+    generatorsConfig: useSelector(selectGeneratorsConfig),
     globalConfig: useSelector(selectGlobalGeneratorsConfig),
   }
 }

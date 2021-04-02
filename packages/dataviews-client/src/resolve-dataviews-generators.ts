@@ -250,7 +250,7 @@ export function getDataviewsGeneratorConfigs(
       return sublayer
     })
 
-    const activityDataview = {
+    const mergedActivityDataview = {
       id: params.mergedActivityGeneratorId || MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
       config: {
         type: Generators.Type.HeatmapAnimated,
@@ -258,7 +258,7 @@ export function getDataviewsGeneratorConfigs(
         mode: heatmapAnimatedMode,
       },
     }
-    dataviewsFiltered.push(activityDataview)
+    dataviewsFiltered.push(mergedActivityDataview)
   }
 
   const generatorsConfig = dataviewsFiltered.flatMap((dataview) => {

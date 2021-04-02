@@ -12,8 +12,11 @@ import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { useGeneratorStyleMetadata } from 'features/map/map.hooks'
-import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
-import { selectActiveActivityDataviews } from 'features/workspace/workspace.selectors'
+import { useActivityTemporalgridFeatures } from 'features/map/map-features.hooks'
+import {
+  selectActiveActivityDataviews,
+  selectActiveTemporalgridDataviews,
+} from 'features/workspace/workspace.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import * as AnalysisWorker from './Analysis.worker'
 import AnalysisGraph, { GraphData } from './AnalysisGraph'
@@ -28,11 +31,12 @@ function AnalysisGraphWrapper() {
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
   const [timeseries, setTimeseries] = useState<GraphData[] | undefined>()
+  const activeTemporalGridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const temporalgrid = useGeneratorStyleMetadata(MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
   const numSublayers = temporalgrid?.numSublayers
   const timeChunks = temporalgrid?.timeChunks as TimeChunks
   const interval = temporalgrid?.timeChunks?.interval
-  const { features: cellFeatures, sourceLoaded } = useMapTemporalgridFeatures({
+  const { features: cellFeatures, sourceLoaded } = useActivityTemporalgridFeatures({
     cacheKey: interval,
   })
   // console.log(cellFeatures)

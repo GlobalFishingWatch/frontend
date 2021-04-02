@@ -97,10 +97,14 @@ export const useMapFeatures = ({
   return { features, sourceLoaded }
 }
 
-export const useMapTemporalgridFeatures = ({ cacheKey }: { cacheKey?: string } = {}) => {
-  const mergedActivityGenMetadata = useGeneratorStyleMetadata(
-    MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
-  )
+const useMapTemporalgridLayerFeatures = ({
+  cacheKey,
+  generatorId,
+}: {
+  cacheKey?: string
+  generatorId: string
+}) => {
+  const mergedActivityGenMetadata = useGeneratorStyleMetadata(generatorId)
   const currentTimeChunks = mergedActivityGenMetadata.timeChunks as TimeChunks
   const currentTimeChunkId = currentTimeChunks?.activeSourceId
 
@@ -108,5 +112,12 @@ export const useMapTemporalgridFeatures = ({ cacheKey }: { cacheKey?: string } =
     sourceId: currentTimeChunkId,
     sourceLayer: TEMPORALGRID_SOURCE_LAYER,
     cacheKey,
+  })
+}
+
+export const useActivityTemporalgridFeatures = ({ cacheKey }: { cacheKey?: string } = {}) => {
+  return useMapTemporalgridLayerFeatures({
+    cacheKey,
+    generatorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   })
 }

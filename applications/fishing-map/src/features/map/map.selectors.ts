@@ -168,7 +168,7 @@ export const selectMapWorkspacesListGenerators = createSelector(
   }
 )
 
-export const getGeneratorsConfig = createSelector(
+export const selectGeneratorsConfig = createSelector(
   [
     selectWorkspaceError,
     isWorkspaceLocation,
