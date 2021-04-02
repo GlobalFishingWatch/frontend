@@ -11,7 +11,24 @@ Object {
   "gearType": "trawlers",
   "grossTonnage": "51.000",
   "history": Object {
+    "builtYear": Object {
+      "byCount": Array [],
+      "byDate": Array [
+        Object {
+          "firstSeen": "1991-02-02T00:00:00.000Z",
+          "value": "1951",
+        },
+      ],
+    },
     "callsign": Object {
+      "byCount": Array [],
+      "byDate": Array [
+        Object {
+          "value": "IRNZ",
+        },
+      ],
+    },
+    "depth": Object {
       "byCount": Array [],
       "byDate": Array [],
     },
@@ -23,11 +40,24 @@ Object {
       "byCount": Array [],
       "byDate": Array [
         Object {
+          "value": "Purse seine",
+        },
+        Object {
+          "firstSeen": "1991-02-02T00:00:00.000Z",
+          "value": "Pole and line",
+        },
+        Object {
           "firstSeen": "1991-02-02T00:00:00.000Z",
           "value": "Otter trawl",
         },
+      ],
+    },
+    "grossTonnage": Object {
+      "byCount": Array [],
+      "byDate": Array [
         Object {
-          "value": "Purse seine",
+          "firstSeen": "1991-02-02T00:00:00.000Z",
+          "value": "51.000",
         },
       ],
     },
@@ -35,7 +65,20 @@ Object {
       "byCount": Array [],
       "byDate": Array [],
     },
+    "length": Object {
+      "byCount": Array [],
+      "byDate": Array [
+        Object {
+          "firstSeen": "1991-02-02T00:00:00.000Z",
+          "value": "18.550",
+        },
+      ],
+    },
     "mmsi": Object {
+      "byCount": Array [],
+      "byDate": Array [],
+    },
+    "operator": Object {
       "byCount": Array [],
       "byDate": Array [],
     },
@@ -47,6 +90,10 @@ Object {
       "byCount": Array [],
       "byDate": Array [
         Object {
+          "firstSeen": "1991-02-02T00:00:00.000Z",
+          "value": "MARIA MADRE II",
+        },
+        Object {
           "endDate": "1991-02-02T00:00:00.000Z",
           "firstSeen": "1981-02-02T00:00:00.000Z",
           "value": "MARIA MARIA",
@@ -55,6 +102,15 @@ Object {
           "endDate": "1981-02-02T00:00:00.000Z",
           "firstSeen": "1971-02-02T00:00:00.000Z",
           "value": "MAAAARIA",
+        },
+      ],
+    },
+    "vesselType": Object {
+      "byCount": Array [],
+      "byDate": Array [
+        Object {
+          "firstSeen": "1991-02-02T00:00:00.000Z",
+          "value": "Fishing Vessel",
         },
       ],
     },
