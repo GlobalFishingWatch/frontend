@@ -180,3 +180,19 @@ export const selectGeneratorsConfig = createSelector(
     return showWorkspaceDetail ? workspaceGenerators : workspaceListGenerators
   }
 )
+
+const selectGeneratorConfigsByType = (type: Generators.Type) => {
+  return createSelector([selectGeneratorsConfig], (generators) => {
+    return generators?.filter((generator) => generator.type === type)
+  })
+}
+
+const selectHeatmapAnimatedGeneratorConfigs = createSelector(
+  [selectGeneratorConfigsByType(Generators.Type.HeatmapAnimated)],
+  (dataviews) => dataviews
+)
+
+export const selectActiveHeatmapAnimatedGeneratorConfigs = createSelector(
+  [selectHeatmapAnimatedGeneratorConfigs],
+  (generators) => generators?.filter((generator) => generator.visible)
+)

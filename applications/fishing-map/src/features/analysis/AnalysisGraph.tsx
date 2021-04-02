@@ -24,14 +24,14 @@ export interface GraphData {
   max: number[]
 }
 
-interface AnalysisGraphProps {
+export interface AnalysisGraphProps {
   timeseries: GraphData[]
-  datasets: {
+  sublayers: {
     id: string
     color?: string
     unit?: string
   }[]
-  timeChunkInterval?: Interval
+  interval: Interval
 }
 
 const tickFormatter = (tick: number) => {
@@ -124,8 +124,8 @@ const AnalysisGraphTooltip = (props: any) => {
   return null
 }
 
-const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
-  const { timeseries, timeChunkInterval = '10days', datasets } = props
+const AnalysisGraph: React.FC<{ graphData: AnalysisGraphProps }> = (props) => {
+  const { timeseries, interval = '10days', sublayers } = props.graphData
 
   if (!timeseries) return null
 
@@ -152,6 +152,8 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
     }
   })
 
+  // console.log(dataFormated)
+
   return (
     <ResponsiveContainer width="100%" height={240}>
       <ComposedChart data={dataFormated} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
@@ -159,7 +161,7 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
         <XAxis
           dataKey="date"
           interval="preserveStartEnd"
-          tickFormatter={(tick: string) => formatDateTicks(tick, timeChunkInterval)}
+          tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
           axisLine={paddedDomain[0] === 0}
         />
         <YAxis
@@ -171,8 +173,8 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
           tickLine={false}
           tickCount={4}
         />
-        <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={timeChunkInterval} />} />
-        {datasets.map(({ id, color, unit }, index) => (
+        <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={interval} />} />
+        {sublayers.map(({ id, color, unit }, index) => (
           <Line
             key={`${id}-line`}
             name="line"
@@ -185,7 +187,7 @@ const AnalysisGraph: React.FC<AnalysisGraphProps> = (props) => {
             strokeWidth={2}
           />
         ))}
-        {datasets.map(({ id, color }, index) => (
+        {sublayers.map(({ id, color }, index) => (
           <Area
             key={`${id}-area`}
             name="area"

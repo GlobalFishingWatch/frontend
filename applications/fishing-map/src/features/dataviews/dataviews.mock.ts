@@ -13,7 +13,6 @@ export const dataviews: Dataview[] = [
       colorRamp: 'red',
       breaks: [28, 28.4, 28.6, 28.8, 29, 29.3, 29.6, 30],
       interval: 'month',
-      breaksMultiplier: 1,
     },
     category: DataviewCategory.Environment,
     datasetsConfig: [
@@ -25,7 +24,7 @@ export const dataviews: Dataview[] = [
           },
         ],
         endpoint: '4wings-fd-tiles', // TODO remove this once 4wings and fd are merged
-        datasetId: 'fd-water-temperature-palau',
+        datasetId: 'fd-water-temperature-palau-v2',
       },
     ],
     createdAt: '2021-02-18T17:33:36.198Z',

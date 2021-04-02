@@ -193,13 +193,3 @@ export const selectActivityDatasets = createSelector([selectActivityDataviews], 
 export const getRelatedDatasetByType = (dataset?: Dataset, datasetType?: DatasetTypes) => {
   return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)
 }
-
-export const selectTemporalgridDataviews = createSelector(
-  [selectDataviewInstancesByType(Generators.Type.HeatmapAnimated)],
-  (dataviews) => dataviews
-)
-
-export const selectActiveTemporalgridDataviews = createSelector(
-  [selectTemporalgridDataviews],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
-)

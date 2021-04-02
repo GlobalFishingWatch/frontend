@@ -3,7 +3,7 @@ import { Dataset } from '@globalfishingwatch/api-types/dist'
 export const datasets: Dataset[] = [
   {
     alias: null,
-    id: 'fd-water-temperature-palau',
+    id: 'fd-water-temperature-palau-v2',
     name: 'Water temperature Palau',
     type: '4wings-fd:v1',
     description: 'test',

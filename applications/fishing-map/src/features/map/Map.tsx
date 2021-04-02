@@ -185,7 +185,6 @@ const MapWrapper = (): React.ReactElement | null => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
-
   return (
     <div className={styles.container}>
       {<MapScreenshot map={map} />}
@@ -229,7 +228,7 @@ const MapWrapper = (): React.ReactElement | null => {
         </InteractiveMap>
       )}
       <MapControls onMouseEnter={resetHoverState} mapLoading={tilesLoading} />
-      {legendsTranslated?.map((legend) => {
+      {legendsTranslated?.map((legend: any) => {
         const legendDomElement = document.getElementById(legend.id as string)
         if (legendDomElement) {
           return createPortal(
