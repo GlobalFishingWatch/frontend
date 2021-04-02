@@ -29,13 +29,10 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
     return `${label} History for ${vesselName}`
   }, [label, vesselName])
 
-  const since = useMemo(
-    () =>
-      current?.firstSeen ??
-      history.slice(0, 1)?.shift()?.endDate ??
-      history.slice(0, 1)?.shift()?.firstSeen,
-    [current, history]
-  )
+  const since = useMemo(() => current?.firstSeen ?? history.slice(0, 1)?.shift()?.endDate, [
+    current,
+    history,
+  ])
 
   if (history.length < 1) {
     return <div></div>
@@ -63,6 +60,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
                 <div>
                   <span className={styles.rangeLabel}>{t('common.since', 'Since')}: </span>
                   <span className={styles.rangeValue}>{since && <I18nDate date={since} />}</span>
+                  <span className={styles.rangeValue}>{!since && ' - '}</span>
                 </div>
               </div>
             </div>

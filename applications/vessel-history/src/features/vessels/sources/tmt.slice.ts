@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { TMTDetail, ValueItem, VesselWithHistory } from 'types'
 import { VesselSourceId } from 'types/vessel'
@@ -7,10 +8,13 @@ interface TMTVesselSourceId extends VesselSourceId {
   id: string
 }
 
+// Using today as fallback when both firstSeen and endDate are missing
+const today = DateTime.now().toUTC().toISO()
+
 const sortValuesByDate = (a: ValueItem, b: ValueItem) =>
-  (a.firstSeen || a.endDate || '') >= (b.firstSeen || b.endDate || '') ? -1 : 1
+  (a.firstSeen || a.endDate || today) >= (b.firstSeen || b.endDate || today) ? -1 : 1
 const extractValue: (valueItem: ValueItem[]) => string | undefined = (valueItem: ValueItem[]) => {
-  return valueItem.shift()?.value || undefined
+  return valueItem.slice().shift()?.value || undefined
 }
 
 export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail) => {
@@ -64,7 +68,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     },
     owner: {
       byCount: [],
-      byDate: data.relationList.vesselOwnership.sort(sortValuesByDate),
+      byDate: vesselOwnership.sort(sortValuesByDate),
     },
     vesselType: {
       byCount: [],
@@ -72,7 +76,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     },
     operator: {
       byCount: [],
-      byDate: data.relationList.vesselOperations.sort(sortValuesByDate),
+      byDate: vesselOperations.sort(sortValuesByDate),
     },
   }
 
@@ -96,12 +100,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     lastTransmissionDate: '',
     origin: '',
     history: {
-      gearType: vesselHistory.gearType,
-      callsign: vesselHistory.callsign,
-      imo: vesselHistory.imo,
-      mmsi: vesselHistory.mmsi,
-      owner: vesselHistory.owner,
-      shipname: vesselHistory.shipname,
+      ...vesselHistory,
       flag: emptyHistory,
     },
   }

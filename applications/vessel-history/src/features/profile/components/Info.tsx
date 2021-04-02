@@ -30,6 +30,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               vesselName={vessel.shipname ?? ''}
               label={VesselFieldLabel.type}
               value={vessel.type ?? ''}
+              valuesHistory={vessel.history.vesselType.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
@@ -45,6 +46,12 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
+              label={VesselFieldLabel.imo}
+              value={vessel.imo ?? ''}
+              valuesHistory={vessel.history.imo.byDate}
+            ></InfoField>
+            <InfoField
+              vesselName={vessel.shipname ?? ''}
               label={VesselFieldLabel.callsign}
               value={vessel.callsign ?? ''}
               valuesHistory={vessel.history.callsign.byDate}
@@ -53,21 +60,25 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               vesselName={vessel.shipname ?? ''}
               label={VesselFieldLabel.gearType}
               value={vessel.gearType ?? ''}
+              valuesHistory={vessel.history.gearType.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={VesselFieldLabel.length}
               value={vessel.length ?? ''}
+              valuesHistory={vessel.history.length.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={VesselFieldLabel.grossTonnage}
               value={vessel.grossTonnage ?? ''}
+              valuesHistory={vessel.history.grossTonnage.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
               label={VesselFieldLabel.depth}
               value={vessel.depth ?? ''}
+              valuesHistory={vessel.history.depth.byDate}
             ></InfoField>
             <div className={styles.identifierField}>
               <label>{t('vessel.authorizationPlural', 'authorizations')}</label>
@@ -93,6 +104,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               vesselName={vessel.shipname ?? ''}
               label={VesselFieldLabel.operator}
               value={vessel.operator ?? ''}
+              valuesHistory={vessel.history.operator.byDate}
             ></InfoField>
           </div>
         )}
