@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
 import { atom, useRecoilState } from 'recoil'
@@ -11,6 +11,7 @@ import { updateUrlViewport } from 'routes/routes.actions'
 import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { selectViewport } from 'features/app/app.selectors'
+import store, { RootState } from '../../store'
 import useMapInstance from './map-context.hooks'
 
 type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>
@@ -28,10 +29,10 @@ const viewportState = atom<MapCoordinates>({
   effects_UNSTABLE: [
     ({ trigger, setSelf, onSet }) => {
       const dispatch = useDispatch()
-      const { latitude, longitude, zoom } = useSelector(selectViewport)
+      const viewport = selectViewport(store.getState() as RootState)
 
-      if (trigger === 'get' && latitude && longitude && zoom) {
-        setSelf({ latitude, longitude, zoom })
+      if (trigger === 'get') {
+        setSelf(viewport)
       }
 
       const updateUrlViewportDebounced = debounce(
