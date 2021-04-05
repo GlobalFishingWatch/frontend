@@ -28,10 +28,10 @@ const viewportState = atom<MapCoordinates>({
   effects_UNSTABLE: [
     ({ trigger, setSelf, onSet }) => {
       const dispatch = useDispatch()
-      const initialViewport = useSelector(selectViewport)
+      const { latitude, longitude, zoom } = useSelector(selectViewport)
 
-      if (trigger === 'get') {
-        setSelf(initialViewport)
+      if (trigger === 'get' && latitude && longitude && zoom) {
+        setSelf({ latitude, longitude, zoom })
       }
 
       const updateUrlViewportDebounced = debounce(
