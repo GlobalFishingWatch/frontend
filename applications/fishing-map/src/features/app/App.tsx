@@ -89,32 +89,14 @@ function App(): React.ReactElement {
   }, [dispatch])
 
   const isHomeLocation = locationType === HOME
-  // TODO: decide if we want to redirect when only one category is supported and
-  // we want to hide the default workspace
-  // const onlyOneCategorySupported = availableCategories?.length === 1
-  // const categorySupportedNotFishing =
-  //   availableCategories?.[0] === WorkspaceCategories.FishingActivity
-
-  // useEffect(() => {
-  //   if (isHomeLocation && onlyOneCategorySupported && !categorySupportedNotFishing) {
-  //     dispatchLocation(
-  //       WORKSPACES_LIST,
-  //       { category: availableCategories?.[0] as WorkspaceCategories },
-  //       true
-  //     )
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isHomeLocation, onlyOneCategorySupported])
-
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
   useEffect(() => {
     const fetchWorkspace = async () => {
       const action = await dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
       if (fetchWorkspaceThunk.fulfilled.match(action)) {
-        const newViewport = urlViewport || action.payload?.viewport
-        if (newViewport) {
-          setMapCoordinates(newViewport)
+        if (!urlViewport && action.payload?.viewport) {
+          setMapCoordinates(action.payload.viewport)
         }
       }
     }

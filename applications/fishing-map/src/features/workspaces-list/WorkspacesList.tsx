@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
@@ -8,17 +8,31 @@ import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.s
 import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { DEFAULT_WORKSPACE_KEY } from 'data/workspaces'
+import useViewport from 'features/map/map-viewport.hooks'
 import styles from './WorkspacesList.module.css'
-import { selectCurrentHighlightedWorkspaces } from './workspaces-list.selectors'
+import {
+  HighlightedWorkspaceMerged,
+  selectCurrentHighlightedWorkspaces,
+} from './workspaces-list.selectors'
 import { selectHighlightedWorkspacesStatus } from './workspaces-list.slice'
 
 function WorkspacesList() {
   const { t } = useTranslation()
+  const { setMapCoordinates } = useViewport()
   const locationCategory = useSelector(selectLocationCategory)
   const userFriendlyCategory = locationCategory.replace('-', ' ')
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
   const validCategory = useSelector(isValidLocationCategory)
+
+  const onWorkspaceClick = useCallback(
+    (workspace: HighlightedWorkspaceMerged) => {
+      if (workspace.viewport) {
+        setMapCoordinates(workspace.viewport)
+      }
+    },
+    [setMapCoordinates]
+  )
 
   if (highlightedWorkspacesStatus === AsyncReducerStatus.Finished && !validCategory) {
     return (
@@ -70,7 +84,11 @@ function WorkspacesList() {
                       className={styles.description}
                       dangerouslySetInnerHTML={{ __html: highlightedWorkspace.description }}
                     ></p>
-                    <Link to={linkTo} className={styles.link}>
+                    <Link
+                      to={linkTo}
+                      className={styles.link}
+                      onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                    >
                       {highlightedWorkspace.cta}
                     </Link>
                   </div>
