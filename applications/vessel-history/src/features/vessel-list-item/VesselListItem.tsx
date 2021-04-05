@@ -68,7 +68,7 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
           </div>
         )}
         <div>
-          <label>{t('vessel.transmissionPlural', 'transmissions')}</label>
+          <label>{t('vessel.transmission_plural', 'transmissions')}</label>
           {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
             <Fragment>
               {t('common.from', 'from')}{' '}
