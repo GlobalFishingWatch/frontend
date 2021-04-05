@@ -1,9 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { CircleLayer } from '@globalfishingwatch/mapbox-gl'
+import type { CircleLayer } from '@globalfishingwatch/mapbox-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/dataviews-client'
+import {
+  getDataviewsGeneratorConfigs,
+  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+} from '@globalfishingwatch/dataviews-client'
 import {
   selectDataviewInstancesResolved,
   selectWorkspaceError,
@@ -56,6 +59,7 @@ export const getWorkspaceGeneratorsConfig = createSelector(
       highlightedTime,
       timeRange: staticTime,
       debug: debugOptions.blob,
+      mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
     }
 
     const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
@@ -65,7 +69,13 @@ export const getWorkspaceGeneratorsConfig = createSelector(
       id: 'rulers',
       data: rulers,
     }
-    return [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
+
+    const generators = [
+      ...generatorsConfig.reverse(),
+      rulersGeneratorConfig,
+    ] as AnyGeneratorConfig[]
+
+    return generators
   }
 )
 
@@ -152,7 +162,7 @@ const basemap: Generators.BasemapGeneratorConfig = {
 
 export const selectMapWorkspacesListGenerators = createSelector(
   [selectWorkspacesListGenerator],
-  (workspaceGenerator): AnyGeneratorConfig[] => {
+  (workspaceGenerator): Generators.AnyGeneratorConfig[] => {
     if (!workspaceGenerator) return [basemap]
     return [basemap, workspaceGenerator]
   }

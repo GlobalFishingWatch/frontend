@@ -91,7 +91,7 @@ class HeatmapAnimatedGenerator {
 
     const sources = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
       const baseSourceParams: TileAggregationSourceParams = {
-        id: getSourceId(config, timeChunk),
+        id: getSourceId(config.id, timeChunk),
         singleFrame: false,
         geomType,
         delta,
@@ -156,6 +156,7 @@ class HeatmapAnimatedGenerator {
     }
     // console.log(finalConfig)
     const timeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
+      finalConfig.id,
       finalConfig.staticStart || finalConfig.start,
       finalConfig.staticEnd || finalConfig.end,
       finalConfig.tilesetsStart,
@@ -163,7 +164,7 @@ class HeatmapAnimatedGenerator {
       finalConfig.interval
     )
 
-    return {
+    const style = {
       id: finalConfig.id,
       sources: this._getStyleSources(finalConfig, timeChunks),
       layers: this._getStyleLayers(finalConfig, timeChunks),
@@ -172,8 +173,12 @@ class HeatmapAnimatedGenerator {
         numSublayers: config.sublayers.length,
         visibleSublayers: getSubLayersVisible(config.sublayers),
         timeChunks,
+        aggregationOperation: finalConfig.aggregationOperation,
+        multiplier: finalConfig.breaksMultiplier,
+        legend: config.metadata?.legend,
       },
     }
+    return style
   }
 }
 

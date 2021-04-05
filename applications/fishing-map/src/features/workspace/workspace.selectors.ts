@@ -12,6 +12,7 @@ import {
   UrlDataviewInstance,
   mergeWorkspaceUrlDataviewInstances,
 } from '@globalfishingwatch/dataviews-client'
+import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { WorkspaceState } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets } from 'features/datasets/datasets.slice'
@@ -166,9 +167,14 @@ export const selectTemporalgridDataviews = createSelector(
 )
 
 export const selectHasAnalysisLayersVisible = createSelector(
-  [selectTemporalgridDataviews],
-  (dataviews) => {
-    const visibleDataviews = dataviews?.filter(({ config }) => config?.visible === true)
+  [selectTemporalgridDataviews, selectEnvironmentalDataviews],
+  (activityDataviews = [], environmentalDataviews = []) => {
+    const heatmapEnvironmentalDataviews = environmentalDataviews?.filter(
+      ({ config }) => config?.type === GeneratorType.HeatmapAnimated
+    )
+    const visibleDataviews = [...activityDataviews, ...heatmapEnvironmentalDataviews]?.filter(
+      ({ config }) => config?.visible === true
+    )
     return visibleDataviews && visibleDataviews.length > 0
   }
 )

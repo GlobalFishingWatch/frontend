@@ -12,7 +12,6 @@ const aggregateCell = ({
   multiplier = VALUE_MULTIPLIER,
 }: CellAggregationParams) => {
   if (!rawValues) return null
-
   const { values, minCellOffset, maxCellOffset } = getCellValues(rawValues)
 
   // When we should start counting in terms of days/hours/10days from start of time
@@ -37,7 +36,7 @@ const aggregateCell = ({
   for (let i = 0; i < rawValuesArrSlice.length; i++) {
     const sublayerIndex = i % sublayerCount
     const rawValue = rawValuesArrSlice[i]
-    if (rawValue !== null && rawValue !== undefined) {
+    if (rawValue !== null && rawValue !== undefined && !isNaN(rawValue)) {
       aggregatedValues[sublayerIndex] += rawValue
       if (sublayerIndex === 0) numValues++
     }
