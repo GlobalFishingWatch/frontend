@@ -40,6 +40,11 @@ export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail
       mmsi: emptyHistory,
       owner: emptyHistory,
       flag: emptyHistory,
+      depth: emptyHistory,
+      length: emptyHistory,
+      grossTonnage: emptyHistory,
+      vesselType: emptyHistory,
+      operator: emptyHistory,
     },
   } as VesselWithHistory
 }
