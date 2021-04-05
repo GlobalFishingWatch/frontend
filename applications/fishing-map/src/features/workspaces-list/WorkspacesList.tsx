@@ -73,13 +73,17 @@ function WorkspacesList() {
             return (
               <li key={highlightedWorkspace.name}>
                 <div className={cx(styles.workspace, { [styles.disabled]: !active })}>
-                  <img
-                    className={styles.image}
-                    alt={highlightedWorkspace.name}
-                    src={highlightedWorkspace.img}
-                  />
+                  <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
+                    <img
+                      className={styles.image}
+                      alt={highlightedWorkspace.name}
+                      src={highlightedWorkspace.img}
+                    />
+                  </Link>
                   <div className={styles.info}>
-                    <h3 className={styles.title}>{highlightedWorkspace.name}</h3>
+                    <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
+                      <h3 className={styles.title}>{highlightedWorkspace.name}</h3>
+                    </Link>
                     <p
                       className={styles.description}
                       dangerouslySetInnerHTML={{ __html: highlightedWorkspace.description }}
