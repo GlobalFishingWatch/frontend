@@ -71,7 +71,7 @@ const InfoField: React.FC<ListItemProps> = ({
 
   const current: ValueItem = {
     value,
-    firstSeen: valuesHistory.slice().shift()?.endDate,
+    firstSeen: valuesHistory.slice().shift()?.firstSeen ?? valuesHistory.slice().shift()?.endDate,
   }
   const labelPlural: VesselFieldLabelPlural = useMemo(() => {
     const plural = VesselFieldLabelPlural[label as keyof typeof VesselFieldLabelPlural]

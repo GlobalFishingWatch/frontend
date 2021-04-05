@@ -29,10 +29,12 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
     return `${label} History for ${vesselName}`
   }, [label, vesselName])
 
-  const since = useMemo(() => current?.firstSeen ?? history.slice(0, 1)?.shift()?.endDate, [
+  const since = useMemo(() => current?.firstSeen ?? history.slice(0, 1)?.shift()?.firstSeen, [
     current,
     history,
   ])
+
+  const previousHistory = useMemo(() => history.slice(1), [history])
 
   if (history.length < 1) {
     return <div></div>
@@ -64,7 +66,7 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
                 </div>
               </div>
             </div>
-            {history.map((historyValue: ValueItem, index) => (
+            {previousHistory.map((historyValue: ValueItem, index) => (
               <div className={styles.historyItem} key={index}>
                 <div className={styles.identifierField}>
                   <label>{t(`vessel.${label}` as any, label)}</label>
