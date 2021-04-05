@@ -70,7 +70,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               value={vessel.depth ?? ''}
             ></InfoField>
             <div className={styles.identifierField}>
-              <label>{t('vessel.authorizationPlural', 'authorizations')}</label>
+              <label>{t('vessel.authorization_plural', 'authorizations')}</label>
               {vessel.authorizations?.map((auth) => (
                 <p key={auth}>{auth}</p>
               ))}
