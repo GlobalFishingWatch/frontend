@@ -41,11 +41,11 @@ const mergeHistoryFields = (
   return (fieldValues || []).reduce(
     (acc, current) =>
       typedKeys<VesselFieldsHistory>(current as VesselFieldsHistory).reduce(
-        (history, field) => ({
+        (history, fieldName) => ({
           ...history,
-          [field]: {
-            byCount: (acc[field]?.byCount || []).concat(current[field].byCount),
-            byDate: (acc[field]?.byDate || []).concat(current[field].byDate),
+          [fieldName]: {
+            byCount: (acc[fieldName]?.byCount || []).concat(current[fieldName].byCount),
+            byDate: (acc[fieldName]?.byDate || []).concat(current[fieldName].byDate),
           },
         }),
         { ...acc }

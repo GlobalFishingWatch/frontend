@@ -10,6 +10,8 @@ import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
+import { selectViewport } from 'features/app/app.selectors'
+import store, { RootState } from '../../store'
 import useMapInstance from './map-context.hooks'
 
 type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>
@@ -25,12 +27,19 @@ const viewportState = atom<MapCoordinates>({
   key: 'mapViewport',
   default: DEFAULT_VIEWPORT as MapCoordinates,
   effects_UNSTABLE: [
-    ({ onSet }) => {
+    ({ trigger, setSelf, onSet }) => {
       const dispatch = useDispatch()
+      const viewport = selectViewport(store.getState() as RootState)
+
+      if (trigger === 'get') {
+        setSelf(viewport)
+      }
+
       const updateUrlViewportDebounced = debounce(
         dispatch(updateUrlViewport),
         URL_VIEWPORT_DEBOUNCED_TIME
       )
+
       onSet((viewport) => {
         const { latitude, longitude, zoom } = viewport as MapCoordinates
         updateUrlViewportDebounced({ latitude, longitude, zoom })

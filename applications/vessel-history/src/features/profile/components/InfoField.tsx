@@ -28,26 +28,26 @@ export enum VesselFieldLabel {
 }
 
 enum VesselFieldLabelPlural {
-  name = 'namePlural',
-  flag = 'flagPlural',
-  shipname = 'shipnamePlural',
-  firstTransmissionDate = 'firstTransmissionDatePlural',
-  lastTransmissionDate = 'lastTransmissionDatePlural',
-  imo = 'imoPlural',
-  mmsi = 'mmsiPlural',
-  callsign = 'callsignPlural',
-  fleet = 'fleetPlural',
-  origin = 'originPlural',
-  type = 'typePlural',
-  gearType = 'gearTypePlural',
-  length = 'lengthPlural',
-  depth = 'depthPlural',
-  grossTonnage = 'grossTonnagePlural',
-  owner = 'ownerPlural',
-  operator = 'operatorPlural',
-  builtYear = 'builtYearPlural',
-  authorizations = 'authorizationPlural',
-  registeredGearType = 'registeredGearTypePlural',
+  name = 'name_plural',
+  flag = 'flag_plural',
+  shipname = 'shipname_plural',
+  firstTransmissionDate = 'firstTransmissionDate_plural',
+  lastTransmissionDate = 'lastTransmissionDate_plural',
+  imo = 'imo_plural',
+  mmsi = 'mmsi_plural',
+  callsign = 'callsign_plural',
+  fleet = 'fleet_plural',
+  origin = 'origin_plural',
+  type = 'type_plural',
+  gearType = 'gearType_plural',
+  length = 'length_plural',
+  depth = 'depth_plural',
+  grossTonnage = 'grossTonnage_plural',
+  owner = 'owner_plural',
+  operator = 'operator_plural',
+  builtYear = 'builtYear_plural',
+  authorizations = 'authorization_plural',
+  registeredGearType = 'registeredGearType_plural',
 }
 interface ListItemProps {
   label: VesselFieldLabel
@@ -71,7 +71,7 @@ const InfoField: React.FC<ListItemProps> = ({
 
   const current: ValueItem = {
     value,
-    firstSeen: valuesHistory.slice().shift()?.endDate,
+    firstSeen: valuesHistory.slice().shift()?.firstSeen ?? valuesHistory.slice().shift()?.endDate,
   }
   const labelPlural: VesselFieldLabelPlural = useMemo(() => {
     const plural = VesselFieldLabelPlural[label as keyof typeof VesselFieldLabelPlural]

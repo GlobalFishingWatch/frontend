@@ -9,6 +9,7 @@
     "test": "CI=true react-scripts test --passWithNoTests",
     "test:deps": "depcheck",
     "eject": "react-scripts eject",
+    "serve": "serve -s build",
     "i18n:parser": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
@@ -115,6 +116,7 @@
     "lint-staged": "^10.4.0",
     "prettier": "^2.1.2",
     "react-test-renderer": "^17.0.1",
+    "serve": "^11.3.2",
     "stylelint": "^13.7.1",
     "stylelint-config-css-modules": "^2.2.0",
     "stylelint-config-prettier": "^8.0.2",

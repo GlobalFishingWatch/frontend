@@ -23,7 +23,7 @@
     "selected": "seleccionado"
   },
   "vessel": {
-    "authorization_plural": "authorizations",
+    "authorization_plural": "authorizaciones",
     "callsign": "callsign",
     "flag": "bandera",
     "historyLabelByField": "Historial para {{label}} de {{vesselName}}",
@@ -45,17 +45,17 @@
     "operator": "operador",
     "owner": "propietario",
     "type": "tipo",
-    "grossTonnage_plural": "gross tonnages",
-    "builtYear_plural": "built years",
+    "grossTonnage_plural": "tonelajes brutos",
+    "builtYear_plural": "años de fabricación",
     "callsign_plural": "callsigns",
-    "depth_plural": "depths",
-    "flag_plural": "flags",
-    "gearType_plural": "gear types",
-    "length_plural": "lengths",
+    "depth_plural": "calados",
+    "flag_plural": "banderas",
+    "gearType_plural": "tipos de equipo",
+    "length_plural": "longitudes",
     "mmsi_plural": "mmsis",
-    "name_plural": "names",
-    "operator_plural": "operators",
-    "owner_plural": "owners",
-    "type_plural": "types"
+    "name_plural": "nombres",
+    "operator_plural": "operadores",
+    "owner_plural": "propietarios",
+    "type_plural": "tipos"
   }
 }

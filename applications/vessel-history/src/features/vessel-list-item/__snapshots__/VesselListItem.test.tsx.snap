@@ -17,27 +17,27 @@ exports[`<VesselListItem /> does not show source API in production environment 1
     >
       <div>
         <label>
-          FLAG
+          flag
         </label>
         Chile
       </div>
       <div>
         <label>
-          MMSI
+          mmsi
         </label>
         725000410
       </div>
       <div>
         <label>
-          CALLSIGN
+          callsign
         </label>
         CB5527
       </div>
       <div>
         <label>
-          TRANSMISSIONS
+          transmissions
         </label>
-        from 2012-01-19T14:24:39Z to 2020-12-13T23:51:36Z
+        from Jan 19, 2012 to Dec 13, 2020
       </div>
     </div>
   </div>
@@ -61,33 +61,33 @@ exports[`<VesselListItem /> shows source API in environments others than product
     >
       <div>
         <label>
-          FLAG
+          flag
         </label>
         Chile
       </div>
       <div>
         <label>
-          MMSI
+          mmsi
         </label>
         725000410
       </div>
       <div>
         <label>
-          CALLSIGN
+          callsign
         </label>
         CB5527
       </div>
       <div>
         <label>
-          SOURCE
+          source
         </label>
         GFW+TMT
       </div>
       <div>
         <label>
-          TRANSMISSIONS
+          transmissions
         </label>
-        from 2012-01-19T14:24:39Z to 2020-12-13T23:51:36Z
+        from Jan 19, 2012 to Dec 13, 2020
       </div>
     </div>
   </div>
