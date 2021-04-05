@@ -23,7 +23,7 @@
     "selected": "selected"
   },
   "vessel": {
-    "authorizationPlural": "authorizations",
+    "authorization_plural": "authorizations",
     "historyLabelByField": "{{label}} history for {{vesselName}}",
     "noAuthorizations": "No authorizations found",
     "plusPreviousValuesByField": "+{{quantity}} previous {{fieldLabel}}",
@@ -41,17 +41,17 @@
     "operator": "operator",
     "owner": "owner",
     "type": "type",
-    "grossTonnagePlural": "gross tonnages",
-    "builtYearPlural": "built years",
-    "callsignPlural": "callsigns",
-    "depthPlural": "depths",
-    "flagPlural": "flags",
-    "gearTypePlural": "gear types",
-    "lengthPlural": "lengths",
-    "mmsiPlural": "mmsis",
-    "namePlural": "names",
-    "operatorPlural": "operators",
-    "ownerPlural": "owners",
-    "typePlural": "types"
+    "grossTonnage_plural": "gross tonnages",
+    "builtYear_plural": "built years",
+    "callsign_plural": "callsigns",
+    "depth_plural": "depths",
+    "flag_plural": "flags",
+    "gearType_plural": "gear types",
+    "length_plural": "lengths",
+    "mmsi_plural": "mmsis",
+    "name_plural": "names",
+    "operator_plural": "operators",
+    "owner_plural": "owners",
+    "type_plural": "types"
   }
 }
