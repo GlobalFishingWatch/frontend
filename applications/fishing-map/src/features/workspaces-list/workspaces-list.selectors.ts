@@ -41,7 +41,7 @@ export const selectAvailableWorkspacesCategories = createSelector(
   }
 )
 
-type HighlightedWorkspaceMerged = HighlightedWorkspace & {
+export type HighlightedWorkspaceMerged = HighlightedWorkspace & {
   viewport?: WorkspaceViewport
   category?: WorkspaceCategories
 }
