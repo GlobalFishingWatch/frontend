@@ -8,6 +8,22 @@ import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 type FeatureStates = 'click' | 'hover' | 'highlight'
 type FeatureStateSource = { source: string; sourceLayer: string; id: string; state?: FeatureStates }
 
+export const filterSameLayerFeatures = (
+  features: ExtendedFeature[],
+  sameLayerFeaturesLimit: number
+) => {
+  const layerIdFeaturesCount: Record<string, number> = {}
+  const filtered = features?.filter(({ layerId }) => {
+    if (layerIdFeaturesCount[layerId] === undefined) {
+      layerIdFeaturesCount[layerId] = 0
+      return true
+    }
+    layerIdFeaturesCount[layerId] = +1
+    return layerIdFeaturesCount[layerId] > sameLayerFeaturesLimit
+  })
+  return filtered
+}
+
 const getExtendedFeatures = (
   features: MapboxGeoJSONFeature[],
   metadata?: ExtendedStyleMeta,
@@ -134,11 +150,21 @@ export const useFeatureState = (map?: Map) => {
   return featureState
 }
 
+type MapClickConfig = {
+  /**
+   * Useful when clickRadius is higher than 1 to ensure cells click and hover works
+   * but wanted to get only a limited number of the same group features
+   */
+  sameLayerFeaturesLimit?: number
+}
+
 export const useMapClick = (
   clickCallback: InteractionEventCallback,
   metadata: ExtendedStyleMeta,
-  map?: Map
+  map?: Map,
+  config?: MapClickConfig
 ) => {
+  const { sameLayerFeaturesLimit } = config || {}
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const onMapClick = useCallback(
     (event) => {
@@ -155,21 +181,30 @@ export const useMapClick = (
           metadata,
           true
         )
-        if (extendedFeatures.length) {
-          interactionEvent.features = extendedFeatures
-          updateFeatureState(extendedFeatures, 'click')
+        const extendedFeaturesLimit = sameLayerFeaturesLimit
+          ? filterSameLayerFeatures(extendedFeatures, sameLayerFeaturesLimit)
+          : extendedFeatures
+
+        if (extendedFeaturesLimit.length) {
+          interactionEvent.features = extendedFeaturesLimit
+          updateFeatureState(extendedFeaturesLimit, 'click')
         }
       }
       clickCallback(interactionEvent)
     },
-    [cleanFeatureState, clickCallback, metadata, updateFeatureState]
+    [cleanFeatureState, clickCallback, metadata, sameLayerFeaturesLimit, updateFeatureState]
   )
 
   return onMapClick
 }
 
 type MapHoverConfig = {
-  debounced: number
+  debounced?: number
+  /**
+   * Useful when clickRadius is higher than 1 to ensure cells click and hover works
+   * but wanted to get only a limited number of the same group features
+   */
+  sameLayerFeaturesLimit?: number
 }
 export const useMapHover = (
   hoverCallbackImmediate?: InteractionEventCallback,
@@ -178,7 +213,7 @@ export const useMapHover = (
   metadata?: ExtendedStyleMeta,
   config?: MapHoverConfig
 ) => {
-  const { debounced = 300 } = config || ({} as MapHoverConfig)
+  const { debounced = 300, sameLayerFeaturesLimit } = config || ({} as MapHoverConfig)
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
 
@@ -203,11 +238,15 @@ export const useMapHover = (
       if (event.features?.length) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
 
-        if (extendedFeatures.length) {
-          hoverEvent.features = extendedFeatures
+        const extendedFeaturesLimit = sameLayerFeaturesLimit
+          ? filterSameLayerFeatures(extendedFeatures, sameLayerFeaturesLimit)
+          : extendedFeatures
+
+        if (extendedFeaturesLimit.length) {
+          hoverEvent.features = extendedFeaturesLimit
         }
 
-        updateFeatureState(extendedFeatures, 'hover')
+        updateFeatureState(extendedFeaturesLimit, 'hover')
       }
 
       if (hoverCallbackDebounced?.current) {
@@ -218,7 +257,13 @@ export const useMapHover = (
         hoverCallbackImmediate(hoverEvent)
       }
     },
-    [cleanFeatureState, hoverCallbackImmediate, metadata, updateFeatureState]
+    [
+      cleanFeatureState,
+      hoverCallbackImmediate,
+      metadata,
+      sameLayerFeaturesLimit,
+      updateFeatureState,
+    ]
   )
 
   return onMapHover
