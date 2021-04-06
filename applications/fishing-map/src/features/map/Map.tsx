@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { scaleLinear } from 'd3-scale'
 import { useSelector, useDispatch } from 'react-redux'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
@@ -33,6 +34,9 @@ import { useMapSourceLoaded } from './map-features.hooks'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
+const mapInteractionConfig = { sameLayerFeaturesLimit: 1 }
+const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
+
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceType: string) => {
   const response: MapRequest = { url }
@@ -65,7 +69,12 @@ const MapWrapper = (): React.ReactElement | null => {
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
   const { cleanFeatureState } = useFeatureState(map)
-  const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
+  const onMapClick = useMapClick(
+    dispatchClickedEvent,
+    style?.metadata as ExtendedStyleMeta,
+    map,
+    mapInteractionConfig
+  )
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const rulersEditing = useSelector(selectEditing)
   const closePopup = useCallback(() => {
@@ -95,7 +104,8 @@ const MapWrapper = (): React.ReactElement | null => {
     handleHoverEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,
     map,
-    style?.metadata
+    style?.metadata,
+    mapInteractionConfig
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
 
@@ -194,6 +204,7 @@ const MapWrapper = (): React.ReactElement | null => {
           onResize={setMapBounds}
           getCursor={rulersEditing ? getRulersCursor : getCursor}
           interactiveLayerIds={rulersEditing ? undefined : style?.metadata?.interactiveLayerIds}
+          clickRadius={clickRadiusScale(viewport.zoom)}
           onClick={onMapClick}
           onHover={onMapHover}
           onError={handleError}
