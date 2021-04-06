@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { scaleLinear } from 'd3-scale'
 import { useSelector, useDispatch } from 'react-redux'
 import { MapLegend } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
@@ -32,6 +33,8 @@ import { SliceInteractionEvent } from './map.slice'
 import { useMapSourceLoaded } from './map-features.hooks'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+
+const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceType: string) => {
@@ -194,6 +197,7 @@ const MapWrapper = (): React.ReactElement | null => {
           onResize={setMapBounds}
           getCursor={rulersEditing ? getRulersCursor : getCursor}
           interactiveLayerIds={rulersEditing ? undefined : style?.metadata?.interactiveLayerIds}
+          clickRadius={clickRadiusScale(viewport.zoom)}
           onClick={onMapClick}
           onHover={onMapHover}
           onError={handleError}
