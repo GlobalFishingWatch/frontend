@@ -1,0 +1,76 @@
+import { Component } from 'react'
+export default Timebar
+declare class Timebar extends Component<any, any, any> {
+  static getDerivedStateFromProps(
+    props: any
+  ): {
+    absoluteEnd: any
+  }
+  constructor()
+  toggleImmediate: (immediate: any) => void
+  interval: any
+  getMaximumRangeMs: (this: any, maximumRange: any, maximumRangeUnit: any) => any
+  getMinimumRangeMs: (this: any, minimumRange: any, minimumRangeUnit: any) => any
+  toggleTimeRangeSelector: () => void
+  setBookmark: () => void
+  onTimeRangeSelectorSubmit: (start: any, end: any) => void
+  zoom: (zoom: any) => void
+  notifyChange: (start: any, end: any, source: any, clampToEnd?: boolean) => void
+  onPlaybackTick: (newStart: any, newEnd: any) => void
+  onTogglePlay: (isPlaying: any) => void
+  maximumRangeMs: any
+  minimumRangeMs: any
+}
+declare namespace Timebar {
+  namespace propTypes {
+    const start: any
+    const end: any
+    const onChange: any
+    const children: any
+    const bookmarkStart: any
+    const bookmarkEnd: any
+    const bookmarkPlacement: any
+    const onMouseLeave: any
+    const onMouseMove: any
+    const onBookmarkChange: any
+    const absoluteStart: any
+    const absoluteEnd: any
+    const enablePlayback: any
+    const onTogglePlay: any
+    const minimumRange: any
+    const minimumRangeUnit: any
+    const maximumRange: any
+    const maximumRangeUnit: any
+    const showLastUpdate: any
+  }
+  namespace defaultProps {
+    const bookmarkStart_1: any
+    export { bookmarkStart_1 as bookmarkStart }
+    const bookmarkEnd_1: any
+    export { bookmarkEnd_1 as bookmarkEnd }
+    const enablePlayback_1: boolean
+    export { enablePlayback_1 as enablePlayback }
+    export function onTogglePlay_1(): void
+    export { onTogglePlay_1 as onTogglePlay }
+    export function children_1(): void
+    export { children_1 as children }
+    export function onMouseLeave_1(): void
+    export { onMouseLeave_1 as onMouseLeave }
+    export function onMouseMove_1(): void
+    export { onMouseMove_1 as onMouseMove }
+    const bookmarkPlacement_1: string
+    export { bookmarkPlacement_1 as bookmarkPlacement }
+    export function onBookmarkChange_1(): void
+    export { onBookmarkChange_1 as onBookmarkChange }
+    const minimumRange_1: any
+    export { minimumRange_1 as minimumRange }
+    const minimumRangeUnit_1: string
+    export { minimumRangeUnit_1 as minimumRangeUnit }
+    const maximumRange_1: any
+    export { maximumRange_1 as maximumRange }
+    const maximumRangeUnit_1: string
+    export { maximumRangeUnit_1 as maximumRangeUnit }
+    const showLastUpdate_1: boolean
+    export { showLastUpdate_1 as showLastUpdate }
+  }
+}

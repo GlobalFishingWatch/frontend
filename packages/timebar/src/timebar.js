@@ -95,6 +95,7 @@ class Timebar extends Component {
 
   static getDerivedStateFromProps(props) {
     // let absolute end run through the end of the day
+    // eslint-disable-next-line prettier/prettier
     const absoluteEnd = dayjs(props.absoluteEnd)
       .utc()
       .endOf('day')
@@ -170,6 +171,8 @@ class Timebar extends Component {
     const middleMs = getTime(start) + (getTime(end) - getTime(start)) / 2
     const offsetMs = (nextDelta * unitOffsetMs) / 2
     const newStartMs = middleMs - offsetMs
+
+    // eslint-disable-next-line prettier/prettier
     const mNewStart = dayjs(newStartMs)
       .utc()
       .startOf(nextUnit)
@@ -368,11 +371,16 @@ Timebar.defaultProps = {
   bookmarkStart: null,
   bookmarkEnd: null,
   enablePlayback: false,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTogglePlay: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   children: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onMouseLeave: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onMouseMove: () => {},
   bookmarkPlacement: 'top',
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onBookmarkChange: () => {},
   minimumRange: null,
   minimumRangeUnit: 'day',
