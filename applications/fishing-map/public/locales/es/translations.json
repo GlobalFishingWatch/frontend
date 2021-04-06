@@ -154,7 +154,7 @@
     "selected": "seleccionado",
     "placeholder": "Seleccione una opción"
   },
-  "timebar": {
+  "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa aparente de esfuerzo de pesca",
     "graph": "Graph",
     "settings_close": "Cerrar opciones del timebar",
@@ -162,6 +162,42 @@
     "showFishingEffort": "Mostrar gráfico de horas de pesca",
     "showTracks": "Mostrar gráfico de pistas",
     "tracksDisabled": "Seleccione al menos un buque"
+  },
+  "timebar": {
+    "playback": {
+      "playAnimation": "Play animación",
+      "pauseAnimation": "Pausar animación",
+      "toogleAnimationLooping": "Cambiar el ciclo de la animación",
+      "moveBack": "Mover hacia atrás",
+      "moveForward": "Mover hacia delante",
+      "changeAnimationSpeed": "Cambiar velocidad de animación"
+    },
+    "timerange": {
+      "title": "Selecciona un rango de tiempo",
+      "start": "Inicio",
+      "end": "Final",
+      "last30days": "Últimos 30 días",
+      "done": "OK",
+      "errorEarlyStart": "Your start date is the earliest date with data available",
+      "errorLatestEnd": "Your end date is the latest date with data available",
+      "errorMinRange": "Your start and end date must be at least one day apart",
+      "errorMaxRange": "Your time range is the maximum range with data available"
+    },
+    "bookmark": {
+      "goToBookmark": "Go to your bookmarked time range",
+      "deleteBookmark": "Delete time range bookmark"
+    },
+    "dragLabel": "Drag to change the time range",
+    "lastUpdate": "Last update",
+    "setBookmark": "Bookmark current time range",
+    "day": "day",
+    "year": "year",
+    "month": "month",
+    "hour": "hour",
+    "zoomIn": "Zoom in",
+    "zoomTo": "Zoom to",
+    "zoomOut": "Zoom out",
+    "selectTimeRange": "Select a time range"
   },
   "user": {
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
