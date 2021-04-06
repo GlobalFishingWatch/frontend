@@ -8,18 +8,17 @@ import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 type FeatureStates = 'click' | 'hover' | 'highlight'
 type FeatureStateSource = { source: string; sourceLayer: string; id: string; state?: FeatureStates }
 
-export const filterSameLayerFeatures = (
-  features: ExtendedFeature[],
-  sameLayerFeaturesLimit: number
-) => {
-  const layerIdFeaturesCount: Record<string, number> = {}
-  const filtered = features?.filter(({ layerId }) => {
-    if (layerIdFeaturesCount[layerId] === undefined) {
-      layerIdFeaturesCount[layerId] = 0
+export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
+  const uniqueLayerIdFeatures: Record<string, boolean> = {}
+  const filtered = features?.filter(({ layerId, uniqueFeatureInteraction }) => {
+    if (!uniqueFeatureInteraction) {
       return true
     }
-    layerIdFeaturesCount[layerId] = +1
-    return layerIdFeaturesCount[layerId] > sameLayerFeaturesLimit
+    if (uniqueLayerIdFeatures[layerId] === undefined) {
+      uniqueLayerIdFeatures[layerId] = true
+      return true
+    }
+    return false
   })
   return filtered
 }
@@ -38,6 +37,7 @@ const getExtendedFeatures = (
     const generatorType = feature.layer.metadata?.generatorType ?? null
     const generatorId = feature.layer.metadata?.generatorId ?? null
     const unit = feature.layer?.metadata?.legend?.unit ?? null
+    const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
     const properties = feature.properties || {}
     const extendedFeature: ExtendedFeature | null = {
       properties,
@@ -46,6 +46,7 @@ const getExtendedFeatures = (
       layerId: feature.layer.id,
       source: feature.source,
       sourceLayer: feature.sourceLayer,
+      uniqueFeatureInteraction,
       id: (feature.id as number) || feature.properties?.gfw_id || undefined,
       value: properties.value || properties.name || properties.id,
       unit,
@@ -150,21 +151,11 @@ export const useFeatureState = (map?: Map) => {
   return featureState
 }
 
-type MapClickConfig = {
-  /**
-   * Useful when clickRadius is higher than 1 to ensure cells click and hover works
-   * but wanted to get only a limited number of the same group features
-   */
-  sameLayerFeaturesLimit?: number
-}
-
 export const useMapClick = (
   clickCallback: InteractionEventCallback,
   metadata: ExtendedStyleMeta,
-  map?: Map,
-  config?: MapClickConfig
+  map?: Map
 ) => {
-  const { sameLayerFeaturesLimit } = config || {}
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const onMapClick = useCallback(
     (event) => {
@@ -181,9 +172,7 @@ export const useMapClick = (
           metadata,
           true
         )
-        const extendedFeaturesLimit = sameLayerFeaturesLimit
-          ? filterSameLayerFeatures(extendedFeatures, sameLayerFeaturesLimit)
-          : extendedFeatures
+        const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 
         if (extendedFeaturesLimit.length) {
           interactionEvent.features = extendedFeaturesLimit
@@ -192,7 +181,7 @@ export const useMapClick = (
       }
       clickCallback(interactionEvent)
     },
-    [cleanFeatureState, clickCallback, metadata, sameLayerFeaturesLimit, updateFeatureState]
+    [cleanFeatureState, clickCallback, metadata, updateFeatureState]
   )
 
   return onMapClick
@@ -200,11 +189,6 @@ export const useMapClick = (
 
 type MapHoverConfig = {
   debounced?: number
-  /**
-   * Useful when clickRadius is higher than 1 to ensure cells click and hover works
-   * but wanted to get only a limited number of the same group features
-   */
-  sameLayerFeaturesLimit?: number
 }
 export const useMapHover = (
   hoverCallbackImmediate?: InteractionEventCallback,
@@ -213,7 +197,7 @@ export const useMapHover = (
   metadata?: ExtendedStyleMeta,
   config?: MapHoverConfig
 ) => {
-  const { debounced = 300, sameLayerFeaturesLimit } = config || ({} as MapHoverConfig)
+  const { debounced = 300 } = config || ({} as MapHoverConfig)
   // Keep a list of active feature state sources, so that we can turn them off when hovering away
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
 
@@ -237,10 +221,7 @@ export const useMapHover = (
       }
       if (event.features?.length) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
-
-        const extendedFeaturesLimit = sameLayerFeaturesLimit
-          ? filterSameLayerFeatures(extendedFeatures, sameLayerFeaturesLimit)
-          : extendedFeatures
+        const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 
         if (extendedFeaturesLimit.length) {
           hoverEvent.features = extendedFeaturesLimit
@@ -257,13 +238,7 @@ export const useMapHover = (
         hoverCallbackImmediate(hoverEvent)
       }
     },
-    [
-      cleanFeatureState,
-      hoverCallbackImmediate,
-      metadata,
-      sameLayerFeaturesLimit,
-      updateFeatureState,
-    ]
+    [cleanFeatureState, hoverCallbackImmediate, metadata, updateFeatureState]
   )
 
   return onMapHover

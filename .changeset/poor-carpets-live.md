@@ -1,5 +1,6 @@
 ---
 '@globalfishingwatch/react-hooks': minor
+'@globalfishingwatch/layer-composer': minor
 ---
 
-support sameLayerFeaturesLimit in map interaction hook
+support uniqueFeatureInteraction in layer-composer and map interaction hook

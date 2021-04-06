@@ -34,7 +34,6 @@ import { useMapSourceLoaded } from './map-features.hooks'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
-const mapInteractionConfig = { sameLayerFeaturesLimit: 1 }
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 
 // TODO: Abstract this away
@@ -69,12 +68,7 @@ const MapWrapper = (): React.ReactElement | null => {
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
   const { cleanFeatureState } = useFeatureState(map)
-  const onMapClick = useMapClick(
-    dispatchClickedEvent,
-    style?.metadata as ExtendedStyleMeta,
-    map,
-    mapInteractionConfig
-  )
+  const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const rulersEditing = useSelector(selectEditing)
   const closePopup = useCallback(() => {
@@ -104,8 +98,7 @@ const MapWrapper = (): React.ReactElement | null => {
     handleHoverEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,
     map,
-    style?.metadata,
-    mapInteractionConfig
+    style?.metadata
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
 
