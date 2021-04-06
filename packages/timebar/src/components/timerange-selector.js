@@ -33,22 +33,14 @@ class TimeRangeSelector extends Component {
     const { onSubmit } = this.props
 
     // on release, "stick" to day/hour
-    const newStart = dayjs(start)
-      .utc()
-      .startOf('day')
-      .toISOString()
-    const newEnd = dayjs(end)
-      .utc()
-      .startOf('day')
-      .toISOString()
+    const newStart = dayjs(start).utc().startOf('day').toISOString()
+    const newEnd = dayjs(end).utc().startOf('day').toISOString()
     onSubmit(newStart, newEnd)
   }
 
   setUnit(which, allBounds, unit, offset) {
     const prevDate = this.state[which]
-    const newDate = dayjs(prevDate)
-      .utc()
-      .add(offset, unit)
+    const newDate = dayjs(prevDate).utc().add(offset, unit)
 
     const bounds = allBounds[which]
     let newDateMs = newDate.toDate().getTime()
@@ -73,13 +65,7 @@ class TimeRangeSelector extends Component {
 
   last30days = () => {
     const { absoluteEnd, onSubmit } = this.props
-    onSubmit(
-      dayjs(absoluteEnd)
-        .utc()
-        .subtract(30, 'day')
-        .toISOString(),
-      absoluteEnd
-    )
+    onSubmit(dayjs(absoluteEnd).utc().subtract(30, 'day').toISOString(), absoluteEnd)
   }
 
   render() {
@@ -91,7 +77,7 @@ class TimeRangeSelector extends Component {
       endCanIncrement,
       endCanDecrement,
     } = this.state
-    const { absoluteStart, absoluteEnd } = this.props
+    const { labels, absoluteStart, absoluteEnd } = this.props
 
     if (start === undefined) {
       return null
@@ -111,22 +97,19 @@ class TimeRangeSelector extends Component {
     const mEnd = dayjs(end).utc()
 
     let errorMessage = ''
-    if (!startCanDecrement)
-      errorMessage = 'Your start date is the earliest date with data available'
-    if (!endCanIncrement) errorMessage = 'Your end date is the latest date with data available'
-    if (!startCanIncrement && !endCanDecrement)
-      errorMessage = 'Your start and end date must be at least one day apart'
-    if (!startCanDecrement && !endCanIncrement)
-      errorMessage = 'Your time range is the maximum range with data available'
+    if (!startCanDecrement) errorMessage = labels.errorEarlyStart
+    if (!endCanIncrement) errorMessage = labels.errorLatestEnd
+    if (!startCanIncrement && !endCanDecrement) errorMessage = labels.errorMinRange
+    if (!startCanDecrement && !endCanIncrement) errorMessage = labels.errorMaxRange
 
     return (
       <div className={styles.TimeRangeSelector}>
         <div className={styles.veil} onClick={this.props.onDiscard} />
         <div className={styles.inner}>
-          <h2 className={styles.title}>Select a time range</h2>
+          <h2 className={styles.title}>{labels.title}</h2>
           <div className={styles.selectorsContainer}>
             <div className={styles.selectorGroup}>
-              <span className={styles.selectorLabel}>START</span>
+              <span className={styles.selectorLabel}>{labels.start}</span>
               <DateSelector
                 canIncrement={startCanIncrement}
                 canDecrement={startCanDecrement}
@@ -153,7 +136,7 @@ class TimeRangeSelector extends Component {
               />
             </div>
             <div className={styles.selectorGroup}>
-              <span className={styles.selectorLabel}>END</span>
+              <span className={styles.selectorLabel}>{labels.end}</span>
               <DateSelector
                 canIncrement={endCanIncrement}
                 canDecrement={endCanDecrement}
@@ -187,7 +170,7 @@ class TimeRangeSelector extends Component {
               className={classNames(styles.cta, styles.secondary)}
               onClick={this.last30days}
             >
-              LAST 30 DAYS
+              {labels.last30days}
             </button>
             <button
               type="button"
@@ -196,7 +179,7 @@ class TimeRangeSelector extends Component {
                 this.submit(start, end)
               }}
             >
-              DONE
+              {labels.done}
             </button>
           </div>
         </div>
@@ -212,6 +195,31 @@ TimeRangeSelector.propTypes = {
   absoluteStart: PropTypes.string.isRequired,
   absoluteEnd: PropTypes.string.isRequired,
   onDiscard: PropTypes.func.isRequired,
+  labels: PropTypes.shape({
+    title: PropTypes.string,
+    start: PropTypes.string,
+    end: PropTypes.string,
+    last30days: PropTypes.string,
+    done: PropTypes.string,
+    errorEarlyStart: PropTypes.string,
+    errorLatestEnd: PropTypes.string,
+    errorMinRange: PropTypes.string,
+    errorMaxRange: PropTypes.string,
+  }),
+}
+
+TimeRangeSelector.defaultProps = {
+  labels: {
+    title: 'Select a time range',
+    start: 'start',
+    end: 'end',
+    last30days: 'Last 30 days',
+    done: 'done',
+    errorEarlyStart: 'Your start date is the earliest date with data available',
+    errorLatestEnd: 'Your end date is the latest date with data available',
+    errorMinRange: 'Your start and end date must be at least one day apart',
+    errorMaxRange: 'Your time range is the maximum range with data available',
+  },
 }
 
 export default TimeRangeSelector

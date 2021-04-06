@@ -95,11 +95,7 @@ class Timebar extends Component {
 
   static getDerivedStateFromProps(props) {
     // let absolute end run through the end of the day
-    // eslint-disable-next-line prettier/prettier
-    const absoluteEnd = dayjs(props.absoluteEnd)
-      .utc()
-      .endOf('day')
-      .toISOString()
+    const absoluteEnd = dayjs(props.absoluteEnd).utc().endOf('day').toISOString()
     return {
       absoluteEnd,
     }
@@ -172,10 +168,7 @@ class Timebar extends Component {
     const offsetMs = (nextDelta * unitOffsetMs) / 2
     const newStartMs = middleMs - offsetMs
 
-    // eslint-disable-next-line prettier/prettier
-    const mNewStart = dayjs(newStartMs)
-      .utc()
-      .startOf(nextUnit)
+    const mNewStart = dayjs(newStartMs).utc().startOf(nextUnit)
     const newEnd = mNewStart.add(nextDelta, nextUnit).toISOString()
 
     const deltaMs = nextDelta * unitOffsetMs
@@ -218,6 +211,7 @@ class Timebar extends Component {
 
   render() {
     const {
+      labels = {},
       start,
       end,
       absoluteStart,
@@ -258,6 +252,7 @@ class Timebar extends Component {
         <div className={styles.Timebar}>
           {enablePlayback && (
             <Playback
+              labels={labels.playback}
               start={start}
               end={end}
               absoluteStart={absoluteStart}
@@ -270,6 +265,7 @@ class Timebar extends Component {
           <div className={cx('print-hidden', styles.timeActions)}>
             {showTimeRangeSelector && (
               <TimeRangeSelector
+                labels={labels.timerange}
                 start={start}
                 end={end}
                 absoluteStart={absoluteStart}
@@ -281,7 +277,7 @@ class Timebar extends Component {
             <div className={cx('print-hidden', styles.timeRangeContainer)}>
               <button
                 type="button"
-                title="Select a time range"
+                title={labels.timeRange}
                 className={cx(styles.uiButton, styles.timeRange)}
                 disabled={immediate}
                 onClick={this.toggleTimeRangeSelector}
@@ -291,7 +287,7 @@ class Timebar extends Component {
             </div>
             <button
               type="button"
-              title="Bookmark current time range"
+              title={labels.setBookmark}
               className={cx('print-hidden', styles.uiButton, styles.bookmark)}
               onClick={this.setBookmark}
               disabled={immediate || bookmarkDisabled === true}
@@ -301,7 +297,7 @@ class Timebar extends Component {
             <div className={cx('print-hidden', styles.timeScale)}>
               <button
                 type="button"
-                title="Zoom out"
+                title={labels.zoomOut}
                 disabled={immediate || canZoomOut === false}
                 onClick={() => {
                   this.zoom('out')
@@ -312,7 +308,7 @@ class Timebar extends Component {
               </button>
               <button
                 type="button"
-                title="Zoom in"
+                title={labels.zoomIn}
                 disabled={immediate || canZoomIn === false}
                 onClick={() => {
                   this.zoom('in')
@@ -328,6 +324,7 @@ class Timebar extends Component {
             children={this.props.children}
             start={start}
             end={end}
+            labels={labels}
             onChange={this.notifyChange}
             onMouseLeave={this.props.onMouseLeave}
             onMouseMove={this.props.onMouseMove}
@@ -346,6 +343,41 @@ class Timebar extends Component {
 }
 
 Timebar.propTypes = {
+  labels: PropTypes.shape({
+    playback: PropTypes.shape({
+      playAnimation: PropTypes.string,
+      pauseAnimation: PropTypes.string,
+      toogleAnimationLooping: PropTypes.string,
+      moveBack: PropTypes.string,
+      moveForward: PropTypes.string,
+      changeAnimationSpeed: PropTypes.string,
+    }),
+    timerange: PropTypes.shape({
+      title: PropTypes.string,
+      start: PropTypes.string,
+      end: PropTypes.string,
+      last30days: PropTypes.string,
+      done: PropTypes.string,
+      errorEarlyStart: PropTypes.string,
+      errorLatestEnd: PropTypes.string,
+      errorMinRange: PropTypes.string,
+      errorMaxRange: PropTypes.string,
+    }),
+    bookmark: PropTypes.shape({
+      goToBookmark: PropTypes.string,
+      deleteBookmark: PropTypes.string,
+    }),
+    lastUpdate: PropTypes.string,
+    day: PropTypes.string,
+    year: PropTypes.string,
+    month: PropTypes.string,
+    hour: PropTypes.string,
+    setBookmark: PropTypes.string,
+    zoomIn: PropTypes.string,
+    zoomOut: PropTypes.string,
+    zoomTo: PropTypes.string,
+    timeRange: PropTypes.string,
+  }),
   start: PropTypes.string.isRequired,
   end: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
@@ -368,6 +400,42 @@ Timebar.propTypes = {
 }
 
 Timebar.defaultProps = {
+  labels: {
+    playback: {
+      playAnimation: 'Play animation',
+      pauseAnimation: 'Pause animation',
+      toogleAnimationLooping: 'Toggle animation looping',
+      moveBack: 'Move back',
+      moveForward: 'Move forward',
+      changeAnimationSpeed: 'Change animation speed',
+    },
+    timerange: {
+      title: 'Select a time range',
+      start: 'start',
+      end: 'end',
+      last30days: 'Last 30 days',
+      done: 'Done',
+      errorEarlyStart: 'Your start date is the earliest date with data available',
+      errorLatestEnd: 'Your end date is the latest date with data available',
+      errorMinRange: 'Your start and end date must be at least one day apart',
+      errorMaxRange: 'Your time range is the maximum range with data available',
+    },
+    bookmark: {
+      goToBookmark: 'Go to your bookmarked time range',
+      deleteBookmark: 'Delete time range bookmark',
+    },
+    dragLabel: 'Drag to change the time range',
+    lastUpdate: 'Last update',
+    setBookmark: 'Bookmark current time range',
+    day: 'day',
+    year: 'year',
+    month: 'month',
+    hour: 'hour',
+    zoomIn: 'Zoom in',
+    zoomTo: 'Zoom to',
+    zoomOut: 'Zoom out',
+    selectTimeRange: 'Select a time range',
+  },
   bookmarkStart: null,
   bookmarkEnd: null,
   enablePlayback: false,

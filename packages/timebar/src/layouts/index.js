@@ -78,7 +78,8 @@ export const getUnitsPositions = (
   outerEnd,
   absoluteStart,
   absoluteEnd,
-  baseUnit
+  baseUnit,
+  labels = {}
 ) => {
   const startMs = Math.max(getTime(outerStart), getTime(absoluteStart))
   const endMs = Math.min(getTime(outerEnd), getTime(absoluteEnd))
@@ -114,7 +115,9 @@ export const getUnitsPositions = (
       x,
       width,
       label: getUnitLabel(mUnit, baseUnit, width),
-      hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity)} - Zoom to ${baseUnit}`,
+      hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity)} - ${labels.zoomTo} ${
+        labels[baseUnit]
+      }`,
       start: mUnit.toISOString(),
       end: mUnitNext.subtract(1, 'hour').toISOString(), // this avoids being stuck when clicking on a day unit
     }

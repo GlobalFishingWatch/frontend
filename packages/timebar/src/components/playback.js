@@ -33,9 +33,8 @@ class Playback extends Component {
     const baseStepWithSpeed = BASE_STEP * SPEED_STEPS[speedStep]
     const startMs = new Date(start).getTime()
     const endMs = new Date(end).getTime()
-    const scale = scaleLinear()
-      .range([0, 1])
-      .domain([startMs, endMs])
+
+    const scale = scaleLinear().range([0, 1]).domain([startMs, endMs])
     const step = scale.invert(baseStepWithSpeed) - startMs
     return step
   })
@@ -148,7 +147,7 @@ class Playback extends Component {
 
   render() {
     const { playing, loop, speedStep } = this.state
-    const { end, absoluteEnd } = this.props
+    const { labels, end, absoluteEnd } = this.props
     const stoppedAtEnd = end === absoluteEnd && loop !== true
 
     return (
@@ -159,7 +158,7 @@ class Playback extends Component {
       >
         <button
           type="button"
-          title="Toggle animation looping"
+          title={labels.toogleAnimationLooping}
           onClick={this.toggleLoop}
           className={cx(uiStyles.uiButton, styles.secondary, styles.loop, {
             [styles.secondaryActive]: loop,
@@ -169,7 +168,7 @@ class Playback extends Component {
         </button>
         <button
           type="button"
-          title="Move back"
+          title={labels.moveBack}
           onClick={this.onBackwardClick}
           className={cx(uiStyles.uiButton, styles.secondary, styles.back)}
         >
@@ -177,7 +176,7 @@ class Playback extends Component {
         </button>
         <button
           type="button"
-          title={`${playing === true ? 'Pause' : 'Play'} animation`}
+          title={playing === true ? labels.pauseAnimation : labels.playAnimation}
           onClick={this.onPlayToggleClick}
           disabled={stoppedAtEnd}
           className={cx(uiStyles.uiButton, styles.buttonBigger, styles.play)}
@@ -186,7 +185,7 @@ class Playback extends Component {
         </button>
         <button
           type="button"
-          title="Move forward"
+          title={labels.moveForward}
           onClick={this.onForwardClick}
           className={cx(uiStyles.uiButton, styles.secondary, styles.forward)}
         >
@@ -194,7 +193,7 @@ class Playback extends Component {
         </button>
         <button
           type="button"
-          title="Change animation speed"
+          title={labels.changeAnimationSpeed}
           onClick={this.onSpeedClick}
           className={cx(uiStyles.uiButton, styles.secondary, styles.speed)}
         >
@@ -206,6 +205,14 @@ class Playback extends Component {
 }
 
 Playback.propTypes = {
+  labels: PropTypes.shape({
+    playAnimation: PropTypes.string,
+    pauseAnimation: PropTypes.string,
+    toogleAnimationLooping: PropTypes.string,
+    moveBack: PropTypes.string,
+    moveForward: PropTypes.string,
+    changeAnimationSpeed: PropTypes.string,
+  }),
   onTick: PropTypes.func.isRequired,
   start: PropTypes.string.isRequired,
   end: PropTypes.string.isRequired,
@@ -215,6 +222,15 @@ Playback.propTypes = {
 }
 
 Playback.defaultProps = {
+  labels: {
+    playAnimation: 'Play animation',
+    pauseAnimation: 'Pause animation',
+    toogleAnimationLooping: 'Toggle animation looping',
+    moveBack: 'Move back',
+    moveForward: 'Move forward',
+    changeAnimationSpeed: 'Change animation speed',
+  },
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTogglePlay: () => {},
 }
 
