@@ -1,5 +1,17 @@
 # @globalfishingwatch/react-hooks
 
+## 5.2.0
+
+### Minor Changes
+
+- f570b76f: support uniqueFeatureInteraction in layer-composer and map interaction hook
+
+### Patch Changes
+
+- Updated dependencies [f570b76f]
+  - @globalfishingwatch/layer-composer@4.19.0
+  - @globalfishingwatch/ui-components@2.16.2
+
 ## 5.1.1
 
 ### Patch Changes

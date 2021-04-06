@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.19.0
+
+### Minor Changes
+
+- f570b76f: support uniqueFeatureInteraction in layer-composer and map interaction hook
+
 ## 4.18.1
 
 ### Patch Changes
