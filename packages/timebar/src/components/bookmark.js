@@ -13,7 +13,7 @@ const MIN_WIDTH_WITH_OVERFLOW_ARROWS = 52
 const COMPACT_MAX_WIDTH = 240
 
 const Bookmark = ({
-  labels = {},
+  labels,
   placement,
   scale,
   bookmarkStart,

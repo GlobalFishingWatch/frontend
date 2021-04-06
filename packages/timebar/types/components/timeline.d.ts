@@ -52,6 +52,7 @@ declare class Timeline extends PureComponent<any, any, any> {
 }
 declare namespace Timeline {
   namespace propTypes {
+    const labels: any
     const onChange: any
     const onMouseLeave: any
     const onMouseMove: any
@@ -67,6 +68,15 @@ declare namespace Timeline {
     const showLastUpdate: any
   }
   namespace defaultProps {
+    export namespace labels_1 {
+      const dragLabel: string
+      const lastUpdate: string
+      namespace bookmark {
+        const goToBookmark: string
+        const deleteBookmark: string
+      }
+    }
+    export { labels_1 as labels }
     const bookmarkStart_1: any
     export { bookmarkStart_1 as bookmarkStart }
     const bookmarkEnd_1: any

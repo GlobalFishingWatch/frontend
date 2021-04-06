@@ -23,6 +23,7 @@ declare class Timebar extends Component<any, any, any> {
 }
 declare namespace Timebar {
   namespace propTypes {
+    const labels: any
     const start: any
     const end: any
     const onChange: any
@@ -44,6 +45,45 @@ declare namespace Timebar {
     const showLastUpdate: any
   }
   namespace defaultProps {
+    export namespace labels_1 {
+      namespace playback {
+        const playAnimation: string
+        const pauseAnimation: string
+        const toogleAnimationLooping: string
+        const moveBack: string
+        const moveForward: string
+        const changeAnimationSpeed: string
+      }
+      namespace timerange {
+        export const title: string
+        const start_1: string
+        export { start_1 as start }
+        const end_1: string
+        export { end_1 as end }
+        export const last30days: string
+        export const done: string
+        export const errorEarlyStart: string
+        export const errorLatestEnd: string
+        export const errorMinRange: string
+        export const errorMaxRange: string
+      }
+      namespace bookmark {
+        const goToBookmark: string
+        const deleteBookmark: string
+      }
+      const dragLabel: string
+      const lastUpdate: string
+      const setBookmark: string
+      const day: string
+      const year: string
+      const month: string
+      const hour: string
+      const zoomIn: string
+      const zoomTo: string
+      const zoomOut: string
+      const selectTimeRange: string
+    }
+    export { labels_1 as labels }
     const bookmarkStart_1: any
     export { bookmarkStart_1 as bookmarkStart }
     const bookmarkEnd_1: any

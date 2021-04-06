@@ -4,7 +4,10 @@ export function getUnitsPositions(
   outerEnd: any,
   absoluteStart: any,
   absoluteEnd: any,
-  baseUnit: any
+  baseUnit: any,
+  labels?: {
+    zoomTo: string
+  }
 ): {
   id: any
   x: any

@@ -1,5 +1,6 @@
 export default Bookmark
 declare function Bookmark({
+  labels,
   placement,
   scale,
   bookmarkStart,
@@ -9,6 +10,7 @@ declare function Bookmark({
   onSelect,
   onDelete,
 }: {
+  labels: any
   placement: any
   scale: any
   bookmarkStart: any
@@ -20,6 +22,7 @@ declare function Bookmark({
 }): JSX.Element
 declare namespace Bookmark {
   namespace propTypes {
+    const label: any
     const placement: any
     const bookmarkStart: any
     const bookmarkEnd: any
@@ -32,5 +35,9 @@ declare namespace Bookmark {
   namespace defaultProps {
     const placement_1: string
     export { placement_1 as placement }
+    export namespace labels {
+      const goToBookmark: string
+      const deleteBookmark: string
+    }
   }
 }

@@ -79,7 +79,7 @@ export const getUnitsPositions = (
   absoluteStart,
   absoluteEnd,
   baseUnit,
-  labels = {}
+  labels = { zoomTo: 'Zoom to' }
 ) => {
   const startMs = Math.max(getTime(outerStart), getTime(absoluteStart))
   const endMs = Math.min(getTime(outerEnd), getTime(absoluteEnd))

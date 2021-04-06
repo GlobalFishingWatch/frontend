@@ -8,6 +8,7 @@ declare class TimelineUnits extends Component<any, any, any> {
 }
 declare namespace TimelineUnits {
   namespace propTypes {
+    const labels: any
     const onChange: any
     const start: any
     const end: any
@@ -16,5 +17,15 @@ declare namespace TimelineUnits {
     const outerStart: any
     const outerEnd: any
     const outerScale: any
+  }
+  namespace defaultProps {
+    export namespace labels_1 {
+      const zoomTo: string
+      const day: string
+      const year: string
+      const month: string
+      const hour: string
+    }
+    export { labels_1 as labels }
   }
 }

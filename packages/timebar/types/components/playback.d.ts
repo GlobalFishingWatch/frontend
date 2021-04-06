@@ -17,6 +17,7 @@ declare class Playback extends Component<any, any, any> {
 }
 declare namespace Playback {
   namespace propTypes {
+    const labels: any
     const onTick: any
     const start: any
     const end: any
@@ -25,6 +26,15 @@ declare namespace Playback {
     const onTogglePlay: any
   }
   namespace defaultProps {
+    export namespace labels_1 {
+      const playAnimation: string
+      const pauseAnimation: string
+      const toogleAnimationLooping: string
+      const moveBack: string
+      const moveForward: string
+      const changeAnimationSpeed: string
+    }
+    export { labels_1 as labels }
     export function onTogglePlay_1(): void
     export { onTogglePlay_1 as onTogglePlay }
   }
