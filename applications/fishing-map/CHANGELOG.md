@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.28.8
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/timebar@1.4.0
+
 ## 0.28.7
 
 ### Patch Changes

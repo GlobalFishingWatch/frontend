@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 1.4.0
+
+### Minor Changes
+
+- support label translations
+
 ## 1.3.3
 
 ### Patch Changes
