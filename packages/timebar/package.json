@@ -23,9 +23,7 @@
     "start:watch": "rollup -c ./rollup.config.js -w",
     "start": "run-p start:watch types:watch",
     "types:watch": "tsc src/index.js --declaration --allowJs --emitDeclarationOnly --outDir types -w >/dev/null || true",
-    "types:lint": "eslint ./types -c ./.eslintrc.js --fix --resolve-plugins-relative-to .",
-    "types:build": "tsc src/index.js --declaration --allowJs --emitDeclarationOnly --outDir types >/dev/null || true",
-    "types": "run-s types:build types:lint",
+    "types": "tsc src/index.js --declaration --allowJs --emitDeclarationOnly --outDir types >/dev/null || true",
     "clean": "rimraf dist/*",
     "build": "cross-env NODE_ENV=production rollup -c",
     "prepare": "yarn clean && yarn build && yarn types"
