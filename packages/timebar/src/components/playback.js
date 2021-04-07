@@ -230,8 +230,9 @@ Playback.defaultProps = {
     moveForward: 'Move forward',
     changeAnimationSpeed: 'Change animation speed',
   },
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onTogglePlay: () => {},
+  onTogglePlay: () => {
+    // do nothing
+  },
 }
 
 export default Playback

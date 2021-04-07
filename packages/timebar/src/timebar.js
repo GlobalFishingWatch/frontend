@@ -439,17 +439,22 @@ Timebar.defaultProps = {
   bookmarkStart: null,
   bookmarkEnd: null,
   enablePlayback: false,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onTogglePlay: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  children: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onMouseLeave: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onMouseMove: () => {},
+  onTogglePlay: () => {
+    // do nothing
+  },
+  children: () => {
+    // do nothing
+  },
+  onMouseLeave: () => {
+    // do nothing
+  },
+  onMouseMove: () => {
+    // do nothing
+  },
   bookmarkPlacement: 'top',
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onBookmarkChange: () => {},
+  onBookmarkChange: () => {
+    // do nothing
+  },
   minimumRange: null,
   minimumRangeUnit: 'day',
   maximumRange: null,

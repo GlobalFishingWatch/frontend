@@ -519,14 +519,18 @@ Timeline.defaultProps = {
   bookmarkStart: null,
   bookmarkEnd: null,
   bookmarkPlacement: 'top',
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  children: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onBookmarkChange: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onMouseLeave: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onMouseMove: () => {},
+  children: () => {
+    // do nothing
+  },
+  onBookmarkChange: () => {
+    // do nothing
+  },
+  onMouseLeave: () => {
+    // do nothing
+  },
+  onMouseMove: () => {
+    // do nothing
+  },
   showLastUpdate: true,
 }
 
