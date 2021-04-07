@@ -64,8 +64,8 @@ const TimebarSettings = () => {
         onClick={optionsPanelOpen ? closeOptions : openOptions}
         tooltip={
           optionsPanelOpen
-            ? t('timebar.settings_close', 'Close timebar settings')
-            : t('timebar.settings_open', 'Open timebar settings')
+            ? t('timebarSettings.settings_close', 'Close timebar settings')
+            : t('timebarSettings.settings_open', 'Open timebar settings')
         }
       />
       {optionsPanelOpen && (
@@ -77,10 +77,10 @@ const TimebarSettings = () => {
             tooltip={
               !activeHeatmapDataviews?.length
                 ? t(
-                    'timebar.fishingEffortDisabled',
+                    'timebarSettings.fishingEffortDisabled',
                     'Select at least one apparent fishing effort layer'
                   )
-                : t('timebar.showFishingEffort', 'Show fishing hours graph')
+                : t('timebarSettings.showFishingEffort', 'Show fishing hours graph')
             }
             onClick={setHeatmapActive}
           />
@@ -91,8 +91,8 @@ const TimebarSettings = () => {
               disabled={!activeVesselDataviews?.length}
               tooltip={
                 !activeVesselDataviews?.length
-                  ? t('timebar.tracksDisabled', 'Select at least one vessel')
-                  : t('timebar.showTracks', 'Show tracks graph')
+                  ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
+                  : t('timebarSettings.showTracks', 'Show tracks graph')
               }
               onClick={setVesselActive}
             />
@@ -112,7 +112,7 @@ const TimebarSettings = () => {
                   />
                   {timebarGraphEnabled && (
                     <Select
-                      label={t('timebar.graph', 'Graph')}
+                      label={t('timebarSettings.graph', 'Graph')}
                       options={TIMEBAR_GRAPH_OPTIONS}
                       selectedOption={TIMEBAR_GRAPH_OPTIONS.find((o) => o.id === timebarGraph)}
                       onSelect={setGraphOption}

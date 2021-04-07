@@ -33,9 +33,9 @@ module.exports = {
         pathGroupsExcludedImportTypes: ['builtin'],
       },
     ],
-    'prettier/prettier': 'error',
-    'react/prop-types': 'error',
-    'react/require-default-props': 'error',
+    'prettier/prettier': 1,
+    'react/prop-types': 1,
+    'react/require-default-props': 1,
     'react/jsx-fragments': ['error', 'element'],
   },
 }

@@ -154,7 +154,7 @@
     "selected": "slectionns",
     "placeholder": "Sélectionnez une option"
   },
-  "timebar": {
+  "timebarSettings": {
     "fishingEffortDisabled": "Sélectionnez au moins une couche apparente d'effort de pêche",
     "graph": "Graphique",
     "settings_close": "Fermer les paramètres de la barre de temps",
