@@ -14,7 +14,7 @@
     "dateRange": "Intervalo de fechas",
     "emailDescription": "Se generará un informe para los intervalos de fechas y filtros seleccionados y se enviará a tu cuenta de correo electrónico",
     "generate": "Generar",
-    "timeRangeTooLong": "Reports are only allowed for time ranges up to one year"
+    "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año"
   },
   "common": {
     "active_after": "Activo después de",
@@ -132,7 +132,7 @@
     "search": "Buscar áreas",
     "zoom_in": "Acercar",
     "zoom_out": "Alejar",
-    "legend_help": "Approximated grid cell area at the Equator"
+    "legend_help": "Área de celda de cuadrícula aproximada en el ecuador"
   },
   "search": {
     "advanced": "Avanzado",
@@ -157,54 +157,54 @@
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa aparente de esfuerzo de pesca",
-    "graph": "Graph",
-    "settings_close": "Cerrar opciones del timebar",
-    "settings_open": "Abrir opciones del timebar",
+    "graph": "Gráfico",
+    "settings_close": "Cerrar la barra de tiempo",
+    "settings_open": "Abrir ajustes de la barra de tiempo",
     "showFishingEffort": "Mostrar gráfico de horas de pesca",
     "showTracks": "Mostrar gráfico de pistas",
     "tracksDisabled": "Seleccione al menos un buque"
   },
   "timebar": {
     "playback": {
-      "playAnimation": "Play animación",
+      "playAnimation": "Reproducir animación",
       "pauseAnimation": "Pausar animación",
-      "toogleAnimationLooping": "Cambiar el ciclo de la animación",
-      "moveBack": "Mover hacia atrás",
-      "moveForward": "Mover hacia delante",
+      "toogleAnimationLooping": "Cambiar animación de bucle",
+      "moveBack": "Retroceder",
+      "moveForward": "Avanzar",
       "changeAnimationSpeed": "Cambiar velocidad de animación"
     },
     "timerange": {
-      "title": "Selecciona un rango de tiempo",
-      "start": "Inicio",
-      "end": "Final",
+      "title": "Seleccione un intervalo de tiempo",
+      "start": "empezar",
+      "end": "fin",
       "last30days": "Últimos 30 días",
-      "done": "OK",
-      "errorEarlyStart": "Your start date is the earliest date with data available",
-      "errorLatestEnd": "Your end date is the latest date with data available",
-      "errorMinRange": "Your start and end date must be at least one day apart",
-      "errorMaxRange": "Your time range is the maximum range with data available"
+      "done": "Hecho",
+      "errorEarlyStart": "Su fecha de inicio es la fecha más temprana con datos disponibles",
+      "errorLatestEnd": "Su fecha de fin es la última fecha con datos disponibles",
+      "errorMinRange": "Tu fecha de inicio y fin debe tener al menos un día de diferencia",
+      "errorMaxRange": "Su intervalo de tiempo es el rango máximo con datos disponibles"
     },
     "bookmark": {
-      "goToBookmark": "Go to your bookmarked time range",
-      "deleteBookmark": "Delete time range bookmark"
+      "goToBookmark": "Ir al rango de tiempo marcado",
+      "deleteBookmark": "Eliminar marcador de intervalo de tiempo"
     },
-    "dragLabel": "Drag to change the time range",
-    "lastUpdate": "Last update",
-    "setBookmark": "Bookmark current time range",
-    "day": "day",
-    "year": "year",
-    "month": "month",
-    "hour": "hour",
-    "zoomIn": "Zoom in",
-    "zoomTo": "Zoom to",
-    "zoomOut": "Zoom out",
-    "selectTimeRange": "Select a time range"
+    "dragLabel": "Arrastre para cambiar el rango de tiempo",
+    "lastUpdate": "Última actualización",
+    "setBookmark": "Rango de tiempo actual del marcador",
+    "day": "día",
+    "year": "año",
+    "month": "mes",
+    "hour": "hora",
+    "zoomIn": "Acercarse en",
+    "zoomTo": "Acercar a",
+    "zoomOut": "Apagar",
+    "selectTimeRange": "Seleccione un intervalo de tiempo"
   },
   "user": {
-    "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
-    "groups": "User Groups",
-    "profile": "User profile",
-    "title": "User"
+    "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
+    "groups": "Grupos de usuarios",
+    "profile": "Perfil de usuario",
+    "title": "Usuario"
   },
   "vessel": {
     "beam": "Rayo",
@@ -242,7 +242,7 @@
     "remove": "Eliminar área de trabajo",
     "save": "Guardar el mapa actual",
     "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
-    "saveLogin": "You need to login to save views",
+    "saveLogin": "Necesitas iniciar sesión para guardar las vistas",
     "title_plural": "Espacios de trabajo",
     "title": "Espacio de trabajo"
   }
