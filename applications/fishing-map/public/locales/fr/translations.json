@@ -131,7 +131,8 @@
     "rulers_remove": "Supprimer toutes les distances",
     "search": "Rechercher des zones",
     "zoom_in": "Zoomer",
-    "zoom_out": "Dézoomer"
+    "zoom_out": "Dézoomer",
+    "legend_help": "Approximated grid cell area at the Equator"
   },
   "search": {
     "advanced": "Avancé",
