@@ -2,7 +2,8 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { scaleLinear } from 'd3-scale'
 import { useSelector, useDispatch } from 'react-redux'
-import { MapLegend } from '@globalfishingwatch/ui-components/dist'
+import { useTranslation } from 'react-i18next'
+import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import useTilesLoading from '@globalfishingwatch/react-hooks/dist/use-tiles-loading'
@@ -58,6 +59,7 @@ const handleError = ({ error }: any) => {
 
 const MapWrapper = (): React.ReactElement | null => {
   const map = useMapInstance()
+  const { t } = useTranslation()
 
   const dispatch = useDispatch()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -130,7 +132,7 @@ const MapWrapper = (): React.ReactElement | null => {
             unitDisplay: 'short',
           })
         : ''
-      label = `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}`
+      label = `${i18n.t('common.hour_plural', 'hours')} / ~${gridAreaFormatted}²`
     }
     return { ...legend, label }
   })
@@ -231,10 +233,11 @@ const MapWrapper = (): React.ReactElement | null => {
               className={styles.legend}
               currentValueClassName={styles.currentValue}
               labelComponent={
-                <span className={styles.legendLabel}>
-                  {legend.label}
-                  {legend.gridArea && <sup>2</sup>}
-                </span>
+                <Tooltip
+                  content={t('map.legend_help', 'Approximated grid cell area at the Equator')}
+                >
+                  <span className={styles.legendLabel}>{legend.label}</span>
+                </Tooltip>
               }
             />,
             legendDomElement
