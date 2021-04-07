@@ -156,29 +156,29 @@
     "placeholder": "Seleccione una opción"
   },
   "timebarSettings": {
-    "fishingEffortDisabled": "Seleccione al menos una capa aparente de esfuerzo de pesca",
+    "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graph",
-    "settings_close": "Cerrar opciones del timebar",
-    "settings_open": "Abrir opciones del timebar",
-    "showFishingEffort": "Mostrar gráfico de horas de pesca",
-    "showTracks": "Mostrar gráfico de pistas",
-    "tracksDisabled": "Seleccione al menos un buque"
+    "settings_close": "Close timebar settings",
+    "settings_open": "Open timebar settings",
+    "showFishingEffort": "Show fishing hours graph",
+    "showTracks": "Show tracks graph",
+    "tracksDisabled": "Select at least one vessel"
   },
   "timebar": {
     "playback": {
-      "playAnimation": "Play animación",
-      "pauseAnimation": "Pausar animación",
-      "toogleAnimationLooping": "Cambiar el ciclo de la animación",
-      "moveBack": "Mover hacia atrás",
-      "moveForward": "Mover hacia delante",
-      "changeAnimationSpeed": "Cambiar velocidad de animación"
+      "playAnimation": "Play animation",
+      "pauseAnimation": "Pause animation",
+      "toogleAnimationLooping": "Toggle animation looping",
+      "moveBack": "Move back",
+      "moveForward": "Move forward",
+      "changeAnimationSpeed": "Change animation speed"
     },
     "timerange": {
-      "title": "Selecciona un rango de tiempo",
-      "start": "Inicio",
-      "end": "Final",
-      "last30days": "Últimos 30 días",
-      "done": "OK",
+      "title": "Select a time range",
+      "start": "start",
+      "end": "end",
+      "last30days": "Last 30 days",
+      "done": "Done",
       "errorEarlyStart": "Your start date is the earliest date with data available",
       "errorLatestEnd": "Your end date is the latest date with data available",
       "errorMinRange": "Your start and end date must be at least one day apart",
