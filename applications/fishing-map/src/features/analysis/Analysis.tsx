@@ -65,6 +65,8 @@ function Analysis() {
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const { areaId, sourceId } = analysisQuery
   const filter = useMemo(() => ['==', 'gfw_id', parseInt(areaId)], [areaId])
+
+  // TODO deprecate, use useFeatures instead
   const { features: contextAreaFeatures, sourceLoaded } = useMapFeatures({
     sourceId,
     filter,

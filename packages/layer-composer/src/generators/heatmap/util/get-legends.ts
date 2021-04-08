@@ -111,6 +111,7 @@ const getLegendsCompare = (
 
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
+      unit: config.sublayers[sublayerIndex].legend?.unit,
       type: LegendType.ColorRampDiscrete,
       ramp: legendRamp,
       ...(gridArea && { gridArea }),

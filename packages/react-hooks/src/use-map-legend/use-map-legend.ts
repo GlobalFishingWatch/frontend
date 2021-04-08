@@ -43,7 +43,9 @@ const getLegendLayers = (
       } else if (generatorType === Generators.Type.HeatmapAnimated) {
         const getHoveredFeatureValueForSublayerIndex = (index: number): number => {
           const hoveredFeature = hoveredEvent?.features?.find(
-            (f) => f.temporalgrid?.sublayerIndex === index
+            (f) =>
+              f.generatorId === layer.metadata?.generatorId &&
+              f.temporalgrid?.sublayerIndex === index
           )
           return hoveredFeature?.value
         }

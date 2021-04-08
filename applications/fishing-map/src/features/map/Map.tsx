@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { scaleLinear } from 'd3-scale'
 import { useSelector, useDispatch } from 'react-redux'
@@ -122,25 +122,33 @@ const MapWrapper = (): React.ReactElement | null => {
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
 
-  const legendsTranslated = mapLegends?.map((legend) => {
-    const isSquareKm = (legend.gridArea as number) > 50000
-    let label = legend.unit
-    if (!label) {
-      // TODO review this when environmental layers switchs to heatmapAnimated
-      if (legend.generatorType === GeneratorType.HeatmapAnimated) {
-        const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
-        const gridAreaFormatted = gridArea
-          ? formatI18nNumber(gridArea, {
-              style: 'unit',
-              unit: isSquareKm ? 'kilometer' : 'meter',
-              unitDisplay: 'short',
-            })
-          : ''
-        label = `${i18n.t('common.hour_plural', 'hours')} / ~${gridAreaFormatted}²`
-      }
-    }
-    return { ...legend, label }
-  })
+  const legendsTranslated = useMemo(
+    () =>
+      mapLegends?.map((legend) => {
+        const isSquareKm = (legend.gridArea as number) > 50000
+        let label = legend.unit
+        if (!label) {
+          // TODO review this when environmental layers switchs to heatmapAnimated
+          if (legend.generatorType === GeneratorType.HeatmapAnimated) {
+            const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+            const gridAreaFormatted = gridArea
+              ? formatI18nNumber(gridArea, {
+                  style: 'unit',
+                  unit: isSquareKm ? 'kilometer' : 'meter',
+                  unitDisplay: 'short',
+                })
+              : ''
+            if (!legend.unit || legend.unit === 'hours') {
+              label = `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
+            } else {
+              label = `${legend.unit} - ${gridAreaFormatted}² per cell`
+            }
+          }
+        }
+        return { ...legend, label }
+      }),
+    []
+  )
 
   const debugOptions = useSelector(selectDebugOptions)
 
@@ -151,6 +159,8 @@ const MapWrapper = (): React.ReactElement | null => {
   // TODO handle also in case of error
   // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
   const tilesLoading = useTilesLoading(map)
+
+  // TODO deprecate
   const encounterSourceLoaded = useMapSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
 
   const getCursor = useCallback(
