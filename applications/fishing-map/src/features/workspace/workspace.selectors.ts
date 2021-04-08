@@ -135,6 +135,12 @@ export const selectDataviewInstancesByCategory = (category: DataviewCategory) =>
   })
 }
 
+export const selectDataviewInstancesByIds = (ids: string[]) => {
+  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
+    return dataviews?.filter((dataview) => ids.includes(dataview.id))
+  })
+}
+
 export const selectVesselsDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.Track)],
   (dataviews) => dataviews

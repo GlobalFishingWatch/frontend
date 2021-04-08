@@ -28,8 +28,10 @@ export interface AnalysisGraphProps {
   timeseries: GraphData[]
   sublayers: {
     id: string
-    color?: string
-    unit?: string
+    legend: {
+      color?: string
+      unit?: string
+    }
   }[]
   interval: Interval
 }
@@ -130,7 +132,7 @@ const AnalysisGraphTooltip = (props: any) => {
   return null
 }
 
-const AnalysisGraph: React.FC<{ graphData: AnalysisGraphProps }> = (props) => {
+const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps }> = (props) => {
   const { timeseries, interval = '10days', sublayers } = props.graphData
 
   if (!timeseries) return null
@@ -161,54 +163,56 @@ const AnalysisGraph: React.FC<{ graphData: AnalysisGraphProps }> = (props) => {
   // console.log(dataFormated)
 
   return (
-    <ResponsiveContainer width="100%" height={240}>
-      <ComposedChart data={dataFormated} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="date"
-          interval="preserveStartEnd"
-          tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
-          axisLine={paddedDomain[0] === 0}
-        />
-        <YAxis
-          scale="linear"
-          domain={paddedDomain}
-          interval="preserveEnd"
-          tickFormatter={tickFormatter}
-          axisLine={false}
-          tickLine={false}
-          tickCount={4}
-        />
-        <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={interval} />} />
-        {sublayers.map(({ id, color, unit }, index) => (
-          <Line
-            key={`${id}-line`}
-            name="line"
-            type="monotone"
-            dataKey={(data) => data.avg[index]}
-            unit={unit}
-            dot={false}
-            isAnimationActive={false}
-            stroke={color}
-            strokeWidth={2}
+    <div className={styles.graph}>
+      <ResponsiveContainer width="100%" height={240}>
+        <ComposedChart data={dataFormated} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="date"
+            interval="preserveStartEnd"
+            tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
+            axisLine={paddedDomain[0] === 0}
           />
-        ))}
-        {sublayers.map(({ id, color }, index) => (
-          <Area
-            key={`${id}-area`}
-            name="area"
-            type="monotone"
-            dataKey={(data) => data.range[index]}
-            activeDot={false}
-            fill={color}
-            stroke="none"
-            fillOpacity={0.2}
-            isAnimationActive={false}
+          <YAxis
+            scale="linear"
+            domain={paddedDomain}
+            interval="preserveEnd"
+            tickFormatter={tickFormatter}
+            axisLine={false}
+            tickLine={false}
+            tickCount={4}
           />
-        ))}
-      </ComposedChart>
-    </ResponsiveContainer>
+          <Tooltip content={<AnalysisGraphTooltip timeChunkInterval={interval} />} />
+          {sublayers.map(({ id, legend }, index) => (
+            <Line
+              key={`${id}-line`}
+              name="line"
+              type="monotone"
+              dataKey={(data) => data.avg[index]}
+              unit={legend.unit}
+              dot={false}
+              isAnimationActive={false}
+              stroke={legend.color}
+              strokeWidth={2}
+            />
+          ))}
+          {sublayers.map(({ id, legend }, index) => (
+            <Area
+              key={`${id}-area`}
+              name="area"
+              type="monotone"
+              dataKey={(data) => data.range[index]}
+              activeDot={false}
+              fill={legend.color}
+              stroke="none"
+              fillOpacity={0.2}
+              isAnimationActive={false}
+            />
+          ))}
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
   )
 }
 
-export default AnalysisGraph
+export default AnalysisItemGraph

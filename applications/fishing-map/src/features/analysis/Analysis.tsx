@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useMemo, useState } from 'react'
+import React, { useEffect, useRef, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import union from '@turf/union'
@@ -7,7 +7,6 @@ import { Feature, Polygon } from 'geojson'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
@@ -27,12 +26,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useMapFeatures } from 'features/map/map-features.hooks'
 import { Bbox } from 'types'
-import { getFlagsByIds } from 'utils/flags'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import i18n from 'features/i18n/i18n'
-import { isFishingDataview, isPresenceDataview } from 'features/workspace/heatmaps/heatmaps.utils'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import AnalysisLayerPanel from './AnalysisLayerPanel'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
@@ -47,68 +41,7 @@ import {
   selectReportStatus,
   setAnalysisGeometry,
 } from './analysis.slice'
-import AnalysisGraphWrapper from './AnalysisGraphWrapper'
-
-const sortStrings = (a: string, b: string) => a.localeCompare(b)
-
-const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
-  const commonProperties: string[] = []
-  let title = ''
-
-  if (dataviews?.length > 0) {
-    const firstDataviewDatasets = dataviews[0].config?.datasets
-      ?.slice()
-      .sort(sortStrings)
-      .join(', ')
-    const firstDataviewFlags = dataviews[0].config?.filters?.flag
-      ?.slice()
-      .sort(sortStrings)
-      .join(', ')
-
-    if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
-      commonProperties.push('dataset')
-      const fishingDataview = isFishingDataview(dataviews[0])
-      const presenceDataview = isPresenceDataview(dataviews[0])
-      if (fishingDataview || presenceDataview) {
-        title = presenceDataview
-          ? i18n.t(`common.presence`, 'Fishing presence')
-          : i18n.t(`common.apparentFishing`, 'Apparent Fishing Effort')
-      } else {
-        title += dataviews[0].name
-      }
-    }
-
-    if (
-      dataviews?.every((dataview) => {
-        const datasets = dataview.config?.datasets?.slice().sort(sortStrings).join(', ')
-        return datasets === firstDataviewDatasets
-      })
-    ) {
-      commonProperties.push('source')
-      const datasets = dataviews[0].datasets?.filter((d) =>
-        dataviews[0].config?.datasets?.includes(d.id)
-      )
-      title += ` (${datasets?.map((d) => d.name).join(', ')})`
-    }
-
-    if (
-      dataviews?.every((dataview) => {
-        const flags = dataview.config?.filters?.flag?.slice().sort(sortStrings).join(', ')
-
-        return flags === firstDataviewFlags
-      })
-    ) {
-      commonProperties.push('flag')
-      const flags = getFlagsByIds(dataviews[0].config?.filters?.flag || [])
-      if (firstDataviewFlags)
-        title += ` ${i18n.t('analysis.vesselFlags', 'by vessels flagged by')} ${flags
-          ?.map((d) => d.label)
-          .join(', ')}`
-    }
-  }
-
-  return { title, commonProperties }
-}
+import AnalysisWrapper from './AnalysisWrapper'
 
 function Analysis() {
   const { t } = useTranslation()
@@ -128,6 +61,7 @@ function Analysis() {
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
+  // TODO should not use hardcoded activity layers
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const { areaId, sourceId } = analysisQuery
   const filter = useMemo(() => ['==', 'gfw_id', parseInt(areaId)], [areaId])
@@ -136,16 +70,6 @@ function Analysis() {
     filter,
     cacheKey: areaId,
   })
-
-  const { title, commonProperties } = getCommonProperties(dataviews)
-  let description = analysisAreaName
-    ? `${title} ${t('common.in', 'in')} ${analysisAreaName}`
-    : title
-  description = `${description} ${t('common.dateRange', {
-    start: formatI18nDate(staticTime.start),
-    end: formatI18nDate(staticTime.end),
-    defaultValue: 'between {{start}} and {{end}}',
-  })}.`
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
@@ -280,32 +204,14 @@ function Analysis() {
       ) : (
         <div className={styles.contentContainer}>
           <div className={styles.content}>
-            {hasAnalysisLayers ? (
-              <Fragment>
-                <h3 className={styles.commonTitle}>{description}</h3>
-                <div className={styles.layerPanels}>
-                  {dataviews?.map((dataview, index) => (
-                    <AnalysisLayerPanel
-                      key={dataview.id}
-                      dataview={dataview}
-                      index={index}
-                      hiddenProperties={commonProperties}
-                    />
-                  ))}
-                </div>
-              </Fragment>
+            {!sourceLoaded || !analysisGeometry ? (
+              <Spinner className={styles.spinner} />
             ) : (
-              <p className={styles.placeholder}>
-                {t('analysis.empty', 'Your selected datasets will appear here')}
-              </p>
+              <AnalysisWrapper
+                hasAnalysisLayers={hasAnalysisLayers}
+                analysisAreaName={analysisAreaName}
+              />
             )}
-            <div className={styles.graph}>
-              {!sourceLoaded || !analysisGeometry ? (
-                <Spinner className={styles.spinner} />
-              ) : (
-                <AnalysisGraphWrapper />
-              )}
-            </div>
             {sourceLoaded && analysisGeometry && (
               <p className={styles.placeholder}>
                 {t(

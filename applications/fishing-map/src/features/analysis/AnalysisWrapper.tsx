@@ -6,37 +6,32 @@ import { MultiPolygon, Polygon } from 'geojson'
 import { DateTime } from 'luxon'
 import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
-import { getTimeSeries, getRealValue, getRealValues } from '@globalfishingwatch/fourwings-aggregate'
+import { getTimeSeries, getRealValues } from '@globalfishingwatch/fourwings-aggregate'
 import {
   quantizeOffsetToDate,
   TEMPORALGRID_SOURCE_LAYER,
   TimeChunk,
-  TimeChunks,
 } from '@globalfishingwatch/layer-composer'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
-import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
-import { useGeneratorStyleMetadata } from 'features/map/map.hooks'
-import {
-  useActivityTemporalgridFeatures,
-  useSourcesLoadingState,
-  useActiveHeatmapAnimatedMetadatas,
-  useFeatures,
-} from 'features/map/map-features.hooks'
-import { selectActiveActivityDataviews } from 'features/workspace/workspace.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import {
-  selectActiveHeatmapAnimatedGeneratorConfigs,
-  selectGeneratorsConfig,
-} from 'features/map/map.selectors'
+import { selectActiveHeatmapAnimatedGeneratorConfigs } from 'features/map/map.selectors'
+import { useFeatures } from 'features/map/map-features.hooks'
 import * as AnalysisWorker from './Analysis.worker'
-import AnalysisGraph, { GraphData, AnalysisGraphProps } from './AnalysisGraph'
+import AnalysisItem from './AnalysisItem'
+import { AnalysisGraphProps } from './AnalysisItemGraph'
 import { selectAnalysisGeometry } from './analysis.slice'
 import styles from './Analysis.module.css'
 
 const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 
-function AnalysisGraphWrapper() {
+function AnalysisGraphWrapper({
+  hasAnalysisLayers,
+  analysisAreaName,
+}: {
+  hasAnalysisLayers: boolean
+  analysisAreaName: string
+}) {
   const generatorConfigs = useSelector(selectActiveHeatmapAnimatedGeneratorConfigs)
   //TODO collect metadata here, not just ids
   // TODO also pass metadata here
@@ -120,7 +115,7 @@ function AnalysisGraphWrapper() {
           return {
             timeseries,
             interval: sourceInterval,
-            sublayers: sourceMetadata.sublayers.map((s: any) => s.legend || {}),
+            sublayers: sourceMetadata.sublayers,
           }
         }
       )
@@ -130,7 +125,6 @@ function AnalysisGraphWrapper() {
     }
 
     if (sourcesFeatures && sourcesFeatures.some((features) => features.length > 0)) {
-      console.log(sourcesFeatures, haveAllSourcesLoaded)
       // setGeneratingTimeseries(true)
 
       // Make features serializable for worker
@@ -152,86 +146,7 @@ function AnalysisGraphWrapper() {
     }
   }, [simplifiedGeometry, sourcesMetadata, sourcesFeatures, haveAllSourcesLoaded])
 
-  // const temporalGridDataviews = useSelector(selectActiveActivityDataviews)
-
   const debouncedSourceLoaded = useDebounce(haveAllSourcesLoaded, 600)
-
-  // const simplifiedGeometry = useMemo(() => {
-  //   if (!analysisAreaFeature) return null
-  //   const simplifiedGeometry = simplify(analysisAreaFeature?.geometry as Polygon | MultiPolygon, {
-  //     tolerance: 0.1,
-  //   })
-  //   // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
-  //   // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
-  //   simplifiedGeometry.bbox = bbox(simplifiedGeometry)
-  //   return simplifiedGeometry
-  // }, [analysisAreaFeature])
-
-  // useEffect(() => {
-  //   const updateTimeseries = async (
-  //     allFeatures: GeoJSON.Feature<GeoJSON.Geometry>[],
-  //     geometry: Polygon | MultiPolygon
-  //   ) => {
-  //     setGeneratingTimeseries(true)
-  //     const filteredFeatures = (await filterByPolygon([allFeatures], geometry))[0]
-  //     const valuesContained = getTimeSeries(
-  //       (filteredFeatures.contained || []) as any,
-  //       numSublayers,
-  //       chunkQuantizeOffset
-  //     ).map((frameValues) => {
-  //       const { frame, ...rest } = frameValues
-  //       return {
-  //         values: Object.values(rest) as number[],
-  //         date: quantizeOffsetToDate(frame, interval).toISOString(),
-  //       }
-  //     })
-
-  //     const featuresContainedAndOverlapping = [
-  //       ...(filteredFeatures.contained || []),
-  //       ...(filteredFeatures.overlapping || []),
-  //     ]
-  //     const valuesContainedAndOverlapping = getTimeSeries(
-  //       featuresContainedAndOverlapping as any,
-  //       numSublayers,
-  //       chunkQuantizeOffset
-  //     ).map((frameValues) => {
-  //       const { frame, ...rest } = frameValues
-  //       return {
-  //         values: Object.values(rest) as number[],
-  //         date: quantizeOffsetToDate(frame, interval).toISOString(),
-  //       }
-  //     })
-
-  //     const timeseries = valuesContainedAndOverlapping.map(({ values, date }) => {
-  //       const minValues = valuesContained.find((overlap) => overlap.date === date)?.values
-  //       return {
-  //         date,
-  //         min: minValues ? minValues.map(getRealValue) : new Array(values.length).fill(0),
-  //         max: values.map(getRealValue),
-  //       }
-  //     })
-  //     setTimeseries(timeseries)
-  //     setGeneratingTimeseries(false)
-  //   }
-
-  //   if (cellFeatures && cellFeatures.length > 0) {
-  //     setGeneratingTimeseries(true)
-  //     const allFeatures = cellFeatures.map(({ properties, geometry }) => ({
-  //       type: 'Feature' as any,
-  //       properties,
-  //       geometry,
-  //     }))
-
-  //     if (allFeatures?.length && simplifiedGeometry) {
-  //       updateTimeseries(allFeatures, simplifiedGeometry)
-  //     } else {
-  //       setGeneratingTimeseries(false)
-  //     }
-  //   } else {
-  //     setTimeseries(undefined)
-  //   }
-  //   // TODO will have to generate some kind of hash to rerun effect when layers + intervals change
-  // }, [simplifiedGeometry, numSublayers, interval, cellFeatures, chunkQuantizeOffset])
 
   const sourcesTimeseriesFiltered = useMemo(() => {
     return sourcesTimeseries?.map((sourceTimeseries) => {
@@ -249,13 +164,6 @@ function AnalysisGraphWrapper() {
 
   if (!debouncedSourceLoaded || generatingTimeseries) return <Spinner className={styles.spinner} />
 
-  // const datasets = temporalGridDataviews?.map((dataview) => ({
-  //   id: dataview.id,
-  //   color: dataview.config?.color,
-  // TODO do that in dv client
-  //   unit: dataview.datasets?.[0].unit,
-  // }))
-
   if (!sourcesTimeseriesFiltered?.length) {
     return <p className={styles.emptyDataPlaceholder}>No data available</p>
   }
@@ -266,7 +174,14 @@ function AnalysisGraphWrapper() {
   return (
     <Fragment>
       {sourcesTimeseriesFiltered.map((sourceTimeseriesFiltered, index) => {
-        return <AnalysisGraph key={index} graphData={sourceTimeseriesFiltered} />
+        return (
+          <AnalysisItem
+            hasAnalysisLayers={hasAnalysisLayers}
+            analysisAreaName={analysisAreaName}
+            key={index}
+            graphData={sourceTimeseriesFiltered}
+          />
+        )
       })}
     </Fragment>
   )
