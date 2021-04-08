@@ -92,7 +92,7 @@
     "uploadError": "There was an error uploading your dataset",
     "vesselLoading": "There was an error loading the vessel details track",
     "workspaceLoad": "There was an error loading the workspace. Please try again later.",
-    "workspaceNotFound": "The view you request was not found"
+    "workspaceNotFound": "The view you requested was not found"
   },
   "event": {
     "noData": "No data available",
@@ -138,11 +138,11 @@
     "advanced": "Advanced",
     "basic": "Basic",
     "close": "Close search",
-    "description": "Search by vessel name or identification code. You can narrow your search by pressing the filter icon in the top menu bar",
+    "description": "Search by vessel name or identification code. You can narrow your search by using the filter icon in the top menu bar",
     "mainQueryLabel": "Name, IMO or MMSI",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign",
-    "notAllowed": "The available datasets don't allow searching vessels",
-    "placeholder": "Type to search vessels",
+    "notAllowed": "You don't have permission to search on these datasets",
+    "placeholder": "Type to search for vessels",
     "suggestion": "Did you mean",
     "title": "Search",
     "vesselAlreadyInWorksace": "Vessel already added. Close search to see it.",
