@@ -7,14 +7,14 @@
     "empty": "Los conjuntos de datos seleccionados aparecerán aquí",
     "errorMessage": "Ha habido un error",
     "noActivityLayers": "Ninguna capa de actividad se encuentra activa",
+    "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
     "area": "Área",
     "generating": "Estamos generando el informe para ti, estará listo pronto.",
     "successfullMessage": "El informe ha sido enviado con éxito, lo recibirás pronto por correo electrónico.",
     "dateRange": "Intervalo de fechas",
     "emailDescription": "Se generará un informe para los intervalos de fechas y filtros seleccionados y se enviará a tu cuenta de correo electrónico",
-    "generate": "Generar",
-    "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año"
+    "generate": "Generar"
   },
   "common": {
     "active_after": "Activo después de",
@@ -125,14 +125,14 @@
     "captureMap": "Capturar el mapa",
     "change_basemap_default": "Cambia al mapa base por defecto",
     "change_basemap_satellite": "Cambia al mapa base satelital",
+    "legend_help": "Área de celda de cuadrícula aproximada en el ecuador",
     "loading": "Cargando el mapa",
     "mapLoadingWait": "Por favor espere a que cargue el mapa",
     "rulers_add": "Añade reglas",
     "rulers_remove": "Borra todas las reglas",
     "search": "Buscar áreas",
     "zoom_in": "Acercar",
-    "zoom_out": "Alejar",
-    "legend_help": "Área de celda de cuadrícula aproximada en el ecuador"
+    "zoom_out": "Alejar"
   },
   "search": {
     "advanced": "Avanzado",
@@ -163,6 +163,53 @@
     "showFishingEffort": "Mostrar gráfico de horas de pesca",
     "showTracks": "Mostrar gráfico de pistas",
     "tracksDisabled": "Seleccione al menos un buque"
+  },
+  "user": {
+    "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
+    "groups": "Grupos de usuarios",
+    "profile": "Perfil de usuario",
+    "title": "Usuario"
+  },
+  "vessel": {
+    "beam": "Rayo",
+    "callsign": "Callsing",
+    "capacity": "Capacidad",
+    "carrier": "Transportista",
+    "donor": "Buque de donante",
+    "firstTransmissionDate": "Fecha primera transmisión",
+    "flag": "Bandera",
+    "fleet": "Flota",
+    "geartype": "Gear type",
+    "grossTonnageRange": "Gross Tonnage range",
+    "imo": "IMO",
+    "lastTransmissionDate": "Fecha última transmisión",
+    "length": "Longitud",
+    "lengthRange": "Rango de longitud",
+    "loading": "Cargando track de buque",
+    "mmsi": "MMSI",
+    "nationalId": "Identificación Nacional",
+    "origin": "Origen",
+    "registeredGearType": "Tipo de equipo registrado",
+    "source": "Fuente",
+    "tracks": "Tracks de barcos",
+    "transmission_plural": "Transmisión",
+    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
+    "vesselType_plural": "Tipos de buque",
+    "widthRange": "Width range",
+    "transmission": "Transmisión"
+  },
+  "workspace": {
+    "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
+    "editName": "Editar nombre del área de trabajo",
+    "emptyState": "Sus áreas de trabajo aparecerán aquí",
+    "nameInput": "Nombre del área de trabajo",
+    "new": "Nuevo espacio de trabajo",
+    "remove": "Eliminar área de trabajo",
+    "save": "Guardar el mapa actual",
+    "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
+    "saveLogin": "Necesitas iniciar sesión para guardar las vistas",
+    "title_plural": "Espacios de trabajo",
+    "title": "Espacio de trabajo"
   },
   "timebar": {
     "playback": {
@@ -199,51 +246,5 @@
     "zoomTo": "Acercar a",
     "zoomOut": "Apagar",
     "selectTimeRange": "Seleccione un intervalo de tiempo"
-  },
-  "user": {
-    "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
-    "groups": "Grupos de usuarios",
-    "profile": "Perfil de usuario",
-    "title": "Usuario"
-  },
-  "vessel": {
-    "beam": "Rayo",
-    "callsign": "Callsing",
-    "capacity": "Capacidad",
-    "carrier": "Transportista",
-    "donor": "Buque de donante",
-    "firstTransmissionDate": "Fecha primera transmisión",
-    "flag": "Bandera",
-    "fleet": "Flota",
-    "grossTonnageRange": "Gross Tonnage range",
-    "imo": "IMO",
-    "lastTransmissionDate": "Fecha última transmisión",
-    "length": "Longitud",
-    "lengthRange": "Rango de longitud",
-    "loading": "Cargando track de buque",
-    "mmsi": "MMSI",
-    "nationalId": "Identificación Nacional",
-    "origin": "Origen",
-    "registeredGearType": "Tipo de equipo registrado",
-    "source": "Fuente",
-    "tracks": "Tracks de barcos",
-    "transmission_plural": "Transmisión",
-    "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
-    "vesselType_plural": "Tipos de buque",
-    "widthRange": "Width range",
-    "transmission": "Transmisión"
-  },
-  "workspace": {
-    "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
-    "editName": "Editar nombre del área de trabajo",
-    "emptyState": "Sus áreas de trabajo aparecerán aquí",
-    "nameInput": "Nombre del área de trabajo",
-    "new": "Nuevo espacio de trabajo",
-    "remove": "Eliminar área de trabajo",
-    "save": "Guardar el mapa actual",
-    "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
-    "saveLogin": "Necesitas iniciar sesión para guardar las vistas",
-    "title_plural": "Espacios de trabajo",
-    "title": "Espacio de trabajo"
   }
 }
