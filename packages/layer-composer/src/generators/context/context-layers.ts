@@ -2,6 +2,8 @@ import type { FillLayer, Layer, LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
 import { ContextLayerType } from '../types'
 
+export const HIGHLIGHT_SUFIX = '_highlight'
+
 const settledBoundaries = [
   '200 NM',
   'Treaty',
@@ -63,15 +65,15 @@ const getDefaultContextHighlight = (): Partial<LineLayer> => {
 const getDefaultContextLayersById = (id: string, color: string): (LineLayer | FillLayer)[] => {
   return [
     {
-      id: `${id}-interaction`,
+      id: `${id}_interaction`,
       ...getDefaultContextInteraction(),
     } as FillLayer,
     {
-      id: `${id}-line`,
+      id: `${id}_line`,
       ...getDefaultContextLine(color),
     } as LineLayer,
     {
-      id: `${id}-highlight`,
+      id: `${id}${HIGHLIGHT_SUFIX}`,
       ...getDefaultContextHighlight(),
     } as LineLayer,
   ]
@@ -89,22 +91,22 @@ const CONTEXT_LAYERS: Record<ContextLayerType, Layer[]> = {
   [ContextLayerType.TunaRfmo]: getDefaultContextLayersById(ContextLayerType.TunaRfmo, '#B39DDB'),
   [ContextLayerType.EEZ]: [
     {
-      id: 'eez-interaction',
+      id: 'eez_interaction_',
       ...getDefaultContextInteraction(),
     } as FillLayer,
     {
-      id: 'eez-highlight',
+      id: `eez${HIGHLIGHT_SUFIX}_`,
       ...getDefaultContextHighlight(),
     } as LineLayer,
   ],
   [ContextLayerType.EEZBoundaries]: [
     {
-      id: 'eez_rest_lines',
+      id: 'eez_rest_lines_',
       ...getDefaultContextLine('#33B679'),
       filter: ['match', ['get', 'line_type'], settledBoundaries, true, false],
     } as LineLayer,
     {
-      id: 'eez_special_lines',
+      id: 'eez_special_lines_',
       ...getDefaultContextLine(),
       filter: ['match', ['get', 'line_type'], settledBoundaries, false, true],
       paint: {

@@ -14,8 +14,20 @@ export interface EndpointParam {
   default?: string | boolean | number
 }
 
+export enum EndpointId {
+  Tracks = 'carriers-tracks',
+  Vessel = 'carriers-vessel',
+  VesselList = 'carriers-list-vessels',
+  VesselSearch = 'carriers-search-vessels',
+  VesselAdvancedSearch = 'carriers-advanced-search-vessels',
+  FourwingsTiles = '4wings-tiles',
+  FourwingsLegend = '4wings-legend',
+  FourwingsInteraction = '4wings-interaction',
+  UserContextTiles = 'user-context-tiles',
+}
+
 export interface Endpoint {
-  id: string
+  id: EndpointId
   description?: string
   method?: 'GET' | 'POST'
   pathTemplate: string

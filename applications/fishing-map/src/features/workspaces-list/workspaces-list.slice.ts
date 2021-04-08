@@ -9,12 +9,15 @@ import {
   asyncInitialState,
   AsyncReducer,
   createAsyncSlice,
+  AsyncError,
 } from 'utils/async-slice'
 import { RootState } from 'store'
 import { APP_NAME } from 'data/config'
-import { WorkspaceViewport } from 'types'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
+import { WorkspaceState } from 'types'
+
+type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategories>
 
 type fetchWorkspacesThunkParams = {
   app?: string
@@ -25,7 +28,7 @@ export const fetchWorkspacesThunk = createAsyncThunk(
   'workspaces/fetch',
   async ({ app = APP_NAME, ids, userId }: fetchWorkspacesThunkParams) => {
     const workspacesParams = { app, ids, ownerId: userId }
-    const workspaces = await GFWAPI.fetch<Workspace[]>(
+    const workspaces = await GFWAPI.fetch<AppWorkspace[]>(
       `/v1/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
     )
 
@@ -43,7 +46,6 @@ export type HighlightedWorkspace = {
   description: string
   img?: string
   cta?: string
-  viewport?: WorkspaceViewport
 }
 
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
@@ -67,7 +69,53 @@ export const fetchHighlightWorkspacesThunk = createAsyncThunk(
   }
 )
 
-export interface WorkspacesState extends AsyncReducer<Workspace> {
+export const updateWorkspaceThunk = createAsyncThunk<
+  Workspace,
+  Partial<Workspace>,
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'workspaces/update',
+  async (workspace, { rejectWithValue }) => {
+    try {
+      const updatedWorkspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${workspace.id}`, {
+        method: 'PATCH',
+        body: { ...workspace } as any,
+      })
+      return updatedWorkspace
+    } catch (e) {
+      return rejectWithValue({ status: e.status || e.code, message: e.message })
+    }
+  },
+  {
+    condition: (partialWorkspace) => {
+      if (!partialWorkspace || !partialWorkspace.id) {
+        console.warn('To update the workspace you need the id')
+        return false
+      }
+    },
+  }
+)
+
+export const deleteWorkspaceThunk = createAsyncThunk<
+  Workspace,
+  string,
+  {
+    rejectValue: AsyncError
+  }
+>('workspaces/delete', async (id: string, { rejectWithValue }) => {
+  try {
+    const workspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces/${id}`, {
+      method: 'DELETE',
+    })
+    return { ...workspace, id }
+  } catch (e) {
+    return rejectWithValue({ status: e.status || e.code, message: e.message })
+  }
+})
+
+export interface WorkspacesState extends AsyncReducer<AppWorkspace> {
   highlighted: {
     status: AsyncReducerStatus
     data: Record<string, HighlightedWorkspace[]> | undefined
@@ -82,11 +130,13 @@ const initialState: WorkspacesState = {
   },
 }
 
-const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesState, Workspace>({
+const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesState, AppWorkspace>({
   name: 'workspaces',
   initialState,
   thunks: {
     fetchThunk: fetchWorkspacesThunk,
+    updateThunk: updateWorkspaceThunk,
+    deleteThunk: deleteWorkspaceThunk,
   },
   extraReducers: (builder) => {
     builder.addCase(fetchHighlightWorkspacesThunk.pending, (state) => {
@@ -107,6 +157,7 @@ export const { selectAll: selectWorkspaces, selectById } = entityAdapter.getSele
 )
 
 export const selectWorkspaceListStatus = (state: RootState) => state.workspaces.status
+export const selectWorkspaceListStatusId = (state: RootState) => state.workspaces.statusId
 export const selectHighlightedWorkspaces = (state: RootState) => state.workspaces.highlighted.data
 export const selectHighlightedWorkspacesStatus = (state: RootState) =>
   state.workspaces.highlighted.status

@@ -1,31 +1,25 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { scaleLinear } from 'd3-scale'
 import { useSelector, useDispatch } from 'react-redux'
-import { MapLegend } from '@globalfishingwatch/ui-components/dist'
-import type { Map } from '@globalfishingwatch/mapbox-gl'
+import { useTranslation } from 'react-i18next'
+import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
-import useTilesState from '@globalfishingwatch/react-hooks/dist/use-tiles-state'
+import useTilesLoading from '@globalfishingwatch/react-hooks/dist/use-tiles-loading'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import {
   useMapClick,
   useMapHover,
   useFeatureState,
   InteractionEventCallback,
-  InteractionEvent,
 } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
-import {
-  LegendLayer,
-  LegendLayerBivariate,
-} from '@globalfishingwatch/ui-components/dist/map-legend'
-import {
-  ExtendedStyle,
-  ExtendedStyleMeta,
-  Generators,
-  LayerMetadataLegend,
-} from '@globalfishingwatch/layer-composer'
-import { UrlDataviewInstance } from 'types'
+import { ExtendedStyleMeta, Generators } from '@globalfishingwatch/layer-composer'
+import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
+import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
+import useMapInstance from 'features/map/map-context.hooks'
 import i18n from 'features/i18n/i18n'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import { selectEditing, moveCurrentRuler } from 'features/map/controls/rulers.slice'
@@ -33,18 +27,16 @@ import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
-import { useMapboxInstance, useMapboxRef } from './map.context'
 import styles from './Map.module.css'
+import { SliceInteractionEvent } from './map.slice'
+import { useMapSourceLoaded } from './map-features.hooks'
+
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
-declare global {
-  interface Window {
-    gfwmap: InteractiveMap
-  }
-}
+const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceType: string) => {
@@ -58,85 +50,17 @@ const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceT
 }
 
 const handleError = ({ error }: any) => {
-  if (error?.status === 401 && error?.url.includes('globalfishingwatch')) {
+  if (
+    (error?.status === 401 || error?.status === 403) &&
+    error?.url.includes('globalfishingwatch')
+  ) {
     GFWAPI.refreshAPIToken()
   }
 }
 
-const getLegendLayers = (
-  style?: ExtendedStyle,
-  dataviews?: UrlDataviewInstance[],
-  hoveredEvent?: InteractionEvent | null
-) => {
-  if (!style) return []
-  return style.layers?.flatMap((layer) => {
-    if (!layer.metadata?.legend) return []
-
-    const sublayerLegendsMetadata: LayerMetadataLegend[] = Array.isArray(layer.metadata.legend)
-      ? layer.metadata.legend
-      : [layer.metadata.legend]
-    return sublayerLegendsMetadata.map((sublayerLegendMetadata, sublayerIndex) => {
-      const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
-      const dataview = dataviews?.find((d) => d.id === id)
-      const isSquareKm = (sublayerLegendMetadata.gridArea as number) > 50000
-      let label = sublayerLegendMetadata.unit
-      if (!label) {
-        const gridArea = isSquareKm
-          ? (sublayerLegendMetadata.gridArea as number) / 1000000
-          : sublayerLegendMetadata.gridArea
-        const gridAreaFormatted = gridArea
-          ? formatI18nNumber(gridArea, {
-              style: 'unit',
-              unit: isSquareKm ? 'kilometer' : 'meter',
-              unitDisplay: 'short',
-            })
-          : ''
-        label = `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}`
-      }
-      const sublayerLegend: LegendLayer | LegendLayerBivariate = {
-        ...sublayerLegendMetadata,
-        id: `legend_${id}`,
-        color: layer.metadata?.color || dataview?.config?.color || 'red',
-        label,
-      }
-
-      const generatorType = layer.metadata?.generatorType
-
-      if (generatorType === Generators.Type.Heatmap) {
-        const value = hoveredEvent?.features?.find(
-          (f) => f.generatorId === layer.metadata?.generatorId
-        )?.value
-        if (value) {
-          sublayerLegend.currentValue = value
-        }
-      } else if (generatorType === Generators.Type.HeatmapAnimated) {
-        const getHoveredFeatureValueForSublayerIndex = (index: number): number => {
-          const hoveredFeature = hoveredEvent?.features?.find(
-            (f) => f.temporalgrid?.sublayerIndex === index
-          )
-          return hoveredFeature?.value
-        }
-        // Both bivariate sublayers come in the same sublayerLegend (see getLegendsBivariate in LC)
-        if (sublayerLegend.type === 'bivariate') {
-          sublayerLegend.currentValues = [
-            getHoveredFeatureValueForSublayerIndex(0),
-            getHoveredFeatureValueForSublayerIndex(1),
-          ]
-        } else {
-          sublayerLegend.currentValue = getHoveredFeatureValueForSublayerIndex(sublayerIndex)
-        }
-      } else if (generatorType === Generators.Type.UserContext) {
-        // TODO use dataset propertyToInclude value
-        sublayerLegend.label = ''
-      }
-      return sublayerLegend
-    })
-  })
-}
-
 const MapWrapper = (): React.ReactElement | null => {
-  const mapRef = useMapboxRef()
-  const mapInstance = useMapboxInstance()
+  const map = useMapInstance()
+  const { t } = useTranslation()
 
   const dispatch = useDispatch()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -146,12 +70,8 @@ const MapWrapper = (): React.ReactElement | null => {
   const { style } = useLayerComposer(generatorsConfig, globalConfig)
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
-  const { cleanFeatureState } = useFeatureState(mapInstance)
-  const onMapClick = useMapClick(
-    dispatchClickedEvent,
-    style?.metadata as ExtendedStyleMeta,
-    mapInstance
-  )
+  const { cleanFeatureState } = useFeatureState(map)
+  const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const rulersEditing = useSelector(selectEditing)
   const closePopup = useCallback(() => {
@@ -159,25 +79,28 @@ const MapWrapper = (): React.ReactElement | null => {
     dispatchClickedEvent(null)
   }, [cleanFeatureState, dispatchClickedEvent])
 
-  const [hoveredEvent, setHoveredEvent] = useState<InteractionEvent | null>(null)
+  const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
   const handleHoverEvent = useCallback(
     (event) => {
-      setHoveredEvent(event)
-      if (rulersEditing === true) {
+      if (rulersEditing) {
         const center = {
           longitude: event.longitude,
           latitude: event.latitude,
         }
         dispatch(moveCurrentRuler(center))
+      } else {
+        setHoveredEvent(event)
       }
     },
     [dispatch, rulersEditing]
   )
-  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<InteractionEvent | null>(null)
+  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
+    null
+  )
   const onMapHover = useMapHover(
     handleHoverEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,
-    mapInstance,
+    map,
     style?.metadata
   )
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
@@ -185,7 +108,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const resetHoverState = useCallback(() => {
     setHoveredEvent(null)
     setHoveredDebouncedEvent(null)
-    cleanFeatureState()
+    cleanFeatureState('hover')
   }, [cleanFeatureState])
 
   const { viewport, onViewportChange } = useViewport()
@@ -197,7 +120,27 @@ const MapWrapper = (): React.ReactElement | null => {
   }, [viewport])
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
-  const layersWithLegend = getLegendLayers(style, dataviews, hoveredEvent)
+  const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
+
+  const legendsTranslated = mapLegends?.map((legend) => {
+    const isSquareKm = (legend.gridArea as number) > 50000
+    let label = legend.unit
+    if (!label) {
+      // TODO review this when environmental layers switchs to heatmapAnimated
+      if (legend.generatorType === GeneratorType.HeatmapAnimated) {
+        const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+        const gridAreaFormatted = gridArea
+          ? formatI18nNumber(gridArea, {
+              style: 'unit',
+              unit: isSquareKm ? 'kilometer' : 'meter',
+              unitDisplay: 'short',
+            })
+          : ''
+        label = `${i18n.t('common.hour_plural', 'hours')} / ~${gridAreaFormatted}²`
+      }
+    }
+    return { ...legend, label }
+  })
 
   const debugOptions = useSelector(selectDebugOptions)
 
@@ -205,45 +148,50 @@ const MapWrapper = (): React.ReactElement | null => {
     return 'crosshair'
   }, [])
 
+  // TODO handle also in case of error
+  // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
+  const tilesLoading = useTilesLoading(map)
+  const encounterSourceLoaded = useMapSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+
   const getCursor = useCallback(
     (state) => {
       // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
       if (state.isHovering && hoveredTooltipEvent) {
+        const isCluster = hoveredTooltipEvent.features.find(
+          (f) => f.type === Generators.Type.TileCluster && parseInt(f.properties.count) > 1
+        )
+        if (isCluster) {
+          return encounterSourceLoaded ? 'zoom-in' : 'progress'
+        }
         return 'pointer'
       } else if (state.isDragging) {
         return 'grabbing'
       }
       return 'grab'
     },
-    [hoveredTooltipEvent]
+    [hoveredTooltipEvent, encounterSourceLoaded]
   )
 
-  // TODO handle also in case of error
-  // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
-  const tilesLoading = useTilesState(mapInstance as Map)
-
   useEffect(() => {
-    if (mapInstance) {
-      mapInstance.showTileBoundaries = debugOptions.debug
+    if (map) {
+      map.showTileBoundaries = debugOptions.debug
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapInstance, debugOptions])
+  }, [map, debugOptions])
 
   useEffect(() => {
-    if (mapRef.current) {
-      // Used for the screeenshot callback for the 'idle' event to generate the image once loaded
-      window.gfwmap = mapRef.current.getMap()
+    if (map) {
+      map.showTileBoundaries = debugOptions.debug
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapRef.current])
+  }, [map, debugOptions])
 
   return (
     <div className={styles.container}>
-      {<MapScreenshot map={mapRef.current?.getMap()} />}
+      {<MapScreenshot map={map} />}
       {style && (
         <InteractiveMap
           disableTokenWarning={true}
-          ref={mapRef}
           width="100%"
           height="100%"
           zoom={viewport.zoom}
@@ -256,6 +204,7 @@ const MapWrapper = (): React.ReactElement | null => {
           onResize={setMapBounds}
           getCursor={rulersEditing ? getRulersCursor : getCursor}
           interactiveLayerIds={rulersEditing ? undefined : style?.metadata?.interactiveLayerIds}
+          clickRadius={clickRadiusScale(viewport.zoom)}
           onClick={onMapClick}
           onHover={onMapHover}
           onError={handleError}
@@ -279,8 +228,8 @@ const MapWrapper = (): React.ReactElement | null => {
           <MapInfo center={hoveredEvent} />
         </InteractiveMap>
       )}
-      <MapControls onMouseEnter={resetHoverState} mapLoading={tilesLoading.loading} />
-      {layersWithLegend?.map((legend) => {
+      <MapControls onMouseEnter={resetHoverState} mapLoading={tilesLoading} />
+      {legendsTranslated?.map((legend) => {
         const legendDomElement = document.getElementById(legend.id as string)
         if (legendDomElement) {
           return createPortal(
@@ -289,10 +238,11 @@ const MapWrapper = (): React.ReactElement | null => {
               className={styles.legend}
               currentValueClassName={styles.currentValue}
               labelComponent={
-                <span className={styles.legendLabel}>
-                  {legend.label}
-                  {legend.gridArea && <sup>2</sup>}
-                </span>
+                <Tooltip
+                  content={t('map.legend_help', 'Approximated grid cell area at the Equator')}
+                >
+                  <span className={styles.legendLabel}>{legend.label}</span>
+                </Tooltip>
               }
             />,
             legendDomElement

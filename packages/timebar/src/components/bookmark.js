@@ -13,6 +13,7 @@ const MIN_WIDTH_WITH_OVERFLOW_ARROWS = 52
 const COMPACT_MAX_WIDTH = 240
 
 const Bookmark = ({
+  labels,
   placement,
   scale,
   bookmarkStart,
@@ -65,12 +66,7 @@ const Bookmark = ({
       })}
       style={{ left: renderedX, width: renderedWidth }}
     >
-      <button
-        type="button"
-        title="Go to your bookmarked time range"
-        className={styles.main}
-        onClick={onSelect}
-      >
+      <button type="button" title={labels.goToBookmark} className={styles.main} onClick={onSelect}>
         {overflowingLeft && <Arrow className={styles.leftArrow} />}
         <IconBookmarkFilled className={styles.icon} />
         {compact === false && <span className={styles.title}>{label}</span>}
@@ -79,7 +75,7 @@ const Bookmark = ({
       {compact === false && (
         <button
           type="button"
-          title="Delete time range bookmark"
+          title={labels.deleteBookmark}
           className={styles.delete}
           onClick={onDelete}
         >
@@ -91,6 +87,10 @@ const Bookmark = ({
 }
 
 Bookmark.propTypes = {
+  label: PropTypes.shape({
+    goToBookmark: PropTypes.string,
+    deleteBookmark: PropTypes.string,
+  }),
   placement: PropTypes.string,
   bookmarkStart: PropTypes.string.isRequired,
   bookmarkEnd: PropTypes.string.isRequired,
@@ -103,6 +103,10 @@ Bookmark.propTypes = {
 
 Bookmark.defaultProps = {
   placement: 'top',
+  labels: {
+    goToBookmark: 'Go to your bookmarked time range',
+    deleteBookmark: 'Delete time range bookmark',
+  },
 }
 
 export default Bookmark

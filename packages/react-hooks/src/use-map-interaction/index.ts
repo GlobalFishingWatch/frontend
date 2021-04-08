@@ -1,22 +1,17 @@
-import { Dataset } from '@globalfishingwatch/api-types'
+import type { Geometry } from 'geojson'
 import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { PointerEvent } from '@globalfishingwatch/react-map-gl'
 
 export { useMapHover, useMapClick, useFeatureState } from './use-map-interaction'
 
-export type ExtendedFeatureVessel = {
-  id: string
-  hours: number
-  dataset: Dataset
-  [key: string]: any
-}
-
 export type ExtendedFeature = {
   properties: Record<string, any>
+  layerId: string
   source: string
   sourceLayer: string
   generatorId: string | number | null
   generatorType: string | null
-  id?: number
+  id: string
   value: any
   unit?: string
   tile: {
@@ -30,9 +25,9 @@ export type ExtendedFeature = {
     col: number
     row: number
   }
+  uniqueFeatureInteraction?: boolean
   generatorContextLayer?: ContextLayerType | null
-  vessels?: ExtendedFeatureVessel[]
-  dataset?: Dataset
+  geometry?: Geometry
 }
 
 export type InteractionEventCallback = (event: InteractionEvent | null) => void
@@ -41,4 +36,5 @@ export type InteractionEvent = {
   features?: ExtendedFeature[]
   latitude: number
   longitude: number
+  point: Pick<PointerEvent, 'point'>
 }

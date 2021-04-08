@@ -31,12 +31,14 @@ import { ReactComponent as Layers } from '../assets/icons/layers.svg'
 import { ReactComponent as Logout } from '../assets/icons/logout.svg'
 import { ReactComponent as Menu } from '../assets/icons/menu.svg'
 import { ReactComponent as Minus } from '../assets/icons/minus.svg'
+import { ReactComponent as Pin } from '../assets/icons/pin.svg'
 import { ReactComponent as Plus } from '../assets/icons/plus.svg'
 import { ReactComponent as Publish } from '../assets/icons/publish.svg'
 import { ReactComponent as RemoveFromMap } from '../assets/icons/remove-from-map.svg'
 import { ReactComponent as Ruler } from '../assets/icons/ruler.svg'
 import { ReactComponent as Report } from '../assets/icons/report.svg'
 import { ReactComponent as Satellite } from '../assets/icons/satellite.svg'
+import { ReactComponent as Save } from '../assets/icons/save.svg'
 import { ReactComponent as Search } from '../assets/icons/search.svg'
 import { ReactComponent as Settings } from '../assets/icons/settings.svg'
 import { ReactComponent as Share } from '../assets/icons/share.svg'
@@ -80,12 +82,14 @@ export const IconComponents = {
   layers: Layers,
   menu: Menu,
   minus: Minus,
+  pin: Pin,
   plus: Plus,
   publish: Publish,
   'remove-from-map': RemoveFromMap,
   ruler: Ruler,
   report: Report,
   satellite: Satellite,
+  save: Save,
   search: Search,
   settings: Settings,
   share: Share,

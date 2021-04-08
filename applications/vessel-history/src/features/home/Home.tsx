@@ -1,14 +1,18 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
+import { useTranslation } from 'react-i18next'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
+import { VesselSearch } from '@globalfishingwatch/api-types'
+import { BASE_DATASET } from 'data/constants'
 import { logoutUserThunk } from 'features/user/user.slice'
-import { Vessel } from 'types'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
+import { selectQueryParam } from 'routes/routes.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 import styles from './Home.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
 
@@ -21,10 +25,12 @@ interface LoaderProps {
 }
 
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const [searching, setSearching] = useState(false)
-  const [vessels, setVessels] = useState<Array<Vessel>>([])
-  const [query, setQuery] = useState('')
+  const [vessels, setVessels] = useState<Array<VesselSearch>>([])
+  const query = useSelector(selectQueryParam('q'))
+  const { dispatchQueryParams } = useLocationConnect()
 
   const minimumCharacters = 3
   const resultsPerRequest = 25
@@ -32,30 +38,29 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const fetchData = useCallback(async (query: string) => {
     setSearching(true)
     GFWAPI.fetch<any>(
-      `/v1/vessels/search?datasets=public-global-vessels%3Av20190502&limit=${resultsPerRequest}&offset=${0}&query=${encodeURIComponent(
-        query
-      )}`
+      `/v1/vessels/search?datasets=${encodeURIComponent(
+        BASE_DATASET
+      )}&limit=${resultsPerRequest}&offset=${0}&query=${encodeURIComponent(query)}`
     )
       .then((json: any) => {
-        const resultVessels: Array<Vessel> = json.entries
+        const resultVessels: Array<VesselSearch> = json.entries
         setSearching(false)
         setVessels(resultVessels)
       })
       .catch((error) => {
         setSearching(false)
-        console.warn(error)
       })
   }, [])
 
   useEffect(() => {
     setVessels([])
-    if (query.length >= minimumCharacters) {
+    if (query?.length >= minimumCharacters) {
       fetchData(query)
     }
   }, [query, fetchData])
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
+    dispatchQueryParams({ q: e.target.value })
   }
 
   return (
@@ -85,6 +90,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             aria-label="Search vessels"
             className={styles.input}
             onChange={onInputChange}
+            value={query}
           />
           {!query && (
             <IconButton
@@ -97,7 +103,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         </div>
         {!query && (
           <div>
-            <h2>OFFLINE ACCESS</h2>
+            <h2>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
             <div className={styles.offlineVessels}></div>
           </div>
         )}

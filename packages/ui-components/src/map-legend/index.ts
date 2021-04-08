@@ -7,14 +7,15 @@ export { default, MapLegend } from './MapLegend'
 export { default as ColorRampLegend } from './ColorRamp'
 export { default as BivariateLegend } from './Bivariate'
 
-// TODO unify this with use-map-legend
-export type LegendLayer = LayerMetadataLegend & {
+type UILayer = {
   color: string
+  generatorId: string
+  generatorType: string
 }
 
-export type LegendLayerBivariate = LayerMetadataLegendBivariate & {
-  color: string
-}
+export type LegendLayer = LayerMetadataLegend & UILayer
+
+export type LegendLayerBivariate = LayerMetadataLegendBivariate & UILayer
 
 export const roundLegendNumber = (number: number) => {
   return number > 1 ? Math.floor(number) : number

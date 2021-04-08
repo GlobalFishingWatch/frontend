@@ -52,6 +52,7 @@ export enum Group {
   TrackHighlightedEvent = 'trackHighlightedEvent', // Fixed highlight section normally used for a event duration
   TrackHighlighted = 'trackHighlighted', // Highlighted sections of tracks
   BasemapForeground = 'BasemapForeground', // Graticule labels, bathymetry labels, etc
+  Cluster = 'cluster', // Cluster circles
   Tool = 'tool', // Tools such as rulers, etc
   Label = 'label', // All non-basemap layers labels
   Overlay = 'overlay', // Popups, ruler tool, etc

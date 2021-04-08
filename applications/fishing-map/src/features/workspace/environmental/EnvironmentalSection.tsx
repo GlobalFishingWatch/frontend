@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
@@ -13,13 +14,14 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   const { t } = useTranslation()
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
   const dataviews = useSelector(selectEnvironmentalDataviews)
+  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onAddClick = useCallback(() => {
     setNewDatasetOpen(true)
   }, [])
 
   return (
-    <div className={styles.container}>
+    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.environment', 'Environment')}</h2>
         <TooltipContainer

@@ -9,11 +9,7 @@
 }
 
 .userInfo {
-  padding: var(--space-M);
   border-bottom: var(--border);
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
 }
 
 .secondary {
@@ -35,6 +31,7 @@
 .dataset,
 .workspace {
   padding: var(--space-XS) var(--space-XS) 0 0;
+  display: flex;
 }
 
 .dataset,
@@ -44,6 +41,7 @@
 
 .workspaceLink {
   display: flex;
+  flex: 1;
   align-items: center;
 }
 
@@ -62,5 +60,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-secondary-blue)
+  color: var(--color-secondary-blue);
+}
+
+.missingGroup {
+  color: var(--color-secondary-blue);
+}
+
+.link {
+  text-decoration: underline;
+}
+
+.textSpaced {
+  padding: var(--space-XS) 0;
 }

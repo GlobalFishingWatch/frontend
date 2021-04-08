@@ -18,5 +18,6 @@ export interface UserData {
   lastName?: string
   photo?: string
   type: string
+  groups: string[]
   permissions: UserPermission[]
 }

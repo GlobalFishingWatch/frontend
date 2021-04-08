@@ -1,5 +1,168 @@
 # @globalfishingwatch/react-hooks
 
+## 5.3.0
+
+### Minor Changes
+
+- 9af9dea7: include generatorId and Type in legendLayers
+
+### Patch Changes
+
+- Updated dependencies [9af9dea7]
+  - @globalfishingwatch/ui-components@2.17.0
+
+## 5.2.0
+
+### Minor Changes
+
+- f570b76f: support uniqueFeatureInteraction in layer-composer and map interaction hook
+
+### Patch Changes
+
+- Updated dependencies [f570b76f]
+  - @globalfishingwatch/layer-composer@4.19.0
+  - @globalfishingwatch/ui-components@2.16.2
+
+## 5.1.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@5.0.1
+  - @globalfishingwatch/layer-composer@4.18.1
+  - @globalfishingwatch/ui-components@2.16.1
+
+## 5.1.0
+
+### Minor Changes
+
+- 6badcfe5: Update use-legends hook to match fishing-map latest changes
+
+## 5.0.0
+
+### Major Changes
+
+- d2501b54: move fishing-map logic into dataview-client
+
+### Patch Changes
+
+- Updated dependencies [d2501b54]
+  - @globalfishingwatch/dataviews-client@5.0.0
+  - @globalfishingwatch/api-client@1.6.8
+
+## 4.11.0
+
+### Minor Changes
+
+- match latest versions
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@4.1.0
+  - @globalfishingwatch/layer-composer@4.18.0
+
+## 4.10.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.3
+
+## 4.10.0
+
+### Minor Changes
+
+- move ExtendedFeatureVessel to app responsability
+
+## 4.9.6
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.2
+
+## 4.9.5
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.1
+
+## 4.9.4
+
+### Patch Changes
+
+- Updated dependencies [ce98aa73]
+  - @globalfishingwatch/layer-composer@4.17.0
+- [`d99bf5f3`](https://github.com/GlobalFishingWatch/frontend/commit/d99bf5f30bceed021ac990a0de8b4e992189be73) [#375](https://github.com/GlobalFishingWatch/frontend/pull/375) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - define endpoints enum
+
+## 4.9.3
+
+### Patch Changes
+
+- Updated dependencies [[`55796c7a`](https://github.com/GlobalFishingWatch/frontend/commit/55796c7a0a0b9972d3b7f8631566091dd0b74809), [`f7b017f0`](https://github.com/GlobalFishingWatch/frontend/commit/f7b017f0c72bd1f90e6a984ff5c26e524d7d735a)]:
+  - @globalfishingwatch/fourwings-aggregate@1.2.1
+  - @globalfishingwatch/layer-composer@4.16.0
+
+## 4.9.2
+
+### Patch Changes
+
+- fix useTilesLoading
+
+## 4.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.15.0
+
+## 4.9.0
+
+### Minor Changes
+
+- simpler version of use-tiles-state hook just for loading boolean
+
+## 4.8.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.5
+
+## 4.8.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.4
+
+## 4.8.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.3
+
+## 4.8.0
+
+### Minor Changes
+
+- support highlighted feature states
+
+### Patch Changes
+
+- Updated dependencies [[`729322ab`](https://github.com/GlobalFishingWatch/frontend/commit/729322ab540c4ad807cb3bba1c2b344eb265ed89)]:
+  - @globalfishingwatch/layer-composer@4.14.2
+  - @globalfishingwatch/fourwings-aggregate@1.2.0
+
+## 4.7.0
+
+### Minor Changes
+
+- [`c33e3caa`](https://github.com/GlobalFishingWatch/frontend/commit/c33e3caa4d0efbea3d0ce9ab49af6dc7491b282a) [#343](https://github.com/GlobalFishingWatch/frontend/pull/343) Thanks [@rdgfuentes](https://github.com/rdgfuentes)! - send clicked point in extended feature
+
 ## 4.6.0
 
 ### Minor Changes

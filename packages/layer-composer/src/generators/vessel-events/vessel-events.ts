@@ -21,6 +21,10 @@ const EVENTS_COLORS: Dictionary<string> = {
   port: '#99EEFF',
 }
 
+interface VesselsEventsSource extends GeoJSONSourceRaw {
+  id: string
+}
+
 class VesselsEventsGenerator {
   type = Type.VesselEvents
 
@@ -40,7 +44,9 @@ class VesselsEventsGenerator {
     return featureCollection
   }
 
-  _getStyleSources = (config: VesselEventsGeneratorConfig & GlobalGeneratorConfig) => {
+  _getStyleSources = (
+    config: VesselEventsGeneratorConfig & GlobalGeneratorConfig
+  ): VesselsEventsSource[] => {
     const { id, data } = config
 
     if (!data) {
@@ -63,11 +69,12 @@ class VesselsEventsGenerator {
       })
     }
 
-    const source: GeoJSONSourceRaw = {
+    const source: VesselsEventsSource = {
+      id,
       type: 'geojson',
       data: newData,
     }
-    return [{ id, ...source }]
+    return [source]
   }
 
   _getStyleLayers = (config: VesselEventsGeneratorConfig) => {

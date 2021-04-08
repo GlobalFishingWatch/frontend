@@ -1,9 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 
+export enum DebugOption {
+  Blob = 'blob',
+  Extruded = 'extruded',
+  Debug = 'debug',
+  Thinning = 'thinning',
+}
+
 interface UserState {
   active: boolean
-  options: Record<string, boolean>
+  options: Record<DebugOption, boolean>
 }
 
 const initialState: UserState = {
@@ -12,6 +19,7 @@ const initialState: UserState = {
     blob: false,
     extruded: false,
     debug: false,
+    thinning: true,
   },
 }
 
@@ -22,7 +30,7 @@ const debugSlice = createSlice({
     toggleDebugMenu: (state) => {
       state.active = !state.active
     },
-    toggleOption: (state, action: PayloadAction<string>) => {
+    toggleOption: (state, action: PayloadAction<DebugOption>) => {
       state.options[action.payload] = !state.options[action.payload]
       if (state.options.blob) {
         state.options.extruded = false

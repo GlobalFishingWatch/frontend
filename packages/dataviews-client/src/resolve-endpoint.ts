@@ -41,7 +41,7 @@ const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig)
     url = `${url}?datasets=${dataset.id}`
   }
 
-  return url
+  return decodeURI(url)
 }
 
 export default resolveEndpoint

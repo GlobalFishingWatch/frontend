@@ -1,70 +1,90 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { FeatureCollection } from '@turf/helpers'
-import { RootState } from '../../store'
+import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { memoize } from 'lodash'
+import { VesselAPISource, VesselWithHistory } from 'types'
+import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import { VesselSourceId } from 'types/vessel'
+import gfwThunk from 'features/vessels/sources/gfw.slice'
+import tmtThunk from 'features/vessels/sources/tmt.slice'
+import { RootState } from 'store'
+import { mergeVesselFromSources } from './vessels.utils'
 
-interface Dictionary<T> {
-  [Key: string]: T
+export type VesselState = AsyncReducer<VesselWithHistory>
+
+const initialState: VesselState = {
+  ...asyncInitialState,
+}
+export interface VesselAPIThunk {
+  fetchById(id: VesselSourceId): Promise<VesselWithHistory>
 }
 
-export type VesselDynamicField = {
-  start: string
-  end: string
-  value: string
-}
-
-export type Vessel = {
-  id: string
-  name: string
-  imo?: string
-  flags?: VesselDynamicField[]
-  lastFlag?: string
-  mmsi?: VesselDynamicField[]
-  lastMMSI?: string
-}
-export type CoordinateProperties = {
-  id: string
-  type: string
-  coordinateProperties: {
-    times: number[]
+const getVesselFromSourceAPI: (source: VesselAPISource) => VesselAPIThunk = (
+  source: VesselAPISource
+) => {
+  const thunks = {
+    [VesselAPISource.GFW]: gfwThunk,
+    [VesselAPISource.TMT]: tmtThunk,
   }
+  return thunks[source]
 }
 
-export type TrackGeometry = FeatureCollection<any, CoordinateProperties>
-
-export interface VesselInfo {
-  id: string
-  shipname?: string
-  callsign: string
-  flag?: string
-  mmsi: string
-  imo?: string
+export type FetchVessel = {
+  source: VesselAPISource
+  sourceId: VesselSourceId
 }
 
-type VesselsSlice = {
-  vessels: Dictionary<VesselInfo>
-  events: Dictionary<any>
-}
+export const fetchVesselByIdThunk = createAsyncThunk(
+  'vessels/fetchById',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const [dataset, gfwId, tmtId] = id.split('_')
+      const vesselsToFetch: FetchVessel[] = [
+        {
+          source: VesselAPISource.GFW,
+          sourceId: {
+            id: gfwId,
+            dataset: dataset,
+          },
+        },
+        {
+          source: VesselAPISource.TMT,
+          sourceId: {
+            id: tmtId,
+          },
+        },
+      ].filter(({ sourceId: { id } }) => id && id.toLowerCase() !== 'na')
+      const vessels = await Promise.all(
+        vesselsToFetch.map(async ({ source, sourceId }) => ({
+          source,
+          vessel: await getVesselFromSourceAPI(source).fetchById(sourceId),
+        }))
+      )
+      return {
+        ...mergeVesselFromSources(vessels),
+        id,
+      }
+    } catch (e) {
+      return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
+    }
+  }
+)
 
-const initialState: VesselsSlice = {
-  vessels: {},
-  events: {},
-}
-
-const slice = createSlice({
+const { slice: vesselsSlice, entityAdapter } = createAsyncSlice<VesselState, VesselWithHistory>({
   name: 'vessels',
   initialState,
-  reducers: {
-    setVesselInfo: (state, action: PayloadAction<{ id: string; data: VesselInfo }>) => {
-      state.vessels[action.payload.id] = action.payload.data
-    },
-
-    setVesselEvents: (state, action: PayloadAction<{ id: string; data: any }>) => {
-      state.events[action.payload.id] = action.payload.data
-    },
+  thunks: {
+    fetchByIdThunk: fetchVesselByIdThunk,
   },
 })
-export const { setVesselEvents, setVesselInfo } = slice.actions
-export default slice.reducer
 
-export const selectVessels = (state: RootState) => state.vessels.vessels
-export const selectEvents = (state: RootState) => state.vessels.events
+export const { selectById, selectIds } = entityAdapter.getSelectors<RootState>(
+  (state) => state.vessels
+)
+
+export const selectVesselById = memoize((id: string) =>
+  createSelector([(state: RootState) => state], (state) => {
+    return selectById(state, id)
+  })
+)
+
+export const selectVessels = (state: RootState) => state.vessels.entities
+export default vesselsSlice.reducer

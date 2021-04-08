@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types/dist'
-import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
+import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
 import {
   selectDataviewInstancesMerged,
@@ -10,43 +9,35 @@ import {
   selectWorkspaceViewport,
 } from 'features/workspace/workspace.selectors'
 import {
-  selectUrlMapZoomQuery,
-  selectUrlMapLatitudeQuery,
-  selectUrlMapLongitudeQuery,
-  selectUrlEndQuery,
-  selectUrlStartQuery,
   selectQueryParam,
+  selectUrlViewport,
+  selectUrlTimeRange,
   selectLocationCategory,
 } from 'routes/routes.selectors'
 import {
   TimebarEvents,
   TimebarGraphs,
   TimebarVisualisations,
+  WorkspaceAnalysis,
   WorkspaceState,
   WorkspaceStateProperty,
 } from 'types'
-import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
-import { formatI18nDate } from 'features/i18n/i18nDate'
 
 export const selectViewport = createSelector(
-  [
-    selectUrlMapZoomQuery,
-    selectUrlMapLatitudeQuery,
-    selectUrlMapLongitudeQuery,
-    selectWorkspaceViewport,
-  ],
-  (zoom, latitude, longitude, workspaceViewport) => {
+  [selectUrlViewport, selectWorkspaceViewport],
+  (urlViewport, workspaceViewport) => {
     return {
-      zoom: zoom || workspaceViewport?.zoom || DEFAULT_WORKSPACE.zoom,
-      latitude: latitude || workspaceViewport?.latitude || DEFAULT_WORKSPACE.latitude,
-      longitude: longitude || workspaceViewport?.longitude || DEFAULT_WORKSPACE.longitude,
+      zoom: urlViewport?.zoom || workspaceViewport?.zoom || DEFAULT_WORKSPACE.zoom,
+      latitude: urlViewport?.latitude || workspaceViewport?.latitude || DEFAULT_WORKSPACE.latitude,
+      longitude:
+        urlViewport?.longitude || workspaceViewport?.longitude || DEFAULT_WORKSPACE.longitude,
     }
   }
 )
 
 export const selectTimeRange = createSelector(
-  [selectUrlStartQuery, selectUrlEndQuery, selectWorkspaceTimeRange],
-  (start, end, workspaceTimerange) => {
+  [selectUrlTimeRange, selectWorkspaceTimeRange],
+  ({ start, end }, workspaceTimerange) => {
     return {
       start: start || workspaceTimerange?.start || DEFAULT_WORKSPACE.start,
       end: end || workspaceTimerange?.end || DEFAULT_WORKSPACE.end,
@@ -62,6 +53,13 @@ export const selectWorkspaceStateProperty = (property: WorkspaceStateProperty) =
       return workspaceState[property] ?? DEFAULT_WORKSPACE[property]
     }
   )
+
+export const selectAnalysisQuery = createSelector(
+  [selectWorkspaceStateProperty('analysis')],
+  (analysis): WorkspaceAnalysis => {
+    return analysis
+  }
+)
 
 export const selectSearchQuery = createSelector(
   [selectWorkspaceStateProperty('query')],
@@ -107,15 +105,14 @@ export const selectTimebarGraph = createSelector(
 
 export const selectWorkspaceAppState = createSelector(
   [
-    selectSearchQuery,
     selectBivariate,
     selectSidebarOpen,
     selectTimebarVisualisation,
     selectTimebarEvents,
     selectTimebarGraph,
   ],
-  (search, bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph) => {
-    return { search, bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph }
+  (bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph) => {
+    return { bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph }
   }
 )
 
@@ -136,23 +133,8 @@ export const selectCustomWorkspace = createSelector(
     state,
     dataviewInstances
   ): WorkspaceUpsert<WorkspaceState> => {
-    const areaName = getOceanAreaName(viewport)
-    const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
-    const start = formatI18nDate(timerange.start as string, {
-      format: dateFormat,
-    })
-      .replace(',', '')
-      .replace('.', '')
-    const end = formatI18nDate(timerange.end as string, {
-      format: dateFormat,
-    })
-      .replace(',', '')
-      .replace('.', '')
-
-    const name = `From ${start} to ${end} near ${areaName}`
     return {
       ...workspace,
-      name,
       app: APP_NAME,
       public: true,
       category,

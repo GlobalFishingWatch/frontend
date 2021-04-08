@@ -13,11 +13,12 @@ import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { AppActions, AppState } from 'types/redux.types'
 import { UpdateQueryParamsAction } from './routes.actions'
-import { getLocationType, selectLocationQuery } from './routes.selectors'
 
 export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
 export const PROFILE = 'PROFILE'
+
+export type ROUTE_TYPES = typeof HOME | typeof PROFILE
 
 const thunk = async (
   dispatch: Dispatch<AppActions | NavigationAction>,
@@ -34,7 +35,7 @@ const routesMap: RoutesMap = {
     thunk,
   },
   [PROFILE]: {
-    path: '/profile/:vesselID',
+    path: '/profile/:dataset/:vesselID/:tmtID',
     thunk,
   },
   [NOT_FOUND]: {

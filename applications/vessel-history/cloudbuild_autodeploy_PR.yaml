@@ -1,102 +1,5 @@
 steps:
-  # Push production image to GCR
-  steps:
-    # Push production image to GCR
-    - name: 'gcr.io/kaniko-project/executor:latest'
-      args:
-        [
-            '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-            '--cache=true',
-            '--build-arg',
-            'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
-            '--build-arg',
-            'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
-            '--build-arg',
-            'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV',
-            '--build-arg',
-            'REACT_APP_LIMITED_ACCESS_USER=$_REACT_APP_LIMITED_ACCESS_USER',
-            '--build-arg',
-            'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
-            '--build-arg',
-            'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
-            '--target',
-            'build',
-            '-f',
-            './applications/vessel-history/Dockerfile',
-            '-c',
-            './applications/vessel-history',
-        ]
-
-    - name: 'gcr.io/cloud-builders/docker'
-      args:
-        [
-            'run',
-            'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-            'npm',
-            'test',
-        ]
-
-    - name: 'gcr.io/kaniko-project/executor:latest'
-      args:
-        [
-            '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-            '--cache=true',
-            '--build-arg',
-            'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
-            '--build-arg',
-            'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
-            '--build-arg',
-            'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV',
-            '--build-arg',
-            'REACT_APP_LIMITED_ACCESS_USER=$_REACT_APP_LIMITED_ACCESS_USER',
-            '--build-arg',
-            'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
-            '--build-arg',
-            'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
-            '--target',
-            'production',
-            '-f',
-            './applications/vessel-history/Dockerfile',
-            '-c',
-            './applications/vessel-history',
-        ]
-
-    # Deploy to the appropriate environment
-    - name: 'gcr.io/cloud-builders/gcloud'
-      args:
-        [
-            'beta',
-            'run',
-            'deploy',
-            '$_RUN_SERVICE_NAME',
-            '--project',
-            '$_RUN_PROJECT',
-            '--image',
-            'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-            '--region',
-            '$_RUN_REGION',
-            '--platform',
-            'managed',
-            '--set-env-vars',
-            'BASIC_AUTH=$_BASIC_AUTH',
-            '--allow-unauthenticated',
-        ]
-
-  images:
-    - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA'
-
-  timeout: 1800s
-
-
-    - name: 'gcr.io/cloud-builders/docker'
-    args:
-      [
-        'run',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-        'npm',
-        'test',
-      ]
-
+  # Push build image to GCR
   - name: 'gcr.io/kaniko-project/executor:latest'
     args:
       [
@@ -104,6 +7,46 @@ steps:
         '--cache=true',
         '--build-arg',
         'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
+        '--build-arg',
+        'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
+        '--build-arg',
+        'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV',
+        '--build-arg',
+        'REACT_APP_LIMITED_ACCESS_USER=$_REACT_APP_LIMITED_ACCESS_USER',
+        '--build-arg',
+        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
+        '--build-arg',
+        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '--target',
+        'build',
+        '-f',
+        './applications/vessel-history/Dockerfile',
+        '-c',
+        './applications/vessel-history',
+      ]
+  # Run tests using build image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'run',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
+        'npm',
+        'test',
+      ]
+  # Build and Push production image to GCR
+  - name: 'gcr.io/kaniko-project/executor:latest'
+    args:
+      [
+        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
+        '--cache=true',
+        '--build-arg',
+        'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
+        '--build-arg',
+        'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
+        '--build-arg',
+        'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV',
+        '--build-arg',
+        'REACT_APP_LIMITED_ACCESS_USER=$_REACT_APP_LIMITED_ACCESS_USER',
         '--build-arg',
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
@@ -118,26 +61,26 @@ steps:
 
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
     args:
-      [
-        'beta',
-        'run',
-        'deploy',
-        'vessel-history-$BRANCH_NAME',
-        '--project',
-        '$_RUN_PROJECT',
-        '--image',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
-        '--region',
-        '$_RUN_REGION',
-        '--platform',
-        'managed',
-        '--set-env-vars',
-        'BASIC_AUTH=$_BASIC_AUTH',
-        '--allow-unauthenticated',
-      ]
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        gcloud beta run deploy \
+        vessel-history-`echo $BRANCH_NAME | sed -r 's,/,-,g' | awk '{print tolower($0)}'` \
+        --project \
+        $_RUN_PROJECT \
+        --image \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA \
+        --region \
+        $_RUN_REGION \
+        --platform managed \
+        --set-env-vars \
+        BASIC_AUTH=$_BASIC_AUTH \
+        --allow-unauthenticated
 
 images:
   - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA'
 
-timeout: 900s
+timeout: 1800s

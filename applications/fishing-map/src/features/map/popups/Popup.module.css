@@ -97,14 +97,16 @@
 .vesselName {
   flex: 1;
   text-align: left;
-  height: 2rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.3;
   margin-right: var(--space-S);
 }
 
 .vesselsMore {
   opacity: var(--opacity-secondary);
+}
+
+.rowContainer {
+  flex: 1;
 }
 
 .row {
@@ -119,12 +121,32 @@
   margin-bottom: var(--space-XS);
 }
 
+.rowColum {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
 .hover .row:last-child {
   margin-bottom: 0;
 }
 
 .click .row:last-child {
   margin-bottom: 0;
+}
+
+.btnLarge {
+  width: 100%;
+}
+
+.centered {
+  display: flex;
+  align-items: center;
+}
+
+.rowTitle {
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
 }
 
 .rowText {
@@ -140,21 +162,19 @@
 :global(.mapboxgl-popup .mapboxgl-popup-content) {
   background: none;
   padding: 0;
+  box-shadow: none;
   border: none;
 }
-
 
 :global(.printing .mapboxgl-popup) {
   display: none !important;
 }
-
 
 @media print {
   :global(.mapboxgl-popup) {
     display: none !important;
   }
 }
-
 
 .hover:global(.mapboxgl-popup .mapboxgl-popup-content) {
   pointer-events: none;
@@ -217,4 +237,3 @@
   display: none;
   pointer-events: none;
 }
-

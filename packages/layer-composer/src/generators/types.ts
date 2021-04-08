@@ -6,6 +6,7 @@ import { Segment } from '@globalfishingwatch/data-transforms'
 export enum Type {
   Background = 'BACKGROUND',
   UserContext = 'USER_CONTEXT',
+  TileCluster = 'TILE_CLUSTER',
   Context = 'CONTEXT',
   Basemap = 'BASEMAP',
   CartoPolygons = 'CARTO_POLYGONS',
@@ -131,6 +132,30 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
   color?: StringUnitLength
 }
 
+export type TileClusterEventType = 'encounter' | 'loitering' | 'port'
+/**
+ * Layers created by user uploading their own shapefile
+ */
+export interface TileClusterGeneratorConfig extends GeneratorConfig {
+  type: Type.TileCluster
+  /**
+   * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
+   */
+  color?: string
+  /**
+   * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
+   */
+  tilesUrl: string
+  /**
+   * List of types supported by the API, optional to allow using resolved url params directly (eg: using resolve-endpoints)
+   */
+  eventTypes?: TileClusterEventType | TileClusterEventType[]
+  /**
+   * List of datasets to retrieve the data from, optional to allow using resolved url params directly (eg: using resolve-endpoints)
+   */
+  dataset?: string
+}
+
 /**
  * Placeholder for a generic set of Mapbox GL layers (consisting of one or more sources and one or mor layers)
  */
@@ -251,6 +276,7 @@ export type AnyGeneratorConfig =
   | CartoPolygonsGeneratorConfig
   | UserContextGeneratorConfig
   | ContextGeneratorConfig
+  | TileClusterGeneratorConfig
   | TrackGeneratorConfig
   | VesselEventsGeneratorConfig
   | RulersGeneratorConfig

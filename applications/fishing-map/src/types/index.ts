@@ -1,5 +1,4 @@
-import { DataviewInstance } from '@globalfishingwatch/api-types'
-import { Generators } from '@globalfishingwatch/layer-composer'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export enum Locale {
   en = 'en',
@@ -7,15 +6,11 @@ export enum Locale {
   fr = 'fr',
 }
 
-export type UrlDataviewInstance = Omit<DataviewInstance<Generators.Type>, 'dataviewId'> & {
-  dataviewId?: number // making this optional as sometimes we just need to reference the id
-  deleted?: boolean // needed when you want to override from url an existing workspace config
-}
-
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 export type WorkspaceTimeRangeParam = 'start' | 'end'
 export type WorkspaceStateProperty =
   | 'query'
+  | 'analysis'
   | 'sidebarOpen'
   | 'dataviewInstances'
   | 'timebarVisualisation'
@@ -30,9 +25,15 @@ export type WorkspaceParam =
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
 export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
+export type WorkspaceAnalysis = {
+  areaId: string
+  sourceId: string
+  bounds?: [number, number, number, number]
+}
 export type WorkspaceState = {
   query?: string
   sidebarOpen?: boolean
+  analysis?: WorkspaceAnalysis
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   timebarVisualisation?: TimebarVisualisations
   timebarEvents?: TimebarEvents
@@ -68,3 +69,6 @@ export enum TimebarGraphs {
   Depth = 'depth',
   None = 'none',
 }
+
+// minX, minY, maxX, maxY
+export type Bbox = [number, number, number, number]

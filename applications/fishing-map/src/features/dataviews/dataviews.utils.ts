@@ -1,4 +1,4 @@
-import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
 import {
   TrackColorBarOptions,
   HeatmapColorBarOptions,
@@ -11,7 +11,11 @@ import {
   DEFAULT_VESSEL_DATAVIEW_ID,
 } from 'data/workspaces'
 
-export const DATAVIEW_INSTANCE_PREFIX = 'vessel-'
+// used in workspaces with encounter events layers
+export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
+export const VESSEL_LAYER_PREFIX = 'vessel-'
+export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
+export const CONTEXT_LAYER_PREFIX = 'context-'
 
 type VesselInstanceDatasets = {
   trackDatasetId: string
@@ -25,18 +29,19 @@ export const getVesselDataviewInstance = (
     {
       datasetId: trackDatasetId,
       params: [{ id: 'vesselId', value: vessel.id }],
-      endpoint: 'carriers-tracks',
+      endpoint: EndpointId.Tracks,
     },
     {
       datasetId: infoDatasetId,
       params: [{ id: 'vesselId', value: vessel.id }],
-      endpoint: 'carriers-vessel',
+      endpoint: EndpointId.Vessel,
     },
   ]
   const vesselDataviewInstance = {
-    id: `${DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
+    id: `${VESSEL_LAYER_PREFIX}${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
+      // TODO pick a not used color
       color: TrackColorBarOptions[Math.floor(Math.random() * TrackColorBarOptions.length)].value,
     },
     datasetsConfig,
@@ -66,8 +71,8 @@ export const getEnvironmentDataviewInstance = (
 ): DataviewInstance<Generators.Type> => {
   const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamp.includes(option.id))
   const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
-  const contextDataviewInstance = {
-    id: `environmental-${Date.now()}`,
+  const environmentalDataviewInstance = {
+    id: `${ENVIRONMENTAL_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Environment,
     config: {
       color: colorOption.value,
@@ -78,11 +83,11 @@ export const getEnvironmentDataviewInstance = (
       {
         datasetId,
         params: [],
-        endpoint: 'user-context-tiles',
+        endpoint: EndpointId.UserContextTiles,
       },
     ],
   }
-  return contextDataviewInstance
+  return environmentalDataviewInstance
 }
 
 export const getContextDataviewInstance = (
@@ -92,7 +97,7 @@ export const getContextDataviewInstance = (
   const notUsedOptions = TrackColorBarOptions.filter((option) => !usedColors.includes(option.value))
   const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
   const contextDataviewInstance = {
-    id: `context-${Date.now()}`,
+    id: `${CONTEXT_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Context,
     config: {
       color: colorOption.value,

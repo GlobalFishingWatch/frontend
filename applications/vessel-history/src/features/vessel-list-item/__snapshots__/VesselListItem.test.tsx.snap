@@ -5,35 +5,39 @@ exports[`<VesselListItem /> does not show source API in production environment 1
   <div
     class="vesselItem"
   >
-    <h3>
-      DON TITO
-    </h3>
+    <a
+      to="profile,mocked-dataset-for-test,9e075a986-6162-fe6e-b25e-81188438a00c,6dd26b05-c055-5b5a-b396-2cc6503fdd4c"
+    >
+      <h3>
+        DON TITO
+      </h3>
+    </a>
     <div
       class="identifiers"
     >
       <div>
         <label>
-          FLAG
+          flag
         </label>
         Chile
       </div>
       <div>
         <label>
-          MMSI
+          mmsi
         </label>
         725000410
       </div>
       <div>
         <label>
-          CALLSIGN
+          callsign
         </label>
         CB5527
       </div>
       <div>
         <label>
-          TRANSMISSIONS
+          transmissions
         </label>
-        from 2012-01-19T14:24:39Z to 2020-12-13T23:51:36Z
+        from Jan 19, 2012 to Dec 13, 2020
       </div>
     </div>
   </div>
@@ -45,41 +49,45 @@ exports[`<VesselListItem /> shows source API in environments others than product
   <div
     class="vesselItem"
   >
-    <h3>
-      DON TITO
-    </h3>
+    <a
+      to="profile,mocked-dataset-for-test,9e075a986-6162-fe6e-b25e-81188438a00c,6dd26b05-c055-5b5a-b396-2cc6503fdd4c"
+    >
+      <h3>
+        DON TITO
+      </h3>
+    </a>
     <div
       class="identifiers"
     >
       <div>
         <label>
-          FLAG
+          flag
         </label>
         Chile
       </div>
       <div>
         <label>
-          MMSI
+          mmsi
         </label>
         725000410
       </div>
       <div>
         <label>
-          CALLSIGN
+          callsign
         </label>
         CB5527
       </div>
       <div>
         <label>
-          SOURCE
+          source
         </label>
         GFW+TMT
       </div>
       <div>
         <label>
-          TRANSMISSIONS
+          transmissions
         </label>
-        from 2012-01-19T14:24:39Z to 2020-12-13T23:51:36Z
+        from Jan 19, 2012 to Dec 13, 2020
       </div>
     </div>
   </div>

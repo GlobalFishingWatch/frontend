@@ -1,5 +1,83 @@
 # @globalfishingwatch/layer-composer
 
+## 4.19.0
+
+### Minor Changes
+
+- f570b76f: support uniqueFeatureInteraction in layer-composer and map interaction hook
+
+## 4.18.1
+
+### Patch Changes
+
+- fix generators type export
+
+## 4.18.0
+
+### Minor Changes
+
+- match latest versions
+
+## 4.17.3
+
+### Patch Changes
+
+- polish tile cluster generator
+
+## 4.17.2
+
+### Patch Changes
+
+- make params optional in tile-cluster
+
+## 4.17.1
+
+### Patch Changes
+
+- tile-cluster fix generatorId and mark interactive
+
+## 4.17.0
+
+### Minor Changes
+
+- ce98aa73: new tile cluster generator
+
+## 4.16.0
+
+### Minor Changes
+
+- [`f7b017f0`](https://github.com/GlobalFishingWatch/frontend/commit/f7b017f0c72bd1f90e6a984ff5c26e524d7d735a) [#360](https://github.com/GlobalFishingWatch/frontend/pull/360) Thanks [@j8seangel](https://github.com/j8seangel)! - set user context layers as interactive
+
+## 4.15.0
+
+### Minor Changes
+
+- expose temporal grid source layer id
+
+## 4.14.5
+
+### Patch Changes
+
+- fix highted areas color
+
+## 4.14.4
+
+### Patch Changes
+
+- fix highlight typo
+
+## 4.14.3
+
+### Patch Changes
+
+- fix feature state context styles
+
+## 4.14.2
+
+### Patch Changes
+
+- highlight style in context areas
+
 ## 4.14.1
 
 ### Patch Changes

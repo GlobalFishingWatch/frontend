@@ -1,8 +1,9 @@
 import { createSelector } from 'reselect'
 import memoize from 'lodash/memoize'
 import { Query, RouteObject } from 'redux-first-router'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store'
-import { WorkspaceParam, UrlDataviewInstance } from 'types'
+import { WorkspaceParam } from 'types'
 import { DEFAULT_VERSION } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
 import { HOME, ROUTE_TYPES, WORKSPACE } from './routes'
@@ -62,6 +63,22 @@ export const selectUrlEndQuery = selectQueryParam<string>('end')
 export const selectUrlDataviewInstances = selectQueryParam<UrlDataviewInstance[]>(
   'dataviewInstances'
 )
+
+export const selectUrlViewport = createSelector(
+  [selectUrlMapZoomQuery, selectUrlMapLatitudeQuery, selectUrlMapLongitudeQuery],
+  (zoom, latitude, longitude) => {
+    if (!zoom && !latitude && !longitude) return
+    return { zoom, latitude, longitude }
+  }
+)
+
+export const selectUrlTimeRange = createSelector(
+  [selectUrlStartQuery, selectUrlEndQuery],
+  (start, end) => {
+    return { start, end }
+  }
+)
+
 export const selectUrlDataviewInstancesById = memoize((id: string) =>
   createSelector([selectUrlDataviewInstances], (urlDataviewInstances) =>
     urlDataviewInstances?.find((dataviewInstance) => dataviewInstance.id === id)

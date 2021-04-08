@@ -5,8 +5,23 @@ import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
-type FeatureStates = 'click' | 'hover'
-type FeatureStateSource = { source: string; sourceLayer: string; state: FeatureStates }
+type FeatureStates = 'click' | 'hover' | 'highlight'
+type FeatureStateSource = { source: string; sourceLayer: string; id: string; state?: FeatureStates }
+
+export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
+  const uniqueLayerIdFeatures: Record<string, boolean> = {}
+  const filtered = features?.filter(({ layerId, uniqueFeatureInteraction }) => {
+    if (!uniqueFeatureInteraction) {
+      return true
+    }
+    if (uniqueLayerIdFeatures[layerId] === undefined) {
+      uniqueLayerIdFeatures[layerId] = true
+      return true
+    }
+    return false
+  })
+  return filtered
+}
 
 const getExtendedFeatures = (
   features: MapboxGeoJSONFeature[],
@@ -22,13 +37,16 @@ const getExtendedFeatures = (
     const generatorType = feature.layer.metadata?.generatorType ?? null
     const generatorId = feature.layer.metadata?.generatorId ?? null
     const unit = feature.layer?.metadata?.legend?.unit ?? null
+    const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
     const properties = feature.properties || {}
     const extendedFeature: ExtendedFeature | null = {
       properties,
       generatorType,
       generatorId,
+      layerId: feature.layer.id,
       source: feature.source,
       sourceLayer: feature.sourceLayer,
+      uniqueFeatureInteraction,
       id: (feature.id as number) || feature.properties?.gfw_id || undefined,
       value: properties.value || properties.name || properties.id,
       unit,
@@ -69,7 +87,9 @@ const getExtendedFeatures = (
       case Generators.Type.Context:
         return {
           ...extendedFeature,
+          gfwId: feature.properties?.gfw_id,
           generatorContextLayer: feature.layer.metadata?.layer,
+          geometry: feature.geometry,
         }
       default:
         return extendedFeature
@@ -96,30 +116,28 @@ export const useFeatureState = (map?: Map) => {
   )
 
   const updateFeatureState = useCallback(
-    (extendedFeatures: ExtendedFeature[], state: FeatureStates = 'hover') => {
-      const newSourcesWithClickState: FeatureStateSource[] = extendedFeatures.flatMap(
-        (feature: ExtendedFeature) => {
-          if (!map || feature.id === undefined) {
-            return []
-          }
-          map.setFeatureState(
-            {
-              source: feature.source,
-              sourceLayer: feature.sourceLayer,
-              id: feature.id,
-            },
-            { [state]: true }
-          )
-
-          // Add source to active feature states
-          return {
-            state,
-            id: feature.id,
+    (extendedFeatures: FeatureStateSource[], state: FeatureStates = 'hover') => {
+      const newSourcesWithClickState: FeatureStateSource[] = extendedFeatures.flatMap((feature) => {
+        if (!map || feature.id === undefined) {
+          return []
+        }
+        map.setFeatureState(
+          {
             source: feature.source,
             sourceLayer: feature.sourceLayer,
-          }
+            id: feature.id,
+          },
+          { [state]: true }
+        )
+
+        // Add source to active feature states
+        return {
+          state,
+          id: feature.id,
+          source: feature.source,
+          sourceLayer: feature.sourceLayer,
         }
-      )
+      })
       const previousSources = sourcesWithFeatureState.filter((source) => source.state !== state)
       sourcesWithFeatureState = [...previousSources, ...newSourcesWithClickState]
     },
@@ -146,17 +164,19 @@ export const useMapClick = (
       const interactionEvent: InteractionEvent = {
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
+        point: event.point,
       }
       if (event.features?.length) {
-        console.log(event.features)
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
           event.features,
           metadata,
           true
         )
-        if (extendedFeatures.length) {
-          interactionEvent.features = extendedFeatures
-          updateFeatureState(extendedFeatures, 'click')
+        const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
+
+        if (extendedFeaturesLimit.length) {
+          interactionEvent.features = extendedFeaturesLimit
+          updateFeatureState(extendedFeaturesLimit, 'click')
         }
       }
       clickCallback(interactionEvent)
@@ -168,7 +188,7 @@ export const useMapClick = (
 }
 
 type MapHoverConfig = {
-  debounced: number
+  debounced?: number
 }
 export const useMapHover = (
   hoverCallbackImmediate?: InteractionEventCallback,
@@ -195,17 +215,19 @@ export const useMapHover = (
       // Turn all sources with active feature states off
       cleanFeatureState()
       const hoverEvent: InteractionEvent = {
+        point: event.point,
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
       }
       if (event.features?.length) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
+        const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 
-        if (extendedFeatures.length) {
-          hoverEvent.features = extendedFeatures
+        if (extendedFeaturesLimit.length) {
+          hoverEvent.features = extendedFeaturesLimit
         }
 
-        updateFeatureState(extendedFeatures, 'hover')
+        updateFeatureState(extendedFeaturesLimit, 'hover')
       }
 
       if (hoverCallbackDebounced?.current) {

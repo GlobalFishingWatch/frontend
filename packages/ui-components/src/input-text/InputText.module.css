@@ -23,6 +23,13 @@
   height: var(--size-S);
 }
 
+.spinner {
+  position: absolute;
+  bottom: 0;
+  right: var(--space-XS);
+  height: var(--size-S);
+}
+
 .icon {
   position: absolute;
   bottom: 0;

@@ -259,7 +259,7 @@ const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interv
 export const frameToDate = (frame: number, quantizeOffset: number, interval: Interval) => {
   const offsetedFrame = frame + quantizeOffset
   const config = CONFIG_BY_INTERVAL[interval]
-  return config.getDate(offsetedFrame)
+  return config.getDate(offsetedFrame) as Date
 }
 
 export const quantizeOffsetToDate = (quantizeOffset: number, interval: Interval) => {

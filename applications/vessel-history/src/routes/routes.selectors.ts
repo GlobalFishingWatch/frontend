@@ -1,9 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { RouteObject } from 'redux-first-router'
+import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
 import { AppState } from 'types/redux.types'
+import { ROUTE_TYPES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
+export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
+  const routeMap = routesMap[type] as RouteObject
+  return { type: type as ROUTE_TYPES, ...routeMap }
+})
 
 export const DEFAULT_WORKSPACE: AppState = {
   //workspaceDataviews: DEFAULT_DATAVIEWS,
@@ -27,10 +34,23 @@ export const getLocationType = createSelector([selectLocation], (location) => {
 export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)
 
 export const selectVesselId = createSelector([selectLocationPayload], (payload) => {
-  return payload.vesselID
+  return payload.vesselID !== 'NA' ? payload.vesselID : null
 })
 
-export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
+export const selectTmtId = createSelector([selectLocationPayload], (payload) => {
+  return payload.tmtID !== 'NA' ? payload.tmtID : null
+})
+
+export const selectDataset = createSelector([selectLocationPayload], (payload) => {
+  return payload.dataset
+})
+
+export const selectVesselProfileId = createSelector(
+  [selectDataset, selectVesselId, selectTmtId],
+  formatVesselProfileId
+)
+
+export const selectQueryParam = (param: WorkspaceParam) =>
   createSelector([selectLocationQuery], (query: any) => {
     if (query === undefined || query[param] === undefined) {
       return DEFAULT_WORKSPACE[param]

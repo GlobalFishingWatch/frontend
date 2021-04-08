@@ -16,6 +16,8 @@ import WorkspacesList from 'features/workspaces-list/WorkspacesList'
 import NewDataset from 'features/datasets/NewDataset'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
+import Analysis from 'features/analysis/Analysis'
+import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -26,6 +28,7 @@ type SidebarProps = {
 
 function Sidebar({ onMenuClick }: SidebarProps) {
   const { t } = useTranslation()
+  const isAnalyzing = useSelector(selectIsAnalyzing)
   const searchQuery = useSelector(selectSearchQuery)
   const locationType = useSelector(selectLocationType)
   const guestUser = useSelector(isGuestUser)
@@ -88,6 +91,11 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   if (searchQuery !== undefined) {
     return <Search />
   }
+
+  if (isAnalyzing) {
+    return <Analysis />
+  }
+
   return (
     <Suspense fallback={null}>
       <div className={styles.container}>

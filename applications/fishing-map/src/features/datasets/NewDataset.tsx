@@ -64,7 +64,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
   const { metadata, fileData, className = '', datasetCategory, onDatasetFieldChange } = props
   const { t } = useTranslation()
   const geojsonProperties = extractPropertiesFromGeojson(fileData)
-  const colorByOptions = geojsonProperties.map((property) => ({
+  const geojsonPropertiesOptions = geojsonProperties.map((property) => ({
     id: property,
     label: capitalize(property),
   }))
@@ -99,18 +99,6 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
         direction="top"
       />
       <Select
-        label={t('dataset.featuresNameField', 'Features name field')}
-        options={[]}
-        selectedOption={undefined}
-        onSelect={(selected) => {
-          console.log('selected', selected)
-        }}
-        onRemove={(removed) => {
-          console.log('removed', removed)
-        }}
-        direction="top"
-      />
-      <Select
         label={t('dataset.timeField', 'Time field')}
         options={[]}
         selectedOption={undefined}
@@ -122,6 +110,22 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
         }}
         direction="top"
       /> */}
+
+      {datasetCategory === DatasetCategory.Context && (
+        <Select
+          label={t('dataset.featuresNameField', 'Features name field')}
+          options={geojsonPropertiesOptions}
+          selectedOption={geojsonPropertiesOptions.find(
+            ({ id }) => id === metadata.configuration?.propertyToInclude
+          )}
+          onSelect={(selected) => {
+            onDatasetFieldChange({ propertyToInclude: selected.id })
+          }}
+          onRemove={() => {
+            onDatasetFieldChange({ propertyToInclude: undefined })
+          }}
+        />
+      )}
       {datasetCategory === DatasetCategory.Environment && (
         <div className={styles.row}>
           <label className={styles.selectLabel}>
@@ -130,8 +134,8 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           <Select
             className={styles.selectShort}
             containerClassName={styles.selectContainer}
-            options={colorByOptions}
-            selectedOption={colorByOptions.find(
+            options={geojsonPropertiesOptions}
+            selectedOption={geojsonPropertiesOptions.find(
               ({ id }) => id === metadata.configuration?.propertyToInclude
             )}
             onSelect={(selected) => {
@@ -150,7 +154,6 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
             onRemove={() => {
               onDatasetFieldChange({ propertyToInclude: undefined })
             }}
-            direction="top"
           />
           <InputText
             inputSize="small"
@@ -206,7 +209,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' 
     [onFileLoaded]
   )
   const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
-    accept: '.zip, .json',
+    accept: '.zip, .json, .geojson',
     onDropAccepted,
   })
   return (
@@ -230,7 +233,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' 
       )}
       {fileRejections.length > 0 && (
         <p className={cx(styles.fileText, styles.warning)}>
-          {t('dataset.fileNotAllowed', '(Only .zip or geo.json files are allowed)')}
+          {t('dataset.fileNotAllowed', '(Only .zip or .json files are allowed)')}
         </p>
       )}
     </div>
@@ -261,9 +264,23 @@ function NewDataset(): React.ReactElement {
     async (file: File) => {
       setLoading(true)
       setError('')
-      setFile(file)
-      const isZip = file.type === 'application/zip'
-      const isGeojson = !isZip && file.type === 'application/json'
+      const isZip =
+        file.type === 'application/zip' ||
+        file.type === 'application/x-zip-compressed' ||
+        file.type === 'application/octet-stream' ||
+        file.type === 'multipart/x-zip'
+      const isGeojson =
+        (!isZip && file.type === 'application/json') || (!isZip && file.name.includes('.geojson'))
+      const name =
+        file.name.lastIndexOf('.') > 0 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name
+      if (isGeojson && file.name.includes('.geojson')) {
+        const blob = file.slice(0, file.size, 'application/json')
+        const fileAsJson = new File([blob], `${name}.json`, { type: 'application/json' })
+        setFile(fileAsJson)
+      } else {
+        setFile(file)
+      }
+
       let geojson: FeatureCollectionWithFilename | undefined = undefined
       if (isZip) {
         try {
@@ -282,8 +299,6 @@ function NewDataset(): React.ReactElement {
           console.warn('Error reading file:', e)
         }
       }
-      const name =
-        file.name.lastIndexOf('.') > 0 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name
       if (geojson !== undefined) {
         setFileData(geojson)
         setMetadata((metadata) => ({
@@ -360,7 +375,7 @@ function NewDataset(): React.ReactElement {
     <Modal
       title={
         datasetCategory === DatasetCategory.Context
-          ? t('dataset.uploadNewContex', 'Upload new context areas')
+          ? t('dataset.uploadNewContext', 'Upload new context areas')
           : t('dataset.uploadNewEnviroment', 'Upload new environment dataset')
       }
       isOpen={datasetModal === 'new'}

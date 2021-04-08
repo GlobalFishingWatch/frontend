@@ -1,4 +1,7 @@
 import { render } from '@testing-library/react'
+import React from 'react'
+import { I18nextProvider } from 'react-i18next'
+import i18n from 'features/i18n/__mocks__/i18n'
 import { Vessel } from 'types'
 import VesselListItem from './VesselListItem'
 
@@ -23,7 +26,7 @@ describe('<VesselListItem />', () => {
     otherShipnames: [],
     shipname: 'DON TITO',
     source: 'AIS',
-    dataset: 'public-global-vessels:v20190502',
+    dataset: 'mocked-dataset-for-test',
     vesselMatchId: '6dd26b05-c055-5b5a-b396-2cc6503fdd4c',
   }
 
@@ -33,17 +36,25 @@ describe('<VesselListItem />', () => {
 
   it('shows source API in environments others than production', () => {
     mockShowSourceAPI.mockReturnValueOnce(true)
-    const component = render(<VesselListItem vessel={vessel} />)
-    expect(component.getAllByText('SOURCE').length).toBe(1)
+    const component = render(
+      <I18nextProvider i18n={i18n}>
+        <VesselListItem vessel={vessel} />
+      </I18nextProvider>
+    )
+    expect(component.getAllByText('source').length).toBe(1)
     expect(component.getAllByText('GFW+TMT').length).toBe(1)
     expect(component.asFragment()).toMatchSnapshot()
   })
 
   it('does not show source API in production environment', () => {
     mockShowSourceAPI.mockReturnValueOnce(false)
-    const component = render(<VesselListItem vessel={vessel} />)
-    expect(() => component.getAllByText('SOURCE')).toThrow(
-      'Unable to find an element with the text: SOURCE.'
+    const component = render(
+      <I18nextProvider i18n={i18n}>
+        <VesselListItem vessel={vessel} />
+      </I18nextProvider>
+    )
+    expect(() => component.getAllByText('source')).toThrow(
+      'Unable to find an element with the text: source.'
     )
     expect(component.asFragment()).toMatchSnapshot()
   })

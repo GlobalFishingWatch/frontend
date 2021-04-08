@@ -1,5 +1,148 @@
 # @globalfishingwatch/ui-components
 
+## 2.17.0
+
+### Minor Changes
+
+- 9af9dea7: include generatorId and Type in legendLayers
+
+## 2.16.2
+
+### Patch Changes
+
+- Updated dependencies [f570b76f]
+  - @globalfishingwatch/layer-composer@4.19.0
+
+## 2.16.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.18.1
+
+## 2.16.0
+
+### Minor Changes
+
+- f164fc6d: Support mouseEnter and mouseLeave in IconButton
+
+## 2.15.2
+
+### Patch Changes
+
+- update dependencies
+
+## 2.15.0
+
+### Minor Changes
+
+- match latest versions
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.18.0
+
+## 2.14.9
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.3
+
+## 2.14.8
+
+### Patch Changes
+
+- fix disabled button
+
+## 2.14.7
+
+### Patch Changes
+
+- support disabled button as link
+
+## 2.14.6
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.2
+
+## 2.14.5
+
+### Patch Changes
+
+- support target blank for button link
+
+## 2.14.4
+
+### Patch Changes
+
+- add pin icon
+
+## 2.14.3
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.1
+
+## 2.14.2
+
+### Patch Changes
+
+- Updated dependencies [ce98aa73]
+  - @globalfishingwatch/layer-composer@4.17.0
+- [`1eb0a62f`](https://github.com/GlobalFishingWatch/frontend/commit/1eb0a62f65f350f87d9047f8fc9c635d04f55f08) [#373](https://github.com/GlobalFishingWatch/frontend/pull/373) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - update choice component
+
+## 2.14.1
+
+### Patch Changes
+
+- Updated dependencies [[`f7b017f0`](https://github.com/GlobalFishingWatch/frontend/commit/f7b017f0c72bd1f90e6a984ff5c26e524d7d735a)]:
+  - @globalfishingwatch/layer-composer@4.16.0
+
+## 2.14.0
+
+### Minor Changes
+
+- [`a607f131`](https://github.com/GlobalFishingWatch/frontend/commit/a607f13101520a9c1571a36cb8198b7af04d10ea) [#358](https://github.com/GlobalFishingWatch/frontend/pull/358) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - UI components / add choice component
+
+## 2.13.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.15.0
+
+## 2.13.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.5
+
+## 2.13.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.4
+
+## 2.13.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.3
+
+## 2.13.3
+
+### Patch Changes
+
+- [`4e8ee291`](https://github.com/GlobalFishingWatch/frontend/commit/4e8ee29171eed49ce43bfd0607128da4888846df) [#340](https://github.com/GlobalFishingWatch/frontend/pull/340) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - new save icon
+
 ## 2.13.2
 
 ### Patch Changes

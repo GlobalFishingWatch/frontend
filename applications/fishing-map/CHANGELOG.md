@@ -1,5 +1,299 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.28.9
+
+### Patch Changes
+
+- Updated dependencies [9af9dea7]
+  - @globalfishingwatch/react-hooks@5.3.0
+  - @globalfishingwatch/ui-components@2.17.0
+
+## 0.28.8
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/timebar@1.4.0
+
+## 0.28.7
+
+### Patch Changes
+
+- Updated dependencies [f570b76f]
+  - @globalfishingwatch/react-hooks@5.2.0
+  - @globalfishingwatch/layer-composer@4.19.0
+  - @globalfishingwatch/ui-components@2.16.2
+
+## 0.28.6
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@5.0.1
+  - @globalfishingwatch/layer-composer@4.18.1
+  - @globalfishingwatch/react-hooks@5.1.1
+  - @globalfishingwatch/ui-components@2.16.1
+
+## 0.28.5
+
+### Patch Changes
+
+- 6badcfe5: Update use-legends hook to match fishing-map latest changes
+- f164fc6d: Support mouseEnter and mouseLeave in IconButton
+- Updated dependencies [6badcfe5]
+- Updated dependencies [f164fc6d]
+- Updated dependencies [df1cb0cc]
+  - @globalfishingwatch/react-hooks@5.1.0
+  - @globalfishingwatch/ui-components@2.16.0
+  - @globalfishingwatch/api-types@3.1.0
+
+## 0.28.4
+
+### Patch Changes
+
+- Updated dependencies [d2501b54]
+  - @globalfishingwatch/api-types@3.0.0
+  - @globalfishingwatch/dataviews-client@5.0.0
+  - @globalfishingwatch/react-hooks@5.0.0
+  - @globalfishingwatch/api-client@1.6.8
+
+## 0.28.3
+
+### Patch Changes
+
+- Updated dependencies [328e7234]
+  - @globalfishingwatch/api-types@2.17.0
+
+## 0.28.2
+
+### Patch Changes
+
+- Updated dependencies [d6bc4dc6]
+  - @globalfishingwatch/api-types@2.16.0
+
+## 0.28.1
+
+### Patch Changes
+
+- update dependencies
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.15.2
+
+## 0.28.0
+
+### Minor Changes
+
+- match latest versions
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.15.0
+  - @globalfishingwatch/dataviews-client@4.1.0
+  - @globalfishingwatch/layer-composer@4.18.0
+  - @globalfishingwatch/react-hooks@4.11.0
+  - @globalfishingwatch/ui-components@2.15.0
+
+## 0.27.20
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.3
+  - @globalfishingwatch/react-hooks@4.10.1
+  - @globalfishingwatch/ui-components@2.14.9
+
+## 0.27.19
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.14.8
+
+## 0.27.18
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.14.7
+
+## 0.27.17
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/react-hooks@4.10.0
+
+## 0.27.16
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.14.2
+
+## 0.27.15
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@4.0.4
+
+## 0.27.14
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.2
+  - @globalfishingwatch/react-hooks@4.9.6
+  - @globalfishingwatch/ui-components@2.14.6
+
+## 0.27.13
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.14.5
+
+## 0.27.12
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.14.1
+
+## 0.27.11
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.14.4
+
+## 0.27.10
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@2.14.0
+
+## 0.27.9
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.1
+  - @globalfishingwatch/react-hooks@4.9.5
+  - @globalfishingwatch/ui-components@2.14.3
+- Updated dependencies [[`d99bf5f3`](https://github.com/GlobalFishingWatch/frontend/commit/d99bf5f30bceed021ac990a0de8b4e992189be73)]:
+  - @globalfishingwatch/api-types@2.13.0
+  - @globalfishingwatch/react-hooks@4.10.0
+- [`1eb0a62f`](https://github.com/GlobalFishingWatch/frontend/commit/1eb0a62f65f350f87d9047f8fc9c635d04f55f08) [#373](https://github.com/GlobalFishingWatch/frontend/pull/373) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - update choice component
+
+- Updated dependencies [[`1eb0a62f`](https://github.com/GlobalFishingWatch/frontend/commit/1eb0a62f65f350f87d9047f8fc9c635d04f55f08)]:
+  - @globalfishingwatch/ui-components@2.15.0
+
+## 0.27.8
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/api-types@2.12.1
+- Updated dependencies [ce98aa73]
+- Updated dependencies [f9b53836]
+  - @globalfishingwatch/layer-composer@4.17.0
+  - @globalfishingwatch/api-types@2.13.0
+  - @globalfishingwatch/react-hooks@4.9.4
+  - @globalfishingwatch/ui-components@2.14.2
+
+## 0.27.7
+
+### Patch Changes
+
+- Updated dependencies [[`55796c7a`](https://github.com/GlobalFishingWatch/frontend/commit/55796c7a0a0b9972d3b7f8631566091dd0b74809), [`f7b017f0`](https://github.com/GlobalFishingWatch/frontend/commit/f7b017f0c72bd1f90e6a984ff5c26e524d7d735a)]:
+  - @globalfishingwatch/fourwings-aggregate@1.2.1
+  - @globalfishingwatch/layer-composer@4.16.0
+  - @globalfishingwatch/react-hooks@4.9.3
+  - @globalfishingwatch/ui-components@2.14.1
+
+## 0.27.6
+
+### Patch Changes
+
+- Updated dependencies [[`a607f131`](https://github.com/GlobalFishingWatch/frontend/commit/a607f13101520a9c1571a36cb8198b7af04d10ea)]:
+  - @globalfishingwatch/ocean-areas@0.1.2
+  - @globalfishingwatch/ui-components@2.14.0
+
+## 0.27.5
+
+### Patch Changes
+
+- fix useTilesLoading
+
+- Updated dependencies []:
+  - @globalfishingwatch/react-hooks@4.9.2
+
+## 0.27.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.15.0
+  - @globalfishingwatch/react-hooks@4.9.1
+  - @globalfishingwatch/ui-components@2.13.7
+
+## 0.27.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.5
+  - @globalfishingwatch/react-hooks@4.8.3
+  - @globalfishingwatch/ui-components@2.13.6
+
+## 0.27.2
+
+### Patch Changes
+
+- fix highlight typo
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.4
+  - @globalfishingwatch/react-hooks@4.8.2
+  - @globalfishingwatch/ui-components@2.13.5
+
+## 0.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @globalfishingwatch/layer-composer@4.14.3
+  - @globalfishingwatch/react-hooks@4.8.1
+  - @globalfishingwatch/ui-components@2.13.4
+
+## 0.27.0
+
+### Minor Changes
+
+- support highlighted feature states
+
+### Patch Changes
+
+- Updated dependencies [[`729322ab`](https://github.com/GlobalFishingWatch/frontend/commit/729322ab540c4ad807cb3bba1c2b344eb265ed89)]:
+  - @globalfishingwatch/layer-composer@4.14.2
+  - @globalfishingwatch/react-hooks@4.8.0
+  - @globalfishingwatch/fourwings-aggregate@1.2.0
+
+## 0.26.0
+
+### Minor Changes
+
+- [`c33e3caa`](https://github.com/GlobalFishingWatch/frontend/commit/c33e3caa4d0efbea3d0ce9ab49af6dc7491b282a) [#343](https://github.com/GlobalFishingWatch/frontend/pull/343) Thanks [@rdgfuentes](https://github.com/rdgfuentes)! - send clicked point in extended feature
+
+### Patch Changes
+
+- Updated dependencies [[`c33e3caa`](https://github.com/GlobalFishingWatch/frontend/commit/c33e3caa4d0efbea3d0ce9ab49af6dc7491b282a), [`c33e3caa`](https://github.com/GlobalFishingWatch/frontend/commit/c33e3caa4d0efbea3d0ce9ab49af6dc7491b282a)]:
+  - @globalfishingwatch/react-hooks@4.7.0
+  - @globalfishingwatch/api-types@2.12.0
+
 ## 0.25.6
 
 ### Patch Changes

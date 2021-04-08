@@ -13,12 +13,15 @@ function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
+  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const searchAllowed = useSelector(isSearchAllowed)
+
   const onSearchClick = useCallback(() => {
     dispatchQueryParams({ query: '' })
   }, [dispatchQueryParams])
+
   return (
-    <div className={cx(styles.container, { 'print-hidden': !dataviews?.length })}>
+    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.vessel_plural', 'Vessels')}</h2>
         <IconButton
