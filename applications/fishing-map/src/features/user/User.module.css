@@ -74,3 +74,18 @@
 .textSpaced {
   padding: var(--space-XS) 0;
 }
+
+.workspaceTemplatesList {
+  padding: var(--space-S);
+  padding-right: 0;
+}
+
+.workspaceTemplate {
+  cursor: pointer;
+  padding: var(--space-XS);
+  padding-right: var(--space-M);
+}
+
+.workspaceTemplate:not(:last-of-type) {
+  border-bottom: var(--border);
+}

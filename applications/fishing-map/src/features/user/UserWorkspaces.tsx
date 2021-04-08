@@ -1,11 +1,12 @@
+import React, { useCallback, useState } from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import { useCallback } from 'react'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { Workspace } from '@globalfishingwatch/api-types/dist'
+import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
 import {
@@ -16,14 +17,19 @@ import {
 } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport from 'features/map/map-viewport.hooks'
+import { selectWorkspacesByUserGroup } from 'features/workspaces-list/workspaces-list.selectors'
 import styles from './User.module.css'
-import { selectUserWorkspaces } from './user.selectors'
+import { selectUserGroups, selectUserWorkspaces } from './user.selectors'
 
 function UserWorkspaces() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const [workspaceTemplatesOpen, setWorkspaceTemplatesOpen] = useState(false)
+  const [workspaceTemplates, setWorkspaceTemplates] = useState<string[] | undefined>()
   const { setMapCoordinates } = useViewport()
   const workspaces = useSelector(selectUserWorkspaces)
+  const userGroups = useSelector(selectUserGroups)
+  const workspacesByUserGroup = useSelector(selectWorkspacesByUserGroup)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
   const workspacesStatusId = useSelector(selectWorkspaceListStatusId)
 
@@ -40,6 +46,23 @@ function UserWorkspaces() {
     },
     [dispatch, t]
   )
+
+  const onNewWorkspaceClick = useCallback(() => {
+    const groupsWithTemplates = userGroups?.filter(
+      (group) => workspacesByUserGroup[group] !== undefined
+    )
+    if (!groupsWithTemplates) {
+      console.warn('Missing template for user groups', userGroups)
+      return
+    }
+    if (groupsWithTemplates.length === 1) {
+      console.log('do default')
+    } else {
+      console.log('prompt to select')
+      setWorkspaceTemplates(groupsWithTemplates)
+      setWorkspaceTemplatesOpen(true)
+    }
+  }, [userGroups, workspacesByUserGroup])
 
   const onWorkspaceClick = useCallback(
     (workspace: Workspace) => {
@@ -64,14 +87,33 @@ function UserWorkspaces() {
     },
     [dispatch, t]
   )
-
+  console.log(workspaceTemplates)
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
         <label>{t('workspace.title_plural', 'Workspaces')}</label>
-        <Button disabled={loading} type="secondary" tooltip="Coming soon">
-          {t('workspace.new', 'New Workspace') as string}
-        </Button>
+        <TooltipContainer
+          visible={workspaceTemplatesOpen}
+          onClickOutside={() => {
+            setWorkspaceTemplatesOpen(false)
+          }}
+          component={
+            <ul className={styles.workspaceTemplatesList}>
+              {workspaceTemplates?.map((template) => (
+                <li key={template} className={styles.workspaceTemplate}>
+                  {template}
+                </li>
+              ))}
+            </ul>
+          }
+        >
+          {/* Div needed because of https://github.com/atomiks/tippyjs-react#component-children */}
+          <div>
+            <Button disabled={loading} type="secondary" onClick={onNewWorkspaceClick}>
+              {t('workspace.new', 'New Workspace') as string}
+            </Button>
+          </div>
+        </TooltipContainer>
       </div>
       {loading ? (
         <div className={styles.placeholder}>

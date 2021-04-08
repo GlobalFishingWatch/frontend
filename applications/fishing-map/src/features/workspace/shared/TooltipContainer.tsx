@@ -5,7 +5,7 @@ import styles from './TooltipContainer.module.css'
 interface TooltipContainerProps {
   visible: boolean
   children: React.ReactElement
-  component: React.ReactElement
+  component: React.ReactElement | null
   onClickOutside: () => void
 }
 

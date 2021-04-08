@@ -78,3 +78,15 @@ export const selectCurrentWorkspacesList = createSelector(
     return locationType === USER ? userWorkspaces : highlightedWorkspaces
   }
 )
+
+export const selectWorkspacesByUserGroup = createSelector(
+  [selectHighlightedWorkspaces],
+  (workspaces) => {
+    if (!workspaces) return
+    const groups = Object.values(workspaces)
+      .flatMap((w) => w)
+      ?.filter(({ userGroup }) => userGroup !== undefined)
+      .map(({ id, userGroup }) => [userGroup, id])
+    return Object.fromEntries(groups)
+  }
+)

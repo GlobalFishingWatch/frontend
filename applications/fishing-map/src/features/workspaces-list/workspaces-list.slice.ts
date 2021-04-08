@@ -46,6 +46,7 @@ export type HighlightedWorkspace = {
   description: string
   img?: string
   cta?: string
+  userGroup?: string
 }
 
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
