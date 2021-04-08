@@ -61,8 +61,10 @@ function HeatmapsSection(): React.ReactElement {
     )
   }
 
+  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+
   return (
-    <div className={styles.container}>
+    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
         <div className={cx('print-hidden', styles.sectionButtons)}>

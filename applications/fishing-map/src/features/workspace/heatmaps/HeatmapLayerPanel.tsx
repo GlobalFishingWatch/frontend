@@ -84,6 +84,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
       className={cx(styles.LayerPanel, {
         [styles.expandedContainerOpen]: filterOpen,
         [styles.noBorder]: bivariate,
+        'print-hidden': !layerActive,
       })}
     >
       <div className={styles.header}>

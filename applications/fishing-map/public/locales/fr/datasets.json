@@ -115,11 +115,11 @@
     "name": "Concentration des chlorophylles",
     "description": "Le chlorophyll-a est le pigment qui récolte la lumière dans toutes les plantes photosynthétiques. Sa concentration dans l'océan est utilisée comme indice de biomasse de phytoplancton et, à ce titre, est un élément clé des modèles primaires de productivité. L'instrument d'imagerie modérée Spectroradiomètre (MODIS) à bord des satellites Terra de la NASA et Aqua mesure la couleur de l'océan chaque jour, à partir de laquelle sont dérivées les concentrations mondiales de chlorophylle. Océan phytoplancton fixe chimiquement le carbone par la photosynthèse, en prenant du dioxyde de carbone dissous et en produisant de l'oxygène. Grâce à ce processus, les plantes marines captent une quantité de carbone égale à celle de la photosynthèse par végétation terrestre. Les changements dans la quantité de phytoplancton indiquent l'évolution de la productivité des océans et constituent un maillon clé de la surveillance mondiale du changement climatique. Les scientifiques utilisent le chlorophylle pour modéliser les cycles biogéochimiques de la Terre tels que le cycle du carbone ou le cycle de l'azote. De plus, sur de courtes échelles de temps, le chlorophyll peut être utilisé pour tracer les courants océanographiques, les jets et les plumes. La résolution de 1 km et la couverture mondiale quasi quotidienne des données MODIS permettent ainsi aux scientifiques d'observer les caractéristiques océanographiques méso-échelle dans les environnements côtiers et estuarins, qui sont de plus en plus importants dans les études des sciences marines."
   },
-  "fd-sar-caribe-match-2019-v2": {
+  "dgg_sar_caribe_match_2019": {
     "name": "Match SAR 2019",
     "description": "TBD"
   },
-  "fd-sar-caribe-not-match-2019-v2": {
+  "dgg_sar_caribe_not_match_2019": {
     "name": "SAR ne correspond pas à 2019",
     "description": "TBD"
   },

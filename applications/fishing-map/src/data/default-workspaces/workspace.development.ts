@@ -15,8 +15,8 @@ const workspace: Workspace<WorkspaceState> = {
   app: APP_NAME,
   name: 'Default public Fishing Map workspace',
   description: '',
-  startAt: new Date(2018, 0).toISOString(),
   category: WorkspaceCategories.FishingActivity,
+  startAt: new Date(Date.UTC(2018, 0, 1)).toISOString(),
   endAt: DEFAULT_WORKSPACE.end,
   viewport: {
     zoom: 0,

@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.19.1
+
+### Patch Changes
+
+- bug fixes
+
 ## 4.19.0
 
 ### Minor Changes
