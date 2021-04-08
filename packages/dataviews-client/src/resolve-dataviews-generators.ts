@@ -238,8 +238,7 @@ export function getDataviewsGeneratorConfigs(
       const { config, datasetsConfig } = dataview
       if (!config || !datasetsConfig || !datasetsConfig.length) return []
       const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
-      console.log(dataview, datasetsConfig, datasets)
-      // TODO Take unit from ffirst dataset -> are we sure activity sublayers always use 'hours'?
+      // TODO Take unit from first dataset -> are we sure activity sublayers always use 'hours'?
       const unit = dataview.datasets?.[0].unit
       const sublayer: HeatmapAnimatedGeneratorSublayer = {
         id: dataview.id,

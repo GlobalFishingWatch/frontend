@@ -80,7 +80,8 @@ function AnalysisGraphWrapper() {
           const valuesContained = getTimeSeries(
             (sourceFilteredFeatures.contained || []) as any,
             sourceNumSublayers,
-            sourceQuantizeOffset
+            sourceQuantizeOffset,
+            sourceMetadata.aggregationOperation
           ).map((frameValues) => {
             const { frame, ...rest } = frameValues
             return {
@@ -96,7 +97,8 @@ function AnalysisGraphWrapper() {
           const valuesContainedAndOverlapping = getTimeSeries(
             featuresContainedAndOverlapping as any,
             sourceNumSublayers,
-            sourceQuantizeOffset
+            sourceQuantizeOffset,
+            sourceMetadata.aggregationOperation
           ).map((frameValues) => {
             const { frame, ...rest } = frameValues
             return {

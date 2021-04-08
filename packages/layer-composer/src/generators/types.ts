@@ -2,7 +2,7 @@ import { FeatureCollection } from 'geojson'
 import { StringUnitLength } from 'luxon'
 import { AnySourceData, Layer } from '@globalfishingwatch/mapbox-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
-// import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { IntervalOption } from './heatmap/util/time-chunks'
 
 export enum Type {
@@ -271,7 +271,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   staticStart?: string
   staticEnd?: string
   interval?: IntervalOption
-  aggregationOperation?: any
+  aggregationOperation?: AggregationOperation
   breaksMultiplier?: number
 }
 
