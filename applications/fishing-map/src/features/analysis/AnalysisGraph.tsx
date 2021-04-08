@@ -40,14 +40,17 @@ const tickFormatter = (tick: number) => {
 }
 
 const formatDateTicks = (tick: string, timeChunkInterval: Interval) => {
-  const date = DateTime.fromISO(tick).toUTC()
+  const date = DateTime.fromISO(tick).toUTC().setLocale(i18n.language)
   let formattedTick = ''
   switch (timeChunkInterval) {
+    case 'month':
+      formattedTick = date.toFormat('LLL y')
+      break
     case 'hour':
-      formattedTick = date.setLocale(i18n.language).toFormat("ccc', 'DD T")
+      formattedTick = date.toLocaleString(DateTime.DATETIME_MED)
       break
     default:
-      formattedTick = date.setLocale(i18n.language).toFormat("ccc', 'DD")
+      formattedTick = date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
       break
   }
   return formattedTick
@@ -88,19 +91,22 @@ const AnalysisGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
 
   if (active && payload && payload.length) {
-    const date = DateTime.fromISO(label).toUTC()
+    const date = DateTime.fromISO(label).toUTC().setLocale(i18n.language)
     let formattedLabel = ''
     switch (timeChunkInterval) {
+      case 'month':
+        formattedLabel = date.toFormat('LLLL y')
+        break
       case '10days':
-        const timeRangeStart = date.setLocale(i18n.language).toFormat('DDD')
-        const timeRangeEnd = date.plus({ days: 9 }).setLocale(i18n.language).toFormat('DDD')
+        const timeRangeStart = date.toLocaleString(DateTime.DATE_MED)
+        const timeRangeEnd = date.plus({ days: 9 }).toLocaleString(DateTime.DATE_MED)
         formattedLabel = `${timeRangeStart} - ${timeRangeEnd}`
         break
       case 'day':
-        formattedLabel = date.setLocale(i18n.language).toFormat("ccc', 'DDD")
+        formattedLabel = date.toLocaleString(DateTime.DATE_MED)
         break
       default:
-        formattedLabel = date.setLocale(i18n.language).toFormat("ccc', 'DDD T")
+        formattedLabel = date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
         break
     }
     const formattedValues = payload.filter(({ name }) => name === 'line')
