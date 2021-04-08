@@ -215,6 +215,7 @@
     "firstTransmissionDate": "First transmission date",
     "flag": "Flag",
     "fleet": "Fleet",
+    "geartype": "Gear type",
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Last transmission date",
