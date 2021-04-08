@@ -1,8 +1,18 @@
 .Timeline {
-  width: 100%;
+  width: calc(100% - 145px);
   background-position-y: 1rem;
   position: relative;
   z-index: var(--timebar-z-timeline-bookmark);
+}
+
+:global(.printing) .Timeline {
+  width: 100%;
+}
+
+@media print {
+  .Timeline {
+    width: 100%;
+  }
 }
 
 ._disabled {
@@ -37,23 +47,21 @@
 
 .veilLeft {
   width: 15%;
-  background-image:
-    linear-gradient(
-      90deg,
-      var(--timebar-main-background-color) 0%,
-      rgba(0, 16, 57, 0.3) 100%
-    );
+  background-image: linear-gradient(
+    90deg,
+    var(--timebar-main-background-color) 0%,
+    rgba(0, 16, 57, 0.3) 100%
+  );
 }
 
 .veilRight {
   right: 0;
   width: 15.01%;
-  background-image:
-    linear-gradient(
-      90deg,
-      rgba(0, 16, 57, 0.3) 0%,
-      var(--timebar-main-background-color) 100%
-    );
+  background-image: linear-gradient(
+    90deg,
+    rgba(0, 16, 57, 0.3) 0%,
+    var(--timebar-main-background-color) 100%
+  );
 }
 
 .veil._immediate {

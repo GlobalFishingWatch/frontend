@@ -43,6 +43,7 @@ import { Bbox } from 'types'
 // t('vessel.length', 'Length')
 // t('vessel.beam', 'Beam')
 // t('vessel.capacity', 'Capacity')
+// t('vessel.geartype', 'Gear type')
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance

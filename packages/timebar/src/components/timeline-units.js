@@ -21,7 +21,16 @@ class TimelineUnits extends Component {
   }
 
   render() {
-    const { start, end, absoluteStart, absoluteEnd, outerScale, outerStart, outerEnd } = this.props
+    const {
+      labels = {},
+      start,
+      end,
+      absoluteStart,
+      absoluteEnd,
+      outerScale,
+      outerStart,
+      outerEnd,
+    } = this.props
     const { immediate } = this.context
     const innerDays = getDeltaDays(start, end)
 
@@ -36,7 +45,8 @@ class TimelineUnits extends Component {
       outerEnd,
       absoluteStart,
       absoluteEnd,
-      baseUnit
+      baseUnit,
+      labels
     )
     return (
       <div>
@@ -73,6 +83,13 @@ class TimelineUnits extends Component {
 }
 
 TimelineUnits.propTypes = {
+  labels: PropTypes.shape({
+    zoomTo: PropTypes.string,
+    day: PropTypes.string,
+    year: PropTypes.string,
+    month: PropTypes.string,
+    hour: PropTypes.string,
+  }),
   onChange: PropTypes.func.isRequired,
   start: PropTypes.string.isRequired,
   end: PropTypes.string.isRequired,
@@ -81,6 +98,16 @@ TimelineUnits.propTypes = {
   outerStart: PropTypes.string.isRequired,
   outerEnd: PropTypes.string.isRequired,
   outerScale: PropTypes.func.isRequired,
+}
+
+TimelineUnits.defaultProps = {
+  labels: {
+    zoomTo: 'Zoom to',
+    day: 'day',
+    year: 'year',
+    month: 'month',
+    hour: 'hour',
+  },
 }
 
 export default TimelineUnits

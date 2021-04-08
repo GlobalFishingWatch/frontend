@@ -128,8 +128,8 @@ export function getGeneratorConfig(
           const rampScale = scaleLinear().range([min, max]).domain([0, 1])
           const numSteps = 8
           const steps = [...Array(numSteps)]
-            .map((_, i) => parseFloat((i / (numSteps - 1)).toFixed(2)))
-            .map((value) => parseFloat((rampScale(value) as number).toFixed(3)))
+            .map((_, i) => parseFloat((i / (numSteps - 1))?.toFixed(2)))
+            .map((value) => parseFloat((rampScale(value) as number)?.toFixed(3)))
           generator.steps = steps
         }
       }
