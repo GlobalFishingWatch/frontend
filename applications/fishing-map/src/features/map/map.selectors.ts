@@ -167,6 +167,7 @@ export const getGeneratorsConfig = createSelector(
   ],
   (workspaceError, showWorkspaceDetail, workspaceGenerators, workspaceListGenerators) => {
     if (workspaceError.status === 401) return [basemap]
+    console.log(workspaceGenerators)
     return showWorkspaceDetail ? workspaceGenerators : workspaceListGenerators
   }
 )

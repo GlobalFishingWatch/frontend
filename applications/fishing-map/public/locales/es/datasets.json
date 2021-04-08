@@ -115,11 +115,11 @@
     "name": "Concentración de clorofilo",
     "description": "La clorofila-a es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas."
   },
-  "fd-sar-caribe-match-2019-v2": {
+  "dgg_sar_caribe_match_2019": {
     "name": "SAR coincide con 2019",
     "description": "TBD"
   },
-  "fd-sar-caribe-not-match-2019-v2": {
+  "dgg_sar_caribe_not_match_2019": {
     "name": "SAR no coincide con 2019",
     "description": "TBD"
   },

@@ -22,5 +22,9 @@ export const roundLegendNumber = (number: number) => {
 }
 
 export const formatLegendValue = (number: number) => {
+  if (typeof number !== 'number') {
+    console.warn('Value not valid be fixed parsed, returning original value', number)
+    return number
+  }
   return number >= 1000 ? `${(number / 1000).toFixed(1)}k` : number
 }
