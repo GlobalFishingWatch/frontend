@@ -57,3 +57,7 @@
 .tabsHeader button:last-child {
   border: none;
 }
+
+.mapContainer {
+  min-height: 30vh;
+}

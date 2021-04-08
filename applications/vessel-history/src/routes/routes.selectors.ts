@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { RouteObject } from 'redux-first-router'
+import { DEFAULT_WORKSPACE } from 'data/config'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
@@ -12,16 +13,19 @@ export const selectCurrentLocation = createSelector([selectLocation], ({ type, r
   return { type: type as ROUTE_TYPES, ...routeMap }
 })
 
-export const DEFAULT_WORKSPACE: AppState = {
-  //workspaceDataviews: DEFAULT_DATAVIEWS,
-  zoom: 3,
-  latitude: -25.54035,
-  longitude: -35.97144,
-  project: '1',
-  start: '2017-12-01T00:00:00.000Z',
-  end: '2018-01-01T00:00:00.000Z',
-  timebarMode: 'speed',
-}
+// export const DEFAULT_WORKSPACE: AppState = {
+//   //workspaceDataviews: DEFAULT_DATAVIEWS,
+//   zoom: 3,
+//   latitude: -25.54035,
+//   longitude: -35.97144,
+//   project: '1',
+//   start: '2017-12-01T00:00:00.000Z',
+//   end: '2018-01-01T00:00:00.000Z',
+//   timebarMode: 'speed',
+//   hiddenLayers: '',
+//   satellite: '',
+//   colorMode: '',
+// }
 
 export const selectLocationQuery = createSelector([selectLocation], (location) => {
   return location.query
@@ -82,3 +86,23 @@ export const getDateRangeTS = createSelector([selectStartQuery, selectEndQuery],
   start: new Date(start).getTime(),
   end: new Date(end).getTime(),
 }))
+
+/**
+ * Get the hidden layers in the map
+ */
+export const selectHiddenLayers = createSelector(
+  [selectQueryParam('hiddenLayers')],
+  (hiddenLayers) => hiddenLayers.split(',')
+)
+export const selectSatellite = selectQueryParam('satellite')
+export const selectColorMode = selectQueryParam('colorMode')
+
+// export const selectViewport = createSelector(
+//   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery, selectColorMode],
+//   (zoom, latitude, longitude, colorMode) => ({
+//     zoom,
+//     latitude,
+//     longitude,
+//     colorMode,
+//   })
+// )
