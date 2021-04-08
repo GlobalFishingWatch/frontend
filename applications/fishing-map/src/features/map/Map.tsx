@@ -16,6 +16,7 @@ import {
 } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { ExtendedStyleMeta, Generators } from '@globalfishingwatch/layer-composer'
 import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
+import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import useMapInstance from 'features/map/map-context.hooks'
 import i18n from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -120,19 +121,23 @@ const MapWrapper = (): React.ReactElement | null => {
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
+
   const legendsTranslated = mapLegends?.map((legend) => {
     const isSquareKm = (legend.gridArea as number) > 50000
     let label = legend.unit
     if (!label) {
-      const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
-      const gridAreaFormatted = gridArea
-        ? formatI18nNumber(gridArea, {
-            style: 'unit',
-            unit: isSquareKm ? 'kilometer' : 'meter',
-            unitDisplay: 'short',
-          })
-        : ''
-      label = `${i18n.t('common.hour_plural', 'hours')} / ~${gridAreaFormatted}²`
+      // TODO review this when environmental layers switchs to heatmapAnimated
+      if (legend.generatorType === GeneratorType.HeatmapAnimated) {
+        const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+        const gridAreaFormatted = gridArea
+          ? formatI18nNumber(gridArea, {
+              style: 'unit',
+              unit: isSquareKm ? 'kilometer' : 'meter',
+              unitDisplay: 'short',
+            })
+          : ''
+        label = `${i18n.t('common.hour_plural', 'hours')} / ~${gridAreaFormatted}²`
+      }
     }
     return { ...legend, label }
   })
