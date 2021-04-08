@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.17.0
+
+### Minor Changes
+
+- 9af9dea7: include generatorId and Type in legendLayers
+
 ## 2.16.2
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @globalfishingwatch/react-hooks
 
+## 5.3.0
+
+### Minor Changes
+
+- 9af9dea7: include generatorId and Type in legendLayers
+
+### Patch Changes
+
+- Updated dependencies [9af9dea7]
+  - @globalfishingwatch/ui-components@2.17.0
+
 ## 5.2.0
 
 ### Minor Changes
