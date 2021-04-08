@@ -19,14 +19,16 @@ const getLegendLayers = (
     const sublayerLegendsMetadata: LayerMetadataLegend[] = Array.isArray(layer.metadata.legend)
       ? layer.metadata.legend
       : [layer.metadata.legend]
+
     return sublayerLegendsMetadata.map((sublayerLegendMetadata, sublayerIndex) => {
       const id = sublayerLegendMetadata.id || (layer.metadata?.generatorId as string)
       const dataview = dataviews?.find((d) => d.id === id)
-
       const sublayerLegend: LegendLayer | LegendLayerBivariate = {
         ...sublayerLegendMetadata,
         id: `legend_${id}`,
         color: layer.metadata?.color || dataview?.config?.color || 'red',
+        generatorId: layer.metadata.generatorId,
+        generatorType: layer.metadata.generatorType,
       }
 
       const generatorType = layer.metadata?.generatorType
