@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Vessel } from '@globalfishingwatch/api-types/dist'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import i18n from '../features/i18n/i18n'
@@ -22,7 +23,12 @@ export const formatNumber = (num: string | number) => {
   })
 }
 
-export const getVesselLabel = (vessel: ExtendedFeatureVessel | Vessel) => {
+export const getVesselLabel = (vessel: ExtendedFeatureVessel | Vessel, withGearType = false) => {
+  if (vessel.shipname && vessel.geartype && withGearType)
+    return `${formatInfoField(vessel.shipname, 'name')} (${i18n.t(
+      `vessel.gearTypes.${vessel.geartype}` as any,
+      '---'
+    )})`
   if (vessel.shipname) return formatInfoField(vessel.shipname, 'name')
   if (vessel.registeredGearType) {
     return `${i18n.t('vessel.unkwownVesselByGeartype', {

@@ -131,6 +131,31 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = trackResource?.status === ResourceStatus.Error
 
+  const getFieldValue = (field: any, fieldValue: string) => {
+    if (field.type === 'date') {
+      return <I18nDate date={fieldValue} />
+    }
+    if (field.type === 'flag') {
+      return <I18nFlag iso={fieldValue} />
+    }
+    if (field.id === 'geartype') {
+      return t(`vessel.gearTypes.${fieldValue}` as any, '---')
+    }
+    if (field.id === 'mmsi') {
+      return (
+        <a
+          className={styles.link}
+          target="_blank"
+          rel="noreferrer"
+          href={`https://www.marinetraffic.com/en/ais/details/ships/${fieldValue}`}
+        >
+          {formatInfoField(fieldValue, field.type)}
+        </a>
+      )
+    }
+    return formatInfoField(fieldValue, field.type)
+  }
+
   return (
     <div
       className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: colorOpen || infoOpen })}
@@ -211,22 +236,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                           <label>{t(`vessel.${field.id}` as any)}</label>
                           {fieldValues.map((fieldValue, i) => (
                             <span key={fieldValue}>
-                              {field.type === 'date' ? (
-                                <I18nDate date={fieldValue} />
-                              ) : field.type === 'flag' ? (
-                                <I18nFlag iso={fieldValue} />
-                              ) : field.id === 'mmsi' ? (
-                                <a
-                                  className={styles.link}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  href={`https://www.marinetraffic.com/en/ais/details/ships/${fieldValue}`}
-                                >
-                                  {formatInfoField(fieldValue, field.type)}
-                                </a>
-                              ) : (
-                                formatInfoField(fieldValue, field.type)
-                              )}
+                              {getFieldValue(field, fieldValue)}
                               {/* Field values separator */}
                               {i < fieldValues.length - 1 ? ', ' : ''}
                             </span>

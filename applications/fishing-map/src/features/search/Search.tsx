@@ -246,6 +246,7 @@ function Search() {
                       mmsi,
                       imo,
                       callsign,
+                      geartype,
                       origin,
                       dataset,
                       firstTransmissionDate,
@@ -282,6 +283,14 @@ function Search() {
                             <div className={styles.property}>
                               <label>{t('vessel.callsign', 'Callsign')}</label>
                               <span>{callsign || '---'}</span>
+                            </div>
+                            <div className={styles.property}>
+                              <label>{t('vessel.geartype', 'Gear Type')}</label>
+                              <span>
+                                {geartype !== undefined
+                                  ? t(`vessel.gearTypes.${geartype}` as any, '---')
+                                  : '---'}
+                              </span>
                             </div>
                             {fleet && (
                               <div className={styles.property}>

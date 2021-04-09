@@ -71,7 +71,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
               </label>
             </div>
             {feature.vesselsInfo.vessels.map((vessel, i) => {
-              const vesselLabel = getVesselLabel(vessel)
+              const vesselLabel = getVesselLabel(vessel, true)
               return (
                 <button key={i} className={styles.vesselRow} onClick={() => onVesselClick(vessel)}>
                   <span className={styles.vesselName}>
