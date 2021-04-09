@@ -69,17 +69,27 @@ registerRoute(
   })
 )
 registerRoute(
-  ({ url }) => url.pathname.startsWith('/locales/'),
-  // Customize this strategy as needed, e.g., by changing to CacheFirst.
+  (request) => {
+    console.log(request)
+    const { url } = request
+    return url.pathname.startsWith('/locales/')
+  },
   new StaleWhileRevalidate({
     cacheName: 'locales',
-    plugins: [
-      // Ensure that once this runtime cache reaches a maximum size the
-      // least-recently used locales are removed.
-      new ExpirationPlugin({ maxEntries: 50 }),
-    ],
+    plugins: [new ExpirationPlugin({ maxEntries: 50 })],
   })
 )
+
+// REACT_APP_API_GATEWAY
+registerRoute(
+  ({ url }) =>
+    process.env.REACT_APP_API_GATEWAY && url.origin === process.env.REACT_APP_API_GATEWAY,
+  new StaleWhileRevalidate({
+    cacheName: 'api',
+    plugins: [new ExpirationPlugin({ maxEntries: 50 })],
+  })
+)
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', (event) => {
