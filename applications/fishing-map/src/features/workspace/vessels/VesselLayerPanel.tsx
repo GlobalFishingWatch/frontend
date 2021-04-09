@@ -28,23 +28,6 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { Bbox } from 'types'
 
-// Translations by feature.unit static keys
-// t('vessel.flag', 'Flag')
-// t('vessel.imo', 'IMO')
-// t('vessel.firstTransmissionDate', 'First transmission date')
-// t('vessel.lastTransmissionDate', 'Last transmission date')
-// t('vessel.registeredGearType', 'Registered Gear Type')
-// t('vessel.widthRange', 'Width range')
-// t('vessel.lengthRange', 'Length range')
-// t('vessel.grossTonnageRange', 'Gross Tonnage range')
-// t('vessel.fleet', 'Fleet')
-// t('vessel.source', 'Source')
-// t('vessel.nationalId', 'National Id')
-// t('vessel.length', 'Length')
-// t('vessel.beam', 'Beam')
-// t('vessel.capacity', 'Capacity')
-// t('vessel.geartype', 'Gear type')
-
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
 }
