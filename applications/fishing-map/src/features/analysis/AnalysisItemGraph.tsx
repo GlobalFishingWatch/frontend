@@ -150,17 +150,20 @@ const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps }> = (props) =
     Math.ceil(dataMax + domainPadding),
   ]
 
-  const dataFormated = timeseries.map(({ date, min, max }) => {
+  let dataFormated = timeseries.map(({ date, min, max }) => {
     const range = min.map((m, i) => [m, max[i]])
     const avg = min.map((m, i) => (m + max[i]) / 2)
     return {
-      date: date,
+      date: new Date(date).getTime(),
       range,
       avg,
     }
   })
 
   // console.log(dataFormated)
+  dataFormated = dataFormated.filter((d) => {
+    return !isNaN(d.avg[0])
+  })
 
   return (
     <div className={styles.graph}>
@@ -168,10 +171,13 @@ const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps }> = (props) =
         <ComposedChart data={dataFormated} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
+            domain={[new Date(2012, 0, 1).getTime(), new Date(2021, 0, 1).getTime()]}
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
             axisLine={paddedDomain[0] === 0}
+            // scale={'time'}
+            type={'number'}
           />
           <YAxis
             scale="linear"

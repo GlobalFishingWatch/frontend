@@ -74,12 +74,10 @@ const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
 }
 
 function AnalysisItem({
-  key,
   graphData,
   hasAnalysisLayers,
   analysisAreaName,
 }: {
-  key: number
   graphData: AnalysisGraphProps
   hasAnalysisLayers: boolean
   analysisAreaName: string
@@ -123,7 +121,7 @@ function AnalysisItem({
           {t('analysis.empty', 'Your selected datasets will appear here')}
         </p>
       )}
-      <AnalysisItemGraph key={key} graphData={graphData} />
+      <AnalysisItemGraph graphData={graphData} />
     </div>
   )
 }

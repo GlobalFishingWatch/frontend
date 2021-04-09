@@ -32,6 +32,8 @@ function AnalysisGraphWrapper({
   hasAnalysisLayers: boolean
   analysisAreaName: string
 }) {
+  console.log('AW')
+
   const generatorConfigs = useSelector(selectActiveHeatmapAnimatedGeneratorConfigs)
   //TODO collect metadata here, not just ids
   // TODO also pass metadata here
@@ -39,7 +41,6 @@ function AnalysisGraphWrapper({
     generators: generatorConfigs,
     sourceLayer: TEMPORALGRID_SOURCE_LAYER,
   })
-
   const { start, end } = useTimerangeConnect()
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
@@ -57,6 +58,7 @@ function AnalysisGraphWrapper({
   }, [analysisAreaFeature])
 
   useEffect(() => {
+    console.log('generating analysis')
     const updateTimeseries = async (
       allFeatures: GeoJSON.Feature<GeoJSON.Geometry>[][],
       geometry: Polygon | MultiPolygon
@@ -104,7 +106,6 @@ function AnalysisGraphWrapper({
 
           const timeseries = valuesContainedAndOverlapping.map(({ values, date }) => {
             const minValues = valuesContained.find((overlap) => overlap.date === date)?.values
-            // console.log(minValues, minValues?.map(getRealValue))
             return {
               date,
               // TODO take into account multiplier when calling getRealValue
@@ -125,8 +126,7 @@ function AnalysisGraphWrapper({
     }
 
     if (sourcesFeatures && sourcesFeatures.some((features) => features.length > 0)) {
-      // setGeneratingTimeseries(true)
-
+      setGeneratingTimeseries(true)
       // Make features serializable for worker
       const allFeatures = sourcesFeatures.map((sourceFeatures) => {
         return sourceFeatures.map(({ properties, geometry }) => ({
@@ -170,19 +170,19 @@ function AnalysisGraphWrapper({
 
   // TODO looks like it renders at each idle event, check why and ifx
   // console.log(sourcesTimeseriesFiltered)
-
   return (
     <Fragment>
-      {sourcesTimeseriesFiltered.map((sourceTimeseriesFiltered, index) => {
-        return (
-          <AnalysisItem
-            hasAnalysisLayers={hasAnalysisLayers}
-            analysisAreaName={analysisAreaName}
-            key={index}
-            graphData={sourceTimeseriesFiltered}
-          />
-        )
-      })}
+      {sourcesTimeseriesFiltered &&
+        sourcesTimeseriesFiltered.map((sourceTimeseriesFiltered, index) => {
+          return (
+            <AnalysisItem
+              hasAnalysisLayers={hasAnalysisLayers}
+              analysisAreaName={analysisAreaName}
+              key={index}
+              graphData={sourceTimeseriesFiltered}
+            />
+          )
+        })}
     </Fragment>
   )
 }

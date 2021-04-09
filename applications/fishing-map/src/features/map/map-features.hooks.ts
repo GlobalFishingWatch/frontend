@@ -15,6 +15,7 @@ const sourcesLoadingState = atom<{ [key: string]: boolean }>({
   effects_UNSTABLE: [
     ({ onSet, setSelf, trigger, node }) => {
       const map = useMapInstance()
+      let idledAttached = true
 
       // const sourceLoadingCallback = (sourcedataEvent: any) => {
       //   console.log('sourcedataloading')
@@ -42,13 +43,22 @@ const sourcesLoadingState = atom<{ [key: string]: boolean }>({
             sourceId,
             map?.isSourceLoaded(sourceId),
           ])
-
+          const allSourcesLoaded = sourcesLoaded.every(([id, loaded]) => loaded)
+          if (allSourcesLoaded) {
+            map.off('idle', sourceEventCallback)
+            idledAttached = false
+          } else if (!idledAttached) {
+            map.on('idle', sourceEventCallback)
+            idledAttached = true
+          }
           setSelf(Object.fromEntries(sourcesLoaded))
-          // console.log(currentSources, sourcesLoaded)
         }
+
         map.on('sourcedataloading', sourceEventCallback)
         map.on('idle', sourceEventCallback)
         map.on('error', sourceEventCallback)
+
+        // TODO unlisten on unmount
       }
       // console.log('onSet?', onSet, setSelf, trigger, map)
     },
@@ -57,10 +67,16 @@ const sourcesLoadingState = atom<{ [key: string]: boolean }>({
 
 export const useSourcesLoadingState = () => {
   const sourcesState = useRecoilValue(sourcesLoadingState)
-  return sourcesState
+  const serializedSourcesState = Object.entries(sourcesState)
+    .map((s) => s.join('_'))
+    .join('__')
+  return useMemo(() => {
+    return sourcesState
+  }, [serializedSourcesState])
 }
 
 export const useHaveAllSourcesLoaded = (sourcesIds: string[]) => {
+  console.log('useHaveAllSourcesLoaded')
   const sourcesState = useSourcesLoadingState()
   const haveAllSourcesLoaded = sourcesIds.every((sourceId) => sourcesState[sourceId] === true)
   return useMemo(() => {
