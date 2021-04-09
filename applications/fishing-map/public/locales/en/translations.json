@@ -25,6 +25,7 @@
     "context_area_plural": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "countries",
+    "dateRange": "between {{start}} and {{end}}",
     "description": "Description",
     "environment": "Environment",
     "events": "Events",

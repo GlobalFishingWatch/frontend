@@ -89,7 +89,7 @@ const MapWrapper = (): React.ReactElement | null => {
         }
         dispatch(moveCurrentRuler(center))
       } else {
-        setHoveredEvent(event)
+        // setHoveredEvent(event)
       }
     },
     [dispatch, rulersEditing]
@@ -106,8 +106,8 @@ const MapWrapper = (): React.ReactElement | null => {
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
 
   const resetHoverState = useCallback(() => {
-    setHoveredEvent(null)
-    setHoveredDebouncedEvent(null)
+    // setHoveredEvent(null)
+    // setHoveredDebouncedEvent(null)
     cleanFeatureState('hover')
   }, [cleanFeatureState])
 
