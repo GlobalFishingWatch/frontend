@@ -9,7 +9,7 @@
     "noActivityLayers": "Aucun calque d'activité actif",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps allant jusqu'à un an",
     "title": "Analyse",
-    "vesselFlags": "by vessels flagged by",
+    "vesselFlags": "par les navires marqués par",
     "area": "Zone de stockage",
     "generating": "Nous sommes en train de générer le rapport pour vous, il sera prêt bientôt.",
     "successfullMessage": "Le rapport a été envoyé avec succès, vous le recevrez bientôt par courriel.",
@@ -26,13 +26,13 @@
     "context_area_plural": "Calques de contexte",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers.",
     "country_plural": "Pays",
-    "dateRange": "between {{start}} and {{end}}",
+    "dateRange": "entre {{start}} et {{end}}",
     "description": "Libellé",
     "environment": "Environnement",
     "events": "Évènements",
     "hour": "Heure",
     "hour_plural": "heures",
-    "in": "in",
+    "in": "dans",
     "loggedAs": "Connecté en tant que",
     "login": "Se connecter",
     "logout": "Déconnexion",
@@ -48,7 +48,6 @@
     "update": "Mise à jour",
     "vessel": "Navire",
     "vessel_plural": "Navires",
-    "between": "between",
     "loading": "En cours de chargement",
     "open_menu": "Ouvrir le menu",
     "dismiss": "Fermer",
@@ -107,8 +106,8 @@
     "seeInCVP": "Voir dans le Portail du Transporteur"
   },
   "footer": {
-    "convenedBy": "A partnership convened by",
-    "supportBy": "Supported by"
+    "convenedBy": "Un partenariat convoqué par",
+    "supportBy": "Prise en charge par"
   },
   "layer": {
     "add": "Ajouter un calque",
