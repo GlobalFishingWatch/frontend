@@ -18,6 +18,8 @@ import {
 import { useMapboxRef, useMapboxRefCallback } from './map.context'
 import styles from './Map.module.css'
 
+import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+
 const Map = (): ReactElement => {
   const mapRef = useMapboxRef()
 
@@ -50,12 +52,10 @@ const Map = (): ReactElement => {
           ref={mapRef}
           width="100%"
           height="100%"
-          latitude={viewport.latitude}
-          longitude={viewport.longitude}
-          zoom={viewport.zoom}
+          {...viewport}
           // onLoad={onLoadCallback}
-          // onViewportChange={onViewportChange}
-          // mapStyle={styleWithArrows}
+          onViewportChange={setViewport}
+          mapStyle={style}
           // onClick={handleMapClick}
           // onHover={handleMapHover}
           // onMouseMove={onMapMove}
