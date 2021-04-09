@@ -199,7 +199,27 @@
     "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
     "vesselType_plural": "Tipos de buque",
     "widthRange": "Width range",
-    "transmission": "Transmisión"
+    "transmission": "Transmisión",
+    "gearTypes": {
+      "tuna_purse_seines": "Tuna Purse Seine",
+      "driftnets": "Driftnet",
+      "trollers": "Troller",
+      "set_longlines": "Set Longline",
+      "purse_seines": "Purse Seine",
+      "pots_and_traps": "Pots and Traps",
+      "other_fishing": "Other Fishing",
+      "dredge_fishing": "Dredge Fishing",
+      "set_gillnets": "Set Gillnet",
+      "fixed_gear": "Fixed Gear",
+      "trawlers": "Trawler",
+      "fishing": "Fishing",
+      "seiners": "Seiners",
+      "other_purse_seines": "Other Purse Seines",
+      "other_seines": "Other Seines",
+      "squid_jigger": "Squid Jigger",
+      "pole_and_line": "Pole and Line",
+      "drifting_longlines": "Drifting Longline dfghjhk"
+    }
   },
   "workspace": {
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
