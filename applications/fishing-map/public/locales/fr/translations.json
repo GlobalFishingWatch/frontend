@@ -91,6 +91,9 @@
     "trackLoading": "Une erreur s'est produite lors du chargement de la piste du vaisseau",
     "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
     "vesselLoading": "Une erreur s'est produite lors du chargement de la piste des détails du vaisseau",
+    "workspaceMissingName": "Le nom de l'espace de travail est requis",
+    "workspaceDuplicatedName": "Il existe déjà un espace de travail portant ce nom",
+    "workspaceCreate": "Une erreur s'est produite lors de la création de l'espace de travail, veuillez réessayer plus tard",
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement",
     "workspaceNotFound": "La vue demandée n'a pas été trouvée"
   },

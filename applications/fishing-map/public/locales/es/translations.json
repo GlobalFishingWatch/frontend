@@ -91,6 +91,9 @@
     "trackLoading": "Se ha producido un error al cargar la pista del buque",
     "uploadError": "Hubo un error al cargar su conjunto de datos",
     "vesselLoading": "Se ha producido un error al cargar el seguimiento de detalles del buque",
+    "workspaceMissingName": "Se necesita el nombre del espacio de trabajo",
+    "workspaceDuplicatedName": "Ya hay un área de trabajo con este nombre",
+    "workspaceCreate": "Hubo un error al crear el espacio de trabajo, por favor inténtalo de nuevo más tarde",
     "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo",
     "workspaceNotFound": "La vista que solicitó no se encontró"
   },
