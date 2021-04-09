@@ -9,7 +9,7 @@
     "noActivityLayers": "Ninguna capa de actividad se encuentra activa",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
-    "vesselFlags": "by vessels flagged by",
+    "vesselFlags": "por buques marcados por",
     "area": "Área",
     "generating": "Estamos generando el informe para ti, estará listo pronto.",
     "successfullMessage": "El informe ha sido enviado con éxito, lo recibirás pronto por correo electrónico.",
@@ -26,13 +26,13 @@
     "context_area_plural": "Areas de gestión",
     "copiedToClipboard": "El enlace para compartir este mapa ha sido copiado al portapapeles.",
     "country_plural": "paises",
-    "dateRange": "between {{start}} and {{end}}",
+    "dateRange": "entre {{start}} y {{end}}",
     "description": "Descripción",
     "environment": "Entorno",
     "events": "Eventos",
     "hour": "Hora",
     "hour_plural": "horas",
-    "in": "in",
+    "in": "en",
     "loggedAs": "Registrado como",
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
@@ -48,7 +48,6 @@
     "update": "Actualizar",
     "vessel": "Buque",
     "vessel_plural": "Embarcaciones",
-    "between": "between",
     "loading": "Cargando",
     "open_menu": "Abrir menú",
     "dismiss": "Cancelar",
@@ -107,8 +106,8 @@
     "seeInCVP": "Ver en el Portal de Buque de Carrier"
   },
   "footer": {
-    "convenedBy": "A partnership convened by",
-    "supportBy": "Supported by"
+    "convenedBy": "Una asociación convocada por",
+    "supportBy": "Soportado por"
   },
   "layer": {
     "add": "Añadir capa",
