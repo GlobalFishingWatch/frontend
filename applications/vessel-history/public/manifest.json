@@ -1,7 +1,7 @@
 {
   "name": "GFW Vessel History",
   "short_name": "GFW Vessel History",
-  "description": null,
+  "description": "Vessel history app",
   "dir": "auto",
   "lang": "en-US",
   "display": "standalone",
