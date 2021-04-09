@@ -9,7 +9,6 @@
     "noActivityLayers": "No activity layers active",
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
     "title": "Analysis",
-    "vesselFlags": "by vessels flagged by",
     "area": "Area",
     "generating": "We are generating the report for you, it'll be ready soon.",
     "successfullMessage": "The report was sent successfully, you'll receive it by email soon.",
@@ -26,13 +25,11 @@
     "context_area_plural": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "countries",
-    "dateRange": "between {{start}} and {{end}}",
     "description": "Description",
     "environment": "Environment",
     "events": "Events",
     "hour": "Hour",
     "hour_plural": "hours",
-    "in": "in",
     "loggedAs": "Logged as",
     "login": "Log in",
     "logout": "Log out",
@@ -48,7 +45,6 @@
     "update": "Update",
     "vessel": "Vessel",
     "vessel_plural": "Vessels",
-    "between": "between",
     "loading": "Loading",
     "open_menu": "Open Menu",
     "dismiss": "Dismiss",
@@ -106,10 +102,6 @@
     "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
     "seeInCVP": "See in Carrier Vessel Portal"
   },
-  "footer": {
-    "convenedBy": "A partnership convened by",
-    "supportBy": "Supported by"
-  },
   "layer": {
     "add": "Add layer",
     "color_change": "Change color",
@@ -163,8 +155,8 @@
   },
   "selects": {
     "allSelected": "All",
-    "placeholder": "Select an option",
-    "selected": "selected"
+    "selected": "selected",
+    "placeholder": "Select an option"
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
