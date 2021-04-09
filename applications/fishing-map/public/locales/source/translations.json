@@ -91,6 +91,9 @@
     "trackLoading": "There was an error loading the vessel track",
     "uploadError": "There was an error uploading your dataset",
     "vesselLoading": "There was an error loading the vessel details track",
+    "workspaceMissingName": "Workspace name is needed",
+    "workspaceDuplicatedName": "There is already a workspace with this name",
+    "workspaceCreate": "There was an error creating the workspace, please try again later",
     "workspaceLoad": "There was an error loading the workspace, please try again later",
     "workspaceNotFound": "The view you request was not found"
   },

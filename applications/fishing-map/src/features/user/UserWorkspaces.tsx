@@ -1,15 +1,16 @@
 import React, { useCallback, useState } from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { Workspace } from '@globalfishingwatch/api-types/dist'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { WORKSPACE } from 'routes/routes'
-import { WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import {
+  createWorkspaceThunk,
   deleteWorkspaceThunk,
   selectWorkspaceListStatus,
   selectWorkspaceListStatusId,
@@ -17,16 +18,24 @@ import {
 } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport from 'features/map/map-viewport.hooks'
-import { selectWorkspacesByUserGroup } from 'features/workspaces-list/workspaces-list.selectors'
+import {
+  selectDefaultWorkspace,
+  selectWorkspacesByUserGroup,
+} from 'features/workspaces-list/workspaces-list.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { useLocationConnect } from 'routes/routes.hook'
 import styles from './User.module.css'
 import { selectUserGroups, selectUserWorkspaces } from './user.selectors'
 
 function UserWorkspaces() {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
+  const { dispatchLocation } = useLocationConnect()
+  const [creatingLoading, setCreatingLoading] = useState(false)
   const [workspaceTemplatesOpen, setWorkspaceTemplatesOpen] = useState(false)
   const [workspaceTemplates, setWorkspaceTemplates] = useState<string[] | undefined>()
   const { setMapCoordinates } = useViewport()
+  const defaultWorkspace = useSelector(selectDefaultWorkspace)
   const workspaces = useSelector(selectUserWorkspaces)
   const userGroups = useSelector(selectUserGroups)
   const workspacesByUserGroup = useSelector(selectWorkspacesByUserGroup)
@@ -47,6 +56,65 @@ function UserWorkspaces() {
     [dispatch, t]
   )
 
+  const createWorkspaceByUserGroup = useCallback(
+    async (userGroup: string) => {
+      const workspaceId = workspacesByUserGroup[userGroup]
+      const template = [defaultWorkspace, ...workspaces].find((w) => w?.id === workspaceId)
+      if (template) {
+        const name = prompt(
+          t('workspace.nameInput', 'Workspace name'),
+          template.id === DEFAULT_WORKSPACE_ID ? '' : template.name
+        )
+        if (name) {
+          if (name !== template.name) {
+            setCreatingLoading(true)
+            setWorkspaceTemplatesOpen(false)
+            const workspace = {
+              ...template,
+              name,
+            }
+            const action = await dispatch(createWorkspaceThunk(workspace))
+            if (createWorkspaceThunk.fulfilled.match(action)) {
+              dispatchLocation(
+                WORKSPACE,
+                {
+                  category: action.payload.category || WorkspaceCategories.FishingActivity,
+                  workspaceId: action.payload.id,
+                },
+                true
+              )
+            } else {
+              alert(
+                t(
+                  'errors.workspaceCreate',
+                  'There was an error creating the workspace, please try again later'
+                )
+              )
+            }
+            setCreatingLoading(false)
+          } else {
+            alert(
+              t('errors.workspaceDuplicatedName', 'There is already a workspace with this name')
+            )
+            createWorkspaceByUserGroup(userGroup)
+          }
+        } else if (name === '') {
+          alert(t('errors.workspaceMissingName', 'Workspace name is needed'))
+          createWorkspaceByUserGroup(userGroup)
+        }
+      }
+    },
+    [defaultWorkspace, dispatch, dispatchLocation, t, workspaces, workspacesByUserGroup]
+  )
+
+  const onWorkspaceUserGroupClick = useCallback(
+    (userGroup: string) => {
+      setWorkspaceTemplatesOpen(false)
+      createWorkspaceByUserGroup(userGroup)
+    },
+    [createWorkspaceByUserGroup]
+  )
+
   const onNewWorkspaceClick = useCallback(() => {
     const groupsWithTemplates = userGroups?.filter(
       (group) => workspacesByUserGroup[group] !== undefined
@@ -56,13 +124,12 @@ function UserWorkspaces() {
       return
     }
     if (groupsWithTemplates.length === 1) {
-      console.log('do default')
+      createWorkspaceByUserGroup(groupsWithTemplates[0])
     } else {
-      console.log('prompt to select')
       setWorkspaceTemplates(groupsWithTemplates)
       setWorkspaceTemplatesOpen(true)
     }
-  }, [userGroups, workspacesByUserGroup])
+  }, [createWorkspaceByUserGroup, userGroups, workspacesByUserGroup])
 
   const onWorkspaceClick = useCallback(
     (workspace: Workspace) => {
@@ -87,7 +154,7 @@ function UserWorkspaces() {
     },
     [dispatch, t]
   )
-  console.log(workspaceTemplates)
+
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
@@ -100,7 +167,11 @@ function UserWorkspaces() {
           component={
             <ul className={styles.workspaceTemplatesList}>
               {workspaceTemplates?.map((template) => (
-                <li key={template} className={styles.workspaceTemplate}>
+                <li
+                  key={template}
+                  className={styles.workspaceTemplate}
+                  onClick={() => onWorkspaceUserGroupClick(template)}
+                >
                   {template}
                 </li>
               ))}
@@ -109,7 +180,12 @@ function UserWorkspaces() {
         >
           {/* Div needed because of https://github.com/atomiks/tippyjs-react#component-children */}
           <div>
-            <Button disabled={loading} type="secondary" onClick={onNewWorkspaceClick}>
+            <Button
+              disabled={loading}
+              loading={creatingLoading}
+              type="secondary"
+              onClick={onNewWorkspaceClick}
+            >
               {t('workspace.new', 'New Workspace') as string}
             </Button>
           </div>
