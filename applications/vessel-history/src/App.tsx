@@ -13,10 +13,10 @@ import './App.css'
 function App() {
   const { loading, logged } = useGFWLogin(GFWAPI)
   const [minLoading, setMinLoading] = useState(true)
-  // if (!loading && !logged) {
-  //   const location = window.location.origin + BASE_URL
-  //   window.location.assign(GFWAPI.getLoginUrl(location))
-  // }
+  if (!loading && !logged) {
+    const location = window.location.origin + BASE_URL
+    window.location.assign(GFWAPI.getLoginUrl(location))
+  }
 
   // Splash screen is shown at least one second
   useEffect(() => {

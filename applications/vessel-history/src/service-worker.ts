@@ -68,19 +68,26 @@ registerRoute(
     ],
   })
 )
+// This allows the web app to trigger skipWaiting via
+// registration.waiting.postMessage({type: 'SKIP_WAITING'})
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting()
+  }
+})
+
+// Any other custom service worker logic can go here.
+
+// Cache locales
 registerRoute(
-  (request) => {
-    console.log(request)
-    const { url } = request
-    return url.pathname.startsWith('/locales/')
-  },
+  /\/locales\/.*/,
   new StaleWhileRevalidate({
     cacheName: 'locales',
     plugins: [new ExpirationPlugin({ maxEntries: 50 })],
   })
 )
 
-// REACT_APP_API_GATEWAY
+// Cache API Calls
 registerRoute(
   ({ url }) =>
     process.env.REACT_APP_API_GATEWAY && url.origin === process.env.REACT_APP_API_GATEWAY,
