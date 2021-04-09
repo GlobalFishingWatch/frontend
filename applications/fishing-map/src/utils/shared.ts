@@ -4,7 +4,7 @@ export const capitalize = (s: string) => {
 }
 
 export const toFixed = (value: number, decimals = 2) => {
-  if (typeof value !== 'number' || typeof value !== 'string') {
+  if (typeof value !== 'number') {
     console.warn('Value not valid be fixed parsed, returning original value', value)
     return value
   }
