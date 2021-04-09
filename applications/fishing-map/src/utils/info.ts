@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import { Vessel } from '@globalfishingwatch/api-types/dist'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import i18n from '../features/i18n/i18n'
