@@ -1,6 +1,9 @@
 .container {
-  flex: 1;
-  height: 400px;
+  height: 100%;
+}
+.container > * {
+  height: 100% !important;
+  width: 100% !important;
 }
 .legendContainer {
   position: absolute;
