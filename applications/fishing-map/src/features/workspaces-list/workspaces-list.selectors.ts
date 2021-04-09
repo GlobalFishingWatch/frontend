@@ -11,7 +11,10 @@ import {
 } from './workspaces-list.slice'
 
 export const selectDefaultWorkspace = createSelector([selectWorkspaces], (workspaces) => {
-  return workspaces?.find((w) => w.id === DEFAULT_WORKSPACE_ID)
+  return workspaces?.find(
+    // To ensure this is the local workspace and not overlaps with a new one on the api with the same id
+    (w) => w.id === DEFAULT_WORKSPACE_ID && w.description === DEFAULT_WORKSPACE_ID
+  )
 })
 
 export const selectWorkspaceByCategory = (category: WorkspaceCategories) => {

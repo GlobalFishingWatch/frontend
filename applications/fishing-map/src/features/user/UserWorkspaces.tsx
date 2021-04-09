@@ -8,7 +8,7 @@ import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { Workspace } from '@globalfishingwatch/api-types/dist'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { WORKSPACE } from 'routes/routes'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { WorkspaceCategories } from 'data/workspaces'
 import {
   createWorkspaceThunk,
   deleteWorkspaceThunk,
@@ -59,11 +59,16 @@ function UserWorkspaces() {
   const createWorkspaceByUserGroup = useCallback(
     async (userGroup: string) => {
       const workspaceId = workspacesByUserGroup[userGroup]
-      const template = [defaultWorkspace, ...workspaces].find((w) => w?.id === workspaceId)
+      let defaultTemplate = false
+      let template = workspaces.find((w) => w?.id === workspaceId)
+      if (!template) {
+        defaultTemplate = true
+        template = defaultWorkspace
+      }
       if (template) {
         const name = prompt(
           t('workspace.nameInput', 'Workspace name'),
-          template.id === DEFAULT_WORKSPACE_ID ? '' : template.name
+          defaultTemplate ? '' : template.name
         )
         if (name) {
           if (name !== template.name) {

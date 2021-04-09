@@ -15,7 +15,7 @@ const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,
   app: APP_NAME,
   name: 'Default public Fishing Map workspace in production v1',
-  description: '',
+  description: DEFAULT_WORKSPACE_ID,
   category: WorkspaceCategories.FishingActivity,
   startAt: new Date(Date.UTC(2018, 0, 1)).toISOString(),
   endAt: new Date(Date.UTC(2019, 11, 31, 23, 59)).toISOString(),
