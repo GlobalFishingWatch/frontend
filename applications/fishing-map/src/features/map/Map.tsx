@@ -147,7 +147,7 @@ const MapWrapper = (): React.ReactElement | null => {
         }
         return { ...legend, label }
       }),
-    []
+    [mapLegends]
   )
 
   const debugOptions = useSelector(selectDebugOptions)

@@ -14,11 +14,11 @@ import styles from './AnalysisItem.module.css'
 
 const sortStrings = (a: string, b: string) => a.localeCompare(b)
 
-const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
+const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
   const commonProperties: string[] = []
   let title = ''
 
-  if (dataviews?.length > 0) {
+  if (dataviews && dataviews?.length > 0) {
     const firstDataviewDatasets = dataviews[0].config?.datasets
       ?.slice()
       .sort(sortStrings)
@@ -51,7 +51,9 @@ const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
       const datasets = dataviews[0].datasets?.filter((d) =>
         dataviews[0].config?.datasets?.includes(d.id)
       )
-      title += ` (${datasets?.map((d) => d.name).join(', ')})`
+      if (datasets?.length) {
+        title += ` (${datasets?.map((d) => d.name).join(', ')})`
+      }
     }
 
     if (
@@ -121,7 +123,7 @@ function AnalysisItem({
           {t('analysis.empty', 'Your selected datasets will appear here')}
         </p>
       )}
-      <AnalysisItemGraph graphData={graphData} />
+      <AnalysisItemGraph graphData={graphData} timeRange={staticTime} />
     </div>
   )
 }
