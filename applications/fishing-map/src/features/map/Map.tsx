@@ -1,7 +1,9 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { scaleLinear } from 'd3-scale'
 import { useSelector, useDispatch } from 'react-redux'
-import { MapLegend } from '@globalfishingwatch/ui-components/dist'
+import { useTranslation } from 'react-i18next'
+import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import useTilesLoading from '@globalfishingwatch/react-hooks/dist/use-tiles-loading'
@@ -14,6 +16,7 @@ import {
 } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { ExtendedStyleMeta, Generators } from '@globalfishingwatch/layer-composer'
 import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
+import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import useMapInstance from 'features/map/map-context.hooks'
 import i18n from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -32,6 +35,8 @@ import { SliceInteractionEvent } from './map.slice'
 import { useMapSourceLoaded } from './map-features.hooks'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+
+const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 
 // TODO: Abstract this away
 const transformRequest: (...args: any[]) => MapRequest = (url: string, resourceType: string) => {
@@ -55,6 +60,7 @@ const handleError = ({ error }: any) => {
 
 const MapWrapper = (): React.ReactElement | null => {
   const map = useMapInstance()
+  const { t } = useTranslation()
 
   const dispatch = useDispatch()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -115,19 +121,23 @@ const MapWrapper = (): React.ReactElement | null => {
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
+
   const legendsTranslated = mapLegends?.map((legend) => {
     const isSquareKm = (legend.gridArea as number) > 50000
     let label = legend.unit
     if (!label) {
-      const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
-      const gridAreaFormatted = gridArea
-        ? formatI18nNumber(gridArea, {
-            style: 'unit',
-            unit: isSquareKm ? 'kilometer' : 'meter',
-            unitDisplay: 'short',
-          })
-        : ''
-      label = `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}`
+      // TODO review this when environmental layers switchs to heatmapAnimated
+      if (legend.generatorType === GeneratorType.HeatmapAnimated) {
+        const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+        const gridAreaFormatted = gridArea
+          ? formatI18nNumber(gridArea, {
+              style: 'unit',
+              unit: isSquareKm ? 'kilometer' : 'meter',
+              unitDisplay: 'short',
+            })
+          : ''
+        label = `${i18n.t('common.hour_plural', 'hours')} / ~${gridAreaFormatted}²`
+      }
     }
     return { ...legend, label }
   })
@@ -194,6 +204,7 @@ const MapWrapper = (): React.ReactElement | null => {
           onResize={setMapBounds}
           getCursor={rulersEditing ? getRulersCursor : getCursor}
           interactiveLayerIds={rulersEditing ? undefined : style?.metadata?.interactiveLayerIds}
+          clickRadius={clickRadiusScale(viewport.zoom)}
           onClick={onMapClick}
           onHover={onMapHover}
           onError={handleError}
@@ -227,10 +238,11 @@ const MapWrapper = (): React.ReactElement | null => {
               className={styles.legend}
               currentValueClassName={styles.currentValue}
               labelComponent={
-                <span className={styles.legendLabel}>
-                  {legend.label}
-                  {legend.gridArea && <sup>2</sup>}
-                </span>
+                <Tooltip
+                  content={t('map.legend_help', 'Approximated grid cell area at the Equator')}
+                >
+                  <span className={styles.legendLabel}>{legend.label}</span>
+                </Tooltip>
               }
             />,
             legendDomElement

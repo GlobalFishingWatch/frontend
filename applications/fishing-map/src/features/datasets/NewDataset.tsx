@@ -114,6 +114,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
       {datasetCategory === DatasetCategory.Context && (
         <Select
           label={t('dataset.featuresNameField', 'Features name field')}
+          placeholder={t('selects.placeholder', 'Select an option')}
           options={geojsonPropertiesOptions}
           selectedOption={geojsonPropertiesOptions.find(
             ({ id }) => id === metadata.configuration?.propertyToInclude
@@ -133,6 +134,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           </label>
           <Select
             className={styles.selectShort}
+            placeholder={t('selects.placeholder', 'Select an option')}
             containerClassName={styles.selectContainer}
             options={geojsonPropertiesOptions}
             selectedOption={geojsonPropertiesOptions.find(
@@ -209,7 +211,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' 
     [onFileLoaded]
   )
   const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
-    accept: '.zip, .json',
+    accept: '.zip, .json, .geojson',
     onDropAccepted,
   })
   return (
@@ -264,13 +266,23 @@ function NewDataset(): React.ReactElement {
     async (file: File) => {
       setLoading(true)
       setError('')
-      setFile(file)
       const isZip =
         file.type === 'application/zip' ||
         file.type === 'application/x-zip-compressed' ||
         file.type === 'application/octet-stream' ||
         file.type === 'multipart/x-zip'
-      const isGeojson = !isZip && file.type === 'application/json'
+      const isGeojson =
+        (!isZip && file.type === 'application/json') || (!isZip && file.name.includes('.geojson'))
+      const name =
+        file.name.lastIndexOf('.') > 0 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name
+      if (isGeojson && file.name.includes('.geojson')) {
+        const blob = file.slice(0, file.size, 'application/json')
+        const fileAsJson = new File([blob], `${name}.json`, { type: 'application/json' })
+        setFile(fileAsJson)
+      } else {
+        setFile(file)
+      }
+
       let geojson: FeatureCollectionWithFilename | undefined = undefined
       if (isZip) {
         try {
@@ -289,8 +301,6 @@ function NewDataset(): React.ReactElement {
           console.warn('Error reading file:', e)
         }
       }
-      const name =
-        file.name.lastIndexOf('.') > 0 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name
       if (geojson !== undefined) {
         setFileData(geojson)
         setMetadata((metadata) => ({

@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 3.1.1
+
+### Patch Changes
+
+- include geartype in vessel type definition
+
 ## 3.1.0
 
 ### Minor Changes

@@ -18,7 +18,6 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
-import i18n from 'features/i18n/i18n'
 import I18nDate from 'features/i18n/i18nDate'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getFlagById } from 'utils/flags'
@@ -44,17 +43,6 @@ import SearchPlaceholder, {
 } from './SearchPlaceholders'
 import { isSearchAllowed, selectAllowedVesselsDatasets } from './search.selectors'
 
-const searchOptions = [
-  {
-    id: 'basic',
-    title: i18n.t('search.basic', 'Basic'),
-  },
-  {
-    id: 'advanced',
-    title: i18n.t('search.advanced', 'Advanced'),
-  },
-]
-
 function Search() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -71,6 +59,18 @@ function Search() {
   const searchStatus = useSelector(selectSearchStatus)
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
+
+  const searchOptions = [
+    {
+      id: 'basic',
+      title: t('search.basic', 'Basic'),
+    },
+    {
+      id: 'advanced',
+      title: t('search.advanced', 'Advanced'),
+    },
+  ]
+
   const [activeSearchOption, setActiveSearchOption] = useState<string>(
     hasSearchFilters ? searchOptions[1].id : searchOptions[0].id
   )
@@ -246,6 +246,7 @@ function Search() {
                       mmsi,
                       imo,
                       callsign,
+                      geartype,
                       origin,
                       dataset,
                       firstTransmissionDate,
@@ -282,6 +283,14 @@ function Search() {
                             <div className={styles.property}>
                               <label>{t('vessel.callsign', 'Callsign')}</label>
                               <span>{callsign || '---'}</span>
+                            </div>
+                            <div className={styles.property}>
+                              <label>{t('vessel.geartype', 'Gear Type')}</label>
+                              <span>
+                                {geartype !== undefined
+                                  ? t(`vessel.gearTypes.${geartype}` as any, '---')
+                                  : '---'}
+                              </span>
                             </div>
                             {fleet && (
                               <div className={styles.property}>

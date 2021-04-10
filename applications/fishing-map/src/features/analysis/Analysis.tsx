@@ -29,6 +29,9 @@ import { useMapFeatures } from 'features/map/map-features.hooks'
 import { Bbox } from 'types'
 import { getFlagsByIds } from 'utils/flags'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import i18n from 'features/i18n/i18n'
+import { isFishingDataview, isPresenceDataview } from 'features/workspace/heatmaps/heatmaps.utils'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import styles from './Analysis.module.css'
 import {
@@ -64,7 +67,15 @@ const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
 
     if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
       commonProperties.push('dataset')
-      title += dataviews[0].name
+      const fishingDataview = isFishingDataview(dataviews[0])
+      const presenceDataview = isPresenceDataview(dataviews[0])
+      if (fishingDataview || presenceDataview) {
+        title = presenceDataview
+          ? i18n.t(`common.presence`, 'Fishing presence')
+          : i18n.t(`common.apparentFishing`, 'Apparent Fishing Effort')
+      } else {
+        title += dataviews[0].name
+      }
     }
 
     if (
@@ -79,7 +90,6 @@ const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
       )
       title += ` (${datasets?.map((d) => d.name).join(', ')})`
     }
-    title += ' evolution'
 
     if (
       dataviews?.every((dataview) => {
@@ -91,7 +101,9 @@ const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
       commonProperties.push('flag')
       const flags = getFlagsByIds(dataviews[0].config?.filters?.flag || [])
       if (firstDataviewFlags)
-        title += ` by vessels flagged by ${flags?.map((d) => d.label).join(', ')}`
+        title += ` ${i18n.t('analysis.vesselFlags', 'by vessels flagged by')} ${flags
+          ?.map((d) => d.label)
+          .join(', ')}`
     }
   }
 
@@ -126,6 +138,14 @@ function Analysis() {
   })
 
   const { title, commonProperties } = getCommonProperties(dataviews)
+  let description = analysisAreaName
+    ? `${title} ${t('common.in', 'in')} ${analysisAreaName}`
+    : title
+  description = `${description} ${t('common.dateRange', {
+    start: formatI18nDate(staticTime.start),
+    end: formatI18nDate(staticTime.end),
+    defaultValue: 'between {{start}} and {{end}}',
+  })}.`
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
@@ -262,9 +282,7 @@ function Analysis() {
           <div className={styles.content}>
             {hasAnalysisLayers ? (
               <Fragment>
-                <h3 className={styles.commonTitle}>
-                  {`${title}${analysisAreaName ? ` in ${analysisAreaName}` : ''}.`}
-                </h3>
+                <h3 className={styles.commonTitle}>{description}</h3>
                 <div className={styles.layerPanels}>
                   {dataviews?.map((dataview, index) => (
                     <AnalysisLayerPanel

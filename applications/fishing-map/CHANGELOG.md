@@ -1,5 +1,46 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.28.11
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@3.1.1
+
+## 0.28.10
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.1
+  - @globalfishingwatch/timebar@1.4.1
+  - @globalfishingwatch/react-hooks@5.3.1
+  - @globalfishingwatch/ui-components@2.17.1
+
+## 0.28.9
+
+### Patch Changes
+
+- Updated dependencies [9af9dea7]
+  - @globalfishingwatch/react-hooks@5.3.0
+  - @globalfishingwatch/ui-components@2.17.0
+
+## 0.28.8
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/timebar@1.4.0
+
+## 0.28.7
+
+### Patch Changes
+
+- Updated dependencies [f570b76f]
+  - @globalfishingwatch/react-hooks@5.2.0
+  - @globalfishingwatch/layer-composer@4.19.0
+  - @globalfishingwatch/ui-components@2.16.2
+
 ## 0.28.6
 
 ### Patch Changes

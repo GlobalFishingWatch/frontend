@@ -2,3 +2,6 @@ files:
   - source: applications/fishing-map/public/locales/source
     translation: >-
       /applications/fishing-map/public/locales/%two_letters_code%/%original_file_name%
+  - source: applications/vessel-history/public/locales/source
+    translation: >-
+      /applications/vessel-history/public/locales/%two_letters_code%/%original_file_name%

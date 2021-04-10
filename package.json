@@ -27,7 +27,8 @@
     "test:vessel-history": "cross-env lerna run test --scope @globalfishingwatchapp/vessel-history",
     "changesets": "yarn changeset && yarn changeset version",
     "release": "lerna publish",
-    "release:ci": "lerna publish from-package -y --no-verify-access",
+    "release:prepare": "lerna run --scope @globalfishingwatch/data-transforms build",
+    "release:ci": "yarn release:prepare && lerna publish from-package -y --no-verify-access",
     "clean": "lerna clean && rm -rf node_modules && rm yarn.lock && yarn",
     "clean:packages": "lerna run clean --parallel --scope @globalfishingwatch/*"
   },
@@ -65,7 +66,7 @@
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^20.0.0",
     "tslib": "^2.1.0",
-    "typescript": "^4.1.5",
+    "typescript": "^4.2.3",
     "typescript-plugin-css-modules": "^2.3.0"
   },
   "peerDependencies": {

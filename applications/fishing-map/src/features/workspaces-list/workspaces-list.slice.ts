@@ -2,6 +2,7 @@ import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
 import { fetchGoogleSheetsData } from 'google-sheets-mapper'
 import { stringify } from 'qs'
+import kebabCase from 'lodash/kebabCase'
 import { Workspace } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
@@ -46,6 +47,7 @@ export type HighlightedWorkspace = {
   description: string
   img?: string
   cta?: string
+  userGroup?: string
 }
 
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
@@ -66,6 +68,43 @@ export const fetchHighlightWorkspacesThunk = createAsyncThunk(
 
     dispatch(fetchWorkspacesThunk({ ids: workspacesIds }))
     return workspaces
+  }
+)
+
+export const createWorkspaceThunk = createAsyncThunk<
+  Workspace,
+  Partial<Workspace>,
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'workspaces/create',
+  async (workspace, { rejectWithValue }) => {
+    const parsedWorkspace = {
+      ...workspace,
+      id: kebabCase(workspace.name),
+      public: true,
+      dataviews: Array.isArray(workspace.dataviews)
+        ? workspace.dataviews.map(({ id }) => id)
+        : workspace.dataviews,
+    }
+    try {
+      const newWorkspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces`, {
+        method: 'POST',
+        body: parsedWorkspace as any,
+      })
+      return newWorkspace
+    } catch (e) {
+      return rejectWithValue({ status: e.status || e.code, message: e.message })
+    }
+  },
+  {
+    condition: (partialWorkspace) => {
+      if (!partialWorkspace || !partialWorkspace.id) {
+        console.warn('To update the workspace you need the id')
+        return false
+      }
+    },
   }
 )
 
@@ -135,6 +174,7 @@ const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesSta
   initialState,
   thunks: {
     fetchThunk: fetchWorkspacesThunk,
+    createThunk: createWorkspaceThunk,
     updateThunk: updateWorkspaceThunk,
     deleteThunk: deleteWorkspaceThunk,
   },

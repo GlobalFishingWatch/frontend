@@ -36,7 +36,10 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
   const flagOptions = useMemo(getFlags, [])
   const searchDatasets = useSelector(selectAllowedVesselsDatasets)
   const sourceOptions = useMemo(
-    () => searchDatasets?.map(({ id, name }) => ({ id, label: name })),
+    () =>
+      searchDatasets
+        ?.sort((a, b) => a.name.localeCompare(b.name))
+        .map(({ id, name }) => ({ id, label: name })),
     [searchDatasets]
   )
 

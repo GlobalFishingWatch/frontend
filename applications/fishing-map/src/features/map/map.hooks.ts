@@ -91,8 +91,8 @@ export const useClickedEventConnect = () => {
               },
           true
         )
-        if (workspace.properties.viewport) {
-          const { latitude, longitude, zoom } = workspace.properties.viewport
+        const { latitude, longitude, zoom } = workspace.properties
+        if (latitude && longitude && zoom) {
           setMapCoordinates({ latitude, longitude, zoom })
         }
         return

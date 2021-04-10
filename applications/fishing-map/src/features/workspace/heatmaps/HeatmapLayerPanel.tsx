@@ -84,6 +84,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
       className={cx(styles.LayerPanel, {
         [styles.expandedContainerOpen]: filterOpen,
         [styles.noBorder]: bivariate,
+        'print-hidden': !layerActive,
       })}
     >
       <div className={styles.header}>
@@ -165,6 +166,11 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
                 dataview={dataview}
                 field={'fleet'}
                 label={t('layer.fleet_plural', 'Fleets')}
+              />
+              <DatasetSchemaField
+                dataview={dataview}
+                field={'origin'}
+                label={t('vessel.origin', 'Origin')}
               />
               <DatasetSchemaField
                 dataview={dataview}

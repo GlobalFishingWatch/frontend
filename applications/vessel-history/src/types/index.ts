@@ -41,6 +41,11 @@ export interface VesselFieldsHistory {
   shipname: VesselFieldHistory<string>
   owner: VesselFieldHistory<string>
   flag: VesselFieldHistory<string>
+  depth: VesselFieldHistory<string>
+  length: VesselFieldHistory<string>
+  grossTonnage: VesselFieldHistory<string>
+  vesselType: VesselFieldHistory<string>
+  operator: VesselFieldHistory<string>
 }
 
 export interface VesselWithHistory extends Vessel {
@@ -138,4 +143,10 @@ export type GFWDetail = {
   dataset: string
   geartype: string
   normalized_shipname: string
+}
+
+export enum Locale {
+  en = 'en',
+  es = 'es',
+  fr = 'fr',
 }

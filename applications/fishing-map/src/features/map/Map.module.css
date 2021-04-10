@@ -38,6 +38,7 @@
 .legendLabel {
   font: var(--font-S);
   opacity: var(--opacity-secondary);
+  cursor: help;
 }
 
 :global(.mapboxgl-control-container .mapboxgl-ctrl.mapboxgl-ctrl-attrib) {

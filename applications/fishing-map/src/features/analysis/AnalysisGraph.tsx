@@ -61,10 +61,10 @@ const formatTooltipValue = (value: number, payload: any, unit: string) => {
   const range = payload.range?.[index]
   const difference = range ? range[1] - value : 0
   const imprecision = value > 0 && (difference / value) * 100
-  const valueLabel = `${formatI18nNumber(value.toFixed())} ${unit ? unit : ''}`
+  const valueLabel = `${formatI18nNumber(value?.toFixed())} ${unit ? unit : ''}`
   const imprecisionLabel =
-    imprecision && imprecision.toFixed() !== '0' && value.toFixed() !== '0'
-      ? ` ± ${imprecision.toFixed()}%`
+    imprecision && imprecision?.toFixed() !== '0' && value?.toFixed() !== '0'
+      ? ` ± ${imprecision?.toFixed()}%`
       : ''
   return valueLabel + imprecisionLabel
 }

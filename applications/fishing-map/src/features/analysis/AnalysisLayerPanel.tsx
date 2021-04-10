@@ -65,6 +65,11 @@ function AnalysisLayerPanel({ dataview, hiddenProperties }: LayerPanelProps): Re
         />
         <DatasetSchemaField
           dataview={dataview}
+          field={'origin'}
+          label={t('vessel.origin', 'Origin')}
+        />
+        <DatasetSchemaField
+          dataview={dataview}
           field={'vessel_type'}
           label={t('vessel.vesselType_plural', 'Vessel types')}
         />

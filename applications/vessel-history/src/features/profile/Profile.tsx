@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { IconButton, Tabs } from '@globalfishingwatch/ui-components'
@@ -6,7 +7,6 @@ import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { selectQueryParam, selectVesselProfileId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import { fetchVesselByIdThunk, selectVesselById } from 'features/vessels/vessels.slice'
-import { useTranslation } from 'utils/i18n'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 
@@ -28,7 +28,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     () => [
       {
         id: 'info',
-        title: 'INFO',
+        title: t('common.info', 'INFO').toLocaleUpperCase(),
         content: vessel ? (
           <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
         ) : (
@@ -37,12 +37,12 @@ const Profile: React.FC = (props): React.ReactElement => {
       },
       {
         id: 'activity',
-        title: 'ACTIVITY',
+        title: t('common.activity', 'ACTIVITY').toLocaleUpperCase(),
         content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
       },
       {
         id: 'map',
-        title: 'MAP',
+        title: t('common.map', 'MAP').toLocaleUpperCase(),
         content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
       },
     ],
@@ -50,6 +50,13 @@ const Profile: React.FC = (props): React.ReactElement => {
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
+
+  const defaultPreviousNames = useMemo(() => {
+    return `+${vessel?.history.shipname.byDate.length} previous ${t(
+      `vessel.name_plural` as any,
+      'names'
+    ).toLocaleUpperCase()}`
+  }, [vessel, t])
 
   return (
     <Fragment>
@@ -67,8 +74,10 @@ const Profile: React.FC = (props): React.ReactElement => {
             {vessel.shipname}
             {vessel.history.shipname.byDate.length && (
               <p>
-                +{vessel.history.shipname.byDate.length}{' '}
-                {t('vessel.previousNames', 'previous names')}
+                {t('vessel.plusPreviousValuesByField', defaultPreviousNames, {
+                  quantity: vessel.history.shipname.byDate.length,
+                  fieldLabel: t(`vessel.name_plural` as any, 'names').toLocaleUpperCase(),
+                })}
               </p>
             )}
           </h1>

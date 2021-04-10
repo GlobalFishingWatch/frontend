@@ -1,6 +1,7 @@
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import TimebarComponent, {
   TimebarTracks,
   TimebarActivity,
@@ -32,6 +33,10 @@ import styles from './Timebar.module.css'
 export const TIMEBAR_HEIGHT = 72
 
 const TimebarWrapper = () => {
+  const { ready, i18n } = useTranslation()
+  const labels = ready
+    ? (i18n?.getDataByLanguage(i18n.language) as any)?.translations?.timebar
+    : undefined
   const { start, end, dispatchTimeranges } = useTimerangeConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
   const { timebarVisualisation } = useTimebarVisualisation()
@@ -133,6 +138,7 @@ const TimebarWrapper = () => {
     <div>
       <TimebarComponent
         enablePlayback={!staticHeatmapLayersActive}
+        labels={labels}
         start={start}
         end={end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
