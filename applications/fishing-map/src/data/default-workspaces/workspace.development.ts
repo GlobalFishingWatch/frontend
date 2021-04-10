@@ -46,6 +46,10 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'palau',
       dataviewId: 1,
+      config: {
+        color: '#FFAA0D',
+        colorRamp: 'orange',
+      },
     },
     {
       id: 'fishing-1',

@@ -23,7 +23,7 @@ export const dataviews: Dataview[] = [
             value: 'heatmap',
           },
         ],
-        endpoint: '4wings-fd-tiles', // TODO remove this once 4wings and fd are merged
+        endpoint: '4wings-tiles',
         datasetId: 'fd-water-temperature-palau-v2',
       },
     ],
