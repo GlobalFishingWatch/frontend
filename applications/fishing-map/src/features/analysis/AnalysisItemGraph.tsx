@@ -16,6 +16,7 @@ import { DateTime } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
+import { Range } from 'features/timebar/timebar.slice'
 import styles from './AnalysisGraph.module.css'
 
 export interface GraphData {
@@ -132,7 +133,10 @@ const AnalysisGraphTooltip = (props: any) => {
   return null
 }
 
-const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps }> = (props) => {
+const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps; timeRange: Range }> = (
+  props
+) => {
+  const { start, end } = props.timeRange
   const { timeseries, interval = '10days', sublayers } = props.graphData
 
   if (!timeseries) return null
@@ -171,7 +175,7 @@ const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps }> = (props) =
         <ComposedChart data={dataFormated} margin={{ top: 15, right: 20, left: -20, bottom: -10 }}>
           <CartesianGrid vertical={false} />
           <XAxis
-            domain={[new Date(2012, 0, 1).getTime(), new Date(2021, 0, 1).getTime()]}
+            domain={[new Date(start).getTime(), new Date(end).getTime()]}
             dataKey="date"
             interval="preserveStartEnd"
             tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
