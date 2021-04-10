@@ -42,8 +42,8 @@ const tickFormatter = (tick: number) => {
   return format(formatter)(tick)
 }
 
-const formatDateTicks = (tick: string, timeChunkInterval: Interval) => {
-  const date = DateTime.fromISO(tick).toUTC().setLocale(i18n.language)
+const formatDateTicks = (tick: number, timeChunkInterval: Interval) => {
+  const date = DateTime.fromMillis(tick).toUTC().setLocale(i18n.language)
   let formattedTick = ''
   switch (timeChunkInterval) {
     case 'month':
@@ -67,7 +67,7 @@ const formatTooltipValue = (value: number, payload: any, unit: string) => {
   const range = payload.range?.[index]
   const difference = range ? range[1] - value : 0
   const imprecision = value > 0 && (difference / value) * 100
-  const valueLabel = `${formatI18nNumber(value?.toFixed())} ${unit ? unit : ''}`
+  const valueLabel = `${formatI18nNumber(value, { maximumFractionDigits: 2 })} ${unit ? unit : ''}`
   const imprecisionLabel =
     imprecision && imprecision?.toFixed() !== '0' && value?.toFixed() !== '0'
       ? ` ± ${imprecision?.toFixed()}%`
@@ -80,13 +80,13 @@ type AnalysisGraphTooltipProps = {
   payload: {
     name: string
     dataKey: string
-    label: string
+    label: number
     value: number
     payload: any
     color: string
     unit: string
   }[]
-  label: string
+  label: number
   timeChunkInterval: Interval
 }
 
@@ -94,7 +94,7 @@ const AnalysisGraphTooltip = (props: any) => {
   const { active, payload, label, timeChunkInterval } = props as AnalysisGraphTooltipProps
 
   if (active && payload && payload.length) {
-    const date = DateTime.fromISO(label).toUTC().setLocale(i18n.language)
+    const date = DateTime.fromMillis(label).toUTC().setLocale(i18n.language)
     let formattedLabel = ''
     switch (timeChunkInterval) {
       case 'month':
@@ -178,7 +178,7 @@ const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps; timeRange: Ra
             domain={[new Date(start).getTime(), new Date(end).getTime()]}
             dataKey="date"
             interval="preserveStartEnd"
-            tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
+            tickFormatter={(tick: number) => formatDateTicks(tick, interval)}
             axisLine={paddedDomain[0] === 0}
             // scale={'time'}
             type={'number'}
