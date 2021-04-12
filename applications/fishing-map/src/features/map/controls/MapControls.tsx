@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -13,6 +13,7 @@ import {
 } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
+import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
 import Rulers from 'features/map/controls/Rulers'
@@ -74,6 +75,16 @@ const MapControls = ({
   const { viewport, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
   const { bounds } = useMapBounds()
+  const center = useMemo(
+    () => ({
+      latitude,
+      longitude,
+    }),
+    [latitude, longitude]
+  )
+
+  const debouncedBounds = useDebounce(bounds, 50)
+  const debouncedCenter = useDebounce(center, 50)
 
   const onZoomInClick = useCallback(() => {
     setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
@@ -140,8 +151,8 @@ const MapControls = ({
             className={styles.miniglobe}
             size={60}
             viewportThickness={3}
-            bounds={bounds}
-            center={{ latitude, longitude }}
+            bounds={debouncedBounds}
+            center={debouncedCenter}
           />
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewport} />}
         </div>
