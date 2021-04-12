@@ -11,38 +11,47 @@ const sourcesLoadingState = atom<{ [key: string]: boolean }>({
   default: {},
 })
 
-let listenstenerAttached = false
+let listenerAttached = false
 export const useSourcesLoadingState = () => {
   const [sourcesState, setSourcesState] = useRecoilState(sourcesLoadingState)
   const map = useMapInstance()
   const idledAttached = useRef<boolean>(true)
   useEffect(() => {
-    if (map && !listenstenerAttached) {
-      const sourceEventCallback = (e: any) => {
-        const currentSources = Object.keys(map?.getStyle().sources || {})
-        const sourcesLoaded = currentSources.map((sourceId) => [
-          sourceId,
-          map?.isSourceLoaded(sourceId),
-        ])
-        const allSourcesLoaded = sourcesLoaded.every(([id, loaded]) => loaded)
-        if (allSourcesLoaded) {
-          map.off('idle', sourceEventCallback)
-          idledAttached.current = false
-        } else if (!idledAttached.current) {
-          map.on('idle', sourceEventCallback)
-          idledAttached.current = true
-        }
-        setSourcesState(Object.fromEntries(sourcesLoaded))
+    const detachListeners = () => {
+      if (map) {
+        map.off('sourcedataloading', sourceEventCallback)
+        map.off('idle', sourceEventCallback)
+        map.off('error', sourceEventCallback)
       }
+    }
+
+    if (!map || listenerAttached) return detachListeners
+
+    const sourceEventCallback = (e: any) => {
+      const currentSources = Object.keys(map.getStyle().sources || {})
+      const sourcesLoaded = currentSources.map((sourceId) => [
+        sourceId,
+        map.isSourceLoaded(sourceId),
+      ])
+      const allSourcesLoaded = sourcesLoaded.every(([id, loaded]) => loaded)
+      if (allSourcesLoaded) {
+        map.off('idle', sourceEventCallback)
+        idledAttached.current = false
+      } else if (!idledAttached.current) {
+        map.on('idle', sourceEventCallback)
+        idledAttached.current = true
+      }
+      setSourcesState(Object.fromEntries(sourcesLoaded))
+    }
+    if (map && !listenerAttached) {
       map.on('sourcedataloading', sourceEventCallback)
       map.on('idle', sourceEventCallback)
       map.on('error', sourceEventCallback)
 
       // TODO: improve this workaroud to avoid attaching listeners on every hook instance
-      listenstenerAttached = true
-      // TODO unlisten on unmount
+      listenerAttached = true
     }
-    // console.log('onSet?', onSet, setSelf, trigger, map)
+    return detachListeners
   }, [map, setSourcesState])
 
   const serializedSourcesState = Object.entries(sourcesState)
