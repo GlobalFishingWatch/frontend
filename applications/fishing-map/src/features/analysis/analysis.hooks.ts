@@ -10,7 +10,6 @@ import { quantizeOffsetToDate, TimeChunk } from '@globalfishingwatch/layer-compo
 import { getTimeSeries, getRealValues } from '@globalfishingwatch/fourwings-aggregate'
 import { useActiveHeatmapAnimatedFeatures } from 'features/map/map-features.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectActiveHeatmapAnimatedGeneratorConfigs } from 'features/map/map.selectors'
 import { selectAnalysisGeometry } from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisItemGraph'
 import * as AnalysisWorker from './Analysis.worker'
@@ -19,10 +18,7 @@ const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 
 export const useFilteredTimeSeries = () => {
   const { start, end } = useTimerangeConnect()
-  const generatorConfigs = useSelector(selectActiveHeatmapAnimatedGeneratorConfigs)
-  const { sourcesFeatures, sourcesMetadata, haveSourcesLoaded } = useActiveHeatmapAnimatedFeatures(
-    generatorConfigs
-  )
+  const { sourcesFeatures, sourcesMetadata, haveSourcesLoaded } = useActiveHeatmapAnimatedFeatures()
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
   const [sourcesTimeseries, setSourceTimeseries] = useState<AnalysisGraphProps[] | undefined>()

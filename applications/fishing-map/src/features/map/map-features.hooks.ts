@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { atom, useRecoilState } from 'recoil'
-import { TEMPORALGRID_SOURCE_LAYER, TimeChunks } from '@globalfishingwatch/layer-composer'
+import { useSelector } from 'react-redux'
+import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import useMapInstance from 'features/map/map-context.hooks'
-import { useGeneratorStyleMetadata, useMapStyle } from './map.hooks'
+import { useMapStyle } from './map.hooks'
+import {
+  selectActiveHeatmapAnimatedGeneratorConfigs,
+  selectGeneratorConfigsById,
+} from './map.selectors'
 
 const sourcesLoadingState = atom<{ [key: string]: boolean }>({
   key: 'sourcesState',
@@ -66,9 +71,7 @@ export const useSourceLoaded = (sourceId: string) => {
 }
 
 export const useHaveSourcesLoaded = (sourcesIds: string[]) => {
-  console.log('useHaveSourcesLoaded')
   const sourcesState = useSourcesLoadingState()
-  console.log(sourcesState)
   const haveAllSourcesLoaded = sourcesIds.every((sourceId) => sourcesState[sourceId] === true)
   return useMemo(() => {
     return haveAllSourcesLoaded
@@ -121,7 +124,7 @@ export const useFeatures = ({
   return { sourcesFeatures, haveSourcesLoaded }
 }
 
-export const useActiveHeatmapAnimatedFeatures = (generators: AnyGeneratorConfig[]) => {
+const useGeneratorAnimatedFeatures = (generators: AnyGeneratorConfig[]) => {
   const sourcesMetadata = useActiveHeatmapAnimatedMetadatas(generators)
   const sourcesIds: string[] = useMemo(() => {
     return sourcesMetadata.map((metadata) => metadata?.timeChunks?.activeSourceId)
@@ -132,6 +135,18 @@ export const useActiveHeatmapAnimatedFeatures = (generators: AnyGeneratorConfig[
     sourceLayer: TEMPORALGRID_SOURCE_LAYER,
   })
   return { sourcesFeatures, haveSourcesLoaded, sourcesMetadata }
+}
+
+export const useActiveHeatmapAnimatedFeatures = () => {
+  const generators = useSelector(selectActiveHeatmapAnimatedGeneratorConfigs)
+  return useGeneratorAnimatedFeatures(generators)
+}
+
+export const useActivityTemporalgridFeatures = () => {
+  const generator = useSelector(
+    selectGeneratorConfigsById(MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
+  )
+  return useGeneratorAnimatedFeatures(generator)
 }
 
 /**
@@ -203,67 +218,4 @@ export const useMapSourceLoaded = (sourceId: string, cacheKey?: string) => {
   }, [map, sourceId, sourceLoaded])
 
   return sourceLoaded
-}
-
-/**
-TODO: DEPRECATE
- */
-export const useMapFeatures = ({
-  sourceId,
-  sourceLayer = 'main',
-  cacheKey,
-  filter,
-}: {
-  sourceId: string
-  sourceLayer?: string
-  cacheKey?: string
-  filter?: any[]
-}) => {
-  const map = useMapInstance()
-  const sourceLoaded = useMapSourceLoaded(sourceId, cacheKey)
-  // console.log(sourceId, sourceLayer, sourceLoaded, useMapStyle())
-
-  const features = useMemo(() => {
-    if (sourceLoaded) {
-      const features = map?.querySourceFeatures(sourceId, {
-        sourceLayer: sourceLayer,
-        ...(filter && { filter }),
-      })
-      // console.log(features)
-      return features
-    }
-  }, [sourceLoaded, map, sourceId, sourceLayer, filter])
-
-  return { features, sourceLoaded }
-}
-
-/**
-TODO: DEPRECATE
- */
-const useMapTemporalgridLayerFeatures = ({
-  cacheKey,
-  generatorId,
-}: {
-  cacheKey?: string
-  generatorId: string
-}) => {
-  const mergedActivityGenMetadata = useGeneratorStyleMetadata(generatorId)
-  const currentTimeChunks = mergedActivityGenMetadata.timeChunks as TimeChunks
-  const currentTimeChunkId = currentTimeChunks?.activeSourceId
-
-  return useMapFeatures({
-    sourceId: currentTimeChunkId,
-    sourceLayer: TEMPORALGRID_SOURCE_LAYER,
-    cacheKey,
-  })
-}
-
-/**
-TODO: DEPRECATE
- */
-export const useActivityTemporalgridFeatures = ({ cacheKey }: { cacheKey?: string } = {}) => {
-  return useMapTemporalgridLayerFeatures({
-    cacheKey,
-    generatorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
-  })
 }

@@ -227,6 +227,12 @@ const selectGeneratorConfigsByType = (type: Generators.Type) => {
   })
 }
 
+export const selectGeneratorConfigsById = (id: string) => {
+  return createSelector([selectStaticGeneratorsConfig], (generators) => {
+    return generators?.filter((generator) => generator.id === id)
+  })
+}
+
 const selectHeatmapAnimatedGeneratorConfigs = createSelector(
   [selectGeneratorConfigsByType(Generators.Type.HeatmapAnimated)],
   (dataviews) => dataviews

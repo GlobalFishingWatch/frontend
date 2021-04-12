@@ -11,16 +11,14 @@ import TimebarComponent, {
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
-import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import { selectActivityDataviews } from 'features/workspace/workspace.selectors'
-import { useGeneratorStyleMetadata } from 'features/map/map.hooks'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
-import { useActivityTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { filterByViewport } from 'features/map/map.utils'
+import { useActivityTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -60,7 +58,6 @@ const TimebarWrapper = () => {
     [setBookmark]
   )
 
-  const temporalgrid = useGeneratorStyleMetadata(MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
   const [stackedActivity, setStackedActivity] = useState<any>()
 
   const visibleTemporalGridDataviews = useMemo(
@@ -69,7 +66,7 @@ const TimebarWrapper = () => {
   )
 
   const { bounds } = useMapBounds()
-  const { features: cellFeatures, sourceLoaded } = useActivityTemporalgridFeatures()
+  const { sourcesFeatures, haveSourcesLoaded, sourcesMetadata } = useActivityTemporalgridFeatures()
   const debouncedBounds = useDebounce(bounds, 400)
 
   useEffect(() => {
@@ -81,14 +78,13 @@ const TimebarWrapper = () => {
       return
     }
 
-    if (cellFeatures?.length && debouncedBounds && temporalgrid) {
-      // TODO: think about having an custom useMapFeatures just for cells
-      const numSublayers = temporalgrid.numSublayers
-      const timeChunks = temporalgrid.timeChunks as TimeChunks
+    if (sourcesFeatures?.length && debouncedBounds) {
+      const numSublayers = sourcesMetadata[0].numSublayers
+      const timeChunks = sourcesMetadata[0].timeChunks as TimeChunks
       const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
       const chunkQuantizeOffset = activeTimeChunk.quantizeOffset
 
-      const filteredFeatures = filterByViewport(cellFeatures, debouncedBounds)
+      const filteredFeatures = filterByViewport(sourcesFeatures[0], debouncedBounds)
       if (filteredFeatures?.length > 0) {
         const values = getTimeSeries(
           filteredFeatures as any,
@@ -116,10 +112,10 @@ const TimebarWrapper = () => {
       }
     }
   }, [
-    cellFeatures,
+    sourcesFeatures,
+    haveSourcesLoaded,
+    sourcesMetadata,
     debouncedBounds,
-    temporalgrid,
-    sourceLoaded,
     timebarVisualisation,
     visibleTemporalGridDataviews,
   ])
@@ -127,10 +123,10 @@ const TimebarWrapper = () => {
   const dataviewsColors = temporalGridDataviews?.map((dataview) => dataview.config?.color)
 
   // Using an effect to ensure the blur loading is removed once the component has been rendered
-  const [loading, setLoading] = useState(sourceLoaded)
+  const [loading, setLoading] = useState(haveSourcesLoaded)
   useEffect(() => {
-    setLoading(sourceLoaded)
-  }, [sourceLoaded])
+    setLoading(haveSourcesLoaded)
+  }, [haveSourcesLoaded])
 
   if (!start || !end) return null
 
