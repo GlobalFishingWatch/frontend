@@ -1,18 +1,15 @@
-import React, { useEffect, useRef, useMemo, useState } from 'react'
+import React, { useEffect, useRef, useMemo, useState, Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import union from '@turf/union'
-import bbox from '@turf/bbox'
-import { Feature, Polygon } from 'geojson'
+import { Feature, Polygon, MultiPolygon } from 'geojson'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
+import bbox from '@turf/bbox'
 import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
-import {
-  DEFAULT_CONTEXT_SOURCE_LAYER,
-  TEMPORALGRID_SOURCE_LAYER,
-} from '@globalfishingwatch/layer-composer/dist/generators'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
@@ -27,10 +24,9 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectAnalysisQuery } from 'features/app/app.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { useFeatures, useMapFeatures } from 'features/map/map-features.hooks'
+import { useMapFeatures } from 'features/map/map-features.hooks'
 import { Bbox } from 'types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectActiveHeatmapAnimatedGeneratorConfigs } from 'features/map/map.selectors'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
@@ -45,7 +41,10 @@ import {
   selectReportStatus,
   setAnalysisGeometry,
 } from './analysis.slice'
-import AnalysisWrapper from './AnalysisWrapper'
+import AnalysisItem from './AnalysisItem'
+import { useFilteredTimeSeries } from './analysis.hooks'
+
+// const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 
 function Analysis() {
   const { t } = useTranslation()
@@ -76,15 +75,6 @@ function Analysis() {
     filter,
     cacheKey: areaId,
   })
-
-  const generatorConfigs = useSelector(selectActiveHeatmapAnimatedGeneratorConfigs)
-  //TODO collect metadata here, not just ids
-  // TODO also pass metadata here
-  const { sourcesFeatures, sourcesMetadata, haveAllSourcesLoaded } = useFeatures({
-    generators: generatorConfigs,
-    sourceLayer: TEMPORALGRID_SOURCE_LAYER,
-  })
-  console.log('haveAllSourcesLoaded', haveAllSourcesLoaded)
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
@@ -197,6 +187,12 @@ function Analysis() {
     }
   }, [])
 
+  const {
+    generatingTimeseries,
+    haveAllSourcesLoaded,
+    sourcesTimeseriesFiltered,
+  } = useFilteredTimeSeries()
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -217,17 +213,29 @@ function Analysis() {
       {workspaceStatus !== AsyncReducerStatus.Finished ||
       !contextAreaSourceLoaded ||
       !analysisGeometry ||
-      !haveAllSourcesLoaded ? (
+      !haveAllSourcesLoaded ||
+      generatingTimeseries ? (
         <Spinner className={styles.spinnerFull} />
       ) : (
         <div className={styles.contentContainer}>
           <div className={styles.content}>
-            <AnalysisWrapper
-              hasAnalysisLayers={hasAnalysisLayers}
-              analysisAreaName={analysisAreaName}
-              sourcesFeatures={sourcesFeatures}
-              sourcesMetadata={sourcesMetadata}
-            />
+            {sourcesTimeseriesFiltered && sourcesTimeseriesFiltered?.length ? (
+              <Fragment>
+                {sourcesTimeseriesFiltered.map((sourceTimeseriesFiltered, index) => {
+                  return (
+                    <AnalysisItem
+                      hasAnalysisLayers={hasAnalysisLayers}
+                      analysisAreaName={analysisAreaName}
+                      key={index}
+                      graphData={sourceTimeseriesFiltered}
+                    />
+                  )
+                })}
+              </Fragment>
+            ) : (
+              <p className={styles.emptyDataPlaceholder}>No data available</p>
+            )}
+
             {contextAreaSourceLoaded && analysisGeometry && (
               <p className={styles.placeholder}>
                 {t(

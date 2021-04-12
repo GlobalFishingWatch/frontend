@@ -1,46 +1,30 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import createAnalysisWorker from 'workerize-loader!./Analysis.worker'
-import { MultiPolygon, Polygon } from 'geojson'
 import { DateTime } from 'luxon'
 import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import createAnalysisWorker from 'workerize-loader!./Analysis.worker'
+import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
+import { quantizeOffsetToDate, TimeChunk } from '@globalfishingwatch/layer-composer'
 import { getTimeSeries, getRealValues } from '@globalfishingwatch/fourwings-aggregate'
-import {
-  quantizeOffsetToDate,
-  TEMPORALGRID_SOURCE_LAYER,
-  TimeChunk,
-} from '@globalfishingwatch/layer-composer'
-import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
+import { useFeatures } from 'features/map/map-features.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveHeatmapAnimatedGeneratorConfigs } from 'features/map/map.selectors'
-import { useFeatures } from 'features/map/map-features.hooks'
-import * as AnalysisWorker from './Analysis.worker'
-import AnalysisItem from './AnalysisItem'
-import { AnalysisGraphProps } from './AnalysisItemGraph'
 import { selectAnalysisGeometry } from './analysis.slice'
-import styles from './Analysis.module.css'
+import { AnalysisGraphProps } from './AnalysisItemGraph'
+import * as AnalysisWorker from './Analysis.worker'
 
 const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 
-function AnalysisGraphWrapper({
-  hasAnalysisLayers,
-  analysisAreaName,
-  sourcesFeatures,
-  sourcesMetadata,
-}: {
-  sourcesFeatures: mapboxgl.MapboxGeoJSONFeature[][] | undefined
-  sourcesMetadata: any[]
-  hasAnalysisLayers: boolean
-  analysisAreaName: string
-}) {
-  console.log('AW')
-
-  //TODO collect metadata here, not just ids
-  // TODO also pass metadata here
+export const useFilteredTimeSeries = () => {
   const { start, end } = useTimerangeConnect()
+  const generatorConfigs = useSelector(selectActiveHeatmapAnimatedGeneratorConfigs)
+  const { sourcesFeatures, sourcesMetadata, haveAllSourcesLoaded } = useFeatures({
+    generators: generatorConfigs,
+    sourceLayer: TEMPORALGRID_SOURCE_LAYER,
+  })
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
   const [sourcesTimeseries, setSourceTimeseries] = useState<AnalysisGraphProps[] | undefined>()
@@ -57,7 +41,6 @@ function AnalysisGraphWrapper({
   }, [analysisAreaFeature])
 
   useEffect(() => {
-    console.log('generating analysis')
     const updateTimeseries = async (
       allFeatures: GeoJSON.Feature<GeoJSON.Geometry>[][],
       geometry: Polygon | MultiPolygon
@@ -144,7 +127,6 @@ function AnalysisGraphWrapper({
       setSourceTimeseries(undefined)
     }
   }, [simplifiedGeometry, sourcesMetadata, sourcesFeatures])
-
   const sourcesTimeseriesFiltered = useMemo(() => {
     return sourcesTimeseries?.map((sourceTimeseries) => {
       return {
@@ -158,32 +140,5 @@ function AnalysisGraphWrapper({
       }
     })
   }, [sourcesTimeseries, start, end])
-
-  if (generatingTimeseries) {
-    return <Spinner className={styles.wrapperSpinner} />
-  }
-
-  if (!sourcesTimeseriesFiltered?.length) {
-    return <p className={styles.emptyDataPlaceholder}>No data available</p>
-  }
-
-  // TODO looks like it renders at each idle event, check why and ifx
-  // console.log(sourcesTimeseriesFiltered)
-  return (
-    <Fragment>
-      {sourcesTimeseriesFiltered &&
-        sourcesTimeseriesFiltered.map((sourceTimeseriesFiltered, index) => {
-          return (
-            <AnalysisItem
-              hasAnalysisLayers={hasAnalysisLayers}
-              analysisAreaName={analysisAreaName}
-              key={index}
-              graphData={sourceTimeseriesFiltered}
-            />
-          )
-        })}
-    </Fragment>
-  )
+  return { generatingTimeseries, haveAllSourcesLoaded, sourcesTimeseriesFiltered }
 }
-
-export default AnalysisGraphWrapper
