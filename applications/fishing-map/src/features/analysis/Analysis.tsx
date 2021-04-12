@@ -24,7 +24,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectAnalysisQuery } from 'features/app/app.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { useMapFeatures } from 'features/map/map-features.hooks'
+import { useFeatures } from 'features/map/map-features.hooks'
 import { Bbox } from 'types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import styles from './Analysis.module.css'
@@ -66,14 +66,17 @@ function Analysis() {
   const userData = useSelector(selectUserData)
   // TODO should not use hardcoded activity layers
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
-  const { areaId, sourceId } = analysisQuery
+  const { areaId, sourceId: contextSourceId } = analysisQuery
+  const contextSourcesIds = useMemo(() => [contextSourceId], [contextSourceId])
   const filter = useMemo(() => ['==', 'gfw_id', parseInt(areaId)], [areaId])
 
-  // TODO deprecate, use useFeatures instead
-  const { features: contextAreaFeatures, sourceLoaded: contextAreaSourceLoaded } = useMapFeatures({
-    sourceId,
+  const {
+    sourcesFeatures: contextAreaFeaturesArr,
+    haveSourcesLoaded: contextAreaSourceLoaded,
+  } = useFeatures({
+    sourcesIds: contextSourcesIds,
+    sourceLayer: 'main',
     filter,
-    cacheKey: areaId,
   })
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
@@ -89,17 +92,18 @@ function Analysis() {
     if (contextAreaSourceLoaded) {
       cleanFeatureState('highlight')
       const featureState = {
-        source: sourceId,
+        source: contextSourceId,
         sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
         id: areaId,
       }
       updateFeatureState([featureState], 'highlight')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areaId, sourceId, contextAreaSourceLoaded])
+  }, [areaId, contextSourceId, contextAreaSourceLoaded])
 
   useEffect(() => {
     if (contextAreaSourceLoaded) {
+      const contextAreaFeatures = contextAreaFeaturesArr?.[0]
       if (contextAreaFeatures && contextAreaFeatures.length > 0) {
         const contextAreaFeatureMerged = contextAreaFeatures.reduce(
           (acc, { geometry, properties }) => {
@@ -136,7 +140,7 @@ function Analysis() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contextAreaFeatures, dispatch, contextAreaSourceLoaded])
+  }, [contextAreaFeaturesArr, dispatch, contextAreaSourceLoaded])
 
   useEffect(() => {
     if (analysisBounds) {
@@ -189,7 +193,7 @@ function Analysis() {
 
   const {
     generatingTimeseries,
-    haveAllSourcesLoaded,
+    haveSourcesLoaded,
     sourcesTimeseriesFiltered,
   } = useFilteredTimeSeries()
 
@@ -213,7 +217,7 @@ function Analysis() {
       {workspaceStatus !== AsyncReducerStatus.Finished ||
       !contextAreaSourceLoaded ||
       !analysisGeometry ||
-      !haveAllSourcesLoaded ||
+      !haveSourcesLoaded ||
       generatingTimeseries ? (
         <Spinner className={styles.spinnerFull} />
       ) : (

@@ -17,16 +17,7 @@ export const useSourcesLoadingState = () => {
   const map = useMapInstance()
   const idledAttached = useRef<boolean>(true)
   useEffect(() => {
-    const detachListeners = () => {
-      if (map) {
-        map.off('sourcedataloading', sourceEventCallback)
-        map.off('idle', sourceEventCallback)
-        map.off('error', sourceEventCallback)
-      }
-    }
-
-    if (!map || listenerAttached) return detachListeners
-
+    if (!map || listenerAttached) return
     const sourceEventCallback = (e: any) => {
       const currentSources = Object.keys(map.getStyle().sources || {})
       const sourcesLoaded = currentSources.map((sourceId) => [
@@ -51,6 +42,12 @@ export const useSourcesLoadingState = () => {
       // TODO: improve this workaroud to avoid attaching listeners on every hook instance
       listenerAttached = true
     }
+    const detachListeners = () => {
+      map.off('sourcedataloading', sourceEventCallback)
+      map.off('idle', sourceEventCallback)
+      map.off('error', sourceEventCallback)
+    }
+
     return detachListeners
   }, [map, setSourcesState])
 
@@ -68,8 +65,8 @@ export const useSourceLoaded = (sourceId: string) => {
   return sourcesState[sourceId] === true
 }
 
-export const useHaveAllSourcesLoaded = (sourcesIds: string[]) => {
-  console.log('useHaveAllSourcesLoaded')
+export const useHaveSourcesLoaded = (sourcesIds: string[]) => {
+  console.log('useHaveSourcesLoaded')
   const sourcesState = useSourcesLoadingState()
   console.log(sourcesState)
   const haveAllSourcesLoaded = sourcesIds.every((sourceId) => sourcesState[sourceId] === true)
@@ -97,25 +94,20 @@ export const useActiveHeatmapAnimatedMetadatas = (generators: AnyGeneratorConfig
 }
 
 export const useFeatures = ({
-  generators,
+  sourcesIds,
   sourceLayer = 'main',
   filter,
 }: {
-  generators: AnyGeneratorConfig[]
+  sourcesIds: string[]
   sourceLayer?: string
   filter?: any[]
 }) => {
-  const sourcesMetadata = useActiveHeatmapAnimatedMetadatas(generators)
-  const activeSourcesIds = useMemo(() => {
-    return sourcesMetadata.map((metadata) => metadata?.timeChunks?.activeSourceId)
-  }, [sourcesMetadata])
-  const haveAllSourcesLoaded = useHaveAllSourcesLoaded(activeSourcesIds)
+  const haveSourcesLoaded = useHaveSourcesLoaded(sourcesIds)
   const map = useMapInstance()
 
   const sourcesFeatures = useMemo(() => {
-    if (haveAllSourcesLoaded && map) {
-      const features = sourcesMetadata.map((metadata) => {
-        const sourceId = metadata?.timeChunks?.activeSourceId
+    if (haveSourcesLoaded && map) {
+      const features = sourcesIds.map((sourceId) => {
         const sourceFeatures = map.querySourceFeatures(sourceId, {
           sourceLayer,
           ...(filter && { filter }),
@@ -124,9 +116,22 @@ export const useFeatures = ({
       })
       return features
     }
-  }, [haveAllSourcesLoaded, map, sourcesMetadata, sourceLayer, filter])
+  }, [haveSourcesLoaded, map, sourceLayer, filter, sourcesIds])
 
-  return { sourcesFeatures, sourcesMetadata, haveAllSourcesLoaded }
+  return { sourcesFeatures, haveSourcesLoaded }
+}
+
+export const useActiveHeatmapAnimatedFeatures = (generators: AnyGeneratorConfig[]) => {
+  const sourcesMetadata = useActiveHeatmapAnimatedMetadatas(generators)
+  const sourcesIds: string[] = useMemo(() => {
+    return sourcesMetadata.map((metadata) => metadata?.timeChunks?.activeSourceId)
+  }, [sourcesMetadata])
+
+  const { sourcesFeatures, haveSourcesLoaded } = useFeatures({
+    sourcesIds,
+    sourceLayer: TEMPORALGRID_SOURCE_LAYER,
+  })
+  return { sourcesFeatures, haveSourcesLoaded, sourcesMetadata }
 }
 
 /**

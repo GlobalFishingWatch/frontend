@@ -6,10 +6,9 @@ import simplify from '@turf/simplify'
 import bbox from '@turf/bbox'
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import createAnalysisWorker from 'workerize-loader!./Analysis.worker'
-import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { quantizeOffsetToDate, TimeChunk } from '@globalfishingwatch/layer-composer'
 import { getTimeSeries, getRealValues } from '@globalfishingwatch/fourwings-aggregate'
-import { useFeatures } from 'features/map/map-features.hooks'
+import { useActiveHeatmapAnimatedFeatures } from 'features/map/map-features.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectActiveHeatmapAnimatedGeneratorConfigs } from 'features/map/map.selectors'
 import { selectAnalysisGeometry } from './analysis.slice'
@@ -21,10 +20,9 @@ const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 export const useFilteredTimeSeries = () => {
   const { start, end } = useTimerangeConnect()
   const generatorConfigs = useSelector(selectActiveHeatmapAnimatedGeneratorConfigs)
-  const { sourcesFeatures, sourcesMetadata, haveAllSourcesLoaded } = useFeatures({
-    generators: generatorConfigs,
-    sourceLayer: TEMPORALGRID_SOURCE_LAYER,
-  })
+  const { sourcesFeatures, sourcesMetadata, haveSourcesLoaded } = useActiveHeatmapAnimatedFeatures(
+    generatorConfigs
+  )
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
   const [sourcesTimeseries, setSourceTimeseries] = useState<AnalysisGraphProps[] | undefined>()
@@ -140,5 +138,5 @@ export const useFilteredTimeSeries = () => {
       }
     })
   }, [sourcesTimeseries, start, end])
-  return { generatingTimeseries, haveAllSourcesLoaded, sourcesTimeseriesFiltered }
+  return { generatingTimeseries, haveSourcesLoaded, sourcesTimeseriesFiltered }
 }
