@@ -133,6 +133,19 @@ const TimebarWrapper = () => {
   }, [sourceLoaded])
 
   if (!start || !end) return null
+
+  const onMouseMove = (clientX: number, scale: (arg: number) => Date) => {
+    if (clientX === null) {
+      if (highlightedTime !== undefined) {
+        dispatch(disableHighlightedTime())
+      }
+    } else {
+      const start = scale(clientX - 10).toISOString()
+      const end = scale(clientX + 10).toISOString()
+      dispatch(setHighlightedTime({ start, end }))
+    }
+  }
+
   return (
     <div>
       <TimebarComponent
@@ -144,17 +157,7 @@ const TimebarWrapper = () => {
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
         onChange={dispatchTimeranges}
         showLastUpdate={false}
-        onMouseMove={(clientX: number, scale: (arg: number) => Date) => {
-          if (clientX === null) {
-            if (highlightedTime !== undefined) {
-              dispatch(disableHighlightedTime())
-            }
-          } else {
-            const start = scale(clientX - 10).toISOString()
-            const end = scale(clientX + 10).toISOString()
-            dispatch(setHighlightedTime({ start, end }))
-          }
-        }}
+        onMouseMove={onMouseMove}
         onBookmarkChange={onBookmarkChange}
         bookmarkStart={bookmark?.start}
         bookmarkEnd={bookmark?.end}
