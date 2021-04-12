@@ -12,7 +12,8 @@ import { clientsClaim } from 'workbox-core'
 import { ExpirationPlugin } from 'workbox-expiration'
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
-import { StaleWhileRevalidate } from 'workbox-strategies'
+import { NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies'
+import { BackgroundSyncPlugin } from 'workbox-background-sync'
 
 declare const self: ServiceWorkerGlobalScope
 
@@ -65,6 +66,9 @@ registerRoute(
       // Ensure that once this runtime cache reaches a maximum size the
       // least-recently used images are removed.
       new ExpirationPlugin({ maxEntries: 50 }),
+      new BackgroundSyncPlugin('images-bg-sync', {
+        maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
+      }),
     ],
   })
 )
@@ -83,17 +87,62 @@ registerRoute(
   /\/locales\/.*/,
   new StaleWhileRevalidate({
     cacheName: 'locales',
-    plugins: [new ExpirationPlugin({ maxEntries: 50 })],
+    plugins: [
+      new ExpirationPlugin({ maxEntries: 50 }),
+      new BackgroundSyncPlugin('locales-bg-sync', {
+        maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
+      }),
+    ],
+  })
+)
+
+// Cache API Auth Calls
+registerRoute(
+  ({ url }) =>
+    process.env.REACT_APP_API_GATEWAY &&
+    url.origin === process.env.REACT_APP_API_GATEWAY &&
+    url.pathname.match(/^\/auth\//),
+  new NetworkFirst({
+    cacheName: 'auth',
+    plugins: [
+      new ExpirationPlugin({
+        maxAgeSeconds: 24 * 60 * 60, // Auth requests cached expires in 24 hours
+      }),
+      new BackgroundSyncPlugin('auth-bg-sync', {
+        maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
+      }),
+    ],
   })
 )
 
 // Cache API Calls
 registerRoute(
   ({ url }) =>
-    process.env.REACT_APP_API_GATEWAY && url.origin === process.env.REACT_APP_API_GATEWAY,
-  new StaleWhileRevalidate({
+    process.env.REACT_APP_API_GATEWAY &&
+    url.origin === process.env.REACT_APP_API_GATEWAY &&
+    !url.pathname.match(/^\/auth\//),
+  new NetworkFirst({
     cacheName: 'api',
-    plugins: [new ExpirationPlugin({ maxEntries: 50 })],
+    plugins: [
+      new BackgroundSyncPlugin('api-bg-sync', {
+        maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
+      }),
+    ],
+  })
+)
+
+// Cache Public Tiles API Calls (bathymetry pngs & default pbfs)
+registerRoute(
+  ({ url }) =>
+    url.origin === 'https://storage.googleapis.com' &&
+    url.pathname.match(/^\/public-tiles\/basemap\//),
+  new StaleWhileRevalidate({
+    cacheName: 'tiles',
+    plugins: [
+      new BackgroundSyncPlugin('tiles-bg-sync', {
+        maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
+      }),
+    ],
   })
 )
 
