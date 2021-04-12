@@ -1,5 +1,11 @@
 ## 0.0.1
 
+## 0.2.0
+
+### Minor Changes
+
+- supports i18n
+
 ## 0.1.2
 
 ### Patch Changes

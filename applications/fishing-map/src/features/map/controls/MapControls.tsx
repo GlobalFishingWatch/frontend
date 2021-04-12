@@ -12,7 +12,9 @@ import {
   Button,
 } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
+
+
+import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
@@ -29,10 +31,16 @@ import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
 
 const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
+  const { i18n } = useTranslation()
   const [showDMS, setShowDMS] = useState(true)
   return (
     <div className={styles.miniGlobeInfo} onClick={() => setShowDMS(!showDMS)}>
-      <div className={styles.miniGlobeInfoTitle}>{getOceanAreaName(viewport, true)}</div>
+      <div className={styles.miniGlobeInfoTitle}>
+        {getOceanAreaName(viewport, {
+          locale: i18n.language as OceanAreaLocale,
+          combineWithEEZ: true,
+        })}
+      </div>
       <div>
         {showDMS
           ? formatcoords(viewport.latitude, viewport.longitude).format('DDMMssX', {
