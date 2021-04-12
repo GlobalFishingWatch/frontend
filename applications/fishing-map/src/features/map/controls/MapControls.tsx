@@ -82,9 +82,8 @@ const MapControls = ({
     }),
     [latitude, longitude]
   )
-
-  const debouncedBounds = useDebounce(bounds, 50)
-  const debouncedCenter = useDebounce(center, 50)
+  const options = { bounds, center }
+  const debouncedOptions = useDebounce(options, 16)
 
   const onZoomInClick = useCallback(() => {
     setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
@@ -151,8 +150,8 @@ const MapControls = ({
             className={styles.miniglobe}
             size={60}
             viewportThickness={3}
-            bounds={debouncedBounds}
-            center={debouncedCenter}
+            bounds={debouncedOptions.bounds}
+            center={debouncedOptions.center}
           />
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewport} />}
         </div>
