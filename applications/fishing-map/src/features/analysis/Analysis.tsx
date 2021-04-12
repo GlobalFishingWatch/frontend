@@ -9,7 +9,10 @@ import { DateTime } from 'luxon'
 import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
+import {
+  DEFAULT_CONTEXT_SOURCE_LAYER,
+  TEMPORALGRID_SOURCE_LAYER,
+} from '@globalfishingwatch/layer-composer/dist/generators'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
@@ -24,9 +27,10 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectAnalysisQuery } from 'features/app/app.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { useMapFeatures } from 'features/map/map-features.hooks'
+import { useFeatures, useMapFeatures } from 'features/map/map-features.hooks'
 import { Bbox } from 'types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectActiveHeatmapAnimatedGeneratorConfigs } from 'features/map/map.selectors'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
@@ -67,11 +71,20 @@ function Analysis() {
   const filter = useMemo(() => ['==', 'gfw_id', parseInt(areaId)], [areaId])
 
   // TODO deprecate, use useFeatures instead
-  const { features: contextAreaFeatures, sourceLoaded } = useMapFeatures({
+  const { features: contextAreaFeatures, sourceLoaded: contextAreaSourceLoaded } = useMapFeatures({
     sourceId,
     filter,
     cacheKey: areaId,
   })
+
+  const generatorConfigs = useSelector(selectActiveHeatmapAnimatedGeneratorConfigs)
+  //TODO collect metadata here, not just ids
+  // TODO also pass metadata here
+  const { sourcesFeatures, sourcesMetadata, haveAllSourcesLoaded } = useFeatures({
+    generators: generatorConfigs,
+    sourceLayer: TEMPORALGRID_SOURCE_LAYER,
+  })
+  console.log('haveAllSourcesLoaded', haveAllSourcesLoaded)
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
@@ -83,7 +96,7 @@ function Analysis() {
   }, [start, end])
 
   useEffect(() => {
-    if (sourceLoaded) {
+    if (contextAreaSourceLoaded) {
       cleanFeatureState('highlight')
       const featureState = {
         source: sourceId,
@@ -93,10 +106,10 @@ function Analysis() {
       updateFeatureState([featureState], 'highlight')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areaId, sourceId, sourceLoaded])
+  }, [areaId, sourceId, contextAreaSourceLoaded])
 
   useEffect(() => {
-    if (sourceLoaded) {
+    if (contextAreaSourceLoaded) {
       if (contextAreaFeatures && contextAreaFeatures.length > 0) {
         const contextAreaFeatureMerged = contextAreaFeatures.reduce(
           (acc, { geometry, properties }) => {
@@ -133,7 +146,7 @@ function Analysis() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contextAreaFeatures, dispatch, sourceLoaded])
+  }, [contextAreaFeatures, dispatch, contextAreaSourceLoaded])
 
   useEffect(() => {
     if (analysisBounds) {
@@ -201,20 +214,21 @@ function Analysis() {
           />
         </div>
       </div>
-      {workspaceStatus !== AsyncReducerStatus.Finished ? (
+      {workspaceStatus !== AsyncReducerStatus.Finished ||
+      !contextAreaSourceLoaded ||
+      !analysisGeometry ||
+      !haveAllSourcesLoaded ? (
         <Spinner className={styles.spinnerFull} />
       ) : (
         <div className={styles.contentContainer}>
           <div className={styles.content}>
-            {!sourceLoaded || !analysisGeometry ? (
-              <Spinner className={styles.spinner} />
-            ) : (
-              <AnalysisWrapper
-                hasAnalysisLayers={hasAnalysisLayers}
-                analysisAreaName={analysisAreaName}
-              />
-            )}
-            {sourceLoaded && analysisGeometry && (
+            <AnalysisWrapper
+              hasAnalysisLayers={hasAnalysisLayers}
+              analysisAreaName={analysisAreaName}
+              sourcesFeatures={sourcesFeatures}
+              sourcesMetadata={sourcesMetadata}
+            />
+            {contextAreaSourceLoaded && analysisGeometry && (
               <p className={styles.placeholder}>
                 {t(
                   'analysis.disclaimer',

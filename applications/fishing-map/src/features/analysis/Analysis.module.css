@@ -62,6 +62,10 @@
   height: 100vh;
 }
 
+.wrapperSpinner {
+  height: calc(100% - 80px);
+}
+
 .emptyDataPlaceholder {
   display: flex;
   align-items: center;

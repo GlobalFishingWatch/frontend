@@ -28,19 +28,18 @@ const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 function AnalysisGraphWrapper({
   hasAnalysisLayers,
   analysisAreaName,
+  sourcesFeatures,
+  sourcesMetadata,
 }: {
+  sourcesFeatures: mapboxgl.MapboxGeoJSONFeature[][] | undefined
+  sourcesMetadata: any[]
   hasAnalysisLayers: boolean
   analysisAreaName: string
 }) {
   console.log('AW')
 
-  const generatorConfigs = useSelector(selectActiveHeatmapAnimatedGeneratorConfigs)
   //TODO collect metadata here, not just ids
   // TODO also pass metadata here
-  const { sourcesFeatures, sourcesMetadata, haveAllSourcesLoaded } = useFeatures({
-    generators: generatorConfigs,
-    sourceLayer: TEMPORALGRID_SOURCE_LAYER,
-  })
   const { start, end } = useTimerangeConnect()
   const analysisAreaFeature = useSelector(selectAnalysisGeometry)
   const [generatingTimeseries, setGeneratingTimeseries] = useState(false)
@@ -144,9 +143,7 @@ function AnalysisGraphWrapper({
     } else {
       setSourceTimeseries(undefined)
     }
-  }, [simplifiedGeometry, sourcesMetadata, sourcesFeatures, haveAllSourcesLoaded])
-
-  const debouncedSourceLoaded = useDebounce(haveAllSourcesLoaded, 600)
+  }, [simplifiedGeometry, sourcesMetadata, sourcesFeatures])
 
   const sourcesTimeseriesFiltered = useMemo(() => {
     return sourcesTimeseries?.map((sourceTimeseries) => {
@@ -162,7 +159,9 @@ function AnalysisGraphWrapper({
     })
   }, [sourcesTimeseries, start, end])
 
-  if (!debouncedSourceLoaded || generatingTimeseries) return <Spinner className={styles.spinner} />
+  if (generatingTimeseries) {
+    return <Spinner className={styles.wrapperSpinner} />
+  }
 
   if (!sourcesTimeseriesFiltered?.length) {
     return <p className={styles.emptyDataPlaceholder}>No data available</p>

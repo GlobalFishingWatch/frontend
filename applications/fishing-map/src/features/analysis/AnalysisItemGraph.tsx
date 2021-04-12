@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -139,13 +139,29 @@ const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps; timeRange: Ra
   const { start, end } = props.timeRange
   const { timeseries, interval = '10days', sublayers } = props.graphData
 
-  if (!timeseries) return null
+  const dataFormated = useMemo(() => {
+    return timeseries
+      ?.map(({ date, min, max }) => {
+        const range = min.map((m, i) => [m, max[i]])
+        const avg = min.map((m, i) => (m + max[i]) / 2)
+        return {
+          date: new Date(date).getTime(),
+          range,
+          avg,
+        }
+      })
+      .filter((d) => {
+        return !isNaN(d.avg[0])
+      })
+  }, [timeseries])
 
-  const dataMin: number = timeseries.length
-    ? (min(timeseries.flatMap(({ min }) => min)) as number)
+  if (!dataFormated) return null
+
+  const dataMin: number = dataFormated.length
+    ? (min(dataFormated.flatMap(({ range }) => range[0])) as number)
     : 0
-  const dataMax: number = timeseries.length
-    ? (max(timeseries.flatMap(({ max }) => max)) as number)
+  const dataMax: number = dataFormated.length
+    ? (max(dataFormated.flatMap(({ range }) => range[1])) as number)
     : 0
 
   const domainPadding = (dataMax - dataMin) / 8
@@ -153,21 +169,6 @@ const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps; timeRange: Ra
     Math.max(0, Math.floor(dataMin - domainPadding)),
     Math.ceil(dataMax + domainPadding),
   ]
-
-  let dataFormated = timeseries.map(({ date, min, max }) => {
-    const range = min.map((m, i) => [m, max[i]])
-    const avg = min.map((m, i) => (m + max[i]) / 2)
-    return {
-      date: new Date(date).getTime(),
-      range,
-      avg,
-    }
-  })
-
-  // console.log(dataFormated)
-  dataFormated = dataFormated.filter((d) => {
-    return !isNaN(d.avg[0])
-  })
 
   return (
     <div className={styles.graph}>
