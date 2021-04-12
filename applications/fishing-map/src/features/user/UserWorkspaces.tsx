@@ -174,8 +174,8 @@ function UserWorkspaces() {
           component={
             <TooltipListContainer>
               {workspaceTemplates?.map((template) => (
-                <li key={template} onClick={() => onWorkspaceUserGroupClick(template)}>
-                  {template}
+                <li key={template}>
+                  <button onClick={() => onWorkspaceUserGroupClick(template)}>{template}</button>
                 </li>
               ))}
             </TooltipListContainer>

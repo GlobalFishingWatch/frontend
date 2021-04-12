@@ -104,14 +104,14 @@ function HeatmapsSection(): React.ReactElement {
             component={
               <TooltipListContainer>
                 {heatmapOptions.map(({ id, label }) => (
-                  <li key={id} onClick={() => onAddClick(id)}>
-                    {label}
+                  <li key={id}>
+                    <button onClick={() => onAddClick(id)}>{label}</button>
                   </li>
                 ))}
               </TooltipListContainer>
             }
           >
-            <span tabIndex={0} className={styles.lastBtn}>
+            <div className={styles.lastBtn}>
               <IconButton
                 icon="plus"
                 type="border"
@@ -120,7 +120,7 @@ function HeatmapsSection(): React.ReactElement {
                 tooltipPlacement="top"
                 onClick={() => setNewLayerOpen(true)}
               />
-            </span>
+            </div>
           </TooltipContainer>
         </div>
       </div>
