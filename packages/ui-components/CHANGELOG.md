@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.17.2
+
+### Patch Changes
+
+- e284ce5e: Fishing map/improve miniglobe performance
+
 ## 2.17.1
 
 ### Patch Changes
