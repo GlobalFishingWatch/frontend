@@ -67,15 +67,14 @@ function MapScreenshot({ map }: { map?: Map }) {
       }
     }, 800)
 
-    // TODO: fix that causes idle to fire every second
-    // if (map && !rulersEditing) {
-    //   map.on('idle', handleIdle)
-    // }
-    // return () => {
-    //   if (map) {
-    //     map.off('idle', handleIdle)
-    //   }
-    // }
+    if (map && !rulersEditing) {
+      map.on('idle', handleIdle)
+    }
+    return () => {
+      if (map) {
+        map.off('idle', handleIdle)
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, rulersEditing])
 
