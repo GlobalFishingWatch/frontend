@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.28.13
+
+### Patch Changes
+
+- e284ce5e: Fishing map/improve miniglobe performance
+- Updated dependencies [e284ce5e]
+  - @globalfishingwatch/ui-components@2.17.2
+
 ## 0.28.12
 
 ### Patch Changes
