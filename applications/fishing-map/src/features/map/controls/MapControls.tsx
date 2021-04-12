@@ -12,8 +12,6 @@ import {
   Button,
 } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
-
-
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
