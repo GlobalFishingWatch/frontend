@@ -1,5 +1,11 @@
 ## 0.0.1
 
+## 0.2.1
+
+### Patch Changes
+
+- update es and fr translations
+
 ## 0.2.0
 
 ### Minor Changes
