@@ -4,6 +4,21 @@
   box-shadow: var(--box-shadow);
 }
 
+.listContainer {
+  padding: var(--space-S);
+  padding-right: 0;
+}
+
+.listContainer > li {
+  cursor: pointer;
+  padding: var(--space-XS);
+  padding-right: var(--space-M);
+}
+
+.listContainer > li:not(:last-of-type) {
+  border-bottom: var(--border);
+}
+
 .tooltipArrow,
 .tooltipArrow::before {
   position: absolute;

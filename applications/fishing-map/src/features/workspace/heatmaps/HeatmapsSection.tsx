@@ -9,12 +9,20 @@ import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectBivariate } from 'features/app/app.selectors'
-import { getHeatmapDataviewInstance } from 'features/dataviews/dataviews.utils'
+import {
+  getActivityDataviewInstance,
+  getPresenceDataviewInstance,
+} from 'features/dataviews/dataviews.utils'
+import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
 import LayerPanel from './HeatmapLayerPanel'
+
+type HeatmapCategory = 'activity' | 'presence'
+type HeatmapCategoryOption = { id: HeatmapCategory; label: string }
 
 function HeatmapsSection(): React.ReactElement {
   const { t } = useTranslation()
   const [heatmapSublayersAddedIndex, setHeatmapSublayersAddedIndex] = useState<number | undefined>()
+  const [newLayerOpen, setNewLayerOpen] = useState<boolean>(false)
   const dataviews = useSelector(selectActivityDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
@@ -22,13 +30,24 @@ function HeatmapsSection(): React.ReactElement {
   const supportBivariateToggle =
     dataviews?.filter((dataview) => dataview?.config?.visible)?.length === 2
 
-  const onAddClick = useCallback(() => {
-    setHeatmapSublayersAddedIndex(dataviews ? dataviews.length : 0)
-    dispatchQueryParams({ bivariate: false })
-    const usedRamps = dataviews?.flatMap((dataview) => dataview.config?.colorRamp || [])
-    const dataviewInstance = getHeatmapDataviewInstance(usedRamps)
-    upsertDataviewInstance(dataviewInstance)
-  }, [dispatchQueryParams, dataviews, upsertDataviewInstance])
+  const heatmapOptions: HeatmapCategoryOption[] = [
+    { id: 'activity', label: t('common.apparentFishing', 'Apparent Fishing Effort') },
+    { id: 'presence', label: t('common.presence', 'Fishing presence') },
+  ]
+
+  const onAddClick = useCallback(
+    (category: HeatmapCategory) => {
+      setHeatmapSublayersAddedIndex(dataviews ? dataviews.length : 0)
+      dispatchQueryParams({ bivariate: false })
+      const usedRamps = dataviews?.flatMap((dataview) => dataview.config?.colorRamp || [])
+      const dataviewInstance =
+        category === 'activity'
+          ? getActivityDataviewInstance(usedRamps)
+          : getPresenceDataviewInstance(usedRamps)
+      upsertDataviewInstance(dataviewInstance)
+    },
+    [dispatchQueryParams, dataviews, upsertDataviewInstance]
+  )
 
   const onToggleCombinationMode = useCallback(() => {
     const newBivariateValue = !bivariate
@@ -77,14 +96,32 @@ function HeatmapsSection(): React.ReactElement {
             tooltipPlacement="top"
             onClick={onToggleCombinationMode}
           />
-          <IconButton
-            icon="plus"
-            type="border"
-            size="medium"
-            tooltip={t('layer.add', 'Add layer')}
-            tooltipPlacement="top"
-            onClick={onAddClick}
-          />
+          <TooltipContainer
+            visible={newLayerOpen}
+            onClickOutside={() => {
+              setNewLayerOpen(false)
+            }}
+            component={
+              <TooltipListContainer>
+                {heatmapOptions.map(({ id, label }) => (
+                  <li key={id} onClick={() => onAddClick(id)}>
+                    {label}
+                  </li>
+                ))}
+              </TooltipListContainer>
+            }
+          >
+            <span tabIndex={0} className={styles.lastBtn}>
+              <IconButton
+                icon="plus"
+                type="border"
+                size="medium"
+                tooltip={t('layer.add', 'Add layer')}
+                tooltipPlacement="top"
+                onClick={() => setNewLayerOpen(true)}
+              />
+            </span>
+          </TooltipContainer>
         </div>
       </div>
       {dataviews?.map((dataview, index) => (

@@ -28,3 +28,7 @@
 .sectionButtons > *:not(:last-child) {
   margin-right: 1rem;
 }
+
+.sectionButtons > *:not(:last-child).lastBtn {
+  margin-right: 0;
+}

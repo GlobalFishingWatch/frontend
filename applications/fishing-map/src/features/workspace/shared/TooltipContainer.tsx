@@ -9,6 +9,14 @@ interface TooltipContainerProps {
   onClickOutside: () => void
 }
 
+export function TooltipListContainer({
+  children,
+}: {
+  children: React.ReactElement | React.ReactElement[] | undefined | null
+}) {
+  return <ul className={styles.listContainer}>{children}</ul>
+}
+
 function TooltipContainer({ visible, children, component, onClickOutside }: TooltipContainerProps) {
   return (
     <Tippy

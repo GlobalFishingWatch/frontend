@@ -6,7 +6,7 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { Workspace } from '@globalfishingwatch/api-types/dist'
-import TooltipContainer from 'features/workspace/shared/TooltipContainer'
+import TooltipContainer, { TooltipListContainer } from 'features/workspace/shared/TooltipContainer'
 import { WORKSPACE } from 'routes/routes'
 import { WorkspaceCategories } from 'data/workspaces'
 import {
@@ -172,17 +172,13 @@ function UserWorkspaces() {
             setWorkspaceTemplatesOpen(false)
           }}
           component={
-            <ul className={styles.workspaceTemplatesList}>
+            <TooltipListContainer>
               {workspaceTemplates?.map((template) => (
-                <li
-                  key={template}
-                  className={styles.workspaceTemplate}
-                  onClick={() => onWorkspaceUserGroupClick(template)}
-                >
+                <li key={template} onClick={() => onWorkspaceUserGroupClick(template)}>
                   {template}
                 </li>
               ))}
-            </ul>
+            </TooltipListContainer>
           }
         >
           {/* Div needed because of https://github.com/atomiks/tippyjs-react#component-children */}
