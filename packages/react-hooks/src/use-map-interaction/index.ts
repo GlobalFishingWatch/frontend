@@ -25,6 +25,7 @@ export type ExtendedFeature = {
     col: number
     row: number
   }
+  uniqueFeatureInteraction?: boolean
   generatorContextLayer?: ContextLayerType | null
   geometry?: Geometry
 }

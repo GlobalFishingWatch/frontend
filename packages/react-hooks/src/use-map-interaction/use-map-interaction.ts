@@ -8,20 +8,40 @@ import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 type FeatureStates = 'click' | 'hover' | 'highlight'
 type FeatureStateSource = { source: string; sourceLayer: string; id: string; state?: FeatureStates }
 
+export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
+  const uniqueLayerIdFeatures: Record<string, boolean> = {}
+  const filtered = features?.filter(({ layerId, uniqueFeatureInteraction }) => {
+    if (!uniqueFeatureInteraction) {
+      return true
+    }
+    if (uniqueLayerIdFeatures[layerId] === undefined) {
+      uniqueLayerIdFeatures[layerId] = true
+      return true
+    }
+    return false
+  })
+  return filtered
+}
+
 const getExtendedFeatures = (
   features: MapboxGeoJSONFeature[],
   metadata?: ExtendedStyleMeta,
   debug = false
 ): ExtendedFeature[] => {
-  const timeChunks = metadata?.temporalgrid?.timeChunks
-  const frame = timeChunks?.activeChunkFrame
-  const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active)
-  const numSublayers = metadata?.temporalgrid?.numSublayers
-
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature: MapboxGeoJSONFeature) => {
     const generatorType = feature.layer.metadata?.generatorType ?? null
     const generatorId = feature.layer.metadata?.generatorId ?? null
-    const unit = feature.layer?.metadata?.legend?.unit ?? null
+
+    // TODO: if no generatorMetadata is found, fallback to feature.layer.metadata, but the former should be prefered
+    let generatorMetadata
+    if (metadata?.generatorsMetadata && metadata?.generatorsMetadata[generatorId]) {
+      generatorMetadata = metadata?.generatorsMetadata[generatorId]
+    } else {
+      generatorMetadata = feature.layer.metadata
+    }
+
+    const unit = generatorMetadata?.sublayers?.[0].legend.unit ?? null
+    const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
     const properties = feature.properties || {}
     const extendedFeature: ExtendedFeature | null = {
       properties,
@@ -30,6 +50,7 @@ const getExtendedFeatures = (
       layerId: feature.layer.id,
       source: feature.source,
       sourceLayer: feature.sourceLayer,
+      uniqueFeatureInteraction,
       id: (feature.id as number) || feature.properties?.gfw_id || undefined,
       value: properties.value || properties.name || properties.id,
       unit,
@@ -41,17 +62,22 @@ const getExtendedFeatures = (
     }
     switch (generatorType) {
       case Generators.Type.HeatmapAnimated:
-        const values = aggregateCell(
-          properties.rawValues,
+        const timeChunks = generatorMetadata?.timeChunks
+        const frame = timeChunks?.activeChunkFrame
+        const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active)
+        const numSublayers = generatorMetadata?.numSublayers
+        const values = aggregateCell({
+          rawValues: properties.rawValues,
           frame,
-          timeChunks.deltaInIntervalUnits,
-          activeTimeChunk.quantizeOffset,
-          numSublayers,
-          debug
-        )
-        if (!values || !values.filter((v) => v > 0).length) return []
+          delta: timeChunks.deltaInIntervalUnits,
+          quantizeOffset: activeTimeChunk.quantizeOffset,
+          sublayerCount: numSublayers,
+          aggregationOperation: generatorMetadata?.aggregationOperation,
+          multiplier: generatorMetadata?.multiplier,
+        })
+        if (!values || !values.filter((v: number) => v > 0).length) return []
 
-        const visibleSublayers = metadata?.temporalgrid?.visibleSublayers as boolean[]
+        const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
         return values.flatMap((value: any, i: number) => {
           if (value === 0) return []
           return [
@@ -155,9 +181,11 @@ export const useMapClick = (
           metadata,
           true
         )
-        if (extendedFeatures.length) {
-          interactionEvent.features = extendedFeatures
-          updateFeatureState(extendedFeatures, 'click')
+        const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
+
+        if (extendedFeaturesLimit.length) {
+          interactionEvent.features = extendedFeaturesLimit
+          updateFeatureState(extendedFeaturesLimit, 'click')
         }
       }
       clickCallback(interactionEvent)
@@ -169,7 +197,7 @@ export const useMapClick = (
 }
 
 type MapHoverConfig = {
-  debounced: number
+  debounced?: number
 }
 export const useMapHover = (
   hoverCallbackImmediate?: InteractionEventCallback,
@@ -202,12 +230,13 @@ export const useMapHover = (
       }
       if (event.features?.length) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
+        const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 
-        if (extendedFeatures.length) {
-          hoverEvent.features = extendedFeatures
+        if (extendedFeaturesLimit.length) {
+          hoverEvent.features = extendedFeaturesLimit
         }
 
-        updateFeatureState(extendedFeatures, 'hover')
+        updateFeatureState(extendedFeaturesLimit, 'hover')
       }
 
       if (hoverCallbackDebounced?.current) {

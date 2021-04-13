@@ -1,105 +1,159 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
+import { atom, useRecoilState } from 'recoil'
+import { useSelector } from 'react-redux'
 import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
+import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
+import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import useMapInstance from 'features/map/map-context.hooks'
-import { useCurrentTimeChunkId } from './map.hooks'
+import { useMapStyle } from './map.hooks'
+import {
+  selectActiveHeatmapAnimatedGeneratorConfigs,
+  selectGeneratorConfigsById,
+} from './map.selectors'
 
-export const useMapSourceLoaded = (sourceId: string, cacheKey?: string) => {
+const sourcesLoadingState = atom<{ [key: string]: boolean }>({
+  key: 'sourcesState',
+  default: {},
+})
+
+let listenerAttached = false
+export const useSourcesLoadingState = () => {
+  const [sourcesState, setSourcesState] = useRecoilState(sourcesLoadingState)
   const map = useMapInstance()
-  const [sourceLoaded, setSourceLoaded] = useState(false)
-
+  const idledAttached = useRef<boolean>(true)
   useEffect(() => {
-    if (cacheKey) {
-      setSourceLoaded(false)
-    }
-  }, [cacheKey])
-
-  useEffect(() => {
-    const sourceLoadingCallback = (sourcedataEvent: any) => {
-      if (sourcedataEvent.sourceId === sourceId) {
-        setSourceLoaded(false)
+    if (!map || listenerAttached) return
+    const sourceEventCallback = (e: any) => {
+      const currentSources = Object.keys(map.getStyle().sources || {})
+      const sourcesLoaded = currentSources.map((sourceId) => [
+        sourceId,
+        map.isSourceLoaded(sourceId),
+      ])
+      const allSourcesLoaded = sourcesLoaded.every(([id, loaded]) => loaded)
+      if (allSourcesLoaded) {
+        map.off('idle', sourceEventCallback)
+        idledAttached.current = false
+      } else if (!idledAttached.current) {
+        map.on('idle', sourceEventCallback)
+        idledAttached.current = true
       }
+      setSourcesState(Object.fromEntries(sourcesLoaded))
+    }
+    if (map && !listenerAttached) {
+      map.on('sourcedataloading', sourceEventCallback)
+      map.on('idle', sourceEventCallback)
+      map.on('error', sourceEventCallback)
+
+      // TODO: improve this workaroud to avoid attaching listeners on every hook instance
+      listenerAttached = true
+    }
+    const detachListeners = () => {
+      map.off('sourcedataloading', sourceEventCallback)
+      map.off('idle', sourceEventCallback)
+      map.off('error', sourceEventCallback)
     }
 
-    if (!cacheKey) {
-      if (map && sourceLoaded) {
-        map.on('sourcedataloading', sourceLoadingCallback)
-      }
-    }
+    return detachListeners
+  }, [map, setSourcesState])
 
-    return () => {
-      if (map) {
-        map.off('sourcedataloading', sourceLoadingCallback)
-      }
-    }
-  }, [cacheKey, map, sourceId, sourceLoaded])
+  const serializedSourcesState = Object.entries(sourcesState)
+    .map((s) => s.join('_'))
+    .join('__')
 
-  useEffect(() => {
-    const sourceCallback = () => {
-      if (map?.getSource(sourceId) && map?.isSourceLoaded(sourceId)) {
-        setSourceLoaded(true)
-        map.off('idle', sourceCallback)
-      }
-    }
-
-    const sourceErrorCallback = (errorEvent: any) => {
-      if (
-        errorEvent.sourceId === sourceId &&
-        map?.getSource(sourceId) &&
-        map?.isSourceLoaded(sourceId)
-      ) {
-        setSourceLoaded(true)
-      }
-    }
-
-    if (map && sourceId && !sourceLoaded) {
-      map.on('idle', sourceCallback)
-      map.on('error', sourceErrorCallback)
-    }
-
-    return () => {
-      if (map) {
-        map.off('idle', sourceCallback)
-        map.off('error', sourceErrorCallback)
-      }
-    }
-  }, [map, sourceId, sourceLoaded])
-
-  return sourceLoaded
+  return useMemo(() => {
+    return sourcesState
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serializedSourcesState])
 }
 
-export const useMapFeatures = ({
-  sourceId,
+export const useSourceLoaded = (sourceId: string) => {
+  const sourcesState = useSourcesLoadingState()
+  return sourcesState[sourceId] === true
+}
+
+export const useHaveSourcesLoaded = (sourcesIds: string[]) => {
+  const sourcesState = useSourcesLoadingState()
+  const haveAllSourcesLoaded = sourcesIds.every((sourceId) => sourcesState[sourceId] === true)
+  return useMemo(() => {
+    return haveAllSourcesLoaded
+  }, [haveAllSourcesLoaded])
+}
+
+export const useHasSourceLoaded = (sourceId: string) => {
+  const sourcesState = useSourcesLoadingState()
+  const haveAllSourcesLoaded = sourcesState[sourceId] === true
+  return useMemo(() => {
+    return haveAllSourcesLoaded
+  }, [haveAllSourcesLoaded])
+}
+
+export const useActiveHeatmapAnimatedMetadatas = (generators: AnyGeneratorConfig[]) => {
+  const style = useMapStyle()
+  const generatorsIds = generators.map((generator) => generator.id)
+  const generatorsMetadata = generatorsIds.map((generatorId) => {
+    return style?.metadata?.generatorsMetadata[generatorId]
+  })
+  const serializedGeneratorIds = generatorsMetadata
+    .map((metadata) => {
+      return metadata?.timeChunks?.activeSourceId
+    })
+    .join()
+  const metadatas = useMemo(() => {
+    return generatorsMetadata
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serializedGeneratorIds])
+  return metadatas
+}
+
+export const useFeatures = ({
+  sourcesIds,
   sourceLayer = 'main',
-  cacheKey,
   filter,
 }: {
-  sourceId: string
+  sourcesIds: string[]
   sourceLayer?: string
-  cacheKey?: string
   filter?: any[]
 }) => {
+  const haveSourcesLoaded = useHaveSourcesLoaded(sourcesIds)
   const map = useMapInstance()
-  const sourceLoaded = useMapSourceLoaded(sourceId, cacheKey)
 
-  const features = useMemo(() => {
-    if (sourceLoaded) {
-      const features = map?.querySourceFeatures(sourceId, {
-        sourceLayer: sourceLayer,
-        ...(filter && { filter }),
+  const sourcesFeatures = useMemo(() => {
+    if (haveSourcesLoaded && map) {
+      const features = sourcesIds.map((sourceId) => {
+        const sourceFeatures = map.querySourceFeatures(sourceId, {
+          sourceLayer,
+          ...(filter && { filter }),
+        })
+        return sourceFeatures
       })
       return features
     }
-  }, [sourceLoaded, map, sourceId, sourceLayer, filter])
+  }, [haveSourcesLoaded, map, sourceLayer, filter, sourcesIds])
 
-  return { features, sourceLoaded }
+  return { sourcesFeatures, haveSourcesLoaded }
 }
 
-export const useMapTemporalgridFeatures = ({ cacheKey }: { cacheKey?: string } = {}) => {
-  const currentTimeChunkId = useCurrentTimeChunkId()
+const useGeneratorAnimatedFeatures = (generators: AnyGeneratorConfig[]) => {
+  const sourcesMetadata = useActiveHeatmapAnimatedMetadatas(generators)
+  const sourcesIds: string[] = useMemo(() => {
+    return sourcesMetadata.map((metadata) => metadata?.timeChunks?.activeSourceId)
+  }, [sourcesMetadata])
 
-  return useMapFeatures({
-    sourceId: currentTimeChunkId,
+  const { sourcesFeatures, haveSourcesLoaded } = useFeatures({
+    sourcesIds,
     sourceLayer: TEMPORALGRID_SOURCE_LAYER,
-    cacheKey,
   })
+  return { sourcesFeatures, haveSourcesLoaded, sourcesMetadata }
+}
+
+export const useActiveHeatmapAnimatedFeatures = () => {
+  const generators = useSelector(selectActiveHeatmapAnimatedGeneratorConfigs)
+  return useGeneratorAnimatedFeatures(generators)
+}
+
+export const useActivityTemporalgridFeatures = () => {
+  const generator = useSelector(
+    selectGeneratorConfigsById(MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
+  )
+  return useGeneratorAnimatedFeatures(generator)
 }

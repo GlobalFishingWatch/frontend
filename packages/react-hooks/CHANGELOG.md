@@ -1,5 +1,59 @@
 # @globalfishingwatch/react-hooks
 
+## 6.0.0
+
+### Major Changes
+
+- 358004cb: Use client-side aggregation with env layers
+
+### Patch Changes
+
+- Updated dependencies [358004cb]
+- Updated dependencies [8785580f]
+  - @globalfishingwatch/fourwings-aggregate@3.0.0
+  - @globalfishingwatch/layer-composer@5.0.0
+  - @globalfishingwatch/dataviews-client@6.0.0
+  - @globalfishingwatch/ui-components@2.17.4
+
+## 5.3.2
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.2
+  - @globalfishingwatch/ui-components@2.17.3
+
+## 5.3.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.1
+  - @globalfishingwatch/ui-components@2.17.1
+
+## 5.3.0
+
+### Minor Changes
+
+- 9af9dea7: include generatorId and Type in legendLayers
+
+### Patch Changes
+
+- Updated dependencies [9af9dea7]
+  - @globalfishingwatch/ui-components@2.17.0
+
+## 5.2.0
+
+### Minor Changes
+
+- f570b76f: support uniqueFeatureInteraction in layer-composer and map interaction hook
+
+### Patch Changes
+
+- Updated dependencies [f570b76f]
+  - @globalfishingwatch/layer-composer@4.19.0
+  - @globalfishingwatch/ui-components@2.16.2
+
 ## 5.1.1
 
 ### Patch Changes

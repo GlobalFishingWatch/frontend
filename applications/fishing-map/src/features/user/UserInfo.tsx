@@ -8,15 +8,14 @@ import { updateLocation } from 'routes/routes.actions'
 import { SUPPORT_EMAIL } from 'data/config'
 import styles from './User.module.css'
 import { fetchUserThunk, GUEST_USER_TYPE, logoutUserThunk, selectUserData } from './user.slice'
-import { isUserLogged } from './user.selectors'
-
-const DEFAULT_GROUP_ID = 'Default'
+import { isUserLogged, selectUserGroupsClean } from './user.selectors'
 
 function UserInfo() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const userLogged = useSelector(isUserLogged)
   const userData = useSelector(selectUserData)
+  const userGroups = useSelector(selectUserGroupsClean)
   const [logoutLoading, setLogoutLoading] = useState(false)
 
   const onLogoutClick = useCallback(async () => {
@@ -36,7 +35,6 @@ function UserInfo() {
       </div>
     )
   }
-  const cleanGroups = userData.groups?.filter((g) => g !== DEFAULT_GROUP_ID)
 
   return (
     <div className={styles.userInfo}>
@@ -57,7 +55,7 @@ function UserInfo() {
           </Button>
         </div>
         <label>{t('user.groups', 'User Groups')}</label>
-        {cleanGroups && <p className={styles.textSpaced}>{cleanGroups.join(', ')}</p>}
+        {userGroups && <p className={styles.textSpaced}>{userGroups.join(', ')}</p>}
         <p className={styles.missingGroup}>
           <Trans i18nKey="user.groupMissing">
             Do you belong to a user group that doesn’t appear here?{' '}

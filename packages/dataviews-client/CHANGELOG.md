@@ -1,5 +1,22 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.1.0
+
+### Minor Changes
+
+- cbb694df: fix heatmap animated agrupation
+
+## 6.0.0
+
+### Major Changes
+
+- 358004cb: Use client-side aggregation with env layers
+
+### Patch Changes
+
+- Updated dependencies [358004cb]
+  - @globalfishingwatch/layer-composer@5.0.0
+
 ## 5.0.1
 
 ### Patch Changes

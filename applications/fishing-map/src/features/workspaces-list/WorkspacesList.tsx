@@ -7,7 +7,7 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { DEFAULT_WORKSPACE_KEY } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import useViewport from 'features/map/map-viewport.hooks'
 import styles from './WorkspacesList.module.css'
 import {
@@ -56,7 +56,7 @@ function WorkspacesList() {
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
             const active = highlightedWorkspace?.id !== undefined
             const linkTo =
-              highlightedWorkspace.id === DEFAULT_WORKSPACE_KEY
+              highlightedWorkspace.id === DEFAULT_WORKSPACE_ID
                 ? {
                     type: HOME,
                     payload: {},
@@ -71,7 +71,7 @@ function WorkspacesList() {
                     query: {},
                   }
             return (
-              <li key={highlightedWorkspace.name}>
+              <li key={highlightedWorkspace.id || highlightedWorkspace.name}>
                 <div className={cx(styles.workspace, { [styles.disabled]: !active })}>
                   <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
                     <img

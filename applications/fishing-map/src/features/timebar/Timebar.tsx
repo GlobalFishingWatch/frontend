@@ -1,6 +1,7 @@
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import TimebarComponent, {
   TimebarTracks,
   TimebarActivity,
@@ -14,11 +15,10 @@ import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/t
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
-import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
-import { useMapStyle } from 'features/map/map.hooks'
+import { selectActivityDataviews } from 'features/workspace/workspace.selectors'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
-import { useMapTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { filterByViewport } from 'features/map/map.utils'
+import { useActivityTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -31,13 +31,17 @@ import styles from './Timebar.module.css'
 export const TIMEBAR_HEIGHT = 72
 
 const TimebarWrapper = () => {
+  const { ready, i18n } = useTranslation()
+  const labels = ready
+    ? (i18n?.getDataByLanguage(i18n.language) as any)?.translations?.timebar
+    : undefined
   const { start, end, dispatchTimeranges } = useTimerangeConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
   const { timebarVisualisation } = useTimebarVisualisation()
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
-  const temporalGridDataviews = useSelector(selectTemporalgridDataviews)
+  const temporalGridDataviews = useSelector(selectActivityDataviews)
   const staticHeatmapLayersActive = useSelector(hasStaticHeatmapLayersActive)
 
   const dispatch = useDispatch()
@@ -54,8 +58,6 @@ const TimebarWrapper = () => {
     [setBookmark]
   )
 
-  const mapStyle = useMapStyle()
-  const temporalgrid = mapStyle?.metadata?.temporalgrid
   const [stackedActivity, setStackedActivity] = useState<any>()
 
   const visibleTemporalGridDataviews = useMemo(
@@ -64,7 +66,7 @@ const TimebarWrapper = () => {
   )
 
   const { bounds } = useMapBounds()
-  const { features: cellFeatures, sourceLoaded } = useMapTemporalgridFeatures()
+  const { sourcesFeatures, haveSourcesLoaded, sourcesMetadata } = useActivityTemporalgridFeatures()
   const debouncedBounds = useDebounce(bounds, 400)
 
   useEffect(() => {
@@ -76,14 +78,13 @@ const TimebarWrapper = () => {
       return
     }
 
-    if (cellFeatures?.length && debouncedBounds && temporalgrid) {
-      // TODO: think about having an custom useMapFeatures just for cells
-      const numSublayers = temporalgrid.numSublayers
-      const timeChunks = temporalgrid.timeChunks as TimeChunks
+    if (sourcesFeatures?.length && debouncedBounds) {
+      const numSublayers = sourcesMetadata[0].numSublayers
+      const timeChunks = sourcesMetadata[0].timeChunks as TimeChunks
       const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
       const chunkQuantizeOffset = activeTimeChunk.quantizeOffset
 
-      const filteredFeatures = filterByViewport(cellFeatures, debouncedBounds)
+      const filteredFeatures = filterByViewport(sourcesFeatures[0], debouncedBounds)
       if (filteredFeatures?.length > 0) {
         const values = getTimeSeries(
           filteredFeatures as any,
@@ -111,45 +112,48 @@ const TimebarWrapper = () => {
       }
     }
   }, [
-    cellFeatures,
+    sourcesFeatures,
+    haveSourcesLoaded,
+    sourcesMetadata,
     debouncedBounds,
-    temporalgrid,
-    sourceLoaded,
     timebarVisualisation,
     visibleTemporalGridDataviews,
   ])
 
-  const dataviews = useSelector(selectTemporalgridDataviews)
-  const dataviewsColors = dataviews?.map((dataview) => dataview.config?.color)
+  const dataviewsColors = temporalGridDataviews?.map((dataview) => dataview.config?.color)
 
   // Using an effect to ensure the blur loading is removed once the component has been rendered
-  const [loading, setLoading] = useState(sourceLoaded)
+  const [loading, setLoading] = useState(haveSourcesLoaded)
   useEffect(() => {
-    setLoading(sourceLoaded)
-  }, [sourceLoaded])
+    setLoading(haveSourcesLoaded)
+  }, [haveSourcesLoaded])
 
   if (!start || !end) return null
+
+  const onMouseMove = (clientX: number, scale: (arg: number) => Date) => {
+    if (clientX === null) {
+      if (highlightedTime !== undefined) {
+        dispatch(disableHighlightedTime())
+      }
+    } else {
+      const start = scale(clientX - 10).toISOString()
+      const end = scale(clientX + 10).toISOString()
+      dispatch(setHighlightedTime({ start, end }))
+    }
+  }
+
   return (
     <div>
       <TimebarComponent
         enablePlayback={!staticHeatmapLayersActive}
+        labels={labels}
         start={start}
         end={end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
         onChange={dispatchTimeranges}
         showLastUpdate={false}
-        onMouseMove={(clientX: number, scale: (arg: number) => Date) => {
-          if (clientX === null) {
-            if (highlightedTime !== undefined) {
-              dispatch(disableHighlightedTime())
-            }
-          } else {
-            const start = scale(clientX - 10).toISOString()
-            const end = scale(clientX + 10).toISOString()
-            dispatch(setHighlightedTime({ start, end }))
-          }
-        }}
+        onMouseMove={onMouseMove}
         onBookmarkChange={onBookmarkChange}
         bookmarkStart={bookmark?.start}
         bookmarkEnd={bookmark?.end}
@@ -163,7 +167,7 @@ const TimebarWrapper = () => {
                   key="stackedActivity"
                   data={stackedActivity}
                   colors={dataviewsColors}
-                  numSublayers={dataviews?.length}
+                  numSublayers={temporalGridDataviews?.length}
                 />
               </div>
             )}

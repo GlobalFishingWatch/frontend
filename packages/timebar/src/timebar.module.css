@@ -82,3 +82,14 @@
     height: var(--timebar-size);
   }
 }
+
+@media print {
+  :global(*) {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  :global(.print-hidden) {
+    display: none !important;
+  }
+}

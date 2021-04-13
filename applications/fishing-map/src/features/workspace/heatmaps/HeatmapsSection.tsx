@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
+import { selectActivityDataviews } from 'features/workspace/workspace.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -15,7 +15,7 @@ import LayerPanel from './HeatmapLayerPanel'
 function HeatmapsSection(): React.ReactElement {
   const { t } = useTranslation()
   const [heatmapSublayersAddedIndex, setHeatmapSublayersAddedIndex] = useState<number | undefined>()
-  const dataviews = useSelector(selectTemporalgridDataviews)
+  const dataviews = useSelector(selectActivityDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
@@ -61,8 +61,10 @@ function HeatmapsSection(): React.ReactElement {
     )
   }
 
+  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+
   return (
-    <div className={styles.container}>
+    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
         <div className={cx('print-hidden', styles.sectionButtons)}>

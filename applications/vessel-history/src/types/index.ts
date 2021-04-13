@@ -38,7 +38,7 @@ export interface VesselFieldHistory<T> {
 
 export interface VesselFieldsHistory {
   callsign: VesselFieldHistory<string>
-  gearType: VesselFieldHistory<string>
+  geartype: VesselFieldHistory<string>
   mmsi: VesselFieldHistory<string>
   imo: VesselFieldHistory<string>
   shipname: VesselFieldHistory<string>
