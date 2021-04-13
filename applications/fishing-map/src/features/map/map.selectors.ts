@@ -31,15 +31,24 @@ export const selectGlobalGeneratorsConfig = createSelector(
   })
 )
 
-const getGeneratorsConfig = (
-  dataviews: UrlDataviewInstance[] | undefined = [],
-  resources: ResourcesState,
-  rulers: Generators.Ruler[],
-  debugOptions: DebugOptions,
-  highlightedTime: Range | undefined,
-  staticTime: Range,
+type GetGeneratorConfigParams = {
+  dataviews: UrlDataviewInstance[] | undefined
+  resources: ResourcesState
+  rulers: Generators.Ruler[]
+  debugOptions: DebugOptions
+  highlightedTime?: Range
+  staticTime: Range
   bivariate: boolean
-) => {
+}
+const getGeneratorsConfig = ({
+  dataviews = [],
+  resources,
+  rulers,
+  debugOptions,
+  highlightedTime,
+  staticTime,
+  bivariate,
+}: GetGeneratorConfigParams) => {
   const animatedHeatmapDataviews = dataviews.filter((d) => {
     const isAnimatedHeatmap = d.config?.type === Generators.Type.HeatmapAnimated
     return !isAnimatedHeatmap
@@ -85,15 +94,15 @@ const selectMapGeneratorsConfig = createSelector(
     selectBivariate,
   ],
   (dataviews = [], resources, rulers, debugOptions, highlightedTime, staticTime, bivariate) => {
-    return getGeneratorsConfig(
+    return getGeneratorsConfig({
       dataviews,
       resources,
       rulers,
       debugOptions,
       highlightedTime,
       staticTime,
-      bivariate
-    )
+      bivariate,
+    })
   }
 )
 
@@ -107,15 +116,15 @@ const selectStaticGeneratorsConfig = createSelector(
     selectBivariate,
   ],
   (dataviews = [], resources, rulers, debugOptions, staticTime, bivariate) => {
-    return getGeneratorsConfig(
+    // We don't want highlightedTime here to avoid re-computing on mouse timebar hovering
+    return getGeneratorsConfig({
       dataviews,
       resources,
       rulers,
       debugOptions,
-      undefined,
       staticTime,
-      bivariate
-    )
+      bivariate,
+    })
   }
 )
 
@@ -240,5 +249,7 @@ const selectHeatmapAnimatedGeneratorConfigs = createSelector(
 
 export const selectActiveHeatmapAnimatedGeneratorConfigs = createSelector(
   [selectHeatmapAnimatedGeneratorConfigs],
-  (generators) => generators?.filter((generator) => generator.visible)
+  (generators) => {
+    return generators?.filter((generator) => generator.visible)
+  }
 )
