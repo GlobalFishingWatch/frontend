@@ -1,9 +1,20 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { VesselWithHistory } from 'types'
-import styles from './Info.module.css'
+import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
+import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
+import { OfflineVessel } from 'types/vessel'
+import {
+  selectDataset,
+  selectTmtId,
+  selectVesselId,
+  selectVesselProfileId,
+} from 'routes/routes.selectors'
 import InfoField, { VesselFieldLabel } from './InfoField'
+import styles from './Info.module.css'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -14,6 +25,44 @@ interface InfoProps {
 const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const vessel = props.vessel
   const { t } = useTranslation()
+  const [loading, setLoading] = useState(false)
+  const vesselId = useSelector(selectVesselId)
+  const vesselTmtId = useSelector(selectTmtId)
+  const vesselDataset = useSelector(selectDataset)
+  const vesselProfileId = useSelector(selectVesselProfileId)
+  const offlineVessel = useSelector(selectCurrentOfflineVessel)
+  const {
+    dispatchCreateOfflineVessel,
+    dispatchDeleteOfflineVessel,
+    dispatchFetchOfflineVessel,
+  } = useOfflineVesselsAPI()
+
+  useEffect(() => {
+    dispatchFetchOfflineVessel(vesselProfileId)
+    // return () => {
+    //   cleanup
+    // }
+  }, [vesselProfileId, dispatchFetchOfflineVessel])
+
+  const onDeleteClick = async (data: OfflineVessel) => {
+    setLoading(true)
+    await dispatchDeleteOfflineVessel(data.profileId)
+    setLoading(false)
+  }
+  const onSaveClick = async (data: VesselWithHistory) => {
+    setLoading(true)
+    await dispatchCreateOfflineVessel({
+      vessel: {
+        ...data,
+        profileId: data.id,
+        id: vesselId,
+        dataset: vesselDataset,
+        vesselMatchId: vesselTmtId,
+        source: '',
+      },
+    })
+    setLoading(false)
+  }
 
   return (
     <Fragment>
@@ -108,12 +157,41 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             ></InfoField>
           </div>
         )}
-        <br />
-        {vessel && (
-          <Button className={styles.saveButton} type="secondary">
-            {t('vessel.saveForOfflineView', 'SAVE VESSEL FOR OFFLINE VIEW')}
-          </Button>
-        )}
+        <div className={styles.actions}>
+          {vessel && offlineVessel && (
+            <Fragment>
+              <Button
+                className={styles.readyButton}
+                type="secondary"
+                disabled={loading}
+                onClick={() => onDeleteClick(offlineVessel)}
+              >
+                {t('vessel.readyForOfflineView', 'READY FOR OFFLINE VIEW')}
+              </Button>
+              {/* <Tag className={styles.readyButton}>
+              {t('vessel.readyForOfflineView', 'READY FOR OFFLINE VIEW')}
+            </Tag> */}
+              <IconButton
+                size="default"
+                icon="delete"
+                type="warning"
+                className={cx(styles.defaultIcon, styles.remove)}
+                loading={loading}
+                onClick={() => onDeleteClick(offlineVessel)}
+              />
+            </Fragment>
+          )}
+          {vessel && !offlineVessel && (
+            <Button
+              className={styles.saveButton}
+              type="secondary"
+              disabled={loading}
+              onClick={() => onSaveClick(vessel)}
+            >
+              {t('vessel.saveForOfflineView', 'SAVE VESSEL FOR OFFLINE VIEW')}
+            </Button>
+          )}
+        </div>
       </div>
     </Fragment>
   )

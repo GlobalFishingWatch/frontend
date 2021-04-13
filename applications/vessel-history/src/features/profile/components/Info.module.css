@@ -7,6 +7,7 @@
   color: #22447e;
   display: flex;
   flex-flow: row wrap;
+  margin-bottom: var(--size-M);
 }
 
 .identifierField {
@@ -44,4 +45,31 @@
 }
 .rangeLabel {
   text-transform: capitalize;
+}
+.actions {
+  display: flex;
+  justify-content: center;
+}
+.readyButton {
+  flex: 1;
+  text-transform: uppercase;
+  color: var(--color-primary-green);
+  background-color: var(--color-terthiary-green);
+}
+
+.readyButton:focus:not(:disabled),
+.readyButton:active:not(:disabled),
+.readyButton:hover:not(:disabled) {
+  color: var(--color-primary-green);
+  background-color: var(--color-primary-green-border);
+}
+.remove {
+  margin-left: var(--space-XS);
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary));
+}
+
+.remove:focus:not(:disabled),
+.remove:active:not(:disabled),
+.remove:hover:not(:disabled) {
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-border));
 }

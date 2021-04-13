@@ -10,6 +10,8 @@ import { VesselSearch } from '@globalfishingwatch/api-types'
 import { BASE_DATASET } from 'data/constants'
 import { logoutUserThunk } from 'features/user/user.slice'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
+import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
+import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -30,10 +32,16 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const [searching, setSearching] = useState(false)
   const [vessels, setVessels] = useState<Array<VesselSearch>>([])
   const query = useSelector(selectQueryParam('q'))
+  const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchQueryParams } = useLocationConnect()
+  const { dispatchFetchOfflineVessels } = useOfflineVesselsAPI()
 
   const minimumCharacters = 3
   const resultsPerRequest = 25
+
+  useEffect(() => {
+    dispatchFetchOfflineVessels()
+  }, [dispatchFetchOfflineVessels])
 
   const fetchData = useCallback(async (query: string) => {
     setSearching(true)
@@ -62,7 +70,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ q: e.target.value })
   }
-
+  console.log(offlineVessels)
   return (
     <div className={styles.homeContainer}>
       {!query && (
@@ -104,7 +112,11 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         {!query && (
           <div>
             <h2>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
-            <div className={styles.offlineVessels}></div>
+            <div className={styles.offlineVessels}>
+              {offlineVessels.map((vessel, index) => (
+                <VesselListItem key={index} vessel={vessel} />
+              ))}
+            </div>
           </div>
         )}
         {query && (

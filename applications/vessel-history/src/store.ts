@@ -3,9 +3,10 @@ import {
   ThunkAction,
   Action,
   combineReducers,
-  getDefaultMiddleware,
+  // getDefaultMiddleware,
 } from '@reduxjs/toolkit'
 import connectedRoutes, { routerQueryMiddleware } from 'routes/routes'
+import offlineVesselsReducer from 'features/vessels/offline-vessels.slice'
 import vesselsReducer from 'features/vessels/vessels.slice'
 import mapReducer from './features/map/map.slice'
 
@@ -16,6 +17,7 @@ const {
 } = connectedRoutes
 
 const rootReducer = combineReducers({
+  offlineVessels: offlineVesselsReducer,
   vessels: vesselsReducer,
   location: location,
   map: mapReducer,
@@ -35,11 +37,10 @@ const defaultMiddlewareOptions: any = {
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: [
-    ...getDefaultMiddleware(defaultMiddlewareOptions),
-    routerQueryMiddleware,
-    routerMiddleware,
-  ],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware(defaultMiddlewareOptions)
+      .concat(routerQueryMiddleware)
+      .concat(routerMiddleware),
   enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })
 
