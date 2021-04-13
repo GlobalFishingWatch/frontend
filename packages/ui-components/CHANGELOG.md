@@ -1,5 +1,13 @@
 # @globalfishingwatch/ui-components
 
+## 2.17.4
+
+### Patch Changes
+
+- 8785580f: fix legend gridArea
+- Updated dependencies [358004cb]
+  - @globalfishingwatch/layer-composer@5.0.0
+
 ## 2.17.3
 
 ### Patch Changes
