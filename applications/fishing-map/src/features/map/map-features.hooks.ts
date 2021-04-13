@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { useSelector } from 'react-redux'
 import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
@@ -62,6 +62,7 @@ export const useSourcesLoadingState = () => {
 
   return useMemo(() => {
     return sourcesState
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serializedSourcesState])
 }
 
