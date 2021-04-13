@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, Fragment } from 'react'
 import cx from 'classnames'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
@@ -373,6 +373,8 @@ function NewDataset(): React.ReactElement {
     dispatchDatasetModal(undefined)
   }
 
+  const isSelectingDatasetType = true
+
   return (
     <Modal
       title={
@@ -385,14 +387,25 @@ function NewDataset(): React.ReactElement {
       onClose={onClose}
     >
       <div className={styles.modalContent}>
-        <DatasetFile onFileLoaded={onFileLoaded} />
-        {fileData && metadata && (
-          <DatasetConfig
-            fileData={fileData}
-            metadata={metadata}
-            datasetCategory={datasetCategory}
-            onDatasetFieldChange={onDatasetFieldChange}
-          />
+        {isSelectingDatasetType && datasetCategory === DatasetCategory.Environment ? (
+          <Fragment>
+            <div>select type</div>
+            <select>
+              <option>lla</option>
+            </select>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <DatasetFile onFileLoaded={onFileLoaded} />
+            {fileData && metadata && (
+              <DatasetConfig
+                fileData={fileData}
+                metadata={metadata}
+                datasetCategory={datasetCategory}
+                onDatasetFieldChange={onDatasetFieldChange}
+              />
+            )}
+          </Fragment>
         )}
       </div>
       <div className={styles.modalFooter}>
