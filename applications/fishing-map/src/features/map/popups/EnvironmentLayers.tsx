@@ -7,7 +7,10 @@ type ContextTooltipRowProps = {
   showFeaturesDetails: boolean
 }
 
-function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
+function EnvironmentTooltipSection({
+  features,
+  showFeaturesDetails = false,
+}: ContextTooltipRowProps) {
   return (
     <Fragment>
       {features.map((feature, index) => (
@@ -17,7 +20,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
             <div className={styles.row}>
               <span className={styles.rowText}>
-                {feature.value} {feature.unit && <span>{feature.unit}</span>}
+                {(feature.value as any).toFixed(2)} {feature.unit && <span>{feature.unit}</span>}
               </span>
             </div>
           </div>
@@ -27,4 +30,4 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
   )
 }
 
-export default ContextTooltipSection
+export default EnvironmentTooltipSection

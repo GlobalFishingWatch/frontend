@@ -1,6 +1,6 @@
+import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import { ColorRampsIds, HeatmapAnimatedMode } from '../types'
 import { DEFAULT_BACKGROUND_COLOR } from '..'
-import { HeatmapAnimatedCombinationMode } from './types'
 
 export const API_ENDPOINTS = {
   tiles: '4wings/tile/heatmap/{z}/{x}/{y}',
@@ -9,17 +9,16 @@ export const API_ENDPOINTS = {
 
 export const HEATMAP_DEFAULT_MAX_ZOOM = 12
 
-export const HEATMAP_MODE_COMBINATION: Record<
-  HeatmapAnimatedMode,
-  HeatmapAnimatedCombinationMode
-> = {
-  [HeatmapAnimatedMode.Compare]: HeatmapAnimatedCombinationMode.Compare,
-  [HeatmapAnimatedMode.Bivariate]: HeatmapAnimatedCombinationMode.Bivariate,
-  [HeatmapAnimatedMode.Blob]: HeatmapAnimatedCombinationMode.Literal,
-  [HeatmapAnimatedMode.Extruded]: HeatmapAnimatedCombinationMode.Cumulative,
+export const HEATMAP_MODE_COMBINATION: Record<HeatmapAnimatedMode, SublayerCombinationMode> = {
+  [HeatmapAnimatedMode.Single]: SublayerCombinationMode.None,
+  [HeatmapAnimatedMode.Compare]: SublayerCombinationMode.Max,
+  [HeatmapAnimatedMode.Bivariate]: SublayerCombinationMode.Bivariate,
+  [HeatmapAnimatedMode.Blob]: SublayerCombinationMode.Literal,
+  [HeatmapAnimatedMode.Extruded]: SublayerCombinationMode.Cumulative,
 }
 
 export const HEATMAP_MODE_LAYER_TYPE: Record<HeatmapAnimatedMode, string> = {
+  [HeatmapAnimatedMode.Single]: 'fill',
   [HeatmapAnimatedMode.Compare]: 'fill',
   [HeatmapAnimatedMode.Bivariate]: 'fill',
   [HeatmapAnimatedMode.Blob]: 'heatmap',

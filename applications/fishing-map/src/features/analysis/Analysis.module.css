@@ -42,17 +42,6 @@
   margin-bottom: auto;
 }
 
-.commonTitle {
-  width: 100%;
-  padding: var(--space-M);
-  border-bottom: var(--border);
-}
-
-.layerPanels {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 .saveBtn {
   margin-top: auto;
   align-self: flex-end;
@@ -65,17 +54,16 @@
   padding: var(--space-M);
 }
 
-.graph {
-  padding: var(--space-M);
-  min-height: 28rem;
-}
-
 .graph .spinner {
   height: 24rem;
 }
 
 .container .spinnerFull {
   height: 100vh;
+}
+
+.wrapperSpinner {
+  height: calc(100% - 80px);
 }
 
 .emptyDataPlaceholder {

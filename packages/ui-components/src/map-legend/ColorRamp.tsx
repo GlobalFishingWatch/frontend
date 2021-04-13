@@ -35,7 +35,6 @@ function ColorRampLegend({
   }, [cleanRamp, ramp])
 
   if (!ramp || !cleanRamp) return null
-
   return (
     <div className={cx(styles.row, className)}>
       {labelComponent ? (
@@ -47,14 +46,7 @@ function ColorRampLegend({
             <span className={styles.subTitle}>
               {' '}
               ({unit}
-              {gridArea && (
-                <span>
-                  {' '}
-                  by {gridArea}
-                  <sup>2</sup>
-                </span>
-              )}
-              )
+              {gridArea && <span> / {gridArea}</span>})
             </span>
           )}
         </p>
@@ -78,7 +70,7 @@ function ColorRampLegend({
                     : 0,
                 }}
               >
-                {currentValue}
+                {currentValue.toFixed(2)}
               </span>
             )}
             {type === 'colorramp-discrete' && (

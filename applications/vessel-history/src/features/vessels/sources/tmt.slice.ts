@@ -46,7 +46,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
       byCount: [],
       byDate: valueList.imo.sort(sortValuesByDate),
     },
-    gearType: {
+    geartype: {
       byCount: [],
       byDate: valueList.gear.sort(sortValuesByDate),
     },
@@ -88,7 +88,7 @@ export const toVessel: (data: TMTDetail) => VesselWithHistory = (data: TMTDetail
     callsign: extractValue(vesselHistory.callsign.byDate),
     flag: extractValue(vesselHistory.flag.byDate) || '',
     type: extractValue(vesselHistory.vesselType.byDate),
-    gearType: extractValue(vesselHistory.gearType.byDate),
+    geartype: extractValue(vesselHistory.geartype.byDate),
     length: extractValue(vesselHistory.length.byDate),
     depth: extractValue(vesselHistory.depth.byDate),
     grossTonnage: extractValue(vesselHistory.grossTonnage.byDate),

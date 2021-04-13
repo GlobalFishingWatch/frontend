@@ -58,9 +58,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}
-              label={VesselFieldLabel.gearType}
-              value={vessel.gearType ?? ''}
-              valuesHistory={vessel.history.gearType.byDate}
+              label={VesselFieldLabel.geartype}
+              value={vessel.geartype ?? ''}
+              valuesHistory={vessel.history.geartype.byDate}
             ></InfoField>
             <InfoField
               vesselName={vessel.shipname ?? ''}

@@ -2,16 +2,16 @@ import tap from 'tap'
 import { aggregateTile, aggregateCell, getRealValue } from '@globalfishingwatch/fourwings-aggregate'
 
 const BASE_CONFIG = {
-  combinationMode: 'add',
+  sublayerCombinationMode: 'add',
   delta: 72,
   geomType: 'rectangle',
   interactive: true,
   interval: '10days',
-  numDatasets: 1,
+  sublayerCount: 1,
   quantizeOffset: 0,
   singleFrame: false,
   tileBBox: [90, -11.178401873711792, 101.25, 0],
-  visible: [true],
+  sublayerVisibility: [true],
   x: 24,
   y: 16,
   z: 5,
@@ -39,22 +39,20 @@ const lastFeature = agg.main.features[TEST_CELL_INDEX]
 const firstFeatureInteractive = agg.interactive.features[0]
 const lastFeatureInteractive = agg.interactive.features[TEST_CELL_INDEX]
 
-const firstFeatureInteractiveRawCellFrame = aggregateCell(
-  JSON.stringify(firstFeatureInteractive.properties.rawValues),
-  TEST_FRAME,
-  BASE_CONFIG.delta,
-  BASE_CONFIG.quantizeOffset,
-  BASE_CONFIG.numDatasets,
-  true
-)
-const lastFeatureInteractiveRawCellFrame = aggregateCell(
-  JSON.stringify(lastFeatureInteractive.properties.rawValues),
-  TEST_FRAME,
-  BASE_CONFIG.delta,
-  BASE_CONFIG.quantizeOffset,
-  BASE_CONFIG.numDatasets,
-  true
-)
+const firstFeatureInteractiveRawCellFrame = aggregateCell({
+  rawValues: JSON.stringify(firstFeatureInteractive.properties.rawValues),
+  frame: TEST_FRAME,
+  delta: BASE_CONFIG.delta,
+  quantizeOffset: BASE_CONFIG.quantizeOffset,
+  sublayerCount: BASE_CONFIG.sublayerCount,
+})
+const lastFeatureInteractiveRawCellFrame = aggregateCell({
+  rawValues: JSON.stringify(lastFeatureInteractive.properties.rawValues),
+  frame: TEST_FRAME,
+  delta: BASE_CONFIG.delta,
+  quantizeOffset: BASE_CONFIG.quantizeOffset,
+  sublayerCount: BASE_CONFIG.sublayerCount,
+})
 
 tap.equals(firstFeature.properties[TEST_FRAME], TEST_VALUE)
 tap.equals(firstFeature.properties[TEST_FRAME], lastFeature.properties[TEST_FRAME])

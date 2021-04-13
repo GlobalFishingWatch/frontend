@@ -10,7 +10,7 @@ export interface Vessel {
   fleet?: string
   origin?: string
   type?: string
-  gearType?: string
+  geartype?: string
   length?: string
   depth?: string
   grossTonnage?: string

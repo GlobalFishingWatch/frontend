@@ -55,12 +55,18 @@
 .languages {
   display: none;
   position: absolute;
+  padding: var(--space-S) 0;
   left: 5.2rem;
-  top: -50%;
+  bottom: 0;
   z-index: 1;
   flex-direction: column;
   background-color: var(--color-white);
   filter: var(--filter-drop-shadow);
+  width: max-content;
+}
+
+.languages > li {
+  width: 100%;
 }
 
 .languageToggle:hover .languages {
@@ -68,12 +74,23 @@
 }
 
 .language {
-  width: 100%;
+  width: calc(100%);
   color: var(--color-secondary-blue);
   display: block;
   padding: var(--space-XS) var(--space-M);
   text-align: left;
   cursor: pointer;
+  position: relative;
+}
+
+.languages > li:not(:last-of-type) > .language::after {
+  content: '';
+  height: 1px;
+  bottom: 0;
+  position: absolute;
+  left: var(--space-M);
+  right: 0;
+  background-color: var(--color-border);
 }
 
 .language:hover {

@@ -1,5 +1,69 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.28.18
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ocean-areas@0.2.2
+
+## 0.28.17
+
+### Patch Changes
+
+- Updated dependencies [cbb694df]
+  - @globalfishingwatch/dataviews-client@6.1.0
+
+## 0.28.16
+
+### Patch Changes
+
+- Updated dependencies [358004cb]
+- Updated dependencies [8785580f]
+  - @globalfishingwatch/fourwings-aggregate@3.0.0
+  - @globalfishingwatch/layer-composer@5.0.0
+  - @globalfishingwatch/react-hooks@6.0.0
+  - @globalfishingwatch/dataviews-client@6.0.0
+  - @globalfishingwatch/ui-components@2.17.4
+
+## 0.28.15
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.2
+  - @globalfishingwatch/react-hooks@5.3.2
+  - @globalfishingwatch/ui-components@2.17.3
+
+## 0.28.14
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ocean-areas@0.2.1
+
+## 0.28.13
+
+### Patch Changes
+
+- e284ce5e: Fishing map/improve miniglobe performance
+- Updated dependencies [e284ce5e]
+  - @globalfishingwatch/ui-components@2.17.2
+
+## 0.28.12
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ocean-areas@0.2.0
+
+## 0.28.11
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@3.1.1
+
 ## 0.28.10
 
 ### Patch Changes
