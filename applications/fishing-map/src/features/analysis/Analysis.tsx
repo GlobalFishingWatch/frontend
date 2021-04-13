@@ -64,7 +64,6 @@ function Analysis() {
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
-  // TODO should not use hardcoded activity layers
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
   const { areaId, sourceId: contextSourceId } = analysisQuery
   const contextSourcesIds = useMemo(() => [contextSourceId], [contextSourceId])

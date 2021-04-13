@@ -128,7 +128,6 @@ const MapWrapper = (): React.ReactElement | null => {
         const isSquareKm = (legend.gridArea as number) > 50000
         let label = legend.unit
         if (!label) {
-          // TODO review this when environmental layers switchs to heatmapAnimated
           if (legend.generatorType === GeneratorType.HeatmapAnimated) {
             const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
             const gridAreaFormatted = gridArea
@@ -159,8 +158,6 @@ const MapWrapper = (): React.ReactElement | null => {
   // TODO handle also in case of error
   // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
   const tilesLoading = useTilesLoading(map)
-
-  // TODO deprecate
   const encounterSourceLoaded = useHasSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
 
   const getCursor = useCallback(
