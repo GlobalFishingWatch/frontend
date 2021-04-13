@@ -78,6 +78,14 @@ export const useHaveSourcesLoaded = (sourcesIds: string[]) => {
   }, [haveAllSourcesLoaded])
 }
 
+export const useHasSourceLoaded = (sourceId: string) => {
+  const sourcesState = useSourcesLoadingState()
+  const haveAllSourcesLoaded = sourcesState[sourceId] === true
+  return useMemo(() => {
+    return haveAllSourcesLoaded
+  }, [haveAllSourcesLoaded])
+}
+
 export const useActiveHeatmapAnimatedMetadatas = (generators: AnyGeneratorConfig[]) => {
   const style = useMapStyle()
   const generatorsIds = generators.map((generator) => generator.id)
@@ -147,75 +155,4 @@ export const useActivityTemporalgridFeatures = () => {
     selectGeneratorConfigsById(MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
   )
   return useGeneratorAnimatedFeatures(generator)
-}
-
-/**
-TODO: DEPRECATE
- */
-export const useMapSourceLoaded = (sourceId: string, cacheKey?: string) => {
-  const map = useMapInstance()
-  const [sourceLoaded, setSourceLoaded] = useState(false)
-
-  // if cacheKey changed, reset loading status
-  useEffect(() => {
-    if (cacheKey) {
-      setSourceLoaded(false)
-    }
-  }, [cacheKey])
-
-  useEffect(() => {
-    const sourceLoadingCallback = (sourcedataEvent: any) => {
-      if (sourcedataEvent.sourceId === sourceId) {
-        setSourceLoaded(false)
-      }
-    }
-
-    // if no cachekey specified and sourceLoaded already true, start listen to sourceloading events
-    // and reset loading status to false when source starts loading again
-    // TODO could we simplify that by checking map?.isSourceLoaded() every time the hook is run?
-    if (!cacheKey) {
-      if (map && sourceLoaded) {
-        map.on('sourcedataloading', sourceLoadingCallback)
-      }
-    }
-
-    return () => {
-      if (map) {
-        map.off('sourcedataloading', sourceLoadingCallback)
-      }
-    }
-  }, [cacheKey, map, sourceId, sourceLoaded])
-
-  useEffect(() => {
-    const sourceCallback = () => {
-      if (map?.getSource(sourceId) && map?.isSourceLoaded(sourceId)) {
-        setSourceLoaded(true)
-        map.off('idle', sourceCallback)
-      }
-    }
-
-    const sourceErrorCallback = (errorEvent: any) => {
-      if (
-        errorEvent.sourceId === sourceId &&
-        map?.getSource(sourceId) &&
-        map?.isSourceLoaded(sourceId)
-      ) {
-        setSourceLoaded(true)
-      }
-    }
-
-    if (map && sourceId && !sourceLoaded) {
-      map.on('idle', sourceCallback)
-      map.on('error', sourceErrorCallback)
-    }
-
-    return () => {
-      if (map) {
-        map.off('idle', sourceCallback)
-        map.off('error', sourceErrorCallback)
-      }
-    }
-  }, [map, sourceId, sourceLoaded])
-
-  return sourceLoaded
 }

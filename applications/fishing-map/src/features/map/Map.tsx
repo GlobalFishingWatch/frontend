@@ -32,7 +32,7 @@ import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { SliceInteractionEvent } from './map.slice'
-import { useMapSourceLoaded } from './map-features.hooks'
+import { useHasSourceLoaded } from './map-features.hooks'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
@@ -161,7 +161,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const tilesLoading = useTilesLoading(map)
 
   // TODO deprecate
-  const encounterSourceLoaded = useMapSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const encounterSourceLoaded = useHasSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
 
   const getCursor = useCallback(
     (state) => {
