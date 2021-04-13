@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/fishing-map",
-  "version": "0.28.17",
+  "version": "0.28.18",
   "private": true,
   "scripts": {
     "start": "PORT=3003 react-scripts start",
@@ -20,7 +20,7 @@
     "@globalfishingwatch/fourwings-aggregate": "3.0.0",
     "@globalfishingwatch/layer-composer": "5.0.0",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.20",
-    "@globalfishingwatch/ocean-areas": "0.2.1",
+    "@globalfishingwatch/ocean-areas": "0.2.2",
     "@globalfishingwatch/pbf": "1.0.9",
     "@globalfishingwatch/react-hooks": "6.0.0",
     "@globalfishingwatch/react-map-gl": "5.2.9-gfw.15",
