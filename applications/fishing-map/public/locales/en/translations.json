@@ -7,14 +7,15 @@
     "empty": "Your selected datasets will appear here",
     "errorMessage": "Something went wrong",
     "noActivityLayers": "No activity layers active",
+    "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
     "title": "Analysis",
+    "vesselFlags": "by vessels flagged by",
     "area": "Area",
     "generating": "We are generating the report for you, it'll be ready soon.",
     "successfullMessage": "The report was sent successfully, you'll receive it by email soon.",
     "dateRange": "Date Range",
     "emailDescription": "A report for the selected date ranges and filters will be generated and sent to your email account",
-    "generate": "Generate",
-    "timeRangeTooLong": "Reports are only allowed for time ranges up to one year"
+    "generate": "Generate"
   },
   "common": {
     "active_after": "Active after",
@@ -22,15 +23,17 @@
     "activity": "Vessel activity",
     "apparentFishing": "Apparent Fishing Effort",
     "confirm": "Confirm",
-    "context_area_plural": "Context areas",
+    "context_area_plural": "Reference Layers",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "countries",
+    "dateRange": "between {{start}} and {{end}}",
     "description": "Description",
     "environment": "Environment",
     "events": "Events",
     "hour": "Hour",
     "hour_plural": "Hours",
-    "loggedAs": "Logged as",
+    "in": "in",
+    "loggedAs": "Logged in as",
     "login": "Log in",
     "logout": "Log out",
     "max": "Max",
@@ -52,7 +55,7 @@
     "fishing": "Fishing"
   },
   "dataset": {
-    "addContext": "Add context dataset",
+    "addContext": "Add reference layer",
     "addEnvironmental": "Add environmental dataset",
     "colorByValue": "Color features by value",
     "confirmRemove": "Are you sure you want to permanently delete this dataset?",
@@ -66,11 +69,11 @@
     "hint": "Find out more about the supported formats",
     "importing": "Dataset is being imported",
     "new": "New dataset",
-    "notUploadedYet": "No context layers uploaded yet",
+    "notUploadedYet": "No reference layer uploaded yet",
     "remove": "Remove dataset",
     "title": "Dataset",
     "uploadLogin": "You need to <1>login</1> to upload datasets",
-    "uploadNewContext": "Upload new context areas",
+    "uploadNewContext": "Upload new reference layer",
     "uploadNewEnviroment": "Upload new environment dataset",
     "addEnvironment": "Add environment dataset",
     "title_plural": "Datasets",
@@ -79,7 +82,7 @@
   },
   "errors": {
     "datasetNotFound": "Dataset not found",
-    "datasetNotValid": "It seems to be something wrong with your file",
+    "datasetNotValid": "There seems to be something wrong with your file",
     "generic": "Something went wrong, try again or contact:",
     "invalidRange": "Min has to be lower than max value",
     "latestCarrierNotFound": "Latest carrier dataset not found",
@@ -91,13 +94,20 @@
     "trackLoading": "There was an error loading the vessel track",
     "uploadError": "There was an error uploading your dataset",
     "vesselLoading": "There was an error loading the vessel details track",
+    "workspaceCreate": "There was an error creating the workspace, please try again later",
+    "workspaceDuplicatedName": "There is already a workspace with this name",
     "workspaceLoad": "There was an error loading the workspace. Please try again later.",
-    "workspaceNotFound": "The view you request was not found"
+    "workspaceMissingName": "Workspace name is needed",
+    "workspaceNotFound": "The view you requested was not found"
   },
   "event": {
     "noData": "No data available",
     "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
     "seeInCVP": "See in Carrier Vessel Portal"
+  },
+  "footer": {
+    "convenedBy": "A partnership convened by",
+    "supportBy": "Supported by"
   },
   "layer": {
     "add": "Add layer",
@@ -125,6 +135,7 @@
     "captureMap": "Map screenshot",
     "change_basemap_default": "Switch to default basemap",
     "change_basemap_satellite": "Switch to satellite basemap",
+    "legend_help": "Approximated grid cell area at the Equator",
     "loading": "Loading map",
     "mapLoadingWait": "Please wait until map loads",
     "rulers_add": "Measure distance",
@@ -137,11 +148,11 @@
     "advanced": "Advanced",
     "basic": "Basic",
     "close": "Close search",
-    "description": "Search by vessel name or identification code. You can narrow your search by pressing the filter icon in the top menu bar",
+    "description": "Search by vessel name or identification code. You can narrow your search by using the filter icon in the top menu bar",
     "mainQueryLabel": "Name, IMO or MMSI",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign",
-    "notAllowed": "The available datasets don't allow searching vessels",
-    "placeholder": "Type to search vessels",
+    "notAllowed": "You don't have permission to search on these datasets",
+    "placeholder": "Type to search for vessels",
     "suggestion": "Did you mean",
     "title": "Search",
     "vesselAlreadyInWorksace": "Vessel already added. Close search to see it.",
@@ -151,10 +162,10 @@
   },
   "selects": {
     "allSelected": "All",
-    "selected": "selected",
-    "placeholder": "Select an option"
+    "placeholder": "Select an option",
+    "selected": "selected"
   },
-  "timebar": {
+  "timebarSettings": {
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graph",
     "settings_close": "Close timebar settings",
@@ -178,6 +189,27 @@
     "firstTransmissionDate": "First transmission date",
     "flag": "Flag",
     "fleet": "Fleet",
+    "geartype": "Gear type",
+    "gearTypes": {
+      "dredge_fishing": "Dredge Fishing",
+      "drifting_longlines": "Drifting Longline",
+      "driftnets": "Driftnet",
+      "fishing": "Fishing",
+      "fixed_gear": "Fixed Gear",
+      "other_fishing": "Other Fishing",
+      "other_purse_seines": "Other Purse Seines",
+      "other_seines": "Other Seines",
+      "pole_and_line": "Pole and Line",
+      "pots_and_traps": "Pots and Traps",
+      "purse_seines": "Purse Seine",
+      "seiners": "Seiners",
+      "set_gillnets": "Set Gillnet",
+      "set_longlines": "Set Longline",
+      "squid_jigger": "Squid Jigger",
+      "trawlers": "Trawler",
+      "trollers": "Troller",
+      "tuna_purse_seines": "Tuna Purse Seine"
+    },
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Last transmission date",
@@ -208,5 +240,41 @@
     "saveLogin": "You need to login to save views",
     "title_plural": "Workspaces",
     "title": "Workspace"
+  },
+  "timebar": {
+    "playback": {
+      "playAnimation": "Play animation",
+      "pauseAnimation": "Pause animation",
+      "toogleAnimationLooping": "Toggle animation looping",
+      "moveBack": "Move back",
+      "moveForward": "Move forward",
+      "changeAnimationSpeed": "Change animation speed"
+    },
+    "timerange": {
+      "title": "Select a time range",
+      "start": "start",
+      "end": "end",
+      "last30days": "Last 30 days",
+      "done": "Done",
+      "errorEarlyStart": "Your start date is the earliest date with data available",
+      "errorLatestEnd": "Your end date is the latest date with data available",
+      "errorMinRange": "Your start and end date must be at least one day apart",
+      "errorMaxRange": "Your time range is the maximum range with data available"
+    },
+    "bookmark": {
+      "goToBookmark": "Go to your bookmarked time range",
+      "deleteBookmark": "Delete time range bookmark"
+    },
+    "dragLabel": "Drag to change the time range",
+    "lastUpdate": "Last update",
+    "setBookmark": "Bookmark current time range",
+    "day": "day",
+    "year": "year",
+    "month": "month",
+    "hour": "hour",
+    "zoomIn": "Zoom in",
+    "zoomTo": "Zoom to",
+    "zoomOut": "Zoom out",
+    "selectTimeRange": "Select a time range"
   }
 }

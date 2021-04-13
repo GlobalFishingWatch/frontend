@@ -1,5 +1,34 @@
 # @globalfishingwatch/layer-composer
 
+## 5.0.0
+
+### Major Changes
+
+- 358004cb: Use client-side aggregation with env layers
+
+### Patch Changes
+
+- Updated dependencies [358004cb]
+  - @globalfishingwatch/fourwings-aggregate@3.0.0
+
+## 4.19.2
+
+### Patch Changes
+
+- call cluster tiles api with the new "maxClusterZoom" parameter
+
+## 4.19.1
+
+### Patch Changes
+
+- bug fixes
+
+## 4.19.0
+
+### Minor Changes
+
+- f570b76f: support uniqueFeatureInteraction in layer-composer and map interaction hook
+
 ## 4.18.1
 
 ### Patch Changes

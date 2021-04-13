@@ -114,6 +114,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
       {datasetCategory === DatasetCategory.Context && (
         <Select
           label={t('dataset.featuresNameField', 'Features name field')}
+          placeholder={t('selects.placeholder', 'Select an option')}
           options={geojsonPropertiesOptions}
           selectedOption={geojsonPropertiesOptions.find(
             ({ id }) => id === metadata.configuration?.propertyToInclude
@@ -133,6 +134,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           </label>
           <Select
             className={styles.selectShort}
+            placeholder={t('selects.placeholder', 'Select an option')}
             containerClassName={styles.selectContainer}
             options={geojsonPropertiesOptions}
             selectedOption={geojsonPropertiesOptions.find(

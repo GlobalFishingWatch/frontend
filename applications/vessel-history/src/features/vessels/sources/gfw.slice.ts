@@ -18,14 +18,14 @@ export const toVessel: (data: GFWDetail) => VesselWithHistory = (data: GFWDetail
     imo: data.imo,
     mmsi: data.mmsi,
     callsign: data.callsign,
-    gearType: data.geartype,
+    geartype: data.geartype,
     authorizations: [],
     history: {
       callsign: {
         byCount: data.otherCallsigns,
         byDate: [],
       },
-      gearType: {
+      geartype: {
         byCount: [],
         byDate: [],
       },

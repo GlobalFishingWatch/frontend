@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { Fragment, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import ImmediateContext from '../immediateContext'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
@@ -67,14 +67,18 @@ const Tracks = ({ tracks }) => {
   const trackCoords = useMemo(() => getCoords(tracks, outerScale), [tracks, outerScale])
   if (tracks === null || tracks === undefined) return null
 
-  return trackCoords.map((track, i) => {
-    const y = getTrackY(tracks.length, i, graphHeight)
-    return (
-      <div key={i}>
-        <Segments segments={track.segments} color={track.color} immediate={immediate} y={y} />
-      </div>
-    )
-  })
+  return (
+    <Fragment>
+      {trackCoords.map((track, i) => {
+        const y = getTrackY(tracks.length, i, graphHeight)
+        return (
+          <div key={i}>
+            <Segments segments={track.segments} color={track.color} immediate={immediate} y={y} />
+          </div>
+        )
+      })}
+    </Fragment>
+  )
 }
 
 Tracks.propTypes = {

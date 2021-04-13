@@ -10,6 +10,8 @@ import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserStatus, selectUserLogged, GUEST_USER_TYPE, selectUserData } from './user.slice'
 
+const DEFAULT_GROUP_ID = 'Default'
+
 export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE
 })
@@ -34,6 +36,14 @@ export const isUserAuthorized = createSelector([selectUserData], (user) => {
 
 export const selectUserId = createSelector([selectUserData], (userData) => {
   return userData?.id
+})
+
+export const selectUserGroups = createSelector([selectUserData], (userData) => {
+  return userData?.groups
+})
+
+export const selectUserGroupsClean = createSelector([selectUserGroups], (userGroups) => {
+  return userGroups?.filter((g) => g !== DEFAULT_GROUP_ID)
 })
 
 export const selectUserWorkspaces = createSelector(

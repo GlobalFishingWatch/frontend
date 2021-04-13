@@ -1,3 +1,4 @@
+import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 
@@ -136,4 +137,11 @@ export const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = [
     id: 'none',
     label: 'None',
   },
+]
+
+export const POPUP_CATEGORY_ORDER = [
+  DataviewCategory.Activity,
+  DataviewCategory.Events,
+  DataviewCategory.Environment,
+  DataviewCategory.Context,
 ]

@@ -8,12 +8,14 @@ export enum DebugOption {
   Thinning = 'thinning',
 }
 
-interface UserState {
+export type DebugOptions = Record<DebugOption, boolean>
+
+interface DebugState {
   active: boolean
-  options: Record<DebugOption, boolean>
+  options: DebugOptions
 }
 
-const initialState: UserState = {
+const initialState: DebugState = {
   active: false,
   options: {
     blob: false,

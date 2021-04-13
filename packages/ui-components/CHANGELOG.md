@@ -1,5 +1,46 @@
 # @globalfishingwatch/ui-components
 
+## 2.17.4
+
+### Patch Changes
+
+- 8785580f: fix legend gridArea
+- Updated dependencies [358004cb]
+  - @globalfishingwatch/layer-composer@5.0.0
+
+## 2.17.3
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.2
+
+## 2.17.2
+
+### Patch Changes
+
+- e284ce5e: Fishing map/improve miniglobe performance
+
+## 2.17.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.1
+
+## 2.17.0
+
+### Minor Changes
+
+- 9af9dea7: include generatorId and Type in legendLayers
+
+## 2.16.2
+
+### Patch Changes
+
+- Updated dependencies [f570b76f]
+  - @globalfishingwatch/layer-composer@4.19.0
+
 ## 2.16.1
 
 ### Patch Changes

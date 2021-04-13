@@ -1,5 +1,7 @@
 # Dataviews in use
 
+Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/swagger#/DataviewsAPI)
+
 ## Context
 
 | Layer name                   | Dev id | Pro id |
@@ -21,13 +23,13 @@
 
 ### Marine Reserves - Caribe
 
-| Layer name                          | Dev id | Pro id |
-| ----------------------------------- | ------ | ------ |
-| SAR match 2019 for Caribe           | 138    | 242    |
-| SAR not match 2019 for Caribe       | 139    | 243    |
-| Sea surface tempoerature for Caribe | 79     | 223    |
-| Salinity for Caribe                 | 80     | 225    |
-| Chlorophyll for Caribe              | 84     | 226    |
+| Layer name                         | Dev id | Pro id |
+| ---------------------------------- | ------ | ------ |
+| SAR match 2019 for Caribe          | 138    | 242    |
+| SAR not match 2019 for Caribe      | 139    | 243    |
+| Sea surface temperature for Caribe | 79     | 224    |
+| Salinity for Caribe                | 80     | 225    |
+| Chlorophyll for Caribe             | 84     | 226    |
 
 ### Marine Reserves - Galapagos
 
@@ -60,6 +62,14 @@
 | Salinity for Palau                | 137    | 240    |
 | Sea surface temperature for Palau | 135    | 238    |
 | Chlorophyll for Palau             | 136    | 239    |
+
+### Marine Reserves - Niue
+
+| Layer name                       | Dev id | Pro id |
+| -------------------------------- | ------ | ------ |
+| Salinity for Niue                | 141    | ---    |
+| Sea surface temperature for Niue | 142    | ---    |
+| Chlorophyll for Niue             | 143    | ---    |
 
 ## Activity
 

@@ -147,9 +147,9 @@ function Workspace() {
 
   return (
     <Fragment>
-      {locationCategory === WorkspaceCategories.MarineReserves && workspace?.name && (
-        <h2 className={styles.title}>{workspace.name}</h2>
-      )}
+      {(locationCategory === WorkspaceCategories.MarineReserves ||
+        locationCategory === WorkspaceCategories.FishingActivity) &&
+        workspace?.name && <h2 className={styles.title}>{workspace.name}</h2>}
       <HeatmapsSection />
       <VesselsSection />
       <EventsSection />

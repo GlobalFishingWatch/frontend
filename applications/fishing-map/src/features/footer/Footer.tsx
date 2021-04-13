@@ -1,6 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import LogoOceana from 'assets/images/partner-logos/oceana@2x.png'
@@ -11,12 +12,14 @@ import styles from './Footer.module.css'
 
 export const FOOTER_HEIGHT = 24
 
-const getFooterPartners = (category: WorkspaceCategories) => {
+const FooterPartners = () => {
+  const category = useSelector(selectLocationCategory)
+  const { t } = useTranslation()
   switch (category) {
     case WorkspaceCategories.MarineReserves:
       return (
         <div className={styles.partners}>
-          <span className={styles.text}>Supported by</span>
+          <span className={styles.text}>{t('footer.supportBy', 'Supported by')}</span>
           <a href="https://donabertarelli.com/" rel="noopener noreferrer">
             <img src={LogoDonaBertarelli} alt="Dona Bertarelli" width="129px" />
           </a>
@@ -25,7 +28,7 @@ const getFooterPartners = (category: WorkspaceCategories) => {
     default:
       return (
         <div className={styles.partners}>
-          <span className={styles.text}>A partnership convened by</span>
+          <span className={styles.text}>{t('footer.convenedBy', 'A partnership convened by')}</span>
           <a href="https://oceana.org/" rel="noopener noreferrer">
             <img src={LogoOceana} alt="Oceana" width="64px" />
           </a>
@@ -41,10 +44,9 @@ const getFooterPartners = (category: WorkspaceCategories) => {
 }
 
 function Footer(): React.ReactElement {
-  const locationCategory = useSelector(selectLocationCategory)
   return (
     <footer className={cx('print-hidden', styles.footer)}>
-      {getFooterPartners(locationCategory)}
+      <FooterPartners />
       <span className={styles.text}>© Global Fishing Watch {new Date().getFullYear()}</span>
     </footer>
   )

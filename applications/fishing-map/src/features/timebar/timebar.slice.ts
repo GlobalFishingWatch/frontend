@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { RootState } from 'store'
 
-type Range = {
+export type Range = {
   start: string
   end: string
 }
