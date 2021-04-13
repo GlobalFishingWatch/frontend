@@ -1,5 +1,5 @@
 .container {
-  margin-bottom: 5rem;
+  margin-bottom: var(--space-M);
   border-top: var(--border);
 }
 
