@@ -135,6 +135,12 @@ export const selectDataviewInstancesByCategory = (category: DataviewCategory) =>
   })
 }
 
+export const selectDataviewInstancesByIds = (ids: string[]) => {
+  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
+    return dataviews?.filter((dataview) => ids.includes(dataview.id))
+  })
+}
+
 export const selectVesselsDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.Track)],
   (dataviews) => dataviews
@@ -161,13 +167,13 @@ export const selectEventsDataviews = createSelector(
   (dataviews) => dataviews
 )
 
-export const selectTemporalgridDataviews = createSelector(
+export const selectActivityDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Activity)],
   (dataviews) => dataviews
 )
 
 export const selectHasAnalysisLayersVisible = createSelector(
-  [selectTemporalgridDataviews, selectEnvironmentalDataviews],
+  [selectActivityDataviews, selectEnvironmentalDataviews],
   (activityDataviews = [], environmentalDataviews = []) => {
     const heatmapEnvironmentalDataviews = environmentalDataviews?.filter(
       ({ config }) => config?.type === GeneratorType.HeatmapAnimated
@@ -179,19 +185,16 @@ export const selectHasAnalysisLayersVisible = createSelector(
   }
 )
 
-export const selectActiveTemporalgridDataviews = createSelector(
-  [selectTemporalgridDataviews],
+export const selectActiveActivityDataviews = createSelector(
+  [selectActivityDataviews],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectTemporalgridDatasets = createSelector(
-  [selectTemporalgridDataviews],
-  (dataviews) => {
-    if (!dataviews) return
+export const selectActivityDatasets = createSelector([selectActivityDataviews], (dataviews) => {
+  if (!dataviews) return
 
-    return dataviews.flatMap((dataview) => getDatasetsByDataview(dataview))
-  }
-)
+  return dataviews.flatMap((dataview) => getDatasetsByDataview(dataview))
+})
 
 export const getRelatedDatasetByType = (dataset?: Dataset, datasetType?: DatasetTypes) => {
   return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)

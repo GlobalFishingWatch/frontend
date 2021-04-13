@@ -61,10 +61,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
 
   const dataset = dataview.datasets?.find(
-    (d) =>
-      d.type === DatasetTypes.Fourwings ||
-      d.type === DatasetTypes.FourwingsFD ||
-      d.type === DatasetTypes.Context
+    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
   )
   useAutoRefreshImportingDataset(dataset)
   const isCustomUserLayer = dataset?.ownerId === userId

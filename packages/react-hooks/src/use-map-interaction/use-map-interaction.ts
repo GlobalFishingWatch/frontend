@@ -40,8 +40,7 @@ const getExtendedFeatures = (
       generatorMetadata = feature.layer.metadata
     }
 
-    const unit = generatorMetadata?.legend?.unit ?? null
-
+    const unit = generatorMetadata?.sublayers?.[0].legend.unit ?? null
     const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
     const properties = feature.properties || {}
     const extendedFeature: ExtendedFeature | null = {

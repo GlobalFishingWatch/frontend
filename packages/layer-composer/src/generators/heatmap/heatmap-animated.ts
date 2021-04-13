@@ -175,6 +175,7 @@ class HeatmapAnimatedGenerator {
         timeChunks,
         aggregationOperation: finalConfig.aggregationOperation,
         multiplier: finalConfig.breaksMultiplier,
+        sublayers: config.sublayers,
         legend: config.metadata?.legend,
       },
     }

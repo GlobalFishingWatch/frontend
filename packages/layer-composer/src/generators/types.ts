@@ -40,6 +40,7 @@ export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | nul
 export interface GeneratorLegend {
   label?: string
   unit?: string
+  color?: string
 }
 
 export interface GeneratorMetadata {
@@ -342,6 +343,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   colorRamp: ColorRampsIds
   visible?: boolean
   breaks?: number[]
+  legend?: GeneratorLegend
 }
 
 // ---- Heatmap Generator color ramps types

@@ -15,7 +15,7 @@ import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-in
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import {
   selectDataviewInstancesResolved,
-  selectTemporalgridDataviews,
+  selectActivityDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import { selectLocationType } from 'routes/routes.selectors'
@@ -24,7 +24,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
-  getGeneratorsConfig,
+  selectDefaultMapGeneratorsConfig,
   selectGlobalGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
@@ -42,13 +42,13 @@ import {
   ExtendedFeatureEvent,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
-import { useMapSourceLoaded } from './map-features.hooks'
+import { useHasSourceLoaded } from './map-features.hooks'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
   return {
-    generatorsConfig: useSelector(getGeneratorsConfig),
+    generatorsConfig: useSelector(selectDefaultMapGeneratorsConfig),
     globalConfig: useSelector(selectGlobalGeneratorsConfig),
   }
 }
@@ -63,14 +63,13 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
-  const encounterSourceLoaded = useMapSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const encounterSourceLoaded = useHasSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
   const fourWingsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
   const rulersEditing = useSelector(selectEditing)
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
-    console.log(event)
     // Used on workspaces-list or user panel to go to the workspace detail page
     if (locationType === USER || locationType === WORKSPACES_LIST) {
       const workspace = event?.features?.find(
@@ -194,7 +193,7 @@ export type TooltipEvent = {
 export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
   const { t } = useTranslation()
   const dataviews = useSelector(selectDataviewInstancesResolved)
-  const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
+  const temporalgridDataviews = useSelector(selectActivityDataviews)
   if (!event || !event.features) return null
 
   const clusterFeature = event.features.find(

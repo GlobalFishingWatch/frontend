@@ -14,7 +14,7 @@ import type {
   ColorRampsIds,
   HeatmapAnimatedGeneratorSublayer,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import { resolveDataviewDatasetResource, UrlDataviewInstance } from './resolve-dataviews'
 
 export const MULTILAYER_SEPARATOR = '__'
@@ -112,6 +112,11 @@ export function getGeneratorConfig(
             visible: dataview.config?.visible ?? true,
             breaks: dataview.config?.breaks,
             datasets: datasetsIds,
+            legend: {
+              label: dataset?.name,
+              unit: dataset?.unit,
+              color: dataview?.config.color,
+            },
           },
         ]
 
@@ -121,15 +126,7 @@ export function getGeneratorConfig(
           aggregationOperation: AggregationOperation.Avg,
           interactive: true,
           interval: dataview.config?.interval || 'month',
-          breaksMultiplier: dataview.config?.breaskMultiplier || 1,
-          // TODO remove and grab from dataset config here
-          tilesAPI: 'https://dev-api-fourwings-tiler-jzzp2ui3wq-uc.a.run.app/v1',
-          metadata: {
-            legend: {
-              label: dataset?.name,
-              unit: dataset?.unit,
-            },
-          },
+          breaksMultiplier: dataview.config?.breaksMultiplier || VALUE_MULTIPLIER,
         }
       }
 
@@ -233,24 +230,31 @@ export function getDataviewsGeneratorConfigs(
     return !isActivityDataview
   })
 
-  // If heatmap animated generators found, merge them into one generator with multiple sublayers
+  // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
   if (activityDataviews.length) {
     const activitySublayers = activityDataviews.flatMap((dataview) => {
       const { config, datasetsConfig } = dataview
       if (!config || !datasetsConfig || !datasetsConfig.length) return []
       const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
+      // TODO Take unit from first dataset -> are we sure activity sublayers always use 'hours'?
+      const unit = dataview.datasets?.[0].unit
       const sublayer: HeatmapAnimatedGeneratorSublayer = {
         id: dataview.id,
         datasets,
         colorRamp: config.colorRamp as Generators.ColorRampsIds,
         filter: config.filter,
         visible: config.visible,
+        legend: {
+          label: dataview.name,
+          unit,
+          color: dataview?.config?.color,
+        },
       }
 
       return sublayer
     })
 
-    const activityDataview = {
+    const mergedActivityDataview = {
       id: params.mergedActivityGeneratorId || MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
       config: {
         type: Generators.Type.HeatmapAnimated,
@@ -258,7 +262,7 @@ export function getDataviewsGeneratorConfigs(
         mode: heatmapAnimatedMode,
       },
     }
-    dataviewsFiltered.push(activityDataview)
+    dataviewsFiltered.push(mergedActivityDataview)
   }
 
   const generatorsConfig = dataviewsFiltered.flatMap((dataview) => {
