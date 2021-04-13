@@ -17,6 +17,7 @@ import { Interval } from '@globalfishingwatch/layer-composer'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
 import { Range } from 'features/timebar/timebar.slice'
+import { toFixed } from 'utils/shared'
 import styles from './AnalysisGraph.module.css'
 
 export interface GraphData {
@@ -67,11 +68,11 @@ const formatTooltipValue = (value: number, payload: any, unit: string) => {
   const range = payload.range?.[index]
   const difference = range ? range[1] - value : 0
   const imprecision = value > 0 && (difference / value) * 100
-  const valueLabel = `${formatI18nNumber(value, { maximumFractionDigits: 2 })} ${unit ? unit : ''}`
+  const imprecisionFormatted = imprecision ? toFixed(imprecision, 0) : ''
+  const valueFormatted = formatI18nNumber(value, { maximumFractionDigits: 2 })
+  const valueLabel = `${valueFormatted} ${unit ? unit : ''}`
   const imprecisionLabel =
-    imprecision && imprecision?.toFixed() !== '0' && value?.toFixed() !== '0'
-      ? ` ± ${imprecision?.toFixed()}%`
-      : ''
+    imprecisionFormatted !== '0' && valueFormatted !== '0' ? ` ± ${imprecisionFormatted}%` : ''
   return valueLabel + imprecisionLabel
 }
 
