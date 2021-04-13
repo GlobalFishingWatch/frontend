@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 4.19.2
+
+### Patch Changes
+
+- call cluster tiles api with the new "maxClusterZoom" parameter
+
 ## 4.19.1
 
 ### Patch Changes
