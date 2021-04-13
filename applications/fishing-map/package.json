@@ -20,7 +20,7 @@
     "@globalfishingwatch/fourwings-aggregate": "3.0.0",
     "@globalfishingwatch/layer-composer": "5.0.0",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.20",
-    "@globalfishingwatch/ocean-areas": "0.1.2",
+    "@globalfishingwatch/ocean-areas": "0.2.1",
     "@globalfishingwatch/pbf": "1.0.9",
     "@globalfishingwatch/react-hooks": "6.0.0",
     "@globalfishingwatch/react-map-gl": "5.2.9-gfw.15",
