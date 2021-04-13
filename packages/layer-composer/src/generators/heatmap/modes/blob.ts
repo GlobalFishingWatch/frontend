@@ -61,6 +61,7 @@ const blob = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChun
   paint['heatmap-intensity'][6] = maxIntensity
 
   const chunkMainLayer = getBaseLayer(config)
+  // TODO proper layer/src ids
   chunkMainLayer.id = activeChunk.id
   chunkMainLayer.source = activeChunk.id
   chunkMainLayer.paint = paint as any

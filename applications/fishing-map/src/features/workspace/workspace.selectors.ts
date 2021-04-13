@@ -12,6 +12,7 @@ import {
   UrlDataviewInstance,
   mergeWorkspaceUrlDataviewInstances,
 } from '@globalfishingwatch/dataviews-client'
+import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { WorkspaceState } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets } from 'features/datasets/datasets.slice'
@@ -134,6 +135,12 @@ export const selectDataviewInstancesByCategory = (category: DataviewCategory) =>
   })
 }
 
+export const selectDataviewInstancesByIds = (ids: string[]) => {
+  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
+    return dataviews?.filter((dataview) => ids.includes(dataview.id))
+  })
+}
+
 export const selectVesselsDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.Track)],
   (dataviews) => dataviews
@@ -160,32 +167,34 @@ export const selectEventsDataviews = createSelector(
   (dataviews) => dataviews
 )
 
-export const selectTemporalgridDataviews = createSelector(
+export const selectActivityDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Activity)],
   (dataviews) => dataviews
 )
 
 export const selectHasAnalysisLayersVisible = createSelector(
-  [selectTemporalgridDataviews],
-  (dataviews) => {
-    const visibleDataviews = dataviews?.filter(({ config }) => config?.visible === true)
+  [selectActivityDataviews, selectEnvironmentalDataviews],
+  (activityDataviews = [], environmentalDataviews = []) => {
+    const heatmapEnvironmentalDataviews = environmentalDataviews?.filter(
+      ({ config }) => config?.type === GeneratorType.HeatmapAnimated
+    )
+    const visibleDataviews = [...activityDataviews, ...heatmapEnvironmentalDataviews]?.filter(
+      ({ config }) => config?.visible === true
+    )
     return visibleDataviews && visibleDataviews.length > 0
   }
 )
 
-export const selectActiveTemporalgridDataviews = createSelector(
-  [selectTemporalgridDataviews],
+export const selectActiveActivityDataviews = createSelector(
+  [selectActivityDataviews],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectTemporalgridDatasets = createSelector(
-  [selectTemporalgridDataviews],
-  (dataviews) => {
-    if (!dataviews) return
+export const selectActivityDatasets = createSelector([selectActivityDataviews], (dataviews) => {
+  if (!dataviews) return
 
-    return dataviews.flatMap((dataview) => getDatasetsByDataview(dataview))
-  }
-)
+  return dataviews.flatMap((dataview) => getDatasetsByDataview(dataview))
+})
 
 export const getRelatedDatasetByType = (dataset?: Dataset, datasetType?: DatasetTypes) => {
   return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)

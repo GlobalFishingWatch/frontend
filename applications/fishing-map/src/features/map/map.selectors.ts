@@ -1,18 +1,22 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { CircleLayer } from '@globalfishingwatch/mapbox-gl'
+import type { CircleLayer } from '@globalfishingwatch/mapbox-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/dataviews-client'
+import {
+  getDataviewsGeneratorConfigs,
+  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import {
   selectDataviewInstancesResolved,
   selectWorkspaceError,
 } from 'features/workspace/workspace.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
-import { selectResources } from 'features/resources/resources.slice'
-import { selectDebugOptions } from 'features/debug/debug.slice'
+import { selectResources, ResourcesState } from 'features/resources/resources.slice'
+import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/controls/rulers.slice'
-import { selectHighlightedTime, selectStaticTime } from 'features/timebar/timebar.slice'
+import { selectHighlightedTime, selectStaticTime, Range } from 'features/timebar/timebar.slice'
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
@@ -27,7 +31,50 @@ export const selectGlobalGeneratorsConfig = createSelector(
   })
 )
 
-export const getWorkspaceGeneratorsConfig = createSelector(
+const getGeneratorsConfig = (
+  dataviews: UrlDataviewInstance[] | undefined = [],
+  resources: ResourcesState,
+  rulers: Generators.Ruler[],
+  debugOptions: DebugOptions,
+  highlightedTime: Range | undefined,
+  staticTime: Range,
+  bivariate: boolean
+) => {
+  const animatedHeatmapDataviews = dataviews.filter((d) => {
+    const isAnimatedHeatmap = d.config?.type === Generators.Type.HeatmapAnimated
+    return !isAnimatedHeatmap
+  })
+
+  let heatmapAnimatedMode: Generators.HeatmapAnimatedMode = bivariate
+    ? Generators.HeatmapAnimatedMode.Bivariate
+    : Generators.HeatmapAnimatedMode.Compare
+  if (debugOptions.extruded) {
+    heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Extruded
+  } else if (debugOptions.blob && animatedHeatmapDataviews.length === 1) {
+    heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Blob
+  }
+  const generatorOptions = {
+    heatmapAnimatedMode,
+    highlightedTime,
+    timeRange: staticTime,
+    debug: debugOptions.blob,
+    mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+  }
+
+  const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
+
+  const rulersGeneratorConfig = {
+    type: Generators.Type.Rulers,
+    id: 'rulers',
+    data: rulers,
+  }
+
+  const generators = [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
+
+  return generators
+}
+
+const selectMapGeneratorsConfig = createSelector(
   [
     selectDataviewInstancesResolved,
     selectResources,
@@ -38,34 +85,37 @@ export const getWorkspaceGeneratorsConfig = createSelector(
     selectBivariate,
   ],
   (dataviews = [], resources, rulers, debugOptions, highlightedTime, staticTime, bivariate) => {
-    const animatedHeatmapDataviews = dataviews.filter((d) => {
-      const isAnimatedHeatmap = d.config?.type === Generators.Type.HeatmapAnimated
-      return !isAnimatedHeatmap
-    })
-
-    let heatmapAnimatedMode: Generators.HeatmapAnimatedMode = bivariate
-      ? Generators.HeatmapAnimatedMode.Bivariate
-      : Generators.HeatmapAnimatedMode.Compare
-    if (debugOptions.extruded) {
-      heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Extruded
-    } else if (debugOptions.blob && animatedHeatmapDataviews.length === 1) {
-      heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Blob
-    }
-    const generatorOptions = {
-      heatmapAnimatedMode,
+    return getGeneratorsConfig(
+      dataviews,
+      resources,
+      rulers,
+      debugOptions,
       highlightedTime,
-      timeRange: staticTime,
-      debug: debugOptions.blob,
-    }
+      staticTime,
+      bivariate
+    )
+  }
+)
 
-    const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
-
-    const rulersGeneratorConfig = {
-      type: Generators.Type.Rulers,
-      id: 'rulers',
-      data: rulers,
-    }
-    return [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
+const selectStaticGeneratorsConfig = createSelector(
+  [
+    selectDataviewInstancesResolved,
+    selectResources,
+    selectRulers,
+    selectDebugOptions,
+    selectStaticTime,
+    selectBivariate,
+  ],
+  (dataviews = [], resources, rulers, debugOptions, staticTime, bivariate) => {
+    return getGeneratorsConfig(
+      dataviews,
+      resources,
+      rulers,
+      debugOptions,
+      undefined,
+      staticTime,
+      bivariate
+    )
   }
 )
 
@@ -152,21 +202,43 @@ const basemap: Generators.BasemapGeneratorConfig = {
 
 export const selectMapWorkspacesListGenerators = createSelector(
   [selectWorkspacesListGenerator],
-  (workspaceGenerator): AnyGeneratorConfig[] => {
+  (workspaceGenerator): Generators.AnyGeneratorConfig[] => {
     if (!workspaceGenerator) return [basemap]
     return [basemap, workspaceGenerator]
   }
 )
 
-export const getGeneratorsConfig = createSelector(
+export const selectDefaultMapGeneratorsConfig = createSelector(
   [
     selectWorkspaceError,
     isWorkspaceLocation,
-    getWorkspaceGeneratorsConfig,
+    selectMapGeneratorsConfig,
     selectMapWorkspacesListGenerators,
   ],
   (workspaceError, showWorkspaceDetail, workspaceGenerators, workspaceListGenerators) => {
     if (workspaceError.status === 401) return [basemap]
     return showWorkspaceDetail ? workspaceGenerators : workspaceListGenerators
   }
+)
+
+const selectGeneratorConfigsByType = (type: Generators.Type) => {
+  return createSelector([selectStaticGeneratorsConfig], (generators) => {
+    return generators?.filter((generator) => generator.type === type)
+  })
+}
+
+export const selectGeneratorConfigsById = (id: string) => {
+  return createSelector([selectStaticGeneratorsConfig], (generators) => {
+    return generators?.filter((generator) => generator.id === id)
+  })
+}
+
+const selectHeatmapAnimatedGeneratorConfigs = createSelector(
+  [selectGeneratorConfigsByType(Generators.Type.HeatmapAnimated)],
+  (dataviews) => dataviews
+)
+
+export const selectActiveHeatmapAnimatedGeneratorConfigs = createSelector(
+  [selectHeatmapAnimatedGeneratorConfigs],
+  (generators) => generators?.filter((generator) => generator.visible)
 )

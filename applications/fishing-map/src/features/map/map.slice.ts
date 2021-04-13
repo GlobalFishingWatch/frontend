@@ -19,7 +19,7 @@ import { AppDispatch, RootState } from 'store'
 import {
   getRelatedDatasetByType,
   selectEventsDataviews,
-  selectTemporalgridDataviews,
+  selectActivityDataviews,
 } from 'features/workspace/workspace.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectTimeRange } from 'features/app/app.selectors'
@@ -99,7 +99,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
   'map/fetchInteraction',
   async (temporalGridFeatures: ExtendedFeature[], { getState, signal, dispatch }) => {
     const state = getState() as RootState
-    const temporalgridDataviews = selectTemporalgridDataviews(state) || []
+    const temporalgridDataviews = selectActivityDataviews(state) || []
     const { start, end } = selectTimeRange(state)
 
     // get corresponding dataviews

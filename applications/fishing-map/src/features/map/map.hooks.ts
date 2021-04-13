@@ -3,16 +3,19 @@ import { Geometry } from 'geojson'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { InteractionEvent, useTilesLoading } from '@globalfishingwatch/react-hooks'
-import { Generators, TimeChunks } from '@globalfishingwatch/layer-composer'
+import { Generators } from '@globalfishingwatch/layer-composer'
+import {
+  MULTILAYER_SEPARATOR,
+  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+} from '@globalfishingwatch/dataviews-client'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import { Style } from '@globalfishingwatch/mapbox-gl'
+import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
-import { MULTILAYER_SEPARATOR } from '@globalfishingwatch/dataviews-client'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import {
   selectDataviewInstancesResolved,
-  selectTemporalgridDataviews,
+  selectActivityDataviews,
 } from 'features/workspace/workspace.selectors'
 import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import { selectLocationType } from 'routes/routes.selectors'
@@ -21,7 +24,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
-  getGeneratorsConfig,
+  selectDefaultMapGeneratorsConfig,
   selectGlobalGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
@@ -39,13 +42,13 @@ import {
   ExtendedFeatureEvent,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
-import { useMapSourceLoaded } from './map-features.hooks'
+import { useHasSourceLoaded } from './map-features.hooks'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
   return {
-    generatorsConfig: useSelector(getGeneratorsConfig),
+    generatorsConfig: useSelector(selectDefaultMapGeneratorsConfig),
     globalConfig: useSelector(selectGlobalGeneratorsConfig),
   }
 }
@@ -60,7 +63,7 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
-  const encounterSourceLoaded = useMapSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const encounterSourceLoaded = useHasSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
   const fourWingsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
@@ -158,6 +161,7 @@ export const useClickedEventConnect = () => {
   return { clickedEvent, fourWingsStatus, apiEventStatus, dispatchClickedEvent }
 }
 
+// TODO this could extend ExtendedFeature
 export type TooltipEventFeature = {
   id?: string
   title?: string
@@ -167,9 +171,9 @@ export type TooltipEventFeature = {
   source: string
   sourceLayer: string
   layerId: string
-  contextLayer?: ContextLayerType | null
+  generatorContextLayer?: ContextLayerType | null
   geometry?: Geometry
-  value: string
+  value: string // TODO Why not a number?
   properties: Record<string, string>
   vesselsInfo?: {
     overflow: boolean
@@ -177,6 +181,7 @@ export type TooltipEventFeature = {
     vessels: ExtendedFeatureVessel[]
   }
   event?: ExtendedFeatureEvent
+  category: DataviewCategory
 }
 
 export type TooltipEvent = {
@@ -188,7 +193,7 @@ export type TooltipEvent = {
 export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
   const { t } = useTranslation()
   const dataviews = useSelector(selectDataviewInstancesResolved)
-  const temporalgridDataviews = useSelector(selectTemporalgridDataviews)
+  const temporalgridDataviews = useSelector(selectActivityDataviews)
   if (!event || !event.features) return null
 
   const clusterFeature = event.features.find(
@@ -212,7 +217,7 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
 
   const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     let dataview
-    if (feature.generatorType === Generators.Type.HeatmapAnimated) {
+    if (feature.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID) {
       const { temporalgrid } = feature
       if (!temporalgrid || temporalgrid.sublayerIndex === undefined || !temporalgrid.visible) {
         return []
@@ -239,6 +244,8 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
           type: Generators.Type.GL,
           value: feature.properties.label,
           properties: {},
+          // TODO: I have no idea wwhat to put here
+          category: DataviewCategory.Context,
         }
         return tooltipWorkspaceFeature
       }
@@ -263,15 +270,8 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
       title,
       type: dataview.config?.type,
       color: dataview.config?.color || 'black',
-      id: feature.id,
-      unit: feature.unit,
-      value: feature.value,
-      event: feature.event,
-      source: feature.source,
-      sourceLayer: feature.sourceLayer,
-      geometry: feature.geometry,
-      layerId: feature.layerId,
-      contextLayer: feature.generatorContextLayer,
+      category: dataview.category || DataviewCategory.Context,
+      ...feature,
       properties: { ...feature.properties },
     }
     // Insert custom properties by each dataview configuration
@@ -326,9 +326,7 @@ export const useMapStyle = () => {
   return style
 }
 
-export const useCurrentTimeChunkId = () => {
+export const useGeneratorStyleMetadata = (generatorId: string) => {
   const style = useMapStyle()
-  const currentTimeChunks = style?.metadata?.temporalgrid?.timeChunks as TimeChunks
-  const currentTimeChunkId = currentTimeChunks?.activeId
-  return currentTimeChunkId
+  return style?.metadata?.generatorsMetadata[generatorId] || {}
 }

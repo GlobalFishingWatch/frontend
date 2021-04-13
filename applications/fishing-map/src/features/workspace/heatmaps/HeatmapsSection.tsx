@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { selectTemporalgridDataviews } from 'features/workspace/workspace.selectors'
+import { selectActivityDataviews } from 'features/workspace/workspace.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -15,7 +15,7 @@ import LayerPanel from './HeatmapLayerPanel'
 function HeatmapsSection(): React.ReactElement {
   const { t } = useTranslation()
   const [heatmapSublayersAddedIndex, setHeatmapSublayersAddedIndex] = useState<number | undefined>()
-  const dataviews = useSelector(selectTemporalgridDataviews)
+  const dataviews = useSelector(selectActivityDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)

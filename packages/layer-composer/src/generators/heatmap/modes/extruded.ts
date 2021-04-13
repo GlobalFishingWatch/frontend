@@ -8,6 +8,7 @@ function extruded(config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: Time
   const layers: any[] = timeChunks.chunks.flatMap(
     (timeChunk: TimeChunk, timeChunkIndex: number) => {
       const chunkMainLayer = getBaseLayer(config)
+      // TODO proper layer/src ids
       chunkMainLayer.id = timeChunk.id
       chunkMainLayer.source = timeChunk.id
       chunkMainLayer.paint = {

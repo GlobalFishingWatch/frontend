@@ -56,7 +56,8 @@ export const getSublayersBreaks = (
 
   const multiplier = intervalInDays * Math.pow(1 / 4, config.zoom) * 250
 
-  return config.sublayers.map((_, sublayerIndex) => {
+  return config.sublayers.map((sublayer, sublayerIndex) => {
+    if (sublayer.breaks) return sublayer.breaks
     const sublayerColorRamp = ramps[sublayerIndex]
     const numBreaks =
       config.mode === HeatmapAnimatedMode.Bivariate
@@ -110,6 +111,7 @@ const getLegendsCompare = (
 
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
+      unit: config.sublayers[sublayerIndex].legend?.unit,
       type: LegendType.ColorRampDiscrete,
       ramp: legendRamp,
       ...(gridArea && { gridArea }),
