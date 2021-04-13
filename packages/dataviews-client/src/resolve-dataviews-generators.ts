@@ -127,8 +127,6 @@ export function getGeneratorConfig(
           interactive: true,
           interval: dataview.config?.interval || 'month',
           breaksMultiplier: dataview.config?.breaksMultiplier || VALUE_MULTIPLIER,
-          // TODO remove and grab from dataset config here
-          tilesAPI: 'https://dev-api-fourwings-tiler-jzzp2ui3wq-uc.a.run.app/v1',
         }
       }
 
