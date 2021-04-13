@@ -42,7 +42,9 @@ function UserWorkspaces() {
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
   const workspacesStatusId = useSelector(selectWorkspaceListStatusId)
 
-  const loading = workspacesStatus === AsyncReducerStatus.Loading
+  const loading =
+    workspacesStatus === AsyncReducerStatus.Loading ||
+    workspacesStatus === AsyncReducerStatus.LoadingItem
   const updateLoading = workspacesStatus === AsyncReducerStatus.LoadingUpdate
   const deleteLoading = workspacesStatus === AsyncReducerStatus.LoadingDelete
 

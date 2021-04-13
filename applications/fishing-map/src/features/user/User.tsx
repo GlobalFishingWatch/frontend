@@ -4,7 +4,10 @@ import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { DatasetCategory } from '@globalfishingwatch/api-types/dist'
 import EditDataset from 'features/datasets/EditDataset'
-import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
+import {
+  fetchDefaultWorkspaceThunk,
+  fetchWorkspacesThunk,
+} from 'features/workspaces-list/workspaces-list.slice'
 import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import styles from './User.module.css'
@@ -27,6 +30,7 @@ function User() {
   }, [dispatch, userData?.id, userLogged])
 
   useEffect(() => {
+    dispatch(fetchDefaultWorkspaceThunk())
     dispatch(fetchAllDatasetsThunk())
   }, [dispatch])
 

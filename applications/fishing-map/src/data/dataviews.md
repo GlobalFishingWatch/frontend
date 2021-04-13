@@ -61,6 +61,14 @@
 | Sea surface temperature for Palau | 135    | 238    |
 | Chlorophyll for Palau             | 136    | 239    |
 
+### Marine Reserves - Niue
+
+| Layer name                       | Dev id | Pro id |
+| -------------------------------- | ------ | ------ |
+| Salinity for Niue                | 141    | ---    |
+| Sea surface temperature for Niue | 142    | ---    |
+| Chlorophyll for Niue             | 143    | ---    |
+
 ## Activity
 
 | Layer name                     | Dev id | Pro id |

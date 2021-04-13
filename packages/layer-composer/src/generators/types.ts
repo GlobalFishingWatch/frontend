@@ -142,6 +142,10 @@ export type TileClusterEventType = 'encounter' | 'loitering' | 'port'
 export interface TileClusterGeneratorConfig extends GeneratorConfig {
   type: Type.TileCluster
   /**
+   * Defines the maximum zoom that returns clusters
+   */
+  maxZoomCluster?: number
+  /**
    * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
    */
   color?: string
