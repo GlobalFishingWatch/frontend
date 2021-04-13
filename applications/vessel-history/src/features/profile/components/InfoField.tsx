@@ -16,7 +16,7 @@ export enum VesselFieldLabel {
   fleet = 'fleet',
   origin = 'origin',
   type = 'type',
-  gearType = 'gearType',
+  geartype = 'geartype',
   length = 'length',
   depth = 'depth',
   grossTonnage = 'grossTonnage',
