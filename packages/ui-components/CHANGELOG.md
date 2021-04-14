@@ -1,5 +1,13 @@
 # @globalfishingwatch/ui-components
 
+## 2.18.1
+
+### Patch Changes
+
+- bb4978cd: fix blob mode
+- Updated dependencies [bb4978cd]
+  - @globalfishingwatch/layer-composer@5.0.1
+
 ## 2.18.0
 
 ### Minor Changes

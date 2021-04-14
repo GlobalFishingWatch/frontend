@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 5.0.1
+
+### Patch Changes
+
+- bb4978cd: fix blob mode
+
 ## 5.0.0
 
 ### Major Changes
