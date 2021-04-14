@@ -53,23 +53,23 @@
 .readyButton {
   flex: 1;
   text-transform: uppercase;
-  color: var(--color-primary-green);
-  background-color: var(--color-terthiary-green);
+  color: var(--color-primary-green) !important;
+  background-color: var(--color-terthiary-green) !important;
 }
 
 .readyButton:focus:not(:disabled),
 .readyButton:active:not(:disabled),
 .readyButton:hover:not(:disabled) {
-  color: var(--color-primary-green);
-  background-color: var(--color-primary-green-border);
+  color: var(--color-primary-green) !important;
+  background-color: var(--color-primary-green-border) !important;
 }
 .remove {
   margin-left: var(--space-XS);
-  background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary));
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary)) !important;
 }
 
 .remove:focus:not(:disabled),
 .remove:active:not(:disabled),
 .remove:hover:not(:disabled) {
-  background-color: rgba(var(--danger-red-rgb), var(--opacity-border));
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-border)) !important;
 }
