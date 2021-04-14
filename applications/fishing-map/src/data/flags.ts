@@ -38,10 +38,12 @@ const flags = [
   {
     id: 'ARM',
     label: 'Armenia',
+    alias: 'Hayastan',
   },
   {
     id: 'ASM',
     label: 'American Samoa',
+    alias: 'Amerika Sāmoa',
   },
   {
     id: 'ATA',
@@ -50,6 +52,7 @@ const flags = [
   {
     id: 'ATF',
     label: 'French Southern and Antarctic Lands',
+    alias: 'Terres australes et antarctiques françaises',
   },
   {
     id: 'ATG',
@@ -62,10 +65,12 @@ const flags = [
   {
     id: 'AUT',
     label: 'Austria',
+    alias: 'Österreich',
   },
   {
     id: 'AZE',
     label: 'Azerbaijan',
+    alias: 'Azərbaycan',
   },
   {
     id: 'BDI',
@@ -74,6 +79,7 @@ const flags = [
   {
     id: 'BEL',
     label: 'Belgium',
+    alias: ['België', 'Belgique', 'Belgien'],
   },
   {
     id: 'BEN',
@@ -90,10 +96,12 @@ const flags = [
   {
     id: 'BGR',
     label: 'Bulgaria',
+    alias: 'Bǎlgariya',
   },
   {
     id: 'BHR',
     label: 'Bahrain',
+    alias: 'Baḥrayn',
   },
   {
     id: 'BHS',
@@ -102,6 +110,7 @@ const flags = [
   {
     id: 'BIH',
     label: 'Bosnia and Herzegovina',
+    alias: 'Hercegovina',
   },
   {
     id: 'BLM',
@@ -130,10 +139,12 @@ const flags = [
   {
     id: 'BES',
     label: 'Caribbean Netherlands',
+    alias: 'Caribisch Nederland',
   },
   {
     id: 'BRA',
     label: 'Brazil',
+    alias: 'Brasil',
   },
   {
     id: 'BRB',
@@ -146,6 +157,7 @@ const flags = [
   {
     id: 'BTN',
     label: 'Bhutan',
+    alias: 'Druk Gyal Khap',
   },
   {
     id: 'BVT',
@@ -158,6 +170,7 @@ const flags = [
   {
     id: 'CAF',
     label: 'Central African Republic',
+    alias: ['Ködörösêse tî Bêafrîka', 'République centrafricaine'],
   },
   {
     id: 'CAN',
@@ -170,6 +183,7 @@ const flags = [
   {
     id: 'CHE',
     label: 'Switzerland',
+    alias: ['Schweizerische', 'Suisse', 'Svizzera', 'Svizra', 'Helvetica'],
   },
   {
     id: 'CHL',
@@ -178,26 +192,32 @@ const flags = [
   {
     id: 'CHN',
     label: 'China',
+    alias: 'Zhōnghuá Rénmín Gònghéguó',
   },
   {
     id: 'CIV',
     label: 'Ivory Coast',
+    alias: "Côte d'Ivoire",
   },
   {
     id: 'CMR',
     label: 'Cameroon',
+    alias: 'Cameroun',
   },
   {
     id: 'COD',
     label: 'DR Congo',
+    alias: 'Kôngo',
   },
   {
     id: 'COG',
     label: 'Republic of the Congo',
+    alias: 'Kôngo',
   },
   {
     id: 'COK',
     label: 'Cook Islands',
+    alias: "Kūki 'Āirani",
   },
   {
     id: 'COL',
@@ -206,10 +226,12 @@ const flags = [
   {
     id: 'COM',
     label: 'Comoros',
+    alias: ['Qumurī', 'Komori'],
   },
   {
     id: 'CPV',
     label: 'Cape Verde',
+    alias: 'Kabu Verdi',
   },
   {
     id: 'CRI',
@@ -234,18 +256,22 @@ const flags = [
   {
     id: 'CYP',
     label: 'Cyprus',
+    alias: 'Cumhuriyeti',
   },
   {
     id: 'CZE',
     label: 'Czech Republic',
+    alias: 'Česká',
   },
   {
     id: 'DEU',
     label: 'Germany',
+    alias: 'Deutschland',
   },
   {
     id: 'DJI',
     label: 'Djibouti',
+    alias: ['Jabuuti', 'Gabuutih'],
   },
   {
     id: 'DMA',
@@ -254,18 +280,22 @@ const flags = [
   {
     id: 'DNK',
     label: 'Denmark',
+    alias: 'Danmark',
   },
   {
     id: 'DOM',
     label: 'Dominican Republic',
+    alias: 'República Dominicana',
   },
   {
     id: 'DZA',
     label: 'Algeria',
+    alias: 'Algérienne',
   },
   {
     id: 'ECU',
     label: 'Ecuador',
+    alias: ['Ikwayur', 'Ekuatur'],
   },
   {
     id: 'EGY',
@@ -278,14 +308,17 @@ const flags = [
   {
     id: 'ESH',
     label: 'Western Sahara',
+    alias: ['Taneẓroft Tutrimt', 'Sahara Occidental'],
   },
   {
     id: 'ESP',
     label: 'Spain',
+    alias: ['España'],
   },
   {
     id: 'EST',
     label: 'Estonia',
+    alias: 'Eesti',
   },
   {
     id: 'ETH',
@@ -294,10 +327,12 @@ const flags = [
   {
     id: 'FIN',
     label: 'Finland',
+    alias: 'Suomen',
   },
   {
     id: 'FJI',
     label: 'Fiji',
+    alias: 'Matanitu Tugalala o Viti',
   },
   {
     id: 'FLK',
@@ -306,6 +341,7 @@ const flags = [
   {
     id: 'FRA',
     label: 'France',
+    alias: 'française',
   },
   {
     id: 'FRO',
@@ -342,6 +378,7 @@ const flags = [
   {
     id: 'GIN',
     label: 'Guinea',
+    alias: 'Guinée',
   },
   {
     id: 'GLP',
@@ -362,6 +399,7 @@ const flags = [
   {
     id: 'GRC',
     label: 'Greece',
+    alias: ['Ellinikí', 'Hellas'],
   },
   {
     id: 'GRD',
@@ -370,6 +408,7 @@ const flags = [
   {
     id: 'GRL',
     label: 'Greenland',
+    alias: ['Kalaallit Nunaat', 'Grønland'],
   },
   {
     id: 'GTM',
@@ -378,10 +417,12 @@ const flags = [
   {
     id: 'GUF',
     label: 'French Guiana',
+    alias: 'Guyane',
   },
   {
     id: 'GUM',
     label: 'Guam',
+    alias: 'Guåhån',
   },
   {
     id: 'GUY',
@@ -402,14 +443,17 @@ const flags = [
   {
     id: 'HRV',
     label: 'Croatia',
+    alias: 'Hrvatska',
   },
   {
     id: 'HTI',
     label: 'Haiti',
+    alias: 'Ayiti',
   },
   {
     id: 'HUN',
     label: 'Hungary',
+    alias: 'Magyarország',
   },
   {
     id: 'IDN',
@@ -430,6 +474,7 @@ const flags = [
   {
     id: 'IRL',
     label: 'Ireland',
+    alias: ['Éire', 'Airlann'],
   },
   {
     id: 'IRN',
@@ -442,6 +487,7 @@ const flags = [
   {
     id: 'ISL',
     label: 'Iceland',
+    alias: 'Ísland',
   },
   {
     id: 'ISR',
@@ -450,6 +496,7 @@ const flags = [
   {
     id: 'ITA',
     label: 'Italy',
+    alias: 'Italia',
   },
   {
     id: 'JAM',
@@ -466,10 +513,12 @@ const flags = [
   {
     id: 'JPN',
     label: 'Japan',
+    alias: ['Nippon', 'Nihon'],
   },
   {
     id: 'KAZ',
     label: 'Kazakhstan',
+    alias: 'Qazaqstan',
   },
   {
     id: 'KEN',
@@ -478,10 +527,12 @@ const flags = [
   {
     id: 'KGZ',
     label: 'Kyrgyzstan',
+    alias: 'Kırğız',
   },
   {
     id: 'KHM',
     label: 'Cambodia',
+    alias: ['kampuciə', 'Cambodge'],
   },
   {
     id: 'KIR',
@@ -494,6 +545,7 @@ const flags = [
   {
     id: 'KOR',
     label: 'South Korea',
+    alias: 'Daehan Minguk',
   },
   {
     id: 'UNK',
@@ -510,6 +562,7 @@ const flags = [
   {
     id: 'LBN',
     label: 'Lebanon',
+    alias: ['Liban', 'Lubnān'],
   },
   {
     id: 'LBR',
@@ -538,14 +591,17 @@ const flags = [
   {
     id: 'LTU',
     label: 'Lithuania',
+    alias: 'Lietuva',
   },
   {
     id: 'LUX',
     label: 'Luxembourg',
+    alias: 'Lëtzebuerg',
   },
   {
     id: 'LVA',
     label: 'Latvia',
+    alias: 'Latvijas',
   },
   {
     id: 'MAC',
@@ -598,10 +654,12 @@ const flags = [
   {
     id: 'MMR',
     label: 'Myanmar',
+    alias: 'Burma',
   },
   {
     id: 'MNE',
     label: 'Montenegro',
+    alias: 'Crna Gora',
   },
   {
     id: 'MNG',
@@ -614,10 +672,12 @@ const flags = [
   {
     id: 'MOZ',
     label: 'Mozambique',
+    alias: ['Mozambiki', 'Msumbiji'],
   },
   {
     id: 'MRT',
     label: 'Mauritania',
+    alias: 'Mūrītānīyah',
   },
   {
     id: 'MSR',
@@ -662,6 +722,7 @@ const flags = [
   {
     id: 'NGA',
     label: 'Nigeria',
+    alias: ['Nijeriya', 'Naìjíríyà'],
   },
   {
     id: 'NIC',
@@ -674,10 +735,12 @@ const flags = [
   {
     id: 'NLD',
     label: 'Netherlands',
+    alias: 'Nederland',
   },
   {
     id: 'NOR',
     label: 'Norway',
+    alias: 'Norge',
   },
   {
     id: 'NPL',
@@ -690,10 +753,12 @@ const flags = [
   {
     id: 'NZL',
     label: 'New Zealand',
+    alias: 'Aotearoa',
   },
   {
     id: 'OMN',
     label: 'Oman',
+    alias: 'ʻUmān',
   },
   {
     id: 'PAK',
@@ -714,6 +779,7 @@ const flags = [
   {
     id: 'PHL',
     label: 'Philippines',
+    alias: 'Pilipinas',
   },
   {
     id: 'PLW',
@@ -726,6 +792,7 @@ const flags = [
   {
     id: 'POL',
     label: 'Poland',
+    alias: 'Polska',
   },
   {
     id: 'PRI',
@@ -734,6 +801,7 @@ const flags = [
   {
     id: 'PRK',
     label: 'North Korea',
+    alias: 'PRK',
   },
   {
     id: 'PRT',
@@ -746,10 +814,12 @@ const flags = [
   {
     id: 'PSE',
     label: 'Palestine',
+    alias: 'Dawlat Filasṭīn',
   },
   {
     id: 'PYF',
     label: 'French Polynesia',
+    alias: ['Polynésie française', 'Pōrīnetia Farāni'],
   },
   {
     id: 'QAT',
@@ -766,6 +836,7 @@ const flags = [
   {
     id: 'RUS',
     label: 'Russia',
+    alias: 'Rossiya',
   },
   {
     id: 'RWA',
@@ -774,6 +845,7 @@ const flags = [
   {
     id: 'SAU',
     label: 'Saudi Arabia',
+    alias: 'Arabīyah as-Saʿūdīyah',
   },
   {
     id: 'SDN',
@@ -822,6 +894,7 @@ const flags = [
   {
     id: 'SRB',
     label: 'Serbia',
+    alias: 'Srbija',
   },
   {
     id: 'SSD',
@@ -838,14 +911,17 @@ const flags = [
   {
     id: 'SVK',
     label: 'Slovakia',
+    alias: 'Slovenská',
   },
   {
     id: 'SVN',
     label: 'Slovenia',
+    alias: 'Slovenija',
   },
   {
     id: 'SWE',
     label: 'Sweden',
+    alias: 'Sverige',
   },
   {
     id: 'SWZ',
@@ -906,10 +982,12 @@ const flags = [
   {
     id: 'TUN',
     label: 'Tunisia',
+    alias: 'Tūnisīyah',
   },
   {
     id: 'TUR',
     label: 'Turkey',
+    alias: 'Türkiye',
   },
   {
     id: 'TUV',
@@ -918,10 +996,7 @@ const flags = [
   {
     id: 'TAI',
     label: 'Chinese Taipei',
-  },
-  {
-    id: 'TWN',
-    label: 'Chinese Taipei',
+    alias: ['Taiwan'],
   },
   {
     id: 'TZA',
@@ -934,6 +1009,7 @@ const flags = [
   {
     id: 'UKR',
     label: 'Ukraine',
+    alias: 'Ukrayina',
   },
   {
     id: 'UMI',
@@ -1004,4 +1080,5 @@ const flags = [
     label: 'Zimbabwe',
   },
 ]
+
 export default flags
