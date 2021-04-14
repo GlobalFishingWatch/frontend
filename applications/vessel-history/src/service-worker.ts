@@ -54,24 +54,6 @@ registerRoute(
   createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
 )
 
-// An example runtime caching route for requests that aren't handled by the
-// precache, in this case same-origin .png requests like those from in public/
-registerRoute(
-  // Add in any other file extensions or routing criteria as needed.
-  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.png'),
-  // Customize this strategy as needed, e.g., by changing to CacheFirst.
-  new StaleWhileRevalidate({
-    cacheName: 'images',
-    plugins: [
-      // Ensure that once this runtime cache reaches a maximum size the
-      // least-recently used images are removed.
-      new ExpirationPlugin({ maxEntries: 50 }),
-      new BackgroundSyncPlugin('images-bg-sync', {
-        maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
-      }),
-    ],
-  })
-)
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', (event) => {
@@ -81,6 +63,40 @@ self.addEventListener('message', (event) => {
 })
 
 // Any other custom service worker logic can go here.
+
+// Cache all requests to /public folder like /icons and manifest.jsonm
+registerRoute(
+  ({ url }) =>
+    (url.origin === self.location.origin && url.pathname.startsWith('/icons')) ||
+    url.pathname.endsWith('manifest.json'),
+  new StaleWhileRevalidate({
+    cacheName: 'public',
+    plugins: [
+      // Ensure that once this runtime cache reaches a maximum size the
+      // least-recently used images are removed.
+      new ExpirationPlugin({ maxEntries: 100 }),
+      new BackgroundSyncPlugin('public-bg-sync', {
+        maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
+      }),
+    ],
+  })
+)
+
+// Cache gstatic resources (css and fonts)
+registerRoute(
+  ({ url }) => ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'].includes(url.origin),
+  new StaleWhileRevalidate({
+    cacheName: 'fonts',
+    plugins: [
+      // Ensure that once this runtime cache reaches a maximum size the
+      // least-recently used fonts are removed.
+      new ExpirationPlugin({ maxEntries: 5 }),
+      new BackgroundSyncPlugin('fonts-bg-sync', {
+        maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
+      }),
+    ],
+  })
+)
 
 // Cache locales
 registerRoute(
@@ -145,13 +161,3 @@ registerRoute(
     ],
   })
 )
-
-// This allows the web app to trigger skipWaiting via
-// registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting()
-  }
-})
-
-// Any other custom service worker logic can go here.
