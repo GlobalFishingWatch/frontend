@@ -50,8 +50,7 @@ const getGeneratorsConfig = ({
   bivariate,
 }: GetGeneratorConfigParams) => {
   const animatedHeatmapDataviews = dataviews.filter((d) => {
-    const isAnimatedHeatmap = d.config?.type === Generators.Type.HeatmapAnimated
-    return !isAnimatedHeatmap
+    return d.config?.type === Generators.Type.HeatmapAnimated && d.config.visible === true
   })
 
   let heatmapAnimatedMode: Generators.HeatmapAnimatedMode = bivariate
@@ -62,11 +61,12 @@ const getGeneratorsConfig = ({
   } else if (debugOptions.blob && animatedHeatmapDataviews.length === 1) {
     heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Blob
   }
+
   const generatorOptions = {
     heatmapAnimatedMode,
     highlightedTime,
     timeRange: staticTime,
-    debug: debugOptions.blob,
+    debug: debugOptions.debug,
     mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   }
 
