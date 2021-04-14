@@ -8,7 +8,7 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import { BASE_DATASET } from 'data/constants'
-import { getLastQuery, getVesselsFound, setVesselSeach } from 'features/search/search.slice'
+import { getLastQuery, getVesselsFound, setVesselSearch } from 'features/search/search.slice'
 import { logoutUserThunk } from 'features/user/user.slice'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
@@ -48,7 +48,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         .then((json: any) => {
           const resultVessels: Array<VesselSearch> = json.entries
           setSearching(false)
-          dispatch(setVesselSeach({ vessels: resultVessels, query }))
+          dispatch(setVesselSearch({ vessels: resultVessels, query }))
         })
         .catch((error) => {
           setSearching(false)

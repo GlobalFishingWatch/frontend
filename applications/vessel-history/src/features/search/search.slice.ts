@@ -16,7 +16,7 @@ const slice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    setVesselSeach: (
+    setVesselSearch: (
       state,
       action: PayloadAction<{ query: string; vessels: Array<VesselSearch> }>
     ) => {
@@ -25,7 +25,7 @@ const slice = createSlice({
     },
   },
 })
-export const { setVesselSeach } = slice.actions
+export const { setVesselSearch } = slice.actions
 export default slice.reducer
 
 export const getVesselsFound = (state: RootState) => state.search.vessels
