@@ -9439,6 +9439,16 @@ detect-port-alt@1.1.6:
     address "^1.0.1"
     debug "^2.6.0"
 
+dexie-react-hooks@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/dexie-react-hooks/-/dexie-react-hooks-1.0.6.tgz#a21d116addb2bb785507bf924cc6e963d858d5d5"
+  integrity sha512-OFoOBC4BQzkVGicuWl/cIMtlPp0wTAnUXwUJzq+l/zp0XVGmwEWkemRFq7JbudJLT0DINFVVzgVhGV7KOUK7uA==
+
+dexie@^3.1.0-alpha.9:
+  version "3.1.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.1.0-alpha.9.tgz#0851220aa0187afe2c7487932cfc15279a21753f"
+  integrity sha512-H4cqgKTtdw23/3f+HjxqrmidfytHAWjOFwcpy9z6fYQZI/DM6Keo0nRGGNPokHIElYeShS8TOUkVLoZoLSAhCw==
+
 dezalgo@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/dezalgo/-/dezalgo-1.0.3.tgz#7f742de066fc748bc8db820569dddce49bf0d456"
