@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useMemo, memo } from 'react'
+import { matchSorter } from 'match-sorter'
 import {
   useMultipleSelection,
   useCombobox,
@@ -38,10 +39,10 @@ const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOpt
 
 const getItemsFiltered = (items: MultiSelectOption[], filter?: string) => {
   if (!filter) return items
-
-  return (items || []).filter(
-    (item) => !filter || item.label.toLowerCase().startsWith(filter.toLowerCase())
-  )
+  const matchingItems = matchSorter(items, filter, {
+    keys: ['label', 'alias'],
+  })
+  return matchingItems
 }
 
 function MultiSelect(props: MultiSelectProps) {
