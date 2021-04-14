@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.18.0
+
+### Minor Changes
+
+- fdad03d6: support aliases in multiselect
+
 ## 2.17.4
 
 ### Patch Changes
