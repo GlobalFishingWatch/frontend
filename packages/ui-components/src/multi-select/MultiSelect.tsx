@@ -40,7 +40,7 @@ const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOpt
 const getItemsFiltered = (items: MultiSelectOption[], filter?: string) => {
   if (!filter) return items
   const matchingItems = matchSorter(items, filter, {
-    keys: ['label', 'alias'],
+    keys: ['id', 'label', 'alias'],
   })
   return matchingItems
 }
