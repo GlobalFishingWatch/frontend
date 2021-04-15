@@ -1,8 +1,7 @@
-type Args = {
+import { Columns } from './types'
+
+type Args = Columns & {
   record: Record<string, any>
-  latitude: string
-  longitude: string
-  timestamp: string
 }
 
 const checkRecordValidity = ({ record, latitude, longitude, timestamp }: Args) => {
