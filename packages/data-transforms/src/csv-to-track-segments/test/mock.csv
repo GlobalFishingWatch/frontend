@@ -1,5 +1,5 @@
 event-id,visible,timestamp,location-long,location-lat,comments,sensor-type,individual-taxon-canonical-name,tag-local-identifier,individual-local-identifier,study-name
-8030368027,true,2015-09-11 08:52:28.000,-32.394212,-3.832247,"1","gps","Phaethon lepturus","24202","24202","Foraging habitat of white-tailed tropicbirds (data from Santos et al. 2019)"
+8030368027,true,2015-09-11 08:52:28.000,"-32.394212",-3.832247,"1","gps","Phaethon lepturus","24202","24202","Foraging habitat of white-tailed tropicbirds (data from Santos et al. 2019)"
 8030368028,true,2015-09-11 08:53:28.000,-32.392457,-3.831218,"1","gps","Phaethon lepturus","24202","24202","Foraging habitat of white-tailed tropicbirds (data from Santos et al. 2019)"
 8030368029,true,2015-09-11 08:54:28.000,-32.391273,-3.829337,"1","gps","Phaethon lepturus","24202","24202","Foraging habitat of white-tailed tropicbirds (data from Santos et al. 2019)"
 8030368030,true,2015-09-11 08:55:28.000,-32.388868,-3.827532,"1","gps","Phaethon lepturus","24202","24202","Foraging habitat of white-tailed tropicbirds (data from Santos et al. 2019)"

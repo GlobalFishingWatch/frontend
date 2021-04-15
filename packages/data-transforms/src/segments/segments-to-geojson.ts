@@ -20,6 +20,7 @@ const segmentsToGeoJSON = (segments: Segment[]) => {
       type: 'Feature',
       geometry,
       properties: {
+        id: segment[0].id,
         coordinateProperties: {
           times,
         },
