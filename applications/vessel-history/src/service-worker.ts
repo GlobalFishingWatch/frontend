@@ -64,6 +64,9 @@ self.addEventListener('message', (event) => {
 
 // Any other custom service worker logic can go here.
 
+// Precache GeoJson for offline use
+precacheAndRoute([{ url: '/data/ne_10m_admin_0_countries_gj.geojson' }])
+
 // Cache all requests to /public folder like /icons and manifest.jsonm
 registerRoute(
   ({ url }) =>
@@ -90,7 +93,7 @@ registerRoute(
     plugins: [
       // Ensure that once this runtime cache reaches a maximum size the
       // least-recently used fonts are removed.
-      new ExpirationPlugin({ maxEntries: 5 }),
+      new ExpirationPlugin({ maxEntries: 10 }),
       new BackgroundSyncPlugin('fonts-bg-sync', {
         maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
       }),

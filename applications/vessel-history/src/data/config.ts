@@ -2,11 +2,15 @@ import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   BackgroundGeneratorConfig,
   BasemapGeneratorConfig,
+  GeneratorConfig,
+  GlGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { FillLayer } from '@globalfishingwatch/mapbox-gl'
 import { ContextLayer } from 'types'
 import { AppState } from 'types/redux.types'
 
-export const MAP_BACKGROUND_COLOR = '#163f89'
+export const MAP_BACKGROUND_COLOR = '#052555'
+export const DEFAULT_LANDMASS_COLOR = '#274877'
 
 export const BACKGROUND_LAYER = [
   {
@@ -17,7 +21,32 @@ export const BACKGROUND_LAYER = [
     color: MAP_BACKGROUND_COLOR,
   } as BackgroundGeneratorConfig,
 ]
-export const DEFAULT_DATAVIEWS = [
+export const DEFAULT_DATAVIEWS: GeneratorConfig[] = [
+  // When offline we serve this landmass layer as a backup
+  // in case that not all tiles are cached
+  {
+    id: 'landmass_offline',
+    type: Generators.Type.GL,
+    sources: [
+      {
+        type: 'geojson',
+        data: '/data/ne_10m_admin_0_countries_gj.geojson',
+      },
+    ],
+    layers: [
+      {
+        type: 'fill',
+        paint: {
+          'fill-color': DEFAULT_LANDMASS_COLOR,
+          'fill-opacity': 0.99, // This is a trick to allow proper rendering of MGL heatmap layers behind
+        },
+      } as FillLayer,
+    ],
+    metadata: {
+      offline: true,
+    },
+  } as GlGeneratorConfig,
+  // When online the tiles will be used (high res)
   {
     id: 'landmass',
     tileset: 'landmass',
