@@ -168,9 +168,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               >
                 {t('vessel.readyForOfflineView', 'READY FOR OFFLINE VIEW')}
               </Button>
-              {/* <Tag className={styles.readyButton}>
-              {t('vessel.readyForOfflineView', 'READY FOR OFFLINE VIEW')}
-            </Tag> */}
               <IconButton
                 size="default"
                 icon="delete"

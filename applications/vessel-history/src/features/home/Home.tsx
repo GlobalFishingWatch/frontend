@@ -15,6 +15,7 @@ import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-v
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { OfflineVessel } from 'types/vessel'
 import styles from './Home.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
 
@@ -29,12 +30,12 @@ interface LoaderProps {
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const [searching, setSearching] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [vessels, setVessels] = useState<Array<VesselSearch>>([])
   const query = useSelector(selectQueryParam('q'))
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchQueryParams } = useLocationConnect()
-  const { dispatchFetchOfflineVessels } = useOfflineVesselsAPI()
+  const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
 
   const minimumCharacters = 3
   const resultsPerRequest = 25
@@ -44,7 +45,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   }, [dispatchFetchOfflineVessels])
 
   const fetchData = useCallback(async (query: string) => {
-    setSearching(true)
+    setLoading(true)
     GFWAPI.fetch<any>(
       `/v1/vessels/search?datasets=${encodeURIComponent(
         BASE_DATASET
@@ -52,11 +53,11 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
     )
       .then((json: any) => {
         const resultVessels: Array<VesselSearch> = json.entries
-        setSearching(false)
+        setLoading(false)
         setVessels(resultVessels)
       })
       .catch((error) => {
-        setSearching(false)
+        setLoading(false)
       })
   }, [])
 
@@ -70,7 +71,11 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ q: e.target.value })
   }
-  console.log(offlineVessels)
+  const onDeleteClick = async (data: OfflineVessel) => {
+    setLoading(true)
+    await dispatchDeleteOfflineVessel(data.profileId)
+    setLoading(false)
+  }
   return (
     <div className={styles.homeContainer}>
       {!query && (
@@ -114,7 +119,17 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             <h2>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
             <div className={styles.offlineVessels}>
               {offlineVessels.map((vessel, index) => (
-                <VesselListItem key={index} vessel={vessel} />
+                <div className={styles.vesselItem}>
+                  <VesselListItem key={index} vessel={vessel} />
+                  <IconButton
+                    size="default"
+                    icon="delete"
+                    type="warning"
+                    className={styles.remove}
+                    loading={loading}
+                    onClick={() => onDeleteClick(vessel)}
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -122,19 +137,19 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         {query && (
           <Fragment>
             <ul className={styles.searchResults}>
-              {searching && (
+              {loading && (
                 <SearchPlaceholder>
                   <Spinner className={styles.loader}></Spinner>
                 </SearchPlaceholder>
               )}
-              {!searching && vessels.length > 0 && (
+              {!loading && vessels.length > 0 && (
                 <div className={styles.offlineVessels}>
                   {vessels.map((vessel, index) => (
                     <VesselListItem key={index} vessel={vessel} />
                   ))}
                 </div>
               )}
-              {!searching && vessels.length === 0 && <SearchNoResultsState />}
+              {!loading && vessels.length === 0 && <SearchNoResultsState />}
             </ul>
           </Fragment>
         )}
