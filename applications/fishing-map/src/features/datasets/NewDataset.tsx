@@ -199,10 +199,12 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
 
 interface DatasetFileProps {
   className?: string
+  accept?: string
   onFileLoaded: (fileInfo: File) => void
 }
 
-const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' }) => {
+const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, accept, className = '' }) => {
+  console.log(accept)
   const { t } = useTranslation()
   const onDropAccepted = useCallback(
     (files) => {
@@ -211,9 +213,10 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' 
     [onFileLoaded]
   )
   const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
-    accept: '.zip, .json, .geojson',
+    accept,
     onDropAccepted,
   })
+  console.log(acceptedFiles)
   return (
     <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
       <FilesIcon />
@@ -249,11 +252,21 @@ export type DatasetMetadata = {
   configuration?: AnyDatasetConfiguration
 }
 
+type DatasetType = 'polygons' | 'tracks' | 'points'
+
+const ACCEPT_FILES_BY_TYPE: Record<DatasetType, string> = {
+  polygons: '.zip, .json, .geojson',
+  tracks: '.csv',
+  points: '',
+}
+
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
   const { datasetModal, datasetCategory, dispatchDatasetModal } = useDatasetModalConnect()
   const { addNewDatasetToWorkspace } = useNewDatasetConnect()
 
+  const [datasetType, setDatasetType] = useState<DatasetType | null>(null)
+  const [datasetTypeConfirmed, setDatasetTypeConfirmed] = useState<boolean>(false)
   const [file, setFile] = useState<File | undefined>()
   const [fileData, setFileData] = useState<FeatureCollectionWithFilename | undefined>()
   const [loading, setLoading] = useState(false)
@@ -373,7 +386,16 @@ function NewDataset(): React.ReactElement {
     dispatchDatasetModal(undefined)
   }
 
-  const isSelectingDatasetType = true
+  const onDatasetTypeChange = (e: any) => {
+    setDatasetType(e.target.value)
+  }
+
+  const onConfirmDatasetCategoryClick = () => {
+    setDatasetTypeConfirmed(true)
+  }
+
+  console.log(datasetType)
+  console.log(ACCEPT_FILES_BY_TYPE[datasetType as DatasetType])
 
   return (
     <Modal
@@ -387,16 +409,20 @@ function NewDataset(): React.ReactElement {
       onClose={onClose}
     >
       <div className={styles.modalContent}>
-        {isSelectingDatasetType && datasetCategory === DatasetCategory.Environment ? (
+        {datasetTypeConfirmed === false && datasetCategory === DatasetCategory.Environment ? (
           <Fragment>
-            <div>select type</div>
-            <select>
-              <option>lla</option>
-            </select>
+            <div onChange={onDatasetTypeChange}>
+              <input type="radio" value="polygons" name="datasetType" /> Polygons
+              <input type="radio" value="tracks" name="datasetType" /> Tracks/telemetry
+              <input type="radio" value="points" name="datasetType" disabled /> Points (coming soon)
+            </div>
           </Fragment>
         ) : (
           <Fragment>
-            <DatasetFile onFileLoaded={onFileLoaded} />
+            <DatasetFile
+              onFileLoaded={onFileLoaded}
+              accept={ACCEPT_FILES_BY_TYPE[datasetType as DatasetType]}
+            />
             {fileData && metadata && (
               <DatasetConfig
                 fileData={fileData}
@@ -417,14 +443,24 @@ function NewDataset(): React.ReactElement {
             </a>
           </span>
         </div>
-        <Button
-          disabled={!file || !metadata?.name}
-          className={styles.saveBtn}
-          onClick={onConfirmClick}
-          loading={loading}
-        >
-          {t('common.confirm', 'Confirm') as string}
-        </Button>
+        {datasetTypeConfirmed ? (
+          <Button
+            disabled={!file || !metadata?.name}
+            className={styles.saveBtn}
+            onClick={onConfirmClick}
+            loading={loading}
+          >
+            {t('common.confirm', 'Confirm') as string}
+          </Button>
+        ) : (
+          <Button
+            disabled={!datasetType}
+            className={styles.saveBtn}
+            onClick={onConfirmDatasetCategoryClick}
+          >
+            {t('common.confirm', 'Confirm') as string}
+          </Button>
+        )}
       </div>
     </Modal>
   )
