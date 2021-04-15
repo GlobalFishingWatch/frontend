@@ -96,3 +96,9 @@
   overflow-y: auto;
   position: relative;
 }
+
+.listFooter {
+  text-align: center;
+  padding-bottom: 20px;
+  text-transform: uppercase;
+}
