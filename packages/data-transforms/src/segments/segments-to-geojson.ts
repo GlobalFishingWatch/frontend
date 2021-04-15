@@ -1,7 +1,7 @@
 import { FeatureCollection, LineString, Feature } from 'geojson'
-import { Segment } from '@globalfishingwatch/data-transforms'
+import { Segment } from '../track-value-array-to-segments/types'
 
-const segmentsToGeojson = (segments: Segment[]) => {
+const segmentsToGeoJSON = (segments: Segment[]) => {
   const geoJSON: FeatureCollection = {
     type: 'FeatureCollection',
     features: [],
@@ -31,4 +31,4 @@ const segmentsToGeojson = (segments: Segment[]) => {
   return geoJSON
 }
 
-export default segmentsToGeojson
+export default segmentsToGeoJSON
