@@ -1,18 +1,11 @@
-import { parse } from 'papaparse'
-
 const GUESS_COLUMN_NAMES: [string, string[]][] = [
   ['latitude', ['latitude', 'lat', 'location-lat']],
   ['longitude', ['longitude', 'lng', 'long']],
   ['timestamp', ['timestamp', 'time', 'date', 'datetime']],
 ]
 
-const guessColumns = (rawCsv: string) => {
-  const d = parse(rawCsv, { dynamicTyping: true, header: true })
-
-  // const firstRow = d.data[0]
-
-  const columns = d.meta.fields
-
+const guessColumns = (columns: string[] | undefined) => {
+  if (!columns) return {}
   const guessedColumns = GUESS_COLUMN_NAMES.map(([columnToGuess, candidates]) => {
     const exactGuess = columns?.find((column) => candidates.includes(column))
 
