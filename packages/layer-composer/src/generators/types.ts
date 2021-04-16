@@ -274,6 +274,9 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   interactive?: boolean
   staticStart?: string
   staticEnd?: string
+  /**
+   * Defines a fixed or a supported list of intervals in an Array format
+   */
   interval?: Interval | Interval[]
   aggregationOperation?: AggregationOperation
   breaksMultiplier?: number

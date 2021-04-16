@@ -26,11 +26,14 @@ import { resolveDataviewDatasetResource, UrlDataviewInstance } from './resolve-d
 export const MULTILAYER_SEPARATOR = '__'
 export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeatmap'
 
-const getMaximumCommonTemporalResolution = (datasets: Dataset[]) => {
+const getCommonIntervals = (datasets: Dataset[]) => {
   const interval = DEFAULT_HEATMAP_INTERVALS.find((interval) =>
     datasets.every((dataset) => dataset.configuration?.resolution === interval)
   )
-  return interval
+  return (
+    interval &&
+    DEFAULT_HEATMAP_INTERVALS.slice(DEFAULT_HEATMAP_INTERVALS.findIndex((i) => i === interval))
+  )
 }
 
 type DataviewsGeneratorConfigsParams = {
@@ -270,7 +273,8 @@ export function getDataviewsGeneratorConfigs(
     const intervalDatasets = activityDataviews
       .flatMap((dataview) => dataview.datasets || [])
       .filter((d) => d?.configuration?.resolution)
-    const interval = getMaximumCommonTemporalResolution(intervalDatasets)
+    const interval = getCommonIntervals(intervalDatasets)
+    console.log(interval)
 
     const mergedActivityDataview = {
       id: params.mergedActivityGeneratorId || MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
