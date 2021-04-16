@@ -54,6 +54,7 @@ function WorkspacesList() {
       ) : (
         <ul>
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
+            const { id, name, cta, description, img } = highlightedWorkspace
             const active = highlightedWorkspace?.id !== undefined
             const linkTo =
               highlightedWorkspace.id === DEFAULT_WORKSPACE_ID
@@ -74,26 +75,24 @@ function WorkspacesList() {
               <li key={highlightedWorkspace.id || highlightedWorkspace.name}>
                 <div className={cx(styles.workspace, { [styles.disabled]: !active })}>
                   <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
-                    <img
-                      className={styles.image}
-                      alt={highlightedWorkspace.name}
-                      src={highlightedWorkspace.img}
-                    />
+                    <img className={styles.image} alt={name} src={img} />
                   </Link>
                   <div className={styles.info}>
                     <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
-                      <h3 className={styles.title}>{highlightedWorkspace.name}</h3>
+                      <h3 className={styles.title}>{t(`workspaces:${id}.name` as any, name)}</h3>
                     </Link>
                     <p
                       className={styles.description}
-                      dangerouslySetInnerHTML={{ __html: highlightedWorkspace.description }}
+                      dangerouslySetInnerHTML={{
+                        __html: t(`workspaces:${id}.description` as any, description),
+                      }}
                     ></p>
                     <Link
                       to={linkTo}
                       className={styles.link}
                       onClick={() => onWorkspaceClick(highlightedWorkspace)}
                     >
-                      {highlightedWorkspace.cta}
+                      {t(`workspaces:${id}.cta` as any, cta)}
                     </Link>
                   </div>
                 </div>

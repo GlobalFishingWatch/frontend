@@ -274,7 +274,6 @@ export function getDataviewsGeneratorConfigs(
       .flatMap((dataview) => dataview.datasets || [])
       .filter((d) => d?.configuration?.resolution)
     const interval = getCommonIntervals(intervalDatasets)
-    console.log(interval)
 
     const mergedActivityDataview = {
       id: params.mergedActivityGeneratorId || MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
