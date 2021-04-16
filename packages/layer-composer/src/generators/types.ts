@@ -3,7 +3,7 @@ import { StringUnitLength } from 'luxon'
 import { AnySourceData, Layer } from '@globalfishingwatch/mapbox-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { IntervalOption } from './heatmap/util/time-chunks'
+import { Interval } from './heatmap/util/time-chunks'
 
 export enum Type {
   Background = 'BACKGROUND',
@@ -274,7 +274,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   interactive?: boolean
   staticStart?: string
   staticEnd?: string
-  interval?: IntervalOption
+  interval?: Interval | Interval[]
   aggregationOperation?: AggregationOperation
   breaksMultiplier?: number
 }
