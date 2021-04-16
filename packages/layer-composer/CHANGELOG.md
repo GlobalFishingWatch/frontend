@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 5.1.2
+
+### Patch Changes
+
+- af994916: Sort datasets to improve chance of hitting cache
+
 ## 5.1.1
 
 ### Patch Changes
