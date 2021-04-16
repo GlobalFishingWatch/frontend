@@ -4,6 +4,7 @@ import {
   DEFAULT_CONTEXT_DATAVIEW_ID,
   DEFAULT_ENVIRONMENT_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
+  DEFAULT_PRESENCE_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
   DEFAULT_WORKSPACE_ID,
   WorkspaceCategories,
@@ -35,6 +36,7 @@ const workspace: Workspace<WorkspaceState> = {
   ownerId: 0,
   dataviews: [
     { id: DEFAULT_VESSEL_DATAVIEW_ID }, // Fetch vessel information
+    { id: DEFAULT_PRESENCE_DATAVIEW_ID }, // Default dataview for new presence layers
     { id: DEFAULT_CONTEXT_DATAVIEW_ID }, // Default context dataview for new layers
     { id: DEFAULT_ENVIRONMENT_DATAVIEW_ID }, // Default environmet dataview for new layers
   ],

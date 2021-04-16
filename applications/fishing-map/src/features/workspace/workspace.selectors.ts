@@ -55,6 +55,10 @@ export const selectWorkspaceTimeRange = createSelector([selectWorkspace], (works
   }
 })
 
+export const selectWorkspaceDataviews = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.dataviews
+})
+
 export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace], (workspace) => {
   return workspace?.dataviewInstances
 })

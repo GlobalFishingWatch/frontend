@@ -9,6 +9,7 @@ import {
   DEFAULT_CONTEXT_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
+  DEFAULT_PRESENCE_DATAVIEW_ID,
 } from 'data/workspaces'
 
 // used in workspaces with encounter events layers
@@ -49,12 +50,12 @@ export const getVesselDataviewInstance = (
   return vesselDataviewInstance
 }
 
-export const getHeatmapDataviewInstance = (
+export const getActivityDataviewInstance = (
   usedRamps: string[] = []
 ): DataviewInstance<Generators.Type> => {
   const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamps.includes(option.id))
   const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : HeatmapColorBarOptions[0]
-  const heatmapDataviewInstance = {
+  return {
     id: `fishing-${Date.now()}`,
     config: {
       color: colorOption.value,
@@ -62,7 +63,21 @@ export const getHeatmapDataviewInstance = (
     },
     dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
   }
-  return heatmapDataviewInstance
+}
+
+export const getPresenceDataviewInstance = (
+  usedRamps: string[] = []
+): DataviewInstance<Generators.Type> => {
+  const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamps.includes(option.id))
+  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : HeatmapColorBarOptions[0]
+  return {
+    id: `presence-${Date.now()}`,
+    config: {
+      color: colorOption.value,
+      colorRamp: colorOption.id,
+    },
+    dataviewId: DEFAULT_PRESENCE_DATAVIEW_ID,
+  }
 }
 
 export const getEnvironmentDataviewInstance = (
