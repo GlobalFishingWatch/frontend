@@ -17,7 +17,7 @@ const checkRecordValidity = ({ record, latitude, longitude, timestamp }: Args) =
     errors.push('longitude')
   }
   const d = new Date(record[timestamp])
-  if (!(d instanceof Date) || isNaN(d.getTime())) {
+  if (!(d instanceof Date) || isNaN(d.getTime()) || d.getTime() <= 1) {
     errors.push('timestamp')
   }
   return errors

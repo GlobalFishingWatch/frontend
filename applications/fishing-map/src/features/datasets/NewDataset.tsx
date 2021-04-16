@@ -12,7 +12,12 @@ import {
   DatasetTypes,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
-import { guessColumns } from '@globalfishingwatch/data-transforms'
+import {
+  checkRecordValidity,
+  csvToTrackSegments,
+  guessColumns,
+  segmentsToGeoJSON,
+} from '@globalfishingwatch/data-transforms'
 import { capitalize } from 'utils/shared'
 import { SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
@@ -128,6 +133,11 @@ function NewDataset(): React.ReactElement {
           category: datasetCategory,
           fields: meta!.fields,
           guessedFields: guessedColumns,
+          configuration: {
+            latitude: guessedColumns.latitude,
+            longitude: guessedColumns.longitude,
+            timestamp: guessedColumns.timestamp,
+          },
         } as any) // TODO
         console.log(data, meta, guessedColumns)
       }
@@ -156,6 +166,23 @@ function NewDataset(): React.ReactElement {
       if (min && max && min >= max) {
         error = t('errors.invalidRange', 'Min has to be lower than max value')
       }
+      if (meta?.type === DatasetTypes.UserTracks) {
+        if (
+          fileData &&
+          newMetadata.configuration?.latitude &&
+          newMetadata.configuration?.longitude &&
+          newMetadata.configuration?.timestamp
+        ) {
+          const errors = checkRecordValidity({
+            record: (fileData as CSV)[0],
+            ...newMetadata.configuration,
+          } as any)
+          if (errors.length) {
+            // TODO i18n
+            error = `error with fields: ${errors}`
+          }
+        }
+      }
       setError(error)
       return newMetadata
     })
@@ -163,10 +190,51 @@ function NewDataset(): React.ReactElement {
 
   const onConfirmClick = async () => {
     if (file) {
+      let validityError
+      let userTrackGeoJSONFile
+      if (metadata?.type === DatasetTypes.UserTracks) {
+        if (
+          !metadata.configuration?.latitude ||
+          !metadata.configuration?.longitude ||
+          !metadata.configuration?.timestamp
+        ) {
+          // TODO i18n
+          validityError = 'latitude. longitude and timestamp are required fields'
+        } else {
+          const errors = checkRecordValidity({
+            record: (fileData as CSV)[0],
+            ...metadata.configuration,
+          } as any)
+          if (errors.length) {
+            // TODO i18n
+            validityError = `error with fields: ${errors}`
+          } else {
+            const segments = csvToTrackSegments({
+              records: fileData as CSV,
+              ...(metadata.configuration as any),
+            })
+            const geoJSON = segmentsToGeoJSON(segments)
+            console.log(geoJSON)
+            // const blob = new Blob([JSON.stringify(geoJSON)], { type: 'application/json' })
+            userTrackGeoJSONFile = new File([JSON.stringify(geoJSON)], 'file.json', {
+              type: 'application/json',
+            })
+          }
+        }
+      }
+      if (validityError) {
+        setError(validityError)
+        return
+      }
+
       setLoading(true)
-      const { payload, error } = await dispatchCreateDataset({ dataset: { ...metadata }, file })
+      const { payload, error: createDatasetError } = await dispatchCreateDataset({
+        dataset: { ...metadata },
+        file: userTrackGeoJSONFile || file,
+      })
       setLoading(false)
-      if (error) {
+
+      if (createDatasetError) {
         setError(
           `${t('errors.generic', 'Something went wrong, try again or contact:')} ${SUPPORT_EMAIL}`
         )
