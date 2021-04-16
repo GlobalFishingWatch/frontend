@@ -72,7 +72,10 @@ class HeatmapAnimatedGenerator {
         `Heatmap generator must specify start, end and sublayers parameters in ${config}`
       )
     }
-    const datasets = config.sublayers.map((sublayer) => sublayer.datasets.join(','))
+    const datasets = config.sublayers.map((sublayer) => {
+      const sublayerDatasets = [...sublayer.datasets]
+      return sublayerDatasets.sort((a, b) => a.localeCompare(b)).join(',')
+    })
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
     const visible = getSubLayersVisible(config.sublayers)
 
