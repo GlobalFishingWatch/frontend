@@ -50,7 +50,8 @@ const serializeBaseSourceParams = (params: any) => {
   return serialized
 }
 
-export const DEFAULT_HEATMAP_INTERVALS: Interval[] = ['10days', 'day', 'hour']
+// This also defines the priority order, so remember to keep it ascendent
+export const DEFAULT_HEATMAP_INTERVALS: Interval[] = ['hour', 'day', '10days']
 
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   mode: HeatmapAnimatedMode.Compare,
