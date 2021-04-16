@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 5.1.0
+
+### Minor Changes
+
+- 87a54e62: auto detect intervals by dataset configuration
+
 ## 5.0.1
 
 ### Patch Changes

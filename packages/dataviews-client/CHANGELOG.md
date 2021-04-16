@@ -1,5 +1,16 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.2.0
+
+### Minor Changes
+
+- 87a54e62: auto detect intervals by dataset configuration
+
+### Patch Changes
+
+- Updated dependencies [87a54e62]
+  - @globalfishingwatch/layer-composer@5.1.0
+
 ## 6.1.0
 
 ### Minor Changes
