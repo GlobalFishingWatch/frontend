@@ -45,6 +45,8 @@ export enum DatasetTypes {
   Fourwings = '4wings:v1',
   Context = 'user-context-layer:v1',
   Download = 'data-download:v1',
+  // TODO
+  UserTracks = 'user-tracks:v1',
 }
 
 export enum DatasetStatus {
