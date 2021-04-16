@@ -1,57 +1,57 @@
 {
   "default-public": {
-    "name": "Global Fishing Activity",
-    "cta": "See view",
-    "description": "Monitor commercial fishing in near real-time from global AIS and VMS from our partner countries."
+    "name": "Activité mondiale de la pêche",
+    "cta": "Voir la vue",
+    "description": "Surveiller la pêche commerciale en temps quasi réel à partir de l'AIS mondial et de VMS de nos pays partenaires."
   },
   "encounters-public": {
-    "name": "Vessel Encounters",
-    "cta": "See view",
-    "description": "Transhipment is one of the major missing links in understanding where illegally caught fish finds its way to the market.<a href=\"https://globalfishingwatch.org/carrier-portal/\" target=\"_blank\">See more in Carrier Vessel Portal.</a>"
+    "name": "Rencontres du Navire",
+    "cta": "Voir la vue",
+    "description": "Le transport est l'un des principaux maillons manquants pour comprendre où le poisson pêché illégalement trouve son chemin vers le marché.<a href=\"https://globalfishingwatch.org/carrier-portal/\" target=\"_blank\">En savoir plus sur le Portail des Transporteurs.</a>"
   },
   "small-scale": {
-    "name": "Small Scale Fisheries",
-    "cta": "See view",
-    "description": "Small-scale fisheries make an important contribution to nutrition, food security, sustainable livelihoods and poverty alleviation, especially in developing countries."
+    "name": "Pêches à petite échelle",
+    "cta": "Voir la vue",
+    "description": "La pêche à petite échelle apporte une contribution importante à la nutrition, à la sécurité alimentaire, aux moyens d'existence durables et à la réduction de la pauvreté, en particulier dans les pays en développement."
   },
   "caribe-public": {
-    "name": "Caribbean",
-    "cta": "See marine reserve portal",
-    "description": "The Caribbean is a region of the Americas that consists of the Caribbean Sea, its islands and the surrounding coasts."
+    "name": "Caraïbes",
+    "cta": "Voir le portail de réserve marine",
+    "description": "Les Caraïbes est une région des Amériques qui se compose de la mer des Caraïbes, de ses îles et des côtes environnantes."
   },
   "galapagos-public": {
     "name": "Galapagos",
-    "cta": "See marine reserve portal",
-    "description": "A UNESCO World Heritage site, Galapagos Marine Reserve is one of the most biologically diverse marine protected areas in the world."
+    "cta": "Voir le portail de réserve marine",
+    "description": "Site du patrimoine mondial de l'UNESCO, la Réserve marine de Galapagos est l'une des zones marines les plus diverses du monde sur le plan biologique."
   },
   "tristan-public": {
     "name": "Tristan da Cunha",
-    "cta": "See marine reserve portal",
-    "description": "Covering 690,000 square kilometers of ocean and home to critically endangered albatrosses, this marine protection zone is one of the largest in the world."
+    "cta": "Voir le portail de réserve marine",
+    "description": "Avec 690 000 kilomètres carrés d’océan et abritant des albatros en danger critique, cette zone de protection marine est l’une des plus grandes du monde."
   },
   "ascension-public": {
-    "name": "Ascension Island",
-    "cta": "See marine reserve portal",
-    "description": "At 440,000 square kilometers, this marine protected area covers 100 percent of Ascension’s exclusive economic zone and protects many native species like the Ascension Island Frigatebird."
+    "name": "Île de l'Ascension",
+    "cta": "Voir le portail de réserve marine",
+    "description": "À 440 000 kilomètres carrés, Cette zone marine protégée couvre 100 % de la zone économique exclusive de l’Ascension et protège de nombreuses espèces indigènes telles que l’Ascension Island Frigatebird."
   },
   "palau-public": {
     "name": "Palau",
-    "cta": "See marine reserve portal",
-    "description": "Palau’s surrounding waters are home to remarkable fish and coral biodiversity, and includes the world’s first shark sanctuary."
+    "cta": "Voir le portail de réserve marine",
+    "description": "Les eaux environnantes de Palau abritent une remarquable biodiversité de poissons et de coraux, et comprennent le premier sanctuaire de requins du monde."
   },
   "niue-public": {
     "name": "Niue",
-    "cta": "See marine reserve portal",
+    "cta": "Voir le portail de réserve marine",
     "description": "TBD"
   },
   "chile": {
-    "name": "Chile",
-    "cta": "See country portal",
-    "description": "Explore the Vessel Monitoring System (VMS) data provided by the Chilean government’s fisheries and aquaculture regulator, SERNAPESCA."
+    "name": "Chili",
+    "cta": "Voir le portail du pays",
+    "description": "Explorez les données du système de surveillance des navires (VMS) fournies par le régulateur des pêches et de l'aquaculture du gouvernement chilien, SERNAPESCA."
   },
   "indonesia": {
-    "name": "Indonesia",
-    "cta": "See country portal",
-    "description": "Explore the Vessel Monitoring System (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries."
+    "name": "Indonésie",
+    "cta": "Voir le portail du pays",
+    "description": "Explorez les données du système de surveillance des navires (VMS) fournies par le Ministère des Affaires maritimes et de la Pêche du gouvernement indonésien."
   }
 }
