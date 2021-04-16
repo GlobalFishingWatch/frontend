@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.2.2
+
+### Patch Changes
+
+- remove log
+
 ## 6.2.1
 
 ### Patch Changes
