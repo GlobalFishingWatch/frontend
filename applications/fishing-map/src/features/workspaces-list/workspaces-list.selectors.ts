@@ -61,17 +61,19 @@ export const selectCurrentHighlightedWorkspaces = createSelector(
     apiWorkspaces
   ): HighlightedWorkspaceMerged[] | undefined => {
     const workspaces = highlightedWorkspaces?.[locationCategory]
-    return workspaces?.map((workspace) => {
-      const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
+    return workspaces
+      ?.filter((workspace) => workspace.visible !== 'hidden')
+      .map((workspace) => {
+        const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
 
-      if (!apiWorkspace) return workspace
+        if (!apiWorkspace) return workspace
 
-      return {
-        ...workspace,
-        viewport: apiWorkspace.viewport,
-        category: apiWorkspace.category as WorkspaceCategories,
-      }
-    })
+        return {
+          ...workspace,
+          viewport: apiWorkspace.viewport,
+          category: apiWorkspace.category as WorkspaceCategories,
+        }
+      })
   }
 )
 

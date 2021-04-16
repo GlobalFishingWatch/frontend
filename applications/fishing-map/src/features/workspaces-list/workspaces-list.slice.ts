@@ -68,6 +68,7 @@ export type HighlightedWorkspace = {
   img?: string
   cta?: string
   userGroup?: string
+  visible?: 'visible' | 'hidden'
 }
 
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
