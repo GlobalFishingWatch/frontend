@@ -1,37 +1,49 @@
-
 .vesselItem {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(22, 63, 137, 0.1);
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(22, 63, 137, 0.1);
 }
 .vesselItem h3 {
-    color: #163F89;
-    font-family: Roboto;
-    font-size: 18px;
-    letter-spacing: 0;
-    line-height: 21px;
-    margin-bottom: 10px;
+  color: #163f89;
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: 21px;
+  margin-bottom: 10px;
 }
 
 .deleteSaved {
-    float: right;
-    background-color: rgba(22, 63, 137, 0.1);
-    color: #FA5E5E;
+  float: right;
+  background-color: rgba(22, 63, 137, 0.1);
+  color: #fa5e5e;
 }
 
-.identifiers{
-    overflow: hidden;
-
+.identifiers {
+  overflow: hidden;
 }
 
-.identifiers div{
-    float: left;
-    opacity: 0.65;
-    color: #163F89;
-    font-family: Roboto;
-    font-size: 14px;
-    letter-spacing: 0;
-    line-height: 16px;
-    margin-right: 30px;
-    margin-bottom: 15px;
+.identifiers div {
+  float: left;
+  opacity: 0.65;
+  color: #163f89;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 16px;
+  margin-right: 30px;
+  margin-bottom: 15px;
+}
+
+.remove {
+  float: right;
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary)) !important;
+
+  /* margin-left: var(--space-XS); */
+
+  /* position: absolute;
+  right: 0; */
+}
+
+.remove:focus:not(:disabled),
+.remove:active:not(:disabled),
+.remove:hover:not(:disabled) {
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-border)) !important;
 }

@@ -96,20 +96,3 @@
   overflow-y: auto;
   position: relative;
 }
-
-.remove {
-  margin-left: var(--space-XS);
-  background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary)) !important;
-  position: absolute;
-  right: 0;
-}
-
-.remove:focus:not(:disabled),
-.remove:active:not(:disabled),
-.remove:hover:not(:disabled) {
-  background-color: rgba(var(--danger-red-rgb), var(--opacity-border)) !important;
-}
-
-.vesselItem {
-  display: flex;
-}

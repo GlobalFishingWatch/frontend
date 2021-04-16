@@ -6,4 +6,5 @@ export type VesselSourceId = {
 
 export interface OfflineVessel extends VesselSearch {
   profileId: string
+  savedOn: string
 }

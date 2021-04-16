@@ -37,6 +37,7 @@ export class VesselHistoryIdb extends Dexie {
         'dataset',
         'source',
         'vesselMatchId',
+        'savedOn',
       ].join(','),
     })
 

@@ -119,17 +119,12 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
             <h2>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
             <div className={styles.offlineVessels}>
               {offlineVessels.map((vessel, index) => (
-                <div className={styles.vesselItem}>
-                  <VesselListItem key={index} vessel={vessel} />
-                  <IconButton
-                    size="default"
-                    icon="delete"
-                    type="warning"
-                    className={styles.remove}
-                    loading={loading}
-                    onClick={() => onDeleteClick(vessel)}
-                  />
-                </div>
+                <VesselListItem
+                  key={index}
+                  vessel={vessel}
+                  saved={vessel.savedOn}
+                  onDeleteClick={() => onDeleteClick(vessel)}
+                />
               ))}
             </div>
           </div>
