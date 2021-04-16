@@ -65,7 +65,7 @@ function WorkspacesList() {
             const i18nCta = highlightedWorkspace[
               `cta_${i18n.language as Locale}` as keyof HighlightedWorkspace
             ] as string
-            const active = highlightedWorkspace?.id !== undefined
+            const active = highlightedWorkspace?.id !== undefined && highlightedWorkspace?.id !== ''
             const linkTo =
               highlightedWorkspace.id === DEFAULT_WORKSPACE_ID
                 ? {
@@ -84,26 +84,36 @@ function WorkspacesList() {
             return (
               <li key={highlightedWorkspace.id || highlightedWorkspace.name}>
                 <div className={cx(styles.workspace, { [styles.disabled]: !active })}>
-                  <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
-                    <img className={styles.image} alt={name} src={img} />
-                  </Link>
-                  <div className={styles.info}>
+                  {active ? (
                     <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
-                      <h3 className={styles.title}>{i18nName || name}</h3>
+                      <img className={styles.image} alt={name} src={img} />
                     </Link>
+                  ) : (
+                    <img className={styles.image} alt={name} src={img} />
+                  )}
+                  <div className={styles.info}>
+                    {active ? (
+                      <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
+                        <h3 className={styles.title}>{i18nName || name}</h3>
+                      </Link>
+                    ) : (
+                      <h3 className={styles.title}>{i18nName || name}</h3>
+                    )}
                     <p
                       className={styles.description}
                       dangerouslySetInnerHTML={{
                         __html: i18nDescription || description,
                       }}
                     ></p>
-                    <Link
-                      to={linkTo}
-                      className={styles.link}
-                      onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                    >
-                      {i18nCta || cta}
-                    </Link>
+                    {active && (
+                      <Link
+                        to={linkTo}
+                        className={styles.link}
+                        onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                      >
+                        {i18nCta || cta}
+                      </Link>
+                    )}
                   </div>
                 </div>
               </li>
