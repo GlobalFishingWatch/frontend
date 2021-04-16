@@ -4,7 +4,6 @@ import { DEFAULT_WORKSPACE } from 'data/config'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
-// import { AppState } from 'types/redux.types'
 import { ROUTE_TYPES } from './routes'
 
 const selectLocation = (state: RootState) => state.location

@@ -1,14 +1,8 @@
-import {
-  configureStore,
-  ThunkAction,
-  Action,
-  combineReducers,
-  // getDefaultMiddleware,
-} from '@reduxjs/toolkit'
+import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
 import connectedRoutes, { routerQueryMiddleware } from 'routes/routes'
 import offlineVesselsReducer from 'features/vessels/offline-vessels.slice'
 import vesselsReducer from 'features/vessels/vessels.slice'
-import mapReducer from './features/map/map.slice'
+import mapReducer from 'features/map/map.slice'
 
 const {
   reducer: location,

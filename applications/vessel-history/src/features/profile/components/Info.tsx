@@ -39,9 +39,6 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
 
   useEffect(() => {
     dispatchFetchOfflineVessel(vesselProfileId)
-    // return () => {
-    //   cleanup
-    // }
   }, [vesselProfileId, dispatchFetchOfflineVessel])
 
   const onDeleteClick = async (data: OfflineVessel) => {

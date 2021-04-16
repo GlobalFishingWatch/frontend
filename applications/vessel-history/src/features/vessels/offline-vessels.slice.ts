@@ -1,11 +1,9 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
-// import { OfflineVessel } from '@globalfishingwatch/api-types'
 import db from 'offline-store'
 import { RootState } from 'store'
 import { OfflineVessel } from 'types/vessel'
 import { AsyncError, asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
-// import { formatVesselProfileId } from './vessels.utils'
 
 export type OfflineVesselState = AsyncReducer<OfflineVessel>
 
@@ -22,12 +20,6 @@ export const createOfflineVesselThunk = createAsyncThunk<
   }
 >('offlineVessels/create', async ({ vessel }, { rejectWithValue }) => {
   try {
-    // const profileId = formatVesselProfileId(
-    //   vessel.dataset ?? '',
-    //   vessel.id ?? '',
-    //   vessel.vesselMatchId ?? ''
-    // )
-    // const result = { ...vessel, profileId }
     db.vessels.add(vessel, vessel.profileId)
     return vessel
   } catch (e) {
@@ -105,13 +97,7 @@ export const updateOfflineVesselThunk = createAsyncThunk<
     rejectValue: AsyncError
   }
 >('offlineVessels/update', async (vessel: OfflineVessel, { rejectWithValue }) => {
-  // const profileId = formatVesselProfileId(
-  //   vessel.dataset ?? '',
-  //   vessel.id ?? '',
-  //   vessel.vesselMatchId ?? ''
-  // )
   try {
-    // const result = { ...vessel, profileId }
     await db.vessels.put(vessel, vessel.profileId)
     return vessel
   } catch (e) {

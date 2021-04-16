@@ -1,4 +1,3 @@
-// import { bindActionCreators } from 'redux'
 import { useCallback } from 'react'
 import { AsyncError } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
