@@ -1,5 +1,13 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.2.1
+
+### Patch Changes
+
+- 80907c1f: fixes latest commit
+- Updated dependencies [80907c1f]
+  - @globalfishingwatch/layer-composer@5.1.1
+
 ## 6.2.0
 
 ### Minor Changes

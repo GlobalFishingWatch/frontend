@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/dataviews-client",
-  "version": "6.2.0",
+  "version": "6.2.1",
   "description": "",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -30,7 +30,7 @@
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.6.8",
     "@globalfishingwatch/api-types": "^3.0.0",
-    "@globalfishingwatch/layer-composer": "^5.1.0",
+    "@globalfishingwatch/layer-composer": "^5.1.1",
     "qs": "^6.9.4"
   },
   "devDependencies": {
