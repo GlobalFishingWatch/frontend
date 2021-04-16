@@ -1,0 +1,57 @@
+{
+  "default-public": {
+    "name": "Global Fishing Activity",
+    "cta": "See view",
+    "description": "Monitor commercial fishing in near real-time from global AIS and VMS from our partner countries."
+  },
+  "encounters-public": {
+    "name": "Vessel Encounters",
+    "cta": "See view",
+    "description": "Transhipment is one of the major missing links in understanding where illegally caught fish finds its way to the market.<a href=\"https://globalfishingwatch.org/carrier-portal/\" target=\"_blank\">See more in Carrier Vessel Portal.</a>"
+  },
+  "small-scale": {
+    "name": "Small Scale Fisheries",
+    "cta": "See view",
+    "description": "Small-scale fisheries make an important contribution to nutrition, food security, sustainable livelihoods and poverty alleviation, especially in developing countries."
+  },
+  "caribe-public": {
+    "name": "Caribbean",
+    "cta": "See marine reserve portal",
+    "description": "The Caribbean is a region of the Americas that consists of the Caribbean Sea, its islands and the surrounding coasts."
+  },
+  "galapagos-public": {
+    "name": "Galapagos",
+    "cta": "See marine reserve portal",
+    "description": "A UNESCO World Heritage site, Galapagos Marine Reserve is one of the most biologically diverse marine protected areas in the world."
+  },
+  "tristan-public": {
+    "name": "Tristan da Cunha",
+    "cta": "See marine reserve portal",
+    "description": "Covering 690,000 square kilometers of ocean and home to critically endangered albatrosses, this marine protection zone is one of the largest in the world."
+  },
+  "ascension-public": {
+    "name": "Ascension Island",
+    "cta": "See marine reserve portal",
+    "description": "At 440,000 square kilometers, this marine protected area covers 100 percent of Ascension’s exclusive economic zone and protects many native species like the Ascension Island Frigatebird."
+  },
+  "palau-public": {
+    "name": "Palau",
+    "cta": "See marine reserve portal",
+    "description": "Palau’s surrounding waters are home to remarkable fish and coral biodiversity, and includes the world’s first shark sanctuary."
+  },
+  "niue-public": {
+    "name": "Niue",
+    "cta": "See marine reserve portal",
+    "description": "TBD"
+  },
+  "chile": {
+    "name": "Chile",
+    "cta": "See country portal",
+    "description": "Explore the Vessel Monitoring System (VMS) data provided by the Chilean government’s fisheries and aquaculture regulator, SERNAPESCA."
+  },
+  "indonesia": {
+    "name": "Indonesia",
+    "cta": "See country portal",
+    "description": "Explore the Vessel Monitoring System (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries."
+  }
+}
