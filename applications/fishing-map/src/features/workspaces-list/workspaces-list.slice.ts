@@ -64,9 +64,18 @@ export const fetchDefaultWorkspaceThunk = createAsyncThunk<Workspace>(
 export type HighlightedWorkspace = {
   id: string
   name: string
+  name_es?: string
+  name_fr?: string
+  name_id?: string
   description: string
-  img?: string
+  description_es?: string
+  description_fr?: string
+  description_id?: string
   cta?: string
+  cta_es?: string
+  cta_fr?: string
+  cta_id?: string
+  img?: string
   userGroup?: string
   visible?: 'visible' | 'hidden'
 }
