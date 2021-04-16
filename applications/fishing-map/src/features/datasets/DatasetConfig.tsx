@@ -1,6 +1,7 @@
 import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
+import { Fragment } from 'react'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import {
   AnyDatasetConfiguration,
@@ -181,21 +182,68 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
         </div>
       )}
       {datasetCategory === DatasetCategory.Environment && datasetGeometryType === 'tracks' && (
-        <Select
-          // TODO
-          label="Features latitude field"
-          placeholder={t('selects.placeholder', 'Select an option')}
-          options={fieldsOptions}
-          selectedOption={fieldsOptions.find(
-            ({ id }) => id === metadata.configuration?.propertyToInclude
-          )}
-          onSelect={(selected) => {
-            onDatasetFieldChange({ propertyToInclude: selected.id })
-          }}
-          onRemove={() => {
-            onDatasetFieldChange({ propertyToInclude: undefined })
-          }}
-        />
+        <Fragment>
+          <div className={styles.multipleSelectContainer}>
+            <Select
+              // TODO
+              label="Positions field"
+              // TODO
+              placeholder="latitude"
+              options={fieldsOptions}
+              selectedOption={fieldsOptions.find(
+                ({ id }) => id === metadata.configuration?.latitude
+              )}
+              onSelect={(selected) => {
+                onDatasetFieldChange({ latitude: selected.id })
+              }}
+              onRemove={() => {
+                onDatasetFieldChange({ latitude: undefined })
+              }}
+            />
+            <Select
+              // TODO
+              placeholder="longitude"
+              options={fieldsOptions}
+              selectedOption={fieldsOptions.find(
+                ({ id }) => id === metadata.configuration?.longitude
+              )}
+              onSelect={(selected) => {
+                onDatasetFieldChange({ longitude: selected.id })
+              }}
+              onRemove={() => {
+                onDatasetFieldChange({ longitude: undefined })
+              }}
+            />
+          </div>
+          <Select
+            // TODO
+            label="Time field"
+            placeholder={t('selects.placeholder', 'Select an option')}
+            options={fieldsOptions}
+            selectedOption={fieldsOptions.find(
+              ({ id }) => id === metadata.configuration?.timestamp
+            )}
+            onSelect={(selected) => {
+              onDatasetFieldChange({ timestamp: selected.id })
+            }}
+            onRemove={() => {
+              onDatasetFieldChange({ timestamp: undefined })
+            }}
+          />
+          <Select
+            // TODO
+            label="Individual ID field (optional)"
+            placeholder={t('selects.placeholder', 'Select an option')}
+            options={fieldsOptions}
+            selectedOption={fieldsOptions.find(({ id }) => id === metadata.configuration?.id)}
+            onSelect={(selected) => {
+              onDatasetFieldChange({ id: selected.id })
+            }}
+            onRemove={() => {
+              onDatasetFieldChange({ id: undefined })
+            }}
+          />
+        </Fragment>
       )}
     </div>
   )
