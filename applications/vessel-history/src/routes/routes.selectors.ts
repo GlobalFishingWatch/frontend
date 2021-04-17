@@ -4,7 +4,6 @@ import { DEFAULT_WORKSPACE } from 'data/config'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { RootState } from 'store'
 import { WorkspaceParam } from 'types'
-import { AppState } from 'types/redux.types'
 import { ROUTE_TYPES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
@@ -12,20 +11,6 @@ export const selectCurrentLocation = createSelector([selectLocation], ({ type, r
   const routeMap = routesMap[type] as RouteObject
   return { type: type as ROUTE_TYPES, ...routeMap }
 })
-
-// export const DEFAULT_WORKSPACE: AppState = {
-//   //workspaceDataviews: DEFAULT_DATAVIEWS,
-//   zoom: 3,
-//   latitude: -25.54035,
-//   longitude: -35.97144,
-//   project: '1',
-//   start: '2017-12-01T00:00:00.000Z',
-//   end: '2018-01-01T00:00:00.000Z',
-//   timebarMode: 'speed',
-//   hiddenLayers: '',
-//   satellite: '',
-//   colorMode: '',
-// }
 
 export const selectLocationQuery = createSelector([selectLocation], (location) => {
   return location.query

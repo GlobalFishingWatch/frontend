@@ -1,8 +1,4 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useEffect, useState } from 'react'
-import { ViewportProps } from 'react-map-gl'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { MapCoordinates } from 'types'
 import {
   selectGeneratorsConfig,
   updateGenerator,
