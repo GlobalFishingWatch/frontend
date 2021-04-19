@@ -57,7 +57,6 @@ function Search() {
   const searchStatus = useSelector(selectSearchStatus)
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
-  console.log(vesselDataviews)
 
   const searchOptions = [
     {
@@ -89,15 +88,18 @@ function Search() {
         if (promiseRef.current) {
           promiseRef.current.abort()
         }
-
-        promiseRef.current = dispatch(
-          fetchVesselSearchThunk({
-            query: debouncedQuery,
-            filters: searchFilters,
-            datasets: sources,
-            offset,
-          })
-        )
+        // To ensure the pending action isn't overwritted by the abort above
+        // and we miss the loading intermediate state
+        setTimeout(() => {
+          promiseRef.current = dispatch(
+            fetchVesselSearchThunk({
+              query: debouncedQuery,
+              filters: searchFilters,
+              datasets: sources,
+              offset,
+            })
+          )
+        }, 1)
       }
     },
     [debouncedQuery, dispatch, searchDatasets, searchFilters]
@@ -212,12 +214,16 @@ function Search() {
                 disabled={!searchAllowed}
                 className={styles.input}
                 type="search"
-                loading={searchStatus === AsyncReducerStatus.Loading}
+                loading={
+                  searchStatus === AsyncReducerStatus.Loading ||
+                  searchStatus === AsyncReducerStatus.Aborted
+                }
                 placeholder={t('search.placeholder', 'Type to search vessels')}
               />
               {activeSearchOption === 'advanced' && <SearchFilters className={styles.filters} />}
             </div>
-            {searchStatus === AsyncReducerStatus.Loading &&
+            {(searchStatus === AsyncReducerStatus.Loading ||
+              searchStatus === AsyncReducerStatus.Aborted) &&
             searchPagination.loading === false ? null : searchAllowed ? (
               <Fragment>
                 <ul {...getMenuProps()} className={styles.searchResults}>
