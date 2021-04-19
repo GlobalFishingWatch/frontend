@@ -8,10 +8,8 @@ import {
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import {
-  selectDataviewInstancesResolved,
-  selectWorkspaceError,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceError } from 'features/workspace/workspace.selectors'
+import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import { selectResources, ResourcesState } from 'features/resources/resources.slice'
 import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'

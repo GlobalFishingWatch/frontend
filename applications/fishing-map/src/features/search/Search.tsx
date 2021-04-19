@@ -12,16 +12,14 @@ import { Choice, Icon } from '@globalfishingwatch/ui-components'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import {
-  selectVesselsDataviews,
-  selectWorkspaceStatus,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getFlagById } from 'utils/flags'
 import { formatInfoField } from 'utils/info'
+import { selectVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -59,6 +57,7 @@ function Search() {
   const searchStatus = useSelector(selectSearchStatus)
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
+  console.log(vesselDataviews)
 
   const searchOptions = [
     {
@@ -157,9 +156,7 @@ function Search() {
         trackDatasetId: selection.trackDatasetId as string,
         infoDatasetId: selection.dataset.id,
       })
-      batch(() => {
-        upsertDataviewInstance(vesselDataviewInstance)
-      })
+      upsertDataviewInstance(vesselDataviewInstance)
     }
   }
 

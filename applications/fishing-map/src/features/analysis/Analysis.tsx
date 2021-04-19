@@ -13,12 +13,7 @@ import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
-import {
-  getRelatedDatasetByType,
-  selectActiveActivityDataviews,
-  selectHasAnalysisLayersVisible,
-  selectWorkspaceStatus,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectAnalysisQuery } from 'features/app/app.selectors'
@@ -27,6 +22,11 @@ import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useFeatures } from 'features/map/map-features.hooks'
 import { Bbox } from 'types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import {
+  selectActiveActivityDataviews,
+  selectHasAnalysisLayersVisible,
+} from 'features/dataviews/dataviews.selectors'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,

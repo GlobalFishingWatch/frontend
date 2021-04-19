@@ -2,7 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { selectEventsDataviews } from 'features/workspace/workspace.selectors'
+import { selectEventsDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import LayerPanel from './EventsLayerPanel'
 

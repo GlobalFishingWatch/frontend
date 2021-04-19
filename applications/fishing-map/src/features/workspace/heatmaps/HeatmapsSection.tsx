@@ -4,10 +4,8 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import {
-  selectActivityDataviews,
-  selectWorkspaceDataviews,
-} from 'features/workspace/workspace.selectors'
+import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectWorkspaceDataviews } from 'features/workspace/workspace.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
