@@ -144,7 +144,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       ]
 
       const queryFilters = queryFiltersFields
-        .filter(({ value }) => value !== undefined)
+        .filter(({ value }) => value !== undefined && value !== '')
         .map(
           ({ field, operator, transformation, value }) =>
             `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
