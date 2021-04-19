@@ -26,7 +26,26 @@ export const isGuestUser = createSelector([selectUserData], (userData) => {
 export const selectDataviews = createSelector(
   [selectAllDataviews, isGuestUser, selectDebugOptions],
   (dataviews, guestUser, { thinning }) => {
-    return dataviews
+    return dataviews?.map((dataview) => {
+      if (thinning) {
+        // Insert thinning queryParams depending on the user type
+        const thinningConfig = guestUser
+          ? THINNING_LEVELS[ThinningLevels.Aggressive]
+          : THINNING_LEVELS[ThinningLevels.Default]
+        const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
+          id,
+          value,
+        }))
+        return {
+          ...dataview,
+          datasetsConfig: dataview.datasetsConfig?.map((datasetConfig) => {
+            if (datasetConfig.endpoint !== EndpointId.Tracks) return datasetConfig
+            return { ...datasetConfig, query: [...(datasetConfig.query || []), ...thinningQuery] }
+          }),
+        }
+      }
+      return dataview
+    })
   }
 )
 
