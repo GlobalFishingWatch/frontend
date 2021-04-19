@@ -74,7 +74,7 @@ function Analysis() {
     haveSourcesLoaded: contextAreaSourceLoaded,
   } = useFeatures({
     sourcesIds: contextSourcesIds,
-    sourceLayer: 'main',
+    sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
     filter,
   })
 

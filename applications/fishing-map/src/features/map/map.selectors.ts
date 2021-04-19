@@ -72,15 +72,17 @@ const getGeneratorsConfig = ({
 
   const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
 
-  const rulersGeneratorConfig = {
-    type: Generators.Type.Rulers,
-    id: 'rulers',
-    data: rulers,
+  // Avoid entering rulers sources and layers when no active rules
+  if (rulers?.length) {
+    const rulersGeneratorConfig = {
+      type: Generators.Type.Rulers,
+      id: 'rulers',
+      data: rulers,
+    }
+    return [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
   }
 
-  const generators = [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
-
-  return generators
+  return generatorsConfig.reverse()
 }
 
 const selectMapGeneratorsConfig = createSelector(

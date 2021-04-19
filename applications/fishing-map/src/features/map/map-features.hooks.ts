@@ -30,7 +30,7 @@ export const useSourcesLoadingState = () => {
         map.isSourceLoaded(sourceId),
       ])
       const allSourcesLoaded = sourcesLoaded.every(([id, loaded]) => loaded)
-      if (allSourcesLoaded) {
+      if (allSourcesLoaded && e.type === 'idle') {
         map.off('idle', sourceEventCallback)
         idledAttached.current = false
       } else if (!idledAttached.current) {
@@ -40,6 +40,7 @@ export const useSourcesLoadingState = () => {
       setSourcesState(Object.fromEntries(sourcesLoaded))
     }
     if (map && !listenerAttached) {
+      map.on('sourcedata', sourceEventCallback)
       map.on('sourcedataloading', sourceEventCallback)
       map.on('idle', sourceEventCallback)
       map.on('error', sourceEventCallback)
@@ -48,6 +49,7 @@ export const useSourcesLoadingState = () => {
       listenerAttached = true
     }
     const detachListeners = () => {
+      map.on('sourcedata', sourceEventCallback)
       map.off('sourcedataloading', sourceEventCallback)
       map.off('idle', sourceEventCallback)
       map.off('error', sourceEventCallback)
