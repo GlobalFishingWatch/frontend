@@ -62,3 +62,6 @@
   min-height: 30vh;
   height: calc(100vh - 110px);
 }
+.spinnerFull {
+  height: calc(100vh - 110px);
+}
