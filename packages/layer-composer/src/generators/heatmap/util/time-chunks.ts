@@ -1,8 +1,9 @@
 import { DateTime, Duration, Interval as LuxonInterval } from 'luxon'
+import { DEFAULT_HEATMAP_INTERVALS } from '../heatmap-animated'
 import { getSourceId } from '.'
 
+// month only supported in environmental layers
 export type Interval = 'month' | '10days' | 'day' | 'hour'
-export type IntervalOption = 'auto' | Interval
 
 export type TimeChunk = {
   id: string
@@ -106,10 +107,16 @@ const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
  * Returns the type of interval for a given delta in ms
  * @param delta delta in ms
  */
-const getInterval = (delta: number): Interval => {
+const getInterval = (
+  delta: number,
+  supportedIntervals: Interval[] = DEFAULT_HEATMAP_INTERVALS
+): Interval => {
   const duration = Duration.fromMillis(delta)
-  if (CONFIG_BY_INTERVAL.day.isValid(duration)) {
-    if (CONFIG_BY_INTERVAL.hour.isValid(duration)) {
+  if (
+    CONFIG_BY_INTERVAL.day.isValid(duration) &&
+    (supportedIntervals.includes('day') || supportedIntervals.includes('hour'))
+  ) {
+    if (CONFIG_BY_INTERVAL.hour.isValid(duration) && supportedIntervals.includes('hour')) {
       return 'hour'
     }
     return 'day'
@@ -212,11 +219,11 @@ export const getActiveTimeChunks = (
   activeEnd: string,
   datasetStart: string,
   datasetEnd: string,
-  interval?: IntervalOption
+  interval?: Interval | Interval[]
 ): TimeChunks => {
   const delta = +toDT(activeEnd) - +toDT(activeStart)
   const finalInterval: Interval =
-    !interval || interval === 'auto' ? getInterval(delta) : (interval as Interval)
+    !interval || Array.isArray(interval) ? getInterval(delta, interval) : (interval as Interval)
   const timeChunks: TimeChunks = {
     activeStart,
     activeEnd,

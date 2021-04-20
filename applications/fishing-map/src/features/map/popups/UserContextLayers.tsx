@@ -7,7 +7,7 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { CONTEXT_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
-import { selectHasAnalysisLayersVisible } from 'features/workspace/workspace.selectors'
+import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
 import styles from './Popup.module.css'
 
 type UserContextLayersProps = {

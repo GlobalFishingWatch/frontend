@@ -15,7 +15,7 @@ import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/t
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
-import { selectActivityDataviews } from 'features/workspace/workspace.selectors'
+import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
 import { filterByViewport } from 'features/map/map.utils'
 import { useActivityTemporalgridFeatures } from 'features/map/map-features.hooks'

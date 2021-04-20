@@ -1,5 +1,47 @@
 # @globalfishingwatch/react-hooks
 
+## 6.0.5
+
+### Patch Changes
+
+- Updated dependencies [bf2d09a1]
+  - @globalfishingwatch/layer-composer@5.2.0
+  - @globalfishingwatch/ui-components@2.18.5
+
+## 6.0.4
+
+### Patch Changes
+
+- Updated dependencies [af994916]
+  - @globalfishingwatch/layer-composer@5.1.2
+  - @globalfishingwatch/ui-components@2.18.4
+
+## 6.0.3
+
+### Patch Changes
+
+- Updated dependencies [80907c1f]
+  - @globalfishingwatch/dataviews-client@6.2.1
+  - @globalfishingwatch/layer-composer@5.1.1
+  - @globalfishingwatch/ui-components@2.18.3
+
+## 6.0.2
+
+### Patch Changes
+
+- Updated dependencies [87a54e62]
+  - @globalfishingwatch/dataviews-client@6.2.0
+  - @globalfishingwatch/layer-composer@5.1.0
+  - @globalfishingwatch/ui-components@2.18.2
+
+## 6.0.1
+
+### Patch Changes
+
+- Updated dependencies [bb4978cd]
+  - @globalfishingwatch/layer-composer@5.0.1
+  - @globalfishingwatch/ui-components@2.18.1
+
 ## 6.0.0
 
 ### Major Changes

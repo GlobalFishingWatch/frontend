@@ -8,8 +8,14 @@ import {
   DatasetCategory,
   EnviromentalDatasetConfiguration,
   DataviewCategory,
+  Dataset,
 } from '@globalfishingwatch/api-types'
-import { GeneratorDataviewConfig, Generators, Group } from '@globalfishingwatch/layer-composer'
+import {
+  DEFAULT_HEATMAP_INTERVALS,
+  GeneratorDataviewConfig,
+  Generators,
+  Group,
+} from '@globalfishingwatch/layer-composer'
 import type {
   ColorRampsIds,
   HeatmapAnimatedGeneratorSublayer,
@@ -19,6 +25,16 @@ import { resolveDataviewDatasetResource, UrlDataviewInstance } from './resolve-d
 
 export const MULTILAYER_SEPARATOR = '__'
 export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeatmap'
+
+const getCommonIntervals = (datasets: Dataset[]) => {
+  const interval = DEFAULT_HEATMAP_INTERVALS.find((interval) =>
+    datasets.every((dataset) => dataset.configuration?.resolution === interval)
+  )
+  return (
+    interval &&
+    DEFAULT_HEATMAP_INTERVALS.slice(DEFAULT_HEATMAP_INTERVALS.findIndex((i) => i === interval))
+  )
+}
 
 type DataviewsGeneratorConfigsParams = {
   debug?: boolean
@@ -125,8 +141,8 @@ export function getGeneratorConfig(
           mode: Generators.HeatmapAnimatedMode.Single,
           aggregationOperation: AggregationOperation.Avg,
           interactive: true,
-          interval: dataview.config?.interval || 'month',
           breaksMultiplier: dataview.config?.breaksMultiplier || VALUE_MULTIPLIER,
+          interval: dataview.config?.interval || 'month',
         }
       }
 
@@ -254,6 +270,10 @@ export function getDataviewsGeneratorConfigs(
 
       return sublayer
     })
+    const intervalDatasets = activityDataviews
+      .flatMap((dataview) => dataview.datasets || [])
+      .filter((d) => d?.configuration?.resolution)
+    const interval = getCommonIntervals(intervalDatasets)
 
     const mergedActivityDataview = {
       id: params.mergedActivityGeneratorId || MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
@@ -261,6 +281,7 @@ export function getDataviewsGeneratorConfigs(
         type: Generators.Type.HeatmapAnimated,
         sublayers: activitySublayers,
         mode: heatmapAnimatedMode,
+        ...(interval && { interval }),
       },
     }
     dataviewsFiltered.push(mergedActivityDataview)

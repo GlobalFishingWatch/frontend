@@ -1,5 +1,47 @@
 # @globalfishingwatch/ui-components
 
+## 2.18.5
+
+### Patch Changes
+
+- Updated dependencies [bf2d09a1]
+  - @globalfishingwatch/layer-composer@5.2.0
+
+## 2.18.4
+
+### Patch Changes
+
+- Updated dependencies [af994916]
+  - @globalfishingwatch/layer-composer@5.1.2
+
+## 2.18.3
+
+### Patch Changes
+
+- Updated dependencies [80907c1f]
+  - @globalfishingwatch/layer-composer@5.1.1
+
+## 2.18.2
+
+### Patch Changes
+
+- Updated dependencies [87a54e62]
+  - @globalfishingwatch/layer-composer@5.1.0
+
+## 2.18.1
+
+### Patch Changes
+
+- bb4978cd: fix blob mode
+- Updated dependencies [bb4978cd]
+  - @globalfishingwatch/layer-composer@5.0.1
+
+## 2.18.0
+
+### Minor Changes
+
+- fdad03d6: support aliases in multiselect
+
 ## 2.17.4
 
 ### Patch Changes

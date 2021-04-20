@@ -49,7 +49,7 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<ResourcesState
 })
 
 export const {
-  selectAll: selectDataviews,
+  selectAll: selectAllDataviews,
   selectById,
   selectIds,
 } = entityAdapter.getSelectors<RootState>((state) => state.dataviews)

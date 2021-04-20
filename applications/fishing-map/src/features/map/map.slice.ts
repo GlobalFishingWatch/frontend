@@ -16,11 +16,11 @@ import {
 } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import {
-  getRelatedDatasetByType,
   selectEventsDataviews,
   selectActivityDataviews,
-} from 'features/workspace/workspace.selectors'
+} from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectTimeRange } from 'features/app/app.selectors'
 

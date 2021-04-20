@@ -12,16 +12,14 @@ import { Choice, Icon } from '@globalfishingwatch/ui-components'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import {
-  selectVesselsDataviews,
-  selectWorkspaceStatus,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getFlagById } from 'utils/flags'
 import { formatInfoField } from 'utils/info'
+import { selectVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -90,15 +88,18 @@ function Search() {
         if (promiseRef.current) {
           promiseRef.current.abort()
         }
-
-        promiseRef.current = dispatch(
-          fetchVesselSearchThunk({
-            query: debouncedQuery,
-            filters: searchFilters,
-            datasets: sources,
-            offset,
-          })
-        )
+        // To ensure the pending action isn't overwritted by the abort above
+        // and we miss the loading intermediate state
+        setTimeout(() => {
+          promiseRef.current = dispatch(
+            fetchVesselSearchThunk({
+              query: debouncedQuery,
+              filters: searchFilters,
+              datasets: sources,
+              offset,
+            })
+          )
+        }, 1)
       }
     },
     [debouncedQuery, dispatch, searchDatasets, searchFilters]
@@ -157,9 +158,7 @@ function Search() {
         trackDatasetId: selection.trackDatasetId as string,
         infoDatasetId: selection.dataset.id,
       })
-      batch(() => {
-        upsertDataviewInstance(vesselDataviewInstance)
-      })
+      upsertDataviewInstance(vesselDataviewInstance)
     }
   }
 
@@ -215,12 +214,16 @@ function Search() {
                 disabled={!searchAllowed}
                 className={styles.input}
                 type="search"
-                loading={searchStatus === AsyncReducerStatus.Loading}
+                loading={
+                  searchStatus === AsyncReducerStatus.Loading ||
+                  searchStatus === AsyncReducerStatus.Aborted
+                }
                 placeholder={t('search.placeholder', 'Type to search vessels')}
               />
               {activeSearchOption === 'advanced' && <SearchFilters className={styles.filters} />}
             </div>
-            {searchStatus === AsyncReducerStatus.Loading &&
+            {(searchStatus === AsyncReducerStatus.Loading ||
+              searchStatus === AsyncReducerStatus.Aborted) &&
             searchPagination.loading === false ? null : searchAllowed ? (
               <Fragment>
                 <ul {...getMenuProps()} className={styles.searchResults}>
