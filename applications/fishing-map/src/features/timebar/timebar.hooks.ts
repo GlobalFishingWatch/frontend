@@ -6,7 +6,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveActivityDataviews,
   selectActiveVesselsDataviews,
-} from 'features/workspace/workspace.selectors'
+} from 'features/dataviews/dataviews.selectors'
 import { setStaticTime, selectHasChangedSettingsOnce, changeSettings } from './timebar.slice'
 
 export const useTimerangeConnect = () => {

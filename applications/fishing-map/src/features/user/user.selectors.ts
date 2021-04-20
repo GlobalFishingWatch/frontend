@@ -5,7 +5,7 @@ import { selectDatasets } from 'features/datasets/datasets.slice'
 import {
   selectContextAreasDataviews,
   selectEnvironmentalDataviews,
-} from 'features/workspace/workspace.selectors'
+} from 'features/dataviews/dataviews.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserStatus, selectUserLogged, GUEST_USER_TYPE, selectUserData } from './user.slice'

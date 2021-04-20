@@ -18,7 +18,9 @@ const Map = (): ReactElement => {
   })
 
   const { style } = useLayerComposer(generatorConfigs, globalConfig)
-
+  const mapOptions = {
+    customAttribution: '© Copyright Global Fishing Watch 2020',
+  }
   return (
     <div className={styles.container}>
       {style && (
@@ -29,9 +31,7 @@ const Map = (): ReactElement => {
           {...viewport}
           onViewportChange={setViewport}
           mapStyle={style}
-          mapOptions={{
-            customAttribution: '© Copyright Global Fishing Watch 2020',
-          }}
+          mapOptions={mapOptions}
         ></InteractiveMap>
       )}
     </div>

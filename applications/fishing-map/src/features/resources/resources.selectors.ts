@@ -1,11 +1,10 @@
 import { createSelector } from 'reselect'
-import { DatasetTypes, EndpointId, Resource } from '@globalfishingwatch/api-types'
+import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
+import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import { isGuestUser } from 'features/user/user.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import { ThinningLevels, THINNING_LEVELS } from 'data/config'
 
 export const selectDataviewsResourceQueries = createSelector(
   [selectDataviewInstancesResolved, isGuestUser, selectDebugOptions],
@@ -19,20 +18,6 @@ export const selectDataviewsResourceQueries = createSelector(
 
       let trackQuery: any = [] // initialized as empty array to be filtered by flatMap if not used
       if (dataview.config.visible === true) {
-        if (thinning) {
-          // Insert thinning queryParams depending on the user type
-          const thinningConfig = guestUser
-            ? THINNING_LEVELS[ThinningLevels.Aggressive]
-            : THINNING_LEVELS[ThinningLevels.Default]
-          const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
-            id,
-            value,
-          }))
-          dataview.datasetsConfig = dataview.datasetsConfig?.map((datasetConfig) => {
-            if (datasetConfig.endpoint !== EndpointId.Tracks) return datasetConfig
-            return { ...datasetConfig, query: [...(datasetConfig.query || []), ...thinningQuery] }
-          })
-        }
         const trackResource = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
         if (trackResource.url && trackResource.dataset && trackResource.datasetConfig) {
           trackQuery = {

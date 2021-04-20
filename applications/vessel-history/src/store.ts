@@ -2,7 +2,8 @@ import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/t
 import connectedRoutes, { routerQueryMiddleware } from 'routes/routes'
 import offlineVesselsReducer from 'features/vessels/offline-vessels.slice'
 import vesselsReducer from 'features/vessels/vessels.slice'
-import mapReducer from 'features/map/map.slice'
+import searchReducer from 'features/search/search.slice'
+import mapReducer from './features/map/map.slice'
 
 const {
   reducer: location,
@@ -13,6 +14,7 @@ const {
 const rootReducer = combineReducers({
   offlineVessels: offlineVesselsReducer,
   vessels: vesselsReducer,
+  search: searchReducer,
   location: location,
   map: mapReducer,
 })

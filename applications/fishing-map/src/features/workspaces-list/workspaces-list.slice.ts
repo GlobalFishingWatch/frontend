@@ -64,10 +64,20 @@ export const fetchDefaultWorkspaceThunk = createAsyncThunk<Workspace>(
 export type HighlightedWorkspace = {
   id: string
   name: string
+  name_es?: string
+  name_fr?: string
+  name_id?: string
   description: string
-  img?: string
+  description_es?: string
+  description_fr?: string
+  description_id?: string
   cta?: string
+  cta_es?: string
+  cta_fr?: string
+  cta_id?: string
+  img?: string
   userGroup?: string
+  visible?: 'visible' | 'hidden'
 }
 
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
@@ -83,7 +93,7 @@ export const fetchHighlightWorkspacesThunk = createAsyncThunk(
     })
 
     const workspacesIds = Object.values(workspaces).flatMap((workspaces) =>
-      workspaces.flatMap((w) => w.id || [])
+      workspaces.flatMap((w) => (w.visible === 'visible' && w.id) || [])
     )
 
     dispatch(fetchWorkspacesThunk({ ids: workspacesIds }))

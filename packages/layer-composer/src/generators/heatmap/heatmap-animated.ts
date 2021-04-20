@@ -15,7 +15,7 @@ import {
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
-import { TimeChunk, TimeChunks, getActiveTimeChunks, getDelta } from './util/time-chunks'
+import { TimeChunk, TimeChunks, getActiveTimeChunks, getDelta, Interval } from './util/time-chunks'
 import { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
@@ -50,13 +50,16 @@ const serializeBaseSourceParams = (params: any) => {
   return serialized
 }
 
+// This also defines the priority order, so remember to keep it ascendent
+export const DEFAULT_HEATMAP_INTERVALS: Interval[] = ['hour', 'day', '10days']
+
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   mode: HeatmapAnimatedMode.Compare,
   tilesetsStart: '2012-01-01T00:00:00.000Z',
   tilesetsEnd: new Date().toISOString(),
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
-  interval: 'auto',
+  interval: DEFAULT_HEATMAP_INTERVALS,
   aggregationOperation: AggregationOperation.Sum,
   breaksMultiplier: VALUE_MULTIPLIER,
 }
@@ -70,7 +73,10 @@ class HeatmapAnimatedGenerator {
         `Heatmap generator must specify start, end and sublayers parameters in ${config}`
       )
     }
-    const datasets = config.sublayers.map((sublayer) => sublayer.datasets.join(','))
+    const datasets = config.sublayers.map((sublayer) => {
+      const sublayerDatasets = [...sublayer.datasets]
+      return sublayerDatasets.sort((a, b) => a.localeCompare(b)).join(',')
+    })
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
     const visible = getSubLayersVisible(config.sublayers)
 
@@ -96,7 +102,7 @@ class HeatmapAnimatedGenerator {
         geomType,
         delta,
         quantizeOffset: timeChunk.quantizeOffset,
-        interval: timeChunks.interval as string,
+        interval: timeChunks.interval,
         filters,
         datasets,
         aggregationOperation: config.aggregationOperation,
@@ -154,8 +160,8 @@ class HeatmapAnimatedGenerator {
       ...DEFAULT_CONFIG,
       ...config,
     }
-    // console.log(finalConfig)
-    const timeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
+
+    const timeChunks: TimeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
       finalConfig.id,
       finalConfig.staticStart || finalConfig.start,
       finalConfig.staticEnd || finalConfig.end,

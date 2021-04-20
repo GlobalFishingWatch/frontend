@@ -1,5 +1,35 @@
 # @globalfishingwatch/layer-composer
 
+## 5.2.0
+
+### Minor Changes
+
+- bf2d09a1: remove uniqueFeatureInteraction for heatmapAnimated
+
+## 5.1.2
+
+### Patch Changes
+
+- af994916: Sort datasets to improve chance of hitting cache
+
+## 5.1.1
+
+### Patch Changes
+
+- 80907c1f: fixes latest commit
+
+## 5.1.0
+
+### Minor Changes
+
+- 87a54e62: auto detect intervals by dataset configuration
+
+## 5.0.1
+
+### Patch Changes
+
+- bb4978cd: fix blob mode
+
 ## 5.0.0
 
 ### Major Changes
