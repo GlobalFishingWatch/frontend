@@ -5,7 +5,7 @@
   "dependencies": {
     "@globalfishingwatch/cra-template": "1.6.1",
     "@globalfishingwatch/fourwings-aggregate": "3.0.0",
-    "@globalfishingwatch/ui-components": "2.18.4",
+    "@globalfishingwatch/layer-composer": "5.2.1",
     "d3-geom": "^0.0.0",
     "d3-quadtree": "^2.0.0",
     "d3-scale": "^3.3.0",
