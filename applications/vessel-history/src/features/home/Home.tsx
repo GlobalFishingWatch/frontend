@@ -1,20 +1,17 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
 import { useTranslation } from 'react-i18next'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
-import GFWAPI from '@globalfishingwatch/api-client'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
-import { VesselSearch } from '@globalfishingwatch/api-types'
-import { BASE_DATASET } from 'data/constants'
+import { RESULTS_PER_PAGE } from 'data/constants'
 import {
-  getLastQuery,
   getOffset,
   getTotalResults,
   getVesselsFound,
+  isSearching,
   setOffset,
-  setVesselSearch,
 } from 'features/search/search.slice'
 import { logoutUserThunk } from 'features/user/user.slice'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
@@ -35,51 +32,12 @@ interface LoaderProps {
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const [searching, setSearching] = useState(false)
-  const lastQuery = useSelector(getLastQuery)
+  const searching = useSelector(isSearching)
   const vessels = useSelector(getVesselsFound)
   const query = useSelector(selectQueryParam('q'))
   const offset = useSelector(getOffset)
   const totalResults = useSelector(getTotalResults)
   const { dispatchQueryParams } = useLocationConnect()
-
-  const minimumCharacters = 3
-  const resultsPerRequest = 5
-
-  const fetchData = useCallback(
-    async (query: string, offset: number) => {
-      dispatch(setOffset(offset))
-      setSearching(true)
-      console.log(offset)
-      GFWAPI.fetch<any>(
-        `/v1/vessels/search?datasets=${encodeURIComponent(
-          BASE_DATASET
-        )}&limit=${resultsPerRequest}&offset=${offset}&query=${encodeURIComponent(query)}`
-      )
-        .then((json: any) => {
-          const resultVessels: Array<VesselSearch> = json.entries
-          setSearching(false)
-          dispatch(
-            setVesselSearch({
-              vessels: offset > 0 ? [...vessels, ...resultVessels] : resultVessels,
-              query,
-              offset: json.offset,
-              total: json.total,
-            })
-          )
-        })
-        .catch((error) => {
-          setSearching(false)
-        })
-    },
-    [dispatch, vessels]
-  )
-
-  useEffect(() => {
-    if (query?.length >= minimumCharacters && query !== lastQuery) {
-      fetchData(query, 0)
-    }
-  }, [query, fetchData, lastQuery])
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ q: e.target.value })
@@ -146,7 +104,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
               )}
               {totalResults && !searching && vessels.length < totalResults && (
                 <div className={styles.listFooter}>
-                  <Button onClick={() => fetchData(query, offset + resultsPerRequest)}>
+                  <Button onClick={() => dispatch(setOffset(offset + RESULTS_PER_PAGE))}>
                     {t('search.loadMore', 'LOAD MORE')}
                   </Button>
                 </div>
