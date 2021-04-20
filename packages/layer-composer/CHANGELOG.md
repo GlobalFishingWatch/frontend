@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 5.2.0
+
+### Minor Changes
+
+- bf2d09a1: remove uniqueFeatureInteraction for heatmapAnimated
+
 ## 5.1.2
 
 ### Patch Changes
