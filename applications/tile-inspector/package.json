@@ -1,12 +1,12 @@
 {
-  "name": "tile-inspector",
-  "version": "0.1.1",
+  "name": "@globalfishingwatchapp/tile-inspector",
+  "version": "0.1.2",
   "private": true,
   "dependencies": {
     "@globalfishingwatch/api-client": "^1.6.8",
-    "@globalfishingwatch/fourwings-aggregate": "3.0.0",
-    "@globalfishingwatch/layer-composer": "5.2.2",
-    "@globalfishingwatch/ui-components": "2.18.7",
+    "@globalfishingwatch/fourwings-aggregate": "3.1.0",
+    "@globalfishingwatch/layer-composer": "5.2.3",
+    "@globalfishingwatch/ui-components": "2.18.8",
     "d3-geom": "^0.0.0",
     "d3-quadtree": "^2.0.0",
     "d3-scale": "^3.3.0",

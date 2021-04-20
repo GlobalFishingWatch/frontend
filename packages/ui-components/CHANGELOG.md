@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.18.8
+
+### Patch Changes
+
+- @globalfishingwatch/layer-composer@5.2.3
+
 ## 2.18.7
 
 ### Patch Changes

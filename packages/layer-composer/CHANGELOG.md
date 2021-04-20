@@ -1,5 +1,12 @@
 # @globalfishingwatch/layer-composer
 
+## 5.2.3
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/fourwings-aggregate@3.1.0
+
 ## 5.2.2
 
 ### Patch Changes
