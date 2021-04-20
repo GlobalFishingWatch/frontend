@@ -51,7 +51,6 @@ export default function gridded(
             generatorType: Type.HeatmapAnimated,
             generatorId: config.id,
             interactive: true,
-            uniqueFeatureInteraction: true,
           },
         })
         chunkLayers.push({
