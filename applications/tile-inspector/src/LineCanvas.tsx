@@ -61,8 +61,8 @@ const LineCanvas = ({
     })
     const factory = quadtree(
       points as any,
-      (d) => (d as any).x,
-      (d) => (d as any).y
+      (d: any) => d.x,
+      (d: any) => d.y
     )
 
     quadRef.current = factory
