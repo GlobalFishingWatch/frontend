@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/linting",
-  "version": "1.5.4",
+  "version": "1.6.0",
   "description": "linting config ready to be used in every gfw frontend project",
   "keywords": [
     "eslint",
