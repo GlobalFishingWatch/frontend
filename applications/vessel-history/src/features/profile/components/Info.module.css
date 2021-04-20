@@ -51,19 +51,17 @@
   display: flex;
   justify-content: center;
 }
-.readyButton {
+.readyForOffline {
+  font: var(--font-S);
+  line-height: var(--size-M);
+  text-align: center;
+  vertical-align: middle;
   flex: 1;
   text-transform: uppercase;
   color: var(--color-primary-green) !important;
   background-color: var(--color-terthiary-green) !important;
 }
 
-.readyButton:focus:not(:disabled),
-.readyButton:active:not(:disabled),
-.readyButton:hover:not(:disabled) {
-  color: var(--color-primary-green) !important;
-  background-color: var(--color-primary-green-border) !important;
-}
 .remove {
   margin-left: var(--space-XS);
   background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary)) !important;

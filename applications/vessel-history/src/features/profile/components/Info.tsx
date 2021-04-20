@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { Button, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, IconButton, Tag } from '@globalfishingwatch/ui-components'
 import { VesselWithHistory } from 'types'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
@@ -159,20 +159,17 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         <div className={styles.actions}>
           {vessel && offlineVessel && (
             <Fragment>
-              <Button
-                className={styles.readyButton}
-                type="secondary"
-                disabled={loading}
-                onClick={() => onDeleteClick(offlineVessel)}
-              >
+              <div className={styles.readyForOffline}>
                 {t('vessel.readyForOfflineView', 'READY FOR OFFLINE VIEW')}
-              </Button>
+              </div>
               <IconButton
                 size="default"
                 icon="delete"
                 type="warning"
                 className={cx(styles.defaultIcon, styles.remove)}
                 loading={loading}
+                tooltip={t('vessel.remove', 'Remove')}
+                tooltipPlacement={'top'}
                 onClick={() => onDeleteClick(offlineVessel)}
               />
             </Fragment>
