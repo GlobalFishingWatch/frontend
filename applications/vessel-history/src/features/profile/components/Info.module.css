@@ -58,8 +58,8 @@
   vertical-align: middle;
   flex: 1;
   text-transform: uppercase;
-  color: var(--color-primary-green) !important;
-  background-color: var(--color-terthiary-green) !important;
+  color: var(--color-primary-green);
+  background-color: var(--color-terthiary-green);
 }
 
 .remove {
