@@ -14,7 +14,7 @@ import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
 import { NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies'
 import { BackgroundSyncPlugin } from 'workbox-background-sync'
-import { API_GATEWAY } from 'data/constants'
+import { API_GATEWAY, LANDMASS_OFFLINE_GEOJSON } from 'data/constants'
 
 declare const self: ServiceWorkerGlobalScope
 
@@ -66,7 +66,7 @@ self.addEventListener('message', (event) => {
 // Any other custom service worker logic can go here.
 
 // Precache GeoJson for offline use
-precacheAndRoute([{ url: '/data/ne_10m_admin_0_countries_gj.geojson' }])
+precacheAndRoute([{ url: LANDMASS_OFFLINE_GEOJSON }])
 
 // Cache all requests to /public folder like /icons and manifest.jsonm
 registerRoute(

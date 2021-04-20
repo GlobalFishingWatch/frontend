@@ -8,6 +8,7 @@ import {
 import { FillLayer } from '@globalfishingwatch/mapbox-gl'
 import { ContextLayer } from 'types'
 import { AppState } from 'types/redux.types'
+import { LANDMASS_OFFLINE_GEOJSON } from './constants'
 
 export const MAP_BACKGROUND_COLOR = '#052555'
 export const DEFAULT_LANDMASS_COLOR = '#274877'
@@ -30,7 +31,7 @@ export const DEFAULT_DATAVIEWS: GeneratorConfig[] = [
     sources: [
       {
         type: 'geojson',
-        data: '/data/ne_10m_admin_0_countries_gj.geojson',
+        data: LANDMASS_OFFLINE_GEOJSON,
       },
     ],
     layers: [
