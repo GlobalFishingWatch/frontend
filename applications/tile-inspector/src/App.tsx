@@ -3,9 +3,17 @@ import { LineChart, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { DateTime } from 'luxon'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import { CELL_END_INDEX, CELL_NUM_INDEX, CELL_START_INDEX, CELL_VALUES_START_INDEX, FEATURE_CELLS_START_INDEX, FEATURE_COL_INDEX, FEATURE_ROW_INDEX } from '@globalfishingwatch/fourwings-aggregate/'
-import { Interval, CONFIG_BY_INTERVAL } from '@globalfishingwatch/layer-composer/dist'
-import decodePBF from  './decodePbf'
+import {
+  CELL_END_INDEX,
+  CELL_NUM_INDEX,
+  CELL_START_INDEX,
+  CELL_VALUES_START_INDEX,
+  FEATURE_CELLS_START_INDEX,
+  FEATURE_COL_INDEX,
+  FEATURE_ROW_INDEX,
+} from '@globalfishingwatch/fourwings-aggregate'
+import { Interval, CONFIG_BY_INTERVAL } from '@globalfishingwatch/layer-composer'
+import decodePBF from './decodePbf'
 import LineCanvas from './LineCanvas'
 import './App.css'
 
@@ -26,11 +34,11 @@ type CellsWrapper = {
 }
 
 export type Cell = {
-  rawCell: number[],
-  values: number[],
-  timeseries: { frame: number, value: number }[],
-  cellNum: number,
-  startFrame: number,
+  rawCell: number[]
+  values: number[]
+  timeseries: { frame: number; value: number }[]
+  cellNum: number
+  startFrame: number
   endFrame: number
 }
 
@@ -66,7 +74,7 @@ const getCellArrays = (intArray: number[], sublayerCount = 1): CellsWrapper => {
       // eslint-disable-next-line
       const timeseries = values.map((v, i) => ({
         value: v,
-        frame: i + startFrame
+        frame: i + startFrame,
       }))
       cells.push({
         rawCell: original,
@@ -74,7 +82,7 @@ const getCellArrays = (intArray: number[], sublayerCount = 1): CellsWrapper => {
         timeseries,
         cellNum,
         startFrame,
-        endFrame
+        endFrame,
       })
       if (startFrame < domainX[0]) domainX[0] = startFrame
       if (endFrame > domainX[1]) domainX[1] = endFrame
@@ -85,7 +93,7 @@ const getCellArrays = (intArray: number[], sublayerCount = 1): CellsWrapper => {
   return {
     domainX,
     domainY,
-    cells
+    cells,
   }
 }
 
@@ -107,9 +115,9 @@ function App(): React.ReactElement {
 
   const [meta, setMeta] = useState<Meta | null>(null)
   const [cells, setCells] = useState<CellsWrapper>({
-    domainX: [0,1],
-    domainY: [0,1],
-    cells: []
+    domainX: [0, 1],
+    domainY: [0, 1],
+    cells: [],
   })
   const [currentPt, setCurrentPt] = useState(null)
 
@@ -126,17 +134,20 @@ function App(): React.ReactElement {
           cols: intArray[FEATURE_COL_INDEX],
           domainX: cells.domainX,
           domainY: cells.domainY,
-          interval
+          interval,
         })
         setCells(cells)
-    })
+      })
   }, [tileURL, numSublayers])
 
-  const dateTickFormatter = useCallback((value: any, index: number) => {
-    if (!meta?.interval) return '??'
-    const getDate = CONFIG_BY_INTERVAL[meta.interval].getDate
-    return DateTime.fromJSDate(getDate(value)).toLocaleString(DateTime.DATE_SHORT)
-  }, [meta])
+  const dateTickFormatter = useCallback(
+    (value: any, index: number) => {
+      if (!meta?.interval) return '??'
+      const getDate = CONFIG_BY_INTERVAL[meta.interval].getDate
+      return DateTime.fromJSDate(getDate(value)).toLocaleString(DateTime.DATE_SHORT)
+    },
+    [meta]
+  )
 
   const onLineCanvasClick = useCallback((pt: any) => {
     setCurrentPt(pt)
@@ -157,35 +168,60 @@ function App(): React.ReactElement {
         onChange={(e) => setNumSublayers(parseInt(e.target.value))}
       />
       <Button onClick={loadTile}>Load tile</Button>
-      {meta && <ul>
-        <li>rows: {meta.rows}</li>
-        <li>cols: {meta.cols}</li>
-        <li>domainX: {meta.domainX.toString()}</li>
-        <li>domainY: {meta.domainY.toString()}</li>
-        <li>interval: {meta.interval}</li>
-      </ul>}
+      {meta && (
+        <ul>
+          <li>rows: {meta.rows}</li>
+          <li>cols: {meta.cols}</li>
+          <li>domainX: {meta.domainX.toString()}</li>
+          <li>domainY: {meta.domainY.toString()}</li>
+          <li>interval: {meta.interval}</li>
+        </ul>
+      )}
 
-<div>
+      <div>Clicked: {currentPt && (currentPt as any).cellNum}</div>
 
-      Clicked: {currentPt && (currentPt as any).cellNum}
-</div>
-      
-      <div style={{ position: 'relative' }} >
-        <LineChart width={W+RECHART_PADDING.left+RECHART_PADDING.right} height={H+RECHART_PADDING.top+RECHART_PADDING.bottom} data={cells.cells}>
+      <div style={{ position: 'relative' }}>
+        <LineChart
+          width={W + RECHART_PADDING.left + RECHART_PADDING.right}
+          height={H + RECHART_PADDING.top + RECHART_PADDING.bottom}
+          data={cells.cells}
+        >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="frame" type="number"  domain={cells.domainX} tickCount={999} allowDecimals={false} minTickGap={0} />
-          {meta && meta.interval && 
-            <XAxis dataKey="frame" type="number"  domain={cells.domainX} tickCount={999} allowDecimals={false} minTickGap={0} xAxisId='plop' axisLine={false} tickFormatter={dateTickFormatter}  />
-            }
-          <YAxis dataKey="value" type="number"  domain={cells.domainY} reversed={true} />
+          <XAxis
+            dataKey="frame"
+            type="number"
+            domain={cells.domainX}
+            tickCount={999}
+            allowDecimals={false}
+            minTickGap={0}
+          />
+          {meta && meta.interval && (
+            <XAxis
+              dataKey="frame"
+              type="number"
+              domain={cells.domainX}
+              tickCount={999}
+              allowDecimals={false}
+              minTickGap={0}
+              xAxisId="plop"
+              axisLine={false}
+              tickFormatter={dateTickFormatter}
+            />
+          )}
+          <YAxis dataKey="value" type="number" domain={cells.domainY} reversed={true} />
         </LineChart>
 
-        <div style={{ position: 'absolute', top: RECHART_PADDING.top, left: RECHART_PADDING.left}}>
-
-        <LineCanvas width={W} height={H} data={cells.cells} domainX={cells.domainX} domainY={cells.domainY} onClick={onLineCanvasClick} />
+        <div style={{ position: 'absolute', top: RECHART_PADDING.top, left: RECHART_PADDING.left }}>
+          <LineCanvas
+            width={W}
+            height={H}
+            data={cells.cells}
+            domainX={cells.domainX}
+            domainY={cells.domainY}
+            onClick={onLineCanvasClick}
+          />
         </div>
       </div>
-
     </Fragment>
   )
 }

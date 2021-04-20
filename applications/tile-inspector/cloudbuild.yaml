@@ -6,8 +6,6 @@ steps:
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA',
         '--cache=true',
         '--build-arg',
-        'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
-        '--build-arg',
         'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
         '--build-arg',
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
@@ -35,8 +33,6 @@ steps:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA',
         '--cache=true',
-        '--build-arg',
-        'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY',
         '--build-arg',
         'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
         '--build-arg',

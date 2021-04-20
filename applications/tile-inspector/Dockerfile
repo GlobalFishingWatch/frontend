@@ -6,13 +6,11 @@ RUN mkdir -p /app
 WORKDIR /app
 
 # Config build args
-ARG REACT_APP_GOOGLE_TAG_MANAGER_KEY=
 ARG REACT_APP_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
 
 # Install build dependencies
 COPY ./package.json /app
 ENV NODE_ENV=development
-ENV REACT_APP_GOOGLE_TAG_MANAGER_KEY=${REACT_APP_GOOGLE_TAG_MANAGER_KEY}
 ENV REACT_APP_API_GATEWAY=${REACT_APP_API_GATEWAY}
 RUN npm install --unsafe-perm
 
