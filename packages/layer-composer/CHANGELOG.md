@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 5.2.2
+
+### Patch Changes
+
+- 8d08df8a: export CONFIG_BY_INTERVAL
+
 ## 5.2.1
 
 ### Patch Changes
