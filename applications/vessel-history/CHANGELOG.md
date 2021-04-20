@@ -1,5 +1,14 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.24
+
+### Patch Changes
+
+- Updated dependencies [c0dc95ec]
+  - @globalfishingwatch/layer-composer@5.2.1
+  - @globalfishingwatch/react-hooks@6.0.6
+  - @globalfishingwatch/ui-components@2.18.6
+
 ## 0.0.23
 
 ### Patch Changes

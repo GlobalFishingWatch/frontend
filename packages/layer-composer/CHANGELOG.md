@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 5.2.1
+
+### Patch Changes
+
+- c0dc95ec: restore uniqueFeatureInteraction with layer id checking
+
 ## 5.2.0
 
 ### Minor Changes
