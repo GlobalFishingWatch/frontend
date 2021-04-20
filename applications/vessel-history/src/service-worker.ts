@@ -14,6 +14,7 @@ import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
 import { NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies'
 import { BackgroundSyncPlugin } from 'workbox-background-sync'
+import { API_GATEWAY } from 'data/constants'
 
 declare const self: ServiceWorkerGlobalScope
 
@@ -114,10 +115,7 @@ registerRoute(
 
 // Cache API Auth Calls
 registerRoute(
-  ({ url }) =>
-    process.env.REACT_APP_API_GATEWAY &&
-    url.origin === process.env.REACT_APP_API_GATEWAY &&
-    url.pathname.match(/^\/auth\//),
+  ({ url }) => API_GATEWAY && url.origin === API_GATEWAY && url.pathname.match(/^\/auth\//),
   new NetworkFirst({
     cacheName: 'auth',
     plugins: [
@@ -133,10 +131,7 @@ registerRoute(
 
 // Cache API Calls
 registerRoute(
-  ({ url }) =>
-    process.env.REACT_APP_API_GATEWAY &&
-    url.origin === process.env.REACT_APP_API_GATEWAY &&
-    !url.pathname.match(/^\/auth\//),
+  ({ url }) => API_GATEWAY && url.origin === API_GATEWAY && !url.pathname.match(/^\/auth\//),
   new NetworkFirst({
     cacheName: 'api',
     plugins: [
