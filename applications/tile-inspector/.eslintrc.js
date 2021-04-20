@@ -1,7 +1,5 @@
-const config = require('@globalfishingwatch/linting/typescript')
-
 module.exports = {
-  ...config,
+  ...require('@globalfishingwatch/linting/typescript'),
   // TODO couldn't disable prettier so I copied & pasted this from the linting package
   extends: [
     'plugin:@typescript-eslint/recommended',

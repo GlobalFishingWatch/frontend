@@ -38,6 +38,7 @@
     ],
     "ignorePatterns": "public/"
   },
+  "prettier": "@globalfishingwatch/linting/prettier",
   "browserslist": {
     "production": [
       ">0.2%",
