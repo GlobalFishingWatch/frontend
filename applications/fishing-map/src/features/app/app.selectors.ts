@@ -2,7 +2,6 @@ import { createSelector } from '@reduxjs/toolkit'
 import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
 import {
-  selectDataviewInstancesMerged,
   selectWorkspace,
   selectWorkspaceState,
   selectWorkspaceTimeRange,
@@ -22,6 +21,7 @@ import {
   WorkspaceState,
   WorkspaceStateProperty,
 } from 'types'
+import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.selectors'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],

@@ -1,5 +1,17 @@
 # @globalfishingwatch/layer-composer
 
+## 5.2.1
+
+### Patch Changes
+
+- c0dc95ec: restore uniqueFeatureInteraction with layer id checking
+
+## 5.2.0
+
+### Minor Changes
+
+- bf2d09a1: remove uniqueFeatureInteraction for heatmapAnimated
+
 ## 5.1.2
 
 ### Patch Changes

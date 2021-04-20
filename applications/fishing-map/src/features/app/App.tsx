@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
 import { useSelector } from 'react-redux'
+// import RecoilizeDebugger from 'recoilize'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
@@ -121,6 +122,7 @@ function App(): React.ReactElement {
   return (
     /* Value as null as there is no needed to set a default value but Typescript complains */
     <MapContext.Provider value={null as any}>
+      {/* <RecoilizeDebugger /> */}
       <Suspense fallback={null}>
         <SplitView
           isOpen={sidebarOpen}

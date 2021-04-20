@@ -7,7 +7,7 @@ import {
   selectContextAreasDataviews,
   selectEnvironmentalDataviews,
   selectActivityDataviews,
-} from 'features/workspace/workspace.selectors'
+} from 'features/dataviews/dataviews.selectors'
 import {
   getContextDataviewInstance,
   getEnvironmentDataviewInstance,

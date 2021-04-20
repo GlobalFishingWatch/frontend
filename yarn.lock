@@ -5368,6 +5368,11 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
+"@types/recoilize@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@types/recoilize/-/recoilize-0.8.0.tgz#7351f7a048bcef9c712f39d05696ce7fd2a414fe"
+  integrity sha512-h4Rm8J/8XH1wZIZC5gOeN9EDJWBhK2sLEs5voSHyZKB5cynIDbohuYS6rEdv2kNPrwoYQyt7D3yeXI9ODvZDlw==
+
 "@types/redux-first-router-link@^1.4.4":
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/@types/redux-first-router-link/-/redux-first-router-link-1.4.4.tgz#d9ee41404f730416a1b9f4ad3d14b448d9c0f58f"
@@ -19742,6 +19747,11 @@ recoil@^0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/recoil/-/recoil-0.1.3.tgz#3926b29ece8748967a0ff6c10516aca436cf4ae8"
   integrity sha512-/Rm7wN7jqCjhtFK1TgtK0V115SUXNu6d4QYvwxWNLydib0QChSmpB6U8CaHoRPS0MFWtAIsD/IFjpbfk/OYm7Q==
+
+recoilize@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/recoilize/-/recoilize-2.0.1.tgz#8c81ba83a7da8c8c881b861b87d1a1fd00a25a8c"
+  integrity sha512-C/JML0SxXDbJ74iNF46GQGrc9g3CRd2+rmNBcpwkCc1L9OSSYki4ipbUPCJL6I8Bbw5slKXY809RWrF0nwhRoQ==
 
 recursive-readdir@2.2.2:
   version "2.2.2"

@@ -8,10 +8,8 @@ import {
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import {
-  selectDataviewInstancesResolved,
-  selectWorkspaceError,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceError } from 'features/workspace/workspace.selectors'
+import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import { selectResources, ResourcesState } from 'features/resources/resources.slice'
 import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
@@ -72,15 +70,17 @@ const getGeneratorsConfig = ({
 
   const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
 
-  const rulersGeneratorConfig = {
-    type: Generators.Type.Rulers,
-    id: 'rulers',
-    data: rulers,
+  // Avoid entering rulers sources and layers when no active rules
+  if (rulers?.length) {
+    const rulersGeneratorConfig = {
+      type: Generators.Type.Rulers,
+      id: 'rulers',
+      data: rulers,
+    }
+    return [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
   }
 
-  const generators = [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
-
-  return generators
+  return generatorsConfig.reverse()
 }
 
 const selectMapGeneratorsConfig = createSelector(
