@@ -29,7 +29,7 @@
     "classnames": "^2.2.6",
     "countryflag": "^4.0.1",
     "dayjs": "^1.8.36",
-    "dexie": "^3.1.0-alpha.9",
+    "dexie": "^3.0.3",
     "dexie-react-hooks": "^1.0.6",
     "file-saver": "^2.0.2",
     "html2canvas": "^1.0.0-rc.7",
