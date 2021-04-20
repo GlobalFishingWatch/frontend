@@ -3,7 +3,7 @@ steps:
   - name: 'gcr.io/kaniko-project/executor:latest'
     args:
       [
-        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA',
+        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/tile-inspector:$COMMIT_SHA',
         '--cache=true',
         '--build-arg',
         'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
@@ -14,16 +14,16 @@ steps:
         '--target',
         'build',
         '-f',
-        './applications/[replace-with-repo-name]/Dockerfile',
+        './applications/tile-inspector/Dockerfile',
         '-c',
-        './applications/[replace-with-repo-name]',
+        './applications/tile-inspector',
       ]
 
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'run',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/tile-inspector:$COMMIT_SHA',
         'npm',
         'test',
       ]
@@ -31,7 +31,7 @@ steps:
   - name: 'gcr.io/kaniko-project/executor:latest'
     args:
       [
-        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA',
+        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/tile-inspector:$COMMIT_SHA',
         '--cache=true',
         '--build-arg',
         'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY',
@@ -42,9 +42,9 @@ steps:
         '--target',
         'production',
         '-f',
-        './applications/[replace-with-repo-name]/Dockerfile',
+        './applications/tile-inspector/Dockerfile',
         '-c',
-        './applications/[replace-with-repo-name]',
+        './applications/tile-inspector',
       ]
 
   # Deploy to the appropriate environment
@@ -58,7 +58,7 @@ steps:
         '--project',
         '$_RUN_PROJECT',
         '--image',
-        'gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/tile-inspector:$COMMIT_SHA',
         '--region',
         '$_RUN_REGION',
         '--platform',
@@ -69,6 +69,6 @@ steps:
       ]
 
 images:
-  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/[replace-with-repo-name]:$COMMIT_SHA'
+  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/tile-inspector:$COMMIT_SHA'
 
 timeout: 1800s
