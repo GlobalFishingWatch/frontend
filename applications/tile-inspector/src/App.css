@@ -1,0 +1,11 @@
+:global(#root) {
+  height: 100%;
+}
+
+.recharts-cartesian-axis-tick {
+  font-size: 9px !important;
+}
+
+.xAxis:nth-child(2) {
+  color: red;
+}

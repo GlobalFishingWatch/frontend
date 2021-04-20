@@ -324,6 +324,8 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
       indexInCell = 0
       const original = intArray.slice(startIndex, endIndex)
       const padded = new Array(delta * sublayerCount).fill(padValue)
+
+      // TODO Are we sure we want to use FEATURE_CELLS_START_INDEX, not CELL_START_INDEX??
       original[FEATURE_CELLS_START_INDEX] = endFrame + delta
       const merged = original.concat(padded)
       featureIntArrays.push(merged)
