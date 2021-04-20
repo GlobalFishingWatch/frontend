@@ -33,7 +33,7 @@ const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
 // Buffer size relative to active time delta
 const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2
 
-const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
+export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   hour: {
     isValid: (duration: Duration): boolean => {
       return duration.as('days') < 5
