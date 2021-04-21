@@ -3,6 +3,7 @@ import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { TimeChunks } from '../util/time-chunks'
 import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer from '../util/get-base-layer'
+import { getLayerId, getSourceId } from '../util'
 
 const baseBlobIntensity = 0.5
 const baseBlobRadius = 30
@@ -46,7 +47,7 @@ const blob = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChun
 
   const paint = { ...BASE_PAINT }
   paint['heatmap-weight'] = exprPick as any
-  const hStops = [0, 0.005, 0.01, 0.1, 0.2, 1]
+  const hStops = [0, 0.002, 0.004, 0.01, 0.05, 0.1, 0.2, 1]
   const heatmapColorRamp = zip(hStops, colorRamp).flat()
   paint['heatmap-color'] = [
     'interpolate',
@@ -61,13 +62,15 @@ const blob = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChun
   paint['heatmap-intensity'][6] = maxIntensity
 
   const chunkMainLayer = getBaseLayer(config)
-  chunkMainLayer.id = activeChunk.id
-  chunkMainLayer.source = activeChunk.id
+  // TODO proper layer/src ids
+  chunkMainLayer.id = getLayerId(config.id, activeChunk)
+  chunkMainLayer.source = getSourceId(config.id, activeChunk)
   chunkMainLayer.paint = paint as any
 
   if (!chunkMainLayer.metadata) return []
   chunkMainLayer.metadata.legend = getLegends(config, timeChunks.deltaInDays)
 
+  console.log(chunkMainLayer)
   return [chunkMainLayer]
 }
 

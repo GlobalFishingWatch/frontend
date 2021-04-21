@@ -28,6 +28,7 @@
 
 .moreValues {
   display: block;
+  cursor: pointer;
 }
 
 .saveButton {

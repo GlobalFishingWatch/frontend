@@ -28,3 +28,11 @@
 .sectionButtons > *:not(:last-child) {
   margin-right: 1rem;
 }
+
+.sectionButtons > .lastBtn {
+  display: inline-block;
+}
+
+.sectionButtons > *:not(:last-child).lastBtn {
+  margin-right: 0;
+}

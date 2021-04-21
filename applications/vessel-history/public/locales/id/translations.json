@@ -1,0 +1,63 @@
+{
+  "common": {
+    "activity": "activity",
+    "commingSoon": "coming soon!",
+    "currentTimeRange": "current time range",
+    "from": "from",
+    "info": "info",
+    "map": "map",
+    "offlineAccess": "offline access",
+    "since": "since",
+    "timeRange": "time range",
+    "to": "to",
+    "historyFor": "history for",
+    "previous": "previous"
+  },
+  "search": {
+    "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
+    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign",
+    "notAllowed": "Search not allowed",
+    "loadMore": "Load More",
+    "noMore": "No more results"
+  },
+  "selects": {
+    "allSelected": "All",
+    "selected": "selected"
+  },
+  "vessel": {
+    "authorization_plural": "authorizations",
+    "callsign": "callsign",
+    "flag": "flag",
+    "historyLabelByField": "{{label}} history for {{vesselName}}",
+    "imo": "imo",
+    "mmsi": "mmsi",
+    "noAuthorizations": "No authorizations found",
+    "plusPreviousValuesByField": "+{{quantity}} previous {{fieldLabel}}",
+    "saveForOfflineView": "save vessel for offline view",
+    "source": "source",
+    "transmission_plural": "transmissions",
+    "savedOn": "saved on",
+    "previousNames": "previous names",
+    "builtYear": "built year",
+    "depth": "depth",
+    "gearType": "gear type",
+    "grossTonnage": "gross tonnage",
+    "length": "length",
+    "name": "name",
+    "operator": "operator",
+    "owner": "owner",
+    "type": "type",
+    "grossTonnage_plural": "gross tonnages",
+    "builtYear_plural": "built years",
+    "callsign_plural": "callsigns",
+    "depth_plural": "depths",
+    "flag_plural": "flags",
+    "gearType_plural": "gear types",
+    "length_plural": "lengths",
+    "mmsi_plural": "mmsis",
+    "name_plural": "names",
+    "operator_plural": "operators",
+    "owner_plural": "owners",
+    "type_plural": "types"
+  }
+}

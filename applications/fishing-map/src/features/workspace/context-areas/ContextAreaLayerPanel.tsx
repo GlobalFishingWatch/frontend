@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, DatasetStatus } from '@globalfishingwatch/api-types'
 import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
@@ -12,7 +11,6 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import { selectUserId } from 'features/user/user.selectors'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import DatasetNotFound from '../shared/DatasetNotFound'
 
@@ -23,7 +21,6 @@ type LayerPanelProps = {
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const userId = useSelector(selectUserId)
   const [colorOpen, setColorOpen] = useState(false)
 
   const layerActive = dataview?.config?.visible ?? true
@@ -59,14 +56,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
-  const isCustomUserLayer = dataset?.ownerId === userId
+  const isUserLayer = dataset?.ownerType === 'user'
 
   useAutoRefreshImportingDataset(dataset)
 
   if (!dataset) {
     return <DatasetNotFound dataview={dataview} />
   }
-  const title = isCustomUserLayer
+  const title = isUserLayer
     ? dataset?.name || dataset?.id
     : t(`datasets:${dataset?.id}.name` as any)
   const TitleComponent = (
@@ -77,7 +74,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   const datasetImporting = dataset.status === DatasetStatus.Importing
   const datasetError = dataset.status === DatasetStatus.Error
-  let infoTooltip = isCustomUserLayer
+  let infoTooltip = isUserLayer
     ? dataset?.description
     : t(`datasets:${dataset?.id}.description` as any)
   if (datasetImporting) {
@@ -144,7 +141,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
               />
             </ExpandedContainer>
           )}
-          {isCustomUserLayer && (
+          {isUserLayer && (
             <IconButton
               icon="delete"
               size="small"

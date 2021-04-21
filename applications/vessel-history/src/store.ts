@@ -7,6 +7,7 @@ import {
 } from '@reduxjs/toolkit'
 import connectedRoutes, { routerQueryMiddleware } from 'routes/routes'
 import vesselsReducer from 'features/vessels/vessels.slice'
+import searchReducer from 'features/search/search.slice'
 
 const {
   reducer: location,
@@ -16,6 +17,7 @@ const {
 
 const rootReducer = combineReducers({
   vessels: vesselsReducer,
+  search: searchReducer,
   location: location,
 })
 

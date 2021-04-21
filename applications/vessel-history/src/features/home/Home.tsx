@@ -1,13 +1,18 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
 import { useTranslation } from 'react-i18next'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
-import GFWAPI from '@globalfishingwatch/api-client'
-import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
-import { VesselSearch } from '@globalfishingwatch/api-types'
-import { BASE_DATASET } from 'data/constants'
+import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
+import { RESULTS_PER_PAGE } from 'data/constants'
+import {
+  getOffset,
+  getTotalResults,
+  getVesselsFound,
+  isSearching,
+  setOffset,
+} from 'features/search/search.slice'
 import { logoutUserThunk } from 'features/user/user.slice'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
@@ -27,37 +32,12 @@ interface LoaderProps {
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const [searching, setSearching] = useState(false)
-  const [vessels, setVessels] = useState<Array<VesselSearch>>([])
+  const searching = useSelector(isSearching)
+  const vessels = useSelector(getVesselsFound)
   const query = useSelector(selectQueryParam('q'))
+  const offset = useSelector(getOffset)
+  const totalResults = useSelector(getTotalResults)
   const { dispatchQueryParams } = useLocationConnect()
-
-  const minimumCharacters = 3
-  const resultsPerRequest = 25
-
-  const fetchData = useCallback(async (query: string) => {
-    setSearching(true)
-    GFWAPI.fetch<any>(
-      `/v1/vessels/search?datasets=${encodeURIComponent(
-        BASE_DATASET
-      )}&limit=${resultsPerRequest}&offset=${0}&query=${encodeURIComponent(query)}`
-    )
-      .then((json: any) => {
-        const resultVessels: Array<VesselSearch> = json.entries
-        setSearching(false)
-        setVessels(resultVessels)
-      })
-      .catch((error) => {
-        setSearching(false)
-      })
-  }, [])
-
-  useEffect(() => {
-    setVessels([])
-    if (query?.length >= minimumCharacters) {
-      fetchData(query)
-    }
-  }, [query, fetchData])
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ q: e.target.value })
@@ -109,21 +89,39 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         )}
         {query && (
           <Fragment>
-            <ul className={styles.searchResults}>
-              {searching && (
+            <div className={styles.searchResults}>
+              {searching && offset === 0 && (
                 <SearchPlaceholder>
                   <Spinner className={styles.loader}></Spinner>
                 </SearchPlaceholder>
               )}
-              {!searching && vessels.length > 0 && (
+              {(!searching || offset > 0) && vessels.length > 0 && (
                 <div className={styles.offlineVessels}>
                   {vessels.map((vessel, index) => (
                     <VesselListItem key={index} vessel={vessel} />
                   ))}
                 </div>
               )}
+              {totalResults && !searching && vessels.length < totalResults && (
+                <div className={styles.listFooter}>
+                  <Button onClick={() => dispatch(setOffset(offset + RESULTS_PER_PAGE))}>
+                    {t('search.loadMore', 'LOAD MORE')}
+                  </Button>
+                </div>
+              )}
+              {searching && offset > 0 && (
+                <div className={styles.listFooter}>
+                  <Spinner className={styles.loader}></Spinner>
+                </div>
+              )}
+              {totalResults &&
+                !searching &&
+                vessels.length >= totalResults &&
+                vessels.length !== 0 && (
+                  <p className={styles.listFooter}>{t('search.noMore', 'NO MORE RESULTS')}</p>
+                )}
               {!searching && vessels.length === 0 && <SearchNoResultsState />}
-            </ul>
+            </div>
           </Fragment>
         )}
       </div>

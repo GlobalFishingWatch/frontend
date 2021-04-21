@@ -2,6 +2,8 @@ import { FeatureCollection } from 'geojson'
 import { StringUnitLength } from 'luxon'
 import { AnySourceData, Layer } from '@globalfishingwatch/mapbox-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
+import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { Interval } from './heatmap/util/time-chunks'
 
 export enum Type {
   Background = 'BACKGROUND',
@@ -38,6 +40,7 @@ export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | nul
 export interface GeneratorLegend {
   label?: string
   unit?: string
+  color?: string
 }
 
 export interface GeneratorMetadata {
@@ -271,6 +274,12 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   interactive?: boolean
   staticStart?: string
   staticEnd?: string
+  /**
+   * Defines a fixed or a supported list of intervals in an Array format
+   */
+  interval?: Interval | Interval[]
+  aggregationOperation?: AggregationOperation
+  breaksMultiplier?: number
 }
 
 export type AnyGeneratorConfig =
@@ -340,6 +349,8 @@ export interface HeatmapAnimatedGeneratorSublayer {
   filter?: string
   colorRamp: ColorRampsIds
   visible?: boolean
+  breaks?: number[]
+  legend?: GeneratorLegend
 }
 
 // ---- Heatmap Generator color ramps types
@@ -367,4 +378,6 @@ export enum HeatmapAnimatedMode {
   Blob = 'blob',
   // Represents value in 3D stacked bars. Works with 0 - n sublayers
   Extruded = 'extruded',
+  // Just show raw value ffor 1 sublayer
+  Single = 'single',
 }

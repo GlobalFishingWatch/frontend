@@ -6,8 +6,8 @@ import { AsyncError } from 'utils/async-slice'
 import {
   selectContextAreasDataviews,
   selectEnvironmentalDataviews,
-  selectTemporalgridDataviews,
-} from 'features/workspace/workspace.selectors'
+  selectActivityDataviews,
+} from 'features/dataviews/dataviews.selectors'
 import {
   getContextDataviewInstance,
   getEnvironmentDataviewInstance,
@@ -36,7 +36,7 @@ const DATASET_REFRESH_TIMEOUT = 10000
 
 export const useNewDatasetConnect = () => {
   const contextDataviews = useSelector(selectContextAreasDataviews)
-  const activityDataviews = useSelector(selectTemporalgridDataviews)
+  const activityDataviews = useSelector(selectActivityDataviews)
   const enviromentalDataviews = useSelector(selectEnvironmentalDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 

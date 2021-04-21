@@ -1,5 +1,7 @@
 # Dataviews in use
 
+Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/swagger#/DataviewsAPI)
+
 ## Context
 
 | Layer name                   | Dev id | Pro id |

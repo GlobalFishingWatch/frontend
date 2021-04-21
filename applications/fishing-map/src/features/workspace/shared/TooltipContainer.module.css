@@ -4,6 +4,24 @@
   box-shadow: var(--box-shadow);
 }
 
+.listContainer {
+  padding: var(--space-S);
+  padding-right: 0;
+}
+
+.listContainer > li {
+  padding: var(--space-XS);
+  padding-right: var(--space-M);
+}
+
+.listContainer > li:not(:last-of-type) {
+  border-bottom: var(--border);
+}
+
+.listContainer > li > button {
+  cursor: pointer;
+}
+
 .tooltipArrow,
 .tooltipArrow::before {
   position: absolute;

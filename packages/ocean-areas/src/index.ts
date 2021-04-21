@@ -15,6 +15,7 @@ export enum OceanAreaLocale {
   en = 'en',
   es = 'es',
   fr = 'fr',
+  id = 'id',
 }
 
 export type OceanAreaLocaleKey = keyof typeof sourceLocales

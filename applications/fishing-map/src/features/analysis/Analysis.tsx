@@ -1,38 +1,32 @@
-import React, { Fragment, useEffect, useRef, useMemo, useState } from 'react'
+import React, { useEffect, useRef, useMemo, useState, Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import union from '@turf/union'
-import bbox from '@turf/bbox'
 import { Feature, Polygon } from 'geojson'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
+import bbox from '@turf/bbox'
 import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
-import {
-  getRelatedDatasetByType,
-  selectActiveTemporalgridDataviews,
-  selectHasAnalysisLayersVisible,
-  selectWorkspaceStatus,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectAnalysisQuery } from 'features/app/app.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
-import { useMapFeatures } from 'features/map/map-features.hooks'
+import { useFeatures } from 'features/map/map-features.hooks'
 import { Bbox } from 'types'
-import { getFlagsByIds } from 'utils/flags'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import i18n from 'features/i18n/i18n'
-import { isFishingDataview, isPresenceDataview } from 'features/workspace/heatmaps/heatmaps.utils'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import AnalysisLayerPanel from './AnalysisLayerPanel'
+import {
+  selectActiveActivityDataviews,
+  selectHasAnalysisLayersVisible,
+} from 'features/dataviews/dataviews.selectors'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
@@ -47,68 +41,10 @@ import {
   selectReportStatus,
   setAnalysisGeometry,
 } from './analysis.slice'
-import AnalysisGraphWrapper from './AnalysisGraphWrapper'
+import AnalysisItem from './AnalysisItem'
+import { useFilteredTimeSeries } from './analysis.hooks'
 
-const sortStrings = (a: string, b: string) => a.localeCompare(b)
-
-const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
-  const commonProperties: string[] = []
-  let title = ''
-
-  if (dataviews?.length > 0) {
-    const firstDataviewDatasets = dataviews[0].config?.datasets
-      ?.slice()
-      .sort(sortStrings)
-      .join(', ')
-    const firstDataviewFlags = dataviews[0].config?.filters?.flag
-      ?.slice()
-      .sort(sortStrings)
-      .join(', ')
-
-    if (dataviews?.every((dataview) => dataview.name === dataviews[0].name)) {
-      commonProperties.push('dataset')
-      const fishingDataview = isFishingDataview(dataviews[0])
-      const presenceDataview = isPresenceDataview(dataviews[0])
-      if (fishingDataview || presenceDataview) {
-        title = presenceDataview
-          ? i18n.t(`common.presence`, 'Fishing presence')
-          : i18n.t(`common.apparentFishing`, 'Apparent Fishing Effort')
-      } else {
-        title += dataviews[0].name
-      }
-    }
-
-    if (
-      dataviews?.every((dataview) => {
-        const datasets = dataview.config?.datasets?.slice().sort(sortStrings).join(', ')
-        return datasets === firstDataviewDatasets
-      })
-    ) {
-      commonProperties.push('source')
-      const datasets = dataviews[0].datasets?.filter((d) =>
-        dataviews[0].config?.datasets?.includes(d.id)
-      )
-      title += ` (${datasets?.map((d) => d.name).join(', ')})`
-    }
-
-    if (
-      dataviews?.every((dataview) => {
-        const flags = dataview.config?.filters?.flag?.slice().sort(sortStrings).join(', ')
-
-        return flags === firstDataviewFlags
-      })
-    ) {
-      commonProperties.push('flag')
-      const flags = getFlagsByIds(dataviews[0].config?.filters?.flag || [])
-      if (firstDataviewFlags)
-        title += ` ${i18n.t('analysis.vesselFlags', 'by vessels flagged by')} ${flags
-          ?.map((d) => d.label)
-          .join(', ')}`
-    }
-  }
-
-  return { title, commonProperties }
-}
+// const { filterByPolygon } = createAnalysisWorker<typeof AnalysisWorker>()
 
 function Analysis() {
   const { t } = useTranslation()
@@ -121,7 +57,7 @@ function Analysis() {
   const { dispatchQueryParams } = useLocationConnect()
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
   const staticTime = useSelector(selectStaticTime)
-  const dataviews = useSelector(selectActiveTemporalgridDataviews) || []
+  const dataviews = useSelector(selectActiveActivityDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
   const analysisBounds = useSelector(selectAnalysisBounds)
 
@@ -129,23 +65,18 @@ function Analysis() {
   const reportStatus = useSelector(selectReportStatus)
   const userData = useSelector(selectUserData)
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
-  const { areaId, sourceId } = analysisQuery
+  const { areaId, sourceId: contextSourceId } = analysisQuery
+  const contextSourcesIds = useMemo(() => [contextSourceId], [contextSourceId])
   const filter = useMemo(() => ['==', 'gfw_id', parseInt(areaId)], [areaId])
-  const { features: contextAreaFeatures, sourceLoaded } = useMapFeatures({
-    sourceId,
-    filter,
-    cacheKey: areaId,
-  })
 
-  const { title, commonProperties } = getCommonProperties(dataviews)
-  let description = analysisAreaName
-    ? `${title} ${t('common.in', 'in')} ${analysisAreaName}`
-    : title
-  description = `${description} ${t('common.dateRange', {
-    start: formatI18nDate(staticTime.start),
-    end: formatI18nDate(staticTime.end),
-    defaultValue: 'between {{start}} and {{end}}',
-  })}.`
+  const {
+    sourcesFeatures: contextAreaFeaturesArr,
+    haveSourcesLoaded: contextAreaSourceLoaded,
+  } = useFeatures({
+    sourcesIds: contextSourcesIds,
+    sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+    filter,
+  })
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
@@ -157,20 +88,21 @@ function Analysis() {
   }, [start, end])
 
   useEffect(() => {
-    if (sourceLoaded) {
+    if (contextAreaSourceLoaded) {
       cleanFeatureState('highlight')
       const featureState = {
-        source: sourceId,
+        source: contextSourceId,
         sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
         id: areaId,
       }
       updateFeatureState([featureState], 'highlight')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areaId, sourceId, sourceLoaded])
+  }, [areaId, contextSourceId, contextAreaSourceLoaded])
 
   useEffect(() => {
-    if (sourceLoaded) {
+    if (contextAreaSourceLoaded) {
+      const contextAreaFeatures = contextAreaFeaturesArr?.[0]
       if (contextAreaFeatures && contextAreaFeatures.length > 0) {
         const contextAreaFeatureMerged = contextAreaFeatures.reduce(
           (acc, { geometry, properties }) => {
@@ -207,7 +139,7 @@ function Analysis() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contextAreaFeatures, dispatch, sourceLoaded])
+  }, [contextAreaFeaturesArr, dispatch, contextAreaSourceLoaded])
 
   useEffect(() => {
     if (analysisBounds) {
@@ -258,6 +190,12 @@ function Analysis() {
     }
   }, [])
 
+  const {
+    generatingTimeseries,
+    haveSourcesLoaded,
+    sourcesTimeseriesFiltered,
+  } = useFilteredTimeSeries()
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -275,38 +213,33 @@ function Analysis() {
           />
         </div>
       </div>
-      {workspaceStatus !== AsyncReducerStatus.Finished ? (
+      {workspaceStatus !== AsyncReducerStatus.Finished ||
+      !contextAreaSourceLoaded ||
+      !analysisGeometry ||
+      !haveSourcesLoaded ||
+      generatingTimeseries ? (
         <Spinner className={styles.spinnerFull} />
       ) : (
         <div className={styles.contentContainer}>
           <div className={styles.content}>
-            {hasAnalysisLayers ? (
+            {sourcesTimeseriesFiltered && sourcesTimeseriesFiltered?.length ? (
               <Fragment>
-                <h3 className={styles.commonTitle}>{description}</h3>
-                <div className={styles.layerPanels}>
-                  {dataviews?.map((dataview, index) => (
-                    <AnalysisLayerPanel
-                      key={dataview.id}
-                      dataview={dataview}
-                      index={index}
-                      hiddenProperties={commonProperties}
+                {sourcesTimeseriesFiltered.map((sourceTimeseriesFiltered, index) => {
+                  return (
+                    <AnalysisItem
+                      hasAnalysisLayers={hasAnalysisLayers}
+                      analysisAreaName={analysisAreaName}
+                      key={index}
+                      graphData={sourceTimeseriesFiltered}
                     />
-                  ))}
-                </div>
+                  )
+                })}
               </Fragment>
             ) : (
-              <p className={styles.placeholder}>
-                {t('analysis.empty', 'Your selected datasets will appear here')}
-              </p>
+              <p className={styles.emptyDataPlaceholder}>No data available</p>
             )}
-            <div className={styles.graph}>
-              {!sourceLoaded || !analysisGeometry ? (
-                <Spinner className={styles.spinner} />
-              ) : (
-                <AnalysisGraphWrapper />
-              )}
-            </div>
-            {sourceLoaded && analysisGeometry && (
+
+            {contextAreaSourceLoaded && analysisGeometry && (
               <p className={styles.placeholder}>
                 {t(
                   'analysis.disclaimer',
