@@ -72,9 +72,6 @@ function App(): React.ReactElement {
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 
   useEffect(() => {
-    console.log(userData)
-    console.log(window.gtag)
-    console.log(GOOGLE_UNIVERSAL_ANALYTICS_ID)
     if (userData && GOOGLE_UNIVERSAL_ANALYTICS_ID && window.gtag) {
       window.gtag('config', GOOGLE_UNIVERSAL_ANALYTICS_ID, {
         user_id: userData.id,
