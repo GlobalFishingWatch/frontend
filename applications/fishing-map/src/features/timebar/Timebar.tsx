@@ -124,6 +124,7 @@ const TimebarWrapper = () => {
 
   // Using an effect to ensure the blur loading is removed once the component has been rendered
   const [loading, setLoading] = useState(haveSourcesLoaded)
+
   useEffect(() => {
     setLoading(haveSourcesLoaded)
   }, [haveSourcesLoaded])
