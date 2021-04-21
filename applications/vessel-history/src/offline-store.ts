@@ -7,11 +7,14 @@ export class VesselHistoryIdb extends Dexie {
   constructor() {
     super('VesselHistory')
 
+    // Need to set an initial empty version so that the schemaDiff error does not appear
+    this.version(1)
+
     //
     // Define tables and indexes
     // (Here's where the implicit table props are dynamically created)
     //
-    this.version(1).stores({
+    this.version(2).stores({
       vessels: [
         '++profileId',
         'id',
