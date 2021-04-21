@@ -24,6 +24,7 @@ export enum EndpointId {
   FourwingsLegend = '4wings-legend',
   FourwingsInteraction = '4wings-interaction',
   UserContextTiles = 'user-context-tiles',
+  UserTracks = 'user-tracks',
 }
 
 export interface Endpoint {

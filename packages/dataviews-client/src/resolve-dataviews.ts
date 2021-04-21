@@ -77,12 +77,14 @@ export const resolveDataviewDatasetResource = (
   const dataset = isType
     ? dataview.datasets?.find((dataset) => dataset.type === typeOrId)
     : dataview.datasets?.find((dataset) => dataset.id === typeOrId)
+
   if (!dataset) return {}
   const datasetConfig = dataview?.datasetsConfig?.find(
     (datasetConfig) => datasetConfig.datasetId === dataset.id
   )
   if (!datasetConfig) return {}
   const url = resolveEndpoint(dataset, datasetConfig)
+
   if (!url) return {}
 
   return { dataset, datasetConfig, url }

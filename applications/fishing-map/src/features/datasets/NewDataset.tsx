@@ -22,7 +22,12 @@ import { capitalize } from 'utils/shared'
 import { SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { readBlobAs } from 'utils/files'
-import { useDatasetsAPI, useDatasetModalConnect, useNewDatasetConnect } from './datasets.hook'
+import {
+  useDatasetsAPI,
+  useDatasetModalConnect,
+  useNewDatasetConnect,
+  DatasetGeometryType,
+} from './datasets.hook'
 import styles from './NewDataset.module.css'
 import DatasetFile from './DatasetFile'
 import DatasetConfig from './DatasetConfig'
@@ -36,8 +41,6 @@ export type DatasetMetadata = {
   guessedFields?: Record<string, string>
 }
 
-export type DatasetGeometryType = 'polygons' | 'tracks' | 'points'
-
 export type CSV = Record<string, any>[]
 
 function NewDataset(): React.ReactElement {
@@ -45,7 +48,9 @@ function NewDataset(): React.ReactElement {
   const { datasetModal, datasetCategory, dispatchDatasetModal } = useDatasetModalConnect()
   const { addNewDatasetToWorkspace } = useNewDatasetConnect()
 
-  const [datasetGeometryType, setDatasetGeometryType] = useState<DatasetGeometryType | null>(null)
+  const [datasetGeometryType, setDatasetGeometryType] = useState<DatasetGeometryType | null>(
+    'tracks'
+  )
   const [datasetGeometryTypeConfirmed, setDatasetGeometryTypeConfirmed] = useState<boolean>(false)
   const [file, setFile] = useState<File | undefined>()
   const [fileData, setFileData] = useState<FeatureCollectionWithFilename | CSV | undefined>()
@@ -131,6 +136,7 @@ function NewDataset(): React.ReactElement {
           name: metadataName,
           type: DatasetTypes.UserTracks,
           category: datasetCategory,
+          // eslint-disable-next-line
           fields: meta!.fields,
           guessedFields: guessedColumns,
           configuration: {
@@ -139,11 +145,10 @@ function NewDataset(): React.ReactElement {
             timestamp: guessedColumns.timestamp,
           },
         } as any) // TODO
-        console.log(data, meta, guessedColumns)
       }
       setLoading(false)
     },
-    [t, datasetCategory]
+    [t, datasetCategory, metadata]
   )
 
   const onDatasetFieldChange = (field: DatasetMetadata | AnyDatasetConfiguration) => {
@@ -214,8 +219,6 @@ function NewDataset(): React.ReactElement {
               ...(metadata.configuration as any),
             })
             const geoJSON = segmentsToGeoJSON(segments)
-            console.log(geoJSON)
-            // const blob = new Blob([JSON.stringify(geoJSON)], { type: 'application/json' })
             userTrackGeoJSONFile = new File([JSON.stringify(geoJSON)], 'file.json', {
               type: 'application/json',
             })
@@ -240,7 +243,8 @@ function NewDataset(): React.ReactElement {
         )
       } else if (payload) {
         if (locationType === 'HOME' || locationType === 'WORKSPACE') {
-          addNewDatasetToWorkspace(payload)
+          const dataset = { ...payload }
+          addNewDatasetToWorkspace(dataset, datasetGeometryType)
         }
         onClose()
       }
@@ -287,12 +291,14 @@ function NewDataset(): React.ReactElement {
           </Fragment>
         ) : (
           <Fragment>
+            {/* eslint-disable-next-line  */}
             <DatasetFile onFileLoaded={onFileLoaded} type={datasetGeometryType!} />
             {fileData && metadata && (
               <DatasetConfig
                 fileData={fileData as FeatureCollectionWithFilename}
                 metadata={metadata}
                 datasetCategory={datasetCategory}
+                // eslint-disable-next-line
                 datasetGeometryType={datasetGeometryType!}
                 onDatasetFieldChange={onDatasetFieldChange}
               />

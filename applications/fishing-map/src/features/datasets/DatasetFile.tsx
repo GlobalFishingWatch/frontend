@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone'
 import cx from 'classnames'
 import { ReactComponent as FilesSupportedPolygonsIcon } from 'assets/icons/files-supported-polygons.svg'
 import { ReactComponent as FilesSupportedTracksIcon } from 'assets/icons/files-supported-tracks.svg'
-import { DatasetGeometryType } from './NewDataset'
+import { DatasetGeometryType } from './datasets.hook'
 import styles from './NewDataset.module.css'
 
 interface DatasetFileProps {
@@ -21,7 +21,6 @@ const ACCEPT_FILES_BY_TYPE: Record<DatasetGeometryType, string> = {
 
 const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className = '' }) => {
   const accept = ACCEPT_FILES_BY_TYPE[type]
-  console.log(accept)
   const { t } = useTranslation()
   const onDropAccepted = useCallback(
     (files) => {

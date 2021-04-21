@@ -77,7 +77,10 @@ export function getGeneratorConfig(
         generator.highlightedTime = highlightedTime
       }
       // Try to retrieve resource if it exists
-      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+      const { url: trackUrl } = resolveDataviewDatasetResource(
+        dataview,
+        generator.isUserTrack ? DatasetTypes.UserTracks : DatasetTypes.Tracks
+      )
       if (trackUrl && resources?.[trackUrl]) {
         const resource = resources?.[trackUrl] as Resource<TrackResourceData>
         generator.data = resource.data

@@ -10,8 +10,9 @@ import {
 } from '@globalfishingwatch/api-types'
 import Select from '@globalfishingwatch/ui-components/dist/select'
 import { capitalize } from 'utils/shared'
-import { DatasetGeometryType, DatasetMetadata } from './NewDataset'
+import { DatasetMetadata } from './NewDataset'
 import styles from './NewDataset.module.css'
+import { DatasetGeometryType } from './datasets.hook'
 
 const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection) => {
   if (!geojson?.features) return []
@@ -67,7 +68,6 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
     label: capitalize(property),
   }))
 
-  console.log(fields, metadata.guessedFields)
   const { min, max } =
     (metadata.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange || {}
   return (
@@ -85,20 +85,6 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
         className={styles.input}
         onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
       />
-      {/*
-      <Select
-        label={t('dataset.timeField', 'Time field')}
-        options={[]}
-        selectedOption={undefined}
-        onSelect={(selected) => {
-          console.log('selected', selected)
-        }}
-        onRemove={(removed) => {
-          console.log('removed', removed)
-        }}
-        direction="top"
-      /> */}
-
       {datasetCategory === DatasetCategory.Context && (
         <Select
           label={t('dataset.featuresNameField', 'Features name field')}
