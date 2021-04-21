@@ -108,7 +108,7 @@ export const useDatasetsAPI = () => {
       if (fetchDatasetByIdThunk.fulfilled.match(action)) {
         return { payload: action.payload }
       } else {
-        return { error: action.payload }
+        return { error: action.payload as AsyncError }
       }
     },
     [dispatch]
@@ -120,7 +120,7 @@ export const useDatasetsAPI = () => {
       if (createDatasetThunk.fulfilled.match(action)) {
         return { payload: action.payload }
       } else {
-        return { error: action.payload }
+        return { error: action.payload as AsyncError }
       }
     },
     [dispatch]
@@ -134,7 +134,7 @@ export const useDatasetsAPI = () => {
       if (updateDatasetThunk.fulfilled.match(action)) {
         return { payload: action.payload }
       } else {
-        return { error: action.payload }
+        return { error: action.payload as AsyncError }
       }
     },
     [dispatch]
@@ -168,7 +168,7 @@ export const useCarrierLatestConnect = () => {
     if (fetchLastestCarrierDatasetThunk.fulfilled.match(action)) {
       return { payload: action.payload }
     } else {
-      return { error: action.payload }
+      return { error: action.payload as AsyncError }
     }
   }, [dispatch])
 
