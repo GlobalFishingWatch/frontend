@@ -4,11 +4,13 @@ import db from 'offline-store'
 import { RootState } from 'store'
 import { OfflineVessel } from 'types/vessel'
 import { AsyncError, asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
-
-export type OfflineVesselState = AsyncReducer<OfflineVessel>
+export interface OfflineVesselState extends AsyncReducer<OfflineVessel> {
+  profileIds: (string | undefined)[]
+}
 
 const initialState: OfflineVesselState = {
   ...asyncInitialState,
+  profileIds: [],
 }
 
 export type CreateOfflineVessel = { vessel: OfflineVessel }
@@ -56,8 +58,8 @@ export const fetchOfflineVesselsThunk = createAsyncThunk<
     rejectValue: AsyncError
   }
 >('offlineVessels/fetch', async (profileIds: string[], { rejectWithValue, getState }) => {
-  const existingIds = selectIds(getState() as RootState) as string[]
-  const uniqIds = Array.from(new Set([...profileIds, ...existingIds]))
+  const existingIds = selectProfileIds(getState() as RootState) as string[]
+  const uniqIds = Array.from(new Set([...profileIds, ...existingIds])).filter((id) => !!id)
   try {
     if (uniqIds.length) {
       return await db.vessels.where('profileId').anyOfIgnoreCase(uniqIds).toArray()
@@ -122,7 +124,6 @@ const { slice: vesselsSlice, entityAdapter } = createAsyncSlice<OfflineVesselSta
 
 export const {
   selectById,
-  selectIds,
   selectAll,
   selectEntities,
   selectTotal,
@@ -135,4 +136,5 @@ export const selectOfflineVesselById = memoize((id: string) =>
 )
 
 export const selectOfflineVessels = (state: RootState) => state.offlineVessels.entities
+export const selectProfileIds = (state: RootState) => state.offlineVessels.profileIds
 export default vesselsSlice.reducer

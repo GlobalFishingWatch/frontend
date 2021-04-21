@@ -77,10 +77,14 @@ const Profile: React.FC = (props): React.ReactElement => {
     [vessel]
   )
 
+  const backLink = useMemo(() => {
+    return q ? { type: HOME, replaceQuery: true, query: { q } } : { type: HOME }
+  }, [q])
+
   return (
     <Fragment>
       <header className={styles.header}>
-        <Link to={{ type: HOME, replaceQuery: true, query: { q } }}>
+        <Link to={backLink}>
           <IconButton
             type="border"
             size="default"
