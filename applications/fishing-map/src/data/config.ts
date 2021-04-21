@@ -20,9 +20,9 @@ const end = new Date(
 ).toISOString()
 
 export const DEFAULT_VIEWPORT = {
-  latitude: 15,
-  longitude: 21,
-  zoom: 0,
+  latitude: 26,
+  longitude: 12,
+  zoom: 1,
 }
 export const DEFAULT_TIME_RANGE = {
   start: new Date(Date.UTC(2019, 0, 1)).toISOString(),
