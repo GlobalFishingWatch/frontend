@@ -62,13 +62,13 @@
   background-color: var(--color-terthiary-green);
 }
 
-.remove {
+.actions .remove {
   margin-left: var(--space-XS);
-  background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary)) !important;
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary));
 }
 
-.remove:focus:not(:disabled),
-.remove:active:not(:disabled),
-.remove:hover:not(:disabled) {
-  background-color: rgba(var(--danger-red-rgb), var(--opacity-border)) !important;
+.actions .remove:focus:not(:disabled),
+.actions .remove:active:not(:disabled),
+.actions .remove:hover:not(:disabled) {
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-border));
 }

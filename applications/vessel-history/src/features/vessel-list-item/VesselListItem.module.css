@@ -32,18 +32,13 @@
   margin-bottom: 15px;
 }
 
-.remove {
+.vesselItem .remove {
   float: right;
-  background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary)) !important;
-
-  /* margin-left: var(--space-XS); */
-
-  /* position: absolute;
-  right: 0; */
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary));
 }
 
-.remove:focus:not(:disabled),
-.remove:active:not(:disabled),
-.remove:hover:not(:disabled) {
-  background-color: rgba(var(--danger-red-rgb), var(--opacity-border)) !important;
+.vesselItem .remove:focus:not(:disabled),
+.vesselItem .remove:active:not(:disabled),
+.vesselItem .remove:hover:not(:disabled) {
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-border));
 }
