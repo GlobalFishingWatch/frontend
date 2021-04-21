@@ -10,21 +10,23 @@ import {
   selectWorkspaceError,
   selectWorkspace,
   selectWorkspaceCustomStatus,
+  selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGuestUser, isUserLogged } from 'features/user/user.selectors'
 import {
   selectLocationCategory,
+  selectLocationType,
   selectUrlViewport,
   selectWorkspaceId,
 } from 'routes/routes.selectors'
-import { HOME } from 'routes/routes'
+import { HOME, WORKSPACE } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { SUPPORT_EMAIL } from 'data/config'
-import { WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { selectDataviewsResourceQueries } from 'features/resources/resources.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
@@ -121,15 +123,20 @@ function Workspace() {
   const dispatch = useDispatch()
   const { setMapCoordinates } = useViewport()
   const searchQuery = useSelector(selectSearchQuery)
+  const locationType = useSelector(selectLocationType)
   const workspace = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
+  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const userLogged = useSelector(isUserLogged)
   const urlViewport = useSelector(selectUrlViewport)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
 
+  const isHomeLocation = locationType === HOME
+  const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
+  const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
   useEffect(() => {
     let action: any
     let actionResolved = false
@@ -143,7 +150,11 @@ function Workspace() {
       }
       actionResolved = true
     }
-    if (userLogged && workspaceCustomStatus !== AsyncReducerStatus.Loading) {
+    if (
+      userLogged &&
+      workspaceCustomStatus !== AsyncReducerStatus.Loading &&
+      (homeNeedsFetch || hasWorkspaceIdChanged)
+    ) {
       fetchWorkspace()
     }
     return () => {
@@ -152,7 +163,7 @@ function Workspace() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged])
+  }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
 
   useEffect(() => {
     if (resourceQueries) {
