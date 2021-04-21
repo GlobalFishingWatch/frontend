@@ -8,6 +8,7 @@ import I18nDate from 'features/i18n/i18nDate'
 import { selectQueryParam, selectVesselProfileId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import { fetchVesselByIdThunk, selectVesselById } from 'features/vessels/vessels.slice'
+import Map from 'features/map/Map'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 
@@ -44,7 +45,13 @@ const Profile: React.FC = (props): React.ReactElement => {
       {
         id: 'map',
         title: t('common.map', 'MAP').toLocaleUpperCase(),
-        content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
+        content: vessel ? (
+          <div className={styles.mapContainer}>
+            <Map />
+          </div>
+        ) : (
+          <Fragment />
+        ),
       },
     ],
     [t, vessel, lastPosition, lastPortVisit]

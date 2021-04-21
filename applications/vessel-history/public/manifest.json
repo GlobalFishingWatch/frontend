@@ -1,7 +1,7 @@
 {
-  "name": "GFW Fishing map",
-  "short_name": "GFW Fishing map",
-  "description": null,
+  "name": "GFW Vessel History",
+  "short_name": "GFW Vessel History",
+  "description": "Vessel History app description",
   "dir": "auto",
   "lang": "en-US",
   "display": "standalone",

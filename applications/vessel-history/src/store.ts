@@ -8,6 +8,7 @@ import {
 import connectedRoutes, { routerQueryMiddleware } from 'routes/routes'
 import vesselsReducer from 'features/vessels/vessels.slice'
 import searchReducer from 'features/search/search.slice'
+import mapReducer from './features/map/map.slice'
 
 const {
   reducer: location,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   vessels: vesselsReducer,
   search: searchReducer,
   location: location,
+  map: mapReducer,
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
