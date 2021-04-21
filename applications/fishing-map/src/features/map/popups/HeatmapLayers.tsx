@@ -5,7 +5,7 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getVesselLabel } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
@@ -71,7 +71,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
               </label>
             </div>
             {feature.vesselsInfo.vessels.map((vessel, i) => {
-              const vesselLabel = getVesselLabel(vessel)
+              const vesselLabel = getVesselLabel(vessel, true)
               return (
                 <button key={i} className={styles.vesselRow} onClick={() => onVesselClick(vessel)}>
                   <span className={styles.vesselName}>

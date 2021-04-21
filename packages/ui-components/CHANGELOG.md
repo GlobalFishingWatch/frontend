@@ -1,5 +1,101 @@
 # @globalfishingwatch/ui-components
 
+## 2.18.8
+
+### Patch Changes
+
+- @globalfishingwatch/layer-composer@5.2.3
+
+## 2.18.7
+
+### Patch Changes
+
+- Updated dependencies [8d08df8a]
+  - @globalfishingwatch/layer-composer@5.2.2
+
+## 2.18.6
+
+### Patch Changes
+
+- Updated dependencies [c0dc95ec]
+  - @globalfishingwatch/layer-composer@5.2.1
+
+## 2.18.5
+
+### Patch Changes
+
+- Updated dependencies [bf2d09a1]
+  - @globalfishingwatch/layer-composer@5.2.0
+
+## 2.18.4
+
+### Patch Changes
+
+- Updated dependencies [af994916]
+  - @globalfishingwatch/layer-composer@5.1.2
+
+## 2.18.3
+
+### Patch Changes
+
+- Updated dependencies [80907c1f]
+  - @globalfishingwatch/layer-composer@5.1.1
+
+## 2.18.2
+
+### Patch Changes
+
+- Updated dependencies [87a54e62]
+  - @globalfishingwatch/layer-composer@5.1.0
+
+## 2.18.1
+
+### Patch Changes
+
+- bb4978cd: fix blob mode
+- Updated dependencies [bb4978cd]
+  - @globalfishingwatch/layer-composer@5.0.1
+
+## 2.18.0
+
+### Minor Changes
+
+- fdad03d6: support aliases in multiselect
+
+## 2.17.4
+
+### Patch Changes
+
+- 8785580f: fix legend gridArea
+- Updated dependencies [358004cb]
+  - @globalfishingwatch/layer-composer@5.0.0
+
+## 2.17.3
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.2
+
+## 2.17.2
+
+### Patch Changes
+
+- e284ce5e: Fishing map/improve miniglobe performance
+
+## 2.17.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.1
+
+## 2.17.0
+
+### Minor Changes
+
+- 9af9dea7: include generatorId and Type in legendLayers
+
 ## 2.16.2
 
 ### Patch Changes

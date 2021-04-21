@@ -1,5 +1,114 @@
 # @globalfishingwatch/react-hooks
 
+## 6.0.8
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/fourwings-aggregate@3.1.0
+  - @globalfishingwatch/layer-composer@5.2.3
+  - @globalfishingwatch/ui-components@2.18.8
+
+## 6.0.7
+
+### Patch Changes
+
+- Updated dependencies [8d08df8a]
+  - @globalfishingwatch/layer-composer@5.2.2
+  - @globalfishingwatch/ui-components@2.18.7
+
+## 6.0.6
+
+### Patch Changes
+
+- Updated dependencies [c0dc95ec]
+  - @globalfishingwatch/layer-composer@5.2.1
+  - @globalfishingwatch/ui-components@2.18.6
+
+## 6.0.5
+
+### Patch Changes
+
+- Updated dependencies [bf2d09a1]
+  - @globalfishingwatch/layer-composer@5.2.0
+  - @globalfishingwatch/ui-components@2.18.5
+
+## 6.0.4
+
+### Patch Changes
+
+- Updated dependencies [af994916]
+  - @globalfishingwatch/layer-composer@5.1.2
+  - @globalfishingwatch/ui-components@2.18.4
+
+## 6.0.3
+
+### Patch Changes
+
+- Updated dependencies [80907c1f]
+  - @globalfishingwatch/dataviews-client@6.2.1
+  - @globalfishingwatch/layer-composer@5.1.1
+  - @globalfishingwatch/ui-components@2.18.3
+
+## 6.0.2
+
+### Patch Changes
+
+- Updated dependencies [87a54e62]
+  - @globalfishingwatch/dataviews-client@6.2.0
+  - @globalfishingwatch/layer-composer@5.1.0
+  - @globalfishingwatch/ui-components@2.18.2
+
+## 6.0.1
+
+### Patch Changes
+
+- Updated dependencies [bb4978cd]
+  - @globalfishingwatch/layer-composer@5.0.1
+  - @globalfishingwatch/ui-components@2.18.1
+
+## 6.0.0
+
+### Major Changes
+
+- 358004cb: Use client-side aggregation with env layers
+
+### Patch Changes
+
+- Updated dependencies [358004cb]
+- Updated dependencies [8785580f]
+  - @globalfishingwatch/fourwings-aggregate@3.0.0
+  - @globalfishingwatch/layer-composer@5.0.0
+  - @globalfishingwatch/dataviews-client@6.0.0
+  - @globalfishingwatch/ui-components@2.17.4
+
+## 5.3.2
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.2
+  - @globalfishingwatch/ui-components@2.17.3
+
+## 5.3.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.1
+  - @globalfishingwatch/ui-components@2.17.1
+
+## 5.3.0
+
+### Minor Changes
+
+- 9af9dea7: include generatorId and Type in legendLayers
+
+### Patch Changes
+
+- Updated dependencies [9af9dea7]
+  - @globalfishingwatch/ui-components@2.17.0
+
 ## 5.2.0
 
 ### Minor Changes

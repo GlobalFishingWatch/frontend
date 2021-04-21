@@ -1,5 +1,53 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.2.3
+
+### Patch Changes
+
+- e2c17324: fix crash when no dataset found
+
+## 6.2.2
+
+### Patch Changes
+
+- remove log
+
+## 6.2.1
+
+### Patch Changes
+
+- 80907c1f: fixes latest commit
+- Updated dependencies [80907c1f]
+  - @globalfishingwatch/layer-composer@5.1.1
+
+## 6.2.0
+
+### Minor Changes
+
+- 87a54e62: auto detect intervals by dataset configuration
+
+### Patch Changes
+
+- Updated dependencies [87a54e62]
+  - @globalfishingwatch/layer-composer@5.1.0
+
+## 6.1.0
+
+### Minor Changes
+
+- cbb694df: fix heatmap animated agrupation
+
+## 6.0.0
+
+### Major Changes
+
+- 358004cb: Use client-side aggregation with env layers
+
+### Patch Changes
+
+- Updated dependencies [358004cb]
+  - @globalfishingwatch/layer-composer@5.0.0
+
 ## 5.0.1
 
 ### Patch Changes

@@ -110,6 +110,7 @@ class HeatmapGenerator {
         metadata: {
           // TODO: support multiple legends by each datasets
           ...config.metadata,
+          uniqueFeatureInteraction: true,
           generatorId: config.id,
           legend: {
             ...config.metadata?.legend,

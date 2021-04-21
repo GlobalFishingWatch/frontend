@@ -8,7 +8,7 @@ Object {
   "depth": undefined,
   "firstTransmissionDate": "2013-05-14T03:31:40Z",
   "flag": "ITA",
-  "gearType": "trawlers",
+  "geartype": "trawlers",
   "grossTonnage": "51.000",
   "history": Object {
     "builtYear": Object {
@@ -36,7 +36,7 @@ Object {
       "byCount": Array [],
       "byDate": Array [],
     },
-    "gearType": Object {
+    "geartype": Object {
       "byCount": Array [],
       "byDate": Array [
         Object {

@@ -1,2 +1,2 @@
-export default ImmediateContext
-declare const ImmediateContext: any
+export default ImmediateContext;
+declare const ImmediateContext: any;

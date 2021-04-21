@@ -1,3 +1,4 @@
+import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 
@@ -19,9 +20,9 @@ const end = new Date(
 ).toISOString()
 
 export const DEFAULT_VIEWPORT = {
-  latitude: 15,
-  longitude: 21,
-  zoom: 0,
+  latitude: 26,
+  longitude: 12,
+  zoom: 1,
 }
 export const DEFAULT_TIME_RANGE = {
   start: new Date(Date.UTC(2019, 0, 1)).toISOString(),
@@ -136,4 +137,11 @@ export const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = [
     id: 'none',
     label: 'None',
   },
+]
+
+export const POPUP_CATEGORY_ORDER = [
+  DataviewCategory.Activity,
+  DataviewCategory.Events,
+  DataviewCategory.Environment,
+  DataviewCategory.Context,
 ]

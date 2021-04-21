@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 1.6.0
+
+### Minor Changes
+
+- 9bf13129: include missing dependency
+
 ## 1.5.4
 
 ### Patch Changes

@@ -7,17 +7,18 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { DEFAULT_WORKSPACE_KEY } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import useViewport from 'features/map/map-viewport.hooks'
+import { Locale } from 'types'
 import styles from './WorkspacesList.module.css'
 import {
   HighlightedWorkspaceMerged,
   selectCurrentHighlightedWorkspaces,
 } from './workspaces-list.selectors'
-import { selectHighlightedWorkspacesStatus } from './workspaces-list.slice'
+import { HighlightedWorkspace, selectHighlightedWorkspacesStatus } from './workspaces-list.slice'
 
 function WorkspacesList() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { setMapCoordinates } = useViewport()
   const locationCategory = useSelector(selectLocationCategory)
   const userFriendlyCategory = locationCategory.replace('-', ' ')
@@ -54,13 +55,24 @@ function WorkspacesList() {
       ) : (
         <ul>
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
-            const active = highlightedWorkspace?.id !== undefined
+            const { name, cta, description, img } = highlightedWorkspace
+            const i18nName = highlightedWorkspace[
+              `name_${i18n.language as Locale}` as keyof HighlightedWorkspace
+            ] as string
+            const i18nDescription = highlightedWorkspace[
+              `description_${i18n.language as Locale}` as keyof HighlightedWorkspace
+            ] as string
+            const i18nCta = highlightedWorkspace[
+              `cta_${i18n.language as Locale}` as keyof HighlightedWorkspace
+            ] as string
+            const active = highlightedWorkspace?.id !== undefined && highlightedWorkspace?.id !== ''
             const linkTo =
-              highlightedWorkspace.id === DEFAULT_WORKSPACE_KEY
+              highlightedWorkspace.id === DEFAULT_WORKSPACE_ID
                 ? {
                     type: HOME,
                     payload: {},
                     query: {},
+                    replaceQuery: true,
                   }
                 : {
                     type: WORKSPACE,
@@ -69,32 +81,41 @@ function WorkspacesList() {
                       workspaceId: highlightedWorkspace.id,
                     },
                     query: {},
+                    replaceQuery: true,
                   }
             return (
-              <li key={highlightedWorkspace.name}>
+              <li key={highlightedWorkspace.id || highlightedWorkspace.name}>
                 <div className={cx(styles.workspace, { [styles.disabled]: !active })}>
-                  <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
-                    <img
-                      className={styles.image}
-                      alt={highlightedWorkspace.name}
-                      src={highlightedWorkspace.img}
-                    />
-                  </Link>
-                  <div className={styles.info}>
+                  {active ? (
                     <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
-                      <h3 className={styles.title}>{highlightedWorkspace.name}</h3>
+                      <img className={styles.image} alt={name} src={img} />
                     </Link>
+                  ) : (
+                    <img className={styles.image} alt={name} src={img} />
+                  )}
+                  <div className={styles.info}>
+                    {active ? (
+                      <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
+                        <h3 className={styles.title}>{i18nName || name}</h3>
+                      </Link>
+                    ) : (
+                      <h3 className={styles.title}>{i18nName || name}</h3>
+                    )}
                     <p
                       className={styles.description}
-                      dangerouslySetInnerHTML={{ __html: highlightedWorkspace.description }}
+                      dangerouslySetInnerHTML={{
+                        __html: i18nDescription || description,
+                      }}
                     ></p>
-                    <Link
-                      to={linkTo}
-                      className={styles.link}
-                      onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                    >
-                      {highlightedWorkspace.cta}
-                    </Link>
+                    {active && (
+                      <Link
+                        to={linkTo}
+                        className={styles.link}
+                        onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                      >
+                        {i18nCta || cta}
+                      </Link>
+                    )}
                   </div>
                 </div>
               </li>

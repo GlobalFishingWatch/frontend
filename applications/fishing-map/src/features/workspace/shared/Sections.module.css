@@ -1,9 +1,14 @@
 .container {
-  padding: var(--space-XS) 0;
+  padding-top: var(--space-XS);
+  padding-bottom: var(--space-S);
+}
+
+.container ~ .container {
+  padding-top: var(--space-S);
 }
 
 .container:not(:last-of-type) {
-  border-bottom: var(--border);
+  border-bottom: var(--border-thick);
 }
 
 .header {
@@ -22,4 +27,12 @@
 
 .sectionButtons > *:not(:last-child) {
   margin-right: 1rem;
+}
+
+.sectionButtons > .lastBtn {
+  display: inline-block;
+}
+
+.sectionButtons > *:not(:last-child).lastBtn {
+  margin-right: 0;
 }

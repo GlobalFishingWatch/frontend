@@ -13,7 +13,7 @@ import { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 
 export const RESULTS_PER_PAGE = 20
 
@@ -144,7 +144,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       ]
 
       const queryFilters = queryFiltersFields
-        .filter(({ value }) => value !== undefined)
+        .filter(({ value }) => value !== undefined && value !== '')
         .map(
           ({ field, operator, transformation, value }) =>
             `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`

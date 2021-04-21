@@ -15,10 +15,10 @@ const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,
   app: APP_NAME,
   name: 'Default public Fishing Map workspace in production v1',
-  description: '',
+  description: DEFAULT_WORKSPACE_ID,
   category: WorkspaceCategories.FishingActivity,
-  startAt: '2019-12-01T00:00:00.000Z',
-  endAt: '2019-12-31T23:59:59.999Z',
+  startAt: new Date(Date.UTC(2018, 0, 1)).toISOString(),
+  endAt: new Date(Date.UTC(2019, 11, 31, 23, 59)).toISOString(),
   viewport: {
     zoom: 0,
     latitude: 30,
@@ -85,20 +85,20 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: 175,
     },
-    {
-      id: 'context-layer-wpp-nri',
-      config: {
-        visible: false,
-      },
-      dataviewId: 172,
-    },
-    {
-      id: 'context-layer-high-seas',
-      config: {
-        visible: false,
-      },
-      dataviewId: 174,
-    },
+    // {
+    //   id: 'context-layer-wpp-nri',
+    //   config: {
+    //     visible: false,
+    //   },
+    //   dataviewId: 172,
+    // },
+    // {
+    //   id: 'context-layer-high-seas',
+    //   config: {
+    //     visible: false,
+    //   },
+    //   dataviewId: 174,
+    // },
   ],
 }
 

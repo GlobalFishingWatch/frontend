@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
@@ -14,6 +14,7 @@ import { selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
 import { LocaleLabels } from 'features/i18n/i18n'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
+import useViewport from 'features/map/map-viewport.hooks'
 import HelpModal from 'features/help/HelpModal'
 import FeedbackModal from 'features/feedback/FeedbackModal'
 import styles from './CategoryTabs.module.css'
@@ -32,9 +33,6 @@ function getLinkToCategory(category: WorkspaceCategories) {
   return {
     type: WORKSPACES_LIST,
     payload: { workspaceId: undefined, category },
-    query: {
-      ...DEFAULT_WORKSPACE_LIST_VIEWPORT,
-    },
     replaceQuery: true,
   }
 }
@@ -43,6 +41,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t, i18n } = useTranslation()
   const guestUser = useSelector(isGuestUser)
   const locationType = useSelector(selectLocationType)
+  const { setMapCoordinates } = useViewport()
   const locationCategory = useSelector(selectLocationCategory)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
@@ -64,6 +63,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     setModalFeedbackOpen(true)
   }
 
+  const onCategoryClick = useCallback(() => {
+    setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
+  }, [setMapCoordinates])
+
   return (
     <Fragment>
       <ul className={cx('print-hidden', styles.CategoryTabs)}>
@@ -72,19 +75,21 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             <Icon icon="menu" />
           </span>
         </li>
-        {availableCategories?.map(({ title }, index) => (
+        {availableCategories?.map((category, index) => (
           <li
-            key={title}
+            key={category.title}
             className={cx(styles.tab, {
               [styles.current]:
-                locationCategory === title || (index === 0 && locationType === HOME),
+                locationCategory === (category.title as WorkspaceCategories) ||
+                (index === 0 && locationType === HOME),
             })}
           >
             <Link
               className={styles.tabContent}
-              to={getLinkToCategory(title as WorkspaceCategories)}
+              to={getLinkToCategory(category.title as WorkspaceCategories)}
+              onClick={onCategoryClick}
             >
-              <Icon icon={`category-${title}` as IconType} />
+              <Icon icon={`category-${category.title}` as IconType} />
             </Link>
           </li>
         ))}

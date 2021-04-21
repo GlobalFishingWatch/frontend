@@ -5,6 +5,16 @@
   z-index: var(--timebar-z-timeline-bookmark);
 }
 
+:global(.printing) .Timeline {
+  width: 100%;
+}
+
+@media print {
+  .Timeline {
+    width: 100%;
+  }
+}
+
 ._disabled {
   pointer-events: none;
 }

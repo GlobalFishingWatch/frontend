@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -12,9 +12,10 @@ import {
   Button,
 } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
+import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectDataviewInstancesResolved } from 'features/workspace/workspace.selectors'
+import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import Rulers from 'features/map/controls/Rulers'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
@@ -28,10 +29,16 @@ import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
 
 const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
+  const { i18n } = useTranslation()
   const [showDMS, setShowDMS] = useState(true)
   return (
     <div className={styles.miniGlobeInfo} onClick={() => setShowDMS(!showDMS)}>
-      <div className={styles.miniGlobeInfoTitle}>{getOceanAreaName(viewport, true)}</div>
+      <div className={styles.miniGlobeInfoTitle}>
+        {getOceanAreaName(viewport, {
+          locale: i18n.language as OceanAreaLocale,
+          combineWithEEZ: true,
+        })}
+      </div>
       <div>
         {showDMS
           ? formatcoords(viewport.latitude, viewport.longitude).format('DDMMssX', {
@@ -74,6 +81,15 @@ const MapControls = ({
   const { viewport, setMapCoordinates } = useViewport()
   const { latitude, longitude, zoom } = viewport
   const { bounds } = useMapBounds()
+  const center = useMemo(
+    () => ({
+      latitude,
+      longitude,
+    }),
+    [latitude, longitude]
+  )
+  const options = { bounds, center }
+  const debouncedOptions = useDebounce(options, 16)
 
   const onZoomInClick = useCallback(() => {
     setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
@@ -140,8 +156,8 @@ const MapControls = ({
             className={styles.miniglobe}
             size={60}
             viewportThickness={3}
-            bounds={bounds}
-            center={{ latitude, longitude }}
+            bounds={debouncedOptions.bounds}
+            center={debouncedOptions.center}
           />
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewport} />}
         </div>

@@ -19,10 +19,10 @@ export const getFlagsByIds = (ids: string[], lng = i18n.language): Flag[] =>
 
 export const getFlags = (lng = i18n.language): Flag[] =>
   flags
-    .map(({ id, label }) => {
+    .map((flag) => {
       return {
-        id,
-        label: i18n.t(`flags:${id}`, { lng }) || label,
+        ...flag,
+        label: i18n.t(`flags:${flag.id}`, { lng }) || flag.label,
       }
     })
     .sort((a, b) => a.label.localeCompare(b.label))

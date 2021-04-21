@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Workspace, WorkspaceViewport } from '@globalfishingwatch/api-types/dist'
-import { WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { USER } from 'routes/routes'
 import { selectUserWorkspaces } from 'features/user/user.selectors'
@@ -9,6 +9,13 @@ import {
   selectHighlightedWorkspaces,
   selectWorkspaces,
 } from './workspaces-list.slice'
+
+export const selectDefaultWorkspace = createSelector([selectWorkspaces], (workspaces) => {
+  return workspaces?.find(
+    // To ensure this is the local workspace and not overlaps with a new one on the api with the same id
+    (w) => w.id === DEFAULT_WORKSPACE_ID && w.description === DEFAULT_WORKSPACE_ID
+  )
+})
 
 export const selectWorkspaceByCategory = (category: WorkspaceCategories) => {
   return createSelector([selectWorkspaces], (workspaces) => {
@@ -45,17 +52,19 @@ export const selectCurrentHighlightedWorkspaces = createSelector(
     apiWorkspaces
   ): HighlightedWorkspaceMerged[] | undefined => {
     const highlighted = highlightedWorkspaces?.find(({ title }) => title === locationCategory)
-    return highlighted?.workspaces?.map((workspace) => {
-      const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
+    return highlighted?.workspaces
+      ?.filter((workspace) => workspace.visible !== 'hidden')
+      ?.map((workspace) => {
+        const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
 
-      if (!apiWorkspace) return workspace
+        if (!apiWorkspace) return workspace
 
-      return {
-        ...workspace,
-        viewport: apiWorkspace.viewport,
-        category: apiWorkspace.category as WorkspaceCategories,
-      }
-    })
+        return {
+          ...workspace,
+          viewport: apiWorkspace.viewport,
+          category: apiWorkspace.category as WorkspaceCategories,
+        }
+      })
   }
 )
 
@@ -67,5 +76,18 @@ export const selectCurrentWorkspacesList = createSelector(
     userWorkspaces
   ): HighlightedWorkspaceMerged[] | undefined => {
     return locationType === USER ? userWorkspaces : highlightedWorkspaces
+  }
+)
+
+export const selectWorkspacesByUserGroup = createSelector(
+  [selectHighlightedWorkspaces],
+  (highlightedWorkspace) => {
+    if (!highlightedWorkspace?.length) return
+    const workspaces = highlightedWorkspace.flatMap(({ workspaces }) => workspaces)
+    const groups = workspaces
+      .flatMap((w) => w)
+      ?.filter(({ userGroup }) => userGroup !== undefined)
+      .map(({ id, userGroup }) => [userGroup, id])
+    return Object.fromEntries(groups)
   }
 )

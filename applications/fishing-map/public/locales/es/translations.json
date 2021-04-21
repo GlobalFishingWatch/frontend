@@ -7,14 +7,15 @@
     "empty": "Los conjuntos de datos seleccionados aparecerán aquí",
     "errorMessage": "Ha habido un error",
     "noActivityLayers": "Ninguna capa de actividad se encuentra activa",
+    "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
+    "vesselFlags": "por buques marcados por",
     "area": "Área",
     "generating": "Estamos generando el informe para ti, estará listo pronto.",
     "successfullMessage": "El informe ha sido enviado con éxito, lo recibirás pronto por correo electrónico.",
     "dateRange": "Intervalo de fechas",
     "emailDescription": "Se generará un informe para los intervalos de fechas y filtros seleccionados y se enviará a tu cuenta de correo electrónico",
-    "generate": "Generar",
-    "timeRangeTooLong": "Reports are only allowed for time ranges up to one year"
+    "generate": "Generar"
   },
   "common": {
     "active_after": "Activo después de",
@@ -25,11 +26,13 @@
     "context_area_plural": "Areas de gestión",
     "copiedToClipboard": "El enlace para compartir este mapa ha sido copiado al portapapeles.",
     "country_plural": "paises",
+    "dateRange": "entre {{start}} y {{end}}",
     "description": "Descripción",
     "environment": "Entorno",
     "events": "Eventos",
     "hour": "Hora",
     "hour_plural": "horas",
+    "in": "en",
     "loggedAs": "Registrado como",
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
@@ -37,7 +40,7 @@
     "min": "Mínimo",
     "more": "más",
     "name": "Nombre",
-    "presence": "Presencia de pesca",
+    "presence": "Presencia",
     "report": "Informe",
     "seeDefault": "Ver vista por defecto",
     "share": "Comparte el mapa actual",
@@ -91,13 +94,20 @@
     "trackLoading": "Se ha producido un error al cargar la pista del buque",
     "uploadError": "Hubo un error al cargar su conjunto de datos",
     "vesselLoading": "Se ha producido un error al cargar el seguimiento de detalles del buque",
+    "workspaceCreate": "Hubo un error al crear el espacio de trabajo, por favor inténtalo de nuevo más tarde",
+    "workspaceDuplicatedName": "Ya hay un área de trabajo con este nombre",
     "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo",
+    "workspaceMissingName": "Se necesita el nombre del espacio de trabajo",
     "workspaceNotFound": "La vista que solicitó no se encontró"
   },
   "event": {
     "noData": "No hay datos disponibles",
     "notInCVP": "Este evento ocurrió fuera del intervalo de tiempo de los datos del Portal del Buque Carrier",
     "seeInCVP": "Ver en el Portal de Buque de Carrier"
+  },
+  "footer": {
+    "convenedBy": "Una asociación convocada por",
+    "supportBy": "Soportado por"
   },
   "layer": {
     "add": "Añadir capa",
@@ -125,14 +135,14 @@
     "captureMap": "Capturar el mapa",
     "change_basemap_default": "Cambia al mapa base por defecto",
     "change_basemap_satellite": "Cambia al mapa base satelital",
+    "legend_help": "Área de celda de cuadrícula aproximada en el ecuador",
     "loading": "Cargando el mapa",
     "mapLoadingWait": "Por favor espere a que cargue el mapa",
     "rulers_add": "Añade reglas",
     "rulers_remove": "Borra todas las reglas",
     "search": "Buscar áreas",
     "zoom_in": "Acercar",
-    "zoom_out": "Alejar",
-    "legend_help": "Approximated grid cell area at the Equator"
+    "zoom_out": "Alejar"
   },
   "search": {
     "advanced": "Avanzado",
@@ -152,59 +162,23 @@
   },
   "selects": {
     "allSelected": "Todos",
-    "selected": "seleccionado",
-    "placeholder": "Seleccione una opción"
+    "placeholder": "Seleccione una opción",
+    "selected": "seleccionado"
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa aparente de esfuerzo de pesca",
-    "graph": "Graph",
-    "settings_close": "Cerrar opciones del timebar",
-    "settings_open": "Abrir opciones del timebar",
+    "graph": "Gráfico",
+    "settings_close": "Cerrar la barra de tiempo",
+    "settings_open": "Abrir ajustes de la barra de tiempo",
     "showFishingEffort": "Mostrar gráfico de horas de pesca",
     "showTracks": "Mostrar gráfico de pistas",
     "tracksDisabled": "Seleccione al menos un buque"
   },
-  "timebar": {
-    "playback": {
-      "playAnimation": "Play animación",
-      "pauseAnimation": "Pausar animación",
-      "toogleAnimationLooping": "Cambiar el ciclo de la animación",
-      "moveBack": "Mover hacia atrás",
-      "moveForward": "Mover hacia delante",
-      "changeAnimationSpeed": "Cambiar velocidad de animación"
-    },
-    "timerange": {
-      "title": "Selecciona un rango de tiempo",
-      "start": "Inicio",
-      "end": "Final",
-      "last30days": "Últimos 30 días",
-      "done": "OK",
-      "errorEarlyStart": "Your start date is the earliest date with data available",
-      "errorLatestEnd": "Your end date is the latest date with data available",
-      "errorMinRange": "Your start and end date must be at least one day apart",
-      "errorMaxRange": "Your time range is the maximum range with data available"
-    },
-    "bookmark": {
-      "goToBookmark": "Go to your bookmarked time range",
-      "deleteBookmark": "Delete time range bookmark"
-    },
-    "dragLabel": "Drag to change the time range",
-    "lastUpdate": "Last update",
-    "setBookmark": "Bookmark current time range",
-    "day": "day",
-    "year": "year",
-    "month": "month",
-    "hour": "hour",
-    "zoomIn": "Zoom in",
-    "zoomTo": "Zoom to",
-    "zoomOut": "Zoom out",
-    "selectTimeRange": "Select a time range"
-  },
   "user": {
-    "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
-    "groups": "User Groups",
-    "profile": "User profile",
-    "title": "User"
+    "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
+    "groups": "Grupos de usuarios",
+    "profile": "Perfil de usuario",
+    "title": "Usuario"
   },
   "vessel": {
     "beam": "Rayo",
@@ -215,6 +189,27 @@
     "firstTransmissionDate": "Fecha primera transmisión",
     "flag": "Bandera",
     "fleet": "Flota",
+    "geartype": "Tipo de equipo",
+    "gearTypes": {
+      "dredge_fishing": "Pesca de dragado",
+      "drifting_longlines": "Deslizando Longline",
+      "driftnets": "Red de deriva",
+      "fishing": "Pesca",
+      "fixed_gear": "Equipo fijo",
+      "other_fishing": "Otras pesquerías",
+      "other_purse_seines": "Otras Sena de bolsa",
+      "other_seines": "Other Seines",
+      "pole_and_line": "Polo y línea",
+      "pots_and_traps": "Macetas y trampas",
+      "purse_seines": "Sena de bolsa",
+      "seiners": "Seiners",
+      "set_gillnets": "Establecer Gillnet",
+      "set_longlines": "Establecer Longline",
+      "squid_jigger": "Jigger calamar",
+      "trawlers": "Trawler",
+      "trollers": "Troller",
+      "tuna_purse_seines": "Sena del tesoro atunero"
+    },
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Fecha última transmisión",
@@ -242,8 +237,44 @@
     "remove": "Eliminar área de trabajo",
     "save": "Guardar el mapa actual",
     "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
-    "saveLogin": "You need to login to save views",
+    "saveLogin": "Necesitas iniciar sesión para guardar las vistas",
     "title_plural": "Espacios de trabajo",
     "title": "Espacio de trabajo"
+  },
+  "timebar": {
+    "playback": {
+      "playAnimation": "Reproducir animación",
+      "pauseAnimation": "Pausar animación",
+      "toogleAnimationLooping": "Cambiar animación de bucle",
+      "moveBack": "Retroceder",
+      "moveForward": "Avanzar",
+      "changeAnimationSpeed": "Cambiar velocidad de animación"
+    },
+    "timerange": {
+      "title": "Seleccione un intervalo de tiempo",
+      "start": "empezar",
+      "end": "fin",
+      "last30days": "Últimos 30 días",
+      "done": "Hecho",
+      "errorEarlyStart": "Su fecha de inicio es la fecha más temprana con datos disponibles",
+      "errorLatestEnd": "Su fecha de fin es la última fecha con datos disponibles",
+      "errorMinRange": "Tu fecha de inicio y fin debe tener al menos un día de diferencia",
+      "errorMaxRange": "Su intervalo de tiempo es el rango máximo con datos disponibles"
+    },
+    "bookmark": {
+      "goToBookmark": "Ir al rango de tiempo marcado",
+      "deleteBookmark": "Eliminar marcador de intervalo de tiempo"
+    },
+    "dragLabel": "Arrastre para cambiar el rango de tiempo",
+    "lastUpdate": "Última actualización",
+    "setBookmark": "Rango de tiempo actual del marcador",
+    "day": "día",
+    "year": "año",
+    "month": "mes",
+    "hour": "hora",
+    "zoomIn": "Acercarse en",
+    "zoomTo": "Acercar a",
+    "zoomOut": "Apagar",
+    "selectTimeRange": "Seleccione un intervalo de tiempo"
   }
 }

@@ -61,6 +61,7 @@ class UserContextGenerator {
           color: config.color,
           interactive: true,
           generatorId,
+          uniqueFeatureInteraction: true,
           legend: {
             type: 'colorramp',
             ...config.metadata?.legend,

@@ -90,6 +90,10 @@
   transform: translateX(0);
 }
 
+.lastStep {
+  transform: translateX(-100%);
+}
+
 .discreteSteps {
   display: flex;
   align-items: stretch;

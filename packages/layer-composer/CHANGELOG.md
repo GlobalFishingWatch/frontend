@@ -1,5 +1,77 @@
 # @globalfishingwatch/layer-composer
 
+## 5.2.3
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/fourwings-aggregate@3.1.0
+
+## 5.2.2
+
+### Patch Changes
+
+- 8d08df8a: export CONFIG_BY_INTERVAL
+
+## 5.2.1
+
+### Patch Changes
+
+- c0dc95ec: restore uniqueFeatureInteraction with layer id checking
+
+## 5.2.0
+
+### Minor Changes
+
+- bf2d09a1: remove uniqueFeatureInteraction for heatmapAnimated
+
+## 5.1.2
+
+### Patch Changes
+
+- af994916: Sort datasets to improve chance of hitting cache
+
+## 5.1.1
+
+### Patch Changes
+
+- 80907c1f: fixes latest commit
+
+## 5.1.0
+
+### Minor Changes
+
+- 87a54e62: auto detect intervals by dataset configuration
+
+## 5.0.1
+
+### Patch Changes
+
+- bb4978cd: fix blob mode
+
+## 5.0.0
+
+### Major Changes
+
+- 358004cb: Use client-side aggregation with env layers
+
+### Patch Changes
+
+- Updated dependencies [358004cb]
+  - @globalfishingwatch/fourwings-aggregate@3.0.0
+
+## 4.19.2
+
+### Patch Changes
+
+- call cluster tiles api with the new "maxClusterZoom" parameter
+
+## 4.19.1
+
+### Patch Changes
+
+- bug fixes
+
 ## 4.19.0
 
 ### Minor Changes

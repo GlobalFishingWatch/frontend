@@ -7,14 +7,15 @@
     "empty": "Vos jeux de données sélectionnés apparaîtront ici",
     "errorMessage": "Quelque chose s'est mal passé",
     "noActivityLayers": "Aucun calque d'activité actif",
+    "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps allant jusqu'à un an",
     "title": "Analyse",
+    "vesselFlags": "par les navires marqués par",
     "area": "Zone de stockage",
     "generating": "Nous sommes en train de générer le rapport pour vous, il sera prêt bientôt.",
     "successfullMessage": "Le rapport a été envoyé avec succès, vous le recevrez bientôt par courriel.",
     "dateRange": "Date Range",
     "emailDescription": "Un rapport pour les plages de dates et les filtres sélectionnés sera généré et envoyé à votre compte de messagerie",
-    "generate": "Générer",
-    "timeRangeTooLong": "Reports are only allowed for time ranges up to one year"
+    "generate": "Générer"
   },
   "common": {
     "active_after": "Actif après",
@@ -25,11 +26,13 @@
     "context_area_plural": "Calques de contexte",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers.",
     "country_plural": "Pays",
+    "dateRange": "entre {{start}} et {{end}}",
     "description": "Libellé",
     "environment": "Environnement",
     "events": "Évènements",
     "hour": "Heure",
     "hour_plural": "heures",
+    "in": "dans",
     "loggedAs": "Connecté en tant que",
     "login": "Se connecter",
     "logout": "Déconnexion",
@@ -37,7 +40,7 @@
     "min": "Min",
     "more": "plus",
     "name": "Nom",
-    "presence": "Présence de la pêche",
+    "presence": "Presence",
     "report": "Rapporter",
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
@@ -91,13 +94,20 @@
     "trackLoading": "Une erreur s'est produite lors du chargement de la piste du vaisseau",
     "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
     "vesselLoading": "Une erreur s'est produite lors du chargement de la piste des détails du vaisseau",
+    "workspaceCreate": "Une erreur s'est produite lors de la création de l'espace de travail, veuillez réessayer plus tard",
+    "workspaceDuplicatedName": "Il existe déjà un espace de travail portant ce nom",
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement",
+    "workspaceMissingName": "Le nom de l'espace de travail est requis",
     "workspaceNotFound": "La vue demandée n'a pas été trouvée"
   },
   "event": {
     "noData": "Aucune donnée disponible",
     "notInCVP": "Cet événement s'est produit en dehors de la plage horaire des données du Portail du Transporteur",
     "seeInCVP": "Voir dans le Portail du Transporteur"
+  },
+  "footer": {
+    "convenedBy": "Un partenariat convoqué par",
+    "supportBy": "Prise en charge par"
   },
   "layer": {
     "add": "Ajouter un calque",
@@ -125,14 +135,14 @@
     "captureMap": "Enregistrer une image de la carte",
     "change_basemap_default": "Fond de carte par défaut",
     "change_basemap_satellite": "Fond de carte satellite",
+    "legend_help": "Zone de cellules de la grille approchée à l'équateur",
     "loading": "Chargement de la carte",
     "mapLoadingWait": "Veuillez patienter jusqu'à ce que la carte soit chargée",
     "rulers_add": "Ajouter des distances",
     "rulers_remove": "Supprimer toutes les distances",
     "search": "Rechercher des zones",
     "zoom_in": "Zoomer",
-    "zoom_out": "Dézoomer",
-    "legend_help": "Approximated grid cell area at the Equator"
+    "zoom_out": "Dézoomer"
   },
   "search": {
     "advanced": "Avancé",
@@ -152,23 +162,23 @@
   },
   "selects": {
     "allSelected": "Tous",
-    "selected": "slectionns",
-    "placeholder": "Sélectionnez une option"
+    "placeholder": "Sélectionnez une option",
+    "selected": "slectionns"
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Sélectionnez au moins une couche apparente d'effort de pêche",
     "graph": "Graphique",
     "settings_close": "Fermer les paramètres de la barre de temps",
-    "settings_open": "Montrer les paramètres de la barre de temps",
+    "settings_open": "Ouvrir les paramètres de la barre de temps",
     "showFishingEffort": "Afficher le graphique des heures de pêche",
     "showTracks": "Afficher le graphe des pistes",
     "tracksDisabled": "Sélectionnez au moins un vaisseau"
   },
   "user": {
-    "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
-    "groups": "User Groups",
-    "profile": "User profile",
-    "title": "User"
+    "groupMissing": "appartenez-vous à un groupe d'utilisateurs qui n'apparaît pas ici ? <2>Demander l'accès</2>",
+    "groups": "Groupes d'utilisateurs",
+    "profile": "Profil de l'utilisateur",
+    "title": "Utilisateur"
   },
   "vessel": {
     "beam": "Rayon",
@@ -179,6 +189,27 @@
     "firstTransmissionDate": "Début de transmission",
     "flag": "Drapeau",
     "fleet": "Flotte",
+    "geartype": "Type d'équipement",
+    "gearTypes": {
+      "dredge_fishing": "Pêche à Dragonne",
+      "drifting_longlines": "Dérive longue ligne",
+      "driftnets": "Filet dérivant",
+      "fishing": "Pêche",
+      "fixed_gear": "Équipement Fixe",
+      "other_fishing": "Autres pêches",
+      "other_purse_seines": "Autres Seines boursières",
+      "other_seines": "Other Seines",
+      "pole_and_line": "Pôle et ligne",
+      "pots_and_traps": "Pots et pièges",
+      "purse_seines": "Bourses de la Seine",
+      "seiners": "Seiners",
+      "set_gillnets": "Définir le Gillnet",
+      "set_longlines": "Définir une longue ligne",
+      "squid_jigger": "Jigger de calamar",
+      "trawlers": "Piégeur",
+      "trollers": "Troller",
+      "tuna_purse_seines": "Fusil de la senne au thon"
+    },
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "OMI",
     "lastTransmissionDate": "Fin de transmission",
@@ -206,8 +237,44 @@
     "remove": "Supprimer l'espace de travail",
     "save": "Enregistrer la vue actuelle",
     "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil utilisateur",
-    "saveLogin": "You need to login to save views",
+    "saveLogin": "Vous devez vous connecter pour enregistrer les vues",
     "title_plural": "Workspaces",
     "title": "Espace de travail"
+  },
+  "timebar": {
+    "playback": {
+      "playAnimation": "Jouer l'animation",
+      "pauseAnimation": "Mettre en pause l'animation",
+      "toogleAnimationLooping": "Activer/désactiver la boucle d'animation",
+      "moveBack": "Revenir en arrière",
+      "moveForward": "Avancer",
+      "changeAnimationSpeed": "Changer la vitesse d'animation"
+    },
+    "timerange": {
+      "title": "Sélectionnez une plage de temps",
+      "start": "Début",
+      "end": "fin",
+      "last30days": "Les 30 derniers jours",
+      "done": "Fait",
+      "errorEarlyStart": "Votre date de début est la date la plus ancienne avec les données disponibles",
+      "errorLatestEnd": "Votre date de fin est la dernière date avec les données disponibles",
+      "errorMinRange": "Votre date de début et de fin doit être séparée d'au moins un jour",
+      "errorMaxRange": "Votre plage de temps est la plage maximale avec les données disponibles"
+    },
+    "bookmark": {
+      "goToBookmark": "Accéder à la plage de temps de vos favoris",
+      "deleteBookmark": "Supprimer le marque-page de la plage de temps"
+    },
+    "dragLabel": "Faites glisser pour modifier la plage de temps",
+    "lastUpdate": "Dernière mise à jour",
+    "setBookmark": "Mettre en favori la plage de temps actuelle",
+    "day": "jour",
+    "year": "Année",
+    "month": "mois",
+    "hour": "heure",
+    "zoomIn": "Zoom avant",
+    "zoomTo": "Zoom sur",
+    "zoomOut": "Zoom arrière",
+    "selectTimeRange": "Sélectionnez une plage de temps"
   }
 }
