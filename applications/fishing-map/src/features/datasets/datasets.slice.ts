@@ -4,7 +4,13 @@ import uniqBy from 'lodash/uniqBy'
 import without from 'lodash/without'
 import kebabCase from 'lodash/kebabCase'
 import { stringify } from 'qs'
-import { Dataset, DatasetCategory, UploadResponse } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetCategory,
+  DatasetTypes,
+  EndpointId,
+  UploadResponse,
+} from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,
@@ -108,10 +114,25 @@ export const createDatasetThunk = createAsyncThunk<
         filePath: path,
       },
     }
+
     const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
       method: 'POST',
       body: datasetWithFilePath as any,
     })
+
+    // TODO Use this hack also infetchDatasetsByIdsThunk ??
+    // TODO Properly configure the endpoint on the API side
+    if (dataset.type === DatasetTypes.UserTracks) {
+      createdDataset.endpoints = [
+        {
+          id: EndpointId.UserTracks,
+          pathTemplate: `https://storage.googleapis.com/raul-import/${createdDataset.configuration?.filePath}`,
+          downloadable: true,
+          params: [],
+          query: [],
+        },
+      ]
+    }
     return createdDataset
   } catch (e) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })

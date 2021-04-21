@@ -1,4 +1,9 @@
-import { DataviewCategory, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DataviewCategory,
+  DataviewInstance,
+  EndpointId,
+} from '@globalfishingwatch/api-types'
 import {
   TrackColorBarOptions,
   HeatmapColorBarOptions,
@@ -10,6 +15,7 @@ import {
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
   DEFAULT_PRESENCE_DATAVIEW_ID,
+  DEFAULT_USER_TRACK_ID,
 } from 'data/workspaces'
 
 // used in workspaces with encounter events layers
@@ -103,6 +109,27 @@ export const getEnvironmentDataviewInstance = (
     ],
   }
   return environmentalDataviewInstance
+}
+
+export const getUserTrackDataviewInstance = (dataset: Dataset) => {
+  const datasetsConfig = [
+    {
+      datasetId: dataset.id,
+      endpoint: EndpointId.UserTracks,
+      params: [],
+    },
+  ]
+  const dataviewInstance = {
+    id: `user-track-${dataset.id}`,
+    dataviewId: DEFAULT_USER_TRACK_ID,
+    config: {
+      isUserTrack: true,
+      // TODO pick a not used color
+      color: TrackColorBarOptions[Math.floor(Math.random() * TrackColorBarOptions.length)].value,
+    },
+    datasetsConfig,
+  }
+  return dataviewInstance
 }
 
 export const getContextDataviewInstance = (

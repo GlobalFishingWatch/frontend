@@ -28,3 +28,4 @@ export const DEFAULT_EVENTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 140 
 export const DEFAULT_PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 124 : 241
 export const DEFAULT_CONTEXT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 123 : 220
 export const DEFAULT_ENVIRONMENT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 125 : 223
+export const DEFAULT_USER_TRACK_ID = WORKSPACE_ENV === 'development' ? 999 : 999
