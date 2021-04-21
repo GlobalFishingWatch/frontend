@@ -6,12 +6,7 @@ import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
-import {
-  isWorkspaceLocation,
-  selectLocationType,
-  selectUrlViewport,
-  selectWorkspaceId,
-} from 'routes/routes.selectors'
+import { isWorkspaceLocation } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
@@ -19,16 +14,8 @@ import Sidebar from 'features/sidebar/Sidebar'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import Footer from 'features/footer/Footer'
-import {
-  selectCurrentWorkspaceId,
-  selectWorkspaceCustomStatus,
-  selectWorkspaceStatus,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { fetchUserThunk } from 'features/user/user.slice'
-import { isUserLogged } from 'features/user/user.selectors'
-import { HOME, WORKSPACE } from 'routes/routes'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -54,16 +41,10 @@ function App(): React.ReactElement {
   const sidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
-  const userLogged = useSelector(isUserLogged)
-  const locationType = useSelector(selectLocationType)
-  const urlWorkspaceId = useSelector(selectWorkspaceId)
-  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
-  const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const analysisQuery = useSelector(selectAnalysisQuery)
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
   const narrowSidebar = workspaceLocation && !analysisQuery
-  const urlViewport = useSelector(selectUrlViewport)
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
@@ -88,28 +69,6 @@ function App(): React.ReactElement {
   useEffect(() => {
     dispatch(fetchHighlightWorkspacesThunk())
   }, [dispatch])
-
-  const isHomeLocation = locationType === HOME
-  const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
-  const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
-  useEffect(() => {
-    const fetchWorkspace = async () => {
-      const action = await dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
-      if (fetchWorkspaceThunk.fulfilled.match(action)) {
-        if (!urlViewport && action.payload?.viewport) {
-          setMapCoordinates(action.payload.viewport)
-        }
-      }
-    }
-    if (
-      userLogged &&
-      workspaceCustomStatus !== AsyncReducerStatus.Loading &&
-      (homeNeedsFetch || hasWorkspaceIdChanged)
-    ) {
-      fetchWorkspace()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
 
   const onToggle = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })

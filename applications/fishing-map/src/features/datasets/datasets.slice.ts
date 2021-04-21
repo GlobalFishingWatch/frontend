@@ -37,7 +37,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
 
 export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
-  async (ids: string[] = [], { rejectWithValue, getState }) => {
+  async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
     const existingIds = selectIds(getState() as RootState) as string[]
     const uniqIds = ids?.length ? Array.from(new Set([...ids, ...existingIds])) : []
     try {
@@ -47,7 +47,8 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         cache: process.env.NODE_ENV !== 'development',
       }
       const initialDatasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
+        `/v1/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
+        { signal }
       )
       const relatedDatasetsIds = initialDatasets.flatMap(
         (dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || []
@@ -55,7 +56,8 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...ids).join(',')
       const relatedWorkspaceParams = { ...workspacesParams, ids: uniqRelatedDatasetsIds }
       const relatedDatasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`
+        `/v1/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`,
+        { signal }
       )
       let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
 

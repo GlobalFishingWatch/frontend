@@ -20,11 +20,13 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
 
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
-  async (ids: number[], { rejectWithValue, getState }) => {
+  async (ids: number[], { signal, rejectWithValue, getState }) => {
     const existingIds = selectIds(getState() as RootState) as string[]
     const uniqIds = Array.from(new Set([...ids, ...existingIds]))
     try {
-      let dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${uniqIds.join(',')}`)
+      let dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${uniqIds.join(',')}`, {
+        signal,
+      })
       if (
         process.env.NODE_ENV === 'development' ||
         process.env.REACT_APP_USE_LOCAL_DATAVIEWS === 'true'

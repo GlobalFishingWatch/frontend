@@ -4,9 +4,11 @@ import {
   resolveDataviews,
   UrlDataviewInstance,
   mergeWorkspaceUrlDataviewInstances,
+  getGeneratorConfig,
 } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
+import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { ThinningLevels, THINNING_LEVELS } from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -46,6 +48,29 @@ export const selectDataviews = createSelector(
       }
       return dataview
     })
+  }
+)
+
+const defaultBasemapDataview = {
+  id: 'basemap',
+  config: {
+    type: Generators.Type.Basemap,
+    basemap: Generators.BasemapType.Default,
+  },
+}
+
+export const selectBasemapDataview = createSelector([selectDataviews], (dataviews) => {
+  const basemapDataview = dataviews.find((d) => d.config.type === GeneratorType.Basemap)
+  return basemapDataview || defaultBasemapDataview
+})
+
+export const selectDefaultBasemapGenerator = createSelector(
+  [selectBasemapDataview],
+  (basemapDataview) => {
+    const basemapGenerator = getGeneratorConfig(
+      basemapDataview as UrlDataviewInstance<Type>
+    ) as Generators.BasemapGeneratorConfig
+    return basemapGenerator
   }
 )
 

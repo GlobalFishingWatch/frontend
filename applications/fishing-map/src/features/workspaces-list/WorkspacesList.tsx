@@ -72,6 +72,7 @@ function WorkspacesList() {
                     type: HOME,
                     payload: {},
                     query: {},
+                    replaceQuery: true,
                   }
                 : {
                     type: WORKSPACE,
@@ -80,6 +81,7 @@ function WorkspacesList() {
                       workspaceId: highlightedWorkspace.id,
                     },
                     query: {},
+                    replaceQuery: true,
                   }
             return (
               <li key={highlightedWorkspace.id || highlightedWorkspace.name}>

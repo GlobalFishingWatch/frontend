@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/fishing-map",
-  "version": "0.28.28",
+  "version": "0.28.29",
   "private": true,
   "scripts": {
     "start": "PORT=3003 react-scripts start",
@@ -16,7 +16,7 @@
     "@globalfishingwatch/api-client": "1.6.8",
     "@globalfishingwatch/api-types": "3.1.1",
     "@globalfishingwatch/data-transforms": "1.1.1",
-    "@globalfishingwatch/dataviews-client": "6.2.2",
+    "@globalfishingwatch/dataviews-client": "6.2.3",
     "@globalfishingwatch/fourwings-aggregate": "3.1.0",
     "@globalfishingwatch/layer-composer": "5.2.3",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.20",
