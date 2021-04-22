@@ -33,6 +33,8 @@
     "mmsi": "mmsi",
     "noAuthorizations": "Aucune autorisation trouvée",
     "plusPreviousValuesByField": "+{{quantity}} {{fieldLabel}} précédentes",
+    "readyForOfflineView": "READY FOR OFFLINE VIEW",
+    "remove": "Remove",
     "saveForOfflineView": "enregistrer le vaisseau pour une vue hors ligne",
     "source": "source",
     "transmission_plural": "transmissions",
