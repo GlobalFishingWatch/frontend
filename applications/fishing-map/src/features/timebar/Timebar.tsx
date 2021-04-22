@@ -9,7 +9,11 @@ import TimebarComponent, {
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import { quantizeOffsetToDate, TimeChunk, TimeChunks } from '@globalfishingwatch/layer-composer'
+import { quantizeOffsetToDate } from '@globalfishingwatch/layer-composer'
+import {
+  TimeChunk,
+  TimeChunks,
+} from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
