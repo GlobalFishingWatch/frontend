@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import ReactJson from 'react-json-view'
 import {
   // BasemapGeneratorConfig,
@@ -45,17 +45,21 @@ const heatmapGenerator = {
 } as HeatmapAnimatedGeneratorConfig
 
 const generators = [heatmapGenerator]
-const globalConfig = {
+const defaultConfig = {
   zoom: 1,
   start: '2019-01-01T00:00:00.000Z',
   end: '2020-01-01T00:00:00.000Z',
 }
 
 function App() {
+  // Remember to use /src in hook to compile locally and avoid bundle waiting
+  const [number, setNumber] = useState(0)
+  const globalConfig = useMemo(() => ({ ...defaultConfig, zoom: number }), [number])
   const { style } = useLayerComposer(generators, globalConfig)
 
   return (
     <div className="App">
+      <button onClick={() => setNumber((n) => n + 1)}>re-render ({number})</button>
       <main className="main">
         <ReactJson
           name="Mapbox gl style"

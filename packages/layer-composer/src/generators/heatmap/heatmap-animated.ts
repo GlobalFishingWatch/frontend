@@ -16,15 +16,20 @@ import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
 import { TimeChunk, TimeChunks, getActiveTimeChunks, getDelta, Interval } from './util/time-chunks'
-import { getSublayersBreaks } from './util/get-legends'
+import { getSublayersBreaks, getSublayersBreaksByZoom } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
 import { getSourceId, toURLArray } from './util'
+import fetchBreaks, { Breaks, FetchBreaksParams } from './util/fetch-breaks'
 
 export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
 >
+
+const getTilesUrl = (config: HeatmapAnimatedGeneratorConfig): string => {
+  return `${config.tilesAPI || `${API_GATEWAY}/${API_GATEWAY_VERSION}`}/${API_ENDPOINTS.tiles}`
+}
 
 const getSubLayersVisible = (sublayers: HeatmapAnimatedGeneratorSublayer[]) =>
   sublayers.map((sublayer) => (sublayer.visible === false ? false : true))
@@ -66,13 +71,23 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
 
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
+  breaksCache: Record<string, { loading: boolean; error: boolean; breaks?: Breaks }> = {}
 
-  _getStyleSources = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) => {
+  _getStyleSources = (
+    config: GlobalHeatmapAnimatedGeneratorConfig,
+    timeChunks: TimeChunks,
+    breaks: Breaks | undefined
+  ) => {
     if (!config.start || !config.end || !config.sublayers) {
       throw new Error(
         `Heatmap generator must specify start, end and sublayers parameters in ${config}`
       )
     }
+
+    if (!breaks) {
+      return []
+    }
+
     const datasets = config.sublayers.map((sublayer) => {
       const sublayerDatasets = [...sublayer.datasets]
       return sublayerDatasets.sort((a, b) => a.localeCompare(b)).join(',')
@@ -80,12 +95,8 @@ class HeatmapAnimatedGenerator {
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
     const visible = getSubLayersVisible(config.sublayers)
 
-    const tilesUrl = `${config.tilesAPI || `${API_GATEWAY}/${API_GATEWAY_VERSION}`}/${
-      API_ENDPOINTS.tiles
-    }`
-
+    const tilesUrl = getTilesUrl(config)
     const delta = getDelta(timeChunks.activeStart, timeChunks.activeEnd, timeChunks.interval)
-    const breaks = getSublayersBreaks(config, timeChunks.deltaInDays)
 
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
     const interactiveSource =
@@ -136,18 +147,35 @@ class HeatmapAnimatedGenerator {
     return sources
   }
 
-  _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) => {
+  _getStyleLayers = (
+    config: GlobalHeatmapAnimatedGeneratorConfig,
+    timeChunks: TimeChunks,
+    breaks: Breaks | undefined
+  ) => {
+    if (!breaks) {
+      // we can't return layers until breaks data is loaded
+      return []
+    }
+
     if (
       config.mode === HeatmapAnimatedMode.Compare ||
       config.mode === HeatmapAnimatedMode.Bivariate ||
       config.mode === HeatmapAnimatedMode.Single
     ) {
-      return getGriddedLayers(config, timeChunks)
+      return getGriddedLayers(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Blob) {
+      // TODO review with new buckets
       return getBlobLayer(config, timeChunks)
     } else if (config.mode === HeatmapAnimatedMode.Extruded) {
+      // TODO review with new buckets
       return getExtrudedLayer(config, timeChunks)
     }
+  }
+
+  getCacheKey = (config: FetchBreaksParams) => {
+    const { interval, sublayers } = config
+    const datasets = sublayers.flatMap((s) => s.datasets.flatMap((d) => d))
+    return [...datasets, interval].join(',')
   }
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
@@ -170,22 +198,55 @@ class HeatmapAnimatedGenerator {
       finalConfig.interval
     )
 
+    const breaksConfig = {
+      ...config,
+      interval: timeChunks.interval,
+    }
+
+    const cacheKey = this.getCacheKey(breaksConfig)
+
+    const useSublayerBreaks = finalConfig.sublayers.some((s) => s.breaks?.length)
+    const breaks = useSublayerBreaks
+      ? getSublayersBreaks(finalConfig, timeChunks.deltaInDays)
+      : getSublayersBreaksByZoom(this.breaksCache[cacheKey]?.breaks, finalConfig.zoom)
+
     const style = {
       id: finalConfig.id,
-      sources: this._getStyleSources(finalConfig, timeChunks),
-      layers: this._getStyleLayers(finalConfig, timeChunks),
+      sources: this._getStyleSources(finalConfig, timeChunks, breaks),
+      layers: this._getStyleLayers(finalConfig, timeChunks, breaks),
       metadata: {
+        breaks,
         temporalgrid: true,
-        numSublayers: config.sublayers.length,
-        visibleSublayers: getSubLayersVisible(config.sublayers),
+        numSublayers: finalConfig.sublayers.length,
+        visibleSublayers: getSubLayersVisible(finalConfig.sublayers),
         timeChunks,
         aggregationOperation: finalConfig.aggregationOperation,
         multiplier: finalConfig.breaksMultiplier,
-        sublayers: config.sublayers,
-        legend: config.metadata?.legend,
+        sublayers: finalConfig.sublayers,
+        legend: finalConfig.metadata?.legend,
       },
     }
-    return style
+
+    if (breaks || this.breaksCache[cacheKey]?.loading || this.breaksCache[cacheKey]?.error) {
+      return style
+    }
+
+    const breaksPromise = fetchBreaks(breaksConfig)
+
+    this.breaksCache[cacheKey] = { loading: true, error: false }
+
+    const promise = new Promise((resolve, reject) => {
+      breaksPromise.then((breaks) => {
+        this.breaksCache[cacheKey] = { loading: false, error: false, breaks }
+        resolve(this.getStyle(finalConfig))
+      })
+      breaksPromise.catch((e: any) => {
+        this.breaksCache[cacheKey] = { loading: false, error: true }
+        reject(e)
+      })
+    })
+
+    return { ...style, promise }
   }
 }
 
