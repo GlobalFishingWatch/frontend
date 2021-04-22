@@ -8,8 +8,11 @@ import {
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { selectWorkspaceError } from 'features/workspace/workspace.selectors'
-import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
+import { selectWorkspaceError, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import {
+  selectDataviewInstancesResolved,
+  selectDefaultBasemapGenerator,
+} from 'features/dataviews/dataviews.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import { selectResources, ResourcesState } from 'features/resources/resources.slice'
 import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
@@ -18,6 +21,7 @@ import { selectHighlightedTime, selectStaticTime, Range } from 'features/timebar
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
@@ -203,30 +207,40 @@ export const selectWorkspacesListGenerator = createSelector(
   }
 )
 
-const basemap: Generators.BasemapGeneratorConfig = {
-  id: 'landmass',
-  type: Generators.Type.Basemap,
-  basemap: Generators.BasemapType.Default,
-}
-
 export const selectMapWorkspacesListGenerators = createSelector(
-  [selectWorkspacesListGenerator],
-  (workspaceGenerator): Generators.AnyGeneratorConfig[] => {
-    if (!workspaceGenerator) return [basemap]
-    return [basemap, workspaceGenerator]
+  [selectDefaultBasemapGenerator, selectWorkspacesListGenerator],
+  (basemapGenerator, workspaceGenerator): Generators.AnyGeneratorConfig[] => {
+    if (!workspaceGenerator) return [basemapGenerator]
+    return [basemapGenerator, workspaceGenerator]
   }
 )
 
 export const selectDefaultMapGeneratorsConfig = createSelector(
   [
     selectWorkspaceError,
+    selectWorkspaceStatus,
     isWorkspaceLocation,
+    selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectMapWorkspacesListGenerators,
   ],
-  (workspaceError, showWorkspaceDetail, workspaceGenerators, workspaceListGenerators) => {
-    if (workspaceError.status === 401) return [basemap]
-    return showWorkspaceDetail ? workspaceGenerators : workspaceListGenerators
+  (
+    workspaceError,
+    workspaceStatus,
+    showWorkspaceDetail,
+    basemapGenerator,
+    workspaceGenerators,
+    workspaceListGenerators
+  ) => {
+    if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
+      return [basemapGenerator]
+    }
+    if (showWorkspaceDetail) {
+      return workspaceStatus !== AsyncReducerStatus.Finished
+        ? [basemapGenerator]
+        : workspaceGenerators
+    }
+    return workspaceListGenerators
   }
 )
 

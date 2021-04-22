@@ -1,5 +1,11 @@
 # @globalfishingwatch/fourwings-aggregate
 
+## 3.1.0
+
+### Minor Changes
+
+- export consts
+
 ## 3.0.0
 
 ### Major Changes

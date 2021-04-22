@@ -9,16 +9,16 @@ type FeatureStates = 'click' | 'hover' | 'highlight'
 type FeatureStateSource = { source: string; sourceLayer: string; id: string; state?: FeatureStates }
 
 export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
-  const uniqueLayerIdFeatures: Record<string, boolean> = {}
-  const filtered = features?.filter(({ layerId, uniqueFeatureInteraction }) => {
+  const uniqueLayerIdFeatures: Record<string, string> = {}
+  const filtered = features?.filter(({ layerId, id, uniqueFeatureInteraction }) => {
     if (!uniqueFeatureInteraction) {
       return true
     }
     if (uniqueLayerIdFeatures[layerId] === undefined) {
-      uniqueLayerIdFeatures[layerId] = true
+      uniqueLayerIdFeatures[layerId] = id
       return true
     }
-    return false
+    return uniqueLayerIdFeatures[layerId] === id
   })
   return filtered
 }

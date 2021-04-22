@@ -1,5 +1,9 @@
 .popup {
   font: var(--font-S);
+  pointer-events: none;
+}
+
+.popup.click {
   pointer-events: all;
 }
 
@@ -235,5 +239,6 @@
 .hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip),
 .hover:global(.mapboxgl-popup.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip) {
   display: none;
+  border-width: 0 !important;
   pointer-events: none;
 }

@@ -55,6 +55,7 @@ export const selectMapLongitudeQuery = selectQueryParam('longitude')
 export const selectStartQuery = selectQueryParam('start')
 export const selectEndQuery = selectQueryParam('end')
 export const selectVessel = selectQueryParam('vessel')
+export const selectQuery = selectQueryParam('q')
 
 /**
  * get the start and end dates in string format

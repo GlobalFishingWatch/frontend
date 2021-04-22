@@ -1,5 +1,24 @@
 # @globalfishingwatch/layer-composer
 
+## 5.2.3
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/fourwings-aggregate@3.1.0
+
+## 5.2.2
+
+### Patch Changes
+
+- 8d08df8a: export CONFIG_BY_INTERVAL
+
+## 5.2.1
+
+### Patch Changes
+
+- c0dc95ec: restore uniqueFeatureInteraction with layer id checking
+
 ## 5.2.0
 
 ### Minor Changes

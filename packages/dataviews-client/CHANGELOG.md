@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.2.3
+
+### Patch Changes
+
+- e2c17324: fix crash when no dataset found
+
 ## 6.2.2
 
 ### Patch Changes

@@ -50,6 +50,7 @@ function HeatmapsSection(): React.ReactElement {
           ? getActivityDataviewInstance(usedRamps)
           : getPresenceDataviewInstance(usedRamps)
       upsertDataviewInstance(dataviewInstance)
+      setNewLayerOpen(false)
     },
     [dispatchQueryParams, dataviews, upsertDataviewInstance]
   )

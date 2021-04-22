@@ -1,5 +1,30 @@
 # @globalfishingwatch/react-hooks
 
+## 6.0.8
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/fourwings-aggregate@3.1.0
+  - @globalfishingwatch/layer-composer@5.2.3
+  - @globalfishingwatch/ui-components@2.18.8
+
+## 6.0.7
+
+### Patch Changes
+
+- Updated dependencies [8d08df8a]
+  - @globalfishingwatch/layer-composer@5.2.2
+  - @globalfishingwatch/ui-components@2.18.7
+
+## 6.0.6
+
+### Patch Changes
+
+- Updated dependencies [c0dc95ec]
+  - @globalfishingwatch/layer-composer@5.2.1
+  - @globalfishingwatch/ui-components@2.18.6
+
 ## 6.0.5
 
 ### Patch Changes
