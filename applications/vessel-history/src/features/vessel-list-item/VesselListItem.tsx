@@ -1,36 +1,39 @@
 import React, { Fragment } from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
+import { DateTime } from 'luxon'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { VesselSearch as Vessel } from '@globalfishingwatch/api-types'
 import { getFlagById } from 'utils/flags'
 import { getVesselAPISource } from 'utils/vessel'
 import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
-import I18nDate from 'features/i18n/i18nDate'
+import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from './VesselListItem.module.css'
-
 interface ListItemProps {
-  saved?: boolean
+  saved?: string
   vessel: Vessel
+  onDeleteClick?: () => void
 }
 
 const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
-  const vessel = props.vessel
+  const { vessel, onDeleteClick } = props
   if (!vessel) {
     return <div></div>
   }
 
   const flagLabel = getFlagById(vessel.flag)?.label
   const sourceAPI = getVesselAPISource(vessel)
+
   return (
     <div className={styles.vesselItem}>
-      {props.saved && (
+      {props.saved && onDeleteClick && (
         <IconButton
-          type="default"
+          type="warning"
           size="default"
           icon="delete"
-          className={styles.deleteSaved}
+          className={styles.remove}
+          onClick={onDeleteClick}
         ></IconButton>
       )}
       <Link
@@ -88,12 +91,12 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
             '-'
           )}
         </div>
-        {/* {props.saved && (
+        {props.saved && (
           <div>
             <label>{t('vessel.savedOn', 'saved on')}</label>
-            2020/08/01
+            {`${formatI18nDate(props.saved, { format: DateTime.DATETIME_MED })}`}
           </div>
-        )} */}
+        )}
       </div>
     </div>
   )

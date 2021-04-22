@@ -14,7 +14,7 @@ import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
 import { NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies'
 import { BackgroundSyncPlugin } from 'workbox-background-sync'
-import { API_GATEWAY } from 'data/constants'
+import { API_GATEWAY, LANDMASS_OFFLINE_GEOJSON } from 'data/constants'
 
 declare const self: ServiceWorkerGlobalScope
 
@@ -65,6 +65,9 @@ self.addEventListener('message', (event) => {
 
 // Any other custom service worker logic can go here.
 
+// Precache GeoJson for offline use
+precacheAndRoute([{ url: LANDMASS_OFFLINE_GEOJSON }])
+
 // Cache all requests to /public folder like /icons and manifest.jsonm
 registerRoute(
   ({ url }) =>
@@ -91,7 +94,7 @@ registerRoute(
     plugins: [
       // Ensure that once this runtime cache reaches a maximum size the
       // least-recently used fonts are removed.
-      new ExpirationPlugin({ maxEntries: 5 }),
+      new ExpirationPlugin({ maxEntries: 10 }),
       new BackgroundSyncPlugin('fonts-bg-sync', {
         maxRetentionTime: 24 * 60, // Retry for max of 24 Hours (specified in minutes)
       }),

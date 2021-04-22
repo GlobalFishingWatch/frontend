@@ -2,13 +2,18 @@ import React, { Fragment, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
-import { IconButton, Tabs } from '@globalfishingwatch/ui-components'
+import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import I18nDate from 'features/i18n/i18nDate'
 import { selectQueryParam, selectVesselProfileId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
-import { fetchVesselByIdThunk, selectVesselById } from 'features/vessels/vessels.slice'
+import {
+  fetchVesselByIdThunk,
+  selectVesselById,
+  selectVesselsStatus,
+} from 'features/vessels/vessels.slice'
 import Map from 'features/map/Map'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 
@@ -19,7 +24,8 @@ const Profile: React.FC = (props): React.ReactElement => {
   const [lastPosition] = useState(null)
   const q = useSelector(selectQueryParam('q'))
   const vesselProfileId = useSelector(selectVesselProfileId)
-
+  const vesselStatus = useSelector(selectVesselsStatus)
+  const loading = useMemo(() => vesselStatus === AsyncReducerStatus.LoadingItem, [vesselStatus])
   const vessel = useSelector(selectVesselById(vesselProfileId))
 
   useEffect(() => {
@@ -34,7 +40,7 @@ const Profile: React.FC = (props): React.ReactElement => {
         content: vessel ? (
           <Info vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
         ) : (
-          <Fragment />
+          <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
         ),
       },
       {
@@ -50,11 +56,11 @@ const Profile: React.FC = (props): React.ReactElement => {
             <Map />
           </div>
         ) : (
-          <Fragment />
+          <Fragment>{loading && <Spinner className={styles.spinnerFull}></Spinner>}</Fragment>
         ),
       },
     ],
-    [t, vessel, lastPosition, lastPortVisit]
+    [t, vessel, lastPosition, lastPortVisit, loading]
   )
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
@@ -71,10 +77,14 @@ const Profile: React.FC = (props): React.ReactElement => {
     [vessel]
   )
 
+  const backLink = useMemo(() => {
+    return q ? { type: HOME, replaceQuery: true, query: { q } } : { type: HOME }
+  }, [q])
+
   return (
     <Fragment>
       <header className={styles.header}>
-        <Link to={{ type: HOME, replaceQuery: true, query: { q } }}>
+        <Link to={backLink}>
           <IconButton
             type="border"
             size="default"
