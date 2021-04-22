@@ -4,6 +4,7 @@ import { DEFAULT_BACKGROUND_COLOR } from '..'
 
 export const API_ENDPOINTS = {
   tiles: '4wings/tile/heatmap/{z}/{x}/{y}',
+  breaks: '4wings/binds/{zoom}',
   statistics: '4wings/statistics',
 }
 

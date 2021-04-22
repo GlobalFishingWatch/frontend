@@ -116,9 +116,8 @@ export function getGeneratorConfig(
     case Generators.Type.HeatmapAnimated: {
       const isEnvironmentLayer = dataview.category === DataviewCategory.Environment
       let environmentalConfig: Partial<Generators.HeatmapAnimatedGeneratorConfig> = {}
+      const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
       if (isEnvironmentLayer) {
-        // TODO not exactly sure how to retrieve dataset properly
-        const dataset = dataview?.datasets && dataview?.datasets[0]
         const datasetsIds =
           dataview.config.datasets || dataview.datasetsConfig?.map((dc) => dc.datasetId)
         const sublayers: Generators.HeatmapAnimatedGeneratorSublayer[] = [
@@ -151,13 +150,20 @@ export function getGeneratorConfig(
         ...generator,
         ...environmentalConfig,
       }
-
+      const tilesAPI = dataset?.endpoints?.find(
+        (endpoint) => endpoint.id === EndpointId.FourwingsTiles
+      )
+      const breaksAPI = dataset?.endpoints?.find(
+        (endpoint) => endpoint.id === EndpointId.FourwingsBreaks
+      )
       const visible = generator.sublayers?.some(({ visible }) => visible === true)
       generator = {
         ...generator,
         visible,
         debug,
         debugLabels: debug,
+        tilesAPI,
+        breaksAPI,
         staticStart: timeRange?.start,
         staticEnd: timeRange?.end,
       }

@@ -266,6 +266,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   sublayers: HeatmapAnimatedGeneratorSublayer[]
   mode?: HeatmapAnimatedMode
   tilesAPI?: string
+  breaksAPI?: string
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
