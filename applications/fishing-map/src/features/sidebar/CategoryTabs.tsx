@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
@@ -15,8 +15,8 @@ import { isGuestUser } from 'features/user/user.selectors'
 import { LocaleLabels } from 'features/i18n/i18n'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
-import HelpModal from 'features/help/HelpModal'
-import FeedbackModal from 'features/feedback/FeedbackModal'
+// import HelpModal from 'features/help/HelpModal'
+// import FeedbackModal from 'features/feedback/FeedbackModal'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
@@ -53,15 +53,15 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     i18n.changeLanguage(lang)
   }
 
-  const [modalHelpOpen, setModalHelpOpen] = useState(false)
-  const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false)
+  // const [modalHelpOpen, setModalHelpOpen] = useState(false)
+  // const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false)
 
-  const onHelpClick = () => {
-    setModalHelpOpen(true)
-  }
-  const onFeedbackClick = () => {
-    setModalFeedbackOpen(true)
-  }
+  // const onHelpClick = () => {
+  //   setModalHelpOpen(true)
+  // }
+  // const onFeedbackClick = () => {
+  //   setModalFeedbackOpen(true)
+  // }
 
   const onCategoryClick = useCallback(() => {
     setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
@@ -94,7 +94,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           </li>
         ))}
         <div className={styles.separator}></div>
-        <li className={cx(styles.tab, styles.secondary)}>
+        {/* <li className={cx(styles.tab, styles.secondary)}>
           <button className={styles.tabContent} onClick={onHelpClick}>
             <Icon icon="help" />
           </button>
@@ -103,7 +103,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <button className={styles.tabContent} onClick={onFeedbackClick}>
             <Icon icon="feedback" />
           </button>
-        </li>
+        </li> */}
         <li className={cx(styles.tab, styles.languageToggle)}>
           <button className={styles.tabContent}>
             <Icon icon="language" />
@@ -148,8 +148,8 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           )}
         </li>
       </ul>
-      <HelpModal isOpen={modalHelpOpen} onClose={() => setModalHelpOpen(false)} />
-      <FeedbackModal isOpen={modalFeedbackOpen} onClose={() => setModalFeedbackOpen(false)} />
+      {/* <HelpModal isOpen={modalHelpOpen} onClose={() => setModalHelpOpen(false)} /> */}
+      {/* <FeedbackModal isOpen={modalFeedbackOpen} onClose={() => setModalFeedbackOpen(false)} /> */}
     </Fragment>
   )
 }
