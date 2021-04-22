@@ -31,6 +31,7 @@ import {
 import styles from './NewDataset.module.css'
 import DatasetFile from './DatasetFile'
 import DatasetConfig from './DatasetConfig'
+import DatasetTypeSelect from './DatasetTypeSelect'
 
 export type DatasetMetadata = {
   name: string
@@ -283,11 +284,15 @@ function NewDataset(): React.ReactElement {
         {datasetGeometryTypeConfirmed === false &&
         datasetCategory === DatasetCategory.Environment ? (
           <Fragment>
-            <div onChange={onDatasetTypeChange}>
+            <DatasetTypeSelect
+              onDatasetTypeChange={onDatasetTypeChange}
+              currentType={datasetGeometryType}
+            />
+            {/* <div onChange={onDatasetTypeChange}>
               <input type="radio" value="polygons" name="datasetType" /> Polygons
               <input type="radio" value="tracks" name="datasetType" /> Tracks/telemetry
               <input type="radio" value="points" name="datasetType" disabled /> Points (coming soon)
-            </div>
+            </div> */}
           </Fragment>
         ) : (
           <Fragment>
