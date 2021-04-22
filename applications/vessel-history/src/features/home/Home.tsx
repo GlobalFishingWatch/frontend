@@ -6,19 +6,20 @@ import { useTranslation } from 'react-i18next'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
 import { RESULTS_PER_PAGE } from 'data/constants'
-import {
-  getOffset,
-  getTotalResults,
-  getVesselsFound,
-  isSearching,
-  setOffset,
-} from 'features/search/search.slice'
+import { setOffset } from 'features/search/search.slice'
 import { logoutUserThunk } from 'features/user/user.slice'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
 import { selectQueryParam } from 'routes/routes.selectors'
+import {
+  getOffset,
+  getSearchMetadata,
+  getSearchResults,
+  getTotalResults,
+  isSearching,
+} from 'features/search/search.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from './Home.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
@@ -35,7 +36,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const searching = useSelector(isSearching)
-  const vessels = useSelector(getVesselsFound)
+  const vessels = useSelector(getSearchResults)
   const query = useSelector(selectQueryParam('q'))
   const offset = useSelector(getOffset)
   const totalResults = useSelector(getTotalResults)
@@ -121,7 +122,11 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
               )}
               {totalResults && !searching && vessels.length < totalResults && (
                 <div className={styles.listFooter}>
-                  <Button onClick={() => dispatch(setOffset(offset + RESULTS_PER_PAGE))}>
+                  <Button
+                    onClick={() =>
+                      dispatch(setOffset({ query, offset: offset + RESULTS_PER_PAGE }))
+                    }
+                  >
                     {t('search.loadMore', 'LOAD MORE')}
                   </Button>
                 </div>
