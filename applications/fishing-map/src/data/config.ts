@@ -1,5 +1,5 @@
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
-import { SelectOption } from '@globalfishingwatch/ui-components'
+import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
