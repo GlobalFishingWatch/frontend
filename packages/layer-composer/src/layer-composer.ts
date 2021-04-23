@@ -11,7 +11,12 @@ import {
   ExtendedStyleMeta,
   GeneratorPromise,
 } from './types'
-import { GlobalGeneratorConfig, AnyGeneratorConfig, Type } from './generators/types'
+import {
+  GlobalGeneratorConfig,
+  AnyGeneratorConfig,
+  Type,
+  GlobalGeneratorConfigExtended,
+} from './generators/types'
 import { isConfigVisible } from './generators/utils'
 
 export const DEFAULT_CONFIG = {
@@ -127,9 +132,9 @@ class LayerComposer {
   _getGlobalConfig = (config?: GlobalGeneratorConfig) => {
     if (!config) return {}
 
-    const newConfig = { ...config }
-    if (newConfig.zoom) {
-      newConfig.zoomLoadLevel = Math.floor(newConfig.zoom)
+    const newConfig: GlobalGeneratorConfigExtended = {
+      ...config,
+      zoomLoadLevel: Math.floor(config.zoom),
     }
     return newConfig
   }

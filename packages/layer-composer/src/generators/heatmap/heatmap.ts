@@ -2,7 +2,7 @@ import flatten from 'lodash/flatten'
 import zip from 'lodash/zip'
 import type { FillLayer, LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
-import { Type, HeatmapGeneratorConfig, GlobalGeneratorConfig } from '../types'
+import { Type, HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../layer-composer'
 import fetchStats from './util/fetch-stats'
@@ -11,7 +11,7 @@ import { StatsByZoom } from './types'
 import getBreaks from './util/get-breaks'
 import { toURLArray } from './util'
 
-export type GlobalHeatmapGeneratorConfig = HeatmapGeneratorConfig & GlobalGeneratorConfig
+export type GlobalHeatmapGeneratorConfig = MergedGeneratorConfig<HeatmapGeneratorConfig>
 
 class HeatmapGenerator {
   type = Type.Heatmap

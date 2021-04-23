@@ -3,7 +3,7 @@ import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
 import type { LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
-import { Type, TrackGeneratorConfig, GlobalGeneratorConfig } from '../types'
+import { Type, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { isConfigVisible } from '../utils'
 import segmentsToGeoJSON from './segments-to-geojson'
@@ -82,12 +82,14 @@ const getHighlightedLayer = (
 
 const DEFAULT_TRACK_COLOR = 'rgba(0, 193, 231, 1)'
 
+export type GlobalTrackGeneratorConfig = MergedGeneratorConfig<TrackGeneratorConfig>
+
 class TrackGenerator {
   type = Type.Track
   highlightSufix = '_highlighted'
   highlightEventSufix = `${this.highlightSufix}_event`
 
-  _getStyleSources = (config: TrackGeneratorConfig & GlobalGeneratorConfig) => {
+  _getStyleSources = (config: GlobalTrackGeneratorConfig) => {
     const defaultGeoJSON: FeatureCollection = {
       type: 'FeatureCollection',
       features: [],
@@ -150,7 +152,7 @@ class TrackGenerator {
     return sources
   }
 
-  _getStyleLayers = (config: TrackGeneratorConfig & GlobalGeneratorConfig): LineLayer[] => {
+  _getStyleLayers = (config: GlobalTrackGeneratorConfig): LineLayer[] => {
     const visibility = isConfigVisible(config)
     const layer: LineLayer = {
       id: config.id,
@@ -189,7 +191,7 @@ class TrackGenerator {
     return layers
   }
 
-  getStyle = (config: TrackGeneratorConfig & GlobalGeneratorConfig) => {
+  getStyle = (config: GlobalTrackGeneratorConfig) => {
     memoizeByLayerId(config.id, {
       convertToGeoJSON: memoizeOne(segmentsToGeoJSON),
       simplifyTrackWithZoomLevel: memoizeOne(simplifyTrackWithZoomLevel),

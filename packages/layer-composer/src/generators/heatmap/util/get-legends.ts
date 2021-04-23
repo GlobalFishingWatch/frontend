@@ -1,9 +1,11 @@
+import { Duration } from 'luxon'
 import { LayerMetadataLegend, LegendType } from '../../../types'
 import { ColorRampsIds, HeatmapAnimatedMode } from '../../types'
 import { HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_COLOR_RAMPS, GRID_AREA_BY_ZOOM_LEVEL } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
-import { Breaks } from './fetch-breaks'
+import { Breaks, USE_TEMPORAL_AGGREGATION_BREAKS } from './fetch-breaks'
 import getBreaks from './get-breaks'
+import { toDT } from './time-chunks'
 
 // Get color ramps for a config's sublayers
 export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
@@ -40,8 +42,18 @@ export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGenerato
   return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions[0] }
 }
 
-export const getSublayersBreaksByZoom = (breaks: Breaks | undefined, zoom: number) => {
-  return breaks?.map((bre) => bre.map((b) => b * Math.pow(1 / 4, zoom)))
+export const parseSublayersBreaks = (
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  breaks: Breaks | undefined
+) => {
+  const delta = +toDT(config.end) - +toDT(config.start)
+  const deltaInterval = Duration.fromMillis(delta).as(
+    USE_TEMPORAL_AGGREGATION_BREAKS ? 'years' : 'days'
+  )
+  debugger
+  return breaks?.map((bre) =>
+    bre.map((b) => deltaInterval * b * Math.pow(1 / 4, config.zoomLoadLevel))
+  )
 }
 
 // The following values simulate what would return a stats endpoint response
@@ -85,16 +97,16 @@ const getLegendsCompare = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks:
     const sublayerColorRamp = ramps[sublayerIndex]
     if (!sublayerColorRamp) return []
     let legendRamp = sublayerColorRamp.flatMap((rampColor, rampColorIndex) => {
-      const isLastColor = rampColorIndex === sublayerColorRamp.length - 1
+      // const isLastColor = rampColorIndex === sublayerColorRamp.length - 1
       const isFirstColor = rampColorIndex === 0
 
       const startColor = rampColor
-      const endColor = isLastColor ? startColor : sublayerColorRamp[rampColorIndex + 1]
+      // const endColor = isLastColor ? startColor : sublayerColorRamp[rampColorIndex + 1]
 
       const startBucket = isFirstColor
         ? Number.NEGATIVE_INFINITY
         : sublayerBreaks[rampColorIndex - 1]
-      const endBucket = isLastColor ? Number.POSITIVE_INFINITY : sublayerBreaks[rampColorIndex]
+      // const endBucket = isLastColor ? Number.POSITIVE_INFINITY : sublayerBreaks[rampColorIndex]
       const legendRampItem: [number | null | string, string] = [startBucket, startColor]
       return [legendRampItem]
     })

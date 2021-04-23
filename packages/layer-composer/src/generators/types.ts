@@ -31,8 +31,11 @@ export interface GlobalGeneratorConfig {
   start: string
   end: string
   zoom: number
-  zoomLoadLevel: number
   token?: string
+}
+
+export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
+  zoomLoadLevel: number
 }
 
 export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | null
@@ -61,7 +64,7 @@ export interface GeneratorConfig {
  * This is the union of GeneratorConfig <T> with GlobalGeneratorConfig, which allows access to both
  * generator config params and global config params, at the generator level
  */
-export type MergedGeneratorConfig<T> = T & GlobalGeneratorConfig
+export type MergedGeneratorConfig<T> = T & GlobalGeneratorConfigExtended
 
 /**
  * A solid color background layer
@@ -270,8 +273,8 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
-  tilesetsStart?: string
-  tilesetsEnd?: string
+  datasetsStart?: string
+  datasetsEnd?: string
   interactive?: boolean
   staticStart?: string
   staticEnd?: string
