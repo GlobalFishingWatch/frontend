@@ -31,6 +31,13 @@ const getTilesUrl = (config: HeatmapAnimatedGeneratorConfig): string => {
   return `${config.tilesAPI || `${API_GATEWAY}/${API_GATEWAY_VERSION}`}/${API_ENDPOINTS.tiles}`
 }
 
+const getSubLayersDatasets = (sublayers: HeatmapAnimatedGeneratorSublayer[]): string[] => {
+  return sublayers?.map((sublayer) => {
+    const sublayerDatasets = [...sublayer.datasets]
+    return sublayerDatasets.sort((a, b) => a.localeCompare(b)).join(',')
+  })
+}
+
 const getSubLayersVisible = (sublayers: HeatmapAnimatedGeneratorSublayer[]) =>
   sublayers.map((sublayer) => (sublayer.visible === false ? false : true))
 
@@ -88,10 +95,7 @@ class HeatmapAnimatedGenerator {
       return []
     }
 
-    const datasets = config.sublayers.map((sublayer) => {
-      const sublayerDatasets = [...sublayer.datasets]
-      return sublayerDatasets.sort((a, b) => a.localeCompare(b)).join(',')
-    })
+    const datasets = getSubLayersDatasets(config.sublayers)
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
     const visible = getSubLayersVisible(config.sublayers)
 
@@ -174,7 +178,7 @@ class HeatmapAnimatedGenerator {
 
   getCacheKey = (config: FetchBreaksParams) => {
     const { interval, sublayers } = config
-    const datasets = sublayers.flatMap((s) => s.datasets.flatMap((d) => d))
+    const datasets = getSubLayersDatasets(sublayers)
     return [...datasets, interval].join(',')
   }
 
@@ -241,7 +245,9 @@ class HeatmapAnimatedGenerator {
         resolve({ style: this.getStyle(finalConfig), config: finalConfig })
       })
       breaksPromise.catch((e: any) => {
-        this.breaksCache[cacheKey] = { loading: false, error: true }
+        if (e.name !== 'AbortError') {
+          this.breaksCache[cacheKey] = { loading: false, error: true }
+        }
         reject(e)
       })
     })
