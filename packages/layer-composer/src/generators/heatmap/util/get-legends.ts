@@ -3,8 +3,7 @@ import { LayerMetadataLegend, LegendType } from '../../../types'
 import { ColorRampsIds, HeatmapAnimatedMode } from '../../types'
 import { HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_COLOR_RAMPS, GRID_AREA_BY_ZOOM_LEVEL } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
-import { Breaks, USE_TEMPORAL_AGGREGATION_BREAKS } from './fetch-breaks'
-import getBreaks from './get-breaks'
+import { Breaks } from './fetch-breaks'
 import { toDT } from './time-chunks'
 
 // Get color ramps for a config's sublayers
@@ -42,47 +41,16 @@ export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGenerato
   return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions[0] }
 }
 
-export const parseSublayersBreaks = (
+export const getSublayersBreaks = (
   config: GlobalHeatmapAnimatedGeneratorConfig,
   breaks: Breaks | undefined
 ) => {
   const delta = +toDT(config.end) - +toDT(config.start)
-  const deltaInterval = Duration.fromMillis(delta).as(
-    USE_TEMPORAL_AGGREGATION_BREAKS ? 'years' : 'days'
-  )
-  debugger
+  // uses 'years' as breaks request a year with temporal-aggregation true
+  const deltaInterval = Duration.fromMillis(delta).as('years')
   return breaks?.map((bre) =>
     bre.map((b) => deltaInterval * b * Math.pow(1 / 4, config.zoomLoadLevel))
   )
-}
-
-// The following values simulate what would return a stats endpoint response
-const STATS_MIN = 1 // Min value for a single day
-const STATS_MAX = 50 // Max value for a single day
-const STATS_AVG = 10 // Avg value for a single day
-const SCALEPOWEXPONENT = 1
-
-export const getSublayersBreaks = (
-  config: GlobalHeatmapAnimatedGeneratorConfig,
-  intervalInDays: number
-) => {
-  // TODO - generate this using updated stats API ?
-  // TODO - For each sublayer a different set of breaks should be produced depending on filters
-  const ramps = getSublayersColorRamps(config)
-
-  const multiplier = intervalInDays * Math.pow(1 / 4, config.zoom) * 250
-
-  return config.sublayers.map((sublayer, sublayerIndex) => {
-    if (sublayer.breaks) return sublayer.breaks
-    const sublayerColorRamp = ramps[sublayerIndex]
-    const numBreaks =
-      config.mode === HeatmapAnimatedMode.Bivariate
-        ? 4
-        : sublayerColorRamp
-        ? sublayerColorRamp.length
-        : 6
-    return getBreaks(STATS_MIN, STATS_MAX, STATS_AVG, SCALEPOWEXPONENT, numBreaks, multiplier)
-  })
 }
 
 const getGridAreaByZoom = (zoom: number): number => {

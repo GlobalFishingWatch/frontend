@@ -1,4 +1,5 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
+import { DateTime } from 'luxon'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../../layer-composer'
 import { API_ENDPOINTS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
@@ -9,7 +10,7 @@ export type Breaks = number[][]
 
 export type FetchBreaksParams = Pick<
   GlobalHeatmapAnimatedGeneratorConfig,
-  'breaksAPI' | 'sublayers' | 'start' | 'end' | 'token'
+  'breaksAPI' | 'sublayers' | 'datasetsEnd' | 'token'
 > & { interval: Interval }
 
 const getBreaksUrl = (config: FetchBreaksParams): string => {
@@ -26,15 +27,16 @@ const getBreaksUrl = (config: FetchBreaksParams): string => {
 }
 
 const controllerCache: { [key: string]: AbortController } = {}
+
 export default function fetchBreaks(config: FetchBreaksParams) {
   const breaksUrl = new URL(getBreaksUrl(config))
-
-  breaksUrl.searchParams.set('temporal-aggregation', 'false')
+  breaksUrl.searchParams.set('temporal-aggregation', 'true')
   breaksUrl.searchParams.set('numBinds', '8')
-  breaksUrl.searchParams.set('interval', config.interval as Interval)
-  if (config.start && config.end) {
-    breaksUrl.searchParams.set('date-range', [config.start, config.end].join(','))
-  }
+  breaksUrl.searchParams.set('interval', 'day')
+  const end = DateTime.fromISO(config.datasetsEnd).toISODate()
+  const start = DateTime.fromISO(end).minus({ years: 1 }).toISODate()
+  // Requesting the latest dataset year to use as baseline
+  breaksUrl.searchParams.set('date-range', [start, end].join(','))
 
   const url = breaksUrl.toString()
   const { token, sublayers } = config

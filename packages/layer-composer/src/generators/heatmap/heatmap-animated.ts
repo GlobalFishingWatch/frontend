@@ -1,4 +1,5 @@
 import memoizeOne from 'memoize-one'
+import { DateTime } from 'luxon'
 import {
   GeomType,
   TileAggregationSourceParams,
@@ -16,7 +17,7 @@ import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
 import { TimeChunk, TimeChunks, getActiveTimeChunks, getDelta, Interval } from './util/time-chunks'
-import { getSublayersBreaks, getSublayersBreaksByZoom } from './util/get-legends'
+import { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
@@ -67,8 +68,8 @@ export const DEFAULT_HEATMAP_INTERVALS: Interval[] = ['hour', 'day', '10days']
 
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   mode: HeatmapAnimatedMode.Compare,
-  tilesetsStart: '2012-01-01T00:00:00.000Z',
-  tilesetsEnd: new Date().toISOString(),
+  datasetsStart: '2012-01-01T00:00:00.000Z',
+  datasetsEnd: DateTime.now().toUTC().toISO(),
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
   interval: DEFAULT_HEATMAP_INTERVALS,
@@ -177,9 +178,7 @@ class HeatmapAnimatedGenerator {
   }
 
   getCacheKey = (config: FetchBreaksParams) => {
-    const { interval, sublayers } = config
-    const datasets = getSubLayersDatasets(sublayers)
-    return [...datasets, interval].join(',')
+    return getSubLayersDatasets(config.sublayers).join(',')
   }
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
@@ -197,13 +196,13 @@ class HeatmapAnimatedGenerator {
       finalConfig.id,
       finalConfig.staticStart || finalConfig.start,
       finalConfig.staticEnd || finalConfig.end,
-      finalConfig.tilesetsStart,
-      finalConfig.tilesetsEnd,
+      finalConfig.datasetsStart,
+      finalConfig.datasetsEnd,
       finalConfig.interval
     )
 
     const breaksConfig = {
-      ...config,
+      ...finalConfig,
       interval: timeChunks.interval,
     }
 
@@ -211,8 +210,8 @@ class HeatmapAnimatedGenerator {
 
     const useSublayerBreaks = finalConfig.sublayers.some((s) => s.breaks?.length)
     const breaks = useSublayerBreaks
-      ? getSublayersBreaks(finalConfig, timeChunks.deltaInDays)
-      : getSublayersBreaksByZoom(this.breaksCache[cacheKey]?.breaks, finalConfig.zoomLoadLevel)
+      ? config.sublayers.map(({ breaks }) => breaks || [])
+      : getSublayersBreaks(finalConfig, this.breaksCache[cacheKey]?.breaks)
 
     const style = {
       id: finalConfig.id,
