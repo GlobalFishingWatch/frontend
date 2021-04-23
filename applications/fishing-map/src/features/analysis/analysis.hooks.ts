@@ -123,17 +123,19 @@ export const useFilteredTimeSeries = () => {
     }
   }, [simplifiedGeometry, sourcesMetadata, sourcesFeatures])
   const sourcesTimeseriesFiltered = useMemo(() => {
-    return sourcesTimeseries?.map((sourceTimeseries) => {
-      return {
-        ...sourceTimeseries,
-        timeseries: sourceTimeseries?.timeseries.filter((current: any) => {
-          const currentDate = DateTime.fromISO(current.date)
-          const startDate = DateTime.fromISO(start)
-          const endDate = DateTime.fromISO(end)
-          return currentDate >= startDate && currentDate < endDate
-        }),
-      }
-    })
+    if (start && end) {
+      return sourcesTimeseries?.map((sourceTimeseries) => {
+        return {
+          ...sourceTimeseries,
+          timeseries: sourceTimeseries?.timeseries.filter((current: any) => {
+            const currentDate = DateTime.fromISO(current.date)
+            const startDate = DateTime.fromISO(start)
+            const endDate = DateTime.fromISO(end)
+            return currentDate >= startDate && currentDate < endDate
+          }),
+        }
+      })
+    }
   }, [sourcesTimeseries, start, end])
   return { generatingTimeseries, haveSourcesLoaded, sourcesTimeseriesFiltered }
 }

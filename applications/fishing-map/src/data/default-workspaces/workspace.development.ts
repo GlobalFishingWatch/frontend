@@ -1,5 +1,5 @@
 import { Workspace } from '@globalfishingwatch/api-types'
-import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
+import { APP_NAME, DEFAULT_TIME_RANGE } from 'data/config'
 import {
   DEFAULT_CONTEXT_DATAVIEW_ID,
   DEFAULT_ENVIRONMENT_DATAVIEW_ID,
@@ -17,8 +17,8 @@ const workspace: Workspace<WorkspaceState> = {
   name: 'Default public Fishing Map workspace',
   description: DEFAULT_WORKSPACE_ID,
   category: WorkspaceCategories.FishingActivity,
-  startAt: new Date(Date.UTC(2018, 0, 1)).toISOString(),
-  endAt: DEFAULT_WORKSPACE.end,
+  startAt: DEFAULT_TIME_RANGE.start,
+  endAt: DEFAULT_TIME_RANGE.end,
   viewport: {
     zoom: 0,
     latitude: 30,

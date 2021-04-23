@@ -25,12 +25,12 @@ export const DEFAULT_VIEWPORT = {
   zoom: 1,
 }
 export const DEFAULT_TIME_RANGE = {
-  start: new Date(Date.UTC(2019, 0, 1)).toISOString(),
+  start: new Date(Date.UTC(2018, 0, 1)).toISOString(),
   end: end,
 }
+
 export const DEFAULT_WORKSPACE = {
   ...DEFAULT_VIEWPORT,
-  ...DEFAULT_TIME_RANGE,
   query: undefined,
   sidebarOpen: true,
   availableStart: new Date(Date.UTC(2012, 0, 1)).toISOString(),

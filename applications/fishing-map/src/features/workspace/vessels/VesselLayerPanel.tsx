@@ -47,7 +47,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const [infoOpen, setInfoOpen] = useState(false)
 
   const onFitBoundsClick = useCallback(() => {
-    if (trackResource?.data) {
+    if (trackResource?.data && start && end) {
       const filteredSegments = filterSegmentsByTimerange(trackResource?.data, { start, end })
       const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
       if (bbox) {
