@@ -82,9 +82,15 @@ export const resolveDataviewDatasetResource = (
   const datasetConfig = dataview?.datasetsConfig?.find(
     (datasetConfig) => datasetConfig.datasetId === dataset.id
   )
+  if (dataset.type === DatasetTypes.UserTracks) {
+    console.log('found dataset?', dataset, datasetConfig)
+  }
   if (!datasetConfig) return {}
   const url = resolveEndpoint(dataset, datasetConfig)
 
+  if (dataset.type === DatasetTypes.UserTracks) {
+    console.log('found dataset?', url)
+  }
   if (!url) return {}
 
   return { dataset, datasetConfig, url }

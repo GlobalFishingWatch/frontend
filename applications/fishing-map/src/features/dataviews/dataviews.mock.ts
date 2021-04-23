@@ -1,4 +1,4 @@
-import { Dataview } from '@globalfishingwatch/api-types/dist'
+import { Dataview, EndpointId } from '@globalfishingwatch/api-types/dist'
 
 export const dataviews: Dataview[] = [
   {
@@ -11,13 +11,7 @@ export const dataviews: Dataview[] = [
       color: '#F95E5E',
     },
     // category: 'environment',
-    datasetsConfig: [
-      {
-        params: [],
-        endpoint: 'user-tracks',
-        datasetId: '',
-      },
-    ],
+    datasetsConfig: [],
   },
 ]
 

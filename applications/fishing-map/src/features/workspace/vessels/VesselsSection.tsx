@@ -13,7 +13,6 @@ function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
-  console.log(dataviews)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const searchAllowed = useSelector(isSearchAllowed)
 
