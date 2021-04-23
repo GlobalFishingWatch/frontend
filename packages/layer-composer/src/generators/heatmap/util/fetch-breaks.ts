@@ -37,13 +37,13 @@ export default function fetchBreaks(config: FetchBreaksParams) {
   }
 
   const url = breaksUrl.toString()
-  const { token } = config
+  const { token, sublayers } = config
   if (controllerCache[url]) {
     controllerCache[url].abort()
   }
   // TODO review if we need to remove the controller once the request is finished to avoid memory leaks
   controllerCache[url] = new AbortController()
-  const promise = fetch(url, {
+  return fetch(url, {
     signal: controllerCache[url].signal,
     ...(token && {
       headers: {
@@ -59,12 +59,10 @@ export default function fetchBreaks(config: FetchBreaksParams) {
       const max = Math.max(...breaks.flatMap((b) => b))
       const maxBreaks = breaks.find((b, index) => b[breaks[index].length - 1] === max) || breaks[0]
       // We want to use the biggest break in every sublayer
-      return config.sublayers.map(() => maxBreaks)
+      return sublayers.map(() => maxBreaks)
     })
     .catch((e) => {
       console.warn(e)
       throw e
     })
-
-  return promise
 }

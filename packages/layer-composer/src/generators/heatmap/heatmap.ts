@@ -1,23 +1,22 @@
 import flatten from 'lodash/flatten'
 import zip from 'lodash/zip'
-import memoizeOne from 'memoize-one'
 import type { FillLayer, LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
 import { Type, HeatmapGeneratorConfig, GlobalGeneratorConfig } from '../types'
-import { memoizeByLayerId, memoizeCache, isUrlAbsolute } from '../../utils'
+import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../layer-composer'
 import fetchStats from './util/fetch-stats'
 import { HEATMAP_COLOR_RAMPS, HEATMAP_DEFAULT_MAX_ZOOM } from './config'
-import { statsByZoom } from './types'
+import { StatsByZoom } from './types'
 import getBreaks from './util/get-breaks'
 import { toURLArray } from './util'
 
-type GlobalHeatmapGeneratorConfig = HeatmapGeneratorConfig & GlobalGeneratorConfig
+export type GlobalHeatmapGeneratorConfig = HeatmapGeneratorConfig & GlobalGeneratorConfig
 
 class HeatmapGenerator {
   type = Type.Heatmap
   statsError = 0
-  stats: Record<string, statsByZoom> = {}
+  statsCache: Record<string, { loading: boolean; error: boolean; stats?: StatsByZoom }> = {}
 
   _getStyleSources = (config: GlobalHeatmapGeneratorConfig) => {
     if (!config.tilesUrl) {
@@ -63,23 +62,24 @@ class HeatmapGenerator {
     return rounded
   }
 
-  _getHeatmapLayers = (config: GlobalHeatmapGeneratorConfig): [FillLayer, LineLayer] => {
-    const colorRampType = config.colorRamp || 'presence'
+  getCacheKey = (config: GlobalHeatmapGeneratorConfig) => {
+    return config.id
+  }
 
-    let stops: number[] = []
-    const zoom = Math.min(Math.floor(config.zoom), config.maxZoom || HEATMAP_DEFAULT_MAX_ZOOM)
-    const statsByZoom = (this.stats[config.id] && this.stats[config.id][zoom]) || null
-    if (config.steps) {
-      stops = config.steps
-    } else if (statsByZoom) {
-      const { min, max, avg } = statsByZoom
-      if (min && max && avg) {
-        // Can't understand why steps as number[] doesn't work
-        const numBreaks: number | undefined = config.breaks || (config.steps as any)?.length || 8
-        stops = getBreaks(min, max, avg, config.scalePowExponent, numBreaks)
-      }
+  _getStyleLayers = (
+    config: GlobalHeatmapGeneratorConfig,
+    statsByZoom?: StatsByZoom
+  ): [FillLayer, LineLayer] => {
+    let stops = config.steps || []
+    const zoom = Math.min(config.zoomLoadLevel, config.maxZoom || HEATMAP_DEFAULT_MAX_ZOOM)
+    const stats = statsByZoom?.[zoom]
+    if (!stops?.length && stats) {
+      const { min, max, avg } = stats
+      const numBreaks = config.breaks || (config.steps as number[])?.length || 8
+      stops = getBreaks(min, max, avg, config.scalePowExponent, numBreaks)
     }
 
+    const colorRampType = config.colorRamp || 'presence'
     const pickValueAt = 'value'
     const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampType]
     const legendRamp = stops.length ? zip(stops, originalColorRamp) : []
@@ -115,7 +115,7 @@ class HeatmapGenerator {
           // TODO: It should be added on _applyGenericStyle from layers composer,
           // but it needs to be fixed to make it work
           generatorType: Type.Heatmap,
-          gridArea: statsByZoom && statsByZoom.area,
+          gridArea: stats?.area,
           currentlyAt: pickValueAt,
           group: config.metadata?.group || Group.Heatmap,
         },
@@ -145,66 +145,48 @@ class HeatmapGenerator {
     ]
   }
 
-  _getStyleLayers = (config: GlobalHeatmapGeneratorConfig) => {
+  getStyle = (config: GlobalHeatmapGeneratorConfig) => {
+    const style = {
+      id: config.id,
+      sources: this._getStyleSources(config),
+      layers: this._getStyleLayers(config),
+    }
+
     const hasDates = config.start !== undefined && config.end !== undefined
-    const fetchStats = config.fetchStats === true && config.statsUrl !== undefined
-    if (!fetchStats || !hasDates) {
-      return { layers: this._getHeatmapLayers(config) }
+    const needFetchStats = config.fetchStats === true && config.statsUrl !== undefined
+    const cacheKey = this.getCacheKey(config)
+    const statsCache = this.statsCache[cacheKey]
+
+    if (!needFetchStats || !hasDates || statsCache?.loading || statsCache?.error) {
+      return style
     }
 
-    const statsFilters = [config.filters, config.statsFilter].filter((f) => f).join(' AND ')
-    const dateRange = [config.start, config.end].join(',')
-    const statsUrl =
-      config.statsUrl && isUrlAbsolute(config.statsUrl as string)
-        ? config.statsUrl
-        : API_GATEWAY + config.statsUrl
-    const url = `${statsUrl}?${toURLArray('datasets', config.datasets)}`
-    // use statsError to invalidate cache and try again when it fails
-    // also params can't be named as needs to be independant params for memoization
-    const statsPromise = memoizeCache[config.id]._fetchStats(
-      url,
-      dateRange,
-      statsFilters,
-      true,
-      config.token,
-      this.statsError
-    )
-    const layers = this._getHeatmapLayers(config)
+    const statsByZoom = statsCache?.stats
 
-    if (statsPromise.resolved) {
-      return { layers }
+    if (statsByZoom) {
+      return {
+        ...style,
+        layers: this._getStyleLayers(config, statsByZoom),
+      }
     }
 
+    const statsPromise = fetchStats(config)
+
+    this.statsCache[cacheKey] = { loading: true, error: false }
     const promise = new Promise((resolve, reject) => {
-      statsPromise.then((stats: statsByZoom) => {
-        this.stats[config.id] = stats
-        if (this.statsError > 0) {
-          this.statsError = 0
-        }
+      statsPromise.then((stats: StatsByZoom) => {
+        this.statsCache[cacheKey] = { loading: false, error: false, stats }
         resolve({ style: this.getStyle(config), config })
       })
       statsPromise.catch((e: any) => {
         if (e.name !== 'AbortError') {
-          this.statsError++
+          this.statsCache[cacheKey] = { loading: false, error: true }
         }
         reject(e)
       })
     })
 
-    return { layers, promise }
-  }
-
-  getStyle = (config: GlobalHeatmapGeneratorConfig) => {
-    memoizeByLayerId(config.id, {
-      _fetchStats: memoizeOne(fetchStats),
-    })
-    const { layers, promise } = this._getStyleLayers(config)
-    return {
-      id: config.id,
-      sources: this._getStyleSources(config),
-      layers,
-      promise,
-    }
+    return { ...style, promise }
   }
 }
 

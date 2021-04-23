@@ -31,7 +31,7 @@ export interface GlobalGeneratorConfig {
   start: string
   end: string
   zoom: number
-  zoomLoadLevel?: number
+  zoomLoadLevel: number
   token?: string
 }
 

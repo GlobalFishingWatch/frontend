@@ -63,7 +63,7 @@ class CartoPolygonsGenerator {
           })
           const tiles = [`${CARTO_FISHING_MAP_API}/${layergroupid}/{z}/{x}/{y}.mvt`]
           this.tilesCacheByid[id] = tiles
-          return this.getStyle(config)
+          return { style: this.getStyle(config), config }
         } catch (e) {
           throw e
         }
