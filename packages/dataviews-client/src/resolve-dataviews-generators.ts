@@ -79,7 +79,9 @@ export function getGeneratorConfig(
       // Try to retrieve resource if it exists
       const { url: trackUrl } = resolveDataviewDatasetResource(
         dataview,
-        generator.isUserTrack ? DatasetTypes.UserTracks : DatasetTypes.Tracks
+        dataview.datasets && dataview.datasets[0].type === DatasetTypes.UserTracks
+          ? DatasetTypes.UserTracks
+          : DatasetTypes.Tracks
       )
       if (trackUrl && resources?.[trackUrl]) {
         const resource = resources?.[trackUrl] as Resource<TrackResourceData>

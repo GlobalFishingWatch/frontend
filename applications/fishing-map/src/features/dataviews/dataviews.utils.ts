@@ -123,7 +123,6 @@ export const getUserTrackDataviewInstance = (dataset: Dataset) => {
     id: `user-track-${dataset.id}`,
     dataviewId: DEFAULT_USER_TRACK_ID,
     config: {
-      isUserTrack: true,
       // TODO pick a not used color
       color: TrackColorBarOptions[Math.floor(Math.random() * TrackColorBarOptions.length)].value,
     },
