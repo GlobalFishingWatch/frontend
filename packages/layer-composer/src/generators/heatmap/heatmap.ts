@@ -186,7 +186,7 @@ class HeatmapGenerator {
         if (this.statsError > 0) {
           this.statsError = 0
         }
-        resolve(this.getStyle(config))
+        resolve({ style: this.getStyle(config), config })
       })
       statsPromise.catch((e: any) => {
         if (e.name !== 'AbortError') {

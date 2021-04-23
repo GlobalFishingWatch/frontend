@@ -238,7 +238,7 @@ class HeatmapAnimatedGenerator {
     const promise = new Promise((resolve, reject) => {
       breaksPromise.then((breaks) => {
         this.breaksCache[cacheKey] = { loading: false, error: false, breaks }
-        resolve(this.getStyle(finalConfig))
+        resolve({ style: this.getStyle(finalConfig), config: finalConfig })
       })
       breaksPromise.catch((e: any) => {
         this.breaksCache[cacheKey] = { loading: false, error: true }
