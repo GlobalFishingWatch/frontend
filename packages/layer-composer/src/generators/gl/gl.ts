@@ -1,5 +1,4 @@
 import { Type, GlGeneratorConfig } from '../types'
-import { isConfigVisible } from '../utils'
 
 class GlStyleGenerator {
   type = Type.GL
@@ -9,16 +8,12 @@ class GlStyleGenerator {
   }
 
   _getStyleLayers = (config: GlGeneratorConfig) => {
-    const layout = {
-      visibility: isConfigVisible(config),
-    }
     return (
       config.layers?.map((glLayer: any, i: number) => ({
         id: `${config.id}-${i}`,
         source: config.id,
         ...glLayer,
         layout: {
-          ...layout,
           ...glLayer.layout,
         },
         metadata: { ...glLayer.metadata, generatorId: config.id },

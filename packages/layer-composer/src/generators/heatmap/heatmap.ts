@@ -5,7 +5,6 @@ import type { FillLayer, LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
 import { Type, HeatmapGeneratorConfig, GlobalGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache, isUrlAbsolute } from '../../utils'
-import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
 import fetchStats from './util/fetch-stats'
 import { HEATMAP_COLOR_RAMPS, HEATMAP_DEFAULT_MAX_ZOOM } from './config'
@@ -96,16 +95,12 @@ class HeatmapGenerator {
       'fill-color': colorRamp,
     }
 
-    const visibility = isConfigVisible(config)
     return [
       {
         id: config.id,
         source: config.id,
         'source-layer': 'temporalgrid',
         type: 'fill',
-        layout: {
-          visibility,
-        },
         paint,
         metadata: {
           // TODO: support multiple legends by each datasets
