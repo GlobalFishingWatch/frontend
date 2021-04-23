@@ -1,5 +1,10 @@
 import { createSelector } from 'reselect'
-import { EndpointId, DataviewInstance, DataviewCategory } from '@globalfishingwatch/api-types'
+import {
+  EndpointId,
+  DataviewInstance,
+  DataviewCategory,
+  DatasetTypes,
+} from '@globalfishingwatch/api-types'
 import {
   resolveDataviews,
   UrlDataviewInstance,
@@ -94,10 +99,22 @@ export const selectDataviewInstancesByIds = (ids: string[]) => {
   })
 }
 
-export const selectVesselsDataviews = createSelector(
+const selectTrackDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.Track)],
   (dataviews) => dataviews
 )
+
+export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
+  return dataviews?.filter(
+    (dataview) => !dataview.datasets || dataview.datasets[0].type !== DatasetTypes.UserTracks
+  )
+})
+
+export const selectUserTracksDataviews = createSelector([selectTrackDataviews], (dataviews) => {
+  return dataviews?.filter(
+    (dataview) => dataview.datasets && dataview.datasets[0].type === DatasetTypes.UserTracks
+  )
+})
 
 export const selectActiveVesselsDataviews = createSelector([selectVesselsDataviews], (dataviews) =>
   dataviews?.filter((d) => d.config?.visible)
@@ -123,6 +140,14 @@ export const selectActiveActivityDataviews = createSelector(
 export const selectEnvironmentalDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
   (dataviews) => dataviews
+)
+export const selectEnvironmentalDataviewsAndUserTracks = createSelector(
+  [selectEnvironmentalDataviews, selectUserTracksDataviews],
+  (environmentalDataviews, userTracksDataviews) => {
+    const environmentalDataviews_ = environmentalDataviews || []
+    const userTracksDataviews_ = userTracksDataviews || []
+    return [...environmentalDataviews_, ...userTracksDataviews_]
+  }
 )
 
 export const selectHasAnalysisLayersVisible = createSelector(
