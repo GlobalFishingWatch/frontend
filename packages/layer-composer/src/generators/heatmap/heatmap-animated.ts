@@ -208,7 +208,7 @@ class HeatmapAnimatedGenerator {
     const useSublayerBreaks = finalConfig.sublayers.some((s) => s.breaks?.length)
     const breaks = useSublayerBreaks
       ? getSublayersBreaks(finalConfig, timeChunks.deltaInDays)
-      : getSublayersBreaksByZoom(this.breaksCache[cacheKey]?.breaks, finalConfig.zoom)
+      : getSublayersBreaksByZoom(this.breaksCache[cacheKey]?.breaks, finalConfig.zoomLoadLevel)
 
     const style = {
       id: finalConfig.id,
