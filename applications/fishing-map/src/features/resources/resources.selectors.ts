@@ -18,9 +18,10 @@ export const selectDataviewsResourceQueries = createSelector(
 
       let trackQuery: any = [] // initialized as empty array to be filtered by flatMap if not used
       if (dataview.config.visible === true) {
-        const datasetType = dataview.config.isUserTrack
-          ? DatasetTypes.UserTracks
-          : DatasetTypes.Tracks
+        const datasetType =
+          dataview.datasets && dataview.datasets[0].type === DatasetTypes.UserTracks
+            ? DatasetTypes.UserTracks
+            : DatasetTypes.Tracks
         const trackResource = resolveDataviewDatasetResource(dataview, datasetType)
         if (trackResource.url && trackResource.dataset && trackResource.datasetConfig) {
           trackQuery = {
