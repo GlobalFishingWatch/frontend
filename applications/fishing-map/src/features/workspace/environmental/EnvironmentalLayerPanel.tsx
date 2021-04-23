@@ -61,7 +61,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
 
   const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
+    (d) =>
+      d.type === DatasetTypes.Fourwings ||
+      d.type === DatasetTypes.Context ||
+      d.type === DatasetTypes.UserTracks
   )
   useAutoRefreshImportingDataset(dataset)
   const isCustomUserLayer = dataset?.ownerId === userId
@@ -73,6 +76,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const title = isCustomUserLayer
     ? dataset?.name || dataset?.id
     : t(`datasets:${dataset?.id}.name` as any)
+
   const TitleComponent = (
     <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
       {title}
