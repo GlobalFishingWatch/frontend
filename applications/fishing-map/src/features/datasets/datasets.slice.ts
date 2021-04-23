@@ -118,19 +118,25 @@ export const createDatasetThunk = createAsyncThunk<
       body: datasetWithFilePath as any,
     })
 
-    // TODO Use this hack also infetchDatasetsByIdsThunk ??
+    // TODO Use this also infetchDatasetsByIdsThunk ??
     // TODO Properly configure the endpoint on the API side
-    if (dataset.type === DatasetTypes.UserTracks) {
-      createdDataset.endpoints = [
-        {
-          id: EndpointId.UserTracks,
-          pathTemplate: `https://storage.googleapis.com/raul-import/${createdDataset.configuration?.filePath}`,
-          downloadable: true,
-          params: [],
-          query: [],
-        },
-      ]
-    }
+    // if (dataset.type === DatasetTypes.UserTracks) {
+    //   createdDataset.endpoints = [
+    //     {
+    // id: EndpointId.UserTracks,
+    //       pathTemplate: '/v1/datasets/{{id}}/tracks',
+    //       downloadable: true,
+    //       params: [
+    //         {
+    //           label: 'id',
+    //           id: 'id',
+    //           type: 'string',
+    //         },
+    //       ],
+    //       query: [],
+    //     },
+    //   ]
+    // }
     return createdDataset
   } catch (e) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })

@@ -1,5 +1,6 @@
 import {
   Dataset,
+  DatasetTypes,
   DataviewCategory,
   DataviewInstance,
   EndpointId,
@@ -116,7 +117,7 @@ export const getUserTrackDataviewInstance = (dataset: Dataset) => {
     {
       datasetId: dataset.id,
       endpoint: EndpointId.UserTracks,
-      params: [],
+      params: [{ id: 'id', value: dataset.id }],
     },
   ]
   const dataviewInstance = {

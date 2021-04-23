@@ -241,6 +241,7 @@ class TrackGenerator {
       getHighlightedData: memoizeOne(getHighlightedData),
       getHighlightedEventData: memoizeOne(getHighlightedData),
     })
+    console.log(config)
     const { sources, uniqIds } = this._getStyleSources(config)
     return {
       id: config.id,
