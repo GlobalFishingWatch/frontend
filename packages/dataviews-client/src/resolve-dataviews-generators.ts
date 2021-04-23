@@ -46,6 +46,32 @@ type DataviewsGeneratorConfigsParams = {
 
 type DataviewsGeneratorResource = Record<string, Resource>
 
+const getUTCDate = (timestamp: number) => {
+  const date = new Date(timestamp)
+  return new Date(
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes()
+    )
+  )
+}
+
+const getDatasetsExtent = (datasets: Dataset[] | undefined) => {
+  const startRanges = datasets?.flatMap((d) =>
+    d?.startDate ? new Date(d.startDate).getTime() : []
+  )
+  const endRanges = datasets?.flatMap((d) => (d?.endDate ? new Date(d.endDate).getTime() : []))
+  const extentStart = startRanges?.length
+    ? getUTCDate(Math.min(...startRanges)).toISOString()
+    : undefined
+  const extentEnd = endRanges?.length ? getUTCDate(Math.max(...endRanges)).toISOString() : undefined
+
+  return { extentStart, extentEnd }
+}
+
 export function getGeneratorConfig(
   dataview: UrlDataviewInstance,
   params?: DataviewsGeneratorConfigsParams,
@@ -94,6 +120,7 @@ export function getGeneratorConfig(
       const statsEndpoint = heatmapDataset?.endpoints?.find(
         (endpoint) => endpoint.id === EndpointId.FourwingsLegend
       )
+
       generator = {
         ...generator,
         maxZoom: 8,
@@ -157,6 +184,8 @@ export function getGeneratorConfig(
         (endpoint) => endpoint.id === EndpointId.FourwingsBreaks
       )
       const visible = generator.sublayers?.some(({ visible }) => visible === true)
+      const { extentStart, extentEnd } = getDatasetsExtent(dataview.datasets)
+
       generator = {
         ...generator,
         visible,
@@ -164,6 +193,8 @@ export function getGeneratorConfig(
         debugLabels: debug,
         tilesAPI,
         breaksAPI,
+        ...(extentStart && { datasetsStart: extentStart }),
+        ...(extentEnd && { datasetsEnd: extentEnd }),
         staticStart: timeRange?.start,
         staticEnd: timeRange?.end,
       }
