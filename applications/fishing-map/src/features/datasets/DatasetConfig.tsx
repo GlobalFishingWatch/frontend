@@ -6,13 +6,13 @@ import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import {
   AnyDatasetConfiguration,
   DatasetCategory,
+  DatasetGeometryType,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
 import Select from '@globalfishingwatch/ui-components/dist/select'
 import { capitalize } from 'utils/shared'
 import { DatasetMetadata } from './NewDataset'
 import styles from './NewDataset.module.css'
-import { DatasetGeometryType } from './datasets.hook'
 
 const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection) => {
   if (!geojson?.features) return []
@@ -90,6 +90,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           label={t('dataset.featuresNameField', 'Features name field')}
           placeholder={t('selects.placeholder', 'Select an option')}
           options={fieldsOptions}
+          className={styles.input}
           selectedOption={fieldsOptions.find(
             ({ id }) => id === metadata.configuration?.propertyToInclude
           )}
@@ -107,7 +108,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
             {t('dataset.colorByValue', 'Color features by value')}
           </label>
           <Select
-            className={styles.selectShort}
+            className={cx(styles.selectShort, styles.input)}
             placeholder={t('selects.placeholder', 'Select an option')}
             containerClassName={styles.selectContainer}
             options={fieldsOptions}
@@ -169,7 +170,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
       )}
       {datasetCategory === DatasetCategory.Environment && datasetGeometryType === 'tracks' && (
         <Fragment>
-          <div className={styles.multipleSelectContainer}>
+          <div className={cx(styles.multipleSelectContainer, styles.input)}>
             <Select
               label={t('dataset.latitudeNameField', 'Latitude field')}
               placeholder={t('selects.placeholder', 'Select an option')}
@@ -202,6 +203,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
           <Select
             label={t('dataset.timeNameField', 'Time field')}
             placeholder={t('selects.placeholder', 'Select an option')}
+            className={styles.input}
             options={fieldsOptions}
             selectedOption={fieldsOptions.find(
               ({ id }) => id === metadata.configuration?.timestamp
@@ -214,7 +216,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
             }}
           />
           <Select
-            label={`${t('dataset.individualIdField', 'Individual ID field')} + (${t(
+            label={`${t('dataset.individualIdField', 'Individual ID field')} (${t(
               'common.optional',
               'Optional'
             )})`}
