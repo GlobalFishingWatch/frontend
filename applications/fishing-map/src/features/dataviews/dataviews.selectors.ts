@@ -141,14 +141,6 @@ export const selectEnvironmentalDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
   (dataviews) => dataviews
 )
-export const selectEnvironmentalDataviewsAndUserTracks = createSelector(
-  [selectEnvironmentalDataviews, selectUserTracksDataviews],
-  (environmentalDataviews, userTracksDataviews) => {
-    const environmentalDataviews_ = environmentalDataviews || []
-    const userTracksDataviews_ = userTracksDataviews || []
-    return [...environmentalDataviews_, ...userTracksDataviews_]
-  }
-)
 
 export const selectHasAnalysisLayersVisible = createSelector(
   [selectActivityDataviews, selectEnvironmentalDataviews],
