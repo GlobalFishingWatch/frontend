@@ -1,13 +1,19 @@
 import { Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
 import {
+  WorkspaceCategories,
+  DEFAULT_WORKSPACE_ID,
+  DEFAULT_EEZ_DATAVIEW_ID,
+  DEFAULT_MPA_DATAVIEW_ID,
+  DEFAULT_RFMO_DATAVIEW_ID,
+  DEFAULT_VESSEL_DATAVIEW_ID,
+  DEFAULT_BASEMAP_DATAVIEW_ID,
   DEFAULT_CONTEXT_DATAVIEW_ID,
-  DEFAULT_ENVIRONMENT_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_PRESENCE_DATAVIEW_ID,
-  DEFAULT_VESSEL_DATAVIEW_ID,
-  DEFAULT_WORKSPACE_ID,
-  WorkspaceCategories,
+  DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
+  DEFAULT_ENVIRONMENT_DATAVIEW_ID,
+  DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
 } from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
@@ -36,14 +42,14 @@ const workspace: Workspace<WorkspaceState> = {
   ownerId: 0,
   dataviews: [
     { id: DEFAULT_VESSEL_DATAVIEW_ID }, // Fetch vessel information
-    { id: DEFAULT_PRESENCE_DATAVIEW_ID }, // Default dataview for new presence layers
     { id: DEFAULT_CONTEXT_DATAVIEW_ID }, // Default context dataview for new layers
+    { id: DEFAULT_PRESENCE_DATAVIEW_ID }, // If not present the add activity tooltip layer won't appear
     { id: DEFAULT_ENVIRONMENT_DATAVIEW_ID }, // Default environmet dataview for new layers
   ],
   dataviewInstances: [
     {
       id: 'basemap',
-      dataviewId: 90,
+      dataviewId: DEFAULT_BASEMAP_DATAVIEW_ID,
     },
     {
       id: 'fishing-1',
@@ -59,7 +65,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#069688',
         visible: true,
       },
-      dataviewId: 94,
+      dataviewId: DEFAULT_EEZ_DATAVIEW_ID,
     },
     {
       id: 'context-layer-mpa-no-take',
@@ -67,7 +73,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#F4511F',
         visible: false,
       },
-      dataviewId: 99,
+      dataviewId: DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
     },
     {
       id: 'context-layer-mpa-restricted',
@@ -75,7 +81,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#F09300',
         visible: false,
       },
-      dataviewId: 100,
+      dataviewId: DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
     },
     {
       id: 'context-layer-mpa',
@@ -83,7 +89,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#1AFF6B',
         visible: false,
       },
-      dataviewId: 98,
+      dataviewId: DEFAULT_MPA_DATAVIEW_ID,
     },
     {
       id: 'context-layer-rfmo',
@@ -91,7 +97,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#6b67e5',
         visible: false,
       },
-      dataviewId: 95,
+      dataviewId: DEFAULT_RFMO_DATAVIEW_ID,
     },
     {
       id: 'context-layer-wpp-nri',
@@ -107,15 +113,6 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: 97,
     },
-    // {
-    //   id: 'salinity-for-caribe',
-    //   config: {
-    //     visible: true,
-    //     color: '#FFAE9B',
-    //     colorRamp: 'salmon',
-    //   },
-    //   dataviewId: 80,
-    // },
   ],
 }
 
