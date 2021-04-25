@@ -2,9 +2,9 @@ import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDropzone } from 'react-dropzone'
 import cx from 'classnames'
+import { DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { ReactComponent as FilesSupportedPolygonsIcon } from 'assets/icons/files-supported-polygons.svg'
 import { ReactComponent as FilesSupportedTracksIcon } from 'assets/icons/files-supported-tracks.svg'
-import { DatasetGeometryType } from './datasets.hook'
 import styles from './NewDataset.module.css'
 
 interface DatasetFileProps {

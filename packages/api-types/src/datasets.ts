@@ -56,13 +56,14 @@ export enum DatasetStatus {
   Error = 'error',
 }
 
-export type DatasetCustomTypes = 'points' | 'lines' | 'geometries'
+export type DatasetGeometryType = 'polygons' | 'tracks' | 'points'
+
 export interface DatasetConfiguration {
   index?: string
   filePath?: string
   srid?: number
   file?: string
-  type?: DatasetCustomTypes
+  geometryType?: DatasetGeometryType
   format?: 'geojson'
   [key: string]: unknown
 }

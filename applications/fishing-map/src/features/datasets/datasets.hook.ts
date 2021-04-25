@@ -34,7 +34,6 @@ import {
 } from './datasets.slice'
 
 const DATASET_REFRESH_TIMEOUT = 10000
-export type DatasetGeometryType = 'polygons' | 'tracks' | 'points'
 
 export const useNewDatasetConnect = () => {
   const contextDataviews = useSelector(selectContextAreasDataviews)
@@ -43,17 +42,24 @@ export const useNewDatasetConnect = () => {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const addNewDatasetToWorkspace = useCallback(
-    (dataset: Dataset, geometryType?: DatasetGeometryType | null) => {
+    (dataset: Dataset) => {
       let dataviewInstance
+      debugger
       if (dataset.category === DatasetCategory.Context) {
         const usedColors = contextDataviews?.flatMap((dataview) => dataview.config?.color || [])
         dataviewInstance = getContextDataviewInstance(dataset.id, usedColors)
-      } else if (dataset.category === DatasetCategory.Environment && geometryType === 'polygons') {
+      } else if (
+        dataset.category === DatasetCategory.Environment &&
+        dataset.configuration?.geometryType === 'polygons'
+      ) {
         const usedRamps = [...(enviromentalDataviews || []), ...(activityDataviews || [])].flatMap(
           (dataview) => dataview.config?.colorRamp || []
         )
         dataviewInstance = getEnvironmentDataviewInstance(dataset.id, usedRamps)
-      } else if (dataset.category === DatasetCategory.Environment && geometryType === 'tracks') {
+      } else if (
+        dataset.category === DatasetCategory.Environment &&
+        dataset.configuration?.geometryType === 'tracks'
+      ) {
         dataviewInstance = getUserTrackDataviewInstance(dataset)
       }
       if (dataviewInstance) {
