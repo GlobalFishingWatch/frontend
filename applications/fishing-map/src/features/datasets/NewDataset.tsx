@@ -137,8 +137,7 @@ function NewDataset(): React.ReactElement {
           name: metadataName,
           type: DatasetTypes.UserTracks,
           category: datasetCategory,
-          // eslint-disable-next-line
-          fields: meta!.fields,
+          fields: meta?.fields,
           guessedFields: guessedColumns,
           configuration: {
             latitude: guessedColumns.latitude,
@@ -184,8 +183,8 @@ function NewDataset(): React.ReactElement {
             ...newMetadata.configuration,
           } as any)
           if (errors.length) {
-            // TODO i18n
-            error = `error with fields: ${errors}`
+            const fields = errors.map((error) => t(`common.${error}` as any, error)).join(',')
+            error = t('errors.fields', { fields, defaultValue: `Error with fields: ${fields}` })
           }
         }
       }
@@ -204,16 +203,24 @@ function NewDataset(): React.ReactElement {
           !metadata.configuration?.longitude ||
           !metadata.configuration?.timestamp
         ) {
-          // TODO i18n
-          validityError = 'latitude. longitude and timestamp are required fields'
+          const fields = ['latitude', 'longitude', 'timestamp'].map((f) =>
+            t(`common.${f}` as any, f)
+          )
+          validityError = t('dataset.requiredFields', {
+            fields,
+            defaultValue: `Required fields ${fields}`,
+          }) as string
         } else {
           const errors = checkRecordValidity({
             record: (fileData as CSV)[0],
             ...metadata.configuration,
           } as any)
           if (errors.length) {
-            // TODO i18n
-            validityError = `error with fields: ${errors}`
+            const fields = errors.map((error) => t(`common.${error}` as any, error)).join(',')
+            validityError = t('errors.fields', {
+              fields,
+              defaultValue: `Error with fields: ${fields}`,
+            }) as string
           } else {
             const segments = csvToTrackSegments({
               records: fileData as CSV,

@@ -1,5 +1,6 @@
 import cx from 'classnames'
 import { ReactComponentElement } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ReactComponent as Polygons } from 'assets/icons/dataset-type-polygons.svg'
 import { ReactComponent as Tracks } from 'assets/icons/dataset-type-tracks.svg'
 import { ReactComponent as Points } from 'assets/icons/dataset-type-points.svg'
@@ -41,30 +42,36 @@ const DatasetTypeSelect = ({
   onDatasetTypeChange: (e: any) => void
   currentType: DatasetGeometryType | null
 }) => {
+  const { t } = useTranslation()
   return (
     <div className={styles.wrapper} onChange={onDatasetTypeChange}>
       <DatasetType
         id="polygons"
-        title="Polygons"
-        description="Display one or multiple areas
-        coloured by any quantitative value
-        in your dataset."
+        title={t('dataset.typePolygons', 'Polygons')}
+        description={t(
+          'dataset.typePolygonsDescription',
+          'Display one or multiple areas coloured by any quantitative value in your dataset.'
+        )}
         icon={<Polygons />}
         selected={currentType === 'polygons'}
       />
       <DatasetType
         id="tracks"
-        title="Tracks"
-        description="Display the movement of one or multiple animals or vessels."
+        title={t('dataset.typeTracks', 'Tracks')}
+        description={t(
+          'dataset.typePolygonsDescription',
+          'Display the movement of one or multiple animals or vessels.'
+        )}
         icon={<Tracks />}
         selected={currentType === 'tracks'}
       />
       <DatasetType
         id="points"
-        title="Points (coming soon)"
-        description="Display one or multiple positions
-        sized by any quantitative value
-        in your dataset."
+        title={t('dataset.typePoints', 'Points (coming soon)')}
+        description={t(
+          'dataset.typePolygonsDescription',
+          'Display one or multiple positions sized by any quantitative value in your dataset.'
+        )}
         icon={<Points />}
         selected={currentType === 'points'}
         disabled={true}

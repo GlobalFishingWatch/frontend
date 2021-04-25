@@ -171,10 +171,8 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
         <Fragment>
           <div className={styles.multipleSelectContainer}>
             <Select
-              // TODO
-              label="Positions field"
-              // TODO
-              placeholder="latitude"
+              label={t('dataset.latitudeNameField', 'Latitude field')}
+              placeholder={t('selects.placeholder', 'Select an option')}
               options={fieldsOptions}
               selectedOption={fieldsOptions.find(
                 ({ id }) => id === metadata.configuration?.latitude
@@ -187,8 +185,8 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
               }}
             />
             <Select
-              // TODO
-              placeholder="longitude"
+              label={t('dataset.longitudeNameField', 'Longitude field')}
+              placeholder={t('selects.placeholder', 'Select an option')}
               options={fieldsOptions}
               selectedOption={fieldsOptions.find(
                 ({ id }) => id === metadata.configuration?.longitude
@@ -202,8 +200,7 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
             />
           </div>
           <Select
-            // TODO
-            label="Time field"
+            label={t('dataset.timeNameField', 'Time field')}
             placeholder={t('selects.placeholder', 'Select an option')}
             options={fieldsOptions}
             selectedOption={fieldsOptions.find(
@@ -217,8 +214,10 @@ const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
             }}
           />
           <Select
-            // TODO
-            label="Individual ID field (optional)"
+            label={`${t('dataset.individualIdField', 'Individual ID field')} + (${t(
+              'common.optional',
+              'Optional'
+            )})`}
             placeholder={t('selects.placeholder', 'Select an option')}
             options={fieldsOptions}
             selectedOption={fieldsOptions.find(({ id }) => id === metadata.configuration?.id)}
