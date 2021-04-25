@@ -9,6 +9,8 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import {
   AnyDatasetConfiguration,
   DatasetCategory,
+  DatasetConfiguration,
+  DatasetGeometryType,
   DatasetTypes,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
@@ -22,12 +24,7 @@ import { capitalize } from 'utils/shared'
 import { SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { readBlobAs } from 'utils/files'
-import {
-  useDatasetsAPI,
-  useDatasetModalConnect,
-  useNewDatasetConnect,
-  DatasetGeometryType,
-} from './datasets.hook'
+import { useDatasetsAPI, useDatasetModalConnect, useNewDatasetConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 import DatasetFile from './DatasetFile'
 import DatasetConfig from './DatasetConfig'
@@ -36,6 +33,7 @@ import DatasetTypeSelect from './DatasetTypeSelect'
 export type DatasetMetadata = {
   name: string
   description?: string
+  category: DatasetCategory
   type: DatasetTypes
   configuration?: AnyDatasetConfiguration
   fields?: string[]
@@ -143,12 +141,13 @@ function NewDataset(): React.ReactElement {
             latitude: guessedColumns.latitude,
             longitude: guessedColumns.longitude,
             timestamp: guessedColumns.timestamp,
-          },
-        } as any) // TODO
+            geometryType: datasetGeometryType,
+          } as DatasetConfiguration,
+        })
       }
       setLoading(false)
     },
-    [t, datasetCategory, metadata]
+    [datasetCategory, t, metadata, datasetGeometryType]
   )
 
   const onDatasetFieldChange = (field: DatasetMetadata | AnyDatasetConfiguration) => {
@@ -252,7 +251,7 @@ function NewDataset(): React.ReactElement {
       } else if (payload) {
         if (locationType === 'HOME' || locationType === 'WORKSPACE') {
           const dataset = { ...payload }
-          addNewDatasetToWorkspace(dataset, datasetGeometryType)
+          addNewDatasetToWorkspace(dataset)
         }
         onClose()
       }
@@ -295,11 +294,6 @@ function NewDataset(): React.ReactElement {
               onDatasetTypeChange={onDatasetTypeChange}
               currentType={datasetGeometryType}
             />
-            {/* <div onChange={onDatasetTypeChange}>
-              <input type="radio" value="polygons" name="datasetType" /> Polygons
-              <input type="radio" value="tracks" name="datasetType" /> Tracks/telemetry
-              <input type="radio" value="points" name="datasetType" disabled /> Points (coming soon)
-            </div> */}
           </Fragment>
         ) : (
           <Fragment>

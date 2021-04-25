@@ -1,10 +1,10 @@
 import cx from 'classnames'
 import { ReactComponentElement } from 'react'
 import { useTranslation } from 'react-i18next'
+import { DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { ReactComponent as Polygons } from 'assets/icons/dataset-type-polygons.svg'
 import { ReactComponent as Tracks } from 'assets/icons/dataset-type-tracks.svg'
 import { ReactComponent as Points } from 'assets/icons/dataset-type-points.svg'
-import { DatasetGeometryType } from './datasets.hook'
 import styles from './DatasetTypeSelect.module.css'
 
 const DatasetType = ({
