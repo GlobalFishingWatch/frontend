@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { Fragment, useEffect } from 'react'
-=======
 import React, { Fragment, useEffect, useState } from 'react'
->>>>>>> 14964906... improved vessel search
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
