@@ -2,6 +2,7 @@ import { scaleLinear, scalePow } from 'd3-scale'
 import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
 import uniq from 'lodash/uniq'
+import convert from 'color-convert'
 import type { LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { Group } from '../../types'
@@ -10,15 +11,6 @@ import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { isConfigVisible } from '../utils'
 import filterGeoJSONByTimerange from './filterGeoJSONByTimerange'
 import { simplifyTrack } from './simplify-track'
-
-const LINE_STYLES = {
-  'line-width': [1, 2.5, 4, 5.5],
-  'line-opacity': [1, 0.75, 0.5, 0.25],
-}
-const BASE_LINE_STYLE = {
-  'line-width': LINE_STYLES['line-width'][0],
-  'line-opacity': LINE_STYLES['line-opacity'][0],
-}
 
 const mapZoomToMinPosΔ = (zoomLoadLevel: number) => {
   // first normalize and invert z level
@@ -170,33 +162,29 @@ class TrackGenerator {
     config: TrackGeneratorConfig & GlobalGeneratorConfig,
     uniqIds: string[]
   ): LineLayer[] => {
-    let paint = {
+    const paint = {
       'line-color': config.color || DEFAULT_TRACK_COLOR,
+      'line-width': 1.5,
+      'line-opacity': 1,
     }
+
     if (uniqIds.length > 1) {
-      const extraStyles = Object.fromEntries(
-        Object.keys(LINE_STYLES).map((paintProperty) => {
-          const exprLineWidth = [
-            'match',
-            ['get', 'id'],
-            ...uniqIds.flatMap((id, index) => {
-              const styleIndex = index % 4
-              return [id, (LINE_STYLES as any)[paintProperty][styleIndex]]
-            }),
-            (LINE_STYLES as any)[paintProperty][0],
-          ]
-          return [paintProperty, exprLineWidth]
-        })
-      )
-      paint = {
-        ...paint,
-        ...extraStyles,
-      }
-    } else {
-      paint = {
-        ...paint,
-        ...BASE_LINE_STYLE,
-      }
+      const HUE_CHANGE_DELTA = 40
+      const hueIncrement = HUE_CHANGE_DELTA / (uniqIds.length - 1)
+      const hsl = convert.hex.hsl(config.color || '')
+      const baseHue = hsl[0]
+      const exprLineColor = [
+        'match',
+        ['get', 'id'],
+        ...uniqIds.flatMap((id, index) => {
+          const rawHue = baseHue - HUE_CHANGE_DELTA / 2 + hueIncrement * index
+          const hue = (rawHue + 360) % 360
+          const color = `#${convert.hsl.hex([hue, hsl[1], hsl[2]])}`
+          return [id, color]
+        }),
+        config.color,
+      ]
+      paint['line-color'] = exprLineColor as any
     }
 
     const visibility = isConfigVisible(config)
