@@ -1,5 +1,13 @@
 # @globalfishingwatch/ui-components
 
+## 2.18.9
+
+### Patch Changes
+
+- 0a755cc4: added color scales to white and fixed legend
+- Updated dependencies [0a755cc4]
+  - @globalfishingwatch/layer-composer@5.2.4
+
 ## 2.18.8
 
 ### Patch Changes
