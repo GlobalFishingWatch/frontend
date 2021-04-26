@@ -1,12 +1,9 @@
-import { Dispatch } from 'redux'
-import { StateGetter } from 'redux-first-router'
+import { createAsyncThunk } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
-import { selectQuery } from 'routes/routes.selectors'
-import { AppState } from 'types/redux.types'
-import { CachedVesselSearch, getLastQuery, setSearching, setVesselSearch } from './search.slice'
-import { getSearchMetadata, getSearchResults } from './search.selectors'
+import { RootState } from 'store'
+import { CachedVesselSearch, getSearchMetadata, getSearchResults } from './search.slice'
 
 const fetchData = async (query: string, offset: number) => {
   return await GFWAPI.fetch<any>(
@@ -22,6 +19,7 @@ const fetchData = async (query: string, offset: number) => {
         query,
         offset: json.offset,
         total: json.total,
+        canSearch: true,
         searching: false,
       }
     })
@@ -29,39 +27,55 @@ const fetchData = async (query: string, offset: number) => {
       return null
     })
 }
-const searchNeedsFetch = (query: string, metadata: CachedVesselSearch | null): boolean => {
-  console.log(metadata)
+const searchNeedsFetch = (
+  query: string,
+  offset: number,
+  metadata: CachedVesselSearch | null
+): boolean => {
   if (!metadata) {
     return true
   }
-  if (metadata.offset >= metadata.vessels.length) {
+  if (query && !metadata.vessels && query.length > SEARCH_MIN_CHARACTERS) {
     return true
   }
-  if (query && !metadata.vessels.length && query.length > SEARCH_MIN_CHARACTERS) {
+  if (!metadata.vessels || offset >= metadata.vessels.length) {
     return true
   }
 
   return false
 }
 
-export const searchThunk = async (dispatch: Dispatch, getState: StateGetter<AppState>) => {
-  const state = getState()
-  const query = selectQuery(state)
-  const vessels = getSearchResults(state)
-  const metadata = getSearchMetadata(state)
+export type VesselSearchThunk = {
+  query: string
+  offset: number
+}
 
-  const offset = metadata ? metadata.offset : 0
-  if (searchNeedsFetch(query, metadata)) {
-    dispatch(setSearching({ query, searching: true }))
-    const searchData = await fetchData(query, offset)
-    if (searchData) {
-      dispatch(
-        setVesselSearch({
+export const fetchVesselSearchThunk = createAsyncThunk(
+  'search/vessels',
+  async ({ query, offset }: VesselSearchThunk, { rejectWithValue, getState, signal }) => {
+    const state = getState() as RootState
+    const vessels: VesselSearch[] = getSearchResults(state)
+    const metadata = getSearchMetadata(state)
+    if (searchNeedsFetch(query, offset, metadata)) {
+      const searchData = await fetchData(query, offset)
+      if (searchData) {
+        return {
           ...searchData,
           vessels: offset > 0 ? [...vessels, ...searchData.vessels] : searchData.vessels,
-        })
-      )
+        }
+      }
     }
-    dispatch(setSearching({ query, searching: false }))
+  },
+  {
+    condition: ({ query }, { getState, extra }) => {
+      const { search } = getState() as RootState
+      const fetchStatus: CachedVesselSearch = search.queries[query]
+      if (!fetchStatus) {
+        return true
+      }
+      if (fetchStatus.searching) {
+        return false
+      }
+    },
   }
-}
+)

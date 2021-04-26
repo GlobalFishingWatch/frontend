@@ -1,25 +1,29 @@
+<<<<<<< HEAD
 import React, { Fragment, useEffect } from 'react'
+=======
+import React, { Fragment, useEffect, useState } from 'react'
+>>>>>>> 14964906... improved vessel search
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
 import { useTranslation } from 'react-i18next'
+import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
 import { RESULTS_PER_PAGE } from 'data/constants'
-import { setOffset } from 'features/search/search.slice'
 import { logoutUserThunk } from 'features/user/user.slice'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
 import { selectQueryParam } from 'routes/routes.selectors'
+import { fetchVesselSearchThunk } from 'features/search/search.thunk'
 import {
   getOffset,
-  getSearchMetadata,
   getSearchResults,
   getTotalResults,
   isSearching,
-} from 'features/search/search.selectors'
+} from 'features/search/search.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from './Home.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
@@ -36,8 +40,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const searching = useSelector(isSearching)
+  const urlQuery = useSelector(selectQueryParam('q'))
+  const [query, setQuery] = useState((urlQuery || '') as string)
   const vessels = useSelector(getSearchResults)
-  const query = useSelector(selectQueryParam('q'))
   const offset = useSelector(getOffset)
   const totalResults = useSelector(getTotalResults)
   const offlineVessels = useSelector(selectAllOfflineVessels)
@@ -50,7 +55,14 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ q: e.target.value })
+    setQuery(e.target.value)
   }
+
+  useEffect(() => {
+    if (query !== '') {
+      dispatch(fetchVesselSearchThunk({ query: query, offset: 0 }))
+    }
+  }, [dispatch, query])
 
   return (
     <div className={styles.homeContainer}>
@@ -115,7 +127,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
               )}
               {(!searching || offset > 0) && vessels.length > 0 && (
                 <div className={styles.offlineVessels}>
-                  {vessels.map((vessel, index) => (
+                  {vessels.map((vessel: VesselSearch, index) => (
                     <VesselListItem key={index} vessel={vessel} />
                   ))}
                 </div>
@@ -124,7 +136,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                 <div className={styles.listFooter}>
                   <Button
                     onClick={() =>
-                      dispatch(setOffset({ query, offset: offset + RESULTS_PER_PAGE }))
+                      dispatch(fetchVesselSearchThunk({ query, offset: offset + RESULTS_PER_PAGE }))
                     }
                   >
                     {t('search.loadMore', 'LOAD MORE')}
