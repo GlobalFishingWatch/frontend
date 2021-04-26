@@ -44,7 +44,6 @@ export const useNewDatasetConnect = () => {
   const addNewDatasetToWorkspace = useCallback(
     (dataset: Dataset) => {
       let dataviewInstance
-      debugger
       if (dataset.category === DatasetCategory.Context) {
         const usedColors = contextDataviews?.flatMap((dataview) => dataview.config?.color || [])
         dataviewInstance = getContextDataviewInstance(dataset.id, usedColors)
