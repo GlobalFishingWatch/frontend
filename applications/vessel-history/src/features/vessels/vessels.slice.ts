@@ -87,4 +87,6 @@ export const selectVesselById = memoize((id: string) =>
 )
 
 export const selectVessels = (state: RootState) => state.vessels.entities
+export const selectVesselsStatus = (state: RootState) => state.vessels.status
+
 export default vesselsSlice.reducer

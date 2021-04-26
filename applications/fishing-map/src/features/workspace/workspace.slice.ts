@@ -20,7 +20,7 @@ import {
 } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
-import { selectAnalysisQuery, selectCustomWorkspace } from 'features/app/app.selectors'
+import { selectCustomWorkspace } from 'features/app/app.selectors'
 import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
@@ -66,7 +66,7 @@ export const getDatasetByDataview = (
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
-  async (workspaceId: string, { dispatch, getState, rejectWithValue }) => {
+  async (workspaceId: string, { signal, dispatch, getState, rejectWithValue }) => {
     const state = getState() as RootState
     const version = selectVersion(state)
     const locationType = selectLocationType(state)
@@ -74,7 +74,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
     try {
       let workspace = workspaceId
-        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`)
+        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`, {
+            signal,
+          })
         : null
       if (!workspace && locationType === HOME) {
         workspace = await getDefaultWorkspace()
@@ -89,42 +91,31 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         ...uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId)),
       ]
 
-      let dataviews = []
+      let dataviews: Dataview[] = []
       if (dataviewIds?.length) {
-        const { payload }: any = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
+        const fetchDataviewsAction: any = dispatch(fetchDataviewsByIdsThunk(dataviewIds))
+        signal.addEventListener('abort', fetchDataviewsAction.abort)
+        const { payload } = await fetchDataviewsAction
         if (payload?.length) {
           dataviews = payload
         }
       }
-      const dataviewInstances = [
-        ...dataviews,
-        ...(workspace.dataviewInstances || []),
-        ...(urlDataviewInstances || []),
-      ]
 
-      const datasets = getDatasetByDataview(dataviewInstances)
-
-      const { error, payload }: any = await dispatch(fetchDatasetsByIdsThunk(datasets))
-
-      if (error) {
-        return rejectWithValue({ workspace, error: payload })
+      if (!signal.aborted) {
+        const dataviewInstances = [
+          ...dataviews,
+          ...(workspace.dataviewInstances || []),
+          ...(urlDataviewInstances || []),
+        ]
+        const datasets = getDatasetByDataview(dataviewInstances)
+        const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk(datasets))
+        signal.addEventListener('abort', fetchDatasetsAction.abort)
+        const { error, payload } = await fetchDatasetsAction
+        if (error) {
+          return rejectWithValue({ workspace, error: payload })
+        }
       }
 
-      const locationCategory = selectLocationCategory(state)
-      const analysis = selectAnalysisQuery(state)
-      if (workspace.viewport && locationType !== HOME) {
-        dispatch(
-          updateLocation(locationType, {
-            payload: { category: locationCategory, workspaceId: workspace.id },
-            query: {
-              ...workspace.viewport,
-              dataviewInstances: urlDataviewInstances,
-              analysis,
-            },
-            replaceQuery: true,
-          })
-        )
-      }
       return workspace
     } catch (e) {
       return rejectWithValue({ error: e as AsyncError })
@@ -218,13 +209,18 @@ const workspaceSlice = createSlice({
       }
     })
     builder.addCase(fetchWorkspaceThunk.rejected, (state, action) => {
-      const { workspace, error } = action.payload as RejectedActionPayload
-      state.status = AsyncReducerStatus.Error
-      if (workspace) {
-        state.data = workspace
-      }
-      if (error) {
-        state.error = error
+      if (action.payload) {
+        const { workspace, error } = action.payload as RejectedActionPayload
+        state.status = AsyncReducerStatus.Error
+        if (workspace) {
+          state.data = workspace
+        }
+        if (error) {
+          state.error = error
+        }
+      } else {
+        // This means action was cancelled
+        state.status = AsyncReducerStatus.Idle
       }
     })
     builder.addCase(saveCurrentWorkspaceThunk.pending, (state) => {

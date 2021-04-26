@@ -6,3 +6,6 @@ export const SEARCH_MIN_CHARACTERS = 3
 export const BASE_DATASET = 'public-global-fishing-vessels:v20201001'
 export const SHOW_VESSEL_API_SOURCE =
   process.env.REACT_APP_WORKSPACE_ENV === 'production' ? false : true
+
+export const API_GATEWAY = process.env.REACT_APP_API_GATEWAY
+export const LANDMASS_OFFLINE_GEOJSON = '/data/ne_10m_admin_0_countries_gj.geojson'

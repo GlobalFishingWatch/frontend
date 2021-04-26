@@ -259,7 +259,7 @@ export function getDataviewsGeneratorConfigs(
       if (!config || !datasetsConfig || !datasetsConfig.length) return []
       const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
       // TODO Take unit from first dataset -> are we sure activity sublayers always use 'hours'?
-      const unit = dataview.datasets?.[0].unit
+      const unit = dataview.datasets?.[0]?.unit
       const sublayer: HeatmapAnimatedGeneratorSublayer = {
         id: dataview.id,
         datasets,

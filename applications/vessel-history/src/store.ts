@@ -1,13 +1,9 @@
-import {
-  configureStore,
-  ThunkAction,
-  Action,
-  combineReducers,
-  getDefaultMiddleware,
-} from '@reduxjs/toolkit'
+import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
 import connectedRoutes, { routerQueryMiddleware } from 'routes/routes'
+import offlineVesselsReducer from 'features/vessels/offline-vessels.slice'
 import vesselsReducer from 'features/vessels/vessels.slice'
 import searchReducer from 'features/search/search.slice'
+import mapReducer from './features/map/map.slice'
 
 const {
   reducer: location,
@@ -16,9 +12,11 @@ const {
 } = connectedRoutes
 
 const rootReducer = combineReducers({
+  offlineVessels: offlineVesselsReducer,
   vessels: vesselsReducer,
   search: searchReducer,
   location: location,
+  map: mapReducer,
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
@@ -35,11 +33,10 @@ const defaultMiddlewareOptions: any = {
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: [
-    ...getDefaultMiddleware(defaultMiddlewareOptions),
-    routerQueryMiddleware,
-    routerMiddleware,
-  ],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware(defaultMiddlewareOptions)
+      .concat(routerQueryMiddleware)
+      .concat(routerMiddleware),
   enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })
 
