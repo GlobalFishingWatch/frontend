@@ -50,7 +50,6 @@ export const selectDataviewInstancesResolved = createSelector(
     )
       return
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
-    console.log(dataviewInstancesResolved)
     return dataviewInstancesResolved
   }
 )
