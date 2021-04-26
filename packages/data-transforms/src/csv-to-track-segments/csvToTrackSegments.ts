@@ -10,7 +10,7 @@ const csvToTrackSegments = ({ records, latitude, longitude, timestamp, id }: Arg
   const grouped = id ? groupBy(records, id) : { no_id: records }
   const segments = Object.values(grouped).map((groupedRecords) => {
     return groupedRecords.map((record) => {
-      const recordId = id ? (record[id] as any) : null
+      const recordId = id ? (record[id] as any).toString() : null
       return {
         latitude: parseFloat(record[latitude]),
         longitude: parseFloat(record[longitude]),

@@ -173,14 +173,15 @@ class TrackGenerator {
     let paint = {
       'line-color': config.color || DEFAULT_TRACK_COLOR,
     }
-    if (uniqIds.length > 1 && uniqIds.length <= 4) {
+    if (uniqIds.length > 1) {
       const extraStyles = Object.fromEntries(
         Object.keys(LINE_STYLES).map((paintProperty) => {
           const exprLineWidth = [
             'match',
             ['get', 'id'],
             ...uniqIds.flatMap((id, index) => {
-              return [id, (LINE_STYLES as any)[paintProperty][index]]
+              const styleIndex = index % 4
+              return [id, (LINE_STYLES as any)[paintProperty][styleIndex]]
             }),
             (LINE_STYLES as any)[paintProperty][0],
           ]
