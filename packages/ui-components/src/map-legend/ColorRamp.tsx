@@ -40,6 +40,15 @@ function ColorRampLegend({
       .domain(domainValues)
   }, [cleanRamp, ramp])
 
+  const backgroundStyle = useMemo(() => {
+    if (!cleanRamp || type === 'colorramp-discrete') return {}
+    return {
+      backgroundImage: `linear-gradient(to right, ${cleanRamp
+        .map(([value, color]) => color)
+        .join()})`,
+    }
+  }, [cleanRamp, type])
+
   if (!ramp || !cleanRamp) return null
   return (
     <div className={cx(styles.row, className)}>
@@ -59,14 +68,7 @@ function ColorRampLegend({
       )}
       {cleanRamp?.length > 0 && (
         <Fragment>
-          <div
-            className={styles.ramp}
-            style={{
-              backgroundImage: `linear-gradient(to right, ${cleanRamp
-                .map(([value, color]) => color)
-                .join()})`,
-            }}
-          >
+          <div className={styles.ramp} style={backgroundStyle}>
             {currentValue && (
               <span
                 className={cx(styles.currentValue, currentValueClassName)}

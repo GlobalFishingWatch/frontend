@@ -360,14 +360,23 @@ export type ColorRampsIds =
   | 'reception'
   | 'bivariate'
   | 'teal'
+  | 'teal_toWhite'
   | 'magenta'
+  | 'magenta_toWhite'
   | 'lilac'
+  | 'lilac_toWhite'
   | 'salmon'
+  | 'salmon_toWhite'
   | 'sky'
+  | 'sky_toWhite'
   | 'red'
+  | 'red_toWhite'
   | 'yellow'
+  | 'yellow_toWhite'
   | 'green'
+  | 'green_toWhite'
   | 'orange'
+  | 'orange_toWhite'
 
 export enum HeatmapAnimatedMode {
   // Pick sublayer with highest value and place across this sublayer's color ramp. Works with 0 - n sublayers
