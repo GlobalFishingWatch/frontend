@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 5.2.4
+
+### Patch Changes
+
+- 0a755cc4: added color scales to white and fixed legend
+
 ## 5.2.3
 
 ### Patch Changes
