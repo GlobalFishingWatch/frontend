@@ -82,7 +82,7 @@ export function getGeneratorConfig(
           ? DatasetTypes.UserTracks
           : DatasetTypes.Tracks
       const { url: trackUrl } = resolveDataviewDatasetResource(dataview, trackType)
-      console.log(dataview, trackType, trackUrl)
+
       if (trackUrl && resources?.[trackUrl]) {
         const resource = resources?.[trackUrl] as Resource<TrackResourceData>
         generator.data = resource.data

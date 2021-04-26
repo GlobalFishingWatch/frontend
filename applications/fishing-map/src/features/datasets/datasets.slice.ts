@@ -4,13 +4,7 @@ import uniqBy from 'lodash/uniqBy'
 import without from 'lodash/without'
 import kebabCase from 'lodash/kebabCase'
 import { stringify } from 'qs'
-import {
-  Dataset,
-  DatasetCategory,
-  DatasetTypes,
-  EndpointId,
-  UploadResponse,
-} from '@globalfishingwatch/api-types'
+import { Dataset, DatasetCategory, UploadResponse } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   asyncInitialState,

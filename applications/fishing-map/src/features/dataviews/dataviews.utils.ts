@@ -1,6 +1,5 @@
 import {
   Dataset,
-  DatasetTypes,
   DataviewCategory,
   DataviewInstance,
   EndpointId,

@@ -22,6 +22,7 @@ export const selectDataviewsResourceQueries = createSelector(
           dataview.datasets && dataview.datasets[0].type === DatasetTypes.UserTracks
             ? DatasetTypes.UserTracks
             : DatasetTypes.Tracks
+
         const trackResource = resolveDataviewDatasetResource(dataview, datasetType)
         if (trackResource.url && trackResource.dataset && trackResource.datasetConfig) {
           trackQuery = {

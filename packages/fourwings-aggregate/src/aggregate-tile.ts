@@ -332,8 +332,6 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
     }
   }
 
-  // const t = performance.now()
-
   if (singleFrame) {
     for (let i = 2; i < intArray.length; i++) {
       const value = intArray[i]
@@ -470,7 +468,6 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
           } else if (sublayerCombinationMode === SublayerCombinationMode.Cumulative) {
             finalValue = getCumulativeValue(realValuesSum, cumulativeValuesPaddedStrings)
           }
-          // console.log(quantizedTail, finalValue, currentFeature)
           writeValueToFeature(quantizedTail, finalValue as string | number, currentFeature)
         }
 
@@ -506,7 +503,7 @@ const aggregate = (intArray: number[], options: TileAggregationParams) => {
       continue
     }
   }
-  // console.log(performance.now()- t)
+
   const geoJSONs: any = {
     main: {
       type: 'FeatureCollection',
