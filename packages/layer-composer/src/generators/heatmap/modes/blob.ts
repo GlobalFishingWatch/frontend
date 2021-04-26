@@ -70,7 +70,6 @@ const blob = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChun
   if (!chunkMainLayer.metadata) return []
   chunkMainLayer.metadata.legend = getLegends(config, timeChunks.deltaInDays)
 
-  console.log(chunkMainLayer)
   return [chunkMainLayer]
 }
 

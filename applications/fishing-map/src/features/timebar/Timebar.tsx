@@ -105,7 +105,6 @@ const TimebarWrapper = () => {
             date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
           }
         })
-        // console.log('compute graph', performance.now() - n)
         setStackedActivity(values)
       } else {
         setStackedActivity(undefined)
