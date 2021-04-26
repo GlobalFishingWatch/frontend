@@ -61,7 +61,7 @@ const hexToRgbString = (hex: string) => {
   return rgbToRgbString(color)
 }
 
-const getColorRampByOpacitySteps = (finalColor: string, numSteps = 8) => {
+const getColorRampByOpacitySteps = (finalColor: string, numSteps = 10) => {
   const color = finalColor.includes('#') ? hexToRgbString(finalColor) : finalColor
   const opacitySteps = [...Array(numSteps)].map((_, i) => i / (numSteps - 1))
   return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
@@ -86,7 +86,7 @@ const getColorRampToWhite = (hexColor: string, numSteps = 3) => {
 
 const getMixedOpacityToWhiteColorRamp = (
   finalColor: string,
-  numStepsOpacity = 5,
+  numStepsOpacity = 7,
   numStepsTopWhite = 3
 ) => {
   return [
