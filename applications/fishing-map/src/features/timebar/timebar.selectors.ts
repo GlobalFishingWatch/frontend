@@ -2,10 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { DatasetTypes, Resource, TrackResourceData } from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { selectTimebarGraph } from 'features/app/app.selectors'
-import {
-  selectActiveVesselsDataviews,
-  selectEnvironmentalDataviews,
-} from 'features/dataviews/dataviews.selectors'
+import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 
 type TimebarTrackSegment = {
@@ -18,13 +15,6 @@ type TimebarTrack = {
   color: string
 }
 
-export const hasStaticHeatmapLayersActive = createSelector(
-  [selectEnvironmentalDataviews],
-  (staticHeatmapDataviews) => {
-    if (!staticHeatmapDataviews) return false
-    return staticHeatmapDataviews.some((d) => d.config?.visible === true)
-  }
-)
 export const selectTracksData = createSelector(
   [selectActiveVesselsDataviews, selectResources],
   (trackDataviews, resources) => {
