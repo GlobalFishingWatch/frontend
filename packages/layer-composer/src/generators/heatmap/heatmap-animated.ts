@@ -178,7 +178,7 @@ class HeatmapAnimatedGenerator {
   }
 
   getCacheKey = (config: FetchBreaksParams) => {
-    return getSubLayersDatasets(config.sublayers).join(',')
+    return getSubLayersDatasets(config.sublayers.filter((sublayer) => sublayer.visible)).join(',')
   }
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {

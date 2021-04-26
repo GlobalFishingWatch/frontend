@@ -21,7 +21,9 @@ const getBreaksUrl = (config: FetchBreaksParams): string => {
     .replace(/}}/g, '}')
     .replace('{zoom}', '0')
 
-  const datasets = config.sublayers.flatMap((s) => s.datasets.flatMap((d) => d))
+  const datasets = config.sublayers
+    .filter((sublayer) => sublayer.visible)
+    .flatMap((s) => s.datasets.flatMap((d) => d))
   const datasetsQuery = datasets?.length ? toURLArray('datasets', datasets) : ''
   return `${url}?${datasetsQuery}`
 }
