@@ -26,7 +26,7 @@ const getBreaksUrl = (config: FetchBreaksParams): string => {
   return `${url}?${datasetsQuery}`
 }
 
-const controllerCache: { [key: string]: AbortController } = {}
+let controllerCache: AbortController | undefined
 
 export default function fetchBreaks(config: FetchBreaksParams) {
   const breaksUrl = new URL(getBreaksUrl(config))
@@ -41,13 +41,13 @@ export default function fetchBreaks(config: FetchBreaksParams) {
 
   const url = breaksUrl.toString()
   const { token, sublayers } = config
-  if (controllerCache[url]) {
-    controllerCache[url].abort()
+  if (controllerCache) {
+    controllerCache.abort()
   }
-  // TODO review if we need to remove the controller once the request is finished to avoid memory leaks
-  controllerCache[url] = new AbortController()
+
+  controllerCache = new AbortController()
   return fetch(url, {
-    signal: controllerCache[url].signal,
+    signal: controllerCache.signal,
     ...(token && {
       headers: {
         Authorization: `Bearer ${token}`,

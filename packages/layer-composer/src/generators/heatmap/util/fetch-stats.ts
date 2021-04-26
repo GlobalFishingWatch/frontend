@@ -5,7 +5,7 @@ import { GlobalHeatmapGeneratorConfig } from '../heatmap'
 import { Stats, StatsByZoom } from '../types'
 import { toURLArray } from '.'
 
-const controllerCache: { [key: string]: AbortController } = {}
+let controllerCache: AbortController
 export default function fetchStats(config: GlobalHeatmapGeneratorConfig) {
   const { token, datasets, filters, statsFilter, start, end } = config
   const statsFilters = [filters, statsFilter].filter((f) => f).join(' AND ')
@@ -22,14 +22,14 @@ export default function fetchStats(config: GlobalHeatmapGeneratorConfig) {
   if (dateRange) {
     statsUrl.searchParams.set('date-range', dateRange)
   }
-  if (controllerCache[url]) {
-    controllerCache[url].abort()
+  if (controllerCache) {
+    controllerCache.abort()
   }
   const statsUrlString = statsUrl.toString()
   const finalurl = statsFilters ? statsUrlString + `&${statsFilters}` : statsUrl.toString()
-  controllerCache[url] = new AbortController()
+  controllerCache = new AbortController()
   return fetch(finalurl, {
-    signal: controllerCache[url].signal,
+    signal: controllerCache.signal,
     ...(config.token && {
       headers: {
         Authorization: `Bearer ${token}`,
