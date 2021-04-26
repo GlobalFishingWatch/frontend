@@ -33,20 +33,6 @@ const homeThunk = async (
   searchThunk(dispatch, getState)
 }
 
-// const profileThunk = async (dispatch: AppDispatch, getState: StateGetter<AppState>) => {
-//   let dataviews: Dataview[]
-//   const action = await dispatch(
-//     fetchDataviewsByIdsThunk(dataviewInstances.map((instance) => instance.dataviewId))
-//   )
-//   if (fetchDataviewsByIdsThunk.fulfilled.match(action as any)) {
-//     dataviews = action.payload
-//   }
-
-//   const datasets = getDatasetByDataview(dataviews as Dataview[])
-
-//   dispatch(fetchDatasetsByIdsThunk(datasets))
-// }
-
 const routesMap: RoutesMap = {
   [HOME]: {
     path: '/',
@@ -58,7 +44,6 @@ const routesMap: RoutesMap = {
   },
   [PROFILE]: {
     path: '/profile/:dataset/:vesselID/:tmtID',
-    // thunk: profileThunk,
     thunk,
   },
   [NOT_FOUND]: {
