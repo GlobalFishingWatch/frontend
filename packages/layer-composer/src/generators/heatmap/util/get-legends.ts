@@ -45,9 +45,11 @@ export const getSublayersBreaks = (
   config: GlobalHeatmapAnimatedGeneratorConfig,
   breaks: Breaks | undefined
 ) => {
-  const delta = +toDT(config.end) - +toDT(config.start)
+  // const delta = +toDT(config.end) - +toDT(config.start)
+  const start = toDT(config.start)
+  const end = toDT(config.end)
   // uses 'years' as breaks request a year with temporal-aggregation true
-  const deltaInterval = Duration.fromMillis(delta).as('years')
+  const deltaInterval = end.diff(start, 'days').days / 10
   return breaks?.map((bre) =>
     bre.map((b) => deltaInterval * b * Math.pow(1 / 4, config.zoomLoadLevel))
   )

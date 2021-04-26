@@ -30,9 +30,10 @@ const controllerCache: { [key: string]: AbortController } = {}
 
 export default function fetchBreaks(config: FetchBreaksParams) {
   const breaksUrl = new URL(getBreaksUrl(config))
-  breaksUrl.searchParams.set('temporal-aggregation', 'true')
+  breaksUrl.searchParams.set('temporal-aggregation', 'false')
   breaksUrl.searchParams.set('numBinds', '8')
-  breaksUrl.searchParams.set('interval', 'day')
+  breaksUrl.searchParams.set('interval', '10days')
+
   const end = DateTime.fromISO(config.datasetsEnd).toISODate()
   const start = DateTime.fromISO(end).minus({ years: 1 }).toISODate()
   // Requesting the latest dataset year to use as baseline
