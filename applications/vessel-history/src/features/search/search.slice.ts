@@ -9,11 +9,11 @@ export type CachedVesselSearch = {
   offset: number
   searching: boolean
   total: number | null
-  vessels: VesselSearch[] | null
+  vessels: VesselSearch[]
 }
 
 const searchInitialState = {
-  vessels: null,
+  vessels: [],
   total: 0,
 }
 
@@ -56,7 +56,13 @@ const slice = createSlice({
     builder.addCase(fetchVesselSearchThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
       if (action.payload) {
-        state.queries[action.meta.arg.query] = action.payload
+        state.queries[action.meta.arg.query] = {
+          ...action.payload,
+          vessels:
+            action.meta.arg.offset > 0
+              ? [...state.queries[action.meta.arg.query].vessels, ...action.payload.vessels]
+              : action.payload.vessels,
+        }
       } else {
         state.queries[action.meta.arg.query].searching = false
       }
@@ -67,28 +73,3 @@ const slice = createSlice({
   },
 })
 export default slice.reducer
-
-export const getVesselsFound = (state: RootState) => state.search.queries
-
-export const getSearchMetadata = createSelector(
-  [getVesselsFound, selectQueryParam('q')],
-  (search, query: string) => {
-    return search && search[query] !== undefined ? search[query] : null
-  }
-)
-
-export const getSearchResults = createSelector([getSearchMetadata], (metadata) => {
-  return (metadata && metadata.vessels) || []
-})
-
-export const getOffset = createSelector([getSearchMetadata], (metadata) => {
-  return (metadata && metadata.offset) || 0
-})
-
-export const getTotalResults = createSelector([getSearchMetadata], (metadata) => {
-  return (metadata && metadata.total) || 0
-})
-
-export const isSearching = createSelector([getSearchMetadata], (metadata) => {
-  return (metadata && metadata.searching) || false
-})

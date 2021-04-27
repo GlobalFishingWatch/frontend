@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
@@ -15,11 +15,11 @@ import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchP
 import { selectQueryParam } from 'routes/routes.selectors'
 import { fetchVesselSearchThunk } from 'features/search/search.thunk'
 import {
-  getOffset,
-  getSearchResults,
-  getTotalResults,
+  selectSearchOffset,
+  selectSearchResults,
+  selectSearchTotalResults,
   isSearching,
-} from 'features/search/search.slice'
+} from 'features/search/search.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from './Home.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
@@ -36,11 +36,10 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const searching = useSelector(isSearching)
-  const urlQuery = useSelector(selectQueryParam('q'))
-  const [query, setQuery] = useState((urlQuery || '') as string)
-  const vessels = useSelector(getSearchResults)
-  const offset = useSelector(getOffset)
-  const totalResults = useSelector(getTotalResults)
+  const query = useSelector(selectQueryParam('q'))
+  const vessels = useSelector(selectSearchResults)
+  const offset = useSelector(selectSearchOffset)
+  const totalResults = useSelector(selectSearchTotalResults)
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchQueryParams } = useLocationConnect()
   const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
@@ -51,13 +50,11 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ q: e.target.value })
-    setQuery(e.target.value)
+    dispatch(fetchVesselSearchThunk({ query: query, offset: 0 }))
   }
 
   useEffect(() => {
-    if (query !== '') {
-      dispatch(fetchVesselSearchThunk({ query: query, offset: 0 }))
-    }
+    dispatch(fetchVesselSearchThunk({ query: query, offset: 0 }))
   }, [dispatch, query])
 
   return (

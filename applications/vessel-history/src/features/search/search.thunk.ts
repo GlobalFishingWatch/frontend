@@ -3,7 +3,8 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/constants'
 import { RootState } from 'store'
-import { CachedVesselSearch, getSearchMetadata, getSearchResults } from './search.slice'
+import { CachedVesselSearch } from './search.slice'
+import { selectSearchMetadata } from './search.selectors'
 
 const fetchData = async (query: string, offset: number) => {
   return await GFWAPI.fetch<any>(
@@ -19,7 +20,6 @@ const fetchData = async (query: string, offset: number) => {
         query,
         offset: json.offset,
         total: json.total,
-        canSearch: true,
         searching: false,
       }
     })
@@ -54,20 +54,16 @@ export const fetchVesselSearchThunk = createAsyncThunk(
   'search/vessels',
   async ({ query, offset }: VesselSearchThunk, { rejectWithValue, getState, signal }) => {
     const state = getState() as RootState
-    const vessels: VesselSearch[] = getSearchResults(state)
-    const metadata = getSearchMetadata(state)
+    const metadata = selectSearchMetadata(state)
+    const searchData = await fetchData(query, offset)
     if (searchNeedsFetch(query, offset, metadata)) {
-      const searchData = await fetchData(query, offset)
       if (searchData) {
-        return {
-          ...searchData,
-          vessels: offset > 0 ? [...vessels, ...searchData.vessels] : searchData.vessels,
-        }
+        return searchData
       }
     }
   },
   {
-    condition: ({ query }, { getState, extra }) => {
+    condition: ({ query, offset }, { getState, extra }) => {
       const { search } = getState() as RootState
       const fetchStatus: CachedVesselSearch = search.queries[query]
       if (!fetchStatus) {
@@ -76,6 +72,9 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       if (fetchStatus.searching) {
         return false
       }
+      const metadata = search.queries[query]
+
+      return searchNeedsFetch(query, offset, metadata)
     },
   }
 )
