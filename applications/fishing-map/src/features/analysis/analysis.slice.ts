@@ -12,6 +12,7 @@ import {
 } from 'utils/async-slice'
 import { RootState } from 'store'
 import { Bbox } from 'types'
+import { transformFilters } from './analysis.utils'
 
 export type DateRange = {
   start: string
@@ -23,75 +24,32 @@ export type ReportGeometry = Feature<Polygon>
 export type CreateReport = {
   name: string
   dateRange: DateRange
-  filters: Record<string, any>
-  datasets: string[]
+  dataviews: {
+    filters: Record<string, any>
+    datasets: string[]
+  }[]
   geometry: ReportGeometry
 }
 
-export const createSingleReportThunk = createAsyncThunk<
+export const createReportThunk = createAsyncThunk<
   Report,
   CreateReport,
   {
     rejectValue: AsyncError
   }
->('report/createsingle', async (createReport: CreateReport, { rejectWithValue }) => {
+>('report/create', async (createReport: CreateReport, { rejectWithValue }) => {
   try {
-    const { dateRange, filters, datasets } = createReport
+    const { name, dateRange, dataviews, geometry } = createReport
     const fromDate = DateTime.fromISO(dateRange.start).toUTC().toISODate()
     const toDate = DateTime.fromISO(dateRange.end).toUTC().toISODate()
 
-    const queryFiltersFields = [
-      {
-        value: filters.flag,
-        field: 'flag',
-        operator: 'IN',
-        transformation: (value: any): string =>
-          `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
-      },
-      {
-        value: filters.fleet,
-        field: 'fleet',
-        operator: 'IN',
-        transformation: (value: any): string =>
-          `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
-      },
-      {
-        value: filters.origin,
-        field: 'origin',
-        operator: 'IN',
-        transformation: (value: any): string =>
-          `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
-      },
-      {
-        value: filters.geartype,
-        field: 'geartype',
-        operator: 'IN',
-        transformation: (value: any): string =>
-          `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
-      },
-      {
-        value: filters.vessel_type,
-        field: 'vessel_type',
-        operator: 'IN',
-        transformation: (value: any): string =>
-          `(${(value as string[])?.map((v: string) => `'${v}'`).join(', ')})`,
-      },
-    ]
-
-    const queryFilters = queryFiltersFields
-      .filter(({ value }) => value && value !== undefined)
-      .map(
-        ({ field, operator, transformation, value }) =>
-          `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
-      )
-      .join(' AND ')
-
     const payload = {
-      ...createReport,
+      name,
+      geometry,
       type: 'detail',
       timeGroup: 'none',
-      filters: [queryFilters],
-      datasets: datasets,
+      filters: dataviews.map(({ filters }) => transformFilters(filters)),
+      datasets: dataviews.map(({ datasets }) => datasets.join(',')),
       dateRange: [fromDate, toDate],
     }
 
@@ -104,13 +62,6 @@ export const createSingleReportThunk = createAsyncThunk<
     return rejectWithValue({ status: e.status || e.code, message: e.message })
   }
 })
-
-export const createReportThunk = createAsyncThunk(
-  'report/create',
-  async (createReport: CreateReport[], { dispatch }) => {
-    return Promise.all(createReport.map((report) => dispatch(createSingleReportThunk(report))))
-  }
-)
 
 export interface ReportState extends AsyncReducer<Report> {
   area: {
