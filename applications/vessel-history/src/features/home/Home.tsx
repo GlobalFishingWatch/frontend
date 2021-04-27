@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useRef } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
@@ -36,14 +36,14 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const searching = useSelector(isSearching)
-  const urlQuery = useSelector(selectQueryParam('q'))
-  const [query, setQuery] = useState((urlQuery || '') as string)
+  const query = useSelector(selectQueryParam('q'))
   const vessels = useSelector(getSearchResults)
   const offset = useSelector(getOffset)
   const totalResults = useSelector(getTotalResults)
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchQueryParams } = useLocationConnect()
   const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
+  const promiseRef = useRef<any>()
 
   useEffect(() => {
     dispatchFetchOfflineVessels()
@@ -51,14 +51,32 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ q: e.target.value })
-    setQuery(e.target.value)
   }
+
+  const fetchResults = useCallback(
+    (offset = 0) => {
+      if (promiseRef.current) {
+        promiseRef.current.abort()
+      }
+      // To ensure the pending action isn't overwritted by the abort above
+      // and we miss the loading intermediate state
+      setTimeout(() => {
+        promiseRef.current = dispatch(
+          fetchVesselSearchThunk({
+            query,
+            offset,
+          })
+        )
+      }, 1)
+    },
+    [dispatch, query]
+  )
 
   useEffect(() => {
     if (query !== '') {
-      dispatch(fetchVesselSearchThunk({ query: query, offset: 0 }))
+      fetchResults()
     }
-  }, [dispatch, query])
+  }, [fetchResults, query])
 
   return (
     <div className={styles.homeContainer}>
@@ -130,11 +148,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
               )}
               {totalResults && !searching && vessels.length < totalResults && (
                 <div className={styles.listFooter}>
-                  <Button
-                    onClick={() =>
-                      dispatch(fetchVesselSearchThunk({ query, offset: offset + RESULTS_PER_PAGE }))
-                    }
-                  >
+                  <Button onClick={() => fetchResults(offset + RESULTS_PER_PAGE)}>
                     {t('search.loadMore', 'LOAD MORE')}
                   </Button>
                 </div>

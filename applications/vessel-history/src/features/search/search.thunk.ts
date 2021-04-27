@@ -5,11 +5,14 @@ import { BASE_DATASET, RESULTS_PER_PAGE, SEARCH_MIN_CHARACTERS } from 'data/cons
 import { RootState } from 'store'
 import { CachedVesselSearch, getSearchMetadata, getSearchResults } from './search.slice'
 
-const fetchData = async (query: string, offset: number) => {
+const fetchData = async (query: string, offset: number, signal?: AbortSignal | null) => {
   return await GFWAPI.fetch<any>(
     `/v1/vessels/search?datasets=${encodeURIComponent(
       BASE_DATASET
-    )}&limit=${RESULTS_PER_PAGE}&offset=${offset}&query=${encodeURIComponent(query)}`
+    )}&limit=${RESULTS_PER_PAGE}&offset=${offset}&query=${encodeURIComponent(query)}`,
+    {
+      signal,
+    }
   )
     .then((json: any) => {
       const resultVessels: Array<VesselSearch> = json.entries
@@ -57,7 +60,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     const vessels: VesselSearch[] = getSearchResults(state)
     const metadata = getSearchMetadata(state)
     if (searchNeedsFetch(query, offset, metadata)) {
-      const searchData = await fetchData(query, offset)
+      const searchData = await fetchData(query, offset, signal)
       if (searchData) {
         return {
           ...searchData,
