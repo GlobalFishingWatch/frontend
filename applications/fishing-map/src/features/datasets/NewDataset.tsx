@@ -2,7 +2,7 @@ import React, { useState, useCallback, Fragment } from 'react'
 import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import lowerCase from 'lodash/lowerCase'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { parse as parseCSV } from 'papaparse'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
@@ -24,11 +24,16 @@ import { capitalize } from 'utils/shared'
 import { SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { readBlobAs } from 'utils/files'
-import { useDatasetsAPI, useDatasetModalConnect, useNewDatasetConnect } from './datasets.hook'
+import {
+  useDatasetsAPI,
+  useDatasetModalConnect,
+  useAddDataviewFromDatasetToWorkspace,
+} from './datasets.hook'
 import styles from './NewDataset.module.css'
 import DatasetFile from './DatasetFile'
 import DatasetConfig from './DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
+import { fetchDatasetByIdThunk } from './datasets.slice'
 
 export type DatasetMetadata = {
   name: string
@@ -44,8 +49,9 @@ export type CSV = Record<string, any>[]
 
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const { datasetModal, datasetCategory, dispatchDatasetModal } = useDatasetModalConnect()
-  const { addNewDatasetToWorkspace } = useNewDatasetConnect()
+  const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
   const [datasetGeometryType, setDatasetGeometryType] = useState<DatasetGeometryType | null>(
     'tracks'
@@ -251,7 +257,15 @@ function NewDataset(): React.ReactElement {
       } else if (payload) {
         if (locationType === 'HOME' || locationType === 'WORKSPACE') {
           const dataset = { ...payload }
-          addNewDatasetToWorkspace(dataset)
+          // TODO: dataset we get from POST does not have endpoints, so load it again :/
+          if (metadata?.type === DatasetTypes.UserTracks) {
+            setLoading(true)
+            const action = await dispatch(fetchDatasetByIdThunk(dataset.id))
+            setLoading(false)
+            addDataviewFromDatasetToWorkspace((action as any).payload)
+          } else {
+            addDataviewFromDatasetToWorkspace(dataset)
+          }
         }
         onClose()
       }

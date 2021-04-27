@@ -35,13 +35,13 @@ import {
 
 const DATASET_REFRESH_TIMEOUT = 10000
 
-export const useNewDatasetConnect = () => {
+export const useAddDataviewFromDatasetToWorkspace = () => {
   const contextDataviews = useSelector(selectContextAreasDataviews)
   const activityDataviews = useSelector(selectActivityDataviews)
   const enviromentalDataviews = useSelector(selectEnvironmentalDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
-  const addNewDatasetToWorkspace = useCallback(
+  const addDataviewFromDatasetToWorkspace = useCallback(
     (dataset: Dataset) => {
       let dataviewInstance
       if (dataset.category === DatasetCategory.Context) {
@@ -68,7 +68,7 @@ export const useNewDatasetConnect = () => {
     [contextDataviews, enviromentalDataviews, activityDataviews, upsertDataviewInstance]
   )
 
-  return { addNewDatasetToWorkspace }
+  return { addDataviewFromDatasetToWorkspace }
 }
 
 export const useDatasetModalConnect = () => {

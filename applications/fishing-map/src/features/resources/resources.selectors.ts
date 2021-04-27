@@ -10,7 +10,6 @@ export const selectDataviewsResourceQueries = createSelector(
   [selectDataviewInstancesResolved, isGuestUser, selectDebugOptions],
   (dataviewInstances, guestUser, { thinning }) => {
     if (!dataviewInstances) return
-
     const resourceQueries: Resource[] = dataviewInstances.flatMap((dataview) => {
       if (dataview.config?.type !== Generators.Type.Track || dataview.deleted) {
         return []
