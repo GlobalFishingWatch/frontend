@@ -39,8 +39,10 @@ const getSubLayersDatasets = (sublayers: HeatmapAnimatedGeneratorSublayer[]): st
   })
 }
 
+const getSubLayerVisible = (sublayer: HeatmapAnimatedGeneratorSublayer) =>
+  sublayer.visible === false ? false : true
 const getSubLayersVisible = (sublayers: HeatmapAnimatedGeneratorSublayer[]) =>
-  sublayers.map((sublayer) => (sublayer.visible === false ? false : true))
+  sublayers.map(getSubLayerVisible)
 
 const serializeBaseSourceParams = (params: any) => {
   const serialized = {
@@ -190,9 +192,11 @@ class HeatmapAnimatedGenerator {
       getActiveTimeChunks: memoizeOne(getActiveTimeChunks),
     })
 
-    const finalConfig = {
+    const finalConfig: GlobalHeatmapAnimatedGeneratorConfig = {
       ...DEFAULT_CONFIG,
       ...config,
+      // ensure we have the visible flag set
+      sublayers: config.sublayers?.map((s) => ({ ...s, visible: getSubLayerVisible(s) })),
     }
 
     const timeChunks: TimeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
@@ -210,6 +214,7 @@ class HeatmapAnimatedGenerator {
     }
 
     const cacheKey = this.getCacheKey(breaksConfig)
+    const visible = config.sublayers.some((l) => l.visible === true)
 
     const useSublayerBreaks = finalConfig.sublayers.some((s) => s.breaks?.length)
     const breaks = useSublayerBreaks
@@ -233,7 +238,12 @@ class HeatmapAnimatedGenerator {
       },
     }
 
-    if (breaks || this.breaksCache[cacheKey]?.loading || this.breaksCache[cacheKey]?.error) {
+    if (
+      breaks ||
+      !visible ||
+      this.breaksCache[cacheKey]?.loading ||
+      this.breaksCache[cacheKey]?.error
+    ) {
       return style
     }
 
