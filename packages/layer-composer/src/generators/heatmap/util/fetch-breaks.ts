@@ -27,7 +27,10 @@ const getBreaksUrl = (config: FetchBreaksParams): string => {
       .flatMap((s) => s.datasets.flatMap((d) => d))
   )
   const datasetsQuery = datasets?.length ? toURLArray('datasets', datasets) : ''
-  return `${url}?${datasetsQuery}`
+
+  const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
+  const filtersQuery = filters?.length ? toURLArray('filters', filters) : ''
+  return `${url}?${datasetsQuery}&${filtersQuery}`
 }
 
 let controllerCache: AbortController | undefined
