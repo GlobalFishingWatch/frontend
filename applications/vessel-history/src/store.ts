@@ -3,7 +3,10 @@ import connectedRoutes, { routerQueryMiddleware } from 'routes/routes'
 import offlineVesselsReducer from 'features/vessels/offline-vessels.slice'
 import vesselsReducer from 'features/vessels/vessels.slice'
 import searchReducer from 'features/search/search.slice'
+import { initializeDataviews } from 'features/dataviews/dataviews.utils'
 import mapReducer from './features/map/map.slice'
+import dataviewsReducer from './features/dataviews/dataviews.slice'
+import datasetsReducer from './features/datasets/datasets.slice'
 
 const {
   reducer: location,
@@ -17,6 +20,8 @@ const rootReducer = combineReducers({
   search: searchReducer,
   location: location,
   map: mapReducer,
+  dataviews: dataviewsReducer,
+  datasets: datasetsReducer,
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
@@ -48,5 +53,8 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >
+
+// Only once when the app starts
+initializeDataviews(store.dispatch)
 
 export default store
