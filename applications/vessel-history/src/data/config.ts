@@ -6,8 +6,6 @@ export const WORKSPACE_ENV =
   (process.env.NODE_ENV as WorkspaceEnv) ||
   'production'
 
-export const APP_NAME = 'vessel-history'
-
 export const DEFAULT_WORKSPACE: AppState = {
   zoom: 3,
   colorMode: 'all',
