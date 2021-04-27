@@ -7,7 +7,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { isSearchAllowed } from 'features/search/search.selectors'
-import LayerPanel from './VesselLayerPanel'
+import VesselLayerPanel from './VesselLayerPanel'
 
 function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
@@ -40,7 +40,7 @@ function VesselsSection(): React.ReactElement {
         />
       </div>
       {dataviews?.map((dataview) => (
-        <LayerPanel key={dataview.id} dataview={dataview} />
+        <VesselLayerPanel key={dataview.id} dataview={dataview} />
       ))}
     </div>
   )
