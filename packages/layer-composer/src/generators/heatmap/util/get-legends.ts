@@ -1,9 +1,9 @@
-import { Duration } from 'luxon'
 import { LayerMetadataLegend, LegendType } from '../../../types'
 import { ColorRampsIds, HeatmapAnimatedMode } from '../../types'
 import { HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_COLOR_RAMPS, GRID_AREA_BY_ZOOM_LEVEL } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { Breaks } from './fetch-breaks'
+import { getCleanBreaks } from './get-breaks'
 import { toDT } from './time-chunks'
 
 // Get color ramps for a config's sublayers
@@ -50,9 +50,9 @@ export const getSublayersBreaks = (
   const end = toDT(config.end)
   // uses 'years' as breaks request a year with temporal-aggregation true
   const deltaInterval = end.diff(start, 'days').days / 10
-  return breaks?.map((bre) =>
-    bre.map((b) => deltaInterval * b * Math.pow(1 / 4, config.zoomLoadLevel))
-  )
+  return breaks?.map((bre) => {
+    return getCleanBreaks(bre.map((b) => deltaInterval * b * Math.pow(1 / 4, config.zoomLoadLevel)))
+  })
 }
 
 const getGridAreaByZoom = (zoom: number): number => {
