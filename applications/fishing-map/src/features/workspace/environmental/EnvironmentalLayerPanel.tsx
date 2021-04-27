@@ -3,20 +3,27 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, DatasetStatus } from '@globalfishingwatch/api-types'
-import Switch from '@globalfishingwatch/ui-components/dist/switch'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import ColorBar, {
   ColorBarOption,
   HeatmapColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  resolveDataviewDatasetResource,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
+import { Segment } from '@globalfishingwatch/data-transforms'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import { selectResourceByUrl } from 'features/resources/resources.slice'
 import DatasetNotFound from '../shared/DatasetNotFound'
+import Color from '../common/Color'
+import LayerSwitch from '../common/LayerSwitch'
+import InfoError from '../common/InfoError'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -69,6 +76,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   useAutoRefreshImportingDataset(dataset)
   const isCustomUserLayer = dataset?.ownerId === userId
 
+  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.UserTracks)
+  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
+  console.log(dataview, trackUrl, trackResource)
+
   if (!dataset) {
     return <DatasetNotFound dataview={dataview} />
   }
@@ -105,13 +116,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       })}
     >
       <div className={styles.header}>
-        <Switch
+        <LayerSwitch
           active={layerActive}
           onClick={onToggleLayerActive}
-          tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
-          tooltipPlacement="top"
           className={styles.switch}
-          color={dataview.config?.color}
+          dataview={dataview}
         />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
@@ -119,15 +128,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          <IconButton
-            icon={datasetError ? 'warning' : 'info'}
-            type={datasetError ? 'warning' : 'default'}
-            size="small"
-            loading={datasetImporting}
-            className={styles.actionButton}
-            tooltip={infoTooltip}
-            tooltipPlacement="top"
-          />
           {layerActive && (
             <ExpandedContainer
               visible={colorOpen}
@@ -140,17 +140,20 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 />
               }
             >
-              <IconButton
-                icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
-                size="small"
-                style={colorOpen ? {} : { color: dataview.config?.color }}
-                tooltip={t('layer.color_change', 'Change color')}
-                tooltipPlacement="top"
+              <Color
+                open={colorOpen}
+                dataview={dataview}
                 onClick={onToggleColorOpen}
                 className={styles.actionButton}
               />
             </ExpandedContainer>
           )}
+          <InfoError
+            error={datasetError}
+            loading={datasetImporting}
+            tooltip={infoTooltip}
+            className={styles.actionButton}
+          />
           {isCustomUserLayer && (
             <IconButton
               icon="delete"

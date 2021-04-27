@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, DatasetStatus } from '@globalfishingwatch/api-types'
-import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
 import {
   ColorBarOption,
   TrackColorBarOptions,
@@ -13,6 +13,9 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import DatasetNotFound from '../shared/DatasetNotFound'
+import Color from '../common/Color'
+import LayerSwitch from '../common/LayerSwitch'
+import InfoError from '../common/InfoError'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -94,14 +97,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       })}
     >
       <div className={styles.header}>
-        <Switch
+        <LayerSwitch
           disabled={datasetError}
           active={layerActive}
           onClick={onToggleLayerActive}
-          tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
-          tooltipPlacement="top"
           className={styles.switch}
-          color={dataview.config?.color}
+          dataview={dataview}
         />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
@@ -109,14 +110,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          <IconButton
-            icon={datasetError ? 'warning' : 'info'}
-            type={datasetError ? 'warning' : 'default'}
-            size="small"
+          <InfoError
+            error={datasetError}
             loading={datasetImporting}
-            className={styles.actionButton}
             tooltip={infoTooltip}
-            tooltipPlacement="top"
+            className={styles.actionButton}
           />
           {layerActive && (
             <ExpandedContainer
@@ -130,12 +128,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 />
               }
             >
-              <IconButton
-                icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
-                size="small"
-                style={colorOpen ? {} : { color: dataview.config?.color }}
-                tooltip={t('layer.color_change', 'Change color')}
-                tooltipPlacement="top"
+              <Color
+                open={colorOpen}
+                dataview={dataview}
                 onClick={onToggleColorOpen}
                 className={cx(styles.actionButton)}
               />

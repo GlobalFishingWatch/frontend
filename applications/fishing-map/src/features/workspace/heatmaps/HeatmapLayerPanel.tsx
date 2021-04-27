@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Switch, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -13,6 +13,7 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
+import LayerSwitch from '../common/LayerSwitch'
 import Filters from './HeatmapFilters'
 import HeatmapInfoModal from './HeatmapInfoModal'
 import { isFishingDataview, isPresenceDataview } from './heatmaps.utils'
@@ -88,14 +89,12 @@ function HeatmapLayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.
       })}
     >
       <div className={styles.header}>
-        <Switch
+        <LayerSwitch
+          disabled={bivariate}
           active={layerActive}
           onClick={onToggleLayerActive}
-          tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
-          tooltipPlacement="top"
-          color={dataview.config?.color}
           className={styles.switch}
-          disabled={bivariate}
+          dataview={dataview}
         />
         {datasetName.length > 24 ? (
           <Tooltip content={datasetName}>{TitleComponent}</Tooltip>

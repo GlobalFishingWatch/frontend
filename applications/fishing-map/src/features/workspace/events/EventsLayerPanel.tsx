@@ -2,13 +2,13 @@ import React from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import Switch from '@globalfishingwatch/ui-components/dist/switch'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import DatasetNotFound from '../shared/DatasetNotFound'
+import LayerSwitch from '../common/LayerSwitch'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -50,13 +50,11 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       })}
     >
       <div className={styles.header}>
-        <Switch
+        <LayerSwitch
           active={layerActive}
           onClick={onToggleLayerActive}
-          tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
-          tooltipPlacement="top"
           className={styles.switch}
-          color={dataview.config?.color}
+          dataview={dataview}
         />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
