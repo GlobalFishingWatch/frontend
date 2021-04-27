@@ -1,5 +1,5 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import { DateTime } from 'luxon'
+import uniq from 'lodash/uniq'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../../layer-composer'
 import { API_ENDPOINTS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
@@ -21,9 +21,11 @@ const getBreaksUrl = (config: FetchBreaksParams): string => {
     .replace(/}}/g, '}')
     .replace('{zoom}', '0')
 
-  const datasets = config.sublayers
-    .filter((sublayer) => sublayer.visible)
-    .flatMap((s) => s.datasets.flatMap((d) => d))
+  const datasets = uniq(
+    config.sublayers
+      .filter((sublayer) => sublayer.visible)
+      .flatMap((s) => s.datasets.flatMap((d) => d))
+  )
   const datasetsQuery = datasets?.length ? toURLArray('datasets', datasets) : ''
   return `${url}?${datasetsQuery}`
 }
@@ -33,7 +35,7 @@ let controllerCache: AbortController | undefined
 export default function fetchBreaks(config: FetchBreaksParams) {
   const breaksUrl = new URL(getBreaksUrl(config))
   breaksUrl.searchParams.set('temporal-aggregation', 'false')
-  breaksUrl.searchParams.set('numBinds', '10')
+  breaksUrl.searchParams.set('numBins', '10')
   breaksUrl.searchParams.set('interval', '10days')
 
   const url = breaksUrl.toString()
