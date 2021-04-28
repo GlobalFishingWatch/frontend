@@ -44,6 +44,8 @@
     "name": "Nom",
     "presence": "Presence",
     "report": "Rapporter",
+    "analysis": "Create an analysis for this area",
+    "analysisNotAvailable": "Toggle an activity or environmenet layer on to analyse it in this area",
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
     "unknown": "Inconnu",
