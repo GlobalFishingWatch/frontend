@@ -67,8 +67,11 @@ function FeatureRow({
               disabled={!reportEnabled}
               tooltip={
                 reportEnabled
-                  ? t('common.report', 'Report')
-                  : t('analysis.noActivityLayers', 'No activity layers active')
+                  ? t('common.analysis', 'Create an analysis for this area')
+                  : t(
+                      'common.analysisNotAvailable',
+                      'Toggle an activity or environmenet layer on to analyse in in this area'
+                    )
               }
               onClick={handleReportClick}
               size="small"
@@ -96,7 +99,14 @@ function FeatureRow({
           <IconButton
             icon="report"
             disabled={!reportEnabled}
-            tooltip={t('common.report', 'Report')}
+            tooltip={
+              reportEnabled
+                ? t('common.analysis', 'Create an analysis for this area')
+                : t(
+                    'common.analysisNotAvailable',
+                    'Toggle an activity or environmenet layer on to analyse in in this area'
+                  )
+            }
             onClick={handleReportClick}
             size="small"
           />
@@ -119,7 +129,14 @@ function FeatureRow({
             <IconButton
               icon="report"
               disabled={!reportEnabled}
-              tooltip={t('common.report', 'Report')}
+              tooltip={
+                reportEnabled
+                  ? t('common.analysis', 'Create an analysis for this area')
+                  : t(
+                      'common.analysisNotAvailable',
+                      'Toggle an activity or environmenet layer on to analyse in in this area'
+                    )
+              }
               onClick={handleReportClick}
               size="small"
             />
@@ -147,7 +164,14 @@ function FeatureRow({
             <IconButton
               icon="report"
               disabled={!reportEnabled}
-              tooltip={t('common.report', 'Report')}
+              tooltip={
+                reportEnabled
+                  ? t('common.analysis', 'Create an analysis for this area')
+                  : t(
+                      'common.analysisNotAvailable',
+                      'Toggle an activity or environmenet layer on to analyse it in this area'
+                    )
+              }
               onClick={handleReportClick}
               size="small"
             />

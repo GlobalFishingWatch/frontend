@@ -73,50 +73,52 @@ function ExpandedContainer({
   )
 
   return (
-    <Tippy
-      interactive
-      visible={visible}
-      animation={true}
-      onMount={onMount}
-      onHide={onHide}
-      placement="bottom-end"
-      popperOptions={popperOptions}
-      onClickOutside={onClickOutside}
-      render={(attrs) => {
-        const topPlacement = attrs['data-placement'] === 'top'
-        return (
-          <animated.div
-            style={props}
-            className={cx(
-              styles.expandedContainer,
-              {
-                [styles.expandedContainerOpen]: visible,
-                [styles.expandedContainerTop]: topPlacement,
-              },
-              className
-            )}
-            tabIndex={-1}
-            {...attrs}
-          >
-            {visible && component}
-            {visible && (
-              <div
-                className={cx(
-                  styles.tooltipArrow,
-                  {
-                    [styles.tooltipArrowTop]: topPlacement,
-                  },
-                  arrowClassName
-                )}
-                data-popper-arrow
-              ></div>
-            )}
-          </animated.div>
-        )
-      }}
-    >
-      <span tabIndex={0}>{children}</span>
-    </Tippy>
+    <div>
+      <Tippy
+        interactive
+        visible={visible}
+        animation={true}
+        onMount={onMount}
+        onHide={onHide}
+        placement="bottom-end"
+        popperOptions={popperOptions}
+        onClickOutside={onClickOutside}
+        render={(attrs) => {
+          const topPlacement = attrs['data-placement'] === 'top'
+          return (
+            <animated.div
+              style={props}
+              className={cx(
+                styles.expandedContainer,
+                {
+                  [styles.expandedContainerOpen]: visible,
+                  [styles.expandedContainerTop]: topPlacement,
+                },
+                className
+              )}
+              tabIndex={-1}
+              {...attrs}
+            >
+              {visible && component}
+              {visible && (
+                <div
+                  className={cx(
+                    styles.tooltipArrow,
+                    {
+                      [styles.tooltipArrowTop]: topPlacement,
+                    },
+                    arrowClassName
+                  )}
+                  data-popper-arrow
+                ></div>
+              )}
+            </animated.div>
+          )
+        }}
+      >
+        <span tabIndex={0}>{children}</span>
+      </Tippy>
+    </div>
   )
 }
 

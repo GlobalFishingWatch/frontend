@@ -159,8 +159,7 @@ function SidebarHeader() {
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
-    if (locationCategory === WorkspaceCategories.MarineReserves) subBrand = SubBrands.MarinReserves
-    if (locationCategory === WorkspaceCategories.CountryPortals) subBrand = SubBrands.CountryPortal
+    if (locationCategory === WorkspaceCategories.MarineManager) subBrand = SubBrands.MarineManager
     return subBrand
   }, [locationCategory])
 
