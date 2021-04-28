@@ -4,9 +4,9 @@ import { TimebarVisualisations } from 'types'
 import { selectTimeRange, selectTimebarVisualisation } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
-  selectActiveTemporalgridDataviews,
+  selectActiveActivityDataviews,
   selectActiveVesselsDataviews,
-} from 'features/workspace/workspace.selectors'
+} from 'features/dataviews/dataviews.selectors'
 import { setStaticTime, selectHasChangedSettingsOnce, changeSettings } from './timebar.slice'
 
 export const useTimerangeConnect = () => {
@@ -29,7 +29,7 @@ export const useTimerangeConnect = () => {
 
 export const useTimebarVisualisation = () => {
   const dispatch = useDispatch()
-  const activeHeatmapDataviews = useSelector(selectActiveTemporalgridDataviews)
+  const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
   const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)

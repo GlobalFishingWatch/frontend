@@ -16,11 +16,11 @@ import {
 } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import {
-  getRelatedDatasetByType,
   selectEventsDataviews,
-  selectTemporalgridDataviews,
-} from 'features/workspace/workspace.selectors'
+  selectActivityDataviews,
+} from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectTimeRange } from 'features/app/app.selectors'
 
@@ -99,7 +99,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
   'map/fetchInteraction',
   async (temporalGridFeatures: ExtendedFeature[], { getState, signal, dispatch }) => {
     const state = getState() as RootState
-    const temporalgridDataviews = selectTemporalgridDataviews(state) || []
+    const temporalgridDataviews = selectActivityDataviews(state) || []
     const { start, end } = selectTimeRange(state)
 
     // get corresponding dataviews

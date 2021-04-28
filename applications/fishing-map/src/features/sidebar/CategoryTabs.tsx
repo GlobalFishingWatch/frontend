@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
@@ -14,6 +14,7 @@ import { selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
 import { LocaleLabels } from 'features/i18n/i18n'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
+import useViewport from 'features/map/map-viewport.hooks'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
@@ -30,9 +31,6 @@ function getLinkToCategory(category: WorkspaceCategories) {
   return {
     type: WORKSPACES_LIST,
     payload: { workspaceId: undefined, category },
-    query: {
-      ...DEFAULT_WORKSPACE_LIST_VIEWPORT,
-    },
     replaceQuery: true,
   }
 }
@@ -41,6 +39,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t, i18n } = useTranslation()
   const guestUser = useSelector(isGuestUser)
   const locationType = useSelector(selectLocationType)
+  const { setMapCoordinates } = useViewport()
   const locationCategory = useSelector(selectLocationCategory)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
@@ -51,6 +50,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const toggleLanguage = (lang: Locale) => {
     i18n.changeLanguage(lang)
   }
+
+  const onCategoryClick = useCallback(() => {
+    setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
+  }, [setMapCoordinates])
 
   return (
     <ul className={cx('print-hidden', styles.CategoryTabs)}>
@@ -71,6 +74,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <Link
             className={styles.tabContent}
             to={getLinkToCategory(category as WorkspaceCategories)}
+            onClick={onCategoryClick}
           >
             <Icon icon={`category-${category}` as IconType} />
           </Link>

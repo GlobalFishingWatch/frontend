@@ -5,7 +5,7 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import { Resource, ResourceStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 
-type ResourcesState = Record<any, Resource>
+export type ResourcesState = Record<any, Resource>
 
 const initialState: ResourcesState = {}
 

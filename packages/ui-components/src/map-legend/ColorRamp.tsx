@@ -23,19 +23,33 @@ function ColorRampLegend({
 
   // Omit bucket that goes from -Infinity --> 0. Will have to add an exception if we need a divergent scale
   const cleanRamp = ramp?.filter(([value]) => value !== Number.NEGATIVE_INFINITY)
-
-  const skipOddLabels = ramp && ramp.length > 6
+  const cleanValues = ramp?.filter(([value]) => value)
+  const skipOddLabels = cleanValues && cleanValues.length >= 6
 
   const heatmapLegendScale = useMemo(() => {
     if (!ramp || !cleanRamp) return null
 
+    const domainValues = cleanRamp.map(([value]) => {
+      if (value === 'less') return 0
+      if (value === 'more') return 1
+      return value as number
+    })
+
     return scaleLinear()
       .range(cleanRamp.map((item, i) => (i * 100) / (ramp.length - 1)))
-      .domain(cleanRamp.map(([value]) => value as number))
+      .domain(domainValues)
   }, [cleanRamp, ramp])
 
-  if (!ramp || !cleanRamp) return null
+  const backgroundStyle = useMemo(() => {
+    if (!cleanRamp || type === 'colorramp-discrete') return {}
+    return {
+      backgroundImage: `linear-gradient(to right, ${cleanRamp
+        .map(([value, color]) => color)
+        .join()})`,
+    }
+  }, [cleanRamp, type])
 
+  if (!ramp || !cleanRamp) return null
   return (
     <div className={cx(styles.row, className)}>
       {labelComponent ? (
@@ -47,28 +61,14 @@ function ColorRampLegend({
             <span className={styles.subTitle}>
               {' '}
               ({unit}
-              {gridArea && (
-                <span>
-                  {' '}
-                  by {gridArea}
-                  <sup>2</sup>
-                </span>
-              )}
-              )
+              {gridArea && <span> / {gridArea}</span>})
             </span>
           )}
         </p>
       )}
       {cleanRamp?.length > 0 && (
         <Fragment>
-          <div
-            className={styles.ramp}
-            style={{
-              backgroundImage: `linear-gradient(to right, ${cleanRamp
-                .map(([value, color]) => color)
-                .join()})`,
-            }}
-          >
+          <div className={styles.ramp} style={backgroundStyle}>
             {currentValue && (
               <span
                 className={cx(styles.currentValue, currentValueClassName)}
@@ -78,7 +78,7 @@ function ColorRampLegend({
                     : 0,
                 }}
               >
-                {currentValue}
+                {currentValue.toFixed(2)}
               </span>
             )}
             {type === 'colorramp-discrete' && (
@@ -99,11 +99,13 @@ function ColorRampLegend({
               const roundValue = roundValues
                 ? roundLegendNumber(value as number)
                 : (value as number)
-              const valueLabel = formatLegendValue(roundValue)
+              const valueLabel = typeof value === 'string' ? value : formatLegendValue(roundValue)
               if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
               return (
                 <span
-                  className={styles.step}
+                  className={cx(styles.step, {
+                    [styles.lastStep]: !skipOddLabels && i === cleanRamp.length - 1,
+                  })}
                   style={{ left: `${(i * 100) / (ramp.length - 1)}%` }}
                   key={i}
                 >

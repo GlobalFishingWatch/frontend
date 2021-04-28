@@ -1,5 +1,107 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.27
+
+### Patch Changes
+
+- Updated dependencies [0a755cc4]
+  - @globalfishingwatch/layer-composer@5.2.4
+  - @globalfishingwatch/ui-components@2.18.9
+  - @globalfishingwatch/react-hooks@6.0.9
+
+## 0.0.26
+
+### Patch Changes
+
+- @globalfishingwatch/layer-composer@5.2.3
+- @globalfishingwatch/react-hooks@6.0.8
+- @globalfishingwatch/ui-components@2.18.8
+
+## 0.0.25
+
+### Patch Changes
+
+- Updated dependencies [8d08df8a]
+  - @globalfishingwatch/layer-composer@5.2.2
+  - @globalfishingwatch/react-hooks@6.0.7
+  - @globalfishingwatch/ui-components@2.18.7
+
+## 0.0.24
+
+### Patch Changes
+
+- Updated dependencies [c0dc95ec]
+  - @globalfishingwatch/layer-composer@5.2.1
+  - @globalfishingwatch/react-hooks@6.0.6
+  - @globalfishingwatch/ui-components@2.18.6
+
+## 0.0.23
+
+### Patch Changes
+
+- Updated dependencies [bf2d09a1]
+  - @globalfishingwatch/layer-composer@5.2.0
+  - @globalfishingwatch/react-hooks@6.0.5
+  - @globalfishingwatch/ui-components@2.18.5
+
+## 0.0.22
+
+### Patch Changes
+
+- Updated dependencies [af994916]
+  - @globalfishingwatch/layer-composer@5.1.2
+  - @globalfishingwatch/react-hooks@6.0.4
+  - @globalfishingwatch/ui-components@2.18.4
+
+## 0.0.21
+
+### Patch Changes
+
+- Updated dependencies [80907c1f]
+  - @globalfishingwatch/dataviews-client@6.2.1
+  - @globalfishingwatch/layer-composer@5.1.1
+  - @globalfishingwatch/react-hooks@6.0.3
+  - @globalfishingwatch/ui-components@2.18.3
+
+## 0.0.20
+
+### Patch Changes
+
+- Updated dependencies [87a54e62]
+  - @globalfishingwatch/dataviews-client@6.2.0
+  - @globalfishingwatch/layer-composer@5.1.0
+  - @globalfishingwatch/react-hooks@6.0.2
+  - @globalfishingwatch/ui-components@2.18.2
+
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies [bb4978cd]
+  - @globalfishingwatch/layer-composer@5.0.1
+  - @globalfishingwatch/ui-components@2.18.1
+  - @globalfishingwatch/react-hooks@6.0.1
+
+## 0.0.18
+
+### Patch Changes
+
+- Updated dependencies [358004cb]
+- Updated dependencies [8785580f]
+  - @globalfishingwatch/layer-composer@5.0.0
+  - @globalfishingwatch/react-hooks@6.0.0
+  - @globalfishingwatch/dataviews-client@6.0.0
+  - @globalfishingwatch/ui-components@2.17.4
+
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.2
+  - @globalfishingwatch/react-hooks@5.3.2
+  - @globalfishingwatch/ui-components@2.17.3
+
 ## 0.0.16
 
 ### Patch Changes

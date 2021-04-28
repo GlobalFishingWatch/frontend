@@ -9,6 +9,7 @@
     "noActivityLayers": "Aucun calque d'activité actif",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps allant jusqu'à un an",
     "title": "Analyse",
+    "vesselFlags": "par les navires marqués par",
     "area": "Zone de stockage",
     "generating": "Nous sommes en train de générer le rapport pour vous, il sera prêt bientôt.",
     "successfullMessage": "Le rapport a été envoyé avec succès, vous le recevrez bientôt par courriel.",
@@ -25,11 +26,13 @@
     "context_area_plural": "Calques de contexte",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers.",
     "country_plural": "Pays",
+    "dateRange": "entre {{start}} et {{end}}",
     "description": "Libellé",
     "environment": "Environnement",
     "events": "Évènements",
     "hour": "Heure",
     "hour_plural": "heures",
+    "in": "dans",
     "loggedAs": "Connecté en tant que",
     "login": "Se connecter",
     "logout": "Déconnexion",
@@ -37,7 +40,7 @@
     "min": "Min",
     "more": "plus",
     "name": "Nom",
-    "presence": "Présence de la pêche",
+    "presence": "Presence",
     "report": "Rapporter",
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
@@ -91,13 +94,20 @@
     "trackLoading": "Une erreur s'est produite lors du chargement de la piste du vaisseau",
     "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
     "vesselLoading": "Une erreur s'est produite lors du chargement de la piste des détails du vaisseau",
+    "workspaceCreate": "Une erreur s'est produite lors de la création de l'espace de travail, veuillez réessayer plus tard",
+    "workspaceDuplicatedName": "Il existe déjà un espace de travail portant ce nom",
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer ultérieurement",
+    "workspaceMissingName": "Le nom de l'espace de travail est requis",
     "workspaceNotFound": "La vue demandée n'a pas été trouvée"
   },
   "event": {
     "noData": "Aucune donnée disponible",
     "notInCVP": "Cet événement s'est produit en dehors de la plage horaire des données du Portail du Transporteur",
     "seeInCVP": "Voir dans le Portail du Transporteur"
+  },
+  "footer": {
+    "convenedBy": "Un partenariat convoqué par",
+    "supportBy": "Prise en charge par"
   },
   "layer": {
     "add": "Ajouter un calque",
@@ -152,8 +162,8 @@
   },
   "selects": {
     "allSelected": "Tous",
-    "selected": "slectionns",
-    "placeholder": "Sélectionnez une option"
+    "placeholder": "Sélectionnez une option",
+    "selected": "slectionns"
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Sélectionnez au moins une couche apparente d'effort de pêche",
@@ -180,6 +190,26 @@
     "flag": "Drapeau",
     "fleet": "Flotte",
     "geartype": "Type d'équipement",
+    "gearTypes": {
+      "dredge_fishing": "Pêche à Dragonne",
+      "drifting_longlines": "Dérive longue ligne",
+      "driftnets": "Filet dérivant",
+      "fishing": "Pêche",
+      "fixed_gear": "Équipement Fixe",
+      "other_fishing": "Autres pêches",
+      "other_purse_seines": "Autres Seines boursières",
+      "other_seines": "Other Seines",
+      "pole_and_line": "Pôle et ligne",
+      "pots_and_traps": "Pots et pièges",
+      "purse_seines": "Bourses de la Seine",
+      "seiners": "Seiners",
+      "set_gillnets": "Définir le Gillnet",
+      "set_longlines": "Définir une longue ligne",
+      "squid_jigger": "Jigger de calamar",
+      "trawlers": "Piégeur",
+      "trollers": "Troller",
+      "tuna_purse_seines": "Fusil de la senne au thon"
+    },
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "OMI",
     "lastTransmissionDate": "Fin de transmission",

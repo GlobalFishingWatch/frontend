@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import I18nDate from 'features/i18n/i18nDate'
 import { ValueItem } from 'types'
 import styles from './Info.module.css'
 import InfoFieldHistory from './InfoFieldHistory'
@@ -16,7 +17,7 @@ export enum VesselFieldLabel {
   fleet = 'fleet',
   origin = 'origin',
   type = 'type',
-  gearType = 'gearType',
+  geartype = 'geartype',
   length = 'length',
   depth = 'depth',
   grossTonnage = 'grossTonnage',
@@ -82,18 +83,25 @@ const InfoField: React.FC<ListItemProps> = ({
     return `+${valuesHistory.length} previous ${labelPlural.toLocaleUpperCase()}`
   }, [valuesHistory, labelPlural])
 
+  const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])
+
   return (
     <div className={styles.identifierField}>
       <label>{t(`vessel.${label}` as any, label)}</label>
       <div>
         <div onClick={openModal}>{value.length > 0 ? value : defaultEmptyValue}</div>
-        {valuesHistory.length > 0 && (
+        {valuesHistory.length > 1 && (
           <button className={styles.moreValues} onClick={openModal}>
             {t('vessel.plusPreviousValuesByField', defaultValue, {
               quantity: valuesHistory.length,
               fieldLabel: labelPlural.toLocaleUpperCase(),
             })}
           </button>
+        )}
+        {valuesHistory.length === 1 && since && (
+          <p className={styles.rangeLabel}>
+            {t('common.since', 'Since')} <I18nDate date={since} />
+          </p>
         )}
         <InfoFieldHistory
           current={current}

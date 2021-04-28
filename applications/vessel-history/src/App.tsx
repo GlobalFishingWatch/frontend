@@ -7,7 +7,7 @@ import { getLocationType } from 'routes/routes.selectors'
 import { PROFILE } from 'routes/routes'
 import { BASE_URL, SPLASH_TIMEOUT } from 'data/constants'
 import Profile from 'features/profile/Profile'
-import Splash from 'components/Splash'
+import Splash from 'features/splash/Splash'
 import './App.css'
 
 function App() {

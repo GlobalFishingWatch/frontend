@@ -5,7 +5,7 @@ import { selectTimebarGraph } from 'features/app/app.selectors'
 import {
   selectActiveVesselsDataviews,
   selectEnvironmentalDataviews,
-} from 'features/workspace/workspace.selectors'
+} from 'features/dataviews/dataviews.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 
 type TimebarTrackSegment = {

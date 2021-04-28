@@ -4,6 +4,7 @@ import {
   DEFAULT_CONTEXT_DATAVIEW_ID,
   DEFAULT_ENVIRONMENT_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
+  DEFAULT_PRESENCE_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
   DEFAULT_WORKSPACE_ID,
   WorkspaceCategories,
@@ -14,7 +15,7 @@ const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,
   app: APP_NAME,
   name: 'Default public Fishing Map workspace',
-  description: '',
+  description: DEFAULT_WORKSPACE_ID,
   category: WorkspaceCategories.FishingActivity,
   startAt: new Date(Date.UTC(2018, 0, 1)).toISOString(),
   endAt: DEFAULT_WORKSPACE.end,
@@ -35,6 +36,7 @@ const workspace: Workspace<WorkspaceState> = {
   ownerId: 0,
   dataviews: [
     { id: DEFAULT_VESSEL_DATAVIEW_ID }, // Fetch vessel information
+    { id: DEFAULT_PRESENCE_DATAVIEW_ID }, // Default dataview for new presence layers
     { id: DEFAULT_CONTEXT_DATAVIEW_ID }, // Default context dataview for new layers
     { id: DEFAULT_ENVIRONMENT_DATAVIEW_ID }, // Default environmet dataview for new layers
   ],

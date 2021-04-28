@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { selectUserData } from 'features/user/user.slice'
-import { selectVesselsDatasets } from 'features/workspace/workspace.selectors'
+import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 
 export const selectAllowedVesselsDatasets = createSelector(
   [selectVesselsDatasets, selectUserData],

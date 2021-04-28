@@ -9,6 +9,7 @@
     "noActivityLayers": "No activity layers active",
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
     "title": "Analysis",
+    "vesselFlags": "by vessels flagged by",
     "area": "Area",
     "generating": "We are generating the report for you, it'll be ready soon.",
     "successfullMessage": "The report was sent successfully, you'll receive it by email soon.",
@@ -25,11 +26,13 @@
     "context_area_plural": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "countries",
+    "dateRange": "between {{start}} and {{end}}",
     "description": "Description",
     "environment": "Environment",
     "events": "Events",
     "hour": "Hour",
     "hour_plural": "hours",
+    "in": "in",
     "loggedAs": "Logged as",
     "login": "Log in",
     "logout": "Log out",
@@ -37,7 +40,7 @@
     "min": "Min",
     "more": "more",
     "name": "Name",
-    "presence": "Fishing presence",
+    "presence": "Presence",
     "report": "Report",
     "seeDefault": "See default view",
     "share": "Share the current view",
@@ -91,13 +94,20 @@
     "trackLoading": "There was an error loading the vessel track",
     "uploadError": "There was an error uploading your dataset",
     "vesselLoading": "There was an error loading the vessel details track",
+    "workspaceCreate": "There was an error creating the workspace, please try again later",
+    "workspaceDuplicatedName": "There is already a workspace with this name",
     "workspaceLoad": "There was an error loading the workspace, please try again later",
+    "workspaceMissingName": "Workspace name is needed",
     "workspaceNotFound": "The view you request was not found"
   },
   "event": {
     "noData": "No data available",
     "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
     "seeInCVP": "See in Carrier Vessel Portal"
+  },
+  "footer": {
+    "convenedBy": "A partnership convened by",
+    "supportBy": "Supported by"
   },
   "layer": {
     "add": "Add layer",
@@ -152,8 +162,8 @@
   },
   "selects": {
     "allSelected": "All",
-    "selected": "selected",
-    "placeholder": "Select an option"
+    "placeholder": "Select an option",
+    "selected": "selected"
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
@@ -180,6 +190,26 @@
     "flag": "Flag",
     "fleet": "Fleet",
     "geartype": "Gear type",
+    "gearTypes": {
+      "dredge_fishing": "Dredge Fishing",
+      "drifting_longlines": "Drifting Longline",
+      "driftnets": "Driftnet",
+      "fishing": "Fishing",
+      "fixed_gear": "Fixed Gear",
+      "other_fishing": "Other Fishing",
+      "other_purse_seines": "Other Purse Seines",
+      "other_seines": "Other Seines",
+      "pole_and_line": "Pole and Line",
+      "pots_and_traps": "Pots and Traps",
+      "purse_seines": "Purse Seine",
+      "seiners": "Seiners",
+      "set_gillnets": "Set Gillnet",
+      "set_longlines": "Set Longline",
+      "squid_jigger": "Squid Jigger",
+      "trawlers": "Trawler",
+      "trollers": "Troller",
+      "tuna_purse_seines": "Tuna Purse Seine"
+    },
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Last transmission date",

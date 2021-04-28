@@ -1,5 +1,5 @@
 import { LayerMetadataLegend, LegendType } from '../../../types'
-import { HeatmapAnimatedMode } from '../../types'
+import { ColorRampsIds, HeatmapAnimatedMode } from '../../types'
 import { HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_COLOR_RAMPS, GRID_AREA_BY_ZOOM_LEVEL } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import getBreaks from './get-breaks'
@@ -11,6 +11,11 @@ export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorCon
   // Force bivariate color ramp depending on config
   if (config.mode === HeatmapAnimatedMode.Bivariate) {
     colorRampIds = ['bivariate']
+  }
+
+  const numActiveSublayers = config.sublayers.filter((s) => s.visible).length
+  if (numActiveSublayers === 1) {
+    colorRampIds = [(colorRampIds[0] + '_toWhite') as ColorRampsIds]
   }
   const colorRamps = colorRampIds.map((colorRampId) => {
     const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampId]
@@ -56,7 +61,8 @@ export const getSublayersBreaks = (
 
   const multiplier = intervalInDays * Math.pow(1 / 4, config.zoom) * 250
 
-  return config.sublayers.map((_, sublayerIndex) => {
+  return config.sublayers.map((sublayer, sublayerIndex) => {
+    if (sublayer.breaks) return sublayer.breaks
     const sublayerColorRamp = ramps[sublayerIndex]
     const numBreaks =
       config.mode === HeatmapAnimatedMode.Bivariate
@@ -110,6 +116,7 @@ const getLegendsCompare = (
 
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
+      unit: config.sublayers[sublayerIndex].legend?.unit,
       type: LegendType.ColorRampDiscrete,
       ramp: legendRamp,
       ...(gridArea && { gridArea }),

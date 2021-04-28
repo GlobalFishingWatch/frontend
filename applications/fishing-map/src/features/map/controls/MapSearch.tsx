@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import { OceanArea, searchOceanAreas } from '@globalfishingwatch/ocean-areas'
+import { OceanArea, searchOceanAreas, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { Bbox } from 'types'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './MapSearch.module.css'
 
 const MapSearch = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [query, setQuery] = useState<string>('')
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
@@ -30,7 +30,8 @@ const MapSearch = () => {
       setAreasMatching([])
     } else {
       setQuery(inputValue)
-      setAreasMatching(searchOceanAreas(inputValue))
+      const areas = searchOceanAreas(inputValue, { locale: i18n.language as OceanAreaLocale })
+      setAreasMatching(areas)
     }
   }
 

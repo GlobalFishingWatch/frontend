@@ -1,5 +1,7 @@
 # Dataviews in use
 
+Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/swagger#/DataviewsAPI)
+
 ## Context
 
 | Layer name                   | Dev id | Pro id |
@@ -60,6 +62,14 @@
 | Salinity for Palau                | 137    | 240    |
 | Sea surface temperature for Palau | 135    | 238    |
 | Chlorophyll for Palau             | 136    | 239    |
+
+### Marine Reserves - Niue
+
+| Layer name                       | Dev id | Pro id |
+| -------------------------------- | ------ | ------ |
+| Salinity for Niue                | 141    | ---    |
+| Sea surface temperature for Niue | 142    | ---    |
+| Chlorophyll for Niue             | 143    | ---    |
 
 ## Activity
 

@@ -4,6 +4,9 @@ import { isUrlAbsolute } from '../../utils'
 import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
 import { Group } from '../..'
+import { DEFAULT_BACKGROUND_COLOR } from '../background/background'
+
+const MAX_ZOOM_TO_CLUSTER_POINTS = 4
 
 export type GlobalTileClusterGeneratorConfig = Required<
   MergedGeneratorConfig<TileClusterGeneratorConfig>
@@ -32,6 +35,10 @@ class TileClusterGenerator {
         Array.isArray(config.eventTypes) ? config.eventTypes.join(',') : config.eventTypes
       )
     }
+    url.searchParams.set(
+      'maxClusterZoom',
+      (config.maxZoomCluster || MAX_ZOOM_TO_CLUSTER_POINTS).toString()
+    )
 
     return [
       {
@@ -85,6 +92,7 @@ class TileClusterGenerator {
           'text-offset': [0, 0.13],
           'text-field': ['get', 'count'],
           'text-font': ['Roboto Medium'],
+          'text-allow-overlap': true,
           visibility: isConfigVisible(config),
         },
         paint: {
@@ -106,9 +114,9 @@ class TileClusterGenerator {
         },
         paint: {
           'circle-color': config.color || '#FAE9A0',
-          'circle-radius': 10,
+          'circle-radius': 5,
           'circle-stroke-width': 1,
-          'circle-stroke-color': '#fff',
+          'circle-stroke-color': DEFAULT_BACKGROUND_COLOR,
         },
         metadata: {
           interactive: true,
@@ -116,20 +124,21 @@ class TileClusterGenerator {
           group: Group.Cluster,
         },
       },
-      {
-        id: 'unclustered_point_icon',
-        source: config.id,
-        'source-layer': 'points',
-        type: 'symbol',
-        filter: ['==', ['get', 'count'], 1],
-        layout: {
-          visibility: isConfigVisible(config),
-          'icon-image': 'carrier_portal_encounter',
-        },
-        metadata: {
-          group: Group.Cluster,
-        },
-      },
+      // {
+      //   id: 'unclustered_point_icon',
+      //   source: config.id,
+      //   'source-layer': 'points',
+      //   type: 'symbol',
+      //   filter: ['==', ['get', 'count'], 1],
+      //   layout: {
+      //     visibility: isConfigVisible(config),
+      //     'icon-image': 'carrier_portal_encounter',
+      //     'icon-allow-overlap': true,
+      //   },
+      //   metadata: {
+      //     group: Group.Cluster,
+      //   },
+      // },
     ]
     return layers as AnyLayer[]
   }
