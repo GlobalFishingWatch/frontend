@@ -126,22 +126,18 @@ const MapWrapper = (): React.ReactElement | null => {
     () =>
       mapLegends?.map((legend) => {
         const isSquareKm = (legend.gridArea as number) > 50000
-        let label = legend.unit
-        if (!label) {
-          if (legend.generatorType === GeneratorType.HeatmapAnimated) {
-            const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
-            const gridAreaFormatted = gridArea
-              ? formatI18nNumber(gridArea, {
-                  style: 'unit',
-                  unit: isSquareKm ? 'kilometer' : 'meter',
-                  unitDisplay: 'short',
-                })
-              : ''
-            if (!legend.unit || legend.unit === 'hours') {
-              label = `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
-            } else {
-              label = `${legend.unit} - ${gridAreaFormatted}² per cell`
-            }
+        let label = legend.unit || ''
+        if (legend.generatorType === GeneratorType.HeatmapAnimated) {
+          const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+          const gridAreaFormatted = gridArea
+            ? formatI18nNumber(gridArea, {
+                style: 'unit',
+                unit: isSquareKm ? 'kilometer' : 'meter',
+                unitDisplay: 'short',
+              })
+            : ''
+          if (legend.unit === 'hours') {
+            label = `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
           }
         }
         return { ...legend, label }
