@@ -7,7 +7,7 @@ const feature1 = { properties: { rawValues: '[0,15340,15342,1,2,3]' } }
 const feature2 = { properties: { rawValues: '[0,15340,15342,1,2,3]' } }
 const feature3 = { properties: { rawValues: '[0,15341,15343,1,2,3]' } }
 const feature4 = { properties: { rawValues: '[0,15340,15342,1,10,2,11,3,12]' } }
-const feature5 = { properties: { rawValues: '[0,15341,15343,1,10,2,11,3,12]' } }
+const feature5 = { properties: { rawValues: '[0,15341,15344,     1,10,2,11,3,12,1,1]' } }
 
 tap.strictSame(getTimeSeries([feature1], 1), [
   { frame: 15340, 0: 1 },
@@ -35,6 +35,16 @@ tap.strictSame(getTimeSeries([feature4, feature5], 2), [
   { frame: 15341, 0: 3, 1: 21 },
   { frame: 15342, 0: 5, 1: 23 },
   { frame: 15343, 0: 3, 1: 12 },
+  { frame: 15344, 0: 1, 1: 1 },
+])
+
+// Test avg mode
+tap.strictSame(getTimeSeries([feature4, feature5], 2, 0, 'avg'), [
+  { frame: 15340, 0: 1, 1: 10 },
+  { frame: 15341, 0: 1.5, 1: 10.5 },
+  { frame: 15342, 0: 2.5, 1: 11.5 },
+  { frame: 15343, 0: 3, 1: 12 },
+  { frame: 15344, 0: 1, 1: 1 },
 ])
 
 const geojson = aggregateTile(bigtile, {
@@ -45,7 +55,7 @@ const geojson = aggregateTile(bigtile, {
   quantizeOffset: 15340,
   geomType: 'rectangle',
   delta: 31,
-  numDatasets: 2,
+  sublayerCount: 2,
   interval: 'day',
   breaks: [
     [0, 31, 186, 310, 930],
@@ -53,11 +63,11 @@ const geojson = aggregateTile(bigtile, {
   ],
   // "breaks":[[0,31,186],[0,31,186]],
   // "breaks":[[0,31,186,310,930]],
-  // "combinationMode":"compare",
-  combinationMode: 'compare',
+  // "sublayerCombinationMode":"max",
+  sublayerCombinationMode: 'max',
   tileBBox: [-22.5, 40.97989806962013, 0, 55.77657301866769],
   interactive: true,
-  visible: [true, true, true],
+  sublayerVisibility: [true, true, true],
 })
 
 let sum = 0
@@ -65,7 +75,7 @@ for (var i = 0; i < 20; i++) {
   const t = performance.now()
   const timeseries = getTimeSeries(geojson.interactive.features, 2, 15340)
   const delta = performance.now() - t
-  // console.log(delta)
+  // console.log(delta, timeseries)
   sum += delta
 }
 

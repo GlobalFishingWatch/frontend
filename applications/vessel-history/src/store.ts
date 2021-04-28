@@ -1,12 +1,12 @@
-import {
-  configureStore,
-  ThunkAction,
-  Action,
-  combineReducers,
-  getDefaultMiddleware,
-} from '@reduxjs/toolkit'
+import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
 import connectedRoutes, { routerQueryMiddleware } from 'routes/routes'
+import offlineVesselsReducer from 'features/vessels/offline-vessels.slice'
 import vesselsReducer from 'features/vessels/vessels.slice'
+import searchReducer from 'features/search/search.slice'
+import { initializeDataviews } from 'features/dataviews/dataviews.utils'
+import mapReducer from './features/map/map.slice'
+import dataviewsReducer from './features/dataviews/dataviews.slice'
+import datasetsReducer from './features/datasets/datasets.slice'
 
 const {
   reducer: location,
@@ -15,8 +15,13 @@ const {
 } = connectedRoutes
 
 const rootReducer = combineReducers({
+  offlineVessels: offlineVesselsReducer,
   vessels: vesselsReducer,
+  search: searchReducer,
   location: location,
+  map: mapReducer,
+  dataviews: dataviewsReducer,
+  datasets: datasetsReducer,
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
@@ -33,11 +38,10 @@ const defaultMiddlewareOptions: any = {
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: [
-    ...getDefaultMiddleware(defaultMiddlewareOptions),
-    routerQueryMiddleware,
-    routerMiddleware,
-  ],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware(defaultMiddlewareOptions)
+      .concat(routerQueryMiddleware)
+      .concat(routerMiddleware),
   enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })
 
@@ -49,5 +53,8 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >
+
+// Only once when the app starts
+initializeDataviews(store.dispatch)
 
 export default store

@@ -9,6 +9,7 @@
     "noActivityLayers": "Ninguna capa de actividad se encuentra activa",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
+    "vesselFlags": "por buques marcados por",
     "area": "Área",
     "generating": "Estamos generando el informe para ti, estará listo pronto.",
     "successfullMessage": "El informe ha sido enviado con éxito, lo recibirás pronto por correo electrónico.",
@@ -25,11 +26,13 @@
     "context_area_plural": "Areas de gestión",
     "copiedToClipboard": "El enlace para compartir este mapa ha sido copiado al portapapeles.",
     "country_plural": "paises",
+    "dateRange": "entre {{start}} y {{end}}",
     "description": "Descripción",
     "environment": "Entorno",
     "events": "Eventos",
     "hour": "Hora",
     "hour_plural": "horas",
+    "in": "en",
     "loggedAs": "Registrado como",
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
@@ -37,7 +40,7 @@
     "min": "Mínimo",
     "more": "más",
     "name": "Nombre",
-    "presence": "Presencia de pesca",
+    "presence": "Presencia",
     "report": "Informe",
     "seeDefault": "Ver vista por defecto",
     "share": "Comparte el mapa actual",
@@ -91,13 +94,20 @@
     "trackLoading": "Se ha producido un error al cargar la pista del buque",
     "uploadError": "Hubo un error al cargar su conjunto de datos",
     "vesselLoading": "Se ha producido un error al cargar el seguimiento de detalles del buque",
+    "workspaceCreate": "Hubo un error al crear el espacio de trabajo, por favor inténtalo de nuevo más tarde",
+    "workspaceDuplicatedName": "Ya hay un área de trabajo con este nombre",
     "workspaceLoad": "Hubo un error cargando tu vista, inténtalo de nuevo",
+    "workspaceMissingName": "Se necesita el nombre del espacio de trabajo",
     "workspaceNotFound": "La vista que solicitó no se encontró"
   },
   "event": {
     "noData": "No hay datos disponibles",
     "notInCVP": "Este evento ocurrió fuera del intervalo de tiempo de los datos del Portal del Buque Carrier",
     "seeInCVP": "Ver en el Portal de Buque de Carrier"
+  },
+  "footer": {
+    "convenedBy": "Una asociación convocada por",
+    "supportBy": "Soportado por"
   },
   "layer": {
     "add": "Añadir capa",
@@ -152,8 +162,8 @@
   },
   "selects": {
     "allSelected": "Todos",
-    "selected": "seleccionado",
-    "placeholder": "Seleccione una opción"
+    "placeholder": "Seleccione una opción",
+    "selected": "seleccionado"
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa aparente de esfuerzo de pesca",
@@ -180,6 +190,26 @@
     "flag": "Bandera",
     "fleet": "Flota",
     "geartype": "Tipo de equipo",
+    "gearTypes": {
+      "dredge_fishing": "Pesca de dragado",
+      "drifting_longlines": "Deslizando Longline",
+      "driftnets": "Red de deriva",
+      "fishing": "Pesca",
+      "fixed_gear": "Equipo fijo",
+      "other_fishing": "Otras pesquerías",
+      "other_purse_seines": "Otras Sena de bolsa",
+      "other_seines": "Other Seines",
+      "pole_and_line": "Polo y línea",
+      "pots_and_traps": "Macetas y trampas",
+      "purse_seines": "Sena de bolsa",
+      "seiners": "Seiners",
+      "set_gillnets": "Establecer Gillnet",
+      "set_longlines": "Establecer Longline",
+      "squid_jigger": "Jigger calamar",
+      "trawlers": "Trawler",
+      "trollers": "Troller",
+      "tuna_purse_seines": "Sena del tesoro atunero"
+    },
     "grossTonnageRange": "Gross Tonnage range",
     "imo": "IMO",
     "lastTransmissionDate": "Fecha última transmisión",

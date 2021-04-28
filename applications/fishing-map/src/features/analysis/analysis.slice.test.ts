@@ -2,7 +2,7 @@ import { AsyncThunkAction, Dispatch } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Report, ReportStatus } from '@globalfishingwatch/api-types/dist'
 import { AsyncError } from 'utils/async-slice'
-import { createSingleReportThunk, CreateReport, DateRange } from './analysis.slice'
+import { CreateReport, DateRange, createReportThunk } from './analysis.slice'
 
 jest.mock('@globalfishingwatch/api-client')
 
@@ -17,7 +17,7 @@ describe('Reports Slice', () => {
     jest.unmock('@globalfishingwatch/api-client')
   })
 
-  describe('Create single report thunk', () => {
+  describe('Create report thunk', () => {
     let action: AsyncThunkAction<
       Report,
       CreateReport,
@@ -40,7 +40,6 @@ describe('Reports Slice', () => {
       api.fetch.mockResolvedValue(result)
 
       arg = {
-        datasets: ['public-fishing-tracks:v20190502'],
         dateRange: {
           // Using dates in ART timezone that converted to UTC
           // should fall in the next day (2012-01-01)
@@ -48,13 +47,29 @@ describe('Reports Slice', () => {
           start: '2011-12-31T21:00:00-0300',
           end: '2012-12-31T21:00:00-0300',
         } as DateRange,
-        filters: {
-          flag: ['CHI', 'ARG'],
-          fleet: ['large-fleet'],
-          origin: ['some', 'origin'],
-          geartype: ['gear', 'types'],
-          vessel_type: ['vessel', 'types'],
-        },
+        dataviews: [
+          {
+            datasets: ['public-fishing-tracks:v20190502'],
+            filters: {
+              flag: ['CHI', 'ARG'],
+              fleet: ['large-fleet'],
+              origin: ['some', 'origin'],
+              geartype: ['gear', 'types'],
+              vessel_type: ['vessel', 'types'],
+            },
+          },
+          {
+            datasets: [
+              'public-global-fishing-tracks:v20201001',
+              'public-panama-fishing-tracks:v20200331',
+            ],
+            filters: {
+              flag: ['ESP'],
+              geartype: ['other', 'gear'],
+              vessel_type: ['super', 'vessel', 'type'],
+            },
+          },
+        ],
         geometry: {
           type: 'Feature',
           geometry: {
@@ -83,7 +98,7 @@ describe('Reports Slice', () => {
         status: ReportStatus.NotStarted,
       }
 
-      action = createSingleReportThunk(arg)
+      action = createReportThunk(arg)
     })
 
     // Test that our thunk is calling the API using the arguments we expect
@@ -93,10 +108,14 @@ describe('Reports Slice', () => {
         '/v1/reports',
         {
           body: {
-            datasets: ['public-fishing-tracks:v20190502'],
+            datasets: [
+              'public-fishing-tracks:v20190502',
+              'public-global-fishing-tracks:v20201001,public-panama-fishing-tracks:v20200331',
+            ],
             dateRange: ['2012-01-01', '2013-01-01'],
             filters: [
               "flag IN ('CHI', 'ARG') AND fleet IN ('large-fleet') AND origin IN ('some', 'origin') AND geartype IN ('gear', 'types') AND vessel_type IN ('vessel', 'types')",
+              "flag IN ('ESP') AND geartype IN ('other', 'gear') AND vessel_type IN ('super', 'vessel', 'type')",
             ],
             geometry: {
               type: 'Feature',
@@ -121,15 +140,30 @@ describe('Reports Slice', () => {
       const expectedResult = {
         meta: {
           arg: {
-            datasets: ['public-fishing-tracks:v20190502'],
             dateRange: { end: '2012-12-31T21:00:00-0300', start: '2011-12-31T21:00:00-0300' },
-            filters: {
-              flag: ['CHI', 'ARG'],
-              fleet: ['large-fleet'],
-              origin: ['some', 'origin'],
-              geartype: ['gear', 'types'],
-              vessel_type: ['vessel', 'types'],
-            },
+            dataviews: [
+              {
+                datasets: ['public-fishing-tracks:v20190502'],
+                filters: {
+                  flag: ['CHI', 'ARG'],
+                  fleet: ['large-fleet'],
+                  origin: ['some', 'origin'],
+                  geartype: ['gear', 'types'],
+                  vessel_type: ['vessel', 'types'],
+                },
+              },
+              {
+                datasets: [
+                  'public-global-fishing-tracks:v20201001',
+                  'public-panama-fishing-tracks:v20200331',
+                ],
+                filters: {
+                  flag: ['ESP'],
+                  geartype: ['other', 'gear'],
+                  vessel_type: ['super', 'vessel', 'type'],
+                },
+              },
+            ],
             geometry: {
               type: 'Feature',
               geometry: {
@@ -148,7 +182,7 @@ describe('Reports Slice', () => {
           requestId: expect.any(String),
           requestStatus: 'fulfilled',
         },
-        type: 'report/createsingle/fulfilled',
+        type: 'report/create/fulfilled',
       }
 
       expect(api.fetch).toHaveBeenCalledWith(...expectedParams)

@@ -15,12 +15,15 @@ export function getWorkspaceEnv(): WorkspaceEnv {
 
 export enum WorkspaceCategories {
   FishingActivity = 'fishing-activity',
-  MarineReserves = 'marine-reserves',
+  MarineManager = 'marine-manager',
   CountryPortals = 'country-portals',
 }
 
 // Different ids for each different environment
 // TODO migrate to use strings and define ids for the following ones
+// IMPORTANT: When updating this list, also update it's corresponding
+// values in:
+//      applications/vessel-history/src/features/dataviews/dataviews.config.ts
 export const DEFAULT_BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
 export const DEFAULT_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 92 : 171
 export const DEFAULT_FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178

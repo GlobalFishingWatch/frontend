@@ -116,8 +116,8 @@ function Workspace() {
   const workspace = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
-
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
+
   useEffect(() => {
     if (resourceQueries) {
       resourceQueries.forEach((resourceQuery) => {
@@ -147,9 +147,9 @@ function Workspace() {
 
   return (
     <Fragment>
-      {locationCategory === WorkspaceCategories.MarineReserves && workspace?.name && (
-        <h2 className={styles.title}>{workspace.name}</h2>
-      )}
+      {(locationCategory === WorkspaceCategories.MarineManager ||
+        locationCategory === WorkspaceCategories.FishingActivity) &&
+        workspace?.name && <h2 className={styles.title}>{workspace.name}</h2>}
       <HeatmapsSection />
       <VesselsSection />
       <EventsSection />

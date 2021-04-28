@@ -1,5 +1,23 @@
 # @globalfishingwatch/api-types
 
+## 3.3.0
+
+### Minor Changes
+
+- update app names typing
+
+## 3.2.0
+
+### Minor Changes
+
+- fb321617: update user types definition
+
+## 3.1.1
+
+### Patch Changes
+
+- include geartype in vessel type definition
+
 ## 3.1.0
 
 ### Minor Changes

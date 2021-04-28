@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback } from 'react'
-// import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import groupBy from 'lodash/groupBy'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -8,7 +7,7 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectHasAnalysisLayersVisible } from 'features/workspace/workspace.selectors'
+import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
 import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import useMapInstance, { useMapContext } from 'features/map/map-context.hooks'
@@ -55,7 +54,7 @@ function FeatureRow({
   const { gfw_id } = feature.properties
 
   // ContextLayerType.MPA but enums doesn't work in CRA for now
-  if (['mpa', 'mpa-restricted', 'mpa-no-take'].includes(feature.contextLayer as string)) {
+  if (['mpa', 'mpa-restricted', 'mpa-no-take'].includes(feature.generatorContextLayer as string)) {
     const { wdpa_pid } = feature.properties
     const label = `${feature.value} - ${feature.properties.desig}`
     return (
@@ -68,8 +67,11 @@ function FeatureRow({
               disabled={!reportEnabled}
               tooltip={
                 reportEnabled
-                  ? t('common.report', 'Report')
-                  : t('analysis.noActivityLayers', 'No activity layers active')
+                  ? t('common.analysis', 'Create an analysis for this area')
+                  : t(
+                      'common.analysisNotAvailable',
+                      'Toggle an activity or environmenet layer on to analyse in in this area'
+                    )
               }
               onClick={handleReportClick}
               size="small"
@@ -88,7 +90,7 @@ function FeatureRow({
       </div>
     )
   }
-  if (feature.contextLayer === 'tuna-rfmo') {
+  if (feature.generatorContextLayer === 'tuna-rfmo') {
     const link = TunaRfmoLinksById[feature.value]
     return (
       <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
@@ -97,7 +99,14 @@ function FeatureRow({
           <IconButton
             icon="report"
             disabled={!reportEnabled}
-            tooltip={t('common.report', 'Report')}
+            tooltip={
+              reportEnabled
+                ? t('common.analysis', 'Create an analysis for this area')
+                : t(
+                    'common.analysisNotAvailable',
+                    'Toggle an activity or environmenet layer on to analyse in in this area'
+                  )
+            }
             onClick={handleReportClick}
             size="small"
           />
@@ -110,7 +119,7 @@ function FeatureRow({
       </div>
     )
   }
-  if (feature.contextLayer === 'eez-areas') {
+  if (feature.generatorContextLayer === 'eez-areas') {
     const { mrgid } = feature.properties
     return (
       <div className={styles.row} key={`${mrgid}-${gfw_id}`}>
@@ -120,7 +129,14 @@ function FeatureRow({
             <IconButton
               icon="report"
               disabled={!reportEnabled}
-              tooltip={t('common.report', 'Report')}
+              tooltip={
+                reportEnabled
+                  ? t('common.analysis', 'Create an analysis for this area')
+                  : t(
+                      'common.analysisNotAvailable',
+                      'Toggle an activity or environmenet layer on to analyse in in this area'
+                    )
+              }
               onClick={handleReportClick}
               size="small"
             />
@@ -136,7 +152,10 @@ function FeatureRow({
       </div>
     )
   }
-  if (feature.contextLayer === 'wpp-nri' || feature.contextLayer === 'high-seas') {
+  if (
+    feature.generatorContextLayer === 'wpp-nri' ||
+    feature.generatorContextLayer === 'high-seas'
+  ) {
     return (
       <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
         <span className={styles.rowText}>{feature.value}</span>
@@ -145,7 +164,14 @@ function FeatureRow({
             <IconButton
               icon="report"
               disabled={!reportEnabled}
-              tooltip={t('common.report', 'Report')}
+              tooltip={
+                reportEnabled
+                  ? t('common.analysis', 'Create an analysis for this area')
+                  : t(
+                      'common.analysisNotAvailable',
+                      'Toggle an activity or environmenet layer on to analyse it in this area'
+                    )
+              }
               onClick={handleReportClick}
               size="small"
             />

@@ -23,7 +23,7 @@ type LayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
-function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactElement {
+function HeatmapLayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
@@ -103,7 +103,7 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && fishingDataview && (
+          {layerActive && (fishingDataview || presenceDataview) && (
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
@@ -191,4 +191,4 @@ function LayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactEl
   )
 }
 
-export default LayerPanel
+export default HeatmapLayerPanel

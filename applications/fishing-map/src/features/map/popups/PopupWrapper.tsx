@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import cx from 'classnames'
 import groupBy from 'lodash/groupBy'
-import { Anchor } from '@globalfishingwatch/mapbox-gl'
+import type { Anchor } from '@globalfishingwatch/mapbox-gl'
 import { Popup } from '@globalfishingwatch/react-map-gl'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { TooltipEvent } from 'features/map/map.hooks'
+import { POPUP_CATEGORY_ORDER } from 'data/config'
 import styles from './Popup.module.css'
 import HeatmapTooltipRow from './HeatmapLayers'
 import TileClusterRow from './TileClusterLayers'
-import EnviromentalTooltipSection from './EnvironmentLayers'
+import EnvironmentTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 import UserContextTooltipSection from './UserContextLayers'
 
@@ -32,9 +34,11 @@ function PopupWrapper({
 }: PopupWrapperProps) {
   if (!event) return null
 
-  const featureByType = groupBy(
-    event.features.sort((a, b) => (a.type === Generators.Type.HeatmapAnimated ? -1 : 0)),
-    'type'
+  const featureByCategory = groupBy(
+    event.features.sort(
+      (a, b) => POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
+    ),
+    'category'
   )
 
   return (
@@ -49,54 +53,52 @@ function PopupWrapper({
       captureClick
     >
       <div className={styles.content}>
-        {Object.entries(featureByType).map(([featureType, features]) => {
-          if (featureType === Generators.Type.HeatmapAnimated) {
-            return features.map((feature, i) => (
-              <HeatmapTooltipRow
-                key={i + (feature.title as string)}
-                feature={feature}
-                showFeaturesDetails={type === 'click'}
-              />
-            ))
+        {Object.entries(featureByCategory).map(([featureCategory, features]) => {
+          switch (featureCategory) {
+            case DataviewCategory.Activity:
+              return features.map((feature, i) => (
+                <HeatmapTooltipRow
+                  key={i + (feature.title as string)}
+                  feature={feature}
+                  showFeaturesDetails={type === 'click'}
+                />
+              ))
+            case DataviewCategory.Events:
+              if (type === 'click')
+                return <TileClusterRow key={featureCategory} features={features} />
+              else return null
+            case DataviewCategory.Environment:
+              return (
+                <EnvironmentTooltipSection
+                  key={featureCategory}
+                  features={features}
+                  showFeaturesDetails={type === 'click'}
+                />
+              )
+            // TODO: merge UserContextTooltipSection and ContextTooltipSection
+            case DataviewCategory.Context:
+              const userContextFeatures = features.filter(
+                (feature) => feature.type === Generators.Type.UserContext
+              )
+              const defaultContextFeatures = features.filter(
+                (feature) => feature.type === Generators.Type.Context
+              )
+              return (
+                <Fragment key={featureCategory}>
+                  <UserContextTooltipSection
+                    features={userContextFeatures}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                  <ContextTooltipSection
+                    features={defaultContextFeatures}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                </Fragment>
+              )
+
+            default:
+              return null
           }
-          if (featureType === Generators.Type.UserContext) {
-            return (
-              <UserContextTooltipSection
-                key={featureType}
-                features={features}
-                showFeaturesDetails={type === 'click'}
-              />
-            )
-          }
-          if (featureType === Generators.Type.Context) {
-            return (
-              <ContextTooltipSection
-                key={featureType}
-                features={features}
-                showFeaturesDetails={type === 'click'}
-              />
-            )
-          }
-          if (featureType === Generators.Type.TileCluster && type === 'click') {
-            return <TileClusterRow key={featureType} features={features} />
-          }
-          if (featureType === Generators.Type.Heatmap) {
-            return (
-              <EnviromentalTooltipSection
-                key={featureType}
-                features={features}
-                showFeaturesDetails={type === 'click'}
-              />
-            )
-          }
-          if (featureType === Generators.Type.GL) {
-            return features.map((feature, i) => (
-              <div key={feature.value || i} className={styles.popupSection}>
-                {feature.value}
-              </div>
-            ))
-          }
-          return null
         })}
       </div>
     </Popup>

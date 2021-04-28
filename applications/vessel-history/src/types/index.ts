@@ -9,6 +9,9 @@ export type WorkspaceParam =
   | 'vessel'
   | 'timebarMode'
   | 'q'
+  | 'hiddenLayers'
+  | 'satellite'
+  | 'colorMode'
 
 export type QueryParams = {
   [query in WorkspaceParam]?: string | number | boolean | null
@@ -35,7 +38,7 @@ export interface VesselFieldHistory<T> {
 
 export interface VesselFieldsHistory {
   callsign: VesselFieldHistory<string>
-  gearType: VesselFieldHistory<string>
+  geartype: VesselFieldHistory<string>
   mmsi: VesselFieldHistory<string>
   imo: VesselFieldHistory<string>
   shipname: VesselFieldHistory<string>
@@ -149,4 +152,14 @@ export enum Locale {
   en = 'en',
   es = 'es',
   fr = 'fr',
+}
+
+export type ContextLayer = {
+  id: string
+  label: string
+  color: string
+  active?: boolean
+  visible?: boolean
+  description?: string
+  disabled?: boolean
 }

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Logo, { SubBrands } from '@globalfishingwatch/ui-components/dist/logo'
-import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
+import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   saveCurrentWorkspaceThunk,
@@ -29,7 +29,7 @@ import { useClipboardNotification } from './sidebar.hooks'
 
 function SaveWorkspaceButton() {
   const [loginLink, setLoginLink] = useState('')
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const guestUser = useSelector(isGuestUser)
   const viewport = useSelector(selectViewport)
@@ -49,7 +49,7 @@ function SaveWorkspaceButton() {
       if (workspace && isOwnerWorkspace) {
         dispatchedAction = await dispatch(updatedCurrentWorkspaceThunk(workspace.id))
       } else {
-        const areaName = getOceanAreaName(viewport)
+        const areaName = getOceanAreaName(viewport, { locale: i18n.language as OceanAreaLocale })
         const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
         const start = formatI18nDate(timerange.start as string, {
           format: dateFormat,
@@ -159,8 +159,7 @@ function SidebarHeader() {
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
-    if (locationCategory === WorkspaceCategories.MarineReserves) subBrand = SubBrands.MarinReserves
-    if (locationCategory === WorkspaceCategories.CountryPortals) subBrand = SubBrands.CountryPortal
+    if (locationCategory === WorkspaceCategories.MarineManager) subBrand = SubBrands.MarineManager
     return subBrand
   }, [locationCategory])
 

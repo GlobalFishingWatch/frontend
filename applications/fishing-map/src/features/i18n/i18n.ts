@@ -8,6 +8,7 @@ export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
   { id: Locale.es, label: 'Español' },
   { id: Locale.fr, label: 'Français' },
+  { id: Locale.id, label: 'Bahasa Indonesia' },
 ]
 
 const pathPrefix = process.env.NODE_ENV === 'production' ? 'marine-reserves' : ''

@@ -2,6 +2,8 @@ import { FeatureCollection } from 'geojson'
 import { StringUnitLength } from 'luxon'
 import { AnySourceData, Layer } from '@globalfishingwatch/mapbox-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
+import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { Interval } from './heatmap/util/time-chunks'
 
 export enum Type {
   Background = 'BACKGROUND',
@@ -38,6 +40,7 @@ export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | nul
 export interface GeneratorLegend {
   label?: string
   unit?: string
+  color?: string
 }
 
 export interface GeneratorMetadata {
@@ -138,6 +141,10 @@ export type TileClusterEventType = 'encounter' | 'loitering' | 'port'
  */
 export interface TileClusterGeneratorConfig extends GeneratorConfig {
   type: Type.TileCluster
+  /**
+   * Defines the maximum zoom that returns clusters
+   */
+  maxZoomCluster?: number
   /**
    * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
    */
@@ -267,6 +274,12 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   interactive?: boolean
   staticStart?: string
   staticEnd?: string
+  /**
+   * Defines a fixed or a supported list of intervals in an Array format
+   */
+  interval?: Interval | Interval[]
+  aggregationOperation?: AggregationOperation
+  breaksMultiplier?: number
 }
 
 export type AnyGeneratorConfig =
@@ -335,7 +348,10 @@ export interface HeatmapAnimatedGeneratorSublayer {
   datasets: string[]
   filter?: string
   colorRamp: ColorRampsIds
+  colorRampWhiteEnd?: boolean
   visible?: boolean
+  breaks?: number[]
+  legend?: GeneratorLegend
 }
 
 // ---- Heatmap Generator color ramps types
@@ -345,14 +361,23 @@ export type ColorRampsIds =
   | 'reception'
   | 'bivariate'
   | 'teal'
+  | 'teal_toWhite'
   | 'magenta'
+  | 'magenta_toWhite'
   | 'lilac'
+  | 'lilac_toWhite'
   | 'salmon'
+  | 'salmon_toWhite'
   | 'sky'
+  | 'sky_toWhite'
   | 'red'
+  | 'red_toWhite'
   | 'yellow'
+  | 'yellow_toWhite'
   | 'green'
+  | 'green_toWhite'
   | 'orange'
+  | 'orange_toWhite'
 
 export enum HeatmapAnimatedMode {
   // Pick sublayer with highest value and place across this sublayer's color ramp. Works with 0 - n sublayers
@@ -363,4 +388,6 @@ export enum HeatmapAnimatedMode {
   Blob = 'blob',
   // Represents value in 3D stacked bars. Works with 0 - n sublayers
   Extruded = 'extruded',
+  // Just show raw value ffor 1 sublayer
+  Single = 'single',
 }

@@ -1,0 +1,67 @@
+import { uniq } from 'lodash'
+import { Dataview, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
+import { TrackColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
+import { Generators } from '@globalfishingwatch/layer-composer'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { AppDispatch } from 'store'
+import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
+import { fetchDataviewsByIdsThunk } from './dataviews.slice'
+import { DEFAULT_VESSEL_DATAVIEW_ID, dataviewInstances } from './dataviews.config'
+
+// used in workspaces with encounter events layers
+export const VESSEL_LAYER_PREFIX = 'vessel-'
+
+type VesselInstanceDatasets = {
+  trackDatasetId: string
+  infoDatasetId: string
+}
+export const getVesselDataviewInstance = (
+  vessel: { id: string },
+  { trackDatasetId, infoDatasetId }: VesselInstanceDatasets
+): DataviewInstance<Generators.Type> => {
+  const datasetsConfig = [
+    {
+      datasetId: trackDatasetId,
+      params: [{ id: 'vesselId', value: vessel.id }],
+      endpoint: EndpointId.Tracks,
+    },
+    {
+      datasetId: infoDatasetId,
+      params: [{ id: 'vesselId', value: vessel.id }],
+      endpoint: EndpointId.Vessel,
+    },
+  ]
+  const vesselDataviewInstance = {
+    id: `${VESSEL_LAYER_PREFIX}${vessel.id}`,
+    dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
+    config: {
+      // TODO pick a not used color
+      color: TrackColorBarOptions[Math.floor(Math.random() * TrackColorBarOptions.length)].value,
+    },
+    datasetsConfig,
+  }
+  return vesselDataviewInstance
+}
+
+export const getDatasetByDataview = (
+  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+) => {
+  return uniq(
+    dataviews?.flatMap((dataviews) => {
+      if (!dataviews.datasetsConfig) return []
+      return dataviews.datasetsConfig.map(({ datasetId }) => datasetId)
+    })
+  )
+}
+
+export const initializeDataviews = async (dispatch: AppDispatch) => {
+  let dataviews: Dataview[] = []
+  const action = await dispatch(
+    fetchDataviewsByIdsThunk(dataviewInstances.map((instance) => instance.dataviewId))
+  )
+  if (fetchDataviewsByIdsThunk.fulfilled.match(action as any)) {
+    dataviews = action.payload as Dataview[]
+  }
+  const datasets = getDatasetByDataview(dataviews)
+  dispatch(fetchDatasetsByIdsThunk(datasets))
+}

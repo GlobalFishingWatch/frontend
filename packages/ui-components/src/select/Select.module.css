@@ -55,7 +55,7 @@
   left: 0;
   background: var(--color-white);
   box-shadow: var(--box-shadow);
-  max-height: 40rem;
+  max-height: 24rem;
   overflow: auto;
   z-index: 10;
 }

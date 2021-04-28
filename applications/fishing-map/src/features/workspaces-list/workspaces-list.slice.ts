@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import memoize from 'lodash/memoize'
-import { fetchGoogleSheetsData } from 'google-sheets-mapper'
 import { stringify } from 'qs'
+import kebabCase from 'lodash/kebabCase'
 import { Workspace } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
@@ -13,9 +13,10 @@ import {
 } from 'utils/async-slice'
 import { RootState } from 'store'
 import { APP_NAME } from 'data/config'
+import { WorkspaceState } from 'types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
-import { WorkspaceState } from 'types'
+import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 
 type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategories>
 
@@ -24,48 +25,141 @@ type fetchWorkspacesThunkParams = {
   ids?: string[]
   userId?: number
 }
-export const fetchWorkspacesThunk = createAsyncThunk(
-  'workspaces/fetch',
-  async ({ app = APP_NAME, ids, userId }: fetchWorkspacesThunkParams) => {
-    const workspacesParams = { app, ids, ownerId: userId }
+export const fetchWorkspacesThunk = createAsyncThunk<
+  Workspace[],
+  fetchWorkspacesThunkParams,
+  {
+    rejectValue: AsyncError
+  }
+>('workspaces/fetch', async ({ app = APP_NAME, ids, userId }, { getState, rejectWithValue }) => {
+  const state = getState() as RootState
+  const defaultWorkspaceLoaded = selectWorkspaceById(DEFAULT_WORKSPACE_ID)(state) !== undefined
+  const workspacesParams = { app, ids, ownerId: userId }
+  try {
     const workspaces = await GFWAPI.fetch<AppWorkspace[]>(
       `/v1/workspaces?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
     )
 
-    if (ids?.includes(DEFAULT_WORKSPACE_ID)) {
+    if (ids?.includes(DEFAULT_WORKSPACE_ID) && !defaultWorkspaceLoaded) {
       const defaultWorkspace = await getDefaultWorkspace()
       return [...workspaces, defaultWorkspace]
     }
     return workspaces
+  } catch (e) {
+    return rejectWithValue({
+      status: e.status || e.code,
+      message: `${ids || userId} - ${e.message}`,
+    })
+  }
+})
+
+export const fetchDefaultWorkspaceThunk = createAsyncThunk<Workspace>(
+  'workspaces/fetchDefault',
+  async () => {
+    const defaultWorkspace = await getDefaultWorkspace()
+    return defaultWorkspace
   }
 )
 
 export type HighlightedWorkspace = {
   id: string
   name: string
+  name_es?: string
+  name_fr?: string
+  name_id?: string
   description: string
-  img?: string
+  description_es?: string
+  description_fr?: string
+  description_id?: string
   cta?: string
+  cta_es?: string
+  cta_fr?: string
+  cta_id?: string
+  img?: string
+  userGroup?: string
+  visible?: 'visible' | 'hidden'
 }
+
+const WORKSPACES_SPREADSHEET_ID = process.env.REACT_APP_WORKSPACES_SPREADSHEET_ID
 
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
   'workspaces/fetchHighlighted',
   async (_, { dispatch }) => {
-    const workspaces = await fetchGoogleSheetsData({
-      apiKey: process.env.REACT_APP_GOOGLE_API_KEY as string,
-      sheetId: process.env.REACT_APP_GOOGLE_SHEETS_ID as string,
-    }).then((response) => {
-      return Object.fromEntries(
-        response.map(({ id, data }) => [id, data as HighlightedWorkspace[]])
-      )
-    })
+    const workspacesSpreadsheetDoc = await loadSpreadsheetDoc(WORKSPACES_SPREADSHEET_ID as string)
+    const workspaces = await Promise.all(
+      workspacesSpreadsheetDoc.sheetsByIndex
+        .filter((sheet) =>
+          Object.values(WorkspaceCategories).includes(sheet.title as WorkspaceCategories)
+        )
+        .map(async (sheet) => {
+          const rows = await sheet.getRows()
+          return {
+            title: sheet.title as WorkspaceCategories,
+            workspaces: rows.map((row) => ({
+              visible: row.visible,
+              id: row.id,
+              img: row.img,
+              userGroup: row.userGroup,
+              name: row.name,
+              name_es: row.name_es,
+              name_fr: row.name_fr,
+              name_id: row.name_id,
+              description: row.description,
+              description_es: row.description_es,
+              description_fr: row.description_fr,
+              description_id: row.description_id,
+              cta: row.cta,
+              cta_es: row.cta_es,
+              cta_fr: row.cta_fr,
+              cta_id: row.cta_id,
+            })),
+          }
+        })
+    )
 
-    const workspacesIds = Object.values(workspaces).flatMap((workspaces) =>
-      workspaces.flatMap((w) => w.id || [])
+    const workspacesIds = workspaces.flatMap(({ workspaces }) =>
+      workspaces.flatMap(({ id, visible }) => (visible === 'visible' && id) || [])
     )
 
     dispatch(fetchWorkspacesThunk({ ids: workspacesIds }))
     return workspaces
+  }
+)
+
+export const createWorkspaceThunk = createAsyncThunk<
+  Workspace,
+  Partial<Workspace>,
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'workspaces/create',
+  async (workspace, { rejectWithValue }) => {
+    const parsedWorkspace = {
+      ...workspace,
+      id: kebabCase(workspace.name),
+      public: true,
+      dataviews: Array.isArray(workspace.dataviews)
+        ? workspace.dataviews.map(({ id }) => id)
+        : workspace.dataviews,
+    }
+    try {
+      const newWorkspace = await GFWAPI.fetch<Workspace>(`/v1/workspaces`, {
+        method: 'POST',
+        body: parsedWorkspace as any,
+      })
+      return newWorkspace
+    } catch (e) {
+      return rejectWithValue({ status: e.status || e.code, message: e.message })
+    }
+  },
+  {
+    condition: (partialWorkspace) => {
+      if (!partialWorkspace || !partialWorkspace.id) {
+        console.warn('To update the workspace you need the id')
+        return false
+      }
+    },
   }
 )
 
@@ -118,7 +212,7 @@ export const deleteWorkspaceThunk = createAsyncThunk<
 export interface WorkspacesState extends AsyncReducer<AppWorkspace> {
   highlighted: {
     status: AsyncReducerStatus
-    data: Record<string, HighlightedWorkspace[]> | undefined
+    data: { title: string; workspaces: HighlightedWorkspace[] }[] | undefined
   }
 }
 
@@ -135,6 +229,8 @@ const { slice: workspacesSlice, entityAdapter } = createAsyncSlice<WorkspacesSta
   initialState,
   thunks: {
     fetchThunk: fetchWorkspacesThunk,
+    fetchByIdThunk: fetchDefaultWorkspaceThunk,
+    createThunk: createWorkspaceThunk,
     updateThunk: updateWorkspaceThunk,
     deleteThunk: deleteWorkspaceThunk,
   },

@@ -1,5 +1,209 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.28.34
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@2.18.12
+  - @globalfishingwatch/api-types@3.3.0
+
+## 0.28.33
+
+### Patch Changes
+
+- e94c28f7: Fishingmap/feedback popup
+- Updated dependencies [e94c28f7]
+  - @globalfishingwatch/ui-components@2.18.11
+
+## 0.28.32
+
+### Patch Changes
+
+- Updated dependencies [cd532944]
+- Updated dependencies [cd532944]
+  - @globalfishingwatch/dataviews-client@6.2.4
+  - @globalfishingwatch/layer-composer@5.2.5
+  - @globalfishingwatch/ui-components@2.18.10
+  - @globalfishingwatch/react-hooks@6.0.10
+
+## 0.28.31
+
+### Patch Changes
+
+- Updated dependencies [0a755cc4]
+  - @globalfishingwatch/layer-composer@5.2.4
+  - @globalfishingwatch/ui-components@2.18.9
+  - @globalfishingwatch/react-hooks@6.0.9
+
+## 0.28.30
+
+### Patch Changes
+
+- Updated dependencies [fb321617]
+  - @globalfishingwatch/api-types@3.2.0
+
+## 0.28.29
+
+### Patch Changes
+
+- Updated dependencies [e2c17324]
+  - @globalfishingwatch/dataviews-client@6.2.3
+
+## 0.28.28
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/fourwings-aggregate@3.1.0
+  - @globalfishingwatch/layer-composer@5.2.3
+  - @globalfishingwatch/react-hooks@6.0.8
+  - @globalfishingwatch/ui-components@2.18.8
+
+## 0.28.27
+
+### Patch Changes
+
+- Updated dependencies [8d08df8a]
+  - @globalfishingwatch/layer-composer@5.2.2
+  - @globalfishingwatch/react-hooks@6.0.7
+  - @globalfishingwatch/ui-components@2.18.7
+
+## 0.28.26
+
+### Patch Changes
+
+- Updated dependencies [c0dc95ec]
+  - @globalfishingwatch/layer-composer@5.2.1
+  - @globalfishingwatch/react-hooks@6.0.6
+  - @globalfishingwatch/ui-components@2.18.6
+
+## 0.28.25
+
+### Patch Changes
+
+- Updated dependencies [bf2d09a1]
+  - @globalfishingwatch/layer-composer@5.2.0
+  - @globalfishingwatch/react-hooks@6.0.5
+  - @globalfishingwatch/ui-components@2.18.5
+
+## 0.28.24
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@6.2.2
+
+## 0.28.23
+
+### Patch Changes
+
+- Updated dependencies [af994916]
+  - @globalfishingwatch/layer-composer@5.1.2
+  - @globalfishingwatch/react-hooks@6.0.4
+  - @globalfishingwatch/ui-components@2.18.4
+
+## 0.28.22
+
+### Patch Changes
+
+- Updated dependencies [80907c1f]
+  - @globalfishingwatch/dataviews-client@6.2.1
+  - @globalfishingwatch/layer-composer@5.1.1
+  - @globalfishingwatch/react-hooks@6.0.3
+  - @globalfishingwatch/ui-components@2.18.3
+
+## 0.28.21
+
+### Patch Changes
+
+- Updated dependencies [87a54e62]
+  - @globalfishingwatch/dataviews-client@6.2.0
+  - @globalfishingwatch/layer-composer@5.1.0
+  - @globalfishingwatch/react-hooks@6.0.2
+  - @globalfishingwatch/ui-components@2.18.2
+
+## 0.28.20
+
+### Patch Changes
+
+- Updated dependencies [bb4978cd]
+  - @globalfishingwatch/layer-composer@5.0.1
+  - @globalfishingwatch/ui-components@2.18.1
+  - @globalfishingwatch/react-hooks@6.0.1
+
+## 0.28.19
+
+### Patch Changes
+
+- Updated dependencies [fdad03d6]
+  - @globalfishingwatch/ui-components@2.18.0
+
+## 0.28.18
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ocean-areas@0.2.2
+
+## 0.28.17
+
+### Patch Changes
+
+- Updated dependencies [cbb694df]
+  - @globalfishingwatch/dataviews-client@6.1.0
+
+## 0.28.16
+
+### Patch Changes
+
+- Updated dependencies [358004cb]
+- Updated dependencies [8785580f]
+  - @globalfishingwatch/fourwings-aggregate@3.0.0
+  - @globalfishingwatch/layer-composer@5.0.0
+  - @globalfishingwatch/react-hooks@6.0.0
+  - @globalfishingwatch/dataviews-client@6.0.0
+  - @globalfishingwatch/ui-components@2.17.4
+
+## 0.28.15
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.2
+  - @globalfishingwatch/react-hooks@5.3.2
+  - @globalfishingwatch/ui-components@2.17.3
+
+## 0.28.14
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ocean-areas@0.2.1
+
+## 0.28.13
+
+### Patch Changes
+
+- e284ce5e: Fishing map/improve miniglobe performance
+- Updated dependencies [e284ce5e]
+  - @globalfishingwatch/ui-components@2.17.2
+
+## 0.28.12
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ocean-areas@0.2.0
+
+## 0.28.11
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@3.1.1
+
 ## 0.28.10
 
 ### Patch Changes
