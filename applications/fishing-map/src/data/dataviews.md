@@ -67,9 +67,9 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 
 | Layer name                       | Dev id | Pro id |
 | -------------------------------- | ------ | ------ |
-| Salinity for Niue                | 141    | ---    |
-| Sea surface temperature for Niue | 142    | ---    |
-| Chlorophyll for Niue             | 143    | ---    |
+| Salinity for Niue                | 141    | 248    |
+| Sea surface temperature for Niue | 142    | 249    |
+| Chlorophyll for Niue             | 143    | 250    |
 
 ### Marine Reserves - Mediterranean
 
