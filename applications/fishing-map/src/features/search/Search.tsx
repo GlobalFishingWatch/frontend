@@ -18,7 +18,7 @@ import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getFlagById } from 'utils/flags'
-import { formatInfoField } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import {
   fetchVesselSearchThunk,
@@ -269,30 +269,33 @@ function Search() {
                         key={id}
                       >
                         <Fragment>
-                          <div className={styles.name}>{shipname || '---'}</div>
+                          <div className={styles.name}>{shipname || EMPTY_FIELD_PLACEHOLDER}</div>
                           <div className={styles.properties}>
                             <div className={styles.property}>
                               <label>{t('vessel.flag', 'Flag')}</label>
-                              <span>{flagLabel || '---'}</span>
+                              <span>{flagLabel || EMPTY_FIELD_PLACEHOLDER}</span>
                             </div>
                             <div className={styles.property}>
                               <label>{t('vessel.mmsi', 'MMSI')}</label>
-                              <span>{mmsi || '---'}</span>
+                              <span>{mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
                             </div>
                             <div className={styles.property}>
                               <label>{t('vessel.imo', 'IMO')}</label>
-                              <span>{imo || '---'}</span>
+                              <span>{imo || EMPTY_FIELD_PLACEHOLDER}</span>
                             </div>
                             <div className={styles.property}>
                               <label>{t('vessel.callsign', 'Callsign')}</label>
-                              <span>{callsign || '---'}</span>
+                              <span>{callsign || EMPTY_FIELD_PLACEHOLDER}</span>
                             </div>
                             <div className={styles.property}>
                               <label>{t('vessel.geartype', 'Gear Type')}</label>
                               <span>
                                 {geartype !== undefined
-                                  ? t(`vessel.gearTypes.${geartype}` as any, '---')
-                                  : '---'}
+                                  ? t(
+                                      `vessel.gearTypes.${geartype}` as any,
+                                      EMPTY_FIELD_PLACEHOLDER
+                                    )
+                                  : EMPTY_FIELD_PLACEHOLDER}
                               </span>
                             </div>
                             {fleet && (

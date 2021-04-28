@@ -17,7 +17,7 @@ import {
   UrlDataviewInstance,
   resolveDataviewDatasetResource,
 } from '@globalfishingwatch/dataviews-client'
-import { formatInfoField, getVesselLabel } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
@@ -33,6 +33,7 @@ type LayerPanelProps = {
 }
 
 const showDebugVesselId = process.env.NODE_ENV === 'development'
+const mandatory_fields = ['shipname', 'flag', 'mmsi', 'imo', 'callsign', 'geartype', 'source']
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
@@ -114,7 +115,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = trackResource?.status === ResourceStatus.Error
 
-  const getFieldValue = (field: any, fieldValue: string) => {
+  const getFieldValue = (field: any, fieldValue: string | undefined) => {
+    if (!fieldValue) return
     if (field.type === 'date') {
       return <I18nDate date={fieldValue} />
     }
@@ -122,7 +124,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       return <I18nFlag iso={fieldValue} />
     }
     if (field.id === 'geartype') {
-      return t(`vessel.gearTypes.${fieldValue}` as any, '---')
+      return t(`vessel.gearTypes.${fieldValue}` as any, EMPTY_FIELD_PLACEHOLDER)
     }
     if (field.id === 'mmsi') {
       return (
@@ -212,14 +214,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                   <ul className={styles.infoContent}>
                     {dataview.infoConfig?.fields.map((field: any) => {
                       const value = infoResource?.data?.[field.id as keyof Vessel]
-                      if (!value) return null
+                      if (!value && !mandatory_fields.includes(field.id)) return null
                       const fieldValues = Array.isArray(value) ? value : [value]
                       return (
                         <li key={field.id} className={styles.infoContentItem}>
                           <label>{t(`vessel.${field.id}` as any)}</label>
                           {fieldValues.map((fieldValue, i) => (
                             <span key={fieldValue}>
-                              {getFieldValue(field, fieldValue)}
+                              {fieldValue ? getFieldValue(field, fieldValue) : '---'}
                               {/* Field values separator */}
                               {i < fieldValues.length - 1 ? ', ' : ''}
                             </span>
