@@ -62,7 +62,14 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
                         <IconButton
                           icon="report"
                           disabled={!hasAnalysisLayers}
-                          tooltip={t('common.report', 'Report')}
+                          tooltip={
+                            hasAnalysisLayers
+                              ? t('common.analysis', 'Create an analysis for this area')
+                              : t(
+                                  'common.analysisNotAvailable',
+                                  'Toggle an activity or environmenet layer on to analyse in in this area'
+                                )
+                          }
                           onClick={() => onReportClick && onReportClick(feature)}
                           size="small"
                         />
