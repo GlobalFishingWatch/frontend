@@ -53,7 +53,7 @@ function PopupWrapper({
       captureClick
     >
       <div className={styles.content}>
-        {Object.entries(featureByCategory).map(([featureCategory, features], index) => {
+        {Object.entries(featureByCategory).map(([featureCategory, features]) => {
           switch (featureCategory) {
             case DataviewCategory.Activity:
               return features.map((feature, i) => (

@@ -33,7 +33,6 @@ type LayerPanelProps = {
 }
 
 const showDebugVesselId = process.env.NODE_ENV === 'development'
-const mandatory_fields = ['shipname', 'flag', 'mmsi', 'imo', 'callsign', 'geartype', 'source']
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
@@ -214,13 +213,13 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                   <ul className={styles.infoContent}>
                     {dataview.infoConfig?.fields.map((field: any) => {
                       const value = infoResource?.data?.[field.id as keyof Vessel]
-                      if (!value && !mandatory_fields.includes(field.id)) return null
+                      if (!value && !field.mandatory) return null
                       const fieldValues = Array.isArray(value) ? value : [value]
                       return (
                         <li key={field.id} className={styles.infoContentItem}>
                           <label>{t(`vessel.${field.id}` as any)}</label>
                           {fieldValues.map((fieldValue, i) => (
-                            <span key={fieldValue}>
+                            <span key={field.id + fieldValue}>
                               {fieldValue ? getFieldValue(field, fieldValue) : '---'}
                               {/* Field values separator */}
                               {i < fieldValues.length - 1 ? ', ' : ''}
