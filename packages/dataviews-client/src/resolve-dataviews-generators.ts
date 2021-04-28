@@ -125,6 +125,7 @@ export function getGeneratorConfig(
           {
             id: generator.id,
             colorRamp: dataview.config?.colorRamp as ColorRampsIds,
+            colorRampWhiteEnd: false,
             visible: dataview.config?.visible ?? true,
             breaks: dataview.config?.breaks,
             datasets: datasetsIds,
@@ -259,6 +260,7 @@ export function getDataviewsGeneratorConfigs(
         id: dataview.id,
         datasets,
         colorRamp: config.colorRamp as Generators.ColorRampsIds,
+        colorRampWhiteEnd: true,
         filter: config.filter,
         visible: config.visible,
         legend: {

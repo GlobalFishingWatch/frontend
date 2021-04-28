@@ -6,22 +6,17 @@ import getBreaks from './get-breaks'
 
 // Get color ramps for a config's sublayers
 export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
-  let colorRampIds = config.sublayers.map((s) => s.colorRamp)
-
   // Force bivariate color ramp depending on config
   if (config.mode === HeatmapAnimatedMode.Bivariate) {
-    colorRampIds = ['bivariate']
+    return config.sublayers.map(() => HEATMAP_COLOR_RAMPS['bivariate'])
   }
 
   const numActiveSublayers = config.sublayers.filter((s) => s.visible).length
-  if (numActiveSublayers === 1) {
-    colorRampIds = [(colorRampIds[0] + '_toWhite') as ColorRampsIds]
-  }
-  const colorRamps = colorRampIds.map((colorRampId) => {
-    const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampId]
-    return originalColorRamp
+  return config.sublayers.map(({ colorRamp, colorRampWhiteEnd, visible }) => {
+    const useToWhiteRamp = (numActiveSublayers === 1 && visible && colorRampWhiteEnd) ?? false
+    const finalColorRamp = useToWhiteRamp ? (`${colorRamp}_toWhite` as ColorRampsIds) : colorRamp
+    return HEATMAP_COLOR_RAMPS[finalColorRamp]
   })
-  return colorRamps
 }
 
 // Gets MGL layer paint configuration from base color ramp(s)
