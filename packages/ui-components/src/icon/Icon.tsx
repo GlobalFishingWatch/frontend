@@ -119,7 +119,7 @@ const Icon: React.FC<IconProps> = (props) => {
   const { icon, tooltip, type = 'default', className = '' } = props
   const Component = IconComponents[icon]
   if (!Component) {
-    console.warn(`icon ${icon} not found in <Icon /> component`)
+    console.warn(`Missing icon: ${icon} in ui-components Icon component. Rendering null`)
     return null
   }
   return (
