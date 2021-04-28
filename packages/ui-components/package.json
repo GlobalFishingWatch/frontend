@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/ui-components",
-  "version": "2.18.8",
+  "version": "2.18.9",
   "description": "Set of react components to consume on the gfw ecosystem",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -33,7 +33,7 @@
     "clean": "rimraf dist/*"
   },
   "dependencies": {
-    "@globalfishingwatch/layer-composer": "5.2.3",
+    "@globalfishingwatch/layer-composer": "5.2.4",
     "@tippyjs/react": "4.2.0",
     "countryflag": "4.0.1",
     "d3-geo": "1.12.0",

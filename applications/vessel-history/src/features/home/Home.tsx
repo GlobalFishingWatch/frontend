@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
@@ -15,6 +15,8 @@ import {
 } from 'features/search/search.slice'
 import { logoutUserThunk } from 'features/user/user.slice'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
+import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
+import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -37,7 +39,13 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const query = useSelector(selectQueryParam('q'))
   const offset = useSelector(getOffset)
   const totalResults = useSelector(getTotalResults)
+  const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchQueryParams } = useLocationConnect()
+  const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
+
+  useEffect(() => {
+    dispatchFetchOfflineVessels()
+  }, [dispatchFetchOfflineVessels])
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ q: e.target.value })
@@ -84,7 +92,16 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         {!query && (
           <div>
             <h2>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
-            <div className={styles.offlineVessels}></div>
+            <div className={styles.offlineVessels}>
+              {offlineVessels.map((vessel, index) => (
+                <VesselListItem
+                  key={index}
+                  vessel={vessel}
+                  saved={vessel.savedOn}
+                  onDeleteClick={() => dispatchDeleteOfflineVessel(vessel.profileId)}
+                />
+              ))}
+            </div>
           </div>
         )}
         {query && (
