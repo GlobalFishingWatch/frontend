@@ -1,5 +1,13 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.2.4
+
+### Patch Changes
+
+- cd532944: fix colorRampToWhite
+- Updated dependencies [cd532944]
+  - @globalfishingwatch/layer-composer@5.2.5
+
 ## 6.2.3
 
 ### Patch Changes

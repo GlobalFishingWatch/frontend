@@ -33,18 +33,9 @@ export const selectCurrentWorkspaces = createSelector(
 export const selectAvailableWorkspacesCategories = createSelector(
   [selectHighlightedWorkspaces],
   (highlightedWorkspaces) => {
-    return (
-      highlightedWorkspaces &&
-      Object.entries(highlightedWorkspaces)
-        .filter(([category, entries]) => {
-          const hasEntries = entries.length > 0
-          const isInSupportedCategories = Object.values(WorkspaceCategories).includes(
-            category as WorkspaceCategories
-          )
-          return hasEntries && isInSupportedCategories
-        })
-        .map(([category]) => category as WorkspaceCategories)
-    )
+    return highlightedWorkspaces?.filter(({ workspaces }) => {
+      return workspaces.length > 0
+    })
   }
 )
 
@@ -60,10 +51,10 @@ export const selectCurrentHighlightedWorkspaces = createSelector(
     highlightedWorkspaces,
     apiWorkspaces
   ): HighlightedWorkspaceMerged[] | undefined => {
-    const workspaces = highlightedWorkspaces?.[locationCategory]
-    return workspaces
+    const highlighted = highlightedWorkspaces?.find(({ title }) => title === locationCategory)
+    return highlighted?.workspaces
       ?.filter((workspace) => workspace.visible !== 'hidden')
-      .map((workspace) => {
+      ?.map((workspace) => {
         const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
 
         if (!apiWorkspace) return workspace
@@ -90,9 +81,10 @@ export const selectCurrentWorkspacesList = createSelector(
 
 export const selectWorkspacesByUserGroup = createSelector(
   [selectHighlightedWorkspaces],
-  (workspaces) => {
-    if (!workspaces) return
-    const groups = Object.values(workspaces)
+  (highlightedWorkspace) => {
+    if (!highlightedWorkspace?.length) return
+    const workspaces = highlightedWorkspace.flatMap(({ workspaces }) => workspaces)
+    const groups = workspaces
       .flatMap((w) => w)
       ?.filter(({ userGroup }) => userGroup !== undefined)
       .map(({ id, userGroup }) => [userGroup, id])
