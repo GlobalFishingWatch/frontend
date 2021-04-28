@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import cx from 'classnames'
 import groupBy from 'lodash/groupBy'
 import type { Anchor } from '@globalfishingwatch/mapbox-gl'
@@ -53,7 +53,7 @@ function PopupWrapper({
       captureClick
     >
       <div className={styles.content}>
-        {Object.entries(featureByCategory).map(([featureCategory, features]) => {
+        {Object.entries(featureByCategory).map(([featureCategory, features], index) => {
           switch (featureCategory) {
             case DataviewCategory.Activity:
               return features.map((feature, i) => (
@@ -77,21 +77,25 @@ function PopupWrapper({
               )
             // TODO: merge UserContextTooltipSection and ContextTooltipSection
             case DataviewCategory.Context:
-              return features.map((feature, i) =>
-                feature.type === Generators.Type.UserContext ? (
-                  <UserContextTooltipSection
-                    key={`context-${i}`}
-                    features={features}
-                    showFeaturesDetails={type === 'click'}
-                  />
-                ) : (
-                  <ContextTooltipSection
-                    key={`context-${i}`}
-                    features={features}
-                    showFeaturesDetails={type === 'click'}
-                  />
-                )
+              const userContextFeatures = features.filter(
+                (feature) => feature.type === Generators.Type.UserContext
               )
+              const defaultContextFeatures = features.filter(
+                (feature) => feature.type === Generators.Type.Context
+              )
+              return (
+                <Fragment key={featureCategory}>
+                  <UserContextTooltipSection
+                    features={userContextFeatures}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                  <ContextTooltipSection
+                    features={defaultContextFeatures}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                </Fragment>
+              )
+
             default:
               return null
           }
