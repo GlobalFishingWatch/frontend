@@ -10,7 +10,7 @@ import { ReactComponent as Calendar } from '../assets/icons/calendar.svg'
 import { ReactComponent as Camera } from '../assets/icons/camera.svg'
 import { ReactComponent as CategoryCountryPortals } from '../assets/icons/category-country-portals.svg'
 import { ReactComponent as CategoryFishing } from '../assets/icons/category-fishing.svg'
-import { ReactComponent as CategoryMarineReserves } from '../assets/icons/category-marine-reserves.svg'
+import { ReactComponent as CategoryMarineManager } from '../assets/icons/category-marine-manager.svg'
 import { ReactComponent as CategoryNews } from '../assets/icons/category-news.svg'
 import { ReactComponent as CategoryReports } from '../assets/icons/category-reports.svg'
 import { ReactComponent as Close } from '../assets/icons/close.svg'
@@ -61,7 +61,7 @@ export const IconComponents = {
   camera: Camera,
   'category-country-portals': CategoryCountryPortals,
   'category-fishing-activity': CategoryFishing,
-  'category-marine-reserves': CategoryMarineReserves,
+  'category-marine-manager': CategoryMarineManager,
   'category-news': CategoryNews,
   'category-reports': CategoryReports,
   close: Close,
