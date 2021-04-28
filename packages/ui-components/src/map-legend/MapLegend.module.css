@@ -52,23 +52,42 @@
   font: var(--font-XS);
   position: absolute;
   top: 1rem;
-  padding: 4px 8px;
+  padding: 3px 8px;
   z-index: 1;
   background-color: var(--color-primary-blue);
   transform: translateX(-50%);
-  transition: left 0.1s linear;
+  transition: left 0.1s linear, transform 0.1s linear;
   line-height: 1;
+  filter: var(--filter-drop-shadow);
 }
 
 .currentValue::after {
   content: '';
   position: absolute;
   left: 50%;
-  bottom: 2rem;
+  bottom: 1.8rem;
   height: 1rem;
   width: 3px;
   z-index: 1;
   background-color: var(--color-white);
+  transition: left 0.1s linear;
+}
+
+.offsetLeft {
+  transform: translateX(0%);
+}
+
+.offsetLeft::after {
+  left: 0;
+}
+
+.offsetRight {
+  transform: translateX(-100%);
+}
+
+.offsetRight::after {
+  left: unset;
+  right: 0;
 }
 
 .stepsContainer {
