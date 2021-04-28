@@ -11,7 +11,7 @@ export const LocaleLabels = [
   { id: Locale.id, label: 'Bahasa Indonesia' },
 ]
 
-const pathPrefix = process.env.NODE_ENV === 'production' ? 'marine-reserves' : ''
+const pathPrefix = process.env.NODE_ENV === 'production' ? 'marine-manager' : ''
 
 i18n
   // load translation using http -> see /public/locales
