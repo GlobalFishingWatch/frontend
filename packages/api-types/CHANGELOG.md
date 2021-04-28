@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 3.3.0
+
+### Minor Changes
+
+- update app names typing
+
 ## 3.2.0
 
 ### Minor Changes
