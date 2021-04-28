@@ -114,6 +114,10 @@ interface IconProps {
 const Icon: React.FC<IconProps> = (props) => {
   const { icon, tooltip, type = 'default', className = '' } = props
   const Component = IconComponents[icon]
+  if (!Component) {
+    console.warn(`Missing icon: ${icon} in ui-components Icon component. Rendering null`)
+    return null
+  }
   return (
     <Tooltip content={tooltip} placement="auto">
       <Component className={cx(styles.icon, styles[type], className)} />
