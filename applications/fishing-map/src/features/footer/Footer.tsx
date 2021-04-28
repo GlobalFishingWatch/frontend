@@ -16,7 +16,7 @@ const FooterPartners = () => {
   const category = useSelector(selectLocationCategory)
   const { t } = useTranslation()
   switch (category) {
-    case WorkspaceCategories.MarineReserves:
+    case WorkspaceCategories.MarineManager:
       return (
         <div className={styles.partners}>
           <span className={styles.text}>{t('footer.supportBy', 'Supported by')}</span>

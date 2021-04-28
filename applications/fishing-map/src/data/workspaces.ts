@@ -15,7 +15,7 @@ export function getWorkspaceEnv(): WorkspaceEnv {
 
 export enum WorkspaceCategories {
   FishingActivity = 'fishing-activity',
-  MarineReserves = 'marine-reserves',
+  MarineManager = 'marine-manager',
   CountryPortals = 'country-portals',
 }
 

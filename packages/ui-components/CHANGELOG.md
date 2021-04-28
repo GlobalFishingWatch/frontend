@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.18.12
+
+### Patch Changes
+
+- update marine manager icon
+
 ## 2.18.11
 
 ### Patch Changes

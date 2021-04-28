@@ -69,16 +69,17 @@ function ColorRampLegend({
       {cleanRamp?.length > 0 && (
         <Fragment>
           <div className={styles.ramp} style={backgroundStyle}>
-            {currentValue && (
+            {currentValue && heatmapLegendScale && (
               <span
-                className={cx(styles.currentValue, currentValueClassName)}
+                className={cx(styles.currentValue, currentValueClassName, {
+                  [styles.offsetLeft]: heatmapLegendScale(currentValue) < 10,
+                  [styles.offsetRight]: heatmapLegendScale(currentValue) > 90,
+                })}
                 style={{
-                  left: heatmapLegendScale
-                    ? `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`
-                    : 0,
+                  left: `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`,
                 }}
               >
-                {currentValue.toFixed(2)}
+                {formatLegendValue(currentValue)}
               </span>
             )}
             {type === 'colorramp-discrete' && (
