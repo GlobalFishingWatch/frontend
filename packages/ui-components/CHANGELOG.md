@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 2.18.11
+
+### Patch Changes
+
+- e94c28f7: Fishingmap/feedback popup
+
 ## 2.18.10
 
 ### Patch Changes
