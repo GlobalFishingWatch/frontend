@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.28.33
+
+### Patch Changes
+
+- e94c28f7: Fishingmap/feedback popup
+- Updated dependencies [e94c28f7]
+  - @globalfishingwatch/ui-components@2.18.11
+
 ## 0.28.32
 
 ### Patch Changes
