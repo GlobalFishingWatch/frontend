@@ -44,6 +44,8 @@
     "name": "Nombre",
     "presence": "Presence",
     "report": "Informe",
+    "analysis": "Create an analysis for this area",
+    "analysisNotAvailable": "Toggle an activity or environmenet layer on to analyse it in this area",
     "seeDefault": "Ver vista por defecto",
     "share": "Comparte el mapa actual",
     "unknown": "Desconocido",
