@@ -64,9 +64,7 @@ function UserTrackLayerPanel({ dataview }: LayerPanelProps): React.ReactElement 
 
   const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.UserTracks)
   const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
-  console.log(trackResource)
   const trackError = trackResource?.status === ResourceStatus.Error
-  // console.log(dataview, trackUrl, trackResource)
 
   const { datasetError, datasetImporting, infoTooltip } = useDatasetError(
     dataset,

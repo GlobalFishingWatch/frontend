@@ -22,7 +22,7 @@ type FitBoundsProps = {
 const FitBounds = ({ className, trackResource, hasError }: FitBoundsProps) => {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
-  const { start, end } = useTimerangeConnect()
+  const { dispatchTimeranges, start, end } = useTimerangeConnect()
   const onFitBoundsClick = useCallback(() => {
     if (trackResource?.data) {
       const segments = (trackResource.data as FeatureCollection).features
@@ -34,10 +34,33 @@ const FitBounds = ({ className, trackResource, hasError }: FitBoundsProps) => {
         fitBounds(bbox as Bbox)
       } else {
         // TODO use prompt to ask user if wants to update the timerange to fit the track
-        alert('The vessel has no activity in your selected timerange')
+        if (
+          window.confirm(
+            t(
+              'layer.vessel_fit_bounds_out_of_timerange',
+              'The track has no activity in your selected timerange. Change timerange to fit this track?'
+            )
+          )
+        ) {
+          let minTimestamp = Number.POSITIVE_INFINITY
+          let maxTimestamp = Number.NEGATIVE_INFINITY
+          segments.forEach((seg) => {
+            seg.forEach((pt) => {
+              if (pt.timestamp && pt.timestamp < minTimestamp) minTimestamp = pt.timestamp
+              if (pt.timestamp && pt.timestamp > maxTimestamp) maxTimestamp = pt.timestamp
+            })
+          })
+          dispatchTimeranges({
+            start: new Date(minTimestamp).toISOString(),
+            end: new Date(maxTimestamp).toISOString(),
+            source: '',
+          })
+          const fullBBox = segmentsToBbox(segments)
+          fitBounds(fullBBox as Bbox)
+        }
       }
     }
-  }, [fitBounds, trackResource, start, end])
+  }, [fitBounds, trackResource, start, end, t, dispatchTimeranges])
   return (
     <IconButton
       size="small"
