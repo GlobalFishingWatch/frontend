@@ -1,7 +1,7 @@
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 type InfoErrorProps = {
-  error: boolean
+  error?: boolean
   loading?: boolean
   tooltip: string
   className?: string

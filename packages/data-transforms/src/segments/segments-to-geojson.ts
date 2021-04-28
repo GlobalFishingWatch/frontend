@@ -1,5 +1,5 @@
 import { FeatureCollection, LineString, Feature } from 'geojson'
-import { Segment } from '../track-value-array-to-segments/types'
+import { Segment, Point } from '../track-value-array-to-segments/types'
 
 const segmentsToGeoJSON = (segments: Segment[]) => {
   const geoJSON: FeatureCollection = {
@@ -33,3 +33,20 @@ const segmentsToGeoJSON = (segments: Segment[]) => {
 }
 
 export default segmentsToGeoJSON
+
+export const geoJSONToSegments = (geoJSON: FeatureCollection): Segment[] => {
+  return geoJSON.features.map((feature) => {
+    const timestamps = feature.properties?.coordinateProperties.times
+    const id = feature.properties?.id
+    const segment = (feature.geometry as LineString).coordinates.map((coordinate, i) => {
+      const point: Point = {
+        longitude: coordinate[0],
+        latitude: coordinate[1],
+      }
+      point.timestamp = timestamps[i]
+      return point
+    })
+    segment[0].id = id
+    return segment
+  })
+}

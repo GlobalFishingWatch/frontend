@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
+import { FeatureCollection } from 'geojson'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import {
   Segment,
   segmentsToBbox,
   filterSegmentsByTimerange,
+  geoJSONToSegments,
 } from '@globalfishingwatch/data-transforms'
 import { Resource } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -13,7 +15,7 @@ import { Bbox } from 'types'
 
 type FitBoundsProps = {
   className: string
-  trackResource: Resource<Segment[]>
+  trackResource: Resource<Segment[] | FeatureCollection>
   hasError: boolean
 }
 
@@ -23,7 +25,10 @@ const FitBounds = ({ className, trackResource, hasError }: FitBoundsProps) => {
   const { start, end } = useTimerangeConnect()
   const onFitBoundsClick = useCallback(() => {
     if (trackResource?.data) {
-      const filteredSegments = filterSegmentsByTimerange(trackResource?.data, { start, end })
+      const segments = (trackResource.data as FeatureCollection).features
+        ? geoJSONToSegments(trackResource.data as FeatureCollection)
+        : (trackResource?.data as Segment[])
+      const filteredSegments = filterSegmentsByTimerange(segments, { start, end })
       const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
       if (bbox) {
         fitBounds(bbox as Bbox)

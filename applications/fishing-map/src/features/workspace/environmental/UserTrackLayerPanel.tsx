@@ -1,32 +1,38 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import ColorBar, {
   ColorBarOption,
   HeatmapColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  resolveDataviewDatasetResource,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
+import { Segment } from '@globalfishingwatch/data-transforms'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import { selectResourceByUrl } from 'features/resources/resources.slice'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import InfoError from '../common/InfoError'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
+import FitBounds from '../common/FitBounds'
 import useDatasetError from './useDatasetError'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
-function EnvironmentalLayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+function UserTrackLayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
@@ -52,11 +58,15 @@ function EnvironmentalLayerPanel({ dataview }: LayerPanelProps): React.ReactElem
     setColorOpen(false)
   }
 
-  const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
-  )
+  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.UserTracks)
   useAutoRefreshImportingDataset(dataset)
   const isCustomUserLayer = dataset?.ownerId === userId
+
+  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.UserTracks)
+  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
+  console.log(trackResource)
+  const trackError = trackResource?.status === ResourceStatus.Error
+  // console.log(dataview, trackUrl, trackResource)
 
   const { datasetError, datasetImporting, infoTooltip } = useDatasetError(
     dataset,
@@ -96,24 +106,31 @@ function EnvironmentalLayerPanel({ dataview }: LayerPanelProps): React.ReactElem
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
           {layerActive && (
-            <ExpandedContainer
-              visible={colorOpen}
-              onClickOutside={closeExpandedContainer}
-              component={
-                <ColorBar
-                  colorBarOptions={HeatmapColorBarOptions}
-                  selectedColor={dataview.config?.color}
-                  onColorClick={changeColor}
+            <Fragment>
+              <ExpandedContainer
+                visible={colorOpen}
+                onClickOutside={closeExpandedContainer}
+                component={
+                  <ColorBar
+                    colorBarOptions={HeatmapColorBarOptions}
+                    selectedColor={dataview.config?.color}
+                    onColorClick={changeColor}
+                  />
+                }
+              >
+                <Color
+                  open={colorOpen}
+                  dataview={dataview}
+                  onClick={onToggleColorOpen}
+                  className={styles.actionButton}
                 />
-              }
-            >
-              <Color
-                open={colorOpen}
-                dataview={dataview}
-                onClick={onToggleColorOpen}
+              </ExpandedContainer>
+              <FitBounds
                 className={styles.actionButton}
+                hasError={trackError}
+                trackResource={trackResource}
               />
-            </ExpandedContainer>
+            </Fragment>
           )}
           <InfoError
             error={datasetError}
@@ -134,4 +151,4 @@ function EnvironmentalLayerPanel({ dataview }: LayerPanelProps): React.ReactElem
   )
 }
 
-export default EnvironmentalLayerPanel
+export default UserTrackLayerPanel
