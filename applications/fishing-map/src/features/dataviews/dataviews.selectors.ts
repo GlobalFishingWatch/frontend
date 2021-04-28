@@ -135,6 +135,11 @@ export const selectContextAreasDataviews = createSelector(
   }
 )
 
+export const selectActiveContextAreasDataviews = createSelector(
+  [selectDataviewInstancesByCategory(DataviewCategory.Context)],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
+
 export const selectActivityDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Activity)],
   (dataviews) => dataviews
@@ -150,6 +155,20 @@ export const selectEnvironmentalDataviews = createSelector(
   (dataviews) => dataviews
 )
 
+export const selectActiveEnvironmentalDataviews = createSelector(
+  [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectEventsDataviews = createSelector(
+  [selectDataviewInstancesByCategory(DataviewCategory.Events)],
+  (dataviews) => dataviews
+)
+export const selectActiveEventsDataviews = createSelector(
+  [selectDataviewInstancesByCategory(DataviewCategory.Events)],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
+
 export const selectHasAnalysisLayersVisible = createSelector(
   [selectActivityDataviews, selectEnvironmentalDataviews],
   (activityDataviews = [], environmentalDataviews = []) => {
@@ -163,7 +182,25 @@ export const selectHasAnalysisLayersVisible = createSelector(
   }
 )
 
-export const selectEventsDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Events)],
-  (dataviews) => dataviews
+export const selectActiveDataviews = createSelector(
+  [
+    selectActiveActivityDataviews,
+    selectActiveVesselsDataviews,
+    selectActiveEventsDataviews,
+    selectActiveEnvironmentalDataviews,
+    selectActiveContextAreasDataviews,
+  ],
+  (
+    activeTemporalgridDataviews,
+    activeVesselsDataviews,
+    activeEventsDataviews,
+    activeEnvironmentalDataviews,
+    activeContextAreasDataviews
+  ) => [
+    ...(activeTemporalgridDataviews || []),
+    ...(activeVesselsDataviews || []),
+    ...(activeEventsDataviews || []),
+    ...(activeEnvironmentalDataviews || []),
+    ...(activeContextAreasDataviews || []),
+  ]
 )

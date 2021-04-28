@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
@@ -15,6 +15,8 @@ import { isGuestUser } from 'features/user/user.selectors'
 import { LocaleLabels } from 'features/i18n/i18n'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
+// import HelpModal from 'features/help/HelpModal'
+// import FeedbackModal from 'features/feedback/FeedbackModal'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
@@ -51,80 +53,104 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     i18n.changeLanguage(lang)
   }
 
+  // const [modalHelpOpen, setModalHelpOpen] = useState(false)
+  // const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false)
+
+  // const onHelpClick = () => {
+  //   setModalHelpOpen(true)
+  // }
+  // const onFeedbackClick = () => {
+  //   setModalFeedbackOpen(true)
+  // }
+
   const onCategoryClick = useCallback(() => {
     setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
   }, [setMapCoordinates])
 
   return (
-    <ul className={cx('print-hidden', styles.CategoryTabs)}>
-      <li className={styles.tab} onClick={onMenuClick}>
-        <span className={styles.tabContent}>
-          <Icon icon="menu" />
-        </span>
-      </li>
-      {availableCategories?.map((category, index) => (
+    <Fragment>
+      <ul className={cx('print-hidden', styles.CategoryTabs)}>
+        <li className={styles.tab} onClick={onMenuClick}>
+          <span className={styles.tabContent}>
+            <Icon icon="menu" />
+          </span>
+        </li>
+        {availableCategories?.map((category, index) => (
+          <li
+            key={category.title}
+            className={cx(styles.tab, {
+              [styles.current]:
+                locationCategory === (category.title as WorkspaceCategories) ||
+                (index === 0 && locationType === HOME),
+            })}
+          >
+            <Link
+              className={styles.tabContent}
+              to={getLinkToCategory(category.title as WorkspaceCategories)}
+              onClick={onCategoryClick}
+            >
+              <Icon icon={`category-${category.title}` as IconType} />
+            </Link>
+          </li>
+        ))}
+        <div className={styles.separator}></div>
+        {/* <li className={cx(styles.tab, styles.secondary)}>
+          <button className={styles.tabContent} onClick={onHelpClick}>
+            <Icon icon="help" />
+          </button>
+        </li>
+        <li className={cx(styles.tab, styles.secondary)}>
+          <button className={styles.tabContent} onClick={onFeedbackClick}>
+            <Icon icon="feedback" />
+          </button>
+        </li> */}
+        <li className={cx(styles.tab, styles.languageToggle)}>
+          <button className={styles.tabContent}>
+            <Icon icon="language" />
+          </button>
+          <ul className={styles.languages}>
+            {LocaleLabels.map(({ id, label }) => (
+              <li key={id}>
+                <button
+                  onClick={() => toggleLanguage(id)}
+                  className={cx(styles.language, {
+                    [styles.currentLanguage]: i18n.language === id,
+                  })}
+                >
+                  {label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </li>
         <li
-          key={category}
           className={cx(styles.tab, {
-            [styles.current]:
-              locationCategory === (category as WorkspaceCategories) ||
-              (index === 0 && locationType === HOME),
+            [styles.current]: locationType === USER,
           })}
         >
-          <Link
-            className={styles.tabContent}
-            to={getLinkToCategory(category as WorkspaceCategories)}
-            onClick={onCategoryClick}
-          >
-            <Icon icon={`category-${category}` as IconType} />
-          </Link>
+          {guestUser ? (
+            <Tooltip content={t('common.login', 'Log in')}>
+              <a href={GFWAPI.getLoginUrl(window.location.toString())}>
+                <Icon icon="user" />
+              </a>
+            </Tooltip>
+          ) : (
+            <Link
+              to={{
+                type: USER,
+                payload: {},
+                query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
+                replaceQuery: true,
+              }}
+            >
+              {userData ? initials : <Icon icon="user" className="print-hidden" />}
+            </Link>
+          )}
         </li>
-      ))}
-      <div className={styles.separator}></div>
-      <li className={cx(styles.tab, styles.languageToggle)}>
-        <button className={styles.tabContent}>
-          <Icon icon="language" />
-        </button>
-        <ul className={styles.languages}>
-          {LocaleLabels.map(({ id, label }) => (
-            <li key={id}>
-              <button
-                onClick={() => toggleLanguage(id)}
-                className={cx(styles.language, {
-                  [styles.currentLanguage]: i18n.language === id,
-                })}
-              >
-                {label}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </li>
-      <li
-        className={cx(styles.tab, {
-          [styles.current]: locationType === USER,
-        })}
-      >
-        {guestUser ? (
-          <Tooltip content={t('common.login', 'Log in')}>
-            <a href={GFWAPI.getLoginUrl(window.location.toString())}>
-              <Icon icon="user" />
-            </a>
-          </Tooltip>
-        ) : (
-          <Link
-            to={{
-              type: USER,
-              payload: {},
-              query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
-              replaceQuery: true,
-            }}
-          >
-            {userData ? initials : <Icon icon="user" className="print-hidden" />}
-          </Link>
-        )}
-      </li>
-    </ul>
+      </ul>
+      {/* <HelpModal isOpen={modalHelpOpen} onClose={() => setModalHelpOpen(false)} /> */}
+      {/* <FeedbackModal isOpen={modalFeedbackOpen} onClose={() => setModalFeedbackOpen(false)} /> */}
+    </Fragment>
   )
 }
 
