@@ -30,6 +30,8 @@
     "description": "Description",
     "environment": "Lingkungan Hidup",
     "events": "Acara",
+    "help": "Help",
+    "feedback": "Feedback",
     "hour": "Jam",
     "hour_plural": "hours",
     "in": "in",
@@ -240,6 +242,28 @@
     "saveLogin": "You need to login to save views",
     "title_plural": "Ruang kerja",
     "title": "Workspace"
+  },
+  "feedback": {
+    "intro": "Global Fishing Watch is constantly working to improve our data. With billions of positions and hundreds of thousands of vessel to review, and an entire ocean of activity, we will inevitably have some vessels and activities misclassified. Feedback from you can help us identify where we most need to improve our data. We will endeavour to address your feedback.",
+    "institution": "Institution/Organization",
+    "role": "Role",
+    "dataset": "Dataset you are providing feedback for",
+    "optional": "Optional",
+    "issue": "What issue are you having?",
+    "send": "Send",
+    "email": "E-mail address",
+    "insuficientData": "Please fill in all mandatory fields",
+    "watch": "Watch officer",
+    "analyst": "Analyst",
+    "navy": "Navy or coast guard",
+    "fisheries": "Fisheries enforcement or compliance officer",
+    "ngo": "Non-governmental organization",
+    "scientist": "Scientist",
+    "journalist": "Journalist",
+    "student": "Student",
+    "general": "General public",
+    "GFW": "Global Fishing Watch staff",
+    "other": "Other"
   },
   "timebar": {
     "playback": {
