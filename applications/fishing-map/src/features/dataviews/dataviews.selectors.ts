@@ -124,7 +124,7 @@ export const selectDataviewInstancesByIds = (ids: string[]) => {
   })
 }
 
-const selectTrackDataviews = createSelector(
+export const selectTrackDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.Track)],
   (dataviews) => dataviews
 )
@@ -142,6 +142,10 @@ export const selectUserTracksDataviews = createSelector([selectTrackDataviews], 
 })
 
 export const selectActiveVesselsDataviews = createSelector([selectVesselsDataviews], (dataviews) =>
+  dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) =>
   dataviews?.filter((d) => d.config?.visible)
 )
 
