@@ -170,7 +170,6 @@ function Search() {
         trackDatasetId: vessel.trackDatasetId as string,
         infoDatasetId: vessel.dataset.id,
       })
-      console.log(vesselDataviewInstance)
       return vesselDataviewInstance
     })
     addNewDataviewInstances(instances)
