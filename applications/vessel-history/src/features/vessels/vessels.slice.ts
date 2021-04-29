@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { Dataview, DataviewInstance } from '@globalfishingwatch/api-types/dist/dataviews'
+import { DataviewInstance } from '@globalfishingwatch/api-types/dist/dataviews'
 import { VesselAPISource, VesselWithHistory } from 'types'
 import {
   asyncInitialState,

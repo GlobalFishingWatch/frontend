@@ -21,7 +21,7 @@ export const DEFAULT_WORKSPACE: AppState = {
   longitude: -35.97144,
   project: '1',
   start: '2017-12-01T00:00:00.000Z',
-  end: '2018-01-01T00:00:00.000Z',
+  end: '2021-01-01T00:00:00.000Z',
   timebarMode: 'speed',
   filterMode: 'speed',
   minDistanceFromPort: 0,

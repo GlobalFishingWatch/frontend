@@ -3,7 +3,6 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   resolveDataviews,
   UrlDataviewInstance,
-  // mergeWorkspaceUrlDataviewInstances,
   getGeneratorConfig,
 } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
@@ -13,7 +12,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { selectVesselDataview } from 'features/vessels/vessels.slice'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
-import { dataviewInstances } from './dataviews.config'
+import { BACKGROUND_LAYER, dataviewInstances, OFFLINE_LAYERS } from './dataviews.config'
 
 export const selectDataviews = createSelector([selectAllDataviews], (dataviews) => {
   return dataviews
@@ -26,6 +25,10 @@ const defaultBasemapDataview = {
     basemap: Generators.BasemapType.Default,
   },
 }
+
+export const selectDefaultOfflineDataviewsGenerators = createSelector([], () => {
+  return BACKGROUND_LAYER.concat(OFFLINE_LAYERS)
+})
 
 export const selectBasemapDataview = createSelector([selectDataviews], (dataviews) => {
   const basemapDataview = dataviews.find((d) => d.config.type === GeneratorType.Basemap)
@@ -45,12 +48,6 @@ export const selectDefaultBasemapGenerator = createSelector(
 export const selectDataviewInstancesMerged = createSelector(
   [selectVesselDataview],
   (vesselDataview) => {
-    console.log(vesselDataview)
-    // const trackDataviews = selectVesselDataviewsById(vesselProfileId)
-    // if (workspaceStatus !== AsyncReducerStatus.Finished) {
-    //   return
-    // }
-
     return [...dataviewInstances, vesselDataview ?? []]
   }
 )

@@ -2,6 +2,7 @@ import { DataviewInstance } from '@globalfishingwatch/api-types/dist'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   BackgroundGeneratorConfig,
+  GeneratorConfig,
   GlGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { FillLayer } from '@globalfishingwatch/mapbox-gl'
@@ -11,7 +12,7 @@ import { LANDMASS_OFFLINE_GEOJSON } from 'data/constants'
 export const MAP_BACKGROUND_COLOR = '#052555'
 export const DEFAULT_LANDMASS_COLOR = '#274877'
 
-export const BACKGROUND_LAYER = [
+export const BACKGROUND_LAYER: GeneratorConfig[] = [
   {
     id: 'background',
     tileset: 'background',
@@ -21,7 +22,7 @@ export const BACKGROUND_LAYER = [
   } as BackgroundGeneratorConfig,
 ]
 
-export const OFFLINE_LAYERS = [
+export const OFFLINE_LAYERS: GeneratorConfig[] = [
   // When offline we serve this landmass layer as a backup
   // in case that not all tiles are cached
   {
