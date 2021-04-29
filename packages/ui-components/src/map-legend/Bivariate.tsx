@@ -158,7 +158,7 @@ function BivariateLegend({
                   </g>
                   <g transform="translate(81, 62) scale(1, -1) rotate(45) translate(-81, -62) translate(41, 22)">
                     {layer.bivariateRamp.map((color: string, i: number) => (
-                      <BivariateRect color={color} i={i} key={color} />
+                      <BivariateRect color={color} i={i} key={color + i} />
                     ))}
                     {bivariateBucketIndex && bivariateBucketIndex > 0 && (
                       <BivariateRect
