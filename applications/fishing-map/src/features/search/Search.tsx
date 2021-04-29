@@ -45,7 +45,7 @@ function Search() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const urlQuery = useSelector(selectSearchQuery)
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const { searchFilters } = useSearchFiltersConnect()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
@@ -57,6 +57,7 @@ function Search() {
   const searchStatus = useSelector(selectSearchStatus)
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
+  const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
 
   const searchOptions = [
     {
@@ -151,16 +152,29 @@ function Search() {
       dispatch(setSuggestionClicked(false))
     }
   }
-  const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
-  const onSelectionChange = (selection: VesselWithDatasets | null) => {
+
+  const onSelect = (selection: VesselWithDatasets | null) => {
+    if (!selection) return
+    if (vesselsSelected.includes(selection)) {
+      setVesselsSelected(vesselsSelected.filter((vessel) => vessel !== selection))
+      return
+    }
     if (selection && selection.dataset && selection.trackDatasetId) {
       setVesselsSelected([...vesselsSelected, selection])
-      // const vesselDataviewInstance = getVesselDataviewInstance(selection, {
-      //   trackDatasetId: selection.trackDatasetId as string,
-      //   infoDatasetId: selection.dataset.id,
-      // })
-      // upsertDataviewInstance(vesselDataviewInstance)
     }
+  }
+
+  const onConfirmSelection = () => {
+    const instances = vesselsSelected.map((vessel) => {
+      const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
+        trackDatasetId: vessel.trackDatasetId as string,
+        infoDatasetId: vessel.dataset.id,
+      })
+      console.log(vesselDataviewInstance)
+      return vesselDataviewInstance
+    })
+    addNewDataviewInstances(instances)
+    onCloseClick()
   }
 
   const hasMoreResults =
@@ -185,7 +199,7 @@ function Search() {
   }
 
   return (
-    <Downshift onChange={onSelectionChange} itemToString={(item) => (item ? item.shipname : '')}>
+    <Downshift onSelect={onSelect} itemToString={(item) => (item ? item.shipname : '')}>
       {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, selectedItem }) => (
         <div className={styles.search}>
           <div className={styles.header}>
@@ -257,15 +271,17 @@ function Search() {
                       lastTransmissionDate,
                     } = entry
                     const flagLabel = getFlagById(flag)?.label
-                    console.log(vesselsSelected)
-
-                    const isInWorkspace = vesselsSelected?.some((vessel) => vessel.id === id)
+                    const isInWorkspace = vesselDataviews?.some(
+                      (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
+                    )
+                    const isSelected = vesselsSelected?.some((vessel) => vessel.id === id)
                     return (
                       <li
                         {...getItemProps({ item: entry, index })}
                         className={cx(styles.searchResult, {
                           [styles.highlighted]: highlightedIndex === index,
-                          [styles.selected]: isInWorkspace,
+                          [styles.inWorkspace]: isInWorkspace,
+                          [styles.selected]: isSelected,
                         })}
                         key={id}
                       >
@@ -327,10 +343,19 @@ function Search() {
                               </div>
                             )}
                           </div>
-                          {isInWorkspace && (
+                          {isSelected && (
                             <span className={styles.alreadyAddedMsg}>
                               <Icon icon="tick" />
                               {t('search.vesselSelected', 'Vessel selected')}
+                            </span>
+                          )}
+                          {isInWorkspace && (
+                            <span className={styles.alreadyAddedMsg}>
+                              <Icon icon="tick" />
+                              {t(
+                                'search.vesselAlreadyInWorkspace',
+                                'This vessel is already in your workspace'
+                              )}
                             </span>
                           )}
                         </Fragment>
@@ -357,12 +382,17 @@ function Search() {
             )}
           </div>
           <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
-            <Button disabled type="secondary" tooltip="Coming soon" className={styles.footerAction}>
+            <Button
+              disabled
+              type="secondary"
+              tooltip={t('common.comingSoon', 'Coming Soon')}
+              className={styles.footerAction}
+            >
               See as fleet
             </Button>
-            <Button
-              className={styles.footerAction}
-            >{`See ${vesselsSelected.length} vessels`}</Button>
+            <Button className={styles.footerAction} onClick={onConfirmSelection}>
+              {t('search.seeVessels', 'See vessels')}
+            </Button>
           </div>
         </div>
       )}

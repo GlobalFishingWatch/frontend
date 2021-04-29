@@ -61,6 +61,11 @@
 
 .selected {
   background: var(--color-terthiary-blue);
+}
+
+.inWorkspace {
+  /* background: var(--color-terthiary-blue); */
+  color: var(--color-secondary-blue);
   pointer-events: none;
 }
 
