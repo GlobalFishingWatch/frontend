@@ -13,6 +13,7 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { Segment } from '@globalfishingwatch/data-transforms'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
@@ -71,6 +72,8 @@ function UserTrackLayerPanel({ dataview }: LayerPanelProps): React.ReactElement 
     isCustomUserLayer
   )
 
+  const loading = trackResource?.status === ResourceStatus.Loading
+
   if (!dataset) {
     return <DatasetNotFound dataview={dataview} />
   }
@@ -103,40 +106,53 @@ function UserTrackLayerPanel({ dataview }: LayerPanelProps): React.ReactElement 
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && (
+          {loading ? (
+            <IconButton
+              loading
+              className={styles.loadingIcon}
+              size="small"
+              tooltip={t('vessel.loading', 'Loading vessel track')}
+            />
+          ) : (
             <Fragment>
-              <ExpandedContainer
-                visible={colorOpen}
-                onClickOutside={closeExpandedContainer}
-                component={
-                  <ColorBar
-                    colorBarOptions={HeatmapColorBarOptions}
-                    selectedColor={dataview.config?.color}
-                    onColorClick={changeColor}
+              {layerActive && (
+                <Fragment>
+                  <ExpandedContainer
+                    visible={colorOpen}
+                    onClickOutside={closeExpandedContainer}
+                    component={
+                      <ColorBar
+                        colorBarOptions={HeatmapColorBarOptions}
+                        selectedColor={dataview.config?.color}
+                        onColorClick={changeColor}
+                      />
+                    }
+                  >
+                    <Color
+                      open={colorOpen}
+                      dataview={dataview}
+                      onClick={onToggleColorOpen}
+                      className={styles.actionButton}
+                    />
+                  </ExpandedContainer>
+                  <FitBounds
+                    className={styles.actionButton}
+                    hasError={trackError}
+                    trackResource={trackResource}
                   />
-                }
-              >
-                <Color
-                  open={colorOpen}
-                  dataview={dataview}
-                  onClick={onToggleColorOpen}
-                  className={styles.actionButton}
-                />
-              </ExpandedContainer>
-              <FitBounds
+                </Fragment>
+              )}
+              <InfoError
+                error={datasetError}
+                loading={datasetImporting}
+                tooltip={infoTooltip}
                 className={styles.actionButton}
-                hasError={trackError}
-                trackResource={trackResource}
               />
+              {isCustomUserLayer && (
+                <Remove className={cx(styles.actionButton)} dataview={dataview} />
+              )}
             </Fragment>
           )}
-          <InfoError
-            error={datasetError}
-            loading={datasetImporting}
-            tooltip={infoTooltip}
-            className={styles.actionButton}
-          />
-          {isCustomUserLayer && <Remove className={cx(styles.actionButton)} dataview={dataview} />}
         </div>
       </div>
 
