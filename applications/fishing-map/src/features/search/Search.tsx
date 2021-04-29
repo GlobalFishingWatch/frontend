@@ -381,16 +381,20 @@ function Search() {
             )}
           </div>
           <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
-            <Button
-              disabled
-              type="secondary"
-              tooltip={t('common.comingSoon', 'Coming Soon')}
-              className={styles.footerAction}
-            >
-              See as fleet
-            </Button>
+            {vesselsSelected.length > 1 && (
+              <Button
+                disabled
+                type="secondary"
+                tooltip={t('common.comingSoon', 'Coming Soon')}
+                className={styles.footerAction}
+              >
+                See as fleet
+              </Button>
+            )}
             <Button className={styles.footerAction} onClick={onConfirmSelection}>
-              {t('search.seeVessels', 'See vessels')}
+              {vesselsSelected.length > 1
+                ? t('search.seeVessels', 'See vessels')
+                : t('search.seeVessel', 'See vessel')}
             </Button>
           </div>
         </div>

@@ -161,6 +161,7 @@
     "vesselAlreadyInWorksace": "This vessel is already in your workspace",
     "vesselSelected": "Vessel selected",
     "vessels": "Search vessels",
+    "seeVessel": "See vessel",
     "seeVessels": "See vessels",
     "filterClose": "Close search filters",
     "filterOpen": "Open search filters"
