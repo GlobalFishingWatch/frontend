@@ -144,6 +144,7 @@ function BivariateLegend({
                       positions?.map(({ x, y }, yIndex) => {
                         if (xIndex === 1 && yIndex === 0) return null
                         const value = layer.sublayersBreaks?.[xIndex]?.[yIndex]
+                        if (value === undefined) return null
                         const roundedValue = roundValues ? roundLegendNumber(value) : value
                         return (
                           <text key={value}>

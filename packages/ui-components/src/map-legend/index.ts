@@ -18,7 +18,7 @@ export type LegendLayer = LayerMetadataLegend & UILayer
 export type LegendLayerBivariate = LayerMetadataLegendBivariate & UILayer
 
 export const parseLegendNumber = (number: number) => {
-  return number % 1 === 0 ? number : parseFloat(number.toFixed(2))
+  return number % 1 === 0 ? number : parseFloat(number?.toFixed(2))
 }
 
 export const roundLegendNumber = (number: number) => {

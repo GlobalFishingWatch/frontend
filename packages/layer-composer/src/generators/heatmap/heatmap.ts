@@ -79,7 +79,7 @@ class HeatmapGenerator {
       stops = getBreaks(min, max, avg, config.scalePowExponent, numBreaks)
     }
 
-    const colorRampType = config.colorRamp || 'presence'
+    const colorRampType = config.colorRamp || 'teal'
     const pickValueAt = 'value'
     const originalColorRamp = HEATMAP_COLOR_RAMPS[colorRampType]
     const legendRamp = stops.length ? zip(stops, originalColorRamp) : []

@@ -359,29 +359,29 @@ export interface HeatmapAnimatedGeneratorSublayer {
 }
 
 // ---- Heatmap Generator color ramps types
-export type ColorRampsIds =
-  | 'fishing'
-  | 'presence'
-  | 'reception'
-  | 'bivariate'
+export type ColorRampId =
   | 'teal'
-  | 'teal_toWhite'
   | 'magenta'
-  | 'magenta_toWhite'
   | 'lilac'
-  | 'lilac_toWhite'
   | 'salmon'
-  | 'salmon_toWhite'
   | 'sky'
-  | 'sky_toWhite'
   | 'red'
-  | 'red_toWhite'
   | 'yellow'
-  | 'yellow_toWhite'
   | 'green'
-  | 'green_toWhite'
   | 'orange'
+
+export type ColorRampWhiteId =
+  | 'teal_toWhite'
+  | 'magenta_toWhite'
+  | 'lilac_toWhite'
+  | 'salmon_toWhite'
+  | 'sky_toWhite'
+  | 'red_toWhite'
+  | 'yellow_toWhite'
+  | 'green_toWhite'
   | 'orange_toWhite'
+
+export type ColorRampsIds = ColorRampId | ColorRampWhiteId
 
 export enum HeatmapAnimatedMode {
   // Pick sublayer with highest value and place across this sublayer's color ramp. Works with 0 - n sublayers

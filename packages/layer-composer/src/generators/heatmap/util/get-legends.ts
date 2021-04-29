@@ -1,7 +1,13 @@
 import { LayerMetadataLegend, LegendType } from '../../../types'
-import { ColorRampsIds, HeatmapAnimatedMode } from '../../types'
-import { HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_COLOR_RAMPS, GRID_AREA_BY_ZOOM_LEVEL } from '../config'
+import { ColorRampId, ColorRampsIds, HeatmapAnimatedMode } from '../../types'
+import {
+  HEATMAP_DEFAULT_MAX_ZOOM,
+  HEATMAP_COLOR_RAMPS,
+  GRID_AREA_BY_ZOOM_LEVEL,
+  HEATMAP_COLORS_BY_ID,
+} from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
+import { getBlend, getColorRampByOpacitySteps, rgbaStringToObject, rgbaToHex } from './colors'
 import { Breaks } from './fetch-breaks'
 import { getCleanBreaks } from './get-breaks'
 import { toDT } from './time-chunks'
@@ -10,7 +16,8 @@ import { toDT } from './time-chunks'
 export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
   // Force bivariate color ramp depending on config
   if (config.mode === HeatmapAnimatedMode.Bivariate) {
-    return config.sublayers.map(() => HEATMAP_COLOR_RAMPS['bivariate'])
+    const ramp = getBivariateRamp(config.sublayers.map((s) => s.colorRamp as ColorRampId))
+    return config.sublayers.map(() => ramp)
   }
 
   const numActiveSublayers = config.sublayers.filter((s) => s.visible).length
@@ -89,36 +96,71 @@ const getLegendsCompare = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks:
         return [value, legendItem[1]]
       })
     }
-    const gridArea = getGridAreaByZoom(config.zoom)
 
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
       unit: config.sublayers[sublayerIndex].legend?.unit,
       type: LegendType.ColorRampDiscrete,
       ramp: legendRamp,
-      ...(gridArea && { gridArea }),
     }
     return [sublayerLegend]
   })
 }
 
+const white = { r: 255, g: 255, b: 255, a: 1 }
+
+const getBivariateRamp = (colorRampsIds: ColorRampId[]) => {
+  const ramp1 = getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[colorRampsIds[0]], 4).map((rgba) =>
+    rgbaStringToObject(rgba)
+  )
+  const ramp2 = getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[colorRampsIds[1]], 4).map((rgba) =>
+    rgbaStringToObject(rgba)
+  )
+  return [
+    'transparent',
+    rgbaToHex(getBlend(ramp1[0], ramp2[0])),
+    rgbaToHex(getBlend(ramp1[1], ramp2[0])),
+    rgbaToHex(getBlend(ramp1[2], ramp2[0])),
+    rgbaToHex(getBlend(ramp1[3], ramp2[0])),
+    rgbaToHex(getBlend(ramp1[0], ramp2[1])),
+    rgbaToHex(getBlend(ramp1[1], ramp2[1])),
+    rgbaToHex(getBlend(ramp1[2], ramp2[1])),
+    rgbaToHex(getBlend(ramp1[3], ramp2[1])),
+    rgbaToHex(getBlend(ramp1[0], ramp2[2])),
+    rgbaToHex(getBlend(ramp1[1], ramp2[2])),
+    rgbaToHex(getBlend({ ...white, a: 0.25 }, getBlend(ramp1[2], ramp2[2]))),
+    rgbaToHex(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[3], ramp2[2]))),
+    rgbaToHex(getBlend(ramp1[0], ramp2[3])),
+    rgbaToHex(getBlend(ramp1[1], ramp2[3])),
+    rgbaToHex(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[2], ramp2[3]))),
+    rgbaToHex(getBlend(white, getBlend(ramp1[3], ramp2[3]))),
+  ]
+}
+
 const getLegendsBivariate = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks: Breaks) => {
-  const gridArea = getGridAreaByZoom(config.zoom)
+  const colorRampsIds = config.sublayers.map((l) => l.colorRamp as ColorRampId)
   return [
     {
       id: config.sublayers[0].id,
       type: LegendType.Bivariate,
-      bivariateRamp: HEATMAP_COLOR_RAMPS.bivariate,
-      breaks,
-      ...(gridArea && { gridArea }),
+      bivariateRamp: getBivariateRamp(colorRampsIds),
+      sublayersBreaks: breaks,
     },
   ]
 }
 
 const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks: Breaks) => {
-  return config.mode === HeatmapAnimatedMode.Bivariate
-    ? getLegendsBivariate(config, breaks)
-    : getLegendsCompare(config, breaks)
+  const legends =
+    config.mode === HeatmapAnimatedMode.Bivariate
+      ? getLegendsBivariate(config, breaks)
+      : getLegendsCompare(config, breaks)
+
+  const gridArea = getGridAreaByZoom(config.zoom)
+
+  return legends.map((legend: LayerMetadataLegend) => ({
+    ...legend,
+    ...(gridArea && { gridArea }),
+  }))
 }
 
 export default getLegends
