@@ -8,7 +8,7 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
-import { Choice, Icon } from '@globalfishingwatch/ui-components'
+import { Button, Choice, Icon } from '@globalfishingwatch/ui-components'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -151,14 +151,15 @@ function Search() {
       dispatch(setSuggestionClicked(false))
     }
   }
-
+  const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
   const onSelectionChange = (selection: VesselWithDatasets | null) => {
     if (selection && selection.dataset && selection.trackDatasetId) {
-      const vesselDataviewInstance = getVesselDataviewInstance(selection, {
-        trackDatasetId: selection.trackDatasetId as string,
-        infoDatasetId: selection.dataset.id,
-      })
-      upsertDataviewInstance(vesselDataviewInstance)
+      setVesselsSelected([...vesselsSelected, selection])
+      // const vesselDataviewInstance = getVesselDataviewInstance(selection, {
+      //   trackDatasetId: selection.trackDatasetId as string,
+      //   infoDatasetId: selection.dataset.id,
+      // })
+      // upsertDataviewInstance(vesselDataviewInstance)
     }
   }
 
@@ -256,9 +257,9 @@ function Search() {
                       lastTransmissionDate,
                     } = entry
                     const flagLabel = getFlagById(flag)?.label
-                    const isInWorkspace = vesselDataviews?.some(
-                      (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
-                    )
+                    console.log(vesselsSelected)
+
+                    const isInWorkspace = vesselsSelected?.some((vessel) => vessel.id === id)
                     return (
                       <li
                         {...getItemProps({ item: entry, index })}
@@ -329,7 +330,7 @@ function Search() {
                           {isInWorkspace && (
                             <span className={styles.alreadyAddedMsg}>
                               <Icon icon="tick" />
-                              {t('search.vesselAlreadyInWorksace', 'Vessel already in workspace')}
+                              {t('search.vesselSelected', 'Vessel selected')}
                             </span>
                           )}
                         </Fragment>
@@ -354,6 +355,14 @@ function Search() {
             ) : (
               <SearchNotAllowed />
             )}
+          </div>
+          <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
+            <Button disabled type="secondary" tooltip="Coming soon" className={styles.footerAction}>
+              See as fleet
+            </Button>
+            <Button
+              className={styles.footerAction}
+            >{`See ${vesselsSelected.length} vessels`}</Button>
           </div>
         </div>
       )}

@@ -176,7 +176,7 @@
     "placeholder": "Type to search vessels",
     "suggestion": "Did you mean",
     "title": "Search",
-    "vesselAlreadyInWorksace": "Vessel already added. Close search to see it.",
+    "vesselSelected": "Vessel selected",
     "vessels": "Search vessels",
     "filterClose": "Close search filters",
     "filterOpen": "Open search filters"

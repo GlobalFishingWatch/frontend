@@ -141,3 +141,23 @@
   align-items: center;
   justify-content: center;
 }
+
+.footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  display: flex;
+  gap: var(--space-S);
+  padding: var(--space-S);
+  background: var(--color-white);
+  box-shadow: var(--box-shadow);
+  transition: transform 300ms ease-in-out;
+}
+
+.hidden {
+  transform: translateY(100%);
+}
+
+.footerAction {
+  flex: 1;
+}
