@@ -6,7 +6,11 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AppDispatch } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from './dataviews.slice'
-import { DEFAULT_VESSEL_DATAVIEW_ID, dataviewInstances } from './dataviews.config'
+import {
+  DEFAULT_VESSEL_DATAVIEW_ID,
+  dataviewInstances,
+  vesselDataviewIds,
+} from './dataviews.config'
 
 // used in workspaces with encounter events layers
 export const VESSEL_LAYER_PREFIX = 'vessel-'
@@ -56,9 +60,10 @@ export const getDatasetByDataview = (
 
 export const initializeDataviews = async (dispatch: AppDispatch) => {
   let dataviews: Dataview[] = []
-  const action = await dispatch(
-    fetchDataviewsByIdsThunk(dataviewInstances.map((instance) => instance.dataviewId))
+  const dataviewIds = Array.from(
+    new Set([...dataviewInstances.map((instance) => instance.dataviewId), ...vesselDataviewIds])
   )
+  const action = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
   if (fetchDataviewsByIdsThunk.fulfilled.match(action as any)) {
     dataviews = action.payload as Dataview[]
   }

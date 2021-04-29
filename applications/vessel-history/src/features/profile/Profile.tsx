@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
+import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
 import I18nDate from 'features/i18n/i18nDate'
 import { selectQueryParam, selectVesselProfileId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
@@ -11,11 +12,17 @@ import {
   fetchVesselByIdThunk,
   selectVesselById,
   selectVesselsStatus,
+  upsertVesselDataview,
 } from 'features/vessels/vessels.slice'
 import Map from 'features/map/Map'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import Info from './components/Info'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { selectDatasets } from 'features/datasets/datasets.slice'
+import { selectDataviewsResourceQueries } from 'features/resources/resources.selectors'
+import { fetchResourceThunk } from 'features/resources/resources.slice'
 import styles from './Profile.module.css'
+import Info from './components/Info'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
@@ -27,10 +34,45 @@ const Profile: React.FC = (props): React.ReactElement => {
   const vesselStatus = useSelector(selectVesselsStatus)
   const loading = useMemo(() => vesselStatus === AsyncReducerStatus.LoadingItem, [vesselStatus])
   const vessel = useSelector(selectVesselById(vesselProfileId))
+  const datasets = useSelector(selectDatasets)
+  const resourceQueries = useSelector(selectDataviewsResourceQueries)
 
   useEffect(() => {
-    dispatch(fetchVesselByIdThunk(vesselProfileId))
-  }, [dispatch, vesselProfileId])
+    if (resourceQueries) {
+      resourceQueries.forEach((resourceQuery) => {
+        dispatch(fetchResourceThunk(resourceQuery))
+      })
+    }
+  }, [dispatch, resourceQueries])
+
+  useEffect(() => {
+    const fetchVessel = async () => {
+      const [dataset, gfwId] = (
+        Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
+      ).split('_')
+      const action = await dispatch(fetchVesselByIdThunk(vesselProfileId))
+      if (dataset && gfwId && fetchVesselByIdThunk.fulfilled.match(action as any)) {
+        const vesselDataset = datasets
+          .filter((ds) => ds.id === dataset)
+          .slice(0, 1)
+          .shift()
+        if (vesselDataset) {
+          const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
+          if (trackDatasetId) {
+            const vesselDataviewInstance = getVesselDataviewInstance(
+              { id: gfwId },
+              {
+                trackDatasetId: trackDatasetId as string,
+                infoDatasetId: dataset,
+              }
+            )
+            dispatch(upsertVesselDataview(vesselDataviewInstance))
+          }
+        }
+      }
+    }
+    fetchVessel()
+  }, [dispatch, vesselProfileId, datasets])
 
   const tabs: Tab[] = useMemo(
     () => [

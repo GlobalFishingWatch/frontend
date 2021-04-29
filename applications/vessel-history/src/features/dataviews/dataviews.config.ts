@@ -1,3 +1,4 @@
+import { DataviewInstance } from '@globalfishingwatch/api-types/dist'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   BackgroundGeneratorConfig,
@@ -57,7 +58,7 @@ export const DEFAULT_MPA_RESTRICTED_DATAVIEW_ID = WORKSPACE_ENV === 'development
 export const DEFAULT_MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
 export const DEFAULT_RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
 
-export const dataviewInstances = [
+export const dataviewInstances: DataviewInstance<Generators.Type>[] = [
   {
     id: 'basemap',
     dataviewId: DEFAULT_BASEMAP_DATAVIEW_ID,
@@ -103,3 +104,5 @@ export const dataviewInstances = [
     dataviewId: DEFAULT_RFMO_DATAVIEW_ID,
   },
 ]
+
+export const vesselDataviewIds = [DEFAULT_VESSEL_DATAVIEW_ID]

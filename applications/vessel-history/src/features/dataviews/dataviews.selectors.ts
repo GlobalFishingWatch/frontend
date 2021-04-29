@@ -11,8 +11,9 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generator
 import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
-import { dataviewInstances } from './dataviews.config'
+import { selectVesselDataview } from 'features/vessels/vessels.slice'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
+import { dataviewInstances } from './dataviews.config'
 
 export const selectDataviews = createSelector([selectAllDataviews], (dataviews) => {
   return dataviews
@@ -41,15 +42,44 @@ export const selectDefaultBasemapGenerator = createSelector(
   }
 )
 
+export const selectDataviewInstancesMerged = createSelector(
+  [selectVesselDataview],
+  (vesselDataview) => {
+    console.log(vesselDataview)
+    // const trackDataviews = selectVesselDataviewsById(vesselProfileId)
+    // if (workspaceStatus !== AsyncReducerStatus.Finished) {
+    //   return
+    // }
+
+    return [...dataviewInstances, vesselDataview ?? []]
+  }
+)
+
 export const selectDataviewInstancesResolved = createSelector(
-  [selectDataviewsStatus, selectDataviews, selectDatasets, selectDatasetsStatus],
-  (dataviewsStatus, dataviews, datasets, datasetsStatus): UrlDataviewInstance[] | undefined => {
+  [
+    selectDataviewsStatus,
+    selectDataviews,
+    selectDatasets,
+    selectDatasetsStatus,
+    selectDataviewInstancesMerged,
+  ],
+  (
+    dataviewsStatus,
+    dataviews,
+    datasets,
+    datasetsStatus,
+    dataviewInstances
+  ): UrlDataviewInstance[] | undefined => {
     if (
       dataviewsStatus !== AsyncReducerStatus.Finished ||
       datasetsStatus !== AsyncReducerStatus.Finished
     )
       return
-    const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
+    const dataviewInstancesResolved = resolveDataviews(
+      dataviewInstances as UrlDataviewInstance[],
+      dataviews,
+      datasets
+    )
     return dataviewInstancesResolved
   }
 )
