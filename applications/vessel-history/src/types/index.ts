@@ -163,3 +163,8 @@ export type ContextLayer = {
   description?: string
   disabled?: boolean
 }
+
+export type Range = {
+  start: string
+  end: string
+}
