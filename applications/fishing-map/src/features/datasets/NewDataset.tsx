@@ -2,7 +2,7 @@ import React, { useState, useCallback, Fragment } from 'react'
 import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import lowerCase from 'lodash/lowerCase'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { parse as parseCSV } from 'papaparse'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
@@ -33,7 +33,6 @@ import styles from './NewDataset.module.css'
 import DatasetFile from './DatasetFile'
 import DatasetConfig from './DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
-import { fetchDatasetByIdThunk } from './datasets.slice'
 
 export type DatasetMetadata = {
   name: string
@@ -49,7 +48,6 @@ export type CSV = Record<string, any>[]
 
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
   const { datasetModal, datasetCategory, dispatchDatasetModal } = useDatasetModalConnect()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
@@ -257,15 +255,7 @@ function NewDataset(): React.ReactElement {
       } else if (payload) {
         if (locationType === 'HOME' || locationType === 'WORKSPACE') {
           const dataset = { ...payload }
-          // TODO: dataset we get from POST does not have endpoints, so load it again :/
-          if (metadata?.type === DatasetTypes.UserTracks) {
-            setLoading(true)
-            const action = await dispatch(fetchDatasetByIdThunk(dataset.id))
-            setLoading(false)
-            addDataviewFromDatasetToWorkspace((action as any).payload)
-          } else {
-            addDataviewFromDatasetToWorkspace(dataset)
-          }
+          addDataviewFromDatasetToWorkspace(dataset)
         }
         onClose()
       }
