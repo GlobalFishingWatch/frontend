@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import uniqBy from 'lodash/uniqBy'
 import { InteractionEvent, useTilesLoading } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
@@ -214,8 +215,9 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
       ],
     }
   }
+  const uniqueFeatures = uniqBy(uniqBy(event.features, 'id'), 'properties.value')
 
-  const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
+  const tooltipEventFeatures: TooltipEventFeature[] = uniqueFeatures.flatMap((feature) => {
     let dataview
     if (feature.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID) {
       const { temporalgrid } = feature

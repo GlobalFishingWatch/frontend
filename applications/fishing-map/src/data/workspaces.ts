@@ -15,25 +15,20 @@ export function getWorkspaceEnv(): WorkspaceEnv {
 
 export enum WorkspaceCategories {
   FishingActivity = 'fishing-activity',
-  MarineReserves = 'marine-reserves',
+  MarineManager = 'marine-manager',
   CountryPortals = 'country-portals',
 }
 
-const DEV_WORKSPACE = WORKSPACE_ENV === 'development'
-
-// Default context layers
-export const DEFAULT_BASEMAP_DATAVIEW_ID = DEV_WORKSPACE ? 90 : 173
-export const DEFAULT_EEZ_DATAVIEW_ID = DEV_WORKSPACE ? 94 : 177
-export const DEFAULT_MPA_NO_TAKE_DATAVIEW_ID = DEV_WORKSPACE ? 99 : 179
-export const DEFAULT_MPA_RESTRICTED_DATAVIEW_ID = DEV_WORKSPACE ? 100 : 180
-export const DEFAULT_MPA_DATAVIEW_ID = DEV_WORKSPACE ? 98 : 176
-export const DEFAULT_RFMO_DATAVIEW_ID = DEV_WORKSPACE ? 95 : 175
-
-// Other layers configuration
-export const DEFAULT_VESSEL_DATAVIEW_ID = DEV_WORKSPACE ? 92 : 171
-export const DEFAULT_FISHING_DATAVIEW_ID = DEV_WORKSPACE ? 91 : 178
-export const DEFAULT_EVENTS_DATAVIEW_ID = DEV_WORKSPACE ? 140 : 0
-export const DEFAULT_PRESENCE_DATAVIEW_ID = DEV_WORKSPACE ? 124 : 241
-export const DEFAULT_CONTEXT_DATAVIEW_ID = DEV_WORKSPACE ? 123 : 220
-export const DEFAULT_ENVIRONMENT_DATAVIEW_ID = DEV_WORKSPACE ? 125 : 223
-export const DEFAULT_USER_TRACK_ID = DEV_WORKSPACE ? 999 : 999
+// Different ids for each different environment
+// TODO migrate to use strings and define ids for the following ones
+// IMPORTANT: When updating this list, also update it's corresponding
+// values in:
+//      applications/vessel-history/src/features/dataviews/dataviews.config.ts
+export const DEFAULT_BASEMAP_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 90 : 173
+export const DEFAULT_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 92 : 171
+export const DEFAULT_FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178
+export const DEFAULT_EVENTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 140 : 0
+export const DEFAULT_PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 124 : 241
+export const DEFAULT_CONTEXT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 123 : 220
+export const DEFAULT_ENVIRONMENT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 125 : 223
+export const DEFAULT_USER_TRACK_ID = WORKSPACE_ENV === 'development' ? 999 : 999

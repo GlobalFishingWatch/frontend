@@ -10,7 +10,7 @@ import { ReactComponent as Calendar } from '../assets/icons/calendar.svg'
 import { ReactComponent as Camera } from '../assets/icons/camera.svg'
 import { ReactComponent as CategoryCountryPortals } from '../assets/icons/category-country-portals.svg'
 import { ReactComponent as CategoryFishing } from '../assets/icons/category-fishing.svg'
-import { ReactComponent as CategoryMarineReserves } from '../assets/icons/category-marine-reserves.svg'
+import { ReactComponent as CategoryMarineManager } from '../assets/icons/category-marine-manager.svg'
 import { ReactComponent as CategoryNews } from '../assets/icons/category-news.svg'
 import { ReactComponent as CategoryReports } from '../assets/icons/category-reports.svg'
 import { ReactComponent as Close } from '../assets/icons/close.svg'
@@ -21,9 +21,11 @@ import { ReactComponent as Delete } from '../assets/icons/delete.svg'
 import { ReactComponent as Download } from '../assets/icons/download.svg'
 import { ReactComponent as Edit } from '../assets/icons/edit.svg'
 import { ReactComponent as Email } from '../assets/icons/email.svg'
+import { ReactComponent as Feedback } from '../assets/icons/feedback.svg'
 import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
 import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
 import { ReactComponent as Graph } from '../assets/icons/graph.svg'
+import { ReactComponent as Help } from '../assets/icons/help.svg'
 import { ReactComponent as Home } from '../assets/icons/home.svg'
 import { ReactComponent as Info } from '../assets/icons/info.svg'
 import { ReactComponent as Language } from '../assets/icons/language.svg'
@@ -61,7 +63,7 @@ export const IconComponents = {
   camera: Camera,
   'category-country-portals': CategoryCountryPortals,
   'category-fishing-activity': CategoryFishing,
-  'category-marine-reserves': CategoryMarineReserves,
+  'category-marine-manager': CategoryMarineManager,
   'category-news': CategoryNews,
   'category-reports': CategoryReports,
   close: Close,
@@ -72,9 +74,11 @@ export const IconComponents = {
   download: Download,
   edit: Edit,
   email: Email,
+  feedback: Feedback,
   'filter-off': FilterOff,
   'filter-on': FilterOn,
   graph: Graph,
+  help: Help,
   home: Home,
   info: Info,
   logout: Logout,
@@ -114,6 +118,10 @@ interface IconProps {
 const Icon: React.FC<IconProps> = (props) => {
   const { icon, tooltip, type = 'default', className = '' } = props
   const Component = IconComponents[icon]
+  if (!Component) {
+    console.warn(`Missing icon: ${icon} in ui-components Icon component. Rendering null`)
+    return null
+  }
   return (
     <Tooltip content={tooltip} placement="auto">
       <Component className={cx(styles.icon, styles[type], className)} />

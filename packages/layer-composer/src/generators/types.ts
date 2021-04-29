@@ -348,6 +348,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   datasets: string[]
   filter?: string
   colorRamp: ColorRampsIds
+  colorRampWhiteEnd?: boolean
   visible?: boolean
   breaks?: number[]
   legend?: GeneratorLegend
