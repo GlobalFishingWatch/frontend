@@ -17,4 +17,4 @@ const decodeProto = (data) => {
 
 const data = fs.readFileSync('./16')
 const int16ArrayBuffer = decodeProto(data)
-console.log(JSON.stringify(int16ArrayBuffer))
+console.info(JSON.stringify(int16ArrayBuffer))

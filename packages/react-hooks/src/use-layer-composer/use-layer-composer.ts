@@ -67,7 +67,7 @@ function useLayerComposer(
         }
         setError(null)
       } catch (e) {
-        console.log(e)
+        console.warn(e)
         setError(e)
       }
     }

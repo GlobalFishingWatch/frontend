@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Switch, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -13,6 +13,9 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
+import LayerSwitch from '../common/LayerSwitch'
+import Remove from '../common/Remove'
+import Title from '../common/Title'
 import Filters from './HeatmapFilters'
 import HeatmapInfoModal from './HeatmapInfoModal'
 import { isFishingDataview, isPresenceDataview } from './heatmaps.utils'
@@ -28,19 +31,11 @@ function HeatmapLayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
 
-  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
+  const { deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
 
   const layerActive = dataview?.config?.visible ?? true
-  const onToggleLayerActive = () => {
-    upsertDataviewInstance({
-      id: dataview.id,
-      config: {
-        visible: bivariate ? true : !layerActive,
-      },
-    })
-  }
 
   const onRemoveLayerClick = () => {
     if (index < 2) {
@@ -74,9 +69,12 @@ function HeatmapLayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.
   }
   const showInfoModal = isFishingDataview(dataview)
   const TitleComponent = (
-    <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {datasetName}
-    </h3>
+    <Title
+      title={datasetName}
+      className={styles.name}
+      classNameActive={styles.active}
+      dataview={dataview}
+    />
   )
 
   return (
@@ -88,14 +86,11 @@ function HeatmapLayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.
       })}
     >
       <div className={styles.header}>
-        <Switch
-          active={layerActive}
-          onClick={onToggleLayerActive}
-          tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
-          tooltipPlacement="top"
-          color={dataview.config?.color}
-          className={styles.switch}
+        <LayerSwitch
           disabled={bivariate}
+          active={layerActive}
+          className={styles.switch}
+          dataview={dataview}
         />
         {datasetName.length > 24 ? (
           <Tooltip content={datasetName}>{TitleComponent}</Tooltip>
@@ -141,14 +136,7 @@ function HeatmapLayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.
               tooltipPlacement="top"
             />
           )}
-          <IconButton
-            icon="delete"
-            size="small"
-            className={styles.actionButton}
-            tooltip={t('layer.remove', 'Remove layer')}
-            tooltipPlacement="top"
-            onClick={onRemoveLayerClick}
-          />
+          <Remove className={styles.actionButton} onClick={onRemoveLayerClick} />
         </div>
       </div>
       {layerActive && (

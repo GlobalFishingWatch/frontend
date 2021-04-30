@@ -22,7 +22,7 @@ const TagsSection = () => {
     },
   ])
   const onRemoveTag: TagListOnRemove = (tag, currentTags) => {
-    console.log('Removed', tag)
+    console.info('Removed', tag)
     setTags(currentTags)
   }
 
@@ -30,9 +30,9 @@ const TagsSection = () => {
     <Fragment>
       <label>Default</label>
       <Tag>Argentina</Tag>
-      <Tag onRemove={(e) => console.log(e)}>Panama</Tag>
+      <Tag onRemove={(e) => console.info(e)}>Panama</Tag>
       <label>Custom Color</label>
-      <Tag onRemove={(e) => console.log(e)} color={'#ff0000'}>
+      <Tag onRemove={(e) => console.info(e)} color={'#ff0000'}>
         Chile
       </Tag>
       <label>Tag list</label>

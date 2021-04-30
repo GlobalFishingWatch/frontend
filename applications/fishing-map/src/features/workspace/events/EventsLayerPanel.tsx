@@ -2,13 +2,13 @@ import React from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import Switch from '@globalfishingwatch/ui-components/dist/switch'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import DatasetNotFound from '../shared/DatasetNotFound'
+import LayerSwitch from '../common/LayerSwitch'
+import Title from '../common/Title'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -16,17 +16,8 @@ type LayerPanelProps = {
 
 function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const layerActive = dataview?.config?.visible ?? true
-  const onToggleLayerActive = () => {
-    upsertDataviewInstance({
-      id: dataview.id,
-      config: {
-        visible: !layerActive,
-      },
-    })
-  }
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Events)
 
@@ -36,9 +27,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   const title = t(`datasets:${dataset?.id}.name` as any)
   const TitleComponent = (
-    <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {t(`datasets:${dataset?.id}.name` as any)}
-    </h3>
+    <Title
+      title={title}
+      className={styles.name}
+      classNameActive={styles.active}
+      dataview={dataview}
+    />
   )
 
   const infoTooltip = t(`datasets:${dataset?.id}.description` as any)
@@ -50,14 +44,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       })}
     >
       <div className={styles.header}>
-        <Switch
-          active={layerActive}
-          onClick={onToggleLayerActive}
-          tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
-          tooltipPlacement="top"
-          className={styles.switch}
-          color={dataview.config?.color}
-        />
+        <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
         ) : (

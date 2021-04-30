@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { useDataviewInstancesConnect } from '../workspace.hook'
+import Remove from '../common/Remove'
 
 function DatasetNotFound({ dataview }: { dataview: UrlDataviewInstance }) {
-  const { deleteDataviewInstance } = useDataviewInstancesConnect()
   const { t } = useTranslation()
   return (
     <div className={cx(styles.LayerPanel, 'print-hidden')}>
@@ -25,14 +24,7 @@ function DatasetNotFound({ dataview }: { dataview: UrlDataviewInstance }) {
             tooltip={t('errors.datasetNotFound', 'Dataset not found')}
             tooltipPlacement="top"
           />
-          <IconButton
-            icon="delete"
-            size="small"
-            tooltip={t('layer.remove', 'Remove layer')}
-            tooltipPlacement="top"
-            onClick={() => deleteDataviewInstance(dataview.id)}
-            className={cx(styles.actionButton)}
-          />
+          <Remove className={cx(styles.actionButton)} dataview={dataview} />
         </div>
       </div>
     </div>
