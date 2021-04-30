@@ -51,9 +51,7 @@ function NewDataset(): React.ReactElement {
   const { datasetModal, datasetCategory, dispatchDatasetModal } = useDatasetModalConnect()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
-  const [datasetGeometryType, setDatasetGeometryType] = useState<DatasetGeometryType | null>(
-    'tracks'
-  )
+  const [datasetGeometryType, setDatasetGeometryType] = useState<DatasetGeometryType | null>(null)
   const [datasetGeometryTypeConfirmed, setDatasetGeometryTypeConfirmed] = useState<boolean>(false)
   const [file, setFile] = useState<File | undefined>()
   const [fileData, setFileData] = useState<FeatureCollectionWithFilename | CSV | undefined>()
@@ -271,8 +269,8 @@ function NewDataset(): React.ReactElement {
     setDatasetGeometryTypeConfirmed(false)
   }
 
-  const onDatasetTypeChange = (e: any) => {
-    setDatasetGeometryType(e.target.value)
+  const onDatasetTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDatasetGeometryType(e.target.value as DatasetGeometryType)
   }
 
   const onConfirmDatasetCategoryClick = () => {
