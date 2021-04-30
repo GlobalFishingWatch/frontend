@@ -36,7 +36,6 @@
     "@rollup/plugin-node-resolve": "^10.0.0",
     "@rollup/plugin-typescript": "^6.1.0",
     "@rollup/plugin-url": "^5.0.1",
-    "@mapbox/tilebelt": "^1.0.2",
     "cross-env": "^7.0.3",
     "rollup": "^2.33.1",
     "rollup-plugin-multi-input": "^1.1.1",
@@ -45,5 +44,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "dd9006c455eb7ee9f20cbdc62854d9a16bfc94c1"
 }

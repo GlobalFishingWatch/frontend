@@ -25,7 +25,6 @@
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
     "clean": "rimraf dist/*",
     "prepare": "yarn build",
-    "prepublishOnly": "yarn build",
     "json-schema": "mkdirp dist && typescript-json-schema tsconfig.json-schema.json \"*\" > dist/json-schema.json"
   },
   "bugs": {
@@ -71,5 +70,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "dd9006c455eb7ee9f20cbdc62854d9a16bfc94c1"
 }
