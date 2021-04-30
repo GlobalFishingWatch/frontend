@@ -1,36 +1,36 @@
 {
   "playback": {
-    "playAnimation": "Reproducir animación",
-    "pauseAnimation": "Pausar animación",
-    "toogleAnimationLooping": "Cambiar animación de bucle",
-    "moveBack": "Retroceder",
-    "moveForward": "Avanzar",
-    "changeAnimationSpeed": "Cambiar velocidad de animación"
+    "playAnimation": "Play animation",
+    "pauseAnimation": "Pause animation",
+    "toogleAnimationLooping": "Toggle animation looping",
+    "moveBack": "Move back",
+    "moveForward": "Move forward",
+    "changeAnimationSpeed": "Change animation speed"
   },
   "timerange": {
-    "title": "Seleccione un intervalo de tiempo",
-    "start": "empezar",
-    "end": "fin",
-    "last30days": "Últimos 30 días",
-    "done": "Hecho",
-    "errorEarlyStart": "Su fecha de inicio es la fecha más temprana con datos disponibles",
-    "errorLatestEnd": "Su fecha de fin es la última fecha con datos disponibles",
-    "errorMinRange": "Tu fecha de inicio y fin debe tener al menos un día de diferencia",
-    "errorMaxRange": "Su intervalo de tiempo es el rango máximo con datos disponibles"
+    "title": "Select a time range",
+    "start": "start",
+    "end": "end",
+    "last30days": "Last 30 days",
+    "done": "Done",
+    "errorEarlyStart": "Your start date is the earliest date with data available",
+    "errorLatestEnd": "Your end date is the latest date with data available",
+    "errorMinRange": "Your start and end date must be at least one day apart",
+    "errorMaxRange": "Your time range is the maximum range with data available"
   },
   "bookmark": {
-    "goToBookmark": "Ir al rango de tiempo marcado",
-    "deleteBookmark": "Eliminar marcador de intervalo de tiempo"
+    "goToBookmark": "Go to your bookmarked time range",
+    "deleteBookmark": "Delete time range bookmark"
   },
-  "dragLabel": "Arrastre para cambiar el rango de tiempo",
-  "lastUpdate": "Última actualización",
-  "setBookmark": "Rango de tiempo actual del marcador",
-  "day": "día",
-  "year": "año",
-  "month": "mes",
-  "hour": "hora",
-  "zoomIn": "Acercarse en",
-  "zoomTo": "Acercar a",
-  "zoomOut": "Apagar",
-  "selectTimeRange": "Seleccione un intervalo de tiempo"
+  "dragLabel": "Drag to change the time range",
+  "lastUpdate": "Last update",
+  "setBookmark": "Bookmark current time range",
+  "day": "day",
+  "year": "year",
+  "month": "month",
+  "hour": "hour",
+  "zoomIn": "Zoom in",
+  "zoomTo": "Zoom to",
+  "zoomOut": "Zoom out",
+  "selectTimeRange": "Select a time range"
 }
