@@ -1,8 +1,6 @@
 import { Vessel } from '@globalfishingwatch/api-types/dist'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
-import i18n from '../features/i18n/i18n'
-
-const { t } = i18n
+import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
 

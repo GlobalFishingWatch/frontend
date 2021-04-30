@@ -1,7 +1,5 @@
 import { MultiSelectOption } from '@globalfishingwatch/ui-components/dist/multi-select'
-import i18n from './i18n'
-
-const { t } = i18n
+import i18n, { t } from './i18n'
 
 export const getPlaceholderBySelections = (selections?: MultiSelectOption[]): string => {
   if (!selections?.length) return t('selects.allSelected', 'All')

@@ -3,9 +3,7 @@ import lowerCase from 'lodash/lowerCase'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { capitalize } from 'utils/shared'
-import i18n from 'features/i18n/i18n'
-
-const { t } = i18n
+import { t } from 'features/i18n/i18n'
 
 export type SupportedDatasetSchema = 'geartype' | 'fleet' | 'origin' | 'vessel_type'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>

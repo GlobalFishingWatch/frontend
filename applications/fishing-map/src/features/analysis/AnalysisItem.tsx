@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import { getFlagsByIds } from 'utils/flags'
-import i18n from 'features/i18n/i18n'
+import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { isFishingDataview, isPresenceDataview } from 'features/workspace/heatmaps/heatmaps.utils'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
@@ -15,7 +15,6 @@ import styles from './AnalysisItem.module.css'
 const sortStrings = (a: string, b: string) => a.localeCompare(b)
 
 const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
-  const { t } = i18n
   const commonProperties: string[] = []
   let title = ''
 
