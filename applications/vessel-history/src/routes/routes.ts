@@ -12,7 +12,6 @@ import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { AppActions, AppState } from 'types/redux.types'
-import { searchThunk } from 'features/search/search.thunk'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const HOME = 'HOME'
@@ -26,17 +25,10 @@ const thunk = async (
   getState: StateGetter<AppState>
 ) => null
 
-const homeThunk = async (
-  dispatch: Dispatch<AppActions | NavigationAction>,
-  getState: StateGetter<AppState>
-) => {
-  searchThunk(dispatch, getState)
-}
-
 const routesMap: RoutesMap = {
   [HOME]: {
     path: '/',
-    thunk: homeThunk,
+    thunk,
   },
   [LOGIN]: {
     path: '/login',
