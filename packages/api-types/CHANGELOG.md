@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.1.2
+
+### Patch Changes
+
+- a5339163: fix tiles api
+
 ## 4.1.1
 
 ### Patch Changes

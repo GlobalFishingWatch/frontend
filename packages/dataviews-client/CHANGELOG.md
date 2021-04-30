@@ -1,5 +1,13 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.4.3
+
+### Patch Changes
+
+- a5339163: fix tiles api
+- Updated dependencies [a5339163]
+  - @globalfishingwatch/api-types@4.1.2
+
 ## 6.4.2
 
 ### Patch Changes
