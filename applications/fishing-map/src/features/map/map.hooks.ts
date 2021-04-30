@@ -14,7 +14,6 @@ import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
-import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -68,8 +67,6 @@ export const useClickedEventConnect = () => {
   const fourWingsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
-  const rulersEditing = useSelector(selectEditing)
-
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
     // Used on workspaces-list or user panel to go to the workspace detail page
     if (locationType === USER || locationType === WORKSPACES_LIST) {
@@ -97,16 +94,6 @@ export const useClickedEventConnect = () => {
         }
         return
       }
-    }
-
-    if (rulersEditing === true && event) {
-      dispatch(
-        editRuler({
-          longitude: event.longitude,
-          latitude: event.latitude,
-        })
-      )
-      return
     }
 
     const clusterFeature = event?.features?.find(

@@ -16,7 +16,7 @@ import {
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import { selectResources, ResourcesState } from 'features/resources/resources.slice'
 import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
-import { selectRulers } from 'features/map/controls/rulers.slice'
+import { selectRulers } from 'features/map/rulers/rulers.slice'
 import { selectHighlightedTime, selectStaticTime, Range } from 'features/timebar/timebar.slice'
 import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
