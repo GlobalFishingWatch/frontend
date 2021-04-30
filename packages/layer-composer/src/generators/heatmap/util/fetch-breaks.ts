@@ -3,6 +3,7 @@ import uniq from 'lodash/uniq'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../../layer-composer'
 import { API_ENDPOINTS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
+import { HeatmapAnimatedMode } from '../../types'
 import { Interval } from './time-chunks'
 import { toURLArray } from '.'
 
@@ -10,8 +11,12 @@ export type Breaks = number[][]
 
 export type FetchBreaksParams = Pick<
   GlobalHeatmapAnimatedGeneratorConfig,
-  'breaksAPI' | 'sublayers' | 'datasetsEnd' | 'token' | 'end'
+  'breaksAPI' | 'sublayers' | 'datasetsEnd' | 'token' | 'end' | 'mode' | 'zoomLoadLevel'
 > & { interval: Interval }
+
+export const getBreaksZoom = (zoom: number) => {
+  return zoom >= 3 ? 3 : 0
+}
 
 const getBreaksUrl = (config: FetchBreaksParams): string => {
   const url = `${config.breaksAPI || `${API_GATEWAY}/${API_GATEWAY_VERSION}`}/${
@@ -37,8 +42,9 @@ let controllerCache: AbortController | undefined
 
 export default function fetchBreaks(config: FetchBreaksParams) {
   const breaksUrl = new URL(getBreaksUrl(config))
+  const isBivariate = config.mode === HeatmapAnimatedMode.Bivariate
   breaksUrl.searchParams.set('temporal-aggregation', 'false')
-  breaksUrl.searchParams.set('numBins', '10')
+  breaksUrl.searchParams.set('numBins', isBivariate ? '4' : '9')
   breaksUrl.searchParams.set('interval', '10days')
 
   const url = breaksUrl.toString()

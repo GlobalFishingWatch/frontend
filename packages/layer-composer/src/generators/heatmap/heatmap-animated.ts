@@ -183,7 +183,7 @@ class HeatmapAnimatedGenerator {
     const visibleSublayers = config.sublayers.filter((sublayer) => sublayer.visible)
     const datasetKey = getSubLayersDatasets(visibleSublayers).join(',')
     const filtersKey = visibleSublayers.flatMap((subLayer) => subLayer.filter || []).join(',')
-    return [datasetKey, filtersKey].join(',')
+    return [datasetKey, filtersKey, config.mode].join(',')
   }
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
