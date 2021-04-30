@@ -183,13 +183,15 @@ export function getGeneratorConfig(
         ...generator,
         ...environmentalConfig,
       }
-      const tilesAPI = dataset?.endpoints?.find(
-        (endpoint) => endpoint.id === EndpointId.FourwingsTiles
-      )?.pathTemplate
 
-      const breaksAPI = dataset?.endpoints?.find(
-        (endpoint) => endpoint.id === EndpointId.FourwingsBreaks
-      )?.pathTemplate
+      // TODO use this instead of hardcoded version of the api endpoint in layer composer
+      // const { url: tilesAPI, dataset: heatmapDataset } = resolveDataviewDatasetResource(
+      //   dataview,
+      //   DatasetTypes.Fourwings
+      // )
+      // const breaksAPI = heatmapDataset?.endpoints?.find(
+      //   (endpoint) => endpoint.id === EndpointId.FourwingsBreaks
+      // )?.pathTemplate
 
       const visible = generator.sublayers?.some(({ visible }) => visible === true)
       const { extentStart, extentEnd } = getDatasetsExtent(dataview.datasets)
@@ -199,8 +201,8 @@ export function getGeneratorConfig(
         visible,
         debug,
         debugLabels: debug,
-        tilesAPI,
-        breaksAPI,
+        // tilesAPI,
+        // breaksAPI,
         ...(extentStart && { datasetsStart: extentStart }),
         ...(extentEnd && { datasetsEnd: extentEnd }),
         staticStart: timeRange?.start,
