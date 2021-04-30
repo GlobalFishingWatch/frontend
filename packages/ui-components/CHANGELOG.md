@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 3.0.1
+
+### Patch Changes
+
+- fix tooltip
+
 ## 3.0.0
 
 ### Major Changes
@@ -21,6 +27,12 @@
 
 - Updated dependencies [0ec2156f]
   - @globalfishingwatch/layer-composer@5.3.0
+
+## 2.18.13
+
+### Patch Changes
+
+- 2d262d45: Fishing map/vessel search ux
 
 ## 2.18.12
 

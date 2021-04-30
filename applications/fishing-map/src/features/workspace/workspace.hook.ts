@@ -50,6 +50,18 @@ export const useDataviewInstancesConnect = () => {
     [dispatchQueryParams, urlDataviewInstances]
   )
 
+  const addNewDataviewInstances = useCallback(
+    (dataviewInstances: Partial<UrlDataviewInstance>[]) => {
+      dispatchQueryParams({
+        dataviewInstances: [
+          ...(dataviewInstances as UrlDataviewInstance[]),
+          ...(urlDataviewInstances || []),
+        ],
+      })
+    },
+    [dispatchQueryParams, urlDataviewInstances]
+  )
+
   const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
   const deleteDataviewInstance = useCallback(
     (id: string) => {
@@ -70,5 +82,6 @@ export const useDataviewInstancesConnect = () => {
     upsertDataviewInstance,
     removeDataviewInstance,
     deleteDataviewInstance,
+    addNewDataviewInstances,
   }
 }

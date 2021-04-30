@@ -17,7 +17,7 @@ interface ButtonProps {
   loading?: boolean
   className?: string
   children: React.ReactChild | React.ReactChild[] | TooltipTypes
-  tooltip?: React.ReactChild | React.ReactChild[] | string
+  tooltip?: TooltipTypes
   tooltipPlacement?: Placement
   onClick?: (e: React.MouseEvent) => void
   href?: string
