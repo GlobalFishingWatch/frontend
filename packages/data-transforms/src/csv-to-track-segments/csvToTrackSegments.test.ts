@@ -52,5 +52,5 @@ it('converts to segments', () => {
   const segments = csvToTrackSegment({ records: data as Record<string, any>[], ...columns })
   expect(segments[0].length).toEqual(583)
   expect(segments[0][0].longitude).toEqual(-32.394212)
-  expect(segments[0][0].timestamp).toEqual(1441954348000)
+  expect(segments[0][0].timestamp).toEqual(1441961520000)
 })
