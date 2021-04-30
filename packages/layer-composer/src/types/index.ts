@@ -13,11 +13,12 @@ import type {
 } from '@globalfishingwatch/mapbox-gl'
 import type { DataviewConfig } from '@globalfishingwatch/api-types'
 import {
-  GeneratorConfig,
   Type,
+  ColorRampsIds,
   GeneratorLegend,
   HeatmapAnimatedGeneratorSublayer,
-  ColorRampsIds,
+  GeneratorConfig,
+  AnyGeneratorConfig,
 } from '../generators/types'
 
 export interface GeneratorDataviewConfig<T = Type> extends DataviewConfig<T> {
@@ -147,14 +148,16 @@ export interface LayerComposerOptions {
   sprite?: string
 }
 
+export type GeneratorPromise = Promise<{ style: GeneratorStyles; config: AnyGeneratorConfig }>
+
 // This is what is returned by a <Generator>.getStyle
 // TODO This is unusable as is because sources carry an id which is invalid
 export interface GeneratorStyles {
   id: string
   sources: AnySourceImpl[]
   layers: ExtendedLayer[]
-  promise?: Promise<GeneratorStyles>
-  promises?: Promise<GeneratorStyles>[]
+  promise?: GeneratorPromise
+  promises?: GeneratorPromise[]
   metadata?: Record<string, any>
 }
 

@@ -7,7 +7,7 @@ import { Dataset, DatasetCategory } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGuestUser, selectUserDatasetsNotUsed } from 'features/user/user.selectors'
-import { useDatasetModalConnect, useNewDatasetConnect } from './datasets.hook'
+import { useDatasetModalConnect, useAddDataviewFromDatasetToWorkspace } from './datasets.hook'
 import styles from './NewDatasetTooltip.module.css'
 import {
   fetchAllDatasetsThunk,
@@ -24,7 +24,7 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { dispatchDatasetModal, dispatchDatasetCategory } = useDatasetModalConnect()
-  const { addNewDatasetToWorkspace } = useNewDatasetConnect()
+  const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const datasets = useSelector(selectUserDatasetsNotUsed(datasetCategory))
   const guestuser = useSelector(isGuestUser)
   const datasetsStatus = useSelector(selectDatasetsStatus)
@@ -47,7 +47,7 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
   }
 
   const onSelectClick = async (dataset: any) => {
-    addNewDatasetToWorkspace(dataset)
+    addDataviewFromDatasetToWorkspace(dataset)
     if (onSelect) {
       onSelect(dataset)
     }

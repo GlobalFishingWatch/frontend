@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import type { Map } from '@globalfishingwatch/mapbox-gl'
 import { getCSSVarValue } from 'utils/dom'
 import styles from './Map.module.css'
-import { selectEditing } from './controls/rulers.slice'
+import { selectEditing } from './rulers/rulers.slice'
 
 type PrintSize = {
   px: number

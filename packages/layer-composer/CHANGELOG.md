@@ -1,5 +1,29 @@
 # @globalfishingwatch/layer-composer
 
+## 6.0.0
+
+### Major Changes
+
+- 5d252a2d: buckets from api and dynamic bivariate
+
+## 5.3.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/data-transforms@1.2.0
+  - @globalfishingwatch/fourwings-aggregate@3.1.1
+
+## 5.2.5
+
+### Patch Changes
+
+- cd532944: fix colorRampToWhite
+
 ## 5.2.4
 
 ### Patch Changes

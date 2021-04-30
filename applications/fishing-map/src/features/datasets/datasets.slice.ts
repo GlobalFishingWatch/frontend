@@ -108,10 +108,12 @@ export const createDatasetThunk = createAsyncThunk<
         filePath: path,
       },
     }
+
     const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
       method: 'POST',
       body: datasetWithFilePath as any,
     })
+
     return createdDataset
   } catch (e) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })

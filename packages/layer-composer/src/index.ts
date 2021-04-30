@@ -8,10 +8,4 @@ export {
   CONFIG_BY_INTERVAL,
 } from './generators'
 export * from './types'
-export {
-  TimeChunk,
-  TimeChunks,
-  Interval,
-  frameToDate,
-  quantizeOffsetToDate,
-} from './generators/heatmap/util/time-chunks'
+export { frameToDate, quantizeOffsetToDate } from './generators/heatmap/util/time-chunks'

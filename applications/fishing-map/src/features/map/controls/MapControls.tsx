@@ -16,7 +16,7 @@ import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-are
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
-import Rulers from 'features/map/controls/Rulers'
+import Rulers from 'features/map/rulers/Rulers'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'

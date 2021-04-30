@@ -12,6 +12,7 @@ import {
   selectDatasetsStatusId,
 } from 'features/datasets/datasets.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import InfoError from 'features/workspace/common/InfoError'
 import styles from './User.module.css'
 import { selectUserDatasetsByCategory } from './user.selectors'
 
@@ -102,9 +103,8 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
                 <li className={styles.dataset} key={dataset.id}>
                   {dataset.name}
                   <div>
-                    <IconButton
-                      icon={datasetError ? 'warning' : 'info'}
-                      type={datasetError ? 'warning' : 'default'}
+                    <InfoError
+                      error={datasetError}
                       loading={datasetImporting}
                       tooltip={infoTooltip}
                     />

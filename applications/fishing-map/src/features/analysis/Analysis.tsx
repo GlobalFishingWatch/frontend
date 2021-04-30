@@ -81,10 +81,12 @@ function Analysis() {
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
   useEffect(() => {
-    const startDateTime = DateTime.fromISO(start)
-    const endDateTime = DateTime.fromISO(end)
-    const duration = endDateTime.diff(startDateTime, 'years')
-    setTimeRangeTooLong(duration.years > 1)
+    if (start && end) {
+      const startDateTime = DateTime.fromISO(start)
+      const endDateTime = DateTime.fromISO(end)
+      const duration = endDateTime.diff(startDateTime, 'years')
+      setTimeRangeTooLong(duration.years > 1)
+    }
   }, [start, end])
 
   useEffect(() => {
@@ -163,20 +165,24 @@ function Analysis() {
   }
 
   const onDownloadClick = async () => {
-    const createReports: CreateReport[] = dataviews.map((dataview) => {
+    const reportDataviews = dataviews.map((dataview) => {
       const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
         .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
         .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
 
       return {
-        name: `${dataview.name} - ${t('common.report', 'Report')}`,
-        dateRange: staticTime as DateRange,
         filters: dataview.config?.filters || [],
         datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
-        geometry: analysisGeometry as ReportGeometry,
       }
     })
-    await dispatch(createReportThunk(createReports))
+    const reportName = Array.from(new Set(dataviews.map((dataview) => dataview.name))).join(',')
+    const createReport: CreateReport = {
+      name: `${reportName} - ${t('common.report', 'Report')}`,
+      dateRange: staticTime as DateRange,
+      dataviews: reportDataviews,
+      geometry: analysisGeometry as ReportGeometry,
+    }
+    await dispatch(createReportThunk(createReport))
     timeoutRef.current = setTimeout(() => {
       dispatch(resetReportStatus(undefined))
     }, 5000)

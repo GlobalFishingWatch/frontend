@@ -1,5 +1,42 @@
 # @globalfishingwatch/react-hooks
 
+## 6.1.1
+
+### Patch Changes
+
+- 5d252a2d: fix when no layer present crash
+- Updated dependencies [5d252a2d]
+- Updated dependencies [5d252a2d]
+- Updated dependencies [a07dfc86]
+  - @globalfishingwatch/dataviews-client@6.4.0
+  - @globalfishingwatch/layer-composer@6.0.0
+  - @globalfishingwatch/ui-components@3.0.0
+
+## 6.1.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/dataviews-client@6.3.0
+  - @globalfishingwatch/layer-composer@5.3.0
+  - @globalfishingwatch/ui-components@2.19.0
+  - @globalfishingwatch/fourwings-aggregate@3.1.1
+  - @globalfishingwatch/api-client@1.6.9
+
+## 6.0.10
+
+### Patch Changes
+
+- Updated dependencies [cd532944]
+- Updated dependencies [cd532944]
+  - @globalfishingwatch/dataviews-client@6.2.4
+  - @globalfishingwatch/layer-composer@5.2.5
+  - @globalfishingwatch/ui-components@2.18.10
+
 ## 6.0.9
 
 ### Patch Changes

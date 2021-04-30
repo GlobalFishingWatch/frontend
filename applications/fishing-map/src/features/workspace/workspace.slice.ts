@@ -86,6 +86,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         return
       }
       const dataviewIds = [
+        // TODO add "geenric" dataviews liek tracks, user tracks etc
         ...(workspace.dataviews?.map(({ id }) => id as number) || []),
         ...uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId)),
       ]

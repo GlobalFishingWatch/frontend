@@ -10,7 +10,7 @@ import resourcesReducer from './features/resources/resources.slice'
 import searchReducer from './features/search/search.slice'
 import timebarReducer from './features/timebar/timebar.slice'
 import mapReducer from './features/map/map.slice'
-import rulersReducer from './features/map/controls/rulers.slice'
+import rulersReducer from './features/map/rulers/rulers.slice'
 import debugReducer from './features/debug/debug.slice'
 import analysisReducer from './features/analysis/analysis.slice'
 

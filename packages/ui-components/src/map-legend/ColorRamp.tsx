@@ -2,7 +2,7 @@ import React, { Fragment, memo, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
 import styles from './MapLegend.module.css'
-import { formatLegendValue, LegendLayer, roundLegendNumber } from '.'
+import { formatLegendValue, LegendLayer, parseLegendNumber, roundLegendNumber } from '.'
 
 type ColorRampLegendProps = {
   layer: LegendLayer
@@ -69,16 +69,17 @@ function ColorRampLegend({
       {cleanRamp?.length > 0 && (
         <Fragment>
           <div className={styles.ramp} style={backgroundStyle}>
-            {currentValue && (
+            {currentValue && heatmapLegendScale && (
               <span
-                className={cx(styles.currentValue, currentValueClassName)}
+                className={cx(styles.currentValue, currentValueClassName, {
+                  [styles.offsetLeft]: heatmapLegendScale(currentValue) < 10,
+                  [styles.offsetRight]: heatmapLegendScale(currentValue) > 90,
+                })}
                 style={{
-                  left: heatmapLegendScale
-                    ? `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`
-                    : 0,
+                  left: `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`,
                 }}
               >
-                {currentValue.toFixed(2)}
+                {formatLegendValue(currentValue)}
               </span>
             )}
             {type === 'colorramp-discrete' && (
@@ -98,7 +99,7 @@ function ColorRampLegend({
               if (value === null) return null
               const roundValue = roundValues
                 ? roundLegendNumber(value as number)
-                : (value as number)
+                : parseLegendNumber(value as number)
               const valueLabel = typeof value === 'string' ? value : formatLegendValue(roundValue)
               if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
               return (

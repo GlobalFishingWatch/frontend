@@ -50,11 +50,11 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
             {showFeaturesDetails && (
               <h3 className={styles.popupSectionTitle}>{featureByType[0].title}</h3>
             )}
-            {featureByType.map((feature) => {
+            {featureByType.map((feature, index) => {
               const { gfw_id } = feature.properties
               const isContextArea = feature.layerId.includes(CONTEXT_LAYER_PREFIX)
               return (
-                <div className={styles.row} key={`${feature.value}-${gfw_id}`}>
+                <div className={styles.row} key={`${feature.value}-${gfw_id}-${index}}`}>
                   <span className={styles.rowText}>{feature.value}</span>
                   {showFeaturesDetails && (
                     <div className={styles.rowActions}>
@@ -62,7 +62,14 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
                         <IconButton
                           icon="report"
                           disabled={!hasAnalysisLayers}
-                          tooltip={t('common.report', 'Report')}
+                          tooltip={
+                            hasAnalysisLayers
+                              ? t('common.analysis', 'Create an analysis for this area')
+                              : t(
+                                  'common.analysisNotAvailable',
+                                  'Toggle an activity or environmenet layer on to analyse in in this area'
+                                )
+                          }
                           onClick={() => onReportClick && onReportClick(feature)}
                           size="small"
                         />

@@ -3,7 +3,6 @@ import flatten from 'lodash/flatten'
 import type { AnyLayer, FillLayer, LineLayer, Expression } from '@globalfishingwatch/mapbox-gl'
 import { Type, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
-import { isConfigVisible } from '../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../layer-composer'
 import { DEFAULT_CONTEXT_SOURCE_LAYER, HEATMAP_COLOR_RAMPS } from '..'
@@ -35,9 +34,6 @@ class UserContextGenerator {
       id: generatorId,
       source: config.id,
       'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
-      layout: {
-        visibility: isConfigVisible(config),
-      },
     }
 
     if (config.steps?.length && config.colorRamp) {

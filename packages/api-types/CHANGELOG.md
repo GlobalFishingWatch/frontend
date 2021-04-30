@@ -1,5 +1,35 @@
 # @globalfishingwatch/api-types
 
+## 4.1.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/data-transforms@1.2.1
+
+## 4.1.0
+
+### Minor Changes
+
+- 5d252a2d: new 4wings endpoint id
+
+## 4.0.0
+
+### Major Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/data-transforms@1.2.0
+
+## 3.3.0
+
+### Minor Changes
+
+- update app names typing
+
 ## 3.2.0
 
 ### Minor Changes

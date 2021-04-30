@@ -97,11 +97,13 @@ function AnalysisItem({
   let description = analysisAreaName
     ? `${title} ${t('common.in', 'in')} ${analysisAreaName}`
     : title
-  description = `${description} ${t('common.dateRange', {
-    start: formatI18nDate(staticTime.start),
-    end: formatI18nDate(staticTime.end),
-    defaultValue: 'between {{start}} and {{end}}',
-  })}.`
+  if (staticTime) {
+    description = `${description} ${t('common.dateRange', {
+      start: formatI18nDate(staticTime.start),
+      end: formatI18nDate(staticTime.end),
+      defaultValue: 'between {{start}} and {{end}}',
+    })}.`
+  }
   return (
     <div className={styles.container}>
       {hasAnalysisLayers ? (
@@ -123,7 +125,7 @@ function AnalysisItem({
           {t('analysis.empty', 'Your selected datasets will appear here')}
         </p>
       )}
-      <AnalysisItemGraph graphData={graphData} timeRange={staticTime} />
+      {staticTime && <AnalysisItemGraph graphData={graphData} timeRange={staticTime} />}
     </div>
   )
 }

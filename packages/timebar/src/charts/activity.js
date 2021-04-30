@@ -60,7 +60,6 @@ const getPaths = (activity, graphHeight, overallScale, maxValue, curve, mode = '
     .curve(CURVES[curve])
 
   const paths = activity.map((segment, i) => {
-    // console.log(segment.find(p => p.value === null))
     return areaGenerator(segment)
   })
 

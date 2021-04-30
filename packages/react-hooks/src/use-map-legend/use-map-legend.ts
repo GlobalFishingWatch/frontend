@@ -14,7 +14,7 @@ const getLegendLayers = (
 ) => {
   if (!style) return []
   return style.layers?.flatMap((layer) => {
-    if (!layer.metadata?.legend) return []
+    if (!layer?.metadata?.legend) return []
 
     const sublayerLegendsMetadata: LayerMetadataLegend[] = Array.isArray(layer.metadata.legend)
       ? layer.metadata.legend

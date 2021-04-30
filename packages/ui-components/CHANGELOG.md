@@ -1,5 +1,59 @@
 # @globalfishingwatch/ui-components
 
+## 3.0.1
+
+### Patch Changes
+
+- fix tooltip
+
+## 3.0.0
+
+### Major Changes
+
+- a07dfc86: dont export types in root to get sandbox working
+
+### Patch Changes
+
+- Updated dependencies [5d252a2d]
+  - @globalfishingwatch/layer-composer@6.0.0
+
+## 2.19.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/layer-composer@5.3.0
+
+## 2.18.13
+
+### Patch Changes
+
+- 2d262d45: Fishing map/vessel search ux
+
+## 2.18.12
+
+### Patch Changes
+
+- update marine manager icon
+
+## 2.18.11
+
+### Patch Changes
+
+- e94c28f7: Fishingmap/feedback popup
+
+## 2.18.10
+
+### Patch Changes
+
+- cd532944: fix when no icon found
+- Updated dependencies [cd532944]
+  - @globalfishingwatch/layer-composer@5.2.5
+
 ## 2.18.9
 
 ### Patch Changes

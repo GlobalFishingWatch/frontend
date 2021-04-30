@@ -1,4 +1,4 @@
-import { AnySourceImpl, Layer, AnyPaint } from '@globalfishingwatch/mapbox-gl'
+import { AnySourceImpl, Layer, AnyPaint, AnyLayout } from '@globalfishingwatch/mapbox-gl'
 import Generators from './generators'
 import { flatObjectArrays, layersDictToArray } from './utils'
 import {
@@ -9,13 +9,15 @@ import {
   Generator,
   ExtendedStyle,
   ExtendedStyleMeta,
+  GeneratorPromise,
 } from './types'
 import {
-  GeneratorConfig,
   GlobalGeneratorConfig,
   AnyGeneratorConfig,
   Type,
+  GlobalGeneratorConfigExtended,
 } from './generators/types'
+import { isConfigVisible } from './generators/utils'
 
 export const DEFAULT_CONFIG = {
   version: 8,
@@ -81,17 +83,20 @@ class LayerComposer {
     return metadata
   }
 
-  // TODO: async generators doesn't go thought this style
   // apply generic config to all generator layers
   _applyGenericStyle = (
-    generatorConfig: GeneratorConfig,
+    generatorConfig: AnyGeneratorConfig,
     generatorStyles: GeneratorStyles
   ): GeneratorStyles => {
     const newGeneratorStyles = { ...generatorStyles }
     newGeneratorStyles.layers = newGeneratorStyles.layers.map((layer) => {
       const newLayer = { ...layer }
       if (!newLayer.layout) {
-        newLayer.layout = {}
+        newLayer.layout = {} as AnyLayout
+      }
+      newLayer.layout = {
+        ...newLayer.layout,
+        visibility: isConfigVisible(generatorConfig),
       }
       if (!newLayer.paint) {
         newLayer.paint = {} as AnyPaint
@@ -106,9 +111,6 @@ class LayerComposer {
           ...newLayer.metadata,
           generatorType: generatorConfig.type as Type,
         }
-      }
-      if (generatorConfig.visible !== undefined && generatorConfig.visible !== null) {
-        newLayer.layout.visibility = generatorConfig.visible === true ? 'visible' : 'none'
       }
       if (generatorConfig.opacity !== undefined && generatorConfig.opacity !== null) {
         // Can't really handle global opacity on symbol layers as we don't know whether it applies to icon or text
@@ -130,16 +132,16 @@ class LayerComposer {
   _getGlobalConfig = (config?: GlobalGeneratorConfig) => {
     if (!config) return {}
 
-    const newConfig = { ...config }
-    if (newConfig.zoom) {
-      newConfig.zoomLoadLevel = Math.floor(newConfig.zoom)
+    const newConfig: GlobalGeneratorConfigExtended = {
+      ...config,
+      zoomLoadLevel: Math.floor(config.zoom),
     }
     return newConfig
   }
 
   // Uses generators to return the layer with sources and layers
   _getGeneratorStyles = (
-    config: GeneratorConfig,
+    config: AnyGeneratorConfig,
     globalConfig?: GlobalGeneratorConfig
   ): GeneratorStyles => {
     if (!this.generators[config.type]) {
@@ -176,10 +178,10 @@ class LayerComposer {
       return { style: this._getStyleJson() }
     }
 
-    let layersPromises: Promise<GeneratorStyles>[] = []
+    let layersPromises: GeneratorPromise[] = []
     const layersGenerated = layers.map((layer) => {
       const { promise, promises, ...rest } = this._getGeneratorStyles(layer, globalGeneratorConfig)
-      let layerPromises: Promise<GeneratorStyles>[] = []
+      let layerPromises: GeneratorPromise[] = []
       if (promise) {
         layerPromises = [promise]
       } else if (promises) {
@@ -197,7 +199,8 @@ class LayerComposer {
 
     const promises = layersPromises.map((promise) => {
       return promise
-        .then((layer) => {
+        .then(({ config, style }) => {
+          const layer = this._applyGenericStyle(config, style)
           const { id, sources, layers } = layer
           const { sourcesStyle, layersStyle } = this.latestGenerated
           // Mutating the reference to keep the layers order

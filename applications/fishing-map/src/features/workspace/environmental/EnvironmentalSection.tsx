@@ -3,12 +3,13 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import { DatasetCategory } from '@globalfishingwatch/api-types'
+import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
-import LayerPanel from './EnvironmentalLayerPanel'
+import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
+import UserTrackLayerPanel from './UserTrackLayerPanel'
 
 function EnvironmentalLayerSection(): React.ReactElement | null {
   const { t } = useTranslation()
@@ -47,9 +48,13 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
           />
         </TooltipContainer>
       </div>
-      {dataviews?.map((dataview) => (
-        <LayerPanel key={dataview.id} dataview={dataview} />
-      ))}
+      {dataviews?.map((dataview) =>
+        dataview.datasets && dataview.datasets[0].type === DatasetTypes.UserTracks ? (
+          <UserTrackLayerPanel key={dataview.id} dataview={dataview} />
+        ) : (
+          <EnvironmentalLayerPanel key={dataview.id} dataview={dataview} />
+        )
+      )}
     </div>
   )
 }

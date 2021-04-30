@@ -3,7 +3,7 @@ export type HeatmapGeomGL = {
   [key: string]: GeomGl
 }
 
-export type stats = {
+export type Stats = {
   max: number
   min: number
   median: number
@@ -12,6 +12,6 @@ export type stats = {
   area: number
 }
 
-export type statsByZoom = {
-  [key: number]: stats
+export type StatsByZoom = {
+  [key: number]: Stats
 }

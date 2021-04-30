@@ -46,6 +46,32 @@ type DataviewsGeneratorConfigsParams = {
 
 type DataviewsGeneratorResource = Record<string, Resource>
 
+const getUTCDate = (timestamp: number) => {
+  const date = new Date(timestamp)
+  return new Date(
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes()
+    )
+  )
+}
+
+const getDatasetsExtent = (datasets: Dataset[] | undefined) => {
+  const startRanges = datasets?.flatMap((d) =>
+    d?.startDate ? new Date(d.startDate).getTime() : []
+  )
+  const endRanges = datasets?.flatMap((d) => (d?.endDate ? new Date(d.endDate).getTime() : []))
+  const extentStart = startRanges?.length
+    ? getUTCDate(Math.min(...startRanges)).toISOString()
+    : undefined
+  const extentEnd = endRanges?.length ? getUTCDate(Math.max(...endRanges)).toISOString() : undefined
+
+  return { extentStart, extentEnd }
+}
+
 export function getGeneratorConfig(
   dataview: UrlDataviewInstance,
   params?: DataviewsGeneratorConfigsParams,
@@ -77,7 +103,12 @@ export function getGeneratorConfig(
         generator.highlightedTime = highlightedTime
       }
       // Try to retrieve resource if it exists
-      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+      const trackType =
+        dataview.datasets && dataview.datasets[0].type === DatasetTypes.UserTracks
+          ? DatasetTypes.UserTracks
+          : DatasetTypes.Tracks
+      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, trackType)
+
       if (trackUrl && resources?.[trackUrl]) {
         const resource = resources?.[trackUrl] as Resource<TrackResourceData>
         generator.data = resource.data
@@ -94,6 +125,7 @@ export function getGeneratorConfig(
       const statsEndpoint = heatmapDataset?.endpoints?.find(
         (endpoint) => endpoint.id === EndpointId.FourwingsLegend
       )
+
       generator = {
         ...generator,
         maxZoom: 8,
@@ -116,15 +148,15 @@ export function getGeneratorConfig(
     case Generators.Type.HeatmapAnimated: {
       const isEnvironmentLayer = dataview.category === DataviewCategory.Environment
       let environmentalConfig: Partial<Generators.HeatmapAnimatedGeneratorConfig> = {}
+      const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
       if (isEnvironmentLayer) {
-        // TODO not exactly sure how to retrieve dataset properly
-        const dataset = dataview?.datasets && dataview?.datasets[0]
         const datasetsIds =
           dataview.config.datasets || dataview.datasetsConfig?.map((dc) => dc.datasetId)
         const sublayers: Generators.HeatmapAnimatedGeneratorSublayer[] = [
           {
             id: generator.id,
             colorRamp: dataview.config?.colorRamp as ColorRampsIds,
+            colorRampWhiteEnd: false,
             visible: dataview.config?.visible ?? true,
             breaks: dataview.config?.breaks,
             datasets: datasetsIds,
@@ -138,6 +170,7 @@ export function getGeneratorConfig(
 
         environmentalConfig = {
           sublayers,
+          maxZoom: 8,
           mode: Generators.HeatmapAnimatedMode.Single,
           aggregationOperation: AggregationOperation.Avg,
           interactive: true,
@@ -150,13 +183,24 @@ export function getGeneratorConfig(
         ...generator,
         ...environmentalConfig,
       }
-
+      const tilesAPI = dataset?.endpoints?.find(
+        (endpoint) => endpoint.id === EndpointId.FourwingsTiles
+      )
+      const breaksAPI = dataset?.endpoints?.find(
+        (endpoint) => endpoint.id === EndpointId.FourwingsBreaks
+      )
       const visible = generator.sublayers?.some(({ visible }) => visible === true)
+      const { extentStart, extentEnd } = getDatasetsExtent(dataview.datasets)
+
       generator = {
         ...generator,
         visible,
         debug,
         debugLabels: debug,
+        tilesAPI,
+        breaksAPI,
+        ...(extentStart && { datasetsStart: extentStart }),
+        ...(extentEnd && { datasetsEnd: extentEnd }),
         staticStart: timeRange?.start,
         staticEnd: timeRange?.end,
       }
@@ -259,6 +303,7 @@ export function getDataviewsGeneratorConfigs(
         id: dataview.id,
         datasets,
         colorRamp: config.colorRamp as Generators.ColorRampsIds,
+        colorRampWhiteEnd: true,
         filter: config.filter,
         visible: config.visible,
         legend: {

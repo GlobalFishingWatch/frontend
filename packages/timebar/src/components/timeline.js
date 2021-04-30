@@ -150,7 +150,7 @@ class Timeline extends PureComponent {
     if (this.state.outerDrag === true) {
       const { dragging, innerStartPx, innerEndPx, outerWidth, handlerMouseX } = this.state
       const { start, end, absoluteStart, absoluteEnd, onChange } = this.props
-      // console.log(progress);
+
       const deltaPxRatio =
         dragging === DRAG_START
           ? (innerStartPx - handlerMouseX) / innerStartPx

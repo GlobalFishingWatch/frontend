@@ -28,7 +28,7 @@ export type TimeChunks = {
   activeSourceId: string
 }
 
-const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
+export const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
 
 // Buffer size relative to active time delta
 const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2

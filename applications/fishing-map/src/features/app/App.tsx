@@ -6,7 +6,12 @@ import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
-import { isWorkspaceLocation } from 'routes/routes.selectors'
+import {
+  isWorkspaceLocation,
+  selectLocationType,
+  selectUrlViewport,
+  selectWorkspaceId,
+} from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
@@ -14,15 +19,23 @@ import Sidebar from 'features/sidebar/Sidebar'
 import Map from 'features/map/Map'
 import Timebar from 'features/timebar/Timebar'
 import Footer from 'features/footer/Footer'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import {
+  selectCurrentWorkspaceId,
+  selectWorkspaceCustomStatus,
+  selectWorkspaceStatus,
+} from 'features/workspace/workspace.selectors'
 import { fetchUserThunk, selectUserData } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
-import styles from './App.module.css'
-import { selectAnalysisQuery, selectSidebarOpen } from './app.selectors'
+import { isUserLogged } from 'features/user/user.selectors'
+import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { HOME, WORKSPACE } from 'routes/routes'
+import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useAppDispatch } from './app.hooks'
+import { selectAnalysisQuery, selectSidebarOpen } from './app.selectors'
+import styles from './App.module.css'
 
 declare global {
   interface Window {
@@ -57,6 +70,46 @@ function App(): React.ReactElement {
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
+
+  const locationType = useSelector(selectLocationType)
+  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
+  const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
+  const userLogged = useSelector(isUserLogged)
+  const urlViewport = useSelector(selectUrlViewport)
+  const urlWorkspaceId = useSelector(selectWorkspaceId)
+
+  // TODO review this as is needed in analysis and workspace but adds a lot of extra logic here
+  // probably better to fetch in both components just checking if the workspaceId is already fetched
+  const isHomeLocation = locationType === HOME
+  const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
+  const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
+  useEffect(() => {
+    let action: any
+    let actionResolved = false
+    const fetchWorkspace = async () => {
+      action = dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
+      const resolvedAction = await action
+      if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
+        if (!urlViewport && resolvedAction.payload?.viewport) {
+          setMapCoordinates(resolvedAction.payload.viewport)
+        }
+      }
+      actionResolved = true
+    }
+    if (
+      userLogged &&
+      workspaceCustomStatus !== AsyncReducerStatus.Loading &&
+      (homeNeedsFetch || hasWorkspaceIdChanged)
+    ) {
+      fetchWorkspace()
+    }
+    return () => {
+      if (action && action.abort !== undefined && !actionResolved) {
+        action.abort()
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
     if (isAnalysing) {

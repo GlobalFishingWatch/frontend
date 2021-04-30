@@ -1,6 +1,6 @@
 import { AOI, Dataview, DataviewInstance } from '.'
 
-export type ApiAppName = 'fishing-map' | 'marine-reserves'
+export type ApiAppName = 'fishing-map' | 'marine-manager'
 
 export interface WorkspaceViewport {
   zoom: number

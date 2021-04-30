@@ -21,7 +21,10 @@ import {
   WorkspaceState,
   WorkspaceStateProperty,
 } from 'types'
-import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveVesselsDataviews,
+  selectDataviewInstancesMerged,
+} from 'features/dataviews/dataviews.selectors'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -39,8 +42,8 @@ export const selectTimeRange = createSelector(
   [selectUrlTimeRange, selectWorkspaceTimeRange],
   ({ start, end }, workspaceTimerange) => {
     return {
-      start: start || workspaceTimerange?.start || DEFAULT_WORKSPACE.start,
-      end: end || workspaceTimerange?.end || DEFAULT_WORKSPACE.end,
+      start: start || workspaceTimerange?.start,
+      end: end || workspaceTimerange?.end,
     }
   }
 )
@@ -97,9 +100,9 @@ export const selectTimebarEvents = createSelector(
 )
 
 export const selectTimebarGraph = createSelector(
-  [selectWorkspaceStateProperty('timebarGraph')],
-  (timebarGraph): TimebarGraphs => {
-    return timebarGraph
+  [selectWorkspaceStateProperty('timebarGraph'), selectActiveVesselsDataviews],
+  (timebarGraph, vessels): TimebarGraphs => {
+    return vessels && vessels.length ? timebarGraph : TimebarGraphs.None
   }
 )
 

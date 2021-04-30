@@ -1,5 +1,45 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.4.1
+
+### Patch Changes
+
+- 4c7a6f0e: set max zoom 8 in env layers
+
+## 6.4.0
+
+### Minor Changes
+
+- 5d252a2d: prepare datasets extents to layer-composer
+
+### Patch Changes
+
+- Updated dependencies [5d252a2d]
+- Updated dependencies [5d252a2d]
+  - @globalfishingwatch/api-types@4.1.0
+  - @globalfishingwatch/layer-composer@6.0.0
+
+## 6.3.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/api-types@4.0.0
+  - @globalfishingwatch/layer-composer@5.3.0
+  - @globalfishingwatch/api-client@1.6.9
+
+## 6.2.4
+
+### Patch Changes
+
+- cd532944: fix colorRampToWhite
+- Updated dependencies [cd532944]
+  - @globalfishingwatch/layer-composer@5.2.5
+
 ## 6.2.3
 
 ### Patch Changes

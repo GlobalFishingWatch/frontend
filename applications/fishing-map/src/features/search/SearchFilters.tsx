@@ -42,10 +42,10 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
 
   useEffect(() => {
     if (firstTransmissionDate === undefined) {
-      setSearchFilters({ firstTransmissionDate: start.split('T')[0] })
+      setSearchFilters({ firstTransmissionDate: start?.split('T')[0] })
     }
     if (lastTransmissionDate === undefined) {
-      setSearchFilters({ lastTransmissionDate: end.split('T')[0] })
+      setSearchFilters({ lastTransmissionDate: end?.split('T')[0] })
     }
   }, [firstTransmissionDate, lastTransmissionDate, setSearchFilters, start, end])
 
@@ -146,7 +146,7 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
       <div className={styles.row}>
         <InputDate
           value={firstTransmissionDate}
-          max={DEFAULT_WORKSPACE.end.slice(0, 10) as string}
+          max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_after', 'Active after')}
           onChange={(e) => {
@@ -164,7 +164,7 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
       <div className={styles.row}>
         <InputDate
           value={lastTransmissionDate}
-          max={DEFAULT_WORKSPACE.end.slice(0, 10) as string}
+          max={DEFAULT_WORKSPACE.availableEnd.slice(0, 10) as string}
           min={DEFAULT_WORKSPACE.availableStart.slice(0, 10) as string}
           label={t('common.active_before', 'Active Before')}
           onChange={(e) => {

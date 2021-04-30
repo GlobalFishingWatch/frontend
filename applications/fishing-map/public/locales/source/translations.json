@@ -20,10 +20,13 @@
     "context_area_plural": "Context areas",
     "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "countries",
+    "comingSoon": "coming soon!",
     "dateRange": "between {{start}} and {{end}}",
     "description": "Description",
     "environment": "Environment",
     "events": "Events",
+    "help": "Help",
+    "feedback": "Feedback",
     "hour": "Hour",
     "hour_plural": "hours",
     "in": "in",
@@ -34,14 +37,25 @@
     "min": "Min",
     "more": "more",
     "name": "Name",
+    "optional": "Optional",
     "presence": "Presence",
     "report": "Report",
+    "analysis": "Create an analysis for this area",
+    "analysisNotAvailable": "Toggle an activity or environmenet layer on to analyse it in this area",
     "seeDefault": "See default view",
     "share": "Share the current view",
     "unknown": "Unknown",
     "update": "Update",
     "vessel": "Vessel",
-    "vessel_plural": "Vessels"
+    "vessel_plural": "Vessels",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "timestamp": "Timestamp",
+    "loading": "Loading",
+    "open_menu": "Open Menu",
+    "dismiss": "Dismiss",
+    "save": "Save",
+    "fishing": "Fishing"
   },
   "dataset": {
     "addContext": "Add context dataset",
@@ -57,18 +71,33 @@
     "fileNotAllowed": "(Only .zip or .json files are allowed)",
     "hint": "Find out more about the supported formats",
     "importing": "Dataset is being imported",
+    "individualIdField": "Individual ID field",
+    "latitudeNameField": "Longitude field",
+    "longitudeNameField": "Latitude field",
     "new": "New dataset",
     "notUploadedYet": "No context layers uploaded yet",
     "remove": "Remove dataset",
+    "requiredFields": "Required fields {{fields}}",
+    "timeNameField": "Time name field",
     "title": "Dataset",
+    "typePoints": " Points",
+    "typePolygons": " Polygons",
+    "typePolygonsDescription": "Display one or multiple areas coloured by any quantitative value in your dataset.",
+    "typeTracks": " Tracks",
     "uploadLogin": "You need to <1>login</1> to upload datasets",
     "uploadNewContext": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset",
-    "title_plural": "Datasets"
+    "typeTracksDescription": "Display the movement of one or multiple animals or vessels.",
+    "typePointsDescription": "Display one or multiple positions sized by any quantitative value in your dataset.",
+    "addEnvironment": "Add environment dataset",
+    "title_plural": "Datasets",
+    "uploadError": "There was an error uploading your dataset",
+    "uploadNewDataLayer": "Upload new data layer"
   },
   "errors": {
     "datasetNotFound": "Dataset not found",
     "datasetNotValid": "It seems to be something wrong with your file",
+    "fields": "Errors with fields {{fields}}",
     "generic": "Something went wrong, try again or contact:",
     "invalidRange": "Min has to be lower than max value",
     "latestCarrierNotFound": "Latest carrier dataset not found",
@@ -115,7 +144,8 @@
       "split": "Split layers"
     },
     "toggleVisibility": "Toggle layer visibility",
-    "vessel_fit_bounds": "Center view on vessel track"
+    "vessel_fit_bounds": "Center view on vessel track",
+    "vessel_fit_bounds_out_of_timerange": "The track has no activity in your selected timerange. Change timerange to fit this track?"
   },
   "map": {
     "captureMap": "Capture map",
@@ -141,8 +171,13 @@
     "placeholder": "Type to search vessels",
     "suggestion": "Did you mean",
     "title": "Search",
-    "vesselAlreadyInWorksace": "Vessel already added. Close search to see it.",
-    "vessels": "Search vessels"
+    "vesselAlreadyInWorkspace": "This vessel is already in your workspace",
+    "vesselSelected": "Vessel selected",
+    "vessels": "Search vessels",
+    "seeVessel": "See vessel",
+    "seeVessels": "See vessels",
+    "filterClose": "Close search filters",
+    "filterOpen": "Open search filters"
   },
   "selects": {
     "allSelected": "All",
@@ -152,6 +187,7 @@
   "timebarSettings": {
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graph",
+    "tracks": "Tracks",
     "settings_close": "Close timebar settings",
     "settings_open": "Open timebar settings",
     "showFishingEffort": "Show fishing hours graph",
@@ -221,6 +257,65 @@
     "save": "Save the current view",
     "saved": "Current view was saved and it's available in your user profile",
     "saveLogin": "You need to login to save views",
-    "title_plural": "Workspaces"
+    "title_plural": "Workspaces",
+    "title": "Workspace"
+  },
+  "feedback": {
+    "intro": "Global Fishing Watch is constantly working to improve our data. With billions of positions and hundreds of thousands of vessel to review, and an entire ocean of activity, we will inevitably have some vessels and activities misclassified. Feedback from you can help us identify where we most need to improve our data. We will endeavour to address your feedback.",
+    "institution": "Institution/Organization",
+    "role": "Role",
+    "dataset": "Dataset you are providing feedback for",
+    "optional": "Optional",
+    "issue": "What issue are you having?",
+    "send": "Send",
+    "email": "E-mail address",
+    "insuficientData": "Please fill in all mandatory fields",
+    "watch": "Watch officer",
+    "analyst": "Analyst",
+    "navy": "Navy or coast guard",
+    "fisheries": "Fisheries enforcement or compliance officer",
+    "ngo": "Non-governmental organization",
+    "scientist": "Scientist",
+    "journalist": "Journalist",
+    "student": "Student",
+    "general": "General public",
+    "GFW": "Global Fishing Watch staff",
+    "other": "Other"
+  },
+  "timebar": {
+    "playback": {
+      "playAnimation": "Play animation",
+      "pauseAnimation": "Pause animation",
+      "toogleAnimationLooping": "Toggle animation looping",
+      "moveBack": "Move back",
+      "moveForward": "Move forward",
+      "changeAnimationSpeed": "Change animation speed"
+    },
+    "timerange": {
+      "title": "Select a time range",
+      "start": "start",
+      "end": "end",
+      "last30days": "Last 30 days",
+      "done": "Done",
+      "errorEarlyStart": "Your start date is the earliest date with data available",
+      "errorLatestEnd": "Your end date is the latest date with data available",
+      "errorMinRange": "Your start and end date must be at least one day apart",
+      "errorMaxRange": "Your time range is the maximum range with data available"
+    },
+    "bookmark": {
+      "goToBookmark": "Go to your bookmarked time range",
+      "deleteBookmark": "Delete time range bookmark"
+    },
+    "dragLabel": "Drag to change the time range",
+    "lastUpdate": "Last update",
+    "setBookmark": "Bookmark current time range",
+    "day": "day",
+    "year": "year",
+    "month": "month",
+    "hour": "hour",
+    "zoomIn": "Zoom in",
+    "zoomTo": "Zoom to",
+    "zoomOut": "Zoom out",
+    "selectTimeRange": "Select a time range"
   }
 }
