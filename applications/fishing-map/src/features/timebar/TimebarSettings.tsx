@@ -88,7 +88,7 @@ const TimebarSettings = () => {
           />
           <Fragment>
             <Radio
-              label={t('vessel.tracks', 'Vessel Tracks')}
+              label={t('timebarSettings.tracks', 'Tracks')}
               active={timebarVisualisation === TimebarVisualisations.Vessel}
               disabled={!activeTrackDataviews?.length}
               tooltip={

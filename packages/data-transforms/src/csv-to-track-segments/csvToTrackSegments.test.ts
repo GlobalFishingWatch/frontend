@@ -1,5 +1,5 @@
 import { parse } from 'papaparse'
-import { segmentsToGeoJSON } from '../segments'
+// import { segmentsToGeoJSON } from '../segments'
 import csvToTrackSegment from './csvToTrackSegments'
 import checkRecordValidity from './checkRecordValidity'
 import guessColumns from './guessColumns'
