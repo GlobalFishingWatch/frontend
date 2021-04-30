@@ -6,22 +6,18 @@
     "download": "Télécharger le rapport",
     "empty": "Vos jeux de données sélectionnés apparaîtront ici",
     "errorMessage": "Quelque chose s'est mal passé",
-    "noActivityLayers": "Aucun calque d'activité actif",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps allant jusqu'à un an",
     "title": "Analyse",
-    "vesselFlags": "par les navires marqués par",
-    "area": "Zone de stockage",
-    "generating": "Nous sommes en train de générer le rapport pour vous, il sera prêt bientôt.",
-    "successfullMessage": "Le rapport a été envoyé avec succès, vous le recevrez bientôt par courriel.",
-    "dateRange": "Date Range",
-    "emailDescription": "Un rapport pour les plages de dates et les filtres sélectionnés sera généré et envoyé à votre compte de messagerie",
-    "generate": "Générer"
+    "vesselFlags": "par les navires marqués par"
   },
   "common": {
     "active_after": "Actif après",
     "active_before": "Actif avant",
     "activity": "Activité",
+    "analysis": "Créer une analyse pour cette zone",
+    "analysisNotAvailable": "Activer/désactiver une couche d'activité ou d'environnement pour l'analyser dans cette zone",
     "apparentFishing": "Effort de pêche apparent",
+    "comingSoon": "à venir!",
     "confirm": "Valider",
     "context_area_plural": "Calques de contexte",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers.",
@@ -30,6 +26,8 @@
     "description": "Libellé",
     "environment": "Environnement",
     "events": "Évènements",
+    "feedback": "Vos commentaires",
+    "help": "Aide",
     "hour": "Heure",
     "hour_plural": "heures",
     "in": "dans",
@@ -40,19 +38,15 @@
     "min": "Min",
     "more": "plus",
     "name": "Nom",
-    "presence": "Presence",
+    "optional": "Optionnel",
+    "presence": "Présence",
     "report": "Rapporter",
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la vue actuelle",
     "unknown": "Inconnu",
     "update": "Mise à jour",
     "vessel": "Navire",
-    "vessel_plural": "Navires",
-    "loading": "En cours de chargement",
-    "open_menu": "Ouvrir le menu",
-    "dismiss": "Fermer",
-    "save": "Enregistrer",
-    "fishing": "Pêche"
+    "vessel_plural": "Navires"
   },
   "dataset": {
     "addContext": "Ajouter un jeu de données contextuel",
@@ -68,21 +62,30 @@
     "fileNotAllowed": "(Seuls les fichiers .zip ou .json sont autorisés)",
     "hint": "En savoir plus sur les formats pris en charge",
     "importing": "Le jeu de données est en cours d'importation",
+    "individualIdField": "Champ ID Individuel",
+    "latitudeNameField": "Champ de longitude",
+    "longitudeNameField": "Champ Latitude",
     "new": "Nouveau jeu de données",
     "notUploadedYet": "Aucune couche de contexte téléchargée pour le moment",
     "remove": "Remove dataset",
+    "requiredFields": "Champs requis {{fields}}",
+    "timeNameField": "Champ du nom de l'heure",
     "title": "Dataset",
+    "typePoints": " Points",
+    "typePointsDescription": "Affichez une ou plusieurs positions par n'importe quelle valeur quantitative dans votre jeu de données.",
+    "typePolygons": " Polygones",
+    "typePolygonsDescription": "Affichez une ou plusieurs zones colorées par n'importe quelle valeur quantitative dans votre jeu de données.",
+    "typeTracks": " Pistes",
+    "typeTracksDescription": "Afficher le mouvement d'un ou de plusieurs animaux ou vaisseaux.",
     "uploadLogin": "Vous devez <1>login</1> pour télécharger des jeux de données",
     "uploadNewContext": "Télécharger de nouvelles zones contextuelles",
     "uploadNewEnviroment": "Charger un nouveau jeu de données d'environnement",
-    "addEnvironment": "Ajouter un jeu de données d'environnement",
-    "title_plural": "Datasets",
-    "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
-    "uploadNewDataLayer": "Télécharger une nouvelle couche de données"
+    "title_plural": "Datasets"
   },
   "errors": {
     "datasetNotFound": "Jeu de données introuvable",
     "datasetNotValid": "Il semble y avoir un problème avec votre fichier",
+    "fields": "Erreurs avec les champs {{fields}}",
     "generic": "Quelque chose s'est mal passé, veuillez réessayer ou contacter:",
     "invalidRange": "Le minimum doit être inférieur à la valeur max",
     "latestCarrierNotFound": "Dernier jeu de données opérateur introuvable",
@@ -104,6 +107,30 @@
     "noData": "Aucune donnée disponible",
     "notInCVP": "Cet événement s'est produit en dehors de la plage horaire des données du Portail du Transporteur",
     "seeInCVP": "Voir dans le Portail du Transporteur"
+  },
+  "feedback": {
+    "dataset": "Jeu de données pour lequel vous fournissez des commentaires",
+    "email": "Adresse e-mail",
+    "institution": "Institution/Organisation",
+    "insuficientData": "Veuillez remplir tous les champs obligatoires",
+    "intro": "Global Fishing Watch s’efforce constamment d’améliorer nos données. Avec des milliards de positions et des centaines de milliers de navires à revoir, et tout un océan d'activité, nous aurons inévitablement des navires et des activités mal classées. Vos commentaires peuvent nous aider à identifier où nous avons le plus besoin d'améliorer nos données. Nous nous efforcerons de répondre à vos commentaires.",
+    "issue": "Quel problème avez-vous?",
+    "optional": "Optionnel",
+    "role": "Rôle",
+    "roles": {
+      "analyst": "Analyst",
+      "fisheries": "Fisheries enforcement or compliance officer",
+      "general": "General public",
+      "GFW": "Global Fishing Watch staff",
+      "journalist": "Journalist",
+      "navy": "Navy or coast guard",
+      "ngo": "Non-governmental organization",
+      "other": "Other",
+      "scientist": "Scientist",
+      "student": "Student",
+      "watch": "Watch officer"
+    },
+    "send": "Envoyer"
   },
   "footer": {
     "convenedBy": "Un partenariat convoqué par",
@@ -129,7 +156,8 @@
       "split": "Séparer les calques"
     },
     "toggleVisibility": "Activer/désactiver la visibilité de la couche",
-    "vessel_fit_bounds": "Centrer la carte sur le tracé du navire"
+    "vessel_fit_bounds": "Centrer la carte sur le tracé du navire",
+    "vessel_fit_bounds_out_of_timerange": "La piste n'a aucune activité dans le chronomètre sélectionné. Changer la plage de temps pour correspondre à cette piste ?"
   },
   "map": {
     "captureMap": "Enregistrer une image de la carte",
@@ -153,12 +181,13 @@
     "noResults": "Vous ne trouvez pas le vaisseau que vous recherchez ? Essayez d'utiliser MMSI, IMO ou Callsign",
     "notAllowed": "Les jeux de données disponibles n'autorisent pas les vaisseaux de recherche",
     "placeholder": "Tapez pour rechercher des vaisseaux",
+    "seeVessel": "Voir le bateau",
+    "seeVessels": "Voir les navires",
     "suggestion": "Vouliez-vous dire",
     "title": "Chercher",
-    "vesselAlreadyInWorksace": "Navire déjà ajouté. Fermer la recherche pour le voir.",
+    "vesselAlreadyInWorkspace": "Ce vaisseau est déjà dans votre espace de travail",
     "vessels": "Rechercher des vaisseaux",
-    "filterClose": "Fermer les filtres de recherche",
-    "filterOpen": "Ouvrir les filtres de recherche"
+    "vesselSelected": "Navire sélectionné"
   },
   "selects": {
     "allSelected": "Tous",
@@ -172,6 +201,7 @@
     "settings_open": "Ouvrir les paramètres de la barre de temps",
     "showFishingEffort": "Afficher le graphique des heures de pêche",
     "showTracks": "Afficher le graphe des pistes",
+    "tracks": "Pistes",
     "tracksDisabled": "Sélectionnez au moins un vaisseau"
   },
   "user": {
@@ -221,12 +251,10 @@
     "origin": "Origine",
     "registeredGearType": "Type d'équipement enregistré",
     "source": "Source",
-    "tracks": "Trajectoires de navire",
     "transmission_plural": "Transmissions",
     "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
     "vesselType_plural": "Types de navires",
-    "widthRange": "Width range",
-    "transmission": "Transmission"
+    "widthRange": "Width range"
   },
   "workspace": {
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement cet espace de travail ?",
@@ -238,7 +266,6 @@
     "save": "Enregistrer la vue actuelle",
     "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil utilisateur",
     "saveLogin": "Vous devez vous connecter pour enregistrer les vues",
-    "title_plural": "Workspaces",
-    "title": "Espace de travail"
+    "title_plural": "Workspaces"
   }
 }
