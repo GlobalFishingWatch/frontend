@@ -59,7 +59,7 @@ const DatasetTypeSelect = ({
         id="tracks"
         title={t('dataset.typeTracks', 'Tracks')}
         description={t(
-          'dataset.typePolygonsDescription',
+          'dataset.typeTracksDescription',
           'Display the movement of one or multiple animals or vessels.'
         )}
         icon={<Tracks />}
@@ -69,7 +69,7 @@ const DatasetTypeSelect = ({
         id="points"
         title={t('dataset.typePoints', 'Points (coming soon)')}
         description={t(
-          'dataset.typePolygonsDescription',
+          'dataset.typePointsDescription',
           'Display one or multiple positions sized by any quantitative value in your dataset.'
         )}
         icon={<Points />}

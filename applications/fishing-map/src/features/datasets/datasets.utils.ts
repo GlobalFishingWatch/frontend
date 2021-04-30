@@ -5,6 +5,8 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { capitalize } from 'utils/shared'
 import i18n from 'features/i18n/i18n'
 
+const { t } = i18n
+
 export type SupportedDatasetSchema = 'geartype' | 'fleet' | 'origin' | 'vessel_type'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
@@ -87,7 +89,7 @@ export const getFiltersBySchema = (
   )
 
   const tooltip = disabled
-    ? i18n.t('errors.notSupportedBy', {
+    ? t('errors.notSupportedBy', {
         list: datasetsWithoutSchema?.map((d) => d.name).join(','),
         defaultValue: 'Not supported by {{list}}',
       })
