@@ -1,5 +1,11 @@
 # @globalfishingwatch/pbf
 
+## 1.0.10
+
+### Patch Changes
+
+- 0ec2156f: User tracks
+
 ## 1.0.9
 
 ### Patch Changes

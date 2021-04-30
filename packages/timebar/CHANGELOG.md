@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 1.5.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
 ## 1.4.1
 
 ### Patch Changes

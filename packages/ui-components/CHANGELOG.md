@@ -1,5 +1,16 @@
 # @globalfishingwatch/ui-components
 
+## 2.19.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/layer-composer@5.3.0
+
 ## 2.18.12
 
 ### Patch Changes

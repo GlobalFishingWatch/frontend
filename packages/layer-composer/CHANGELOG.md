@@ -1,5 +1,17 @@
 # @globalfishingwatch/layer-composer
 
+## 5.3.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/data-transforms@1.2.0
+  - @globalfishingwatch/fourwings-aggregate@3.1.1
+
 ## 5.2.5
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.3.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/api-types@4.0.0
+  - @globalfishingwatch/layer-composer@5.3.0
+  - @globalfishingwatch/api-client@1.6.9
+
 ## 6.2.4
 
 ### Patch Changes

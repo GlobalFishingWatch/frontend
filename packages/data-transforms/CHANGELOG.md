@@ -1,5 +1,11 @@
 # @globalfishingwatch/data-transforms
 
+## 1.2.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
 ## 1.1.1
 
 ### Patch Changes
