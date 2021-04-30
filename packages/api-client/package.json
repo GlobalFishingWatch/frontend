@@ -40,14 +40,15 @@
     "@rollup/plugin-node-resolve": "^10.0.0",
     "@rollup/plugin-typescript": "^6.1.0",
     "@rollup/plugin-url": "^5.0.1",
+    "@types/file-saver": "^2.0.1",
     "cross-env": "^7.0.3",
     "rollup": "^2.33.1",
     "rollup-plugin-multi-input": "^1.1.1",
     "rollup-plugin-postcss": "^3.1.8",
-    "rollup-plugin-terser": "^7.0.2",
-    "@types/file-saver": "^2.0.1"
+    "rollup-plugin-terser": "^7.0.2"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "dd9006c455eb7ee9f20cbdc62854d9a16bfc94c1"
 }
