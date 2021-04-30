@@ -13,7 +13,7 @@ import {
   HeatmapAnimatedMode,
   HeatmapAnimatedGeneratorSublayer,
 } from '../types'
-import { memoizeByLayerId, memoizeCache } from '../../utils'
+import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
 import { TimeChunk, TimeChunks, getActiveTimeChunks, getDelta, Interval } from './util/time-chunks'
@@ -29,7 +29,10 @@ export type GlobalHeatmapAnimatedGeneratorConfig = Required<
 >
 
 const getTilesUrl = (config: HeatmapAnimatedGeneratorConfig): string => {
-  return `${config.tilesAPI || `${API_GATEWAY}/${API_GATEWAY_VERSION}`}/${API_ENDPOINTS.tiles}`
+  if (config.tilesAPI) {
+    return isUrlAbsolute(config.tilesAPI) ? config.tilesAPI : API_GATEWAY + config.tilesAPI
+  }
+  return `${API_GATEWAY}/${API_GATEWAY_VERSION}/${API_ENDPOINTS.tiles}`
 }
 
 const getSubLayersDatasets = (sublayers: HeatmapAnimatedGeneratorSublayer[]): string[] => {

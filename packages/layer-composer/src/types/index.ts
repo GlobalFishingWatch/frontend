@@ -11,7 +11,7 @@ import type {
   Style,
   SymbolLayer,
 } from '@globalfishingwatch/mapbox-gl'
-import type { DataviewConfig } from '@globalfishingwatch/api-types'
+import { DataviewConfig } from '@globalfishingwatch/api-types'
 import {
   Type,
   ColorRampsIds,

@@ -185,10 +185,12 @@ export function getGeneratorConfig(
       }
       const tilesAPI = dataset?.endpoints?.find(
         (endpoint) => endpoint.id === EndpointId.FourwingsTiles
-      )
+      )?.pathTemplate
+
       const breaksAPI = dataset?.endpoints?.find(
         (endpoint) => endpoint.id === EndpointId.FourwingsBreaks
-      )
+      )?.pathTemplate
+
       const visible = generator.sublayers?.some(({ visible }) => visible === true)
       const { extentStart, extentEnd } = getDatasetsExtent(dataview.datasets)
 

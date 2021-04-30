@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 6.0.1
+
+### Patch Changes
+
+- fix tiles api url
+
 ## 6.0.0
 
 ### Major Changes

@@ -1,5 +1,13 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.4.2
+
+### Patch Changes
+
+- fix tiles api url
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@6.0.1
+
 ## 6.4.1
 
 ### Patch Changes
