@@ -15,6 +15,7 @@ import styles from './AnalysisItem.module.css'
 const sortStrings = (a: string, b: string) => a.localeCompare(b)
 
 const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
+  const { t } = i18n
   const commonProperties: string[] = []
   let title = ''
 
@@ -34,8 +35,8 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
       const presenceDataview = isPresenceDataview(dataviews[0])
       if (fishingDataview || presenceDataview) {
         title = presenceDataview
-          ? i18n.t(`common.presence`, 'Fishing presence')
-          : i18n.t(`common.apparentFishing`, 'Apparent Fishing Effort')
+          ? t(`common.presence`, 'Fishing presence')
+          : t(`common.apparentFishing`, 'Apparent Fishing Effort')
       } else {
         title += dataviews[0].name
       }
@@ -66,7 +67,7 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
       commonProperties.push('flag')
       const flags = getFlagsByIds(dataviews[0].config?.filters?.flag || [])
       if (firstDataviewFlags)
-        title += ` ${i18n.t('analysis.vesselFlags', 'by vessels flagged by')} ${flags
+        title += ` ${t('analysis.vesselFlags', 'by vessels flagged by')} ${flags
           ?.map((d) => d.label)
           .join(', ')}`
     }

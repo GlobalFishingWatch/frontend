@@ -18,7 +18,6 @@ import { ExtendedStyleMeta, Generators } from '@globalfishingwatch/layer-compose
 import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import useMapInstance from 'features/map/map-context.hooks'
-import i18n from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
@@ -130,12 +129,12 @@ const MapWrapper = (): React.ReactElement | null => {
               })
             : ''
           if (legend.unit === 'hours') {
-            label = `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
+            label = `${t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
           }
         }
         return { ...legend, label }
       }),
-    [mapLegends]
+    [mapLegends, t]
   )
 
   const debugOptions = useSelector(selectDebugOptions)

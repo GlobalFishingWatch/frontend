@@ -240,41 +240,5 @@
     "saveLogin": "Vous devez vous connecter pour enregistrer les vues",
     "title_plural": "Workspaces",
     "title": "Espace de travail"
-  },
-  "timebar": {
-    "playback": {
-      "playAnimation": "Jouer l'animation",
-      "pauseAnimation": "Mettre en pause l'animation",
-      "toogleAnimationLooping": "Activer/désactiver la boucle d'animation",
-      "moveBack": "Revenir en arrière",
-      "moveForward": "Avancer",
-      "changeAnimationSpeed": "Changer la vitesse d'animation"
-    },
-    "timerange": {
-      "title": "Sélectionnez une plage de temps",
-      "start": "Début",
-      "end": "fin",
-      "last30days": "Les 30 derniers jours",
-      "done": "Fait",
-      "errorEarlyStart": "Votre date de début est la date la plus ancienne avec les données disponibles",
-      "errorLatestEnd": "Votre date de fin est la dernière date avec les données disponibles",
-      "errorMinRange": "Votre date de début et de fin doit être séparée d'au moins un jour",
-      "errorMaxRange": "Votre plage de temps est la plage maximale avec les données disponibles"
-    },
-    "bookmark": {
-      "goToBookmark": "Accéder à la plage de temps de vos favoris",
-      "deleteBookmark": "Supprimer le marque-page de la plage de temps"
-    },
-    "dragLabel": "Faites glisser pour modifier la plage de temps",
-    "lastUpdate": "Dernière mise à jour",
-    "setBookmark": "Mettre en favori la plage de temps actuelle",
-    "day": "jour",
-    "year": "Année",
-    "month": "mois",
-    "hour": "heure",
-    "zoomIn": "Zoom avant",
-    "zoomTo": "Zoom sur",
-    "zoomOut": "Zoom arrière",
-    "selectTimeRange": "Sélectionnez une plage de temps"
   }
 }

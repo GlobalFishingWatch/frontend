@@ -20,14 +20,14 @@
 }
 
 .wrapper label {
-  border: 1px solid var(--color-border); 
+  border: 1px solid var(--color-border);
 }
 .wrapper label.selected {
   border: 1px solid var(--color-primary-blue);
 }
 .wrapper label.disabled {
-  opacity: .7;
-  cursor: not-allowed
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 .wrapper > label:first-child {
   margin-left: 0;
@@ -40,13 +40,14 @@
   display: none;
 }
 
-.title, .description {
+.title,
+.description {
   text-transform: none;
 }
 
 .title {
   font: var(--font-L);
-  color: var(--color-primary-blue)
+  color: var(--color-primary-blue);
 }
 .description {
   color: var(--color-primary-blue);
