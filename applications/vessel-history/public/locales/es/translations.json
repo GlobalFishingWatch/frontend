@@ -33,6 +33,8 @@
     "mmsi": "mmsi",
     "noAuthorizations": "No se encontraron authorizaciones",
     "plusPreviousValuesByField": "+{{quantity}} {{fieldLabel}} anteriores",
+    "readyForOfflineView": "RESPONSABLE PARA LA VISTA DE OFLINA",
+    "remove": "Eliminar",
     "saveForOfflineView": "guardar buque para vista offline",
     "source": "fuente",
     "transmission_plural": "transmisiones",
