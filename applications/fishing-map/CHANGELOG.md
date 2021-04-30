@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.28.37
+
+### Patch Changes
+
+- Updated dependencies [4c7a6f0e]
+  - @globalfishingwatch/dataviews-client@6.4.1
+
 ## 0.28.36
 
 ### Patch Changes

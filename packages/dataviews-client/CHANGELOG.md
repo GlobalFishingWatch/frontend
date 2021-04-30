@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.4.1
+
+### Patch Changes
+
+- 4c7a6f0e: set max zoom 8 in env layers
+
 ## 6.4.0
 
 ### Minor Changes
