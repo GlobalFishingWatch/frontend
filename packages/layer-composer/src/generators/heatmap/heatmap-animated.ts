@@ -22,7 +22,7 @@ import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
 import { getSourceId, toURLArray } from './util'
-import fetchBreaks, { Breaks, FetchBreaksParams } from './util/fetch-breaks'
+import fetchBreaks, { Breaks, FetchBreaksParams, getBreaksZoom } from './util/fetch-breaks'
 
 export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
@@ -81,7 +81,10 @@ const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
 
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
-  breaksCache: Record<string, { loading: boolean; error: boolean; breaks?: Breaks }> = {}
+  breaksCache: Record<
+    string,
+    Record<number, { loading: boolean; error: boolean; breaks?: Breaks }>
+  > = {}
 
   _getStyleSources = (
     config: GlobalHeatmapAnimatedGeneratorConfig,
@@ -217,9 +220,11 @@ class HeatmapAnimatedGenerator {
     const visible = config.sublayers.some((l) => l.visible === true)
 
     const useSublayerBreaks = finalConfig.sublayers.some((s) => s.breaks?.length)
+    const breaksZoom = getBreaksZoom(config.zoomLoadLevel)
+    const breaksCache = this.breaksCache[cacheKey]?.[breaksZoom]
     const breaks = useSublayerBreaks
       ? config.sublayers.map(({ breaks }) => breaks || [])
-      : getSublayersBreaks(finalConfig, this.breaksCache[cacheKey]?.breaks)
+      : getSublayersBreaks(finalConfig, breaksCache?.breaks)
 
     const style = {
       id: finalConfig.id,
@@ -238,27 +243,35 @@ class HeatmapAnimatedGenerator {
       },
     }
 
-    if (
-      breaks ||
-      !visible ||
-      this.breaksCache[cacheKey]?.loading ||
-      this.breaksCache[cacheKey]?.error
-    ) {
+    if (breaks || !visible || breaksCache?.loading || breaksCache?.error) {
       return style
     }
 
     const breaksPromise = fetchBreaks(breaksConfig)
 
-    this.breaksCache[cacheKey] = { loading: true, error: false }
+    this.breaksCache[cacheKey] = {
+      ...this.breaksCache[cacheKey],
+      [breaksZoom]: { loading: true, error: false },
+    }
 
     const promise = new Promise((resolve, reject) => {
       breaksPromise.then((breaks) => {
-        this.breaksCache[cacheKey] = { loading: false, error: false, breaks }
+        this.breaksCache[cacheKey][breaksZoom] = { loading: false, error: false, breaks }
         resolve({ style: this.getStyle(finalConfig), config: finalConfig })
+        const otherBreaksZoom = breaksZoom === 3 ? 0 : 3
+        debugger
+        this.breaksCache[cacheKey] = {
+          ...this.breaksCache[cacheKey],
+          [otherBreaksZoom]: { loading: true, error: false },
+        }
+        fetchBreaks({ ...breaksConfig, zoomLoadLevel: otherBreaksZoom }).then((breaks) => {
+          debugger
+          this.breaksCache[cacheKey][otherBreaksZoom] = { loading: false, error: false, breaks }
+        })
       })
       breaksPromise.catch((e: any) => {
         if (e.name !== 'AbortError') {
-          this.breaksCache[cacheKey] = { loading: false, error: true }
+          this.breaksCache[cacheKey][breaksZoom] = { loading: false, error: true }
         }
         reject(e)
       })

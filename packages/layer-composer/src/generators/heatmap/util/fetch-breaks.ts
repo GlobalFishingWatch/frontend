@@ -19,12 +19,13 @@ export const getBreaksZoom = (zoom: number) => {
 }
 
 const getBreaksUrl = (config: FetchBreaksParams): string => {
+  const zoom = getBreaksZoom(config.zoomLoadLevel).toString()
   const url = `${config.breaksAPI || `${API_GATEWAY}/${API_GATEWAY_VERSION}`}/${
     API_ENDPOINTS.breaks
   }`
     .replace(/{{/g, '{')
     .replace(/}}/g, '}')
-    .replace('{zoom}', '0')
+    .replace('{zoom}', zoom)
 
   const datasets = uniq(
     config.sublayers

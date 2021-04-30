@@ -8,7 +8,7 @@ import {
 } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { getBlend, getColorRampByOpacitySteps, rgbaStringToObject, rgbaToHex } from './colors'
-import { Breaks } from './fetch-breaks'
+import { Breaks, getBreaksZoom } from './fetch-breaks'
 import { getCleanBreaks } from './get-breaks'
 import { toDT } from './time-chunks'
 
@@ -57,8 +57,11 @@ export const getSublayersBreaks = (
   const end = toDT(config.end)
   // uses 'years' as breaks request a year with temporal-aggregation true
   const deltaInterval = end.diff(start, 'days').days / 10
+  const zoomBreaksBaseline = getBreaksZoom(config.zoomLoadLevel)
   return breaks?.map((bre) => {
-    return getCleanBreaks(bre.map((b) => deltaInterval * b * Math.pow(1 / 4, config.zoomLoadLevel)))
+    return getCleanBreaks(
+      bre.map((b) => deltaInterval * b * Math.pow(1 / 4, config.zoomLoadLevel - zoomBreaksBaseline))
+    )
   })
 }
 
