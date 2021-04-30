@@ -33,6 +33,8 @@
     "mmsi": "mmsi",
     "noAuthorizations": "No authorizations found",
     "plusPreviousValuesByField": "+{{quantity}} previous {{fieldLabel}}",
+    "readyForOfflineView": "READY FOR OFFLINE VIEW",
+    "remove": "Remove",
     "saveForOfflineView": "save vessel for offline view",
     "source": "source",
     "transmission_plural": "transmissions",
