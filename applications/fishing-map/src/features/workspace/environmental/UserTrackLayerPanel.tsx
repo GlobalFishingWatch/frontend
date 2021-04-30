@@ -4,10 +4,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
-import ColorBar, {
-  ColorBarOption,
-  HeatmapColorBarOptions,
-} from '@globalfishingwatch/ui-components/dist/color-bar'
+import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
 import {
   resolveDataviewDatasetResource,
   UrlDataviewInstance,
@@ -18,7 +15,6 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
@@ -117,24 +113,13 @@ function UserTrackLayerPanel({ dataview }: LayerPanelProps): React.ReactElement 
             <Fragment>
               {layerActive && (
                 <Fragment>
-                  <ExpandedContainer
-                    visible={colorOpen}
+                  <Color
+                    dataview={dataview}
+                    open={colorOpen}
+                    onColorClick={changeColor}
+                    onToggleClick={onToggleColorOpen}
                     onClickOutside={closeExpandedContainer}
-                    component={
-                      <ColorBar
-                        colorBarOptions={HeatmapColorBarOptions}
-                        selectedColor={dataview.config?.color}
-                        onColorClick={changeColor}
-                      />
-                    }
-                  >
-                    <Color
-                      open={colorOpen}
-                      dataview={dataview}
-                      onClick={onToggleColorOpen}
-                      className={styles.actionButton}
-                    />
-                  </ExpandedContainer>
+                  />
                   <FitBounds
                     className={styles.actionButton}
                     hasError={trackError}

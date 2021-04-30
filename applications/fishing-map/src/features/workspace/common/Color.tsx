@@ -1,26 +1,47 @@
+import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import ColorBar, {
+  ColorBarOption,
+  TrackColorBarOptions,
+} from '@globalfishingwatch/ui-components/dist/color-bar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import styles from 'features/workspace/shared/LayerPanel.module.css'
+import ExpandedContainer from '../shared/ExpandedContainer'
 
 type ColorProps = {
   open: boolean
   dataview: UrlDataviewInstance
-  onClick: (e: any) => void
-  className: string
+  onColorClick: (color: ColorBarOption) => void
+  onToggleClick: (e: any) => void
+  onClickOutside: () => void
 }
 
-const Color = ({ open, dataview, onClick, className }: ColorProps) => {
+const Color = (props: ColorProps) => {
+  const { open, dataview, onToggleClick, onColorClick, onClickOutside } = props
   const { t } = useTranslation()
   return (
-    <IconButton
-      icon={open ? 'color-picker' : 'color-picker-filled'}
-      size="small"
-      style={open ? {} : { color: dataview.config?.color }}
-      tooltip={t('layer.color_change', 'Change color')}
-      tooltipPlacement="top"
-      onClick={onClick}
-      className={className}
-    />
+    <ExpandedContainer
+      visible={open}
+      onClickOutside={onClickOutside}
+      component={
+        <ColorBar
+          colorBarOptions={TrackColorBarOptions}
+          selectedColor={dataview.config?.color}
+          onColorClick={onColorClick}
+        />
+      }
+    >
+      <IconButton
+        icon={open ? 'color-picker' : 'color-picker-filled'}
+        size="small"
+        style={open ? {} : { color: dataview.config?.color }}
+        tooltip={t('layer.color_change', 'Change color')}
+        tooltipPlacement="top"
+        onClick={onToggleClick}
+        className={styles.actionButton}
+      />
+    </ExpandedContainer>
   )
 }
 

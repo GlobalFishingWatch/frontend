@@ -2,16 +2,12 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, DatasetStatus } from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
-import {
-  ColorBarOption,
-  TrackColorBarOptions,
-} from '@globalfishingwatch/ui-components/dist/color-bar'
+import { Tooltip } from '@globalfishingwatch/ui-components'
+import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -110,24 +106,13 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             className={styles.actionButton}
           />
           {layerActive && (
-            <ExpandedContainer
-              visible={colorOpen}
+            <Color
+              dataview={dataview}
+              open={colorOpen}
+              onColorClick={changeColor}
+              onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
-              component={
-                <ColorBar
-                  colorBarOptions={TrackColorBarOptions}
-                  selectedColor={dataview.config?.color}
-                  onColorClick={changeColor}
-                />
-              }
-            >
-              <Color
-                open={colorOpen}
-                dataview={dataview}
-                onClick={onToggleColorOpen}
-                className={cx(styles.actionButton)}
-              />
-            </ExpandedContainer>
+            />
           )}
           {isUserLayer && <Remove className={cx(styles.actionButton)} dataview={dataview} />}
         </div>

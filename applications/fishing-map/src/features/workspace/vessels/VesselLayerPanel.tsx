@@ -3,11 +3,8 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, ResourceStatus, Vessel } from '@globalfishingwatch/api-types'
-import { IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
-import {
-  ColorBarOption,
-  TrackColorBarOptions,
-} from '@globalfishingwatch/ui-components/dist/color-bar'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Segment } from '@globalfishingwatch/data-transforms'
 import {
   UrlDataviewInstance,
@@ -137,24 +134,13 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
             <Fragment>
               {layerActive && (
                 <Fragment>
-                  <ExpandedContainer
-                    visible={colorOpen}
+                  <Color
+                    dataview={dataview}
+                    open={colorOpen}
+                    onColorClick={changeTrackColor}
+                    onToggleClick={onToggleColorOpen}
                     onClickOutside={closeExpandedContainer}
-                    component={
-                      <ColorBar
-                        colorBarOptions={TrackColorBarOptions}
-                        selectedColor={dataview.config?.color}
-                        onColorClick={changeTrackColor}
-                      />
-                    }
-                  >
-                    <Color
-                      open={colorOpen}
-                      dataview={dataview}
-                      onClick={onToggleColorOpen}
-                      className={styles.actionButton}
-                    />
-                  </ExpandedContainer>
+                  />
                   <FitBounds
                     className={styles.actionButton}
                     hasError={trackError}

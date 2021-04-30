@@ -4,16 +4,12 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
-import ColorBar, {
-  ColorBarOption,
-  HeatmapColorBarOptions,
-} from '@globalfishingwatch/ui-components/dist/color-bar'
+import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -96,24 +92,13 @@ function EnvironmentalLayerPanel({ dataview }: LayerPanelProps): React.ReactElem
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
           {layerActive && (
-            <ExpandedContainer
-              visible={colorOpen}
+            <Color
+              dataview={dataview}
+              open={colorOpen}
+              onColorClick={changeColor}
+              onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
-              component={
-                <ColorBar
-                  colorBarOptions={HeatmapColorBarOptions}
-                  selectedColor={dataview.config?.color}
-                  onColorClick={changeColor}
-                />
-              }
-            >
-              <Color
-                open={colorOpen}
-                dataview={dataview}
-                onClick={onToggleColorOpen}
-                className={styles.actionButton}
-              />
-            </ExpandedContainer>
+            />
           )}
           <InfoError
             error={datasetError}
