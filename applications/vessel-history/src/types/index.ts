@@ -168,3 +168,6 @@ export type Range = {
   start: string
   end: string
 }
+
+// minX, minY, maxX, maxY
+export type Bbox = [number, number, number, number]

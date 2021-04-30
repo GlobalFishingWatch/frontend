@@ -1,7 +1,9 @@
-import React, { Fragment, useState, useEffect, useMemo } from 'react'
+import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import { Segment, segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
@@ -15,18 +17,22 @@ import {
   upsertVesselDataview,
 } from 'features/vessels/vessels.slice'
 import Map from 'features/map/Map'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
+import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectDataviewsResourceQueries } from 'features/resources/resources.selectors'
-import { fetchResourceThunk } from 'features/resources/resources.slice'
-import styles from './Profile.module.css'
+import { fetchResourceThunk, selectResourceByUrl } from 'features/resources/resources.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { Bbox } from 'types'
 import Info from './components/Info'
+import styles from './Profile.module.css'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const fitBounds = useMapFitBounds()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
   const q = useSelector(selectQueryParam('q'))
@@ -36,6 +42,11 @@ const Profile: React.FC = (props): React.ReactElement => {
   const vessel = useSelector(selectVesselById(vesselProfileId))
   const datasets = useSelector(selectDatasets)
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
+  const [vesselDataview] = useSelector(selectActiveVesselsDataviews) ?? []
+  const { url: trackUrl = '' } = vesselDataview
+    ? resolveDataviewDatasetResource(vesselDataview, DatasetTypes.Tracks)
+    : { url: '' }
+  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
 
   useEffect(() => {
     if (resourceQueries) {
@@ -73,6 +84,23 @@ const Profile: React.FC = (props): React.ReactElement => {
     }
     fetchVessel()
   }, [dispatch, vesselProfileId, datasets])
+
+  const onFitLastSegment = useCallback(() => {
+    if (!trackResource?.data || trackResource?.data.length === 0) return
+    const lastSegment = [trackResource?.data.flat().slice(-2)] as Segment[]
+    const bbox = lastSegment?.length ? segmentsToBbox(lastSegment) : undefined
+    if (bbox) {
+      fitBounds(bbox as Bbox)
+    } else {
+      // TODO use prompt to ask user if wants to update the timerange to fit the track
+      alert('The vessel has no activity in your selected timerange')
+    }
+  }, [fitBounds, trackResource])
+
+  useEffect(() => {
+    if (!vessel || !vesselDataview) return
+    onFitLastSegment()
+  }, [vesselDataview, vessel, onFitLastSegment])
 
   const tabs: Tab[] = useMemo(
     () => [

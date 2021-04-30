@@ -29,3 +29,9 @@ export const DEFAULT_WORKSPACE: AppState = {
   importView: false,
   satellite: '',
 }
+
+export const DEFAULT_VIEWPORT = {
+  latitude: 26,
+  longitude: 12,
+  zoom: 1,
+}
