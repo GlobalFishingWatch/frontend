@@ -170,6 +170,7 @@ export function getGeneratorConfig(
 
         environmentalConfig = {
           sublayers,
+          maxZoom: 8,
           mode: Generators.HeatmapAnimatedMode.Single,
           aggregationOperation: AggregationOperation.Avg,
           interactive: true,
