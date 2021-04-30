@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 3.0.1
+
+### Patch Changes
+
+- fix tooltip
+
 ## 3.0.0
 
 ### Major Changes
