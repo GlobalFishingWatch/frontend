@@ -175,7 +175,7 @@ class HeatmapAnimatedGenerator {
       return getBlobLayer(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Extruded) {
       // TODO review with new buckets
-      return getExtrudedLayer(config, timeChunks)
+      return getExtrudedLayer(config, timeChunks, breaks)
     }
   }
 
