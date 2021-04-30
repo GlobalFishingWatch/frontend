@@ -114,25 +114,6 @@ export const createDatasetThunk = createAsyncThunk<
       body: datasetWithFilePath as any,
     })
 
-    // TODO Use this also infetchDatasetsByIdsThunk ??
-    // TODO Properly configure the endpoint on the API side
-    // if (dataset.type === DatasetTypes.UserTracks) {
-    //   createdDataset.endpoints = [
-    //     {
-    // id: EndpointId.UserTracks,
-    //       pathTemplate: '/v1/datasets/{{id}}/tracks',
-    //       downloadable: true,
-    //       params: [
-    //         {
-    //           label: 'id',
-    //           id: 'id',
-    //           type: 'string',
-    //         },
-    //       ],
-    //       query: [],
-    //     },
-    //   ]
-    // }
     return createdDataset
   } catch (e) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })
