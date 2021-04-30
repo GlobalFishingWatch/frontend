@@ -1,5 +1,17 @@
 # @globalfishingwatch/react-hooks
 
+## 6.1.1
+
+### Patch Changes
+
+- 5d252a2d: fix when no layer present crash
+- Updated dependencies [5d252a2d]
+- Updated dependencies [5d252a2d]
+- Updated dependencies [a07dfc86]
+  - @globalfishingwatch/dataviews-client@6.4.0
+  - @globalfishingwatch/layer-composer@6.0.0
+  - @globalfishingwatch/ui-components@3.0.0
+
 ## 6.1.0
 
 ### Minor Changes

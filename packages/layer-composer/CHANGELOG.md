@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 6.0.0
+
+### Major Changes
+
+- 5d252a2d: buckets from api and dynamic bivariate
+
 ## 5.3.0
 
 ### Minor Changes

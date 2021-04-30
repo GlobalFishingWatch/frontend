@@ -1,5 +1,16 @@
 # @globalfishingwatch/ui-components
 
+## 3.0.0
+
+### Major Changes
+
+- a07dfc86: dont export types in root to get sandbox working
+
+### Patch Changes
+
+- Updated dependencies [5d252a2d]
+  - @globalfishingwatch/layer-composer@6.0.0
+
 ## 2.19.0
 
 ### Minor Changes
