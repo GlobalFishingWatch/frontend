@@ -1,5 +1,12 @@
 # @globalfishingwatch/api-types
 
+## 4.1.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/data-transforms@1.2.1
+
 ## 4.1.0
 
 ### Minor Changes
