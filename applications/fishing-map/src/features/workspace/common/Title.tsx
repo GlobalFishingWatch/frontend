@@ -1,3 +1,4 @@
+import { forwardRef, Ref } from 'react'
 import cx from 'classnames'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDataviewInstancesConnect } from '../workspace.hook'
@@ -9,7 +10,8 @@ type TitleProps = {
   title: string
 }
 
-const Title = ({ dataview, className, classNameActive, title }: TitleProps) => {
+const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
+  const { dataview, className, classNameActive, title } = props
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
@@ -21,10 +23,14 @@ const Title = ({ dataview, className, classNameActive, title }: TitleProps) => {
     })
   }
   return (
-    <h3 className={cx(className, { [classNameActive]: layerActive })} onClick={onToggleLayerActive}>
+    <h3
+      ref={ref}
+      className={cx(className, { [classNameActive]: layerActive })}
+      onClick={onToggleLayerActive}
+    >
       {title}
     </h3>
   )
 }
 
-export default Title
+export default forwardRef(Title)
