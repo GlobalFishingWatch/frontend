@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.1.0
+
+### Minor Changes
+
+- 5d252a2d: new 4wings endpoint id
+
 ## 4.0.0
 
 ### Major Changes

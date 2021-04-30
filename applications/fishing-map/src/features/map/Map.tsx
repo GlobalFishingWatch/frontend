@@ -67,7 +67,7 @@ const MapWrapper = (): React.ReactElement | null => {
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
-  const { style } = useLayerComposer(generatorsConfig, globalConfig)
+  const { style, loading: layerComposerLoading } = useLayerComposer(generatorsConfig, globalConfig)
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
   const { cleanFeatureState } = useFeatureState(map)
@@ -230,7 +230,10 @@ const MapWrapper = (): React.ReactElement | null => {
           <MapInfo center={hoveredEvent} />
         </InteractiveMap>
       )}
-      <MapControls onMouseEnter={resetHoverState} mapLoading={tilesLoading} />
+      <MapControls
+        onMouseEnter={resetHoverState}
+        mapLoading={tilesLoading || layerComposerLoading}
+      />
       {legendsTranslated?.map((legend: any) => {
         const legendDomElement = document.getElementById(legend.id as string)
         if (legendDomElement) {

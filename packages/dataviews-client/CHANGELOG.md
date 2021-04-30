@@ -1,5 +1,18 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.4.0
+
+### Minor Changes
+
+- 5d252a2d: prepare datasets extents to layer-composer
+
+### Patch Changes
+
+- Updated dependencies [5d252a2d]
+- Updated dependencies [5d252a2d]
+  - @globalfishingwatch/api-types@4.1.0
+  - @globalfishingwatch/layer-composer@6.0.0
+
 ## 6.3.0
 
 ### Minor Changes

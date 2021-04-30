@@ -2,7 +2,7 @@ import React, { Fragment, memo, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
 import styles from './MapLegend.module.css'
-import { formatLegendValue, LegendLayer, roundLegendNumber } from '.'
+import { formatLegendValue, LegendLayer, parseLegendNumber, roundLegendNumber } from '.'
 
 type ColorRampLegendProps = {
   layer: LegendLayer
@@ -99,7 +99,7 @@ function ColorRampLegend({
               if (value === null) return null
               const roundValue = roundValues
                 ? roundLegendNumber(value as number)
-                : (value as number)
+                : parseLegendNumber(value as number)
               const valueLabel = typeof value === 'string' ? value : formatLegendValue(roundValue)
               if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
               return (

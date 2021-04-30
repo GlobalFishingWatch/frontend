@@ -91,19 +91,22 @@ export const useHasSourceLoaded = (sourceId: string) => {
 
 export const useActiveHeatmapAnimatedMetadatas = (generators: AnyGeneratorConfig[]) => {
   const style = useMapStyle()
-  const generatorsIds = generators.map((generator) => generator.id)
-  const generatorsMetadata = generatorsIds.flatMap((generatorId) => {
-    return style?.metadata?.generatorsMetadata[generatorId] || []
+
+  const generatorsIds = generators?.map((generator) => generator.id)
+  const generatorsMetadata = generatorsIds?.flatMap((generatorId) => {
+    return style?.metadata?.generatorsMetadata?.[generatorId] || []
   })
 
-  const serializedGeneratorIds = generatorsMetadata
-    .map((metadata) => {
-      return metadata?.timeChunks?.activeSourceId + metadata?.numSublayers
-    })
-    .join()
+  const serializedGeneratorIds =
+    generatorsMetadata &&
+    generatorsMetadata
+      .map((metadata) => {
+        return metadata?.timeChunks?.activeSourceId + metadata?.numSublayers
+      })
+      .join()
 
   const metadatas = useMemo(() => {
-    return generatorsMetadata
+    return generatorsMetadata || []
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serializedGeneratorIds])
   return metadatas
@@ -141,7 +144,7 @@ const useGeneratorAnimatedFeatures = (generators: AnyGeneratorConfig[]) => {
   const sourcesMetadata = useActiveHeatmapAnimatedMetadatas(generators)
 
   const sourcesIds: string[] = useMemo(() => {
-    return sourcesMetadata.map((metadata) => metadata?.timeChunks?.activeSourceId)
+    return sourcesMetadata?.map((metadata) => metadata?.timeChunks?.activeSourceId)
   }, [sourcesMetadata])
 
   const { sourcesFeatures, haveSourcesLoaded } = useFeatures({

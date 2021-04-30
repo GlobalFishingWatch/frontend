@@ -22,13 +22,14 @@ import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/a
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { DEFAULT_TIME_RANGE } from 'data/config'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
   ({ zoom }, { start, end }) => ({
     zoom,
-    start,
-    end,
+    start: start || DEFAULT_TIME_RANGE.start,
+    end: end || DEFAULT_TIME_RANGE.end,
     token: GFWAPI.getToken(),
   })
 )
@@ -98,6 +99,7 @@ const selectMapGeneratorsConfig = createSelector(
     selectBivariate,
   ],
   (dataviews = [], resources, rulers, debugOptions, highlightedTime, staticTime, bivariate) => {
+    if (!staticTime) return
     return getGeneratorsConfig({
       dataviews,
       resources,
@@ -120,6 +122,7 @@ const selectStaticGeneratorsConfig = createSelector(
     selectBivariate,
   ],
   (dataviews = [], resources, rulers, debugOptions, staticTime, bivariate) => {
+    if (!staticTime) return
     // We don't want highlightedTime here to avoid re-computing on mouse timebar hovering
     return getGeneratorsConfig({
       dataviews,
@@ -229,9 +232,9 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     workspaceStatus,
     showWorkspaceDetail,
     basemapGenerator,
-    workspaceGenerators,
+    workspaceGenerators = [] as AnyGeneratorConfig[],
     workspaceListGenerators
-  ) => {
+  ): AnyGeneratorConfig[] => {
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]
     }
@@ -245,13 +248,13 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
 )
 
 const selectGeneratorConfigsByType = (type: Generators.Type) => {
-  return createSelector([selectStaticGeneratorsConfig], (generators) => {
+  return createSelector([selectStaticGeneratorsConfig], (generators = []) => {
     return generators?.filter((generator) => generator.type === type)
   })
 }
 
 export const selectGeneratorConfigsById = (id: string) => {
-  return createSelector([selectStaticGeneratorsConfig], (generators) => {
+  return createSelector([selectStaticGeneratorsConfig], (generators = []) => {
     return generators?.filter((generator) => generator.id === id)
   })
 }

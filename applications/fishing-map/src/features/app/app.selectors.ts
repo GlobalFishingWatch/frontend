@@ -42,8 +42,8 @@ export const selectTimeRange = createSelector(
   [selectUrlTimeRange, selectWorkspaceTimeRange],
   ({ start, end }, workspaceTimerange) => {
     return {
-      start: start || workspaceTimerange?.start || DEFAULT_WORKSPACE.start,
-      end: end || workspaceTimerange?.end || DEFAULT_WORKSPACE.end,
+      start: start || workspaceTimerange?.start,
+      end: end || workspaceTimerange?.end,
     }
   }
 )

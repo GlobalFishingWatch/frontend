@@ -46,6 +46,32 @@ type DataviewsGeneratorConfigsParams = {
 
 type DataviewsGeneratorResource = Record<string, Resource>
 
+const getUTCDate = (timestamp: number) => {
+  const date = new Date(timestamp)
+  return new Date(
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes()
+    )
+  )
+}
+
+const getDatasetsExtent = (datasets: Dataset[] | undefined) => {
+  const startRanges = datasets?.flatMap((d) =>
+    d?.startDate ? new Date(d.startDate).getTime() : []
+  )
+  const endRanges = datasets?.flatMap((d) => (d?.endDate ? new Date(d.endDate).getTime() : []))
+  const extentStart = startRanges?.length
+    ? getUTCDate(Math.min(...startRanges)).toISOString()
+    : undefined
+  const extentEnd = endRanges?.length ? getUTCDate(Math.max(...endRanges)).toISOString() : undefined
+
+  return { extentStart, extentEnd }
+}
+
 export function getGeneratorConfig(
   dataview: UrlDataviewInstance,
   params?: DataviewsGeneratorConfigsParams,
@@ -99,6 +125,7 @@ export function getGeneratorConfig(
       const statsEndpoint = heatmapDataset?.endpoints?.find(
         (endpoint) => endpoint.id === EndpointId.FourwingsLegend
       )
+
       generator = {
         ...generator,
         maxZoom: 8,
@@ -121,9 +148,8 @@ export function getGeneratorConfig(
     case Generators.Type.HeatmapAnimated: {
       const isEnvironmentLayer = dataview.category === DataviewCategory.Environment
       let environmentalConfig: Partial<Generators.HeatmapAnimatedGeneratorConfig> = {}
+      const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
       if (isEnvironmentLayer) {
-        // TODO not exactly sure how to retrieve dataset properly
-        const dataset = dataview?.datasets && dataview?.datasets[0]
         const datasetsIds =
           dataview.config.datasets || dataview.datasetsConfig?.map((dc) => dc.datasetId)
         const sublayers: Generators.HeatmapAnimatedGeneratorSublayer[] = [
@@ -156,13 +182,24 @@ export function getGeneratorConfig(
         ...generator,
         ...environmentalConfig,
       }
-
+      const tilesAPI = dataset?.endpoints?.find(
+        (endpoint) => endpoint.id === EndpointId.FourwingsTiles
+      )
+      const breaksAPI = dataset?.endpoints?.find(
+        (endpoint) => endpoint.id === EndpointId.FourwingsBreaks
+      )
       const visible = generator.sublayers?.some(({ visible }) => visible === true)
+      const { extentStart, extentEnd } = getDatasetsExtent(dataview.datasets)
+
       generator = {
         ...generator,
         visible,
         debug,
         debugLabels: debug,
+        tilesAPI,
+        breaksAPI,
+        ...(extentStart && { datasetsStart: extentStart }),
+        ...(extentEnd && { datasetsEnd: extentEnd }),
         staticStart: timeRange?.start,
         staticEnd: timeRange?.end,
       }

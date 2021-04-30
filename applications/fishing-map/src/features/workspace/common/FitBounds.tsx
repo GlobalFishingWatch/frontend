@@ -24,7 +24,7 @@ const FitBounds = ({ className, trackResource, hasError }: FitBoundsProps) => {
   const fitBounds = useMapFitBounds()
   const { dispatchTimeranges, start, end } = useTimerangeConnect()
   const onFitBoundsClick = useCallback(() => {
-    if (trackResource?.data) {
+    if (trackResource?.data && start && end) {
       const segments = (trackResource.data as FeatureCollection).features
         ? geoJSONToSegments(trackResource.data as FeatureCollection)
         : (trackResource?.data as Segment[])

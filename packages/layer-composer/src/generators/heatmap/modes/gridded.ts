@@ -6,14 +6,17 @@ import { Type } from '../../types'
 import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer from '../util/get-base-layer'
 import { getLayerId, getSourceId } from '../util'
+import { Breaks } from '../util/fetch-breaks'
 
 export const TEMPORALGRID_SOURCE_LAYER = 'temporalgrid_interactive'
 
 export default function gridded(
   config: GlobalHeatmapAnimatedGeneratorConfig,
-  timeChunks: TimeChunks
+  timeChunks: TimeChunks,
+  breaks: Breaks
 ) {
   const { colorRampBaseExpression } = getColorRampBaseExpression(config)
+
   const layers: Layer[] = timeChunks.chunks.flatMap(
     (timeChunk: TimeChunk, timeChunkIndex: number) => {
       const pickValueAt = timeChunk.frame.toString()
@@ -32,7 +35,7 @@ export default function gridded(
       chunkMainLayer.paint = paint
       // only add legend metadata for first time chunk
       if (timeChunkIndex === 0 && chunkMainLayer.metadata) {
-        chunkMainLayer.metadata.legend = getLegends(config, timeChunks.deltaInDays)
+        chunkMainLayer.metadata.legend = getLegends(config, breaks)
       }
       const chunkLayers: Layer[] = [chunkMainLayer]
 

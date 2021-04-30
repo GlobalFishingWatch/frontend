@@ -81,10 +81,12 @@ function Analysis() {
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
   useEffect(() => {
-    const startDateTime = DateTime.fromISO(start)
-    const endDateTime = DateTime.fromISO(end)
-    const duration = endDateTime.diff(startDateTime, 'years')
-    setTimeRangeTooLong(duration.years > 1)
+    if (start && end) {
+      const startDateTime = DateTime.fromISO(start)
+      const endDateTime = DateTime.fromISO(end)
+      const duration = endDateTime.diff(startDateTime, 'years')
+      setTimeRangeTooLong(duration.years > 1)
+    }
   }, [start, end])
 
   useEffect(() => {

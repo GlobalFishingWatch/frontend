@@ -46,8 +46,12 @@ hr {
   margin: 2rem;
 }
 
-.map > div{
+.map > div {
   display: block;
   width: 100% !important;
   height: 70vh !important;
+}
+
+.main {
+  padding: var(--space-M);
 }
