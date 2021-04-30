@@ -37,9 +37,9 @@ async function preRender(components: typeof componentsList) {
     const html = `<style>\n${styles}</style>\n${markup}\n${script}`
     try {
       await writeFile(path, html)
-      console.log(`Wrote ${path}`)
+      console.info(`Wrote ${path}`)
     } catch (e) {
-      console.log(e)
+      console.warn(e)
     }
   }
 }

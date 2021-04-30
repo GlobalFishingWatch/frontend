@@ -25,11 +25,7 @@ import { filterByViewport } from 'features/map/map.utils'
 import { useActivityTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
-import {
-  selectTracksData,
-  selectTracksGraphs,
-  hasStaticHeatmapLayersActive,
-} from './timebar.selectors'
+import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
 import styles from './Timebar.module.css'
 
 export const TIMEBAR_HEIGHT = 72
@@ -46,7 +42,6 @@ const TimebarWrapper = () => {
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
   const temporalGridDataviews = useSelector(selectActivityDataviews)
-  const staticHeatmapLayersActive = useSelector(hasStaticHeatmapLayersActive)
 
   const dispatch = useDispatch()
 
@@ -109,7 +104,6 @@ const TimebarWrapper = () => {
             date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
           }
         })
-        // console.log('compute graph', performance.now() - n)
         setStackedActivity(values)
       } else {
         setStackedActivity(undefined)
@@ -150,7 +144,7 @@ const TimebarWrapper = () => {
   return (
     <div>
       <TimebarComponent
-        enablePlayback={!staticHeatmapLayersActive}
+        enablePlayback={true}
         labels={labels}
         start={start}
         end={end}

@@ -10,7 +10,6 @@ export const selectDataviewsResourceQueries = createSelector(
   [selectDataviewInstancesResolved, isGuestUser, selectDebugOptions],
   (dataviewInstances, guestUser, { thinning }) => {
     if (!dataviewInstances) return
-
     const resourceQueries: Resource[] = dataviewInstances.flatMap((dataview) => {
       if (dataview.config?.type !== Generators.Type.Track || dataview.deleted) {
         return []
@@ -18,7 +17,12 @@ export const selectDataviewsResourceQueries = createSelector(
 
       let trackQuery: any = [] // initialized as empty array to be filtered by flatMap if not used
       if (dataview.config.visible === true) {
-        const trackResource = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+        const datasetType =
+          dataview.datasets && dataview.datasets[0].type === DatasetTypes.UserTracks
+            ? DatasetTypes.UserTracks
+            : DatasetTypes.Tracks
+
+        const trackResource = resolveDataviewDatasetResource(dataview, datasetType)
         if (trackResource.url && trackResource.dataset && trackResource.datasetConfig) {
           trackQuery = {
             dataviewId: dataview.dataviewId as number,

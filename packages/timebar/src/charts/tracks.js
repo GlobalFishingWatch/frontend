@@ -13,16 +13,17 @@ const SegmentType = PropTypes.shape({
 const TrackType = PropTypes.shape({
   color: PropTypes.string,
   segments: PropTypes.arrayOf(SegmentType),
+  segmentsOffsetY: PropTypes.boolean,
 })
 
-const Segments = ({ segments, color, immediate, y }) => {
-  return segments.map((segment) => (
+const Segments = ({ segments, color, immediate, y, segmentsOffsetY }) => {
+  return segments.map((segment, i) => (
     <div
       key={segment.id}
       className={styles.segment}
       style={{
         backgroundColor: color,
-        top: y,
+        top: segmentsOffsetY ? y + i : y,
         left: segment.x,
         width: segment.width,
         transition: immediate
@@ -47,6 +48,7 @@ const getCoords = (tracks, outerScale) => {
   tracks.forEach((track) => {
     const coordTrack = {
       color: track.color,
+      segmentsOffsetY: track.segmentsOffsetY,
     }
     coordTrack.segments = track.segments.map((segment, i) => {
       const x = outerScale(segment.start)
@@ -73,7 +75,13 @@ const Tracks = ({ tracks }) => {
         const y = getTrackY(tracks.length, i, graphHeight)
         return (
           <div key={i}>
-            <Segments segments={track.segments} color={track.color} immediate={immediate} y={y} />
+            <Segments
+              segments={track.segments}
+              color={track.color}
+              immediate={immediate}
+              y={y}
+              segmentsOffsetY={track.segmentsOffsetY}
+            />
           </div>
         )
       })}

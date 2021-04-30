@@ -25,6 +25,7 @@ export enum EndpointId {
   FourwingsLegend = '4wings-legend',
   FourwingsInteraction = '4wings-interaction',
   UserContextTiles = 'user-context-tiles',
+  UserTracks = 'user-tracks-data',
 }
 
 export interface Endpoint {
@@ -46,6 +47,8 @@ export enum DatasetTypes {
   Fourwings = '4wings:v1',
   Context = 'user-context-layer:v1',
   Download = 'data-download:v1',
+  // TODO
+  UserTracks = 'user-tracks:v1',
 }
 
 export enum DatasetStatus {
@@ -54,13 +57,14 @@ export enum DatasetStatus {
   Error = 'error',
 }
 
-export type DatasetCustomTypes = 'points' | 'lines' | 'geometries'
+export type DatasetGeometryType = 'polygons' | 'tracks' | 'points'
+
 export interface DatasetConfiguration {
   index?: string
   filePath?: string
   srid?: number
   file?: string
-  type?: DatasetCustomTypes
+  geometryType?: DatasetGeometryType
   format?: 'geojson'
   [key: string]: unknown
 }

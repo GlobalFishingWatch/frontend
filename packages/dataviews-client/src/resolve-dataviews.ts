@@ -67,22 +67,31 @@ export const mergeWorkspaceUrlDataviewInstances = (
 
 export const resolveDataviewDatasetResource = (
   dataview: UrlDataviewInstance,
-  typeOrId: DatasetTypes | string
+  typeOrId: DatasetTypes | DatasetTypes[] | string
 ): {
   dataset?: Dataset
   datasetConfig?: DataviewDatasetConfig
   url?: string
 } => {
-  const isType = Object.values(DatasetTypes).includes(typeOrId as any)
+  const isArray = Array.isArray(typeOrId)
+  const isType = isArray || Object.values(DatasetTypes).includes(typeOrId as DatasetTypes)
+  let types: DatasetTypes[]
+  if (isType) {
+    types = isArray ? (typeOrId as DatasetTypes[]) : [typeOrId as DatasetTypes]
+  }
+
   const dataset = isType
-    ? dataview.datasets?.find((dataset) => dataset.type === typeOrId)
+    ? dataview.datasets?.find((dataset) => types.includes(dataset.type))
     : dataview.datasets?.find((dataset) => dataset.id === typeOrId)
+
   if (!dataset) return {}
   const datasetConfig = dataview?.datasetsConfig?.find(
     (datasetConfig) => datasetConfig.datasetId === dataset.id
   )
+
   if (!datasetConfig) return {}
   const url = resolveEndpoint(dataset, datasetConfig)
+
   if (!url) return {}
 
   return { dataset, datasetConfig, url }
