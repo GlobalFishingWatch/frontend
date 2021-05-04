@@ -1,5 +1,4 @@
 import React from 'react'
-import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { DatasetTypes } from '@globalfishingwatch/api-types'

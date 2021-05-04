@@ -12,6 +12,7 @@ import {
   selectUrlViewport,
   selectUrlTimeRange,
   selectLocationCategory,
+  selectActivityCategory,
 } from 'routes/routes.selectors'
 import {
   TimebarEvents,
@@ -113,9 +114,17 @@ export const selectWorkspaceAppState = createSelector(
     selectTimebarVisualisation,
     selectTimebarEvents,
     selectTimebarGraph,
+    selectActivityCategory,
   ],
-  (bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph) => {
-    return { bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph }
+  (bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph, activityCategory) => {
+    return {
+      bivariate,
+      sidebarOpen,
+      timebarVisualisation,
+      timebarEvents,
+      timebarGraph,
+      activityCategory,
+    }
   }
 )
 

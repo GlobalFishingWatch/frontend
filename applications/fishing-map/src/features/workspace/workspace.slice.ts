@@ -138,21 +138,26 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
 
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
       let workspaceUpdated
-      try {
-        const version = selectVersion(state)
-        const name = tries > 0 ? defaultName + `_${tries}` : defaultName
-        workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces`, {
-          method: 'POST',
-          body: { ...mergedWorkspace, name },
-        } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
-      } catch (e) {
-        // Means we already have a workspace with this name
-        if (e.status === 400) {
-          return await saveWorkspace(tries + 1)
+      if (tries < 5) {
+        try {
+          const version = selectVersion(state)
+          const name = tries > 0 ? defaultName + `_${tries}` : defaultName
+          workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
+            `/${version}/workspaces`,
+            {
+              method: 'POST',
+              body: { ...mergedWorkspace, name },
+            } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
+          )
+        } catch (e) {
+          // Means we already have a workspace with this name
+          if (e.status === 400) {
+            return await saveWorkspace(tries + 1)
+          }
+          throw e
         }
-        throw e
+        return workspaceUpdated
       }
-      return workspaceUpdated
     }
 
     const workspaceUpdated = await saveWorkspace()
