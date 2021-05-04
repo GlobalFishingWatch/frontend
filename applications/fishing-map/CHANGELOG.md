@@ -1,5 +1,17 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.29.0
+
+### Minor Changes
+
+- 2f7db18f: Fishing map/color cycling
+
+### Patch Changes
+
+- Updated dependencies [2f7db18f]
+  - @globalfishingwatch/api-types@4.1.3
+  - @globalfishingwatch/ui-components@3.0.3
+
 ## 0.28.41
 
 ### Patch Changes

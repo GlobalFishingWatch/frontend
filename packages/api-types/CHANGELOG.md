@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.1.3
+
+### Patch Changes
+
+- 2f7db18f: Fishing map/color cycling
+
 ## 4.1.2
 
 ### Patch Changes
