@@ -105,7 +105,9 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         .filter(({ field, condition }) => (condition ? condition(field) : true))
         .map(
           ({ field, operator, transformation }) =>
-            `${field} ${operator} '${transformation ? transformation(query) : query}'`
+            `${field} ${operator} '${encodeURIComponent(
+              transformation ? transformation(query) : query
+            )}'`
         )
         .join(' OR ')
 
@@ -147,7 +149,9 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         .filter(({ value }) => value !== undefined && value !== '')
         .map(
           ({ field, operator, transformation, value }) =>
-            `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
+            `${field} ${operator} ${encodeURIComponent(
+              transformation ? transformation(value) : `'${value}'`
+            )}`
         )
 
       advancedQuery = [`(${querySearch})`, ...queryFilters].join(' AND ')
