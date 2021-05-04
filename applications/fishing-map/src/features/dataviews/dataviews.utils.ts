@@ -5,8 +5,8 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import {
-  TrackColorBarOptions,
-  HeatmapColorBarOptions,
+  LineColorBarOptions,
+  FillColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
@@ -49,7 +49,7 @@ export const getVesselDataviewInstance = (
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       // TODO pick a not used color
-      color: TrackColorBarOptions[Math.floor(Math.random() * TrackColorBarOptions.length)].value,
+      color: LineColorBarOptions[Math.floor(Math.random() * LineColorBarOptions.length)].value,
     },
     datasetsConfig,
   }
@@ -59,8 +59,8 @@ export const getVesselDataviewInstance = (
 export const getActivityDataviewInstance = (
   usedRamps: string[] = []
 ): DataviewInstance<Generators.Type> => {
-  const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamps.includes(option.id))
-  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : HeatmapColorBarOptions[0]
+  const notUsedOptions = FillColorBarOptions.filter((option) => !usedRamps.includes(option.id))
+  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : FillColorBarOptions[0]
   return {
     id: `fishing-${Date.now()}`,
     config: {
@@ -74,8 +74,8 @@ export const getActivityDataviewInstance = (
 export const getPresenceDataviewInstance = (
   usedRamps: string[] = []
 ): DataviewInstance<Generators.Type> => {
-  const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamps.includes(option.id))
-  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : HeatmapColorBarOptions[0]
+  const notUsedOptions = FillColorBarOptions.filter((option) => !usedRamps.includes(option.id))
+  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : FillColorBarOptions[0]
   return {
     id: `presence-${Date.now()}`,
     config: {
@@ -90,8 +90,8 @@ export const getEnvironmentDataviewInstance = (
   datasetId: string,
   usedRamp: string[] = []
 ): DataviewInstance<Generators.Type> => {
-  const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamp.includes(option.id))
-  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
+  const notUsedOptions = FillColorBarOptions.filter((option) => !usedRamp.includes(option.id))
+  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : LineColorBarOptions[0]
   const environmentalDataviewInstance = {
     id: `${ENVIRONMENTAL_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Environment,
@@ -124,7 +124,7 @@ export const getUserTrackDataviewInstance = (dataset: Dataset) => {
     dataviewId: DEFAULT_USER_TRACK_ID,
     config: {
       // TODO pick a not used color
-      color: TrackColorBarOptions[Math.floor(Math.random() * TrackColorBarOptions.length)].value,
+      color: LineColorBarOptions[Math.floor(Math.random() * LineColorBarOptions.length)].value,
     },
     datasetsConfig,
   }
@@ -135,8 +135,8 @@ export const getContextDataviewInstance = (
   datasetId: string,
   usedColors: string[] = []
 ): DataviewInstance<Generators.Type> => {
-  const notUsedOptions = TrackColorBarOptions.filter((option) => !usedColors.includes(option.value))
-  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
+  const notUsedOptions = LineColorBarOptions.filter((option) => !usedColors.includes(option.value))
+  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : LineColorBarOptions[0]
   const contextDataviewInstance = {
     id: `${CONTEXT_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Context,
