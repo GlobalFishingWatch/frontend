@@ -1,6 +1,6 @@
 export * from './types/types'
 export { default as Button } from './button'
-export { default as ColorBar, HeatmapColorBarOptions, TrackColorBarOptions } from './color-bar'
+export { default as ColorBar, FillColorBarOptions, LineColorBarOptions } from './color-bar'
 export { default as CountryFlag } from './countryflag'
 export { default as Choice } from './choice'
 export { default as Header } from './header'

@@ -44,11 +44,8 @@ function HeatmapsSection(): React.ReactElement {
     (category: HeatmapCategory) => {
       setHeatmapSublayersAddedIndex(dataviews ? dataviews.length : 0)
       dispatchQueryParams({ bivariate: false })
-      const usedRamps = dataviews?.flatMap((dataview) => dataview.config?.colorRamp || [])
       const dataviewInstance =
-        category === 'activity'
-          ? getActivityDataviewInstance(usedRamps)
-          : getPresenceDataviewInstance(usedRamps)
+        category === 'activity' ? getActivityDataviewInstance() : getPresenceDataviewInstance()
       upsertDataviewInstance(dataviewInstance)
       setNewLayerOpen(false)
     },
