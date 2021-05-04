@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.6.6
+
+### Patch Changes
+
+- 2f7db18f: Fishing map/color cycling
+
 ## 0.6.5
 
 ### Patch Changes

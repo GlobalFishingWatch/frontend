@@ -1,5 +1,14 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.32
+
+### Patch Changes
+
+- 2f7db18f: Fishing map/color cycling
+- Updated dependencies [2f7db18f]
+  - @globalfishingwatch/api-types@4.1.3
+  - @globalfishingwatch/ui-components@3.0.3
+
 ## 0.0.31
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 3.0.3
+
+### Patch Changes
+
+- 2f7db18f: Fishing map/color cycling
+
 ## 3.0.2
 
 ### Patch Changes
