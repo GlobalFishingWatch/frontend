@@ -45,7 +45,8 @@ export enum DataviewCategory {
   Context = 'context',
   Events = 'events',
   Environment = 'environment',
-  Activity = 'activity',
+  Fishing = 'fishing',
+  Presence = 'presence',
 }
 
 export interface Dataview<Type = any, Category = DataviewCategory> {

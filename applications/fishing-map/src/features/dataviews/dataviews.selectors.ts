@@ -17,13 +17,14 @@ import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { ThinningLevels, THINNING_LEVELS } from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { selectActivityCategory, selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import {
   selectWorkspaceStatus,
   selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
 import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
+import { isActivityDataview } from 'features/workspace/heatmaps/heatmaps.utils'
 import { selectAllDataviews } from './dataviews.slice'
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {
@@ -97,12 +98,22 @@ export const selectDataviewInstancesMerged = createSelector(
   }
 )
 
-export const selectDataviewInstancesResolved = createSelector(
+export const selectAllDataviewInstancesResolved = createSelector(
   [selectDataviewInstancesMerged, selectDataviews, selectDatasets],
   (dataviewInstances, dataviews, datasets): UrlDataviewInstance[] | undefined => {
     if (!dataviewInstances) return
     const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
     return dataviewInstancesResolved
+  }
+)
+
+export const selectDataviewInstancesResolved = createSelector(
+  [selectAllDataviewInstancesResolved, selectActivityCategory],
+  (dataviews = [], activityCategory) => {
+    return dataviews.filter((dataview) => {
+      const activityDataview = isActivityDataview(dataview)
+      return activityDataview ? dataview.category === activityCategory : true
+    })
   }
 )
 
@@ -161,9 +172,21 @@ export const selectActiveContextAreasDataviews = createSelector(
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectActivityDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Activity)],
+export const selectFishingDataviews = createSelector(
+  [selectDataviewInstancesByCategory(DataviewCategory.Fishing)],
   (dataviews) => dataviews
+)
+
+export const selectPresenceDataviews = createSelector(
+  [selectDataviewInstancesByCategory(DataviewCategory.Presence)],
+  (dataviews) => dataviews
+)
+
+export const selectActivityDataviews = createSelector(
+  [selectFishingDataviews, selectPresenceDataviews, selectActivityCategory],
+  (fishingDataviews = [], presenceDataviews = [], activityCategory) => {
+    return activityCategory === 'presence' ? presenceDataviews : fishingDataviews
+  }
 )
 
 export const selectActiveActivityDataviews = createSelector(

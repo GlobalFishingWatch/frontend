@@ -154,7 +154,8 @@ export const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = [
 ]
 
 export const POPUP_CATEGORY_ORDER = [
-  DataviewCategory.Activity,
+  DataviewCategory.Fishing,
+  DataviewCategory.Presence,
   DataviewCategory.Events,
   DataviewCategory.Environment,
   DataviewCategory.Context,
