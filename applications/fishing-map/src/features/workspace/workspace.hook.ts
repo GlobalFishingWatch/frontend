@@ -38,14 +38,19 @@ const createDataviewsInstances = (
   return newDataviewInstances.map((dataview) => {
     if (dataview.config?.colorCyclingType) {
       const nextColor = getNextColor(dataview.config.colorCyclingType, currentDataviewInstances)
-      return {
+      const { colorCyclingType, ...config } = dataview.config
+      const dataviewWithColor = {
         ...dataview,
         config: {
-          ...dataview.config,
+          ...config,
           color: nextColor.value,
-          colorRamp: nextColor.id,
         },
       } as UrlDataviewInstance
+      if (dataview.config.colorCyclingType === 'fill') {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        dataviewWithColor.config!.colorRamp = nextColor.id
+      }
+      return dataviewWithColor
     }
     return dataview as UrlDataviewInstance
   })
