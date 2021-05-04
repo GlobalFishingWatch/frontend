@@ -3,8 +3,8 @@ import memoize from 'lodash/memoize'
 import { Query, RouteObject } from 'redux-first-router'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store'
-import { WorkspaceParam } from 'types'
-import { DEFAULT_VERSION } from 'data/config'
+import { WorkspaceActivityCategory, WorkspaceParam } from 'types'
+import { DEFAULT_ACTIVITY_CATEGORY, DEFAULT_VERSION } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
 import { HOME, ROUTE_TYPES, WORKSPACE } from './routes'
 
@@ -62,6 +62,10 @@ export const selectUrlStartQuery = selectQueryParam<string>('start')
 export const selectUrlEndQuery = selectQueryParam<string>('end')
 export const selectUrlDataviewInstances = selectQueryParam<UrlDataviewInstance[]>(
   'dataviewInstances'
+)
+export const selectActivityCategory = createSelector(
+  [selectQueryParam<WorkspaceActivityCategory>('activityCategory')],
+  (activityCategory) => activityCategory || DEFAULT_ACTIVITY_CATEGORY
 )
 
 export const selectUrlViewport = createSelector(
