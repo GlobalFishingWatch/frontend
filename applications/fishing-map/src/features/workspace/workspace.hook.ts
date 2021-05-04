@@ -1,12 +1,59 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { ColorCyclingType } from '@globalfishingwatch/api-types/dist'
+import { FillColorBarOptions, LineColorBarOptions } from '@globalfishingwatch/ui-components'
+import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
+
+const getNextColor = (
+  colorCyclingType: ColorCyclingType,
+  currentDataviews: UrlDataviewInstance[] | undefined
+) => {
+  const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
+  if (!currentDataviews) {
+    return palette[0]
+  }
+  const currentColors = currentDataviews.map((dv) => dv.config?.color).filter(Boolean)
+  let minRepeat = Number.POSITIVE_INFINITY
+  const availableColors: (ColorBarOption & { num: number })[] = palette.map((color) => {
+    const num = currentColors.filter((c) => c === color.value).length
+    if (num < minRepeat) minRepeat = num
+    return {
+      ...color,
+      num,
+    }
+  })
+  const nextColor = availableColors.find((c) => c.num === minRepeat) || availableColors[0]
+  return nextColor
+}
+
+const createDataviewsInstances = (
+  newDataviewInstances: Partial<UrlDataviewInstance>[],
+  currentDataviewInstances: UrlDataviewInstance[] | undefined
+): UrlDataviewInstance[] => {
+  return newDataviewInstances.map((dataview) => {
+    if (dataview.config?.colorCyclingType) {
+      const nextColor = getNextColor(dataview.config.colorCyclingType, currentDataviewInstances)
+      return {
+        ...dataview,
+        config: {
+          ...dataview.config,
+          color: nextColor.value,
+          colorRamp: nextColor.id,
+        },
+      } as UrlDataviewInstance
+    }
+    return dataview as UrlDataviewInstance
+  })
+}
 
 export const useDataviewInstancesConnect = () => {
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
+  const allDataviews = useSelector(selectDataviewInstancesResolved)
   const { dispatchQueryParams } = useLocationConnect()
 
   const removeDataviewInstance = useCallback(
@@ -41,25 +88,25 @@ export const useDataviewInstancesConnect = () => {
       } else {
         dispatchQueryParams({
           dataviewInstances: [
-            dataviewInstance as UrlDataviewInstance,
+            ...createDataviewsInstances([dataviewInstance], allDataviews),
             ...(urlDataviewInstances || []),
           ],
         })
       }
     },
-    [dispatchQueryParams, urlDataviewInstances]
+    [dispatchQueryParams, urlDataviewInstances, allDataviews]
   )
 
   const addNewDataviewInstances = useCallback(
     (dataviewInstances: Partial<UrlDataviewInstance>[]) => {
       dispatchQueryParams({
         dataviewInstances: [
-          ...(dataviewInstances as UrlDataviewInstance[]),
+          ...createDataviewsInstances(dataviewInstances, allDataviews),
           ...(urlDataviewInstances || []),
         ],
       })
     },
-    [dispatchQueryParams, urlDataviewInstances]
+    [dispatchQueryParams, urlDataviewInstances, allDataviews]
   )
 
   const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
