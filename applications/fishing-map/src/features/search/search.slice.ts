@@ -105,9 +105,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         .filter(({ field, condition }) => (condition ? condition(field) : true))
         .map(
           ({ field, operator, transformation }) =>
-            `${field} ${operator} '${encodeURIComponent(
-              transformation ? transformation(query) : query
-            )}'`
+            `${field} ${operator} '${transformation ? transformation(query) : query}'`
         )
         .join(' OR ')
 
@@ -149,9 +147,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         .filter(({ value }) => value !== undefined && value !== '')
         .map(
           ({ field, operator, transformation, value }) =>
-            `${field} ${operator} ${encodeURIComponent(
-              transformation ? transformation(value) : `'${value}'`
-            )}`
+            `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
         )
 
       advancedQuery = [`(${querySearch})`, ...queryFilters].join(' AND ')
@@ -165,19 +161,14 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         { id: 'datasets', value: datasets.map((d) => d.id) },
         { id: 'limit', value: RESULTS_PER_PAGE },
         { id: 'offset', value: offset },
-        { id: 'query', value: advancedQuery || query },
+        { id: 'query', value: encodeURIComponent(advancedQuery || query) },
       ],
     }
 
-    const url = 'http://localhost:3011' + resolveEndpoint(dataset, datasetConfig)
+    const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
       const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(url, {
         signal,
-        headers: {
-          'x-gateway-url': 'https://gateway.api.dev.globalfishingwatch.org',
-          user: '{"id": 1}',
-          permissions: '[{"type": "dataset", "action": "search", "value": "*"}]',
-        },
       })
 
       const vesselsWithDataset = searchResults.entries.flatMap((vessel) => {
