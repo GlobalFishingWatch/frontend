@@ -25,8 +25,8 @@ export type SearchFilter = {
   sources?: MultiSelectOption<string>[]
   fleets?: MultiSelectOption<string>[]
   origins?: MultiSelectOption<string>[]
-  firstTransmissionDate?: string
-  lastTransmissionDate?: string
+  activeAfterDate?: string
+  activeBeforeDate?: string
 }
 
 interface SearchState {
@@ -113,35 +113,35 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
       const queryFiltersFields = [
         {
-          value: filters.flags,
           field: 'flag',
           operator: 'IN',
+          value: filters.flags,
           transformation: (value: any): string =>
             `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
         },
         {
-          value: filters.fleets,
           field: 'fleet',
           operator: 'IN',
+          value: filters.fleets,
           transformation: (value: any): string =>
             `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
         },
         {
-          value: filters.origins,
           field: 'origin',
           operator: 'IN',
+          value: filters.origins,
           transformation: (value: any): string =>
             `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
         },
         {
-          value: filters?.firstTransmissionDate,
-          field: 'firstTransmissionDate',
+          field: 'lastTransmissionDate',
           operator: '>=',
+          value: filters?.activeAfterDate,
         },
         {
-          value: filters?.lastTransmissionDate,
-          field: 'lastTransmissionDate',
+          field: 'firstTransmissionDate',
           operator: '<=',
+          value: filters?.activeBeforeDate,
         },
       ]
 
@@ -169,10 +169,15 @@ export const fetchVesselSearchThunk = createAsyncThunk(
       ],
     }
 
-    const url = resolveEndpoint(dataset, datasetConfig)
+    const url = 'http://localhost:3011' + resolveEndpoint(dataset, datasetConfig)
     if (url) {
       const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(url, {
         signal,
+        headers: {
+          'x-gateway-url': 'https://gateway.api.dev.globalfishingwatch.org',
+          user: '{"id": 1}',
+          permissions: '[{"type": "dataset", "action": "search", "value": "*"}]',
+        },
       })
 
       const vesselsWithDataset = searchResults.entries.flatMap((vessel) => {
