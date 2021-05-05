@@ -15,6 +15,7 @@ import {
   GeneratorDataviewConfig,
   Generators,
   Group,
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
 } from '@globalfishingwatch/layer-composer'
 import type {
   ColorRampsIds,
@@ -249,7 +250,7 @@ export function getGeneratorConfig(
             (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
             {}
           const rampScale = scaleLinear().range([min, max]).domain([0, 1])
-          const numSteps = 8
+          const numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
           const steps = [...Array(numSteps)]
             .map((_, i) => parseFloat((i / (numSteps - 1))?.toFixed(2)))
             .map((value) => parseFloat((rampScale(value) as number)?.toFixed(3)))

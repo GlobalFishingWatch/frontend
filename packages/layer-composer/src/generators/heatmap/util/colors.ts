@@ -1,5 +1,6 @@
 import { normal, screen } from 'color-blend'
 import { RGBA } from 'color-blend/dist/types'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS, COLOR_RAMP_DEFAULT_NUM_STEPS_TO_WHITE } from '../config'
 
 export const hexToRgb = (hex: string) => {
   const cleanHex = hex.replace('#', '')
@@ -43,18 +44,24 @@ export const rgbaToHex = ({ r, g, b }: RGBA) => {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
 
-export const BLEND_BACKGROUND = '#244979'
+const BLEND_BACKGROUND = '#244979'
 export const getBlend = (color1: RGBA, color2: RGBA) => {
   return normal({ ...hexToRgb(BLEND_BACKGROUND), a: 1 }, screen(color1 as RGBA, color2 as RGBA))
 }
 
-export const getColorRampByOpacitySteps = (finalColor: string, numSteps = 10) => {
+export const getColorRampByOpacitySteps = (
+  finalColor: string,
+  numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
+) => {
   const color = finalColor.includes('#') ? hexToRgbString(finalColor) : finalColor
   const opacitySteps = [...Array(numSteps)].map((_, i) => i / (numSteps - 1))
   return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
 }
 
-export const getColorRampToWhite = (hexColor: string, numSteps = 3) => {
+export const getColorRampToWhite = (
+  hexColor: string,
+  numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS_TO_WHITE[1]
+) => {
   const rgbColor = hexToRgb(hexColor)
   const steps = [...Array(numSteps - 1)].map((_, i) => {
     const ratio = (i + 1) / numSteps
@@ -73,8 +80,8 @@ export const getColorRampToWhite = (hexColor: string, numSteps = 3) => {
 
 export const getMixedOpacityToWhiteColorRamp = (
   finalColor: string,
-  numStepsOpacity = 7,
-  numStepsTopWhite = 3
+  numStepsOpacity = COLOR_RAMP_DEFAULT_NUM_STEPS_TO_WHITE[0],
+  numStepsTopWhite = COLOR_RAMP_DEFAULT_NUM_STEPS_TO_WHITE[1]
 ) => {
   return [
     ...getColorRampByOpacitySteps(finalColor, numStepsOpacity),
