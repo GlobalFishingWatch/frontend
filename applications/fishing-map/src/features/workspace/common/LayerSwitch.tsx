@@ -8,9 +8,10 @@ type LayerSwitchProps = {
   dataview: UrlDataviewInstance
   className: string
   disabled?: boolean
+  onToggle?: (active: boolean) => void
 }
 
-const LayerSwitch = ({ active, dataview, className, disabled }: LayerSwitchProps) => {
+const LayerSwitch = ({ active, dataview, className, disabled, onToggle }: LayerSwitchProps) => {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const layerActive = dataview?.config?.visible ?? true
@@ -21,6 +22,9 @@ const LayerSwitch = ({ active, dataview, className, disabled }: LayerSwitchProps
         visible: !layerActive,
       },
     })
+    if (onToggle) {
+      onToggle(!layerActive)
+    }
   }
   return (
     <Switch

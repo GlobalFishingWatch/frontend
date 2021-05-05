@@ -1,15 +1,16 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Choice, { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectBivariate } from 'features/app/app.selectors'
+import { selectBivariateDataviews } from 'features/app/app.selectors'
 import {
   getFishingDataviewInstance,
   getPresenceDataviewInstance,
@@ -18,6 +19,7 @@ import { ACTIVITY_OPTIONS } from 'data/config'
 import { WorkspaceActivityCategory } from 'types'
 import { selectActivityCategory } from 'routes/routes.selectors'
 import LayerPanel from './HeatmapLayerPanel'
+import heatmapStyles from './HeatmapsSection.module.css'
 
 function HeatmapsSection(): React.ReactElement {
   const { t } = useTranslation()
@@ -26,9 +28,9 @@ function HeatmapsSection(): React.ReactElement {
   const activityCategory = useSelector(selectActivityCategory)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
-  const bivariate = useSelector(selectBivariate)
+  const bivariateDataviews = useSelector(selectBivariateDataviews)
   const supportBivariateToggle =
-    dataviews?.filter((dataview) => dataview?.config?.visible)?.length === 2
+    dataviews?.filter((dataview) => dataview?.config?.visible)?.length >= 2
 
   useEffect(() => {
     setHeatmapSublayersAddedIndex(undefined)
@@ -44,7 +46,7 @@ function HeatmapsSection(): React.ReactElement {
   const onAddClick = useCallback(
     (category: WorkspaceActivityCategory) => {
       setHeatmapSublayersAddedIndex(dataviews ? dataviews.length : 0)
-      dispatchQueryParams({ bivariate: false })
+      dispatchQueryParams({ bivariateDataviews: undefined })
       const dataviewInstance =
         category === 'fishing' ? getFishingDataviewInstance() : getPresenceDataviewInstance()
       upsertDataviewInstance(dataviewInstance)
@@ -52,28 +54,29 @@ function HeatmapsSection(): React.ReactElement {
     [dispatchQueryParams, dataviews, upsertDataviewInstance]
   )
 
-  const onToggleCombinationMode = useCallback(() => {
-    const newBivariateValue = !bivariate
-    dispatchQueryParams({ bivariate: newBivariateValue })
-    // automatically set 2 first animated heatmaps to visible
-    if (newBivariateValue) {
-      let heatmapAnimatedIndex = 0
-      dataviews?.forEach((dataview) => {
-        if (dataview.config?.type === Generators.Type.HeatmapAnimated) {
-          const visible = heatmapAnimatedIndex < 2
-          upsertDataviewInstance({
-            id: dataview.id,
-            config: {
-              visible,
-            },
-          })
-          heatmapAnimatedIndex++
-        }
+  const onBivariateDataviewsClick = useCallback(
+    (dataview1: UrlDataviewInstance, dataview2: UrlDataviewInstance) => {
+      dispatchQueryParams({ bivariateDataviews: [dataview1.id, dataview2.id] })
+      // automatically set other animated heatmaps to invisible
+      const dataviewsToDisable = dataviews?.filter(
+        (dataview) =>
+          dataview.id !== dataview1.id &&
+          dataview.id !== dataview2.id &&
+          dataview.config?.type === Generators.Type.HeatmapAnimated
+      )
+      dataviewsToDisable?.forEach((dataview) => {
+        upsertDataviewInstance({
+          id: dataview.id,
+          config: {
+            visible: false,
+          },
+        })
       })
-    }
-  }, [bivariate, dataviews, dispatchQueryParams, upsertDataviewInstance])
+    },
+    [dataviews, dispatchQueryParams, upsertDataviewInstance]
+  )
 
-  let bivariateTooltip = bivariate
+  let bivariateTooltip = bivariateDataviews
     ? t('layer.toggleCombinationMode.split', 'Split layers')
     : t('layer.toggleCombinationMode.combine', 'Combine layers')
   if (!supportBivariateToggle) {
@@ -97,16 +100,6 @@ function HeatmapsSection(): React.ReactElement {
           onOptionClick={onActivityOptionClick}
         />
         <div className={cx('print-hidden', styles.sectionButtons)}>
-          {/* // TODO move this between layers */}
-          {/* <IconButton
-            icon={bivariate ? 'split' : 'compare'}
-            type="border"
-            size="medium"
-            disabled={!supportBivariateToggle}
-            tooltip={bivariateTooltip}
-            tooltipPlacement="top"
-            onClick={onToggleCombinationMode}
-          /> */}
           <IconButton
             icon="plus"
             type="border"
@@ -117,14 +110,37 @@ function HeatmapsSection(): React.ReactElement {
           />
         </div>
       </div>
-      {dataviews?.map((dataview, index) => (
-        <LayerPanel
-          key={dataview.id}
-          dataview={dataview}
-          index={index}
-          isOpen={index === heatmapSublayersAddedIndex}
-        />
-      ))}
+      {dataviews?.map((dataview, index) => {
+        const isLastElement = index === dataviews?.length - 1
+        const isVisible = dataview?.config?.visible ?? false
+        const isNextVisible = dataviews[index + 1]?.config?.visible ?? false
+        const showBivariateIcon =
+          bivariateDataviews === undefined && isVisible && isNextVisible && !isLastElement
+        return (
+          <Fragment key={dataview.id}>
+            <LayerPanel
+              key={dataview.id}
+              dataview={dataview}
+              showBorder={!showBivariateIcon}
+              isOpen={index === heatmapSublayersAddedIndex}
+            />
+            {showBivariateIcon && (
+              <div className={cx(heatmapStyles.bivariateToggleContainer)}>
+                <IconButton
+                  icon={bivariateDataviews ? 'split' : 'compare'}
+                  type="border"
+                  size="small"
+                  disabled={!supportBivariateToggle}
+                  className={heatmapStyles.bivariateToggle}
+                  tooltip={bivariateTooltip}
+                  tooltipPlacement="top"
+                  onClick={() => onBivariateDataviewsClick(dataview, dataviews[index + 1])}
+                />
+              </div>
+            )}
+          </Fragment>
+        )
+      })}
     </div>
   )
 }

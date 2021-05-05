@@ -18,11 +18,16 @@ import { selectResources, ResourcesState } from 'features/resources/resources.sl
 import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/rulers/rulers.slice'
 import { selectHighlightedTime, selectStaticTime, Range } from 'features/timebar/timebar.slice'
-import { selectViewport, selectTimeRange, selectBivariate } from 'features/app/app.selectors'
+import {
+  selectViewport,
+  selectTimeRange,
+  selectBivariateDataviews,
+} from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { DEFAULT_TIME_RANGE } from 'data/config'
+import { BivariateDataviews } from 'types'
 
 export const selectGlobalGeneratorsConfig = createSelector(
   [selectViewport, selectTimeRange],
@@ -41,7 +46,7 @@ type GetGeneratorConfigParams = {
   debugOptions: DebugOptions
   highlightedTime?: Range
   staticTime: Range
-  bivariate: boolean
+  bivariateDataviews: BivariateDataviews
 }
 const getGeneratorsConfig = ({
   dataviews = [],
@@ -50,13 +55,14 @@ const getGeneratorsConfig = ({
   debugOptions,
   highlightedTime,
   staticTime,
-  bivariate,
+  bivariateDataviews,
 }: GetGeneratorConfigParams) => {
   const animatedHeatmapDataviews = dataviews.filter((d) => {
     return d.config?.type === Generators.Type.HeatmapAnimated && d.config.visible === true
   })
 
-  let heatmapAnimatedMode: Generators.HeatmapAnimatedMode = bivariate
+  // TODO read bivariate dataviews
+  let heatmapAnimatedMode: Generators.HeatmapAnimatedMode = bivariateDataviews
     ? Generators.HeatmapAnimatedMode.Bivariate
     : Generators.HeatmapAnimatedMode.Compare
   if (debugOptions.extruded) {
@@ -96,9 +102,17 @@ const selectMapGeneratorsConfig = createSelector(
     selectDebugOptions,
     selectHighlightedTime,
     selectStaticTime,
-    selectBivariate,
+    selectBivariateDataviews,
   ],
-  (dataviews = [], resources, rulers, debugOptions, highlightedTime, staticTime, bivariate) => {
+  (
+    dataviews = [],
+    resources,
+    rulers,
+    debugOptions,
+    highlightedTime,
+    staticTime,
+    bivariateDataviews
+  ) => {
     if (!staticTime) return
     return getGeneratorsConfig({
       dataviews,
@@ -107,7 +121,7 @@ const selectMapGeneratorsConfig = createSelector(
       debugOptions,
       highlightedTime,
       staticTime,
-      bivariate,
+      bivariateDataviews,
     })
   }
 )
@@ -119,9 +133,9 @@ const selectStaticGeneratorsConfig = createSelector(
     selectRulers,
     selectDebugOptions,
     selectStaticTime,
-    selectBivariate,
+    selectBivariateDataviews,
   ],
-  (dataviews = [], resources, rulers, debugOptions, staticTime, bivariate) => {
+  (dataviews = [], resources, rulers, debugOptions, staticTime, bivariateDataviews) => {
     if (!staticTime) return
     // We don't want highlightedTime here to avoid re-computing on mouse timebar hovering
     return getGeneratorsConfig({
@@ -130,7 +144,7 @@ const selectStaticGeneratorsConfig = createSelector(
       rulers,
       debugOptions,
       staticTime,
-      bivariate,
+      bivariateDataviews,
     })
   }
 )
