@@ -49,9 +49,11 @@ export const useAddDataviewFromDatasetToWorkspace = () => {
       ) {
         dataviewInstance = getUserTrackDataviewInstance(dataset)
       }
-      if (dataviewInstance) {
-        upsertDataviewInstance(dataviewInstance)
+      if (!dataviewInstance) {
+        throw new Error(`
+        Dataview instance was not instanciated correctly. With dataset ${dataset.id}`)
       }
+      upsertDataviewInstance(dataviewInstance)
     },
     [upsertDataviewInstance]
   )

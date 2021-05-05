@@ -113,10 +113,11 @@ function NewDataset(): React.ReactElement {
             type: DatasetTypes.Context,
             category: datasetCategory,
             configuration: {
+              geometryType: datasetGeometryType,
               // TODO when supporting multiple files upload
               // ...(geojson?.fileName && { file: geojson.fileName }),
               ...(isGeojson && { format: 'geojson' }),
-            },
+            } as DatasetConfiguration,
           }))
         } else {
           setFileData(undefined)
