@@ -76,16 +76,6 @@ function HeatmapsSection(): React.ReactElement {
     [dataviews, dispatchQueryParams, upsertDataviewInstance]
   )
 
-  let bivariateTooltip = bivariateDataviews
-    ? t('layer.toggleCombinationMode.split', 'Split layers')
-    : t('layer.toggleCombinationMode.combine', 'Combine layers')
-  if (!supportBivariateToggle) {
-    bivariateTooltip = t(
-      'layer.toggleCombinationMode.disabled',
-      'Combine mode is only available with two activity layers'
-    )
-  }
-
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   return (
@@ -130,9 +120,8 @@ function HeatmapsSection(): React.ReactElement {
                   icon={bivariateDataviews ? 'split' : 'compare'}
                   type="border"
                   size="small"
-                  disabled={!supportBivariateToggle}
                   className={heatmapStyles.bivariateToggle}
-                  tooltip={bivariateTooltip}
+                  tooltip={t('layer.toggleCombinationMode.combine', 'Combine layers')}
                   tooltipPlacement="top"
                   onClick={() => onBivariateDataviewsClick(dataview, dataviews[index + 1])}
                 />
