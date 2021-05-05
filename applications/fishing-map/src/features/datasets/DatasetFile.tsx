@@ -8,19 +8,23 @@ import { ReactComponent as FilesSupportedTracksIcon } from 'assets/icons/files-s
 import styles from './NewDataset.module.css'
 
 interface DatasetFileProps {
-  type: DatasetGeometryType
+  type?: DatasetGeometryType
   className?: string
-  onFileLoaded: (fileInfo: File, type: DatasetGeometryType) => void
+  onFileLoaded: (fileInfo: File, type?: DatasetGeometryType) => void
 }
 
+const POLYGONS_ACCEPT = '.zip, .json, .geojson'
+const TRACKS_ACCEPT = '.csv'
 const ACCEPT_FILES_BY_TYPE: Record<DatasetGeometryType, string> = {
-  polygons: '.zip, .json, .geojson',
-  tracks: '.csv',
+  polygons: POLYGONS_ACCEPT,
+  tracks: TRACKS_ACCEPT,
   points: '',
 }
 
 const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className = '' }) => {
-  const accept = ACCEPT_FILES_BY_TYPE[type]
+  const accept = type ? ACCEPT_FILES_BY_TYPE[type] : ACCEPT_FILES_BY_TYPE.polygons
+  const filesSupportedIcon =
+    accept === POLYGONS_ACCEPT ? <FilesSupportedPolygonsIcon /> : <FilesSupportedTracksIcon />
   const { t } = useTranslation()
   const onDropAccepted = useCallback(
     (files) => {
@@ -34,7 +38,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
   })
   return (
     <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
-      {type === 'polygons' ? <FilesSupportedPolygonsIcon /> : <FilesSupportedTracksIcon />}
+      {filesSupportedIcon}
       <input {...getInputProps()} />
       {acceptedFiles.length ? (
         <p className={styles.fileText}>

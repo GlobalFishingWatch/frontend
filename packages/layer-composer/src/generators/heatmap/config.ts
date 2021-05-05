@@ -54,6 +54,9 @@ export const HEATMAP_COLORS_BY_ID = {
   orange: '#FFAA0D',
 }
 
+export const COLOR_RAMP_DEFAULT_NUM_STEPS = 10
+export const COLOR_RAMP_DEFAULT_NUM_STEPS_TO_WHITE = [7, 3]
+
 export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   teal: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.teal),
   teal_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.teal),
@@ -69,8 +72,8 @@ export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   red_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.red),
   yellow: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.yellow),
   yellow_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.yellow),
-  green: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.green), // 166,255,89
-  green_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.green), // 166,255,89
+  green: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.green),
+  green_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.green),
   orange: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.orange),
   orange_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.orange),
 }

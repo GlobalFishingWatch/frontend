@@ -12,7 +12,7 @@ import VesselEventsGenerator from './vessel-events/vessel-events'
 import RulersGenerator from './rulers/rulers'
 import TileClusterGenerator from './tile-cluster/tile-cluster'
 
-export { HEATMAP_COLOR_RAMPS } from './heatmap/config'
+export { HEATMAP_COLOR_RAMPS, COLOR_RAMP_DEFAULT_NUM_STEPS } from './heatmap/config'
 export { DEFAULT_HEATMAP_INTERVALS } from './heatmap/heatmap-animated'
 export { CONFIG_BY_INTERVAL } from './heatmap/util/time-chunks'
 export { TEMPORALGRID_SOURCE_LAYER } from './heatmap/modes/gridded'

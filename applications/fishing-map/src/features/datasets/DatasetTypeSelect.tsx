@@ -40,7 +40,7 @@ const DatasetTypeSelect = ({
   currentType,
 }: {
   onDatasetTypeChange: (e: any) => void
-  currentType: DatasetGeometryType | null
+  currentType: DatasetGeometryType | undefined
 }) => {
   const { t } = useTranslation()
   return (
