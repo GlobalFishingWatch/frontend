@@ -27,6 +27,7 @@
     "environment": "Entorno",
     "events": "Eventos",
     "feedback": "Comentarios",
+    "fishing": "Fishing",
     "help": "Ayuda",
     "hour": "Hora",
     "hour_plural": "horas",
@@ -197,6 +198,19 @@
   "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa aparente de esfuerzo de pesca",
     "graph": "Gráfico",
+    "eventOptions": {
+      "all": "All events",
+      "fishing": "Fishing",
+      "encounters": "Encounters",
+      "loitering": "Loitering",
+      "ports": "Port visits",
+      "none": "None"
+    },
+    "graphOptions": {
+      "speed": "Speed",
+      "depth": "Depth $t(common.comingSoon)",
+      "none": "None"
+    },
     "settings_close": "Cerrar la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
     "showFishingEffort": "Mostrar gráfico de horas de pesca",
