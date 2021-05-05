@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.2.0
+
+### Minor Changes
+
+- cfae2b4b: new dataview categories
+
 ## 4.1.3
 
 ### Patch Changes

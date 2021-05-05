@@ -1,5 +1,18 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.5.0
+
+### Minor Changes
+
+- cfae2b4b: new dataview categories
+
+### Patch Changes
+
+- Updated dependencies [cfae2b4b]
+- Updated dependencies [cfae2b4b]
+  - @globalfishingwatch/layer-composer@6.0.2
+  - @globalfishingwatch/api-types@4.2.0
+
 ## 6.4.3
 
 ### Patch Changes
