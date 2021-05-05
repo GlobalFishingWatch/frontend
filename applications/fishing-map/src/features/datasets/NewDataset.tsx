@@ -175,7 +175,7 @@ function NewDataset(): React.ReactElement {
       if (min && max && min >= max) {
         error = t('errors.invalidRange', 'Min has to be lower than max value')
       }
-      if (meta?.type === DatasetTypes.UserTracks) {
+      if (meta?.category === DatasetCategory.Environment && datasetGeometryType === 'tracks') {
         if (
           fileData &&
           newMetadata.configuration?.latitude &&
@@ -201,7 +201,20 @@ function NewDataset(): React.ReactElement {
     if (file) {
       let validityError
       let userTrackGeoJSONFile
-      if (metadata?.type === DatasetTypes.UserTracks) {
+      if (
+        metadata?.category === DatasetCategory.Environment &&
+        datasetGeometryType === 'polygons'
+      ) {
+        if (!metadata?.configuration?.propertyToInclude) {
+          validityError = t('dataset.requiredFields', {
+            fields: 'value',
+            defaultValue: 'Required field value',
+          }) as string
+        }
+      } else if (
+        metadata?.category === DatasetCategory.Environment &&
+        datasetGeometryType === 'tracks'
+      ) {
         if (
           !metadata.configuration?.latitude ||
           !metadata.configuration?.longitude ||
