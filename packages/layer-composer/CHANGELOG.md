@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 6.0.3
+
+### Patch Changes
+
+- 67fdfec5: fix color ramps
+
 ## 6.0.2
 
 ### Patch Changes
