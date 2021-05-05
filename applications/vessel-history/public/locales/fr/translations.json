@@ -17,8 +17,8 @@
     "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en appuyant sur l'icône de filtre dans la barre du haut",
     "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser MMSI, IMO ou Call Sign",
     "notAllowed": "Recherche non autorisée",
-    "loadMore": "Load More",
-    "noMore": "No more results"
+    "loadMore": "Charger plus",
+    "noMore": "Aucun résultat supplémentaire"
   },
   "selects": {
     "allSelected": "Tous",
@@ -33,6 +33,8 @@
     "mmsi": "mmsi",
     "noAuthorizations": "Aucune autorisation trouvée",
     "plusPreviousValuesByField": "+{{quantity}} {{fieldLabel}} précédentes",
+    "readyForOfflineView": "PRÊT POUR VUE Hors LIGNE",
+    "remove": "Retirer",
     "saveForOfflineView": "enregistrer le vaisseau pour une vue hors ligne",
     "source": "source",
     "transmission_plural": "transmissions",

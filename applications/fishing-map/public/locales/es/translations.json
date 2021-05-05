@@ -6,22 +6,18 @@
     "download": "Descargar informe",
     "empty": "Los conjuntos de datos seleccionados aparecerán aquí",
     "errorMessage": "Ha habido un error",
-    "noActivityLayers": "Ninguna capa de actividad se encuentra activa",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
-    "vesselFlags": "por buques marcados por",
-    "area": "Área",
-    "generating": "Estamos generando el informe para ti, estará listo pronto.",
-    "successfullMessage": "El informe ha sido enviado con éxito, lo recibirás pronto por correo electrónico.",
-    "dateRange": "Intervalo de fechas",
-    "emailDescription": "Se generará un informe para los intervalos de fechas y filtros seleccionados y se enviará a tu cuenta de correo electrónico",
-    "generate": "Generar"
+    "vesselFlags": "por buques marcados por"
   },
   "common": {
     "active_after": "Activo después de",
     "active_before": "Activo antes",
-    "activity": "Actividad de embarcaciones",
+    "activity": "Actividad",
+    "analysis": "Crear un análisis para esta área",
+    "analysisNotAvailable": "Activa una actividad o capa de entorno para analizarla en este área",
     "apparentFishing": "Esfuerzo de pesca aparente",
+    "comingSoon": "¡próximamente!",
     "confirm": "Confirmar",
     "context_area_plural": "Areas de gestión",
     "copiedToClipboard": "El enlace para compartir este mapa ha sido copiado al portapapeles.",
@@ -30,6 +26,9 @@
     "description": "Descripción",
     "environment": "Entorno",
     "events": "Eventos",
+    "feedback": "Comentarios",
+    "fishing": "Fishing",
+    "help": "Ayuda",
     "hour": "Hora",
     "hour_plural": "horas",
     "in": "en",
@@ -40,6 +39,7 @@
     "min": "Mínimo",
     "more": "más",
     "name": "Nombre",
+    "optional": "Opcional",
     "presence": "Presencia",
     "report": "Informe",
     "seeDefault": "Ver vista por defecto",
@@ -47,12 +47,7 @@
     "unknown": "Desconocido",
     "update": "Actualizar",
     "vessel": "Buque",
-    "vessel_plural": "Embarcaciones",
-    "loading": "Cargando",
-    "open_menu": "Abrir menú",
-    "dismiss": "Cancelar",
-    "save": "Guardar",
-    "fishing": "Pesca"
+    "vessel_plural": "Embarcaciones"
   },
   "dataset": {
     "addContext": "Añadir conjunto de datos de contexto",
@@ -68,21 +63,30 @@
     "fileNotAllowed": "(Sólo se permiten archivos .zip o .json)",
     "hint": "Más información sobre los formatos soportados",
     "importing": "Se está importando el conjunto de datos",
+    "individualIdField": "Campo ID Individual",
+    "latitudeNameField": "Campo de longitud",
+    "longitudeNameField": "Campo Latitud",
     "new": "Nuevo conjunto de datos",
     "notUploadedYet": "No hay capas de contexto subidas aún",
     "remove": "Remove dataset",
+    "requiredFields": "Campos requeridos {{fields}}",
+    "timeNameField": "Campo nombre de hora",
     "title": "Dataset",
+    "typePoints": " Puntos",
+    "typePointsDescription": "Muestra una o varias posiciones de tamaño por cualquier valor cuantitativo en tu conjunto de datos.",
+    "typePolygons": " Polígonos",
+    "typePolygonsDescription": "Mostrar una o varias áreas coloreadas por cualquier valor cuantitativo en su conjunto de datos.",
+    "typeTracks": " Pistas",
+    "typeTracksDescription": "Mostrar el movimiento de uno o varios animales o ases.",
     "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir conjuntos de datos",
     "uploadNewContext": "Subir nuevas áreas de contexto",
     "uploadNewEnviroment": "Subir nuevo conjunto de datos de entorno",
-    "addEnvironment": "Añadir conjunto de datos de entorno",
-    "title_plural": "Datasets",
-    "uploadError": "Hubo un error al cargar su conjunto de datos",
-    "uploadNewDataLayer": "Subir nueva capa de datos"
+    "title_plural": "Datasets"
   },
   "errors": {
     "datasetNotFound": "Conjunto de datos no encontrado",
     "datasetNotValid": "Parece que algo falló en tu archivo",
+    "fields": "Errores con los campos {{fields}}",
     "generic": "Algo salió mal, inténtalo de nuevo o contacta:",
     "invalidRange": "Mínimo debe ser menor que el valor máximo",
     "latestCarrierNotFound": "Último conjunto de datos de transportista no encontrado",
@@ -104,6 +108,30 @@
     "noData": "No hay datos disponibles",
     "notInCVP": "Este evento ocurrió fuera del intervalo de tiempo de los datos del Portal del Buque Carrier",
     "seeInCVP": "Ver en el Portal de Buque de Carrier"
+  },
+  "feedback": {
+    "dataset": "Conjunto de datos para los que estás proporcionando comentarios",
+    "email": "E-mail",
+    "institution": "Institución/Organización",
+    "insuficientData": "Por favor, rellene todos los campos obligatorios",
+    "intro": "Global Fishing Watch trabaja constantemente para mejorar nuestros datos. Con miles de millones de puestos y cientos de miles de barcos a revisar, y todo un océano de actividad, inevitablemente tendremos algunos buques y actividades mal clasificados. Los comentarios de usted pueden ayudarnos a identificar dónde necesitamos mejorar nuestros datos. Nos esforzaremos por responder a sus comentarios.",
+    "issue": "¿Qué problema tiene?",
+    "optional": "Opcional",
+    "role": "Rol",
+    "roles": {
+      "analyst": "Analyst",
+      "fisheries": "Fisheries enforcement or compliance officer",
+      "general": "General public",
+      "GFW": "Global Fishing Watch staff",
+      "journalist": "Journalist",
+      "navy": "Navy or coast guard",
+      "ngo": "Non-governmental organization",
+      "other": "Other",
+      "scientist": "Scientist",
+      "student": "Student",
+      "watch": "Watch officer"
+    },
+    "send": "Enviar"
   },
   "footer": {
     "convenedBy": "Una asociación convocada por",
@@ -129,7 +157,8 @@
       "split": "Dividir capas"
     },
     "toggleVisibility": "Cambiar visibilidad de la capa",
-    "vessel_fit_bounds": "Centrar vista en la pista de barcos"
+    "vessel_fit_bounds": "Centrar vista en la pista de barcos",
+    "vessel_fit_bounds_out_of_timerange": "La pista no tiene actividad en su intervalo de tiempo seleccionado. ¿Cambiar el intervalo de tiempo para que se ajuste a esta pista?"
   },
   "map": {
     "captureMap": "Capturar el mapa",
@@ -153,12 +182,13 @@
     "noResults": "¿No encuentras el buque que estás buscando? Intenta usar MMSI, IMO o Callsign",
     "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques",
     "placeholder": "Tipo para buscar vasos",
+    "seeVessel": "Ver buque",
+    "seeVessels": "Ver buques",
     "suggestion": "Quiso decir",
     "title": "Buscar",
-    "vesselAlreadyInWorksace": "Buque ya añadido. Cierra la búsqueda para verlo.",
+    "vesselAlreadyInWorkspace": "Este buque ya está en su área de trabajo",
     "vessels": "Buscar buques",
-    "filterClose": "Cerrar filtros de búsqueda",
-    "filterOpen": "Abrir filtros de búsqueda"
+    "vesselSelected": "Buque seleccionado"
   },
   "selects": {
     "allSelected": "Todos",
@@ -168,10 +198,24 @@
   "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa aparente de esfuerzo de pesca",
     "graph": "Gráfico",
+    "eventOptions": {
+      "all": "All events",
+      "fishing": "Fishing",
+      "encounters": "Encounters",
+      "loitering": "Loitering",
+      "ports": "Port visits",
+      "none": "None"
+    },
+    "graphOptions": {
+      "speed": "Speed",
+      "depth": "Depth $t(common.comingSoon)",
+      "none": "None"
+    },
     "settings_close": "Cerrar la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
     "showFishingEffort": "Mostrar gráfico de horas de pesca",
     "showTracks": "Mostrar gráfico de pistas",
+    "tracks": "Pistas",
     "tracksDisabled": "Seleccione al menos un buque"
   },
   "user": {
@@ -221,12 +265,10 @@
     "origin": "Origen",
     "registeredGearType": "Tipo de equipo registrado",
     "source": "Fuente",
-    "tracks": "Tracks de barcos",
     "transmission_plural": "Transmisión",
     "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
     "vesselType_plural": "Tipos de buque",
-    "widthRange": "Width range",
-    "transmission": "Transmisión"
+    "widthRange": "Width range"
   },
   "workspace": {
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
@@ -238,7 +280,6 @@
     "save": "Guardar el mapa actual",
     "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
     "saveLogin": "Necesitas iniciar sesión para guardar las vistas",
-    "title_plural": "Espacios de trabajo",
-    "title": "Espacio de trabajo"
+    "title_plural": "Espacios de trabajo"
   }
 }
