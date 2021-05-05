@@ -21,7 +21,7 @@ export enum EndpointId {
   VesselSearch = 'carriers-search-vessels',
   VesselAdvancedSearch = 'carriers-advanced-search-vessels',
   FourwingsTiles = '4wings-tiles',
-  FourwingsBreaks = '4wings-breaks',
+  FourwingsBreaks = '4wings-bins',
   FourwingsLegend = '4wings-legend',
   FourwingsInteraction = '4wings-interaction',
   UserContextTiles = 'user-context-tiles',

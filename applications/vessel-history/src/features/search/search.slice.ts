@@ -1,56 +1,75 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { selectQueryParam } from 'routes/routes.selectors'
+import { fetchVesselSearchThunk } from './search.thunk'
 
-export type SearchSlice = {
-  query: string
+export type CachedVesselSearch = {
   offset: number
   searching: boolean
   total: number | null
   vessels: VesselSearch[]
 }
 
-const initialState: SearchSlice = {
-  query: '',
-  offset: 0,
-  searching: false,
-  total: null,
+const searchInitialState = {
   vessels: [],
+  total: 0,
+}
+
+export type CachedQuerySearch = {
+  [key: string]: CachedVesselSearch
+}
+
+export type SearchSlice = {
+  status: AsyncReducerStatus
+  queries: CachedQuerySearch
+}
+
+const initialState: SearchSlice = {
+  status: AsyncReducerStatus.Idle,
+  queries: {},
 }
 
 const slice = createSlice({
   name: 'search',
   initialState,
-  reducers: {
-    setOffset: (state, action: PayloadAction<number>) => {
-      state.offset = action.payload
-    },
-    setSearching: (state, action: PayloadAction<boolean>) => {
-      state.searching = action.payload
-    },
-    setVesselSearch: (
-      state,
-      action: PayloadAction<{
-        query: string
-        vessels: Array<VesselSearch>
-        offset: number
-        total: number
-        searching: boolean
-      }>
-    ) => {
-      state.query = action.payload.query
-      state.offset = action.payload.offset
-      state.total = action.payload.total
-      state.vessels = action.payload.vessels
-      state.searching = action.payload.searching
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchVesselSearchThunk.pending, (state, action) => {
+      state.status = AsyncReducerStatus.Loading
+      if (action.meta.arg.query) {
+        if (!state.queries[action.meta.arg.query]) {
+          state.queries[action.meta.arg.query] = {
+            ...searchInitialState,
+            offset: action.meta.arg.offset,
+            searching: true,
+          }
+        } else {
+          state.queries[action.meta.arg.query].searching = true
+          if (state.queries[action.meta.arg.query].offset !== action.meta.arg.offset) {
+          }
+          state.queries[action.meta.arg.query].offset = action.meta.arg.offset
+        }
+      }
+    })
+    builder.addCase(fetchVesselSearchThunk.fulfilled, (state, action) => {
+      state.status = AsyncReducerStatus.Finished
+      if (action.payload) {
+        state.queries[action.meta.arg.query] = {
+          ...action.payload,
+          vessels:
+            action.meta.arg.offset > 0
+              ? [...state.queries[action.meta.arg.query].vessels, ...action.payload.vessels]
+              : action.payload.vessels,
+        }
+      } else {
+        state.queries[action.meta.arg.query].searching = false
+      }
+    })
+    builder.addCase(fetchVesselSearchThunk.rejected, (state, action) => {
+      state.queries[action.meta.arg.query].searching = false
+    })
   },
 })
-export const { setVesselSearch, setOffset, setSearching } = slice.actions
 export default slice.reducer
-
-export const getVesselsFound = (state: RootState) => state.search.vessels
-export const getLastQuery = (state: RootState) => state.search.query
-export const getOffset = (state: RootState) => state.search.offset
-export const getTotalResults = (state: RootState) => state.search.total
-export const isSearching = (state: RootState) => state.search.searching

@@ -4,6 +4,7 @@ import { API_GATEWAY, API_GATEWAY_VERSION } from '../../../layer-composer'
 import { API_ENDPOINTS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { HeatmapAnimatedMode } from '../../types'
+import { isUrlAbsolute } from '../../../utils'
 import { Interval } from './time-chunks'
 import { toURLArray } from '.'
 
@@ -18,10 +19,15 @@ export const getBreaksZoom = (zoom: number) => {
   return zoom >= 3 ? 3 : 0
 }
 
+const getBreaksBaseUrl = (config: FetchBreaksParams): string => {
+  if (config.breaksAPI) {
+    return isUrlAbsolute(config.breaksAPI) ? config.breaksAPI : API_GATEWAY + config.breaksAPI
+  }
+  return `${API_GATEWAY}/${API_GATEWAY_VERSION}/${API_ENDPOINTS.breaks}`
+}
+
 const getBreaksUrl = (config: FetchBreaksParams): string => {
-  const url = `${config.breaksAPI || `${API_GATEWAY}/${API_GATEWAY_VERSION}`}/${
-    API_ENDPOINTS.breaks
-  }`
+  const url = getBreaksBaseUrl(config)
     .replace(/{{/g, '{')
     .replace(/}}/g, '}')
     .replace('{zoom}', '0')

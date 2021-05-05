@@ -171,6 +171,7 @@ export const useMapClick = (
       cleanFeatureState('click')
       if (!clickCallback) return
       const interactionEvent: InteractionEvent = {
+        type: 'click',
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
         point: event.point,
@@ -224,6 +225,7 @@ export const useMapHover = (
       // Turn all sources with active feature states off
       cleanFeatureState()
       const hoverEvent: InteractionEvent = {
+        type: 'hover',
         point: event.point,
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],

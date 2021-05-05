@@ -54,12 +54,33 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: DEFAULT_BASEMAP_DATAVIEW_ID,
     },
     {
-      id: 'fishing-1',
+      id: 'fishing-ais',
       config: {
-        // datasets: [`fishing_v5`],
-        // filters: { flag: ['ESP'] },
+        datasets: ['public-global-fishing-effort:v20201001'],
       },
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
+    },
+    {
+      id: 'fishing-vms',
+      config: {
+        color: '#FFAA0D',
+        colorRamp: 'orange',
+        datasets: [
+          'public-chile-fishing-effort:v20200331',
+          'public-indonesia-fishing-effort:v20200320',
+          'public-panama-fishing-effort:v20200331',
+          'public-peru-fishing-effort:v20200324',
+        ],
+      },
+      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
+    },
+    {
+      id: 'presence',
+      config: {
+        color: '#FF64CE',
+        colorRamp: 'magenta',
+      },
+      dataviewId: DEFAULT_PRESENCE_DATAVIEW_ID,
     },
     {
       id: 'context-layer-eez',

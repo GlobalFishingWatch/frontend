@@ -4,11 +4,6 @@ import { useCallback, useEffect } from 'react'
 import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types/dist'
 import { AsyncError } from 'utils/async-slice'
 import {
-  selectContextAreasDataviews,
-  selectEnvironmentalDataviews,
-  selectActivityDataviews,
-} from 'features/dataviews/dataviews.selectors'
-import {
   getContextDataviewInstance,
   getEnvironmentDataviewInstance,
   getUserTrackDataviewInstance,
@@ -36,36 +31,31 @@ import {
 const DATASET_REFRESH_TIMEOUT = 10000
 
 export const useAddDataviewFromDatasetToWorkspace = () => {
-  const contextDataviews = useSelector(selectContextAreasDataviews)
-  const activityDataviews = useSelector(selectActivityDataviews)
-  const enviromentalDataviews = useSelector(selectEnvironmentalDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const addDataviewFromDatasetToWorkspace = useCallback(
     (dataset: Dataset) => {
       let dataviewInstance
       if (dataset.category === DatasetCategory.Context) {
-        const usedColors = contextDataviews?.flatMap((dataview) => dataview.config?.color || [])
-        dataviewInstance = getContextDataviewInstance(dataset.id, usedColors)
+        dataviewInstance = getContextDataviewInstance(dataset.id)
       } else if (
         dataset.category === DatasetCategory.Environment &&
         dataset.configuration?.geometryType === 'polygons'
       ) {
-        const usedRamps = [...(enviromentalDataviews || []), ...(activityDataviews || [])].flatMap(
-          (dataview) => dataview.config?.colorRamp || []
-        )
-        dataviewInstance = getEnvironmentDataviewInstance(dataset.id, usedRamps)
+        dataviewInstance = getEnvironmentDataviewInstance(dataset.id)
       } else if (
         dataset.category === DatasetCategory.Environment &&
         dataset.configuration?.geometryType === 'tracks'
       ) {
         dataviewInstance = getUserTrackDataviewInstance(dataset)
       }
-      if (dataviewInstance) {
-        upsertDataviewInstance(dataviewInstance)
+      if (!dataviewInstance) {
+        throw new Error(`
+        Dataview instance was not instanciated correctly. With dataset ${dataset.id}`)
       }
+      upsertDataviewInstance(dataviewInstance)
     },
-    [contextDataviews, enviromentalDataviews, activityDataviews, upsertDataviewInstance]
+    [upsertDataviewInstance]
   )
 
   return { addDataviewFromDatasetToWorkspace }

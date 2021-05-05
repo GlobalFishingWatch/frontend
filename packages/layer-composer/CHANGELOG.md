@@ -1,5 +1,23 @@
 # @globalfishingwatch/layer-composer
 
+## 6.0.3
+
+### Patch Changes
+
+- 67fdfec5: fix color ramps
+
+## 6.0.2
+
+### Patch Changes
+
+- cfae2b4b: fix crash when no sublayers present
+
+## 6.0.1
+
+### Patch Changes
+
+- fix tiles api url
+
 ## 6.0.0
 
 ### Major Changes

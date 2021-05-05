@@ -9,9 +9,16 @@ interface ChoiceProps {
   activeOption: string
   onOptionClick?: (option: ChoiceOption, e: React.MouseEvent) => void
   size?: 'default' | 'small'
+  className?: string
 }
 
-function Choice({ activeOption, options, onOptionClick, size = 'default' }: ChoiceProps) {
+function Choice({
+  activeOption,
+  options,
+  onOptionClick,
+  size = 'default',
+  className = '',
+}: ChoiceProps) {
   const activeOptionId = activeOption || options?.[0]?.id
   const [activeElementProperties, setActiveElementProperties] = useState<{
     width: number
@@ -38,7 +45,7 @@ function Choice({ activeOption, options, onOptionClick, size = 'default' }: Choi
     }
   }, [activeRef])
   return (
-    <div className={styles.Choice}>
+    <div className={cx(styles.Choice, className)}>
       <ul className={styles.list} role="radiogroup">
         {options.map((option, index) => {
           const optionSelected = activeOptionId === option.id

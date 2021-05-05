@@ -88,10 +88,13 @@
 .vesselRow {
   color: currentColor;
   width: 100%;
-  cursor: pointer;
   display: flex;
   justify-content: space-between;
   margin-bottom: var(--space-XS);
+}
+
+.vesselRow:not(:disabled) {
+  cursor: pointer;
 }
 
 .vesselRowLegend {

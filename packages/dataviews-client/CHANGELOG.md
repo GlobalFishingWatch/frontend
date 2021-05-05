@@ -1,5 +1,42 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.5.1
+
+### Patch Changes
+
+- 67fdfec5: fix color ramps
+- Updated dependencies [67fdfec5]
+  - @globalfishingwatch/layer-composer@6.0.3
+
+## 6.5.0
+
+### Minor Changes
+
+- cfae2b4b: new dataview categories
+
+### Patch Changes
+
+- Updated dependencies [cfae2b4b]
+- Updated dependencies [cfae2b4b]
+  - @globalfishingwatch/layer-composer@6.0.2
+  - @globalfishingwatch/api-types@4.2.0
+
+## 6.4.3
+
+### Patch Changes
+
+- a5339163: fix tiles api
+- Updated dependencies [a5339163]
+  - @globalfishingwatch/api-types@4.1.2
+
+## 6.4.2
+
+### Patch Changes
+
+- fix tiles api url
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@6.0.1
+
 ## 6.4.1
 
 ### Patch Changes

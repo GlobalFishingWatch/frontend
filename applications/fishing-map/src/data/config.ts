@@ -1,6 +1,8 @@
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
+import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
+import { t } from 'features/i18n/i18n'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
@@ -29,6 +31,8 @@ export const DEFAULT_TIME_RANGE = {
   end: end,
 }
 
+export const DEFAULT_ACTIVITY_CATEGORY = 'fishing'
+
 export const DEFAULT_WORKSPACE = {
   ...DEFAULT_VIEWPORT,
   query: undefined,
@@ -41,6 +45,7 @@ export const DEFAULT_WORKSPACE = {
   timebarGraph: TimebarGraphs.None,
   bivariate: false,
   analysis: undefined,
+  activityCategory: DEFAULT_ACTIVITY_CATEGORY,
   version: DEFAULT_VERSION,
 }
 
@@ -94,53 +99,63 @@ export const sources: SelectOption[] = [
   },
 ]
 
-// TODO translate this
-export const TIMEBAR_EVENT_OPTIONS: SelectOption[] = [
-  {
-    id: 'all',
-    label: 'All events',
-  },
+export const ACTIVITY_OPTIONS: ChoiceOption[] = [
   {
     id: 'fishing',
-    label: 'Fishing',
+    title: t('common.fishing', 'Fishing'),
   },
   {
-    id: 'encounters',
-    label: 'Encounters',
-  },
-  {
-    id: 'loitering',
-    label: 'Loitering',
-  },
-  {
-    id: 'ports',
-    label: 'Port visits',
-  },
-  {
-    id: 'none',
-    label: 'None',
+    id: 'presence',
+    title: t('common.presence', 'Presence'),
   },
 ]
 
-// TODO translate this
+export const TIMEBAR_EVENT_OPTIONS: SelectOption[] = [
+  {
+    id: 'all',
+    label: t('timebarSettings.eventOptions', 'All events'),
+  },
+  {
+    id: 'fishing',
+    label: t('timebarSettings.eventOptions', 'Fishing'),
+  },
+  {
+    id: 'encounters',
+    label: t('timebarSettings.eventOptions', 'Encounters'),
+  },
+  {
+    id: 'loitering',
+    label: t('timebarSettings.eventOptions', 'Loitering'),
+  },
+  {
+    id: 'ports',
+    label: t('timebarSettings.eventOptions', 'Port visits'),
+  },
+  {
+    id: 'none',
+    label: t('timebarSettings.eventOptions', 'None'),
+  },
+]
+
 export const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = [
   {
     id: 'speed',
-    label: 'Speed',
+    label: t('timebarSettings.graphOptions.speed', 'Speed'),
   },
   {
     id: 'depth',
-    label: 'Depth (Coming soon)',
+    label: t('timebarSettings.graphOptions.depth', 'Depth (Coming soon)'),
     disabled: true,
   },
   {
     id: 'none',
-    label: 'None',
+    label: t('timebarSettings.graphOptions.none', 'None'),
   },
 ]
 
 export const POPUP_CATEGORY_ORDER = [
-  DataviewCategory.Activity,
+  DataviewCategory.Fishing,
+  DataviewCategory.Presence,
   DataviewCategory.Events,
   DataviewCategory.Environment,
   DataviewCategory.Context,

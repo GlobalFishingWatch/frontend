@@ -1,24 +1,25 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useCallback, useEffect, useRef } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
 import { useTranslation } from 'react-i18next'
+import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
 import { RESULTS_PER_PAGE } from 'data/constants'
-import {
-  getOffset,
-  getTotalResults,
-  getVesselsFound,
-  isSearching,
-  setOffset,
-} from 'features/search/search.slice'
 import { logoutUserThunk } from 'features/user/user.slice'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
 import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
 import { selectQueryParam } from 'routes/routes.selectors'
+import { fetchVesselSearchThunk } from 'features/search/search.thunk'
+import {
+  selectSearchOffset,
+  selectSearchResults,
+  selectSearchTotalResults,
+  selectSearching,
+} from 'features/search/search.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from './Home.module.css'
 import '@globalfishingwatch/ui-components/dist/base.css'
@@ -34,14 +35,15 @@ interface LoaderProps {
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const searching = useSelector(isSearching)
-  const vessels = useSelector(getVesselsFound)
+  const searching = useSelector(selectSearching)
   const query = useSelector(selectQueryParam('q'))
-  const offset = useSelector(getOffset)
-  const totalResults = useSelector(getTotalResults)
+  const vessels = useSelector(selectSearchResults)
+  const offset = useSelector(selectSearchOffset)
+  const totalResults = useSelector(selectSearchTotalResults)
   const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchQueryParams } = useLocationConnect()
   const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
+  const promiseRef = useRef<any>()
 
   useEffect(() => {
     dispatchFetchOfflineVessels()
@@ -50,6 +52,24 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ q: e.target.value })
   }
+
+  const fetchResults = useCallback(
+    (params) => {
+      if (promiseRef.current) {
+        promiseRef.current.abort()
+      }
+      // To ensure the pending action isn't overwritted by the abort above
+      // and we miss the loading intermediate state
+      setTimeout(() => {
+        promiseRef.current = dispatch(fetchVesselSearchThunk(params))
+      }, 100)
+    },
+    [dispatch]
+  )
+
+  useEffect(() => {
+    fetchResults({ query: query, offset: 0 })
+  }, [fetchResults, query])
 
   return (
     <div className={styles.homeContainer}>
@@ -114,14 +134,16 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
               )}
               {(!searching || offset > 0) && vessels.length > 0 && (
                 <div className={styles.offlineVessels}>
-                  {vessels.map((vessel, index) => (
+                  {vessels.map((vessel: VesselSearch, index) => (
                     <VesselListItem key={index} vessel={vessel} />
                   ))}
                 </div>
               )}
               {totalResults && !searching && vessels.length < totalResults && (
                 <div className={styles.listFooter}>
-                  <Button onClick={() => dispatch(setOffset(offset + RESULTS_PER_PAGE))}>
+                  <Button
+                    onClick={() => fetchResults({ query, offset: offset + RESULTS_PER_PAGE })}
+                  >
                     {t('search.loadMore', 'LOAD MORE')}
                   </Button>
                 </div>

@@ -33,6 +33,7 @@ export type ExtendedFeature = {
 export type InteractionEventCallback = (event: InteractionEvent | null) => void
 
 export type InteractionEvent = {
+  type: 'click' | 'hover'
   features?: ExtendedFeature[]
   latitude: number
   longitude: number

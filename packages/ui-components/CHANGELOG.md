@@ -1,5 +1,33 @@
 # @globalfishingwatch/ui-components
 
+## 3.0.5
+
+### Patch Changes
+
+- Updated dependencies [67fdfec5]
+  - @globalfishingwatch/layer-composer@6.0.3
+
+## 3.0.4
+
+### Patch Changes
+
+- cfae2b4b: support choice classname
+- Updated dependencies [cfae2b4b]
+  - @globalfishingwatch/layer-composer@6.0.2
+
+## 3.0.3
+
+### Patch Changes
+
+- 2f7db18f: Fishing map/color cycling
+
+## 3.0.2
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@6.0.1
+
 ## 3.0.1
 
 ### Patch Changes

@@ -55,7 +55,8 @@ function PopupWrapper({
       <div className={styles.content}>
         {Object.entries(featureByCategory).map(([featureCategory, features]) => {
           switch (featureCategory) {
-            case DataviewCategory.Activity:
+            case DataviewCategory.Fishing:
+            case DataviewCategory.Presence:
               return features.map((feature, i) => (
                 <HeatmapTooltipRow
                   key={i + (feature.title as string)}

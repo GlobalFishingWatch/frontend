@@ -68,7 +68,7 @@ steps:
       - '-c'
       - |-
         gcloud beta run deploy \
-        vessel-history-`echo $BRANCH_NAME | sed -r 's,/,-,g' | awk '{print tolower($0)}'` \
+        vessel-history-`echo $BRANCH_NAME | sed -r 's,[/\.],-,g' | awk '{print tolower($0)}'` \
         --project \
         $_RUN_PROJECT \
         --image \

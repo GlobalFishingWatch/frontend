@@ -1,5 +1,29 @@
 # @globalfishingwatchapp/temporalgrid-demo
 
+## 0.7.73
+
+### Patch Changes
+
+- Updated dependencies [67fdfec5]
+  - @globalfishingwatch/layer-composer@6.0.3
+  - @globalfishingwatch/react-hooks@6.1.4
+
+## 0.7.72
+
+### Patch Changes
+
+- Updated dependencies [cfae2b4b]
+  - @globalfishingwatch/layer-composer@6.0.2
+  - @globalfishingwatch/react-hooks@6.1.3
+
+## 0.7.71
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@6.0.1
+  - @globalfishingwatch/react-hooks@6.1.2
+
 ## 0.7.70
 
 ### Patch Changes

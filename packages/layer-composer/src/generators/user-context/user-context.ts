@@ -57,6 +57,7 @@ class UserContextGenerator {
           color: config.color,
           interactive: true,
           generatorId,
+          group: Group.OutlinePolygonsBackground,
           uniqueFeatureInteraction: true,
           legend: {
             type: 'colorramp',

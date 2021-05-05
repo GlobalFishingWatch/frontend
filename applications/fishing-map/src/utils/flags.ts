@@ -1,7 +1,5 @@
 import flags from 'data/flags'
-import i18n from 'features/i18n/i18n'
-
-const { t } = i18n
+import i18n, { t } from 'features/i18n/i18n'
 
 type Flag = { id: string; label: string }
 export const getFlagById = (id: string, lng = i18n.language): Flag | undefined => {

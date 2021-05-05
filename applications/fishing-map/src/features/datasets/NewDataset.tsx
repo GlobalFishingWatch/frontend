@@ -51,7 +51,9 @@ function NewDataset(): React.ReactElement {
   const { datasetModal, datasetCategory, dispatchDatasetModal } = useDatasetModalConnect()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
-  const [datasetGeometryType, setDatasetGeometryType] = useState<DatasetGeometryType | null>(null)
+  const [datasetGeometryType, setDatasetGeometryType] = useState<DatasetGeometryType | undefined>(
+    undefined
+  )
   const [datasetGeometryTypeConfirmed, setDatasetGeometryTypeConfirmed] = useState<boolean>(false)
   const [file, setFile] = useState<File | undefined>()
   const [fileData, setFileData] = useState<FeatureCollectionWithFilename | CSV | undefined>()
@@ -62,7 +64,7 @@ function NewDataset(): React.ReactElement {
   const { dispatchCreateDataset } = useDatasetsAPI()
 
   const onFileLoaded = useCallback(
-    async (file: File, type: DatasetGeometryType) => {
+    async (file: File, type: DatasetGeometryType | undefined) => {
       setLoading(true)
       setError('')
       const name =
@@ -70,7 +72,7 @@ function NewDataset(): React.ReactElement {
 
       const metadataName = capitalize(lowerCase(name))
 
-      if (type === 'polygons') {
+      if (!type || type === 'polygons') {
         const isZip =
           file.type === 'application/zip' ||
           file.type === 'application/x-zip-compressed' ||
@@ -113,10 +115,11 @@ function NewDataset(): React.ReactElement {
             type: DatasetTypes.Context,
             category: datasetCategory,
             configuration: {
+              geometryType: datasetGeometryType,
               // TODO when supporting multiple files upload
               // ...(geojson?.fileName && { file: geojson.fileName }),
               ...(isGeojson && { format: 'geojson' }),
-            },
+            } as DatasetConfiguration,
           }))
         } else {
           setFileData(undefined)
@@ -172,7 +175,7 @@ function NewDataset(): React.ReactElement {
       if (min && max && min >= max) {
         error = t('errors.invalidRange', 'Min has to be lower than max value')
       }
-      if (meta?.type === DatasetTypes.UserTracks) {
+      if (meta?.category === DatasetCategory.Environment && datasetGeometryType === 'tracks') {
         if (
           fileData &&
           newMetadata.configuration?.latitude &&
@@ -198,7 +201,20 @@ function NewDataset(): React.ReactElement {
     if (file) {
       let validityError
       let userTrackGeoJSONFile
-      if (metadata?.type === DatasetTypes.UserTracks) {
+      if (
+        metadata?.category === DatasetCategory.Environment &&
+        datasetGeometryType === 'polygons'
+      ) {
+        if (!metadata?.configuration?.propertyToInclude) {
+          validityError = t('dataset.requiredFields', {
+            fields: 'value',
+            defaultValue: 'Required field value',
+          }) as string
+        }
+      } else if (
+        metadata?.category === DatasetCategory.Environment &&
+        datasetGeometryType === 'tracks'
+      ) {
         if (
           !metadata.configuration?.latitude ||
           !metadata.configuration?.longitude ||
@@ -265,7 +281,7 @@ function NewDataset(): React.ReactElement {
     setLoading(false)
     setMetadata(undefined)
     dispatchDatasetModal(undefined)
-    setDatasetGeometryType(null)
+    setDatasetGeometryType(undefined)
     setDatasetGeometryTypeConfirmed(false)
   }
 
@@ -276,6 +292,9 @@ function NewDataset(): React.ReactElement {
   const onConfirmDatasetCategoryClick = () => {
     setDatasetGeometryTypeConfirmed(true)
   }
+
+  const promptForGeometryType =
+    datasetGeometryTypeConfirmed === false && datasetCategory === DatasetCategory.Environment
 
   return (
     <Modal
@@ -289,8 +308,7 @@ function NewDataset(): React.ReactElement {
       onClose={onClose}
     >
       <div className={styles.modalContent}>
-        {datasetGeometryTypeConfirmed === false &&
-        datasetCategory === DatasetCategory.Environment ? (
+        {promptForGeometryType ? (
           <Fragment>
             <DatasetTypeSelect
               onDatasetTypeChange={onDatasetTypeChange}
@@ -300,7 +318,7 @@ function NewDataset(): React.ReactElement {
         ) : (
           <Fragment>
             {/* eslint-disable-next-line  */}
-            <DatasetFile onFileLoaded={onFileLoaded} type={datasetGeometryType!} />
+            <DatasetFile onFileLoaded={onFileLoaded} type={datasetGeometryType} />
             {fileData && metadata && (
               <DatasetConfig
                 fileData={fileData as FeatureCollectionWithFilename}
@@ -323,20 +341,20 @@ function NewDataset(): React.ReactElement {
             </a>
           </span>
         </div>
-        {datasetGeometryTypeConfirmed ? (
+        {promptForGeometryType ? (
           <Button
-            disabled={!file || !metadata?.name}
+            disabled={!datasetGeometryType}
             className={styles.saveBtn}
-            onClick={onConfirmClick}
-            loading={loading}
+            onClick={onConfirmDatasetCategoryClick}
           >
             {t('common.confirm', 'Confirm') as string}
           </Button>
         ) : (
           <Button
-            disabled={!datasetGeometryType}
+            disabled={!file || !metadata?.name}
             className={styles.saveBtn}
-            onClick={onConfirmDatasetCategoryClick}
+            onClick={onConfirmClick}
+            loading={loading}
           >
             {t('common.confirm', 'Confirm') as string}
           </Button>

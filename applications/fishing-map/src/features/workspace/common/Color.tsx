@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import ColorBar, {
   ColorBarOption,
-  TrackColorBarOptions,
+  LineColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -26,7 +26,7 @@ const Color = (props: ColorProps) => {
       onClickOutside={onClickOutside}
       component={
         <ColorBar
-          colorBarOptions={TrackColorBarOptions}
+          colorBarOptions={LineColorBarOptions}
           selectedColor={dataview.config?.color}
           onColorClick={onColorClick}
         />
