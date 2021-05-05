@@ -29,8 +29,6 @@ function HeatmapsSection(): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
-  const supportBivariateToggle =
-    dataviews?.filter((dataview) => dataview?.config?.visible)?.length >= 2
 
   useEffect(() => {
     setHeatmapSublayersAddedIndex(undefined)

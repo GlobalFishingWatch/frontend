@@ -117,6 +117,13 @@ export const selectDataviewInstancesResolved = createSelector(
   }
 )
 
+export const selectDataviewInstancesResolvedVisible = createSelector(
+  [selectDataviewInstancesResolved, selectActivityCategory],
+  (dataviews = []) => {
+    return dataviews.filter((dataview) => dataview.config?.visible)
+  }
+)
+
 export const selectDataviewInstancesByType = (type: Generators.Type) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)

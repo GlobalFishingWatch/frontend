@@ -10,7 +10,7 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import { selectWorkspaceError, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import {
-  selectDataviewInstancesResolved,
+  selectDataviewInstancesResolvedVisible,
   selectDefaultBasemapGenerator,
 } from 'features/dataviews/dataviews.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
@@ -46,7 +46,7 @@ type GetGeneratorConfigParams = {
   debugOptions: DebugOptions
   highlightedTime?: Range
   staticTime: Range
-  bivariateDataviews: BivariateDataviews
+  bivariateDataviews?: BivariateDataviews
 }
 const getGeneratorsConfig = ({
   dataviews = [],
@@ -57,14 +57,14 @@ const getGeneratorsConfig = ({
   staticTime,
   bivariateDataviews,
 }: GetGeneratorConfigParams) => {
-  const animatedHeatmapDataviews = dataviews.filter((d) => {
-    return d.config?.type === Generators.Type.HeatmapAnimated && d.config.visible === true
+  const animatedHeatmapDataviews = dataviews.filter((dataview) => {
+    return dataview.config?.type === Generators.Type.HeatmapAnimated
   })
 
-  // TODO read bivariate dataviews
   let heatmapAnimatedMode: Generators.HeatmapAnimatedMode = bivariateDataviews
     ? Generators.HeatmapAnimatedMode.Bivariate
     : Generators.HeatmapAnimatedMode.Compare
+
   if (debugOptions.extruded) {
     heatmapAnimatedMode = Generators.HeatmapAnimatedMode.Extruded
   } else if (debugOptions.blob && animatedHeatmapDataviews.length === 1) {
@@ -96,7 +96,7 @@ const getGeneratorsConfig = ({
 
 const selectMapGeneratorsConfig = createSelector(
   [
-    selectDataviewInstancesResolved,
+    selectDataviewInstancesResolvedVisible,
     selectResources,
     selectRulers,
     selectDebugOptions,
@@ -114,7 +114,7 @@ const selectMapGeneratorsConfig = createSelector(
     bivariateDataviews
   ) => {
     if (!staticTime) return
-    return getGeneratorsConfig({
+    const generators = getGeneratorsConfig({
       dataviews,
       resources,
       rulers,
@@ -123,12 +123,13 @@ const selectMapGeneratorsConfig = createSelector(
       staticTime,
       bivariateDataviews,
     })
+    return generators
   }
 )
 
 const selectStaticGeneratorsConfig = createSelector(
   [
-    selectDataviewInstancesResolved,
+    selectDataviewInstancesResolvedVisible,
     selectResources,
     selectRulers,
     selectDebugOptions,

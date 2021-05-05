@@ -174,10 +174,8 @@ class HeatmapAnimatedGenerator {
     ) {
       return getGriddedLayers(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Blob) {
-      // TODO review with new buckets
       return getBlobLayer(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Extruded) {
-      // TODO review with new buckets
       return getExtrudedLayer(config, timeChunks, breaks)
     }
   }
