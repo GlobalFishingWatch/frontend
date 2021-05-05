@@ -27,6 +27,7 @@
     "environment": "Environment",
     "events": "Events",
     "feedback": "Feedback",
+    "fishing": "Fishing",
     "help": "Help",
     "hour": "Hour",
     "hour_plural": "hours",
@@ -197,6 +198,19 @@
   "timebarSettings": {
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graph",
+    "eventOptions": {
+      "all": "All events",
+      "fishing": "Fishing",
+      "encounters": "Encounters",
+      "loitering": "Loitering",
+      "ports": "Port visits",
+      "none": "None"
+    },
+    "graphOptions": {
+      "speed": "Speed",
+      "depth": "Depth $t(common.comingSoon)",
+      "none": "None"
+    },
     "settings_close": "Close timebar settings",
     "settings_open": "Open timebar settings",
     "showFishingEffort": "Show fishing hours graph",

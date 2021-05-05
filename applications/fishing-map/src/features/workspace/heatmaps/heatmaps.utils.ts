@@ -8,6 +8,9 @@ export const isFishingDataview = (dataview: UrlDataviewInstance) =>
 export const isPresenceDataview = (dataview: UrlDataviewInstance) =>
   dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID
 
+export const isActivityDataview = (dataview: UrlDataviewInstance) =>
+  isFishingDataview(dataview) || isPresenceDataview(dataview)
+
 export const getSourcesOptionsInDataview = (
   dataview: UrlDataviewInstance,
   datasetType = DatasetTypes.Fourwings

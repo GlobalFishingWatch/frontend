@@ -2,7 +2,8 @@ import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import Choice, { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectWorkspaceDataviews } from 'features/workspace/workspace.selectors'
@@ -15,6 +16,9 @@ import {
   getPresenceDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
 import { DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
+import { ACTIVITY_OPTIONS } from 'data/config'
+import { WorkspaceActivityCategory } from 'types'
+import { selectActivityCategory } from 'routes/routes.selectors'
 import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
 import LayerPanel from './HeatmapLayerPanel'
 
@@ -27,6 +31,7 @@ function HeatmapsSection(): React.ReactElement {
   const [newLayerOpen, setNewLayerOpen] = useState<boolean>(false)
   const workspaceDataviews = useSelector(selectWorkspaceDataviews)
   const dataviews = useSelector(selectActivityDataviews)
+  const activityCategory = useSelector(selectActivityCategory)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariate = useSelector(selectBivariate)
@@ -39,6 +44,13 @@ function HeatmapsSection(): React.ReactElement {
     { id: 'activity', label: t('common.apparentFishing', 'Apparent Fishing Effort') },
     { id: 'presence', label: t('common.presence', 'Fishing presence') },
   ]
+
+  const onActivityOptionClick = useCallback(
+    (activityOption: ChoiceOption) => {
+      dispatchQueryParams({ activityCategory: activityOption.id as WorkspaceActivityCategory })
+    },
+    [dispatchQueryParams]
+  )
 
   const onAddClick = useCallback(
     (category: HeatmapCategory) => {
@@ -89,8 +101,16 @@ function HeatmapsSection(): React.ReactElement {
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
+        <Choice
+          size="small"
+          className={cx('print-hidden')}
+          options={ACTIVITY_OPTIONS}
+          activeOption={activityCategory}
+          onOptionClick={onActivityOptionClick}
+        />
         <div className={cx('print-hidden', styles.sectionButtons)}>
-          <IconButton
+          {/* // TODO move this between layers */}
+          {/* <IconButton
             icon={bivariate ? 'split' : 'compare'}
             type="border"
             size="medium"
@@ -98,7 +118,7 @@ function HeatmapsSection(): React.ReactElement {
             tooltip={bivariateTooltip}
             tooltipPlacement="top"
             onClick={onToggleCombinationMode}
-          />
+          /> */}
           {supportsPresence ? (
             <TooltipContainer
               visible={newLayerOpen}

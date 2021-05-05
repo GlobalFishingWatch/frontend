@@ -288,7 +288,8 @@ export function getDataviewsGeneratorConfigs(
   // Collect heatmap animated generators and filter them out from main dataview list
   const dataviewsFiltered = dataviews.filter((d) => {
     const isActivityDataview =
-      d.category === DataviewCategory.Activity && d.config?.type === Generators.Type.HeatmapAnimated
+      (d.category === DataviewCategory.Fishing || d.category === DataviewCategory.Presence) &&
+      d.config?.type === Generators.Type.HeatmapAnimated
     if (isActivityDataview) {
       activityDataviews.push(d)
     }
