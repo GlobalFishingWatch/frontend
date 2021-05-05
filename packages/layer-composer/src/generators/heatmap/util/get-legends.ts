@@ -144,6 +144,7 @@ const getLegendsBivariate = (config: GlobalHeatmapAnimatedGeneratorConfig, break
       id: config.sublayers[0].id,
       type: LegendType.Bivariate,
       bivariateRamp: getBivariateRamp(colorRampsIds),
+      unit: config.sublayers[0].legend?.unit,
       sublayersBreaks: breaks,
     },
   ]
