@@ -44,7 +44,7 @@ export const rgbaToHex = ({ r, g, b }: RGBA) => {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
 
-const BLEND_BACKGROUND = '#244979'
+export const BLEND_BACKGROUND = '#0f2e5f'
 export const getBlend = (color1: RGBA, color2: RGBA) => {
   return normal({ ...hexToRgb(BLEND_BACKGROUND), a: 1 }, screen(color1 as RGBA, color2 as RGBA))
 }
