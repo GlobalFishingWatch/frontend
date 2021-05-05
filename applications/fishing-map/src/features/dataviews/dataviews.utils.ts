@@ -52,7 +52,7 @@ export const getVesselDataviewInstance = (
   return vesselDataviewInstance
 }
 
-export const getActivityDataviewInstance = (): DataviewInstance<Generators.Type> => {
+export const getFishingDataviewInstance = (): DataviewInstance<Generators.Type> => {
   return {
     id: `fishing-${Date.now()}`,
     config: {
