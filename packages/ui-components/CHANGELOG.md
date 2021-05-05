@@ -1,5 +1,13 @@
 # @globalfishingwatch/ui-components
 
+## 3.0.4
+
+### Patch Changes
+
+- cfae2b4b: support choice classname
+- Updated dependencies [cfae2b4b]
+  - @globalfishingwatch/layer-composer@6.0.2
+
 ## 3.0.3
 
 ### Patch Changes
