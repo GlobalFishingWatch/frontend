@@ -39,3 +39,11 @@ export const DEFAULT_PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 12
 export const DEFAULT_CONTEXT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 123 : 220
 export const DEFAULT_ENVIRONMENT_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 125 : 223
 export const DEFAULT_USER_TRACK_ID = WORKSPACE_ENV === 'development' ? 154 : 251
+
+export const DEFAULT_DATAVIEW_IDS = [
+  DEFAULT_USER_TRACK_ID, // Default user custom tracks dataview for new layers
+  DEFAULT_VESSEL_DATAVIEW_ID, // Fetch vessel information
+  DEFAULT_CONTEXT_DATAVIEW_ID, // Default context dataview for new layers
+  DEFAULT_PRESENCE_DATAVIEW_ID, // If not present the add activity tooltip layer won't appear
+  DEFAULT_ENVIRONMENT_DATAVIEW_ID, // Default environmet dataview for new layers
+]

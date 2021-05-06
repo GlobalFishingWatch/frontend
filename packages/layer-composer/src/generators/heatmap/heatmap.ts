@@ -6,7 +6,11 @@ import { Type, HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../layer-composer'
 import fetchStats from './util/fetch-stats'
-import { HEATMAP_COLOR_RAMPS, HEATMAP_DEFAULT_MAX_ZOOM } from './config'
+import {
+  HEATMAP_COLOR_RAMPS,
+  HEATMAP_DEFAULT_MAX_ZOOM,
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
+} from './config'
 import { StatsByZoom } from './types'
 import getBreaks from './util/get-breaks'
 import { toURLArray } from './util'
@@ -75,7 +79,8 @@ class HeatmapGenerator {
     const stats = statsByZoom?.[zoom]
     if (!stops?.length && stats) {
       const { min, max, avg } = stats
-      const numBreaks = config.breaks || (config.steps as number[])?.length || 8
+      const numBreaks =
+        config.breaks || (config.steps as number[])?.length || COLOR_RAMP_DEFAULT_NUM_STEPS
       stops = getBreaks(min, max, avg, config.scalePowExponent, numBreaks)
     }
 

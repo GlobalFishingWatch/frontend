@@ -21,7 +21,7 @@ import {
 import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace } from 'features/app/app.selectors'
-import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_DATAVIEW_IDS, getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
@@ -86,14 +86,16 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         return
       }
       const dataviewIds = [
-        // TODO add "geenric" dataviews liek tracks, user tracks etc
+        ...DEFAULT_DATAVIEW_IDS,
         ...(workspace.dataviews?.map(({ id }) => id as number) || []),
-        ...uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId)),
+        ...workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId),
       ]
 
+      const uniqDataviewIds = uniq(dataviewIds)
+
       let dataviews: Dataview[] = []
-      if (dataviewIds?.length) {
-        const fetchDataviewsAction: any = dispatch(fetchDataviewsByIdsThunk(dataviewIds))
+      if (uniqDataviewIds?.length) {
+        const fetchDataviewsAction: any = dispatch(fetchDataviewsByIdsThunk(uniqDataviewIds))
         signal.addEventListener('abort', fetchDataviewsAction.abort)
         const { payload } = await fetchDataviewsAction
         if (payload?.length) {
