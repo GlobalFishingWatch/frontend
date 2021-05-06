@@ -24,11 +24,16 @@ export const useSourcesLoadingState = () => {
   useEffect(() => {
     if (!map || listenerAttached) return
     const sourceEventCallback = (e: any) => {
-      const currentSources = Object.keys(map.getStyle().sources || {})
-      const sourcesLoaded = currentSources.map((sourceId) => [
-        sourceId,
-        map.isSourceLoaded(sourceId),
-      ])
+      const currentSources = map.getStyle().sources || {}
+      const sourcesLoaded = Object.entries(currentSources)
+        .map(([sourceId, source]) => {
+          if (source.type === 'geojson' && !(typeof source.type === 'string')) {
+            return []
+          }
+          return [sourceId, map.isSourceLoaded(sourceId)]
+        })
+        .filter((entry) => entry.length)
+
       const allSourcesLoaded = sourcesLoaded.every(([id, loaded]) => loaded)
       if (allSourcesLoaded && e.type === 'idle') {
         map.off('idle', sourceEventCallback)
