@@ -12,7 +12,7 @@ declare function Bookmark({ labels, placement, scale, bookmarkStart, bookmarkEnd
 }): JSX.Element;
 declare namespace Bookmark {
     namespace propTypes {
-        const label: any;
+        const labels: any;
         const placement: any;
         const bookmarkStart: any;
         const bookmarkEnd: any;
@@ -25,9 +25,10 @@ declare namespace Bookmark {
     namespace defaultProps {
         const placement_1: string;
         export { placement_1 as placement };
-        export namespace labels {
+        export namespace labels_1 {
             const goToBookmark: string;
             const deleteBookmark: string;
         }
+        export { labels_1 as labels };
     }
 }
