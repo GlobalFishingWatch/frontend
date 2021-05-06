@@ -6,15 +6,11 @@ import {
   DEFAULT_EEZ_DATAVIEW_ID,
   DEFAULT_MPA_DATAVIEW_ID,
   DEFAULT_RFMO_DATAVIEW_ID,
-  DEFAULT_VESSEL_DATAVIEW_ID,
   DEFAULT_BASEMAP_DATAVIEW_ID,
-  DEFAULT_CONTEXT_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_PRESENCE_DATAVIEW_ID,
   DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
-  DEFAULT_ENVIRONMENT_DATAVIEW_ID,
   DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
-  DEFAULT_USER_TRACK_ID,
 } from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
@@ -34,13 +30,7 @@ const workspace: Workspace<WorkspaceState> = {
   public: true,
   state: {},
   ownerId: 0,
-  dataviews: [
-    { id: DEFAULT_USER_TRACK_ID }, // Default user custom tracks dataview for new layers
-    { id: DEFAULT_VESSEL_DATAVIEW_ID }, // Fetch vessel information
-    { id: DEFAULT_CONTEXT_DATAVIEW_ID }, // Default context dataview for new layers
-    { id: DEFAULT_PRESENCE_DATAVIEW_ID }, // If not present the add activity tooltip layer won't appear
-    { id: DEFAULT_ENVIRONMENT_DATAVIEW_ID }, // Default environmet dataview for new layers
-  ],
+  dataviews: [],
   dataviewInstances: [
     {
       id: 'basemap',
