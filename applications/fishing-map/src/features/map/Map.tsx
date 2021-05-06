@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
-import useTilesLoading from '@globalfishingwatch/react-hooks/dist/use-tiles-loading'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import {
   useMapClick,
@@ -30,7 +29,7 @@ import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { SliceInteractionEvent } from './map.slice'
-import { useHasSourceLoaded } from './map-features.hooks'
+import { useHasSourceLoaded, useHaveAllSourcesLoaded } from './map-features.hooks'
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 import useRulers from './rulers/rulers.hooks'
 
@@ -141,7 +140,7 @@ const MapWrapper = (): React.ReactElement | null => {
 
   // TODO handle also in case of error
   // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
-  const tilesLoading = useTilesLoading(map)
+  const allSourcesLoaded = useHaveAllSourcesLoaded()
   const encounterSourceLoaded = useHasSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
 
   const getCursor = useCallback(
@@ -176,6 +175,7 @@ const MapWrapper = (): React.ReactElement | null => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
+
   return (
     <div className={styles.container}>
       {<MapScreenshot map={map} />}
@@ -220,7 +220,7 @@ const MapWrapper = (): React.ReactElement | null => {
       )}
       <MapControls
         onMouseEnter={resetHoverState}
-        mapLoading={tilesLoading || layerComposerLoading}
+        mapLoading={!allSourcesLoaded || layerComposerLoading}
       />
       {legendsTranslated?.map((legend: any) => {
         const legendDomElement = document.getElementById(legend.id as string)

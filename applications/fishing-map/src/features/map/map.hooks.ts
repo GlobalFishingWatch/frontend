@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { InteractionEvent, useTilesLoading } from '@globalfishingwatch/react-hooks'
+import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   MULTILAYER_SEPARATOR,
@@ -297,9 +297,6 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
 
 export const useMapStyle = () => {
   const map = useMapInstance()
-  // Used to ensure the style is refreshed on load finish
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const tilesLoading = useTilesLoading(map)
 
   if (!map) return null
 

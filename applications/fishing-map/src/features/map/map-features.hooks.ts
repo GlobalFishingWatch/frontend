@@ -68,14 +68,19 @@ export const useSourcesLoadingState = () => {
   }, [serializedSourcesState])
 }
 
-export const useSourceLoaded = (sourceId: string) => {
-  const sourcesState = useSourcesLoadingState()
-  return sourcesState[sourceId] === true
-}
-
 export const useHaveSourcesLoaded = (sourcesIds: string[]) => {
   const sourcesState = useSourcesLoadingState()
   const haveAllSourcesLoaded = sourcesIds.every((sourceId) => sourcesState[sourceId] === true)
+  return useMemo(() => {
+    return haveAllSourcesLoaded
+  }, [haveAllSourcesLoaded])
+}
+
+export const useHaveAllSourcesLoaded = () => {
+  const sourcesState = useSourcesLoadingState()
+  const haveAllSourcesLoaded = Object.values(sourcesState).every(
+    (sourceLoaded) => sourceLoaded === true
+  )
   return useMemo(() => {
     return haveAllSourcesLoaded
   }, [haveAllSourcesLoaded])

@@ -10,4 +10,3 @@ export type {
 } from './use-map-interaction/index'
 export { default as useMapLegend } from './use-map-legend'
 export { default as useTilesState } from './use-tiles-state'
-export { default as useTilesLoading } from './use-tiles-loading'
