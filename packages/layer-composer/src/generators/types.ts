@@ -41,6 +41,7 @@ export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
 export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | null
 
 export interface GeneratorLegend {
+  type?: string
   label?: string
   unit?: string
   color?: string
