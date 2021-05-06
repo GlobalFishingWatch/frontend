@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 1.5.1
+
+### Patch Changes
+
+- 94cdbb8f: fishing-map/Future absoluteEnd and last 30 days button
+
 ## 1.5.0
 
 ### Minor Changes

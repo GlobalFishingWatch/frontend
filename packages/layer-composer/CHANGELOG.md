@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 6.0.4
+
+### Patch Changes
+
+- abdd6709: Fix default color ramp
+
 ## 6.0.3
 
 ### Patch Changes

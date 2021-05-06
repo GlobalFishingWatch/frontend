@@ -1,5 +1,17 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.29.3
+
+### Patch Changes
+
+- 94cdbb8f: fishing-map/Future absoluteEnd and last 30 days button
+- Updated dependencies [94cdbb8f]
+- Updated dependencies [abdd6709]
+  - @globalfishingwatch/timebar@1.5.1
+  - @globalfishingwatch/layer-composer@6.0.4
+  - @globalfishingwatch/react-hooks@6.1.5
+  - @globalfishingwatch/ui-components@3.0.6
+
 ## 0.29.2
 
 ### Patch Changes
