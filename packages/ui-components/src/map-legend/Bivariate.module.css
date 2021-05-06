@@ -16,6 +16,7 @@
 
 .labels tspan {
   text-anchor: end;
+  font: var(--font-XS);
 }
 
 .highlighted {

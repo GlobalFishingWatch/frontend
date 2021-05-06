@@ -19,7 +19,7 @@ function ColorRampLegend({
   currentValueClassName = '',
   labelComponent = null,
 }: ColorRampLegendProps) {
-  const { gridArea, ramp, label, unit, currentValue, type } = layer
+  const { gridArea, ramp, colorRamp, loading, label, unit, currentValue, type } = layer
 
   // Omit bucket that goes from -Infinity --> 0. Will have to add an exception if we need a divergent scale
   const cleanRamp = ramp?.filter(([value]) => value !== Number.NEGATIVE_INFINITY)
@@ -49,23 +49,63 @@ function ColorRampLegend({
     }
   }, [cleanRamp, type])
 
+  const Label = labelComponent ? (
+    labelComponent
+  ) : (
+    <p>
+      {label && label}
+      {unit && (
+        <span className={styles.subTitle}>
+          {' '}
+          ({unit}
+          {gridArea && <span> / {gridArea}</span>})
+        </span>
+      )}
+    </p>
+  )
+
+  if (loading && colorRamp && type === 'colorramp-discrete') {
+    return (
+      <div className={cx(styles.row, className)}>
+        {Label}
+        <div className={styles.ramp} style={backgroundStyle}>
+          <div className={styles.discreteSteps}>
+            {colorRamp.map((color: string, i: number) =>
+              i > 0 ? (
+                <span className={styles.discreteStep} key={i} style={{ backgroundColor: color }} />
+              ) : null
+            )}
+          </div>
+        </div>
+        <div className={cx(styles.stepsContainer)}>
+          {colorRamp.map((color: string, i: number) => {
+            if (skipOddLabels && i !== 0 && i !== colorRamp.length && i % 2 === 1) return null
+            return (
+              <span
+                className={cx(styles.step, {
+                  [styles.lastStep]: !skipOddLabels && i === colorRamp.length - 1,
+                })}
+                style={{ left: `${(i * 100) / (colorRamp.length - 1)}%` }}
+                key={i}
+              >
+                <span className={styles.loading}>
+                  <span>·</span>
+                  <span>·</span>
+                  <span>·</span>
+                </span>
+              </span>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
+
   if (!ramp || !cleanRamp) return null
+
   return (
     <div className={cx(styles.row, className)}>
-      {labelComponent ? (
-        labelComponent
-      ) : (
-        <p>
-          {label && label}
-          {unit && (
-            <span className={styles.subTitle}>
-              {' '}
-              ({unit}
-              {gridArea && <span> / {gridArea}</span>})
-            </span>
-          )}
-        </p>
-      )}
+      {Label}
       {cleanRamp?.length > 0 && (
         <Fragment>
           <div className={styles.ramp} style={backgroundStyle}>
