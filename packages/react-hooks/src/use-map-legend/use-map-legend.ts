@@ -1,9 +1,6 @@
 import { useMemo } from 'react'
 import { ExtendedStyle, Generators, LayerMetadataLegend } from '@globalfishingwatch/layer-composer'
-import {
-  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
-  UrlDataviewInstance,
-} from '@globalfishingwatch/dataviews-client'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   LegendLayer,
   LegendLayerBivariate,
@@ -20,14 +17,11 @@ const getLegendLayers = (
   hoveredEvent?: InteractionEvent | null
 ) => {
   if (!style) return []
-  const heatmapGeneratorsMetadata =
-    style.metadata?.generatorsMetadata?.[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
-  const heatmapLegends =
-    heatmapGeneratorsMetadata?.legends?.flatMap(
-      (legend: LayerMetadataLegend, sublayerIndex: number) => {
+  const heatmapLegends = Object.entries(style.metadata?.generatorsMetadata || {}).flatMap(
+    ([generatorId, { legends }]) => {
+      return legends?.flatMap((legend: LayerMetadataLegend, sublayerIndex: number) => {
         if (!legend) return []
 
-        const generatorId = MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
         let currentValue
         let currentValues
         const getHoveredFeatureValueForSublayerIndex = (index: number): number => {
@@ -54,8 +48,9 @@ const getLegendLayers = (
           currentValue,
           currentValues,
         } as LegendLayer | LegendLayerBivariate
-      }
-    ) || []
+      })
+    }
+  )
 
   const layerLegends =
     style.layers?.flatMap((layer) => {
