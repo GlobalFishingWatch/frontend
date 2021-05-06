@@ -24,6 +24,7 @@ declare class Timeline extends PureComponent<any, any, any> {
     notifyMouseLeave: () => void;
     onMouseMove: (event: any) => void;
     onMouseUp: (event: any) => void;
+    onLast30DaysClick(): void;
     innerScale: import("d3-scale").ScaleTime<number, number, never>;
     outerScale: import("d3-scale").ScaleTime<number, number, never>;
     node: HTMLDivElement;

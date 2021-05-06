@@ -87,7 +87,7 @@ const Bookmark = ({
 }
 
 Bookmark.propTypes = {
-  label: PropTypes.shape({
+  labels: PropTypes.shape({
     goToBookmark: PropTypes.string,
     deleteBookmark: PropTypes.string,
   }),
