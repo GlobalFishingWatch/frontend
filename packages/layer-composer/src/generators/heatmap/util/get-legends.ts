@@ -70,6 +70,23 @@ const getGridAreaByZoom = (zoom: number): number => {
 
 const getLegendsCompare = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks: Breaks) => {
   const ramps = getSublayersColorRamps(config)
+
+  if (!breaks?.length) {
+    return config.sublayers.flatMap((subLayer, sublayerIndex) => {
+      const sublayerColorRamp = ramps[sublayerIndex]
+      const sublayerLegend: LayerMetadataLegend = {
+        id: subLayer.id,
+        unit: subLayer.legend?.unit,
+        type: LegendType.ColorRampDiscrete,
+        loading: true,
+        ramp: [],
+        colorRamp: sublayerColorRamp,
+      }
+
+      return sublayerLegend
+    })
+  }
+
   return breaks.flatMap((sublayerBreaks, sublayerIndex) => {
     const sublayerColorRamp = ramps[sublayerIndex]
     if (!sublayerColorRamp) return []
@@ -101,7 +118,9 @@ const getLegendsCompare = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks:
       id: config.sublayers[sublayerIndex].id,
       unit: config.sublayers[sublayerIndex].legend?.unit,
       type: LegendType.ColorRampDiscrete,
+      loading: false,
       ramp: legendRamp,
+      colorRamp: sublayerColorRamp,
     }
     return [sublayerLegend]
   })
@@ -141,12 +160,14 @@ const getLegendsBivariate = (config: GlobalHeatmapAnimatedGeneratorConfig, break
   const visibleSublayers = config.sublayers.filter((s) => s.visible)
   const colorRampsIds = visibleSublayers.map((subLayer) => subLayer.colorRamp as ColorRampId)
   const subLayer = visibleSublayers?.[0]
+
   return [
     {
       id: subLayer.id,
       type: LegendType.Bivariate,
       bivariateRamp: getBivariateRamp(colorRampsIds),
       unit: subLayer.legend?.unit,
+      loading: !breaks?.length,
       sublayersBreaks: breaks,
     },
   ]

@@ -74,6 +74,8 @@ export interface LayerMetadataLegend extends GeneratorLegend {
   type: LegendType
   gridArea?: number | string
   ramp?: [number | null | string, string][]
+  colorRamp?: string[]
+  loading?: boolean
   currentValue?: number
   [key: string]: any
 }
