@@ -27,7 +27,7 @@ export const useSourcesLoadingState = () => {
       const currentSources = map.getStyle().sources || {}
       const sourcesLoaded = Object.entries(currentSources)
         .map(([sourceId, source]) => {
-          if (source.type === 'geojson' && !(typeof source.type === 'string')) {
+          if (source.type === 'geojson' && !(typeof source?.data === 'string')) {
             return []
           }
           return [sourceId, map.isSourceLoaded(sourceId)]
