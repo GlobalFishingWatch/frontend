@@ -201,6 +201,7 @@ class LayerComposer {
       return promise
         .then(({ config, style }) => {
           const layer = this._applyGenericStyle(config, style)
+          const metadataStyle = this._getGeneratorMetadata([...layersGenerated, layer])
           const { id, sources, layers } = layer
           const { sourcesStyle, layersStyle } = this.latestGenerated
           // Mutating the reference to keep the layers order
