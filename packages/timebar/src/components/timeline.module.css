@@ -95,3 +95,24 @@
 .tooltipContainer {
   visibility: visible;
 }
+
+.last30Days {
+  position: absolute;
+  display: flex;
+  top: 16px;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.last30Days > button {
+  cursor: pointer;
+  color: rgba(var(--white-rgb), var(--opacity-secondary));
+  background-color: var(--color-primary-blue);
+  border: var(--border-white);
+  border-radius: 99px;
+  height: var(--size-S);
+  padding: 0 12px;
+  pointer-events: all;
+}

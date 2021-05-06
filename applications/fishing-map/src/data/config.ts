@@ -17,9 +17,7 @@ export const PUBLIC_SUFIX = 'public'
 
 // used when no url data and no workspace data
 const now = new Date()
-const end = new Date(
-  Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes())
-).toISOString()
+const end = new Date(Date.UTC(now.getFullYear(), 11, 31)).toISOString()
 
 export const DEFAULT_VIEWPORT = {
   latitude: 26,
@@ -28,7 +26,7 @@ export const DEFAULT_VIEWPORT = {
 }
 export const DEFAULT_TIME_RANGE = {
   start: new Date(Date.UTC(2018, 0, 1)).toISOString(),
-  end: end,
+  end,
 }
 
 export const DEFAULT_ACTIVITY_CATEGORY = 'fishing'
