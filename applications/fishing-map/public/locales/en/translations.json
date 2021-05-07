@@ -106,7 +106,7 @@
   },
   "event": {
     "noData": "No data available",
-    "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
+    "notInCVP": "Event not available.",
     "seeInCVP": "See in carrier vessel portal"
   },
   "feedback": {
