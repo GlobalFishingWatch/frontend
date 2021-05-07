@@ -180,7 +180,7 @@
     "description": "Search by vessel name or identification code. You can narrow your search by using the filter icon in the top menu bar.",
     "mainQueryLabel": "Name, IMO or MMSI",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or call sign.",
-    "notAllowed": "You don't have permission to search on these datasets",
+    "notAllowed": "You don't have permission to search these datasets.",
     "placeholder": "Type to search for vessels",
     "seeVessel": "See vessel",
     "seeVessels": "See vessels",
