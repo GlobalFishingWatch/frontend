@@ -1,8 +1,6 @@
-import { createSelector, createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import { VesselSearch } from '@globalfishingwatch/api-types'
-import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectQueryParam } from 'routes/routes.selectors'
 import { fetchVesselSearchThunk } from './search.thunk'
 
 export type CachedVesselSearch = {
@@ -68,6 +66,7 @@ const slice = createSlice({
       }
     })
     builder.addCase(fetchVesselSearchThunk.rejected, (state, action) => {
+      if ((action.meta.arg.query ?? '').length === 0) return
       state.queries[action.meta.arg.query].searching = false
     })
   },
