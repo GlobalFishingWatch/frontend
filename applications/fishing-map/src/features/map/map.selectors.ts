@@ -61,7 +61,12 @@ const getGeneratorsConfig = ({
     return dataview.config?.type === Generators.Type.HeatmapAnimated
   })
 
-  let heatmapAnimatedMode: Generators.HeatmapAnimatedMode = bivariateDataviews
+  const visibleDataviewIds = dataviews.map(({ id }) => id)
+  const bivariateVisible =
+    bivariateDataviews?.filter((dataviewId) => visibleDataviewIds.includes(dataviewId))?.length ===
+    2
+
+  let heatmapAnimatedMode: Generators.HeatmapAnimatedMode = bivariateVisible
     ? Generators.HeatmapAnimatedMode.Bivariate
     : Generators.HeatmapAnimatedMode.Compare
 
