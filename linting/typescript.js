@@ -3,11 +3,10 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'react-app',
-    'prettier/@typescript-eslint',
-    'plugin:prettier/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
+    'prettier',
   ],
   plugins: ['@typescript-eslint', 'react', 'import'],
   settings: {
