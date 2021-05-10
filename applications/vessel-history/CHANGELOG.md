@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.36
+
+### Patch Changes
+
+- 95e754ca: Linting/prettier
+- Updated dependencies [95e754ca]
+  - @globalfishingwatch/timebar@1.5.2
+
 ## 0.0.35
 
 ### Patch Changes

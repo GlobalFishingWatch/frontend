@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 1.5.2
+
+### Patch Changes
+
+- 95e754ca: Linting/prettier
+
 ## 1.5.1
 
 ### Patch Changes

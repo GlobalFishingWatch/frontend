@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 1.6.1
+
+### Patch Changes
+
+- 95e754ca: Linting/prettier
+
 ## 1.6.0
 
 ### Minor Changes
