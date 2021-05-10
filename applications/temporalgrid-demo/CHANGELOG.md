@@ -1,5 +1,11 @@
 # @globalfishingwatchapp/temporalgrid-demo
 
+## 0.7.76
+
+### Patch Changes
+
+- bbe5b4d2: Linting/prettier pass
+
 ## 0.7.75
 
 ### Patch Changes

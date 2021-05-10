@@ -1,5 +1,11 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.29.5
+
+### Patch Changes
+
+- bbe5b4d2: Linting/prettier pass
+
 ## 0.29.4
 
 ### Patch Changes

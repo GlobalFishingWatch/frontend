@@ -1,5 +1,11 @@
 # @globalfishingwatchapp/dataviews-editor
 
+## 1.1.44
+
+### Patch Changes
+
+- bbe5b4d2: Linting/prettier pass
+
 ## 1.1.43
 
 ### Patch Changes
