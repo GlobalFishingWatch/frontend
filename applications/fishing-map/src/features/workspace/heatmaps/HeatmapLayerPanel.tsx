@@ -180,7 +180,7 @@ function HeatmapLayerPanel({ dataview, showBorder, isOpen }: LayerPanelProps): R
                 icon="split"
                 tooltip={t('layer.toggleCombinationMode.split', 'Split layers')}
                 tooltipPlacement="left"
-                className={heatmapStyles.bivariateSplit}
+                className={cx(heatmapStyles.bivariateSplit, 'print-hidden')}
                 onClick={disableBivariate}
               />
             )}

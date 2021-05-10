@@ -113,7 +113,7 @@ function HeatmapsSection(): React.ReactElement {
               isOpen={dataview.id === addedDataviewId}
             />
             {showBivariateIcon && (
-              <div className={cx(heatmapStyles.bivariateToggleContainer)}>
+              <div className={cx(heatmapStyles.bivariateToggleContainer, 'print-hidden')}>
                 <IconButton
                   icon={bivariateDataviews ? 'split' : 'compare'}
                   type="border"
