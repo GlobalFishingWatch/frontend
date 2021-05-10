@@ -1,5 +1,11 @@
 # tile-inspector
 
+## 0.1.15
+
+### Patch Changes
+
+- 95e754ca: Linting/prettier
+
 ## 0.1.14
 
 ### Patch Changes

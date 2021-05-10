@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.29.4
+
+### Patch Changes
+
+- 95e754ca: Linting/prettier
+- Updated dependencies [95e754ca]
+  - @globalfishingwatch/timebar@1.5.2
+
 ## 0.29.3
 
 ### Patch Changes
