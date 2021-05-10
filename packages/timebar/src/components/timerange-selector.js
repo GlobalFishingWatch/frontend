@@ -70,14 +70,8 @@ class TimeRangeSelector extends Component {
   }
 
   render() {
-    const {
-      start,
-      end,
-      startCanIncrement,
-      startCanDecrement,
-      endCanIncrement,
-      endCanDecrement,
-    } = this.state
+    const { start, end, startCanIncrement, startCanDecrement, endCanIncrement, endCanDecrement } =
+      this.state
     const { labels, absoluteStart, absoluteEnd } = this.props
 
     if (start === undefined) {

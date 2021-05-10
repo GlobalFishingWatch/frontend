@@ -24,8 +24,7 @@
 }
 
 @media print {
-  .tooltip  {
+  .tooltip {
     display: none !important;
   }
 }
-

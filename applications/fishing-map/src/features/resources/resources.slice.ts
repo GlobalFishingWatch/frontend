@@ -22,8 +22,9 @@ export const fetchResourceThunk = createAsyncThunk(
     const data = await GFWAPI.fetch(resource.url, { responseType }).then((data) => {
       // TODO Replace with enum?
       if (isTrackResource) {
-        const fields = (resource.datasetConfig.query?.find((q) => q.id === 'fields')
-          ?.value as string).split(',') as Field[]
+        const fields = (
+          resource.datasetConfig.query?.find((q) => q.id === 'fields')?.value as string
+        ).split(',') as Field[]
         const segments = trackValueArrayToSegments(data as any, fields)
         return segments
       }

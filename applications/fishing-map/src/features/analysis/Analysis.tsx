@@ -69,14 +69,12 @@ function Analysis() {
   const contextSourcesIds = useMemo(() => [contextSourceId], [contextSourceId])
   const filter = useMemo(() => ['==', 'gfw_id', parseInt(areaId)], [areaId])
 
-  const {
-    sourcesFeatures: contextAreaFeaturesArr,
-    haveSourcesLoaded: contextAreaSourceLoaded,
-  } = useFeatures({
-    sourcesIds: contextSourcesIds,
-    sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
-    filter,
-  })
+  const { sourcesFeatures: contextAreaFeaturesArr, haveSourcesLoaded: contextAreaSourceLoaded } =
+    useFeatures({
+      sourcesIds: contextSourcesIds,
+      sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+      filter,
+    })
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
@@ -196,11 +194,8 @@ function Analysis() {
     }
   }, [])
 
-  const {
-    generatingTimeseries,
-    haveSourcesLoaded,
-    sourcesTimeseriesFiltered,
-  } = useFilteredTimeSeries()
+  const { generatingTimeseries, haveSourcesLoaded, sourcesTimeseriesFiltered } =
+    useFilteredTimeSeries()
 
   return (
     <div className={styles.container}>

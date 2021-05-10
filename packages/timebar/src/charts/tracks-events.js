@@ -94,18 +94,12 @@ const getCoordinates = (tracksEvents, outerScale) => {
 
 const TracksEvents = ({ tracksEvents, preselectedEventId, onEventClick, onEventHover }) => {
   const { immediate } = useContext(ImmediateContext)
-  const {
-    outerScale,
-    outerWidth,
-    graphHeight,
-    tooltipContainer,
-    innerStartPx,
-    innerEndPx,
-  } = useContext(TimelineContext)
-  const tracksEventsWithCoordinates = useMemo(() => getCoordinates(tracksEvents, outerScale), [
-    tracksEvents,
-    outerScale,
-  ])
+  const { outerScale, outerWidth, graphHeight, tooltipContainer, innerStartPx, innerEndPx } =
+    useContext(TimelineContext)
+  const tracksEventsWithCoordinates = useMemo(
+    () => getCoordinates(tracksEvents, outerScale),
+    [tracksEvents, outerScale]
+  )
   const [highlightedEvent, setHighlightedEvent] = useState(null)
 
   // checks if preselectedEventId exist in the first trackEvents, pick it and setHighlightedEvent accordingly

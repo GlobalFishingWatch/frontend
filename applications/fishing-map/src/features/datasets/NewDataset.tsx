@@ -51,9 +51,8 @@ function NewDataset(): React.ReactElement {
   const { datasetModal, datasetCategory, dispatchDatasetModal } = useDatasetModalConnect()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
-  const [datasetGeometryType, setDatasetGeometryType] = useState<DatasetGeometryType | undefined>(
-    undefined
-  )
+  const [datasetGeometryType, setDatasetGeometryType] =
+    useState<DatasetGeometryType | undefined>(undefined)
   const [datasetGeometryTypeConfirmed, setDatasetGeometryTypeConfirmed] = useState<boolean>(false)
   const [file, setFile] = useState<File | undefined>()
   const [fileData, setFileData] = useState<FeatureCollectionWithFilename | CSV | undefined>()

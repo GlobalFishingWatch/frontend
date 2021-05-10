@@ -122,12 +122,8 @@ const { slice: vesselsSlice, entityAdapter } = createAsyncSlice<OfflineVesselSta
   },
 })
 
-export const {
-  selectById,
-  selectAll,
-  selectEntities,
-  selectTotal,
-} = entityAdapter.getSelectors<RootState>((state) => state.offlineVessels)
+export const { selectById, selectAll, selectEntities, selectTotal } =
+  entityAdapter.getSelectors<RootState>((state) => state.offlineVessels)
 
 export const selectOfflineVesselById = memoize((id: string) =>
   createSelector([(state: RootState) => state], (state) => {
