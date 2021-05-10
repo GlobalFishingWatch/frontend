@@ -2,7 +2,7 @@
   "*.css": ["prettier --write", "stylelint --fix"],
   "*.scss": ["prettier --write", "stylelint --syntax=scss --fix"],
   "*.{js,jsx,ts,tsx}": [
-    "eslint --fix"
+    "eslint --fix", "prettier --write"
   ],
   "*.{png,jpeg,jpg,gif,svg}": [
     "imagemin-lint-staged",
