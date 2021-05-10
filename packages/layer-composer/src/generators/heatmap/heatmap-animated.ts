@@ -259,9 +259,7 @@ class HeatmapAnimatedGenerator {
         resolve({ style: this.getStyle(finalConfig), config: finalConfig })
       })
       breaksPromise.catch((e: any) => {
-        if (e.name !== 'AbortError') {
-          this.breaksCache[cacheKey] = { loading: false, error: true }
-        }
+        this.breaksCache[cacheKey] = { loading: false, error: e.name !== 'AbortError' }
         reject(e)
       })
     })

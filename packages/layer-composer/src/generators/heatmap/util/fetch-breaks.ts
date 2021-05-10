@@ -79,7 +79,9 @@ export default function fetchBreaks(config: FetchBreaksParams) {
       return sublayers.map(() => maxBreaks)
     })
     .catch((e) => {
-      console.warn(e)
+      if (e.name !== 'AbortError') {
+        console.warn(e)
+      }
       throw e
     })
 }
