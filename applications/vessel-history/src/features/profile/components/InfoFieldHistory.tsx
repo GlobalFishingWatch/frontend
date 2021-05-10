@@ -29,10 +29,10 @@ const InfoFieldHistory: React.FC<ListItemProps> = ({
     return `${label} History for ${vesselName}`
   }, [label, vesselName])
 
-  const since = useMemo(() => current?.firstSeen ?? history.slice(0, 1)?.shift()?.firstSeen, [
-    current,
-    history,
-  ])
+  const since = useMemo(
+    () => current?.firstSeen ?? history.slice(0, 1)?.shift()?.firstSeen,
+    [current, history]
+  )
 
   const previousHistory = useMemo(() => history.slice(1), [history])
 

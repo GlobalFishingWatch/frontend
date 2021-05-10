@@ -60,9 +60,8 @@ export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectUrlStartQuery = selectQueryParam<string>('start')
 export const selectUrlEndQuery = selectQueryParam<string>('end')
-export const selectUrlDataviewInstances = selectQueryParam<UrlDataviewInstance[]>(
-  'dataviewInstances'
-)
+export const selectUrlDataviewInstances =
+  selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
 export const selectActivityCategory = createSelector(
   [selectQueryParam<WorkspaceActivityCategory>('activityCategory')],
   (activityCategory) => activityCategory || DEFAULT_ACTIVITY_CATEGORY

@@ -26,11 +26,8 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
   const datasetStatusId = useSelector(selectDatasetsStatusId)
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const {
-    dispatchDatasetModal,
-    dispatchDatasetCategory,
-    dispatchEditingDatasetId,
-  } = useDatasetModalConnect()
+  const { dispatchDatasetModal, dispatchDatasetCategory, dispatchEditingDatasetId } =
+    useDatasetModalConnect()
 
   const onNewDatasetClick = useCallback(async () => {
     batch(() => {

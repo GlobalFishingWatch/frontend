@@ -37,12 +37,8 @@ const slice = createSlice({
   },
 })
 
-export const {
-  setHighlightedTime,
-  disableHighlightedTime,
-  setStaticTime,
-  changeSettings,
-} = slice.actions
+export const { setHighlightedTime, disableHighlightedTime, setStaticTime, changeSettings } =
+  slice.actions
 export default slice.reducer
 
 export const selectHighlightedTime = (state: RootState) => state.timebar.highlightedTime

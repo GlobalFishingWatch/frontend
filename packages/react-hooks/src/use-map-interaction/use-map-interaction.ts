@@ -153,10 +153,10 @@ export const useFeatureState = (map?: Map) => {
     [map]
   )
 
-  const featureState = useMemo(() => ({ cleanFeatureState, updateFeatureState }), [
-    cleanFeatureState,
-    updateFeatureState,
-  ])
+  const featureState = useMemo(
+    () => ({ cleanFeatureState, updateFeatureState }),
+    [cleanFeatureState, updateFeatureState]
+  )
   return featureState
 }
 

@@ -64,13 +64,8 @@ const MapControls = ({
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const domElement = useRef<HTMLElement>()
-  const {
-    loading,
-    downloadImage,
-    previewImage,
-    previewImageLoading,
-    generatePreviewImage,
-  } = useDownloadDomElementAsImage(domElement.current, false)
+  const { loading, downloadImage, previewImage, previewImageLoading, generatePreviewImage } =
+    useDownloadDomElementAsImage(domElement.current, false)
 
   useEffect(() => {
     if (!domElement.current) {
