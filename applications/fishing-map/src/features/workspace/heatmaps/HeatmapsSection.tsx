@@ -23,7 +23,7 @@ import heatmapStyles from './HeatmapsSection.module.css'
 
 function HeatmapsSection(): React.ReactElement {
   const { t } = useTranslation()
-  const [heatmapSublayersAddedIndex, setHeatmapSublayersAddedIndex] = useState<number | undefined>()
+  const [addedDataviewId, setAddedDataviewId] = useState<string | undefined>()
   const dataviews = useSelector(selectActivityDataviews)
   const activityCategory = useSelector(selectActivityCategory)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -31,7 +31,7 @@ function HeatmapsSection(): React.ReactElement {
   const bivariateDataviews = useSelector(selectBivariateDataviews)
 
   useEffect(() => {
-    setHeatmapSublayersAddedIndex(undefined)
+    setAddedDataviewId(undefined)
   }, [activityCategory])
 
   const onActivityOptionClick = useCallback(
@@ -43,13 +43,13 @@ function HeatmapsSection(): React.ReactElement {
 
   const onAddClick = useCallback(
     (category: WorkspaceActivityCategory) => {
-      setHeatmapSublayersAddedIndex(dataviews ? dataviews.length : 0)
       dispatchQueryParams({ bivariateDataviews: undefined })
       const dataviewInstance =
         category === 'fishing' ? getFishingDataviewInstance() : getPresenceDataviewInstance()
       upsertDataviewInstance(dataviewInstance)
+      setAddedDataviewId(dataviewInstance.id)
     },
-    [dispatchQueryParams, dataviews, upsertDataviewInstance]
+    [dispatchQueryParams, upsertDataviewInstance]
   )
 
   const onBivariateDataviewsClick = useCallback(
@@ -110,7 +110,7 @@ function HeatmapsSection(): React.ReactElement {
               key={dataview.id}
               dataview={dataview}
               showBorder={!showBivariateIcon}
-              isOpen={index === heatmapSublayersAddedIndex}
+              isOpen={dataview.id === addedDataviewId}
             />
             {showBivariateIcon && (
               <div className={cx(heatmapStyles.bivariateToggleContainer)}>
