@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/vessel-history",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
   "scripts": {

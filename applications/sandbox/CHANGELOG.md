@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.6.7
+
+### Patch Changes
+
+- bbe5b4d2: Linting/prettier pass
+
 ## 0.6.6
 
 ### Patch Changes

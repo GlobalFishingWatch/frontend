@@ -1,5 +1,11 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.37
+
+### Patch Changes
+
+- bbe5b4d2: Linting/prettier pass
+
 ## 0.0.36
 
 ### Patch Changes
