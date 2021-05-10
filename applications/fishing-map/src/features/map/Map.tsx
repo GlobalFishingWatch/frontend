@@ -113,28 +113,26 @@ const MapWrapper = (): React.ReactElement | null => {
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
 
-  const legendsTranslated = useMemo(
-    () =>
-      mapLegends?.map((legend) => {
-        const isSquareKm = (legend.gridArea as number) > 50000
-        let label = legend.unit || ''
-        if (legend.generatorType === GeneratorType.HeatmapAnimated) {
-          const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
-          const gridAreaFormatted = gridArea
-            ? formatI18nNumber(gridArea, {
-                style: 'unit',
-                unit: isSquareKm ? 'kilometer' : 'meter',
-                unitDisplay: 'short',
-              })
-            : ''
-          if (legend.unit === 'hours') {
-            label = `${t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
-          }
+  const legendsTranslated = useMemo(() => {
+    return mapLegends?.map((legend) => {
+      const isSquareKm = (legend.gridArea as number) > 50000
+      let label = legend.unit || ''
+      if (legend.generatorType === GeneratorType.HeatmapAnimated) {
+        const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+        const gridAreaFormatted = gridArea
+          ? formatI18nNumber(gridArea, {
+              style: 'unit',
+              unit: isSquareKm ? 'kilometer' : 'meter',
+              unitDisplay: 'short',
+            })
+          : ''
+        if (legend.unit === 'hours') {
+          label = `${t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
         }
-        return { ...legend, label }
-      }),
-    [mapLegends, t]
-  )
+      }
+      return { ...legend, label }
+    })
+  }, [mapLegends, t])
 
   const debugOptions = useSelector(selectDebugOptions)
 

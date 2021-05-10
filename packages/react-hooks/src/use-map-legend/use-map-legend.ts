@@ -78,7 +78,7 @@ const getLegendLayers = (
 
   const legends = [...heatmapLegends, ...layerLegends].map((legend) => {
     const { generatorType, generatorId } = legend
-    let currentValue
+    let currentValue = legend.currentValue
     if (generatorType === Generators.Type.Heatmap) {
       const value = hoveredEvent?.features?.find((f) => f.generatorId === generatorId)?.value
       if (value) {
