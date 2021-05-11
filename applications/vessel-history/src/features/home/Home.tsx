@@ -139,7 +139,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   ))}
                 </div>
               )}
-              {totalResults && !searching && vessels.length < totalResults && (
+              {totalResults > 0 && !searching && vessels.length < totalResults && (
                 <div className={styles.listFooter}>
                   <Button
                     onClick={() => fetchResults({ query, offset: offset + RESULTS_PER_PAGE })}
@@ -153,7 +153,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
                   <Spinner className={styles.loader}></Spinner>
                 </div>
               )}
-              {totalResults &&
+              {totalResults > 0 &&
                 !searching &&
                 vessels.length >= totalResults &&
                 vessels.length !== 0 && (
