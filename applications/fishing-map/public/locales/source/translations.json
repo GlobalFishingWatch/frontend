@@ -31,6 +31,8 @@
     "help": "Help",
     "hour": "Hour",
     "hour_plural": "hours",
+    "days": "Day",
+    "days_plural": "days",
     "in": "in",
     "loggedAs": "Logged as",
     "login": "Log in",

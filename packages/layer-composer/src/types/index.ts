@@ -45,6 +45,7 @@ export enum Group {
   Heatmap = 'heatmap', // Fill/gradient-based heatmaps
   BasemapFill = 'basemapFill', // Landmass
   OutlinePolygons = 'outlinePolygons', // Context layers with an outlined/hollow style such as EEZ, RFMOs, etc
+  OutlinePolygonsFill = 'outlinePolygonsFill', // User context layers with a filled styles, below OutlinePolygons
   OutlinePolygonsBackground = 'OutlinePolygonsBackground', // Polygons  that need to be rendered below landmass
   OutlinePolygonsHighlighted = 'outlinePolygonsHighlighted', // Context layers with selected features
   Default = 'default', // Default stack position when group is not specified
@@ -70,10 +71,12 @@ export enum LegendType {
  * Set of additional metadata properties added by LayerComposer for later use in transformations or to be consumed directly ie (group, legend, etc)
  */
 export interface LayerMetadataLegend extends GeneratorLegend {
-  id?: string
+  id: string
   type: LegendType
   gridArea?: number | string
   ramp?: [number | null | string, string][]
+  colorRamp?: string[]
+  loading?: boolean
   currentValue?: number
   [key: string]: any
 }

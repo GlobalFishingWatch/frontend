@@ -1,6 +1,7 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
 import styles from './Bivariate.module.css'
+import legendStyles from './MapLegend.module.css'
 import BivariateArrows from './Bivariate-arrows'
 import { LegendLayerBivariate, roundLegendNumber, formatLegendValue } from './'
 
@@ -30,6 +31,7 @@ type BivariateLegendProps = {
 //                                            |
 //                                       undefined
 const getBucketIndex = (breaks: number[], value: number) => {
+  if (!breaks) return
   let currentBucketIndex
   for (let bucketIndex = 0; bucketIndex < breaks.length + 1; bucketIndex++) {
     const stopValue = breaks?.[bucketIndex] ?? Number.POSITIVE_INFINITY
@@ -120,7 +122,7 @@ function BivariateLegend({
 }: BivariateLegendProps) {
   if (!layer || !layer.bivariateRamp || !layer.sublayersBreaks) return null
   const bivariateBucketIndex = getBivariateValue(
-    [layer.currentValues[0] || 0, layer.currentValues[1] || 0],
+    [layer.currentValues?.[0] || 0, layer.currentValues?.[1] || 0],
     layer.sublayersBreaks
   )
   return (
@@ -143,8 +145,24 @@ function BivariateLegend({
                     {valuesPositions.map((positions, xIndex) =>
                       positions?.map(({ x, y }, yIndex) => {
                         if (xIndex === 1 && yIndex === 0) return null
+                        if (layer.loading) {
+                          return (
+                            <text
+                              x={x}
+                              y={y}
+                              className={legendStyles.loading}
+                              key={[xIndex, yIndex].join(',')}
+                            >
+                              <tspan>·</tspan>
+                              <tspan>·</tspan>
+                              <tspan>·</tspan>
+                            </text>
+                          )
+                        }
                         const value = layer.sublayersBreaks?.[xIndex]?.[yIndex]
-                        if (value === undefined) return null
+                        if (value === undefined) {
+                          return null
+                        }
                         const roundedValue = roundValues ? roundLegendNumber(value) : value
                         return (
                           <text key={value}>

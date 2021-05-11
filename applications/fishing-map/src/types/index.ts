@@ -17,7 +17,7 @@ export type WorkspaceStateProperty =
   | 'timebarVisualisation'
   | 'timebarEvents'
   | 'timebarGraph'
-  | 'bivariate'
+  | 'bivariateDataviews'
   | 'version'
   | 'activityCategory'
 
@@ -34,6 +34,7 @@ export type WorkspaceAnalysis = {
   bounds?: [number, number, number, number]
 }
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
+export type BivariateDataviews = [string, string]
 
 export type WorkspaceState = {
   query?: string
@@ -44,7 +45,7 @@ export type WorkspaceState = {
   timebarVisualisation?: TimebarVisualisations
   timebarEvents?: TimebarEvents
   timebarGraph?: TimebarGraphs
-  bivariate?: boolean // TODO move this between layers saving layer indexes
+  bivariateDataviews?: BivariateDataviews
   activityCategory?: WorkspaceActivityCategory
 }
 export type QueryParams = Partial<WorkspaceViewport> & Partial<WorkspaceTimeRange> & WorkspaceState

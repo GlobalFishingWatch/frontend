@@ -44,7 +44,7 @@ export const rgbaToHex = ({ r, g, b }: RGBA) => {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
 
-const BLEND_BACKGROUND = '#244979'
+export const BLEND_BACKGROUND = '#0f2e5f'
 export const getBlend = (color1: RGBA, color2: RGBA) => {
   return normal({ ...hexToRgb(BLEND_BACKGROUND), a: 1 }, screen(color1 as RGBA, color2 as RGBA))
 }
@@ -53,7 +53,7 @@ export const getColorRampByOpacitySteps = (
   finalColor: string,
   numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
 ) => {
-  const color = finalColor.includes('#') ? hexToRgbString(finalColor) : finalColor
+  const color = finalColor?.includes('#') ? hexToRgbString(finalColor) : finalColor
   const opacitySteps = [...Array(numSteps)].map((_, i) => i / (numSteps - 1))
   return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
 }

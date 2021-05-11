@@ -17,7 +17,7 @@ import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
 import { TimeChunk, TimeChunks, getActiveTimeChunks, getDelta, Interval } from './util/time-chunks'
-import { getSublayersBreaks } from './util/get-legends'
+import getLegends, { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
@@ -174,10 +174,8 @@ class HeatmapAnimatedGenerator {
     ) {
       return getGriddedLayers(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Blob) {
-      // TODO review with new buckets
       return getBlobLayer(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Extruded) {
-      // TODO review with new buckets
       return getExtrudedLayer(config, timeChunks, breaks)
     }
   }
@@ -223,6 +221,7 @@ class HeatmapAnimatedGenerator {
     const breaks = useSublayerBreaks
       ? config.sublayers.map(({ breaks }) => breaks || [])
       : getSublayersBreaks(finalConfig, this.breaksCache[cacheKey]?.breaks)
+    const legends = getLegends(finalConfig, breaks || [])
 
     const style = {
       id: finalConfig.id,
@@ -230,6 +229,7 @@ class HeatmapAnimatedGenerator {
       layers: this._getStyleLayers(finalConfig, timeChunks, breaks),
       metadata: {
         breaks,
+        legends,
         temporalgrid: true,
         numSublayers: finalConfig.sublayers.length,
         visibleSublayers: getSubLayersVisible(finalConfig.sublayers),
@@ -237,7 +237,6 @@ class HeatmapAnimatedGenerator {
         aggregationOperation: finalConfig.aggregationOperation,
         multiplier: finalConfig.breaksMultiplier,
         sublayers: finalConfig.sublayers,
-        legend: finalConfig.metadata?.legend,
       },
     }
 
@@ -260,9 +259,7 @@ class HeatmapAnimatedGenerator {
         resolve({ style: this.getStyle(finalConfig), config: finalConfig })
       })
       breaksPromise.catch((e: any) => {
-        if (e.name !== 'AbortError') {
-          this.breaksCache[cacheKey] = { loading: false, error: true }
-        }
+        this.breaksCache[cacheKey] = { loading: false, error: e.name !== 'AbortError' }
         reject(e)
       })
     })
