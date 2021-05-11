@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 6.1.6
+
+### Patch Changes
+
+- 4a94bf9b: Fishing map/spinner fixes
+
 ## 6.1.5
 
 ### Patch Changes
