@@ -158,12 +158,14 @@ const getBivariateRamp = (colorRampsIds: ColorRampId[]) => {
 
 const getLegendsBivariate = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks: Breaks) => {
   const visibleSublayers = config.sublayers.filter((s) => s.visible)
+  const ids = visibleSublayers.map(s => s.id)
   const colorRampsIds = visibleSublayers.map((subLayer) => subLayer.colorRamp as ColorRampId)
   const subLayer = visibleSublayers?.[0]
 
   return [
     {
       id: subLayer.id,
+      ids,
       type: LegendType.Bivariate,
       bivariateRamp: getBivariateRamp(colorRampsIds),
       unit: subLayer.legend?.unit,

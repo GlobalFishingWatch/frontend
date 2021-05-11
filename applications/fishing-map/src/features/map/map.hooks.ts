@@ -206,11 +206,10 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
     let dataview
     if (feature.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID) {
       const { temporalgrid } = feature
-      if (!temporalgrid || temporalgrid.sublayerIndex === undefined || !temporalgrid.visible) {
+      if (!temporalgrid || temporalgrid.sublayerId === undefined || !temporalgrid.visible) {
         return []
       }
 
-      // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
       dataview = temporalgridDataviews?.find(dataview => dataview.id === temporalgrid.sublayerId)
     } else {
       dataview = dataviews?.find((dataview) => {
@@ -231,7 +230,6 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
           type: Generators.Type.GL,
           value: feature.properties.label,
           properties: {},
-          // TODO: I have no idea wwhat to put here
           category: DataviewCategory.Context,
         }
         return tooltipWorkspaceFeature

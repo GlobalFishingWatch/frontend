@@ -19,25 +19,25 @@ const getLegendLayers = (
   if (!style) return []
   const heatmapLegends = Object.entries(style.metadata?.generatorsMetadata || {}).flatMap(
     ([generatorId, { legends }]) => {
-      return legends?.flatMap((legend: LayerMetadataLegend, sublayerIndex: number) => {
+      return legends?.flatMap((legend: LayerMetadataLegend) => {
         if (!legend) return []
 
         let currentValue
         let currentValues
-        const getHoveredFeatureValueForSublayerIndex = (index: number): number => {
+        const getHoveredFeatureValueForSublayerId = (id: string): number => {
           const hoveredFeature = hoveredEvent?.features?.find(
-            (f) => f.generatorId === generatorId && f.temporalgrid?.sublayerIndex === index
+            (f) => f.generatorId === generatorId && f.temporalgrid?.sublayerId === id
           )
           return hoveredFeature?.value
         }
         // Both bivariate sublayers come in the same sublayerLegend (see getLegendsBivariate in LC)
         if (legend.type === 'bivariate') {
           currentValues = [
-            getHoveredFeatureValueForSublayerIndex(0),
-            getHoveredFeatureValueForSublayerIndex(1),
+            getHoveredFeatureValueForSublayerId(legend.ids[0]),
+            getHoveredFeatureValueForSublayerId(legend.ids[1]),
           ]
         } else {
-          currentValue = getHoveredFeatureValueForSublayerIndex(sublayerIndex)
+          currentValue = getHoveredFeatureValueForSublayerId(legend.id)
         }
 
         return {

@@ -71,7 +71,7 @@ export enum LegendType {
  * Set of additional metadata properties added by LayerComposer for later use in transformations or to be consumed directly ie (group, legend, etc)
  */
 export interface LayerMetadataLegend extends GeneratorLegend {
-  id?: string
+  id: string
   type: LegendType
   gridArea?: number | string
   ramp?: [number | null | string, string][]

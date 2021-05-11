@@ -85,7 +85,7 @@ const initialState: MapState = {
 }
 
 type SublayerVessels = {
-  sublayerIndex: number
+  sublayerId: string
   vessels: ExtendedFeatureVessel[]
 }
 
@@ -104,7 +104,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
 
     // get corresponding dataviews
     const featuresDataviews = temporalGridFeatures.flatMap((feature) => {
-      return feature.temporalgrid ? temporalgridDataviews[feature.temporalgrid.sublayerIndex] : []
+      return feature.temporalgrid ? temporalgridDataviews.find(dataview => dataview.id === feature?.temporalgrid?.sublayerId) || [] : []
     })
 
     const fourWingsDataset = featuresDataviews[0].datasets?.find(
@@ -231,12 +231,12 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
         }
       }
 
-      const sublayersIndices = temporalGridFeatures.map(
-        (feature) => feature.temporalgrid?.sublayerIndex || 0
+      const sublayersIds = temporalGridFeatures.map(
+        (feature) => feature.temporalgrid?.sublayerId || ''
       )
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
         return {
-          sublayerIndex: sublayersIndices[i],
+          sublayerId: sublayersIds[i],
           vessels: sublayerVessels
             .flatMap((vessels) => {
               return vessels.map((vessel) => {
@@ -346,7 +346,7 @@ const slice = createSlice({
         const sublayer = state.clicked?.features?.find(
           (feature) =>
             feature.temporalgrid &&
-            feature.temporalgrid.sublayerIndex === sublayerVessels.sublayerIndex
+            feature.temporalgrid.sublayerId === sublayerVessels.sublayerId
         )
         if (!sublayer) return
         sublayer.vessels = sublayerVessels.vessels
