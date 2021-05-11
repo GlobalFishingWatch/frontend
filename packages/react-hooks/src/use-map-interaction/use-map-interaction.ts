@@ -76,8 +76,8 @@ const getExtendedFeatures = (
           multiplier: generatorMetadata?.multiplier,
         })
         if (!values || !values.filter((v: number) => v > 0).length) return []
-
         const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
+        const sublayers = generatorMetadata?.sublayers
         return values.flatMap((value: any, i: number) => {
           if (value === 0) return []
           return [
@@ -85,6 +85,7 @@ const getExtendedFeatures = (
               ...extendedFeature,
               temporalgrid: {
                 sublayerIndex: i,
+                sublayerId: sublayers[i].id,
                 visible: visibleSublayers[i] === true,
                 col: properties._col as number,
                 row: properties._row as number,

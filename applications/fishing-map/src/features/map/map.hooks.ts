@@ -211,7 +211,7 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
       }
 
       // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
-      dataview = temporalgridDataviews?.[temporalgrid?.sublayerIndex]
+      dataview = temporalgridDataviews?.find(dataview => dataview.id === temporalgrid.sublayerId)
     } else {
       dataview = dataviews?.find((dataview) => {
         // Needed to get only the initial part to support multiple generator
