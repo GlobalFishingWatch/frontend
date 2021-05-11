@@ -1,6 +1,6 @@
 const GUESS_COLUMN_NAMES: [string, string[]][] = [
   ['latitude', ['latitude', 'lat', 'location-lat']],
-  ['longitude', ['longitude', 'lng', 'long']],
+  ['longitude', ['longitude', 'lng', 'lon', 'long', 'location-lng']],
   ['timestamp', ['timestamp', 'time', 'date', 'datetime']],
 ]
 
