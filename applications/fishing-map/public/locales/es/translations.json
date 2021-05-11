@@ -27,7 +27,7 @@
     "environment": "Entorno",
     "events": "Eventos",
     "feedback": "Comentarios",
-    "fishing": "Fishing",
+    "fishing": "Pesca",
     "help": "Ayuda",
     "hour": "Hora",
     "hour_plural": "horas",
@@ -200,7 +200,7 @@
     "graph": "Gráfico",
     "eventOptions": {
       "all": "All events",
-      "fishing": "Fishing",
+      "fishing": "Pesca",
       "encounters": "Encounters",
       "loitering": "Loitering",
       "ports": "Port visits",
