@@ -176,8 +176,6 @@ const MapWrapper = (): React.ReactElement | null => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
 
-  // console.log(!allSourcesLoaded, layerComposerLoading)
-
   return (
     <div className={styles.container}>
       {<MapScreenshot map={map} />}

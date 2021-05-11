@@ -41,7 +41,7 @@ import {
   ExtendedFeatureEvent,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
-import { useHasSourceLoaded } from './map-features.hooks'
+import { useHasSourceLoaded, useHaveAllSourcesLoaded } from './map-features.hooks'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -297,6 +297,10 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
 
 export const useMapStyle = () => {
   const map = useMapInstance()
+
+  // Used to ensure the style is refreshed on load finish
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const haveAllSourcesLoaded = useHaveAllSourcesLoaded()
 
   if (!map) return null
 
