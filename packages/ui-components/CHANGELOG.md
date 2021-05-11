@@ -1,5 +1,16 @@
 # @globalfishingwatch/ui-components
 
+## 3.1.0
+
+### Minor Changes
+
+- 1050379b: legends with loading support
+
+### Patch Changes
+
+- Updated dependencies [1050379b]
+  - @globalfishingwatch/layer-composer@6.1.0
+
 ## 3.0.6
 
 ### Patch Changes
