@@ -24,11 +24,17 @@ export const useSourcesLoadingState = () => {
   useEffect(() => {
     if (!map || listenerAttached) return
     const sourceEventCallback = (e: any) => {
-      const currentSources = Object.keys(map.getStyle().sources || {})
-      const sourcesLoaded = currentSources.map((sourceId) => [
-        sourceId,
-        map.isSourceLoaded(sourceId),
-      ])
+      const currentSources = map.getStyle().sources || {}
+      const sourcesLoaded = Object.entries(currentSources)
+        .map(([sourceId, source]) => {
+          // Ignore geojson sources that already have their data included in the style
+          if (source.type === 'geojson' && !(typeof source?.data === 'string')) {
+            return []
+          }
+          return [sourceId, map.isSourceLoaded(sourceId)]
+        })
+        .filter((entry) => entry.length)
+
       const allSourcesLoaded = sourcesLoaded.every(([id, loaded]) => loaded)
       if (allSourcesLoaded && e.type === 'idle') {
         map.off('idle', sourceEventCallback)
@@ -68,14 +74,19 @@ export const useSourcesLoadingState = () => {
   }, [serializedSourcesState])
 }
 
-export const useSourceLoaded = (sourceId: string) => {
-  const sourcesState = useSourcesLoadingState()
-  return sourcesState[sourceId] === true
-}
-
 export const useHaveSourcesLoaded = (sourcesIds: string[]) => {
   const sourcesState = useSourcesLoadingState()
   const haveAllSourcesLoaded = sourcesIds.every((sourceId) => sourcesState[sourceId] === true)
+  return useMemo(() => {
+    return haveAllSourcesLoaded
+  }, [haveAllSourcesLoaded])
+}
+
+export const useHaveAllSourcesLoaded = () => {
+  const sourcesState = useSourcesLoadingState()
+  const haveAllSourcesLoaded = Object.values(sourcesState).every(
+    (sourceLoaded) => sourceLoaded === true
+  )
   return useMemo(() => {
     return haveAllSourcesLoaded
   }, [haveAllSourcesLoaded])
