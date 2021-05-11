@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 6.1.0
+
+### Minor Changes
+
+- 1050379b: legends loading and moved to root metadata
+
 ## 6.0.4
 
 ### Patch Changes

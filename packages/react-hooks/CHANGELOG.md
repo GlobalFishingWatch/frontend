@@ -1,5 +1,18 @@
 # @globalfishingwatch/react-hooks
 
+## 6.2.0
+
+### Minor Changes
+
+- 1050379b: use layers legend root metadata
+
+### Patch Changes
+
+- Updated dependencies [1050379b]
+- Updated dependencies [1050379b]
+  - @globalfishingwatch/layer-composer@6.1.0
+  - @globalfishingwatch/ui-components@3.1.0
+
 ## 6.1.6
 
 ### Patch Changes
