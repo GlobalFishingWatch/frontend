@@ -1,5 +1,11 @@
 # @globalfishingwatch/data-transforms
 
+## 1.2.2
+
+### Patch Changes
+
+- 3b8d5d37: fix longitude auto-detect
+
 ## 1.2.1
 
 ### Patch Changes
