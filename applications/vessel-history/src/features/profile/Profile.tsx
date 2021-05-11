@@ -90,7 +90,7 @@ const Profile: React.FC = (props): React.ReactElement => {
     const lastSegment = [trackResource?.data.flat().slice(-2)] as Segment[]
     const bbox = lastSegment?.length ? segmentsToBbox(lastSegment) : undefined
     if (bbox) {
-      fitBounds(bbox as Bbox)
+      fitBounds(bbox as Bbox, { padding: 200 })
     } else {
       // TODO use prompt to ask user if wants to update the timerange to fit the track
       alert('The vessel has no activity in your selected timerange')

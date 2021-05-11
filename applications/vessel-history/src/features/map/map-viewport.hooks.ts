@@ -110,6 +110,8 @@ export function useMapFitBounds() {
         (map
           ? parseInt(map.getCanvas().style.height)
           : window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT)
+
+      const targetSize = [width - padding - padding, height - padding - padding]
       const { latitude, longitude, zoom } = fitBounds({
         bounds: [
           [bounds[0], bounds[1]],
@@ -117,7 +119,13 @@ export function useMapFitBounds() {
         ],
         width,
         height,
-        padding,
+        padding: {
+          // Adjust padding to not exceed width and height
+          top: targetSize[1] > 0 ? padding : targetSize[1] + padding,
+          bottom: targetSize[1] > 0 ? padding : targetSize[1] + padding,
+          left: targetSize[0] > 0 ? padding : targetSize[0] + padding,
+          right: targetSize[0] > 0 ? padding : targetSize[0] + padding,
+        },
       })
       setMapCoordinates({ latitude, longitude, zoom })
     },
