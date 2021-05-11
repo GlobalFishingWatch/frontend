@@ -137,6 +137,14 @@ function App(): React.ReactElement {
           dimension7: 'userLanguage',
         },
       })
+      window.gtag('set', 'user_properties', {
+        user_id: userData.id,
+        user_group: userData.groups,
+        user_org_type: userData.organizationType,
+        user_organization: userData.organization,
+        user_country: userData.country,
+        user_language: userData.language,
+      })
       window.gtag('event', 'login', {
         userId: userData.id,
         userGroup: userData.groups,
