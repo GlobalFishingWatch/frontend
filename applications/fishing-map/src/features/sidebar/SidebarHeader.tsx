@@ -2,6 +2,7 @@ import React, { Fragment, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
+import Link from 'redux-first-router-link'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Logo, { SubBrands } from '@globalfishingwatch/ui-components/dist/logo'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
@@ -11,6 +12,7 @@ import {
   updatedCurrentWorkspaceThunk,
 } from 'features/workspace/workspace.slice'
 import {
+  selectLastVisitedWorkspace,
   selectWorkspace,
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
@@ -156,7 +158,9 @@ function ShareWorkspaceButton() {
 
 function SidebarHeader() {
   const locationCategory = useSelector(selectLocationCategory)
-  const showInteractionButtons = useSelector(isWorkspaceLocation)
+  const workspaceLocation = useSelector(isWorkspaceLocation)
+  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+  const showBackToWorkspaceButton = !workspaceLocation
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
@@ -168,11 +172,16 @@ function SidebarHeader() {
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
         <Logo className={styles.logo} subBrand={getSubBrand()} />
-        {showInteractionButtons && (
+        {workspaceLocation && (
           <Fragment>
             <SaveWorkspaceButton />
             <ShareWorkspaceButton />
           </Fragment>
+        )}
+        {showBackToWorkspaceButton && lastVisitedWorkspace && (
+          <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
+            <IconButton type="border" icon="close" />
+          </Link>
         )}
       </div>
     </Sticky>
