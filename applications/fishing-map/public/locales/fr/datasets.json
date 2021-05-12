@@ -1,311 +1,311 @@
 {
   "carriers-clusterbuster": {
-    "name": "Test raul clusterbuster",
-    "description": "test dataset for clusterbuster",
+    "name": "Tester la grappe de serveurs raul",
+    "description": "jeu de données de test pour le clusterbuster",
     "schema": {
-      "fields": "fields"
+      "fields": "champs"
     }
   },
   "dgg_sar_caribe_match_2019": {
-    "name": "SAR match 2019 caribe",
+    "name": "Correspondance SAR 2019",
     "description": "TBD",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "dgg_sar_caribe_not_match_2019": {
-    "name": "SAR not match 2019 caribe",
+    "name": "SAR ne correspond pas à la caribe 2019",
     "description": "TBD",
     "schema": {}
   },
   "fd-chlorophyl-ascension-v2": {
-    "name": "Test",
+    "name": "Tester",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-chlorophyl-caribe-v2": {
     "name": "Clorophyl Caribe",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-chlorophyl-galapagos-v2": {
     "name": "Clorophyl Galapagos",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-chlorophyl-niue-v2": {
     "name": "Clorophyl Niue",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-chlorophyl-palau-v2": {
     "name": "Clorophyl Palau",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-chlorophyl-tristan-v2": {
     "name": "Clorophyl Tristan",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-salinity-ascension-v2": {
-    "name": "Salinity Ascension",
+    "name": "Ascension de salinité",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-salinity-caribe-v2": {
-    "name": "Salinity Caribe",
+    "name": "Salinité Caribe",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-salinity-galapagos-v2": {
-    "name": "Salinity Galapagos",
+    "name": "Galapagos de salinité",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-salinity-niue-v2": {
-    "name": "Salinity Niue",
+    "name": "Salinité Niue",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-salinity-palau-v2": {
-    "name": "Salinity Palau",
+    "name": "Salinité Palau",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-salinity-tristan-v2": {
-    "name": "Salinity Tristan",
+    "name": "Tristan de salinité",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-water-temperature-ascension-v2": {
-    "name": "Water Temperature Ascension",
+    "name": "Ascension de température de l'eau",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-water-temperature-caribe-v2-2020": {
-    "name": "Water temperature Caribe with data of 2020",
+    "name": "Température de l'eau Caribe avec données de 2020",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-water-temperature-galapagos-v2": {
-    "name": "Water temperature Galapagos",
+    "name": "Température de l'eau Galapagos",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-water-temperature-niue-v2": {
-    "name": "Water temperature Niue",
+    "name": "Température de l'eau Niue",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-water-temperature-palau-v2": {
-    "name": "Water temperature Palau",
+    "name": "Température de l'eau Palau",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "fd-water-temperature-tristan-v2": {
-    "name": "Water temperature Tristan",
+    "name": "Température de l'eau Tristan",
     "description": "test",
     "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
+      "flag": "Drapeau",
+      "vessel_id": "Id du vaisseau"
     }
   },
   "public-chile-fishing-effort": {
-    "name": "VMS Chile",
-    "description": "Fishing Effort",
+    "name": "VMS Chili",
+    "description": "Effort de pêche",
     "schema": {
       "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
+      "lon": "Lon",
+      "flag": "Drapeau",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "flotte",
         "enum": {
-          "chile_vms_small_fisheries": "chile_vms_small_fisheries",
-          "chile_vms_industry": "chile_vms_industry"
+          "chile_vms_small_fisheries": "chile_vms_petites_pêcheries",
+          "chile_vms_industry": "industrie du chile_vms_fr"
         }
       },
-      "hours": "hours",
-      "vessel_id": "vessel_id",
-      "elevation_m": "elevation_m",
-      "distance_from_port_m": "distance_from_port_m",
-      "distance_from_shore_m": "distance_from_shore_m"
+      "hours": "heures",
+      "vessel_id": "Id du vaisseau",
+      "elevation_m": "Altitude",
+      "distance_from_port_m": "distance_de_port_m",
+      "distance_from_shore_m": "distance_de_rivage_m"
     }
   },
   "public-eez-areas": {
-    "name": "Areas geometries for eez",
-    "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11.",
+    "name": "Géométries des zones pour eez",
+    "description": "Institut Marin de Flandres (2019). Géobase de données sur les limites maritimes et les zones économiques exclusives (200NM), version 11.",
     "schema": {}
   },
   "public-global-fishing-effort-v2-test": {
     "name": "AIS",
-    "description": "This dataset contains fishing effort data for fishing vessels",
+    "description": "Ce jeu de données contient des données d'effort de pêche pour les navires de pêche",
     "schema": {
-      "flag": "flag",
+      "flag": "Drapeau",
       "geartype": {
         "keyword": "geartype",
         "enum": {
           "tuna_purse_seines": "tuna_purse_seines",
-          "driftnets": "driftnets",
+          "driftnets": "filets dérivants",
           "trollers": "trollers",
           "set_longlines": "set_longlines",
           "purse_seines": "purse_seines",
-          "pots_and_traps": "pots_and_traps",
-          "other_fishing": "other_fishing",
-          "dredge_fishing": "dredge_fishing",
-          "set_gillnets": "set_gillnets",
-          "fixed_gear": "fixed_gear",
-          "trawlers": "trawlers",
-          "fishing": "fishing",
+          "pots_and_traps": "pots_et_pièges",
+          "other_fishing": "autre pêche",
+          "dredge_fishing": "Pêche_dragée",
+          "set_gillnets": "format@@0 set_gillnets",
+          "fixed_gear": "équipement_fixe",
+          "trawlers": "chalutiers",
+          "fishing": "Pêche",
           "seiners": "seiners",
-          "other_purse_seines": "other_purse_seines",
+          "other_purse_seines": "autres_seines de sac",
           "other_seines": "other_seines",
-          "squid_jigger": "squid_jigger",
-          "pole_and_line": "pole_and_line",
-          "drifting_longlines": "drifting_longlines"
+          "squid_jigger": "jigger squid",
+          "pole_and_line": "pole_et_ligne",
+          "drifting_longlines": "trajectoire_longlines"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "Id du vaisseau"
     }
   },
   "public-global-fishing-effort": {
     "name": "AIS",
-    "description": "This dataset contains fishing effort data for fishing vessels",
+    "description": "Ce jeu de données contient des données d'effort de pêche pour les navires de pêche",
     "schema": {
-      "flag": "flag",
+      "flag": "Drapeau",
       "geartype": {
         "keyword": "geartype",
         "enum": {
           "tuna_purse_seines": "tuna_purse_seines",
-          "driftnets": "driftnets",
+          "driftnets": "filets dérivants",
           "trollers": "trollers",
           "set_longlines": "set_longlines",
           "purse_seines": "purse_seines",
-          "pots_and_traps": "pots_and_traps",
-          "other_fishing": "other_fishing",
-          "dredge_fishing": "dredge_fishing",
-          "set_gillnets": "set_gillnets",
-          "fixed_gear": "fixed_gear",
-          "trawlers": "trawlers",
-          "fishing": "fishing",
+          "pots_and_traps": "pots_et_pièges",
+          "other_fishing": "autre pêche",
+          "dredge_fishing": "Pêche_dragée",
+          "set_gillnets": "format@@0 set_gillnets",
+          "fixed_gear": "équipement_fixe",
+          "trawlers": "chalutiers",
+          "fishing": "Pêche",
           "seiners": "seiners",
-          "other_purse_seines": "other_purse_seines",
+          "other_purse_seines": "autres_seines de sac",
           "other_seines": "other_seines",
-          "squid_jigger": "squid_jigger",
-          "pole_and_line": "pole_and_line",
-          "drifting_longlines": "drifting_longlines"
+          "squid_jigger": "jigger squid",
+          "pole_and_line": "pole_et_ligne",
+          "drifting_longlines": "trajectoire_longlines"
         }
       },
-      "vessel_id": "vessel_id"
+      "vessel_id": "Id du vaisseau"
     }
   },
   "public-high-seas": {
     "name": "Poches de haute mer",
-    "description": "High seas",
+    "description": "Hautes mers",
     "schema": {}
   },
   "public-indonesia-fishing-effort": {
-    "name": "VMS Indonesia",
-    "description": "Fishing dataset for VMS Indonesia (Public)",
+    "name": "VMS Indonésie",
+    "description": "Jeu de données de pêche pour VMS Indonésie (public)",
     "schema": {
       "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "hours": "hours",
+      "lon": "Lon",
+      "flag": "Drapeau",
+      "hours": "heures",
       "geartype": {
         "keyword": "geartype",
         "enum": {
-          "Purse Seine Group (2 boat) Small Pelagics": "Purse Seine Group (2 boat) Small Pelagics",
-          "Purse Seine Group (2 boat) Big Pelagics": "Purse Seine Group (2 boat) Big Pelagics",
-          "Cast Nets": "Cast Nets",
+          "Purse Seine Group (2 boat) Small Pelagics": "Pilote de la Seine Group (2 bateaux) Petit Pélagique",
+          "Purse Seine Group (2 boat) Big Pelagics": "Pilose Seine Group (2 bateaux) Big Pelagics",
+          "Cast Nets": "Filet de fonte",
           "Pots": "Pots",
-          "Anchored gillnets": "Anchored gillnets",
+          "Anchored gillnets": "filets maillants ancrés",
           "Lampara Seine Nets": "Lampara Seine Nets",
-          "Shrimp net": "Shrimp net",
-          "Purse Seine Big Pelagics with one boat": "Purse Seine Big Pelagics with one boat",
-          "Basic longline": "Basic longline",
-          "Pole-and-line": "Pole-and-line",
-          "Hand Line Tuna": "Hand Line Tuna",
-          "Handline": "Handline",
-          "Purse Seine Small Pelagics": "Purse Seine Small Pelagics",
-          "Stick-Held lift net": "Stick-Held lift net",
-          "Oceanic gillnet": "Oceanic gillnet",
-          "Longline Tuna": "Longline Tuna",
-          "Fish net/dragnet": "Fish net/dragnet",
-          "Squid hooking": "Squid hooking"
+          "Shrimp net": "Filet de crevettes",
+          "Purse Seine Big Pelagics with one boat": "Grand pélagique de la Seine avec un bateau",
+          "Basic longline": "Longueur de base",
+          "Pole-and-line": "Pôle et ligne",
+          "Hand Line Tuna": "Thon à la main",
+          "Handline": "Prise en main",
+          "Purse Seine Small Pelagics": "Petit pélagique de la Seine",
+          "Stick-Held lift net": "Fil de levage des bâtonnets",
+          "Oceanic gillnet": "Grenouille océanique",
+          "Longline Tuna": "Thon long",
+          "Fish net/dragnet": "Pêche/glissernet",
+          "Squid hooking": "Crochet de calamars"
         }
       },
-      "vessel_id": "vessel_id",
-      "elevation_m": "elevation_m",
-      "distance_from_port_m": "distance_from_port_m",
-      "distance_from_shore_m": "distance_from_shore_m"
+      "vessel_id": "Id du vaisseau",
+      "elevation_m": "Altitude",
+      "distance_from_port_m": "distance_de_port_m",
+      "distance_from_shore_m": "distance_de_rivage_m"
     }
   },
   "public-mpa-all": {
-    "name": "Marine Protected Areas",
+    "name": "Zones Marines protégées",
     "description": "Le terme Aires Marines Protégées comprend les réserves marines, les zones marines entièrement protégées, les zones de non-prise, les sanctuaires marins, les sanctuaires océaniques, les parcs marins, les zones maritimes gérées localement, pour n'en citer que quelques-uns. Bon nombre d'entre eux ont des niveaux de protection tout à fait différents et la gamme d'activités autorisées ou interdites à l'intérieur de leurs frontières varie également considérablement. Source: Base de données mondiale sur les zones protégées (WDPA)",
     "schema": {}
   },
   "public-mpa-no-take": {
-    "name": "Marine Protected Areas - No take",
-    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA)",
+    "name": "Zones Marines Protégées - Pas de prise",
+    "description": "Le terme Zones Marines Protégées comprend les réserves maritimes, les zones marines entièrement protégées, les zones de non-prise, sanctuaires marins, sanctuaires océaniques, parcs marins, zones maritimes gérées localement, pour n'en citer que quelques-uns. Bon nombre d'entre eux ont des niveaux de protection tout à fait différents et la gamme d'activités autorisées ou interdites à l'intérieur de leurs frontières varie considérablement également. Source: Base de données mondiale sur les zones protégées (WDPA)",
     "schema": {}
   },
   "public-mpa-restricted": {
-    "name": "Marine Protected Areas - Restricted",
-    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA)",
+    "name": "Zones Marines Protégées - Restreintes",
+    "description": "Le terme Zones Marines Protégées comprend les réserves maritimes, les zones marines entièrement protégées, les zones de non-prise, sanctuaires marins, sanctuaires océaniques, parcs marins, zones maritimes gérées localement, pour n'en citer que quelques-uns. Bon nombre d'entre eux ont des niveaux de protection tout à fait différents et la gamme d'activités autorisées ou interdites à l'intérieur de leurs frontières varie considérablement également. Source: Base de données mondiale sur les zones protégées (WDPA)",
     "schema": {}
   },
   "public-panama-fishing-effort": {
@@ -313,47 +313,47 @@
     "description": "Panama vms",
     "schema": {
       "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
-      "hours": "hours",
-      "vessel_id": "vessel_id",
-      "elevation_m": "elevation_m",
-      "distance_from_port_m": "distance_from_port_m",
-      "distance_from_shore_m": "distance_from_shore_m"
+      "lon": "Lon",
+      "flag": "Drapeau",
+      "hours": "heures",
+      "vessel_id": "Id du vaisseau",
+      "elevation_m": "Altitude",
+      "distance_from_port_m": "distance_de_port_m",
+      "distance_from_shore_m": "distance_de_rivage_m"
     }
   },
   "public-peru-fishing-effort": {
-    "name": "VMS Peru",
-    "description": "Peru vms",
+    "name": "VMS Pérou",
+    "description": "Vms Pérou",
     "schema": {
       "lat": "lat",
-      "lon": "lon",
-      "flag": "flag",
+      "lon": "Lon",
+      "flag": "Drapeau",
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "flotte",
         "enum": {
-          "industrial": "industrial",
+          "industrial": "Industriel",
           "artisanal": "artisanal",
-          "not defined": "not defined"
+          "not defined": "non défini"
         }
       },
-      "hours": "hours",
+      "hours": "heures",
       "origin": {
-        "keyword": "origin",
+        "keyword": "Origine",
         "enum": {
-          "PER": "PER",
-          "Foreign": "Foreign"
+          "PER": "PAR",
+          "Foreign": "Étranger"
         }
       },
-      "vessel_id": "vessel_id",
-      "elevation_m": "elevation_m",
-      "distance_from_port_m": "distance_from_port_m",
-      "distance_from_shore_m": "distance_from_shore_m"
+      "vessel_id": "Id du vaisseau",
+      "elevation_m": "Altitude",
+      "distance_from_port_m": "distance_de_port_m",
+      "distance_from_shore_m": "distance_de_rivage_m"
     }
   },
   "public-tuna-rfmo": {
-    "name": "Tuna RFMO areas",
-    "description": "RFMO stands for Regional Fishery Management Organization. These organizations are international organizations formed by countries with a shared interest in managing or conserving an area's fish stock. Some RFMOs manage all the fish stocks found in a specific area, while others focus on particular highly migratory species, notably tuna, throughout vast geographical areas. The RFMO Layer on the Global Fishing Watch map currently includes the five tuna RFMOs.",
+    "name": "Zones de thon RFMO",
+    "description": "La RFMO est synonyme de Regional Fishery Management Organization. Ces organisations sont des organisations internationales formées par des pays ayant un intérêt commun à gérer ou à conserver les stocks halieutiques d'une zone. Certains RFMOs gèrent tous les stocks de poissons trouvés dans une zone spécifique, alors que d'autres se concentrent sur des espèces hautement migratoires particulières, notamment le thon, dans de vastes zones géographiques. La couche du FMO sur la carte mondiale de surveillance de la pêche comprend actuellement les cinq ORGR du thon.",
     "schema": {}
   },
   "public-wpp-nri": {
