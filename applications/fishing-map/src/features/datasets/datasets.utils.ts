@@ -47,11 +47,15 @@ export const getCommonSchemaFieldsInDataview = (
   )
 
   const schemaFields = activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
+  const datasetId = activeDatasets?.[0]?.id?.split(':')[0]
   const commonSchemaFields = schemaFields
-    ? intersection(...schemaFields).map((field) => ({
-        id: field,
-        label: capitalize(lowerCase(field)),
-      }))
+    ? intersection(...schemaFields).map((field) => {
+        const label = t(
+          `datasets:${datasetId}.schema.${schema}.enum.${field}`,
+          capitalize(lowerCase(field))
+        )
+        return { id: field, label: label || capitalize(lowerCase(field)) }
+      })
     : []
   return commonSchemaFields.sort((a, b) => a.label.localeCompare(b.label))
 }
