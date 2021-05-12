@@ -229,7 +229,8 @@ export const getActiveTimeChunks = (
     activeEnd,
     chunks: [],
     delta,
-    deltaInIntervalUnits: CONFIG_BY_INTERVAL[finalInterval].getFrame(delta),
+    // Set a minimum of 1 to avoid empty frames
+    deltaInIntervalUnits: Math.max(1, CONFIG_BY_INTERVAL[finalInterval].getFrame(delta)),
     deltaInDays: Duration.fromMillis(delta).as('days'),
     interval: finalInterval,
     activeChunkFrame: 0,
