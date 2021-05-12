@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 6.1.1
+
+### Patch Changes
+
+- b87943a6: Fishing map/environment fixes
+
 ## 6.1.0
 
 ### Minor Changes
