@@ -9,6 +9,16 @@ import { toURLArray } from '.'
 
 export type Breaks = number[][]
 
+const BREAKS_FALLBACK = {
+  'global-fishing-effort': [0, 538, 2018, 4682, 10945, 30661, 59568, 106877, 118773],
+  'chile-fishing-effort': [0, 21, 76, 175, 322, 796, 1362, 1633, 1750],
+  'indonesia-fishing-effort': [0, 112, 414, 997, 1895, 2942, 5294, 7498, 8667],
+  'panama-fishing-effort': [0, 17, 63, 138, 264, 528, 749, 1337, 2265],
+  'peru-fishing-effort': [0, 13, 48, 128, 287, 529, 1022, 1732, 2108],
+  'global-presence': [0, 414, 1592, 3284, 6274, 10945, 19804, 32516, 56157],
+}
+type DefaultDatasets = keyof typeof BREAKS_FALLBACK
+
 export type FetchBreaksParams = Pick<
   GlobalHeatmapAnimatedGeneratorConfig,
   'breaksAPI' | 'sublayers' | 'datasetsEnd' | 'token' | 'end' | 'mode' | 'zoomLoadLevel'
@@ -107,7 +117,6 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
       throw r
     })
     .then((breaks: Breaks) => {
-      // datasetsCache[filters]
       const breaksByDataset = Object.fromEntries(
         allDatasets.map((dataset, index) => [dataset, breaks[index]])
       )
@@ -116,8 +125,17 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
     })
     .catch((e) => {
       if (e.name !== 'AbortError') {
-        console.warn(e)
+        console.warn('Using default breaks due to the error', e)
       }
-      throw e
+      const defaultDatasetKeys = Object.keys(BREAKS_FALLBACK) as DefaultDatasets[]
+      const breaks = allDatasets.map((dataset) => {
+        const defaultDataset = defaultDatasetKeys.find((defaultDataset) =>
+          dataset.includes(defaultDataset)
+        )
+        return defaultDataset
+          ? BREAKS_FALLBACK[defaultDataset]
+          : BREAKS_FALLBACK['global-fishing-effort']
+      })
+      return parseBreaksResponse(config, breaks)
     })
 }
