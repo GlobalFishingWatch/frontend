@@ -120,7 +120,8 @@ class HeatmapAnimatedGenerator {
         id: getSourceId(config.id, timeChunk),
         singleFrame: false,
         geomType,
-        delta: timeChunks.deltaInIntervalUnits,
+        // Set a minimum of 1 to avoid empty frames. See error thrown in getStyle() for edge case
+        delta: Math.max(1, timeChunks.deltaInIntervalUnits),
         quantizeOffset: timeChunk.quantizeOffset,
         interval: timeChunks.interval,
         filters,
@@ -207,6 +208,10 @@ class HeatmapAnimatedGenerator {
       finalConfig.datasetsEnd,
       finalConfig.interval
     )
+
+    if (timeChunks.deltaInIntervalUnits === 0 && config.aggregationOperation === AggregationOperation.Sum) {
+      throw new Error('Trying to show less than 1 interval worth of data for this heatmap layer. This could result in showing misleading information when aggregation mode is set to sum.')
+    }
 
     const breaksConfig = {
       ...finalConfig,

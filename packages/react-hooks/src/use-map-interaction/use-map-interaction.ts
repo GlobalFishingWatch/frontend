@@ -69,7 +69,7 @@ const getExtendedFeatures = (
         const values = aggregateCell({
           rawValues: properties.rawValues,
           frame,
-          delta: timeChunks.deltaInIntervalUnits,
+          delta: Math.max(1, timeChunks.deltaInIntervalUnits),
           quantizeOffset: activeTimeChunk.quantizeOffset,
           sublayerCount: numSublayers,
           aggregationOperation: generatorMetadata?.aggregationOperation,
