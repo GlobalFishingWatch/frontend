@@ -1,8 +1,13 @@
-import React, { memo, useLayoutEffect, useRef, useState } from 'react'
+import React, { memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import Button from '../button'
 import styles from './Choice.module.css'
 import { ChoiceOption } from '.'
+
+type ActiveChoiceProperties = {
+  width: number
+  left: number
+}
 
 interface ChoiceProps {
   options: ChoiceOption[]
@@ -20,14 +25,14 @@ function Choice({
   className = '',
 }: ChoiceProps) {
   const activeOptionId = activeOption || options?.[0]?.id
-  const [activeElementProperties, setActiveElementProperties] = useState<{
-    width: number
-    left: number
-  }>({ width: 0, left: 0 })
 
   const activeRef = useRef<HTMLLIElement | null>(null)
+  const [activeElementProperties, setActiveElementProperties] = useState<
+    ActiveChoiceProperties | undefined
+  >()
 
   const onOptionClickHandle = (option: ChoiceOption, e: React.MouseEvent) => {
+    if (activeOptionId === option.id) return
     activeRef.current = e.currentTarget.parentElement as HTMLLIElement
     setActiveElementProperties({
       width: activeRef?.current.clientWidth,
@@ -37,13 +42,29 @@ function Choice({
   }
 
   useLayoutEffect(() => {
-    if (activeRef?.current) {
+    if (activeRef?.current?.clientWidth) {
       setActiveElementProperties({
-        width: activeRef?.current.clientWidth,
+        width: activeRef?.current.getBoundingClientRect().width,
         left: activeRef?.current.offsetLeft,
       })
     }
   }, [activeRef])
+
+  // Workaround to ensure the activeElement has the clientWidth ready
+  useEffect(() => {
+    if (!activeElementProperties) {
+      setTimeout(() => {
+        if (activeRef?.current) {
+          setActiveElementProperties({
+            width: activeRef?.current.clientWidth,
+            left: activeRef?.current.offsetLeft,
+          })
+        }
+      }, 1000)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div className={cx(styles.Choice, className)}>
       <ul className={styles.list} role="radiogroup">
@@ -70,13 +91,15 @@ function Choice({
             </li>
           )
         })}
-        <div
-          className={styles.activeChip}
-          style={{
-            width: activeElementProperties.width,
-            left: activeElementProperties.left,
-          }}
-        />
+        {activeElementProperties && (
+          <div
+            className={styles.activeChip}
+            style={{
+              width: activeElementProperties.width,
+              left: activeElementProperties.left,
+            }}
+          />
+        )}
       </ul>
     </div>
   )
