@@ -8,7 +8,7 @@ import TimebarComponent, {
   TimebarHighlighter,
   TimebarStackedActivity,
 } from '@globalfishingwatch/timebar'
-import { useDebounce } from '@globalfishingwatch/react-hooks'
+import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { quantizeOffsetToDate } from '@globalfishingwatch/layer-composer'
 import {
   TimeChunk,
@@ -29,7 +29,6 @@ import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
 import styles from './Timebar.module.css'
 
 export const TIMEBAR_HEIGHT = 72
-const MAX_WIDTH_TO_SHOW_AS_MOBILE = 768
 
 const TimebarWrapper = () => {
   const { ready, i18n } = useTranslation()
@@ -66,16 +65,13 @@ const TimebarWrapper = () => {
   const { bounds } = useMapBounds()
   const { sourcesFeatures, haveSourcesLoaded, sourcesMetadata } = useActivityTemporalgridFeatures()
   const debouncedBounds = useDebounce(bounds, 400)
-  const windowWidth = window?.innerWidth
-  const [isMobile, setIsMobile] = useState<boolean>(
-    window?.innerWidth <= MAX_WIDTH_TO_SHOW_AS_MOBILE
-  )
+  const isSmallScreen = useSmallScreen()
 
   useEffect(() => {
     if (
       timebarVisualisation !== TimebarVisualisations.Heatmap ||
       !visibleTemporalGridDataviews?.length ||
-      !isMobile
+      !isSmallScreen
     ) {
       setStackedActivity(undefined)
       return
@@ -120,12 +116,8 @@ const TimebarWrapper = () => {
     debouncedBounds,
     timebarVisualisation,
     visibleTemporalGridDataviews,
-    isMobile,
+    isSmallScreen,
   ])
-
-  useEffect(() => {
-    setIsMobile(windowWidth <= MAX_WIDTH_TO_SHOW_AS_MOBILE)
-  }, [windowWidth])
 
   const dataviewsColors = temporalGridDataviews?.map((dataview) => dataview.config?.color)
 
@@ -167,7 +159,7 @@ const TimebarWrapper = () => {
         bookmarkEnd={bookmark?.end}
         bookmarkPlacement="bottom"
       >
-        {!isMobile
+        {!isSmallScreen
           ? () => (
               <Fragment>
                 {timebarVisualisation === TimebarVisualisations.Heatmap && stackedActivity && (
@@ -208,7 +200,7 @@ const TimebarWrapper = () => {
             )
           : null}
       </TimebarComponent>
-      {!isMobile && <TimebarSettings />}
+      {!isSmallScreen && <TimebarSettings />}
     </div>
   )
 }

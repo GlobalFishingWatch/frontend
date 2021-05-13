@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, memo, useMemo } from 'react'
 import cx from 'classnames'
+import useSmallScreen from '@globalfishingwatch/react-hooks/dist/use-small-screen'
 import Icon from '../icon'
 import Choice from '../choice'
 import styles from './SplitView.module.css'
@@ -14,8 +15,6 @@ interface SplitViewProps {
   showMainLabel?: string
   className?: string
 }
-
-const MAX_WIDTH_TO_SHOW_AS_MOBILE = 768
 
 function SplitView(props: SplitViewProps) {
   const {
@@ -42,8 +41,7 @@ function SplitView(props: SplitViewProps) {
     [showAsideLabel, showMainLabel]
   )
   const [internalOpen, setInternalOpen] = useState<boolean>(isOpen)
-  const windowWidth = window?.innerWidth
-  const [isMobile, setIsMobile] = useState<boolean>(windowWidth <= MAX_WIDTH_TO_SHOW_AS_MOBILE)
+  const isSmallScreen = useSmallScreen()
 
   const handleClick = useCallback(
     (e) => {
@@ -59,14 +57,10 @@ function SplitView(props: SplitViewProps) {
     setInternalOpen(isOpen)
   }, [isOpen])
 
-  useEffect(() => {
-    setIsMobile(windowWidth <= MAX_WIDTH_TO_SHOW_AS_MOBILE)
-  }, [windowWidth])
-
   return (
     <div className={cx(styles.container, { [styles.isOpen]: internalOpen }, className)}>
-      <aside className={styles.aside} style={isMobile ? {} : { width: asideWidth }}>
-        {isMobile ? (
+      <aside className={styles.aside} style={isSmallScreen ? {} : { width: asideWidth }}>
+        {isSmallScreen ? (
           <div className={cx('print-hidden', styles.toggleChoice)}>
             <Choice
               size="small"
