@@ -1,5 +1,4 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import uniq from 'lodash/uniq'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../../layer-composer'
 import { API_ENDPOINTS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
@@ -31,11 +30,9 @@ const getBreaksBaseUrl = (config: FetchBreaksParams): string => {
 }
 
 const getDatasets = (config: FetchBreaksParams): string[] => {
-  const datasets = uniq(
-    config.sublayers
-      .filter((sublayer) => sublayer.visible)
-      .flatMap((s) => s.datasets.flatMap((d) => d))
-  )
+  const datasets = config.sublayers
+    .filter((sublayer) => sublayer.visible)
+    .flatMap((s) => s.datasets.flatMap((d) => d))
   return datasets
 }
 
