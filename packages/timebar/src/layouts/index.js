@@ -119,7 +119,7 @@ export const getUnitsPositions = (
         labels[baseUnit]
       }`,
       start: mUnit.toISOString(),
-      end: mUnitNext.subtract(1, 'hour').toISOString(), // this avoids being stuck when clicking on a day unit
+      end: mUnitNext.toISOString(),
     }
     units.push(unit)
     mUnit = mUnitNext
