@@ -7,7 +7,7 @@
     }
   },
   "dgg_sar_caribe_match_2019": {
-    "name": "SAR match 2019 caribe",
+    "name": "SAR with an AIS-matched vessel",
     "description": "Vessels identified using synthetic aperture radar (SAR) and matched to a vessel using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
     "schema": {
       "flag": "flag",
@@ -15,7 +15,7 @@
     }
   },
   "dgg_sar_caribe_not_match_2019": {
-    "name": "SAR not match 2019 caribe",
+    "name": "SAR without an AIS-matched vessel",
     "description": "Vessels identified using synthetic aperture radar (SAR) without a known match to any vessel recorded using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
     "schema": {}
   },
