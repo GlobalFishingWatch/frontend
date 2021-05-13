@@ -22,7 +22,7 @@
   left: calc(50% + 1.3rem);
   bottom: 1.3rem;
   height: 0.1rem;
-  width: calc(50% - 2.6rem);
+  width: calc(50% - 1.3rem);
   background-color: var(--color-border);
   z-index: -1;
 }
@@ -33,6 +33,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  z-index: 0;
 }
 
 .legend {

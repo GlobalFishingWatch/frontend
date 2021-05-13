@@ -29,6 +29,7 @@ import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
 import styles from './Timebar.module.css'
 
 export const TIMEBAR_HEIGHT = 72
+const MAX_WIDTH_TO_SHOW_AS_MOBILE = 768
 
 const TimebarWrapper = () => {
   const { ready, i18n } = useTranslation()
@@ -65,11 +66,16 @@ const TimebarWrapper = () => {
   const { bounds } = useMapBounds()
   const { sourcesFeatures, haveSourcesLoaded, sourcesMetadata } = useActivityTemporalgridFeatures()
   const debouncedBounds = useDebounce(bounds, 400)
+  const windowWidth = window?.innerWidth
+  const [isMobile, setIsMobile] = useState<boolean>(
+    window?.innerWidth <= MAX_WIDTH_TO_SHOW_AS_MOBILE
+  )
 
   useEffect(() => {
     if (
       timebarVisualisation !== TimebarVisualisations.Heatmap ||
-      !visibleTemporalGridDataviews?.length
+      !visibleTemporalGridDataviews?.length ||
+      !isMobile
     ) {
       setStackedActivity(undefined)
       return
@@ -114,7 +120,12 @@ const TimebarWrapper = () => {
     debouncedBounds,
     timebarVisualisation,
     visibleTemporalGridDataviews,
+    isMobile,
   ])
+
+  useEffect(() => {
+    setIsMobile(windowWidth <= MAX_WIDTH_TO_SHOW_AS_MOBILE)
+  }, [windowWidth])
 
   const dataviewsColors = temporalGridDataviews?.map((dataview) => dataview.config?.color)
 
@@ -156,46 +167,48 @@ const TimebarWrapper = () => {
         bookmarkEnd={bookmark?.end}
         bookmarkPlacement="bottom"
       >
-        {() => (
-          <Fragment>
-            {timebarVisualisation === TimebarVisualisations.Heatmap && stackedActivity && (
-              <div className={cx({ [styles.loading]: !loading })}>
-                <TimebarStackedActivity
-                  key="stackedActivity"
-                  data={stackedActivity}
-                  colors={dataviewsColors}
-                  numSublayers={temporalGridDataviews?.length}
-                />
-              </div>
-            )}
-            {timebarVisualisation === TimebarVisualisations.Vessel && tracks?.length && (
+        {!isMobile
+          ? () => (
               <Fragment>
-                {timebarGraph !== TimebarGraphs.Speed && (
-                  <TimebarTracks key="tracks" tracks={tracks} />
+                {timebarVisualisation === TimebarVisualisations.Heatmap && stackedActivity && (
+                  <div className={cx({ [styles.loading]: !loading })}>
+                    <TimebarStackedActivity
+                      key="stackedActivity"
+                      data={stackedActivity}
+                      colors={dataviewsColors}
+                      numSublayers={temporalGridDataviews?.length}
+                    />
+                  </div>
                 )}
-                {timebarGraph === TimebarGraphs.Speed && tracksGraph && (
-                  <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
+                {timebarVisualisation === TimebarVisualisations.Vessel && tracks?.length && (
+                  <Fragment>
+                    {timebarGraph !== TimebarGraphs.Speed && (
+                      <TimebarTracks key="tracks" tracks={tracks} />
+                    )}
+                    {timebarGraph === TimebarGraphs.Speed && tracksGraph && (
+                      <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
+                    )}
+                  </Fragment>
+                )}
+                {highlightedTime && (
+                  <TimebarHighlighter
+                    hoverStart={highlightedTime.start}
+                    hoverEnd={highlightedTime.end}
+                    activity={
+                      timebarVisualisation === TimebarVisualisations.Vessel &&
+                      timebarGraph === TimebarGraphs.Speed &&
+                      tracksGraph
+                        ? tracksGraph
+                        : null
+                    }
+                    unit="knots"
+                  />
                 )}
               </Fragment>
-            )}
-            {highlightedTime && (
-              <TimebarHighlighter
-                hoverStart={highlightedTime.start}
-                hoverEnd={highlightedTime.end}
-                activity={
-                  timebarVisualisation === TimebarVisualisations.Vessel &&
-                  timebarGraph === TimebarGraphs.Speed &&
-                  tracksGraph
-                    ? tracksGraph
-                    : null
-                }
-                unit="knots"
-              />
-            )}
-          </Fragment>
-        )}
+            )
+          : null}
       </TimebarComponent>
-      <TimebarSettings />
+      {!isMobile && <TimebarSettings />}
     </div>
   )
 }

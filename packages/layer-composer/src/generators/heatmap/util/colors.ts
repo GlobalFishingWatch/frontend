@@ -35,13 +35,8 @@ export const rgbaStringToObject = (rgba: string) => {
   }
 }
 
-const componentToHex = (c: number) => {
-  const hex = c.toString(16)
-  return hex.length === 1 ? '0' + hex : hex
-}
-
-export const rgbaToHex = ({ r, g, b }: RGBA) => {
-  return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
+export const rgbaToString = ({ r, g, b, a = 1 }: RGBA) => {
+  return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
 export const BLEND_BACKGROUND = '#0f2e5f'
