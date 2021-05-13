@@ -23,6 +23,8 @@
     "copiedToClipboard": "El enlace para compartir este mapa ha sido copiado al portapapeles.",
     "country_plural": "paises",
     "dateRange": "entre {{start}} y {{end}}",
+    "days": "Día",
+    "days_plural": "días",
     "description": "Descripción",
     "environment": "Entorno",
     "events": "Eventos",
@@ -31,8 +33,6 @@
     "help": "Ayuda",
     "hour": "Hora",
     "hour_plural": "horas",
-    "days": "Día",
-    "days_plural": "días",
     "in": "en",
     "loggedAs": "Registrado como",
     "login": "Iniciar sesión",
@@ -86,16 +86,19 @@
     "title_plural": "Datasets"
   },
   "errors": {
+    "contactUs": "Please <1>contact us</1> to report the problem.",
     "datasetNotFound": "Conjunto de datos no encontrado",
     "datasetNotValid": "Parece que algo falló en tu archivo",
     "fields": "Errores con los campos {{fields}}",
     "generic": "Algo salió mal, inténtalo de nuevo o contacta:",
+    "genericShort": "Something went wrong",
     "invalidRange": "Mínimo debe ser menor que el valor máximo",
     "latestCarrierNotFound": "Último conjunto de datos de transportista no encontrado",
     "notSupportedBy": "No soportado por {{list}}",
     "pageNotFound": "Página no encontrada",
     "privateView": "Esta es una vista privada",
     "requestAccess": "Solicitar acceso",
+    "showError": "Show error",
     "switchAccount": "Cambiar cuenta",
     "trackLoading": "Se ha producido un error al cargar la pista del buque",
     "uploadError": "Hubo un error al cargar su conjunto de datos",
@@ -155,7 +158,6 @@
     "source_plural": "Fuentes",
     "toggleCombinationMode": {
       "combine": "Combinar capas",
-      "disabled": "El modo de combinación solo está disponible con dos capas de actividad",
       "split": "Dividir capas"
     },
     "toggleVisibility": "Cambiar visibilidad de la capa",
@@ -198,20 +200,20 @@
     "selected": "seleccionado"
   },
   "timebarSettings": {
-    "fishingEffortDisabled": "Seleccione al menos una capa aparente de esfuerzo de pesca",
-    "graph": "Gráfico",
     "eventOptions": {
       "all": "Todos los eventos",
-      "fishing": "Pesca",
       "encounters": "Encuentros",
+      "fishing": "Pesca",
       "loitering": "Loitering",
-      "ports": "Visitas de puerto",
-      "none": "Ninguna"
+      "none": "Ninguna",
+      "ports": "Visitas de puerto"
     },
+    "fishingEffortDisabled": "Seleccione al menos una capa aparente de esfuerzo de pesca",
+    "graph": "Gráfico",
     "graphOptions": {
-      "speed": "Velocidad",
       "depth": "Profunda $t(common.comingPron)",
-      "none": "Ninguna"
+      "none": "Ninguna",
+      "speed": "Velocidad"
     },
     "settings_close": "Cerrar la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
