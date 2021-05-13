@@ -16,6 +16,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-XS) var(--space-S);
+  gap: var(--space-XS);
 }
 
 .sectionTitle {
@@ -23,6 +24,7 @@
   color: var(--color-secondary-blue);
   margin: 0;
   text-transform: uppercase;
+  flex: 1;
 }
 
 .sectionButtons > *:not(:last-child) {
