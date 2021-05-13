@@ -1,5 +1,14 @@
 # tile-inspector
 
+## 0.1.19
+
+### Patch Changes
+
+- Updated dependencies [d43610ba]
+  - @globalfishingwatch/layer-composer@6.1.2
+  - @globalfishingwatch/react-hooks@6.2.2
+  - @globalfishingwatch/ui-components@3.1.2
+
 ## 0.1.18
 
 ### Patch Changes
