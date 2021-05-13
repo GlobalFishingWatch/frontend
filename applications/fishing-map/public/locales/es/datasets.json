@@ -123,12 +123,12 @@
       "vessel_id": "i_id"
     }
   },
-  "fd-water-temperature-caribe-v2-2020": {
-    "name": "Temperatura de agua Caribe con datos de 2020",
-    "description": "prueba",
+  "fd-water-temperature-caribe-v2": {
+    "name": "Water temperature Caribe with data of 2020",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
-      "flag": "marca",
-      "vessel_id": "i_id"
+      "flag": "flag",
+      "vessel_id": "vessel_id"
     }
   },
   "fd-water-temperature-galapagos-v2": {
@@ -141,7 +141,7 @@
   },
   "fd-water-temperature-niue-v2": {
     "name": "Temperatura de agua Niue",
-    "description": "prueba",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
       "flag": "marca",
       "vessel_id": "i_id"
@@ -149,7 +149,7 @@
   },
   "fd-water-temperature-palau-v2": {
     "name": "Palau de temperatura del agua",
-    "description": "prueba",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
       "flag": "marca",
       "vessel_id": "i_id"
@@ -157,7 +157,7 @@
   },
   "fd-water-temperature-tristan-v2": {
     "name": "Temperatura del agua Tristán",
-    "description": "prueba",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
     "schema": {
       "flag": "marca",
       "vessel_id": "i_id"
