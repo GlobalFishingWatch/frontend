@@ -48,7 +48,7 @@ function Choice({
         left: activeRef?.current.offsetLeft,
       })
     }
-  }, [activeRef])
+  }, [activeRef, activeOptionId])
 
   // Workaround to ensure the activeElement has the clientWidth ready
   useEffect(() => {
