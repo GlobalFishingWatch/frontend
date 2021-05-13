@@ -29,9 +29,10 @@ import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { SliceInteractionEvent } from './map.slice'
-import { useHasSourceLoaded, useHaveAllSourcesLoaded } from './map-features.hooks'
-import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+import { useHaveSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
 import useRulers from './rulers/rulers.hooks'
+
+import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 
@@ -56,9 +57,10 @@ const handleError = ({ error }: any) => {
 }
 
 const MapWrapper = (): React.ReactElement | null => {
+  // Used it only once here to attach the listener only once
+  useSetMapIdleAtom()
   const map = useMapInstance()
   const { t } = useTranslation()
-
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
@@ -135,10 +137,8 @@ const MapWrapper = (): React.ReactElement | null => {
 
   const debugOptions = useSelector(selectDebugOptions)
 
-  // TODO handle also in case of error
-  // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
-  const allSourcesLoaded = useHaveAllSourcesLoaded()
-  const encounterSourceLoaded = useHasSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const mapLoaded = useMapLoaded()
+  const encounterSourceLoaded = useHaveSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
 
   const getCursor = useCallback(
     (state) => {
@@ -215,10 +215,7 @@ const MapWrapper = (): React.ReactElement | null => {
           <MapInfo center={hoveredEvent} />
         </InteractiveMap>
       )}
-      <MapControls
-        onMouseEnter={resetHoverState}
-        mapLoading={!allSourcesLoaded || layerComposerLoading}
-      />
+      <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
       {legendsTranslated?.map((legend: any) => {
         const legendDomElement = document.getElementById(legend.id as string)
         if (legendDomElement) {
