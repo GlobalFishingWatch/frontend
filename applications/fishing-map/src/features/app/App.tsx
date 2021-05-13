@@ -31,7 +31,7 @@ import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { HOME, WORKSPACE } from 'routes/routes'
+import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useAppDispatch } from './app.hooks'
@@ -173,6 +173,13 @@ function App(): React.ReactElement {
     setMenuOpen(true)
   }, [])
 
+  const getSidebarName = useCallback(() => {
+    if (locationType === USER) return t('user.title', 'User')
+    if (locationType === WORKSPACES_LIST) return t('workspace.title_plural', 'Workspaces')
+    if (isAnalysing) return t('analysis.title', 'Analysis')
+    return t('common.layerList', 'Layer list')
+  }, [isAnalysing, locationType])
+
   return (
     /* Value as null as there is no needed to set a default value but Typescript complains */
     <MapContext.Provider value={null as any}>
@@ -184,7 +191,7 @@ function App(): React.ReactElement {
           aside={<Sidebar onMenuClick={onMenuClick} />}
           main={<Main />}
           asideWidth={narrowSidebar ? '37rem' : '50%'}
-          showAsideLabel={t('common.layerList', 'Layer list')}
+          showAsideLabel={getSidebarName()}
           showMainLabel={t('common.map', 'Map')}
           className="split-container"
         />
