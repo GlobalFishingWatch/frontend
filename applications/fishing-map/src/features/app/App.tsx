@@ -33,6 +33,7 @@ import { isUserLogged } from 'features/user/user.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { t } from 'features/i18n/i18n'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -183,6 +184,8 @@ function App(): React.ReactElement {
           aside={<Sidebar onMenuClick={onMenuClick} />}
           main={<Main />}
           asideWidth={narrowSidebar ? '37rem' : '50%'}
+          showAsideLabel={t('common.layerList', 'Layer list')}
+          showMainLabel={t('common.map', 'Map')}
           className="split-container"
         />
       </Suspense>
