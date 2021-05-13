@@ -28,7 +28,7 @@
     }
   },
   "fd-chlorophyl-caribe-v2": {
-    "name": "Clorophyl Caribe",
+    "name": "Chlorophyll-a concentration",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -36,7 +36,7 @@
     }
   },
   "fd-chlorophyl-galapagos-v2": {
-    "name": "Clorophyl Galapagos",
+    "name": "Chlorophyll-a concentration",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -44,7 +44,7 @@
     }
   },
   "fd-chlorophyl-niue-v2": {
-    "name": "Clorophyl Niue",
+    "name": "Chlorophyll-a concentration",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -52,7 +52,7 @@
     }
   },
   "fd-chlorophyl-palau-v2": {
-    "name": "Clorophyl Palau",
+    "name": "Chlorophyll-a concentration",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -60,7 +60,7 @@
     }
   },
   "fd-chlorophyl-tristan-v2": {
-    "name": "Clorophyl Tristan",
+    "name": "Chlorophyll-a concentration",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -68,7 +68,7 @@
     }
   },
   "fd-salinity-ascension-v2": {
-    "name": "Salinity Ascension",
+    "name": "Salinity",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -76,7 +76,7 @@
     }
   },
   "fd-salinity-caribe-v2": {
-    "name": "Salinity Caribe",
+    "name": "Salinity",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -84,7 +84,7 @@
     }
   },
   "fd-salinity-galapagos-v2": {
-    "name": "Salinity Galapagos",
+    "name": "Salinity",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -92,7 +92,7 @@
     }
   },
   "fd-salinity-niue-v2": {
-    "name": "Salinity Niue",
+    "name": "Salinity",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -100,7 +100,7 @@
     }
   },
   "fd-salinity-palau-v2": {
-    "name": "Salinity Palau",
+    "name": "Salinity",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -108,7 +108,7 @@
     }
   },
   "fd-salinity-tristan-v2": {
-    "name": "Salinity Tristan",
+    "name": "Salinity",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -116,7 +116,7 @@
     }
   },
   "fd-water-temperature-ascension-v2": {
-    "name": "Water Temperature Ascension",
+    "name": "Sea surface temperature",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -124,7 +124,7 @@
     }
   },
   "fd-water-temperature-caribe-v2-2020": {
-    "name": "Water temperature Caribe with data of 2020",
+    "name": "Sea surface temperature",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -132,7 +132,7 @@
     }
   },
   "fd-water-temperature-galapagos-v2": {
-    "name": "Water temperature Galapagos",
+    "name": "Sea surface temperature",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -140,7 +140,7 @@
     }
   },
   "fd-water-temperature-niue-v2": {
-    "name": "Water temperature Niue",
+    "name": "Sea surface temperature",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -148,7 +148,7 @@
     }
   },
   "fd-water-temperature-palau-v2": {
-    "name": "Water temperature Palau",
+    "name": "Sea surface temperature",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -156,7 +156,7 @@
     }
   },
   "fd-water-temperature-tristan-v2": {
-    "name": "Water temperature Tristan",
+    "name": "Sea surface temperature",
     "description": "test",
     "schema": {
       "flag": "flag",
@@ -185,8 +185,8 @@
     }
   },
   "public-eez-areas": {
-    "name": "Areas geometries for eez",
-    "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11.",
+    "name": "EEZs (Source: Marine Regions)",
+    "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org.",
     "schema": {}
   },
   "public-global-fishing-effort-v2-test": {
@@ -294,18 +294,18 @@
     }
   },
   "public-mpa-all": {
-    "name": "Marine Protected Areas",
+    "name": "MPAs (Source: WDPA)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
     "schema": {}
   },
   "public-mpa-no-take": {
-    "name": "Marine Protected Areas - No take",
-    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA)",
+    "name": "MPA - No take",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: April 2021.",
     "schema": {}
   },
   "public-mpa-restricted": {
-    "name": "Marine Protected Areas - Restricted",
-    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. Source: World Database on Protected Areas (WDPA)",
+    "name": "MPA - Restricted",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: April 2021.",
     "schema": {}
   },
   "public-panama-fishing-effort": {
@@ -352,8 +352,8 @@
     }
   },
   "public-tuna-rfmo": {
-    "name": "Tuna RFMO areas",
-    "description": "RFMO stands for Regional Fishery Management Organization. These organizations are international organizations formed by countries with a shared interest in managing or conserving an area's fish stock. Some RFMOs manage all the fish stocks found in a specific area, while others focus on particular highly migratory species, notably tuna, throughout vast geographical areas. The RFMO Layer on the Global Fishing Watch map currently includes the five tuna RFMOs.",
+    "name": "RFMOs (Source: FAO)",
+    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations.",
     "schema": {}
   },
   "public-wpp-nri": {
