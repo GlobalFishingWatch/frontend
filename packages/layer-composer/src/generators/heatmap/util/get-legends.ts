@@ -7,7 +7,7 @@ import {
   HEATMAP_COLORS_BY_ID,
 } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
-import { getBlend, getColorRampByOpacitySteps, rgbaStringToObject, rgbaToHex } from './colors'
+import { getBlend, getColorRampByOpacitySteps, rgbaStringToObject, rgbaToString } from './colors'
 import { Breaks } from './fetch-breaks'
 import { getCleanBreaks } from './get-breaks'
 import { toDT } from './time-chunks'
@@ -137,28 +137,28 @@ const getBivariateRamp = (colorRampsIds: ColorRampId[]) => {
   )
   return [
     'transparent',
-    rgbaToHex(getBlend(ramp1[0], ramp2[0])),
-    rgbaToHex(getBlend(ramp1[1], ramp2[0])),
-    rgbaToHex(getBlend(ramp1[2], ramp2[0])),
-    rgbaToHex(getBlend(ramp1[3], ramp2[0])),
-    rgbaToHex(getBlend(ramp1[0], ramp2[1])),
-    rgbaToHex(getBlend(ramp1[1], ramp2[1])),
-    rgbaToHex(getBlend(ramp1[2], ramp2[1])),
-    rgbaToHex(getBlend(ramp1[3], ramp2[1])),
-    rgbaToHex(getBlend(ramp1[0], ramp2[2])),
-    rgbaToHex(getBlend(ramp1[1], ramp2[2])),
-    rgbaToHex(getBlend({ ...white, a: 0.25 }, getBlend(ramp1[2], ramp2[2]))),
-    rgbaToHex(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[3], ramp2[2]))),
-    rgbaToHex(getBlend(ramp1[0], ramp2[3])),
-    rgbaToHex(getBlend(ramp1[1], ramp2[3])),
-    rgbaToHex(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[2], ramp2[3]))),
-    rgbaToHex(getBlend(white, getBlend(ramp1[3], ramp2[3]))),
+    rgbaToString({ ...getBlend(ramp1[0], ramp2[0]), a: 0.5 }),
+    rgbaToString({ ...getBlend(ramp1[1], ramp2[0]), a: 0.75 }),
+    rgbaToString(getBlend(ramp1[2], ramp2[0])),
+    rgbaToString(getBlend(ramp1[3], ramp2[0])),
+    rgbaToString({ ...getBlend(ramp1[0], ramp2[1]), a: 0.75 }),
+    rgbaToString(getBlend(ramp1[1], ramp2[1])),
+    rgbaToString(getBlend(ramp1[2], ramp2[1])),
+    rgbaToString(getBlend(ramp1[3], ramp2[1])),
+    rgbaToString(getBlend(ramp1[0], ramp2[2])),
+    rgbaToString(getBlend(ramp1[1], ramp2[2])),
+    rgbaToString(getBlend({ ...white, a: 0.25 }, getBlend(ramp1[2], ramp2[2]))),
+    rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[3], ramp2[2]))),
+    rgbaToString(getBlend(ramp1[0], ramp2[3])),
+    rgbaToString(getBlend(ramp1[1], ramp2[3])),
+    rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[2], ramp2[3]))),
+    rgbaToString(getBlend(white, getBlend(ramp1[3], ramp2[3]))),
   ]
 }
 
 const getLegendsBivariate = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks: Breaks) => {
   const visibleSublayers = config.sublayers.filter((s) => s.visible)
-  const ids = visibleSublayers.map(s => s.id)
+  const ids = visibleSublayers.map((s) => s.id)
   const colorRampsIds = visibleSublayers.map((subLayer) => subLayer.colorRamp as ColorRampId)
   const subLayer = visibleSublayers?.[0]
 
