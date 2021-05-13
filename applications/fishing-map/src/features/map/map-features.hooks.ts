@@ -11,69 +11,6 @@ import {
   selectGeneratorConfigsById,
 } from './map.selectors'
 
-// const sourcesLoadingState = atom<{ [key: string]: boolean }>({
-//   key: 'sourcesState',
-//   default: {},
-// })
-
-// let listenerAttached = false
-// export const useSourcesLoadingState = () => {
-//   const [sourcesState, setSourcesState] = useRecoilState(sourcesLoadingState)
-//   const map = useMapInstance()
-//   const idledAttached = useRef<boolean>(true)
-//   useEffect(() => {
-//     if (!map || listenerAttached) return
-//     const sourceEventCallback = (e: any) => {
-//       const currentSources = map.getStyle().sources || {}
-//       const sourcesLoaded = Object.entries(currentSources)
-//         .map(([sourceId, source]) => {
-//           // Ignore geojson sources that already have their data included in the style
-//           if (source.type === 'geojson' && !(typeof source?.data === 'string')) {
-//             return []
-//           }
-//           return [sourceId, map.isSourceLoaded(sourceId)]
-//         })
-//         .filter((entry) => entry.length)
-
-//       const allSourcesLoaded = sourcesLoaded.every(([id, loaded]) => loaded)
-//       if (allSourcesLoaded && e.type === 'idle') {
-//         map.off('idle', sourceEventCallback)
-//         idledAttached.current = false
-//       } else if (!idledAttached.current) {
-//         map.on('idle', sourceEventCallback)
-//         idledAttached.current = true
-//       }
-//       setSourcesState(Object.fromEntries(sourcesLoaded))
-//     }
-//     if (map && !listenerAttached) {
-//       map.on('sourcedata', sourceEventCallback)
-//       map.on('sourcedataloading', sourceEventCallback)
-//       map.on('idle', sourceEventCallback)
-//       map.on('error', sourceEventCallback)
-
-//       // TODO: improve this workaroud to avoid attaching listeners on every hook instance
-//       listenerAttached = true
-//     }
-//     const detachListeners = () => {
-//       map.off('sourcedata', sourceEventCallback)
-//       map.off('sourcedataloading', sourceEventCallback)
-//       map.off('idle', sourceEventCallback)
-//       map.off('error', sourceEventCallback)
-//     }
-
-//     return detachListeners
-//   }, [map, setSourcesState])
-
-//   const serializedSourcesState = Object.entries(sourcesState)
-//     .map((s) => s.join('_'))
-//     .join('__')
-
-//   return useMemo(() => {
-//     return sourcesState
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//   }, [serializedSourcesState])
-// }
-
 export const mapIdleAtom = atom<boolean>({
   key: 'mapIdle',
   default: false,
