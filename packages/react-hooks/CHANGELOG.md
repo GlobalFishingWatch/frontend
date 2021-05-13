@@ -1,5 +1,14 @@
 # @globalfishingwatch/react-hooks
 
+## 6.2.3
+
+### Patch Changes
+
+- Updated dependencies [6b374674]
+  - @globalfishingwatch/dataviews-client@6.5.2
+  - @globalfishingwatch/layer-composer@6.1.3
+  - @globalfishingwatch/ui-components@3.1.3
+
 ## 6.2.2
 
 ### Patch Changes

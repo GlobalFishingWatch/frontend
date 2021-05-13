@@ -1,5 +1,13 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.5.2
+
+### Patch Changes
+
+- 6b374674: Fishing map/minor fixes
+- Updated dependencies [6b374674]
+  - @globalfishingwatch/layer-composer@6.1.3
+
 ## 6.5.1
 
 ### Patch Changes

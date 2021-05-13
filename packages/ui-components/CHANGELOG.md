@@ -1,5 +1,13 @@
 # @globalfishingwatch/ui-components
 
+## 3.1.3
+
+### Patch Changes
+
+- 6b374674: Fishing map/minor fixes
+- Updated dependencies [6b374674]
+  - @globalfishingwatch/layer-composer@6.1.3
+
 ## 3.1.2
 
 ### Patch Changes
