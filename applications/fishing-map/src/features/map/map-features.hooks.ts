@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef } from 'react'
-import { atom, useRecoilState } from 'recoil'
+import { useEffect, useMemo } from 'react'
+import { atom, useRecoilValue, useSetRecoilState } from 'recoil'
 import { useSelector } from 'react-redux'
 import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
@@ -11,93 +11,123 @@ import {
   selectGeneratorConfigsById,
 } from './map.selectors'
 
-const sourcesLoadingState = atom<{ [key: string]: boolean }>({
-  key: 'sourcesState',
-  default: {},
+// const sourcesLoadingState = atom<{ [key: string]: boolean }>({
+//   key: 'sourcesState',
+//   default: {},
+// })
+
+// let listenerAttached = false
+// export const useSourcesLoadingState = () => {
+//   const [sourcesState, setSourcesState] = useRecoilState(sourcesLoadingState)
+//   const map = useMapInstance()
+//   const idledAttached = useRef<boolean>(true)
+//   useEffect(() => {
+//     if (!map || listenerAttached) return
+//     const sourceEventCallback = (e: any) => {
+//       const currentSources = map.getStyle().sources || {}
+//       const sourcesLoaded = Object.entries(currentSources)
+//         .map(([sourceId, source]) => {
+//           // Ignore geojson sources that already have their data included in the style
+//           if (source.type === 'geojson' && !(typeof source?.data === 'string')) {
+//             return []
+//           }
+//           return [sourceId, map.isSourceLoaded(sourceId)]
+//         })
+//         .filter((entry) => entry.length)
+
+//       const allSourcesLoaded = sourcesLoaded.every(([id, loaded]) => loaded)
+//       if (allSourcesLoaded && e.type === 'idle') {
+//         map.off('idle', sourceEventCallback)
+//         idledAttached.current = false
+//       } else if (!idledAttached.current) {
+//         map.on('idle', sourceEventCallback)
+//         idledAttached.current = true
+//       }
+//       setSourcesState(Object.fromEntries(sourcesLoaded))
+//     }
+//     if (map && !listenerAttached) {
+//       map.on('sourcedata', sourceEventCallback)
+//       map.on('sourcedataloading', sourceEventCallback)
+//       map.on('idle', sourceEventCallback)
+//       map.on('error', sourceEventCallback)
+
+//       // TODO: improve this workaroud to avoid attaching listeners on every hook instance
+//       listenerAttached = true
+//     }
+//     const detachListeners = () => {
+//       map.off('sourcedata', sourceEventCallback)
+//       map.off('sourcedataloading', sourceEventCallback)
+//       map.off('idle', sourceEventCallback)
+//       map.off('error', sourceEventCallback)
+//     }
+
+//     return detachListeners
+//   }, [map, setSourcesState])
+
+//   const serializedSourcesState = Object.entries(sourcesState)
+//     .map((s) => s.join('_'))
+//     .join('__')
+
+//   return useMemo(() => {
+//     return sourcesState
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [serializedSourcesState])
+// }
+
+export const mapIdleAtom = atom<boolean>({
+  key: 'mapIdle',
+  default: false,
 })
 
-let listenerAttached = false
-export const useSourcesLoadingState = () => {
-  const [sourcesState, setSourcesState] = useRecoilState(sourcesLoadingState)
+export const useSetMapIdleAtom = () => {
+  // Used it once in Map.tsx the listeners only once
   const map = useMapInstance()
-  const idledAttached = useRef<boolean>(true)
+  const setIdle = useSetRecoilState(mapIdleAtom)
+
   useEffect(() => {
-    if (!map || listenerAttached) return
-    const sourceEventCallback = (e: any) => {
-      const currentSources = map.getStyle().sources || {}
-      const sourcesLoaded = Object.entries(currentSources)
-        .map(([sourceId, source]) => {
-          // Ignore geojson sources that already have their data included in the style
-          if (source.type === 'geojson' && !(typeof source?.data === 'string')) {
-            return []
-          }
-          return [sourceId, map.isSourceLoaded(sourceId)]
-        })
-        .filter((entry) => entry.length)
-
-      const allSourcesLoaded = sourcesLoaded.every(([id, loaded]) => loaded)
-      if (allSourcesLoaded && e.type === 'idle') {
-        map.off('idle', sourceEventCallback)
-        idledAttached.current = false
-      } else if (!idledAttached.current) {
-        map.on('idle', sourceEventCallback)
-        idledAttached.current = true
-      }
-      setSourcesState(Object.fromEntries(sourcesLoaded))
+    if (!map) return
+    const setIdleState = () => {
+      setIdle(true)
     }
-    if (map && !listenerAttached) {
-      map.on('sourcedata', sourceEventCallback)
-      map.on('sourcedataloading', sourceEventCallback)
-      map.on('idle', sourceEventCallback)
-      map.on('error', sourceEventCallback)
-
-      // TODO: improve this workaroud to avoid attaching listeners on every hook instance
-      listenerAttached = true
+    const resetIdleState = () => {
+      setIdle(false)
+    }
+    if (map) {
+      map.on('sourcedata', resetIdleState)
+      map.on('idle', setIdleState)
     }
     const detachListeners = () => {
-      map.on('sourcedata', sourceEventCallback)
-      map.off('sourcedataloading', sourceEventCallback)
-      map.off('idle', sourceEventCallback)
-      map.off('error', sourceEventCallback)
+      map.off('idle', setIdleState)
+      map.off('sourcedata', resetIdleState)
     }
 
     return detachListeners
-  }, [map, setSourcesState])
-
-  const serializedSourcesState = Object.entries(sourcesState)
-    .map((s) => s.join('_'))
-    .join('__')
-
-  return useMemo(() => {
-    return sourcesState
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serializedSourcesState])
+  }, [map, setIdle])
 }
 
-export const useHaveSourcesLoaded = (sourcesIds: string[]) => {
-  const sourcesState = useSourcesLoadingState()
-  const haveAllSourcesLoaded = sourcesIds.every((sourceId) => sourcesState[sourceId] === true)
-  return useMemo(() => {
-    return haveAllSourcesLoaded
-  }, [haveAllSourcesLoaded])
+export const useMapIdle = () => {
+  const idle = useRecoilValue(mapIdleAtom)
+  return idle
 }
 
-export const useHaveAllSourcesLoaded = () => {
-  const sourcesState = useSourcesLoadingState()
-  const haveAllSourcesLoaded = Object.values(sourcesState).every(
-    (sourceLoaded) => sourceLoaded === true
-  )
-  return useMemo(() => {
-    return haveAllSourcesLoaded
-  }, [haveAllSourcesLoaded])
+export const useMapLoaded = () => {
+  const idle = useRecoilValue(mapIdleAtom)
+  const map = useMapInstance()
+  const mapInstanceReady = map !== null
+  const mapFirstLoad = (map as any)?._loaded || false
+  const mapStyleLoad = map?.isStyleLoaded() || false
+  const areTilesLoaded = map?.areTilesLoaded() || false
+  const loaded = mapInstanceReady && mapFirstLoad && (idle || areTilesLoaded || mapStyleLoad)
+  return loaded
 }
 
-export const useHasSourceLoaded = (sourceId: string) => {
-  const sourcesState = useSourcesLoadingState()
-  const haveAllSourcesLoaded = sourcesState[sourceId] === true
-  return useMemo(() => {
-    return haveAllSourcesLoaded
-  }, [haveAllSourcesLoaded])
+export const useHaveSourcesLoaded = (sourcesIds: string | string[]) => {
+  const sourcesIdsList = Array.isArray(sourcesIds) ? sourcesIds : [sourcesIds]
+  const mapLoaded = useMapLoaded()
+  const style = useMapStyle()
+
+  const sourcesLoaded = sourcesIdsList.every((source) => style?.sources?.[source] !== undefined)
+  return mapLoaded && sourcesLoaded
 }
 
 export const useActiveHeatmapAnimatedMetadatas = (generators: AnyGeneratorConfig[]) => {
