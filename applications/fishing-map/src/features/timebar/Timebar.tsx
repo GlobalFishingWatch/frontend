@@ -23,6 +23,7 @@ import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
 import { filterByViewport } from 'features/map/map.utils'
 import { useActivityTemporalgridFeatures } from 'features/map/map-features.hooks'
+import { selectActivityCategory } from 'routes/routes.selectors'
 import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
@@ -125,6 +126,8 @@ const TimebarWrapper = () => {
     setLoading(haveSourcesLoaded)
   }, [haveSourcesLoaded])
 
+  const activityCategory = useSelector(selectActivityCategory)
+
   if (!start || !end) return null
 
   const onMouseMove = (clientX: number, scale: (arg: number) => Date) => {
@@ -155,6 +158,8 @@ const TimebarWrapper = () => {
         bookmarkStart={bookmark?.start}
         bookmarkEnd={bookmark?.end}
         bookmarkPlacement="bottom"
+        minimumRange={1}
+        minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
       >
         {() => (
           <Fragment>

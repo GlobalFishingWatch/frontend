@@ -209,8 +209,8 @@ class HeatmapAnimatedGenerator {
       finalConfig.interval
     )
 
-    if (timeChunks.deltaInIntervalUnits === 0 && config.aggregationOperation === AggregationOperation.Sum) {
-      throw new Error('Trying to show less than 1 interval worth of data for this heatmap layer. This could result in showing misleading information when aggregation mode is set to sum.')
+    if (timeChunks.deltaInIntervalUnits === 0 && config.aggregationOperation !== AggregationOperation.Avg) {
+      throw new Error('Trying to show less than 1 interval worth of data for this heatmap layer. This could result in showing misleading information when aggregation mode is not set to avg.')
     }
 
     const breaksConfig = {

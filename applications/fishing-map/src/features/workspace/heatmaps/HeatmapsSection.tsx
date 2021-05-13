@@ -2,6 +2,7 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { DateTime } from 'luxon'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Choice, { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { Generators } from '@globalfishingwatch/layer-composer'
@@ -18,6 +19,7 @@ import {
 import { ACTIVITY_OPTIONS } from 'data/config'
 import { WorkspaceActivityCategory } from 'types'
 import { selectActivityCategory } from 'routes/routes.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import LayerPanel from './HeatmapLayerPanel'
 import heatmapStyles from './HeatmapsSection.module.css'
 
@@ -29,6 +31,7 @@ function HeatmapsSection(): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const { start } = useTimerangeConnect()
 
   useEffect(() => {
     setAddedDataviewId(undefined)
@@ -36,9 +39,19 @@ function HeatmapsSection(): React.ReactElement {
 
   const onActivityOptionClick = useCallback(
     (activityOption: ChoiceOption) => {
-      dispatchQueryParams({ activityCategory: activityOption.id as WorkspaceActivityCategory })
+      const queryParams: Record<string, any> = {
+        activityCategory: activityOption.id as WorkspaceActivityCategory,
+      }
+      // TODO check that range is < 1 day
+      if (activityOption.id === 'presence' && start) {
+        // Force a minimum of 1 day range when in presence mode
+        queryParams.start = start
+        // TODO check while it still throws
+        queryParams.end = DateTime.fromISO(start).toUTC().plus({ days: 1 }).toISO()
+      }
+      dispatchQueryParams(queryParams)
     },
-    [dispatchQueryParams]
+    [dispatchQueryParams, start]
   )
 
   const onAddClick = useCallback(
