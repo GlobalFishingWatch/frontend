@@ -104,7 +104,10 @@
     "workspaceDuplicatedName": "There is already a workspace with this name",
     "workspaceLoad": "There was an error loading the workspace, please try again later",
     "workspaceMissingName": "Workspace name is needed",
-    "workspaceNotFound": "The view you request was not found"
+    "workspaceNotFound": "The view you request was not found",
+    "genericShort": "Something went wrong",
+    "showError": "Show error details",
+    "contactUs": "Please <1>contact us</1> to report the problem."
   },
   "event": {
     "noData": "No data available",
@@ -283,5 +286,5 @@
     "saved": "Current view was saved and it's available in your user profile",
     "saveLogin": "You need to login to save views",
     "title_plural": "Workspaces"
-  }
+  },
 }

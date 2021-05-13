@@ -1,10 +1,10 @@
-import React, { Component, ErrorInfo, Fragment } from 'react'
+import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { RecoilRoot } from 'recoil'
 import App from 'features/app/App'
+import ErrorBoundary from 'features/app/ErrorBoundary'
 import store from './store'
-
 import './features/i18n/i18n'
 import '@globalfishingwatch/ui-components/dist/base.css'
 
@@ -16,36 +16,6 @@ async function loadPolyfills() {
 }
 
 loadPolyfills()
-
-class ErrorBoundary extends Component<any, { hasError: boolean, error: string | null }> {
-  constructor() {
-    super({});
-    this.state = { hasError: false, error: null };
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error: error.message };
-  }
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // console.log(error, errorInfo)
-    this.setState({ error: [error.message, errorInfo.componentStack].join('\n') })
-  }
-  render() {
-    if (this.state.hasError) {
-      return <Fragment>
-        <h1>Something went wrong.</h1>
-        <pre>
-          {this.state.error}
-        </pre>
-        <p>
-          Please <a href="mailto:tony@globalfishingwatch.org">contact us</a> to report the problem
-        </p>
-      </Fragment>
-      
-    }
-    return this.props.children; 
-  }
-}
 
 render(
   <React.StrictMode>
