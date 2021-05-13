@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 6.1.2
+
+### Patch Changes
+
+- d43610ba: Breaks fixes
+
 ## 6.1.1
 
 ### Patch Changes
