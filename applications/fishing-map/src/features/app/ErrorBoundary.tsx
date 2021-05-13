@@ -4,8 +4,8 @@ import { Button } from '@globalfishingwatch/ui-components'
 import styles from './ErrorBoundary.module.css'
 
 class ErrorBoundary extends Component<any, { error: Error | null }> {
-  constructor() {
-    super({})
+  constructor(props: any) {
+    super(props)
     this.state = { error: null }
   }
 

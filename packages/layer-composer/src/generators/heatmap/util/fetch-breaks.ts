@@ -1,5 +1,4 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import uniq from 'lodash/uniq'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../../layer-composer'
 import { API_ENDPOINTS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
@@ -9,6 +8,16 @@ import { Interval } from './time-chunks'
 import { toURLArray } from '.'
 
 export type Breaks = number[][]
+
+const BREAKS_FALLBACK = {
+  'global-fishing-effort': [0, 538, 2018, 4682, 10945, 30661, 59568, 106877, 118773],
+  'chile-fishing-effort': [0, 21, 76, 175, 322, 796, 1362, 1633, 1750],
+  'indonesia-fishing-effort': [0, 112, 414, 997, 1895, 2942, 5294, 7498, 8667],
+  'panama-fishing-effort': [0, 17, 63, 138, 264, 528, 749, 1337, 2265],
+  'peru-fishing-effort': [0, 13, 48, 128, 287, 529, 1022, 1732, 2108],
+  'global-presence': [0, 414, 1592, 3284, 6274, 10945, 19804, 32516, 56157],
+}
+type DefaultDatasets = keyof typeof BREAKS_FALLBACK
 
 export type FetchBreaksParams = Pick<
   GlobalHeatmapAnimatedGeneratorConfig,
@@ -31,11 +40,9 @@ const getBreaksBaseUrl = (config: FetchBreaksParams): string => {
 }
 
 const getDatasets = (config: FetchBreaksParams): string[] => {
-  const datasets = uniq(
-    config.sublayers
-      .filter((sublayer) => sublayer.visible)
-      .flatMap((s) => s.datasets.flatMap((d) => d))
-  )
+  const datasets = config.sublayers
+    .filter((sublayer) => sublayer.visible)
+    .flatMap((s) => s.datasets.flatMap((d) => d))
   return datasets
 }
 
@@ -44,10 +51,15 @@ const getFiltersQuery = (config: FetchBreaksParams): string => {
   return filters?.length ? toURLArray('filters', filters) : ''
 }
 
+const getCacheKey = (config: FetchBreaksParams): string => {
+  const filters = getFiltersQuery(config)
+  return [filters, config.mode].join(',')
+}
+
 const getDatasetsWithoutCache = (config: FetchBreaksParams): string[] => {
   const datasets = getDatasets(config)
-  const filters = getFiltersQuery(config)
-  return datasets.filter((dataset) => datasetsCache[filters]?.[dataset] === undefined)
+  const cacheKey = getCacheKey(config)
+  return datasets.filter((dataset) => datasetsCache[cacheKey]?.[dataset] === undefined)
 }
 
 const getBreaksUrl = (config: FetchBreaksParams): string => {
@@ -74,13 +86,13 @@ let controllerCache: AbortController | undefined
 
 export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> {
   const isBivariate = config.mode === HeatmapAnimatedMode.Bivariate
-  const filters = getFiltersQuery(config)
+  const cacheKey = getCacheKey(config)
   const allDatasets = getDatasets(config)
   const datasetsWithoutCache = getDatasetsWithoutCache(config)
 
   if (!datasetsWithoutCache?.length) {
     return new Promise((resolve) => {
-      const breaks = allDatasets.map((dataset) => datasetsCache[filters]?.[dataset]) as Breaks
+      const breaks = allDatasets.map((dataset) => datasetsCache[cacheKey]?.[dataset]) as Breaks
       resolve(parseBreaksResponse(config, breaks))
     })
   }
@@ -110,17 +122,25 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
       throw r
     })
     .then((breaks: Breaks) => {
-      // datasetsCache[filters]
       const breaksByDataset = Object.fromEntries(
         allDatasets.map((dataset, index) => [dataset, breaks[index]])
       )
-      datasetsCache[filters] = breaksByDataset
+      datasetsCache[cacheKey] = breaksByDataset
       return parseBreaksResponse(config, breaks)
     })
     .catch((e) => {
       if (e.name !== 'AbortError') {
-        console.warn(e)
+        console.warn('Using default breaks due to the error', e)
       }
-      throw e
+      const defaultDatasetKeys = Object.keys(BREAKS_FALLBACK) as DefaultDatasets[]
+      const breaks = allDatasets.map((dataset) => {
+        const defaultDataset = defaultDatasetKeys.find((defaultDataset) =>
+          dataset.includes(defaultDataset)
+        )
+        return defaultDataset
+          ? BREAKS_FALLBACK[defaultDataset]
+          : BREAKS_FALLBACK['global-fishing-effort']
+      })
+      return parseBreaksResponse(config, breaks)
     })
 }
