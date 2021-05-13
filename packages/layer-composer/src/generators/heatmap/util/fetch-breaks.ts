@@ -51,10 +51,15 @@ const getFiltersQuery = (config: FetchBreaksParams): string => {
   return filters?.length ? toURLArray('filters', filters) : ''
 }
 
+const getCacheKey = (config: FetchBreaksParams): string => {
+  const filters = getFiltersQuery(config)
+  return [filters, config.mode].join(',')
+}
+
 const getDatasetsWithoutCache = (config: FetchBreaksParams): string[] => {
   const datasets = getDatasets(config)
-  const filters = getFiltersQuery(config)
-  return datasets.filter((dataset) => datasetsCache[filters]?.[dataset] === undefined)
+  const cacheKey = getCacheKey(config)
+  return datasets.filter((dataset) => datasetsCache[cacheKey]?.[dataset] === undefined)
 }
 
 const getBreaksUrl = (config: FetchBreaksParams): string => {
@@ -81,13 +86,13 @@ let controllerCache: AbortController | undefined
 
 export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> {
   const isBivariate = config.mode === HeatmapAnimatedMode.Bivariate
-  const filters = getFiltersQuery(config)
+  const cacheKey = getCacheKey(config)
   const allDatasets = getDatasets(config)
   const datasetsWithoutCache = getDatasetsWithoutCache(config)
 
   if (!datasetsWithoutCache?.length) {
     return new Promise((resolve) => {
-      const breaks = allDatasets.map((dataset) => datasetsCache[filters]?.[dataset]) as Breaks
+      const breaks = allDatasets.map((dataset) => datasetsCache[cacheKey]?.[dataset]) as Breaks
       resolve(parseBreaksResponse(config, breaks))
     })
   }
@@ -120,7 +125,7 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
       const breaksByDataset = Object.fromEntries(
         allDatasets.map((dataset, index) => [dataset, breaks[index]])
       )
-      datasetsCache[filters] = breaksByDataset
+      datasetsCache[cacheKey] = breaksByDataset
       return parseBreaksResponse(config, breaks)
     })
     .catch((e) => {

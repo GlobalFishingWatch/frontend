@@ -221,7 +221,6 @@ class HeatmapAnimatedGenerator {
       ? config.sublayers.map(({ breaks }) => breaks || [])
       : getSublayersBreaks(finalConfig, this.breaksCache[cacheKey]?.breaks)
     const legends = getLegends(finalConfig, breaks || [])
-
     const style = {
       id: finalConfig.id,
       sources: this._getStyleSources(finalConfig, timeChunks, breaks),
