@@ -74,7 +74,8 @@ const TimebarWrapper = () => {
   useEffect(() => {
     if (
       timebarVisualisation !== TimebarVisualisations.Heatmap ||
-      !visibleTemporalGridDataviews?.length
+      !visibleTemporalGridDataviews?.length ||
+      !isMobile
     ) {
       setStackedActivity(undefined)
       return
@@ -119,6 +120,7 @@ const TimebarWrapper = () => {
     debouncedBounds,
     timebarVisualisation,
     visibleTemporalGridDataviews,
+    isMobile,
   ])
 
   useEffect(() => {
