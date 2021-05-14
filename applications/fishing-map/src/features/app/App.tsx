@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
+import React, { lazy, useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
 import { useSelector } from 'react-redux'
 // import RecoilizeDebugger from 'recoilize'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
@@ -16,15 +16,13 @@ import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
 import Sidebar from 'features/sidebar/Sidebar'
-import Map from 'features/map/Map'
-import Timebar from 'features/timebar/Timebar'
 import Footer from 'features/footer/Footer'
 import {
   selectCurrentWorkspaceId,
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk, selectUserData } from 'features/user/user.slice'
+import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -39,6 +37,8 @@ import { selectAnalysisQuery, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
+const Map = lazy(() => import('features/map/Map'))
+const Timebar = lazy(() => import('features/timebar/Timebar'))
 
 declare global {
   interface Window {

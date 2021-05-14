@@ -123,6 +123,7 @@
     "prettier": "2.3.0",
     "react-test-renderer": "^17.0.1",
     "serve": "^11.3.2",
+    "source-map-explorer": "^2.5.2",
     "stylelint": "^13.7.1",
     "stylelint-config-css-modules": "^2.2.0",
     "stylelint-config-prettier": "^8.0.2",
