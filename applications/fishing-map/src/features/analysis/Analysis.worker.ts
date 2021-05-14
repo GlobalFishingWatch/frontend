@@ -1,5 +1,5 @@
-import type { Polygon, MultiPolygon, BBox } from 'geojson'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+import { Polygon, MultiPolygon, BBox } from 'geojson'
 
 type Feature = GeoJSON.Feature<GeoJSON.Geometry>
 export type FilteredPolygons = {
