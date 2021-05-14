@@ -206,8 +206,9 @@ export function getGeneratorConfig(
         // breaksAPI,
         ...(extentStart && { datasetsStart: extentStart }),
         ...(extentEnd && { datasetsEnd: extentEnd }),
-        staticStart: timeRange?.start,
-        staticEnd: timeRange?.end,
+        // TODO Talk about this
+        // staticStart: timeRange?.start,
+        // staticEnd: timeRange?.end,
       }
       break
     }

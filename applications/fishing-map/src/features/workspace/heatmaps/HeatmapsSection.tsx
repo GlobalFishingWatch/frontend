@@ -31,7 +31,7 @@ function HeatmapsSection(): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
-  const { start } = useTimerangeConnect()
+  const { start, end } = useTimerangeConnect()
 
   useEffect(() => {
     setAddedDataviewId(undefined)
@@ -42,16 +42,17 @@ function HeatmapsSection(): React.ReactElement {
       const queryParams: Record<string, any> = {
         activityCategory: activityOption.id as WorkspaceActivityCategory,
       }
-      // TODO check that range is < 1 day
-      if (activityOption.id === 'presence' && start) {
-        // Force a minimum of 1 day range when in presence mode
-        queryParams.start = start
-        // TODO check while it still throws
-        queryParams.end = DateTime.fromISO(start).toUTC().plus({ days: 1 }).toISO()
+      if (activityOption.id === 'presence' && start && end) {
+        const intervalInDays = DateTime.fromISO(end).diff(DateTime.fromISO(start)).as('days')
+        if (intervalInDays < 1) {
+          // Force a minimum of 1 day range when in presence mode
+          queryParams.start = start
+          queryParams.end = DateTime.fromISO(start).toUTC().plus({ days: 1 }).toISO()
+        }
       }
       dispatchQueryParams(queryParams)
     },
-    [dispatchQueryParams, start]
+    [dispatchQueryParams, start, end]
   )
 
   const onAddClick = useCallback(
