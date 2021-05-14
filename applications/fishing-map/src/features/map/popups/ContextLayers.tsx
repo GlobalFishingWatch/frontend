@@ -1,5 +1,5 @@
 import React, { Fragment, useCallback } from 'react'
-import groupBy from 'lodash/groupBy'
+import { groupBy } from 'lodash'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import bbox from '@turf/bbox'

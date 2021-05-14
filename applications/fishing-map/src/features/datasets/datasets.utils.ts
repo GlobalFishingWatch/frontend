@@ -1,5 +1,4 @@
-import intersection from 'lodash/intersection'
-import lowerCase from 'lodash/lowerCase'
+import { intersection, lowerCase } from 'lodash'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { capitalize } from 'utils/shared'

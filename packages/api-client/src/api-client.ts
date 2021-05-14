@@ -113,8 +113,12 @@ export class GFWAPI {
     return this.status
   }
 
-  getLoginUrl(callbackUrl: string, client = 'gfw') {
-    return `${this.baseUrl}/${AUTH_PATH}?client=${client}&callback=${callbackUrl}`
+  getLoginUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
+    const fallbackLocale =
+      locale ||
+      (typeof localStorage !== undefined ? localStorage.getItem('i18nextLng') : '') ||
+      'en'
+    return `${this.baseUrl}/${AUTH_PATH}?client=${client}&callback=${callbackUrl}&locale=${fallbackLocale}`
   }
 
   getConfig() {

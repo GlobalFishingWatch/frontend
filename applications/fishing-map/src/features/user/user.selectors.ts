@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import orderBy from 'lodash/orderBy'
+import { orderBy } from 'lodash'
 import { DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import {
