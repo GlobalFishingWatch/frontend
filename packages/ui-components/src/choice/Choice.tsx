@@ -83,7 +83,10 @@ function Choice({
             >
               <Button
                 disabled={option.disabled}
-                className={cx(styles.optionButton, { [styles.optionActive]: optionSelected })}
+                className={cx(styles.optionButton, {
+                  [styles.optionActive]: optionSelected,
+                  [styles.disabled]: option.disabled,
+                })}
                 type="secondary"
                 tooltip={option.disabled ? disabledTooltip : ''}
                 onClick={(e) => !option.disabled && onOptionClickHandle(option, e)}
