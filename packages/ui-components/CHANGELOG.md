@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 3.1.4
+
+### Patch Changes
+
+- support disabled choice option
+
 ## 3.1.3
 
 ### Patch Changes

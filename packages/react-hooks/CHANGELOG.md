@@ -1,5 +1,16 @@
 # @globalfishingwatch/react-hooks
 
+## 6.3.0
+
+### Minor Changes
+
+- new use-small-screen hook
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@3.1.4
+
 ## 6.2.3
 
 ### Patch Changes
