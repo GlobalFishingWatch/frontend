@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import memoize from 'lodash/memoize'
+import { memoize } from 'lodash'
 import { Field, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { Resource, ResourceStatus, DatasetTypes } from '@globalfishingwatch/api-types'

@@ -1,4 +1,4 @@
-import groupBy from 'lodash/groupBy'
+import { groupBy } from 'lodash'
 import { Segment } from '../track-value-array-to-segments'
 import { Columns } from './types'
 
