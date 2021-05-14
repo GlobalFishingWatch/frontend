@@ -1,5 +1,5 @@
 import React, { useState, useCallback, Fragment } from 'react'
-import type { FeatureCollectionWithFilename } from 'shpjs'
+import { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import lowerCase from 'lodash/lowerCase'
 import { useSelector } from 'react-redux'
