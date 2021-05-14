@@ -239,60 +239,54 @@ export const fetchDataviews = () => async (dispatch: Dispatch<PayloadAction>) =>
   dispatch(setDataviews(dataviews))
 }
 
-export const startUpdatingDataview = (dataview: EditorDataview) => async (
-  dispatch: Dispatch<PayloadAction>
-) => {
-  dispatch(startLoading())
-  const editorId = dataview.editorId
-  const dataviewResp: Dataview = await dataviewsClient.updateDataview(
-    dataview,
-    dataview.savedOnce || false
-  )
-  dispatch(replaceDataview({ editorId, dataview: dataviewResp }))
-  dispatch(completeLoading())
-}
-
-export const startDeletingDataview = (dataview: EditorDataview) => async (
-  dispatch: Dispatch<PayloadAction>
-) => {
-  dispatch(startLoading())
-  const editorId = dataview.editorId
-  await dataviewsClient.deleteDataview(dataview)
-  dispatch(deleteDataview({ editorId }))
-  dispatch(completeLoading())
-}
-
-export const fetchDataset = ({
-  editorId,
-  datasetId,
-}: {
-  editorId: number
-  datasetId: string
-}) => async (dispatch: any) => {
-  try {
-    const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${datasetId}?include=endpoints`)
-    const defaultParams = [
-      {
-        dataset: dataset.id,
-        endpoint: 'track',
-        params: {
-          id: '46df37738-8057-e7d4-f3f3-a9b44d52fe03',
-        },
-        query: {
-          binary: 'true',
-          fields: 'lonlat,timestamp',
-          format: 'valueArray',
-          endDate: '2020-01-01T00:00:00.000Z',
-          startDate: '2017-01-01T00:00:00.000Z',
-        },
-      },
-    ]
-    dispatch(setDataset({ editorId, dataset, defaultParams }))
-    dispatch(setDatasetEndpoint({ editorId, endpoint: 'track', dataset: dataset.id }))
-  } catch (e) {
-    console.log(e)
+export const startUpdatingDataview =
+  (dataview: EditorDataview) => async (dispatch: Dispatch<PayloadAction>) => {
+    dispatch(startLoading())
+    const editorId = dataview.editorId
+    const dataviewResp: Dataview = await dataviewsClient.updateDataview(
+      dataview,
+      dataview.savedOnce || false
+    )
+    dispatch(replaceDataview({ editorId, dataview: dataviewResp }))
+    dispatch(completeLoading())
   }
-}
+
+export const startDeletingDataview =
+  (dataview: EditorDataview) => async (dispatch: Dispatch<PayloadAction>) => {
+    dispatch(startLoading())
+    const editorId = dataview.editorId
+    await dataviewsClient.deleteDataview(dataview)
+    dispatch(deleteDataview({ editorId }))
+    dispatch(completeLoading())
+  }
+
+export const fetchDataset =
+  ({ editorId, datasetId }: { editorId: number; datasetId: string }) =>
+  async (dispatch: any) => {
+    try {
+      const dataset = await GFWAPI.fetch<Dataset>(`/v1/datasets/${datasetId}?include=endpoints`)
+      const defaultParams = [
+        {
+          dataset: dataset.id,
+          endpoint: 'track',
+          params: {
+            id: '46df37738-8057-e7d4-f3f3-a9b44d52fe03',
+          },
+          query: {
+            binary: 'true',
+            fields: 'lonlat,timestamp',
+            format: 'valueArray',
+            endDate: '2020-01-01T00:00:00.000Z',
+            startDate: '2017-01-01T00:00:00.000Z',
+          },
+        },
+      ]
+      dispatch(setDataset({ editorId, dataset, defaultParams }))
+      dispatch(setDatasetEndpoint({ editorId, endpoint: 'track', dataset: dataset.id }))
+    } catch (e) {
+      console.warn(e)
+    }
+  }
 
 export const fetchResources = (dataviews: Dataview[]) => async (dispatch: any) => {
   const { resources, promises } = dataviewsClient.getResources(dataviews)

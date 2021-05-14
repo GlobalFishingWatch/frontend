@@ -29,11 +29,8 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
   const { apiEventStatus } = useClickedEventConnect()
   const { start, end } = useSelector(selectTimeRange)
   const { viewport } = useViewport()
-  const {
-    carrierLatest,
-    carrierLatestStatus,
-    dispatchFetchLatestCarrier,
-  } = useCarrierLatestConnect()
+  const { carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier } =
+    useCarrierLatestConnect()
 
   useEffect(() => {
     if (!carrierLatest) {

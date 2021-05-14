@@ -1,7 +1,6 @@
 import { AnyLayer, Layer, CirclePaint, LinePaint, FillPaint } from '@globalfishingwatch/mapbox-gl'
 import { Type, ContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
-import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
 import LAYERS, { HIGHLIGHT_SUFIX } from './context-layers'
 import {
@@ -89,7 +88,6 @@ class ContextGenerator {
         'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
         layout: {
           ...baseLayer.layout,
-          visibility: isConfigVisible(config),
         },
         paint,
         metadata: {

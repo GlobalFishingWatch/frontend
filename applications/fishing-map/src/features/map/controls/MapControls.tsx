@@ -16,7 +16,7 @@ import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-are
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
-import Rulers from 'features/map/controls/Rulers'
+import Rulers from 'features/map/rulers/Rulers'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
@@ -24,6 +24,7 @@ import setInlineStyles from 'utils/dom'
 import { MapCoordinates } from 'types'
 import { toFixed } from 'utils/shared'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 import { isPrintSupported } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
@@ -62,15 +63,11 @@ const MapControls = ({
   const [modalOpen, setModalOpen] = useState(false)
   const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
+  const { dispatchQueryParams } = useLocationConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const domElement = useRef<HTMLElement>()
-  const {
-    loading,
-    downloadImage,
-    previewImage,
-    previewImageLoading,
-    generatePreviewImage,
-  } = useDownloadDomElementAsImage(domElement.current, false)
+  const { loading, downloadImage, previewImage, previewImageLoading, generatePreviewImage } =
+    useDownloadDomElementAsImage(domElement.current, false)
 
   useEffect(() => {
     if (!domElement.current) {
@@ -100,16 +97,19 @@ const MapControls = ({
   }, [latitude, longitude, setMapCoordinates, zoom])
 
   const onScreenshotClick = useCallback(() => {
-    if (domElement.current) {
-      domElement.current.classList.add('printing')
-      setInlineStyles(domElement.current)
-      // leave some time to apply the styles
-      setTimeout(() => {
-        generatePreviewImage()
-        setModalOpen(true)
-      }, 100)
-    }
-  }, [generatePreviewImage])
+    dispatchQueryParams({ sidebarOpen: true })
+    setTimeout(() => {
+      if (domElement.current) {
+        domElement.current.classList.add('printing')
+        setInlineStyles(domElement.current)
+        // leave some time to apply the styles
+        setTimeout(() => {
+          generatePreviewImage()
+          setModalOpen(true)
+        }, 100)
+      }
+    }, 100)
+  }, [dispatchQueryParams, generatePreviewImage])
 
   const handleModalClose = useCallback(() => {
     if (domElement.current) {

@@ -5,7 +5,7 @@ import { selectTimeRange, selectTimebarVisualisation } from 'features/app/app.se
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveActivityDataviews,
-  selectActiveVesselsDataviews,
+  selectActiveTrackDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { setStaticTime, selectHasChangedSettingsOnce, changeSettings } from './timebar.slice'
 
@@ -30,7 +30,7 @@ export const useTimerangeConnect = () => {
 export const useTimebarVisualisation = () => {
   const dispatch = useDispatch()
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
-  const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
+  const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
 
@@ -50,28 +50,28 @@ export const useTimebarVisualisation = () => {
       // fallback to vessels if heatmap = 0 (only if at least 1 vessel is available)
       if (
         (!activeHeatmapDataviews || activeHeatmapDataviews.length === 0) &&
-        activeVesselDataviews?.length
+        activeTrackDataviews?.length
       ) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeHeatmapDataviews, activeVesselDataviews])
+  }, [activeHeatmapDataviews, activeTrackDataviews])
 
   useEffect(() => {
     if (timebarVisualisation !== TimebarVisualisations.Vessel) {
       // switch to vessel if track shown "for the first time"
-      if (!hasChangedSettingsOnce && activeVesselDataviews?.length) {
+      if (!hasChangedSettingsOnce && activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       }
     } else {
       // fallback to heatmap if vessel = 0
-      if (!activeVesselDataviews || activeVesselDataviews.length === 0) {
+      if (!activeTrackDataviews || activeTrackDataviews.length === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Heatmap, true)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeVesselDataviews, hasChangedSettingsOnce])
+  }, [activeTrackDataviews, hasChangedSettingsOnce])
 
   return { timebarVisualisation, dispatchTimebarVisualisation }
 }

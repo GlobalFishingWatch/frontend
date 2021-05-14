@@ -1,10 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DatasetTypes, Resource, TrackResourceData } from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import { geoJSONToSegments, Segment } from '@globalfishingwatch/data-transforms'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import {
+  selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
-  selectEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 
@@ -18,33 +19,34 @@ type TimebarTrack = {
   color: string
 }
 
-export const hasStaticHeatmapLayersActive = createSelector(
-  [selectEnvironmentalDataviews],
-  (staticHeatmapDataviews) => {
-    if (!staticHeatmapDataviews) return false
-    return staticHeatmapDataviews.some((d) => d.config?.visible === true)
-  }
-)
 export const selectTracksData = createSelector(
-  [selectActiveVesselsDataviews, selectResources],
+  [selectActiveTrackDataviews, selectResources],
   (trackDataviews, resources) => {
     if (!trackDataviews || !resources) return
 
     const tracksSegments: TimebarTrack[] = trackDataviews.flatMap((dataview) => {
-      const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+      const { url } = resolveDataviewDatasetResource(dataview, [
+        DatasetTypes.Tracks,
+        DatasetTypes.UserTracks,
+      ])
       if (!url) return []
       const track = resources[url] as Resource<TrackResourceData>
       if (!track?.data) return []
 
-      const trackSegments: TimebarTrackSegment[] = track.data?.map((segment) => {
+      const segments = (track.data as any).features
+        ? geoJSONToSegments(track.data as any)
+        : (track?.data as Segment[])
+
+      const trackSegments: TimebarTrackSegment[] = segments.map((segment) => {
         return {
-          start: segment[0].timestamp || 0,
-          end: segment[segment.length - 1].timestamp || 0,
+          start: Math.min(...segment.map((p) => p.timestamp || Number.POSITIVE_INFINITY)),
+          end: Math.max(...segment.map((p) => p.timestamp || Number.NEGATIVE_INFINITY)),
         }
       })
       return {
         segments: trackSegments,
         color: dataview.config?.color || '',
+        segmentsOffsetY: track.datasetType === DatasetTypes.UserTracks,
       }
     })
 
@@ -54,10 +56,10 @@ export const selectTracksData = createSelector(
 
 export const selectTracksGraphs = createSelector(
   [selectActiveVesselsDataviews, selectTimebarGraph, selectResources],
-  (trackDataviews, timebarGraph, resources) => {
-    if (!trackDataviews || trackDataviews.length > 2 || !resources) return
+  (vesselDataviews, timebarGraph, resources) => {
+    if (!vesselDataviews || vesselDataviews.length > 2 || !resources) return
 
-    const graphs = trackDataviews.flatMap((dataview) => {
+    const graphs = vesselDataviews.flatMap((dataview) => {
       const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       if (!url) return []
       const track = resources[url] as Resource<TrackResourceData>

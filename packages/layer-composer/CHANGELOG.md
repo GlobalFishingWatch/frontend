@@ -1,5 +1,71 @@
 # @globalfishingwatch/layer-composer
 
+## 6.1.3
+
+### Patch Changes
+
+- 6b374674: Fishing map/minor fixes
+
+## 6.1.2
+
+### Patch Changes
+
+- d43610ba: Breaks fixes
+
+## 6.1.1
+
+### Patch Changes
+
+- b87943a6: Fishing map/environment fixes
+
+## 6.1.0
+
+### Minor Changes
+
+- 1050379b: legends loading and moved to root metadata
+
+## 6.0.4
+
+### Patch Changes
+
+- abdd6709: Fix default color ramp
+
+## 6.0.3
+
+### Patch Changes
+
+- 67fdfec5: fix color ramps
+
+## 6.0.2
+
+### Patch Changes
+
+- cfae2b4b: fix crash when no sublayers present
+
+## 6.0.1
+
+### Patch Changes
+
+- fix tiles api url
+
+## 6.0.0
+
+### Major Changes
+
+- 5d252a2d: buckets from api and dynamic bivariate
+
+## 5.3.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/data-transforms@1.2.0
+  - @globalfishingwatch/fourwings-aggregate@3.1.1
+
 ## 5.2.5
 
 ### Patch Changes

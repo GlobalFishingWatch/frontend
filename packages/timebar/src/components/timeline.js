@@ -16,6 +16,7 @@ import {
   stickToClosestUnit,
 } from '../utils/internal-utils'
 import { EVENT_SOURCE } from '../constants'
+import { getLast30Days } from '../utils'
 import Bookmark from './bookmark'
 import TimelineUnits from './timeline-units'
 import Handler from './timeline-handler'
@@ -150,7 +151,7 @@ class Timeline extends PureComponent {
     if (this.state.outerDrag === true) {
       const { dragging, innerStartPx, innerEndPx, outerWidth, handlerMouseX } = this.state
       const { start, end, absoluteStart, absoluteEnd, onChange } = this.props
-      // console.log(progress);
+
       const deltaPxRatio =
         dragging === DRAG_START
           ? (innerStartPx - handlerMouseX) / innerStartPx
@@ -309,6 +310,12 @@ class Timeline extends PureComponent {
     })
   }
 
+  onLast30DaysClick() {
+    const { onChange } = this.props
+    const { start, end } = getLast30Days()
+    onChange(start, end)
+  }
+
   render() {
     const {
       labels = {},
@@ -346,6 +353,8 @@ class Timeline extends PureComponent {
     const svgTransform = this.getSvgTransform(overallScale, start, end, innerWidth, innerStartPx)
 
     const lastUpdatePosition = this.outerScale(new Date(absoluteEnd))
+    const isInTheFuture = new Date(start) > Date.now()
+
     return (
       <TimelineContext.Provider
         value={{
@@ -475,6 +484,17 @@ class Timeline extends PureComponent {
                 </animated.div>
               )}
             </Spring>
+          )}
+          {isInTheFuture && (
+            <div className={styles.last30Days}>
+              <button
+                onClick={() => {
+                  this.onLast30DaysClick()
+                }}
+              >
+                ↩︎ {labels.timerange.last30days}
+              </button>
+            </div>
           )}
         </div>
       </TimelineContext.Provider>

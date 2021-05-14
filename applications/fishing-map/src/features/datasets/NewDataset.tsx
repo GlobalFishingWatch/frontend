@@ -1,261 +1,61 @@
-import React, { useState, useCallback } from 'react'
-import cx from 'classnames'
-import { useDropzone } from 'react-dropzone'
+import React, { useState, useCallback, Fragment } from 'react'
+import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import lowerCase from 'lodash/lowerCase'
 import { useSelector } from 'react-redux'
-import type { FeatureCollectionWithFilename } from 'shpjs'
-import InputText from '@globalfishingwatch/ui-components/dist/input-text'
+import { parse as parseCSV } from 'papaparse'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import Select from '@globalfishingwatch/ui-components/dist/select'
 import {
   AnyDatasetConfiguration,
   DatasetCategory,
+  DatasetConfiguration,
+  DatasetGeometryType,
   DatasetTypes,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
-import { ReactComponent as FilesIcon } from 'assets/icons/files-supported.svg'
+import {
+  checkRecordValidity,
+  csvToTrackSegments,
+  guessColumns,
+  segmentsToGeoJSON,
+} from '@globalfishingwatch/data-transforms'
 import { capitalize } from 'utils/shared'
 import { SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { readBlobAs } from 'utils/files'
-import { useDatasetsAPI, useDatasetModalConnect, useNewDatasetConnect } from './datasets.hook'
+import {
+  useDatasetsAPI,
+  useDatasetModalConnect,
+  useAddDataviewFromDatasetToWorkspace,
+} from './datasets.hook'
 import styles from './NewDataset.module.css'
-
-const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection) => {
-  if (!geojson?.features) return []
-  const uniqueProperties = Object.keys(
-    geojson.features.reduce(function (acc, { properties }) {
-      return { ...acc, ...properties }
-    }, {})
-  )
-  return uniqueProperties
-}
-
-const getPropertyRangeValuesFromGeojson = (
-  geojson: GeoJSON.FeatureCollection,
-  property: string
-) => {
-  if (!geojson?.features) return
-  const propertyRange = geojson.features.reduce(
-    function (acc, { properties }) {
-      const value = properties?.[property]
-      if (!value) return acc
-      return {
-        min: value < acc.min ? value : acc.min,
-        max: value > acc.max ? value : acc.max,
-      }
-    },
-    { min: 0, max: 0 }
-  )
-  return propertyRange
-}
-
-interface DatasetConfigProps {
-  className?: string
-  datasetCategory: DatasetCategory
-  onDatasetFieldChange: (field: DatasetMetadata | AnyDatasetConfiguration) => void
-  fileData: FeatureCollectionWithFilename
-  metadata: DatasetMetadata
-}
-
-const DatasetConfig: React.FC<DatasetConfigProps> = (props) => {
-  const { metadata, fileData, className = '', datasetCategory, onDatasetFieldChange } = props
-  const { t } = useTranslation()
-  const geojsonProperties = extractPropertiesFromGeojson(fileData)
-  const geojsonPropertiesOptions = geojsonProperties.map((property) => ({
-    id: property,
-    label: capitalize(property),
-  }))
-  const { min, max } =
-    (metadata.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange || {}
-  return (
-    <div className={cx(styles.datasetConfig, className)}>
-      <InputText
-        inputSize="small"
-        value={metadata.name}
-        label={t('common.name', 'Name')}
-        className={styles.input}
-        onChange={(e) => onDatasetFieldChange({ name: e.target.value })}
-      />
-      <InputText
-        inputSize="small"
-        label={t('common.description', 'Description')}
-        className={styles.input}
-        onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
-      />
-      {/*
-      <Select
-        label={t('dataset.typeOfFeatures', 'Type of features')}
-        options={[]}
-        selectedOption={undefined}
-        onSelect={(selected) => {
-          console.log('selected', selected)
-        }}
-        onRemove={(removed) => {
-          console.log('removed', removed)
-        }}
-        direction="top"
-      />
-      <Select
-        label={t('dataset.timeField', 'Time field')}
-        options={[]}
-        selectedOption={undefined}
-        onSelect={(selected) => {
-          console.log('selected', selected)
-        }}
-        onRemove={(removed) => {
-          console.log('removed', removed)
-        }}
-        direction="top"
-      /> */}
-
-      {datasetCategory === DatasetCategory.Context && (
-        <Select
-          label={t('dataset.featuresNameField', 'Features name field')}
-          placeholder={t('selects.placeholder', 'Select an option')}
-          options={geojsonPropertiesOptions}
-          selectedOption={geojsonPropertiesOptions.find(
-            ({ id }) => id === metadata.configuration?.propertyToInclude
-          )}
-          onSelect={(selected) => {
-            onDatasetFieldChange({ propertyToInclude: selected.id })
-          }}
-          onRemove={() => {
-            onDatasetFieldChange({ propertyToInclude: undefined })
-          }}
-        />
-      )}
-      {datasetCategory === DatasetCategory.Environment && (
-        <div className={styles.row}>
-          <label className={styles.selectLabel}>
-            {t('dataset.colorByValue', 'Color features by value')}
-          </label>
-          <Select
-            className={styles.selectShort}
-            placeholder={t('selects.placeholder', 'Select an option')}
-            containerClassName={styles.selectContainer}
-            options={geojsonPropertiesOptions}
-            selectedOption={geojsonPropertiesOptions.find(
-              ({ id }) => id === metadata.configuration?.propertyToInclude
-            )}
-            onSelect={(selected) => {
-              // TODO: pre-populate min and max values depending on selection
-              onDatasetFieldChange({ propertyToInclude: selected.id })
-              const propertyRange = getPropertyRangeValuesFromGeojson(fileData, selected.id)
-              if (propertyRange) {
-                onDatasetFieldChange({
-                  propertyToIncludeRange: {
-                    min: propertyRange.min,
-                    max: propertyRange.max,
-                  },
-                })
-              }
-            }}
-            onRemove={() => {
-              onDatasetFieldChange({ propertyToInclude: undefined })
-            }}
-          />
-          <InputText
-            inputSize="small"
-            type="number"
-            step="0.1"
-            value={min}
-            placeholder={t('common.min', 'Min')}
-            className={cx(styles.shortInput, styles.noLabelInput)}
-            onChange={(e) =>
-              onDatasetFieldChange({
-                propertyToIncludeRange: {
-                  min: e.target.value && parseFloat(e.target.value),
-                  max:
-                    (metadata.configuration as EnviromentalDatasetConfiguration)
-                      ?.propertyToIncludeRange?.max || parseFloat(e.target.value),
-                },
-              })
-            }
-          />
-          <InputText
-            inputSize="small"
-            type="number"
-            step="0.1"
-            placeholder={t('common.max', 'Max')}
-            value={max}
-            className={cx(styles.shortInput, styles.noLabelInput)}
-            onChange={(e) =>
-              onDatasetFieldChange({
-                propertyToIncludeRange: {
-                  min: min || 0,
-                  max: e.target.value && parseFloat(e.target.value),
-                },
-              })
-            }
-          />
-        </div>
-      )}
-    </div>
-  )
-}
-
-interface DatasetFileProps {
-  className?: string
-  onFileLoaded: (fileInfo: File) => void
-}
-
-const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, className = '' }) => {
-  const { t } = useTranslation()
-  const onDropAccepted = useCallback(
-    (files) => {
-      onFileLoaded(files[0])
-    },
-    [onFileLoaded]
-  )
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
-    accept: '.zip, .json, .geojson',
-    onDropAccepted,
-  })
-  return (
-    <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
-      <FilesIcon />
-      <input {...getInputProps()} />
-      {acceptedFiles.length ? (
-        <p className={styles.fileText}>
-          {t('dataset.file', 'File')}: {acceptedFiles[0].name}
-        </p>
-      ) : isDragActive ? (
-        <p className={styles.fileText}>{t('dataset.dragActive', 'Drop the file here ...')}</p>
-      ) : (
-        <p className={styles.fileText}>
-          {t('dataset.dragFilePlaceholder', {
-            defaultValue:
-              'Drag and drop a compressed shapefile or geojson here or click to select it',
-            interpolation: { escapeValue: false, useRawValueToEscape: true },
-          })}
-        </p>
-      )}
-      {fileRejections.length > 0 && (
-        <p className={cx(styles.fileText, styles.warning)}>
-          {t('dataset.fileNotAllowed', '(Only .zip or .json files are allowed)')}
-        </p>
-      )}
-    </div>
-  )
-}
+import DatasetFile from './DatasetFile'
+import DatasetConfig from './DatasetConfig'
+import DatasetTypeSelect from './DatasetTypeSelect'
 
 export type DatasetMetadata = {
   name: string
   description?: string
-  type: DatasetTypes.Context
+  category: DatasetCategory
+  type: DatasetTypes
   configuration?: AnyDatasetConfiguration
+  fields?: string[]
+  guessedFields?: Record<string, string>
 }
+
+export type CSV = Record<string, any>[]
 
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
   const { datasetModal, datasetCategory, dispatchDatasetModal } = useDatasetModalConnect()
-  const { addNewDatasetToWorkspace } = useNewDatasetConnect()
+  const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
+  const [datasetGeometryType, setDatasetGeometryType] =
+    useState<DatasetGeometryType | undefined>(undefined)
+  const [datasetGeometryTypeConfirmed, setDatasetGeometryTypeConfirmed] = useState<boolean>(false)
   const [file, setFile] = useState<File | undefined>()
-  const [fileData, setFileData] = useState<FeatureCollectionWithFilename | undefined>()
+  const [fileData, setFileData] = useState<FeatureCollectionWithFilename | CSV | undefined>()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [metadata, setMetadata] = useState<DatasetMetadata | undefined>()
@@ -263,64 +63,95 @@ function NewDataset(): React.ReactElement {
   const { dispatchCreateDataset } = useDatasetsAPI()
 
   const onFileLoaded = useCallback(
-    async (file: File) => {
+    async (file: File, type: DatasetGeometryType | undefined) => {
       setLoading(true)
       setError('')
-      const isZip =
-        file.type === 'application/zip' ||
-        file.type === 'application/x-zip-compressed' ||
-        file.type === 'application/octet-stream' ||
-        file.type === 'multipart/x-zip'
-      const isGeojson =
-        (!isZip && file.type === 'application/json') || (!isZip && file.name.includes('.geojson'))
       const name =
         file.name.lastIndexOf('.') > 0 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name
-      if (isGeojson && file.name.includes('.geojson')) {
-        const blob = file.slice(0, file.size, 'application/json')
-        const fileAsJson = new File([blob], `${name}.json`, { type: 'application/json' })
-        setFile(fileAsJson)
-      } else {
-        setFile(file)
-      }
 
-      let geojson: FeatureCollectionWithFilename | undefined = undefined
-      if (isZip) {
-        try {
-          const shpjs = await import('shpjs').then((module) => module.default)
-          const fileData = await readBlobAs(file, 'arrayBuffer')
-          // TODO support multiple files in shapefile
-          geojson = (await shpjs(fileData)) as FeatureCollectionWithFilename
-        } catch (e) {
-          console.warn('Error reading file:', e)
+      const metadataName = capitalize(lowerCase(name))
+
+      if (!type || type === 'polygons') {
+        const isZip =
+          file.type === 'application/zip' ||
+          file.type === 'application/x-zip-compressed' ||
+          file.type === 'application/octet-stream' ||
+          file.type === 'multipart/x-zip'
+        const isGeojson =
+          (!isZip && file.type === 'application/json') || (!isZip && file.name.includes('.geojson'))
+
+        if (isGeojson && file.name.includes('.geojson')) {
+          const blob = file.slice(0, file.size, 'application/json')
+          const fileAsJson = new File([blob], `${name}.json`, { type: 'application/json' })
+          setFile(fileAsJson)
+        } else {
+          setFile(file)
         }
-      } else {
+
+        let geojson: FeatureCollectionWithFilename | undefined = undefined
+        if (isZip) {
+          try {
+            const shpjs = await import('shpjs').then((module) => module.default)
+            const fileData = await readBlobAs(file, 'arrayBuffer')
+            // TODO support multiple files in shapefile
+            geojson = (await shpjs(fileData)) as FeatureCollectionWithFilename
+          } catch (e) {
+            console.warn('Error reading file:', e)
+          }
+        } else {
+          const fileData = await readBlobAs(file, 'text')
+          try {
+            geojson = JSON.parse(fileData)
+          } catch (e) {
+            console.warn('Error reading file:', e)
+          }
+        }
+        if (geojson !== undefined) {
+          setFileData(geojson)
+          setMetadata((metadata) => ({
+            ...metadata,
+            name: metadataName,
+            type: DatasetTypes.Context,
+            category: datasetCategory,
+            configuration: {
+              geometryType: datasetGeometryType,
+              // TODO when supporting multiple files upload
+              // ...(geojson?.fileName && { file: geojson.fileName }),
+              ...(isGeojson && { format: 'geojson' }),
+            } as DatasetConfiguration,
+          }))
+        } else {
+          setFileData(undefined)
+          setError(t('errors.datasetNotValid', 'It seems to be something wrong with your file'))
+        }
+      } else if (type === 'tracks') {
+        setFile(file)
         const fileData = await readBlobAs(file, 'text')
-        try {
-          geojson = JSON.parse(fileData)
-        } catch (e) {
-          console.warn('Error reading file:', e)
-        }
-      }
-      if (geojson !== undefined) {
-        setFileData(geojson)
-        setMetadata((metadata) => ({
+        const { data, meta } = parseCSV(fileData, {
+          dynamicTyping: true,
+          header: true,
+          skipEmptyLines: true,
+        })
+        setFileData(data as CSV)
+        const guessedColumns = guessColumns(meta?.fields)
+        setMetadata({
           ...metadata,
-          name: capitalize(lowerCase(name)),
-          type: DatasetTypes.Context,
+          name: metadataName,
+          type: DatasetTypes.UserTracks,
           category: datasetCategory,
+          fields: meta?.fields,
+          guessedFields: guessedColumns,
           configuration: {
-            // TODO when supporting multiple files upload
-            // ...(geojson?.fileName && { file: geojson.fileName }),
-            ...(isGeojson && { format: 'geojson' }),
-          },
-        }))
-      } else {
-        setFileData(undefined)
-        setError(t('errors.datasetNotValid', 'It seems to be something wrong with your file'))
+            latitude: guessedColumns.latitude,
+            longitude: guessedColumns.longitude,
+            timestamp: guessedColumns.timestamp,
+            geometryType: datasetGeometryType,
+          } as DatasetConfiguration,
+        })
       }
       setLoading(false)
     },
-    [t, datasetCategory]
+    [datasetCategory, t, metadata, datasetGeometryType]
   )
 
   const onDatasetFieldChange = (field: DatasetMetadata | AnyDatasetConfiguration) => {
@@ -343,6 +174,23 @@ function NewDataset(): React.ReactElement {
       if (min && max && min >= max) {
         error = t('errors.invalidRange', 'Min has to be lower than max value')
       }
+      if (meta?.category === DatasetCategory.Environment && datasetGeometryType === 'tracks') {
+        if (
+          fileData &&
+          newMetadata.configuration?.latitude &&
+          newMetadata.configuration?.longitude &&
+          newMetadata.configuration?.timestamp
+        ) {
+          const errors = checkRecordValidity({
+            record: (fileData as CSV)[0],
+            ...newMetadata.configuration,
+          } as any)
+          if (errors.length) {
+            const fields = errors.map((error) => t(`common.${error}` as any, error)).join(',')
+            error = t('errors.fields', { fields, defaultValue: `Error with fields: ${fields}` })
+          }
+        }
+      }
       setError(error)
       return newMetadata
     })
@@ -350,16 +198,77 @@ function NewDataset(): React.ReactElement {
 
   const onConfirmClick = async () => {
     if (file) {
+      let validityError
+      let userTrackGeoJSONFile
+      if (
+        metadata?.category === DatasetCategory.Environment &&
+        datasetGeometryType === 'polygons'
+      ) {
+        if (!metadata?.configuration?.propertyToInclude) {
+          validityError = t('dataset.requiredFields', {
+            fields: 'value',
+            defaultValue: 'Required field value',
+          }) as string
+        }
+      } else if (
+        metadata?.category === DatasetCategory.Environment &&
+        datasetGeometryType === 'tracks'
+      ) {
+        if (
+          !metadata.configuration?.latitude ||
+          !metadata.configuration?.longitude ||
+          !metadata.configuration?.timestamp
+        ) {
+          const fields = ['latitude', 'longitude', 'timestamp'].map((f) =>
+            t(`common.${f}` as any, f)
+          )
+          validityError = t('dataset.requiredFields', {
+            fields,
+            defaultValue: `Required fields ${fields}`,
+          }) as string
+        } else {
+          const errors = checkRecordValidity({
+            record: (fileData as CSV)[0],
+            ...metadata.configuration,
+          } as any)
+          if (errors.length) {
+            const fields = errors.map((error) => t(`common.${error}` as any, error)).join(',')
+            validityError = t('errors.fields', {
+              fields,
+              defaultValue: `Error with fields: ${fields}`,
+            }) as string
+          } else {
+            const segments = csvToTrackSegments({
+              records: fileData as CSV,
+              ...(metadata.configuration as any),
+            })
+            const geoJSON = segmentsToGeoJSON(segments)
+            userTrackGeoJSONFile = new File([JSON.stringify(geoJSON)], 'file.json', {
+              type: 'application/json',
+            })
+          }
+        }
+      }
+      if (validityError) {
+        setError(validityError)
+        return
+      }
+
       setLoading(true)
-      const { payload, error } = await dispatchCreateDataset({ dataset: { ...metadata }, file })
+      const { payload, error: createDatasetError } = await dispatchCreateDataset({
+        dataset: { ...metadata },
+        file: userTrackGeoJSONFile || file,
+      })
       setLoading(false)
-      if (error) {
+
+      if (createDatasetError) {
         setError(
           `${t('errors.generic', 'Something went wrong, try again or contact:')} ${SUPPORT_EMAIL}`
         )
       } else if (payload) {
         if (locationType === 'HOME' || locationType === 'WORKSPACE') {
-          addNewDatasetToWorkspace(payload)
+          const dataset = { ...payload }
+          addDataviewFromDatasetToWorkspace(dataset)
         }
         onClose()
       }
@@ -371,7 +280,20 @@ function NewDataset(): React.ReactElement {
     setLoading(false)
     setMetadata(undefined)
     dispatchDatasetModal(undefined)
+    setDatasetGeometryType(undefined)
+    setDatasetGeometryTypeConfirmed(false)
   }
+
+  const onDatasetTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDatasetGeometryType(e.target.value as DatasetGeometryType)
+  }
+
+  const onConfirmDatasetCategoryClick = () => {
+    setDatasetGeometryTypeConfirmed(true)
+  }
+
+  const promptForGeometryType =
+    datasetGeometryTypeConfirmed === false && datasetCategory === DatasetCategory.Environment
 
   return (
     <Modal
@@ -385,14 +307,28 @@ function NewDataset(): React.ReactElement {
       onClose={onClose}
     >
       <div className={styles.modalContent}>
-        <DatasetFile onFileLoaded={onFileLoaded} />
-        {fileData && metadata && (
-          <DatasetConfig
-            fileData={fileData}
-            metadata={metadata}
-            datasetCategory={datasetCategory}
-            onDatasetFieldChange={onDatasetFieldChange}
-          />
+        {promptForGeometryType ? (
+          <Fragment>
+            <DatasetTypeSelect
+              onDatasetTypeChange={onDatasetTypeChange}
+              currentType={datasetGeometryType}
+            />
+          </Fragment>
+        ) : (
+          <Fragment>
+            {/* eslint-disable-next-line  */}
+            <DatasetFile onFileLoaded={onFileLoaded} type={datasetGeometryType} />
+            {fileData && metadata && (
+              <DatasetConfig
+                fileData={fileData as FeatureCollectionWithFilename}
+                metadata={metadata}
+                datasetCategory={datasetCategory}
+                // eslint-disable-next-line
+                datasetGeometryType={datasetGeometryType!}
+                onDatasetFieldChange={onDatasetFieldChange}
+              />
+            )}
+          </Fragment>
         )}
       </div>
       <div className={styles.modalFooter}>
@@ -404,14 +340,24 @@ function NewDataset(): React.ReactElement {
             </a>
           </span>
         </div>
-        <Button
-          disabled={!file || !metadata?.name}
-          className={styles.saveBtn}
-          onClick={onConfirmClick}
-          loading={loading}
-        >
-          {t('common.confirm', 'Confirm') as string}
-        </Button>
+        {promptForGeometryType ? (
+          <Button
+            disabled={!datasetGeometryType}
+            className={styles.saveBtn}
+            onClick={onConfirmDatasetCategoryClick}
+          >
+            {t('common.confirm', 'Confirm') as string}
+          </Button>
+        ) : (
+          <Button
+            disabled={!file || !metadata?.name}
+            className={styles.saveBtn}
+            onClick={onConfirmClick}
+            loading={loading}
+          >
+            {t('common.confirm', 'Confirm') as string}
+          </Button>
+        )}
       </div>
     </Modal>
   )

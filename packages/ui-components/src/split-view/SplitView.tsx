@@ -1,6 +1,8 @@
-import React, { useState, useCallback, useEffect, memo } from 'react'
+import React, { useState, useCallback, useEffect, memo, useMemo } from 'react'
 import cx from 'classnames'
+import useSmallScreen from '@globalfishingwatch/react-hooks/dist/use-small-screen'
 import Icon from '../icon'
+import Choice from '../choice'
 import styles from './SplitView.module.css'
 
 interface SplitViewProps {
@@ -9,6 +11,8 @@ interface SplitViewProps {
   asideWidth?: string
   aside: React.ReactNode
   main: React.ReactNode
+  showAsideLabel?: string
+  showMainLabel?: string
   className?: string
 }
 
@@ -19,9 +23,25 @@ function SplitView(props: SplitViewProps) {
     aside = null,
     main = null,
     asideWidth = '32rem',
+    showAsideLabel = 'Show aside',
+    showMainLabel = 'Show main',
     className,
   } = props
+  const panelOptions = useMemo(
+    () => [
+      {
+        id: 'aside',
+        title: showAsideLabel,
+      },
+      {
+        id: 'main',
+        title: showMainLabel,
+      },
+    ],
+    [showAsideLabel, showMainLabel]
+  )
   const [internalOpen, setInternalOpen] = useState<boolean>(isOpen)
+  const isSmallScreen = useSmallScreen()
 
   const handleClick = useCallback(
     (e) => {
@@ -39,10 +59,21 @@ function SplitView(props: SplitViewProps) {
 
   return (
     <div className={cx(styles.container, { [styles.isOpen]: internalOpen }, className)}>
-      <aside className={styles.aside} style={{ width: asideWidth }}>
-        <button className={cx('print-hidden', styles.toggleBtn)} onClick={handleClick}>
-          <Icon icon={internalOpen ? 'arrow-left' : 'arrow-right'} />
-        </button>
+      <aside className={styles.aside} style={isSmallScreen ? {} : { width: asideWidth }}>
+        {isSmallScreen ? (
+          <div className={cx('print-hidden', styles.toggleChoice)}>
+            <Choice
+              size="small"
+              options={panelOptions}
+              activeOption={internalOpen ? panelOptions[0].id : panelOptions[1].id}
+              onOptionClick={handleClick}
+            />
+          </div>
+        ) : (
+          <button className={cx('print-hidden', styles.toggleBtn)} onClick={handleClick}>
+            <Icon icon={internalOpen ? 'arrow-left' : 'arrow-right'} />
+          </button>
+        )}
         {aside}
       </aside>
       <main style={{ left: isOpen ? asideWidth : 0 }} className={styles.main}>

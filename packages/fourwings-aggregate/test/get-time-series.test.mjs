@@ -75,8 +75,8 @@ for (var i = 0; i < 20; i++) {
   const t = performance.now()
   const timeseries = getTimeSeries(geojson.interactive.features, 2, 15340)
   const delta = performance.now() - t
-  // console.log(delta, timeseries)
+  // console.info(delta, timeseries)
   sum += delta
 }
 
-console.log('avg:', sum / 20)
+console.info('avg:', sum / 20)

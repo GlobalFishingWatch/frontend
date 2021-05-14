@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, Fragment } from 'react'
+import React, { useState, useEffect, useCallback, useRef, Fragment, useMemo } from 'react'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
@@ -8,7 +8,7 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
-import { Choice, Icon } from '@globalfishingwatch/ui-components'
+import { Button, Choice, Icon } from '@globalfishingwatch/ui-components'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -30,6 +30,7 @@ import {
   checkSearchFiltersEnabled,
   resetFilters,
   setSuggestionClicked,
+  SearchType,
 } from './search.slice'
 import styles from './Search.module.css'
 import SearchFilters from './SearchFilters'
@@ -39,38 +40,52 @@ import SearchPlaceholder, {
   SearchNoResultsState,
   SearchEmptyState,
 } from './SearchPlaceholders'
-import { isSearchAllowed, selectAllowedVesselsDatasets } from './search.selectors'
+import {
+  isBasicSearchAllowed,
+  isAdvancedSearchAllowed,
+  selectBasicSearchDatasets,
+  selectAdvancedSearchDatasets,
+} from './search.selectors'
 
 function Search() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const urlQuery = useSelector(selectSearchQuery)
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const { searchFilters } = useSearchFiltersConnect()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 600)
   const { dispatchQueryParams } = useLocationConnect()
-  const searchDatasets = useSelector(selectAllowedVesselsDatasets)
-  const searchAllowed = useSelector(isSearchAllowed)
+  const basicSearchAllowed = useSelector(isBasicSearchAllowed)
+  const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
+  const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
 
-  const searchOptions = [
-    {
-      id: 'basic',
-      title: t('search.basic', 'Basic'),
-    },
-    {
-      id: 'advanced',
-      title: t('search.advanced', 'Advanced'),
-    },
-  ]
+  const searchOptions = useMemo(() => {
+    return [
+      {
+        id: 'basic' as SearchType,
+        title: t('search.basic', 'Basic'),
+        disabled: !basicSearchAllowed,
+      },
+      {
+        id: 'advanced' as SearchType,
+        title: t('search.advanced', 'Advanced'),
+        disabled: !advancedSearchAllowed,
+      },
+    ]
+  }, [advancedSearchAllowed, basicSearchAllowed, t])
 
-  const [activeSearchOption, setActiveSearchOption] = useState<string>(
+  const [activeSearchOption, setActiveSearchOption] = useState<SearchType>(
     hasSearchFilters ? searchOptions[1].id : searchOptions[0].id
+  )
+
+  const searchDatasets = useSelector(
+    activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
   )
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -152,14 +167,27 @@ function Search() {
     }
   }
 
-  const onSelectionChange = (selection: VesselWithDatasets | null) => {
-    if (selection && selection.dataset && selection.trackDatasetId) {
-      const vesselDataviewInstance = getVesselDataviewInstance(selection, {
-        trackDatasetId: selection.trackDatasetId as string,
-        infoDatasetId: selection.dataset.id,
-      })
-      upsertDataviewInstance(vesselDataviewInstance)
+  const onSelect = (selection: VesselWithDatasets | null) => {
+    if (!selection) return
+    if (vesselsSelected.includes(selection)) {
+      setVesselsSelected(vesselsSelected.filter((vessel) => vessel !== selection))
+      return
     }
+    if (selection && selection.dataset && selection.trackDatasetId) {
+      setVesselsSelected([...vesselsSelected, selection])
+    }
+  }
+
+  const onConfirmSelection = () => {
+    const instances = vesselsSelected.map((vessel) => {
+      const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
+        trackDatasetId: vessel.trackDatasetId as string,
+        infoDatasetId: vessel.dataset.id,
+      })
+      return vesselDataviewInstance
+    })
+    addNewDataviewInstances(instances)
+    onCloseClick()
   }
 
   const hasMoreResults =
@@ -171,7 +199,7 @@ function Search() {
     if (option.id === activeSearchOption && scrollRef.current) {
       scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
-      setActiveSearchOption(option.id)
+      setActiveSearchOption(option.id as SearchType)
     }
   }
 
@@ -184,13 +212,14 @@ function Search() {
   }
 
   return (
-    <Downshift onChange={onSelectionChange} itemToString={(item) => (item ? item.shipname : '')}>
+    <Downshift onSelect={onSelect} itemToString={(item) => (item ? item.shipname : '')}>
       {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, selectedItem }) => (
         <div className={styles.search}>
           <div className={styles.header}>
             <label className={styles.title}>{t('search.title', 'Search')}</label>
             <Choice
               options={searchOptions}
+              disabledTooltip={t('search.advancedDisabled')}
               activeOption={activeSearchOption}
               onOptionClick={onSearchOptionChange}
               size="small"
@@ -211,7 +240,7 @@ function Search() {
                 value={searchQuery}
                 label={t('search.mainQueryLabel', 'Name, IMO or MMSI')}
                 autoFocus
-                disabled={!searchAllowed}
+                disabled={!basicSearchAllowed}
                 className={styles.input}
                 type="search"
                 loading={
@@ -220,11 +249,13 @@ function Search() {
                 }
                 placeholder={t('search.placeholder', 'Type to search vessels')}
               />
-              {activeSearchOption === 'advanced' && <SearchFilters className={styles.filters} />}
+              {activeSearchOption === 'advanced' && searchDatasets && (
+                <SearchFilters className={styles.filters} datasets={searchDatasets} />
+              )}
             </div>
             {(searchStatus === AsyncReducerStatus.Loading ||
               searchStatus === AsyncReducerStatus.Aborted) &&
-            searchPagination.loading === false ? null : searchAllowed ? (
+            searchPagination.loading === false ? null : basicSearchAllowed ? (
               <Fragment>
                 <ul {...getMenuProps()} className={styles.searchResults}>
                   {searchQuery &&
@@ -259,12 +290,14 @@ function Search() {
                     const isInWorkspace = vesselDataviews?.some(
                       (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
                     )
+                    const isSelected = vesselsSelected?.some((vessel) => vessel.id === id)
                     return (
                       <li
                         {...getItemProps({ item: entry, index })}
                         className={cx(styles.searchResult, {
                           [styles.highlighted]: highlightedIndex === index,
-                          [styles.selected]: isInWorkspace,
+                          [styles.inWorkspace]: isInWorkspace,
+                          [styles.selected]: isSelected,
                         })}
                         key={id}
                       >
@@ -326,10 +359,19 @@ function Search() {
                               </div>
                             )}
                           </div>
+                          {isSelected && (
+                            <span className={styles.alreadyAddedMsg}>
+                              <Icon icon="tick" />
+                              {t('search.vesselSelected', 'Vessel selected')}
+                            </span>
+                          )}
                           {isInWorkspace && (
                             <span className={styles.alreadyAddedMsg}>
                               <Icon icon="tick" />
-                              {t('search.vesselAlreadyInWorksace', 'Vessel already in workspace')}
+                              {t(
+                                'search.vesselAlreadyInWorkspace',
+                                'This vessel is already in your workspace'
+                              )}
                             </span>
                           )}
                         </Fragment>
@@ -354,6 +396,23 @@ function Search() {
             ) : (
               <SearchNotAllowed />
             )}
+          </div>
+          <div className={cx(styles.footer, { [styles.hidden]: vesselsSelected.length === 0 })}>
+            {vesselsSelected.length > 1 && (
+              <Button
+                disabled
+                type="secondary"
+                tooltip={t('common.comingSoon', 'Coming Soon')}
+                className={styles.footerAction}
+              >
+                See as fleet
+              </Button>
+            )}
+            <Button className={styles.footerAction} onClick={onConfirmSelection}>
+              {vesselsSelected.length > 1
+                ? t('search.seeVessels', 'See vessels')
+                : t('search.seeVessel', 'See vessel')}
+            </Button>
           </div>
         </div>
       )}

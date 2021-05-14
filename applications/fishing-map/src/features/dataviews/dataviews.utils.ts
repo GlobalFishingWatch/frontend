@@ -1,8 +1,10 @@
-import { DataviewCategory, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
 import {
-  TrackColorBarOptions,
-  HeatmapColorBarOptions,
-} from '@globalfishingwatch/ui-components/dist/color-bar'
+  ColorCyclingType,
+  Dataset,
+  DataviewCategory,
+  DataviewInstance,
+  EndpointId,
+} from '@globalfishingwatch/api-types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   DEFAULT_ENVIRONMENT_DATAVIEW_ID,
@@ -10,6 +12,7 @@ import {
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_VESSEL_DATAVIEW_ID,
   DEFAULT_PRESENCE_DATAVIEW_ID,
+  DEFAULT_USER_TRACK_ID,
 } from 'data/workspaces'
 
 // used in workspaces with encounter events layers
@@ -42,56 +45,41 @@ export const getVesselDataviewInstance = (
     id: `${VESSEL_LAYER_PREFIX}${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
-      // TODO pick a not used color
-      color: TrackColorBarOptions[Math.floor(Math.random() * TrackColorBarOptions.length)].value,
+      colorCyclingType: 'line' as ColorCyclingType,
     },
     datasetsConfig,
   }
   return vesselDataviewInstance
 }
 
-export const getActivityDataviewInstance = (
-  usedRamps: string[] = []
-): DataviewInstance<Generators.Type> => {
-  const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamps.includes(option.id))
-  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : HeatmapColorBarOptions[0]
+export const getFishingDataviewInstance = (): DataviewInstance<Generators.Type> => {
   return {
     id: `fishing-${Date.now()}`,
     config: {
-      color: colorOption.value,
-      colorRamp: colorOption.id,
+      colorCyclingType: 'fill' as ColorCyclingType,
     },
     dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
   }
 }
 
-export const getPresenceDataviewInstance = (
-  usedRamps: string[] = []
-): DataviewInstance<Generators.Type> => {
-  const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamps.includes(option.id))
-  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : HeatmapColorBarOptions[0]
+export const getPresenceDataviewInstance = (): DataviewInstance<Generators.Type> => {
   return {
     id: `presence-${Date.now()}`,
     config: {
-      color: colorOption.value,
-      colorRamp: colorOption.id,
+      colorCyclingType: 'fill' as ColorCyclingType,
     },
     dataviewId: DEFAULT_PRESENCE_DATAVIEW_ID,
   }
 }
 
 export const getEnvironmentDataviewInstance = (
-  datasetId: string,
-  usedRamp: string[] = []
+  datasetId: string
 ): DataviewInstance<Generators.Type> => {
-  const notUsedOptions = HeatmapColorBarOptions.filter((option) => !usedRamp.includes(option.id))
-  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
   const environmentalDataviewInstance = {
     id: `${ENVIRONMENTAL_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Environment,
     config: {
-      color: colorOption.value,
-      colorRamp: colorOption.id,
+      colorCyclingType: 'fill' as ColorCyclingType,
     },
     dataviewId: DEFAULT_ENVIRONMENT_DATAVIEW_ID,
     datasetsConfig: [
@@ -105,17 +93,33 @@ export const getEnvironmentDataviewInstance = (
   return environmentalDataviewInstance
 }
 
+export const getUserTrackDataviewInstance = (dataset: Dataset) => {
+  const datasetsConfig = [
+    {
+      datasetId: dataset.id,
+      endpoint: EndpointId.UserTracks,
+      params: [{ id: 'id', value: dataset.id }],
+    },
+  ]
+  const dataviewInstance = {
+    id: `user-track-${dataset.id}`,
+    dataviewId: DEFAULT_USER_TRACK_ID,
+    config: {
+      colorCyclingType: 'line' as ColorCyclingType,
+    },
+    datasetsConfig,
+  }
+  return dataviewInstance
+}
+
 export const getContextDataviewInstance = (
-  datasetId: string,
-  usedColors: string[] = []
+  datasetId: string
 ): DataviewInstance<Generators.Type> => {
-  const notUsedOptions = TrackColorBarOptions.filter((option) => !usedColors.includes(option.value))
-  const colorOption = notUsedOptions?.length > 0 ? notUsedOptions[0] : TrackColorBarOptions[0]
   const contextDataviewInstance = {
     id: `${CONTEXT_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Context,
     config: {
-      color: colorOption.value,
+      colorCyclingType: 'line' as ColorCyclingType,
     },
     dataviewId: DEFAULT_CONTEXT_DATAVIEW_ID,
     datasetsConfig: [

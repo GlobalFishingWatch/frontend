@@ -1,6 +1,7 @@
 .popup {
   font: var(--font-S);
   pointer-events: none;
+  z-index: 2;
 }
 
 .popup.click {
@@ -18,7 +19,8 @@
   background: var(--color-white);
   color: var(--color-primary-blue);
   box-shadow: var(--box-shadow);
-  width: 32rem;
+  min-width: 32rem;
+  max-width: 40vw;
 }
 
 .popupSection {
@@ -67,8 +69,8 @@
 }
 
 .loading {
-  min-height: 4rem;
-  padding: var(--space-S);
+  height: 17.9rem;
+  padding: var(--space-XS);
 }
 
 .vesselsTable {
@@ -88,10 +90,14 @@
 .vesselRow {
   color: currentColor;
   width: 100%;
-  cursor: pointer;
   display: flex;
   justify-content: space-between;
   margin-bottom: var(--space-XS);
+  line-height: 1.3;
+}
+
+.vesselRow:not(:disabled) {
+  cursor: pointer;
 }
 
 .vesselRowLegend {
@@ -101,8 +107,7 @@
 .vesselName {
   flex: 1;
   text-align: left;
-  line-height: 1.3;
-  margin-right: var(--space-S);
+  margin-right: var(--space-M);
 }
 
 .vesselsMore {
@@ -198,6 +203,7 @@
   background-color: var(--color-primary-blue);
   color: rgba(var(--white-rgb), 0.8);
   opacity: 1;
+  border: var(--border-white);
 }
 
 :global(.mapboxgl-popup .mapboxgl-popup-close-button:hover) {

@@ -17,8 +17,10 @@ export type WorkspaceStateProperty =
   | 'timebarVisualisation'
   | 'timebarEvents'
   | 'timebarGraph'
-  | 'bivariate'
+  | 'bivariateDataviews'
   | 'version'
+  | 'activityCategory'
+
 export type WorkspaceParam =
   | WorkspaceViewportParam
   | WorkspaceTimeRangeParam
@@ -31,16 +33,20 @@ export type WorkspaceAnalysis = {
   sourceId: string
   bounds?: [number, number, number, number]
 }
+export type WorkspaceActivityCategory = 'fishing' | 'presence'
+export type BivariateDataviews = [string, string]
+
 export type WorkspaceState = {
   query?: string
+  version?: string
   sidebarOpen?: boolean
   analysis?: WorkspaceAnalysis
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   timebarVisualisation?: TimebarVisualisations
   timebarEvents?: TimebarEvents
   timebarGraph?: TimebarGraphs
-  bivariate?: boolean
-  version?: string
+  bivariateDataviews?: BivariateDataviews
+  activityCategory?: WorkspaceActivityCategory
 }
 export type QueryParams = Partial<WorkspaceViewport> & Partial<WorkspaceTimeRange> & WorkspaceState
 

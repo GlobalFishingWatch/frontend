@@ -106,7 +106,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
 
   const roleOptions = FEEDBACK_ROLE_IDS.map((roleId) => ({
     id: roleId,
-    label: t(`feedback.${roleId}` as any),
+    label: t(`feedback.role.${roleId}` as any),
   }))
 
   const onFieldChange = (field: keyof FeedbackData, value: string) => {

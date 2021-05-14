@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux'
 import type { Map } from '@globalfishingwatch/mapbox-gl'
 import { getCSSVarValue } from 'utils/dom'
 import styles from './Map.module.css'
-import { selectEditing } from './controls/rulers.slice'
+import { selectEditing } from './rulers/rulers.slice'
+import { useMapIdle } from './map-features.hooks'
 
 type PrintSize = {
   px: number
@@ -37,6 +38,7 @@ export const getMapImage = (map: Map): Promise<string> => {
 }
 
 function MapScreenshot({ map }: { map?: Map }) {
+  const idle = useMapIdle()
   const [screenshotImage, setScreenshotImage] = useState<string | null>(null)
   const rulersEditing = useSelector(selectEditing)
   const printSize = useRef<{ width: PrintSize; height: PrintSize } | undefined>()
@@ -59,7 +61,7 @@ function MapScreenshot({ map }: { map?: Map }) {
   }, [])
 
   useEffect(() => {
-    const handleIdle = debounce(() => {
+    const onMapIdle = debounce(() => {
       if (map) {
         getMapImage(map).then((image) => {
           setScreenshotImage(image)
@@ -67,16 +69,10 @@ function MapScreenshot({ map }: { map?: Map }) {
       }
     }, 800)
 
-    if (map && !rulersEditing) {
-      map.on('idle', handleIdle)
+    if (map && idle && !rulersEditing) {
+      onMapIdle()
     }
-    return () => {
-      if (map) {
-        map.off('idle', handleIdle)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, rulersEditing])
+  }, [map, idle, rulersEditing])
 
   if (!screenshotImage) return null
 

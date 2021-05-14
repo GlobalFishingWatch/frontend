@@ -32,11 +32,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const vesselDataset = useSelector(selectDataset)
   const vesselProfileId = useSelector(selectVesselProfileId)
   const offlineVessel = useSelector(selectCurrentOfflineVessel)
-  const {
-    dispatchCreateOfflineVessel,
-    dispatchDeleteOfflineVessel,
-    dispatchFetchOfflineVessel,
-  } = useOfflineVesselsAPI()
+  const { dispatchCreateOfflineVessel, dispatchDeleteOfflineVessel, dispatchFetchOfflineVessel } =
+    useOfflineVesselsAPI()
 
   useEffect(() => {
     dispatchFetchOfflineVessel(vesselProfileId)

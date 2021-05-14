@@ -16,7 +16,6 @@
   opacity: 0;
 }
 
-
 :global(.ReactModal__Overlay--after-open) {
   opacity: 1;
 }
@@ -50,7 +49,6 @@
   opacity: 0;
   transform: translateX(-100%);
 }
-
 
 .link {
   width: 100%;

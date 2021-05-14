@@ -4,13 +4,9 @@ import { useCallback, useEffect } from 'react'
 import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types/dist'
 import { AsyncError } from 'utils/async-slice'
 import {
-  selectContextAreasDataviews,
-  selectEnvironmentalDataviews,
-  selectActivityDataviews,
-} from 'features/dataviews/dataviews.selectors'
-import {
   getContextDataviewInstance,
   getEnvironmentDataviewInstance,
+  getUserTrackDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -34,32 +30,35 @@ import {
 
 const DATASET_REFRESH_TIMEOUT = 10000
 
-export const useNewDatasetConnect = () => {
-  const contextDataviews = useSelector(selectContextAreasDataviews)
-  const activityDataviews = useSelector(selectActivityDataviews)
-  const enviromentalDataviews = useSelector(selectEnvironmentalDataviews)
+export const useAddDataviewFromDatasetToWorkspace = () => {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
-  const addNewDatasetToWorkspace = useCallback(
+  const addDataviewFromDatasetToWorkspace = useCallback(
     (dataset: Dataset) => {
       let dataviewInstance
       if (dataset.category === DatasetCategory.Context) {
-        const usedColors = contextDataviews?.flatMap((dataview) => dataview.config?.color || [])
-        dataviewInstance = getContextDataviewInstance(dataset.id, usedColors)
-      } else {
-        const usedRamps = [...(enviromentalDataviews || []), ...(activityDataviews || [])].flatMap(
-          (dataview) => dataview.config?.colorRamp || []
-        )
-        dataviewInstance = getEnvironmentDataviewInstance(dataset.id, usedRamps)
+        dataviewInstance = getContextDataviewInstance(dataset.id)
+      } else if (
+        dataset.category === DatasetCategory.Environment &&
+        dataset.configuration?.geometryType === 'polygons'
+      ) {
+        dataviewInstance = getEnvironmentDataviewInstance(dataset.id)
+      } else if (
+        dataset.category === DatasetCategory.Environment &&
+        dataset.configuration?.geometryType === 'tracks'
+      ) {
+        dataviewInstance = getUserTrackDataviewInstance(dataset)
       }
       if (dataviewInstance) {
         upsertDataviewInstance(dataviewInstance)
+      } else {
+        console.warn(`Dataview instance was not instanciated correctly. With dataset ${dataset.id}`)
       }
     },
-    [contextDataviews, enviromentalDataviews, activityDataviews, upsertDataviewInstance]
+    [upsertDataviewInstance]
   )
 
-  return { addNewDatasetToWorkspace }
+  return { addDataviewFromDatasetToWorkspace }
 }
 
 export const useDatasetModalConnect = () => {

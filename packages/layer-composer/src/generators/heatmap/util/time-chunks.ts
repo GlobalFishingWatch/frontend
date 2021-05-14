@@ -28,7 +28,7 @@ export type TimeChunks = {
   activeSourceId: string
 }
 
-const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
+export const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
 
 // Buffer size relative to active time delta
 const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2
@@ -229,7 +229,8 @@ export const getActiveTimeChunks = (
     activeEnd,
     chunks: [],
     delta,
-    deltaInIntervalUnits: CONFIG_BY_INTERVAL[finalInterval].getFrame(delta),
+    // Set a minimum of 1 to avoid empty frames
+    deltaInIntervalUnits: Math.max(1, CONFIG_BY_INTERVAL[finalInterval].getFrame(delta)),
     deltaInDays: Duration.fromMillis(delta).as('days'),
     interval: finalInterval,
     activeChunkFrame: 0,

@@ -1,19 +1,29 @@
 import { LayerMetadataLegend, LegendType } from '../../../types'
-import { ColorRampsIds, HeatmapAnimatedMode } from '../../types'
-import { HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_COLOR_RAMPS, GRID_AREA_BY_ZOOM_LEVEL } from '../config'
+import { ColorRampId, ColorRampsIds, HeatmapAnimatedMode } from '../../types'
+import {
+  HEATMAP_DEFAULT_MAX_ZOOM,
+  HEATMAP_COLOR_RAMPS,
+  GRID_AREA_BY_ZOOM_LEVEL,
+  HEATMAP_COLORS_BY_ID,
+} from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
-import getBreaks from './get-breaks'
+import { getBlend, getColorRampByOpacitySteps, rgbaStringToObject, rgbaToString } from './colors'
+import { Breaks } from './fetch-breaks'
+import { getCleanBreaks } from './get-breaks'
+import { toDT } from './time-chunks'
 
 // Get color ramps for a config's sublayers
 export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
+  const visibleSublayers = config.sublayers.filter((s) => s.visible)
+
   // Force bivariate color ramp depending on config
   if (config.mode === HeatmapAnimatedMode.Bivariate) {
-    return config.sublayers.map(() => HEATMAP_COLOR_RAMPS['bivariate'])
+    const ramp = getBivariateRamp(visibleSublayers.map((s) => s.colorRamp as ColorRampId))
+    return config.sublayers.map(() => ramp)
   }
 
-  const numActiveSublayers = config.sublayers.filter((s) => s.visible).length
   return config.sublayers.map(({ colorRamp, colorRampWhiteEnd, visible }) => {
-    const useToWhiteRamp = (numActiveSublayers === 1 && visible && colorRampWhiteEnd) ?? false
+    const useToWhiteRamp = (visibleSublayers.length === 1 && visible && colorRampWhiteEnd) ?? false
     const finalColorRamp = useToWhiteRamp ? (`${colorRamp}_toWhite` as ColorRampsIds) : colorRamp
     return HEATMAP_COLOR_RAMPS[finalColorRamp]
   })
@@ -22,7 +32,6 @@ export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorCon
 // Gets MGL layer paint configuration from base color ramp(s)
 export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
   const colorRamps = getSublayersColorRamps(config)
-
   const expressions = colorRamps.map((originalColorRamp, colorRampIndex) => {
     const legend = [...Array(originalColorRamp.length)].flatMap((_, bucketIndex) => [
       // offset each dataset by 10 + add actual bucket value
@@ -39,33 +48,17 @@ export const getColorRampBaseExpression = (config: GlobalHeatmapAnimatedGenerato
   return { colorRamp: colorRamps[0], colorRampBaseExpression: expressions[0] }
 }
 
-// The following values simulate what would return a stats endpoint response
-const STATS_MIN = 1 // Min value for a single day
-const STATS_MAX = 50 // Max value for a single day
-const STATS_AVG = 10 // Avg value for a single day
-const SCALEPOWEXPONENT = 1
-
-// Gets breaks depending on config (alternative method to stats API)
 export const getSublayersBreaks = (
   config: GlobalHeatmapAnimatedGeneratorConfig,
-  intervalInDays: number
+  breaks: Breaks | undefined
 ) => {
-  // TODO - generate this using updated stats API ?
-  // TODO - For each sublayer a different set of breaks should be produced depending on filters
-  const ramps = getSublayersColorRamps(config)
-
-  const multiplier = intervalInDays * Math.pow(1 / 4, config.zoom) * 250
-
-  return config.sublayers.map((sublayer, sublayerIndex) => {
-    if (sublayer.breaks) return sublayer.breaks
-    const sublayerColorRamp = ramps[sublayerIndex]
-    const numBreaks =
-      config.mode === HeatmapAnimatedMode.Bivariate
-        ? 4
-        : sublayerColorRamp
-        ? sublayerColorRamp.length
-        : 6
-    return getBreaks(STATS_MIN, STATS_MAX, STATS_AVG, SCALEPOWEXPONENT, numBreaks, multiplier)
+  // const delta = +toDT(config.end) - +toDT(config.start)
+  const start = toDT(config.start)
+  const end = toDT(config.end)
+  // uses 'years' as breaks request a year with temporal-aggregation true
+  const deltaInterval = end.diff(start, 'days').days / 10
+  return breaks?.map((bre) => {
+    return getCleanBreaks(bre.map((b) => deltaInterval * b * Math.pow(1 / 4, config.zoomLoadLevel)))
   })
 }
 
@@ -75,26 +68,39 @@ const getGridAreaByZoom = (zoom: number): number => {
   return gridArea
 }
 
-const getLegendsCompare = (
-  config: GlobalHeatmapAnimatedGeneratorConfig,
-  intervalInDays: number
-) => {
-  const sublayersBreaks = getSublayersBreaks(config, intervalInDays)
+const getLegendsCompare = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks: Breaks) => {
   const ramps = getSublayersColorRamps(config)
-  return sublayersBreaks.flatMap((sublayerBreaks, sublayerIndex) => {
+
+  if (!breaks?.length) {
+    return config.sublayers.flatMap((subLayer, sublayerIndex) => {
+      const sublayerColorRamp = ramps[sublayerIndex]
+      const sublayerLegend: LayerMetadataLegend = {
+        id: subLayer.id,
+        unit: subLayer.legend?.unit,
+        type: LegendType.ColorRampDiscrete,
+        loading: true,
+        ramp: [],
+        colorRamp: sublayerColorRamp,
+      }
+
+      return sublayerLegend
+    })
+  }
+
+  return breaks.flatMap((sublayerBreaks, sublayerIndex) => {
     const sublayerColorRamp = ramps[sublayerIndex]
     if (!sublayerColorRamp) return []
     let legendRamp = sublayerColorRamp.flatMap((rampColor, rampColorIndex) => {
-      const isLastColor = rampColorIndex === sublayerColorRamp.length - 1
+      // const isLastColor = rampColorIndex === sublayerColorRamp.length - 1
       const isFirstColor = rampColorIndex === 0
 
       const startColor = rampColor
-      const endColor = isLastColor ? startColor : sublayerColorRamp[rampColorIndex + 1]
+      // const endColor = isLastColor ? startColor : sublayerColorRamp[rampColorIndex + 1]
 
       const startBucket = isFirstColor
         ? Number.NEGATIVE_INFINITY
         : sublayerBreaks[rampColorIndex - 1]
-      const endBucket = isLastColor ? Number.POSITIVE_INFINITY : sublayerBreaks[rampColorIndex]
+      // const endBucket = isLastColor ? Number.POSITIVE_INFINITY : sublayerBreaks[rampColorIndex]
       const legendRampItem: [number | null | string, string] = [startBucket, startColor]
       return [legendRampItem]
     })
@@ -107,40 +113,80 @@ const getLegendsCompare = (
         return [value, legendItem[1]]
       })
     }
-    const gridArea = getGridAreaByZoom(config.zoom)
 
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
       unit: config.sublayers[sublayerIndex].legend?.unit,
       type: LegendType.ColorRampDiscrete,
+      loading: false,
       ramp: legendRamp,
-      ...(gridArea && { gridArea }),
+      colorRamp: sublayerColorRamp,
     }
     return [sublayerLegend]
   })
 }
 
-const getLegendsBivariate = (
-  config: GlobalHeatmapAnimatedGeneratorConfig,
-  intervalInDays: number
-) => {
-  const sublayersBreaks = getSublayersBreaks(config, intervalInDays)
-  const gridArea = getGridAreaByZoom(config.zoom)
+const white = { r: 255, g: 255, b: 255, a: 1 }
+
+const getBivariateRamp = (colorRampsIds: ColorRampId[]) => {
+  const ramp1 = getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[colorRampsIds[0]], 4).map((rgba) =>
+    rgbaStringToObject(rgba)
+  )
+  const ramp2 = getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[colorRampsIds[1]], 4).map((rgba) =>
+    rgbaStringToObject(rgba)
+  )
+  return [
+    'transparent',
+    rgbaToString({ ...getBlend(ramp1[0], ramp2[0]), a: 0.5 }),
+    rgbaToString({ ...getBlend(ramp1[1], ramp2[0]), a: 0.75 }),
+    rgbaToString(getBlend(ramp1[2], ramp2[0])),
+    rgbaToString(getBlend(ramp1[3], ramp2[0])),
+    rgbaToString({ ...getBlend(ramp1[0], ramp2[1]), a: 0.75 }),
+    rgbaToString(getBlend(ramp1[1], ramp2[1])),
+    rgbaToString(getBlend(ramp1[2], ramp2[1])),
+    rgbaToString(getBlend(ramp1[3], ramp2[1])),
+    rgbaToString(getBlend(ramp1[0], ramp2[2])),
+    rgbaToString(getBlend(ramp1[1], ramp2[2])),
+    rgbaToString(getBlend({ ...white, a: 0.25 }, getBlend(ramp1[2], ramp2[2]))),
+    rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[3], ramp2[2]))),
+    rgbaToString(getBlend(ramp1[0], ramp2[3])),
+    rgbaToString(getBlend(ramp1[1], ramp2[3])),
+    rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[2], ramp2[3]))),
+    rgbaToString(getBlend(white, getBlend(ramp1[3], ramp2[3]))),
+  ]
+}
+
+const getLegendsBivariate = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks: Breaks) => {
+  const visibleSublayers = config.sublayers.filter((s) => s.visible)
+  const ids = visibleSublayers.map((s) => s.id)
+  const colorRampsIds = visibleSublayers.map((subLayer) => subLayer.colorRamp as ColorRampId)
+  const subLayer = visibleSublayers?.[0]
+
   return [
     {
-      id: config.sublayers[0].id,
+      id: subLayer.id,
+      ids,
       type: LegendType.Bivariate,
-      bivariateRamp: HEATMAP_COLOR_RAMPS.bivariate,
-      sublayersBreaks,
-      ...(gridArea && { gridArea }),
+      bivariateRamp: getBivariateRamp(colorRampsIds),
+      unit: subLayer.legend?.unit,
+      loading: !breaks?.length,
+      sublayersBreaks: breaks,
     },
   ]
 }
 
-const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, intervalInDays: number) => {
-  return config.mode === HeatmapAnimatedMode.Bivariate
-    ? getLegendsBivariate(config, intervalInDays)
-    : getLegendsCompare(config, intervalInDays)
+const getLegends = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks: Breaks) => {
+  const legends =
+    config.mode === HeatmapAnimatedMode.Bivariate
+      ? getLegendsBivariate(config, breaks)
+      : getLegendsCompare(config, breaks)
+
+  const gridArea = getGridAreaByZoom(config.zoom)
+
+  return legends.map((legend: LayerMetadataLegend) => ({
+    ...legend,
+    ...(gridArea && { gridArea }),
+  }))
 }
 
 export default getLegends

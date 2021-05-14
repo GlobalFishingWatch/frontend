@@ -1,5 +1,60 @@
 # @globalfishingwatch/api-types
 
+## 4.2.2
+
+### Patch Changes
+
+- include guest dataview info config field
+
+## 4.2.1
+
+### Patch Changes
+
+- Updated dependencies [3b8d5d37]
+  - @globalfishingwatch/data-transforms@1.2.2
+
+## 4.2.0
+
+### Minor Changes
+
+- cfae2b4b: new dataview categories
+
+## 4.1.3
+
+### Patch Changes
+
+- 2f7db18f: Fishing map/color cycling
+
+## 4.1.2
+
+### Patch Changes
+
+- a5339163: fix tiles api
+
+## 4.1.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/data-transforms@1.2.1
+
+## 4.1.0
+
+### Minor Changes
+
+- 5d252a2d: new 4wings endpoint id
+
+## 4.0.0
+
+### Major Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/data-transforms@1.2.0
+
 ## 3.3.0
 
 ### Minor Changes

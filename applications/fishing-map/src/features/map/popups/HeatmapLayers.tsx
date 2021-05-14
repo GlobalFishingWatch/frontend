@@ -14,6 +14,8 @@ import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
 // t('common.hour', 'Hour')
+// t('common.days', 'Day')
+// t('common.days_plural', 'Days')
 
 type HeatmapTooltipRowProps = {
   feature: TooltipEventFeature
@@ -73,7 +75,12 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
             {feature.vesselsInfo.vessels.map((vessel, i) => {
               const vesselLabel = getVesselLabel(vessel, true)
               return (
-                <button key={i} className={styles.vesselRow} onClick={() => onVesselClick(vessel)}>
+                <button
+                  disabled={feature.category === 'presence'}
+                  key={i}
+                  className={styles.vesselRow}
+                  onClick={() => onVesselClick(vessel)}
+                >
                   <span className={styles.vesselName}>
                     {vesselLabel}
                     {vessel.dataset && vessel.dataset.name && (

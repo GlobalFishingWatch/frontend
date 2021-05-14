@@ -15,6 +15,7 @@ import {
   GeneratorDataviewConfig,
   Generators,
   Group,
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
 } from '@globalfishingwatch/layer-composer'
 import type {
   ColorRampsIds,
@@ -45,6 +46,32 @@ type DataviewsGeneratorConfigsParams = {
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
+
+const getUTCDate = (timestamp: number) => {
+  const date = new Date(timestamp)
+  return new Date(
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes()
+    )
+  )
+}
+
+const getDatasetsExtent = (datasets: Dataset[] | undefined) => {
+  const startRanges = datasets?.flatMap((d) =>
+    d?.startDate ? new Date(d.startDate).getTime() : []
+  )
+  const endRanges = datasets?.flatMap((d) => (d?.endDate ? new Date(d.endDate).getTime() : []))
+  const extentStart = startRanges?.length
+    ? getUTCDate(Math.min(...startRanges)).toISOString()
+    : undefined
+  const extentEnd = endRanges?.length ? getUTCDate(Math.max(...endRanges)).toISOString() : undefined
+
+  return { extentStart, extentEnd }
+}
 
 export function getGeneratorConfig(
   dataview: UrlDataviewInstance,
@@ -77,7 +104,12 @@ export function getGeneratorConfig(
         generator.highlightedTime = highlightedTime
       }
       // Try to retrieve resource if it exists
-      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+      const trackType =
+        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
+          ? DatasetTypes.UserTracks
+          : DatasetTypes.Tracks
+      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, trackType)
+
       if (trackUrl && resources?.[trackUrl]) {
         const resource = resources?.[trackUrl] as Resource<TrackResourceData>
         generator.data = resource.data
@@ -94,6 +126,7 @@ export function getGeneratorConfig(
       const statsEndpoint = heatmapDataset?.endpoints?.find(
         (endpoint) => endpoint.id === EndpointId.FourwingsLegend
       )
+
       generator = {
         ...generator,
         maxZoom: 8,
@@ -116,9 +149,8 @@ export function getGeneratorConfig(
     case Generators.Type.HeatmapAnimated: {
       const isEnvironmentLayer = dataview.category === DataviewCategory.Environment
       let environmentalConfig: Partial<Generators.HeatmapAnimatedGeneratorConfig> = {}
+      const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
       if (isEnvironmentLayer) {
-        // TODO not exactly sure how to retrieve dataset properly
-        const dataset = dataview?.datasets && dataview?.datasets[0]
         const datasetsIds =
           dataview.config.datasets || dataview.datasetsConfig?.map((dc) => dc.datasetId)
         const sublayers: Generators.HeatmapAnimatedGeneratorSublayer[] = [
@@ -139,6 +171,7 @@ export function getGeneratorConfig(
 
         environmentalConfig = {
           sublayers,
+          maxZoom: 8,
           mode: Generators.HeatmapAnimatedMode.Single,
           aggregationOperation: AggregationOperation.Avg,
           interactive: true,
@@ -152,12 +185,27 @@ export function getGeneratorConfig(
         ...environmentalConfig,
       }
 
+      // TODO use this instead of hardcoded version of the api endpoint in layer composer
+      // const { url: tilesAPI, dataset: heatmapDataset } = resolveDataviewDatasetResource(
+      //   dataview,
+      //   DatasetTypes.Fourwings
+      // )
+      // const breaksAPI = heatmapDataset?.endpoints?.find(
+      //   (endpoint) => endpoint.id === EndpointId.FourwingsBreaks
+      // )?.pathTemplate
+
       const visible = generator.sublayers?.some(({ visible }) => visible === true)
+      const { extentStart, extentEnd } = getDatasetsExtent(dataview.datasets)
+
       generator = {
         ...generator,
         visible,
         debug,
         debugLabels: debug,
+        // tilesAPI,
+        // breaksAPI,
+        ...(extentStart && { datasetsStart: extentStart }),
+        ...(extentEnd && { datasetsEnd: extentEnd }),
         staticStart: timeRange?.start,
         staticEnd: timeRange?.end,
       }
@@ -202,7 +250,7 @@ export function getGeneratorConfig(
             (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
             {}
           const rampScale = scaleLinear().range([min, max]).domain([0, 1])
-          const numSteps = 8
+          const numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
           const steps = [...Array(numSteps)]
             .map((_, i) => parseFloat((i / (numSteps - 1))?.toFixed(2)))
             .map((value) => parseFloat((rampScale(value) as number)?.toFixed(3)))
@@ -241,7 +289,8 @@ export function getDataviewsGeneratorConfigs(
   // Collect heatmap animated generators and filter them out from main dataview list
   const dataviewsFiltered = dataviews.filter((d) => {
     const isActivityDataview =
-      d.category === DataviewCategory.Activity && d.config?.type === Generators.Type.HeatmapAnimated
+      (d.category === DataviewCategory.Fishing || d.category === DataviewCategory.Presence) &&
+      d.config?.type === Generators.Type.HeatmapAnimated
     if (isActivityDataview) {
       activityDataviews.push(d)
     }
