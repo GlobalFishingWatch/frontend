@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import memoize from 'lodash/memoize'
-import { uniqBy } from 'lodash'
+import { memoize, uniqBy } from 'lodash'
 import { Dataview } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AsyncReducer, createAsyncSlice } from 'utils/async-slice'

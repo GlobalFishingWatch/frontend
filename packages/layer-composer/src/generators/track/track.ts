@@ -1,7 +1,7 @@
 import { scaleLinear, scalePow } from 'd3-scale'
 import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
-import uniq from 'lodash/uniq'
+import { uniq } from 'lodash'
 import convert from 'color-convert'
 import type { LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'

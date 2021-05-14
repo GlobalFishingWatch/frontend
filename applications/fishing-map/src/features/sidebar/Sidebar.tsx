@@ -1,4 +1,4 @@
-import React, { Suspense, useMemo } from 'react'
+import React, { lazy, Suspense, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -6,21 +6,22 @@ import Button from '@globalfishingwatch/ui-components/dist/button'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { logoutUserThunk } from 'features/user/user.slice'
 import { isGuestUser, isUserAuthorized, isUserLogged } from 'features/user/user.selectors'
-import Search from 'features/search/Search'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { selectLocationType } from 'routes/routes.selectors'
 import { USER, WORKSPACES_LIST } from 'routes/routes'
-import User from 'features/user/User'
-import Workspace from 'features/workspace/Workspace'
-import WorkspacesList from 'features/workspaces-list/WorkspacesList'
-import NewDataset from 'features/datasets/NewDataset'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
-import Analysis from 'features/analysis/Analysis'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
+
+const Analysis = lazy(() => import('features/analysis/Analysis'))
+const User = lazy(() => import('features/user/User'))
+const Workspace = lazy(() => import('features/workspace/Workspace'))
+const WorkspacesList = lazy(() => import('features/workspaces-list/WorkspacesList'))
+const Search = lazy(() => import('features/search/Search'))
+const NewDataset = lazy(() => import('features/datasets/NewDataset'))
 
 type SidebarProps = {
   onMenuClick: () => void
@@ -89,25 +90,31 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   ])
 
   if (searchQuery !== undefined) {
-    return <Search />
+    return (
+      <Suspense fallback={null}>
+        <Search />
+      </Suspense>
+    )
   }
 
   if (isAnalyzing) {
-    return <Analysis />
+    return (
+      <Suspense fallback={null}>
+        <Analysis />
+      </Suspense>
+    )
   }
 
   return (
-    <Suspense fallback={null}>
-      <div className={styles.container}>
-        <CategoryTabs onMenuClick={onMenuClick} />
-        {/* New dataset modal is used in user and workspace pages*/}
-        <NewDataset />
-        <div className="scrollContainer">
-          <SidebarHeader />
-          {sidebarComponent}
-        </div>
+    <div className={styles.container}>
+      <CategoryTabs onMenuClick={onMenuClick} />
+      {/* New dataset modal is used in user and workspace pages*/}
+      <NewDataset />
+      <div className="scrollContainer">
+        <SidebarHeader />
+        <Suspense fallback={null}>{sidebarComponent}</Suspense>
       </div>
-    </Suspense>
+    </div>
   )
 }
 

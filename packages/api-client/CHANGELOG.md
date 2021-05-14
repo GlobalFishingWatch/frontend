@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-client
 
+## 1.7.0
+
+### Minor Changes
+
+- redirect to loginUrl with locale
+
 ## 1.6.9
 
 ### Patch Changes
