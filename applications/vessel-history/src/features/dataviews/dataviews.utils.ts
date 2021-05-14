@@ -1,6 +1,6 @@
 import { uniq } from 'lodash'
 import { Dataview, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
-import { TrackColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
+import { LineColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AppDispatch } from 'store'
@@ -36,7 +36,7 @@ export const getVesselDataviewInstance = (
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       // TODO pick a not used color
-      color: TrackColorBarOptions[Math.floor(Math.random() * TrackColorBarOptions.length)].value,
+      color: LineColorBarOptions[Math.floor(Math.random() * LineColorBarOptions.length)].value,
     },
     datasetsConfig,
   }

@@ -1,90 +1,78 @@
-import React, { useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import Choice, { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { Generators } from '@globalfishingwatch/layer-composer'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
-import { selectWorkspaceDataviews } from 'features/workspace/workspace.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectBivariate } from 'features/app/app.selectors'
+import { selectBivariateDataviews } from 'features/app/app.selectors'
 import {
-  getActivityDataviewInstance,
+  getFishingDataviewInstance,
   getPresenceDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
-import { DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
-import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
+import { ACTIVITY_OPTIONS } from 'data/config'
+import { WorkspaceActivityCategory } from 'types'
+import { selectActivityCategory } from 'routes/routes.selectors'
 import LayerPanel from './HeatmapLayerPanel'
-
-type HeatmapCategory = 'activity' | 'presence'
-type HeatmapCategoryOption = { id: HeatmapCategory; label: string }
+import heatmapStyles from './HeatmapsSection.module.css'
 
 function HeatmapsSection(): React.ReactElement {
   const { t } = useTranslation()
-  const [heatmapSublayersAddedIndex, setHeatmapSublayersAddedIndex] = useState<number | undefined>()
-  const [newLayerOpen, setNewLayerOpen] = useState<boolean>(false)
-  const workspaceDataviews = useSelector(selectWorkspaceDataviews)
+  const [addedDataviewId, setAddedDataviewId] = useState<string | undefined>()
   const dataviews = useSelector(selectActivityDataviews)
+  const activityCategory = useSelector(selectActivityCategory)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
-  const bivariate = useSelector(selectBivariate)
-  const supportBivariateToggle =
-    dataviews?.filter((dataview) => dataview?.config?.visible)?.length === 2
-  const supportsPresence =
-    workspaceDataviews?.find((d) => d.id === DEFAULT_PRESENCE_DATAVIEW_ID) !== undefined
+  const bivariateDataviews = useSelector(selectBivariateDataviews)
 
-  const heatmapOptions: HeatmapCategoryOption[] = [
-    { id: 'activity', label: t('common.apparentFishing', 'Apparent Fishing Effort') },
-    { id: 'presence', label: t('common.presence', 'Fishing presence') },
-  ]
+  useEffect(() => {
+    setAddedDataviewId(undefined)
+  }, [activityCategory])
 
-  const onAddClick = useCallback(
-    (category: HeatmapCategory) => {
-      setHeatmapSublayersAddedIndex(dataviews ? dataviews.length : 0)
-      dispatchQueryParams({ bivariate: false })
-      const usedRamps = dataviews?.flatMap((dataview) => dataview.config?.colorRamp || [])
-      const dataviewInstance =
-        category === 'activity'
-          ? getActivityDataviewInstance(usedRamps)
-          : getPresenceDataviewInstance(usedRamps)
-      upsertDataviewInstance(dataviewInstance)
-      setNewLayerOpen(false)
+  const onActivityOptionClick = useCallback(
+    (activityOption: ChoiceOption) => {
+      dispatchQueryParams({ activityCategory: activityOption.id as WorkspaceActivityCategory })
     },
-    [dispatchQueryParams, dataviews, upsertDataviewInstance]
+    [dispatchQueryParams]
   )
 
-  const onToggleCombinationMode = useCallback(() => {
-    const newBivariateValue = !bivariate
-    dispatchQueryParams({ bivariate: newBivariateValue })
-    // automatically set 2 first animated heatmaps to visible
-    if (newBivariateValue) {
-      let heatmapAnimatedIndex = 0
-      dataviews?.forEach((dataview) => {
-        if (dataview.config?.type === Generators.Type.HeatmapAnimated) {
-          const visible = heatmapAnimatedIndex < 2
-          upsertDataviewInstance({
-            id: dataview.id,
-            config: {
-              visible,
-            },
-          })
-          heatmapAnimatedIndex++
-        }
-      })
-    }
-  }, [bivariate, dataviews, dispatchQueryParams, upsertDataviewInstance])
+  const onAddClick = useCallback(
+    (category: WorkspaceActivityCategory) => {
+      dispatchQueryParams({ bivariateDataviews: undefined })
+      const dataviewInstance =
+        category === 'fishing' ? getFishingDataviewInstance() : getPresenceDataviewInstance()
+      upsertDataviewInstance(dataviewInstance)
+      setAddedDataviewId(dataviewInstance.id)
+    },
+    [dispatchQueryParams, upsertDataviewInstance]
+  )
 
-  let bivariateTooltip = bivariate
-    ? t('layer.toggleCombinationMode.split', 'Split layers')
-    : t('layer.toggleCombinationMode.combine', 'Combine layers')
-  if (!supportBivariateToggle) {
-    bivariateTooltip = t(
-      'layer.toggleCombinationMode.disabled',
-      'Combine mode is only available with two activity layers'
-    )
-  }
+  const onBivariateDataviewsClick = useCallback(
+    (dataview1: UrlDataviewInstance, dataview2: UrlDataviewInstance) => {
+      dispatchQueryParams({ bivariateDataviews: [dataview1.id, dataview2.id] })
+      // automatically set other animated heatmaps to invisible
+      const dataviewsToDisable = dataviews?.filter(
+        (dataview) =>
+          dataview.id !== dataview1.id &&
+          dataview.id !== dataview2.id &&
+          dataview.config?.type === Generators.Type.HeatmapAnimated
+      )
+      dataviewsToDisable?.forEach((dataview) => {
+        upsertDataviewInstance({
+          id: dataview.id,
+          config: {
+            visible: false,
+          },
+        })
+      })
+    },
+    [dataviews, dispatchQueryParams, upsertDataviewInstance]
+  )
 
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
@@ -92,63 +80,54 @@ function HeatmapsSection(): React.ReactElement {
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
+        <Choice
+          size="small"
+          className={cx('print-hidden')}
+          options={ACTIVITY_OPTIONS}
+          activeOption={activityCategory}
+          onOptionClick={onActivityOptionClick}
+        />
         <div className={cx('print-hidden', styles.sectionButtons)}>
           <IconButton
-            icon={bivariate ? 'split' : 'compare'}
+            icon="plus"
             type="border"
             size="medium"
-            disabled={!supportBivariateToggle}
-            tooltip={bivariateTooltip}
+            tooltip={t('layer.add', 'Add layer')}
             tooltipPlacement="top"
-            onClick={onToggleCombinationMode}
+            onClick={() => onAddClick(activityCategory)}
           />
-          {supportsPresence ? (
-            <TooltipContainer
-              visible={newLayerOpen}
-              onClickOutside={() => {
-                setNewLayerOpen(false)
-              }}
-              component={
-                <TooltipListContainer>
-                  {heatmapOptions.map(({ id, label }) => (
-                    <li key={id}>
-                      <button onClick={() => onAddClick(id)}>{label}</button>
-                    </li>
-                  ))}
-                </TooltipListContainer>
-              }
-            >
-              <div className={styles.lastBtn}>
-                <IconButton
-                  icon="plus"
-                  type="border"
-                  size="medium"
-                  tooltip={t('layer.add', 'Add layer')}
-                  tooltipPlacement="top"
-                  onClick={() => setNewLayerOpen(true)}
-                />
-              </div>
-            </TooltipContainer>
-          ) : (
-            <IconButton
-              icon="plus"
-              type="border"
-              size="medium"
-              tooltip={t('layer.add', 'Add layer')}
-              tooltipPlacement="top"
-              onClick={() => onAddClick('activity')}
-            />
-          )}
         </div>
       </div>
-      {dataviews?.map((dataview, index) => (
-        <LayerPanel
-          key={dataview.id}
-          dataview={dataview}
-          index={index}
-          isOpen={index === heatmapSublayersAddedIndex}
-        />
-      ))}
+      {dataviews?.map((dataview, index) => {
+        const isLastElement = index === dataviews?.length - 1
+        const isVisible = dataview?.config?.visible ?? false
+        const isNextVisible = dataviews[index + 1]?.config?.visible ?? false
+        const showBivariateIcon =
+          bivariateDataviews === undefined && isVisible && isNextVisible && !isLastElement
+        return (
+          <Fragment key={dataview.id}>
+            <LayerPanel
+              key={dataview.id}
+              dataview={dataview}
+              showBorder={!showBivariateIcon}
+              isOpen={dataview.id === addedDataviewId}
+            />
+            {showBivariateIcon && (
+              <div className={cx(heatmapStyles.bivariateToggleContainer, 'print-hidden')}>
+                <IconButton
+                  icon={bivariateDataviews ? 'split' : 'compare'}
+                  type="border"
+                  size="small"
+                  className={heatmapStyles.bivariateToggle}
+                  tooltip={t('layer.toggleCombinationMode.combine', 'Combine layers')}
+                  tooltipPlacement="top"
+                  onClick={() => onBivariateDataviewsClick(dataview, dataviews[index + 1])}
+                />
+              </div>
+            )}
+          </Fragment>
+        )
+      })}
     </div>
   )
 }

@@ -1,5 +1,11 @@
 # @globalfishingwatch/fourwings-aggregate
 
+## 3.1.1
+
+### Patch Changes
+
+- 0ec2156f: User tracks
+
 ## 3.1.0
 
 ### Minor Changes

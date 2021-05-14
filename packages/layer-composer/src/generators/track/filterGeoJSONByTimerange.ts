@@ -13,12 +13,17 @@ interface SegmentData {
 }
 
 // TODO TS types wont work with MultiPoint geoms
-export default (geojson: FeatureCollection, start: number, end: number): FeatureCollection => {
+const filterGeoJSONByTimerange = (
+  geojson: FeatureCollection,
+  start: number,
+  end: number
+): FeatureCollection => {
   if (!geojson || !geojson.features)
     return {
       type: 'FeatureCollection',
       features: [],
     }
+
   const featuresFiltered: Feature<Geometry, GeoJsonProperties>[] = geojson.features.reduce(
     (filteredFeatures: Feature<Geometry, GeoJsonProperties>[], feature) => {
       const hasTimes =
@@ -32,7 +37,7 @@ export default (geojson: FeatureCollection, start: number, end: number): Feature
             const timeCoordinate: number = feature.properties!.coordinateProperties.times[index]
             const isInTimeline = timeCoordinate >= start && timeCoordinate <= end
             if (isInTimeline) {
-              ;(filteredCoordinates.coordinates as Position[]).push(coordinate)
+              (filteredCoordinates.coordinates as Position[]).push(coordinate)
               ;(filteredCoordinates.times as number[]).push(timeCoordinate)
             }
             return filteredCoordinates
@@ -71,3 +76,5 @@ export default (geojson: FeatureCollection, start: number, end: number): Feature
   }
   return geojsonFiltered
 }
+
+export default filterGeoJSONByTimerange

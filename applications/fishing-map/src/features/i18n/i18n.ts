@@ -28,7 +28,7 @@ i18n
     backend: {
       loadPath: `/${pathPrefix}/locales/{{lng}}/{{ns}}.json`,
     },
-    ns: ['translations', 'flags', 'datasets'],
+    ns: ['translations', 'flags', 'datasets', 'timebar'],
     defaultNS: 'translations',
     fallbackLng: Locale.en,
     supportedLngs: Object.values(Locale),
@@ -43,5 +43,9 @@ i18n
       // },
     },
   })
+
+const t = i18n.t.bind(i18n)
+
+export { t }
 
 export default i18n

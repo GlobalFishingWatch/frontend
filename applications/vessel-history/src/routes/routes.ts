@@ -12,7 +12,6 @@ import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { AppActions, AppState } from 'types/redux.types'
-import { searchThunk } from 'features/search/search.thunk'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const HOME = 'HOME'
@@ -26,17 +25,10 @@ const thunk = async (
   getState: StateGetter<AppState>
 ) => null
 
-const homeThunk = async (
-  dispatch: Dispatch<AppActions | NavigationAction>,
-  getState: StateGetter<AppState>
-) => {
-  searchThunk(dispatch, getState)
-}
-
 const routesMap: RoutesMap = {
   [HOME]: {
     path: '/',
-    thunk: homeThunk,
+    thunk,
   },
   [LOGIN]: {
     path: '/login',
@@ -84,26 +76,27 @@ const urlToObjectTransformation: Dictionary<(value: any) => any> = {
   zoom: (s) => parseFloat(s),
 }
 
-export const routerQueryMiddleware: Middleware = ({ getState }: { getState: () => RootState }) => (
-  next
-) => (action: UpdateQueryParamsAction) => {
-  const routesActions = Object.keys(routesMap)
-  // check if action type matches a route type
-  const isRouterAction = routesActions.includes(action.type)
-  if (!isRouterAction) {
-    next(action)
-  } else {
-    const newAction: UpdateQueryParamsAction = { ...action }
+export const routerQueryMiddleware: Middleware =
+  ({ getState }: { getState: () => RootState }) =>
+  (next) =>
+  (action: UpdateQueryParamsAction) => {
+    const routesActions = Object.keys(routesMap)
+    // check if action type matches a route type
+    const isRouterAction = routesActions.includes(action.type)
+    if (!isRouterAction) {
+      next(action)
+    } else {
+      const newAction: UpdateQueryParamsAction = { ...action }
 
-    const prevQuery = getState().location.query || {}
-    if (newAction.replaceQuery !== true) {
-      newAction.query = {
-        ...prevQuery,
-        ...newAction.query,
+      const prevQuery = getState().location.query || {}
+      if (newAction.replaceQuery !== true) {
+        newAction.query = {
+          ...prevQuery,
+          ...newAction.query,
+        }
       }
+      next(newAction)
     }
-    next(newAction)
   }
-}
 
 export default connectRoutes(routesMap, routesOptions)

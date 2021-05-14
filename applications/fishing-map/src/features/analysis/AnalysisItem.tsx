@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import { getFlagsByIds } from 'utils/flags'
-import i18n from 'features/i18n/i18n'
+import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { isFishingDataview, isPresenceDataview } from 'features/workspace/heatmaps/heatmaps.utils'
 import { selectStaticTime } from 'features/timebar/timebar.slice'
@@ -34,8 +34,8 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
       const presenceDataview = isPresenceDataview(dataviews[0])
       if (fishingDataview || presenceDataview) {
         title = presenceDataview
-          ? i18n.t(`common.presence`, 'Fishing presence')
-          : i18n.t(`common.apparentFishing`, 'Apparent Fishing Effort')
+          ? t(`common.presence`, 'Fishing presence')
+          : t(`common.apparentFishing`, 'Apparent Fishing Effort')
       } else {
         title += dataviews[0].name
       }
@@ -66,7 +66,7 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
       commonProperties.push('flag')
       const flags = getFlagsByIds(dataviews[0].config?.filters?.flag || [])
       if (firstDataviewFlags)
-        title += ` ${i18n.t('analysis.vesselFlags', 'by vessels flagged by')} ${flags
+        title += ` ${t('analysis.vesselFlags', 'by vessels flagged by')} ${flags
           ?.map((d) => d.label)
           .join(', ')}`
     }
@@ -97,11 +97,13 @@ function AnalysisItem({
   let description = analysisAreaName
     ? `${title} ${t('common.in', 'in')} ${analysisAreaName}`
     : title
-  description = `${description} ${t('common.dateRange', {
-    start: formatI18nDate(staticTime.start),
-    end: formatI18nDate(staticTime.end),
-    defaultValue: 'between {{start}} and {{end}}',
-  })}.`
+  if (staticTime) {
+    description = `${description} ${t('common.dateRange', {
+      start: formatI18nDate(staticTime.start),
+      end: formatI18nDate(staticTime.end),
+      defaultValue: 'between {{start}} and {{end}}',
+    })}.`
+  }
   return (
     <div className={styles.container}>
       {hasAnalysisLayers ? (
@@ -123,7 +125,7 @@ function AnalysisItem({
           {t('analysis.empty', 'Your selected datasets will appear here')}
         </p>
       )}
-      <AnalysisItemGraph graphData={graphData} timeRange={staticTime} />
+      {staticTime && <AnalysisItemGraph graphData={graphData} timeRange={staticTime} />}
     </div>
   )
 }

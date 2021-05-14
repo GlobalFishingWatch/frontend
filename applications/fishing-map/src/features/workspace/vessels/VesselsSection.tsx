@@ -6,15 +6,15 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
-import { isSearchAllowed } from 'features/search/search.selectors'
-import LayerPanel from './VesselLayerPanel'
+import { isBasicSearchAllowed } from 'features/search/search.selectors'
+import VesselLayerPanel from './VesselLayerPanel'
 
 function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
-  const searchAllowed = useSelector(isSearchAllowed)
+  const searchAllowed = useSelector(isBasicSearchAllowed)
 
   const onSearchClick = useCallback(() => {
     dispatchQueryParams({ query: '' })
@@ -40,7 +40,7 @@ function VesselsSection(): React.ReactElement {
         />
       </div>
       {dataviews?.map((dataview) => (
-        <LayerPanel key={dataview.id} dataview={dataview} />
+        <VesselLayerPanel key={dataview.id} dataview={dataview} />
       ))}
     </div>
   )

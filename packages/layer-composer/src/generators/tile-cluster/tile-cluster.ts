@@ -1,7 +1,6 @@
 import { AnyLayer } from '@globalfishingwatch/mapbox-gl'
 import { Type, TileClusterGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
-import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
 import { Group } from '../..'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/background'
@@ -72,9 +71,6 @@ class TileClusterGenerator {
           ],
           'circle-color': config.color || '#FAE9A0',
         },
-        layout: {
-          visibility: isConfigVisible(config),
-        },
         metadata: {
           interactive: true,
           generatorId: config.id,
@@ -93,7 +89,6 @@ class TileClusterGenerator {
           'text-field': ['get', 'count'],
           'text-font': ['Roboto Medium'],
           'text-allow-overlap': true,
-          visibility: isConfigVisible(config),
         },
         paint: {
           'text-color': '#163f89',
@@ -109,9 +104,6 @@ class TileClusterGenerator {
         source: config.id,
         'source-layer': 'points',
         filter: ['==', ['get', 'count'], 1],
-        layout: {
-          visibility: isConfigVisible(config),
-        },
         paint: {
           'circle-color': config.color || '#FAE9A0',
           'circle-radius': 5,
@@ -131,7 +123,6 @@ class TileClusterGenerator {
       //   type: 'symbol',
       //   filter: ['==', ['get', 'count'], 1],
       //   layout: {
-      //     visibility: isConfigVisible(config),
       //     'icon-image': 'carrier_portal_encounter',
       //     'icon-allow-overlap': true,
       //   },

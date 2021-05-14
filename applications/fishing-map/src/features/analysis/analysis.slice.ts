@@ -113,11 +113,8 @@ const { slice: analysisSlice } = createAsyncSlice<ReportState, Report>({
   },
 })
 
-export const {
-  resetReportStatus,
-  clearAnalysisGeometry,
-  setAnalysisGeometry,
-} = analysisSlice.actions
+export const { resetReportStatus, clearAnalysisGeometry, setAnalysisGeometry } =
+  analysisSlice.actions
 
 export const selectAnalysisGeometry = (state: RootState) => state.analysis.area.geometry
 export const selectAnalysisBounds = (state: RootState) => state.analysis.area.bounds

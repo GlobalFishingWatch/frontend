@@ -2,8 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import uniqBy from 'lodash/uniqBy'
-import { InteractionEvent, useTilesLoading } from '@globalfishingwatch/react-hooks'
+import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   MULTILAYER_SEPARATOR,
@@ -14,7 +13,6 @@ import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
-import { selectEditing, editRuler } from 'features/map/controls/rulers.slice'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -43,7 +41,7 @@ import {
   ExtendedFeatureEvent,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
-import { useHasSourceLoaded } from './map-features.hooks'
+import { useHaveSourcesLoaded, useMapLoaded } from './map-features.hooks'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -64,11 +62,9 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
-  const encounterSourceLoaded = useHasSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const encounterSourceLoaded = useHaveSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
   const fourWingsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
-
-  const rulersEditing = useSelector(selectEditing)
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
     // Used on workspaces-list or user panel to go to the workspace detail page
@@ -97,16 +93,6 @@ export const useClickedEventConnect = () => {
         }
         return
       }
-    }
-
-    if (rulersEditing === true && event) {
-      dispatch(
-        editRuler({
-          longitude: event.longitude,
-          latitude: event.latitude,
-        })
-      )
-      return
     }
 
     const clusterFeature = event?.features?.find(
@@ -215,18 +201,16 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
       ],
     }
   }
-  const uniqueFeatures = uniqBy(uniqBy(event.features, 'id'), 'properties.value')
 
-  const tooltipEventFeatures: TooltipEventFeature[] = uniqueFeatures.flatMap((feature) => {
+  const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
     let dataview
     if (feature.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID) {
       const { temporalgrid } = feature
-      if (!temporalgrid || temporalgrid.sublayerIndex === undefined || !temporalgrid.visible) {
+      if (!temporalgrid || temporalgrid.sublayerId === undefined || !temporalgrid.visible) {
         return []
       }
 
-      // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
-      dataview = temporalgridDataviews?.[temporalgrid?.sublayerIndex]
+      dataview = temporalgridDataviews?.find((dataview) => dataview.id === temporalgrid.sublayerId)
     } else {
       dataview = dataviews?.find((dataview) => {
         // Needed to get only the initial part to support multiple generator
@@ -246,7 +230,6 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
           type: Generators.Type.GL,
           value: feature.properties.label,
           properties: {},
-          // TODO: I have no idea wwhat to put here
           category: DataviewCategory.Context,
         }
         return tooltipWorkspaceFeature
@@ -312,9 +295,10 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
 
 export const useMapStyle = () => {
   const map = useMapInstance()
+
   // Used to ensure the style is refreshed on load finish
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const tilesLoading = useTilesLoading(map)
+  const mapLoaded = useMapLoaded()
 
   if (!map) return null
 

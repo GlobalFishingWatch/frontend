@@ -6,6 +6,18 @@ const roundNumber = (number: number) => {
   return rounded
 }
 
+export const getCleanBreaks = (breaks: number[]): number[] => {
+  const prevStepValues: number[] = []
+  return breaks.map((stop, index) => {
+    let roundValue = roundNumber(stop)
+    if (prevStepValues.indexOf(roundValue) > -1) {
+      roundValue = prevStepValues[index - 1] + 1
+    }
+    prevStepValues.push(roundValue)
+    return roundValue
+  })
+}
+
 /**
  * Generates a breaks array made of:
  * - 0 --> might need to revise if its always the base value, ie to we have diverging scales at some point?
@@ -44,16 +56,7 @@ const getBreaks = (
   const intermediateBreaks = intermediateBreakRatios.map((ratio) => scale(ratio))
   let breaks: number[] = [0, min, ...intermediateBreaks, roundedMax]
 
-  // Avoid repeating values
-  const prevStepValues: number[] = []
-  breaks = breaks.map((stop, index) => {
-    let roundValue = roundNumber(stop)
-    if (prevStepValues.indexOf(roundValue) > -1) {
-      roundValue = prevStepValues[index - 1] + 1
-    }
-    prevStepValues.push(roundValue)
-    return roundValue
-  })
+  breaks = getCleanBreaks(breaks)
 
   // apply multiplier
   breaks = breaks.map((number) => number * multiplier)

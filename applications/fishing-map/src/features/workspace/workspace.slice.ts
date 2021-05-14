@@ -21,7 +21,7 @@ import {
 import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
 import { selectCustomWorkspace } from 'features/app/app.selectors'
-import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
+import { DEFAULT_DATAVIEW_IDS, getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
@@ -86,13 +86,16 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         return
       }
       const dataviewIds = [
+        ...DEFAULT_DATAVIEW_IDS,
         ...(workspace.dataviews?.map(({ id }) => id as number) || []),
-        ...uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId)),
+        ...workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId),
       ]
 
+      const uniqDataviewIds = uniq(dataviewIds)
+
       let dataviews: Dataview[] = []
-      if (dataviewIds?.length) {
-        const fetchDataviewsAction: any = dispatch(fetchDataviewsByIdsThunk(dataviewIds))
+      if (uniqDataviewIds?.length) {
+        const fetchDataviewsAction: any = dispatch(fetchDataviewsByIdsThunk(uniqDataviewIds))
         signal.addEventListener('abort', fetchDataviewsAction.abort)
         const { payload } = await fetchDataviewsAction
         if (payload?.length) {
@@ -137,21 +140,26 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
 
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
       let workspaceUpdated
-      try {
-        const version = selectVersion(state)
-        const name = tries > 0 ? defaultName + `_${tries}` : defaultName
-        workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces`, {
-          method: 'POST',
-          body: { ...mergedWorkspace, name },
-        } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
-      } catch (e) {
-        // Means we already have a workspace with this name
-        if (e.status === 400) {
-          return await saveWorkspace(tries + 1)
+      if (tries < 5) {
+        try {
+          const version = selectVersion(state)
+          const name = tries > 0 ? defaultName + `_${tries}` : defaultName
+          workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
+            `/${version}/workspaces`,
+            {
+              method: 'POST',
+              body: { ...mergedWorkspace, name },
+            } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
+          )
+        } catch (e) {
+          // Means we already have a workspace with this name
+          if (e.status === 400) {
+            return await saveWorkspace(tries + 1)
+          }
+          throw e
         }
-        throw e
+        return workspaceUpdated
       }
-      return workspaceUpdated
     }
 
     const workspaceUpdated = await saveWorkspace()

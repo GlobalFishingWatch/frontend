@@ -1,5 +1,82 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.5.2
+
+### Patch Changes
+
+- 6b374674: Fishing map/minor fixes
+- Updated dependencies [6b374674]
+  - @globalfishingwatch/layer-composer@6.1.3
+
+## 6.5.1
+
+### Patch Changes
+
+- 67fdfec5: fix color ramps
+- Updated dependencies [67fdfec5]
+  - @globalfishingwatch/layer-composer@6.0.3
+
+## 6.5.0
+
+### Minor Changes
+
+- cfae2b4b: new dataview categories
+
+### Patch Changes
+
+- Updated dependencies [cfae2b4b]
+- Updated dependencies [cfae2b4b]
+  - @globalfishingwatch/layer-composer@6.0.2
+  - @globalfishingwatch/api-types@4.2.0
+
+## 6.4.3
+
+### Patch Changes
+
+- a5339163: fix tiles api
+- Updated dependencies [a5339163]
+  - @globalfishingwatch/api-types@4.1.2
+
+## 6.4.2
+
+### Patch Changes
+
+- fix tiles api url
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@6.0.1
+
+## 6.4.1
+
+### Patch Changes
+
+- 4c7a6f0e: set max zoom 8 in env layers
+
+## 6.4.0
+
+### Minor Changes
+
+- 5d252a2d: prepare datasets extents to layer-composer
+
+### Patch Changes
+
+- Updated dependencies [5d252a2d]
+- Updated dependencies [5d252a2d]
+  - @globalfishingwatch/api-types@4.1.0
+  - @globalfishingwatch/layer-composer@6.0.0
+
+## 6.3.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/api-types@4.0.0
+  - @globalfishingwatch/layer-composer@5.3.0
+  - @globalfishingwatch/api-client@1.6.9
+
 ## 6.2.4
 
 ### Patch Changes

@@ -316,7 +316,6 @@ for (var i = 0; i < 20; i++) {
     sublayerVisibility: [true, true, true],
   })
   const delta = performance.now() - t
-  // console.log(delta)
   sum += delta
 }
-console.log('avg:', sum / 20)
+console.info('avg:', sum / 20)

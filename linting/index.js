@@ -1,10 +1,5 @@
 module.exports = {
-  extends: [
-    'react-app',
-    'plugin:prettier/recommended',
-    'plugin:import/errors',
-    'plugin:import/warnings',
-  ],
+  extends: ['react-app', 'plugin:import/errors', 'plugin:import/warnings', 'prettier'],
   plugins: ['react', 'import'],
   rules: {
     'import/default': 0,
@@ -33,7 +28,6 @@ module.exports = {
         pathGroupsExcludedImportTypes: ['builtin'],
       },
     ],
-    'prettier/prettier': 1,
     'react/prop-types': 1,
     'react/require-default-props': 1,
     'react/jsx-fragments': ['error', 'element'],

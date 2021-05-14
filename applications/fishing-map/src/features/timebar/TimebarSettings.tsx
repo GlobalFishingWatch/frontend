@@ -9,6 +9,7 @@ import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveActivityDataviews,
+  selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { TIMEBAR_EVENT_OPTIONS, TIMEBAR_GRAPH_OPTIONS } from 'data/config'
@@ -21,7 +22,8 @@ const TimebarSettings = () => {
   const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
-  const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
+  const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const timebarEvents = useSelector(selectTimebarEvents)
   const timebarGraph = useSelector(selectTimebarGraph)
   const { dispatchQueryParams } = useLocationConnect()
@@ -55,7 +57,7 @@ const TimebarSettings = () => {
   }
   const expandedContainerRef = useClickedOutside(closeOptions)
 
-  const timebarGraphEnabled = activeVesselDataviews && activeVesselDataviews?.length <= 2
+  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews?.length <= 2
   return (
     <div className={cx('print-hidden', styles.container)} ref={expandedContainerRef}>
       <IconButton
@@ -86,19 +88,19 @@ const TimebarSettings = () => {
           />
           <Fragment>
             <Radio
-              label={t('vessel.tracks', 'Vessel Tracks')}
+              label={t('timebarSettings.tracks', 'Tracks')}
               active={timebarVisualisation === TimebarVisualisations.Vessel}
-              disabled={!activeVesselDataviews?.length}
+              disabled={!activeTrackDataviews?.length}
               tooltip={
-                !activeVesselDataviews?.length
+                !activeTrackDataviews?.length
                   ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
                   : t('timebarSettings.showTracks', 'Show tracks graph')
               }
               onClick={setVesselActive}
             />
             {timebarVisualisation === TimebarVisualisations.Vessel &&
-              activeVesselDataviews &&
-              activeVesselDataviews.length > 0 && (
+              activeVesselsDataviews &&
+              activeVesselsDataviews.length > 0 && (
                 <div className={styles.vesselTrackOptions}>
                   <Select
                     // label={t('common.events', 'Events')}

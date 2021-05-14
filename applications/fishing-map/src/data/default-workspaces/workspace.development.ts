@@ -1,13 +1,16 @@
 import { Workspace } from '@globalfishingwatch/api-types'
-import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
+import { APP_NAME, DEFAULT_TIME_RANGE } from 'data/config'
 import {
-  DEFAULT_CONTEXT_DATAVIEW_ID,
-  DEFAULT_ENVIRONMENT_DATAVIEW_ID,
+  WorkspaceCategories,
+  DEFAULT_WORKSPACE_ID,
+  DEFAULT_EEZ_DATAVIEW_ID,
+  DEFAULT_MPA_DATAVIEW_ID,
+  DEFAULT_RFMO_DATAVIEW_ID,
+  DEFAULT_BASEMAP_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_PRESENCE_DATAVIEW_ID,
-  DEFAULT_VESSEL_DATAVIEW_ID,
-  DEFAULT_WORKSPACE_ID,
-  WorkspaceCategories,
+  DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
+  DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
 } from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
@@ -17,8 +20,8 @@ const workspace: Workspace<WorkspaceState> = {
   name: 'Default public Fishing Map workspace',
   description: DEFAULT_WORKSPACE_ID,
   category: WorkspaceCategories.FishingActivity,
-  startAt: new Date(Date.UTC(2018, 0, 1)).toISOString(),
-  endAt: DEFAULT_WORKSPACE.end,
+  startAt: DEFAULT_TIME_RANGE.start,
+  endAt: DEFAULT_TIME_RANGE.end,
   viewport: {
     zoom: 0,
     latitude: 30,
@@ -34,24 +37,40 @@ const workspace: Workspace<WorkspaceState> = {
     // timebarGraph: '',
   },
   ownerId: 0,
-  dataviews: [
-    { id: DEFAULT_VESSEL_DATAVIEW_ID }, // Fetch vessel information
-    { id: DEFAULT_PRESENCE_DATAVIEW_ID }, // Default dataview for new presence layers
-    { id: DEFAULT_CONTEXT_DATAVIEW_ID }, // Default context dataview for new layers
-    { id: DEFAULT_ENVIRONMENT_DATAVIEW_ID }, // Default environmet dataview for new layers
-  ],
+  dataviews: [],
   dataviewInstances: [
     {
       id: 'basemap',
-      dataviewId: 90,
+      dataviewId: DEFAULT_BASEMAP_DATAVIEW_ID,
     },
     {
-      id: 'fishing-1',
+      id: 'fishing-ais',
       config: {
-        // datasets: [`fishing_v5`],
-        // filters: { flag: ['ESP'] },
+        datasets: ['public-global-fishing-effort:v20201001'],
       },
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
+    },
+    {
+      id: 'fishing-vms',
+      config: {
+        color: '#FFAA0D',
+        colorRamp: 'orange',
+        datasets: [
+          'public-chile-fishing-effort:v20200331',
+          'public-indonesia-fishing-effort:v20200320',
+          'public-panama-fishing-effort:v20200331',
+          'public-peru-fishing-effort:v20200324',
+        ],
+      },
+      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
+    },
+    {
+      id: 'presence',
+      config: {
+        color: '#FF64CE',
+        colorRamp: 'magenta',
+      },
+      dataviewId: DEFAULT_PRESENCE_DATAVIEW_ID,
     },
     {
       id: 'context-layer-eez',
@@ -59,7 +78,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#069688',
         visible: true,
       },
-      dataviewId: 94,
+      dataviewId: DEFAULT_EEZ_DATAVIEW_ID,
     },
     {
       id: 'context-layer-mpa-no-take',
@@ -67,7 +86,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#F4511F',
         visible: false,
       },
-      dataviewId: 99,
+      dataviewId: DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
     },
     {
       id: 'context-layer-mpa-restricted',
@@ -75,7 +94,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#F09300',
         visible: false,
       },
-      dataviewId: 100,
+      dataviewId: DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
     },
     {
       id: 'context-layer-mpa',
@@ -83,7 +102,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#1AFF6B',
         visible: false,
       },
-      dataviewId: 98,
+      dataviewId: DEFAULT_MPA_DATAVIEW_ID,
     },
     {
       id: 'context-layer-rfmo',
@@ -91,7 +110,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#6b67e5',
         visible: false,
       },
-      dataviewId: 95,
+      dataviewId: DEFAULT_RFMO_DATAVIEW_ID,
     },
     {
       id: 'context-layer-wpp-nri',
@@ -107,15 +126,6 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: 97,
     },
-    // {
-    //   id: 'salinity-for-caribe',
-    //   config: {
-    //     visible: true,
-    //     color: '#FFAE9B',
-    //     colorRamp: 'salmon',
-    //   },
-    //   dataviewId: 80,
-    // },
   ],
 }
 

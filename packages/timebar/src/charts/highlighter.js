@@ -56,6 +56,8 @@ const getValuesAtCenter = (activity, centerDate) => {
   })
 }
 
+const truncDecimals = (num) => (Math.round(num * 100) / 100).toFixed(2)
+
 const getFormattedValuesAtCenter = (activity, centerDate, unit) => {
   const valuesAtCenter = getValuesAtCenter(activity, centerDate)
   const valueLabel =
@@ -70,19 +72,16 @@ const getFormattedValuesAtCenter = (activity, centerDate, unit) => {
   return valueLabel
 }
 
-const truncDecimals = (num) => (Math.round(num * 100) / 100).toFixed(2)
-
 const Highlighter = ({ hoverStart, hoverEnd, activity, unit }) => {
   const { outerScale, graphHeight, tooltipContainer } = useContext(TimelineContext)
   const { width, left, center, centerDate, centerDateLabel } = useMemo(
     () => getCoords(hoverStart, hoverEnd, outerScale),
     [hoverStart, hoverEnd, outerScale]
   )
-  const valueLabel = useMemo(() => getFormattedValuesAtCenter(activity, centerDate, unit), [
-    activity,
-    centerDate,
-    unit,
-  ])
+  const valueLabel = useMemo(
+    () => getFormattedValuesAtCenter(activity, centerDate, unit),
+    [activity, centerDate, unit]
+  )
 
   if (hoverStart === null || hoverEnd === null) {
     return null

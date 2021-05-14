@@ -12,8 +12,10 @@ import {
   selectUrlViewport,
   selectUrlTimeRange,
   selectLocationCategory,
+  selectActivityCategory,
 } from 'routes/routes.selectors'
 import {
+  BivariateDataviews,
   TimebarEvents,
   TimebarGraphs,
   TimebarVisualisations,
@@ -21,7 +23,10 @@ import {
   WorkspaceState,
   WorkspaceStateProperty,
 } from 'types'
-import { selectDataviewInstancesMerged } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveVesselsDataviews,
+  selectDataviewInstancesMerged,
+} from 'features/dataviews/dataviews.selectors'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -39,8 +44,8 @@ export const selectTimeRange = createSelector(
   [selectUrlTimeRange, selectWorkspaceTimeRange],
   ({ start, end }, workspaceTimerange) => {
     return {
-      start: start || workspaceTimerange?.start || DEFAULT_WORKSPACE.start,
-      end: end || workspaceTimerange?.end || DEFAULT_WORKSPACE.end,
+      start: start || workspaceTimerange?.start,
+      end: end || workspaceTimerange?.end,
     }
   }
 )
@@ -68,9 +73,9 @@ export const selectSearchQuery = createSelector(
   }
 )
 
-export const selectBivariate = createSelector(
-  [selectWorkspaceStateProperty('bivariate')],
-  (bivariate): boolean => {
+export const selectBivariateDataviews = createSelector(
+  [selectWorkspaceStateProperty('bivariateDataviews')],
+  (bivariate): BivariateDataviews => {
     return bivariate
   }
 )
@@ -97,22 +102,37 @@ export const selectTimebarEvents = createSelector(
 )
 
 export const selectTimebarGraph = createSelector(
-  [selectWorkspaceStateProperty('timebarGraph')],
-  (timebarGraph): TimebarGraphs => {
-    return timebarGraph
+  [selectWorkspaceStateProperty('timebarGraph'), selectActiveVesselsDataviews],
+  (timebarGraph, vessels): TimebarGraphs => {
+    return vessels && vessels.length ? timebarGraph : TimebarGraphs.None
   }
 )
 
 export const selectWorkspaceAppState = createSelector(
   [
-    selectBivariate,
+    selectBivariateDataviews,
     selectSidebarOpen,
     selectTimebarVisualisation,
     selectTimebarEvents,
     selectTimebarGraph,
+    selectActivityCategory,
   ],
-  (bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph) => {
-    return { bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph }
+  (
+    bivariateDataviews,
+    sidebarOpen,
+    timebarVisualisation,
+    timebarEvents,
+    timebarGraph,
+    activityCategory
+  ) => {
+    return {
+      bivariateDataviews,
+      sidebarOpen,
+      timebarVisualisation,
+      timebarEvents,
+      timebarGraph,
+      activityCategory,
+    }
   }
 )
 

@@ -69,22 +69,22 @@ function Analysis() {
   const contextSourcesIds = useMemo(() => [contextSourceId], [contextSourceId])
   const filter = useMemo(() => ['==', 'gfw_id', parseInt(areaId)], [areaId])
 
-  const {
-    sourcesFeatures: contextAreaFeaturesArr,
-    haveSourcesLoaded: contextAreaSourceLoaded,
-  } = useFeatures({
-    sourcesIds: contextSourcesIds,
-    sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
-    filter,
-  })
+  const { sourcesFeatures: contextAreaFeaturesArr, haveSourcesLoaded: contextAreaSourceLoaded } =
+    useFeatures({
+      sourcesIds: contextSourcesIds,
+      sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+      filter,
+    })
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
   useEffect(() => {
-    const startDateTime = DateTime.fromISO(start)
-    const endDateTime = DateTime.fromISO(end)
-    const duration = endDateTime.diff(startDateTime, 'years')
-    setTimeRangeTooLong(duration.years > 1)
+    if (start && end) {
+      const startDateTime = DateTime.fromISO(start)
+      const endDateTime = DateTime.fromISO(end)
+      const duration = endDateTime.diff(startDateTime, 'years')
+      setTimeRangeTooLong(duration.years > 1)
+    }
   }, [start, end])
 
   useEffect(() => {
@@ -194,11 +194,8 @@ function Analysis() {
     }
   }, [])
 
-  const {
-    generatingTimeseries,
-    haveSourcesLoaded,
-    sourcesTimeseriesFiltered,
-  } = useFilteredTimeSeries()
+  const { generatingTimeseries, haveSourcesLoaded, sourcesTimeseriesFiltered } =
+    useFilteredTimeSeries()
 
   return (
     <div className={styles.container}>

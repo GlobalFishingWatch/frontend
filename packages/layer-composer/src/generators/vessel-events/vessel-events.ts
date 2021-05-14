@@ -11,7 +11,6 @@ import {
 } from '../types'
 import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
-import { isConfigVisible } from '../utils'
 
 const EVENTS_COLORS: Dictionary<string> = {
   encounter: '#FAE9A0',
@@ -84,7 +83,6 @@ class VesselsEventsGenerator {
     }
 
     const activeFilter = ['case', ['==', ['get', 'active'], true]]
-    const visibility = isConfigVisible(config)
     const layers: any[] = [
       {
         id: `${config.id}_background`,
@@ -96,9 +94,6 @@ class VesselsEventsGenerator {
           'circle-stroke-color': [...activeFilter, 'rgba(0, 193, 231, 1)', DEFAULT_LANDMASS_COLOR],
           'circle-radius': [...activeFilter, 12, 5],
         },
-        layout: {
-          visibility,
-        },
         metadata: {
           group: Group.Point,
         },
@@ -108,7 +103,6 @@ class VesselsEventsGenerator {
         source: config.id,
         type: 'symbol',
         layout: {
-          visibility,
           'icon-allow-overlap': true,
           'icon-image': ['get', 'icon'],
           'icon-size': [...activeFilter, 1, 0],

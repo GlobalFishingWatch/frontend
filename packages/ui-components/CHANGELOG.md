@@ -1,5 +1,113 @@
 # @globalfishingwatch/ui-components
 
+## 3.1.4
+
+### Patch Changes
+
+- support disabled choice option
+
+## 3.1.3
+
+### Patch Changes
+
+- 6b374674: Fishing map/minor fixes
+- Updated dependencies [6b374674]
+  - @globalfishingwatch/layer-composer@6.1.3
+
+## 3.1.2
+
+### Patch Changes
+
+- Updated dependencies [d43610ba]
+  - @globalfishingwatch/layer-composer@6.1.2
+
+## 3.1.1
+
+### Patch Changes
+
+- Updated dependencies [b87943a6]
+  - @globalfishingwatch/layer-composer@6.1.1
+
+## 3.1.0
+
+### Minor Changes
+
+- 1050379b: legends with loading support
+
+### Patch Changes
+
+- Updated dependencies [1050379b]
+  - @globalfishingwatch/layer-composer@6.1.0
+
+## 3.0.6
+
+### Patch Changes
+
+- Updated dependencies [abdd6709]
+  - @globalfishingwatch/layer-composer@6.0.4
+
+## 3.0.5
+
+### Patch Changes
+
+- Updated dependencies [67fdfec5]
+  - @globalfishingwatch/layer-composer@6.0.3
+
+## 3.0.4
+
+### Patch Changes
+
+- cfae2b4b: support choice classname
+- Updated dependencies [cfae2b4b]
+  - @globalfishingwatch/layer-composer@6.0.2
+
+## 3.0.3
+
+### Patch Changes
+
+- 2f7db18f: Fishing map/color cycling
+
+## 3.0.2
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@6.0.1
+
+## 3.0.1
+
+### Patch Changes
+
+- fix tooltip
+
+## 3.0.0
+
+### Major Changes
+
+- a07dfc86: dont export types in root to get sandbox working
+
+### Patch Changes
+
+- Updated dependencies [5d252a2d]
+  - @globalfishingwatch/layer-composer@6.0.0
+
+## 2.19.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/layer-composer@5.3.0
+
+## 2.18.13
+
+### Patch Changes
+
+- 2d262d45: Fishing map/vessel search ux
+
 ## 2.18.12
 
 ### Patch Changes

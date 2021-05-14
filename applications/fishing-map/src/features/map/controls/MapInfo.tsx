@@ -17,8 +17,9 @@ export const pickDateFormatByRange = (start: string, end: string): DateTimeForma
 
 export const TimelineDatesRange = () => {
   const { start, end } = useTimerangeConnect()
-  const dateFormat = pickDateFormatByRange(start, end)
   if (!start || !end) return null
+
+  const dateFormat = pickDateFormatByRange(start, end)
   return (
     <div className={styles.dateRange}>
       <I18nDate date={start} format={dateFormat} /> - <I18nDate date={end} format={dateFormat} />

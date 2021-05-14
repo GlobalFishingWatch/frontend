@@ -32,8 +32,6 @@ const featAggTileCell = agg.main.features.find(
   (f) => f.properties._col === 48 && f.properties._row === 70
 )
 const featAggTileCellFrame = JSON.parse(featAggTileCell.properties[FRAME])
-// console.log('main', featMain)
-// console.log('interactive', featInteractive.properties.rawValues)
 
 const featAggTileRawCell = agg.interactive.features.find(
   (f) => f.properties._col === 48 && f.properties._row === 70

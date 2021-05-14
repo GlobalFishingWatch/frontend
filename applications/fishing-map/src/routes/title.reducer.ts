@@ -1,7 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit'
 import lowerCase from 'lodash/lowerCase'
 import { capitalize } from 'utils/shared'
-import i18n from 'features/i18n/i18n'
+import { t } from 'features/i18n/i18n'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from './routes'
 
 const PREFIX = 'GFW'
@@ -13,7 +13,7 @@ const titleReducer = (state = DEFAULT, action: PayloadAction<{ category?: string
     case HOME:
       return DEFAULT
     case USER:
-      return `${PREFIX} | ${i18n.t('user.profile', 'User profile')}`
+      return `${PREFIX} | ${t('user.profile', 'User profile')}`
     case WORKSPACE:
     case WORKSPACES_LIST: {
       const parsedCategory = capitalize(lowerCase(action.payload.category))

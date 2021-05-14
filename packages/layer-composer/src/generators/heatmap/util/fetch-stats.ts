@@ -1,37 +1,36 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import { stats, statsByZoom } from '../types'
+import { API_GATEWAY } from '../../../layer-composer'
+import { isUrlAbsolute } from '../../../utils'
+import { GlobalHeatmapGeneratorConfig } from '../heatmap'
+import { Stats, StatsByZoom } from '../types'
+import { toURLArray } from '.'
 
-type ExtendedPromise<T> = Promise<T> & {
-  resolved?: boolean
-  error?: boolean
-}
+let controllerCache: AbortController
+export default function fetchStats(config: GlobalHeatmapGeneratorConfig) {
+  const { token, datasets, filters, statsFilter, start, end } = config
+  const statsFilters = [filters, statsFilter].filter((f) => f).join(' AND ')
+  const dateRange = [start, end].join(',')
+  const baseUrl =
+    config.statsUrl && isUrlAbsolute(config.statsUrl as string)
+      ? config.statsUrl
+      : API_GATEWAY + config.statsUrl
+  const url = `${baseUrl}?${toURLArray('datasets', datasets)}`
 
-const controllerCache: { [key: string]: AbortController } = {}
-export default function fetchStats(
-  url: string,
-  dateRange = '',
-  serverSideFilters = '',
-  singleFrame = false,
-  token?: string
-) {
   const statsUrl = new URL(url)
-  if (singleFrame) {
-    statsUrl.searchParams.set('temporal-aggregation', 'true')
-  }
+  statsUrl.searchParams.set('temporal-aggregation', 'true')
+
   if (dateRange) {
     statsUrl.searchParams.set('date-range', dateRange)
   }
-  if (controllerCache[url]) {
-    controllerCache[url].abort()
+  if (controllerCache) {
+    controllerCache.abort()
   }
   const statsUrlString = statsUrl.toString()
-  const finalurl = serverSideFilters
-    ? statsUrlString + `&${serverSideFilters}`
-    : statsUrl.toString()
-  controllerCache[url] = new AbortController()
-  const promise: ExtendedPromise<statsByZoom> = fetch(finalurl, {
-    signal: controllerCache[url].signal,
-    ...(token && {
+  const finalurl = statsFilters ? statsUrlString + `&${statsFilters}` : statsUrl.toString()
+  controllerCache = new AbortController()
+  return fetch(finalurl, {
+    signal: controllerCache.signal,
+    ...(config.token && {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -42,20 +41,14 @@ export default function fetchStats(
       throw r
     })
     .then((statsResponse) => {
-      const stats = statsResponse.reduce((acc: statsByZoom, next: stats) => {
+      const stats = statsResponse.reduce((acc: StatsByZoom, next: Stats) => {
         acc[next.zoom] = next
         return acc
       }, {})
-      promise.resolved = true
       return stats
     })
     .catch((e) => {
       console.warn(e)
-      promise.resolved = true
-      promise.error = true
       throw e
     })
-  promise.resolved = false
-  promise.error = false
-  return promise
 }

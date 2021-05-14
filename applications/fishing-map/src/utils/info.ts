@@ -1,6 +1,6 @@
 import { Vessel } from '@globalfishingwatch/api-types/dist'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
-import i18n from '../features/i18n/i18n'
+import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
 
@@ -26,15 +26,15 @@ export const formatNumber = (num: string | number) => {
 
 export const getVesselLabel = (vessel: ExtendedFeatureVessel | Vessel, withGearType = false) => {
   if (vessel.shipname && vessel.geartype && withGearType)
-    return `${formatInfoField(vessel.shipname, 'name')} (${i18n.t(
+    return `${formatInfoField(vessel.shipname, 'name')} (${t(
       `vessel.gearTypes.${vessel.geartype}` as any,
       EMPTY_FIELD_PLACEHOLDER
     )})`
   if (vessel.shipname) return formatInfoField(vessel.shipname, 'name')
   if (vessel.registeredGearType) {
-    return `${i18n.t('vessel.unkwownVesselByGeartype', {
+    return `${t('vessel.unkwownVesselByGeartype', {
       gearType: vessel.registeredGearType,
     })}`
   }
-  return `${i18n.t('common.unknown', 'Unknown')} ${i18n.t('common.vessel', 'Vessel')}`
+  return `${t('common.unknown', 'Unknown')} ${t('common.vessel', 'Vessel')}`
 }

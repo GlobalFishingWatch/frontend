@@ -68,13 +68,8 @@ const slice = createSlice({
   },
 })
 
-export const {
-  editRuler,
-  moveCurrentRuler,
-  toggleRulersEditing,
-  setRulersEditing,
-  resetRulers,
-} = slice.actions
+export const { editRuler, moveCurrentRuler, toggleRulersEditing, setRulersEditing, resetRulers } =
+  slice.actions
 
 export const selectEditing = (state: RootState) => state.rulers.editing
 export const selectNumRulers = (state: RootState) => state.rulers.rulers.length

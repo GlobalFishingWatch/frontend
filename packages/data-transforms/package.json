@@ -1,15 +1,15 @@
 {
   "name": "@globalfishingwatch/data-transforms",
-  "version": "1.1.1",
+  "version": "1.2.2",
   "description": "Utils to decode various data formats",
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "start": "rollup -c ./rollup.config.js -w",
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "test": "jest",
     "clean": "rimraf dist/*",
-    "prepare": "yarn build",
-    "prepublishOnly": "yarn build"
+    "prepare": "yarn build"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^16.0.0",
@@ -18,13 +18,20 @@
     "@rollup/plugin-typescript": "^6.1.0",
     "@rollup/plugin-url": "^5.0.1",
     "@types/geojson": "^7946.0.7",
+    "@types/jest": "^26.0.22",
+    "@types/papaparse": "^5.2.5",
     "cross-env": "^7.0.3",
     "rollup": "^2.33.1",
     "rollup-plugin-multi-input": "^1.1.1",
     "rollup-plugin-postcss": "^3.1.8",
-    "rollup-plugin-terser": "^7.0.2"
+    "rollup-plugin-terser": "^7.0.2",
+    "ts-jest": "^26.5.4"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "dependencies": {
+    "papaparse": "^5.3.0"
+  },
+  "gitHead": "dd9006c455eb7ee9f20cbdc62854d9a16bfc94c1"
 }

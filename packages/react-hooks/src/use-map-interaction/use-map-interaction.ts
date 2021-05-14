@@ -76,22 +76,22 @@ const getExtendedFeatures = (
           multiplier: generatorMetadata?.multiplier,
         })
         if (!values || !values.filter((v: number) => v > 0).length) return []
-
         const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
+        const sublayers = generatorMetadata?.sublayers
         return values.flatMap((value: any, i: number) => {
           if (value === 0) return []
-          return [
-            {
-              ...extendedFeature,
-              temporalgrid: {
-                sublayerIndex: i,
-                visible: visibleSublayers[i] === true,
-                col: properties._col as number,
-                row: properties._row as number,
-              },
-              value,
+          const temporalGridExtendedFeature: ExtendedFeature = {
+            ...extendedFeature,
+            temporalgrid: {
+              sublayerIndex: i,
+              sublayerId: sublayers[i].id,
+              visible: visibleSublayers[i] === true,
+              col: properties._col as number,
+              row: properties._row as number,
             },
-          ]
+            value,
+          }
+          return [temporalGridExtendedFeature]
         })
       case Generators.Type.Context:
         return {
@@ -153,10 +153,10 @@ export const useFeatureState = (map?: Map) => {
     [map]
   )
 
-  const featureState = useMemo(() => ({ cleanFeatureState, updateFeatureState }), [
-    cleanFeatureState,
-    updateFeatureState,
-  ])
+  const featureState = useMemo(
+    () => ({ cleanFeatureState, updateFeatureState }),
+    [cleanFeatureState, updateFeatureState]
+  )
   return featureState
 }
 
@@ -171,6 +171,7 @@ export const useMapClick = (
       cleanFeatureState('click')
       if (!clickCallback) return
       const interactionEvent: InteractionEvent = {
+        type: 'click',
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
         point: event.point,
@@ -224,6 +225,7 @@ export const useMapHover = (
       // Turn all sources with active feature states off
       cleanFeatureState()
       const hoverEvent: InteractionEvent = {
+        type: 'hover',
         point: event.point,
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],

@@ -46,8 +46,7 @@ test('coordinate properties array should have same length as coordinates', () =>
   simplifiedGeojsons.forEach((simplified) => {
     const geojson = simplified.geojson
     const numCoordinates = geojson.features[0].geometry.coordinates.length
-    // console.log(geojson.features[0].properties!.coordinateProperties)
-    const numCoordinateProps = geojson.features[0].properties!.coordinateProperties.times.length
+    const numCoordinateProps = geojson.features[0].properties?.coordinateProperties.times.length
     expect(numCoordinateProps).toBe(numCoordinates)
   })
 })

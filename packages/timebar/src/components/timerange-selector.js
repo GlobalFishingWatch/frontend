@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import cx from 'classnames'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
 import classNames from 'classnames'
 import { getTime } from '../utils/internal-utils'
+import { getLast30Days } from '../utils'
 import DateSelector from './date-selector'
 import styles from './timerange-selector.module.css'
 
@@ -64,19 +64,14 @@ class TimeRangeSelector extends Component {
   }
 
   last30days = () => {
-    const { absoluteEnd, onSubmit } = this.props
-    onSubmit(dayjs(absoluteEnd).utc().subtract(30, 'day').toISOString(), absoluteEnd)
+    const { onSubmit } = this.props
+    const { start, end } = getLast30Days()
+    onSubmit(start, end)
   }
 
   render() {
-    const {
-      start,
-      end,
-      startCanIncrement,
-      startCanDecrement,
-      endCanIncrement,
-      endCanDecrement,
-    } = this.state
+    const { start, end, startCanIncrement, startCanDecrement, endCanIncrement, endCanDecrement } =
+      this.state
     const { labels, absoluteStart, absoluteEnd } = this.props
 
     if (start === undefined) {

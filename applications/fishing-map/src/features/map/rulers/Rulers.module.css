@@ -10,7 +10,7 @@
 
 .num {
   font: var(--font-XS);
-  transform: translate(-2px,5px);
+  transform: translate(-2px, 5px);
 }
 
 .remove {

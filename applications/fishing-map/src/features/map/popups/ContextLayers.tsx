@@ -12,6 +12,7 @@ import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import useMapInstance, { useMapContext } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
+import { selectSidebarOpen } from 'features/app/app.selectors'
 import { setClickedEvent } from '../map.slice'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './Popup.module.css'
@@ -39,6 +40,8 @@ function FeatureRow({
 }: FeatureRowProps) {
   const { t } = useTranslation()
   const context = useMapContext()
+  const isSidebarOpen = useSelector(selectSidebarOpen)
+  const { dispatchQueryParams } = useLocationConnect()
 
   const handleReportClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>) => {
@@ -46,8 +49,11 @@ function FeatureRow({
       if (onReportClick) {
         onReportClick(feature)
       }
+      if (!isSidebarOpen) {
+        dispatchQueryParams({ sidebarOpen: true })
+      }
     },
-    [context.eventManager, feature, onReportClick]
+    [context.eventManager, dispatchQueryParams, feature, isSidebarOpen, onReportClick]
   )
 
   if (!feature.value) return null

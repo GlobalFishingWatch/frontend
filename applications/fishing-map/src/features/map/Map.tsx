@@ -1,12 +1,11 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import { createPortal } from 'react-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { scaleLinear } from 'd3-scale'
 import { useTranslation } from 'react-i18next'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
-import useTilesLoading from '@globalfishingwatch/react-hooks/dist/use-tiles-loading'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import {
   useMapClick,
@@ -18,11 +17,9 @@ import { ExtendedStyleMeta, Generators } from '@globalfishingwatch/layer-compose
 import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import useMapInstance from 'features/map/map-context.hooks'
-import i18n from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
-import { selectEditing, moveCurrentRuler } from 'features/map/controls/rulers.slice'
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
@@ -32,7 +29,8 @@ import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { SliceInteractionEvent } from './map.slice'
-import { useHasSourceLoaded } from './map-features.hooks'
+import { useHaveSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
+import useRulers from './rulers/rulers.hooks'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
@@ -59,50 +57,44 @@ const handleError = ({ error }: any) => {
 }
 
 const MapWrapper = (): React.ReactElement | null => {
+  // Used it only once here to attach the listener only once
+  useSetMapIdleAtom()
   const map = useMapInstance()
   const { t } = useTranslation()
-
-  const dispatch = useDispatch()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
-  const { style } = useLayerComposer(generatorsConfig, globalConfig)
+  const { style, loading: layerComposerLoading } = useLayerComposer(generatorsConfig, globalConfig)
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
   const { cleanFeatureState } = useFeatureState(map)
+  const { onMapHoverWithRuler, onMapClickWithRuler, getRulersCursor, rulersEditing } = useRulers()
+
   const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
+  const currentClickCallback = useMemo(() => {
+    return rulersEditing ? onMapClickWithRuler : onMapClick
+  }, [rulersEditing, onMapClickWithRuler, onMapClick])
   const clickedTooltipEvent = useMapTooltip(clickedEvent)
-  const rulersEditing = useSelector(selectEditing)
   const closePopup = useCallback(() => {
     cleanFeatureState('click')
     dispatchClickedEvent(null)
   }, [cleanFeatureState, dispatchClickedEvent])
 
   const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
-  const handleHoverEvent = useCallback(
-    (event) => {
-      if (rulersEditing) {
-        const center = {
-          longitude: event.longitude,
-          latitude: event.latitude,
-        }
-        dispatch(moveCurrentRuler(center))
-      } else {
-        setHoveredEvent(event)
-      }
-    },
-    [dispatch, rulersEditing]
-  )
-  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
-    null
-  )
+
+  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] =
+    useState<SliceInteractionEvent | null>(null)
   const onMapHover = useMapHover(
-    handleHoverEvent as InteractionEventCallback,
+    setHoveredEvent as InteractionEventCallback,
     setHoveredDebouncedEvent as InteractionEventCallback,
     map,
     style?.metadata
   )
+  const currentMapHoverCallback = useMemo(() => {
+    return rulersEditing ? onMapHoverWithRuler : onMapHover
+  }, [rulersEditing, onMapHoverWithRuler, onMapHover])
+
   const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
 
   const resetHoverState = useCallback(() => {
@@ -122,39 +114,31 @@ const MapWrapper = (): React.ReactElement | null => {
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
 
-  const legendsTranslated = useMemo(
-    () =>
-      mapLegends?.map((legend) => {
-        const isSquareKm = (legend.gridArea as number) > 50000
-        let label = legend.unit || ''
-        if (legend.generatorType === GeneratorType.HeatmapAnimated) {
-          const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
-          const gridAreaFormatted = gridArea
-            ? formatI18nNumber(gridArea, {
-                style: 'unit',
-                unit: isSquareKm ? 'kilometer' : 'meter',
-                unitDisplay: 'short',
-              })
-            : ''
-          if (legend.unit === 'hours') {
-            label = `${i18n.t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
-          }
+  const legendsTranslated = useMemo(() => {
+    return mapLegends?.map((legend) => {
+      const isSquareKm = (legend.gridArea as number) > 50000
+      let label = legend.unit || ''
+      if (legend.generatorType === GeneratorType.HeatmapAnimated) {
+        const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+        const gridAreaFormatted = gridArea
+          ? formatI18nNumber(gridArea, {
+              style: 'unit',
+              unit: isSquareKm ? 'kilometer' : 'meter',
+              unitDisplay: 'short',
+            })
+          : ''
+        if (legend.unit === 'hours') {
+          label = `${t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
         }
-        return { ...legend, label }
-      }),
-    [mapLegends]
-  )
+      }
+      return { ...legend, label }
+    })
+  }, [mapLegends, t])
 
   const debugOptions = useSelector(selectDebugOptions)
 
-  const getRulersCursor = useCallback(() => {
-    return 'crosshair'
-  }, [])
-
-  // TODO handle also in case of error
-  // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
-  const tilesLoading = useTilesLoading(map)
-  const encounterSourceLoaded = useHasSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const mapLoaded = useMapLoaded()
+  const encounterSourceLoaded = useHaveSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
 
   const getCursor = useCallback(
     (state) => {
@@ -188,6 +172,7 @@ const MapWrapper = (): React.ReactElement | null => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
+
   return (
     <div className={styles.container}>
       {<MapScreenshot map={map} />}
@@ -207,8 +192,8 @@ const MapWrapper = (): React.ReactElement | null => {
           getCursor={rulersEditing ? getRulersCursor : getCursor}
           interactiveLayerIds={rulersEditing ? undefined : style?.metadata?.interactiveLayerIds}
           clickRadius={clickRadiusScale(viewport.zoom)}
-          onClick={onMapClick}
-          onHover={onMapHover}
+          onClick={currentClickCallback}
+          onHover={currentMapHoverCallback}
           onError={handleError}
           onMouseOut={resetHoverState}
           transitionDuration={viewport.transitionDuration}
@@ -230,7 +215,7 @@ const MapWrapper = (): React.ReactElement | null => {
           <MapInfo center={hoveredEvent} />
         </InteractiveMap>
       )}
-      <MapControls onMouseEnter={resetHoverState} mapLoading={tilesLoading} />
+      <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
       {legendsTranslated?.map((legend: any) => {
         const legendDomElement = document.getElementById(legend.id as string)
         if (legendDomElement) {
