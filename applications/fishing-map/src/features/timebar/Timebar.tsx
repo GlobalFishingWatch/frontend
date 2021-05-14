@@ -71,7 +71,7 @@ const TimebarWrapper = () => {
     if (
       timebarVisualisation !== TimebarVisualisations.Heatmap ||
       !visibleTemporalGridDataviews?.length ||
-      !isSmallScreen
+      isSmallScreen
     ) {
       setStackedActivity(undefined)
       return
