@@ -12,6 +12,7 @@ type ActiveChoiceProperties = {
 interface ChoiceProps {
   options: ChoiceOption[]
   activeOption: string
+  disabledTooltip?: string
   onOptionClick?: (option: ChoiceOption, e: React.MouseEvent) => void
   size?: 'default' | 'small'
   className?: string
@@ -21,15 +22,15 @@ function Choice({
   activeOption,
   options,
   onOptionClick,
+  disabledTooltip,
   size = 'default',
   className = '',
 }: ChoiceProps) {
   const activeOptionId = activeOption || options?.[0]?.id
 
   const activeRef = useRef<HTMLLIElement | null>(null)
-  const [activeElementProperties, setActiveElementProperties] = useState<
-    ActiveChoiceProperties | undefined
-  >()
+  const [activeElementProperties, setActiveElementProperties] =
+    useState<ActiveChoiceProperties | undefined>()
 
   const onOptionClickHandle = (option: ChoiceOption, e: React.MouseEvent) => {
     if (activeOptionId === option.id) return
@@ -81,9 +82,14 @@ function Choice({
               ref={optionSelected ? activeRef : null}
             >
               <Button
-                className={cx(styles.optionButton, { [styles.optionActive]: optionSelected })}
+                disabled={option.disabled}
+                className={cx(styles.optionButton, {
+                  [styles.optionActive]: optionSelected,
+                  [styles.disabled]: option.disabled,
+                })}
                 type="secondary"
-                onClick={(e) => onOptionClickHandle(option, e)}
+                tooltip={option.disabled ? disabledTooltip : ''}
+                onClick={(e) => !option.disabled && onOptionClickHandle(option, e)}
                 size={size}
               >
                 {option.title}
