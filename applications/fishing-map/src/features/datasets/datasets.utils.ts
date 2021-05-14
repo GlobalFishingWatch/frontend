@@ -8,6 +8,10 @@ import { t } from 'features/i18n/i18n'
 export type SupportedDatasetSchema = 'geartype' | 'fleet' | 'origin' | 'vessel_type'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
+export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boolean) => {
+  return datasets.filter((dataset) => dataset.id.includes(isGuestUser ? 'public-' : 'full-'))
+}
+
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
   return dataset.schema?.[schema]?.enum !== undefined && dataset.schema?.[schema].enum.length > 0
 }

@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import MultiSelect from '@globalfishingwatch/ui-components/dist/multi-select'
 import InputDate from '@globalfishingwatch/ui-components/dist/input-date'
+import { Dataset } from '@globalfishingwatch/api-types/dist'
 import { getFlags } from 'utils/flags'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { DEFAULT_WORKSPACE } from 'data/config'
@@ -11,26 +11,25 @@ import { getFiltersBySchema, SchemaFieldDataview } from 'features/datasets/datas
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useSearchFiltersConnect } from './search.hook'
 import styles from './SearchFilters.module.css'
-import { selectAllowedVesselsDatasets } from './search.selectors'
 
 type SearchFiltersProps = {
+  datasets: Dataset[]
   className?: string
 }
 
-function SearchFilters({ className = '' }: SearchFiltersProps) {
+function SearchFilters({ datasets, className = '' }: SearchFiltersProps) {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
   const { flags, sources, fleets, origins, activeAfterDate, activeBeforeDate } = searchFilters
 
   const flagOptions = useMemo(getFlags, [])
-  const searchDatasets = useSelector(selectAllowedVesselsDatasets)
   const sourceOptions = useMemo(
     () =>
-      searchDatasets
+      datasets
         ?.sort((a, b) => a.name.localeCompare(b.name))
         .map(({ id, name }) => ({ id, label: name })),
-    [searchDatasets]
+    [datasets]
   )
 
   useEffect(() => {
@@ -50,7 +49,7 @@ function SearchFilters({ className = '' }: SearchFiltersProps) {
         origin: origins?.map(({ id }) => id),
       },
     },
-    datasets: searchDatasets,
+    datasets,
   } as SchemaFieldDataview
 
   const fleetFilters = getFiltersBySchema(dataview, 'fleet')
