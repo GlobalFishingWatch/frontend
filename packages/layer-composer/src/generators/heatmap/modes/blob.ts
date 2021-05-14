@@ -1,4 +1,4 @@
-import zip from 'lodash/zip'
+import { zip } from 'lodash'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { TimeChunks } from '../util/time-chunks'
 import getLegends, { getColorRampBaseExpression } from '../util/get-legends'

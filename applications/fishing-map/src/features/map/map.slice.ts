@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
-import uniqBy from 'lodash/uniqBy'
+import { uniqBy } from 'lodash'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
@@ -104,7 +104,11 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
 
     // get corresponding dataviews
     const featuresDataviews = temporalGridFeatures.flatMap((feature) => {
-      return feature.temporalgrid ? temporalgridDataviews.find(dataview => dataview.id === feature?.temporalgrid?.sublayerId) || [] : []
+      return feature.temporalgrid
+        ? temporalgridDataviews.find(
+            (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
+          ) || []
+        : []
     })
 
     const fourWingsDataset = featuresDataviews[0].datasets?.find(
@@ -345,8 +349,7 @@ const slice = createSlice({
       action.payload.vessels.forEach((sublayerVessels) => {
         const sublayer = state.clicked?.features?.find(
           (feature) =>
-            feature.temporalgrid &&
-            feature.temporalgrid.sublayerId === sublayerVessels.sublayerId
+            feature.temporalgrid && feature.temporalgrid.sublayerId === sublayerVessels.sublayerId
         )
         if (!sublayer) return
         sublayer.vessels = sublayerVessels.vessels

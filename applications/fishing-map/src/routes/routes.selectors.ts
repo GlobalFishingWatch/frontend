@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import memoize from 'lodash/memoize'
+import { memoize } from 'lodash'
 import { Query, RouteObject } from 'redux-first-router'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store'

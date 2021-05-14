@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Dispatch } from 'react'
-import maxBy from 'lodash/maxBy'
+import { maxBy } from 'lodash'
 import {
   trackValueArrayToSegments as trackSegments,
   TRACK_FIELDS,

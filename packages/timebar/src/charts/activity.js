@@ -1,7 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import maxBy from 'lodash/maxBy'
-import max from 'lodash/max'
+import { maxBy, max } from 'lodash'
 import {
   area,
   curveStepAfter,
