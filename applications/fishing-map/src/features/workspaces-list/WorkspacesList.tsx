@@ -15,7 +15,7 @@ import {
   HighlightedWorkspaceMerged,
   selectCurrentHighlightedWorkspaces,
 } from './workspaces-list.selectors'
-import { HighlightedWorkspace, selectHighlightedWorkspacesStatus } from './workspaces-list.slice'
+import { selectHighlightedWorkspacesStatus } from './workspaces-list.slice'
 
 function WorkspacesList() {
   const { t, i18n } = useTranslation()
@@ -56,15 +56,12 @@ function WorkspacesList() {
         <ul>
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
             const { name, cta, description, img } = highlightedWorkspace
-            const i18nName = highlightedWorkspace[
-              `name_${i18n.language as Locale}` as keyof HighlightedWorkspace
-            ] as string
-            const i18nDescription = highlightedWorkspace[
-              `description_${i18n.language as Locale}` as keyof HighlightedWorkspace
-            ] as string
-            const i18nCta = highlightedWorkspace[
-              `cta_${i18n.language as Locale}` as keyof HighlightedWorkspace
-            ] as string
+            const i18nName = (name?.[i18n.language as Locale] as string) || name.en
+            const i18nDescription =
+              (description?.[i18n.language as Locale] as string) || description.en
+            const i18nCta =
+              (highlightedWorkspace.cta?.[i18n.language as Locale] as string) ||
+              highlightedWorkspace.cta.en
             const active = highlightedWorkspace?.id !== undefined && highlightedWorkspace?.id !== ''
             const linkTo =
               highlightedWorkspace.id === DEFAULT_WORKSPACE_ID
@@ -84,14 +81,14 @@ function WorkspacesList() {
                     replaceQuery: true,
                   }
             return (
-              <li key={highlightedWorkspace.id || highlightedWorkspace.name}>
+              <li key={highlightedWorkspace.id || i18nName}>
                 <div className={cx(styles.workspace, { [styles.disabled]: !active })}>
                   {active ? (
                     <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
-                      <img className={styles.image} alt={name} src={img} />
+                      <img className={styles.image} alt={i18nName} src={img} />
                     </Link>
                   ) : (
-                    <img className={styles.image} alt={name} src={img} />
+                    <img className={styles.image} alt={i18nName} src={img} />
                   )}
                   <div className={styles.info}>
                     {active ? (
@@ -101,12 +98,14 @@ function WorkspacesList() {
                     ) : (
                       <h3 className={styles.title}>{i18nName || name}</h3>
                     )}
-                    <p
-                      className={styles.description}
-                      dangerouslySetInnerHTML={{
-                        __html: i18nDescription || description,
-                      }}
-                    ></p>
+                    {i18nDescription && (
+                      <p
+                        className={styles.description}
+                        dangerouslySetInnerHTML={{
+                          __html: i18nDescription,
+                        }}
+                      ></p>
+                    )}
                     {active && (
                       <Link
                         to={linkTo}
