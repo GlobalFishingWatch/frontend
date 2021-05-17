@@ -4,11 +4,12 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import useGFWLogin from '@globalfishingwatch/react-hooks/dist/use-login'
 import Home from 'features/home/Home'
 import { getLocationType } from 'routes/routes.selectors'
-import { PROFILE } from 'routes/routes'
+import { PROFILE, SETTINGS } from 'routes/routes'
 import { BASE_URL, SPLASH_TIMEOUT } from 'data/constants'
 import Profile from 'features/profile/Profile'
 import Splash from 'features/splash/Splash'
 import './App.css'
+import Settings from 'features/settings/Settings'
 
 function App() {
   const { loading, logged } = useGFWLogin(GFWAPI)
@@ -28,6 +29,9 @@ function App() {
 
   if (loading || minLoading) {
     return <Splash />
+  }
+  if (locationType === SETTINGS) {
+    return <Settings />
   }
   if (locationType === PROFILE) {
     return <Profile />

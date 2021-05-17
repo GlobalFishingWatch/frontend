@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
 import { useTranslation } from 'react-i18next'
+import Link from 'redux-first-router-link'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
@@ -84,7 +85,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
               dispatch(logoutUserThunk({ redirectToLogin: true }))
             }}
           ></IconButton>
-          <IconButton type="default" size="default" icon="settings"></IconButton>
+          <Link to={['settings']}>
+            <IconButton type="default" size="default" icon="settings"></IconButton>
+          </Link>
         </header>
       )}
       <div className={styles.search}>
