@@ -16,7 +16,6 @@ import { DateTime } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
-import { Range } from 'features/timebar/timebar.slice'
 import { toFixed } from 'utils/shared'
 import styles from './AnalysisGraph.module.css'
 

@@ -39,7 +39,6 @@ export const TIMEBAR_HEIGHT = 72
 const TimebarWrapper = () => {
   const { ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
-  // const { start, end, dispatchTimeranges } = useTimerangeConnect()
   const { start, end, onTimebarChange } = useTimerangeConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
   const { timebarVisualisation } = useTimebarVisualisation()

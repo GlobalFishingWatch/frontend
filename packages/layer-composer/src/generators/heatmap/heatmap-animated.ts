@@ -202,8 +202,8 @@ class HeatmapAnimatedGenerator {
 
     const timeChunks: TimeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
       finalConfig.id,
-      finalConfig.staticStart || finalConfig.start,
-      finalConfig.staticEnd || finalConfig.end,
+      finalConfig.start,
+      finalConfig.end,
       finalConfig.datasetsStart,
       finalConfig.datasetsEnd,
       finalConfig.interval
