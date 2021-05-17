@@ -7,7 +7,7 @@ import { getFlagsByIds } from 'utils/flags'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { isFishingDataview, isPresenceDataview } from 'features/workspace/heatmaps/heatmaps.utils'
-import { selectStaticTime } from 'features/timebar/timebar.slice'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import AnalysisItemGraph, { AnalysisGraphProps } from './AnalysisItemGraph'
 import styles from './AnalysisItem.module.css'
@@ -85,7 +85,7 @@ function AnalysisItem({
   analysisAreaName: string
 }) {
   const { t } = useTranslation()
-  const staticTime = useSelector(selectStaticTime)
+  const { start, end } = useTimerangeConnect()
   const dataviewsIds = useMemo(() => {
     return graphData.sublayers.map((s) => s.id)
   }, [graphData])
@@ -97,10 +97,10 @@ function AnalysisItem({
   let description = analysisAreaName
     ? `${title} ${t('common.in', 'in')} ${analysisAreaName}`
     : title
-  if (staticTime) {
+  if (start && end) {
     description = `${description} ${t('common.dateRange', {
-      start: formatI18nDate(staticTime.start),
-      end: formatI18nDate(staticTime.end),
+      start: formatI18nDate(start),
+      end: formatI18nDate(end),
       defaultValue: 'between {{start}} and {{end}}',
     })}.`
   }
@@ -125,7 +125,7 @@ function AnalysisItem({
           {t('analysis.empty', 'Your selected datasets will appear here')}
         </p>
       )}
-      {staticTime && <AnalysisItemGraph graphData={graphData} timeRange={staticTime} />}
+      {start && end && <AnalysisItemGraph graphData={graphData} start={start} end={end} />}
     </div>
   )
 }

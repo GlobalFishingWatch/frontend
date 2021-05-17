@@ -34,7 +34,8 @@ export const TIMEBAR_HEIGHT = 72
 const TimebarWrapper = () => {
   const { ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
-  const { start, end, dispatchTimeranges } = useTimerangeConnect()
+  // const { start, end, dispatchTimeranges } = useTimerangeConnect()
+  const { start, end, onTimebarChange } = useTimerangeConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
   const { timebarVisualisation } = useTimebarVisualisation()
   const timebarGraph = useSelector(selectTimebarGraph)
@@ -151,7 +152,7 @@ const TimebarWrapper = () => {
         end={end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
-        onChange={dispatchTimeranges}
+        onChange={onTimebarChange}
         showLastUpdate={false}
         onMouseMove={onMouseMove}
         onBookmarkChange={onBookmarkChange}

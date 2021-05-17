@@ -21,9 +21,10 @@ import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
+import { selectViewport } from 'features/app/app.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
@@ -33,7 +34,7 @@ function SaveWorkspaceButton() {
   const dispatch = useAppDispatch()
   const guestUser = useSelector(isGuestUser)
   const viewport = useSelector(selectViewport)
-  const timerange = useSelector(selectTimeRange)
+  const timerange = useTimerangeConnect()
   const userData = useSelector(selectUserData)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)

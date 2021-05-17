@@ -12,7 +12,6 @@ import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-in
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
-import { selectStaticTime } from 'features/timebar/timebar.slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -56,7 +55,7 @@ function Analysis() {
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
-  const staticTime = useSelector(selectStaticTime)
+  const { timerange } = useTimerangeConnect()
   const dataviews = useSelector(selectActiveActivityDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
   const analysisBounds = useSelector(selectAnalysisBounds)
@@ -176,7 +175,7 @@ function Analysis() {
     const reportName = Array.from(new Set(dataviews.map((dataview) => dataview.name))).join(',')
     const createReport: CreateReport = {
       name: `${reportName} - ${t('common.report', 'Report')}`,
-      dateRange: staticTime as DateRange,
+      dateRange: timerange as DateRange,
       dataviews: reportDataviews,
       geometry: analysisGeometry as ReportGeometry,
     }

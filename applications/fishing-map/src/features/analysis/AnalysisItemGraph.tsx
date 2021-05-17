@@ -135,10 +135,10 @@ const AnalysisGraphTooltip = (props: any) => {
   return null
 }
 
-const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps; timeRange: Range }> = (
+const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps; start: string; end: string }> = (
   props
 ) => {
-  const { start, end } = props.timeRange
+  const { start, end } = props
   const { timeseries, interval = '10days', sublayers } = props.graphData
 
   const dataFormated = useMemo(() => {
