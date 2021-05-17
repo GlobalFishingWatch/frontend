@@ -16,14 +16,9 @@ import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { selectWorkspaceTimeRange } from 'features/workspace/workspace.selectors'
 import { selectHasChangedSettingsOnce, changeSettings, Range } from './timebar.slice'
 
-interface TimeRangeAtomData extends Range {
-  internalRange: Range
-}
-
 const selectTimeRange = createSelector(
   [selectUrlTimeRange, selectWorkspaceTimeRange],
   ({ start, end }, workspaceTimerange) => {
-    console.log(start, workspaceTimerange.start)
     return {
       start: start || workspaceTimerange?.start || DEFAULT_TIME_RANGE.start,
       end: end || workspaceTimerange?.end || DEFAULT_TIME_RANGE.end,
@@ -36,27 +31,21 @@ export const TimeRangeAtom = atom<Range>({
   default: DEFAULT_TIME_RANGE,
   effects_UNSTABLE: [
     ({ trigger, setSelf, onSet }) => {
-      // const dispatch = useDispatch()
       const timerange = selectTimeRange(store.getState() as RootState)
       const { dispatchQueryParams } = useLocationConnect()
 
       if (trigger === 'get') {
-        console.log(timerange)
-        // if (timerange.start) {
-        //   setSelf({
-        //     start: (timerange as Range).start,
-        //     end: (timerange as Range).end,
-        //   })
-        // }
+        setSelf({
+          ...timerange,
+        })
       }
 
       const updateTimerangeDebounced = debounce(dispatchQueryParams, 1000)
 
       onSet((timerange) => {
-        updateTimerangeDebounced({
-          start: (timerange as Range).start,
-          end: (timerange as Range).end,
-        })
+        if (timerange) {
+          updateTimerangeDebounced({ ...timerange })
+        }
       })
     },
   ],
@@ -66,10 +55,8 @@ export const useTimerangeConnect = () => {
   const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
 
   const onTimebarChange = useCallback(
-    (event: { start: string; end: string; source: string }) => {
-      if (event.source !== 'ZOOM_OUT_MOVE') {
-        setTimerange(event)
-      }
+    (start: string, end: string) => {
+      setTimerange({ start, end })
     },
     [setTimerange]
   )

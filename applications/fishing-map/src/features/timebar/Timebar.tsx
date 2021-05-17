@@ -24,7 +24,12 @@ import { useMapBounds } from 'features/map/map-viewport.hooks'
 import { filterByViewport } from 'features/map/map.utils'
 import { useActivityTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { selectActivityCategory } from 'routes/routes.selectors'
-import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
+import {
+  setHighlightedTime,
+  disableHighlightedTime,
+  selectHighlightedTime,
+  Range,
+} from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
 import styles from './Timebar.module.css'
@@ -129,30 +134,46 @@ const TimebarWrapper = () => {
 
   const activityCategory = useSelector(selectActivityCategory)
 
-  if (!start || !end) return null
-
-  const onMouseMove = (clientX: number, scale: (arg: number) => Date) => {
-    if (clientX === null) {
-      if (highlightedTime !== undefined) {
-        dispatch(disableHighlightedTime())
+  const onMouseMove = useCallback(
+    (clientX: number, scale: (arg: number) => Date) => {
+      if (clientX === null) {
+        if (highlightedTime !== undefined) {
+          dispatch(disableHighlightedTime())
+        }
+      } else {
+        const start = scale(clientX - 10).toISOString()
+        const end = scale(clientX + 10).toISOString()
+        dispatch(setHighlightedTime({ start, end }))
       }
-    } else {
-      const start = scale(clientX - 10).toISOString()
-      const end = scale(clientX + 10).toISOString()
-      dispatch(setHighlightedTime({ start, end }))
-    }
-  }
+    },
+    [dispatch, highlightedTime]
+  )
+
+  const [internalRange, setInternalRange] = useState<Range | null>(null)
+  const onChange = useCallback(
+    (e) => {
+      if (e.source === 'ZOOM_OUT_MOVE') {
+        setInternalRange({ ...e })
+        return
+      }
+      setInternalRange(null)
+      onTimebarChange(e.start, e.end)
+    },
+    [setInternalRange, onTimebarChange]
+  )
+
+  if (!start || !end) return null
 
   return (
     <div>
       <TimebarComponent
         enablePlayback={true}
         labels={labels}
-        start={start}
-        end={end}
+        start={internalRange ? internalRange.start : start}
+        end={internalRange ? internalRange.end : end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
-        onChange={onTimebarChange}
+        onChange={onChange}
         showLastUpdate={false}
         onMouseMove={onMouseMove}
         onBookmarkChange={onBookmarkChange}
