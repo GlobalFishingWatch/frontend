@@ -28,10 +28,10 @@
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
   "dependencies": {
-    "@globalfishingwatch/api-types": "^4.0.0",
     "file-saver": "^2.0.2"
   },
   "peerDependencies": {
+    "@globalfishingwatch/api-types": "^4.0.0",
     "@globalfishingwatch/pbf": "^1.0.10"
   },
   "devDependencies": {
