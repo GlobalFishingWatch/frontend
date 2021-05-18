@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -15,6 +15,7 @@ import {
   TimeChunks,
 } from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
+import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
@@ -67,6 +68,8 @@ const TimebarWrapper = () => {
   const debouncedBounds = useDebounce(bounds, 400)
   const isSmallScreen = useSmallScreen()
 
+  const prevChunkId = useRef<string>('')
+  const prevDebouncedBounds = useRef<MiniglobeBounds | undefined>(debouncedBounds)
   useEffect(() => {
     if (
       timebarVisualisation !== TimebarVisualisations.Heatmap ||
@@ -77,19 +80,49 @@ const TimebarWrapper = () => {
       return
     }
 
-    if (sourcesFeatures?.length && debouncedBounds) {
-      const numSublayers = sourcesMetadata[0].numSublayers
-      const timeChunks = sourcesMetadata[0].timeChunks as TimeChunks
-      const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
-      const chunkQuantizeOffset = activeTimeChunk.quantizeOffset
+    if (
+      !sourcesMetadata[0] ||
+      !sourcesMetadata[0].timeChunks ||
+      !sourcesMetadata[0].timeChunks.activeSourceId ||
+      !debouncedBounds
+    ) {
+      setStackedActivity(undefined)
+      return
+    }
 
-      const filteredFeatures = filterByViewport(sourcesFeatures[0], debouncedBounds)
-      if (filteredFeatures?.length > 0) {
-        const values = getTimeSeries(
-          filteredFeatures as any,
-          numSublayers,
-          chunkQuantizeOffset
-        ).map((frameValues) => {
+    let recompute = false
+    const features = sourcesFeatures && sourcesFeatures[0]
+    //  Time chunk changed
+    if (sourcesMetadata[0].timeChunks.activeSourceId !== prevChunkId.current) {
+      //  Time chunk changed and source is fully loaded
+      if (haveSourcesLoaded && features && features.length) {
+        recompute = true
+        prevChunkId.current = sourcesMetadata[0].timeChunks.activeSourceId
+      }
+    }
+
+    if (prevDebouncedBounds.current !== debouncedBounds) {
+      recompute = true
+    }
+    prevDebouncedBounds.current = debouncedBounds
+
+    console.log('recompute?', recompute)
+    if (!recompute) return
+
+    if (!features || !features.length) {
+      console.log('sourcesFeatures not ready')
+      return
+    }
+
+    const numSublayers = sourcesMetadata[0].numSublayers
+    const timeChunks = sourcesMetadata[0].timeChunks as TimeChunks
+    const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active) as TimeChunk
+    const chunkQuantizeOffset = activeTimeChunk.quantizeOffset
+
+    const filteredFeatures = filterByViewport(features, debouncedBounds)
+    if (filteredFeatures?.length > 0) {
+      const values = getTimeSeries(filteredFeatures as any, numSublayers, chunkQuantizeOffset).map(
+        (frameValues) => {
           // Ideally we don't have the features not visible in 4wings but we have them
           // so this needs to be filtered by the current active ones
           const activeFrameValues = Object.fromEntries(
@@ -103,16 +136,14 @@ const TimebarWrapper = () => {
             ...activeFrameValues,
             date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
           }
-        })
-        setStackedActivity(values)
-      } else {
-        setStackedActivity(undefined)
-      }
+        }
+      )
+      setStackedActivity(values)
     }
   }, [
+    sourcesMetadata,
     sourcesFeatures,
     haveSourcesLoaded,
-    sourcesMetadata,
     debouncedBounds,
     timebarVisualisation,
     visibleTemporalGridDataviews,
@@ -128,8 +159,12 @@ const TimebarWrapper = () => {
     setLoading(haveSourcesLoaded)
   }, [haveSourcesLoaded])
 
+  // Use a debounced version of loading because sadly haveSourcesLoaded is briefly set to false when applyin g a style, even if there's no source update
+  const debouncedLoading = useDebounce(loading, 400)
+
   if (!start || !end) return null
 
+  // TODO callback
   const onMouseMove = (clientX: number, scale: (arg: number) => Date) => {
     if (clientX === null) {
       if (highlightedTime !== undefined) {
@@ -163,7 +198,7 @@ const TimebarWrapper = () => {
           ? () => (
               <Fragment>
                 {timebarVisualisation === TimebarVisualisations.Heatmap && stackedActivity && (
-                  <div className={cx({ [styles.loading]: !loading })}>
+                  <div className={cx({ [styles.loading]: !debouncedLoading })}>
                     <TimebarStackedActivity
                       key="stackedActivity"
                       data={stackedActivity}
