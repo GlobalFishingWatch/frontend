@@ -1,6 +1,6 @@
 import React, { Fragment, useCallback } from 'react'
 // import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
-import groupBy from 'lodash/groupBy'
+import { groupBy } from 'lodash'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'

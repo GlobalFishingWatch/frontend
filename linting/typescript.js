@@ -27,7 +27,7 @@ module.exports = {
     'import/named': 0,
     'import/namespace': 0,
     'import/order': [
-      'error',
+      1,
       {
         groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
         'newlines-between': 'never',

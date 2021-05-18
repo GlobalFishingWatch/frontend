@@ -111,27 +111,27 @@ export const ACTIVITY_OPTIONS: ChoiceOption[] = [
 export const TIMEBAR_EVENT_OPTIONS: SelectOption[] = [
   {
     id: 'all',
-    label: t('timebarSettings.eventOptions', 'All events'),
+    label: t('timebarSettings.eventOptions.all', 'All events'),
   },
   {
     id: 'fishing',
-    label: t('timebarSettings.eventOptions', 'Fishing'),
+    label: t('timebarSettings.eventOptions.fishing', 'Fishing'),
   },
   {
     id: 'encounters',
-    label: t('timebarSettings.eventOptions', 'Encounters'),
+    label: t('timebarSettings.eventOptions.encounters', 'Encounters'),
   },
   {
     id: 'loitering',
-    label: t('timebarSettings.eventOptions', 'Loitering'),
+    label: t('timebarSettings.eventOptions.loitering', 'Loitering'),
   },
   {
     id: 'ports',
-    label: t('timebarSettings.eventOptions', 'Port visits'),
+    label: t('timebarSettings.eventOptions.ports', 'Port visits'),
   },
   {
     id: 'none',
-    label: t('timebarSettings.eventOptions', 'None'),
+    label: t('timebarSettings.eventOptions.none', 'None'),
   },
 ]
 

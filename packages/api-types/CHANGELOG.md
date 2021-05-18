@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.2.2
+
+### Patch Changes
+
+- include guest dataview info config field
+
 ## 4.2.1
 
 ### Patch Changes

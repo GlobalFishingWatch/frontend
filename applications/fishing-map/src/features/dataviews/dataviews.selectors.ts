@@ -149,13 +149,13 @@ export const selectTrackDataviews = createSelector(
 
 export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
-    (dataview) => !dataview.datasets || dataview.datasets[0].type !== DatasetTypes.UserTracks
+    (dataview) => !dataview.datasets || dataview.datasets?.[0]?.type !== DatasetTypes.UserTracks
   )
 })
 
 export const selectUserTracksDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
-    (dataview) => dataview.datasets && dataview.datasets[0].type === DatasetTypes.UserTracks
+    (dataview) => dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
   )
 })
 

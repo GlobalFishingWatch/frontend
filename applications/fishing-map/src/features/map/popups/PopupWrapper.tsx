@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import cx from 'classnames'
-import groupBy from 'lodash/groupBy'
+import { groupBy } from 'lodash'
 import type { Anchor } from '@globalfishingwatch/mapbox-gl'
 import { Popup } from '@globalfishingwatch/react-map-gl'
 import { Generators } from '@globalfishingwatch/layer-composer'

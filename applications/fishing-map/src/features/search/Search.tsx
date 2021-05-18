@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, Fragment } from 'react'
+import React, { useState, useEffect, useCallback, useRef, Fragment, useMemo } from 'react'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
@@ -30,6 +30,7 @@ import {
   checkSearchFiltersEnabled,
   resetFilters,
   setSuggestionClicked,
+  SearchType,
 } from './search.slice'
 import styles from './Search.module.css'
 import SearchFilters from './SearchFilters'
@@ -39,7 +40,12 @@ import SearchPlaceholder, {
   SearchNoResultsState,
   SearchEmptyState,
 } from './SearchPlaceholders'
-import { isSearchAllowed, selectAllowedVesselsDatasets } from './search.selectors'
+import {
+  isBasicSearchAllowed,
+  isAdvancedSearchAllowed,
+  selectBasicSearchDatasets,
+  selectAdvancedSearchDatasets,
+} from './search.selectors'
 
 function Search() {
   const { t } = useTranslation()
@@ -51,27 +57,35 @@ function Search() {
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 600)
   const { dispatchQueryParams } = useLocationConnect()
-  const searchDatasets = useSelector(selectAllowedVesselsDatasets)
-  const searchAllowed = useSelector(isSearchAllowed)
+  const basicSearchAllowed = useSelector(isBasicSearchAllowed)
+  const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
 
-  const searchOptions = [
-    {
-      id: 'basic',
-      title: t('search.basic', 'Basic'),
-    },
-    {
-      id: 'advanced',
-      title: t('search.advanced', 'Advanced'),
-    },
-  ]
+  const searchOptions = useMemo(() => {
+    return [
+      {
+        id: 'basic' as SearchType,
+        title: t('search.basic', 'Basic'),
+        disabled: !basicSearchAllowed,
+      },
+      {
+        id: 'advanced' as SearchType,
+        title: t('search.advanced', 'Advanced'),
+        disabled: !advancedSearchAllowed,
+      },
+    ]
+  }, [advancedSearchAllowed, basicSearchAllowed, t])
 
-  const [activeSearchOption, setActiveSearchOption] = useState<string>(
+  const [activeSearchOption, setActiveSearchOption] = useState<SearchType>(
     hasSearchFilters ? searchOptions[1].id : searchOptions[0].id
+  )
+
+  const searchDatasets = useSelector(
+    activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
   )
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -185,7 +199,7 @@ function Search() {
     if (option.id === activeSearchOption && scrollRef.current) {
       scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
-      setActiveSearchOption(option.id)
+      setActiveSearchOption(option.id as SearchType)
     }
   }
 
@@ -205,6 +219,7 @@ function Search() {
             <label className={styles.title}>{t('search.title', 'Search')}</label>
             <Choice
               options={searchOptions}
+              disabledTooltip={t('search.advancedDisabled')}
               activeOption={activeSearchOption}
               onOptionClick={onSearchOptionChange}
               size="small"
@@ -225,7 +240,7 @@ function Search() {
                 value={searchQuery}
                 label={t('search.mainQueryLabel', 'Name, IMO or MMSI')}
                 autoFocus
-                disabled={!searchAllowed}
+                disabled={!basicSearchAllowed}
                 className={styles.input}
                 type="search"
                 loading={
@@ -234,11 +249,13 @@ function Search() {
                 }
                 placeholder={t('search.placeholder', 'Type to search vessels')}
               />
-              {activeSearchOption === 'advanced' && <SearchFilters className={styles.filters} />}
+              {activeSearchOption === 'advanced' && searchDatasets && (
+                <SearchFilters className={styles.filters} datasets={searchDatasets} />
+              )}
             </div>
             {(searchStatus === AsyncReducerStatus.Loading ||
               searchStatus === AsyncReducerStatus.Aborted) &&
-            searchPagination.loading === false ? null : searchAllowed ? (
+            searchPagination.loading === false ? null : basicSearchAllowed ? (
               <Fragment>
                 <ul {...getMenuProps()} className={styles.searchResults}>
                   {searchQuery &&

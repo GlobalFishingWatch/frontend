@@ -1,5 +1,4 @@
-import zip from 'lodash/zip'
-import flatten from 'lodash/flatten'
+import { zip, flatten } from 'lodash'
 import type { AnyLayer, FillLayer, LineLayer, Expression } from '@globalfishingwatch/mapbox-gl'
 import { Type, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'

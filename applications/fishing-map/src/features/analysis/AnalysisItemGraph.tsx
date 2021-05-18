@@ -10,8 +10,7 @@ import {
   Area,
 } from 'recharts'
 import { format } from 'd3-format'
-import min from 'lodash/min'
-import max from 'lodash/max'
+import { min, max } from 'lodash'
 import { DateTime } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'

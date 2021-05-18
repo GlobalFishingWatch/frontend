@@ -1,5 +1,4 @@
-import intersection from 'lodash/intersection'
-import lowerCase from 'lodash/lowerCase'
+import { intersection, lowerCase } from 'lodash'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { capitalize } from 'utils/shared'
@@ -7,6 +6,10 @@ import { t } from 'features/i18n/i18n'
 
 export type SupportedDatasetSchema = 'geartype' | 'fleet' | 'origin' | 'vessel_type'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
+
+export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boolean) => {
+  return datasets.filter((dataset) => dataset.id.includes(isGuestUser ? 'public-' : 'full-'))
+}
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
   return dataset.schema?.[schema]?.enum !== undefined && dataset.schema?.[schema].enum.length > 0

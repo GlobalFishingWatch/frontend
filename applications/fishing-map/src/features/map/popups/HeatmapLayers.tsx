@@ -14,6 +14,8 @@ import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
 // t('common.hour', 'Hour')
+// t('common.days', 'Day')
+// t('common.days_plural', 'Days')
 
 type HeatmapTooltipRowProps = {
   feature: TooltipEventFeature

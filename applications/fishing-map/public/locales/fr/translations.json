@@ -23,6 +23,8 @@
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers.",
     "country_plural": "Pays",
     "dateRange": "entre {{start}} et {{end}}",
+    "days": "Jour",
+    "days_plural": "Jours",
     "description": "Libellé",
     "environment": "Environnement",
     "events": "Évènements",
@@ -31,12 +33,12 @@
     "help": "Aide",
     "hour": "Heure",
     "hour_plural": "heures",
-    "days": "Jour",
-    "days_plural": "Jours",
     "in": "dans",
+    "layerList": "Layer list",
     "loggedAs": "Connecté en tant que",
     "login": "Se connecter",
     "logout": "Déconnexion",
+    "map": "Map",
     "max": "Max.",
     "min": "Min",
     "more": "plus",
@@ -86,16 +88,19 @@
     "title_plural": "Datasets"
   },
   "errors": {
+    "contactUs": "Please <1>contact us</1> to report the problem.",
     "datasetNotFound": "Jeu de données introuvable",
     "datasetNotValid": "Il semble y avoir un problème avec votre fichier",
     "fields": "Erreurs avec les champs {{fields}}",
     "generic": "Quelque chose s'est mal passé, veuillez réessayer ou contacter:",
+    "genericShort": "Something went wrong",
     "invalidRange": "Le minimum doit être inférieur à la valeur max",
     "latestCarrierNotFound": "Dernier jeu de données opérateur introuvable",
     "notSupportedBy": "Non pris en charge par {{list}}",
     "pageNotFound": "Page introuvable",
     "privateView": "Ceci est une vue privée",
     "requestAccess": "Demander l'accès",
+    "showError": "Show error",
     "switchAccount": "Changer de compte",
     "trackLoading": "Une erreur s'est produite lors du chargement de la piste du vaisseau",
     "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
@@ -155,7 +160,6 @@
     "source_plural": "Sources",
     "toggleCombinationMode": {
       "combine": "Combiner les claques",
-      "disabled": "Le mode combiné n'est accessible qu'avec deux calques",
       "split": "Séparer les calques"
     },
     "toggleVisibility": "Activer/désactiver la visibilité de la couche",
@@ -177,6 +181,7 @@
   },
   "search": {
     "advanced": "Avancé",
+    "advancedDisabled": "You need to login to use advanced search",
     "basic": "Basique",
     "close": "Fermer la recherche",
     "description": "Recherche par nom de navire ou code d'identification (OMI, MMSI, VMS ID, etc). Vous pouvez affiner votre recherche en cliquant sur l'icône de filtre dans la barre supérieure.",
@@ -198,20 +203,20 @@
     "selected": "slectionns"
   },
   "timebarSettings": {
-    "fishingEffortDisabled": "Sélectionnez au moins une couche apparente d'effort de pêche",
-    "graph": "Graphique",
     "eventOptions": {
       "all": "Tous les événements",
-      "fishing": "Pêche",
       "encounters": "Rencontres",
+      "fishing": "Pêche",
       "loitering": "Loitering",
-      "ports": "Visites du port",
-      "none": "Aucun"
+      "none": "Aucun",
+      "ports": "Visites du port"
     },
+    "fishingEffortDisabled": "Sélectionnez au moins une couche apparente d'effort de pêche",
+    "graph": "Graphique",
     "graphOptions": {
-      "speed": "Rapidité",
       "depth": "Profondeur $t(common.comingBientôt)",
-      "none": "Aucun"
+      "none": "Aucun",
+      "speed": "Rapidité"
     },
     "settings_close": "Fermer les paramètres de la barre de temps",
     "settings_open": "Ouvrir les paramètres de la barre de temps",
@@ -262,6 +267,7 @@
     "length": "Longueur",
     "lengthRange": "Plage de longueur",
     "loading": "Chargement de la piste",
+    "login": "You need to <1>login</1> to see more details",
     "mmsi": "MMSI",
     "nationalId": "Identifiant national",
     "origin": "Origine",

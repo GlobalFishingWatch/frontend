@@ -23,6 +23,8 @@
     "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "countries",
     "dateRange": "between {{start}} and {{end}}",
+    "days": "Day",
+    "days_plural": "days",
     "description": "Description",
     "environment": "Environment",
     "events": "Events",
@@ -31,12 +33,12 @@
     "help": "Help",
     "hour": "Hour",
     "hour_plural": "hours",
-    "days": "Day",
-    "days_plural": "days",
     "in": "in",
+    "layerList": "Layer list",
     "loggedAs": "Logged as",
     "login": "Log in",
     "logout": "Log out",
+    "map": "Map",
     "max": "Max",
     "min": "Min",
     "more": "more",
@@ -86,16 +88,19 @@
     "title_plural": "Datasets"
   },
   "errors": {
+    "contactUs": "Please <1>contact us</1> to report the problem.",
     "datasetNotFound": "Dataset not found",
     "datasetNotValid": "It seems to be something wrong with your file",
     "fields": "Errors with fields {{fields}}",
     "generic": "Something went wrong, try again or contact:",
+    "genericShort": "Something went wrong",
     "invalidRange": "Min has to be lower than max value",
     "latestCarrierNotFound": "Latest carrier dataset not found",
     "notSupportedBy": "Not supported by {{list}}",
     "pageNotFound": "Page not found",
     "privateView": "This is a private view",
     "requestAccess": "Request access",
+    "showError": "Show error",
     "switchAccount": "Switch account",
     "trackLoading": "There was an error loading the vessel track",
     "uploadError": "There was an error uploading your dataset",
@@ -155,7 +160,6 @@
     "source_plural": "Sources",
     "toggleCombinationMode": {
       "combine": "Combine layers",
-      "disabled": "Combine mode is only available with two activity layers",
       "split": "Split layers"
     },
     "toggleVisibility": "Toggle layer visibility",
@@ -177,6 +181,7 @@
   },
   "search": {
     "advanced": "Advanced",
+    "advancedDisabled": "You need to login to use advanced search",
     "basic": "Basic",
     "close": "Close search",
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
@@ -198,20 +203,20 @@
     "selected": "selected"
   },
   "timebarSettings": {
-    "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
-    "graph": "Graph",
     "eventOptions": {
       "all": "All events",
-      "fishing": "Fishing",
       "encounters": "Encounters",
+      "fishing": "Fishing",
       "loitering": "Loitering",
-      "ports": "Port visits",
-      "none": "None"
+      "none": "None",
+      "ports": "Port visits"
     },
+    "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
+    "graph": "Graph",
     "graphOptions": {
-      "speed": "Speed",
       "depth": "Depth $t(common.comingSoon)",
-      "none": "None"
+      "none": "None",
+      "speed": "Speed"
     },
     "settings_close": "Close timebar settings",
     "settings_open": "Open timebar settings",
@@ -262,6 +267,7 @@
     "length": "Length",
     "lengthRange": "Length range",
     "loading": "Loading vessel track",
+    "login": "You need to <1>login</1> to see more details",
     "mmsi": "MMSI",
     "nationalId": "National Id",
     "origin": "Origin",
