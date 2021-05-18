@@ -4,13 +4,16 @@ import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
 import {
   selectWorkspace,
   selectWorkspaceState,
+  selectWorkspaceTimeRange,
   selectWorkspaceViewport,
 } from 'features/workspace/workspace.selectors'
+import { Range } from 'features/timebar/timebar.slice'
 import {
   selectQueryParam,
   selectUrlViewport,
   selectLocationCategory,
   selectActivityCategory,
+  selectUrlTimeRange,
 } from 'routes/routes.selectors'
 import {
   BivariateDataviews,
@@ -35,6 +38,16 @@ export const selectViewport = createSelector(
       longitude:
         urlViewport?.longitude || workspaceViewport?.longitude || DEFAULT_WORKSPACE.longitude,
     }
+  }
+)
+
+export const selectTimeRange = createSelector(
+  [selectUrlTimeRange, selectWorkspaceTimeRange],
+  ({ start, end }, workspaceTimerange) => {
+    return {
+      start: start || workspaceTimerange?.start,
+      end: end || workspaceTimerange?.end,
+    } as Range
   }
 )
 
@@ -128,11 +141,19 @@ export const selectCustomWorkspace = createSelector(
   [
     selectWorkspace,
     selectViewport,
+    selectTimeRange,
     selectLocationCategory,
     selectWorkspaceAppState,
     selectDataviewInstancesMerged,
   ],
-  (workspace, viewport, category, state, dataviewInstances): WorkspaceUpsert<WorkspaceState> => {
+  (
+    workspace,
+    viewport,
+    timerange,
+    category,
+    state,
+    dataviewInstances
+  ): WorkspaceUpsert<WorkspaceState> => {
     return {
       ...workspace,
       app: APP_NAME,
@@ -141,6 +162,8 @@ export const selectCustomWorkspace = createSelector(
       aoi: undefined,
       dataviews: workspace?.dataviews?.map(({ id }) => id as number),
       viewport,
+      startAt: timerange.start,
+      endAt: timerange.end,
       state,
       dataviewInstances: dataviewInstances as DataviewInstance<any>[],
     }

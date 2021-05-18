@@ -2,9 +2,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
-import { createSelector } from 'reselect'
 import { TimebarVisualisations } from 'types'
-import { selectTimebarVisualisation } from 'features/app/app.selectors'
+import { selectTimeRange, selectTimebarVisualisation } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveActivityDataviews,
@@ -12,19 +11,7 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import store, { RootState } from 'store'
-import { selectUrlTimeRange } from 'routes/routes.selectors'
-import { selectWorkspaceTimeRange } from 'features/workspace/workspace.selectors'
 import { selectHasChangedSettingsOnce, changeSettings, Range } from './timebar.slice'
-
-const selectTimeRange = createSelector(
-  [selectUrlTimeRange, selectWorkspaceTimeRange],
-  ({ start, end }, workspaceTimerange) => {
-    return {
-      start: start || workspaceTimerange?.start || DEFAULT_TIME_RANGE.start,
-      end: end || workspaceTimerange?.end || DEFAULT_TIME_RANGE.end,
-    } as Range
-  }
-)
 
 export const TimeRangeAtom = atom<Range>({
   key: 'timerange',
