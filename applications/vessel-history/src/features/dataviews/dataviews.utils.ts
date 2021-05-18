@@ -40,7 +40,8 @@ export const getVesselDataviewInstance = (
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       // TODO pick a not used color
-      color: LineColorBarOptions[Math.floor(Math.random() * LineColorBarOptions.length)].value,
+      // color: LineColorBarOptions[Math.floor(Math.random() * LineColorBarOptions.length)].value,
+      color: '#8DE9F6',
     },
     datasetsConfig,
   }
