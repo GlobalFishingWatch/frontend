@@ -37,8 +37,8 @@ import { selectAnalysisQuery, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
-const Map = lazy(() => import('features/map/Map'))
-const Timebar = lazy(() => import('features/timebar/Timebar'))
+const Map = lazy(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
+const Timebar = lazy(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
 
 declare global {
   interface Window {

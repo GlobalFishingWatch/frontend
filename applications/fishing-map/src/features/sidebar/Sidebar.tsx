@@ -16,12 +16,18 @@ import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
 
-const Analysis = lazy(() => import('features/analysis/Analysis'))
-const User = lazy(() => import('features/user/User'))
-const Workspace = lazy(() => import('features/workspace/Workspace'))
-const WorkspacesList = lazy(() => import('features/workspaces-list/WorkspacesList'))
-const Search = lazy(() => import('features/search/Search'))
-const NewDataset = lazy(() => import('features/datasets/NewDataset'))
+const Analysis = lazy(() => import(/* webpackChunkName: "Analyis" */ 'features/analysis/Analysis'))
+const User = lazy(() => import(/* webpackChunkName: "User" */ 'features/user/User'))
+const Workspace = lazy(
+  () => import(/* webpackChunkName: "Workspace" */ 'features/workspace/Workspace')
+)
+const WorkspacesList = lazy(
+  () => import(/* webpackChunkName: "WorkspacesList" */ 'features/workspaces-list/WorkspacesList')
+)
+const Search = lazy(() => import(/* webpackChunkName: "Search" */ 'features/search/Search'))
+const NewDataset = lazy(
+  () => import(/* webpackChunkName: "NewDataset" */ 'features/datasets/NewDataset')
+)
 
 type SidebarProps = {
   onMenuClick: () => void
