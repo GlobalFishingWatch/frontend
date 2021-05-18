@@ -56,26 +56,36 @@ export const selectCurrentHighlightedWorkspaces = createSelector(
       ?.filter((workspace) => workspace.visible !== 'hidden')
       ?.map((workspace) => {
         const apiWorkspace = apiWorkspaces.find(({ id }) => workspace.id === id)
-
-        if (!apiWorkspace) return workspace
-
         return {
           ...workspace,
-          viewport: apiWorkspace.viewport,
-          category: apiWorkspace.category as WorkspaceCategories,
+          ...(apiWorkspace && {
+            viewport: apiWorkspace.viewport,
+            category: apiWorkspace.category as WorkspaceCategories,
+          }),
         }
       })
   }
 )
 
+type HighlightedMapWorkspace = {
+  id: string
+  name: string
+  viewport?: WorkspaceViewport
+  category?: WorkspaceCategories
+}
+
 export const selectCurrentWorkspacesList = createSelector(
   [selectLocationType, selectCurrentHighlightedWorkspaces, selectUserWorkspaces],
-  (
-    locationType,
-    highlightedWorkspaces,
-    userWorkspaces
-  ): HighlightedWorkspaceMerged[] | undefined => {
-    return locationType === USER ? userWorkspaces : highlightedWorkspaces
+  (locationType, highlightedWorkspaces, userWorkspaces): HighlightedMapWorkspace[] | undefined => {
+    if (locationType === USER) {
+      return userWorkspaces
+    }
+    return highlightedWorkspaces?.map((workspace) => ({
+      id: workspace.id,
+      name: workspace.name.en,
+      viewport: workspace.viewport,
+      category: workspace.category,
+    }))
   }
 )
 
