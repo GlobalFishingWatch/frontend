@@ -10,10 +10,12 @@ import {
 } from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
+import { VectorSource } from '@globalfishingwatch/mapbox-gl'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
 import { filterByViewport } from 'features/map/map.utils'
 import { useActivityTemporalgridFeatures } from 'features/map/map-features.hooks'
 import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import { useMapStyle } from 'features/map/map.hooks'
 import styles from './Timebar.module.css'
 
 const TimebarActivityGraph = () => {
@@ -27,10 +29,11 @@ const TimebarActivityGraph = () => {
 
   const { bounds } = useMapBounds()
   const { sourcesFeatures, haveSourcesLoaded, sourcesMetadata } = useActivityTemporalgridFeatures()
+  const style = useMapStyle()
   const debouncedBounds = useDebounce(bounds, 400)
   const isSmallScreen = useSmallScreen()
 
-  const prevChunkId = useRef<string>('')
+  const prevActiveSourceUrl = useRef<string>('')
   const prevDebouncedBounds = useRef<MiniglobeBounds | undefined>(debouncedBounds)
   useEffect(() => {
     if (!visibleTemporalGridDataviews?.length || isSmallScreen) {
@@ -48,23 +51,34 @@ const TimebarActivityGraph = () => {
       return
     }
 
-    let recompute = false
+    let activeSourceUrl
+    if (style && style.sources && sourcesMetadata && sourcesMetadata[0]) {
+      const activeSource = style.sources[
+        sourcesMetadata[0].timeChunks.activeSourceId
+      ] as VectorSource
+      if (activeSource && activeSource.tiles) {
+        activeSourceUrl = activeSource.tiles[0]
+      }
+    }
+
+    let recompute = ''
     const features = sourcesFeatures && sourcesFeatures[0]
     //  Time chunk changed
-    if (sourcesMetadata[0].timeChunks.activeSourceId !== prevChunkId.current) {
+    if (activeSourceUrl && activeSourceUrl !== prevActiveSourceUrl.current) {
+      console.log('url changed')
       //  Time chunk changed and source is fully loaded
       if (haveSourcesLoaded && features && features.length) {
-        recompute = true
-        prevChunkId.current = sourcesMetadata[0].timeChunks.activeSourceId
+        recompute = 'url changed'
+        prevActiveSourceUrl.current = activeSourceUrl
       }
     }
 
     if (prevDebouncedBounds.current !== debouncedBounds) {
-      recompute = true
+      recompute = 'bounds'
     }
     prevDebouncedBounds.current = debouncedBounds
-
-    if (!recompute) return
+    if (recompute === '') return
+    console.log('recompute?', recompute)
 
     if (!features || !features.length) {
       console.log('sourcesFeatures not ready')
@@ -104,6 +118,7 @@ const TimebarActivityGraph = () => {
     debouncedBounds,
     visibleTemporalGridDataviews,
     isSmallScreen,
+    style,
   ])
 
   const dataviewsColors = temporalGridDataviews?.map((dataview) => dataview.config?.color)
