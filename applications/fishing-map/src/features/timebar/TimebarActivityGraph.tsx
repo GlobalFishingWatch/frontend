@@ -41,31 +41,28 @@ const TimebarActivityGraph = () => {
       return
     }
 
-    if (
-      !sourcesMetadata[0] ||
-      !sourcesMetadata[0].timeChunks ||
-      !sourcesMetadata[0].timeChunks.activeSourceId ||
-      !debouncedBounds
-    ) {
+    const activeSourceId = sourcesMetadata?.[0]?.timeChunks?.activeSourceId
+    if (!activeSourceId || !debouncedBounds) {
       setStackedActivity(undefined)
+      return
+    }
+
+    const features = sourcesFeatures?.[0]
+    if (!features || !features.length) {
       return
     }
 
     let activeSourceUrl
     if (style && style.sources && sourcesMetadata && sourcesMetadata[0]) {
-      const activeSource = style.sources[
-        sourcesMetadata[0].timeChunks.activeSourceId
-      ] as VectorSource
+      const activeSource = style.sources[activeSourceId] as VectorSource
       if (activeSource && activeSource.tiles) {
         activeSourceUrl = activeSource.tiles[0]
       }
     }
 
     let recompute = ''
-    const features = sourcesFeatures && sourcesFeatures[0]
     //  Time chunk changed
     if (activeSourceUrl && activeSourceUrl !== prevActiveSourceUrl.current) {
-      console.log('url changed')
       //  Time chunk changed and source is fully loaded
       if (haveSourcesLoaded && features && features.length) {
         recompute = 'url changed'
@@ -77,13 +74,8 @@ const TimebarActivityGraph = () => {
       recompute = 'bounds'
     }
     prevDebouncedBounds.current = debouncedBounds
-    if (recompute === '') return
-    console.log('recompute?', recompute)
 
-    if (!features || !features.length) {
-      console.log('sourcesFeatures not ready')
-      return
-    }
+    if (recompute === '') return
 
     const numSublayers = sourcesMetadata[0].numSublayers
     const timeChunks = sourcesMetadata[0].timeChunks as TimeChunks
@@ -127,6 +119,7 @@ const TimebarActivityGraph = () => {
   const [loading, setLoading] = useState(haveSourcesLoaded)
 
   useEffect(() => {
+    console.log('set loading', haveSourcesLoaded)
     setLoading(haveSourcesLoaded)
   }, [haveSourcesLoaded])
 
