@@ -22,7 +22,7 @@ import {
   selectActivityDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { selectTimeRange } from 'features/app/app.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
 export const MAX_TOOLTIP_VESSELS = 5
 
@@ -100,11 +100,15 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
   async (temporalGridFeatures: ExtendedFeature[], { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const temporalgridDataviews = selectActivityDataviews(state) || []
-    const { start, end } = selectTimeRange(state)
+    const { start, end } = useTimerangeConnect()
 
     // get corresponding dataviews
     const featuresDataviews = temporalGridFeatures.flatMap((feature) => {
-      return feature.temporalgrid ? temporalgridDataviews.find(dataview => dataview.id === feature?.temporalgrid?.sublayerId) || [] : []
+      return feature.temporalgrid
+        ? temporalgridDataviews.find(
+            (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
+          ) || []
+        : []
     })
 
     const fourWingsDataset = featuresDataviews[0].datasets?.find(
@@ -345,8 +349,7 @@ const slice = createSlice({
       action.payload.vessels.forEach((sublayerVessels) => {
         const sublayer = state.clicked?.features?.find(
           (feature) =>
-            feature.temporalgrid &&
-            feature.temporalgrid.sublayerId === sublayerVessels.sublayerId
+            feature.temporalgrid && feature.temporalgrid.sublayerId === sublayerVessels.sublayerId
         )
         if (!sublayer) return
         sublayer.vessels = sublayerVessels.vessels

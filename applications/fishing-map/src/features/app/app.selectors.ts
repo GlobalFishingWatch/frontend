@@ -7,12 +7,13 @@ import {
   selectWorkspaceTimeRange,
   selectWorkspaceViewport,
 } from 'features/workspace/workspace.selectors'
+import { Range } from 'features/timebar/timebar.slice'
 import {
   selectQueryParam,
   selectUrlViewport,
-  selectUrlTimeRange,
   selectLocationCategory,
   selectActivityCategory,
+  selectUrlTimeRange,
 } from 'routes/routes.selectors'
 import {
   BivariateDataviews,
@@ -46,7 +47,7 @@ export const selectTimeRange = createSelector(
     return {
       start: start || workspaceTimerange?.start,
       end: end || workspaceTimerange?.end,
-    }
+    } as Range
   }
 )
 

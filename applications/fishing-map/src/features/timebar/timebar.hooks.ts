@@ -1,5 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
+import { atom, useRecoilState } from 'recoil'
+import { debounce } from 'lodash'
 import { TimebarVisualisations } from 'types'
 import { selectTimeRange, selectTimebarVisualisation } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -7,24 +9,48 @@ import {
   selectActiveActivityDataviews,
   selectActiveTrackDataviews,
 } from 'features/dataviews/dataviews.selectors'
-import { setStaticTime, selectHasChangedSettingsOnce, changeSettings } from './timebar.slice'
+import { DEFAULT_TIME_RANGE } from 'data/config'
+import store, { RootState } from 'store'
+import { selectHasChangedSettingsOnce, changeSettings, Range } from './timebar.slice'
+
+export const TimeRangeAtom = atom<Range>({
+  key: 'timerange',
+  default: DEFAULT_TIME_RANGE,
+  effects_UNSTABLE: [
+    ({ trigger, setSelf, onSet }) => {
+      const timerange = selectTimeRange(store.getState() as RootState)
+      const { dispatchQueryParams } = useLocationConnect()
+
+      if (trigger === 'get') {
+        setSelf({
+          ...timerange,
+        })
+      }
+
+      const updateTimerangeDebounced = debounce(dispatchQueryParams, 1000)
+
+      onSet((timerange) => {
+        if (timerange) {
+          updateTimerangeDebounced({ ...timerange })
+        }
+      })
+    },
+  ],
+})
 
 export const useTimerangeConnect = () => {
-  const { dispatchQueryParams } = useLocationConnect()
-  const dispatch = useDispatch()
-  const { start, end } = useSelector(selectTimeRange)
-  // TODO needs to be debounced like viewport
-  const dispatchTimeranges = useCallback(
-    (event: { start: string; end: string; source: string }) => {
-      const range = { start: event.start, end: event.end }
-      if (event.source !== 'ZOOM_OUT_MOVE') {
-        dispatch(setStaticTime(range))
-      }
-      dispatchQueryParams(range)
+  const [timerange, setTimerange] = useRecoilState(TimeRangeAtom)
+
+  const onTimebarChange = useCallback(
+    (start: string, end: string) => {
+      setTimerange({ start, end })
     },
-    [dispatchQueryParams, dispatch]
+    [setTimerange]
   )
-  return { start, end, dispatchTimeranges }
+  return useMemo(() => {
+    const { start, end } = timerange
+    return { start, end, timerange, setTimerange, onTimebarChange }
+  }, [onTimebarChange, timerange, setTimerange])
 }
 
 export const useTimebarVisualisation = () => {

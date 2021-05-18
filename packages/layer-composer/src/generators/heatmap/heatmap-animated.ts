@@ -202,15 +202,20 @@ class HeatmapAnimatedGenerator {
 
     const timeChunks: TimeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
       finalConfig.id,
-      finalConfig.staticStart || finalConfig.start,
-      finalConfig.staticEnd || finalConfig.end,
+      finalConfig.start,
+      finalConfig.end,
       finalConfig.datasetsStart,
       finalConfig.datasetsEnd,
       finalConfig.interval
     )
 
-    if (timeChunks.deltaInIntervalUnits === 0 && config.aggregationOperation !== AggregationOperation.Avg) {
-      console.error('Trying to show less than 1 interval worth of data for this heatmap layer. This could result in showing misleading information when aggregation mode is not set to avg.')
+    if (
+      timeChunks.deltaInIntervalUnits === 0 &&
+      config.aggregationOperation !== AggregationOperation.Avg
+    ) {
+      console.error(
+        'Trying to show less than 1 interval worth of data for this heatmap layer. This could result in showing misleading information when aggregation mode is not set to avg.'
+      )
     }
 
     const breaksConfig = {

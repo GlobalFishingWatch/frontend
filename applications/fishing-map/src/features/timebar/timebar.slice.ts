@@ -28,20 +28,15 @@ const slice = createSlice({
     disableHighlightedTime: (state) => {
       state.highlightedTime = undefined
     },
-    setStaticTime: (state, action: PayloadAction<Range>) => {
-      state.staticTime = action.payload
-    },
     changeSettings: (state) => {
       state.hasChangedSettingsOnce = true
     },
   },
 })
 
-export const { setHighlightedTime, disableHighlightedTime, setStaticTime, changeSettings } =
-  slice.actions
+export const { setHighlightedTime, disableHighlightedTime, changeSettings } = slice.actions
 export default slice.reducer
 
 export const selectHighlightedTime = (state: RootState) => state.timebar.highlightedTime
-export const selectStaticTime = (state: RootState) => state.timebar.staticTime
 export const selectHasChangedSettingsOnce = (state: RootState) =>
   state.timebar.hasChangedSettingsOnce
