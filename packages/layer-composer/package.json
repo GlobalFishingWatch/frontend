@@ -47,6 +47,9 @@
     "vt-pbf": "^3.1.1"
   },
   "devDependencies": {
+    "@globalfishingwatch/api-types": "^4.2.2",
+    "@globalfishingwatch/data-transforms": "^1.2.0",
+    "@globalfishingwatch/fourwings-aggregate": "3.1.1",
     "@types/color-convert": "^2.0.0",
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-json": "^4.1.0",
@@ -68,6 +71,7 @@
     "rollup-plugin-terser": "^7.0.2"
   },
   "peerDependencies": {
+    "@globalfishingwatch/api-types": "^4.2.2",
     "@globalfishingwatch/data-transforms": "^1.2.0",
     "@globalfishingwatch/fourwings-aggregate": "3.1.1",
     "lodash": "^4.17.21",

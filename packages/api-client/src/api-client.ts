@@ -1,5 +1,9 @@
 import { saveAs } from 'file-saver'
-import { UserData, ResourceResponseType, ResourceRequestType } from '@globalfishingwatch/api-types'
+import type {
+  UserData,
+  ResourceResponseType,
+  ResourceRequestType,
+} from '@globalfishingwatch/api-types'
 import { isUrlAbsolute } from './utils/url'
 
 const API_GATEWAY =
