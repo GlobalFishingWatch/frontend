@@ -6,9 +6,9 @@
     "download": "Télécharger le rapport",
     "empty": "Vos jeux de données sélectionnés apparaîtront ici",
     "errorMessage": "Quelque chose s'est mal passé",
-    "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps allant jusqu'à un an",
+    "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
     "title": "Analyse",
-    "vesselFlags": "par les navires marqués par"
+    "vesselFlags": "pour les navires battant le pavillon de"
   },
   "common": {
     "active_after": "Actif après",
@@ -93,7 +93,7 @@
     "datasetNotValid": "Il semble y avoir un problème avec votre fichier",
     "fields": "Erreurs avec les champs {{fields}}",
     "generic": "Quelque chose s'est mal passé, veuillez réessayer ou contacter:",
-    "genericShort": "Something went wrong",
+    "genericShort": "Quelque chose s'est mal passé",
     "invalidRange": "Le minimum doit être inférieur à la valeur max",
     "latestCarrierNotFound": "Dernier jeu de données opérateur introuvable",
     "notSupportedBy": "Non pris en charge par {{list}}",
