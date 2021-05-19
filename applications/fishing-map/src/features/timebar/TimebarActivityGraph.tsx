@@ -53,7 +53,7 @@ const TimebarActivityGraph = () => {
             numSublayers,
             chunkQuantizeOffset
           ).map((frameValues) => {
-            // TODO deduplicate a frame that was already there from a previous chunk?
+            // TODO deduplicate a frame that was already there from a previous timechunk?
 
             // Ideally we don't have the features not visible in 4wings but we have them
             // so this needs to be filtered by the current active ones

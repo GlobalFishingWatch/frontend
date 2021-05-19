@@ -2,14 +2,10 @@ import { useEffect, useMemo } from 'react'
 import { atom, useRecoilValue, useSetRecoilState } from 'recoil'
 import { useSelector } from 'react-redux'
 import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
-import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from './map.hooks'
-import {
-  selectActiveHeatmapAnimatedGeneratorConfigs,
-  selectGeneratorConfigsById,
-} from './map.selectors'
+import { selectActiveHeatmapAnimatedGeneratorConfigs } from './map.selectors'
 
 export const mapIdleAtom = atom<boolean>({
   key: 'mapIdle',
@@ -135,14 +131,4 @@ const useGeneratorAnimatedFeatures = (generators: AnyGeneratorConfig[]) => {
 export const useActiveHeatmapAnimatedFeatures = () => {
   const generators = useSelector(selectActiveHeatmapAnimatedGeneratorConfigs)
   return useGeneratorAnimatedFeatures(generators)
-}
-
-export const useActivityTemporalgridFeatures = () => {
-  const generator = useSelector(
-    selectGeneratorConfigsById(MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
-  )
-  const { sourcesFeatures, haveSourcesLoaded, sourcesMetadata } =
-    useGeneratorAnimatedFeatures(generator)
-
-  return { sourcesFeatures, haveSourcesLoaded, sourcesMetadata }
 }
