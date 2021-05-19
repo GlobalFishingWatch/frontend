@@ -1,22 +1,25 @@
-import React, { useCallback } from 'react'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { MultiSelect, InputText, IconButton } from '@globalfishingwatch/ui-components'
-import '@globalfishingwatch/ui-components/dist/base.css'
+import { MultiSelect, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import { MultiSelectOption } from '@globalfishingwatch//ui-components/dist/multi-select'
-import { t } from 'features/i18n/i18n'
 import { SettingsEvents } from '../settings.slice'
 import { useApplySettingsConnect } from '../settings.hooks'
 import styles from './SettingsComponents.module.css'
-
+import '@globalfishingwatch/ui-components/dist/base.css'
 interface SettingsProps {
   settings: SettingsEvents
   section: string
+  minDuration: number
+  maxDuration: number
+  minDistance: number
+  maxDistance: number
 }
 
-const Encounters: React.FC<SettingsProps> = (props): React.ReactElement => {
+const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
   const { settings, section } = props
-
+  const { t } = useTranslation()
   const { setSettingOptions, setSetting } = useApplySettingsConnect()
 
   const EEZ_OPTIONS: SelectOption[] = [
@@ -61,16 +64,26 @@ const Encounters: React.FC<SettingsProps> = (props): React.ReactElement => {
     },
   ]
 
+  const MPAS_OPTIONS: MultiSelectOption[] = [
+    {
+      id: 'm1',
+      label: 'MPAS 1',
+    },
+    {
+      id: 'm2',
+      label: 'MPAS 2',
+    },
+  ]
   const eezs = EEZ_OPTIONS.filter((option) => settings.eezs?.includes(option.id))
   const rfmos = RFMOS_OPTIONS.filter((option) => settings.rfmos?.includes(option.id))
-  const mpas = EEZ_OPTIONS.filter((option) => settings.mpas?.includes(option.id))
+  const mpas = MPAS_OPTIONS.filter((option) => settings.mpas?.includes(option.id))
 
   return (
-    <div className={styles.settingsFieldsContainer}>
+    <div>
       <div className={styles.settingsField}>
         <label>
-          Events in There EEZs
-          <IconButton type="default" size="tiny" icon="info" tooltip="testing tootip"></IconButton>
+          {t('settings.eezs.label',"Events in these EEZs")}
+          <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
         <MultiSelect
           selectedOptions={eezs}
@@ -89,8 +102,8 @@ const Encounters: React.FC<SettingsProps> = (props): React.ReactElement => {
       </div>
       <div className={styles.settingsField}>
         <label>
-          Events in these RFMOS
-          <IconButton type="default" size="tiny" icon="info" tooltip="testing tootip"></IconButton>
+          {t('settings.rfmos.label', "Events in these RFMOS")}
+          <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
         <MultiSelect
           onCleanClick={() => setSettingOptions(section, 'rfmos', [])}
@@ -111,8 +124,8 @@ const Encounters: React.FC<SettingsProps> = (props): React.ReactElement => {
       </div>
       <div className={styles.settingsField}>
         <label>
-          Events in these MPAs
-          <IconButton type="default" size="tiny" icon="info" tooltip="testing tootip"></IconButton>
+          {t('settings.mpas.label',"Events in these MPAs")}
+          <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
         <MultiSelect
           onCleanClick={() => setSettingOptions(section, 'mpas', [])}
@@ -128,35 +141,35 @@ const Encounters: React.FC<SettingsProps> = (props): React.ReactElement => {
               mpas.filter((o) => o.id !== option.id)
             )
           }
-          options={EEZ_OPTIONS}
+          options={MPAS_OPTIONS}
         ></MultiSelect>
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
         <label>
-          DURATION
-          <IconButton type="default" size="tiny" icon="info" tooltip="testing tootip"></IconButton>
+        {t('settings.duration',"DURATION")}
+          <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
-        <span>Longer than</span>
+        <span>{t('settings.longerThan',"Longer than")}</span>
         <InputText
           type="number"
-          value={settings.duration ?? 2}
-          min={2}
-          max={99}
+          value={settings.duration ?? 0}
+          min={props.minDuration}
+          max={props.maxDuration}
           onChange={(event) => setSetting(section, 'duration', parseInt(event.currentTarget.value))}
         ></InputText>
-        <span>hours</span>
+        <span>{t('settings.hours',"hours")}</span>
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
         <label>
-          DISTANCE TRAVELLED
-          <IconButton type="default" size="tiny" icon="info" tooltip="testing tootip"></IconButton>
+          {t('settings.distance',"DISTANCE TRAVELLED")}
+          <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
-        <span>Longer than</span>
+        <span>{t('settings.longerThan',"Longer than")}</span>
         <InputText
           type="number"
           value={settings.distance ?? 0}
-          min={0}
-          max={99}
+          min={props.minDistance}
+          max={props.maxDistance}
           onChange={(event) => setSetting(section, 'distance', parseInt(event.currentTarget.value))}
         ></InputText>
         <span>kms</span>
@@ -165,4 +178,4 @@ const Encounters: React.FC<SettingsProps> = (props): React.ReactElement => {
   )
 }
 
-export default Encounters
+export default ActivityEvents

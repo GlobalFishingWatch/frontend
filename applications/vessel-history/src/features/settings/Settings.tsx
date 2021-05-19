@@ -1,15 +1,16 @@
 import React, { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { redirect } from 'redux-first-router'
+import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { HOME } from 'routes/routes'
 import styles from './Settings.module.css'
-import '@globalfishingwatch/ui-components/dist/base.css'
 import FishingEvents from './components/FishingEvents'
 import LoiteringEvents from './components/LoiteringEvents'
-import Encounters from './components/Encounters'
+import EncounterEvents from './components/EncounterEvents'
 import PortVisits from './components/PortVisits'
-import { selectSettings, updateSettings } from './settings.slice'
+import { selectSettings } from './settings.slice'
+import '@globalfishingwatch/ui-components/dist/base.css'
 
 interface SettingsOption {
   title: string
@@ -21,19 +22,20 @@ interface SettingsOptions {
 
 const Settings: React.FC = (): React.ReactElement => {
   const settings = useSelector(selectSettings)
+  const { t } = useTranslation()
   const options = ['fishing_events', 'encounters', 'loitering_events', 'port_visits']
   const optionsData: SettingsOptions = {
     fishing_events: {
-      title: 'Fishing Events',
+      title: t('settings.fishingEvents.title',"Fishing Events"),
     },
     encounters: {
-      title: 'Encounters',
+      title: t('settings.encounters.title',"Encounters"),
     },
     loitering_events: {
-      title: 'Loitering Events',
+      title: t('settings.loiteringEvents.title',"Loitering Events"),
     },
     port_visits: {
-      title: 'Port Visits',
+      title: t('settings.portVisits.title',"Port Visits"),
     },
   }
   const [selectedOption, setSelectedOption] = useState('')
@@ -73,7 +75,7 @@ const Settings: React.FC = (): React.ReactElement => {
         <FishingEvents settings={settings.fishingEvents} section="fishingEvents"></FishingEvents>
       )}
       {selectedOption === 'encounters' && (
-        <Encounters settings={settings.encounters} section="encounters"></Encounters>
+        <EncounterEvents settings={settings.encounters} section="encounters"></EncounterEvents>
       )}
       {selectedOption === 'loitering_events' && (
         <LoiteringEvents

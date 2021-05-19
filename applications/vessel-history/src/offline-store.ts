@@ -3,7 +3,6 @@ import { OfflineVessel } from 'types/vessel'
 
 export class VesselHistoryIdb extends Dexie {
   vessels: Dexie.Table<OfflineVessel, string>
-  settings: Dexie.Table<any>
 
   constructor() {
     super('VesselHistory')
@@ -44,13 +43,9 @@ export class VesselHistoryIdb extends Dexie {
         'savedOn',
       ].join(','),
     })
-    this.version(3).stores({
-      settings: ['++field', 'fishing_events_eez', 'fishing_events_rfmos'].join(','),
-    })
 
     // The following lines are needed for it to work across typescipt using babel-preset-typescript:
     this.vessels = this.table('vessels')
-    this.settings = this.table('settings')
   }
 }
 
