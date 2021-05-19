@@ -33,7 +33,7 @@
     "@mapbox/tile-cover": "^3.0.2",
     "@turf/area": "^6.0.1",
     "@turf/bbox": "^6.0.1",
-    "classnames": "^2.2.6",
+    "classnames": "^2.3.1",
     "d3-ease": "1.0.5",
     "d3-geo": "1.11.3",
     "d3-scale": "2.2.2",
@@ -81,7 +81,7 @@
     "typescript": "^4.2.3"
   },
   "peerDependencies": {
-    "classnames": "^2.2.6",
+    "classnames": "^2.3.1",
     "dayjs": "^1.7.7",
     "prop-types": "^15.6.2",
     "lodash": "^4.17.21",
