@@ -1,5 +1,11 @@
 # @globalfishingwatch/data-transforms
 
+## 1.3.0
+
+### Minor Changes
+
+- b3f3ca64: Sync valueArray decoding with encoding in api-vessels-service
+
 ## 1.2.2
 
 ### Patch Changes
