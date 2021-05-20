@@ -23,17 +23,6 @@ export const isUserLogged = createSelector(
   }
 )
 
-export const isUserAuthorized = createSelector([selectUserData], (user) => {
-  return (
-    user?.permissions.find(
-      (permission) =>
-        permission.type === 'application' &&
-        permission.value === 'fishing-map' &&
-        permission.action === 'map.load'
-    ) !== undefined
-  )
-})
-
 export const selectUserId = createSelector([selectUserData], (userData) => {
   return userData?.id
 })
