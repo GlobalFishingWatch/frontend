@@ -1,17 +1,13 @@
 import React, { lazy, Suspense, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import Button from '@globalfishingwatch/ui-components/dist/button'
-import GFWAPI from '@globalfishingwatch/api-client'
-import { logoutUserThunk } from 'features/user/user.slice'
-import { isGuestUser, isUserAuthorized, isUserLogged } from 'features/user/user.selectors'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { selectLocationType } from 'routes/routes.selectors'
 import { USER, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
+import { isUserLogged } from 'features/user/user.selectors'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -28,66 +24,27 @@ type SidebarProps = {
 }
 
 function Sidebar({ onMenuClick }: SidebarProps) {
-  const { t } = useTranslation()
   const isAnalyzing = useSelector(selectIsAnalyzing)
   const searchQuery = useSelector(selectSearchQuery)
   const locationType = useSelector(selectLocationType)
-  const guestUser = useSelector(isGuestUser)
   const userLogged = useSelector(isUserLogged)
-  const userAuthorized = useSelector(isUserAuthorized)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
-  const dispatch = useDispatch()
 
   const sidebarComponent = useMemo(() => {
     if (!userLogged || highlightedWorkspacesStatus === AsyncReducerStatus.Loading) {
       return <Spinner />
     }
-    // TODO remove once public release and permissions to use map in anonymous user
-    if (!userAuthorized) {
-      return (
-        <div className={styles.placeholder}>
-          {guestUser ? (
-            <h2>You need to login to see this view</h2>
-          ) : (
-            <h2>We're sorry but your user is not authorized to use this app yet</h2>
-          )}
-          {guestUser ? (
-            <Button
-              className={styles.errorBtn}
-              href={GFWAPI.getLoginUrl(window.location.toString())}
-            >
-              {t('common.login', 'Log in') as string}
-            </Button>
-          ) : (
-            <Button
-              className={styles.errorBtn}
-              onClick={async () => {
-                dispatch(logoutUserThunk({ redirectToLogin: true }))
-              }}
-            >
-              Logout
-            </Button>
-          )}
-        </div>
-      )
-    }
 
     if (locationType === USER) {
       return <User />
     }
+
     if (locationType === WORKSPACES_LIST) {
       return <WorkspacesList />
     }
+
     return <Workspace />
-  }, [
-    dispatch,
-    locationType,
-    userAuthorized,
-    userLogged,
-    highlightedWorkspacesStatus,
-    guestUser,
-    t,
-  ])
+  }, [locationType, userLogged, highlightedWorkspacesStatus])
 
   if (searchQuery !== undefined) {
     return (
