@@ -80,7 +80,7 @@
     "typePointsDescription": "Affichez une ou plusieurs positions par n'importe quelle valeur quantitative dans votre jeu de données.",
     "typePolygons": " Polygones",
     "typePolygonsDescription": "Affichez une ou plusieurs zones colorées par n'importe quelle valeur quantitative dans votre jeu de données.",
-    "typeTracks": " Pistes",
+    "typeTracks": "Trajectoires",
     "typeTracksDescription": "Afficher le mouvement d'un ou de plusieurs animaux ou vaisseaux.",
     "uploadLogin": "Inscrivez-vous et  <1>connectez-vous</1> pour télécharger des jeux de données (gratuit, 2 minutes)",
     "uploadNewContext": "Télécharger de nouvelles couches de référence",
@@ -222,7 +222,7 @@
     "settings_open": "Ouvrir les paramètres de la barre de temps",
     "showFishingEffort": "Afficher le graphique des heures de pêche",
     "showTracks": "Afficher le graphe des pistes",
-    "tracks": "Pistes",
+    "tracks": "Trajectoires",
     "tracksDisabled": "Sélectionnez au moins un navire"
   },
   "user": {
@@ -261,9 +261,9 @@
       "trollers": "Pêche à la traîne",
       "tuna_purse_seines": "Senne coulissante au thon"
     },
-    "grossTonnageRange": "Gross Tonnage range",
+    "grossTonnageRange": "Plage de tonnage brut",
     "imo": "OMI",
-    "lastTransmissionDate": "Fin de transmission",
+    "lastTransmissionDate": "Dernière date de transmission",
     "length": "Longueur",
     "lengthRange": "Plage de longueur",
     "loading": "Chargement de la piste du navire",
@@ -276,7 +276,7 @@
     "transmission_plural": "Transmissions",
     "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
     "vesselType_plural": "Types de navires",
-    "widthRange": "Width range"
+    "widthRange": "Plage de largeur"
   },
   "workspace": {
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement cet espace de travail ?",
@@ -286,8 +286,8 @@
     "new": "Nouvel espace de travail",
     "remove": "Supprimer l'espace de travail",
     "save": "Enregistrer la vue actuelle",
-    "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil utilisateur",
-    "saveLogin": "Vous devez vous connecter pour enregistrer les vues",
-    "title_plural": "Workspaces"
+    "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil",
+    "saveLogin": "Vous devez vous connecter pour enregistrer les vues (gratuit, 2 minutes)",
+    "title_plural": "Espaces de travail"
   }
 }
