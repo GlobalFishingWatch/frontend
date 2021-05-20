@@ -6,6 +6,7 @@ import { Feature, Polygon } from 'geojson'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import bbox from '@turf/bbox'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
@@ -22,6 +23,7 @@ import { useFeatures } from 'features/map/map-features.hooks'
 import { Bbox } from 'types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
+  isGuestUser,
   selectActiveActivityDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
@@ -59,6 +61,7 @@ function Analysis() {
   const dataviews = useSelector(selectActiveActivityDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
   const analysisBounds = useSelector(selectAnalysisBounds)
+  const guestUser = useSelector(isGuestUser)
 
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
@@ -263,31 +266,45 @@ function Analysis() {
                   })`
                 : ''}
             </p>
-            <Button
-              className={styles.saveBtn}
-              onClick={onDownloadClick}
-              loading={reportStatus === AsyncReducerStatus.LoadingCreate}
-              tooltip={
-                timeRangeTooLong
-                  ? t(
-                      'analysis.timeRangeTooLong',
-                      'Reports are only allowed for time ranges up to a year'
-                    )
-                  : ''
-              }
-              tooltipPlacement="top"
-              disabled={
-                timeRangeTooLong ||
-                !hasAnalysisLayers ||
-                reportStatus === AsyncReducerStatus.Finished
-              }
-            >
-              {reportStatus === AsyncReducerStatus.Finished ? (
-                <Icon icon="tick" />
+            {hasAnalysisLayers &&
+              (guestUser && !timeRangeTooLong ? (
+                <Button
+                  className={styles.saveBtn}
+                  type="secondary"
+                  onClick={() => {
+                    window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+                  }}
+                >
+                  <Icon icon={'user'} />
+                  {t('analysis.downloadLogin', 'You need to login to download reports')}
+                </Button>
               ) : (
-                t('analysis.download', 'Download report')
-              )}
-            </Button>
+                <Button
+                  className={styles.saveBtn}
+                  onClick={onDownloadClick}
+                  loading={reportStatus === AsyncReducerStatus.LoadingCreate}
+                  tooltip={
+                    timeRangeTooLong
+                      ? t(
+                          'analysis.timeRangeTooLong',
+                          'Reports are only allowed for time ranges up to a year'
+                        )
+                      : ''
+                  }
+                  tooltipPlacement="top"
+                  disabled={
+                    timeRangeTooLong ||
+                    !hasAnalysisLayers ||
+                    reportStatus === AsyncReducerStatus.Finished
+                  }
+                >
+                  {reportStatus === AsyncReducerStatus.Finished ? (
+                    <Icon icon="tick" />
+                  ) : (
+                    t('analysis.download', 'Download report')
+                  )}
+                </Button>
+              ))}
           </div>
         </div>
       )}
