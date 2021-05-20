@@ -51,9 +51,13 @@ const TimebarWrapper = () => {
           dispatch(disableHighlightedTime())
         }
       } else {
-        const start = scale(clientX - 10).toISOString()
-        const end = scale(clientX + 10).toISOString()
-        dispatch(setHighlightedTime({ start, end }))
+        try {
+          const start = scale(clientX - 10).toISOString()
+          const end = scale(clientX + 10).toISOString()
+          dispatch(setHighlightedTime({ start, end }))
+        } catch (e) {
+          console.warn(e)
+        }
       }
     },
     [dispatch, highlightedTime]

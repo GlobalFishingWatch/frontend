@@ -119,7 +119,6 @@ const TimebarActivityGraph = () => {
   const [loading, setLoading] = useState(haveSourcesLoaded)
 
   useEffect(() => {
-    console.log('set loading', haveSourcesLoaded)
     setLoading(haveSourcesLoaded)
   }, [haveSourcesLoaded])
 
