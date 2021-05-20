@@ -11,6 +11,7 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import store, { RootState } from 'store'
+import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectHasChangedSettingsOnce, changeSettings, Range } from './timebar.slice'
 
 export const TimeRangeAtom = atom<Range>({
@@ -19,16 +20,14 @@ export const TimeRangeAtom = atom<Range>({
   effects_UNSTABLE: [
     ({ trigger, setSelf, onSet }) => {
       const timerange = selectTimeRange(store.getState() as RootState)
-      const { dispatchQueryParams } = useLocationConnect()
+      const dispatch = useDispatch()
 
       if (trigger === 'get') {
         setSelf({
           ...timerange,
         })
       }
-
-      const updateTimerangeDebounced = debounce(dispatchQueryParams, 1000)
-
+      const updateTimerangeDebounced = debounce(dispatch(updateUrlTimerange), 1000)
       onSet((timerange) => {
         if (timerange) {
           updateTimerangeDebounced({ ...timerange })
