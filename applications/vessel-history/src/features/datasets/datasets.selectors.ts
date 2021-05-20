@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import uniqBy from 'lodash/uniqBy'
+import { uniqBy } from 'lodash'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectDatasets } from './datasets.slice'

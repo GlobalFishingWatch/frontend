@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import memoize from 'lodash/memoize'
-import uniqBy from 'lodash/uniqBy'
-import without from 'lodash/without'
+import { uniqBy, memoize, without } from 'lodash'
 import { stringify } from 'qs'
 import { Dataset } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
