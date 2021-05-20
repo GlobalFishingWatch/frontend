@@ -59,7 +59,7 @@ const Settings: React.FC = (): React.ReactElement => {
           onClick={onBackClick}
           className={styles.backButton}
         />
-        <h1>Settings {selectedOption && <span> - {optionsData[selectedOption].title}</span>}</h1>
+        <h1>{t('settings.title',"Settings")} {selectedOption && <span> - {optionsData[selectedOption].title}</span>}</h1>
       </header>
       {!selectedOption && (
         <ul>

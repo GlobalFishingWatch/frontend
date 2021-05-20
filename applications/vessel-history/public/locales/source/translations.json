@@ -25,6 +25,7 @@
     "selected": "selected"
   },
   "settings": {
+    "title": "Settings",
     "distance": "DISTANCE TRAVELLED",
     "duration": "DURATION",
     "hours": "hours",
