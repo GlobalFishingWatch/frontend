@@ -40,6 +40,7 @@ const TimebarActivityGraph = () => {
       if (!map || !metadata) return
       const numSublayers = metadata.numSublayers
       const timeChunks = metadata.timeChunks as TimeChunks
+      let prevMaxFrame: number
       const allChunksValues = metadata.timeChunks.chunks.flatMap((chunk: TimeChunk) => {
         const sourceFeatures = map.querySourceFeatures(chunk.sourceId as string, {
           sourceLayer: TEMPORALGRID_SOURCE_LAYER,
@@ -48,13 +49,20 @@ const TimebarActivityGraph = () => {
         const chunkQuantizeOffset = chunk.quantizeOffset
         const filteredFeatures = filterByViewport(sourceFeatures, bounds)
         if (filteredFeatures?.length > 0) {
-          const values = getTimeSeries(
+          const { values, maxFrame } = getTimeSeries(
             filteredFeatures as any,
             numSublayers,
             chunkQuantizeOffset
-          ).map((frameValues) => {
-            // TODO deduplicate a frame that was already there from a previous timechunk?
+          )
 
+          const valuesTimeChunkOverlapFramesFiltered = prevMaxFrame
+            ? values.filter((frameValues) => frameValues.frame > prevMaxFrame)
+            : values
+
+          prevMaxFrame = maxFrame
+
+          const finalValues = valuesTimeChunkOverlapFramesFiltered.map((frameValues) => {
+            // TODO deduplicate a frame that was already there from a previous timechunk?
             // Ideally we don't have the features not visible in 4wings but we have them
             // so this needs to be filtered by the current active ones
             const activeFrameValues = Object.fromEntries(
@@ -69,7 +77,7 @@ const TimebarActivityGraph = () => {
               date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
             }
           })
-          return values
+          return finalValues
         } else return []
       })
       if (allChunksValues && allChunksValues.length) {
@@ -102,6 +110,7 @@ const TimebarActivityGraph = () => {
     map.on('data', (e: MapSourceDataEvent) => {
       const { metadata, isActive } = isEventSourceActiveChunk(e)
       if (isActive && (e as any).previousState !== 'reloading') {
+        setLoading(true)
         if (!isNaN(sourcesLoadedTimeout.current)) {
           window.clearTimeout(sourcesLoadedTimeout.current)
         }
