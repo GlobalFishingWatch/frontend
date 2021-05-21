@@ -8,6 +8,7 @@ import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
 import {
   isWorkspaceLocation,
+  selectLocationCategory,
   selectLocationType,
   selectUrlViewport,
   selectWorkspaceId,
@@ -28,7 +29,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
@@ -59,6 +60,9 @@ const Main = () => {
   )
 }
 
+const MARINE_MANAGER_LAST_VISIT = 'MarineManagerLastVisit'
+const isFirstTimeVisit = !localStorage.getItem(MARINE_MANAGER_LAST_VISIT)
+
 function App(): React.ReactElement {
   useAnalytics()
   const dispatch = useAppDispatch()
@@ -70,7 +74,16 @@ function App(): React.ReactElement {
   const isAnalysing = useSelector(selectIsAnalyzing)
   const narrowSidebar = workspaceLocation && !analysisQuery
   const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
-  const [welcomePopupOpen, setWelcomePopupOpen] = useState(true)
+
+  const locationIsMarineManager =
+    useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
+  const [welcomePopupOpen, setWelcomePopupOpen] = useState(
+    locationIsMarineManager && isFirstTimeVisit
+  )
+  useEffect(() => {
+    if (locationIsMarineManager)
+      localStorage.setItem(MARINE_MANAGER_LAST_VISIT, new Date().toISOString())
+  }, [])
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
