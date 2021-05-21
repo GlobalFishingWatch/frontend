@@ -78,6 +78,7 @@ export const selectUrlViewport = createSelector(
 export const selectUrlTimeRange = createSelector(
   [selectUrlStartQuery, selectUrlEndQuery],
   (start, end) => {
+    if (!start || !end) return null
     return { start, end }
   }
 )

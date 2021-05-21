@@ -200,6 +200,14 @@ class HeatmapAnimatedGenerator {
       sublayers: config.sublayers?.map((s) => ({ ...s, visible: getSubLayerVisible(s) })),
     }
 
+    if (!config.start || !config.end) {
+      return {
+        id: finalConfig.id,
+        sources: [],
+        layers: [],
+      }
+    }
+
     const timeChunks: TimeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
       finalConfig.id,
       finalConfig.start,

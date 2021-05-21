@@ -3,28 +3,28 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
 import { TimebarVisualisations } from 'types'
-import { selectTimeRange, selectTimebarVisualisation } from 'features/app/app.selectors'
+import { selectTimebarVisualisation } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveActivityDataviews,
   selectActiveTrackDataviews,
 } from 'features/dataviews/dataviews.selectors'
-import { DEFAULT_TIME_RANGE } from 'data/config'
 import store, { RootState } from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
+import { selectUrlTimeRange } from 'routes/routes.selectors'
 import { selectHasChangedSettingsOnce, changeSettings, Range } from './timebar.slice'
 
-export const TimeRangeAtom = atom<Range>({
+export const TimeRangeAtom = atom<Range | null>({
   key: 'timerange',
-  default: DEFAULT_TIME_RANGE,
+  default: null,
   effects_UNSTABLE: [
     ({ trigger, setSelf, onSet }) => {
-      const timerange = selectTimeRange(store.getState() as RootState)
+      const urlTimeRange = selectUrlTimeRange(store.getState() as RootState)
       const dispatch = useDispatch()
 
-      if (trigger === 'get') {
+      if (trigger === 'get' && urlTimeRange) {
         setSelf({
-          ...timerange,
+          ...urlTimeRange,
         })
       }
       const updateTimerangeDebounced = debounce(dispatch(updateUrlTimerange), 1000)
@@ -47,8 +47,13 @@ export const useTimerangeConnect = () => {
     [setTimerange]
   )
   return useMemo(() => {
-    const { start, end } = timerange
-    return { start, end, timerange, setTimerange, onTimebarChange }
+    return {
+      start: timerange?.start,
+      end: timerange?.end,
+      timerange,
+      setTimerange,
+      onTimebarChange,
+    }
   }, [onTimebarChange, timerange, setTimerange])
 }
 

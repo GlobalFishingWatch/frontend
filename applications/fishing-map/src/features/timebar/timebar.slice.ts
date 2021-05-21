@@ -8,13 +8,11 @@ export type Range = {
 
 type TimebarSlice = {
   highlightedTime: Range | undefined
-  staticTime: Range | undefined
   hasChangedSettingsOnce: boolean
 }
 
 const initialState: TimebarSlice = {
   highlightedTime: undefined,
-  staticTime: undefined,
   hasChangedSettingsOnce: false,
 }
 
