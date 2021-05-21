@@ -159,8 +159,8 @@
     }
   },
   "full-panama-fishing-vessels": {
-    "name": "VMS Panama",
-    "description": "Dataset for VMS Panama (Public)",
+    "name": "Panama VMS",
+    "description": "Panama VMS",
     "schema": {
       "id": "id",
       "flag": "flag",
@@ -343,8 +343,8 @@
     }
   },
   "public-panama-fishing-vessels": {
-    "name": "VMS Panama",
-    "description": "Dataset for VMS Panama (Public)",
+    "name": "Panama VMS",
+    "description": "Panama VMS",
     "schema": {
       "id": "id",
       "shipname": "shipname",
