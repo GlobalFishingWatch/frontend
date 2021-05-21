@@ -62,7 +62,7 @@
     "dragFilePlaceholder": "Glissez et déposez un fichier de forme compressé ou un géojson ici ou cliquez pour le sélectionner",
     "edit": "Modifier le jeu de données",
     "emptyState": "Vos jeux de données apparaîtront ici",
-    "featuresNameField": "Champ de nom des caractéristiques",
+    "featuresNameField": "Champ de nom pour chaque zone",
     "file": "Fichier",
     "fileNotAllowed": "(Seuls les fichiers .zip ou .json sont autorisés)",
     "hint": "En savoir plus sur les formats pris en charge",
@@ -72,20 +72,20 @@
     "longitudeNameField": "Champ de longitude",
     "new": "Nouveau jeu de données",
     "notUploadedYet": "Aucune couche de référence téléchargée pour le moment",
-    "remove": "Remove dataset",
+    "remove": "Supprimer les jeux de données",
     "requiredFields": "Champs requis {{fields}}",
     "timeNameField": "Champ du nom de l'heure",
-    "title": "Dataset",
+    "title": "Jeu de données",
     "typePoints": " Points",
     "typePointsDescription": "Affichez une ou plusieurs positions par n'importe quelle valeur quantitative dans votre jeu de données.",
     "typePolygons": " Polygones",
     "typePolygonsDescription": "Affichez une ou plusieurs zones colorées par n'importe quelle valeur quantitative dans votre jeu de données.",
-    "typeTracks": " Pistes",
+    "typeTracks": "Trajectoires",
     "typeTracksDescription": "Afficher le mouvement d'un ou de plusieurs animaux ou vaisseaux.",
-    "uploadLogin": "Vous devez <1>login</1> pour télécharger des jeux de données",
+    "uploadLogin": "Inscrivez-vous et  <1>connectez-vous</1> pour télécharger des jeux de données (gratuit, 2 minutes)",
     "uploadNewContext": "Télécharger de nouvelles couches de référence",
     "uploadNewEnviroment": "Charger un nouveau jeu de données d'environnement",
-    "title_plural": "Datasets"
+    "title_plural": "Jeux de données"
   },
   "errors": {
     "contactUs": "Please <1>contact us</1> to report the problem.",
@@ -105,16 +105,16 @@
     "trackLoading": "Une erreur s'est produite lors du chargement de la piste du navire",
     "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
     "vesselLoading": "Une erreur s'est produite lors du chargement de la piste des détails du vaisseau",
-    "workspaceCreate": "Une erreur s'est produite lors de la création de l'espace de travail, veuillez réessayer plus tard",
+    "workspaceCreate": "Une erreur s'est produite lors de la création de l'espace de travail. Veuillez réessayer ",
     "workspaceDuplicatedName": "Il existe déjà un espace de travail portant ce nom",
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer.",
-    "workspaceMissingName": "Le nom de l'espace de travail est requis",
-    "workspaceNotFound": "La vue demandée n'a pas été trouvée"
+    "workspaceMissingName": "Donner un nom à cet espace de travail.",
+    "workspaceNotFound": "L'espace de travail demandé n'a pas été trouvé."
   },
   "event": {
     "noData": "Aucune donnée disponible",
-    "notInCVP": "Cet événement s'est produit en dehors de la plage horaire des données du Portail du Transporteur",
-    "seeInCVP": "Voir dans le Portail du Transporteur"
+    "notInCVP": "Événement non disponible.",
+    "seeInCVP": "Voir dans le Carrier Vessel Portal"
   },
   "feedback": {
     "dataset": "Jeu de données pour lequel vous fournissez des commentaires",
@@ -141,7 +141,7 @@
     "send": "Envoyer"
   },
   "footer": {
-    "convenedBy": "Un partenariat convoqué par",
+    "convenedBy": "Partenaires fondateurs",
     "supportBy": "Prise en charge par"
   },
   "layer": {
@@ -149,7 +149,7 @@
     "color_change": "Modifier la couleur",
     "filterClose": "Fermer les filtres",
     "filterOpen": "Ouvrir les filtres",
-    "flagState_plural": "États du Pavillon",
+    "flagState_plural": "Pavillons",
     "fleet_plural": "Flottes",
     "gearType_plural": "Types d'équipement",
     "infoClose": "Masquer les infos",
@@ -159,7 +159,7 @@
     "source": "Source",
     "source_plural": "Sources",
     "toggleCombinationMode": {
-      "combine": "Combiner les claques",
+      "combine": "Combiner les calques",
       "split": "Séparer les calques"
     },
     "toggleVisibility": "Activer/désactiver la visibilité de la couche",
@@ -170,10 +170,10 @@
     "captureMap": "Enregistrer une image de la carte",
     "change_basemap_default": "Fond de carte par défaut",
     "change_basemap_satellite": "Fond de carte satellite",
-    "legend_help": "Zone de cellules de la grille approchée à l'équateur",
+    "legend_help": "Zone approximatie des cellules de la grille par rapport à l'équateur",
     "loading": "Chargement de la carte",
     "mapLoadingWait": "Veuillez patienter jusqu'à ce que la carte soit chargée",
-    "rulers_add": "Ajouter des distances",
+    "rulers_add": "Mesurer des distances",
     "rulers_remove": "Supprimer toutes les distances",
     "search": "Rechercher des zones",
     "zoom_in": "Zoomer",
@@ -184,23 +184,23 @@
     "advancedDisabled": "You need to login to use advanced search",
     "basic": "Basique",
     "close": "Fermer la recherche",
-    "description": "Recherche par nom de navire ou code d'identification (OMI, MMSI, VMS ID, etc). Vous pouvez affiner votre recherche en cliquant sur l'icône de filtre dans la barre supérieure.",
+    "description": "Recherche par nom de navire ou code d'identification . Vous pouvez affiner votre recherche en cliquant sur \"Avancé\" dans la barre supérieure.",
     "mainQueryLabel": "Nom, IMO ou MMSI",
-    "noResults": "Vous ne trouvez pas le vaisseau que vous recherchez ? Essayez d'utiliser MMSI, IMO ou Callsign",
-    "notAllowed": "Les jeux de données disponibles n'autorisent pas les vaisseaux de recherche",
-    "placeholder": "Tapez pour rechercher des vaisseaux",
+    "noResults": "Vous ne trouvez pas le navire que vous recherchez ? Essayez d'utiliser MMSI, IMO ou Callsign",
+    "notAllowed": "Vous n'êtes pas autorisé à rechercher ces données.",
+    "placeholder": "Tapez pour rechercher des navires",
     "seeVessel": "Voir le bateau",
     "seeVessels": "Voir les navires",
     "suggestion": "Vouliez-vous dire",
     "title": "Chercher",
     "vesselAlreadyInWorkspace": "Ce vaisseau est déjà dans votre espace de travail",
-    "vessels": "Rechercher des vaisseaux",
+    "vessels": "Rechercher des navires",
     "vesselSelected": "Navire sélectionné"
   },
   "selects": {
     "allSelected": "Tous",
     "placeholder": "Sélectionnez une option",
-    "selected": "slectionns"
+    "selected": "sélectionné"
   },
   "timebarSettings": {
     "eventOptions": {
@@ -222,13 +222,13 @@
     "settings_open": "Ouvrir les paramètres de la barre de temps",
     "showFishingEffort": "Afficher le graphique des heures de pêche",
     "showTracks": "Afficher le graphe des pistes",
-    "tracks": "Pistes",
-    "tracksDisabled": "Sélectionnez au moins un vaisseau"
+    "tracks": "Trajectoires",
+    "tracksDisabled": "Sélectionnez au moins un navire"
   },
   "user": {
-    "groupMissing": "appartenez-vous à un groupe d'utilisateurs qui n'apparaît pas ici ? <2>Demander l'accès</2>",
+    "groupMissing": "Appartenez-vous à un groupe d’utilisateurs qui n’apparaît pas ici ? <2>Demander l'accès</2>",
     "groups": "Groupes d'utilisateurs",
-    "profile": "Profil de l'utilisateur",
+    "profile": "Profil",
     "title": "Utilisateur"
   },
   "vessel": {
@@ -236,34 +236,34 @@
     "callsign": "Indicatif",
     "capacity": "Capacité",
     "carrier": "Transporteur",
-    "donor": "Vaisseau du donateur",
-    "firstTransmissionDate": "Début de transmission",
+    "donor": "Navire donneur",
+    "firstTransmissionDate": "Première date de transmission",
     "flag": "Drapeau",
     "fleet": "Flotte",
     "geartype": "Type d'équipement",
     "gearTypes": {
-      "dredge_fishing": "Pêche à Dragonne",
-      "drifting_longlines": "Dérive longue ligne",
+      "dredge_fishing": "Pêche à la drague",
+      "drifting_longlines": "Palangre dérivante",
       "driftnets": "Filet dérivant",
       "fishing": "Pêche",
-      "fixed_gear": "Équipement Fixe",
-      "other_fishing": "Autres pêches",
-      "other_purse_seines": "Autres Seines boursières",
-      "other_seines": "Other Seines",
-      "pole_and_line": "Pôle et ligne",
-      "pots_and_traps": "Pots et pièges",
-      "purse_seines": "Bourses de la Seine",
-      "seiners": "Seiners",
-      "set_gillnets": "Définir le Gillnet",
-      "set_longlines": "Définir une longue ligne",
-      "squid_jigger": "Jigger de calamar",
-      "trawlers": "Piégeur",
-      "trollers": "Troller",
-      "tuna_purse_seines": "Fusil de la senne au thon"
+      "fixed_gear": "Apparaux de pêche fixe",
+      "other_fishing": "Autres techniques de pêches",
+      "other_purse_seines": "Autres sennes coulissantes",
+      "other_seines": "Autres senneurs",
+      "pole_and_line": "Ligneurs",
+      "pots_and_traps": "Caseyeurs",
+      "purse_seines": "Sennes coulissantes",
+      "seiners": "Senneurs",
+      "set_gillnets": "Filet maillant",
+      "set_longlines": "Palangre",
+      "squid_jigger": "Pêcheur de calamar (jigger)",
+      "trawlers": "Chalutier",
+      "trollers": "Pêche à la traîne",
+      "tuna_purse_seines": "Senne coulissante au thon"
     },
-    "grossTonnageRange": "Gross Tonnage range",
+    "grossTonnageRange": "Plage de tonnage brut",
     "imo": "OMI",
-    "lastTransmissionDate": "Fin de transmission",
+    "lastTransmissionDate": "Dernière date de transmission",
     "length": "Longueur",
     "lengthRange": "Plage de longueur",
     "loading": "Chargement de la piste du navire",
@@ -276,7 +276,7 @@
     "transmission_plural": "Transmissions",
     "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
     "vesselType_plural": "Types de navires",
-    "widthRange": "Width range"
+    "widthRange": "Plage de largeur"
   },
   "workspace": {
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement cet espace de travail ?",
@@ -286,8 +286,8 @@
     "new": "Nouvel espace de travail",
     "remove": "Supprimer l'espace de travail",
     "save": "Enregistrer la vue actuelle",
-    "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil utilisateur",
-    "saveLogin": "Vous devez vous connecter pour enregistrer les vues",
-    "title_plural": "Workspaces"
+    "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil",
+    "saveLogin": "Vous devez vous connecter pour enregistrer les vues (gratuit, 2 minutes)",
+    "title_plural": "Espaces de travail"
   }
 }
