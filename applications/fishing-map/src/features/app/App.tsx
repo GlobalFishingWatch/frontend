@@ -32,6 +32,7 @@ import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
+import Welcome from 'features/welcome/Welcome'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -68,6 +69,8 @@ function App(): React.ReactElement {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
   const narrowSidebar = workspaceLocation && !analysisQuery
+  const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
+  const [welcomePopupOpen, setWelcomePopupOpen] = useState(true)
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
@@ -123,8 +126,6 @@ function App(): React.ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
-
   useEffect(() => {
     dispatch(fetchUserThunk())
   }, [dispatch])
@@ -176,6 +177,9 @@ function App(): React.ReactElement {
         onClose={() => dispatchToggleDebugMenu()}
       >
         <DebugMenu />
+      </Modal>
+      <Modal header={false} isOpen={welcomePopupOpen} onClose={() => setWelcomePopupOpen(false)}>
+        <Welcome />
       </Modal>
     </MapContext.Provider>
   )
