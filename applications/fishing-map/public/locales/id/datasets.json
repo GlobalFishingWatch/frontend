@@ -6,19 +6,6 @@
       "fields": "fields"
     }
   },
-  "dgg_sar_caribe_match_2019": {
-    "name": "SAR with an AIS-matched vessel",
-    "description": "Vessels identified using synthetic aperture radar (SAR) and matched to a vessel using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
-    "schema": {
-      "flag": "flag",
-      "vessel_id": "vessel_id"
-    }
-  },
-  "dgg_sar_caribe_not_match_2019": {
-    "name": "SAR without an AIS-matched vessel",
-    "description": "Vessels identified using synthetic aperture radar (SAR) without a known match to any vessel recorded using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
-    "schema": {}
-  },
   "fd-chlorophyl-ascension-v2": {
     "name": "Chlorophyll-a concentration",
     "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
@@ -131,6 +118,14 @@
       "vessel_id": "vessel_id"
     }
   },
+  "fd-water-temperature-caribe-v2-2020": {
+    "name": "Water temperature Caribe with data of 2020",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
   "fd-water-temperature-galapagos-v2": {
     "name": "Sea surface temperature",
     "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
@@ -163,6 +158,18 @@
       "vessel_id": "vessel_id"
     }
   },
+  "full-panama-fishing-vessels": {
+    "name": "VMS Panama",
+    "description": "Dataset for VMS Panama (Public)",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
   "public-chile-fishing-effort": {
     "name": "Chile VMS",
     "description": "Vessel monitoring system (VMS) data provided by the Chilean government’s fisheries and aquaculture regulator (SERNAPESCA). It is possible to filter Chile’s VMS data for small-scale fishing vessels (<18 meters) and industrial fishing vessels (>18 meters). Note that some vessels are <18 meters but are considered industrial because they were registered in the capture of industrial quotas. SERNAPESCA is also using our map to visualize and track vessel positions for their fleet, including vessels involved in aquaculture. Data is collected using Chile’s VMS via satellites and terrestrial receivers and contains vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
@@ -183,6 +190,19 @@
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
     }
+  },
+  "public-dgg_sar_caribe_match_2019": {
+    "name": "SAR with an AIS-matched vessel",
+    "description": "Vessels identified using synthetic aperture radar (SAR) and matched to a vessel using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-dgg_sar_caribe_not_match_2019": {
+    "name": "SAR without an AIS-matched vessel",
+    "description": "Vessels identified using synthetic aperture radar (SAR) without a known match to any vessel recorded using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
+    "schema": {}
   },
   "public-eez-areas": {
     "name": "EEZ (marineregions.org)",
@@ -320,6 +340,16 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-panama-fishing-vessels": {
+    "name": "VMS Panama",
+    "description": "Dataset for VMS Panama (Public)",
+    "schema": {
+      "id": "id",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
     }
   },
   "public-peru-fishing-effort": {
