@@ -1,5 +1,13 @@
 # @globalfishingwatch/layer-composer
 
+## 6.1.4
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+- Updated dependencies [7d060771]
+  - @globalfishingwatch/api-types@4.2.4
+
 ## 6.1.3
 
 ### Patch Changes

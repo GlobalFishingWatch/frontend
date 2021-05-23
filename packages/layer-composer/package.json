@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/layer-composer",
-  "version": "6.1.3",
+  "version": "6.1.4",
   "description": "",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -47,7 +47,7 @@
     "vt-pbf": "^3.1.1"
   },
   "devDependencies": {
-    "@globalfishingwatch/api-types": "^4.2.2",
+    "@globalfishingwatch/api-types": "^4.2.4",
     "@globalfishingwatch/data-transforms": "^1.2.0",
     "@globalfishingwatch/fourwings-aggregate": "3.1.1",
     "@types/color-convert": "^2.0.0",
@@ -71,7 +71,7 @@
     "rollup-plugin-terser": "^7.0.2"
   },
   "peerDependencies": {
-    "@globalfishingwatch/api-types": "^4.2.2",
+    "@globalfishingwatch/api-types": "^4.2.4",
     "@globalfishingwatch/data-transforms": "^1.2.0",
     "@globalfishingwatch/fourwings-aggregate": "3.1.1",
     "lodash": "^4.17.21",
