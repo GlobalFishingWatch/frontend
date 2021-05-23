@@ -15,7 +15,6 @@ import { APP_NAME } from 'data/config'
 import { WorkspaceState } from 'types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
-import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 
 type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategories>
 
@@ -62,58 +61,41 @@ export const fetchDefaultWorkspaceThunk = createAsyncThunk<Workspace>(
 
 export type HighlightedWorkspace = {
   id: string
-  name: string
-  name_es?: string
-  name_fr?: string
-  name_id?: string
-  description: string
-  description_es?: string
-  description_fr?: string
-  description_id?: string
-  cta?: string
-  cta_es?: string
-  cta_fr?: string
-  cta_id?: string
+  name: {
+    en: string
+    es?: string
+    fr?: string
+    id?: string
+  }
+  description: {
+    en: string
+    es?: string
+    fr?: string
+    id?: string
+  }
+  cta: {
+    en: string
+    es?: string
+    fr?: string
+    id?: string
+  }
   img?: string
   userGroup?: string
   visible?: 'visible' | 'hidden'
 }
 
-const WORKSPACES_SPREADSHEET_ID = process.env.REACT_APP_WORKSPACES_SPREADSHEET_ID
+export type HighlightedWorkspaces = {
+  title: string
+  workspaces: HighlightedWorkspace[]
+}
+
+const WORKSPACES_APP = 'fishing-map'
 
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
   'workspaces/fetchHighlighted',
   async (_, { dispatch }) => {
-    const workspacesSpreadsheetDoc = await loadSpreadsheetDoc(WORKSPACES_SPREADSHEET_ID as string)
-    const workspaces = await Promise.all(
-      workspacesSpreadsheetDoc.sheetsByIndex
-        .filter((sheet) =>
-          Object.values(WorkspaceCategories).includes(sheet.title as WorkspaceCategories)
-        )
-        .map(async (sheet) => {
-          const rows = await sheet.getRows()
-          return {
-            title: sheet.title as WorkspaceCategories,
-            workspaces: rows.map((row) => ({
-              visible: row.visible,
-              id: row.id,
-              img: row.img,
-              userGroup: row.userGroup,
-              name: row.name,
-              name_es: row.name_es,
-              name_fr: row.name_fr,
-              name_id: row.name_id,
-              description: row.description,
-              description_es: row.description_es,
-              description_fr: row.description_fr,
-              description_id: row.description_id,
-              cta: row.cta,
-              cta_es: row.cta_es,
-              cta_fr: row.cta_fr,
-              cta_id: row.cta_id,
-            })),
-          }
-        })
+    const workspaces = await GFWAPI.fetch<HighlightedWorkspaces[]>(
+      `/v1/highlighted-workspaces/${WORKSPACES_APP}`
     )
 
     const workspacesIds = workspaces.flatMap(({ workspaces }) =>

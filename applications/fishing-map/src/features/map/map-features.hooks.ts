@@ -141,5 +141,18 @@ export const useActivityTemporalgridFeatures = () => {
   const generator = useSelector(
     selectGeneratorConfigsById(MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID)
   )
-  return useGeneratorAnimatedFeatures(generator)
+  const { sourcesFeatures, haveSourcesLoaded, sourcesMetadata } =
+    useGeneratorAnimatedFeatures(generator)
+
+  // console.log(sourcesMetadata)
+
+  // const activeChunkSource = sources.find((source) => source.id === timeChunks.activeSourceId)
+  // if (activeChunkSource) {
+  //   const activeChunkSourceUrl = activeChunkSource.tiles[0]
+  //   console.log('tiles source', activeChunkSource)
+  //   console.log('tiles URL', activeChunkSourceUrl)
+  //   ;(style.metadata as any).activeChunkSourceUrl = activeChunkSourceUrl
+  // }
+
+  return { sourcesFeatures, haveSourcesLoaded, sourcesMetadata }
 }

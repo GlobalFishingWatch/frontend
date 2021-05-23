@@ -98,8 +98,8 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <button className={styles.tabContent} onClick={onHelpClick}>
             <Icon icon="help" />
           </button>
-        </li>
-        <li className={cx(styles.tab, styles.secondary)}>
+        </li> */}
+        {/* <li className={cx(styles.tab, styles.secondary)}>
           <button className={styles.tabContent} onClick={onFeedbackClick}>
             <Icon icon="feedback" />
           </button>
