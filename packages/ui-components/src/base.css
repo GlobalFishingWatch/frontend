@@ -65,6 +65,14 @@
   --space-S: 1rem;
   --space-M: 2rem;
   --space-L: 4rem;
+
+  /* SCROLLBARS */
+  --scrollbar-track-color: transparent;
+  --scrollbar-color: rgba(0, 36, 87, 0.4);
+  --scrollbar-color-hover: rgba(0, 36, 87, 0.6);
+  --scrollbar-width: thin;
+  --scrollbar-size: 0.5rem;
+  --scrollbar-minlength: 1.5rem; /* Minimum length of scrollbar thumb (width of horizontal, height of vertical) */
 }
 
 html {
@@ -122,6 +130,33 @@ ul {
   font: inherit;
   box-sizing: border-box;
   vertical-align: baseline;
+  scrollbar-width: var(--scrollbar-width);
+  scrollbar-color: var(--scrollbar-color) var(--scrollbar-track-color);
+}
+
+*::-webkit-scrollbar {
+  height: var(--scrollbar-size);
+  width: var(--scrollbar-size);
+}
+*::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track-color);
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-color);
+}
+
+*:focus {
+  outline: none;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-color-hover);
+}
+*::-webkit-scrollbar-thumb:vertical {
+  min-height: var(--scrollbar-minlength);
+}
+*::-webkit-scrollbar-thumb:horizontal {
+  min-width: var(--scrollbar-minlength);
 }
 
 sub {
@@ -132,10 +167,6 @@ sub {
 sup {
   vertical-align: super;
   font: var(--font-XS);
-}
-
-*:focus {
-  outline: none;
 }
 
 ::selection {
