@@ -20,9 +20,9 @@ import useViewport from 'features/map/map-viewport.hooks'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
-  latitude: 3,
-  longitude: -7,
-  zoom: 0.1,
+  latitude: 10,
+  longitude: 40,
+  zoom: 1,
 }
 
 type CategoryTabsProps = {
