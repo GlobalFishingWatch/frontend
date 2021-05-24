@@ -1,5 +1,6 @@
 import React, { Fragment, memo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import TimebarComponent, {
   TimebarTracks,
@@ -84,6 +85,13 @@ const TimebarWrapper = () => {
     [setInternalRange, onTimebarChange]
   )
 
+  const onTogglePlay = useCallback((isPlaying: boolean) => {
+    uaEvent({
+      category: 'Timebar',
+      action: `Click on ${isPlaying ? 'Play' : 'Pause'}`,
+    })
+  }, [])
+
   if (!start || !end) return null
 
   return (
@@ -99,6 +107,7 @@ const TimebarWrapper = () => {
         showLastUpdate={false}
         onMouseMove={onMouseMove}
         onBookmarkChange={onBookmarkChange}
+        onTogglePlay={onTogglePlay}
         bookmarkStart={bookmark?.start}
         bookmarkEnd={bookmark?.end}
         bookmarkPlacement="bottom"
