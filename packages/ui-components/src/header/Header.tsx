@@ -4,55 +4,69 @@ import styles from './Header.css'
 
 const navigation = [
   {
-    link: 'https://globalfishingwatch.org/map-and-data/',
-    label: 'Map & data',
+    link: 'https://globalfishingwatch.org/topics/',
+    label: 'Topics',
     childs: [
-      { link: 'https://globalfishingwatch.org/our-map/', label: 'Our map' },
-      { link: 'https://globalfishingwatch.org/join/', label: 'Map sign up' },
+      { link: 'https://globalfishingwatch.org/commercial-fishing/', label: 'Commercial Fishing' },
+      { link: 'https://globalfishingwatch.org/transshipment/', label: 'Transshipment' },
+    ],
+  },
+  {
+    link: 'https://globalfishingwatch.org/map-and-data/',
+    label: 'Map & dara',
+    childs: [
+      { link: 'https://globalfishingwatch.org/our-technology/', label: 'Our Technology' },
+      { link: 'https://globalfishingwatch.org/our-map/', label: 'Our Map' },
       {
         link: 'https://globalfishingwatch.org/carrier-vessel-portal/',
         label: 'Carrier Vessel Portal',
       },
-      { link: 'https://globalfishingwatch.org/map-and-data/technology/', label: 'How it works' },
-      { link: 'https://globalfishingwatch.org/faqs/', label: 'Help hub' },
-      { link: 'https://globalfishingwatch.org/datasets-and-code/', label: 'Datasets and code' },
+      { link: 'https://globalfishingwatch.org/datasets-and-code/', label: 'Datasets and Code' },
     ],
   },
   {
-    link: 'https://globalfishingwatch.org/faqs/',
-    label: 'Help',
-  },
-  {
-    link: 'https://globalfishingwatch.org/research/',
-    label: 'Research',
+    link: 'https://globalfishingwatch.org/programs/',
+    label: 'Programs',
     childs: [
-      { link: 'https://globalfishingwatch.org/research-partners/', label: 'Research partners' },
-      { link: 'https://globalfishingwatch.org/publications/', label: 'Publications' },
+      {
+        link: 'https://globalfishingwatch.org/research/',
+        label: 'Research',
+        childs: [
+          { link: 'https://globalfishingwatch.org/our-analysis/', label: 'Analysis' },
+          { link: 'https://globalfishingwatch.org/publications/', label: 'Publications' },
+        ],
+      },
+      {
+        link: 'https://globalfishingwatch.org/transparency/',
+        label: 'Transparency',
+        childs: [
+          {
+            link: 'https://globalfishingwatch.org/transparency-program-africa/',
+            label: 'Africa',
+          },
+          { link: 'https://globalfishingwatch.org/transparency-program-asia/', label: 'Asia' },
+          {
+            link: 'https://globalfishingwatch.org/transparency-program-latin-america/',
+            label: '>Latin America',
+          },
+          {
+            link: 'https://globalfishingwatch.org/transparency-program-mediterranean/',
+            label: 'Mediterranean',
+          },
+          {
+            link: 'https://globalfishingwatch.org/transparency-program-pacific/',
+            label: 'Pacific',
+          },
+        ],
+      },
     ],
   },
   {
-    link: 'https://globalfishingwatch.org/news/',
-    label: 'News & Blog',
+    link: 'https://globalfishingwatch.org/newsroom/',
+    label: 'Newsroom',
     childs: [
-      { link: 'https://globalfishingwatch.org/news/press-centre/', label: 'Press centre' },
       { link: 'https://globalfishingwatch.org/blog/', label: 'Blog' },
-      {
-        link: 'https://globalfishingwatch.org/new-and-views/highlights/',
-        label: 'Media highlights',
-      },
-    ],
-  },
-  {
-    link: 'https://globalfishingwatch.org/get-involved/',
-    label: 'Get involved',
-    childs: [
-      {
-        link: 'https://globalfishingwatch.org/transparency-makes-a-difference/',
-        label: 'Share your story',
-      },
-      { link: 'https://globalfishingwatch.org/join/', label: 'Newsletter sign up' },
-      { link: 'https://globalfishingwatch.org/work-for-us/', label: 'Work for us' },
-      { link: 'https://globalfishingwatch.org/contact-us', label: 'Contact us' },
+      { link: 'https://globalfishingwatch.org/multimedia/', label: 'Multimedia' },
     ],
   },
   {
@@ -60,10 +74,19 @@ const navigation = [
     label: 'About us',
     mini: true,
     childs: [
-      { link: 'https://globalfishingwatch.org/programs/', label: 'Programs' },
-      { link: 'https://globalfishingwatch.org/leadership/', label: 'Leadership' },
-      { link: 'https://globalfishingwatch.org/partners/', label: 'Partners' },
-      { link: 'https://globalfishingwatch.org/meet-the-team/', label: 'Meet the team' },
+      { link: 'https://globalfishingwatch.org/leadership/', label: 'Board of Directors' },
+      { link: 'https://globalfishingwatch.org/meet-the-team/', label: 'Team' },
+      { link: 'https://globalfishingwatch.org/careers/', label: 'Careers' },
+      { link: 'https://globalfishingwatch.org/financials/', label: 'Financials' },
+    ],
+  },
+  {
+    link: 'https://globalfishingwatch.org/help-faqs/"',
+    label: 'Help',
+    childs: [
+      { link: 'https://globalfishingwatch.org/help-faqs/', label: 'FAQ' },
+      { link: 'https://globalfishingwatch.org/tutorials/', label: 'Tutorials' },
+      { link: 'https://globalfishingwatch.org/contact-us/', label: 'Contact Us' },
     ],
   },
 ]
