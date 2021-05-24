@@ -13,6 +13,7 @@ import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import { selectActivityCategory } from 'routes/routes.selectors'
+import { getEventLabel } from 'utils/analytics'
 import {
   setHighlightedTime,
   disableHighlightedTime,
@@ -78,6 +79,13 @@ const TimebarWrapper = () => {
       if (e.source === 'ZOOM_OUT_MOVE') {
         setInternalRange({ ...e })
         return
+      }
+      if (e.source === 'TIME_RANGE_SELECTOR') {
+        uaEvent({
+          category: 'Timebar',
+          action: 'Configure timerange using calendar option',
+          label: getEventLabel([e.start , e.end]),
+        })
       }
       setInternalRange(null)
       onTimebarChange(e.start, e.end)
