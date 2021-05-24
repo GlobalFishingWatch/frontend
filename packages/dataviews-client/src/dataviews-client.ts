@@ -7,7 +7,6 @@ import {
   DataviewInstance,
   ResourceResponseType,
   Dataset,
-  DataviewDatasetConfig,
 } from '@globalfishingwatch/api-types'
 import resolveDataviews from './resolve-dataviews'
 

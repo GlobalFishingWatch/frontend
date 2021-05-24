@@ -40,11 +40,18 @@ function Modal(props: ModalProps) {
       isOpen={isOpen}
       onRequestClose={onClose}
     >
-      {header && (
+      {header ? (
         <div className={cx(styles.header, { [styles.withTitle]: title })}>
           <h1 className={styles.title}>{title}</h1>
           <IconButton icon="close" onClick={onClose} />
         </div>
+      ) : (
+        <IconButton
+          icon="close"
+          onClick={onClose}
+          type="border"
+          className={styles.closeButtonWithoutHeader}
+        />
       )}
       <div
         className={cx(styles.content, contentClassName, {
