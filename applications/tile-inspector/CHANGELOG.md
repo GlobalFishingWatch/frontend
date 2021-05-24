@@ -1,5 +1,22 @@
 # tile-inspector
 
+## 0.1.25
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@4.1.0
+
+## 0.1.24
+
+### Patch Changes
+
+- Updated dependencies [1a3d0960]
+  - @globalfishingwatch/fourwings-aggregate@4.0.0
+  - @globalfishingwatch/layer-composer@7.0.0
+  - @globalfishingwatch/react-hooks@7.0.0
+  - @globalfishingwatch/ui-components@4.0.0
+
 ## 0.1.23
 
 ### Patch Changes

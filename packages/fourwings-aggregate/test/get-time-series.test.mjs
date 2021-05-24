@@ -9,28 +9,28 @@ const feature3 = { properties: { rawValues: '[0,15341,15343,1,2,3]' } }
 const feature4 = { properties: { rawValues: '[0,15340,15342,1,10,2,11,3,12]' } }
 const feature5 = { properties: { rawValues: '[0,15341,15344,     1,10,2,11,3,12,1,1]' } }
 
-tap.strictSame(getTimeSeries([feature1], 1), [
+tap.strictSame(getTimeSeries([feature1], 1).values, [
   { frame: 15340, 0: 1 },
   { frame: 15341, 0: 2 },
   { frame: 15342, 0: 3 },
 ])
-tap.strictSame(getTimeSeries([feature1, feature2], 1), [
+tap.strictSame(getTimeSeries([feature1, feature2], 1).values, [
   { frame: 15340, 0: 2 },
   { frame: 15341, 0: 4 },
   { frame: 15342, 0: 6 },
 ])
-tap.strictSame(getTimeSeries([feature1, feature2, feature3], 1), [
+tap.strictSame(getTimeSeries([feature1, feature2, feature3], 1).values, [
   { frame: 15340, 0: 2 },
   { frame: 15341, 0: 5 },
   { frame: 15342, 0: 8 },
   { frame: 15343, 0: 3 },
 ])
-tap.strictSame(getTimeSeries([feature4], 2), [
+tap.strictSame(getTimeSeries([feature4], 2).values, [
   { frame: 15340, 0: 1, 1: 10 },
   { frame: 15341, 0: 2, 1: 11 },
   { frame: 15342, 0: 3, 1: 12 },
 ])
-tap.strictSame(getTimeSeries([feature4, feature5], 2), [
+tap.strictSame(getTimeSeries([feature4, feature5], 2).values, [
   { frame: 15340, 0: 1, 1: 10 },
   { frame: 15341, 0: 3, 1: 21 },
   { frame: 15342, 0: 5, 1: 23 },
@@ -39,7 +39,7 @@ tap.strictSame(getTimeSeries([feature4, feature5], 2), [
 ])
 
 // Test avg mode
-tap.strictSame(getTimeSeries([feature4, feature5], 2, 0, 'avg'), [
+tap.strictSame(getTimeSeries([feature4, feature5], 2, 0, 'avg').values, [
   { frame: 15340, 0: 1, 1: 10 },
   { frame: 15341, 0: 1.5, 1: 10.5 },
   { frame: 15342, 0: 2.5, 1: 11.5 },
@@ -73,7 +73,7 @@ const geojson = aggregateTile(bigtile, {
 let sum = 0
 for (var i = 0; i < 20; i++) {
   const t = performance.now()
-  const timeseries = getTimeSeries(geojson.interactive.features, 2, 15340)
+  const timeseries = getTimeSeries(geojson.interactive.features, 2, 15340).values
   const delta = performance.now() - t
   // console.info(delta, timeseries)
   sum += delta

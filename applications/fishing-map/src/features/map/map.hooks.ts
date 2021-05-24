@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
@@ -12,6 +12,7 @@ import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/
 import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
@@ -22,9 +23,9 @@ import {
   selectActivityDataviews,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/dataviews.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   selectDefaultMapGeneratorsConfig,
-  selectGlobalGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
 } from './map.selectors'
@@ -46,10 +47,21 @@ import { useHaveSourcesLoaded, useMapLoaded } from './map-features.hooks'
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
-  return {
-    generatorsConfig: useSelector(selectDefaultMapGeneratorsConfig),
-    globalConfig: useSelector(selectGlobalGeneratorsConfig),
-  }
+  const { start, end } = useTimerangeConnect()
+  const { viewport } = useViewport()
+  const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
+
+  return useMemo(() => {
+    return {
+      generatorsConfig,
+      globalConfig: {
+        zoom: viewport.zoom,
+        start,
+        end,
+        token: GFWAPI.getToken(),
+      },
+    }
+  }, [generatorsConfig, viewport.zoom, start, end])
 }
 
 export const useClickedEventConnect = () => {

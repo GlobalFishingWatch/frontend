@@ -1,13 +1,19 @@
+import { Range } from 'features/timebar/timebar.slice'
 import { AppDispatch, RootState } from 'store'
 import { QueryParams, WorkspaceViewport } from 'types'
 import { ROUTE_TYPES } from './routes'
-import { selectCurrentLocation, selectLocationPayload } from './routes.selectors'
+import {
+  selectCurrentLocation,
+  selectLocationPayload,
+  selectLocationQuery,
+} from './routes.selectors'
 
 export interface UpdateQueryParamsAction {
   type: ROUTE_TYPES
   query: QueryParams
   replaceQuery?: boolean
   payload?: any
+  prev?: any
   meta?: {
     location: {
       kind: string
@@ -45,4 +51,14 @@ const updateUrlViewport: any = (dispatch: AppDispatch, getState: () => RootState
   }
 }
 
-export { cleanQueryLocation, updateUrlViewport }
+const updateUrlTimerange: any = (dispatch: AppDispatch, getState: () => RootState) => {
+  return (timerange: Range) => {
+    const state = getState()
+    const location = selectCurrentLocation(state)
+    const payload = selectLocationPayload(state)
+    const query = selectLocationQuery(state)
+    dispatch(updateLocation(location.type, { query: { ...query, ...timerange }, payload }))
+  }
+}
+
+export { cleanQueryLocation, updateUrlViewport, updateUrlTimerange }

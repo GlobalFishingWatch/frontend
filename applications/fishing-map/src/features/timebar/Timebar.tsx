@@ -11,7 +11,13 @@ import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/t
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
-import { setHighlightedTime, disableHighlightedTime, selectHighlightedTime } from './timebar.slice'
+import { selectActivityCategory } from 'routes/routes.selectors'
+import {
+  setHighlightedTime,
+  disableHighlightedTime,
+  selectHighlightedTime,
+  Range,
+} from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
@@ -21,7 +27,7 @@ export const TIMEBAR_HEIGHT = 72
 const TimebarWrapper = () => {
   const { ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
-  const { start, end, dispatchTimeranges } = useTimerangeConnect()
+  const { start, end, onTimebarChange } = useTimerangeConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
   const { timebarVisualisation } = useTimebarVisualisation()
   const timebarGraph = useSelector(selectTimebarGraph)
@@ -44,6 +50,8 @@ const TimebarWrapper = () => {
 
   const isSmallScreen = useSmallScreen()
 
+  const activityCategory = useSelector(selectActivityCategory)
+
   const onMouseMove = useCallback(
     (clientX: number, scale: (arg: number) => Date) => {
       if (clientX === null) {
@@ -63,6 +71,19 @@ const TimebarWrapper = () => {
     [dispatch, highlightedTime]
   )
 
+  const [internalRange, setInternalRange] = useState<Range | null>(null)
+  const onChange = useCallback(
+    (e) => {
+      if (e.source === 'ZOOM_OUT_MOVE') {
+        setInternalRange({ ...e })
+        return
+      }
+      setInternalRange(null)
+      onTimebarChange(e.start, e.end)
+    },
+    [setInternalRange, onTimebarChange]
+  )
+
   if (!start || !end) return null
 
   return (
@@ -70,17 +91,19 @@ const TimebarWrapper = () => {
       <TimebarComponent
         enablePlayback={true}
         labels={labels}
-        start={start}
-        end={end}
+        start={internalRange ? internalRange.start : start}
+        end={internalRange ? internalRange.end : end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
-        onChange={dispatchTimeranges}
+        onChange={onChange}
         showLastUpdate={false}
         onMouseMove={onMouseMove}
         onBookmarkChange={onBookmarkChange}
         bookmarkStart={bookmark?.start}
         bookmarkEnd={bookmark?.end}
         bookmarkPlacement="bottom"
+        minimumRange={1}
+        minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
       >
         {!isSmallScreen
           ? () => (

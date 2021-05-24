@@ -10,6 +10,7 @@ import {
   isWorkspaceLocation,
   selectLocationCategory,
   selectLocationType,
+  selectUrlTimeRange,
   selectUrlViewport,
   selectWorkspaceId,
 } from 'routes/routes.selectors'
@@ -33,6 +34,7 @@ import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import Welcome from 'features/welcome/Welcome'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectSidebarOpen } from './app.selectors'
@@ -87,12 +89,15 @@ function App(): React.ReactElement {
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
+  const { setTimerange } = useTimerangeConnect()
 
   const locationType = useSelector(selectLocationType)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
+  const showToggle = useSelector(isWorkspaceLocation)
   const userLogged = useSelector(isUserLogged)
   const urlViewport = useSelector(selectUrlViewport)
+  const urlTimeRange = useSelector(selectUrlTimeRange)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
 
   // TODO review this as is needed in analysis and workspace but adds a lot of extra logic here
@@ -110,6 +115,12 @@ function App(): React.ReactElement {
         if (!urlViewport && resolvedAction.payload?.viewport) {
           setMapCoordinates(resolvedAction.payload.viewport)
         }
+        if (!urlTimeRange && resolvedAction.payload?.startAt && resolvedAction.payload?.endAt) {
+          setTimerange({
+            start: resolvedAction.payload?.startAt,
+            end: resolvedAction.payload?.endAt,
+          })
+        }
       }
       actionResolved = true
     }
@@ -118,6 +129,8 @@ function App(): React.ReactElement {
       workspaceCustomStatus !== AsyncReducerStatus.Loading &&
       (homeNeedsFetch || hasWorkspaceIdChanged)
     ) {
+      // TODO Can we arrive in a situation where no workspace is ever loaded?
+      // In that case static timerange will need to be set manually
       fetchWorkspace()
     }
     return () => {
@@ -169,6 +182,7 @@ function App(): React.ReactElement {
       <Suspense fallback={null}>
         <SplitView
           isOpen={sidebarOpen}
+          showToggle={showToggle}
           onToggle={onToggle}
           aside={<Sidebar onMenuClick={onMenuClick} />}
           main={<Main />}

@@ -51,12 +51,14 @@ export const useFilteredTimeSeries = () => {
           ) as TimeChunk
           const sourceQuantizeOffset = sourceActiveTimeChunk.quantizeOffset
           const sourceInterval = sourceMetadata.timeChunks.interval
-          const valuesContained = getTimeSeries(
+          const { values: valuesContainedRaw } = getTimeSeries(
             (sourceFilteredFeatures.contained || []) as any,
             sourceNumSublayers,
             sourceQuantizeOffset,
             sourceMetadata.aggregationOperation
-          ).map((frameValues) => {
+          )
+
+          const valuesContained = valuesContainedRaw.map((frameValues) => {
             const { frame, ...rest } = frameValues
             return {
               values: Object.values(rest) as number[],
@@ -68,18 +70,22 @@ export const useFilteredTimeSeries = () => {
             ...(sourceFilteredFeatures.contained || []),
             ...(sourceFilteredFeatures.overlapping || []),
           ]
-          const valuesContainedAndOverlapping = getTimeSeries(
+          const { values: valuesContainedAndOverlappingRaw } = getTimeSeries(
             featuresContainedAndOverlapping as any,
             sourceNumSublayers,
             sourceQuantizeOffset,
             sourceMetadata.aggregationOperation
-          ).map((frameValues) => {
-            const { frame, ...rest } = frameValues
-            return {
-              values: Object.values(rest) as number[],
-              date: quantizeOffsetToDate(frame, sourceInterval).toISOString(),
+          )
+
+          const valuesContainedAndOverlapping = valuesContainedAndOverlappingRaw.map(
+            (frameValues) => {
+              const { frame, ...rest } = frameValues
+              return {
+                values: Object.values(rest) as number[],
+                date: quantizeOffsetToDate(frame, sourceInterval).toISOString(),
+              }
             }
-          })
+          )
 
           const timeseries = valuesContainedAndOverlapping.map(({ values, date }) => {
             const minValues = valuesContained.find((overlap) => overlap.date === date)?.values
