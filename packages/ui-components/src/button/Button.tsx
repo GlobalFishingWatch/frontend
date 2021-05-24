@@ -1,10 +1,10 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
-import type { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
 import Spinner from '../spinner'
 import { TooltipTypes } from '../types/types'
 import styles from './Button.module.css'
+import type { Placement } from 'tippy.js'
 
 export type ButtonType = 'default' | 'secondary'
 export type ButtonSize = 'default' | 'small'
@@ -20,6 +20,8 @@ interface ButtonProps {
   tooltip?: TooltipTypes
   tooltipPlacement?: Placement
   onClick?: (e: React.MouseEvent) => void
+  onMouseEnter?: (e: React.MouseEvent) => void
+  onMouseLeave?: (e: React.MouseEvent) => void
   href?: string
   target?: string
 }
@@ -36,6 +38,8 @@ function Button(props: ButtonProps) {
     tooltip,
     tooltipPlacement = 'auto',
     onClick,
+    onMouseEnter,
+    onMouseLeave,
     href,
     target,
   } = props
@@ -63,6 +67,8 @@ function Button(props: ButtonProps) {
             [styles.disabled]: disabled,
           })}
           onClick={(e) => !loading && !disabled && onClick && onClick(e)}
+          onMouseEnter={(e) => onMouseEnter && onMouseEnter(e)}
+          onMouseLeave={(e) => onMouseLeave && onMouseLeave(e)}
         >
           {loading ? (
             <Spinner
