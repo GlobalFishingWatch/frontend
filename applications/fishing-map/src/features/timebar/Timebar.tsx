@@ -53,7 +53,7 @@ const TimebarWrapper = () => {
       uaEvent({
         category: 'Timebar',
         action: 'Bookmark timerange',
-        label: getEventLabel([start , end]),
+        label: getEventLabel([start, end]),
       })
       setBookmark({ start, end })
     },
