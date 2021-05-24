@@ -231,9 +231,9 @@
       "vessel_type": {
         "keyword": "vessel_type",
         "enum": {
-          "fishing": "fishing",
-          "carrier": "carrier",
-          "unknown": "unknown"
+          "fishing": "Fishing",
+          "carrier": "Carrier",
+          "unknown": "Other"
         }
       }
     }

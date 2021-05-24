@@ -3,6 +3,7 @@
     "close": "Fermer l'analyse",
     "completed": "Le rapport sera dans votre e-mail sous peu",
     "disclaimer": "Les données indiquées ci-dessus doivent être considérées comme une estimation. Cliquez sur le bouton ci-dessous si vous avez besoin d'une anlyse plus précise, y compris la liste des navires concernés, et nous vous l'enverrons par courriel.",
+    "downloadLogin": "You need to login to download a report",
     "download": "Télécharger le rapport",
     "empty": "Vos jeux de données sélectionnés apparaîtront ici",
     "errorMessage": "Quelque chose s'est mal passé",
