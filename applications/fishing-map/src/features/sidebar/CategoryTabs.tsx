@@ -130,7 +130,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         >
           {guestUser ? (
             <Tooltip content={t('common.login', 'Log in')}>
-              <a href={GFWAPI.getLoginUrl(window.location.toString())}>
+              <a href={GFWAPI.getLoginUrl(window.location.toString())} className={styles.loginLink}>
                 <Icon icon="user" />
               </a>
             </Tooltip>
