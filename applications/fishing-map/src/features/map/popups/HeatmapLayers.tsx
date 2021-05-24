@@ -69,7 +69,8 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
                 {t('common.vessel_plural', 'Vessels')}
               </label>
               <label className={styles.vesselsHeaderLabel}>
-                {t('common.hour_plural', 'hours')}
+                {feature.unit === 'hours' && t('common.hour_plural', 'hours')}
+                {feature.unit === 'days' && t('common.days_plural', 'days')}
               </label>
             </div>
             {feature.vesselsInfo.vessels.map((vessel, i) => {
