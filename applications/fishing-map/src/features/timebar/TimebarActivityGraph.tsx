@@ -14,7 +14,7 @@ import { MapSourceDataEvent } from '@globalfishingwatch/mapbox-gl'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { useMapBounds, mglToMiniGlobeBounds } from 'features/map/map-viewport.hooks'
 import { filterByViewport } from 'features/map/map.utils'
-import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import styles from './Timebar.module.css'
 
@@ -27,7 +27,7 @@ const getMetadata = (style: any) => {
 }
 
 const TimebarActivityGraph = () => {
-  const temporalGridDataviews = useSelector(selectActivityDataviews)
+  const temporalGridDataviews = useSelector(selectActiveActivityDataviews)
   const [stackedActivity, setStackedActivity] = useState<any>()
   const { bounds } = useMapBounds()
   const debouncedBounds = useDebounce(bounds, 400)
