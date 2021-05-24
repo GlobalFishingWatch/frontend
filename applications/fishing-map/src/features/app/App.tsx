@@ -191,9 +191,17 @@ function App(): React.ReactElement {
       >
         <DebugMenu />
       </Modal>
-      <Modal header={false} isOpen={welcomePopupOpen} onClose={() => setWelcomePopupOpen(false)}>
-        <Welcome />
-      </Modal>
+      {welcomePopupOpen && (
+        <Suspense fallback={null}>
+          <Modal
+            header={false}
+            isOpen={welcomePopupOpen}
+            onClose={() => setWelcomePopupOpen(false)}
+          >
+            <Welcome />
+          </Modal>
+        </Suspense>
+      )}
     </MapContext.Provider>
   )
 }
