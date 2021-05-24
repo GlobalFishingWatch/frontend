@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 3.1.6
+
+### Patch Changes
+
+- 0dcebc6a: Fishingmap/welcome popup
+
 ## 3.1.5
 
 ### Patch Changes
