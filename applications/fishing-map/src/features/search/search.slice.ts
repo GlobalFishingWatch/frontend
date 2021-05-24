@@ -194,7 +194,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         pagination: {
           loading: false,
           total: searchResults.total,
-          offset: searchResults.offset + offset,
+          offset: searchResults.nextOffset,
         },
       }
     }
@@ -234,8 +234,6 @@ const searchSlice = createSlice({
     builder.addCase(fetchVesselSearchThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
       if (action.payload) {
-        console.log('fetchVesselSearchThunk.fulfilled -> payload', action.payload)
-
         state.data = action.payload.data
         state.suggestion = action.payload.suggestion
         state.pagination = action.payload.pagination
