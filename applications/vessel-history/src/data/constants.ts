@@ -4,6 +4,7 @@ export const SPLASH_TIMEOUT = 1000
 export const RESULTS_PER_PAGE = 25
 export const SEARCH_MIN_CHARACTERS = 3
 export const BASE_DATASET = 'full-global-fishing-vessels:v20201001'
+export const EVENTS_DATASET = 'scratch_alvaro.published_events_fishing'
 export const SHOW_VESSEL_API_SOURCE =
   process.env.REACT_APP_WORKSPACE_ENV === 'production' ? false : true
 
