@@ -182,7 +182,7 @@
   },
   "search": {
     "advanced": "Advanced",
-    "advancedDisabled": "You need to login to use advanced search",
+    "advancedDisabled": "You need to <1>login</1> to use advanced search",
     "basic": "Basic",
     "close": "Close search",
     "description": "Search by vessel name or identification code. You can narrow your search by clicking \"ADVANCED\" in the top menu bar.",

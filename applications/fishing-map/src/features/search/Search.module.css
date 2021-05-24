@@ -36,6 +36,10 @@
   flex: 1;
 }
 
+.link {
+  text-decoration: underline;
+}
+
 .searchResults {
   height: 100%;
   position: relative;
