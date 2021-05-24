@@ -21,8 +21,8 @@
       "fleet": {
         "keyword": "fleet",
         "enum": {
-          "chile_vms_small_fisheries": "chile_vms_small_fisheries",
-          "chile_vms_industry": "chile_vms_industry"
+          "chile_vms_small_fisheries": "Small fisheries",
+          "chile_vms_industry": "Industry"
         }
       },
       "hours": "hours",
