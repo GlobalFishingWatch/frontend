@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -17,6 +18,10 @@ function VesselsSection(): React.ReactElement {
   const searchAllowed = useSelector(isBasicSearchAllowed)
 
   const onSearchClick = useCallback(() => {
+    uaEvent({
+      category: 'Search Vessel',
+      action: 'Click search icon to open search panel',
+    })
     dispatchQueryParams({ query: '' })
   }, [dispatchQueryParams])
 
