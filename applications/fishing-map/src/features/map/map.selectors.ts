@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { CircleLayer } from '@globalfishingwatch/mapbox-gl'
-import GFWAPI from '@globalfishingwatch/api-client'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
@@ -17,27 +16,12 @@ import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces
 import { selectResources, ResourcesState } from 'features/resources/resources.slice'
 import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/rulers/rulers.slice'
-import { selectHighlightedTime, selectStaticTime, Range } from 'features/timebar/timebar.slice'
-import {
-  selectViewport,
-  selectTimeRange,
-  selectBivariateDataviews,
-} from 'features/app/app.selectors'
+import { selectHighlightedTime, Range } from 'features/timebar/timebar.slice'
+import { selectBivariateDataviews } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { DEFAULT_TIME_RANGE } from 'data/config'
 import { BivariateDataviews } from 'types'
-
-export const selectGlobalGeneratorsConfig = createSelector(
-  [selectViewport, selectTimeRange],
-  ({ zoom }, { start, end }) => ({
-    zoom,
-    start: start || DEFAULT_TIME_RANGE.start,
-    end: end || DEFAULT_TIME_RANGE.end,
-    token: GFWAPI.getToken(),
-  })
-)
 
 type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
@@ -45,7 +29,6 @@ type GetGeneratorConfigParams = {
   rulers: Generators.Ruler[]
   debugOptions: DebugOptions
   highlightedTime?: Range
-  staticTime: Range
   bivariateDataviews?: BivariateDataviews
 }
 const getGeneratorsConfig = ({
@@ -54,7 +37,6 @@ const getGeneratorsConfig = ({
   rulers,
   debugOptions,
   highlightedTime,
-  staticTime,
   bivariateDataviews,
 }: GetGeneratorConfigParams) => {
   const animatedHeatmapDataviews = dataviews.filter((dataview) => {
@@ -79,7 +61,6 @@ const getGeneratorsConfig = ({
   const generatorOptions = {
     heatmapAnimatedMode,
     highlightedTime,
-    timeRange: staticTime,
     debug: debugOptions.debug,
     mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   }
@@ -106,26 +87,15 @@ const selectMapGeneratorsConfig = createSelector(
     selectRulers,
     selectDebugOptions,
     selectHighlightedTime,
-    selectStaticTime,
     selectBivariateDataviews,
   ],
-  (
-    dataviews = [],
-    resources,
-    rulers,
-    debugOptions,
-    highlightedTime,
-    staticTime,
-    bivariateDataviews
-  ) => {
-    if (!staticTime) return
+  (dataviews = [], resources, rulers, debugOptions, highlightedTime, bivariateDataviews) => {
     const generators = getGeneratorsConfig({
       dataviews,
       resources,
       rulers,
       debugOptions,
       highlightedTime,
-      staticTime,
       bivariateDataviews,
     })
     return generators
@@ -138,18 +108,15 @@ const selectStaticGeneratorsConfig = createSelector(
     selectResources,
     selectRulers,
     selectDebugOptions,
-    selectStaticTime,
     selectBivariateDataviews,
   ],
-  (dataviews = [], resources, rulers, debugOptions, staticTime, bivariateDataviews) => {
-    if (!staticTime) return
+  (dataviews = [], resources, rulers, debugOptions, bivariateDataviews) => {
     // We don't want highlightedTime here to avoid re-computing on mouse timebar hovering
     return getGeneratorsConfig({
       dataviews,
       resources,
       rulers,
       debugOptions,
-      staticTime,
       bivariateDataviews,
     })
   }

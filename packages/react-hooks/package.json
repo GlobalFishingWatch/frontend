@@ -48,7 +48,7 @@
     "@globalfishingwatch/dataviews-client": "^6.5.3",
     "@globalfishingwatch/fourwings-aggregate": "3.1.1",
     "@globalfishingwatch/layer-composer": "6.1.4",
-    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.20",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.21",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.1"
