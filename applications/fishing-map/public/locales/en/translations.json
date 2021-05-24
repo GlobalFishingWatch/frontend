@@ -4,7 +4,7 @@
     "completed": "The report has been emailed successfully, you'll receive it soon.",
     "disclaimer": "Data presented should be taken as an estimate. Download a data report for more precise analysis, including the list of vessels involved.",
     "download": "Download report (AIS)",
-    "downloadLogin": "You need to login to download a report",
+    "downloadLogin": "Register and <1>login</1> to download reports (free, 2 minutes)",
     "empty": "Your selected datasets will appear here",
     "errorMessage": "Something went wrong",
     "timeRangeTooLong": "Reports are only supported for time spans up to one year.",
@@ -182,7 +182,7 @@
   },
   "search": {
     "advanced": "Advanced",
-    "advancedDisabled": "You need to <1>login</1> to use advanced search",
+    "advancedDisabled": "Register and <1>login</1> to use advanced search (free, 2 minutes)",
     "basic": "Basic",
     "close": "Close search",
     "description": "Search by vessel name or identification code. You can narrow your search by clicking \"ADVANCED\" in the top menu bar.",
@@ -268,7 +268,7 @@
     "length": "Length",
     "lengthRange": "Length range",
     "loading": "Loading vessel track",
-    "login": "You need to <1>login</1> to see more details",
+    "login": "Register and <1>login</1> to see more details (free, 2 minutes)",
     "mmsi": "MMSI",
     "nationalId": "National ID",
     "origin": "Origin",
@@ -288,7 +288,7 @@
     "remove": "Remove workspace",
     "save": "Save the current view",
     "saved": "The current view has been saved and it's available in your profile.",
-    "saveLogin": "Register and login to save workspace views (free, 2 minutes)",
+    "saveLogin": "Register and <1>login</1> to save workspace views (free, 2 minutes)",
     "title_plural": "Workspaces"
   }
 }
