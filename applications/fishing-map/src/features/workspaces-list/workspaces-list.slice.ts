@@ -89,7 +89,7 @@ export type HighlightedWorkspaces = {
   workspaces: HighlightedWorkspace[]
 }
 
-const WORKSPACES_APP = 'fishing-map'
+const WORKSPACES_APP = 'marine-manager'
 
 export const fetchHighlightWorkspacesThunk = createAsyncThunk(
   'workspaces/fetchHighlighted',
