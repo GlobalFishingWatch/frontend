@@ -255,12 +255,20 @@ function NewDataset(): React.ReactElement {
         return
       }
 
-      setLoading(true)
+      let uaCategory, uaDatasetType
+      if (metadata?.category === DatasetCategory.Environment) {
+        uaCategory = 'Environmental data'
+        uaDatasetType = 'environmental dataset'
+      } else if (metadata?.category === DatasetCategory.Context) {
+        uaCategory = 'Reference layer'
+        uaDatasetType = 'reference layer'
+      }
       uaEvent({
-        category: 'Environmental data',
-        action: `Confirm environmental dataset upload`,
+        category: `${uaCategory}`,
+        action: `Confirm ${uaDatasetType} upload`,
         label: userTrackGeoJSONFile?.name ?? file.name,
       })
+      setLoading(true)
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
         dataset: { ...metadata },
         file: userTrackGeoJSONFile || file,
