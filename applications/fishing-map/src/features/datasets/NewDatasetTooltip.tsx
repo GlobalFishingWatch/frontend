@@ -39,8 +39,12 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
 
   const onAddNewClick = async () => {
     uaEvent({
-      category: 'Environmental data',
-      action: `Start upload environmental dataset flow`,
+      category:
+        datasetCategory === DatasetCategory.Context ? 'Reference layer' : 'Environmental data',
+      action:
+        datasetCategory === DatasetCategory.Context
+          ? `Start upload reference layer flow`
+          : `Start upload environmental dataset flow`,
       label: datasetCategory,
     })
     batch(() => {
