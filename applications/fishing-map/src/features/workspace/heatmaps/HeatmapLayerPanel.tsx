@@ -69,10 +69,10 @@ function HeatmapLayerPanel({ dataview, showBorder, isOpen }: LayerPanelProps): R
   const presenceDataview = isPresenceDataview(dataview)
   if (fishingDataview || presenceDataview) {
     datasetName = presenceDataview
-      ? t(`common.presence`, 'Fishing presence')
+      ? t(`common.presence`, 'Vessel presence')
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
-  const showInfoModal = isFishingDataview(dataview)
+  const showInfoModal = isFishingDataview(dataview) || isPresenceDataview(dataview)
   const TitleComponent = (
     <Title
       title={datasetName}

@@ -3,16 +3,17 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import union from '@turf/union'
 import { Feature, Polygon } from 'geojson'
+import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import bbox from '@turf/bbox'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { useLocationConnect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
-import { selectStaticTime } from 'features/timebar/timebar.slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -23,6 +24,7 @@ import { useFeatures } from 'features/map/map-features.hooks'
 import { Bbox } from 'types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
+  isGuestUser,
   selectActiveActivityDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
@@ -56,10 +58,11 @@ function Analysis() {
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
-  const staticTime = useSelector(selectStaticTime)
+  const { timerange } = useTimerangeConnect()
   const dataviews = useSelector(selectActiveActivityDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
   const analysisBounds = useSelector(selectAnalysisBounds)
+  const guestUser = useSelector(isGuestUser)
 
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
@@ -163,20 +166,27 @@ function Analysis() {
   }
 
   const onDownloadClick = async () => {
-    const reportDataviews = dataviews.map((dataview) => {
-      const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
-        .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
-        .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
+    const reportDataviews = dataviews
+      .map((dataview) => {
+        const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
+          .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
+          .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
+          .filter((dataset: Dataset) => {
+            const permission = { type: 'dataset', value: dataset.id, action: 'report' }
+            return checkExistPermissionInList(userData?.permissions, permission)
+          })
 
-      return {
-        filters: dataview.config?.filters || [],
-        datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
-      }
-    })
+        return {
+          filters: dataview.config?.filters || [],
+          datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
+        }
+      })
+      .filter((dataview) => dataview.datasets.length > 0)
+
     const reportName = Array.from(new Set(dataviews.map((dataview) => dataview.name))).join(',')
     const createReport: CreateReport = {
       name: `${reportName} - ${t('common.report', 'Report')}`,
-      dateRange: staticTime as DateRange,
+      dateRange: timerange as DateRange,
       dataviews: reportDataviews,
       geometry: analysisGeometry as ReportGeometry,
     }
@@ -264,31 +274,45 @@ function Analysis() {
                   })`
                 : ''}
             </p>
-            <Button
-              className={styles.saveBtn}
-              onClick={onDownloadClick}
-              loading={reportStatus === AsyncReducerStatus.LoadingCreate}
-              tooltip={
-                timeRangeTooLong
-                  ? t(
-                      'analysis.timeRangeTooLong',
-                      'Reports are only allowed for time ranges up to a year'
-                    )
-                  : ''
-              }
-              tooltipPlacement="top"
-              disabled={
-                timeRangeTooLong ||
-                !hasAnalysisLayers ||
-                reportStatus === AsyncReducerStatus.Finished
-              }
-            >
-              {reportStatus === AsyncReducerStatus.Finished ? (
-                <Icon icon="tick" />
+            {hasAnalysisLayers &&
+              (guestUser && !timeRangeTooLong ? (
+                <Button
+                  type="secondary"
+                  className={styles.saveBtn}
+                  tooltip={t('analysis.downloadLogin', 'Please login to download report')}
+                  onClick={() => {
+                    window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+                  }}
+                >
+                  {t('analysis.download', 'Download report')}
+                </Button>
               ) : (
-                t('analysis.download', 'Download report')
-              )}
-            </Button>
+                <Button
+                  className={styles.saveBtn}
+                  onClick={onDownloadClick}
+                  loading={reportStatus === AsyncReducerStatus.LoadingCreate}
+                  tooltip={
+                    timeRangeTooLong
+                      ? t(
+                          'analysis.timeRangeTooLong',
+                          'Reports are only allowed for time ranges up to a year'
+                        )
+                      : ''
+                  }
+                  tooltipPlacement="top"
+                  disabled={
+                    timeRangeTooLong ||
+                    !hasAnalysisLayers ||
+                    reportStatus === AsyncReducerStatus.Finished
+                  }
+                >
+                  {reportStatus === AsyncReducerStatus.Finished ? (
+                    <Icon icon="tick" />
+                  ) : (
+                    t('analysis.download', 'Download report')
+                  )}
+                </Button>
+              ))}
           </div>
         </div>
       )}

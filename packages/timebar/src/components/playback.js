@@ -40,7 +40,7 @@ class Playback extends Component {
   })
 
   update = (deltaMultiplicatorMs) => {
-    const { onTick, start, end, absoluteStart, absoluteEnd } = this.props
+    const { onTick, start, end, absoluteStart } = this.props
     const { speedStep, loop } = this.state
     const deltaMs = this.getStep(start, end, speedStep) * deltaMultiplicatorMs
 
@@ -52,12 +52,14 @@ class Playback extends Component {
     const newStart = new Date(newStartMs).toISOString()
     const newEnd = new Date(newEndMs).toISOString()
 
+    const playbackAbsoluteEnd = new Date(Date.now()).toISOString()
+
     const { newStartClamped, newEndClamped, clamped } = clampToAbsoluteBoundaries(
       newStart,
       newEnd,
       currentStartEndDeltaMs,
       absoluteStart,
-      absoluteEnd
+      playbackAbsoluteEnd
     )
 
     onTick(newStartClamped, newEndClamped)

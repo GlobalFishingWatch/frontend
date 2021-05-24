@@ -1,21 +1,18 @@
 import { Dispatch } from 'redux'
 import { NOT_FOUND, RoutesMap, redirect, connectRoutes, Options } from 'redux-first-router'
 import { stringify, parse } from 'qs'
-import { Dictionary, Middleware } from '@reduxjs/toolkit'
+import { Dictionary } from '@reduxjs/toolkit'
 import { invert, isObject, transform } from 'lodash'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { RootState } from 'store'
-import { QueryParams } from 'types'
-import { REPLACE_URL_PARAMS } from 'data/config'
-import { UpdateQueryParamsAction } from './routes.actions'
 
 export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
 export const WORKSPACES_LIST = 'WORKSPACES_LIST'
 export const USER = 'USER'
+export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
 export type ROUTE_TYPES = typeof HOME | typeof USER | typeof WORKSPACES_LIST | typeof WORKSPACE
 
-const routesMap: RoutesMap = {
+export const routesMap: RoutesMap = {
   [HOME]: {
     path: '/',
   },
@@ -135,41 +132,5 @@ const routesOptions: Options = {
     parse: parseWorkspace,
   },
 }
-
-export const routerQueryMiddleware: Middleware =
-  ({ getState }: { getState: () => RootState }) =>
-  (next) =>
-  (action: UpdateQueryParamsAction) => {
-    const routesActions = Object.keys(routesMap)
-    // check if action type matches a route type
-    const isRouterAction = routesActions.includes(action.type)
-    if (!isRouterAction) {
-      next(action)
-    } else {
-      const newAction: UpdateQueryParamsAction = { ...action }
-
-      const prevQuery = getState().location.query || {}
-      if (newAction.replaceQuery !== true) {
-        newAction.query = {
-          ...prevQuery,
-          ...newAction.query,
-        }
-      }
-      const { query } = action
-      if (query) {
-        const redirect = Object.keys(prevQuery)
-          .filter((k) => query[k as keyof QueryParams])
-          .some((key) => REPLACE_URL_PARAMS.includes(key))
-        if (redirect === true) {
-          newAction.meta = {
-            location: {
-              kind: 'redirect',
-            },
-          }
-        }
-      }
-      next(newAction)
-    }
-  }
 
 export default connectRoutes(routesMap, routesOptions)

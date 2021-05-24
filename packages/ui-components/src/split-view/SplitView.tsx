@@ -7,6 +7,7 @@ import styles from './SplitView.module.css'
 
 interface SplitViewProps {
   isOpen?: boolean
+  showToggle?: boolean
   onToggle?: (e: React.MouseEvent) => void
   asideWidth?: string
   aside: React.ReactNode
@@ -19,6 +20,7 @@ interface SplitViewProps {
 function SplitView(props: SplitViewProps) {
   const {
     isOpen = true,
+    showToggle = true,
     onToggle,
     aside = null,
     main = null,
@@ -70,9 +72,11 @@ function SplitView(props: SplitViewProps) {
             />
           </div>
         ) : (
-          <button className={cx('print-hidden', styles.toggleBtn)} onClick={handleClick}>
-            <Icon icon={internalOpen ? 'arrow-left' : 'arrow-right'} />
-          </button>
+          showToggle && (
+            <button className={cx('print-hidden', styles.toggleBtn)} onClick={handleClick}>
+              <Icon icon={internalOpen ? 'arrow-left' : 'arrow-right'} />
+            </button>
+          )
         )}
         {aside}
       </aside>

@@ -1,5 +1,40 @@
 # @globalfishingwatch/ui-components
 
+## 4.1.1
+
+### Patch Changes
+
+- gfw links in logo
+
+## 4.1.0
+
+### Minor Changes
+
+- make the SplitView toggle optional
+
+## 4.0.0
+
+### Patch Changes
+
+- Updated dependencies [1a3d0960]
+  - @globalfishingwatch/layer-composer@7.0.0
+  - @globalfishingwatch/react-hooks@7.0.0
+
+## 3.1.6
+
+### Patch Changes
+
+- 0dcebc6a: Fishingmap/welcome popup
+
+## 3.1.5
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+- Updated dependencies [7d060771]
+  - @globalfishingwatch/layer-composer@6.1.4
+  - @globalfishingwatch/react-hooks@6.3.1
+
 ## 3.1.4
 
 ### Patch Changes

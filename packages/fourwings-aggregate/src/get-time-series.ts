@@ -16,18 +16,28 @@ interface TimeSeriesFrame {
   [key: string]: number
 }
 
+type TimeSeries = {
+  values: TimeSeriesFrame[]
+  minFrame: number
+  maxFrame: number
+}
+
 const getTimeSeries = (
   features: Feature[],
   numSublayers: number,
   quantizeOffset = 0,
   aggregationOperation = AggregationOperation.Sum
-): TimeSeriesFrame[] => {
-  if (!features || !features.length) {
-    return []
-  }
-
+): TimeSeries => {
   let minFrame = Number.POSITIVE_INFINITY
   let maxFrame = Number.NEGATIVE_INFINITY
+
+  if (!features || !features.length) {
+    return {
+      values: [],
+      minFrame,
+      maxFrame,
+    }
+  }
 
   const valuesByFrame: { sublayersValues: number[]; numFrames: number }[] = []
 
@@ -76,7 +86,7 @@ const getTimeSeries = (
     }
   }
 
-  return finalValues
+  return { values: finalValues, minFrame, maxFrame }
 }
 
 export default getTimeSeries

@@ -61,9 +61,9 @@ export const getColorRampToWhite = (
   const steps = [...Array(numSteps - 1)].map((_, i) => {
     const ratio = (i + 1) / numSteps
     const rgb = {
-      r: rgbColor.r + (255 - rgbColor.r) * ratio,
-      g: rgbColor.g + (255 - rgbColor.g) * ratio,
-      b: rgbColor.b + (255 - rgbColor.b) * ratio,
+      r: Math.floor(rgbColor.r + (255 - rgbColor.r) * ratio),
+      g: Math.floor(rgbColor.g + (255 - rgbColor.g) * ratio),
+      b: Math.floor(rgbColor.b + (255 - rgbColor.b) * ratio),
     }
     return `rgb(${rgbToRgbString(rgb)})`
   })

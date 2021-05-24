@@ -85,7 +85,7 @@ const MapControls = ({
     }),
     [latitude, longitude]
   )
-  const options = { bounds, center }
+  const options = useMemo(() => ({ bounds, center }), [bounds, center])
   const debouncedOptions = useDebounce(options, 16)
 
   const onZoomInClick = useCallback(() => {
