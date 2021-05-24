@@ -90,11 +90,16 @@ const TimebarWrapper = () => {
         setInternalRange({ ...e })
         return
       }
-      if (e.source === 'TIME_RANGE_SELECTOR') {
+      const gaActions: Record<string, string> = {
+        TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
+        ZOOM_IN_BUTTON: 'Zoom In timerange',
+        ZOOM_OUT_BUTTON: 'Zoom Out timerange',
+      }
+      if (gaActions[e.source]) {
         uaEvent({
           category: 'Timebar',
-          action: 'Configure timerange using calendar option',
-          label: getEventLabel([e.start , e.end]),
+          action: gaActions[e.source],
+          label: getEventLabel([e.start, e.end]),
         })
       }
       setInternalRange(null)
