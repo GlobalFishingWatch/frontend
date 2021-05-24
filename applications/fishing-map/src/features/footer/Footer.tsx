@@ -20,7 +20,7 @@ const FooterPartners = () => {
       return (
         <div className={styles.partners}>
           <span className={styles.text}>{t('footer.supportBy', 'Supported by')}</span>
-          <a href="https://donabertarelli.com/" rel="noopener noreferrer">
+          <a href="https://donabertarelli.com/" rel="noopener noreferrer" target="_blank">
             <img src={LogoDonaBertarelli} alt="Dona Bertarelli" width="129px" />
           </a>
         </div>
@@ -29,13 +29,13 @@ const FooterPartners = () => {
       return (
         <div className={styles.partners}>
           <span className={styles.text}>{t('footer.convenedBy', 'A partnership convened by')}</span>
-          <a href="https://oceana.org/" rel="noopener noreferrer">
+          <a href="https://oceana.org/" rel="noopener noreferrer" target="_blank">
             <img src={LogoOceana} alt="Oceana" width="64px" />
           </a>
-          <a href="https://skytruth.org/" rel="noopener noreferrer">
+          <a href="https://skytruth.org/" rel="noopener noreferrer" target="_blank">
             <img src={LogoSkytruth} alt="Skytruth" width="79px" />
           </a>
-          <a href="https://google.com/" rel="noopener noreferrer">
+          <a href="https://google.com/" rel="noopener noreferrer" target="_blank">
             <img src={LogoGoogle} alt="Google" width="57px" />
           </a>
         </div>

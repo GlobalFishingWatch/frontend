@@ -8,6 +8,7 @@ import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
 import {
   isWorkspaceLocation,
+  selectLocationCategory,
   selectLocationType,
   selectUrlViewport,
   selectWorkspaceId,
@@ -28,10 +29,11 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
+import Welcome from 'features/welcome/Welcome'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -58,6 +60,9 @@ const Main = () => {
   )
 }
 
+const MARINE_MANAGER_LAST_VISIT = 'MarineManagerLastVisit'
+const isFirstTimeVisit = !localStorage.getItem(MARINE_MANAGER_LAST_VISIT)
+
 function App(): React.ReactElement {
   useAnalytics()
   const dispatch = useAppDispatch()
@@ -68,6 +73,17 @@ function App(): React.ReactElement {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
   const narrowSidebar = workspaceLocation && !analysisQuery
+  const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
+
+  const locationIsMarineManager =
+    useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
+  const [welcomePopupOpen, setWelcomePopupOpen] = useState(
+    locationIsMarineManager && isFirstTimeVisit
+  )
+  useEffect(() => {
+    if (locationIsMarineManager)
+      localStorage.setItem(MARINE_MANAGER_LAST_VISIT, new Date().toISOString())
+  }, [locationIsMarineManager])
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
@@ -123,8 +139,6 @@ function App(): React.ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
-
   useEffect(() => {
     dispatch(fetchUserThunk())
   }, [dispatch])
@@ -177,6 +191,17 @@ function App(): React.ReactElement {
       >
         <DebugMenu />
       </Modal>
+      {welcomePopupOpen && (
+        <Suspense fallback={null}>
+          <Modal
+            header={false}
+            isOpen={welcomePopupOpen}
+            onClose={() => setWelcomePopupOpen(false)}
+          >
+            <Welcome />
+          </Modal>
+        </Suspense>
+      )}
     </MapContext.Provider>
   )
 }

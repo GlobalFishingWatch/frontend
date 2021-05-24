@@ -49,7 +49,7 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
         </TooltipContainer>
       </div>
       {dataviews?.map((dataview) =>
-        dataview.datasets && dataview.datasets[0].type === DatasetTypes.UserTracks ? (
+        dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
           <UserTrackLayerPanel key={dataview.id} dataview={dataview} />
         ) : (
           <EnvironmentalLayerPanel key={dataview.id} dataview={dataview} />
