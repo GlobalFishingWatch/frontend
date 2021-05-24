@@ -269,14 +269,14 @@ function Analysis() {
             {hasAnalysisLayers &&
               (guestUser && !timeRangeTooLong ? (
                 <Button
-                  className={styles.saveBtn}
                   type="secondary"
+                  className={styles.saveBtn}
+                  tooltip={t('analysis.downloadLogin', 'Please login to download report')}
                   onClick={() => {
                     window.location.href = GFWAPI.getLoginUrl(window.location.toString())
                   }}
                 >
-                  <Icon icon={'user'} />
-                  {t('analysis.downloadLogin', 'You need to login to download reports')}
+                  {t('analysis.download', 'Download report')}
                 </Button>
               ) : (
                 <Button
