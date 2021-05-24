@@ -1,5 +1,15 @@
 # @globalfishingwatch/react-hooks
 
+## 6.3.1
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+- Updated dependencies [7d060771]
+  - @globalfishingwatch/api-client@1.7.1
+  - @globalfishingwatch/dataviews-client@6.5.3
+  - @globalfishingwatch/layer-composer@6.1.4
+
 ## 6.3.0
 
 ### Minor Changes

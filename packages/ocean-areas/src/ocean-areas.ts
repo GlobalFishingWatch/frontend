@@ -1,3 +1,4 @@
+import { BBox, Feature, Geometry } from 'geojson'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import explode from '@turf/explode'
 import nearest from '@turf/nearest-point'
@@ -7,7 +8,25 @@ import bbox from '@turf/bbox'
 import { matchSorter } from 'match-sorter'
 import oceanAreas from './data/geometries'
 import oceanAreasLocales from './data/locales'
-import { OceanArea, OceanAreaProperties, OceanAreaLocale, OceanAreaLocaleKey } from '.'
+import sourceLocales from './data/locales/source.json'
+
+export type OceanAreaLocaleKey = keyof typeof sourceLocales
+export interface OceanAreaProperties {
+  type: string
+  name: string
+  area?: number
+  mrgid?: string
+  bounds?: BBox
+}
+
+export type OceanArea = Feature<Geometry, OceanAreaProperties>
+
+export enum OceanAreaLocale {
+  en = 'en',
+  es = 'es',
+  fr = 'fr',
+  id = 'id',
+}
 
 const MIN_ZOOM_NOT_GLOBAL = 3
 const MIN_ZOOM_TO_PREFER_EEZS = 5
@@ -131,4 +150,4 @@ const getOceanAreaName = (
   return name
 }
 
-export { getOceanAreaName, searchOceanAreas, OceanAreaProperties }
+export { getOceanAreaName, searchOceanAreas }
