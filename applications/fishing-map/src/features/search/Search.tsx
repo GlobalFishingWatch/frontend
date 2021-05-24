@@ -404,6 +404,7 @@ function Search() {
                 disabled
                 type="secondary"
                 tooltip={t('common.comingSoon', 'Coming Soon')}
+                tooltipPlacement="top"
                 className={styles.footerAction}
               >
                 See as fleet
