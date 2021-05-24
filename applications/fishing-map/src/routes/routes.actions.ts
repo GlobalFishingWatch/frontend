@@ -13,6 +13,7 @@ export interface UpdateQueryParamsAction {
   query: QueryParams
   replaceQuery?: boolean
   payload?: any
+  prev?: any
   meta?: {
     location: {
       kind: string

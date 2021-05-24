@@ -6,7 +6,7 @@ import { RootState } from 'store'
 import { WorkspaceActivityCategory, WorkspaceParam } from 'types'
 import { DEFAULT_ACTIVITY_CATEGORY, DEFAULT_VERSION } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
-import { HOME, ROUTE_TYPES, WORKSPACE } from './routes'
+import { ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
@@ -19,9 +19,8 @@ export const selectLocationType = createSelector(
   (location) => location.type as ROUTE_TYPES
 )
 
-export const isWorkspaceLocation = createSelector(
-  [selectLocationType],
-  (locationType) => locationType === WORKSPACE || locationType === HOME
+export const isWorkspaceLocation = createSelector([selectLocationType], (locationType) =>
+  WORKSPACE_ROUTES.includes(locationType)
 )
 
 export const selectLocationQuery = createSelector(

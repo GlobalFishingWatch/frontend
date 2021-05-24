@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 4.1.0
+
+### Minor Changes
+
+- make the SplitView toggle optional
+
 ## 4.0.0
 
 ### Patch Changes
