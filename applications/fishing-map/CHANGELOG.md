@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.29.16
+
+### Patch Changes
+
+- 0dcebc6a: Fishingmap/welcome popup
+- Updated dependencies [0dcebc6a]
+  - @globalfishingwatch/ui-components@3.1.6
+
 ## 0.29.15
 
 ### Patch Changes
