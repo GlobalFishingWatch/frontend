@@ -83,7 +83,7 @@ function App(): React.ReactElement {
   useEffect(() => {
     if (locationIsMarineManager)
       localStorage.setItem(MARINE_MANAGER_LAST_VISIT, new Date().toISOString())
-  }, [])
+  }, [locationIsMarineManager])
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
