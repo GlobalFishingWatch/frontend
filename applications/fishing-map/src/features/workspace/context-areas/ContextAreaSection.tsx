@@ -9,6 +9,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
+import { selectUserDatasets } from 'features/user/user.selectors'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import LayerPanel from './ContextAreaLayerPanel'
@@ -18,11 +19,17 @@ function ContextAreaSection(): React.ReactElement {
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
 
   const dataviews = useSelector(selectContextAreasDataviews)
+  const userDatasets = useSelector(selectUserDatasets)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onAddClick = useCallback(() => {
+    uaEvent({
+      category: 'Reference layer',
+      action: `Open panel to upload new reference layer`,
+      value: userDatasets.length,
+    })
     setNewDatasetOpen(true)
-  }, [])
+  }, [userDatasets.length])
 
   const onToggleLayer = useCallback(
     (dataview: UrlDataviewInstance) => () => {
