@@ -26,7 +26,7 @@ const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategories]?: WelcomeConten
       <p>We have integrated vessel presence data into the portal, which indicates the locations of all vessels transmitting on AIS. Vessel presence data can currently be filtered by fishing and carrier vessels, as well as ships categorized as “other vessels”, which include those associated with shipping, tourism and oil and gas exploration.</p>
       <h2><img src="https://globalfishingwatch.org/website3/wp-content/uploads/icon-coral-orange.png">Environmental data</h2>
       <p>Global Fishing Watch is providing publicly available oceanographic and biological datasets, like sea surface temperature and primary productivity and salinity, to allow anyone to examine environmental patterns as they relate to human activity.</p>
-      <p>In private workspaces, managers and researchers can upload their own datasets—animal telemetry tracks—to inform management and protection of vulnerable species.</p>
+      <p>In private workspaces, managers and researchers can upload their own datasets—like animal telemetry tracks—to inform management and protection of vulnerable species.</p>
       <h2><img src="https://globalfishingwatch.org/website3/wp-content/uploads/icon-location-map-orange.png">Reference layers</h2>
       <p>Reference layers support understanding of vessel activity around marine protected areas and other areas. They can be added to support detailed analysis or spatial management.</p>
       <h2><img src="https://globalfishingwatch.org/website3/wp-content/uploads/icon-teamwork-orange.png">Partnerships</h2>
@@ -46,7 +46,7 @@ const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategories]?: WelcomeConten
       <p> Hemos integrado datos de presencia de embarcaciones en el portal, que indica las ubicaciones de todas las embarcaciones que transmiten por AIS. Los datos de presencia de embarcaciones actualmente pueden ser filtrados por embarcaciones pesqueras y de transporte, así como por embarcaciones categorizadas como "otras embarcaciones", que incluyen aquellas asociadas con el transporte marítimo, el turismo y la exploración de petróleo y gas. </p>
       <h2> <img src = "https://globalfishingwatch.org/website3/wp-content/uploads/icon-coral-orange.png"> Datos ambientales </h2>
       <p> Global Fishing Watch proporciona conjuntos de datos oceanográficos y biológicos disponibles públicamente, como la temperatura de la superficie del mar y la productividad y salinidad primarias, para permitir que cualquiera pueda examinar los patrones ambientales en relación con la actividad humana. </p>
-      <p> En espacios de trabajo privados, los administradores e investigadores pueden cargar sus propios conjuntos de datos (pistas de telemetría animal) para informar la gestión y protección de especies vulnerables. </p>
+      <p> En espacios de trabajo privados, los administradores e investigadores pueden cargar sus propios conjuntos de datos (como pistas de telemetría animal) para informar la gestión y protección de especies vulnerables. </p>
       <h2> <img src = "https://globalfishingwatch.org/website3/wp-content/uploads/icon-location-map-orange.png"> Capas de referencia </h2>
       <p> Las capas de referencia apoyan la comprensión de la actividad de los barcos alrededor de áreas marinas protegidas y otras áreas. Se pueden agregar para respaldar el análisis detallado o la gestión espacial. </p>
       <h2> <img src = "https://globalfishingwatch.org/website3/wp-content/uploads/icon-teamwork-orange.png"> Asociaciones </h2>

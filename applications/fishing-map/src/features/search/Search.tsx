@@ -125,7 +125,7 @@ function Search() {
       const { offset, total } = searchPagination
       if (entry.isIntersecting) {
         if (offset <= total && total > RESULTS_PER_PAGE) {
-          fetchResults(offset + RESULTS_PER_PAGE)
+          fetchResults(offset)
         }
       }
     },
@@ -193,6 +193,7 @@ function Search() {
   const hasMoreResults =
     searchPagination.total !== 0 &&
     searchPagination.total > RESULTS_PER_PAGE &&
+    searchPagination.offset &&
     searchPagination.offset <= searchPagination.total
 
   const onSearchOptionChange = (option: ChoiceOption, e: React.MouseEvent<Element, MouseEvent>) => {
@@ -403,6 +404,7 @@ function Search() {
                 disabled
                 type="secondary"
                 tooltip={t('common.comingSoon', 'Coming Soon')}
+                tooltipPlacement="top"
                 className={styles.footerAction}
               >
                 See as fleet

@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.2.5
+
+### Patch Changes
+
+- fix search pagination types
+
 ## 4.2.4
 
 ### Patch Changes
