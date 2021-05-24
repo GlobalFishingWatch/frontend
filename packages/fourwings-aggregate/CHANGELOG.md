@@ -1,5 +1,11 @@
 # @globalfishingwatch/fourwings-aggregate
 
+## 4.0.0
+
+### Major Changes
+
+- 1a3d0960: Fishing map/presence less than one day
+
 ## 3.1.1
 
 ### Patch Changes

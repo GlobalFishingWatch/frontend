@@ -1,5 +1,16 @@
 # @globalfishingwatch/layer-composer
 
+## 7.0.0
+
+### Minor Changes
+
+- 1a3d0960: Fishing map/presence less than one day
+
+### Patch Changes
+
+- Updated dependencies [1a3d0960]
+  - @globalfishingwatch/fourwings-aggregate@4.0.0
+
 ## 6.1.4
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @globalfishingwatch/dataviews-client
 
+## 7.0.0
+
+### Major Changes
+
+- 1a3d0960: Fishing map/presence less than one day
+
+### Patch Changes
+
+- Updated dependencies [1a3d0960]
+  - @globalfishingwatch/layer-composer@7.0.0
+
 ## 6.5.3
 
 ### Patch Changes
