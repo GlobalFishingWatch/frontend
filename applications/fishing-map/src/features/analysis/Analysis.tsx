@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import union from '@turf/union'
 import { Feature, Polygon } from 'geojson'
+import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import bbox from '@turf/bbox'
@@ -165,16 +166,23 @@ function Analysis() {
   }
 
   const onDownloadClick = async () => {
-    const reportDataviews = dataviews.map((dataview) => {
-      const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
-        .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
-        .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
+    const reportDataviews = dataviews
+      .map((dataview) => {
+        const trackDatasets: Dataset[] = (dataview?.config?.datasets || [])
+          .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
+          .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
+          .filter((dataset: Dataset) => {
+            const permission = { type: 'dataset', value: dataset.id, action: 'report' }
+            return checkExistPermissionInList(userData?.permissions, permission)
+          })
 
-      return {
-        filters: dataview.config?.filters || [],
-        datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
-      }
-    })
+        return {
+          filters: dataview.config?.filters || [],
+          datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
+        }
+      })
+      .filter((dataview) => dataview.datasets.length > 0)
+
     const reportName = Array.from(new Set(dataviews.map((dataview) => dataview.name))).join(',')
     const createReport: CreateReport = {
       name: `${reportName} - ${t('common.report', 'Report')}`,
