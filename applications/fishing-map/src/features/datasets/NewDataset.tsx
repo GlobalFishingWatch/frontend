@@ -1,5 +1,6 @@
 import React, { useState, useCallback, Fragment } from 'react'
 import { FeatureCollectionWithFilename } from 'shpjs'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { lowerCase } from 'lodash'
 import { useSelector } from 'react-redux'
@@ -255,6 +256,11 @@ function NewDataset(): React.ReactElement {
       }
 
       setLoading(true)
+      uaEvent({
+        category: 'Environmental data',
+        action: `Confirm environmental dataset upload`,
+        label: userTrackGeoJSONFile?.name ?? file.name,
+      })
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
         dataset: { ...metadata },
         file: userTrackGeoJSONFile || file,

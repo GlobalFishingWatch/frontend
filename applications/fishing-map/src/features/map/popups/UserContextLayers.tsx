@@ -3,11 +3,13 @@ import React, { Fragment, useCallback } from 'react'
 import { groupBy } from 'lodash'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { CONTEXT_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
+import { getEventLabel } from 'utils/analytics'
 import styles from './Popup.module.css'
 
 type UserContextLayersProps = {
@@ -32,6 +34,11 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
           areaId: feature.properties?.gfw_id,
           sourceId: feature.source,
         },
+      })
+      uaEvent({
+        category: 'Analysis',
+        action: `Open analysis panel`,
+        label: getEventLabel([feature.title ?? '', feature.value ?? '']),
       })
     },
     [dispatchQueryParams]

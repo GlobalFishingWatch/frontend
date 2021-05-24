@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation, Trans } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { Dataset, DatasetCategory } from '@globalfishingwatch/api-types'
@@ -37,6 +38,11 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
   }, [allDatasetsRequested, dispatch])
 
   const onAddNewClick = async () => {
+    uaEvent({
+      category: 'Environmental data',
+      action: `Start upload environmental dataset flow`,
+      label: datasetCategory,
+    })
     batch(() => {
       dispatchDatasetModal('new')
       dispatchDatasetCategory(datasetCategory)

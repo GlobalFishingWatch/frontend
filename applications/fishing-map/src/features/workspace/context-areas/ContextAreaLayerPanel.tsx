@@ -17,9 +17,10 @@ import Title from '../common/Title'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
+  onToggle?: () => void
 }
 
-function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [colorOpen, setColorOpen] = useState(false)
@@ -62,6 +63,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       className={styles.name}
       classNameActive={styles.active}
       dataview={dataview}
+      onToggle={onToggle}
     />
   )
 
@@ -92,6 +94,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           active={layerActive}
           className={styles.switch}
           dataview={dataview}
+          onToggle={onToggle}
         />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>

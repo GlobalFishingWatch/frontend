@@ -2,11 +2,13 @@ import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
+import { selectUserDatasets } from 'features/user/user.selectors'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 import UserTrackLayerPanel from './UserTrackLayerPanel'
@@ -15,11 +17,17 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   const { t } = useTranslation()
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
   const dataviews = useSelector(selectEnvironmentalDataviews)
+  const userDatasets = useSelector(selectUserDatasets)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onAddClick = useCallback(() => {
+    uaEvent({
+      category: 'Environmental data',
+      action: `Open panel to upload new environmental dataset`,
+      value: userDatasets.length,
+    })
     setNewDatasetOpen(true)
-  }, [])
+  }, [userDatasets])
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
