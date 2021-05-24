@@ -166,7 +166,9 @@ function SidebarHeader() {
   return (
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
-        <Logo className={styles.logo} subBrand={getSubBrand()} />
+        <a href="https://globalfishingwatch.org" className={styles.logoLink}>
+          <Logo className={styles.logo} subBrand={getSubBrand()} />
+        </a>
         {showInteractionButtons && (
           <Fragment>
             <SaveWorkspaceButton />
