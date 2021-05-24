@@ -17,6 +17,7 @@ import {
 import { ExtendedStyleMeta, Generators } from '@globalfishingwatch/layer-composer'
 import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
+import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
@@ -31,6 +32,7 @@ import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { getEventLabel } from 'utils/analytics'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
@@ -39,8 +41,6 @@ import { useHaveSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-fea
 import useRulers from './rulers/rulers.hooks'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
-import { POPUP_CATEGORY_ORDER } from 'data/config'
-import { getEventLabel } from 'utils/analytics'
 
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 

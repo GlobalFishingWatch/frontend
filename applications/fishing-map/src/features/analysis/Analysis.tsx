@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo, useState, Fragment } from 'react'
+import { useEffect, useRef, useMemo, useState, Fragment } from 'react'
 import cx from 'classnames'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
@@ -179,7 +179,7 @@ function Analysis() {
           })
 
         return {
-          filters: dataview.config?.filters || [],
+          filters: dataview.config?.filters || {},
           datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
         }
       })
