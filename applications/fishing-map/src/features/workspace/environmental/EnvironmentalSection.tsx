@@ -3,13 +3,15 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
-import { selectUserDatasets } from 'features/user/user.selectors'
+import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
+import { getEventLabel } from 'utils/analytics'
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 import UserTrackLayerPanel from './UserTrackLayerPanel'
 
@@ -17,7 +19,7 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   const { t } = useTranslation()
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
   const dataviews = useSelector(selectEnvironmentalDataviews)
-  const userDatasets = useSelector(selectUserDatasets)
+  const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Environment))
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onAddClick = useCallback(() => {
@@ -28,6 +30,21 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
     })
     setNewDatasetOpen(true)
   }, [userDatasets])
+
+  const onToggleLayer = useCallback(
+    (dataview: UrlDataviewInstance) => () => {
+      const isVisible = dataview?.config?.visible ?? false
+      const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
+      const layerTitle = dataset?.name ?? dataset?.id ?? 'Unknown layer'
+      const action = isVisible ? 'disable' : 'enable'
+      uaEvent({
+        category: 'Environmental data',
+        action: `Toggle environmental layer`,
+        label: getEventLabel([action, layerTitle]),
+      })
+    },
+    []
+  )
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
@@ -58,9 +75,17 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
       </div>
       {dataviews?.map((dataview) =>
         dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
-          <UserTrackLayerPanel key={dataview.id} dataview={dataview} />
+          <UserTrackLayerPanel
+            key={dataview.id}
+            dataview={dataview}
+            onToggle={onToggleLayer(dataview)}
+          />
         ) : (
-          <EnvironmentalLayerPanel key={dataview.id} dataview={dataview} />
+          <EnvironmentalLayerPanel
+            key={dataview.id}
+            dataview={dataview}
+            onToggle={onToggleLayer(dataview)}
+          />
         )
       )}
     </div>

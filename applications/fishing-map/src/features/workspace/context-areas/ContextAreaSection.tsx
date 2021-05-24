@@ -9,7 +9,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
-import { selectUserDatasets } from 'features/user/user.selectors'
+import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import LayerPanel from './ContextAreaLayerPanel'
@@ -19,7 +19,7 @@ function ContextAreaSection(): React.ReactElement {
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
 
   const dataviews = useSelector(selectContextAreasDataviews)
-  const userDatasets = useSelector(selectUserDatasets)
+  const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onAddClick = useCallback(() => {
@@ -38,8 +38,8 @@ function ContextAreaSection(): React.ReactElement {
       const layerTitle = dataset?.name ?? dataset?.id ?? 'Unknown layer'
       const action = isVisible ? 'disable' : 'enable'
       uaEvent({
-        category: 'Environmental data',
-        action: `Toggle environmental layer`,
+        category: 'Reference layer',
+        action: `Toggle reference layer`,
         label: getEventLabel([action, layerTitle]),
       })
     },
