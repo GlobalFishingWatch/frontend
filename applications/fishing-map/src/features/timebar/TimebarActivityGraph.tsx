@@ -10,7 +10,7 @@ import {
 } from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
 import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
-import { MapSourceDataEvent } from '@globalfishingwatch/mapbox-gl'
+import { MapboxEvent, MapSourceDataEvent } from '@globalfishingwatch/mapbox-gl'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { useMapBounds, mglToMiniGlobeBounds } from 'features/map/map-viewport.hooks'
 import { filterByViewport } from 'features/map/map.utils'
@@ -122,7 +122,14 @@ const TimebarActivityGraph = () => {
       const { isActive } = isEventSourceActiveChunk(e)
       if (isActive) setLoading(true)
     })
-    map.on('idle', () => {
+    map.on('idle', (e: MapboxEvent) => {
+      if (!isNaN(sourcesLoadedTimeout.current)) {
+        window.clearTimeout(sourcesLoadedTimeout.current)
+      }
+      const style = (e.target as any).style.stylesheet
+      const metadata = getMetadata(style)
+
+      computeStackedActivity(metadata, mglToMiniGlobeBounds(map.getBounds()))
       setLoading(false)
     })
   }, [map, computeStackedActivity, isSmallScreen])
