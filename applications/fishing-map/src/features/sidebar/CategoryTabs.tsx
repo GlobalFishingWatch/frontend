@@ -20,9 +20,9 @@ import useViewport from 'features/map/map-viewport.hooks'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
-  latitude: 3,
-  longitude: -7,
-  zoom: 0.1,
+  latitude: 10,
+  longitude: -90,
+  zoom: 1,
 }
 
 type CategoryTabsProps = {
@@ -98,8 +98,8 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <button className={styles.tabContent} onClick={onHelpClick}>
             <Icon icon="help" />
           </button>
-        </li>
-        <li className={cx(styles.tab, styles.secondary)}>
+        </li> */}
+        {/* <li className={cx(styles.tab, styles.secondary)}>
           <button className={styles.tabContent} onClick={onFeedbackClick}>
             <Icon icon="feedback" />
           </button>
@@ -130,7 +130,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         >
           {guestUser ? (
             <Tooltip content={t('common.login', 'Log in')}>
-              <a href={GFWAPI.getLoginUrl(window.location.toString())}>
+              <a href={GFWAPI.getLoginUrl(window.location.toString())} className={styles.loginLink}>
                 <Icon icon="user" />
               </a>
             </Tooltip>

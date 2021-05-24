@@ -1,5 +1,29 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.43
+
+### Patch Changes
+
+- 1a3d0960: Fishing map/presence less than one day
+- Updated dependencies [1a3d0960]
+  - @globalfishingwatch/dataviews-client@7.0.0
+  - @globalfishingwatch/layer-composer@7.0.0
+  - @globalfishingwatch/timebar@1.6.0
+  - @globalfishingwatch/react-hooks@7.0.0
+  - @globalfishingwatch/ui-components@4.0.0
+
+## 0.0.42
+
+### Patch Changes
+
+- Updated dependencies [7d060771]
+  - @globalfishingwatch/api-client@1.7.1
+  - @globalfishingwatch/api-types@4.2.4
+  - @globalfishingwatch/dataviews-client@6.5.3
+  - @globalfishingwatch/layer-composer@6.1.4
+  - @globalfishingwatch/react-hooks@6.3.1
+  - @globalfishingwatch/ui-components@3.1.5
+
 ## 0.0.41
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @globalfishingwatch/react-hooks
 
+## 7.0.0
+
+### Patch Changes
+
+- Updated dependencies [1a3d0960]
+  - @globalfishingwatch/dataviews-client@7.0.0
+  - @globalfishingwatch/fourwings-aggregate@4.0.0
+  - @globalfishingwatch/layer-composer@7.0.0
+
+## 6.3.1
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+- Updated dependencies [7d060771]
+  - @globalfishingwatch/api-client@1.7.1
+  - @globalfishingwatch/dataviews-client@6.5.3
+  - @globalfishingwatch/layer-composer@6.1.4
+
 ## 6.3.0
 
 ### Minor Changes

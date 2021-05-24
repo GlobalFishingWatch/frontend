@@ -22,7 +22,7 @@ import {
   selectActivityDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { selectTimeRange } from 'features/app/app.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
 export const MAX_TOOLTIP_VESSELS = 5
 
@@ -100,7 +100,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
   async (temporalGridFeatures: ExtendedFeature[], { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const temporalgridDataviews = selectActivityDataviews(state) || []
-    const { start, end } = selectTimeRange(state)
+    const { start, end } = useTimerangeConnect()
 
     // get corresponding dataviews
     const featuresDataviews = temporalGridFeatures.flatMap((feature) => {

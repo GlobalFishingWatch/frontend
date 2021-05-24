@@ -78,7 +78,9 @@ function Menu(props: MenuProps) {
       onRequestClose={onClose}
     >
       <IconButton className={styles.closeBtn} icon="close" type="invert" onClick={onClose} />
-      <Logo type="invert" className={styles.logo} />
+      <a href="https://globalfishingwatch.org">
+        <Logo type="invert" className={styles.logo} />
+      </a>
       {links?.length > 0 && (
         <ul>
           {links.map(({ id, label, href }) => (

@@ -203,7 +203,14 @@ export const selectActiveActivityDataviews = createSelector(
 
 export const selectEnvironmentalDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
-  (dataviews) => dataviews
+  (dataviews) =>
+    dataviews.filter((d) => {
+      if (!d.datasets?.length) {
+        console.warn('This dataview has no datasets:', d)
+        return false
+      }
+      return true
+    })
 )
 
 export const selectActiveEnvironmentalDataviews = createSelector(

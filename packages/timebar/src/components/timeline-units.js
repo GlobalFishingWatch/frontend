@@ -37,7 +37,7 @@ class TimelineUnits extends Component {
     let baseUnit = 'day'
     if (innerDays > 366) baseUnit = 'year'
     else if (innerDays > 31) baseUnit = 'month'
-    else if (innerDays < 1) baseUnit = 'hour'
+    else if (innerDays <= 1) baseUnit = 'hour'
 
     const units = getUnitsPositions(
       outerScale,
