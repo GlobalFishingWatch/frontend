@@ -3,8 +3,8 @@
     "close": "Cerrar análisis",
     "completed": "El informe estará pronto en su correo electrónico",
     "disclaimer": "Los datos mostrados arriba deben ser tomados como una estimación. Haga clic en el botón de abajo si necesita una análisis más preciso, incluyendo la lista de las embarcaciones involucradas, lo cuál será enviado a su correo electrónico.",
-    "downloadLogin": "You need to login to download a report",
     "download": "Descargar informe (AIS)",
+    "downloadLogin": "You need to login to download a report",
     "empty": "Los datos seleccionados aparecerán aquí",
     "errorMessage": "Ha habido un error",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
@@ -182,7 +182,7 @@
   },
   "search": {
     "advanced": "Avanzado",
-    "advancedDisabled": "You need to login to use advanced search",
+    "advancedDisabled": "You need to <1>login</1> to use advanced search",
     "basic": "Básico",
     "close": "Cierra la busqueda",
     "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
