@@ -34,7 +34,7 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
       const presenceDataview = isPresenceDataview(dataviews[0])
       if (fishingDataview || presenceDataview) {
         title = presenceDataview
-          ? t(`common.presence`, 'Fishing presence')
+          ? t(`common.presence`, 'Vessel presence')
           : t(`common.apparentFishing`, 'Apparent Fishing Effort')
       } else {
         title += dataviews[0].name

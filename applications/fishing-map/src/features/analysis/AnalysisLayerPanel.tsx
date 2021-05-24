@@ -29,7 +29,7 @@ function AnalysisLayerPanel({ dataview, hiddenProperties }: LayerPanelProps) {
   let datasetName = dataset ? t(`datasets:${dataset?.id}.name` as any) : dataview.name || ''
   if (fishignDataview || presenceDataview) {
     datasetName = presenceDataview
-      ? t(`common.presence`, 'Fishing presence')
+      ? t(`common.presence`, 'Vessel presence')
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
   const TitleComponent = <p className={styles.dataset}>{datasetName}</p>
