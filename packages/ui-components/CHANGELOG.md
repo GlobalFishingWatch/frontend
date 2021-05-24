@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 4.1.1
+
+### Patch Changes
+
+- gfw links in logo
+
 ## 4.1.0
 
 ### Minor Changes
