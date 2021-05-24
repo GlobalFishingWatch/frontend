@@ -1,5 +1,15 @@
 # @globalfishingwatch/dataviews-client
 
+## 6.5.3
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+- Updated dependencies [7d060771]
+  - @globalfishingwatch/api-client@1.7.1
+  - @globalfishingwatch/api-types@4.2.4
+  - @globalfishingwatch/layer-composer@6.1.4
+
 ## 6.5.2
 
 ### Patch Changes
