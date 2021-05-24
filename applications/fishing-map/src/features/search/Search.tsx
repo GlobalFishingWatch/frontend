@@ -212,6 +212,11 @@ function Search() {
     if (option.id === activeSearchOption && scrollRef.current) {
       scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
+      uaEvent({
+        category: 'Search Vessel',
+        action: 'Toggle search type to filter results',
+        label: option.id,
+      })
       setActiveSearchOption(option.id as SearchType)
     }
   }
