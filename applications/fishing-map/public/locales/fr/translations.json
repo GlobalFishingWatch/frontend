@@ -3,8 +3,8 @@
     "close": "Fermer l'analyse",
     "completed": "Le rapport sera dans votre e-mail sous peu",
     "disclaimer": "Les données indiquées ci-dessus doivent être considérées comme une estimation. Cliquez sur le bouton ci-dessous si vous avez besoin d'une anlyse plus précise, y compris la liste des navires concernés, et nous vous l'enverrons par courriel.",
-    "downloadLogin": "You need to login to download a report",
     "download": "Télécharger le rapport",
+    "downloadLogin": "You need to login to download a report",
     "empty": "Vos jeux de données sélectionnés apparaîtront ici",
     "errorMessage": "Quelque chose s'est mal passé",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
@@ -182,7 +182,7 @@
   },
   "search": {
     "advanced": "Avancé",
-    "advancedDisabled": "You need to login to use advanced search",
+    "advancedDisabled": "You need to <1>login</1> to use advanced search",
     "basic": "Basique",
     "close": "Fermer la recherche",
     "description": "Recherche par nom de navire ou code d'identification . Vous pouvez affiner votre recherche en cliquant sur \"Avancé\" dans la barre supérieure.",
