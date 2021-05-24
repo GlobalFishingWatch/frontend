@@ -1,5 +1,18 @@
 # @globalfishingwatch/api-types
 
+## 4.2.4
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+
+## 4.2.3
+
+### Patch Changes
+
+- Updated dependencies [b3f3ca64]
+  - @globalfishingwatch/data-transforms@1.3.0
+
 ## 4.2.2
 
 ### Patch Changes
