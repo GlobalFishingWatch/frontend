@@ -42,9 +42,19 @@ const TimebarWrapper = () => {
   const onBookmarkChange = useCallback(
     (start, end) => {
       if (!start || !end) {
+        uaEvent({
+          category: 'Timebar',
+          action: 'Bookmark timerange',
+          label: 'removed',
+        })
         setBookmark(null)
         return
       }
+      uaEvent({
+        category: 'Timebar',
+        action: 'Bookmark timerange',
+        label: getEventLabel([start , end]),
+      })
       setBookmark({ start, end })
     },
     [setBookmark]
