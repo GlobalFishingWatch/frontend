@@ -238,6 +238,22 @@
       }
     }
   },
+  "public-global-presence": {
+    "name": "AIS",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessel's AIS.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "vessel_type": {
+        "keyword": "vessel_type",
+        "enum": {
+          "fishing": "fishing",
+          "carrier": "carrier",
+          "unknown": "unknown"
+        }
+      }
+    }
+  },
   "public-high-seas": {
     "name": "High seas pockets",
     "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
