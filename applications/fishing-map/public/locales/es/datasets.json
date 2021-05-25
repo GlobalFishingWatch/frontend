@@ -197,26 +197,26 @@
     "schema": {
       "flag": "marca",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "Arte de pesca",
         "enum": {
-          "tuna_purse_seines": "tuna_purse_seines",
+          "tuna_purse_seines": "redes de cerco atunera",
           "driftnets": "redes de deriva",
-          "trollers": "trollers",
-          "set_longlines": "set_longlines",
-          "purse_seines": "purse_seines",
-          "pots_and_traps": "botes_y_trampas",
-          "other_fishing": "otro_pesca",
-          "dredge_fishing": "pesca_dredge",
-          "set_gillnets": "set_redes",
+          "trollers": "curricaneros",
+          "set_longlines": "palangres",
+          "purse_seines": "redes de cerco",
+          "pots_and_traps": "trampas y nasas",
+          "other_fishing": "Otras pesquerías",
+          "dredge_fishing": "Pesca de dragado",
+          "set_gillnets": "redes de enmalle",
           "fixed_gear": "equipo fijo",
           "trawlers": "rastreadores",
-          "fishing": "pescar",
-          "seiners": "seiners",
-          "other_purse_seines": "otro_monedero_seines",
-          "other_seines": "other_seines",
-          "squid_jigger": "squid_jigger",
-          "pole_and_line": "pole_y_línea",
-          "drifting_longlines": "derivar_longlines"
+          "fishing": "pesqueros",
+          "seiners": "cerqueros",
+          "other_purse_seines": "Otras redes de cerco",
+          "other_seines": "otras redes",
+          "squid_jigger": "Jigger calamar",
+          "pole_and_line": "vara",
+          "drifting_longlines": "palangres a la deriva"
         }
       },
       "vessel_id": "i_id"
@@ -252,7 +252,7 @@
       "flag": "marca",
       "hours": "horas",
       "geartype": {
-        "keyword": "geartype",
+        "keyword": "arte de pesca",
         "enum": {
           "Purse Seine Group (2 boat) Small Pelagics": "Pelágica Pequeña del Grupo de Sena (2 barcos)",
           "Purse Seine Group (2 boat) Big Pelagics": "Pelágicos Grandes del Grupo de Sena de Purse (2 barcos)",
@@ -291,12 +291,12 @@
     "schema": {}
   },
   "public-mpa-no-take": {
-    "name": "MPA - Sin actividad pesquera (Fuente: WDPA)",
+    "name": "AMPs - Sin actividad pesquera (Fuente: WDPA)",
     "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. No Take layer was created using the data available from the Marine Protected Planet WDPA using the filter NO_TAKE = 'All'. Source: World Database on Protected Areas (WDPA)",
     "schema": {}
   },
   "public-mpa-restricted": {
-    "name": "MPA - Uso restringido (Fuente: WDPA)",
+    "name": "AMPs - Uso restringido (Fuente: WDPA)",
     "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. No Take layer was created using the data available from the Marine Protected Planet WDPA using the filter NO_TAKE = 'Part'. Source: World Database on Protected Areas (WDPA)",
     "schema": {}
   },
@@ -376,7 +376,7 @@
     "schema": {}
   },
   "public-tuna-rfmo": {
-    "name": "OROP (Fuente: FAO)",
+    "name": "OROPs (Fuente: FAO)",
     "description": "OROP significa Organización Regional de Ordenación de Pesca. Estas organizaciones son organizaciones internacionales formadas por países con un interés compartido en gestionar o conservar las poblaciones de peces de un área determinada. Algunas OROP gestionan todas las poblaciones de peces encontradas en un área específica, mientras que otras se centran en especies altamente migratorias, en particular el atún, a través de vastas zonas geográficas. La capa OROP en el mapa mundial de vigilancia de la pesca incluye actualmente las cinco OROP atuneras.",
     "schema": {}
   },
