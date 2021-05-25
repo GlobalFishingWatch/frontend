@@ -20,8 +20,8 @@ import styles from './Timebar.module.css'
 
 const getMetadata = (style: any) => {
   const metadata =
-    style.metadata.generatorsMetadata?.[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
-  if (metadata && metadata.timeChunks) {
+    style?.metadata?.generatorsMetadata?.[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
+  if (metadata?.timeChunks) {
     return metadata
   }
   return null
