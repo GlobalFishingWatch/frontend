@@ -26,32 +26,31 @@ type LayerWithFeatures = {
 
 export const useFilteredTimeSeries = () => {
   const map = useMapInstance()
-  const analysisAreaFeature = useSelector(selectAnalysisGeometry)
+  const analysisAreaGeometry = useSelector(selectAnalysisGeometry)
   const [timeseries, setTimeseries] = useState<AnalysisGraphProps[] | undefined>()
 
   const simplifiedGeometry = useMemo(() => {
-    if (!analysisAreaFeature) return null
-    const simplifiedGeometry = simplify(analysisAreaFeature?.geometry as Polygon | MultiPolygon, {
+    if (!analysisAreaGeometry) return null
+    const simplifiedGeometry = simplify(analysisAreaGeometry?.geometry as Polygon | MultiPolygon, {
       tolerance: 0.1,
     })
     // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
     // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
     simplifiedGeometry.bbox = bbox(simplifiedGeometry)
     return simplifiedGeometry
-  }, [analysisAreaFeature])
+  }, [analysisAreaGeometry])
 
-  const computeTimeseries = useCallback((
-    layersWithFeatures: LayerWithFeatures[],
-    geometry: Polygon | MultiPolygon
-  ) => {
-
-    const getTimeseries = async (
-      layersWithFeatures: LayerWithFeatures[],
-      geometry: Polygon | MultiPolygon
-    ) => {
-      const filteredFeatures = await filterByPolygon(layersWithFeatures.map(l => l.features), geometry)
-      const timeseries = filteredFeatures.map(
-        (filteredFeatures, sourceIndex) => {
+  const computeTimeseries = useCallback(
+    (layersWithFeatures: LayerWithFeatures[], geometry: Polygon | MultiPolygon) => {
+      const getTimeseries = async (
+        layersWithFeatures: LayerWithFeatures[],
+        geometry: Polygon | MultiPolygon
+      ) => {
+        const filteredFeatures = await filterByPolygon(
+          layersWithFeatures.map((l) => l.features),
+          geometry
+        )
+        const timeseries = filteredFeatures.map((filteredFeatures, sourceIndex) => {
           const sourceMetadata = layersWithFeatures[sourceIndex].metadata
           const sourceNumSublayers = sourceMetadata.numSublayers
           // TODO handle multiple timechunks
@@ -66,7 +65,7 @@ export const useFilteredTimeSeries = () => {
             sourceQuantizeOffset,
             sourceMetadata.aggregationOperation
           )
-    
+
           const valuesContained = valuesContainedRaw.map((frameValues) => {
             const { frame, ...rest } = frameValues
             return {
@@ -74,7 +73,7 @@ export const useFilteredTimeSeries = () => {
               date: quantizeOffsetToDate(frame, sourceInterval).toISOString(),
             }
           })
-    
+
           const featuresContainedAndOverlapping = [
             ...(filteredFeatures.contained || []),
             ...(filteredFeatures.overlapping || []),
@@ -85,7 +84,7 @@ export const useFilteredTimeSeries = () => {
             sourceQuantizeOffset,
             sourceMetadata.aggregationOperation
           )
-    
+
           const valuesContainedAndOverlapping = valuesContainedAndOverlappingRaw.map(
             (frameValues) => {
               const { frame, ...rest } = frameValues
@@ -95,7 +94,7 @@ export const useFilteredTimeSeries = () => {
               }
             }
           )
-    
+
           const timeseries = valuesContainedAndOverlapping.map(({ values, date }) => {
             const minValues = valuesContained.find((overlap) => overlap.date === date)?.values
             return {
@@ -110,23 +109,24 @@ export const useFilteredTimeSeries = () => {
             interval: sourceInterval,
             sublayers: sourceMetadata.sublayers,
           }
-        }
-      )
-      setTimeseries(timeseries)
-    }
-    // Make features serializable for worker
-    const serializedLayerWithFeatures = layersWithFeatures.map((layerWithFeatures) => {
-      return {
-        ...layerWithFeatures,
-        features: layerWithFeatures.features.map(({ properties, geometry }) => ({
-          type: 'Feature' as any,
-          properties,
-          geometry,
-        }))
+        })
+        setTimeseries(timeseries)
       }
-    })
-    getTimeseries(serializedLayerWithFeatures, geometry)
-  }, [])
+      // Make features serializable for worker
+      const serializedLayerWithFeatures = layersWithFeatures.map((layerWithFeatures) => {
+        return {
+          ...layerWithFeatures,
+          features: layerWithFeatures.features.map(({ properties, geometry }) => ({
+            type: 'Feature' as any,
+            properties,
+            geometry,
+          })),
+        }
+      })
+      getTimeseries(serializedLayerWithFeatures, geometry)
+    },
+    []
+  )
 
   const attachedListener = useRef<boolean>(false)
   useEffect(() => {
@@ -136,27 +136,33 @@ export const useFilteredTimeSeries = () => {
     const onMapIdle = (e: MapboxEvent) => {
       const style = (e.target as any).style.stylesheet
       const activityLayersMeta = style.metadata.generatorsMetadata
-      const activityLayersWithFeatures = Object.entries(activityLayersMeta).map(([dataviewId, metadata]) => {
-        const chunks = (metadata as any).timeChunks as TimeChunks
-        const allChunksFeatures = chunks.chunks.flatMap((chunk: TimeChunk) => {
-          const sourceFeatures = map.querySourceFeatures(chunk.sourceId as string, {
-            sourceLayer: TEMPORALGRID_SOURCE_LAYER,
+      const activityLayersWithFeatures = Object.entries(activityLayersMeta).map(
+        ([dataviewId, metadata]) => {
+          const chunks = (metadata as any).timeChunks as TimeChunks
+          const allChunksFeatures = chunks.chunks.flatMap((chunk: TimeChunk) => {
+            const sourceFeatures = map.querySourceFeatures(chunk.sourceId as string, {
+              sourceLayer: TEMPORALGRID_SOURCE_LAYER,
+            })
+            return sourceFeatures
           })
-          return sourceFeatures
-        })
-        return {
-          id: dataviewId,
-          features: allChunksFeatures,
-          metadata
+          return {
+            id: dataviewId,
+            features: allChunksFeatures,
+            metadata,
+          }
         }
-      })
-      if (activityLayersWithFeatures.length && activityLayersWithFeatures.every((activityLayerWithFeatures) => activityLayerWithFeatures.features.length)) {
+      )
+      if (
+        activityLayersWithFeatures.length &&
+        activityLayersWithFeatures.every(
+          (activityLayerWithFeatures) => activityLayerWithFeatures.features.length
+        )
+      ) {
         computeTimeseries(activityLayersWithFeatures, simplifiedGeometry as MultiPolygon)
-        map.off('idle',onMapIdle)
+        map.off('idle', onMapIdle)
       }
     }
     map.on('idle', onMapIdle)
-  
   }, [map, computeTimeseries, simplifiedGeometry])
 
   const { start, end } = useTimerangeConnect()
