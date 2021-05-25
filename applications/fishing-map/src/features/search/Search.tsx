@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, Fragment, useMemo } from 'react'
 import { batch, useDispatch, useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
 import Downshift from 'downshift'
@@ -65,7 +66,6 @@ function Search() {
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
-
   const searchOptions = useMemo(() => {
     return [
       {
@@ -113,6 +113,19 @@ function Search() {
               offset,
             })
           )
+          // TODO: Find a better approach to sync debouncedQuery
+          // and searchPagination.total to track the search in google analytics
+          promiseRef.current.then((data: any) => {
+            const total = data?.payload?.pagination?.total
+            if (total >= 0) {
+              uaEvent({
+                category: 'Search Vessel',
+                action: 'Search specific vessel',
+                label: debouncedQuery,
+                value: total,
+              })
+            }
+          })
         }, 1)
       }
     },
@@ -199,6 +212,11 @@ function Search() {
     if (option.id === activeSearchOption && scrollRef.current) {
       scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
+      uaEvent({
+        category: 'Search Vessel',
+        action: 'Toggle search type to filter results',
+        label: option.id,
+      })
       setActiveSearchOption(option.id as SearchType)
     }
   }

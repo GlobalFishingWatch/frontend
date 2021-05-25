@@ -1,5 +1,6 @@
 import React, { Fragment, memo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import TimebarComponent, {
   TimebarTracks,
@@ -12,6 +13,7 @@ import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import { selectActivityCategory } from 'routes/routes.selectors'
+import { getEventLabel } from 'utils/analytics'
 import {
   setHighlightedTime,
   disableHighlightedTime,
@@ -40,9 +42,19 @@ const TimebarWrapper = () => {
   const onBookmarkChange = useCallback(
     (start, end) => {
       if (!start || !end) {
+        uaEvent({
+          category: 'Timebar',
+          action: 'Bookmark timerange',
+          label: 'removed',
+        })
         setBookmark(null)
         return
       }
+      uaEvent({
+        category: 'Timebar',
+        action: 'Bookmark timerange',
+        label: getEventLabel([start, end]),
+      })
       setBookmark({ start, end })
     },
     [setBookmark]
@@ -78,11 +90,30 @@ const TimebarWrapper = () => {
         setInternalRange({ ...e })
         return
       }
+      const gaActions: Record<string, string> = {
+        TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
+        ZOOM_IN_BUTTON: 'Zoom In timerange',
+        ZOOM_OUT_BUTTON: 'Zoom Out timerange',
+      }
+      if (gaActions[e.source]) {
+        uaEvent({
+          category: 'Timebar',
+          action: gaActions[e.source],
+          label: getEventLabel([e.start, e.end]),
+        })
+      }
       setInternalRange(null)
       onTimebarChange(e.start, e.end)
     },
     [setInternalRange, onTimebarChange]
   )
+
+  const onTogglePlay = useCallback((isPlaying: boolean) => {
+    uaEvent({
+      category: 'Timebar',
+      action: `Click on ${isPlaying ? 'Play' : 'Pause'}`,
+    })
+  }, [])
 
   if (!start || !end) return null
 
@@ -99,6 +130,7 @@ const TimebarWrapper = () => {
         showLastUpdate={false}
         onMouseMove={onMouseMove}
         onBookmarkChange={onBookmarkChange}
+        onTogglePlay={onTogglePlay}
         bookmarkStart={bookmark?.start}
         bookmarkEnd={bookmark?.end}
         bookmarkPlacement="bottom"

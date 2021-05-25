@@ -1,5 +1,6 @@
 import React, { Fragment, useCallback } from 'react'
 import Link from 'redux-first-router-link'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
@@ -50,6 +51,11 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     : ''
 
   const toggleLanguage = (lang: Locale) => {
+    uaEvent({
+      category: 'Internationalization',
+      action: `Change language`,
+      label: lang,
+    })
     i18n.changeLanguage(lang)
   }
 

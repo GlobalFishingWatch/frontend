@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Radio from '@globalfishingwatch/ui-components/dist/radio'
@@ -15,6 +16,7 @@ import {
 import { TIMEBAR_EVENT_OPTIONS, TIMEBAR_GRAPH_OPTIONS } from 'data/config'
 import { selectTimebarEvents, selectTimebarGraph } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { getEventLabel } from 'utils/analytics'
 import { useTimebarVisualisation } from './timebar.hooks'
 import styles from './TimebarSettings.module.css'
 
@@ -30,6 +32,11 @@ const TimebarSettings = () => {
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisation()
 
   const openOptions = () => {
+    uaEvent({
+      category: 'Timebar',
+      action: 'Open timebar settings',
+      label: getEventLabel([`visualization: ${timebarVisualisation}`]),
+    })
     setOptionsPanelOpen(true)
   }
   const closeOptions = () => {

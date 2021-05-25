@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
+import { event as uaEvent } from 'react-ga'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Choice, { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { Generators } from '@globalfishingwatch/layer-composer'
@@ -20,6 +21,7 @@ import { ACTIVITY_OPTIONS } from 'data/config'
 import { WorkspaceActivityCategory } from 'types'
 import { selectActivityCategory } from 'routes/routes.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import LayerPanel from './HeatmapLayerPanel'
 import heatmapStyles from './HeatmapsSection.module.css'
 
@@ -84,10 +86,39 @@ function HeatmapsSection(): React.ReactElement {
           },
         })
       })
+      uaEvent({
+        category: 'Activity data',
+        action: 'Click on bivariate option',
+        label: getEventLabel([
+          'combine',
+          dataview1.name ?? dataview1.id,
+          getActivitySources(dataview1),
+          ...getActivityFilters(dataview1.config?.filters),
+          dataview2.name ?? dataview2.id,
+          getActivitySources(dataview2),
+          ...getActivityFilters(dataview2.config?.filters),
+        ]),
+      })
     },
     [dataviews, dispatchQueryParams, upsertDataviewInstance]
   )
 
+  const onToggleLayer = useCallback(
+    (dataview: UrlDataviewInstance) => () => {
+      const isVisible = dataview?.config?.visible ?? false
+      const action = isVisible ? 'disable' : 'enable'
+      uaEvent({
+        category: 'Activity data',
+        action: `Toggle ${dataview.category} layer`,
+        label: getEventLabel([
+          action,
+          getActivitySources(dataview),
+          ...getActivityFilters(dataview.config?.filters),
+        ]),
+      })
+    },
+    []
+  )
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   return (
@@ -125,6 +156,7 @@ function HeatmapsSection(): React.ReactElement {
               dataview={dataview}
               showBorder={!showBivariateIcon}
               isOpen={dataview.id === addedDataviewId}
+              onToggle={onToggleLayer(dataview)}
             />
             {showBivariateIcon && (
               <div className={cx(heatmapStyles.bivariateToggleContainer, 'print-hidden')}>

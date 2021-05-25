@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useMemo, useState, Fragment } from 'react'
+import { useEffect, useRef, useMemo, useState, Fragment } from 'react'
 import cx from 'classnames'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import union from '@turf/union'
 import { Feature, Polygon } from 'geojson'
@@ -29,6 +30,7 @@ import {
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
+import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
@@ -177,7 +179,7 @@ function Analysis() {
           })
 
         return {
-          filters: dataview.config?.filters || [],
+          filters: dataview.config?.filters || {},
           datasets: trackDatasets.map((dataset: Dataset) => dataset.id),
         }
       })
@@ -191,6 +193,16 @@ function Analysis() {
       geometry: analysisGeometry as ReportGeometry,
     }
     await dispatch(createReportThunk(createReport))
+    uaEvent({
+      category: 'Analysis',
+      action: `Download report`,
+      label: getEventLabel([
+        analysisAreaName,
+        ...reportDataviews
+          .map(({ datasets, filters }) => [datasets.join(','), ...getActivityFilters(filters)])
+          .flat(),
+      ]),
+    })
     timeoutRef.current = setTimeout(() => {
       dispatch(resetReportStatus(undefined))
     }, 5000)
