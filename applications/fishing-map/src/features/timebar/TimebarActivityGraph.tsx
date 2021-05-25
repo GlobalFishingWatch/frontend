@@ -123,13 +123,16 @@ const TimebarActivityGraph = () => {
       if (isActive) setLoading(true)
     })
     map.on('idle', (e: MapboxEvent) => {
-      // if (!isNaN(sourcesLoadedTimeout.current)) {
-      //   window.clearTimeout(sourcesLoadedTimeout.current)
-      // }
-      // const style = (e.target as any).style.stylesheet
-      // const metadata = getMetadata(style)
+      // If there's still a timer running when idle, skip it and render graph immediately
+      if (!isNaN(sourcesLoadedTimeout.current)) {
+        window.clearTimeout(sourcesLoadedTimeout.current)
+        sourcesLoadedTimeout.current = NaN
+        const style = (e.target as any).style.stylesheet
+        const metadata = getMetadata(style)
+  
+        computeStackedActivity(metadata, mglToMiniGlobeBounds(map.getBounds()))
+      }
 
-      // computeStackedActivity(metadata, mglToMiniGlobeBounds(map.getBounds()))
       setLoading(false)
     })
   }, [map, computeStackedActivity, isSmallScreen])
