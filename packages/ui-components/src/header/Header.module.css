@@ -321,7 +321,7 @@
     padding-bottom: 5px;
   }
 
-  .gfwHeaderContainer-inverted .gfwHeader .navList > li > a {
+  .gfwHeaderContainerInverted .gfwHeader .navList > li > a {
     color: var(--white, white);
   }
 
