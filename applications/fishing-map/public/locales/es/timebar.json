@@ -14,9 +14,9 @@
     "last30days": "Últimos 30 días",
     "done": "Hecho",
     "errorEarlyStart": "Su fecha de inicio es la más temprana con los datos disponibles",
-    "errorLatestEnd": "Su fecha de fin es la última fecha con datos disponibles",
+    "errorLatestEnd": "Su fecha de fin es la última con los datos disponibles",
     "errorMinRange": "Tu fecha de inicio y fin debe tener al menos un día de diferencia",
-    "errorMaxRange": "Su intervalo de tiempo es el rango máximo con datos disponibles"
+    "errorMaxRange": "Su intervalo de tiempo es el rango máximo con los datos disponibles"
   },
   "bookmark": {
     "goToBookmark": "Ir al rango de tiempo marcado",
