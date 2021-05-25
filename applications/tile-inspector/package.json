@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/tile-inspector",
-  "version": "0.1.28",
+  "version": "0.1.29",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
@@ -14,7 +14,7 @@
     "@globalfishingwatch/layer-composer": "7.0.1",
     "@globalfishingwatch/pbf": "^1.0.10",
     "@globalfishingwatch/react-hooks": "7.0.1",
-    "@globalfishingwatch/ui-components": "4.2.1",
+    "@globalfishingwatch/ui-components": "4.3.0",
     "luxon": "^1.26.0",
     "d3-geom": "^0.0.0",
     "d3-quadtree": "^2.0.0",
