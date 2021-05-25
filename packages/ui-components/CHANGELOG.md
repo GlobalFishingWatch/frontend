@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 4.3.1
+
+### Patch Changes
+
+- 831739e8: added missing style - inverted mode
+
 ## 4.3.0
 
 ### Minor Changes
