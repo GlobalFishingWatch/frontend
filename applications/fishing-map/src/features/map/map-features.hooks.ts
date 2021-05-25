@@ -1,11 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { atom, useRecoilValue, useSetRecoilState } from 'recoil'
-import { useSelector } from 'react-redux'
-import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
-import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from './map.hooks'
-import { selectActiveHeatmapAnimatedGeneratorConfigs } from './map.selectors'
 
 export const mapIdleAtom = atom<boolean>({
   key: 'mapIdle',
@@ -63,29 +59,7 @@ export const useHaveSourcesLoaded = (sourcesIds: string | string[]) => {
   return mapLoaded && sourcesLoaded
 }
 
-export const useActiveHeatmapAnimatedMetadatas = (generators: AnyGeneratorConfig[]) => {
-  const style = useMapStyle()
-
-  const generatorsIds = generators?.map((generator) => generator.id)
-  const generatorsMetadata = generatorsIds?.flatMap((generatorId) => {
-    return style?.metadata?.generatorsMetadata?.[generatorId] || []
-  })
-
-  const serializedGeneratorIds =
-    generatorsMetadata &&
-    generatorsMetadata
-      .map((metadata) => {
-        return metadata?.timeChunks?.activeSourceId + metadata?.numSublayers
-      })
-      .join()
-
-  const metadatas = useMemo(() => {
-    return generatorsMetadata || []
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serializedGeneratorIds])
-  return metadatas
-}
-
+// TODO Deprecate
 export const useFeatures = ({
   sourcesIds,
   sourceLayer = 'main',
@@ -112,23 +86,4 @@ export const useFeatures = ({
   }, [haveSourcesLoaded, map, sourceLayer, filter, sourcesIds])
 
   return { sourcesFeatures, haveSourcesLoaded }
-}
-
-const useGeneratorAnimatedFeatures = (generators: AnyGeneratorConfig[]) => {
-  const sourcesMetadata = useActiveHeatmapAnimatedMetadatas(generators)
-
-  const sourcesIds: string[] = useMemo(() => {
-    return sourcesMetadata?.map((metadata) => metadata?.timeChunks?.activeSourceId)
-  }, [sourcesMetadata])
-
-  const { sourcesFeatures, haveSourcesLoaded } = useFeatures({
-    sourcesIds,
-    sourceLayer: TEMPORALGRID_SOURCE_LAYER,
-  })
-  return { sourcesFeatures, haveSourcesLoaded, sourcesMetadata }
-}
-
-export const useActiveHeatmapAnimatedFeatures = () => {
-  const generators = useSelector(selectActiveHeatmapAnimatedGeneratorConfigs)
-  return useGeneratorAnimatedFeatures(generators)
 }

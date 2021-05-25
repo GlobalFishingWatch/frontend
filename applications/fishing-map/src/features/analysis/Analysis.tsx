@@ -216,8 +216,7 @@ function Analysis() {
     }
   }, [])
 
-  const { generatingTimeseries, haveSourcesLoaded, sourcesTimeseriesFiltered } =
-    useFilteredTimeSeries()
+  const layersTimeseriesFiltered = useFilteredTimeSeries()
 
   return (
     <div className={styles.container}>
@@ -239,21 +238,20 @@ function Analysis() {
       {workspaceStatus !== AsyncReducerStatus.Finished ||
       !contextAreaSourceLoaded ||
       !analysisGeometry ||
-      !haveSourcesLoaded ||
-      generatingTimeseries ? (
+      !layersTimeseriesFiltered ? (
         <Spinner className={styles.spinnerFull} />
       ) : (
         <div className={styles.contentContainer}>
           <div className={styles.content}>
-            {sourcesTimeseriesFiltered && sourcesTimeseriesFiltered?.length ? (
+            {layersTimeseriesFiltered && layersTimeseriesFiltered?.length ? (
               <Fragment>
-                {sourcesTimeseriesFiltered.map((sourceTimeseriesFiltered, index) => {
+                {layersTimeseriesFiltered.map((layerTimeseriesFiltered, index) => {
                   return (
                     <AnalysisItem
                       hasAnalysisLayers={hasAnalysisLayers}
                       analysisAreaName={analysisAreaName}
                       key={index}
-                      graphData={sourceTimeseriesFiltered}
+                      graphData={layerTimeseriesFiltered}
                     />
                   )
                 })}
