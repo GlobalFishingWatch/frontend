@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 4.3.2
+
+### Patch Changes
+
+- 4bcd1f16: fix typo
+
 ## 4.3.1
 
 ### Patch Changes
