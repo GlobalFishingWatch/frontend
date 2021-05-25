@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 4.3.3
+
+### Patch Changes
+
+- 9b9d73f7: removed donate button from header
+
 ## 4.3.2
 
 ### Patch Changes
