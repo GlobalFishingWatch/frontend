@@ -22,7 +22,7 @@ import {
   selectActivityDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { Range } from 'features/timebar/timebar.slice'
 
 export const MAX_TOOLTIP_VESSELS = 5
 
@@ -91,16 +91,16 @@ type SublayerVessels = {
 
 export const fetch4WingInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
-  ExtendedFeature[],
+  { temporalGridFeatures: ExtendedFeature[]; timeRange: Range },
   {
     dispatch: AppDispatch
   }
 >(
   'map/fetchInteraction',
-  async (temporalGridFeatures: ExtendedFeature[], { getState, signal, dispatch }) => {
+  async ({ temporalGridFeatures, timeRange }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const temporalgridDataviews = selectActivityDataviews(state) || []
-    const { start, end } = useTimerangeConnect()
+    const { start, end } = timeRange || {}
 
     // get corresponding dataviews
     const featuresDataviews = temporalGridFeatures.flatMap((feature) => {
@@ -110,7 +110,6 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
           ) || []
         : []
     })
-
     const fourWingsDataset = featuresDataviews[0].datasets?.find(
       (d) => d.type === DatasetTypes.Fourwings
     ) as Dataset

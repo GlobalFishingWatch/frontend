@@ -24,6 +24,7 @@ import {
   selectDataviewInstancesResolved,
 } from 'features/dataviews/dataviews.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { Range } from 'features/timebar/timebar.slice'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -67,6 +68,7 @@ export const useGeneratorsConnect = () => {
 export const useClickedEventConnect = () => {
   const map = useMapInstance()
   const dispatch = useDispatch()
+  const timeRange = useTimerangeConnect() as Range
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
   const fourWingsStatus = useSelector(selectFourWingsStatus)
@@ -146,8 +148,11 @@ export const useClickedEventConnect = () => {
     const temporalGridFeatures = event.features
       .filter((feature) => feature.temporalgrid !== undefined && feature.temporalgrid.visible)
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
-    if (temporalGridFeatures?.length) {
-      fourWingsPromiseRef.current = dispatch(fetch4WingInteractionThunk(temporalGridFeatures))
+
+    if (temporalGridFeatures?.length && timeRange) {
+      fourWingsPromiseRef.current = dispatch(
+        fetch4WingInteractionThunk({ temporalGridFeatures, timeRange })
+      )
     }
 
     const encounterFeature = event.features.find(

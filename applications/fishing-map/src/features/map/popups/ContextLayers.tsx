@@ -256,7 +256,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             )}
             {featureByType.map((feature, index) => (
               <FeatureRow
-                key={feature.properties?.value + index}
+                key={(feature?.id || feature.properties?.value) + index}
                 feature={feature}
                 showFeaturesDetails={showFeaturesDetails}
                 onReportClick={onReportClick}
