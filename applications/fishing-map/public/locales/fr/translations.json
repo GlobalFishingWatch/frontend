@@ -228,7 +228,7 @@
   },
   "user": {
     "groupMissing": "Appartenez-vous à un groupe d’utilisateurs qui n’apparaît pas ici ? <2>Demander l'accès</2>",
-    "groups": "Groupes d'utilisateurs",
+    "groups": "Groupes",
     "profile": "Profil",
     "title": "Utilisateur"
   },
