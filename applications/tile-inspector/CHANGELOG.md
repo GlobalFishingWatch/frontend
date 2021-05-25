@@ -1,5 +1,12 @@
 # tile-inspector
 
+## 0.1.27
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@4.2.0
+
 ## 0.1.26
 
 ### Patch Changes
