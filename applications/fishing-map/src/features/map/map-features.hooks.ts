@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { atom, useRecoilValue, useSetRecoilState } from 'recoil'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapStyle } from './map.hooks'
@@ -57,33 +57,4 @@ export const useHaveSourcesLoaded = (sourcesIds: string | string[]) => {
 
   const sourcesLoaded = sourcesIdsList.every((source) => style?.sources?.[source] !== undefined)
   return mapLoaded && sourcesLoaded
-}
-
-// TODO Deprecate
-export const useFeatures = ({
-  sourcesIds,
-  sourceLayer = 'main',
-  filter,
-}: {
-  sourcesIds: string[]
-  sourceLayer?: string
-  filter?: any[]
-}) => {
-  const haveSourcesLoaded = useHaveSourcesLoaded(sourcesIds)
-  const map = useMapInstance()
-
-  const sourcesFeatures = useMemo(() => {
-    if (haveSourcesLoaded && map) {
-      const features = sourcesIds.map((sourceId) => {
-        const sourceFeatures = map.querySourceFeatures(sourceId, {
-          sourceLayer,
-          ...(filter && { filter }),
-        })
-        return sourceFeatures
-      })
-      return features
-    }
-  }, [haveSourcesLoaded, map, sourceLayer, filter, sourcesIds])
-
-  return { sourcesFeatures, haveSourcesLoaded }
 }
