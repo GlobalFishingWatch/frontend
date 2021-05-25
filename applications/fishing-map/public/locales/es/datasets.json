@@ -67,7 +67,7 @@
     "name": "Concentración de clorofila",
     "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -75,7 +75,7 @@
     "name": "Concentración de clorofila",
     "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -83,7 +83,7 @@
     "name": "Concentración de clorofila",
     "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -91,7 +91,7 @@
     "name": "Concentración de clorofila",
     "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -99,7 +99,7 @@
     "name": "Salinidad",
     "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -107,7 +107,7 @@
     "name": "Salinidad",
     "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -115,7 +115,7 @@
     "name": "Salinidad",
     "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -123,7 +123,7 @@
     "name": "Salinidad",
     "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -131,7 +131,7 @@
     "name": "Salinidad",
     "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -139,7 +139,7 @@
     "name": "Salinidad",
     "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -147,7 +147,7 @@
     "name": "Temperatura de la superficie del mar",
     "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -155,7 +155,7 @@
     "name": "Temperatura de la superficie del mar con datos del 2020",
     "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -163,7 +163,7 @@
     "name": "Temperatura de la superficie del mar",
     "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -171,7 +171,7 @@
     "name": "Temperatura de la superficie del mar",
     "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -179,7 +179,7 @@
     "name": "Temperatura de la superficie del mar",
     "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -187,7 +187,7 @@
     "name": "Temperatura de la superficie del mar",
     "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id"
     }
   },
@@ -224,16 +224,16 @@
   },
   "public-global-presence": {
     "name": "AIS",
-    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessel's AIS.",
+    "description": "Utilizamos datos sobre la identidad, el tipo, la ubicación, la velocidad, la dirección y más de una embarcación que se transmiten mediante el Sistema de identificación automática (AIS) y se recopilan a través de satélites y receptores terrestres. AIS fue desarrollado para seguridad / prevención de colisiones. Analizamos los datos AIS recopilados de los barcos que nuestra investigación ha identificado como transportistas. La capa de actividad muestra un mapa de calor de la presencia de las embarcaciones. La presencia se determina tomando una posición por día por embarcación a partir de las posiciones transmitidas por el AIS de la embarcación.",
     "schema": {
-      "flag": "flag",
+      "flag": "bandera",
       "vessel_id": "vessel_id",
       "vessel_type": {
-        "keyword": "vessel_type",
+        "keyword": "Tipos de embarcaciones",
         "enum": {
-          "fishing": "fishing",
-          "carrier": "carrier",
-          "unknown": "unknown"
+          "fishing": "Pesqueras",
+          "carrier": "De transporte",
+          "unknown": "Otros"
         }
       }
     }
@@ -281,28 +281,28 @@
     }
   },
   "public-inshore-fishing-zone-1618837176535": {
-    "name": "Inshore Fishing Zone",
-    "description": "50 nm around the Tristan Archipelago and 40nm around Gough (8% of EEZ)",
+    "name": "Zona de pesca de bajura",
+    "description": "50 nm alrededor del archipiélago de Tristán y 40 nm alrededor de Gough (8% de la ZEE)",
     "schema": {}
   },
   "public-mpa-all": {
-    "name": "MPAs (Source: WDPA)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: May 2021.",
+    "name": "AMPs (Fuente: WDPA)",
+    "description": "El término Áreas Marinas Protegidas incluye, por ejemplo, reservas marinas, áreas marinas totalmente protegidas, zonas sin tomar santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente. Muchos de ellos tienen diferentes niveles de protección y el abanico de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. La capa de áreas sin actividad pesquera se creó utilizando los datos disponibles en el Planeta Marino Protegido WDPA usando el filtro NO_TAKE = 'Todos'. Fuente: Base de datos mundial sobre áreas protegidas (WDPA). Última actualización: Mayo 2021.",
     "schema": {}
   },
   "public-mpa-no-take": {
-    "name": "MPAs - No take (Source: WDPA)",
+    "name": "MPA - Sin actividad pesquera (Fuente: WDPA)",
     "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. No Take layer was created using the data available from the Marine Protected Planet WDPA using the filter NO_TAKE = 'All'. Source: World Database on Protected Areas (WDPA)",
     "schema": {}
   },
   "public-mpa-restricted": {
-    "name": "MPAs - Restricted (Source: WDPA)",
+    "name": "MPA - Uso restringido (Fuente: WDPA)",
     "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. No Take layer was created using the data available from the Marine Protected Planet WDPA using the filter NO_TAKE = 'Part'. Source: World Database on Protected Areas (WDPA)",
     "schema": {}
   },
   "public-no-take-zone-1618836692786": {
-    "name": "Marine Protection Zone",
-    "description": "90% of EEZ",
+    "name": "MPA - Sin actividad pesquera (Fuente: WDPA)",
+    "description": "90% de la ZEE",
     "schema": {}
   },
   "public-panama-fishing-effort": {
@@ -324,7 +324,7 @@
     "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por la Autoridad Panamana de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panama vía satélite y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Los datos del buque portador de Panama también están disponibles aquí. Cada punto en la capa de datos del buque de transporte representa una posición de los transportistas, pero no todas las posiciones se muestran. Las posiciones del buque portador se muestran una vez al día. En el futuro, esperamos poder mostrar más posiciones. Haga clic en la posición del transportista para ver el camino completo de la compañía. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
     "schema": {
       "id": "id",
-      "flag": "flag",
+      "flag": "bandera",
       "source": "source",
       "shipname": "shipname",
       "lastTransmissionDate": "lastTransmissionDate",
@@ -361,18 +361,18 @@
     }
   },
   "public-tristan-seamounts-200-1618586314138": {
-    "name": "Depth: -200 m",
+    "name": "Profundidad: -200 m",
     "description": "",
     "schema": {}
   },
   "public-tristan-seamounts-3000-1618586349746": {
-    "name": "Depth: -3000 m",
+    "name": "Profundidad: -3000 m",
     "description": "",
     "schema": {}
   },
   "public-tristan-seamounts-existing-1618586378121": {
-    "name": "Existing Seamount Fishing Zones",
-    "description": "2% of EEZ",
+    "name": "Zonas de pesca existentes en los montes submarinos",
+    "description": "2% de la ZEE",
     "schema": {}
   },
   "public-tuna-rfmo": {
@@ -382,7 +382,7 @@
   },
   "public-wdpa-may-2021-marine": {
     "name": "AMPs (Fuente: WDPA)",
-    "description": "El término Áreas Marinas Protegidas (AMPs) incluye, por ejemplo, reservas marinas, áreas marinas totalmente protegidas, zonas de veda, santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente. Muchos de ellos tienen diferentes niveles de protección, y la gama de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. Fuente: Base de datos mundial sobre áreas protegidas (WDPA).",
+    "description": "El término Áreas Marinas Protegidas (AMPs) incluye, por ejemplo, reservas marinas, áreas marinas totalmente protegidas, zonas de veda, santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente. Muchos de ellos tienen diferentes niveles de protección, y la gama de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. Fuente: Base de datos mundial sobre áreas protegidas (WDPA). Última actualización: Mayo 2021.",
     "schema": {}
   },
   "public-wpp-nri": {
