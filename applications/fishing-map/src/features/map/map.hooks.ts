@@ -42,7 +42,7 @@ import {
   ExtendedFeatureEvent,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
-import { useHaveSourcesLoaded, useMapLoaded } from './map-features.hooks'
+import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -74,7 +74,7 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
-  const encounterSourceLoaded = useHaveSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
   const fourWingsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 

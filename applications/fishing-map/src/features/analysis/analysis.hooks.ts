@@ -23,6 +23,7 @@ import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectAnalysisQuery } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
+import { useSourceInStyle } from 'features/map/map-features.hooks'
 import { selectAnalysisGeometry, setAnalysisGeometry } from './analysis.slice'
 import { AnalysisGraphProps } from './AnalysisItemGraph'
 import * as AnalysisWorker from './Analysis.worker'
@@ -217,6 +218,7 @@ export const useAnalysisGeometry = () => {
   const { areaId, sourceId } = useSelector(selectAnalysisQuery)
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const [loaded, setLoaded] = useState(false)
+  const sourceLoaded = useSourceInStyle(sourceId)
 
   const getContextAreaFeatures = useCallback(
     (map: Map) => {
@@ -254,12 +256,11 @@ export const useAnalysisGeometry = () => {
   }, [areaId])
 
   useEffect(() => {
-    if (!map || attachedListener.current) return
+    if (!map || attachedListener.current || !sourceLoaded) return
 
     attachedListener.current = true
 
     const onMapIdle = (e: MapboxEvent) => {
-      console.log('on map idle')
       const contextAreaFeatures = getContextAreaFeatures(map)
       const contextAreaGeometry = getContextAreaGeometry(contextAreaFeatures)
 
@@ -291,6 +292,7 @@ export const useAnalysisGeometry = () => {
   }, [
     map,
     areaId,
+    sourceLoaded,
     getContextAreaFeatures,
     setAnalysisBounds,
     fitMapBounds,
