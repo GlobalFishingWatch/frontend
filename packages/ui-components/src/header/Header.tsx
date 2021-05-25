@@ -2,13 +2,20 @@ import React, { Fragment, memo } from 'react'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './Header.css'
 
-const navigation = [
+export type MenuItem = {
+  link: string
+  label: string
+  mini?: boolean
+  childs?: MenuItem[]
+}
+
+const navigation: MenuItem[] = [
   {
     link: 'https://globalfishingwatch.org/topics/',
     label: 'Topics',
     childs: [
-      { link: 'https://globalfishingwatch.org/commercial-fishing/', label: 'Commercial Fishing' },
-      { link: 'https://globalfishingwatch.org/transshipment/', label: 'Transshipment' },
+      { link: 'https://globalfishingwatch.org/commercial-fishing/', label: 'Commercial Fishing', childs: [] },
+      { link: 'https://globalfishingwatch.org/transshipment/', label: 'Transshipment', childs: [] },
     ],
   },
   {
@@ -47,7 +54,7 @@ const navigation = [
           { link: 'https://globalfishingwatch.org/transparency-program-asia/', label: 'Asia' },
           {
             link: 'https://globalfishingwatch.org/transparency-program-latin-america/',
-            label: '>Latin America',
+            label: 'Latin America',
           },
           {
             link: 'https://globalfishingwatch.org/transparency-program-mediterranean/',
