@@ -20,7 +20,7 @@ const navigation: MenuItem[] = [
   },
   {
     link: 'https://globalfishingwatch.org/map-and-data/',
-    label: 'Map & dara',
+    label: 'Map & data',
     childs: [
       { link: 'https://globalfishingwatch.org/our-technology/', label: 'Our Technology' },
       { link: 'https://globalfishingwatch.org/our-map/', label: 'Our Map' },
