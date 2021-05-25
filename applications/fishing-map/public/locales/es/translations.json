@@ -191,7 +191,7 @@
     "notAllowed": "Los datos disponibles no permiten la búsqueda de embarcaciones",
     "placeholder": "Escriba para buscar embarcaciones",
     "seeVessel": "Ver embarcación",
-    "seeVessels": "Ver embarcaciones",
+    "seeVessels": "See {{count}} vessels",
     "suggestion": "Quiso decir",
     "title": "Buscar",
     "vesselAlreadyInWorkspace": "La embarcación ya está agregada en su área de trabajo.",
