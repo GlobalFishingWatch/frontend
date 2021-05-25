@@ -273,22 +273,22 @@
     "nationalId": "ID Nasional",
     "origin": "Asal",
     "registeredGearType": "Jenis peralatan terdaftar",
-    "source": "Source",
-    "transmission_plural": "Transmissions",
+    "source": "Sumber",
+    "transmission_plural": "Transmisi",
     "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
-    "vesselType_plural": "Vessel types",
-    "widthRange": "Width range"
+    "vesselType_plural": "Jenis Kapal",
+    "widthRange": "Rentang lebar"
   },
   "workspace": {
-    "confirmRemove": "Are you sure you want to permanently delete this workspace?",
-    "editName": "Edit workspace name",
-    "emptyState": "Your workspaces will appear here",
-    "nameInput": "Workspace name",
-    "new": "New Workspace",
-    "remove": "Remove workspace",
-    "save": "Save the current view",
-    "saved": "Current view was saved and it's available in your user profile",
-    "saveLogin": "You need to login to save views",
+    "confirmRemove": "Anda yakin ingin menghapus ruang kerja ini secara permanen?",
+    "editName": "Edit nama ruang kerja",
+    "emptyState": "Ruang kerja Anda akan muncul di sini",
+    "nameInput": "Nama ruang kerja",
+    "new": "Ruang kerja baru",
+    "remove": "Hapus ruang kerja",
+    "save": "Simpan tampilan saat ini",
+    "saved": "Tampilan saat ini telah disimpan dan tersedia di profil Anda",
+    "saveLogin": "Anda harus masuk untuk menyimpan tampilan (gratis, 2 menit)",
     "title_plural": "Ruang kerja"
   }
 }
