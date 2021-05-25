@@ -59,9 +59,6 @@ function Header({ mini = false, inverted = false }: HeaderProps) {
                     </li>
                   )
               )}
-              <li key="donate" role="menuitem" className={styles.highlightBtn}>
-                <a href="https://globalfishingwatch.org/donate/">Donate</a>
-              </li>
             </ul>
           </nav>
         </div>
