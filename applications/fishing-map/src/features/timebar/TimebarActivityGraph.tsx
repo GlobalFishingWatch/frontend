@@ -19,7 +19,8 @@ import useMapInstance from 'features/map/map-context.hooks'
 import styles from './Timebar.module.css'
 
 const getMetadata = (style: any) => {
-  const metadata = style.metadata.generatorsMetadata[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
+  const metadata =
+    style.metadata.generatorsMetadata?.[MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID]
   if (metadata && metadata.timeChunks) {
     return metadata
   }
@@ -129,7 +130,7 @@ const TimebarActivityGraph = () => {
         sourcesLoadedTimeout.current = NaN
         const style = (e.target as any).style.stylesheet
         const metadata = getMetadata(style)
-  
+
         computeStackedActivity(metadata, mglToMiniGlobeBounds(map.getBounds()))
       }
 
