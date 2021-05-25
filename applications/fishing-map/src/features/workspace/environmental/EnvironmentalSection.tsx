@@ -34,7 +34,7 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   const onToggleLayer = useCallback(
     (dataview: UrlDataviewInstance) => () => {
       const isVisible = dataview?.config?.visible ?? false
-      const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
+      const dataset = dataview.datasets?.shift()
       const layerTitle = dataset?.name ?? dataset?.id ?? 'Unknown layer'
       const action = isVisible ? 'disable' : 'enable'
       uaEvent({
