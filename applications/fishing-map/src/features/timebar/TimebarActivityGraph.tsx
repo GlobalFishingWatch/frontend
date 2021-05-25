@@ -123,13 +123,13 @@ const TimebarActivityGraph = () => {
       if (isActive) setLoading(true)
     })
     map.on('idle', (e: MapboxEvent) => {
-      if (!isNaN(sourcesLoadedTimeout.current)) {
-        window.clearTimeout(sourcesLoadedTimeout.current)
-      }
-      const style = (e.target as any).style.stylesheet
-      const metadata = getMetadata(style)
+      // if (!isNaN(sourcesLoadedTimeout.current)) {
+      //   window.clearTimeout(sourcesLoadedTimeout.current)
+      // }
+      // const style = (e.target as any).style.stylesheet
+      // const metadata = getMetadata(style)
 
-      computeStackedActivity(metadata, mglToMiniGlobeBounds(map.getBounds()))
+      // computeStackedActivity(metadata, mglToMiniGlobeBounds(map.getBounds()))
       setLoading(false)
     })
   }, [map, computeStackedActivity, isSmallScreen])
