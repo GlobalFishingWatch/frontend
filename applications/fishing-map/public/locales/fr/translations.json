@@ -191,7 +191,7 @@
     "notAllowed": "Vous n'êtes pas autorisé à rechercher ces données.",
     "placeholder": "Tapez pour rechercher des navires",
     "seeVessel": "Voir le bateau",
-    "seeVessels": "Voir les navires",
+    "seeVessels": "See {{count}} vessels",
     "suggestion": "Vouliez-vous dire",
     "title": "Chercher",
     "vesselAlreadyInWorkspace": "Ce vaisseau est déjà dans votre espace de travail",
