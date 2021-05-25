@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 4.2.0
+
+### Minor Changes
+
+- update menu links
+
 ## 4.1.1
 
 ### Patch Changes

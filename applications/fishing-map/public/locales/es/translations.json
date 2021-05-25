@@ -4,7 +4,7 @@
     "completed": "El informe estará pronto en su correo electrónico",
     "disclaimer": "Los datos mostrados arriba deben ser tomados como una estimación. Haga clic en el botón de abajo si necesita una análisis más preciso, incluyendo la lista de las embarcaciones involucradas, lo cuál será enviado a su correo electrónico.",
     "download": "Descargar informe (AIS)",
-    "downloadLogin": "You need to login to download a report",
+    "downloadLogin": "Necesita <1>iniciar sesión</1> para descargar el informe (gratis y toma 2 minutos)",
     "empty": "Los datos seleccionados aparecerán aquí",
     "errorMessage": "Ha habido un error",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
@@ -83,27 +83,27 @@
     "typePolygonsDescription": "Mostrar una o varias áreas coloreadas por cualquier valor cuantitativo en sus datos.",
     "typeTracks": " Pistas",
     "typeTracksDescription": "Mostrar el movimiento de uno o varios animales o embarcaciones.",
-    "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir conjuntos de datos",
+    "uploadLogin": "Necesitas <1>iniciar sesión</1> para subir datos (gratis y toma 2 minutos)",
     "uploadNewContext": "Subir nuevas capas de referencia",
     "uploadNewEnviroment": "Subir un nuevo dato ambiental",
     "title_plural": "Datos"
   },
   "errors": {
     "contactUs": "Please <1>contact us</1> to report the problem.",
-    "datasetNotFound": "No se pudo encontrar los datos",
+    "datasetNotFound": "No se pudo encontrar esos datos",
     "datasetNotValid": "Parece que algo falló en tu archivo",
     "fields": "Errores con los campos {{fields}}",
     "generic": "Algo salió mal, inténtalo de nuevo o contacta:",
     "genericShort": "Ha habido un error",
     "invalidRange": "El mínimo debe ser menor que el valor máximo",
-    "latestCarrierNotFound": "Último conjunto de datos de transportista no encontrado",
-    "notSupportedBy": "No soportado por {{list}}",
+    "latestCarrierNotFound": "No se pudo encontrar el último grupo de datos de carriers",
+    "notSupportedBy": "No soportado o compartible con {{list}}",
     "pageNotFound": "Página no encontrada",
     "privateView": "Esta es una vista privada",
     "requestAccess": "Solicitar acceso",
     "showError": "Show error",
-    "switchAccount": "Cambiar cuenta",
-    "trackLoading": "Se ha producido un error al cargar el track de la embarcación",
+    "switchAccount": "Cambiar de cuenta",
+    "trackLoading": "Se ha producido un error al cargar la trayectoria de la embarcación",
     "uploadError": "Hubo un error al cargar los datos",
     "vesselLoading": "Se ha producido un error al cargar los detalles de la embarcación",
     "workspaceCreate": "Hubo un error al crear el espacio de trabajo, por favor inténtalo de nuevo más tarde",
@@ -114,8 +114,8 @@
   },
   "event": {
     "noData": "No hay datos disponibles",
-    "notInCVP": "Este evento ocurrió fuera del intervalo de tiempo de los datos del Portal del Buque Carrier",
-    "seeInCVP": "Ver en el Portal de Buque de Carrier"
+    "notInCVP": "Evento no disponible",
+    "seeInCVP": "Ver en el Carrier Vessel Portal"
   },
   "feedback": {
     "dataset": "Los datos para los que estás proporcionando comentarios",
@@ -142,17 +142,17 @@
     "send": "Enviar"
   },
   "footer": {
-    "convenedBy": "Una asociación convocada por",
-    "supportBy": "Soportado por"
+    "convenedBy": "Socios fundadores",
+    "supportBy": "Apoyado por"
   },
   "layer": {
     "add": "Añadir capa",
-    "color_change": "Cambiar color",
-    "filterClose": "Cerrar filtros",
-    "filterOpen": "Abrir filtros",
-    "flagState_plural": "Estados de bandera",
+    "color_change": "Cambiar el color",
+    "filterClose": "Cerrar los filtros",
+    "filterOpen": "Abrir los filtros",
+    "flagState_plural": "Banderas",
     "fleet_plural": "Flotas",
-    "gearType_plural": "Tipos de equipo",
+    "gearType_plural": "Artes de pesca",
     "infoClose": "Ocultar info",
     "infoOpen": "Mostrar info",
     "remove": "Eliminar la capa",
@@ -160,43 +160,43 @@
     "source": "Fuente",
     "source_plural": "Fuentes",
     "toggleCombinationMode": {
-      "combine": "Combinar capas",
-      "split": "Dividir capas"
+      "combine": "Combinar las capas",
+      "split": "Separar las capas"
     },
-    "toggleVisibility": "Cambiar visibilidad de la capa",
-    "vessel_fit_bounds": "Centrar vista en la pista de barcos",
-    "vessel_fit_bounds_out_of_timerange": "La pista no tiene actividad en su intervalo de tiempo seleccionado. ¿Cambiar el intervalo de tiempo para que se ajuste a esta pista?"
+    "toggleVisibility": "Cambiar la visibilidad de la capa",
+    "vessel_fit_bounds": "Centrar mapa en la trayectoria de la embarcación",
+    "vessel_fit_bounds_out_of_timerange": "La trayectoria de la embarcación no tiene actividad en el periodo seleccionado. ¿Desea cambiar el periodo para que se ajuste a esta trayectoria?"
   },
   "map": {
-    "captureMap": "Capturar el mapa",
-    "change_basemap_default": "Cambia al mapa base por defecto",
+    "captureMap": "Captura de pantalla del mapa",
+    "change_basemap_default": "Cambia al mapa base predeterminado",
     "change_basemap_satellite": "Cambia al mapa base satelital",
     "legend_help": "Área de celda de cuadrícula aproximada en el ecuador",
     "loading": "Cargando el mapa",
     "mapLoadingWait": "Por favor espere a que cargue el mapa",
-    "rulers_add": "Añade reglas",
-    "rulers_remove": "Eliminar todas las reglas",
+    "rulers_add": "Mide distancias",
+    "rulers_remove": "Eliminar todas las distancias medidas",
     "search": "Buscar áreas",
-    "zoom_in": "Acercar",
-    "zoom_out": "Alejar"
+    "zoom_in": "Acercarse",
+    "zoom_out": "Alejarse"
   },
   "search": {
-    "advanced": "Avanzado",
-    "advancedDisabled": "You need to <1>login</1> to use advanced search",
-    "basic": "Básico",
-    "close": "Cierra la busqueda",
-    "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
-    "mainQueryLabel": "Nombre, IMO, MMSI o Callsign",
-    "noResults": "¿No encuentras el buque que estás buscando? Intenta usar MMSI, IMO o Callsign",
-    "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques",
-    "placeholder": "Tipo para buscar vasos",
-    "seeVessel": "Ver buque",
-    "seeVessels": "Ver buques",
+    "advanced": "Avanzada",
+    "advancedDisabled": "Necesita <1>iniciar sesión</1> para realizar una búsqueda avanzada (gratis y toma 2 minutos)",
+    "basic": "Básica",
+    "close": "Cierra la búsqueda",
+    "description": "Buscar por nombre de embarcación o código de identificación. Puedes filtrar tu búsqueda presionando \"Avanzada\" en la barra superior.",
+    "mainQueryLabel": "Nombre, IMO, MMSI o Call sign",
+    "noResults": "¿No encuentras la embarcación que estás buscando? Intenta usar MMSI, IMO o Call sign.",
+    "notAllowed": "Los datos disponibles no permiten la búsqueda de embarcaciones",
+    "placeholder": "Escriba para buscar embarcaciones",
+    "seeVessel": "Ver embarcación",
+    "seeVessels": "Ver embarcaciones",
     "suggestion": "Quiso decir",
     "title": "Buscar",
-    "vesselAlreadyInWorkspace": "Este buque ya está en su área de trabajo",
-    "vessels": "Buscar buques",
-    "vesselSelected": "Buque seleccionado"
+    "vesselAlreadyInWorkspace": "La embarcación ya está agregada en su área de trabajo.",
+    "vessels": "Buscar embarcaciones",
+    "vesselSelected": "Embarcación seleccionada"
   },
   "selects": {
     "allSelected": "Todos",
@@ -222,9 +222,9 @@
     "settings_close": "Cerrar la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
     "showFishingEffort": "Mostrar gráfico de horas de pesca",
-    "showTracks": "Mostrar gráfico de pistas",
-    "tracks": "Pistas",
-    "tracksDisabled": "Seleccione al menos un buque"
+    "showTracks": "Mostrar gráfico de las trayectorias",
+    "tracks": "Trayectorias",
+    "tracksDisabled": "Seleccione al menos una embarcación"
   },
   "user": {
     "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
@@ -237,11 +237,11 @@
     "callsign": "Callsing",
     "capacity": "Capacidad",
     "carrier": "Transportista",
-    "donor": "Buque de donante",
+    "donor": "Embarcación donante",
     "firstTransmissionDate": "Fecha primera transmisión",
     "flag": "Bandera",
     "fleet": "Flota",
-    "geartype": "Tipo de equipo",
+    "geartype": "Arte de pesca",
     "gearTypes": {
       "dredge_fishing": "Pesca de dragado",
       "drifting_longlines": "Deslizando Longline",
@@ -267,16 +267,16 @@
     "lastTransmissionDate": "Fecha última transmisión",
     "length": "Longitud",
     "lengthRange": "Rango de longitud",
-    "loading": "Cargando el track de la embarcación",
-    "login": "You need to <1>login</1> to see more details",
+    "loading": "Cargando la trayectoria de la embarcación",
+    "login": "Necesita <1>iniciar sesión</1> para ver más detalles (gratis y toma 2 minutos)",
     "mmsi": "MMSI",
     "nationalId": "Identificación Nacional",
     "origin": "Origen",
-    "registeredGearType": "Tipo de equipo registrado",
+    "registeredGearType": "Arte de pesca registrado",
     "source": "Fuente",
     "transmission_plural": "Transmisión",
     "unkwownVesselByGeartype": "$t(common.unknown) {{gearType}}",
-    "vesselType_plural": "Tipos de buque",
+    "vesselType_plural": "Tipos de embarcaciones",
     "widthRange": "Width range"
   },
   "workspace": {
@@ -288,7 +288,7 @@
     "remove": "Eliminar el área de trabajo",
     "save": "Guardar el mapa actual",
     "saved": "La vista actual ha sido guardada y está disponible en tu perfil de usuario",
-    "saveLogin": "Necesitas iniciar sesión para guardar las vistas",
+    "saveLogin": "Necesita <1>iniciar sesión</1> para guardar la vista actual (gratis y toma 2 minutos)",
     "title_plural": "Espacios de trabajo"
   }
 }

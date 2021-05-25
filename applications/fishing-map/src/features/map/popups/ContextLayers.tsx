@@ -2,6 +2,7 @@ import React, { Fragment, useCallback } from 'react'
 import { groupBy } from 'lodash'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import bbox from '@turf/bbox'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
@@ -13,6 +14,7 @@ import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import useMapInstance, { useMapContext } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
 import { selectSidebarOpen } from 'features/app/app.selectors'
+import { getEventLabel } from 'utils/analytics'
 import { setClickedEvent } from '../map.slice'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './Popup.module.css'
@@ -218,6 +220,11 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         dispatch(setClickedEvent(null))
 
         cleanFeatureState('click')
+      })
+      uaEvent({
+        category: 'Analysis',
+        action: `Open analysis panel`,
+        label: getEventLabel([feature.title ?? '', feature.value ?? '']),
       })
       // Analysis already does it on page reload but to avoid waiting
       // this moves the map to the same position

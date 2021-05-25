@@ -12,15 +12,15 @@ type MenuLink = {
 }
 
 export const defaultLinks: MenuLink[] = [
-  { id: 'about-us', label: 'About Us', href: 'https://globalfishingwatch.org/about-us/' },
+  { id: 'topics', label: 'Topics', href: 'https://globalfishingwatch.org/topics/' },
   { id: 'map-data', label: 'Map & data', href: 'https://globalfishingwatch.org/map-and-data/' },
-  { id: 'research', label: 'Research', href: 'https://globalfishingwatch.org/research/' },
-  { id: 'blog', label: 'Blog', href: 'https://globalfishingwatch.org/blog/' },
-  { id: 'news', label: 'News', href: 'https://globalfishingwatch.org/news/' },
+  { id: 'programs', label: 'Programs', href: 'https://globalfishingwatch.org/programs/' },
+  { id: 'newsroom', label: 'Newsroom', href: 'https://globalfishingwatch.org/newsroom/' },
+  { id: 'about-us', label: 'About Us', href: 'https://globalfishingwatch.org/about-us/' },
   {
-    id: 'get-involved',
-    label: 'Get involved',
-    href: 'https://globalfishingwatch.org/get-involved/',
+    id: 'help',
+    label: 'Help',
+    href: 'https://globalfishingwatch.org/help-faqs/',
   },
   {
     id: 'terms-of-use',
