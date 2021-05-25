@@ -441,7 +441,10 @@ function Search() {
             )}
             <Button className={styles.footerAction} onClick={onConfirmSelection}>
               {vesselsSelected.length > 1
-                ? t('search.seeVessels', 'See vessels')
+                ? t('search.seeVessels', {
+                    defaultValue: 'See vessels',
+                    count: vesselsSelected.length,
+                  })
                 : t('search.seeVessel', 'See vessel')}
             </Button>
           </div>
