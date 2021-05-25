@@ -241,7 +241,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
   )
 
   const featuresByType = groupBy(features, 'layerId')
-  console.log(Object.values(featuresByType))
+
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => (
