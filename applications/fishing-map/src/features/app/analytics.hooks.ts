@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { initialize as uaInitialize, set as uaSet, event as uaEvent } from 'react-ga'
 import { selectUserData } from 'features/user/user.slice'
+import { GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS, IS_PRODUCTION } from 'data/config'
 
 const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID
 
@@ -8,33 +10,40 @@ export const useAnalytics = () => {
   const userData = useSelector(selectUserData)
 
   useEffect(() => {
-    if (userData && GOOGLE_UNIVERSAL_ANALYTICS_ID && window.gtag) {
-      window.gtag('config', GOOGLE_UNIVERSAL_ANALYTICS_ID, {
-        user_id: userData.id,
-        custom_map: {
-          dimension1: 'userId',
-          dimension3: 'userGroup',
-          dimension4: 'userOrgType',
-          dimension5: 'userOrganization',
-          dimension6: 'userCountry',
-          dimension7: 'userLanguage',
+    if (GOOGLE_UNIVERSAL_ANALYTICS_ID) {
+      uaInitialize(GOOGLE_UNIVERSAL_ANALYTICS_ID, {
+        ...GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS,
+      })
+      // Uncomment to prevent sending hits in non-production envs
+      if (!IS_PRODUCTION) {
+        uaSet({ sendHitTask: null })
+      }
+      uaSet({
+        dimension1: 'userId',
+        dimension3: 'userGroup',
+        dimension4: 'userOrgType',
+        dimension5: 'userOrganization',
+        dimension6: 'userCountry',
+        dimension7: 'userLanguage',
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (userData && GOOGLE_UNIVERSAL_ANALYTICS_ID) {
+      uaSet({
+        userProperties: {
+          userId: userData.id,
+          userGroup: userData.groups,
+          userOrgType: userData.organizationType,
+          userOrganization: userData.organization,
+          userCountry: userData.country,
+          userLanguage: userData.language,
         },
       })
-      window.gtag('set', 'user_properties', {
-        user_id: userData.id,
-        user_group: userData.groups,
-        user_org_type: userData.organizationType,
-        user_organization: userData.organization,
-        user_country: userData.country,
-        user_language: userData.language,
-      })
-      window.gtag('event', 'login', {
-        userId: userData.id,
-        userGroup: userData.groups,
-        userOrgType: userData.organizationType,
-        userOrganization: userData.organization,
-        userCountry: userData.country,
-        userLanguage: userData.language,
+      uaEvent({
+        category: 'User',
+        action: 'Login',
       })
     }
   }, [userData])

@@ -20,9 +20,13 @@ import useDatasetError from './useDatasetError'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
+  onToggle?: () => void
 }
 
-function EnvironmentalLayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+function EnvironmentalLayerPanel({
+  dataview,
+  onToggle = () => {},
+}: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
@@ -73,6 +77,7 @@ function EnvironmentalLayerPanel({ dataview }: LayerPanelProps): React.ReactElem
       className={styles.name}
       classNameActive={styles.active}
       dataview={dataview}
+      onToggle={onToggle}
     />
   )
 
@@ -84,7 +89,12 @@ function EnvironmentalLayerPanel({ dataview }: LayerPanelProps): React.ReactElem
       })}
     >
       <div className={styles.header}>
-        <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
+        <LayerSwitch
+          active={layerActive}
+          className={styles.switch}
+          dataview={dataview}
+          onToggle={onToggle}
+        />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
         ) : (

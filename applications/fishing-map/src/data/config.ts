@@ -1,3 +1,4 @@
+import ReactGA from 'react-ga'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
@@ -5,10 +6,17 @@ import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 import { t } from 'features/i18n/i18n'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
+export const IS_PRODUCTION =
+  (process.env.REACT_APP_WORKSPACE_ENV || process.env.NODE_ENV) === 'production'
 
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
 export const CARRIER_PORTAL_URL =
   process.env.REACT_APP_CARRIER_PORTAL_URL || 'https://carrier-portal.dev.globalfishingwatch.org'
+
+export const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID
+export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
+  ? {}
+  : { debug: true }
 
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const DEFAULT_VERSION = 'v1'

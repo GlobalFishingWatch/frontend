@@ -1,5 +1,6 @@
 import React, { Fragment, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
 import Link from 'redux-first-router-link'
@@ -78,6 +79,11 @@ function SaveWorkspaceButton() {
           saveCurrentWorkspaceThunk.fulfilled.match(dispatchedAction) ||
           updatedCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)
         ) {
+          uaEvent({
+            category: 'Workspace Management',
+            action: 'Save current workspace',
+            label: dispatchedAction.payload?.name ?? 'Unknown',
+          })
           copyToClipboard(window.location.href)
         } else {
           console.warn('Error saving workspace', dispatchedAction.payload)

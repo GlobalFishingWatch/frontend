@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
 import { scaleLinear } from 'd3-scale'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
@@ -16,15 +17,22 @@ import {
 import { ExtendedStyleMeta, Generators } from '@globalfishingwatch/layer-composer'
 import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
+import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
+import {
+  useClickedEventConnect,
+  useMapTooltip,
+  useGeneratorsConnect,
+  TooltipEventFeature,
+} from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { getEventLabel } from 'utils/analytics'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
@@ -68,14 +76,45 @@ const MapWrapper = (): React.ReactElement | null => {
   const { style, loading: layerComposerLoading } = useLayerComposer(generatorsConfig, globalConfig)
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
+  const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const { cleanFeatureState } = useFeatureState(map)
   const { onMapHoverWithRuler, onMapClickWithRuler, getRulersCursor, rulersEditing } = useRulers()
 
   const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
+
+  const clickedCellLayers = useMemo(() => {
+    if (!clickedEvent || !clickedTooltipEvent) return
+
+    const layersByCategory = (clickedTooltipEvent?.features ?? [])
+      .sort(
+        (a, b) =>
+          POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
+      )
+      .reduce(
+        (prev: Record<string, TooltipEventFeature[]>, current) => ({
+          ...prev,
+          [current.category]: [...(prev[current.category] ?? []), current],
+        }),
+        {}
+      )
+
+    return Object.entries(layersByCategory).map(
+      ([featureCategory, features]) =>
+        `${featureCategory}: ${features.map((f) => f.layerId).join(',')}`
+    )
+  }, [clickedEvent, clickedTooltipEvent])
   const currentClickCallback = useMemo(() => {
-    return rulersEditing ? onMapClickWithRuler : onMapClick
-  }, [rulersEditing, onMapClickWithRuler, onMapClick])
-  const clickedTooltipEvent = useMapTooltip(clickedEvent)
+    const clickEvent = (event: any) => {
+      uaEvent({
+        category: 'Environmental data',
+        action: `Click in grid cell`,
+        label: getEventLabel(clickedCellLayers ?? []),
+      })
+      return rulersEditing ? onMapClickWithRuler(event) : onMapClick(event)
+    }
+    return clickEvent
+  }, [clickedCellLayers, rulersEditing, onMapClickWithRuler, onMapClick])
+
   const closePopup = useCallback(() => {
     cleanFeatureState('click')
     dispatchClickedEvent(null)
