@@ -141,6 +141,7 @@ const writeValueToFeature = (
 //
 const getBucketIndex = (breaks: number[], value: number) => {
   let currentBucketIndex
+  if (isNaN(value)) return 0
   for (let bucketIndex = 0; bucketIndex < breaks.length + 1; bucketIndex++) {
     const stopValue =
       breaks[bucketIndex] !== undefined ? breaks[bucketIndex] : Number.POSITIVE_INFINITY
