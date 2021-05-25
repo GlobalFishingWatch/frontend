@@ -1,5 +1,11 @@
 # @globalfishingwatch/fourwings-aggregate
 
+## 4.0.1
+
+### Patch Changes
+
+- 18fbfda4: Fixed NaN value in avg mode
+
 ## 4.0.0
 
 ### Major Changes
