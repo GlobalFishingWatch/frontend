@@ -23,13 +23,9 @@ import {
   selectWorkspaceStatus,
   selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
-import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
 import { isActivityDataview } from 'features/workspace/heatmaps/heatmaps.utils'
+import { isGuestUser } from 'features/user/user.selectors'
 import { selectAllDataviews } from './dataviews.slice'
-
-export const isGuestUser = createSelector([selectUserData], (userData) => {
-  return userData?.type === GUEST_USER_TYPE
-})
 
 export const selectDataviews = createSelector(
   [selectAllDataviews, isGuestUser, selectDebugOptions],

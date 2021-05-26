@@ -158,10 +158,10 @@ const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps; start: string
   if (!dataFormated) return null
 
   const dataMin: number = dataFormated.length
-    ? (min(dataFormated.flatMap(({ range }) => range[0])) as number)
+    ? (min(dataFormated.flatMap(({ range }) => range[0][0])) as number)
     : 0
   const dataMax: number = dataFormated.length
-    ? (max(dataFormated.flatMap(({ range }) => range[1])) as number)
+    ? (max(dataFormated.flatMap(({ range }) => range[0][1])) as number)
     : 0
 
   const domainPadding = (dataMax - dataMin) / 8

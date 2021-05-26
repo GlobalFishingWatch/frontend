@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-client
 
+## 1.7.2
+
+### Patch Changes
+
+- b950b19a: fix callbackurl encoding
+
 ## 1.7.1
 
 ### Patch Changes

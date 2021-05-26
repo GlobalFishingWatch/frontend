@@ -17,9 +17,11 @@ import {
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
+export const FISHING_LAYER_PREFIX = 'fishing-'
 export const VESSEL_LAYER_PREFIX = 'vessel-'
 export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
+export const PRESENCE_LAYER_ID = 'presence'
 
 type VesselInstanceDatasets = {
   trackDatasetId: string
@@ -54,7 +56,7 @@ export const getVesselDataviewInstance = (
 
 export const getFishingDataviewInstance = (): DataviewInstance<Generators.Type> => {
   return {
-    id: `fishing-${Date.now()}`,
+    id: `${FISHING_LAYER_PREFIX}${Date.now()}`,
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
     },
@@ -64,7 +66,7 @@ export const getFishingDataviewInstance = (): DataviewInstance<Generators.Type> 
 
 export const getPresenceDataviewInstance = (): DataviewInstance<Generators.Type> => {
   return {
-    id: `presence-${Date.now()}`,
+    id: `${PRESENCE_LAYER_ID}-${Date.now()}`,
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
     },

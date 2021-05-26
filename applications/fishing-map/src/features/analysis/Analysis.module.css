@@ -81,8 +81,13 @@
   color: var(--color-secondary-blue);
 }
 
-.error {
+.error,
+.experimental {
   color: var(--color-danger-red);
+}
+
+.experimental {
+  margin-left: 0.5rem;
 }
 
 .footer {

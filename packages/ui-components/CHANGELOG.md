@@ -1,5 +1,44 @@
 # @globalfishingwatch/ui-components
 
+## 4.3.5
+
+### Patch Changes
+
+- Updated dependencies [9e507541]
+  - @globalfishingwatch/layer-composer@7.0.3
+  - @globalfishingwatch/react-hooks@7.0.3
+
+## 4.3.4
+
+### Patch Changes
+
+- @globalfishingwatch/layer-composer@7.0.2
+- @globalfishingwatch/react-hooks@7.0.2
+
+## 4.3.3
+
+### Patch Changes
+
+- 9b9d73f7: removed donate button from header
+
+## 4.3.2
+
+### Patch Changes
+
+- 4bcd1f16: fix typo
+
+## 4.3.1
+
+### Patch Changes
+
+- 831739e8: added missing style - inverted mode
+
+## 4.3.0
+
+### Minor Changes
+
+- a65d8dc4: Update header menu
+
 ## 4.2.1
 
 ### Patch Changes

@@ -8,7 +8,7 @@ import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectUserId } from 'features/user/user.selectors'
+import { isGuestUser, selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
@@ -30,6 +30,7 @@ function EnvironmentalLayerPanel({
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
+  const guestUser = useSelector(isGuestUser)
   const [colorOpen, setColorOpen] = useState(false)
 
   const layerActive = dataview?.config?.visible ?? true
@@ -56,7 +57,7 @@ function EnvironmentalLayerPanel({
     (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.Context
   )
   useAutoRefreshImportingDataset(dataset)
-  const isCustomUserLayer = dataset?.ownerId === userId
+  const isCustomUserLayer = !guestUser && dataset?.ownerId === userId
 
   const { datasetError, datasetImporting, infoTooltip } = useDatasetError(
     dataset,
