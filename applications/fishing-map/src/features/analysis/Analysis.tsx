@@ -49,12 +49,25 @@ function Analysis() {
   const { timerange } = useTimerangeConnect()
   const dataviews = useSelector(selectActiveActivityDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
+  const userData = useSelector(selectUserData)
   const guestUser = useSelector(isGuestUser)
 
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
-  const userData = useSelector(selectUserData)
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
+
+  const datasetsReportAllowed = dataviews.flatMap((dataview) => {
+    const datasets: Dataset[] = (dataview?.config?.datasets || [])
+      .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
+      .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
+      .filter((dataset: Dataset) => {
+        const permission = { type: 'dataset', value: dataset.id, action: 'report' }
+        return checkExistPermissionInList(userData?.permissions, permission)
+      })
+    return datasets
+  })
+  const AISInDatasetsReport =
+    datasetsReportAllowed.find((dataset) => dataset.id.includes('global')) !== undefined
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
@@ -216,12 +229,15 @@ function Analysis() {
                           'analysis.timeRangeTooLong',
                           'Reports are only allowed for time ranges up to a year'
                         )
-                      : ''
+                      : AISInDatasetsReport
+                      ? ''
+                      : t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
                   }
                   tooltipPlacement="top"
                   disabled={
                     timeRangeTooLong ||
                     !hasAnalysisLayers ||
+                    !AISInDatasetsReport ||
                     reportStatus === AsyncReducerStatus.Finished
                   }
                 >
