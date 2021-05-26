@@ -140,12 +140,22 @@ function Analysis() {
   const layersTimeseriesFiltered = useFilteredTimeSeries()
   const analysisGeometryLoaded = useAnalysisGeometry()
 
+  let downloadTooltip = ''
+  if (timeRangeTooLong) {
+    downloadTooltip = t(
+      'analysis.timeRangeTooLong',
+      'Reports are only allowed for time ranges up to a year'
+    )
+  } else if (!AISInDatasetsReport) {
+    downloadTooltip = t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>
           {t('analysis.title', 'Analysis')}
-          <span className={styles.error}>{t('analysis.experimental', 'Experimental')}</span>
+          <span className={styles.experimental}>{t('analysis.experimental', 'Experimental')}</span>
         </h2>
         <div className={cx('print-hidden', sectionStyles.sectionButtons)}>
           <IconButton
@@ -223,16 +233,7 @@ function Analysis() {
                   className={styles.saveBtn}
                   onClick={onDownloadClick}
                   loading={reportStatus === AsyncReducerStatus.LoadingCreate}
-                  tooltip={
-                    timeRangeTooLong
-                      ? t(
-                          'analysis.timeRangeTooLong',
-                          'Reports are only allowed for time ranges up to a year'
-                        )
-                      : AISInDatasetsReport
-                      ? ''
-                      : t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
-                  }
+                  tooltip={downloadTooltip}
                   tooltipPlacement="top"
                   disabled={
                     timeRangeTooLong ||
