@@ -3,12 +3,15 @@
     "close": "Cerrar análisis",
     "completed": "El informe estará pronto en su correo electrónico",
     "disclaimer": "Los datos mostrados arriba deben ser tomados como una estimación. Haga clic en el botón de abajo si necesita una análisis más preciso, incluyendo la lista de las embarcaciones involucradas, lo cuál será enviado a su correo electrónico.",
+    "experimental": "Experimental",
     "download": "Descargar informe (AIS)",
     "downloadLogin": "Necesita <1>iniciar sesión</1> para descargar el informe (gratis y toma 2 minutos)",
     "empty": "Los datos seleccionados aparecerán aquí",
     "errorMessage": "Ha habido un error",
+    "noData": "No data available",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
+    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "vesselFlags": "de embarcaciones abanderadas con"
   },
   "common": {
