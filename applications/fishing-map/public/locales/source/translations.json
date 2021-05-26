@@ -3,10 +3,12 @@
     "close": "Close analysis",
     "completed": "The report will be in your email soon",
     "disclaimer": "The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.",
+    "experimental": "Experimental",
     "download": "Download report",
     "downloadLogin": "You need to login to download a report",
     "empty": "Your selected datasets will appear here",
     "errorMessage": "Something went wrong",
+    "noData": "No data available",
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
     "title": "Analysis",
     "vesselFlags": "by vessels flagged by"

@@ -23,7 +23,6 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
-// import { useMapLoaded } from 'features/map/map-features.hooks'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
@@ -51,7 +50,6 @@ function Analysis() {
   const dataviews = useSelector(selectActiveActivityDataviews) || []
   const analysisGeometry = useSelector(selectAnalysisGeometry)
   const guestUser = useSelector(isGuestUser)
-  // const mapLoaded = useMapLoaded()
 
   const analysisAreaName = useSelector(selectAnalysisAreaName)
   const reportStatus = useSelector(selectReportStatus)
@@ -134,7 +132,7 @@ function Analysis() {
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>
           {t('analysis.title', 'Analysis')}
-          <span className={styles.error}> Experimental</span>
+          <span className={styles.error}>{t('analysis.experimental', 'Experimental')}</span>
         </h2>
         <div className={cx('print-hidden', sectionStyles.sectionButtons)}>
           <IconButton
@@ -167,7 +165,9 @@ function Analysis() {
                 })}
               </Fragment>
             ) : (
-              <p className={styles.emptyDataPlaceholder}>No data available</p>
+              <p className={styles.emptyDataPlaceholder}>
+                {t('analysis.noData', 'No data available')}
+              </p>
             )}
             {analysisGeometry && (
               <p className={styles.placeholder}>
