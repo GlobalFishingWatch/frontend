@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { event as uaEvent } from 'react-ga'
@@ -13,7 +13,6 @@ import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.selectors'
-import { TIMEBAR_EVENT_OPTIONS, TIMEBAR_GRAPH_OPTIONS } from 'data/config'
 import { selectTimebarEvents, selectTimebarGraph } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
@@ -21,7 +20,7 @@ import { useTimebarVisualisation } from './timebar.hooks'
 import styles from './TimebarSettings.module.css'
 
 const TimebarSettings = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
@@ -30,6 +29,54 @@ const TimebarSettings = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const { dispatchQueryParams } = useLocationConnect()
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisation()
+
+  const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = useMemo(
+    () => [
+      {
+        id: 'speed',
+        label: t('timebarSettings.graphOptions.speed', 'Speed'),
+      },
+      {
+        id: 'depth',
+        label: t('timebarSettings.graphOptions.depth', 'Depth (Coming soon)'),
+        disabled: true,
+      },
+      {
+        id: 'none',
+        label: t('timebarSettings.graphOptions.none', 'None'),
+      },
+    ],
+    [i18n.language]
+  )
+  const TIMEBAR_EVENT_OPTIONS: SelectOption[] = useMemo(
+    () => [
+      {
+        id: 'all',
+        label: t('timebarSettings.eventOptions.all', 'All events'),
+      },
+      {
+        id: 'fishing',
+        label: t('timebarSettings.eventOptions.fishing', 'Fishing'),
+      },
+      {
+        id: 'encounters',
+        label: t('timebarSettings.eventOptions.encounters', 'Encounters'),
+      },
+      {
+        id: 'loitering',
+        label: t('timebarSettings.eventOptions.loitering', 'Loitering'),
+      },
+      {
+        id: 'ports',
+        label: t('timebarSettings.eventOptions.ports', 'Port visits'),
+      },
+      {
+        id: 'none',
+        label: t('timebarSettings.eventOptions.none', 'None'),
+      },
+    ],
+    [i18n.language]
+  )
 
   const openOptions = () => {
     uaEvent({

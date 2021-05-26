@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -17,7 +17,6 @@ import {
   getFishingDataviewInstance,
   getPresenceDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
-import { ACTIVITY_OPTIONS } from 'data/config'
 import { WorkspaceActivityCategory } from 'types'
 import { selectActivityCategory } from 'routes/routes.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -26,7 +25,7 @@ import LayerPanel from './HeatmapLayerPanel'
 import heatmapStyles from './HeatmapsSection.module.css'
 
 function HeatmapsSection(): React.ReactElement {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
   const [addedDataviewId, setAddedDataviewId] = useState<string | undefined>()
   const dataviews = useSelector(selectActivityDataviews)
   const activityCategory = useSelector(selectActivityCategory)
@@ -34,6 +33,20 @@ function HeatmapsSection(): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const { start, end } = useTimerangeConnect()
+
+  const ACTIVITY_OPTIONS: ChoiceOption[] = useMemo(
+    () => [
+      {
+        id: 'fishing',
+        title: t('common.fishing', 'Fishing'),
+      },
+      {
+        id: 'presence',
+        title: t('common.presence', 'Presence'),
+      },
+    ],
+    [i18n.language]
+  )
 
   useEffect(() => {
     setAddedDataviewId(undefined)
