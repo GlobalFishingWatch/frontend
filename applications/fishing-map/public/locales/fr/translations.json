@@ -11,6 +11,7 @@
     "noData": "No data available",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
     "title": "Analyse",
+    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "vesselFlags": "pour les navires battant le pavillon de"
   },
   "common": {
