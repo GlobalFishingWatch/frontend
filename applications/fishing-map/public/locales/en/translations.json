@@ -11,6 +11,7 @@
     "noData": "No data available",
     "timeRangeTooLong": "Reports are only supported for time spans up to one year.",
     "title": "Analysis",
+    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "vesselFlags": "for vessels flagged by"
   },
   "common": {
