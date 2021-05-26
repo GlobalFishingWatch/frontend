@@ -25,12 +25,12 @@ import { useFeatures } from 'features/map/map-features.hooks'
 import { Bbox } from 'types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
-  isGuestUser,
   selectActiveActivityDataviews,
   selectHasAnalysisLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
+import { isGuestUser } from 'features/user/user.selectors'
 import styles from './Analysis.module.css'
 import {
   clearAnalysisGeometry,
