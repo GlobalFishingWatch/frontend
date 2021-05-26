@@ -13,7 +13,10 @@ import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { ENCOUNTER_EVENTS_SOURCE_ID, PRESENCE_LAYER_ID } from 'features/dataviews/dataviews.utils'
+import {
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  FISHING_LAYER_PREFIX,
+} from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -151,8 +154,8 @@ export const useClickedEventConnect = () => {
           return false
         }
         const isFeatureVisible = feature.temporalgrid.visible
-        const isNotPresence = !feature.temporalgrid.sublayerId.includes(PRESENCE_LAYER_ID)
-        return isFeatureVisible && isNotPresence
+        const isFishingFeature = feature.temporalgrid.sublayerId.startsWith(FISHING_LAYER_PREFIX)
+        return isFeatureVisible && isFishingFeature
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
