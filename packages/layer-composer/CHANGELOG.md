@@ -1,5 +1,18 @@
 # @globalfishingwatch/layer-composer
 
+## 7.0.3
+
+### Patch Changes
+
+- 9e507541: compute timeseries once on idle
+
+## 7.0.2
+
+### Patch Changes
+
+- Updated dependencies [b230075f]
+  - @globalfishingwatch/fourwings-aggregate@4.0.2
+
 ## 7.0.1
 
 ### Patch Changes

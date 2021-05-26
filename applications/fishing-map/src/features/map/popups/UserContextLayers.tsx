@@ -5,11 +5,14 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { event as uaEvent } from 'react-ga'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
+import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { CONTEXT_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
+import useMapInstance from '../map-context.hooks'
 import styles from './Popup.module.css'
 
 type UserContextLayersProps = {
@@ -21,6 +24,16 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
+
+  const highlightArea = useCallback(
+    (source: string, id: string) => {
+      cleanFeatureState('highlight')
+      const featureState = { source, sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER, id }
+      updateFeatureState([featureState], 'highlight')
+    },
+    [cleanFeatureState, updateFeatureState]
+  )
 
   const onReportClick = useCallback(
     (feature: TooltipEventFeature) => {
@@ -28,20 +41,17 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
         console.warn('No gfw_id available in the feature to analyze', feature)
         return
       }
-
-      dispatchQueryParams({
-        analysis: {
-          areaId: feature.properties?.gfw_id,
-          sourceId: feature.source,
-        },
-      })
+      const areaId = feature.properties?.gfw_id
+      const sourceId = feature.source
+      dispatchQueryParams({ analysis: { areaId, sourceId } })
+      highlightArea(sourceId, areaId)
       uaEvent({
         category: 'Analysis',
         action: `Open analysis panel`,
         label: getEventLabel([feature.title ?? '', feature.value ?? '']),
       })
     },
-    [dispatchQueryParams]
+    [dispatchQueryParams, highlightArea]
   )
 
   const featuresByType = groupBy(features, 'layerId')

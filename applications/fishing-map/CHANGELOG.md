@@ -1,5 +1,61 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.29.30
+
+### Patch Changes
+
+- Updated dependencies [b950b19a]
+  - @globalfishingwatch/api-client@1.7.2
+
+## 0.29.29
+
+### Patch Changes
+
+- 9e507541: compute timeseries once on idle
+- Updated dependencies [9e507541]
+  - @globalfishingwatch/layer-composer@7.0.3
+  - @globalfishingwatch/react-hooks@7.0.3
+  - @globalfishingwatch/ui-components@4.3.5
+
+## 0.29.28
+
+### Patch Changes
+
+- b230075f: Fishing map/fix analysis broken graph
+- Updated dependencies [b230075f]
+  - @globalfishingwatch/fourwings-aggregate@4.0.2
+  - @globalfishingwatch/layer-composer@7.0.2
+  - @globalfishingwatch/react-hooks@7.0.2
+  - @globalfishingwatch/ui-components@4.3.4
+
+## 0.29.27
+
+### Patch Changes
+
+- Updated dependencies [9b9d73f7]
+  - @globalfishingwatch/ui-components@4.3.3
+
+## 0.29.26
+
+### Patch Changes
+
+- Updated dependencies [4bcd1f16]
+  - @globalfishingwatch/ui-components@4.3.2
+
+## 0.29.25
+
+### Patch Changes
+
+- Updated dependencies [831739e8]
+  - @globalfishingwatch/ui-components@4.3.1
+
+## 0.29.24
+
+### Patch Changes
+
+- Updated dependencies [a65d8dc4]
+  - @globalfishingwatch/ui-components@4.3.0
+
 ## 0.29.23
 
 ### Patch Changes

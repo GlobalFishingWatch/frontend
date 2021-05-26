@@ -37,7 +37,7 @@ import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { SliceInteractionEvent } from './map.slice'
-import { useHaveSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
+import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
 import useRulers from './rulers/rulers.hooks'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
@@ -177,7 +177,7 @@ const MapWrapper = (): React.ReactElement | null => {
   const debugOptions = useSelector(selectDebugOptions)
 
   const mapLoaded = useMapLoaded()
-  const encounterSourceLoaded = useHaveSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
 
   const getCursor = useCallback(
     (state) => {

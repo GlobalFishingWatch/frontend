@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -10,6 +11,7 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { isUserLogged } from 'features/user/user.selectors'
 import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
@@ -25,13 +27,15 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { fourWingsStatus } = useClickedEventConnect()
+  const userLogged = useSelector(isUserLogged)
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
-    const infoDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Vessels)
+    const infoDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Vessels, userLogged)
+
     if (!infoDataset) {
       console.warn('Missing info related dataset for', vessel)
     }
-    const trackDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks)
+    const trackDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks, userLogged)
     if (!trackDataset) {
       console.warn('Missing track related dataset for', vessel)
     }

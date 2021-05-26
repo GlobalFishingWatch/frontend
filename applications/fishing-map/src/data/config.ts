@@ -22,6 +22,7 @@ export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions 
 export const DEFAULT_VERSION = 'v1'
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
+export const FULL_SUFIX = 'full'
 
 // used when no url data and no workspace data
 const now = new Date()

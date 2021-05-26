@@ -1,22 +1,23 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import createTimebarActivityGraphWorker from 'workerize-loader!./TimebarActivityGraph.worker.ts'
 import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
 import { useDebounce, useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { quantizeOffsetToDate, TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
+import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import {
   TimeChunk,
   TimeChunks,
 } from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
-import { getTimeSeries } from '@globalfishingwatch/fourwings-aggregate'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
 import { MapboxEvent, MapSourceDataEvent } from '@globalfishingwatch/mapbox-gl'
 import { MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID } from '@globalfishingwatch/dataviews-client'
 import { useMapBounds, mglToMiniGlobeBounds } from 'features/map/map-viewport.hooks'
-import { filterByViewport } from 'features/map/map.utils'
 import { selectActiveActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
 import styles from './Timebar.module.css'
+import * as TimebarActivityGraphWorker from './TimebarActivityGraph.worker'
 
 const getMetadata = (style: any) => {
   const metadata =
@@ -27,62 +28,45 @@ const getMetadata = (style: any) => {
   return null
 }
 
+const { getTimeseries } = createTimebarActivityGraphWorker<typeof TimebarActivityGraphWorker>()
+
 const TimebarActivityGraph = () => {
   const temporalGridDataviews = useSelector(selectActiveActivityDataviews)
   const [stackedActivity, setStackedActivity] = useState<any>()
   const { bounds } = useMapBounds()
-  const debouncedBounds = useDebounce(bounds, 400)
+  const debouncedBounds = useDebounce(bounds, 1000)
   const isSmallScreen = useSmallScreen()
 
   const map = useMapInstance()
-
   const computeStackedActivity = useCallback(
     (metadata: any, bounds: MiniglobeBounds) => {
       if (!map || !metadata) return
       const numSublayers = metadata.numSublayers
       const timeChunks = metadata.timeChunks as TimeChunks
-      let prevMaxFrame: number
-      const allChunksValues = metadata.timeChunks.chunks.flatMap((chunk: TimeChunk) => {
-        const sourceFeatures = map.querySourceFeatures(chunk.sourceId as string, {
+      const allChunksFeatures = metadata.timeChunks.chunks.map((chunk: TimeChunk) => {
+        const features = map.querySourceFeatures(chunk.sourceId as string, {
           sourceLayer: TEMPORALGRID_SOURCE_LAYER,
         })
 
-        const chunkQuantizeOffset = chunk.quantizeOffset
-        const filteredFeatures = filterByViewport(sourceFeatures, bounds)
-        if (filteredFeatures?.length > 0) {
-          const { values, maxFrame } = getTimeSeries(
-            filteredFeatures as any,
-            numSublayers,
-            chunkQuantizeOffset
-          )
+        const serializedFeatures = features.map(({ properties, geometry }) => ({
+          type: 'Feature' as any,
+          properties,
+          geometry,
+        }))
 
-          const valuesTimeChunkOverlapFramesFiltered = prevMaxFrame
-            ? values.filter((frameValues) => frameValues.frame > prevMaxFrame)
-            : values
-
-          prevMaxFrame = maxFrame
-
-          const finalValues = valuesTimeChunkOverlapFramesFiltered.map((frameValues) => {
-            // Ideally we don't have the features not visible in 4wings but we have them
-            // so this needs to be filtered by the current active ones
-            const activeFrameValues = Object.fromEntries(
-              Object.entries(frameValues).map(([key, value]) => {
-                const cleanValue =
-                  key === 'frame' || metadata.visibleSublayers[parseInt(key)] === true ? value : 0
-                return [key, cleanValue]
-              })
-            )
-            return {
-              ...activeFrameValues,
-              date: quantizeOffsetToDate(frameValues.frame, timeChunks.interval).getTime(),
-            }
-          })
-          return finalValues
-        } else return []
+        return {
+          features: serializedFeatures,
+          quantizeOffset: chunk.quantizeOffset,
+        }
       })
-      if (allChunksValues && allChunksValues.length) {
-        setStackedActivity(allChunksValues)
+
+      const getTimeseriesAsync = async () => {
+        const timeseries = await getTimeseries(allChunksFeatures, bounds, numSublayers, timeChunks.interval, metadata.visibleSublayers)
+        if (timeseries && timeseries.length) {
+          setStackedActivity(timeseries)
+        }
       }
+      getTimeseriesAsync()
     },
     [map]
   )
@@ -116,7 +100,7 @@ const TimebarActivityGraph = () => {
         }
         sourcesLoadedTimeout.current = window.setTimeout(() => {
           computeStackedActivity(metadata, mglToMiniGlobeBounds(map.getBounds()))
-        }, 1000)
+        }, 2000)
       }
     })
     map.on('dataloading', (e: MapSourceDataEvent) => {

@@ -248,11 +248,12 @@ class HeatmapAnimatedGenerator {
         legends,
         temporalgrid: true,
         numSublayers: finalConfig.sublayers.length,
+        sublayers: finalConfig.sublayers,
         visibleSublayers: getSubLayersVisible(finalConfig.sublayers),
         timeChunks,
         aggregationOperation: finalConfig.aggregationOperation,
         multiplier: finalConfig.breaksMultiplier,
-        sublayers: finalConfig.sublayers,
+
       },
     }
 

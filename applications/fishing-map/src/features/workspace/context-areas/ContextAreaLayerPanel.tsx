@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, DatasetStatus } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
@@ -8,6 +9,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
+import { isGuestUser } from 'features/user/user.selectors'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -24,6 +26,7 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [colorOpen, setColorOpen] = useState(false)
+  const guestUser = useSelector(isGuestUser)
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -46,7 +49,7 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
   }
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
-  const isUserLayer = dataset?.ownerType === 'user'
+  const isUserLayer = !guestUser && dataset?.ownerType === 'user'
 
   useAutoRefreshImportingDataset(dataset)
 

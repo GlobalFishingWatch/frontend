@@ -13,7 +13,10 @@ import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import {
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  FISHING_LAYER_PREFIX,
+} from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -43,7 +46,7 @@ import {
   ExtendedFeatureEvent,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
-import { useHaveSourcesLoaded, useMapLoaded } from './map-features.hooks'
+import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -76,7 +79,7 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
-  const encounterSourceLoaded = useHaveSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
   const fourWingsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
@@ -146,7 +149,14 @@ export const useClickedEventConnect = () => {
 
     // get temporal grid clicked features and order them by sublayerindex
     const temporalGridFeatures = event.features
-      .filter((feature) => feature.temporalgrid !== undefined && feature.temporalgrid.visible)
+      .filter((feature) => {
+        if (!feature.temporalgrid) {
+          return false
+        }
+        const isFeatureVisible = feature.temporalgrid.visible
+        const isFishingFeature = feature.temporalgrid.sublayerId.startsWith(FISHING_LAYER_PREFIX)
+        return isFeatureVisible && isFishingFeature
+      })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
     if (temporalGridFeatures?.length && timeRange) {

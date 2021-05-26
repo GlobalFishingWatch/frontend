@@ -122,7 +122,8 @@ export class GFWAPI {
       locale ||
       (typeof localStorage !== undefined ? localStorage.getItem('i18nextLng') : '') ||
       'en'
-    return `${this.baseUrl}/${AUTH_PATH}?client=${client}&callback=${callbackUrl}&locale=${fallbackLocale}`
+    const callbackUrlEncoded = encodeURIComponent(callbackUrl)
+    return `${this.baseUrl}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`
   }
 
   getConfig() {
