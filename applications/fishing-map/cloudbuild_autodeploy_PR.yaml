@@ -1,9 +1,30 @@
 steps:
-  - name: node
+  - name: node:12
     entrypoint: yarn
-    args: ['install']
-  - name: node
+    args: ['install', '--unsafe-perm']
+    dir: './applications/fishing-map'
+  - name: node:12
     entrypoint: yarn
     args: ['test']
-
+    dir: './applications/fishing-map'
+  - name: node:12
+    entrypoint: yarn
+    args: ['build']
+    dir: './applications/fishing-map'
+    env:
+      - 'NODE_ENV=production'
+      - 'REACT_APP_SPREADSHEET_CLIENT_EMAIL=$_REACT_APP_SPREADSHEET_CLIENT_EMAIL'
+      - 'REACT_APP_SPREADSHEET_PRIVATE_KEY=$_REACT_APP_SPREADSHEET_PRIVATE_KEY'
+      - 'REACT_APP_FEEDBACK_SPREADSHEET_ID=$_REACT_APP_FEEDBACK_SPREADSHEET_ID'
+      - 'REACT_APP_GOOGLE_TAG_MANAGER_KEY=$_REACT_APP_GOOGLE_TAG_MANAGER_KEY'
+      - 'REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID=$_REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID'
+      - 'REACT_APP_GOOGLE_MEASUREMENT_ID=$_REACT_APP_GOOGLE_MEASUREMENT_ID'
+      - 'REACT_APP_USE_LOCAL_DATAVIEWS=$_REACT_APP_USE_LOCAL_DATAVIEWS'
+      - 'REACT_APP_USE_LOCAL_DATASETS=$_REACT_APP_USE_LOCAL_DATASETS'
+      - 'REACT_APP_API_GATEWAY=$_REACT_APP_API_GATEWAY'
+      - 'REACT_APP_CARRIER_PORTAL_URL=$_REACT_APP_CARRIER_PORTAL_URL'
+      - 'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV'
+      # - 'BASIC_AUTH_USER=$_BASIC_AUTH_USER'
+      # - 'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS'
+    waitFor: ['-']
 timeout: 1800s
