@@ -141,8 +141,17 @@ export const useFilteredTimeSeries = () => {
   )
 
   const attachedListener = useRef<boolean>(false)
+  const { areaId } = useSelector(selectAnalysisQuery)
+
+  useEffect(() => {
+    // Used to re-attach the idle listener on area change
+    setTimeseries(undefined)
+    attachedListener.current = false
+  }, [areaId])
+
   useEffect(() => {
     if (!map || attachedListener.current || !simplifiedGeometry) return
+
     attachedListener.current = true
 
     const onMapIdle = (e: MapboxEvent) => {
@@ -174,10 +183,12 @@ export const useFilteredTimeSeries = () => {
         map.off('idle', onMapIdle)
       }
     }
+
     map.on('idle', onMapIdle)
   }, [map, computeTimeseries, simplifiedGeometry])
 
   const { start, end } = useTimerangeConnect()
+
   const layersTimeseriesFiltered = useMemo(() => {
     if (start && end) {
       return timeseries?.map((layerTimeseries) => {
@@ -193,6 +204,7 @@ export const useFilteredTimeSeries = () => {
       })
     }
   }, [timeseries, start, end])
+
   return layersTimeseriesFiltered
 }
 
