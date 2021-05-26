@@ -29,8 +29,8 @@
   "year": "año",
   "month": "mes",
   "hour": "hora",
-  "zoomIn": "Acercarse en",
+  "zoomIn": "Acercarse",
   "zoomTo": "Acercar a",
-  "zoomOut": "Apagar",
+  "zoomOut": "Alejarse",
   "selectTimeRange": "Seleccione un intervalo de tiempo"
 }
