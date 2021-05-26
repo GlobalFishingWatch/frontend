@@ -1,5 +1,11 @@
 # @globalfishingwatch/fourwings-aggregate
 
+## 4.0.2
+
+### Patch Changes
+
+- b230075f: Fishing map/fix analysis broken graph
+
 ## 4.0.1
 
 ### Patch Changes
