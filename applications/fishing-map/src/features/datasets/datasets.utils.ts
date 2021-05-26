@@ -3,12 +3,13 @@ import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { capitalize } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
+import { FULL_SUFIX, PUBLIC_SUFIX } from 'data/config'
 
 export type SupportedDatasetSchema = 'geartype' | 'fleet' | 'origin' | 'vessel_type'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
 export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boolean) => {
-  return datasets.filter((dataset) => dataset.id.includes(isGuestUser ? 'public-' : 'full-'))
+  return datasets.filter((dataset) => dataset.id.includes(isGuestUser ? PUBLIC_SUFIX : FULL_SUFIX))
 }
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
