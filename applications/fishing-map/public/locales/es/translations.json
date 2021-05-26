@@ -11,6 +11,7 @@
     "noData": "No data available",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
+    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "vesselFlags": "de embarcaciones abanderadas con"
   },
   "common": {
