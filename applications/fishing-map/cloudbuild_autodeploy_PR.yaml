@@ -1,5 +1,6 @@
 steps:
   - name: node:12
+    id: 'base'
     entrypoint: yarn
     args: ['install', '--unsafe-perm']
     dir: './applications/fishing-map'
@@ -7,6 +8,8 @@ steps:
     entrypoint: yarn
     args: ['test']
     dir: './applications/fishing-map'
+    waitFor:
+      - 'base'
   - name: node:12
     entrypoint: yarn
     args: ['build']
@@ -26,5 +29,6 @@ steps:
       - 'REACT_APP_WORKSPACE_ENV=$_REACT_APP_WORKSPACE_ENV'
       # - 'BASIC_AUTH_USER=$_BASIC_AUTH_USER'
       # - 'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS'
-    waitFor: ['-']
+    waitFor:
+      - 'base'
 timeout: 1800s
