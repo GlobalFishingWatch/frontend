@@ -1,8 +1,5 @@
 import React, { Fragment, memo } from 'react'
-import cx from 'classnames'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import styles from './Header.module.css'
-import navigation from './Header.links'
+import navigation from '../Header.links'
 
 interface HeaderProps {
   mini?: boolean
@@ -11,28 +8,26 @@ interface HeaderProps {
 
 function Header({ mini = false, inverted = false }: HeaderProps) {
   return (
-    <div
-      className={cx(styles.gfwHeaderContainer, { [styles.gfwHeaderContainerInverted]: inverted })}
-    >
-      <header className={styles.gfwHeader}>
-        <div className={styles.whiteBg}></div>
-        <a className={styles.appLogo} href="https://globalfishingwatch.org">
-          <span className={styles.screenReaderOnly}>Home</span>
+    <div className={`gfw-header-container ${inverted ? 'gfw-header-container-inverted' : ''}`}>
+      <header className="gfw-header">
+        <div className="white-bg"></div>
+        <a className="app-logo" href="https://globalfishingwatch.org">
+          <span className="screen-reader-only">Home</span>
         </a>
-        <a className={styles.screenReaderOnly} href="#main">
+        <a className="screen-reader-only" href="#main">
           Skip navigation links
         </a>
 
-        <div className={styles.navContainer}>
-          <input className={cx(styles.navMobile, styles.navMobileMenuAction)} type="checkbox" />
-          <div className={cx(styles.navMobile, styles.navMobileMenuIcon)}>
+        <div className="nav-container">
+          <input className="nav-mobile nav-mobile-menu-action" type="checkbox" />
+          <div className="nav-mobile nav-mobile-menu-icon">
             <span></span>
             <span></span>
             <span></span>
           </div>
 
-          <nav className={styles.nav} role="navigation" aria-label="main menu">
-            <ul className={styles.navList} role="menubar">
+          <nav className="nav" role="navigation" aria-label="main menu">
+            <ul className="nav-list" role="menubar">
               {navigation.map(
                 (item, index) =>
                   (!mini || (mini && item.mini)) && (
@@ -42,10 +37,10 @@ function Header({ mini = false, inverted = false }: HeaderProps) {
                         <Fragment>
                           <input
                             name={`accordion-toggle-${index}`}
-                            className={styles.accordionToggle}
+                            className="accordion-toggle"
                             type="checkbox"
                           />
-                          <ul role="menu" className={styles.navListSubMenu}>
+                          <ul role="menu" className="nav-list-sub-menu">
                             {item.childs.map((child, index) => (
                               <li key={index} role="menuitem">
                                 <a href={child.link}>
@@ -59,6 +54,9 @@ function Header({ mini = false, inverted = false }: HeaderProps) {
                     </li>
                   )
               )}
+              <li key="donate" role="menuitem" className="highlight-btn">
+                <a href="https://globalfishingwatch.org/donate/">Donate</a>
+              </li>
             </ul>
           </nav>
         </div>

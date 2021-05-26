@@ -193,7 +193,7 @@
     "notAllowed": "The available datasets don't allow searching vessels",
     "placeholder": "Type to search vessels",
     "seeVessel": "See vessel",
-    "seeVessels": "See vessels",
+    "seeVessels": "See {{count}} vessels",
     "suggestion": "Did you mean",
     "title": "Search",
     "vesselAlreadyInWorkspace": "This vessel is already in your workspace",

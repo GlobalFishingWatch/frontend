@@ -1,5 +1,33 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.29.27
+
+### Patch Changes
+
+- Updated dependencies [9b9d73f7]
+  - @globalfishingwatch/ui-components@4.3.3
+
+## 0.29.26
+
+### Patch Changes
+
+- Updated dependencies [4bcd1f16]
+  - @globalfishingwatch/ui-components@4.3.2
+
+## 0.29.25
+
+### Patch Changes
+
+- Updated dependencies [831739e8]
+  - @globalfishingwatch/ui-components@4.3.1
+
+## 0.29.24
+
+### Patch Changes
+
+- Updated dependencies [a65d8dc4]
+  - @globalfishingwatch/ui-components@4.3.0
+
 ## 0.29.23
 
 ### Patch Changes

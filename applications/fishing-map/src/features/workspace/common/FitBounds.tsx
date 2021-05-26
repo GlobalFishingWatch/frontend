@@ -23,6 +23,7 @@ const FitBounds = ({ className, trackResource, hasError }: FitBoundsProps) => {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
   const { setTimerange, start, end } = useTimerangeConnect()
+
   const onFitBoundsClick = useCallback(() => {
     if (trackResource?.data && start && end) {
       const segments = (trackResource.data as FeatureCollection).features
@@ -50,16 +51,19 @@ const FitBounds = ({ className, trackResource, hasError }: FitBoundsProps) => {
               if (pt.timestamp && pt.timestamp > maxTimestamp) maxTimestamp = pt.timestamp
             })
           })
-          setTimerange({
-            start: new Date(minTimestamp).toISOString(),
-            end: new Date(maxTimestamp).toISOString(),
-          })
           const fullBBox = segmentsToBbox(segments)
-          fitBounds(fullBBox as Bbox)
+          if (fullBBox && maxTimestamp > minTimestamp) {
+            setTimerange({
+              start: new Date(minTimestamp).toISOString(),
+              end: new Date(maxTimestamp).toISOString(),
+            })
+            fitBounds(fullBBox as Bbox)
+          }
         }
       }
     }
   }, [fitBounds, trackResource, start, end, t, setTimerange])
+
   return (
     <IconButton
       size="small"

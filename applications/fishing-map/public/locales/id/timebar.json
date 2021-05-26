@@ -1,36 +1,36 @@
 {
   "playback": {
-    "playAnimation": "Play animation",
-    "pauseAnimation": "Pause animation",
-    "toogleAnimationLooping": "Toggle animation looping",
-    "moveBack": "Move back",
-    "moveForward": "Move forward",
-    "changeAnimationSpeed": "Change animation speed"
+    "playAnimation": "Putar animasi",
+    "pauseAnimation": "Jeda animasi",
+    "toogleAnimationLooping": "Ubah animasi berulang",
+    "moveBack": "Bergerak mundur",
+    "moveForward": "Bergerak maju",
+    "changeAnimationSpeed": "Ubah kecepatan animasi"
   },
   "timerange": {
-    "title": "Select a time range",
-    "start": "start",
-    "end": "end",
-    "last30days": "Last 30 days",
-    "done": "Done",
-    "errorEarlyStart": "Your start date is the earliest date with data available",
-    "errorLatestEnd": "Your end date is the latest date with data available",
-    "errorMinRange": "Your start and end date must be at least one day apart",
-    "errorMaxRange": "Your time range is the maximum range with data available"
+    "title": "Pilih rentang waktu",
+    "start": "mulai",
+    "end": "akhir",
+    "last30days": "30 hari terakhir",
+    "done": "Selesai",
+    "errorEarlyStart": "Tanggal mulai Anda adalah tanggal paling awal dengan data yang tersedia",
+    "errorLatestEnd": "Tanggal akhir Anda adalah tanggal terbaru dengan data yang tersedia",
+    "errorMinRange": "Tanggal mulai dan akhir Anda setidaknya harus berjarak satu hari",
+    "errorMaxRange": "Rentang waktu Anda adalah rentang maksimum dengan data yang tersedia"
   },
   "bookmark": {
-    "goToBookmark": "Go to your bookmarked time range",
-    "deleteBookmark": "Delete time range bookmark"
+    "goToBookmark": "Pergi ke rentang waktu yang Anda tandai",
+    "deleteBookmark": "Hapus penanda rentang waktu"
   },
-  "dragLabel": "Drag to change the time range",
-  "lastUpdate": "Last update",
-  "setBookmark": "Bookmark current time range",
-  "day": "day",
-  "year": "year",
-  "month": "month",
-  "hour": "hour",
-  "zoomIn": "Zoom in",
-  "zoomTo": "Zoom to",
-  "zoomOut": "Zoom out",
-  "selectTimeRange": "Select a time range"
+  "dragLabel": "Seret untuk mengubah rentang waktu",
+  "lastUpdate": "Pembaharuan terakhir",
+  "setBookmark": "Tandai rentang waktu saat ini",
+  "day": "hari",
+  "year": "tahun",
+  "month": "bulan",
+  "hour": "jam",
+  "zoomIn": "Perbesar",
+  "zoomTo": "Memperbesar",
+  "zoomOut": "Perkecil",
+  "selectTimeRange": "Pilih rentang waktu"
 }

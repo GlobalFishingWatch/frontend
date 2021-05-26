@@ -13,7 +13,7 @@ import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { ENCOUNTER_EVENTS_SOURCE_ID, PRESENCE_LAYER_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -24,6 +24,7 @@ import {
   selectDataviewInstancesResolved,
 } from 'features/dataviews/dataviews.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { Range } from 'features/timebar/timebar.slice'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -67,6 +68,7 @@ export const useGeneratorsConnect = () => {
 export const useClickedEventConnect = () => {
   const map = useMapInstance()
   const dispatch = useDispatch()
+  const timeRange = useTimerangeConnect() as Range
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
   const fourWingsStatus = useSelector(selectFourWingsStatus)
@@ -144,10 +146,20 @@ export const useClickedEventConnect = () => {
 
     // get temporal grid clicked features and order them by sublayerindex
     const temporalGridFeatures = event.features
-      .filter((feature) => feature.temporalgrid !== undefined && feature.temporalgrid.visible)
+      .filter((feature) => {
+        if (!feature.temporalgrid) {
+          return false
+        }
+        const isFeatureVisible = feature.temporalgrid.visible
+        const isNotPresence = !feature.temporalgrid.sublayerId.includes(PRESENCE_LAYER_ID)
+        return isFeatureVisible && isNotPresence
+      })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
-    if (temporalGridFeatures?.length) {
-      fourWingsPromiseRef.current = dispatch(fetch4WingInteractionThunk(temporalGridFeatures))
+
+    if (temporalGridFeatures?.length && timeRange) {
+      fourWingsPromiseRef.current = dispatch(
+        fetch4WingInteractionThunk({ temporalGridFeatures, timeRange })
+      )
     }
 
     const encounterFeature = event.features.find(
