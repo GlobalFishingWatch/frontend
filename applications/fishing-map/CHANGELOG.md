@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 0.29.28
+
+### Patch Changes
+
+- b230075f: Fishing map/fix analysis broken graph
+- Updated dependencies [b230075f]
+  - @globalfishingwatch/fourwings-aggregate@4.0.2
+  - @globalfishingwatch/layer-composer@7.0.2
+  - @globalfishingwatch/react-hooks@7.0.2
+  - @globalfishingwatch/ui-components@4.3.4
+
 ## 0.29.27
 
 ### Patch Changes
