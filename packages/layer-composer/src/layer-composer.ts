@@ -134,7 +134,7 @@ class LayerComposer {
 
     const newConfig: GlobalGeneratorConfigExtended = {
       ...config,
-      zoomLoadLevel: Math.floor(config.zoom),
+      zoomLoadLevel: Math.floor(config.zoom || 0),
     }
     return newConfig
   }
