@@ -106,60 +106,6 @@ export const sources: SelectOption[] = [
   },
 ]
 
-export const ACTIVITY_OPTIONS: ChoiceOption[] = [
-  {
-    id: 'fishing',
-    title: t('common.fishing', 'Fishing'),
-  },
-  {
-    id: 'presence',
-    title: t('common.presence', 'Presence'),
-  },
-]
-
-export const TIMEBAR_EVENT_OPTIONS: SelectOption[] = [
-  {
-    id: 'all',
-    label: t('timebarSettings.eventOptions.all', 'All events'),
-  },
-  {
-    id: 'fishing',
-    label: t('timebarSettings.eventOptions.fishing', 'Fishing'),
-  },
-  {
-    id: 'encounters',
-    label: t('timebarSettings.eventOptions.encounters', 'Encounters'),
-  },
-  {
-    id: 'loitering',
-    label: t('timebarSettings.eventOptions.loitering', 'Loitering'),
-  },
-  {
-    id: 'ports',
-    label: t('timebarSettings.eventOptions.ports', 'Port visits'),
-  },
-  {
-    id: 'none',
-    label: t('timebarSettings.eventOptions.none', 'None'),
-  },
-]
-
-export const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = [
-  {
-    id: 'speed',
-    label: t('timebarSettings.graphOptions.speed', 'Speed'),
-  },
-  {
-    id: 'depth',
-    label: t('timebarSettings.graphOptions.depth', 'Depth (Coming soon)'),
-    disabled: true,
-  },
-  {
-    id: 'none',
-    label: t('timebarSettings.graphOptions.none', 'None'),
-  },
-]
-
 export const POPUP_CATEGORY_ORDER = [
   DataviewCategory.Fishing,
   DataviewCategory.Presence,
