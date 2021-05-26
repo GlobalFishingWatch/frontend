@@ -6,6 +6,7 @@ import { event as uaEvent } from 'react-ga'
 import bbox from '@turf/bbox'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
@@ -199,9 +200,18 @@ type ContextTooltipRowProps = {
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const dispatch = useDispatch()
   const fitMapBounds = useMapFitBounds()
-  const { cleanFeatureState } = useFeatureState(useMapInstance())
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchQueryParams } = useLocationConnect()
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
+
+  const highlightArea = useCallback(
+    (source: string, id: string) => {
+      cleanFeatureState('highlight')
+      const featureState = { source, sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER, id }
+      updateFeatureState([featureState], 'highlight')
+    },
+    [cleanFeatureState, updateFeatureState]
+  )
 
   const onReportClick = useCallback(
     (feature: TooltipEventFeature) => {
@@ -210,17 +220,13 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         return
       }
       const bounds = bbox(feature.geometry) as Bbox
+      const areaId = feature.properties?.gfw_id
+      const sourceId = feature.source
       batch(() => {
-        dispatchQueryParams({
-          analysis: {
-            areaId: feature.properties?.gfw_id,
-            sourceId: feature.source,
-          },
-        })
+        dispatchQueryParams({ analysis: { areaId, sourceId } })
         dispatch(setClickedEvent(null))
-
-        cleanFeatureState('click')
       })
+      highlightArea(areaId, sourceId)
       uaEvent({
         category: 'Analysis',
         action: `Open analysis panel`,
@@ -237,7 +243,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         fitMapBounds(bounds, boundsParams)
       }
     },
-    [cleanFeatureState, dispatch, dispatchQueryParams, fitMapBounds]
+    [dispatch, dispatchQueryParams, fitMapBounds, highlightArea]
   )
 
   const featuresByType = groupBy(features, 'layerId')
