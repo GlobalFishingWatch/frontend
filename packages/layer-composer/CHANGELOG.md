@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 7.0.3
+
+### Patch Changes
+
+- 9e507541: compute timeseries once on idle
+
 ## 7.0.2
 
 ### Patch Changes
