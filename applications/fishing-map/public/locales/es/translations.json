@@ -8,10 +8,10 @@
     "downloadLogin": "Necesita <1>iniciar sesión</1> para descargar el informe (gratis y toma 2 minutos)",
     "empty": "Los datos seleccionados aparecerán aquí",
     "errorMessage": "Ha habido un error",
-    "noData": "No data available",
+    "noData": "No hay datos disponibles",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
-    "onlyAISAllowed": "Only AIS datasets are allowed to download",
+    "onlyAISAllowed": "Sólo los conjuntos de datos AIS pueden descargarse",
     "vesselFlags": "de embarcaciones abanderadas con"
   },
   "common": {
