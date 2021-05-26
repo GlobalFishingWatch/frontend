@@ -1,18 +1,22 @@
 steps:
   - name: node:12
     id: 'base'
-    entrypoint: yarn
+    entrypoint: npm
     args: ['install', '--unsafe-perm']
+    env:
+      - 'NODE_ENV=development'
     dir: './applications/fishing-map'
   - name: node:12
-    entrypoint: yarn
+    id: 'test'
+    entrypoint: npm
     args: ['test']
     dir: './applications/fishing-map'
     waitFor:
       - 'base'
   - name: node:12
-    entrypoint: yarn
-    args: ['build']
+    id: 'build'
+    entrypoint: npm
+    args: ['run', 'build']
     dir: './applications/fishing-map'
     env:
       - 'NODE_ENV=production'
