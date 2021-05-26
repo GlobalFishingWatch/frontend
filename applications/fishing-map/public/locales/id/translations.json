@@ -11,6 +11,7 @@
     "noData": "No data available",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Analisis",
+    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "vesselFlags": "oleh kapal berbendera oleh"
   },
   "common": {
