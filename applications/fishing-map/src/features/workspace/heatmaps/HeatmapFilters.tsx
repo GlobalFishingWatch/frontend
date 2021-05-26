@@ -123,7 +123,7 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
       label: getEventLabel([
         'deselect',
         getActivitySources(dataview),
-        ...getActivityFilters({ [filterKey]: filterValue }),
+        ...getActivityFilters({ [filterKey]: filterValue ?? [] }),
       ]),
     })
   }
