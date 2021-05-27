@@ -3,6 +3,7 @@ steps:
     id: 'build'
     args:
       [
+        '--no-push',
         '--cache=true',
         '--build-arg',
         'REACT_APP_SPREADSHEET_CLIENT_EMAIL=$_REACT_APP_SPREADSHEET_CLIENT_EMAIL',
@@ -42,6 +43,7 @@ steps:
     id: 'test'
     args:
       [
+        '--no-push',
         '--cache=true',
         '--build-arg',
         'REACT_APP_SPREADSHEET_CLIENT_EMAIL=$_REACT_APP_SPREADSHEET_CLIENT_EMAIL',
