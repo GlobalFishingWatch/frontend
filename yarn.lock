@@ -1556,6 +1556,19 @@
     resize-observer-polyfill "^1.5.1"
     viewport-mercator-project "^6.2.3 || ^7.0.1"
 
+"@globalfishingwatch/ui-components@^4.3.7":
+  version "4.3.7"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/ui-components/-/ui-components-4.3.7.tgz#7d2f9b5a6d011b0b8b8d976f7a1fa33675b4a67d"
+  integrity sha512-S80G7cZIzywNTGTwbhmTyji+dYTd/s+BNLohow2vtuCCKwBhRQZSW/6QBNtup6UhFxcAyHNXQyeZlh9zAWlJ1Q==
+  dependencies:
+    "@tippyjs/react" "4.2.0"
+    countryflag "4.0.1"
+    d3-geo "1.12.0"
+    d3-scale "^3.2.2"
+    match-sorter "^6.3.0"
+    react-modal "^3.11.2"
+    topojson-client "3.1.0"
+
 "@google-cloud/functions-framework@^1.6.0":
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/@google-cloud/functions-framework/-/functions-framework-1.7.1.tgz#d29a27744a6eb2f95d840b86135b97b0d804a49e"
