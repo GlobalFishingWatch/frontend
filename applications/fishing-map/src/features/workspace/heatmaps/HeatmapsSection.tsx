@@ -25,7 +25,7 @@ import LayerPanel from './HeatmapLayerPanel'
 import heatmapStyles from './HeatmapsSection.module.css'
 
 function HeatmapsSection(): React.ReactElement {
-  const { i18n, t } = useTranslation()
+  const { t } = useTranslation()
   const [addedDataviewId, setAddedDataviewId] = useState<string | undefined>()
   const dataviews = useSelector(selectActivityDataviews)
   const activityCategory = useSelector(selectActivityCategory)
@@ -45,7 +45,7 @@ function HeatmapsSection(): React.ReactElement {
         title: t('common.presence', 'Presence'),
       },
     ],
-    [i18n.language]
+    [t]
   )
 
   useEffect(() => {
