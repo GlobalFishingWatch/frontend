@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
-import { Segment, segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { Point, Segment, segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
@@ -21,11 +21,12 @@ import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectDataviewsResourceQueries } from 'features/resources/resources.selectors'
 import { fetchResourceThunk, selectResourceByUrl } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { Bbox } from 'types'
+import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 
@@ -33,6 +34,7 @@ const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
+  const { setMapCoordinates } = useViewport()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
   const q = useSelector(selectQueryParam('q'))
@@ -85,6 +87,8 @@ const Profile: React.FC = (props): React.ReactElement => {
     fetchVessel()
   }, [dispatch, vesselProfileId, datasets])
 
+  // TODO review and enhance this
+  // first try to fit map on last segment
   const onFitLastSegment = useCallback(() => {
     if (!trackResource?.data || trackResource?.data.length === 0) return
     const lastSegment = [trackResource?.data.flat().slice(-2)] as Segment[]
@@ -92,15 +96,28 @@ const Profile: React.FC = (props): React.ReactElement => {
     if (bbox) {
       fitBounds(bbox as Bbox, { padding: 200 })
     } else {
-      // TODO use prompt to ask user if wants to update the timerange to fit the track
       alert('The vessel has no activity in your selected timerange')
     }
   }, [fitBounds, trackResource])
 
+  const onFitLastPosition = useCallback(() => {
+    if (!trackResource?.data || trackResource?.data.length === 0) return
+    const { latitude, longitude } = (trackResource?.data.flat().slice(-1) as Segment).pop() as Point
+    if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+      setMapCoordinates({
+        latitude: latitude as number,
+        longitude: longitude as number,
+        zoom: DEFAULT_VESSEL_MAP_ZOOM,
+      })
+    } else {
+      alert('The vessel has no activity in your selected timerange')
+    }
+  }, [setMapCoordinates, trackResource])
+
   useEffect(() => {
     if (!vessel || !vesselDataview) return
-    onFitLastSegment()
-  }, [vesselDataview, vessel, onFitLastSegment])
+    onFitLastPosition()
+  }, [vesselDataview, vessel, onFitLastPosition])
 
   const tabs: Tab[] = useMemo(
     () => [

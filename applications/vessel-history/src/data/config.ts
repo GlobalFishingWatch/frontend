@@ -36,3 +36,5 @@ export const DEFAULT_VIEWPORT = {
   longitude: 12,
   zoom: 1,
 }
+
+export const DEFAULT_VESSEL_MAP_ZOOM = 8
