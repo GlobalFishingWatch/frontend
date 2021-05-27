@@ -4,6 +4,7 @@ steps:
     args:
       [
         '--no-push',
+        '--cache-repo=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map'
         '--cache=true',
         '--build-arg',
         'REACT_APP_SPREADSHEET_CLIENT_EMAIL=$_REACT_APP_SPREADSHEET_CLIENT_EMAIL',
@@ -44,6 +45,7 @@ steps:
     args:
       [
         '--no-push',
+        '--cache-repo=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map'
         '--cache=true',
         '--build-arg',
         'REACT_APP_SPREADSHEET_CLIENT_EMAIL=$_REACT_APP_SPREADSHEET_CLIENT_EMAIL',
