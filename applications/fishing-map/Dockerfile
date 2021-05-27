@@ -1,7 +1,7 @@
 #################################################################################
 # Step to build the application assets
 #################################################################################
-FROM node:12 AS build
+FROM node:12 AS base
 RUN mkdir -p /app
 WORKDIR /app
 
@@ -42,7 +42,18 @@ COPY ./.eslintignore /app/.eslintignore
 COPY ./.eslintrc.js /app/.eslintrc.js
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./tsconfig.json /app/tsconfig.json
-RUN npm run build
+
+#################################################################################
+# Run tests application to run
+#################################################################################
+FROM base as test
+RUN npm run test
+
+#################################################################################
+# Build the application assets
+#################################################################################
+FROM base as build
+RUN npm run test
 
 #################################################################################
 # Actual application to run
