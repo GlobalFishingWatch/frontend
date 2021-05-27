@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { Button, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { VesselWithHistory } from 'types'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
@@ -16,7 +16,7 @@ import {
 } from 'routes/routes.selectors'
 import { fetchVesselActivityThunk } from 'features/vessels/vessels-activity.thunk'
 import InfoField, { VesselFieldLabel } from './InfoField'
-import styles from './Info.module.css'
+import styles from './Activity.module.css'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -50,9 +50,64 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
   }, [dispatch, vesselId])
   return (
     <Fragment>
-      <div className={styles.infoContainer}>
-        sadasds
-        
+      <div className={styles.activityContainer}>
+
+        <div className={styles.event}>
+          <div>
+            <i className={styles.eventIcon}></i>
+          </div>
+          <div className={styles.eventData}>
+            <div className={styles.date}>
+              2018/06/20 12:30
+            </div>
+            <div className={styles.description}>
+            Entered Port of Pennington, Nigeria
+            Entered Port of Pennington, Nigeria
+            Entered Port of Pennington, Nigeria
+            Entered Port of Pennington, Nigeria
+            </div>
+            
+          </div>
+          <div className={styles.actions}>
+            <IconButton icon="info" size="small"></IconButton>
+            <IconButton icon="view-on-map" size="small"></IconButton>
+          </div>
+        </div>
+        <div className={styles.divider}></div>
+        <div className={styles.event}>
+          <div>
+            <i className={styles.eventIcon}></i>
+          </div>
+          <div className={styles.eventData}>
+            <div className={styles.date}>
+              2018/06/20 12:30
+            </div>
+            <div className={styles.description}>
+            Entered Port of Pennington, Nigeria
+            </div>
+            
+          </div>
+          <div className={styles.actions}>
+            <IconButton icon="info" size="small"></IconButton>
+            <IconButton icon="view-on-map" size="small"></IconButton>
+          </div>
+        </div>
+        <div className={styles.divider}></div>
+        <div className={styles.event}>
+          <div>
+            <i className={styles.eventIcon}></i>
+          </div>
+          <div className={styles.eventData}>
+            <div className={styles.date}>
+              2018/06/20 12:30
+            </div>
+            <div className={styles.description}>
+            Entered Port of Pennington, Nigeria
+            </div>
+            
+          </div>
+        </div>
+        <div className={styles.divider}></div>
       </div>
     </Fragment>
   )

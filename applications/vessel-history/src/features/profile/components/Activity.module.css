@@ -1,0 +1,68 @@
+.activityContainer {
+  padding: 8px;
+}
+
+.divider {
+  opacity: 0.1;
+  background-color: #22447e;
+  width: 100%;
+  height: 1px;
+  position: relative;
+  margin: 10px 0;
+}
+
+.divider::before {
+  margin-right: 9px;
+  background: #fff url('../../../assets/icons/vessel.svg') no-repeat 17px;
+  content: '';
+  display: inline-block;
+  position: absolute;
+  height: 15px;
+  width: 15px;
+  background-size: 15px 15px;
+  top: -6px;
+  padding: 0 21px 0 10px;
+}
+
+.event {
+  padding: 0 7px;
+  display: flex;
+  align-items: center;
+}
+
+.event .eventData .date {
+  opacity: 0.5;
+  color: #22447e;
+  font-family: Roboto, 'Courier New', Courier, monospace;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 16px;
+}
+
+.event .eventData .description {
+  color: #22447e;
+  font-family: Roboto, 'Courier New', Courier, monospace;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 18px;
+}
+
+.event .eventIcon {
+  display: inline-block;
+  width: 31px;
+  margin: 0 9px 0 0;
+  height: 31px;
+  border: 1px solid rgba(34, 68, 126, 0.1);
+  border-radius: 15.5px;
+  background: #fc5d5f url('../../../assets/icons/encounter.svg') no-repeat center center;
+}
+
+.event .actions {
+  min-width: 56px;
+  margin-right: 0;
+  margin-left: auto;
+}
+
+.event .actions.oneIcon {
+  min-width: 28px;
+}
