@@ -35,5 +35,6 @@ export const formatLegendValue = (number: number) => {
   }
   if (number >= 1000000) return `${(number / 1000000).toFixed(2).replace(/\.?0+$/, '')}M`
   if (number >= 1000) return `${(number / 1000).toFixed(1).replace(/\.?0+$/, '')}K`
+  if (number < 1) return `${number.toFixed(2)}`
   return number.toFixed(0)
 }
