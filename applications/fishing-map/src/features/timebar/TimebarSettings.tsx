@@ -20,7 +20,7 @@ import { useTimebarVisualisation } from './timebar.hooks'
 import styles from './TimebarSettings.module.css'
 
 const TimebarSettings = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
@@ -46,7 +46,7 @@ const TimebarSettings = () => {
         label: t('timebarSettings.graphOptions.none', 'None'),
       },
     ],
-    [i18n.language]
+    [t]
   )
   const TIMEBAR_EVENT_OPTIONS: SelectOption[] = useMemo(
     () => [
@@ -75,7 +75,7 @@ const TimebarSettings = () => {
         label: t('timebarSettings.eventOptions.none', 'None'),
       },
     ],
-    [i18n.language]
+    [t]
   )
 
   const openOptions = () => {

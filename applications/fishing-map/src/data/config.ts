@@ -1,9 +1,6 @@
 import ReactGA from 'react-ga'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
-import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
-import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
-import { t } from 'features/i18n/i18n'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 export const IS_PRODUCTION =
@@ -86,25 +83,6 @@ export const THINNING_LEVELS = {
 
 // Params to use replace instead of push for router history to make navigation easier
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
-
-export const sources: SelectOption[] = [
-  {
-    id: 'ais',
-    label: 'AIS',
-  },
-  {
-    id: 'vms-chile',
-    label: 'VMS Chile',
-  },
-  {
-    id: 'vms-indonesia',
-    label: 'VMS Indonesia',
-  },
-  {
-    id: 'vms-panama',
-    label: 'VMS Panama',
-  },
-]
 
 export const POPUP_CATEGORY_ORDER = [
   DataviewCategory.Fishing,
