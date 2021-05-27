@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { InputText } from '@globalfishingwatch/ui-components'
 import { SettingsPortVisits } from '../settings.slice'
 import { useApplySettingsConnect } from '../settings.hooks'
-import '@globalfishingwatch/ui-components/dist/base.css'
 import styles from './SettingsComponents.module.css'
 
 interface SettingsProps {

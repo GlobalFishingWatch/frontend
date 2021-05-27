@@ -23,7 +23,7 @@ import {
 } from 'features/search/search.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from './Home.module.css'
-import '@globalfishingwatch/ui-components/dist/base.css'
+
 
 interface LoaderProps {
   invert?: boolean

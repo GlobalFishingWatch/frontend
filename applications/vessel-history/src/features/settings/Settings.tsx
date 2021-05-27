@@ -10,7 +10,7 @@ import LoiteringEvents from './components/LoiteringEvents'
 import EncounterEvents from './components/EncounterEvents'
 import PortVisits from './components/PortVisits'
 import { selectSettings } from './settings.slice'
-import '@globalfishingwatch/ui-components/dist/base.css'
+
 
 interface SettingsOption {
   title: string

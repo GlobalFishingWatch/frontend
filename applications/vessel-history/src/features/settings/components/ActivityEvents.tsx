@@ -7,7 +7,7 @@ import { MultiSelectOption } from '@globalfishingwatch//ui-components/dist/multi
 import { SettingsEvents } from '../settings.slice'
 import { useApplySettingsConnect } from '../settings.hooks'
 import styles from './SettingsComponents.module.css'
-import '@globalfishingwatch/ui-components/dist/base.css'
+
 interface SettingsProps {
   settings: SettingsEvents
   section: string
