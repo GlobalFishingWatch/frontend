@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 4.3.6
+
+### Patch Changes
+
+- c6aac5ff: fix legend rounding number
+
 ## 4.3.5
 
 ### Patch Changes
