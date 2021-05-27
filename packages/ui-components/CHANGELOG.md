@@ -1,5 +1,131 @@
 # @globalfishingwatch/ui-components
 
+## 4.3.5
+
+### Patch Changes
+
+- Updated dependencies [9e507541]
+  - @globalfishingwatch/layer-composer@7.0.3
+  - @globalfishingwatch/react-hooks@7.0.3
+
+## 4.3.4
+
+### Patch Changes
+
+- @globalfishingwatch/layer-composer@7.0.2
+- @globalfishingwatch/react-hooks@7.0.2
+
+## 4.3.3
+
+### Patch Changes
+
+- 9b9d73f7: removed donate button from header
+
+## 4.3.2
+
+### Patch Changes
+
+- 4bcd1f16: fix typo
+
+## 4.3.1
+
+### Patch Changes
+
+- 831739e8: added missing style - inverted mode
+
+## 4.3.0
+
+### Minor Changes
+
+- a65d8dc4: Update header menu
+
+## 4.2.1
+
+### Patch Changes
+
+- @globalfishingwatch/layer-composer@7.0.1
+- @globalfishingwatch/react-hooks@7.0.1
+
+## 4.2.0
+
+### Minor Changes
+
+- update menu links
+
+## 4.1.1
+
+### Patch Changes
+
+- gfw links in logo
+
+## 4.1.0
+
+### Minor Changes
+
+- make the SplitView toggle optional
+
+## 4.0.0
+
+### Patch Changes
+
+- Updated dependencies [1a3d0960]
+  - @globalfishingwatch/layer-composer@7.0.0
+  - @globalfishingwatch/react-hooks@7.0.0
+
+## 3.1.6
+
+### Patch Changes
+
+- 0dcebc6a: Fishingmap/welcome popup
+
+## 3.1.5
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+- Updated dependencies [7d060771]
+  - @globalfishingwatch/layer-composer@6.1.4
+  - @globalfishingwatch/react-hooks@6.3.1
+
+## 3.1.4
+
+### Patch Changes
+
+- support disabled choice option
+
+## 3.1.3
+
+### Patch Changes
+
+- 6b374674: Fishing map/minor fixes
+- Updated dependencies [6b374674]
+  - @globalfishingwatch/layer-composer@6.1.3
+
+## 3.1.2
+
+### Patch Changes
+
+- Updated dependencies [d43610ba]
+  - @globalfishingwatch/layer-composer@6.1.2
+
+## 3.1.1
+
+### Patch Changes
+
+- Updated dependencies [b87943a6]
+  - @globalfishingwatch/layer-composer@6.1.1
+
+## 3.1.0
+
+### Minor Changes
+
+- 1050379b: legends with loading support
+
+### Patch Changes
+
+- Updated dependencies [1050379b]
+  - @globalfishingwatch/layer-composer@6.1.0
+
 ## 3.0.6
 
 ### Patch Changes

@@ -1,5 +1,4 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import uniq from 'lodash/uniq'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../../layer-composer'
 import { API_ENDPOINTS } from '../config'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
@@ -10,10 +9,24 @@ import { toURLArray } from '.'
 
 export type Breaks = number[][]
 
+const BREAKS_FALLBACK = {
+  'global-fishing-effort': [0, 538, 2018, 4682, 10945, 30661, 59568, 106877, 118773],
+  'chile-fishing-effort': [0, 21, 76, 175, 322, 796, 1362, 1633, 1750],
+  'indonesia-fishing-effort': [0, 112, 414, 997, 1895, 2942, 5294, 7498, 8667],
+  'panama-fishing-effort': [0, 17, 63, 138, 264, 528, 749, 1337, 2265],
+  'peru-fishing-effort': [0, 13, 48, 128, 287, 529, 1022, 1732, 2108],
+  'global-presence': [0, 414, 1592, 3284, 6274, 10945, 19804, 32516, 56157],
+}
+type DefaultDatasets = keyof typeof BREAKS_FALLBACK
+
 export type FetchBreaksParams = Pick<
   GlobalHeatmapAnimatedGeneratorConfig,
   'breaksAPI' | 'sublayers' | 'datasetsEnd' | 'token' | 'end' | 'mode' | 'zoomLoadLevel'
 > & { interval: Interval }
+
+// Stores datasets breaks by filters, so when we already have we avoid requesting again
+// { flag:spain: { ais: string[] }}
+const datasetsCache: Record<string, Record<string, number[]>> = {}
 
 export const getBreaksZoom = (zoom: number) => {
   return zoom >= 3 ? 3 : 0
@@ -26,35 +39,71 @@ const getBreaksBaseUrl = (config: FetchBreaksParams): string => {
   return `${API_GATEWAY}/${API_GATEWAY_VERSION}/${API_ENDPOINTS.breaks}`
 }
 
+const getDatasets = (config: FetchBreaksParams): string[] => {
+  const datasets = config.sublayers
+    .filter((sublayer) => sublayer.visible)
+    .flatMap((s) => s.datasets.flatMap((d) => d))
+  return datasets
+}
+
+const getFiltersQuery = (config: FetchBreaksParams): string => {
+  const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
+  return filters?.length ? toURLArray('filters', filters) : ''
+}
+
+const getCacheKey = (config: FetchBreaksParams): string => {
+  const filters = getFiltersQuery(config)
+  return [filters, config.mode].join(',')
+}
+
+const getDatasetsWithoutCache = (config: FetchBreaksParams): string[] => {
+  const datasets = getDatasets(config)
+  const cacheKey = getCacheKey(config)
+  return datasets.filter((dataset) => datasetsCache[cacheKey]?.[dataset] === undefined)
+}
+
 const getBreaksUrl = (config: FetchBreaksParams): string => {
   const url = getBreaksBaseUrl(config)
     .replace(/{{/g, '{')
     .replace(/}}/g, '}')
     .replace('{zoom}', '0')
 
-  const datasets = uniq(
-    config.sublayers
-      .filter((sublayer) => sublayer.visible)
-      .flatMap((s) => s.datasets.flatMap((d) => d))
-  )
+  const datasets = getDatasets(config)
   const datasetsQuery = datasets?.length ? toURLArray('datasets', datasets) : ''
+  const filtersQuery = getFiltersQuery(config)
 
-  const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
-  const filtersQuery = filters?.length ? toURLArray('filters', filters) : ''
   return `${url}?${datasetsQuery}&${filtersQuery}`
+}
+
+const parseBreaksResponse = (config: FetchBreaksParams, breaks: Breaks) => {
+  const max = Math.max(...breaks.flatMap((b) => b))
+  const maxBreaks = breaks.find((b, index) => b[breaks[index].length - 1] === max) || breaks[0]
+  // We want to use the biggest break in every sublayer
+  return config.sublayers.map(() => maxBreaks)
 }
 
 let controllerCache: AbortController | undefined
 
-export default function fetchBreaks(config: FetchBreaksParams) {
-  const breaksUrl = new URL(getBreaksUrl(config))
+export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> {
   const isBivariate = config.mode === HeatmapAnimatedMode.Bivariate
+  const cacheKey = getCacheKey(config)
+  const allDatasets = getDatasets(config)
+  const datasetsWithoutCache = getDatasetsWithoutCache(config)
+
+  if (!datasetsWithoutCache?.length) {
+    return new Promise((resolve) => {
+      const breaks = allDatasets.map((dataset) => datasetsCache[cacheKey]?.[dataset]) as Breaks
+      resolve(parseBreaksResponse(config, breaks))
+    })
+  }
+
+  const breaksUrl = new URL(getBreaksUrl(config))
   breaksUrl.searchParams.set('temporal-aggregation', 'false')
   breaksUrl.searchParams.set('numBins', isBivariate ? '4' : '9')
   breaksUrl.searchParams.set('interval', '10days')
 
   const url = breaksUrl.toString()
-  const { token, sublayers } = config
+  const { token } = config
   if (controllerCache) {
     controllerCache.abort()
   }
@@ -73,13 +122,25 @@ export default function fetchBreaks(config: FetchBreaksParams) {
       throw r
     })
     .then((breaks: Breaks) => {
-      const max = Math.max(...breaks.flatMap((b) => b))
-      const maxBreaks = breaks.find((b, index) => b[breaks[index].length - 1] === max) || breaks[0]
-      // We want to use the biggest break in every sublayer
-      return sublayers.map(() => maxBreaks)
+      const breaksByDataset = Object.fromEntries(
+        allDatasets.map((dataset, index) => [dataset, breaks[index]])
+      )
+      datasetsCache[cacheKey] = breaksByDataset
+      return parseBreaksResponse(config, breaks)
     })
     .catch((e) => {
-      console.warn(e)
-      throw e
+      if (e.name !== 'AbortError') {
+        console.warn('Using default breaks due to the error', e)
+      }
+      const defaultDatasetKeys = Object.keys(BREAKS_FALLBACK) as DefaultDatasets[]
+      const breaks = allDatasets.map((dataset) => {
+        const defaultDataset = defaultDatasetKeys.find((defaultDataset) =>
+          dataset.includes(defaultDataset)
+        )
+        return defaultDataset
+          ? BREAKS_FALLBACK[defaultDataset]
+          : BREAKS_FALLBACK['global-fishing-effort']
+      })
+      return parseBreaksResponse(config, breaks)
     })
 }

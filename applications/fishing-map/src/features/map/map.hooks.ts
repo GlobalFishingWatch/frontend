@@ -1,8 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { InteractionEvent, useTilesLoading } from '@globalfishingwatch/react-hooks'
+import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   MULTILAYER_SEPARATOR,
@@ -12,7 +12,11 @@ import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/
 import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import GFWAPI from '@globalfishingwatch/api-client'
+import {
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  FISHING_LAYER_PREFIX,
+} from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -22,9 +26,10 @@ import {
   selectActivityDataviews,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/dataviews.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { Range } from 'features/timebar/timebar.slice'
 import {
   selectDefaultMapGeneratorsConfig,
-  selectGlobalGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
 } from './map.selectors'
@@ -41,20 +46,32 @@ import {
   ExtendedFeatureEvent,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
-import { useHasSourceLoaded } from './map-features.hooks'
+import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
-  return {
-    generatorsConfig: useSelector(selectDefaultMapGeneratorsConfig),
-    globalConfig: useSelector(selectGlobalGeneratorsConfig),
-  }
+  const { start, end } = useTimerangeConnect()
+  const { viewport } = useViewport()
+  const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
+
+  return useMemo(() => {
+    return {
+      generatorsConfig,
+      globalConfig: {
+        zoom: viewport.zoom,
+        start,
+        end,
+        token: GFWAPI.getToken(),
+      },
+    }
+  }, [generatorsConfig, viewport.zoom, start, end])
 }
 
 export const useClickedEventConnect = () => {
   const map = useMapInstance()
   const dispatch = useDispatch()
+  const timeRange = useTimerangeConnect() as Range
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
   const fourWingsStatus = useSelector(selectFourWingsStatus)
@@ -62,11 +79,15 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
-  const encounterSourceLoaded = useHasSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
   const fourWingsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
+    if (event === null) {
+      dispatch(setClickedEvent(null))
+      return
+    }
     // Used on workspaces-list or user panel to go to the workspace detail page
     if (locationType === USER || locationType === WORKSPACES_LIST) {
       const workspace = event?.features?.find(
@@ -132,10 +153,20 @@ export const useClickedEventConnect = () => {
 
     // get temporal grid clicked features and order them by sublayerindex
     const temporalGridFeatures = event.features
-      .filter((feature) => feature.temporalgrid !== undefined && feature.temporalgrid.visible)
+      .filter((feature) => {
+        if (!feature.temporalgrid) {
+          return false
+        }
+        const isFeatureVisible = feature.temporalgrid.visible
+        const isFishingFeature = feature.temporalgrid.sublayerId.startsWith(FISHING_LAYER_PREFIX)
+        return isFeatureVisible && isFishingFeature
+      })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
-    if (temporalGridFeatures?.length) {
-      fourWingsPromiseRef.current = dispatch(fetch4WingInteractionThunk(temporalGridFeatures))
+
+    if (temporalGridFeatures?.length && timeRange) {
+      fourWingsPromiseRef.current = dispatch(
+        fetch4WingInteractionThunk({ temporalGridFeatures, timeRange })
+      )
     }
 
     const encounterFeature = event.features.find(
@@ -206,12 +237,11 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
     let dataview
     if (feature.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID) {
       const { temporalgrid } = feature
-      if (!temporalgrid || temporalgrid.sublayerIndex === undefined || !temporalgrid.visible) {
+      if (!temporalgrid || temporalgrid.sublayerId === undefined || !temporalgrid.visible) {
         return []
       }
 
-      // TODO We assume here that temporalgrid dataviews appear in the same order as sublayers are set in the generator, ie indices will match feature.temporalgrid.sublayerIndex
-      dataview = temporalgridDataviews?.[temporalgrid?.sublayerIndex]
+      dataview = temporalgridDataviews?.find((dataview) => dataview.id === temporalgrid.sublayerId)
     } else {
       dataview = dataviews?.find((dataview) => {
         // Needed to get only the initial part to support multiple generator
@@ -231,7 +261,6 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
           type: Generators.Type.GL,
           value: feature.properties.label,
           properties: {},
-          // TODO: I have no idea wwhat to put here
           category: DataviewCategory.Context,
         }
         return tooltipWorkspaceFeature
@@ -297,9 +326,10 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
 
 export const useMapStyle = () => {
   const map = useMapInstance()
+
   // Used to ensure the style is refreshed on load finish
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const tilesLoading = useTilesLoading(map)
+  const mapLoaded = useMapLoaded()
 
   if (!map) return null
 

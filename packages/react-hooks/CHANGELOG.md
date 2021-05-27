@@ -1,5 +1,102 @@
 # @globalfishingwatch/react-hooks
 
+## 7.0.3
+
+### Patch Changes
+
+- Updated dependencies [9e507541]
+  - @globalfishingwatch/layer-composer@7.0.3
+
+## 7.0.2
+
+### Patch Changes
+
+- Updated dependencies [b230075f]
+  - @globalfishingwatch/fourwings-aggregate@4.0.2
+  - @globalfishingwatch/layer-composer@7.0.2
+
+## 7.0.1
+
+### Patch Changes
+
+- Updated dependencies [18fbfda4]
+  - @globalfishingwatch/fourwings-aggregate@4.0.1
+  - @globalfishingwatch/layer-composer@7.0.1
+
+## 7.0.0
+
+### Patch Changes
+
+- Updated dependencies [1a3d0960]
+  - @globalfishingwatch/dataviews-client@7.0.0
+  - @globalfishingwatch/fourwings-aggregate@4.0.0
+  - @globalfishingwatch/layer-composer@7.0.0
+
+## 6.3.1
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+- Updated dependencies [7d060771]
+  - @globalfishingwatch/api-client@1.7.1
+  - @globalfishingwatch/dataviews-client@6.5.3
+  - @globalfishingwatch/layer-composer@6.1.4
+
+## 6.3.0
+
+### Minor Changes
+
+- new use-small-screen hook
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@3.1.4
+
+## 6.2.3
+
+### Patch Changes
+
+- Updated dependencies [6b374674]
+  - @globalfishingwatch/dataviews-client@6.5.2
+  - @globalfishingwatch/layer-composer@6.1.3
+  - @globalfishingwatch/ui-components@3.1.3
+
+## 6.2.2
+
+### Patch Changes
+
+- Updated dependencies [d43610ba]
+  - @globalfishingwatch/layer-composer@6.1.2
+  - @globalfishingwatch/ui-components@3.1.2
+
+## 6.2.1
+
+### Patch Changes
+
+- Updated dependencies [b87943a6]
+  - @globalfishingwatch/layer-composer@6.1.1
+  - @globalfishingwatch/ui-components@3.1.1
+
+## 6.2.0
+
+### Minor Changes
+
+- 1050379b: use layers legend root metadata
+
+### Patch Changes
+
+- Updated dependencies [1050379b]
+- Updated dependencies [1050379b]
+  - @globalfishingwatch/layer-composer@6.1.0
+  - @globalfishingwatch/ui-components@3.1.0
+
+## 6.1.6
+
+### Patch Changes
+
+- 4a94bf9b: Fishing map/spinner fixes
+
 ## 6.1.5
 
 ### Patch Changes

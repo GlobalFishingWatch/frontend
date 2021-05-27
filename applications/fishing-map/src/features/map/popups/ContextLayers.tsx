@@ -1,10 +1,12 @@
 import React, { Fragment, useCallback } from 'react'
-import groupBy from 'lodash/groupBy'
+import { groupBy } from 'lodash'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import bbox from '@turf/bbox'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer/dist/generators'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectHasAnalysisLayersVisible } from 'features/dataviews/dataviews.selectors'
@@ -12,6 +14,8 @@ import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import useMapInstance, { useMapContext } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
+import { selectSidebarOpen } from 'features/app/app.selectors'
+import { getEventLabel } from 'utils/analytics'
 import { setClickedEvent } from '../map.slice'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './Popup.module.css'
@@ -39,6 +43,8 @@ function FeatureRow({
 }: FeatureRowProps) {
   const { t } = useTranslation()
   const context = useMapContext()
+  const isSidebarOpen = useSelector(selectSidebarOpen)
+  const { dispatchQueryParams } = useLocationConnect()
 
   const handleReportClick = useCallback(
     (ev: React.MouseEvent<Element, MouseEvent>) => {
@@ -46,8 +52,11 @@ function FeatureRow({
       if (onReportClick) {
         onReportClick(feature)
       }
+      if (!isSidebarOpen) {
+        dispatchQueryParams({ sidebarOpen: true })
+      }
     },
-    [context.eventManager, feature, onReportClick]
+    [context.eventManager, dispatchQueryParams, feature, isSidebarOpen, onReportClick]
   )
 
   if (!feature.value) return null
@@ -191,9 +200,18 @@ type ContextTooltipRowProps = {
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const dispatch = useDispatch()
   const fitMapBounds = useMapFitBounds()
-  const { cleanFeatureState } = useFeatureState(useMapInstance())
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchQueryParams } = useLocationConnect()
   const hasAnalysisLayers = useSelector(selectHasAnalysisLayersVisible)
+
+  const highlightArea = useCallback(
+    (source: string, id: string) => {
+      cleanFeatureState('highlight')
+      const featureState = { source, sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER, id }
+      updateFeatureState([featureState], 'highlight')
+    },
+    [cleanFeatureState, updateFeatureState]
+  )
 
   const onReportClick = useCallback(
     (feature: TooltipEventFeature) => {
@@ -202,16 +220,17 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         return
       }
       const bounds = bbox(feature.geometry) as Bbox
+      const areaId = feature.properties?.gfw_id
+      const sourceId = feature.source
       batch(() => {
-        dispatchQueryParams({
-          analysis: {
-            areaId: feature.properties?.gfw_id,
-            sourceId: feature.source,
-          },
-        })
+        dispatchQueryParams({ analysis: { areaId, sourceId } })
         dispatch(setClickedEvent(null))
-
-        cleanFeatureState('click')
+      })
+      highlightArea(areaId, sourceId)
+      uaEvent({
+        category: 'Analysis',
+        action: `Open analysis panel`,
+        label: getEventLabel([feature.title ?? '', feature.value ?? '']),
       })
       // Analysis already does it on page reload but to avoid waiting
       // this moves the map to the same position
@@ -224,7 +243,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         fitMapBounds(bounds, boundsParams)
       }
     },
-    [cleanFeatureState, dispatch, dispatchQueryParams, fitMapBounds]
+    [dispatch, dispatchQueryParams, fitMapBounds, highlightArea]
   )
 
   const featuresByType = groupBy(features, 'layerId')
@@ -243,7 +262,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             )}
             {featureByType.map((feature, index) => (
               <FeatureRow
-                key={feature.properties?.value + index}
+                key={(feature?.id || feature.properties?.value) + index}
                 feature={feature}
                 showFeaturesDetails={showFeaturesDetails}
                 onReportClick={onReportClick}

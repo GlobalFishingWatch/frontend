@@ -1,5 +1,25 @@
 # @globalfishingwatch/api-client
 
+## 1.7.2
+
+### Patch Changes
+
+- b950b19a: fix callbackurl encoding
+
+## 1.7.1
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+- Updated dependencies [7d060771]
+  - @globalfishingwatch/api-types@4.2.4
+
+## 1.7.0
+
+### Minor Changes
+
+- redirect to loginUrl with locale
+
 ## 1.6.9
 
 ### Patch Changes

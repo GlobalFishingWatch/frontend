@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/react-hooks",
-  "version": "6.1.5",
+  "version": "7.0.3",
   "description": "set of react hooks to easily use pure js libraries",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -25,12 +25,6 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@globalfishingwatch/api-client": "^1.6.9",
-    "@globalfishingwatch/dataviews-client": "^6.5.1",
-    "@globalfishingwatch/fourwings-aggregate": "3.1.1",
-    "@globalfishingwatch/layer-composer": "6.0.4",
-    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.20",
-    "@globalfishingwatch/ui-components": "^3.0.6",
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
@@ -41,6 +35,23 @@
     "rollup-plugin-multi-input": "^1.1.1",
     "rollup-plugin-postcss": "^3.1.8",
     "rollup-plugin-terser": "^7.0.2"
+  },
+  "devDependencies": {
+    "@globalfishingwatch/api-client": "^1.7.1",
+    "@globalfishingwatch/dataviews-client": "^7.0.0",
+    "@globalfishingwatch/fourwings-aggregate": "4.0.2",
+    "@globalfishingwatch/layer-composer": "7.0.3",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22"
+  },
+  "peerDependencies": {
+    "@globalfishingwatch/api-client": "^1.7.1",
+    "@globalfishingwatch/dataviews-client": "^7.0.0",
+    "@globalfishingwatch/fourwings-aggregate": "4.0.2",
+    "@globalfishingwatch/layer-composer": "7.0.3",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22",
+    "lodash": "^4.17.21",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.1"
   },
   "publishConfig": {
     "access": "public"

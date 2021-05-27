@@ -1,11 +1,11 @@
 import { PayloadAction } from '@reduxjs/toolkit'
-import lowerCase from 'lodash/lowerCase'
+import { lowerCase } from 'lodash'
 import { capitalize } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from './routes'
 
 const PREFIX = 'GFW'
-const HOME_TITLE = 'Fishing map'
+const HOME_TITLE = 'Map'
 const DEFAULT = `${PREFIX} | ${HOME_TITLE}`
 
 const titleReducer = (state = DEFAULT, action: PayloadAction<{ category?: string }>) => {

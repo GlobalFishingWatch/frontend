@@ -3,11 +3,15 @@
     "close": "Close analysis",
     "completed": "The report will be in your email soon",
     "disclaimer": "The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.",
+    "experimental": "Experimental",
     "download": "Download report",
+    "downloadLogin": "You need to login to download a report",
     "empty": "Your selected datasets will appear here",
     "errorMessage": "Something went wrong",
+    "noData": "No data available",
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
     "title": "Analysis",
+    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "vesselFlags": "by vessels flagged by"
   },
   "common": {
@@ -23,6 +27,8 @@
     "copiedToClipboard": "The link to share this view has been copied to your clipboard.",
     "country_plural": "countries",
     "dateRange": "between {{start}} and {{end}}",
+    "days": "Day",
+    "days_plural": "days",
     "description": "Description",
     "environment": "Environment",
     "events": "Events",
@@ -32,9 +38,11 @@
     "hour": "Hour",
     "hour_plural": "hours",
     "in": "in",
+    "layerList": "Layer list",
     "loggedAs": "Logged as",
     "login": "Log in",
     "logout": "Log out",
+    "map": "Map",
     "max": "Max",
     "min": "Min",
     "more": "more",
@@ -64,8 +72,8 @@
     "hint": "Find out more about the supported formats",
     "importing": "Dataset is being imported",
     "individualIdField": "Individual ID field",
-    "latitudeNameField": "Longitude field",
-    "longitudeNameField": "Latitude field",
+    "latitudeNameField": "Latitude field",
+    "longitudeNameField": "Longitude field",
     "new": "New dataset",
     "notUploadedYet": "No context layers uploaded yet",
     "remove": "Remove dataset",
@@ -84,16 +92,19 @@
     "title_plural": "Datasets"
   },
   "errors": {
+    "contactUs": "Please <1>contact us</1> to report the problem.",
     "datasetNotFound": "Dataset not found",
     "datasetNotValid": "It seems to be something wrong with your file",
     "fields": "Errors with fields {{fields}}",
     "generic": "Something went wrong, try again or contact:",
+    "genericShort": "Something went wrong",
     "invalidRange": "Min has to be lower than max value",
     "latestCarrierNotFound": "Latest carrier dataset not found",
     "notSupportedBy": "Not supported by {{list}}",
     "pageNotFound": "Page not found",
     "privateView": "This is a private view",
     "requestAccess": "Request access",
+    "showError": "Show error",
     "switchAccount": "Switch account",
     "trackLoading": "There was an error loading the vessel track",
     "uploadError": "There was an error uploading your dataset",
@@ -153,7 +164,6 @@
     "source_plural": "Sources",
     "toggleCombinationMode": {
       "combine": "Combine layers",
-      "disabled": "Combine mode is only available with two activity layers",
       "split": "Split layers"
     },
     "toggleVisibility": "Toggle layer visibility",
@@ -175,6 +185,7 @@
   },
   "search": {
     "advanced": "Advanced",
+    "advancedDisabled": "You need to <1>login</1> to use advanced search",
     "basic": "Basic",
     "close": "Close search",
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
@@ -183,7 +194,7 @@
     "notAllowed": "The available datasets don't allow searching vessels",
     "placeholder": "Type to search vessels",
     "seeVessel": "See vessel",
-    "seeVessels": "See vessels",
+    "seeVessels": "See {{count}} vessels",
     "suggestion": "Did you mean",
     "title": "Search",
     "vesselAlreadyInWorkspace": "This vessel is already in your workspace",
@@ -196,20 +207,20 @@
     "selected": "selected"
   },
   "timebarSettings": {
-    "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
-    "graph": "Graph",
     "eventOptions": {
       "all": "All events",
-      "fishing": "Fishing",
       "encounters": "Encounters",
+      "fishing": "Fishing",
       "loitering": "Loitering",
-      "ports": "Port visits",
-      "none": "None"
+      "none": "None",
+      "ports": "Port visits"
     },
+    "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
+    "graph": "Graph",
     "graphOptions": {
-      "speed": "Speed",
       "depth": "Depth $t(common.comingSoon)",
-      "none": "None"
+      "none": "None",
+      "speed": "Speed"
     },
     "settings_close": "Close timebar settings",
     "settings_open": "Open timebar settings",
@@ -260,6 +271,7 @@
     "length": "Length",
     "lengthRange": "Length range",
     "loading": "Loading vessel track",
+    "login": "You need to <1>login</1> to see more details",
     "mmsi": "MMSI",
     "nationalId": "National Id",
     "origin": "Origin",

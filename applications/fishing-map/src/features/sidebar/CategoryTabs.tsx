@@ -1,9 +1,11 @@
 import React, { Fragment, useCallback } from 'react'
 import Link from 'redux-first-router-link'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import Icon, { IconType } from '@globalfishingwatch/ui-components/dist/icon'
+import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { Locale } from 'types'
@@ -13,6 +15,8 @@ import { selectLocationCategory, selectLocationType } from 'routes/routes.select
 import { selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
 import { LocaleLabels } from 'features/i18n/i18n'
+import { useClickedEventConnect } from 'features/map/map.hooks'
+import useMapInstance from 'features/map/map-context.hooks'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
@@ -20,9 +24,9 @@ import useViewport from 'features/map/map-viewport.hooks'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
-  latitude: 3,
-  longitude: -7,
-  zoom: 0.1,
+  latitude: 10,
+  longitude: -90,
+  zoom: 1,
 }
 
 type CategoryTabsProps = {
@@ -40,6 +44,8 @@ function getLinkToCategory(category: WorkspaceCategories) {
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t, i18n } = useTranslation()
   const guestUser = useSelector(isGuestUser)
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
+  const { dispatchClickedEvent } = useClickedEventConnect()
   const locationType = useSelector(selectLocationType)
   const { setMapCoordinates } = useViewport()
   const locationCategory = useSelector(selectLocationCategory)
@@ -50,6 +56,11 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     : ''
 
   const toggleLanguage = (lang: Locale) => {
+    uaEvent({
+      category: 'Internationalization',
+      action: `Change language`,
+      label: lang,
+    })
     i18n.changeLanguage(lang)
   }
 
@@ -65,7 +76,9 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
 
   const onCategoryClick = useCallback(() => {
     setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
-  }, [setMapCoordinates])
+    dispatchClickedEvent(null)
+    cleanFeatureState('highlight')
+  }, [setMapCoordinates, cleanFeatureState, dispatchClickedEvent])
 
   return (
     <Fragment>
@@ -98,8 +111,8 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <button className={styles.tabContent} onClick={onHelpClick}>
             <Icon icon="help" />
           </button>
-        </li>
-        <li className={cx(styles.tab, styles.secondary)}>
+        </li> */}
+        {/* <li className={cx(styles.tab, styles.secondary)}>
           <button className={styles.tabContent} onClick={onFeedbackClick}>
             <Icon icon="feedback" />
           </button>
@@ -130,7 +143,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         >
           {guestUser ? (
             <Tooltip content={t('common.login', 'Log in')}>
-              <a href={GFWAPI.getLoginUrl(window.location.toString())}>
+              <a href={GFWAPI.getLoginUrl(window.location.toString())} className={styles.loginLink}>
                 <Icon icon="user" />
               </a>
             </Tooltip>

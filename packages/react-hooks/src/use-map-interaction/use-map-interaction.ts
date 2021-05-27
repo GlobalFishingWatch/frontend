@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import debounce from 'lodash/debounce'
+import { debounce } from 'lodash'
 import { Generators, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
@@ -69,29 +69,29 @@ const getExtendedFeatures = (
         const values = aggregateCell({
           rawValues: properties.rawValues,
           frame,
-          delta: timeChunks.deltaInIntervalUnits,
+          delta: Math.max(1, timeChunks.deltaInIntervalUnits),
           quantizeOffset: activeTimeChunk.quantizeOffset,
           sublayerCount: numSublayers,
           aggregationOperation: generatorMetadata?.aggregationOperation,
           multiplier: generatorMetadata?.multiplier,
         })
         if (!values || !values.filter((v: number) => v > 0).length) return []
-
         const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
+        const sublayers = generatorMetadata?.sublayers
         return values.flatMap((value: any, i: number) => {
           if (value === 0) return []
-          return [
-            {
-              ...extendedFeature,
-              temporalgrid: {
-                sublayerIndex: i,
-                visible: visibleSublayers[i] === true,
-                col: properties._col as number,
-                row: properties._row as number,
-              },
-              value,
+          const temporalGridExtendedFeature: ExtendedFeature = {
+            ...extendedFeature,
+            temporalgrid: {
+              sublayerIndex: i,
+              sublayerId: sublayers[i].id,
+              visible: visibleSublayers[i] === true,
+              col: properties._col as number,
+              row: properties._row as number,
             },
-          ]
+            value,
+          }
+          return [temporalGridExtendedFeature]
         })
       case Generators.Type.Context:
         return {

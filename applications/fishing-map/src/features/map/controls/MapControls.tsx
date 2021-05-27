@@ -24,6 +24,7 @@ import setInlineStyles from 'utils/dom'
 import { MapCoordinates } from 'types'
 import { toFixed } from 'utils/shared'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 import { isPrintSupported } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 import MapSearch from './MapSearch'
@@ -62,6 +63,7 @@ const MapControls = ({
   const [modalOpen, setModalOpen] = useState(false)
   const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
+  const { dispatchQueryParams } = useLocationConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const domElement = useRef<HTMLElement>()
   const { loading, downloadImage, previewImage, previewImageLoading, generatePreviewImage } =
@@ -83,7 +85,7 @@ const MapControls = ({
     }),
     [latitude, longitude]
   )
-  const options = { bounds, center }
+  const options = useMemo(() => ({ bounds, center }), [bounds, center])
   const debouncedOptions = useDebounce(options, 16)
 
   const onZoomInClick = useCallback(() => {
@@ -95,16 +97,19 @@ const MapControls = ({
   }, [latitude, longitude, setMapCoordinates, zoom])
 
   const onScreenshotClick = useCallback(() => {
-    if (domElement.current) {
-      domElement.current.classList.add('printing')
-      setInlineStyles(domElement.current)
-      // leave some time to apply the styles
-      setTimeout(() => {
-        generatePreviewImage()
-        setModalOpen(true)
-      }, 100)
-    }
-  }, [generatePreviewImage])
+    dispatchQueryParams({ sidebarOpen: true })
+    setTimeout(() => {
+      if (domElement.current) {
+        domElement.current.classList.add('printing')
+        setInlineStyles(domElement.current)
+        // leave some time to apply the styles
+        setTimeout(() => {
+          generatePreviewImage()
+          setModalOpen(true)
+        }, 100)
+      }
+    }, 100)
+  }, [dispatchQueryParams, generatePreviewImage])
 
   const handleModalClose = useCallback(() => {
     if (domElement.current) {

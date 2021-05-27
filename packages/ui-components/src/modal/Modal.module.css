@@ -73,6 +73,12 @@
   padding-right: var(--size-L);
 }
 
+.closeButtonWithoutHeader {
+  position: absolute;
+  top: var(--space-M);
+  right: var(--space-M);
+}
+
 @media only screen and (min-width: 720px) {
   .content {
     height: 50rem;

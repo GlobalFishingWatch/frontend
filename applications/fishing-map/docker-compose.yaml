@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  fishing-map:
+    build:
+      context: .
+      target: production
+      args:
+        - REACT_APP_WORKSPACE_ENV=production
+        - REACT_APP_API_GATEWAY=https://gateway.api.globalfishingwatch.org
+        - REACT_APP_CARRIER_PORTAL_URL=https://carrier-portal.globalfishingwatch.org
+    container_name: app-fishing-map
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - BASIC_AUTH=false

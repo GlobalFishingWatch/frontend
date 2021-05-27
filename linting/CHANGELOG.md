@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 1.7.0
+
+### Minor Changes
+
+- set import/order as warning
+
 ## 1.6.1
 
 ### Patch Changes

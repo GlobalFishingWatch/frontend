@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import uniq from 'lodash/uniq'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { uniq } from 'lodash'
 import {
   Workspace,
   Dataview,
@@ -25,12 +25,15 @@ import { DEFAULT_DATAVIEW_IDS, getWorkspaceEnv, WorkspaceCategories } from 'data
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
 
+type LastWorkspaceVisited = { type: string; payload: any; query: any }
+
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
   // used to identify when someone saves its own version of the workspace
   customStatus: AsyncReducerStatus
   error: AsyncError
   data: Workspace<WorkspaceState> | null
+  lastVisited: LastWorkspaceVisited | undefined
 }
 
 const initialState: WorkspaceSliceState = {
@@ -38,6 +41,7 @@ const initialState: WorkspaceSliceState = {
   customStatus: AsyncReducerStatus.Idle,
   error: {},
   data: null,
+  lastVisited: undefined,
 }
 
 type RejectedActionPayload = {
@@ -204,7 +208,11 @@ export const updatedCurrentWorkspaceThunk = createAsyncThunk(
 const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
-  reducers: {},
+  reducers: {
+    setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
+      state.lastVisited = action.payload
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaceThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
@@ -256,5 +264,7 @@ const workspaceSlice = createSlice({
     })
   },
 })
+
+export const { setLastWorkspaceVisited } = workspaceSlice.actions
 
 export default workspaceSlice.reducer

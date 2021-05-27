@@ -2,14 +2,16 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectBivariate } from 'features/app/app.selectors'
+import { selectBivariateDataviews } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -19,27 +21,59 @@ import Title from '../common/Title'
 import Filters from './HeatmapFilters'
 import HeatmapInfoModal from './HeatmapInfoModal'
 import { isFishingDataview, isPresenceDataview } from './heatmaps.utils'
+import heatmapStyles from './HeatmapsSection.module.css'
 
 type LayerPanelProps = {
-  index: number
   isOpen: boolean
+  showBorder: boolean
   dataview: UrlDataviewInstance
+  onToggle?: () => void
 }
 
-function HeatmapLayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.ReactElement {
+function HeatmapLayerPanel({
+  dataview,
+  showBorder,
+  isOpen,
+  onToggle = () => {},
+}: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
 
   const { deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
-  const bivariate = useSelector(selectBivariate)
+  const bivariateDataviews = useSelector(selectBivariateDataviews)
 
   const layerActive = dataview?.config?.visible ?? true
 
+  const disableBivariate = () => {
+    dispatchQueryParams({ bivariateDataviews: undefined })
+  }
+
+  const onSplitLayers = () => {
+    disableBivariate()
+
+    uaEvent({
+      category: 'Activity data',
+      action: 'Click on bivariate option',
+      label: getEventLabel([
+        'split',
+        dataview.name ?? dataview.id ?? bivariateDataviews[0],
+        getActivitySources(dataview),
+        ...getActivityFilters(dataview.config?.filters),
+        bivariateDataviews[1],
+      ]),
+    })
+  }
+
+  const onLayerSwitchToggle = () => {
+    onToggle()
+    disableBivariate()
+  }
+
   const onRemoveLayerClick = () => {
-    if (index < 2) {
-      dispatchQueryParams({ bivariate: false })
+    if (bivariateDataviews && bivariateDataviews.includes(dataview.id)) {
+      disableBivariate()
     }
     deleteDataviewInstance(dataview.id)
   }
@@ -64,30 +98,30 @@ function HeatmapLayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.
   const presenceDataview = isPresenceDataview(dataview)
   if (fishingDataview || presenceDataview) {
     datasetName = presenceDataview
-      ? t(`common.presence`, 'Fishing presence')
+      ? t(`common.presence`, 'Vessel presence')
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
-  const showInfoModal = isFishingDataview(dataview)
+  const showInfoModal = isFishingDataview(dataview) || isPresenceDataview(dataview)
   const TitleComponent = (
     <Title
       title={datasetName}
       className={styles.name}
       classNameActive={styles.active}
       dataview={dataview}
+      onToggle={onToggle}
     />
   )
-
   return (
     <div
-      className={cx(styles.LayerPanel, {
+      className={cx(styles.LayerPanel, heatmapStyles.layerPanel, {
         [styles.expandedContainerOpen]: filterOpen,
-        [styles.noBorder]: bivariate,
+        [styles.noBorder]: !showBorder || bivariateDataviews?.[0] === dataview.id,
         'print-hidden': !layerActive,
       })}
     >
       <div className={styles.header}>
         <LayerSwitch
-          disabled={bivariate}
+          onToggle={onLayerSwitchToggle}
           active={layerActive}
           className={styles.switch}
           dataview={dataview}
@@ -167,7 +201,20 @@ function HeatmapLayerPanel({ dataview, index, isOpen }: LayerPanelProps): React.
               />
             </div>
           </div>
-          <div id={`legend_${dataview.id}`}></div>
+          <div className={heatmapStyles.legendContainer}>
+            <div className={heatmapStyles.legend} id={`legend_${dataview.id}`}></div>
+            {bivariateDataviews?.[0] === dataview.id && (
+              <IconButton
+                size="small"
+                type="border"
+                icon="split"
+                tooltip={t('layer.toggleCombinationMode.split', 'Split layers')}
+                tooltipPlacement="left"
+                className={cx(heatmapStyles.bivariateSplit, 'print-hidden')}
+                onClick={onSplitLayers}
+              />
+            )}
+          </div>
         </div>
       )}
       <HeatmapInfoModal

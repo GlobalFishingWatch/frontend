@@ -1,8 +1,9 @@
 import { createSelector } from 'reselect'
-import uniqBy from 'lodash/uniqBy'
+import { uniqBy } from 'lodash'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
+import { FULL_SUFIX } from 'data/config'
 import { selectDatasets } from './datasets.slice'
 
 export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
@@ -50,6 +51,19 @@ export const selectActivityDatasets = createSelector([selectActivityDataviews], 
   return dataviews.flatMap((dataview) => getDatasetsByDataview(dataview))
 })
 
-export const getRelatedDatasetByType = (dataset?: Dataset, datasetType?: DatasetTypes) => {
+export const getRelatedDatasetByType = (
+  dataset?: Dataset,
+  datasetType?: DatasetTypes,
+  fullDatasetAllowed = false
+) => {
+  if (fullDatasetAllowed) {
+    const fullDataset = dataset?.relatedDatasets?.find(
+      (relatedDataset) =>
+        relatedDataset.type === datasetType && relatedDataset.id.startsWith(FULL_SUFIX)
+    )
+    if (fullDataset) {
+      return fullDataset
+    }
+  }
   return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)
 }

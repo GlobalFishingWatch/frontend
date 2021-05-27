@@ -1,12 +1,16 @@
-import intersection from 'lodash/intersection'
-import lowerCase from 'lodash/lowerCase'
+import { intersection, lowerCase } from 'lodash'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { capitalize } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
+import { FULL_SUFIX, PUBLIC_SUFIX } from 'data/config'
 
 export type SupportedDatasetSchema = 'geartype' | 'fleet' | 'origin' | 'vessel_type'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
+
+export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boolean) => {
+  return datasets.filter((dataset) => dataset.id.includes(isGuestUser ? PUBLIC_SUFIX : FULL_SUFIX))
+}
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
   return dataset.schema?.[schema]?.enum !== undefined && dataset.schema?.[schema].enum.length > 0
@@ -47,11 +51,15 @@ export const getCommonSchemaFieldsInDataview = (
   )
 
   const schemaFields = activeDatasets?.map((d) => d.schema?.[schema]?.enum || [])
+  const datasetId = activeDatasets?.[0]?.id?.split(':')[0]
   const commonSchemaFields = schemaFields
-    ? intersection(...schemaFields).map((field) => ({
-        id: field,
-        label: capitalize(lowerCase(field)),
-      }))
+    ? intersection(...schemaFields).map((field) => {
+        const label = t(
+          `datasets:${datasetId}.schema.${schema}.enum.${field}`,
+          capitalize(lowerCase(field))
+        )
+        return { id: field, label: label || capitalize(lowerCase(field)) }
+      })
     : []
   return commonSchemaFields.sort((a, b) => a.label.localeCompare(b.label))
 }

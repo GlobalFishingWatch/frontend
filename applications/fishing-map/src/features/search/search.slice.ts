@@ -18,7 +18,7 @@ import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 export const RESULTS_PER_PAGE = 20
 
 export type VesselWithDatasets = Vessel & { dataset: Dataset; trackDatasetId?: string }
-
+export type SearchType = 'basic' | 'advanced'
 export type SearchFilterKey = 'flags' | 'gearType' | 'startDate' | 'endDate'
 export type SearchFilter = {
   flags?: MultiSelectOption<string>[]
@@ -193,8 +193,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         suggestion: searchResults.metadata?.suggestion,
         pagination: {
           loading: false,
-          total: searchResults.total?.value,
-          offset: searchResults.offset + offset,
+          total: searchResults.total,
+          offset: searchResults.nextOffset,
         },
       }
     }

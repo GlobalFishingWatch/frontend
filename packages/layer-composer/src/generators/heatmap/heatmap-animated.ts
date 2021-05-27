@@ -16,8 +16,8 @@ import {
 import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
-import { TimeChunk, TimeChunks, getActiveTimeChunks, getDelta, Interval } from './util/time-chunks'
-import { getSublayersBreaks } from './util/get-legends'
+import { TimeChunk, TimeChunks, getActiveTimeChunks, Interval } from './util/time-chunks'
+import getLegends, { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
@@ -106,7 +106,6 @@ class HeatmapAnimatedGenerator {
     const visible = getSubLayersVisible(config.sublayers)
 
     const tilesUrl = getTilesUrl(config)
-    const delta = getDelta(timeChunks.activeStart, timeChunks.activeEnd, timeChunks.interval)
 
     const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
     const interactiveSource =
@@ -121,7 +120,8 @@ class HeatmapAnimatedGenerator {
         id: getSourceId(config.id, timeChunk),
         singleFrame: false,
         geomType,
-        delta,
+        // Set a minimum of 1 to avoid empty frames. See error thrown in getStyle() for edge case
+        delta: Math.max(1, timeChunks.deltaInIntervalUnits),
         quantizeOffset: timeChunk.quantizeOffset,
         interval: timeChunks.interval,
         filters,
@@ -174,10 +174,8 @@ class HeatmapAnimatedGenerator {
     ) {
       return getGriddedLayers(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Blob) {
-      // TODO review with new buckets
       return getBlobLayer(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Extruded) {
-      // TODO review with new buckets
       return getExtrudedLayer(config, timeChunks, breaks)
     }
   }
@@ -202,14 +200,31 @@ class HeatmapAnimatedGenerator {
       sublayers: config.sublayers?.map((s) => ({ ...s, visible: getSubLayerVisible(s) })),
     }
 
+    if (!config.start || !config.end) {
+      return {
+        id: finalConfig.id,
+        sources: [],
+        layers: [],
+      }
+    }
+
     const timeChunks: TimeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
       finalConfig.id,
-      finalConfig.staticStart || finalConfig.start,
-      finalConfig.staticEnd || finalConfig.end,
+      finalConfig.start,
+      finalConfig.end,
       finalConfig.datasetsStart,
       finalConfig.datasetsEnd,
       finalConfig.interval
     )
+
+    if (
+      timeChunks.deltaInIntervalUnits === 0 &&
+      config.aggregationOperation !== AggregationOperation.Avg
+    ) {
+      console.error(
+        'Trying to show less than 1 interval worth of data for this heatmap layer. This could result in showing misleading information when aggregation mode is not set to avg.'
+      )
+    }
 
     const breaksConfig = {
       ...finalConfig,
@@ -223,21 +238,22 @@ class HeatmapAnimatedGenerator {
     const breaks = useSublayerBreaks
       ? config.sublayers.map(({ breaks }) => breaks || [])
       : getSublayersBreaks(finalConfig, this.breaksCache[cacheKey]?.breaks)
-
+    const legends = getLegends(finalConfig, breaks || [])
     const style = {
       id: finalConfig.id,
       sources: this._getStyleSources(finalConfig, timeChunks, breaks),
       layers: this._getStyleLayers(finalConfig, timeChunks, breaks),
       metadata: {
         breaks,
+        legends,
         temporalgrid: true,
         numSublayers: finalConfig.sublayers.length,
+        sublayers: finalConfig.sublayers,
         visibleSublayers: getSubLayersVisible(finalConfig.sublayers),
         timeChunks,
         aggregationOperation: finalConfig.aggregationOperation,
         multiplier: finalConfig.breaksMultiplier,
-        sublayers: finalConfig.sublayers,
-        legend: finalConfig.metadata?.legend,
+
       },
     }
 
@@ -260,9 +276,7 @@ class HeatmapAnimatedGenerator {
         resolve({ style: this.getStyle(finalConfig), config: finalConfig })
       })
       breaksPromise.catch((e: any) => {
-        if (e.name !== 'AbortError') {
-          this.breaksCache[cacheKey] = { loading: false, error: true }
-        }
+        this.breaksCache[cacheKey] = { loading: false, error: e.name !== 'AbortError' }
         reject(e)
       })
     })

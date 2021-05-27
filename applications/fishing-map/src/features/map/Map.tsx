@@ -2,11 +2,11 @@ import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
 import { scaleLinear } from 'd3-scale'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
-import useTilesLoading from '@globalfishingwatch/react-hooks/dist/use-tiles-loading'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import {
   useMapClick,
@@ -17,22 +17,30 @@ import {
 import { ExtendedStyleMeta, Generators } from '@globalfishingwatch/layer-composer'
 import useMapLegend from '@globalfishingwatch/react-hooks/dist/use-map-legend'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
+import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { useClickedEventConnect, useMapTooltip, useGeneratorsConnect } from 'features/map/map.hooks'
+import {
+  useClickedEventConnect,
+  useMapTooltip,
+  useGeneratorsConnect,
+  TooltipEventFeature,
+} from 'features/map/map.hooks'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { getEventLabel } from 'utils/analytics'
 import PopupWrapper from './popups/PopupWrapper'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { SliceInteractionEvent } from './map.slice'
-import { useHasSourceLoaded } from './map-features.hooks'
-import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
 import useRulers from './rulers/rulers.hooks'
+
+import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const clickRadiusScale = scaleLinear().domain([4, 12, 17]).rangeRound([1, 2, 8]).clamp(true)
 
@@ -57,9 +65,10 @@ const handleError = ({ error }: any) => {
 }
 
 const MapWrapper = (): React.ReactElement | null => {
+  // Used it only once here to attach the listener only once
+  useSetMapIdleAtom()
   const map = useMapInstance()
   const { t } = useTranslation()
-
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
@@ -67,14 +76,45 @@ const MapWrapper = (): React.ReactElement | null => {
   const { style, loading: layerComposerLoading } = useLayerComposer(generatorsConfig, globalConfig)
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
+  const clickedTooltipEvent = useMapTooltip(clickedEvent)
   const { cleanFeatureState } = useFeatureState(map)
   const { onMapHoverWithRuler, onMapClickWithRuler, getRulersCursor, rulersEditing } = useRulers()
 
   const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
+
+  const clickedCellLayers = useMemo(() => {
+    if (!clickedEvent || !clickedTooltipEvent) return
+
+    const layersByCategory = (clickedTooltipEvent?.features ?? [])
+      .sort(
+        (a, b) =>
+          POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
+      )
+      .reduce(
+        (prev: Record<string, TooltipEventFeature[]>, current) => ({
+          ...prev,
+          [current.category]: [...(prev[current.category] ?? []), current],
+        }),
+        {}
+      )
+
+    return Object.entries(layersByCategory).map(
+      ([featureCategory, features]) =>
+        `${featureCategory}: ${features.map((f) => f.layerId).join(',')}`
+    )
+  }, [clickedEvent, clickedTooltipEvent])
   const currentClickCallback = useMemo(() => {
-    return rulersEditing ? onMapClickWithRuler : onMapClick
-  }, [rulersEditing, onMapClickWithRuler, onMapClick])
-  const clickedTooltipEvent = useMapTooltip(clickedEvent)
+    const clickEvent = (event: any) => {
+      uaEvent({
+        category: 'Environmental data',
+        action: `Click in grid cell`,
+        label: getEventLabel(clickedCellLayers ?? []),
+      })
+      return rulersEditing ? onMapClickWithRuler(event) : onMapClick(event)
+    }
+    return clickEvent
+  }, [clickedCellLayers, rulersEditing, onMapClickWithRuler, onMapClick])
+
   const closePopup = useCallback(() => {
     cleanFeatureState('click')
     dispatchClickedEvent(null)
@@ -113,35 +153,31 @@ const MapWrapper = (): React.ReactElement | null => {
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
 
-  const legendsTranslated = useMemo(
-    () =>
-      mapLegends?.map((legend) => {
-        const isSquareKm = (legend.gridArea as number) > 50000
-        let label = legend.unit || ''
-        if (legend.generatorType === GeneratorType.HeatmapAnimated) {
-          const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
-          const gridAreaFormatted = gridArea
-            ? formatI18nNumber(gridArea, {
-                style: 'unit',
-                unit: isSquareKm ? 'kilometer' : 'meter',
-                unitDisplay: 'short',
-              })
-            : ''
-          if (legend.unit === 'hours') {
-            label = `${t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
-          }
+  const legendsTranslated = useMemo(() => {
+    return mapLegends?.map((legend) => {
+      const isSquareKm = (legend.gridArea as number) > 50000
+      let label = legend.unit || ''
+      if (legend.generatorType === GeneratorType.HeatmapAnimated) {
+        const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+        const gridAreaFormatted = gridArea
+          ? formatI18nNumber(gridArea, {
+              style: 'unit',
+              unit: isSquareKm ? 'kilometer' : 'meter',
+              unitDisplay: 'short',
+            })
+          : ''
+        if (legend.unit === 'hours') {
+          label = `${t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
         }
-        return { ...legend, label }
-      }),
-    [mapLegends, t]
-  )
+      }
+      return { ...legend, label }
+    })
+  }, [mapLegends, t])
 
   const debugOptions = useSelector(selectDebugOptions)
 
-  // TODO handle also in case of error
-  // https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:sourcedataloading
-  const tilesLoading = useTilesLoading(map)
-  const encounterSourceLoaded = useHasSourceLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
+  const mapLoaded = useMapLoaded()
+  const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
 
   const getCursor = useCallback(
     (state) => {
@@ -175,6 +211,7 @@ const MapWrapper = (): React.ReactElement | null => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
+
   return (
     <div className={styles.container}>
       {<MapScreenshot map={map} />}
@@ -217,10 +254,7 @@ const MapWrapper = (): React.ReactElement | null => {
           <MapInfo center={hoveredEvent} />
         </InteractiveMap>
       )}
-      <MapControls
-        onMouseEnter={resetHoverState}
-        mapLoading={tilesLoading || layerComposerLoading}
-      />
+      <MapControls onMouseEnter={resetHoverState} mapLoading={!mapLoaded || layerComposerLoading} />
       {legendsTranslated?.map((legend: any) => {
         const legendDomElement = document.getElementById(legend.id as string)
         if (legendDomElement) {

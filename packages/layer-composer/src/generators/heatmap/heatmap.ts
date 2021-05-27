@@ -1,5 +1,4 @@
-import flatten from 'lodash/flatten'
-import zip from 'lodash/zip'
+import { flatten, zip } from 'lodash'
 import type { FillLayer, LineLayer } from '@globalfishingwatch/mapbox-gl'
 import { Group } from '../../types'
 import { Type, HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types'

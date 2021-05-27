@@ -1,7 +1,8 @@
 import React, { useState, useCallback, Fragment } from 'react'
-import type { FeatureCollectionWithFilename } from 'shpjs'
+import { FeatureCollectionWithFilename } from 'shpjs'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
-import lowerCase from 'lodash/lowerCase'
+import { lowerCase } from 'lodash'
 import { useSelector } from 'react-redux'
 import { parse as parseCSV } from 'papaparse'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
@@ -254,6 +255,19 @@ function NewDataset(): React.ReactElement {
         return
       }
 
+      let uaCategory, uaDatasetType
+      if (metadata?.category === DatasetCategory.Environment) {
+        uaCategory = 'Environmental data'
+        uaDatasetType = 'environmental dataset'
+      } else if (metadata?.category === DatasetCategory.Context) {
+        uaCategory = 'Reference layer'
+        uaDatasetType = 'reference layer'
+      }
+      uaEvent({
+        category: `${uaCategory}`,
+        action: `Confirm ${uaDatasetType} upload`,
+        label: userTrackGeoJSONFile?.name ?? file.name,
+      })
       setLoading(true)
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
         dataset: { ...metadata },

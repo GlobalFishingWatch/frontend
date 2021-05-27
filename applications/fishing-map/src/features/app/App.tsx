@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
+import React, { lazy, useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
 import { useSelector } from 'react-redux'
 // import RecoilizeDebugger from 'recoilize'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
@@ -8,7 +8,9 @@ import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
 import {
   isWorkspaceLocation,
+  selectLocationCategory,
   selectLocationType,
+  selectUrlTimeRange,
   selectUrlViewport,
   selectWorkspaceId,
 } from 'routes/routes.selectors'
@@ -16,34 +18,37 @@ import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
 import Sidebar from 'features/sidebar/Sidebar'
-import Map from 'features/map/Map'
-import Timebar from 'features/timebar/Timebar'
 import Footer from 'features/footer/Footer'
 import {
   selectCurrentWorkspaceId,
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk, selectUserData } from 'features/user/user.slice'
+import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
 import { isUserLogged } from 'features/user/user.selectors'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { HOME, WORKSPACE } from 'routes/routes'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { t } from 'features/i18n/i18n'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import Welcome from 'features/welcome/Welcome'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
+import { useAnalytics } from './analytics.hooks'
+
+const Map = lazy(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
+const Timebar = lazy(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
 
 declare global {
   interface Window {
     gtag: any
   }
 }
-
-const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID
 
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
@@ -57,9 +62,12 @@ const Main = () => {
   )
 }
 
+const MARINE_MANAGER_LAST_VISIT = 'MarineManagerLastVisit'
+const isFirstTimeVisit = !localStorage.getItem(MARINE_MANAGER_LAST_VISIT)
+
 function App(): React.ReactElement {
+  useAnalytics()
   const dispatch = useAppDispatch()
-  const userData = useSelector(selectUserData)
   const sidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -67,15 +75,29 @@ function App(): React.ReactElement {
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
   const narrowSidebar = workspaceLocation && !analysisQuery
+  const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
+
+  const locationIsMarineManager =
+    useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
+  const [welcomePopupOpen, setWelcomePopupOpen] = useState(
+    locationIsMarineManager && isFirstTimeVisit
+  )
+  useEffect(() => {
+    if (locationIsMarineManager)
+      localStorage.setItem(MARINE_MANAGER_LAST_VISIT, new Date().toISOString())
+  }, [locationIsMarineManager])
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
+  const { setTimerange } = useTimerangeConnect()
 
   const locationType = useSelector(selectLocationType)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
+  const showToggle = useSelector(isWorkspaceLocation)
   const userLogged = useSelector(isUserLogged)
   const urlViewport = useSelector(selectUrlViewport)
+  const urlTimeRange = useSelector(selectUrlTimeRange)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
 
   // TODO review this as is needed in analysis and workspace but adds a lot of extra logic here
@@ -93,6 +115,12 @@ function App(): React.ReactElement {
         if (!urlViewport && resolvedAction.payload?.viewport) {
           setMapCoordinates(resolvedAction.payload.viewport)
         }
+        if (!urlTimeRange && resolvedAction.payload?.startAt && resolvedAction.payload?.endAt) {
+          setTimerange({
+            start: resolvedAction.payload?.startAt,
+            end: resolvedAction.payload?.endAt,
+          })
+        }
       }
       actionResolved = true
     }
@@ -101,6 +129,8 @@ function App(): React.ReactElement {
       workspaceCustomStatus !== AsyncReducerStatus.Loading &&
       (homeNeedsFetch || hasWorkspaceIdChanged)
     ) {
+      // TODO Can we arrive in a situation where no workspace is ever loaded?
+      // In that case static timerange will need to be set manually
       fetchWorkspace()
     }
     return () => {
@@ -122,32 +152,6 @@ function App(): React.ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
-
-  useEffect(() => {
-    if (userData && GOOGLE_UNIVERSAL_ANALYTICS_ID && window.gtag) {
-      window.gtag('config', GOOGLE_UNIVERSAL_ANALYTICS_ID, {
-        user_id: userData.id,
-        custom_map: {
-          dimension1: 'userId',
-          dimension3: 'userGroup',
-          dimension4: 'userOrgType',
-          dimension5: 'userOrganization',
-          dimension6: 'userCountry',
-          dimension7: 'userLanguage',
-        },
-      })
-      window.gtag('event', 'login', {
-        userId: userData.id,
-        userGroup: userData.groups,
-        userOrgType: userData.organizationType,
-        userOrganization: userData.organization,
-        userCountry: userData.country,
-        userLanguage: userData.language,
-      })
-    }
-  }, [userData])
-
   useEffect(() => {
     dispatch(fetchUserThunk())
   }, [dispatch])
@@ -164,6 +168,13 @@ function App(): React.ReactElement {
     setMenuOpen(true)
   }, [])
 
+  const getSidebarName = useCallback(() => {
+    if (locationType === USER) return t('user.title', 'User')
+    if (locationType === WORKSPACES_LIST) return t('workspace.title_plural', 'Workspaces')
+    if (isAnalysing) return t('analysis.title', 'Analysis')
+    return t('common.layerList', 'Layer list')
+  }, [isAnalysing, locationType])
+
   return (
     /* Value as null as there is no needed to set a default value but Typescript complains */
     <MapContext.Provider value={null as any}>
@@ -171,10 +182,13 @@ function App(): React.ReactElement {
       <Suspense fallback={null}>
         <SplitView
           isOpen={sidebarOpen}
+          showToggle={showToggle}
           onToggle={onToggle}
           aside={<Sidebar onMenuClick={onMenuClick} />}
           main={<Main />}
           asideWidth={narrowSidebar ? '37rem' : '50%'}
+          showAsideLabel={getSidebarName()}
+          showMainLabel={t('common.map', 'Map')}
           className="split-container"
         />
       </Suspense>
@@ -191,6 +205,17 @@ function App(): React.ReactElement {
       >
         <DebugMenu />
       </Modal>
+      {welcomePopupOpen && (
+        <Suspense fallback={null}>
+          <Modal
+            header={false}
+            isOpen={welcomePopupOpen}
+            onClose={() => setWelcomePopupOpen(false)}
+          >
+            <Welcome />
+          </Modal>
+        </Suspense>
+      )}
     </MapContext.Provider>
   )
 }

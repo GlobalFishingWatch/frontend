@@ -12,7 +12,7 @@ import styles from './MapInfo.module.css'
 export const pickDateFormatByRange = (start: string, end: string): DateTimeFormatOptions => {
   const A_DAY = 1000 * 60 * 60 * 24
   const timeΔ = start && end ? new Date(end).getTime() - new Date(start).getTime() : 0
-  return timeΔ < A_DAY ? DateTime.DATETIME_MED : DateTime.DATE_MED
+  return timeΔ <= A_DAY ? DateTime.DATETIME_MED : DateTime.DATE_MED
 }
 
 export const TimelineDatesRange = () => {

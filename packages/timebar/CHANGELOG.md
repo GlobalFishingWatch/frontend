@@ -1,5 +1,23 @@
 # @globalfishingwatch/timebar
 
+## 1.6.1
+
+### Patch Changes
+
+- 37935df0: Fishing map/more timebar fixes
+
+## 1.6.0
+
+### Minor Changes
+
+- 1a3d0960: Fishing map/presence less than one day
+
+## 1.5.3
+
+### Patch Changes
+
+- 6b374674: Fishing map/minor fixes
+
 ## 1.5.2
 
 ### Patch Changes

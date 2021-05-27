@@ -1,7 +1,9 @@
 import React, { Fragment, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
+import Link from 'redux-first-router-link'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Logo, { SubBrands } from '@globalfishingwatch/ui-components/dist/logo'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
@@ -11,6 +13,7 @@ import {
   updatedCurrentWorkspaceThunk,
 } from 'features/workspace/workspace.slice'
 import {
+  selectLastVisitedWorkspace,
   selectWorkspace,
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
@@ -21,9 +24,10 @@ import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
+import { selectViewport } from 'features/app/app.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
@@ -33,7 +37,7 @@ function SaveWorkspaceButton() {
   const dispatch = useAppDispatch()
   const guestUser = useSelector(isGuestUser)
   const viewport = useSelector(selectViewport)
-  const timerange = useSelector(selectTimeRange)
+  const timerange = useTimerangeConnect()
   const userData = useSelector(selectUserData)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
@@ -75,6 +79,11 @@ function SaveWorkspaceButton() {
           saveCurrentWorkspaceThunk.fulfilled.match(dispatchedAction) ||
           updatedCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)
         ) {
+          uaEvent({
+            category: 'Workspace Management',
+            action: 'Save current workspace',
+            label: dispatchedAction.payload?.name ?? 'Unknown',
+          })
           copyToClipboard(window.location.href)
         } else {
           console.warn('Error saving workspace', dispatchedAction.payload)
@@ -155,7 +164,9 @@ function ShareWorkspaceButton() {
 
 function SidebarHeader() {
   const locationCategory = useSelector(selectLocationCategory)
-  const showInteractionButtons = useSelector(isWorkspaceLocation)
+  const workspaceLocation = useSelector(isWorkspaceLocation)
+  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+  const showBackToWorkspaceButton = !workspaceLocation
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined
@@ -166,12 +177,19 @@ function SidebarHeader() {
   return (
     <Sticky scrollElement=".scrollContainer">
       <div className={styles.sidebarHeader}>
-        <Logo className={styles.logo} subBrand={getSubBrand()} />
-        {showInteractionButtons && (
+        <a href="https://globalfishingwatch.org" className={styles.logoLink}>
+          <Logo className={styles.logo} subBrand={getSubBrand()} />
+        </a>
+        {workspaceLocation && (
           <Fragment>
             <SaveWorkspaceButton />
             <ShareWorkspaceButton />
           </Fragment>
+        )}
+        {showBackToWorkspaceButton && lastVisitedWorkspace && (
+          <Link className={styles.workspaceLink} to={lastVisitedWorkspace}>
+            <IconButton type="border" icon="close" />
+          </Link>
         )}
       </div>
     </Sticky>

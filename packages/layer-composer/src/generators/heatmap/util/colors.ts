@@ -35,16 +35,11 @@ export const rgbaStringToObject = (rgba: string) => {
   }
 }
 
-const componentToHex = (c: number) => {
-  const hex = c.toString(16)
-  return hex.length === 1 ? '0' + hex : hex
+export const rgbaToString = ({ r, g, b, a = 1 }: RGBA) => {
+  return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
-export const rgbaToHex = ({ r, g, b }: RGBA) => {
-  return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
-}
-
-const BLEND_BACKGROUND = '#244979'
+export const BLEND_BACKGROUND = '#0f2e5f'
 export const getBlend = (color1: RGBA, color2: RGBA) => {
   return normal({ ...hexToRgb(BLEND_BACKGROUND), a: 1 }, screen(color1 as RGBA, color2 as RGBA))
 }
@@ -53,7 +48,7 @@ export const getColorRampByOpacitySteps = (
   finalColor: string,
   numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
 ) => {
-  const color = finalColor.includes('#') ? hexToRgbString(finalColor) : finalColor
+  const color = finalColor?.includes('#') ? hexToRgbString(finalColor) : finalColor
   const opacitySteps = [...Array(numSteps)].map((_, i) => i / (numSteps - 1))
   return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
 }
@@ -66,9 +61,9 @@ export const getColorRampToWhite = (
   const steps = [...Array(numSteps - 1)].map((_, i) => {
     const ratio = (i + 1) / numSteps
     const rgb = {
-      r: rgbColor.r + (255 - rgbColor.r) * ratio,
-      g: rgbColor.g + (255 - rgbColor.g) * ratio,
-      b: rgbColor.b + (255 - rgbColor.b) * ratio,
+      r: Math.floor(rgbColor.r + (255 - rgbColor.r) * ratio),
+      g: Math.floor(rgbColor.g + (255 - rgbColor.g) * ratio),
+      b: Math.floor(rgbColor.b + (255 - rgbColor.b) * ratio),
     }
     return `rgb(${rgbToRgbString(rgb)})`
   })

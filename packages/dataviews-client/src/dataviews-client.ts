@@ -1,4 +1,4 @@
-import template from 'lodash/template'
+import { template } from 'lodash'
 import { stringify } from 'qs'
 import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
 import {
@@ -7,7 +7,6 @@ import {
   DataviewInstance,
   ResourceResponseType,
   Dataset,
-  DataviewDatasetConfig,
 } from '@globalfishingwatch/api-types'
 import resolveDataviews from './resolve-dataviews'
 

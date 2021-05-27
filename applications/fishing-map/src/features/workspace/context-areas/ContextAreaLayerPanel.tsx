@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, DatasetStatus } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
@@ -8,6 +9,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
+import { isGuestUser } from 'features/user/user.selectors'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -17,12 +19,14 @@ import Title from '../common/Title'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
+  onToggle?: () => void
 }
 
-function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [colorOpen, setColorOpen] = useState(false)
+  const guestUser = useSelector(isGuestUser)
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -45,7 +49,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
-  const isUserLayer = dataset?.ownerType === 'user'
+  const isUserLayer = !guestUser && dataset?.ownerType === 'user'
 
   useAutoRefreshImportingDataset(dataset)
 
@@ -62,6 +66,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       className={styles.name}
       classNameActive={styles.active}
       dataview={dataview}
+      onToggle={onToggle}
     />
   )
 
@@ -92,6 +97,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           active={layerActive}
           className={styles.switch}
           dataview={dataview}
+          onToggle={onToggle}
         />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>

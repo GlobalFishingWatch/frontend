@@ -1,5 +1,68 @@
 # @globalfishingwatch/layer-composer
 
+## 7.0.3
+
+### Patch Changes
+
+- 9e507541: compute timeseries once on idle
+
+## 7.0.2
+
+### Patch Changes
+
+- Updated dependencies [b230075f]
+  - @globalfishingwatch/fourwings-aggregate@4.0.2
+
+## 7.0.1
+
+### Patch Changes
+
+- Updated dependencies [18fbfda4]
+  - @globalfishingwatch/fourwings-aggregate@4.0.1
+
+## 7.0.0
+
+### Minor Changes
+
+- 1a3d0960: Fishing map/presence less than one day
+
+### Patch Changes
+
+- Updated dependencies [1a3d0960]
+  - @globalfishingwatch/fourwings-aggregate@4.0.0
+
+## 6.1.4
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+- Updated dependencies [7d060771]
+  - @globalfishingwatch/api-types@4.2.4
+
+## 6.1.3
+
+### Patch Changes
+
+- 6b374674: Fishing map/minor fixes
+
+## 6.1.2
+
+### Patch Changes
+
+- d43610ba: Breaks fixes
+
+## 6.1.1
+
+### Patch Changes
+
+- b87943a6: Fishing map/environment fixes
+
+## 6.1.0
+
+### Minor Changes
+
+- 1050379b: legends loading and moved to root metadata
+
 ## 6.0.4
 
 ### Patch Changes

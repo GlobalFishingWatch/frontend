@@ -39,8 +39,8 @@ export const selectTracksData = createSelector(
 
       const trackSegments: TimebarTrackSegment[] = segments.map((segment) => {
         return {
-          start: segment[0].timestamp || 0,
-          end: segment[segment.length - 1].timestamp || 0,
+          start: Math.min(...segment.map((p) => p.timestamp || Number.POSITIVE_INFINITY)),
+          end: Math.max(...segment.map((p) => p.timestamp || Number.NEGATIVE_INFINITY)),
         }
       })
       return {

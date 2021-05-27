@@ -23,13 +23,9 @@ import {
   selectWorkspaceStatus,
   selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
-import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
 import { isActivityDataview } from 'features/workspace/heatmaps/heatmaps.utils'
+import { isGuestUser } from 'features/user/user.selectors'
 import { selectAllDataviews } from './dataviews.slice'
-
-export const isGuestUser = createSelector([selectUserData], (userData) => {
-  return userData?.type === GUEST_USER_TYPE
-})
 
 export const selectDataviews = createSelector(
   [selectAllDataviews, isGuestUser, selectDebugOptions],
@@ -117,6 +113,13 @@ export const selectDataviewInstancesResolved = createSelector(
   }
 )
 
+export const selectDataviewInstancesResolvedVisible = createSelector(
+  [selectDataviewInstancesResolved, selectActivityCategory],
+  (dataviews = []) => {
+    return dataviews.filter((dataview) => dataview.config?.visible)
+  }
+)
+
 export const selectDataviewInstancesByType = (type: Generators.Type) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
@@ -142,13 +145,13 @@ export const selectTrackDataviews = createSelector(
 
 export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
-    (dataview) => !dataview.datasets || dataview.datasets[0].type !== DatasetTypes.UserTracks
+    (dataview) => !dataview.datasets || dataview.datasets?.[0]?.type !== DatasetTypes.UserTracks
   )
 })
 
 export const selectUserTracksDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
-    (dataview) => dataview.datasets && dataview.datasets[0].type === DatasetTypes.UserTracks
+    (dataview) => dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
   )
 })
 
@@ -196,7 +199,14 @@ export const selectActiveActivityDataviews = createSelector(
 
 export const selectEnvironmentalDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
-  (dataviews) => dataviews
+  (dataviews) =>
+    dataviews.filter((d) => {
+      if (!d.datasets?.length) {
+        console.warn('This dataview has no datasets:', d)
+        return false
+      }
+      return true
+    })
 )
 
 export const selectActiveEnvironmentalDataviews = createSelector(

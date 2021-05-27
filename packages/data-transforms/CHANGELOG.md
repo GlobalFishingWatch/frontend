@@ -1,5 +1,17 @@
 # @globalfishingwatch/data-transforms
 
+## 1.3.0
+
+### Minor Changes
+
+- b3f3ca64: Sync valueArray decoding with encoding in api-vessels-service
+
+## 1.2.2
+
+### Patch Changes
+
+- 3b8d5d37: fix longitude auto-detect
+
 ## 1.2.1
 
 ### Patch Changes

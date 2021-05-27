@@ -7,6 +7,7 @@ export {
   TEMPORALGRID_SOURCE_LAYER,
   CONFIG_BY_INTERVAL,
   COLOR_RAMP_DEFAULT_NUM_STEPS,
+  Interval
 } from './generators'
 export * from './types'
 export { frameToDate, quantizeOffsetToDate } from './generators/heatmap/util/time-chunks'

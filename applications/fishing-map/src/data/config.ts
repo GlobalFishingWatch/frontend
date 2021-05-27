@@ -1,19 +1,25 @@
+import ReactGA from 'react-ga'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
-import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
-import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
-import { t } from 'features/i18n/i18n'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
+export const IS_PRODUCTION =
+  (process.env.REACT_APP_WORKSPACE_ENV || process.env.NODE_ENV) === 'production'
 
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
 export const CARRIER_PORTAL_URL =
   process.env.REACT_APP_CARRIER_PORTAL_URL || 'https://carrier-portal.dev.globalfishingwatch.org'
 
+export const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID
+export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
+  ? {}
+  : { debug: true }
+
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const DEFAULT_VERSION = 'v1'
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
+export const FULL_SUFIX = 'full'
 
 // used when no url data and no workspace data
 const now = new Date()
@@ -41,7 +47,7 @@ export const DEFAULT_WORKSPACE = {
   timebarVisualisation: TimebarVisualisations.Heatmap,
   timebarEvents: TimebarEvents.None,
   timebarGraph: TimebarGraphs.None,
-  bivariate: false,
+  bivariateDataviews: undefined,
   analysis: undefined,
   activityCategory: DEFAULT_ACTIVITY_CATEGORY,
   version: DEFAULT_VERSION,
@@ -77,79 +83,6 @@ export const THINNING_LEVELS = {
 
 // Params to use replace instead of push for router history to make navigation easier
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
-
-export const sources: SelectOption[] = [
-  {
-    id: 'ais',
-    label: 'AIS',
-  },
-  {
-    id: 'vms-chile',
-    label: 'VMS Chile',
-  },
-  {
-    id: 'vms-indonesia',
-    label: 'VMS Indonesia',
-  },
-  {
-    id: 'vms-panama',
-    label: 'VMS Panama',
-  },
-]
-
-export const ACTIVITY_OPTIONS: ChoiceOption[] = [
-  {
-    id: 'fishing',
-    title: t('common.fishing', 'Fishing'),
-  },
-  {
-    id: 'presence',
-    title: t('common.presence', 'Presence'),
-  },
-]
-
-export const TIMEBAR_EVENT_OPTIONS: SelectOption[] = [
-  {
-    id: 'all',
-    label: t('timebarSettings.eventOptions', 'All events'),
-  },
-  {
-    id: 'fishing',
-    label: t('timebarSettings.eventOptions', 'Fishing'),
-  },
-  {
-    id: 'encounters',
-    label: t('timebarSettings.eventOptions', 'Encounters'),
-  },
-  {
-    id: 'loitering',
-    label: t('timebarSettings.eventOptions', 'Loitering'),
-  },
-  {
-    id: 'ports',
-    label: t('timebarSettings.eventOptions', 'Port visits'),
-  },
-  {
-    id: 'none',
-    label: t('timebarSettings.eventOptions', 'None'),
-  },
-]
-
-export const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = [
-  {
-    id: 'speed',
-    label: t('timebarSettings.graphOptions.speed', 'Speed'),
-  },
-  {
-    id: 'depth',
-    label: t('timebarSettings.graphOptions.depth', 'Depth (Coming soon)'),
-    disabled: true,
-  },
-  {
-    id: 'none',
-    label: t('timebarSettings.graphOptions.none', 'None'),
-  },
-]
 
 export const POPUP_CATEGORY_ORDER = [
   DataviewCategory.Fishing,

@@ -1,134 +1,393 @@
 {
-  "public-global-fishing-effort": {
-    "name": "AIS",
-    "description": "Global Fishing Watch utiliza datos sobre la identidad, el tipo, la ubicación, la velocidad, y más que se emite utilizando el Sistema de Identificación Automática (AIS) y recolectado a través de satélites y receptores terrestres. AIS fue desarrollado para la prevención de colisión/esquivación. Global Fishing Watch analiza los datos de AIS recopilados de los buques que nuestra investigación ha identificado como conocidos o posibles pesqueros comerciales, y aplica un algoritmo de detección de pesca para determinar “actividad pesquera aparente” basado en cambios en la velocidad y dirección de los buques. El algoritmo clasifica cada punto de datos de emisión de AIS para estos buques como aparentemente pesca o no pesca y muestra el primero en el mapa de calor de la actividad pesquera de Global Fishing Watch. Los datos AIS como emisión pueden variar en integridad, precisión y calidad. Además, la recogida de datos por parte de receptores satelitales o terrestres, puede introducir errores a través de datos faltantes o inexactos. El algoritmo de detección de la pesca de Global Fishing Watch es un mejor esfuerzo matemático para identificar “la actividad pesquera aparente”. Como resultado, es posible que algunas actividades pesqueras no sean identificadas como tales por Global Fishing Watch; Por el contrario, Global Fishing Watch puede mostrar una actividad pesquera aparente en la que la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica a los diseñadores de la actividad pesquera de los buques. incluyendo sinónimos del término “actividad pesquera”, como “pesca” o “esfuerzo pesquero”, como “aparente”, en lugar de seguro. La información de Any/all Global Fishing Watch sobre “aparente actividad de pesca” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Global Fishing Watch está tomando medidas para asegurar que los diseñadores de la actividad pesquera sean lo más exactos posible. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de buques que dan lugar a la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y técnicas de clasificación automatizadas."
+  "carriers-clusterbuster": {
+    "name": "Encuentros",
+    "description": "Identificado de los datos AIS como lugares donde dos buques, un transportador y uno pesquero; estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media de <2 nudos, y a menos de 10 km de la costa.",
+    "schema": {
+      "fields": "campos"
+    }
+  },
+  "public-areas-to-be-avoided-1618836788619": {
+    "name": "Áreas que deben ser evitadas por embarcaciones transportando cargas",
+    "description": "25 nm de búfer alrededor de las islas recomendando circunnavegar",
+    "schema": {}
   },
   "public-chile-fishing-effort": {
-    "name": "VMS Chile",
-    "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por el regulador de pesca y acuicultura del gobierno chileno, SERNAPESCA. También es posible utilizar la ficha FILTERS en nuestra caja de herramientas para ver por separado los datos del VMS chileno para la pesca artesanal (<18 metros) y buques industriales de pesca (>18 metros). Tenga en cuenta que hay unos pocos barcos que son <18 metros pero considerados industriales porque estaban registrados en la captura de cuotas industriales. SERNAPESCA también está utilizando nuestro mapa para visualizar y rastrear las posiciones de los buques para su flota, incluyendo los buques involucrados en la acuicultura. (Visite el mapa en el sitio web de SERNAPESCA. Los datos se recogen utilizando la VMS chilena vía satélites y receptores terrestres, y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como la pesca aparentemente o no la pesca y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. VMS transmite datos de forma muy diferente a AIS y puede dar diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algoritmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor puede mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de seguro. La información de Any/all Global Fishing Watch sobre “aparente actividad de pesca” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada."
+    "name": "VMS de Chile",
+    "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por el Servicio Nacional de Pesca y Acuicultura del gobierno chileno, SERNAPESCA. También es posible utilizar la ficha FILTERS en nuestra caja de herramientas para ver por separado los datos del VMS chileno para la pesca artesanal (<18 metros) y buques industriales de pesca (>18 metros). Tenga en cuenta que hay unos pocos barcos que son <18 metros pero considerados industriales porque estaban registrados en la captura de cuotas industriales. SERNAPESCA también está utilizando nuestro mapa para visualizar y rastrear las posiciones de los buques para su flota, incluyendo los buques involucrados en la acuicultura (Visite el mapa en el sitio web de SERNAPESCA). Los datos se recogen utilizando los datos VMS chilenos vía satélites y receptores terrestres, y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "marca",
+      "fleet": {
+        "keyword": "flota",
+        "enum": {
+          "chile_vms_small_fisheries": "chile_vms_pesca_pequeña",
+          "chile_vms_industry": "industria chile_vms_"
+        }
+      },
+      "hours": "horas",
+      "vessel_id": "i_id",
+      "elevation_m": "altitud_m",
+      "distance_from_port_m": "distancia_de_puerto_m",
+      "distance_from_shore_m": "distancia_de_oro_m"
+    }
   },
-  "public-indonesia-fishing-effort": {
-    "name": "VMS Indonesia",
-    "description": "Esta capa de Global Fishing Watch utiliza los datos proporcionados por el Ministerio de Asuntos Marítimos y Pesca del Gobierno de Indonesia. Los datos se recogen utilizando su Sistema de Monitorización de Buques (VMS) a través de satélites y receptores terrestres, y contiene identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos desarrollados para los datos AIS para identificar la actividad y las conductas de la pesca. El algoritmo clasifica cada punto de datos de emisión de estos buques como una pesca aparentemente o no pesca y muestra la primera en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. VMS transmite datos de forma muy diferente a AIS y puede dar diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algoritmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor puede mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” o “esfuerzo pesquero”, como “aparente” en lugar de seguro. La información de Any/all Global Fishing Watch sobre “aparente actividad de pesca” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y técnicas de clasificación automatizadas."
+  "public-dgg_sar_caribe_match_2019": {
+    "name": "SAR with an AIS-matched vessel",
+    "description": "Vessels identified using synthetic aperture radar (SAR) and matched to a vessel using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
+    "schema": {}
   },
-  "public-panama-fishing-effort": {
-    "name": "VMS de Panamá",
-    "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por la Autoridad Panamana de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panama vía satélite y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Los datos del buque portador de Panama también están disponibles aquí. Cada punto en la capa de datos del buque de transporte representa una posición de los transportistas, pero no todas las posiciones se muestran. Las posiciones del buque portador se muestran una vez al día. En el futuro, esperamos poder mostrar más posiciones. Haga clic en la posición del transportista para ver el camino completo de la compañía. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como la pesca aparentemente o no la pesca y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. VMS transmite datos de forma muy diferente a AIS y puede dar diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algoritmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor puede mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de seguro. La información de Any/all Global Fishing Watch sobre “aparente actividad de pesca” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada."
-  },
-  "public-peru-fishing-effort": {
-    "name": "VMS del Perú",
-    "description": "Esta capa de Global Fishing Watch utiliza los datos proporcionados por el Ministerio de Producción del Gobierno peruano, Sector de Pesca (PRODUCE). El permiso para incluir datos peruanos exigió que se implementara un retraso de 10 días para la publicación. Los datos se recogen utilizando su Sistema de Monitorización de Buques (VMS) a través de satélites y receptores terrestres, y contiene un tipo de engranaje de identidad, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos desarrollados para los datos AIS para identificar la actividad y las conductas de la pesca. El algoritmo clasifica cada punto de datos de emisión de estos buques como una pesca aparentemente o no pesca y muestra la primera en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. VMS transmite datos de forma muy diferente a AIS y puede dar diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algoritmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor puede mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” o “esfuerzo pesquero”, como “aparente” en lugar de seguro. La información de Any/all Global Fishing Watch sobre “aparente actividad de pesca” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y técnicas de clasificación automatizadas."
-  },
-  "public-mpa-all": {
-    "name": "Áreas Marinas Protegidas (WDPA)",
-    "description": "El término Áreas Marinas Protegidas incluye reservas marinas, áreas marinas totalmente protegidas, zonas de veda, santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente, por nombrar algunos. Muchos de estos tienen niveles de protección bastante diferentes, y la gama de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. Fuente: Base de datos mundial sobre áreas protegidas (WDPA)"
-  },
-  "public-mpa-no-take": {
-    "name": "MPA - No tomar (WDPA)",
-    "description": "El término Áreas Marinas Protegidas incluye reservas marinas, áreas marinas totalmente protegidas, zonas sin tomar santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente, por nombrar algunos. Muchos de ellos tienen niveles de protección muy diferentes y el abanico de actividades permitidas o prohibidas dentro de sus fronteras también varía considerablemente. No se creó ninguna capa de Toma utilizando los datos disponibles en el Planeta Marino Protegido WDPA usando el filtro NO_TAKE = 'Todos'. Fuente: Base de datos mundial sobre áreas protegidas (WDPA)"
-  },
-  "public-mpa-restricted": {
-    "name": "MPA - Restringido (WDPA)",
-    "description": "El término Áreas Marinas Protegidas incluye reservas marinas, áreas marinas totalmente protegidas, zonas sin tomar santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente, por nombrar algunos. Muchos de ellos tienen niveles de protección muy diferentes y el abanico de actividades permitidas o prohibidas dentro de sus fronteras también varía considerablemente. No se creó ninguna capa de Toma utilizando los datos disponibles en el Planeta Marino Protegido WDPA usando el filtro NO_TAKE = 'Parte'. Fuente: Base de datos mundial sobre áreas protegidas (WDPA)"
+  "public-dgg_sar_caribe_not_match_2019": {
+    "name": "SAR without an AIS-matched vessel",
+    "description": "Vessels identified using synthetic aperture radar (SAR) without a known match to any vessel recorded using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
+    "schema": {}
   },
   "public-eez-areas": {
-    "name": "EEZ (marineregions.org)",
-    "description": "Instituto Marino de Flandes (2019). Geobase de datos de Límites Marítimos: Límites Marítimos y Zonas Económicas Exclusivas (200NM), versión 11. Fuente: marineregions.org"
+    "name": "ZEE (Fuente: Marine Regions)",
+    "description": "Instituto Marino de Flandes (2019). Geobase de datos de Límites Marítimos: Límites Marítimos y Zonas Económicas Exclusivas (200MN), versión 11. Fuente: marineregions.org",
+    "schema": {}
   },
-  "public-tuna-rfmo": {
-    "name": "RFMO atunero",
-    "description": "RFMO significa Organización Regional de Manejo de Pesca. Estas organizaciones son organizaciones internacionales formadas por países con un interés compartido en gestionar o conservar las poblaciones de peces de un área. Algunos OROP gestionan todas las poblaciones de peces encontradas en un área específica, mientras que otros se centran en particular en especies altamente migratorias, en particular el atún, a través de vastas zonas geográficas. La capa RFMO en el mapa mundial de vigilancia de la pesca incluye actualmente los cinco RFMO atuneros."
+  "public-fd-chlorophyl-ascension-v2": {
+    "name": "Concentración de clorofila",
+    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
   },
-  "public-wpp-nri": {
-    "name": "WPP NRI",
-    "description": "El WPP-NRI (Wilayah Pengelolaan Perikanan Negara Republik Indonesia) son áreas de ordenación pesquera para la pesca, la conservación, la investigación, y desarrollo pesquero que abarca las aguas interiores, las aguas archipiélagas, el mar territorial, dentro y fuera de la zona económica exclusiva de Indonesia."
+  "public-fd-chlorophyl-caribe-v2": {
+    "name": "Concentración de clorofila",
+    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-galapagos-v2": {
+    "name": "Concentración de clorofila",
+    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-niue-v2": {
+    "name": "Concentración de clorofila",
+    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-palau-v2": {
+    "name": "Concentración de clorofila",
+    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-tristan-v2": {
+    "name": "Concentración de clorofila",
+    "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-ascension-v2": {
+    "name": "Salinidad",
+    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-caribe-v2": {
+    "name": "Salinidad",
+    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-galapagos-v2": {
+    "name": "Salinidad",
+    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-niue-v2": {
+    "name": "Salinidad",
+    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-palau-v2": {
+    "name": "Salinidad",
+    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-tristan-v2": {
+    "name": "Salinidad",
+    "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-ascension-v2": {
+    "name": "Temperatura de la superficie del mar",
+    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-caribe-v2": {
+    "name": "Temperatura de la superficie del mar con datos del 2020",
+    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-galapagos-v2": {
+    "name": "Temperatura de la superficie del mar",
+    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-niue-v2": {
+    "name": "Temperatura de la superficie del mar",
+    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-palau-v2": {
+    "name": "Temperatura de la superficie del mar",
+    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-tristan-v2": {
+    "name": "Temperatura de la superficie del mar",
+    "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-global-fishing-effort": {
+    "name": "AIS",
+    "description": "Utilizamos datos sobre la identidad, el tipo, la ubicación, la velocidad, y más que se emite utilizando el Sistema de Identificación Automática (AIS) y recolectado a través de satélites y receptores terrestres. AIS fue desarrollado para la prevención de colisión/esquivación. Global Fishing Watch analiza los datos de AIS recopilados de los buques que nuestra investigación ha identificado como conocidos o posibles pesqueros comerciales, y aplica un algoritmo de detección de pesca para determinar una “aparente actividad pesquera” basado en cambios en la velocidad y dirección de los buques. El algoritmo clasifica cada punto de datos de emisión de AIS para estos buques como pesca aparente o sin actividad pesquera y exhibe el primero en el mapa de calor de la actividad pesquera de Global Fishing Watch. Los datos AIS como emisión pueden variar en integridad, precisión y calidad. Además, la recolección de datos por parte de receptores satelitales o terrestres, puede introducir errores a través de datos faltantes o inexactos. El algoritmo de detección de la pesca de Global Fishing Watch es un mejor esfuerzo matemático para identificar una “aparente actividad pesquera”. Como resultado, es posible que algunas actividades pesqueras no sean identificadas como tales por Global Fishing Watch. Por el contrario, Global Fishing Watch puede mostrar una actividad pesquera aparente en la que la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica “actividad pesquera”,“pesca” o “esfuerzo pesquero” como “aparente”, en lugar de brindar certeza sobre la actividad. En todo o en parte, la información de Global Fishing Watch sobre “aparente actividad de pesca” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Global Fishing Watch está tomando medidas para asegurar que la identificación del comportamiento de la actividad pesquera sea lo más exacta posible. Los algoritmos de detección de pesca de Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de buques que dan lugar a la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y técnicas de clasificación automatizadas.",
+    "schema": {
+      "flag": "marca",
+      "geartype": {
+        "keyword": "Arte de pesca",
+        "enum": {
+          "tuna_purse_seines": "redes de cerco atunera",
+          "driftnets": "redes de deriva",
+          "trollers": "curricaneros",
+          "set_longlines": "palangres",
+          "purse_seines": "redes de cerco",
+          "pots_and_traps": "trampas y nasas",
+          "other_fishing": "Otras pesquerías",
+          "dredge_fishing": "Pesca de dragado",
+          "set_gillnets": "redes de enmalle",
+          "fixed_gear": "equipo fijo",
+          "trawlers": "rastreadores",
+          "fishing": "pesqueros",
+          "seiners": "cerqueros",
+          "other_purse_seines": "Otras redes de cerco",
+          "other_seines": "otras redes",
+          "squid_jigger": "Jigger calamar",
+          "pole_and_line": "vara",
+          "drifting_longlines": "palangres a la deriva"
+        }
+      },
+      "vessel_id": "i_id"
+    }
+  },
+  "public-global-presence": {
+    "name": "AIS",
+    "description": "Utilizamos datos sobre la identidad, el tipo, la ubicación, la velocidad, la dirección y más de una embarcación que se transmiten mediante el Sistema de identificación automática (AIS) y se recopilan a través de satélites y receptores terrestres. AIS fue desarrollado para seguridad / prevención de colisiones. Analizamos los datos AIS recopilados de los barcos que nuestra investigación ha identificado como transportistas. La capa de actividad muestra un mapa de calor de la presencia de las embarcaciones. La presencia se determina tomando una posición por día por embarcación a partir de las posiciones transmitidas por el AIS de la embarcación.",
+    "schema": {
+      "flag": "bandera",
+      "vessel_id": "vessel_id",
+      "vessel_type": {
+        "keyword": "Tipos de embarcaciones",
+        "enum": {
+          "fishing": "Pesqueras",
+          "carrier": "De transporte",
+          "unknown": "Otros"
+        }
+      }
+    }
   },
   "public-high-seas": {
     "name": "Alta mar",
-    "description": "Los High Seas son cualquier área del océano más allá de las Zonas Económicas Exclusivas (EEZ). Estos bolsillos pueden ser difíciles de distinguir de las múltiples jurisdicciones de la ZEE que los rodean, por lo que tenemos una capa que los resalta."
+    "description": "El alta mar es cualquier área de la columna de agua del océano más allá de las aguas jurisdiccionales. Estos puntos pueden ser difíciles de distinguir de las múltiples jurisdicciones de la ZEE que los rodean, por lo que tenemos una capa que los resalta.",
+    "schema": {}
   },
-  "fd-salinity-caribe-v2": {
-    "name": "Salinidad",
-    "description": "Salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones."
+  "public-indonesia-fishing-effort": {
+    "name": "VMS de Indonesia",
+    "description": "Los datos de VMS Indonesia no están disponibles desde julio de 2020.\n\nEsta capa de Global Fishing Watch utiliza los datos proporcionados por el Ministerio de Asuntos Marítimos y Pesca del Gobierno de Indonesia. Los datos se recogen utilizando su Sistema de Monitorización de Buques (VMS) a través de satélites y receptores terrestres, y contiene identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "marca",
+      "hours": "horas",
+      "geartype": {
+        "keyword": "arte de pesca",
+        "enum": {
+          "Purse Seine Group (2 boat) Small Pelagics": "Pelágica Pequeña del Grupo de Sena (2 barcos)",
+          "Purse Seine Group (2 boat) Big Pelagics": "Pelágicos Grandes del Grupo de Sena de Purse (2 barcos)",
+          "Cast Nets": "Emitir redes",
+          "Pots": "Macetas",
+          "Anchored gillnets": "Redes de enmalle ancladas",
+          "Lampara Seine Nets": "Lampara Seine Nets",
+          "Shrimp net": "Red de Camarón",
+          "Purse Seine Big Pelagics with one boat": "Pelágicos Grandes del Sena con un barco",
+          "Basic longline": "Longline básico",
+          "Pole-and-line": "Polo y línea",
+          "Hand Line Tuna": "Atún de línea de mano",
+          "Handline": "Línea de mano",
+          "Purse Seine Small Pelagics": "Pequeña Pelágica de Sena de bolsa",
+          "Stick-Held lift net": "Red de elevación con bastidor",
+          "Oceanic gillnet": "Red oceánica",
+          "Longline Tuna": "Atún longline",
+          "Fish net/dragnet": "Red de pescado/arrastre",
+          "Squid hooking": "Enganche de calamar"
+        }
+      },
+      "vessel_id": "i_id",
+      "elevation_m": "altitud_m",
+      "distance_from_port_m": "distancia_de_puerto_m",
+      "distance_from_shore_m": "distancia_de_oro_m"
+    }
   },
-  "fd-water-temperature-caribe-v2": {
-    "name": "Temperatura de la superficie del mar",
-    "description": "La temperatura de la superficie marina de interpolación óptima de 1/4° NOAA (o OISST diario) es un análisis construido combinando observaciones de diferentes plataformas (satélites, buques, boyas y Argo flotan en una red global regular. Un mapa SST espacialmente completo se produce interpolando para llenar lagunas. La metodología incluye el ajuste sesgado de las observaciones satelitales y navales (referenciado a las boyas) para compensar las diferencias de plataforma y sesgo de los sensores."
+  "public-inshore-fishing-zone-1618837176535": {
+    "name": "Zona de pesca de bajura",
+    "description": "50 nm alrededor del archipiélago de Tristán y 40 nm alrededor de Gough (8% de la ZEE)",
+    "schema": {}
   },
-  "fd-chlorophyl-caribe-v2": {
-    "name": "Concentración de clorofilo",
-    "description": "La clorofila-a es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas."
+  "public-mpa-all": {
+    "name": "AMPs (Fuente: WDPA)",
+    "description": "El término Áreas Marinas Protegidas incluye, por ejemplo, reservas marinas, áreas marinas totalmente protegidas, zonas sin tomar santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente. Muchos de ellos tienen diferentes niveles de protección y el abanico de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. La capa de áreas sin actividad pesquera se creó utilizando los datos disponibles en el Planeta Marino Protegido WDPA usando el filtro NO_TAKE = 'Todos'. Fuente: Base de datos mundial sobre áreas protegidas (WDPA). Última actualización: Mayo 2021.",
+    "schema": {}
   },
-  "fd-salinity-galapagos-v2": {
-    "name": "Salinidad",
-    "description": "Salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones."
+  "public-mpa-no-take": {
+    "name": "AMPs - Sin actividad pesquera (Fuente: WDPA)",
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. No Take layer was created using the data available from the Marine Protected Planet WDPA using the filter NO_TAKE = 'All'. Source: World Database on Protected Areas (WDPA)",
+    "schema": {}
   },
-  "fd-water-temperature-galapagos-v2": {
-    "name": "Temperatura de la superficie del mar",
-    "description": "La temperatura de la superficie marina de interpolación óptima de 1/4° NOAA (o OISST diario) es un análisis construido combinando observaciones de diferentes plataformas (satélites, buques, boyas y Argo flotan en una red global regular. Un mapa SST espacialmente completo se produce interpolando para llenar lagunas. La metodología incluye el ajuste sesgado de las observaciones satelitales y navales (referenciado a las boyas) para compensar las diferencias de plataforma y sesgo de los sensores."
+  "public-mpa-restricted": {
+    "name": "AMPs - Uso restringido (Fuente: WDPA)",
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. No Take layer was created using the data available from the Marine Protected Planet WDPA using the filter NO_TAKE = 'Part'. Source: World Database on Protected Areas (WDPA)",
+    "schema": {}
   },
-  "fd-chlorophyl-galapagos-v2": {
-    "name": "Concentración de clorofilo",
-    "description": "La clorofila-a es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas."
+  "public-no-take-zone-1618836692786": {
+    "name": "MPA - Sin actividad pesquera (Fuente: WDPA)",
+    "description": "90% de la ZEE",
+    "schema": {}
   },
-  "fd-salinity-tristan-v2": {
-    "name": "Salinidad",
-    "description": "Salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones."
+  "public-panama-fishing-effort": {
+    "name": "VMS de Panamá",
+    "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por la Autoridad Panamana de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panama vía satélite y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Los datos del buque portador de Panama también están disponibles aquí. Cada punto en la capa de datos del buque de transporte representa una posición de los transportistas, pero no todas las posiciones se muestran. Las posiciones del buque portador se muestran una vez al día. En el futuro, esperamos poder mostrar más posiciones. Haga clic en la posición del transportista para ver el camino completo de la compañía. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "marca",
+      "hours": "horas",
+      "vessel_id": "i_id",
+      "elevation_m": "altitud_m",
+      "distance_from_port_m": "distancia_de_puerto_m",
+      "distance_from_shore_m": "distancia_de_oro_m"
+    }
   },
-  "fd-water-temperature-tristan-v2": {
-    "name": "Temperatura de la superficie del mar",
-    "description": "La temperatura de la superficie marina de interpolación óptima de 1/4° NOAA (o OISST diario) es un análisis construido combinando observaciones de diferentes plataformas (satélites, buques, boyas y Argo flotan en una red global regular. Un mapa SST espacialmente completo se produce interpolando para llenar lagunas. La metodología incluye el ajuste sesgado de las observaciones satelitales y navales (referenciado a las boyas) para compensar las diferencias de plataforma y sesgo de los sensores."
+  "public-panama-fishing-vessels": {
+    "name": "VMS Panama",
+    "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por la Autoridad Panamana de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panama vía satélite y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Los datos del buque portador de Panama también están disponibles aquí. Cada punto en la capa de datos del buque de transporte representa una posición de los transportistas, pero no todas las posiciones se muestran. Las posiciones del buque portador se muestran una vez al día. En el futuro, esperamos poder mostrar más posiciones. Haga clic en la posición del transportista para ver el camino completo de la compañía. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
+    "schema": {
+      "id": "id",
+      "flag": "bandera",
+      "source": "source",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
   },
-  "fd-chlorophyl-tristan-v2": {
-    "name": "Concentración de clorofilo",
-    "description": "La clorofila-a es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas."
+  "public-peru-fishing-effort": {
+    "name": "VMS del Perú",
+    "description": "Esta capa de Global Fishing Watch utiliza los datos proporcionados por el Ministerio de la Producción del Gobierno peruano (PRODUCE). El permiso para incluir datos peruanos exigió que se implementara un retraso de 10 días para la publicación. Los datos se recogen utilizando su Sistema de Monitorización de Buques (VMS) a través de satélites y receptores terrestres, y contiene un tipo de engranaje de identidad, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "marca",
+      "fleet": {
+        "keyword": "flota",
+        "enum": {
+          "industrial": "industrial",
+          "artisanal": "artisanal",
+          "not defined": "no definido"
+        }
+      },
+      "hours": "horas",
+      "origin": {
+        "keyword": "origen",
+        "enum": {
+          "PER": "Por",
+          "Foreign": "Extranjero"
+        }
+      },
+      "vessel_id": "i_id",
+      "elevation_m": "altitud_m",
+      "distance_from_port_m": "distancia_de_puerto_m",
+      "distance_from_shore_m": "distancia_de_oro_m"
+    }
   },
-  "fd-salinity-ascension-v2": {
-    "name": "Salinidad",
-    "description": "Salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones."
+  "public-tristan-seamounts-200-1618586314138": {
+    "name": "Profundidad: -200 m",
+    "description": "",
+    "schema": {}
   },
-  "fd-water-temperature-ascension-v2": {
-    "name": "Temperatura de la superficie del mar",
-    "description": "La temperatura de la superficie marina de interpolación óptima de 1/4° NOAA (o OISST diario) es un análisis construido combinando observaciones de diferentes plataformas (satélites, buques, boyas y Argo flotan en una red global regular. Un mapa SST espacialmente completo se produce interpolando para llenar lagunas. La metodología incluye el ajuste sesgado de las observaciones satelitales y navales (referenciado a las boyas) para compensar las diferencias de plataforma y sesgo de los sensores."
+  "public-tristan-seamounts-3000-1618586349746": {
+    "name": "Profundidad: -3000 m",
+    "description": "",
+    "schema": {}
   },
-  "fd-chlorophyl-ascension-v2": {
-    "name": "Concentración de clorofilo",
-    "description": "La clorofila-a es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas."
+  "public-tristan-seamounts-existing-1618586378121": {
+    "name": "Zonas de pesca existentes en los montes submarinos",
+    "description": "2% de la ZEE",
+    "schema": {}
   },
-  "fd-salinity-palau-v2": {
-    "name": "Salinidad",
-    "description": "Salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones."
+  "public-tuna-rfmo": {
+    "name": "OROPs (Fuente: FAO)",
+    "description": "OROP significa Organización Regional de Ordenación de Pesca. Estas organizaciones son organizaciones internacionales formadas por países con un interés compartido en gestionar o conservar las poblaciones de peces de un área determinada. Algunas OROP gestionan todas las poblaciones de peces encontradas en un área específica, mientras que otras se centran en especies altamente migratorias, en particular el atún, a través de vastas zonas geográficas. La capa OROP en el mapa mundial de vigilancia de la pesca incluye actualmente las cinco OROP atuneras.",
+    "schema": {}
   },
-  "fd-water-temperature-palau-v2": {
-    "name": "Temperatura de la superficie del mar",
-    "description": "La temperatura de la superficie marina de interpolación óptima de 1/4° NOAA (o OISST diario) es un análisis construido combinando observaciones de diferentes plataformas (satélites, buques, boyas y Argo flotan en una red global regular. Un mapa SST espacialmente completo se produce interpolando para llenar lagunas. La metodología incluye el ajuste sesgado de las observaciones satelitales y navales (referenciado a las boyas) para compensar las diferencias de plataforma y sesgo de los sensores."
+  "public-wdpa-may-2021-marine": {
+    "name": "AMPs (Fuente: WDPA)",
+    "description": "El término Áreas Marinas Protegidas (AMPs) incluye, por ejemplo, reservas marinas, áreas marinas totalmente protegidas, zonas de veda, santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente. Muchos de ellos tienen diferentes niveles de protección, y la gama de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. Fuente: Base de datos mundial sobre áreas protegidas (WDPA). Última actualización: Mayo 2021.",
+    "schema": {}
   },
-  "fd-chlorophyl-palau-v2": {
-    "name": "Concentración de clorofilo",
-    "description": "La clorofila-a es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas."
-  },
-  "fd-salinity-niue-v2": {
-    "name": "Salinidad",
-    "description": "Salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones."
-  },
-  "fd-water-temperature-niue-v2": {
-    "name": "Temperatura de la superficie del mar",
-    "description": "La temperatura de la superficie marina de interpolación óptima de 1/4° NOAA (o OISST diario) es un análisis construido combinando observaciones de diferentes plataformas (satélites, buques, boyas y Argo flotan en una red global regular. Un mapa SST espacialmente completo se produce interpolando para llenar lagunas. La metodología incluye el ajuste sesgado de las observaciones satelitales y navales (referenciado a las boyas) para compensar las diferencias de plataforma y sesgo de los sensores."
-  },
-  "fd-chlorophyl-niue-v2": {
-    "name": "Concentración de clorofilo",
-    "description": "La clorofila-a es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas."
-  },
-  "dgg_sar_caribe_match_2019": {
-    "name": "SAR coincide con 2019",
-    "description": "TBD"
-  },
-  "dgg_sar_caribe_not_match_2019": {
-    "name": "SAR no coincide con 2019",
-    "description": "TBD"
-  },
-  "carriers-clusterbuster": {
-    "name": "Eventos encontrados",
-    "description": "Identificado de los datos AIS como lugares donde dos asalariados, un portador y una pesca; estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media <2 nudos, mientras que al menos 10 km de un fondo costero"
+  "public-wpp-nri": {
+    "name": "WPP NRI",
+    "description": "El WPP-NRI (Wilayah Pengelolaan Perikanan Negara Republik Indonesia) son áreas de ordenación pesquera para la pesca, la conservación, la investigación, y desarrollo pesquero que abarca las aguas interiores, las aguas archipiélagas, el mar territorial, dentro y fuera de la Zona Económica Exclusiva de Indonesia.",
+    "schema": {}
   }
 }

@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -10,12 +9,12 @@ import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.ho
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { selectTimeRange } from 'features/app/app.selectors'
 import { formatInfoField } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useViewport from '../map-viewport.hooks'
 import styles from './Popup.module.css'
 
@@ -27,7 +26,7 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { apiEventStatus } = useClickedEventConnect()
-  const { start, end } = useSelector(selectTimeRange)
+  const { start, end } = useTimerangeConnect()
   const { viewport } = useViewport()
   const { carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier } =
     useCarrierLatestConnect()

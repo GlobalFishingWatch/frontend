@@ -1,5 +1,4 @@
-import zip from 'lodash/zip'
-import flatten from 'lodash/flatten'
+import { zip, flatten } from 'lodash'
 import type { AnyLayer, FillLayer, LineLayer, Expression } from '@globalfishingwatch/mapbox-gl'
 import { Type, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
@@ -57,7 +56,7 @@ class UserContextGenerator {
           color: config.color,
           interactive: true,
           generatorId,
-          group: Group.OutlinePolygonsBackground,
+          group: Group.OutlinePolygonsFill,
           uniqueFeatureInteraction: true,
           legend: {
             type: 'colorramp',
@@ -83,7 +82,7 @@ class UserContextGenerator {
         legend: {
           type: 'solid',
           ...config.metadata?.legend,
-          group: Group.OutlinePolygons,
+          group: Group.OutlinePolygonsHighlighted,
         },
       },
     }
@@ -99,7 +98,7 @@ class UserContextGenerator {
       metadata: {
         interactive: true,
         generatorId: generatorId,
-        group: Group.OutlinePolygonsBackground,
+        group: Group.OutlinePolygonsFill,
       },
     }
     return [lineLayer, interactionLayer]

@@ -28,9 +28,9 @@ export interface GeneratorFeature {
 }
 
 export interface GlobalGeneratorConfig {
-  start: string
-  end: string
-  zoom: number
+  start?: string
+  end?: string
+  zoom?: number
   token?: string
 }
 
@@ -41,6 +41,7 @@ export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
 export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | null
 
 export interface GeneratorLegend {
+  type?: string
   label?: string
   unit?: string
   color?: string
@@ -276,8 +277,6 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   datasetsStart?: string
   datasetsEnd?: string
   interactive?: boolean
-  staticStart?: string
-  staticEnd?: string
   /**
    * Defines a fixed or a supported list of intervals in an Array format
    */

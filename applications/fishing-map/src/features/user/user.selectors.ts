@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import orderBy from 'lodash/orderBy'
+import { orderBy } from 'lodash'
 import { DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -22,17 +22,6 @@ export const isUserLogged = createSelector(
     return status === AsyncReducerStatus.Finished && logged
   }
 )
-
-export const isUserAuthorized = createSelector([selectUserData], (user) => {
-  return (
-    user?.permissions.find(
-      (permission) =>
-        permission.type === 'application' &&
-        permission.value === 'fishing-map' &&
-        permission.action === 'map.load'
-    ) !== undefined
-  )
-})
 
 export const selectUserId = createSelector([selectUserData], (userData) => {
   return userData?.id

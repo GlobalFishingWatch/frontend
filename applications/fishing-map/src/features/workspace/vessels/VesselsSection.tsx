@@ -1,12 +1,13 @@
 import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
-import { isSearchAllowed } from 'features/search/search.selectors'
+import { isBasicSearchAllowed } from 'features/search/search.selectors'
 import VesselLayerPanel from './VesselLayerPanel'
 
 function VesselsSection(): React.ReactElement {
@@ -14,9 +15,13 @@ function VesselsSection(): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
-  const searchAllowed = useSelector(isSearchAllowed)
+  const searchAllowed = useSelector(isBasicSearchAllowed)
 
   const onSearchClick = useCallback(() => {
+    uaEvent({
+      category: 'Search Vessel',
+      action: 'Click search icon to open search panel',
+    })
     dispatchQueryParams({ query: '' })
   }, [dispatchQueryParams])
 

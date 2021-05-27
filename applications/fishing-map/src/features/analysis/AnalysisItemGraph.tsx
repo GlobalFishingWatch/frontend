@@ -10,13 +10,11 @@ import {
   Area,
 } from 'recharts'
 import { format } from 'd3-format'
-import min from 'lodash/min'
-import max from 'lodash/max'
+import { min, max } from 'lodash'
 import { DateTime } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer/dist/generators/heatmap/util/time-chunks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import i18n from 'features/i18n/i18n'
-import { Range } from 'features/timebar/timebar.slice'
 import { toFixed } from 'utils/shared'
 import styles from './AnalysisGraph.module.css'
 
@@ -135,10 +133,10 @@ const AnalysisGraphTooltip = (props: any) => {
   return null
 }
 
-const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps; timeRange: Range }> = (
+const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps; start: string; end: string }> = (
   props
 ) => {
-  const { start, end } = props.timeRange
+  const { start, end } = props
   const { timeseries, interval = '10days', sublayers } = props.graphData
 
   const dataFormated = useMemo(() => {
@@ -160,10 +158,10 @@ const AnalysisItemGraph: React.FC<{ graphData: AnalysisGraphProps; timeRange: Ra
   if (!dataFormated) return null
 
   const dataMin: number = dataFormated.length
-    ? (min(dataFormated.flatMap(({ range }) => range[0])) as number)
+    ? (min(dataFormated.flatMap(({ range }) => range[0][0])) as number)
     : 0
   const dataMax: number = dataFormated.length
-    ? (max(dataFormated.flatMap(({ range }) => range[1])) as number)
+    ? (max(dataFormated.flatMap(({ range }) => range[0][1])) as number)
     : 0
 
   const domainPadding = (dataMax - dataMin) / 8

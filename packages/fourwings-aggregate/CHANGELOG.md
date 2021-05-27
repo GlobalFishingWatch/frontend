@@ -1,5 +1,23 @@
 # @globalfishingwatch/fourwings-aggregate
 
+## 4.0.2
+
+### Patch Changes
+
+- b230075f: Fishing map/fix analysis broken graph
+
+## 4.0.1
+
+### Patch Changes
+
+- 18fbfda4: Fixed NaN value in avg mode
+
+## 4.0.0
+
+### Major Changes
+
+- 1a3d0960: Fishing map/presence less than one day
+
 ## 3.1.1
 
 ### Patch Changes

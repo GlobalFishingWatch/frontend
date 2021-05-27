@@ -84,7 +84,7 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 | Layer name                     | Dev id | Pro id |
 | ------------------------------ | ------ | ------ |
 | Public Apparent fishing effort | 122    | ---    |
-| Default Fishing presence       | 124    | ---    |
+| Default Fishing presence       | 124    | 241    |
 | Default Fishing activity       | 91     | 178    |
 
 ## Others

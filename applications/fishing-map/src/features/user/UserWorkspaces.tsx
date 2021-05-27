@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import Link from 'redux-first-router-link'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Button from '@globalfishingwatch/ui-components/dist/button'
@@ -24,6 +25,7 @@ import {
 } from 'features/workspaces-list/workspaces-list.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
+import { getEventLabel } from 'utils/analytics'
 import styles from './User.module.css'
 import { selectUserGroups, selectUserWorkspaces } from './user.selectors'
 
@@ -81,6 +83,11 @@ function UserWorkspaces() {
               name,
             }
             const action = await dispatch(createWorkspaceThunk(workspace))
+            uaEvent({
+              category: 'Workspace Management',
+              action: 'Save current workspace',
+              label: getEventLabel([`base: ${template.name}`, name]),
+            })
             if (createWorkspaceThunk.fulfilled.match(action)) {
               dispatchLocation(
                 WORKSPACE,

@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { DatasetTypes, ResourceStatus, Vessel } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
@@ -10,6 +10,7 @@ import {
   UrlDataviewInstance,
   resolveDataviewDatasetResource,
 } from '@globalfishingwatch/dataviews-client'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -17,6 +18,7 @@ import { selectResourceByUrl } from 'features/resources/resources.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import { isGuestUser } from 'features/user/user.selectors'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -36,6 +38,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
   const infoResource = useSelector(selectResourceByUrl<Vessel>(infoUrl))
   const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
+  const guestUser = useSelector(isGuestUser)
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
 
@@ -111,6 +114,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     return formatInfoField(fieldValue, field.type)
   }
 
+  const infoFields = guestUser
+    ? dataview.infoConfig?.fields.filter((field) => field.guest)
+    : dataview.infoConfig?.fields
+
   return (
     <div
       className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: colorOpen || infoOpen })}
@@ -153,7 +160,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 onClickOutside={closeExpandedContainer}
                 component={
                   <ul className={styles.infoContent}>
-                    {dataview.infoConfig?.fields.map((field: any) => {
+                    {infoFields?.map((field: any) => {
                       const value = infoResource?.data?.[field.id as keyof Vessel]
                       if (!value && !field.mandatory) return null
                       const fieldValues = Array.isArray(value) ? value : [value]
@@ -170,6 +177,20 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                         </li>
                       )
                     })}
+                    {guestUser && (
+                      <li className={styles.infoLogin}>
+                        <Trans i18nKey="vessel.login">
+                          You need to
+                          <a
+                            className={styles.link}
+                            href={GFWAPI.getLoginUrl(window.location.toString())}
+                          >
+                            login
+                          </a>
+                          to see more details
+                        </Trans>
+                      </li>
+                    )}
                   </ul>
                 }
               >
