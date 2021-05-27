@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 4.3.7
+
+### Patch Changes
+
+- 9a31afec: added display all options in multiselect
+
 ## 4.3.6
 
 ### Patch Changes
