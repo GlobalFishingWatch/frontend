@@ -1,6 +1,6 @@
 import { uniq } from 'lodash'
 import { Dataview, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
-import { LineColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
+// import { LineColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AppDispatch } from 'store'
