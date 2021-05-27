@@ -18,6 +18,7 @@ import { MultiSelectOption, MultiSelectOnChange } from './index'
 interface MultiSelectProps {
   label?: string
   placeholder?: string
+  placeholderDisplayAll?: boolean
   options: MultiSelectOption[]
   selectedOptions?: MultiSelectOption[]
   disabled?: boolean
@@ -28,9 +29,20 @@ interface MultiSelectProps {
   className?: string
 }
 
-const getPlaceholderBySelections = (selections: MultiSelectOption[]): string => {
+const getPlaceholderBySelections = (
+  selections: MultiSelectOption[],
+  displayAll: boolean
+): string => {
   if (!selections?.length) return 'Select an option'
-  return selections.length > 1 ? `${selections.length} selected` : selections[0].label
+  return displayAll
+    ? selections
+        .map((elem: MultiSelectOption) => {
+          return elem.label
+        })
+        .join(', ')
+    : selections.length > 1
+    ? `${selections.length} selected`
+    : selections[0].label
 }
 
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
@@ -50,6 +62,7 @@ function MultiSelect(props: MultiSelectProps) {
     label = '',
     options,
     selectedOptions = [],
+    placeholderDisplayAll = false,
     placeholder,
     className = '',
     onSelect,
@@ -197,7 +210,9 @@ function MultiSelect(props: MultiSelectProps) {
             })}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder={placeholder || getPlaceholderBySelections(selectedOptions)}
+            placeholder={
+              placeholder || getPlaceholderBySelections(selectedOptions, placeholderDisplayAll)
+            }
             className={multiSelectStyles.input}
           />
         </div>
