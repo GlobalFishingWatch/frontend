@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import Icon, { IconType } from '@globalfishingwatch/ui-components/dist/icon'
+import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { Locale } from 'types'
@@ -14,6 +15,8 @@ import { selectLocationCategory, selectLocationType } from 'routes/routes.select
 import { selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
 import { LocaleLabels } from 'features/i18n/i18n'
+import { useClickedEventConnect } from 'features/map/map.hooks'
+import useMapInstance from 'features/map/map-context.hooks'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
@@ -41,6 +44,8 @@ function getLinkToCategory(category: WorkspaceCategories) {
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t, i18n } = useTranslation()
   const guestUser = useSelector(isGuestUser)
+  const { cleanFeatureState } = useFeatureState(useMapInstance())
+  const { dispatchClickedEvent } = useClickedEventConnect()
   const locationType = useSelector(selectLocationType)
   const { setMapCoordinates } = useViewport()
   const locationCategory = useSelector(selectLocationCategory)
@@ -71,7 +76,9 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
 
   const onCategoryClick = useCallback(() => {
     setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
-  }, [setMapCoordinates])
+    dispatchClickedEvent(null)
+    cleanFeatureState('highlight')
+  }, [setMapCoordinates, cleanFeatureState, dispatchClickedEvent])
 
   return (
     <Fragment>

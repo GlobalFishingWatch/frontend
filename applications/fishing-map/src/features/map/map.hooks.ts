@@ -84,6 +84,10 @@ export const useClickedEventConnect = () => {
   const eventsPromiseRef = useRef<any>()
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
+    if (event === null) {
+      dispatch(setClickedEvent(null))
+      return
+    }
     // Used on workspaces-list or user panel to go to the workspace detail page
     if (locationType === USER || locationType === WORKSPACES_LIST) {
       const workspace = event?.features?.find(
