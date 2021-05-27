@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { MultiSelectOption } from '../../../../../packages/ui-components/dist/multi-select'
+import { MultiSelectOption } from '@globalfishingwatch//ui-components/dist/multi-select'
 import {
   selectSettings,
   Settings,
