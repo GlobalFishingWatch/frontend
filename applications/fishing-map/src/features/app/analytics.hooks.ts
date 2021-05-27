@@ -18,19 +18,19 @@ export const useAnalytics = () => {
       if (!IS_PRODUCTION) {
         uaSet({ sendHitTask: null })
       }
-      uaSet({
-        dimension1: 'userId',
-        dimension3: 'userGroup',
-        dimension4: 'userOrgType',
-        dimension5: 'userOrganization',
-        dimension6: 'userCountry',
-        dimension7: 'userLanguage',
-      })
     }
   }, [])
 
   useEffect(() => {
     if (userData && GOOGLE_UNIVERSAL_ANALYTICS_ID) {
+      uaSet({
+        dimension1: `${userData.id}`,
+        dimension3: `${JSON.stringify(userData.groups)}` ?? '',
+        dimension4: userData.organizationType ?? '',
+        dimension5: userData.organization ?? '',
+        dimension6: userData.country ?? '',
+        dimension7: userData.language ?? '',
+      })
       uaSet({
         userProperties: {
           userId: userData.id,
