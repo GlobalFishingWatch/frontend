@@ -53,7 +53,7 @@ RUN npm run test
 # Build the application assets
 #################################################################################
 FROM base as build
-RUN npm run test
+RUN npm run build
 
 #################################################################################
 # Actual application to run
