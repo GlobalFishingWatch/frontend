@@ -1,0 +1,35 @@
+.mapControls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: absolute;
+  right: var(--space-S);
+  top: calc(110px + var(--space-S));
+  z-index: 1;
+}
+
+.controlsNested {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mapControls > *,
+.controlsNested > * {
+  margin-bottom: var(--space-XS);
+}
+
+.loadingBtn {
+  transform: scale(0);
+  height: 0;
+  pointer-events: none;
+  transition: transform 0.3s 0.5s, border 0.3s 0s;
+  margin-bottom: 0;
+  border: none;
+}
+
+.visible {
+  transform: scale(1);
+  border: var(--border-white);
+  height: var(--size-M);
+}

@@ -6,12 +6,13 @@ import useViewport from './map-viewport.hooks'
 import styles from './Map.module.css'
 
 import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
+import MapControls from './controls/MapControls'
 
 const Map = (): ReactElement => {
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const { viewport, onViewportChange } = useViewport()
 
-  const { style } = useLayerComposer(generatorsConfig, globalConfig)
+  const { style, loading: layerComposerLoading } = useLayerComposer(generatorsConfig, globalConfig)
   const mapOptions = {
     customAttribution: '© Copyright Global Fishing Watch 2020',
   }
@@ -28,6 +29,7 @@ const Map = (): ReactElement => {
           mapOptions={mapOptions}
         ></InteractiveMap>
       )}
+      <MapControls mapLoading={layerComposerLoading}></MapControls>
     </div>
   )
 }
