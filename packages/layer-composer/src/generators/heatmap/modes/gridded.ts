@@ -17,11 +17,16 @@ export default function gridded(
 ) {
   const { colorRampBaseExpression } = getColorRampBaseExpression(config)
 
+  // TODO only active chunk needed?
   const layers: Layer[] = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
     const pickValueAt = timeChunk.frame.toString()
     // TODO Coalesce to 0 will not work if we use divergent scale (because we would need the value < min value)
     const exprPick = ['coalesce', ['get', pickValueAt], 0]
-    const exprColorRamp = ['step', exprPick, 'transparent', ...colorRampBaseExpression]
+    
+    // TODO try with 'case' or 'match', might be faster than 'step'
+    const exprColorRamp = ['match', exprPick, ...colorRampBaseExpression, 'transparent']
+    // const exprColorRamp = ['step', exprPick, 'transparent', ...colorRampBaseExpression]
+    console.log(exprColorRamp)
 
     const paint = {
       'fill-color': timeChunk.active ? (exprColorRamp as any) : 'rgba(0,0,0,0)',
