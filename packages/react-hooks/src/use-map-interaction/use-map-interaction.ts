@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
-import { Generators, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
+import { Generators, ExtendedStyleMeta, CONFIG_BY_INTERVAL, Interval } from '@globalfishingwatch/layer-composer'
 import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
@@ -65,6 +65,12 @@ const getExtendedFeatures = (
         const timeChunks = generatorMetadata?.timeChunks
         const frame = timeChunks?.activeChunkFrame
         const activeTimeChunk = timeChunks?.chunks.find((c: any) => c.active)
+
+        // This is used when querying the interaction endpoint, so that start begins at the start of the frame (ie start of a 10days interval)
+        // This avoids querying a cell visible on the map, when its actual timerange is not included in the app-overall time range
+        const getDate = CONFIG_BY_INTERVAL[timeChunks.interval as Interval].getDate
+        const visibleFramesStart = getDate(activeTimeChunk.frame).toISOString()
+        const visibleFramesEnd = getDate(activeTimeChunk.frame + timeChunks.deltaInIntervalUnits).toISOString()
         const numSublayers = generatorMetadata?.numSublayers
         const values = aggregateCell({
           rawValues: properties.rawValues,
@@ -88,6 +94,8 @@ const getExtendedFeatures = (
               visible: visibleSublayers[i] === true,
               col: properties._col as number,
               row: properties._row as number,
+              visibleFramesStart,
+              visibleFramesEnd
             },
             value,
           }

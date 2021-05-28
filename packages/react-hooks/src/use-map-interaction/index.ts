@@ -25,6 +25,8 @@ export type ExtendedFeature = {
     visible: boolean
     col: number
     row: number
+    visibleFramesStart: number
+    visibleFramesEnd: number
   }
   uniqueFeatureInteraction?: boolean
   generatorContextLayer?: ContextLayerType | null

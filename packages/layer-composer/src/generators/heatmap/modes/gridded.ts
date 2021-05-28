@@ -23,10 +23,7 @@ export default function gridded(
     // TODO Coalesce to 0 will not work if we use divergent scale (because we would need the value < min value)
     const exprPick = ['coalesce', ['get', pickValueAt], 0]
     
-    // TODO try with 'case' or 'match', might be faster than 'step'
     const exprColorRamp = ['match', exprPick, ...colorRampBaseExpression, 'transparent']
-    // const exprColorRamp = ['step', exprPick, 'transparent', ...colorRampBaseExpression]
-    console.log(exprColorRamp)
 
     const paint = {
       'fill-color': timeChunk.active ? (exprColorRamp as any) : 'rgba(0,0,0,0)',
