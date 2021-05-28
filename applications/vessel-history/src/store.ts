@@ -4,10 +4,12 @@ import offlineVesselsReducer from 'features/vessels/offline-vessels.slice'
 import vesselsReducer from 'features/vessels/vessels.slice'
 import searchReducer from 'features/search/search.slice'
 import { initializeDataviews } from 'features/dataviews/dataviews.utils'
+import { routerWorkspaceMiddleware } from 'features/workspace/workspace.middlewares'
 import mapReducer from './features/map/map.slice'
 import dataviewsReducer from './features/dataviews/dataviews.slice'
 import datasetsReducer from './features/datasets/datasets.slice'
 import resourcesReducer from './features/resources/resources.slice'
+import workspaceReducer from './features/workspace/workspace.slice'
 
 const {
   reducer: location,
@@ -24,6 +26,7 @@ const rootReducer = combineReducers({
   dataviews: dataviewsReducer,
   datasets: datasetsReducer,
   resources: resourcesReducer,
+  workspace: workspaceReducer,
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
@@ -43,6 +46,7 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware(defaultMiddlewareOptions)
       .concat(routerQueryMiddleware)
+      .concat(routerWorkspaceMiddleware)
       .concat(routerMiddleware),
   enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })

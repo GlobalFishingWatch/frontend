@@ -14,7 +14,6 @@ export const DEFAULT_WORKSPACE: AppState = {
   maxSpeed: 12,
   minElevation: -4000,
   maxElevation: 500,
-  hiddenLayers: '',
   fromHour: 0,
   toHour: 24,
   latitude: -25.54035,

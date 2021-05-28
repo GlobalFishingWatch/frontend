@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { Query, RouteObject } from 'redux-first-router'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { formatVesselProfileId } from 'features/vessels/vessels.utils'
 import { RootState } from 'store'
@@ -55,6 +56,8 @@ export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectUrlStartQuery = selectQueryParam<string>('start')
 export const selectUrlEndQuery = selectQueryParam<string>('end')
 export const selectUrlQuery = selectQueryParam<string>('q')
+export const selectUrlDataviewInstances =
+  selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
 
 export const selectUrlViewport = createSelector(
   [selectUrlMapZoomQuery, selectUrlMapLatitudeQuery, selectUrlMapLongitudeQuery],
@@ -85,23 +88,3 @@ export const selectUrlTimeRange = createSelector(
     end: new Date(end).getTime(),
   })
 )
-
-/**
- * Get the hidden layers in the map
- */
-export const selectHiddenLayers = createSelector(
-  [selectQueryParam('hiddenLayers')],
-  (hiddenLayers) => hiddenLayers.split(',')
-)
-export const selectSatellite = selectQueryParam('satellite')
-export const selectColorMode = selectQueryParam('colorMode')
-
-// export const selectViewport = createSelector(
-//   [selectMapZoomQuery, selectMapLatitudeQuery, selectMapLongitudeQuery, selectColorMode],
-//   (zoom, latitude, longitude, colorMode) => ({
-//     zoom,
-//     latitude,
-//     longitude,
-//     colorMode,
-//   })
-// )

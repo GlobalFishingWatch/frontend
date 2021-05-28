@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -36,14 +35,14 @@ export const useDataviewInstancesConnect = () => {
             },
           }
         })
-        // dispatchQueryParams({ dataviewInstances })
+        dispatchQueryParams({ dataviewInstances })
       } else {
-        // dispatchQueryParams({
-        //   dataviewInstances: [
-        //     dataviewInstance as UrlDataviewInstance,
-        //     ...(allDataviewInstances || []),
-        //   ],
-        // })
+        dispatchQueryParams({
+          dataviewInstances: [
+            dataviewInstance as UrlDataviewInstance,
+            ...(allDataviewInstances || []),
+          ],
+        })
       }
     },
     [dispatchQueryParams, allDataviewInstances]

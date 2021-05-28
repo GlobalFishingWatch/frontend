@@ -13,6 +13,9 @@
     "historyFor": "history for",
     "previous": "previous"
   },
+  "layer": {
+    "toggleVisibility": "Toggle layer visibility"
+  },
   "map": {
     "loading": "Map loading",
     "toggleLayers": "Toggle layers"

@@ -3,10 +3,9 @@ import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
 import { useLayerComposer } from '@globalfishingwatch/react-hooks'
 import { useGeneratorsConnect } from './map.hooks'
 import useViewport from './map-viewport.hooks'
-import styles from './Map.module.css'
-
-import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 import MapControls from './controls/MapControls'
+import styles from './Map.module.css'
+import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 
 const Map = (): ReactElement => {
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()

@@ -11,7 +11,7 @@
 .controlsNested {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .mapControls > *,
@@ -32,4 +32,39 @@
   transform: scale(1);
   border: var(--border-white);
   height: var(--size-M);
+}
+
+.name {
+  margin-left: var(--space-XS);
+  flex: 1;
+  opacity: var(--opacity-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.contextLayersContainer {
+  position: absolute;
+  right: var(--size-M);
+  background: var(--color-white);
+  filter: var(--drop-shadow);
+  padding: var(--space-S);
+  z-index: 1;
+}
+
+.contextLayer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: var(--size-M);
+}
+
+.switch {
+  display: flex;
 }
