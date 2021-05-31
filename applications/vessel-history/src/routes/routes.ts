@@ -17,6 +17,7 @@ import { UpdateQueryParamsAction } from './routes.actions'
 export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
 export const PROFILE = 'PROFILE'
+export const WORKSPACE_ROUTES = [HOME, PROFILE]
 
 export type ROUTE_TYPES = typeof HOME | typeof PROFILE
 
@@ -25,7 +26,7 @@ const thunk = async (
   getState: StateGetter<AppState>
 ) => null
 
-const routesMap: RoutesMap = {
+export const routesMap: RoutesMap = {
   [HOME]: {
     path: '/',
     thunk,
