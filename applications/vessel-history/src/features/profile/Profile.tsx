@@ -49,6 +49,8 @@ const Profile: React.FC = (props): React.ReactElement => {
     ? resolveDataviewDatasetResource(vesselDataview, DatasetTypes.Tracks)
     : { url: '' }
   const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
+  const vesselLoaded = useMemo(() => !!vessel, [vessel])
+  const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])
 
   useEffect(() => {
     if (resourceQueries) {
@@ -115,9 +117,9 @@ const Profile: React.FC = (props): React.ReactElement => {
   }, [setMapCoordinates, trackResource])
 
   useEffect(() => {
-    if (!vessel || !vesselDataview) return
+    if (!vesselLoaded || !vesselDataviewLoaded || !trackUrl) return
     onFitLastPosition()
-  }, [vesselDataview, vessel, onFitLastPosition])
+  }, [vesselLoaded, vesselDataviewLoaded, trackUrl, onFitLastPosition])
 
   const tabs: Tab[] = useMemo(
     () => [
