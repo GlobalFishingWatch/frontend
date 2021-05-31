@@ -382,7 +382,7 @@
   },
   "public-wdpa-may-2021-marine": {
     "name": "AMPs (Fuente: WDPA)",
-    "description": "El término Áreas Marinas Protegidas (AMPs) incluye, por ejemplo, reservas marinas, áreas marinas totalmente protegidas, zonas de veda, santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente. Muchos de ellos tienen diferentes niveles de protección, y la gama de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. Fuente: Base de datos mundial sobre áreas protegidas (WDPA). Última actualización: Mayo 2021.",
+    "description": "El término Áreas Marinas Protegidas (AMPs) incluye, por ejemplo, reservas marinas, áreas marinas totalmente protegidas, zonas de veda, santuarios marinos, santuarios oceánicos, parques marinos, áreas marinas administradas localmente. Muchos de ellos tienen diferentes niveles de protección, y la gama de actividades permitidas o prohibidas dentro de sus límites también varía considerablemente. Fuente: World Database on Protected Areas. (WDPA). Última actualización: Mayo 2021.",
     "schema": {}
   },
   "public-wpp-nri": {
