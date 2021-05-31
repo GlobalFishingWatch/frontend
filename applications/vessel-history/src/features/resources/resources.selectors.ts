@@ -3,8 +3,6 @@ import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
-// import { isGuestUser } from 'features/user/user.selectors'
-// import { selectDebugOptions } from 'features/debug/debug.slice'
 
 export const selectDataviewsResourceQueries = createSelector(
   [selectDataviewInstancesResolved],

@@ -4,18 +4,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { dataviewInstances as allDataviewInstances } from './dataviews.config'
 
 export const useDataviewInstancesConnect = () => {
-  // const allDataviewInstances = useSelector(selectUrlDataviewInstances)
   const { dispatchQueryParams } = useLocationConnect()
-
-  // const removeDataviewInstance = useCallback(
-  //   (id: string) => {
-  //     const dataviewInstances = allDataviewInstances?.filter(
-  //       (urlDataviewInstance) => urlDataviewInstance.id !== id
-  //     )
-  //     dispatchQueryParams({ dataviewInstances })
-  //   },
-  //   [dispatchQueryParams, allDataviewInstances]
-  // )
 
   // TODO review if this is still needed or we switch to add / update
   const upsertDataviewInstance = useCallback(
@@ -48,22 +37,6 @@ export const useDataviewInstancesConnect = () => {
     [dispatchQueryParams, allDataviewInstances]
   )
 
-  // const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
-  // const deleteDataviewInstance = useCallback(
-  //   (id: string) => {
-  //     const dataviewInstances = (allDataviewInstances || []).filter(
-  //       (urlDataviewInstance) => urlDataviewInstance.id !== id
-  //     )
-  //     const workspaceDataviewInstance = workspaceDataviewInstances?.find(
-  //       (dataviewInstance) => dataviewInstance.id === id
-  //     )
-  //     if (workspaceDataviewInstance) {
-  //       dataviewInstances.push({ id, deleted: true })
-  //     }
-  //     dispatchQueryParams({ dataviewInstances })
-  //   },
-  //   [dispatchQueryParams, allDataviewInstances, workspaceDataviewInstances]
-  // )
   return {
     upsertDataviewInstance,
     // removeDataviewInstance,

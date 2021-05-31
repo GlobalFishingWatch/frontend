@@ -1,6 +1,5 @@
 import { uniq } from 'lodash'
 import { Dataview, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
-// import { LineColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AppDispatch } from 'store'
@@ -10,6 +9,7 @@ import {
   DEFAULT_VESSEL_DATAVIEW_ID,
   dataviewInstances,
   vesselDataviewIds,
+  DEFAULT_TRACK_COLOR,
 } from './dataviews.config'
 
 // used in workspaces with encounter events layers
@@ -39,9 +39,7 @@ export const getVesselDataviewInstance = (
     id: `${VESSEL_LAYER_PREFIX}${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
-      // TODO pick a not used color
-      // color: LineColorBarOptions[Math.floor(Math.random() * LineColorBarOptions.length)].value,
-      color: '#8DE9F6',
+      color: DEFAULT_TRACK_COLOR,
     },
     datasetsConfig,
   }

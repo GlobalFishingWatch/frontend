@@ -88,7 +88,6 @@ const { slice: vesselsSlice, entityAdapter } = createAsyncSlice<VesselState, Ves
       state.status = AsyncReducerStatus.Idle
     },
     upsertVesselDataview: (state, action: PayloadAction<DataviewInstance<Generators.Type>>) => {
-      // const { vesselId, dataviews } = action.payload
       state.dataview = action.payload
     },
   },

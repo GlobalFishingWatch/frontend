@@ -42,50 +42,24 @@ type GetGeneratorConfigParams = {
 const getGeneratorsConfig = ({
   dataviews = [],
   resources,
-  // rulers = [],
-  // highlightedTime,
   staticTime,
 }: GetGeneratorConfigParams) => {
   const generatorOptions = {
-    // highlightedTime,
     timeRange: staticTime,
   }
 
   const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
 
-  // Avoid entering rulers sources and layers when no active rules
-  // if (rulers?.length) {
-  //   const rulersGeneratorConfig = {
-  //     type: Generators.Type.Rulers,
-  //     id: 'rulers',
-  //     data: rulers,
-  //   }
-  //   return [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
-  // }
-
   return generatorsConfig.reverse()
 }
 
 const selectMapGeneratorsConfig = createSelector(
-  [
-    selectDataviewInstancesResolved,
-    selectResources,
-    // selectRulers,
-    // selectDebugOptions,
-    // selectHighlightedTime,
-    // selectStaticTime,
-    // selectBivariate,
-  ],
-  (
-    dataviews = [],
-    resources
-    //rulers, debugOptions, highlightedTime, staticTime, bivariate
-  ) => {
+  [selectDataviewInstancesResolved, selectResources],
+  (dataviews = [], resources) => {
     return getGeneratorsConfig({
       dataviews,
       resources,
       rulers: [],
-      // debugOptions,
       staticTime: {
         start: DEFAULT_WORKSPACE.start,
         end: DEFAULT_WORKSPACE.end,
@@ -98,24 +72,11 @@ const selectMapGeneratorsConfig = createSelector(
 export const selectDefaultMapGeneratorsConfig = createSelector(
   [
     selectVesselsStatus,
-    // isWorkspaceLocation,
     selectDefaultBasemapGenerator,
     selectMapGeneratorsConfig,
     selectDefaultOfflineDataviewsGenerators,
-    // selectMapWorkspacesListGenerators,
   ],
-  (
-    vesselStatus,
-    // showWorkspaceDetail,
-    basemapGenerator,
-    mapGeneratorsConfig,
-    offlineDataviewsGenerators
-    // workspaceListGenerators
-  ) => {
-    // if (vesselStatus === AsyncReducerStatus.Loading) {
-    //   return offlineDataviewsGenerators.concat([basemapGenerator])
-    // }
-
+  (vesselStatus, basemapGenerator, mapGeneratorsConfig, offlineDataviewsGenerators) => {
     return vesselStatus !== AsyncReducerStatus.Finished
       ? [...offlineDataviewsGenerators, basemapGenerator]
       : [...offlineDataviewsGenerators, ...mapGeneratorsConfig]

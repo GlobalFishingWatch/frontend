@@ -107,3 +107,5 @@ export const dataviewInstances: DataviewInstance<Generators.Type>[] = [
 ]
 
 export const vesselDataviewIds = [DEFAULT_VESSEL_DATAVIEW_ID]
+
+export const DEFAULT_TRACK_COLOR = '#8DE9F6'
