@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 7.0.4
+
+### Patch Changes
+
+- daa1de75: satellite basemap attribution
+
 ## 7.0.3
 
 ### Patch Changes
