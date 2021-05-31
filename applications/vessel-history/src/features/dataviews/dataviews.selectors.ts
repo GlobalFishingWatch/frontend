@@ -11,6 +11,7 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generator
 import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
+import { selectVesselDataview } from 'features/vessels/vessels.slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
@@ -48,10 +49,10 @@ export const selectDefaultBasemapGenerator = createSelector(
 )
 
 export const selectDataviewInstancesMerged = createSelector(
-  [selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
-  (dataviews, urlDataviewInstances) => {
+  [selectVesselDataview, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
+  (vesselDataview, dataviews, urlDataviewInstances) => {
     return mergeWorkspaceUrlDataviewInstances(
-      dataviews as DataviewInstance<any>[],
+      [...dataviews, vesselDataview ?? []] as DataviewInstance<any>[],
       urlDataviewInstances
     )
   }
