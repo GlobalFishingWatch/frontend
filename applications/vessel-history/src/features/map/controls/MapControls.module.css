@@ -1,10 +1,13 @@
+:root {
+  --header-height: 110px;
+}
 .mapControls {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   position: absolute;
   right: var(--space-S);
-  top: calc(110px + var(--space-S));
+  top: calc(var(--header-height) + var(--space-S));
   z-index: 1;
 }
 
@@ -39,13 +42,26 @@
   z-index: 1;
 }
 
-.contextLayersContainer {
-  position: absolute;
-  right: var(--size-M);
+.layersModalOverlay {
+  background: none;
+  display: block;
+}
+
+.layersModalContentWrapper {
   background: var(--color-white);
   filter: var(--drop-shadow);
   padding: var(--space-S);
-  z-index: 1;
+  position: absolute;
+  right: var(--space-S);
+  top: calc(var(--header-height) + var(--space-S));
+  height: fit-content;
+  width: fit-content;
+}
+
+.layersModalContainer {
+  width: fit-content;
+  height: fit-content;
+  padding: 0 var(--space-S);
 }
 
 .contextLayer {

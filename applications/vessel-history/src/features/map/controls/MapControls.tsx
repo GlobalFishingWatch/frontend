@@ -1,10 +1,10 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
 import LayerSwitch from 'features/workspace/common/LayerSwitch'
@@ -34,6 +34,10 @@ const MapControls = ({
     return t(`datasets:${dataset?.id}.name` as any, dataset?.name)
   }
 
+  const handleCloseShowLayers = useCallback(() => {
+    setShowLayersPopup(false)
+  }, [])
+
   return (
     <Fragment>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
@@ -48,20 +52,30 @@ const MapControls = ({
                 onClick={() => setShowLayersPopup(!showLayersPopup)}
               />
               {showLayersPopup && (
-                <div className={styles.contextLayersContainer}>
-                  <div className={styles.contextLayers}>
-                    {!!layers &&
-                      layers.map((layer) => (
-                        <LayerSwitch
-                          key={layer.id}
-                          className={styles.contextLayer}
-                          classNameActive={styles.active}
-                          dataview={layer}
-                          title={layerTitle(layer)}
-                        />
-                      ))}
+                <Modal
+                  isOpen={showLayersPopup}
+                  onClose={handleCloseShowLayers}
+                  header={false}
+                  className={styles.layersModalContentWrapper}
+                  contentClassName={styles.layersModalContainer}
+                  overlayClassName={styles.layersModalOverlay}
+                  hideCloseButton={true}
+                >
+                  <div>
+                    <div className={styles.contextLayers}>
+                      {!!layers &&
+                        layers.map((layer) => (
+                          <LayerSwitch
+                            key={layer.id}
+                            className={styles.contextLayer}
+                            classNameActive={styles.active}
+                            dataview={layer}
+                            title={layerTitle(layer)}
+                          />
+                        ))}
+                    </div>
                   </div>
-                </div>
+                </Modal>
               )}
               {/* <Rulers /> */}
               <IconButton
