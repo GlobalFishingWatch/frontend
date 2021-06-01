@@ -8,7 +8,6 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
 import LayerSwitch from 'features/workspace/common/LayerSwitch'
-import Title from 'features/workspace/common/Title'
 import styles from './MapControls.module.css'
 
 const MapControls = ({
@@ -53,24 +52,13 @@ const MapControls = ({
                   <div className={styles.contextLayers}>
                     {!!layers &&
                       layers.map((layer) => (
-                        <label
-                          className={cx(styles.contextLayer, {
-                            [styles.disabled]: layer.config?.visible === true,
-                          })}
+                        <LayerSwitch
                           key={layer.id}
-                        >
-                          <LayerSwitch
-                            active={layer.config?.visible ?? true}
-                            dataview={layer}
-                            className={styles.switch}
-                          />
-                          <Title
-                            dataview={layer}
-                            title={layerTitle(layer)}
-                            className={styles.name}
-                            classNameActive={styles.active}
-                          />
-                        </label>
+                          className={styles.contextLayer}
+                          classNameActive={styles.active}
+                          dataview={layer}
+                          title={layerTitle(layer)}
+                        />
                       ))}
                   </div>
                 </div>

@@ -1,18 +1,25 @@
+import { Ref, forwardRef } from 'react'
+import cx from 'classnames'
 import { Switch } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import styles from './LayerSwitch.module.css'
 
 type LayerSwitchProps = {
-  active: boolean
-  dataview: UrlDataviewInstance
   className?: string
+  classNameActive?: string
+  dataview: UrlDataviewInstance
   disabled?: boolean
   onToggle?: (active: boolean) => void
+  title?: string
 }
 
-const LayerSwitch = ({ active, dataview, className, disabled, onToggle }: LayerSwitchProps) => {
+const LayerSwitch = (
+  { dataview, className, classNameActive, disabled, onToggle, title }: LayerSwitchProps,
+  ref: Ref<HTMLLabelElement>
+) => {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const layerActive = dataview?.config?.visible ?? true
+  const layerActive = [true, 'true', 1].includes((dataview?.config?.visible ?? true) as any)
   const onToggleLayerActive = () => {
     upsertDataviewInstance({
       id: dataview.id,
@@ -25,14 +32,20 @@ const LayerSwitch = ({ active, dataview, className, disabled, onToggle }: LayerS
     }
   }
   return (
-    <Switch
-      disabled={disabled}
-      active={active}
-      onClick={onToggleLayerActive}
-      className={className}
-      color={dataview.config?.color}
-    />
+    <label
+      ref={ref}
+      className={cx(className, classNameActive ? { [classNameActive]: layerActive } : {})}
+    >
+      <Switch
+        disabled={disabled}
+        active={layerActive}
+        className={styles.switch}
+        onClick={onToggleLayerActive}
+        color={dataview.config?.color}
+      />
+      <h3 className={styles.name}>{title ?? ''}</h3>
+    </label>
   )
 }
 
-export default LayerSwitch
+export default forwardRef(LayerSwitch)

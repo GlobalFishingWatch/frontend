@@ -1,0 +1,13 @@
+.name {
+  margin-left: var(--space-XS);
+  flex: 1;
+  opacity: var(--opacity-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.switch {
+  display: flex;
+}
