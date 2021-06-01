@@ -13,9 +13,9 @@ import { isGuestUser } from 'features/user/user.selectors'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
-import InfoError from '../common/InfoError'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
+import InfoModal from '../common/InfoModal'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -56,6 +56,7 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
   if (!dataset) {
     return <DatasetNotFound dataview={dataview} />
   }
+
   const title = isUserLayer
     ? dataset?.name || dataset?.id
     : t(`datasets:${dataset?.id}.name` as any)
@@ -70,20 +71,6 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
     />
   )
 
-  const datasetImporting = dataset.status === DatasetStatus.Importing
-  const datasetError = dataset.status === DatasetStatus.Error
-  let infoTooltip = isUserLayer
-    ? dataset?.description
-    : t(`datasets:${dataset?.id}.description` as any)
-  if (datasetImporting) {
-    infoTooltip = t('dataset.importing', 'Dataset is being imported')
-  }
-  if (datasetError) {
-    infoTooltip = `${t('errors.uploadError', 'There was an error uploading your dataset')} - ${
-      dataset.importLogs
-    }`
-  }
-
   return (
     <div
       className={cx(styles.LayerPanel, {
@@ -93,7 +80,7 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
     >
       <div className={styles.header}>
         <LayerSwitch
-          disabled={datasetError}
+          disabled={dataset?.status === DatasetStatus.Error}
           active={layerActive}
           className={styles.switch}
           dataview={dataview}
@@ -105,12 +92,7 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          <InfoError
-            error={datasetError}
-            loading={datasetImporting}
-            tooltip={infoTooltip}
-            className={styles.actionButton}
-          />
+          <InfoModal dataview={dataview} />
           {layerActive && (
             <Color
               dataview={dataview}
@@ -120,7 +102,7 @@ function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.R
               onClickOutside={closeExpandedContainer}
             />
           )}
-          {isUserLayer && <Remove className={cx(styles.actionButton)} dataview={dataview} />}
+          {isUserLayer && <Remove dataview={dataview} />}
         </div>
       </div>
     </div>

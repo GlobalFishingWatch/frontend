@@ -8,6 +8,10 @@ import { FULL_SUFIX, PUBLIC_SUFIX } from 'data/config'
 export type SupportedDatasetSchema = 'geartype' | 'fleet' | 'origin' | 'vessel_type'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
+export const removeDatasetVersion = (datasetId: string) => {
+  return datasetId?.split(':')[0]
+}
+
 export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boolean) => {
   return datasets.filter((dataset) => dataset.id.includes(isGuestUser ? PUBLIC_SUFIX : FULL_SUFIX))
 }

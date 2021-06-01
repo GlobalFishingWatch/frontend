@@ -2,13 +2,13 @@ import React from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import LayerSwitch from '../common/LayerSwitch'
 import Title from '../common/Title'
+import InfoModal from '../common/InfoModal'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -35,8 +35,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     />
   )
 
-  const infoTooltip = t(`datasets:${dataset?.id}.description` as any)
-
   return (
     <div
       className={cx(styles.LayerPanel, {
@@ -51,14 +49,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          <IconButton
-            icon="info"
-            type="default"
-            size="small"
-            className={styles.actionButton}
-            tooltip={infoTooltip}
-            tooltipPlacement="top"
-          />
+          <InfoModal dataview={dataview} />
         </div>
       </div>
     </div>

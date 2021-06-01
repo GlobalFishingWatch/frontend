@@ -40,7 +40,6 @@ const Color = (props: ColorProps) => {
         tooltip={t('layer.color_change', 'Change color')}
         tooltipPlacement="top"
         onClick={onToggleClick}
-        className={styles.actionButton}
       />
     </ExpandedContainer>
   )

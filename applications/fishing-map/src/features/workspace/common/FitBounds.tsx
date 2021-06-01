@@ -14,9 +14,9 @@ import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { Bbox } from 'types'
 
 type FitBoundsProps = {
-  className: string
-  trackResource: Resource<Segment[] | FeatureCollection>
   hasError: boolean
+  trackResource: Resource<Segment[] | FeatureCollection>
+  className?: string
 }
 
 const FitBounds = ({ className, trackResource, hasError }: FitBoundsProps) => {
