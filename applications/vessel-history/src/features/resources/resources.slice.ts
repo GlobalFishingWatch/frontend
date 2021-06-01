@@ -22,8 +22,9 @@ export const fetchResourceThunk = createAsyncThunk(
     const data = await GFWAPI.fetch(resource.url, { responseType }).then((data) => {
       // TODO Replace with enum?
       if (isTrackResource) {
-        const fields = (resource.datasetConfig.query?.find((q) => q.id === 'fields')
-          ?.value as string).split(',') as Field[]
+        const fields = (
+          resource.datasetConfig.query?.find((q) => q.id === 'fields')?.value as string
+        ).split(',') as Field[]
         const segments = trackValueArrayToSegments(data as any, fields)
         return segments
       }
@@ -67,5 +68,10 @@ export const selectResources = (state: RootState) => state.resources
 export const selectResourceByUrl = memoize(<T = any>(url = '') =>
   createSelector([selectResources], (resources) => resources[url] as Resource<T>)
 )
+export const selectResourcesLoading = createSelector([selectResources], (resources) => {
+  return Object.entries(resources)
+    .map(([, resource]) => resource.status)
+    .includes(ResourceStatus.Loading)
+})
 
 export default resourcesSlice.reducer

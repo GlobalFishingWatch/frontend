@@ -1,6 +1,8 @@
 import { ReactElement } from 'react'
+import { useSelector } from 'react-redux'
 import { InteractiveMap } from '@globalfishingwatch/react-map-gl'
 import { useLayerComposer } from '@globalfishingwatch/react-hooks'
+import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { useGeneratorsConnect } from './map.hooks'
 import useViewport from './map-viewport.hooks'
 import MapControls from './controls/MapControls'
@@ -10,6 +12,7 @@ import '@globalfishingwatch/mapbox-gl/dist/mapbox-gl.css'
 const Map = (): ReactElement => {
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const { viewport, onViewportChange } = useViewport()
+  const resourcesLoading = useSelector(selectResourcesLoading) ?? false
 
   const { style, loading: layerComposerLoading } = useLayerComposer(generatorsConfig, globalConfig)
   const mapOptions = {
@@ -28,7 +31,7 @@ const Map = (): ReactElement => {
           mapOptions={mapOptions}
         ></InteractiveMap>
       )}
-      <MapControls mapLoading={layerComposerLoading}></MapControls>
+      <MapControls mapLoading={layerComposerLoading || resourcesLoading}></MapControls>
     </div>
   )
 }
