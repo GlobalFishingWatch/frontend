@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 7.1.0
+
+### Minor Changes
+
+- 6c1b25bb: include leading point in filterGeoJSONByTimerange
+
 ## 7.0.4
 
 ### Patch Changes
