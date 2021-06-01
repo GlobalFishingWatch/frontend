@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
 import {
   resolveDataviews,
   UrlDataviewInstance,
@@ -15,10 +15,23 @@ import { selectVesselDataview } from 'features/vessels/vessels.slice'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
-import { BACKGROUND_LAYER, OFFLINE_LAYERS } from './dataviews.config'
+import { BACKGROUND_LAYER, OFFLINE_LAYERS, APP_THINNING, THINNING_LEVELS } from './dataviews.config'
 
 export const selectDataviews = createSelector([selectAllDataviews], (dataviews) => {
-  return dataviews
+  const thinningConfig = THINNING_LEVELS[APP_THINNING]
+  const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
+    id,
+    value,
+  }))
+  return dataviews?.map((dataview) => {
+    return {
+      ...dataview,
+      datasetsConfig: dataview.datasetsConfig?.map((datasetConfig) => {
+        if (datasetConfig.endpoint !== EndpointId.Tracks) return datasetConfig
+        return { ...datasetConfig, query: [...(datasetConfig.query || []), ...thinningQuery] }
+      }),
+    }
+  })
 })
 
 const defaultBasemapDataview = {
