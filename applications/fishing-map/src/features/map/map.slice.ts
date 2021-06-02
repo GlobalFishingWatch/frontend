@@ -91,6 +91,7 @@ type SublayerVessels = {
 
 export const fetch4WingInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
+  // TODO the whole function could be greatly simplified if only one temporalGridFeature was accepted, which is effecttively always the case
   { temporalGridFeatures: ExtendedFeature[]; timeRange: Range },
   {
     dispatch: AppDispatch
@@ -100,7 +101,25 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
   async ({ temporalGridFeatures, timeRange }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const temporalgridDataviews = selectActivityDataviews(state) || []
-    const { start, end } = timeRange || {}
+
+    if (!temporalGridFeatures.length) {
+      console.warn('fetchInteraction not possible, 0 features')
+      return
+    }
+
+    // use the first feature/dv for common parameters
+    const mainFeature = temporalGridFeatures[0]
+
+    // Currently only one timerange is supported, which is OK since we only need interaction on the activity heatmaps and all
+    // activity heatmaps use the same time intervals, This will need to be revised in case we support interactivity on environment layers
+    const start =
+      mainFeature.temporalgrid?.interval === '10days'
+        ? mainFeature.temporalgrid?.visibleFramesStart
+        : timeRange.start
+    const end =
+      mainFeature.temporalgrid?.interval === '10days'
+        ? mainFeature.temporalgrid?.visibleFramesEnd
+        : timeRange.end
 
     // get corresponding dataviews
     const featuresDataviews = temporalGridFeatures.flatMap((feature) => {
@@ -119,8 +138,6 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
       return dv.config?.datasets || []
     })
 
-    // use the first feature/dv for common parameters
-    const mainFeature = temporalGridFeatures[0]
     const datasetConfig: DataviewDatasetConfig = {
       datasetId: fourWingsDataset.id,
       endpoint: EndpointId.FourwingsInteraction,

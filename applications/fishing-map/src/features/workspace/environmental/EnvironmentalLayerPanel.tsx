@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -13,10 +13,9 @@ import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
-import InfoError from '../common/InfoError'
+import InfoModal from '../common/InfoModal'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
-import useDatasetError from './useDatasetError'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -59,11 +58,6 @@ function EnvironmentalLayerPanel({
   useAutoRefreshImportingDataset(dataset)
   const isCustomUserLayer = !guestUser && dataset?.ownerId === userId
 
-  const { datasetError, datasetImporting, infoTooltip } = useDatasetError(
-    dataset,
-    isCustomUserLayer
-  )
-
   if (!dataset) {
     return <DatasetNotFound dataview={dataview} />
   }
@@ -92,6 +86,7 @@ function EnvironmentalLayerPanel({
       <div className={styles.header}>
         <LayerSwitch
           active={layerActive}
+          disabled={dataset?.status === DatasetStatus.Error}
           className={styles.switch}
           dataview={dataview}
           onToggle={onToggle}
@@ -102,22 +97,18 @@ function EnvironmentalLayerPanel({
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && (
+          {layerActive && isCustomUserLayer && (
             <Color
               dataview={dataview}
               open={colorOpen}
+              colorType="fill"
               onColorClick={changeColor}
               onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
             />
           )}
-          <InfoError
-            error={datasetError}
-            loading={datasetImporting}
-            tooltip={infoTooltip}
-            className={styles.actionButton}
-          />
-          {isCustomUserLayer && <Remove className={cx(styles.actionButton)} dataview={dataview} />}
+          <InfoModal dataview={dataview} />
+          {isCustomUserLayer && <Remove dataview={dataview} />}
         </div>
       </div>
 

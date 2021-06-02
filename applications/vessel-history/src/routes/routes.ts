@@ -18,6 +18,7 @@ export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
 export const PROFILE = 'PROFILE'
 export const WORKSPACE_ROUTES = [HOME, PROFILE]
+export const SETTINGS = 'SETTINGS'
 
 export type ROUTE_TYPES = typeof HOME | typeof PROFILE
 
@@ -29,6 +30,10 @@ const thunk = async (
 export const routesMap: RoutesMap = {
   [HOME]: {
     path: '/',
+    thunk,
+  },
+  [SETTINGS]: {
+    path: '/settings',
     thunk,
   },
   [LOGIN]: {

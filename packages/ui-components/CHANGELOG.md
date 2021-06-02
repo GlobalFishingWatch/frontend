@@ -1,5 +1,44 @@
 # @globalfishingwatch/ui-components
 
+## 5.0.2
+
+### Patch Changes
+
+- ac5fb891: fix undefined in legend when no bins data
+- Updated dependencies [ac5fb891]
+  - @globalfishingwatch/layer-composer@7.1.2
+  - @globalfishingwatch/react-hooks@8.0.2
+
+## 5.0.1
+
+### Patch Changes
+
+- Updated dependencies [d5dd9f90]
+  - @globalfishingwatch/layer-composer@7.1.1
+  - @globalfishingwatch/react-hooks@8.0.1
+
+## 5.0.0
+
+### Patch Changes
+
+- Updated dependencies [6c1b25bb]
+  - @globalfishingwatch/layer-composer@7.1.0
+  - @globalfishingwatch/react-hooks@8.0.0
+
+## 4.3.8
+
+### Patch Changes
+
+- Updated dependencies [daa1de75]
+  - @globalfishingwatch/layer-composer@7.0.4
+  - @globalfishingwatch/react-hooks@7.0.4
+
+## 4.3.7
+
+### Patch Changes
+
+- 9a31afec: added display all options in multiselect
+
 ## 4.3.6
 
 ### Patch Changes

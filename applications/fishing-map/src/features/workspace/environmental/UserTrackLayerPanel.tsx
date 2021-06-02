@@ -19,11 +19,10 @@ import { selectResourceByUrl } from 'features/resources/resources.slice'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
-import InfoError from '../common/InfoError'
+import InfoModal from '../common/InfoModal'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import FitBounds from '../common/FitBounds'
-import useDatasetError from './useDatasetError'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -66,11 +65,6 @@ function UserTrackLayerPanel({
   const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.UserTracks)
   const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const trackError = trackResource?.status === ResourceStatus.Error
-
-  const { datasetError, datasetImporting, infoTooltip } = useDatasetError(
-    dataset,
-    isCustomUserLayer
-  )
 
   const loading = trackResource?.status === ResourceStatus.Loading
 
@@ -130,22 +124,11 @@ function UserTrackLayerPanel({
                     onToggleClick={onToggleColorOpen}
                     onClickOutside={closeExpandedContainer}
                   />
-                  <FitBounds
-                    className={styles.actionButton}
-                    hasError={trackError}
-                    trackResource={trackResource}
-                  />
+                  <FitBounds hasError={trackError} trackResource={trackResource} />
                 </Fragment>
               )}
-              <InfoError
-                error={datasetError}
-                loading={datasetImporting}
-                tooltip={infoTooltip}
-                className={styles.actionButton}
-              />
-              {isCustomUserLayer && (
-                <Remove className={cx(styles.actionButton)} dataview={dataview} />
-              )}
+              <InfoModal dataview={dataview} />
+              {isCustomUserLayer && <Remove dataview={dataview} />}
             </Fragment>
           )}
         </div>

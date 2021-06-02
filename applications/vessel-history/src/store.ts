@@ -3,6 +3,7 @@ import connectedRoutes, { routerQueryMiddleware } from 'routes/routes'
 import offlineVesselsReducer from 'features/vessels/offline-vessels.slice'
 import vesselsReducer from 'features/vessels/vessels.slice'
 import searchReducer from 'features/search/search.slice'
+import settingsReducer from 'features/settings/settings.slice'
 import { initializeDataviews } from 'features/dataviews/dataviews.utils'
 import { routerWorkspaceMiddleware } from 'features/workspace/workspace.middlewares'
 import mapReducer from './features/map/map.slice'
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   offlineVessels: offlineVesselsReducer,
   vessels: vesselsReducer,
   search: searchReducer,
+  settings: settingsReducer,
   location: location,
   map: mapReducer,
   dataviews: dataviewsReducer,

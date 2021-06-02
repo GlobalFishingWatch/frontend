@@ -20,11 +20,10 @@ function DatasetNotFound({ dataview }: { dataview: UrlDataviewInstance }) {
             icon="warning"
             type="warning"
             size="small"
-            className={styles.actionButton}
             tooltip={t('errors.datasetNotFound', 'Dataset not found')}
             tooltipPlacement="top"
           />
-          <Remove className={cx(styles.actionButton)} dataview={dataview} />
+          <Remove dataview={dataview} />
         </div>
       </div>
     </div>

@@ -161,10 +161,10 @@ const MapWrapper = (): React.ReactElement | null => {
         const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
         const gridAreaFormatted = gridArea
           ? formatI18nNumber(gridArea, {
-              style: 'unit',
-              unit: isSquareKm ? 'kilometer' : 'meter',
-              unitDisplay: 'short',
-            })
+            style: 'unit',
+            unit: isSquareKm ? 'kilometer' : 'meter',
+            unitDisplay: 'short',
+          })
           : ''
         if (legend.unit === 'hours') {
           label = `${t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`

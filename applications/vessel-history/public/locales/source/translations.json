@@ -31,6 +31,36 @@
     "allSelected": "All",
     "selected": "selected"
   },
+  "settings": {
+    "title": "Settings",
+    "distance": "DISTANCE TRAVELLED",
+    "duration": "DURATION",
+    "hours": "hours",
+    "longerThan": "Longer than",
+    "eezs": {
+      "label": "Events in these EEZs"
+    },
+    "mpas": {
+      "label": "Events in these MPAs"
+    },
+    "rfmos": {
+      "label": "Events in these RFMOS"
+    },
+    "loiteringEvents": {
+      "title": "Loitering Events"
+    },
+    "encounters": {
+      "title": "Loitering Events"
+    },
+    "fishingEvents": {
+      "title": "Loitering Events"
+    },
+    "portVisits": {
+      "title": "Port Visits",
+      "inputStart": "Port visits in",
+      "inputEnd": "ports"
+    }
+  },
   "vessel": {
     "authorization_plural": "authorizations",
     "callsign": "callsign",

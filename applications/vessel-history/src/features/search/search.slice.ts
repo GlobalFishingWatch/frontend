@@ -66,8 +66,9 @@ const slice = createSlice({
       }
     })
     builder.addCase(fetchVesselSearchThunk.rejected, (state, action) => {
-      if ((action.meta.arg.query ?? '').length === 0) return
-      state.queries[action.meta.arg.query].searching = false
+      if (state.queries[action.meta.arg.query]) {
+        state.queries[action.meta.arg.query].searching = false
+      }
     })
   },
 })

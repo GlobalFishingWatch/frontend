@@ -93,6 +93,7 @@ export const sources: Dictionary<Record<string, Partial<any>>> = {
       ],
       type: 'raster',
       tileSize: 256,
+      attribution: 'Google',
     },
   },
   [BasemapType.Default]: {

@@ -7,6 +7,7 @@ import * as serviceWorker from './serviceWorkerRegistration'
 import store from './store'
 import App from './App'
 import './features/i18n/i18n'
+import '@globalfishingwatch/ui-components/dist/base.css'
 import './index.css'
 
 render(
