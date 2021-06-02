@@ -9,9 +9,9 @@ interface ModalProps {
   title?: string
   header?: boolean
   className?: string
+  closeButtonClassName?: string
   contentClassName?: string
   overlayClassName?: string
-  hideCloseButton?: boolean
   /**
    * Id of the html root selector, normally in CRA 'root'
    */
@@ -30,7 +30,7 @@ function Modal(props: ModalProps) {
     className,
     contentClassName,
     overlayClassName,
-    hideCloseButton = false,
+    closeButtonClassName,
     children,
   } = props
   const appElement = useMemo(() => document.getElementById(appSelector), [appSelector])
@@ -49,17 +49,15 @@ function Modal(props: ModalProps) {
       {header ? (
         <div className={cx(styles.header, { [styles.withTitle]: title })}>
           <h1 className={styles.title}>{title}</h1>
-          {!hideCloseButton && <IconButton icon="close" onClick={onClose} />}
+          <IconButton icon="close" className={closeButtonClassName} onClick={onClose} />
         </div>
       ) : (
-        !hideCloseButton && (
-          <IconButton
-            icon="close"
-            onClick={onClose}
-            type="border"
-            className={styles.closeButtonWithoutHeader}
-          />
-        )
+        <IconButton
+          icon="close"
+          onClick={onClose}
+          type="border"
+          className={cx(styles.closeButtonWithoutHeader, closeButtonClassName)}
+        />
       )}
       <div
         className={cx(styles.content, contentClassName, {

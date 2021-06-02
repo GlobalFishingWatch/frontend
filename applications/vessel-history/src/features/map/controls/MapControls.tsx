@@ -57,9 +57,9 @@ const MapControls = ({
                   onClose={handleCloseShowLayers}
                   header={false}
                   className={styles.layersModalContentWrapper}
+                  closeButtonClassName={styles.layersModalCloseButton}
                   contentClassName={styles.layersModalContainer}
                   overlayClassName={styles.layersModalOverlay}
-                  hideCloseButton={true}
                 >
                   <div>
                     <div className={styles.contextLayers}>

@@ -47,8 +47,8 @@
   filter: var(--drop-shadow);
   padding: var(--space-S);
   position: absolute;
-  right: var(--space-S);
-  top: calc(var(--header-height) + var(--space-S));
+  right: var(--space-XS);
+  top: calc(var(--header-height) + var(--space-XS));
   height: fit-content;
   width: fit-content;
 }
@@ -71,4 +71,10 @@
 .active {
   color: var(--color-primary-blue);
   z-index: 1;
+}
+
+.layersModalCloseButton {
+  position: absolute;
+  top: var(--space-XS);
+  right: var(--space-XS);
 }
