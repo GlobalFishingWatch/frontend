@@ -37,11 +37,6 @@
   height: var(--size-M);
 }
 
-.active {
-  opacity: 1;
-  z-index: 1;
-}
-
 .layersModalOverlay {
   background: none;
   display: block;
@@ -66,7 +61,14 @@
 
 .contextLayer {
   display: flex;
+  font-size: var(--font-S);
   flex-direction: row;
   align-items: center;
   height: var(--size-M);
+  color: rgba(var(--primary-blue-rgb), 0.7);
+}
+
+.active {
+  color: var(--color-primary-blue);
+  z-index: 1;
 }

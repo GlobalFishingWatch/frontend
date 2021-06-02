@@ -34,7 +34,10 @@ const LayerSwitch = (
   return (
     <label
       ref={ref}
-      className={cx(className, classNameActive ? { [classNameActive]: layerActive } : {})}
+      className={cx(
+        className,
+        classNameActive && layerActive ? { [classNameActive]: layerActive } : {}
+      )}
     >
       <Switch
         disabled={disabled}
