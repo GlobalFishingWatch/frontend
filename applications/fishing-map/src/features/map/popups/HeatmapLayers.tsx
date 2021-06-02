@@ -9,9 +9,10 @@ import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { isUserLogged } from 'features/user/user.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
@@ -52,7 +53,21 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
     <div className={styles.popupSection}>
       <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
       <div className={styles.popupSectionContent}>
-        {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
+        {showFeaturesDetails && (
+          <h3 className={styles.popupSectionTitle}>
+            {feature.title}
+            {feature.temporalgrid && feature.temporalgrid.interval === '10days' && (
+              <span>
+                {' '}
+                {t('common.dateRange', {
+                  start: formatI18nDate(feature.temporalgrid.visibleFramesStart),
+                  end: formatI18nDate(feature.temporalgrid.visibleFramesEnd),
+                  defaultValue: 'between {{start}} and {{end}}',
+                })}
+              </span>
+            )}
+          </h3>
+        )}
         <div className={styles.row}>
           <span className={styles.rowText}>
             <I18nNumber number={feature.value} />{' '}
