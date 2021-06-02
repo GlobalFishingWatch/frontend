@@ -1,5 +1,13 @@
 # @globalfishingwatch/ui-components
 
+## 5.0.3
+
+### Patch Changes
+
+- Updated dependencies [d14baf30]
+  - @globalfishingwatch/layer-composer@7.1.3
+  - @globalfishingwatch/react-hooks@8.0.3
+
 ## 5.0.2
 
 ### Patch Changes
