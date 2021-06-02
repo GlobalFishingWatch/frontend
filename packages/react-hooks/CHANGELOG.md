@@ -1,5 +1,14 @@
 # @globalfishingwatch/react-hooks
 
+## 8.0.1
+
+### Patch Changes
+
+- d5dd9f90: Fishing map/4wings filter precision
+- Updated dependencies [d5dd9f90]
+  - @globalfishingwatch/fourwings-aggregate@4.0.3
+  - @globalfishingwatch/layer-composer@7.1.1
+
 ## 8.0.0
 
 ### Patch Changes
