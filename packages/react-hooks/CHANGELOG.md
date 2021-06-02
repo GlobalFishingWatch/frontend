@@ -1,5 +1,12 @@
 # @globalfishingwatch/react-hooks
 
+## 8.0.2
+
+### Patch Changes
+
+- Updated dependencies [ac5fb891]
+  - @globalfishingwatch/layer-composer@7.1.2
+
 ## 8.0.1
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @globalfishingwatch/ui-components
 
+## 5.0.2
+
+### Patch Changes
+
+- ac5fb891: fix undefined in legend when no bins data
+- Updated dependencies [ac5fb891]
+  - @globalfishingwatch/layer-composer@7.1.2
+  - @globalfishingwatch/react-hooks@8.0.2
+
 ## 5.0.1
 
 ### Patch Changes
