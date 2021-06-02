@@ -1,4 +1,5 @@
 import ReactGA from 'react-ga'
+import { DateTime } from 'luxon'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 
@@ -22,8 +23,7 @@ export const PUBLIC_SUFIX = 'public'
 export const FULL_SUFIX = 'full'
 
 // used when no url data and no workspace data
-const now = new Date()
-const end = new Date(Date.UTC(now.getFullYear(), 11, 31)).toISOString()
+const end = DateTime.fromObject({ hour: 0, minute: 0, second: 0, zone: 'utc' }).toISO()
 
 export const DEFAULT_VIEWPORT = {
   latitude: 26,
@@ -31,7 +31,7 @@ export const DEFAULT_VIEWPORT = {
   zoom: 1,
 }
 export const DEFAULT_TIME_RANGE = {
-  start: new Date(Date.UTC(2018, 0, 1)).toISOString(),
+  start: DateTime.fromISO(end).minus({ months: 6 }).toISO(),
   end,
 }
 
