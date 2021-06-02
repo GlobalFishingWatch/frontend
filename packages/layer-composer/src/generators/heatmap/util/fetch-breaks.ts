@@ -75,7 +75,16 @@ const getBreaksUrl = (config: FetchBreaksParams): string => {
   return `${url}?${datasetsQuery}&${filtersQuery}`
 }
 
+const getNumBins = (config: FetchBreaksParams) => {
+  const isBivariate = config.mode === HeatmapAnimatedMode.Bivariate
+  return isBivariate ? '4' : '9'
+}
+
 const parseBreaksResponse = (config: FetchBreaksParams, breaks: Breaks) => {
+  const bins = parseInt(getNumBins(config))
+  if (!breaks || breaks.length < bins) {
+    return config.sublayers.map(() => new Array(bins).fill(0))
+  }
   const max = Math.max(...breaks.flatMap((b) => b))
   const maxBreaks = breaks.find((b, index) => b[breaks[index].length - 1] === max) || breaks[0]
   // We want to use the biggest break in every sublayer
@@ -85,7 +94,6 @@ const parseBreaksResponse = (config: FetchBreaksParams, breaks: Breaks) => {
 let controllerCache: AbortController | undefined
 
 export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> {
-  const isBivariate = config.mode === HeatmapAnimatedMode.Bivariate
   const cacheKey = getCacheKey(config)
   const allDatasets = getDatasets(config)
   const datasetsWithoutCache = getDatasetsWithoutCache(config)
@@ -99,7 +107,7 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
 
   const breaksUrl = new URL(getBreaksUrl(config))
   breaksUrl.searchParams.set('temporal-aggregation', 'false')
-  breaksUrl.searchParams.set('numBins', isBivariate ? '4' : '9')
+  breaksUrl.searchParams.set('numBins', getNumBins(config))
   breaksUrl.searchParams.set('interval', '10days')
 
   const url = breaksUrl.toString()
