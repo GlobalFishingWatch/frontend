@@ -107,14 +107,19 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
       return
     }
 
-
     // use the first feature/dv for common parameters
     const mainFeature = temporalGridFeatures[0]
 
     // Currently only one timerange is supported, which is OK since we only need interaction on the activity heatmaps and all
     // activity heatmaps use the same time intervals, This will need to be revised in case we support interactivity on environment layers
-    const start = mainFeature.temporalgrid?.visibleFramesStart
-    const end = mainFeature.temporalgrid?.visibleFramesEnd
+    const start =
+      mainFeature.temporalgrid?.interval === '10days'
+        ? mainFeature.temporalgrid?.visibleFramesStart
+        : timeRange.start
+    const end =
+      mainFeature.temporalgrid?.interval === '10days'
+        ? mainFeature.temporalgrid?.visibleFramesEnd
+        : timeRange.end
 
     // get corresponding dataviews
     const featuresDataviews = temporalGridFeatures.flatMap((feature) => {

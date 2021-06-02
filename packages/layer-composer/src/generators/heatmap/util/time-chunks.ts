@@ -224,7 +224,7 @@ export const getActiveTimeChunks = (
   const delta = +toDT(activeEnd) - +toDT(activeStart)
   const finalInterval: Interval =
     !interval || Array.isArray(interval) ? getInterval(delta, interval) : (interval as Interval)
-  
+
   const deltaInIntervalUnits = CONFIG_BY_INTERVAL[finalInterval].getFrame(delta)
 
   const timeChunks: TimeChunks = {

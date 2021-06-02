@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
-import { Generators, ExtendedStyleMeta, CONFIG_BY_INTERVAL, Interval } from '@globalfishingwatch/layer-composer'
+import {
+  Generators,
+  ExtendedStyleMeta,
+  CONFIG_BY_INTERVAL,
+  Interval,
+} from '@globalfishingwatch/layer-composer'
 import { aggregateCell } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, MapboxGeoJSONFeature } from '@globalfishingwatch/mapbox-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
@@ -70,7 +75,9 @@ const getExtendedFeatures = (
         // This avoids querying a cell visible on the map, when its actual timerange is not included in the app-overall time range
         const getDate = CONFIG_BY_INTERVAL[timeChunks.interval as Interval].getDate
         const visibleFramesStart = getDate(activeTimeChunk.frame).toISOString()
-        const visibleFramesEnd = getDate(activeTimeChunk.frame + timeChunks.deltaInIntervalUnits).toISOString()
+        const visibleFramesEnd = getDate(
+          activeTimeChunk.frame + timeChunks.deltaInIntervalUnits
+        ).toISOString()
         const numSublayers = generatorMetadata?.numSublayers
         const values = aggregateCell({
           rawValues: properties.rawValues,
@@ -94,8 +101,9 @@ const getExtendedFeatures = (
               visible: visibleSublayers[i] === true,
               col: properties._col as number,
               row: properties._row as number,
+              interval: timeChunks.interval,
               visibleFramesStart,
-              visibleFramesEnd
+              visibleFramesEnd,
             },
             value,
           }

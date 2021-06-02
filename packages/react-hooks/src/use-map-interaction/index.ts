@@ -1,8 +1,20 @@
 import type { Geometry } from 'geojson'
 import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { Interval } from '@globalfishingwatch/layer-composer/dist/generators'
 import { PointerEvent } from '@globalfishingwatch/react-map-gl'
 
 export { useMapHover, useMapClick, useFeatureState } from './use-map-interaction'
+
+export type TemporalGridFeature = {
+  sublayerIndex: number
+  sublayerId: string
+  visible: boolean
+  col: number
+  row: number
+  interval: Interval
+  visibleFramesStart: string
+  visibleFramesEnd: string
+}
 
 export type ExtendedFeature = {
   properties: Record<string, any>
@@ -19,15 +31,7 @@ export type ExtendedFeature = {
     y: number
     z: number
   }
-  temporalgrid?: {
-    sublayerIndex: number
-    sublayerId: string
-    visible: boolean
-    col: number
-    row: number
-    visibleFramesStart: number
-    visibleFramesEnd: number
-  }
+  temporalgrid?: TemporalGridFeature
   uniqueFeatureInteraction?: boolean
   generatorContextLayer?: ContextLayerType | null
   geometry?: Geometry

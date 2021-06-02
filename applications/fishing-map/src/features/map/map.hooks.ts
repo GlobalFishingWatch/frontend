@@ -11,7 +11,10 @@ import {
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import type { Style } from '@globalfishingwatch/mapbox-gl'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
-import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
+import {
+  TemporalGridFeature,
+  useFeatureState,
+} from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { ENCOUNTER_EVENTS_SOURCE_ID, PRESENCE_LAYER_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
@@ -192,6 +195,7 @@ export type TooltipEventFeature = {
     vessels: ExtendedFeatureVessel[]
   }
   event?: ExtendedFeatureEvent
+  temporalgrid?: TemporalGridFeature
   category: DataviewCategory
 }
 
