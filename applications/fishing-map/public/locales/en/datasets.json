@@ -32,6 +32,11 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-cold-water-corals": {
+    "name": "Cold Water Corals",
+    "description": "Buffered at ~1km",
+    "schema": {}
+  },
   "public-dgg_sar_caribe_match_2019": {
     "name": "SAR with an AIS-matched vessel",
     "description": "Vessels identified using synthetic aperture radar (SAR) and matched to a vessel using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
@@ -48,7 +53,7 @@
     "schema": {}
   },
   "public-eez-boundaries": {
-    "name": "Boundaries",
+    "name": "Areas boundaries for eez",
     "description": "EEZs boundaries are shown as solid lines for '200 NM', 'Treaty', 'Median line', 'Joint regime', 'Connection Line', 'Unilateral claim (undisputed)' and dashed lines for 'Joint regime', 'Unsettled', 'Unsettled median line' based on the 'LINE_TYPE' field. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
     "schema": {}
   },
@@ -196,6 +201,11 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fisheries-restricted-areas": {
+    "name": "Fisheries Restricted Areas",
+    "description": "",
+    "schema": {}
+  },
   "public-global-fishing-effort": {
     "name": "AIS",
     "description": "We analyze the automatic identification system (AIS) data collected from vessels that our research has identified as known or possible commercial fishing vessels, and apply a fishing detection algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either “apparently fishing” or “not fishing” and shows the former on our fishing activity heat map.\n\nYou can find more detail in our Technology page: https://globalfishingwatch.org/our-technology/",
@@ -243,6 +253,16 @@
       }
     }
   },
+  "public-gs-as-simplified": {
+    "name": "GSAs simplified",
+    "description": "GSAs simplified",
+    "schema": {}
+  },
+  "public-gulf-of-lion-french-zones": {
+    "name": "Gulf of Lion French Zones",
+    "description": "Gulf of lion french zones",
+    "schema": {}
+  },
   "public-high-seas": {
     "name": "High seas pockets",
     "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
@@ -288,6 +308,11 @@
   "public-inshore-fishing-zone-1618837176535": {
     "name": "Inshore fishing zone",
     "description": "50 nautical miles around the Tristan da Cunha northern islands and 40 nautical miles around Gough Island (eight percent of the exclusive economic zone), Source: RSPB.",
+    "schema": {}
+  },
+  "public-mediterranean-area-of-interest-1": {
+    "name": "Area of Interest",
+    "description": "",
     "schema": {}
   },
   "public-mpa-all": {
