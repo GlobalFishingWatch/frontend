@@ -2,7 +2,6 @@ import { createSelector } from '@reduxjs/toolkit'
 import { WorkspaceState } from 'types'
 import { RootState } from 'store'
 
-export const selectLastVisitedWorkspace = (state: RootState) => state.workspace.lastVisited
 export const selectWorkspace = (state: RootState) => state.workspace.data
 export const selectWorkspaceStatus = (state: RootState) => state.workspace.status
 export const selectWorkspaceCustomStatus = (state: RootState) => state.workspace.customStatus

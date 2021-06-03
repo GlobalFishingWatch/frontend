@@ -7,15 +7,12 @@ import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { dataviewInstances } from 'features/dataviews/dataviews.config'
 
-type LastWorkspaceVisited = { type: string; payload: any; query: any }
-
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
   // used to identify when someone saves its own version of the workspace
   customStatus: AsyncReducerStatus
   error: AsyncError
   data: Workspace<WorkspaceState>
-  lastVisited: LastWorkspaceVisited | undefined
 }
 
 export const getDefaultWorkspace = () => {
@@ -27,7 +24,6 @@ const initialState: WorkspaceSliceState = {
   customStatus: AsyncReducerStatus.Idle,
   error: {},
   data: { ...getDefaultWorkspace(), dataviewInstances },
-  lastVisited: undefined,
 }
 
 export const getDatasetByDataview = (
@@ -45,15 +41,12 @@ const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
-    setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
-      state.lastVisited = action.payload
-    },
     setDataviewInstances: (state, action: PayloadAction<DataviewInstance<any>[]>) => {
       state.data.dataviewInstances = action.payload
     },
   },
 })
 
-export const { setLastWorkspaceVisited, setDataviewInstances } = workspaceSlice.actions
+export const { setDataviewInstances } = workspaceSlice.actions
 
 export default workspaceSlice.reducer
