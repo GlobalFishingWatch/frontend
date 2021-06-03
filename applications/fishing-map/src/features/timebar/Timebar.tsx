@@ -1,5 +1,6 @@
 import React, { Fragment, memo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import TimebarComponent, {
@@ -74,7 +75,17 @@ const TimebarWrapper = () => {
         try {
           const start = scale(clientX - 10).toISOString()
           const end = scale(clientX + 10).toISOString()
-          dispatch(setHighlightedTime({ start, end }))
+          const startDateTime = DateTime.fromISO(start)
+          const endDateTime = DateTime.fromISO(end)
+          const diff = endDateTime.diff(startDateTime, 'hours')
+          if (diff.hours < 1) {
+            // To ensure at least 1h range is highlighted
+            const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
+            const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
+            dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
+          } else {
+            dispatch(setHighlightedTime({ start, end }))
+          }
         } catch (e) {
           console.warn(e)
         }

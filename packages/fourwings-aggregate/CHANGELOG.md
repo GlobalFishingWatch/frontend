@@ -1,5 +1,11 @@
 # @globalfishingwatch/fourwings-aggregate
 
+## 4.0.3
+
+### Patch Changes
+
+- d5dd9f90: Fishing map/4wings filter precision
+
 ## 4.0.2
 
 ### Patch Changes

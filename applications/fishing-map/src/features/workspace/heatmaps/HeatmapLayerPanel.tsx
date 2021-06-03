@@ -18,8 +18,8 @@ import DatasetSchemaField from '../shared/DatasetSchemaField'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
+import InfoModal from '../common/InfoModal'
 import Filters from './HeatmapFilters'
-import HeatmapInfoModal from './HeatmapInfoModal'
 import { isFishingDataview, isPresenceDataview } from './heatmaps.utils'
 import heatmapStyles from './HeatmapsSection.module.css'
 
@@ -38,7 +38,6 @@ function HeatmapLayerPanel({
 }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
-  const [modalInfoOpen, setModalInfoOpen] = useState(false)
 
   const { deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
@@ -82,10 +81,6 @@ function HeatmapLayerPanel({
     setFiltersOpen(!filterOpen)
   }
 
-  const onInfoLayerClick = () => {
-    setModalInfoOpen(true)
-  }
-
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
   }
@@ -101,7 +96,6 @@ function HeatmapLayerPanel({
       ? t(`common.presence`, 'Vessel presence')
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
-  const showInfoModal = isFishingDataview(dataview) || isPresenceDataview(dataview)
   const TitleComponent = (
     <Title
       title={datasetName}
@@ -142,7 +136,6 @@ function HeatmapLayerPanel({
                 icon={filterOpen ? 'filter-on' : 'filter-off'}
                 size="small"
                 onClick={onToggleFilterOpen}
-                className={styles.actionButton}
                 tooltip={
                   filterOpen
                     ? t('layer.filterClose', 'Close filters')
@@ -152,25 +145,8 @@ function HeatmapLayerPanel({
               />
             </ExpandedContainer>
           )}
-          {showInfoModal ? (
-            <IconButton
-              icon="info"
-              size="small"
-              className={styles.actionButton}
-              tooltip={t(`layer.seeDescription`, 'Click to see layer description')}
-              tooltipPlacement="top"
-              onClick={onInfoLayerClick}
-            />
-          ) : (
-            <IconButton
-              icon="info"
-              size="small"
-              className={styles.actionButton}
-              tooltip={dataset?.id ? t(`datasets:${dataset.id}.description` as any) : ''}
-              tooltipPlacement="top"
-            />
-          )}
-          <Remove className={styles.actionButton} onClick={onRemoveLayerClick} />
+          <InfoModal dataview={dataview} />
+          <Remove onClick={onRemoveLayerClick} />
         </div>
       </div>
       {layerActive && (
@@ -217,11 +193,6 @@ function HeatmapLayerPanel({
           </div>
         </div>
       )}
-      <HeatmapInfoModal
-        dataview={dataview}
-        isOpen={modalInfoOpen}
-        onClose={() => setModalInfoOpen(false)}
-      />
     </div>
   )
 }

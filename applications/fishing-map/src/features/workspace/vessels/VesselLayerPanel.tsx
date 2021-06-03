@@ -148,11 +148,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                     onToggleClick={onToggleColorOpen}
                     onClickOutside={closeExpandedContainer}
                   />
-                  <FitBounds
-                    className={styles.actionButton}
-                    hasError={trackError}
-                    trackResource={trackResource}
-                  />
+                  <FitBounds hasError={trackError} trackResource={trackResource} />
                 </Fragment>
               )}
               <ExpandedContainer
@@ -198,7 +194,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                   size="small"
                   icon={infoError ? 'warning' : 'info'}
                   type={infoError ? 'warning' : 'default'}
-                  className={styles.actionButton}
                   tooltip={
                     infoError
                       ? t('errors.vesselLoading', 'There was an error loading the vessel details')
@@ -210,7 +205,7 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                   tooltipPlacement="top"
                 />
               </ExpandedContainer>
-              <Remove className={styles.actionButton} dataview={dataview} />
+              <Remove dataview={dataview} />
             </Fragment>
           )}
         </div>

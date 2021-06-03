@@ -32,6 +32,11 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-cold-water-corals": {
+    "name": "Cold Water Corals",
+    "description": "Buffered at ~1km",
+    "schema": {}
+  },
   "public-dgg_sar_caribe_match_2019": {
     "name": "SAR with an AIS-matched vessel",
     "description": "Vessels identified using synthetic aperture radar (SAR) and matched to a vessel using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
@@ -45,6 +50,11 @@
   "public-eez-areas": {
     "name": "ZEE (Sumber: Marine Regions)",
     "description": "Zona ekonomi eksklusif (ZEE) membentang hingga 200 mil laut dari pantai suatu negara. Flanders Marine Institute (2019). Batas Maritim Geodatabase: Batas Maritim dan Zona Ekonomi Eksklusif (200NM), versi 11. Sumber: marineregions.org.",
+    "schema": {}
+  },
+  "public-eez-boundaries": {
+    "name": "Areas boundaries for eez",
+    "description": "EEZs boundaries are shown as solid lines for '200 NM', 'Treaty', 'Median line', 'Joint regime', 'Connection Line', 'Unilateral claim (undisputed)' and dashed lines for 'Joint regime', 'Unsettled', 'Unsettled median line' based on the 'LINE_TYPE' field. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
     "schema": {}
   },
   "public-fd-chlorophyl-ascension-v2": {
@@ -66,6 +76,14 @@
   "public-fd-chlorophyl-galapagos-v2": {
     "name": "Konsentrasi klorofil-a",
     "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-mediterranean-v2": {
+    "name": "Clorophyl Mediterranean",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
       "flag": "flag",
       "vessel_id": "vessel_id"
@@ -119,6 +137,14 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fd-salinity-mediterranean-v2": {
+    "name": "Salinity Mediterranean",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-fd-salinity-niue-v2": {
     "name": "Salinitas",
     "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
@@ -167,6 +193,14 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fd-water-temperature-mediterranean-v2": {
+    "name": "Water temperature Mediterranean",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-fd-water-temperature-niue-v2": {
     "name": "Suhu permukaan laut",
     "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM.",
@@ -190,6 +224,11 @@
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
+  },
+  "public-fisheries-restricted-areas": {
+    "name": "Fisheries Restricted Areas",
+    "description": "",
+    "schema": {}
   },
   "public-global-fishing-effort": {
     "name": "AIS",
@@ -238,6 +277,16 @@
       }
     }
   },
+  "public-gs-as-simplified": {
+    "name": "GSAs simplified",
+    "description": "GSAs simplified",
+    "schema": {}
+  },
+  "public-gulf-of-lion-french-zones": {
+    "name": "Gulf of Lion French Zones",
+    "description": "Gulf of lion french zones",
+    "schema": {}
+  },
   "public-high-seas": {
     "name": "Kantong laut lepas",
     "description": "Laut lepas adalah wilayah lautan di luar zona ekonomi eksklusif (ZEE). Kantong laut lepas adalah area yang benar-benar tertutup oleh ZEE. Kantong-kantong ini mungkin sulit dibedakan dari beberapa yurisdiksi ZEE yang mengelilinginya, oleh karena itu, kami memiliki layer yang menyorotinya.",
@@ -283,6 +332,11 @@
   "public-inshore-fishing-zone-1618837176535": {
     "name": "Inshore Fishing Zone",
     "description": "50 nm around the Tristan Archipelago and 40nm around Gough (8% of EEZ)",
+    "schema": {}
+  },
+  "public-mediterranean-area-of-interest-1": {
+    "name": "Area of Interest",
+    "description": "",
     "schema": {}
   },
   "public-mpa-all": {

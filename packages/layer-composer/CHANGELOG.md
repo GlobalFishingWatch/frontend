@@ -1,5 +1,37 @@
 # @globalfishingwatch/layer-composer
 
+## 7.1.3
+
+### Patch Changes
+
+- d14baf30: fix undefined in legend when no bins data
+
+## 7.1.2
+
+### Patch Changes
+
+- ac5fb891: fix undefined in legend when no bins data
+
+## 7.1.1
+
+### Patch Changes
+
+- d5dd9f90: Fishing map/4wings filter precision
+- Updated dependencies [d5dd9f90]
+  - @globalfishingwatch/fourwings-aggregate@4.0.3
+
+## 7.1.0
+
+### Minor Changes
+
+- 6c1b25bb: include leading point in filterGeoJSONByTimerange
+
+## 7.0.4
+
+### Patch Changes
+
+- daa1de75: satellite basemap attribution
+
 ## 7.0.3
 
 ### Patch Changes

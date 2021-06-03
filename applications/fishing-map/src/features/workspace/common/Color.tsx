@@ -3,22 +3,23 @@ import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import ColorBar, {
   ColorBarOption,
+  FillColorBarOptions,
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import styles from 'features/workspace/shared/LayerPanel.module.css'
 import ExpandedContainer from '../shared/ExpandedContainer'
 
 type ColorProps = {
   open: boolean
   dataview: UrlDataviewInstance
+  colorType?: 'fill' | 'line'
   onColorClick: (color: ColorBarOption) => void
   onToggleClick: (e: any) => void
   onClickOutside: () => void
 }
 
 const Color = (props: ColorProps) => {
-  const { open, dataview, onToggleClick, onColorClick, onClickOutside } = props
+  const { open, colorType = 'line', dataview, onToggleClick, onColorClick, onClickOutside } = props
   const { t } = useTranslation()
   return (
     <ExpandedContainer
@@ -26,7 +27,7 @@ const Color = (props: ColorProps) => {
       onClickOutside={onClickOutside}
       component={
         <ColorBar
-          colorBarOptions={LineColorBarOptions}
+          colorBarOptions={colorType === 'line' ? LineColorBarOptions : FillColorBarOptions}
           selectedColor={dataview.config?.color}
           onColorClick={onColorClick}
         />
@@ -39,7 +40,6 @@ const Color = (props: ColorProps) => {
         tooltip={t('layer.color_change', 'Change color')}
         tooltipPlacement="top"
         onClick={onToggleClick}
-        className={styles.actionButton}
       />
     </ExpandedContainer>
   )

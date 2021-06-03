@@ -32,6 +32,11 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-cold-water-corals": {
+    "name": "Cold-water corals (Source: UNEP-WCMC)",
+    "description": "This dataset shows the Mediterranean and Black Sea distribution of cold-water corals using data collected from 1915 to 2014, buffered at ~1km. Occurrence records are given for the subclass Octocorallia (octocorals; also known as Alcyonaria) and four Orders (in Class Anthozoa): Scleractinia (reef-forming corals), Antipatharia (black corals), Zoanthidae (encrusting or button polyps), and Pennatulacea (sea pens). Occurrence records are also available for the order sub-Order Filifera (lace corals) in Class Hydrozoa. References: Freiwald et al. 2017, Freiwald et al 2004. Source: UNEP-WCMC.",
+    "schema": {}
+  },
   "public-dgg_sar_caribe_match_2019": {
     "name": "SAR with an AIS-matched vessel",
     "description": "Vessels identified using synthetic aperture radar (SAR) and matched to a vessel using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
@@ -45,6 +50,11 @@
   "public-eez-areas": {
     "name": "EEZs (Source: Marine Regions)",
     "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org.",
+    "schema": {}
+  },
+  "public-eez-boundaries": {
+    "name": "Boundaries",
+    "description": "EEZs boundaries are shown as solid lines for '200 NM', 'Treaty', 'Median line', 'Joint regime', 'Connection Line', 'Unilateral claim (undisputed)' and dashed lines for 'Joint regime', 'Unsettled', 'Unsettled median line' based on the 'LINE_TYPE' field. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
     "schema": {}
   },
   "public-fd-chlorophyl-ascension-v2": {
@@ -64,6 +74,14 @@
     }
   },
   "public-fd-chlorophyl-galapagos-v2": {
+    "name": "Chlorophyll-a concentration",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-mediterranean-v2": {
     "name": "Chlorophyll-a concentration",
     "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
     "schema": {
@@ -119,6 +137,14 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fd-salinity-mediterranean-v2": {
+    "name": "Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-fd-salinity-niue-v2": {
     "name": "Salinity",
     "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: HYCOM.",
@@ -167,6 +193,14 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fd-water-temperature-mediterranean-v2": {
+    "name": "Sea surface temperature",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-fd-water-temperature-niue-v2": {
     "name": "Sea surface temperature",
     "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
@@ -190,6 +224,11 @@
       "flag": "flag",
       "vessel_id": "vessel_id"
     }
+  },
+  "public-fisheries-restricted-areas": {
+    "name": "Fisheries restricted areas (Source: FAO)",
+    "description": "Fisheries restricted areas (FRAs) are geographically defined areas in which some specific fishing activities are temporarily or permanently banned or restricted in order to improve the exploitation patterns and conservation of specific stocks as well as of habitats and deep-sea ecosystems. Source: FAO.",
+    "schema": {}
   },
   "public-global-fishing-effort": {
     "name": "AIS",
@@ -238,6 +277,16 @@
       }
     }
   },
+  "public-gs-as-simplified": {
+    "name": "GFCM GSAs (Source: FAO)",
+    "description": "The General Fisheries Commission for the Mediterranean (GFCM) geographical subareas (GSAs). More information available: fao.org/gfcm/data/maps/gsas/en. Source: FAO.",
+    "schema": {}
+  },
+  "public-gulf-of-lion-french-zones": {
+    "name": "Gulf of Lion French zones (Source: Légifrance)",
+    "description": "Gulf of Lion French zones are fisheries restricted areas in which some specific fishing activities are temporarily or permanently banned or restricted in order to protect spawning aggregations and deep-sea sensitive habitats. Source: Légifrance.",
+    "schema": {}
+  },
   "public-high-seas": {
     "name": "High seas pockets",
     "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
@@ -283,6 +332,11 @@
   "public-inshore-fishing-zone-1618837176535": {
     "name": "Inshore fishing zone",
     "description": "50 nautical miles around the Tristan da Cunha northern islands and 40 nautical miles around Gough Island (eight percent of the exclusive economic zone), Source: RSPB.",
+    "schema": {}
+  },
+  "public-mediterranean-area-of-interest-1": {
+    "name": "Area of interest",
+    "description": "The full extent of the Mediterranean and Black Sea area of interest. Source: Global Fishing Watch.",
     "schema": {}
   },
   "public-mpa-all": {

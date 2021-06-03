@@ -6,3 +6,7 @@ div.modalContent {
   padding: var(--space-L);
   line-height: 1.8;
 }
+
+.defaultCursor {
+  cursor: default;
+}

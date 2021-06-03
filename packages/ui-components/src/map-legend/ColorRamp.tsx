@@ -109,7 +109,7 @@ function ColorRampLegend({
       {cleanRamp?.length > 0 && (
         <Fragment>
           <div className={styles.ramp} style={backgroundStyle}>
-            {currentValue && heatmapLegendScale && (
+            {currentValue !== null && currentValue !== undefined && heatmapLegendScale && (
               <span
                 className={cx(styles.currentValue, currentValueClassName, {
                   [styles.offsetLeft]: heatmapLegendScale(currentValue) < 10,
@@ -136,7 +136,7 @@ function ColorRampLegend({
           </div>
           <div className={styles.stepsContainer}>
             {cleanRamp.map(([value], i) => {
-              if (value === null) return null
+              if (value === null || value === undefined) return null
               const roundValue = roundValues
                 ? roundLegendNumber(value as number)
                 : parseLegendNumber(value as number)
