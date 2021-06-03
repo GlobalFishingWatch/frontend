@@ -32,6 +32,11 @@
       "distance_from_shore_m": "distancia_de_oro_m"
     }
   },
+  "public-cold-water-corals": {
+    "name": "Cold Water Corals",
+    "description": "Buffered at ~1km",
+    "schema": {}
+  },
   "public-dgg_sar_caribe_match_2019": {
     "name": "SAR with an AIS-matched vessel",
     "description": "Vessels identified using synthetic aperture radar (SAR) and matched to a vessel using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
@@ -48,7 +53,7 @@
     "schema": {}
   },
   "public-eez-boundaries": {
-    "name": "Boundaries",
+    "name": "Areas boundaries for eez",
     "description": "EEZs boundaries are shown as solid lines for '200 NM', 'Treaty', 'Median line', 'Joint regime', 'Connection Line', 'Unilateral claim (undisputed)' and dashed lines for 'Joint regime', 'Unsettled', 'Unsettled median line' based on the 'LINE_TYPE' field. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
     "schema": {}
   },
@@ -73,6 +78,14 @@
     "description": "La clorofila es el pigmento cosechador ligero que se encuentra en todas las plantas fotosínticas. Su concentración en el océano se utiliza como un índice de biomasa del thóplankton y, como tal, es un aporte clave a los modelos de productividad primaria. Los satélites Terra y Aqua de Resolución Moderada Espectroradiómetro (MODIS) de la NASA miden todos los días el color del océano, del cual se obtienen concentraciones globales de clorofila. El toplancton del Océano fijan químicamente el carbono a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. A través de este proceso, las plantas marinas capturan una cantidad igual de carbono que la fotosíntesis por vegetación terrestre. Los cambios en la cantidad de toplancton indican el cambio en la productividad de los océanos y proporcionan un vínculo oceánico clave para la monitorización del cambio climático global. Los científicos utilizan clorofilos para modelar los ciclos biogeoquímicos de la Tierra, como el ciclo de carbono o el ciclo de nitrogenado. Adicionalmente, en escalas cortas de tiempo, el clorofilo se puede utilizar para rastrear las corrientes oceanográficas, chorros y ciruelas. La resolución de 1 km y la cobertura global casi diaria de los datos MODIS permiten así a los científicos observar características oceanográficas mesoscales en entornos costeros y estuarinos, que son de creciente importancia en los estudios de ciencias marinas.",
     "schema": {
       "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-mediterranean-v2": {
+    "name": "Clorophyl Mediterranean",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
+    "schema": {
+      "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
@@ -124,6 +137,14 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fd-salinity-mediterranean-v2": {
+    "name": "Salinity Mediterranean",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-fd-salinity-niue-v2": {
     "name": "Salinidad",
     "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
@@ -172,6 +193,14 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fd-water-temperature-mediterranean-v2": {
+    "name": "Water temperature Mediterranean",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-fd-water-temperature-niue-v2": {
     "name": "Temperatura de la superficie del mar",
     "description": "La temperatura de la superficie del mar es la temperatura del agua en la superficie del océano. El modelo híbrido de coordenadas oceánicas (HYCOM) es un modelo oceánico de coordenadas híbrido isopícnal-sigma-presión (generalizado) de asimilación de datos. El subconjunto de datos HYCOM alojados en EE contiene las variables salinidad, temperatura, velocidad y elevación. Se han interpolado a una cuadrícula uniforme de 0,08 grados de latitud / longitud entre 80,48 ° S y 80,48 ° N. Las variables de salinidad, temperatura y velocidad se han interpolado a 40 niveles z estándar. Fuente: HYCOM.",
@@ -195,6 +224,11 @@
       "flag": "bandera",
       "vessel_id": "vessel_id"
     }
+  },
+  "public-fisheries-restricted-areas": {
+    "name": "Fisheries Restricted Areas",
+    "description": "",
+    "schema": {}
   },
   "public-global-fishing-effort": {
     "name": "AIS",
@@ -243,6 +277,16 @@
       }
     }
   },
+  "public-gs-as-simplified": {
+    "name": "GSAs simplified",
+    "description": "GSAs simplified",
+    "schema": {}
+  },
+  "public-gulf-of-lion-french-zones": {
+    "name": "Gulf of Lion French Zones",
+    "description": "Gulf of lion french zones",
+    "schema": {}
+  },
   "public-high-seas": {
     "name": "Alta mar",
     "description": "El alta mar es cualquier área de la columna de agua del océano más allá de las aguas jurisdiccionales. Estos puntos pueden ser difíciles de distinguir de las múltiples jurisdicciones de la ZEE que los rodean, por lo que tenemos una capa que los resalta.",
@@ -288,6 +332,11 @@
   "public-inshore-fishing-zone-1618837176535": {
     "name": "Zona de pesca de bajura",
     "description": "50 nm alrededor del archipiélago de Tristán y 40 nm alrededor de Gough (8% de la ZEE)",
+    "schema": {}
+  },
+  "public-mediterranean-area-of-interest-1": {
+    "name": "Area of Interest",
+    "description": "",
     "schema": {}
   },
   "public-mpa-all": {
