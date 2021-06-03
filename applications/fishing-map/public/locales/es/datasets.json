@@ -32,6 +32,11 @@
       "distance_from_shore_m": "distancia_de_oro_m"
     }
   },
+  "public-cold-water-corals": {
+    "name": "Cold Water Corals",
+    "description": "Buffered at ~1km",
+    "schema": {}
+  },
   "public-dgg_sar_caribe_match_2019": {
     "name": "SAR with an AIS-matched vessel",
     "description": "Vessels identified using synthetic aperture radar (SAR) and matched to a vessel using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
@@ -48,7 +53,7 @@
     "schema": {}
   },
   "public-eez-boundaries": {
-    "name": "Boundaries",
+    "name": "Areas boundaries for eez",
     "description": "EEZs boundaries are shown as solid lines for '200 NM', 'Treaty', 'Median line', 'Joint regime', 'Connection Line', 'Unilateral claim (undisputed)' and dashed lines for 'Joint regime', 'Unsettled', 'Unsettled median line' based on the 'LINE_TYPE' field. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
     "schema": {}
   },
@@ -196,6 +201,11 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fisheries-restricted-areas": {
+    "name": "Fisheries Restricted Areas",
+    "description": "",
+    "schema": {}
+  },
   "public-global-fishing-effort": {
     "name": "AIS",
     "description": "Utilizamos datos sobre la identidad, el tipo, la ubicación, la velocidad, y más que se emite utilizando el Sistema de Identificación Automática (AIS) y recolectado a través de satélites y receptores terrestres. AIS fue desarrollado para la prevención de colisión/esquivación. Global Fishing Watch analiza los datos de AIS recopilados de los buques que nuestra investigación ha identificado como conocidos o posibles pesqueros comerciales, y aplica un algoritmo de detección de pesca para determinar una “aparente actividad pesquera” basado en cambios en la velocidad y dirección de los buques. El algoritmo clasifica cada punto de datos de emisión de AIS para estos buques como pesca aparente o sin actividad pesquera y exhibe el primero en el mapa de calor de la actividad pesquera de Global Fishing Watch. Los datos AIS como emisión pueden variar en integridad, precisión y calidad. Además, la recolección de datos por parte de receptores satelitales o terrestres, puede introducir errores a través de datos faltantes o inexactos. El algoritmo de detección de la pesca de Global Fishing Watch es un mejor esfuerzo matemático para identificar una “aparente actividad pesquera”. Como resultado, es posible que algunas actividades pesqueras no sean identificadas como tales por Global Fishing Watch. Por el contrario, Global Fishing Watch puede mostrar una actividad pesquera aparente en la que la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica “actividad pesquera”,“pesca” o “esfuerzo pesquero” como “aparente”, en lugar de brindar certeza sobre la actividad. En todo o en parte, la información de Global Fishing Watch sobre “aparente actividad de pesca” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Global Fishing Watch está tomando medidas para asegurar que la identificación del comportamiento de la actividad pesquera sea lo más exacta posible. Los algoritmos de detección de pesca de Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de buques que dan lugar a la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y técnicas de clasificación automatizadas.",
@@ -243,6 +253,16 @@
       }
     }
   },
+  "public-gs-as-simplified": {
+    "name": "GSAs simplified",
+    "description": "GSAs simplified",
+    "schema": {}
+  },
+  "public-gulf-of-lion-french-zones": {
+    "name": "Gulf of Lion French Zones",
+    "description": "Gulf of lion french zones",
+    "schema": {}
+  },
   "public-high-seas": {
     "name": "Alta mar",
     "description": "El alta mar es cualquier área de la columna de agua del océano más allá de las aguas jurisdiccionales. Estos puntos pueden ser difíciles de distinguir de las múltiples jurisdicciones de la ZEE que los rodean, por lo que tenemos una capa que los resalta.",
@@ -288,6 +308,11 @@
   "public-inshore-fishing-zone-1618837176535": {
     "name": "Zona de pesca de bajura",
     "description": "50 nm alrededor del archipiélago de Tristán y 40 nm alrededor de Gough (8% de la ZEE)",
+    "schema": {}
+  },
+  "public-mediterranean-area-of-interest-1": {
+    "name": "Area of Interest",
+    "description": "",
     "schema": {}
   },
   "public-mpa-all": {
