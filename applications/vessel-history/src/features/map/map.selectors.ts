@@ -4,7 +4,6 @@ import {
   getDataviewsGeneratorConfigs,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   selectDataviewInstancesResolved,
   selectDefaultBasemapGenerator,
@@ -15,28 +14,22 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { ResourcesState, selectResources } from 'features/resources/resources.slice'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { Range } from 'types'
+import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
 
 export const selectGlobalGeneratorsConfig = createSelector(
-  [
-    // selectViewport, selectTimeRange
-  ],
-  () =>
-    // { zoom }, { start, end }
-    ({
-      zoom: DEFAULT_WORKSPACE.zoom,
-      start: DEFAULT_WORKSPACE.start,
-      end: DEFAULT_WORKSPACE.end,
-      token: GFWAPI.getToken(),
-    })
+  [selectViewport, selectTimeRange],
+  ({ zoom }, { start, end }) => ({
+    zoom,
+    start,
+    end,
+    token: GFWAPI.getToken(),
+  })
 )
 
 type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
   resources: ResourcesState
-  rulers: Generators.Ruler[]
-  highlightedTime?: Range
   staticTime: Range
-  bivariate: boolean
 }
 
 const getGeneratorsConfig = ({
@@ -59,12 +52,10 @@ const selectMapGeneratorsConfig = createSelector(
     return getGeneratorsConfig({
       dataviews,
       resources,
-      rulers: [],
       staticTime: {
         start: DEFAULT_WORKSPACE.start,
         end: DEFAULT_WORKSPACE.end,
       },
-      bivariate: false,
     })
   }
 )
