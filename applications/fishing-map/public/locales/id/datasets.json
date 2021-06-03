@@ -32,6 +32,11 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-cold-water-corals": {
+    "name": "Cold Water Corals",
+    "description": "Buffered at ~1km",
+    "schema": {}
+  },
   "public-dgg_sar_caribe_match_2019": {
     "name": "SAR with an AIS-matched vessel",
     "description": "Vessels identified using synthetic aperture radar (SAR) and matched to a vessel using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
@@ -48,7 +53,7 @@
     "schema": {}
   },
   "public-eez-boundaries": {
-    "name": "Boundaries",
+    "name": "Areas boundaries for eez",
     "description": "EEZs boundaries are shown as solid lines for '200 NM', 'Treaty', 'Median line', 'Joint regime', 'Connection Line', 'Unilateral claim (undisputed)' and dashed lines for 'Joint regime', 'Unsettled', 'Unsettled median line' based on the 'LINE_TYPE' field. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
     "schema": {}
   },
@@ -196,6 +201,11 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fisheries-restricted-areas": {
+    "name": "Fisheries Restricted Areas",
+    "description": "",
+    "schema": {}
+  },
   "public-global-fishing-effort": {
     "name": "AIS",
     "description": "Kami menggunakan data tentang identitas kapal, jenis, lokasi, kecepatan, arah, dan lainnya yang disiarkan menggunakan sistem identifikasi otomatis (AIS) dan dikumpulkan melalui satelit dan penerima terestrial. Kami menganalisis data AIS yang dikumpulkan dari kapal yang diidentifikasi oleh penelitian kami sebagai kapal penangkap ikan komersial yang diketahui atau diperkirakan, dan menerapkan algoritma deteksi penangkapan ikan untuk menentukan \"\"aktivitas penangkapan ikan yang terlihat\"\" berdasarkan perubahan dalam kecepatan dan arah kapal. Algoritma tersebut mengklasifikasikan setiap titik data siaran AIS untuk kapal-kapal ini sebagai \"\"terlihat sedang memancing\"\" atau \"\"tidak mamancing\"\" dan menunjukkan titik data sebelumnya pada peta panas aktivitas penangkapan ikan kami. \n\nAnda dapat menemukan lebih detail di halaman teknologi kami.",
@@ -243,6 +253,16 @@
       }
     }
   },
+  "public-gs-as-simplified": {
+    "name": "GSAs simplified",
+    "description": "GSAs simplified",
+    "schema": {}
+  },
+  "public-gulf-of-lion-french-zones": {
+    "name": "Gulf of Lion French Zones",
+    "description": "Gulf of lion french zones",
+    "schema": {}
+  },
   "public-high-seas": {
     "name": "Kantong laut lepas",
     "description": "Laut lepas adalah wilayah lautan di luar zona ekonomi eksklusif (ZEE). Kantong laut lepas adalah area yang benar-benar tertutup oleh ZEE. Kantong-kantong ini mungkin sulit dibedakan dari beberapa yurisdiksi ZEE yang mengelilinginya, oleh karena itu, kami memiliki layer yang menyorotinya.",
@@ -288,6 +308,11 @@
   "public-inshore-fishing-zone-1618837176535": {
     "name": "Inshore Fishing Zone",
     "description": "50 nm around the Tristan Archipelago and 40nm around Gough (8% of EEZ)",
+    "schema": {}
+  },
+  "public-mediterranean-area-of-interest-1": {
+    "name": "Area of Interest",
+    "description": "",
     "schema": {}
   },
   "public-mpa-all": {
