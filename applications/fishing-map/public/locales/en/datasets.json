@@ -33,8 +33,8 @@
     }
   },
   "public-cold-water-corals": {
-    "name": "Cold Water Corals",
-    "description": "Buffered at ~1km",
+    "name": "Cold-water corals (Source: UNEP-WCMC)",
+    "description": "This dataset shows the Mediterranean and Black Sea distribution of cold-water corals using data collected from 1915 to 2014, buffered at ~1km. Occurrence records are given for the subclass Octocorallia (octocorals; also known as Alcyonaria) and four Orders (in Class Anthozoa): Scleractinia (reef-forming corals), Antipatharia (black corals), Zoanthidae (encrusting or button polyps), and Pennatulacea (sea pens). Occurrence records are also available for the order sub-Order Filifera (lace corals) in Class Hydrozoa. References: Freiwald et al. 2017, Freiwald et al 2004. Source: UNEP-WCMC.",
     "schema": {}
   },
   "public-dgg_sar_caribe_match_2019": {
@@ -226,8 +226,8 @@
     }
   },
   "public-fisheries-restricted-areas": {
-    "name": "Fisheries Restricted Areas",
-    "description": "",
+    "name": "Fisheries restricted areas (Source: FAO)",
+    "description": "Fisheries restricted areas (FRAs) are geographically defined areas in which some specific fishing activities are temporarily or permanently banned or restricted in order to improve the exploitation patterns and conservation of specific stocks as well as of habitats and deep-sea ecosystems. Source: FAO.",
     "schema": {}
   },
   "public-global-fishing-effort": {
@@ -278,13 +278,13 @@
     }
   },
   "public-gs-as-simplified": {
-    "name": "GSAs simplified",
-    "description": "GSAs simplified",
+    "name": "GFCM GSAs (Source: FAO)",
+    "description": "The General Fisheries Commission for the Mediterranean (GFCM) geographical subareas (GSAs). More information available: fao.org/gfcm/data/maps/gsas/en. Source: FAO.",
     "schema": {}
   },
   "public-gulf-of-lion-french-zones": {
-    "name": "Gulf of Lion French Zones",
-    "description": "Gulf of lion french zones",
+    "name": "Gulf of Lion French zones (Source: Légifrance)",
+    "description": "Gulf of Lion French zones are fisheries restricted areas in which some specific fishing activities are temporarily or permanently banned or restricted in order to protect spawning aggregations and deep-sea sensitive habitats. Source: Légifrance.",
     "schema": {}
   },
   "public-high-seas": {
@@ -335,8 +335,8 @@
     "schema": {}
   },
   "public-mediterranean-area-of-interest-1": {
-    "name": "Area of Interest",
-    "description": "",
+    "name": "Area of interest",
+    "description": "The full extent of the Mediterranean and Black Sea area of interest. Source: Global Fishing Watch.",
     "schema": {}
   },
   "public-mpa-all": {
