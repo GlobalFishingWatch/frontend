@@ -15,7 +15,8 @@ export const selectDataviewsResourceQueries = createSelector(
         return []
       }
 
-      let trackQuery: any = [] // initialized as empty array to be filtered by flatMap if not used
+      const queries: Resource[] = []
+
       if (dataview.config.visible === true) {
         const datasetType =
           dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
@@ -24,26 +25,36 @@ export const selectDataviewsResourceQueries = createSelector(
 
         const trackResource = resolveDataviewDatasetResource(dataview, datasetType)
         if (trackResource.url && trackResource.dataset && trackResource.datasetConfig) {
-          trackQuery = {
+          queries.push({
             dataviewId: dataview.dataviewId as number,
             url: trackResource.url,
             datasetType: trackResource.dataset.type,
             datasetConfig: trackResource.datasetConfig,
-          }
+          })
         }
       }
 
       const infoResource = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-      if (!infoResource.url || !infoResource.dataset || !infoResource.datasetConfig) {
-        return trackQuery as Resource
+      if (infoResource.url && infoResource.dataset && infoResource.datasetConfig) {
+        queries.push({
+          dataviewId: dataview.dataviewId as number,
+          url: infoResource.url,
+          datasetType: infoResource.dataset.type,
+          datasetConfig: infoResource.datasetConfig,
+        })
       }
-      const infoQuery: Resource = {
-        dataviewId: dataview.dataviewId as number,
-        url: infoResource.url,
-        datasetType: infoResource.dataset.type,
-        datasetConfig: infoResource.datasetConfig,
+
+      const eventsResource = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
+      if (eventsResource.url && eventsResource.dataset && eventsResource.datasetConfig) {
+        queries.push({
+          dataviewId: dataview.dataviewId as number,
+          url: eventsResource.url,
+          datasetType: eventsResource.dataset.type,
+          datasetConfig: eventsResource.datasetConfig,
+        })
       }
-      return [trackQuery, infoQuery]
+
+      return queries
     })
 
     return resourceQueries
