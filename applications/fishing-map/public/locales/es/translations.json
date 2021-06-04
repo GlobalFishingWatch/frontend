@@ -175,7 +175,7 @@
     "change_basemap_default": "Cambia al mapa base predeterminado",
     "change_basemap_satellite": "Cambia al mapa base satelital",
     "legend_help": "Área de celda de cuadrícula aproximada en el ecuador",
-    "loading": "Cargando el mapa",
+    "loading": "Loading",
     "mapLoadingWait": "Por favor espere a que cargue el mapa",
     "rulers_add": "Mide distancias",
     "rulers_remove": "Eliminar todas las distancias medidas",
