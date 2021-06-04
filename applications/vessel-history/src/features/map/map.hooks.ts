@@ -1,10 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  selectGeneratorsConfig,
-  updateGenerator,
-  UpdateGeneratorPayload,
-  selectGlobalGeneratorsConfig,
-} from './map.slice'
+import { selectDefaultMapGeneratorsConfig } from './map.selectors'
+import { updateGenerator, UpdateGeneratorPayload, selectGlobalGeneratorsConfig } from './map.slice'
 
 // >>> To take into account when implementing useViewport <<<
 // j8seangel: This always was an 🤯 let's talk about the latest working solution I found
@@ -16,7 +12,7 @@ export const useGeneratorsConnect = () => {
   const dispatch = useDispatch()
   return {
     globalConfig: useSelector(selectGlobalGeneratorsConfig),
-    generatorsConfig: useSelector(selectGeneratorsConfig),
+    generatorsConfig: useSelector(selectDefaultMapGeneratorsConfig),
     updateGenerator: (payload: UpdateGeneratorPayload) => dispatch(updateGenerator(payload)),
   }
 }

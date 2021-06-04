@@ -1,6 +1,7 @@
 import { render } from 'react-dom'
 import React from 'react'
 import { Provider } from 'react-redux'
+import { RecoilRoot } from 'recoil'
 import GFWAPI from '@globalfishingwatch/api-client'
 import * as serviceWorker from './serviceWorkerRegistration'
 import store from './store'
@@ -11,9 +12,11 @@ import './index.css'
 
 render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <RecoilRoot>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
 )

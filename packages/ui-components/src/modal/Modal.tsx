@@ -8,7 +8,10 @@ interface ModalProps {
   isOpen: boolean
   title?: string
   header?: boolean
+  className?: string
+  closeButtonClassName?: string
   contentClassName?: string
+  overlayClassName?: string
   /**
    * Id of the html root selector, normally in CRA 'root'
    */
@@ -24,7 +27,10 @@ function Modal(props: ModalProps) {
     appSelector = 'root',
     header = true,
     title,
+    className,
     contentClassName,
+    overlayClassName,
+    closeButtonClassName,
     children,
   } = props
   const appElement = useMemo(() => document.getElementById(appSelector), [appSelector])
@@ -34,8 +40,8 @@ function Modal(props: ModalProps) {
   }
   return (
     <ReactModal
-      overlayClassName={styles.modalOverlay}
-      className={styles.modalContentWrapper}
+      overlayClassName={cx(styles.modalOverlay, overlayClassName)}
+      className={cx(styles.modalContentWrapper, className)}
       appElement={appElement}
       isOpen={isOpen}
       onRequestClose={onClose}
@@ -43,14 +49,14 @@ function Modal(props: ModalProps) {
       {header ? (
         <div className={cx(styles.header, { [styles.withTitle]: title })}>
           <h1 className={styles.title}>{title}</h1>
-          <IconButton icon="close" onClick={onClose} />
+          <IconButton icon="close" className={closeButtonClassName} onClick={onClose} />
         </div>
       ) : (
         <IconButton
           icon="close"
           onClick={onClose}
           type="border"
-          className={styles.closeButtonWithoutHeader}
+          className={cx(styles.closeButtonWithoutHeader, closeButtonClassName)}
         />
       )}
       <div

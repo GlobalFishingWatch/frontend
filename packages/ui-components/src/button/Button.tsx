@@ -1,10 +1,10 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
+import type { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
 import Spinner from '../spinner'
 import { TooltipTypes } from '../types/types'
 import styles from './Button.module.css'
-import type { Placement } from 'tippy.js'
 
 export type ButtonType = 'default' | 'secondary'
 export type ButtonSize = 'default' | 'small'

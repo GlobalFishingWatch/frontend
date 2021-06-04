@@ -8,6 +8,8 @@ import { initializeDataviews } from 'features/dataviews/dataviews.utils'
 import mapReducer from './features/map/map.slice'
 import dataviewsReducer from './features/dataviews/dataviews.slice'
 import datasetsReducer from './features/datasets/datasets.slice'
+import resourcesReducer from './features/resources/resources.slice'
+import workspaceReducer from './features/workspace/workspace.slice'
 
 const {
   reducer: location,
@@ -24,6 +26,8 @@ const rootReducer = combineReducers({
   map: mapReducer,
   dataviews: dataviewsReducer,
   datasets: datasetsReducer,
+  resources: resourcesReducer,
+  workspace: workspaceReducer,
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
