@@ -13,12 +13,19 @@
     "historyFor": "history for",
     "previous": "previous"
   },
+  "layer": {
+    "toggleVisibility": "Toggle layer visibility"
+  },
+  "map": {
+    "loading": "Map loading",
+    "toggleLayers": "Toggle layers"
+  },
   "search": {
     "description": "Search by vessel name or identification code (IMO, MMSI, VMS ID, etc…). You can narrow your search pressing the filter icon in the top bar",
-    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign",
-    "notAllowed": "Search not allowed",
     "loadMore": "Load More",
-    "noMore": "No more results"
+    "noMore": "No more results",
+    "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Call Sign",
+    "notAllowed": "Search not allowed"
   },
   "selects": {
     "allSelected": "All",
@@ -65,10 +72,10 @@
     "plusPreviousValuesByField": "+{{quantity}} previous {{fieldLabel}}",
     "readyForOfflineView": "READY FOR OFFLINE VIEW",
     "remove": "Remove",
+    "savedOn": "saved on",
     "saveForOfflineView": "save vessel for offline view",
     "source": "source",
     "transmission_plural": "transmissions",
-    "savedOn": "saved on",
     "previousNames": "previous names",
     "builtYear": "built year",
     "depth": "depth",
