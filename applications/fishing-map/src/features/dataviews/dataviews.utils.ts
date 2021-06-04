@@ -2,6 +2,7 @@ import {
   ColorCyclingType,
   Dataset,
   DataviewCategory,
+  DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
 } from '@globalfishingwatch/api-types'
@@ -13,7 +14,6 @@ import {
   DEFAULT_VESSEL_DATAVIEW_ID,
   DEFAULT_PRESENCE_DATAVIEW_ID,
   DEFAULT_USER_TRACK_ID,
-  DEFAULT_VESSEL_EVENTS_DATAVIEW_ID,
 } from 'data/workspaces'
 
 // used in workspaces with encounter events layers
@@ -29,12 +29,13 @@ export const VESSEL_EVENTS_DATAVIEW_INSTANCE_PREFIX = 'vessel_events-'
 type VesselInstanceDatasets = {
   trackDatasetId: string
   infoDatasetId: string
+  eventsDatasetId?: string
 }
 export const getVesselDataviewInstance = (
   vessel: { id: string },
-  { trackDatasetId, infoDatasetId }: VesselInstanceDatasets
+  { trackDatasetId, infoDatasetId, eventsDatasetId }: VesselInstanceDatasets
 ): DataviewInstance<Generators.Type> => {
-  const datasetsConfig = [
+  const datasetsConfig: DataviewDatasetConfig[] = [
     {
       datasetId: trackDatasetId,
       params: [{ id: 'vesselId', value: vessel.id }],
@@ -46,6 +47,14 @@ export const getVesselDataviewInstance = (
       endpoint: EndpointId.Vessel,
     },
   ]
+  if (eventsDatasetId) {
+    datasetsConfig.push({
+      datasetId: eventsDatasetId,
+      query: [{ id: 'vessels', value: vessel.id }],
+      params: [],
+      endpoint: EndpointId.Events,
+    })
+  }
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
@@ -55,27 +64,6 @@ export const getVesselDataviewInstance = (
     datasetsConfig,
   }
   return vesselDataviewInstance
-}
-
-export const getVesselEventsDataviewInstance = (
-  vessel: { id: string },
-  eventsDatasetId: string
-): DataviewInstance<Generators.Type> => {
-  const datasetsConfig = [
-    {
-      datasetId: eventsDatasetId,
-      query: [{ id: 'vessels', value: vessel.id }],
-      params: [],
-      endpoint: 'carriers-events',
-    },
-  ]
-  const vesselEventsDataviewInstance = {
-    id: `${VESSEL_EVENTS_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
-    dataviewId: DEFAULT_VESSEL_EVENTS_DATAVIEW_ID,
-    config: {},
-    datasetsConfig,
-  }
-  return vesselEventsDataviewInstance
 }
 
 export const getFishingDataviewInstance = (): DataviewInstance<Generators.Type> => {

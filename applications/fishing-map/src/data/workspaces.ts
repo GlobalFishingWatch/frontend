@@ -33,7 +33,6 @@ export const DEFAULT_RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 1
 
 // Workspaces dataviews
 export const DEFAULT_VESSEL_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 92 : 171
-export const DEFAULT_VESSEL_EVENTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 99999 : 99999
 export const DEFAULT_FISHING_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 91 : 178
 export const DEFAULT_EVENTS_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 140 : 0
 export const DEFAULT_PRESENCE_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 124 : 241

@@ -127,6 +127,7 @@ export default function resolveDataviews(
         ...dataviewInstance.config,
       }
       config.visible = config?.visible ?? true
+      // Ensure the datasetConfig is defined in the base template dataview
       const datasetsConfig =
         dataview.datasetsConfig && dataview.datasetsConfig.length > 0
           ? dataview.datasetsConfig?.map((datasetConfig) => {

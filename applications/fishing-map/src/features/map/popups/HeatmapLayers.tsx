@@ -5,10 +5,7 @@ import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getVesselLabel } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import {
-  getVesselDataviewInstance,
-  getVesselEventsDataviewInstance,
-} from 'features/dataviews/dataviews.utils'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
@@ -33,7 +30,6 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { fourWingsStatus } = useClickedEventConnect()
   const userLogged = useSelector(isUserLogged)
-  const allDatasets = useSelector(selectDatasets)
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
     const vesselRelatedDataset = getRelatedDatasetByType(
@@ -53,25 +49,19 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
     if (!trackRelatedDataset) {
       console.warn('Missing track related dataset for', vessel)
     }
+    const eventsRelatedDataset = getRelatedDatasetByType(
+      vessel.dataset,
+      DatasetTypes.Events,
+      userLogged
+    )
 
     if (vesselRelatedDataset && trackRelatedDataset) {
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
         trackDatasetId: trackRelatedDataset.id,
         infoDatasetId: vesselRelatedDataset.id,
+        ...(eventsRelatedDataset && { eventsDatasetId: eventsRelatedDataset?.id }),
       })
-      const newDataviewInstances = [vesselDataviewInstance]
-      const vesselDatasetId = vesselRelatedDataset.id
-      const vesselDataset = allDatasets.find((dataset) => dataset.id === vesselDatasetId)
-      const eventsRelatedDataset = getRelatedDatasetByType(vesselDataset, DatasetTypes.Events)
-
-      if (eventsRelatedDataset) {
-        const vesselEventsDataviewInstance = getVesselEventsDataviewInstance(
-          vessel,
-          eventsRelatedDataset.id
-        )
-        newDataviewInstances.push(vesselEventsDataviewInstance)
-      }
-      upsertDataviewInstance(newDataviewInstances)
+      upsertDataviewInstance(vesselDataviewInstance)
     }
   }
 
