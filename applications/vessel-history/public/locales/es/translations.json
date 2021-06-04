@@ -13,12 +13,19 @@
     "historyFor": "historial para",
     "previous": "anteriones"
   },
+  "layer": {
+    "toggleVisibility": "Toggle layer visibility"
+  },
+  "map": {
+    "loading": "Map loading",
+    "toggleLayers": "Toggle layers"
+  },
   "search": {
     "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
-    "noResults": "¿No encuentras el buque que estás buscando? Intenta usar MMSI, IMO o Callsign",
-    "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques",
     "loadMore": "Cargar más",
-    "noMore": "No hay más resultados"
+    "noMore": "No hay más resultados",
+    "noResults": "¿No encuentras el buque que estás buscando? Intenta usar MMSI, IMO o Callsign",
+    "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques"
   },
   "selects": {
     "allSelected": "todos",
@@ -65,10 +72,10 @@
     "plusPreviousValuesByField": "+{{quantity}} {{fieldLabel}} anteriores",
     "readyForOfflineView": "RESPONSABLE PARA LA VISTA DE OFLINA",
     "remove": "Eliminar",
+    "savedOn": "guardado en",
     "saveForOfflineView": "guardar buque para vista offline",
     "source": "fuente",
     "transmission_plural": "transmisiones",
-    "savedOn": "guardado en",
     "previousNames": "nombres anteriores",
     "builtYear": "año de fabricación",
     "depth": "calado",
