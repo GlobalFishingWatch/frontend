@@ -175,7 +175,7 @@
     "change_basemap_default": "Fond de carte par défaut",
     "change_basemap_satellite": "Fond de carte satellite",
     "legend_help": "Zone approximatie des cellules de la grille par rapport à l'équateur",
-    "loading": "Chargement de la carte",
+    "loading": "Loading",
     "mapLoadingWait": "Veuillez patienter jusqu'à ce que la carte soit chargée",
     "rulers_add": "Mesurer des distances",
     "rulers_remove": "Supprimer toutes les distances",
