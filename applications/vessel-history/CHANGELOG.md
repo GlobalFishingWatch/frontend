@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.51
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@5.1.0
+
 ## 0.0.50
 
 ### Patch Changes
