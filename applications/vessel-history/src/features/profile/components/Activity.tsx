@@ -15,6 +15,8 @@ import {
   selectVesselProfileId,
 } from 'routes/routes.selectors'
 import { fetchVesselActivityThunk } from 'features/vessels/vessels-activity.thunk'
+import { selectVesselActivity } from 'features/vessels/vessels-activity.slice'
+import { ActivityEvent, ActivityEventGroup } from 'types/activity'
 import InfoField, { VesselFieldLabel } from './InfoField'
 import styles from './Activity.module.css'
 
@@ -35,11 +37,6 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
   const offlineVessel = useSelector(selectCurrentOfflineVessel)
   const { dispatchCreateOfflineVessel, dispatchDeleteOfflineVessel, dispatchFetchOfflineVessel } =
     useOfflineVesselsAPI()
-
-  useEffect(() => {
-    dispatchFetchOfflineVessel(vesselProfileId)
-  }, [vesselProfileId, dispatchFetchOfflineVessel])
-
  
   const dispatch = useDispatch()
   useEffect(() => {
@@ -48,66 +45,46 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
       dispatch(fetchVesselActivityThunk({vesselId}))
     }
   }, [dispatch, vesselId])
+
+  const eventGroups = useSelector(selectVesselActivity)
+  console.log(eventGroups)
   return (
     <Fragment>
       <div className={styles.activityContainer}>
-
-        <div className={styles.event}>
-          <div>
-            <i className={styles.eventIcon}></i>
-          </div>
-          <div className={styles.eventData}>
-            <div className={styles.date}>
-              2018/06/20 12:30
-            </div>
-            <div className={styles.description}>
-            Entered Port of Pennington, Nigeria
-            Entered Port of Pennington, Nigeria
-            Entered Port of Pennington, Nigeria
-            Entered Port of Pennington, Nigeria
-            </div>
-            
-          </div>
-          <div className={styles.actions}>
-            <IconButton icon="info" size="small"></IconButton>
-            <IconButton icon="view-on-map" size="small"></IconButton>
-          </div>
-        </div>
-        <div className={styles.divider}></div>
-        <div className={styles.event}>
-          <div>
-            <i className={styles.eventIcon}></i>
-          </div>
-          <div className={styles.eventData}>
-            <div className={styles.date}>
-              2018/06/20 12:30
-            </div>
-            <div className={styles.description}>
-            Entered Port of Pennington, Nigeria
-            </div>
-            
-          </div>
-          <div className={styles.actions}>
-            <IconButton icon="info" size="small"></IconButton>
-            <IconButton icon="view-on-map" size="small"></IconButton>
-          </div>
-        </div>
-        <div className={styles.divider}></div>
-        <div className={styles.event}>
-          <div>
-            <i className={styles.eventIcon}></i>
-          </div>
-          <div className={styles.eventData}>
-            <div className={styles.date}>
-              2018/06/20 12:30
-            </div>
-            <div className={styles.description}>
-            Entered Port of Pennington, Nigeria
-            </div>
-            
-          </div>
-        </div>
-        <div className={styles.divider}></div>
+        {eventGroups && eventGroups.map((group: ActivityEventGroup, index) => ( 
+          <Fragment key={index}>
+            {group.entries && group.entries.map((event: ActivityEvent) => ( 
+              <div className={styles.event} >
+                <div>
+                  <i className={styles.eventIcon}></i>
+                </div>
+                <div className={styles.eventData}>
+                  {event.event_start && event.event_end && (
+                    <div className={styles.date}>
+                      {event.event_start} - {event.event_end}
+                    </div>
+                  )}
+                  {event.event_start && !event.event_end && (
+                    <div className={styles.date}>
+                      {event.event_start}
+                    </div>
+                  )}
+                  <div className={styles.description}>
+                    Fishing in ????
+                  </div>
+                  
+                </div>
+                {group.entries.length > 1 && ( 
+                  <div className={styles.actions}>
+                    <IconButton icon="info" size="small"></IconButton>
+                    <IconButton icon="view-on-map" size="small"></IconButton>
+                  </div>
+                )}
+              </div>
+            ))}
+            <div className={styles.divider}></div>
+          </Fragment>
+        ))}
       </div>
     </Fragment>
   )

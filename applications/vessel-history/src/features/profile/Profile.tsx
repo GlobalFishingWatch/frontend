@@ -193,7 +193,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       <div className={styles.profileContainer}>
         <Tabs
           tabs={tabs}
-          activeTab={activeTab?.id}
+          activeTab={activeTab?.id as string}
           onTabClick={(tab: Tab) => setActiveTab(tab)}
         ></Tabs>
       </div>
