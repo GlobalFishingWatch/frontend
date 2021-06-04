@@ -209,7 +209,7 @@ const MapControls = ({
               )}
               <IconButton
                 type="map-tool"
-                tooltip={t('map.loading', 'Map loading')}
+                tooltip={t('map.loading', 'Loading')}
                 loading={mapLoading}
                 className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
               />
