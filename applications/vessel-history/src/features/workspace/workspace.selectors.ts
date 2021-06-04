@@ -3,9 +3,6 @@ import { WorkspaceState } from 'types'
 import { RootState } from 'store'
 
 export const selectWorkspace = (state: RootState) => state.workspace.data
-export const selectWorkspaceStatus = (state: RootState) => state.workspace.status
-export const selectWorkspaceCustomStatus = (state: RootState) => state.workspace.customStatus
-export const selectWorkspaceError = (state: RootState) => state.workspace.error
 
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id
@@ -20,10 +17,6 @@ export const selectWorkspaceTimeRange = createSelector([selectWorkspace], (works
     start: workspace?.startAt,
     end: workspace?.endAt,
   }
-})
-
-export const selectWorkspaceDataviews = createSelector([selectWorkspace], (workspace) => {
-  return workspace?.dataviews
 })
 
 export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace], (workspace) => {
