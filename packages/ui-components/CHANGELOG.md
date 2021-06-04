@@ -1,11 +1,5 @@
 # @globalfishingwatch/ui-components
 
-## 5.1.0
-
-### Minor Changes
-
-- Enhanced Modal styling customisation
-
 ## 5.0.3
 
 ### Patch Changes
