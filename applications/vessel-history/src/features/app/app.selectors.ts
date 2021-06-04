@@ -5,11 +5,11 @@ import { selectUrlViewport, selectUrlTimeRange } from 'routes/routes.selectors'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspace],
-  (urlViewport, { viewport: { zoom, latitude, longitude } }) => {
+  (urlViewport, { viewport }) => {
     return {
-      zoom: urlViewport?.zoom || zoom,
-      latitude: urlViewport?.latitude || latitude,
-      longitude: urlViewport?.longitude || longitude,
+      zoom: urlViewport?.zoom || viewport?.zoom,
+      latitude: urlViewport?.latitude || viewport?.latitude,
+      longitude: urlViewport?.longitude || viewport?.longitude,
     }
   }
 )
