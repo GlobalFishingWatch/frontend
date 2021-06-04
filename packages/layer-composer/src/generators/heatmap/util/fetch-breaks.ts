@@ -82,11 +82,12 @@ const getNumBins = (config: FetchBreaksParams) => {
 
 const parseBreaksResponse = (config: FetchBreaksParams, breaks: Breaks) => {
   const bins = parseInt(getNumBins(config))
-  if (!breaks || breaks.length < bins) {
-    return config.sublayers.map(() => new Array(bins).fill(0))
-  }
-  const max = Math.max(...breaks.flatMap((b) => b))
-  const maxBreaks = breaks.find((b, index) => b[breaks[index].length - 1] === max) || breaks[0]
+  const cleanBreaks = breaks?.map((b) => {
+    return b?.length === bins ? b : new Array(bins).fill(0)
+  })
+  const max = Math.max(...cleanBreaks.flatMap((b) => b))
+  const maxBreaks =
+    cleanBreaks.find((b, index) => b[cleanBreaks[index].length - 1] === max) || cleanBreaks[0]
   // We want to use the biggest break in every sublayer
   return config.sublayers.map(() => maxBreaks)
 }

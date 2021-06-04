@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
+import Link, { To } from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
@@ -63,28 +63,36 @@ function WorkspacesList() {
               (highlightedWorkspace.cta?.[i18n.language as Locale] as string) ||
               highlightedWorkspace.cta.en
             const active = highlightedWorkspace?.id !== undefined && highlightedWorkspace?.id !== ''
-            const linkTo =
-              highlightedWorkspace.id === DEFAULT_WORKSPACE_ID
-                ? {
-                    type: HOME,
-                    payload: {},
-                    query: {},
-                    replaceQuery: true,
-                  }
-                : {
-                    type: WORKSPACE,
-                    payload: {
-                      category: locationCategory,
-                      workspaceId: highlightedWorkspace.id,
-                    },
-                    query: {},
-                    replaceQuery: true,
-                  }
+            const isExternalLink = highlightedWorkspace.id.includes('http')
+            let linkTo: To
+            if (isExternalLink) linkTo = highlightedWorkspace.id
+            else if (highlightedWorkspace.id === DEFAULT_WORKSPACE_ID) {
+              linkTo = {
+                type: HOME,
+                payload: {},
+                query: {},
+                replaceQuery: true,
+              }
+            } else {
+              linkTo = {
+                type: WORKSPACE,
+                payload: {
+                  category: locationCategory,
+                  workspaceId: highlightedWorkspace.id,
+                },
+                query: {},
+                replaceQuery: true,
+              }
+            }
             return (
               <li key={highlightedWorkspace.id || i18nName}>
                 <div className={cx(styles.workspace, { [styles.disabled]: !active })}>
                   {active ? (
-                    <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
+                    <Link
+                      to={linkTo}
+                      target={isExternalLink ? '_blank' : '_self'}
+                      onClick={() => !isExternalLink && onWorkspaceClick(highlightedWorkspace)}
+                    >
                       <img className={styles.image} alt={i18nName} src={img} />
                     </Link>
                   ) : (
@@ -92,7 +100,11 @@ function WorkspacesList() {
                   )}
                   <div className={styles.info}>
                     {active ? (
-                      <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
+                      <Link
+                        to={linkTo}
+                        target={isExternalLink ? '_blank' : '_self'}
+                        onClick={() => !isExternalLink && onWorkspaceClick(highlightedWorkspace)}
+                      >
                         <h3 className={styles.title}>{i18nName || name}</h3>
                       </Link>
                     ) : (
@@ -109,6 +121,7 @@ function WorkspacesList() {
                     {active && (
                       <Link
                         to={linkTo}
+                        target={isExternalLink ? '_blank' : '_self'}
                         className={styles.link}
                         onClick={() => onWorkspaceClick(highlightedWorkspace)}
                       >

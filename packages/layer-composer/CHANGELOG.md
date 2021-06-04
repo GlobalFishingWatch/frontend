@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 7.1.3
+
+### Patch Changes
+
+- d14baf30: fix undefined in legend when no bins data
+
 ## 7.1.2
 
 ### Patch Changes

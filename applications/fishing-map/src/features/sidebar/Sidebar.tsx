@@ -37,7 +37,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
 
   const sidebarComponent = useMemo(() => {
-    if (!userLogged || highlightedWorkspacesStatus === AsyncReducerStatus.Loading) {
+    if (!userLogged) {
       return <Spinner />
     }
 
@@ -46,7 +46,11 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     }
 
     if (locationType === WORKSPACES_LIST) {
-      return <WorkspacesList />
+      return highlightedWorkspacesStatus === AsyncReducerStatus.Loading ? (
+        <Spinner />
+      ) : (
+        <WorkspacesList />
+      )
     }
 
     return <Workspace />
