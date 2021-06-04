@@ -175,7 +175,7 @@
     "change_basemap_default": "Beralih ke peta dasar default",
     "change_basemap_satellite": "Beralih ke peta dasar satelit",
     "legend_help": "Perkiraan area grid sel di Khatulistiwa",
-    "loading": "Memuat Peta",
+    "loading": "Loading",
     "mapLoadingWait": "Harap tunggu sampai peta dimuat",
     "rulers_add": "Tambahkan penggaris",
     "rulers_remove": "Hapus semua penggaris",
