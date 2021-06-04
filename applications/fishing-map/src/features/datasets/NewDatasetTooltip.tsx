@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation, Trans } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { Dataset, DatasetCategory } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGuestUser, selectUserDatasetsNotUsed } from 'features/user/user.selectors'
-import { useDatasetModalConnect, useNewDatasetConnect } from './datasets.hook'
+import { useDatasetModalConnect, useAddDataviewFromDatasetToWorkspace } from './datasets.hook'
 import styles from './NewDatasetTooltip.module.css'
 import {
   fetchAllDatasetsThunk,
@@ -24,7 +25,7 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { dispatchDatasetModal, dispatchDatasetCategory } = useDatasetModalConnect()
-  const { addNewDatasetToWorkspace } = useNewDatasetConnect()
+  const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const datasets = useSelector(selectUserDatasetsNotUsed(datasetCategory))
   const guestuser = useSelector(isGuestUser)
   const datasetsStatus = useSelector(selectDatasetsStatus)
@@ -37,6 +38,15 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
   }, [allDatasetsRequested, dispatch])
 
   const onAddNewClick = async () => {
+    uaEvent({
+      category:
+        datasetCategory === DatasetCategory.Context ? 'Reference layer' : 'Environmental data',
+      action:
+        datasetCategory === DatasetCategory.Context
+          ? `Start upload reference layer flow`
+          : `Start upload environmental dataset flow`,
+      label: datasetCategory,
+    })
     batch(() => {
       dispatchDatasetModal('new')
       dispatchDatasetCategory(datasetCategory)
@@ -47,7 +57,7 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
   }
 
   const onSelectClick = async (dataset: any) => {
-    addNewDatasetToWorkspace(dataset)
+    addDataviewFromDatasetToWorkspace(dataset)
     if (onSelect) {
       onSelect(dataset)
     }
@@ -76,19 +86,23 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
       <ul className={styles.listContainer}>
         <li className={cx(styles.dataset, styles.create)} onClick={onAddNewClick}>
           {datasetCategory === DatasetCategory.Context
-            ? t('dataset.uploadNewContex', 'Upload new context areas')
+            ? t('dataset.uploadNewContext', 'Upload new context areas')
             : t('dataset.uploadNewEnviroment', 'Upload new environment dataset')}
         </li>
         {datasetsStatus === AsyncReducerStatus.Loading ? (
           <li className={styles.loadingPlaceholder}>
             <Spinner size="small" />
           </li>
-        ) : (
-          datasets?.map((dataset) => (
+        ) : datasets?.length > 0 ? (
+          datasets.map((dataset) => (
             <li key={dataset.id} className={styles.dataset} onClick={() => onSelectClick(dataset)}>
               {dataset.name}
             </li>
           ))
+        ) : (
+          <li className={cx(styles.dataset, styles.empty)}>
+            {t('dataset.notUploadedYet', 'No context layers uploaded yet')}
+          </li>
         )}
       </ul>
     </div>

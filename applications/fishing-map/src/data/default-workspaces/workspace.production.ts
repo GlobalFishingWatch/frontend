@@ -1,12 +1,16 @@
 import { Workspace } from '@globalfishingwatch/api-types'
-import { APP_NAME } from 'data/config'
+import { APP_NAME, DEFAULT_TIME_RANGE } from 'data/config'
 import {
-  DEFAULT_BASEMAP_DATAVIEW_ID,
-  DEFAULT_CONTEXT_DATAVIEW_ID,
-  DEFAULT_ENVIRONMENT_DATAVIEW_ID,
-  DEFAULT_FISHING_DATAVIEW_ID,
-  DEFAULT_VESSEL_DATAVIEW_ID,
+  WorkspaceCategories,
   DEFAULT_WORKSPACE_ID,
+  DEFAULT_EEZ_DATAVIEW_ID,
+  DEFAULT_MPA_DATAVIEW_ID,
+  DEFAULT_RFMO_DATAVIEW_ID,
+  DEFAULT_BASEMAP_DATAVIEW_ID,
+  DEFAULT_FISHING_DATAVIEW_ID,
+  DEFAULT_PRESENCE_DATAVIEW_ID,
+  DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
+  DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
 } from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
@@ -14,9 +18,10 @@ const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,
   app: APP_NAME,
   name: 'Default public Fishing Map workspace in production v1',
-  description: '',
-  startAt: '2019-12-01T00:00:00.000Z',
-  endAt: '2019-12-31T23:59:59.999Z',
+  description: DEFAULT_WORKSPACE_ID,
+  category: WorkspaceCategories.FishingActivity,
+  startAt: DEFAULT_TIME_RANGE.start,
+  endAt: DEFAULT_TIME_RANGE.end,
   viewport: {
     zoom: 0,
     latitude: 30,
@@ -25,23 +30,40 @@ const workspace: Workspace<WorkspaceState> = {
   public: true,
   state: {},
   ownerId: 0,
-  dataviews: [
-    { id: DEFAULT_VESSEL_DATAVIEW_ID }, // Fetch vessel information
-    { id: DEFAULT_CONTEXT_DATAVIEW_ID }, // Default context dataview for new layers
-    { id: DEFAULT_ENVIRONMENT_DATAVIEW_ID }, // Default environmet dataview for new layers
-  ],
+  dataviews: [],
   dataviewInstances: [
     {
       id: 'basemap',
       dataviewId: DEFAULT_BASEMAP_DATAVIEW_ID,
     },
     {
-      id: 'fishing-1',
+      id: 'fishing-ais',
       config: {
-        // datasets: [`${PUBLIC_SUFIX}-fishing_v4`],
-        // filters: ['ESP'],
+        datasets: ['public-global-fishing-effort:v20201001'],
       },
       dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
+    },
+    {
+      id: 'fishing-vms',
+      config: {
+        color: '#FFAA0D',
+        colorRamp: 'orange',
+        datasets: [
+          'public-chile-fishing-effort:v20200331',
+          'public-indonesia-fishing-effort:v20200320',
+          'public-panama-fishing-effort:v20200331',
+          'public-peru-fishing-effort:v20200324',
+        ],
+      },
+      dataviewId: DEFAULT_FISHING_DATAVIEW_ID,
+    },
+    {
+      id: 'presence',
+      config: {
+        color: '#FF64CE',
+        colorRamp: 'magenta',
+      },
+      dataviewId: DEFAULT_PRESENCE_DATAVIEW_ID,
     },
     {
       id: 'context-layer-eez',
@@ -49,7 +71,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#069688',
         visible: false,
       },
-      dataviewId: 177,
+      dataviewId: DEFAULT_EEZ_DATAVIEW_ID,
     },
     {
       id: 'context-layer-mpa-no-take',
@@ -57,7 +79,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#F4511F',
         visible: false,
       },
-      dataviewId: 179,
+      dataviewId: DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
     },
     {
       id: 'context-layer-mpa-restricted',
@@ -65,7 +87,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#F09300',
         visible: false,
       },
-      dataviewId: 180,
+      dataviewId: DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
     },
     {
       id: 'context-layer-mpa',
@@ -73,7 +95,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#1AFF6B',
         visible: false,
       },
-      dataviewId: 176,
+      dataviewId: DEFAULT_MPA_DATAVIEW_ID,
     },
     {
       id: 'context-layer-rfmo',
@@ -81,21 +103,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#6b67e5',
         visible: false,
       },
-      dataviewId: 175,
-    },
-    {
-      id: 'context-layer-wpp-nri',
-      config: {
-        visible: false,
-      },
-      dataviewId: 172,
-    },
-    {
-      id: 'context-layer-high-seas',
-      config: {
-        visible: false,
-      },
-      dataviewId: 174,
+      dataviewId: DEFAULT_RFMO_DATAVIEW_ID,
     },
   ],
 }

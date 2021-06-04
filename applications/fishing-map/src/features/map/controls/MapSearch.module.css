@@ -38,7 +38,7 @@
 
 .results {
   display: block;
-  left:0;
+  left: 0;
   width: 32rem;
   background-color: var(--color-gradient);
 }

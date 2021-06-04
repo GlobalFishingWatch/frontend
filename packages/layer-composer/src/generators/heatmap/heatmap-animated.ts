@@ -1,4 +1,11 @@
 import memoizeOne from 'memoize-one'
+import { DateTime } from 'luxon'
+import {
+  GeomType,
+  TileAggregationSourceParams,
+  AggregationOperation,
+  VALUE_MULTIPLIER,
+} from '@globalfishingwatch/fourwings-aggregate'
 import {
   Type,
   HeatmapAnimatedGeneratorConfig,
@@ -6,79 +13,134 @@ import {
   HeatmapAnimatedMode,
   HeatmapAnimatedGeneratorSublayer,
 } from '../types'
-import { memoizeByLayerId, memoizeCache } from '../../utils'
+import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../layer-composer'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
-import { TimeChunk, TimeChunks, getActiveTimeChunks, getDelta } from './util/time-chunks'
-import { getSublayersBreaks } from './util/get-legends'
+import { TimeChunk, TimeChunks, getActiveTimeChunks, Interval } from './util/time-chunks'
+import getLegends, { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
-import { toURLArray } from './util'
+import { getSourceId, toURLArray } from './util'
+import fetchBreaks, { Breaks, FetchBreaksParams } from './util/fetch-breaks'
 
 export type GlobalHeatmapAnimatedGeneratorConfig = Required<
   MergedGeneratorConfig<HeatmapAnimatedGeneratorConfig>
 >
 
+const getTilesUrl = (config: HeatmapAnimatedGeneratorConfig): string => {
+  if (config.tilesAPI) {
+    return isUrlAbsolute(config.tilesAPI) ? config.tilesAPI : API_GATEWAY + config.tilesAPI
+  }
+  return `${API_GATEWAY}/${API_GATEWAY_VERSION}/${API_ENDPOINTS.tiles}`
+}
+
+const getSubLayersDatasets = (sublayers: HeatmapAnimatedGeneratorSublayer[]): string[] => {
+  return sublayers?.map((sublayer) => {
+    const sublayerDatasets = [...sublayer.datasets]
+    return sublayerDatasets.sort((a, b) => a.localeCompare(b)).join(',')
+  })
+}
+
+const getSubLayerVisible = (sublayer: HeatmapAnimatedGeneratorSublayer) =>
+  sublayer.visible === false ? false : true
 const getSubLayersVisible = (sublayers: HeatmapAnimatedGeneratorSublayer[]) =>
-  sublayers.map((sublayer) => (sublayer.visible === false ? false : true))
+  sublayers.map(getSubLayerVisible)
+
+const serializeBaseSourceParams = (params: any) => {
+  const serialized = {
+    ...params,
+    singleFrame: params.singleFrame ? 'true' : 'false',
+    filters: toURLArray('filters', params.filters),
+    datasets: toURLArray('datasets', params.datasets),
+    delta: params.delta.toString(),
+    quantizeOffset: params.quantizeOffset.toString(),
+    sublayerVisibility: JSON.stringify(params.sublayerVisibility),
+    sublayerCount: params.sublayerCount.toString(),
+    interactive: params.interactive ? 'true' : 'false',
+  }
+  if (params['date-range']) {
+    serialized['date-range'] = params['date-range'].join(',')
+  }
+  if (params.sublayerBreaks) {
+    serialized.sublayerBreaks = JSON.stringify(params.sublayerBreaks)
+  }
+  return serialized
+}
+
+// This also defines the priority order, so remember to keep it ascendent
+export const DEFAULT_HEATMAP_INTERVALS: Interval[] = ['hour', 'day', '10days']
 
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   mode: HeatmapAnimatedMode.Compare,
-  tilesetsStart: '2012-01-01T00:00:00.000Z',
-  tilesetsEnd: new Date().toISOString(),
+  datasetsStart: '2012-01-01T00:00:00.000Z',
+  datasetsEnd: DateTime.now().toUTC().toISO(),
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
+  interval: DEFAULT_HEATMAP_INTERVALS,
+  aggregationOperation: AggregationOperation.Sum,
+  breaksMultiplier: VALUE_MULTIPLIER,
 }
 
 class HeatmapAnimatedGenerator {
   type = Type.HeatmapAnimated
+  breaksCache: Record<string, { loading: boolean; error: boolean; breaks?: Breaks }> = {}
 
-  _getStyleSources = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) => {
+  _getStyleSources = (
+    config: GlobalHeatmapAnimatedGeneratorConfig,
+    timeChunks: TimeChunks,
+    breaks: Breaks | undefined
+  ) => {
     if (!config.start || !config.end || !config.sublayers) {
       throw new Error(
         `Heatmap generator must specify start, end and sublayers parameters in ${config}`
       )
     }
-    const datasets = config.sublayers.map((sublayer) => sublayer.datasets.join(','))
+
+    if (!breaks) {
+      return []
+    }
+
+    const datasets = getSubLayersDatasets(config.sublayers)
     const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
     const visible = getSubLayersVisible(config.sublayers)
 
-    const tilesUrl = `${config.tilesAPI || `${API_GATEWAY}/${API_GATEWAY_VERSION}`}/${
-      API_ENDPOINTS.tiles
-    }`
+    const tilesUrl = getTilesUrl(config)
 
-    const delta = getDelta(timeChunks.activeStart, timeChunks.activeEnd, timeChunks.interval)
-    const breaks = getSublayersBreaks(config, timeChunks.deltaInDays)
-
-    const geomType = config.mode === HeatmapAnimatedMode.Blob ? 'point' : 'rectangle'
+    const geomType = config.mode === HeatmapAnimatedMode.Blob ? GeomType.point : GeomType.rectangle
     const interactiveSource =
       config.interactive &&
-      (config.mode === HeatmapAnimatedMode.Compare || config.mode === HeatmapAnimatedMode.Bivariate)
-    const combinationMode = HEATMAP_MODE_COMBINATION[config.mode]
+      (config.mode === HeatmapAnimatedMode.Compare ||
+        config.mode === HeatmapAnimatedMode.Bivariate ||
+        config.mode === HeatmapAnimatedMode.Single)
+    const sublayerCombinationMode = HEATMAP_MODE_COMBINATION[config.mode]
 
     const sources = timeChunks.chunks.flatMap((timeChunk: TimeChunk) => {
-      const baseSourceParams: Record<string, string> = {
-        id: timeChunk.id,
-        singleFrame: 'false',
+      const baseSourceParams: TileAggregationSourceParams = {
+        id: getSourceId(config.id, timeChunk),
+        singleFrame: false,
         geomType,
-        combinationMode,
-        filters: toURLArray('filters', filters),
-        datasets: toURLArray('datasets', datasets),
-        visible: JSON.stringify(visible),
-        delta: delta.toString(),
-        quantizeOffset: timeChunk.quantizeOffset.toString(),
+        // Set a minimum of 1 to avoid empty frames. See error thrown in getStyle() for edge case
+        delta: Math.max(1, timeChunks.deltaInIntervalUnits),
+        quantizeOffset: timeChunk.quantizeOffset,
         interval: timeChunks.interval,
-        numDatasets: config.sublayers.length.toString(),
-        breaks: JSON.stringify(breaks.map((sublayerBreaks) => sublayerBreaks.map((b) => b * 100))),
-        // TODO only for visible time chunk
-        interactive: interactiveSource.toString(),
+        filters,
+        datasets,
+        aggregationOperation: config.aggregationOperation,
+        sublayerCombinationMode,
+        sublayerVisibility: visible,
+        sublayerCount: config.sublayers.length,
+        sublayerBreaks: breaks.map((sublayerBreaks) =>
+          sublayerBreaks.map((b) => b * config.breaksMultiplier)
+        ),
+        interactive: interactiveSource,
       }
       if (timeChunk.start && timeChunk.dataEnd) {
-        baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd].join(',')
+        baseSourceParams['date-range'] = [timeChunk.start, timeChunk.dataEnd]
       }
+      const serializedBaseSourceParams = serializeBaseSourceParams(baseSourceParams)
 
-      const sourceParams = [baseSourceParams]
+      const sourceParams = [serializedBaseSourceParams]
 
       return sourceParams.map((params: Record<string, string>) => {
         const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)
@@ -95,17 +157,34 @@ class HeatmapAnimatedGenerator {
     return sources
   }
 
-  _getStyleLayers = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) => {
+  _getStyleLayers = (
+    config: GlobalHeatmapAnimatedGeneratorConfig,
+    timeChunks: TimeChunks,
+    breaks: Breaks | undefined
+  ) => {
+    if (!breaks) {
+      // we can't return layers until breaks data is loaded
+      return []
+    }
+
     if (
       config.mode === HeatmapAnimatedMode.Compare ||
-      config.mode === HeatmapAnimatedMode.Bivariate
+      config.mode === HeatmapAnimatedMode.Bivariate ||
+      config.mode === HeatmapAnimatedMode.Single
     ) {
-      return getGriddedLayers(config, timeChunks)
+      return getGriddedLayers(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Blob) {
-      return getBlobLayer(config, timeChunks)
+      return getBlobLayer(config, timeChunks, breaks)
     } else if (config.mode === HeatmapAnimatedMode.Extruded) {
-      return getExtrudedLayer(config, timeChunks)
+      return getExtrudedLayer(config, timeChunks, breaks)
     }
+  }
+
+  getCacheKey = (config: FetchBreaksParams) => {
+    const visibleSublayers = config.sublayers?.filter((sublayer) => sublayer.visible)
+    const datasetKey = getSubLayersDatasets(visibleSublayers)?.join(',')
+    const filtersKey = visibleSublayers?.flatMap((subLayer) => subLayer.filter || []).join(',')
+    return [datasetKey, filtersKey, config.mode].join(',')
   }
 
   getStyle = (config: GlobalHeatmapAnimatedGeneratorConfig) => {
@@ -114,28 +193,95 @@ class HeatmapAnimatedGenerator {
       getActiveTimeChunks: memoizeOne(getActiveTimeChunks),
     })
 
-    const finalConfig = {
+    const finalConfig: GlobalHeatmapAnimatedGeneratorConfig = {
       ...DEFAULT_CONFIG,
       ...config,
+      // ensure we have the visible flag set
+      sublayers: config.sublayers?.map((s) => ({ ...s, visible: getSubLayerVisible(s) })),
     }
-    const timeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
-      finalConfig.staticStart || finalConfig.start,
-      finalConfig.staticEnd || finalConfig.end,
-      finalConfig.tilesetsStart,
-      finalConfig.tilesetsEnd
+
+    if (!config.start || !config.end) {
+      return {
+        id: finalConfig.id,
+        sources: [],
+        layers: [],
+      }
+    }
+
+    const timeChunks: TimeChunks = memoizeCache[finalConfig.id].getActiveTimeChunks(
+      finalConfig.id,
+      finalConfig.start,
+      finalConfig.end,
+      finalConfig.datasetsStart,
+      finalConfig.datasetsEnd,
+      finalConfig.interval
     )
 
-    return {
+    if (
+      timeChunks.deltaInIntervalUnits === 0 &&
+      config.aggregationOperation !== AggregationOperation.Avg
+    ) {
+      console.error(
+        'Trying to show less than 1 interval worth of data for this heatmap layer. This could result in showing misleading information when aggregation mode is not set to avg.'
+      )
+    }
+
+    const breaksConfig = {
+      ...finalConfig,
+      interval: timeChunks.interval,
+    }
+
+    const cacheKey = this.getCacheKey(breaksConfig)
+    const visible = config.sublayers.some((l) => l.visible === true)
+
+    const useSublayerBreaks = finalConfig.sublayers.some((s) => s.breaks?.length)
+    const breaks = useSublayerBreaks
+      ? config.sublayers.map(({ breaks }) => breaks || [])
+      : getSublayersBreaks(finalConfig, this.breaksCache[cacheKey]?.breaks)
+    const legends = getLegends(finalConfig, breaks || [])
+    const style = {
       id: finalConfig.id,
-      sources: this._getStyleSources(finalConfig, timeChunks),
-      layers: this._getStyleLayers(finalConfig, timeChunks),
+      sources: this._getStyleSources(finalConfig, timeChunks, breaks),
+      layers: this._getStyleLayers(finalConfig, timeChunks, breaks),
       metadata: {
+        breaks,
+        legends,
         temporalgrid: true,
-        numSublayers: config.sublayers.length,
-        visibleSublayers: getSubLayersVisible(config.sublayers),
+        numSublayers: finalConfig.sublayers.length,
+        sublayers: finalConfig.sublayers,
+        visibleSublayers: getSubLayersVisible(finalConfig.sublayers),
         timeChunks,
+        aggregationOperation: finalConfig.aggregationOperation,
+        multiplier: finalConfig.breaksMultiplier,
+
       },
     }
+
+    if (
+      breaks ||
+      !visible ||
+      this.breaksCache[cacheKey]?.loading ||
+      this.breaksCache[cacheKey]?.error
+    ) {
+      return style
+    }
+
+    const breaksPromise = fetchBreaks(breaksConfig)
+
+    this.breaksCache[cacheKey] = { loading: true, error: false }
+
+    const promise = new Promise((resolve, reject) => {
+      breaksPromise.then((breaks) => {
+        this.breaksCache[cacheKey] = { loading: false, error: false, breaks }
+        resolve({ style: this.getStyle(finalConfig), config: finalConfig })
+      })
+      breaksPromise.catch((e: any) => {
+        this.breaksCache[cacheKey] = { loading: false, error: e.name !== 'AbortError' }
+        reject(e)
+      })
+    })
+
+    return { ...style, promise }
   }
 }
 

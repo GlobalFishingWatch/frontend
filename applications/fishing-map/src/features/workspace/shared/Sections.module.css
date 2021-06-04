@@ -1,9 +1,14 @@
 .container {
-  padding: var(--space-XS) 0;
+  padding-top: var(--space-XS);
+  padding-bottom: var(--space-S);
+}
+
+.container ~ .container {
+  padding-top: var(--space-S);
 }
 
 .container:not(:last-of-type) {
-  border-bottom: var(--border);
+  border-bottom: var(--border-thick);
 }
 
 .header {
@@ -11,6 +16,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-XS) var(--space-S);
+  gap: var(--space-XS);
 }
 
 .sectionTitle {
@@ -18,8 +24,17 @@
   color: var(--color-secondary-blue);
   margin: 0;
   text-transform: uppercase;
+  flex: 1;
 }
 
 .sectionButtons > *:not(:last-child) {
   margin-right: 1rem;
+}
+
+.sectionButtons > .lastBtn {
+  display: inline-block;
+}
+
+.sectionButtons > *:not(:last-child).lastBtn {
+  margin-right: 0;
 }

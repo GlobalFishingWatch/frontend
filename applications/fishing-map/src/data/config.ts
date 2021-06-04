@@ -1,102 +1,93 @@
-import { SelectOption } from '@globalfishingwatch/ui-components'
+import ReactGA from 'react-ga'
+import { DateTime } from 'luxon'
+import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
+export const IS_PRODUCTION =
+  (process.env.REACT_APP_WORKSPACE_ENV || process.env.NODE_ENV) === 'production'
 
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.REACT_APP_API_GATEWAY || ''
+export const CARRIER_PORTAL_URL =
+  process.env.REACT_APP_CARRIER_PORTAL_URL || 'https://carrier-portal.dev.globalfishingwatch.org'
+
+export const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID
+export const GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS: ReactGA.InitializeOptions = IS_PRODUCTION
+  ? {}
+  : { debug: true }
 
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const DEFAULT_VERSION = 'v1'
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
+export const FULL_SUFIX = 'full'
 
 // used when no url data and no workspace data
-const end = new Date(2019, 11, 31).toISOString()
+const end = DateTime.fromObject({ hour: 0, minute: 0, second: 0, zone: 'utc' }).toISO()
+
 export const DEFAULT_VIEWPORT = {
-  latitude: 15,
-  longitude: 21,
-  zoom: 0,
+  latitude: 26,
+  longitude: 12,
+  zoom: 1,
 }
+export const DEFAULT_TIME_RANGE = {
+  start: DateTime.fromISO(end).minus({ months: 6 }).toISO(),
+  end,
+}
+
+export const DEFAULT_ACTIVITY_CATEGORY = 'fishing'
+
 export const DEFAULT_WORKSPACE = {
   ...DEFAULT_VIEWPORT,
   query: undefined,
   sidebarOpen: true,
-  start: new Date(2019, 0, 1).toISOString(),
-  end: end,
-  availableStart: new Date(2012, 0, 1).toISOString(),
+  availableStart: new Date(Date.UTC(2012, 0, 1)).toISOString(),
   availableEnd: end,
   dataviewInstances: undefined,
   timebarVisualisation: TimebarVisualisations.Heatmap,
   timebarEvents: TimebarEvents.None,
   timebarGraph: TimebarGraphs.None,
-  bivariate: false,
+  bivariateDataviews: undefined,
   analysis: undefined,
+  activityCategory: DEFAULT_ACTIVITY_CATEGORY,
   version: DEFAULT_VERSION,
+}
+
+export enum ThinningLevels {
+  Aggressive = 'aggressive',
+  Default = 'default',
+}
+
+export const THINNING_LEVELS = {
+  [ThinningLevels.Aggressive]: {
+    distanceFishing: 1000,
+    bearingValFishing: 5,
+    changeSpeedFishing: 200,
+    minAccuracyFishing: 50,
+    distanceTransit: 2000,
+    bearingValTransit: 5,
+    changeSpeedTransit: 200,
+    minAccuracyTransit: 100,
+  },
+  [ThinningLevels.Default]: {
+    distanceFishing: 500,
+    bearingValFishing: 1,
+    changeSpeedFishing: 200,
+    minAccuracyFishing: 30,
+    distanceTransit: 500,
+    bearingValTransit: 1,
+    changeSpeedTransit: 200,
+    minAccuracyTransit: 30,
+  },
 }
 
 // Params to use replace instead of push for router history to make navigation easier
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
 
-export const sources: SelectOption[] = [
-  {
-    id: 'ais',
-    label: 'AIS',
-  },
-  {
-    id: 'vms-chile',
-    label: 'VMS Chile',
-  },
-  {
-    id: 'vms-indonesia',
-    label: 'VMS Indonesia',
-  },
-  {
-    id: 'vms-panama',
-    label: 'VMS Panama',
-  },
-]
-
-// TODO translate this
-export const TIMEBAR_EVENT_OPTIONS: SelectOption[] = [
-  {
-    id: 'all',
-    label: 'All events',
-  },
-  {
-    id: 'fishing',
-    label: 'Fishing',
-  },
-  {
-    id: 'encounters',
-    label: 'Encounters',
-  },
-  {
-    id: 'loitering',
-    label: 'Loitering',
-  },
-  {
-    id: 'ports',
-    label: 'Port visits',
-  },
-  {
-    id: 'none',
-    label: 'None',
-  },
-]
-
-// TODO translate this
-export const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = [
-  {
-    id: 'speed',
-    label: 'Speed',
-  },
-  {
-    id: 'depth',
-    label: 'Depth (Coming soon)',
-    disabled: true,
-  },
-  {
-    id: 'none',
-    label: 'None',
-  },
+export const POPUP_CATEGORY_ORDER = [
+  DataviewCategory.Fishing,
+  DataviewCategory.Presence,
+  DataviewCategory.Events,
+  DataviewCategory.Environment,
+  DataviewCategory.Context,
 ]

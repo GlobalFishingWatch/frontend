@@ -1,42 +1,116 @@
-import React, { useCallback, useState } from 'react'
-// eslint-disable-next-line import/order
-import { HistoricValue, VesselInfoValue } from 'classes/vessel.class'
+import React, { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import I18nDate from 'features/i18n/i18nDate'
+import { ValueItem } from 'types'
 import styles from './Info.module.css'
-import InfoFieldHistoric from './InfoFieldHistoric'
+import InfoFieldHistory from './InfoFieldHistory'
 
+export enum VesselFieldLabel {
+  name = 'name',
+  flag = 'flag',
+  shipname = 'shipname',
+  firstTransmissionDate = 'firstTransmissionDate',
+  lastTransmissionDate = 'lastTransmissionDate',
+  imo = 'imo',
+  mmsi = 'mmsi',
+  callsign = 'callsign',
+  fleet = 'fleet',
+  origin = 'origin',
+  type = 'type',
+  geartype = 'geartype',
+  length = 'length',
+  depth = 'depth',
+  grossTonnage = 'grossTonnage',
+  owner = 'owner',
+  operator = 'operator',
+  builtYear = 'builtYear',
+  authorizations = 'authorizations',
+  registeredGearType = 'registeredGearType',
+}
+
+enum VesselFieldLabelPlural {
+  name = 'name_plural',
+  flag = 'flag_plural',
+  shipname = 'shipname_plural',
+  firstTransmissionDate = 'firstTransmissionDate_plural',
+  lastTransmissionDate = 'lastTransmissionDate_plural',
+  imo = 'imo_plural',
+  mmsi = 'mmsi_plural',
+  callsign = 'callsign_plural',
+  fleet = 'fleet_plural',
+  origin = 'origin_plural',
+  type = 'type_plural',
+  gearType = 'gearType_plural',
+  length = 'length_plural',
+  depth = 'depth_plural',
+  grossTonnage = 'grossTonnage_plural',
+  owner = 'owner_plural',
+  operator = 'operator_plural',
+  builtYear = 'builtYear_plural',
+  authorizations = 'authorization_plural',
+  registeredGearType = 'registeredGearType_plural',
+}
 interface ListItemProps {
-  label: string
-  field: VesselInfoValue
+  label: VesselFieldLabel
+  value: string
+  valuesHistory?: ValueItem[]
   vesselName: string
 }
 
-const InfoField: React.FC<ListItemProps> = ({ field, label, vesselName }): React.ReactElement => {
+const InfoField: React.FC<ListItemProps> = ({
+  value = '',
+  label,
+  valuesHistory = [],
+  vesselName,
+}): React.ReactElement => {
+  const { t } = useTranslation()
+
   const [modalOpen, setModalOpen] = useState(false)
-  const displachOpenModal = useCallback((field: VesselInfoValue) => {
-    setModalOpen(true)
-  }, [])
+  const openModal = useCallback(() => setModalOpen(true), [])
+  const closeModal = useCallback(() => setModalOpen(false), [])
+  const defaultEmptyValue = '-'
 
-  if (!field.value?.data) {
-    return <div></div>
+  const current: ValueItem = {
+    value,
+    firstSeen: valuesHistory.slice().shift()?.firstSeen ?? valuesHistory.slice().shift()?.endDate,
   }
+  const labelPlural: VesselFieldLabelPlural = useMemo(() => {
+    const plural = VesselFieldLabelPlural[label as keyof typeof VesselFieldLabelPlural]
+    return t(`vessel.${plural}` as any, `${label}s`)
+  }, [t, label])
 
-  const current: HistoricValue = {
-    data: field.value?.data,
-    start: field.value.historic.slice().shift()?.end || null,
-    end: null,
-  }
+  const defaultValue = useMemo(() => {
+    return `+${valuesHistory.length} previous ${labelPlural.toLocaleUpperCase()}`
+  }, [valuesHistory, labelPlural])
+
+  const since = useMemo(() => valuesHistory.slice(0, 1)?.shift()?.firstSeen, [valuesHistory])
+
   return (
     <div className={styles.identifierField}>
-      <label>{label}</label>
-      <div onClick={() => displachOpenModal(field)}>
-        {field.value?.data}
-        <InfoFieldHistoric
+      <label>{t(`vessel.${label}` as any, label)}</label>
+      <div>
+        <div onClick={openModal}>{value.length > 0 ? value : defaultEmptyValue}</div>
+        {valuesHistory.length > 1 && (
+          <button className={styles.moreValues} onClick={openModal}>
+            {t('vessel.plusPreviousValuesByField', defaultValue, {
+              quantity: valuesHistory.length,
+              fieldLabel: labelPlural.toLocaleUpperCase(),
+            })}
+          </button>
+        )}
+        {valuesHistory.length === 1 && since && (
+          <p className={styles.rangeLabel}>
+            {t('common.since', 'Since')} <I18nDate date={since} />
+          </p>
+        )}
+        <InfoFieldHistory
           current={current}
           label={label}
-          historic={field.value.historic}
+          history={valuesHistory}
           isOpen={modalOpen}
+          onClose={closeModal}
           vesselName={vesselName}
-        ></InfoFieldHistoric>
+        ></InfoFieldHistory>
       </div>
     </div>
   )

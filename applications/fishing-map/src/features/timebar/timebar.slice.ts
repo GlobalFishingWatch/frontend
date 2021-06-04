@@ -1,20 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 
-type Range = {
+export type Range = {
   start: string
   end: string
 }
 
 type TimebarSlice = {
-  highlightedTime: Range | null
-  staticTime: Range | null
+  highlightedTime: Range | undefined
   hasChangedSettingsOnce: boolean
 }
 
 const initialState: TimebarSlice = {
-  highlightedTime: null,
-  staticTime: null,
+  highlightedTime: undefined,
   hasChangedSettingsOnce: false,
 }
 
@@ -26,10 +24,7 @@ const slice = createSlice({
       state.highlightedTime = action.payload
     },
     disableHighlightedTime: (state) => {
-      state.highlightedTime = null
-    },
-    setStaticTime: (state, action: PayloadAction<Range>) => {
-      state.staticTime = action.payload
+      state.highlightedTime = undefined
     },
     changeSettings: (state) => {
       state.hasChangedSettingsOnce = true
@@ -37,15 +32,9 @@ const slice = createSlice({
   },
 })
 
-export const {
-  setHighlightedTime,
-  disableHighlightedTime,
-  setStaticTime,
-  changeSettings,
-} = slice.actions
+export const { setHighlightedTime, disableHighlightedTime, changeSettings } = slice.actions
 export default slice.reducer
 
 export const selectHighlightedTime = (state: RootState) => state.timebar.highlightedTime
-export const selectStaticTime = (state: RootState) => state.timebar.staticTime
 export const selectHasChangedSettingsOnce = (state: RootState) =>
   state.timebar.hasChangedSettingsOnce

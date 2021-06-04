@@ -1,9 +1,12 @@
 import { ApiAppName, Dataset } from '.'
 
+export type ColorCyclingType = 'fill' | 'line'
+
 export interface DataviewConfig<Type = any> {
   // TODO use any property from layer-composer here?
   type?: Type
   color?: string
+  colorCyclingType?: ColorCyclingType
   visible?: boolean
   filters?: Record<string, any>
   [key: string]: any
@@ -32,6 +35,8 @@ export interface DataviewCreation<T = any> {
 export interface DataviewInfoConfigField {
   id: string
   type: 'flag' | 'number' | 'date'
+  mandatory?: boolean
+  guest?: boolean
 }
 
 export interface DataviewInfoConfig {
@@ -40,8 +45,10 @@ export interface DataviewInfoConfig {
 
 export enum DataviewCategory {
   Context = 'context',
+  Events = 'events',
   Environment = 'environment',
-  Activity = 'activity',
+  Fishing = 'fishing',
+  Presence = 'presence',
 }
 
 export interface Dataview<Type = any, Category = DataviewCategory> {

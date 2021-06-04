@@ -1,5 +1,5 @@
 import { QueryParams } from 'types'
-import { ROUTE_TYPES } from './routes'
+import { ROUTE_TYPES, HOME } from './routes'
 
 export interface UpdateQueryParamsAction {
   type: ROUTE_TYPES
@@ -19,4 +19,8 @@ export function updateLocation(
   { query = {}, payload = {}, replaceQuery = false }: UpdateLocationOptions = {}
 ) {
   return { type, query, payload, replaceQuery }
+}
+
+export function updateQueryParams(query: QueryParams): UpdateQueryParamsAction {
+  return { type: HOME, query }
 }

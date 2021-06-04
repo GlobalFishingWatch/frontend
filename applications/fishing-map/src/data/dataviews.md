@@ -1,5 +1,7 @@
 # Dataviews in use
 
+Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/swagger#/DataviewsAPI)
+
 ## Context
 
 | Layer name                   | Dev id | Pro id |
@@ -19,17 +21,17 @@
 | ---------------------------- | ------ | ------ |
 | Default (used on new layers) | 125    | 223    |
 
-### Marine Reserves - Caribe
+### Marine Manager - Caribe
 
-| Layer name                          | Dev id | Pro id |
-| ----------------------------------- | ------ | ------ |
-| SAR match 2019 for Caribe           | 138    | 242    |
-| SAR not match 2019 for Caribe       | 139    | 243    |
-| Sea surface tempoerature for Caribe | 79     | 223    |
-| Salinity for Caribe                 | 80     | 225    |
-| Chlorophyll for Caribe              | 84     | 226    |
+| Layer name                         | Dev id | Pro id |
+| ---------------------------------- | ------ | ------ |
+| SAR match 2019 for Caribe          | 138    | 242    |
+| SAR not match 2019 for Caribe      | 139    | 243    |
+| Sea surface temperature for Caribe | 79     | 224    |
+| Salinity for Caribe                | 80     | 225    |
+| Chlorophyll for Caribe             | 84     | 226    |
 
-### Marine Reserves - Galapagos
+### Marine Manager - Galapagos
 
 | Layer name                             | Dev id | Pro id |
 | -------------------------------------- | ------ | ------ |
@@ -37,7 +39,7 @@
 | Sea surface tempoerature for Galapagos | 128    | 228    |
 | Chlorophyll for Galapagos              | 127    | 229    |
 
-### Marine Reserves - Tristan
+### Marine Manager - Tristan
 
 | Layer name                           | Dev id | Pro id |
 | ------------------------------------ | ------ | ------ |
@@ -45,7 +47,7 @@
 | Sea surface tempoerature for Tristan | 129    | 232    |
 | Chlorophyll for Tristan              | 130    | 233    |
 
-### Marine Reserves - Ascension
+### Marine Manager - Ascension
 
 | Layer name                             | Dev id | Pro id |
 | -------------------------------------- | ------ | ------ |
@@ -53,7 +55,7 @@
 | Sea surface tempoerature for Ascension | 132    | 235    |
 | Chlorophyll for Ascension              | 133    | 236    |
 
-### Marine Reserves - Palau
+### Marine Manager - Palau
 
 | Layer name                        | Dev id | Pro id |
 | --------------------------------- | ------ | ------ |
@@ -61,12 +63,28 @@
 | Sea surface temperature for Palau | 135    | 238    |
 | Chlorophyll for Palau             | 136    | 239    |
 
+### Marine Manager - Niue
+
+| Layer name                       | Dev id | Pro id |
+| -------------------------------- | ------ | ------ |
+| Salinity for Niue                | 141    | 248    |
+| Sea surface temperature for Niue | 142    | 249    |
+| Chlorophyll for Niue             | 143    | 250    |
+
+### Marine Reserves - Mediterranean
+
+| Layer name                                | Dev id | Pro id |
+| ----------------------------------------- | ------ | ------ |
+| Salinity for Mediterranean                | ---    | 244    |
+| Sea surface temperature for Mediterranean | ---    | 245    |
+| Chlorophyll for Mediterranean             | ---    | 246    |
+
 ## Activity
 
 | Layer name                     | Dev id | Pro id |
 | ------------------------------ | ------ | ------ |
 | Public Apparent fishing effort | 122    | ---    |
-| Default Fishing presence       | 124    | ---    |
+| Default Fishing presence       | 124    | 241    |
 | Default Fishing activity       | 91     | 178    |
 
 ## Others
@@ -75,3 +93,4 @@
 | ---------- | ------ | ------ |
 | Basemap    | 90     | 173    |
 | Tracks     | 92     | 171    |
+| Events     | 140    | ---    |

@@ -32,13 +32,14 @@
   --color-white: rgb(var(--white-rgb));
   --gradient: linear-gradient(180deg, var(--color-gradient) 0, var(--color-white) 70rem);
   --color-map-background: #002457;
-  --color-highlight-blue: #6AECF9;
+  --color-highlight-blue: #6aecf9;
 
   /* OPACITIES */
   --opacity-hover: 0.9;
   --opacity-secondary: 0.75;
   --opacity-terthiary: 0.1;
-  --opacity-border: 0.2;
+  --opacity-border-thick: 0.25;
+  --opacity-border: 0.15;
 
   /* SHADOWS */
   --box-shadow: 0 0 1rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
@@ -46,8 +47,10 @@
 
   /* UTILS */
   --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
+  --color-border-thick: rgba(var(--primary-blue-rgb), var(--opacity-border-thick));
   --color-veil: rgba(var(--primary-blue-rgb), var(--opacity-secondary));
   --border: 1px solid var(--color-border);
+  --border-thick: 1px solid var(--color-border-thick);
   --border-white: 1px solid rgba(var(--white-rgb), var(--opacity-border));
   --box-shadow-highlight: 0 0 0.2rem 0.2rem var(--color-highlight-blue);
   --transition: all 150ms ease-out;
@@ -62,6 +65,14 @@
   --space-S: 1rem;
   --space-M: 2rem;
   --space-L: 4rem;
+
+  /* SCROLLBARS */
+  --scrollbar-track-color: transparent;
+  --scrollbar-color: rgba(0, 36, 87, 0.4);
+  --scrollbar-color-hover: rgba(0, 36, 87, 0.6);
+  --scrollbar-width: thin;
+  --scrollbar-size: 0.5rem;
+  --scrollbar-minlength: 1.5rem; /* Minimum length of scrollbar thumb (width of horizontal, height of vertical) */
 }
 
 html {
@@ -119,6 +130,33 @@ ul {
   font: inherit;
   box-sizing: border-box;
   vertical-align: baseline;
+  scrollbar-width: var(--scrollbar-width);
+  scrollbar-color: var(--scrollbar-color) var(--scrollbar-track-color);
+}
+
+*::-webkit-scrollbar {
+  height: var(--scrollbar-size);
+  width: var(--scrollbar-size);
+}
+*::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track-color);
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-color);
+}
+
+*:focus {
+  outline: none;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-color-hover);
+}
+*::-webkit-scrollbar-thumb:vertical {
+  min-height: var(--scrollbar-minlength);
+}
+*::-webkit-scrollbar-thumb:horizontal {
+  min-width: var(--scrollbar-minlength);
 }
 
 sub {
@@ -129,10 +167,6 @@ sub {
 sup {
   vertical-align: super;
   font: var(--font-XS);
-}
-
-*:focus {
-  outline: none;
 }
 
 ::selection {

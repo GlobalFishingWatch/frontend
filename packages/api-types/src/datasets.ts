@@ -14,8 +14,22 @@ export interface EndpointParam {
   default?: string | boolean | number
 }
 
+export enum EndpointId {
+  Tracks = 'carriers-tracks',
+  Vessel = 'carriers-vessel',
+  VesselList = 'carriers-list-vessels',
+  VesselSearch = 'carriers-search-vessels',
+  VesselAdvancedSearch = 'carriers-advanced-search-vessels',
+  FourwingsTiles = '4wings-tiles',
+  FourwingsBreaks = '4wings-bins',
+  FourwingsLegend = '4wings-legend',
+  FourwingsInteraction = '4wings-interaction',
+  UserContextTiles = 'user-context-tiles',
+  UserTracks = 'user-tracks-data',
+}
+
 export interface Endpoint {
-  id: string
+  id: EndpointId
   description?: string
   method?: 'GET' | 'POST'
   pathTemplate: string
@@ -33,6 +47,8 @@ export enum DatasetTypes {
   Fourwings = '4wings:v1',
   Context = 'user-context-layer:v1',
   Download = 'data-download:v1',
+  // TODO
+  UserTracks = 'user-tracks:v1',
 }
 
 export enum DatasetStatus {
@@ -41,13 +57,14 @@ export enum DatasetStatus {
   Error = 'error',
 }
 
-export type DatasetCustomTypes = 'points' | 'lines' | 'geometries'
+export type DatasetGeometryType = 'polygons' | 'tracks' | 'points'
+
 export interface DatasetConfiguration {
   index?: string
   filePath?: string
   srid?: number
   file?: string
-  type?: DatasetCustomTypes
+  geometryType?: DatasetGeometryType
   format?: 'geojson'
   [key: string]: unknown
 }

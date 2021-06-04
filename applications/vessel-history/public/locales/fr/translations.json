@@ -1,0 +1,95 @@
+{
+  "common": {
+    "activity": "Activité",
+    "commingSoon": "à venir!",
+    "currentTimeRange": "intervalle de temps actuel",
+    "from": "de",
+    "info": "Infos",
+    "map": "carte",
+    "offlineAccess": "accès hors ligne",
+    "since": "depuis le",
+    "timeRange": "intervalle de temps",
+    "to": "à",
+    "historyFor": "historique pour",
+    "previous": "Précédent"
+  },
+  "search": {
+    "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en appuyant sur l'icône de filtre dans la barre du haut",
+    "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser MMSI, IMO ou Call Sign",
+    "notAllowed": "Recherche non autorisée",
+    "loadMore": "Charger plus",
+    "noMore": "Aucun résultat supplémentaire"
+  },
+  "selects": {
+    "allSelected": "Tous",
+    "selected": "slectionns"
+  },
+  "settings": {
+    "title": "Settings",
+    "distance": "DISTANCE TRAVELLED",
+    "duration": "DURATION",
+    "hours": "hours",
+    "longerThan": "Longer than",
+    "eezs": {
+      "label": "Events in these EEZs"
+    },
+    "mpas": {
+      "label": "Events in these MPAs"
+    },
+    "rfmos": {
+      "label": "Events in these RFMOS"
+    },
+    "loiteringEvents": {
+      "title": "Loitering Events"
+    },
+    "encounters": {
+      "title": "Loitering Events"
+    },
+    "fishingEvents": {
+      "title": "Loitering Events"
+    },
+    "portVisits": {
+      "title": "Port Visits",
+      "inputStart": "Port visits in",
+      "inputEnd": "ports"
+    }
+  },
+  "vessel": {
+    "authorization_plural": "autorisations",
+    "callsign": "signe d'appel",
+    "flag": "Drapeau",
+    "historyLabelByField": "Historique de {{label}} pour {{vesselName}}",
+    "imo": "imo",
+    "mmsi": "mmsi",
+    "noAuthorizations": "Aucune autorisation trouvée",
+    "plusPreviousValuesByField": "+{{quantity}} {{fieldLabel}} précédentes",
+    "readyForOfflineView": "PRÊT POUR VUE Hors LIGNE",
+    "remove": "Retirer",
+    "saveForOfflineView": "enregistrer le vaisseau pour une vue hors ligne",
+    "source": "source",
+    "transmission_plural": "transmissions",
+    "savedOn": "sauvegardé le",
+    "previousNames": "noms précédents",
+    "builtYear": "année de construction",
+    "depth": "profondeur",
+    "gearType": "type d'engrenage",
+    "grossTonnage": "gross tonnage",
+    "length": "Longueur",
+    "name": "Nom",
+    "operator": "opérateur",
+    "owner": "Propriétaire",
+    "type": "Type de type",
+    "grossTonnage_plural": "tonnages bruts",
+    "builtYear_plural": "années construites",
+    "callsign_plural": "panneaux d'appel",
+    "depth_plural": "profondeurs",
+    "flag_plural": "drapeaux",
+    "gearType_plural": "types d'engrenages",
+    "length_plural": "longueurs",
+    "mmsi_plural": "mmse",
+    "name_plural": "Noms",
+    "operator_plural": "opérateurs",
+    "owner_plural": "propriétaires",
+    "type_plural": "types"
+  }
+}

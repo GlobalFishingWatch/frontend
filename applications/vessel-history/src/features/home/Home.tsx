@@ -1,19 +1,29 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useRef } from 'react'
 import cx from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { DebounceInput } from 'react-debounce-input'
+import { useTranslation } from 'react-i18next'
+import Link from 'redux-first-router-link'
+import { VesselSearch } from '@globalfishingwatch/api-types'
 import Logo from '@globalfishingwatch/ui-components/dist/logo'
-import GFWAPI from '@globalfishingwatch/api-client'
-import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
-import { BASE_DATASET } from 'data/constants'
+import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
+import { RESULTS_PER_PAGE } from 'data/constants'
 import { logoutUserThunk } from 'features/user/user.slice'
-import { Vessel } from 'types'
 import VesselListItem from 'features/vessel-list-item/VesselListItem'
+import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
+import { selectAll as selectAllOfflineVessels } from 'features/vessels/offline-vessels.slice'
 import SearchPlaceholder, { SearchNoResultsState } from 'features/search/SearchPlaceholders'
 import { selectQueryParam } from 'routes/routes.selectors'
+import { fetchVesselSearchThunk } from 'features/search/search.thunk'
+import {
+  selectSearchOffset,
+  selectSearchResults,
+  selectSearchTotalResults,
+  selectSearching,
+} from 'features/search/search.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from './Home.module.css'
-import '@globalfishingwatch/ui-components/dist/base.css'
+
 
 interface LoaderProps {
   invert?: boolean
@@ -24,42 +34,43 @@ interface LoaderProps {
 }
 
 const Home: React.FC<LoaderProps> = (): React.ReactElement => {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
-  const [searching, setSearching] = useState(false)
-  const [vessels, setVessels] = useState<Array<Vessel>>([])
+  const searching = useSelector(selectSearching)
   const query = useSelector(selectQueryParam('q'))
+  const vessels = useSelector(selectSearchResults)
+  const offset = useSelector(selectSearchOffset)
+  const totalResults = useSelector(selectSearchTotalResults)
+  const offlineVessels = useSelector(selectAllOfflineVessels)
   const { dispatchQueryParams } = useLocationConnect()
-
-  const minimumCharacters = 3
-  const resultsPerRequest = 25
-
-  const fetchData = useCallback(async (query: string) => {
-    setSearching(true)
-    GFWAPI.fetch<any>(
-      `/v1/vessels/search?datasets=${encodeURIComponent(
-        BASE_DATASET
-      )}&limit=${resultsPerRequest}&offset=${0}&query=${encodeURIComponent(query)}`
-    )
-      .then((json: any) => {
-        const resultVessels: Array<Vessel> = json.entries
-        setSearching(false)
-        setVessels(resultVessels)
-      })
-      .catch((error) => {
-        setSearching(false)
-      })
-  }, [])
+  const { dispatchFetchOfflineVessels, dispatchDeleteOfflineVessel } = useOfflineVesselsAPI()
+  const promiseRef = useRef<any>()
 
   useEffect(() => {
-    setVessels([])
-    if (query?.length >= minimumCharacters) {
-      fetchData(query)
-    }
-  }, [query, fetchData])
+    dispatchFetchOfflineVessels()
+  }, [dispatchFetchOfflineVessels])
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ q: e.target.value })
   }
+
+  const fetchResults = useCallback(
+    (params) => {
+      if (promiseRef.current) {
+        promiseRef.current.abort()
+      }
+      // To ensure the pending action isn't overwritted by the abort above
+      // and we miss the loading intermediate state
+      setTimeout(() => {
+        promiseRef.current = dispatch(fetchVesselSearchThunk(params))
+      }, 100)
+    },
+    [dispatch]
+  )
+
+  useEffect(() => {
+    fetchResults({ query: query, offset: 0 })
+  }, [fetchResults, query])
 
   return (
     <div className={styles.homeContainer}>
@@ -74,7 +85,9 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
               dispatch(logoutUserThunk({ redirectToLogin: true }))
             }}
           ></IconButton>
-          <IconButton type="default" size="default" icon="settings"></IconButton>
+          <Link to={['settings']}>
+            <IconButton type="default" size="default" icon="settings"></IconButton>
+          </Link>
         </header>
       )}
       <div className={styles.search}>
@@ -101,27 +114,56 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         </div>
         {!query && (
           <div>
-            <h2>OFFLINE ACCESS</h2>
-            <div className={styles.offlineVessels}></div>
+            <h2>{t('common.offlineAccess', 'OFFLINE ACCESS')}</h2>
+            <div className={styles.offlineVessels}>
+              {offlineVessels.map((vessel, index) => (
+                <VesselListItem
+                  key={index}
+                  vessel={vessel}
+                  saved={vessel.savedOn}
+                  onDeleteClick={() => dispatchDeleteOfflineVessel(vessel.profileId)}
+                />
+              ))}
+            </div>
           </div>
         )}
         {query && (
           <Fragment>
-            <ul className={styles.searchResults}>
-              {searching && (
+            <div className={styles.searchResults}>
+              {searching && offset === 0 && (
                 <SearchPlaceholder>
                   <Spinner className={styles.loader}></Spinner>
                 </SearchPlaceholder>
               )}
-              {!searching && vessels.length > 0 && (
+              {(!searching || offset > 0) && vessels.length > 0 && (
                 <div className={styles.offlineVessels}>
-                  {vessels.map((vessel, index) => (
+                  {vessels.map((vessel: VesselSearch, index) => (
                     <VesselListItem key={index} vessel={vessel} />
                   ))}
                 </div>
               )}
+              {totalResults && !searching && vessels.length < totalResults && (
+                <div className={styles.listFooter}>
+                  <Button
+                    onClick={() => fetchResults({ query, offset: offset + RESULTS_PER_PAGE })}
+                  >
+                    {t('search.loadMore', 'LOAD MORE')}
+                  </Button>
+                </div>
+              )}
+              {searching && offset > 0 && (
+                <div className={styles.listFooter}>
+                  <Spinner className={styles.loader}></Spinner>
+                </div>
+              )}
+              {totalResults &&
+                !searching &&
+                vessels.length >= totalResults &&
+                vessels.length !== 0 && (
+                  <p className={styles.listFooter}>{t('search.noMore', 'NO MORE RESULTS')}</p>
+                )}
               {!searching && vessels.length === 0 && <SearchNoResultsState />}
-            </ul>
+            </div>
           </Fragment>
         )}
       </div>

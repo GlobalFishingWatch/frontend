@@ -1,33 +1,39 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import Link from 'redux-first-router-link'
+import { useTranslation } from 'react-i18next'
+import { DateTime } from 'luxon'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { Vessel } from 'types'
+import { VesselSearch as Vessel } from '@globalfishingwatch/api-types'
 import { getFlagById } from 'utils/flags'
 import { getVesselAPISource } from 'utils/vessel'
 import { SHOW_VESSEL_API_SOURCE } from 'data/constants'
+import I18nDate, { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from './VesselListItem.module.css'
-
 interface ListItemProps {
-  saved?: boolean
+  saved?: string
   vessel: Vessel
+  onDeleteClick?: () => void
 }
 
 const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
-  const vessel = props.vessel
+  const { t } = useTranslation()
+  const { vessel, onDeleteClick } = props
   if (!vessel) {
     return <div></div>
   }
 
   const flagLabel = getFlagById(vessel.flag)?.label
   const sourceAPI = getVesselAPISource(vessel)
+
   return (
     <div className={styles.vesselItem}>
-      {props.saved && (
+      {props.saved && onDeleteClick && (
         <IconButton
-          type="default"
+          type="warning"
           size="default"
           icon="delete"
-          className={styles.deleteSaved}
+          className={styles.remove}
+          onClick={onDeleteClick}
         ></IconButton>
       )}
       <Link
@@ -37,41 +43,58 @@ const VesselListItem: React.FC<ListItemProps> = (props): React.ReactElement => {
       </Link>
       <div className={styles.identifiers}>
         <div>
-          <label>FLAG</label>
+          <label>{t('vessel.flag', 'flag')}</label>
           {flagLabel}
         </div>
         {vessel.mmsi && (
           <div>
-            <label>MMSI</label>
+            <label>{t('vessel.mmsi', 'mmsi')}</label>
             {vessel.mmsi}
           </div>
         )}
         {vessel.imo && vessel.imo !== '0' && (
           <div>
-            <label>IMO</label>
+            <label>{t('vessel.imo', 'imo')}</label>
             {vessel.imo}
           </div>
         )}
         {vessel.callsign && (
           <div>
-            <label>CALLSIGN</label>
+            <label>{t('vessel.callsign', 'callsign')}</label>
             {vessel.callsign}
           </div>
         )}
         {SHOW_VESSEL_API_SOURCE && (
           <div>
-            <label>SOURCE</label>
+            <label>{t('vessel.source', 'source')}</label>
             {sourceAPI.join('+')}
           </div>
         )}
         <div>
-          <label>TRANSMISSIONS</label>
-          from {vessel.firstTransmissionDate} to {vessel.lastTransmissionDate}
+          <label>{t('vessel.transmission_plural', 'transmissions')}</label>
+          {vessel.firstTransmissionDate || vessel.lastTransmissionDate ? (
+            <Fragment>
+              {t('common.from', 'from')}{' '}
+              {vessel.firstTransmissionDate ? (
+                <I18nDate date={vessel.firstTransmissionDate} />
+              ) : (
+                '-'
+              )}{' '}
+              {t('common.to', 'to')}{' '}
+              {vessel.lastTransmissionDate ? (
+                <I18nDate date={vessel.lastTransmissionDate} />
+              ) : (
+                ' - '
+              )}
+            </Fragment>
+          ) : (
+            '-'
+          )}
         </div>
         {props.saved && (
           <div>
-            <label>SAVED ON</label>
-            2020/08/01
+            <label>{t('vessel.savedOn', 'saved on')}</label>
+            {`${formatI18nDate(props.saved, { format: DateTime.DATETIME_MED })}`}
           </div>
         )}
       </div>

@@ -1,5 +1,6 @@
 import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
-import connectedRoutes, { routerQueryMiddleware } from './routes/routes'
+import connectedRoutes from './routes/routes'
+import { routerQueryMiddleware, routerWorkspaceMiddleware } from './routes/routes.middlewares'
 import titleReducer from './routes/title.reducer'
 import userReducer from './features/user/user.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
@@ -10,7 +11,7 @@ import resourcesReducer from './features/resources/resources.slice'
 import searchReducer from './features/search/search.slice'
 import timebarReducer from './features/timebar/timebar.slice'
 import mapReducer from './features/map/map.slice'
-import rulersReducer from './features/map/controls/rulers.slice'
+import rulersReducer from './features/map/rulers/rulers.slice'
 import debugReducer from './features/debug/debug.slice'
 import analysisReducer from './features/analysis/analysis.slice'
 
@@ -69,6 +70,7 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware(defaultMiddlewareOptions)
       .concat(routerQueryMiddleware)
+      .concat(routerWorkspaceMiddleware)
       .concat(routerMiddleware),
   enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
 })

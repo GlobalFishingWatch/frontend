@@ -1,5 +1,274 @@
 # @globalfishingwatch/layer-composer
 
+## 7.1.3
+
+### Patch Changes
+
+- d14baf30: fix undefined in legend when no bins data
+
+## 7.1.2
+
+### Patch Changes
+
+- ac5fb891: fix undefined in legend when no bins data
+
+## 7.1.1
+
+### Patch Changes
+
+- d5dd9f90: Fishing map/4wings filter precision
+- Updated dependencies [d5dd9f90]
+  - @globalfishingwatch/fourwings-aggregate@4.0.3
+
+## 7.1.0
+
+### Minor Changes
+
+- 6c1b25bb: include leading point in filterGeoJSONByTimerange
+
+## 7.0.4
+
+### Patch Changes
+
+- daa1de75: satellite basemap attribution
+
+## 7.0.3
+
+### Patch Changes
+
+- 9e507541: compute timeseries once on idle
+
+## 7.0.2
+
+### Patch Changes
+
+- Updated dependencies [b230075f]
+  - @globalfishingwatch/fourwings-aggregate@4.0.2
+
+## 7.0.1
+
+### Patch Changes
+
+- Updated dependencies [18fbfda4]
+  - @globalfishingwatch/fourwings-aggregate@4.0.1
+
+## 7.0.0
+
+### Minor Changes
+
+- 1a3d0960: Fishing map/presence less than one day
+
+### Patch Changes
+
+- Updated dependencies [1a3d0960]
+  - @globalfishingwatch/fourwings-aggregate@4.0.0
+
+## 6.1.4
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+- Updated dependencies [7d060771]
+  - @globalfishingwatch/api-types@4.2.4
+
+## 6.1.3
+
+### Patch Changes
+
+- 6b374674: Fishing map/minor fixes
+
+## 6.1.2
+
+### Patch Changes
+
+- d43610ba: Breaks fixes
+
+## 6.1.1
+
+### Patch Changes
+
+- b87943a6: Fishing map/environment fixes
+
+## 6.1.0
+
+### Minor Changes
+
+- 1050379b: legends loading and moved to root metadata
+
+## 6.0.4
+
+### Patch Changes
+
+- abdd6709: Fix default color ramp
+
+## 6.0.3
+
+### Patch Changes
+
+- 67fdfec5: fix color ramps
+
+## 6.0.2
+
+### Patch Changes
+
+- cfae2b4b: fix crash when no sublayers present
+
+## 6.0.1
+
+### Patch Changes
+
+- fix tiles api url
+
+## 6.0.0
+
+### Major Changes
+
+- 5d252a2d: buckets from api and dynamic bivariate
+
+## 5.3.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/data-transforms@1.2.0
+  - @globalfishingwatch/fourwings-aggregate@3.1.1
+
+## 5.2.5
+
+### Patch Changes
+
+- cd532944: fix colorRampToWhite
+
+## 5.2.4
+
+### Patch Changes
+
+- 0a755cc4: added color scales to white and fixed legend
+
+## 5.2.3
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/fourwings-aggregate@3.1.0
+
+## 5.2.2
+
+### Patch Changes
+
+- 8d08df8a: export CONFIG_BY_INTERVAL
+
+## 5.2.1
+
+### Patch Changes
+
+- c0dc95ec: restore uniqueFeatureInteraction with layer id checking
+
+## 5.2.0
+
+### Minor Changes
+
+- bf2d09a1: remove uniqueFeatureInteraction for heatmapAnimated
+
+## 5.1.2
+
+### Patch Changes
+
+- af994916: Sort datasets to improve chance of hitting cache
+
+## 5.1.1
+
+### Patch Changes
+
+- 80907c1f: fixes latest commit
+
+## 5.1.0
+
+### Minor Changes
+
+- 87a54e62: auto detect intervals by dataset configuration
+
+## 5.0.1
+
+### Patch Changes
+
+- bb4978cd: fix blob mode
+
+## 5.0.0
+
+### Major Changes
+
+- 358004cb: Use client-side aggregation with env layers
+
+### Patch Changes
+
+- Updated dependencies [358004cb]
+  - @globalfishingwatch/fourwings-aggregate@3.0.0
+
+## 4.19.2
+
+### Patch Changes
+
+- call cluster tiles api with the new "maxClusterZoom" parameter
+
+## 4.19.1
+
+### Patch Changes
+
+- bug fixes
+
+## 4.19.0
+
+### Minor Changes
+
+- f570b76f: support uniqueFeatureInteraction in layer-composer and map interaction hook
+
+## 4.18.1
+
+### Patch Changes
+
+- fix generators type export
+
+## 4.18.0
+
+### Minor Changes
+
+- match latest versions
+
+## 4.17.3
+
+### Patch Changes
+
+- polish tile cluster generator
+
+## 4.17.2
+
+### Patch Changes
+
+- make params optional in tile-cluster
+
+## 4.17.1
+
+### Patch Changes
+
+- tile-cluster fix generatorId and mark interactive
+
+## 4.17.0
+
+### Minor Changes
+
+- ce98aa73: new tile cluster generator
+
+## 4.16.0
+
+### Minor Changes
+
+- [`f7b017f0`](https://github.com/GlobalFishingWatch/frontend/commit/f7b017f0c72bd1f90e6a984ff5c26e524d7d735a) [#360](https://github.com/GlobalFishingWatch/frontend/pull/360) Thanks [@j8seangel](https://github.com/j8seangel)! - set user context layers as interactive
+
 ## 4.15.0
 
 ### Minor Changes

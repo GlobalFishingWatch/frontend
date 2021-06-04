@@ -1,17 +1,23 @@
-import React, { useState, Fragment, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { lazy, useState, useCallback, useEffect, Suspense, useLayoutEffect } from 'react'
+import { useSelector } from 'react-redux'
+// import RecoilizeDebugger from 'recoilize'
 import SplitView from '@globalfishingwatch/ui-components/dist/split-view'
 import Menu from '@globalfishingwatch/ui-components/dist/menu'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { MapContext } from 'features/map/map-context.hooks'
 import useDebugMenu from 'features/debug/debug.hooks'
-import { isWorkspaceLocation, selectLocationType, selectWorkspaceId } from 'routes/routes.selectors'
+import {
+  isWorkspaceLocation,
+  selectLocationCategory,
+  selectLocationType,
+  selectUrlTimeRange,
+  selectUrlViewport,
+  selectWorkspaceId,
+} from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
 import Sidebar from 'features/sidebar/Sidebar'
-import Map from 'features/map/Map'
-import Timebar from 'features/timebar/Timebar'
 import Footer from 'features/footer/Footer'
 import {
   selectCurrentWorkspaceId,
@@ -19,16 +25,30 @@ import {
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { fetchUserThunk } from 'features/user/user.slice'
-import { isUserLogged } from 'features/user/user.selectors'
-import { HOME, WORKSPACE } from 'routes/routes'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectIsAnalyzing } from 'features/analysis/analysis.selectors'
+import { isUserLogged } from 'features/user/user.selectors'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
+import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
+import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { t } from 'features/i18n/i18n'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import Welcome from 'features/welcome/Welcome'
+import { useAppDispatch } from './app.hooks'
+import { selectAnalysisQuery, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
-import { selectAnalysisQuery, selectSidebarOpen, selectViewport } from './app.selectors'
+import { useAnalytics } from './analytics.hooks'
+
+const Map = lazy(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
+const Timebar = lazy(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
+
+declare global {
+  interface Window {
+    gtag: any
+  }
+}
 
 const Main = () => {
   const workspaceLocation = useSelector(isWorkspaceLocation)
@@ -42,24 +62,84 @@ const Main = () => {
   )
 }
 
+const MARINE_MANAGER_LAST_VISIT = 'MarineManagerLastVisit'
+const isFirstTimeVisit = !localStorage.getItem(MARINE_MANAGER_LAST_VISIT)
+
 function App(): React.ReactElement {
-  const dispatch = useDispatch()
+  useAnalytics()
+  const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
-  const userLogged = useSelector(isUserLogged)
-  const locationType = useSelector(selectLocationType)
-  const urlWorkspaceId = useSelector(selectWorkspaceId)
-  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
-  const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const analysisQuery = useSelector(selectAnalysisQuery)
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const isAnalysing = useSelector(selectIsAnalyzing)
   const narrowSidebar = workspaceLocation && !analysisQuery
-  const urlViewport = useSelector(selectViewport)
+  const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
+
+  const locationIsMarineManager =
+    useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
+  const [welcomePopupOpen, setWelcomePopupOpen] = useState(
+    locationIsMarineManager && isFirstTimeVisit
+  )
+  useEffect(() => {
+    if (locationIsMarineManager)
+      localStorage.setItem(MARINE_MANAGER_LAST_VISIT, new Date().toISOString())
+  }, [locationIsMarineManager])
 
   const fitMapBounds = useMapFitBounds()
   const { setMapCoordinates } = useViewport()
+  const { setTimerange } = useTimerangeConnect()
+
+  const locationType = useSelector(selectLocationType)
+  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
+  const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
+  const showToggle = useSelector(isWorkspaceLocation)
+  const userLogged = useSelector(isUserLogged)
+  const urlViewport = useSelector(selectUrlViewport)
+  const urlTimeRange = useSelector(selectUrlTimeRange)
+  const urlWorkspaceId = useSelector(selectWorkspaceId)
+
+  // TODO review this as is needed in analysis and workspace but adds a lot of extra logic here
+  // probably better to fetch in both components just checking if the workspaceId is already fetched
+  const isHomeLocation = locationType === HOME
+  const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
+  const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
+  useEffect(() => {
+    let action: any
+    let actionResolved = false
+    const fetchWorkspace = async () => {
+      action = dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
+      const resolvedAction = await action
+      if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
+        if (!urlViewport && resolvedAction.payload?.viewport) {
+          setMapCoordinates(resolvedAction.payload.viewport)
+        }
+        if (!urlTimeRange && resolvedAction.payload?.startAt && resolvedAction.payload?.endAt) {
+          setTimerange({
+            start: resolvedAction.payload?.startAt,
+            end: resolvedAction.payload?.endAt,
+          })
+        }
+      }
+      actionResolved = true
+    }
+    if (
+      userLogged &&
+      workspaceCustomStatus !== AsyncReducerStatus.Loading &&
+      (homeNeedsFetch || hasWorkspaceIdChanged)
+    ) {
+      // TODO Can we arrive in a situation where no workspace is ever loaded?
+      // In that case static timerange will need to be set manually
+      fetchWorkspace()
+    }
+    return () => {
+      if (action && action.abort !== undefined && !actionResolved) {
+        action.abort()
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
 
   useLayoutEffect(() => {
     if (isAnalysing) {
@@ -68,13 +148,9 @@ function App(): React.ReactElement {
       } else {
         setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
-    } else {
-      setMapCoordinates(urlViewport)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const { debugActive, dispatchToggleDebugMenu } = useDebugMenu()
 
   useEffect(() => {
     dispatch(fetchUserThunk())
@@ -84,37 +160,6 @@ function App(): React.ReactElement {
     dispatch(fetchHighlightWorkspacesThunk())
   }, [dispatch])
 
-  const isHomeLocation = locationType === HOME
-  // TODO: decide if we want to redirect when only one category is supported and
-  // we want to hide the default workspace
-  // const onlyOneCategorySupported = availableCategories?.length === 1
-  // const categorySupportedNotFishing =
-  //   availableCategories?.[0] === WorkspaceCategories.FishingActivity
-
-  // useEffect(() => {
-  //   if (isHomeLocation && onlyOneCategorySupported && !categorySupportedNotFishing) {
-  //     dispatchLocation(
-  //       WORKSPACES_LIST,
-  //       { category: availableCategories?.[0] as WorkspaceCategories },
-  //       true
-  //     )
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isHomeLocation, onlyOneCategorySupported])
-
-  const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
-  const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
-  useEffect(() => {
-    if (
-      userLogged &&
-      workspaceCustomStatus !== AsyncReducerStatus.Loading &&
-      (homeNeedsFetch || hasWorkspaceIdChanged)
-    ) {
-      dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged, homeNeedsFetch, hasWorkspaceIdChanged])
-
   const onToggle = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })
   }, [dispatchQueryParams, sidebarOpen])
@@ -123,21 +168,30 @@ function App(): React.ReactElement {
     setMenuOpen(true)
   }, [])
 
+  const getSidebarName = useCallback(() => {
+    if (locationType === USER) return t('user.title', 'User')
+    if (locationType === WORKSPACES_LIST) return t('workspace.title_plural', 'Workspaces')
+    if (isAnalysing) return t('analysis.title', 'Analysis')
+    return t('common.layerList', 'Layer list')
+  }, [isAnalysing, locationType])
+
   return (
-    <Fragment>
-      {/* Value as null as there is no needed to set a default value but Typescript complains */}
-      <MapContext.Provider value={null as any}>
-        <Suspense fallback={null}>
-          <SplitView
-            isOpen={sidebarOpen}
-            onToggle={onToggle}
-            aside={<Sidebar onMenuClick={onMenuClick} />}
-            main={<Main />}
-            asideWidth={narrowSidebar ? '37rem' : '50%'}
-            className="split-container"
-          />
-        </Suspense>
-      </MapContext.Provider>
+    /* Value as null as there is no needed to set a default value but Typescript complains */
+    <MapContext.Provider value={null as any}>
+      {/* <RecoilizeDebugger /> */}
+      <Suspense fallback={null}>
+        <SplitView
+          isOpen={sidebarOpen}
+          showToggle={showToggle}
+          onToggle={onToggle}
+          aside={<Sidebar onMenuClick={onMenuClick} />}
+          main={<Main />}
+          asideWidth={narrowSidebar ? '37rem' : '50%'}
+          showAsideLabel={getSidebarName()}
+          showMainLabel={t('common.map', 'Map')}
+          className="split-container"
+        />
+      </Suspense>
       <Menu
         bgImage={menuBgImage}
         isOpen={menuOpen}
@@ -151,7 +205,18 @@ function App(): React.ReactElement {
       >
         <DebugMenu />
       </Modal>
-    </Fragment>
+      {welcomePopupOpen && (
+        <Suspense fallback={null}>
+          <Modal
+            header={false}
+            isOpen={welcomePopupOpen}
+            onClose={() => setWelcomePopupOpen(false)}
+          >
+            <Welcome />
+          </Modal>
+        </Suspense>
+      )}
+    </MapContext.Provider>
   )
 }
 

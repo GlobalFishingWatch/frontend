@@ -1,24 +1,28 @@
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { ExtendedFeatureVessel } from '@globalfishingwatch/react-hooks'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { formatInfoField } from 'utils/info'
+import { getVesselLabel } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   getVesselDataviewInstance,
   getVesselEventsDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
-import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { ExtendedFeatureVessel } from 'features/map/map.slice'
+import { isUserLogged } from 'features/user/user.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
 // t('common.hour', 'Hour')
+// t('common.days', 'Day')
+// t('common.days_plural', 'Days')
 
 type HeatmapTooltipRowProps = {
   feature: TooltipEventFeature
@@ -27,15 +31,25 @@ type HeatmapTooltipRowProps = {
 function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { clickedEventStatus } = useClickedEventConnect()
+  const { fourWingsStatus } = useClickedEventConnect()
+  const userLogged = useSelector(isUserLogged)
   const allDatasets = useSelector(selectDatasets)
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
-    const vesselRelatedDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Vessels)
+    const vesselRelatedDataset = getRelatedDatasetByType(
+      vessel.dataset,
+      DatasetTypes.Vessels,
+      userLogged
+    )
+
     if (!vesselRelatedDataset) {
       console.warn('Missing info related dataset for', vessel)
     }
-    const trackRelatedDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks)
+    const trackRelatedDataset = getRelatedDatasetByType(
+      vessel.dataset,
+      DatasetTypes.Tracks,
+      userLogged
+    )
     if (!trackRelatedDataset) {
       console.warn('Missing track related dataset for', vessel)
     }
@@ -65,7 +79,21 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
     <div className={styles.popupSection}>
       <span className={styles.popupSectionColor} style={{ backgroundColor: feature.color }} />
       <div className={styles.popupSectionContent}>
-        {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
+        {showFeaturesDetails && (
+          <h3 className={styles.popupSectionTitle}>
+            {feature.title}
+            {feature.temporalgrid && feature.temporalgrid.interval === '10days' && (
+              <span>
+                {' '}
+                {t('common.dateRange', {
+                  start: formatI18nDate(feature.temporalgrid.visibleFramesStart),
+                  end: formatI18nDate(feature.temporalgrid.visibleFramesEnd),
+                  defaultValue: 'between {{start}} and {{end}}',
+                })}
+              </span>
+            )}
+          </h3>
+        )}
         <div className={styles.row}>
           <span className={styles.rowText}>
             <I18nNumber number={feature.value} />{' '}
@@ -74,7 +102,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
             })}
           </span>
         </div>
-        {clickedEventStatus === AsyncReducerStatus.Loading && (
+        {fourWingsStatus === AsyncReducerStatus.Loading && (
           <div className={styles.loading}>
             <Spinner size="small" />
           </div>
@@ -86,23 +114,28 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
                 {t('common.vessel_plural', 'Vessels')}
               </label>
               <label className={styles.vesselsHeaderLabel}>
-                {t('common.hour_plural', 'hours')}
+                {feature.unit === 'hours' && t('common.hour_plural', 'hours')}
+                {feature.unit === 'days' && t('common.days_plural', 'days')}
               </label>
             </div>
             {feature.vesselsInfo.vessels.map((vessel, i) => {
-              const vesselLabel = vessel.shipname
-                ? formatInfoField(vessel.shipname, 'name')
-                : vessel.id
+              const vesselLabel = getVesselLabel(vessel, true)
               return (
-                <button key={i} className={styles.vesselRow} onClick={() => onVesselClick(vessel)}>
+                <button
+                  disabled={feature.category === 'presence'}
+                  key={i}
+                  className={styles.vesselRow}
+                  onClick={() => onVesselClick(vessel)}
+                >
                   <span className={styles.vesselName}>
-                    {vesselLabel.length > 25 ? `${vesselLabel.slice(0, 25)}...` : vesselLabel}
+                    {vesselLabel}
                     {vessel.dataset && vessel.dataset.name && (
                       <span className={styles.vesselRowLegend}> - {vessel.dataset.name}</span>
                     )}
                   </span>
-                  {/* Using Math.round as is the same method used in aggregate.js from mapbox.gl fork */}
-                  <span>{Math.round(vessel.hours)}</span>
+                  <span>
+                    <I18nNumber number={vessel.hours} />
+                  </span>
                 </button>
               )
             })}

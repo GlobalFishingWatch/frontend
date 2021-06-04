@@ -1,11 +1,12 @@
 import { createSelector } from 'reselect'
-import memoize from 'lodash/memoize'
+import { memoize } from 'lodash'
 import { Query, RouteObject } from 'redux-first-router'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { RootState } from 'store'
-import { WorkspaceParam, UrlDataviewInstance } from 'types'
-import { DEFAULT_VERSION } from 'data/config'
+import { WorkspaceActivityCategory, WorkspaceParam } from 'types'
+import { DEFAULT_ACTIVITY_CATEGORY, DEFAULT_VERSION } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
-import { HOME, ROUTE_TYPES, WORKSPACE } from './routes'
+import { ROUTE_TYPES, WORKSPACE_ROUTES } from './routes'
 
 const selectLocation = (state: RootState) => state.location
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
@@ -18,9 +19,8 @@ export const selectLocationType = createSelector(
   (location) => location.type as ROUTE_TYPES
 )
 
-export const isWorkspaceLocation = createSelector(
-  [selectLocationType],
-  (locationType) => locationType === WORKSPACE || locationType === HOME
+export const isWorkspaceLocation = createSelector([selectLocationType], (locationType) =>
+  WORKSPACE_ROUTES.includes(locationType)
 )
 
 export const selectLocationQuery = createSelector(
@@ -59,9 +59,29 @@ export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
 export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
 export const selectUrlStartQuery = selectQueryParam<string>('start')
 export const selectUrlEndQuery = selectQueryParam<string>('end')
-export const selectUrlDataviewInstances = selectQueryParam<UrlDataviewInstance[]>(
-  'dataviewInstances'
+export const selectUrlDataviewInstances =
+  selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
+export const selectActivityCategory = createSelector(
+  [selectQueryParam<WorkspaceActivityCategory>('activityCategory')],
+  (activityCategory) => activityCategory || DEFAULT_ACTIVITY_CATEGORY
 )
+
+export const selectUrlViewport = createSelector(
+  [selectUrlMapZoomQuery, selectUrlMapLatitudeQuery, selectUrlMapLongitudeQuery],
+  (zoom, latitude, longitude) => {
+    if (!zoom && !latitude && !longitude) return
+    return { zoom, latitude, longitude }
+  }
+)
+
+export const selectUrlTimeRange = createSelector(
+  [selectUrlStartQuery, selectUrlEndQuery],
+  (start, end) => {
+    if (!start || !end) return null
+    return { start, end }
+  }
+)
+
 export const selectUrlDataviewInstancesById = memoize((id: string) =>
   createSelector([selectUrlDataviewInstances], (urlDataviewInstances) =>
     urlDataviewInstances?.find((dataviewInstance) => dataviewInstance.id === id)

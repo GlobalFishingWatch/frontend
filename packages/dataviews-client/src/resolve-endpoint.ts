@@ -1,8 +1,9 @@
-import { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 
 // Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
 const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
   const endpoint = dataset.endpoints?.find((endpoint) => endpoint.id === datasetConfig.endpoint)
+
   if (!endpoint) return null
 
   const template = endpoint.pathTemplate
@@ -36,12 +37,15 @@ const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig)
       resolvedQuery.set('datasets', datasetConfig.datasetId)
     }
     url = `${url}?${resolvedQuery.toString()}`
-  } else if (endpoint.query.some((q) => q.id === 'datasets')) {
+  } else if (
+    dataset.type !== DatasetTypes.Fourwings &&
+    endpoint.query.some((q) => q.id === 'datasets')
+  ) {
     // Fallback when no dataset query is defined but we already know which dataset want to search in
     url = `${url}?datasets=${dataset.id}`
   }
 
-  return url
+  return decodeURI(url)
 }
 
 export default resolveEndpoint

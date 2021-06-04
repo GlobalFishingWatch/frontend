@@ -20,6 +20,8 @@ function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
     className,
     icon,
     onClick,
+    onMouseEnter,
+    onMouseLeave,
     tooltip,
     tooltipPlacement = 'auto',
     children,
@@ -41,6 +43,8 @@ function IconButton(props: IconButtonProps, ref: Ref<HTMLButtonElement>) {
           className
         )}
         onClick={disabled ? undefined : onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
         {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
         {...rest}
       >

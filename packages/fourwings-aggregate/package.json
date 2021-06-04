@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/fourwings-aggregate",
-  "version": "1.2.0",
+  "version": "4.0.3",
   "description": "Logic to turn fourwings tiles or cells into meaningful values for the frontend",
   "main": "dist/index.js",
   "license": "MIT",
@@ -23,7 +23,8 @@
     "build": "yarn clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
     "clean": "rimraf dist/*",
     "prepare": "yarn build",
-    "test": "yarn build && tap test/*.test.mjs"
+    "test": "yarn build && tap test/*.mjs",
+    "test:watch": "tap test/get-time-series.test.mjs"
   },
   "directories": {
     "src": "src",
@@ -42,5 +43,6 @@
     "rollup-plugin-postcss": "^3.1.8",
     "rollup-plugin-terser": "^7.0.2",
     "tap": "~12.4.1"
-  }
+  },
+  "gitHead": "dd9006c455eb7ee9f20cbdc62854d9a16bfc94c1"
 }

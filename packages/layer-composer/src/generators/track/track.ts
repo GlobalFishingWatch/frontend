@@ -1,11 +1,14 @@
 import { scaleLinear, scalePow } from 'd3-scale'
 import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
+import { uniq } from 'lodash'
+import convert from 'color-convert'
+import type { LineLayer } from '@globalfishingwatch/mapbox-gl'
+import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { Group } from '../../types'
-import { Type, TrackGeneratorConfig, GlobalGeneratorConfig } from '../types'
+import { Type, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { isConfigVisible } from '../utils'
-import segmentsToGeoJSON from './segments-to-geojson'
 import filterGeoJSONByTimerange from './filterGeoJSONByTimerange'
 import { simplifyTrack } from './simplify-track'
 
@@ -56,7 +59,10 @@ const getHighlightedData = (
   return filteredData
 }
 
-const getHighlightedLayer = (id: string, { group = Group.TrackHighlighted, paint = {} } = {}) => {
+const getHighlightedLayer = (
+  id: string,
+  { group = Group.TrackHighlighted, paint = {} } = {}
+): LineLayer => {
   return {
     id,
     type: 'line',
@@ -68,7 +74,7 @@ const getHighlightedLayer = (id: string, { group = Group.TrackHighlighted, paint
     },
     paint: {
       'line-color': 'white',
-      'line-width': 2,
+      'line-width': 3,
       'line-opacity': 1,
       ...paint,
     },
@@ -78,18 +84,20 @@ const getHighlightedLayer = (id: string, { group = Group.TrackHighlighted, paint
 
 const DEFAULT_TRACK_COLOR = 'rgba(0, 193, 231, 1)'
 
+export type GlobalTrackGeneratorConfig = MergedGeneratorConfig<TrackGeneratorConfig>
+
 class TrackGenerator {
   type = Type.Track
   highlightSufix = '_highlighted'
   highlightEventSufix = `${this.highlightSufix}_event`
 
-  _getStyleSources = (config: TrackGeneratorConfig & GlobalGeneratorConfig) => {
+  _getStyleSources = (config: GlobalTrackGeneratorConfig) => {
     const defaultGeoJSON: FeatureCollection = {
       type: 'FeatureCollection',
       features: [],
     }
 
-    const source = {
+    const source: Record<string, any> = {
       id: config.id,
       type: 'geojson',
       data: defaultGeoJSON,
@@ -110,6 +118,12 @@ class TrackGenerator {
         config.zoomLoadLevel
       )
     }
+
+    const uniqIds: string[] = uniq(
+      source.data.features
+        .filter((f: any) => f.properties?.id !== undefined)
+        .map((f: any) => f.properties?.id)
+    )
 
     if (config.start && config.end) {
       source.data = memoizeCache[config.id].filterByTimerange(source.data, config.start, config.end)
@@ -143,20 +157,42 @@ class TrackGenerator {
       sources.push(highlightedSource)
     }
 
-    return sources
+    return { sources, uniqIds }
   }
 
-  _getStyleLayers = (config: TrackGeneratorConfig & GlobalGeneratorConfig) => {
+  _getStyleLayers = (config: GlobalTrackGeneratorConfig, uniqIds: string[]): LineLayer[] => {
+    const paint = {
+      'line-color': config.color || DEFAULT_TRACK_COLOR,
+      'line-width': 1.5,
+      'line-opacity': 1,
+    }
+
+    if (uniqIds.length > 1) {
+      const HUE_CHANGE_DELTA = 40
+      const hueIncrement = HUE_CHANGE_DELTA / (uniqIds.length - 1)
+      const hsl = convert.hex.hsl(config.color || '')
+      const baseHue = hsl[0]
+      const exprLineColor = [
+        'match',
+        ['get', 'id'],
+        ...uniqIds.flatMap((id, index) => {
+          const rawHue = baseHue - HUE_CHANGE_DELTA / 2 + hueIncrement * index
+          const hue = (rawHue + 360) % 360
+          const color = `#${convert.hsl.hex([hue, hsl[1], hsl[2]])}`
+          return [id, color]
+        }),
+        config.color,
+      ]
+      paint['line-color'] = exprLineColor as any
+    }
+
     const visibility = isConfigVisible(config)
-    const layer = {
+    const layer: LineLayer = {
       id: config.id,
       source: config.id,
       type: 'line',
       layout: { visibility },
-      paint: {
-        'line-color': config.color || DEFAULT_TRACK_COLOR,
-        'line-opacity': config.opacity || 0.9,
-      },
+      paint,
       metadata: {
         group: Group.Track,
       },
@@ -185,7 +221,7 @@ class TrackGenerator {
     return layers
   }
 
-  getStyle = (config: TrackGeneratorConfig & GlobalGeneratorConfig) => {
+  getStyle = (config: GlobalTrackGeneratorConfig) => {
     memoizeByLayerId(config.id, {
       convertToGeoJSON: memoizeOne(segmentsToGeoJSON),
       simplifyTrackWithZoomLevel: memoizeOne(simplifyTrackWithZoomLevel),
@@ -193,10 +229,12 @@ class TrackGenerator {
       getHighlightedData: memoizeOne(getHighlightedData),
       getHighlightedEventData: memoizeOne(getHighlightedData),
     })
+
+    const { sources, uniqIds } = this._getStyleSources(config)
     return {
       id: config.id,
-      sources: this._getStyleSources(config),
-      layers: this._getStyleLayers(config),
+      sources,
+      layers: this._getStyleLayers(config, uniqIds),
     }
   }
 }

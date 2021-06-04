@@ -1,24 +1,39 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
+import Link, { To } from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { DEFAULT_WORKSPACE_KEY } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import useViewport from 'features/map/map-viewport.hooks'
+import { Locale } from 'types'
 import styles from './WorkspacesList.module.css'
-import { selectCurrentHighlightedWorkspaces } from './workspaces-list.selectors'
+import {
+  HighlightedWorkspaceMerged,
+  selectCurrentHighlightedWorkspaces,
+} from './workspaces-list.selectors'
 import { selectHighlightedWorkspacesStatus } from './workspaces-list.slice'
 
 function WorkspacesList() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { setMapCoordinates } = useViewport()
   const locationCategory = useSelector(selectLocationCategory)
   const userFriendlyCategory = locationCategory.replace('-', ' ')
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
   const validCategory = useSelector(isValidLocationCategory)
+
+  const onWorkspaceClick = useCallback(
+    (workspace: HighlightedWorkspaceMerged) => {
+      if (workspace.viewport) {
+        setMapCoordinates(workspace.viewport)
+      }
+    },
+    [setMapCoordinates]
+  )
 
   if (highlightedWorkspacesStatus === AsyncReducerStatus.Finished && !validCategory) {
     return (
@@ -40,36 +55,81 @@ function WorkspacesList() {
       ) : (
         <ul>
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
-            const active = highlightedWorkspace?.id !== undefined
-            const linkTo =
-              highlightedWorkspace.id === DEFAULT_WORKSPACE_KEY
-                ? {
-                    type: HOME,
-                    payload: {},
-                    query: {},
-                  }
-                : {
-                    type: WORKSPACE,
-                    payload: {
-                      category: locationCategory,
-                      workspaceId: highlightedWorkspace.id,
-                    },
-                    query: {},
-                  }
+            const { name, cta, description, img } = highlightedWorkspace
+            const i18nName = (name?.[i18n.language as Locale] as string) || name.en
+            const i18nDescription =
+              (description?.[i18n.language as Locale] as string) || description.en
+            const i18nCta =
+              (highlightedWorkspace.cta?.[i18n.language as Locale] as string) ||
+              highlightedWorkspace.cta.en
+            const active = highlightedWorkspace?.id !== undefined && highlightedWorkspace?.id !== ''
+            const isExternalLink = highlightedWorkspace.id.includes('http')
+            let linkTo: To
+            if (isExternalLink) linkTo = highlightedWorkspace.id
+            else if (highlightedWorkspace.id === DEFAULT_WORKSPACE_ID) {
+              linkTo = {
+                type: HOME,
+                payload: {},
+                query: {},
+                replaceQuery: true,
+              }
+            } else {
+              linkTo = {
+                type: WORKSPACE,
+                payload: {
+                  category: locationCategory,
+                  workspaceId: highlightedWorkspace.id,
+                },
+                query: {},
+                replaceQuery: true,
+              }
+            }
             return (
-              <li key={highlightedWorkspace.name}>
-                <Link className={cx(styles.workspace, { [styles.disabled]: !active })} to={linkTo}>
-                  <img
-                    className={styles.image}
-                    alt={highlightedWorkspace.name}
-                    src={highlightedWorkspace.img}
-                  />
+              <li key={highlightedWorkspace.id || i18nName}>
+                <div className={cx(styles.workspace, { [styles.disabled]: !active })}>
+                  {active ? (
+                    <Link
+                      to={linkTo}
+                      target={isExternalLink ? '_blank' : '_self'}
+                      onClick={() => !isExternalLink && onWorkspaceClick(highlightedWorkspace)}
+                    >
+                      <img className={styles.image} alt={i18nName} src={img} />
+                    </Link>
+                  ) : (
+                    <img className={styles.image} alt={i18nName} src={img} />
+                  )}
                   <div className={styles.info}>
-                    <h3 className={styles.title}>{highlightedWorkspace.name}</h3>
-                    <p className={styles.description}>{highlightedWorkspace.description}</p>
-                    <span className={styles.link}>{highlightedWorkspace.cta}</span>
+                    {active ? (
+                      <Link
+                        to={linkTo}
+                        target={isExternalLink ? '_blank' : '_self'}
+                        onClick={() => !isExternalLink && onWorkspaceClick(highlightedWorkspace)}
+                      >
+                        <h3 className={styles.title}>{i18nName || name}</h3>
+                      </Link>
+                    ) : (
+                      <h3 className={styles.title}>{i18nName || name}</h3>
+                    )}
+                    {i18nDescription && (
+                      <p
+                        className={styles.description}
+                        dangerouslySetInnerHTML={{
+                          __html: i18nDescription,
+                        }}
+                      ></p>
+                    )}
+                    {active && (
+                      <Link
+                        to={linkTo}
+                        target={isExternalLink ? '_blank' : '_self'}
+                        className={styles.link}
+                        onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                      >
+                        {i18nCta || cta}
+                      </Link>
+                    )}
                   </div>
-                </Link>
+                </div>
               </li>
             )
           })}

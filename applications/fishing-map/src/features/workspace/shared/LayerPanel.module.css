@@ -98,6 +98,11 @@
   margin-right: var(--space-M);
 }
 
+.infoLogin {
+  margin-top: var(--space-M);
+  color: var(--color-secondary-blue);
+}
+
 .actions .loadingIcon:hover {
   cursor: default;
 }

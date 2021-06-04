@@ -1,0 +1,95 @@
+{
+  "common": {
+    "activity": "actividad",
+    "commingSoon": "muy pronto!",
+    "currentTimeRange": "período actual",
+    "from": "desde",
+    "info": "info",
+    "map": "mapa",
+    "offlineAccess": "acceso sin conexión",
+    "since": "desde",
+    "timeRange": "período",
+    "to": "hasta",
+    "historyFor": "historial para",
+    "previous": "anteriones"
+  },
+  "search": {
+    "description": "Buscar por nombre de buque o código de identificación (IMO, MMSI, VMS ID, etc…). Puedes restringir tu búsqueda presionando el icono de filtro en la barra superior",
+    "noResults": "¿No encuentras el buque que estás buscando? Intenta usar MMSI, IMO o Callsign",
+    "notAllowed": "Los conjuntos de datos disponibles no permiten la búsqueda de buques",
+    "loadMore": "Cargar más",
+    "noMore": "No hay más resultados"
+  },
+  "selects": {
+    "allSelected": "todos",
+    "selected": "seleccionado"
+  },
+  "settings": {
+    "title": "Settings",
+    "distance": "DISTANCE TRAVELLED",
+    "duration": "DURATION",
+    "hours": "hours",
+    "longerThan": "Longer than",
+    "eezs": {
+      "label": "Events in these EEZs"
+    },
+    "mpas": {
+      "label": "Events in these MPAs"
+    },
+    "rfmos": {
+      "label": "Events in these RFMOS"
+    },
+    "loiteringEvents": {
+      "title": "Loitering Events"
+    },
+    "encounters": {
+      "title": "Loitering Events"
+    },
+    "fishingEvents": {
+      "title": "Loitering Events"
+    },
+    "portVisits": {
+      "title": "Port Visits",
+      "inputStart": "Port visits in",
+      "inputEnd": "ports"
+    }
+  },
+  "vessel": {
+    "authorization_plural": "autorizaciones",
+    "callsign": "signatura",
+    "flag": "bandera",
+    "historyLabelByField": "Historial para {{label}} de {{vesselName}}",
+    "imo": "imo",
+    "mmsi": "mmsi",
+    "noAuthorizations": "No se encontraron authorizaciones",
+    "plusPreviousValuesByField": "+{{quantity}} {{fieldLabel}} anteriores",
+    "readyForOfflineView": "RESPONSABLE PARA LA VISTA DE OFLINA",
+    "remove": "Eliminar",
+    "saveForOfflineView": "guardar buque para vista offline",
+    "source": "fuente",
+    "transmission_plural": "transmisiones",
+    "savedOn": "guardado en",
+    "previousNames": "nombres anteriores",
+    "builtYear": "año de fabricación",
+    "depth": "calado",
+    "gearType": "tipo de equipo",
+    "grossTonnage": "tonelaje bruto",
+    "length": "longitud",
+    "name": "nombre",
+    "operator": "operador",
+    "owner": "propietario",
+    "type": "tipo",
+    "grossTonnage_plural": "tonelajes brutos",
+    "builtYear_plural": "años construidos",
+    "callsign_plural": "signaturas",
+    "depth_plural": "profundidades",
+    "flag_plural": "banderas",
+    "gearType_plural": "tipos de equipo",
+    "length_plural": "longitudes",
+    "mmsi_plural": "mmsis",
+    "name_plural": "nombres",
+    "operator_plural": "operadores",
+    "owner_plural": "propietarios",
+    "type_plural": "tipos"
+  }
+}

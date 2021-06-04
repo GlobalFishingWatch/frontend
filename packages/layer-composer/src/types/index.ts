@@ -11,13 +11,14 @@ import type {
   Style,
   SymbolLayer,
 } from '@globalfishingwatch/mapbox-gl'
-import type { DataviewConfig } from '@globalfishingwatch/api-types'
+import { DataviewConfig } from '@globalfishingwatch/api-types'
 import {
-  GeneratorConfig,
   Type,
+  ColorRampsIds,
   GeneratorLegend,
   HeatmapAnimatedGeneratorSublayer,
-  ColorRampsIds,
+  GeneratorConfig,
+  AnyGeneratorConfig,
 } from '../generators/types'
 
 export interface GeneratorDataviewConfig<T = Type> extends DataviewConfig<T> {
@@ -36,7 +37,7 @@ export interface Generator {
 }
 
 /**
- * Defines groups for layer order
+ * Defines groups for layer order. See actual layer order in packages/layer-composer/src/transforms/sort/sort.ts
  */
 export enum Group {
   Background = 'background', // Solid bg color
@@ -44,6 +45,7 @@ export enum Group {
   Heatmap = 'heatmap', // Fill/gradient-based heatmaps
   BasemapFill = 'basemapFill', // Landmass
   OutlinePolygons = 'outlinePolygons', // Context layers with an outlined/hollow style such as EEZ, RFMOs, etc
+  OutlinePolygonsFill = 'outlinePolygonsFill', // User context layers with a filled styles, below OutlinePolygons
   OutlinePolygonsBackground = 'OutlinePolygonsBackground', // Polygons  that need to be rendered below landmass
   OutlinePolygonsHighlighted = 'outlinePolygonsHighlighted', // Context layers with selected features
   Default = 'default', // Default stack position when group is not specified
@@ -52,6 +54,7 @@ export enum Group {
   TrackHighlightedEvent = 'trackHighlightedEvent', // Fixed highlight section normally used for a event duration
   TrackHighlighted = 'trackHighlighted', // Highlighted sections of tracks
   BasemapForeground = 'BasemapForeground', // Graticule labels, bathymetry labels, etc
+  Cluster = 'cluster', // Cluster circles
   Tool = 'tool', // Tools such as rulers, etc
   Label = 'label', // All non-basemap layers labels
   Overlay = 'overlay', // Popups, ruler tool, etc
@@ -68,10 +71,12 @@ export enum LegendType {
  * Set of additional metadata properties added by LayerComposer for later use in transformations or to be consumed directly ie (group, legend, etc)
  */
 export interface LayerMetadataLegend extends GeneratorLegend {
-  id?: string
+  id: string
   type: LegendType
   gridArea?: number | string
   ramp?: [number | null | string, string][]
+  colorRamp?: string[]
+  loading?: boolean
   currentValue?: number
   [key: string]: any
 }
@@ -120,7 +125,7 @@ export type ExtendedLayer = AnyLayer & {
 export interface ExtendedStyleMeta {
   generatedAt?: number
   interactiveLayerIds?: string[]
-  temporalgrid?: Record<string, any>
+  generatorsMetadata?: Record<string, any>
 }
 
 /**
@@ -146,14 +151,16 @@ export interface LayerComposerOptions {
   sprite?: string
 }
 
+export type GeneratorPromise = Promise<{ style: GeneratorStyles; config: AnyGeneratorConfig }>
+
 // This is what is returned by a <Generator>.getStyle
 // TODO This is unusable as is because sources carry an id which is invalid
 export interface GeneratorStyles {
   id: string
   sources: AnySourceImpl[]
   layers: ExtendedLayer[]
-  promise?: Promise<GeneratorStyles>
-  promises?: Promise<GeneratorStyles>[]
+  promise?: GeneratorPromise
+  promises?: GeneratorPromise[]
   metadata?: Record<string, any>
 }
 

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { TagList } from '@globalfishingwatch/ui-components'
-import { UrlDataviewInstance } from 'types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import {
   getSchemaFieldsSelectedInDataview,

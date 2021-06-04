@@ -1,5 +1,23 @@
 # @globalfishingwatch/linting
 
+## 1.7.0
+
+### Minor Changes
+
+- set import/order as warning
+
+## 1.6.1
+
+### Patch Changes
+
+- 95e754ca: Linting/prettier
+
+## 1.6.0
+
+### Minor Changes
+
+- 9bf13129: include missing dependency
+
 ## 1.5.4
 
 ### Patch Changes

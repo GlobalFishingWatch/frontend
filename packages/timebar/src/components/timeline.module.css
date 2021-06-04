@@ -1,8 +1,18 @@
 .Timeline {
-  width: 100%;
+  width: calc(100% - 145px);
   background-position-y: 1rem;
   position: relative;
   z-index: var(--timebar-z-timeline-bookmark);
+}
+
+:global(.printing) .Timeline {
+  width: 100%;
+}
+
+@media print {
+  .Timeline {
+    width: 100%;
+  }
 }
 
 ._disabled {
@@ -11,7 +21,7 @@
 
 .graphContainer {
   width: 100%;
-  height: 100%;
+  height: var(--timebar-size);
   z-index: 0;
   overflow: hidden;
 }
@@ -37,23 +47,21 @@
 
 .veilLeft {
   width: 15%;
-  background-image:
-    linear-gradient(
-      90deg,
-      var(--timebar-main-background-color) 0%,
-      rgba(0, 16, 57, 0.3) 100%
-    );
+  background-image: linear-gradient(
+    90deg,
+    var(--timebar-main-background-color) 0%,
+    rgba(0, 16, 57, 0.3) 100%
+  );
 }
 
 .veilRight {
   right: 0;
   width: 15.01%;
-  background-image:
-    linear-gradient(
-      90deg,
-      rgba(0, 16, 57, 0.3) 0%,
-      var(--timebar-main-background-color) 100%
-    );
+  background-image: linear-gradient(
+    90deg,
+    rgba(0, 16, 57, 0.3) 0%,
+    var(--timebar-main-background-color) 100%
+  );
 }
 
 .veil._immediate {
@@ -86,4 +94,31 @@
 
 .tooltipContainer {
   visibility: visible;
+}
+
+.last30Days {
+  position: absolute;
+  display: flex;
+  top: 16px;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.last30Days > button {
+  cursor: pointer;
+  color: rgba(var(--white-rgb), var(--opacity-secondary));
+  background-color: var(--color-primary-blue);
+  border: var(--border-white);
+  border-radius: 99px;
+  height: var(--size-S);
+  padding: 0 12px;
+  pointer-events: all;
+}
+
+@media only screen and (max-width: 768px) {
+  .Timeline {
+    width: calc(100% - 60px);
+  }
 }

@@ -1,19 +1,18 @@
 import { Dispatch } from 'redux'
 import { NOT_FOUND, RoutesMap, redirect, connectRoutes, Options } from 'redux-first-router'
 import { stringify, parse } from 'qs'
-import { Dictionary, Middleware } from '@reduxjs/toolkit'
-import { RootState } from 'store'
-import { QueryParams, UrlDataviewInstance } from 'types'
-import { REPLACE_URL_PARAMS } from 'data/config'
-import { UpdateQueryParamsAction } from './routes.actions'
+import { Dictionary } from '@reduxjs/toolkit'
+import { invert, isObject, transform } from 'lodash'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
 export const WORKSPACES_LIST = 'WORKSPACES_LIST'
 export const USER = 'USER'
+export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
 export type ROUTE_TYPES = typeof HOME | typeof USER | typeof WORKSPACES_LIST | typeof WORKSPACE
 
-const routesMap: RoutesMap = {
+export const routesMap: RoutesMap = {
   [HOME]: {
     path: '/',
   },
@@ -32,6 +31,25 @@ const routesMap: RoutesMap = {
       dispatch(redirect({ type: HOME }))
     },
   },
+}
+
+const PARAMS_TO_ABBREVIATED = {
+  dataviewInstances: 'dvIn',
+  datasetsConfig: 'dsC',
+  datasets: 'dss',
+  endpoint: 'ept',
+  datasetId: 'dsId',
+  dataviewId: 'dvId',
+  params: 'pms',
+  config: 'cfg',
+}
+const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
+
+const deepReplaceKeys = (obj: Dictionary<any>, keysMap: Dictionary<string>) => {
+  return transform(obj, (result: any, value, key) => {
+    const newKey = keysMap[key] || key
+    result[newKey] = isObject(value) ? deepReplaceKeys(value, keysMap) : value
+  })
 }
 
 const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
@@ -55,12 +73,17 @@ const urlToObjectTransformation: Dictionary<(value: any) => any> = {
   },
 }
 
-const encodeWorkspace = (object: Record<string, unknown>) => {
-  return stringify(object, { encodeValuesOnly: true, strictNullHandling: true })
+const stringifyWorkspace = (object: Record<string, unknown>) => {
+  const objectWithAbbr = deepReplaceKeys(object, PARAMS_TO_ABBREVIATED)
+  const stringified = stringify(objectWithAbbr, {
+    encodeValuesOnly: true,
+    strictNullHandling: true,
+  })
+  return stringified
 }
 
 // Extended logic from qs utils decoder to have some keywords parsed
-const decoder = (str: string, decoder?: any, charset?: string) => {
+const decoder = (str: string, decoder?: any, charset?: string, type?: string) => {
   const strWithoutPlus = str.replace(/\+/g, ' ')
   if (charset === 'iso-8859-1') {
     // unescape never throws, no try...catch needed:
@@ -84,63 +107,30 @@ const decoder = (str: string, decoder?: any, charset?: string) => {
   }
 }
 
-const decodeWorkspace = (queryString: string) => {
+const parseWorkspace = (queryString: string) => {
   const parsed = parse(queryString, {
     arrayLimit: 1000,
     depth: 20,
     decoder,
     strictNullHandling: true,
   })
-  Object.keys(parsed).forEach((param: string) => {
-    const value = parsed[param]
+  const parsedWithAbbr = deepReplaceKeys(parsed, ABBREVIATED_TO_PARAMS)
+  Object.keys(parsedWithAbbr).forEach((param: string) => {
+    const value = parsedWithAbbr[param]
     const transformationFn = urlToObjectTransformation[param]
     if (value && transformationFn) {
-      parsed[param] = transformationFn(value)
+      parsedWithAbbr[param] = transformationFn(value)
     }
   })
-  return parsed
+
+  return parsedWithAbbr
 }
 
 const routesOptions: Options = {
   querySerializer: {
-    stringify: encodeWorkspace,
-    parse: decodeWorkspace,
+    stringify: stringifyWorkspace,
+    parse: parseWorkspace,
   },
-}
-
-export const routerQueryMiddleware: Middleware = ({ getState }: { getState: () => RootState }) => (
-  next
-) => (action: UpdateQueryParamsAction) => {
-  const routesActions = Object.keys(routesMap)
-  // check if action type matches a route type
-  const isRouterAction = routesActions.includes(action.type)
-  if (!isRouterAction) {
-    next(action)
-  } else {
-    const newAction: UpdateQueryParamsAction = { ...action }
-
-    const prevQuery = getState().location.query || {}
-    if (newAction.replaceQuery !== true) {
-      newAction.query = {
-        ...prevQuery,
-        ...newAction.query,
-      }
-    }
-    const { query } = action
-    if (query) {
-      const redirect = Object.keys(prevQuery)
-        .filter((k) => query[k as keyof QueryParams])
-        .some((key) => REPLACE_URL_PARAMS.includes(key))
-      if (redirect === true) {
-        newAction.meta = {
-          location: {
-            kind: 'redirect',
-          },
-        }
-      }
-    }
-    next(newAction)
-  }
 }
 
 export default connectRoutes(routesMap, routesOptions)

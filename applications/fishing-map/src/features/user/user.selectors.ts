@@ -1,13 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { orderBy } from 'lodash'
 import { DatasetStatus, DatasetCategory } from '@globalfishingwatch/api-types'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import {
   selectContextAreasDataviews,
   selectEnvironmentalDataviews,
-} from 'features/workspace/workspace.selectors'
+} from 'features/dataviews/dataviews.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserStatus, selectUserLogged, GUEST_USER_TYPE, selectUserData } from './user.slice'
+
+const DEFAULT_GROUP_ID = 'Default'
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE
@@ -20,25 +23,26 @@ export const isUserLogged = createSelector(
   }
 )
 
-export const isUserAuthorized = createSelector([selectUserData], (user) => {
-  return (
-    user?.permissions.find(
-      (permission) =>
-        permission.type === 'application' &&
-        permission.value === 'fishing-map' &&
-        permission.action === 'map.load'
-    ) !== undefined
-  )
-})
-
 export const selectUserId = createSelector([selectUserData], (userData) => {
   return userData?.id
+})
+
+export const selectUserGroups = createSelector([selectUserData], (userData) => {
+  return userData?.groups
+})
+
+export const selectUserGroupsClean = createSelector([selectUserGroups], (userGroups) => {
+  return userGroups?.filter((g) => g !== DEFAULT_GROUP_ID)
 })
 
 export const selectUserWorkspaces = createSelector(
   [selectUserData, selectWorkspaces],
   (userData, workspaces) => {
-    return workspaces?.filter((workspace) => workspace.ownerId === userData?.id).reverse()
+    return orderBy(
+      workspaces?.filter((workspace) => workspace.ownerId === userData?.id),
+      'createdAt',
+      'desc'
+    )
   }
 )
 

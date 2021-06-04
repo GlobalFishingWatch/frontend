@@ -12,21 +12,15 @@ import { stringify, parse } from 'qs'
 import { Dictionary, Middleware } from '@reduxjs/toolkit'
 import { RootState } from 'store'
 import { AppActions, AppState } from 'types/redux.types'
-import { vesselInfoThunk } from 'features/vessels/vessels.thunks'
 import { UpdateQueryParamsAction } from './routes.actions'
 
 export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
 export const PROFILE = 'PROFILE'
+export const SETTINGS = 'SETTINGS'
 
 export type ROUTE_TYPES = typeof HOME | typeof PROFILE
 
-const profileThunk = async (
-  dispatch: Dispatch<AppActions | NavigationAction>,
-  getState: StateGetter<AppState>
-) => {
-  vesselInfoThunk(dispatch, getState)
-}
 const thunk = async (
   dispatch: Dispatch<AppActions | NavigationAction>,
   getState: StateGetter<AppState>
@@ -37,13 +31,17 @@ const routesMap: RoutesMap = {
     path: '/',
     thunk,
   },
+  [SETTINGS]: {
+    path: '/settings',
+    thunk,
+  },
   [LOGIN]: {
     path: '/login',
     thunk,
   },
   [PROFILE]: {
     path: '/profile/:dataset/:vesselID/:tmtID',
-    thunk: profileThunk,
+    thunk,
   },
   [NOT_FOUND]: {
     path: '',
@@ -83,26 +81,27 @@ const urlToObjectTransformation: Dictionary<(value: any) => any> = {
   zoom: (s) => parseFloat(s),
 }
 
-export const routerQueryMiddleware: Middleware = ({ getState }: { getState: () => RootState }) => (
-  next
-) => (action: UpdateQueryParamsAction) => {
-  const routesActions = Object.keys(routesMap)
-  // check if action type matches a route type
-  const isRouterAction = routesActions.includes(action.type)
-  if (!isRouterAction) {
-    next(action)
-  } else {
-    const newAction: UpdateQueryParamsAction = { ...action }
+export const routerQueryMiddleware: Middleware =
+  ({ getState }: { getState: () => RootState }) =>
+  (next) =>
+  (action: UpdateQueryParamsAction) => {
+    const routesActions = Object.keys(routesMap)
+    // check if action type matches a route type
+    const isRouterAction = routesActions.includes(action.type)
+    if (!isRouterAction) {
+      next(action)
+    } else {
+      const newAction: UpdateQueryParamsAction = { ...action }
 
-    const prevQuery = getState().location.query || {}
-    if (newAction.replaceQuery !== true) {
-      newAction.query = {
-        ...prevQuery,
-        ...newAction.query,
+      const prevQuery = getState().location.query || {}
+      if (newAction.replaceQuery !== true) {
+        newAction.query = {
+          ...prevQuery,
+          ...newAction.query,
+        }
       }
+      next(newAction)
     }
-    next(newAction)
   }
-}
 
 export default connectRoutes(routesMap, routesOptions)

@@ -1,5 +1,425 @@
 # @globalfishingwatch/react-hooks
 
+## 8.0.3
+
+### Patch Changes
+
+- Updated dependencies [d14baf30]
+  - @globalfishingwatch/layer-composer@7.1.3
+
+## 8.0.2
+
+### Patch Changes
+
+- Updated dependencies [ac5fb891]
+  - @globalfishingwatch/layer-composer@7.1.2
+
+## 8.0.1
+
+### Patch Changes
+
+- d5dd9f90: Fishing map/4wings filter precision
+- Updated dependencies [d5dd9f90]
+  - @globalfishingwatch/fourwings-aggregate@4.0.3
+  - @globalfishingwatch/layer-composer@7.1.1
+
+## 8.0.0
+
+### Patch Changes
+
+- Updated dependencies [6c1b25bb]
+  - @globalfishingwatch/layer-composer@7.1.0
+  - @globalfishingwatch/dataviews-client@8.0.0
+
+## 7.0.4
+
+### Patch Changes
+
+- Updated dependencies [daa1de75]
+  - @globalfishingwatch/layer-composer@7.0.4
+
+## 7.0.3
+
+### Patch Changes
+
+- Updated dependencies [9e507541]
+  - @globalfishingwatch/layer-composer@7.0.3
+
+## 7.0.2
+
+### Patch Changes
+
+- Updated dependencies [b230075f]
+  - @globalfishingwatch/fourwings-aggregate@4.0.2
+  - @globalfishingwatch/layer-composer@7.0.2
+
+## 7.0.1
+
+### Patch Changes
+
+- Updated dependencies [18fbfda4]
+  - @globalfishingwatch/fourwings-aggregate@4.0.1
+  - @globalfishingwatch/layer-composer@7.0.1
+
+## 7.0.0
+
+### Patch Changes
+
+- Updated dependencies [1a3d0960]
+  - @globalfishingwatch/dataviews-client@7.0.0
+  - @globalfishingwatch/fourwings-aggregate@4.0.0
+  - @globalfishingwatch/layer-composer@7.0.0
+
+## 6.3.1
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+- Updated dependencies [7d060771]
+  - @globalfishingwatch/api-client@1.7.1
+  - @globalfishingwatch/dataviews-client@6.5.3
+  - @globalfishingwatch/layer-composer@6.1.4
+
+## 6.3.0
+
+### Minor Changes
+
+- new use-small-screen hook
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ui-components@3.1.4
+
+## 6.2.3
+
+### Patch Changes
+
+- Updated dependencies [6b374674]
+  - @globalfishingwatch/dataviews-client@6.5.2
+  - @globalfishingwatch/layer-composer@6.1.3
+  - @globalfishingwatch/ui-components@3.1.3
+
+## 6.2.2
+
+### Patch Changes
+
+- Updated dependencies [d43610ba]
+  - @globalfishingwatch/layer-composer@6.1.2
+  - @globalfishingwatch/ui-components@3.1.2
+
+## 6.2.1
+
+### Patch Changes
+
+- Updated dependencies [b87943a6]
+  - @globalfishingwatch/layer-composer@6.1.1
+  - @globalfishingwatch/ui-components@3.1.1
+
+## 6.2.0
+
+### Minor Changes
+
+- 1050379b: use layers legend root metadata
+
+### Patch Changes
+
+- Updated dependencies [1050379b]
+- Updated dependencies [1050379b]
+  - @globalfishingwatch/layer-composer@6.1.0
+  - @globalfishingwatch/ui-components@3.1.0
+
+## 6.1.6
+
+### Patch Changes
+
+- 4a94bf9b: Fishing map/spinner fixes
+
+## 6.1.5
+
+### Patch Changes
+
+- Updated dependencies [abdd6709]
+  - @globalfishingwatch/layer-composer@6.0.4
+  - @globalfishingwatch/ui-components@3.0.6
+
+## 6.1.4
+
+### Patch Changes
+
+- Updated dependencies [67fdfec5]
+  - @globalfishingwatch/dataviews-client@6.5.1
+  - @globalfishingwatch/layer-composer@6.0.3
+  - @globalfishingwatch/ui-components@3.0.5
+
+## 6.1.3
+
+### Patch Changes
+
+- Updated dependencies [cfae2b4b]
+- Updated dependencies [cfae2b4b]
+- Updated dependencies [cfae2b4b]
+  - @globalfishingwatch/ui-components@3.0.4
+  - @globalfishingwatch/layer-composer@6.0.2
+  - @globalfishingwatch/dataviews-client@6.5.0
+
+## 6.1.2
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@6.4.2
+  - @globalfishingwatch/layer-composer@6.0.1
+  - @globalfishingwatch/ui-components@3.0.2
+
+## 6.1.1
+
+### Patch Changes
+
+- 5d252a2d: fix when no layer present crash
+- Updated dependencies [5d252a2d]
+- Updated dependencies [5d252a2d]
+- Updated dependencies [a07dfc86]
+  - @globalfishingwatch/dataviews-client@6.4.0
+  - @globalfishingwatch/layer-composer@6.0.0
+  - @globalfishingwatch/ui-components@3.0.0
+
+## 6.1.0
+
+### Minor Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/dataviews-client@6.3.0
+  - @globalfishingwatch/layer-composer@5.3.0
+  - @globalfishingwatch/ui-components@2.19.0
+  - @globalfishingwatch/fourwings-aggregate@3.1.1
+  - @globalfishingwatch/api-client@1.6.9
+
+## 6.0.10
+
+### Patch Changes
+
+- Updated dependencies [cd532944]
+- Updated dependencies [cd532944]
+  - @globalfishingwatch/dataviews-client@6.2.4
+  - @globalfishingwatch/layer-composer@5.2.5
+  - @globalfishingwatch/ui-components@2.18.10
+
+## 6.0.9
+
+### Patch Changes
+
+- Updated dependencies [0a755cc4]
+  - @globalfishingwatch/layer-composer@5.2.4
+  - @globalfishingwatch/ui-components@2.18.9
+
+## 6.0.8
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/fourwings-aggregate@3.1.0
+  - @globalfishingwatch/layer-composer@5.2.3
+  - @globalfishingwatch/ui-components@2.18.8
+
+## 6.0.7
+
+### Patch Changes
+
+- Updated dependencies [8d08df8a]
+  - @globalfishingwatch/layer-composer@5.2.2
+  - @globalfishingwatch/ui-components@2.18.7
+
+## 6.0.6
+
+### Patch Changes
+
+- Updated dependencies [c0dc95ec]
+  - @globalfishingwatch/layer-composer@5.2.1
+  - @globalfishingwatch/ui-components@2.18.6
+
+## 6.0.5
+
+### Patch Changes
+
+- Updated dependencies [bf2d09a1]
+  - @globalfishingwatch/layer-composer@5.2.0
+  - @globalfishingwatch/ui-components@2.18.5
+
+## 6.0.4
+
+### Patch Changes
+
+- Updated dependencies [af994916]
+  - @globalfishingwatch/layer-composer@5.1.2
+  - @globalfishingwatch/ui-components@2.18.4
+
+## 6.0.3
+
+### Patch Changes
+
+- Updated dependencies [80907c1f]
+  - @globalfishingwatch/dataviews-client@6.2.1
+  - @globalfishingwatch/layer-composer@5.1.1
+  - @globalfishingwatch/ui-components@2.18.3
+
+## 6.0.2
+
+### Patch Changes
+
+- Updated dependencies [87a54e62]
+  - @globalfishingwatch/dataviews-client@6.2.0
+  - @globalfishingwatch/layer-composer@5.1.0
+  - @globalfishingwatch/ui-components@2.18.2
+
+## 6.0.1
+
+### Patch Changes
+
+- Updated dependencies [bb4978cd]
+  - @globalfishingwatch/layer-composer@5.0.1
+  - @globalfishingwatch/ui-components@2.18.1
+
+## 6.0.0
+
+### Major Changes
+
+- 358004cb: Use client-side aggregation with env layers
+
+### Patch Changes
+
+- Updated dependencies [358004cb]
+- Updated dependencies [8785580f]
+  - @globalfishingwatch/fourwings-aggregate@3.0.0
+  - @globalfishingwatch/layer-composer@5.0.0
+  - @globalfishingwatch/dataviews-client@6.0.0
+  - @globalfishingwatch/ui-components@2.17.4
+
+## 5.3.2
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.2
+  - @globalfishingwatch/ui-components@2.17.3
+
+## 5.3.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.19.1
+  - @globalfishingwatch/ui-components@2.17.1
+
+## 5.3.0
+
+### Minor Changes
+
+- 9af9dea7: include generatorId and Type in legendLayers
+
+### Patch Changes
+
+- Updated dependencies [9af9dea7]
+  - @globalfishingwatch/ui-components@2.17.0
+
+## 5.2.0
+
+### Minor Changes
+
+- f570b76f: support uniqueFeatureInteraction in layer-composer and map interaction hook
+
+### Patch Changes
+
+- Updated dependencies [f570b76f]
+  - @globalfishingwatch/layer-composer@4.19.0
+  - @globalfishingwatch/ui-components@2.16.2
+
+## 5.1.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@5.0.1
+  - @globalfishingwatch/layer-composer@4.18.1
+  - @globalfishingwatch/ui-components@2.16.1
+
+## 5.1.0
+
+### Minor Changes
+
+- 6badcfe5: Update use-legends hook to match fishing-map latest changes
+
+## 5.0.0
+
+### Major Changes
+
+- d2501b54: move fishing-map logic into dataview-client
+
+### Patch Changes
+
+- Updated dependencies [d2501b54]
+  - @globalfishingwatch/dataviews-client@5.0.0
+  - @globalfishingwatch/api-client@1.6.8
+
+## 4.11.0
+
+### Minor Changes
+
+- match latest versions
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@4.1.0
+  - @globalfishingwatch/layer-composer@4.18.0
+
+## 4.10.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.3
+
+## 4.10.0
+
+### Minor Changes
+
+- move ExtendedFeatureVessel to app responsability
+
+## 4.9.6
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.2
+
+## 4.9.5
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@4.17.1
+
+## 4.9.4
+
+### Patch Changes
+
+- Updated dependencies [ce98aa73]
+  - @globalfishingwatch/layer-composer@4.17.0
+- [`d99bf5f3`](https://github.com/GlobalFishingWatch/frontend/commit/d99bf5f30bceed021ac990a0de8b4e992189be73) [#375](https://github.com/GlobalFishingWatch/frontend/pull/375) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - define endpoints enum
+
+## 4.9.3
+
+### Patch Changes
+
+- Updated dependencies [[`55796c7a`](https://github.com/GlobalFishingWatch/frontend/commit/55796c7a0a0b9972d3b7f8631566091dd0b74809), [`f7b017f0`](https://github.com/GlobalFishingWatch/frontend/commit/f7b017f0c72bd1f90e6a984ff5c26e524d7d735a)]:
+  - @globalfishingwatch/fourwings-aggregate@1.2.1
+  - @globalfishingwatch/layer-composer@4.16.0
+
 ## 4.9.2
 
 ### Patch Changes

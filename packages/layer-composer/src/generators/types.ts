@@ -2,10 +2,13 @@ import { FeatureCollection } from 'geojson'
 import { StringUnitLength } from 'luxon'
 import { AnySourceData, Layer } from '@globalfishingwatch/mapbox-gl'
 import { Segment } from '@globalfishingwatch/data-transforms'
+import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { Interval } from './heatmap/util/time-chunks'
 
 export enum Type {
   Background = 'BACKGROUND',
   UserContext = 'USER_CONTEXT',
+  TileCluster = 'TILE_CLUSTER',
   Context = 'CONTEXT',
   Basemap = 'BASEMAP',
   CartoPolygons = 'CARTO_POLYGONS',
@@ -25,18 +28,23 @@ export interface GeneratorFeature {
 }
 
 export interface GlobalGeneratorConfig {
-  start: string
-  end: string
-  zoom: number
-  zoomLoadLevel?: number
+  start?: string
+  end?: string
+  zoom?: number
   token?: string
+}
+
+export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
+  zoomLoadLevel: number
 }
 
 export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | null
 
 export interface GeneratorLegend {
+  type?: string
   label?: string
   unit?: string
+  color?: string
 }
 
 export interface GeneratorMetadata {
@@ -57,7 +65,7 @@ export interface GeneratorConfig {
  * This is the union of GeneratorConfig <T> with GlobalGeneratorConfig, which allows access to both
  * generator config params and global config params, at the generator level
  */
-export type MergedGeneratorConfig<T> = T & GlobalGeneratorConfig
+export type MergedGeneratorConfig<T> = T & GlobalGeneratorConfigExtended
 
 /**
  * A solid color background layer
@@ -129,6 +137,34 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
    */
   color?: StringUnitLength
+}
+
+export type TileClusterEventType = 'encounter' | 'loitering' | 'port'
+/**
+ * Layers created by user uploading their own shapefile
+ */
+export interface TileClusterGeneratorConfig extends GeneratorConfig {
+  type: Type.TileCluster
+  /**
+   * Defines the maximum zoom that returns clusters
+   */
+  maxZoomCluster?: number
+  /**
+   * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
+   */
+  color?: string
+  /**
+   * Url to grab the tiles from, internally using https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-tiles
+   */
+  tilesUrl: string
+  /**
+   * List of types supported by the API, optional to allow using resolved url params directly (eg: using resolve-endpoints)
+   */
+  eventTypes?: TileClusterEventType | TileClusterEventType[]
+  /**
+   * List of datasets to retrieve the data from, optional to allow using resolved url params directly (eg: using resolve-endpoints)
+   */
+  dataset?: string
 }
 
 /**
@@ -234,14 +270,19 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   sublayers: HeatmapAnimatedGeneratorSublayer[]
   mode?: HeatmapAnimatedMode
   tilesAPI?: string
+  breaksAPI?: string
   maxZoom?: number
   debug?: boolean
   debugLabels?: boolean
-  tilesetsStart?: string
-  tilesetsEnd?: string
+  datasetsStart?: string
+  datasetsEnd?: string
   interactive?: boolean
-  staticStart?: string
-  staticEnd?: string
+  /**
+   * Defines a fixed or a supported list of intervals in an Array format
+   */
+  interval?: Interval | Interval[]
+  aggregationOperation?: AggregationOperation
+  breaksMultiplier?: number
 }
 
 export type AnyGeneratorConfig =
@@ -251,6 +292,7 @@ export type AnyGeneratorConfig =
   | CartoPolygonsGeneratorConfig
   | UserContextGeneratorConfig
   | ContextGeneratorConfig
+  | TileClusterGeneratorConfig
   | TrackGeneratorConfig
   | VesselEventsGeneratorConfig
   | RulersGeneratorConfig
@@ -309,15 +351,14 @@ export interface HeatmapAnimatedGeneratorSublayer {
   datasets: string[]
   filter?: string
   colorRamp: ColorRampsIds
+  colorRampWhiteEnd?: boolean
   visible?: boolean
+  breaks?: number[]
+  legend?: GeneratorLegend
 }
 
 // ---- Heatmap Generator color ramps types
-export type ColorRampsIds =
-  | 'fishing'
-  | 'presence'
-  | 'reception'
-  | 'bivariate'
+export type ColorRampId =
   | 'teal'
   | 'magenta'
   | 'lilac'
@@ -328,6 +369,19 @@ export type ColorRampsIds =
   | 'green'
   | 'orange'
 
+export type ColorRampWhiteId =
+  | 'teal_toWhite'
+  | 'magenta_toWhite'
+  | 'lilac_toWhite'
+  | 'salmon_toWhite'
+  | 'sky_toWhite'
+  | 'red_toWhite'
+  | 'yellow_toWhite'
+  | 'green_toWhite'
+  | 'orange_toWhite'
+
+export type ColorRampsIds = ColorRampId | ColorRampWhiteId
+
 export enum HeatmapAnimatedMode {
   // Pick sublayer with highest value and place across this sublayer's color ramp. Works with 0 - n sublayers
   Compare = 'compare',
@@ -337,4 +391,6 @@ export enum HeatmapAnimatedMode {
   Blob = 'blob',
   // Represents value in 3D stacked bars. Works with 0 - n sublayers
   Extruded = 'extruded',
+  // Just show raw value ffor 1 sublayer
+  Single = 'single',
 }

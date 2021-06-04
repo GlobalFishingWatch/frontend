@@ -1,0 +1,447 @@
+{
+  "carriers-clusterbuster": {
+    "name": "Pertemuan kapal",
+    "description": "Diidentifikasi dari data AIS sebagai lokasi di mana dua kapal, kapal pengangkut dan kapal penangkap ikan, berada dalam jarak 500 meter selama setidaknya 2 jam dan melakukan perjalanan dengan kecepatan rata-rata <2 knot, sementara setidaknya 10 km dari pelabuhan pantai.",
+    "schema": {
+      "fields": "fields"
+    }
+  },
+  "public-areas-to-be-avoided-1618836788619": {
+    "name": "Areas to be Avoided by Cargo Shipping",
+    "description": "25 nm buffer around islands recommending shipping diversion",
+    "schema": {}
+  },
+  "public-chile-fishing-effort": {
+    "name": "VMS Chili",
+    "description": "Data Vessel Monitoring System VMS) disediakan oleh fisheries and aquaculture regulator (SERNAPESCA) pemerintah Chili. Data VMS Chili dapat difilter untuk kapal penangkap ikan skala kecil (<18 meter) dan kapal penangkap ikan industri (> 18 meter). Perhatikan bahwa beberapa kapal berukuran <18 meter tetapi dianggap industri karena terdaftar dalam penangkapan kuota industri. SERNAPESCA juga menggunakan peta kami untuk memvisualisasikan dan melacak posisi kapal untuk armadanya, termasuk kapal yang terlibat dalam akuakultur. Data dikumpulkan menggunakan VMS Chili melalui satelit dan penerima terestrial dan berisi identitas kapal, jenis alat tangkap, lokasi, kecepatan, arah, dan lainnya. Global Fishing Watch menganalisis data ini menggunakan algoritma yang sama dengan yang dkembangkan untuk data Automatic Identification System (AIS) untuk mengidentifikasi aktivitas dan perilaku penangkapan ikan. Algoritma tersebut mengklasifikasikan setiap titik data siaran dari kapal sebagai terlihat sedang memancing atau tidak sedang memancing dan menunjukkan titik data sebelumnya di peta Global Fishing Watch. VMS menyiarkan data dengan sangat berbeda dari AIS dan dapat memberikan ukuran kelengkapan, akurasi dan kualitas yang berbeda. Seiring waktu, algoritma kami akan meningkat di semua format data siaran kami. Algoritma deteksi penangkapan ikan Global Fishing Watch untuk VMS seperti untuk AIS, adalah upaya terbaik secara algoritma untuk mengidentifikasi \"aktivitas penangkapan ikan yang terlihat.\" Ada kemungkinan bahwa beberapa aktivitas penangkapan ikan tidak teridentifikasi, atau peta panas dapat menunjukkan aktivitas penangkapan ikan yang terlihat jelas di mana penangkapan ikan sebenarnya tidak terjadi. Untuk alasan ini, Global Fishing Watch mengkualifikasikan istilah \"aktivitas memancing\", \"memancing\", dan \"upaya penangkapan ikan\", sebagai \"terlihat jelas\" dan daripada pasti. Setiap / semua informasi Global Fishing Watch tentang \"aktivitas penangkapan ikan yang terlihat\" harus dianggap sebagai perkiraan dan harus diandalkan sepenuhnya dengan risiko Anda sendiri. Algoritma deteksi penangkapan ikan Global Fishing Watch dikembangkan dan diuji menggunakan data peristiwa penangkapan ikan aktual yang dikumpulkan oleh pengamat, dikombinasikan dengan analisis ahli dari data pergerakan kapal AIS yang menghasilkan klasifikasi manual dari ribuan peristiwa penangkapan ikan yang diketahui. Global Fishing Watch juga bekerja sama secara ekstensif dengan peneliti akademis melalui program penelitian kami untuk berbagi data klasifikasi aktivitas penangkapan ikan dan klasifikasi otomatis.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "chile_vms_small_fisheries": "perikanan kecil",
+          "chile_vms_industry": "industri"
+        }
+      },
+      "hours": "hours",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-cold-water-corals": {
+    "name": "Cold Water Corals",
+    "description": "Buffered at ~1km",
+    "schema": {}
+  },
+  "public-dgg_sar_caribe_match_2019": {
+    "name": "SAR with an AIS-matched vessel",
+    "description": "Vessels identified using synthetic aperture radar (SAR) and matched to a vessel using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
+    "schema": {}
+  },
+  "public-dgg_sar_caribe_not_match_2019": {
+    "name": "SAR without an AIS-matched vessel",
+    "description": "Vessels identified using synthetic aperture radar (SAR) without a known match to any vessel recorded using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
+    "schema": {}
+  },
+  "public-eez-areas": {
+    "name": "ZEE (Sumber: Marine Regions)",
+    "description": "Zona ekonomi eksklusif (ZEE) membentang hingga 200 mil laut dari pantai suatu negara. Flanders Marine Institute (2019). Batas Maritim Geodatabase: Batas Maritim dan Zona Ekonomi Eksklusif (200NM), versi 11. Sumber: marineregions.org.",
+    "schema": {}
+  },
+  "public-eez-boundaries": {
+    "name": "Areas boundaries for eez",
+    "description": "EEZs boundaries are shown as solid lines for '200 NM', 'Treaty', 'Median line', 'Joint regime', 'Connection Line', 'Unilateral claim (undisputed)' and dashed lines for 'Joint regime', 'Unsettled', 'Unsettled median line' based on the 'LINE_TYPE' field. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org",
+    "schema": {}
+  },
+  "public-fd-chlorophyl-ascension-v2": {
+    "name": "Konsentrasi klorofil-a",
+    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-caribe-v2": {
+    "name": "Konsentrasi klorofil-a",
+    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-galapagos-v2": {
+    "name": "Konsentrasi klorofil-a",
+    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-mediterranean-v2": {
+    "name": "Clorophyl Mediterranean",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-niue-v2": {
+    "name": "Konsentrasi klorofil-a",
+    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-palau-v2": {
+    "name": "Konsentrasi klorofil-a",
+    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-chlorophyl-tristan-v2": {
+    "name": "Konsentrasi klorofil-a",
+    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tumbuhan fotosintetik. Konsentrasinya di lautan digunakan sebagai indeks biomassa fitoplankton, dengan demikian, merupakan masukan kunci untuk model produktivitas primer. Instrumen spektroradiometer pencitraan resolusi sedang (MODIS) di atas satelit Terra dan Aqua NASA mengukur warna laut setiap hari, dari mana konsentrasi klorofil global diturunkan. Fitoplankton laut secara kimiawi mengikat karbon melalui fotosintesis, mengambil karbon dioksida terlarut dan menghasilkan oksigen. Melalui proses ini, tumbuhan laut menangkap karbon dalam jumlah yang sama seperti fotosintesis oleh vegetasi darat. Perubahan jumlah fitoplankton menunjukkan perubahan produktivitas lautan dan memberikan hubungan utama di laut untuk pemantauan perubahan iklim global. Ilmuwan menggunakan klorofil dalam pemodelan siklus biogeokimia bumi seperti siklus karbon atau siklus nitrogen. Selain itu, dalam skala waktu yang singkat, klorofil dapat digunakan untuk melacak arus oseanografi, jet, dan plumes. Dengan demikian, resolusi 1 kilometer dan cakupan global hampir setiap hari dari data MODIS memungkinkan para ilmuwan untuk mengamati fitur oseanografi mesoscale di lingkungan pesisir dan muara, yang semakin penting dalam studi ilmu kelautan. Sumber: NASA Earth Observations.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-ascension-v2": {
+    "name": "Salinitas",
+    "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-caribe-v2": {
+    "name": "Salinitas",
+    "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-galapagos-v2": {
+    "name": "Salinitas",
+    "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-mediterranean-v2": {
+    "name": "Salinity Mediterranean",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-niue-v2": {
+    "name": "Salinitas",
+    "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-palau-v2": {
+    "name": "Salinitas",
+    "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-tristan-v2": {
+    "name": "Salinitas",
+    "description": "Salinitas permukaan laut adalah parameter kunci untuk memperkirakan pengaruh lautan terhadap iklim. Seiring dengan suhu, salinitas adalah faktor kunci yang menentukan kepadatan air laut dan dengan demikian menentukan konveksi dan munculnya kembali massa air. Sirkulasi termohalin melintasi semua lautan di permukaan dan di kedalaman, didorong oleh suhu dan salinitas. \"Conveyor belt\" global adalah model sederhana dari sirkulasi termohalin skala besar. Bentuk air dalam di Atlantik Utara, tenggelam, bergerak ke selatan, bersirkulasi di sekitar Antartika, dan akhirnya memasuki cekungan Hindia, Pasifik, dan Atlantik. Arus membawa massa air dingin dari utara ke selatan dan sebaliknya. Sirkulasi termohalin ini sangat mempengaruhi pembentukan es laut di kutub dunia, dan membawa sumber makanan laut dan kehidupan laut ke sekitarnya planet, serta mempengaruhi pola curah hujan, pola angin, badai dan monsun Sumber: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-ascension-v2": {
+    "name": "Suhu permukaan laut",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-caribe-v2": {
+    "name": "Water temperature Caribe with data of 2020",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-galapagos-v2": {
+    "name": "Suhu permukaan laut",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-mediterranean-v2": {
+    "name": "Water temperature Mediterranean",
+    "description": "The NOAA 1/4° daily Optimum Interpolation Sea Surface Temperature (or daily OISST) is an analysis constructed by combining observations from different platforms (satellites, ships, buoys, and Argo floats) on a regular global grid. A spatially complete SST map is produced by interpolating to fill in gaps. The methodology includes bias adjustment of satellite and ship observations (referenced to buoys) to compensate for platform differences and sensor biases.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-niue-v2": {
+    "name": "Suhu permukaan laut",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-palau-v2": {
+    "name": "Suhu permukaan laut",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-water-temperature-tristan-v2": {
+    "name": "Suhu permukaan laut",
+    "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fisheries-restricted-areas": {
+    "name": "Fisheries Restricted Areas",
+    "description": "",
+    "schema": {}
+  },
+  "public-global-fishing-effort": {
+    "name": "AIS",
+    "description": "Kami menggunakan data tentang identitas kapal, jenis, lokasi, kecepatan, arah, dan lainnya yang disiarkan menggunakan sistem identifikasi otomatis (AIS) dan dikumpulkan melalui satelit dan penerima terestrial. Kami menganalisis data AIS yang dikumpulkan dari kapal yang diidentifikasi oleh penelitian kami sebagai kapal penangkap ikan komersial yang diketahui atau diperkirakan, dan menerapkan algoritma deteksi penangkapan ikan untuk menentukan \"\"aktivitas penangkapan ikan yang terlihat\"\" berdasarkan perubahan dalam kecepatan dan arah kapal. Algoritma tersebut mengklasifikasikan setiap titik data siaran AIS untuk kapal-kapal ini sebagai \"\"terlihat sedang memancing\"\" atau \"\"tidak mamancing\"\" dan menunjukkan titik data sebelumnya pada peta panas aktivitas penangkapan ikan kami. \n\nAnda dapat menemukan lebih detail di halaman teknologi kami.",
+    "schema": {
+      "flag": "flag",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "tuna_purse_seines": "tuna_purse_seines",
+          "driftnets": "driftnets",
+          "trollers": "trollers",
+          "set_longlines": "set_longlines",
+          "purse_seines": "purse_seines",
+          "pots_and_traps": "pots_and_traps",
+          "other_fishing": "other_fishing",
+          "dredge_fishing": "dredge_fishing",
+          "set_gillnets": "set_gillnets",
+          "fixed_gear": "fixed_gear",
+          "trawlers": "trawlers",
+          "fishing": "fishing",
+          "seiners": "seiners",
+          "other_purse_seines": "other_purse_seines",
+          "other_seines": "other_seines",
+          "squid_jigger": "squid_jigger",
+          "pole_and_line": "pole_and_line",
+          "drifting_longlines": "drifting_longlines"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-global-presence": {
+    "name": "AIS",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessel's AIS.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id",
+      "vessel_type": {
+        "keyword": "vessel_type",
+        "enum": {
+          "fishing": "fishing",
+          "carrier": "carrier",
+          "unknown": "unknown"
+        }
+      }
+    }
+  },
+  "public-gs-as-simplified": {
+    "name": "GSAs simplified",
+    "description": "GSAs simplified",
+    "schema": {}
+  },
+  "public-gulf-of-lion-french-zones": {
+    "name": "Gulf of Lion French Zones",
+    "description": "Gulf of lion french zones",
+    "schema": {}
+  },
+  "public-high-seas": {
+    "name": "Kantong laut lepas",
+    "description": "Laut lepas adalah wilayah lautan di luar zona ekonomi eksklusif (ZEE). Kantong laut lepas adalah area yang benar-benar tertutup oleh ZEE. Kantong-kantong ini mungkin sulit dibedakan dari beberapa yurisdiksi ZEE yang mengelilinginya, oleh karena itu, kami memiliki layer yang menyorotinya.",
+    "schema": {}
+  },
+  "public-indonesia-fishing-effort": {
+    "name": "VMS Indonesia",
+    "description": "Data VMS untuk Indonesia saat ini tidak tersedia untuk periode Juli 2020.\n\nData Vessel Monitoring System (VMS) disediakan oleh Kementerian Kelautan dan Perikanan Pemerintah Indonesia. Data dikumpulkan menggunakan VMS mereka melalui satelit dan penerima terestrial, dan berisi identitas kapal, jenis alat tangkap, lokasi, kecepatan, arah, dan lainnya. Global Fishing Watch menganalisis data ini menggunakan algoritma yang sama dengan yang dkembangkan untuk data Automatic Identification System (AIS) untuk mengidentifikasi aktivitas dan perilaku penangkapan ikan. Algoritma tersebut mengklasifikasikan setiap titik data siaran dari kapal sebagai yang terlihat sedang memancing atau tidak sedang memancing dan menunjukkan titik data sebelumnya pada peta panas aktivitas penangkapan ikan Global Fishing Watch. VMS menyiarkan data dengan sangat berbeda dari AIS dan dapat memberikan ukuran kelengkapan, akurasi, dan kualitas yang berbeda. Seiring waktu, algoritme kami akan meningkat di semua format data siaran kami. Algoritma deteksi penangkapan ikan Global Fishing Watch untuk VMS seperti untuk AIS, adalah upaya terbaik secara algoritma untuk mengidentifikasi \"aktivitas penangkapan ikan yang terlihat.\" Ada kemungkinan bahwa beberapa aktivitas penangkapan ikan tidak teridentifikasi, atau peta panas dapat menunjukkan aktivitas penangkapan ikan yang terlihat jelas di mana penangkapan ikan sebenarnya tidak terjadi. Untuk alasan ini, Global Fishing Watch mengkualifikasikan istilah \"aktivitas memancing\", \"memancing\", dan \"upaya penangkapan ikan\", sebagai \"terlihat jelas\" dan daripada pasti. Setiap / semua informasi Global Fishing Watch tentang \"aktivitas penangkapan ikan yang terlihat\" harus dianggap sebagai perkiraan dan harus diandalkan sepenuhnya dengan risiko Anda sendiri. Algoritma deteksi penangkapan ikan Global Fishing Watch dikembangkan dan diuji menggunakan data peristiwa penangkapan ikan aktual yang dikumpulkan oleh pengamat, dikombinasikan dengan analisis ahli dari data pergerakan kapal AIS yang menghasilkan klasifikasi manual dari ribuan peristiwa penangkapan ikan yang diketahui. Global Fishing Watch juga bekerja sama secara ekstensif dengan peneliti akademis melalui program penelitian kami untuk berbagi data klasifikasi aktivitas penangkapan ikan dan klasifikasi otomatis.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "hours": "hours",
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "Purse Seine Group (2 boat) Small Pelagics": "Purse Seine Group (2 boat) Small Pelagics",
+          "Purse Seine Group (2 boat) Big Pelagics": "Purse Seine Group (2 boat) Big Pelagics",
+          "Cast Nets": "Cast Nets",
+          "Pots": "Pots",
+          "Anchored gillnets": "Anchored gillnets",
+          "Lampara Seine Nets": "Lampara Seine Nets",
+          "Shrimp net": "Shrimp net",
+          "Purse Seine Big Pelagics with one boat": "Purse Seine Big Pelagics with one boat",
+          "Basic longline": "Basic longline",
+          "Pole-and-line": "Pole-and-line",
+          "Hand Line Tuna": "Hand Line Tuna",
+          "Handline": "Handline",
+          "Purse Seine Small Pelagics": "Purse Seine Small Pelagics",
+          "Stick-Held lift net": "Stick-Held lift net",
+          "Oceanic gillnet": "Oceanic gillnet",
+          "Longline Tuna": "Longline Tuna",
+          "Fish net/dragnet": "Fish net/dragnet",
+          "Squid hooking": "Squid hooking"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-inshore-fishing-zone-1618837176535": {
+    "name": "Inshore Fishing Zone",
+    "description": "50 nm around the Tristan Archipelago and 40nm around Gough (8% of EEZ)",
+    "schema": {}
+  },
+  "public-mediterranean-area-of-interest-1": {
+    "name": "Area of Interest",
+    "description": "",
+    "schema": {}
+  },
+  "public-mpa-all": {
+    "name": "MPA (Sumber: WDPA)",
+    "description": "Kawasan Perlindungan Laut (MPA) adalah kawasan lautan yang dikhususkan untuk konservasi jangka panjang. Ini dapat memiliki tingkat perlindungan yang berbeda, dan rentang aktivitas yang diizinkan atau dilarang dalam batasannya sangat bervariasi. Sumber: World Database on Protected Areas. Terakhir diperbarui: May 2021.",
+    "schema": {}
+  },
+  "public-mpa-no-take": {
+    "name": "MPA - Dilarang mengambil (Sumber: WDPA)",
+    "description": "MPA berarti sebagai kawasan perlindungan laut. Kawasan lindung laut larang tangkap adalah kawasan lautan yang dilarang mengekstraksi atau merusak secara signifikan sumber daya alam dan budaya, termasuk ikan.Sumber: World Database on Protected Areas. Terakhir diperbarui: May 2021.",
+    "schema": {}
+  },
+  "public-mpa-restricted": {
+    "name": "MPA - Dibatasi (Sumber: WDPA)",
+    "description": "MPA berarti sebagai kawasan perlindungan laut. Penggunaan yang dibatasi dapat memiliki tingkat perlindungan yang berbeda, dan rentang kegiatan yang diizinkan atau dilarang di dalam batas-batasnya sangat bervariasi. Sumber: World Database on Protected Areas. Terakhir diperbarui: May 2021.",
+    "schema": {}
+  },
+  "public-no-take-zone-1618836692786": {
+    "name": "Marine Protection Zone",
+    "description": "90% of EEZ",
+    "schema": {}
+  },
+  "public-panama-fishing-effort": {
+    "name": "VMS Panama",
+    "description": "Data Vessel Monitoring System (VMS) disediakan oleh Panamanian Authority of Aquatic Resources (ARAP). Data diterima oleh sistem VMS Panama melalui satelit dan berisi identitas kapal, jenis alat tangkap, lokasi, kecepatan, arah, dan lainnya. Data kapal pengangkut Panama juga tersedia di sini. Setiap titik di layer data kapal pengangkut mewakili posisi pengangkut, tetapi tidak semua posisi ditampilkan. Posisi kapal pengangkut ditampilkan sekali sehari. Di masa mendatang, kami berharap dapat menampilkan lebih banyak posisi. Klik pada posisi kapal pengangkut untuk melihat trek lengkap kapal. Global Fishing Watch menganalisis data ini menggunakan algoritma yang sama dengan yang dkembangkan untuk data Automatic Identification System (AIS) untuk mengidentifikasi aktivitas dan perilaku penangkapan ikan. Algoritma tersebut mengklasifikasikan setiap titik data siaran dari kapal sebagai yang terlihat sedang memancing atau tidak sedang memancing dan menunjukkan titik data sebelumnya pada peta panas aktivitas penangkapan ikan Global Fishing Watch. VMS menyiarkan data dengan sangat berbeda dari AIS dan dapat memberikan ukuran kelengkapan, akurasi dan kualitas yang berbeda. Seiring waktu, algoritma kami akan meningkat di semua format data siaran kami. Algoritma deteksi penangkapan ikan Global Fishing Watch untuk VMS seperti untuk AIS, adalah upaya terbaik secara algoritma untuk mengidentifikasi \"aktivitas penangkapan ikan yang terlihat.\" Ada kemungkinan bahwa beberapa aktivitas penangkapan ikan tidak teridentifikasi, atau peta panas dapat menunjukkan aktivitas penangkapan ikan yang terlihat jelas di mana penangkapan ikan sebenarnya tidak terjadi. Untuk alasan ini, Global Fishing Watch mengkualifikasikan istilah \"aktivitas memancing\", \"memancing\", dan \"upaya penangkapan ikan\", sebagai \"terlihat jelas\" dan daripada pasti. Setiap / semua informasi Global Fishing Watch tentang \"aktivitas penangkapan ikan yang terlihat\" harus dianggap sebagai perkiraan dan harus diandalkan sepenuhnya dengan risiko Anda sendiri. Algoritma deteksi penangkapan ikan Global Fishing Watch dikembangkan dan diuji menggunakan data peristiwa penangkapan ikan aktual yang dikumpulkan oleh pengamat, dikombinasikan dengan analisis ahli dari data pergerakan kapal AIS yang menghasilkan klasifikasi manual dari ribuan peristiwa penangkapan ikan yang diketahui. Global Fishing Watch juga bekerja sama secara ekstensif dengan peneliti akademis melalui program penelitian kami untuk berbagi data klasifikasi aktivitas penangkapan ikan dan klasifikasi otomatis.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "hours": "hours",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-panama-fishing-vessels": {
+    "name": "VMS Panama",
+    "description": "VMS Panama",
+    "schema": {
+      "id": "id",
+      "flag": "flag",
+      "source": "source",
+      "shipname": "shipname",
+      "lastTransmissionDate": "lastTransmissionDate",
+      "firstTransmissionDate": "firstTransmissionDate"
+    }
+  },
+  "public-peru-fishing-effort": {
+    "name": "VMS Peru",
+    "description": "Data Vessel Monitoring System (VMS) disediakan oleh Ministry of Production, Fisheries Sector (PRODUCE) Pemerintah Peru. Izin untuk menyertakan Data Peru mengharuskan penundaan penerbitan selama 10 hari. Data dikumpulkan menggunakan vessel monitoring system (VMS) mereka melalui satelit dan penerima terestrial, dan berisi identitas kapal, jenis alat tangkap, lokasi, kecepatan, arah, dan lainnya. Global Fishing Watch menganalisis data ini menggunakan algoritma yang sama dengan yang dkembangkan untuk data Automatic Identification System (AIS) untuk mengidentifikasi aktivitas dan perilaku penangkapan ikan. Algoritma tersebut mengklasifikasikan setiap titik data siaran dari kapal sebagai yang terlihat sedang memancing atau tidak sedang memancing dan menunjukkan titik data sebelumnya pada peta panas aktivitas penangkapan ikan Global Fishing Watch. VMS menyiarkan data dengan sangat berbeda dari AIS dan dapat memberikan ukuran kelengkapan, akurasi dan kualitas yang berbeda. Seiring waktu, algoritma kami akan meningkat di semua format data siaran kami. Algoritma deteksi penangkapan ikan Global Fishing Watch untuk VMS seperti untuk AIS, adalah upaya terbaik secara algoritma untuk mengidentifikasi \"aktivitas penangkapan ikan yang terlihat.\" Ada kemungkinan bahwa beberapa aktivitas penangkapan ikan tidak teridentifikasi, atau peta panas dapat menunjukkan aktivitas penangkapan ikan yang terlihat jelas di mana penangkapan ikan sebenarnya tidak terjadi. Untuk alasan ini, Global Fishing Watch mengkualifikasikan istilah \"aktivitas memancing\", \"memancing\", dan \"upaya penangkapan ikan\", sebagai \"terlihat jelas\" dan daripada pasti. Setiap / semua informasi Global Fishing Watch tentang \"aktivitas penangkapan ikan yang terlihat\" harus dianggap sebagai perkiraan dan harus diandalkan sepenuhnya dengan risiko Anda sendiri. Algoritma deteksi penangkapan ikan Global Fishing Watch dikembangkan dan diuji menggunakan data peristiwa penangkapan ikan aktual yang dikumpulkan oleh pengamat, dikombinasikan dengan analisis ahli dari data pergerakan kapal AIS yang menghasilkan klasifikasi manual dari ribuan peristiwa penangkapan ikan yang diketahui. Global Fishing Watch juga bekerja sama secara ekstensif dengan peneliti akademis melalui program penelitian kami untuk berbagi data klasifikasi aktivitas penangkapan ikan dan klasifikasi otomatis.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industrial": "industrial",
+          "artisanal": "artisanal",
+          "not defined": "not defined"
+        }
+      },
+      "hours": "hours",
+      "origin": {
+        "keyword": "origin",
+        "enum": {
+          "PER": "PER",
+          "Foreign": "Foreign"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-tristan-seamounts-200-1618586314138": {
+    "name": "Depth: -200 m",
+    "description": "",
+    "schema": {}
+  },
+  "public-tristan-seamounts-3000-1618586349746": {
+    "name": "Depth: -3000 m",
+    "description": "",
+    "schema": {}
+  },
+  "public-tristan-seamounts-existing-1618586378121": {
+    "name": "Existing Seamount Fishing Zones",
+    "description": "2% of EEZ",
+    "schema": {}
+  },
+  "public-tuna-rfmo": {
+    "name": "RFMO (Sumber: FAO)",
+    "description": "Regional fisheries management organizations (RFMO) adalah badan internasional yang dibentuk oleh negara-negara dengan kepentingan bersama dalam mengelola atau melestarikan stok ikan di wilayah tertentu. Beberapa mengelola semua stok ikan yang ditemukan di wilayah tertentu, sementara yang lain berfokus pada spesies tertentu yang beruaya jauh, terutama tuna. Organisasi pengelolaan perikanan regional di peta Global Fishing Watch saat ini mencakup lima organisasi pengelolaan perikanan regional tuna.",
+    "schema": {}
+  },
+  "public-wdpa-may-2021-marine": {
+    "name": "MPA (Sumber: WDPA)",
+    "description": "Kawasan Perlindungan Laut (MPA) adalah kawasan lautan yang dikhususkan untuk konservasi jangka panjang. Ini dapat memiliki tingkat perlindungan yang berbeda, dan rentang aktivitas yang diizinkan atau dilarang dalam batasannya sangat bervariasi. Sumber: World Database on Protected Areas. Terakhir diperbarui: May 2021.",
+    "schema": {}
+  },
+  "public-wpp-nri": {
+    "name": "WPP NRI",
+    "description": "WPP-NRI (Wilayah Pengelolaan Perikanan Negara Republik Indonesia) merupakan wilayah pengelolaan perikanan untuk penangkapan ikan, pembudidayaan ikan, konservasi, penelitian, dan pengembangan perikanan yang meliputi perairan pedalaman, perairan kepulauan, laut teritorial, zona tambahan, dan zona ekonomi eksklusif Indonesia.",
+    "schema": {}
+  }
+}

@@ -1,23 +1,22 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types/dist'
-import { APP_NAME, DEFAULT_WORKSPACE } from 'data/config'
+import { DataviewInstance, WorkspaceUpsert } from '@globalfishingwatch/api-types'
+import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import {
-  selectDataviewInstancesMerged,
   selectWorkspace,
   selectWorkspaceState,
   selectWorkspaceTimeRange,
   selectWorkspaceViewport,
 } from 'features/workspace/workspace.selectors'
+import { Range } from 'features/timebar/timebar.slice'
 import {
-  selectUrlMapZoomQuery,
-  selectUrlMapLatitudeQuery,
-  selectUrlMapLongitudeQuery,
-  selectUrlEndQuery,
-  selectUrlStartQuery,
   selectQueryParam,
+  selectUrlViewport,
   selectLocationCategory,
+  selectActivityCategory,
+  selectUrlTimeRange,
 } from 'routes/routes.selectors'
 import {
+  BivariateDataviews,
   TimebarEvents,
   TimebarGraphs,
   TimebarVisualisations,
@@ -25,30 +24,30 @@ import {
   WorkspaceState,
   WorkspaceStateProperty,
 } from 'types'
+import {
+  selectActiveVesselsDataviews,
+  selectDataviewInstancesMerged,
+} from 'features/dataviews/dataviews.selectors'
 
 export const selectViewport = createSelector(
-  [
-    selectUrlMapZoomQuery,
-    selectUrlMapLatitudeQuery,
-    selectUrlMapLongitudeQuery,
-    selectWorkspaceViewport,
-  ],
-  (zoom, latitude, longitude, workspaceViewport) => {
+  [selectUrlViewport, selectWorkspaceViewport],
+  (urlViewport, workspaceViewport) => {
     return {
-      zoom: zoom || workspaceViewport?.zoom || DEFAULT_WORKSPACE.zoom,
-      latitude: latitude || workspaceViewport?.latitude || DEFAULT_WORKSPACE.latitude,
-      longitude: longitude || workspaceViewport?.longitude || DEFAULT_WORKSPACE.longitude,
+      zoom: urlViewport?.zoom || workspaceViewport?.zoom || DEFAULT_WORKSPACE.zoom,
+      latitude: urlViewport?.latitude || workspaceViewport?.latitude || DEFAULT_WORKSPACE.latitude,
+      longitude:
+        urlViewport?.longitude || workspaceViewport?.longitude || DEFAULT_WORKSPACE.longitude,
     }
   }
 )
 
-export const selectTimeRange = createSelector(
-  [selectUrlStartQuery, selectUrlEndQuery, selectWorkspaceTimeRange],
-  (start, end, workspaceTimerange) => {
+const selectTimeRange = createSelector(
+  [selectUrlTimeRange, selectWorkspaceTimeRange],
+  (urlTimerange, workspaceTimerange) => {
     return {
-      start: start || workspaceTimerange?.start || DEFAULT_WORKSPACE.start,
-      end: end || workspaceTimerange?.end || DEFAULT_WORKSPACE.end,
-    }
+      start: urlTimerange?.start || workspaceTimerange?.start || DEFAULT_TIME_RANGE.start,
+      end: urlTimerange?.end || workspaceTimerange?.end || DEFAULT_TIME_RANGE.end,
+    } as Range
   }
 )
 
@@ -75,9 +74,9 @@ export const selectSearchQuery = createSelector(
   }
 )
 
-export const selectBivariate = createSelector(
-  [selectWorkspaceStateProperty('bivariate')],
-  (bivariate): boolean => {
+export const selectBivariateDataviews = createSelector(
+  [selectWorkspaceStateProperty('bivariateDataviews')],
+  (bivariate): BivariateDataviews => {
     return bivariate
   }
 )
@@ -104,22 +103,37 @@ export const selectTimebarEvents = createSelector(
 )
 
 export const selectTimebarGraph = createSelector(
-  [selectWorkspaceStateProperty('timebarGraph')],
-  (timebarGraph): TimebarGraphs => {
-    return timebarGraph
+  [selectWorkspaceStateProperty('timebarGraph'), selectActiveVesselsDataviews],
+  (timebarGraph, vessels): TimebarGraphs => {
+    return vessels && vessels.length ? timebarGraph : TimebarGraphs.None
   }
 )
 
 export const selectWorkspaceAppState = createSelector(
   [
-    selectBivariate,
+    selectBivariateDataviews,
     selectSidebarOpen,
     selectTimebarVisualisation,
     selectTimebarEvents,
     selectTimebarGraph,
+    selectActivityCategory,
   ],
-  (bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph) => {
-    return { bivariate, sidebarOpen, timebarVisualisation, timebarEvents, timebarGraph }
+  (
+    bivariateDataviews,
+    sidebarOpen,
+    timebarVisualisation,
+    timebarEvents,
+    timebarGraph,
+    activityCategory
+  ) => {
+    return {
+      bivariateDataviews,
+      sidebarOpen,
+      timebarVisualisation,
+      timebarEvents,
+      timebarGraph,
+      activityCategory,
+    }
   }
 )
 

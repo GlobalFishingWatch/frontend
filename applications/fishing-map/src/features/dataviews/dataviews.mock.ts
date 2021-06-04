@@ -38,4 +38,5 @@ export const dataviews: Dataview[] = [
     ],
   },
 ]
+
 export default dataviews

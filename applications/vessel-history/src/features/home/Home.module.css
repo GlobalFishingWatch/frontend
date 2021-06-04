@@ -25,6 +25,7 @@
   letter-spacing: 0;
   line-height: 20px;
   margin: 20px 15px 0;
+  text-transform: uppercase;
 }
 
 .searchbar {
@@ -94,4 +95,10 @@
   flex: 1;
   overflow-y: auto;
   position: relative;
+}
+
+.listFooter {
+  text-align: center;
+  padding-bottom: 20px;
+  text-transform: uppercase;
 }

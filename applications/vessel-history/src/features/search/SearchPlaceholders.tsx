@@ -1,7 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
-// TODO: replace this mocked useTranslation when i18n is implemented
-import { useTranslation } from 'utils/i18n'
+import { useTranslation } from 'react-i18next'
 import vesselImage from 'assets/images/vessel@2x.png'
 import vesselNoResultsImage from 'assets/images/vessel-side@2x.png'
 import styles from './SearchPlaceholders.module.css'

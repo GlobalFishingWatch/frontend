@@ -3,42 +3,32 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, DatasetStatus } from '@globalfishingwatch/api-types'
-import { Switch, IconButton, Tooltip, ColorBar } from '@globalfishingwatch/ui-components'
-import {
-  ColorBarOption,
-  TrackColorBarOptions,
-} from '@globalfishingwatch/ui-components/dist/color-bar'
-import { UrlDataviewInstance } from 'types'
+import { Tooltip } from '@globalfishingwatch/ui-components'
+import { ColorBarOption } from '@globalfishingwatch/ui-components/dist/color-bar'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import { selectUserId } from 'features/user/user.selectors'
-import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import { isGuestUser } from 'features/user/user.selectors'
 import DatasetNotFound from '../shared/DatasetNotFound'
+import Color from '../common/Color'
+import LayerSwitch from '../common/LayerSwitch'
+import Remove from '../common/Remove'
+import Title from '../common/Title'
+import InfoModal from '../common/InfoModal'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
+  onToggle?: () => void
 }
 
-function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+function LayerPanel({ dataview, onToggle = () => {} }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const userId = useSelector(selectUserId)
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [colorOpen, setColorOpen] = useState(false)
+  const guestUser = useSelector(isGuestUser)
 
   const layerActive = dataview?.config?.visible ?? true
-  const onToggleLayerActive = () => {
-    upsertDataviewInstance({
-      id: dataview.id,
-      config: {
-        visible: !layerActive,
-      },
-    })
-  }
-
-  const onRemoveClick = () => {
-    deleteDataviewInstance(dataview.id)
-  }
 
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
@@ -59,35 +49,27 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   }
 
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
-  const isCustomUserLayer = dataset?.ownerId === userId
+  const isUserLayer = !guestUser && dataset?.ownerType === 'user'
 
   useAutoRefreshImportingDataset(dataset)
 
   if (!dataset) {
     return <DatasetNotFound dataview={dataview} />
   }
-  const title = isCustomUserLayer
+
+  const title = isUserLayer
     ? dataset?.name || dataset?.id
     : t(`datasets:${dataset?.id}.name` as any)
-  const TitleComponent = (
-    <h3 className={cx(styles.name, { [styles.active]: layerActive })} onClick={onToggleLayerActive}>
-      {title}
-    </h3>
-  )
 
-  const datasetImporting = dataset.status === DatasetStatus.Importing
-  const datasetError = dataset.status === DatasetStatus.Error
-  let infoTooltip = isCustomUserLayer
-    ? dataset?.description
-    : t(`datasets:${dataset?.id}.description` as any)
-  if (datasetImporting) {
-    infoTooltip = t('dataset.importing', 'Dataset is being imported')
-  }
-  if (datasetError) {
-    infoTooltip = `${t('errors.uploadError', 'There was an error uploading your dataset')} - ${
-      dataset.importLogs
-    }`
-  }
+  const TitleComponent = (
+    <Title
+      title={title}
+      className={styles.name}
+      classNameActive={styles.active}
+      dataview={dataview}
+      onToggle={onToggle}
+    />
+  )
 
   return (
     <div
@@ -97,14 +79,12 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       })}
     >
       <div className={styles.header}>
-        <Switch
-          disabled={datasetError}
+        <LayerSwitch
+          disabled={dataset?.status === DatasetStatus.Error}
           active={layerActive}
-          onClick={onToggleLayerActive}
-          tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
-          tooltipPlacement="top"
           className={styles.switch}
-          color={dataview.config?.color}
+          dataview={dataview}
+          onToggle={onToggle}
         />
         {title && title.length > 30 ? (
           <Tooltip content={title}>{TitleComponent}</Tooltip>
@@ -112,48 +92,17 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          <IconButton
-            icon={datasetError ? 'warning' : 'info'}
-            type={datasetError ? 'warning' : 'default'}
-            size="small"
-            loading={datasetImporting}
-            className={styles.actionButton}
-            tooltip={infoTooltip}
-            tooltipPlacement="top"
-          />
+          <InfoModal dataview={dataview} />
           {layerActive && (
-            <ExpandedContainer
-              visible={colorOpen}
+            <Color
+              dataview={dataview}
+              open={colorOpen}
+              onColorClick={changeColor}
+              onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
-              component={
-                <ColorBar
-                  colorBarOptions={TrackColorBarOptions}
-                  selectedColor={dataview.config?.color}
-                  onColorClick={changeColor}
-                />
-              }
-            >
-              <IconButton
-                icon={colorOpen ? 'color-picker' : 'color-picker-filled'}
-                size="small"
-                style={colorOpen ? {} : { color: dataview.config?.color }}
-                tooltip={t('layer.color_change', 'Change color')}
-                tooltipPlacement="top"
-                onClick={onToggleColorOpen}
-                className={cx(styles.actionButton)}
-              />
-            </ExpandedContainer>
-          )}
-          {isCustomUserLayer && (
-            <IconButton
-              icon="delete"
-              size="small"
-              tooltip={t('layer.remove', 'Remove layer')}
-              tooltipPlacement="top"
-              onClick={onRemoveClick}
-              className={cx(styles.actionButton)}
             />
           )}
+          {isUserLayer && <Remove dataview={dataview} />}
         </div>
       </div>
     </div>

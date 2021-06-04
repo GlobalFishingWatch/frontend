@@ -17,6 +17,8 @@ export interface IconButtonProps {
   disabled?: boolean
   loading?: boolean
   onClick?: (e: React.MouseEvent) => void
+  onMouseEnter?: (e: React.MouseEvent) => void
+  onMouseLeave?: (e: React.MouseEvent) => void
   tooltip?: TooltipTypes
   tooltipPlacement?: Placement
   children?: React.ReactNode

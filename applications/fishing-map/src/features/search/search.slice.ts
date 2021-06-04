@@ -7,25 +7,26 @@ import {
   Vessel,
   APISearch,
   VesselSearch,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
-import { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { MultiSelectOption } from '@globalfishingwatch/ui-components/dist/multi-select'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType } from 'features/workspace/workspace.selectors'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 
 export const RESULTS_PER_PAGE = 20
 
 export type VesselWithDatasets = Vessel & { dataset: Dataset; trackDatasetId?: string }
-
+export type SearchType = 'basic' | 'advanced'
 export type SearchFilterKey = 'flags' | 'gearType' | 'startDate' | 'endDate'
 export type SearchFilter = {
   flags?: MultiSelectOption<string>[]
   sources?: MultiSelectOption<string>[]
   fleets?: MultiSelectOption<string>[]
   origins?: MultiSelectOption<string>[]
-  firstTransmissionDate?: string
-  lastTransmissionDate?: string
+  activeAfterDate?: string
+  activeBeforeDate?: string
 }
 
 interface SearchState {
@@ -61,12 +62,12 @@ export type VesselSearchThunk = {
 }
 
 export function checkSearchFiltersEnabled(filters: SearchFilter): boolean {
-  return Object.values(filters).filter((f) => !!f).length > 0
+  return Object.values(filters).filter((f) => f !== undefined).length > 0
 }
 
 export function checkAdvanceSearchFiltersEnabled(filters: SearchFilter): boolean {
   const { sources, ...rest } = filters
-  return Object.values(rest).filter((f) => !!f).length > 0
+  return Object.values(rest).filter((f) => f !== undefined).length > 0
 }
 
 export const fetchVesselSearchThunk = createAsyncThunk(
@@ -110,40 +111,40 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
       const queryFiltersFields = [
         {
-          value: filters.flags,
           field: 'flag',
           operator: 'IN',
+          value: filters.flags,
           transformation: (value: any): string =>
             `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
         },
         {
-          value: filters.fleets,
           field: 'fleet',
           operator: 'IN',
+          value: filters.fleets,
           transformation: (value: any): string =>
             `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
         },
         {
-          value: filters.origins,
           field: 'origin',
           operator: 'IN',
+          value: filters.origins,
           transformation: (value: any): string =>
             `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
         },
         {
-          value: filters?.firstTransmissionDate,
-          field: 'firstTransmissionDate',
+          field: 'lastTransmissionDate',
           operator: '>=',
+          value: filters?.activeAfterDate,
         },
         {
-          value: filters?.lastTransmissionDate,
-          field: 'lastTransmissionDate',
+          field: 'firstTransmissionDate',
           operator: '<=',
+          value: filters?.activeBeforeDate,
         },
       ]
 
       const queryFilters = queryFiltersFields
-        .filter(({ value }) => value !== undefined)
+        .filter(({ value }) => value !== undefined && value !== '')
         .map(
           ({ field, operator, transformation, value }) =>
             `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
@@ -153,14 +154,14 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     }
 
     const datasetConfig = {
-      endpoint: advancedQuery ? 'carriers-advanced-search-vessels' : 'carriers-search-vessels',
+      endpoint: advancedQuery ? EndpointId.VesselAdvancedSearch : EndpointId.VesselSearch,
       datasetId: dataset.id,
       params: [],
       query: [
         { id: 'datasets', value: datasets.map((d) => d.id) },
         { id: 'limit', value: RESULTS_PER_PAGE },
         { id: 'offset', value: offset },
-        { id: 'query', value: advancedQuery || query },
+        { id: 'query', value: encodeURIComponent(advancedQuery || query) },
       ],
     }
 
@@ -192,8 +193,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         suggestion: searchResults.metadata?.suggestion,
         pagination: {
           loading: false,
-          total: searchResults.total?.value,
-          offset: searchResults.offset + offset,
+          total: searchResults.total,
+          offset: searchResults.nextOffset,
         },
       }
     }

@@ -8,6 +8,7 @@ export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
   { id: Locale.es, label: 'Español' },
   { id: Locale.fr, label: 'Français' },
+  { id: Locale.id, label: 'Bahasa Indonesia' },
 ]
 
 i18n
@@ -22,7 +23,7 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    ns: ['translations', 'flags', 'datasets'],
+    ns: ['translations', 'flags', 'datasets', 'timebar'],
     defaultNS: 'translations',
     fallbackLng: Locale.en,
     supportedLngs: Object.values(Locale),
@@ -37,5 +38,13 @@ i18n
       // },
     },
   })
+
+i18n.on('languageChanged', (lng) => {
+  document.documentElement.setAttribute('lang', lng)
+})
+
+const t = i18n.t.bind(i18n)
+
+export { t }
 
 export default i18n

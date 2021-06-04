@@ -13,32 +13,47 @@ interface SegmentData {
 }
 
 // TODO TS types wont work with MultiPoint geoms
-export default (geojson: FeatureCollection, start: number, end: number): FeatureCollection => {
+const filterGeoJSONByTimerange = (
+  geojson: FeatureCollection,
+  start: number,
+  end: number
+): FeatureCollection => {
   if (!geojson || !geojson.features)
     return {
       type: 'FeatureCollection',
       features: [],
     }
+  let leadingPoint = true
   const featuresFiltered: Feature<Geometry, GeoJsonProperties>[] = geojson.features.reduce(
     (filteredFeatures: Feature<Geometry, GeoJsonProperties>[], feature) => {
-      const hasTimes =
-        feature.properties &&
-        feature.properties.coordinateProperties &&
-        feature.properties.coordinateProperties.times &&
-        feature.properties.coordinateProperties.times.length > 0
+      const hasTimes = feature?.properties?.coordinateProperties?.times?.length > 0
       if (hasTimes) {
         const filtered: SegmentData = (feature.geometry as LineString).coordinates.reduce(
           (filteredCoordinates, coordinate, index) => {
-            const timeCoordinate: number = feature.properties!.coordinateProperties.times[index]
+            const timeCoordinate: number = feature.properties?.coordinateProperties.times[index]
             const isInTimeline = timeCoordinate >= start && timeCoordinate <= end
             if (isInTimeline) {
-              ;(filteredCoordinates.coordinates as Position[]).push(coordinate)
-              ;(filteredCoordinates.times as number[]).push(timeCoordinate)
+              if (leadingPoint && index > 0) {
+                leadingPoint = false
+                const leadingIndex = index - 1
+                const leadingCoordinatePoint = (feature.geometry as LineString).coordinates[
+                  leadingIndex
+                ]
+                const leadingCoordinateTime: number =
+                  feature.properties?.coordinateProperties.times[leadingIndex]
+                filteredCoordinates.coordinates.push(leadingCoordinatePoint)
+                filteredCoordinates.times.push(leadingCoordinateTime)
+              }
+
+              filteredCoordinates.coordinates.push(coordinate)
+              filteredCoordinates.times.push(timeCoordinate)
             }
+
             return filteredCoordinates
           },
-          { coordinates: [], times: [] }
+          { coordinates: [] as Position[], times: [] as number[] }
         )
+
         if (!filtered.coordinates.length) return filteredFeatures
 
         //
@@ -71,3 +86,5 @@ export default (geojson: FeatureCollection, start: number, end: number): Feature
   }
   return geojsonFiltered
 }
+
+export default filterGeoJSONByTimerange

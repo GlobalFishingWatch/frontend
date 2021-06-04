@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useMemo, memo } from 'react'
+import { matchSorter } from 'match-sorter'
 import {
   useMultipleSelection,
   useCombobox,
@@ -17,6 +18,7 @@ import { MultiSelectOption, MultiSelectOnChange } from './index'
 interface MultiSelectProps {
   label?: string
   placeholder?: string
+  placeholderDisplayAll?: boolean
   options: MultiSelectOption[]
   selectedOptions?: MultiSelectOption[]
   disabled?: boolean
@@ -27,9 +29,20 @@ interface MultiSelectProps {
   className?: string
 }
 
-const getPlaceholderBySelections = (selections: MultiSelectOption[]): string => {
+const getPlaceholderBySelections = (
+  selections: MultiSelectOption[],
+  displayAll: boolean
+): string => {
   if (!selections?.length) return 'Select an option'
-  return selections.length > 1 ? `${selections.length} selected` : selections[0].label
+  return displayAll
+    ? selections
+        .map((elem: MultiSelectOption) => {
+          return elem.label
+        })
+        .join(', ')
+    : selections.length > 1
+    ? `${selections.length} selected`
+    : selections[0].label
 }
 
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
@@ -38,10 +51,10 @@ const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOpt
 
 const getItemsFiltered = (items: MultiSelectOption[], filter?: string) => {
   if (!filter) return items
-
-  return (items || []).filter(
-    (item) => !filter || item.label.toLowerCase().startsWith(filter.toLowerCase())
-  )
+  const matchingItems = matchSorter(items, filter, {
+    keys: ['id', 'label', 'alias'],
+  })
+  return matchingItems
 }
 
 function MultiSelect(props: MultiSelectProps) {
@@ -49,6 +62,7 @@ function MultiSelect(props: MultiSelectProps) {
     label = '',
     options,
     selectedOptions = [],
+    placeholderDisplayAll = false,
     placeholder,
     className = '',
     onSelect,
@@ -196,7 +210,9 @@ function MultiSelect(props: MultiSelectProps) {
             })}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder={placeholder || getPlaceholderBySelections(selectedOptions)}
+            placeholder={
+              placeholder || getPlaceholderBySelections(selectedOptions, placeholderDisplayAll)
+            }
             className={multiSelectStyles.input}
           />
         </div>

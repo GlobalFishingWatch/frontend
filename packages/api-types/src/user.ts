@@ -13,10 +13,15 @@ export interface UserPermission {
 
 export interface UserData {
   id: number
+  type: string
+  groups: string[]
+  permissions: UserPermission[]
   email?: string
   firstName?: string
   lastName?: string
   photo?: string
-  type: string
-  permissions: UserPermission[]
+  language?: string
+  country?: string
+  organization?: string
+  organizationType?: string
 }

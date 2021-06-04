@@ -4,12 +4,13 @@
   grid-template-columns: min-content min-content min-content auto;
   grid-template-rows: 1fr auto;
   gap: 0;
-  grid-template-areas:  "workspace dataviews dataview map"
-                        "workspace dataviews dataview timebar";
+  grid-template-areas:
+    'workspace dataviews dataview map'
+    'workspace dataviews dataview timebar';
 }
 
 .loading {
-  opacity: .5;
+  opacity: 0.5;
   pointer-events: none;
 }
 
@@ -65,7 +66,6 @@ h3 {
   transform-origin: 0;
   width: 300px;
 }
-
 
 .timebar {
   grid-area: timebar;

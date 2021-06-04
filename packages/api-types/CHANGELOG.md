@@ -1,5 +1,158 @@
 # @globalfishingwatch/api-types
 
+## 4.2.5
+
+### Patch Changes
+
+- fix search pagination types
+
+## 4.2.4
+
+### Patch Changes
+
+- 7d060771: Fishingmap/last minute improvements
+
+## 4.2.3
+
+### Patch Changes
+
+- Updated dependencies [b3f3ca64]
+  - @globalfishingwatch/data-transforms@1.3.0
+
+## 4.2.2
+
+### Patch Changes
+
+- include guest dataview info config field
+
+## 4.2.1
+
+### Patch Changes
+
+- Updated dependencies [3b8d5d37]
+  - @globalfishingwatch/data-transforms@1.2.2
+
+## 4.2.0
+
+### Minor Changes
+
+- cfae2b4b: new dataview categories
+
+## 4.1.3
+
+### Patch Changes
+
+- 2f7db18f: Fishing map/color cycling
+
+## 4.1.2
+
+### Patch Changes
+
+- a5339163: fix tiles api
+
+## 4.1.1
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/data-transforms@1.2.1
+
+## 4.1.0
+
+### Minor Changes
+
+- 5d252a2d: new 4wings endpoint id
+
+## 4.0.0
+
+### Major Changes
+
+- 0ec2156f: User tracks
+
+### Patch Changes
+
+- Updated dependencies [0ec2156f]
+  - @globalfishingwatch/data-transforms@1.2.0
+
+## 3.3.0
+
+### Minor Changes
+
+- update app names typing
+
+## 3.2.0
+
+### Minor Changes
+
+- fb321617: update user types definition
+
+## 3.1.1
+
+### Patch Changes
+
+- include geartype in vessel type definition
+
+## 3.1.0
+
+### Minor Changes
+
+- df1cb0cc: support category typing in workspace definition
+
+## 3.0.0
+
+### Major Changes
+
+- d2501b54: move fishing-map logic into dataview-client
+
+## 2.17.0
+
+### Minor Changes
+
+- 328e7234: extend vessel interface with additional fields
+
+## 2.16.0
+
+### Minor Changes
+
+- d6bc4dc6: include user groups types definition
+
+## 2.15.0
+
+### Minor Changes
+
+- match latest versions
+
+## 2.14.2
+
+### Patch Changes
+
+- fix registeredGearType release
+
+## 2.14.1
+
+### Patch Changes
+
+- update start and end api event types
+
+## 2.14.0
+
+### Minor Changes
+
+- new events types definitions
+
+## 2.13.0
+
+### Minor Changes
+
+- f9b53836: new dataview category type for events
+- [`d99bf5f3`](https://github.com/GlobalFishingWatch/frontend/commit/d99bf5f30bceed021ac990a0de8b4e992189be73) [#375](https://github.com/GlobalFishingWatch/frontend/pull/375) Thanks [@satellitestudiodesign](https://github.com/satellitestudiodesign)! - define endpoints enum
+
+## 2.12.1
+
+### Patch Changes
+
+- include registeredGearType in vessel types
+
 ## 2.12.0
 
 ### Minor Changes

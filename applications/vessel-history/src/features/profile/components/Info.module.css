@@ -7,6 +7,7 @@
   color: #22447e;
   display: flex;
   flex-flow: row wrap;
+  margin-bottom: var(--size-M);
 }
 
 .identifierField {
@@ -26,10 +27,48 @@
   opacity: 0.8;
 }
 
+.moreValues {
+  display: block;
+  cursor: pointer;
+}
+
 .saveButton {
+  text-transform: uppercase;
   width: 100%;
 }
 
 .historyRange {
   font-size: 12px;
+}
+.historyItem {
+  display: flex;
+  flex-flow: row nowrap;
+}
+.rangeLabel {
+  text-transform: capitalize;
+}
+.actions {
+  display: flex;
+  justify-content: center;
+}
+.readyForOffline {
+  font: var(--font-S);
+  line-height: var(--size-M);
+  text-align: center;
+  vertical-align: middle;
+  flex: 1;
+  text-transform: uppercase;
+  color: var(--color-primary-green);
+  background-color: var(--color-terthiary-green);
+}
+
+.actions .remove {
+  margin-left: var(--space-XS);
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-terthiary));
+}
+
+.actions .remove:focus:not(:disabled),
+.actions .remove:active:not(:disabled),
+.actions .remove:hover:not(:disabled) {
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-border));
 }

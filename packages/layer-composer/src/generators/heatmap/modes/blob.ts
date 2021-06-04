@@ -1,8 +1,10 @@
-import zip from 'lodash/zip'
+import { zip } from 'lodash'
 import { GlobalHeatmapAnimatedGeneratorConfig } from '../heatmap-animated'
 import { TimeChunks } from '../util/time-chunks'
 import getLegends, { getColorRampBaseExpression } from '../util/get-legends'
 import getBaseLayer from '../util/get-base-layer'
+import { getLayerId, getSourceId } from '../util'
+import { Breaks } from '../util/fetch-breaks'
 
 const baseBlobIntensity = 0.5
 const baseBlobRadius = 30
@@ -37,7 +39,11 @@ const BASE_PAINT = {
 // Seems like MGL 'heatmap' layer types can be rendered more than once,
 // so when using 'blob' type, we just use the 1st timechunk to render a single layer
 // this will prevent buffering to happen, but whatever
-const blob = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChunks) => {
+const blob = (
+  config: GlobalHeatmapAnimatedGeneratorConfig,
+  timeChunks: TimeChunks,
+  breaks: Breaks
+) => {
   const { colorRamp } = getColorRampBaseExpression(config)
   const activeChunk = timeChunks.chunks.find((chunk) => chunk.active)
   if (!activeChunk) return []
@@ -46,7 +52,7 @@ const blob = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChun
 
   const paint = { ...BASE_PAINT }
   paint['heatmap-weight'] = exprPick as any
-  const hStops = [0, 0.005, 0.01, 0.1, 0.2, 1]
+  const hStops = [0, 0.002, 0.004, 0.01, 0.05, 0.07, 0.1, 0.15, 0.2, 1]
   const heatmapColorRamp = zip(hStops, colorRamp).flat()
   paint['heatmap-color'] = [
     'interpolate',
@@ -61,12 +67,13 @@ const blob = (config: GlobalHeatmapAnimatedGeneratorConfig, timeChunks: TimeChun
   paint['heatmap-intensity'][6] = maxIntensity
 
   const chunkMainLayer = getBaseLayer(config)
-  chunkMainLayer.id = activeChunk.id
-  chunkMainLayer.source = activeChunk.id
+  // TODO proper layer/src ids
+  chunkMainLayer.id = getLayerId(config.id, activeChunk)
+  chunkMainLayer.source = getSourceId(config.id, activeChunk)
   chunkMainLayer.paint = paint as any
 
   if (!chunkMainLayer.metadata) return []
-  chunkMainLayer.metadata.legend = getLegends(config, timeChunks.deltaInDays)
+  chunkMainLayer.metadata.legend = getLegends(config, breaks)
 
   return [chunkMainLayer]
 }

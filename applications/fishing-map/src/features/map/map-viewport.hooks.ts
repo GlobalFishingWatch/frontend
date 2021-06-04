@@ -2,14 +2,17 @@ import { useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
 import { atom, useRecoilState } from 'recoil'
-import debounce from 'lodash/debounce'
+import { debounce } from 'lodash'
 import { ViewportProps } from '@globalfishingwatch/react-map-gl'
-import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { MapCoordinates } from 'types'
+import { MiniglobeBounds } from '@globalfishingwatch/ui-components/dist/miniglobe'
+import { LngLatBounds } from '@globalfishingwatch/mapbox-gl'
+import { Bbox, MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { TIMEBAR_HEIGHT } from 'features/timebar/Timebar'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
+import { selectViewport } from 'features/app/app.selectors'
+import store, { RootState } from '../../store'
 import useMapInstance from './map-context.hooks'
 
 type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>
@@ -25,12 +28,19 @@ const viewportState = atom<MapCoordinates>({
   key: 'mapViewport',
   default: DEFAULT_VIEWPORT as MapCoordinates,
   effects_UNSTABLE: [
-    ({ onSet }) => {
+    ({ trigger, setSelf, onSet }) => {
       const dispatch = useDispatch()
+      const viewport = selectViewport(store.getState() as RootState)
+
+      if (trigger === 'get') {
+        setSelf(viewport)
+      }
+
       const updateUrlViewportDebounced = debounce(
         dispatch(updateUrlViewport),
         URL_VIEWPORT_DEBOUNCED_TIME
       )
+
       onSet((viewport) => {
         const { latitude, longitude, zoom } = viewport as MapCoordinates
         updateUrlViewportDebounced({ latitude, longitude, zoom })
@@ -61,6 +71,15 @@ const boundsState = atom<MiniglobeBounds | undefined>({
   default: undefined,
 })
 
+export function mglToMiniGlobeBounds(mglBounds: LngLatBounds) {
+  return {
+    north: mglBounds.getNorth() as number,
+    south: mglBounds.getSouth() as number,
+    west: mglBounds.getWest() as number,
+    east: mglBounds.getEast() as number,
+  }
+}
+
 export function useMapBounds() {
   const map = useMapInstance()
   const [bounds, setBounds] = useRecoilState(boundsState)
@@ -68,12 +87,7 @@ export function useMapBounds() {
     if (map) {
       const rawBounds = map.getBounds()
       if (rawBounds) {
-        setBounds({
-          north: rawBounds.getNorth() as number,
-          south: rawBounds.getSouth() as number,
-          west: rawBounds.getWest() as number,
-          east: rawBounds.getEast() as number,
-        })
+        setBounds(mglToMiniGlobeBounds(rawBounds))
       }
     }
   }, [map, setBounds])
@@ -90,7 +104,7 @@ export function useMapFitBounds() {
   const { setMapCoordinates } = useViewport()
 
   const fitMapBounds = useCallback(
-    (bounds: [number, number, number, number], params: FitBoundsParams = {}) => {
+    (bounds: Bbox, params: FitBoundsParams = {}) => {
       const { mapWidth, mapHeight, padding = 60 } = params
       const width =
         mapWidth || (map ? parseInt(map.getCanvas().style.width) : window.innerWidth / 2)

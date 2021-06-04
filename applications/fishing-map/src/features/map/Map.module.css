@@ -1,5 +1,6 @@
 .container {
   flex: 1;
+  height: calc(100% - 9.6rem);
 }
 
 .screenshot {
@@ -38,6 +39,8 @@
 .legendLabel {
   font: var(--font-S);
   opacity: var(--opacity-secondary);
+  cursor: help;
+  width: max-content;
 }
 
 :global(.mapboxgl-control-container .mapboxgl-ctrl.mapboxgl-ctrl-attrib) {

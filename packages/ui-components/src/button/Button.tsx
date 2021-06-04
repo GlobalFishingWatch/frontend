@@ -1,10 +1,10 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
-import type { Placement } from 'tippy.js'
 import Tooltip from '../tooltip'
 import Spinner from '../spinner'
 import { TooltipTypes } from '../types/types'
 import styles from './Button.module.css'
+import type { Placement } from 'tippy.js'
 
 export type ButtonType = 'default' | 'secondary'
 export type ButtonSize = 'default' | 'small'
@@ -17,10 +17,13 @@ interface ButtonProps {
   loading?: boolean
   className?: string
   children: React.ReactChild | React.ReactChild[] | TooltipTypes
-  tooltip?: React.ReactChild | React.ReactChild[] | string
+  tooltip?: TooltipTypes
   tooltipPlacement?: Placement
   onClick?: (e: React.MouseEvent) => void
+  onMouseEnter?: (e: React.MouseEvent) => void
+  onMouseLeave?: (e: React.MouseEvent) => void
   href?: string
+  target?: string
 }
 
 function Button(props: ButtonProps) {
@@ -35,23 +38,43 @@ function Button(props: ButtonProps) {
     tooltip,
     tooltipPlacement = 'auto',
     onClick,
+    onMouseEnter,
+    onMouseLeave,
     href,
+    target,
   } = props
   return (
     <Tooltip content={tooltip} placement={tooltipPlacement}>
-      {href !== undefined ? (
-        <a href={href} className={cx(styles.button, styles[type], styles[size], className)}>
-          {children}
+      {href !== undefined && !disabled ? (
+        <a
+          href={href}
+          className={cx(styles.button, styles[type], styles[size], className)}
+          target={target}
+        >
+          {loading ? (
+            <Spinner
+              size="small"
+              color={type === 'default' ? (disabled ? '#22447e' : 'white') : undefined}
+            />
+          ) : (
+            children
+          )}
         </a>
       ) : (
         <button
           id={id}
-          className={cx(styles.button, styles[type], styles[size], className)}
-          onClick={(e) => !loading && onClick && onClick(e)}
-          disabled={disabled}
+          className={cx(styles.button, styles[type], styles[size], className, {
+            [styles.disabled]: disabled,
+          })}
+          onClick={(e) => !loading && !disabled && onClick && onClick(e)}
+          onMouseEnter={(e) => onMouseEnter && onMouseEnter(e)}
+          onMouseLeave={(e) => onMouseLeave && onMouseLeave(e)}
         >
           {loading ? (
-            <Spinner size="small" color={type === 'default' ? 'white' : undefined} />
+            <Spinner
+              size="small"
+              color={type === 'default' ? (disabled ? '#22447e' : 'white') : undefined}
+            />
           ) : (
             children
           )}

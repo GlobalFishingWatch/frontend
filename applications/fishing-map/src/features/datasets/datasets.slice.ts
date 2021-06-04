@@ -1,12 +1,15 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
-import memoize from 'lodash/memoize'
-import uniqBy from 'lodash/uniqBy'
-import without from 'lodash/without'
-import kebabCase from 'lodash/kebabCase'
+import { memoize, uniqBy, without, kebabCase } from 'lodash'
 import { stringify } from 'qs'
 import { Dataset, DatasetCategory, UploadResponse } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { asyncInitialState, AsyncReducer, createAsyncSlice, AsyncError } from 'utils/async-slice'
+import {
+  asyncInitialState,
+  AsyncReducer,
+  createAsyncSlice,
+  AsyncError,
+  AsyncReducerStatus,
+} from 'utils/async-slice'
 import { RootState } from 'store'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
@@ -31,7 +34,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
 
 export const fetchDatasetsByIdsThunk = createAsyncThunk(
   'datasets/fetch',
-  async (ids: string[] = [], { rejectWithValue, getState }) => {
+  async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
     const existingIds = selectIds(getState() as RootState) as string[]
     const uniqIds = ids?.length ? Array.from(new Set([...ids, ...existingIds])) : []
     try {
@@ -41,7 +44,8 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         cache: process.env.NODE_ENV !== 'development',
       }
       const initialDatasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`
+        `/v1/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
+        { signal }
       )
       const relatedDatasetsIds = initialDatasets.flatMap(
         (dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || []
@@ -49,13 +53,16 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...ids).join(',')
       const relatedWorkspaceParams = { ...workspacesParams, ids: uniqRelatedDatasetsIds }
       const relatedDatasets = await GFWAPI.fetch<Dataset[]>(
-        `/v1/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`
+        `/v1/datasets?${stringify(relatedWorkspaceParams, { arrayFormat: 'comma' })}`,
+        { signal }
       )
       let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
-      if (process.env.NODE_ENV === 'development') {
+      if (
+        process.env.NODE_ENV === 'development' ||
+        process.env.REACT_APP_USE_DATASETS_MOCK === 'true'
+      ) {
         const mockedDatasets = await import('./datasets.mock')
-        datasets = uniqBy([...mockedDatasets.default, ...datasets], (dataset) => dataset.id)
-        console.log('datasets', datasets)
+        datasets = uniqBy([...mockedDatasets.default, ...datasets], 'id')
       }
       return datasets
     } catch (e) {
@@ -84,6 +91,8 @@ export const createDatasetThunk = createAsyncThunk<
       } as any,
     })
     await fetch(url, { method: 'PUT', body: file })
+    // API needs to have the value in lowercase
+    const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
     const datasetWithFilePath = {
       ...dataset,
       description: dataset.description || dataset.name,
@@ -91,13 +100,16 @@ export const createDatasetThunk = createAsyncThunk<
       source: DATASETS_USER_SOURCE_ID,
       configuration: {
         ...dataset.configuration,
+        ...(propertyToInclude && { propertyToInclude }),
         filePath: path,
       },
     }
+
     const createdDataset = await GFWAPI.fetch<Dataset>('/v1/datasets', {
       method: 'POST',
       body: datasetWithFilePath as any,
     })
+
     return createdDataset
   } catch (e) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })
@@ -150,19 +162,47 @@ export const deleteDatasetThunk = createAsyncThunk<
   }
 })
 
+const LATEST_CARRIER_DATASET_ID =
+  process.env.NODE_ENV === 'development' ? 'carriers:dev' : 'carriers:latest'
+export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
+  Dataset,
+  undefined,
+  {
+    rejectValue: AsyncError
+  }
+>('datasets/fetchLatestCarrier', async (_, { rejectWithValue }) => {
+  try {
+    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${LATEST_CARRIER_DATASET_ID}`)
+    return dataset
+  } catch (e) {
+    return rejectWithValue({
+      status: e.status || e.code,
+      message: `${LATEST_CARRIER_DATASET_ID} - ${e.message}`,
+    })
+  }
+})
+
 export type DatasetModals = 'new' | 'edit' | undefined
 export interface DatasetsState extends AsyncReducer<Dataset> {
   datasetModal: DatasetModals
   datasetCategory: DatasetCategory
   editingDatasetId: string | undefined
   allDatasetsRequested: boolean
+  carrierLatest: {
+    status: AsyncReducerStatus
+    dataset: Dataset | undefined
+  }
 }
 const initialState: DatasetsState = {
   ...asyncInitialState,
   datasetModal: undefined,
   datasetCategory: DatasetCategory.Context,
-  editingDatasetId: undefined,
   allDatasetsRequested: false,
+  editingDatasetId: undefined,
+  carrierLatest: {
+    status: AsyncReducerStatus.Idle,
+    dataset: undefined,
+  },
 }
 
 const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
@@ -185,6 +225,18 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
   extraReducers: (builder) => {
     builder.addCase(fetchAllDatasetsThunk.fulfilled, (state) => {
       state.allDatasetsRequested = true
+    })
+    builder.addCase(fetchLastestCarrierDatasetThunk.pending, (state) => {
+      state.carrierLatest.status = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchLastestCarrierDatasetThunk.fulfilled, (state, action) => {
+      state.carrierLatest.status = AsyncReducerStatus.Finished
+      if (action.payload) {
+        state.carrierLatest.dataset = action.payload
+      }
+    })
+    builder.addCase(fetchLastestCarrierDatasetThunk.rejected, (state) => {
+      state.carrierLatest.status = AsyncReducerStatus.Error
     })
   },
   thunks: {
@@ -214,6 +266,9 @@ export const selectDatasetsError = (state: RootState) => state.datasets.error
 export const selectEditingDatasetId = (state: RootState) => state.datasets.editingDatasetId
 export const selectAllDatasetsRequested = (state: RootState) => state.datasets.allDatasetsRequested
 export const selectDatasetModal = (state: RootState) => state.datasets.datasetModal
+export const selectCarrierLatestDataset = (state: RootState) => state.datasets.carrierLatest.dataset
+export const selectCarrierLatestDatasetStatus = (state: RootState) =>
+  state.datasets.carrierLatest.status
 export const selectDatasetCategory = (state: RootState) => state.datasets.datasetCategory
 
 export default datasetSlice.reducer

@@ -11,7 +11,6 @@ import {
 } from '../types'
 import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
-import { isConfigVisible } from '../utils'
 
 const EVENTS_COLORS: Dictionary<string> = {
   encounter: '#FAE9A0',
@@ -19,6 +18,10 @@ const EVENTS_COLORS: Dictionary<string> = {
   unmatched: '#CE2C54',
   loitering: '#cfa9f9',
   port: '#99EEFF',
+}
+
+interface VesselsEventsSource extends GeoJSONSourceRaw {
+  id: string
 }
 
 class VesselsEventsGenerator {
@@ -40,7 +43,9 @@ class VesselsEventsGenerator {
     return featureCollection
   }
 
-  _getStyleSources = (config: VesselEventsGeneratorConfig & GlobalGeneratorConfig) => {
+  _getStyleSources = (
+    config: VesselEventsGeneratorConfig & GlobalGeneratorConfig
+  ): VesselsEventsSource[] => {
     const { id, data } = config
 
     if (!data) {
@@ -63,11 +68,12 @@ class VesselsEventsGenerator {
       })
     }
 
-    const source: GeoJSONSourceRaw = {
+    const source: VesselsEventsSource = {
+      id,
       type: 'geojson',
       data: newData,
     }
-    return [{ id, ...source }]
+    return [source]
   }
 
   _getStyleLayers = (config: VesselEventsGeneratorConfig) => {
@@ -77,7 +83,6 @@ class VesselsEventsGenerator {
     }
 
     const activeFilter = ['case', ['==', ['get', 'active'], true]]
-    const visibility = isConfigVisible(config)
     const layers: any[] = [
       {
         id: `${config.id}_background`,
@@ -89,9 +94,6 @@ class VesselsEventsGenerator {
           'circle-stroke-color': [...activeFilter, 'rgba(0, 193, 231, 1)', DEFAULT_LANDMASS_COLOR],
           'circle-radius': [...activeFilter, 12, 5],
         },
-        layout: {
-          visibility,
-        },
         metadata: {
           group: Group.Point,
         },
@@ -101,7 +103,6 @@ class VesselsEventsGenerator {
         source: config.id,
         type: 'symbol',
         layout: {
-          visibility,
           'icon-allow-overlap': true,
           'icon-image': ['get', 'icon'],
           'icon-size': [...activeFilter, 1, 0],

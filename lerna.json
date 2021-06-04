@@ -4,13 +4,9 @@
   "npmClient": "yarn",
   "useWorkspaces": true,
   "stream": true,
-  "changelog": {
-    "labels": {
-      ":rocket: enhancement": ":rocket: enhancement",
-      ":memo: documentation": ":memo: documentation",
-      ":boom: breaking change": ":boom: breaking change",
-      ":house: internal": ":house: internal",
-      ":bug: bug": ":bug: bug"
+  "command": {
+    "run": {
+      "graphType": "all"
     }
   }
 }

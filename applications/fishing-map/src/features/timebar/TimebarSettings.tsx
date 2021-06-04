@@ -1,6 +1,7 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
+import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Radio from '@globalfishingwatch/ui-components/dist/radio'
@@ -8,26 +9,81 @@ import Select, { SelectOption } from '@globalfishingwatch/ui-components/dist/sel
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
 import {
-  selectActiveTemporalgridDataviews,
+  selectActiveActivityDataviews,
+  selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
-} from 'features/workspace/workspace.selectors'
-import { TIMEBAR_EVENT_OPTIONS, TIMEBAR_GRAPH_OPTIONS } from 'data/config'
+} from 'features/dataviews/dataviews.selectors'
 import { selectTimebarEvents, selectTimebarGraph } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { getEventLabel } from 'utils/analytics'
 import { useTimebarVisualisation } from './timebar.hooks'
 import styles from './TimebarSettings.module.css'
 
 const TimebarSettings = () => {
   const { t } = useTranslation()
   const [optionsPanelOpen, setOptionsPanelOpen] = useState(false)
-  const activeHeatmapDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
+  const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
+  const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const timebarEvents = useSelector(selectTimebarEvents)
   const timebarGraph = useSelector(selectTimebarGraph)
   const { dispatchQueryParams } = useLocationConnect()
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisation()
 
+  const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = useMemo(
+    () => [
+      {
+        id: 'speed',
+        label: t('timebarSettings.graphOptions.speed', 'Speed'),
+      },
+      {
+        id: 'depth',
+        label: t('timebarSettings.graphOptions.depth', 'Depth (Coming soon)'),
+        disabled: true,
+      },
+      {
+        id: 'none',
+        label: t('timebarSettings.graphOptions.none', 'None'),
+      },
+    ],
+    [t]
+  )
+  const TIMEBAR_EVENT_OPTIONS: SelectOption[] = useMemo(
+    () => [
+      {
+        id: 'all',
+        label: t('timebarSettings.eventOptions.all', 'All events'),
+      },
+      {
+        id: 'fishing',
+        label: t('timebarSettings.eventOptions.fishing', 'Fishing'),
+      },
+      {
+        id: 'encounters',
+        label: t('timebarSettings.eventOptions.encounters', 'Encounters'),
+      },
+      {
+        id: 'loitering',
+        label: t('timebarSettings.eventOptions.loitering', 'Loitering'),
+      },
+      {
+        id: 'ports',
+        label: t('timebarSettings.eventOptions.ports', 'Port visits'),
+      },
+      {
+        id: 'none',
+        label: t('timebarSettings.eventOptions.none', 'None'),
+      },
+    ],
+    [t]
+  )
+
   const openOptions = () => {
+    uaEvent({
+      category: 'Timebar',
+      action: 'Open timebar settings',
+      label: getEventLabel([`visualization: ${timebarVisualisation}`]),
+    })
     setOptionsPanelOpen(true)
   }
   const closeOptions = () => {
@@ -55,7 +111,7 @@ const TimebarSettings = () => {
   }
   const expandedContainerRef = useClickedOutside(closeOptions)
 
-  const timebarGraphEnabled = activeVesselDataviews && activeVesselDataviews?.length <= 2
+  const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews?.length <= 2
   return (
     <div className={cx('print-hidden', styles.container)} ref={expandedContainerRef}>
       <IconButton
@@ -64,8 +120,8 @@ const TimebarSettings = () => {
         onClick={optionsPanelOpen ? closeOptions : openOptions}
         tooltip={
           optionsPanelOpen
-            ? t('timebar.settings_close', 'Close timebar settings')
-            : t('timebar.settings_open', 'Open timebar settings')
+            ? t('timebarSettings.settings_close', 'Close timebar settings')
+            : t('timebarSettings.settings_open', 'Open timebar settings')
         }
       />
       {optionsPanelOpen && (
@@ -77,28 +133,28 @@ const TimebarSettings = () => {
             tooltip={
               !activeHeatmapDataviews?.length
                 ? t(
-                    'timebar.fishingEffortDisabled',
+                    'timebarSettings.fishingEffortDisabled',
                     'Select at least one apparent fishing effort layer'
                   )
-                : t('timebar.showFishingEffort', 'Show fishing hours graph')
+                : t('timebarSettings.showFishingEffort', 'Show fishing hours graph')
             }
             onClick={setHeatmapActive}
           />
           <Fragment>
             <Radio
-              label={t('vessel.tracks', 'Vessel Tracks')}
+              label={t('timebarSettings.tracks', 'Tracks')}
               active={timebarVisualisation === TimebarVisualisations.Vessel}
-              disabled={!activeVesselDataviews?.length}
+              disabled={!activeTrackDataviews?.length}
               tooltip={
-                !activeVesselDataviews?.length
-                  ? t('timebar.tracksDisabled', 'Select at least one vessel')
-                  : t('timebar.showTracks', 'Show tracks graph')
+                !activeTrackDataviews?.length
+                  ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
+                  : t('timebarSettings.showTracks', 'Show tracks graph')
               }
               onClick={setVesselActive}
             />
             {timebarVisualisation === TimebarVisualisations.Vessel &&
-              activeVesselDataviews &&
-              activeVesselDataviews.length > 0 && (
+              activeVesselsDataviews &&
+              activeVesselsDataviews.length > 0 && (
                 <div className={styles.vesselTrackOptions}>
                   <Select
                     // label={t('common.events', 'Events')}
@@ -112,7 +168,7 @@ const TimebarSettings = () => {
                   />
                   {timebarGraphEnabled && (
                     <Select
-                      label={t('timebar.graph', 'Graph')}
+                      label={t('timebarSettings.graph', 'Graph')}
                       options={TIMEBAR_GRAPH_OPTIONS}
                       selectedOption={TIMEBAR_GRAPH_OPTIONS.find((o) => o.id === timebarGraph)}
                       onSelect={setGraphOption}

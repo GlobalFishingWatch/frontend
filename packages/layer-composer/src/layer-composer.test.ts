@@ -24,7 +24,7 @@ test('check valid style.json format', async () => {
   const { style } = layerComposer.getGLStyle([])
   const errors = mapboxStyleValidator(style)
   if (errors.length) {
-    console.log('Errors found in style validation:', errors)
+    console.warn('Errors found in style validation:', errors)
   }
   expect(errors.length).toBe(0)
 })
