@@ -12,6 +12,7 @@ interface ModalProps {
   closeButtonClassName?: string
   contentClassName?: string
   overlayClassName?: string
+  portalClassName?: string
   /**
    * Id of the html root selector, normally in CRA 'root'
    */
@@ -27,6 +28,7 @@ function Modal(props: ModalProps) {
     appSelector = 'root',
     header = true,
     title,
+    portalClassName,
     className,
     contentClassName,
     overlayClassName,
@@ -40,6 +42,7 @@ function Modal(props: ModalProps) {
   }
   return (
     <ReactModal
+      portalClassName={portalClassName}
       overlayClassName={cx(styles.modalOverlay, overlayClassName)}
       className={cx(styles.modalContentWrapper, className)}
       appElement={appElement}
