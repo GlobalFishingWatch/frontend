@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 5.1.1
+
+### Patch Changes
+
+- Customizable modal portalClassName
+
 ## 5.1.0
 
 ### Minor Changes
