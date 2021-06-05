@@ -37,12 +37,12 @@
   height: var(--size-M);
 }
 
-.layersModalOverlay {
+.layersModalPortal .layersModalOverlay {
   background: none;
   display: block;
 }
 
-.layersModalContentWrapper {
+.layersModalPortal .layersModalContentWrapper {
   background: var(--color-white);
   filter: var(--drop-shadow);
   padding: var(--space-S);
@@ -53,7 +53,7 @@
   width: fit-content;
 }
 
-.layersModalContainer {
+.layersModalPortal .layersModalContainer {
   width: fit-content;
   height: fit-content;
   padding: 0 var(--space-S);
@@ -73,7 +73,7 @@
   z-index: 1;
 }
 
-.layersModalCloseButton {
+.layersModalPortal .layersModalCloseButton {
   position: absolute;
   top: var(--space-XS);
   right: var(--space-XS);

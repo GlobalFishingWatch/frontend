@@ -60,6 +60,7 @@ const MapControls = ({
                   closeButtonClassName={styles.layersModalCloseButton}
                   contentClassName={styles.layersModalContainer}
                   overlayClassName={styles.layersModalOverlay}
+                  portalClassName={styles.layersModalPortal}
                 >
                   <div>
                     <div className={styles.contextLayers}>
