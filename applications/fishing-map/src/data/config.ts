@@ -53,6 +53,16 @@ export const DEFAULT_WORKSPACE = {
   version: DEFAULT_VERSION,
 }
 
+export const EVENTS_COLORS: Record<string, string> = {
+  encounterauthorized: '#FAE9A0',
+  encounterauthorizedLabels: '#DCC76D',
+  encounterpartially: '#F59E84',
+  encounterunmatched: '#CE2C54',
+  loitering: '#cfa9f9',
+  port: '#99EEFF',
+  fishing: '#fff',
+}
+
 export enum ThinningLevels {
   Aggressive = 'aggressive',
   Default = 'default',

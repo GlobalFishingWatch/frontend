@@ -7,6 +7,7 @@ import TimebarComponent, {
   TimebarTracks,
   TimebarActivity,
   TimebarHighlighter,
+  TimebarTracksEvents,
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
@@ -22,7 +23,11 @@ import {
   Range,
 } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
-import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
+import {
+  selectTracksData,
+  selectTracksGraphs,
+  selectEventsWithRenderingInfo,
+} from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 
 export const TIMEBAR_HEIGHT = 72
@@ -36,6 +41,7 @@ const TimebarWrapper = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
+  const tracksEvents = useSelector(selectEventsWithRenderingInfo)
 
   const dispatch = useDispatch()
 
@@ -159,6 +165,18 @@ const TimebarWrapper = () => {
                     )}
                     {timebarGraph === TimebarGraphs.Speed && tracksGraph && (
                       <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
+                    )}
+                    {tracksEvents && (
+                      <TimebarTracksEvents
+                        key="events"
+                        tracksEvents={tracksEvents}
+                        onEventClick={(event: Event) => {
+                          console.log(event)
+                        }}
+                        onEventHover={(event: Event) => {
+                          console.log(event)
+                        }}
+                      />
                     )}
                   </Fragment>
                 )}

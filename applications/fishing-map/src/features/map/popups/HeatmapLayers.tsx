@@ -13,7 +13,6 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { isUserLogged } from 'features/user/user.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectDatasets } from 'features/datasets/datasets.slice'
 import styles from './Popup.module.css'
 
 // Translations by feature.unit static keys
