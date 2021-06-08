@@ -1,21 +1,26 @@
 import { Vessel } from '@globalfishingwatch/api-types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
+export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
+export type WorkspaceTimeRangeParam = 'start' | 'end'
+export type WorkspaceStateProperty = 'q' | 'dataviewInstances' | 'version' | 'vessel'
 
 export type WorkspaceParam =
-  | 'zoom'
-  | 'latitude'
-  | 'longitude'
-  | 'start'
-  | 'end'
-  | 'vessel'
-  | 'timebarMode'
-  | 'q'
-  | 'hiddenLayers'
-  | 'satellite'
-  | 'colorMode'
+  | WorkspaceViewportParam
+  | WorkspaceTimeRangeParam
+  | WorkspaceStateProperty
 
-export type QueryParams = {
-  [query in WorkspaceParam]?: string | number | boolean | null
+export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
+export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
+export type BivariateDataviews = [string, string]
+
+export type WorkspaceState = {
+  q?: string
+  version?: string
+  dataviewInstances?: Partial<UrlDataviewInstance[]>
+  vessel?: string
 }
+export type QueryParams = Partial<WorkspaceViewport> & Partial<WorkspaceTimeRange> & WorkspaceState
 
 export type CoordinatePosition = {
   latitude: number
@@ -163,3 +168,11 @@ export type ContextLayer = {
   description?: string
   disabled?: boolean
 }
+
+export type Range = {
+  start: string
+  end: string
+}
+
+// minX, minY, maxX, maxY
+export type Bbox = [number, number, number, number]

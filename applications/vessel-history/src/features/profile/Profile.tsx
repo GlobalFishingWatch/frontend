@@ -1,9 +1,12 @@
-import React, { Fragment, useState, useEffect, useMemo } from 'react'
+import React, { Fragment, useState, useEffect, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import { Point, Segment } from '@globalfishingwatch/data-transforms'
 import { IconButton, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
+import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
 import I18nDate from 'features/i18n/i18nDate'
 import { selectQueryParam, selectVesselProfileId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
@@ -11,15 +14,25 @@ import {
   fetchVesselByIdThunk,
   selectVesselById,
   selectVesselsStatus,
+  upsertVesselDataview,
 } from 'features/vessels/vessels.slice'
 import Map from 'features/map/Map'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
+import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectDatasets } from 'features/datasets/datasets.slice'
+import useViewport from 'features/map/map-viewport.hooks'
+import { selectDataviewsResourceQueries } from 'features/resources/resources.selectors'
+import { fetchResourceThunk, selectResourceByUrl } from 'features/resources/resources.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import Info from './components/Info'
 import styles from './Profile.module.css'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const { setMapCoordinates } = useViewport()
   const [lastPortVisit] = useState({ label: '', coordinates: null })
   const [lastPosition] = useState(null)
   const q = useSelector(selectQueryParam('q'))
@@ -27,10 +40,71 @@ const Profile: React.FC = (props): React.ReactElement => {
   const vesselStatus = useSelector(selectVesselsStatus)
   const loading = useMemo(() => vesselStatus === AsyncReducerStatus.LoadingItem, [vesselStatus])
   const vessel = useSelector(selectVesselById(vesselProfileId))
+  const datasets = useSelector(selectDatasets)
+  const resourceQueries = useSelector(selectDataviewsResourceQueries)
+  const [vesselDataview] = useSelector(selectActiveVesselsDataviews) ?? []
+  const { url: trackUrl = '' } = vesselDataview
+    ? resolveDataviewDatasetResource(vesselDataview, DatasetTypes.Tracks)
+    : { url: '' }
+  const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
+  const vesselLoaded = useMemo(() => !!vessel, [vessel])
+  const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])
 
   useEffect(() => {
-    dispatch(fetchVesselByIdThunk(vesselProfileId))
-  }, [dispatch, vesselProfileId])
+    if (resourceQueries) {
+      resourceQueries.forEach((resourceQuery) => {
+        dispatch(fetchResourceThunk(resourceQuery))
+      })
+    }
+  }, [dispatch, resourceQueries])
+
+  useEffect(() => {
+    const fetchVessel = async () => {
+      const [dataset, gfwId] = (
+        Array.from(new URLSearchParams(vesselProfileId).keys()).shift() ?? ''
+      ).split('_')
+      const action = await dispatch(fetchVesselByIdThunk(vesselProfileId))
+      if (dataset && gfwId && fetchVesselByIdThunk.fulfilled.match(action as any)) {
+        const vesselDataset = datasets
+          .filter((ds) => ds.id === dataset)
+          .slice(0, 1)
+          .shift()
+        if (vesselDataset) {
+          const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
+          if (trackDatasetId) {
+            const vesselDataviewInstance = getVesselDataviewInstance(
+              { id: gfwId },
+              {
+                trackDatasetId: trackDatasetId as string,
+                infoDatasetId: dataset,
+              }
+            )
+            dispatch(upsertVesselDataview(vesselDataviewInstance))
+          }
+        }
+      }
+    }
+    fetchVessel()
+  }, [dispatch, vesselProfileId, datasets])
+
+  const onFitLastPosition = useCallback(() => {
+    if (!trackResource?.data || trackResource?.data.length === 0) return
+    const { latitude, longitude } = (trackResource?.data.flat().slice(-1) as Segment).pop() as Point
+    if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+      setMapCoordinates({
+        latitude: latitude as number,
+        longitude: longitude as number,
+        zoom: DEFAULT_VESSEL_MAP_ZOOM,
+      })
+    } else {
+      alert('The vessel has no activity in your selected timerange')
+    }
+  }, [setMapCoordinates, trackResource])
+
+  useEffect(() => {
+    if (!vesselLoaded || !vesselDataviewLoaded || !trackUrl) return
+    onFitLastPosition()
+  }, [vesselLoaded, vesselDataviewLoaded, trackUrl, onFitLastPosition])
 
   const tabs: Tab[] = useMemo(
     () => [

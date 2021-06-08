@@ -1,17 +1,25 @@
-import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
+import { Generators } from '@globalfishingwatch/layer-composer'
+import { DataviewInstance } from '@globalfishingwatch/api-types/dist/dataviews'
 import { VesselAPISource, VesselWithHistory } from 'types'
-import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import {
+  asyncInitialState,
+  AsyncReducer,
+  AsyncReducerStatus,
+  createAsyncSlice,
+} from 'utils/async-slice'
 import { VesselSourceId } from 'types/vessel'
 import gfwThunk from 'features/vessels/sources/gfw.slice'
 import tmtThunk from 'features/vessels/sources/tmt.slice'
 import { RootState } from 'store'
 import { mergeVesselFromSources } from './vessels.utils'
-
-export type VesselState = AsyncReducer<VesselWithHistory>
-
+export interface VesselState extends AsyncReducer<VesselWithHistory> {
+  dataview?: DataviewInstance<Generators.Type>
+}
 const initialState: VesselState = {
   ...asyncInitialState,
+  dataview: undefined,
 }
 export interface VesselAPIThunk {
   fetchById(id: VesselSourceId): Promise<VesselWithHistory>
@@ -74,6 +82,15 @@ const { slice: vesselsSlice, entityAdapter } = createAsyncSlice<VesselState, Ves
   thunks: {
     fetchByIdThunk: fetchVesselByIdThunk,
   },
+  reducers: {
+    clearVesselDataview: (state) => {
+      state.dataview = undefined
+      state.status = AsyncReducerStatus.Idle
+    },
+    upsertVesselDataview: (state, action: PayloadAction<DataviewInstance<Generators.Type>>) => {
+      state.dataview = action.payload
+    },
+  },
 })
 
 export const { selectById, selectIds } = entityAdapter.getSelectors<RootState>(
@@ -88,5 +105,8 @@ export const selectVesselById = memoize((id: string) =>
 
 export const selectVessels = (state: RootState) => state.vessels.entities
 export const selectVesselsStatus = (state: RootState) => state.vessels.status
+export const selectVesselDataview = (state: RootState) => state.vessels.dataview
+
+export const { clearVesselDataview, upsertVesselDataview } = vesselsSlice.actions
 
 export default vesselsSlice.reducer

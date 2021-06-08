@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import { AppState } from 'types/redux.types'
 
 export type WorkspaceEnv = 'development' | 'production'
@@ -13,7 +14,6 @@ export const DEFAULT_WORKSPACE: AppState = {
   maxSpeed: 12,
   minElevation: -4000,
   maxElevation: 500,
-  hiddenLayers: '',
   fromHour: 0,
   toHour: 24,
   latitude: -25.54035,
@@ -21,7 +21,7 @@ export const DEFAULT_WORKSPACE: AppState = {
   longitude: -35.97144,
   project: '1',
   start: '2017-12-01T00:00:00.000Z',
-  end: '2018-01-01T00:00:00.000Z',
+  end: DateTime.utc().toISO(),
   timebarMode: 'speed',
   filterMode: 'speed',
   minDistanceFromPort: 0,
@@ -29,3 +29,11 @@ export const DEFAULT_WORKSPACE: AppState = {
   importView: false,
   satellite: '',
 }
+
+export const DEFAULT_VIEWPORT = {
+  latitude: 26,
+  longitude: 12,
+  zoom: 1,
+}
+
+export const DEFAULT_VESSEL_MAP_ZOOM = 8

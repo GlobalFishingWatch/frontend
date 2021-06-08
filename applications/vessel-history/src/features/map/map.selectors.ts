@@ -1,37 +1,75 @@
 import { createSelector } from '@reduxjs/toolkit'
-// import { Generators } from '@globalfishingwatch/layer-composer'
-import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/dataviews-client'
-// import { selectHiddenLayers, selectSatellite } from 'routes/routes.selectors'
-import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
-import { BACKGROUND_LAYER, OFFLINE_LAYERS } from 'features/dataviews/dataviews.config'
+import GFWAPI from '@globalfishingwatch/api-client/dist/api-client'
+import {
+  getDataviewsGeneratorConfigs,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
+import {
+  selectDataviewInstancesResolved,
+  selectDefaultBasemapGenerator,
+  selectDefaultOfflineDataviewsGenerators,
+} from 'features/dataviews/dataviews.selectors'
+import { selectVesselsStatus } from 'features/vessels/vessels.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { ResourcesState, selectResources } from 'features/resources/resources.slice'
+import { DEFAULT_WORKSPACE } from 'data/config'
+import { Range } from 'types'
+import { selectTimeRange, selectViewport } from 'features/app/app.selectors'
 
-const generatorOptions = {
-  // heatmapAnimatedMode,
-  // highlightedTime,
-  // timeRange: staticTime,
-  // debug: debugOptions.debug,
-  // mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+export const selectGlobalGeneratorsConfig = createSelector(
+  [selectViewport, selectTimeRange],
+  ({ zoom }, { start, end }) => ({
+    zoom,
+    start,
+    end,
+    token: GFWAPI.getToken(),
+  })
+)
+
+type GetGeneratorConfigParams = {
+  dataviews: UrlDataviewInstance[] | undefined
+  resources: ResourcesState
+  staticTime: Range
 }
 
-// const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
+const getGeneratorsConfig = ({
+  dataviews = [],
+  resources,
+  staticTime,
+}: GetGeneratorConfigParams) => {
+  const generatorOptions = {
+    timeRange: staticTime,
+  }
 
-/**
- * Select the base layers that are not hidden by the user
- */
-export const selectMapLayers = createSelector(
-  [selectDataviewInstancesResolved],
-  (dataviewsInstances) => {
-    if (!dataviewsInstances) return
-    return getDataviewsGeneratorConfigs(
-      dataviewsInstances,
-      generatorOptions
-      // resources
-    )
+  const generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
+
+  return generatorsConfig.reverse()
+}
+
+const selectMapGeneratorsConfig = createSelector(
+  [selectDataviewInstancesResolved, selectResources],
+  (dataviews = [], resources) => {
+    return getGeneratorsConfig({
+      dataviews,
+      resources,
+      staticTime: {
+        start: DEFAULT_WORKSPACE.start,
+        end: DEFAULT_WORKSPACE.end,
+      },
+    })
   }
 )
-/**
- * Merge all the layers needed to render the map
- */
-export const getLayerComposerLayers = createSelector([selectMapLayers], (mapLayers = []) => {
-  return [...BACKGROUND_LAYER, ...OFFLINE_LAYERS, ...mapLayers]
-})
+
+export const selectDefaultMapGeneratorsConfig = createSelector(
+  [
+    selectVesselsStatus,
+    selectDefaultBasemapGenerator,
+    selectMapGeneratorsConfig,
+    selectDefaultOfflineDataviewsGenerators,
+  ],
+  (vesselStatus, basemapGenerator, mapGeneratorsConfig, offlineDataviewsGenerators) => {
+    return vesselStatus !== AsyncReducerStatus.Finished
+      ? [...offlineDataviewsGenerators, basemapGenerator]
+      : [...offlineDataviewsGenerators, ...mapGeneratorsConfig]
+  }
+)

@@ -1,9 +1,9 @@
 .container {
-  height: 100%;
+  height: 100vh;
 }
 
 .splash {
-  height: calc(100% - 100px);
+  height: calc(100vh - 100px);
   padding: 5vh 3% 0;
   display: flex;
   flex-direction: column;
@@ -24,7 +24,7 @@
 
 .splash::before {
   width: 50%;
-  height: 100%;
+  height: 100vh;
   background: var(--white);
   border-radius: 10em 0 0 10em;
   box-shadow: 0 0 0 1px var(--white);
@@ -36,7 +36,7 @@
 
 .splash::after {
   width: 50%;
-  height: 100%;
+  height: 100vh;
   background: var(--white);
   top: 0;
   left: 50%;

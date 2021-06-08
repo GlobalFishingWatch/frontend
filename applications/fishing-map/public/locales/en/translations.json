@@ -175,7 +175,7 @@
     "change_basemap_default": "Switch to default basemap",
     "change_basemap_satellite": "Switch to satellite basemap",
     "legend_help": "Approximate grid cell area at equator",
-    "loading": "Loading map",
+    "loading": "Loading",
     "mapLoadingWait": "Please wait until map loads.",
     "rulers_add": "Measure distance",
     "rulers_remove": "Remove measured distances",

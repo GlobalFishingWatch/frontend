@@ -7,6 +7,17 @@
 - Updated dependencies [undefined]
   - @globalfishingwatch/layer-composer@7.2.0
   - @globalfishingwatch/react-hooks@9.0.0
+## 5.1.1
+
+### Patch Changes
+
+- Customizable modal portalClassName
+
+## 5.1.0
+
+### Minor Changes
+
+- 82eed687: Enhanced Modal styling customisation
 
 ## 5.0.3
 
