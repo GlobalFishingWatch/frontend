@@ -37,6 +37,7 @@
     "@turf/center": "^6.3.0",
     "@turf/simplify": "^6.3.0",
     "@turf/union": "^6.3.0",
+    "array.prototype.flatmap": "^1.2.4",
     "auth-middleware": "GlobalFishingWatch/auth-middleware#develop",
     "bowser": "^2.11.0",
     "classnames": "^2.3.1",
