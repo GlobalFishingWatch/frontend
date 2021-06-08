@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.2.7
+
+### Patch Changes
+
+- events generator
+
 ## 4.2.6
 
 ### Patch Changes

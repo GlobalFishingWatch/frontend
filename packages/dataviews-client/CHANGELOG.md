@@ -1,5 +1,13 @@
 # @globalfishingwatch/dataviews-client
 
+## 9.0.1
+
+### Patch Changes
+
+- events generator
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@4.2.7
+
 ## 9.0.0
 
 ### Minor Changes

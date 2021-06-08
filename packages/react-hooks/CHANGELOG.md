@@ -1,5 +1,13 @@
 # @globalfishingwatch/react-hooks
 
+## 9.0.1
+
+### Patch Changes
+
+- events generator
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@9.0.1
+
 ## 9.0.0
 
 ### Patch Changes

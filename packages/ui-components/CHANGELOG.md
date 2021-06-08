@@ -1,5 +1,13 @@
 # @globalfishingwatch/ui-components
 
+## 6.0.1
+
+### Patch Changes
+
+- events generator
+- Updated dependencies [undefined]
+  - @globalfishingwatch/react-hooks@9.0.1
+
 ## 6.0.0
 
 ### Patch Changes
@@ -7,6 +15,7 @@
 - Updated dependencies [undefined]
   - @globalfishingwatch/layer-composer@7.2.0
   - @globalfishingwatch/react-hooks@9.0.0
+
 ## 5.1.1
 
 ### Patch Changes
