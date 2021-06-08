@@ -1,5 +1,16 @@
 # @globalfishingwatch/layer-composer
 
+## 7.2.0
+
+### Minor Changes
+
+- resolve vessel events generator
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@4.2.6
+
 ## 7.1.3
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @globalfishingwatch/dataviews-client
 
+## 9.0.0
+
+### Minor Changes
+
+- resolve vessel events generator
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/api-types@4.2.6
+
 ## 8.0.0
 
 ### Patch Changes
