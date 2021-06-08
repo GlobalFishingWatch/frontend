@@ -97,7 +97,7 @@ const selectEventsForTracks = createSelector(
       if (!eventsUrl) {
         return []
       }
-      return resources[eventsUrl]?.data as ApiEvent[]
+      return (resources[eventsUrl]?.data || []) as ApiEvent[]
     })
     return vesselsEvents
   }
@@ -113,7 +113,7 @@ export const selectEventsWithRenderingInfo = createSelector(
   (eventsForTrack) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(
       (trackEvents: ApiEvent[]) => {
-        return trackEvents?.map((event: ApiEvent) => {
+        return (trackEvents || []).map((event: ApiEvent) => {
           const vesselName = event.vessel.name || event.vessel.id
           let description
           switch (event.type) {
