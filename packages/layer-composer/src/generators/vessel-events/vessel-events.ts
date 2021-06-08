@@ -18,6 +18,7 @@ const EVENTS_COLORS: Dictionary<string> = {
   unmatched: '#CE2C54',
   loitering: '#cfa9f9',
   port: '#99EEFF',
+  fishing: '#ffffff',
 }
 
 interface VesselsEventsSource extends GeoJSONSourceRaw {
@@ -90,7 +91,7 @@ class VesselsEventsGenerator {
         source: config.id,
         paint: {
           'circle-color': ['get', 'color'],
-          'circle-stroke-width': 2,
+          'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, 0, 8, 1, 14, 3],
           'circle-stroke-color': [...activeFilter, 'rgba(0, 193, 231, 1)', DEFAULT_LANDMASS_COLOR],
           'circle-radius': [...activeFilter, 12, 5],
         },

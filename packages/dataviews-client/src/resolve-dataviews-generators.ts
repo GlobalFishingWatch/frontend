@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import { scaleLinear } from 'd3-scale'
 import {
   Resource,
@@ -9,6 +10,9 @@ import {
   EnviromentalDatasetConfiguration,
   DataviewCategory,
   Dataset,
+  EventTypes,
+  ApiEvent,
+  EventVesselTypeEnum,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -73,12 +77,46 @@ const getDatasetsExtent = (datasets: Dataset[] | undefined) => {
   return { extentStart, extentEnd }
 }
 
+// TODO remove this once the cluster events follow the same API events format
+type TemporalFishingEvent = {
+  event_id: string
+  event_type: EventTypes
+  vessel_id: string
+  event_start: string
+  event_end: string
+  lat_mean: number
+  lon_mean: number
+}
+// TODO: remove this workaound once the api returns the same format for every event
+const parseFishingEvent = (fishingEvent: TemporalFishingEvent): ApiEvent => {
+  const event = {
+    id: `${fishingEvent.lat_mean},${fishingEvent.lon_mean}`,
+    position: {
+      lat: fishingEvent.lat_mean,
+      lon: fishingEvent.lon_mean,
+    },
+    type: fishingEvent.event_type,
+    vessel: {
+      id: fishingEvent.vessel_id,
+      ssvid: '',
+      name: '',
+      flag: '',
+      type: EventVesselTypeEnum.Fishing,
+    },
+    start: DateTime.fromISO(fishingEvent.event_start).toMillis(),
+    end: DateTime.fromISO(fishingEvent.event_end).toMillis(),
+    rfmos: [],
+    eezs: [],
+  }
+  return event
+}
+
 export function getGeneratorConfig(
   dataview: UrlDataviewInstance,
   params?: DataviewsGeneratorConfigsParams,
   resources?: DataviewsGeneratorResource
 ) {
-  const { debug = false, timeRange, highlightedTime } = params || {}
+  const { debug = false, highlightedTime } = params || {}
 
   let generator: GeneratorDataviewConfig = {
     id: dataview.id,
@@ -96,7 +134,7 @@ export function getGeneratorConfig(
         return []
       }
       generator.tilesUrl = tileClusterUrl
-      break
+      return generator
     }
     case Generators.Type.Track: {
       // Inject highligtedTime
@@ -114,7 +152,18 @@ export function getGeneratorConfig(
         const resource = resources?.[trackUrl] as Resource<TrackResourceData>
         generator.data = resource.data
       }
-      break
+      const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
+      if (eventsUrl && resources?.[eventsUrl]?.data) {
+        const resource = resources?.[eventsUrl] as Resource<any>
+        const data = resource.data.entries ? resource.data.entries.map(parseFishingEvent) : []
+        const eventsGenerator = {
+          id: `${dataview.id}_vessel_events`,
+          type: Generators.Type.VesselEvents,
+          data,
+        }
+        return [generator, eventsGenerator]
+      }
+      return generator
     }
     case Generators.Type.Heatmap: {
       const heatmapDataset = dataview.datasets?.find(
@@ -144,7 +193,7 @@ export function getGeneratorConfig(
           },
         },
       }
-      break
+      return generator
     }
     case Generators.Type.HeatmapAnimated: {
       const isEnvironmentLayer = dataview.category === DataviewCategory.Environment
@@ -207,7 +256,7 @@ export function getGeneratorConfig(
         ...(extentStart && { datasetsStart: extentStart }),
         ...(extentEnd && { datasetsEnd: extentEnd }),
       }
-      break
+      return generator
     }
     case Generators.Type.Context:
     case Generators.Type.UserContext: {
@@ -259,10 +308,12 @@ export function getGeneratorConfig(
         console.warn('Missing tiles url for dataview', dataview)
         return []
       }
-      break
+      return generator
+    }
+    default: {
+      return generator
     }
   }
-  return generator
 }
 
 /**

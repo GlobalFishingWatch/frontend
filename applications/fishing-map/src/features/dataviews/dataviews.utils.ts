@@ -24,7 +24,6 @@ export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
 export const PRESENCE_LAYER_ID = 'presence'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
-export const VESSEL_EVENTS_DATAVIEW_INSTANCE_PREFIX = 'vessel_events-'
 
 type VesselInstanceDatasets = {
   trackDatasetId: string
