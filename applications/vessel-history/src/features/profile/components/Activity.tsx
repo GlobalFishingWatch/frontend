@@ -52,37 +52,39 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
     <Fragment>
       <div className={styles.activityContainer}>
         {eventGroups && eventGroups.map((group: ActivityEventGroup, index) => ( 
-          <Fragment key={index}>
+          <Fragment>
             {group.entries && group.entries.map((event: ActivityEvent) => ( 
-              <div className={styles.event} >
-                <div>
-                  <i className={styles.eventIcon}></i>
-                </div>
-                <div className={styles.eventData}>
-                  {event.event_start && event.event_end && (
-                    <div className={styles.date}>
-                      {event.event_start} - {event.event_end}
+              <Fragment key={index}>
+                  <div className={styles.event} >
+                    <div>
+                      <i className={styles.eventIcon}></i>
                     </div>
-                  )}
-                  {event.event_start && !event.event_end && (
-                    <div className={styles.date}>
-                      {event.event_start}
+                    <div className={styles.eventData}>
+                      {event.event_start && event.event_end && (
+                        <div className={styles.date}>
+                          {event.event_start} - {event.event_end}
+                        </div>
+                      )}
+                      {event.event_start && !event.event_end && (
+                        <div className={styles.date}>
+                          {event.event_start}
+                        </div>
+                      )}
+                      <div className={styles.description}>
+                        Fishing in ????
+                      </div>
+                      
                     </div>
-                  )}
-                  <div className={styles.description}>
-                    Fishing in ????
+                    {group.entries.length > 1 && ( 
+                      <div className={styles.actions}>
+                        <IconButton icon="info" size="small"></IconButton>
+                        <IconButton icon="view-on-map" size="small"></IconButton>
+                      </div>
+                    )}
                   </div>
-                  
-                </div>
-                {group.entries.length > 1 && ( 
-                  <div className={styles.actions}>
-                    <IconButton icon="info" size="small"></IconButton>
-                    <IconButton icon="view-on-map" size="small"></IconButton>
-                  </div>
-                )}
-              </div>
+                <div className={styles.divider}></div>
+              </Fragment>
             ))}
-            <div className={styles.divider}></div>
           </Fragment>
         ))}
       </div>

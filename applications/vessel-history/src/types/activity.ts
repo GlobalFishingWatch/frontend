@@ -64,3 +64,8 @@ export interface ActivityEvents {
     limit?: any;
     groups: ActivityEventGroup[];
 }
+
+export interface OfflineVesselActivity extends ActivityEvent {
+    profileId: string
+    savedOn: string
+}
