@@ -77,40 +77,6 @@ const getDatasetsExtent = (datasets: Dataset[] | undefined) => {
   return { extentStart, extentEnd }
 }
 
-// TODO remove this once the cluster events follow the same API events format
-type TemporalFishingEvent = {
-  event_id: string
-  event_type: EventTypes
-  vessel_id: string
-  event_start: string
-  event_end: string
-  lat_mean: number
-  lon_mean: number
-}
-// TODO: remove this workaound once the api returns the same format for every event
-const parseFishingEvent = (fishingEvent: TemporalFishingEvent): ApiEvent => {
-  const event = {
-    id: `${fishingEvent.lat_mean},${fishingEvent.lon_mean}`,
-    position: {
-      lat: fishingEvent.lat_mean,
-      lon: fishingEvent.lon_mean,
-    },
-    type: fishingEvent.event_type,
-    vessel: {
-      id: fishingEvent.vessel_id,
-      ssvid: '',
-      name: '',
-      flag: '',
-      type: EventVesselTypeEnum.Fishing,
-    },
-    start: DateTime.fromISO(fishingEvent.event_start).toMillis(),
-    end: DateTime.fromISO(fishingEvent.event_end).toMillis(),
-    rfmos: [],
-    eezs: [],
-  }
-  return event
-}
-
 export function getGeneratorConfig(
   dataview: UrlDataviewInstance,
   params?: DataviewsGeneratorConfigsParams,
@@ -154,12 +120,10 @@ export function getGeneratorConfig(
       }
       const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
       if (eventsUrl && resources?.[eventsUrl]?.data) {
-        const resource = resources?.[eventsUrl] as Resource<any>
-        const data = resource.data.entries ? resource.data.entries.map(parseFishingEvent) : []
         const eventsGenerator = {
           id: `${dataview.id}_vessel_events`,
           type: Generators.Type.VesselEvents,
-          data,
+          data: resources?.[eventsUrl].data,
         }
         return [generator, eventsGenerator]
       }

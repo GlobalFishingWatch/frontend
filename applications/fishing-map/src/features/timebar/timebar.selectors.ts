@@ -1,13 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import {
-  ApiEvent,
-  DatasetTypes,
-  EventTypes,
-  EventVesselTypeEnum,
-  Resource,
-  TrackResourceData,
-} from '@globalfishingwatch/api-types'
+import { ApiEvent, DatasetTypes, Resource, TrackResourceData } from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { geoJSONToSegments, Segment } from '@globalfishingwatch/data-transforms'
 import { selectTimebarGraph } from 'features/app/app.selectors'
@@ -96,51 +89,15 @@ export const selectTracksGraphs = createSelector(
   }
 )
 
-// TODO remove this once the cluster events follow the same API events format
-type TemporalFishingEvent = {
-  event_id: string
-  event_type: EventTypes
-  vessel_id: string
-  event_start: string
-  event_end: string
-  lat_mean: number
-  lon_mean: number
-}
-
-// TODO: remove this workaound once the api returns the same format for every event
-const parseFishingEvent = (fishingEvent: TemporalFishingEvent): ApiEvent => {
-  const event = {
-    id: `${fishingEvent.lat_mean},${fishingEvent.lon_mean}`,
-    position: {
-      lat: fishingEvent.lat_mean,
-      lon: fishingEvent.lon_mean,
-    },
-    type: fishingEvent.event_type,
-    vessel: {
-      id: fishingEvent.vessel_id,
-      ssvid: '',
-      name: '',
-      flag: '',
-      type: EventVesselTypeEnum.Fishing,
-    },
-    start: DateTime.fromISO(fishingEvent.event_start).toMillis(),
-    end: DateTime.fromISO(fishingEvent.event_end).toMillis(),
-    rfmos: [],
-    eezs: [],
-  }
-  return event
-}
-
 const selectEventsForTracks = createSelector(
   [selectTrackDataviews, selectResources],
   (trackDataviews, resources) => {
     const vesselsEvents = trackDataviews.map((dataview) => {
-      const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
-      if (!trackUrl) {
+      const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
+      if (!eventsUrl) {
         return []
       }
-      const entries = (resources[trackUrl]?.data as any)?.entries as TemporalFishingEvent[]
-      return entries ? entries.map(parseFishingEvent) : []
+      return resources[eventsUrl]?.data as ApiEvent[]
     })
     return vesselsEvents
   }
@@ -156,7 +113,7 @@ export const selectEventsWithRenderingInfo = createSelector(
   (eventsForTrack) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(
       (trackEvents: ApiEvent[]) => {
-        return trackEvents.map((event: ApiEvent) => {
+        return trackEvents?.map((event: ApiEvent) => {
           const vesselName = event.vessel.name || event.vessel.id
           let description
           switch (event.type) {
