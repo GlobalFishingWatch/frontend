@@ -20,21 +20,17 @@ const fetchData = (dataset: string, vesselId: string, signal?: AbortSignal | nul
 }
 
 const fetchDatasets = async (vesselId: string, signal?: AbortSignal | null) => {
-  console.log(vesselId)
   // TODO:duplicate for testing, others datasets should be used
-  const datasets = [FISHING_EVENTS_DATASET, FISHING_EVENTS_DATASET]
+  const datasets = [FISHING_EVENTS_DATASET]
   const fetchedEvents = await Promise.all(
     datasets.map(async (dataset) => fetchData(dataset, vesselId, signal))
   )
-  console.error(324)
   const allEvents = fetchedEvents.flat()
-  console.log(allEvents)
   const sortEvents = allEvents.sort(
     (n1: ActivityEvent, n2: ActivityEvent) => {
       return new Date(n1.event_start).getTime() > new Date(n2.event_start).getTime() ? -1 : 1
     }
   )
-  console.log(sortEvents)
 
   return sortEvents
 }
@@ -62,9 +58,7 @@ const groupEvents = (events: ActivityEvent[]) => {
 export const fetchVesselActivityThunk = createAsyncThunk(
   'vessels/activity',
   async ({ vesselId }: VesselSearchThunk, { rejectWithValue, getState, signal }) => {
-    console.log(vesselId)
     const events = await fetchDatasets(vesselId, signal)
-    console.log(events)
     return groupEvents(events)
   },
   {

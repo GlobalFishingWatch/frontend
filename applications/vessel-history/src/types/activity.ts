@@ -15,7 +15,7 @@ export interface RegionsMeanPosition {
     major_fao: string[];
 }
 
-enum EventType {
+export enum EventType {
     Fishing = 'fishing',
 }
 
@@ -37,8 +37,8 @@ export interface ActivityEvent {
     event_type: EventType;
     vessel_id: string;
     seg_id: string;
-    event_start: Date;
-    event_end: Date;
+    event_start: string;
+    event_end: string;
     lat_mean: number;
     lon_mean: number;
     lat_min: number;
@@ -65,7 +65,8 @@ export interface ActivityEvents {
     groups: ActivityEventGroup[];
 }
 
-export interface OfflineVesselActivity extends ActivityEvent {
+export interface OfflineVesselActivity {
+    activities: ActivityEvent[]
     profileId: string
     savedOn: string
 }

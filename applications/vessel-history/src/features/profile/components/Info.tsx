@@ -7,6 +7,7 @@ import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { VesselWithHistory } from 'types'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
+import { useOfflineVesselsActivityAPI } from 'features/vessels/activity/offline-vessels-activity.hook'
 import { OfflineVessel } from 'types/vessel'
 import {
   selectDataset,
@@ -14,6 +15,8 @@ import {
   selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
+import { selectVesselActivity } from 'features/vessels/activity/vessels-activity.slice'
+import { ActivityEvent, ActivityEventGroup, OfflineVesselActivity } from 'types/activity'
 import InfoField, { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
 
@@ -28,13 +31,14 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const vesselId = useSelector(selectVesselId)
+  const activities = useSelector(selectVesselActivity)
   const vesselTmtId = useSelector(selectTmtId)
   const vesselDataset = useSelector(selectDataset)
   const vesselProfileId = useSelector(selectVesselProfileId)
   const offlineVessel = useSelector(selectCurrentOfflineVessel)
   const { dispatchCreateOfflineVessel, dispatchDeleteOfflineVessel, dispatchFetchOfflineVessel } =
     useOfflineVesselsAPI()
-
+  const { dispatchCreateOfflineVesselActivity, dispatchDeleteOfflineVesselActivity } = useOfflineVesselsActivityAPI()
   useEffect(() => {
     dispatchFetchOfflineVessel(vesselProfileId)
   }, [vesselProfileId, dispatchFetchOfflineVessel])
@@ -42,6 +46,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const onDeleteClick = async (data: OfflineVessel) => {
     setLoading(true)
     await dispatchDeleteOfflineVessel(data.profileId)
+    await dispatchDeleteOfflineVesselActivity(data.profileId)
     setLoading(false)
   }
   const onSaveClick = async (data: VesselWithHistory) => {
@@ -56,6 +61,16 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         source: '',
         savedOn: DateTime.utc().toISO(),
       },
+    })
+
+    await dispatchCreateOfflineVesselActivity({
+      activity: {
+        activities: activities.flatMap((groups: ActivityEventGroup) => {
+          return groups.entries
+        }),
+        profileId: data.id,
+        savedOn: DateTime.utc().toISO(),
+      }
     })
     setLoading(false)
   }

@@ -1,7 +1,6 @@
 import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
 import connectedRoutes, { routerQueryMiddleware } from 'routes/routes'
 import offlineVesselsReducer from 'features/vessels/offline-vessels.slice'
-import offlineVesselsActivityReducer from 'features/vessels/offline-vessels-activity.slice'
 import vesselsReducer from 'features/vessels/vessels.slice'
 import searchReducer from 'features/search/search.slice'
 import settingsReducer from 'features/settings/settings.slice'
@@ -12,7 +11,7 @@ import datasetsReducer from './features/datasets/datasets.slice'
 import regionsReducer from './features/regions/regions.slice'
 import resourcesReducer from './features/resources/resources.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
-import activityReducer from './features/vessels/vessels-activity.slice'
+import activityReducer from './features/vessels/activity/vessels-activity.slice'
 
 const {
   reducer: location,

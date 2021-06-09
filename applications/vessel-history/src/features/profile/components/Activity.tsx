@@ -14,11 +14,13 @@ import {
   selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
-import { fetchVesselActivityThunk } from 'features/vessels/vessels-activity.thunk'
-import { selectVesselActivity } from 'features/vessels/vessels-activity.slice'
+import { fetchVesselActivityThunk } from 'features/vessels/activity/vessels-activity.thunk'
+import { selectVesselActivity } from 'features/vessels/activity/vessels-activity.slice'
 import { ActivityEvent, ActivityEventGroup } from 'types/activity'
+import I18nDate from 'features/i18n/i18nDate'
 import InfoField, { VesselFieldLabel } from './InfoField'
 import styles from './Activity.module.css'
+import ActivityDate from './ActivityDate'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -51,25 +53,16 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
   return (
     <Fragment>
       <div className={styles.activityContainer}>
-        {eventGroups && eventGroups.map((group: ActivityEventGroup, index) => ( 
-          <Fragment>
-            {group.entries && group.entries.map((event: ActivityEvent) => ( 
-              <Fragment key={index}>
+        {eventGroups && eventGroups.map((group: ActivityEventGroup, groupIndex) => ( 
+          <Fragment key={groupIndex}>
+            {group.entries && group.entries.map((event: ActivityEvent, eventIndex) => ( 
+              <Fragment key={eventIndex}>
                   <div className={styles.event} >
                     <div>
                       <i className={styles.eventIcon}></i>
                     </div>
                     <div className={styles.eventData}>
-                      {event.event_start && event.event_end && (
-                        <div className={styles.date}>
-                          {event.event_start} - {event.event_end}
-                        </div>
-                      )}
-                      {event.event_start && !event.event_end && (
-                        <div className={styles.date}>
-                          {event.event_start}
-                        </div>
-                      )}
+                      <ActivityDate event={event}/>
                       <div className={styles.description}>
                         Fishing in ????
                       </div>

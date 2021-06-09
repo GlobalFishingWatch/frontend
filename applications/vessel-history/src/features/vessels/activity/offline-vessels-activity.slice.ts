@@ -22,9 +22,10 @@ export const createOfflineVesselActivityThunk = createAsyncThunk<
   }
 >('offlineVesselsActivity/create', async ({ activity }, { rejectWithValue }) => {
   try {
-    db.activity.add(activity, activity.profileId)
+    console.log(activity)
+    db.activity.add(activity)
     return activity
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })
   }
 })
@@ -43,7 +44,7 @@ export const deleteOfflineVesselActivityThunk = createAsyncThunk<
     }
     await db.activity.delete(profileId)
     return { ...result }
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({
       status: e.status || e.code,
       message: `${profileId} - ${e.message}`,
@@ -51,8 +52,8 @@ export const deleteOfflineVesselActivityThunk = createAsyncThunk<
   }
 })
 
-export const fetchOfflineVesselsActivityThunk = createAsyncThunk<
-  OfflineVesselActivity[],
+/*export const fetchOfflineVesselsActivityThunk = createAsyncThunk<
+  OfflineVesselActivity,
   string[],
   {
     rejectValue: AsyncError
@@ -66,10 +67,10 @@ export const fetchOfflineVesselsActivityThunk = createAsyncThunk<
     } else {
       return await db.activity.toArray()
     }
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({ status: e.status || e.code, message: e.message })
   }
-})
+})*/
 
 export const fetchOfflineVesselActivityByIdThunk = createAsyncThunk<
   OfflineVesselActivity,
@@ -84,7 +85,7 @@ export const fetchOfflineVesselActivityByIdThunk = createAsyncThunk<
       throw new Error('Vessel not found')
     }
     return result
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({
       status: e.status || e.code,
       message: `${profileId} - ${e.message}`,
@@ -102,7 +103,7 @@ export const updateOfflineVesselActivityThunk = createAsyncThunk<
   try {
     await db.activity.put(activity, activity.profileId)
     return activity
-  } catch (e) {
+  } catch (e: any) {
     return rejectWithValue({
       status: e.status || e.code,
       message: `${activity.profileId} - ${e.message}`,
@@ -111,12 +112,12 @@ export const updateOfflineVesselActivityThunk = createAsyncThunk<
 })
 
 const { slice: vesselsSlice, entityAdapter } = createAsyncSlice<OfflineVesselActivityState, OfflineVesselActivity>({
-  name: 'offlineVessels',
+  name: 'offlineVesselsActivity',
   initialState,
   thunks: {
     createThunk: createOfflineVesselActivityThunk,
     deleteThunk: deleteOfflineVesselActivityThunk,
-    fetchThunk: fetchOfflineVesselsActivityThunk,
+    //fetchThunk: fetchOfflineVesselsActivityThunk,
     updateThunk: updateOfflineVesselActivityThunk,
     fetchByIdThunk: fetchOfflineVesselActivityByIdThunk,
   },
@@ -131,6 +132,6 @@ export const selectOfflineVesselById = memoize((id: string) =>
   })
 )
 
-export const selectOfflineVessels = (state: RootState) => state.offlineVessels.entities
+export const selectOfflineVesselsActivity = (state: RootState) => state.offlineVesselsActivity.entities
 export const selectProfileIds = (state: RootState) => state.offlineVessels.profileIds
 export default vesselsSlice.reducer
