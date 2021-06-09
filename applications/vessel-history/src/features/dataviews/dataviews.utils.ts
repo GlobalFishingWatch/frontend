@@ -1,12 +1,16 @@
 import { uniq } from 'lodash'
 import { Dataview, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
-import { LineColorBarOptions } from '@globalfishingwatch/ui-components/dist/color-bar'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AppDispatch } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from './dataviews.slice'
-import { DEFAULT_VESSEL_DATAVIEW_ID, dataviewInstances } from './dataviews.config'
+import {
+  DEFAULT_VESSEL_DATAVIEW_ID,
+  dataviewInstances,
+  vesselDataviewIds,
+  DEFAULT_TRACK_COLOR,
+} from './dataviews.config'
 
 // used in workspaces with encounter events layers
 export const VESSEL_LAYER_PREFIX = 'vessel-'
@@ -35,8 +39,7 @@ export const getVesselDataviewInstance = (
     id: `${VESSEL_LAYER_PREFIX}${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
-      // TODO pick a not used color
-      color: LineColorBarOptions[Math.floor(Math.random() * LineColorBarOptions.length)].value,
+      color: DEFAULT_TRACK_COLOR,
     },
     datasetsConfig,
   }
@@ -56,9 +59,10 @@ export const getDatasetByDataview = (
 
 export const initializeDataviews = async (dispatch: AppDispatch) => {
   let dataviews: Dataview[] = []
-  const action = await dispatch(
-    fetchDataviewsByIdsThunk(dataviewInstances.map((instance) => instance.dataviewId))
+  const dataviewIds = Array.from(
+    new Set([...dataviewInstances.map((instance) => instance.dataviewId), ...vesselDataviewIds])
   )
+  const action = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
   if (fetchDataviewsByIdsThunk.fulfilled.match(action as any)) {
     dataviews = action.payload as Dataview[]
   }

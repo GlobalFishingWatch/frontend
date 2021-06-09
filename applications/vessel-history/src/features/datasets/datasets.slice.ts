@@ -67,7 +67,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
   }
 )
 
-export const fetchAllDatasetsThunk = createAsyncThunk('datasets/all', async (_, { dispatch }) => {
+export const fetchAllDatasetsThunk = createAsyncThunk('datasets/all', (_, { dispatch }) => {
   return dispatch(fetchDatasetsByIdsThunk([]))
 })
 

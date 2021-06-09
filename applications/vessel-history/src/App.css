@@ -19,8 +19,8 @@
 }
 
 #root,
-.content {
-  height: 100%;
+body {
+  height: auto;
 }
 
 .content {

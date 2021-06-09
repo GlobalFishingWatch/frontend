@@ -1,0 +1,79 @@
+:root {
+  --header-height: 110px;
+}
+.mapControls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: absolute;
+  right: var(--space-S);
+  top: calc(var(--header-height) + var(--space-S));
+  z-index: 1;
+}
+
+.controlsNested {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.mapControls > *,
+.controlsNested > * {
+  margin-bottom: var(--space-XS);
+}
+
+.loadingBtn {
+  transform: scale(0);
+  height: 0;
+  pointer-events: none;
+  transition: transform 0.3s 0.5s, border 0.3s 0s;
+  margin-bottom: 0;
+  border: none;
+}
+
+.visible {
+  transform: scale(1);
+  border: var(--border-white);
+  height: var(--size-M);
+}
+
+.layersModalPortal .layersModalOverlay {
+  background: none;
+}
+
+.layersModalPortal .layersModalContentWrapper {
+  background: var(--color-white);
+  filter: var(--drop-shadow);
+  padding: var(--space-S);
+  position: absolute;
+  right: var(--space-XS);
+  top: calc(var(--header-height) + var(--space-XS));
+  height: fit-content;
+  width: fit-content;
+}
+
+.layersModalPortal .layersModalContainer {
+  width: fit-content;
+  height: fit-content;
+  padding: 0 var(--space-S);
+}
+
+.contextLayer {
+  display: flex;
+  font-size: var(--font-S);
+  flex-direction: row;
+  align-items: center;
+  height: var(--size-M);
+  color: rgba(var(--primary-blue-rgb), 0.7);
+}
+
+.active {
+  color: var(--color-primary-blue);
+  z-index: 1;
+}
+
+.layersModalPortal .layersModalCloseButton {
+  position: absolute;
+  top: var(--space-XS);
+  right: var(--space-XS);
+}

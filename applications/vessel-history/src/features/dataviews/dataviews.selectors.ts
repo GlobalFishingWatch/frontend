@@ -1,21 +1,37 @@
 import { createSelector } from 'reselect'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
 import {
   resolveDataviews,
   UrlDataviewInstance,
-  // mergeWorkspaceUrlDataviewInstances,
   getGeneratorConfig,
+  mergeWorkspaceUrlDataviewInstances,
 } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasets, selectDatasetsStatus } from 'features/datasets/datasets.slice'
-import { dataviewInstances } from './dataviews.config'
+import { selectVesselDataview } from 'features/vessels/vessels.slice'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
+import { BACKGROUND_LAYER, OFFLINE_LAYERS, APP_THINNING, THINNING_LEVELS } from './dataviews.config'
 
 export const selectDataviews = createSelector([selectAllDataviews], (dataviews) => {
-  return dataviews
+  const thinningConfig = THINNING_LEVELS[APP_THINNING]
+  const thinningQuery = Object.entries(thinningConfig).map(([id, value]) => ({
+    id,
+    value,
+  }))
+  return dataviews?.map((dataview) => {
+    return {
+      ...dataview,
+      datasetsConfig: dataview.datasetsConfig?.map((datasetConfig) => {
+        if (datasetConfig.endpoint !== EndpointId.Tracks) return datasetConfig
+        return { ...datasetConfig, query: [...(datasetConfig.query || []), ...thinningQuery] }
+      }),
+    }
+  })
 })
 
 const defaultBasemapDataview = {
@@ -25,6 +41,10 @@ const defaultBasemapDataview = {
     basemap: Generators.BasemapType.Default,
   },
 }
+
+export const selectDefaultOfflineDataviewsGenerators = createSelector([], () => {
+  return BACKGROUND_LAYER.concat(OFFLINE_LAYERS)
+})
 
 export const selectBasemapDataview = createSelector([selectDataviews], (dataviews) => {
   const basemapDataview = dataviews.find((d) => d.config.type === GeneratorType.Basemap)
@@ -41,15 +61,41 @@ export const selectDefaultBasemapGenerator = createSelector(
   }
 )
 
+export const selectDataviewInstancesMerged = createSelector(
+  [selectVesselDataview, selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
+  (vesselDataview, dataviews, urlDataviewInstances) => {
+    return mergeWorkspaceUrlDataviewInstances(
+      [...dataviews, vesselDataview ?? []] as DataviewInstance<any>[],
+      urlDataviewInstances
+    )
+  }
+)
+
 export const selectDataviewInstancesResolved = createSelector(
-  [selectDataviewsStatus, selectDataviews, selectDatasets, selectDatasetsStatus],
-  (dataviewsStatus, dataviews, datasets, datasetsStatus): UrlDataviewInstance[] | undefined => {
+  [
+    selectDataviewsStatus,
+    selectDataviews,
+    selectDatasets,
+    selectDatasetsStatus,
+    selectDataviewInstancesMerged,
+  ],
+  (
+    dataviewsStatus,
+    dataviews,
+    datasets,
+    datasetsStatus,
+    dataviewInstances
+  ): UrlDataviewInstance[] | undefined => {
     if (
       dataviewsStatus !== AsyncReducerStatus.Finished ||
       datasetsStatus !== AsyncReducerStatus.Finished
     )
       return
-    const dataviewInstancesResolved = resolveDataviews(dataviewInstances, dataviews, datasets)
+    const dataviewInstancesResolved = resolveDataviews(
+      dataviewInstances as UrlDataviewInstance[],
+      dataviews,
+      datasets
+    )
     return dataviewInstancesResolved
   }
 )

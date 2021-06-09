@@ -7,7 +7,7 @@ import {
   BasemapGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { RootState } from 'store'
-import { selectMapZoomQuery, getDateRange } from 'routes/routes.selectors'
+import { selectUrlMapZoomQuery, getDateRange } from 'routes/routes.selectors'
 
 export interface MapState {
   generatorsConfig: AnyGeneratorConfig[]
@@ -56,7 +56,7 @@ export const { updateGenerator } = mapSlice.actions
 export const selectGeneratorsConfig = (state: RootState) => state.map.generatorsConfig
 
 export const selectGlobalGeneratorsConfig = createSelector(
-  [selectMapZoomQuery, getDateRange],
+  [selectUrlMapZoomQuery, getDateRange],
   (zoom, { start, end }) => ({
     zoom,
     start,

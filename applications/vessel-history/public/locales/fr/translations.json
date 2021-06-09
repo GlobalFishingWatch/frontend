@@ -13,12 +13,19 @@
     "historyFor": "historique pour",
     "previous": "Précédent"
   },
+  "layer": {
+    "toggleVisibility": "Toggle layer visibility"
+  },
+  "map": {
+    "loading": "Map loading",
+    "toggleLayers": "Toggle layers"
+  },
   "search": {
     "description": "Recherche par nom de navire ou code d'identification (IMO, MMSI, VMS ID, etc…). Vous pouvez affiner votre recherche en appuyant sur l'icône de filtre dans la barre du haut",
-    "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser MMSI, IMO ou Call Sign",
-    "notAllowed": "Recherche non autorisée",
     "loadMore": "Charger plus",
-    "noMore": "Aucun résultat supplémentaire"
+    "noMore": "Aucun résultat supplémentaire",
+    "noResults": "Vous ne trouvez pas le vaisseau que vous cherchez? Essayez d'utiliser MMSI, IMO ou Call Sign",
+    "notAllowed": "Recherche non autorisée"
   },
   "selects": {
     "allSelected": "Tous",
@@ -65,10 +72,10 @@
     "plusPreviousValuesByField": "+{{quantity}} {{fieldLabel}} précédentes",
     "readyForOfflineView": "PRÊT POUR VUE Hors LIGNE",
     "remove": "Retirer",
+    "savedOn": "sauvegardé le",
     "saveForOfflineView": "enregistrer le vaisseau pour une vue hors ligne",
     "source": "source",
     "transmission_plural": "transmissions",
-    "savedOn": "sauvegardé le",
     "previousNames": "noms précédents",
     "builtYear": "année de construction",
     "depth": "profondeur",

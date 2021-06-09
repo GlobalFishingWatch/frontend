@@ -61,7 +61,8 @@ function Analysis() {
       .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
       .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
       .filter((dataset: Dataset) => {
-        const permission = { type: 'dataset', value: dataset.id, action: 'report' }
+        if (!dataset) return false
+        const permission = { type: 'dataset', value: dataset?.id, action: 'report' }
         return checkExistPermissionInList(userData?.permissions, permission)
       })
     return datasets
@@ -95,7 +96,8 @@ function Analysis() {
           .map((id: string) => dataview.datasets?.find((dataset) => dataset.id === id))
           .map((dataset: Dataset) => getRelatedDatasetByType(dataset, DatasetTypes.Tracks))
           .filter((dataset: Dataset) => {
-            const permission = { type: 'dataset', value: dataset.id, action: 'report' }
+            if (!dataset) return false
+            const permission = { type: 'dataset', value: dataset?.id, action: 'report' }
             return checkExistPermissionInList(userData?.permissions, permission)
           })
 

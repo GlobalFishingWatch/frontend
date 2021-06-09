@@ -1,6 +1,8 @@
+import { DataviewInstance } from '@globalfishingwatch/api-types/dist'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   BackgroundGeneratorConfig,
+  GeneratorConfig,
   GlGeneratorConfig,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { FillLayer } from '@globalfishingwatch/mapbox-gl'
@@ -10,7 +12,7 @@ import { LANDMASS_OFFLINE_GEOJSON } from 'data/constants'
 export const MAP_BACKGROUND_COLOR = '#052555'
 export const DEFAULT_LANDMASS_COLOR = '#274877'
 
-export const BACKGROUND_LAYER = [
+export const BACKGROUND_LAYER: GeneratorConfig[] = [
   {
     id: 'background',
     tileset: 'background',
@@ -20,7 +22,7 @@ export const BACKGROUND_LAYER = [
   } as BackgroundGeneratorConfig,
 ]
 
-export const OFFLINE_LAYERS = [
+export const OFFLINE_LAYERS: GeneratorConfig[] = [
   // When offline we serve this landmass layer as a backup
   // in case that not all tiles are cached
   {
@@ -57,7 +59,7 @@ export const DEFAULT_MPA_RESTRICTED_DATAVIEW_ID = WORKSPACE_ENV === 'development
 export const DEFAULT_MPA_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 98 : 176
 export const DEFAULT_RFMO_DATAVIEW_ID = WORKSPACE_ENV === 'development' ? 95 : 175
 
-export const dataviewInstances = [
+export const dataviewInstances: DataviewInstance<Generators.Type>[] = [
   {
     id: 'basemap',
     dataviewId: DEFAULT_BASEMAP_DATAVIEW_ID,
@@ -103,3 +105,38 @@ export const dataviewInstances = [
     dataviewId: DEFAULT_RFMO_DATAVIEW_ID,
   },
 ]
+
+export const vesselDataviewIds = [DEFAULT_VESSEL_DATAVIEW_ID]
+
+export const DEFAULT_TRACK_COLOR = '#8DE9F6'
+
+export enum ThinningLevels {
+  Aggressive = 'aggressive',
+  Default = 'default',
+}
+
+export const THINNING_LEVELS = {
+  [ThinningLevels.Aggressive]: {
+    distanceFishing: 1000,
+    bearingValFishing: 5,
+    changeSpeedFishing: 200,
+    minAccuracyFishing: 50,
+    distanceTransit: 2000,
+    bearingValTransit: 5,
+    changeSpeedTransit: 200,
+    minAccuracyTransit: 100,
+  },
+  [ThinningLevels.Default]: {
+    distanceFishing: 500,
+    bearingValFishing: 1,
+    changeSpeedFishing: 200,
+    minAccuracyFishing: 30,
+    distanceTransit: 500,
+    bearingValTransit: 1,
+    changeSpeedTransit: 200,
+    minAccuracyTransit: 30,
+  },
+}
+
+export const APP_THINNING =
+  (process.env.APP_THINNING as ThinningLevels) || ThinningLevels.Aggressive
