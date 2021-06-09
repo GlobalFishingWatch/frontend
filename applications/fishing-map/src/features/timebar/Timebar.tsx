@@ -12,8 +12,8 @@ import TimebarComponent, {
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { TimebarVisualisations, TimebarGraphs } from 'types'
-import { selectTimebarGraph } from 'features/app/app.selectors'
+import { TimebarEvents, TimebarVisualisations, TimebarGraphs } from 'types'
+import { selectTimebarEvents, selectTimebarGraph } from 'features/app/app.selectors'
 import { selectActivityCategory } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 import {
@@ -39,6 +39,7 @@ const TimebarWrapper = () => {
   const highlightedTime = useSelector(selectHighlightedTime)
   const { timebarVisualisation } = useTimebarVisualisation()
   const timebarGraph = useSelector(selectTimebarGraph)
+  const timebarEvents = useSelector(selectTimebarEvents)
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
   const tracksEvents = useSelector(selectEventsWithRenderingInfo)
@@ -134,6 +135,8 @@ const TimebarWrapper = () => {
 
   if (!start || !end) return null
 
+  const showAllEvents = timebarEvents === TimebarEvents.All
+  const showFishingEvents = showAllEvents || timebarEvents === TimebarEvents.Fishing
   return (
     <div>
       <TimebarComponent
@@ -166,7 +169,7 @@ const TimebarWrapper = () => {
                     {timebarGraph === TimebarGraphs.Speed && tracksGraph && (
                       <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
                     )}
-                    {tracksEvents && (
+                    {tracksEvents && showFishingEvents && (
                       <TimebarTracksEvents
                         key="events"
                         tracksEvents={tracksEvents}

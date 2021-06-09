@@ -45,7 +45,7 @@ export const DEFAULT_WORKSPACE = {
   availableEnd: end,
   dataviewInstances: undefined,
   timebarVisualisation: TimebarVisualisations.Heatmap,
-  timebarEvents: TimebarEvents.None,
+  timebarEvents: TimebarEvents.All,
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
   analysis: undefined,
