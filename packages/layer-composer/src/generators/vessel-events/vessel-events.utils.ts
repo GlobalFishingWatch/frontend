@@ -113,8 +113,14 @@ export const getVesselSegmentsGeojson = (
       (feature) => ({
         ...feature,
         properties: {
-          ...feature.properties,
           id: event.id,
+          type: event.type,
+          start: event.start,
+          end: event.end,
+          ...(event.vessel && {
+            vesselId: event.vessel.id,
+            vesselName: event.vessel.name,
+          }),
           ...(currentEventId && { active: event.id === currentEventId }),
         },
       })

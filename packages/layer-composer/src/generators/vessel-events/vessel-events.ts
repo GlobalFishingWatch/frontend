@@ -132,7 +132,12 @@ class VesselsEventsGenerator {
           'line-width': [...activeFilter, 6, 1.5],
           'line-opacity': 1,
         },
-        metadata: { group: Group.TrackHighlighted },
+        metadata: {
+          group: Group.TrackHighlighted,
+          interactive: true,
+          generatorId: config.id,
+          uniqueFeatureInteraction: true,
+        },
       } as LineLayer,
     ]
     return [...pointsLayers, ...segmentsLayers]

@@ -333,6 +333,10 @@ export type RawEvent = {
   start: number
   end: number
   highlight?: boolean
+  vessel?: {
+    id: string
+    name: string
+  }
   encounter?: {
     authorized: boolean
     authorizationStatus: AuthorizationOptions
