@@ -75,10 +75,13 @@ Tooltip.defaultProps = {
 const getCoordinates = (tracksEvents, outerScale) => {
   return tracksEvents.map((trackEvents) => {
     const trackEventsWithCoordinates = trackEvents.map((event) => {
-      const height = event.height || 7
+      if (!outerScale) {
+        return event
+      }
+      const height = event.height
       const x1 = outerScale(event.start)
       const x2 = event.end === null ? x1 : outerScale(event.end)
-      const width = Math.max(height, x2 - x1)
+      const width = Math.max(1, x2 - x1)
       return {
         ...event,
         x1,
@@ -101,17 +104,26 @@ const TracksEvents = ({ tracksEvents, preselectedEventId, onEventClick, onEventH
     [tracksEvents, outerScale]
   )
   const [highlightedEvent, setHighlightedEvent] = useState(null)
+  const [preselectedEvent, setPreselectedEvent] = useState(null)
+
+  const eventHighlighted = preselectedEvent || highlightedEvent
 
   // checks if preselectedEventId exist in the first trackEvents, pick it and setHighlightedEvent accordingly
   // TODO should that work on *all* trackEvents?
   useEffect(() => {
-    if (tracksEventsWithCoordinates && tracksEventsWithCoordinates.length) {
-      const preselectedHighlightedEvent = tracksEventsWithCoordinates[0].find(
-        (event) => event.id === preselectedEventId
-      )
-      if (preselectedHighlightedEvent) {
-        setHighlightedEvent(preselectedHighlightedEvent)
+    if (preselectedEventId) {
+      if (tracksEventsWithCoordinates && tracksEventsWithCoordinates.length) {
+        const preselectedHighlightedEvent = tracksEventsWithCoordinates[0].find(
+          (event) => event.id === preselectedEventId
+        )
+        if (preselectedHighlightedEvent) {
+          setPreselectedEvent(preselectedHighlightedEvent)
+        } else {
+          setPreselectedEvent(null)
+        }
       }
+    } else {
+      setPreselectedEvent(null)
     }
   }, [preselectedEventId, tracksEventsWithCoordinates])
 
@@ -130,18 +142,17 @@ const TracksEvents = ({ tracksEvents, preselectedEventId, onEventClick, onEventH
               <div
                 key={event.id}
                 className={cx(styles.event, {
-                  [styles.highlighted]: highlightedEvent && highlightedEvent.id === event.id,
+                  [styles.highlighted]: eventHighlighted && eventHighlighted.id === event.id,
                 })}
                 data-type={event.type}
                 style={{
                   background: event.color || 'white',
                   left: `${event.x1}px`,
-                  top: `${-(event.height / 2) - 1}px`,
                   width: `${event.width}px`,
-                  height: `${event.height}px`,
+                  ...(event.height && { height: `${event.height}px` }),
                   transition: immediate
                     ? 'none'
-                    : `left ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
+                    : `left ${DEFAULT_CSS_TRANSITION}, height ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
                 }}
                 onMouseEnter={() => {
                   onEventHover(event)
@@ -158,6 +169,7 @@ const TracksEvents = ({ tracksEvents, preselectedEventId, onEventClick, onEventH
         ))}
       </div>
       {tooltipContainer &&
+        highlightedEvent &&
         ReactDOM.createPortal(
           <Tooltip
             highlightedEvent={highlightedEvent}

@@ -50,10 +50,13 @@ const getCoords = (tracks, outerScale) => {
       color: track.color,
       segmentsOffsetY: track.segmentsOffsetY,
     }
-    coordTrack.segments = track.segments.map((segment, i) => {
+    coordTrack.segments = track.segments.map((segment, id) => {
+      if (!outerScale) {
+        return { id }
+      }
       const x = outerScale(segment.start)
       return {
-        id: i,
+        id,
         x,
         width: outerScale(segment.end) - x,
       }
