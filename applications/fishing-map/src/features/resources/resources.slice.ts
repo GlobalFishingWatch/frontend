@@ -20,6 +20,7 @@ const initialState: ResourcesState = {}
 
 // TODO remove this once the cluster events follow the same API events format
 type DatasetEvent = {
+  seg_id: string
   event_id: string
   event_type: EventTypes
   vessel_id: string
@@ -30,9 +31,9 @@ type DatasetEvent = {
 }
 
 // TODO: remove this workaound once the api returns the same format for every event
-const parseFishingEvent = (fishingEvent: DatasetEvent): ApiEvent => {
+const parseFishingEvent = (fishingEvent: DatasetEvent, index: number): ApiEvent => {
   const event = {
-    id: `${fishingEvent.lat_mean},${fishingEvent.lon_mean}`,
+    id: `${fishingEvent.seg_id}_${index}`,
     position: {
       lat: fishingEvent.lat_mean,
       lon: fishingEvent.lon_mean,

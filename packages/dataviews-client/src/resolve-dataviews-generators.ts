@@ -45,6 +45,7 @@ type DataviewsGeneratorConfigsParams = {
   debug?: boolean
   timeRange?: { start: string; end: string }
   highlightedTime?: { start: string; end: string }
+  highlightedEvent?: ApiEvent
   mergedActivityGeneratorId?: string
   heatmapAnimatedMode?: Generators.HeatmapAnimatedMode
 }
@@ -82,7 +83,7 @@ export function getGeneratorConfig(
   params?: DataviewsGeneratorConfigsParams,
   resources?: DataviewsGeneratorResource
 ) {
-  const { debug = false, highlightedTime } = params || {}
+  const { debug = false, highlightedTime, highlightedEvent } = params || {}
 
   let generator: GeneratorDataviewConfig = {
     id: dataview.id,
@@ -124,6 +125,12 @@ export function getGeneratorConfig(
           id: `${dataview.id}_vessel_events`,
           type: Generators.Type.VesselEvents,
           data: resources?.[eventsUrl].data,
+          color: dataview.config?.color,
+          ...(generator.data && {
+            showTrackSegments: true,
+            track: generator.data,
+          }),
+          ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
         }
         return [generator, eventsGenerator]
       }

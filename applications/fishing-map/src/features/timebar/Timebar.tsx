@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useState } from 'react'
+import React, { Fragment, memo, useCallback, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
@@ -9,10 +9,16 @@ import TimebarComponent, {
   TimebarHighlighter,
   TimebarTracksEvents,
 } from '@globalfishingwatch/timebar'
+import { ApiEvent } from '@globalfishingwatch/api-types/dist'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
+import {
+  useTimerangeConnect,
+  useTimebarVisualisation,
+  useHighlightEventConnect,
+} from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarEvents, TimebarVisualisations, TimebarGraphs } from 'types'
+import useViewport from 'features/map/map-viewport.hooks'
 import { selectTimebarEvents, selectTimebarGraph } from 'features/app/app.selectors'
 import { selectActivityCategory } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
@@ -36,8 +42,10 @@ const TimebarWrapper = () => {
   const { ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
+  const { dispatchHighlightedEvent } = useHighlightEventConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
   const { timebarVisualisation } = useTimebarVisualisation()
+  const { setMapCoordinates } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
   const timebarEvents = useSelector(selectTimebarEvents)
   const tracks = useSelector(selectTracksData)
@@ -69,32 +77,35 @@ const TimebarWrapper = () => {
   )
 
   const isSmallScreen = useSmallScreen()
+  const hoverInEvent = useRef(false)
 
   const activityCategory = useSelector(selectActivityCategory)
 
   const onMouseMove = useCallback(
     (clientX: number, scale: (arg: number) => Date) => {
-      if (clientX === null) {
-        if (highlightedTime !== undefined) {
-          dispatch(disableHighlightedTime())
-        }
-      } else {
-        try {
-          const start = scale(clientX - 10).toISOString()
-          const end = scale(clientX + 10).toISOString()
-          const startDateTime = DateTime.fromISO(start)
-          const endDateTime = DateTime.fromISO(end)
-          const diff = endDateTime.diff(startDateTime, 'hours')
-          if (diff.hours < 1) {
-            // To ensure at least 1h range is highlighted
-            const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
-            const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
-            dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
-          } else {
-            dispatch(setHighlightedTime({ start, end }))
+      if (hoverInEvent.current === false) {
+        if (clientX === null) {
+          if (highlightedTime !== undefined) {
+            dispatch(disableHighlightedTime())
           }
-        } catch (e) {
-          console.warn(e)
+        } else {
+          try {
+            const start = scale(clientX - 10).toISOString()
+            const end = scale(clientX + 10).toISOString()
+            const startDateTime = DateTime.fromISO(start)
+            const endDateTime = DateTime.fromISO(end)
+            const diff = endDateTime.diff(startDateTime, 'hours')
+            if (diff.hours < 1) {
+              // To ensure at least 1h range is highlighted
+              const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
+              const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
+              dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
+            } else {
+              dispatch(setHighlightedTime({ start, end }))
+            }
+          } catch (e) {
+            console.warn(e)
+          }
         }
       }
     },
@@ -132,6 +143,27 @@ const TimebarWrapper = () => {
       action: `Click on ${isPlaying ? 'Play' : 'Pause'}`,
     })
   }, [])
+
+  const onEventClick = useCallback(
+    (event: ApiEvent) => {
+      setMapCoordinates({
+        latitude: event.position.lat,
+        longitude: event.position.lon,
+      })
+    },
+    [setMapCoordinates]
+  )
+
+  const onEventHover = useCallback(
+    (event: ApiEvent) => {
+      if (event && highlightedTime) {
+        dispatch(disableHighlightedTime())
+      }
+      hoverInEvent.current = event !== undefined
+      dispatchHighlightedEvent(event)
+    },
+    [dispatch, dispatchHighlightedEvent, highlightedTime]
+  )
 
   if (!start || !end) return null
 
@@ -173,12 +205,8 @@ const TimebarWrapper = () => {
                       <TimebarTracksEvents
                         key="events"
                         tracksEvents={tracksEvents}
-                        onEventClick={(event: Event) => {
-                          console.log(event)
-                        }}
-                        onEventHover={(event: Event) => {
-                          console.log(event)
-                        }}
+                        onEventClick={onEventClick}
+                        onEventHover={onEventHover}
                       />
                     )}
                   </Fragment>
