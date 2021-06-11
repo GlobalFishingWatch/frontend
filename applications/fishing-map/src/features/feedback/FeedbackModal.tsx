@@ -91,8 +91,10 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       organization: userData?.organization || '',
     })
   }
+
   useEffect(() => {
     setInitialFeedbackStateWithUserData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData])
 
   useEffect(() => {

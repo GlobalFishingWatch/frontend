@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import Icon, { IconType } from '@globalfishingwatch/ui-components/dist/icon'
+import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
@@ -42,6 +43,7 @@ function getLinkToCategory(category: WorkspaceCategories) {
 }
 
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
+  const [loginLink, setLoginLink] = useState('')
   const { t, i18n } = useTranslation()
   const guestUser = useSelector(isGuestUser)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
@@ -113,9 +115,35 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           </button>
         </li> */}
         <li className={cx(styles.tab, styles.secondary)}>
-          <button className={styles.tabContent} onClick={onFeedbackClick}>
-            <Icon icon="feedback" />
-          </button>
+          {guestUser ? (
+            <IconButton
+              // className={styles.tabContent}
+              icon={loginLink ? 'user' : 'feedback'}
+              size="medium"
+              disabled={!loginLink}
+              tooltip={t('feedback.feedbackLogin', 'Register and login to provide feedback')}
+              tooltipPlacement="bottom"
+              onClick={() => {
+                window.location.href = loginLink
+              }}
+              onMouseEnter={() => {
+                setLoginLink(GFWAPI.getLoginUrl(window.location.toString()))
+              }}
+              onMouseLeave={() => {
+                setLoginLink('')
+              }}
+            />
+          ) : (
+            <IconButton
+              // className={cx(styles.tabContent, 'print-hidden')}
+              icon="feedback"
+              size="medium"
+              onClick={onFeedbackClick}
+              tooltip={t('common.feedback', 'Feedback')}
+              tooltipPlacement="right"
+            />
+          )}
+          {/* </button> */}
         </li>
         <li className={cx(styles.tab, styles.languageToggle)}>
           <button className={styles.tabContent}>

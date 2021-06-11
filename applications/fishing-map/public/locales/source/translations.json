@@ -121,6 +121,7 @@
     "seeInCVP": "See in Carrier Vessel Portal"
   },
   "feedback": {
+    "feedbackLogin": "Register and login to provide feedback (free, 2 minutes)",
     "dataset": "Dataset you are providing feedback for",
     "email": "E-mail address",
     "institution": "Institution/Organization",
