@@ -61,6 +61,7 @@ export const EVENTS_COLORS: Record<string, string> = {
   loitering: '#cfa9f9',
   port: '#99EEFF',
   fishing: '#fff',
+  fishingLabels: '#163f89',
 }
 
 export enum ThinningLevels {

@@ -45,6 +45,8 @@
     "map": "Map",
     "max": "Max",
     "min": "Min",
+    "minute": "minute",
+    "minute_plural": "minutes",
     "more": "more",
     "name": "Name",
     "optional": "Optional",
@@ -116,8 +118,10 @@
     "workspaceNotFound": "The workspace you requested was not found."
   },
   "event": {
+    "fishing": "Fished for",
     "noData": "No data available",
     "notInCVP": "Event not available.",
+    "port": "Docked for",
     "seeInCVP": "See in carrier vessel portal"
   },
   "feedback": {

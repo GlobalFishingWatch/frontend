@@ -10,7 +10,6 @@ import {
   EventTypes,
   ApiEvent,
   ApiEvents,
-  EventVesselTypeEnum,
 } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 
@@ -22,6 +21,7 @@ const initialState: ResourcesState = {}
 type DatasetEvent = {
   seg_id: string
   event_id: string
+  event_vessels: any[]
   event_type: EventTypes
   vessel_id: string
   event_start: string
@@ -32,6 +32,7 @@ type DatasetEvent = {
 
 // TODO: remove this workaound once the api returns the same format for every event
 const parseFishingEvent = (fishingEvent: DatasetEvent, index: number): ApiEvent => {
+  const vessel = fishingEvent.event_vessels.find((v) => v.id === fishingEvent.vessel_id)
   const event = {
     id: `${fishingEvent.seg_id}_${index}`,
     position: {
@@ -39,13 +40,7 @@ const parseFishingEvent = (fishingEvent: DatasetEvent, index: number): ApiEvent 
       lon: fishingEvent.lon_mean,
     },
     type: fishingEvent.event_type,
-    vessel: {
-      id: fishingEvent.vessel_id,
-      ssvid: '',
-      name: '',
-      flag: '',
-      type: EventVesselTypeEnum.Fishing,
-    },
+    vessel,
     start: DateTime.fromISO(fishingEvent.event_start).toMillis(),
     end: DateTime.fromISO(fishingEvent.event_end).toMillis(),
     rfmos: [],

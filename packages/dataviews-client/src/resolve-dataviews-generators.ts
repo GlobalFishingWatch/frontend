@@ -122,7 +122,7 @@ export function getGeneratorConfig(
       const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
       if (eventsUrl && resources?.[eventsUrl]?.data) {
         const eventsGenerator = {
-          id: `${dataview.id}_vessel_events`,
+          id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           type: Generators.Type.VesselEvents,
           data: resources?.[eventsUrl].data,
           color: dataview.config?.color,

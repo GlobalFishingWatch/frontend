@@ -42,7 +42,7 @@ const TimebarWrapper = () => {
   const { ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
-  const { dispatchHighlightedEvent } = useHighlightEventConnect()
+  const { highlightedEvent, dispatchHighlightedEvent } = useHighlightEventConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
   const { timebarVisualisation } = useTimebarVisualisation()
   const { setMapCoordinates } = useViewport()
@@ -204,6 +204,7 @@ const TimebarWrapper = () => {
                     {tracksEvents && showFishingEvents && (
                       <TimebarTracksEvents
                         key="events"
+                        preselectedEventId={highlightedEvent?.id}
                         tracksEvents={tracksEvents}
                         onEventClick={onEventClick}
                         onEventHover={onEventHover}

@@ -13,6 +13,7 @@ import TileClusterRow from './TileClusterLayers'
 import EnvironmentTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 import UserContextTooltipSection from './UserContextLayers'
+import VesselEventsLayers from './VesselEventsLayers'
 
 type PopupWrapperProps = {
   event: TooltipEvent | null
@@ -96,6 +97,12 @@ function PopupWrapper({
                   />
                 </Fragment>
               )
+
+            case DataviewCategory.Vessels:
+              if (type === 'click') {
+                return null
+              }
+              return <VesselEventsLayers features={features} />
 
             default:
               return null

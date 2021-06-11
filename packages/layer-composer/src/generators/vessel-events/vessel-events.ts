@@ -92,10 +92,12 @@ class VesselsEventsGenerator {
             config.color || DEFAULT_STROKE_COLOR,
             DEFAULT_LANDMASS_COLOR,
           ],
-          'circle-radius': [...activeFilter, 12, 3],
+          'circle-radius': [...activeFilter, 8, 3],
         },
         metadata: {
           group: Group.Point,
+          interactive: true,
+          generatorId: config.id,
         },
       } as CircleLayer,
       {

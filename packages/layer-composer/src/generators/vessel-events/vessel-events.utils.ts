@@ -70,6 +70,8 @@ export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureC
         id: event.id,
         type: event.type,
         timestamp: event.start,
+        start: DateTime.fromMillis(event.start).toUTC().toISO(),
+        end: DateTime.fromMillis(event.end).toUTC().toISO(),
         authorized,
         authorizationStatus,
         icon: `carrier_portal_${event.type}`,
@@ -115,8 +117,8 @@ export const getVesselSegmentsGeojson = (
         properties: {
           id: event.id,
           type: event.type,
-          start: event.start,
-          end: event.end,
+          start: DateTime.fromMillis(event.start).toUTC().toISO(),
+          end: DateTime.fromMillis(event.end).toUTC().toISO(),
           ...(event.vessel && {
             vesselId: event.vessel.id,
             vesselName: event.vessel.name,
