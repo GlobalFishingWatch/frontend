@@ -192,6 +192,8 @@ export interface CartoPolygonsGeneratorConfig extends GeneratorConfig {
   radius?: number
 }
 
+export type TrackGeneratorConfigData = FeatureCollection | Segment[] | null
+
 /**
  * Renders a vessel track that can be filtered by time. Will use `start` and `end` from the global generator config, if set
  */
@@ -200,7 +202,7 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
   /**
    * A GeoJSON made of one or more LineStrings. Features should have `coordinateProperties` set in order to filter by time
    */
-  data: FeatureCollection | Segment[] | null
+  data: TrackGeneratorConfigData
   /**
    * Progresseively simplify geometries when zooming out for improved performance
    */
@@ -232,6 +234,9 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
 export interface VesselEventsGeneratorConfig extends GeneratorConfig {
   type: Type.VesselEvents
   data: RawEvent[]
+  color?: string
+  track?: any
+  showTrackSegments?: boolean
   currentEventId?: string
 }
 
@@ -326,6 +331,8 @@ export type RawEvent = {
     lat: number
   }
   start: number
+  end: number
+  highlight?: boolean
   encounter?: {
     authorized: boolean
     authorizationStatus: AuthorizationOptions
