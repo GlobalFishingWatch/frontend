@@ -121,14 +121,20 @@
     "seeInCVP": "Ver en el Carrier Vessel Portal"
   },
   "feedback": {
+    "feedbackLogin": "Register and login to provide feedback (free, 2 minutes)",
     "dataset": "Los datos para los que estás proporcionando comentarios",
     "email": "E-mail",
     "institution": "Institución/Organización",
     "insuficientData": "Por favor, rellene todos los campos obligatorios",
     "intro": "Global Fishing Watch trabaja constantemente para mejorar nuestros datos. Con miles de millones de puestos y cientos de miles de barcos a revisar, y todo un océano de actividad, inevitablemente tendremos algunos buques y actividades mal clasificados. Los comentarios de usted pueden ayudarnos a identificar dónde necesitamos mejorar nuestros datos. Nos esforzaremos por responder a sus comentarios.",
-    "issue": "¿Qué problema tiene?",
+    "descriptionPlaceholder": "Please be as specific as possible.",
     "optional": "Opcional",
     "role": "Rol",
+    "type": "What are you providing feedback for?",
+    "improvements": "Platform Improvements",
+    "issues": "Platform Issues",
+    "whichFeature": "Which feature would you like to improve?",
+    "whatIssue": "Where are you having an issue?",
     "roles": {
       "analyst": "Analista",
       "fisheries": "Oficial de cumplimiento de la pesca",
@@ -141,6 +147,20 @@
       "scientist": "Científico",
       "student": "Estudiante",
       "watch": "Vigilar oficial"
+    },
+    "features": {
+      "activityLayers": "Activity Layers",
+      "vesselTracks": "Vessel Tracks",
+      "vesselSearch": "Vessel Search",
+      "environment": "Environment Layers",
+      "referenceLayers": "Reference Layers",
+      "timebar": "Time bar along the bottom of the map",
+      "analysis": "Analysis",
+      "layerUpload": "Custom layers upload",
+      "areaSearch": "Area Search",
+      "screenshot": "Screenshot",
+      "rulers": "Rulers",
+      "other": "Other"
     },
     "send": "Enviar"
   },
