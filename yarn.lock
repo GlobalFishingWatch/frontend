@@ -1479,10 +1479,10 @@
   version "1.0.0"
   resolved "https://codeload.github.com/GlobalFishingWatch/map-convert/tar.gz/29d2918507ad3b57ac661abc2791b9334a43b853"
 
-"@globalfishingwatch/mapbox-gl@1.12.0-gfw.22":
-  version "1.12.0-gfw.22"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/mapbox-gl/-/mapbox-gl-1.12.0-gfw.22.tgz#42bd23b94768c4f4027aa43c85309a79c5ee4f79"
-  integrity sha512-ym8AKgII+j0EJH90FxkcA1MkHxodq+VAoLgB6P46Wvu8rcM6tBtLlGjpc80uUvlMDGcwL6VDQ9U0vKkNJ3/wgg==
+"@globalfishingwatch/mapbox-gl@1.12.0-gfw.24":
+  version "1.12.0-gfw.24"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/mapbox-gl/-/mapbox-gl-1.12.0-gfw.24.tgz#3ee1cc9d8bf3162830e923a00dd8f5bece418c09"
+  integrity sha512-UJHup4ZuaV1ZYV9DBRUHYuPoW/4+tZtjxKE6Tdc/tr8r938RoRFSPuNAcXhqojSECm8iDzA6OKTqh6f5uNCXcQ==
   dependencies:
     "@globalfishingwatch/fourwings-aggregate" "4.0.1"
     "@mapbox/geojson-rewind" "^0.5.0"
@@ -1511,10 +1511,10 @@
     tinyqueue "^2.0.3"
     vt-pbf "^3.1.1"
 
-"@globalfishingwatch/react-map-gl@5.2.9-gfw.17":
-  version "5.2.9-gfw.17"
-  resolved "https://registry.yarnpkg.com/@globalfishingwatch/react-map-gl/-/react-map-gl-5.2.9-gfw.17.tgz#765588d07ba3b2a83a3a86151f6d54fd9af95dee"
-  integrity sha512-+iPRP9/x3G+lQEdmVI+oRxSJTxY6tGUHe+yVCcGIxfEVe8g1PxCqzneuBM1vwa/JsehQc02adRuqIrgw0Uh50A==
+"@globalfishingwatch/react-map-gl@5.2.9-gfw.19":
+  version "5.2.9-gfw.19"
+  resolved "https://registry.yarnpkg.com/@globalfishingwatch/react-map-gl/-/react-map-gl-5.2.9-gfw.19.tgz#ab467b1d58cb97da025059b1ad169a7dbaab6226"
+  integrity sha512-7/rKnHuOjfwfHPsHk2WkWyN3UTFLQ+CL6DzBO6y8XOCIfaim57/yA6ttpdTUYcDqMXCINoNYFeEpqojpvBVTOg==
   dependencies:
     "@babel/runtime" "^7.0.0"
     "@types/react-map-gl" "^5.2.9"
