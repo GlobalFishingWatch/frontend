@@ -1,0 +1,19 @@
+{
+  "name": "regions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  },
+  "author": "GlobalFishingWatch <support@globalfishingwatch.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GlobalFishingWatch/frontend/issues"
+  },
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme"
+}
