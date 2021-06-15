@@ -15,7 +15,7 @@ import {
   selectVesselProfileId,
 } from 'routes/routes.selectors'
 import { selectVesselActivity } from 'features/vessels/activity/vessels-activity.slice'
-import { ActivityEvent, ActivityEventGroup, OfflineVesselActivity } from 'types/activity'
+import { ActivityEventGroup } from 'types/activity'
 import InfoField, { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
 

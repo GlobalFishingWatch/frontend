@@ -1,19 +1,11 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import { VesselWithHistory } from 'types'
-import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
-import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
-import { OfflineVessel } from 'types/vessel'
-import {
-  selectDataset,
-  selectTmtId,
-  selectVesselId,
-  selectVesselProfileId,
-} from 'routes/routes.selectors'
+import { selectVesselId } from 'routes/routes.selectors'
 import { fetchVesselActivityThunk } from 'features/vessels/activity/vessels-activity.thunk'
 import { selectVesselActivity, toggleGroup } from 'features/vessels/activity/vessels-activity.slice'
 import { ActivityEvent, ActivityEventGroup } from 'types/activity'
@@ -28,16 +20,9 @@ interface InfoProps {
 }
 
 const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
-  const vessel = props.vessel
   const { t } = useTranslation()
-  const [loading, setLoading] = useState(false)
   const vesselId = useSelector(selectVesselId)
-  const vesselTmtId = useSelector(selectTmtId)
-  const vesselDataset = useSelector(selectDataset)
-  const vesselProfileId = useSelector(selectVesselProfileId)
-  const offlineVessel = useSelector(selectCurrentOfflineVessel)
-  const { dispatchCreateOfflineVessel, dispatchDeleteOfflineVessel, dispatchFetchOfflineVessel } =
-    useOfflineVesselsAPI()
+
  
   const dispatch = useDispatch()
   useEffect(() => {
