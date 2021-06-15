@@ -21,6 +21,7 @@ export const DEFAULT_VERSION = 'v1'
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
 export const FULL_SUFIX = 'full'
+export const PRIVATE_SUFIX = 'private'
 
 // used when no url data and no workspace data
 const end = DateTime.fromObject({ hour: 0, minute: 0, second: 0, zone: 'utc' }).toISO()
