@@ -19,7 +19,7 @@
     "active_before": "Active before",
     "activity": "Activity",
     "analysis": "Create an analysis for this area",
-    "analysisNotAvailable": "Toggle an activity or environmenet layer on to analyse it in this area",
+    "analysisNotAvailable": "Toggle an activity or environment layer on to create an analysis for this area",
     "apparentFishing": "Apparent fishing effort",
     "comingSoon": "Coming soon",
     "confirm": "Confirm",
@@ -125,14 +125,20 @@
     "seeInCVP": "See in carrier vessel portal"
   },
   "feedback": {
+    "feedbackLogin": "Register and login to provide feedback (free, 2 minutes)",
     "dataset": "Dataset you are providing feedback for",
     "email": "E-mail address",
     "institution": "Institution/Organization",
     "insuficientData": "Please fill in all mandatory fields",
     "intro": "Global Fishing Watch is constantly working to improve our data. With billions of positions and hundreds of thousands of vessel to review, and an entire ocean of activity, we will inevitably have some vessels and activities misclassified. Feedback from you can help us identify where we most need to improve our data. We will endeavour to address your feedback.",
-    "issue": "What issue are you having?",
+    "descriptionPlaceholder": "Please be as specific as possible.",
     "optional": "Optional",
     "role": "Role",
+    "type": "What are you providing feedback for?",
+    "improvements": "Platform Improvements",
+    "issues": "Platform Issues",
+    "whichFeature": "Which feature would you like to improve?",
+    "whatIssue": "Where are you having an issue?",
     "roles": {
       "analyst": "Analyst",
       "fisheries": "Fisheries enforcement or compliance officer",
@@ -145,6 +151,20 @@
       "scientist": "Scientist",
       "student": "Student",
       "watch": "Watch officer"
+    },
+    "features": {
+      "activityLayers": "Activity Layers",
+      "vesselTracks": "Vessel Tracks",
+      "vesselSearch": "Vessel Search",
+      "environmentLayers": "Environment Layers",
+      "reference": "Reference Layers",
+      "timebar": "Time bar along the bottom of the map",
+      "analysis": "Analysis",
+      "layerUpload": "Custom layers upload",
+      "areaSearch": "Area Search",
+      "screenshot": "Screenshot",
+      "rulers": "Rulers",
+      "other": "Other"
     },
     "send": "Send"
   },

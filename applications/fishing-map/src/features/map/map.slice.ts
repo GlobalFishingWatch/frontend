@@ -23,6 +23,7 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { Range } from 'features/timebar/timebar.slice'
+import { selectUserLogged } from 'features/user/user.slice'
 
 export const MAX_TOOLTIP_VESSELS = 5
 
@@ -100,6 +101,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
   'map/fetchInteraction',
   async ({ temporalGridFeatures, timeRange }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
+    const userLogged = selectUserLogged(state)
     const temporalgridDataviews = selectActivityDataviews(state) || []
 
     if (!temporalGridFeatures.length) {
@@ -197,7 +199,11 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
       // Grab related dataset to fetch info from and prepare tracks
       const infoDatasets = await Promise.all(
         topHoursVesselsDatasets.map(async (dataset) => {
-          const infoDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id
+          const infoDatasetId = getRelatedDatasetByType(
+            dataset,
+            DatasetTypes.Vessels,
+            userLogged
+          )?.id
           if (infoDatasetId) {
             let infoDataset = selectDatasetById(infoDatasetId)(state)
             if (!infoDataset) {

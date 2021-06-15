@@ -1,4 +1,4 @@
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
 
@@ -9,7 +9,10 @@ export const isPresenceDataview = (dataview: UrlDataviewInstance) =>
   dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID
 
 export const isActivityDataview = (dataview: UrlDataviewInstance) =>
-  isFishingDataview(dataview) || isPresenceDataview(dataview)
+  isFishingDataview(dataview) ||
+  isPresenceDataview(dataview) ||
+  dataview.category === DataviewCategory.Fishing ||
+  dataview.category === DataviewCategory.Presence
 
 export const getSourcesOptionsInDataview = (
   dataview: UrlDataviewInstance,
