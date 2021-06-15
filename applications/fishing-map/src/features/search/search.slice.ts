@@ -11,7 +11,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { MultiSelectOption } from '@globalfishingwatch/ui-components/dist/multi-select'
 import { RootState } from 'store'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 
@@ -31,6 +31,7 @@ export type SearchFilter = {
 
 interface SearchState {
   status: AsyncReducerStatus
+  statusCode: number | undefined
   data: VesselWithDatasets[] | null
   suggestion: string | null
   suggestionClicked: boolean
@@ -46,6 +47,7 @@ interface SearchState {
 const paginationInitialState = { total: 0, offset: 0, loading: false }
 const initialState: SearchState = {
   status: AsyncReducerStatus.Idle,
+  statusCode: undefined,
   pagination: paginationInitialState,
   data: null,
   suggestion: null,
@@ -72,131 +74,137 @@ export function checkAdvanceSearchFiltersEnabled(filters: SearchFilter): boolean
 
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/fetch',
-  async ({ query, filters, datasets, offset }: VesselSearchThunk, { getState, signal }) => {
+  async (
+    { query, filters, datasets, offset }: VesselSearchThunk,
+    { getState, signal, rejectWithValue }
+  ) => {
     const state = getState() as RootState
     const dataset = datasets[0]
     const currentResults = selectSearchResults(state)
     let advancedQuery
-
-    if (checkAdvanceSearchFiltersEnabled(filters)) {
-      const fieldsAllowed = Array.from(
-        new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
-      )
-
-      const querySearchFields = [
-        {
-          field: 'shipname',
-          operator: 'LIKE',
-          transformation: (value: string) => `%${value.toUpperCase()}%`,
-        },
-        {
-          field: 'mmsi',
-          operator: '=',
-          condition: (field: string) => fieldsAllowed.includes(field),
-        },
-        {
-          field: 'imo',
-          operator: '=',
-          condition: (field: string) => fieldsAllowed.includes(field),
-        },
-      ]
-
-      const querySearch = querySearchFields
-        .filter(({ field, condition }) => (condition ? condition(field) : true))
-        .map(
-          ({ field, operator, transformation }) =>
-            `${field} ${operator} '${transformation ? transformation(query) : query}'`
-        )
-        .join(' OR ')
-
-      const queryFiltersFields = [
-        {
-          field: 'flag',
-          operator: 'IN',
-          value: filters.flags,
-          transformation: (value: any): string =>
-            `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
-        },
-        {
-          field: 'fleet',
-          operator: 'IN',
-          value: filters.fleets,
-          transformation: (value: any): string =>
-            `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
-        },
-        {
-          field: 'origin',
-          operator: 'IN',
-          value: filters.origins,
-          transformation: (value: any): string =>
-            `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
-        },
-        {
-          field: 'lastTransmissionDate',
-          operator: '>=',
-          value: filters?.activeAfterDate,
-        },
-        {
-          field: 'firstTransmissionDate',
-          operator: '<=',
-          value: filters?.activeBeforeDate,
-        },
-      ]
-
-      const queryFilters = queryFiltersFields
-        .filter(({ value }) => value !== undefined && value !== '')
-        .map(
-          ({ field, operator, transformation, value }) =>
-            `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
+    try {
+      if (checkAdvanceSearchFiltersEnabled(filters)) {
+        const fieldsAllowed = Array.from(
+          new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
         )
 
-      advancedQuery = [`(${querySearch})`, ...queryFilters].join(' AND ')
-    }
+        const querySearchFields = [
+          {
+            field: 'shipname',
+            operator: 'LIKE',
+            transformation: (value: string) => `%${value.toUpperCase()}%`,
+          },
+          {
+            field: 'mmsi',
+            operator: '=',
+            condition: (field: string) => fieldsAllowed.includes(field),
+          },
+          {
+            field: 'imo',
+            operator: '=',
+            condition: (field: string) => fieldsAllowed.includes(field),
+          },
+        ]
 
-    const datasetConfig = {
-      endpoint: advancedQuery ? EndpointId.VesselAdvancedSearch : EndpointId.VesselSearch,
-      datasetId: dataset.id,
-      params: [],
-      query: [
-        { id: 'datasets', value: datasets.map((d) => d.id) },
-        { id: 'limit', value: RESULTS_PER_PAGE },
-        { id: 'offset', value: offset },
-        { id: 'query', value: encodeURIComponent(advancedQuery || query) },
-      ],
-    }
+        const querySearch = querySearchFields
+          .filter(({ field, condition }) => (condition ? condition(field) : true))
+          .map(
+            ({ field, operator, transformation }) =>
+              `${field} ${operator} '${transformation ? transformation(query) : query}'`
+          )
+          .join(' OR ')
 
-    const url = resolveEndpoint(dataset, datasetConfig)
-    if (url) {
-      const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(url, {
-        signal,
-      })
+        const queryFiltersFields = [
+          {
+            field: 'flag',
+            operator: 'IN',
+            value: filters.flags,
+            transformation: (value: any): string =>
+              `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+          },
+          {
+            field: 'fleet',
+            operator: 'IN',
+            value: filters.fleets,
+            transformation: (value: any): string =>
+              `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+          },
+          {
+            field: 'origin',
+            operator: 'IN',
+            value: filters.origins,
+            transformation: (value: any): string =>
+              `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`,
+          },
+          {
+            field: 'lastTransmissionDate',
+            operator: '>=',
+            value: filters?.activeAfterDate,
+          },
+          {
+            field: 'firstTransmissionDate',
+            operator: '<=',
+            value: filters?.activeBeforeDate,
+          },
+        ]
 
-      const vesselsWithDataset = searchResults.entries.flatMap((vessel) => {
-        if (!vessel) return []
+        const queryFilters = queryFiltersFields
+          .filter(({ value }) => value !== undefined && value !== '')
+          .map(
+            ({ field, operator, transformation, value }) =>
+              `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
+          )
 
-        const infoDataset = selectDatasetById(vessel.dataset)(state)
-        if (!infoDataset) return []
-
-        const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
-        return {
-          ...vessel,
-          dataset: infoDataset,
-          trackDatasetId,
-        }
-      })
-
-      return {
-        data:
-          offset > 0 && currentResults
-            ? currentResults.concat(vesselsWithDataset)
-            : vesselsWithDataset,
-        suggestion: searchResults.metadata?.suggestion,
-        pagination: {
-          loading: false,
-          total: searchResults.total,
-          offset: searchResults.nextOffset,
-        },
+        advancedQuery = [`(${querySearch})`, ...queryFilters].join(' AND ')
       }
+
+      const datasetConfig = {
+        endpoint: advancedQuery ? EndpointId.VesselAdvancedSearch : EndpointId.VesselSearch,
+        datasetId: dataset.id,
+        params: [],
+        query: [
+          { id: 'datasets', value: datasets.map((d) => d.id) },
+          { id: 'limit', value: RESULTS_PER_PAGE },
+          { id: 'offset', value: offset },
+          { id: 'query', value: encodeURIComponent(advancedQuery || query) },
+        ],
+      }
+
+      const url = resolveEndpoint(dataset, datasetConfig)
+      if (url) {
+        const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(url, {
+          signal,
+        })
+
+        const vesselsWithDataset = searchResults.entries.flatMap((vessel) => {
+          if (!vessel) return []
+
+          const infoDataset = selectDatasetById(vessel.dataset)(state)
+          if (!infoDataset) return []
+
+          const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
+          return {
+            ...vessel,
+            dataset: infoDataset,
+            trackDatasetId,
+          }
+        })
+
+        return {
+          data:
+            offset > 0 && currentResults
+              ? currentResults.concat(vesselsWithDataset)
+              : vesselsWithDataset,
+          suggestion: searchResults.metadata?.suggestion,
+          pagination: {
+            loading: false,
+            total: searchResults.total,
+            offset: searchResults.nextOffset,
+          },
+        }
+      }
+    } catch (e) {
+      return rejectWithValue({ status: e.status || e.code, message: e.message } as AsyncError)
     }
   }
 )
@@ -243,7 +251,10 @@ const searchSlice = createSlice({
       if (action.error.message === 'Aborted') {
         state.status = AsyncReducerStatus.Aborted
       } else {
+        state.data = initialState.data
+        state.pagination = paginationInitialState
         state.status = AsyncReducerStatus.Error
+        state.statusCode = (action.payload as AsyncError)?.status
       }
     })
   },
@@ -259,6 +270,7 @@ export const {
 
 export const selectSearchResults = (state: RootState) => state.search.data
 export const selectSearchStatus = (state: RootState) => state.search.status
+export const selectSearchStatusCode = (state: RootState) => state.search.statusCode
 export const selectSearchFiltersOpen = (state: RootState) => state.search.filtersOpen
 export const selectSearchFilters = (state: RootState) => state.search.filters
 export const selectSearchSuggestion = (state: RootState) => state.search.suggestion
