@@ -9,7 +9,7 @@ import { ActivityEvent, ActivityEventGroup } from 'types/activity'
 const fetchData = (dataset: string, vesselId: string, signal?: AbortSignal | null) => {
   console.log(7)
   return GFWAPI.fetch<any>(
-    `/v1/events?datasets=${encodeURIComponent(dataset)}&vessels=${vesselId}&startDate=2017-01-01&endDate=2021-05-05`
+    `/v1/events?datasets=${encodeURIComponent(dataset)}&vessels=${vesselId}&startDate=2012-01-01&endDate=2021-05-05`
   )
     .then((json: any) => {
       return json.entries as ActivityEvent[] ?? []
@@ -28,7 +28,7 @@ const fetchDatasets = async (vesselId: string, signal?: AbortSignal | null) => {
   const allEvents = fetchedEvents.flat()
   const sortEvents = allEvents.sort(
     (n1: ActivityEvent, n2: ActivityEvent) => {
-      return new Date(n1.event_start).getTime() > new Date(n2.event_start).getTime() ? -1 : 1
+      return new Date(n1.start).getTime() > new Date(n2.start).getTime() ? -1 : 1
     }
   )
 
@@ -42,14 +42,20 @@ export type VesselSearchThunk = {
 const groupEvents = (events: ActivityEvent[]) => {
   const groups: ActivityEventGroup[] = []
   events.forEach(event => {
-    if (!groups.length || groups[groups.length - 1].event_type !== event.event_type) {
+    if (
+      !groups.length ||
+      groups[groups.length - 1].event_type !== event.type ||
+      groups[groups.length - 1].event_place !== event.regions.eez[0]
+    ) {
       groups.push({
-        event_type: event.event_type,
+        event_type: event.type,
+        event_place: event.regions.eez[0],
+        open: true,
         entries: [event]
       })
-    }
-    if (groups[groups.length - 1].event_type === event.event_type) {
+    } else if (groups[groups.length - 1].event_type === event.type && groups[groups.length - 1].event_place === event.regions.eez[0]) {
       groups[groups.length - 1].entries.push(event)
+      groups[groups.length - 1].open = false
     }
   });
   return groups

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
@@ -15,10 +15,9 @@ import {
   selectVesselProfileId,
 } from 'routes/routes.selectors'
 import { fetchVesselActivityThunk } from 'features/vessels/activity/vessels-activity.thunk'
-import { selectVesselActivity } from 'features/vessels/activity/vessels-activity.slice'
+import { selectVesselActivity, toggleGroup } from 'features/vessels/activity/vessels-activity.slice'
 import { ActivityEvent, ActivityEventGroup } from 'types/activity'
 import I18nDate from 'features/i18n/i18nDate'
-import InfoField, { VesselFieldLabel } from './InfoField'
 import styles from './Activity.module.css'
 import ActivityDate from './ActivityDate'
 
@@ -48,6 +47,10 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
     }
   }, [dispatch, vesselId])
 
+  const onOpenGroup = useCallback((index: number) => {
+    dispatch(toggleGroup({index}))
+  },[dispatch])
+
   const eventGroups = useSelector(selectVesselActivity)
   console.log(eventGroups)
   return (
@@ -55,25 +58,51 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
       <div className={styles.activityContainer}>
         {eventGroups && eventGroups.map((group: ActivityEventGroup, groupIndex) => ( 
           <Fragment key={groupIndex}>
-            {group.entries && group.entries.map((event: ActivityEvent, eventIndex) => ( 
-              <Fragment key={eventIndex}>
+            {!group.open && group.entries && ( 
+              <Fragment>
                   <div className={styles.event} >
-                    <div>
-                      <i className={styles.eventIcon}></i>
+                    <div className={styles.eventIcon}>
+                      <i></i>
+                      <span className={styles.eventCount}>{group.entries.length}</span>
                     </div>
                     <div className={styles.eventData}>
-                      <ActivityDate event={event}/>
+                      <div className={styles.date}>
+                        <I18nDate date={group.entries[0].start} format={DateTime.DATE_SHORT} /> - 
+                        <I18nDate date={group.entries[group.entries.length - 1].end} format={DateTime.DATE_SHORT} />
+                      </div>
                       <div className={styles.description}>
-                        Fishing in ????
+                      {group.entries.length} Fishing events in {group.event_place}
                       </div>
                       
                     </div>
                     {group.entries.length > 1 && ( 
                       <div className={styles.actions}>
-                        <IconButton icon="info" size="small"></IconButton>
-                        <IconButton icon="view-on-map" size="small"></IconButton>
+                        <IconButton icon="compare" size="small" onClick={() => onOpenGroup(groupIndex)}></IconButton>
                       </div>
                     )}
+                  </div>
+                <div className={styles.divider}></div>
+              </Fragment>
+            )}
+            {group.open && group.entries && group.entries.map((event: ActivityEvent, eventIndex) => ( 
+              <Fragment key={eventIndex}>
+                  <div className={styles.event} >
+                    <div  className={styles.eventIcon}>
+                      <i></i>
+                    </div>
+                    <div className={styles.eventData}>
+                      <ActivityDate event={event}/>
+                      <div className={styles.description}>
+                        Fishing in ???? {event.start}
+                      </div>
+                      
+                    </div>
+
+                    <div className={styles.actions}>
+                      <IconButton icon="info" size="small"></IconButton>
+                      <IconButton icon="view-on-map" size="small"></IconButton>
+                    </div>
+
                   </div>
                 <div className={styles.divider}></div>
               </Fragment>

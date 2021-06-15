@@ -28,7 +28,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import Info from './components/Info'
 import styles from './Profile.module.css'
-import Activity from './components/Activity'
+import Activity from './components/activity/Activity'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()

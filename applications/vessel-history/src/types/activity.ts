@@ -1,4 +1,18 @@
-export interface RegionsMeanPosition {
+export interface EventVessel {
+    id: string;
+    name: string;
+    ssvid: string;
+    nextPort?: any;
+}
+export interface Position {
+    lat: number;
+    lon: number;
+}
+
+export enum EventType {
+    Fishing = 'fishing',
+}
+export interface Regions {
     arg: any[];
     eez: string[];
     fao: string[];
@@ -12,50 +26,37 @@ export interface RegionsMeanPosition {
     ocean: string[];
     other: any[];
     mregion: string[];
-    major_fao: string[];
+    majorFao: string[];
 }
 
-export enum EventType {
-    Fishing = 'fishing',
+export interface Distances {
+    startDistanceFromShoreKm?: number;
+    endDistanceFromShoreKm: number;
+    startDistanceFromPortKm?: number;
+    endDistanceFromPortKm: number;
 }
 
-export interface EventInfo {
-    distance_km: number;
-    message_count: number;
-    avg_speed_knots: number;
-    avg_duration_hrs: number;
-}
-
-export interface EventVessel {
-    id: string;
-    name: string;
-    ssvid: string;
-    seg_id: string;
+export interface Fishing {
+    totalDistanceKm: number;
+    averageSpeedKnots: number;
+    averageDurationHours: number;
 }
 
 export interface ActivityEvent {
-    event_type: EventType;
-    vessel_id: string;
-    seg_id: string;
-    event_start: string;
-    event_end: string;
-    lat_mean: number;
-    lon_mean: number;
-    lat_min: number;
-    lat_max: number;
-    lon_min: number;
-    lon_max: number;
-    regions_mean_position: RegionsMeanPosition;
-    start_distance_from_shore_km?: number;
-    end_distance_from_shore_km: number;
-    start_distance_from_port_km?: number;
-    end_distance_from_port_km: number;
-    event_info: EventInfo;
-    event_vessels: EventVessel[];
+    type: EventType;
+    vessel: EventVessel;
+    start: string;
+    end: string;
+    position: Position;
+    regions: Regions;
+    boundingBox: number[];
+    distances: Distances;
+    fishing: Fishing;
 }
-
 export interface ActivityEventGroup {
     event_type: EventType
+    event_place?: string
+    open: boolean
     entries: ActivityEvent[];
 }
 

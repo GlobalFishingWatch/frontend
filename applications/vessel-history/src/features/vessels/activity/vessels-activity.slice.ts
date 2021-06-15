@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { VesselSearch } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { RootState } from 'store'
@@ -18,7 +18,12 @@ const initialState: ActivitySlice = {
 const slice = createSlice({
   name: 'activity',
   initialState,
-  reducers: {},
+  reducers: {
+    toggleGroup: (state, action: PayloadAction<{ index: number }>) => {
+      const index = action.payload.index
+      state.events[index].open = !state.events[index].open
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchVesselActivityThunk.pending, (state, action) => {
       state.status = AsyncReducerStatus.Loading
@@ -36,6 +41,11 @@ const slice = createSlice({
     })
   },
 })
+
+export const {
+  toggleGroup,
+} = slice.actions
+
 export default slice.reducer
 
 export const selectVesselActivity = (state: RootState) => state.activity.events

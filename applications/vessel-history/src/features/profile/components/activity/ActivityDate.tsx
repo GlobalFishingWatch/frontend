@@ -12,16 +12,16 @@ interface ActivityDateProps {
 const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement => {
   const event = props.event
   const { t } = useTranslation()
-  const start = DateTime.fromISO(event.event_start)
-  const end = DateTime.fromISO(event.event_end)
+  const start = DateTime.fromISO(event.start)
+  const end = DateTime.fromISO(event.end)
   const unit: DurationUnit = 'hours' 
   const diff = Math.round(end.diff(start).as(unit) * 10) /10
-  if (event.event_type === EventType.Fishing) {
+  if (event.type === EventType.Fishing) {
     return (
       <Fragment>
-        {event.event_start && event.event_end && (
+        {event.start && event.end && (
           <div className={styles.date}>
-            <I18nDate date={event.event_start} format={DateTime.DATETIME_MED} /> - {diff} hours
+            <I18nDate date={event.start} format={DateTime.DATETIME_SHORT} /> - {diff} hours
           </div>
         )}
       </Fragment>

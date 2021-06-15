@@ -70,7 +70,7 @@ export const fetchVesselByIdThunk = createAsyncThunk(
         ...mergeVesselFromSources(vessels),
         id,
       }
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({ status: e.status || e.code, message: `${id} - ${e.message}` })
     }
   }
