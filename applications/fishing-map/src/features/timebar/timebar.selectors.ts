@@ -115,6 +115,8 @@ export const selectEventsWithRenderingInfo = createSelector(
       (trackEvents: ApiEvent[]) => {
         return (trackEvents || []).map((event: ApiEvent) => {
           const vesselName = event.vessel.name || event.vessel.id
+
+          // TODO translate this
           let description
           switch (event.type) {
             // case 'encounter':

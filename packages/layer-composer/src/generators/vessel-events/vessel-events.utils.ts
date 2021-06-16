@@ -49,6 +49,10 @@ export const setActiveEvent = (
   return featureCollection
 }
 
+const getDateTimeDate = (date: string | number) => {
+  return typeof date === 'number' ? DateTime.fromMillis(date) : DateTime.fromISO(date)
+}
+
 export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -64,14 +68,15 @@ export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureC
       : ('unmatched' as AuthorizationOptions)
 
     const lng = event.position.lng || event.position.lon || 0
+
     return {
       type: 'Feature',
       properties: {
         id: event.id,
         type: event.type,
         timestamp: event.start,
-        start: DateTime.fromMillis(event.start).toUTC().toISO(),
-        end: DateTime.fromMillis(event.end).toUTC().toISO(),
+        start: getDateTimeDate(event.start).toUTC().toISO(),
+        end: getDateTimeDate(event.end).toUTC().toISO(),
         authorized,
         authorizationStatus,
         icon: `carrier_portal_${event.type}`,
@@ -117,8 +122,8 @@ export const getVesselSegmentsGeojson = (
         properties: {
           id: event.id,
           type: event.type,
-          start: DateTime.fromMillis(event.start).toUTC().toISO(),
-          end: DateTime.fromMillis(event.end).toUTC().toISO(),
+          start: getDateTimeDate(event.start).toUTC().toISO(),
+          end: getDateTimeDate(event.end).toUTC().toISO(),
           ...(event.vessel && {
             vesselId: event.vessel.id,
             vesselName: event.vessel.name,

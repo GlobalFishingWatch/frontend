@@ -1,13 +1,12 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { DateTime } from 'luxon'
 import { memoize } from 'lodash'
+import { DateTime } from 'luxon'
 import { Field, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import GFWAPI from '@globalfishingwatch/api-client'
 import {
   Resource,
   ResourceStatus,
   DatasetTypes,
-  EventTypes,
   ApiEvent,
   ApiEvents,
 } from '@globalfishingwatch/api-types'
@@ -17,36 +16,13 @@ export type ResourcesState = Record<any, Resource>
 
 const initialState: ResourcesState = {}
 
-// TODO remove this once the cluster events follow the same API events format
-type DatasetEvent = {
-  seg_id: string
-  event_id: string
-  event_vessels: any[]
-  event_type: EventTypes
-  vessel_id: string
-  event_start: string
-  event_end: string
-  lat_mean: number
-  lon_mean: number
-}
-
-// TODO: remove this workaound once the api returns the same format for every event
-const parseFishingEvent = (fishingEvent: DatasetEvent, index: number): ApiEvent => {
-  const vessel = fishingEvent.event_vessels.find((v) => v.id === fishingEvent.vessel_id)
-  const event = {
-    id: `${fishingEvent.seg_id}_${index}`,
-    position: {
-      lat: fishingEvent.lat_mean,
-      lon: fishingEvent.lon_mean,
-    },
-    type: fishingEvent.event_type,
-    vessel,
-    start: DateTime.fromISO(fishingEvent.event_start).toMillis(),
-    end: DateTime.fromISO(fishingEvent.event_end).toMillis(),
-    rfmos: [],
-    eezs: [],
+const parseFishingEvent = (event: ApiEvent, index: number): ApiEvent => {
+  return {
+    ...event,
+    id: index.toString(),
+    start: DateTime.fromISO(event.start as string).toMillis(),
+    end: DateTime.fromISO(event.end as string).toMillis(),
   }
-  return event
 }
 
 export const fetchResourceThunk = createAsyncThunk(
@@ -71,7 +47,7 @@ export const fetchResourceThunk = createAsyncThunk(
       }
       // TODO check by eventType when needed
       if (isEventsResource) {
-        return (data as ApiEvents<DatasetEvent>).entries.map(parseFishingEvent)
+        return (data as ApiEvents).entries.map(parseFishingEvent)
       }
       return data
     })
