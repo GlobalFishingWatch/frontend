@@ -1,13 +1,18 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import { ApiEvent, DatasetTypes, Resource, TrackResourceData } from '@globalfishingwatch/api-types'
+import {
+  ApiEvent,
+  DatasetTypes,
+  Resource,
+  ResourceStatus,
+  TrackResourceData,
+} from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { geoJSONToSegments, Segment } from '@globalfishingwatch/data-transforms'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
-  selectTrackDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 import { EVENTS_COLORS } from 'data/config'
@@ -93,13 +98,19 @@ const selectEventsForTracks = createSelector(
   [selectActiveTrackDataviews, selectResources],
   (trackDataviews, resources) => {
     const vesselsEvents = trackDataviews.map((dataview) => {
+      const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
-      if (!eventsUrl) {
+      const hasEventData = eventsUrl && resources[eventsUrl]?.data
+      const tracksResourceResolved =
+        tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
+
+      // Waiting for the tracks resource to be resolved to show the events
+      if (!hasEventData || !tracksResourceResolved) {
         return []
       }
-      return (resources[eventsUrl]?.data || []) as ApiEvent[]
+      return (eventsUrl ? resources[eventsUrl].data : []) as ApiEvent[]
     })
-    return vesselsEvents
+    return vesselsEvents.filter((events) => events.length > 0)
   }
 )
 
