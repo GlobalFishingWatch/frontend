@@ -116,11 +116,11 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
     // activity heatmaps use the same time intervals, This will need to be revised in case we support interactivity on environment layers
     const start =
       mainFeature.temporalgrid?.interval === '10days'
-        ? mainFeature.temporalgrid?.visibleFramesStart
+        ? mainFeature.temporalgrid?.visibleStartFrame
         : timeRange.start
     const end =
       mainFeature.temporalgrid?.interval === '10days'
-        ? mainFeature.temporalgrid?.visibleFramesEnd
+        ? mainFeature.temporalgrid?.visibleEndFrame
         : timeRange.end
 
     // get corresponding dataviews

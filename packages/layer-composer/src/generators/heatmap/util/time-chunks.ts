@@ -26,12 +26,21 @@ export type TimeChunks = {
   activeEnd: string
   activeChunkFrame: number
   activeSourceId: string
+  visibleStartFrame: number
+  visibleEndFrame: number
 }
 
 export const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
 
 // Buffer size relative to active time delta
 const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2
+
+const getVisibleStartFrame = (rawFrame: number) => {
+  return Math.floor(rawFrame)
+}
+const getVisibleEndFrame = (rawFrame: number) => {
+  return Math.ceil(rawFrame)
+}
 
 export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   hour: {
@@ -50,8 +59,8 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       return chunkViewEnd.plus({ days: 5 })
     },
     // We will substract every timestamp with a quantize offset to end up with shorter arrays indexes
-    getFrame: (start: number) => {
-      return Math.floor(start / 1000 / 60 / 60)
+    getRawFrame: (start: number) => {
+      return start / 1000 / 60 / 60
     },
     getDate: (frame: number) => {
       return new Date(frame * 1000 * 60 * 60)
@@ -71,29 +80,27 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     getChunkDataEnd: (chunkViewEnd: DateTime): DateTime => {
       return chunkViewEnd.plus({ days: 100 })
     },
-    getFrame: (start: number) => {
-      return Math.floor(start / 1000 / 60 / 60 / 24)
+    getRawFrame: (start: number) => {
+      return start / 1000 / 60 / 60 / 24
     },
     getDate: (frame: number) => {
       return new Date(frame * 1000 * 60 * 60 * 24)
     },
   },
   '10days': {
-    getFrame: (start: number) => {
-      return Math.floor(start / 1000 / 60 / 60 / 24 / 10)
+    getRawFrame: (start: number) => {
+      return start / 1000 / 60 / 60 / 24 / 10
     },
     getDate: (frame: number) => {
       return new Date(frame * 1000 * 60 * 60 * 24 * 10)
     },
   },
   month: {
-    getFrame: (start: number) => {
-      return Math.floor(
-        LuxonInterval.fromDateTimes(
+    getRawFrame: (start: number) => {
+      return LuxonInterval.fromDateTimes(
           DateTime.fromMillis(0).toUTC(),
           DateTime.fromMillis(start).toUTC()
         ).toDuration('month').months
-      )
     },
     getDate: (frame: number) => {
       const year = 1970 + Math.floor(frame / 12)
@@ -108,10 +115,10 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
  * @param delta delta in ms
  */
 const getInterval = (
-  delta: number,
+  deltaMs: number,
   supportedIntervals: Interval[] = DEFAULT_HEATMAP_INTERVALS
 ): Interval => {
-  const duration = Duration.fromMillis(delta)
+  const duration = Duration.fromMillis(deltaMs)
   if (
     CONFIG_BY_INTERVAL.day.isValid(duration) &&
     (supportedIntervals.includes('day') || supportedIntervals.includes('hour'))
@@ -221,22 +228,31 @@ export const getActiveTimeChunks = (
   datasetEnd: string,
   interval?: Interval | Interval[]
 ): TimeChunks => {
-  const delta = +toDT(activeEnd) - +toDT(activeStart)
-  const finalInterval: Interval =
-    !interval || Array.isArray(interval) ? getInterval(delta, interval) : (interval as Interval)
+  const deltaMs = +toDT(activeEnd) - +toDT(activeStart)
 
-  const deltaInIntervalUnits = CONFIG_BY_INTERVAL[finalInterval].getFrame(delta)
+  const finalInterval: Interval =
+    !interval || Array.isArray(interval) ? getInterval(deltaMs, interval) : (interval as Interval)
+
+  const finalIntervalConfig = CONFIG_BY_INTERVAL[finalInterval]
+  const visibleStartFrameRaw = finalIntervalConfig.getRawFrame(+toDT(activeStart))
+  const visibleStartFrame = getVisibleStartFrame(visibleStartFrameRaw)
+  const visibleEndFrameRaw = finalIntervalConfig.getRawFrame(+toDT(activeEnd))
+  const visibleEndFrame = getVisibleEndFrame(visibleEndFrameRaw)
+
+  const deltaInIntervalUnits = visibleEndFrame - visibleStartFrame
 
   const timeChunks: TimeChunks = {
     activeStart,
     activeEnd,
     chunks: [],
-    delta,
+    delta: deltaMs,
     deltaInIntervalUnits,
-    deltaInDays: Duration.fromMillis(delta).as('days'),
+    deltaInDays: Duration.fromMillis(deltaMs).as('days'),
     interval: finalInterval,
     activeChunkFrame: 0,
     activeSourceId: '',
+    visibleStartFrame,
+    visibleEndFrame,
   }
 
   // ignore any start/end time chunk calculation as for the '10 days' interval the entire tileset is loaded
@@ -269,7 +285,7 @@ export const getActiveTimeChunks = (
   }
 
   // calculate start and end taking some buffer into account to proactively load time chunks
-  const bufferSize = delta * TIME_CHUNK_BUFFER_RELATIVE_SIZE
+  const bufferSize = deltaMs * TIME_CHUNK_BUFFER_RELATIVE_SIZE
   const bufferedActiveStart = +toDT(activeStart) - bufferSize
   const bufferedActiveEnd = +toDT(activeEnd) + bufferSize
 
@@ -298,7 +314,7 @@ const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interv
   const config = CONFIG_BY_INTERVAL[interval]
   // TODO Use Luxon to use UTC!!!!
   const ms = new Date(date).getTime()
-  const frame = config.getFrame(ms)
+  const frame = config.getVisibleStartFrame(config.getRawFrame(ms))
   return frame - quantizeOffset
 }
 
@@ -310,12 +326,4 @@ export const frameToDate = (frame: number, quantizeOffset: number, interval: Int
 
 export const quantizeOffsetToDate = (quantizeOffset: number, interval: Interval) => {
   return frameToDate(0, quantizeOffset, interval)
-}
-
-export const getDelta = (start: string, end: string, interval: Interval) => {
-  const config = CONFIG_BY_INTERVAL[interval]
-  const startTimestampMs = new Date(start).getTime()
-  const endTimestampMs = new Date(end).getTime()
-  const delta = config.getFrame(endTimestampMs - startTimestampMs)
-  return delta
 }
