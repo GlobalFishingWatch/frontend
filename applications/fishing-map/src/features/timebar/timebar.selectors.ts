@@ -90,7 +90,7 @@ export const selectTracksGraphs = createSelector(
 )
 
 const selectEventsForTracks = createSelector(
-  [selectTrackDataviews, selectResources],
+  [selectActiveTrackDataviews, selectResources],
   (trackDataviews, resources) => {
     const vesselsEvents = trackDataviews.map((dataview) => {
       const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
