@@ -7,7 +7,7 @@ import Downshift from 'downshift'
 import { Trans, useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { Dataset } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -15,6 +15,8 @@ import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { Button, Choice, Icon } from '@globalfishingwatch/ui-components'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
+import { selectUserLogged } from 'features/user/user.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
@@ -57,6 +59,7 @@ function Search() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const urlQuery = useSelector(selectSearchQuery)
+  const userLogged = useSelector(selectUserLogged)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const { searchFilters } = useSearchFiltersConnect()
@@ -165,7 +168,7 @@ function Search() {
   const [ref] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
   useEffect(() => {
-    if (!promiseRef.current && searchDatasets?.length) {
+    if (debouncedQuery && !promiseRef.current && searchDatasets?.length) {
       fetchResults({
         query: debouncedQuery,
         datasets: searchDatasets,
@@ -176,7 +179,7 @@ function Search() {
   }, [searchDatasets])
 
   useEffect(() => {
-    if (searchDatasets?.length) {
+    if (debouncedQuery && searchDatasets?.length) {
       fetchResults({
         query: debouncedQuery,
         datasets: searchDatasets,
@@ -229,9 +232,15 @@ function Search() {
 
   const onConfirmSelection = () => {
     const instances = vesselsSelected.map((vessel) => {
+      const eventsRelatedDataset = getRelatedDatasetByType(
+        vessel.dataset,
+        DatasetTypes.Events,
+        userLogged
+      )
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
         trackDatasetId: vessel.trackDatasetId as string,
         infoDatasetId: vessel.dataset.id,
+        ...(eventsRelatedDataset && { eventsDatasetId: eventsRelatedDataset?.id }),
       })
       return vesselDataviewInstance
     })
