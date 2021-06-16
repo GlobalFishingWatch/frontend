@@ -4,7 +4,6 @@ import { Segment, segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { Dictionary } from '../../types'
 import filterGeoJSONByTimerange from '../track/filterGeoJSONByTimerange'
 import { AuthorizationOptions, RawEvent } from '../types'
-import { GlobalVesselEventsGeneratorConfig } from './vessel-events'
 
 const EVENTS_COLORS: Dictionary<string> = {
   encounter: '#FAE9A0',
@@ -96,9 +95,12 @@ export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureC
 }
 
 export const getVesselSegmentsGeojson = (
-  config: GlobalVesselEventsGeneratorConfig
+  track: any,
+  data: RawEvent[],
+  start: string,
+  end: string,
+  currentEventId?: string
 ): FeatureCollection => {
-  const { track, data, start, end, currentEventId } = config
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
     features: [],

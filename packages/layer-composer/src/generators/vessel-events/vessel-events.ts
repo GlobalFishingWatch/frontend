@@ -29,7 +29,7 @@ class VesselsEventsGenerator {
   type = Type.VesselEvents
 
   _getStyleSources = (config: GlobalVesselEventsGeneratorConfig): VesselsEventsSource[] => {
-    const { id, data } = config
+    const { id, data, track, start, end, currentEventId } = config
 
     if (!data) {
       // console.warn(`${VESSEL_EVENTS_TYPE} source generator needs geojson data`, config)
@@ -61,7 +61,14 @@ class VesselsEventsGenerator {
       return [pointsSource]
     }
     // TODO review performance memoization
-    const segments = memoizeCache[config.id].getVesselSegmentsGeojson(config) as FeatureCollection
+
+    const segments = memoizeCache[config.id].getVesselSegmentsGeojson(
+      track,
+      data,
+      start,
+      end,
+      currentEventId
+    ) as FeatureCollection
     const segmentsSource: VesselsEventsSource = {
       id: `${id}_segments`,
       type: 'geojson',
