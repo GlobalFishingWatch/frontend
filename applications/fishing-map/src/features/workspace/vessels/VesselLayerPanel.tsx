@@ -27,7 +27,6 @@ import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import FitBounds from '../common/FitBounds'
-import layerStyles from './VesselLayerPanel.module.css'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -45,7 +44,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const guestUser = useSelector(isGuestUser)
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
-  const eventDatasets = getEventsDatasetsInDataview(dataview)
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -217,25 +215,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           )}
         </div>
       </div>
-      {layerActive && eventDatasets && eventDatasets.length > 0 && (
-        <div className={styles.content}>
-          <ul className={layerStyles.eventsLegendContainer}>
-            {eventDatasets.map((dataset) => {
-              const eventType = dataset.configuration?.type
-              if (!eventType) return null
-              return (
-                <li className={layerStyles.eventsLegend}>
-                  <span
-                    className={layerStyles.eventLegendIcon}
-                    style={{ backgroundColor: EVENTS_COLORS[eventType] }}
-                  ></span>
-                  {t(`event.${eventType}` as any, eventType)}
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      )}
     </div>
   )
 }

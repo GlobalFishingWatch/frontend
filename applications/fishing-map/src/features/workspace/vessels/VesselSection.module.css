@@ -1,0 +1,23 @@
+.eventsLegendContainer {
+  /* padding-left: var(--space-S); */
+  display: flex;
+  flex-direction: column;
+}
+
+.eventsLegend {
+  display: flex;
+  align-items: center;
+}
+
+.eventLegendIcon {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 1rem;
+  margin-right: 0.5rem;
+  border: var(--border);
+}
+
+.eventLegendLabel {
+  font: var(--font-S);
+}

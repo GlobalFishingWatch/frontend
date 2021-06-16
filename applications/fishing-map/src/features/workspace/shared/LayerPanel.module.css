@@ -21,8 +21,7 @@
   filter: drop-shadow(0 0 1rem rgba(var(--primary-blue-rgb), 0.4));
 }
 
-.header,
-.content {
+.header {
   padding: var(--space-XS) var(--space-S);
   display: flex;
   align-items: center;
