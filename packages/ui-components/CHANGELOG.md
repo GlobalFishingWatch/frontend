@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 5.1.2
+
+### Patch Changes
+
+- f96a081c: added Marine Protected Areas to the header
+
 ## 5.1.1
 
 ### Patch Changes
