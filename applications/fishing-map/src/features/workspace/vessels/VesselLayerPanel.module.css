@@ -1,0 +1,19 @@
+.eventsLegendContainer {
+  padding-left: var(--space-S);
+  display: flex;
+  flex-direction: column;
+}
+
+.eventsLegend {
+  display: flex;
+  align-items: center;
+}
+
+.eventLegendIcon {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 1.5rem;
+  margin-right: var(--space-XS);
+  border: 1px solid var(--color-secondary-blue);
+}

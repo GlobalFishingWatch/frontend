@@ -1,3 +1,5 @@
+import { EventTypes } from './events'
+
 export interface UploadResponse {
   path: string
   url: string
@@ -65,6 +67,7 @@ export interface DatasetConfiguration {
   filePath?: string
   srid?: number
   file?: string
+  type?: EventTypes
   geometryType?: DatasetGeometryType
   format?: 'geojson'
   [key: string]: unknown

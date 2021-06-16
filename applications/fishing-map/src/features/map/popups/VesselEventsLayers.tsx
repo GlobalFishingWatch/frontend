@@ -38,7 +38,7 @@ function EnvironmentTooltipSection({ features }: ContextTooltipRowProps) {
                   </div>
                   <div className={styles.row}>
                     <span className={styles.rowText}>
-                      {t(`event.${feature.properties.type}` as any)}{' '}
+                      {t(`event.${feature.properties.type}Action` as any)}{' '}
                       {duration.hours !== undefined &&
                         duration.hours > 0 &&
                         `${duration.hours} ${t('common.hour', {

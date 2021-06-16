@@ -118,10 +118,12 @@
     "workspaceNotFound": "The view you request was not found"
   },
   "event": {
-    "fishing": "Fished for",
+    "fishing": "Fishing",
+    "fishingAction": "Fished for",
     "noData": "No data available",
     "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
-    "port": "Docked for",
+    "port": "Port",
+    "portAction": "Docked for",
     "seeInCVP": "See in Carrier Vessel Portal"
   },
   "feedback": {
