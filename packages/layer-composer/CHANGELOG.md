@@ -1,5 +1,18 @@
 # @globalfishingwatch/layer-composer
 
+## 8.0.0
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@4.3.0
+
+## 7.3.0
+
+### Minor Changes
+
+- events with track segments
+
 ## 7.2.0
 
 ### Minor Changes

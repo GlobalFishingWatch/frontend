@@ -1,5 +1,22 @@
 # @globalfishingwatch/react-hooks
 
+## 11.0.0
+
+### Patch Changes
+
+- @globalfishingwatch/api-client@2.0.0
+- @globalfishingwatch/dataviews-client@11.0.0
+- @globalfishingwatch/layer-composer@8.0.0
+
+## 10.0.0
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@7.3.0
+  - @globalfishingwatch/dataviews-client@10.0.0
+
 ## 9.0.1
 
 ### Patch Changes
