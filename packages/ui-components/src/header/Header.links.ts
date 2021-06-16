@@ -15,6 +15,11 @@ const navigation: MenuItem[] = [
         label: 'Commercial Fishing',
         childs: [],
       },
+      {
+        link: 'https://globalfishingwatch.org/marine-protected-areas/',
+        label: 'Marine Protected Areas',
+        childs: [],
+      },
       { link: 'https://globalfishingwatch.org/transshipment/', label: 'Transshipment', childs: [] },
     ],
   },
