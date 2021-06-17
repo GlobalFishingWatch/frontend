@@ -12,8 +12,8 @@ export type TemporalGridFeature = {
   col: number
   row: number
   interval: Interval
-  visibleStartFrame: string
-  visibleEndFrame: string
+  visibleStartDate: string
+  visibleEndDate: string
 }
 
 export type ExtendedFeature = {

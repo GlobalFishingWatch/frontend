@@ -74,8 +74,8 @@ const getExtendedFeatures = (
         // This is used when querying the interaction endpoint, so that start begins at the start of the frame (ie start of a 10days interval)
         // This avoids querying a cell visible on the map, when its actual timerange is not included in the app-overall time range
         const getDate = CONFIG_BY_INTERVAL[timeChunks.interval as Interval].getDate
-        const visibleStartFrame = getDate(timeChunks.visibleStartFrame).toISOString()
-        const visibleEndFrame = getDate(timeChunks.visibleEndFrame).toISOString()
+        const visibleStartDate = getDate(timeChunks.visibleStartFrame).toISOString()
+        const visibleEndDate = getDate(timeChunks.visibleEndFrame).toISOString()
         const numSublayers = generatorMetadata?.numSublayers
         const values = aggregateCell({
           rawValues: properties.rawValues,
@@ -100,8 +100,8 @@ const getExtendedFeatures = (
               col: properties._col as number,
               row: properties._row as number,
               interval: timeChunks.interval,
-              visibleStartFrame,
-              visibleEndFrame,
+              visibleStartDate,
+              visibleEndDate,
             },
             value,
           }

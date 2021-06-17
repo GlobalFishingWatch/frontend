@@ -187,7 +187,7 @@ const getTimeChunks = (
     const dataEnd = chunkDataEnd.toString()
 
     // we will substract every timestamp with this to end up with shorter arrays indexes
-    const quantizeOffset = config.getRawFrame(+chunkStart)
+    const quantizeOffset = getVisibleStartFrame(config.getRawFrame(+chunkStart))
 
     const activeStartDT = +toDT(activeStart)
     const isActive = activeStartDT > +chunkStart && activeStartDT <= chunkViewEnd
