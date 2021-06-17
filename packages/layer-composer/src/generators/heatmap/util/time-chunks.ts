@@ -98,9 +98,9 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   month: {
     getRawFrame: (start: number) => {
       return LuxonInterval.fromDateTimes(
-          DateTime.fromMillis(0).toUTC(),
-          DateTime.fromMillis(start).toUTC()
-        ).toDuration('month').months
+        DateTime.fromMillis(0).toUTC(),
+        DateTime.fromMillis(start).toUTC()
+      ).toDuration('month').months
     },
     getDate: (frame: number) => {
       const year = 1970 + Math.floor(frame / 12)
@@ -187,7 +187,7 @@ const getTimeChunks = (
     const dataEnd = chunkDataEnd.toString()
 
     // we will substract every timestamp with this to end up with shorter arrays indexes
-    const quantizeOffset = config.getFrame(+chunkStart)
+    const quantizeOffset = config.getRawFrame(+chunkStart)
 
     const activeStartDT = +toDT(activeStart)
     const isActive = activeStartDT > +chunkStart && activeStartDT <= chunkViewEnd
@@ -314,7 +314,7 @@ const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interv
   const config = CONFIG_BY_INTERVAL[interval]
   // TODO Use Luxon to use UTC!!!!
   const ms = new Date(date).getTime()
-  const frame = config.getVisibleStartFrame(config.getRawFrame(ms))
+  const frame = getVisibleStartFrame(config.getRawFrame(ms))
   return frame - quantizeOffset
 }
 
