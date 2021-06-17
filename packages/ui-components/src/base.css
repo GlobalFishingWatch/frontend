@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
 
 :root {
   --base-font-size: 10px;
@@ -14,11 +14,21 @@
   --font-XXL: var(--font-regular) 5rem/6.2rem var(--font-family);
 
   /* BASE COLORS */
-  --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */
-  --danger-red-rgb: 360, 62, 98; /* rgb(360, 62, 98) */
-  --gradient-rgb: 229, 240, 242; /* rgb(229, 240, 242) */
-  --off-white-rgb: 242, 247, 248; /* rgb(242, 247, 248) */
-  --white-rgb: 255, 255, 255; /* rgb(255, 255, 255) */
+  --primary-blue-rgb: 22, 63, 137;
+
+  /* rgb(22, 63, 137) */
+  --danger-red-rgb: 360, 62, 98;
+
+  /* rgb(360, 62, 98) */
+  --gradient-rgb: 229, 240, 242;
+
+  /* rgb(229, 240, 242) */
+  --off-white-rgb: 242, 247, 248;
+
+  /* rgb(242, 247, 248) */
+  --white-rgb: 255, 255, 255;
+
+  /* rgb(255, 255, 255) */
 
   /* COLORS */
   --color-primary-blue: rgb(var(--primary-blue-rgb));
@@ -72,7 +82,9 @@
   --scrollbar-color-hover: rgba(0, 36, 87, 0.6);
   --scrollbar-width: thin;
   --scrollbar-size: 0.5rem;
-  --scrollbar-minlength: 1.5rem; /* Minimum length of scrollbar thumb (width of horizontal, height of vertical) */
+  --scrollbar-minlength: 1.5rem;
+
+  /* Minimum length of scrollbar thumb (width of horizontal, height of vertical) */
 }
 
 html {
@@ -138,9 +150,11 @@ ul {
   height: var(--scrollbar-size);
   width: var(--scrollbar-size);
 }
+
 *::-webkit-scrollbar-track {
   background-color: var(--scrollbar-track-color);
 }
+
 *::-webkit-scrollbar-thumb {
   background-color: var(--scrollbar-color);
 }
@@ -152,9 +166,11 @@ ul {
 *::-webkit-scrollbar-thumb:hover {
   background-color: var(--scrollbar-color-hover);
 }
+
 *::-webkit-scrollbar-thumb:vertical {
   min-height: var(--scrollbar-minlength);
 }
+
 *::-webkit-scrollbar-thumb:horizontal {
   min-width: var(--scrollbar-minlength);
 }
