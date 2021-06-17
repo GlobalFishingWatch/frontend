@@ -1,8 +1,10 @@
 import eez from './data/eez'
 import rfmo from './data/rfmo'
 import mpa from './data/mpa'
+import marineRegionsLocales from './data/locales'
+import sourceLocales from './data/locales/source.json'
 
-export type MarineRegionLocaleKey = string
+export type MarineRegionLocaleKey = keyof typeof sourceLocales
 export enum MarineRegionType {
   eez = 'eez',
   rfmo = 'rfmo',
@@ -20,21 +22,33 @@ export interface MarineRegion<T = string> {
   label: T
 }
 
-type GetMarineRegionLocaleParam = {
+export type GetMarineRegionLocaleParam = {
   locale: MarineRegionsLocale
 }
 
-const getMarineRegion = (
-  regionsList: Record<string, MarineRegion<MarineRegionLocaleKey>>,
-  { locale = MarineRegionsLocale.en }: GetMarineRegionLocaleParam = {} as GetMarineRegionLocaleParam
-): MarineRegion[] => {
-  return Object.values(regionsList).map((region) => region)
+const localizeName = (name: MarineRegionLocaleKey, locale = MarineRegionsLocale.en) => {
+  if (!marineRegionsLocales[locale]) {
+    return name
+  }
+  return (marineRegionsLocales[locale][name] as MarineRegionLocaleKey) || name
 }
 
-const getEEZ = (): MarineRegion[] => getMarineRegion(eez)
+const getLocalizedMarineRegions = (
+  regionsList: Record<string, MarineRegion>,
+  { locale = MarineRegionsLocale.en }: GetMarineRegionLocaleParam = {} as GetMarineRegionLocaleParam
+): MarineRegion[] => {
+  return Object.values(regionsList).map((region) => ({
+    ...region,
+    label: localizeName(region.label as MarineRegionLocaleKey, locale),
+  }))
+}
 
-const getMPA = (): MarineRegion[] => getMarineRegion(mpa)
+const getEEZ = (locale?: GetMarineRegionLocaleParam): MarineRegion[] =>
+  getLocalizedMarineRegions(eez, locale)
 
-const getRFMO = (): MarineRegion[] => getMarineRegion(rfmo)
+const getMPA = (): MarineRegion[] => Object.values(mpa)
+
+const getRFMO = (locale?: GetMarineRegionLocaleParam): MarineRegion[] =>
+  getLocalizedMarineRegions(rfmo, locale)
 
 export { getEEZ, getMPA, getRFMO }
