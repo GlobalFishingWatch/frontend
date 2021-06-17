@@ -1,10 +1,23 @@
 import { createSelector } from 'reselect'
 import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import { resolveDataviewDatasetResource, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import { isGuestUser } from 'features/user/user.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
+
+const getVesselResourceQuery = (dataview: UrlDataviewInstance<Generators.Type>, datasetType: DatasetTypes): Resource | null => {
+  const resource = resolveDataviewDatasetResource(dataview, datasetType)
+  if (resource.url && resource.dataset && resource.datasetConfig) {
+    return {
+      dataviewId: dataview.dataviewId as number,
+      url: resource.url,
+      datasetType: resource.dataset.type,
+      datasetConfig: resource.datasetConfig,
+    }
+  }
+  return null
+}
 
 export const selectDataviewsResourceQueries = createSelector(
   [selectDataviewInstancesResolved, isGuestUser, selectDebugOptions],
@@ -15,7 +28,7 @@ export const selectDataviewsResourceQueries = createSelector(
         return []
       }
 
-      const queries: Resource[] = []
+      let trackResource: Resource | null = null
 
       if (dataview.config.visible === true) {
         const datasetType =
@@ -23,38 +36,13 @@ export const selectDataviewsResourceQueries = createSelector(
             ? DatasetTypes.UserTracks
             : DatasetTypes.Tracks
 
-        const trackResource = resolveDataviewDatasetResource(dataview, datasetType)
-        if (trackResource.url && trackResource.dataset && trackResource.datasetConfig) {
-          queries.push({
-            dataviewId: dataview.dataviewId as number,
-            url: trackResource.url,
-            datasetType: trackResource.dataset.type,
-            datasetConfig: trackResource.datasetConfig,
-          })
-        }
+        trackResource = getVesselResourceQuery(dataview, datasetType)
       }
 
-      const infoResource = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-      if (infoResource.url && infoResource.dataset && infoResource.datasetConfig) {
-        queries.push({
-          dataviewId: dataview.dataviewId as number,
-          url: infoResource.url,
-          datasetType: infoResource.dataset.type,
-          datasetConfig: infoResource.datasetConfig,
-        })
-      }
+      const infoResource = getVesselResourceQuery(dataview, DatasetTypes.Vessels)
+      const eventsResource = getVesselResourceQuery(dataview, DatasetTypes.Events)
 
-      const eventsResource = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
-      if (eventsResource.url && eventsResource.dataset && eventsResource.datasetConfig) {
-        queries.push({
-          dataviewId: dataview.dataviewId as number,
-          url: eventsResource.url,
-          datasetType: eventsResource.dataset.type,
-          datasetConfig: eventsResource.datasetConfig,
-        })
-      }
-
-      return queries
+      return [trackResource, infoResource, eventsResource].filter(r => r !== null) as Resource[]
     })
 
     return resourceQueries
