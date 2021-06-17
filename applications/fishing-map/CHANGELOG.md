@@ -1,5 +1,16 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.0.6
+
+### Patch Changes
+
+- 05fe3de6: fixed issue with 4w time range + more greedy
+- Updated dependencies [05fe3de6]
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/react-hooks@9.0.0
+  - @globalfishingwatch/dataviews-client@9.0.0
+  - @globalfishingwatch/ui-components@6.0.0
+
 ## 1.0.5
 
 ### Patch Changes
