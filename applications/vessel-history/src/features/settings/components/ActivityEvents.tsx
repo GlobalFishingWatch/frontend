@@ -125,7 +125,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           max={props.maxDistance}
           onChange={(event) => setSetting(section, 'distance', parseInt(event.currentTarget.value))}
         ></InputText>
-        <span>kms</span>
+        <span>{t('settings.kms', 'kms')}</span>
       </div>
     </div>
   )

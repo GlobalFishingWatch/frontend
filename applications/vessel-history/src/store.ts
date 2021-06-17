@@ -4,7 +4,6 @@ import offlineVesselsReducer from 'features/vessels/offline-vessels.slice'
 import vesselsReducer from 'features/vessels/vessels.slice'
 import searchReducer from 'features/search/search.slice'
 import settingsReducer from 'features/settings/settings.slice'
-import { initializeRegions } from 'features/regions/regions.utils'
 import { initializeDataviews } from 'features/dataviews/dataviews.utils'
 import mapReducer from './features/map/map.slice'
 import dataviewsReducer from './features/dataviews/dataviews.slice'
@@ -65,8 +64,5 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 
 // Only once when the app starts
 initializeDataviews(store.dispatch)
-
-// TODO review a better approach
-initializeRegions(store.dispatch)
 
 export default store
