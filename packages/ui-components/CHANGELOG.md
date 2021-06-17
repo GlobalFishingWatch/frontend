@@ -1,5 +1,25 @@
 # @globalfishingwatch/ui-components
 
+## 6.0.1
+
+### Patch Changes
+
+- fdeabdfa: improvments in the design of the header
+
+## 6.0.0
+
+### Patch Changes
+
+- Updated dependencies [05fe3de6]
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/react-hooks@9.0.0
+
+## 5.1.2
+
+### Patch Changes
+
+- f96a081c: added Marine Protected Areas to the header
+
 ## 5.1.1
 
 ### Patch Changes

@@ -28,8 +28,8 @@ export const selectBasicSearchDatasets = createSelector(
 
 export const selectAdvancedSearchDatasets = createSelector(
   [selectSearchDatasets('advanced')],
-  (basicSearchDatasets) => {
-    return basicSearchDatasets
+  (advancedSearchDatasets) => {
+    return advancedSearchDatasets
   }
 )
 

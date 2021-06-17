@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 7.2.0
+
+### Minor Changes
+
+- 05fe3de6: fixed issue with 4w time range + more greedy
+
 ## 7.1.3
 
 ### Patch Changes

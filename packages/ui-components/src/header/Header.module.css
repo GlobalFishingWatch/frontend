@@ -27,9 +27,9 @@
   z-index: 1;
   -webkit-user-select: none;
   user-select: none;
-  height: var(--header-height, 87px);
-  padding: 0 var(--space-S, 10px);
-  background-color: white;
+  height: var(--header-height, 85px);
+  padding: 0 20px;
+  background-color: #eff5f8;
   max-width: var(--max-page-width, 1050px);
   margin: 0 auto;
 }
@@ -42,7 +42,7 @@
   top: 0;
   pointer-events: none;
   z-index: 2;
-  background-color: white;
+  background-color: #eff5f8;
 }
 
 .gfwHeaderContainer .gfwHeader .appLogo {
@@ -86,11 +86,11 @@
 
 .gfwHeaderContainer .gfwHeader .navMobileMenuIcon > span {
   display: block;
-  width: 32px;
-  height: 4px;
-  margin-bottom: 5px;
+  width: 20px;
+  height: 2px;
+  margin-bottom: 3px;
   position: relative;
-  background: var(--color-brand, rgba(34, 68, 126, 1));
+  background: #f05032;
   border-radius: 3px;
   z-index: 1;
   transform-origin: 4px 0;
@@ -130,16 +130,16 @@
 
 .gfwHeaderContainer .gfwHeader .nav {
   position: absolute;
-  top: var(--header-height, 87px);
+  top: var(--header-height, 85px);
   left: 0;
   right: 0;
   min-width: 300px;
   padding: 0;
   transform-origin: 0% 0%;
-  transform: translateY(calc(-100% - var(--header-height, 87px)));
+  transform: translateY(calc(-100% - var(--header-height, 85px)));
   transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1);
   background-color: var(--white, white);
-  height: calc(100vh - var(--header-height, 87px));
+  height: calc(100vh - var(--header-height, 85px));
   overflow: auto;
   display: flex;
   align-items: flex-start;
@@ -194,9 +194,9 @@
 .gfwHeaderContainer .gfwHeader .navList > li > a {
   text-decoration: none;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   padding: var(--space-M, 20px);
-  color: var(--color-brand, rgba(34, 68, 126, 1));
+  color: #1b4b87;
   cursor: pointer;
 }
 
@@ -252,7 +252,6 @@
 }
 
 .gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu > li {
-  border-top: 1px solid rgba(127, 178, 192, 0.2);
   padding: 0 var(--space-M, 20px);
 }
 
@@ -271,6 +270,10 @@
 .gfwHeaderContainer .gfwHeader .navMobileMenuAction:checked ~ .nav {
   transform: scale(1, 1);
   opacity: 1;
+}
+
+.gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu > li:hover a {
+  color: var(--color-highlight, #ff6b6b);
 }
 
 @media only screen and (min-width: 860px) {
@@ -295,7 +298,7 @@
     padding: 0;
     top: 0;
     background-color: transparent;
-    height: var(--header-height, 87px);
+    height: var(--header-height, 85px);
     overflow: unset;
     align-items: center;
   }
@@ -307,13 +310,18 @@
 
   .gfwHeaderContainer .gfwHeader .navList > li {
     margin-right: var(--space-S, 10px);
-    height: var(--header-height, 87px);
+    height: var(--header-height, 85px);
     flex-direction: row;
     align-items: center;
     overflow: unset;
     border-top: 3px solid transparent;
     border-bottom: none;
     padding: 0;
+    z-index: 10;
+  }
+
+  .gfwHeaderContainer .gfwHeader .navList > li:hover {
+    z-index: 15;
   }
 
   .gfwHeaderContainer .gfwHeader .navList > li > a {
@@ -346,8 +354,8 @@
   }
 
   .gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu {
-    top: 84px;
-    min-width: 140px;
+    top: 82px;
+    min-width: 190px;
     position: absolute;
     height: 0;
     overflow: hidden;
@@ -355,13 +363,12 @@
     height: auto;
   }
 
-  .gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu > li {
-    border-bottom: 1px solid rgba(225, 225, 225, 0.5);
-    background-color: var(--color-brand-text, white);
+  .gfwHeaderContainer .gfwHeader .navList > li:last-child .navListSubMenu {
+    right: 0;
   }
 
-  .gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu > li:hover {
-    background-color: #81bbc7;
+  .gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu > li {
+    background-color: var(--color-brand-text, white);
   }
 
   .gfwHeaderContainer .gfwHeader .navMobile {

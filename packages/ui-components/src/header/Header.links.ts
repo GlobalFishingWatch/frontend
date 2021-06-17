@@ -15,6 +15,11 @@ const navigation: MenuItem[] = [
         label: 'Commercial Fishing',
         childs: [],
       },
+      {
+        link: 'https://globalfishingwatch.org/marine-protected-areas/',
+        label: 'Marine Protected Areas',
+        childs: [],
+      },
       { link: 'https://globalfishingwatch.org/transshipment/', label: 'Transshipment', childs: [] },
     ],
   },
@@ -28,6 +33,7 @@ const navigation: MenuItem[] = [
         link: 'https://globalfishingwatch.org/carrier-vessel-portal/',
         label: 'Carrier Vessel Portal',
       },
+      { link: 'https://globalfishingwatch.org/marine-manager-portal/', label: 'Marine Manager Portal' },
       { link: 'https://globalfishingwatch.org/datasets-and-code/', label: 'Datasets and Code' },
     ],
   },
@@ -78,7 +84,7 @@ const navigation: MenuItem[] = [
   },
   {
     link: 'https://globalfishingwatch.org/about-us/',
-    label: 'About us',
+    label: 'About Us',
     mini: true,
     childs: [
       { link: 'https://globalfishingwatch.org/leadership/', label: 'Board of Directors' },
