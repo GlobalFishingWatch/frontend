@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { MultiSelect, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import { MultiSelectOption } from '@globalfishingwatch//ui-components/dist/multi-select'
-import { selectEEZs, selectRFMOs } from 'features/regions/regions.selectors'
+import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { SettingsEvents } from '../settings.slice'
 import { useApplySettingsConnect } from '../settings.hooks'
 import styles from './SettingsComponents.module.css'
@@ -25,17 +25,8 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
   const { setSettingOptions, setSetting } = useApplySettingsConnect()
   const EEZ_OPTIONS: SelectOption[] = useSelector(selectEEZs) ?? []
   const RFMOS_OPTIONS: MultiSelectOption[] = useSelector(selectRFMOs) ?? []
+  const MPAS_OPTIONS: MultiSelectOption[] = useSelector(selectMPAs) ?? []
 
-  const MPAS_OPTIONS: MultiSelectOption[] = [
-    {
-      id: 'm1',
-      label: 'MPAS 1',
-    },
-    {
-      id: 'm2',
-      label: 'MPAS 2',
-    },
-  ]
   const eezs = EEZ_OPTIONS.filter((option) => settings.eezs?.includes(option.id))
   const rfmos = RFMOS_OPTIONS.filter((option) => settings.rfmos?.includes(option.id))
   const mpas = MPAS_OPTIONS.filter((option) => settings.mpas?.includes(option.id))

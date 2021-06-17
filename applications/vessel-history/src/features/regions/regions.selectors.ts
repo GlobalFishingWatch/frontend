@@ -1,5 +1,6 @@
 import { memoize } from 'lodash'
 import { createSelector } from '@reduxjs/toolkit'
+import { MarineRegionType } from '@globalfishingwatch/marine-regions'
 import { RootState } from 'store'
 import { RegionId, regionsEntityAdapter } from './regions.slice'
 
@@ -14,8 +15,8 @@ const selectRegionsById = memoize((id: RegionId) =>
   })
 )
 
-export const selectEEZs = selectRegionsById('eezs')
-export const selectRFMOs = selectRegionsById('rfmos')
-export const selectPorts = selectRegionsById('ports')
+export const selectEEZs = selectRegionsById(MarineRegionType.eez)
+export const selectMPAs = selectRegionsById(MarineRegionType.mpa)
+export const selectRFMOs = selectRegionsById(MarineRegionType.rfmo)
 
 export const selectRegionsStatus = (state: RootState) => state.regions.status
