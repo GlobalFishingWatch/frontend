@@ -27,6 +27,8 @@ const initialState: RegionsState = {
   ...asyncInitialState,
 }
 
+// Leave it as async so it's easier to migrate when regions
+// were consumed from a service
 export const fetchRegionsThunk = createAsyncThunk(
   'regions/fetch',
   (locale: GetMarineRegionLocaleParam | undefined, { rejectWithValue }) => {
