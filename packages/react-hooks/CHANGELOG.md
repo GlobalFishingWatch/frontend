@@ -1,5 +1,17 @@
 # @globalfishingwatch/react-hooks
 
+## 9.0.0
+
+### Major Changes
+
+- 05fe3de6: fixed issue with 4w time range + more greedy
+
+### Patch Changes
+
+- Updated dependencies [05fe3de6]
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/dataviews-client@9.0.0
+
 ## 8.0.3
 
 ### Patch Changes
