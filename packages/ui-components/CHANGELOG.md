@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 6.0.1
+
+### Patch Changes
+
+- fdeabdfa: improvments in the design of the header
+
 ## 6.0.0
 
 ### Patch Changes
