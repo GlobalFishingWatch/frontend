@@ -5,8 +5,16 @@ import styles from './TooltipContainer.module.css'
 interface TooltipContainerProps {
   visible: boolean
   children: React.ReactElement
-  component: React.ReactElement
+  component: React.ReactElement | null
   onClickOutside: () => void
+}
+
+export function TooltipListContainer({
+  children,
+}: {
+  children: React.ReactElement | React.ReactElement[] | undefined | null
+}) {
+  return <ul className={styles.listContainer}>{children}</ul>
 }
 
 function TooltipContainer({ visible, children, component, onClickOutside }: TooltipContainerProps) {

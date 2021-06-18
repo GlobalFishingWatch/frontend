@@ -2,12 +2,16 @@ import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import { DatasetCategory } from '@globalfishingwatch/api-types'
-import { selectContextAreasDataviews } from 'features/workspace/workspace.selectors'
+import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
+import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
+import { getEventLabel } from 'utils/analytics'
 import LayerPanel from './ContextAreaLayerPanel'
 
 function ContextAreaSection(): React.ReactElement {
@@ -15,12 +19,32 @@ function ContextAreaSection(): React.ReactElement {
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
 
   const dataviews = useSelector(selectContextAreasDataviews)
+  const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onAddClick = useCallback(() => {
+    uaEvent({
+      category: 'Reference layer',
+      action: `Open panel to upload new reference layer`,
+      value: userDatasets.length,
+    })
     setNewDatasetOpen(true)
-  }, [])
+  }, [userDatasets.length])
 
+  const onToggleLayer = useCallback(
+    (dataview: UrlDataviewInstance) => () => {
+      const isVisible = dataview?.config?.visible ?? false
+      const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Context)
+      const layerTitle = dataset?.name ?? dataset?.id ?? 'Unknown layer'
+      const action = isVisible ? 'disable' : 'enable'
+      uaEvent({
+        category: 'Reference layer',
+        action: `Toggle reference layer`,
+        label: getEventLabel([action, layerTitle]),
+      })
+    },
+    []
+  )
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
@@ -49,7 +73,7 @@ function ContextAreaSection(): React.ReactElement {
         </TooltipContainer>
       </div>
       {dataviews?.map((dataview) => (
-        <LayerPanel key={dataview.id} dataview={dataview} />
+        <LayerPanel key={dataview.id} dataview={dataview} onToggle={onToggleLayer(dataview)} />
       ))}
     </div>
   )

@@ -3,12 +3,36 @@ import { Field, Segment, Point } from './types'
 export const TRACK_FIELDS = [Field.lonlat, Field.timestamp, Field.speed]
 export const DEFAULT_NULL_VALUE = -Math.pow(2, 31)
 
+/**
+ * Transformer functions to be applied on every valueArray field
+ * to convert the received value (Int32) to the actual value (Float)
+ * depending on its precision.
+ * This transformations should be the inverse of the formatterValueArray
+ * property of every field defined in:
+ *  https://github.com/GlobalFishingWatch/api-vessels-service/blob/develop/src/modules/api/v1/vessels/modules/tracks/services/feature.service.ts
+ */
+const transformerByField: Partial<Record<Field, (value: number) => number>> = {
+  [Field.course]: (value: number) => value / Math.pow(10, 6),
+  [Field.distanceFromPort]: (value: number) => value,
+  // Uncomment when added to new package version
+  // [Field.distanceFromShore]: (value: number) => value,
+  [Field.elevation]: (value: number) => value,
+  // Uncomment when added to new package version
+  // [Field.encounter]: (value: number) => value,
+  [Field.latitude]: (value: number) => value / Math.pow(10, 6),
+  [Field.longitude]: (value: number) => value / Math.pow(10, 6),
+  [Field.fishing]: (value: number) => value,
+  [Field.night]: (value: number) => value,
+  [Field.speed]: (value: number) => value / Math.pow(10, 6),
+  [Field.timestamp]: (value: number) => value * Math.pow(10, 3),
+}
+
 export const trackValueArrayToSegments = (valueArray: number[], fields_: Field[]) => {
   if (!fields_.length) {
     throw new Error()
   }
 
-  const fields = fields_
+  const fields: Field[] = [...fields_]
   if (fields.includes(Field.lonlat)) {
     const llIndex = fields.indexOf(Field.lonlat)
     fields.splice(llIndex, 1, Field.longitude, Field.latitude)
@@ -63,13 +87,12 @@ export const trackValueArrayToSegments = (valueArray: number[], fields_: Field[]
       }
 
       const field: Field = fields[currentPointFieldIndex]
+      const transformer = transformerByField[field]
 
-      // values by default must be / 1000000 in order to convert ints to floats
-      // except for timestamp that mmust be converted from s to ms
-      if (value === nullValue) {
+      if (value === nullValue || transformer === undefined) {
         currentPoint[field] = null
       } else {
-        currentPoint[field] = field === Field.timestamp ? value * 1000 : value / 1000000
+        currentPoint[field] = transformer(value)
       }
 
       pointsFieldIndex++

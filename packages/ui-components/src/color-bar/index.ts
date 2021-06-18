@@ -5,29 +5,7 @@ export type ColorBarOption = {
   value: string
 }
 
-export type HeatmapColorBarIds =
-  | 'teal'
-  | 'magenta'
-  | 'lilac'
-  | 'salmon'
-  | 'sky'
-  | 'red'
-  | 'yellow'
-  | 'green'
-  | 'orange'
-
-export type HeatmapColorBarValues =
-  | '#00FFBC'
-  | '#FF64CE'
-  | '#9CA4FF'
-  | '#FFAE9B'
-  | '#00EEFF'
-  | '#FF6854'
-  | '#FFEA00'
-  | '#A6FF59'
-  | '#FFAA0D'
-
-export const HeatmapColorBarOptions: ColorBarOption[] = [
+export const FillColorBarOptions: ColorBarOption[] = [
   { id: 'teal', value: '#00FFBC' },
   { id: 'magenta', value: '#FF64CE' },
   { id: 'lilac', value: '#9CA4FF' },
@@ -39,28 +17,7 @@ export const HeatmapColorBarOptions: ColorBarOption[] = [
   { id: 'orange', value: '#FFAA0D' },
 ]
 
-export type TrackColorBarValues =
-  | '#F95E5E'
-  | '#33B679'
-  | '#F09300'
-  | '#FBFF8B'
-  | '#1AFF6B'
-  | '#9E6AB0'
-  | '#F4511F'
-  | '#B39DDB'
-  | '#0B8043'
-  | '#67FBFE'
-  | '#BB00FF'
-  | '#069688'
-  | '#4184F4'
-  | '#AD1457'
-  | '#FE81E5'
-  | '#C0CA33'
-  | '#8E24A9'
-  | '#ABFF34'
-  | '#FCA26F'
-
-export const TrackColorBarOptions: ColorBarOption[] = [
+export const LineColorBarOptions: ColorBarOption[] = [
   { id: 'carnation', value: '#F95E5E' },
   { id: 'jungle-green', value: '#33B679' },
   { id: 'tangerine', value: '#F09300' },

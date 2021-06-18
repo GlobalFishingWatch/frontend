@@ -7,10 +7,7 @@ export interface SearchResult<T = any> {
   nextOffset: number
   offset: number
   query: string
-  total: {
-    value: number
-    relation: string
-  }
+  total: number
 }
 
 export type APISearch<T> = SearchResult<T>

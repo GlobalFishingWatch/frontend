@@ -1,5 +1,53 @@
 # @globalfishingwatch/fourwings-aggregate
 
+## 4.0.3
+
+### Patch Changes
+
+- d5dd9f90: Fishing map/4wings filter precision
+
+## 4.0.2
+
+### Patch Changes
+
+- b230075f: Fishing map/fix analysis broken graph
+
+## 4.0.1
+
+### Patch Changes
+
+- 18fbfda4: Fixed NaN value in avg mode
+
+## 4.0.0
+
+### Major Changes
+
+- 1a3d0960: Fishing map/presence less than one day
+
+## 3.1.1
+
+### Patch Changes
+
+- 0ec2156f: User tracks
+
+## 3.1.0
+
+### Minor Changes
+
+- export consts
+
+## 3.0.0
+
+### Major Changes
+
+- 358004cb: Use client-side aggregation with env layers
+
+## 1.2.1
+
+### Patch Changes
+
+- [`55796c7a`](https://github.com/GlobalFishingWatch/frontend/commit/55796c7a0a0b9972d3b7f8631566091dd0b74809) [#360](https://github.com/GlobalFishingWatch/frontend/pull/360) Thanks [@j8seangel](https://github.com/j8seangel)! - fix crash when no rawValues in aggregateCell
+
 ## 1.2.0
 
 ### Minor Changes

@@ -34,7 +34,7 @@ export const clampToAbsoluteBoundaries = (
 
 export const getDeltaMs = (start, end) => getTime(end) - getTime(start)
 export const getDeltaDays = (start, end) => getDeltaMs(start, end) / 1000 / 60 / 60 / 24
-export const isMoreThanADay = (start, end) => getDeltaDays(start, end) >= 1
+export const isMoreThanADay = (start, end) => getDeltaDays(start, end) > 1
 export const getDefaultFormat = (start, end) =>
   isMoreThanADay(start, end) ? DEFAULT_DATE_FORMAT : DEFAULT_FULL_DATE_FORMAT
 

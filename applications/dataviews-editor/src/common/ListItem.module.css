@@ -19,7 +19,7 @@
   position: absolute;
   right: -10px;
   top: calc(50% - 15px);
-  transform: scaleX(.7) rotate(45deg);
+  transform: scaleX(0.7) rotate(45deg);
   width: 30px;
   height: 30px;
 }

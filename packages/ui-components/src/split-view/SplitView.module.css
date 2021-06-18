@@ -9,8 +9,8 @@
   z-index: 10;
   position: absolute;
   top: 0;
-  left: -1px;
-  bottom: 0;
+  left: 0;
+  height: 100vh;
   transition: var(--transition);
   transform: translateX(-100%);
   background: var(--gradient);
@@ -24,7 +24,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  bottom: 0;
+  height: 100vh;
   left: 0;
   z-index: 0;
 }
@@ -42,4 +42,35 @@
   color: var(--color-white);
   background-color: var(--color-primary-blue);
   border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  transition: var(--transition);
+}
+
+@media only screen and (max-width: 768px) {
+  .container {
+    height: 100vh;
+    padding-bottom: 4.2rem;
+  }
+
+  .aside,
+  .main {
+    width: 100vw;
+    height: calc(100vh - 4.2rem);
+  }
+
+  .toggleChoice {
+    position: absolute;
+    background: var(--color-white);
+    padding: var(--space-XS);
+    width: 100vw;
+    transform: translateX(100vw);
+    left: 0;
+    bottom: -4.2rem;
+    z-index: 1;
+    transition: var(--transition);
+    box-shadow: var(--box-shadow);
+  }
+
+  .isOpen .toggleChoice {
+    transform: translateX(0);
+  }
 }

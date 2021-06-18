@@ -3,5 +3,10 @@
     "cloudbuildTaskId": "fishing-map-autodeploy-bot",
     "auto": false,
     "watch": ["applications/fishing-map/**/*"]
+  },
+  "vessel-history": {
+    "cloudbuildTaskId": "vessel-history-autodeploy-bot",
+    "auto": false,
+    "watch": ["applications/vessel-history/**/*"]
   }
 }

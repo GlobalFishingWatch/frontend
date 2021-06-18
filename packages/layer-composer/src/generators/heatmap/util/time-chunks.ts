@@ -1,9 +1,13 @@
-import { DateTime, Duration } from 'luxon'
+import { DateTime, Duration, Interval as LuxonInterval } from 'luxon'
+import { DEFAULT_HEATMAP_INTERVALS } from '../heatmap-animated'
+import { getSourceId } from '.'
 
-export type Interval = '10days' | 'day' | 'hour'
+// month only supported in environmental layers
+export type Interval = 'month' | '10days' | 'day' | 'hour'
 
 export type TimeChunk = {
   id: string
+  sourceId?: string
   start?: string
   viewEnd?: string
   dataEnd?: string
@@ -21,15 +25,24 @@ export type TimeChunks = {
   activeStart: string
   activeEnd: string
   activeChunkFrame: number
-  activeId: string
+  activeSourceId: string
+  visibleStartFrame: number
+  visibleEndFrame: number
 }
 
-const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
+export const toDT = (dateISO: string) => DateTime.fromISO(dateISO).toUTC()
 
 // Buffer size relative to active time delta
 const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2
 
-const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
+const getVisibleStartFrame = (rawFrame: number) => {
+  return Math.floor(rawFrame)
+}
+const getVisibleEndFrame = (rawFrame: number) => {
+  return Math.ceil(rawFrame)
+}
+
+export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   hour: {
     isValid: (duration: Duration): boolean => {
       return duration.as('days') < 5
@@ -46,8 +59,8 @@ const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
       return chunkViewEnd.plus({ days: 5 })
     },
     // We will substract every timestamp with a quantize offset to end up with shorter arrays indexes
-    getFrame: (start: number) => {
-      return Math.floor(start / 1000 / 60 / 60)
+    getRawFrame: (start: number) => {
+      return start / 1000 / 60 / 60
     },
     getDate: (frame: number) => {
       return new Date(frame * 1000 * 60 * 60)
@@ -67,19 +80,32 @@ const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
     getChunkDataEnd: (chunkViewEnd: DateTime): DateTime => {
       return chunkViewEnd.plus({ days: 100 })
     },
-    getFrame: (start: number) => {
-      return Math.floor(start / 1000 / 60 / 60 / 24)
+    getRawFrame: (start: number) => {
+      return start / 1000 / 60 / 60 / 24
     },
     getDate: (frame: number) => {
       return new Date(frame * 1000 * 60 * 60 * 24)
     },
   },
   '10days': {
-    getFrame: (start: number) => {
-      return Math.floor(start / 1000 / 60 / 60 / 24 / 10)
+    getRawFrame: (start: number) => {
+      return start / 1000 / 60 / 60 / 24 / 10
     },
     getDate: (frame: number) => {
       return new Date(frame * 1000 * 60 * 60 * 24 * 10)
+    },
+  },
+  month: {
+    getRawFrame: (start: number) => {
+      return LuxonInterval.fromDateTimes(
+        DateTime.fromMillis(0).toUTC(),
+        DateTime.fromMillis(start).toUTC()
+      ).toDuration('month').months
+    },
+    getDate: (frame: number) => {
+      const year = 1970 + Math.floor(frame / 12)
+      const month = frame % 12
+      return new Date(Date.UTC(year, month, 1))
     },
   },
 }
@@ -88,10 +114,16 @@ const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
  * Returns the type of interval for a given delta in ms
  * @param delta delta in ms
  */
-const getInterval = (delta: number): Interval => {
-  const duration = Duration.fromMillis(delta)
-  if (CONFIG_BY_INTERVAL.day.isValid(duration)) {
-    if (CONFIG_BY_INTERVAL.hour.isValid(duration)) {
+const getInterval = (
+  deltaMs: number,
+  supportedIntervals: Interval[] = DEFAULT_HEATMAP_INTERVALS
+): Interval => {
+  const duration = Duration.fromMillis(deltaMs)
+  if (
+    CONFIG_BY_INTERVAL.day.isValid(duration) &&
+    (supportedIntervals.includes('day') || supportedIntervals.includes('hour'))
+  ) {
+    if (CONFIG_BY_INTERVAL.hour.isValid(duration) && supportedIntervals.includes('hour')) {
       return 'hour'
     }
     return 'day'
@@ -131,6 +163,7 @@ const getChunkStarts = (
  * @param interval interval to consider ('day' or 'hour')
  */
 const getTimeChunks = (
+  baseId: string,
   chunkStarts: DateTime[],
   datasetStart: string,
   datasetEnd: string,
@@ -139,7 +172,7 @@ const getTimeChunks = (
 ) => {
   const config = CONFIG_BY_INTERVAL[interval]
   let activeChunkFrame = 0
-  let activeId = ''
+  let activeSourceId = ''
   const chunks: TimeChunk[] = chunkStarts.map((chunkStart) => {
     // end of *usable* tileset is end of year
     // end of *loaded* tileset is end of year + 100 days
@@ -154,16 +187,12 @@ const getTimeChunks = (
     const dataEnd = chunkDataEnd.toString()
 
     // we will substract every timestamp with this to end up with shorter arrays indexes
-    const quantizeOffset = config.getFrame(+chunkStart)
+    const quantizeOffset = getVisibleStartFrame(config.getRawFrame(+chunkStart))
 
     const activeStartDT = +toDT(activeStart)
     const isActive = activeStartDT > +chunkStart && activeStartDT <= chunkViewEnd
     const frame = toQuantizedFrame(activeStart, quantizeOffset, interval)
     const id = `heatmapchunk_${start.slice(0, 13)}_${viewEnd.slice(0, 13)}`
-    if (isActive) {
-      activeChunkFrame = frame
-      activeId = id
-    }
 
     const chunk: TimeChunk = {
       start,
@@ -174,9 +203,14 @@ const getTimeChunks = (
       frame,
       active: isActive,
     }
+    chunk.sourceId = getSourceId(baseId, chunk)
+    if (isActive) {
+      activeChunkFrame = frame
+      activeSourceId = chunk.sourceId
+    }
     return chunk
   })
-  return { chunks, activeChunkFrame, activeId }
+  return { chunks, activeChunkFrame, activeSourceId }
 }
 
 /**
@@ -187,45 +221,71 @@ const getTimeChunks = (
  * @param datasetEnd    end of available data for this dataset
  */
 export const getActiveTimeChunks = (
+  baseId: string,
   activeStart: string,
   activeEnd: string,
   datasetStart: string,
-  datasetEnd: string
+  datasetEnd: string,
+  interval?: Interval | Interval[]
 ): TimeChunks => {
-  const delta = +toDT(activeEnd) - +toDT(activeStart)
-  const interval = getInterval(delta)
+  const deltaMs = +toDT(activeEnd) - +toDT(activeStart)
+
+  const finalInterval: Interval =
+    !interval || Array.isArray(interval) ? getInterval(deltaMs, interval) : (interval as Interval)
+
+  const finalIntervalConfig = CONFIG_BY_INTERVAL[finalInterval]
+  const visibleStartFrameRaw = finalIntervalConfig.getRawFrame(+toDT(activeStart))
+  const visibleStartFrame = getVisibleStartFrame(visibleStartFrameRaw)
+  const visibleEndFrameRaw = finalIntervalConfig.getRawFrame(+toDT(activeEnd))
+  const visibleEndFrame = getVisibleEndFrame(visibleEndFrameRaw)
+
+  const deltaInIntervalUnits = visibleEndFrame - visibleStartFrame
+
   const timeChunks: TimeChunks = {
     activeStart,
     activeEnd,
     chunks: [],
-    delta,
-    deltaInIntervalUnits: CONFIG_BY_INTERVAL[interval].getFrame(delta),
-    deltaInDays: Duration.fromMillis(delta).as('days'),
-    interval,
+    delta: deltaMs,
+    deltaInIntervalUnits,
+    deltaInDays: Duration.fromMillis(deltaMs).as('days'),
+    interval: finalInterval,
     activeChunkFrame: 0,
-    activeId: '',
+    activeSourceId: '',
+    visibleStartFrame,
+    visibleEndFrame,
   }
 
   // ignore any start/end time chunk calculation as for the '10 days' interval the entire tileset is loaded
   if (timeChunks.interval === '10days') {
     const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
-    const config = CONFIG_BY_INTERVAL['10days']
-    const id = 'heatmapchunk_10days'
-    timeChunks.chunks = [
-      {
-        quantizeOffset: 0,
-        id,
-        frame,
-        active: true,
-      },
-    ]
+    const chunk: TimeChunk = {
+      quantizeOffset: 0,
+      id: 'heatmapchunk_10days',
+      frame,
+      active: true,
+    }
+    chunk.sourceId = getSourceId(baseId, chunk)
+    timeChunks.chunks = [chunk]
+    timeChunks.activeSourceId = chunk.sourceId
     timeChunks.activeChunkFrame = frame
-    timeChunks.activeId = id
+    return timeChunks
+  } else if (timeChunks.interval === 'month') {
+    const frame = toQuantizedFrame(activeStart, 0, timeChunks.interval)
+    const chunk: TimeChunk = {
+      quantizeOffset: 0,
+      id: 'heatmapchunk_month',
+      frame,
+      active: true,
+    }
+    chunk.sourceId = getSourceId(baseId, chunk)
+    timeChunks.chunks = [chunk]
+    timeChunks.activeSourceId = chunk.sourceId
+    timeChunks.activeChunkFrame = frame
     return timeChunks
   }
 
   // calculate start and end taking some buffer into account to proactively load time chunks
-  const bufferSize = delta * TIME_CHUNK_BUFFER_RELATIVE_SIZE
+  const bufferSize = deltaMs * TIME_CHUNK_BUFFER_RELATIVE_SIZE
   const bufferedActiveStart = +toDT(activeStart) - bufferSize
   const bufferedActiveEnd = +toDT(activeEnd) + bufferSize
 
@@ -235,7 +295,8 @@ export const getActiveTimeChunks = (
   }
 
   const chunkStarts = getChunkStarts(bufferedActiveStart, bufferedActiveEnd, timeChunks.interval)
-  const { chunks, activeChunkFrame, activeId } = getTimeChunks(
+  const { chunks, activeChunkFrame, activeSourceId } = getTimeChunks(
+    baseId,
     chunkStarts,
     datasetStart,
     datasetEnd,
@@ -244,15 +305,16 @@ export const getActiveTimeChunks = (
   )
   timeChunks.chunks = chunks
   timeChunks.activeChunkFrame = activeChunkFrame
-  timeChunks.activeId = activeId
+  timeChunks.activeSourceId = activeSourceId
 
   return timeChunks
 }
 
 const toQuantizedFrame = (date: string, quantizeOffset: number, interval: Interval) => {
   const config = CONFIG_BY_INTERVAL[interval]
+  // TODO Use Luxon to use UTC!!!!
   const ms = new Date(date).getTime()
-  const frame = config.getFrame(ms)
+  const frame = getVisibleStartFrame(config.getRawFrame(ms))
   return frame - quantizeOffset
 }
 
@@ -264,12 +326,4 @@ export const frameToDate = (frame: number, quantizeOffset: number, interval: Int
 
 export const quantizeOffsetToDate = (quantizeOffset: number, interval: Interval) => {
   return frameToDate(0, quantizeOffset, interval)
-}
-
-export const getDelta = (start: string, end: string, interval: Interval) => {
-  const config = CONFIG_BY_INTERVAL[interval]
-  const startTimestampMs = new Date(start).getTime()
-  const endTimestampMs = new Date(end).getTime()
-  const delta = config.getFrame(endTimestampMs - startTimestampMs)
-  return delta
 }

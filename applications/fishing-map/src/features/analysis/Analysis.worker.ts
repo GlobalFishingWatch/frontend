@@ -1,5 +1,5 @@
-import type { Polygon, MultiPolygon, BBox } from 'geojson'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+import { Polygon, MultiPolygon, BBox } from 'geojson'
 
 type Feature = GeoJSON.Feature<GeoJSON.Geometry>
 export type FilteredPolygons = {
@@ -30,37 +30,39 @@ function isCellInPolygon(cellGeometry: Polygon, polygon: Polygon) {
 }
 
 export function filterByPolygon(
-  cells: Feature[],
+  layersCells: Feature[][],
   polygon: Polygon | MultiPolygon
-): FilteredPolygons {
-  const filtered = cells.reduce(
-    (acc, cell) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [[minX, minY], [maxX], [_, maxY]] = (cell.geometry as Polygon).coordinates[0]
-      const cellBbox: BBox = [minX, minY, maxX, maxY]
-      const bboxContained = isBboxContained(polygon.bbox as BBox, cellBbox)
-      const isContained =
-        bboxContained && polygon.type === 'MultiPolygon'
-          ? polygon.coordinates.some((coordinates) =>
-              isCellInPolygon(cell.geometry as Polygon, { type: 'Polygon', coordinates })
-            )
-          : isCellInPolygon(cell.geometry as Polygon, polygon as Polygon)
+): FilteredPolygons[] {
+  const filtered = layersCells.map((layerCells) => {
+    return layerCells.reduce(
+      (acc, cell) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [[minX, minY], [maxX], [_, maxY]] = (cell.geometry as Polygon).coordinates[0]
+        const cellBbox: BBox = [minX, minY, maxX, maxY]
+        const bboxContained = isBboxContained(polygon.bbox as BBox, cellBbox)
+        const isContained =
+          bboxContained && polygon.type === 'MultiPolygon'
+            ? polygon.coordinates.some((coordinates) =>
+                isCellInPolygon(cell.geometry as Polygon, { type: 'Polygon', coordinates })
+              )
+            : isCellInPolygon(cell.geometry as Polygon, polygon as Polygon)
 
-      if (isContained) {
-        acc.contained.push(cell)
-      } else {
-        const center = {
-          type: 'Point' as const,
-          coordinates: [(minX + maxX) / 2, (minY + maxY) / 2],
+        if (isContained) {
+          acc.contained.push(cell)
+        } else {
+          const center = {
+            type: 'Point' as const,
+            coordinates: [(minX + maxX) / 2, (minY + maxY) / 2],
+          }
+          const overlaps = booleanPointInPolygon(center, polygon)
+          if (overlaps) {
+            acc.overlapping.push(cell)
+          }
         }
-        const overlaps = booleanPointInPolygon(center, polygon)
-        if (overlaps) {
-          acc.overlapping.push(cell)
-        }
-      }
-      return acc
-    },
-    { contained: [] as Feature[], overlapping: [] as Feature[] }
-  )
+        return acc
+      },
+      { contained: [] as Feature[], overlapping: [] as Feature[] }
+    )
+  })
   return filtered
 }

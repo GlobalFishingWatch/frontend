@@ -1,0 +1,24 @@
+.settingsFieldsContainer {
+  margin: 15px;
+}
+
+.settingsField {
+  margin-bottom: 20px;
+}
+
+.settingsField label {
+  color: rgba(34, 68, 126, 0.5);
+}
+
+.settingsField.inlineRow > div,
+.settingsField.inlineRow span {
+  display: inline-block;
+}
+
+.settingsField.inlineRow > div {
+  width: 60px;
+}
+
+.settingsField.inlineRow > div input {
+  text-align: center;
+}

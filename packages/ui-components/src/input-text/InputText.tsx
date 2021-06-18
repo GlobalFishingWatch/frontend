@@ -1,6 +1,7 @@
 import React, { useRef, forwardRef, useImperativeHandle, memo, Ref } from 'react'
 import cx from 'classnames'
 import Icon from '../icon'
+import { Spinner } from '..'
 import styles from './InputText.module.css'
 
 export type InputSize = 'default' | 'small'
@@ -13,6 +14,7 @@ type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   step?: string
   inputSize?: InputSize
   inputKey?: string
+  loading?: boolean
 }
 
 const defaultKey = Date.now().toString()
@@ -25,6 +27,7 @@ function InputText(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
     step = 'any',
     inputSize = 'default',
     inputKey = defaultKey,
+    loading = false,
     ...rest
   } = props
   const inputRef = useRef<HTMLInputElement>(null)
@@ -43,7 +46,8 @@ function InputText(props: InputTextProps, forwardedRef: Ref<HTMLInputElement>) {
         {...rest}
         {...(type === 'number' && { step })}
       />
-      {(type === 'email' || type === 'search') && (
+      {loading && <Spinner size="tiny" className={styles.spinner} />}
+      {!loading && (type === 'email' || type === 'search') && (
         <Icon
           icon={type}
           className={styles.icon}

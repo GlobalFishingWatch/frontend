@@ -52,23 +52,42 @@
   font: var(--font-XS);
   position: absolute;
   top: 1rem;
-  padding: 4px 8px;
+  padding: 3px 8px;
   z-index: 1;
   background-color: var(--color-primary-blue);
   transform: translateX(-50%);
-  transition: left 0.1s linear;
+  transition: left 0.1s linear, transform 0.1s linear;
   line-height: 1;
+  filter: var(--filter-drop-shadow);
 }
 
 .currentValue::after {
   content: '';
   position: absolute;
   left: 50%;
-  bottom: 2rem;
+  bottom: 1.8rem;
   height: 1rem;
   width: 3px;
   z-index: 1;
   background-color: var(--color-white);
+  transition: left 0.1s linear;
+}
+
+.offsetLeft {
+  transform: translateX(0%);
+}
+
+.offsetLeft::after {
+  left: 0;
+}
+
+.offsetRight {
+  transform: translateX(-100%);
+}
+
+.offsetRight::after {
+  left: unset;
+  right: 0;
 }
 
 .stepsContainer {
@@ -90,6 +109,10 @@
   transform: translateX(0);
 }
 
+.lastStep {
+  transform: translateX(-100%);
+}
+
 .discreteSteps {
   display: flex;
   align-items: stretch;
@@ -99,4 +122,48 @@
 
 .discreteStep {
   flex: 1;
+}
+
+.loading {
+  opacity: 0.6;
+}
+
+.loading > span,
+.loading > tspan {
+  animation: pulse 2s infinite;
+  letter-spacing: -1px;
+  font-size: 2.5rem !important;
+  line-height: 1.2rem;
+}
+
+.loading > span {
+  line-height: 1rem;
+}
+
+.loading > span:nth-child(1),
+.loading > tspan:nth-child(1) {
+  animation-delay: 0s;
+}
+.loading > span:nth-child(2),
+.loading > tspan:nth-child(2) {
+  animation-delay: 0.5s;
+}
+.loading > span:nth-child(3),
+.loading > tspan:nth-child(3) {
+  animation-delay: 1s;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  33% {
+    opacity: 0;
+  }
+  66% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

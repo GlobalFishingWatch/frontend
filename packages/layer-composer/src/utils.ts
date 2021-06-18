@@ -25,7 +25,7 @@ export const flatObjectArrays = (object = {} as any) => {
   return objectParsed
 }
 
-export const layersDictToArray = (layers: Dictionary<ExtendedLayer>) =>
+export const layersDictToArray = (layers: Dictionary<ExtendedLayer>): ExtendedLayer[] =>
   Object.values(layers).flatMap((layerGroup) => layerGroup)
 
 type AnyFunc = (...args: any[]) => any

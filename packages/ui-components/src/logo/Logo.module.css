@@ -7,11 +7,11 @@
   font-weight: 400;
 }
 
-.default{
-  fill: #3C3C3B;
+.default {
+  fill: #3c3c3b;
 }
 
-.invert{
+.invert {
   fill: var(--color-white);
 }
 

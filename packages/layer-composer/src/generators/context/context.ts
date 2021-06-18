@@ -1,14 +1,15 @@
-import { Layer, CirclePaint, LinePaint, FillPaint } from '@globalfishingwatch/mapbox-gl'
+import { AnyLayer, Layer, CirclePaint, LinePaint, FillPaint } from '@globalfishingwatch/mapbox-gl'
 import { Type, ContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
-import { isConfigVisible } from '../utils'
 import { API_GATEWAY } from '../../layer-composer'
 import LAYERS, { HIGHLIGHT_SUFIX } from './context-layers'
+import {
+  DEFAULT_LINE_COLOR,
+  getFillPaintWithFeatureState,
+  getLinePaintWithFeatureState,
+} from './context.utils'
 
-const DEFAULT_LINE_COLOR = 'white'
-const HIGHLIGHT_LINE_COLOR = 'white'
-const HIGHLIGHT_FILL_COLOR = 'rgba(0, 0, 0, 0.3)'
-const DEFAULT_SOURCE_LAYER = 'main'
+export const DEFAULT_CONTEXT_SOURCE_LAYER = 'main'
 
 const getSourceId = (config: ContextGeneratorConfig) => {
   return `${config.id}-${config.layer}`
@@ -22,15 +23,7 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
       : config.color || (layer.paint as LinePaint)?.['line-color'] || DEFAULT_LINE_COLOR
     const linePaint: LinePaint = {
       ...layer.paint,
-      'line-opacity': opacity,
-      'line-color': [
-        'case',
-        ['boolean', ['feature-state', 'hover'], false],
-        HIGHLIGHT_LINE_COLOR,
-        ['boolean', ['feature-state', 'click'], false],
-        HIGHLIGHT_LINE_COLOR,
-        color,
-      ],
+      ...getLinePaintWithFeatureState(color, opacity),
     }
     return linePaint
   } else if (layer.type === 'fill') {
@@ -38,23 +31,8 @@ const getPaintPropertyByType = (layer: Layer, config: any) => {
 
     const fillPaint: FillPaint = {
       ...layer.paint,
-      'fill-opacity': opacity,
-      'fill-color': [
-        'case',
-        ['boolean', ['feature-state', 'click'], false],
-        HIGHLIGHT_FILL_COLOR,
-        ['boolean', ['feature-state', 'highlight'], false],
-        HIGHLIGHT_FILL_COLOR,
-        fillColor,
-      ],
+      ...getFillPaintWithFeatureState(fillColor, opacity),
     }
-    // if (hasSelectedFeatures) {
-    //   const { field = 'id', values, fill = {} } = config.selectedFeatures
-    //   const { color = fillColor, fillOutlineColor = config.color } = fill
-    //   const matchFilter = ['match', ['get', field], values]
-    //   paint['fill-color'] = [...matchFilter, color, fillColor]
-    //   paint['fill-outline-color'] = [...matchFilter, fillOutlineColor, config.color]
-    // }
     return fillPaint
   } else if (layer.type === 'circle') {
     const circleColor = config.color || '#99eeff'
@@ -94,7 +72,7 @@ class ContextGenerator {
     ]
   }
 
-  _getStyleLayers = (config: ContextGeneratorConfig) => {
+  _getStyleLayers = (config: ContextGeneratorConfig): AnyLayer[] => {
     const baseLayers = LAYERS[config.layer]
     if (!baseLayers?.length) {
       throw new Error(`Context layer should specify a valid layer parameter, ${config.layer}`)
@@ -107,10 +85,9 @@ class ContextGenerator {
         ...baseLayer,
         id: baseLayer.id + config.id,
         source: getSourceId(config),
-        'source-layer': DEFAULT_SOURCE_LAYER,
+        'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
         layout: {
           ...baseLayer.layout,
-          visibility: isConfigVisible(config),
         },
         paint,
         metadata: {
@@ -122,7 +99,7 @@ class ContextGenerator {
       }
     })
 
-    return layers
+    return layers as AnyLayer[]
   }
 
   getStyle = (config: ContextGeneratorConfig) => {

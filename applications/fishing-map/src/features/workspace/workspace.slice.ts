@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import uniq from 'lodash/uniq'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { uniq } from 'lodash'
 import {
   Workspace,
   Dataview,
@@ -7,7 +7,8 @@ import {
   WorkspaceUpsert,
 } from '@globalfishingwatch/api-types'
 import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
-import { UrlDataviewInstance, WorkspaceState } from 'types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { WorkspaceState } from 'types'
 import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
@@ -17,12 +18,14 @@ import {
   selectUrlDataviewInstances,
   selectVersion,
 } from 'routes/routes.selectors'
-import { WORKSPACE, HOME } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
-import { selectAnalysisQuery, selectCustomWorkspace } from 'features/app/app.selectors'
-import { getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
+import { HOME, WORKSPACE } from 'routes/routes'
+import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
+import { selectCustomWorkspace } from 'features/app/app.selectors'
+import { DEFAULT_DATAVIEW_IDS, getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
+
+type LastWorkspaceVisited = { type: string; payload: any; query: any }
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
@@ -30,6 +33,7 @@ interface WorkspaceSliceState {
   customStatus: AsyncReducerStatus
   error: AsyncError
   data: Workspace<WorkspaceState> | null
+  lastVisited: LastWorkspaceVisited | undefined
 }
 
 const initialState: WorkspaceSliceState = {
@@ -37,6 +41,7 @@ const initialState: WorkspaceSliceState = {
   customStatus: AsyncReducerStatus.Idle,
   error: {},
   data: null,
+  lastVisited: undefined,
 }
 
 type RejectedActionPayload = {
@@ -65,7 +70,7 @@ export const getDatasetByDataview = (
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
-  async (workspaceId: string, { dispatch, getState, rejectWithValue }) => {
+  async (workspaceId: string, { signal, dispatch, getState, rejectWithValue }) => {
     const state = getState() as RootState
     const version = selectVersion(state)
     const locationType = selectLocationType(state)
@@ -73,7 +78,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
     try {
       let workspace = workspaceId
-        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`)
+        ? await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces/${workspaceId}`, {
+            signal,
+          })
         : null
       if (!workspace && locationType === HOME) {
         workspace = await getDefaultWorkspace()
@@ -83,46 +90,38 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         return
       }
       const dataviewIds = [
+        ...DEFAULT_DATAVIEW_IDS,
         ...(workspace.dataviews?.map(({ id }) => id as number) || []),
-        ...uniq(workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId)),
+        ...workspace.dataviewInstances?.map(({ dataviewId }) => dataviewId),
       ]
 
-      let dataviews = []
-      if (dataviewIds?.length) {
-        const { payload }: any = await dispatch(fetchDataviewsByIdsThunk(dataviewIds))
+      const uniqDataviewIds = uniq(dataviewIds)
+
+      let dataviews: Dataview[] = []
+      if (uniqDataviewIds?.length) {
+        const fetchDataviewsAction: any = dispatch(fetchDataviewsByIdsThunk(uniqDataviewIds))
+        signal.addEventListener('abort', fetchDataviewsAction.abort)
+        const { payload } = await fetchDataviewsAction
         if (payload?.length) {
           dataviews = payload
         }
       }
-      const dataviewIntances = [
-        ...dataviews,
-        ...(workspace.dataviewInstances || []),
-        ...(urlDataviewInstances || []),
-      ]
 
-      const datasets = getDatasetByDataview(dataviewIntances)
-
-      const { error, payload }: any = await dispatch(fetchDatasetsByIdsThunk(datasets))
-      if (error) {
-        return rejectWithValue({ workspace, error: payload })
+      if (!signal.aborted) {
+        const dataviewInstances = [
+          ...dataviews,
+          ...(workspace.dataviewInstances || []),
+          ...(urlDataviewInstances || []),
+        ]
+        const datasets = getDatasetByDataview(dataviewInstances)
+        const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk(datasets))
+        signal.addEventListener('abort', fetchDatasetsAction.abort)
+        const { error, payload } = await fetchDatasetsAction
+        if (error) {
+          return rejectWithValue({ workspace, error: payload })
+        }
       }
 
-      const locationCategory = selectLocationCategory(state)
-      const dataviewInstances = selectUrlDataviewInstances(state)
-      const analysis = selectAnalysisQuery(state)
-      if (workspace.viewport && locationType !== HOME) {
-        dispatch(
-          updateLocation(locationType, {
-            payload: { category: locationCategory, workspaceId: workspace.id },
-            query: {
-              ...workspace.viewport,
-              dataviewInstances,
-              analysis,
-            },
-            replaceQuery: true,
-          })
-        )
-      }
       return workspace
     } catch (e) {
       return rejectWithValue({ error: e as AsyncError })
@@ -145,21 +144,26 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
 
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
       let workspaceUpdated
-      try {
-        const version = selectVersion(state)
-        const name = tries > 0 ? defaultName + `_${tries}` : defaultName
-        workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/${version}/workspaces`, {
-          method: 'POST',
-          body: { ...mergedWorkspace, name },
-        } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
-      } catch (e) {
-        // Means we already have a workspace with this name
-        if (e.status === 400) {
-          return await saveWorkspace(tries + 1)
+      if (tries < 5) {
+        try {
+          const version = selectVersion(state)
+          const name = tries > 0 ? defaultName + `_${tries}` : defaultName
+          workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
+            `/${version}/workspaces`,
+            {
+              method: 'POST',
+              body: { ...mergedWorkspace, name },
+            } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
+          )
+        } catch (e) {
+          // Means we already have a workspace with this name
+          if (e.status === 400) {
+            return await saveWorkspace(tries + 1)
+          }
+          throw e
         }
-        throw e
+        return workspaceUpdated
       }
-      return workspaceUpdated
     }
 
     const workspaceUpdated = await saveWorkspace()
@@ -172,11 +176,6 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
             category: locationCategory,
             workspaceId: workspaceUpdated.id,
           },
-          query: {
-            latitude: workspaceUpdated.viewport.latitude,
-            longitude: workspaceUpdated.viewport.longitude,
-            zoom: workspaceUpdated.viewport.zoom,
-          },
           replaceQuery: true,
         })
       )
@@ -185,10 +184,35 @@ export const saveCurrentWorkspaceThunk = createAsyncThunk(
   }
 )
 
+export const updatedCurrentWorkspaceThunk = createAsyncThunk(
+  'workspace/updatedCurrent',
+  async (workspaceId: string, { dispatch, getState }) => {
+    const state = getState() as RootState
+    const version = selectVersion(state)
+    const workspace = selectCustomWorkspace(state)
+
+    const workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(
+      `/${version}/workspaces/${workspaceId}`,
+      {
+        method: 'PATCH',
+        body: workspace,
+      } as FetchOptions<WorkspaceUpsert<WorkspaceState>>
+    )
+    if (workspaceUpdated) {
+      dispatch(cleanQueryLocation())
+    }
+    return workspaceUpdated
+  }
+)
+
 const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
-  reducers: {},
+  reducers: {
+    setLastWorkspaceVisited: (state, action: PayloadAction<LastWorkspaceVisited | undefined>) => {
+      state.lastVisited = action.payload
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaceThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
@@ -200,13 +224,18 @@ const workspaceSlice = createSlice({
       }
     })
     builder.addCase(fetchWorkspaceThunk.rejected, (state, action) => {
-      const { workspace, error } = action.payload as RejectedActionPayload
-      state.status = AsyncReducerStatus.Error
-      if (workspace) {
-        state.data = workspace
-      }
-      if (error) {
-        state.error = error
+      if (action.payload) {
+        const { workspace, error } = action.payload as RejectedActionPayload
+        state.status = AsyncReducerStatus.Error
+        if (workspace) {
+          state.data = workspace
+        }
+        if (error) {
+          state.error = error
+        }
+      } else {
+        // This means action was cancelled
+        state.status = AsyncReducerStatus.Idle
       }
     })
     builder.addCase(saveCurrentWorkspaceThunk.pending, (state) => {
@@ -221,7 +250,21 @@ const workspaceSlice = createSlice({
     builder.addCase(saveCurrentWorkspaceThunk.rejected, (state) => {
       state.customStatus = AsyncReducerStatus.Error
     })
+    builder.addCase(updatedCurrentWorkspaceThunk.pending, (state) => {
+      state.customStatus = AsyncReducerStatus.Loading
+    })
+    builder.addCase(updatedCurrentWorkspaceThunk.fulfilled, (state, action) => {
+      state.customStatus = AsyncReducerStatus.Finished
+      if (action.payload) {
+        state.data = action.payload
+      }
+    })
+    builder.addCase(updatedCurrentWorkspaceThunk.rejected, (state) => {
+      state.customStatus = AsyncReducerStatus.Error
+    })
   },
 })
+
+export const { setLastWorkspaceVisited } = workspaceSlice.actions
 
 export default workspaceSlice.reducer

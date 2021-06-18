@@ -1,5 +1,5 @@
 import flags from 'data/flags'
-import i18n from 'features/i18n/i18n'
+import i18n, { t } from 'features/i18n/i18n'
 
 type Flag = { id: string; label: string }
 export const getFlagById = (id: string, lng = i18n.language): Flag | undefined => {
@@ -7,7 +7,7 @@ export const getFlagById = (id: string, lng = i18n.language): Flag | undefined =
   if (!flag || !lng) return flag
   return {
     ...flag,
-    label: i18n.t(`flags:${id}`, { lng }) || flag.label,
+    label: t(`flags:${id}`, { lng }) || flag.label,
   }
 }
 
@@ -19,10 +19,10 @@ export const getFlagsByIds = (ids: string[], lng = i18n.language): Flag[] =>
 
 export const getFlags = (lng = i18n.language): Flag[] =>
   flags
-    .map(({ id, label }) => {
+    .map((flag) => {
       return {
-        id,
-        label: i18n.t(`flags:${id}`, { lng }) || label,
+        ...flag,
+        label: t(`flags:${flag.id}`, { lng }) || flag.label,
       }
     })
     .sort((a, b) => a.label.localeCompare(b.label))

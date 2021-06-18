@@ -12,13 +12,14 @@ import styles from './MapInfo.module.css'
 export const pickDateFormatByRange = (start: string, end: string): DateTimeFormatOptions => {
   const A_DAY = 1000 * 60 * 60 * 24
   const timeΔ = start && end ? new Date(end).getTime() - new Date(start).getTime() : 0
-  return timeΔ < A_DAY ? DateTime.DATETIME_MED : DateTime.DATE_MED
+  return timeΔ <= A_DAY ? DateTime.DATETIME_MED : DateTime.DATE_MED
 }
 
 export const TimelineDatesRange = () => {
   const { start, end } = useTimerangeConnect()
-  const dateFormat = pickDateFormatByRange(start, end)
   if (!start || !end) return null
+
+  const dateFormat = pickDateFormatByRange(start, end)
   return (
     <div className={styles.dateRange}>
       <I18nDate date={start} format={dateFormat} /> - <I18nDate date={end} format={dateFormat} />

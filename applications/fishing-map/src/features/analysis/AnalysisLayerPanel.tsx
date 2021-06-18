@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from 'types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { isFishingDataview, isPresenceDataview } from 'features/workspace/heatmaps/heatmaps.utils'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
@@ -19,7 +19,7 @@ type LayerPanelProps = {
   hiddenProperties?: string[]
 }
 
-function AnalysisLayerPanel({ dataview, hiddenProperties }: LayerPanelProps): React.ReactElement {
+function AnalysisLayerPanel({ dataview, hiddenProperties }: LayerPanelProps) {
   const { t } = useTranslation()
 
   const fishignDataview = isFishingDataview(dataview)
@@ -29,11 +29,20 @@ function AnalysisLayerPanel({ dataview, hiddenProperties }: LayerPanelProps): Re
   let datasetName = dataset ? t(`datasets:${dataset?.id}.name` as any) : dataview.name || ''
   if (fishignDataview || presenceDataview) {
     datasetName = presenceDataview
-      ? t(`common.presence`, 'Fishing Presence')
+      ? t(`common.presence`, 'Vessel presence')
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
   const TitleComponent = <p className={styles.dataset}>{datasetName}</p>
   const showDot = !allAvailableProperties.every((property) => hiddenProperties?.includes(property))
+
+  const areAllPropertiesHidden =
+    hiddenProperties?.includes('dataset') &&
+    hiddenProperties?.includes('source') &&
+    hiddenProperties?.includes('flag')
+
+  if (areAllPropertiesHidden) {
+    return null
+  }
 
   return (
     <div className={cx(styles.row)}>
@@ -62,6 +71,11 @@ function AnalysisLayerPanel({ dataview, hiddenProperties }: LayerPanelProps): Re
           dataview={dataview}
           field={'fleet'}
           label={t('layer.fleet_plural', 'Fleets')}
+        />
+        <DatasetSchemaField
+          dataview={dataview}
+          field={'origin'}
+          label={t('vessel.origin', 'Origin')}
         />
         <DatasetSchemaField
           dataview={dataview}

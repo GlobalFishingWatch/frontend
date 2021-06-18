@@ -1,39 +1,104 @@
 import { useMemo } from 'react'
-import { ExtendedStyle } from '@globalfishingwatch/layer-composer'
+import { ExtendedStyle, Generators, LayerMetadataLegend } from '@globalfishingwatch/layer-composer'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { InteractionEvent } from '../use-map-interaction'
-import { LegendLayer } from '.'
+import type { LegendLayer, LegendLayerBivariate } from './index'
 
-export function getLegendLayers(
-  style: ExtendedStyle,
-  event?: InteractionEvent
-): LegendLayer[] | undefined {
-  const layers = style?.layers?.flatMap((layer) => {
-    if (!layer.metadata?.legend) return []
-    const legendLayer = {
-      ...layer.metadata.legend,
-      color: layer.metadata.color || 'red',
-      generatorId: layer.metadata.generatorId as string,
-    }
-    if (!event) return legendLayer
-    const eventFeature = event?.features?.find(
-      (feature) => feature.generatorId === layer.metadata?.generatorId
-    )
-    if (!eventFeature) return legendLayer
-    return {
-      ...legendLayer,
-      currentValue: eventFeature.value,
-      properties: eventFeature.properties,
-    }
-  })
-  return layers as LegendLayer[]
+const getLegendId = (id = '') => {
+  return `legend_${id}`
 }
 
-function useMapLegend(style?: ExtendedStyle, interactionEvent?: InteractionEvent) {
+const getLegendLayers = (
+  style?: ExtendedStyle,
+  dataviews?: UrlDataviewInstance[],
+  hoveredEvent?: InteractionEvent | null
+) => {
+  if (!style) return []
+  const heatmapLegends = Object.entries(style.metadata?.generatorsMetadata || {}).flatMap(
+    ([generatorId, { legends }]) => {
+      return legends?.flatMap((legend: LayerMetadataLegend) => {
+        if (!legend) return []
+
+        let currentValue
+        let currentValues
+        const getHoveredFeatureValueForSublayerId = (id: string): number => {
+          const hoveredFeature = hoveredEvent?.features?.find(
+            (f) => f.generatorId === generatorId && f.temporalgrid?.sublayerId === id
+          )
+          return hoveredFeature?.value
+        }
+        // Both bivariate sublayers come in the same sublayerLegend (see getLegendsBivariate in LC)
+        if (legend.type === 'bivariate') {
+          currentValues = [
+            getHoveredFeatureValueForSublayerId(legend.ids[0]),
+            getHoveredFeatureValueForSublayerId(legend.ids[1]),
+          ]
+        } else {
+          currentValue = getHoveredFeatureValueForSublayerId(legend.id)
+        }
+
+        return {
+          ...legend,
+          id: getLegendId(legend?.id),
+          generatorId,
+          generatorType: Generators.Type.HeatmapAnimated,
+          currentValue,
+          currentValues,
+        } as LegendLayer | LegendLayerBivariate
+      })
+    }
+  )
+
+  const layerLegends =
+    style.layers?.flatMap((layer) => {
+      if (!layer?.metadata?.legend) return []
+
+      const sublayerLegendsMetadata: LayerMetadataLegend[] = Array.isArray(layer.metadata.legend)
+        ? layer.metadata.legend
+        : [layer.metadata.legend]
+
+      return (
+        sublayerLegendsMetadata.map((sublayerLegendMetadata) => {
+          const id = sublayerLegendMetadata?.id || (layer.metadata?.generatorId as string)
+          const dataview = dataviews?.find((d) => d.id === id)
+          const sublayerLegend: LegendLayer = {
+            ...sublayerLegendMetadata,
+            id: getLegendId(id),
+            color: layer.metadata?.color || dataview?.config?.color || 'red',
+            generatorId: layer.metadata.generatorId,
+            generatorType: layer.metadata.generatorType,
+          }
+          return sublayerLegend
+        }) || []
+      )
+    }) || []
+
+  const legends = [...heatmapLegends, ...layerLegends].map((legend) => {
+    const { generatorType, generatorId } = legend
+    let currentValue = legend.currentValue
+    if (generatorType === Generators.Type.Heatmap) {
+      const value = hoveredEvent?.features?.find((f) => f.generatorId === generatorId)?.value
+      if (value) {
+        currentValue = value
+      }
+    }
+    // TODO use dataset propertyToInclude value
+    const label = generatorType === Generators.Type.UserContext ? '' : legend.label
+    return { ...legend, currentValue, label }
+  })
+
+  return legends as (LegendLayer | LegendLayerBivariate)[]
+}
+
+function useMapLegend(
+  style?: ExtendedStyle,
+  dataviews?: UrlDataviewInstance[],
+  interactionEvent?: InteractionEvent | null
+) {
   const legendLayers = useMemo(() => {
     if (!style) return
-    const legendLayers = getLegendLayers(style, interactionEvent)
-    return legendLayers?.reverse()
-  }, [style, interactionEvent])
+    return getLegendLayers(style, dataviews, interactionEvent)
+  }, [style, dataviews, interactionEvent])
   return legendLayers
 }
 export default useMapLegend

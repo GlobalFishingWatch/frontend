@@ -1,105 +1,64 @@
-import { useEffect, useMemo, useState } from 'react'
-import { TEMPORALGRID_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
+import { useEffect } from 'react'
+import { atom, useRecoilValue, useSetRecoilState } from 'recoil'
 import useMapInstance from 'features/map/map-context.hooks'
-import { useCurrentTimeChunkId } from './map.hooks'
+import { useMapStyle } from './map.hooks'
 
-export const useMapSourceLoaded = (sourceId: string, cacheKey?: string) => {
+export const mapIdleAtom = atom<boolean>({
+  key: 'mapIdle',
+  default: false,
+})
+
+export const useSetMapIdleAtom = () => {
+  // Used it once in Map.tsx the listeners only once
   const map = useMapInstance()
-  const [sourceLoaded, setSourceLoaded] = useState(false)
+  const setIdle = useSetRecoilState(mapIdleAtom)
 
   useEffect(() => {
-    if (cacheKey) {
-      setSourceLoaded(false)
+    if (!map) return
+    const setIdleState = () => {
+      setIdle(true)
     }
-  }, [cacheKey])
-
-  useEffect(() => {
-    const sourceLoadingCallback = (sourcedataEvent: any) => {
-      if (sourcedataEvent.sourceId === sourceId) {
-        setSourceLoaded(false)
-      }
+    const resetIdleState = () => {
+      setIdle(false)
     }
-
-    if (!cacheKey) {
-      if (map && sourceLoaded) {
-        map.on('sourcedataloading', sourceLoadingCallback)
-      }
+    if (map) {
+      map.on('sourcedata', resetIdleState)
+      map.on('idle', setIdleState)
+    }
+    const detachListeners = () => {
+      map.off('idle', setIdleState)
+      map.off('sourcedata', resetIdleState)
     }
 
-    return () => {
-      if (map) {
-        map.off('sourcedataloading', sourceLoadingCallback)
-      }
-    }
-  }, [cacheKey, map, sourceId, sourceLoaded])
-
-  useEffect(() => {
-    const sourceCallback = () => {
-      if (map?.getSource(sourceId) && map?.isSourceLoaded(sourceId)) {
-        setSourceLoaded(true)
-        map.off('idle', sourceCallback)
-      }
-    }
-
-    const sourceErrorCallback = (errorEvent: any) => {
-      if (
-        errorEvent.sourceId === sourceId &&
-        map?.getSource(sourceId) &&
-        map?.isSourceLoaded(sourceId)
-      ) {
-        setSourceLoaded(true)
-      }
-    }
-
-    if (map && sourceId && !sourceLoaded) {
-      map.on('idle', sourceCallback)
-      map.on('error', sourceErrorCallback)
-    }
-
-    return () => {
-      if (map) {
-        map.off('idle', sourceCallback)
-        map.off('error', sourceErrorCallback)
-      }
-    }
-  }, [map, sourceId, sourceLoaded])
-
-  return sourceLoaded
+    return detachListeners
+  }, [map, setIdle])
 }
 
-export const useMapFeatures = ({
-  sourceId,
-  sourceLayer = 'main',
-  cacheKey,
-  filter,
-}: {
-  sourceId: string
-  sourceLayer?: string
-  cacheKey?: string
-  filter?: any[]
-}) => {
-  const map = useMapInstance()
-  const sourceLoaded = useMapSourceLoaded(sourceId, cacheKey)
-
-  const features = useMemo(() => {
-    if (sourceLoaded) {
-      const features = map?.querySourceFeatures(sourceId, {
-        sourceLayer: sourceLayer,
-        ...(filter && { filter }),
-      })
-      return features
-    }
-  }, [sourceLoaded, map, sourceId, sourceLayer, filter])
-
-  return { features, sourceLoaded }
+export const useMapIdle = () => {
+  const idle = useRecoilValue(mapIdleAtom)
+  return idle
 }
 
-export const useMapTemporalgridFeatures = ({ cacheKey }: { cacheKey?: string } = {}) => {
-  const currentTimeChunkId = useCurrentTimeChunkId()
+export const useMapLoaded = () => {
+  const idle = useRecoilValue(mapIdleAtom)
+  const map = useMapInstance()
+  const mapInstanceReady = map !== null
+  const mapFirstLoad = (map as any)?._loaded || false
+  const mapStyleLoad = map?.isStyleLoaded() || false
+  const areTilesLoaded = map?.areTilesLoaded() || false
+  const loaded = mapInstanceReady && mapFirstLoad && (idle || areTilesLoaded || mapStyleLoad)
+  return loaded
+}
 
-  return useMapFeatures({
-    sourceId: currentTimeChunkId,
-    sourceLayer: TEMPORALGRID_SOURCE_LAYER,
-    cacheKey,
-  })
+export const useSourceInStyle = (sourcesIds: string | string[]) => {
+  const style = useMapStyle()
+  const sourcesIdsList = Array.isArray(sourcesIds) ? sourcesIds : [sourcesIds]
+  const sourcesLoaded = sourcesIdsList.every((source) => style?.sources?.[source] !== undefined)
+  return sourcesLoaded
+}
+
+export const useMapAndSourcesLoaded = (sourcesIds: string | string[]) => {
+  const mapLoaded = useMapLoaded()
+  const sourcesLoaded = useSourceInStyle(sourcesIds)
+  return mapLoaded && sourcesLoaded
 }

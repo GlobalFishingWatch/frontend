@@ -1,6 +1,7 @@
 import React, { memo } from 'react'
 import cx from 'classnames'
 import styles from './Bivariate.module.css'
+import legendStyles from './MapLegend.module.css'
 import BivariateArrows from './Bivariate-arrows'
 import { LegendLayerBivariate, roundLegendNumber, formatLegendValue } from './'
 
@@ -30,6 +31,7 @@ type BivariateLegendProps = {
 //                                            |
 //                                       undefined
 const getBucketIndex = (breaks: number[], value: number) => {
+  if (!breaks) return
   let currentBucketIndex
   for (let bucketIndex = 0; bucketIndex < breaks.length + 1; bucketIndex++) {
     const stopValue = breaks?.[bucketIndex] ?? Number.POSITIVE_INFINITY
@@ -120,7 +122,7 @@ function BivariateLegend({
 }: BivariateLegendProps) {
   if (!layer || !layer.bivariateRamp || !layer.sublayersBreaks) return null
   const bivariateBucketIndex = getBivariateValue(
-    [layer.currentValues[0] || 0, layer.currentValues[1] || 0],
+    [layer.currentValues?.[0] || 0, layer.currentValues?.[1] || 0],
     layer.sublayersBreaks
   )
   return (
@@ -143,7 +145,24 @@ function BivariateLegend({
                     {valuesPositions.map((positions, xIndex) =>
                       positions?.map(({ x, y }, yIndex) => {
                         if (xIndex === 1 && yIndex === 0) return null
+                        if (layer.loading) {
+                          return (
+                            <text
+                              x={x}
+                              y={y}
+                              className={legendStyles.loading}
+                              key={[xIndex, yIndex].join(',')}
+                            >
+                              <tspan>·</tspan>
+                              <tspan>·</tspan>
+                              <tspan>·</tspan>
+                            </text>
+                          )
+                        }
                         const value = layer.sublayersBreaks?.[xIndex]?.[yIndex]
+                        if (value === undefined) {
+                          return null
+                        }
                         const roundedValue = roundValues ? roundLegendNumber(value) : value
                         return (
                           <text key={value}>
@@ -156,8 +175,9 @@ function BivariateLegend({
                     )}
                   </g>
                   <g transform="translate(81, 62) scale(1, -1) rotate(45) translate(-81, -62) translate(41, 22)">
+                    <rect fill="#0f2e5f" stroke="none" x={0} y={40} width={40} height={40}></rect>
                     {layer.bivariateRamp.map((color: string, i: number) => (
-                      <BivariateRect color={color} i={i} key={color} />
+                      <BivariateRect color={color} i={i} key={color + i} />
                     ))}
                     {bivariateBucketIndex && bivariateBucketIndex > 0 && (
                       <BivariateRect

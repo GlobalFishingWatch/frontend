@@ -10,7 +10,7 @@ const MIN_DEGREES_PATH = 4
 const MAX_DEGREES_PATH = 150
 const defaultCenter = { latitude: 0, longitude: 0 }
 const worldData = feature(
-  (jsonData as unknown) as Topology,
+  jsonData as unknown as Topology,
   jsonData.objects.land as GeometryCollection
 ).features
 

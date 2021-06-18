@@ -18,7 +18,7 @@ const distFolder = pkg.main.split('/')[0]
 
 const isProduction = process.env.NODE_ENV === 'production'
 
-export default [
+const config = [
   {
     input: ['./src/**/index.js'],
     output: {
@@ -44,3 +44,5 @@ export default [
     ],
   },
 ]
+
+export default config

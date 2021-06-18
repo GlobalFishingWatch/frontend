@@ -1,20 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { ApiEvent } from '@globalfishingwatch/api-types/dist'
 import { RootState } from 'store'
 
-type Range = {
+export type Range = {
   start: string
   end: string
 }
 
 type TimebarSlice = {
-  highlightedTime: Range | null
-  staticTime: Range | null
+  highlightedTime: Range | undefined
+  highlightedEvent: ApiEvent | undefined
   hasChangedSettingsOnce: boolean
 }
 
 const initialState: TimebarSlice = {
-  highlightedTime: null,
-  staticTime: null,
+  highlightedTime: undefined,
+  highlightedEvent: undefined,
   hasChangedSettingsOnce: false,
 }
 
@@ -25,11 +26,11 @@ const slice = createSlice({
     setHighlightedTime: (state, action: PayloadAction<Range>) => {
       state.highlightedTime = action.payload
     },
-    disableHighlightedTime: (state) => {
-      state.highlightedTime = null
+    setHighlightedEvent: (state, action: PayloadAction<ApiEvent | undefined>) => {
+      state.highlightedEvent = action.payload
     },
-    setStaticTime: (state, action: PayloadAction<Range>) => {
-      state.staticTime = action.payload
+    disableHighlightedTime: (state) => {
+      state.highlightedTime = undefined
     },
     changeSettings: (state) => {
       state.hasChangedSettingsOnce = true
@@ -37,15 +38,12 @@ const slice = createSlice({
   },
 })
 
-export const {
-  setHighlightedTime,
-  disableHighlightedTime,
-  setStaticTime,
-  changeSettings,
-} = slice.actions
+export const { setHighlightedTime, setHighlightedEvent, disableHighlightedTime, changeSettings } =
+  slice.actions
+
 export default slice.reducer
 
 export const selectHighlightedTime = (state: RootState) => state.timebar.highlightedTime
-export const selectStaticTime = (state: RootState) => state.timebar.staticTime
+export const selectHighlightedEvent = (state: RootState) => state.timebar.highlightedEvent
 export const selectHasChangedSettingsOnce = (state: RootState) =>
   state.timebar.hasChangedSettingsOnce

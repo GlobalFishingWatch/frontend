@@ -12,10 +12,11 @@ type Dates = {
 type formatI18DateParams = { format?: DateTimeFormatOptions; locale?: Locale }
 
 export const formatI18nDate = (
-  date: string,
+  date: string | number,
   { format = DateTime.DATE_MED, locale = i18n.language as Locale }: formatI18DateParams = {}
 ) => {
-  return `${DateTime.fromISO(date).toUTC().setLocale(locale).toLocaleString(format)}${
+  const dateTimeDate = typeof date === 'number' ? DateTime.fromMillis(date) : DateTime.fromISO(date)
+  return `${dateTimeDate.toUTC().setLocale(locale).toLocaleString(format)}${
     format === DateTime.DATETIME_MED ? ' UTC' : ''
   }`
 }

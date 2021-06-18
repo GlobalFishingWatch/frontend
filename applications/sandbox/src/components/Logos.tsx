@@ -6,7 +6,7 @@ const LogosSection = () => {
     <Fragment>
       <h3>Default</h3>
       <Logo />
-      <Logo subBrand={SubBrands.MarinReserves} />
+      <Logo subBrand={SubBrands.MarineManager} />
       <div style={{ padding: '2rem', backgroundColor: 'black' }}>
         <Logo type="invert" />
         <Logo type="invert" subBrand={SubBrands.CarrierVessels} />

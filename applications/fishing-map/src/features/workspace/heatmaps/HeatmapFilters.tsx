@@ -1,17 +1,19 @@
 import React, { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { event as uaEvent } from 'react-ga'
 import MultiSelect, {
   MultiSelectOnChange,
   MultiSelectOption,
 } from '@globalfishingwatch/ui-components/dist/multi-select'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getFlags, getFlagsByIds } from 'utils/flags'
-import { UrlDataviewInstance } from 'types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import {
   getFiltersBySchema,
   getCommonSchemaFieldsInDataview,
 } from 'features/datasets/datasets.utils'
+import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import styles from './HeatmapFilters.module.css'
 import { getSourcesOptionsInDataview, getSourcesSelectedInDataview } from './heatmaps.utils'
 
@@ -97,6 +99,15 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
         },
       },
     })
+    uaEvent({
+      category: 'Activity data',
+      action: `Click on ${filterKey} filter`,
+      label: getEventLabel([
+        'select',
+        getActivitySources(dataview),
+        ...getActivityFilters({ [filterKey]: filterValues }),
+      ]),
+    })
   }
 
   const onRemoveFilterClick = (filterKey: string, selection: MultiSelectOption[]) => {
@@ -106,6 +117,15 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
       id: dataview.id,
       config: { filters: { ...filters, [filterKey]: filterValue } },
     })
+    uaEvent({
+      category: 'Activity data',
+      action: `Click on ${filterKey} filter`,
+      label: getEventLabel([
+        'deselect',
+        getActivitySources(dataview),
+        ...getActivityFilters({ [filterKey]: filterValue ?? [] }),
+      ]),
+    })
   }
 
   const onCleanFilterClick = (filterKey: string) => {
@@ -114,6 +134,11 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
     upsertDataviewInstance({
       id: dataview.id,
       config: { filters },
+    })
+    uaEvent({
+      category: 'Activity data',
+      action: `Click on ${filterKey} filter`,
+      label: getEventLabel(['clear', getActivitySources(dataview)]),
     })
   }
 

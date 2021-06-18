@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import TagList, { TagItem } from '@globalfishingwatch/ui-components/dist/tag-list'
-import { UrlDataviewInstance } from 'types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getSourcesSelectedInDataview } from '../heatmaps/heatmaps.utils'
 

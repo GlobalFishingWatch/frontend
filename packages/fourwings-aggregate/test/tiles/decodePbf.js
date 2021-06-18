@@ -3,6 +3,9 @@
 import * as fs from 'fs'
 import Protobuf from 'pbf'
 
+const args = process.argv.slice(2)
+const file = args[0]
+
 const decodeProto = (data) => {
   const readField = function (tag, obj, pbf) {
     if (tag === 1) pbf.readPackedVarint(obj.data)
@@ -15,6 +18,6 @@ const decodeProto = (data) => {
   return intArray && intArray.data
 }
 
-const data = fs.readFileSync('./test323.pbf')
+const data = fs.readFileSync(file)
 const int16ArrayBuffer = decodeProto(data)
-console.log(JSON.stringify(int16ArrayBuffer))
+console.info(JSON.stringify(int16ArrayBuffer))

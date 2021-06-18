@@ -25,7 +25,6 @@
   padding: var(--space-XS) var(--space-S);
   display: flex;
   align-items: center;
-  transition: background-color 150ms linear;
 }
 
 .expandedContainerOpen .header {
@@ -96,6 +95,11 @@
 
 .infoContentItem {
   margin-right: var(--space-M);
+}
+
+.infoLogin {
+  margin-top: var(--space-M);
+  color: var(--color-secondary-blue);
 }
 
 .actions .loadingIcon:hover {

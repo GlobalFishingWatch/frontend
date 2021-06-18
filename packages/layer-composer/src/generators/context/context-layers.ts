@@ -65,11 +65,11 @@ const getDefaultContextHighlight = (): Partial<LineLayer> => {
 const getDefaultContextLayersById = (id: string, color: string): (LineLayer | FillLayer)[] => {
   return [
     {
-      id: `${id}-interaction`,
+      id: `${id}_interaction`,
       ...getDefaultContextInteraction(),
     } as FillLayer,
     {
-      id: `${id}-line`,
+      id: `${id}_line`,
       ...getDefaultContextLine(color),
     } as LineLayer,
     {

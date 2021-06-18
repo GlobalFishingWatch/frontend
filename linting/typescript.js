@@ -3,11 +3,10 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'react-app',
-    'prettier/@typescript-eslint',
-    'plugin:prettier/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
+    'prettier',
   ],
   plugins: ['@typescript-eslint', 'react', 'import'],
   settings: {
@@ -28,7 +27,7 @@ module.exports = {
     'import/named': 0,
     'import/namespace': 0,
     'import/order': [
-      'error',
+      1,
       {
         groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
         'newlines-between': 'never',
@@ -63,5 +62,6 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 0,
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/camelcase': 0,
+    '@typescript-eslint/no-empty-function': 0,
   },
 }

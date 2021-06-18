@@ -7,7 +7,6 @@ import GFWAPI from '@globalfishingwatch/api-client'
 import Search from 'features/search/Search'
 import {
   selectWorkspaceStatus,
-  selectDataviewsResourceQueries,
   selectWorkspaceError,
   selectWorkspace,
 } from 'features/workspace/workspace.selectors'
@@ -21,8 +20,10 @@ import { logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import { SUPPORT_EMAIL } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
+import { selectDataviewsResourceQueries } from 'features/resources/resources.selectors'
 import HeatmapsSection from './heatmaps/HeatmapsSection'
 import VesselsSection from './vessels/VesselsSection'
+import EventsSection from './events/EventsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
@@ -115,8 +116,8 @@ function Workspace() {
   const workspace = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
-
   const resourceQueries = useSelector(selectDataviewsResourceQueries)
+
   useEffect(() => {
     if (resourceQueries) {
       resourceQueries.forEach((resourceQuery) => {
@@ -146,11 +147,12 @@ function Workspace() {
 
   return (
     <Fragment>
-      {locationCategory === WorkspaceCategories.MarineReserves && workspace?.name && (
-        <h2 className={styles.title}>{workspace.name}</h2>
-      )}
+      {(locationCategory === WorkspaceCategories.MarineManager ||
+        locationCategory === WorkspaceCategories.FishingActivity) &&
+        workspace?.name && <h2 className={styles.title}>{workspace.name}</h2>}
       <HeatmapsSection />
       <VesselsSection />
+      <EventsSection />
       <EnvironmentalSection />
       <ContextAreaSection />
     </Fragment>

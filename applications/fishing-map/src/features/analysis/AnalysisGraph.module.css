@@ -19,6 +19,11 @@
   stroke: var(--color-terthiary-blue);
 }
 
+.graph {
+  padding: var(--space-M);
+  min-height: 28rem;
+}
+
 .tooltipContainer {
   background-color: var(--color-white);
   border: var(--border);

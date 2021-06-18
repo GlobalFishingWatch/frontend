@@ -41,6 +41,24 @@
   outline: none;
 }
 
+:global(.printing) .handler {
+  background-color: transparent;
+}
+
+:global(.printing) .handler svg {
+  display: none;
+}
+
+:global(.printing) .handler::after {
+  content: '';
+  position: absolute;
+  left: 0.8rem;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: var(--timebar-white);
+}
+
 @media only screen and (max-width: 460px) {
   .handler {
     width: 2.4rem;

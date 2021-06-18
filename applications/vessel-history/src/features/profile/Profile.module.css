@@ -57,3 +57,12 @@
 .tabsHeader button:last-child {
   border: none;
 }
+
+.mapContainer {
+  min-height: 30vh;
+  height: calc(100vh - 110px);
+}
+
+.profileContainer .spinnerFull {
+  height: calc(100vh - 110px);
+}

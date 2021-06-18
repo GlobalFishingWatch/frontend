@@ -1,7 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import maxBy from 'lodash/maxBy'
-import max from 'lodash/max'
+import { maxBy, max } from 'lodash'
 import {
   area,
   curveStepAfter,
@@ -60,7 +59,6 @@ const getPaths = (activity, graphHeight, overallScale, maxValue, curve, mode = '
     .curve(CURVES[curve])
 
   const paths = activity.map((segment, i) => {
-    // console.log(segment.find(p => p.value === null))
     return areaGenerator(segment)
   })
 

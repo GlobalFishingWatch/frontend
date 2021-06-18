@@ -4,6 +4,7 @@ export type SelectOptionId = number | string
 export type MultiSelectOption<T = any> = {
   id: T
   label: string
+  alias?: string[]
   tooltip?: string
 }
 /**

@@ -45,6 +45,7 @@
 
 .selectorLabel {
   width: 100%;
+  text-transform: uppercase;
 }
 
 .actions {
@@ -64,6 +65,7 @@
   color: var(--timebar-white);
   font-size: var(--timebar-font-size);
   transition: var(--timebar-hover-transition);
+  text-transform: uppercase;
 }
 
 .cta:hover,

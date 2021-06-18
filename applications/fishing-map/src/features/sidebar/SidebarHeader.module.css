@@ -12,10 +12,14 @@
   height: 5.2rem;
 }
 
+.logoLink {
+  line-height: 0;
+  margin-right: auto;
+}
+
 .logo {
   width: 18rem;
   height: auto;
-  margin-right: auto;
 }
 
 :global(.printing) .logo {

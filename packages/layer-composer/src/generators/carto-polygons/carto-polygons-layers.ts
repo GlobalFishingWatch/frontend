@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { Group } from '../../types'
 
 const layers = {
@@ -68,8 +67,7 @@ const layers = {
   },
   eez: {
     source: {
-      sql:
-        'SELECT cartodb_id, CAST (mrgid AS TEXT) as id, the_geom, the_geom_webmercator, _union as name FROM eez_land_v3_202030',
+      sql: 'SELECT cartodb_id, CAST (mrgid AS TEXT) as id, the_geom, the_geom_webmercator, _union as name FROM eez_land_v3_202030',
       type: 'vector',
       attribution: 'EEZs: marineregions.org',
     },

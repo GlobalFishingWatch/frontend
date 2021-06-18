@@ -1,8 +1,8 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import TagList from '@globalfishingwatch/ui-components/dist/tag-list'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getFlagsByIds } from 'utils/flags'
-import { UrlDataviewInstance } from 'types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type DatasetFlagFieldProps = {

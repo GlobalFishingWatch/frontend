@@ -6,7 +6,7 @@ const IconButtonsSection = () => {
   return (
     <Fragment>
       <label>Default</label>
-      <IconButton icon="menu" onClick={(e) => console.log(e)} tooltip="Menu" />
+      <IconButton icon="menu" onClick={(e) => console.info(e)} tooltip="Menu" />
       <label>Default warning</label>
       <IconButton icon="delete" type="warning" />
       <label>With child</label>

@@ -9,7 +9,7 @@ const Handler = (props) => (
     onMouseDown={props.onMouseDown}
     onTouchStart={props.onMouseDown}
     type="button"
-    title="Drag to change the time range"
+    title={props.dragLabel}
     className={cx(styles.handler, {
       [styles._immediate]: props.dragging === true,
     })}
@@ -20,6 +20,7 @@ const Handler = (props) => (
 )
 
 Handler.propTypes = {
+  dragLabel: PropTypes.string,
   onMouseDown: PropTypes.func.isRequired,
   dragging: PropTypes.bool.isRequired,
   x: PropTypes.number.isRequired,
@@ -27,6 +28,7 @@ Handler.propTypes = {
 }
 
 Handler.defaultProps = {
+  dragLabel: 'Drag to change the time range',
   mouseX: 0,
 }
 

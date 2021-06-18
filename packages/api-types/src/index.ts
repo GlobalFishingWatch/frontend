@@ -1,6 +1,7 @@
 export * from './areas-of-interest'
 export * from './datasets'
 export * from './dataviews'
+export * from './events'
 export * from './report'
 export * from './resources'
 export * from './search'

@@ -7,19 +7,34 @@ export { default, MapLegend } from './MapLegend'
 export { default as ColorRampLegend } from './ColorRamp'
 export { default as BivariateLegend } from './Bivariate'
 
-// TODO unify this with use-map-legend
-export type LegendLayer = LayerMetadataLegend & {
+type UILayer = {
   color: string
+  generatorId: string
+  generatorType: string
 }
 
-export type LegendLayerBivariate = LayerMetadataLegendBivariate & {
-  color: string
+export type LegendLayer = LayerMetadataLegend & UILayer
+
+export type LegendLayerBivariate = LayerMetadataLegendBivariate & UILayer
+
+export const parseLegendNumber = (number: number) => {
+  if (typeof number !== 'number') {
+    return number
+  }
+  return number % 1 === 0 ? number : parseFloat(number.toFixed(2))
 }
 
 export const roundLegendNumber = (number: number) => {
-  return number > 1 ? Math.floor(number) : number
+  return number > 1 ? Math.floor(number) : parseLegendNumber(number)
 }
 
 export const formatLegendValue = (number: number) => {
-  return number >= 1000 ? `${(number / 1000).toFixed(1)}k` : number
+  if (typeof number !== 'number') {
+    console.warn('Value not valid be fixed parsed, returning original value', number)
+    return number
+  }
+  if (number >= 1000000) return `${(number / 1000000).toFixed(2).replace(/\.?0+$/, '')}M`
+  if (number >= 1000) return `${(number / 1000).toFixed(1).replace(/\.?0+$/, '')}K`
+  if (number < 1) return `${number.toFixed(2)}`
+  return number.toFixed(0)
 }

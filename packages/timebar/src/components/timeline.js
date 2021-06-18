@@ -4,7 +4,7 @@ import memoize from 'memoize-one'
 import cx from 'classnames'
 import { scaleTime } from 'd3-scale'
 import dayjs from 'dayjs'
-import throttle from 'lodash/throttle'
+import { throttle } from 'lodash'
 import { animated, Spring } from 'react-spring/renderprops'
 import ResizeObserver from 'resize-observer-polyfill'
 import ImmediateContext from '../immediateContext'
@@ -16,6 +16,7 @@ import {
   stickToClosestUnit,
 } from '../utils/internal-utils'
 import { EVENT_SOURCE } from '../constants'
+import { getLast30Days } from '../utils'
 import Bookmark from './bookmark'
 import TimelineUnits from './timeline-units'
 import Handler from './timeline-handler'
@@ -150,7 +151,7 @@ class Timeline extends PureComponent {
     if (this.state.outerDrag === true) {
       const { dragging, innerStartPx, innerEndPx, outerWidth, handlerMouseX } = this.state
       const { start, end, absoluteStart, absoluteEnd, onChange } = this.props
-      // console.log(progress);
+
       const deltaPxRatio =
         dragging === DRAG_START
           ? (innerStartPx - handlerMouseX) / innerStartPx
@@ -309,8 +310,15 @@ class Timeline extends PureComponent {
     })
   }
 
+  onLast30DaysClick() {
+    const { onChange } = this.props
+    const { start, end } = getLast30Days()
+    onChange(start, end)
+  }
+
   render() {
     const {
+      labels = {},
       start,
       end,
       absoluteStart,
@@ -345,6 +353,8 @@ class Timeline extends PureComponent {
     const svgTransform = this.getSvgTransform(overallScale, start, end, innerWidth, innerStartPx)
 
     const lastUpdatePosition = this.outerScale(new Date(absoluteEnd))
+    const isInTheFuture = new Date(start) > Date.now()
+
     return (
       <TimelineContext.Provider
         value={{
@@ -368,6 +378,7 @@ class Timeline extends PureComponent {
         >
           {bookmarkStart !== undefined && bookmarkStart !== null && bookmarkStart !== '' && (
             <Bookmark
+              labels={labels.bookmark}
               scale={this.outerScale}
               bookmarkStart={bookmarkStart}
               bookmarkEnd={bookmarkEnd}
@@ -399,6 +410,7 @@ class Timeline extends PureComponent {
               }}
             >
               <TimelineUnits
+                zoomToLabel={labels}
                 start={start}
                 end={end}
                 absoluteStart={absoluteStart}
@@ -427,6 +439,7 @@ class Timeline extends PureComponent {
             }}
           />
           <Handler
+            dragLabel={labels.dragLabel}
             onMouseDown={(event) => {
               this.onMouseDown(event, DRAG_START)
             }}
@@ -438,6 +451,7 @@ class Timeline extends PureComponent {
             mouseX={this.state.handlerMouseX}
           />
           <Handler
+            dragLabel={labels.dragLabel}
             onMouseDown={(event) => {
               this.onMouseDown(event, DRAG_END)
             }}
@@ -461,15 +475,26 @@ class Timeline extends PureComponent {
             <Spring native immediate={immediate} to={{ left: lastUpdatePosition }}>
               {(style) => (
                 <animated.div className={styles.absoluteEnd} style={style}>
-                  <div className={cx(styles.lastUpdate, styles.lastUpdateLabel)}>Last Update</div>
+                  <div className={cx(styles.lastUpdate, styles.lastUpdateLabel)}>
+                    {labels.lastUpdate}
+                  </div>
                   <div className={styles.lastUpdate}>
-                    {dayjs(absoluteEnd)
-                      .utc()
-                      .format('MMMM D YYYY')}
+                    {dayjs(absoluteEnd).utc().format('MMMM D YYYY')}
                   </div>
                 </animated.div>
               )}
             </Spring>
+          )}
+          {isInTheFuture && (
+            <div className={styles.last30Days}>
+              <button
+                onClick={() => {
+                  this.onLast30DaysClick()
+                }}
+              >
+                ↩︎ {labels.timerange.last30days}
+              </button>
+            </div>
           )}
         </div>
       </TimelineContext.Provider>
@@ -478,6 +503,15 @@ class Timeline extends PureComponent {
 }
 
 Timeline.propTypes = {
+  labels: PropTypes.shape({
+    zoomTo: PropTypes.string,
+    dragLabel: PropTypes.string,
+    lastUpdate: PropTypes.string,
+    bookmark: PropTypes.shape({
+      goToBookmark: PropTypes.string,
+      deleteBookmark: PropTypes.string,
+    }),
+  }),
   onChange: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func,
   onMouseMove: PropTypes.func,
@@ -494,13 +528,29 @@ Timeline.propTypes = {
 }
 
 Timeline.defaultProps = {
+  labels: {
+    dragLabel: 'Drag to change the time range',
+    lastUpdate: 'Last update',
+    bookmark: {
+      goToBookmark: 'Go to your bookmarked time range',
+      deleteBookmark: 'Delete time range bookmark',
+    },
+  },
   bookmarkStart: null,
   bookmarkEnd: null,
   bookmarkPlacement: 'top',
-  children: () => {},
-  onBookmarkChange: () => {},
-  onMouseLeave: () => {},
-  onMouseMove: () => {},
+  children: () => {
+    // do nothing
+  },
+  onBookmarkChange: () => {
+    // do nothing
+  },
+  onMouseLeave: () => {
+    // do nothing
+  },
+  onMouseMove: () => {
+    // do nothing
+  },
   showLastUpdate: true,
 }
 

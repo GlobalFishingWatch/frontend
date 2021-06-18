@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { area, stack, stackOffsetSilhouette, curveStepAfter } from 'd3-shape'
 import { scaleLinear } from 'd3-scale'
@@ -13,20 +13,27 @@ const MARGIN_TOP = 5
 const getPathContainers = (data, graphHeight, overallScale, numSublayers) => {
   if (!data) return []
 
+  
   const stackLayout = stack()
     .keys(Array.from(Array(numSublayers).keys()))
     .offset(stackOffsetSilhouette)
-
+    
   const series = stackLayout(data)
-
+  const maxY = max(series, (d) => max(d, (d) => d[1]))
   const y = scaleLinear()
-    .domain([0, max(series, (d) => max(d, (d) => d[1]))])
+    .domain([0, maxY])
     .range([MARGIN_TOP, graphHeight / 2 - MARGIN_BOTTOM / 2])
 
   const areaLayout = area()
     .x((d) => overallScale(d.data.date))
-    .y0((d) => y(d[0]))
-    .y1((d) => y(d[1]))
+    .y0((d) => {
+      const y0 = y(d[0])
+      return (numSublayers === 1 && y0 < 0) ? Math.min(y0, -1) : y0
+    })
+    .y1((d) => {
+      const y1 = y(d[1])
+      return (numSublayers === 1 && y1 > 0) ? Math.max(y1, 1) : y1
+    })
     .curve(curveStepAfter)
 
   const layouted = series.map((s) => {
@@ -41,7 +48,6 @@ const getPathContainers = (data, graphHeight, overallScale, numSublayers) => {
 const StackedActivity = ({ data, colors, numSublayers }) => {
   const { immediate } = useContext(ImmediateContext)
   const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(TimelineContext)
-
   const pathContainers = useMemo(() => {
     return getPathContainers(data, graphHeight, overallScale, numSublayers)
   }, [data, graphHeight, overallScale, numSublayers])

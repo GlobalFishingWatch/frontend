@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import memoize from 'lodash/memoize'
-import { uniqBy } from 'lodash'
+import { uniqBy, memoize } from 'lodash'
 import { Dataview } from '@globalfishingwatch/api-types'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { AsyncReducer, createAsyncSlice } from 'utils/async-slice'
@@ -20,15 +19,19 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
 
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
-  async (ids: number[], { rejectWithValue, getState }) => {
+  async (ids: number[], { signal, rejectWithValue, getState }) => {
     const existingIds = selectIds(getState() as RootState) as string[]
     const uniqIds = Array.from(new Set([...ids, ...existingIds]))
     try {
-      let dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${uniqIds.join(',')}`)
-      if (process.env.NODE_ENV === 'development') {
+      let dataviews = await GFWAPI.fetch<Dataview[]>(`/v1/dataviews?ids=${uniqIds.join(',')}`, {
+        signal,
+      })
+      if (
+        process.env.NODE_ENV === 'development' ||
+        process.env.REACT_APP_USE_LOCAL_DATAVIEWS === 'true'
+      ) {
         const mockedDataviews = await import('./dataviews.mock')
-        dataviews = uniqBy([...mockedDataviews.default, ...dataviews], (dataview) => dataview.id)
-        console.log('dataviews:', dataviews)
+        dataviews = uniqBy([...mockedDataviews.default, ...dataviews], 'id')
       }
       return dataviews
     } catch (e) {
@@ -47,12 +50,12 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<ResourcesState
 })
 
 export const {
-  selectAll: selectDataviews,
+  selectAll: selectAllDataviews,
   selectById,
   selectIds,
 } = entityAdapter.getSelectors<RootState>((state) => state.dataviews)
 
-export const selectDataviewById = memoize((id: string) =>
+export const selectDataviewById = memoize((id: number) =>
   createSelector([(state: RootState) => state], (state) => selectById(state, id))
 )
 

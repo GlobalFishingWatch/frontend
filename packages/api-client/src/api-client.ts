@@ -1,5 +1,9 @@
 import { saveAs } from 'file-saver'
-import { UserData, ResourceResponseType, ResourceRequestType } from '@globalfishingwatch/api-types'
+import type {
+  UserData,
+  ResourceResponseType,
+  ResourceRequestType,
+} from '@globalfishingwatch/api-types'
 import { isUrlAbsolute } from './utils/url'
 
 const API_GATEWAY =
@@ -113,8 +117,13 @@ export class GFWAPI {
     return this.status
   }
 
-  getLoginUrl(callbackUrl: string, client = 'gfw') {
-    return `${this.baseUrl}/${AUTH_PATH}?client=${client}&callback=${callbackUrl}`
+  getLoginUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
+    const fallbackLocale =
+      locale ||
+      (typeof localStorage !== undefined ? localStorage.getItem('i18nextLng') : '') ||
+      'en'
+    const callbackUrlEncoded = encodeURIComponent(callbackUrl)
+    return `${this.baseUrl}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`
   }
 
   getConfig() {

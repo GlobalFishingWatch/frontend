@@ -21,6 +21,8 @@ const applyStyleTransformations = (
 
 const defaultTransformations: StyleTransformation[] = [sort, getInteractiveLayerIds]
 
+let styleSpec: any
+
 const defaultLayerComposerInstance = new LayerComposer()
 function useLayerComposer(
   generatorConfigs: Generators.AnyGeneratorConfig[],
@@ -40,15 +42,17 @@ function useLayerComposer(
           globalGeneratorConfig
         )
         const afterTransformations = applyStyleTransformations(style, styleTransformations)
-        // if (process.env.NODE_ENV === 'development') {
-        //   const styleSpec = await import('@globalfishingwatch/mapbox-gl/dist/style-spec')
-        //   if (styleSpec && styleSpec.validate) {
-        //     const styleErrors = styleSpec.validate(afterTransformations)
-        //     if (styleErrors && styleErrors.length) {
-        //       throw new Error(styleErrors.map((e: any) => e.message).join('\n'))
-        //     }
-        //   }
-        // }
+        if (process.env.NODE_ENV === 'development') {
+          if (!styleSpec) {
+            styleSpec = await import('@globalfishingwatch/mapbox-gl/dist/style-spec')
+          }
+          if (styleSpec && styleSpec.validate) {
+            const styleErrors = styleSpec.validate(afterTransformations)
+            if (styleErrors && styleErrors.length) {
+              throw new Error(styleErrors.map((e: any) => e.message).join('\n'))
+            }
+          }
+        }
         setStyle(afterTransformations)
         if (promises && promises.length) {
           setLoading(true)
@@ -63,7 +67,7 @@ function useLayerComposer(
         }
         setError(null)
       } catch (e) {
-        console.log(e)
+        console.warn(e)
         setError(e)
       }
     }

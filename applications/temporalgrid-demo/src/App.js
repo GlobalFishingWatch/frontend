@@ -193,8 +193,6 @@ export default function App() {
     return generators
   }, [animated, showBasemap, debug, debugLabels, sublayers, mode, isPlaying, staticTime])
 
-  // console.log(layers)
-
   const [mapRef, setMapRef] = useState(null)
   const globalConfig = useMemo(() => {
     const finalTime = animated ? time : debouncedTime
@@ -204,10 +202,10 @@ export default function App() {
   const { style } = useLayerComposer(layers, globalConfig)
 
   const clickCallback = useCallback((event) => {
-    console.log(event)
+    console.info(event)
   }, [])
   const hoverCallback = useCallback((event) => {
-    console.log(event)
+    console.info(event)
   }, [])
 
   // TODO useMapInteraction has been removed

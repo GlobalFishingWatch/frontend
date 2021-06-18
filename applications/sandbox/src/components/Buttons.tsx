@@ -5,7 +5,7 @@ const ButtonsSection = () => {
   return (
     <Fragment>
       <h3>Basic</h3>
-      <Button tooltip="Tooltiping" onClick={(e) => console.log(e)}>
+      <Button tooltip="Tooltiping" onClick={(e) => console.info(e)}>
         I'm the default
       </Button>
       <h3>Secondary</h3>

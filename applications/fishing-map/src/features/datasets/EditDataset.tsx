@@ -5,7 +5,11 @@ import { useSelector } from 'react-redux'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import { DatasetCategory, EnviromentalDatasetConfiguration } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetCategory,
+  EnviromentalDatasetConfiguration,
+} from '@globalfishingwatch/api-types'
 import { useDatasetsAPI, useDatasetModalConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
 import { selectDatasetById } from './datasets.slice'
@@ -18,14 +22,31 @@ export type EditDatasetMetadata = Pick<
   description?: string
 }
 
+const checkChanges = (metadata: EditDatasetMetadata | undefined, dataset: Dataset | undefined) => {
+  const hasChangedName = metadata?.name && metadata?.name !== dataset?.name
+  const hasChangedDescription =
+    metadata?.description && metadata?.description !== dataset?.description
+  const hasChangedPropertyToInclude =
+    metadata?.propertyToInclude &&
+    metadata?.propertyToInclude !==
+      (dataset?.configuration as EnviromentalDatasetConfiguration)?.propertyToInclude
+  const hasChangedPropertyToIncludeRange =
+    metadata?.propertyToIncludeRange &&
+    metadata?.propertyToIncludeRange !==
+      (dataset?.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange
+
+  return (
+    hasChangedName ||
+    hasChangedDescription ||
+    hasChangedPropertyToInclude ||
+    hasChangedPropertyToIncludeRange
+  )
+}
+
 function EditDataset(): React.ReactElement {
   const { t } = useTranslation()
-  const {
-    datasetCategory,
-    datasetModal,
-    editingDatasetId,
-    dispatchDatasetModal,
-  } = useDatasetModalConnect()
+  const { datasetCategory, datasetModal, editingDatasetId, dispatchDatasetModal } =
+    useDatasetModalConnect()
   const dataset = useSelector(selectDatasetById(editingDatasetId as string))
   const [loading, setLoading] = useState(false)
   const [metadata, setMetadata] = useState<EditDatasetMetadata | undefined>({
@@ -67,18 +88,11 @@ function EditDataset(): React.ReactElement {
     dispatchDatasetModal(undefined)
   }
 
-  const hasChangedName = metadata?.name && metadata?.name !== dataset?.name
-  const hasChangedPropertyToInclude =
-    metadata?.propertyToInclude &&
-    metadata?.propertyToInclude !==
-      (dataset?.configuration as EnviromentalDatasetConfiguration)?.propertyToInclude
-  const hasChangedPropertyToIncludeRange =
-    metadata?.propertyToIncludeRange &&
-    metadata?.propertyToIncludeRange !==
-      (dataset?.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange
+  const allowUpdate = checkChanges(metadata, dataset)
 
-  const allowUpdate =
-    hasChangedName || hasChangedPropertyToInclude || hasChangedPropertyToIncludeRange
+  const showEnvironmentalFields =
+    datasetCategory === DatasetCategory.Environment &&
+    dataset?.configuration?.geometryType !== 'tracks'
 
   const { min, max } = metadata?.propertyToIncludeRange || {}
 
@@ -104,7 +118,7 @@ function EditDataset(): React.ReactElement {
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
         />
-        {datasetCategory === DatasetCategory.Environment && (
+        {showEnvironmentalFields && (
           <div className={styles.row}>
             <InputText
               value={metadata?.propertyToInclude}

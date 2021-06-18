@@ -21,7 +21,7 @@
 
 .color::after {
   position: absolute;
-  content: "";
+  content: '';
   top: -4px;
   right: -4px;
   bottom: -4px;

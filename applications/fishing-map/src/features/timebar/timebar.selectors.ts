@@ -1,12 +1,21 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DateTime } from 'luxon'
+import {
+  ApiEvent,
+  DatasetTypes,
+  Resource,
+  ResourceStatus,
+  TrackResourceData,
+} from '@globalfishingwatch/api-types'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import { geoJSONToSegments, Segment } from '@globalfishingwatch/data-transforms'
 import { selectTimebarGraph } from 'features/app/app.selectors'
 import {
-  resolveDataviewDatasetResource,
+  selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
-  selectEnvironmentalDataviews,
-} from 'features/workspace/workspace.selectors'
-import { selectResources, Resource, TrackResourceData } from 'features/resources/resources.slice'
+} from 'features/dataviews/dataviews.selectors'
+import { selectResources } from 'features/resources/resources.slice'
+import { EVENTS_COLORS } from 'data/config'
 
 type TimebarTrackSegment = {
   start: number
@@ -18,33 +27,34 @@ type TimebarTrack = {
   color: string
 }
 
-export const hasStaticHeatmapLayersActive = createSelector(
-  [selectEnvironmentalDataviews],
-  (staticHeatmapDataviews) => {
-    if (!staticHeatmapDataviews) return false
-    return staticHeatmapDataviews.some((d) => d.config?.visible === true)
-  }
-)
 export const selectTracksData = createSelector(
-  [selectActiveVesselsDataviews, selectResources],
+  [selectActiveTrackDataviews, selectResources],
   (trackDataviews, resources) => {
     if (!trackDataviews || !resources) return
 
     const tracksSegments: TimebarTrack[] = trackDataviews.flatMap((dataview) => {
-      const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
+      const { url } = resolveDataviewDatasetResource(dataview, [
+        DatasetTypes.Tracks,
+        DatasetTypes.UserTracks,
+      ])
       if (!url) return []
       const track = resources[url] as Resource<TrackResourceData>
       if (!track?.data) return []
 
-      const trackSegments: TimebarTrackSegment[] = track.data?.map((segment) => {
+      const segments = (track.data as any).features
+        ? geoJSONToSegments(track.data as any)
+        : (track?.data as Segment[])
+
+      const trackSegments: TimebarTrackSegment[] = segments.map((segment) => {
         return {
-          start: segment[0].timestamp || 0,
-          end: segment[segment.length - 1].timestamp || 0,
+          start: Math.min(...segment.map((p) => p.timestamp || Number.POSITIVE_INFINITY)),
+          end: Math.max(...segment.map((p) => p.timestamp || Number.NEGATIVE_INFINITY)),
         }
       })
       return {
         segments: trackSegments,
         color: dataview.config?.color || '',
+        segmentsOffsetY: track.datasetType === DatasetTypes.UserTracks,
       }
     })
 
@@ -54,11 +64,11 @@ export const selectTracksData = createSelector(
 
 export const selectTracksGraphs = createSelector(
   [selectActiveVesselsDataviews, selectTimebarGraph, selectResources],
-  (trackDataviews, timebarGraph, resources) => {
-    if (!trackDataviews || trackDataviews.length > 2 || !resources) return
+  (vesselDataviews, timebarGraph, resources) => {
+    if (!vesselDataviews || vesselDataviews.length > 2 || !resources) return
 
-    const graphs = trackDataviews.flatMap((dataview) => {
-      const { url } = resolveDataviewDatasetResource(dataview, { type: DatasetTypes.Tracks })
+    const graphs = vesselDataviews.flatMap((dataview) => {
+      const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       if (!url) return []
       const track = resources[url] as Resource<TrackResourceData>
       if (!track?.data) return []
@@ -81,5 +91,91 @@ export const selectTracksGraphs = createSelector(
       }
     })
     return graphs
+  }
+)
+
+const selectEventsForTracks = createSelector(
+  [selectActiveTrackDataviews, selectResources],
+  (trackDataviews, resources) => {
+    const vesselsEvents = trackDataviews.map((dataview) => {
+      const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+      const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
+      const hasEventData = eventsUrl && resources[eventsUrl]?.data
+      const tracksResourceResolved =
+        tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
+
+      // Waiting for the tracks resource to be resolved to show the events
+      if (!hasEventData || !tracksResourceResolved) {
+        return []
+      }
+      return (eventsUrl ? resources[eventsUrl].data : []) as ApiEvent[]
+    })
+    return vesselsEvents.filter((events) => events.length > 0)
+  }
+)
+
+interface RenderedEvent extends ApiEvent {
+  color: string
+  description: string
+}
+
+export const selectEventsWithRenderingInfo = createSelector(
+  [selectEventsForTracks],
+  (eventsForTrack) => {
+    const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(
+      (trackEvents: ApiEvent[]) => {
+        return (trackEvents || []).map((event: ApiEvent) => {
+          const vesselName = event.vessel.name || event.vessel.id
+
+          // TODO translate this
+          let description
+          switch (event.type) {
+            // case 'encounter':
+            //   if (event.encounter && event.encounter.vessel.name) {
+            //     description = `${vesselName} had an encounter with ${event.encounter.vessel.name}`
+            //   } else {
+            //     description = `${vesselName} had an encounter with another vessel`
+            //   }
+            //   break
+            // case 'port':
+            //   if (event.port && event.port.name) {
+            //     description = `${vesselName} docked at ${event.port.name}`
+            //   } else {
+            //     description = `${vesselName} Docked`
+            //   }
+            //   break
+            // case 'loitering':
+            //   description = `${vesselName} loitered`
+            //   break
+            case 'fishing':
+              description = `${vesselName} fishing`
+              break
+            default:
+              description = 'Unknown event'
+          }
+          const duration = DateTime.fromMillis(event.end as number)
+            .diff(DateTime.fromMillis(event.start as number), ['hours', 'minutes'])
+            .toObject()
+          description = `${description} for ${duration.hours}hrs ${Math.round(
+            duration.minutes as number
+          )}mns`
+
+          let colorKey = event.type as string
+          if (event.type === 'encounter') {
+            colorKey = `${colorKey}${event.encounter?.authorizationStatus}`
+          }
+          const color = EVENTS_COLORS[colorKey]
+          const colorLabels = EVENTS_COLORS[`${colorKey}Labels`]
+
+          return {
+            ...event,
+            color,
+            colorLabels,
+            description,
+          }
+        })
+      }
+    )
+    return eventsWithRenderingInfo
   }
 )

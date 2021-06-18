@@ -1,5 +1,8 @@
+import { WorkspaceViewport } from '@globalfishingwatch/api-types/dist'
+import { AppDispatch, RootState } from 'store'
 import { QueryParams } from 'types'
-import { ROUTE_TYPES } from './routes'
+import { ROUTE_TYPES, HOME } from './routes'
+import { selectCurrentLocation, selectLocationPayload } from './routes.selectors'
 
 export interface UpdateQueryParamsAction {
   type: ROUTE_TYPES
@@ -19,4 +22,18 @@ export function updateLocation(
   { query = {}, payload = {}, replaceQuery = false }: UpdateLocationOptions = {}
 ) {
   return { type, query, payload, replaceQuery }
+}
+
+export function updateQueryParams(query: QueryParams): UpdateQueryParamsAction {
+  return { type: HOME, query }
+}
+
+// Why this works the other way around ? with the dispatch and getState firt in params ??
+export const updateUrlViewport: any = (dispatch: AppDispatch, getState: () => RootState) => {
+  return (viewport: WorkspaceViewport) => {
+    const state = getState()
+    const location = selectCurrentLocation(state)
+    const payload = selectLocationPayload(state)
+    dispatch(updateLocation(location.type, { query: { ...viewport }, payload }))
+  }
 }
