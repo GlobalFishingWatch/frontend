@@ -3,15 +3,15 @@
     "close": "Tutup analisis",
     "completed": "Laporan akan segera ada di email anda",
     "disclaimer": "Data yang ditunjukkan di atas harus diambil sebagai perkiraan. Klik tombol di bawah jika Anda membutuhkan analisis yang lebih tepat, termasuk daftar kapal yang terlibat, dan kami akan mengirimkannya ke email Anda.",
-    "experimental": "Experimental",
     "download": "Unduh laporan",
     "downloadLogin": "Anda perlu masuk untuk Unduh laporan",
     "empty": "Dataset yang dipilih akan muncul di sini",
     "errorMessage": "Ada yang salah",
+    "experimental": "Experimental",
     "noData": "No data available",
+    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Analisis",
-    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "vesselFlags": "oleh kapal berbendera oleh"
   },
   "common": {
@@ -45,6 +45,8 @@
     "map": "Peta",
     "max": "Maks.",
     "min": "Min.",
+    "minute": "minute",
+    "minute_plural": "minutes",
     "more": "tambah",
     "name": "Nama",
     "optional": "Opsional",
@@ -116,8 +118,12 @@
     "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan"
   },
   "event": {
+    "fishing": "Fishing",
+    "fishingAction": "Fished for",
     "noData": "Tidak ada data yang tersedia",
     "notInCVP": "Peristiwa ini terjadi di luar rentang waktu data Carrier Vessel Portal",
+    "port": "Port",
+    "portAction": "Docked for",
     "seeInCVP": "Lihat di Carrier Vessel Portal"
   },
   "feedback": {
@@ -215,6 +221,7 @@
     "placeholder": "Ketik untuk mencari kapal",
     "seeVessel": "Lihat kapal",
     "seeVessels": "Lihat {{count}} kapal",
+    "seeVessels_plural": "See vessels",
     "suggestion": "Apakah yang kamu maksud",
     "title": "Cari",
     "vesselAlreadyInWorkspace": "Kapal ini sudah ada di ruang kerja Anda",
