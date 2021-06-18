@@ -120,11 +120,7 @@ export const filterGeojsonByTimerange = (
   return geojsonFiltered
 }
 
-export const getVesselSegmentsGeojson = (
-  track: any,
-  data: RawEvent[],
-  currentEventId?: string
-): FeatureCollection => {
+export const getVesselSegmentsGeojson = (track: any, data: RawEvent[]): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
     features: [],
@@ -136,7 +132,6 @@ export const getVesselSegmentsGeojson = (
     ? (track as FeatureCollection)
     : segmentsToGeoJSON(track as Segment[])
   if (!geojson) return featureCollection
-
   featureCollection.features = data.flatMap((event: RawEvent) => {
     return filterTrackByTimerange(geojson, event.start, event.end).features.map((feature) => ({
       ...feature,
@@ -149,7 +144,6 @@ export const getVesselSegmentsGeojson = (
           vesselId: event.vessel.id,
           vesselName: event.vessel.name,
         }),
-        ...(currentEventId && { active: event.id === currentEventId }),
       },
     }))
   })
