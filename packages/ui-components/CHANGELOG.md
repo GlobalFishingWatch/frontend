@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 8.1.1
+
+### Patch Changes
+
+- a3c573ee: change to generate new version
+
 ## 8.1.0
 
 ### Minor Changes
