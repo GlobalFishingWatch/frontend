@@ -1,10 +1,10 @@
 import eez from './data/eez'
 import rfmo from './data/rfmo'
 import mpa from './data/mpa'
-import marineRegionsLocales from './data/locales'
-import sourceLocales from './data/locales/source.json'
+// import marineRegionsLocales from './data/locales'
+// import sourceLocales from './data/locales/source.json'
 
-export type MarineRegionLocaleKey = keyof typeof sourceLocales
+export type MarineRegionLocaleKey = string //keyof typeof sourceLocales
 export enum MarineRegionType {
   eez = 'eez',
   rfmo = 'rfmo',
@@ -26,29 +26,29 @@ export type GetMarineRegionLocaleParam = {
   locale: MarineRegionsLocale
 }
 
-const localizeName = (name: MarineRegionLocaleKey, locale = MarineRegionsLocale.en) => {
-  if (!marineRegionsLocales[locale]) {
-    return name
-  }
-  return (marineRegionsLocales[locale][name] as MarineRegionLocaleKey) || name
-}
+// const localizeName = (name: MarineRegionLocaleKey, locale = MarineRegionsLocale.en) => {
+//   if (!marineRegionsLocales[locale]) {
+//     return name
+//   }
+//   return (marineRegionsLocales[locale][name] as MarineRegionLocaleKey) || name
+// }
 
-const getLocalizedMarineRegions = (
-  regionsList: Record<string, MarineRegion>,
-  { locale = MarineRegionsLocale.en }: GetMarineRegionLocaleParam = {} as GetMarineRegionLocaleParam
-): MarineRegion[] => {
-  return Object.values(regionsList).map((region) => ({
-    ...region,
-    label: localizeName(region.label as MarineRegionLocaleKey, locale),
-  }))
-}
+// const getLocalizedMarineRegions = (
+//   regionsList: Record<string, MarineRegion>,
+//   { locale = MarineRegionsLocale.en }: GetMarineRegionLocaleParam = {} as GetMarineRegionLocaleParam
+// ): MarineRegion[] => {
+//   return Object.values(regionsList).map((region) => ({
+//     ...region,
+//     label: localizeName(region.label as MarineRegionLocaleKey, locale),
+//   }))
+// }
 
-const getEEZ = (locale?: GetMarineRegionLocaleParam): MarineRegion[] =>
-  getLocalizedMarineRegions(eez, locale)
+const getEEZ = (locale?: GetMarineRegionLocaleParam): MarineRegion[] => Object.values(eez)
+//   getLocalizedMarineRegions(eez, locale)
 
 const getMPA = (): MarineRegion[] => Object.values(mpa)
 
-const getRFMO = (locale?: GetMarineRegionLocaleParam): MarineRegion[] =>
-  getLocalizedMarineRegions(rfmo, locale)
+const getRFMO = (locale?: GetMarineRegionLocaleParam): MarineRegion[] => Object.values(rfmo)
+// getLocalizedMarineRegions(rfmo, locale)
 
 export { getEEZ, getMPA, getRFMO }
