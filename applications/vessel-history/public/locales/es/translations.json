@@ -13,9 +13,6 @@
     "historyFor": "historial para",
     "previous": "anteriones"
   },
-  "layer": {
-    "toggleVisibility": "Toggle layer visibility"
-  },
   "map": {
     "loading": "Map loading",
     "toggleLayers": "Toggle layers"
@@ -32,34 +29,35 @@
     "selected": "seleccionado"
   },
   "settings": {
-    "title": "Settings",
     "distance": "DISTANCE TRAVELLED",
     "duration": "DURATION",
-    "hours": "hours",
-    "longerThan": "Longer than",
     "eezs": {
       "label": "Events in these EEZs"
     },
+    "encounters": {
+      "title": "Encounter Events"
+    },
+    "fishingEvents": {
+      "title": "Fishing Events"
+    },
+    "hours": "hours",
+    "kms": "kms",
+    "loiteringEvents": {
+      "title": "Loitering Events"
+    },
+    "longerThan": "Longer than",
     "mpas": {
       "label": "Events in these MPAs"
+    },
+    "portVisits": {
+      "inputEnd": "ports",
+      "inputStart": "Port visits in",
+      "title": "Port Visits"
     },
     "rfmos": {
       "label": "Events in these RFMOS"
     },
-    "loiteringEvents": {
-      "title": "Loitering Events"
-    },
-    "encounters": {
-      "title": "Loitering Events"
-    },
-    "fishingEvents": {
-      "title": "Loitering Events"
-    },
-    "portVisits": {
-      "title": "Port Visits",
-      "inputStart": "Port visits in",
-      "inputEnd": "ports"
-    }
+    "title": "Settings"
   },
   "vessel": {
     "authorization_plural": "autorizaciones",
@@ -98,5 +96,8 @@
     "operator_plural": "operadores",
     "owner_plural": "propietarios",
     "type_plural": "tipos"
+  },
+  "layer": {
+    "toggleVisibility": "Toggle layer visibility"
   }
 }
