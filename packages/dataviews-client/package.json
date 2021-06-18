@@ -52,9 +52,9 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@globalfishingwatch/api-client": "^2.0.0",
-    "@globalfishingwatch/api-types": "^4.3.0",
-    "@globalfishingwatch/layer-composer": "^8.0.0"
+    "@globalfishingwatch/api-client": "^2.x",
+    "@globalfishingwatch/api-types": "^4.x",
+    "@globalfishingwatch/layer-composer": "^8.x"
   },
   "gitHead": "dd9006c455eb7ee9f20cbdc62854d9a16bfc94c1"
 }
