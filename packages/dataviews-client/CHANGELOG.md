@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.1.0
+
+### Minor Changes
+
+- fishing events
+
 ## 11.0.0
 
 ### Patch Changes
@@ -40,6 +46,7 @@
 - Updated dependencies [undefined]
   - @globalfishingwatch/layer-composer@7.2.0
   - @globalfishingwatch/api-types@4.2.6
+
 ## 9.0.0
 
 ### Patch Changes

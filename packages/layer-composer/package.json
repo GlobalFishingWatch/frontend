@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/layer-composer",
-  "version": "8.0.0",
+  "version": "8.1.0",
   "description": "",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -47,7 +47,7 @@
     "vt-pbf": "^3.1.1"
   },
   "devDependencies": {
-    "@globalfishingwatch/api-types": "^4.3.0",
+    "@globalfishingwatch/api-types": "^4.4.0",
     "@globalfishingwatch/data-transforms": "^1.2.0",
     "@globalfishingwatch/fourwings-aggregate": "4.0.3",
     "@types/color-convert": "^2.0.0",

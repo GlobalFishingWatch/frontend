@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 11.1.0
+
+### Minor Changes
+
+- fishing events
+
 ## 11.0.0
 
 ### Patch Changes
@@ -32,6 +38,7 @@
 - Updated dependencies [undefined]
   - @globalfishingwatch/dataviews-client@9.0.0
   - @globalfishingwatch/layer-composer@7.2.0
+
 ## 9.0.0
 
 ### Major Changes

@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 1.8.0
+
+### Minor Changes
+
+- fishing events
+
 ## 1.7.0
 
 ### Minor Changes

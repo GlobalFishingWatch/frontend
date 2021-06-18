@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.4.0
+
+### Minor Changes
+
+- fishing events
+
 ## 4.3.0
 
 ### Minor Changes

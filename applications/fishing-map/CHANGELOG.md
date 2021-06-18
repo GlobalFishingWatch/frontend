@@ -1,5 +1,17 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@4.4.0
+  - @globalfishingwatch/dataviews-client@11.1.0
+  - @globalfishingwatch/layer-composer@8.1.0
+  - @globalfishingwatch/react-hooks@11.1.0
+  - @globalfishingwatch/timebar@1.8.0
+  - @globalfishingwatch/ui-components@8.1.0
+
 ## 1.0.7
 
 ### Patch Changes

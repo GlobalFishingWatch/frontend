@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.1.0
+
+### Minor Changes
+
+- fishing events
+
 ## 8.0.0
 
 ### Patch Changes
