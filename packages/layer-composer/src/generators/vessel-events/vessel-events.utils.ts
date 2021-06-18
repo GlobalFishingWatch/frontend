@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { FeatureCollection } from 'geojson'
 import { Segment, segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { Dictionary } from '../../types'
-import filterGeoJSONByTimerange from '../track/filterGeoJSONByTimerange'
+import filterTrackByTimerange from '../track/filterTrackByTimerange'
 import { AuthorizationOptions, RawEvent } from '../types'
 
 const EVENTS_COLORS: Dictionary<string> = {
@@ -94,11 +94,35 @@ export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureC
   return featureCollection
 }
 
+export const filterGeojsonByTimerange = (
+  geojson: FeatureCollection,
+  start: string,
+  end: string
+): FeatureCollection => {
+  if (!geojson || !geojson.features) {
+    return {
+      type: 'FeatureCollection',
+      features: [],
+    }
+  }
+  if (!start || !end) {
+    return geojson
+  }
+
+  const featuresFiltered = geojson.features.filter((feature) => {
+    return feature.properties?.start >= start && feature.properties?.end <= end
+  })
+
+  const geojsonFiltered: FeatureCollection = {
+    ...geojson,
+    features: featuresFiltered,
+  }
+  return geojsonFiltered
+}
+
 export const getVesselSegmentsGeojson = (
   track: any,
   data: RawEvent[],
-  start: string,
-  end: string,
   currentEventId?: string
 ): FeatureCollection => {
   const featureCollection: FeatureCollection = {
@@ -106,34 +130,28 @@ export const getVesselSegmentsGeojson = (
     features: [],
   }
 
-  if (!track || !data || !start || !end) return featureCollection
+  if (!track || !data) return featureCollection
 
   const geojson = (track as FeatureCollection).type
     ? (track as FeatureCollection)
     : segmentsToGeoJSON(track as Segment[])
   if (!geojson) return featureCollection
 
-  const startMillis = DateTime.fromISO(start).toUTC().toMillis()
-  const endMillis = DateTime.fromISO(end).toUTC().toMillis()
-  const filteredGeojson = filterGeoJSONByTimerange(geojson, startMillis, endMillis)
-
   featureCollection.features = data.flatMap((event: RawEvent) => {
-    return filterGeoJSONByTimerange(filteredGeojson, event.start, event.end).features.map(
-      (feature) => ({
-        ...feature,
-        properties: {
-          id: event.id,
-          type: event.type,
-          start: getDateTimeDate(event.start).toUTC().toISO(),
-          end: getDateTimeDate(event.end).toUTC().toISO(),
-          ...(event.vessel && {
-            vesselId: event.vessel.id,
-            vesselName: event.vessel.name,
-          }),
-          ...(currentEventId && { active: event.id === currentEventId }),
-        },
-      })
-    )
+    return filterTrackByTimerange(geojson, event.start, event.end).features.map((feature) => ({
+      ...feature,
+      properties: {
+        id: event.id,
+        type: event.type,
+        start: getDateTimeDate(event.start).toUTC().toISO(),
+        end: getDateTimeDate(event.end).toUTC().toISO(),
+        ...(event.vessel && {
+          vesselId: event.vessel.id,
+          vesselName: event.vessel.name,
+        }),
+        ...(currentEventId && { active: event.id === currentEventId }),
+      },
+    }))
   })
   return featureCollection
 }

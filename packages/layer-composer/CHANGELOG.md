@@ -48,7 +48,7 @@
 
 ### Minor Changes
 
-- 6c1b25bb: include leading point in filterGeoJSONByTimerange
+- 6c1b25bb: include leading point in filterTrackByTimerange
 
 ## 7.0.4
 

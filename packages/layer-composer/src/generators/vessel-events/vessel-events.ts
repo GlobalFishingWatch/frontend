@@ -1,5 +1,6 @@
 import memoizeOne from 'memoize-one'
 import { FeatureCollection } from 'geojson'
+import { DateTime } from 'luxon'
 import type {
   CircleLayer,
   LineLayer,
@@ -13,6 +14,7 @@ import { memoizeByLayerId, memoizeCache } from '../../utils'
 import {
   getVesselEventsGeojson,
   getVesselSegmentsGeojson,
+  filterGeojsonByTimerange,
   setActiveEvent,
 } from './vessel-events.utils'
 
@@ -65,19 +67,19 @@ class VesselsEventsGenerator {
     if (!showTrackSegments) {
       return [pointsSource]
     }
-    // TODO review performance memoization
 
     const segments = memoizeCache[config.id].getVesselSegmentsGeojson(
       track,
       data,
-      start,
-      end,
       currentEventId
     ) as FeatureCollection
+
+    const segmentsFiltered = memoizeCache[config.id].filterGeojsonByTimerange(segments, start, end)
+
     const segmentsSource: VesselsEventsSource = {
       id: `${id}_segments`,
       type: 'geojson',
-      data: segments,
+      data: segmentsFiltered,
     }
     return [pointsSource, segmentsSource]
   }
@@ -165,6 +167,7 @@ class VesselsEventsGenerator {
     memoizeByLayerId(config.id, {
       getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
       getVesselSegmentsGeojson: memoizeOne(getVesselSegmentsGeojson),
+      filterGeojsonByTimerange: memoizeOne(filterGeojsonByTimerange),
     })
 
     return {
