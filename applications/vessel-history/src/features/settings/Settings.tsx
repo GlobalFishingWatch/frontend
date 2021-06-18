@@ -1,16 +1,17 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { redirect } from 'redux-first-router'
 import { useTranslation } from 'react-i18next'
+import { MarineRegionsLocale } from '@globalfishingwatch/marine-regions'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { HOME } from 'routes/routes'
-import styles from './Settings.module.css'
+import { fetchRegionsThunk } from 'features/regions/regions.slice'
+import { selectSettings } from './settings.slice'
 import FishingEvents from './components/FishingEvents'
 import LoiteringEvents from './components/LoiteringEvents'
 import EncounterEvents from './components/EncounterEvents'
 import PortVisits from './components/PortVisits'
-import { selectSettings } from './settings.slice'
-
+import styles from './Settings.module.css'
 
 interface SettingsOption {
   title: string
@@ -22,20 +23,20 @@ interface SettingsOptions {
 
 const Settings: React.FC = (): React.ReactElement => {
   const settings = useSelector(selectSettings)
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const options = ['fishing_events', 'encounters', 'loitering_events', 'port_visits']
   const optionsData: SettingsOptions = {
     fishing_events: {
-      title: t('settings.fishingEvents.title',"Fishing Events"),
+      title: t('settings.fishingEvents.title', 'Fishing Events'),
     },
     encounters: {
-      title: t('settings.encounters.title',"Encounters"),
+      title: t('settings.encounters.title', 'Encounters'),
     },
     loitering_events: {
-      title: t('settings.loiteringEvents.title',"Loitering Events"),
+      title: t('settings.loiteringEvents.title', 'Loitering Events'),
     },
     port_visits: {
-      title: t('settings.portVisits.title',"Port Visits"),
+      title: t('settings.portVisits.title', 'Port Visits'),
     },
   }
   const [selectedOption, setSelectedOption] = useState('')
@@ -49,6 +50,16 @@ const Settings: React.FC = (): React.ReactElement => {
     }
   }, [dispatch, selectedOption])
 
+  useEffect(() => {
+    const locale = Object.entries(MarineRegionsLocale)
+      .map(([, locale]) => ({ locale }))
+      .filter(({ locale }) => locale.toString() === i18n.language)
+      .slice(0, 1)
+      .pop()
+
+    dispatch(fetchRegionsThunk(locale))
+  }, [dispatch, i18n.language])
+
   return (
     <div className={styles.settingsContainer}>
       <header>
@@ -59,7 +70,10 @@ const Settings: React.FC = (): React.ReactElement => {
           onClick={onBackClick}
           className={styles.backButton}
         />
-        <h1>{t('settings.title',"Settings")} {selectedOption && <span> - {optionsData[selectedOption].title}</span>}</h1>
+        <h1>
+          {t('settings.title', 'Settings')}{' '}
+          {selectedOption && <span> - {optionsData[selectedOption].title}</span>}
+        </h1>
       </header>
       {!selectedOption && (
         <ul>

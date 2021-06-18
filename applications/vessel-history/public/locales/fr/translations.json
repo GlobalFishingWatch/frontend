@@ -50,10 +50,10 @@
       "title": "Loitering Events"
     },
     "encounters": {
-      "title": "Loitering Events"
+      "title": "Encounter Events"
     },
     "fishingEvents": {
-      "title": "Loitering Events"
+      "title": "Fishing Events"
     },
     "portVisits": {
       "title": "Port Visits",

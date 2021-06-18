@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.57
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/marine-regions@0.1.1
+
 ## 0.0.56
 
 ### Patch Changes

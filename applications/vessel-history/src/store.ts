@@ -8,6 +8,7 @@ import { initializeDataviews } from 'features/dataviews/dataviews.utils'
 import mapReducer from './features/map/map.slice'
 import dataviewsReducer from './features/dataviews/dataviews.slice'
 import datasetsReducer from './features/datasets/datasets.slice'
+import regionsReducer from './features/regions/regions.slice'
 import resourcesReducer from './features/resources/resources.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
 
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   map: mapReducer,
   dataviews: dataviewsReducer,
   datasets: datasetsReducer,
+  regions: regionsReducer,
   resources: resourcesReducer,
   workspace: workspaceReducer,
 })

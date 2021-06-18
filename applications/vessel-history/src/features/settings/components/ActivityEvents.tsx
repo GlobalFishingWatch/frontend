@@ -1,9 +1,11 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { MultiSelect, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import { MultiSelectOption } from '@globalfishingwatch//ui-components/dist/multi-select'
+import { selectEEZs, selectMPAs, selectRFMOs } from 'features/regions/regions.selectors'
 import { SettingsEvents } from '../settings.slice'
 import { useApplySettingsConnect } from '../settings.hooks'
 import styles from './SettingsComponents.module.css'
@@ -21,59 +23,10 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
   const { settings, section } = props
   const { t } = useTranslation()
   const { setSettingOptions, setSetting } = useApplySettingsConnect()
+  const EEZ_OPTIONS: SelectOption[] = useSelector(selectEEZs) ?? []
+  const RFMOS_OPTIONS: MultiSelectOption[] = useSelector(selectRFMOs) ?? []
+  const MPAS_OPTIONS: MultiSelectOption[] = useSelector(selectMPAs) ?? []
 
-  const EEZ_OPTIONS: SelectOption[] = [
-    {
-      id: 'ghana',
-      label: 'Ghana',
-    },
-    {
-      id: 'argentina',
-      label: 'Argentina',
-    },
-  ]
-
-  const RFMOS_OPTIONS: MultiSelectOption[] = [
-    {
-      id: 'CCSBT',
-      label: 'CCSBT',
-    },
-    {
-      id: 'IATTC',
-      label: 'IATTC',
-    },
-    {
-      id: 'ICCAT',
-      label: 'ICCAT',
-    },
-    {
-      id: 'IOTC',
-      label: 'IOTC',
-    },
-    {
-      id: 'NPFC',
-      label: 'NPFC',
-    },
-    {
-      id: 'SPRFMO',
-      label: 'SPRFMO',
-    },
-    {
-      id: 'WCPFC',
-      label: 'WCPFC',
-    },
-  ]
-
-  const MPAS_OPTIONS: MultiSelectOption[] = [
-    {
-      id: 'm1',
-      label: 'MPAS 1',
-    },
-    {
-      id: 'm2',
-      label: 'MPAS 2',
-    },
-  ]
   const eezs = EEZ_OPTIONS.filter((option) => settings.eezs?.includes(option.id))
   const rfmos = RFMOS_OPTIONS.filter((option) => settings.rfmos?.includes(option.id))
   const mpas = MPAS_OPTIONS.filter((option) => settings.mpas?.includes(option.id))
@@ -82,7 +35,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
     <div>
       <div className={styles.settingsField}>
         <label>
-          {t('settings.eezs.label',"Events in these EEZs")}
+          {t('settings.eezs.label', 'Events in these EEZs')}
           <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
         <MultiSelect
@@ -102,7 +55,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       </div>
       <div className={styles.settingsField}>
         <label>
-          {t('settings.rfmos.label', "Events in these RFMOS")}
+          {t('settings.rfmos.label', 'Events in these RFMOS')}
           <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
         <MultiSelect
@@ -124,7 +77,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       </div>
       <div className={styles.settingsField}>
         <label>
-          {t('settings.mpas.label',"Events in these MPAs")}
+          {t('settings.mpas.label', 'Events in these MPAs')}
           <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
         <MultiSelect
@@ -146,10 +99,10 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
         <label>
-        {t('settings.duration',"DURATION")}
+          {t('settings.duration', 'DURATION')}
           <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
-        <span>{t('settings.longerThan',"Longer than")}</span>
+        <span>{t('settings.longerThan', 'Longer than')}</span>
         <InputText
           type="number"
           value={settings.duration ?? 0}
@@ -157,14 +110,14 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           max={props.maxDuration}
           onChange={(event) => setSetting(section, 'duration', parseInt(event.currentTarget.value))}
         ></InputText>
-        <span>{t('settings.hours',"hours")}</span>
+        <span>{t('settings.hours', 'hours')}</span>
       </div>
       <div className={cx(styles.settingsField, styles.inlineRow)}>
         <label>
-          {t('settings.distance',"DISTANCE TRAVELLED")}
+          {t('settings.distance', 'DISTANCE TRAVELLED')}
           <IconButton type="default" size="tiny" icon="info"></IconButton>
         </label>
-        <span>{t('settings.longerThan',"Longer than")}</span>
+        <span>{t('settings.longerThan', 'Longer than')}</span>
         <InputText
           type="number"
           value={settings.distance ?? 0}
@@ -172,7 +125,7 @@ const ActivityEvents: React.FC<SettingsProps> = (props): React.ReactElement => {
           max={props.maxDistance}
           onChange={(event) => setSetting(section, 'distance', parseInt(event.currentTarget.value))}
         ></InputText>
-        <span>kms</span>
+        <span>{t('settings.kms', 'kms')}</span>
       </div>
     </div>
   )
