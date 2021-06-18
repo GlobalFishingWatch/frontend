@@ -27,6 +27,8 @@ COPY ./.eslintignore /app/.eslintignore
 COPY ./.eslintrc.js /app/.eslintrc.js
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./tsconfig.json /app/tsconfig.json
+ENV GENERATE_SOURCEMAP=${GENERATE_SOURCEMAP}
+
 RUN npm run build
 
 #################################################################################
