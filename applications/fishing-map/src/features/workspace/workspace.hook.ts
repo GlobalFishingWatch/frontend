@@ -71,7 +71,6 @@ export const useDataviewInstancesConnect = () => {
     [dispatchQueryParams, urlDataviewInstances]
   )
 
-  // TODO review if this is still needed or we switch to add / update
   const upsertDataviewInstance = useCallback(
     (dataviewInstance: Partial<UrlDataviewInstance>) => {
       const currentDataviewInstance = urlDataviewInstances?.find(

@@ -13,7 +13,7 @@ interface SegmentData {
 }
 
 // TODO TS types wont work with MultiPoint geoms
-const filterGeoJSONByTimerange = (
+const filterTrackByTimerange = (
   geojson: FeatureCollection,
   start: number,
   end: number
@@ -87,4 +87,4 @@ const filterGeoJSONByTimerange = (
   return geojsonFiltered
 }
 
-export default filterGeoJSONByTimerange
+export default filterTrackByTimerange

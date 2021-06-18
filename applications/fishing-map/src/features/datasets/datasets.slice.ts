@@ -57,7 +57,6 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
         { signal }
       )
       let datasets = uniqBy([...initialDatasets, ...relatedDatasets], 'id')
-
       if (
         process.env.NODE_ENV === 'development' ||
         process.env.REACT_APP_USE_DATASETS_MOCK === 'true'

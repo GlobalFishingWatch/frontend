@@ -39,12 +39,14 @@ export const selectVesselsDatasets = createSelector(
     return datasets
   }
 )
+
 export const selectTracksDatasets = createSelector(
   [selectDatasetsByType(DatasetTypes.Tracks)],
   (datasets) => {
     return datasets
   }
 )
+
 export const selectActivityDatasets = createSelector([selectActivityDataviews], (dataviews) => {
   if (!dataviews) return
 

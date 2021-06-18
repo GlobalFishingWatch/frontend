@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { CircleLayer } from '@globalfishingwatch/mapbox-gl'
 import { AnyGeneratorConfig } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import { ApiEvent } from '@globalfishingwatch/api-types/dist'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   getDataviewsGeneratorConfigs,
@@ -16,7 +17,11 @@ import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces
 import { selectResources, ResourcesState } from 'features/resources/resources.slice'
 import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/rulers/rulers.slice'
-import { selectHighlightedTime, Range } from 'features/timebar/timebar.slice'
+import {
+  selectHighlightedTime,
+  selectHighlightedEvent,
+  Range,
+} from 'features/timebar/timebar.slice'
 import { selectBivariateDataviews } from 'features/app/app.selectors'
 import { isWorkspaceLocation } from 'routes/routes.selectors'
 import { WorkspaceCategories } from 'data/workspaces'
@@ -29,6 +34,7 @@ type GetGeneratorConfigParams = {
   rulers: Generators.Ruler[]
   debugOptions: DebugOptions
   highlightedTime?: Range
+  highlightedEvent?: ApiEvent
   bivariateDataviews?: BivariateDataviews
 }
 const getGeneratorsConfig = ({
@@ -37,6 +43,7 @@ const getGeneratorsConfig = ({
   rulers,
   debugOptions,
   highlightedTime,
+  highlightedEvent,
   bivariateDataviews,
 }: GetGeneratorConfigParams) => {
   const animatedHeatmapDataviews = dataviews.filter((dataview) => {
@@ -60,6 +67,7 @@ const getGeneratorsConfig = ({
 
   const generatorOptions = {
     heatmapAnimatedMode,
+    highlightedEvent,
     highlightedTime,
     debug: debugOptions.debug,
     mergedActivityGeneratorId: MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
@@ -87,15 +95,25 @@ const selectMapGeneratorsConfig = createSelector(
     selectRulers,
     selectDebugOptions,
     selectHighlightedTime,
+    selectHighlightedEvent,
     selectBivariateDataviews,
   ],
-  (dataviews = [], resources, rulers, debugOptions, highlightedTime, bivariateDataviews) => {
+  (
+    dataviews = [],
+    resources,
+    rulers,
+    debugOptions,
+    highlightedTime,
+    highlightedEvent,
+    bivariateDataviews
+  ) => {
     const generators = getGeneratorsConfig({
       dataviews,
       resources,
       rulers,
       debugOptions,
       highlightedTime,
+      highlightedEvent,
       bivariateDataviews,
     })
     return generators

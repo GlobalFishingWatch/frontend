@@ -45,6 +45,8 @@
     "map": "Map",
     "max": "Max",
     "min": "Min",
+    "minute": "minute",
+    "minute_plural": "minutes",
     "more": "more",
     "name": "Name",
     "optional": "Optional",
@@ -116,9 +118,13 @@
     "workspaceNotFound": "The workspace you requested was not found."
   },
   "event": {
+    "fishing": "Fishing",
+    "fishingAction": "Fished for",
     "noData": "No data available",
-    "notInCVP": "Event not available.",
-    "seeInCVP": "See in carrier vessel portal"
+    "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
+    "port": "Port",
+    "portAction": "Docked for",
+    "seeInCVP": "See in Carrier Vessel Portal"
   },
   "feedback": {
     "feedbackLogin": "Register and login to provide feedback (free, 2 minutes)",

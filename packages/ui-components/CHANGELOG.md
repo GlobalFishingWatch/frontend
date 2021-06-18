@@ -1,14 +1,43 @@
 # @globalfishingwatch/ui-components
 
+## 8.1.0
+
+### Minor Changes
+
+- fishing events
+
+## 8.0.0
+
+### Patch Changes
+
+- @globalfishingwatch/layer-composer@8.0.0
+- @globalfishingwatch/react-hooks@11.0.0
+
+## 7.0.0
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@7.3.0
+  - @globalfishingwatch/react-hooks@10.0.0
+
 ## 6.0.1
 
 ### Patch Changes
 
+- events generator
+- Updated dependencies [undefined]
+  - @globalfishingwatch/react-hooks@9.0.1
 - fdeabdfa: improvments in the design of the header
 
 ## 6.0.0
 
 ### Patch Changes
+
+- Updated dependencies [undefined]
+
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/react-hooks@9.0.0
 
 - Updated dependencies [05fe3de6]
   - @globalfishingwatch/layer-composer@7.2.0
