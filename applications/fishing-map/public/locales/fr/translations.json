@@ -3,15 +3,15 @@
     "close": "Fermer l'analyse",
     "completed": "Le rapport sera dans votre e-mail sous peu",
     "disclaimer": "Les données indiquées ci-dessus doivent être considérées comme une estimation. Cliquez sur le bouton ci-dessous si vous avez besoin d'une anlyse plus précise, y compris la liste des navires concernés, et nous vous l'enverrons par courriel.",
-    "experimental": "Experimental",
     "download": "Télécharger le rapport",
     "downloadLogin": "Vous devez vous connecter pour télécharger le rapport (gratuit, 2 minutes)",
     "empty": "Vos jeux de données sélectionnés apparaîtront ici",
     "errorMessage": "Quelque chose s'est mal passé",
+    "experimental": "Experimental",
     "noData": "No data available",
+    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
     "title": "Analyse",
-    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "vesselFlags": "pour les navires battant le pavillon de"
   },
   "common": {
@@ -45,6 +45,8 @@
     "map": "Carte",
     "max": "Max",
     "min": "Min",
+    "minute": "minute",
+    "minute_plural": "minutes",
     "more": "plus",
     "name": "Nom",
     "optional": "Optionnel",
@@ -116,8 +118,12 @@
     "workspaceNotFound": "L'espace de travail demandé n'a pas été trouvé."
   },
   "event": {
+    "fishing": "Fishing",
+    "fishingAction": "Fished for",
     "noData": "Aucune donnée disponible",
     "notInCVP": "Événement non disponible.",
+    "port": "Port",
+    "portAction": "Docked for",
     "seeInCVP": "Voir dans le Carrier Vessel Portal"
   },
   "feedback": {
@@ -215,6 +221,7 @@
     "placeholder": "Tapez pour rechercher des navires",
     "seeVessel": "Voir le bateau",
     "seeVessels": "Voir {{count}} navires",
+    "seeVessels_plural": "See vessels",
     "suggestion": "Vouliez-vous dire",
     "title": "Chercher",
     "vesselAlreadyInWorkspace": "Ce vaisseau est déjà dans votre espace de travail",
