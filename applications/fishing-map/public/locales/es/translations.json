@@ -3,15 +3,15 @@
     "close": "Cerrar análisis",
     "completed": "El informe estará pronto en su correo electrónico",
     "disclaimer": "Los datos mostrados arriba deben ser tomados como una estimación. Haga clic en el botón de abajo si necesita una análisis más preciso, incluyendo la lista de las embarcaciones involucradas, lo cuál será enviado a su correo electrónico.",
-    "experimental": "Experimental",
     "download": "Descargar informe (AIS)",
     "downloadLogin": "Necesita <1>iniciar sesión</1> para descargar el informe (gratis y toma 2 minutos)",
     "empty": "Los datos seleccionados aparecerán aquí",
     "errorMessage": "Ha habido un error",
+    "experimental": "Experimental",
     "noData": "No hay datos disponibles",
+    "onlyAISAllowed": "Sólo los conjuntos de datos AIS pueden descargarse",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
-    "onlyAISAllowed": "Sólo los conjuntos de datos AIS pueden descargarse",
     "vesselFlags": "de embarcaciones abanderadas con"
   },
   "common": {
@@ -45,6 +45,8 @@
     "map": "Mapa",
     "max": "Máximo",
     "min": "Mínimo",
+    "minute": "minute",
+    "minute_plural": "minutes",
     "more": "más",
     "name": "Nombre",
     "optional": "Opcional",
@@ -116,8 +118,12 @@
     "workspaceNotFound": "La vista que solicitó no se encontró"
   },
   "event": {
+    "fishing": "Fishing",
+    "fishingAction": "Fished for",
     "noData": "No hay datos disponibles",
     "notInCVP": "Evento no disponible",
+    "port": "Port",
+    "portAction": "Docked for",
     "seeInCVP": "Ver en el Carrier Vessel Portal"
   },
   "feedback": {
@@ -215,6 +221,7 @@
     "placeholder": "Escriba para buscar embarcaciones",
     "seeVessel": "Ver embarcación",
     "seeVessels": "Ver {{count}} embarcaciones",
+    "seeVessels_plural": "See vessels",
     "suggestion": "Quiso decir",
     "title": "Búsqueda",
     "vesselAlreadyInWorkspace": "La embarcación ya está agregada en su espacio de trabajo.",
