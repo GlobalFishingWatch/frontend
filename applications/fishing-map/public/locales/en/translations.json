@@ -3,15 +3,15 @@
     "close": "Close analysis",
     "completed": "The report has been emailed successfully, you'll receive it soon.",
     "disclaimer": "Data presented should be taken as an estimate. Download a data report for more precise analysis, including the list of vessels involved.",
-    "experimental": "Experimental",
     "download": "Download report (AIS)",
     "downloadLogin": "Register and login to download reports (free, 2 minutes)",
     "empty": "Your selected datasets will appear here",
     "errorMessage": "Something went wrong",
+    "experimental": "Experimental",
     "noData": "No data available",
+    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "timeRangeTooLong": "Reports are only supported for time spans up to one year.",
     "title": "Analysis",
-    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "vesselFlags": "for vessels flagged by"
   },
   "common": {
@@ -45,6 +45,8 @@
     "map": "Map",
     "max": "Max",
     "min": "Min",
+    "minute": "minute",
+    "minute_plural": "minutes",
     "more": "more",
     "name": "Name",
     "optional": "Optional",
@@ -116,8 +118,12 @@
     "workspaceNotFound": "The workspace you requested was not found."
   },
   "event": {
+    "fishing": "Fishing",
+    "fishingAction": "Fished for",
     "noData": "No data available",
     "notInCVP": "Event not available.",
+    "port": "Port",
+    "portAction": "Docked for",
     "seeInCVP": "See in carrier vessel portal"
   },
   "feedback": {
@@ -215,6 +221,7 @@
     "placeholder": "Type to search for vessels",
     "seeVessel": "See vessel",
     "seeVessels": "See {{count}} vessels",
+    "seeVessels_plural": "See vessels",
     "suggestion": "Did you mean",
     "title": "Search",
     "vesselAlreadyInWorkspace": "This vessel is already in your workspace",
