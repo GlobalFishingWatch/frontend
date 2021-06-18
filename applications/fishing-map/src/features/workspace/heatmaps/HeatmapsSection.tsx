@@ -12,13 +12,12 @@ import { selectActivityDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectBivariateDataviews } from 'features/app/app.selectors'
 import {
   getFishingDataviewInstance,
   getPresenceDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
 import { WorkspaceActivityCategory } from 'types'
-import { selectActivityCategory } from 'routes/routes.selectors'
+import { selectBivariateDataviews, selectActivityCategory } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import LayerPanel from './HeatmapLayerPanel'

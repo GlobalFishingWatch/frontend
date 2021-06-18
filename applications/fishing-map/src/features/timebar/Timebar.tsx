@@ -19,8 +19,11 @@ import {
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarEvents, TimebarVisualisations, TimebarGraphs } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
-import { selectTimebarEvents, selectTimebarGraph } from 'features/app/app.selectors'
-import { selectActivityCategory } from 'routes/routes.selectors'
+import {
+  selectActivityCategory,
+  selectTimebarEvents,
+  selectTimebarGraph,
+} from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import {
   setHighlightedTime,
