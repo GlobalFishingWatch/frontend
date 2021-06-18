@@ -23,6 +23,7 @@
 
 - Updated dependencies [undefined]
   - @globalfishingwatch/api-types@4.2.6
+- 05fe3de6: fixed issue with 4w time range + more greedy
 
 ## 7.1.3
 

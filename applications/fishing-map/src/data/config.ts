@@ -24,7 +24,9 @@ export const FULL_SUFIX = 'full'
 export const PRIVATE_SUFIX = 'private'
 
 // used when no url data and no workspace data
-const end = DateTime.fromObject({ hour: 0, minute: 0, second: 0, zone: 'utc' }).toISO()
+const end = DateTime.fromObject({ hour: 0, minute: 0, second: 0, zone: 'utc' })
+  .minus({ days: 3 })
+  .toISO()
 
 export const DEFAULT_VIEWPORT = {
   latitude: 26,
@@ -32,7 +34,7 @@ export const DEFAULT_VIEWPORT = {
   zoom: 1,
 }
 export const DEFAULT_TIME_RANGE = {
-  start: DateTime.fromISO(end).minus({ months: 6 }).toISO(),
+  start: DateTime.fromISO(end).minus({ months: 3 }).toISO(),
   end,
 }
 

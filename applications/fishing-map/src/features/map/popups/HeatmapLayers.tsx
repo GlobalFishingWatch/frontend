@@ -75,8 +75,8 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
               <span>
                 {' '}
                 {t('common.dateRange', {
-                  start: formatI18nDate(feature.temporalgrid.visibleFramesStart),
-                  end: formatI18nDate(feature.temporalgrid.visibleFramesEnd),
+                  start: formatI18nDate(feature.temporalgrid.visibleStartDate),
+                  end: formatI18nDate(feature.temporalgrid.visibleEndDate),
                   defaultValue: 'between {{start}} and {{end}}',
                 })}
               </span>

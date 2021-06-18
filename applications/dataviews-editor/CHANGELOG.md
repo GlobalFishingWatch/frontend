@@ -25,6 +25,9 @@
 - Updated dependencies [undefined]
   - @globalfishingwatch/dataviews-client@9.0.0
   - @globalfishingwatch/layer-composer@7.2.0
+- Updated dependencies [05fe3de6]
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/dataviews-client@9.0.0
 
 ## 1.1.58
 

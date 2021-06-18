@@ -8,6 +8,8 @@
 - @globalfishingwatch/layer-composer@8.0.0
 - @globalfishingwatch/react-hooks@11.0.0
 - @globalfishingwatch/ui-components@8.0.0
+- Updated dependencies [fdeabdfa]
+  - @globalfishingwatch/ui-components@6.0.1
 
 ## 0.1.45
 
@@ -17,6 +19,10 @@
   - @globalfishingwatch/layer-composer@7.3.0
   - @globalfishingwatch/react-hooks@10.0.0
   - @globalfishingwatch/ui-components@7.0.0
+- Updated dependencies [05fe3de6]
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/react-hooks@9.0.0
+  - @globalfishingwatch/ui-components@6.0.0
 
 ## 0.1.44
 
@@ -24,7 +30,9 @@
 
 - Updated dependencies [undefined]
   - @globalfishingwatch/react-hooks@9.0.1
-  - @globalfishingwatch/ui-components@6.0.1
+  - # @globalfishingwatch/ui-components@6.0.1
+- Updated dependencies [f96a081c]
+  - @globalfishingwatch/ui-components@5.1.2
 
 ## 0.1.43
 
