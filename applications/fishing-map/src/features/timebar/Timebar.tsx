@@ -84,7 +84,7 @@ const TimebarWrapper = () => {
   const onMouseMove = useCallback(
     (clientX: number, scale: (arg: number) => Date) => {
       if (hoverInEvent.current === false) {
-        if (clientX === null) {
+        if (clientX === null || clientX === undefined) {
           if (highlightedTime !== undefined) {
             dispatch(disableHighlightedTime())
           }
@@ -104,6 +104,7 @@ const TimebarWrapper = () => {
               dispatch(setHighlightedTime({ start, end }))
             }
           } catch (e) {
+            console.log(clientX)
             console.warn(e)
           }
         }
