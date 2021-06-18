@@ -235,8 +235,7 @@ export interface VesselEventsGeneratorConfig extends GeneratorConfig {
   type: Type.VesselEvents
   data: RawEvent[]
   color?: string
-  track?: any
-  showTrackSegments?: boolean
+  track?: TrackGeneratorConfigData
   currentEventId?: string
 }
 

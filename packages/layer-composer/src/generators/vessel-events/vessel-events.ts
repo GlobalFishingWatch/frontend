@@ -22,11 +22,15 @@ interface VesselsEventsSource extends GeoJSONSourceRaw {
 
 export type GlobalVesselEventsGeneratorConfig = MergedGeneratorConfig<VesselEventsGeneratorConfig>
 
-const POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH = 6
+const POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH = 9
 const DEFAULT_STROKE_COLOR = 'rgba(0, 193, 231, 1)'
 
 class VesselsEventsGenerator {
   type = Type.VesselEvents
+
+  _showTrackSegments = (config: GlobalVesselEventsGeneratorConfig) => {
+    return config.track && (config.zoom as number) >= POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH
+  }
 
   _getStyleSources = (config: GlobalVesselEventsGeneratorConfig): VesselsEventsSource[] => {
     const { id, data, track, start, end, currentEventId } = config
@@ -56,8 +60,9 @@ class VesselsEventsGenerator {
       type: 'geojson',
       data: newData,
     }
+    const showTrackSegments = this._showTrackSegments(config)
 
-    if (!config.showTrackSegments) {
+    if (!showTrackSegments) {
       return [pointsSource]
     }
     // TODO review performance memoization
@@ -82,6 +87,8 @@ class VesselsEventsGenerator {
       // console.warn(`${VESSEL_EVENTS_TYPE} source generator needs geojson data`, config)
       return []
     }
+    const showTrackSegments = this._showTrackSegments(config)
+    console.log(showTrackSegments)
 
     const activeFilter = ['case', ['==', ['get', 'active'], true]]
 
@@ -90,7 +97,7 @@ class VesselsEventsGenerator {
         id: `${config.id}_background`,
         type: 'circle',
         source: `${config.id}_points`,
-        ...(config.showTrackSegments && { maxzoom: POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH }),
+        ...(showTrackSegments && { maxzoom: POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH }),
         paint: {
           'circle-color': ['get', 'color'],
           'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, 0, 8, 1, 14, 3],
@@ -99,7 +106,7 @@ class VesselsEventsGenerator {
             config.color || DEFAULT_STROKE_COLOR,
             DEFAULT_LANDMASS_COLOR,
           ],
-          'circle-radius': [...activeFilter, 8, 3],
+          'circle-radius': [...activeFilter, 8, 4],
         },
         metadata: {
           group: Group.Point,
@@ -110,7 +117,7 @@ class VesselsEventsGenerator {
       {
         id: `${config.id}_outline`,
         source: `${config.id}_points`,
-        ...(config.showTrackSegments && { maxzoom: POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH }),
+        ...(showTrackSegments && { maxzoom: POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH }),
         type: 'symbol',
         layout: {
           'icon-allow-overlap': true,
@@ -122,9 +129,11 @@ class VesselsEventsGenerator {
         },
       } as SymbolLayer,
     ]
-    if (!config.showTrackSegments) {
+
+    if (!showTrackSegments) {
       return pointsLayers
     }
+
     const segmentsLayers = [
       {
         id: `${config.id}_segments`,

@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import { scaleLinear } from 'd3-scale'
 import {
   Resource,
@@ -10,9 +9,7 @@ import {
   EnviromentalDatasetConfiguration,
   DataviewCategory,
   Dataset,
-  EventTypes,
   ApiEvent,
-  EventVesselTypeEnum,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -127,7 +124,6 @@ export function getGeneratorConfig(
           data: resources?.[eventsUrl].data,
           color: dataview.config?.color,
           ...(generator.data && {
-            showTrackSegments: true,
             track: generator.data,
           }),
           ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
