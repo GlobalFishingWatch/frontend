@@ -1,18 +1,35 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
+import { DateTime } from 'luxon'
 import { Field, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { Resource, ResourceStatus, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  Resource,
+  ResourceStatus,
+  DatasetTypes,
+  ApiEvent,
+  ApiEvents,
+} from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 
 export type ResourcesState = Record<any, Resource>
 
 const initialState: ResourcesState = {}
 
+const parseFishingEvent = (event: ApiEvent, index: number): ApiEvent => {
+  return {
+    ...event,
+    id: index.toString(),
+    start: DateTime.fromISO(event.start as string).toMillis(),
+    end: DateTime.fromISO(event.end as string).toMillis(),
+  }
+}
+
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
   async (resource: Resource) => {
     const isTrackResource = resource.datasetType === DatasetTypes.Tracks
+    const isEventsResource = resource.datasetType === DatasetTypes.Events
     const responseType =
       isTrackResource &&
       resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
@@ -27,6 +44,10 @@ export const fetchResourceThunk = createAsyncThunk(
         ).split(',') as Field[]
         const segments = trackValueArrayToSegments(data as any, fields)
         return segments
+      }
+      // TODO check by eventType when needed
+      if (isEventsResource) {
+        return (data as ApiEvents).entries.map(parseFishingEvent)
       }
       return data
     })

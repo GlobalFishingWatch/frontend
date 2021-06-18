@@ -8,12 +8,15 @@
 }
 
 .event {
-  border-radius: 99px;
-  border: 1px solid var(--timebar-main-background-color);
+  height: 7px;
+  transform: translateY(-50%);
+  border-radius: 7px;
+  border: 2px solid transparent;
 }
 
-.highlighted {
-  border: 2px solid white;
+.event:hover,
+.event.highlighted {
+  height: 18px;
 }
 
 .tooltip {

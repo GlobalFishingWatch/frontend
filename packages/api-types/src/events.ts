@@ -111,3 +111,9 @@ export interface ApiEvent {
   encounter?: EncounterEvent
   port?: PortEvent
 }
+
+export interface ApiEvents<T = ApiEvent> {
+  entries: T[]
+  limit: number | null
+  total: number
+}

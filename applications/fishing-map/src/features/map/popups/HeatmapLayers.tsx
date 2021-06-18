@@ -31,19 +31,34 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
   const userLogged = useSelector(isUserLogged)
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
-    const infoDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Vessels, userLogged)
+    const vesselRelatedDataset = getRelatedDatasetByType(
+      vessel.dataset,
+      DatasetTypes.Vessels,
+      userLogged
+    )
 
-    if (!infoDataset) {
+    if (!vesselRelatedDataset) {
       console.warn('Missing info related dataset for', vessel)
     }
-    const trackDataset = getRelatedDatasetByType(vessel.dataset, DatasetTypes.Tracks, userLogged)
-    if (!trackDataset) {
+    const trackRelatedDataset = getRelatedDatasetByType(
+      vessel.dataset,
+      DatasetTypes.Tracks,
+      userLogged
+    )
+    if (!trackRelatedDataset) {
       console.warn('Missing track related dataset for', vessel)
     }
-    if (infoDataset && trackDataset) {
+    const eventsRelatedDataset = getRelatedDatasetByType(
+      vessel.dataset,
+      DatasetTypes.Events,
+      userLogged
+    )
+
+    if (vesselRelatedDataset && trackRelatedDataset) {
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
-        trackDatasetId: trackDataset.id,
-        infoDatasetId: infoDataset.id,
+        trackDatasetId: trackRelatedDataset.id,
+        infoDatasetId: vesselRelatedDataset.id,
+        ...(eventsRelatedDataset && { eventsDatasetId: eventsRelatedDataset?.id }),
       })
       upsertDataviewInstance(vesselDataviewInstance)
     }

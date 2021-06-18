@@ -12,7 +12,7 @@ export const selectSearchDatasets = (type: SearchType) =>
     (datasets, userData, guestUser) => {
       if (!userData || !datasets?.length) return
       const datasetsWithPermissions = datasets.filter((dataset) => {
-        const permission = { type: 'dataset', value: dataset.id, action: `${type}-search` }
+        const permission = { type: 'dataset', value: dataset?.id, action: `${type}-search` }
         return checkExistPermissionInList(userData?.permissions, permission)
       })
       return filterDatasetsByUserType(datasetsWithPermissions, guestUser)

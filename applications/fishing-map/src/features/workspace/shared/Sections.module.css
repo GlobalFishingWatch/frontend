@@ -19,6 +19,10 @@
   gap: var(--space-XS);
 }
 
+.content {
+  padding: var(--space-XS) var(--space-S);
+}
+
 .sectionTitle {
   font: var(--font-S);
   color: var(--color-secondary-blue);

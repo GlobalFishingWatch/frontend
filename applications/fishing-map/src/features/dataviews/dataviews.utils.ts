@@ -2,6 +2,7 @@ import {
   ColorCyclingType,
   Dataset,
   DataviewCategory,
+  DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
 } from '@globalfishingwatch/api-types'
@@ -22,16 +23,18 @@ export const VESSEL_LAYER_PREFIX = 'vessel-'
 export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
 export const PRESENCE_LAYER_ID = 'presence'
+export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
 type VesselInstanceDatasets = {
   trackDatasetId: string
   infoDatasetId: string
+  eventsDatasetId?: string
 }
 export const getVesselDataviewInstance = (
   vessel: { id: string },
-  { trackDatasetId, infoDatasetId }: VesselInstanceDatasets
+  { trackDatasetId, infoDatasetId, eventsDatasetId }: VesselInstanceDatasets
 ): DataviewInstance<Generators.Type> => {
-  const datasetsConfig = [
+  const datasetsConfig: DataviewDatasetConfig[] = [
     {
       datasetId: trackDatasetId,
       params: [{ id: 'vesselId', value: vessel.id }],
@@ -43,8 +46,16 @@ export const getVesselDataviewInstance = (
       endpoint: EndpointId.Vessel,
     },
   ]
+  if (eventsDatasetId) {
+    datasetsConfig.push({
+      datasetId: eventsDatasetId,
+      query: [{ id: 'vessels', value: vessel.id }],
+      params: [],
+      endpoint: EndpointId.Events,
+    })
+  }
   const vesselDataviewInstance = {
-    id: `${VESSEL_LAYER_PREFIX}${vessel.id}`,
+    id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,

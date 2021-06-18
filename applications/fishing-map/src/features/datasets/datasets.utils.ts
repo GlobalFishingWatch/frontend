@@ -1,5 +1,5 @@
 import { intersection, lowerCase } from 'lodash'
-import { Dataset, Dataview } from '@globalfishingwatch/api-types'
+import { Dataset, Dataview, EventTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { capitalize } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
@@ -10,6 +10,14 @@ export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' 
 
 export const removeDatasetVersion = (datasetId: string) => {
   return datasetId?.split(':')[0]
+}
+
+export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
+  return (dataview?.datasets || []).filter((dataset) => {
+    return dataset?.configuration?.type
+      ? Object.values(EventTypes).includes(dataset.configuration.type)
+      : false
+  })
 }
 
 export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boolean) => {

@@ -58,14 +58,15 @@ const TimebarSettings = () => {
         id: 'fishing',
         label: t('timebarSettings.eventOptions.fishing', 'Fishing'),
       },
-      {
-        id: 'encounters',
-        label: t('timebarSettings.eventOptions.encounters', 'Encounters'),
-      },
-      {
-        id: 'loitering',
-        label: t('timebarSettings.eventOptions.loitering', 'Loitering'),
-      },
+      // TODO: enable when datasets ready
+      // {
+      //   id: 'encounters',
+      //   label: t('timebarSettings.eventOptions.encounters', 'Encounters'),
+      // },
+      // {
+      //   id: 'loitering',
+      //   label: t('timebarSettings.eventOptions.loitering', 'Loitering'),
+      // },
       {
         id: 'ports',
         label: t('timebarSettings.eventOptions.ports', 'Port visits'),
@@ -157,14 +158,12 @@ const TimebarSettings = () => {
               activeVesselsDataviews.length > 0 && (
                 <div className={styles.vesselTrackOptions}>
                   <Select
-                    // label={t('common.events', 'Events')}
-                    label="Events (Coming soon)"
+                    label={t('common.events', 'Events')}
                     options={TIMEBAR_EVENT_OPTIONS}
                     selectedOption={TIMEBAR_EVENT_OPTIONS.find((o) => o.id === timebarEvents)}
                     onSelect={setEventsOption}
                     onRemove={removeEventsOption}
                     direction="top"
-                    disabled
                   />
                   {timebarGraphEnabled && (
                     <Select

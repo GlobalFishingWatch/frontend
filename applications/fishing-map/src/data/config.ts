@@ -48,12 +48,23 @@ export const DEFAULT_WORKSPACE = {
   availableEnd: end,
   dataviewInstances: undefined,
   timebarVisualisation: TimebarVisualisations.Heatmap,
-  timebarEvents: TimebarEvents.None,
+  timebarEvents: TimebarEvents.All,
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
   analysis: undefined,
   activityCategory: DEFAULT_ACTIVITY_CATEGORY,
   version: DEFAULT_VERSION,
+}
+
+export const EVENTS_COLORS: Record<string, string> = {
+  encounterauthorized: '#FAE9A0',
+  encounterauthorizedLabels: '#DCC76D',
+  encounterpartially: '#F59E84',
+  encounterunmatched: '#CE2C54',
+  loitering: '#cfa9f9',
+  port: '#99EEFF',
+  fishing: '#fff',
+  fishingLabels: '#163f89',
 }
 
 export enum ThinningLevels {

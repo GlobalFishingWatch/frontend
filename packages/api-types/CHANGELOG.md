@@ -1,5 +1,29 @@
 # @globalfishingwatch/api-types
 
+## 4.4.0
+
+### Minor Changes
+
+- fishing events
+
+## 4.3.0
+
+### Minor Changes
+
+- dataset config event type
+
+## 4.2.7
+
+### Patch Changes
+
+- events generator
+
+## 4.2.6
+
+### Patch Changes
+
+- events types update
+
 ## 4.2.5
 
 ### Patch Changes
