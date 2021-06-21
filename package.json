@@ -77,7 +77,6 @@
     "@globalfishingwatch/dataviews-client": "*",
     "@globalfishingwatch/fourwings-aggregate": "*",
     "@globalfishingwatch/layer-composer": "*",
-    "@globalfishingwatch/marine-regions": "*",
     "@globalfishingwatch/ocean-areas": "*",
     "@globalfishingwatch/pbf-decoders": "*",
     "@globalfishingwatch/react-hooks": "*",
