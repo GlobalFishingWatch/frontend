@@ -1,8 +1,7 @@
 import { memoize } from 'lodash'
 import { createSelector } from '@reduxjs/toolkit'
-import { MarineRegionType } from '@globalfishingwatch/marine-regions'
 import { RootState } from 'store'
-import { RegionId, regionsEntityAdapter } from './regions.slice'
+import { MarineRegionType, RegionId, regionsEntityAdapter } from './regions.slice'
 
 const { selectById } = regionsEntityAdapter.getSelectors<RootState>((state) => state.regions)
 
