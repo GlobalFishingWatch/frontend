@@ -1,6 +1,6 @@
 import eez from './data/eez'
 import rfmo from './data/rfmo'
-import mpa from './data/mpa'
+// import mpa from './data/mpa.json'
 // import marineRegionsLocales from './data/locales'
 // import sourceLocales from './data/locales/source.json'
 
@@ -43,12 +43,12 @@ export type GetMarineRegionLocaleParam = {
 //   }))
 // }
 
-const getEEZ = (locale?: GetMarineRegionLocaleParam): MarineRegion[] => Object.values(eez)
+const getEEZ = (locale?: GetMarineRegionLocaleParam): Record<string, MarineRegion> => eez
 //   getLocalizedMarineRegions(eez, locale)
 
-const getMPA = (): MarineRegion[] => Object.values(mpa)
+const getMPA = (): any[] => []
 
-const getRFMO = (locale?: GetMarineRegionLocaleParam): MarineRegion[] => Object.values(rfmo)
+const getRFMO = (locale?: GetMarineRegionLocaleParam): Record<string, MarineRegion> => rfmo
 // getLocalizedMarineRegions(rfmo, locale)
 
 export { getEEZ, getMPA, getRFMO }
