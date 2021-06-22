@@ -30,13 +30,6 @@ export const fetchRegionsThunk = createAsyncThunk(
   'regions/fetch',
   async (_, { rejectWithValue }) => {
     try {
-      // const apiUrl = 'http://localhost:4500/v1/datasets'
-      // const options = {
-      //   headers: {
-      //     'x-gateway-url': 'https://gateway.api.dev.globalfishingwatch.org',
-      //     user: '{"id": 1}',
-      //   },
-      // }
       const apiUrl = '/v1/datasets'
       const options = {}
       const eezs = await GFWAPI.fetch<Region[]>(
