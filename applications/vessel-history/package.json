@@ -18,7 +18,6 @@
     "@globalfishingwatch/data-transforms": "^1.2.0",
     "@globalfishingwatch/dataviews-client": "^11.1.0",
     "@globalfishingwatch/layer-composer": "8.1.0",
-    "@globalfishingwatch/marine-regions": "^0.1.1",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22",
     "@globalfishingwatch/pbf": "^1.0.10",
     "@globalfishingwatch/react-hooks": "^11.1.0",

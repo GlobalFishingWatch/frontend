@@ -1,14 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import {
-  getEEZ,
-  getMPA,
-  getRFMO,
-  GetMarineRegionLocaleParam,
-  MarineRegionType,
-} from '@globalfishingwatch/marine-regions'
+import GFWAPI from '@globalfishingwatch/api-client'
 import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 
-export type RegionId = MarineRegionType
+export type RegionId = string | number
+export enum MarineRegionType {
+  eez = 'eez',
+  rfmo = 'rfmo',
+  mpa = 'mpa',
+}
 
 export interface Region {
   id: string
@@ -27,16 +26,28 @@ const initialState: RegionsState = {
   ...asyncInitialState,
 }
 
-// Leave it as async so it's easier to migrate when regions
-// were consumed from a service
 export const fetchRegionsThunk = createAsyncThunk(
   'regions/fetch',
-  (locale: GetMarineRegionLocaleParam | undefined, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
+      const apiUrl = '/v1/datasets'
+      const options = {}
+      const eezs = await GFWAPI.fetch<Region[]>(
+        `${apiUrl}/public-eez-areas/user-context-layer-v1`,
+        options
+      )
+      const mpas = await GFWAPI.fetch<Region[]>(
+        `${apiUrl}/public-mpa-all/user-context-layer-v1`,
+        options
+      )
+      const rfmos = await GFWAPI.fetch<Region[]>(
+        `${apiUrl}/public-tuna-rfmo/user-context-layer-v1`,
+        options
+      )
       const result: Regions[] = [
-        { id: MarineRegionType.eez, data: getEEZ(locale) as Region[] },
-        { id: MarineRegionType.mpa, data: getMPA() as Region[] },
-        { id: MarineRegionType.rfmo, data: getRFMO(locale) as Region[] },
+        { id: MarineRegionType.eez, data: eezs },
+        { id: MarineRegionType.mpa, data: mpas },
+        { id: MarineRegionType.rfmo, data: rfmos },
       ]
       return result
     } catch (e) {
