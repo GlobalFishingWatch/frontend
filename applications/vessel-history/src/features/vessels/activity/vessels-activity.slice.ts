@@ -30,7 +30,6 @@ const slice = createSlice({
         })
         builder.addCase(fetchVesselActivityThunk.fulfilled, (state, action) => {
             state.status = AsyncReducerStatus.Finished
-            console.log(action.payload)
             if (action.payload) {
                 state.events = action.payload
             }

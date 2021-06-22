@@ -27,8 +27,9 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
   useEffect(() => {
     if (vesselId) {
-      console.log(vesselId)
-      dispatch(fetchVesselActivityThunk({vesselId}))
+      const start = '2017-01-01'
+      const end = '2021-07-01'
+      dispatch(fetchVesselActivityThunk({vesselId, start, end}))
     }
   }, [dispatch, vesselId])
 
@@ -37,7 +38,6 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
   },[dispatch])
 
   const eventGroups = useSelector(selectVesselActivity)
-  console.log(eventGroups)
   return (
     <Fragment>
       <div className={styles.activityContainer}>

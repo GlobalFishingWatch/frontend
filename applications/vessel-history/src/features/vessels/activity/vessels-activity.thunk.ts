@@ -4,10 +4,9 @@ import { FISHING_EVENTS_DATASET } from 'data/constants'
 import { ActivityEvent, ActivityEventGroup } from 'types/activity'
 
 
-const fetchData = (dataset: string, vesselId: string, signal?: AbortSignal | null) => {
-    console.log(7)
+const fetchData = (dataset: string, vesselId: string, start: string, end: string, signal?: AbortSignal | null) => {
     return GFWAPI.fetch<any>(
-        `/v1/events?datasets=${encodeURIComponent(dataset)}&vessels=${vesselId}&startDate=2012-01-01&endDate=2021-05-05`
+        `/v1/events?datasets=${encodeURIComponent(dataset)}&vessels=${vesselId}&startDate=${start}&endDate=${end}`
     )
         .then((json: any) => {
             return json.entries as ActivityEvent[] ?? []
@@ -17,11 +16,11 @@ const fetchData = (dataset: string, vesselId: string, signal?: AbortSignal | nul
         })
 }
 
-const fetchDatasets = async (vesselId: string, signal?: AbortSignal | null) => {
+const fetchDatasets = async (vesselId: string, start: string, end: string, signal?: AbortSignal | null) => {
     // TODO:duplicate for testing, others datasets should be used
     const datasets = [FISHING_EVENTS_DATASET]
     const fetchedEvents = await Promise.all(
-        datasets.map(async (dataset) => fetchData(dataset, vesselId, signal))
+        datasets.map(async (dataset) => fetchData(dataset, vesselId, start, end, signal))
     )
     const allEvents = fetchedEvents.flat()
     const sortEvents = allEvents.sort(
@@ -35,6 +34,8 @@ const fetchDatasets = async (vesselId: string, signal?: AbortSignal | null) => {
 
 export type VesselSearchThunk = {
     vesselId: string
+    start: string
+    end: string
 }
 
 const groupEvents = (events: ActivityEvent[]) => {
@@ -61,8 +62,8 @@ const groupEvents = (events: ActivityEvent[]) => {
 
 export const fetchVesselActivityThunk = createAsyncThunk(
     'vessels/activity',
-    async ({ vesselId }: VesselSearchThunk, { rejectWithValue, getState, signal }) => {
-        const events = await fetchDatasets(vesselId, signal)
+    async ({ vesselId, start, end }: VesselSearchThunk, { rejectWithValue, getState, signal }) => {
+        const events = await fetchDatasets(vesselId, start, end, signal)
         return groupEvents(events)
     },
     {
