@@ -8,7 +8,7 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectBivariateDataviews } from 'features/app/app.selectors'
+import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
@@ -42,6 +42,7 @@ function HeatmapLayerPanel({
   const { deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const readOnly = useSelector(selectReadOnly)
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -126,7 +127,7 @@ function HeatmapLayerPanel({
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && (fishingDataview || presenceDataview) && (
+          {layerActive && (fishingDataview || presenceDataview) && !readOnly && (
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
@@ -146,7 +147,7 @@ function HeatmapLayerPanel({
             </ExpandedContainer>
           )}
           <InfoModal dataview={dataview} />
-          <Remove onClick={onRemoveLayerClick} />
+          {!readOnly && <Remove onClick={onRemoveLayerClick} />}
         </div>
       </div>
       {layerActive && (

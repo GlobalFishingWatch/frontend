@@ -12,6 +12,7 @@ export type WorkspaceTimeRangeParam = 'start' | 'end'
 export type WorkspaceStateProperty =
   | 'query'
   | 'analysis'
+  | 'readOnly'
   | 'sidebarOpen'
   | 'dataviewInstances'
   | 'timebarVisualisation'
@@ -39,6 +40,7 @@ export type BivariateDataviews = [string, string]
 export type WorkspaceState = {
   query?: string
   version?: string
+  readOnly?: boolean
   sidebarOpen?: boolean
   analysis?: WorkspaceAnalysis
   dataviewInstances?: Partial<UrlDataviewInstance[]>

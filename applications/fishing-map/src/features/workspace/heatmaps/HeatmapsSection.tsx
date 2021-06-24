@@ -17,7 +17,11 @@ import {
   getPresenceDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
 import { WorkspaceActivityCategory } from 'types'
-import { selectBivariateDataviews, selectActivityCategory } from 'features/app/app.selectors'
+import {
+  selectBivariateDataviews,
+  selectActivityCategory,
+  selectReadOnly,
+} from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import LayerPanel from './HeatmapLayerPanel'
@@ -26,6 +30,7 @@ import heatmapStyles from './HeatmapsSection.module.css'
 function HeatmapsSection(): React.ReactElement {
   const { t } = useTranslation()
   const [addedDataviewId, setAddedDataviewId] = useState<string | undefined>()
+  const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
   const activityCategory = useSelector(selectActivityCategory)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -144,16 +149,18 @@ function HeatmapsSection(): React.ReactElement {
           activeOption={activityCategory}
           onOptionClick={onActivityOptionClick}
         />
-        <div className={cx('print-hidden', styles.sectionButtons)}>
-          <IconButton
-            icon="plus"
-            type="border"
-            size="medium"
-            tooltip={t('layer.add', 'Add layer')}
-            tooltipPlacement="top"
-            onClick={() => onAddClick(activityCategory)}
-          />
-        </div>
+        {!readOnly && (
+          <div className={cx('print-hidden', styles.sectionButtons)}>
+            <IconButton
+              icon="plus"
+              type="border"
+              size="medium"
+              tooltip={t('layer.add', 'Add layer')}
+              tooltipPlacement="top"
+              onClick={() => onAddClick(activityCategory)}
+            />
+          </div>
+        )}
       </div>
       {dataviews?.map((dataview, index) => {
         const isLastElement = index === dataviews?.length - 1
