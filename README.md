@@ -117,3 +117,8 @@ yarn changesets
 ```
 
 and follow the steps to generate a changeset release, once merged to develop the github action will deploy to npm automatically.
+
+
+### API DOCS
+
+https://gateway.api.dev.globalfishingwatch.org/swagger#/

@@ -14,6 +14,8 @@ import {
   selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
+import { selectVesselActivity } from 'features/vessels/activity/vessels-activity.slice'
+import { ActivityEventGroup } from 'types/activity'
 import InfoField, { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
 
@@ -28,6 +30,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const vesselId = useSelector(selectVesselId)
+  const activities = useSelector(selectVesselActivity)
   const vesselTmtId = useSelector(selectTmtId)
   const vesselDataset = useSelector(selectDataset)
   const vesselProfileId = useSelector(selectVesselProfileId)
@@ -44,6 +47,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     await dispatchDeleteOfflineVessel(data.profileId)
     setLoading(false)
   }
+
   const onSaveClick = async (data: VesselWithHistory) => {
     setLoading(true)
     await dispatchCreateOfflineVessel({
@@ -54,6 +58,9 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
         dataset: vesselDataset,
         vesselMatchId: vesselTmtId,
         source: '',
+        activities: activities.flatMap((groups: ActivityEventGroup) => {
+          return groups.entries
+        }),
         savedOn: DateTime.utc().toISO(),
       },
     })

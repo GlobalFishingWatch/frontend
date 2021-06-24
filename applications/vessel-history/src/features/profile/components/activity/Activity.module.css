@@ -1,0 +1,97 @@
+.activityContainer {
+  padding: 8px;
+}
+
+.divider {
+  opacity: 0.1;
+  background-color: #22447e;
+  width: 100%;
+  height: 1px;
+  position: relative;
+  margin: 10px 0 15px;
+}
+
+.divider::before {
+  margin-right: 9px;
+  background: #fff url('../../../../assets/icons/vessel.svg') no-repeat 15px;
+  content: '';
+  display: inline-block;
+  position: absolute;
+  height: 15px;
+  width: 15px;
+  background-size: 15px 15px;
+  top: -6px;
+  padding: 0 21px 0 10px;
+}
+
+.event {
+  padding: 0 7px;
+  display: flex;
+  align-items: center;
+}
+
+.event .eventData .date {
+  opacity: 0.5;
+  color: #22447e;
+  font-family: Roboto, 'Courier New', Courier, monospace;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 16px;
+}
+
+.event .eventData .description {
+  color: #22447e;
+  font-family: Roboto, 'Courier New', Courier, monospace;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 18px;
+  margin-top: 3px;
+}
+
+.eventIcon {
+  position: relative;
+}
+
+.eventIcon i {
+  display: inline-block;
+  width: 31px;
+  margin: 0 9px 0 0;
+  height: 31px;
+  border: 1px solid rgba(34, 68, 126, 0.1);
+  border-radius: 15.5px;
+  background: #fff url('../../../../assets/icons/fishingEvent.svg') no-repeat center center;
+}
+
+.eventIcon .eventCount {
+  position: absolute;
+  top: -5px;
+  right: 2px;
+  height: 18px;
+  width: 18px;
+  opacity: 1;
+  color: #163f89;
+  font-family: Roboto, 'Courier New', Courier, monospace;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 0 2px #163f89;
+}
+
+.eventIcon.encounter i {
+  background: #9c9091 url('../../../../assets/icons/encounter.svg') no-repeat center center;
+}
+
+.event .actions {
+  min-width: 56px;
+  margin-right: 0;
+  margin-left: auto;
+  text-align: right;
+}
+
+.event .actions.oneIcon {
+  min-width: 28px;
+}

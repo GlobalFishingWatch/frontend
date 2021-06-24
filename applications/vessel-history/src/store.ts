@@ -11,6 +11,7 @@ import datasetsReducer from './features/datasets/datasets.slice'
 import regionsReducer from './features/regions/regions.slice'
 import resourcesReducer from './features/resources/resources.slice'
 import workspaceReducer from './features/workspace/workspace.slice'
+import activityReducer from './features/vessels/activity/vessels-activity.slice'
 
 const {
   reducer: location,
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   offlineVessels: offlineVesselsReducer,
   vessels: vesselsReducer,
   search: searchReducer,
+  activity: activityReducer,
   settings: settingsReducer,
   location: location,
   map: mapReducer,
@@ -30,6 +32,7 @@ const rootReducer = combineReducers({
   regions: regionsReducer,
   resources: resourcesReducer,
   workspace: workspaceReducer,
+
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
