@@ -51,4 +51,5 @@ export const tmtVessel: TMTDetail = {
   },
   relationList: { vesselOwnership: [], vesselOperations: [] },
   authorisationList: [],
+  imageList: [],
 }

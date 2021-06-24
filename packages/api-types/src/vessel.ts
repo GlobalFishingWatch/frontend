@@ -19,6 +19,7 @@ export interface Vessel {
   builtYear?: string
   authorizations?: string[]
   registeredGearType?: string
+  imageList?: string[]
 }
 
 export interface VesselSearch extends Vessel {
