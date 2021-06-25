@@ -29,10 +29,11 @@ COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./tsconfig.json /app/tsconfig.json
 # override node_modules inside image with
 # generated versions from the monorepo
-COPY ./node_modules /app/node_modules
+COPY ./node_modules/@globalfishingwatch /tmp/@globalfishingwatch
+RUN cp -r /tmp/@globalfishingwatch /app/node_modules/
 ENV GENERATE_SOURCEMAP=${GENERATE_SOURCEMAP}
 
-RUN npm run build
+RUN yarn build
 
 #################################################################################
 # Generate htpasswd file
