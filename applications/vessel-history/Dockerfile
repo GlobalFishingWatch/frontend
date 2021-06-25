@@ -27,22 +27,35 @@ COPY ./.eslintignore /app/.eslintignore
 COPY ./.eslintrc.js /app/.eslintrc.js
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./tsconfig.json /app/tsconfig.json
+# override node_modules inside image with
+# generated versions from the monorepo
+COPY ./node_modules /app/node_modules
 ENV GENERATE_SOURCEMAP=${GENERATE_SOURCEMAP}
 
 RUN npm run build
 
 #################################################################################
-# Actual application to run
+# Generate htpasswd file
 #################################################################################
-FROM nginx as production
+FROM appsoa/docker-alpine-htpasswd as htpasswd
 ARG BASIC_AUTH_USER=gfw
 ARG BASIC_AUTH_PASS=default
+RUN htpasswd -Bbn "${BASIC_AUTH_USER}" "${BASIC_AUTH_PASS}" > /tmp/.htpasswd
 
-RUN apt-get update && apt-get install openssl -y
+#################################################################################
+# Actual application to run
+#################################################################################
+FROM nginx:alpine as production
+# ARG BASIC_AUTH_USER=gfw
+# ARG BASIC_AUTH_PASS=default
+
+# RUN apt-get update && apt-get install openssl -y
 
 COPY nginx/nginx.conf /etc/nginx/nginx.template
-RUN echo -n ${BASIC_AUTH_USER}: >> /etc/nginx/.htpasswd
-RUN echo ${BASIC_AUTH_PASS} | openssl passwd -apr1 -stdin >> /etc/nginx/.htpasswd
+# RUN echo -n ${BASIC_AUTH_USER}: >> /etc/nginx/.htpasswd
+# RUN echo ${BASIC_AUTH_PASS} | openssl passwd -apr1 -stdin >> /etc/nginx/.htpasswd
+COPY --from=htpasswd /tmp/.htpasswd /tmp/.htpasswd
+RUN cat /tmp/.htpasswd >> /etc/nginx/.htpasswd
 COPY entrypoint.sh entrypoint.sh
 COPY --from=build /app/build/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
