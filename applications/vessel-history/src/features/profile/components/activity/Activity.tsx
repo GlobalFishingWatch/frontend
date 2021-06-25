@@ -10,8 +10,10 @@ import { fetchVesselActivityThunk } from 'features/vessels/activity/vessels-acti
 import { selectVesselActivity, toggleGroup } from 'features/vessels/activity/vessels-activity.slice'
 import { ActivityEvent, ActivityEventGroup } from 'types/activity'
 import I18nDate from 'features/i18n/i18nDate'
+import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import styles from './Activity.module.css'
 import ActivityDate from './ActivityDate'
+import ActivityDescription from './description/ActivityDescription'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -37,6 +39,10 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
     dispatch(toggleGroup({index}))
   },[dispatch])
 
+  useEffect(() => {
+    dispatch(fetchRegionsThunk())
+  }, [dispatch])
+  
   const eventGroups = useSelector(selectVesselActivity)
   return (
     <Fragment>
@@ -56,7 +62,7 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
                         <I18nDate date={group.entries[group.entries.length - 1].end} format={DateTime.DATE_SHORT} />
                       </div>
                       <div className={styles.description}>
-                      {group.entries.length} Fishing events in {group.event_place}
+                        <ActivityDescription  group={group} ></ActivityDescription>
                       </div>
                       
                     </div>
@@ -78,7 +84,7 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
                     <div className={styles.eventData}>
                       <ActivityDate event={event}/>
                       <div className={styles.description}>
-                        Fishing in ???? {event.start}
+                        <ActivityDescription  event={event} ></ActivityDescription>
                       </div>
                       
                     </div>

@@ -50,7 +50,7 @@ export const fetchRegionsThunk = createAsyncThunk(
         { id: MarineRegionType.rfmo, data: rfmos },
       ]
       return result
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({
         status: e.status || e.code,
         message: `Regions - ${e.message}`,

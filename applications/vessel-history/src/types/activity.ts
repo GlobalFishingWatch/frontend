@@ -55,7 +55,8 @@ export interface ActivityEvent {
 }
 export interface ActivityEventGroup {
     event_type: EventType
-    event_place?: string
+    event_eez?: number | string
+    event_rfmo?: number | string
     open: boolean
     entries: ActivityEvent[];
 }

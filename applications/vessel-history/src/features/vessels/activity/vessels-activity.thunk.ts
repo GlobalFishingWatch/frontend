@@ -44,17 +44,29 @@ const groupEvents = (events: ActivityEvent[]) => {
         if (
             !groups.length ||
             groups[groups.length - 1].event_type !== event.type ||
-            groups[groups.length - 1].event_place !== event.regions.eez[0]
+            (
+                groups[groups.length - 1].event_eez !== event.regions.eez[0] ||
+                groups[groups.length - 1].event_rfmo !== event.regions.rfmo[0]
+            )
         ) {
             groups.push({
                 event_type: event.type,
-                event_place: event.regions.eez[0],
+                event_eez: event.regions.eez[0],
+                event_rfmo: event.regions.rfmo[0],
                 open: true,
                 entries: [event]
             })
-        } else if (groups[groups.length - 1].event_type === event.type && groups[groups.length - 1].event_place === event.regions.eez[0]) {
+        } else if (
+            groups[groups.length - 1].event_type === event.type &&
+            (
+                groups[groups.length - 1].event_eez === event.regions.eez[0] &&
+                groups[groups.length - 1].event_rfmo === event.regions.rfmo[0]
+            )
+        ) {
             groups[groups.length - 1].entries.push(event)
             groups[groups.length - 1].open = false
+        } else {
+            console.log('*')
         }
     });
     return groups

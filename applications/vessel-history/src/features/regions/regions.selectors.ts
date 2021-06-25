@@ -19,3 +19,21 @@ export const selectMPAs = selectRegionsById(MarineRegionType.mpa)
 export const selectRFMOs = selectRegionsById(MarineRegionType.rfmo)
 
 export const selectRegionsStatus = (state: RootState) => state.regions.status
+
+export const selectEezById = memoize((id: RegionId) =>
+  createSelector([selectEEZs], (eezs) => {
+    if (!id) {
+      return null
+    }
+    return eezs.find(eez => eez.id == id)
+  })
+)
+
+export const selectRfmoById = memoize((id: RegionId) =>
+  createSelector([selectRFMOs], (eezs) => {
+    if (!id) {
+      return null
+    }
+    return eezs.find(eez => eez.id == id)
+  })
+)
