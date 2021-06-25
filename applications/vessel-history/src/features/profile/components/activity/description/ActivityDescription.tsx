@@ -12,7 +12,7 @@ const ActivityDescription: React.FC<ActivityDescriptionProps> = (props): React.R
   const group = props.group
 
   if (group?.event_eez){
-    return <ActivityDescriptionEEZ regionId={group?.event_eez} type="group"></ActivityDescriptionEEZ>
+    return <ActivityDescriptionEEZ regionId={group?.event_eez} type="group" ocean={group.ocean}></ActivityDescriptionEEZ>
   }
 
   if (event?.regions.eez[0]){
@@ -20,7 +20,7 @@ const ActivityDescription: React.FC<ActivityDescriptionProps> = (props): React.R
   }
 
   if (group?.event_rfmo){
-    return <ActivityDescriptionEEZ regionId={group?.event_rfmo} type="group"></ActivityDescriptionEEZ>
+    return <ActivityDescriptionEEZ regionId={group?.event_rfmo} type="group" ocean={group.ocean}></ActivityDescriptionEEZ>
   }
 
   if (event?.regions.rfmo[0]){

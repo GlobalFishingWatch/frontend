@@ -57,6 +57,7 @@ export interface ActivityEventGroup {
     event_type: EventType
     event_eez?: number | string
     event_rfmo?: number | string
+    ocean?: string
     open: boolean
     entries: ActivityEvent[];
 }

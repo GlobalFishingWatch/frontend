@@ -53,6 +53,7 @@ const groupEvents = (events: ActivityEvent[]) => {
                 event_type: event.type,
                 event_eez: event.regions.eez[0],
                 event_rfmo: event.regions.rfmo[0],
+                ocean: event.regions.ocean[0],
                 open: true,
                 entries: [event]
             })
@@ -65,8 +66,6 @@ const groupEvents = (events: ActivityEvent[]) => {
         ) {
             groups[groups.length - 1].entries.push(event)
             groups[groups.length - 1].open = false
-        } else {
-            console.log('*')
         }
     });
     return groups
