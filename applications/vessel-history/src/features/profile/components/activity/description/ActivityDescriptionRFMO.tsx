@@ -7,6 +7,7 @@ import { RegionId } from 'features/regions/regions.slice'
 interface ActivityDescriptionProps {
   regionId: RegionId
   type: 'group' | 'event'
+  ocean?: string
   count?: number
 }
 
@@ -18,7 +19,7 @@ const ActivityDescriptionEEZ: React.FC<ActivityDescriptionProps> = (props): Reac
   if (props.type === 'group' ) {
     return (
       <Fragment>
-        {props.count} Fishing events rfmo in {regionName || 'unknown'}
+        {props.count} Fishing events rfmo in {regionName || props.ocean || 'unknown'}
       </Fragment>
     )
   }
@@ -26,7 +27,7 @@ const ActivityDescriptionEEZ: React.FC<ActivityDescriptionProps> = (props): Reac
   if (props.type === 'event') {
     return (
       <Fragment>
-        Fishing in {regionName || 'unknown'}
+        Fishing in {regionName || props.ocean || 'unknown'}
       </Fragment>
     )
   }

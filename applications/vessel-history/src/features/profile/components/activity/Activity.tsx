@@ -14,6 +14,7 @@ import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import styles from './Activity.module.css'
 import ActivityDate from './ActivityDate'
 import ActivityDescription from './description/ActivityDescription'
+import ActivityGroupDescription from './description/ActivityGroupDescription'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -58,11 +59,11 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
                     </div>
                     <div className={styles.eventData}>
                       <div className={styles.date}>
-                        <I18nDate date={group.entries[0].start} format={DateTime.DATE_SHORT} /> - 
-                        <I18nDate date={group.entries[group.entries.length - 1].end} format={DateTime.DATE_SHORT} />
+                        <I18nDate date={group.start} format={DateTime.DATE_SHORT} /> - 
+                        <I18nDate date={group.end} format={DateTime.DATE_SHORT} />
                       </div>
                       <div className={styles.description}>
-                        <ActivityDescription  group={group} ></ActivityDescription>
+                        <ActivityGroupDescription  group={group} ></ActivityGroupDescription>
                       </div>
                       
                     </div>

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { selectEezById } from 'features/regions/regions.selectors'
 import { RegionId } from 'features/regions/regions.slice'
+import { getEEZName } from 'utils/region-name-transform'
 
 interface ActivityDescriptionProps {
   regionId: RegionId
@@ -16,7 +17,7 @@ const ActivityDescriptionEEZ: React.FC<ActivityDescriptionProps> = (props): Reac
   const { t } = useTranslation()
 
   const region = useSelector(selectEezById(regionId))
-  const regionName = region?.label?.replace('Exclusive Economic Zone', 'EEZ') || props.ocean || 'unknown'
+  const regionName = getEEZName(region, props.ocean)
   if (props.type === 'group' ) {
     return (
       <Fragment>

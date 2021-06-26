@@ -1,33 +1,23 @@
 import React, { Fragment } from 'react'
-import { ActivityEvent, ActivityEventGroup } from 'types/activity'
+import { ActivityEvent } from 'types/activity'
 import ActivityDescriptionEEZ from './ActivityDescriptionEEZ'
+import ActivityDescriptionRFMO from './ActivityDescriptionRFMO'
 
 interface ActivityDescriptionProps {
-  event?: ActivityEvent
-  group?: ActivityEventGroup
+  event: ActivityEvent
 }
 
 const ActivityDescription: React.FC<ActivityDescriptionProps> = (props): React.ReactElement => {
   const event = props.event
-  const group = props.group
-
-  if (group?.event_eez){
-    return <ActivityDescriptionEEZ regionId={group?.event_eez} type="group" ocean={group.ocean}></ActivityDescriptionEEZ>
-  }
-
+  
   if (event?.regions.eez[0]){
     return <ActivityDescriptionEEZ regionId={event.regions.eez[0]} type="event" ocean={event.regions.ocean[0]}></ActivityDescriptionEEZ>
   }
-
-  if (group?.event_rfmo){
-    return <ActivityDescriptionEEZ regionId={group?.event_rfmo} type="group" ocean={group.ocean}></ActivityDescriptionEEZ>
-  }
-
-  if (event?.regions.rfmo[0]){
-    return <ActivityDescriptionEEZ regionId={event.regions.rfmo[0]} type="event" ocean={event.regions.ocean[0]}></ActivityDescriptionEEZ>
+  if (event.regions.rfmo[0]){
+    return <ActivityDescriptionRFMO regionId={event.regions.rfmo[0]} type="event" ocean={event.regions.ocean[0]}></ActivityDescriptionRFMO>
   }
   return (
-    <Fragment></Fragment>
+    <Fragment>No description found</Fragment>
   )
 }
 

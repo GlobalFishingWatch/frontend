@@ -1,3 +1,5 @@
+import { GroupRegions } from "features/regions/regions.slice";
+
 export interface EventVessel {
     id: string;
     name: string;
@@ -55,9 +57,10 @@ export interface ActivityEvent {
 }
 export interface ActivityEventGroup {
     event_type: EventType
-    event_eez?: number | string
-    event_rfmo?: number | string
+    event_places: GroupRegions[]
     ocean?: string
+    start: string
+    end: string
     open: boolean
     entries: ActivityEvent[];
 }
