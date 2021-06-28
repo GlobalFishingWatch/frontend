@@ -47,7 +47,7 @@ export const DEFAULT_WORKSPACE = {
   daysFromLatest: undefined,
   sidebarOpen: true,
   availableStart: new Date(Date.UTC(2012, 0, 1)).toISOString(),
-  availableEnd: end,
+  availableEnd: new Date(Date.UTC(new Date().getFullYear(), 11, 31)).toISOString(),
   dataviewInstances: undefined,
   timebarVisualisation: TimebarVisualisations.Heatmap,
   timebarEvents: TimebarEvents.All,
