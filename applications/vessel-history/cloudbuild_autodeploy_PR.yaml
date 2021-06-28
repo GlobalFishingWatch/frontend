@@ -15,7 +15,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        cp -r --parents -L git./node_modules/@globalfishingwatch ./applications/vessel-history
+        cp -r --parents -L ./node_modules/@globalfishingwatch ./applications/vessel-history
 
   # Push build image to GCR
   - name: 'gcr.io/kaniko-project/executor:latest'
