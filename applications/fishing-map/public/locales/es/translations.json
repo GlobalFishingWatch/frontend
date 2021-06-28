@@ -158,14 +158,10 @@
       "activityLayers": "Activity Layers",
       "vesselTracks": "Vessel Tracks",
       "vesselSearch": "Vessel Search",
-      "environment": "Environment Layers",
+      "environmentLayers": "Environment Layers",
       "referenceLayers": "Reference Layers",
       "timebar": "Time bar along the bottom of the map",
       "analysis": "Analysis",
-      "layerUpload": "Custom layers upload",
-      "areaSearch": "Area Search",
-      "screenshot": "Screenshot",
-      "rulers": "Rulers",
       "other": "Other"
     },
     "send": "Enviar"
