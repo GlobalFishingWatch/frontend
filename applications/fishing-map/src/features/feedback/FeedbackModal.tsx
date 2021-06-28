@@ -199,6 +199,12 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
                   placeholder={t('feedback.email', 'E-mail address') as any}
                   onChange={({ target }) => onFieldChange('email', target.value)}
                 />
+                <span className={styles.emailDisclaimer}>
+                  {t(
+                    'feedback.emailDisclaimer',
+                    'We will only email you in relation to this feedback'
+                  )}
+                </span>
               </Fragment>
             )}
             <Select
