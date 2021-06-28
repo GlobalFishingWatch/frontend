@@ -6,7 +6,10 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getVesselLabel } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+} from 'features/datasets/datasets.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -48,17 +51,19 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
     if (!trackRelatedDataset) {
       console.warn('Missing track related dataset for', vessel)
     }
-    const eventsRelatedDataset = getRelatedDatasetByType(
-      vessel.dataset,
-      DatasetTypes.Events,
-      userLogged
-    )
+
+    const eventsRelatedDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
+
+    const eventsDatasetsId =
+      eventsRelatedDatasets && eventsRelatedDatasets?.length
+        ? eventsRelatedDatasets.map((d) => d.id)
+        : []
 
     if (vesselRelatedDataset && trackRelatedDataset) {
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
         trackDatasetId: trackRelatedDataset.id,
         infoDatasetId: vesselRelatedDataset.id,
-        ...(eventsRelatedDataset && { eventsDatasetId: eventsRelatedDataset?.id }),
+        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
       })
       upsertDataviewInstance(vesselDataviewInstance)
     }

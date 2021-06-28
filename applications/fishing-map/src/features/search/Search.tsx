@@ -15,8 +15,7 @@ import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { Button, Choice, Icon } from '@globalfishingwatch/ui-components'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { useLocationConnect } from 'routes/routes.hook'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
-import { selectUserLogged } from 'features/user/user.slice'
+import { getRelatedDatasetsByType } from 'features/datasets/datasets.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
@@ -59,7 +58,6 @@ function Search() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const urlQuery = useSelector(selectSearchQuery)
-  const userLogged = useSelector(selectUserLogged)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const { searchFilters } = useSearchFiltersConnect()
@@ -232,15 +230,16 @@ function Search() {
 
   const onConfirmSelection = () => {
     const instances = vesselsSelected.map((vessel) => {
-      const eventsRelatedDataset = getRelatedDatasetByType(
-        vessel.dataset,
-        DatasetTypes.Events,
-        userLogged
-      )
+      const eventsRelatedDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
+
+      const eventsDatasetsId =
+        eventsRelatedDatasets && eventsRelatedDatasets?.length
+          ? eventsRelatedDatasets.map((d) => d.id)
+          : []
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
         trackDatasetId: vessel.trackDatasetId as string,
         infoDatasetId: vessel.dataset.id,
-        ...(eventsRelatedDataset && { eventsDatasetId: eventsRelatedDataset?.id }),
+        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
       })
       return vesselDataviewInstance
     })

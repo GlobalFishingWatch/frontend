@@ -13,7 +13,10 @@ import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { formatInfoField } from 'utils/info'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+} from 'features/datasets/datasets.selectors'
 import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -44,6 +47,12 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
   const onPinClick = (vessel: ExtendedEventVessel) => {
     const infoDataset = datasets.find((dataset) => dataset.id === vessel.dataset)
     const trackDataset = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)
+    const eventsRelatedDatasets = getRelatedDatasetsByType(infoDataset, DatasetTypes.Events)
+
+    const eventsDatasetsId =
+      eventsRelatedDatasets && eventsRelatedDatasets?.length
+        ? eventsRelatedDatasets.map((d) => d.id)
+        : []
 
     if (infoDataset && trackDataset) {
       const vesselDataviewInstance = getVesselDataviewInstance(
@@ -51,6 +60,7 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
         {
           trackDatasetId: trackDataset.id,
           infoDatasetId: infoDataset.id,
+          ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
         }
       )
       upsertDataviewInstance(vesselDataviewInstance)
