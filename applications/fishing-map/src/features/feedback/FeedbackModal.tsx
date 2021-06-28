@@ -6,7 +6,7 @@ import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { selectActiveDataviews } from 'features/dataviews/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/heatmaps/heatmaps.utils'
-import { selectUserData } from 'features/user/user.slice'
+import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { isGuestUser, selectUserGroupsClean } from 'features/user/user.selectors'
 import styles from './FeedbackModal.module.css'
@@ -21,7 +21,7 @@ type FeedbackData = {
   url: string
   userAgent: string
   resolution: string
-  userId?: number | 'guest'
+  userId?: number | typeof GUEST_USER_TYPE
   name?: string
   email?: string
   organization?: string
@@ -158,7 +158,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       const sheet = feedbackSpreadsheetDoc.sheetsByTitle[FEEDBACK_SHEET_TITLE]
       const finalFeedbackData = {
         ...feedbackData,
-        userId: feedbackData.userId || 'guest',
+        userId: feedbackData.userId || GUEST_USER_TYPE,
       }
       await sheet.addRow(finalFeedbackData)
       setLoading(false)
