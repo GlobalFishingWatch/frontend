@@ -24,7 +24,7 @@ import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectViewport } from 'features/app/app.selectors'
+import { selectReadOnly, selectViewport } from 'features/app/app.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -163,6 +163,7 @@ function ShareWorkspaceButton() {
 }
 
 function SidebarHeader() {
+  const readOnly = useSelector(selectReadOnly)
   const locationCategory = useSelector(selectLocationCategory)
   const workspaceLocation = useSelector(isWorkspaceLocation)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
@@ -180,7 +181,7 @@ function SidebarHeader() {
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>
-        {workspaceLocation && (
+        {workspaceLocation && !readOnly && (
           <Fragment>
             <SaveWorkspaceButton />
             <ShareWorkspaceButton />

@@ -12,12 +12,14 @@ import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
 import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
+import { selectReadOnly } from 'features/app/app.selectors'
 import LayerPanel from './ContextAreaLayerPanel'
 
 function ContextAreaSection(): React.ReactElement {
   const { t } = useTranslation()
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
 
+  const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectContextAreasDataviews)
   const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
@@ -49,28 +51,30 @@ function ContextAreaSection(): React.ReactElement {
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.context_area_plural', 'Context areas')}</h2>
-        <TooltipContainer
-          visible={newDatasetOpen}
-          onClickOutside={() => {
-            setNewDatasetOpen(false)
-          }}
-          component={
-            <NewDatasetTooltip
-              datasetCategory={DatasetCategory.Context}
-              onSelect={() => setNewDatasetOpen(false)}
+        {!readOnly && (
+          <TooltipContainer
+            visible={newDatasetOpen}
+            onClickOutside={() => {
+              setNewDatasetOpen(false)
+            }}
+            component={
+              <NewDatasetTooltip
+                datasetCategory={DatasetCategory.Context}
+                onSelect={() => setNewDatasetOpen(false)}
+              />
+            }
+          >
+            <IconButton
+              icon="plus"
+              type="border"
+              size="medium"
+              tooltip={t('dataset.addContext', 'Add context dataset')}
+              tooltipPlacement="top"
+              className="print-hidden"
+              onClick={onAddClick}
             />
-          }
-        >
-          <IconButton
-            icon="plus"
-            type="border"
-            size="medium"
-            tooltip={t('dataset.addContext', 'Add context dataset')}
-            tooltipPlacement="top"
-            className="print-hidden"
-            onClick={onAddClick}
-          />
-        </TooltipContainer>
+          </TooltipContainer>
+        )}
       </div>
       {dataviews?.map((dataview) => (
         <LayerPanel key={dataview.id} dataview={dataview} onToggle={onToggleLayer(dataview)} />

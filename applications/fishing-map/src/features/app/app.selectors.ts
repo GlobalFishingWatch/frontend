@@ -93,6 +93,20 @@ export const selectBivariateDataviews = createSelector(
   }
 )
 
+export const selectReadOnly = createSelector(
+  [selectWorkspaceStateProperty('readOnly')],
+  (readOnly): boolean => {
+    return readOnly
+  }
+)
+
+export const selectDaysFromLatest = createSelector(
+  [selectWorkspaceStateProperty('daysFromLatest')],
+  (daysFromLatest): number => {
+    return daysFromLatest
+  }
+)
+
 export const selectSidebarOpen = createSelector(
   [selectWorkspaceStateProperty('sidebarOpen')],
   (sidebarOpen): boolean => {

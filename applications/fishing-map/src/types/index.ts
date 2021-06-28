@@ -12,6 +12,8 @@ export type WorkspaceTimeRangeParam = 'start' | 'end'
 export type WorkspaceStateProperty =
   | 'query'
   | 'analysis'
+  | 'readOnly'
+  | 'daysFromLatest'
   | 'sidebarOpen'
   | 'dataviewInstances'
   | 'timebarVisualisation'
@@ -39,6 +41,8 @@ export type BivariateDataviews = [string, string]
 export type WorkspaceState = {
   query?: string
   version?: string
+  readOnly?: boolean
+  daysFromLatest?: number // use latest day as endAt minus the number of days set here
   sidebarOpen?: boolean
   analysis?: WorkspaceAnalysis
   dataviewInstances?: Partial<UrlDataviewInstance[]>

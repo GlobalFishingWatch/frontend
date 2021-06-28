@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import { selectSearchQuery } from 'features/app/app.selectors'
+import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
 import { selectLocationType } from 'routes/routes.selectors'
 import { USER, WORKSPACES_LIST } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -30,6 +30,7 @@ type SidebarProps = {
 }
 
 function Sidebar({ onMenuClick }: SidebarProps) {
+  const readOnly = useSelector(selectReadOnly)
   const isAnalyzing = useSelector(selectIsAnalyzing)
   const searchQuery = useSelector(selectSearchQuery)
   const locationType = useSelector(selectLocationType)
@@ -74,7 +75,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
 
   return (
     <div className={styles.container}>
-      <CategoryTabs onMenuClick={onMenuClick} />
+      {!readOnly && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
       <NewDataset />
       <div className="scrollContainer">
