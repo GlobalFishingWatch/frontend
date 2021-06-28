@@ -1,12 +1,19 @@
 import { createSelector } from 'reselect'
 import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
-import { resolveDataviewDatasetResource, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  resolveDataviewDatasetResource,
+  resolveDataviewEventsResources,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import { isGuestUser } from 'features/user/user.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 
-const getVesselResourceQuery = (dataview: UrlDataviewInstance<Generators.Type>, datasetType: DatasetTypes): Resource | null => {
+const getVesselResourceQuery = (
+  dataview: UrlDataviewInstance<Generators.Type>,
+  datasetType: DatasetTypes
+): Resource | null => {
   const resource = resolveDataviewDatasetResource(dataview, datasetType)
   if (resource.url && resource.dataset && resource.datasetConfig) {
     return {
@@ -29,6 +36,7 @@ export const selectDataviewsResourceQueries = createSelector(
       }
 
       let trackResource: Resource | null = null
+      let eventsResources: (Resource | null)[] = []
 
       if (dataview.config.visible === true) {
         const datasetType =
@@ -37,12 +45,14 @@ export const selectDataviewsResourceQueries = createSelector(
             : DatasetTypes.Tracks
 
         trackResource = getVesselResourceQuery(dataview, datasetType)
+        eventsResources = resolveDataviewEventsResources(dataview)
       }
 
       const infoResource = getVesselResourceQuery(dataview, DatasetTypes.Vessels)
-      const eventsResource = getVesselResourceQuery(dataview, DatasetTypes.Events)
 
-      return [trackResource, infoResource, eventsResource].filter(r => r !== null) as Resource[]
+      return [trackResource, infoResource, ...eventsResources].filter(
+        (r) => r !== null
+      ) as Resource[]
     })
 
     return resourceQueries

@@ -7,9 +7,13 @@ import {
   ResourceStatus,
   TrackResourceData,
 } from '@globalfishingwatch/api-types'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import {
+  resolveDataviewDatasetResource,
+  resolveDataviewEventsResources,
+} from '@globalfishingwatch/dataviews-client'
 import { geoJSONToSegments, Segment } from '@globalfishingwatch/data-transforms'
 import { selectTimebarGraph } from 'features/app/app.selectors'
+import { t } from 'features/i18n/i18n'
 import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
@@ -99,8 +103,10 @@ const selectEventsForTracks = createSelector(
   (trackDataviews, resources) => {
     const vesselsEvents = trackDataviews.map((dataview) => {
       const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
-      const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
-      const hasEventData = eventsUrl && resources[eventsUrl]?.data
+      // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
+      const eventsResources = resolveDataviewEventsResources(dataview)
+      const hasEventData =
+        eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
       const tracksResourceResolved =
         tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
 
@@ -108,7 +114,8 @@ const selectEventsForTracks = createSelector(
       if (!hasEventData || !tracksResourceResolved) {
         return []
       }
-      return (eventsUrl ? resources[eventsUrl].data : []) as ApiEvent[]
+      const data = eventsResources.flatMap(({ url }) => (url ? resources[url].data : []))
+      return data as ApiEvent[]
     })
     return vesselsEvents.filter((events) => events.length > 0)
   }
@@ -124,10 +131,9 @@ export const selectEventsWithRenderingInfo = createSelector(
   (eventsForTrack) => {
     const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(
       (trackEvents: ApiEvent[]) => {
-        return (trackEvents || []).map((event: ApiEvent) => {
+        return (trackEvents || []).map((event: ApiEvent, index) => {
           const vesselName = event.vessel.name || event.vessel.id
 
-          // TODO translate this
           let description
           switch (event.type) {
             // case 'encounter':
@@ -137,18 +143,18 @@ export const selectEventsWithRenderingInfo = createSelector(
             //     description = `${vesselName} had an encounter with another vessel`
             //   }
             //   break
-            // case 'port':
-            //   if (event.port && event.port.name) {
-            //     description = `${vesselName} docked at ${event.port.name}`
-            //   } else {
-            //     description = `${vesselName} Docked`
-            //   }
-            //   break
-            // case 'loitering':
-            //   description = `${vesselName} loitered`
-            //   break
+            case 'port':
+              if (event.port && event.port.name) {
+                description = `${vesselName} ${t('event.portAt')} ${event.port.name}`
+              } else {
+                description = `${vesselName} ${t('event.portAction')}`
+              }
+              break
+            case 'loitering':
+              description = `${vesselName} ${t('event.loiteringAction')}`
+              break
             case 'fishing':
-              description = `${vesselName} fishing`
+              description = `${vesselName} ${t('event.fishingAction')}`
               break
             default:
               description = 'Unknown event'
@@ -169,6 +175,7 @@ export const selectEventsWithRenderingInfo = createSelector(
 
           return {
             ...event,
+            id: event.id + index,
             color,
             colorLabels,
             description,
