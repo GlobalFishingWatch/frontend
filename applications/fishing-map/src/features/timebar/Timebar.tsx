@@ -87,7 +87,7 @@ const TimebarWrapper = () => {
   const onMouseMove = useCallback(
     (clientX: number, scale: (arg: number) => Date) => {
       if (hoverInEvent.current === false) {
-        if (clientX === null || clientX === undefined) {
+        if (clientX === null || clientX === undefined || isNaN(clientX)) {
           if (highlightedTime !== undefined) {
             dispatch(disableHighlightedTime())
           }
