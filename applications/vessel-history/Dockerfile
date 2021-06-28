@@ -47,14 +47,9 @@ RUN htpasswd -Bbn "${BASIC_AUTH_USER}" "${BASIC_AUTH_PASS}" > /tmp/.htpasswd
 # Actual application to run
 #################################################################################
 FROM nginx:alpine as production
-# ARG BASIC_AUTH_USER=gfw
-# ARG BASIC_AUTH_PASS=default
-
-# RUN apt-get update && apt-get install openssl -y
+RUN apk -U upgrade
 
 COPY nginx/nginx.conf /etc/nginx/nginx.template
-# RUN echo -n ${BASIC_AUTH_USER}: >> /etc/nginx/.htpasswd
-# RUN echo ${BASIC_AUTH_PASS} | openssl passwd -apr1 -stdin >> /etc/nginx/.htpasswd
 COPY --from=htpasswd /tmp/.htpasswd /tmp/.htpasswd
 RUN cat /tmp/.htpasswd >> /etc/nginx/.htpasswd
 COPY entrypoint.sh entrypoint.sh
