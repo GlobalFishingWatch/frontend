@@ -159,13 +159,9 @@
       "vesselTracks": "Vessel Tracks",
       "vesselSearch": "Vessel Search",
       "environmentLayers": "Environment Layers",
-      "reference": "Reference Layers",
+      "referenceLayers": "Reference Layers",
       "timebar": "Time bar along the bottom of the map",
       "analysis": "Analysis",
-      "layerUpload": "Custom layers upload",
-      "areaSearch": "Area Search",
-      "screenshot": "Screenshot",
-      "rulers": "Rulers",
       "other": "Other"
     },
     "send": "Send"

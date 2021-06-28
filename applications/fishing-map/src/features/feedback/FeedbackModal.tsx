@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
-import { Button, Select } from '@globalfishingwatch/ui-components'
+import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { selectActiveDataviews } from 'features/dataviews/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/heatmaps/heatmaps.utils'
-import { selectUserData } from 'features/user/user.slice'
+import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
-import { selectUserGroupsClean } from 'features/user/user.selectors'
+import { isGuestUser, selectUserGroupsClean } from 'features/user/user.selectors'
 import styles from './FeedbackModal.module.css'
 
 type FeedbackModalProps = {
@@ -21,7 +21,7 @@ type FeedbackData = {
   url: string
   userAgent: string
   resolution: string
-  userId?: number
+  userId?: number | typeof GUEST_USER_TYPE
   name?: string
   email?: string
   organization?: string
@@ -58,10 +58,6 @@ export const FEEDBACK_FEATURE_IDS = [
   'reference',
   'timebar',
   'analysis',
-  'layerUpload',
-  'areaSearch',
-  'screenshot',
-  'rulers',
   'other',
 ]
 
@@ -72,6 +68,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   const [loading, setLoading] = useState(false)
   const [suficientData, setSuficientData] = useState(false)
   const userGroups = useSelector(selectUserGroupsClean)
+  const guestUser = useSelector(isGuestUser)
 
   const initialFeedbackState = {
     date: new Date().toISOString(),
@@ -84,11 +81,14 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   const setInitialFeedbackStateWithUserData = () => {
     setFeedbackData({
       ...initialFeedbackState,
-      userId: userData?.id,
-      email: userData?.email || '',
-      name: `${userData?.firstName} ${userData?.lastName}`,
-      groups: (userGroups || []).join(', '),
-      organization: userData?.organization || '',
+      ...(!guestUser &&
+        userData && {
+          userId: userData.id,
+          email: userData.email,
+          name: `${userData.firstName} ${userData.lastName}`,
+          groups: (userGroups || []).join(', '),
+          organization: userData.organization || '',
+        }),
     })
   }
 
@@ -156,12 +156,11 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(FEEDBACK_SPREADSHEET_ID)
       // loads document properties and worksheets
       const sheet = feedbackSpreadsheetDoc.sheetsByTitle[FEEDBACK_SHEET_TITLE]
-      setFeedbackData({
+      const finalFeedbackData = {
         ...feedbackData,
-        url: window.location.href,
-        date: new Date().toString(),
-      })
-      await sheet.addRow(feedbackData)
+        userId: feedbackData.userId || GUEST_USER_TYPE,
+      }
+      await sheet.addRow(finalFeedbackData)
       setLoading(false)
       setInitialFeedbackStateWithUserData()
       onClose()
@@ -188,6 +187,20 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       <div className={styles.container}>
         <div className={styles.form}>
           <div className={styles.column}>
+            {guestUser && (
+              <Fragment>
+                <InputText
+                  value={feedbackData.name || ''}
+                  placeholder={t('common.name', 'Name') as any}
+                  onChange={({ target }) => onFieldChange('name', target.value)}
+                />
+                <InputText
+                  value={feedbackData.email || ''}
+                  placeholder={t('feedback.email', 'E-mail address') as any}
+                  onChange={({ target }) => onFieldChange('email', target.value)}
+                />
+              </Fragment>
+            )}
             <Select
               label={t('feedback.role', 'Role')}
               options={roleOptions}

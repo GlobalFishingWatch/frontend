@@ -43,7 +43,6 @@ function getLinkToCategory(category: WorkspaceCategories) {
 }
 
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
-  const [loginLink, setLoginLink] = useState('')
   const { t, i18n } = useTranslation()
   const guestUser = useSelector(isGuestUser)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
@@ -114,26 +113,8 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             <Icon icon="help" />
           </button>
         </li> */}
-        <li className={cx(styles.tab, styles.secondary)}>
-          {guestUser ? (
-            <IconButton
-              // className={styles.tabContent}
-              icon={loginLink ? 'user' : 'feedback'}
-              size="medium"
-              disabled={!loginLink}
-              tooltip={t('feedback.feedbackLogin', 'Register and login to provide feedback')}
-              tooltipPlacement="bottom"
-              onClick={() => {
-                window.location.href = loginLink
-              }}
-              onMouseEnter={() => {
-                setLoginLink(GFWAPI.getLoginUrl(window.location.toString()))
-              }}
-              onMouseLeave={() => {
-                setLoginLink('')
-              }}
-            />
-          ) : (
+        {userData && (
+          <li className={cx(styles.tab, styles.secondary)}>
             <IconButton
               // className={cx(styles.tabContent, 'print-hidden')}
               icon="feedback"
@@ -142,9 +123,8 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
               tooltip={t('common.feedback', 'Feedback')}
               tooltipPlacement="right"
             />
-          )}
-          {/* </button> */}
-        </li>
+          </li>
+        )}
         <li className={cx(styles.tab, styles.languageToggle)}>
           <button className={styles.tabContent}>
             <Icon icon="language" />
