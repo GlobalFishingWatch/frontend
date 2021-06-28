@@ -44,6 +44,7 @@ export const DEFAULT_WORKSPACE = {
   ...DEFAULT_VIEWPORT,
   query: undefined,
   readOnly: false,
+  daysFromLatest: undefined,
   sidebarOpen: true,
   availableStart: new Date(Date.UTC(2012, 0, 1)).toISOString(),
   availableEnd: end,

@@ -100,6 +100,13 @@ export const selectReadOnly = createSelector(
   }
 )
 
+export const selectDaysFromLatest = createSelector(
+  [selectWorkspaceStateProperty('daysFromLatest')],
+  (daysFromLatest): number => {
+    return daysFromLatest
+  }
+)
+
 export const selectSidebarOpen = createSelector(
   [selectWorkspaceStateProperty('sidebarOpen')],
   (sidebarOpen): boolean => {
