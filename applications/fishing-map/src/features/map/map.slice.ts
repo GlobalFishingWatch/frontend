@@ -90,27 +90,27 @@ type SublayerVessels = {
   vessels: ExtendedFeatureVessel[]
 }
 
-export const fetch4WingInteractionThunk = createAsyncThunk<
+export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
   // TODO the whole function could be greatly simplified if only one temporalGridFeature was accepted, which is effecttively always the case
-  { temporalGridFeatures: ExtendedFeature[]; timeRange: Range },
+  { fishingActivityFeatures: ExtendedFeature[]; timeRange: Range },
   {
     dispatch: AppDispatch
   }
 >(
   'map/fetchInteraction',
-  async ({ temporalGridFeatures, timeRange }, { getState, signal, dispatch }) => {
+  async ({ fishingActivityFeatures, timeRange }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const userLogged = selectUserLogged(state)
     const temporalgridDataviews = selectActivityDataviews(state) || []
 
-    if (!temporalGridFeatures.length) {
+    if (!fishingActivityFeatures.length) {
       console.warn('fetchInteraction not possible, 0 features')
       return
     }
 
     // use the first feature/dv for common parameters
-    const mainFeature = temporalGridFeatures[0]
+    const mainFeature = fishingActivityFeatures[0]
 
     // Currently only one timerange is supported, which is OK since we only need interaction on the activity heatmaps and all
     // activity heatmaps use the same time intervals, This will need to be revised in case we support interactivity on environment layers
@@ -118,7 +118,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
     const end = mainFeature.temporalgrid?.visibleEndDate
 
     // get corresponding dataviews
-    const featuresDataviews = temporalGridFeatures.flatMap((feature) => {
+    const featuresDataviews = fishingActivityFeatures.flatMap((feature) => {
       return feature.temporalgrid
         ? temporalgridDataviews.find(
             (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
@@ -251,7 +251,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
         }
       }
 
-      const sublayersIds = temporalGridFeatures.map(
+      const sublayersIds = fishingActivityFeatures.map(
         (feature) => feature.temporalgrid?.sublayerId || ''
       )
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
@@ -355,10 +355,10 @@ const slice = createSlice({
   },
 
   extraReducers: (builder) => {
-    builder.addCase(fetch4WingInteractionThunk.pending, (state, action) => {
+    builder.addCase(fetchFishingActivityInteractionThunk.pending, (state, action) => {
       state.fourWingsStatus = AsyncReducerStatus.Loading
     })
-    builder.addCase(fetch4WingInteractionThunk.fulfilled, (state, action) => {
+    builder.addCase(fetchFishingActivityInteractionThunk.fulfilled, (state, action) => {
       state.fourWingsStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
 
@@ -371,7 +371,7 @@ const slice = createSlice({
         sublayer.vessels = sublayerVessels.vessels
       })
     })
-    builder.addCase(fetch4WingInteractionThunk.rejected, (state, action) => {
+    builder.addCase(fetchFishingActivityInteractionThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
         state.fourWingsStatus = AsyncReducerStatus.Idle
       } else {
