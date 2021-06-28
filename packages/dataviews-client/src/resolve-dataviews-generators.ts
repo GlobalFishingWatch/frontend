@@ -25,7 +25,11 @@ import type {
   HeatmapAnimatedInteractionType,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
-import { resolveDataviewDatasetResource, UrlDataviewInstance } from './resolve-dataviews'
+import {
+  resolveDataviewDatasetResource,
+  resolveDataviewEventsResources,
+  UrlDataviewInstance,
+} from './resolve-dataviews'
 
 export const MULTILAYER_SEPARATOR = '__'
 export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeatmap'
@@ -118,12 +122,16 @@ export function getGeneratorConfig(
         const resource = resources?.[trackUrl] as Resource<TrackResourceData>
         generator.data = resource.data
       }
-      const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
-      if (eventsUrl && resources?.[eventsUrl]?.data) {
+      const eventsResources = resolveDataviewEventsResources(dataview)
+      const hasEventData =
+        eventsResources?.length && eventsResources.every(({ url }) => resources?.[url]?.data)
+      // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
+      if (hasEventData) {
+        const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url].data : []))
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           type: Generators.Type.VesselEvents,
-          data: resources?.[eventsUrl].data,
+          data: data,
           color: dataview.config?.color,
           ...(generator.data && {
             track: generator.data,
