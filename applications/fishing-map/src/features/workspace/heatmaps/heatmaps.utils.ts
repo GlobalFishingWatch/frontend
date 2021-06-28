@@ -3,16 +3,15 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
 
 export const isFishingDataview = (dataview: UrlDataviewInstance) =>
-  dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID
+  dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID ||
+  dataview.category === DataviewCategory.Fishing
 
 export const isPresenceDataview = (dataview: UrlDataviewInstance) =>
-  dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID
+  dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID ||
+  dataview.category === DataviewCategory.Presence
 
 export const isActivityDataview = (dataview: UrlDataviewInstance) =>
-  isFishingDataview(dataview) ||
-  isPresenceDataview(dataview) ||
-  dataview.category === DataviewCategory.Fishing ||
-  dataview.category === DataviewCategory.Presence
+  isFishingDataview(dataview) || isPresenceDataview(dataview)
 
 export const getSourcesOptionsInDataview = (
   dataview: UrlDataviewInstance,
