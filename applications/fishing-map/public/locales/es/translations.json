@@ -123,6 +123,7 @@
   "feedback": {
     "dataset": "Los datos para los que estás proporcionando comentarios",
     "email": "E-mail",
+    "emailDisclaimer": "Sólo te escribiremos en relación a tus comentarios",
     "institution": "Institución/Organización",
     "insuficientData": "Por favor, rellene todos los campos obligatorios",
     "intro": "Global Fishing Watch trabaja constantemente para mejorar nuestros datos. Con miles de millones de puestos y cientos de miles de barcos a revisar, y todo un océano de actividad, inevitablemente tendremos algunos buques y actividades mal clasificados. Los comentarios de usted pueden ayudarnos a identificar dónde necesitamos mejorar nuestros datos. Nos esforzaremos por responder a sus comentarios.",
