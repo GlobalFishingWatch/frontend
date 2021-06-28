@@ -37,7 +37,6 @@ import {
 import {
   setClickedEvent,
   selectClickedEvent,
-  fetch4WingInteractionThunk,
   MAX_TOOLTIP_VESSELS,
   fetchEncounterEventThunk,
   SliceInteractionEvent,
@@ -45,6 +44,7 @@ import {
   selectApiEventStatus,
   ExtendedFeatureVessel,
   ExtendedFeatureEvent,
+  fetchFishingActivityInteractionThunk,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
@@ -161,7 +161,7 @@ export const useClickedEventConnect = () => {
     dispatch(setClickedEvent(event as SliceInteractionEvent))
 
     // get temporal grid clicked features and order them by sublayerindex
-    const temporalGridFeatures = event.features
+    const fishingActivityFeatures = event.features
       .filter((feature) => {
         if (!feature.temporalgrid) {
           return false
@@ -172,9 +172,9 @@ export const useClickedEventConnect = () => {
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
-    if (temporalGridFeatures?.length && timeRange) {
+    if (fishingActivityFeatures?.length && timeRange) {
       fourWingsPromiseRef.current = dispatch(
-        fetch4WingInteractionThunk({ temporalGridFeatures, timeRange })
+        fetchFishingActivityInteractionThunk({ fishingActivityFeatures, timeRange })
       )
     }
 

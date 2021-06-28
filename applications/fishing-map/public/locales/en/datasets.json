@@ -277,6 +277,31 @@
       }
     }
   },
+  "public-global-viirs": {
+    "name": "Viirs",
+    "description": "The dataset contains viirs data",
+    "schema": {
+      "cel": "cel",
+      "lat": "lat",
+      "lon": "lon",
+      "pos": "pos",
+      "htime": "htime",
+      "radiance": "radiance",
+      "detect_id": "detect_id",
+      "qf_detect": {
+        "keyword": "qf_detect",
+        "enum": {
+          "1": "Boat (1)",
+          "2": "Weak (2)",
+          "3": "Blurry (3)",
+          "5": "5",
+          "7": "Glow (7)",
+          "10": "Weak and Blurry (10)"
+        }
+      },
+      "timestamp": "timestamp"
+    }
+  },
   "public-gs-as-simplified": {
     "name": "GFCM GSAs (Source: FAO)",
     "description": "The General Fisheries Commission for the Mediterranean (GFCM) geographical subareas (GSAs). More information available: fao.org/gfcm/data/maps/gsas/en. Source: FAO.",

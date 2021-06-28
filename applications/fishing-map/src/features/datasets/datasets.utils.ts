@@ -5,7 +5,13 @@ import { capitalize } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
 
-export type SupportedDatasetSchema = 'geartype' | 'fleet' | 'origin' | 'vessel_type'
+export type SupportedDatasetSchema =
+  | 'flag'
+  | 'geartype'
+  | 'fleet'
+  | 'origin'
+  | 'vessel_type'
+  | 'qf_detect'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
 export const removeDatasetVersion = (datasetId: string) => {
@@ -27,6 +33,16 @@ export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boole
     }
     return dataset.id.includes(FULL_SUFIX) || dataset.id.includes(PRIVATE_SUFIX)
   })
+}
+
+export const isDataviewSchemaSupported = (
+  dataview: SchemaFieldDataview,
+  schema: SupportedDatasetSchema
+) => {
+  const schemaSupported = dataview?.datasets?.every((dataset) => {
+    return dataset.fieldsAllowed.includes(schema)
+  })
+  return schemaSupported
 }
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
