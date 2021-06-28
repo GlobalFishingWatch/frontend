@@ -79,16 +79,17 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
 
   const [feedbackData, setFeedbackData] = useState<FeedbackData>(initialFeedbackState)
   const setInitialFeedbackStateWithUserData = () => {
-    if (!guestUser && userData) {
-      setFeedbackData({
-        ...initialFeedbackState,
-        userId: userData.id,
-        email: userData.email,
-        name: `${userData.firstName} ${userData.lastName}`,
-        groups: (userGroups || []).join(', '),
-        organization: userData.organization || '',
-      })
-    }
+    setFeedbackData({
+      ...initialFeedbackState,
+      ...(!guestUser &&
+        userData && {
+          userId: userData.id,
+          email: userData.email,
+          name: `${userData.firstName} ${userData.lastName}`,
+          groups: (userGroups || []).join(', '),
+          organization: userData.organization || '',
+        }),
+    })
   }
 
   useEffect(() => {
