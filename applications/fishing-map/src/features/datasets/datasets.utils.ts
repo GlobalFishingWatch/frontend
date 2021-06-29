@@ -19,10 +19,17 @@ export const removeDatasetVersion = (datasetId: string) => {
 }
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
+  const datasetsConfigured = dataview.datasetsConfig
+    ?.filter((datasetConfig) =>
+      datasetConfig.query?.find((q) => q.id === 'vessels' && q.value !== '')
+    )
+    .map((d) => d.datasetId)
   return (dataview?.datasets || []).filter((dataset) => {
-    return dataset?.configuration?.type
+    const isEventType = dataset?.configuration?.type
       ? Object.values(EventTypes).includes(dataset.configuration.type)
       : false
+    const hasVesselId = datasetsConfigured?.includes(dataset.id)
+    return isEventType && hasVesselId
   })
 }
 
