@@ -1,6 +1,5 @@
 steps:
   - name: 'alpine'
-    entrypoint: 'ash'
     id: 'Setup empty packages dir'
     args: ['ash', '-c', 'mkdir -p ./applications/vessel-history/node_modules/@globalfishingwatch']
 
