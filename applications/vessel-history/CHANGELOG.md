@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.58
+
+### Patch Changes
+
+- Updated dependencies [57de90f7]
+  - @globalfishingwatch/api-types@4.4.1
+
 ## 0.0.57
 
 ### Patch Changes
