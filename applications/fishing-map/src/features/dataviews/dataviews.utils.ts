@@ -58,6 +58,8 @@ export const getVesselDataviewInstance = (
   }
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
+    // TODO find the way to use different vessel dataviews, for example
+    // panama and peru doesn't show events and needed a workaround to work with this
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,

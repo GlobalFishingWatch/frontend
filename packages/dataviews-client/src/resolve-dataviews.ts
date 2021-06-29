@@ -109,6 +109,10 @@ export const resolveDataviewEventsResources = (dataview: UrlDataviewInstance): R
     if (datasetConfig.endpoint !== EndpointId.Events) {
       return []
     }
+    const vesselID = datasetConfig.query?.find((q) => q.id === 'vessel')?.value
+    if (!vesselID) {
+      return []
+    }
     const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetConfig.datasetId)
     if (!dataset) {
       return []
