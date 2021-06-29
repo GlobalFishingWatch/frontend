@@ -20,14 +20,14 @@ import styles from './Popup.module.css'
 // t('common.days', 'Day')
 // t('common.days_plural', 'Days')
 
-type HeatmapTooltipRowProps = {
+type FishingTooltipRowProps = {
   feature: TooltipEventFeature
   showFeaturesDetails: boolean
 }
-function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowProps) {
+function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { fourWingsStatus } = useClickedEventConnect()
+  const { fishingInteractionStatus } = useClickedEventConnect()
   const userLogged = useSelector(isUserLogged)
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
@@ -91,7 +91,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
             })}
           </span>
         </div>
-        {fourWingsStatus === AsyncReducerStatus.Loading && (
+        {fishingInteractionStatus === AsyncReducerStatus.Loading && (
           <div className={styles.loading}>
             <Spinner size="small" />
           </div>
@@ -141,4 +141,4 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
   )
 }
 
-export default HeatmapTooltipRow
+export default FishingTooltipRow

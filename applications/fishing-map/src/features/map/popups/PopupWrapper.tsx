@@ -8,7 +8,8 @@ import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { TooltipEvent } from 'features/map/map.hooks'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import styles from './Popup.module.css'
-import HeatmapTooltipRow from './HeatmapLayers'
+import FishingTooltipRow from './FishingLayers'
+import ViirsTooltipRow from './ViirsLayers'
 import TileClusterRow from './TileClusterLayers'
 import EnvironmentTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
@@ -57,9 +58,17 @@ function PopupWrapper({
         {Object.entries(featureByCategory).map(([featureCategory, features]) => {
           switch (featureCategory) {
             case DataviewCategory.Fishing:
+              return features.map((feature, i) => (
+                <FishingTooltipRow
+                  key={i + (feature.title as string)}
+                  feature={feature}
+                  showFeaturesDetails={type === 'click'}
+                />
+              ))
+            // TODO only works while don't have interaction for presence layer
             case DataviewCategory.Presence:
               return features.map((feature, i) => (
-                <HeatmapTooltipRow
+                <ViirsTooltipRow
                   key={i + (feature.title as string)}
                   feature={feature}
                   showFeaturesDetails={type === 'click'}

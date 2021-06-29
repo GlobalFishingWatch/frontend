@@ -40,11 +40,14 @@ import {
   MAX_TOOLTIP_VESSELS,
   fetchEncounterEventThunk,
   SliceInteractionEvent,
-  selectFourWingsStatus,
+  selectFishingInteractionStatus,
   selectApiEventStatus,
   ExtendedFeatureVessel,
   ExtendedFeatureEvent,
   fetchFishingActivityInteractionThunk,
+  fetchViirsInteractionThunk,
+  selectViirsInteractionStatus,
+  ApiViirsStats,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
@@ -75,13 +78,15 @@ export const useClickedEventConnect = () => {
   const timeRange = useTimerangeConnect() as Range
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
-  const fourWingsStatus = useSelector(selectFourWingsStatus)
+  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
+  const viirsInteractionStatus = useSelector(selectViirsInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
   const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
-  const fourWingsPromiseRef = useRef<any>()
+  const fishingPromiseRef = useRef<any>()
+  const viirsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
@@ -135,8 +140,12 @@ export const useClickedEventConnect = () => {
       }
     }
 
-    if (fourWingsPromiseRef.current) {
-      fourWingsPromiseRef.current.abort()
+    if (fishingPromiseRef.current) {
+      fishingPromiseRef.current.abort()
+    }
+
+    if (viirsPromiseRef.current) {
+      viirsPromiseRef.current.abort()
     }
 
     if (eventsPromiseRef.current) {
@@ -173,9 +182,22 @@ export const useClickedEventConnect = () => {
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
     if (fishingActivityFeatures?.length && timeRange) {
-      fourWingsPromiseRef.current = dispatch(
+      fishingPromiseRef.current = dispatch(
         fetchFishingActivityInteractionThunk({ fishingActivityFeatures, timeRange })
       )
+    }
+
+    const viirsFeature = event.features?.find((feature) => {
+      if (!feature.temporalgrid) {
+        return false
+      }
+      const isFeatureVisible = feature.temporalgrid.visible
+      const isFishingFeature = feature.temporalgrid.sublayerId.startsWith('viirs')
+      return isFeatureVisible && isFishingFeature
+    })
+
+    if (viirsFeature) {
+      viirsPromiseRef.current = dispatch(fetchViirsInteractionThunk({ feature: viirsFeature }))
     }
 
     const encounterFeature = event.features.find(
@@ -185,7 +207,13 @@ export const useClickedEventConnect = () => {
       eventsPromiseRef.current = dispatch(fetchEncounterEventThunk(encounterFeature))
     }
   }
-  return { clickedEvent, fourWingsStatus, apiEventStatus, dispatchClickedEvent }
+  return {
+    clickedEvent,
+    fishingInteractionStatus,
+    viirsInteractionStatus,
+    apiEventStatus,
+    dispatchClickedEvent,
+  }
 }
 
 // TODO this could extend ExtendedFeature
@@ -208,6 +236,7 @@ export type TooltipEventFeature = {
     vessels: ExtendedFeatureVessel[]
   }
   event?: ExtendedFeatureEvent
+  viirs?: ApiViirsStats[]
   temporalgrid?: TemporalGridFeature
   category: DataviewCategory
 }

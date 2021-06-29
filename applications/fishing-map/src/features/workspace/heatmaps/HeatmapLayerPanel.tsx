@@ -163,7 +163,7 @@ function HeatmapLayerPanel({
               <DatasetSchemaField
                 dataview={dataview}
                 field={'qf_detect'}
-                label={t('layer.qfDetect', 'QF detect')}
+                label={t('layer.qf', 'Quality signal')}
               />
               <DatasetSchemaField
                 dataview={dataview}

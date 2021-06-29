@@ -161,6 +161,22 @@
   color: var(--color-secondary-blue);
 }
 
+.listColumn {
+  display: flex;
+  justify-content: space-between;
+}
+
+.listColumn > span {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  max-width: 33%;
+}
+
+.listColumn:first-of-type > span {
+  text-transform: capitalize;
+}
+
 .rowText {
   line-height: 1.2;
 }

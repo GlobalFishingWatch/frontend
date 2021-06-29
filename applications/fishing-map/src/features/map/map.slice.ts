@@ -34,6 +34,8 @@ export type ExtendedFeatureVessel = {
   [key: string]: any
 }
 
+export type ApiViirsStats = { detect_id: string; qf_detect: number; radiance: number }
+
 // TODO remove this once the cluster events follow the same API events format
 type TemporalClusterBusterEvent = {
   event_id: string
@@ -64,6 +66,7 @@ export type ExtendedFeatureEvent = ApiEvent & { dataset: Dataset }
 export type SliceExtendedFeature = ExtendedFeature & {
   event?: ExtendedFeatureEvent
   vessels?: ExtendedFeatureVessel[]
+  viirs?: ApiViirsStats[]
 }
 
 // Extends the default extendedEvent including event and vessels information from API
@@ -74,14 +77,16 @@ export type SliceInteractionEvent = Omit<InteractionEvent, 'features'> & {
 type MapState = {
   clicked: SliceInteractionEvent | null
   hovered: SliceInteractionEvent | null
-  fourWingsStatus: AsyncReducerStatus
+  fishingStatus: AsyncReducerStatus
+  viirsStatus: AsyncReducerStatus
   apiEventStatus: AsyncReducerStatus
 }
 
 const initialState: MapState = {
   clicked: null,
   hovered: null,
-  fourWingsStatus: AsyncReducerStatus.Idle,
+  fishingStatus: AsyncReducerStatus.Idle,
+  viirsStatus: AsyncReducerStatus.Idle,
   apiEventStatus: AsyncReducerStatus.Idle,
 }
 
@@ -98,7 +103,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
     dispatch: AppDispatch
   }
 >(
-  'map/fetchInteraction',
+  'map/fetchFishingActivityInteraction',
   async ({ fishingActivityFeatures, timeRange }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const userLogged = selectUserLogged(state)
@@ -274,6 +279,75 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   }
 )
 
+export const fetchViirsInteractionThunk = createAsyncThunk<
+  ApiViirsStats[] | undefined,
+  // TODO the whole function could be greatly simplified if only one temporalGridFeature was accepted, which is effecttively always the case
+  { feature: ExtendedFeature },
+  {
+    dispatch: AppDispatch
+  }
+>('map/fetchViirsInteraction', async ({ feature }, { getState, signal, dispatch }) => {
+  const state = getState() as RootState
+  const temporalgridDataviews = selectActivityDataviews(state) || []
+  if (!feature) {
+    console.warn('fetchInteraction not possible, no features')
+    return
+  }
+
+  // Currently only one timerange is supported, which is OK since we only need interaction on the activity heatmaps and all
+  // activity heatmaps use the same time intervals, This will need to be revised in case we support interactivity on environment layers
+  const start = feature.temporalgrid?.visibleStartDate
+  const end = feature.temporalgrid?.visibleEndDate
+
+  const featureDataview = temporalgridDataviews.find(
+    (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
+  )
+  if (!featureDataview) {
+    console.warn('fetchInteraction not possible, no dataview found')
+    return
+  }
+
+  const fourWingsDataset = featureDataview.datasets?.find(
+    (d) => d.type === DatasetTypes.Fourwings
+  ) as Dataset
+
+  const datasets: string[] = featureDataview.config?.datasets || []
+
+  const datasetConfig: DataviewDatasetConfig = {
+    datasetId: fourWingsDataset.id,
+    endpoint: EndpointId.FourwingsInteraction,
+    params: [
+      { id: 'z', value: feature.tile?.z },
+      { id: 'x', value: feature.tile?.x },
+      { id: 'y', value: feature.tile?.y },
+      { id: 'rows', value: feature.temporalgrid?.row as number },
+      { id: 'cols', value: feature.temporalgrid?.col as number },
+    ],
+    query: [
+      { id: 'date-range', value: [start, end].join(',') },
+      {
+        id: 'datasets',
+        value: datasets,
+      },
+    ],
+  }
+
+  // const filters = featureDataview.config?.filter
+  // if (filters) {
+  //   const filtersArray = Array.isArray(filters) ? filters : [filters]
+  //   datasetConfig.query?.push({ id: 'filters', value: filtersArray })
+  // }
+
+  const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
+  if (interactionUrl) {
+    const viirsStats = await GFWAPI.fetch<ApiViirsStats[][]>(interactionUrl, {
+      signal,
+    })
+
+    return viirsStats[0]
+  }
+})
+
 // TODO: remove this workaound once the api returns the same format for every event
 const parseClusterEvent = (
   clusterEvent: TemporalClusterBusterEvent,
@@ -356,10 +430,10 @@ const slice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(fetchFishingActivityInteractionThunk.pending, (state, action) => {
-      state.fourWingsStatus = AsyncReducerStatus.Loading
+      state.fishingStatus = AsyncReducerStatus.Loading
     })
     builder.addCase(fetchFishingActivityInteractionThunk.fulfilled, (state, action) => {
-      state.fourWingsStatus = AsyncReducerStatus.Finished
+      state.fishingStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
 
       action.payload.vessels.forEach((sublayerVessels) => {
@@ -373,9 +447,29 @@ const slice = createSlice({
     })
     builder.addCase(fetchFishingActivityInteractionThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
-        state.fourWingsStatus = AsyncReducerStatus.Idle
+        state.fishingStatus = AsyncReducerStatus.Idle
       } else {
-        state.fourWingsStatus = AsyncReducerStatus.Error
+        state.fishingStatus = AsyncReducerStatus.Error
+      }
+    })
+    builder.addCase(fetchViirsInteractionThunk.pending, (state, action) => {
+      state.viirsStatus = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchViirsInteractionThunk.fulfilled, (state, action) => {
+      state.viirsStatus = AsyncReducerStatus.Finished
+      if (!state.clicked || !state.clicked.features || !action.payload) return
+      const feature = state.clicked?.features?.find(
+        (feature) => feature.id && action.meta.arg.feature.id
+      )
+      if (feature && action.payload) {
+        feature.viirs = action.payload
+      }
+    })
+    builder.addCase(fetchViirsInteractionThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.viirsStatus = AsyncReducerStatus.Idle
+      } else {
+        state.viirsStatus = AsyncReducerStatus.Error
       }
     })
     builder.addCase(fetchEncounterEventThunk.pending, (state, action) => {
@@ -400,7 +494,8 @@ const slice = createSlice({
 })
 
 export const selectClickedEvent = (state: RootState) => state.map.clicked
-export const selectFourWingsStatus = (state: RootState) => state.map.fourWingsStatus
+export const selectFishingInteractionStatus = (state: RootState) => state.map.fishingStatus
+export const selectViirsInteractionStatus = (state: RootState) => state.map.viirsStatus
 export const selectApiEventStatus = (state: RootState) => state.map.apiEventStatus
 
 export const { setClickedEvent } = slice.actions
