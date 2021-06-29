@@ -109,7 +109,7 @@ export const resolveDataviewEventsResources = (dataview: UrlDataviewInstance): R
     if (datasetConfig.endpoint !== EndpointId.Events) {
       return []
     }
-    const vesselID = datasetConfig.query?.find((q) => q.id === 'vessel')?.value
+    const vesselID = datasetConfig.query?.find((q) => q.id === 'vessels')?.value
     if (!vesselID) {
       return []
     }
@@ -170,10 +170,15 @@ export default function resolveDataviews(
           ? dataview.datasetsConfig?.map((datasetConfig) => {
               const instanceDatasetConfig = dataviewInstance.datasetsConfig?.find(
                 (instanceDatasetConfig) => {
-                  return (
-                    datasetConfig.endpoint === instanceDatasetConfig.endpoint &&
-                    datasetConfig.datasetId === instanceDatasetConfig.datasetId
-                  )
+                  if (datasetConfig.endpoint === EndpointId.Events) {
+                    return (
+                      datasetConfig.endpoint === instanceDatasetConfig.endpoint &&
+                      // As the events could have multiple datasets we also have to validate this
+                      // which also enforces to set the datasetConfig in the dataviewInstance used
+                      datasetConfig.datasetId === instanceDatasetConfig.datasetId
+                    )
+                  }
+                  return datasetConfig.endpoint === instanceDatasetConfig.endpoint
                 }
               )
               if (!instanceDatasetConfig) return datasetConfig
