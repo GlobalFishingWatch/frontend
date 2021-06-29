@@ -76,6 +76,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
               items={imageList}
               showThumbnails={false}
               showBullets={true}
+              slideDuration={5000}
               showPlayButton={imageList.length > 1}
               additionalClass={styles.imageGallery}
             />

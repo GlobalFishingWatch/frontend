@@ -116,15 +116,6 @@ const vesselThunk: VesselAPIThunk = {
       })
     }
     const url = `/v1/vessel-history/${id}`
-    // const url = `http://localhost:3011/v1/vessel-history/${id}`
-    // const options = {
-    //   headers: {
-    //     'x-gateway-url': 'https://gateway.api.dev.globalfishingwatch.org',
-    //     user: '{"id": 1}',
-    //     permissions:
-    //       '[{"type": "dataset", "action": "search", "value": "*"}, {"type": "dataset", "action": "basic-search", "value": "*"}]',
-    //   },
-    // }
     return await GFWAPI.fetch<TMTDetail>(url).then(toVessel)
   },
 }
