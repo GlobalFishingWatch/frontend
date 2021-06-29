@@ -4,16 +4,16 @@ import ActivityDescriptionEEZ from './ActivityDescriptionEEZ'
 import ActivityDescriptionRFMO from './ActivityDescriptionRFMO'
 
 interface ActivityDescriptionProps {
-  event: ActivityEvent
+  event: ActivityEvent | null
 }
 
 const ActivityDescription: React.FC<ActivityDescriptionProps> = (props): React.ReactElement => {
   const event = props.event
-  
+
   if (event?.regions.eez[0]){
     return <ActivityDescriptionEEZ regionId={event.regions.eez[0]} type="event" ocean={event.regions.ocean[0]}></ActivityDescriptionEEZ>
   }
-  if (event.regions.rfmo[0]){
+  if (event?.regions.rfmo[0]){
     return <ActivityDescriptionRFMO regionId={event.regions.rfmo[0]} type="event" ocean={event.regions.ocean[0]}></ActivityDescriptionRFMO>
   }
   return (
