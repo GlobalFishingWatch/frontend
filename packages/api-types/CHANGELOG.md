@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.4.1
+
+### Patch Changes
+
+- 57de90f7: Added image list to vessel
+
 ## 4.4.0
 
 ### Minor Changes
