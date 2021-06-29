@@ -20,7 +20,7 @@ const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig)
       const endpointQuery = endpoint.query.find((q) => q.id === query.id)
       // TODO               this won't scale, we need another meta in Dataset
       if (endpointQuery && ['4wings-datasets', 'sql'].includes(endpointQuery.type)) {
-        ;(query.value as string[]).forEach((queryArrItem, i) => {
+        (query.value as string[]).forEach((queryArrItem, i) => {
           const queryArrId = `${query.id}[${i}]`
           resolvedQuery.set(queryArrId, queryArrItem)
         })

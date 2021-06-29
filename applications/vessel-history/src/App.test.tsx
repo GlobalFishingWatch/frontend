@@ -11,8 +11,10 @@ jest.useFakeTimers()
 describe('<App />', () => {
   const assignMock = jest.fn()
   const mockGFWLogin: jest.Mock = useGFWLogin as jest.Mock
-  delete window['location']
-  window.location = { assign: assignMock }
+  Object.defineProperty(window, 'location', {
+    writable: true,
+    value: { assign: assignMock },
+  })
 
   const gfwLoginDefault = {
     loading: true,

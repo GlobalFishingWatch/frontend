@@ -111,9 +111,10 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
               const vesselLabel = getVesselLabel(vessel, true)
               return (
                 <button
-                  disabled={feature.category === 'presence'}
                   key={i}
                   className={styles.vesselRow}
+                  aria-label={`vessel-info-${vessel.id}`}
+                  disabled={feature.category === 'presence'}
                   onClick={() => onVesselClick(vessel)}
                 >
                   <span className={styles.vesselName}>
