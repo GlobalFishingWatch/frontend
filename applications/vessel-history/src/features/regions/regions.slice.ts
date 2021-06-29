@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { asyncInitialState, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
+import { asyncInitialState, AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
+import { RootState } from 'store'
 
 export type RegionId = string | number
 export enum MarineRegionType {
@@ -12,6 +13,10 @@ export enum MarineRegionType {
 export interface Region {
   id: string
   label: string
+}
+export interface GroupRegions {
+  id: RegionId
+  type: MarineRegionType
 }
 export interface Regions {
   id: RegionId
@@ -50,12 +55,23 @@ export const fetchRegionsThunk = createAsyncThunk(
         { id: MarineRegionType.rfmo, data: rfmos },
       ]
       return result
-    } catch (e) {
+    } catch (e: any) {
       return rejectWithValue({
         status: e.status || e.code,
         message: `Regions - ${e.message}`,
       })
     }
+  },
+  {
+    condition: (_, { getState, extra }) => {
+      const { regions } = getState() as RootState
+      const fetchStatus = regions.status
+      if (fetchStatus === AsyncReducerStatus.Finished || fetchStatus === AsyncReducerStatus.Loading) {
+        // Already fetched or in progress, don't need to re-fetch
+        return false
+      }
+      return true
+    },
   }
 )
 

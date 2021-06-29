@@ -10,8 +10,11 @@ import { fetchVesselActivityThunk } from 'features/vessels/activity/vessels-acti
 import { selectVesselActivity, toggleGroup } from 'features/vessels/activity/vessels-activity.slice'
 import { ActivityEvent, ActivityEventGroup } from 'types/activity'
 import I18nDate from 'features/i18n/i18nDate'
+import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import styles from './Activity.module.css'
 import ActivityDate from './ActivityDate'
+import ActivityDescription from './description/ActivityDescription'
+import ActivityGroupDescription from './description/ActivityGroupDescription'
 
 interface InfoProps {
   vessel: VesselWithHistory | null
@@ -37,6 +40,10 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
     dispatch(toggleGroup({index}))
   },[dispatch])
 
+  useEffect(() => {
+    dispatch(fetchRegionsThunk())
+  }, [dispatch])
+  
   const eventGroups = useSelector(selectVesselActivity)
   return (
     <Fragment>
@@ -52,11 +59,11 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
                     </div>
                     <div className={styles.eventData}>
                       <div className={styles.date}>
-                        <I18nDate date={group.entries[0].start} format={DateTime.DATE_SHORT} /> - 
-                        <I18nDate date={group.entries[group.entries.length - 1].end} format={DateTime.DATE_SHORT} />
+                        <I18nDate date={group.start} format={DateTime.DATE_SHORT} /> - 
+                        <I18nDate date={group.end} format={DateTime.DATE_SHORT} />
                       </div>
                       <div className={styles.description}>
-                      {group.entries.length} Fishing events in {group.event_place}
+                        <ActivityGroupDescription  group={group} ></ActivityGroupDescription>
                       </div>
                       
                     </div>
@@ -78,7 +85,7 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
                     <div className={styles.eventData}>
                       <ActivityDate event={event}/>
                       <div className={styles.description}>
-                        Fishing in ???? {event.start}
+                        <ActivityDescription  event={event} ></ActivityDescription>
                       </div>
                       
                     </div>

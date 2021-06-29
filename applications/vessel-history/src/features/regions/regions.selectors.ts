@@ -1,7 +1,7 @@
 import { memoize } from 'lodash'
 import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'store'
-import { MarineRegionType, RegionId, regionsEntityAdapter } from './regions.slice'
+import { MarineRegionType, Region, RegionId, regionsEntityAdapter } from './regions.slice'
 
 const { selectById } = regionsEntityAdapter.getSelectors<RootState>((state) => state.regions)
 
@@ -19,3 +19,21 @@ export const selectMPAs = selectRegionsById(MarineRegionType.mpa)
 export const selectRFMOs = selectRegionsById(MarineRegionType.rfmo)
 
 export const selectRegionsStatus = (state: RootState) => state.regions.status
+
+export const selectEezById = memoize((id: RegionId) =>
+  createSelector([selectEEZs], (eezs: Region[]) => {
+    if (!id) {
+      return null
+    }
+    return eezs.find(eez => eez.id == id)
+  })
+)
+
+export const selectRfmoById = memoize((id: RegionId) =>
+  createSelector([selectRFMOs], (rfmos: Region[]) => {
+    if (!id) {
+      return null
+    }
+    return rfmos.find(rfmo => rfmo.id == id)
+  })
+)
