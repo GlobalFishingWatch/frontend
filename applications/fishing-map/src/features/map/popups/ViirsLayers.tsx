@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { groupBy, meanBy } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -6,6 +6,7 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Popup.module.css'
+
 
 type ViirsTooltipRowProps = {
   feature: TooltipEventFeature
@@ -44,33 +45,41 @@ function ViirsTooltipRow({ feature, showFeaturesDetails }: ViirsTooltipRowProps)
         {showFeaturesDetails &&
           viirsInteractionStatus === AsyncReducerStatus.Finished &&
           viirsGroupedByQf && (
-            <ul>
-              <li className={styles.listColumn} key="header">
-                <span>{t('layer.qf', 'Quality signal')}</span>
-                <span>
-                  {t([`common.${feature.unit}` as any, 'common.detection'], 'detections', {
-                    count: parseInt(feature.value), // neded to select the plural automatically
+            <Fragment>
+              <table className={styles.viirsTable}>
+                <thead>
+                  <tr>
+                    <th>{t('layer.qf', 'Quality signal')}</th>
+                    <th>
+                      {t([`common.${feature.unit}` as any, 'common.detection'], 'detections', {
+                        count: parseInt(feature.value), // neded to select the plural automatically
+                      })}
+                    </th>
+                    <th>
+                      {t('common.avgRadiance', 'Avg radiance')}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.keys(viirsGroupedByQf).map((qf) => {
+                    const detections = viirsGroupedByQf[qf]
+                    const label = t(
+                      `datasets:public-global-viirs.schema.qf_detect.enum.${qf}` as any,
+                      qf
+                    )
+                    return (
+                      <tr key={qf}>
+                        <td>{label}</td>
+                        <td>{detections.length}</td>
+                        <td>
+                          <I18nNumber number={meanBy(detections, 'radiance')} />
+                        </td>
+                      </tr>
+                    )
                   })}
-                </span>
-                <span>{t('common.avgRadiance', 'Avg radiance')}</span>
-              </li>
-              {Object.keys(viirsGroupedByQf).map((qf) => {
-                const detections = viirsGroupedByQf[qf]
-                const label = t(
-                  `datasets:public-global-viirs.schema.qf_detect.enum.${qf}` as any,
-                  qf
-                )
-                return (
-                  <li className={styles.listColumn} key={qf}>
-                    <span>{label}</span>
-                    <span>{detections.length}</span>
-                    <span>
-                      <I18nNumber number={meanBy(detections, 'radiance')} />
-                    </span>
-                  </li>
-                )
-              })}
-            </ul>
+                </tbody>
+              </table>
+            </Fragment>
           )}
       </div>
     </div>

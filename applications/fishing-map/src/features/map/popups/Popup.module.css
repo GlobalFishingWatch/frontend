@@ -161,20 +161,27 @@
   color: var(--color-secondary-blue);
 }
 
-.listColumn {
-  display: flex;
-  justify-content: space-between;
+.viirsTable {
+  width: 100%;
 }
 
-.listColumn > span {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  max-width: 33%;
+.viirsTable,
+.viirsTable th,
+.viirsTable td {
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;
 }
 
-.listColumn:first-of-type > span {
+.viirsTable th {
   text-transform: capitalize;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.viirsTable thead tr,
+.viirsTable tbody tr:nth-child(even) {
+  background: var(--color-terthiary-blue);
 }
 
 .rowText {
