@@ -95,73 +95,78 @@ type SublayerVessels = {
   vessels: ExtendedFeatureVessel[]
 }
 
+const getInteractionEndpointDatasetConfig = (getState: () => any, features: ExtendedFeature[]) => {
+  const state = getState() as RootState
+  const temporalgridDataviews = selectActivityDataviews(state) || []
+  // use the first feature/dv for common parameters
+  const mainFeature = features[0]
+  // Currently only one timerange is supported, which is OK since we only need interaction on the activity heatmaps and all
+  // activity heatmaps use the same time intervals, This will need to be revised in case we support interactivity on environment layers
+  const start = mainFeature.temporalgrid?.visibleStartDate
+  const end = mainFeature.temporalgrid?.visibleEndDate
+
+  // get corresponding dataviews
+  const featuresDataviews = features.flatMap((feature) => {
+    return feature.temporalgrid
+      ? temporalgridDataviews.find(
+          (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
+        ) || []
+      : []
+  })
+  const fourWingsDataset = featuresDataviews[0].datasets?.find(
+    (d) => d.type === DatasetTypes.Fourwings
+  ) as Dataset
+
+  // get corresponding datasets
+  const datasets: string[][] = featuresDataviews.map((dv) => {
+    return dv.config?.datasets || []
+  })
+
+  const datasetConfig: DataviewDatasetConfig = {
+    datasetId: fourWingsDataset.id,
+    endpoint: EndpointId.FourwingsInteraction,
+    params: [
+      { id: 'z', value: mainFeature.tile?.z },
+      { id: 'x', value: mainFeature.tile?.x },
+      { id: 'y', value: mainFeature.tile?.y },
+      { id: 'rows', value: mainFeature.temporalgrid?.row as number },
+      { id: 'cols', value: mainFeature.temporalgrid?.col as number },
+    ],
+    query: [
+      { id: 'date-range', value: [start, end].join(',') },
+      {
+        id: 'datasets',
+        value: datasets.map((ds) => ds.join(',')),
+      },
+    ],
+  }
+
+  const filters = featuresDataviews.map((dv) => dv.config?.filter || [])
+  if (filters?.length) {
+    datasetConfig.query?.push({ id: 'filters', value: filters })
+  }
+
+  return { featuresDataviews, fourWingsDataset, datasetConfig }
+}
+
 export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
-  // TODO the whole function could be greatly simplified if only one temporalGridFeature was accepted, which is effecttively always the case
   { fishingActivityFeatures: ExtendedFeature[]; timeRange: Range },
   {
     dispatch: AppDispatch
   }
 >(
   'map/fetchFishingActivityInteraction',
-  async ({ fishingActivityFeatures, timeRange }, { getState, signal, dispatch }) => {
+  async ({ fishingActivityFeatures }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const userLogged = selectUserLogged(state)
-    const temporalgridDataviews = selectActivityDataviews(state) || []
 
     if (!fishingActivityFeatures.length) {
       console.warn('fetchInteraction not possible, 0 features')
       return
     }
 
-    // use the first feature/dv for common parameters
-    const mainFeature = fishingActivityFeatures[0]
-
-    // Currently only one timerange is supported, which is OK since we only need interaction on the activity heatmaps and all
-    // activity heatmaps use the same time intervals, This will need to be revised in case we support interactivity on environment layers
-    const start = mainFeature.temporalgrid?.visibleStartDate
-    const end = mainFeature.temporalgrid?.visibleEndDate
-
-    // get corresponding dataviews
-    const featuresDataviews = fishingActivityFeatures.flatMap((feature) => {
-      return feature.temporalgrid
-        ? temporalgridDataviews.find(
-            (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
-          ) || []
-        : []
-    })
-    const fourWingsDataset = featuresDataviews[0].datasets?.find(
-      (d) => d.type === DatasetTypes.Fourwings
-    ) as Dataset
-
-    // get corresponding datasets
-    const datasets: string[][] = featuresDataviews.map((dv) => {
-      return dv.config?.datasets || []
-    })
-
-    const datasetConfig: DataviewDatasetConfig = {
-      datasetId: fourWingsDataset.id,
-      endpoint: EndpointId.FourwingsInteraction,
-      params: [
-        { id: 'z', value: mainFeature.tile?.z },
-        { id: 'x', value: mainFeature.tile?.x },
-        { id: 'y', value: mainFeature.tile?.y },
-        { id: 'rows', value: mainFeature.temporalgrid?.row as number },
-        { id: 'cols', value: mainFeature.temporalgrid?.col as number },
-      ],
-      query: [
-        { id: 'date-range', value: [start, end].join(',') },
-        {
-          id: 'datasets',
-          value: datasets.map((ds) => ds.join(',')),
-        },
-      ],
-    }
-
-    const filters = featuresDataviews.map((dv) => dv.config?.filter || [])
-    if (filters?.length) {
-      datasetConfig.query?.push({ id: 'filters', value: filters })
-    }
+    const { featuresDataviews, fourWingsDataset, datasetConfig } = getInteractionEndpointDatasetConfig(getState, fishingActivityFeatures)
 
     const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
     if (interactionUrl) {
@@ -281,62 +286,17 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
 export const fetchViirsInteractionThunk = createAsyncThunk<
   ApiViirsStats[] | undefined,
-  // TODO the whole function could be greatly simplified if only one temporalGridFeature was accepted, which is effecttively always the case
   { feature: ExtendedFeature },
   {
     dispatch: AppDispatch
   }
->('map/fetchViirsInteraction', async ({ feature }, { getState, signal, dispatch }) => {
-  const state = getState() as RootState
-  const temporalgridDataviews = selectActivityDataviews(state) || []
+>('map/fetchViirsInteraction', async ({ feature }, { getState, signal }) => {
   if (!feature) {
     console.warn('fetchInteraction not possible, no features')
     return
   }
 
-  // Currently only one timerange is supported, which is OK since we only need interaction on the activity heatmaps and all
-  // activity heatmaps use the same time intervals, This will need to be revised in case we support interactivity on environment layers
-  const start = feature.temporalgrid?.visibleStartDate
-  const end = feature.temporalgrid?.visibleEndDate
-
-  const featureDataview = temporalgridDataviews.find(
-    (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
-  )
-  if (!featureDataview) {
-    console.warn('fetchInteraction not possible, no dataview found')
-    return
-  }
-
-  const fourWingsDataset = featureDataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Fourwings
-  ) as Dataset
-
-  const datasets: string[] = featureDataview.config?.datasets || []
-
-  const datasetConfig: DataviewDatasetConfig = {
-    datasetId: fourWingsDataset.id,
-    endpoint: EndpointId.FourwingsInteraction,
-    params: [
-      { id: 'z', value: feature.tile?.z },
-      { id: 'x', value: feature.tile?.x },
-      { id: 'y', value: feature.tile?.y },
-      { id: 'rows', value: feature.temporalgrid?.row as number },
-      { id: 'cols', value: feature.temporalgrid?.col as number },
-    ],
-    query: [
-      { id: 'date-range', value: [start, end].join(',') },
-      {
-        id: 'datasets',
-        value: datasets,
-      },
-    ],
-  }
-
-  const filters = featureDataview.config?.filter
-  if (filters) {
-    const filtersArray = Array.isArray(filters) ? filters : [filters]
-    datasetConfig.query?.push({ id: 'filters', value: filtersArray })
-  }
+  const { fourWingsDataset, datasetConfig } = getInteractionEndpointDatasetConfig(getState, [feature])
 
   const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
   if (interactionUrl) {
