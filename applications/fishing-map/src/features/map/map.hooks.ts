@@ -140,17 +140,12 @@ export const useClickedEventConnect = () => {
       }
     }
 
-    if (fishingPromiseRef.current) {
-      fishingPromiseRef.current.abort()
-    }
-
-    if (viirsPromiseRef.current) {
-      viirsPromiseRef.current.abort()
-    }
-
-    if (eventsPromiseRef.current) {
-      eventsPromiseRef.current.abort()
-    }
+    // Cancel all pending promises
+    [fishingPromiseRef, viirsPromiseRef, eventsPromiseRef].forEach(ref => {
+      if (ref.current) {
+        ref.current.abort()
+      }
+    })
 
     if (!event || !event.features) {
       if (clickedEvent) {
