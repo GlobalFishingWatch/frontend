@@ -151,7 +151,7 @@ const getInteractionEndpointDatasetConfig = (getState: () => any, features: Exte
 
 export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
-  { fishingActivityFeatures: ExtendedFeature[]; timeRange: Range },
+  { fishingActivityFeatures: ExtendedFeature[] },
   {
     dispatch: AppDispatch
   }

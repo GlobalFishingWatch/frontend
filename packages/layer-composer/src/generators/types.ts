@@ -356,6 +356,8 @@ export type Ruler = {
   isNew?: boolean
 }
 
+export type HeatmapAnimatedInteractionType = 'presence' | 'viirs' | 'fishing-effort'
+
 export interface HeatmapAnimatedGeneratorSublayer {
   id: string
   datasets: string[]
@@ -365,6 +367,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   visible?: boolean
   breaks?: number[]
   legend?: GeneratorLegend
+  interactionType?: HeatmapAnimatedInteractionType
 }
 
 // ---- Heatmap Generator color ramps types

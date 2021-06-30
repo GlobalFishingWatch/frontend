@@ -176,14 +176,14 @@ export const useClickedEventConnect = () => {
           return false
         }
         const isFeatureVisible = feature.temporalgrid.visible
-        const isFishingFeature = feature.temporalgrid.sublayerId.startsWith(FISHING_LAYER_PREFIX)
+        const isFishingFeature = feature.temporalgrid.sublayerInteractionType === 'fishing-effort'
         return isFeatureVisible && isFishingFeature
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
-    if (fishingActivityFeatures?.length && timeRange) {
+    if (fishingActivityFeatures?.length) {
       fishingPromiseRef.current = dispatch(
-        fetchFishingActivityInteractionThunk({ fishingActivityFeatures, timeRange })
+        fetchFishingActivityInteractionThunk({ fishingActivityFeatures })
       )
     }
 
@@ -192,7 +192,7 @@ export const useClickedEventConnect = () => {
         return false
       }
       const isFeatureVisible = feature.temporalgrid.visible
-      const isFishingFeature = feature.temporalgrid.sublayerId.startsWith('viirs')
+      const isFishingFeature = feature.temporalgrid.sublayerInteractionType === 'viirs'
       return isFeatureVisible && isFishingFeature
     })
 

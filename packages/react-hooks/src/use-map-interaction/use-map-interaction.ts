@@ -45,6 +45,7 @@ const getExtendedFeatures = (
       generatorMetadata = feature.layer.metadata
     }
 
+    // TODO Throw error if unit difer?
     const unit = generatorMetadata?.sublayers?.[0].legend.unit ?? null
     const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
     const properties = feature.properties || {}
@@ -96,6 +97,7 @@ const getExtendedFeatures = (
             temporalgrid: {
               sublayerIndex: i,
               sublayerId: sublayers[i].id,
+              sublayerInteractionType: sublayers[i].interactionType,
               visible: visibleSublayers[i] === true,
               col: properties._col as number,
               row: properties._row as number,
