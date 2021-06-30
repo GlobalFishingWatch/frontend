@@ -332,11 +332,11 @@ export const fetchViirsInteractionThunk = createAsyncThunk<
     ],
   }
 
-  // const filters = featureDataview.config?.filter
-  // if (filters) {
-  //   const filtersArray = Array.isArray(filters) ? filters : [filters]
-  //   datasetConfig.query?.push({ id: 'filters', value: filtersArray })
-  // }
+  const filters = featureDataview.config?.filter
+  if (filters) {
+    const filtersArray = Array.isArray(filters) ? filters : [filters]
+    datasetConfig.query?.push({ id: 'filters', value: filtersArray })
+  }
 
   const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
   if (interactionUrl) {
