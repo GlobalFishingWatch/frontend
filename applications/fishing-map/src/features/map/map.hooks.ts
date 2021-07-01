@@ -141,7 +141,8 @@ export const useClickedEventConnect = () => {
     }
 
     // Cancel all pending promises
-    [fishingPromiseRef, viirsPromiseRef, eventsPromiseRef].forEach(ref => {
+    const promisesRef = [fishingPromiseRef, viirsPromiseRef, eventsPromiseRef]
+    promisesRef.forEach((ref) => {
       if (ref.current) {
         ref.current.abort()
       }
@@ -187,8 +188,8 @@ export const useClickedEventConnect = () => {
         return false
       }
       const isFeatureVisible = feature.temporalgrid.visible
-      const isFishingFeature = feature.temporalgrid.sublayerInteractionType === 'viirs'
-      return isFeatureVisible && isFishingFeature
+      const isViirsFeature = feature.temporalgrid.sublayerInteractionType === 'viirs'
+      return isFeatureVisible && isViirsFeature
     })
 
     if (viirsFeature) {

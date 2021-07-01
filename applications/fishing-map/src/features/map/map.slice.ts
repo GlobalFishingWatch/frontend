@@ -2,7 +2,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   DataviewDatasetConfig,
   Dataset,
@@ -95,9 +95,10 @@ type SublayerVessels = {
   vessels: ExtendedFeatureVessel[]
 }
 
-const getInteractionEndpointDatasetConfig = (getState: () => any, features: ExtendedFeature[]) => {
-  const state = getState() as RootState
-  const temporalgridDataviews = selectActivityDataviews(state) || []
+const getInteractionEndpointDatasetConfig = (
+  features: ExtendedFeature[],
+  temporalgridDataviews: UrlDataviewInstance[] = []
+) => {
   // use the first feature/dv for common parameters
   const mainFeature = features[0]
   // Currently only one timerange is supported, which is OK since we only need interaction on the activity heatmaps and all
@@ -160,13 +161,15 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   async ({ fishingActivityFeatures }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
     const userLogged = selectUserLogged(state)
+    const temporalgridDataviews = selectActivityDataviews(state) || []
 
     if (!fishingActivityFeatures.length) {
       console.warn('fetchInteraction not possible, 0 features')
       return
     }
 
-    const { featuresDataviews, fourWingsDataset, datasetConfig } = getInteractionEndpointDatasetConfig(getState, fishingActivityFeatures)
+    const { featuresDataviews, fourWingsDataset, datasetConfig } =
+      getInteractionEndpointDatasetConfig(fishingActivityFeatures, temporalgridDataviews)
 
     const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
     if (interactionUrl) {
@@ -295,8 +298,13 @@ export const fetchViirsInteractionThunk = createAsyncThunk<
     console.warn('fetchInteraction not possible, no features')
     return
   }
+  const state = getState() as RootState
+  const temporalgridDataviews = selectActivityDataviews(state) || []
 
-  const { fourWingsDataset, datasetConfig } = getInteractionEndpointDatasetConfig(getState, [feature])
+  const { fourWingsDataset, datasetConfig } = getInteractionEndpointDatasetConfig(
+    [feature],
+    temporalgridDataviews
+  )
 
   const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
   if (interactionUrl) {
