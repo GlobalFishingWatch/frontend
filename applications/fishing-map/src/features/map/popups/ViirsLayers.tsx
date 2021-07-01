@@ -1,12 +1,11 @@
 import React, { Fragment } from 'react'
-import { groupBy, meanBy } from 'lodash'
+import { groupBy } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Popup.module.css'
-
 
 type ViirsTooltipRowProps = {
   feature: TooltipEventFeature
@@ -28,13 +27,6 @@ function ViirsTooltipRow({ feature, showFeaturesDetails }: ViirsTooltipRowProps)
             {t([`common.${feature.unit}` as any, 'common.detection'], 'detections', {
               count: parseInt(feature.value), // neded to select the plural automatically
             })}
-            {feature.viirs && feature.viirs.length > 0 && (
-              <span>
-                {' '}
-                ({t('common.averageRadiance', 'Average radiance')}{' '}
-                <I18nNumber number={meanBy(feature.viirs, 'radiance')} />)
-              </span>
-            )}
           </span>
         </div>
         {viirsInteractionStatus === AsyncReducerStatus.Loading && (
@@ -55,9 +47,6 @@ function ViirsTooltipRow({ feature, showFeaturesDetails }: ViirsTooltipRowProps)
                         count: parseInt(feature.value), // neded to select the plural automatically
                       })}
                     </th>
-                    <th>
-                      {t('common.avgRadiance', 'Avg radiance')}
-                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -70,10 +59,7 @@ function ViirsTooltipRow({ feature, showFeaturesDetails }: ViirsTooltipRowProps)
                     return (
                       <tr key={qf}>
                         <td>{label}</td>
-                        <td>{detections.length}</td>
-                        <td>
-                          <I18nNumber number={meanBy(detections, 'radiance')} />
-                        </td>
+                        <td>{<I18nNumber number={detections.length} />}</td>
                       </tr>
                     )
                   })}

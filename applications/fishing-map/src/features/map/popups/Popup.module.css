@@ -174,14 +174,15 @@
 }
 
 .viirsTable th {
-  text-transform: capitalize;
+  font: var(--font-XS);
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
   text-align: left;
-  border-bottom: 1px solid var(--color-border);
 }
 
-.viirsTable thead tr,
-.viirsTable tbody tr:nth-child(even) {
-  background: var(--color-terthiary-blue);
+.viirsTable th:last-child,
+.viirsTable td:last-child {
+  text-align: right;
 }
 
 .rowText {
@@ -192,6 +193,10 @@
   display: flex;
   flex-wrap: nowrap;
   margin-left: var(--space-S);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
 }
 
 :global(.mapboxgl-popup .mapboxgl-popup-content) {
