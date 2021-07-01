@@ -15,7 +15,7 @@ export type SupportedDatasetSchema =
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
 export const removeDatasetVersion = (datasetId: string) => {
-  return datasetId?.split(':')[0]
+  return datasetId ? datasetId?.split(':')[0] : ''
 }
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {

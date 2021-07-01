@@ -8,10 +8,7 @@ import {
   Dataset,
   Vessel,
   DatasetTypes,
-  EventVessel,
   ApiEvent,
-  AuthorizationOptions,
-  EventTypes,
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -32,31 +29,6 @@ export type ExtendedFeatureVessel = {
   hours: number
   dataset: Dataset
   [key: string]: any
-}
-
-// TODO remove this once the cluster events follow the same API events format
-type TemporalClusterBusterEvent = {
-  event_id: string
-  event_type: EventTypes
-  vessel_id: string
-  event_start: string
-  event_end: string
-  event_info: {
-    regions: {
-      eez: string[]
-      fao: string[]
-      rfmo: string[]
-    }
-    elevation_m: number
-    is_authorized: boolean
-    median_distance_km: number
-    median_speed_knots: number
-    authorization_status: AuthorizationOptions
-    distance_from_port_m: number
-    distance_from_shore_m: number
-    encountered_vessel_id: string
-  }
-  event_vessels: EventVessel[]
 }
 
 export type ExtendedFeatureEvent = ApiEvent & { dataset: Dataset }
@@ -274,42 +246,6 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   }
 )
 
-// TODO: remove this workaound once the api returns the same format for every event
-const parseClusterEvent = (
-  clusterEvent: TemporalClusterBusterEvent,
-  eventFeature: ExtendedFeature
-): ApiEvent => {
-  const vessel = clusterEvent.event_vessels.find(
-    (v) => v.id === clusterEvent.vessel_id
-  ) as EventVessel
-  const encounterVessel = clusterEvent.event_vessels.find(
-    (v) => v.id === clusterEvent.event_info?.encountered_vessel_id
-  ) as EventVessel
-  const event = {
-    position: {
-      lat: eventFeature.properties?.lat as number,
-      lon: eventFeature.properties?.lng as number,
-    },
-    id: clusterEvent.event_id,
-    type: clusterEvent.event_type,
-    vessel,
-    start: clusterEvent.event_start,
-    end: clusterEvent.event_end,
-    rfmos: clusterEvent.event_info?.regions?.rfmo,
-    eezs: clusterEvent.event_info?.regions?.eez,
-    encounter: {
-      vessel: encounterVessel,
-      authorized: clusterEvent.event_info.is_authorized,
-      medianDistanceKilometers: clusterEvent.event_info.median_distance_km,
-      medianSpeedKnots: clusterEvent.event_info.median_speed_knots,
-      authorizationStatus: clusterEvent.event_info.authorization_status,
-      regionAuthorizations: [],
-      vesselAuthorizations: [],
-    },
-  }
-  return event
-}
-
 export const fetchEncounterEventThunk = createAsyncThunk<
   ExtendedFeatureEvent | undefined,
   ExtendedFeature,
@@ -329,10 +265,9 @@ export const fetchEncounterEventThunk = createAsyncThunk<
     }
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
-      const clusterEvent = await GFWAPI.fetch<TemporalClusterBusterEvent>(url, { signal })
+      const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal })
       if (clusterEvent) {
-        const event = parseClusterEvent(clusterEvent, eventFeature)
-        return { ...event, dataset }
+        return { ...clusterEvent, dataset }
       }
     } else {
       console.warn('Missing url for endpoints', dataset, datasetConfig)

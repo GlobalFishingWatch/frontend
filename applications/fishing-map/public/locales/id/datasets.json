@@ -1,10 +1,8 @@
 {
-  "carriers-clusterbuster": {
+  "public-global-encounters-events-carriers-fishing": {
     "name": "Pertemuan kapal",
     "description": "Diidentifikasi dari data AIS sebagai lokasi di mana dua kapal, kapal pengangkut dan kapal penangkap ikan, berada dalam jarak 500 meter selama setidaknya 2 jam dan melakukan perjalanan dengan kecepatan rata-rata <2 knot, sementara setidaknya 10 km dari pelabuhan pantai.",
-    "schema": {
-      "fields": "fields"
-    }
+    "schema": {}
   },
   "private-panama-fishing-effort": {
     "name": "Panama VMS",
