@@ -88,6 +88,7 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 | Default Fishing activity        | 91     | 178    |
 | Private Peru Fishing activity   | 161    | ---    |
 | Private Panama Fishing activity | 162    | ---    |
+| VIIRS                           | 159    | ---    |
 
 ## Vessels
 
