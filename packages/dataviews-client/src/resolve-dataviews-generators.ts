@@ -1,4 +1,5 @@
 import { scaleLinear } from 'd3-scale'
+import { uniq } from 'lodash'
 import {
   Resource,
   TrackResourceData,
@@ -21,6 +22,7 @@ import {
 import type {
   ColorRampsIds,
   HeatmapAnimatedGeneratorSublayer,
+  HeatmapAnimatedInteractionType,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import { resolveDataviewDatasetResource, UrlDataviewInstance } from './resolve-dataviews'
@@ -319,8 +321,14 @@ export function getDataviewsGeneratorConfigs(
       const { config, datasetsConfig } = dataview
       if (!config || !datasetsConfig || !datasetsConfig.length) return []
       const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
-      // TODO Take unit from first dataset -> are we sure activity sublayers always use 'hours'?
-      const unit = dataview.datasets?.[0]?.unit
+      const units = uniq(dataview.datasets?.map(dataset => dataset.unit))
+      if (units.length !== 1) {
+        throw new Error('Shouldnt have distinct units for the same heatmap layer')
+      }
+      const interactionTypes = uniq(dataview.datasets?.map(dataset => dataset.configuration?.type || 'fishing-effort'))
+      if (interactionTypes.length !== 1) {
+        throw new Error(`Shouldnt have distinct dataset config types for the same heatmap layer: ${interactionTypes.toString()}`)
+      }
       const sublayer: HeatmapAnimatedGeneratorSublayer = {
         id: dataview.id,
         datasets,
@@ -330,9 +338,10 @@ export function getDataviewsGeneratorConfigs(
         visible: config.visible,
         legend: {
           label: dataview.name,
-          unit,
+          unit: units[0],
           color: dataview?.config?.color,
         },
+        interactionType: interactionTypes[0] as HeatmapAnimatedInteractionType, // TODO I don't understand why dataset.configuration?.type is of type EventTypes? 
       }
 
       return sublayer
