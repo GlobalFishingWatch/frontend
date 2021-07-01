@@ -5,7 +5,9 @@ import { useIntersectionObserver } from '@researchgate/react-intersection-observ
 import cx from 'classnames'
 import Downshift from 'downshift'
 import { Trans, useTranslation } from 'react-i18next'
+import { debounce } from 'lodash'
 import GFWAPI from '@globalfishingwatch/api-client'
+import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -13,6 +15,8 @@ import useDebounce from '@globalfishingwatch/react-hooks/dist/use-debounce'
 import { Button, Choice, Icon } from '@globalfishingwatch/ui-components'
 import { ChoiceOption } from '@globalfishingwatch/ui-components/dist/choice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
+import { selectUserLogged } from 'features/user/user.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
@@ -27,12 +31,14 @@ import {
   selectSearchResults,
   cleanVesselSearchResults,
   selectSearchStatus,
+  selectSearchStatusCode,
   VesselWithDatasets,
   RESULTS_PER_PAGE,
   checkSearchFiltersEnabled,
   resetFilters,
   setSuggestionClicked,
   SearchType,
+  SearchFilter,
 } from './search.slice'
 import styles from './Search.module.css'
 import SearchFilters from './SearchFilters'
@@ -53,6 +59,7 @@ function Search() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const urlQuery = useSelector(selectSearchQuery)
+  const userLogged = useSelector(selectUserLogged)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const [searchQuery, setSearchQuery] = useState((urlQuery || '') as string)
   const { searchFilters } = useSearchFiltersConnect()
@@ -63,6 +70,7 @@ function Search() {
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
+  const searchStatusCode = useSelector(selectSearchStatusCode)
   const hasSearchFilters = checkSearchFiltersEnabled(searchFilters)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const [vesselsSelected, setVesselsSelected] = useState<VesselWithDatasets[]>([])
@@ -91,29 +99,37 @@ function Search() {
   const promiseRef = useRef<any>()
   const scrollRef = useRef<HTMLDivElement | null>(null)
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchResults = useCallback(
-    (offset = 0) => {
-      if (searchDatasets?.length) {
-        const sourceIds = searchFilters?.sources?.map((source) => source.id)
-        const sources = sourceIds
-          ? searchDatasets.filter(({ id }) => sourceIds.includes(id))
-          : searchDatasets
-
-        if (promiseRef.current) {
-          promiseRef.current.abort()
-        }
-        // To ensure the pending action isn't overwritted by the abort above
-        // and we miss the loading intermediate state
-        setTimeout(() => {
+    debounce(
+      ({
+        query,
+        datasets,
+        filters,
+        offset = 0,
+      }: {
+        query: string
+        datasets: Dataset[]
+        filters: SearchFilter
+        offset?: number
+      }) => {
+        if (datasets?.length) {
+          const sourceIds = filters?.sources?.map((source) => source.id)
+          const sources = sourceIds ? datasets.filter(({ id }) => sourceIds.includes(id)) : datasets
+          if (promiseRef.current) {
+            promiseRef.current.abort()
+          }
+          // To ensure the pending action isn't overwritted by the abort above
+          // and we miss the loading intermediate state
           promiseRef.current = dispatch(
             fetchVesselSearchThunk({
-              query: debouncedQuery,
-              filters: searchFilters,
+              query,
+              filters,
               datasets: sources,
               offset,
             })
           )
-          // TODO: Find a better approach to sync debouncedQuery
+          // TODO: Find a better approach to sync query
           // and searchPagination.total to track the search in google analytics
           promiseRef.current.then((data: any) => {
             const total = data?.payload?.pagination?.total
@@ -121,41 +137,65 @@ function Search() {
               uaEvent({
                 category: 'Search Vessel',
                 action: 'Search specific vessel',
-                label: debouncedQuery,
+                label: query,
                 value: total,
               })
             }
           })
-        }, 1)
-      }
-    },
-    [debouncedQuery, dispatch, searchDatasets, searchFilters]
+        }
+      },
+      100
+    ),
+    [dispatch]
   )
 
   const handleIntersection = useCallback(
     (entry: IntersectionObserverEntry) => {
       const { offset, total } = searchPagination
       if (entry.isIntersecting) {
-        if (offset <= total && total > RESULTS_PER_PAGE) {
-          fetchResults(offset)
+        if (offset <= total && total > RESULTS_PER_PAGE && searchDatasets) {
+          fetchResults({
+            query: debouncedQuery,
+            datasets: searchDatasets,
+            filters: searchFilters,
+            offset,
+          })
         }
       }
     },
-    [fetchResults, searchPagination]
+    [searchPagination, searchDatasets, searchFilters, debouncedQuery, fetchResults]
   )
   const [ref] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
   useEffect(() => {
-    if (debouncedQuery === '') {
-      batch(() => {
-        dispatch(cleanVesselSearchResults())
+    if (debouncedQuery && !promiseRef.current && searchDatasets?.length) {
+      fetchResults({
+        query: debouncedQuery,
+        datasets: searchDatasets,
+        filters: searchFilters,
       })
-    } else {
-      fetchResults()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchDatasets])
+
+  useEffect(() => {
+    if (debouncedQuery && searchDatasets?.length) {
+      fetchResults({
+        query: debouncedQuery,
+        datasets: searchDatasets,
+        filters: activeSearchOption === 'basic' ? {} : searchFilters,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery, searchFilters, activeSearchOption])
+
+  useEffect(() => {
+    if (debouncedQuery === '') {
+      dispatch(cleanVesselSearchResults())
     }
     dispatchQueryParams({ query: debouncedQuery })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery, searchFilters, searchDatasets, activeSearchOption])
+  }, [debouncedQuery])
 
   const onCloseClick = () => {
     batch(() => {
@@ -192,9 +232,15 @@ function Search() {
 
   const onConfirmSelection = () => {
     const instances = vesselsSelected.map((vessel) => {
+      const eventsRelatedDataset = getRelatedDatasetByType(
+        vessel.dataset,
+        DatasetTypes.Events,
+        userLogged
+      )
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
         trackDatasetId: vessel.trackDatasetId as string,
         infoDatasetId: vessel.dataset.id,
+        ...(eventsRelatedDataset && { eventsDatasetId: eventsRelatedDataset?.id }),
       })
       return vesselDataviewInstance
     })
@@ -418,7 +464,14 @@ function Search() {
                       <SearchNoResultsState />
                     )}
                     {searchStatus === AsyncReducerStatus.Error && (
-                      <p className={styles.error}>Something went wrong 🙈</p>
+                      <p className={styles.error}>
+                        {searchStatusCode === 404
+                          ? t(
+                              'search.noResults',
+                              "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
+                            )
+                          : t('errors.genericShort', 'Something went wrong')}
+                      </p>
                     )}
                   </ul>
                 </Fragment>

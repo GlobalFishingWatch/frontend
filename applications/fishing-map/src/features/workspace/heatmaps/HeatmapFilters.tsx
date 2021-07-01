@@ -12,6 +12,7 @@ import { getPlaceholderBySelections } from 'features/i18n/utils'
 import {
   getFiltersBySchema,
   getCommonSchemaFieldsInDataview,
+  isDataviewSchemaSupported,
 } from 'features/datasets/datasets.utils'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import styles from './HeatmapFilters.module.css'
@@ -31,10 +32,12 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
   const flagOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
   const flags = useMemo(getFlags, [])
 
+  const flagFiltersSupported = isDataviewSchemaSupported(dataview, 'flag')
   const gearTypeFilters = getFiltersBySchema(dataview, 'geartype')
   const fleetFilters = getFiltersBySchema(dataview, 'fleet')
   const originFilters = getFiltersBySchema(dataview, 'origin')
   const vesselFilters = getFiltersBySchema(dataview, 'vessel_type')
+  const qfDectectionFilters = getFiltersBySchema(dataview, 'qf_detect')
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
     const datasets = [...(dataview.config?.datasets || []), source.id]
@@ -154,16 +157,18 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
           onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
         />
       )}
-      <MultiSelect
-        label={t('layer.flagState_plural', 'Flag States')}
-        placeholder={getPlaceholderBySelections(flagOptions)}
-        options={flags}
-        selectedOptions={flagOptions}
-        className={styles.multiSelect}
-        onSelect={(selection) => onSelectFilterClick('flag', selection)}
-        onRemove={(selection, rest) => onRemoveFilterClick('flag', rest)}
-        onCleanClick={() => onCleanFilterClick('flag')}
-      />
+      {flagFiltersSupported && (
+        <MultiSelect
+          label={t('layer.flagState_plural', 'Flag States')}
+          placeholder={getPlaceholderBySelections(flagOptions)}
+          options={flags}
+          selectedOptions={flagOptions}
+          className={styles.multiSelect}
+          onSelect={(selection) => onSelectFilterClick('flag', selection)}
+          onRemove={(selection, rest) => onRemoveFilterClick('flag', rest)}
+          onCleanClick={() => onCleanFilterClick('flag')}
+        />
+      )}
       {gearTypeFilters.active && (
         <MultiSelect
           disabled={gearTypeFilters.disabled}
@@ -218,6 +223,20 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
           onSelect={(selection) => onSelectFilterClick('vessel_type', selection)}
           onRemove={(selection, rest) => onRemoveFilterClick('vessel_type', rest)}
           onCleanClick={() => onCleanFilterClick('vessel_type')}
+        />
+      )}
+      {qfDectectionFilters.active && (
+        <MultiSelect
+          disabled={qfDectectionFilters.disabled}
+          disabledMsg={qfDectectionFilters.tooltip}
+          label={t('layer.qfDetect', 'QF detects')}
+          placeholder={getPlaceholderBySelections(qfDectectionFilters.optionsSelected)}
+          options={qfDectectionFilters.options}
+          selectedOptions={qfDectectionFilters.optionsSelected}
+          className={styles.multiSelect}
+          onSelect={(selection) => onSelectFilterClick('qf_detect', selection)}
+          onRemove={(selection, rest) => onRemoveFilterClick('qf_detect', rest)}
+          onCleanClick={() => onCleanFilterClick('qf_detect')}
         />
       )}
     </Fragment>

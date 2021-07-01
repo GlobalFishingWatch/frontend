@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useState } from 'react'
+import React, { Fragment, memo, useCallback, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
@@ -7,13 +7,23 @@ import TimebarComponent, {
   TimebarTracks,
   TimebarActivity,
   TimebarHighlighter,
+  TimebarTracksEvents,
 } from '@globalfishingwatch/timebar'
+import { ApiEvent } from '@globalfishingwatch/api-types/dist'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { useTimerangeConnect, useTimebarVisualisation } from 'features/timebar/timebar.hooks'
+import {
+  useTimerangeConnect,
+  useTimebarVisualisation,
+  useHighlightEventConnect,
+} from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { TimebarVisualisations, TimebarGraphs } from 'types'
-import { selectTimebarGraph } from 'features/app/app.selectors'
-import { selectActivityCategory } from 'routes/routes.selectors'
+import { TimebarEvents, TimebarVisualisations, TimebarGraphs } from 'types'
+import useViewport from 'features/map/map-viewport.hooks'
+import {
+  selectActivityCategory,
+  selectTimebarEvents,
+  selectTimebarGraph,
+} from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import {
   setHighlightedTime,
@@ -22,7 +32,11 @@ import {
   Range,
 } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
-import { selectTracksData, selectTracksGraphs } from './timebar.selectors'
+import {
+  selectTracksData,
+  selectTracksGraphs,
+  selectEventsWithRenderingInfo,
+} from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 
 export const TIMEBAR_HEIGHT = 72
@@ -31,11 +45,15 @@ const TimebarWrapper = () => {
   const { ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
+  const { highlightedEvent, dispatchHighlightedEvent } = useHighlightEventConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
   const { timebarVisualisation } = useTimebarVisualisation()
+  const { setMapCoordinates } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
+  const timebarEvents = useSelector(selectTimebarEvents)
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
+  const tracksEvents = useSelector(selectEventsWithRenderingInfo)
 
   const dispatch = useDispatch()
 
@@ -62,32 +80,36 @@ const TimebarWrapper = () => {
   )
 
   const isSmallScreen = useSmallScreen()
+  const hoverInEvent = useRef(false)
 
   const activityCategory = useSelector(selectActivityCategory)
 
   const onMouseMove = useCallback(
     (clientX: number, scale: (arg: number) => Date) => {
-      if (clientX === null) {
-        if (highlightedTime !== undefined) {
-          dispatch(disableHighlightedTime())
-        }
-      } else {
-        try {
-          const start = scale(clientX - 10).toISOString()
-          const end = scale(clientX + 10).toISOString()
-          const startDateTime = DateTime.fromISO(start)
-          const endDateTime = DateTime.fromISO(end)
-          const diff = endDateTime.diff(startDateTime, 'hours')
-          if (diff.hours < 1) {
-            // To ensure at least 1h range is highlighted
-            const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
-            const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
-            dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
-          } else {
-            dispatch(setHighlightedTime({ start, end }))
+      if (hoverInEvent.current === false) {
+        if (clientX === null || clientX === undefined) {
+          if (highlightedTime !== undefined) {
+            dispatch(disableHighlightedTime())
           }
-        } catch (e) {
-          console.warn(e)
+        } else {
+          try {
+            const start = scale(clientX - 10).toISOString()
+            const end = scale(clientX + 10).toISOString()
+            const startDateTime = DateTime.fromISO(start)
+            const endDateTime = DateTime.fromISO(end)
+            const diff = endDateTime.diff(startDateTime, 'hours')
+            if (diff.hours < 1) {
+              // To ensure at least 1h range is highlighted
+              const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO()
+              const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO()
+              dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
+            } else {
+              dispatch(setHighlightedTime({ start, end }))
+            }
+          } catch (e) {
+            console.log(clientX)
+            console.warn(e)
+          }
         }
       }
     },
@@ -126,8 +148,31 @@ const TimebarWrapper = () => {
     })
   }, [])
 
+  const onEventClick = useCallback(
+    (event: ApiEvent) => {
+      setMapCoordinates({
+        latitude: event.position.lat,
+        longitude: event.position.lon,
+      })
+    },
+    [setMapCoordinates]
+  )
+
+  const onEventHover = useCallback(
+    (event: ApiEvent) => {
+      if (event && highlightedTime) {
+        dispatch(disableHighlightedTime())
+      }
+      hoverInEvent.current = event !== undefined
+      dispatchHighlightedEvent(event)
+    },
+    [dispatch, dispatchHighlightedEvent, highlightedTime]
+  )
+
   if (!start || !end) return null
 
+  const showAllEvents = timebarEvents === TimebarEvents.All
+  const showFishingEvents = showAllEvents || timebarEvents === TimebarEvents.Fishing
   return (
     <div>
       <TimebarComponent
@@ -159,6 +204,15 @@ const TimebarWrapper = () => {
                     )}
                     {timebarGraph === TimebarGraphs.Speed && tracksGraph && (
                       <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
+                    )}
+                    {tracksEvents && showFishingEvents && (
+                      <TimebarTracksEvents
+                        key="events"
+                        preselectedEventId={highlightedEvent?.id}
+                        tracksEvents={tracksEvents}
+                        onEventClick={onEventClick}
+                        onEventHover={onEventHover}
+                      />
                     )}
                   </Fragment>
                 )}

@@ -6,9 +6,10 @@ import { event as uaEvent } from 'react-ga'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectBivariateDataviews } from 'features/app/app.selectors'
+import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
@@ -42,6 +43,7 @@ function HeatmapLayerPanel({
   const { deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const readOnly = useSelector(selectReadOnly)
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -91,7 +93,10 @@ function HeatmapLayerPanel({
     : dataview.name || ''
   const fishingDataview = isFishingDataview(dataview)
   const presenceDataview = isPresenceDataview(dataview)
-  if (fishingDataview || presenceDataview) {
+  if (
+    dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID ||
+    dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID
+  ) {
     datasetName = presenceDataview
       ? t(`common.presence`, 'Vessel presence')
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
@@ -126,7 +131,7 @@ function HeatmapLayerPanel({
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && (fishingDataview || presenceDataview) && (
+          {layerActive && (fishingDataview || presenceDataview) && !readOnly && (
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
@@ -146,7 +151,7 @@ function HeatmapLayerPanel({
             </ExpandedContainer>
           )}
           <InfoModal dataview={dataview} />
-          <Remove onClick={onRemoveLayerClick} />
+          {!readOnly && <Remove onClick={onRemoveLayerClick} />}
         </div>
       </div>
       {layerActive && (
@@ -155,6 +160,11 @@ function HeatmapLayerPanel({
             <div className={styles.filters}>
               <DatasetFilterSource dataview={dataview} />
               <DatasetFlagField dataview={dataview} />
+              <DatasetSchemaField
+                dataview={dataview}
+                field={'qf_detect'}
+                label={t('layer.qfDetect', 'QF detect')}
+              />
               <DatasetSchemaField
                 dataview={dataview}
                 field={'geartype'}

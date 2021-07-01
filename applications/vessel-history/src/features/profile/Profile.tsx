@@ -28,6 +28,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { DEFAULT_VESSEL_MAP_ZOOM } from 'data/config'
 import Info from './components/Info'
 import styles from './Profile.module.css'
+import Activity from './components/activity/Activity'
 
 const Profile: React.FC = (props): React.ReactElement => {
   const dispatch = useDispatch()
@@ -120,7 +121,11 @@ const Profile: React.FC = (props): React.ReactElement => {
       {
         id: 'activity',
         title: t('common.activity', 'ACTIVITY').toLocaleUpperCase(),
-        content: <div>{t('common.commingSoon', 'Comming Soon!')}</div>,
+        content: vessel ? (
+          <Activity vessel={vessel} lastPosition={lastPosition} lastPortVisit={lastPortVisit} />
+        ) : (
+          <Fragment>{loading && <Spinner className={styles.spinnerFull} />}</Fragment>
+        ),
       },
       {
         id: 'map',
@@ -188,7 +193,7 @@ const Profile: React.FC = (props): React.ReactElement => {
       <div className={styles.profileContainer}>
         <Tabs
           tabs={tabs}
-          activeTab={activeTab?.id}
+          activeTab={activeTab?.id as string}
           onTabClick={(tab: Tab) => setActiveTab(tab)}
         ></Tabs>
       </div>

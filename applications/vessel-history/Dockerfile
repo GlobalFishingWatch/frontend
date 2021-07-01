@@ -10,6 +10,7 @@ ARG REACT_APP_GOOGLE_TAG_MANAGER_KEY=""
 ARG REACT_APP_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
 ARG REACT_APP_WORKSPACE_ENV=development
 ARG REACT_APP_LIMITED_ACCESS_USER=false
+ARG GENERATE_SOURCEMAP=false
 
 # Install build dependencies
 COPY ./package.json /app
@@ -26,6 +27,8 @@ COPY ./.eslintignore /app/.eslintignore
 COPY ./.eslintrc.js /app/.eslintrc.js
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./tsconfig.json /app/tsconfig.json
+ENV GENERATE_SOURCEMAP=${GENERATE_SOURCEMAP}
+
 RUN npm run build
 
 #################################################################################

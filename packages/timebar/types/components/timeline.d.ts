@@ -20,7 +20,7 @@ declare class Timeline extends PureComponent<any, any, any> {
     frameTimestamp: any;
     onMouseDown: (event: any, dragging: any) => void;
     lastX: any;
-    throttledMouseMove: any;
+    throttledMouseMove: import("lodash").DebouncedFunc<(clientX: any, scale: any, isDay: any) => void>;
     notifyMouseLeave: () => void;
     onMouseMove: (event: any) => void;
     onMouseUp: (event: any) => void;

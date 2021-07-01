@@ -1,12 +1,13 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
-import { useMemo, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { debounce } from 'lodash'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   MULTILAYER_SEPARATOR,
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+  UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import type { Style } from '@globalfishingwatch/mapbox-gl'
@@ -25,12 +26,9 @@ import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
-import {
-  selectActivityDataviews,
-  selectDataviewInstancesResolved,
-} from 'features/dataviews/dataviews.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { Range } from 'features/timebar/timebar.slice'
+import { Range, selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
+import { t } from 'features/i18n/i18n'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -39,7 +37,6 @@ import {
 import {
   setClickedEvent,
   selectClickedEvent,
-  fetch4WingInteractionThunk,
   MAX_TOOLTIP_VESSELS,
   fetchEncounterEventThunk,
   SliceInteractionEvent,
@@ -47,6 +44,7 @@ import {
   selectApiEventStatus,
   ExtendedFeatureVessel,
   ExtendedFeatureEvent,
+  fetchFishingActivityInteractionThunk,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
@@ -152,10 +150,18 @@ export const useClickedEventConnect = () => {
       return
     }
 
+    // When hovering in a vessel event we don't want to have clicked events
+    const isVesselSingleFeatureEvent =
+      event.features.find((f) => f.generatorType === Generators.Type.VesselEvents) !== undefined
+
+    if (isVesselSingleFeatureEvent && event.features?.length === 1) {
+      return
+    }
+
     dispatch(setClickedEvent(event as SliceInteractionEvent))
 
     // get temporal grid clicked features and order them by sublayerindex
-    const temporalGridFeatures = event.features
+    const fishingActivityFeatures = event.features
       .filter((feature) => {
         if (!feature.temporalgrid) {
           return false
@@ -166,9 +172,9 @@ export const useClickedEventConnect = () => {
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
-    if (temporalGridFeatures?.length && timeRange) {
+    if (fishingActivityFeatures?.length && timeRange) {
       fourWingsPromiseRef.current = dispatch(
-        fetch4WingInteractionThunk({ temporalGridFeatures, timeRange })
+        fetchFishingActivityInteractionThunk({ fishingActivityFeatures, timeRange })
       )
     }
 
@@ -212,10 +218,40 @@ export type TooltipEvent = {
   features: TooltipEventFeature[]
 }
 
-export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
-  const { t } = useTranslation()
-  const dataviews = useSelector(selectDataviewInstancesResolved)
-  const temporalgridDataviews = useSelector(selectActivityDataviews)
+export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
+  const highlightedEvent = useSelector(selectHighlightedEvent)
+  const dispatch = useDispatch()
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceDispatch = useCallback(
+    debounce((event: any) => {
+      dispatch(setHighlightedEvent(event))
+    }, 100),
+    []
+  )
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const setHighlightedEventDebounced = useCallback(() => {
+    const vesselFeature = features?.find((f) => f.category === DataviewCategory.Vessels)
+    if (vesselFeature) {
+      if (vesselFeature.properties?.id && highlightedEvent?.id !== vesselFeature.properties.id) {
+        debounceDispatch({ id: vesselFeature.properties.id })
+      }
+    } else if (highlightedEvent) {
+      debounceDispatch(undefined)
+    }
+  }, [features, highlightedEvent, debounceDispatch])
+
+  useEffect(() => {
+    setHighlightedEventDebounced()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [features])
+}
+
+export const parseMapTooltipEvent = (
+  event: SliceInteractionEvent | null,
+  dataviews: UrlDataviewInstance<Generators.Type>[],
+  temporalgridDataviews: UrlDataviewInstance<Generators.Type>[]
+) => {
   if (!event || !event.features) return null
 
   const clusterFeature = event.features.find(

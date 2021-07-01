@@ -1,5 +1,36 @@
 # @globalfishingwatch/layer-composer
 
+## 8.1.0
+
+### Minor Changes
+
+- fishing events
+
+## 8.0.0
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@4.3.0
+
+## 7.3.0
+
+### Minor Changes
+
+- events with track segments
+
+## 7.2.0
+
+### Minor Changes
+
+- resolve vessel events generator
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@4.2.6
+- 05fe3de6: fixed issue with 4w time range + more greedy
+
 ## 7.1.3
 
 ### Patch Changes
@@ -24,7 +55,7 @@
 
 ### Minor Changes
 
-- 6c1b25bb: include leading point in filterGeoJSONByTimerange
+- 6c1b25bb: include leading point in filterTrackByTimerange
 
 ## 7.0.4
 

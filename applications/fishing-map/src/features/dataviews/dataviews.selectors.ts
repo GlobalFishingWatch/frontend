@@ -17,7 +17,7 @@ import { Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { ThinningLevels, THINNING_LEVELS } from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectActivityCategory, selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
 import {
   selectWorkspaceStatus,
@@ -25,6 +25,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { isActivityDataview } from 'features/workspace/heatmaps/heatmaps.utils'
 import { isGuestUser } from 'features/user/user.selectors'
+import { selectActivityCategoryFn } from 'features/app/app.selectors'
 import { selectAllDataviews } from './dataviews.slice'
 
 export const selectDataviews = createSelector(
@@ -104,7 +105,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
 )
 
 export const selectDataviewInstancesResolved = createSelector(
-  [selectAllDataviewInstancesResolved, selectActivityCategory],
+  [selectAllDataviewInstancesResolved, selectActivityCategoryFn],
   (dataviews = [], activityCategory) => {
     return dataviews.filter((dataview) => {
       const activityDataview = isActivityDataview(dataview)
@@ -114,7 +115,7 @@ export const selectDataviewInstancesResolved = createSelector(
 )
 
 export const selectDataviewInstancesResolvedVisible = createSelector(
-  [selectDataviewInstancesResolved, selectActivityCategory],
+  [selectDataviewInstancesResolved, selectActivityCategoryFn],
   (dataviews = []) => {
     return dataviews.filter((dataview) => dataview.config?.visible)
   }
@@ -186,7 +187,7 @@ export const selectPresenceDataviews = createSelector(
 )
 
 export const selectActivityDataviews = createSelector(
-  [selectFishingDataviews, selectPresenceDataviews, selectActivityCategory],
+  [selectFishingDataviews, selectPresenceDataviews, selectActivityCategoryFn],
   (fishingDataviews = [], presenceDataviews = [], activityCategory) => {
     return activityCategory === 'presence' ? presenceDataviews : fishingDataviews
   }

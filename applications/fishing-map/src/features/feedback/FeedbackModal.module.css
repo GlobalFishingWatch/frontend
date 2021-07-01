@@ -34,6 +34,12 @@
   color: var(--color-secondary-blue);
 }
 
+.emailDisclaimer {
+  text-align: right;
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}
+
 .footer {
   margin-top: var(--space-S);
   width: 100%;

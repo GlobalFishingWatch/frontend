@@ -173,12 +173,7 @@ export const useFilteredTimeSeries = () => {
           }
         }
       )
-      if (
-        activityLayersWithFeatures.length &&
-        activityLayersWithFeatures.every(
-          (activityLayerWithFeatures) => activityLayerWithFeatures.features.length
-        )
-      ) {
+      if (activityLayersWithFeatures.length) {
         computeTimeseries(activityLayersWithFeatures, simplifiedGeometry as MultiPolygon)
         map.off('idle', onMapIdle)
       }

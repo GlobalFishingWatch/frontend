@@ -17,6 +17,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
+import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { isGuestUser } from 'features/user/user.selectors'
 import Color from '../common/Color'
@@ -68,7 +69,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
 
   const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
   const vesselId = showDebugVesselId
-    ? (infoResource?.datasetConfig?.params?.find((p) => p.id === 'vesselId')?.value as string) || ''
+    ? (infoResource?.datasetConfig?.params?.find((p) => p.id === 'vesselId')?.value as string) ||
+      dataview.id.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, '') ||
+      ''
     : ''
   const vesselTitle = vesselLabel || vesselId
 

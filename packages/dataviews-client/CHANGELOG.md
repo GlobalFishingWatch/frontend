@@ -1,5 +1,59 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.1.0
+
+### Minor Changes
+
+- fishing events
+
+## 11.0.0
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@4.3.0
+  - @globalfishingwatch/api-client@2.0.0
+  - @globalfishingwatch/layer-composer@8.0.0
+
+## 10.0.0
+
+### Minor Changes
+
+- currentEvent interaction
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@7.3.0
+
+## 9.0.1
+
+### Patch Changes
+
+- events generator
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@4.2.7
+
+## 9.0.0
+
+### Minor Changes
+
+- resolve vessel events generator
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/api-types@4.2.6
+
+## 9.0.0
+
+### Patch Changes
+
+- Updated dependencies [05fe3de6]
+  - @globalfishingwatch/layer-composer@7.2.0
+
 ## 8.0.0
 
 ### Patch Changes

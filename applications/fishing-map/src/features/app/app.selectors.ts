@@ -12,7 +12,6 @@ import {
   selectQueryParam,
   selectUrlViewport,
   selectLocationCategory,
-  selectActivityCategory,
   selectUrlTimeRange,
 } from 'routes/routes.selectors'
 import {
@@ -20,6 +19,7 @@ import {
   TimebarEvents,
   TimebarGraphs,
   TimebarVisualisations,
+  WorkspaceActivityCategory,
   WorkspaceAnalysis,
   WorkspaceState,
   WorkspaceStateProperty,
@@ -28,6 +28,7 @@ import {
   selectActiveVesselsDataviews,
   selectDataviewInstancesMerged,
 } from 'features/dataviews/dataviews.selectors'
+import { RootState } from 'store'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -74,10 +75,35 @@ export const selectSearchQuery = createSelector(
   }
 )
 
+export const selectActivityCategory = createSelector(
+  [selectWorkspaceStateProperty('activityCategory')],
+  (activityCategory): WorkspaceActivityCategory => {
+    return activityCategory
+  }
+)
+
+export function selectActivityCategoryFn(state: RootState) {
+  return selectActivityCategory(state)
+}
+
 export const selectBivariateDataviews = createSelector(
   [selectWorkspaceStateProperty('bivariateDataviews')],
   (bivariate): BivariateDataviews => {
     return bivariate
+  }
+)
+
+export const selectReadOnly = createSelector(
+  [selectWorkspaceStateProperty('readOnly')],
+  (readOnly): boolean => {
+    return readOnly
+  }
+)
+
+export const selectDaysFromLatest = createSelector(
+  [selectWorkspaceStateProperty('daysFromLatest')],
+  (daysFromLatest): number => {
+    return daysFromLatest
   }
 )
 

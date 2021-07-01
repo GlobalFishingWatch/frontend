@@ -25,11 +25,13 @@ export const formatNumber = (num: string | number) => {
 }
 
 export const getVesselLabel = (vessel: ExtendedFeatureVessel | Vessel, withGearType = false) => {
-  if (vessel.shipname && vessel.geartype && withGearType)
-    return `${formatInfoField(vessel.shipname, 'name')} (${t(
+  if (vessel.shipname && vessel.geartype && vessel.flag && withGearType) {
+    return `${formatInfoField(vessel.shipname, 'name')}
+    (${t(`flags:${vessel.flag}`)}, ${t(
       `vessel.gearTypes.${vessel.geartype}` as any,
       EMPTY_FIELD_PLACEHOLDER
     )})`
+  }
   if (vessel.shipname) return formatInfoField(vessel.shipname, 'name')
   if (vessel.registeredGearType) {
     return `${t('vessel.unkwownVesselByGeartype', {
