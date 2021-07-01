@@ -127,6 +127,7 @@ export interface TMTDetail {
   valueList: ValueList
   relationList: RelationList
   authorisationList: AuthorizationList[]
+  imageList: string[]
 }
 
 export type OtherCallsign = FieldValueCounter<string>

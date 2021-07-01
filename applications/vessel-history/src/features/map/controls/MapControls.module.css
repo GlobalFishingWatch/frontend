@@ -1,5 +1,5 @@
 :root {
-  --header-height: 110px;
+  --header-height: calc(70px + 4rem);
 }
 .mapControls {
   display: flex;

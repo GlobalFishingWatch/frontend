@@ -1,14 +1,14 @@
 .vesselItem {
-  margin-bottom: 15px;
-  padding-bottom: 15px;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
   border-bottom: 1px solid rgba(22, 63, 137, 0.1);
 }
 .vesselItem h3 {
   color: #163f89;
-  font-size: 18px;
+  font-size: 1.8rem;
   letter-spacing: 0;
-  line-height: 21px;
-  margin-bottom: 10px;
+  line-height: 2.1rem;
+  margin-bottom: 1rem;
 }
 
 .deleteSaved {
@@ -25,11 +25,11 @@
   float: left;
   opacity: 0.65;
   color: #163f89;
-  font-size: 14px;
+  font-size: 1.4rem;
   letter-spacing: 0;
-  line-height: 16px;
-  margin-right: 30px;
-  margin-bottom: 15px;
+  line-height: 1.7rem;
+  margin-right: 3rem;
+  margin-bottom: 1.5rem;
 }
 
 .vesselItem .remove {
