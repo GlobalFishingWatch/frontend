@@ -22,7 +22,6 @@ import {
   selectActivityDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { Range } from 'features/timebar/timebar.slice'
 import { selectUserLogged } from 'features/user/user.slice'
 
 export const MAX_TOOLTIP_VESSELS = 5

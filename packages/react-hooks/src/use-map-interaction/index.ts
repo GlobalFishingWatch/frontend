@@ -1,5 +1,8 @@
 import type { Geometry } from 'geojson'
-import { ContextLayerType, HeatmapAnimatedInteractionType } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import {
+  ContextLayerType,
+  HeatmapAnimatedInteractionType,
+} from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Interval } from '@globalfishingwatch/layer-composer/dist/generators'
 import { PointerEvent } from '@globalfishingwatch/react-map-gl'
 

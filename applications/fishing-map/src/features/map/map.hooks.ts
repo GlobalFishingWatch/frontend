@@ -17,17 +17,14 @@ import {
   useFeatureState,
 } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
-import {
-  ENCOUNTER_EVENTS_SOURCE_ID,
-  FISHING_LAYER_PREFIX,
-} from 'features/dataviews/dataviews.utils'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { Range, selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
+import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
 import { t } from 'features/i18n/i18n'
 import {
   selectDefaultMapGeneratorsConfig,
@@ -75,7 +72,6 @@ export const useGeneratorsConnect = () => {
 export const useClickedEventConnect = () => {
   const map = useMapInstance()
   const dispatch = useDispatch()
-  const timeRange = useTimerangeConnect() as Range
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
