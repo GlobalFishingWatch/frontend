@@ -161,20 +161,28 @@
   color: var(--color-secondary-blue);
 }
 
-.listColumn {
-  display: flex;
-  justify-content: space-between;
+.viirsTable {
+  width: 100%;
 }
 
-.listColumn > span {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  max-width: 33%;
+.viirsTable,
+.viirsTable th,
+.viirsTable td {
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;
 }
 
-.listColumn:first-of-type > span {
-  text-transform: capitalize;
+.viirsTable th {
+  font: var(--font-XS);
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
+  text-align: left;
+}
+
+.viirsTable th:last-child,
+.viirsTable td:last-child {
+  text-align: right;
 }
 
 .rowText {
@@ -185,6 +193,10 @@
   display: flex;
   flex-wrap: nowrap;
   margin-left: var(--space-S);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
 }
 
 :global(.mapboxgl-popup .mapboxgl-popup-content) {
