@@ -10,3 +10,11 @@ export const toFixed = (value: number, decimals = 2) => {
   }
   return (Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals)).toFixed(decimals)
 }
+
+export type Field = { id: string; label: string | number }
+export const sortFields = (a: Field, b: Field) => {
+  if (typeof a.label === 'number' || typeof b.label === 'number') {
+    return (a.label as number) - (b.label as number)
+  }
+  return a.label.localeCompare(b.label)
+}
