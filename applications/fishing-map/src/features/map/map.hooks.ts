@@ -23,6 +23,7 @@ import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
+import { removeDatasetVersion } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
 import { t } from 'features/i18n/i18n'
@@ -339,7 +340,8 @@ export const parseMapTooltipEvent = (
         if (dataview.config?.type === Generators.Type.UserContext) {
           title = dataset.name
         } else {
-          title = t(`datasets:${dataset.id}.name` as any) as string
+          const datasetId = removeDatasetVersion(dataset?.id)
+          title = t(`datasets:${datasetId}.name` as any) as string
         }
       }
     }
