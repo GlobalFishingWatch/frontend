@@ -137,7 +137,7 @@ class VesselsEventsGenerator {
           visibility: 'visible',
         },
         paint: {
-          'line-color': 'white',
+          'line-color': ['get', 'color'],
           'line-width': [...activeFilter, 6, 1.5],
           'line-opacity': 1,
         },
