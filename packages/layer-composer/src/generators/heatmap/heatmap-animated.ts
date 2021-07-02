@@ -144,10 +144,11 @@ class HeatmapAnimatedGenerator {
 
       return sourceParams.map((params: Record<string, string>) => {
         const url = new URL(`${tilesUrl}?${new URLSearchParams(params)}`)
+        const urlString = decodeURI(url.toString())
         const source = {
           id: params.id,
           type: 'temporalgrid',
-          tiles: [decodeURI(url.toString())],
+          tiles: [urlString],
           maxzoom: config.maxZoom,
         }
         return source

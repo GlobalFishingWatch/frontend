@@ -38,9 +38,6 @@ const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2
 const getVisibleStartFrame = (rawFrame: number) => {
   return Math.floor(rawFrame)
 }
-const getVisibleEndFrame = (rawFrame: number) => {
-  return Math.ceil(rawFrame)
-}
 
 export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   hour: {
@@ -237,9 +234,8 @@ export const getActiveTimeChunks = (
   const visibleStartFrameRaw = finalIntervalConfig.getRawFrame(+toDT(activeStart))
   const visibleStartFrame = getVisibleStartFrame(visibleStartFrameRaw)
   const visibleEndFrameRaw = finalIntervalConfig.getRawFrame(+toDT(activeEnd))
-  const visibleEndFrame = getVisibleEndFrame(visibleEndFrameRaw)
-
-  const deltaInIntervalUnits = visibleEndFrame - visibleStartFrame
+  const deltaInIntervalUnits = Math.round(visibleEndFrameRaw - visibleStartFrameRaw)
+  const visibleEndFrame = visibleStartFrame + deltaInIntervalUnits
 
   const timeChunks: TimeChunks = {
     activeStart,
