@@ -58,7 +58,7 @@ export const selectTracksData = createSelector(
       return {
         segments: trackSegments,
         color: dataview.config?.color || '',
-        segmentsOffsetY: track.datasetType === DatasetTypes.UserTracks,
+        segmentsOffsetY: track.dataset.type === DatasetTypes.UserTracks,
       }
     })
 

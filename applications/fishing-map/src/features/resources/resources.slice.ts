@@ -28,8 +28,8 @@ const parseFishingEvent = (event: ApiEvent, index: number): ApiEvent => {
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
   async (resource: Resource) => {
-    const isTrackResource = resource.datasetType === DatasetTypes.Tracks
-    const isEventsResource = resource.datasetType === DatasetTypes.Events
+    const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
+    const isEventsResource = resource.dataset.type === DatasetTypes.Events
     const responseType =
       isTrackResource &&
       resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
