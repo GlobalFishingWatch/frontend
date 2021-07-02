@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.2.0
+
+### Minor Changes
+
+- 87882042: add sublayerInteractionType
+
 ## 8.1.0
 
 ### Minor Changes
