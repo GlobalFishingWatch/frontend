@@ -100,9 +100,8 @@ export default class DataviewsClient {
                   const binaryQuery = datasetParams?.query?.find((query) => query.id === 'binary')
                   const formatQuery = datasetParams?.query?.find((query) => query.id === 'format')
                   resources.push({
+                    dataset,
                     dataviewId: dataview.id,
-                    datasetType: dataset.type,
-                    datasetId: dataset.id,
                     responseType:
                       binaryQuery?.value === true
                         ? dataset.type?.includes('track') && formatQuery?.value === 'valueArray'
