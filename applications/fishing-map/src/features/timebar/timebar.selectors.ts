@@ -12,7 +12,7 @@ import {
   resolveDataviewEventsResources,
 } from '@globalfishingwatch/dataviews-client'
 import { geoJSONToSegments, Segment } from '@globalfishingwatch/data-transforms'
-import { selectTimebarGraph } from 'features/app/app.selectors'
+import { selectTimebarEvents, selectTimebarGraph } from 'features/app/app.selectors'
 import { t } from 'features/i18n/i18n'
 import {
   selectActiveTrackDataviews,
@@ -99,8 +99,8 @@ export const selectTracksGraphs = createSelector(
 )
 
 const selectEventsForTracks = createSelector(
-  [selectActiveTrackDataviews, selectResources],
-  (trackDataviews, resources) => {
+  [selectActiveTrackDataviews, selectResources, selectTimebarEvents],
+  (trackDataviews, resources, timebarEvents) => {
     const vesselsEvents = trackDataviews.map((dataview) => {
       const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
@@ -111,10 +111,24 @@ const selectEventsForTracks = createSelector(
         tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
 
       // Waiting for the tracks resource to be resolved to show the events
-      if (!hasEventData || !tracksResourceResolved) {
+      if (!hasEventData || !tracksResourceResolved || timebarEvents === 'none') {
         return []
       }
-      const data = eventsResources.flatMap(({ url }) => (url ? resources[url].data : []))
+
+      const eventsResourcesFiltered = eventsResources.filter(({ dataset }) => {
+        if (timebarEvents === 'all') {
+          return true
+        }
+        return dataset.configuration?.type && dataset.configuration?.type === timebarEvents
+      })
+
+      const data = eventsResourcesFiltered.flatMap(({ url }) => {
+        if (!url || !resources[url].data) {
+          return []
+        }
+
+        return resources[url].data
+      })
       return data as ApiEvent[]
     })
     return vesselsEvents.filter((events) => events.length > 0)
