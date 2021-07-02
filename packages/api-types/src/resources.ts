@@ -1,5 +1,5 @@
 import { Segment } from '@globalfishingwatch/data-transforms'
-import { DatasetTypes } from './datasets'
+import { Dataset } from './datasets'
 import { DataviewDatasetConfig } from '.'
 
 export type ResourceResponseType = 'default' | 'text' | 'json' | 'blob' | 'arrayBuffer' | 'vessel'
@@ -18,8 +18,7 @@ export enum ResourceStatus {
 
 export interface Resource<T = unknown> {
   dataviewId: number | string
-  datasetId?: string
-  datasetType: DatasetTypes
+  dataset: Dataset
   datasetConfig: DataviewDatasetConfig
   url: string // identifies resource uniquely
   responseType?: ResourceResponseType

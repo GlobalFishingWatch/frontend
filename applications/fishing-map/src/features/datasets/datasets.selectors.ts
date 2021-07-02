@@ -69,3 +69,7 @@ export const getRelatedDatasetByType = (
   }
   return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)
 }
+
+export const getRelatedDatasetsByType = (dataset?: Dataset, datasetType?: DatasetTypes) => {
+  return dataset?.relatedDatasets?.filter((relatedDataset) => relatedDataset.type === datasetType)
+}

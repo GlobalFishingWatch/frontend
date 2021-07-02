@@ -13,9 +13,6 @@
     "historyFor": "historique pour",
     "previous": "Précédent"
   },
-  "layer": {
-    "toggleVisibility": "Toggle layer visibility"
-  },
   "map": {
     "loading": "Map loading",
     "toggleLayers": "Toggle layers"
@@ -32,22 +29,10 @@
     "selected": "slectionns"
   },
   "settings": {
-    "title": "Settings",
     "distance": "DISTANCE TRAVELLED",
     "duration": "DURATION",
-    "hours": "hours",
-    "longerThan": "Longer than",
     "eezs": {
       "label": "Events in these EEZs"
-    },
-    "mpas": {
-      "label": "Events in these MPAs"
-    },
-    "rfmos": {
-      "label": "Events in these RFMOS"
-    },
-    "loiteringEvents": {
-      "title": "Loitering Events"
     },
     "encounters": {
       "title": "Encounter Events"
@@ -55,11 +40,24 @@
     "fishingEvents": {
       "title": "Fishing Events"
     },
+    "hours": "hours",
+    "kms": "kms",
+    "loiteringEvents": {
+      "title": "Loitering Events"
+    },
+    "longerThan": "Longer than",
+    "mpas": {
+      "label": "Events in these MPAs"
+    },
     "portVisits": {
-      "title": "Port Visits",
+      "inputEnd": "ports",
       "inputStart": "Port visits in",
-      "inputEnd": "ports"
-    }
+      "title": "Port Visits"
+    },
+    "rfmos": {
+      "label": "Events in these RFMOS"
+    },
+    "title": "Settings"
   },
   "vessel": {
     "authorization_plural": "autorisations",
@@ -98,5 +96,8 @@
     "operator_plural": "opérateurs",
     "owner_plural": "propriétaires",
     "type_plural": "types"
+  },
+  "layer": {
+    "toggleVisibility": "Toggle layer visibility"
   }
 }

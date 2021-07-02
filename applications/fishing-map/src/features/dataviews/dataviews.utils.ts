@@ -28,11 +28,11 @@ export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 type VesselInstanceDatasets = {
   trackDatasetId: string
   infoDatasetId: string
-  eventsDatasetId?: string
+  eventsDatasetsId?: string[]
 }
 export const getVesselDataviewInstance = (
   vessel: { id: string },
-  { trackDatasetId, infoDatasetId, eventsDatasetId }: VesselInstanceDatasets
+  { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets
 ): DataviewInstance<Generators.Type> => {
   const datasetsConfig: DataviewDatasetConfig[] = [
     {
@@ -46,16 +46,20 @@ export const getVesselDataviewInstance = (
       endpoint: EndpointId.Vessel,
     },
   ]
-  if (eventsDatasetId) {
-    datasetsConfig.push({
-      datasetId: eventsDatasetId,
-      query: [{ id: 'vessels', value: vessel.id }],
-      params: [],
-      endpoint: EndpointId.Events,
+  if (eventsDatasetsId) {
+    eventsDatasetsId.forEach((eventDatasetId) => {
+      datasetsConfig.push({
+        datasetId: eventDatasetId,
+        query: [{ id: 'vessels', value: vessel.id }],
+        params: [],
+        endpoint: EndpointId.Events,
+      })
     })
   }
   const vesselDataviewInstance = {
     id: `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vessel.id}`,
+    // TODO find the way to use different vessel dataviews, for example
+    // panama and peru doesn't show events and needed a workaround to work with this
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,

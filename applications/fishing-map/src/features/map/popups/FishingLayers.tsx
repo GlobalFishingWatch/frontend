@@ -6,7 +6,10 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getVesselLabel } from 'utils/info'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+} from 'features/datasets/datasets.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -20,14 +23,14 @@ import styles from './Popup.module.css'
 // t('common.days', 'Day')
 // t('common.days_plural', 'Days')
 
-type HeatmapTooltipRowProps = {
+type FishingTooltipRowProps = {
   feature: TooltipEventFeature
   showFeaturesDetails: boolean
 }
-function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowProps) {
+function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { fourWingsStatus } = useClickedEventConnect()
+  const { fishingInteractionStatus } = useClickedEventConnect()
   const userLogged = useSelector(isUserLogged)
 
   const onVesselClick = (vessel: ExtendedFeatureVessel) => {
@@ -48,17 +51,19 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
     if (!trackRelatedDataset) {
       console.warn('Missing track related dataset for', vessel)
     }
-    const eventsRelatedDataset = getRelatedDatasetByType(
-      vessel.dataset,
-      DatasetTypes.Events,
-      userLogged
-    )
+
+    const eventsRelatedDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
+
+    const eventsDatasetsId =
+      eventsRelatedDatasets && eventsRelatedDatasets?.length
+        ? eventsRelatedDatasets.map((d) => d.id)
+        : []
 
     if (vesselRelatedDataset && trackRelatedDataset) {
       const vesselDataviewInstance = getVesselDataviewInstance(vessel, {
         trackDatasetId: trackRelatedDataset.id,
         infoDatasetId: vesselRelatedDataset.id,
-        ...(eventsRelatedDataset && { eventsDatasetId: eventsRelatedDataset?.id }),
+        ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
       })
       upsertDataviewInstance(vesselDataviewInstance)
     }
@@ -91,7 +96,7 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
             })}
           </span>
         </div>
-        {fourWingsStatus === AsyncReducerStatus.Loading && (
+        {fishingInteractionStatus === AsyncReducerStatus.Loading && (
           <div className={styles.loading}>
             <Spinner size="small" />
           </div>
@@ -141,4 +146,4 @@ function HeatmapTooltipRow({ feature, showFeaturesDetails }: HeatmapTooltipRowPr
   )
 }
 
-export default HeatmapTooltipRow
+export default FishingTooltipRow

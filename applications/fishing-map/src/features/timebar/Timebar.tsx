@@ -17,13 +17,9 @@ import {
   useHighlightEventConnect,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
-import { TimebarEvents, TimebarVisualisations, TimebarGraphs } from 'types'
+import { TimebarVisualisations, TimebarGraphs } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
-import {
-  selectActivityCategory,
-  selectTimebarEvents,
-  selectTimebarGraph,
-} from 'features/app/app.selectors'
+import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import {
   setHighlightedTime,
@@ -50,7 +46,6 @@ const TimebarWrapper = () => {
   const { timebarVisualisation } = useTimebarVisualisation()
   const { setMapCoordinates } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
-  const timebarEvents = useSelector(selectTimebarEvents)
   const tracks = useSelector(selectTracksData)
   const tracksGraph = useSelector(selectTracksGraphs)
   const tracksEvents = useSelector(selectEventsWithRenderingInfo)
@@ -87,7 +82,7 @@ const TimebarWrapper = () => {
   const onMouseMove = useCallback(
     (clientX: number, scale: (arg: number) => Date) => {
       if (hoverInEvent.current === false) {
-        if (clientX === null || clientX === undefined) {
+        if (clientX === null || clientX === undefined || isNaN(clientX)) {
           if (highlightedTime !== undefined) {
             dispatch(disableHighlightedTime())
           }
@@ -171,8 +166,6 @@ const TimebarWrapper = () => {
 
   if (!start || !end) return null
 
-  const showAllEvents = timebarEvents === TimebarEvents.All
-  const showFishingEvents = showAllEvents || timebarEvents === TimebarEvents.Fishing
   return (
     <div>
       <TimebarComponent
@@ -205,7 +198,7 @@ const TimebarWrapper = () => {
                     {timebarGraph === TimebarGraphs.Speed && tracksGraph && (
                       <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
                     )}
-                    {tracksEvents && showFishingEvents && (
+                    {tracksEvents && (
                       <TimebarTracksEvents
                         key="events"
                         preselectedEventId={highlightedEvent?.id}

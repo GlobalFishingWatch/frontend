@@ -1,6 +1,10 @@
 import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
 import { Generators } from '@globalfishingwatch/layer-composer'
-import { resolveDataviewDatasetResource, UrlDataviewInstance } from '../resolve-dataviews'
+import {
+  resolveDataviewDatasetResource,
+  resolveDataviewEventsResources,
+  UrlDataviewInstance,
+} from '../resolve-dataviews'
 
 const getVesselResourceQuery = (
   dataview: UrlDataviewInstance<Generators.Type>,
@@ -11,7 +15,7 @@ const getVesselResourceQuery = (
     return {
       dataviewId: dataview.dataviewId as number,
       url: resource.url,
-      datasetType: resource.dataset.type,
+      dataset: resource.dataset,
       datasetConfig: resource.datasetConfig,
     }
   }
@@ -28,6 +32,7 @@ const resolveResourceEndpoint = (
     }
 
     let trackResource: Resource | null = null
+    let eventsResources: (Resource | null)[] = []
 
     if (dataview.config.visible === true) {
       const datasetType =
@@ -36,12 +41,12 @@ const resolveResourceEndpoint = (
           : DatasetTypes.Tracks
 
       trackResource = getVesselResourceQuery(dataview, datasetType)
+      eventsResources = resolveDataviewEventsResources(dataview)
     }
 
     const infoResource = getVesselResourceQuery(dataview, DatasetTypes.Vessels)
-    const eventsResource = getVesselResourceQuery(dataview, DatasetTypes.Events)
 
-    return [trackResource, infoResource, eventsResource].filter((r) => r !== null) as Resource[]
+    return [trackResource, infoResource, ...eventsResources].filter((r) => r !== null) as Resource[]
   })
 
   return resourceQueries

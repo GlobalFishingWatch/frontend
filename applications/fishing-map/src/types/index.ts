@@ -1,4 +1,5 @@
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { EventType } from '@globalfishingwatch/api-types'
 
 export enum Locale {
   en = 'en',
@@ -66,14 +67,7 @@ export enum TimebarVisualisations {
   Vessel = 'vessel',
 }
 
-export enum TimebarEvents {
-  All = 'all',
-  Fishing = 'fishing',
-  Encounters = 'encounters',
-  Loitering = 'loitering',
-  Ports = 'ports',
-  None = 'none',
-}
+export type TimebarEvents = EventType | 'all' | 'none'
 
 export enum TimebarGraphs {
   Speed = 'speed',

@@ -1,7 +1,7 @@
 import ReactGA from 'react-ga'
 import { DateTime } from 'luxon'
 import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
-import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
+import { TimebarGraphs, TimebarVisualisations } from 'types'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 export const IS_PRODUCTION =
@@ -50,7 +50,7 @@ export const DEFAULT_WORKSPACE = {
   availableEnd: new Date(Date.UTC(new Date().getFullYear(), 11, 31)).toISOString(),
   dataviewInstances: undefined,
   timebarVisualisation: TimebarVisualisations.Heatmap,
-  timebarEvents: TimebarEvents.All,
+  timebarEvents: 'all',
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
   analysis: undefined,

@@ -1,7 +1,7 @@
 import { intersection, lowerCase } from 'lodash'
 import { Dataset, Dataview, EventTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { capitalize } from 'utils/shared'
+import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
 
@@ -15,14 +15,21 @@ export type SupportedDatasetSchema =
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
 export const removeDatasetVersion = (datasetId: string) => {
-  return datasetId?.split(':')[0]
+  return datasetId ? datasetId?.split(':')[0] : ''
 }
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
+  const datasetsConfigured = dataview.datasetsConfig
+    ?.filter((datasetConfig) =>
+      datasetConfig.query?.find((q) => q.id === 'vessels' && q.value !== '')
+    )
+    .map((d) => d.datasetId)
   return (dataview?.datasets || []).filter((dataset) => {
-    return dataset?.configuration?.type
+    const isEventType = dataset?.configuration?.type
       ? Object.values(EventTypes).includes(dataset.configuration.type)
       : false
+    const hasVesselId = datasetsConfigured?.includes(dataset.id)
+    return isEventType && hasVesselId
   })
 }
 
@@ -94,7 +101,7 @@ export const getCommonSchemaFieldsInDataview = (
         return { id: field, label: label || capitalize(lowerCase(field)) }
       })
     : []
-  return commonSchemaFields.sort((a, b) => a.label.localeCompare(b.label))
+  return commonSchemaFields.sort(sortFields)
 }
 
 export const getSchemaFieldsSelectedInDataview = (

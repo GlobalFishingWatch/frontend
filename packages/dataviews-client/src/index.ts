@@ -2,6 +2,7 @@ export { default } from './dataviews-client'
 export {
   default as resolveDataviews,
   resolveDataviewDatasetResource,
+  resolveDataviewEventsResources,
   UrlDataviewInstance,
   mergeWorkspaceUrlDataviewInstances,
 } from './resolve-dataviews'

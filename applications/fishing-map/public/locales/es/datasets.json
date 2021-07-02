@@ -1,9 +1,64 @@
 {
-  "carriers-clusterbuster": {
-    "name": "Encuentros",
-    "description": "Identificado de los datos AIS como lugares donde dos buques, un transportador y uno pesquero; estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media de <2 nudos, y a menos de 10 km de la costa.",
+  "private-panama-fishing-effort": {
+    "name": "Panama VMS",
+    "description": "Vessel monitoring system (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). Data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Panama’s carrier vessel data is also available here. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. In the future, we expect to be able to display more positions. Click on a carrier vessel’s position to view the vessel’s complete track. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
     "schema": {
-      "fields": "campos"
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "hours": "hours",
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "private-peru-fishing-effort": {
+    "name": "Peru VMS",
+    "description": "Vessel monitoring system (VMS) data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. Data is collected using their vessel monitoring system (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industrial": "industrial",
+          "artisanal": "artisanal",
+          "not defined": "not defined"
+        }
+      },
+      "hours": "hours",
+      "origin": {
+        "keyword": "origin",
+        "enum": {
+          "PER": "PER",
+          "Foreign": "Foreign"
+        }
+      },
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "drifting_longlines": "drifting_longlines",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "driftnets|fishing|pole_and_line|set_gillnets|set_longlines",
+          "set_longlines": "set_longlines",
+          "purse_seines": "purse_seines",
+          "trawlers": "trawlers",
+          "drifting_longlines|squid_jiggers": "drifting_longlines|squid_jiggers",
+          "pots_and_traps": "pots_and_traps",
+          "set_gillnets": "set_gillnets",
+          "set_longlines|squid_jigger": "set_longlines|squid_jigger",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "driftnets|pole_and_line|set_gillnets|set_longlines",
+          "fishing": "fishing",
+          "driftnets|set_gillnets": "driftnets|set_gillnets",
+          "fishing|purse_seines": "fishing|purse_seines",
+          "drifting_longlines|trawlers": "drifting_longlines|trawlers"
+        }
+      },
+      "vessel_id": "vessel_id",
+      "elevation_m": "elevation_m",
+      "distance_from_port_m": "distance_from_port_m",
+      "distance_from_shore_m": "distance_from_shore_m"
     }
   },
   "public-areas-to-be-avoided-1618836788619": {
@@ -30,6 +85,25 @@
       "elevation_m": "altitud_m",
       "distance_from_port_m": "distancia_de_puerto_m",
       "distance_from_shore_m": "distancia_de_oro_m"
+    }
+  },
+  "public-chile-presence": {
+    "name": "Chile VMS",
+    "description": "Vessel monitoring system (VMS) data provided by the Chilean government’s fisheries and aquaculture regulator (SERNAPESCA). It is possible to filter Chile’s VMS data for small-scale fishing vessels (<18 meters) and industrial fishing vessels (>18 meters). Note that some vessels are <18 meters but are considered industrial because they were registered in the capture of industrial quotas. SERNAPESCA is also using our map to visualize and track vessel positions for their fleet, including vessels involved in aquaculture. Data is collected using Chile’s VMS via satellites and terrestrial receivers and contains vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "chile_vms_small_fisheries": "chile_vms_small_fisheries",
+          "chile_vms_industry": "chile_vms_industry",
+          "chile_vms_aquaculture": "chile_vms_aquaculture",
+          "chile_vms_transport": "chile_vms_transport"
+        }
+      },
+      "vessel_id": "vessel_id"
     }
   },
   "public-cold-water-corals": {
@@ -121,11 +195,27 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fd-salinity-ascension-v3": {
+    "name": "Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-fd-salinity-caribe-v2": {
     "name": "Salinidad",
     "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
     "schema": {
       "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-caribe-v3": {
+    "name": "Salinity Caribe",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
@@ -153,6 +243,14 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fd-salinity-niue-v3": {
+    "name": "Salinity Niue",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-fd-salinity-palau-v2": {
     "name": "Salinidad",
     "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
@@ -161,11 +259,27 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-fd-salinity-palau-v3": {
+    "name": "Salinity Palau",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-fd-salinity-tristan-v2": {
     "name": "Salinidad",
     "description": "La salinidad de superficie marina es un parámetro clave para estimar la influencia de los océanos en el clima. Junto con la temperatura, la salinidad es un factor clave que determina la densidad del agua del océano y determina así la convección y reaparición de las masas de agua. La circulación de termohalina atraviesa todos los océanos en superficie y a profundidad, impulsados por la temperatura y la salinidad. Una “correa de transporte” global es un modelo simple de la circulación de termohalina a gran escala. Las aguas profundas se forman en el Atlántico Norte, los sumideros, se mueven hacia el sur, circula alrededor de la Antártida, y finalmente entra en las cuencas hindú, falso y atlántico. Las corrientes traen masas de agua fría de norte a sur y viceversa. Esta circulación de termohalina influye en gran medida en la formación del hielo marino en los polos del mundo, y transporta fuentes de alimentos oceánicos y vida marina alrededor del planeta, así como afecta a patrones de lluvia, patrones de viento, hurricanes y monzones.",
     "schema": {
       "flag": "bandera",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-fd-salinity-tristan-v3": {
+    "name": "Salinity Tristan",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information.",
+    "schema": {
+      "flag": "flag",
       "vessel_id": "vessel_id"
     }
   },
@@ -230,6 +344,26 @@
     "description": "Las zonas de pesca restringidas son areas definidas geográficamente en donde algunas actividades específicas de pesca están temporalmente prohibidas o restringidas con el objetivo de mejorar los patrones de explotación y conservar poblaciones específicas, así como también hábitats delicados de los fondos marinos. Fuente: FAO.",
     "schema": {}
   },
+  "public-global-encounters-events-carriers-fishing": {
+    "name": "Encounter Events for Carriers-Fishing Vessels (AIS)",
+    "description": "The dataset contains encounter events for AIS (Carriers-Fishing)",
+    "schema": {
+      "fields": "fields",
+      "event_id": "event_id",
+      "event_end": "event_end",
+      "vessel_id": "vessel_id",
+      "event_info": "event_info",
+      "event_type": {
+        "keyword": "event_type",
+        "enum": {
+          "port": "port"
+        }
+      },
+      "event_start": "event_start",
+      "event_vessels": "event_vessels",
+      "event_mean_position": "event_mean_position"
+    }
+  },
   "public-global-fishing-effort": {
     "name": "AIS",
     "description": "Utilizamos datos sobre la identidad, el tipo, la ubicación, la velocidad, y más que se emite utilizando el Sistema de Identificación Automática (AIS) y recolectado a través de satélites y receptores terrestres. AIS fue desarrollado para la prevención de colisión/esquivación. Global Fishing Watch analiza los datos de AIS recopilados de los buques que nuestra investigación ha identificado como conocidos o posibles pesqueros comerciales, y aplica un algoritmo de detección de pesca para determinar una “aparente actividad pesquera” basado en cambios en la velocidad y dirección de los buques. El algoritmo clasifica cada punto de datos de emisión de AIS para estos buques como pesca aparente o sin actividad pesquera y exhibe el primero en el mapa de calor de la actividad pesquera de Global Fishing Watch. Los datos AIS como emisión pueden variar en integridad, precisión y calidad. Además, la recolección de datos por parte de receptores satelitales o terrestres, puede introducir errores a través de datos faltantes o inexactos. El algoritmo de detección de la pesca de Global Fishing Watch es un mejor esfuerzo matemático para identificar una “aparente actividad pesquera”. Como resultado, es posible que algunas actividades pesqueras no sean identificadas como tales por Global Fishing Watch. Por el contrario, Global Fishing Watch puede mostrar una actividad pesquera aparente en la que la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica “actividad pesquera”,“pesca” o “esfuerzo pesquero” como “aparente”, en lugar de brindar certeza sobre la actividad. En todo o en parte, la información de Global Fishing Watch sobre “aparente actividad de pesca” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Global Fishing Watch está tomando medidas para asegurar que la identificación del comportamiento de la actividad pesquera sea lo más exacta posible. Los algoritmos de detección de pesca de Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de buques que dan lugar a la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y técnicas de clasificación automatizadas.",
@@ -275,6 +409,33 @@
           "unknown": "Otros"
         }
       }
+    }
+  },
+  "public-global-viirs": {
+    "name": "Viirs",
+    "description": "The dataset contains viirs data",
+    "schema": {
+      "cel": "cel",
+      "lat": "lat",
+      "lon": "lon",
+      "pos": "pos",
+      "flag": "flag",
+      "htime": "htime",
+      "radiance": "radiance",
+      "detect_id": "detect_id",
+      "qf_detect": {
+        "keyword": "qf_detect",
+        "enum": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "5": 5,
+          "7": 7,
+          "10": 10
+        }
+      },
+      "timestamp": "timestamp",
+      "vessel_id": "vessel_id"
     }
   },
   "public-gs-as-simplified": {
@@ -412,6 +573,51 @@
       "elevation_m": "altitud_m",
       "distance_from_port_m": "distancia_de_puerto_m",
       "distance_from_shore_m": "distancia_de_oro_m"
+    }
+  },
+  "public-peru-presence": {
+    "name": "Peru VMS Presence",
+    "description": "Vessel monitoring system (VMS) data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. Data is collected using their vessel monitoring system (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industrial": "industrial",
+          "artisanal": "artisanal",
+          "not defined": "not defined"
+        }
+      },
+      "origin": {
+        "keyword": "origin",
+        "enum": {
+          "PER": "PER",
+          "Foreign": "Foreign"
+        }
+      },
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "drifting_longlines": "drifting_longlines",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "driftnets|fishing|pole_and_line|set_gillnets|set_longlines",
+          "set_longlines": "set_longlines",
+          "purse_seines": "purse_seines",
+          "driftnets|fishing|set_gillnets": "driftnets|fishing|set_gillnets",
+          "trawlers": "trawlers",
+          "drifting_longlines|squid_jiggers": "drifting_longlines|squid_jiggers",
+          "pots_and_traps": "pots_and_traps",
+          "set_gillnets": "set_gillnets",
+          "set_longlines|squid_jigger": "set_longlines|squid_jigger",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "driftnets|pole_and_line|set_gillnets|set_longlines",
+          "fishing": "fishing",
+          "driftnets|set_gillnets": "driftnets|set_gillnets",
+          "fishing|purse_seines": "fishing|purse_seines",
+          "drifting_longlines|trawlers": "drifting_longlines|trawlers"
+        }
+      },
+      "vessel_id": "vessel_id"
     }
   },
   "public-tristan-seamounts-200-1618586314138": {
