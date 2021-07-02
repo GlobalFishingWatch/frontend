@@ -360,9 +360,13 @@ const slice = createSlice({
     builder.addCase(fetchViirsInteractionThunk.fulfilled, (state, action) => {
       state.viirsStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
-      const feature = state.clicked?.features?.find(
-        (feature) => feature.id && action.meta.arg.feature.id
-      )
+      const feature = state.clicked?.features?.find((feature) => {
+        const sameFeatureId = feature.id && action.meta.arg.feature.id
+        const sameFeatureInteractionType =
+          feature.temporalgrid?.sublayerInteractionType ===
+          action.meta.arg.feature.temporalgrid?.sublayerInteractionType
+        return sameFeatureId && sameFeatureInteractionType
+      })
       if (feature && action.payload) {
         feature.viirs = action.payload
       }
