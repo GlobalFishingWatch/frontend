@@ -17,10 +17,7 @@ import {
   useFeatureState,
 } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
-import {
-  ENCOUNTER_EVENTS_SOURCE_ID,
-  FISHING_LAYER_PREFIX,
-} from 'features/dataviews/dataviews.utils'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -28,7 +25,7 @@ import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import { removeDatasetVersion } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { Range, selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
+import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
 import { t } from 'features/i18n/i18n'
 import {
   selectDefaultMapGeneratorsConfig,
@@ -41,11 +38,14 @@ import {
   MAX_TOOLTIP_VESSELS,
   fetchEncounterEventThunk,
   SliceInteractionEvent,
-  selectFourWingsStatus,
+  selectFishingInteractionStatus,
   selectApiEventStatus,
   ExtendedFeatureVessel,
   ExtendedFeatureEvent,
   fetchFishingActivityInteractionThunk,
+  fetchViirsInteractionThunk,
+  selectViirsInteractionStatus,
+  ApiViirsStats,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
@@ -73,16 +73,17 @@ export const useGeneratorsConnect = () => {
 export const useClickedEventConnect = () => {
   const map = useMapInstance()
   const dispatch = useDispatch()
-  const timeRange = useTimerangeConnect() as Range
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
-  const fourWingsStatus = useSelector(selectFourWingsStatus)
+  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
+  const viirsInteractionStatus = useSelector(selectViirsInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
   const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
-  const fourWingsPromiseRef = useRef<any>()
+  const fishingPromiseRef = useRef<any>()
+  const viirsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
@@ -136,13 +137,13 @@ export const useClickedEventConnect = () => {
       }
     }
 
-    if (fourWingsPromiseRef.current) {
-      fourWingsPromiseRef.current.abort()
-    }
-
-    if (eventsPromiseRef.current) {
-      eventsPromiseRef.current.abort()
-    }
+    // Cancel all pending promises
+    const promisesRef = [fishingPromiseRef, viirsPromiseRef, eventsPromiseRef]
+    promisesRef.forEach((ref) => {
+      if (ref.current) {
+        ref.current.abort()
+      }
+    })
 
     if (!event || !event.features) {
       if (clickedEvent) {
@@ -168,15 +169,28 @@ export const useClickedEventConnect = () => {
           return false
         }
         const isFeatureVisible = feature.temporalgrid.visible
-        const isFishingFeature = feature.temporalgrid.sublayerId.startsWith(FISHING_LAYER_PREFIX)
+        const isFishingFeature = feature.temporalgrid.sublayerInteractionType === 'fishing-effort'
         return isFeatureVisible && isFishingFeature
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
-    if (fishingActivityFeatures?.length && timeRange) {
-      fourWingsPromiseRef.current = dispatch(
-        fetchFishingActivityInteractionThunk({ fishingActivityFeatures, timeRange })
+    if (fishingActivityFeatures?.length) {
+      fishingPromiseRef.current = dispatch(
+        fetchFishingActivityInteractionThunk({ fishingActivityFeatures })
       )
+    }
+
+    const viirsFeature = event.features?.find((feature) => {
+      if (!feature.temporalgrid) {
+        return false
+      }
+      const isFeatureVisible = feature.temporalgrid.visible
+      const isViirsFeature = feature.temporalgrid.sublayerInteractionType === 'viirs'
+      return isFeatureVisible && isViirsFeature
+    })
+
+    if (viirsFeature) {
+      viirsPromiseRef.current = dispatch(fetchViirsInteractionThunk({ feature: viirsFeature }))
     }
 
     const encounterFeature = event.features.find(
@@ -186,7 +200,13 @@ export const useClickedEventConnect = () => {
       eventsPromiseRef.current = dispatch(fetchEncounterEventThunk(encounterFeature))
     }
   }
-  return { clickedEvent, fourWingsStatus, apiEventStatus, dispatchClickedEvent }
+  return {
+    clickedEvent,
+    fishingInteractionStatus,
+    viirsInteractionStatus,
+    apiEventStatus,
+    dispatchClickedEvent,
+  }
 }
 
 // TODO this could extend ExtendedFeature
@@ -209,6 +229,7 @@ export type TooltipEventFeature = {
     vessels: ExtendedFeatureVessel[]
   }
   event?: ExtendedFeatureEvent
+  viirs?: ApiViirsStats[]
   temporalgrid?: TemporalGridFeature
   category: DataviewCategory
 }

@@ -1,7 +1,7 @@
 import { intersection, lowerCase } from 'lodash'
 import { Dataset, Dataview, EventTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { capitalize } from 'utils/shared'
+import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
 
@@ -94,7 +94,7 @@ export const getCommonSchemaFieldsInDataview = (
         return { id: field, label: label || capitalize(lowerCase(field)) }
       })
     : []
-  return commonSchemaFields.sort((a, b) => a.label.localeCompare(b.label))
+  return commonSchemaFields.sort(sortFields)
 }
 
 export const getSchemaFieldsSelectedInDataview = (

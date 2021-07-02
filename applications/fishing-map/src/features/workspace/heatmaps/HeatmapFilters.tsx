@@ -229,7 +229,7 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
         <MultiSelect
           disabled={qfDectectionFilters.disabled}
           disabledMsg={qfDectectionFilters.tooltip}
-          label={t('layer.qfDetect', 'QF detects')}
+          label={t('layer.qf', 'Quality Signal')}
           placeholder={getPlaceholderBySelections(qfDectectionFilters.optionsSelected)}
           options={qfDectectionFilters.options}
           selectedOptions={qfDectectionFilters.optionsSelected}
