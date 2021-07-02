@@ -25,7 +25,7 @@ export const selectEezById = memoize((id: RegionId) =>
     if (!id) {
       return null
     }
-    return eezs.find(eez => eez.id == id)
+    return eezs.find(eez => eez.id.toString() === id.toString())
   })
 )
 
@@ -34,6 +34,6 @@ export const selectRfmoById = memoize((id: RegionId) =>
     if (!id) {
       return null
     }
-    return rfmos.find(rfmo => rfmo.id == id)
+    return rfmos.find(rfmo => rfmo.id.toString() === id.toString())
   })
 )

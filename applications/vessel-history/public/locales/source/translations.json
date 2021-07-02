@@ -1,7 +1,6 @@
 {
   "common": {
     "activity": "activity",
-    "commingSoon": "coming soon!",
     "currentTimeRange": "current time range",
     "from": "from",
     "info": "info",
@@ -10,8 +9,27 @@
     "since": "since",
     "timeRange": "time range",
     "to": "to",
+    "commingSoon": "coming soon!",
     "historyFor": "history for",
     "previous": "previous"
+  },
+  "event": {
+    "avgDuration": "Avg Duration",
+    "avgSpeed": "Avg Speed",
+    "diffHours": "{{ diff }} hours",
+    "distance": "Distance",
+    "end": "End date",
+    "endDistancePort": "End distance from port",
+    "endDistanceShore": "End distance from shore",
+    "fishingEvent": "Fishing in {{ regionName }}",
+    "fishingGroup": "{{ count }} Fishing events in {{ regionName }}",
+    "fishingGroup_plural": "{{ count }} Fishing events in {{ regionName }}",
+    "maxCoords": "Max coordinates",
+    "minCoords": "Min coordinates",
+    "noDescription": "No description found",
+    "start": "Start date",
+    "startDistancePort": "Start distance from port",
+    "startDistanceShore": "Start distance from shore"
   },
   "map": {
     "loading": "Map loading",
