@@ -131,6 +131,7 @@ export function getGeneratorConfig(
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           type: Generators.Type.VesselEvents,
+          showIcons: dataview.config?.showIcons,
           data: data,
           color: dataview.config?.color,
           ...(generator.data && {
