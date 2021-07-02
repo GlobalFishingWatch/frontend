@@ -19,7 +19,7 @@ const getVesselResourceQuery = (
     return {
       dataviewId: dataview.dataviewId as number,
       url: resource.url,
-      datasetType: resource.dataset.type,
+      dataset: resource.dataset,
       datasetConfig: resource.datasetConfig,
     }
   }

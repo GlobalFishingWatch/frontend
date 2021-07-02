@@ -125,7 +125,7 @@ export const resolveDataviewEventsResources = (dataview: UrlDataviewInstance): R
       return {
         dataviewId: dataview.dataviewId as number,
         url: resource.url,
-        datasetType: resource.dataset.type,
+        dataset: resource.dataset,
         datasetConfig: resource.datasetConfig,
       } as Resource
     }
