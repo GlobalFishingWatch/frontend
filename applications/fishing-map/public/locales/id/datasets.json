@@ -92,6 +92,25 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-chile-presence": {
+    "name": "Chile VMS",
+    "description": "Vessel monitoring system (VMS) data provided by the Chilean government’s fisheries and aquaculture regulator (SERNAPESCA). It is possible to filter Chile’s VMS data for small-scale fishing vessels (<18 meters) and industrial fishing vessels (>18 meters). Note that some vessels are <18 meters but are considered industrial because they were registered in the capture of industrial quotas. SERNAPESCA is also using our map to visualize and track vessel positions for their fleet, including vessels involved in aquaculture. Data is collected using Chile’s VMS via satellites and terrestrial receivers and contains vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "chile_vms_small_fisheries": "chile_vms_small_fisheries",
+          "chile_vms_industry": "chile_vms_industry",
+          "chile_vms_aquaculture": "chile_vms_aquaculture",
+          "chile_vms_transport": "chile_vms_transport"
+        }
+      },
+      "vessel_id": "vessel_id"
+    }
+  },
   "public-cold-water-corals": {
     "name": "Cold Water Corals",
     "description": "Buffered at ~1km",
@@ -385,21 +404,23 @@
       "lat": "lat",
       "lon": "lon",
       "pos": "pos",
+      "flag": "flag",
       "htime": "htime",
       "radiance": "radiance",
       "detect_id": "detect_id",
       "qf_detect": {
         "keyword": "qf_detect",
         "enum": {
-          "1": "Boat (1)",
-          "2": "Weak (2)",
-          "3": "Blurry (3)",
-          "5": "5",
-          "7": "Glow (7)",
-          "10": "Weak and Blurry (10)"
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "5": 5,
+          "7": 7,
+          "10": 10
         }
       },
-      "timestamp": "timestamp"
+      "timestamp": "timestamp",
+      "vessel_id": "vessel_id"
     }
   },
   "public-gs-as-simplified": {
@@ -537,6 +558,51 @@
       "elevation_m": "elevation_m",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-peru-presence": {
+    "name": "Peru VMS Presence",
+    "description": "Vessel monitoring system (VMS) data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. Data is collected using their vessel monitoring system (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "fleet": {
+        "keyword": "fleet",
+        "enum": {
+          "industrial": "industrial",
+          "artisanal": "artisanal",
+          "not defined": "not defined"
+        }
+      },
+      "origin": {
+        "keyword": "origin",
+        "enum": {
+          "PER": "PER",
+          "Foreign": "Foreign"
+        }
+      },
+      "geartype": {
+        "keyword": "geartype",
+        "enum": {
+          "drifting_longlines": "drifting_longlines",
+          "driftnets|fishing|pole_and_line|set_gillnets|set_longlines": "driftnets|fishing|pole_and_line|set_gillnets|set_longlines",
+          "set_longlines": "set_longlines",
+          "purse_seines": "purse_seines",
+          "driftnets|fishing|set_gillnets": "driftnets|fishing|set_gillnets",
+          "trawlers": "trawlers",
+          "drifting_longlines|squid_jiggers": "drifting_longlines|squid_jiggers",
+          "pots_and_traps": "pots_and_traps",
+          "set_gillnets": "set_gillnets",
+          "set_longlines|squid_jigger": "set_longlines|squid_jigger",
+          "driftnets|pole_and_line|set_gillnets|set_longlines": "driftnets|pole_and_line|set_gillnets|set_longlines",
+          "fishing": "fishing",
+          "driftnets|set_gillnets": "driftnets|set_gillnets",
+          "fishing|purse_seines": "fishing|purse_seines",
+          "drifting_longlines|trawlers": "drifting_longlines|trawlers"
+        }
+      },
+      "vessel_id": "vessel_id"
     }
   },
   "public-tristan-seamounts-200-1618586314138": {
