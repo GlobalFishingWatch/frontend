@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { FeatureCollection } from 'geojson'
+import { Feature, FeatureCollection } from 'geojson'
 import { Segment, segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { Dictionary } from '../../types'
 import filterTrackByTimerange from '../track/filterTrackByTimerange'
@@ -25,27 +25,6 @@ const getEncounterAuthColor = (authorizationStatus: AuthorizationOptions) => {
     default:
       return ''
   }
-}
-
-export const setActiveEvent = (
-  data: FeatureCollection,
-  currentEventId: string | null
-): FeatureCollection => {
-  const featureCollection = { ...data }
-  featureCollection.features = featureCollection.features.map((feature) => {
-    const newFeature = { ...feature }
-    newFeature.properties = newFeature.properties || {}
-    newFeature.properties.active = currentEventId
-      ? newFeature.properties.id === currentEventId
-      : false
-    return newFeature
-  })
-  featureCollection.features.sort((a, b) => {
-    if (a.properties && a.properties.active) return 1
-    else if (b.properties && b.properties.active) return -1
-    else return 0
-  })
-  return featureCollection
 }
 
 const getDateTimeDate = (date: string | number) => {
@@ -92,6 +71,21 @@ export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureC
   })
 
   return featureCollection
+}
+
+export const filterFeaturesByTimerange = (features: Feature[], start: string, end: string) => {
+  if (start && end) {
+    const startMs = new Date(start).getTime()
+    const endMs = new Date(end).getTime()
+    return features.filter((feature) => {
+      return (
+        feature.properties &&
+        feature.properties.timestamp > startMs &&
+        feature.properties.timestamp < endMs
+      )
+    })
+  }
+  return features
 }
 
 export const filterGeojsonByTimerange = (
