@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import ImageGallery from 'react-image-gallery'
 import { DateTime } from 'luxon'
-import { Button, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { VesselWithHistory } from 'types'
 import { selectCurrentOfflineVessel } from 'features/vessels/offline-vessels.selectors'
 import { useOfflineVesselsAPI } from 'features/vessels/offline-vessels.hook'
@@ -73,7 +73,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     () => (vessel?.imageList ?? []).map((url) => ({ original: url })),
     [vessel]
   )
-
+  const [imageLoading, setImageLoading] = useState(true)
   return (
     <Fragment>
       <div className={styles.infoContainer}>
@@ -81,11 +81,12 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
           <Fragment>
             <ImageGallery
               items={imageList}
+              onImageLoad={() => setImageLoading(false)}
               showThumbnails={false}
               showBullets={true}
               slideDuration={5000}
               showPlayButton={imageList.length > 1}
-              additionalClass={styles.imageGallery}
+              additionalClass={cx(styles.imageGallery, { [styles.loading]: imageLoading })}
             />
             <div className={styles.identifiers}>
               <InfoField
