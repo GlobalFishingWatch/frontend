@@ -48,7 +48,7 @@ const TimebarSettings = () => {
     ],
     [t]
   )
-  const TIMEBAR_EVENT_OPTIONS: SelectOption[] = useMemo(
+  const TIMEBAR_EVENT_OPTIONS: SelectOption<TimebarEvents>[] = useMemo(
     () => [
       {
         id: 'all',
@@ -58,17 +58,16 @@ const TimebarSettings = () => {
         id: 'fishing',
         label: t('timebarSettings.eventOptions.fishing', 'Fishing'),
       },
-      // TODO: enable when datasets ready
-      // {
-      //   id: 'encounters',
-      //   label: t('timebarSettings.eventOptions.encounters', 'Encounters'),
-      // },
-      // {
-      //   id: 'loitering',
-      //   label: t('timebarSettings.eventOptions.loitering', 'Loitering'),
-      // },
       {
-        id: 'ports',
+        id: 'encounter',
+        label: t('timebarSettings.eventOptions.encounters', 'Encounters'),
+      },
+      {
+        id: 'loitering',
+        label: t('timebarSettings.eventOptions.loitering', 'Loitering'),
+      },
+      {
+        id: 'port',
         label: t('timebarSettings.eventOptions.ports', 'Port visits'),
       },
       {
@@ -105,7 +104,7 @@ const TimebarSettings = () => {
     }
   }
   const removeEventsOption = () => {
-    dispatchQueryParams({ timebarEvents: TimebarEvents.None })
+    dispatchQueryParams({ timebarEvents: 'none' })
   }
   const removeGraphOption = () => {
     dispatchQueryParams({ timebarGraph: TimebarGraphs.None })
