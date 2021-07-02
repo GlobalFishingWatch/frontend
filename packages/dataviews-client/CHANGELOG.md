@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.2.0
+
+### Minor Changes
+
+- 87882042: add sublayerInteractionType
+
 ## 11.1.0
 
 ### Minor Changes
