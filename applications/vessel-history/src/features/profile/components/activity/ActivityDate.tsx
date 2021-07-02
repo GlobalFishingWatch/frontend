@@ -21,7 +21,7 @@ const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement =>
       <Fragment>
         {event.start && event.end && (
           <div className={styles.date}>
-            <I18nDate date={event.start} format={DateTime.DATETIME_SHORT} /> - {diff} hours
+            <I18nDate date={event.start} format={DateTime.DATETIME_SHORT} /> - {t('event.diffHours', '{{ diff }} hours', { diff: diff })}
           </div>
         )}
       </Fragment>

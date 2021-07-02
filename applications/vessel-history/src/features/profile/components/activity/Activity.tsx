@@ -1,6 +1,4 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
-import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { IconButton, Modal } from '@globalfishingwatch/ui-components'
@@ -8,7 +6,7 @@ import { VesselWithHistory } from 'types'
 import { selectVesselId } from 'routes/routes.selectors'
 import { fetchVesselActivityThunk } from 'features/vessels/activity/vessels-activity.thunk'
 import { selectVesselActivity, toggleGroup } from 'features/vessels/activity/vessels-activity.slice'
-import { ActivityEvent, ActivityEventGroup, EventType } from 'types/activity'
+import { ActivityEvent, ActivityEventGroup } from 'types/activity'
 import I18nDate from 'features/i18n/i18nDate'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import styles from './Activity.module.css'
@@ -23,7 +21,6 @@ interface InfoProps {
 }
 
 const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
-  const { t } = useTranslation()
   const vesselId = useSelector(selectVesselId)
 
  

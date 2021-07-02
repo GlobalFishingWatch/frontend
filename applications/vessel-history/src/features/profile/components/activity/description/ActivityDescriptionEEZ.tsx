@@ -21,7 +21,10 @@ const ActivityDescriptionEEZ: React.FC<ActivityDescriptionProps> = (props): Reac
   if (props.type === 'group' ) {
     return (
       <Fragment>
-        {props.count} Fishing events in {regionName}
+        {t('event.fishingGroup', '{{ count }} Fishing events in {{ regionName }}', { 
+          count: props.count ,
+          regionName: regionName
+        })}
       </Fragment>
     )
   }
@@ -29,13 +32,15 @@ const ActivityDescriptionEEZ: React.FC<ActivityDescriptionProps> = (props): Reac
   if (props.type === 'event') {
     return (
       <Fragment>
-        Fishing in {regionName}
+        {t('event.fishingEvent', 'Fishing in {{ regionName }}', { 
+          regionName: regionName
+        })}
       </Fragment>
     )
   }
 
   return (
-    <Fragment></Fragment>
+    <Fragment>{t('event.noDescription', 'No description found')}</Fragment>
   )
 }
 
