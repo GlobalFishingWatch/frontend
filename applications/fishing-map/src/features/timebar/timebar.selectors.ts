@@ -189,7 +189,6 @@ export const selectEventsWithRenderingInfo = createSelector(
 
           return {
             ...event,
-            id: event.id + index,
             color,
             colorLabels,
             description,
