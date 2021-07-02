@@ -14,7 +14,7 @@ import {
   getVesselEventsGeojson,
   getVesselSegmentsGeojson,
   filterGeojsonByTimerange,
-  setActiveEvent,
+  filterFeaturesByTimerange,
 } from './vessel-events.utils'
 
 interface VesselsEventsSource extends GeoJSONSourceRaw {
@@ -34,7 +34,7 @@ class VesselsEventsGenerator {
   }
 
   _getStyleSources = (config: GlobalVesselEventsGeneratorConfig): VesselsEventsSource[] => {
-    const { id, data, track, start, end, currentEventId } = config
+    const { id, data, track, start, end } = config
 
     if (!data) {
       // console.warn(`${VESSEL_EVENTS_TYPE} source generator needs geojson data`, config)
@@ -42,24 +42,16 @@ class VesselsEventsGenerator {
     }
 
     const geojson = memoizeCache[config.id].getVesselEventsGeojson(data) as FeatureCollection
-    const newData: FeatureCollection = setActiveEvent(geojson, config.currentEventId || null)
-
-    if (config.start && config.end) {
-      const startMs = new Date(config.start).getTime()
-      const endMs = new Date(config.end).getTime()
-      newData.features = newData.features.filter((feature) => {
-        return (
-          feature.properties &&
-          feature.properties.timestamp > startMs &&
-          feature.properties.timestamp < endMs
-        )
-      })
-    }
+    const featuresFiltered = memoizeCache[config.id].filterFeaturesByTimerange(
+      geojson.features,
+      config.start,
+      config.end
+    )
 
     const pointsSource: VesselsEventsSource = {
       id: `${id}_points`,
       type: 'geojson',
-      data: newData,
+      data: { ...geojson, features: featuresFiltered },
     }
     const showTrackSegments = this._showTrackSegments(config)
 
@@ -165,6 +157,7 @@ class VesselsEventsGenerator {
       getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
       getVesselSegmentsGeojson: memoizeOne(getVesselSegmentsGeojson),
       filterGeojsonByTimerange: memoizeOne(filterGeojsonByTimerange),
+      filterFeaturesByTimerange: memoizeOne(filterFeaturesByTimerange),
     })
 
     return {
