@@ -127,19 +127,28 @@ export const getVesselSegmentsGeojson = (track: any, data: RawEvent[]): FeatureC
     : segmentsToGeoJSON(track as Segment[])
   if (!geojson) return featureCollection
   featureCollection.features = data.flatMap((event: RawEvent) => {
-    return filterTrackByTimerange(geojson, event.start, event.end).features.map((feature) => ({
-      ...feature,
-      properties: {
-        id: event.id,
-        type: event.type,
-        start: getDateTimeDate(event.start).toUTC().toISO(),
-        end: getDateTimeDate(event.end).toUTC().toISO(),
-        ...(event.vessel && {
-          vesselId: event.vessel.id,
-          vesselName: event.vessel.name,
-        }),
-      },
-    }))
+    return filterTrackByTimerange(geojson, event.start, event.end).features.map((feature) => {
+      const authorizationStatus = event.encounter
+        ? event.encounter.authorizationStatus
+        : ('unmatched' as AuthorizationOptions)
+      return {
+        ...feature,
+        properties: {
+          id: event.id,
+          type: event.type,
+          start: getDateTimeDate(event.start).toUTC().toISO(),
+          end: getDateTimeDate(event.end).toUTC().toISO(),
+          color:
+            event.type === 'encounter'
+              ? getEncounterAuthColor(authorizationStatus)
+              : EVENTS_COLORS[event.type],
+          ...(event.vessel && {
+            vesselId: event.vessel.id,
+            vesselName: event.vessel.name,
+          }),
+        },
+      }
+    })
   })
   return featureCollection
 }
