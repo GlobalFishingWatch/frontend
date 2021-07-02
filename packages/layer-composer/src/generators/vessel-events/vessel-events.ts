@@ -83,7 +83,7 @@ class VesselsEventsGenerator {
 
     const activeFilter = ['case', ['==', ['get', 'id'], config.currentEventId || null]]
 
-    const pointsLayers = [
+    const pointsLayers: (CircleLayer | SymbolLayer)[] = [
       {
         id: `${config.id}_background`,
         type: 'circle',
@@ -105,7 +105,11 @@ class VesselsEventsGenerator {
           generatorId: config.id,
         },
       } as CircleLayer,
-      {
+    ]
+
+    const showIcons = config.showIcons !== undefined ? config.showIcons : true
+    if (showIcons) {
+      pointsLayers.push({
         id: `${config.id}_outline`,
         source: `${config.id}_points`,
         ...(showTrackSegments && { maxzoom: POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH }),
@@ -118,8 +122,8 @@ class VesselsEventsGenerator {
         metadata: {
           group: Group.Point,
         },
-      } as SymbolLayer,
-    ]
+      } as SymbolLayer)
+    }
 
     if (!showTrackSegments) {
       return pointsLayers
