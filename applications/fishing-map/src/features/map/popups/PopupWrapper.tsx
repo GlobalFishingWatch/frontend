@@ -83,9 +83,13 @@ function PopupWrapper({
                 )
               )
             case DataviewCategory.Events:
-              if (type === 'click')
-                return <TileClusterRow key={featureCategory} features={features} />
-              else return null
+              return (
+                <TileClusterRow
+                  key={featureCategory}
+                  features={features}
+                  showFeaturesDetails={type === 'click'}
+                />
+              )
             case DataviewCategory.Environment:
               return (
                 <EnvironmentTooltipSection
