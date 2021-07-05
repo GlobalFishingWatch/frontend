@@ -66,7 +66,6 @@ function PopupWrapper({
                   showFeaturesDetails={type === 'click'}
                 />
               ))
-            // TODO only works while don't have interaction for presence layer
             case DataviewCategory.Presence:
               return features.map((feature, i) =>
                 feature.temporalgrid?.sublayerInteractionType === 'viirs' ? (
@@ -84,9 +83,13 @@ function PopupWrapper({
                 )
               )
             case DataviewCategory.Events:
-              if (type === 'click')
-                return <TileClusterRow key={featureCategory} features={features} />
-              else return null
+              return (
+                <TileClusterRow
+                  key={featureCategory}
+                  features={features}
+                  showFeaturesDetails={type === 'click'}
+                />
+              )
             case DataviewCategory.Environment:
               return (
                 <EnvironmentTooltipSection

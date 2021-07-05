@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.3.0
+
+### Minor Changes
+
+- cleanup events generator
+
 ## 8.2.1
 
 ### Patch Changes

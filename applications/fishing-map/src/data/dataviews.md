@@ -81,11 +81,21 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 
 ## Activity
 
-| Layer name                     | Dev id | Pro id |
-| ------------------------------ | ------ | ------ |
-| Public Apparent fishing effort | 122    | ---    |
-| Default Fishing presence       | 124    | 241    |
-| Default Fishing activity       | 91     | 178    |
+| Layer name                      | Dev id | Pro id |
+| ------------------------------- | ------ | ------ |
+| Public Apparent fishing effort  | 122    | ---    |
+| Default Fishing presence        | 124    | 241    |
+| Default Fishing activity        | 91     | 178    |
+| Private Peru Fishing activity   | 161    | ---    |
+| Private Panama Fishing activity | 162    | ---    |
+| VIIRS                           | 159    | ---    |
+
+## Vessels
+
+| Layer name                         | Dev id | Pro id |
+| ---------------------------------- | ------ | ------ |
+| Vessel with ony track and info     | 163    | ---    |
+| Vessel with track, info and events | 92     | 171    |
 
 ## Others
 

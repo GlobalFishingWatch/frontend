@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 8.2.0
+
+### Minor Changes
+
+- remove track colors options to not overlap with events
+
 ## 8.1.1
 
 ### Patch Changes

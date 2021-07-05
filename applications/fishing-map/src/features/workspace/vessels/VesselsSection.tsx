@@ -64,7 +64,7 @@ function VesselsSection(): React.ReactElement {
               const eventType = dataset.configuration?.type
               if (!eventType) return null
               return (
-                <li className={layerStyles.eventsLegend}>
+                <li className={layerStyles.eventsLegend} key={dataset.id}>
                   <span
                     className={layerStyles.eventLegendIcon}
                     style={{ backgroundColor: EVENTS_COLORS[eventType] }}

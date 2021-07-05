@@ -19,7 +19,7 @@ const initialState: ResourcesState = {}
 const parseFishingEvent = (event: ApiEvent, index: number): ApiEvent => {
   return {
     ...event,
-    id: index.toString(),
+    id: `${event.type}-${index}`,
     start: DateTime.fromISO(event.start as string).toMillis(),
     end: DateTime.fromISO(event.end as string).toMillis(),
   }
@@ -28,8 +28,8 @@ const parseFishingEvent = (event: ApiEvent, index: number): ApiEvent => {
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
   async (resource: Resource) => {
-    const isTrackResource = resource.datasetType === DatasetTypes.Tracks
-    const isEventsResource = resource.datasetType === DatasetTypes.Events
+    const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
+    const isEventsResource = resource.dataset.type === DatasetTypes.Events
     const responseType =
       isTrackResource &&
       resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)
