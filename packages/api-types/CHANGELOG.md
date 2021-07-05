@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-types
 
+## 4.5.0
+
+### Minor Changes
+
+- encounter vessel as generic
+
 ## 4.4.1
 
 ### Patch Changes
