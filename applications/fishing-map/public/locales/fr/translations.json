@@ -61,7 +61,8 @@
     "unknown": "Inconnu",
     "update": "Mise à jour",
     "vessel": "Navire",
-    "vessel_plural": "Navires"
+    "vessel_plural": "Navires",
+    "viirs": "VIIRS"
   },
   "dataset": {
     "addContext": "Ajouter la couche de référence",
