@@ -130,8 +130,7 @@
     "notInCVP": "Event not available.",
     "port": "Port",
     "portAction": "Docked for",
-    "portAt": "Docked at",
-    "seeInCVP": "See in Carrier Vessel Portal"
+    "seeInCVP": "See in carrier vessel portal"
   },
   "feedback": {
     "feedbackLogin": "Register and login to provide feedback (free, 2 minutes)",
