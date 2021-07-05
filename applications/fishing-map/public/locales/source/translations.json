@@ -61,8 +61,7 @@
     "unknown": "Unknown",
     "update": "Update",
     "vessel": "Vessel",
-    "vessel_plural": "Vessels",
-    "viirs": "VIIRS"
+    "vessel_plural": "Vessels"
   },
   "dataset": {
     "addContext": "Add context dataset",
