@@ -61,7 +61,8 @@
     "unknown": "Desconocido",
     "update": "Actualizar",
     "vessel": "Embarcación",
-    "vessel_plural": "Embarcaciones"
+    "vessel_plural": "Embarcaciones",
+    "viirs": "VIIRS"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",
