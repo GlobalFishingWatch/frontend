@@ -1,21 +1,24 @@
 import React, { Fragment, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Button from '@globalfishingwatch/ui-components/dist/button'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
-import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types/dist'
+import { DatasetTypes } from '@globalfishingwatch/api-types/dist'
 import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { formatInfoField } from 'utils/info'
+import { selectDatasets } from 'features/datasets/datasets.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
 import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import useViewport from '../map-viewport.hooks'
+import { ExtendedEventVessel } from '../map.slice'
 import styles from './Popup.module.css'
 
 type UserContextLayersProps = {
@@ -25,6 +28,7 @@ type UserContextLayersProps = {
 function TileClusterTooltipRow({ features }: UserContextLayersProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const datasets = useSelector(selectDatasets)
   const { apiEventStatus } = useClickedEventConnect()
   const { start, end } = useTimerangeConnect()
   const { viewport } = useViewport()
@@ -37,17 +41,16 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
     }
   }, [carrierLatest, dispatchFetchLatestCarrier])
 
-  const onPinClick = (vessel: EventVessel, feature: TooltipEventFeature) => {
-    const dataset = feature.event?.dataset
-    const trackDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Tracks)?.id
-    const infoDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id
+  const onPinClick = (vessel: ExtendedEventVessel) => {
+    const infoDataset = datasets.find((dataset) => dataset.id === vessel.dataset)
+    const trackDataset = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)
 
-    if (trackDatasetId && infoDatasetId) {
+    if (infoDataset && trackDataset) {
       const vesselDataviewInstance = getVesselDataviewInstance(
         { id: vessel.id },
         {
-          trackDatasetId: trackDatasetId as string,
-          infoDatasetId: infoDatasetId,
+          trackDatasetId: trackDataset.id,
+          infoDatasetId: infoDataset.id,
         }
       )
       upsertDataviewInstance(vesselDataviewInstance)
@@ -108,9 +111,7 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
                           <IconButton
                             icon="pin"
                             size="small"
-                            onClick={() =>
-                              onPinClick(feature.event?.vessel as EventVessel, feature)
-                            }
+                            onClick={() => onPinClick(feature.event?.vessel as ExtendedEventVessel)}
                           />
                         </div>
                       </div>
@@ -129,7 +130,7 @@ function TileClusterTooltipRow({ features }: UserContextLayersProps) {
                               icon="pin"
                               size="small"
                               onClick={() =>
-                                onPinClick(feature.event?.encounter?.vessel as EventVessel, feature)
+                                onPinClick(feature.event?.encounter?.vessel as ExtendedEventVessel)
                               }
                             />
                           </div>

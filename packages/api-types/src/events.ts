@@ -56,7 +56,7 @@ export enum AuthorizationOptions {
   Partially = 'partially',
   Unmatched = 'unmatched',
 }
-export interface EncounterEvent {
+export interface EncounterEvent<Vessel = EventVessel> {
   /**
    * Median distance to the other vessel across the encounter, in kilometers
    */
@@ -65,7 +65,7 @@ export interface EncounterEvent {
    * Median speed of the vessels across the encounter, in knots
    */
   medianSpeedKnots: number
-  vessel: EventVessel
+  vessel: Vessel
   /**
    * If authorization information is available, indicates wether the main vessel of the encounter
    * had authorization to do so by all the management organizations for the regions in which the
@@ -97,10 +97,10 @@ export interface PortEvent {
   position: PointCoordinate
 }
 
-export interface ApiEvent {
+export interface ApiEvent<Vessel = EventVessel> {
   id: string
   type: EventTypes
-  vessel: EventVessel
+  vessel: Vessel
   start: number | string // Depends on timestamp format API param
   end: number | string // Depends on timestamp format API param
   rfmos: string[]
@@ -108,7 +108,7 @@ export interface ApiEvent {
   nextPort?: EventNextPort
   position: PointCoordinate
   loitering?: LoiteringEvent
-  encounter?: EncounterEvent
+  encounter?: EncounterEvent<Vessel>
   port?: PortEvent
 }
 
