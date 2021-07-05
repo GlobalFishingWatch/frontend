@@ -1,5 +1,18 @@
 # @globalfishingwatch/api-types
 
+## 4.6.0
+
+### Minor Changes
+
+- entire dataset in resource typing
+- entire dataset in resource typing
+
+## 4.5.0
+
+### Minor Changes
+
+- encounter vessel as generic
+
 ## 4.4.1
 
 ### Patch Changes

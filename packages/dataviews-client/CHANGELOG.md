@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.3.0
+
+### Minor Changes
+
+- resolve events resources
+
 ## 11.2.0
 
 ### Minor Changes

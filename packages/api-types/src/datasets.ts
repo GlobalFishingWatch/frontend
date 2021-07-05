@@ -18,6 +18,7 @@ export interface EndpointParam {
 
 export enum EndpointId {
   Events = 'carriers-events',
+  EventsDetail = 'carriers-events-detail',
   FourwingsTiles = '4wings-tiles',
   FourwingsBreaks = '4wings-bins',
   FourwingsLegend = '4wings-legend',

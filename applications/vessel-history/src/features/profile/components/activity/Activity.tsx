@@ -1,14 +1,9 @@
-import React, { Fragment, useCallback, useEffect } from 'react'
-import cx from 'classnames'
-import { useTranslation } from 'react-i18next'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { VesselWithHistory } from 'types'
-import { selectVesselId } from 'routes/routes.selectors'
-import { fetchVesselActivityThunk } from 'features/vessels/activity/vessels-activity.thunk'
 import {
-  selectVesselActivity,
   selectVesselActivityEvents,
   toggleGroup,
 } from 'features/vessels/activity/vessels-activity.slice'
@@ -19,7 +14,7 @@ import styles from './Activity.module.css'
 import ActivityDate from './ActivityDate'
 import ActivityDescription from './description/ActivityDescription'
 import ActivityGroupDescription from './description/ActivityGroupDescription'
-
+import ActivityModalContent from './ActivityModalContent'
 interface InfoProps {
   vessel: VesselWithHistory | null
   lastPosition: any
@@ -27,17 +22,7 @@ interface InfoProps {
 }
 
 const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
-  const { t } = useTranslation()
-  // const vesselId = useSelector(selectVesselId)
-
   const dispatch = useDispatch()
-  // useEffect(() => {
-  //   if (vesselId) {
-  //     const start = '2017-01-01'
-  //     const end = '2021-07-01'
-  //     dispatch(fetchVesselActivityThunk({ vesselId, start, end }))
-  //   }
-  // }, [dispatch, vesselId])
 
   const onOpenGroup = useCallback(
     (index: number) => {
@@ -46,15 +31,30 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
     [dispatch]
   )
 
+  const [isModalOpen, setIsOpen] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
+  const openModal = useCallback((event: ActivityEvent) => {
+    setSelectedEvent(event)
+    setIsOpen(true)
+  }, [])
+  const closeModal = useCallback(() => setIsOpen(false), [])
+
   useEffect(() => {
     dispatch(fetchRegionsThunk())
   }, [dispatch])
 
-  // const eventGroups = useSelector(selectVesselActivity)
   const eventGroups = useSelector(selectVesselActivityEvents)
-  // console.log(events)
   return (
     <Fragment>
+      <Modal
+        title={
+          selectedEvent ? <ActivityDescription event={selectedEvent}></ActivityDescription> : ''
+        }
+        isOpen={isModalOpen}
+        onClose={closeModal}
+      >
+        {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
+      </Modal>
       <div className={styles.activityContainer}>
         {eventGroups &&
           eventGroups.map((group: ActivityEventGroup, groupIndex) => (
@@ -104,11 +104,15 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
                       </div>
 
                       <div className={styles.actions}>
-                        <IconButton icon="info" size="small"></IconButton>
+                        <IconButton
+                          icon="info"
+                          size="small"
+                          onClick={() => openModal(event)}
+                        ></IconButton>
                         <IconButton icon="view-on-map" size="small"></IconButton>
                       </div>
+                      <div className={styles.divider}></div>
                     </div>
-                    <div className={styles.divider}></div>
                   </Fragment>
                 ))}
             </Fragment>

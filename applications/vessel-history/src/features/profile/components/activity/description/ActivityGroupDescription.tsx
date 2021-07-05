@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MarineRegionType } from 'features/regions/regions.slice'
 import { ActivityEventGroup } from 'types/activity'
 import ActivityDescriptionEEZ from './ActivityDescriptionEEZ'
@@ -10,17 +11,17 @@ interface ActivityDescriptionProps {
 
 const ActivityGroupDescription: React.FC<ActivityDescriptionProps> = (props): React.ReactElement => {
   const group = props.group
-
+  const { t } = useTranslation()
   const eez = group?.event_places.find(place => place.type === MarineRegionType.eez)
   if (eez){
-    return <ActivityDescriptionEEZ regionId={eez.id} type="group" ocean={group.ocean}></ActivityDescriptionEEZ>
+    return <ActivityDescriptionEEZ regionId={eez.id} count={group?.entries.length} type="group" ocean={group.ocean}></ActivityDescriptionEEZ>
   }
   const rfmo = group?.event_places.find(place => place.type === MarineRegionType.rfmo)
   if (rfmo){
-    return <ActivityDescriptionRFMO regionId={rfmo.id} type="group" ocean={group.ocean}></ActivityDescriptionRFMO>
+    return <ActivityDescriptionRFMO regionId={rfmo.id} count={group?.entries.length} type="group" ocean={group.ocean}></ActivityDescriptionRFMO>
   }
   return (
-    <Fragment>No description found</Fragment>
+    <Fragment>{t('event.noDescription', 'No description found')}</Fragment>
   )
 }
 

@@ -15,11 +15,14 @@ const ActivityDescriptionEEZ: React.FC<ActivityDescriptionProps> = (props): Reac
   const regionId = props.regionId
   const { t } = useTranslation()
 
-  const regionName = useSelector(selectRfmoById(regionId))?.label
+  const regionName = useSelector(selectRfmoById(regionId))?.label || props.ocean || 'unknown'
   if (props.type === 'group' ) {
     return (
       <Fragment>
-        {props.count} Fishing events rfmo in {regionName || props.ocean || 'unknown'}
+        {t('event.fishingGroup', '{{ count }} Fishing events in {{ regionName }}', { 
+          count: props.count ,
+          regionName: regionName
+        })}
       </Fragment>
     )
   }
@@ -27,13 +30,15 @@ const ActivityDescriptionEEZ: React.FC<ActivityDescriptionProps> = (props): Reac
   if (props.type === 'event') {
     return (
       <Fragment>
-        Fishing in {regionName || props.ocean || 'unknown'}
+        {t('event.fishingEvent', 'Fishing in {{ regionName }}', { 
+          regionName: regionName
+        })}
       </Fragment>
     )
   }
 
   return (
-    <Fragment></Fragment>
+    <Fragment>{t('event.noDescription', 'No description found')}</Fragment>
   )
 }
 

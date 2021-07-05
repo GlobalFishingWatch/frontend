@@ -1,5 +1,17 @@
 # @globalfishingwatch/layer-composer
 
+## 8.3.0
+
+### Minor Changes
+
+- cleanup events generator
+
+## 8.2.1
+
+### Patch Changes
+
+- b268d362: fixed instable delta time
+
 ## 8.2.0
 
 ### Minor Changes
