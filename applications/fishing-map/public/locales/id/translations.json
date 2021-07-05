@@ -61,7 +61,8 @@
     "unknown": "Tidak diketahui",
     "update": "Memperbarui",
     "vessel": "Kapal",
-    "vessel_plural": "Kapal"
+    "vessel_plural": "Kapal",
+    "viirs": "VIIRS"
   },
   "dataset": {
     "addContext": "Menambah layer referensi",
