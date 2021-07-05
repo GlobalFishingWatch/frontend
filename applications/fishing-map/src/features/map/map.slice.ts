@@ -10,6 +10,8 @@ import {
   DatasetTypes,
   ApiEvent,
   EndpointId,
+  EventVessel,
+  EventVesselTypeEnum,
 } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
@@ -30,9 +32,11 @@ export type ExtendedFeatureVessel = {
   [key: string]: any
 }
 
+export type ExtendedEventVessel = EventVessel & { dataset?: string }
+
 export type ApiViirsStats = { detect_id: string; qf_detect: number; radiance: number }
 
-export type ExtendedFeatureEvent = ApiEvent & { dataset: Dataset }
+export type ExtendedFeatureEvent = ApiEvent<ExtendedEventVessel> & { dataset: Dataset }
 
 export type SliceExtendedFeature = ExtendedFeature & {
   event?: ExtendedFeatureEvent
@@ -301,14 +305,67 @@ export const fetchEncounterEventThunk = createAsyncThunk<
   if (dataset) {
     const datasetConfig = {
       datasetId: dataset.id,
-      endpoint: 'carriers-events-detail',
+      endpoint: EndpointId.EventsDetail,
       params: [{ id: 'eventId', value: eventFeature.id }],
     }
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
       const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal })
+
+      // Workaround to grab information about each vessel dataset
+      // will need discuss with API team to scale this for other types
+      const isACarrierTheMainVessel = clusterEvent.vessel.type === EventVesselTypeEnum.Carrier
+      const fishingVessel = isACarrierTheMainVessel
+        ? clusterEvent.encounter?.vessel
+        : clusterEvent.vessel
+      const carrierVessel = isACarrierTheMainVessel
+        ? clusterEvent.vessel
+        : clusterEvent.encounter?.vessel
+      let vesselsInfo: ExtendedEventVessel[] = []
+      const vesselsDatasets = dataview?.datasets
+        ?.flatMap((d) => d.relatedDatasets || [])
+        .filter((d) => d?.type === 'carriers-vessels:v1')
+      if (vesselsDatasets?.length && fishingVessel && carrierVessel) {
+        const vesselDataset = selectDatasetById(vesselsDatasets[0].id)(state) as Dataset
+        const vesselsDatasetConfig = {
+          datasetId: vesselDataset.id,
+          endpoint: EndpointId.VesselList,
+          params: [],
+          query: [
+            { id: 'ids', value: [fishingVessel.id, carrierVessel.id].join(',') },
+            { id: 'datasets', value: vesselsDatasets.map((d) => d.id).join(',') },
+          ],
+        }
+        const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
+        if (vesselsUrl) {
+          vesselsInfo = await GFWAPI.fetch<ExtendedEventVessel[]>(vesselsUrl, { signal })
+        }
+      }
+
       if (clusterEvent) {
-        return { ...clusterEvent, dataset }
+        const fishingVesselDataset =
+          vesselsInfo.find((v) => v.id === fishingVessel?.id)?.dataset || ''
+        const carrierVesselDataset =
+          vesselsInfo.find((v) => v.id === carrierVessel?.id)?.dataset || ''
+        const carrierExtendedVessel: ExtendedEventVessel = {
+          ...(carrierVessel as EventVessel),
+          dataset: carrierVesselDataset,
+        }
+        const fishingExtendedVessel: ExtendedEventVessel = {
+          ...(fishingVessel as EventVessel),
+          dataset: fishingVesselDataset,
+        }
+        return {
+          ...clusterEvent,
+          vessel: carrierExtendedVessel,
+          ...(clusterEvent.encounter && {
+            encounter: {
+              ...clusterEvent.encounter,
+              vessel: fishingExtendedVessel,
+            },
+          }),
+          dataset,
+        }
       }
     } else {
       console.warn('Missing url for endpoints', dataset, datasetConfig)
