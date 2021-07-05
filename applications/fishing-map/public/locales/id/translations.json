@@ -124,6 +124,8 @@
   "event": {
     "fishing": "Fishing",
     "fishingAction": "Fished for",
+    "loitering": "Loitering",
+    "loiteringAction": "Loitering for",
     "noData": "Tidak ada data yang tersedia",
     "notInCVP": "Peristiwa ini terjadi di luar rentang waktu data Carrier Vessel Portal",
     "port": "Port",

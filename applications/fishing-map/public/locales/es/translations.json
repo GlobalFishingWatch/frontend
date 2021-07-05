@@ -124,6 +124,8 @@
   "event": {
     "fishing": "Fishing",
     "fishingAction": "Fished for",
+    "loitering": "Loitering",
+    "loiteringAction": "Loitering for",
     "noData": "No hay datos disponibles",
     "notInCVP": "Evento no disponible",
     "port": "Port",
