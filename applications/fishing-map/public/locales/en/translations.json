@@ -61,7 +61,8 @@
     "unknown": "Other",
     "update": "Update",
     "vessel": "Vessel",
-    "vessel_plural": "Vessels"
+    "vessel_plural": "Vessels",
+    "viirs": "Night light detections (VIIRS)"
   },
   "dataset": {
     "addContext": "Add reference layer",
