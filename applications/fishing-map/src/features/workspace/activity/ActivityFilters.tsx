@@ -15,14 +15,14 @@ import {
   isDataviewSchemaSupported,
 } from 'features/datasets/datasets.utils'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import styles from './HeatmapFilters.module.css'
-import { getSourcesOptionsInDataview, getSourcesSelectedInDataview } from './heatmaps.utils'
+import styles from './ActivityFilters.module.css'
+import { getSourcesOptionsInDataview, getSourcesSelectedInDataview } from './activity.utils'
 
-type FiltersProps = {
+type ActivityFiltersProps = {
   dataview: UrlDataviewInstance
 }
 
-function Filters({ dataview }: FiltersProps): React.ReactElement {
+function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
@@ -243,4 +243,4 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
   )
 }
 
-export default Filters
+export default ActivityFilters

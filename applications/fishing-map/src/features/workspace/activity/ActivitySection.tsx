@@ -15,8 +15,9 @@ import { useLocationConnect } from 'routes/routes.hook'
 import {
   getFishingDataviewInstance,
   getPresenceDataviewInstance,
+  getViirsDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
-import { WorkspaceActivityCategory } from 'types'
+import { WorkspaceActivityCategory, WorkspacePresenceCategory } from 'types'
 import {
   selectBivariateDataviews,
   selectActivityCategory,
@@ -24,12 +25,14 @@ import {
 } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import LayerPanel from './HeatmapLayerPanel'
-import heatmapStyles from './HeatmapsSection.module.css'
+import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
+import LayerPanel from './ActivityLayerPanel'
+import activityStyles from './ActivitySection.module.css'
 
-function HeatmapsSection(): React.ReactElement {
+function ActivitySection(): React.ReactElement {
   const { t } = useTranslation()
   const [addedDataviewId, setAddedDataviewId] = useState<string | undefined>()
+  const [newLayerOpen, setNewLayerOpen] = useState<boolean>(false)
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
   const activityCategory = useSelector(selectActivityCategory)
@@ -74,11 +77,18 @@ function HeatmapsSection(): React.ReactElement {
     [dispatchQueryParams, start, end]
   )
 
-  const onAddClick = useCallback(
-    (category: WorkspaceActivityCategory) => {
+  const onAddFishingClick = useCallback(() => {
+    dispatchQueryParams({ bivariateDataviews: undefined })
+    const dataviewInstance = getFishingDataviewInstance()
+    upsertDataviewInstance(dataviewInstance)
+    setAddedDataviewId(dataviewInstance.id)
+  }, [dispatchQueryParams, upsertDataviewInstance])
+
+  const onAddPresenceClick = useCallback(
+    (presenceCategory: WorkspacePresenceCategory) => {
       dispatchQueryParams({ bivariateDataviews: undefined })
       const dataviewInstance =
-        category === 'fishing' ? getFishingDataviewInstance() : getPresenceDataviewInstance()
+        presenceCategory === 'presence' ? getPresenceDataviewInstance() : getViirsDataviewInstance()
       upsertDataviewInstance(dataviewInstance)
       setAddedDataviewId(dataviewInstance.id)
     },
@@ -137,6 +147,16 @@ function HeatmapsSection(): React.ReactElement {
     []
   )
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+  const presenceOptions = useMemo(
+    () => [
+      {
+        id: 'presence' as WorkspacePresenceCategory,
+        label: t('common.presence', 'Fishing presence'),
+      },
+      { id: 'viirs' as WorkspacePresenceCategory, label: t('common.viirs', 'VIIRS') },
+    ],
+    [t]
+  )
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
@@ -151,14 +171,43 @@ function HeatmapsSection(): React.ReactElement {
         />
         {!readOnly && (
           <div className={cx('print-hidden', styles.sectionButtons)}>
-            <IconButton
-              icon="plus"
-              type="border"
-              size="medium"
-              tooltip={t('layer.add', 'Add layer')}
-              tooltipPlacement="top"
-              onClick={() => onAddClick(activityCategory)}
-            />
+            {activityCategory === 'presence' ? (
+              <TooltipContainer
+                visible={newLayerOpen}
+                onClickOutside={() => {
+                  setNewLayerOpen(false)
+                }}
+                component={
+                  <TooltipListContainer>
+                    {presenceOptions.map(({ id, label }) => (
+                      <li key={id}>
+                        <button onClick={() => onAddPresenceClick(id)}>{label}</button>
+                      </li>
+                    ))}
+                  </TooltipListContainer>
+                }
+              >
+                <div className={styles.lastBtn}>
+                  <IconButton
+                    icon="plus"
+                    type="border"
+                    size="medium"
+                    tooltip={t('layer.add', 'Add layer')}
+                    tooltipPlacement="top"
+                    onClick={() => setNewLayerOpen(true)}
+                  />
+                </div>
+              </TooltipContainer>
+            ) : (
+              <IconButton
+                icon="plus"
+                type="border"
+                size="medium"
+                tooltip={t('layer.add', 'Add layer')}
+                tooltipPlacement="top"
+                onClick={() => onAddFishingClick()}
+              />
+            )}
           </div>
         )}
       </div>
@@ -178,12 +227,12 @@ function HeatmapsSection(): React.ReactElement {
               onToggle={onToggleLayer(dataview)}
             />
             {showBivariateIcon && (
-              <div className={cx(heatmapStyles.bivariateToggleContainer, 'print-hidden')}>
+              <div className={cx(activityStyles.bivariateToggleContainer, 'print-hidden')}>
                 <IconButton
                   icon={bivariateDataviews ? 'split' : 'compare'}
                   type="border"
                   size="small"
-                  className={heatmapStyles.bivariateToggle}
+                  className={activityStyles.bivariateToggle}
                   tooltip={t('layer.toggleCombinationMode.combine', 'Combine layers')}
                   tooltipPlacement="top"
                   onClick={() => onBivariateDataviewsClick(dataview, dataviews[index + 1])}
@@ -197,4 +246,4 @@ function HeatmapsSection(): React.ReactElement {
   )
 }
 
-export default HeatmapsSection
+export default ActivitySection

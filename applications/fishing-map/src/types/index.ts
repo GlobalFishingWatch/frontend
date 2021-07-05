@@ -37,6 +37,7 @@ export type WorkspaceAnalysis = {
   bounds?: [number, number, number, number]
 }
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
+export type WorkspacePresenceCategory = 'presence' | 'viirs'
 export type BivariateDataviews = [string, string]
 
 export type WorkspaceState = {

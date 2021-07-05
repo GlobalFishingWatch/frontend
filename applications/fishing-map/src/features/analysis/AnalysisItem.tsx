@@ -6,7 +6,7 @@ import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selec
 import { getFlagsByIds } from 'utils/flags'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { isFishingDataview, isPresenceDataview } from 'features/workspace/heatmaps/heatmaps.utils'
+import { isFishingDataview, isPresenceDataview } from 'features/workspace/activity/activity.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import AnalysisLayerPanel from './AnalysisLayerPanel'
 import AnalysisItemGraph, { AnalysisGraphProps } from './AnalysisItemGraph'
