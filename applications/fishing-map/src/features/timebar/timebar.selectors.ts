@@ -131,7 +131,7 @@ const selectEventsForTracks = createSelector(
       })
       return data as ApiEvent[]
     })
-    return vesselsEvents.filter((events) => events.length > 0)
+    return vesselsEvents
   }
 )
 
