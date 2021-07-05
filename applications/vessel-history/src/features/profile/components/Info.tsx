@@ -73,7 +73,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
     () => (vessel?.imageList ?? []).map((url) => ({ original: url })),
     [vessel]
   )
-
+  const [imageLoading, setImageLoading] = useState(true)
   return (
     <Fragment>
       <div className={styles.infoContainer}>
@@ -81,11 +81,12 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
           <Fragment>
             <ImageGallery
               items={imageList}
+              onImageLoad={() => setImageLoading(false)}
               showThumbnails={false}
               showBullets={true}
               slideDuration={5000}
               showPlayButton={imageList.length > 1}
-              additionalClass={styles.imageGallery}
+              additionalClass={cx(styles.imageGallery, { [styles.loading]: imageLoading })}
             />
             <div className={styles.identifiers}>
               <InfoField
