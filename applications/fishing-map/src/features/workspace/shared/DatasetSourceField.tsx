@@ -4,7 +4,7 @@ import cx from 'classnames'
 import TagList, { TagItem } from '@globalfishingwatch/ui-components/dist/tag-list'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { getSourcesSelectedInDataview } from '../heatmaps/heatmaps.utils'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 
 type DatasetFilterSourceProps = {
   dataview: UrlDataviewInstance

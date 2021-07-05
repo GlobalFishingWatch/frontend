@@ -20,9 +20,9 @@ import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
-import Filters from './HeatmapFilters'
-import { isFishingDataview, isPresenceDataview } from './heatmaps.utils'
-import heatmapStyles from './HeatmapsSection.module.css'
+import Filters from './ActivityFilters'
+import { isFishingDataview, isPresenceDataview } from './activity.utils'
+import activityStyles from './ActivitySection.module.css'
 
 type LayerPanelProps = {
   isOpen: boolean
@@ -31,7 +31,7 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-function HeatmapLayerPanel({
+function ActivityLayerPanel({
   dataview,
   showBorder,
   isOpen,
@@ -112,7 +112,7 @@ function HeatmapLayerPanel({
   )
   return (
     <div
-      className={cx(styles.LayerPanel, heatmapStyles.layerPanel, {
+      className={cx(styles.LayerPanel, activityStyles.layerPanel, {
         [styles.expandedContainerOpen]: filterOpen,
         [styles.noBorder]: !showBorder || bivariateDataviews?.[0] === dataview.id,
         'print-hidden': !layerActive,
@@ -187,8 +187,8 @@ function HeatmapLayerPanel({
               />
             </div>
           </div>
-          <div className={heatmapStyles.legendContainer}>
-            <div className={heatmapStyles.legend} id={`legend_${dataview.id}`}></div>
+          <div className={activityStyles.legendContainer}>
+            <div className={activityStyles.legend} id={`legend_${dataview.id}`}></div>
             {bivariateDataviews?.[0] === dataview.id && (
               <IconButton
                 size="small"
@@ -196,7 +196,7 @@ function HeatmapLayerPanel({
                 icon="split"
                 tooltip={t('layer.toggleCombinationMode.split', 'Split layers')}
                 tooltipPlacement="left"
-                className={cx(heatmapStyles.bivariateSplit, 'print-hidden')}
+                className={cx(activityStyles.bivariateSplit, 'print-hidden')}
                 onClick={onSplitLayers}
               />
             )}
@@ -207,4 +207,4 @@ function HeatmapLayerPanel({
   )
 }
 
-export default HeatmapLayerPanel
+export default ActivityLayerPanel

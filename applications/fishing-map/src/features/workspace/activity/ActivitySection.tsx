@@ -24,10 +24,10 @@ import {
 } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import LayerPanel from './HeatmapLayerPanel'
-import heatmapStyles from './HeatmapsSection.module.css'
+import LayerPanel from './ActivityLayerPanel'
+import activityStyles from './ActivitySection.module.css'
 
-function HeatmapsSection(): React.ReactElement {
+function ActivitySection(): React.ReactElement {
   const { t } = useTranslation()
   const [addedDataviewId, setAddedDataviewId] = useState<string | undefined>()
   const readOnly = useSelector(selectReadOnly)
@@ -178,12 +178,12 @@ function HeatmapsSection(): React.ReactElement {
               onToggle={onToggleLayer(dataview)}
             />
             {showBivariateIcon && (
-              <div className={cx(heatmapStyles.bivariateToggleContainer, 'print-hidden')}>
+              <div className={cx(activityStyles.bivariateToggleContainer, 'print-hidden')}>
                 <IconButton
                   icon={bivariateDataviews ? 'split' : 'compare'}
                   type="border"
                   size="small"
-                  className={heatmapStyles.bivariateToggle}
+                  className={activityStyles.bivariateToggle}
                   tooltip={t('layer.toggleCombinationMode.combine', 'Combine layers')}
                   tooltipPlacement="top"
                   onClick={() => onBivariateDataviewsClick(dataview, dataviews[index + 1])}
@@ -197,4 +197,4 @@ function HeatmapsSection(): React.ReactElement {
   )
 }
 
-export default HeatmapsSection
+export default ActivitySection

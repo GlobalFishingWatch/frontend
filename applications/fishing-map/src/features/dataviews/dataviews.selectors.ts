@@ -23,7 +23,7 @@ import {
   selectWorkspaceStatus,
   selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
-import { isActivityDataview } from 'features/workspace/heatmaps/heatmaps.utils'
+import { isActivityDataview } from 'features/workspace/activity/activity.utils'
 import { isGuestUser } from 'features/user/user.selectors'
 import { selectActivityCategoryFn } from 'features/app/app.selectors'
 import { selectAllDataviews } from './dataviews.slice'

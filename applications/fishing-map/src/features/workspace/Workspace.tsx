@@ -21,7 +21,7 @@ import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
 import { SUPPORT_EMAIL } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectDataviewsResourceQueries } from 'features/resources/resources.selectors'
-import HeatmapsSection from './heatmaps/HeatmapsSection'
+import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
@@ -152,7 +152,7 @@ function Workspace() {
         locationCategory === WorkspaceCategories.FishingActivity) &&
         workspace?.name &&
         !readOnly && <h2 className={styles.title}>{workspace.name}</h2>}
-      <HeatmapsSection />
+      <ActivitySection />
       <VesselsSection />
       <EventsSection />
       <EnvironmentalSection />
