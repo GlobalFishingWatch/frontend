@@ -4,6 +4,7 @@ import { MarineRegionType } from 'features/regions/regions.slice'
 import { ActivityEventGroup } from 'types/activity'
 import ActivityDescriptionEEZ from './ActivityDescriptionEEZ'
 import ActivityDescriptionRFMO from './ActivityDescriptionRFMO'
+import ActivityDescriptionEncounter from './ActivityDescriptionEncounter'
 
 interface ActivityDescriptionProps {
   group: ActivityEventGroup
@@ -13,6 +14,9 @@ const ActivityGroupDescription: React.FC<ActivityDescriptionProps> = (props): Re
   const group = props.group
   const { t } = useTranslation()
   const eez = group?.event_places.find(place => place.type === MarineRegionType.eez)
+  if (group.encounter) {
+    return <ActivityDescriptionEncounter encounter={group.encounter} type="group"></ActivityDescriptionEncounter>
+  }
   if (eez){
     return <ActivityDescriptionEEZ regionId={eez.id} count={group?.entries.length} type="group" ocean={group.ocean}></ActivityDescriptionEEZ>
   }

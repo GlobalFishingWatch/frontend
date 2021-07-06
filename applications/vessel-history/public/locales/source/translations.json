@@ -14,10 +14,12 @@
     "previous": "previous"
   },
   "event": {
+    "authStatus": "Authorization status",
     "avgDuration": "Avg Duration",
     "avgSpeed": "Avg Speed",
     "diffHours": "{{ diff }} hours",
     "distance": "Distance",
+    "encounterDetails": "{{ type }} authorization encounter with {{ vessel }}",
     "end": "End date",
     "endDistancePort": "End distance from port",
     "endDistanceShore": "End distance from shore",
@@ -25,11 +27,15 @@
     "fishingGroup": "{{ count }} Fishing events in {{ regionName }}",
     "fishingGroup_plural": "{{ count }} Fishing events in {{ regionName }}",
     "maxCoords": "Max coordinates",
+    "medianSpeed": "Median Speed",
     "minCoords": "Min coordinates",
+    "nextPort": "Next port traveled",
     "noDescription": "No description found",
+    "position": "Position in coordinate system",
     "start": "Start date",
     "startDistancePort": "Start distance from port",
-    "startDistanceShore": "Start distance from shore"
+    "startDistanceShore": "Start distance from shore",
+    "vesselInvolved": "Vessel involved in the event"
   },
   "map": {
     "loading": "Map loading",
@@ -84,6 +90,7 @@
     "historyLabelByField": "{{label}} history for {{vesselName}}",
     "imo": "imo",
     "mmsi": "mmsi",
+    "name": "name",
     "noAuthorizations": "No authorizations found",
     "plusPreviousValuesByField": "+{{quantity}} previous {{fieldLabel}}",
     "readyForOfflineView": "READY FOR OFFLINE VIEW",
@@ -98,7 +105,6 @@
     "gearType": "gear type",
     "grossTonnage": "gross tonnage",
     "length": "length",
-    "name": "name",
     "operator": "operator",
     "owner": "owner",
     "type": "type",

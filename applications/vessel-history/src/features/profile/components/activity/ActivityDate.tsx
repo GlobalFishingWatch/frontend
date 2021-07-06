@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DateTime, DurationUnit } from 'luxon'
-import { ActivityEvent, EventType } from 'types/activity'
+import { ActivityEventType, EventType } from 'types/activity'
 import I18nDate from 'features/i18n/i18nDate'
 import styles from './Activity.module.css'
 
 interface ActivityDateProps {
-  event: ActivityEvent
+  event: ActivityEventType
 }
 
 const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement => {
@@ -16,7 +16,7 @@ const ActivityDate: React.FC<ActivityDateProps> = (props): React.ReactElement =>
   const end = DateTime.fromISO(event.end)
   const unit: DurationUnit = 'hours' 
   const diff = Math.round(end.diff(start).as(unit) * 10) /10
-  if (event.type === EventType.Fishing) {
+  if (event.type === EventType.Fishing || event.type === EventType.Encounter) {
     return (
       <Fragment>
         {event.start && event.end && (

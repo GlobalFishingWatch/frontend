@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { FISHING_EVENTS_DATASET } from 'data/constants'
-import { ActivityEvent, ActivityEventGroup } from 'types/activity'
+import { CARRIER_EVENTS_DATASET, FISHING_EVENTS_DATASET } from 'data/constants'
+import { ActivityEventGroup, ActivityEventType } from 'types/activity'
 import { GroupRegions, MarineRegionType } from 'features/regions/regions.slice'
 
 
@@ -10,22 +10,22 @@ const fetchData = (dataset: string, vesselId: string, start: string, end: string
         `/v1/events?datasets=${encodeURIComponent(dataset)}&vessels=${vesselId}&startDate=${start}&endDate=${end}`
     )
         .then((json: any) => {
-            return json.entries as ActivityEvent[] ?? []
+            return json.entries as ActivityEventType[] ?? []
         })
         .catch((error) => {
-            return [] as ActivityEvent[]
+            return [] as ActivityEventType[]
         })
 }
 
 const fetchDatasets = async (vesselId: string, start: string, end: string, signal?: AbortSignal | null) => {
     // TODO:duplicate for testing, others datasets should be used
-    const datasets = [FISHING_EVENTS_DATASET]
+    const datasets = [FISHING_EVENTS_DATASET, CARRIER_EVENTS_DATASET]
     const fetchedEvents = await Promise.all(
         datasets.map(async (dataset) => fetchData(dataset, vesselId, start, end, signal))
     )
     const allEvents = fetchedEvents.flat()
     const sortEvents = allEvents.sort(
-        (n1: ActivityEvent, n2: ActivityEvent) => {
+        (n1: ActivityEventType, n2: ActivityEventType) => {
             return new Date(n1.start).getTime() > new Date(n2.start).getTime() ? -1 : 1
         }
     )
@@ -42,7 +42,7 @@ const equals = (a: GroupRegions[], b: GroupRegions[]) =>
     a.length === b.length &&
     a.every((v, i) => v.type === b[i].type && v.id === b[i].id);
 
-const groupEvents = (events: ActivityEvent[]) => {
+const groupEvents = (events: ActivityEventType[]) => {
     const groups: ActivityEventGroup[] = []
     events.forEach(event => {
         const places: GroupRegions[] = []
@@ -75,6 +75,7 @@ const groupEvents = (events: ActivityEvent[]) => {
                 start: event.start,
                 end: event.end,
                 open: true,
+                encounter: event.encounter,
                 entries: [event]
             }
             groups.push(newGroup)

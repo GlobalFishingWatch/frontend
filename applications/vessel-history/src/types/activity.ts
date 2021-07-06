@@ -1,18 +1,16 @@
+import { EncounterEvent, EventVessel, PointCoordinate } from "@globalfishingwatch/api-types/dist/events";
 import { GroupRegions } from "features/regions/regions.slice";
 
-export interface EventVessel {
+export interface NextPort {
     id: string;
-    name: string;
-    ssvid: string;
-    nextPort?: any;
-}
-export interface Position {
-    lat: number;
-    lon: number;
+    label: string;
+    iso: string;
+    anchorageId: string;
 }
 
 export enum EventType {
     Fishing = 'fishing',
+    Encounter = 'encounter',
 }
 export interface Regions {
     arg: any[];
@@ -43,26 +41,50 @@ export interface Fishing {
     averageSpeedKnots: number;
     averageDurationHours: number;
 }
+export interface RegionAuthorization {
+    rfmo: string;
+    authorized: boolean;
+}
+export interface Authorization {
+    rfmo: string;
+    authorized: boolean;
+}
+export interface VesselAuthorization {
+    id: string;
+    authorizations: Authorization[];
+}
+
 
 export interface ActivityEvent {
     type: EventType;
     vessel: EventVessel;
     start: string;
     end: string;
-    position: Position;
+    position: PointCoordinate;
     regions: Regions;
     boundingBox: number[];
     distances: Distances;
+    fishing?: Fishing;
+    encounter?: EncounterEvent;
+}
+
+export interface ActivityFishingEvent extends ActivityEvent {
     fishing: Fishing;
 }
+export interface ActivityEncounterEvent extends ActivityEvent {
+    encounter: EncounterEvent;
+}
+
+export type ActivityEventType = ActivityFishingEvent | ActivityEncounterEvent
 export interface ActivityEventGroup {
     event_type: EventType
     event_places: GroupRegions[]
     ocean?: string
     start: string
     end: string
+    encounter?: EncounterEvent
     open: boolean
-    entries: ActivityEvent[];
+    entries: ActivityEventType[];
 }
 
 export interface ActivityEvents {
@@ -72,7 +94,7 @@ export interface ActivityEvents {
 }
 
 export interface OfflineVesselActivity {
-    activities: ActivityEvent[]
+    activities: ActivityEventType[]
     profileId: string
     savedOn: string
 }

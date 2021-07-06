@@ -1,12 +1,13 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import cx from 'classnames'
 import { DateTime } from 'luxon'
 import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { VesselWithHistory } from 'types'
 import { selectVesselId } from 'routes/routes.selectors'
 import { fetchVesselActivityThunk } from 'features/vessels/activity/vessels-activity.thunk'
 import { selectVesselActivity, toggleGroup } from 'features/vessels/activity/vessels-activity.slice'
-import { ActivityEvent, ActivityEventGroup } from 'types/activity'
+import { ActivityEventGroup, ActivityEventType } from 'types/activity'
 import I18nDate from 'features/i18n/i18nDate'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import styles from './Activity.module.css'
@@ -27,7 +28,7 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
   useEffect(() => {
     if (vesselId) {
-      const start = '2017-01-01'
+      const start = '2013-01-01'
       const end = '2021-07-01'
       dispatch(fetchVesselActivityThunk({vesselId, start, end}))
     }
@@ -38,8 +39,8 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
   },[dispatch])
 
   const [isModalOpen, setIsOpen] = useState(false)
-  const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
-  const openModal = useCallback((event: ActivityEvent) => {
+  const [selectedEvent, setSelectedEvent] = useState<ActivityEventType>()
+  const openModal = useCallback((event: ActivityEventType) => {
     setSelectedEvent(event)
     setIsOpen(true)
   }, [])
@@ -50,6 +51,7 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
   }, [dispatch])
   
   const eventGroups = useSelector(selectVesselActivity)
+  console.log(eventGroups)
   return (
     <Fragment>
       <Modal
@@ -65,7 +67,7 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
             {!group.open && group.entries && ( 
               <Fragment>
                   <div className={styles.event} >
-                    <div className={styles.eventIcon}>
+                    <div className={cx(styles.eventIcon, styles[group.event_type])}>
                       <i></i>
                       <span className={styles.eventCount}>{group.entries.length}</span>
                     </div>
@@ -88,10 +90,10 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
                 <div className={styles.divider}></div>
               </Fragment>
             )}
-            {group.open && group.entries && group.entries.map((event: ActivityEvent, eventIndex) => ( 
+            {group.open && group.entries && group.entries.map((event: ActivityEventType, eventIndex) => ( 
               <Fragment key={eventIndex}>
                   <div className={styles.event} >
-                    <div  className={styles.eventIcon}>
+                    <div className={cx(styles.eventIcon, styles[group.event_type])}>
                       <i></i>
                     </div>
                     <div className={styles.eventData}>

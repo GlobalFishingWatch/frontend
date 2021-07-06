@@ -5,6 +5,7 @@ export const RESULTS_PER_PAGE = 25
 export const SEARCH_MIN_CHARACTERS = 3
 export const BASE_DATASET = 'public-global-fishing-vessels:v20201001'
 export const FISHING_EVENTS_DATASET = 'public-global-fishing-events:v20201001'
+export const CARRIER_EVENTS_DATASET = 'public-global-encounters-events-carriers-fishing:v20201001'
 export const SHOW_VESSEL_API_SOURCE =
   process.env.REACT_APP_WORKSPACE_ENV === 'production' ? false : true
 

@@ -1,3 +1,10 @@
 .modalContainer span {
   font-weight: bold;
+  text-transform: capitalize;
+}
+
+.modalContainer h3 {
+  font-weight: bold;
+  font-size: 2rem;
+  margin-top: 1rem;
 }
