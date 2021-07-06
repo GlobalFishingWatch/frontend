@@ -153,10 +153,11 @@ export const useClickedEventConnect = () => {
     }
 
     // When hovering in a vessel event we don't want to have clicked events
-    const isVesselSingleFeatureEvent =
-      event.features.find((f) => f.generatorType === Generators.Type.VesselEvents) !== undefined
+    const areAllFeaturesVesselEvents = event.features.every(
+      (f) => f.generatorType === Generators.Type.VesselEvents
+    )
 
-    if (isVesselSingleFeatureEvent && event.features?.length === 1) {
+    if (areAllFeaturesVesselEvents) {
       return
     }
 
