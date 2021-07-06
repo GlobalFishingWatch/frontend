@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 2.0.0
+
+### Major Changes
+
+- eb9e4be9: [WIP] Fishing map/vessel events perf
+
 ## 1.8.0
 
 ### Minor Changes

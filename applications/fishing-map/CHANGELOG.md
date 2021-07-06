@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.0.15
+
+### Patch Changes
+
+- eb9e4be9: [WIP] Fishing map/vessel events perf
+- Updated dependencies [eb9e4be9]
+  - @globalfishingwatch/timebar@2.0.0
+
 ## 1.0.14
 
 ### Patch Changes
