@@ -123,7 +123,7 @@ function PopupWrapper({
               if (type === 'click') {
                 return null
               }
-              return <VesselEventsLayers features={features} />
+              return <VesselEventsLayers key={featureCategory} features={features} />
 
             default:
               return null
