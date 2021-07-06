@@ -23,15 +23,11 @@ const ICONS = {
   fishing: null,
 }
 
-const Tooltip = ({ highlightedEvent, outerScale, innerStartPx, innerEndPx }) => {
+const Tooltip = ({ highlightedEvent, outerScale }) => {
   if (!highlightedEvent) {
     return null
   }
   const left = outerScale(highlightedEvent.start)
-
-  if (left < innerStartPx || left > innerEndPx) {
-    return null
-  }
 
   const width = highlightedEvent.end === null ? 0 : outerScale(highlightedEvent.end) - left
   const center = left + width / 2
@@ -240,8 +236,6 @@ const TracksEvents = ({ tracksEvents, preselectedEventId, onEventClick, onEventH
           <Tooltip
             highlightedEvent={highlightedEvent}
             outerScale={outerScale}
-            innerStartPx={innerStartPx}
-            innerEndPx={innerEndPx}
           />,
           tooltipContainer
         )}
