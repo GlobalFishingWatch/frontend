@@ -190,8 +190,14 @@ const MapWrapper = (): React.ReactElement | null => {
     (state) => {
       // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
       if (state.isHovering && hoveredTooltipEvent) {
+        // Workaround to fix cluster events duplicated, only working for encounters and needs
+        // TODO if wanted to scale it to other layers
+        const clusterConfig = dataviews.find((d) => d.config?.type === Generators.Type.TileCluster)
+        const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
+
         const isCluster = hoveredTooltipEvent.features.find(
-          (f) => f.type === Generators.Type.TileCluster && parseInt(f.properties.count) > 1
+          (f) =>
+            f.type === Generators.Type.TileCluster && parseInt(f.properties.count) > eventsCount
         )
         if (isCluster) {
           return encounterSourceLoaded ? 'zoom-in' : 'progress'
@@ -199,7 +205,7 @@ const MapWrapper = (): React.ReactElement | null => {
         const isVesselSingleFeatureEvent =
           hoveredTooltipEvent.features.find((f) => f.category === DataviewCategory.Vessels) !==
           undefined
-        if (isVesselSingleFeatureEvent && hoveredTooltipEvent.features?.length === 1) {
+        if (isVesselSingleFeatureEvent && hoveredTooltipEvent.features?.length === eventsCount) {
           return 'grab'
         }
         return 'pointer'
@@ -208,7 +214,7 @@ const MapWrapper = (): React.ReactElement | null => {
       }
       return 'grab'
     },
-    [hoveredTooltipEvent, encounterSourceLoaded]
+    [hoveredTooltipEvent, encounterSourceLoaded, dataviews]
   )
 
   useEffect(() => {

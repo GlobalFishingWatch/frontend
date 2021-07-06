@@ -1,4 +1,5 @@
 import { Fragment, useState, useCallback, useMemo } from 'react'
+import ReactHtmlParser from 'react-html-parser'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -40,7 +41,9 @@ const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
           <p className={styles.content}>
             {isUserLayer
               ? dataset.description
-              : t(`datasets:${removeDatasetVersion(dataset?.id)}.description` as any)}
+              : ReactHtmlParser(
+                  t(`datasets:${removeDatasetVersion(dataset?.id)}.description` as any)
+                )}
           </p>
         ),
       }

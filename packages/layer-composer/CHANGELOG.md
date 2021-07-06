@@ -1,5 +1,18 @@
 # @globalfishingwatch/layer-composer
 
+## 8.5.0
+
+### Minor Changes
+
+- ea0e1b8a: fix events generator
+
+## 8.4.0
+
+### Minor Changes
+
+- 060b3854: workaround for duplicated events in generator
+- ed8af7ae: workaround for duplicated api events
+
 ## 8.3.0
 
 ### Minor Changes

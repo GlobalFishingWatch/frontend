@@ -165,6 +165,10 @@ export interface TileClusterGeneratorConfig extends GeneratorConfig {
    * List of datasets to retrieve the data from, optional to allow using resolved url params directly (eg: using resolve-endpoints)
    */
   dataset?: string
+  /**
+   * Uses a workaround when having duplicated events to show only 1 event
+   */
+  duplicatedEventsWorkaround?: boolean
 }
 
 /**

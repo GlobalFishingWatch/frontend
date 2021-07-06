@@ -1,5 +1,29 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.0.17
+
+### Patch Changes
+
+- Updated dependencies [ea0e1b8a]
+  - @globalfishingwatch/dataviews-client@11.4.0
+  - @globalfishingwatch/layer-composer@8.5.0
+
+## 1.0.16
+
+### Patch Changes
+
+- Updated dependencies [060b3854]
+- Updated dependencies [ed8af7ae]
+  - @globalfishingwatch/layer-composer@8.4.0
+
+## 1.0.15
+
+### Patch Changes
+
+- eb9e4be9: [WIP] Fishing map/vessel events perf
+- Updated dependencies [eb9e4be9]
+  - @globalfishingwatch/timebar@2.0.0
+
 ## 1.0.14
 
 ### Patch Changes

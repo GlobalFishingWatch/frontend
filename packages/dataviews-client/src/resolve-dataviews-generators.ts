@@ -124,10 +124,10 @@ export function getGeneratorConfig(
       }
       const eventsResources = resolveDataviewEventsResources(dataview)
       const hasEventData =
-        eventsResources?.length && eventsResources.every(({ url }) => resources?.[url]?.data)
+        eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
       if (hasEventData) {
-        const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url].data : []))
+        const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data : []))
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           type: Generators.Type.VesselEvents,

@@ -7,13 +7,13 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Radio from '@globalfishingwatch/ui-components/dist/radio'
 import Select, { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import useClickedOutside from 'hooks/use-clicked-outside'
-import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
+import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveActivityDataviews,
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.selectors'
-import { selectTimebarEvents, selectTimebarGraph } from 'features/app/app.selectors'
+import { selectTimebarGraph } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 import { useTimebarVisualisation } from './timebar.hooks'
@@ -25,7 +25,6 @@ const TimebarSettings = () => {
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
-  const timebarEvents = useSelector(selectTimebarEvents)
   const timebarGraph = useSelector(selectTimebarGraph)
   const { dispatchQueryParams } = useLocationConnect()
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisation()
@@ -48,35 +47,6 @@ const TimebarSettings = () => {
     ],
     [t]
   )
-  const TIMEBAR_EVENT_OPTIONS: SelectOption<TimebarEvents>[] = useMemo(
-    () => [
-      {
-        id: 'all',
-        label: t('timebarSettings.eventOptions.all', 'All events'),
-      },
-      {
-        id: 'fishing',
-        label: t('timebarSettings.eventOptions.fishing', 'Fishing'),
-      },
-      {
-        id: 'encounter',
-        label: t('timebarSettings.eventOptions.encounters', 'Encounters'),
-      },
-      {
-        id: 'loitering',
-        label: t('timebarSettings.eventOptions.loitering', 'Loitering'),
-      },
-      {
-        id: 'port',
-        label: t('timebarSettings.eventOptions.ports', 'Port visits'),
-      },
-      {
-        id: 'none',
-        label: t('timebarSettings.eventOptions.none', 'None'),
-      },
-    ],
-    [t]
-  )
 
   const openOptions = () => {
     uaEvent({
@@ -95,16 +65,10 @@ const TimebarSettings = () => {
   const setVesselActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
   }
-  const setEventsOption = (o: SelectOption) => {
-    dispatchQueryParams({ timebarEvents: o.id as TimebarEvents })
-  }
   const setGraphOption = (o: SelectOption) => {
     if (!o.label.includes('Coming soon')) {
       dispatchQueryParams({ timebarGraph: o.id as TimebarGraphs })
     }
-  }
-  const removeEventsOption = () => {
-    dispatchQueryParams({ timebarEvents: 'none' })
   }
   const removeGraphOption = () => {
     dispatchQueryParams({ timebarGraph: TimebarGraphs.None })
@@ -156,14 +120,6 @@ const TimebarSettings = () => {
               activeVesselsDataviews &&
               activeVesselsDataviews.length > 0 && (
                 <div className={styles.vesselTrackOptions}>
-                  <Select
-                    label={t('common.events', 'Events')}
-                    options={TIMEBAR_EVENT_OPTIONS}
-                    selectedOption={TIMEBAR_EVENT_OPTIONS.find((o) => o.id === timebarEvents)}
-                    onSelect={setEventsOption}
-                    onRemove={removeEventsOption}
-                    direction="top"
-                  />
                   {timebarGraphEnabled && (
                     <Select
                       label={t('timebarSettings.graph', 'Graph')}
