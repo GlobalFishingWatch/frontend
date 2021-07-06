@@ -358,6 +358,8 @@ class Timeline extends PureComponent {
     return (
       <TimelineContext.Provider
         value={{
+          start,
+          end,
           outerScale: this.outerScale,
           outerStart,
           outerEnd,

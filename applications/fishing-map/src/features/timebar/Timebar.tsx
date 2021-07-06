@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useRef, useState , useMemo } from 'react'
+import React, { Fragment, memo, useCallback, useRef, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
@@ -55,7 +55,6 @@ const TimebarWrapper = () => {
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
   const { highlightedEvent, dispatchHighlightedEvent } = useHighlightEventConnect()
-  // const highlightedTime = useSelector(selectHighlightedTime)
   const { timebarVisualisation } = useTimebarVisualisation()
   const { setMapCoordinates } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
