@@ -4,6 +4,7 @@ import { groupBy } from 'lodash'
 import { DateTime } from 'luxon'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { MAX_TOOLTIP_LIST } from '../map.slice'
 import styles from './Popup.module.css'
 
 // t('event.fishing', 'Fished for')
@@ -15,7 +16,9 @@ type ContextTooltipRowProps = {
 
 function VesselEventsTooltipSection({ features }: ContextTooltipRowProps) {
   const { t } = useTranslation()
-  const featuresByType = groupBy(features, 'layerId')
+  const overflows = features?.length > MAX_TOOLTIP_LIST
+  const maxFeatures = overflows ? features.slice(0, MAX_TOOLTIP_LIST) : features
+  const featuresByType = groupBy(maxFeatures, 'layerId')
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => (
@@ -51,6 +54,12 @@ function VesselEventsTooltipSection({ features }: ContextTooltipRowProps) {
                 </Fragment>
               )
             })}
+
+            {overflows && (
+              <div className={styles.vesselsMore}>
+                + {features.length - MAX_TOOLTIP_LIST} {t('common.more', 'more')}
+              </div>
+            )}
           </div>
         </div>
       ))}

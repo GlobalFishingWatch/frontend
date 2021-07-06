@@ -35,7 +35,7 @@ import {
 import {
   setClickedEvent,
   selectClickedEvent,
-  MAX_TOOLTIP_VESSELS,
+  MAX_TOOLTIP_LIST,
   fetchEncounterEventThunk,
   SliceInteractionEvent,
   selectFishingInteractionStatus,
@@ -370,9 +370,9 @@ export const parseMapTooltipEvent = (
 
     if (feature.vessels) {
       tooltipEventFeature.vesselsInfo = {
-        vessels: feature.vessels.slice(0, MAX_TOOLTIP_VESSELS),
+        vessels: feature.vessels.slice(0, MAX_TOOLTIP_LIST),
         numVessels: feature.vessels.length,
-        overflow: feature.vessels.length > MAX_TOOLTIP_VESSELS,
+        overflow: feature.vessels.length > MAX_TOOLTIP_LIST,
       }
     }
     return tooltipEventFeature
