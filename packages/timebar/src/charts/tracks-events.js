@@ -95,13 +95,33 @@ const getCoordinates = (tracksEvents, outerScale) => {
   })
 }
 
+/**
+  Removes events out of outer delta
+ */
+const getFilteredEvents = (tracksEvents, outerStart, outerEnd) => {
+  const outerStartMs = new Date(outerStart).getTime()
+  const outerEndMs = new Date(outerEnd).getTime()
+  return tracksEvents.map(trackEvents => {
+    const filtered = trackEvents.filter(event => {
+      return event.end > outerStartMs && event.start < outerEndMs
+    })
+    
+    console.log(trackEvents.length, filtered.length)
+    return filtered
+  })
+}
+
+
 const TracksEvents = ({ tracksEvents, preselectedEventId, onEventClick, onEventHover }) => {
   const { immediate } = useContext(ImmediateContext)
-  const { outerScale, outerWidth, graphHeight, tooltipContainer, innerStartPx, innerEndPx } =
+  const { outerScale, outerWidth, graphHeight, tooltipContainer, innerStartPx, innerEndPx, outerStart, outerEnd } =
     useContext(TimelineContext)
+
+  const filteredTracksEvents = useMemo(() => getFilteredEvents(tracksEvents, outerStart, outerEnd), [tracksEvents, outerStart, outerEnd])
+  
   const tracksEventsWithCoordinates = useMemo(
-    () => getCoordinates(tracksEvents, outerScale),
-    [tracksEvents, outerScale]
+    () => getCoordinates(filteredTracksEvents, outerScale),
+    [filteredTracksEvents, outerScale]
   )
   const [highlightedEvent, setHighlightedEvent] = useState(null)
   const [preselectedEvent, setPreselectedEvent] = useState(null)
