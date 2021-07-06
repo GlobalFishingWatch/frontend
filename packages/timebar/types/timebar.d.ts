@@ -89,7 +89,7 @@ declare namespace Timebar {
         export { enablePlayback_1 as enablePlayback };
         export function onTogglePlay_1(): void;
         export { onTogglePlay_1 as onTogglePlay };
-        export function children_1(): void;
+        const children_1: any;
         export { children_1 as children };
         export function onMouseLeave_1(): void;
         export { onMouseLeave_1 as onMouseLeave };

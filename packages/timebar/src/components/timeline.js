@@ -420,8 +420,7 @@ class Timeline extends PureComponent {
                 outerEnd={outerEnd}
                 onChange={onChange}
               />
-              {/* // TODO still need to pass props? */}
-              {this.props.children && this.props.children()}
+              {this.props.children}
             </div>
           </div>
           <div
@@ -515,7 +514,7 @@ Timeline.propTypes = {
   onChange: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func,
   onMouseMove: PropTypes.func,
-  children: PropTypes.func,
+  children: PropTypes.node,
   start: PropTypes.string.isRequired,
   end: PropTypes.string.isRequired,
   absoluteStart: PropTypes.string.isRequired,
@@ -539,9 +538,7 @@ Timeline.defaultProps = {
   bookmarkStart: null,
   bookmarkEnd: null,
   bookmarkPlacement: 'top',
-  children: () => {
-    // do nothing
-  },
+  children: null,
   onBookmarkChange: () => {
     // do nothing
   },
