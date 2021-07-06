@@ -23,20 +23,18 @@ const ICONS = {
   fishing: null,
 }
 
-const Tooltip = ({ highlightedEvent, outerScale, innerStartPx, innerEndPx }) => {
+const Tooltip = ({ highlightedEvent, outerScale }) => {
   if (!highlightedEvent) {
     return null
   }
   const left = outerScale(highlightedEvent.start)
 
-  if (left < innerStartPx || left > innerEndPx) {
-    return null
-  }
-
   const width = highlightedEvent.end === null ? 0 : outerScale(highlightedEvent.end) - left
   const center = left + width / 2
 
   const start = dayjs(highlightedEvent.start).utc()
+
+  const description = (highlightedEvent.aggregated) ? `${highlightedEvent.descriptionGeneric} (${highlightedEvent.aggregatedNum} events)` : highlightedEvent.description
 
   return (
     <div className={styles.tooltip} style={{ left: `${center}px` }} key="tooltip">
@@ -48,7 +46,7 @@ const Tooltip = ({ highlightedEvent, outerScale, innerStartPx, innerEndPx }) => 
         >
           {start.format(DEFAULT_FULL_DATE_FORMAT)} UTC
         </div>
-        {highlightedEvent.description}
+        {description}
       </div>
     </div>
   )
@@ -62,6 +60,9 @@ Tooltip.propTypes = {
     color: PropTypes.string,
     colorLabels: PropTypes.string,
     description: PropTypes.string,
+    descriptionGeneric: PropTypes.string,
+    aggregated: PropTypes.bool,
+    aggregatedNum: PropTypes.number,
   }),
   outerScale: PropTypes.func.isRequired,
   innerStartPx: PropTypes.number.isRequired,
@@ -95,13 +96,72 @@ const getCoordinates = (tracksEvents, outerScale) => {
   })
 }
 
+/**
+  Cluster events on order to render less nodes, depending on current time delta
+*/
+const TWO_MONTH_MS = 2 * 31 * 24 * 60 * 60 * 1000
+const MIN_FRACTION_INNER_DELTA_TO_CLUSTER = .005
+const getClusteredEvents = (tracksEvents, innerDeltaMs) => {
+  const maxDistanceMs = MIN_FRACTION_INNER_DELTA_TO_CLUSTER * innerDeltaMs
+  return tracksEvents.map(trackEvents => {
+    const aggregated = trackEvents.reduce((currentAggregatedEvents, currentEvent) => {
+      const lastAggItem = currentAggregatedEvents[currentAggregatedEvents.length - 1]
+      const lastType = (lastAggItem) ? lastAggItem.type : null
+      const lastEnd = (lastAggItem) ? lastAggItem.end : Number.NEGATIVE_INFINITY
+
+      if (currentEvent.start - lastEnd > maxDistanceMs || currentEvent.type !== lastType) {
+        // create new agg event
+        const newAggEvent = {
+          ...currentEvent,
+          aggregated: false,
+          aggregatedTime: currentEvent.end - currentEvent.start,
+          aggregatedNum: 1,
+        }
+        return [...currentAggregatedEvents, newAggEvent]
+      }
+      lastAggItem.end = currentEvent.end
+      lastAggItem.aggregated = true
+      lastAggItem.aggregatedTime += currentEvent.end - currentEvent.start
+      lastAggItem.aggregatedNum++
+      return currentAggregatedEvents
+    }, [])
+    return aggregated
+  })
+}
+  
+
+/**
+  Removes events out of outer delta
+ */
+const getFilteredEvents = (tracksEvents, outerStartMs, outerEndMs) => {
+  return tracksEvents.map(trackEvents => {
+    const filtered = trackEvents.filter(event => {
+      return event.end > outerStartMs && event.start < outerEndMs
+    })
+    return filtered
+  })
+}
+
+
 const TracksEvents = ({ tracksEvents, preselectedEventId, onEventClick, onEventHover }) => {
   const { immediate } = useContext(ImmediateContext)
-  const { outerScale, outerWidth, graphHeight, tooltipContainer, innerStartPx, innerEndPx } =
+  const { outerScale, outerWidth, graphHeight, tooltipContainer, innerStartPx, innerEndPx, start, end, outerStart, outerEnd } =
     useContext(TimelineContext)
+
+  const startMs = +new Date(start)
+  const endMs = +new Date(end)
+  const innerDeltaMs = endMs - startMs
+  const clusteredTracksEvents = useMemo(() => {
+    return innerDeltaMs > TWO_MONTH_MS ? getClusteredEvents(tracksEvents, innerDeltaMs) : tracksEvents
+  }, [tracksEvents, innerDeltaMs])
+
+  const outerStartMs = +new Date(outerStart)
+  const outerEndMs = +new Date(outerEnd)
+  const filteredTracksEvents = useMemo(() => getFilteredEvents(clusteredTracksEvents, outerStartMs, outerEndMs), [clusteredTracksEvents, outerStartMs, outerEndMs])
+  
   const tracksEventsWithCoordinates = useMemo(
-    () => getCoordinates(tracksEvents, outerScale),
-    [tracksEvents, outerScale]
+    () => getCoordinates(filteredTracksEvents, outerScale),
+    [filteredTracksEvents, outerScale]
   )
   const [highlightedEvent, setHighlightedEvent] = useState(null)
   const [preselectedEvent, setPreselectedEvent] = useState(null)
@@ -155,7 +215,9 @@ const TracksEvents = ({ tracksEvents, preselectedEventId, onEventClick, onEventH
                     : `left ${DEFAULT_CSS_TRANSITION}, height ${DEFAULT_CSS_TRANSITION}, width ${DEFAULT_CSS_TRANSITION}`,
                 }}
                 onMouseEnter={() => {
-                  onEventHover(event)
+                  if (event.aggregated !== true) {
+                    onEventHover(event)
+                  }
                   setHighlightedEvent(event)
                 }}
                 onMouseLeave={() => {
@@ -174,8 +236,6 @@ const TracksEvents = ({ tracksEvents, preselectedEventId, onEventClick, onEventH
           <Tooltip
             highlightedEvent={highlightedEvent}
             outerScale={outerScale}
-            innerStartPx={innerStartPx}
-            innerEndPx={innerEndPx}
           />,
           tooltipContainer
         )}

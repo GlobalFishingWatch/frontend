@@ -381,7 +381,7 @@ Timebar.propTypes = {
   start: PropTypes.string.isRequired,
   end: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  children: PropTypes.func,
+  children: PropTypes.node,
   bookmarkStart: PropTypes.string,
   bookmarkEnd: PropTypes.string,
   bookmarkPlacement: PropTypes.string,
@@ -442,9 +442,7 @@ Timebar.defaultProps = {
   onTogglePlay: () => {
     // do nothing
   },
-  children: () => {
-    // do nothing
-  },
+  children: null,
   onMouseLeave: () => {
     // do nothing
   },
