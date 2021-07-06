@@ -59,20 +59,28 @@ const TimebarSettings = () => {
         label: t('timebarSettings.eventOptions.fishing', 'Fishing'),
       },
       {
-        id: 'encounter',
-        label: t('timebarSettings.eventOptions.encounters', 'Encounters'),
-      },
-      {
         id: 'loitering',
         label: t('timebarSettings.eventOptions.loitering', 'Loitering'),
       },
       {
-        id: 'port',
-        label: t('timebarSettings.eventOptions.ports', 'Port visits'),
-      },
-      {
         id: 'none',
         label: t('timebarSettings.eventOptions.none', 'None'),
+      },
+      {
+        id: 'encounter',
+        label: `${t('timebarSettings.eventOptions.encounters', 'Encounters')} (${t(
+          'common.comingSoon',
+          'Coming soon'
+        )})`,
+        disabled: true,
+      },
+      {
+        id: 'port',
+        label: `${t('timebarSettings.eventOptions.ports', 'Port visits')} (${t(
+          'common.comingSoon',
+          'Coming soon'
+        )})`,
+        disabled: true,
       },
     ],
     [t]
