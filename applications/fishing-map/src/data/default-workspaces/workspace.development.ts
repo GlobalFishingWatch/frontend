@@ -33,7 +33,7 @@ const workspace: Workspace<WorkspaceState> = {
     // bivariate: true,
     // sidebarOpen: false,
     // timebarVisualisation: '',
-    // timebarEvents: '',
+    // visibleEvents: 'all',
     // timebarGraph: '',
   },
   ownerId: 0,

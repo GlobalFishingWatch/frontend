@@ -35,7 +35,7 @@ import {
 import {
   setClickedEvent,
   selectClickedEvent,
-  MAX_TOOLTIP_VESSELS,
+  MAX_TOOLTIP_LIST,
   fetchEncounterEventThunk,
   SliceInteractionEvent,
   selectFishingInteractionStatus,
@@ -153,10 +153,11 @@ export const useClickedEventConnect = () => {
     }
 
     // When hovering in a vessel event we don't want to have clicked events
-    const isVesselSingleFeatureEvent =
-      event.features.find((f) => f.generatorType === Generators.Type.VesselEvents) !== undefined
+    const areAllFeaturesVesselEvents = event.features.every(
+      (f) => f.generatorType === Generators.Type.VesselEvents
+    )
 
-    if (isVesselSingleFeatureEvent && event.features?.length === 1) {
+    if (areAllFeaturesVesselEvents) {
       return
     }
 
@@ -370,9 +371,9 @@ export const parseMapTooltipEvent = (
 
     if (feature.vessels) {
       tooltipEventFeature.vesselsInfo = {
-        vessels: feature.vessels.slice(0, MAX_TOOLTIP_VESSELS),
+        vessels: feature.vessels.slice(0, MAX_TOOLTIP_LIST),
         numVessels: feature.vessels.length,
-        overflow: feature.vessels.length > MAX_TOOLTIP_VESSELS,
+        overflow: feature.vessels.length > MAX_TOOLTIP_LIST,
       }
     }
     return tooltipEventFeature

@@ -15,6 +15,12 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 | MPA Restricted               | 100    | 180    |
 | Default (used on new layers) | 123    | 220    |
 
+## Events
+
+| Layer name | Dev id | Pro id |
+| ---------- | ------ | ------ |
+| Encounters | 140    | ---    |
+
 ## Environmental
 
 | Layer name                   | Dev id | Pro id |
