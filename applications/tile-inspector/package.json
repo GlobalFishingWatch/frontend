@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/tile-inspector",
-  "version": "0.1.52",
+  "version": "0.1.53",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
@@ -11,7 +11,7 @@
   "dependencies": {
     "@globalfishingwatch/api-client": "^2.0.0",
     "@globalfishingwatch/fourwings-aggregate": "4.0.3",
-    "@globalfishingwatch/layer-composer": "8.4.0",
+    "@globalfishingwatch/layer-composer": "8.5.0",
     "@globalfishingwatch/pbf": "^1.0.10",
     "@globalfishingwatch/react-hooks": "11.2.0",
     "@globalfishingwatch/ui-components": "8.2.0",
