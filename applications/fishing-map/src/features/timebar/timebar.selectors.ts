@@ -138,6 +138,7 @@ const selectEventsForTracks = createSelector(
 interface RenderedEvent extends ApiEvent {
   color: string
   description: string
+  descriptionGeneric: string
 }
 
 export const selectEventsWithRenderingInfo = createSelector(
@@ -149,6 +150,7 @@ export const selectEventsWithRenderingInfo = createSelector(
           const vesselName = event.vessel.name || event.vessel.id
 
           let description
+          let descriptionGeneric
           switch (event.type) {
             // case 'encounter':
             //   if (event.encounter && event.encounter.vessel.name) {
@@ -163,20 +165,26 @@ export const selectEventsWithRenderingInfo = createSelector(
               } else {
                 description = `${vesselName} ${t('event.portAction')}`
               }
+              descriptionGeneric = `${vesselName} ${t('event.port')}`
               break
             case 'loitering':
               description = `${vesselName} ${t('event.loiteringAction')}`
+              descriptionGeneric = `${vesselName} ${t('event.loitering')}`
               break
             case 'fishing':
               description = `${vesselName} ${t('event.fishingAction')}`
+              descriptionGeneric = `${vesselName} ${t('event.fishing')}`
               break
             default:
               description = 'Unknown event'
+              descriptionGeneric = 'Unknown event'
           }
           const duration = DateTime.fromMillis(event.end as number)
             .diff(DateTime.fromMillis(event.start as number), ['hours', 'minutes'])
             .toObject()
-          description = `${description} for ${duration.hours}hrs ${Math.round(
+
+          // TODO i18n
+          description = `${description} ${duration.hours}hrs ${Math.round(
             duration.minutes as number
           )}mns`
 
@@ -192,6 +200,7 @@ export const selectEventsWithRenderingInfo = createSelector(
             color,
             colorLabels,
             description,
+            descriptionGeneric,
           }
         })
       }

@@ -3,7 +3,6 @@ export { EVENT_SOURCE } from "./constants";
 export { TimelineContext } from "./components/timeline";
 export { default as TimebarActivity } from "./charts/activity";
 export { default as TimebarEvents } from "./charts/events";
-export { default as TimebarVesselEvents } from "./charts/vessel-events";
 export { default as TimebarTracks } from "./charts/tracks";
 export { default as TimebarHighlighter } from "./charts/highlighter";
 export { default as TimebarTracksEvents } from "./charts/tracks-events";
