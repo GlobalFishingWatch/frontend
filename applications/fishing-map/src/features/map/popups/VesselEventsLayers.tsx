@@ -13,7 +13,7 @@ type ContextTooltipRowProps = {
   features: TooltipEventFeature[]
 }
 
-function EnvironmentTooltipSection({ features }: ContextTooltipRowProps) {
+function VesselEventsTooltipSection({ features }: ContextTooltipRowProps) {
   const { t } = useTranslation()
   const featuresByType = groupBy(features, 'layerId')
   return (
@@ -30,7 +30,7 @@ function EnvironmentTooltipSection({ features }: ContextTooltipRowProps) {
                 .diff(DateTime.fromISO(feature.properties.start), ['hours', 'minutes', 'seconds'])
                 .toObject()
               return (
-                <Fragment>
+                <Fragment key={index}>
                   <div className={styles.row}>
                     <span className={styles.rowText}>
                       {formatI18nDate(feature.properties.start, { format: DateTime.DATETIME_FULL })}{' '}
@@ -58,4 +58,4 @@ function EnvironmentTooltipSection({ features }: ContextTooltipRowProps) {
   )
 }
 
-export default EnvironmentTooltipSection
+export default VesselEventsTooltipSection
