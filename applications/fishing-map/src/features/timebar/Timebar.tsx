@@ -15,6 +15,7 @@ import {
   useTimerangeConnect,
   useTimebarVisualisation,
   useHighlightEventConnect,
+  useDisableHighlightTimeConnect,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
@@ -35,19 +36,18 @@ import {
 } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 
-
 export const TIMEBAR_HEIGHT = 72
 
 const TimebarHighlighterWrapper = ({ activity }: any) => {
   const highlightedTime = useSelector(selectHighlightedTime)
-  return highlightedTime ?
+  return highlightedTime ? (
     <TimebarHighlighter
       hoverStart={highlightedTime.start}
       hoverEnd={highlightedTime.end}
       activity={activity}
       unit="knots"
     />
-    : null
+  ) : null
 }
 
 const TimebarWrapper = () => {
@@ -55,6 +55,7 @@ const TimebarWrapper = () => {
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
   const { highlightedEvent, dispatchHighlightedEvent } = useHighlightEventConnect()
+  const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisation()
   const { setMapCoordinates } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
@@ -95,7 +96,7 @@ const TimebarWrapper = () => {
     (clientX: number, scale: (arg: number) => Date) => {
       if (hoverInEvent.current === false) {
         if (clientX === null || clientX === undefined || isNaN(clientX)) {
-          dispatch(disableHighlightedTime())
+          dispatchDisableHighlightedTime()
         } else {
           try {
             const start = scale(clientX - 10).toISOString()
@@ -118,7 +119,7 @@ const TimebarWrapper = () => {
         }
       }
     },
-    [dispatch]
+    [dispatch, dispatchDisableHighlightedTime]
   )
 
   const [internalRange, setInternalRange] = useState<Range | null>(null)
@@ -175,9 +176,9 @@ const TimebarWrapper = () => {
   )
 
   const highlighterActivity = useMemo(() => {
-    return (timebarVisualisation === TimebarVisualisations.Vessel &&
+    return timebarVisualisation === TimebarVisualisations.Vessel &&
       timebarGraph === TimebarGraphs.Speed &&
-      tracksGraph)
+      tracksGraph
       ? tracksGraph
       : null
   }, [timebarVisualisation, timebarGraph, tracksGraph])
@@ -204,8 +205,7 @@ const TimebarWrapper = () => {
         minimumRange={1}
         minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
       >
-        {!isSmallScreen
-          ?
+        {!isSmallScreen ? (
           <Fragment>
             {timebarVisualisation === TimebarVisualisations.Heatmap && <TimebarActivityGraph />}
             {timebarVisualisation === TimebarVisualisations.Vessel && tracks?.length && (
@@ -229,8 +229,7 @@ const TimebarWrapper = () => {
             )}
             <TimebarHighlighterWrapper activity={highlighterActivity} />
           </Fragment>
-
-          : null}
+        ) : null}
       </TimebarComponent>
       {!isSmallScreen && <TimebarSettings />}
     </div>

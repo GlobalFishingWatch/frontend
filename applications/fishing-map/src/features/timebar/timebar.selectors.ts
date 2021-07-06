@@ -171,12 +171,13 @@ export const selectEventsWithRenderingInfo = createSelector(
               description = `${vesselName} ${t('event.loiteringAction')}`
               descriptionGeneric = `${vesselName} ${t('event.loitering')}`
               break
-              case 'fishing':
-                description = `${vesselName} ${t('event.fishingAction')}`
-                descriptionGeneric = `${vesselName} ${t('event.fishing')}`
+            case 'fishing':
+              description = `${vesselName} ${t('event.fishingAction')}`
+              descriptionGeneric = `${vesselName} ${t('event.fishing')}`
               break
             default:
               description = 'Unknown event'
+              descriptionGeneric = 'Unknown event'
           }
           const duration = DateTime.fromMillis(event.end as number)
             .diff(DateTime.fromMillis(event.start as number), ['hours', 'minutes'])
