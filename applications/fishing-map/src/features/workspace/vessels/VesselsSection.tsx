@@ -64,14 +64,20 @@ function VesselsSection(): React.ReactElement {
               const eventType = dataset.configuration?.type
               if (!eventType) return null
               return (
-                <li className={layerStyles.eventsLegend} key={dataset.id}>
-                  <span
-                    className={layerStyles.eventLegendIcon}
-                    style={{ backgroundColor: EVENTS_COLORS[eventType] }}
-                  ></span>
-                  <span className={layerStyles.eventLegendLabel}>
+                <li
+                  key={dataset.id}
+                  className={layerStyles.eventsLegend}
+                  style={{ color: EVENTS_COLORS[eventType] }}
+                >
+                  <input
+                    type="checkbox"
+                    defaultChecked
+                    className={layerStyles.eventLegendCheckbox}
+                    id={eventType}
+                  />
+                  <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
                     {t(`event.${eventType}` as any, eventType)}
-                  </span>
+                  </label>
                 </li>
               )
             })}
