@@ -39,7 +39,7 @@ import { selectDebugOptions } from 'features/debug/debug.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { getEventLabel } from 'utils/analytics'
 import PopupWrapper from './popups/PopupWrapper'
-import useViewport, { useMapBounds } from './map-viewport.hooks'
+import useViewport, { useMapBounds, useWebGLLoseContext } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { SliceInteractionEvent } from './map.slice'
 import { useMapAndSourcesLoaded, useMapLoaded, useSetMapIdleAtom } from './map-features.hooks'
@@ -73,6 +73,8 @@ const MapWrapper = (): React.ReactElement | null => {
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
   const map = useMapInstance()
+  const { contextLost, emulateContextLost } = useWebGLLoseContext()
+
   const { t } = useTranslation()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const dataviews = useSelector(selectDataviewInstancesResolved)
@@ -230,10 +232,12 @@ const MapWrapper = (): React.ReactElement | null => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, debugOptions])
+  console.log('WEBGLContextLost', contextLost)
 
   return (
     <div className={styles.container}>
       {<MapScreenshot map={map} />}
+      <button onClick={emulateContextLost}>Lose Context</button>
       {style && (
         <InteractiveMap
           disableTokenWarning={true}

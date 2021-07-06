@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { fitBounds } from 'viewport-mercator-project'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
@@ -127,4 +127,30 @@ export function useMapFitBounds() {
     [map, setMapCoordinates]
   )
   return fitMapBounds
+}
+
+export function useWebGLLoseContext() {
+  const map = useMapInstance()
+  const [contextLost, setContextLost] = useState(false)
+  const canvas = map?.getCanvas()
+
+  useEffect(() => {
+    const event = canvas?.addEventListener(
+      'webglcontextlost',
+      function (e) {
+        setContextLost(true)
+        console.log(e)
+      },
+      false
+    )
+    return () => {
+      // canvas.removeEventListener('webglcontextlost' as any, event)
+    }
+  }, [canvas])
+
+  const emulateContextLost = useCallback(() => {
+    return canvas?.getContext('webgl')?.getExtension('WEBGL_lose_context')?.loseContext()
+  }, [canvas])
+
+  return { contextLost, emulateContextLost }
 }
