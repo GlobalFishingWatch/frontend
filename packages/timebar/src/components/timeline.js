@@ -213,16 +213,17 @@ class Timeline extends PureComponent {
     const x = clientX - outerX
     const isMovingInside = this.node.contains(event.target) && x > innerStartPx && x < innerEndPx
     const isNodeInside = event.target.contains(this.node)
-    if (isMovingInside || isNodeInside) {
+    
+    const isDraggingInner = dragging === DRAG_INNER
+    const isDraggingZoomIn = this.isHandlerZoomInValid(x).isValid === true
+    const isDraggingZoomOut = this.isHandlerZoomOutValid(x) === true
+
+    if ((isMovingInside || isNodeInside) && !isDraggingInner && !isDraggingZoomIn && !isDraggingZoomOut) {
       const isDay = !isMoreThanADay(start, end)
       this.throttledMouseMove(x, this.outerScale.invert, isDay)
     } else {
       this.notifyMouseLeave()
     }
-
-    const isDraggingInner = dragging === DRAG_INNER
-    const isDraggingZoomIn = this.isHandlerZoomInValid(x).isValid === true
-    const isDraggingZoomOut = this.isHandlerZoomOutValid(x) === true
 
     if (isDraggingInner || isDraggingZoomIn || isDraggingZoomOut) {
       // trigger setting immediate only once, when any drag interaction starts
