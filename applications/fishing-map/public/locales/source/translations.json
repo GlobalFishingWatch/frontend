@@ -62,7 +62,8 @@
     "update": "Update",
     "vessel": "Vessel",
     "vessel_plural": "Vessels",
-    "viirs": "VIIRS"
+    "viirs": "VIIRS",
+    "welcomePopupDisable": "Don't show this message anymore"
   },
   "dataset": {
     "addContext": "Add context dataset",

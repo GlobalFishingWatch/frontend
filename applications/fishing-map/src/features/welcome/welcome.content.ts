@@ -8,8 +8,8 @@ type WelcomeContentLang = {
   }
 }
 type WelcomeContent = {
-  partnerLogo: string
-  partnerLink: string
+  partnerLogo?: string
+  partnerLink?: string
 } & WelcomeContentLang
 
 const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategories]?: WelcomeContent } = {
@@ -55,6 +55,19 @@ const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategories]?: WelcomeConten
       <h2> <img src = "https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png"> Regístrese para obtener acceso gratuito a todas las funciones </h2>
       <p> Regístrese para obtener una cuenta gratuita de Global Fishing Watch <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/marine-manager"> </ a > para acceder a funciones de análisis avanzado, descargas de datos y opciones de búsqueda avanzada. El registro demora dos minutos. </p>
       `,
+    },
+  },
+  [WorkspaceCategories.FishingActivity]: {
+    en: {
+      title: 'Welcome to the Global Fishing Watch Map',
+      description: `
+      <p>Batfish bonnethead tilefish Banana wrasse papershell coral hogfish. In seahorse banded eel, butter hamlet are butterflyfish blue tang, wabash pigtoe sea coral king crab heelsplitter, in painted combe.</p>
+      <h2>Banded eel bicolor blenny.</h2>
+      <p>Hippo tang pebblesnail fins raced. Peppered moray stingray grouper our kelp. Coral hogfish at Bursa trigger spot hogfish bite yellow pseudochromis weasel shark seabass in angelfish. Foxface Painted comber octopus blue whale in the sea. Swimming are milk shark zebra moray est. In Beautiful, ocean is Asian clam elktoe, cardinalfish deep heelsplitter foxface, with craz.<p>
+      <h2>Manta ray catshark shaking filefish.</h2>
+      <p>Manta ray with lionfish ect. In seahorse banded eel, butter hamlet are butterflyfish blue tang, wabash pigtoe sea coral king crab heelsplitter, in painted comber Banded eel bicolor blenny. Quagga mussel grey whale mermaid appeared. Batfish bonnethead tilefish Banana wrasse papershell coral hogfish. Fire fish at deap water pushed. Peppered moray clownfish hawkfish at seahorse hammerhead a funny snake eel. Neon goby banded grunt kelp snowcrab, fingernail cla.</p>
+      <h2>Stingray colorful gold damsel.</h2>
+      <p>Swim clownfish fun, snowcrab as algae starfish, going down in scorpionfish angelfish. Angelfish blue tang, filefish a weird algae, hammerhead grouper kelp. Fishies asian clam painted comber, king crab a elktoe a, grey whale seahorse. Milk shark swim Asia.</p> `,
     },
   },
 }
