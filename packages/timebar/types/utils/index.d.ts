@@ -10,7 +10,7 @@ export function getTimebarRangeByWorkspace(timeline: any): {
 export function geoJSONTrackToTimebarFeatureSegments({ features }?: {
     features?: any[];
 }): any[][];
-export function getLast30Days(): {
+export function getLast30Days(latestAvailableDataDate: any): {
     start: any;
     end: any;
 };

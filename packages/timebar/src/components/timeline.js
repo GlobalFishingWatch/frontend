@@ -213,12 +213,17 @@ class Timeline extends PureComponent {
     const x = clientX - outerX
     const isMovingInside = this.node.contains(event.target) && x > innerStartPx && x < innerEndPx
     const isNodeInside = event.target.contains(this.node)
-    
+
     const isDraggingInner = dragging === DRAG_INNER
     const isDraggingZoomIn = this.isHandlerZoomInValid(x).isValid === true
     const isDraggingZoomOut = this.isHandlerZoomOutValid(x) === true
 
-    if ((isMovingInside || isNodeInside) && !isDraggingInner && !isDraggingZoomIn && !isDraggingZoomOut) {
+    if (
+      (isMovingInside || isNodeInside) &&
+      !isDraggingInner &&
+      !isDraggingZoomIn &&
+      !isDraggingZoomOut
+    ) {
       const isDay = !isMoreThanADay(start, end)
       this.throttledMouseMove(x, this.outerScale.invert, isDay)
     } else {
@@ -312,8 +317,8 @@ class Timeline extends PureComponent {
   }
 
   onLast30DaysClick() {
-    const { onChange } = this.props
-    const { start, end } = getLast30Days()
+    const { onChange, latestAvailableDataDate } = this.props
+    const { start, end } = getLast30Days(latestAvailableDataDate)
     onChange(start, end)
   }
 
@@ -354,7 +359,7 @@ class Timeline extends PureComponent {
     const svgTransform = this.getSvgTransform(overallScale, start, end, innerWidth, innerStartPx)
 
     const lastUpdatePosition = this.outerScale(new Date(absoluteEnd))
-    const isInTheFuture = new Date(start) > Date.now()
+    const isInTheFuture = new Date(start) > new Date(this.props.latestAvailableDataDate)
 
     return (
       <TimelineContext.Provider
@@ -522,6 +527,7 @@ Timeline.propTypes = {
   end: PropTypes.string.isRequired,
   absoluteStart: PropTypes.string.isRequired,
   absoluteEnd: PropTypes.string.isRequired,
+  latestAvailableDataDate: PropTypes.string.isRequired,
   onBookmarkChange: PropTypes.func,
   bookmarkStart: PropTypes.string,
   bookmarkEnd: PropTypes.string,
