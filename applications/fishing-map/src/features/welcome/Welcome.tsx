@@ -7,7 +7,6 @@ import useLocalStorage from 'hooks/use-local-storage'
 import styles from './Welcome.module.css'
 import WELCOME_POPUP_CONTENT from './welcome.content'
 
-
 type WelcomeProps = {
   contentKey: WorkspaceCategories
   showDisableCheckbox?: boolean
@@ -18,7 +17,7 @@ export const DISABLE_WELCOME_POPUP = 'DisableWelcomePopup'
 const Welcome: React.FC<WelcomeProps> = ({ contentKey, showDisableCheckbox }: WelcomeProps) => {
   const { t, i18n } = useTranslation()
   const welcomeModal = WELCOME_POPUP_CONTENT[contentKey]
-  const [disabled, setDisabled] = useLocalStorage(DISABLE_WELCOME_POPUP, false);
+  const [disabled, setDisabled] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
   const onDisableToggled = useCallback(() => {
     setDisabled(!disabled)
   }, [disabled, setDisabled])
@@ -51,18 +50,20 @@ const Welcome: React.FC<WelcomeProps> = ({ contentKey, showDisableCheckbox }: We
         className={styles.contentContainer}
         dangerouslySetInnerHTML={{ __html: description }}
       ></div>
-      {showDisableCheckbox && <div className={styles.disableSection}>
-        <input
-          id="disableWelcomePopup"
-          type="checkbox"
-          onChange={onDisableToggled}
-          className={styles.disableCheckbox}
-          checked={disabled}
-        />
-        <label className={styles.disableLabel} htmlFor="disableWelcomePopup">
-          {t('common.welcomePopupDisable', 'Don\'t show this message anymore')}
-        </label>
-      </div>}
+      {showDisableCheckbox && (
+        <div className={styles.disableSection}>
+          <input
+            id="disableWelcomePopup"
+            type="checkbox"
+            onChange={onDisableToggled}
+            className={styles.disableCheckbox}
+            checked={disabled}
+          />
+          <label className={styles.disableLabel} htmlFor="disableWelcomePopup">
+            {t('common.welcomePopupDisable', "Don't show this message anymore")}
+          </label>
+        </div>
+      )}
     </div>
   )
 }
