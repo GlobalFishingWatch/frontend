@@ -16,7 +16,12 @@ import {
 } from 'features/datasets/datasets.utils'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import styles from './ActivityFilters.module.css'
-import { getSourcesOptionsInDataview, getSourcesSelectedInDataview } from './activity.utils'
+import {
+  ALL_SOURCES_OPTION_ID,
+  areAllSourcesSelectedInDataview,
+  getSourcesOptionsInDataview,
+  getSourcesSelectedInDataview,
+} from './activity.utils'
 
 type ActivityFiltersProps = {
   dataview: UrlDataviewInstance
@@ -27,7 +32,13 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const sourceOptions = getSourcesOptionsInDataview(dataview)
+  // insert the "All" option only when more than one option available
+  const allSourceOptions =
+    sourceOptions.length > 1
+      ? [{ id: ALL_SOURCES_OPTION_ID, label: t('selects.allSelected', 'All') }, ...sourceOptions]
+      : sourceOptions
   const sourcesSelected = getSourcesSelectedInDataview(dataview)
+  const allSelected = areAllSourcesSelectedInDataview(dataview)
 
   const flagOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
   const flags = useMemo(getFlags, [])
@@ -40,7 +51,12 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
   const qfDectectionFilters = getFiltersBySchema(dataview, 'qf_detect')
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
-    const datasets = [...(dataview.config?.datasets || []), source.id]
+    let datasets: string[] = []
+    if (source.id === ALL_SOURCES_OPTION_ID) {
+      datasets = sourceOptions.map((s) => s.id)
+    } else {
+      datasets = allSelected ? [source.id] : [...(dataview.config?.datasets || []), source.id]
+    }
     const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
 
     const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
@@ -151,7 +167,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
         <MultiSelect
           label={t('layer.source_plural', 'Sources')}
           placeholder={getPlaceholderBySelections(sourcesSelected)}
-          options={sourceOptions}
+          options={allSourceOptions}
           selectedOptions={sourcesSelected}
           onSelect={onSelectSourceClick}
           onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
