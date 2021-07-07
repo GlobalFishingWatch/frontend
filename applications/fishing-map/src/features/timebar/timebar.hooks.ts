@@ -68,7 +68,6 @@ export const useTimerangeConnect = () => {
 
 export const useDisableHighlightTimeConnect = () => {
   const highlightedTime = useSelector(selectHighlightedTime)
-  console.log(highlightedTime)
   const dispatch = useDispatch()
 
   const dispatchDisableHighlightedTime = useCallback(() => {

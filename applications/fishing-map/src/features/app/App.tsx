@@ -35,7 +35,8 @@ import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import Welcome from 'features/welcome/Welcome'
+import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
+import useLocalStorage from 'hooks/use-local-storage'
 import { useAppDispatch } from './app.hooks'
 import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -80,9 +81,15 @@ function App(): React.ReactElement {
 
   const locationIsMarineManager =
     useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
+
+  const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false);
+
   const [welcomePopupOpen, setWelcomePopupOpen] = useState(
-    locationIsMarineManager && isFirstTimeVisit
+    (locationIsMarineManager && isFirstTimeVisit) ||
+    !disabledWelcomePopup
   )
+  const welcomePopupContentKey = locationIsMarineManager ? WorkspaceCategories.MarineManager : WorkspaceCategories.FishingActivity
+
   useEffect(() => {
     if (locationIsMarineManager)
       localStorage.setItem(MARINE_MANAGER_LAST_VISIT, new Date().toISOString())
@@ -219,7 +226,10 @@ function App(): React.ReactElement {
             isOpen={welcomePopupOpen}
             onClose={() => setWelcomePopupOpen(false)}
           >
-            <Welcome />
+            <Welcome
+              contentKey={welcomePopupContentKey}
+              showDisableCheckbox={!locationIsMarineManager}
+            />
           </Modal>
         </Suspense>
       )}
