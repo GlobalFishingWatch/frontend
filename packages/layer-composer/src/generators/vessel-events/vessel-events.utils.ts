@@ -39,10 +39,11 @@ export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureC
 
   if (!trackEvents) return featureCollection
   const trackEventsSorted = [...trackEvents].sort((a, b) => (a.type === 'encounter' ? 1 : -1))
-  featureCollection.features = trackEventsSorted.map((event: RawEvent) => {
-    const authorized = event.encounter && event.encounter.authorized === true
-    const authorizationStatus = event.encounter
-      ? event.encounter.authorizationStatus
+  featureCollection.features = trackEventsSorted.flatMap((event: RawEvent) => {
+    if (!event) return []
+    const authorized = event.encounter?.authorized === true
+    const authorizationStatus = event?.encounter
+      ? event.encounter?.authorizationStatus
       : ('unmatched' as AuthorizationOptions)
 
     const lng = event.position.lng || event.position.lon || 0

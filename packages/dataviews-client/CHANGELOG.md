@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.4.0
+
+### Minor Changes
+
+- ea0e1b8a: fix events generator
+
 ## 11.3.0
 
 ### Minor Changes

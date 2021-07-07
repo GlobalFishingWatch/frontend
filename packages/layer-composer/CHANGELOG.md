@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.5.0
+
+### Minor Changes
+
+- ea0e1b8a: fix events generator
+
 ## 8.4.0
 
 ### Minor Changes

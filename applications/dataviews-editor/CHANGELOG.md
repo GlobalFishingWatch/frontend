@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/dataviews-editor
 
+## 1.1.68
+
+### Patch Changes
+
+- Updated dependencies [ea0e1b8a]
+  - @globalfishingwatch/dataviews-client@11.4.0
+  - @globalfishingwatch/layer-composer@8.5.0
+
 ## 1.1.67
 
 ### Patch Changes
