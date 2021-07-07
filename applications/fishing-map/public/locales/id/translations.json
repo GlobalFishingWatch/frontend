@@ -62,7 +62,8 @@
     "update": "Memperbarui",
     "vessel": "Kapal",
     "vessel_plural": "Kapal",
-    "viirs": "VIIRS"
+    "viirs": "VIIRS",
+    "welcomePopupDisable": "Don't show this message anymore"
   },
   "dataset": {
     "addContext": "Menambah layer referensi",
