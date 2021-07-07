@@ -41,14 +41,14 @@
     "@globalfishingwatch/dataviews-client": "^11.4.0",
     "@globalfishingwatch/fourwings-aggregate": "4.0.3",
     "@globalfishingwatch/layer-composer": "8.5.0",
-    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.24"
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22"
   },
   "peerDependencies": {
     "@globalfishingwatch/api-client": "^2.x",
     "@globalfishingwatch/dataviews-client": "^11.x",
     "@globalfishingwatch/fourwings-aggregate": "^4.x",
     "@globalfishingwatch/layer-composer": "^8.x",
-    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.24",
+    "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.1"
