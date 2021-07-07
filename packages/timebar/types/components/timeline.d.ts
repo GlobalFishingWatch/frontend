@@ -41,6 +41,7 @@ declare namespace Timeline {
         const end: any;
         const absoluteStart: any;
         const absoluteEnd: any;
+        const latestAvailableDataDate: any;
         const onBookmarkChange: any;
         const bookmarkStart: any;
         const bookmarkEnd: any;
