@@ -82,13 +82,14 @@ function App(): React.ReactElement {
   const locationIsMarineManager =
     useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
 
-  const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false);
+  const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
 
   const [welcomePopupOpen, setWelcomePopupOpen] = useState(
-    (locationIsMarineManager && isFirstTimeVisit) ||
-    !disabledWelcomePopup
+    locationIsMarineManager ? isFirstTimeVisit : !disabledWelcomePopup
   )
-  const welcomePopupContentKey = locationIsMarineManager ? WorkspaceCategories.MarineManager : WorkspaceCategories.FishingActivity
+  const welcomePopupContentKey = locationIsMarineManager
+    ? WorkspaceCategories.MarineManager
+    : WorkspaceCategories.FishingActivity
 
   useEffect(() => {
     if (locationIsMarineManager)
