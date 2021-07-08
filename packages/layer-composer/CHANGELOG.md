@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.5.1
+
+### Patch Changes
+
+- c60ce91a: Fix perf issue on track events hover
+
 ## 8.5.0
 
 ### Minor Changes

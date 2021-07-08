@@ -17,7 +17,6 @@ import {
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import styles from './ActivityFilters.module.css'
 import {
-  ALL_SOURCES_OPTION_ID,
   areAllSourcesSelectedInDataview,
   getSourcesOptionsInDataview,
   getSourcesSelectedInDataview,
@@ -33,12 +32,10 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
 
   const sourceOptions = getSourcesOptionsInDataview(dataview)
   // insert the "All" option only when more than one option available
-  const allSourceOptions =
-    sourceOptions.length > 1
-      ? [{ id: ALL_SOURCES_OPTION_ID, label: t('selects.allSelected', 'All') }, ...sourceOptions]
-      : sourceOptions
-  const sourcesSelected = getSourcesSelectedInDataview(dataview)
+  const allOption = { id: 'all', label: t('selects.allSelected', 'All') }
+  const allSourceOptions = sourceOptions.length > 1 ? [allOption, ...sourceOptions] : sourceOptions
   const allSelected = areAllSourcesSelectedInDataview(dataview)
+  const sourcesSelected = allSelected ? [allOption] : getSourcesSelectedInDataview(dataview)
 
   const flagOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
   const flags = useMemo(getFlags, [])
@@ -52,7 +49,7 @@ function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
     let datasets: string[] = []
-    if (source.id === ALL_SOURCES_OPTION_ID) {
+    if (source.id === allOption.id) {
       datasets = sourceOptions.map((s) => s.id)
     } else {
       datasets = allSelected ? [source.id] : [...(dataview.config?.datasets || []), source.id]

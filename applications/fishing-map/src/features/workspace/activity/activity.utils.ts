@@ -1,7 +1,6 @@
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
-import { t } from 'features/i18n/i18n'
 
 export const isFishingDataview = (dataview: UrlDataviewInstance) =>
   dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID ||
@@ -13,8 +12,6 @@ export const isPresenceDataview = (dataview: UrlDataviewInstance) =>
 
 export const isActivityDataview = (dataview: UrlDataviewInstance) =>
   isFishingDataview(dataview) || isPresenceDataview(dataview)
-
-export const ALL_SOURCES_OPTION_ID = 'all'
 
 export const getSourcesOptionsInDataview = (
   dataview: UrlDataviewInstance,
@@ -30,11 +27,6 @@ export const getSourcesSelectedInDataview = (
   datasetType = DatasetTypes.Fourwings
 ) => {
   const sourceOptions = getSourcesOptionsInDataview(dataview, datasetType)
-  const allSelected = areAllSourcesSelectedInDataview(dataview, datasetType)
-  if (allSelected) {
-    // defined here to ensure the translation is updated everytime is invoked
-    return [{ id: ALL_SOURCES_OPTION_ID, label: t('selects.allSelected', 'All') }]
-  }
   const sourcesSelected = sourceOptions.filter((sourceOption) =>
     dataview.config?.datasets?.includes(sourceOption.id)
   )
