@@ -110,6 +110,7 @@ const MapWrapper = (): React.ReactElement | null => {
         `${featureCategory}: ${features.map((f) => f.layerId).join(',')}`
     )
   }, [clickedEvent, clickedTooltipEvent])
+
   const currentClickCallback = useMemo(() => {
     const clickEvent = (event: any) => {
       uaEvent({

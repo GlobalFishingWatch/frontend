@@ -1,10 +1,10 @@
 # @globalfishingwatch/dataviews-client
 
-## 11.4.1
+## 11.5.0
 
-### Patch Changes
+### Minor Changes
 
-- c60ce91a: Fix perf issue on track events hover
+- 3513a689: support interaction (configured in dataview as presenceDetails) for presence layers
 
 ## 11.4.0
 

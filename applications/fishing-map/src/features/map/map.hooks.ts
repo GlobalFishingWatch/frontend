@@ -50,6 +50,11 @@ import {
 import useViewport from './map-viewport.hooks'
 import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
 
+export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
+  'fishing-effort',
+  'presence-detail',
+]
+
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
 export const useGeneratorsConnect = () => {
@@ -83,6 +88,7 @@ export const useClickedEventConnect = () => {
   const { setMapCoordinates } = useViewport()
   const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
   const fishingPromiseRef = useRef<any>()
+  const presencePromiseRef = useRef<any>()
   const viirsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
@@ -138,7 +144,7 @@ export const useClickedEventConnect = () => {
     }
 
     // Cancel all pending promises
-    const promisesRef = [fishingPromiseRef, viirsPromiseRef, eventsPromiseRef]
+    const promisesRef = [fishingPromiseRef, presencePromiseRef, viirsPromiseRef, eventsPromiseRef]
     promisesRef.forEach((ref) => {
       if (ref.current) {
         ref.current.abort()
@@ -169,9 +175,12 @@ export const useClickedEventConnect = () => {
         if (!feature.temporalgrid) {
           return false
         }
-        const isFeatureVisible = feature.temporalgrid.visible
-        const isFishingFeature = feature.temporalgrid.sublayerInteractionType === 'fishing-effort'
-        return isFeatureVisible && isFishingFeature
+        return (
+          feature.temporalgrid.visible &&
+          SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+            feature.temporalgrid.sublayerInteractionType
+          )
+        )
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
