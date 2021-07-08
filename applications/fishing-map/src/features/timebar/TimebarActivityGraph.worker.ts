@@ -5,30 +5,6 @@ import { Interval, quantizeOffsetToDate } from '@globalfishingwatch/layer-compos
 import { filterByViewport } from 'features/map/map.utils'
 const flatMap = require('array.prototype.flatmap')
 
-if (!Object.entries) {
-  Object.entries = function (obj: any) {
-    const ownProps = Object.keys(obj)
-    let i = ownProps.length
-    const resArray = new Array(i) // preallocate the Array
-    while (i--) resArray[i] = [ownProps[i], obj[ownProps[i]]]
-
-    return resArray
-  }
-}
-
-if (!Object.fromEntries) {
-  Object.fromEntries = function (entries: any) {
-    if (!entries || !entries[Symbol.iterator]) {
-      throw new Error('Object.fromEntries() requires a single iterable argument')
-    }
-    const obj = {} as any
-    for (const [key, value] of entries) {
-      obj[key] = value
-    }
-    return obj
-  }
-}
-
 export const getTimeseries = (
   allChunksFeatures: {
     features: MapboxGeoJSONFeature[]
