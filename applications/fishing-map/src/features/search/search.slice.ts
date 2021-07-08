@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { uniqBy } from 'lodash'
 import GFWAPI from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
 import {
@@ -175,8 +176,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         const searchResults = await GFWAPI.fetch<APISearch<VesselSearch>>(url, {
           signal,
         })
-
-        const vesselsWithDataset = searchResults.entries.flatMap((vessel) => {
+        const uniqSearchResults = uniqBy(searchResults.entries, 'id')
+        const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {
           if (!vessel) return []
 
           const infoDataset = selectDatasetById(vessel.dataset)(state)
