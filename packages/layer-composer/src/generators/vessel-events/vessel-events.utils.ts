@@ -115,19 +115,29 @@ export const filterGeojsonByTimerange = (
   return geojsonFiltered
 }
 
-export const getVesselSegmentsGeojson = (track: any, data: RawEvent[]): FeatureCollection => {
+export const getVesselEventsSegmentsGeojsonMemoizeEqualityCheck = (
+  newArgs: any[],
+  lastArgs: any[]
+) => {
+  return newArgs[0].length === lastArgs[0].length && newArgs[1].length === lastArgs[1].length
+}
+
+export const getVesselEventsSegmentsGeojson = (
+  track: any,
+  events: RawEvent[]
+): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
     features: [],
   }
 
-  if (!track || !data) return featureCollection
+  if (!track || !events) return featureCollection
 
   const geojson = (track as FeatureCollection).type
     ? (track as FeatureCollection)
     : segmentsToGeoJSON(track as Segment[])
   if (!geojson) return featureCollection
-  featureCollection.features = data.flatMap((event: RawEvent) => {
+  featureCollection.features = events.flatMap((event: RawEvent) => {
     return filterTrackByTimerange(geojson, event.start, event.end).features.map((feature) => {
       const authorizationStatus = event.encounter
         ? event.encounter.authorizationStatus
