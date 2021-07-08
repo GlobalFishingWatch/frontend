@@ -158,15 +158,82 @@
       name="description"
       content="Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability."
     />
-
-    <script
-      crossorigin="anonymous"
-      src="https://polyfill.io/v3/polyfill.min.js?features=blissfuljs%2CIntl%2Cdefault%2Ces2015%2Ces2016%2Ces2017%2Ces2018%2Ces2019%2Ces5%2Ces6%2Ces7%2CAbortController"
-    ></script>
   </head>
 
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script
+      crossorigin="anonymous"
+      src="https://polyfill.io/v3/polyfill.min.js?features=Intl%2Cdefault%2Cblissfuljs%2Ces2015%2Ces2016%2Ces2017%2Ces2018%2Ces2019%2Ces5%2Ces6%2Ces7%2CAbortController"
+    ></script>
+    <script>
+      /*!
+       * copy from is.js : https://is.js.org/
+       * Author: Aras Atasaygin
+       */
+      var navigator = window && window.navigator
+      var userAgent = ((navigator && navigator.userAgent) || '').toLowerCase()
+      var vendor = ((navigator && navigator.vendor) || '').toLowerCase()
+      var comparator = {
+        '<': function (a, b) {
+          return a < b
+        },
+        '<=': function (a, b) {
+          return a <= b
+        },
+        '>': function (a, b) {
+          return a > b
+        },
+        '>=': function (a, b) {
+          return a >= b
+        },
+      }
+      function compareVersion(version, range) {
+        var string = range + ''
+        var n = +(string.match(/\d+/) || NaN)
+        var op = string.match(/^[<>]=?|/)[0]
+        return comparator[op] ? comparator[op](version, n) : version == n || n !== n
+      }
+      function opera(range) {
+        var match = userAgent.match(/(?:^opera.+?version|opr)\/(\d+)/)
+        return match !== null && compareVersion(match[1], range)
+      }
+      function chrome(range) {
+        var match = /google inc/.test(vendor) ? userAgent.match(/(?:chrome|crios)\/(\d+)/) : null
+        return match !== null && !opera() && compareVersion(match[1], range)
+      }
+      function edge(range) {
+        var match = userAgent.match(/edge\/(\d+)/)
+        return match !== null && compareVersion(match[1], range)
+      }
+      function firefox(range) {
+        var match = userAgent.match(/(?:firefox|fxios)\/(\d+)/)
+        return match !== null && compareVersion(match[1], range)
+      }
+      function ie(range) {
+        var match = userAgent.match(/(?:msie |trident.+?; rv:)(\d+)/)
+        return match !== null && compareVersion(match[1], range)
+      }
+      function safari(range) {
+        var match = userAgent.match(/version\/(\d+).+?safari/)
+        return match !== null && compareVersion(match[1], range)
+      }
+
+      // redirect to un-support page if browser is not in our support range
+      if (chrome('<73')) {
+        document.location = './unsupported.html#chrome'
+      } else if (firefox('<63')) {
+        document.location = './unsupported.html#firefox'
+      } else if (safari('<12.1')) {
+        document.location = './unsupported.html#safari'
+      } else if (ie('*')) {
+        document.location = './unsupported.html#ie'
+      } else if (edge('<79')) {
+        document.location = './unsupported.html#edge'
+      } else if (opera('<60')) {
+        document.location = './unsupported.html#opera'
+      }
+    </script>
     <% if (process.env.REACT_APP_GOOGLE_TAG_MANAGER_KEY) { %>
     <!-- Google Tag Manager (noscript) -->
     <noscript
