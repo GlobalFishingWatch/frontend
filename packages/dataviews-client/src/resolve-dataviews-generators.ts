@@ -361,7 +361,7 @@ export function getDataviewsGeneratorConfigs(
           unit: units[0],
           color: dataview?.config?.color,
         },
-        interactionType: interactionType,
+        interactionType,
       }
 
       return sublayer

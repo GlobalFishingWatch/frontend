@@ -11,7 +11,11 @@ import {
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
+import {
+  SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
+  TooltipEventFeature,
+  useClickedEventConnect,
+} from 'features/map/map.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { isUserLogged } from 'features/user/user.selectors'
@@ -117,7 +121,11 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
               return (
                 <button
                   key={i}
-                  disabled={feature.temporalgrid?.sublayerInteractionType === 'presence'}
+                  disabled={
+                    !SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+                      feature.temporalgrid?.sublayerInteractionType || ''
+                    )
+                  }
                   className={styles.vesselRow}
                   onClick={() => onVesselClick(vessel)}
                 >
