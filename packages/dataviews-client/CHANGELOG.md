@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.4.1
+
+### Patch Changes
+
+- c60ce91a: Fix perf issue on track events hover
+
 ## 11.4.0
 
 ### Minor Changes
