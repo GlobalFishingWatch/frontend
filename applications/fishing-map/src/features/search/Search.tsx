@@ -22,9 +22,9 @@ import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/datavie
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { getFlagById } from 'utils/flags'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.selectors'
+import I18nFlag from 'features/i18n/i18nFlag'
 import {
   fetchVesselSearchThunk,
   selectSearchResults,
@@ -360,7 +360,6 @@ function Search() {
                         firstTransmissionDate,
                         lastTransmissionDate,
                       } = entry
-                      const flagLabel = getFlagById(flag)?.label
                       const isInWorkspace = vesselDataviews?.some(
                         (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
                       )
@@ -380,7 +379,9 @@ function Search() {
                             <div className={styles.properties}>
                               <div className={styles.property}>
                                 <label>{t('vessel.flag', 'Flag')}</label>
-                                <span>{flagLabel || EMPTY_FIELD_PLACEHOLDER}</span>
+                                <span>
+                                  <I18nFlag iso={flag} />
+                                </span>
                               </div>
                               <div className={styles.property}>
                                 <label>{t('vessel.mmsi', 'MMSI')}</label>

@@ -61,7 +61,13 @@ const TimebarActivityGraph = () => {
       })
 
       const getTimeseriesAsync = async () => {
-        const timeseries = await getTimeseries(allChunksFeatures, bounds, numSublayers, timeChunks.interval, metadata.visibleSublayers)
+        const timeseries = await getTimeseries(
+          allChunksFeatures,
+          bounds,
+          numSublayers,
+          timeChunks.interval,
+          metadata.visibleSublayers
+        )
         if (timeseries && timeseries.length) {
           setStackedActivity(timeseries)
         }
@@ -123,7 +129,8 @@ const TimebarActivityGraph = () => {
   }, [map, computeStackedActivity, isSmallScreen])
 
   useEffect(() => {
-    if (!map || !debouncedBounds || isSmallScreen) return
+    // Need to check for first load to ensure
+    if (!map || !map.loaded() || !debouncedBounds || isSmallScreen) return
     const metadata = getMetadata(map?.getStyle())
     computeStackedActivity(metadata, debouncedBounds)
   }, [debouncedBounds, computeStackedActivity, map, isSmallScreen])

@@ -62,7 +62,8 @@
     "update": "Update",
     "vessel": "Vessel",
     "vessel_plural": "Vessels",
-    "viirs": "Night light detections (VIIRS)"
+    "viirs": "Night light detections (VIIRS)",
+    "welcomePopupDisable": "Don't show this message anymore"
   },
   "dataset": {
     "addContext": "Add reference layer",

@@ -42,3 +42,19 @@
 .contentContainer a {
   color: var(--color-danger-red);
 }
+
+.disableSection {
+  margin-top: 5rem;
+}
+
+.disableCheckbox {
+  cursor: pointer;
+}
+
+.disableLabel {
+  display: inline;
+  cursor: pointer;
+  position: relative;
+  padding-left: 0.5rem;
+  font: var(--font-S);
+}

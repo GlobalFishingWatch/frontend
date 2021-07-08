@@ -11,6 +11,7 @@ import {
   AsyncReducerStatus,
 } from 'utils/async-slice'
 import { RootState } from 'store'
+import { LATEST_CARRIER_DATASET_ID } from 'data/config'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 
@@ -162,8 +163,6 @@ export const deleteDatasetThunk = createAsyncThunk<
   }
 })
 
-const LATEST_CARRIER_DATASET_ID =
-  process.env.NODE_ENV === 'development' ? 'carriers:dev' : 'carriers:latest'
 export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
   Dataset,
   undefined,

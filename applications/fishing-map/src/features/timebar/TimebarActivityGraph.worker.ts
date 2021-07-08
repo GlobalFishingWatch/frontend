@@ -5,6 +5,29 @@ import { Interval, quantizeOffsetToDate } from '@globalfishingwatch/layer-compos
 import { filterByViewport } from 'features/map/map.utils'
 const flatMap = require('array.prototype.flatmap')
 
+const objectEntries =
+  Object?.entries ||
+  function (obj: any) {
+    const ownProps = Object.keys(obj)
+    let i = ownProps.length
+    const resArray = new Array(i) // preallocate the Array
+    while (i--) resArray[i] = [ownProps[i], obj[ownProps[i]]]
+    return resArray
+  }
+
+const objectFromEntries =
+  Object?.fromEntries ||
+  function (entries: any) {
+    if (!entries || !entries[Symbol.iterator]) {
+      throw new Error('Object.fromEntries() requires a single iterable argument')
+    }
+    const obj = {} as any
+    for (const [key, value] of entries) {
+      obj[key] = value
+    }
+    return obj
+  }
+
 export const getTimeseries = (
   allChunksFeatures: {
     features: MapboxGeoJSONFeature[]
@@ -38,8 +61,8 @@ export const getTimeseries = (
         const finalValues = valuesTimeChunkOverlapFramesFiltered.map((frameValues) => {
           // Ideally we don't have the features not visible in 4wings but we have them
           // so this needs to be filtered by the current active ones
-          const activeFrameValues = Object.fromEntries(
-            Object.entries(frameValues).map(([key, value]) => {
+          const activeFrameValues = objectFromEntries(
+            objectEntries(frameValues).map(([key, value]) => {
               const cleanValue =
                 key === 'frame' || visibleSublayers[parseInt(key)] === true ? value : 0
               return [key, cleanValue]

@@ -62,7 +62,8 @@
     "update": "Actualizar",
     "vessel": "Embarcación",
     "vessel_plural": "Embarcaciones",
-    "viirs": "VIIRS"
+    "viirs": "VIIRS",
+    "welcomePopupDisable": "Don't show this message anymore"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",

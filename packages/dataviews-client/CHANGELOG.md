@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.5.0
+
+### Minor Changes
+
+- 3513a689: support interaction (configured in dataview as presenceDetails) for presence layers
+
 ## 11.4.0
 
 ### Minor Changes

@@ -32,3 +32,14 @@ export const getSourcesSelectedInDataview = (
   )
   return sourcesSelected
 }
+
+export const areAllSourcesSelectedInDataview = (
+  dataview: UrlDataviewInstance,
+  datasetType = DatasetTypes.Fourwings
+) => {
+  const sourceOptions = getSourcesOptionsInDataview(dataview, datasetType)
+  const allSelected = sourceOptions.every((sourceOption) =>
+    dataview.config?.datasets?.includes(sourceOption.id)
+  )
+  return allSelected
+}

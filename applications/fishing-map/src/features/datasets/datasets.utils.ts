@@ -38,7 +38,11 @@ export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boole
     if (isGuestUser) {
       return dataset.id.includes(PUBLIC_SUFIX)
     }
-    return dataset.id.includes(FULL_SUFIX) || dataset.id.includes(PRIVATE_SUFIX)
+    return (
+      dataset.id.includes(PUBLIC_SUFIX) ||
+      dataset.id.includes(FULL_SUFIX) ||
+      dataset.id.includes(PRIVATE_SUFIX)
+    )
   })
 }
 

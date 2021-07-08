@@ -17,7 +17,7 @@ import {
   useHighlightEventConnect,
   useDisableHighlightTimeConnect,
 } from 'features/timebar/timebar.hooks'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
 import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
@@ -194,6 +194,7 @@ const TimebarWrapper = () => {
         end={internalRange ? internalRange.end : end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
+        latestAvailableDataDate={LAST_DATA_UPDATE}
         onChange={onChange}
         showLastUpdate={false}
         onMouseMove={onMouseMove}

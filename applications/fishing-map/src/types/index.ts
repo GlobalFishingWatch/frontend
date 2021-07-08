@@ -68,7 +68,7 @@ export enum TimebarVisualisations {
   Vessel = 'vessel',
 }
 
-export type VisibleEvents = EventType[] | 'all'
+export type VisibleEvents = EventType[] | 'all' | 'none'
 
 export enum TimebarGraphs {
   Speed = 'speed',

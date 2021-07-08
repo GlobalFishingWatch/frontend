@@ -127,6 +127,7 @@ export function getGeneratorConfig(
         eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
       // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
       if (hasEventData) {
+        // TODO This flatMap will prevent the corresponding generator to memoize correctly
         const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data : []))
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
@@ -134,9 +135,7 @@ export function getGeneratorConfig(
           showIcons: dataview.config?.showIcons,
           data: data,
           color: dataview.config?.color,
-          ...(generator.data && {
-            track: generator.data,
-          }),
+          track: generator.data,
           ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
         }
         return [generator, eventsGenerator]
@@ -336,12 +335,20 @@ export function getDataviewsGeneratorConfigs(
       }
       const interactionTypes = uniq(
         dataview.datasets?.map((dataset) => dataset.configuration?.type || 'fishing-effort')
-      )
+      ) as HeatmapAnimatedInteractionType[]
       if (interactionTypes.length !== 1) {
         throw new Error(
           `Shouldnt have distinct dataset config types for the same heatmap layer: ${interactionTypes.toString()}`
         )
       }
+      const interactionType =
+        // Some VMS presence layers have interaction, this is the way of
+        // allowing it but keeping it disabled in the global one
+        interactionTypes[0] === 'presence'
+          ? dataview?.config?.presenceDetails === true
+            ? 'presence-detail'
+            : 'presence'
+          : (interactionTypes[0] as HeatmapAnimatedInteractionType)
       const sublayer: HeatmapAnimatedGeneratorSublayer = {
         id: dataview.id,
         datasets,
@@ -354,7 +361,7 @@ export function getDataviewsGeneratorConfigs(
           unit: units[0],
           color: dataview?.config?.color,
         },
-        interactionType: interactionTypes[0] as HeatmapAnimatedInteractionType, // TODO I don't understand why dataset.configuration?.type is of type EventTypes?
+        interactionType,
       }
 
       return sublayer
