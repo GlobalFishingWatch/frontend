@@ -12,9 +12,10 @@ import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import {
   getVesselEventsGeojson,
-  getVesselSegmentsGeojson,
+  getVesselEventsSegmentsGeojson,
   filterGeojsonByTimerange,
   filterFeaturesByTimerange,
+  getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
 } from './vessel-events.utils'
 
 interface VesselsEventsSource extends GeoJSONSourceRaw {
@@ -59,7 +60,7 @@ class VesselsEventsGenerator {
       return [pointsSource]
     }
 
-    const segments = memoizeCache[config.id].getVesselSegmentsGeojson(
+    const segments = memoizeCache[config.id].getVesselEventsSegmentsGeojson(
       track,
       data
     ) as FeatureCollection
@@ -159,7 +160,11 @@ class VesselsEventsGenerator {
   getStyle = (config: GlobalVesselEventsGeneratorConfig) => {
     memoizeByLayerId(config.id, {
       getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
-      getVesselSegmentsGeojson: memoizeOne(getVesselSegmentsGeojson),
+      getVesselEventsSegmentsGeojson: memoizeOne(
+        getVesselEventsSegmentsGeojson,
+        // This is a hack needed because the events array mutates constantly in resolve-dataviews-generators
+        getVesselEventsSegmentsGeojsonMemoizeEqualityCheck
+      ),
       filterGeojsonByTimerange: memoizeOne(filterGeojsonByTimerange),
       filterFeaturesByTimerange: memoizeOne(filterFeaturesByTimerange),
     })
