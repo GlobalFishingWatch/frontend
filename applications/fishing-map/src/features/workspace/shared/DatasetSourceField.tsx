@@ -12,7 +12,6 @@ type DatasetFilterSourceProps = {
 
 function DatasetFilterSource({ dataview }: DatasetFilterSourceProps) {
   const { t } = useTranslation()
-
   const sourcesOptions: TagItem[] = getSourcesSelectedInDataview(dataview)
   const nonVmsSources = sourcesOptions.filter((source) => !source.label.includes('VMS'))
   const vmsSources = sourcesOptions.filter((source) => source.label.includes('VMS'))
