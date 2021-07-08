@@ -29,22 +29,25 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
 
   const onEventChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      // TODO add or remove depending on state
       const checked = event.target.checked
       const eventTypeChanged = event.target.id as EventType
       if (checked) {
         const visibleEvents =
           currentVisibleEvents === 'all'
             ? allEventTypes.filter((eventType) => eventType !== eventTypeChanged)
-            : [...currentVisibleEvents, eventTypeChanged]
+            : [...(currentVisibleEvents === 'none' ? [] : currentVisibleEvents), eventTypeChanged]
         dispatchQueryParams({ visibleEvents })
       } else {
         const currentVisibleEventsTypes =
-          currentVisibleEvents === 'all' ? allEventTypes : currentVisibleEvents
+          currentVisibleEvents === 'all'
+            ? allEventTypes
+            : currentVisibleEvents === 'none'
+            ? []
+            : currentVisibleEvents
         const visibleEvents = currentVisibleEventsTypes.filter(
           (eventType) => eventTypeChanged !== eventType
         )
-        dispatchQueryParams({ visibleEvents })
+        dispatchQueryParams({ visibleEvents: visibleEvents?.length ? visibleEvents : 'none' })
       }
     },
     [dispatchQueryParams, allEventTypes, currentVisibleEvents]
@@ -72,7 +75,11 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
                 onChange={onEventChange}
                 className={layerStyles.eventLegendCheckbox}
                 checked={
-                  currentVisibleEvents === 'all' ? true : currentVisibleEvents.includes(eventType)
+                  currentVisibleEvents === 'all'
+                    ? true
+                    : currentVisibleEvents === 'none'
+                    ? false
+                    : currentVisibleEvents.includes(eventType)
                 }
               />
               <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
