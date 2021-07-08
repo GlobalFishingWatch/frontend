@@ -1,10 +1,10 @@
 # @globalfishingwatch/layer-composer
 
-## 8.5.1
+## 8.6.0
 
-### Patch Changes
+### Minor Changes
 
-- c60ce91a: Fix perf issue on track events hover
+- 3513a689: support interaction (configured in dataview as presenceDetails) for presence layers
 
 ## 8.5.0
 

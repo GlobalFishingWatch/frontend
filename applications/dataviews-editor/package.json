@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "@globalfishingwatch/api-client": "^2.0.0",
-    "@globalfishingwatch/dataviews-client": "^11.4.1",
-    "@globalfishingwatch/layer-composer": "8.5.1",
+    "@globalfishingwatch/dataviews-client": "^11.5.0",
+    "@globalfishingwatch/layer-composer": "8.6.0",
     "@globalfishingwatch/timebar": "^2.0.0",
     "@reduxjs/toolkit": "^1.5.0",
     "cra-template-typescript": "1.0.3",

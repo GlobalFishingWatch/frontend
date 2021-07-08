@@ -4,8 +4,8 @@
 
 ### Patch Changes
 
-- Updated dependencies [c60ce91a]
-  - @globalfishingwatch/layer-composer@8.5.1
+- Updated dependencies [3513a689]
+  - @globalfishingwatch/layer-composer@8.6.0
 
 ## 0.7.104
 
