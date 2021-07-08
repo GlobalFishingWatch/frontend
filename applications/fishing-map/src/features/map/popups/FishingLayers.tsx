@@ -116,8 +116,8 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
               const vesselLabel = getVesselLabel(vessel, true)
               return (
                 <button
-                  disabled={feature.category === 'presence'}
                   key={i}
+                  disabled={feature.temporalgrid?.sublayerInteractionType === 'presence'}
                   className={styles.vesselRow}
                   onClick={() => onVesselClick(vessel)}
                 >

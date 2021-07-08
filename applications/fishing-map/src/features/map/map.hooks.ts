@@ -83,6 +83,7 @@ export const useClickedEventConnect = () => {
   const { setMapCoordinates } = useViewport()
   const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
   const fishingPromiseRef = useRef<any>()
+  const presencePromiseRef = useRef<any>()
   const viirsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
@@ -138,7 +139,7 @@ export const useClickedEventConnect = () => {
     }
 
     // Cancel all pending promises
-    const promisesRef = [fishingPromiseRef, viirsPromiseRef, eventsPromiseRef]
+    const promisesRef = [fishingPromiseRef, presencePromiseRef, viirsPromiseRef, eventsPromiseRef]
     promisesRef.forEach((ref) => {
       if (ref.current) {
         ref.current.abort()
@@ -171,7 +172,9 @@ export const useClickedEventConnect = () => {
         }
         const isFeatureVisible = feature.temporalgrid.visible
         const isFishingFeature = feature.temporalgrid.sublayerInteractionType === 'fishing-effort'
-        return isFeatureVisible && isFishingFeature
+        const isPresenceDetailFeature =
+          feature.temporalgrid.sublayerInteractionType === 'presence-detail'
+        return isFeatureVisible && (isFishingFeature || isPresenceDetailFeature)
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
