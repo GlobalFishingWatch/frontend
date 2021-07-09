@@ -72,7 +72,7 @@
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement ce jeu de données ?",
     "dragActive": "Déposez le fichier ici ...",
     "dragFilePlaceholder": "Glissez et déposez un fichier shapefile ou un geojson ici ou cliquez pour le sélectionner",
-    "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
+    "dragFilePlaceholderCSV": "Glissez et déposez un fichier CSV ici ou cliquez pour le sélectionner",
     "edit": "Modifier le jeu de données",
     "emptyState": "Vos jeux de données apparaîtront ici",
     "featuresNameField": "Champ de nom pour chaque zone",
@@ -127,7 +127,8 @@
   "event": {
     "encounter": "Encounter",
     "encounterAction": "had an encounter with",
-    "encounterUnknownVesselAction": "had an encounter with another vessel",
+    "encounterAnotherVessel": "another vessel",
+    "during": "during",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
     "loitering": "Loitering",
