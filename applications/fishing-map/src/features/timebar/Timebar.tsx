@@ -209,25 +209,29 @@ const TimebarWrapper = () => {
         {!isSmallScreen ? (
           <Fragment>
             {timebarVisualisation === TimebarVisualisations.Heatmap && <TimebarActivityGraph />}
-            {timebarVisualisation === TimebarVisualisations.Vessel && tracks?.length && (
-              <Fragment>
-                {timebarGraph !== TimebarGraphs.Speed && (
-                  <TimebarTracks key="tracks" tracks={tracks} />
-                )}
-                {timebarGraph === TimebarGraphs.Speed && tracksGraph && (
-                  <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
-                )}
-                {tracksEvents && (
-                  <TimebarTracksEvents
-                    key="events"
-                    preselectedEventId={highlightedEvent?.id}
-                    tracksEvents={tracksEvents}
-                    onEventClick={onEventClick}
-                    onEventHover={onEventHover}
-                  />
-                )}
-              </Fragment>
-            )}
+            {timebarVisualisation === TimebarVisualisations.Vessel &&
+              tracks &&
+              tracks.length <= 10 && (
+                <Fragment>
+                  {timebarGraph !== TimebarGraphs.Speed && (
+                    <TimebarTracks key="tracks" tracks={tracks} />
+                  )}
+                  {timebarGraph === TimebarGraphs.Speed &&
+                    tracksGraph &&
+                    tracksGraph.length <= 10 && (
+                      <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
+                    )}
+                  {tracksEvents && tracksEvents.length <= 10 && (
+                    <TimebarTracksEvents
+                      key="events"
+                      preselectedEventId={highlightedEvent?.id}
+                      tracksEvents={tracksEvents}
+                      onEventClick={onEventClick}
+                      onEventHover={onEventHover}
+                    />
+                  )}
+                </Fragment>
+              )}
             <TimebarHighlighterWrapper activity={highlighterActivity} />
           </Fragment>
         ) : null}
