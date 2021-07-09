@@ -65,7 +65,7 @@ export const EVENTS_COLORS: Record<string, string> = {
   encounterauthorizedLabels: '#DCC76D',
   encounterpartially: '#F59E84',
   encounterunmatched: '#CE2C54',
-  encounter: '#F59E84',
+  encounter: '#FAE9A0',
   loitering: '#cfa9f9',
   port: '#99EEFF',
   fishing: '#fff',
