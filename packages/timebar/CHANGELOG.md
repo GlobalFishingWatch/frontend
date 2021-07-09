@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 2.0.1
+
+### Patch Changes
+
+- ed81ea50: Fishing map/max tracks
+
 ## 2.0.0
 
 ### Major Changes

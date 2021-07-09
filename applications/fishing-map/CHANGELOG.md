@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.0.21
+
+### Patch Changes
+
+- ed81ea50: Fishing map/max tracks
+- Updated dependencies [ed81ea50]
+  - @globalfishingwatch/timebar@2.0.1
+
 ## 1.0.20
 
 ### Patch Changes
