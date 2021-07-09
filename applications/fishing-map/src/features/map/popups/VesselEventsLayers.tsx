@@ -32,6 +32,9 @@ function VesselEventsTooltipSection({ features }: ContextTooltipRowProps) {
               const duration = DateTime.fromISO(feature.properties.end)
                 .diff(DateTime.fromISO(feature.properties.start), ['hours', 'minutes', 'seconds'])
                 .toObject()
+              const encounterVesselName =
+                feature.properties.encounterVesselName ||
+                t('event.encounterAnotherVessel', 'another vessel')
               return (
                 <Fragment key={index}>
                   <div className={styles.row}>
@@ -42,6 +45,8 @@ function VesselEventsTooltipSection({ features }: ContextTooltipRowProps) {
                   <div className={styles.row}>
                     <span className={styles.rowText}>
                       {t(`event.${feature.properties.type}Action` as any)}{' '}
+                      {feature.properties.type === 'encounter' &&
+                        `${encounterVesselName} ${t('event.during' as any, 'during')} `}
                       {duration.hours !== undefined &&
                         duration.hours > 0 &&
                         `${duration.hours} ${t('common.hour', {
