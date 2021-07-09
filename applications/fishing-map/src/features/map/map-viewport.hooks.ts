@@ -122,7 +122,7 @@ export function useMapFitBounds() {
         height,
         padding,
       })
-      setMapCoordinates({ latitude, longitude, zoom })
+      setMapCoordinates({ latitude, longitude, zoom: Math.max(0, zoom) })
     },
     [map, setMapCoordinates]
   )
