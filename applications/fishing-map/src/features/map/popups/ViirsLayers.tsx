@@ -24,7 +24,7 @@ function ViirsTooltipRow({ feature, showFeaturesDetails }: ViirsTooltipRowProps)
         <div className={styles.row}>
           <span className={styles.rowText}>
             <I18nNumber number={feature.value} />{' '}
-            {t([`common.${feature.unit}` as any, 'common.detection'], 'detections', {
+            {t([`common.${feature.temporalgrid?.unit}` as any, 'common.detection'], 'detections', {
               count: parseInt(feature.value), // neded to select the plural automatically
             })}
           </span>
@@ -43,9 +43,13 @@ function ViirsTooltipRow({ feature, showFeaturesDetails }: ViirsTooltipRowProps)
                   <tr>
                     <th>{t('layer.qf', 'Quality signal')}</th>
                     <th>
-                      {t([`common.${feature.unit}` as any, 'common.detection'], 'detections', {
-                        count: parseInt(feature.value), // neded to select the plural automatically
-                      })}
+                      {t(
+                        [`common.${feature.temporalgrid?.unit}` as any, 'common.detection'],
+                        'detections',
+                        {
+                          count: parseInt(feature.value), // neded to select the plural automatically
+                        }
+                      )}
                     </th>
                   </tr>
                 </thead>

@@ -18,6 +18,7 @@ export type TemporalGridFeature = {
   interval: Interval
   visibleStartDate: string
   visibleEndDate: string
+  unit?: string
 }
 
 export type ExtendedFeature = {
@@ -29,7 +30,6 @@ export type ExtendedFeature = {
   generatorType: string | null
   id: string
   value: any
-  unit?: string
   tile: {
     x: number
     y: number
