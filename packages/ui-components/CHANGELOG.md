@@ -1,5 +1,12 @@
 # @globalfishingwatch/ui-components
 
+## 9.0.0
+
+### Patch Changes
+
+- Updated dependencies [70ad8e32]
+  - @globalfishingwatch/react-hooks@12.0.0
+
 ## 8.2.0
 
 ### Minor Changes
