@@ -72,6 +72,7 @@
     "confirmRemove": "Anda yakin ingin menghapus dataset ini secara permanen?",
     "dragActive": "Jatuhkan file di sini ...",
     "dragFilePlaceholder": "Seret dan jatuhkan shapefile atau geojson yang terkompresi di sini atau klik untuk memilihnya",
+    "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Edit dataset",
     "emptyState": "Dataset Anda akan muncul di sini",
     "featuresNameField": "Fitur kolom nama",
@@ -124,6 +125,9 @@
     "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan"
   },
   "event": {
+    "encounter": "Encounter",
+    "encounterAction": "had an encounter with",
+    "encounterUnknownVesselAction": "had an encounter with another vessel",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
     "loitering": "Loitering",
@@ -240,14 +244,6 @@
     "selected": "terpilih"
   },
   "timebarSettings": {
-    "eventOptions": {
-      "all": "Semua acara",
-      "encounters": "Encounters",
-      "fishing": "Fishing",
-      "loitering": "Loitering",
-      "none": "None",
-      "ports": "Port visits"
-    },
     "fishingEffortDisabled": "Pilih setidaknya satu layer upaya penangkapan ikan yang terlihat",
     "graph": "Grafik",
     "graphOptions": {

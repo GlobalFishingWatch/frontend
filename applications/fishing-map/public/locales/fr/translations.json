@@ -71,7 +71,8 @@
     "colorByValue": "Caractéristiques de couleur par valeur",
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement ce jeu de données ?",
     "dragActive": "Déposez le fichier ici ...",
-    "dragFilePlaceholder": "Glissez et déposez un fichier de forme compressé ou un géojson ici ou cliquez pour le sélectionner",
+    "dragFilePlaceholder": "Glissez et déposez un fichier shapefile ou un geojson ici ou cliquez pour le sélectionner",
+    "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Modifier le jeu de données",
     "emptyState": "Vos jeux de données apparaîtront ici",
     "featuresNameField": "Champ de nom pour chaque zone",
@@ -124,6 +125,9 @@
     "workspaceNotFound": "L'espace de travail demandé n'a pas été trouvé."
   },
   "event": {
+    "encounter": "Encounter",
+    "encounterAction": "had an encounter with",
+    "encounterUnknownVesselAction": "had an encounter with another vessel",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
     "loitering": "Loitering",
@@ -240,14 +244,6 @@
     "selected": "sélectionné"
   },
   "timebarSettings": {
-    "eventOptions": {
-      "all": "Tous les événements",
-      "encounters": "Rencontres",
-      "fishing": "Pêche",
-      "loitering": "Loitering",
-      "none": "Aucun",
-      "ports": "Visites du port"
-    },
     "fishingEffortDisabled": "Sélectionnez au moins une couche apparente d'effort de pêche",
     "graph": "Graphique",
     "graphOptions": {
