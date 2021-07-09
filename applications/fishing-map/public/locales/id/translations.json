@@ -244,6 +244,9 @@
     "placeholder": "Pilih salah satu opsi",
     "selected": "terpilih"
   },
+  "timebar": {
+    "tooManyTracks": "Too many tracks"
+  },
   "timebarSettings": {
     "fishingEffortDisabled": "Pilih setidaknya satu layer upaya penangkapan ikan yang terlihat",
     "graph": "Grafik",
