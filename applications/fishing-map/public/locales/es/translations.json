@@ -244,6 +244,9 @@
     "placeholder": "Seleccione una opción",
     "selected": "seleccionado"
   },
+  "timebar": {
+    "tooManyTracks": "Too many tracks"
+  },
   "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa de esfuerzo de pesca aparente",
     "graph": "Gráfico",
