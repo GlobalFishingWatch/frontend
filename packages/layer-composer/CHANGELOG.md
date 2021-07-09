@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.8.0
+
+### Minor Changes
+
+- 12482b76: include encounter vessel in feature properties
+
 ## 8.7.0
 
 ### Minor Changes

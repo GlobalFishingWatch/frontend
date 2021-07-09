@@ -6,6 +6,8 @@
 
 - Updated dependencies [ed81ea50]
   - @globalfishingwatch/timebar@2.0.1
+- Updated dependencies [12482b76]
+  - @globalfishingwatch/layer-composer@8.8.0
 
 ## 0.7.107
 

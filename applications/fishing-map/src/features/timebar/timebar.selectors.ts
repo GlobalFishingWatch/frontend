@@ -157,16 +157,15 @@ export const selectEventsWithRenderingInfo = createSelector(
           let descriptionGeneric
           switch (event.type) {
             case 'encounter':
-              if (event.encounter && event.encounter.vessel.name) {
+              if (event.encounter) {
                 description = `${vesselName} ${t(
-                  'event.encounterAction',
+                  'event.encounterActionWith',
                   'had an encounter with'
-                )} ${event.encounter.vessel.name}`
-              } else {
-                description = `${vesselName} ${t(
-                  'event.encounterUnknownVesselAction',
-                  'had an encounter with another vessel'
-                )}`
+                )} ${
+                  event.encounter.vessel.name
+                    ? event.encounter.vessel.name
+                    : t('event.encounterAnotherVessel', 'another vessel')
+                } `
               }
               descriptionGeneric = `${vesselName} ${t('event.encounter')}`
               break

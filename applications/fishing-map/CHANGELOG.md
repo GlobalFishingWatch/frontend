@@ -7,6 +7,7 @@
 - ed81ea50: Fishing map/max tracks
 - Updated dependencies [ed81ea50]
   - @globalfishingwatch/timebar@2.0.1
+  - @globalfishingwatch/layer-composer@8.8.0
 
 ## 1.0.20
 
