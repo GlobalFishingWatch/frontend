@@ -124,6 +124,9 @@
     "workspaceNotFound": "The workspace you requested was not found."
   },
   "event": {
+    "encounter": "Encounter",
+    "encounterAction": "had an encounter with",
+    "encounterUnknownVesselAction": "had an encounter with another vessel",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
     "loitering": "Loitering",

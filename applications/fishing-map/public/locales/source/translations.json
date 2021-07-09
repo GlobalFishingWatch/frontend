@@ -124,6 +124,9 @@
     "workspaceNotFound": "The view you request was not found"
   },
   "event": {
+    "encounter": "Encounter",
+    "encounterAction": "had an encounter with",
+    "encounterUnknownVesselAction": "had an encounter with another vessel",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
     "loitering": "Loitering",
@@ -240,14 +243,6 @@
     "selected": "selected"
   },
   "timebarSettings": {
-    "eventOptions": {
-      "all": "All events",
-      "encounters": "Encounters",
-      "fishing": "Fishing",
-      "loitering": "Loitering",
-      "none": "None",
-      "ports": "Port visits"
-    },
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graph",
     "graphOptions": {
