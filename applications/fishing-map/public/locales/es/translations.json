@@ -72,6 +72,7 @@
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente estos datos?",
     "dragActive": "Soltar el archivo aquí ...",
     "dragFilePlaceholder": "Arrastra y suelta un archivo comprimido o geojson aquí o haz clic para seleccionarlo",
+    "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Modificar los datos",
     "emptyState": "Sus datos aparecerán aquí",
     "featuresNameField": "Campo para nombrar cada área",
@@ -124,6 +125,9 @@
     "workspaceNotFound": "La vista que solicitó no se encontró"
   },
   "event": {
+    "encounter": "Encounter",
+    "encounterAction": "had an encounter with",
+    "encounterUnknownVesselAction": "had an encounter with another vessel",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
     "loitering": "Loitering",
@@ -240,14 +244,6 @@
     "selected": "seleccionado"
   },
   "timebarSettings": {
-    "eventOptions": {
-      "all": "Todos los eventos",
-      "encounters": "Encuentros",
-      "fishing": "Pesca",
-      "loitering": "Loitering",
-      "none": "Ninguna",
-      "ports": "Visitas de puerto"
-    },
     "fishingEffortDisabled": "Seleccione al menos una capa de esfuerzo de pesca aparente",
     "graph": "Gráfico",
     "graphOptions": {
