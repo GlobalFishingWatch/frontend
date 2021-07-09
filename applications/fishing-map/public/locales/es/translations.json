@@ -127,7 +127,8 @@
   "event": {
     "encounter": "Encounter",
     "encounterAction": "had an encounter with",
-    "encounterUnknownVesselAction": "had an encounter with another vessel",
+    "encounterAnotherVessel": "another vessel",
+    "during": "during",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
     "loitering": "Loitering",
@@ -242,6 +243,9 @@
     "allSelected": "Todos",
     "placeholder": "Seleccione una opción",
     "selected": "seleccionado"
+  },
+  "timebar": {
+    "tooManyTracks": "Too many tracks"
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa de esfuerzo de pesca aparente",
