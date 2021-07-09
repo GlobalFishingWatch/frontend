@@ -121,23 +121,23 @@ const WELCOME_POPUP_CONTENT: { [category in WorkspaceCategories]?: WelcomeConten
       `,
     },
     id: {
-      title: 'Welcome to the Global Fishing Watch Map',
+      title: 'Selamat datang di peta Global Fishing Watch',
       description: `
-        <p></p>
-        <h2><img src = "https://globalfishingwatch.org/wp-content/uploads/icon-line-caught-fish-orange.png">Apparent fishing effort</h2>
-        <p></p>
-        <h2><img src = "https://globalfishingwatch.org/wp-content/uploads/GFW_VESSEL-TRACKS_Orange.png">Vessel tracks and events</h2>
-        <p></p>
-        <h2><img src = "https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBAL-SEARCH_Orange-1.png">Search for a vessel</h2>
-        <p></p>
-        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-location-map-orange.png">Upload reference layers</h2>
-        <p></p>
-        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Feedback</h2>
-        <p><a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a></p>
-        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Register for free access to all features</h2>
-        <p></p>
-        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Previous Global Fishing Watch map</h2>
-        <p></p>
+        <p>Peta Global Fishing Watch adalah alat daring dengan akses terbuka yang pertama untuk visualisasi dan analisis kapal berdasarkan aktivitas manusia di laut. Siapa saja dengan koneksi internet dapat mengakses peta untuk memantau aktivitas penangkapan ikan global dari tahun 2012 hingga sekarang untuk lebih dari 65.000 kapal penangkap ikan komersial yang bertanggung jawab atas sebagian besar tangkapan makanan laut secara global.</p>
+        <h2><img src = "https://globalfishingwatch.org/wp-content/uploads/icon-line-caught-fish-orange.png">Upaya penangkapan ikan yang terlihat</h2>
+        <p>Kami menggunakan data yang disiarkan menggunakan automatic identification system (AIS) dan dikumpulkan melalui satelit dan penerima terestrial. Kemudian kami menggabungkan informasi ini dengan data sistem pemantauan kapal yang disediakan oleh negara mitra kami. Kami menerapkan algoritma deteksi penangkapan ikan untuk menentukan “upaya penangkapan yang terlihat” berdasarkan perubahan kecepatan dan arah kapal. Warna sel grid pada peta panas menunjukkan berapa banyak penangkapan ikan yang terjadi di area itu, memungkinkan untuk perbandingan yang tepat.</p>
+        <h2><img src = "https://globalfishingwatch.org/wp-content/uploads/GFW_VESSEL-TRACKS_Orange.png">Lintasan kapal dan peristiwa</h2>
+        <p>Melihat lintasan kapal beresolusi tinggi yang tepat di peta dan "peristiwa" yang terjadi di sepanjang setiap lintasan. Peristiwa menyoroti tempat penangkapan ikan, kunjungan pelabuhan, pertemuan kapal, dan peristiwa berkeliaran—ketika satu kapal menunjukkan perilaku yang menunjukkan pertemuan dengan kapal lain tetapi tidak ada transmisi lain yang diterima. Peristiwa dikelompokkan bersama saat peta diperkecil. Perbesar area tertentu untuk informasi lebih detail.</p>
+        <h2><img src = "https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBAL-SEARCH_Orange-1.png">Pencarian kapal</h2>
+        <p>Pencarian kapal di mana saja di peta dengan nama kapal, nomor maritime mobile service identity (MMSI), nomor Organisasi Maritim Internasional, tanda panggil atau pengenal sistem pemantauan kapal. Pencarian lanjutan memungkinkan Anda untuk menyaring dan memperhalus pencarian Anda secara lebih efektif berdasarkan sumber, bendera, dan tanggal aktif. Klik kapal mana saja di hasil pencarian untuk menambahkan jalur kapal itu ke peta.</p>
+        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-location-map-orange.png">Unggah layer referensi</h2>
+        <p>Layer referensi memfasilitasi pemahaman yang lebih baik tentang aktivitas kapal di sekitar zona ekonomi eksklusif, organisasi pengelolaan perikanan regional, dan area lainnya. Tambahkan lapisan referensi Anda sendiri untuk mendukung analisis terperinci atau manajemen spasial.</p>
+        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Umpan balik</h2>
+        <p>Bantu kami meningkatkan perbaikan peta Global Fishing Watch dengan mengirimkan umpan balik ke <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> atau melalui formulir umpan balik di sebelah sisi kiri pada peta.</p>
+        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Daftar untuk akses gratis ke semua fitur</h2>
+        <p>Daftarkan <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">akun</a> Global Fishing Watch gratis untuk mengakses fitur analisis lanjutan, unduhan data, dan menyimpan ruang kerja Anda. Pendaftaran memakan waktu dua menit.</p>
+        <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Peta Global Fishing Watch sebelumnya</h2>
+        <p><a href="https://globalfishingwatch.org/legacy-map">Akses peta Global Fishing Watch sebelumnya di sini untuk memigrasikan ruang kerja hingga 18 Oktober 2021.</a></p>
       `,
     },
   },
