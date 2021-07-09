@@ -21,8 +21,8 @@ const ACCEPT_FILES_BY_TYPE: Record<DatasetGeometryType, string> = {
   points: '',
 }
 const TRANSLATIONS_BY_TYPE: Record<DatasetGeometryType, string> = {
-  polygons: 'dragFilePlaceholder',
-  tracks: 'dragFilePlaceholderCSV',
+  polygons: 'dataset.dragFilePlaceholder',
+  tracks: 'dataset.dragFilePlaceholderCSV',
   points: '',
 }
 
