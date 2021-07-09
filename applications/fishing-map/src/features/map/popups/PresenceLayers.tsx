@@ -19,7 +19,7 @@ function PresenceTooltipRow({ feature, showFeaturesDetails }: PresenceTooltipRow
         <div className={styles.row}>
           <span className={styles.rowText}>
             <I18nNumber number={feature.value} />{' '}
-            {t([`common.${feature.unit}` as any, 'common.detection'], 'detections', {
+            {t([`common.${feature.temporalgrid?.unit}` as any, 'common.detection'], 'detections', {
               count: parseInt(feature.value), // neded to select the plural automatically
             })}
           </span>
