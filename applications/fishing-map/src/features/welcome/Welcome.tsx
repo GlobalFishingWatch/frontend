@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Logo } from '@globalfishingwatch/ui-components'
 import { Locale } from 'types'
@@ -17,7 +17,12 @@ export const DISABLE_WELCOME_POPUP = 'DisableWelcomePopup'
 const Welcome: React.FC<WelcomeProps> = ({ contentKey, showDisableCheckbox }: WelcomeProps) => {
   const { t, i18n } = useTranslation()
   const welcomeModal = WELCOME_POPUP_CONTENT[contentKey]
-  const [disabled, setDisabled] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
+  const [disabled, setDisabled] = useLocalStorage(DISABLE_WELCOME_POPUP, null)
+  useEffect(() => {
+    if (disabled === null) {
+      setDisabled(true)
+    }
+  })
   const onDisableToggled = useCallback(() => {
     setDisabled(!disabled)
   }, [disabled, setDisabled])
@@ -60,7 +65,7 @@ const Welcome: React.FC<WelcomeProps> = ({ contentKey, showDisableCheckbox }: We
             checked={disabled}
           />
           <label className={styles.disableLabel} htmlFor="disableWelcomePopup">
-            {t('common.welcomePopupDisable', "Don't show this message anymore")}
+            {t('common.welcomePopupDisable', "Don't show again")}
           </label>
         </div>
       )}

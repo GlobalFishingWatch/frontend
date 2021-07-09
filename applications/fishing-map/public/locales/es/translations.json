@@ -63,7 +63,7 @@
     "vessel": "Embarcación",
     "vessel_plural": "Embarcaciones",
     "viirs": "VIIRS",
-    "welcomePopupDisable": "Don't show this message anymore"
+    "welcomePopupDisable": "Don't show again"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",

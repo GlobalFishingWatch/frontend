@@ -44,7 +44,18 @@
 }
 
 .disableSection {
-  margin-top: 5rem;
+  position: absolute;
+  top: 30px;
+  right: 80px;
+}
+
+@media only screen and (max-width: 460px) {
+  .disableSection {
+    position: relative;
+    margin-top: 4rem;
+    top: 0;
+    right: 0;
+  }
 }
 
 .disableCheckbox {

@@ -63,7 +63,7 @@
     "vessel": "Kapal",
     "vessel_plural": "Kapal",
     "viirs": "VIIRS",
-    "welcomePopupDisable": "Don't show this message anymore"
+    "welcomePopupDisable": "Don't show again"
   },
   "dataset": {
     "addContext": "Menambah layer referensi",
