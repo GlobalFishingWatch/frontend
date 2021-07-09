@@ -273,9 +273,9 @@ export const useAnalysisGeometry = () => {
 
       if (contextAreaGeometry && contextAreaGeometry.type === 'Feature') {
         const { name, value, id } = contextAreaGeometry.properties || {}
-        const areaName: string = name || id || value
+        const areaName: string = name || id || value || ''
         const bounds = bbox(contextAreaGeometry) as Bbox
-        if (areaName && bounds) {
+        if (bounds) {
           setAnalysisBounds(bounds)
           fitMapBounds(bounds, { padding: 10 })
           dispatch(
@@ -287,7 +287,7 @@ export const useAnalysisGeometry = () => {
           )
           setHighlightedArea()
         } else {
-          console.warn('No area name or bounds')
+          console.warn('No area bounds')
         }
         setLoaded(true)
       }
