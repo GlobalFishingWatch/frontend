@@ -128,7 +128,7 @@ const TimebarActivityGraph = () => {
 
   useEffect(() => {
     // Need to check for first load to ensure getStyle doesn't crash
-    if (!map || !map.loaded() || !debouncedBounds || isSmallScreen) return
+    if (!map || !map.loaded || !map.loaded() || !debouncedBounds || isSmallScreen) return
     const metadata = getMetadata(map?.getStyle())
     computeStackedActivity(metadata, debouncedBounds)
   }, [debouncedBounds, computeStackedActivity, map, isSmallScreen])

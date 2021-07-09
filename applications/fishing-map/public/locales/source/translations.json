@@ -243,6 +243,9 @@
     "placeholder": "Select an option",
     "selected": "selected"
   },
+  "timebar": {
+    "tooManyTracks": "Too many tracks"
+  },
   "timebarSettings": {
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graph",

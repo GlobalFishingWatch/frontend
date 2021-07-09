@@ -35,8 +35,10 @@ import {
   selectEventsWithRenderingInfo,
 } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
+import styles from './Timebar.module.css'
 
 export const TIMEBAR_HEIGHT = 72
+export const MAX_TIMEBAR_VESSELS = 10
 
 const TimebarHighlighterWrapper = ({ activity }: any) => {
   const highlightedTime = useSelector(selectHighlightedTime)
@@ -51,7 +53,7 @@ const TimebarHighlighterWrapper = ({ activity }: any) => {
 }
 
 const TimebarWrapper = () => {
-  const { ready, i18n } = useTranslation()
+  const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
   const { highlightedEvent, dispatchHighlightedEvent } = useHighlightEventConnect()
@@ -210,28 +212,32 @@ const TimebarWrapper = () => {
           <Fragment>
             {timebarVisualisation === TimebarVisualisations.Heatmap && <TimebarActivityGraph />}
             {timebarVisualisation === TimebarVisualisations.Vessel &&
-              tracks &&
-              tracks.length <= 10 && (
-                <Fragment>
-                  {timebarGraph !== TimebarGraphs.Speed && (
-                    <TimebarTracks key="tracks" tracks={tracks} />
+            tracks &&
+            tracks.length <= MAX_TIMEBAR_VESSELS ? (
+              <Fragment>
+                {timebarGraph !== TimebarGraphs.Speed && (
+                  <TimebarTracks key="tracks" tracks={tracks} />
+                )}
+                {timebarGraph === TimebarGraphs.Speed &&
+                  tracksGraph &&
+                  tracksGraph.length <= 10 && (
+                    <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
                   )}
-                  {timebarGraph === TimebarGraphs.Speed &&
-                    tracksGraph &&
-                    tracksGraph.length <= 10 && (
-                      <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
-                    )}
-                  {tracksEvents && tracksEvents.length <= 10 && (
-                    <TimebarTracksEvents
-                      key="events"
-                      preselectedEventId={highlightedEvent?.id}
-                      tracksEvents={tracksEvents}
-                      onEventClick={onEventClick}
-                      onEventHover={onEventHover}
-                    />
-                  )}
-                </Fragment>
-              )}
+                {tracksEvents && tracksEvents.length <= 10 && (
+                  <TimebarTracksEvents
+                    key="events"
+                    preselectedEventId={highlightedEvent?.id}
+                    tracksEvents={tracksEvents}
+                    onEventClick={onEventClick}
+                    onEventHover={onEventHover}
+                  />
+                )}
+              </Fragment>
+            ) : (
+              <div className={styles.disclaimer}>
+                <label>{t('timebar.tooManyTracks', 'Too many tracks')}</label>
+              </div>
+            )}
             <TimebarHighlighterWrapper activity={highlighterActivity} />
           </Fragment>
         ) : null}
