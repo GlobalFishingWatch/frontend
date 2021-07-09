@@ -104,7 +104,10 @@ export function getGeneratorConfig(
         return []
       }
       generator.tilesUrl = tileClusterUrl
-      return generator
+      return {
+        ...generator,
+        ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
+      }
     }
     case Generators.Type.Track: {
       // Inject highligtedTime

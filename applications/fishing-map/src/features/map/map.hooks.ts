@@ -261,12 +261,19 @@ export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
     }, 100),
     []
   )
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   const setHighlightedEventDebounced = useCallback(() => {
+    let highlightEvent: { id: string } | undefined
     const vesselFeature = features?.find((f) => f.category === DataviewCategory.Vessels)
-    if (vesselFeature) {
-      if (vesselFeature.properties?.id && highlightedEvent?.id !== vesselFeature.properties.id) {
-        debounceDispatch({ id: vesselFeature.properties.id })
+    const clusterFeature = features?.find((f) => f.type === Generators.Type.TileCluster)
+    if (!clusterFeature && vesselFeature) {
+      highlightEvent = { id: vesselFeature.properties?.id }
+    } else if (clusterFeature) {
+      highlightEvent = { id: clusterFeature.properties?.event_id }
+    }
+    if (highlightEvent) {
+      if (highlightedEvent?.id !== highlightEvent.id) {
+        debounceDispatch(highlightEvent)
       }
     } else if (highlightedEvent) {
       debounceDispatch(undefined)

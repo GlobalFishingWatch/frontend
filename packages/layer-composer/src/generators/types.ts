@@ -169,6 +169,10 @@ export interface TileClusterGeneratorConfig extends GeneratorConfig {
    * Uses a workaround when having duplicated events to show only 1 event
    */
   duplicatedEventsWorkaround?: boolean
+  /**
+   * Event id to highlight on active
+   */
+  currentEventId?: string
 }
 
 /**

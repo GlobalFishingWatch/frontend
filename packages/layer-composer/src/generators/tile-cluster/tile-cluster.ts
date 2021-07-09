@@ -50,6 +50,7 @@ class TileClusterGenerator {
   }
 
   _getStyleLayers = (config: GlobalTileClusterGeneratorConfig): AnyLayer[] => {
+    const activeFilter = ['case', ['==', ['get', 'event_id'], config.currentEventId || null]]
     const layers = [
       {
         id: 'clusters',
@@ -108,7 +109,7 @@ class TileClusterGenerator {
         filter: ['<=', ['get', 'count'], config.duplicatedEventsWorkaround ? 2 : 1],
         paint: {
           'circle-color': config.color || '#FAE9A0',
-          'circle-radius': 5,
+          'circle-radius': [...activeFilter, 8, 5],
           'circle-stroke-width': 1,
           'circle-stroke-color': DEFAULT_BACKGROUND_COLOR,
         },
