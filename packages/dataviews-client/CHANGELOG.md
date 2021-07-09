@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.6.0
+
+### Minor Changes
+
+- 7f486176: highlight tile-cluster event
+
 ## 11.5.0
 
 ### Minor Changes

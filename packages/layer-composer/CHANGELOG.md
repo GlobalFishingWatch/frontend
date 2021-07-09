@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.7.0
+
+### Minor Changes
+
+- 7f486176: highlight tile-cluster event
+
 ## 8.6.0
 
 ### Minor Changes
