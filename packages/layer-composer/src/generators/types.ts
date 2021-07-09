@@ -348,6 +348,10 @@ export type RawEvent = {
   encounter?: {
     authorized: boolean
     authorizationStatus: AuthorizationOptions
+    vessel: {
+      id: string
+      name: string
+    }
   }
 }
 
