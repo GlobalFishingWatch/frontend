@@ -1,5 +1,14 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.0.20
+
+### Patch Changes
+
+- 70ad8e32: Fixes popup units
+- Updated dependencies [70ad8e32]
+  - @globalfishingwatch/react-hooks@12.0.0
+  - @globalfishingwatch/ui-components@9.0.0
+
 ## 1.0.19
 
 ### Patch Changes

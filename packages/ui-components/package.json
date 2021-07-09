@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/ui-components",
-  "version": "8.2.0",
+  "version": "9.0.0",
   "description": "Set of react components to consume on the gfw ecosystem",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@globalfishingwatch/layer-composer": "8.7.0",
-    "@globalfishingwatch/react-hooks": "^11.2.0",
+    "@globalfishingwatch/react-hooks": "^12.0.0",
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
@@ -67,7 +67,7 @@
   },
   "peerDependencies": {
     "@globalfishingwatch/layer-composer": "^8.x",
-    "@globalfishingwatch/react-hooks": "^11.x",
+    "@globalfishingwatch/react-hooks": "^12.0.0",
     "downshift": "^6.0.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.1"
