@@ -63,7 +63,7 @@
     "vessel": "Navire",
     "vessel_plural": "Navires",
     "viirs": "VIIRS",
-    "welcomePopupDisable": "Don't show this message anymore"
+    "welcomePopupDisable": "Don't show again"
   },
   "dataset": {
     "addContext": "Ajouter la couche de référence",
