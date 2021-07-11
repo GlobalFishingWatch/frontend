@@ -245,7 +245,7 @@
     "selected": "seleccionado"
   },
   "timebar": {
-    "tooManyTracks": "Too many tracks"
+    "maxTracksNumber": "Track detail not available for mor than 10 vessels"
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa de esfuerzo de pesca aparente",

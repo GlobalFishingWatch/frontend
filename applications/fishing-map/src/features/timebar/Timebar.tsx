@@ -212,32 +212,36 @@ const TimebarWrapper = () => {
           <Fragment>
             {timebarVisualisation === TimebarVisualisations.Heatmap && <TimebarActivityGraph />}
             {timebarVisualisation === TimebarVisualisations.Vessel &&
-            tracks &&
-            tracks.length <= MAX_TIMEBAR_VESSELS ? (
-              <Fragment>
-                {timebarGraph !== TimebarGraphs.Speed && (
-                  <TimebarTracks key="tracks" tracks={tracks} />
-                )}
-                {timebarGraph === TimebarGraphs.Speed &&
-                  tracksGraph &&
-                  tracksGraph.length <= 10 && (
-                    <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
+              (tracks && tracks.length <= MAX_TIMEBAR_VESSELS ? (
+                <Fragment>
+                  {timebarGraph !== TimebarGraphs.Speed && (
+                    <TimebarTracks key="tracks" tracks={tracks} />
                   )}
-                {tracksEvents && tracksEvents.length <= 10 && (
-                  <TimebarTracksEvents
-                    key="events"
-                    preselectedEventId={highlightedEvent?.id}
-                    tracksEvents={tracksEvents}
-                    onEventClick={onEventClick}
-                    onEventHover={onEventHover}
-                  />
-                )}
-              </Fragment>
-            ) : (
-              <div className={styles.disclaimer}>
-                <label>{t('timebar.tooManyTracks', 'Too many tracks')}</label>
-              </div>
-            )}
+                  {timebarGraph === TimebarGraphs.Speed &&
+                    tracksGraph &&
+                    tracksGraph.length <= 10 && (
+                      <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
+                    )}
+                  {tracksEvents && tracksEvents.length <= 10 && (
+                    <TimebarTracksEvents
+                      key="events"
+                      preselectedEventId={highlightedEvent?.id}
+                      tracksEvents={tracksEvents}
+                      onEventClick={onEventClick}
+                      onEventHover={onEventHover}
+                    />
+                  )}
+                </Fragment>
+              ) : (
+                <div className={styles.disclaimer}>
+                  <label>
+                    {t(
+                      'timebar.maxTracksNumber',
+                      'Track detail not available for mor than 10 vessels'
+                    )}
+                  </label>
+                </div>
+              ))}
             <TimebarHighlighterWrapper activity={highlighterActivity} />
           </Fragment>
         ) : null}
