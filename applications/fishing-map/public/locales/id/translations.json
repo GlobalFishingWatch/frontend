@@ -321,6 +321,8 @@
     "confirmRemove": "Anda yakin ingin menghapus ruang kerja ini secara permanen?",
     "editName": "Edit nama ruang kerja",
     "emptyState": "Ruang kerja Anda akan muncul di sini",
+    "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
+    "emptyStateEnvironment": "Upload custom datasets like animal telemetry clicking on the plus icon.",
     "nameInput": "Nama ruang kerja",
     "new": "Ruang kerja baru",
     "remove": "Hapus ruang kerja",
