@@ -13,7 +13,7 @@ import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.selectors'
-import { selectTimebarGraph } from 'features/app/app.selectors'
+import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 import { useTimebarVisualisation } from './timebar.hooks'
@@ -28,6 +28,7 @@ const TimebarSettings = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const { dispatchQueryParams } = useLocationConnect()
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisation()
+  const activityCategory = useSelector(selectActivityCategory)
 
   const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = useMemo(
     () => [
@@ -75,6 +76,25 @@ const TimebarSettings = () => {
   }
   const expandedContainerRef = useClickedOutside(closeOptions)
 
+  const activityLabel = `
+    ${t('common.activity', 'Activity')} - ${
+    activityCategory === 'fishing'
+      ? t('common.fishing', 'Fishing')
+      : t('common.presence', 'Presence')
+  }
+  `
+
+  const activityTooltipLabel = !activeHeatmapDataviews?.length
+    ? activityCategory === 'fishing'
+      ? t(
+          'timebarSettings.fishingEffortDisabled',
+          'Select at least one apparent fishing effort layer'
+        )
+      : t('timebarSettings.presenceDisabled', 'Select at least one presence layer')
+    : activityCategory === 'fishing'
+    ? t('timebarSettings.showFishingEffort', 'Show fishing hours graph')
+    : t('timebarSettings.showPresence', 'Show presence graph')
+
   const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews?.length <= 2
   return (
     <div className={cx('print-hidden', styles.container)} ref={expandedContainerRef}>
@@ -91,17 +111,10 @@ const TimebarSettings = () => {
       {optionsPanelOpen && (
         <div className={styles.optionsContainer}>
           <Radio
-            label={t('common.apparentFishing', 'Apparent Fishing Effort')}
+            label={activityLabel}
             active={timebarVisualisation === TimebarVisualisations.Heatmap}
             disabled={!activeHeatmapDataviews?.length}
-            tooltip={
-              !activeHeatmapDataviews?.length
-                ? t(
-                    'timebarSettings.fishingEffortDisabled',
-                    'Select at least one apparent fishing effort layer'
-                  )
-                : t('timebarSettings.showFishingEffort', 'Show fishing hours graph')
-            }
+            tooltip={activityTooltipLabel}
             onClick={setHeatmapActive}
           />
           <Fragment>
