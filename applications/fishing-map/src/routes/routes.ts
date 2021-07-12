@@ -43,6 +43,9 @@ const PARAMS_TO_ABBREVIATED = {
   params: 'pms',
   config: 'cfg',
   visible: 'vis',
+  query: 'qry',
+  value: 'val',
+  color: 'clr',
 }
 const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
 
