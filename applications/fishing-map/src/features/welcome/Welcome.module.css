@@ -43,19 +43,26 @@
   color: var(--color-danger-red);
 }
 
-.disableSection {
+.headerActions {
   position: absolute;
-  top: 30px;
-  right: 80px;
+  top: var(--space-M);
+  right: 7rem;
+  display: flex;
+  gap: var(--space-M);
 }
 
 @media only screen and (max-width: 460px) {
-  .disableSection {
+  .headerActions {
     position: relative;
     margin-top: 4rem;
     top: 0;
     right: 0;
   }
+}
+
+.disableSection {
+  display: flex;
+  align-items: center;
 }
 
 .disableCheckbox {
@@ -68,4 +75,6 @@
   position: relative;
   padding-left: 0.5rem;
   font: var(--font-S);
+  flex: 1;
+  white-space: pre;
 }
