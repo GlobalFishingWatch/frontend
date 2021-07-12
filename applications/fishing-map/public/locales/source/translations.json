@@ -245,7 +245,7 @@
     "selected": "selected"
   },
   "timebar": {
-    "maxTracksNumber": "Track detail not available for mor than 10 vessels"
+    "maxTracksNumber": "Track detail not available for more than 10 vessels"
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",

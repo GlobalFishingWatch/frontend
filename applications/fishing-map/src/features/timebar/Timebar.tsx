@@ -38,7 +38,7 @@ import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
 export const TIMEBAR_HEIGHT = 72
-export const MAX_TIMEBAR_VESSELS = 10
+export const MAX_TIMEBAR_VESSELS = 1
 
 const TimebarHighlighterWrapper = ({ activity }: any) => {
   const highlightedTime = useSelector(selectHighlightedTime)
@@ -237,7 +237,7 @@ const TimebarWrapper = () => {
                   <label className={styles.disclaimerLabel}>
                     {t(
                       'timebar.maxTracksNumber',
-                      'Track detail not available for mor than 10 vessels'
+                      'Track detail not available for more than 10 vessels'
                     )}
                   </label>
                 </div>
