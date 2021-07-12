@@ -75,10 +75,12 @@ const deepTokenizeValues = (obj: Dictionary<any>) => {
     if (!tokensCount[token]) {
       tokensCount[token] = 0
     }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     tokensCount[token]!++
   })
   const repeatedTokens = Object.entries(tokensCount)
     .filter(([key, count]) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return count! > 1 && key.length > 5
     })
     .map(([key]) => key)
