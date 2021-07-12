@@ -2,7 +2,7 @@ import { Dispatch } from 'redux'
 import { NOT_FOUND, RoutesMap, redirect, connectRoutes, Options } from 'redux-first-router'
 import { stringify, parse } from 'qs'
 import { Dictionary } from '@reduxjs/toolkit'
-import { invert, isObject, transform } from 'lodash'
+import { invert, isObject, isString, transform } from 'lodash'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 export const HOME = 'HOME'
@@ -42,14 +42,95 @@ const PARAMS_TO_ABBREVIATED = {
   dataviewId: 'dvId',
   params: 'pms',
   config: 'cfg',
+  visible: 'vis',
 }
 const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
+
+const TOKEN_PREFIX = '~'
+const TOKEN_REGEX = /~(\d+)/
 
 const deepReplaceKeys = (obj: Dictionary<any>, keysMap: Dictionary<string>) => {
   return transform(obj, (result: any, value, key) => {
     const newKey = keysMap[key] || key
     result[newKey] = isObject(value) ? deepReplaceKeys(value, keysMap) : value
   })
+}
+
+// Replace repeated values
+const deepTokenizeValues = (obj: Dictionary<any>) => {
+  const tokens: string[] = []
+  const collectTokens = (obj: Dictionary<any>) => {
+    Object.values(obj).forEach((value) => {
+      if (isObject(value)) collectTokens(value)
+      else if (isString(value)) tokens.push(value as string)
+    })
+  }
+  collectTokens(obj)
+
+  const tokensCount: Dictionary<number> = {}
+  tokens.forEach((token) => {
+    if (!tokensCount[token]) {
+      tokensCount[token] = 0
+    }
+    tokensCount[token]!++
+  })
+  const repeatedTokens = Object.entries(tokensCount)
+    .filter(([key, count]) => {
+      return count! > 1 && key.length > 5
+    })
+    .map(([key]) => key)
+
+  if (!repeatedTokens.length) {
+    return obj
+  }
+
+  const tokenizeValues = (obj: Dictionary<any>) => {
+    return transform(obj, (result: any, value, key) => {
+      if (isObject(value)) {
+        result[key] = tokenizeValues(value)
+      } else if (isString(value)) {
+        // Special case for dataset ids that are of the form 'vessel-[same hash as other dataset ids]'
+        const isVessel = value.includes('vessel-')
+        const vesselValue = isVessel ? 'vessel-' : ''
+
+        const tokenValue = isVessel ? value.replace('vessel-', '') : value
+        const repeatedTokenIndex = repeatedTokens.indexOf(tokenValue)
+        const replacedValue =
+          repeatedTokenIndex === -1 ? value : `${vesselValue}${TOKEN_PREFIX}${repeatedTokenIndex}`
+        result[key] = replacedValue
+      } else {
+        result[key] = value
+      }
+    })
+  }
+  const tokenized = tokenizeValues(obj)
+  tokenized.tk = repeatedTokens
+  return tokenized
+}
+
+const deepDetokenizeValues = (obj: Dictionary<any>) => {
+  const tokens = obj.tk
+  const detokenizeValues = (obj: Dictionary<any>) => {
+    return transform(obj, (result: any, value, key) => {
+      if (isObject(value)) {
+        result[key] = detokenizeValues(value)
+      } else if (isString(value)) {
+        // TODO token as var
+        const matchesToken = value.match(TOKEN_REGEX)
+        if (!matchesToken) {
+          result[key] = value
+          return
+        }
+        const tokenIndex = parseInt(matchesToken[1])
+        const detokenizedValue = value.replace(TOKEN_REGEX, tokens[tokenIndex])
+        result[key] = detokenizedValue
+      } else {
+        result[key] = value
+      }
+    })
+  }
+  const detokenized = detokenizeValues(obj)
+  return detokenized
 }
 
 const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
@@ -75,7 +156,8 @@ const urlToObjectTransformation: Dictionary<(value: any) => any> = {
 
 const stringifyWorkspace = (object: Record<string, unknown>) => {
   const objectWithAbbr = deepReplaceKeys(object, PARAMS_TO_ABBREVIATED)
-  const stringified = stringify(objectWithAbbr, {
+  const tokenized = deepTokenizeValues(objectWithAbbr)
+  const stringified = stringify(tokenized, {
     encodeValuesOnly: true,
     strictNullHandling: true,
   })
@@ -115,15 +197,16 @@ const parseWorkspace = (queryString: string) => {
     strictNullHandling: true,
   })
   const parsedWithAbbr = deepReplaceKeys(parsed, ABBREVIATED_TO_PARAMS)
-  Object.keys(parsedWithAbbr).forEach((param: string) => {
-    const value = parsedWithAbbr[param]
+  const parsedDetokenized = deepDetokenizeValues(parsedWithAbbr)
+  Object.keys(parsedDetokenized).forEach((param: string) => {
+    const value = parsedDetokenized[param]
     const transformationFn = urlToObjectTransformation[param]
     if (value && transformationFn) {
-      parsedWithAbbr[param] = transformationFn(value)
+      parsedDetokenized[param] = transformationFn(value)
     }
   })
 
-  return parsedWithAbbr
+  return parsedDetokenized
 }
 
 const routesOptions: Options = {
