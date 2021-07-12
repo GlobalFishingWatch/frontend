@@ -321,6 +321,8 @@
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",
     "editName": "Edit workspace name",
     "emptyState": "Your workspaces will appear here.",
+    "emptyStateVessels": "Search for vessels or add them from the map.",
+    "emptyStateEnvironment": "Upload custom datasets, areas or tracks.",
     "nameInput": "Workspace name",
     "new": "New workspace",
     "remove": "Remove workspace",
