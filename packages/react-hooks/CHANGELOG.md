@@ -1,5 +1,11 @@
 # @globalfishingwatch/react-hooks
 
+## 12.0.1
+
+### Patch Changes
+
+- 604bde0c: disable interaction for attribution links
+
 ## 12.0.0
 
 ### Major Changes

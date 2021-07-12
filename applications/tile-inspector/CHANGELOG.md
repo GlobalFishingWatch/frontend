@@ -1,5 +1,12 @@
 # tile-inspector
 
+## 0.1.59
+
+### Patch Changes
+
+- Updated dependencies [604bde0c]
+  - @globalfishingwatch/react-hooks@12.0.1
+
 ## 0.1.58
 
 ### Patch Changes
