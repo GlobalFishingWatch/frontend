@@ -249,6 +249,7 @@
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Pilih setidaknya satu layer upaya penangkapan ikan yang terlihat",
+    "presenceDisabled": "Select at least one presence layer",
     "graph": "Grafik",
     "graphOptions": {
       "depth": "Depth $t(common.comingSoon)",
@@ -258,6 +259,7 @@
     "settings_close": "Tutup pengaturan timebar",
     "settings_open": "Buka pengaturan timebar",
     "showFishingEffort": "Tampilkan grafik jam memancing",
+    "showPresence": "Show presence graph",
     "showTracks": "Tampilkan grafik trek",
     "tracks": "Tracks",
     "tracksDisabled": "Pilih setidaknya satu kapal"
