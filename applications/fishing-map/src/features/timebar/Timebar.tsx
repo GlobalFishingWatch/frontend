@@ -149,12 +149,16 @@ const TimebarWrapper = () => {
     [setInternalRange, onTimebarChange]
   )
 
-  const onTogglePlay = useCallback((isPlaying: boolean) => {
-    uaEvent({
-      category: 'Timebar',
-      action: `Click on ${isPlaying ? 'Play' : 'Pause'}`,
-    })
-  }, [])
+  const onTogglePlay = useCallback(
+    (isPlaying: boolean) => {
+      uaEvent({
+        category: 'Timebar',
+        action: `Click on ${isPlaying ? 'Play' : 'Pause'}`,
+        label: getEventLabel([start ?? '', end ?? '']),
+      })
+    },
+    [start, end]
+  )
 
   const onEventClick = useCallback(
     (event: ApiEvent) => {
