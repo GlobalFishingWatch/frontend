@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.8.1
+
+### Patch Changes
+
+- 1154779b: open attribution link in target blank
+
 ## 8.8.0
 
 ### Minor Changes
