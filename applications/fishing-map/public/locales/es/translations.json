@@ -249,6 +249,7 @@
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa de esfuerzo de pesca aparente",
+    "presenceDisabled": "Select at least one presence layer",
     "graph": "Gráfico",
     "graphOptions": {
       "depth": "Profunda $t(common.comingPron)",
@@ -258,6 +259,7 @@
     "settings_close": "Cerrar ajustes de la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
     "showFishingEffort": "Mostrar gráfico de horas de pesca",
+    "showPresence": "Show presence graph",
     "showTracks": "Mostrar gráfico de las trayectorias",
     "tracks": "Trayectorias",
     "tracksDisabled": "Seleccione al menos una embarcación"

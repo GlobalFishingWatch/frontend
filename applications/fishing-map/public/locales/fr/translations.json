@@ -54,7 +54,7 @@
     "more": "plus",
     "name": "Nom",
     "optional": "Optionnel",
-    "presence": "Présence de navire",
+    "presence": "Présence",
     "report": "Rapporter",
     "seeDefault": "Voir la vue par défaut",
     "share": "Partager la carte",
@@ -249,6 +249,7 @@
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Sélectionnez au moins une couche apparente d'effort de pêche",
+    "presenceDisabled": "Select at least one presence layer",
     "graph": "Graphique",
     "graphOptions": {
       "depth": "Profondeur $t(common.comingBientôt)",
@@ -258,6 +259,7 @@
     "settings_close": "Fermer les paramètres de la barre de temps",
     "settings_open": "Ouvrir les paramètres de la barre de temps",
     "showFishingEffort": "Afficher le graphique des heures de pêche",
+    "showPresence": "Show presence graph",
     "showTracks": "Afficher le graphe des pistes",
     "tracks": "Trajectoires",
     "tracksDisabled": "Sélectionnez au moins un navire"

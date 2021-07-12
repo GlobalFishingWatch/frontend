@@ -249,6 +249,7 @@
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer.",
+    "presenceDisabled": "Select at least one presence layer",
     "graph": "Graph",
     "graphOptions": {
       "depth": "Depth $t(common.comingSoon)",
@@ -258,6 +259,7 @@
     "settings_close": "Close timebar settings",
     "settings_open": "Open timebar settings",
     "showFishingEffort": "Show fishing hours graph",
+    "showPresence": "Show presence graph",
     "showTracks": "Show tracks graph",
     "tracks": "Tracks",
     "tracksDisabled": "Select at least one vessel"
