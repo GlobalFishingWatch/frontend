@@ -234,7 +234,7 @@ const TimebarWrapper = () => {
                 </Fragment>
               ) : (
                 <div className={styles.disclaimer}>
-                  <label>
+                  <label className={styles.disclaimerLabel}>
                     {t(
                       'timebar.maxTracksNumber',
                       'Track detail not available for mor than 10 vessels'
