@@ -245,7 +245,7 @@
     "selected": "terpilih"
   },
   "timebar": {
-    "maxTracksNumber": "Track detail not available for mor than 10 vessels"
+    "maxTracksNumber": "Track detail not available for more than 10 vessels"
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Pilih setidaknya satu layer upaya penangkapan ikan yang terlihat",
