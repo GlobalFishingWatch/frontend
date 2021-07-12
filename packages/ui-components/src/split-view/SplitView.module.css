@@ -10,7 +10,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  height: 100vh;
+  height: 100%;
   transition: var(--transition);
   transform: translateX(-100%);
   background: var(--gradient);
@@ -24,7 +24,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  height: 100vh;
+  height: 100%;
   left: 0;
   z-index: 0;
 }
@@ -47,14 +47,13 @@
 
 @media only screen and (max-width: 768px) {
   .container {
-    height: 100vh;
     padding-bottom: 4.2rem;
   }
 
   .aside,
   .main {
     width: 100vw;
-    height: calc(100vh - 4.2rem);
+    height: calc(100% - 4.2rem);
   }
 
   .toggleChoice {
