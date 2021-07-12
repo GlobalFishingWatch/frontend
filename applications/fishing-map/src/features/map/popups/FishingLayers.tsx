@@ -1,4 +1,5 @@
 import React from 'react'
+import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -19,6 +20,7 @@ import {
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { isUserLogged } from 'features/user/user.selectors'
+import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Popup.module.css'
 
@@ -71,6 +73,11 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
       })
       upsertDataviewInstance(vesselDataviewInstance)
     }
+    uaEvent({
+      category: 'Tracks',
+      action: 'Click in vessel from grid cell panel',
+      label: getEventLabel([vessel.dataset.id, vessel.id]),
+    })
   }
 
   return (
