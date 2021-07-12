@@ -236,15 +236,20 @@ export const useMapHover = (
 
   const onMapHover = useCallback(
     (event) => {
-      // Turn all sources with active feature states off
-      cleanFeatureState()
       const hoverEvent: InteractionEvent = {
         type: 'hover',
         point: event.point,
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
       }
-      if (event.features?.length) {
+      const isLinkHover = event.target.tagName.toLowerCase() === 'a'
+      if (isLinkHover) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      // Turn all sources with active feature states off
+      cleanFeatureState()
+      if (event.features?.length && !isLinkHover) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
         const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 
