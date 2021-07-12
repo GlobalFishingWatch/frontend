@@ -4,6 +4,7 @@ import { Logo } from '@globalfishingwatch/ui-components'
 import { Locale } from 'types'
 import { WorkspaceCategories } from 'data/workspaces'
 import useLocalStorage from 'hooks/use-local-storage'
+import LanguageToggle from 'features/i18n/LanguageToggle'
 import styles from './Welcome.module.css'
 import WELCOME_POPUP_CONTENT from './welcome.content'
 
@@ -55,20 +56,23 @@ const Welcome: React.FC<WelcomeProps> = ({ contentKey, showDisableCheckbox }: We
         className={styles.contentContainer}
         dangerouslySetInnerHTML={{ __html: description }}
       ></div>
-      {showDisableCheckbox && (
-        <div className={styles.disableSection}>
-          <input
-            id="disableWelcomePopup"
-            type="checkbox"
-            onChange={onDisableToggled}
-            className={styles.disableCheckbox}
-            checked={disabled}
-          />
-          <label className={styles.disableLabel} htmlFor="disableWelcomePopup">
-            {t('common.welcomePopupDisable', "Don't show again")}
-          </label>
-        </div>
-      )}
+      <div className={styles.headerActions}>
+        {showDisableCheckbox && (
+          <div className={styles.disableSection}>
+            <input
+              id="disableWelcomePopup"
+              type="checkbox"
+              onChange={onDisableToggled}
+              className={styles.disableCheckbox}
+              checked={disabled}
+            />
+            <label className={styles.disableLabel} htmlFor="disableWelcomePopup">
+              {t('common.welcomePopupDisable', "Don't show again")}
+            </label>
+          </div>
+        )}
+        <LanguageToggle position="rightDown" />
+      </div>
     </div>
   )
 }

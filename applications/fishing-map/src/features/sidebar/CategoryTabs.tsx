@@ -22,6 +22,7 @@ import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/wo
 import useViewport from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
 import FeedbackModal from 'features/feedback/FeedbackModal'
+import LanguageToggle from 'features/i18n/LanguageToggle'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
@@ -118,31 +119,14 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             <IconButton
               // className={cx(styles.tabContent, 'print-hidden')}
               icon="feedback"
-              size="medium"
               onClick={onFeedbackClick}
               tooltip={t('common.feedback', 'Feedback')}
               tooltipPlacement="right"
             />
           </li>
         )}
-        <li className={cx(styles.tab, styles.languageToggle)}>
-          <button className={styles.tabContent}>
-            <Icon icon="language" />
-          </button>
-          <ul className={styles.languages}>
-            {LocaleLabels.map(({ id, label }) => (
-              <li key={id}>
-                <button
-                  onClick={() => toggleLanguage(id)}
-                  className={cx(styles.language, {
-                    [styles.currentLanguage]: i18n.language === id,
-                  })}
-                >
-                  {label}
-                </button>
-              </li>
-            ))}
-          </ul>
+        <li className={styles.tab}>
+          <LanguageToggle />
         </li>
         <li
           className={cx(styles.tab, {
