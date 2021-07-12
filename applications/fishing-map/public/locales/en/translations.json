@@ -319,6 +319,8 @@
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",
     "editName": "Edit workspace name",
     "emptyState": "Your workspaces will appear here.",
+    "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
+    "emptyStateEnvironment": "Upload custom datasets like animal telemetry clicking on the plus icon.",
     "nameInput": "Workspace name",
     "new": "New workspace",
     "remove": "Remove workspace",
