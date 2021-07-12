@@ -1,5 +1,11 @@
 # @globalfishingwatch/ui-components
 
+## 9.0.1
+
+### Patch Changes
+
+- 571c314b: Fishing map/last minute stuff
+
 ## 9.0.0
 
 ### Patch Changes

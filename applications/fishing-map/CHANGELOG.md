@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.0.24
+
+### Patch Changes
+
+- 571c314b: Fishing map/last minute stuff
+- Updated dependencies [571c314b]
+  - @globalfishingwatch/ui-components@9.0.1
+
 ## 1.0.23
 
 ### Patch Changes
