@@ -25,6 +25,7 @@ import { capitalize } from 'utils/shared'
 import { SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { readBlobAs } from 'utils/files'
+import { getEventLabel } from 'utils/analytics'
 import {
   useDatasetsAPI,
   useDatasetModalConnect,
@@ -303,6 +304,13 @@ function NewDataset(): React.ReactElement {
   }
 
   const onConfirmDatasetCategoryClick = () => {
+    if (datasetCategory === DatasetCategory.Environment) {
+      uaEvent({
+        category: 'Environmental data',
+        action: `Start upload environmental dataset flow`,
+        label: datasetGeometryType ?? '',
+      })
+    }
     setDatasetGeometryTypeConfirmed(true)
   }
 
