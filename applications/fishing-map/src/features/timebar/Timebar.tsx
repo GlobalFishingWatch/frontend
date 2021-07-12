@@ -38,7 +38,7 @@ import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
 export const TIMEBAR_HEIGHT = 72
-export const MAX_TIMEBAR_VESSELS = 1
+export const MAX_TIMEBAR_VESSELS = 10
 
 const TimebarHighlighterWrapper = ({ activity }: any) => {
   const highlightedTime = useSelector(selectHighlightedTime)
