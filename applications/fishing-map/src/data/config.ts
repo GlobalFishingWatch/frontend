@@ -36,7 +36,7 @@ export const DEFAULT_VIEWPORT = {
   zoom: 1,
 }
 export const DEFAULT_TIME_RANGE = {
-  start: DateTime.fromISO(LAST_DATA_UPDATE).minus({ months: 6 }).toISO(),
+  start: DateTime.fromISO(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),
   end: LAST_DATA_UPDATE,
 }
 

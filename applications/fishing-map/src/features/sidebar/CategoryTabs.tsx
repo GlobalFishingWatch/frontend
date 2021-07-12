@@ -1,6 +1,5 @@
 import { Fragment, useCallback, useState } from 'react'
 import Link from 'redux-first-router-link'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
@@ -9,7 +8,6 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
-import { Locale } from 'types'
 import { WorkspaceCategories } from 'data/workspaces'
 import { HOME, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
@@ -43,7 +41,7 @@ function getLinkToCategory(category: WorkspaceCategories) {
 }
 
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const guestUser = useSelector(isGuestUser)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchClickedEvent } = useClickedEventConnect()
@@ -55,15 +53,6 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const initials = userData
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
-
-  const toggleLanguage = (lang: Locale) => {
-    uaEvent({
-      category: 'Internationalization',
-      action: `Change language`,
-      label: lang,
-    })
-    i18n.changeLanguage(lang)
-  }
 
   // const [modalHelpOpen, setModalHelpOpen] = useState(false)
   const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false)
