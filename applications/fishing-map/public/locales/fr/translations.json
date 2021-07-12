@@ -321,6 +321,8 @@
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement cet espace de travail ?",
     "editName": "Modifier le nom de l'espace de travail",
     "emptyState": "Vos espaces de travail apparaîtront ici",
+    "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
+    "emptyStateEnvironment": "Upload custom datasets like animal telemetry clicking on the plus icon.",
     "nameInput": "Nom de l'espace de travail",
     "new": "Nouvel espace de travail",
     "remove": "Supprimer l'espace de travail",
