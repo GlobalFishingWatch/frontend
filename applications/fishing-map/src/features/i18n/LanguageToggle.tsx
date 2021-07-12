@@ -13,7 +13,7 @@ type LanguageToggleProps = {
 const LanguageToggle: React.FC<LanguageToggleProps> = ({
   position = 'bottomRight',
 }: LanguageToggleProps) => {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const toggleLanguage = (lang: Locale) => {
     uaEvent({
       category: 'Internationalization',
