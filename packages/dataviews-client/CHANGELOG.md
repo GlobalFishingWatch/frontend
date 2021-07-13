@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.7.0
+
+### Minor Changes
+
+- fdf6b275: support showAuthorizationStatus dataview config in encounter events
+
 ## 11.6.0
 
 ### Minor Changes
