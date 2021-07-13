@@ -32,7 +32,7 @@
     "days_plural": "días",
     "description": "Descripción",
     "detection": "Detección",
-    "detection_plural": "Detections",
+    "detection_plural": "Detecciones",
     "environment": "Datos ambientales",
     "events": "Eventos",
     "feedback": "Comentarios",
@@ -62,7 +62,7 @@
     "vessel": "Embarcación",
     "vessel_plural": "Embarcaciones",
     "viirs": "VIIRS",
-    "welcomePopupDisable": "Don't show again"
+    "welcomePopupDisable": "No volver a mostrar"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",
@@ -71,7 +71,7 @@
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente estos datos?",
     "dragActive": "Soltar el archivo aquí ...",
     "dragFilePlaceholder": "Arrastra y suelta un archivo comprimido o geojson aquí o haz clic para seleccionarlo",
-    "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
+    "dragFilePlaceholderCSV": "Arrastra y suelta un archivo CSV aquí o haz clic para seleccionarlo",
     "edit": "Modificar los datos",
     "emptyState": "Sus datos aparecerán aquí",
     "featuresNameField": "Campo para nombrar cada área",
@@ -125,45 +125,45 @@
     "workspaceNotFound": "La vista que solicitó no se encontró"
   },
   "event": {
-    "during": "during",
-    "encounter": "Encounter",
+    "during": "durante",
+    "encounter": "Encuentro",
     "encounterAction": "tuvo un encuentro con",
-    "encounterActionWith": "had an encounter with",
-    "encounterAnotherVessel": "another vessel",
-    "fishing": "Fishing",
-    "fishingAction": "Fished for",
+    "encounterActionWith": "tuvo un encuentro con",
+    "encounterAnotherVessel": "otra embarcación",
+    "fishing": "Pesca",
+    "fishingAction": "Pescó durante",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_plural": "{{count}}h",
-    "loitering": "Loitering",
-    "loiteringAction": "Loitering for",
+    "loitering": "Deriva",
+    "loiteringAction": "Evento de deriva durante",
     "minuteAbbreviated": "{{count}}m",
     "minuteAbbreviated_plural": "{{count}}m",
     "noData": "No hay datos disponibles",
     "notInCVP": "Evento no disponible",
-    "port": "Port",
-    "portAction": "Docked for",
-    "portAt": "Docked at {{port}} for",
+    "port": "Puerto",
+    "portAction": "Atracado durante",
+    "portAt": "Atracado a {{port}} durante",
     "seeInCVP": "Ver en el Carrier Vessel Portal",
-    "unknown": "Unknown event"
+    "unknown": "Evento desconocido"
   },
   "feedback": {
-    "descriptionPlaceholder": "Please be as specific as possible.",
+    "descriptionPlaceholder": "Por favor se tan descriptivo como sea posible.",
     "email": "E-mail",
-    "emailDisclaimer": "We will only email you in relation to this feedback",
+    "emailDisclaimer": "Sólo te enviaremos un correo electrónico en relación a este comentario",
     "features": {
-      "activityLayers": "Activity Layers",
-      "analysis": "Analysis",
-      "environmentLayers": "Environment Layers",
-      "other": "Other",
-      "referenceLayers": "Reference Layers",
-      "timebar": "Time bar along the bottom of the map",
-      "vesselSearch": "Vessel Search",
-      "vesselTracks": "Vessel Tracks"
+      "activityLayers": "Capas de Actividad",
+      "analysis": "Análisis",
+      "environmentLayers": "Capas de Entorno",
+      "other": "Otro",
+      "referenceLayers": "Capas de Referencia",
+      "timebar": "Barra de tiempo en la parte inferior del mapa",
+      "vesselSearch": "Búsqueda de Embarcación",
+      "vesselTracks": "Trayectorias de Embarcaciones"
     },
-    "improvements": "Platform Improvements",
+    "improvements": "Mejoras de la plataforma",
     "insuficientData": "Por favor, rellene todos los campos obligatorios",
-    "intro": "Global Fishing Watch is constantly working to improve our data. With billions of positions and hundreds of thousands of vessels to review, and an entire ocean of activity, we will inevitably have some vessels and activities misclassified. Your feedback can help us identify where we most need to improve our data. We will endeavour to address your feedback.",
-    "issues": "Platform Issues",
+    "intro": "Global Fishing Watch trabaja constantemente para mejorar nuestros datos. Con miles de millones de puestos y cientos de miles de barcos a revisar, y todo un océano de actividad, inevitablemente tendremos algunos buques y actividades mal clasificados. Sus comentarios pueden ayudarnos a identificar dónde necesitamos mejorar nuestros datos. Nos esforzaremos por responder a sus comentarios.",
+    "issues": "Problemas de la plataforma",
     "role": "Rol",
     "roles": {
       "analyst": "Analista",
@@ -179,9 +179,9 @@
       "watch": "Vigilar oficial"
     },
     "send": "Enviar",
-    "type": "What are you providing feedback for?",
-    "whatIssue": "Where are you having an issue?",
-    "whichFeature": "Which feature would you like to improve?"
+    "type": "¿Sobre qué tema son sus comentarios?",
+    "whatIssue": "¿Dónde tienes un problema?",
+    "whichFeature": "¿Qué funcionalidad te gustaría mejorar?"
   },
   "footer": {
     "convenedBy": "Socios fundadores",
@@ -197,7 +197,7 @@
     "gearType_plural": "Artes de pesca",
     "infoClose": "Ocultar info",
     "infoOpen": "Mostrar info",
-    "qf": "Quality signal",
+    "qf": "Calidad de la señal",
     "remove": "Eliminar la capa",
     "seeDescription": "Haga clic para ver la descripción de la capa",
     "source": "Fuente",
@@ -215,7 +215,7 @@
     "change_basemap_default": "Cambia al mapa base predeterminado",
     "change_basemap_satellite": "Cambia al mapa base satelital",
     "legend_help": "Área de celda de cuadrícula aproximada en el ecuador",
-    "loading": "Loading",
+    "loading": "Cargando",
     "mapLoadingWait": "Por favor espere a que cargue el mapa",
     "rulers_add": "Mide distancias",
     "rulers_remove": "Eliminar todas las distancias medidas",
@@ -235,7 +235,7 @@
     "placeholder": "Escriba para buscar embarcaciones",
     "seeVessel": "Ver embarcación",
     "seeVessels": "Ver {{count}} embarcaciones",
-    "seeVessels_plural": "See vessels",
+    "seeVessels_plural": "Ver embarcaciones",
     "suggestion": "Quiso decir",
     "title": "Búsqueda",
     "vesselAlreadyInWorkspace": "La embarcación ya está agregada en su espacio de trabajo.",
@@ -248,7 +248,7 @@
     "selected": "seleccionado"
   },
   "timebar": {
-    "maxTracksNumber": "Track detail not available for more than 10 vessels"
+    "maxTracksNumber": "Detalles de trayectorias no disponibles para más de 10 embarcaciones"
   },
   "timebarSettings": {
     "fishingEffortDisabled": "Seleccione al menos una capa de esfuerzo de pesca aparente",
@@ -258,11 +258,11 @@
       "none": "Ninguna",
       "speed": "Velocidad"
     },
-    "presenceDisabled": "Select at least one presence layer",
+    "presenceDisabled": "Selecciona al menos una capa de presencia",
     "settings_close": "Cerrar ajustes de la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
     "showFishingEffort": "Mostrar gráfico de horas de pesca",
-    "showPresence": "Show presence graph",
+    "showPresence": "Mostrar gráfico de presencia",
     "showTracks": "Mostrar gráfico de las trayectorias",
     "tracks": "Trayectorias",
     "tracksDisabled": "Seleccione al menos una embarcación"
@@ -324,8 +324,8 @@
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
     "editName": "Modificar el nombre del espacio de trabajo",
     "emptyState": "Sus espacios de trabajo aparecerán aquí",
-    "emptyStateEnvironment": "Upload custom datasets like animal telemetry clicking on the plus icon.",
-    "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
+    "emptyStateEnvironment": "Sube conjuntos de datos personalizados como telemetría de animales haciendo clic en el icono de más.",
+    "emptyStateVessels": "Las embarcaciones seleccionadas en la búsqueda o haciendo clic en el mapa de calor aparecerán aquí.",
     "nameInput": "Nombre del espacio de trabajo",
     "new": "Nuevo espacio de trabajo",
     "remove": "Eliminar el espacio de trabajo",
