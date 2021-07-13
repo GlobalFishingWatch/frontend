@@ -203,10 +203,10 @@ const MapWrapper = (): React.ReactElement | null => {
         if (isCluster) {
           return encounterSourceLoaded ? 'zoom-in' : 'progress'
         }
-        const isVesselSingleFeatureEvent =
-          hoveredTooltipEvent.features.find((f) => f.category === DataviewCategory.Vessels) !==
-          undefined
-        if (isVesselSingleFeatureEvent && hoveredTooltipEvent.features?.length === eventsCount) {
+        const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
+          (f) => f.category === DataviewCategory.Vessels
+        )
+        if (vesselFeatureEvents.length > 0) {
           return 'grab'
         }
         return 'pointer'

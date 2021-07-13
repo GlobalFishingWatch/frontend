@@ -130,9 +130,6 @@ function PopupWrapper({
               )
 
             case DataviewCategory.Vessels:
-              if (type === 'click') {
-                return null
-              }
               return <VesselEventsLayers key={featureCategory} features={features} />
 
             default:
