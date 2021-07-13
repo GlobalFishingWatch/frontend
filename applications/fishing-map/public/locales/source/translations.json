@@ -132,14 +132,19 @@
     "encounterAnotherVessel": "another vessel",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
+    "hourAbbreviated": "{{count}}h",
+    "hourAbbreviated_plural": "{{count}}h",
     "loitering": "Loitering",
     "loiteringAction": "Loitering for",
+    "minuteAbbreviated": "{{count}}m",
+    "minuteAbbreviated_plural": "{{count}}m",
     "noData": "No data available",
     "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
     "port": "Port",
     "portAction": "Docked for",
-    "portAt": "missing_translation",
-    "seeInCVP": "See in Carrier Vessel Portal"
+    "portAt": "Docked at {{port}} for",
+    "seeInCVP": "See in Carrier Vessel Portal",
+    "unknown": "Unknown event"
   },
   "feedback": {
     "descriptionPlaceholder": "Please be as specific as possible.",

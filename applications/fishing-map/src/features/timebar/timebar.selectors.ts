@@ -171,7 +171,7 @@ export const selectEventsWithRenderingInfo = createSelector(
               break
             case 'port':
               if (event.port && event.port.name) {
-                description = `${vesselName} ${t('event.portAt')} ${event.port.name}`
+                description = `${vesselName} ${t('event.portAt', { port: event.port.name })} `
               } else {
                 description = `${vesselName} ${t('event.portAction')}`
               }
@@ -186,17 +186,24 @@ export const selectEventsWithRenderingInfo = createSelector(
               descriptionGeneric = `${vesselName} ${t('event.fishing')}`
               break
             default:
-              description = 'Unknown event'
-              descriptionGeneric = 'Unknown event'
+              description = t('event.unknown', 'Unknown event')
+              descriptionGeneric = t('event.unknown', 'Unknown event')
           }
           const duration = DateTime.fromMillis(event.end as number)
             .diff(DateTime.fromMillis(event.start as number), ['hours', 'minutes'])
             .toObject()
 
-          // TODO i18n
-          description = `${description} ${duration.hours}hrs ${Math.round(
-            duration.minutes as number
-          )}mns`
+          description = [
+            description,
+            duration.hours && duration.hours > 0
+              ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
+              : '',
+            duration.minutes && duration.minutes > 0
+              ? t('event.minuteAbbreviated', '{{count}}m', {
+                  count: Math.round(duration.minutes as number),
+                })
+              : '',
+          ].join(' ')
 
           let colorKey = event.type as string
           if (event.type === 'encounter') {
