@@ -24,11 +24,6 @@ import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Popup.module.css'
 
-// Translations by feature.temporalgrid?.unit static keys
-// t('common.hour', 'Hour')
-// t('common.days', 'Day')
-// t('common.days_plural', 'Days')
-
 type FishingTooltipRowProps = {
   feature: TooltipEventFeature
   showFeaturesDetails: boolean

@@ -127,6 +127,7 @@
   "event": {
     "during": "during",
     "encounter": "Encounter",
+    "encounterAction": "had an encounter with",
     "encounterActionWith": "had an encounter with",
     "encounterAnotherVessel": "another vessel",
     "fishing": "Fishing",
