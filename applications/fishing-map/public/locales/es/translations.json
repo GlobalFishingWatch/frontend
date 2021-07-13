@@ -13,7 +13,7 @@
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
     "vesselFlags": "de embarcaciones abanderadas con",
-    "filteredBy": "filtered by"
+    "filteredBy": "filtrado por"
   },
   "common": {
     "active_after": "Activo después de",
@@ -86,7 +86,7 @@
     "longitudeNameField": "Campo de longitud",
     "new": "Nuevos datos",
     "notUploadedYet": "No hay capas de referencia subidas aún",
-    "notUploadedYetEnvironment": "No environment layers uploaded yet",
+    "notUploadedYetEnvironment": "No hay capas de entorno subidas aún",
     "remove": "Eliminar los datos",
     "requiredFields": "Campos requeridos {{fields}}",
     "timeNameField": "Campo nombre de hora",
