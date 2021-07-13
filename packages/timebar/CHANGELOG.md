@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 2.0.2
+
+### Patch Changes
+
+- ed24f01b: fix highlight and hover styles in event timebar
+
 ## 2.0.1
 
 ### Patch Changes
