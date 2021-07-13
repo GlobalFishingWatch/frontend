@@ -7,9 +7,6 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { MAX_TOOLTIP_LIST } from '../map.slice'
 import styles from './Popup.module.css'
 
-// t('event.fishing', 'Fished for')
-// t('event.port', 'Anchored for')
-
 type ContextTooltipRowProps = {
   features: TooltipEventFeature[]
 }
@@ -46,7 +43,7 @@ function VesselEventsTooltipSection({ features }: ContextTooltipRowProps) {
                     <span className={styles.rowText}>
                       {t(`event.${feature.properties.type}Action` as any)}{' '}
                       {feature.properties.type === 'encounter' &&
-                        `${encounterVesselName} ${t('event.during' as any, 'during')} `}
+                        `${encounterVesselName} ${t('event.during', 'during')} `}
                       {duration.hours !== undefined &&
                         duration.hours > 0 &&
                         `${duration.hours} ${t('common.hour', {
