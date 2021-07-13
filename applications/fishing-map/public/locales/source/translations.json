@@ -85,6 +85,7 @@
     "longitudeNameField": "Longitude field",
     "new": "New dataset",
     "notUploadedYet": "No context layers uploaded yet",
+    "notUploadedYetEnvironment": "No environment layers uploaded yet",
     "remove": "Remove dataset",
     "requiredFields": "Required fields {{fields}}",
     "timeNameField": "Time name field",

@@ -99,7 +99,9 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
           ))
         ) : (
           <li className={cx(styles.dataset, styles.empty)}>
-            {t('dataset.notUploadedYet', 'No context layers uploaded yet')}
+            {datasetCategory === DatasetCategory.Context
+              ? t('dataset.notUploadedYet', 'No context layers uploaded yet')
+              : t('dataset.notUploadedYetEnvironment', 'No environment layers uploaded yet')}
           </li>
         )}
       </ul>
