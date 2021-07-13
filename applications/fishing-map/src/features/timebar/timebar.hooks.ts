@@ -19,6 +19,8 @@ import {
   setHighlightedEvent,
   selectHighlightedEvent,
   selectHasChangedSettingsOnce,
+  selectHighlightedTime,
+  disableHighlightedTime,
 } from './timebar.slice'
 
 export const TimeRangeAtom = atom<Range | null>({
@@ -62,6 +64,25 @@ export const useTimerangeConnect = () => {
       onTimebarChange,
     }
   }, [onTimebarChange, timerange, setTimerange])
+}
+
+export const useDisableHighlightTimeConnect = () => {
+  const highlightedTime = useSelector(selectHighlightedTime)
+  const dispatch = useDispatch()
+
+  const dispatchDisableHighlightedTime = useCallback(() => {
+    if (highlightedTime !== undefined) {
+      dispatch(disableHighlightedTime())
+    }
+  }, [dispatch, highlightedTime])
+
+  return useMemo(
+    () => ({
+      highlightedTime,
+      dispatchDisableHighlightedTime,
+    }),
+    [highlightedTime, dispatchDisableHighlightedTime]
+  )
 }
 
 export const useHighlightEventConnect = () => {

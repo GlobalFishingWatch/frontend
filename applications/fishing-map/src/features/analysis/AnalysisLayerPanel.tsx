@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { isFishingDataview, isPresenceDataview } from 'features/workspace/heatmaps/heatmaps.utils'
+import { isFishingDataview, isPresenceDataview } from 'features/workspace/activity/activity.utils'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import DatasetFlagField from 'features/workspace/shared/DatasetFlagsField'
 import layerPanelStyles from 'features/workspace/shared/LayerPanel.module.css'
+import { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import styles from './AnalysisLayerPanel.module.css'
 
 const allAvailableProperties = ['dataset', 'source', 'flag']
@@ -17,9 +18,10 @@ type LayerPanelProps = {
   index: number
   dataview: UrlDataviewInstance
   hiddenProperties?: string[]
+  availableFields: string[][]
 }
 
-function AnalysisLayerPanel({ dataview, hiddenProperties }: LayerPanelProps) {
+function AnalysisLayerPanel({ dataview, hiddenProperties, availableFields }: LayerPanelProps) {
   const { t } = useTranslation()
 
   const fishignDataview = isFishingDataview(dataview)
@@ -41,7 +43,8 @@ function AnalysisLayerPanel({ dataview, hiddenProperties }: LayerPanelProps) {
     hiddenProperties?.includes('flag')
 
   if (areAllPropertiesHidden) {
-    return null
+    // TODO I don't understand that logic
+    // return null
   }
 
   return (
@@ -62,26 +65,16 @@ function AnalysisLayerPanel({ dataview, hiddenProperties }: LayerPanelProps) {
         {!hiddenProperties?.includes('flag') && (
           <DatasetFlagField dataview={dataview} showWhenEmpty />
         )}
-        <DatasetSchemaField
-          dataview={dataview}
-          field={'geartype'}
-          label={t('layer.gearType_plural', 'Gear types')}
-        />
-        <DatasetSchemaField
-          dataview={dataview}
-          field={'fleet'}
-          label={t('layer.fleet_plural', 'Fleets')}
-        />
-        <DatasetSchemaField
-          dataview={dataview}
-          field={'origin'}
-          label={t('vessel.origin', 'Origin')}
-        />
-        <DatasetSchemaField
-          dataview={dataview}
-          field={'vessel_type'}
-          label={t('vessel.vesselType_plural', 'Vessel types')}
-        />
+        {availableFields.map((field) => {
+          return hiddenProperties?.includes(field[0]) ? null : (
+            <DatasetSchemaField
+              key={field[0]}
+              dataview={dataview}
+              field={field[0] as SupportedDatasetSchema}
+              label={t(field[1] as any, field[2])}
+            />
+          )
+        })}
         {/* <AnalysisFilter
           label={t('analysis.area', 'Area')}
           taglist={areaItems}

@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useRef, useState } from 'react'
+import React, { Fragment, memo, useCallback, useRef, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { event as uaEvent } from 'react-ga'
@@ -15,12 +15,14 @@ import {
   useTimerangeConnect,
   useTimebarVisualisation,
   useHighlightEventConnect,
+  useDisableHighlightTimeConnect,
 } from 'features/timebar/timebar.hooks'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
 import { TimebarVisualisations, TimebarGraphs } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
 import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
+import { upperFirst } from 'utils/info'
 import {
   setHighlightedTime,
   disableHighlightedTime,
@@ -34,15 +36,29 @@ import {
   selectEventsWithRenderingInfo,
 } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
+import styles from './Timebar.module.css'
 
 export const TIMEBAR_HEIGHT = 72
+export const MAX_TIMEBAR_VESSELS = 10
+
+const TimebarHighlighterWrapper = ({ activity }: any) => {
+  const highlightedTime = useSelector(selectHighlightedTime)
+  return highlightedTime ? (
+    <TimebarHighlighter
+      hoverStart={highlightedTime.start}
+      hoverEnd={highlightedTime.end}
+      activity={activity}
+      unit="knots"
+    />
+  ) : null
+}
 
 const TimebarWrapper = () => {
-  const { ready, i18n } = useTranslation()
+  const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
   const { highlightedEvent, dispatchHighlightedEvent } = useHighlightEventConnect()
-  const highlightedTime = useSelector(selectHighlightedTime)
+  const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisation()
   const { setMapCoordinates } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
@@ -83,9 +99,7 @@ const TimebarWrapper = () => {
     (clientX: number, scale: (arg: number) => Date) => {
       if (hoverInEvent.current === false) {
         if (clientX === null || clientX === undefined || isNaN(clientX)) {
-          if (highlightedTime !== undefined) {
-            dispatch(disableHighlightedTime())
-          }
+          dispatchDisableHighlightedTime()
         } else {
           try {
             const start = scale(clientX - 10).toISOString()
@@ -108,7 +122,7 @@ const TimebarWrapper = () => {
         }
       }
     },
-    [dispatch, highlightedTime]
+    [dispatch, dispatchDisableHighlightedTime]
   )
 
   const [internalRange, setInternalRange] = useState<Range | null>(null)
@@ -136,12 +150,16 @@ const TimebarWrapper = () => {
     [setInternalRange, onTimebarChange]
   )
 
-  const onTogglePlay = useCallback((isPlaying: boolean) => {
-    uaEvent({
-      category: 'Timebar',
-      action: `Click on ${isPlaying ? 'Play' : 'Pause'}`,
-    })
-  }, [])
+  const onTogglePlay = useCallback(
+    (isPlaying: boolean) => {
+      uaEvent({
+        category: 'Timebar',
+        action: `Click on ${isPlaying ? 'Play' : 'Pause'}`,
+        label: getEventLabel([start ?? '', end ?? '']),
+      })
+    },
+    [start, end]
+  )
 
   const onEventClick = useCallback(
     (event: ApiEvent) => {
@@ -155,14 +173,22 @@ const TimebarWrapper = () => {
 
   const onEventHover = useCallback(
     (event: ApiEvent) => {
-      if (event && highlightedTime) {
+      if (event) {
         dispatch(disableHighlightedTime())
       }
       hoverInEvent.current = event !== undefined
       dispatchHighlightedEvent(event)
     },
-    [dispatch, dispatchHighlightedEvent, highlightedTime]
+    [dispatch, dispatchHighlightedEvent]
   )
+
+  const highlighterActivity = useMemo(() => {
+    return timebarVisualisation === TimebarVisualisations.Vessel &&
+      timebarGraph === TimebarGraphs.Speed &&
+      tracksGraph
+      ? tracksGraph
+      : null
+  }, [timebarVisualisation, timebarGraph, tracksGraph])
 
   if (!start || !end) return null
 
@@ -175,6 +201,7 @@ const TimebarWrapper = () => {
         end={internalRange ? internalRange.end : end}
         absoluteStart={DEFAULT_WORKSPACE.availableStart}
         absoluteEnd={DEFAULT_WORKSPACE.availableEnd}
+        latestAvailableDataDate={LAST_DATA_UPDATE}
         onChange={onChange}
         showLastUpdate={false}
         onMouseMove={onMouseMove}
@@ -186,46 +213,45 @@ const TimebarWrapper = () => {
         minimumRange={1}
         minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
       >
-        {!isSmallScreen
-          ? () => (
-              <Fragment>
-                {timebarVisualisation === TimebarVisualisations.Heatmap && <TimebarActivityGraph />}
-                {timebarVisualisation === TimebarVisualisations.Vessel && tracks?.length && (
-                  <Fragment>
-                    {timebarGraph !== TimebarGraphs.Speed && (
-                      <TimebarTracks key="tracks" tracks={tracks} />
-                    )}
-                    {timebarGraph === TimebarGraphs.Speed && tracksGraph && (
+        {!isSmallScreen ? (
+          <Fragment>
+            {timebarVisualisation === TimebarVisualisations.Heatmap && <TimebarActivityGraph />}
+            {timebarVisualisation === TimebarVisualisations.Vessel &&
+              (tracks && tracks.length <= MAX_TIMEBAR_VESSELS ? (
+                <Fragment>
+                  {timebarGraph !== TimebarGraphs.Speed && (
+                    <TimebarTracks key="tracks" tracks={tracks} />
+                  )}
+                  {timebarGraph === TimebarGraphs.Speed &&
+                    tracksGraph &&
+                    tracksGraph.length <= 10 && (
                       <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
                     )}
-                    {tracksEvents && (
-                      <TimebarTracksEvents
-                        key="events"
-                        preselectedEventId={highlightedEvent?.id}
-                        tracksEvents={tracksEvents}
-                        onEventClick={onEventClick}
-                        onEventHover={onEventHover}
-                      />
+                  {tracksEvents && tracksEvents.length <= 10 && (
+                    <TimebarTracksEvents
+                      key="events"
+                      preselectedEventId={highlightedEvent?.id}
+                      tracksEvents={tracksEvents}
+                      onEventClick={onEventClick}
+                      onEventHover={onEventHover}
+                    />
+                  )}
+                </Fragment>
+              ) : (
+                <div className={styles.disclaimer}>
+                  <label className={styles.disclaimerLabel}>
+                    {upperFirst(
+                      t(
+                        'timebar.maxTracksNumber',
+                        'Track detail not available for more than 10 vessels'
+                      )
                     )}
-                  </Fragment>
-                )}
-                {highlightedTime && (
-                  <TimebarHighlighter
-                    hoverStart={highlightedTime.start}
-                    hoverEnd={highlightedTime.end}
-                    activity={
-                      timebarVisualisation === TimebarVisualisations.Vessel &&
-                      timebarGraph === TimebarGraphs.Speed &&
-                      tracksGraph
-                        ? tracksGraph
-                        : null
-                    }
-                    unit="knots"
-                  />
-                )}
-              </Fragment>
-            )
-          : null}
+                  </label>
+                </div>
+              ))}
+            <TimebarHighlighterWrapper activity={highlighterActivity} />
+          </Fragment>
+        ) : null}
       </TimebarComponent>
       {!isSmallScreen && <TimebarSettings />}
     </div>

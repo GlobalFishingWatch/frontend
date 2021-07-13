@@ -10,3 +10,7 @@ div.modalContent {
 .defaultCursor {
   cursor: default;
 }
+
+.content a {
+  text-decoration: underline;
+}

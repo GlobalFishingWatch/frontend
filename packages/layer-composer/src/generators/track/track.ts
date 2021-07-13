@@ -129,33 +129,34 @@ class TrackGenerator {
       source.data = memoizeCache[config.id].filterByTimerange(source.data, config.start, config.end)
     }
 
-    if (config.highlightedEvent) {
-      const highlightedData = memoizeCache[config.id].getHighlightedEventData(
-        source.data,
-        config.highlightedEvent.start,
-        config.highlightedEvent.end
-      )
-      const highlightedSource = {
-        id: `${config.id}${this.highlightEventSufix}`,
-        type: 'geojson',
-        data: highlightedData,
-      }
-      sources.push(highlightedSource)
-    }
+    // console.log(config.highlightedEvent)
+    // if (config.highlightedEvent) {
+    //   const highlightedData = memoizeCache[config.id].getHighlightedEventData(
+    //     source.data,
+    //     config.highlightedEvent.start,
+    //     config.highlightedEvent.end
+    //   )
+    //   const highlightedSource = {
+    //     id: `${config.id}${this.highlightEventSufix}`,
+    //     type: 'geojson',
+    //     data: highlightedData,
+    //   }
+    //   sources.push(highlightedSource)
+    // }
 
-    if (config.highlightedTime) {
-      const highlightedData = memoizeCache[config.id].getHighlightedData(
-        source.data,
-        config.highlightedTime.start,
-        config.highlightedTime.end
-      )
-      const highlightedSource = {
-        id: `${config.id}${this.highlightSufix}`,
-        type: 'geojson',
-        data: highlightedData,
-      }
-      sources.push(highlightedSource)
-    }
+    // if (config.highlightedTime) {
+    //   const highlightedData = memoizeCache[config.id].getHighlightedData(
+    //     source.data,
+    //     config.highlightedTime.start,
+    //     config.highlightedTime.end
+    //   )
+    //   const highlightedSource = {
+    //     id: `${config.id}${this.highlightSufix}`,
+    //     type: 'geojson',
+    //     data: highlightedData,
+    //   }
+    //   sources.push(highlightedSource)
+    // }
 
     return { sources, uniqIds }
   }
@@ -199,24 +200,24 @@ class TrackGenerator {
     }
     const layers = [layer]
 
-    if (visibility && config.highlightedEvent) {
-      const id = `${config.id}${this.highlightEventSufix}`
-      const paint = {
-        'line-color': config.color || DEFAULT_TRACK_COLOR,
-        'line-width': 5,
-      }
-      const highlightedEventLayer = getHighlightedLayer(id, {
-        paint,
-        group: Group.TrackHighlightedEvent,
-      })
-      layers.push(highlightedEventLayer)
-    }
+    // if (visibility && config.highlightedEvent) {
+    //   const id = `${config.id}${this.highlightEventSufix}`
+    //   const paint = {
+    //     'line-color': config.color || DEFAULT_TRACK_COLOR,
+    //     'line-width': 5,
+    //   }
+    //   const highlightedEventLayer = getHighlightedLayer(id, {
+    //     paint,
+    //     group: Group.TrackHighlightedEvent,
+    //   })
+    //   layers.push(highlightedEventLayer)
+    // }
 
-    if (visibility && config.highlightedTime) {
-      const id = `${config.id}${this.highlightSufix}`
-      const highlightedLayer = getHighlightedLayer(id)
-      layers.push(highlightedLayer)
-    }
+    // if (visibility && config.highlightedTime) {
+    //   const id = `${config.id}${this.highlightSufix}`
+    //   const highlightedLayer = getHighlightedLayer(id)
+    //   layers.push(highlightedLayer)
+    // }
 
     return layers
   }

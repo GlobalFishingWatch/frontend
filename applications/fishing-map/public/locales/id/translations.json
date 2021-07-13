@@ -12,7 +12,8 @@
     "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Analisis",
-    "vesselFlags": "oleh kapal berbendera oleh"
+    "vesselFlags": "oleh kapal berbendera oleh",
+    "filteredBy": "filtered by"
   },
   "common": {
     "active_after": "Aktif setelah",
@@ -61,7 +62,9 @@
     "unknown": "Tidak diketahui",
     "update": "Memperbarui",
     "vessel": "Kapal",
-    "vessel_plural": "Kapal"
+    "vessel_plural": "Kapal",
+    "viirs": "VIIRS",
+    "welcomePopupDisable": "Don't show again"
   },
   "dataset": {
     "addContext": "Menambah layer referensi",
@@ -70,6 +73,7 @@
     "confirmRemove": "Anda yakin ingin menghapus dataset ini secara permanen?",
     "dragActive": "Jatuhkan file di sini ...",
     "dragFilePlaceholder": "Seret dan jatuhkan shapefile atau geojson yang terkompresi di sini atau klik untuk memilihnya",
+    "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Edit dataset",
     "emptyState": "Dataset Anda akan muncul di sini",
     "featuresNameField": "Fitur kolom nama",
@@ -82,6 +86,7 @@
     "longitudeNameField": "Bidang bujur",
     "new": "Dataset baru",
     "notUploadedYet": "Belum ada layer referensi yang diunggah",
+    "notUploadedYetEnvironment": "No environment layers uploaded yet",
     "remove": "Hapus dataset",
     "requiredFields": "Bidang yang harus diisi {{fields}}",
     "timeNameField": "Bidang nama waktu",
@@ -122,8 +127,14 @@
     "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan"
   },
   "event": {
+    "encounter": "Encounter",
+    "encounterAction": "had an encounter with",
+    "encounterAnotherVessel": "another vessel",
+    "during": "during",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
+    "loitering": "Loitering",
+    "loiteringAction": "Loitering for",
     "noData": "Tidak ada data yang tersedia",
     "notInCVP": "Peristiwa ini terjadi di luar rentang waktu data Carrier Vessel Portal",
     "port": "Port",
@@ -235,16 +246,12 @@
     "placeholder": "Pilih salah satu opsi",
     "selected": "terpilih"
   },
+  "timebar": {
+    "maxTracksNumber": "Track detail not available for more than 10 vessels"
+  },
   "timebarSettings": {
-    "eventOptions": {
-      "all": "Semua acara",
-      "encounters": "Encounters",
-      "fishing": "Fishing",
-      "loitering": "Loitering",
-      "none": "None",
-      "ports": "Port visits"
-    },
     "fishingEffortDisabled": "Pilih setidaknya satu layer upaya penangkapan ikan yang terlihat",
+    "presenceDisabled": "Select at least one presence layer",
     "graph": "Grafik",
     "graphOptions": {
       "depth": "Depth $t(common.comingSoon)",
@@ -254,6 +261,7 @@
     "settings_close": "Tutup pengaturan timebar",
     "settings_open": "Buka pengaturan timebar",
     "showFishingEffort": "Tampilkan grafik jam memancing",
+    "showPresence": "Show presence graph",
     "showTracks": "Tampilkan grafik trek",
     "tracks": "Tracks",
     "tracksDisabled": "Pilih setidaknya satu kapal"
@@ -315,6 +323,8 @@
     "confirmRemove": "Anda yakin ingin menghapus ruang kerja ini secara permanen?",
     "editName": "Edit nama ruang kerja",
     "emptyState": "Ruang kerja Anda akan muncul di sini",
+    "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
+    "emptyStateEnvironment": "Upload custom datasets like animal telemetry clicking on the plus icon.",
     "nameInput": "Nama ruang kerja",
     "new": "Ruang kerja baru",
     "remove": "Hapus ruang kerja",

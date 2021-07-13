@@ -1,5 +1,48 @@
 # @globalfishingwatch/layer-composer
 
+## 8.9.0
+
+### Minor Changes
+
+- fdf6b275: support showAuthorizationStatus dataview config in encounter events
+
+## 8.8.1
+
+### Patch Changes
+
+- 1154779b: open attribution link in target blank
+
+## 8.8.0
+
+### Minor Changes
+
+- 12482b76: include encounter vessel in feature properties
+
+## 8.7.0
+
+### Minor Changes
+
+- 7f486176: highlight tile-cluster event
+
+## 8.6.0
+
+### Minor Changes
+
+- 3513a689: support interaction (configured in dataview as presenceDetails) for presence layers
+
+## 8.5.0
+
+### Minor Changes
+
+- ea0e1b8a: fix events generator
+
+## 8.4.0
+
+### Minor Changes
+
+- 060b3854: workaround for duplicated events in generator
+- ed8af7ae: workaround for duplicated api events
+
 ## 8.3.0
 
 ### Minor Changes

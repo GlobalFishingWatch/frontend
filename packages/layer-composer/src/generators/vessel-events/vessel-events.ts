@@ -12,9 +12,10 @@ import { DEFAULT_LANDMASS_COLOR } from '../basemap/basemap-layers'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import {
   getVesselEventsGeojson,
-  getVesselSegmentsGeojson,
+  getVesselEventsSegmentsGeojson,
   filterGeojsonByTimerange,
   filterFeaturesByTimerange,
+  getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
 } from './vessel-events.utils'
 
 interface VesselsEventsSource extends GeoJSONSourceRaw {
@@ -34,18 +35,21 @@ class VesselsEventsGenerator {
   }
 
   _getStyleSources = (config: GlobalVesselEventsGeneratorConfig): VesselsEventsSource[] => {
-    const { id, data, track, start, end } = config
+    const { id, data, track, start, end, showAuthorizationStatus } = config
 
     if (!data) {
       // console.warn(`${VESSEL_EVENTS_TYPE} source generator needs geojson data`, config)
       return []
     }
 
-    const geojson = memoizeCache[config.id].getVesselEventsGeojson(data) as FeatureCollection
+    const geojson = memoizeCache[config.id].getVesselEventsGeojson(
+      data,
+      showAuthorizationStatus
+    ) as FeatureCollection
     const featuresFiltered = memoizeCache[config.id].filterFeaturesByTimerange(
       geojson.features,
-      config.start,
-      config.end
+      start,
+      end
     )
 
     const pointsSource: VesselsEventsSource = {
@@ -59,9 +63,10 @@ class VesselsEventsGenerator {
       return [pointsSource]
     }
 
-    const segments = memoizeCache[config.id].getVesselSegmentsGeojson(
+    const segments = memoizeCache[config.id].getVesselEventsSegmentsGeojson(
       track,
-      data
+      data,
+      showAuthorizationStatus
     ) as FeatureCollection
 
     const segmentsFiltered = memoizeCache[config.id].filterGeojsonByTimerange(segments, start, end)
@@ -159,7 +164,11 @@ class VesselsEventsGenerator {
   getStyle = (config: GlobalVesselEventsGeneratorConfig) => {
     memoizeByLayerId(config.id, {
       getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
-      getVesselSegmentsGeojson: memoizeOne(getVesselSegmentsGeojson),
+      getVesselEventsSegmentsGeojson: memoizeOne(
+        getVesselEventsSegmentsGeojson,
+        // This is a hack needed because the events array mutates constantly in resolve-dataviews-generators
+        getVesselEventsSegmentsGeojsonMemoizeEqualityCheck
+      ),
       filterGeojsonByTimerange: memoizeOne(filterGeojsonByTimerange),
       filterFeaturesByTimerange: memoizeOne(filterFeaturesByTimerange),
     })

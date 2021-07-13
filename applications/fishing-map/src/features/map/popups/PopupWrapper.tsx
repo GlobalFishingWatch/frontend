@@ -37,8 +37,9 @@ function PopupWrapper({
 }: PopupWrapperProps) {
   if (!event) return null
 
+  const visibleFeatures = event.features.filter((feature) => feature.visible)
   const featureByCategory = groupBy(
-    event.features.sort(
+    visibleFeatures.sort(
       (a, b) => POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
     ),
     'category'
@@ -67,8 +68,17 @@ function PopupWrapper({
                 />
               ))
             case DataviewCategory.Presence:
-              return features.map((feature, i) =>
-                feature.temporalgrid?.sublayerInteractionType === 'viirs' ? (
+              return features.map((feature, i) => {
+                if (feature.temporalgrid?.sublayerInteractionType === 'presence-detail') {
+                  return (
+                    <FishingTooltipRow
+                      key={i + (feature.title as string)}
+                      feature={feature}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  )
+                }
+                return feature.temporalgrid?.sublayerInteractionType === 'viirs' ? (
                   <ViirsTooltipRow
                     key={i + (feature.title as string)}
                     feature={feature}
@@ -81,7 +91,7 @@ function PopupWrapper({
                     showFeaturesDetails={type === 'click'}
                   />
                 )
-              )
+              })
             case DataviewCategory.Events:
               return (
                 <TileClusterRow
@@ -120,10 +130,7 @@ function PopupWrapper({
               )
 
             case DataviewCategory.Vessels:
-              if (type === 'click') {
-                return null
-              }
-              return <VesselEventsLayers features={features} />
+              return <VesselEventsLayers key={featureCategory} features={features} />
 
             default:
               return null

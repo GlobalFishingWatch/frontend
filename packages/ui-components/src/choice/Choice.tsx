@@ -53,18 +53,16 @@ function Choice({
 
   // Workaround to ensure the activeElement has the clientWidth ready
   useEffect(() => {
-    if (!activeElementProperties) {
-      setTimeout(() => {
-        if (activeRef?.current) {
-          setActiveElementProperties({
-            width: activeRef?.current.clientWidth,
-            left: activeRef?.current.offsetLeft,
-          })
-        }
-      }, 1000)
-    }
+    setTimeout(() => {
+      if (activeRef?.current) {
+        setActiveElementProperties({
+          width: activeRef?.current.clientWidth,
+          left: activeRef?.current.offsetLeft,
+        })
+      }
+    }, 500)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [options])
 
   return (
     <div className={cx(styles.Choice, className)}>

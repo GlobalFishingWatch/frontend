@@ -272,6 +272,7 @@ class Timebar extends Component {
                 absoluteEnd={absoluteEnd}
                 onSubmit={this.onTimeRangeSelectorSubmit}
                 onDiscard={this.toggleTimeRangeSelector}
+                latestAvailableDataDate={this.props.latestAvailableDataDate}
               />
             )}
             <div className={cx('print-hidden', styles.timeRangeContainer)}>
@@ -335,6 +336,7 @@ class Timebar extends Component {
             bookmarkEnd={bookmarkEnd}
             bookmarkPlacement={bookmarkPlacement}
             showLastUpdate={this.props.showLastUpdate}
+            latestAvailableDataDate={this.props.latestAvailableDataDate}
           />
         </div>
       </ImmediateContext.Provider>
@@ -381,7 +383,7 @@ Timebar.propTypes = {
   start: PropTypes.string.isRequired,
   end: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  children: PropTypes.func,
+  children: PropTypes.node,
   bookmarkStart: PropTypes.string,
   bookmarkEnd: PropTypes.string,
   bookmarkPlacement: PropTypes.string,
@@ -390,6 +392,7 @@ Timebar.propTypes = {
   onBookmarkChange: PropTypes.func,
   absoluteStart: PropTypes.string.isRequired,
   absoluteEnd: PropTypes.string.isRequired,
+  latestAvailableDataDate: PropTypes.string,
   enablePlayback: PropTypes.bool,
   onTogglePlay: PropTypes.func,
   minimumRange: PropTypes.number,
@@ -400,6 +403,7 @@ Timebar.propTypes = {
 }
 
 Timebar.defaultProps = {
+  latestAvailableDataDate: new Date().toISOString(),
   labels: {
     playback: {
       playAnimation: 'Play animation',
@@ -442,9 +446,7 @@ Timebar.defaultProps = {
   onTogglePlay: () => {
     // do nothing
   },
-  children: () => {
-    // do nothing
-  },
+  children: null,
   onMouseLeave: () => {
     // do nothing
   },

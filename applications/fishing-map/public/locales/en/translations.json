@@ -12,7 +12,8 @@
     "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "timeRangeTooLong": "Reports are only supported for time spans up to one year.",
     "title": "Analysis",
-    "vesselFlags": "for vessels flagged by"
+    "vesselFlags": "for vessels flagged by",
+    "filteredBy": "filtered by"
   },
   "common": {
     "active_after": "Active after",
@@ -61,7 +62,9 @@
     "unknown": "Other",
     "update": "Update",
     "vessel": "Vessel",
-    "vessel_plural": "Vessels"
+    "vessel_plural": "Vessels",
+    "viirs": "Night light detections (VIIRS)",
+    "welcomePopupDisable": "Don't show again"
   },
   "dataset": {
     "addContext": "Add reference layer",
@@ -70,6 +73,7 @@
     "confirmRemove": "Are you sure you want to permanently delete this dataset?",
     "dragActive": "Drop the file here ...",
     "dragFilePlaceholder": "Drag and drop a compressed zip with shapefile or geojson here or click to select it.",
+    "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Edit dataset",
     "emptyState": "Your datasets will appear here.",
     "featuresNameField": "Field to name each area",
@@ -82,6 +86,7 @@
     "longitudeNameField": "Longitude field",
     "new": "New dataset",
     "notUploadedYet": "No reference layers uploaded yet.",
+    "notUploadedYetEnvironment": "No environment layers uploaded yet",
     "remove": "Remove dataset",
     "requiredFields": "Required fields {{fields}}",
     "timeNameField": "Time name field",
@@ -122,6 +127,10 @@
     "workspaceNotFound": "The workspace you requested was not found."
   },
   "event": {
+    "encounter": "Encounter",
+    "encounterAction": "had an encounter with",
+    "encounterAnotherVessel": "another vessel",
+    "during": "during",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
     "loitering": "Loitering",
@@ -130,8 +139,7 @@
     "notInCVP": "Event not available.",
     "port": "Port",
     "portAction": "Docked for",
-    "portAt": "Docked at",
-    "seeInCVP": "See in Carrier Vessel Portal"
+    "seeInCVP": "See in carrier vessel portal"
   },
   "feedback": {
     "feedbackLogin": "Register and login to provide feedback (free, 2 minutes)",
@@ -199,7 +207,7 @@
     },
     "toggleVisibility": "Toggle layer visibility",
     "vessel_fit_bounds": "Center map on vessel track",
-    "vessel_fit_bounds_out_of_timerange": "The track has no activity in your selected timerange. Change timerange to fit this track?"
+    "vessel_fit_bounds_out_of_timerange": "The track has no activity in your selected time range. Change the time range to fit this track?"
   },
   "map": {
     "captureMap": "Map screenshot",
@@ -238,16 +246,12 @@
     "placeholder": "Select an option",
     "selected": "selected"
   },
+  "timebar": {
+    "maxTracksNumber": "Track detail not available for more than 10 vessels."
+  },
   "timebarSettings": {
-    "eventOptions": {
-      "all": "All events",
-      "encounters": "Encounters",
-      "fishing": "Fishing",
-      "loitering": "Loitering",
-      "none": "None",
-      "ports": "Port visits"
-    },
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer.",
+    "presenceDisabled": "Select at least one presence layer",
     "graph": "Graph",
     "graphOptions": {
       "depth": "Depth $t(common.comingSoon)",
@@ -257,6 +261,7 @@
     "settings_close": "Close timebar settings",
     "settings_open": "Open timebar settings",
     "showFishingEffort": "Show fishing hours graph",
+    "showPresence": "Show presence graph",
     "showTracks": "Show tracks graph",
     "tracks": "Tracks",
     "tracksDisabled": "Select at least one vessel"
@@ -318,6 +323,8 @@
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",
     "editName": "Edit workspace name",
     "emptyState": "Your workspaces will appear here.",
+    "emptyStateVessels": "Search for vessels or add them from the map.",
+    "emptyStateEnvironment": "Upload custom datasets, areas or tracks.",
     "nameInput": "Workspace name",
     "new": "New workspace",
     "remove": "Remove workspace",

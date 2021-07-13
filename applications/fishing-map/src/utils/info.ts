@@ -4,12 +4,11 @@ import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
 
+export const upperFirst = (text: string) =>
+  text.charAt(0).toUpperCase() + text.substr(1).toLowerCase()
+
 export const formatInfoField = (fieldValue: string, type: string) => {
-  if (type === 'name')
-    return fieldValue.replace(
-      /\w\S*/g,
-      (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-    )
+  if (type === 'name') return fieldValue.replace(/\w\S*/g, upperFirst)
   if (type === 'fleet') {
     const fleetClean = fieldValue.replaceAll('_', ' ')
     return fleetClean.charAt(0).toUpperCase() + fleetClean.slice(1)

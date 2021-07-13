@@ -35,7 +35,7 @@ import {
 import {
   setClickedEvent,
   selectClickedEvent,
-  MAX_TOOLTIP_VESSELS,
+  MAX_TOOLTIP_LIST,
   fetchEncounterEventThunk,
   SliceInteractionEvent,
   selectFishingInteractionStatus,
@@ -49,6 +49,11 @@ import {
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
+
+export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
+  'fishing-effort',
+  'presence-detail',
+]
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -83,6 +88,7 @@ export const useClickedEventConnect = () => {
   const { setMapCoordinates } = useViewport()
   const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
   const fishingPromiseRef = useRef<any>()
+  const presencePromiseRef = useRef<any>()
   const viirsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
@@ -138,7 +144,7 @@ export const useClickedEventConnect = () => {
     }
 
     // Cancel all pending promises
-    const promisesRef = [fishingPromiseRef, viirsPromiseRef, eventsPromiseRef]
+    const promisesRef = [fishingPromiseRef, presencePromiseRef, viirsPromiseRef, eventsPromiseRef]
     promisesRef.forEach((ref) => {
       if (ref.current) {
         ref.current.abort()
@@ -153,10 +159,11 @@ export const useClickedEventConnect = () => {
     }
 
     // When hovering in a vessel event we don't want to have clicked events
-    const isVesselSingleFeatureEvent =
-      event.features.find((f) => f.generatorType === Generators.Type.VesselEvents) !== undefined
+    const areAllFeaturesVesselEvents = event.features.every(
+      (f) => f.generatorType === Generators.Type.VesselEvents
+    )
 
-    if (isVesselSingleFeatureEvent && event.features?.length === 1) {
+    if (areAllFeaturesVesselEvents) {
       return
     }
 
@@ -168,9 +175,12 @@ export const useClickedEventConnect = () => {
         if (!feature.temporalgrid) {
           return false
         }
-        const isFeatureVisible = feature.temporalgrid.visible
-        const isFishingFeature = feature.temporalgrid.sublayerInteractionType === 'fishing-effort'
-        return isFeatureVisible && isFishingFeature
+        return (
+          feature.temporalgrid.visible &&
+          SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+            feature.temporalgrid.sublayerInteractionType
+          )
+        )
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
@@ -213,6 +223,7 @@ export const useClickedEventConnect = () => {
 export type TooltipEventFeature = {
   id?: string
   title?: string
+  visible?: boolean
   type?: Type
   color?: string
   unit?: string
@@ -251,12 +262,19 @@ export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
     }, 100),
     []
   )
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   const setHighlightedEventDebounced = useCallback(() => {
+    let highlightEvent: { id: string } | undefined
     const vesselFeature = features?.find((f) => f.category === DataviewCategory.Vessels)
-    if (vesselFeature) {
-      if (vesselFeature.properties?.id && highlightedEvent?.id !== vesselFeature.properties.id) {
-        debounceDispatch({ id: vesselFeature.properties.id })
+    const clusterFeature = features?.find((f) => f.type === Generators.Type.TileCluster)
+    if (!clusterFeature && vesselFeature) {
+      highlightEvent = { id: vesselFeature.properties?.id }
+    } else if (clusterFeature) {
+      highlightEvent = { id: clusterFeature.properties?.event_id }
+    }
+    if (highlightEvent) {
+      if (highlightedEvent?.id !== highlightEvent.id) {
+        debounceDispatch(highlightEvent)
       }
     } else if (highlightedEvent) {
       debounceDispatch(undefined)
@@ -349,6 +367,7 @@ export const parseMapTooltipEvent = (
       title,
       type: dataview.config?.type,
       color: dataview.config?.color || 'black',
+      visible: dataview.config?.visible,
       category: dataview.category || DataviewCategory.Context,
       ...feature,
       properties: { ...feature.properties },
@@ -370,9 +389,9 @@ export const parseMapTooltipEvent = (
 
     if (feature.vessels) {
       tooltipEventFeature.vesselsInfo = {
-        vessels: feature.vessels.slice(0, MAX_TOOLTIP_VESSELS),
+        vessels: feature.vessels.slice(0, MAX_TOOLTIP_LIST),
         numVessels: feature.vessels.length,
-        overflow: feature.vessels.length > MAX_TOOLTIP_VESSELS,
+        overflow: feature.vessels.length > MAX_TOOLTIP_LIST,
       }
     }
     return tooltipEventFeature

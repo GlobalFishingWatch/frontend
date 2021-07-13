@@ -31,7 +31,10 @@ const getDateTimeDate = (date: string | number) => {
   return typeof date === 'number' ? DateTime.fromMillis(date) : DateTime.fromISO(date)
 }
 
-export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureCollection => {
+export const getVesselEventsGeojson = (
+  trackEvents: RawEvent[] | null,
+  showAuthorizationStatus = true
+): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
     features: [],
@@ -39,10 +42,12 @@ export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureC
 
   if (!trackEvents) return featureCollection
   const trackEventsSorted = [...trackEvents].sort((a, b) => (a.type === 'encounter' ? 1 : -1))
-  featureCollection.features = trackEventsSorted.map((event: RawEvent) => {
-    const authorized = event.encounter && event.encounter.authorized === true
-    const authorizationStatus = event.encounter
-      ? event.encounter.authorizationStatus
+  featureCollection.features = trackEventsSorted.flatMap((event: RawEvent) => {
+    if (!event) return []
+    const isEncounterEvent = event.type === 'encounter'
+    const authorized = event.encounter?.authorized === true
+    const authorizationStatus = event?.encounter
+      ? event.encounter?.authorizationStatus
       : ('unmatched' as AuthorizationOptions)
 
     const lng = event.position.lng || event.position.lon || 0
@@ -55,11 +60,16 @@ export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureC
         timestamp: event.start,
         start: getDateTimeDate(event.start).toUTC().toISO(),
         end: getDateTimeDate(event.end).toUTC().toISO(),
-        authorized,
-        authorizationStatus,
+        ...(isEncounterEvent &&
+          showAuthorizationStatus && {
+            authorized,
+            authorizationStatus,
+            encounterVesselId: event.encounter?.vessel?.id,
+            encounterVesselName: event.encounter?.vessel?.name,
+          }),
         icon: `carrier_portal_${event.type}`,
         color:
-          event.type === 'encounter'
+          isEncounterEvent && showAuthorizationStatus
             ? getEncounterAuthColor(authorizationStatus)
             : EVENTS_COLORS[event.type],
       },
@@ -114,22 +124,35 @@ export const filterGeojsonByTimerange = (
   return geojsonFiltered
 }
 
-export const getVesselSegmentsGeojson = (track: any, data: RawEvent[]): FeatureCollection => {
+export const getVesselEventsSegmentsGeojsonMemoizeEqualityCheck = (
+  newArgs: any[],
+  lastArgs: any[]
+) => {
+  return newArgs[0].length === lastArgs[0].length && newArgs[1].length === lastArgs[1].length
+}
+
+export const getVesselEventsSegmentsGeojson = (
+  track: any,
+  events: RawEvent[],
+  showAuthorizationStatus = true
+): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
     features: [],
   }
 
-  if (!track || !data) return featureCollection
+  if (!track || !events) return featureCollection
 
   const geojson = (track as FeatureCollection).type
     ? (track as FeatureCollection)
     : segmentsToGeoJSON(track as Segment[])
   if (!geojson) return featureCollection
-  featureCollection.features = data.flatMap((event: RawEvent) => {
+  featureCollection.features = events.flatMap((event: RawEvent) => {
     return filterTrackByTimerange(geojson, event.start, event.end).features.map((feature) => {
-      const authorizationStatus = event.encounter
-        ? event.encounter.authorizationStatus
+      const isEncounterEvent = event.type === 'encounter'
+      const authorized = event.encounter?.authorized === true
+      const authorizationStatus = event?.encounter
+        ? event.encounter?.authorizationStatus
         : ('unmatched' as AuthorizationOptions)
       return {
         ...feature,
@@ -139,13 +162,20 @@ export const getVesselSegmentsGeojson = (track: any, data: RawEvent[]): FeatureC
           start: getDateTimeDate(event.start).toUTC().toISO(),
           end: getDateTimeDate(event.end).toUTC().toISO(),
           color:
-            event.type === 'encounter'
+            isEncounterEvent && showAuthorizationStatus
               ? getEncounterAuthColor(authorizationStatus)
               : EVENTS_COLORS[event.type],
           ...(event.vessel && {
             vesselId: event.vessel.id,
             vesselName: event.vessel.name,
           }),
+          ...(isEncounterEvent &&
+            showAuthorizationStatus && {
+              authorized,
+              authorizationStatus,
+              encounterVesselId: event.encounter?.vessel.id,
+              encounterVesselName: event.encounter?.vessel.name,
+            }),
         },
       }
     })

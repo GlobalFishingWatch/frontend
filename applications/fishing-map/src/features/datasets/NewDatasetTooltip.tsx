@@ -38,15 +38,13 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
   }, [allDatasetsRequested, dispatch])
 
   const onAddNewClick = async () => {
-    uaEvent({
-      category:
-        datasetCategory === DatasetCategory.Context ? 'Reference layer' : 'Environmental data',
-      action:
-        datasetCategory === DatasetCategory.Context
-          ? `Start upload reference layer flow`
-          : `Start upload environmental dataset flow`,
-      label: datasetCategory,
-    })
+    if (datasetCategory === DatasetCategory.Context) {
+      uaEvent({
+        category: 'Reference layer',
+        action: 'Start upload reference layer flow',
+        label: datasetCategory,
+      })
+    }
     batch(() => {
       dispatchDatasetModal('new')
       dispatchDatasetCategory(datasetCategory)
@@ -101,7 +99,9 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
           ))
         ) : (
           <li className={cx(styles.dataset, styles.empty)}>
-            {t('dataset.notUploadedYet', 'No context layers uploaded yet')}
+            {datasetCategory === DatasetCategory.Context
+              ? t('dataset.notUploadedYet', 'No context layers uploaded yet')
+              : t('dataset.notUploadedYetEnvironment', 'No environment layers uploaded yet')}
           </li>
         )}
       </ul>

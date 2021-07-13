@@ -1,5 +1,17 @@
 # @globalfishingwatch/react-hooks
 
+## 12.0.1
+
+### Patch Changes
+
+- 604bde0c: disable interaction for attribution links
+
+## 12.0.0
+
+### Major Changes
+
+- 70ad8e32: Fixes popup units
+
 ## 11.2.0
 
 ### Minor Changes

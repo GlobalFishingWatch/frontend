@@ -64,8 +64,8 @@ class TimeRangeSelector extends Component {
   }
 
   last30days = () => {
-    const { onSubmit } = this.props
-    const { start, end } = getLast30Days()
+    const { onSubmit, latestAvailableDataDate } = this.props
+    const { start, end } = getLast30Days(latestAvailableDataDate)
     onSubmit(start, end)
   }
 
@@ -189,6 +189,7 @@ TimeRangeSelector.propTypes = {
   end: PropTypes.string.isRequired,
   absoluteStart: PropTypes.string.isRequired,
   absoluteEnd: PropTypes.string.isRequired,
+  latestAvailableDataDate: PropTypes.string.isRequired,
   onDiscard: PropTypes.func.isRequired,
   labels: PropTypes.shape({
     title: PropTypes.string,

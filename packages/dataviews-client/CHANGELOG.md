@@ -1,5 +1,29 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.7.0
+
+### Minor Changes
+
+- fdf6b275: support showAuthorizationStatus dataview config in encounter events
+
+## 11.6.0
+
+### Minor Changes
+
+- 7f486176: highlight tile-cluster event
+
+## 11.5.0
+
+### Minor Changes
+
+- 3513a689: support interaction (configured in dataview as presenceDetails) for presence layers
+
+## 11.4.0
+
+### Minor Changes
+
+- ea0e1b8a: fix events generator
+
 ## 11.3.0
 
 ### Minor Changes

@@ -165,6 +165,14 @@ export interface TileClusterGeneratorConfig extends GeneratorConfig {
    * List of datasets to retrieve the data from, optional to allow using resolved url params directly (eg: using resolve-endpoints)
    */
   dataset?: string
+  /**
+   * Uses a workaround when having duplicated events to show only 1 event
+   */
+  duplicatedEventsWorkaround?: boolean
+  /**
+   * Event id to highlight on active
+   */
+  currentEventId?: string
 }
 
 /**
@@ -237,6 +245,7 @@ export interface VesselEventsGeneratorConfig extends GeneratorConfig {
   color?: string
   track?: TrackGeneratorConfigData
   showIcons?: boolean
+  showAuthorizationStatus?: boolean
   currentEventId?: string
 }
 
@@ -340,6 +349,10 @@ export type RawEvent = {
   encounter?: {
     authorized: boolean
     authorizationStatus: AuthorizationOptions
+    vessel: {
+      id: string
+      name: string
+    }
   }
 }
 
@@ -357,7 +370,11 @@ export type Ruler = {
   isNew?: boolean
 }
 
-export type HeatmapAnimatedInteractionType = 'presence' | 'viirs' | 'fishing-effort'
+export type HeatmapAnimatedInteractionType =
+  | 'presence'
+  | 'presence-detail'
+  | 'viirs'
+  | 'fishing-effort'
 
 export interface HeatmapAnimatedGeneratorSublayer {
   id: string

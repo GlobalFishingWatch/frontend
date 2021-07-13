@@ -213,16 +213,22 @@ class Timeline extends PureComponent {
     const x = clientX - outerX
     const isMovingInside = this.node.contains(event.target) && x > innerStartPx && x < innerEndPx
     const isNodeInside = event.target.contains(this.node)
-    if (isMovingInside || isNodeInside) {
+
+    const isDraggingInner = dragging === DRAG_INNER
+    const isDraggingZoomIn = this.isHandlerZoomInValid(x).isValid === true
+    const isDraggingZoomOut = this.isHandlerZoomOutValid(x) === true
+
+    if (
+      (isMovingInside || isNodeInside) &&
+      !isDraggingInner &&
+      !isDraggingZoomIn &&
+      !isDraggingZoomOut
+    ) {
       const isDay = !isMoreThanADay(start, end)
       this.throttledMouseMove(x, this.outerScale.invert, isDay)
     } else {
       this.notifyMouseLeave()
     }
-
-    const isDraggingInner = dragging === DRAG_INNER
-    const isDraggingZoomIn = this.isHandlerZoomInValid(x).isValid === true
-    const isDraggingZoomOut = this.isHandlerZoomOutValid(x) === true
 
     if (isDraggingInner || isDraggingZoomIn || isDraggingZoomOut) {
       // trigger setting immediate only once, when any drag interaction starts
@@ -311,8 +317,8 @@ class Timeline extends PureComponent {
   }
 
   onLast30DaysClick() {
-    const { onChange } = this.props
-    const { start, end } = getLast30Days()
+    const { onChange, latestAvailableDataDate } = this.props
+    const { start, end } = getLast30Days(latestAvailableDataDate)
     onChange(start, end)
   }
 
@@ -353,11 +359,13 @@ class Timeline extends PureComponent {
     const svgTransform = this.getSvgTransform(overallScale, start, end, innerWidth, innerStartPx)
 
     const lastUpdatePosition = this.outerScale(new Date(absoluteEnd))
-    const isInTheFuture = new Date(start) > Date.now()
+    const isInTheFuture = new Date(start) > new Date(this.props.latestAvailableDataDate)
 
     return (
       <TimelineContext.Provider
         value={{
+          start,
+          end,
           outerScale: this.outerScale,
           outerStart,
           outerEnd,
@@ -420,8 +428,7 @@ class Timeline extends PureComponent {
                 outerEnd={outerEnd}
                 onChange={onChange}
               />
-              {/* // TODO still need to pass props? */}
-              {this.props.children && this.props.children()}
+              {this.props.children}
             </div>
           </div>
           <div
@@ -515,11 +522,12 @@ Timeline.propTypes = {
   onChange: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func,
   onMouseMove: PropTypes.func,
-  children: PropTypes.func,
+  children: PropTypes.node,
   start: PropTypes.string.isRequired,
   end: PropTypes.string.isRequired,
   absoluteStart: PropTypes.string.isRequired,
   absoluteEnd: PropTypes.string.isRequired,
+  latestAvailableDataDate: PropTypes.string.isRequired,
   onBookmarkChange: PropTypes.func,
   bookmarkStart: PropTypes.string,
   bookmarkEnd: PropTypes.string,
@@ -539,9 +547,7 @@ Timeline.defaultProps = {
   bookmarkStart: null,
   bookmarkEnd: null,
   bookmarkPlacement: 'top',
-  children: () => {
-    // do nothing
-  },
+  children: null,
   onBookmarkChange: () => {
     // do nothing
   },

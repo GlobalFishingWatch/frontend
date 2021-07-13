@@ -45,8 +45,6 @@ const getExtendedFeatures = (
       generatorMetadata = feature.layer.metadata
     }
 
-    // TODO Throw error if unit difer?
-    const unit = generatorMetadata?.sublayers?.[0].legend.unit ?? null
     const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
     const properties = feature.properties || {}
     const extendedFeature: ExtendedFeature | null = {
@@ -59,7 +57,6 @@ const getExtendedFeatures = (
       uniqueFeatureInteraction,
       id: (feature.id as number) || feature.properties?.gfw_id || undefined,
       value: properties.value || properties.name || properties.id,
-      unit,
       tile: {
         x: (feature as any)._vectorTileFeature._x,
         y: (feature as any)._vectorTileFeature._y,
@@ -104,6 +101,7 @@ const getExtendedFeatures = (
               interval: timeChunks.interval,
               visibleStartDate,
               visibleEndDate,
+              unit: sublayers[i].legend.unit,
             },
             value,
           }
@@ -238,15 +236,20 @@ export const useMapHover = (
 
   const onMapHover = useCallback(
     (event) => {
-      // Turn all sources with active feature states off
-      cleanFeatureState()
       const hoverEvent: InteractionEvent = {
         type: 'hover',
         point: event.point,
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
       }
-      if (event.features?.length) {
+      const isLinkHover = event.target.tagName.toLowerCase() === 'a'
+      if (isLinkHover) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      // Turn all sources with active feature states off
+      cleanFeatureState()
+      if (event.features?.length && !isLinkHover) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
         const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 

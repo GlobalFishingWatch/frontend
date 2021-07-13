@@ -14,7 +14,8 @@ import {
   selectDefaultBasemapGenerator,
 } from 'features/dataviews/dataviews.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
-import { selectResources, ResourcesState } from 'features/resources/resources.slice'
+import { ResourcesState } from 'features/resources/resources.slice'
+import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
 import { selectRulers } from 'features/map/rulers/rulers.slice'
 import {
@@ -91,7 +92,7 @@ const getGeneratorsConfig = ({
 const selectMapGeneratorsConfig = createSelector(
   [
     selectDataviewInstancesResolvedVisible,
-    selectResources,
+    selectVisibleResources,
     selectRulers,
     selectDebugOptions,
     selectHighlightedTime,
@@ -123,7 +124,7 @@ const selectMapGeneratorsConfig = createSelector(
 const selectStaticGeneratorsConfig = createSelector(
   [
     selectDataviewInstancesResolvedVisible,
-    selectResources,
+    selectVisibleResources,
     selectRulers,
     selectDebugOptions,
     selectBivariateDataviews,

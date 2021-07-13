@@ -18,7 +18,7 @@ export type WorkspaceStateProperty =
   | 'sidebarOpen'
   | 'dataviewInstances'
   | 'timebarVisualisation'
-  | 'timebarEvents'
+  | 'visibleEvents'
   | 'timebarGraph'
   | 'bivariateDataviews'
   | 'version'
@@ -37,6 +37,7 @@ export type WorkspaceAnalysis = {
   bounds?: [number, number, number, number]
 }
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
+export type WorkspacePresenceCategory = 'presence' | 'viirs'
 export type BivariateDataviews = [string, string]
 
 export type WorkspaceState = {
@@ -48,7 +49,7 @@ export type WorkspaceState = {
   analysis?: WorkspaceAnalysis
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   timebarVisualisation?: TimebarVisualisations
-  timebarEvents?: TimebarEvents
+  visibleEvents?: VisibleEvents
   timebarGraph?: TimebarGraphs
   bivariateDataviews?: BivariateDataviews
   activityCategory?: WorkspaceActivityCategory
@@ -67,7 +68,7 @@ export enum TimebarVisualisations {
   Vessel = 'vessel',
 }
 
-export type TimebarEvents = EventType | 'all' | 'none'
+export type VisibleEvents = EventType[] | 'all' | 'none'
 
 export enum TimebarGraphs {
   Speed = 'speed',

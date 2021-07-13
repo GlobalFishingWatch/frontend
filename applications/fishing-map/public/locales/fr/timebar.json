@@ -19,8 +19,8 @@
     "errorMaxRange": "Votre plage de temps est la plage maximale avec les données disponibles"
   },
   "bookmark": {
-    "goToBookmark": "Accéder à la plage de temps de vos favoris",
-    "deleteBookmark": "Supprimer le signet de plage de temps"
+    "goToBookmark": "Accéder à la plage de temps favorite",
+    "deleteBookmark": "Supprimer la plage de temps favorite"
   },
   "dragLabel": "Faites glisser pour modifier la plage de temps",
   "lastUpdate": "Dernière mise à jour",
@@ -29,7 +29,7 @@
   "year": "Année",
   "month": "mois",
   "hour": "heure",
-  "zoomIn": "Zoom avant",
+  "zoomIn": "Zoom",
   "zoomTo": "Zoom sur",
   "zoomOut": "Zoom arrière",
   "selectTimeRange": "Sélectionnez une plage de temps"

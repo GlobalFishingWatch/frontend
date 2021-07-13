@@ -34,12 +34,18 @@ export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
 }
 
 export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boolean) => {
-  return datasets.filter((dataset) => {
+  const datasetsIds = datasets.map(({ id }) => id)
+  const allowedDatasets = datasets.filter(({ id }) => {
     if (isGuestUser) {
-      return dataset.id.includes(PUBLIC_SUFIX)
+      return id.includes(PUBLIC_SUFIX)
     }
-    return dataset.id.includes(FULL_SUFIX) || dataset.id.includes(PRIVATE_SUFIX)
+    if (id.includes(PUBLIC_SUFIX)) {
+      const fullDataset = id.replace(PUBLIC_SUFIX, FULL_SUFIX)
+      return !datasetsIds.includes(fullDataset)
+    }
+    return id.includes(FULL_SUFIX) || id.includes(PRIVATE_SUFIX)
   })
+  return allowedDatasets
 }
 
 export const isDataviewSchemaSupported = (

@@ -16,9 +16,9 @@ import {
 } from 'routes/routes.selectors'
 import {
   BivariateDataviews,
-  TimebarEvents,
   TimebarGraphs,
   TimebarVisualisations,
+  VisibleEvents,
   WorkspaceActivityCategory,
   WorkspaceAnalysis,
   WorkspaceState,
@@ -121,10 +121,10 @@ export const selectTimebarVisualisation = createSelector(
   }
 )
 
-export const selectTimebarEvents = createSelector(
-  [selectWorkspaceStateProperty('timebarEvents')],
-  (timebarEvents): TimebarEvents => {
-    return timebarEvents
+export const selectVisibleEvents = createSelector(
+  [selectWorkspaceStateProperty('visibleEvents')],
+  (visibleEvents): VisibleEvents => {
+    return visibleEvents
   }
 )
 
@@ -140,7 +140,7 @@ export const selectWorkspaceAppState = createSelector(
     selectBivariateDataviews,
     selectSidebarOpen,
     selectTimebarVisualisation,
-    selectTimebarEvents,
+    selectVisibleEvents,
     selectTimebarGraph,
     selectActivityCategory,
   ],
@@ -148,7 +148,7 @@ export const selectWorkspaceAppState = createSelector(
     bivariateDataviews,
     sidebarOpen,
     timebarVisualisation,
-    timebarEvents,
+    visibleEvents,
     timebarGraph,
     activityCategory
   ) => {
@@ -156,7 +156,7 @@ export const selectWorkspaceAppState = createSelector(
       bivariateDataviews,
       sidebarOpen,
       timebarVisualisation,
-      timebarEvents,
+      visibleEvents,
       timebarGraph,
       activityCategory,
     }

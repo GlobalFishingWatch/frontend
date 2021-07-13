@@ -1,5 +1,100 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.0.26
+
+### Patch Changes
+
+- Updated dependencies [ed24f01b]
+  - @globalfishingwatch/timebar@2.0.2
+
+## 1.0.25
+
+### Patch Changes
+
+- Updated dependencies [fdf6b275]
+  - @globalfishingwatch/dataviews-client@11.7.0
+  - @globalfishingwatch/layer-composer@8.9.0
+
+## 1.0.24
+
+### Patch Changes
+
+- 571c314b: Fishing map/last minute stuff
+- Updated dependencies [571c314b]
+  - @globalfishingwatch/ui-components@9.0.1
+
+## 1.0.23
+
+### Patch Changes
+
+- Updated dependencies [604bde0c]
+  - @globalfishingwatch/react-hooks@12.0.1
+
+## 1.0.22
+
+### Patch Changes
+
+- Updated dependencies [1154779b]
+  - @globalfishingwatch/layer-composer@8.8.1
+
+## 1.0.21
+
+### Patch Changes
+
+- ed81ea50: Fishing map/max tracks
+- Updated dependencies [ed81ea50]
+  - @globalfishingwatch/timebar@2.0.1
+  - @globalfishingwatch/layer-composer@8.8.0
+
+## 1.0.20
+
+### Patch Changes
+
+- 70ad8e32: Fixes popup units
+- Updated dependencies [70ad8e32]
+  - @globalfishingwatch/react-hooks@12.0.0
+  - @globalfishingwatch/ui-components@9.0.0
+
+## 1.0.19
+
+### Patch Changes
+
+- Updated dependencies [7f486176]
+  - @globalfishingwatch/dataviews-client@11.6.0
+  - @globalfishingwatch/layer-composer@8.7.0
+
+## 1.0.18
+
+### Patch Changes
+
+- Updated dependencies [3513a689]
+  - @globalfishingwatch/dataviews-client@11.5.0
+  - @globalfishingwatch/layer-composer@8.6.0
+
+## 1.0.17
+
+### Patch Changes
+
+- Updated dependencies [ea0e1b8a]
+  - @globalfishingwatch/dataviews-client@11.4.0
+  - @globalfishingwatch/layer-composer@8.5.0
+
+## 1.0.16
+
+### Patch Changes
+
+- Updated dependencies [060b3854]
+- Updated dependencies [ed8af7ae]
+  - @globalfishingwatch/layer-composer@8.4.0
+
+## 1.0.15
+
+### Patch Changes
+
+- eb9e4be9: [WIP] Fishing map/vessel events perf
+- Updated dependencies [eb9e4be9]
+  - @globalfishingwatch/timebar@2.0.0
+
 ## 1.0.14
 
 ### Patch Changes

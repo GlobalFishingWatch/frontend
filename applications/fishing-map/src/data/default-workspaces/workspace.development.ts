@@ -9,8 +9,8 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_PRESENCE_DATAVIEW_ID,
-  DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
-  DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
+  DEFAULT_VIIRS_DATAVIEW_ID,
+  DEFAULT_EVENTS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
@@ -23,9 +23,9 @@ const workspace: Workspace<WorkspaceState> = {
   startAt: DEFAULT_TIME_RANGE.start,
   endAt: DEFAULT_TIME_RANGE.end,
   viewport: {
-    zoom: 0,
+    zoom: 1,
     latitude: 30,
-    longitude: -37,
+    longitude: 0,
   },
   public: true,
   state: {
@@ -33,7 +33,7 @@ const workspace: Workspace<WorkspaceState> = {
     // bivariate: true,
     // sidebarOpen: false,
     // timebarVisualisation: '',
-    // timebarEvents: '',
+    // visibleEvents: 'all',
     // timebarGraph: '',
   },
   ownerId: 0,
@@ -73,29 +73,46 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: DEFAULT_PRESENCE_DATAVIEW_ID,
     },
     {
+      id: 'viirs',
+      config: {
+        color: '#FFEA00',
+        colorRamp: 'yellow',
+        visible: false,
+      },
+      dataviewId: DEFAULT_VIIRS_DATAVIEW_ID,
+      datasetsConfig: [],
+    },
+    {
+      id: 'encounter-events',
+      dataviewId: DEFAULT_EVENTS_DATAVIEW_ID,
+      config: {
+        visible: false,
+      },
+    },
+    {
       id: 'context-layer-eez',
       config: {
         color: '#069688',
-        visible: true,
+        visible: false,
       },
       dataviewId: DEFAULT_EEZ_DATAVIEW_ID,
     },
-    {
-      id: 'context-layer-mpa-no-take',
-      config: {
-        color: '#F4511F',
-        visible: false,
-      },
-      dataviewId: DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
-    },
-    {
-      id: 'context-layer-mpa-restricted',
-      config: {
-        color: '#F09300',
-        visible: false,
-      },
-      dataviewId: DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
-    },
+    // {
+    //   id: 'context-layer-mpa-no-take',
+    //   config: {
+    //     color: '#F4511F',
+    //     visible: false,
+    //   },
+    //   dataviewId: DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
+    // },
+    // {
+    //   id: 'context-layer-mpa-restricted',
+    //   config: {
+    //     color: '#F09300',
+    //     visible: false,
+    //   },
+    //   dataviewId: DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
+    // },
     {
       id: 'context-layer-mpa',
       config: {
@@ -112,20 +129,20 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: DEFAULT_RFMO_DATAVIEW_ID,
     },
-    {
-      id: 'context-layer-wpp-nri',
-      config: {
-        visible: false,
-      },
-      dataviewId: 96,
-    },
-    {
-      id: 'context-layer-high-seas',
-      config: {
-        visible: false,
-      },
-      dataviewId: 97,
-    },
+    // {
+    //   id: 'context-layer-wpp-nri',
+    //   config: {
+    //     visible: false,
+    //   },
+    //   dataviewId: 96,
+    // },
+    // {
+    //   id: 'context-layer-high-seas',
+    //   config: {
+    //     visible: false,
+    //   },
+    //   dataviewId: 97,
+    // },
   ],
 }
 

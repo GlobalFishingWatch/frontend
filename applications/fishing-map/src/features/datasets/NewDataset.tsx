@@ -303,6 +303,13 @@ function NewDataset(): React.ReactElement {
   }
 
   const onConfirmDatasetCategoryClick = () => {
+    if (datasetCategory === DatasetCategory.Environment) {
+      uaEvent({
+        category: 'Environmental data',
+        action: `Start upload environmental dataset flow`,
+        label: datasetGeometryType ?? '',
+      })
+    }
     setDatasetGeometryTypeConfirmed(true)
   }
 

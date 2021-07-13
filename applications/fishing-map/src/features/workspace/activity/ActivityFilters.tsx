@@ -15,19 +15,27 @@ import {
   isDataviewSchemaSupported,
 } from 'features/datasets/datasets.utils'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import styles from './HeatmapFilters.module.css'
-import { getSourcesOptionsInDataview, getSourcesSelectedInDataview } from './heatmaps.utils'
+import styles from './ActivityFilters.module.css'
+import {
+  areAllSourcesSelectedInDataview,
+  getSourcesOptionsInDataview,
+  getSourcesSelectedInDataview,
+} from './activity.utils'
 
-type FiltersProps = {
+type ActivityFiltersProps = {
   dataview: UrlDataviewInstance
 }
 
-function Filters({ dataview }: FiltersProps): React.ReactElement {
+function ActivityFilters({ dataview }: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const sourceOptions = getSourcesOptionsInDataview(dataview)
-  const sourcesSelected = getSourcesSelectedInDataview(dataview)
+  // insert the "All" option only when more than one option available
+  const allOption = { id: 'all', label: t('selects.allSelected', 'All') }
+  const allSourceOptions = sourceOptions.length > 1 ? [allOption, ...sourceOptions] : sourceOptions
+  const allSelected = areAllSourcesSelectedInDataview(dataview)
+  const sourcesSelected = allSelected ? [allOption] : getSourcesSelectedInDataview(dataview)
 
   const flagOptions = getFlagsByIds(dataview.config?.filters?.flag || [])
   const flags = useMemo(getFlags, [])
@@ -40,7 +48,12 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
   const qfDectectionFilters = getFiltersBySchema(dataview, 'qf_detect')
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
-    const datasets = [...(dataview.config?.datasets || []), source.id]
+    let datasets: string[] = []
+    if (source.id === allOption.id) {
+      datasets = sourceOptions.map((s) => s.id)
+    } else {
+      datasets = allSelected ? [source.id] : [...(dataview.config?.datasets || []), source.id]
+    }
     const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
 
     const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
@@ -151,7 +164,7 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
         <MultiSelect
           label={t('layer.source_plural', 'Sources')}
           placeholder={getPlaceholderBySelections(sourcesSelected)}
-          options={sourceOptions}
+          options={allSourceOptions}
           selectedOptions={sourcesSelected}
           onSelect={onSelectSourceClick}
           onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
@@ -243,4 +256,4 @@ function Filters({ dataview }: FiltersProps): React.ReactElement {
   )
 }
 
-export default Filters
+export default ActivityFilters

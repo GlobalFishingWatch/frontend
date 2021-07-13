@@ -1,4 +1,5 @@
 import React from 'react'
+import { event as uaEvent } from 'react-ga'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
@@ -11,17 +12,17 @@ import {
   getRelatedDatasetsByType,
 } from 'features/datasets/datasets.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { TooltipEventFeature, useClickedEventConnect } from 'features/map/map.hooks'
+import {
+  SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
+  TooltipEventFeature,
+  useClickedEventConnect,
+} from 'features/map/map.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { isUserLogged } from 'features/user/user.selectors'
+import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './Popup.module.css'
-
-// Translations by feature.unit static keys
-// t('common.hour', 'Hour')
-// t('common.days', 'Day')
-// t('common.days_plural', 'Days')
 
 type FishingTooltipRowProps = {
   feature: TooltipEventFeature
@@ -67,6 +68,11 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
       })
       upsertDataviewInstance(vesselDataviewInstance)
     }
+    uaEvent({
+      category: 'Tracks',
+      action: 'Click in vessel from grid cell panel',
+      label: getEventLabel([vessel.dataset.id, vessel.id]),
+    })
   }
 
   return (
@@ -91,7 +97,7 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
         <div className={styles.row}>
           <span className={styles.rowText}>
             <I18nNumber number={feature.value} />{' '}
-            {t([`common.${feature.unit}` as any, 'common.hour'], 'hours', {
+            {t([`common.${feature.temporalgrid?.unit}` as any, 'common.hour'], 'hours', {
               count: parseInt(feature.value), // neded to select the plural automatically
             })}
           </span>
@@ -108,16 +114,20 @@ function FishingTooltipRow({ feature, showFeaturesDetails }: FishingTooltipRowPr
                 {t('common.vessel_plural', 'Vessels')}
               </label>
               <label className={styles.vesselsHeaderLabel}>
-                {feature.unit === 'hours' && t('common.hour_plural', 'hours')}
-                {feature.unit === 'days' && t('common.days_plural', 'days')}
+                {feature.temporalgrid?.unit === 'hours' && t('common.hour_plural', 'hours')}
+                {feature.temporalgrid?.unit === 'days' && t('common.days_plural', 'days')}
               </label>
             </div>
             {feature.vesselsInfo.vessels.map((vessel, i) => {
               const vesselLabel = getVesselLabel(vessel, true)
               return (
                 <button
-                  disabled={feature.category === 'presence'}
                   key={i}
+                  disabled={
+                    !SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+                      feature.temporalgrid?.sublayerInteractionType || ''
+                    )
+                  }
                   className={styles.vesselRow}
                   onClick={() => onVesselClick(vessel)}
                 >

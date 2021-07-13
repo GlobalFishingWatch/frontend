@@ -77,20 +77,29 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
           </TooltipContainer>
         )}
       </div>
-      {dataviews?.map((dataview) =>
-        dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
-          <UserTrackLayerPanel
-            key={dataview.id}
-            dataview={dataview}
-            onToggle={onToggleLayer(dataview)}
-          />
-        ) : (
-          <EnvironmentalLayerPanel
-            key={dataview.id}
-            dataview={dataview}
-            onToggle={onToggleLayer(dataview)}
-          />
+      {dataviews.length > 0 ? (
+        dataviews?.map((dataview) =>
+          dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
+            <UserTrackLayerPanel
+              key={dataview.id}
+              dataview={dataview}
+              onToggle={onToggleLayer(dataview)}
+            />
+          ) : (
+            <EnvironmentalLayerPanel
+              key={dataview.id}
+              dataview={dataview}
+              onToggle={onToggleLayer(dataview)}
+            />
+          )
         )
+      ) : (
+        <div className={styles.emptyState}>
+          {t(
+            'workspace.emptyStateEnvironment',
+            'Upload custom datasets like animal telemetry clicking on the plus icon.'
+          )}
+        </div>
       )}
     </div>
   )

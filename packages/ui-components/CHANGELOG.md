@@ -1,5 +1,18 @@
 # @globalfishingwatch/ui-components
 
+## 9.0.1
+
+### Patch Changes
+
+- 571c314b: Fishing map/last minute stuff
+
+## 9.0.0
+
+### Patch Changes
+
+- Updated dependencies [70ad8e32]
+  - @globalfishingwatch/react-hooks@12.0.0
+
 ## 8.2.0
 
 ### Minor Changes

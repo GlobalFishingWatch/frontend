@@ -12,7 +12,8 @@
     "onlyAISAllowed": "Sólo los conjuntos de datos AIS pueden descargarse",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Análisis",
-    "vesselFlags": "de embarcaciones abanderadas con"
+    "vesselFlags": "de embarcaciones abanderadas con",
+    "filteredBy": "filtrado por"
   },
   "common": {
     "active_after": "Activo después de",
@@ -61,7 +62,9 @@
     "unknown": "Desconocido",
     "update": "Actualizar",
     "vessel": "Embarcación",
-    "vessel_plural": "Embarcaciones"
+    "vessel_plural": "Embarcaciones",
+    "viirs": "VIIRS",
+    "welcomePopupDisable": "Don't show again"
   },
   "dataset": {
     "addContext": "Añadir una capa de referencia",
@@ -70,6 +73,7 @@
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente estos datos?",
     "dragActive": "Soltar el archivo aquí ...",
     "dragFilePlaceholder": "Arrastra y suelta un archivo comprimido o geojson aquí o haz clic para seleccionarlo",
+    "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Modificar los datos",
     "emptyState": "Sus datos aparecerán aquí",
     "featuresNameField": "Campo para nombrar cada área",
@@ -82,6 +86,7 @@
     "longitudeNameField": "Campo de longitud",
     "new": "Nuevos datos",
     "notUploadedYet": "No hay capas de referencia subidas aún",
+    "notUploadedYetEnvironment": "No hay capas de entorno subidas aún",
     "remove": "Eliminar los datos",
     "requiredFields": "Campos requeridos {{fields}}",
     "timeNameField": "Campo nombre de hora",
@@ -122,8 +127,14 @@
     "workspaceNotFound": "La vista que solicitó no se encontró"
   },
   "event": {
+    "encounter": "Encounter",
+    "encounterAction": "had an encounter with",
+    "encounterAnotherVessel": "another vessel",
+    "during": "during",
     "fishing": "Fishing",
     "fishingAction": "Fished for",
+    "loitering": "Loitering",
+    "loiteringAction": "Loitering for",
     "noData": "No hay datos disponibles",
     "notInCVP": "Evento no disponible",
     "port": "Port",
@@ -235,16 +246,12 @@
     "placeholder": "Seleccione una opción",
     "selected": "seleccionado"
   },
+  "timebar": {
+    "maxTracksNumber": "Track detail not available for more than 10 vessels"
+  },
   "timebarSettings": {
-    "eventOptions": {
-      "all": "Todos los eventos",
-      "encounters": "Encuentros",
-      "fishing": "Pesca",
-      "loitering": "Loitering",
-      "none": "Ninguna",
-      "ports": "Visitas de puerto"
-    },
     "fishingEffortDisabled": "Seleccione al menos una capa de esfuerzo de pesca aparente",
+    "presenceDisabled": "Select at least one presence layer",
     "graph": "Gráfico",
     "graphOptions": {
       "depth": "Profunda $t(common.comingPron)",
@@ -254,6 +261,7 @@
     "settings_close": "Cerrar ajustes de la barra de tiempo",
     "settings_open": "Abrir ajustes de la barra de tiempo",
     "showFishingEffort": "Mostrar gráfico de horas de pesca",
+    "showPresence": "Show presence graph",
     "showTracks": "Mostrar gráfico de las trayectorias",
     "tracks": "Trayectorias",
     "tracksDisabled": "Seleccione al menos una embarcación"
@@ -315,6 +323,8 @@
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
     "editName": "Modificar el nombre del espacio de trabajo",
     "emptyState": "Sus espacios de trabajo aparecerán aquí",
+    "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
+    "emptyStateEnvironment": "Upload custom datasets like animal telemetry clicking on the plus icon.",
     "nameInput": "Nombre del espacio de trabajo",
     "new": "Nuevo espacio de trabajo",
     "remove": "Eliminar el espacio de trabajo",
