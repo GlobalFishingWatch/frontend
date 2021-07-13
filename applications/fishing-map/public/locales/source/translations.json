@@ -12,7 +12,8 @@
     "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
     "title": "Analysis",
-    "vesselFlags": "by vessels flagged by"
+    "vesselFlags": "by vessels flagged by",
+    "filteredBy": "filtered by"
   },
   "common": {
     "active_after": "Active after",
@@ -85,6 +86,7 @@
     "longitudeNameField": "Longitude field",
     "new": "New dataset",
     "notUploadedYet": "No context layers uploaded yet",
+    "notUploadedYetEnvironment": "No environment layers uploaded yet",
     "remove": "Remove dataset",
     "requiredFields": "Required fields {{fields}}",
     "timeNameField": "Time name field",
