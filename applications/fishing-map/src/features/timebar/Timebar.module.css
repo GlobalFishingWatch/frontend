@@ -23,5 +23,5 @@
   padding: 0 1rem;
   display: flex;
   align-items: center;
-  text-transform: lowercase;
+  text-transform: none;
 }

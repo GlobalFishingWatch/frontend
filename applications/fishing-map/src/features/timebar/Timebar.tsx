@@ -22,6 +22,7 @@ import { TimebarVisualisations, TimebarGraphs } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
 import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
+import { upperFirst } from 'utils/info'
 import {
   setHighlightedTime,
   disableHighlightedTime,
@@ -239,9 +240,11 @@ const TimebarWrapper = () => {
               ) : (
                 <div className={styles.disclaimer}>
                   <label className={styles.disclaimerLabel}>
-                    {t(
-                      'timebar.maxTracksNumber',
-                      'Track detail not available for more than 10 vessels'
+                    {upperFirst(
+                      t(
+                        'timebar.maxTracksNumber',
+                        'Track detail not available for more than 10 vessels'
+                      )
                     )}
                   </label>
                 </div>
