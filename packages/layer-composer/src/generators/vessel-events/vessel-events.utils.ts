@@ -31,7 +31,10 @@ const getDateTimeDate = (date: string | number) => {
   return typeof date === 'number' ? DateTime.fromMillis(date) : DateTime.fromISO(date)
 }
 
-export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureCollection => {
+export const getVesselEventsGeojson = (
+  trackEvents: RawEvent[] | null,
+  showAuthorizationStatus = true
+): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
     features: [],
@@ -57,16 +60,18 @@ export const getVesselEventsGeojson = (trackEvents: RawEvent[] | null): FeatureC
         timestamp: event.start,
         start: getDateTimeDate(event.start).toUTC().toISO(),
         end: getDateTimeDate(event.end).toUTC().toISO(),
-        ...(isEncounterEvent && {
-          authorized,
-          authorizationStatus,
-          encounterVesselId: event.encounter?.vessel?.id,
-          encounterVesselName: event.encounter?.vessel?.name,
-        }),
+        ...(isEncounterEvent &&
+          showAuthorizationStatus && {
+            authorized,
+            authorizationStatus,
+            encounterVesselId: event.encounter?.vessel?.id,
+            encounterVesselName: event.encounter?.vessel?.name,
+          }),
         icon: `carrier_portal_${event.type}`,
-        color: isEncounterEvent
-          ? getEncounterAuthColor(authorizationStatus)
-          : EVENTS_COLORS[event.type],
+        color:
+          isEncounterEvent && showAuthorizationStatus
+            ? getEncounterAuthColor(authorizationStatus)
+            : EVENTS_COLORS[event.type],
       },
       geometry: {
         type: 'Point',
@@ -128,7 +133,8 @@ export const getVesselEventsSegmentsGeojsonMemoizeEqualityCheck = (
 
 export const getVesselEventsSegmentsGeojson = (
   track: any,
-  events: RawEvent[]
+  events: RawEvent[],
+  showAuthorizationStatus = true
 ): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -155,19 +161,21 @@ export const getVesselEventsSegmentsGeojson = (
           type: event.type,
           start: getDateTimeDate(event.start).toUTC().toISO(),
           end: getDateTimeDate(event.end).toUTC().toISO(),
-          color: isEncounterEvent
-            ? getEncounterAuthColor(authorizationStatus)
-            : EVENTS_COLORS[event.type],
+          color:
+            isEncounterEvent && showAuthorizationStatus
+              ? getEncounterAuthColor(authorizationStatus)
+              : EVENTS_COLORS[event.type],
           ...(event.vessel && {
             vesselId: event.vessel.id,
             vesselName: event.vessel.name,
           }),
-          ...(isEncounterEvent && {
-            authorized,
-            authorizationStatus,
-            encounterVesselId: event.encounter?.vessel.id,
-            encounterVesselName: event.encounter?.vessel.name,
-          }),
+          ...(isEncounterEvent &&
+            showAuthorizationStatus && {
+              authorized,
+              authorizationStatus,
+              encounterVesselId: event.encounter?.vessel.id,
+              encounterVesselName: event.encounter?.vessel.name,
+            }),
         },
       }
     })

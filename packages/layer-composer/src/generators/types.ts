@@ -245,6 +245,7 @@ export interface VesselEventsGeneratorConfig extends GeneratorConfig {
   color?: string
   track?: TrackGeneratorConfigData
   showIcons?: boolean
+  showAuthorizationStatus?: boolean
   currentEventId?: string
 }
 

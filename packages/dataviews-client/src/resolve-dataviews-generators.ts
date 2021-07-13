@@ -136,6 +136,7 @@ export function getGeneratorConfig(
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
           type: Generators.Type.VesselEvents,
           showIcons: dataview.config?.showIcons,
+          showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
           data: data,
           color: dataview.config?.color,
           track: generator.data,

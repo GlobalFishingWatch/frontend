@@ -35,18 +35,21 @@ class VesselsEventsGenerator {
   }
 
   _getStyleSources = (config: GlobalVesselEventsGeneratorConfig): VesselsEventsSource[] => {
-    const { id, data, track, start, end } = config
+    const { id, data, track, start, end, showAuthorizationStatus } = config
 
     if (!data) {
       // console.warn(`${VESSEL_EVENTS_TYPE} source generator needs geojson data`, config)
       return []
     }
 
-    const geojson = memoizeCache[config.id].getVesselEventsGeojson(data) as FeatureCollection
+    const geojson = memoizeCache[config.id].getVesselEventsGeojson(
+      data,
+      showAuthorizationStatus
+    ) as FeatureCollection
     const featuresFiltered = memoizeCache[config.id].filterFeaturesByTimerange(
       geojson.features,
-      config.start,
-      config.end
+      start,
+      end
     )
 
     const pointsSource: VesselsEventsSource = {
@@ -62,7 +65,8 @@ class VesselsEventsGenerator {
 
     const segments = memoizeCache[config.id].getVesselEventsSegmentsGeojson(
       track,
-      data
+      data,
+      showAuthorizationStatus
     ) as FeatureCollection
 
     const segmentsFiltered = memoizeCache[config.id].filterGeojsonByTimerange(segments, start, end)
