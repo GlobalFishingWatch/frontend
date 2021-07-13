@@ -120,14 +120,18 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
       if (isObject(value)) {
         result[key] = detokenizeValues(value)
       } else if (isString(value)) {
-        // TODO token as var
         const matchesToken = value.match(TOKEN_REGEX)
         if (!matchesToken) {
           result[key] = value
           return
         }
         const tokenIndex = parseInt(matchesToken[1])
-        const detokenizedValue = value.replace(TOKEN_REGEX, tokens[tokenIndex])
+        const token = tokens[tokenIndex]
+        if (!token) {
+          result[key] = value
+          return
+        }
+        const detokenizedValue = value.replace(TOKEN_REGEX, token)
         result[key] = detokenizedValue
       } else {
         result[key] = value
