@@ -37,8 +37,9 @@ function PopupWrapper({
 }: PopupWrapperProps) {
   if (!event) return null
 
+  const visibleFeatures = event.features.filter((feature) => feature.visible)
   const featureByCategory = groupBy(
-    event.features.sort(
+    visibleFeatures.sort(
       (a, b) => POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
     ),
     'category'
@@ -129,9 +130,6 @@ function PopupWrapper({
               )
 
             case DataviewCategory.Vessels:
-              if (type === 'click') {
-                return null
-              }
               return <VesselEventsLayers key={featureCategory} features={features} />
 
             default:

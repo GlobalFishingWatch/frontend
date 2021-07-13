@@ -223,6 +223,7 @@ export const useClickedEventConnect = () => {
 export type TooltipEventFeature = {
   id?: string
   title?: string
+  visible?: boolean
   type?: Type
   color?: string
   unit?: string
@@ -366,6 +367,7 @@ export const parseMapTooltipEvent = (
       title,
       type: dataview.config?.type,
       color: dataview.config?.color || 'black',
+      visible: dataview.config?.visible,
       category: dataview.category || DataviewCategory.Context,
       ...feature,
       properties: { ...feature.properties },

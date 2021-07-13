@@ -116,7 +116,7 @@ const selectEventsForTracks = createSelector(
         !tracksResourceResolved ||
         (Array.isArray(visibleEvents) && visibleEvents?.length === 0)
       ) {
-        return []
+        return { dataview, data: [] }
       }
 
       const eventsResourcesFiltered = eventsResources.filter(({ dataset }) => {
@@ -131,9 +131,9 @@ const selectEventsForTracks = createSelector(
           return []
         }
 
-        return resources[url].data
+        return resources[url].data as ApiEvent[]
       })
-      return data as ApiEvent[]
+      return { dataview, data }
     })
     return vesselsEvents
   }
@@ -148,80 +148,78 @@ interface RenderedEvent extends ApiEvent {
 export const selectEventsWithRenderingInfo = createSelector(
   [selectEventsForTracks],
   (eventsForTrack) => {
-    const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(
-      (trackEvents: ApiEvent[]) => {
-        return (trackEvents || []).map((event: ApiEvent, index) => {
-          const vesselName = event.vessel.name || event.vessel.id
+    const eventsWithRenderingInfo: RenderedEvent[][] = eventsForTrack.map(({ dataview, data }) => {
+      return (data || []).map((event: ApiEvent, index) => {
+        const vesselName = event.vessel.name || event.vessel.id
 
-          let description
-          let descriptionGeneric
-          switch (event.type) {
-            case 'encounter':
-              if (event.encounter) {
-                description = `${vesselName} ${t(
-                  'event.encounterActionWith',
-                  'had an encounter with'
-                )} ${
-                  event.encounter.vessel.name
-                    ? event.encounter.vessel.name
-                    : t('event.encounterAnotherVessel', 'another vessel')
-                } `
-              }
-              descriptionGeneric = `${vesselName} ${t('event.encounter')}`
-              break
-            case 'port':
-              if (event.port && event.port.name) {
-                description = `${vesselName} ${t('event.portAt', { port: event.port.name })} `
-              } else {
-                description = `${vesselName} ${t('event.portAction')}`
-              }
-              descriptionGeneric = `${vesselName} ${t('event.port')}`
-              break
-            case 'loitering':
-              description = `${vesselName} ${t('event.loiteringAction')}`
-              descriptionGeneric = `${vesselName} ${t('event.loitering')}`
-              break
-            case 'fishing':
-              description = `${vesselName} ${t('event.fishingAction')}`
-              descriptionGeneric = `${vesselName} ${t('event.fishing')}`
-              break
-            default:
-              description = t('event.unknown', 'Unknown event')
-              descriptionGeneric = t('event.unknown', 'Unknown event')
-          }
-          const duration = DateTime.fromMillis(event.end as number)
-            .diff(DateTime.fromMillis(event.start as number), ['hours', 'minutes'])
-            .toObject()
+        let description
+        let descriptionGeneric
+        switch (event.type) {
+          case 'encounter':
+            if (event.encounter) {
+              description = `${vesselName} ${t(
+                'event.encounterActionWith',
+                'had an encounter with'
+              )} ${
+                event.encounter.vessel.name
+                  ? event.encounter.vessel.name
+                  : t('event.encounterAnotherVessel', 'another vessel')
+              } `
+            }
+            descriptionGeneric = `${vesselName} ${t('event.encounter')}`
+            break
+          case 'port':
+            if (event.port && event.port.name) {
+              description = `${vesselName} ${t('event.portAt', { port: event.port.name })} `
+            } else {
+              description = `${vesselName} ${t('event.portAction')}`
+            }
+            descriptionGeneric = `${vesselName} ${t('event.port')}`
+            break
+          case 'loitering':
+            description = `${vesselName} ${t('event.loiteringAction')}`
+            descriptionGeneric = `${vesselName} ${t('event.loitering')}`
+            break
+          case 'fishing':
+            description = `${vesselName} ${t('event.fishingAction')}`
+            descriptionGeneric = `${vesselName} ${t('event.fishing')}`
+            break
+          default:
+            description = t('event.unknown', 'Unknown event')
+            descriptionGeneric = t('event.unknown', 'Unknown event')
+        }
+        const duration = DateTime.fromMillis(event.end as number)
+          .diff(DateTime.fromMillis(event.start as number), ['hours', 'minutes'])
+          .toObject()
 
-          description = [
-            description,
-            duration.hours && duration.hours > 0
-              ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
-              : '',
-            duration.minutes && duration.minutes > 0
-              ? t('event.minuteAbbreviated', '{{count}}m', {
-                  count: Math.round(duration.minutes as number),
-                })
-              : '',
-          ].join(' ')
+        description = [
+          description,
+          duration.hours && duration.hours > 0
+            ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
+            : '',
+          duration.minutes && duration.minutes > 0
+            ? t('event.minuteAbbreviated', '{{count}}m', {
+                count: Math.round(duration.minutes as number),
+              })
+            : '',
+        ].join(' ')
 
-          let colorKey = event.type as string
-          if (event.type === 'encounter') {
-            colorKey = `${colorKey}${event.encounter?.authorizationStatus}`
-          }
-          const color = EVENTS_COLORS[colorKey]
-          const colorLabels = EVENTS_COLORS[`${colorKey}Labels`]
+        let colorKey = event.type as string
+        if (event.type === 'encounter' && dataview.config?.showAuthorizationStatus) {
+          colorKey = `${colorKey}${event.encounter?.authorizationStatus}`
+        }
+        const color = EVENTS_COLORS[colorKey]
+        const colorLabels = EVENTS_COLORS[`${colorKey}Labels`]
 
-          return {
-            ...event,
-            color,
-            colorLabels,
-            description,
-            descriptionGeneric,
-          }
-        })
-      }
-    )
+        return {
+          ...event,
+          color,
+          colorLabels,
+          description,
+          descriptionGeneric,
+        }
+      })
+    })
     return eventsWithRenderingInfo
   }
 )
