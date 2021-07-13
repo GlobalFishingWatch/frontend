@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.9.0
+
+### Minor Changes
+
+- fdf6b275: support showAuthorizationStatus dataview config in encounter events
+
 ## 8.8.1
 
 ### Patch Changes
