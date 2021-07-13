@@ -35,7 +35,7 @@ const getSerializedFilterFields = (dataview: UrlDataviewInstance, filterKey: str
 
 const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
   const commonProperties: string[] = []
-  let title = ''
+  const titleChunks: { label: string; strong?: boolean }[] = []
 
   if (dataviews && dataviews?.length > 0) {
     const firstDataviewDatasets = getSerializedDatasets(dataviews[0])
@@ -45,11 +45,12 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
       const fishingDataview = isFishingDataview(dataviews[0])
       const presenceDataview = isPresenceDataview(dataviews[0])
       if (fishingDataview || presenceDataview) {
-        title = presenceDataview
+        const mainLabel = presenceDataview
           ? t(`common.presence`, 'Vessel presence')
           : t(`common.apparentFishing`, 'Apparent Fishing Effort')
+        titleChunks.push({ label: mainLabel, strong: true })
       } else {
-        title += dataviews[0].name
+        titleChunks.push({ label: dataviews[0].name || '', strong: true })
       }
     }
 
@@ -64,7 +65,7 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
         dataviews[0].config?.datasets?.includes(d.id)
       )
       if (datasets?.length) {
-        title += ` (${datasets?.map((d) => d.name).join(', ')})`
+        titleChunks.push({ label: ` (${datasets?.map((d) => d.name).join(', ')})` })
       }
     }
 
@@ -77,10 +78,10 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
     ) {
       commonProperties.push('flag')
       const flags = getFlagsByIds(dataviews[0].config?.filters?.flag || [])
-      if (firstDataviewFlags)
-        title += ` ${t('analysis.vesselFlags', 'by vessels flagged by')} ${flags
-          ?.map((d) => d.label)
-          .join(', ')}`
+      if (firstDataviewFlags) {
+        titleChunks.push({ label: t('analysis.vesselFlags', 'by vessels flagged by') })
+        titleChunks.push({ label: `${flags?.map((d) => d.label).join(', ')}`, strong: true })
+      }
     }
 
     // Collect common filters that are not 'flag'
@@ -118,16 +119,41 @@ const getCommonProperties = (dataviews?: UrlDataviewInstance[]) => {
     })
 
     if (genericFilters.length) {
-      title += ' '
-      title += t('analysis.filteredBy', 'filtered by')
-      title += ' '
-      title += genericFilters
-        .map((genericFilter) => `${genericFilter.keyLabel}: ${genericFilter.valuesLabel}`)
-        .join('; ')
+      titleChunks.push({ label: t('analysis.filteredBy', 'filtered by') })
+      titleChunks.push({
+        label: genericFilters
+          .map((genericFilter) => `${genericFilter.keyLabel}: ${genericFilter.valuesLabel}`)
+          .join('; '),
+        strong: true,
+      })
     }
   }
 
-  return { title, commonProperties }
+  return { titleChunks, commonProperties }
+}
+
+const getDescription = (
+  titleChunks: { label: string; strong?: boolean }[],
+  analysisAreaName: string,
+  start: string | undefined,
+  end: string | undefined
+) => {
+  const descriptionChunks = [...titleChunks]
+  if (analysisAreaName) {
+    descriptionChunks.push({ label: t('common.in', 'in') })
+    descriptionChunks.push({ label: analysisAreaName, strong: true })
+  }
+  if (start && end) {
+    descriptionChunks.push({
+      label: t('common.dateRange', {
+        start: formatI18nDate(start),
+        end: formatI18nDate(end),
+        defaultValue: 'between {{start}} and {{end}}',
+      }),
+      strong: true,
+    })
+  }
+  return descriptionChunks
 }
 
 function AnalysisItem({
@@ -145,25 +171,22 @@ function AnalysisItem({
     return graphData.sublayers.map((s) => s.id)
   }, [graphData])
   const dataviews = useSelector(selectDataviewInstancesByIds(dataviewsIds))
-  const { title, commonProperties } = useMemo(() => {
+  const { titleChunks, commonProperties } = useMemo(() => {
     return getCommonProperties(dataviews)
   }, [dataviews])
 
-  let description = analysisAreaName
-    ? `${title} ${t('common.in', 'in')} ${analysisAreaName}`
-    : title
-  if (start && end) {
-    description = `${description} ${t('common.dateRange', {
-      start: formatI18nDate(start),
-      end: formatI18nDate(end),
-      defaultValue: 'between {{start}} and {{end}}',
-    })}.`
-  }
+  const description = getDescription(titleChunks, analysisAreaName, start, end)
+
   return (
     <div className={styles.container}>
       {hasAnalysisLayers ? (
         <Fragment>
-          <h3 className={styles.commonTitle}>{description}</h3>
+          <h3 className={styles.commonTitle}>
+            {description.map((d) =>
+              d.strong ? <strong>{d.label}</strong> : <span>{d.label}</span>
+            )}
+            .
+          </h3>
           <div className={styles.layerPanels}>
             {dataviews?.map((dataview, index) => (
               <AnalysisLayerPanel
