@@ -994,7 +994,7 @@ const flags = [
     label: 'Tuvalu',
   },
   {
-    id: 'TAI',
+    id: 'TWN',
     label: 'Chinese Taipei',
     alias: ['Taiwan'],
   },
