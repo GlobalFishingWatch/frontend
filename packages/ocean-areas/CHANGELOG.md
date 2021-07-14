@@ -1,5 +1,11 @@
 ## 0.0.1
 
+## 0.2.4
+
+### Patch Changes
+
+- cc73f7d3: fix Chinese Taipei label
+
 ## 0.2.3
 
 ### Patch Changes
