@@ -88,25 +88,37 @@ function WorkspacesList() {
               <li key={highlightedWorkspace.id || i18nName}>
                 <div className={cx(styles.workspace, { [styles.disabled]: !active })}>
                   {active ? (
-                    <Link
-                      to={linkTo}
-                      target={isExternalLink ? '_blank' : '_self'}
-                      onClick={() => !isExternalLink && onWorkspaceClick(highlightedWorkspace)}
-                    >
-                      <img className={styles.image} alt={i18nName} src={img} />
-                    </Link>
+                    isExternalLink ? (
+                      <a target="_blank" href={linkTo as string} rel="noreferrer">
+                        <img className={styles.image} alt={i18nName} src={img} />
+                      </a>
+                    ) : (
+                      <Link
+                        to={linkTo}
+                        target="_self"
+                        onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                      >
+                        <img className={styles.image} alt={i18nName} src={img} />
+                      </Link>
+                    )
                   ) : (
                     <img className={styles.image} alt={i18nName} src={img} />
                   )}
                   <div className={styles.info}>
                     {active ? (
-                      <Link
-                        to={linkTo}
-                        target={isExternalLink ? '_blank' : '_self'}
-                        onClick={() => !isExternalLink && onWorkspaceClick(highlightedWorkspace)}
-                      >
-                        <h3 className={styles.title}>{i18nName || name}</h3>
-                      </Link>
+                      isExternalLink ? (
+                        <a target="_blank" href={linkTo as string} rel="noreferrer">
+                          <h3 className={styles.title}>{i18nName || name}</h3>
+                        </a>
+                      ) : (
+                        <Link
+                          to={linkTo}
+                          target="_self"
+                          onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                        >
+                          <h3 className={styles.title}>{i18nName || name}</h3>
+                        </Link>
+                      )
                     ) : (
                       <h3 className={styles.title}>{i18nName || name}</h3>
                     )}
@@ -118,16 +130,21 @@ function WorkspacesList() {
                         }}
                       ></p>
                     )}
-                    {active && (
-                      <Link
-                        to={linkTo}
-                        target={isExternalLink ? '_blank' : '_self'}
-                        className={styles.link}
-                        onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                      >
-                        {i18nCta || cta}
-                      </Link>
-                    )}
+                    {active &&
+                      (isExternalLink ? (
+                        <a target="_blank" href={linkTo as string} className={styles.link} rel="noreferrer">
+                          {i18nCta || cta}
+                        </a>
+                      ) : (
+                        <Link
+                          to={linkTo}
+                          target="_self"
+                          className={styles.link}
+                          onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                        >
+                          {i18nCta || cta}
+                        </Link>
+                      ))}
                   </div>
                 </div>
               </li>
