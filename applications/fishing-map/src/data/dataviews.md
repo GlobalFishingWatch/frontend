@@ -19,7 +19,7 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 
 | Layer name | Dev id | Pro id |
 | ---------- | ------ | ------ |
-| Encounters | 140    | ---    |
+| Encounters | 140    | 254    |
 
 ## Environmental
 
@@ -89,7 +89,6 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 
 | Layer name                       | Dev id | Pro id |
 | -------------------------------- | ------ | ------ |
-| Public Apparent fishing effort   | 122    | ---    |
 | Default Fishing activity         | 91     | 178    |
 | Private Ecuador Fishing activity | 157    | 252    |
 | Private Panama Fishing activity  | 162    | ---    |
@@ -102,7 +101,7 @@ Fetch them using this [API endpoint](https://gateway.api.globalfishingwatch.org/
 | Default Fishing presence    | 124    | 241    |
 | Brasil (Open tuna) Presence | 164    | ---    |
 | Private Ecuador Presence    | 158    | 253    |
-| VIIRS                       | 159    | ---    |
+| VIIRS                       | 159    | 255    |
 
 ## Vessels
 
