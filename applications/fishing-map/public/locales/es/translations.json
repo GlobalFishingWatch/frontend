@@ -61,7 +61,7 @@
     "update": "Actualizar",
     "vessel": "Embarcación",
     "vessel_plural": "Embarcaciones",
-    "viirs": "VIIRS",
+    "viirs": "Detecciones de luz nocturna (VIIRS)",
     "welcomePopupDisable": "No volver a mostrar"
   },
   "dataset": {
@@ -170,7 +170,7 @@
       "fisheries": "Oficial de cumplimiento de la pesca",
       "general": "Público general",
       "GFW": "Global Fishing Watch staff",
-      "journalist": "Diario",
+      "journalist": "Periodista",
       "navy": "Guardia marina o costera",
       "ngo": "Organización no gubernamental",
       "other": "Otro",
