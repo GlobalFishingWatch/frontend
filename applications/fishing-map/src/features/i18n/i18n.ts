@@ -3,6 +3,7 @@ import Backend from 'i18next-http-backend'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { Locale } from 'types'
+import { PATH_BASENAME } from 'routes/routes'
 
 export const LocaleLabels = [
   { id: Locale.en, label: 'English' },
@@ -10,8 +11,6 @@ export const LocaleLabels = [
   { id: Locale.fr, label: 'Français' },
   { id: Locale.id, label: 'Bahasa Indonesia' },
 ]
-
-const pathPrefix = process.env.NODE_ENV === 'production' ? 'map' : ''
 
 i18n
   // load translation using http -> see /public/locales
@@ -26,7 +25,7 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     backend: {
-      loadPath: `/${pathPrefix}/locales/{{lng}}/{{ns}}.json`,
+      loadPath: `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json`,
     },
     ns: ['translations', 'flags', 'datasets', 'timebar'],
     defaultNS: 'translations',
