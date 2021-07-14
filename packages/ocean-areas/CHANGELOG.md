@@ -1,5 +1,11 @@
 ## 0.0.1
 
+## 0.2.5
+
+### Patch Changes
+
+- fix chinese taipei label
+
 ## 0.2.4
 
 ### Patch Changes
