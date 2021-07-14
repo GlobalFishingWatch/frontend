@@ -109,7 +109,7 @@ const AnalysisGraphTooltip = (props: any) => {
         formattedLabel = date.toLocaleString(DateTime.DATE_MED)
         break
       default:
-        formattedLabel = date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
+        formattedLabel = date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
         break
     }
     const formattedValues = payload.filter(({ name }) => name === 'line')
