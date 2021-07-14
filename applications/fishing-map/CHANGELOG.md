@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.5
+
+### Patch Changes
+
+- Timebar localization i18n
+- Updated dependencies [undefined]
+  - @globalfishingwatch/timebar@2.0.3
+
 ## 1.1.4
 
 ### Patch Changes

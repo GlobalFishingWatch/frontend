@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 2.0.3
+
+### Patch Changes
+
+- Timebar localization i18n
+
 ## 2.0.2
 
 ### Patch Changes
