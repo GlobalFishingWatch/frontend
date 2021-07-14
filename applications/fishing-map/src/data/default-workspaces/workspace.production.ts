@@ -9,8 +9,8 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_ID,
   DEFAULT_FISHING_DATAVIEW_ID,
   DEFAULT_PRESENCE_DATAVIEW_ID,
-  DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
-  DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
+  DEFAULT_VIIRS_DATAVIEW_ID,
+  DEFAULT_EVENTS_DATAVIEW_ID,
 } from 'data/workspaces'
 import { WorkspaceState } from 'types'
 
@@ -66,6 +66,23 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: DEFAULT_PRESENCE_DATAVIEW_ID,
     },
     {
+      id: 'viirs',
+      config: {
+        color: '#FFEA00',
+        colorRamp: 'yellow',
+        visible: false,
+      },
+      dataviewId: DEFAULT_VIIRS_DATAVIEW_ID,
+      datasetsConfig: [],
+    },
+    {
+      id: 'encounter-events',
+      dataviewId: DEFAULT_EVENTS_DATAVIEW_ID,
+      config: {
+        visible: false,
+      },
+    },
+    {
       id: 'context-layer-eez',
       config: {
         color: '#069688',
@@ -73,22 +90,22 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: DEFAULT_EEZ_DATAVIEW_ID,
     },
-    {
-      id: 'context-layer-mpa-no-take',
-      config: {
-        color: '#F4511F',
-        visible: false,
-      },
-      dataviewId: DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
-    },
-    {
-      id: 'context-layer-mpa-restricted',
-      config: {
-        color: '#F09300',
-        visible: false,
-      },
-      dataviewId: DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
-    },
+    // {
+    //   id: 'context-layer-mpa-no-take',
+    //   config: {
+    //     color: '#F4511F',
+    //     visible: false,
+    //   },
+    //   dataviewId: DEFAULT_MPA_NO_TAKE_DATAVIEW_ID,
+    // },
+    // {
+    //   id: 'context-layer-mpa-restricted',
+    //   config: {
+    //     color: '#F09300',
+    //     visible: false,
+    //   },
+    //   dataviewId: DEFAULT_MPA_RESTRICTED_DATAVIEW_ID,
+    // },
     {
       id: 'context-layer-mpa',
       config: {

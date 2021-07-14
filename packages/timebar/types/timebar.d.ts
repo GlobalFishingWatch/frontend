@@ -33,6 +33,7 @@ declare namespace Timebar {
         const onBookmarkChange: any;
         const absoluteStart: any;
         const absoluteEnd: any;
+        const latestAvailableDataDate: any;
         const enablePlayback: any;
         const onTogglePlay: any;
         const minimumRange: any;
@@ -42,6 +43,8 @@ declare namespace Timebar {
         const showLastUpdate: any;
     }
     namespace defaultProps {
+        const latestAvailableDataDate_1: string;
+        export { latestAvailableDataDate_1 as latestAvailableDataDate };
         export namespace labels_1 {
             namespace playback {
                 const playAnimation: string;
@@ -89,7 +92,7 @@ declare namespace Timebar {
         export { enablePlayback_1 as enablePlayback };
         export function onTogglePlay_1(): void;
         export { onTogglePlay_1 as onTogglePlay };
-        export function children_1(): void;
+        const children_1: any;
         export { children_1 as children };
         export function onMouseLeave_1(): void;
         export { onMouseLeave_1 as onMouseLeave };

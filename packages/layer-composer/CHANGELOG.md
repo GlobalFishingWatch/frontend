@@ -1,5 +1,97 @@
 # @globalfishingwatch/layer-composer
 
+## 8.9.0
+
+### Minor Changes
+
+- fdf6b275: support showAuthorizationStatus dataview config in encounter events
+
+## 8.8.1
+
+### Patch Changes
+
+- 1154779b: open attribution link in target blank
+
+## 8.8.0
+
+### Minor Changes
+
+- 12482b76: include encounter vessel in feature properties
+
+## 8.7.0
+
+### Minor Changes
+
+- 7f486176: highlight tile-cluster event
+
+## 8.6.0
+
+### Minor Changes
+
+- 3513a689: support interaction (configured in dataview as presenceDetails) for presence layers
+
+## 8.5.0
+
+### Minor Changes
+
+- ea0e1b8a: fix events generator
+
+## 8.4.0
+
+### Minor Changes
+
+- 060b3854: workaround for duplicated events in generator
+- ed8af7ae: workaround for duplicated api events
+
+## 8.3.0
+
+### Minor Changes
+
+- cleanup events generator
+
+## 8.2.1
+
+### Patch Changes
+
+- b268d362: fixed instable delta time
+
+## 8.2.0
+
+### Minor Changes
+
+- 87882042: add sublayerInteractionType
+
+## 8.1.0
+
+### Minor Changes
+
+- fishing events
+
+## 8.0.0
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@4.3.0
+
+## 7.3.0
+
+### Minor Changes
+
+- events with track segments
+
+## 7.2.0
+
+### Minor Changes
+
+- resolve vessel events generator
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@4.2.6
+- 05fe3de6: fixed issue with 4w time range + more greedy
+
 ## 7.1.3
 
 ### Patch Changes
@@ -24,7 +116,7 @@
 
 ### Minor Changes
 
-- 6c1b25bb: include leading point in filterGeoJSONByTimerange
+- 6c1b25bb: include leading point in filterTrackByTimerange
 
 ## 7.0.4
 

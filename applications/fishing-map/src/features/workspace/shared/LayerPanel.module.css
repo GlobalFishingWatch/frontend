@@ -25,7 +25,6 @@
   padding: var(--space-XS) var(--space-S);
   display: flex;
   align-items: center;
-  transition: background-color 150ms linear;
 }
 
 .expandedContainerOpen .header {

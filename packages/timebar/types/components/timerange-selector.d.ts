@@ -12,6 +12,7 @@ declare namespace TimeRangeSelector {
         const end: any;
         const absoluteStart: any;
         const absoluteEnd: any;
+        const latestAvailableDataDate: any;
         const onDiscard: any;
         const labels: any;
     }

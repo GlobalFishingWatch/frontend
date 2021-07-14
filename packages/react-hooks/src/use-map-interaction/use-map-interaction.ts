@@ -45,7 +45,6 @@ const getExtendedFeatures = (
       generatorMetadata = feature.layer.metadata
     }
 
-    const unit = generatorMetadata?.sublayers?.[0].legend.unit ?? null
     const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
     const properties = feature.properties || {}
     const extendedFeature: ExtendedFeature | null = {
@@ -58,7 +57,6 @@ const getExtendedFeatures = (
       uniqueFeatureInteraction,
       id: (feature.id as number) || feature.properties?.gfw_id || undefined,
       value: properties.value || properties.name || properties.id,
-      unit,
       tile: {
         x: (feature as any)._vectorTileFeature._x,
         y: (feature as any)._vectorTileFeature._y,
@@ -74,10 +72,8 @@ const getExtendedFeatures = (
         // This is used when querying the interaction endpoint, so that start begins at the start of the frame (ie start of a 10days interval)
         // This avoids querying a cell visible on the map, when its actual timerange is not included in the app-overall time range
         const getDate = CONFIG_BY_INTERVAL[timeChunks.interval as Interval].getDate
-        const visibleFramesStart = getDate(activeTimeChunk.frame).toISOString()
-        const visibleFramesEnd = getDate(
-          activeTimeChunk.frame + timeChunks.deltaInIntervalUnits
-        ).toISOString()
+        const visibleStartDate = getDate(timeChunks.visibleStartFrame).toISOString()
+        const visibleEndDate = getDate(timeChunks.visibleEndFrame).toISOString()
         const numSublayers = generatorMetadata?.numSublayers
         const values = aggregateCell({
           rawValues: properties.rawValues,
@@ -98,12 +94,14 @@ const getExtendedFeatures = (
             temporalgrid: {
               sublayerIndex: i,
               sublayerId: sublayers[i].id,
+              sublayerInteractionType: sublayers[i].interactionType,
               visible: visibleSublayers[i] === true,
               col: properties._col as number,
               row: properties._row as number,
               interval: timeChunks.interval,
-              visibleFramesStart,
-              visibleFramesEnd,
+              visibleStartDate,
+              visibleEndDate,
+              unit: sublayers[i].legend.unit,
             },
             value,
           }
@@ -238,15 +236,20 @@ export const useMapHover = (
 
   const onMapHover = useCallback(
     (event) => {
-      // Turn all sources with active feature states off
-      cleanFeatureState()
       const hoverEvent: InteractionEvent = {
         type: 'hover',
         point: event.point,
         longitude: event.lngLat[0],
         latitude: event.lngLat[1],
       }
-      if (event.features?.length) {
+      const isLinkHover = event.target.tagName.toLowerCase() === 'a'
+      if (isLinkHover) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      // Turn all sources with active feature states off
+      cleanFeatureState()
+      if (event.features?.length && !isLinkHover) {
         const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features, metadata)
         const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 

@@ -5,6 +5,8 @@ import {
   Dataview,
   DataviewDatasetConfig,
   DataviewInstance,
+  EndpointId,
+  Resource,
 } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer/dist/generators'
 import { resolveEndpoint } from '.'
@@ -97,6 +99,41 @@ export const resolveDataviewDatasetResource = (
   return { dataset, datasetConfig, url }
 }
 
+// Workaround to support multiple resource for the same dataset type (fishing, loitering...)
+// Ideally we move the `resolveDataviewDatasetResource` method to support it natively
+export const resolveDataviewEventsResources = (dataview: UrlDataviewInstance): Resource[] => {
+  if (!dataview.datasetsConfig?.length) {
+    return []
+  }
+  const dataviews = dataview.datasetsConfig?.flatMap((datasetConfig) => {
+    if (datasetConfig.endpoint !== EndpointId.Events) {
+      return []
+    }
+    const vesselID = datasetConfig.query?.find((q) => q.id === 'vessels')?.value
+    if (!vesselID) {
+      return []
+    }
+    const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetConfig.datasetId)
+    if (!dataset) {
+      return []
+    }
+    return { ...dataview, datasets: [dataset], datasetsConfig: [datasetConfig] }
+  })
+  const resources = dataviews?.flatMap((dataview) => {
+    const resource = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
+    if (resource.url && resource.dataset && resource.datasetConfig) {
+      return {
+        dataviewId: dataview.dataviewId as number,
+        url: resource.url,
+        dataset: resource.dataset,
+        datasetConfig: resource.datasetConfig,
+      } as Resource
+    }
+    return []
+  })
+  return resources
+}
+
 /**
  * Gets list of dataviews and those present in the workspace, and applies any config or datasetConfig
  * from it (merges dataview.config and workspace's dataviewConfig and datasetConfig).
@@ -127,11 +164,20 @@ export default function resolveDataviews(
         ...dataviewInstance.config,
       }
       config.visible = config?.visible ?? true
+      // Ensure the datasetConfig is defined in the base template dataview
       const datasetsConfig =
         dataview.datasetsConfig && dataview.datasetsConfig.length > 0
           ? dataview.datasetsConfig?.map((datasetConfig) => {
               const instanceDatasetConfig = dataviewInstance.datasetsConfig?.find(
                 (instanceDatasetConfig) => {
+                  if (datasetConfig.endpoint === EndpointId.Events) {
+                    return (
+                      datasetConfig.endpoint === instanceDatasetConfig.endpoint &&
+                      // As the events could have multiple datasets we also have to validate this
+                      // which also enforces to set the datasetConfig in the dataviewInstance used
+                      datasetConfig.datasetId === instanceDatasetConfig.datasetId
+                    )
+                  }
                   return datasetConfig.endpoint === instanceDatasetConfig.endpoint
                 }
               )

@@ -102,13 +102,14 @@ export const sources: Dictionary<Record<string, Partial<any>>> = {
       tiles: ['https://storage.googleapis.com/public-tiles/basemap/default/{z}/{x}/{y}.pbf'],
       maxzoom: 9,
       attribution:
-        '<a href="https://www.naturalearthdata.com">Natural Earth</a> | <a href="https://gadm.org/">GADM</a>',
+        '<a href="https://www.naturalearthdata.com" target="_blank" rel="noopener noreferrer">Natural Earth</a> | <a href="https://gadm.org/" target="_blank" rel="noopener noreferrer">GADM</a>',
     },
     bathymetry: {
       type: 'raster',
       tiles: ['https://storage.googleapis.com/public-tiles/basemap/bathymetry/{z}/{x}/{y}.png'],
       maxzoom: 8,
-      attribution: '<a href="https://visibleearth.nasa.gov/images/73963/bathymetry">NASA</a>',
+      attribution:
+        '<a href="https://visibleearth.nasa.gov/images/73963/bathymetry" target="_blank" rel="noopener noreferrer">NASA</a>',
     },
   },
 }

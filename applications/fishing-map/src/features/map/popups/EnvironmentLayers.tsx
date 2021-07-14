@@ -32,7 +32,8 @@ function EnvironmentTooltipSection({
               <div className={styles.row}>
                 <span className={styles.rowText}>
                   {parseEnvironmentalValue(feature.value)}{' '}
-                  {feature.unit && <span>{feature.unit}</span>}
+                  {/* TODO will need to not pick from temporalgrid once user polygons support units  */}
+                  {feature.temporalgrid?.unit && <span>{feature.temporalgrid?.unit}</span>}
                 </span>
               </div>
             </div>

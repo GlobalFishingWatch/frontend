@@ -1,4 +1,5 @@
 import { scaleLinear } from 'd3-scale'
+import { uniq } from 'lodash'
 import {
   Resource,
   TrackResourceData,
@@ -9,6 +10,7 @@ import {
   EnviromentalDatasetConfiguration,
   DataviewCategory,
   Dataset,
+  ApiEvent,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -20,9 +22,14 @@ import {
 import type {
   ColorRampsIds,
   HeatmapAnimatedGeneratorSublayer,
+  HeatmapAnimatedInteractionType,
 } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
-import { resolveDataviewDatasetResource, UrlDataviewInstance } from './resolve-dataviews'
+import {
+  resolveDataviewDatasetResource,
+  resolveDataviewEventsResources,
+  UrlDataviewInstance,
+} from './resolve-dataviews'
 
 export const MULTILAYER_SEPARATOR = '__'
 export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedAnimatedHeatmap'
@@ -41,6 +48,7 @@ type DataviewsGeneratorConfigsParams = {
   debug?: boolean
   timeRange?: { start: string; end: string }
   highlightedTime?: { start: string; end: string }
+  highlightedEvent?: ApiEvent
   mergedActivityGeneratorId?: string
   heatmapAnimatedMode?: Generators.HeatmapAnimatedMode
 }
@@ -78,7 +86,7 @@ export function getGeneratorConfig(
   params?: DataviewsGeneratorConfigsParams,
   resources?: DataviewsGeneratorResource
 ) {
-  const { debug = false, timeRange, highlightedTime } = params || {}
+  const { debug = false, highlightedTime, highlightedEvent } = params || {}
 
   let generator: GeneratorDataviewConfig = {
     id: dataview.id,
@@ -96,7 +104,10 @@ export function getGeneratorConfig(
         return []
       }
       generator.tilesUrl = tileClusterUrl
-      break
+      return {
+        ...generator,
+        ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
+      }
     }
     case Generators.Type.Track: {
       // Inject highligtedTime
@@ -114,7 +125,26 @@ export function getGeneratorConfig(
         const resource = resources?.[trackUrl] as Resource<TrackResourceData>
         generator.data = resource.data
       }
-      break
+      const eventsResources = resolveDataviewEventsResources(dataview)
+      const hasEventData =
+        eventsResources?.length && eventsResources.some(({ url }) => resources?.[url]?.data)
+      // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
+      if (hasEventData) {
+        // TODO This flatMap will prevent the corresponding generator to memoize correctly
+        const data = eventsResources.flatMap(({ url }) => (url ? resources?.[url]?.data : []))
+        const eventsGenerator = {
+          id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
+          type: Generators.Type.VesselEvents,
+          showIcons: dataview.config?.showIcons,
+          showAuthorizationStatus: dataview.config?.showAuthorizationStatus,
+          data: data,
+          color: dataview.config?.color,
+          track: generator.data,
+          ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
+        }
+        return [generator, eventsGenerator]
+      }
+      return generator
     }
     case Generators.Type.Heatmap: {
       const heatmapDataset = dataview.datasets?.find(
@@ -144,7 +174,7 @@ export function getGeneratorConfig(
           },
         },
       }
-      break
+      return generator
     }
     case Generators.Type.HeatmapAnimated: {
       const isEnvironmentLayer = dataview.category === DataviewCategory.Environment
@@ -207,7 +237,7 @@ export function getGeneratorConfig(
         ...(extentStart && { datasetsStart: extentStart }),
         ...(extentEnd && { datasetsEnd: extentEnd }),
       }
-      break
+      return generator
     }
     case Generators.Type.Context:
     case Generators.Type.UserContext: {
@@ -259,10 +289,12 @@ export function getGeneratorConfig(
         console.warn('Missing tiles url for dataview', dataview)
         return []
       }
-      break
+      return generator
+    }
+    default: {
+      return generator
     }
   }
-  return generator
 }
 
 /**
@@ -301,8 +333,26 @@ export function getDataviewsGeneratorConfigs(
       const { config, datasetsConfig } = dataview
       if (!config || !datasetsConfig || !datasetsConfig.length) return []
       const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
-      // TODO Take unit from first dataset -> are we sure activity sublayers always use 'hours'?
-      const unit = dataview.datasets?.[0]?.unit
+      const units = uniq(dataview.datasets?.map((dataset) => dataset.unit))
+      if (units.length !== 1) {
+        throw new Error('Shouldnt have distinct units for the same heatmap layer')
+      }
+      const interactionTypes = uniq(
+        dataview.datasets?.map((dataset) => dataset.configuration?.type || 'fishing-effort')
+      ) as HeatmapAnimatedInteractionType[]
+      if (interactionTypes.length !== 1) {
+        throw new Error(
+          `Shouldnt have distinct dataset config types for the same heatmap layer: ${interactionTypes.toString()}`
+        )
+      }
+      const interactionType =
+        // Some VMS presence layers have interaction, this is the way of
+        // allowing it but keeping it disabled in the global one
+        interactionTypes[0] === 'presence'
+          ? dataview?.config?.presenceDetails === true
+            ? 'presence-detail'
+            : 'presence'
+          : (interactionTypes[0] as HeatmapAnimatedInteractionType)
       const sublayer: HeatmapAnimatedGeneratorSublayer = {
         id: dataview.id,
         datasets,
@@ -312,9 +362,10 @@ export function getDataviewsGeneratorConfigs(
         visible: config.visible,
         legend: {
           label: dataview.name,
-          unit,
+          unit: units[0],
           color: dataview?.config?.color,
         },
+        interactionType,
       }
 
       return sublayer

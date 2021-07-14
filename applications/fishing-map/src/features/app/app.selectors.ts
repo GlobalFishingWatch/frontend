@@ -12,14 +12,14 @@ import {
   selectQueryParam,
   selectUrlViewport,
   selectLocationCategory,
-  selectActivityCategory,
   selectUrlTimeRange,
 } from 'routes/routes.selectors'
 import {
   BivariateDataviews,
-  TimebarEvents,
   TimebarGraphs,
   TimebarVisualisations,
+  VisibleEvents,
+  WorkspaceActivityCategory,
   WorkspaceAnalysis,
   WorkspaceState,
   WorkspaceStateProperty,
@@ -28,6 +28,7 @@ import {
   selectActiveVesselsDataviews,
   selectDataviewInstancesMerged,
 } from 'features/dataviews/dataviews.selectors'
+import { RootState } from 'store'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -74,10 +75,35 @@ export const selectSearchQuery = createSelector(
   }
 )
 
+export const selectActivityCategory = createSelector(
+  [selectWorkspaceStateProperty('activityCategory')],
+  (activityCategory): WorkspaceActivityCategory => {
+    return activityCategory
+  }
+)
+
+export function selectActivityCategoryFn(state: RootState) {
+  return selectActivityCategory(state)
+}
+
 export const selectBivariateDataviews = createSelector(
   [selectWorkspaceStateProperty('bivariateDataviews')],
   (bivariate): BivariateDataviews => {
     return bivariate
+  }
+)
+
+export const selectReadOnly = createSelector(
+  [selectWorkspaceStateProperty('readOnly')],
+  (readOnly): boolean => {
+    return readOnly
+  }
+)
+
+export const selectDaysFromLatest = createSelector(
+  [selectWorkspaceStateProperty('daysFromLatest')],
+  (daysFromLatest): number => {
+    return daysFromLatest
   }
 )
 
@@ -95,10 +121,10 @@ export const selectTimebarVisualisation = createSelector(
   }
 )
 
-export const selectTimebarEvents = createSelector(
-  [selectWorkspaceStateProperty('timebarEvents')],
-  (timebarEvents): TimebarEvents => {
-    return timebarEvents
+export const selectVisibleEvents = createSelector(
+  [selectWorkspaceStateProperty('visibleEvents')],
+  (visibleEvents): VisibleEvents => {
+    return visibleEvents
   }
 )
 
@@ -114,7 +140,7 @@ export const selectWorkspaceAppState = createSelector(
     selectBivariateDataviews,
     selectSidebarOpen,
     selectTimebarVisualisation,
-    selectTimebarEvents,
+    selectVisibleEvents,
     selectTimebarGraph,
     selectActivityCategory,
   ],
@@ -122,7 +148,7 @@ export const selectWorkspaceAppState = createSelector(
     bivariateDataviews,
     sidebarOpen,
     timebarVisualisation,
-    timebarEvents,
+    visibleEvents,
     timebarGraph,
     activityCategory
   ) => {
@@ -130,7 +156,7 @@ export const selectWorkspaceAppState = createSelector(
       bivariateDataviews,
       sidebarOpen,
       timebarVisualisation,
-      timebarEvents,
+      visibleEvents,
       timebarGraph,
       activityCategory,
     }

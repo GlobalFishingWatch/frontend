@@ -12,7 +12,7 @@ const initialState: ResourcesState = {}
 export const fetchResourceThunk = createAsyncThunk(
   'resources/fetch',
   async (resource: Resource) => {
-    const isTrackResource = resource.datasetType === DatasetTypes.Tracks
+    const isTrackResource = resource.dataset.type === DatasetTypes.Tracks
     const responseType =
       isTrackResource &&
       resource.datasetConfig.query?.some((q) => q.id === 'binary' && q.value === true)

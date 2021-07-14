@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { selectActiveDataviews } from 'features/dataviews/dataviews.selectors'
-import { getSourcesSelectedInDataview } from 'features/workspace/heatmaps/heatmaps.utils'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { GUEST_USER_TYPE, selectUserData } from 'features/user/user.slice'
-import { validateEmail } from 'utils/shared'
-import { selectLocationType } from 'routes/routes.selectors'
-import { HOME, WORKSPACE } from 'routes/routes'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
+import { isGuestUser, selectUserGroupsClean } from 'features/user/user.selectors'
 import styles from './FeedbackModal.module.css'
 
 type FeedbackModalProps = {
@@ -19,98 +17,137 @@ type FeedbackModalProps = {
 }
 
 type FeedbackData = {
-  userId?: number | string
+  date: string
+  url: string
+  userAgent: string
+  resolution: string
+  userId?: number | typeof GUEST_USER_TYPE
   name?: string
   email?: string
-  institution?: string
+  organization?: string
+  groups?: string
   role?: string
-  dataset?: string
+  feedbackType?: string
+  improvement?: string
+  issue?: string
   description?: string
-  date?: string
-  url?: string
 }
 
 const FEEDBACK_SHEET_TITLE = 'new feedback'
 const FEEDBACK_SPREADSHEET_ID = process.env.REACT_APP_FEEDBACK_SPREADSHEET_ID || ''
 
 export const FEEDBACK_ROLE_IDS = [
-  'watch',
   'analyst',
-  'navy',
   'fisheries',
+  'general',
+  'journalist',
+  'navy',
   'ngo',
   'scientist',
-  'journalist',
   'student',
-  'general',
+  'watch',
   'GFW',
+  'other',
+]
+
+export const FEEDBACK_FEATURE_IDS = [
+  'activityLayers',
+  'vesselTracks',
+  'vesselSearch',
+  'environmentLayers',
+  'reference',
+  'timebar',
+  'analysis',
   'other',
 ]
 
 function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   const { t } = useTranslation()
   const activeDataviews = useSelector(selectActiveDataviews)
-  const locationType = useSelector(selectLocationType)
   const userData = useSelector(selectUserData)
   const [loading, setLoading] = useState(false)
   const [suficientData, setSuficientData] = useState(false)
+  const userGroups = useSelector(selectUserGroupsClean)
+  const guestUser = useSelector(isGuestUser)
 
   const initialFeedbackState = {
+    date: new Date().toISOString(),
     url: window.location.href,
-    date: new Date().toString(),
+    userAgent: navigator.userAgent,
+    resolution: `${window.innerWidth}x${window.innerHeight}px`,
   }
 
   const [feedbackData, setFeedbackData] = useState<FeedbackData>(initialFeedbackState)
+  const setInitialFeedbackStateWithUserData = () => {
+    setFeedbackData({
+      ...initialFeedbackState,
+      ...(!guestUser &&
+        userData && {
+          userId: userData.id,
+          email: userData.email,
+          name: `${userData.firstName} ${userData.lastName}`,
+          groups: (userGroups || []).join(', '),
+          organization: userData.organization || '',
+        }),
+    })
+  }
 
   useEffect(() => {
-    const name =
-      userData && userData.type !== GUEST_USER_TYPE
-        ? `${userData.firstName} ${userData.lastName || ''}`
-        : ''
-    setFeedbackData({
-      ...feedbackData,
-      userId: userData?.id || GUEST_USER_TYPE,
-      email: userData?.email || '',
-      name: name,
-    })
+    setInitialFeedbackStateWithUserData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData])
 
   useEffect(() => {
-    const { description, name, email } = feedbackData
-    const hasMandatoryData =
-      description !== undefined &&
-      description !== '' &&
-      name !== undefined &&
-      name !== '' &&
-      validateEmail(email || '')
-    setSuficientData(hasMandatoryData)
+    const { description } = feedbackData
+    const hasSuficientData = description !== undefined && description !== ''
+    setSuficientData(hasSuficientData)
   }, [feedbackData])
 
+  const inprovementsOption = {
+    id: 'improvements',
+    label: t('feedback.improvements', 'Platform Improvements'),
+  }
+  const issuesOption = {
+    id: 'issues',
+    label: t('feedback.issues', 'Platform Issues'),
+  }
   const datasetOptions = activeDataviews.flatMap((dataview) => {
     if (dataview.config?.type === Generators.Type.HeatmapAnimated) {
       const sourcesInDataview = getSourcesSelectedInDataview(dataview)
       return sourcesInDataview.map((source) => {
         return {
-          id: source.id,
-          label: t(`datasets:${source.id.split(':')[0]}.name` as any),
+          id: `Data: ${source.id}`,
+          label: `Data: ${t(`datasets:${source.id.split(':')[0]}.name` as any)}`,
         }
       })
     } else {
       return {
-        id: dataview.id,
-        label: t(`datasets:${dataview.datasets?.[0]?.id.split(':')[0]}.name` as any),
+        id: `Data: ${dataview.id}`,
+        label: `Data: ${t(`datasets:${dataview.datasets?.[0]?.id.split(':')[0]}.name` as any)}`,
       }
     }
   })
+  const allFeedbackTypeOptions = [inprovementsOption, issuesOption, ...datasetOptions]
 
   const roleOptions = FEEDBACK_ROLE_IDS.map((roleId) => ({
     id: roleId,
     label: t(`feedback.roles.${roleId}` as any),
   }))
 
+  const featureOptions = FEEDBACK_FEATURE_IDS.map((featureId) => ({
+    id: featureId,
+    label: t(`feedback.features.${featureId}` as any),
+  }))
+
   const onFieldChange = (field: keyof FeedbackData, value: string) => {
-    setFeedbackData({ ...feedbackData, [field]: value })
+    const shouldResetType =
+      field === 'feedbackType' && value !== inprovementsOption.id && value !== issuesOption.id
+
+    setFeedbackData({
+      ...feedbackData,
+      [field]: value,
+      ...(shouldResetType && { improvement: '', issue: '' }),
+    })
   }
 
   const sendFeedback = async () => {
@@ -119,20 +156,26 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(FEEDBACK_SPREADSHEET_ID)
       // loads document properties and worksheets
       const sheet = feedbackSpreadsheetDoc.sheetsByTitle[FEEDBACK_SHEET_TITLE]
-      setFeedbackData({
+      const finalFeedbackData = {
         ...feedbackData,
-        url: window.location.href,
-        date: new Date().toString(),
-      })
-      await sheet.addRow(feedbackData)
+        userId: feedbackData.userId || GUEST_USER_TYPE,
+      }
+      await sheet.addRow(finalFeedbackData)
       setLoading(false)
-      setFeedbackData(initialFeedbackState)
+      setInitialFeedbackStateWithUserData()
       onClose()
     } catch (e) {
       setLoading(false)
       console.error('Error: ', e)
     }
   }
+
+  const showDescription =
+    (feedbackData.feedbackType &&
+      feedbackData.feedbackType !== inprovementsOption.id &&
+      feedbackData.feedbackType !== issuesOption.id) ||
+    feedbackData.issue ||
+    feedbackData.improvement
 
   return (
     <Modal
@@ -144,56 +187,78 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       <div className={styles.container}>
         <div className={styles.form}>
           <div className={styles.column}>
-            <InputText
-              onChange={({ target }) => onFieldChange('name', target.value)}
-              value={feedbackData.name || ''}
-              label={t('common.name', 'Name')}
-              placeholder={t('common.name', 'Name')}
-            />
-            <InputText
-              onChange={({ target }) => onFieldChange('email', target.value)}
-              value={feedbackData.email || ''}
-              label={t('feedback.email', 'E-mail address')}
-              placeholder={t('feedback.email', 'E-mail address')}
-            />
+            {guestUser && (
+              <Fragment>
+                <InputText
+                  value={feedbackData.name || ''}
+                  placeholder={t('common.name', 'Name') as any}
+                  onChange={({ target }) => onFieldChange('name', target.value)}
+                />
+                <InputText
+                  value={feedbackData.email || ''}
+                  placeholder={t('feedback.email', 'E-mail address') as any}
+                  onChange={({ target }) => onFieldChange('email', target.value)}
+                />
+                <span className={styles.emailDisclaimer}>
+                  {t(
+                    'feedback.emailDisclaimer',
+                    'We will only email you in relation to this feedback'
+                  )}
+                </span>
+              </Fragment>
+            )}
             <Select
-              label={`${t('feedback.role', 'Role')} (${t('feedback.optional', 'Optional')})`}
+              label={t('feedback.role', 'Role')}
               options={roleOptions}
-              selectedOption={roleOptions.find((option) => option.label === feedbackData.role)}
-              onSelect={(option) => onFieldChange('role', option.label)}
+              selectedOption={roleOptions.find((option) => option.id === feedbackData.role)}
+              onSelect={(option) => onFieldChange('role', option.id)}
               onRemove={() => onFieldChange('role', '')}
             />
-            <InputText
-              onChange={({ target }) => onFieldChange('institution', target.value)}
-              value={feedbackData.institution || ''}
-              label={`${t('feedback.institution', 'Institution/Organization')} (${t(
-                'feedback.optional',
-                'Optional'
-              )})`}
-              placeholder={t('feedback.institution', 'Institution/Organization')}
-            />
+            {feedbackData.role && (
+              <Select
+                label={t('feedback.type', 'What are you providing feedback for?')}
+                options={allFeedbackTypeOptions}
+                selectedOption={allFeedbackTypeOptions.find(
+                  (option) => option.id === feedbackData.feedbackType
+                )}
+                onSelect={(option) => onFieldChange('feedbackType', option.id)}
+                onRemove={() => onFieldChange('feedbackType', '')}
+              />
+            )}
+            {feedbackData.feedbackType === inprovementsOption.id && (
+              <Select
+                label={t('feedback.whichFeature', 'Which feature would you like to improve?')}
+                options={featureOptions}
+                selectedOption={featureOptions.find(
+                  (option) => option.id === feedbackData.improvement
+                )}
+                onSelect={(option) => onFieldChange('improvement', option.id)}
+                onRemove={() => onFieldChange('improvement', '')}
+              />
+            )}
+            {feedbackData.feedbackType === issuesOption.id && (
+              <Select
+                label={t('feedback.whatIssue', 'Where are you having an issue?')}
+                options={featureOptions}
+                selectedOption={featureOptions.find((option) => option.id === feedbackData.issue)}
+                onSelect={(option) => onFieldChange('issue', option.id)}
+                onRemove={() => onFieldChange('issue', '')}
+              />
+            )}
           </div>
-          <div className={styles.column}>
-            {locationType === WORKSPACE ||
-              (locationType === HOME && (
-                <Select
-                  label={t('feedback.dataset', 'Dataset you are providing feedback for')}
-                  options={datasetOptions}
-                  selectedOption={datasetOptions.find(
-                    (option) => option.label === feedbackData.dataset
-                  )}
-                  onSelect={(option) => onFieldChange('dataset', option.label)}
-                  onRemove={() => onFieldChange('dataset', '')}
-                />
-              ))}
-            <label>{t('feedback.issue', 'What issue are you having?')}</label>
-            <textarea
-              onChange={({ target }) => onFieldChange('description', target.value)}
-              value={feedbackData.description || ''}
-              className={styles.textarea}
-              placeholder={t('common.description', 'Description')}
-            ></textarea>
-          </div>
+          {showDescription && (
+            <div className={styles.column}>
+              <label>{t('common.description', 'Description')}</label>
+              <textarea
+                onChange={({ target }) => onFieldChange('description', target.value)}
+                value={feedbackData.description || ''}
+                className={styles.textarea}
+                placeholder={
+                  t('feedback.descriptionPlaceholder', 'Please be as specific as possible.') as any
+                }
+              ></textarea>
+            </div>
+          )}
         </div>
 
         <p className={styles.intro}>

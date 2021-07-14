@@ -1,7 +1,6 @@
 {
   "common": {
     "activity": "actividad",
-    "commingSoon": "muy pronto!",
     "currentTimeRange": "período actual",
     "from": "desde",
     "info": "info",
@@ -10,11 +9,27 @@
     "since": "desde",
     "timeRange": "período",
     "to": "hasta",
+    "commingSoon": "muy pronto!",
     "historyFor": "historial para",
     "previous": "anteriones"
   },
-  "layer": {
-    "toggleVisibility": "Toggle layer visibility"
+  "event": {
+    "avgDuration": "Avg Duration",
+    "avgSpeed": "Avg Speed",
+    "diffHours": "{{ diff }} hours",
+    "distance": "Distance",
+    "end": "End date",
+    "endDistancePort": "End distance from port",
+    "endDistanceShore": "End distance from shore",
+    "fishingEvent": "Fishing in {{ regionName }}",
+    "fishingGroup": "{{ count }} Fishing events in {{ regionName }}",
+    "fishingGroup_plural": "{{ count }} Fishing events in {{ regionName }}",
+    "maxCoords": "Max coordinates",
+    "minCoords": "Min coordinates",
+    "noDescription": "No description found",
+    "start": "Start date",
+    "startDistancePort": "Start distance from port",
+    "startDistanceShore": "Start distance from shore"
   },
   "map": {
     "loading": "Map loading",
@@ -32,34 +47,35 @@
     "selected": "seleccionado"
   },
   "settings": {
-    "title": "Settings",
     "distance": "DISTANCE TRAVELLED",
     "duration": "DURATION",
-    "hours": "hours",
-    "longerThan": "Longer than",
     "eezs": {
       "label": "Events in these EEZs"
     },
+    "encounters": {
+      "title": "Encounter Events"
+    },
+    "fishingEvents": {
+      "title": "Fishing Events"
+    },
+    "hours": "hours",
+    "kms": "kms",
+    "loiteringEvents": {
+      "title": "Loitering Events"
+    },
+    "longerThan": "Longer than",
     "mpas": {
       "label": "Events in these MPAs"
+    },
+    "portVisits": {
+      "inputEnd": "ports",
+      "inputStart": "Port visits in",
+      "title": "Port Visits"
     },
     "rfmos": {
       "label": "Events in these RFMOS"
     },
-    "loiteringEvents": {
-      "title": "Loitering Events"
-    },
-    "encounters": {
-      "title": "Loitering Events"
-    },
-    "fishingEvents": {
-      "title": "Loitering Events"
-    },
-    "portVisits": {
-      "title": "Port Visits",
-      "inputStart": "Port visits in",
-      "inputEnd": "ports"
-    }
+    "title": "Settings"
   },
   "vessel": {
     "authorization_plural": "autorizaciones",
@@ -98,5 +114,8 @@
     "operator_plural": "operadores",
     "owner_plural": "propietarios",
     "type_plural": "tipos"
+  },
+  "layer": {
+    "toggleVisibility": "Toggle layer visibility"
   }
 }

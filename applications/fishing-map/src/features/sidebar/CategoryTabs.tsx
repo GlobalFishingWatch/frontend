@@ -1,26 +1,25 @@
-import React, { Fragment, useCallback } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import Link from 'redux-first-router-link'
-import { event as uaEvent } from 'react-ga'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import Icon, { IconType } from '@globalfishingwatch/ui-components/dist/icon'
+import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
-import { Locale } from 'types'
 import { WorkspaceCategories } from 'data/workspaces'
 import { HOME, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
-import { LocaleLabels } from 'features/i18n/i18n'
 import { useClickedEventConnect } from 'features/map/map.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import useViewport from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
-// import FeedbackModal from 'features/feedback/FeedbackModal'
+import FeedbackModal from 'features/feedback/FeedbackModal'
+import LanguageToggle from 'features/i18n/LanguageToggle'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
@@ -42,7 +41,7 @@ function getLinkToCategory(category: WorkspaceCategories) {
 }
 
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const guestUser = useSelector(isGuestUser)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchClickedEvent } = useClickedEventConnect()
@@ -55,24 +54,15 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
 
-  const toggleLanguage = (lang: Locale) => {
-    uaEvent({
-      category: 'Internationalization',
-      action: `Change language`,
-      label: lang,
-    })
-    i18n.changeLanguage(lang)
-  }
-
   // const [modalHelpOpen, setModalHelpOpen] = useState(false)
-  // const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false)
+  const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false)
 
   // const onHelpClick = () => {
   //   setModalHelpOpen(true)
   // }
-  // const onFeedbackClick = () => {
-  //   setModalFeedbackOpen(true)
-  // }
+  const onFeedbackClick = () => {
+    setModalFeedbackOpen(true)
+  }
 
   const onCategoryClick = useCallback(() => {
     setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
@@ -112,29 +102,19 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             <Icon icon="help" />
           </button>
         </li> */}
-        {/* <li className={cx(styles.tab, styles.secondary)}>
-          <button className={styles.tabContent} onClick={onFeedbackClick}>
-            <Icon icon="feedback" />
-          </button>
-        </li> */}
-        <li className={cx(styles.tab, styles.languageToggle)}>
-          <button className={styles.tabContent}>
-            <Icon icon="language" />
-          </button>
-          <ul className={styles.languages}>
-            {LocaleLabels.map(({ id, label }) => (
-              <li key={id}>
-                <button
-                  onClick={() => toggleLanguage(id)}
-                  className={cx(styles.language, {
-                    [styles.currentLanguage]: i18n.language === id,
-                  })}
-                >
-                  {label}
-                </button>
-              </li>
-            ))}
-          </ul>
+        {userData && (
+          <li className={cx(styles.tab, styles.secondary)}>
+            <IconButton
+              // className={cx(styles.tabContent, 'print-hidden')}
+              icon="feedback"
+              onClick={onFeedbackClick}
+              tooltip={t('common.feedback', 'Feedback')}
+              tooltipPlacement="right"
+            />
+          </li>
+        )}
+        <li className={styles.tab}>
+          <LanguageToggle />
         </li>
         <li
           className={cx(styles.tab, {
@@ -162,7 +142,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         </li>
       </ul>
       {/* <HelpModal isOpen={modalHelpOpen} onClose={() => setModalHelpOpen(false)} /> */}
-      {/* <FeedbackModal isOpen={modalFeedbackOpen} onClose={() => setModalFeedbackOpen(false)} /> */}
+      <FeedbackModal isOpen={modalFeedbackOpen} onClose={() => setModalFeedbackOpen(false)} />
     </Fragment>
   )
 }

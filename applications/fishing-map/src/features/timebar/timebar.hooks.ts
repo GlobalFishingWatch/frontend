@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import { debounce } from 'lodash'
+import { ApiEvent } from '@globalfishingwatch/api-types/dist'
 import { TimebarVisualisations } from 'types'
 import { selectTimebarVisualisation } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -12,7 +13,15 @@ import {
 import store, { RootState } from 'store'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectUrlTimeRange } from 'routes/routes.selectors'
-import { selectHasChangedSettingsOnce, changeSettings, Range } from './timebar.slice'
+import {
+  Range,
+  changeSettings,
+  setHighlightedEvent,
+  selectHighlightedEvent,
+  selectHasChangedSettingsOnce,
+  selectHighlightedTime,
+  disableHighlightedTime,
+} from './timebar.slice'
 
 export const TimeRangeAtom = atom<Range | null>({
   key: 'timerange',
@@ -55,6 +64,45 @@ export const useTimerangeConnect = () => {
       onTimebarChange,
     }
   }, [onTimebarChange, timerange, setTimerange])
+}
+
+export const useDisableHighlightTimeConnect = () => {
+  const highlightedTime = useSelector(selectHighlightedTime)
+  const dispatch = useDispatch()
+
+  const dispatchDisableHighlightedTime = useCallback(() => {
+    if (highlightedTime !== undefined) {
+      dispatch(disableHighlightedTime())
+    }
+  }, [dispatch, highlightedTime])
+
+  return useMemo(
+    () => ({
+      highlightedTime,
+      dispatchDisableHighlightedTime,
+    }),
+    [highlightedTime, dispatchDisableHighlightedTime]
+  )
+}
+
+export const useHighlightEventConnect = () => {
+  const highlightedEvent = useSelector(selectHighlightedEvent)
+  const dispatch = useDispatch()
+
+  const dispatchHighlightedEvent = useCallback(
+    (event: ApiEvent | undefined) => {
+      dispatch(setHighlightedEvent(event))
+    },
+    [dispatch]
+  )
+
+  return useMemo(
+    () => ({
+      highlightedEvent,
+      dispatchHighlightedEvent,
+    }),
+    [highlightedEvent, dispatchHighlightedEvent]
+  )
 }
 
 export const useTimebarVisualisation = () => {

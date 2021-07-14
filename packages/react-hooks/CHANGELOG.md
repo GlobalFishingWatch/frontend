@@ -1,5 +1,74 @@
 # @globalfishingwatch/react-hooks
 
+## 12.0.1
+
+### Patch Changes
+
+- 604bde0c: disable interaction for attribution links
+
+## 12.0.0
+
+### Major Changes
+
+- 70ad8e32: Fixes popup units
+
+## 11.2.0
+
+### Minor Changes
+
+- 87882042: add sublayerInteractionType
+
+## 11.1.0
+
+### Minor Changes
+
+- fishing events
+
+## 11.0.0
+
+### Patch Changes
+
+- @globalfishingwatch/api-client@2.0.0
+- @globalfishingwatch/dataviews-client@11.0.0
+- @globalfishingwatch/layer-composer@8.0.0
+
+## 10.0.0
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@7.3.0
+  - @globalfishingwatch/dataviews-client@10.0.0
+
+## 9.0.1
+
+### Patch Changes
+
+- events generator
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@9.0.1
+
+## 9.0.0
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@9.0.0
+  - @globalfishingwatch/layer-composer@7.2.0
+
+## 9.0.0
+
+### Major Changes
+
+- 05fe3de6: fixed issue with 4w time range + more greedy
+
+### Patch Changes
+
+- Updated dependencies [05fe3de6]
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/dataviews-client@9.0.0
+
 ## 8.0.3
 
 ### Patch Changes

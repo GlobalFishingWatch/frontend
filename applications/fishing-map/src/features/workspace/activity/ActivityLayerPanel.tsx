@@ -6,9 +6,10 @@ import { event as uaEvent } from 'react-ga'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectBivariateDataviews } from 'features/app/app.selectors'
+import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
@@ -19,9 +20,9 @@ import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
-import Filters from './HeatmapFilters'
-import { isFishingDataview, isPresenceDataview } from './heatmaps.utils'
-import heatmapStyles from './HeatmapsSection.module.css'
+import Filters from './ActivityFilters'
+import { isFishingDataview, isPresenceDataview } from './activity.utils'
+import activityStyles from './ActivitySection.module.css'
 
 type LayerPanelProps = {
   isOpen: boolean
@@ -30,7 +31,7 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-function HeatmapLayerPanel({
+function ActivityLayerPanel({
   dataview,
   showBorder,
   isOpen,
@@ -42,6 +43,7 @@ function HeatmapLayerPanel({
   const { deleteDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const readOnly = useSelector(selectReadOnly)
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -91,7 +93,10 @@ function HeatmapLayerPanel({
     : dataview.name || ''
   const fishingDataview = isFishingDataview(dataview)
   const presenceDataview = isPresenceDataview(dataview)
-  if (fishingDataview || presenceDataview) {
+  if (
+    dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID ||
+    dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID
+  ) {
     datasetName = presenceDataview
       ? t(`common.presence`, 'Vessel presence')
       : t(`common.apparentFishing`, 'Apparent Fishing Effort')
@@ -107,7 +112,7 @@ function HeatmapLayerPanel({
   )
   return (
     <div
-      className={cx(styles.LayerPanel, heatmapStyles.layerPanel, {
+      className={cx(styles.LayerPanel, activityStyles.layerPanel, {
         [styles.expandedContainerOpen]: filterOpen,
         [styles.noBorder]: !showBorder || bivariateDataviews?.[0] === dataview.id,
         'print-hidden': !layerActive,
@@ -126,7 +131,7 @@ function HeatmapLayerPanel({
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && (fishingDataview || presenceDataview) && (
+          {layerActive && (fishingDataview || presenceDataview) && !readOnly && (
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
@@ -146,7 +151,7 @@ function HeatmapLayerPanel({
             </ExpandedContainer>
           )}
           <InfoModal dataview={dataview} />
-          <Remove onClick={onRemoveLayerClick} />
+          {!readOnly && <Remove onClick={onRemoveLayerClick} />}
         </div>
       </div>
       {layerActive && (
@@ -155,6 +160,11 @@ function HeatmapLayerPanel({
             <div className={styles.filters}>
               <DatasetFilterSource dataview={dataview} />
               <DatasetFlagField dataview={dataview} />
+              <DatasetSchemaField
+                dataview={dataview}
+                field={'qf_detect'}
+                label={t('layer.qf', 'Quality signal')}
+              />
               <DatasetSchemaField
                 dataview={dataview}
                 field={'geartype'}
@@ -177,8 +187,8 @@ function HeatmapLayerPanel({
               />
             </div>
           </div>
-          <div className={heatmapStyles.legendContainer}>
-            <div className={heatmapStyles.legend} id={`legend_${dataview.id}`}></div>
+          <div className={activityStyles.legendContainer}>
+            <div className={activityStyles.legend} id={`legend_${dataview.id}`}></div>
             {bivariateDataviews?.[0] === dataview.id && (
               <IconButton
                 size="small"
@@ -186,7 +196,7 @@ function HeatmapLayerPanel({
                 icon="split"
                 tooltip={t('layer.toggleCombinationMode.split', 'Split layers')}
                 tooltipPlacement="left"
-                className={cx(heatmapStyles.bivariateSplit, 'print-hidden')}
+                className={cx(activityStyles.bivariateSplit, 'print-hidden')}
                 onClick={onSplitLayers}
               />
             )}
@@ -197,4 +207,4 @@ function HeatmapLayerPanel({
   )
 }
 
-export default HeatmapLayerPanel
+export default ActivityLayerPanel

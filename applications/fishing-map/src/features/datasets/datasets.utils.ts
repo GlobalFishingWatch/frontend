@@ -1,19 +1,61 @@
 import { intersection, lowerCase } from 'lodash'
-import { Dataset, Dataview } from '@globalfishingwatch/api-types'
+import { Dataset, Dataview, EventTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { capitalize } from 'utils/shared'
+import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
-import { FULL_SUFIX, PUBLIC_SUFIX } from 'data/config'
+import { PUBLIC_SUFIX, FULL_SUFIX, PRIVATE_SUFIX } from 'data/config'
 
-export type SupportedDatasetSchema = 'geartype' | 'fleet' | 'origin' | 'vessel_type'
+export type SupportedDatasetSchema =
+  | 'flag'
+  | 'geartype'
+  | 'fleet'
+  | 'origin'
+  | 'vessel_type'
+  | 'qf_detect'
 export type SchemaFieldDataview = UrlDataviewInstance | Pick<Dataview, 'config' | 'datasets'>
 
 export const removeDatasetVersion = (datasetId: string) => {
-  return datasetId?.split(':')[0]
+  return datasetId ? datasetId?.split(':')[0] : ''
+}
+
+export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
+  const datasetsConfigured = dataview.datasetsConfig
+    ?.filter((datasetConfig) =>
+      datasetConfig.query?.find((q) => q.id === 'vessels' && q.value !== '')
+    )
+    .map((d) => d.datasetId)
+  return (dataview?.datasets || []).filter((dataset) => {
+    const isEventType = dataset?.configuration?.type
+      ? Object.values(EventTypes).includes(dataset.configuration.type)
+      : false
+    const hasVesselId = datasetsConfigured?.includes(dataset.id)
+    return isEventType && hasVesselId
+  })
 }
 
 export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boolean) => {
-  return datasets.filter((dataset) => dataset.id.includes(isGuestUser ? PUBLIC_SUFIX : FULL_SUFIX))
+  const datasetsIds = datasets.map(({ id }) => id)
+  const allowedDatasets = datasets.filter(({ id }) => {
+    if (isGuestUser) {
+      return id.includes(PUBLIC_SUFIX)
+    }
+    if (id.includes(PUBLIC_SUFIX)) {
+      const fullDataset = id.replace(PUBLIC_SUFIX, FULL_SUFIX)
+      return !datasetsIds.includes(fullDataset)
+    }
+    return id.includes(FULL_SUFIX) || id.includes(PRIVATE_SUFIX)
+  })
+  return allowedDatasets
+}
+
+export const isDataviewSchemaSupported = (
+  dataview: SchemaFieldDataview,
+  schema: SupportedDatasetSchema
+) => {
+  const schemaSupported = dataview?.datasets?.every((dataset) => {
+    return dataset.fieldsAllowed.includes(schema)
+  })
+  return schemaSupported
 }
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
@@ -65,7 +107,7 @@ export const getCommonSchemaFieldsInDataview = (
         return { id: field, label: label || capitalize(lowerCase(field)) }
       })
     : []
-  return commonSchemaFields.sort((a, b) => a.label.localeCompare(b.label))
+  return commonSchemaFields.sort(sortFields)
 }
 
 export const getSchemaFieldsSelectedInDataview = (

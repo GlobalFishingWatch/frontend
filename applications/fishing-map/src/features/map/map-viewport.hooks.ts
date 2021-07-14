@@ -15,7 +15,7 @@ import { selectViewport } from 'features/app/app.selectors'
 import store, { RootState } from '../../store'
 import useMapInstance from './map-context.hooks'
 
-type SetMapCoordinatesArgs = Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>
+type SetMapCoordinatesArgs = Partial<Pick<ViewportProps, 'latitude' | 'longitude' | 'zoom'>>
 type UseViewport = {
   viewport: MapCoordinates
   onViewportChange: (viewport: ViewportProps) => void
@@ -52,8 +52,8 @@ const viewportState = atom<MapCoordinates>({
 export default function useViewport(): UseViewport {
   const [viewport, setViewport] = useRecoilState(viewportState)
 
-  const setMapCoordinates = useCallback((viewport: SetMapCoordinatesArgs) => {
-    setViewport({ ...viewport })
+  const setMapCoordinates = useCallback((coordinates: SetMapCoordinatesArgs) => {
+    setViewport((viewport) => ({ ...viewport, ...coordinates }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -122,7 +122,7 @@ export function useMapFitBounds() {
         height,
         padding,
       })
-      setMapCoordinates({ latitude, longitude, zoom })
+      setMapCoordinates({ latitude, longitude, zoom: Math.max(0, zoom) })
     },
     [map, setMapCoordinates]
   )

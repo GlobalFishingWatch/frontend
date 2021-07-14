@@ -1,0 +1,53 @@
+.eventsLegendContainer {
+  /* padding-left: var(--space-S); */
+  display: flex;
+  flex-direction: column;
+}
+
+.eventsLegend {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.eventsLegend::before {
+  content: '';
+  position: absolute;
+  top: 0.4rem;
+  left: 0;
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  z-index: 0;
+  border-radius: 1rem;
+  border: var(--border);
+  background-color: currentColor;
+  pointer-events: none;
+}
+
+.eventLegendIcon {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 1rem;
+  margin-right: 0.5rem;
+  border: var(--border);
+}
+
+.eventLegendCheckbox {
+  opacity: 0;
+  cursor: pointer;
+}
+
+.eventLegendLabel {
+  cursor: pointer;
+  position: relative;
+  padding-left: 0.5rem;
+  font: var(--font-S);
+  text-transform: capitalize;
+}
+
+.eventLegendCheckbox:not(:checked) + .eventLegendLabel {
+  opacity: var(--opacity-secondary);
+  text-decoration: line-through;
+}

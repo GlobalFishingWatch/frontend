@@ -20,7 +20,7 @@ declare class Timeline extends PureComponent<any, any, any> {
     frameTimestamp: any;
     onMouseDown: (event: any, dragging: any) => void;
     lastX: any;
-    throttledMouseMove: any;
+    throttledMouseMove: import("lodash").DebouncedFunc<(clientX: any, scale: any, isDay: any) => void>;
     notifyMouseLeave: () => void;
     onMouseMove: (event: any) => void;
     onMouseUp: (event: any) => void;
@@ -41,6 +41,7 @@ declare namespace Timeline {
         const end: any;
         const absoluteStart: any;
         const absoluteEnd: any;
+        const latestAvailableDataDate: any;
         const onBookmarkChange: any;
         const bookmarkStart: any;
         const bookmarkEnd: any;
@@ -63,7 +64,7 @@ declare namespace Timeline {
         export { bookmarkEnd_1 as bookmarkEnd };
         const bookmarkPlacement_1: string;
         export { bookmarkPlacement_1 as bookmarkPlacement };
-        export function children_1(): void;
+        const children_1: any;
         export { children_1 as children };
         export function onBookmarkChange_1(): void;
         export { onBookmarkChange_1 as onBookmarkChange };

@@ -50,13 +50,14 @@ class TileClusterGenerator {
   }
 
   _getStyleLayers = (config: GlobalTileClusterGeneratorConfig): AnyLayer[] => {
+    const activeFilter = ['case', ['==', ['get', 'event_id'], config.currentEventId || null]]
     const layers = [
       {
         id: 'clusters',
         type: 'circle',
         source: config.id,
         'source-layer': 'points',
-        filter: ['>', ['get', 'count'], 1],
+        filter: ['>', ['get', 'count'], config.duplicatedEventsWorkaround ? 2 : 1],
         paint: {
           'circle-radius': [
             'interpolate',
@@ -82,11 +83,13 @@ class TileClusterGenerator {
         type: 'symbol',
         source: config.id,
         'source-layer': 'points',
-        filter: ['>', ['get', 'count'], 1],
+        filter: ['>', ['get', 'count'], config.duplicatedEventsWorkaround ? 2 : 1],
         layout: {
           'text-size': 14,
           'text-offset': [0, 0.13],
-          'text-field': ['get', 'count'],
+          'text-field': config.duplicatedEventsWorkaround
+            ? ['to-string', ['/', ['number', ['get', 'count']], 2]]
+            : ['get', 'count'],
           'text-font': ['Roboto Medium'],
           'text-allow-overlap': true,
         },
@@ -103,16 +106,17 @@ class TileClusterGenerator {
         type: 'circle',
         source: config.id,
         'source-layer': 'points',
-        filter: ['==', ['get', 'count'], 1],
+        filter: ['<=', ['get', 'count'], config.duplicatedEventsWorkaround ? 2 : 1],
         paint: {
           'circle-color': config.color || '#FAE9A0',
-          'circle-radius': 5,
+          'circle-radius': [...activeFilter, 8, 5],
           'circle-stroke-width': 1,
           'circle-stroke-color': DEFAULT_BACKGROUND_COLOR,
         },
         metadata: {
           interactive: true,
           generatorId: config.id,
+          uniqueFeatureInteraction: config.duplicatedEventsWorkaround ? true : false,
           group: Group.Cluster,
         },
       },

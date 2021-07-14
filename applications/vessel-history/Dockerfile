@@ -10,6 +10,7 @@ ARG REACT_APP_GOOGLE_TAG_MANAGER_KEY=""
 ARG REACT_APP_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
 ARG REACT_APP_WORKSPACE_ENV=development
 ARG REACT_APP_LIMITED_ACCESS_USER=false
+ARG GENERATE_SOURCEMAP=false
 
 # Install build dependencies
 COPY ./package.json /app
@@ -26,20 +27,31 @@ COPY ./.eslintignore /app/.eslintignore
 COPY ./.eslintrc.js /app/.eslintrc.js
 COPY ./entrypoint.sh /app/entrypoint.sh
 COPY ./tsconfig.json /app/tsconfig.json
-RUN npm run build
+# override node_modules inside image with
+# generated versions from the monorepo
+COPY ./node_modules/@globalfishingwatch /tmp/@globalfishingwatch
+RUN cp -r /tmp/@globalfishingwatch /app/node_modules/
+ENV GENERATE_SOURCEMAP=${GENERATE_SOURCEMAP}
+
+RUN yarn build
+
+#################################################################################
+# Generate htpasswd file
+#################################################################################
+FROM appsoa/docker-alpine-htpasswd as htpasswd
+ARG BASIC_AUTH_USER=gfw
+ARG BASIC_AUTH_PASS=default
+RUN htpasswd -Bbn "${BASIC_AUTH_USER}" "${BASIC_AUTH_PASS}" > /tmp/.htpasswd
 
 #################################################################################
 # Actual application to run
 #################################################################################
-FROM nginx as production
-ARG BASIC_AUTH_USER=gfw
-ARG BASIC_AUTH_PASS=default
-
-RUN apt-get update && apt-get install openssl -y
+FROM nginx:alpine as production
+RUN apk -U upgrade
 
 COPY nginx/nginx.conf /etc/nginx/nginx.template
-RUN echo -n ${BASIC_AUTH_USER}: >> /etc/nginx/.htpasswd
-RUN echo ${BASIC_AUTH_PASS} | openssl passwd -apr1 -stdin >> /etc/nginx/.htpasswd
+COPY --from=htpasswd /tmp/.htpasswd /tmp/.htpasswd
+RUN cat /tmp/.htpasswd >> /etc/nginx/.htpasswd
 COPY entrypoint.sh entrypoint.sh
 COPY --from=build /app/build/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]

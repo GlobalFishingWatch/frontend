@@ -8,6 +8,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
+import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 
 function VesselsSection(): React.ReactElement {
@@ -44,9 +45,17 @@ function VesselsSection(): React.ReactElement {
           onClick={onSearchClick}
         />
       </div>
-      {dataviews?.map((dataview) => (
-        <VesselLayerPanel key={dataview.id} dataview={dataview} />
-      ))}
+      {dataviews.length > 0 ? (
+        dataviews?.map((dataview) => <VesselLayerPanel key={dataview.id} dataview={dataview} />)
+      ) : (
+        <div className={styles.emptyState}>
+          {t(
+            'workspace.emptyStateVessels',
+            'The vessels selected in the search or by clicking on activity grid cells will appear here.'
+          )}
+        </div>
+      )}
+      <VesselEventsLegend dataviews={dataviews} />
     </div>
   )
 }

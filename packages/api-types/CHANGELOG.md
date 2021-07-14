@@ -1,5 +1,48 @@
 # @globalfishingwatch/api-types
 
+## 4.6.0
+
+### Minor Changes
+
+- entire dataset in resource typing
+- entire dataset in resource typing
+
+## 4.5.0
+
+### Minor Changes
+
+- encounter vessel as generic
+
+## 4.4.1
+
+### Patch Changes
+
+- 57de90f7: Added image list to vessel
+
+## 4.4.0
+
+### Minor Changes
+
+- fishing events
+
+## 4.3.0
+
+### Minor Changes
+
+- dataset config event type
+
+## 4.2.7
+
+### Patch Changes
+
+- events generator
+
+## 4.2.6
+
+### Patch Changes
+
+- events types update
+
 ## 4.2.5
 
 ### Patch Changes

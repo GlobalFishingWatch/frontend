@@ -12,7 +12,7 @@ export const gfwVessel: GFWDetail = {
   normalized_shipname: 'MARIA MARIA 2',
   shipname: 'MARIA MARIA 2',
   source: 'AIS',
-  dataset: 'full-global-fishing-vessels:v20201001',
+  dataset: 'public-global-fishing-vessels:v20201001',
   otherCallsigns: [],
   otherImos: [],
   otherShipnames: [],
@@ -51,4 +51,5 @@ export const tmtVessel: TMTDetail = {
   },
   relationList: { vesselOwnership: [], vesselOperations: [] },
   authorisationList: [],
+  imageList: [],
 }

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { uniq } from 'lodash'
+import { DateTime } from 'luxon'
 import {
   Workspace,
   Dataview,
@@ -8,6 +9,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import GFWAPI, { FetchOptions } from '@globalfishingwatch/api-client'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DEFAULT_TIME_RANGE } from 'data/config'
 import { WorkspaceState } from 'types'
 import { RootState } from 'store'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
@@ -20,7 +22,7 @@ import {
 } from 'routes/routes.selectors'
 import { HOME, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation } from 'routes/routes.actions'
-import { selectCustomWorkspace } from 'features/app/app.selectors'
+import { selectCustomWorkspace, selectDaysFromLatest } from 'features/app/app.selectors'
 import { DEFAULT_DATAVIEW_IDS, getWorkspaceEnv, WorkspaceCategories } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import { selectWorkspaceStatus } from './workspace.selectors'
@@ -75,6 +77,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const version = selectVersion(state)
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
+    const daysFromLatest = selectDaysFromLatest(state)
 
     try {
       let workspace = workspaceId
@@ -89,6 +92,16 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       if (!workspace) {
         return
       }
+
+      const endAt =
+        daysFromLatest !== undefined
+          ? DateTime.fromISO(DEFAULT_TIME_RANGE.end).toUTC()
+          : DateTime.fromISO(workspace.endAt).toUTC()
+      const startAt =
+        daysFromLatest !== undefined
+          ? endAt.minus({ days: daysFromLatest })
+          : DateTime.fromISO(workspace.startAt).toUTC()
+
       const dataviewIds = [
         ...DEFAULT_DATAVIEW_IDS,
         ...(workspace.dataviews?.map(({ id }) => id as number) || []),
@@ -122,7 +135,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         }
       }
 
-      return workspace
+      return { ...workspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
     } catch (e) {
       return rejectWithValue({ error: e as AsyncError })
     }

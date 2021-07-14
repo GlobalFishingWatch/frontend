@@ -1,4 +1,5 @@
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { EventType } from '@globalfishingwatch/api-types'
 
 export enum Locale {
   en = 'en',
@@ -12,10 +13,12 @@ export type WorkspaceTimeRangeParam = 'start' | 'end'
 export type WorkspaceStateProperty =
   | 'query'
   | 'analysis'
+  | 'readOnly'
+  | 'daysFromLatest'
   | 'sidebarOpen'
   | 'dataviewInstances'
   | 'timebarVisualisation'
-  | 'timebarEvents'
+  | 'visibleEvents'
   | 'timebarGraph'
   | 'bivariateDataviews'
   | 'version'
@@ -34,16 +37,19 @@ export type WorkspaceAnalysis = {
   bounds?: [number, number, number, number]
 }
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
+export type WorkspacePresenceCategory = 'presence' | 'viirs'
 export type BivariateDataviews = [string, string]
 
 export type WorkspaceState = {
   query?: string
   version?: string
+  readOnly?: boolean
+  daysFromLatest?: number // use latest day as endAt minus the number of days set here
   sidebarOpen?: boolean
   analysis?: WorkspaceAnalysis
   dataviewInstances?: Partial<UrlDataviewInstance[]>
   timebarVisualisation?: TimebarVisualisations
-  timebarEvents?: TimebarEvents
+  visibleEvents?: VisibleEvents
   timebarGraph?: TimebarGraphs
   bivariateDataviews?: BivariateDataviews
   activityCategory?: WorkspaceActivityCategory
@@ -62,14 +68,7 @@ export enum TimebarVisualisations {
   Vessel = 'vessel',
 }
 
-export enum TimebarEvents {
-  All = 'all',
-  Fishing = 'fishing',
-  Encounters = 'encounters',
-  Loitering = 'loitering',
-  Ports = 'ports',
-  None = 'none',
-}
+export type VisibleEvents = EventType[] | 'all' | 'none'
 
 export enum TimebarGraphs {
   Speed = 'speed',

@@ -8,11 +8,14 @@ import { DataviewCategory } from '@globalfishingwatch/api-types/dist'
 import { TooltipEvent } from 'features/map/map.hooks'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import styles from './Popup.module.css'
-import HeatmapTooltipRow from './HeatmapLayers'
+import FishingTooltipRow from './FishingLayers'
+import PresenceTooltipRow from './PresenceLayers'
+import ViirsTooltipRow from './ViirsLayers'
 import TileClusterRow from './TileClusterLayers'
 import EnvironmentTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
 import UserContextTooltipSection from './UserContextLayers'
+import VesselEventsLayers from './VesselEventsLayers'
 
 type PopupWrapperProps = {
   event: TooltipEvent | null
@@ -34,8 +37,9 @@ function PopupWrapper({
 }: PopupWrapperProps) {
   if (!event) return null
 
+  const visibleFeatures = event.features.filter((feature) => feature.visible)
   const featureByCategory = groupBy(
-    event.features.sort(
+    visibleFeatures.sort(
       (a, b) => POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
     ),
     'category'
@@ -56,18 +60,46 @@ function PopupWrapper({
         {Object.entries(featureByCategory).map(([featureCategory, features]) => {
           switch (featureCategory) {
             case DataviewCategory.Fishing:
-            case DataviewCategory.Presence:
               return features.map((feature, i) => (
-                <HeatmapTooltipRow
+                <FishingTooltipRow
                   key={i + (feature.title as string)}
                   feature={feature}
                   showFeaturesDetails={type === 'click'}
                 />
               ))
+            case DataviewCategory.Presence:
+              return features.map((feature, i) => {
+                if (feature.temporalgrid?.sublayerInteractionType === 'presence-detail') {
+                  return (
+                    <FishingTooltipRow
+                      key={i + (feature.title as string)}
+                      feature={feature}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  )
+                }
+                return feature.temporalgrid?.sublayerInteractionType === 'viirs' ? (
+                  <ViirsTooltipRow
+                    key={i + (feature.title as string)}
+                    feature={feature}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                ) : (
+                  <PresenceTooltipRow
+                    key={i + (feature.title as string)}
+                    feature={feature}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                )
+              })
             case DataviewCategory.Events:
-              if (type === 'click')
-                return <TileClusterRow key={featureCategory} features={features} />
-              else return null
+              return (
+                <TileClusterRow
+                  key={featureCategory}
+                  features={features}
+                  showFeaturesDetails={type === 'click'}
+                />
+              )
             case DataviewCategory.Environment:
               return (
                 <EnvironmentTooltipSection
@@ -96,6 +128,9 @@ function PopupWrapper({
                   />
                 </Fragment>
               )
+
+            case DataviewCategory.Vessels:
+              return <VesselEventsLayers key={featureCategory} features={features} />
 
             default:
               return null

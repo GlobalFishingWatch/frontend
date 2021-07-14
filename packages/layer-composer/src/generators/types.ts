@@ -165,6 +165,14 @@ export interface TileClusterGeneratorConfig extends GeneratorConfig {
    * List of datasets to retrieve the data from, optional to allow using resolved url params directly (eg: using resolve-endpoints)
    */
   dataset?: string
+  /**
+   * Uses a workaround when having duplicated events to show only 1 event
+   */
+  duplicatedEventsWorkaround?: boolean
+  /**
+   * Event id to highlight on active
+   */
+  currentEventId?: string
 }
 
 /**
@@ -192,6 +200,8 @@ export interface CartoPolygonsGeneratorConfig extends GeneratorConfig {
   radius?: number
 }
 
+export type TrackGeneratorConfigData = FeatureCollection | Segment[] | null
+
 /**
  * Renders a vessel track that can be filtered by time. Will use `start` and `end` from the global generator config, if set
  */
@@ -200,7 +210,7 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
   /**
    * A GeoJSON made of one or more LineStrings. Features should have `coordinateProperties` set in order to filter by time
    */
-  data: FeatureCollection | Segment[] | null
+  data: TrackGeneratorConfigData
   /**
    * Progresseively simplify geometries when zooming out for improved performance
    */
@@ -232,6 +242,10 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
 export interface VesselEventsGeneratorConfig extends GeneratorConfig {
   type: Type.VesselEvents
   data: RawEvent[]
+  color?: string
+  track?: TrackGeneratorConfigData
+  showIcons?: boolean
+  showAuthorizationStatus?: boolean
   currentEventId?: string
 }
 
@@ -326,9 +340,19 @@ export type RawEvent = {
     lat: number
   }
   start: number
+  end: number
+  highlight?: boolean
+  vessel?: {
+    id: string
+    name: string
+  }
   encounter?: {
     authorized: boolean
     authorizationStatus: AuthorizationOptions
+    vessel: {
+      id: string
+      name: string
+    }
   }
 }
 
@@ -346,6 +370,12 @@ export type Ruler = {
   isNew?: boolean
 }
 
+export type HeatmapAnimatedInteractionType =
+  | 'presence'
+  | 'presence-detail'
+  | 'viirs'
+  | 'fishing-effort'
+
 export interface HeatmapAnimatedGeneratorSublayer {
   id: string
   datasets: string[]
@@ -355,6 +385,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   visible?: boolean
   breaks?: number[]
   legend?: GeneratorLegend
+  interactionType?: HeatmapAnimatedInteractionType
 }
 
 // ---- Heatmap Generator color ramps types

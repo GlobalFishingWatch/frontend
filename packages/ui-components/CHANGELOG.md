@@ -1,5 +1,79 @@
 # @globalfishingwatch/ui-components
 
+## 9.0.1
+
+### Patch Changes
+
+- 571c314b: Fishing map/last minute stuff
+
+## 9.0.0
+
+### Patch Changes
+
+- Updated dependencies [70ad8e32]
+  - @globalfishingwatch/react-hooks@12.0.0
+
+## 8.2.0
+
+### Minor Changes
+
+- remove track colors options to not overlap with events
+
+## 8.1.1
+
+### Patch Changes
+
+- a3c573ee: change to generate new version
+
+## 8.1.0
+
+### Minor Changes
+
+- fishing events
+
+## 8.0.0
+
+### Patch Changes
+
+- @globalfishingwatch/layer-composer@8.0.0
+- @globalfishingwatch/react-hooks@11.0.0
+
+## 7.0.0
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@7.3.0
+  - @globalfishingwatch/react-hooks@10.0.0
+
+## 6.0.1
+
+### Patch Changes
+
+- events generator
+- Updated dependencies [undefined]
+  - @globalfishingwatch/react-hooks@9.0.1
+- fdeabdfa: improvments in the design of the header
+
+## 6.0.0
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/react-hooks@9.0.0
+
+- Updated dependencies [05fe3de6]
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/react-hooks@9.0.0
+
+## 5.1.2
+
+### Patch Changes
+
+- f96a081c: added Marine Protected Areas to the header
+
 ## 5.1.1
 
 ### Patch Changes

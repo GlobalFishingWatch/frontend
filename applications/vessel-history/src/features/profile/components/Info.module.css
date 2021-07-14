@@ -1,5 +1,5 @@
 .infoContainer {
-  padding: 8px;
+  padding: 0.8rem;
 }
 
 .identifiers {
@@ -16,11 +16,11 @@
   opacity: 0.65;
   color: #163f89;
   font-family: Roboto, Arial, Helvetica, sans-serif;
-  font-size: 14px;
+  font-size: 1.4rem;
   letter-spacing: 0;
-  line-height: 16px;
-  padding: 7px;
-  min-height: 60px;
+  line-height: 1.7rem;
+  padding: 0.5rem;
+  min-height: 4rem;
 }
 
 .identifiers div label {
@@ -38,7 +38,7 @@
 }
 
 .historyRange {
-  font-size: 12px;
+  font-size: 1.2rem;
 }
 .historyItem {
   display: flex;
@@ -71,4 +71,17 @@
 .actions .remove:active:not(:disabled),
 .actions .remove:hover:not(:disabled) {
   background-color: rgba(var(--danger-red-rgb), var(--opacity-border));
+}
+
+.imageGallery {
+  margin: 0 auto;
+  width: 65%;
+}
+.imageGallery.loading {
+  opacity: 0%;
+}
+@media (max-width: 1280px) {
+  .imageGallery {
+    width: 100%;
+  }
 }

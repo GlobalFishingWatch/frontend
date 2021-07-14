@@ -3,15 +3,16 @@
     "close": "Tutup analisis",
     "completed": "Laporan akan segera ada di email anda",
     "disclaimer": "Data yang ditunjukkan di atas harus diambil sebagai perkiraan. Klik tombol di bawah jika Anda membutuhkan analisis yang lebih tepat, termasuk daftar kapal yang terlibat, dan kami akan mengirimkannya ke email Anda.",
-    "experimental": "Experimental",
     "download": "Unduh laporan",
     "downloadLogin": "Anda perlu masuk untuk Unduh laporan",
     "empty": "Dataset yang dipilih akan muncul di sini",
     "errorMessage": "Ada yang salah",
+    "experimental": "Experimental",
+    "filteredBy": "filtered by",
     "noData": "No data available",
+    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Analisis",
-    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "vesselFlags": "oleh kapal berbendera oleh"
   },
   "common": {
@@ -30,6 +31,8 @@
     "days": "Hari",
     "days_plural": "hari",
     "description": "Deskripsi",
+    "detection": "Detection",
+    "detection_plural": "Detections",
     "environment": "Lingkungan",
     "events": "Acara",
     "feedback": "Umpan balik",
@@ -45,6 +48,8 @@
     "map": "Peta",
     "max": "Maks.",
     "min": "Min.",
+    "minute": "minute",
+    "minute_plural": "minutes",
     "more": "tambah",
     "name": "Nama",
     "optional": "Opsional",
@@ -55,7 +60,9 @@
     "unknown": "Tidak diketahui",
     "update": "Memperbarui",
     "vessel": "Kapal",
-    "vessel_plural": "Kapal"
+    "vessel_plural": "Kapal",
+    "viirs": "VIIRS",
+    "welcomePopupDisable": "Don't show again"
   },
   "dataset": {
     "addContext": "Menambah layer referensi",
@@ -64,6 +71,7 @@
     "confirmRemove": "Anda yakin ingin menghapus dataset ini secara permanen?",
     "dragActive": "Jatuhkan file di sini ...",
     "dragFilePlaceholder": "Seret dan jatuhkan shapefile atau geojson yang terkompresi di sini atau klik untuk memilihnya",
+    "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Edit dataset",
     "emptyState": "Dataset Anda akan muncul di sini",
     "featuresNameField": "Fitur kolom nama",
@@ -76,6 +84,7 @@
     "longitudeNameField": "Bidang bujur",
     "new": "Dataset baru",
     "notUploadedYet": "Belum ada layer referensi yang diunggah",
+    "notUploadedYetEnvironment": "No environment layers uploaded yet",
     "remove": "Hapus dataset",
     "requiredFields": "Bidang yang harus diisi {{fields}}",
     "timeNameField": "Bidang nama waktu",
@@ -116,18 +125,45 @@
     "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan"
   },
   "event": {
+    "during": "during",
+    "encounter": "Encounter",
+    "encounterAction": "had an encounter with",
+    "encounterActionWith": "had an encounter with",
+    "encounterAnotherVessel": "another vessel",
+    "fishing": "Fishing",
+    "fishingAction": "Fished for",
+    "hourAbbreviated": "{{count}}h",
+    "hourAbbreviated_plural": "{{count}}h",
+    "loitering": "Loitering",
+    "loiteringAction": "Loitering for",
+    "minuteAbbreviated": "{{count}}m",
+    "minuteAbbreviated_plural": "{{count}}m",
     "noData": "Tidak ada data yang tersedia",
     "notInCVP": "Peristiwa ini terjadi di luar rentang waktu data Carrier Vessel Portal",
-    "seeInCVP": "Lihat di Carrier Vessel Portal"
+    "port": "Port",
+    "portAction": "Docked for",
+    "portAt": "Docked at {{port}} for",
+    "seeInCVP": "Lihat di Carrier Vessel Portal",
+    "unknown": "Unknown event"
   },
   "feedback": {
-    "dataset": "Dataset you are providing feedback for",
+    "descriptionPlaceholder": "Please be as specific as possible.",
     "email": "E-mail address",
-    "institution": "Institution/Organization",
+    "emailDisclaimer": "We will only email you in relation to this feedback",
+    "features": {
+      "activityLayers": "Activity Layers",
+      "analysis": "Analysis",
+      "environmentLayers": "Environment Layers",
+      "other": "Other",
+      "referenceLayers": "Reference Layers",
+      "timebar": "Time bar along the bottom of the map",
+      "vesselSearch": "Vessel Search",
+      "vesselTracks": "Vessel Tracks"
+    },
+    "improvements": "Platform Improvements",
     "insuficientData": "Please fill in all mandatory fields",
-    "intro": "Global Fishing Watch is constantly working to improve our data. With billions of positions and hundreds of thousands of vessel to review, and an entire ocean of activity, we will inevitably have some vessels and activities misclassified. Feedback from you can help us identify where we most need to improve our data. We will endeavour to address your feedback.",
-    "issue": "What issue are you having?",
-    "optional": "Optional",
+    "intro": "Global Fishing Watch is constantly working to improve our data. With billions of positions and hundreds of thousands of vessels to review, and an entire ocean of activity, we will inevitably have some vessels and activities misclassified. Your feedback can help us identify where we most need to improve our data. We will endeavour to address your feedback.",
+    "issues": "Platform Issues",
     "role": "Role",
     "roles": {
       "analyst": "Analyst",
@@ -142,7 +178,10 @@
       "student": "Student",
       "watch": "Watch officer"
     },
-    "send": "Send"
+    "send": "Send",
+    "type": "What are you providing feedback for?",
+    "whatIssue": "Where are you having an issue?",
+    "whichFeature": "Which feature would you like to improve?"
   },
   "footer": {
     "convenedBy": "Mitra pendiri",
@@ -158,6 +197,7 @@
     "gearType_plural": "Jenis peralatan",
     "infoClose": "Sembunyikan info",
     "infoOpen": "Tampilkan info",
+    "qf": "Quality signal",
     "remove": "Hapus layer",
     "seeDescription": "Klik untuk melihat deskripsi layer",
     "source": "Sumber",
@@ -195,6 +235,7 @@
     "placeholder": "Ketik untuk mencari kapal",
     "seeVessel": "Lihat kapal",
     "seeVessels": "Lihat {{count}} kapal",
+    "seeVessels_plural": "See vessels",
     "suggestion": "Apakah yang kamu maksud",
     "title": "Cari",
     "vesselAlreadyInWorkspace": "Kapal ini sudah ada di ruang kerja Anda",
@@ -206,15 +247,10 @@
     "placeholder": "Pilih salah satu opsi",
     "selected": "terpilih"
   },
+  "timebar": {
+    "maxTracksNumber": "Track detail not available for more than 10 vessels"
+  },
   "timebarSettings": {
-    "eventOptions": {
-      "all": "Semua acara",
-      "encounters": "Encounters",
-      "fishing": "Fishing",
-      "loitering": "Loitering",
-      "none": "None",
-      "ports": "Port visits"
-    },
     "fishingEffortDisabled": "Pilih setidaknya satu layer upaya penangkapan ikan yang terlihat",
     "graph": "Grafik",
     "graphOptions": {
@@ -222,9 +258,11 @@
       "none": "None",
       "speed": "Speed"
     },
+    "presenceDisabled": "Select at least one presence layer",
     "settings_close": "Tutup pengaturan timebar",
     "settings_open": "Buka pengaturan timebar",
     "showFishingEffort": "Tampilkan grafik jam memancing",
+    "showPresence": "Show presence graph",
     "showTracks": "Tampilkan grafik trek",
     "tracks": "Tracks",
     "tracksDisabled": "Pilih setidaknya satu kapal"
@@ -286,6 +324,8 @@
     "confirmRemove": "Anda yakin ingin menghapus ruang kerja ini secara permanen?",
     "editName": "Edit nama ruang kerja",
     "emptyState": "Ruang kerja Anda akan muncul di sini",
+    "emptyStateEnvironment": "Upload custom datasets like animal telemetry clicking on the plus icon.",
+    "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
     "nameInput": "Nama ruang kerja",
     "new": "Ruang kerja baru",
     "remove": "Hapus ruang kerja",

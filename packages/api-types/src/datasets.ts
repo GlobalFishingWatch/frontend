@@ -1,3 +1,5 @@
+import { EventTypes } from './events'
+
 export interface UploadResponse {
   path: string
   url: string
@@ -15,17 +17,19 @@ export interface EndpointParam {
 }
 
 export enum EndpointId {
-  Tracks = 'carriers-tracks',
-  Vessel = 'carriers-vessel',
-  VesselList = 'carriers-list-vessels',
-  VesselSearch = 'carriers-search-vessels',
-  VesselAdvancedSearch = 'carriers-advanced-search-vessels',
+  Events = 'carriers-events',
+  EventsDetail = 'carriers-events-detail',
   FourwingsTiles = '4wings-tiles',
   FourwingsBreaks = '4wings-bins',
   FourwingsLegend = '4wings-legend',
   FourwingsInteraction = '4wings-interaction',
+  Tracks = 'carriers-tracks',
   UserContextTiles = 'user-context-tiles',
   UserTracks = 'user-tracks-data',
+  Vessel = 'carriers-vessel',
+  VesselList = 'carriers-list-vessels',
+  VesselSearch = 'carriers-search-vessels',
+  VesselAdvancedSearch = 'carriers-advanced-search-vessels',
 }
 
 export interface Endpoint {
@@ -64,6 +68,7 @@ export interface DatasetConfiguration {
   filePath?: string
   srid?: number
   file?: string
+  type?: EventTypes
   geometryType?: DatasetGeometryType
   format?: 'geojson'
   [key: string]: unknown

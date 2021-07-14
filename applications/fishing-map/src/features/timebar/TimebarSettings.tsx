@@ -7,13 +7,13 @@ import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Radio from '@globalfishingwatch/ui-components/dist/radio'
 import Select, { SelectOption } from '@globalfishingwatch/ui-components/dist/select'
 import useClickedOutside from 'hooks/use-clicked-outside'
-import { TimebarEvents, TimebarGraphs, TimebarVisualisations } from 'types'
+import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveActivityDataviews,
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/dataviews.selectors'
-import { selectTimebarEvents, selectTimebarGraph } from 'features/app/app.selectors'
+import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 import { useTimebarVisualisation } from './timebar.hooks'
@@ -25,10 +25,10 @@ const TimebarSettings = () => {
   const activeHeatmapDataviews = useSelector(selectActiveActivityDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
-  const timebarEvents = useSelector(selectTimebarEvents)
   const timebarGraph = useSelector(selectTimebarGraph)
   const { dispatchQueryParams } = useLocationConnect()
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisation()
+  const activityCategory = useSelector(selectActivityCategory)
 
   const TIMEBAR_GRAPH_OPTIONS: SelectOption[] = useMemo(
     () => [
@@ -44,35 +44,6 @@ const TimebarSettings = () => {
       {
         id: 'none',
         label: t('timebarSettings.graphOptions.none', 'None'),
-      },
-    ],
-    [t]
-  )
-  const TIMEBAR_EVENT_OPTIONS: SelectOption[] = useMemo(
-    () => [
-      {
-        id: 'all',
-        label: t('timebarSettings.eventOptions.all', 'All events'),
-      },
-      {
-        id: 'fishing',
-        label: t('timebarSettings.eventOptions.fishing', 'Fishing'),
-      },
-      {
-        id: 'encounters',
-        label: t('timebarSettings.eventOptions.encounters', 'Encounters'),
-      },
-      {
-        id: 'loitering',
-        label: t('timebarSettings.eventOptions.loitering', 'Loitering'),
-      },
-      {
-        id: 'ports',
-        label: t('timebarSettings.eventOptions.ports', 'Port visits'),
-      },
-      {
-        id: 'none',
-        label: t('timebarSettings.eventOptions.none', 'None'),
       },
     ],
     [t]
@@ -95,21 +66,34 @@ const TimebarSettings = () => {
   const setVesselActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
   }
-  const setEventsOption = (o: SelectOption) => {
-    dispatchQueryParams({ timebarEvents: o.id as TimebarEvents })
-  }
   const setGraphOption = (o: SelectOption) => {
     if (!o.label.includes('Coming soon')) {
       dispatchQueryParams({ timebarGraph: o.id as TimebarGraphs })
     }
   }
-  const removeEventsOption = () => {
-    dispatchQueryParams({ timebarEvents: TimebarEvents.None })
-  }
   const removeGraphOption = () => {
     dispatchQueryParams({ timebarGraph: TimebarGraphs.None })
   }
   const expandedContainerRef = useClickedOutside(closeOptions)
+
+  const activityLabel = `
+    ${t('common.activity', 'Activity')} - ${
+    activityCategory === 'fishing'
+      ? t('common.fishing', 'Fishing')
+      : t('common.presence', 'Presence')
+  }
+  `
+
+  const activityTooltipLabel = !activeHeatmapDataviews?.length
+    ? activityCategory === 'fishing'
+      ? t(
+          'timebarSettings.fishingEffortDisabled',
+          'Select at least one apparent fishing effort layer'
+        )
+      : t('timebarSettings.presenceDisabled', 'Select at least one presence layer')
+    : activityCategory === 'fishing'
+    ? t('timebarSettings.showFishingEffort', 'Show fishing hours graph')
+    : t('timebarSettings.showPresence', 'Show presence graph')
 
   const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews?.length <= 2
   return (
@@ -127,17 +111,10 @@ const TimebarSettings = () => {
       {optionsPanelOpen && (
         <div className={styles.optionsContainer}>
           <Radio
-            label={t('common.apparentFishing', 'Apparent Fishing Effort')}
+            label={activityLabel}
             active={timebarVisualisation === TimebarVisualisations.Heatmap}
             disabled={!activeHeatmapDataviews?.length}
-            tooltip={
-              !activeHeatmapDataviews?.length
-                ? t(
-                    'timebarSettings.fishingEffortDisabled',
-                    'Select at least one apparent fishing effort layer'
-                  )
-                : t('timebarSettings.showFishingEffort', 'Show fishing hours graph')
-            }
+            tooltip={activityTooltipLabel}
             onClick={setHeatmapActive}
           />
           <Fragment>
@@ -156,16 +133,6 @@ const TimebarSettings = () => {
               activeVesselsDataviews &&
               activeVesselsDataviews.length > 0 && (
                 <div className={styles.vesselTrackOptions}>
-                  <Select
-                    // label={t('common.events', 'Events')}
-                    label="Events (Coming soon)"
-                    options={TIMEBAR_EVENT_OPTIONS}
-                    selectedOption={TIMEBAR_EVENT_OPTIONS.find((o) => o.id === timebarEvents)}
-                    onSelect={setEventsOption}
-                    onRemove={removeEventsOption}
-                    direction="top"
-                    disabled
-                  />
                   {timebarGraphEnabled && (
                     <Select
                       label={t('timebarSettings.graph', 'Graph')}

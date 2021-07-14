@@ -1,12 +1,14 @@
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_FISHING_DATAVIEW_ID, DEFAULT_PRESENCE_DATAVIEW_ID } from 'data/workspaces'
 
 export const isFishingDataview = (dataview: UrlDataviewInstance) =>
-  dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID
+  dataview.dataviewId === DEFAULT_FISHING_DATAVIEW_ID ||
+  dataview.category === DataviewCategory.Fishing
 
 export const isPresenceDataview = (dataview: UrlDataviewInstance) =>
-  dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID
+  dataview.dataviewId === DEFAULT_PRESENCE_DATAVIEW_ID ||
+  dataview.category === DataviewCategory.Presence
 
 export const isActivityDataview = (dataview: UrlDataviewInstance) =>
   isFishingDataview(dataview) || isPresenceDataview(dataview)
@@ -29,4 +31,15 @@ export const getSourcesSelectedInDataview = (
     dataview.config?.datasets?.includes(sourceOption.id)
   )
   return sourcesSelected
+}
+
+export const areAllSourcesSelectedInDataview = (
+  dataview: UrlDataviewInstance,
+  datasetType = DatasetTypes.Fourwings
+) => {
+  const sourceOptions = getSourcesOptionsInDataview(dataview, datasetType)
+  const allSelected = sourceOptions.every((sourceOption) =>
+    dataview.config?.datasets?.includes(sourceOption.id)
+  )
+  return allSelected
 }

@@ -1,5 +1,8 @@
 import type { Geometry } from 'geojson'
-import { ContextLayerType } from '@globalfishingwatch/layer-composer/dist/generators/types'
+import {
+  ContextLayerType,
+  HeatmapAnimatedInteractionType,
+} from '@globalfishingwatch/layer-composer/dist/generators/types'
 import { Interval } from '@globalfishingwatch/layer-composer/dist/generators'
 import { PointerEvent } from '@globalfishingwatch/react-map-gl'
 
@@ -8,12 +11,14 @@ export { useMapHover, useMapClick, useFeatureState } from './use-map-interaction
 export type TemporalGridFeature = {
   sublayerIndex: number
   sublayerId: string
+  sublayerInteractionType: HeatmapAnimatedInteractionType
   visible: boolean
   col: number
   row: number
   interval: Interval
-  visibleFramesStart: string
-  visibleFramesEnd: string
+  visibleStartDate: string
+  visibleEndDate: string
+  unit?: string
 }
 
 export type ExtendedFeature = {
@@ -25,7 +30,6 @@ export type ExtendedFeature = {
   generatorType: string | null
   id: string
   value: any
-  unit?: string
   tile: {
     x: number
     y: number

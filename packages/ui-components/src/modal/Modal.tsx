@@ -6,7 +6,7 @@ import styles from './Modal.module.css'
 
 interface ModalProps {
   isOpen: boolean
-  title?: string
+  title?: string | React.ReactNode
   header?: boolean
   className?: string
   closeButtonClassName?: string

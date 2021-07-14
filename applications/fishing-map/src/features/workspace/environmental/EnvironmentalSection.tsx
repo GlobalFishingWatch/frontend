@@ -12,12 +12,14 @@ import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
 import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
+import { selectReadOnly } from 'features/app/app.selectors'
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 import UserTrackLayerPanel from './UserTrackLayerPanel'
 
 function EnvironmentalLayerSection(): React.ReactElement | null {
   const { t } = useTranslation()
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
+  const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEnvironmentalDataviews)
   const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Environment))
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
@@ -50,43 +52,54 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
         <h2 className={styles.sectionTitle}>{t('common.environment', 'Environment')}</h2>
-        <TooltipContainer
-          visible={newDatasetOpen}
-          onClickOutside={() => {
-            setNewDatasetOpen(false)
-          }}
-          component={
-            <NewDatasetTooltip
-              datasetCategory={DatasetCategory.Environment}
-              onSelect={() => setNewDatasetOpen(false)}
+        {!readOnly && (
+          <TooltipContainer
+            visible={newDatasetOpen}
+            onClickOutside={() => {
+              setNewDatasetOpen(false)
+            }}
+            component={
+              <NewDatasetTooltip
+                datasetCategory={DatasetCategory.Environment}
+                onSelect={() => setNewDatasetOpen(false)}
+              />
+            }
+          >
+            <IconButton
+              icon="plus"
+              type="border"
+              size="medium"
+              tooltip={t('dataset.addEnvironmental', 'Add environmental dataset')}
+              tooltipPlacement="top"
+              className="print-hidden"
+              onClick={onAddClick}
             />
-          }
-        >
-          <IconButton
-            icon="plus"
-            type="border"
-            size="medium"
-            tooltip={t('dataset.addEnvironmental', 'Add environmental dataset')}
-            tooltipPlacement="top"
-            className="print-hidden"
-            onClick={onAddClick}
-          />
-        </TooltipContainer>
+          </TooltipContainer>
+        )}
       </div>
-      {dataviews?.map((dataview) =>
-        dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
-          <UserTrackLayerPanel
-            key={dataview.id}
-            dataview={dataview}
-            onToggle={onToggleLayer(dataview)}
-          />
-        ) : (
-          <EnvironmentalLayerPanel
-            key={dataview.id}
-            dataview={dataview}
-            onToggle={onToggleLayer(dataview)}
-          />
+      {dataviews.length > 0 ? (
+        dataviews?.map((dataview) =>
+          dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
+            <UserTrackLayerPanel
+              key={dataview.id}
+              dataview={dataview}
+              onToggle={onToggleLayer(dataview)}
+            />
+          ) : (
+            <EnvironmentalLayerPanel
+              key={dataview.id}
+              dataview={dataview}
+              onToggle={onToggleLayer(dataview)}
+            />
+          )
         )
+      ) : (
+        <div className={styles.emptyState}>
+          {t(
+            'workspace.emptyStateEnvironment',
+            'Upload custom datasets like animal telemetry clicking on the plus icon.'
+          )}
+        </div>
       )}
     </div>
   )

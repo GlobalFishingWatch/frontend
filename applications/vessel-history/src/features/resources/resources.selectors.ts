@@ -21,7 +21,7 @@ export const selectDataviewsResourceQueries = createSelector(
           trackQuery = {
             dataviewId: dataview.dataviewId as number,
             url: trackResource.url,
-            datasetType: trackResource.dataset.type,
+            dataset: trackResource.dataset,
             datasetConfig: trackResource.datasetConfig,
           }
         }
@@ -34,7 +34,7 @@ export const selectDataviewsResourceQueries = createSelector(
       const infoQuery: Resource = {
         dataviewId: dataview.dataviewId as number,
         url: infoResource.url,
-        datasetType: infoResource.dataset.type,
+        dataset: infoResource.dataset,
         datasetConfig: infoResource.datasetConfig,
       }
       return [trackQuery, infoQuery]

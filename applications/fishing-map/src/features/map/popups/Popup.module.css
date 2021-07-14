@@ -72,6 +72,7 @@
 }
 
 .loading {
+  width: 100%;
   height: 17.9rem;
   padding: var(--space-XS);
 }
@@ -161,6 +162,30 @@
   color: var(--color-secondary-blue);
 }
 
+.viirsTable {
+  width: 100%;
+}
+
+.viirsTable,
+.viirsTable th,
+.viirsTable td {
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.viirsTable th {
+  font: var(--font-XS);
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
+  text-align: left;
+}
+
+.viirsTable th:last-child,
+.viirsTable td:last-child {
+  text-align: right;
+}
+
 .rowText {
   line-height: 1.2;
 }
@@ -169,6 +194,10 @@
   display: flex;
   flex-wrap: nowrap;
   margin-left: var(--space-S);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
 }
 
 :global(.mapboxgl-popup .mapboxgl-popup-content) {

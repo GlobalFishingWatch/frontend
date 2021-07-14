@@ -1,7 +1,9 @@
 .logo {
   margin: 7px 0 0 20px;
 }
-
+.logo text {
+  font-size: 18px;
+}
 .homeContainer {
   height: 100vh;
 }
@@ -14,17 +16,17 @@
 
 .homeContainer header button {
   float: right;
-  margin-top: 18px;
-  margin-right: 5px;
+  margin-top: 7px;
+  margin-right: 0.5rem;
 }
 
 .homeContainer h2 {
   color: rgba(34, 68, 126, 0.65);
   font-family: Roboto, Arial, Helvetica, sans-serif;
-  font-size: 14px;
+  font-size: 1.4rem;
   letter-spacing: 0;
-  line-height: 20px;
-  margin: 20px 15px 0;
+  line-height: 2rem;
+  margin: 2rem 1.5rem 0;
   text-transform: uppercase;
 }
 
@@ -41,9 +43,9 @@
   font-family: Roboto, Arial, Helvetica, sans-serif;
   background: transparent;
   padding: 0 3%;
-  font-size: 16px;
+  font-size: 1.6rem;
   letter-spacing: 0;
-  line-height: 20px;
+  line-height: 2rem;
   border: 0;
 }
 
@@ -56,9 +58,9 @@
   background: #fff;
   width: calc(100%);
   opacity: 1;
-  font-size: 21px;
+  font-size: 2.1rem;
   letter-spacing: 0;
-  line-height: 24px;
+  line-height: 2.4rem;
 }
 
 .searchButton {
@@ -66,24 +68,25 @@
 }
 
 .offlineVessels {
-  padding: 15px;
+  padding: 1.5rem;
 }
 
 .loader {
-  margin-top: 50px;
+  margin-top: 5rem;
 }
 
 .search {
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
   z-index: 0;
   position: relative;
 }
 
 .inputContainer {
   display: flex;
-  padding: var(--space-S);
+  padding: var(--space-XS);
   background-color: var(--color-white);
   box-shadow: var(--box-shadow);
   z-index: 1;
@@ -99,6 +102,6 @@
 
 .listFooter {
   text-align: center;
-  padding-bottom: 20px;
+  padding-bottom: 2rem;
   text-transform: uppercase;
 }

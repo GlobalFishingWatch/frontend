@@ -1,12 +1,13 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { Geometry } from 'geojson'
-import { useMemo, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { debounce } from 'lodash'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import {
   MULTILAYER_SEPARATOR,
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
+  UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { ContextLayerType, Type } from '@globalfishingwatch/layer-composer/dist/generators/types'
 import type { Style } from '@globalfishingwatch/mapbox-gl'
@@ -16,21 +17,16 @@ import {
   useFeatureState,
 } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
 import GFWAPI from '@globalfishingwatch/api-client'
-import {
-  ENCOUNTER_EVENTS_SOURCE_ID,
-  FISHING_LAYER_PREFIX,
-} from 'features/dataviews/dataviews.utils'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategories } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
-import {
-  selectActivityDataviews,
-  selectDataviewInstancesResolved,
-} from 'features/dataviews/dataviews.selectors'
+import { removeDatasetVersion } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { Range } from 'features/timebar/timebar.slice'
+import { selectHighlightedEvent, setHighlightedEvent } from 'features/timebar/timebar.slice'
+import { t } from 'features/i18n/i18n'
 import {
   selectDefaultMapGeneratorsConfig,
   WORKSPACES_POINTS_TYPE,
@@ -39,17 +35,25 @@ import {
 import {
   setClickedEvent,
   selectClickedEvent,
-  fetch4WingInteractionThunk,
-  MAX_TOOLTIP_VESSELS,
+  MAX_TOOLTIP_LIST,
   fetchEncounterEventThunk,
   SliceInteractionEvent,
-  selectFourWingsStatus,
+  selectFishingInteractionStatus,
   selectApiEventStatus,
   ExtendedFeatureVessel,
   ExtendedFeatureEvent,
+  fetchFishingActivityInteractionThunk,
+  fetchViirsInteractionThunk,
+  selectViirsInteractionStatus,
+  ApiViirsStats,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
 import { useMapAndSourcesLoaded, useMapLoaded } from './map-features.hooks'
+
+export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
+  'fishing-effort',
+  'presence-detail',
+]
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
@@ -74,16 +78,18 @@ export const useGeneratorsConnect = () => {
 export const useClickedEventConnect = () => {
   const map = useMapInstance()
   const dispatch = useDispatch()
-  const timeRange = useTimerangeConnect() as Range
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
-  const fourWingsStatus = useSelector(selectFourWingsStatus)
+  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
+  const viirsInteractionStatus = useSelector(selectViirsInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
   const encounterSourceLoaded = useMapAndSourcesLoaded(ENCOUNTER_EVENTS_SOURCE_ID)
-  const fourWingsPromiseRef = useRef<any>()
+  const fishingPromiseRef = useRef<any>()
+  const presencePromiseRef = useRef<any>()
+  const viirsPromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
 
   const dispatchClickedEvent = (event: InteractionEvent | null) => {
@@ -137,13 +143,13 @@ export const useClickedEventConnect = () => {
       }
     }
 
-    if (fourWingsPromiseRef.current) {
-      fourWingsPromiseRef.current.abort()
-    }
-
-    if (eventsPromiseRef.current) {
-      eventsPromiseRef.current.abort()
-    }
+    // Cancel all pending promises
+    const promisesRef = [fishingPromiseRef, presencePromiseRef, viirsPromiseRef, eventsPromiseRef]
+    promisesRef.forEach((ref) => {
+      if (ref.current) {
+        ref.current.abort()
+      }
+    })
 
     if (!event || !event.features) {
       if (clickedEvent) {
@@ -152,24 +158,49 @@ export const useClickedEventConnect = () => {
       return
     }
 
+    // When hovering in a vessel event we don't want to have clicked events
+    const areAllFeaturesVesselEvents = event.features.every(
+      (f) => f.generatorType === Generators.Type.VesselEvents
+    )
+
+    if (areAllFeaturesVesselEvents) {
+      return
+    }
+
     dispatch(setClickedEvent(event as SliceInteractionEvent))
 
     // get temporal grid clicked features and order them by sublayerindex
-    const temporalGridFeatures = event.features
+    const fishingActivityFeatures = event.features
       .filter((feature) => {
         if (!feature.temporalgrid) {
           return false
         }
-        const isFeatureVisible = feature.temporalgrid.visible
-        const isFishingFeature = feature.temporalgrid.sublayerId.startsWith(FISHING_LAYER_PREFIX)
-        return isFeatureVisible && isFishingFeature
+        return (
+          feature.temporalgrid.visible &&
+          SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+            feature.temporalgrid.sublayerInteractionType
+          )
+        )
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 
-    if (temporalGridFeatures?.length && timeRange) {
-      fourWingsPromiseRef.current = dispatch(
-        fetch4WingInteractionThunk({ temporalGridFeatures, timeRange })
+    if (fishingActivityFeatures?.length) {
+      fishingPromiseRef.current = dispatch(
+        fetchFishingActivityInteractionThunk({ fishingActivityFeatures })
       )
+    }
+
+    const viirsFeature = event.features?.find((feature) => {
+      if (!feature.temporalgrid) {
+        return false
+      }
+      const isFeatureVisible = feature.temporalgrid.visible
+      const isViirsFeature = feature.temporalgrid.sublayerInteractionType === 'viirs'
+      return isFeatureVisible && isViirsFeature
+    })
+
+    if (viirsFeature) {
+      viirsPromiseRef.current = dispatch(fetchViirsInteractionThunk({ feature: viirsFeature }))
     }
 
     const encounterFeature = event.features.find(
@@ -179,13 +210,20 @@ export const useClickedEventConnect = () => {
       eventsPromiseRef.current = dispatch(fetchEncounterEventThunk(encounterFeature))
     }
   }
-  return { clickedEvent, fourWingsStatus, apiEventStatus, dispatchClickedEvent }
+  return {
+    clickedEvent,
+    fishingInteractionStatus,
+    viirsInteractionStatus,
+    apiEventStatus,
+    dispatchClickedEvent,
+  }
 }
 
 // TODO this could extend ExtendedFeature
 export type TooltipEventFeature = {
   id?: string
   title?: string
+  visible?: boolean
   type?: Type
   color?: string
   unit?: string
@@ -202,6 +240,7 @@ export type TooltipEventFeature = {
     vessels: ExtendedFeatureVessel[]
   }
   event?: ExtendedFeatureEvent
+  viirs?: ApiViirsStats[]
   temporalgrid?: TemporalGridFeature
   category: DataviewCategory
 }
@@ -212,10 +251,47 @@ export type TooltipEvent = {
   features: TooltipEventFeature[]
 }
 
-export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
-  const { t } = useTranslation()
-  const dataviews = useSelector(selectDataviewInstancesResolved)
-  const temporalgridDataviews = useSelector(selectActivityDataviews)
+export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
+  const highlightedEvent = useSelector(selectHighlightedEvent)
+  const dispatch = useDispatch()
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceDispatch = useCallback(
+    debounce((event: any) => {
+      dispatch(setHighlightedEvent(event))
+    }, 100),
+    []
+  )
+
+  const setHighlightedEventDebounced = useCallback(() => {
+    let highlightEvent: { id: string } | undefined
+    const vesselFeature = features?.find((f) => f.category === DataviewCategory.Vessels)
+    const clusterFeature = features?.find((f) => f.type === Generators.Type.TileCluster)
+    if (!clusterFeature && vesselFeature) {
+      highlightEvent = { id: vesselFeature.properties?.id }
+    } else if (clusterFeature) {
+      highlightEvent = { id: clusterFeature.properties?.event_id }
+    }
+    if (highlightEvent) {
+      if (highlightedEvent?.id !== highlightEvent.id) {
+        debounceDispatch(highlightEvent)
+      }
+    } else if (highlightedEvent) {
+      debounceDispatch(undefined)
+    }
+  }, [features, highlightedEvent, debounceDispatch])
+
+  useEffect(() => {
+    setHighlightedEventDebounced()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [features])
+}
+
+export const parseMapTooltipEvent = (
+  event: SliceInteractionEvent | null,
+  dataviews: UrlDataviewInstance<Generators.Type>[],
+  temporalgridDataviews: UrlDataviewInstance<Generators.Type>[]
+) => {
   if (!event || !event.features) return null
 
   const clusterFeature = event.features.find(
@@ -282,7 +358,8 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
         if (dataview.config?.type === Generators.Type.UserContext) {
           title = dataset.name
         } else {
-          title = t(`datasets:${dataset.id}.name` as any) as string
+          const datasetId = removeDatasetVersion(dataset?.id)
+          title = t(`datasets:${datasetId}.name` as any) as string
         }
       }
     }
@@ -290,6 +367,7 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
       title,
       type: dataview.config?.type,
       color: dataview.config?.color || 'black',
+      visible: dataview.config?.visible,
       category: dataview.category || DataviewCategory.Context,
       ...feature,
       properties: { ...feature.properties },
@@ -311,9 +389,9 @@ export const useMapTooltip = (event?: SliceInteractionEvent | null) => {
 
     if (feature.vessels) {
       tooltipEventFeature.vesselsInfo = {
-        vessels: feature.vessels.slice(0, MAX_TOOLTIP_VESSELS),
+        vessels: feature.vessels.slice(0, MAX_TOOLTIP_LIST),
         numVessels: feature.vessels.length,
-        overflow: feature.vessels.length > MAX_TOOLTIP_VESSELS,
+        overflow: feature.vessels.length > MAX_TOOLTIP_LIST,
       }
     }
     return tooltipEventFeature

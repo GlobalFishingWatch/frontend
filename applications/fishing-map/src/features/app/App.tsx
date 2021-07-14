@@ -35,9 +35,10 @@ import { HOME, WORKSPACE, USER, WORKSPACES_LIST } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import Welcome from 'features/welcome/Welcome'
+import Welcome, { DISABLE_WELCOME_POPUP } from 'features/welcome/Welcome'
+import useLocalStorage from 'hooks/use-local-storage'
 import { useAppDispatch } from './app.hooks'
-import { selectAnalysisQuery, selectSidebarOpen } from './app.selectors'
+import { selectAnalysisQuery, selectReadOnly, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
@@ -69,6 +70,7 @@ function App(): React.ReactElement {
   useAnalytics()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
+  const readOnly = useSelector(selectReadOnly)
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const analysisQuery = useSelector(selectAnalysisQuery)
@@ -79,9 +81,16 @@ function App(): React.ReactElement {
 
   const locationIsMarineManager =
     useSelector(selectLocationCategory) === WorkspaceCategories.MarineManager
+
+  const [disabledWelcomePopup] = useLocalStorage(DISABLE_WELCOME_POPUP, false)
+
   const [welcomePopupOpen, setWelcomePopupOpen] = useState(
-    locationIsMarineManager && isFirstTimeVisit
+    locationIsMarineManager ? isFirstTimeVisit : !disabledWelcomePopup
   )
+  const welcomePopupContentKey = locationIsMarineManager
+    ? WorkspaceCategories.MarineManager
+    : WorkspaceCategories.FishingActivity
+
   useEffect(() => {
     if (locationIsMarineManager)
       localStorage.setItem(MARINE_MANAGER_LAST_VISIT, new Date().toISOString())
@@ -175,6 +184,10 @@ function App(): React.ReactElement {
     return t('common.layerList', 'Layer list')
   }, [isAnalysing, locationType])
 
+  let asideWidth = '50%'
+  if (narrowSidebar) asideWidth = '37rem'
+  if (readOnly) asideWidth = '32rem'
+
   return (
     /* Value as null as there is no needed to set a default value but Typescript complains */
     <MapContext.Provider value={null as any}>
@@ -186,18 +199,20 @@ function App(): React.ReactElement {
           onToggle={onToggle}
           aside={<Sidebar onMenuClick={onMenuClick} />}
           main={<Main />}
-          asideWidth={narrowSidebar ? '37rem' : '50%'}
+          asideWidth={asideWidth}
           showAsideLabel={getSidebarName()}
           showMainLabel={t('common.map', 'Map')}
           className="split-container"
         />
       </Suspense>
-      <Menu
-        bgImage={menuBgImage}
-        isOpen={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        activeLinkId="map-data"
-      />
+      {!readOnly && (
+        <Menu
+          bgImage={menuBgImage}
+          isOpen={menuOpen}
+          onClose={() => setMenuOpen(false)}
+          activeLinkId="map-data"
+        />
+      )}
       <Modal
         title="Secret debug menu 🤖"
         isOpen={debugActive}
@@ -205,14 +220,17 @@ function App(): React.ReactElement {
       >
         <DebugMenu />
       </Modal>
-      {welcomePopupOpen && (
+      {welcomePopupOpen && !readOnly && (
         <Suspense fallback={null}>
           <Modal
             header={false}
             isOpen={welcomePopupOpen}
             onClose={() => setWelcomePopupOpen(false)}
           >
-            <Welcome />
+            <Welcome
+              contentKey={welcomePopupContentKey}
+              showDisableCheckbox={!locationIsMarineManager}
+            />
           </Modal>
         </Suspense>
       )}

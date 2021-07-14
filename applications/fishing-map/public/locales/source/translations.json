@@ -3,15 +3,16 @@
     "close": "Close analysis",
     "completed": "The report will be in your email soon",
     "disclaimer": "The data shown above should be taken as an estimate. Click the button below if you need a more precise anlysis, including the list of vessels involved, and we’ll send it to your email.",
-    "experimental": "Experimental",
     "download": "Download report",
     "downloadLogin": "You need to login to download a report",
     "empty": "Your selected datasets will appear here",
     "errorMessage": "Something went wrong",
+    "experimental": "Experimental",
+    "filteredBy": "filtered by",
     "noData": "No data available",
+    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
     "title": "Analysis",
-    "onlyAISAllowed": "Only AIS datasets are allowed to download",
     "vesselFlags": "by vessels flagged by"
   },
   "common": {
@@ -30,6 +31,8 @@
     "days": "Day",
     "days_plural": "days",
     "description": "Description",
+    "detection": "Detection",
+    "detection_plural": "Detections",
     "environment": "Environment",
     "events": "Events",
     "feedback": "Feedback",
@@ -45,6 +48,8 @@
     "map": "Map",
     "max": "Max",
     "min": "Min",
+    "minute": "minute",
+    "minute_plural": "minutes",
     "more": "more",
     "name": "Name",
     "optional": "Optional",
@@ -55,7 +60,9 @@
     "unknown": "Unknown",
     "update": "Update",
     "vessel": "Vessel",
-    "vessel_plural": "Vessels"
+    "vessel_plural": "Vessels",
+    "viirs": "VIIRS",
+    "welcomePopupDisable": "Don't show again"
   },
   "dataset": {
     "addContext": "Add context dataset",
@@ -64,6 +71,7 @@
     "confirmRemove": "Are you sure you want to permanently delete this dataset?",
     "dragActive": "Drop the file here ...",
     "dragFilePlaceholder": "Drag and drop a compressed shapefile or geojson here or click to select it",
+    "dragFilePlaceholderCSV": "Drag and drop a CSV file here or click to select it",
     "edit": "Edit dataset",
     "emptyState": "Your datasets will appear here",
     "featuresNameField": "Features name field",
@@ -76,6 +84,7 @@
     "longitudeNameField": "Longitude field",
     "new": "New dataset",
     "notUploadedYet": "No context layers uploaded yet",
+    "notUploadedYetEnvironment": "No environment layers uploaded yet",
     "remove": "Remove dataset",
     "requiredFields": "Required fields {{fields}}",
     "timeNameField": "Time name field",
@@ -116,18 +125,45 @@
     "workspaceNotFound": "The view you request was not found"
   },
   "event": {
+    "during": "during",
+    "encounter": "Encounter",
+    "encounterAction": "had an encounter with",
+    "encounterActionWith": "had an encounter with",
+    "encounterAnotherVessel": "another vessel",
+    "fishing": "Fishing",
+    "fishingAction": "Fished for",
+    "hourAbbreviated": "{{count}}h",
+    "hourAbbreviated_plural": "{{count}}h",
+    "loitering": "Loitering",
+    "loiteringAction": "Loitering for",
+    "minuteAbbreviated": "{{count}}m",
+    "minuteAbbreviated_plural": "{{count}}m",
     "noData": "No data available",
     "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
-    "seeInCVP": "See in Carrier Vessel Portal"
+    "port": "Port",
+    "portAction": "Docked for",
+    "portAt": "Docked at {{port}} for",
+    "seeInCVP": "See in Carrier Vessel Portal",
+    "unknown": "Unknown event"
   },
   "feedback": {
-    "dataset": "Dataset you are providing feedback for",
+    "descriptionPlaceholder": "Please be as specific as possible.",
     "email": "E-mail address",
-    "institution": "Institution/Organization",
+    "emailDisclaimer": "We will only email you in relation to this feedback",
+    "features": {
+      "activityLayers": "Activity Layers",
+      "analysis": "Analysis",
+      "environmentLayers": "Environment Layers",
+      "other": "Other",
+      "referenceLayers": "Reference Layers",
+      "timebar": "Time bar along the bottom of the map",
+      "vesselSearch": "Vessel Search",
+      "vesselTracks": "Vessel Tracks"
+    },
+    "improvements": "Platform Improvements",
     "insuficientData": "Please fill in all mandatory fields",
-    "intro": "Global Fishing Watch is constantly working to improve our data. With billions of positions and hundreds of thousands of vessel to review, and an entire ocean of activity, we will inevitably have some vessels and activities misclassified. Feedback from you can help us identify where we most need to improve our data. We will endeavour to address your feedback.",
-    "issue": "What issue are you having?",
-    "optional": "Optional",
+    "intro": "Global Fishing Watch is constantly working to improve our data. With billions of positions and hundreds of thousands of vessels to review, and an entire ocean of activity, we will inevitably have some vessels and activities misclassified. Your feedback can help us identify where we most need to improve our data. We will endeavour to address your feedback.",
+    "issues": "Platform Issues",
     "role": "Role",
     "roles": {
       "analyst": "Analyst",
@@ -142,7 +178,10 @@
       "student": "Student",
       "watch": "Watch officer"
     },
-    "send": "Send"
+    "send": "Send",
+    "type": "What are you providing feedback for?",
+    "whatIssue": "Where are you having an issue?",
+    "whichFeature": "Which feature would you like to improve?"
   },
   "footer": {
     "convenedBy": "A partnership convened by",
@@ -158,6 +197,7 @@
     "gearType_plural": "Gear types",
     "infoClose": "Hide info",
     "infoOpen": "Show info",
+    "qf": "Quality signal",
     "remove": "Remove layer",
     "seeDescription": "Click to see layer description",
     "source": "Source",
@@ -195,6 +235,7 @@
     "placeholder": "Type to search vessels",
     "seeVessel": "See vessel",
     "seeVessels": "See {{count}} vessels",
+    "seeVessels_plural": "See vessels",
     "suggestion": "Did you mean",
     "title": "Search",
     "vesselAlreadyInWorkspace": "This vessel is already in your workspace",
@@ -206,15 +247,10 @@
     "placeholder": "Select an option",
     "selected": "selected"
   },
+  "timebar": {
+    "maxTracksNumber": "Track detail not available for more than 10 vessels"
+  },
   "timebarSettings": {
-    "eventOptions": {
-      "all": "All events",
-      "encounters": "Encounters",
-      "fishing": "Fishing",
-      "loitering": "Loitering",
-      "none": "None",
-      "ports": "Port visits"
-    },
     "fishingEffortDisabled": "Select at least one apparent fishing effort layer",
     "graph": "Graph",
     "graphOptions": {
@@ -222,9 +258,11 @@
       "none": "None",
       "speed": "Speed"
     },
+    "presenceDisabled": "Select at least one presence layer",
     "settings_close": "Close timebar settings",
     "settings_open": "Open timebar settings",
     "showFishingEffort": "Show fishing hours graph",
+    "showPresence": "Show presence graph",
     "showTracks": "Show tracks graph",
     "tracks": "Tracks",
     "tracksDisabled": "Select at least one vessel"
@@ -286,6 +324,8 @@
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",
     "editName": "Edit workspace name",
     "emptyState": "Your workspaces will appear here",
+    "emptyStateEnvironment": "Upload custom datasets like animal telemetry clicking on the plus icon.",
+    "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
     "nameInput": "Workspace name",
     "new": "New Workspace",
     "remove": "Remove workspace",

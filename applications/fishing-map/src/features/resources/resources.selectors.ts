@@ -1,10 +1,48 @@
 import { createSelector } from 'reselect'
 import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import {
+  resolveDataviewDatasetResource,
+  resolveDataviewEventsResources,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
 import { isGuestUser } from 'features/user/user.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
+import { selectVisibleEvents } from 'features/app/app.selectors'
+import { selectResources } from './resources.slice'
+
+export const selectVisibleResources = createSelector(
+  [selectResources, selectVisibleEvents],
+  (resources, visibleEvents) => {
+    if (visibleEvents === 'all') {
+      return resources
+    }
+    return Object.fromEntries(
+      Object.entries(resources).filter(([url, resource]) => {
+        return url.includes('events') && resource.dataset?.configuration?.type
+          ? visibleEvents.includes(resource.dataset.configuration.type)
+          : true
+      })
+    )
+  }
+)
+
+const getVesselResourceQuery = (
+  dataview: UrlDataviewInstance<Generators.Type>,
+  datasetType: DatasetTypes
+): Resource | null => {
+  const resource = resolveDataviewDatasetResource(dataview, datasetType)
+  if (resource.url && resource.dataset && resource.datasetConfig) {
+    return {
+      dataviewId: dataview.dataviewId as number,
+      url: resource.url,
+      dataset: resource.dataset,
+      datasetConfig: resource.datasetConfig,
+    }
+  }
+  return null
+}
 
 export const selectDataviewsResourceQueries = createSelector(
   [selectDataviewInstancesResolved, isGuestUser, selectDebugOptions],
@@ -15,35 +53,24 @@ export const selectDataviewsResourceQueries = createSelector(
         return []
       }
 
-      let trackQuery: any = [] // initialized as empty array to be filtered by flatMap if not used
+      let trackResource: Resource | null = null
+      let eventsResources: (Resource | null)[] = []
+
       if (dataview.config.visible === true) {
         const datasetType =
           dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
             ? DatasetTypes.UserTracks
             : DatasetTypes.Tracks
 
-        const trackResource = resolveDataviewDatasetResource(dataview, datasetType)
-        if (trackResource.url && trackResource.dataset && trackResource.datasetConfig) {
-          trackQuery = {
-            dataviewId: dataview.dataviewId as number,
-            url: trackResource.url,
-            datasetType: trackResource.dataset.type,
-            datasetConfig: trackResource.datasetConfig,
-          }
-        }
+        trackResource = getVesselResourceQuery(dataview, datasetType)
+        eventsResources = resolveDataviewEventsResources(dataview)
       }
 
-      const infoResource = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-      if (!infoResource.url || !infoResource.dataset || !infoResource.datasetConfig) {
-        return trackQuery as Resource
-      }
-      const infoQuery: Resource = {
-        dataviewId: dataview.dataviewId as number,
-        url: infoResource.url,
-        datasetType: infoResource.dataset.type,
-        datasetConfig: infoResource.datasetConfig,
-      }
-      return [trackQuery, infoQuery]
+      const infoResource = getVesselResourceQuery(dataview, DatasetTypes.Vessels)
+
+      return [trackResource, infoResource, ...eventsResources].filter(
+        (r) => r !== null
+      ) as Resource[]
     })
 
     return resourceQueries

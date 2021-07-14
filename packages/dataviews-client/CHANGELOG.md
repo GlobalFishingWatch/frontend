@@ -1,5 +1,95 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.7.0
+
+### Minor Changes
+
+- fdf6b275: support showAuthorizationStatus dataview config in encounter events
+
+## 11.6.0
+
+### Minor Changes
+
+- 7f486176: highlight tile-cluster event
+
+## 11.5.0
+
+### Minor Changes
+
+- 3513a689: support interaction (configured in dataview as presenceDetails) for presence layers
+
+## 11.4.0
+
+### Minor Changes
+
+- ea0e1b8a: fix events generator
+
+## 11.3.0
+
+### Minor Changes
+
+- resolve events resources
+
+## 11.2.0
+
+### Minor Changes
+
+- 87882042: add sublayerInteractionType
+
+## 11.1.0
+
+### Minor Changes
+
+- fishing events
+
+## 11.0.0
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@4.3.0
+  - @globalfishingwatch/api-client@2.0.0
+  - @globalfishingwatch/layer-composer@8.0.0
+
+## 10.0.0
+
+### Minor Changes
+
+- currentEvent interaction
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@7.3.0
+
+## 9.0.1
+
+### Patch Changes
+
+- events generator
+- Updated dependencies [undefined]
+  - @globalfishingwatch/api-types@4.2.7
+
+## 9.0.0
+
+### Minor Changes
+
+- resolve vessel events generator
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/api-types@4.2.6
+
+## 9.0.0
+
+### Patch Changes
+
+- Updated dependencies [05fe3de6]
+  - @globalfishingwatch/layer-composer@7.2.0
+
 ## 8.0.0
 
 ### Patch Changes

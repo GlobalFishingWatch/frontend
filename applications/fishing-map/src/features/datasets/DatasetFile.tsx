@@ -20,9 +20,15 @@ const ACCEPT_FILES_BY_TYPE: Record<DatasetGeometryType, string> = {
   tracks: TRACKS_ACCEPT,
   points: '',
 }
+const TRANSLATIONS_BY_TYPE: Record<DatasetGeometryType, string> = {
+  polygons: 'dataset.dragFilePlaceholder',
+  tracks: 'dataset.dragFilePlaceholderCSV',
+  points: '',
+}
 
 const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className = '' }) => {
   const accept = type ? ACCEPT_FILES_BY_TYPE[type] : ACCEPT_FILES_BY_TYPE.polygons
+  const translationKey = type ? TRANSLATIONS_BY_TYPE[type] : TRANSLATIONS_BY_TYPE.polygons
   const filesSupportedIcon =
     accept === POLYGONS_ACCEPT ? <FilesSupportedPolygonsIcon /> : <FilesSupportedTracksIcon />
   const { t } = useTranslation()
@@ -48,7 +54,7 @@ const DatasetFile: React.FC<DatasetFileProps> = ({ onFileLoaded, type, className
         <p className={styles.fileText}>{t('dataset.dragActive', 'Drop the file here ...')}</p>
       ) : (
         <p className={styles.fileText}>
-          {t('dataset.dragFilePlaceholder', {
+          {t(translationKey as any, {
             defaultValue:
               'Drag and drop a compressed shapefile or geojson here or click to select it',
             interpolation: { escapeValue: false, useRawValueToEscape: true },

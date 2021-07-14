@@ -19,6 +19,10 @@
   gap: var(--space-XS);
 }
 
+.content {
+  padding: var(--space-XS) var(--space-S);
+}
+
 .sectionTitle {
   font: var(--font-S);
   color: var(--color-secondary-blue);
@@ -37,4 +41,10 @@
 
 .sectionButtons > *:not(:last-child).lastBtn {
   margin-right: 0;
+}
+
+.emptyState {
+  font: var(--font-S);
+  opacity: var(--opacity-secondary);
+  padding: 0 var(--space-S);
 }

@@ -1,5 +1,128 @@
 # @globalfishingwatchapp/dataviews-editor
 
+## 1.1.73
+
+### Patch Changes
+
+- Updated dependencies [fdf6b275]
+  - @globalfishingwatch/dataviews-client@11.7.0
+  - @globalfishingwatch/layer-composer@8.9.0
+
+## 1.1.72
+
+### Patch Changes
+
+- Updated dependencies [1154779b]
+  - @globalfishingwatch/layer-composer@8.8.1
+
+## 1.1.71
+
+### Patch Changes
+
+- Updated dependencies [12482b76]
+  - @globalfishingwatch/layer-composer@8.8.0
+
+## 1.1.70
+
+### Patch Changes
+
+- Updated dependencies [7f486176]
+  - @globalfishingwatch/dataviews-client@11.6.0
+  - @globalfishingwatch/layer-composer@8.7.0
+
+## 1.1.69
+
+### Patch Changes
+
+- Updated dependencies [3513a689]
+  - @globalfishingwatch/dataviews-client@11.5.0
+  - @globalfishingwatch/layer-composer@8.6.0
+
+## 1.1.68
+
+### Patch Changes
+
+- Updated dependencies [ea0e1b8a]
+  - @globalfishingwatch/dataviews-client@11.4.0
+  - @globalfishingwatch/layer-composer@8.5.0
+
+## 1.1.67
+
+### Patch Changes
+
+- Updated dependencies [060b3854]
+- Updated dependencies [ed8af7ae]
+  - @globalfishingwatch/layer-composer@8.4.0
+
+## 1.1.66
+
+### Patch Changes
+
+- Updated dependencies [eb9e4be9]
+  - @globalfishingwatch/timebar@2.0.0
+
+## 1.1.65
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@8.3.0
+  - @globalfishingwatch/dataviews-client@11.3.0
+
+## 1.1.64
+
+### Patch Changes
+
+- Updated dependencies [b268d362]
+  - @globalfishingwatch/layer-composer@8.2.1
+
+## 1.1.63
+
+### Patch Changes
+
+- Updated dependencies [87882042]
+  - @globalfishingwatch/dataviews-client@11.2.0
+  - @globalfishingwatch/layer-composer@8.2.0
+
+## 1.1.62
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@11.1.0
+  - @globalfishingwatch/layer-composer@8.1.0
+  - @globalfishingwatch/timebar@1.8.0
+
+## 1.1.61
+
+### Patch Changes
+
+- @globalfishingwatch/api-client@2.0.0
+- @globalfishingwatch/dataviews-client@11.0.0
+- @globalfishingwatch/layer-composer@8.0.0
+
+## 1.1.60
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+- Updated dependencies [undefined]
+  - @globalfishingwatch/layer-composer@7.3.0
+  - @globalfishingwatch/dataviews-client@10.0.0
+  - @globalfishingwatch/timebar@1.7.0
+
+## 1.1.59
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@9.0.0
+  - @globalfishingwatch/layer-composer@7.2.0
+- Updated dependencies [05fe3de6]
+  - @globalfishingwatch/layer-composer@7.2.0
+  - @globalfishingwatch/dataviews-client@9.0.0
+
 ## 1.1.58
 
 ### Patch Changes

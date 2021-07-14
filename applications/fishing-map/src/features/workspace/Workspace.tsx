@@ -17,11 +17,11 @@ import { selectLocationCategory, selectWorkspaceId } from 'routes/routes.selecto
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { logoutUserThunk, selectUserData } from 'features/user/user.slice'
-import { selectSearchQuery } from 'features/app/app.selectors'
+import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
 import { SUPPORT_EMAIL } from 'data/config'
 import { WorkspaceCategories } from 'data/workspaces'
 import { selectDataviewsResourceQueries } from 'features/resources/resources.selectors'
-import HeatmapsSection from './heatmaps/HeatmapsSection'
+import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
@@ -113,6 +113,7 @@ function WorkspaceError(): React.ReactElement {
 function Workspace() {
   const dispatch = useDispatch()
   const searchQuery = useSelector(selectSearchQuery)
+  const readOnly = useSelector(selectReadOnly)
   const workspace = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const locationCategory = useSelector(selectLocationCategory)
@@ -149,8 +150,9 @@ function Workspace() {
     <Fragment>
       {(locationCategory === WorkspaceCategories.MarineManager ||
         locationCategory === WorkspaceCategories.FishingActivity) &&
-        workspace?.name && <h2 className={styles.title}>{workspace.name}</h2>}
-      <HeatmapsSection />
+        workspace?.name &&
+        !readOnly && <h2 className={styles.title}>{workspace.name}</h2>}
+      <ActivitySection />
       <VesselsSection />
       <EventsSection />
       <EnvironmentalSection />

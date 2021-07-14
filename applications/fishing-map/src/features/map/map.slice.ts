@@ -2,17 +2,16 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import GFWAPI from '@globalfishingwatch/api-client'
-import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   DataviewDatasetConfig,
   Dataset,
   Vessel,
   DatasetTypes,
-  EventVessel,
   ApiEvent,
-  AuthorizationOptions,
-  EventTypes,
   EndpointId,
+  EventVessel,
+  EventVesselTypeEnum,
 } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch, RootState } from 'store'
@@ -22,9 +21,9 @@ import {
   selectActivityDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { Range } from 'features/timebar/timebar.slice'
+import { selectUserLogged } from 'features/user/user.slice'
 
-export const MAX_TOOLTIP_VESSELS = 5
+export const MAX_TOOLTIP_LIST = 5
 
 export type ExtendedFeatureVessel = {
   id: string
@@ -33,36 +32,16 @@ export type ExtendedFeatureVessel = {
   [key: string]: any
 }
 
-// TODO remove this once the cluster events follow the same API events format
-type TemporalClusterBusterEvent = {
-  event_id: string
-  event_type: EventTypes
-  vessel_id: string
-  event_start: string
-  event_end: string
-  event_info: {
-    regions: {
-      eez: string[]
-      fao: string[]
-      rfmo: string[]
-    }
-    elevation_m: number
-    is_authorized: boolean
-    median_distance_km: number
-    median_speed_knots: number
-    authorization_status: AuthorizationOptions
-    distance_from_port_m: number
-    distance_from_shore_m: number
-    encountered_vessel_id: string
-  }
-  event_vessels: EventVessel[]
-}
+export type ExtendedEventVessel = EventVessel & { dataset?: string }
 
-export type ExtendedFeatureEvent = ApiEvent & { dataset: Dataset }
+export type ApiViirsStats = { detect_id: string; qf_detect: number; radiance: number }
+
+export type ExtendedFeatureEvent = ApiEvent<ExtendedEventVessel> & { dataset: Dataset }
 
 export type SliceExtendedFeature = ExtendedFeature & {
   event?: ExtendedFeatureEvent
   vessels?: ExtendedFeatureVessel[]
+  viirs?: ApiViirsStats[]
 }
 
 // Extends the default extendedEvent including event and vessels information from API
@@ -73,14 +52,16 @@ export type SliceInteractionEvent = Omit<InteractionEvent, 'features'> & {
 type MapState = {
   clicked: SliceInteractionEvent | null
   hovered: SliceInteractionEvent | null
-  fourWingsStatus: AsyncReducerStatus
+  fishingStatus: AsyncReducerStatus
+  viirsStatus: AsyncReducerStatus
   apiEventStatus: AsyncReducerStatus
 }
 
 const initialState: MapState = {
   clicked: null,
   hovered: null,
-  fourWingsStatus: AsyncReducerStatus.Idle,
+  fishingStatus: AsyncReducerStatus.Idle,
+  viirsStatus: AsyncReducerStatus.Idle,
   apiEventStatus: AsyncReducerStatus.Idle,
 }
 
@@ -89,78 +70,81 @@ type SublayerVessels = {
   vessels: ExtendedFeatureVessel[]
 }
 
-export const fetch4WingInteractionThunk = createAsyncThunk<
+const getInteractionEndpointDatasetConfig = (
+  features: ExtendedFeature[],
+  temporalgridDataviews: UrlDataviewInstance[] = []
+) => {
+  // use the first feature/dv for common parameters
+  const mainFeature = features[0]
+  // Currently only one timerange is supported, which is OK since we only need interaction on the activity heatmaps and all
+  // activity heatmaps use the same time intervals, This will need to be revised in case we support interactivity on environment layers
+  const start = mainFeature.temporalgrid?.visibleStartDate
+  const end = mainFeature.temporalgrid?.visibleEndDate
+
+  // get corresponding dataviews
+  const featuresDataviews = features.flatMap((feature) => {
+    return feature.temporalgrid
+      ? temporalgridDataviews.find(
+          (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
+        ) || []
+      : []
+  })
+  const fourWingsDataset = featuresDataviews[0].datasets?.find(
+    (d) => d.type === DatasetTypes.Fourwings
+  ) as Dataset
+
+  // get corresponding datasets
+  const datasets: string[][] = featuresDataviews.map((dv) => {
+    return dv.config?.datasets || []
+  })
+
+  const datasetConfig: DataviewDatasetConfig = {
+    datasetId: fourWingsDataset.id,
+    endpoint: EndpointId.FourwingsInteraction,
+    params: [
+      { id: 'z', value: mainFeature.tile?.z },
+      { id: 'x', value: mainFeature.tile?.x },
+      { id: 'y', value: mainFeature.tile?.y },
+      { id: 'rows', value: mainFeature.temporalgrid?.row as number },
+      { id: 'cols', value: mainFeature.temporalgrid?.col as number },
+    ],
+    query: [
+      { id: 'date-range', value: [start, end].join(',') },
+      {
+        id: 'datasets',
+        value: datasets.map((ds) => ds.join(',')),
+      },
+    ],
+  }
+
+  const filters = featuresDataviews.map((dv) => dv.config?.filter || [])
+  if (filters?.length) {
+    datasetConfig.query?.push({ id: 'filters', value: filters })
+  }
+
+  return { featuresDataviews, fourWingsDataset, datasetConfig }
+}
+
+export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
-  // TODO the whole function could be greatly simplified if only one temporalGridFeature was accepted, which is effecttively always the case
-  { temporalGridFeatures: ExtendedFeature[]; timeRange: Range },
+  { fishingActivityFeatures: ExtendedFeature[] },
   {
     dispatch: AppDispatch
   }
 >(
-  'map/fetchInteraction',
-  async ({ temporalGridFeatures, timeRange }, { getState, signal, dispatch }) => {
+  'map/fetchFishingActivityInteraction',
+  async ({ fishingActivityFeatures }, { getState, signal, dispatch }) => {
     const state = getState() as RootState
+    const userLogged = selectUserLogged(state)
     const temporalgridDataviews = selectActivityDataviews(state) || []
 
-    if (!temporalGridFeatures.length) {
+    if (!fishingActivityFeatures.length) {
       console.warn('fetchInteraction not possible, 0 features')
       return
     }
 
-    // use the first feature/dv for common parameters
-    const mainFeature = temporalGridFeatures[0]
-
-    // Currently only one timerange is supported, which is OK since we only need interaction on the activity heatmaps and all
-    // activity heatmaps use the same time intervals, This will need to be revised in case we support interactivity on environment layers
-    const start =
-      mainFeature.temporalgrid?.interval === '10days'
-        ? mainFeature.temporalgrid?.visibleFramesStart
-        : timeRange.start
-    const end =
-      mainFeature.temporalgrid?.interval === '10days'
-        ? mainFeature.temporalgrid?.visibleFramesEnd
-        : timeRange.end
-
-    // get corresponding dataviews
-    const featuresDataviews = temporalGridFeatures.flatMap((feature) => {
-      return feature.temporalgrid
-        ? temporalgridDataviews.find(
-            (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
-          ) || []
-        : []
-    })
-    const fourWingsDataset = featuresDataviews[0].datasets?.find(
-      (d) => d.type === DatasetTypes.Fourwings
-    ) as Dataset
-
-    // get corresponding datasets
-    const datasets: string[][] = featuresDataviews.map((dv) => {
-      return dv.config?.datasets || []
-    })
-
-    const datasetConfig: DataviewDatasetConfig = {
-      datasetId: fourWingsDataset.id,
-      endpoint: EndpointId.FourwingsInteraction,
-      params: [
-        { id: 'z', value: mainFeature.tile?.z },
-        { id: 'x', value: mainFeature.tile?.x },
-        { id: 'y', value: mainFeature.tile?.y },
-        { id: 'rows', value: mainFeature.temporalgrid?.row as number },
-        { id: 'cols', value: mainFeature.temporalgrid?.col as number },
-      ],
-      query: [
-        { id: 'date-range', value: [start, end].join(',') },
-        {
-          id: 'datasets',
-          value: datasets.map((ds) => ds.join(',')),
-        },
-      ],
-    }
-
-    const filters = featuresDataviews.map((dv) => dv.config?.filter || [])
-    if (filters?.length) {
-      datasetConfig.query?.push({ id: 'filters', value: filters })
-    }
+    const { featuresDataviews, fourWingsDataset, datasetConfig } =
+      getInteractionEndpointDatasetConfig(fishingActivityFeatures, temporalgridDataviews)
 
     const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
     if (interactionUrl) {
@@ -185,7 +169,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
           return source
             .flatMap((source) => source)
             .sort((a, b) => b.hours - a.hours)
-            .slice(0, MAX_TOOLTIP_VESSELS)
+            .slice(0, MAX_TOOLTIP_LIST)
         })
         .flatMap((v) => v)
 
@@ -197,7 +181,11 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
       // Grab related dataset to fetch info from and prepare tracks
       const infoDatasets = await Promise.all(
         topHoursVesselsDatasets.map(async (dataset) => {
-          const infoDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id
+          const infoDatasetId = getRelatedDatasetByType(
+            dataset,
+            DatasetTypes.Vessels,
+            userLogged
+          )?.id
           if (infoDatasetId) {
             let infoDataset = selectDatasetById(infoDatasetId)(state)
             if (!infoDataset) {
@@ -251,7 +239,7 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
         }
       }
 
-      const sublayersIds = temporalGridFeatures.map(
+      const sublayersIds = fishingActivityFeatures.map(
         (feature) => feature.temporalgrid?.sublayerId || ''
       )
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
@@ -274,41 +262,34 @@ export const fetch4WingInteractionThunk = createAsyncThunk<
   }
 )
 
-// TODO: remove this workaound once the api returns the same format for every event
-const parseClusterEvent = (
-  clusterEvent: TemporalClusterBusterEvent,
-  eventFeature: ExtendedFeature
-): ApiEvent => {
-  const vessel = clusterEvent.event_vessels.find(
-    (v) => v.id === clusterEvent.vessel_id
-  ) as EventVessel
-  const encounterVessel = clusterEvent.event_vessels.find(
-    (v) => v.id === clusterEvent.event_info?.encountered_vessel_id
-  ) as EventVessel
-  const event = {
-    position: {
-      lat: eventFeature.properties?.lat as number,
-      lon: eventFeature.properties?.lng as number,
-    },
-    id: clusterEvent.event_id,
-    type: clusterEvent.event_type,
-    vessel,
-    start: clusterEvent.event_start,
-    end: clusterEvent.event_end,
-    rfmos: clusterEvent.event_info?.regions?.rfmo,
-    eezs: clusterEvent.event_info?.regions?.eez,
-    encounter: {
-      vessel: encounterVessel,
-      authorized: clusterEvent.event_info.is_authorized,
-      medianDistanceKilometers: clusterEvent.event_info.median_distance_km,
-      medianSpeedKnots: clusterEvent.event_info.median_speed_knots,
-      authorizationStatus: clusterEvent.event_info.authorization_status,
-      regionAuthorizations: [],
-      vesselAuthorizations: [],
-    },
+export const fetchViirsInteractionThunk = createAsyncThunk<
+  ApiViirsStats[] | undefined,
+  { feature: ExtendedFeature },
+  {
+    dispatch: AppDispatch
   }
-  return event
-}
+>('map/fetchViirsInteraction', async ({ feature }, { getState, signal }) => {
+  if (!feature) {
+    console.warn('fetchInteraction not possible, no features')
+    return
+  }
+  const state = getState() as RootState
+  const temporalgridDataviews = selectActivityDataviews(state) || []
+
+  const { fourWingsDataset, datasetConfig } = getInteractionEndpointDatasetConfig(
+    [feature],
+    temporalgridDataviews
+  )
+
+  const interactionUrl = resolveEndpoint(fourWingsDataset, datasetConfig)
+  if (interactionUrl) {
+    const viirsStats = await GFWAPI.fetch<ApiViirsStats[][]>(interactionUrl, {
+      signal,
+    })
+
+    return viirsStats[0]
+  }
+})
 
 export const fetchEncounterEventThunk = createAsyncThunk<
   ExtendedFeatureEvent | undefined,
@@ -324,15 +305,67 @@ export const fetchEncounterEventThunk = createAsyncThunk<
   if (dataset) {
     const datasetConfig = {
       datasetId: dataset.id,
-      endpoint: 'carriers-events-detail',
+      endpoint: EndpointId.EventsDetail,
       params: [{ id: 'eventId', value: eventFeature.id }],
     }
     const url = resolveEndpoint(dataset, datasetConfig)
     if (url) {
-      const clusterEvent = await GFWAPI.fetch<TemporalClusterBusterEvent>(url, { signal })
+      const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal })
+
+      // Workaround to grab information about each vessel dataset
+      // will need discuss with API team to scale this for other types
+      const isACarrierTheMainVessel = clusterEvent.vessel.type === EventVesselTypeEnum.Carrier
+      const fishingVessel = isACarrierTheMainVessel
+        ? clusterEvent.encounter?.vessel
+        : clusterEvent.vessel
+      const carrierVessel = isACarrierTheMainVessel
+        ? clusterEvent.vessel
+        : clusterEvent.encounter?.vessel
+      let vesselsInfo: ExtendedEventVessel[] = []
+      const vesselsDatasets = dataview?.datasets
+        ?.flatMap((d) => d.relatedDatasets || [])
+        .filter((d) => d?.type === 'carriers-vessels:v1')
+      if (vesselsDatasets?.length && fishingVessel && carrierVessel) {
+        const vesselDataset = selectDatasetById(vesselsDatasets[0].id)(state) as Dataset
+        const vesselsDatasetConfig = {
+          datasetId: vesselDataset.id,
+          endpoint: EndpointId.VesselList,
+          params: [],
+          query: [
+            { id: 'ids', value: [fishingVessel.id, carrierVessel.id].join(',') },
+            { id: 'datasets', value: vesselsDatasets.map((d) => d.id).join(',') },
+          ],
+        }
+        const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
+        if (vesselsUrl) {
+          vesselsInfo = await GFWAPI.fetch<ExtendedEventVessel[]>(vesselsUrl, { signal })
+        }
+      }
+
       if (clusterEvent) {
-        const event = parseClusterEvent(clusterEvent, eventFeature)
-        return { ...event, dataset }
+        const fishingVesselDataset =
+          vesselsInfo.find((v) => v.id === fishingVessel?.id)?.dataset || ''
+        const carrierVesselDataset =
+          vesselsInfo.find((v) => v.id === carrierVessel?.id)?.dataset || ''
+        const carrierExtendedVessel: ExtendedEventVessel = {
+          ...(carrierVessel as EventVessel),
+          dataset: carrierVesselDataset,
+        }
+        const fishingExtendedVessel: ExtendedEventVessel = {
+          ...(fishingVessel as EventVessel),
+          dataset: fishingVesselDataset,
+        }
+        return {
+          ...clusterEvent,
+          vessel: carrierExtendedVessel,
+          ...(clusterEvent.encounter && {
+            encounter: {
+              ...clusterEvent.encounter,
+              vessel: fishingExtendedVessel,
+            },
+          }),
+          dataset,
+        }
       }
     } else {
       console.warn('Missing url for endpoints', dataset, datasetConfig)
@@ -355,11 +388,11 @@ const slice = createSlice({
   },
 
   extraReducers: (builder) => {
-    builder.addCase(fetch4WingInteractionThunk.pending, (state, action) => {
-      state.fourWingsStatus = AsyncReducerStatus.Loading
+    builder.addCase(fetchFishingActivityInteractionThunk.pending, (state, action) => {
+      state.fishingStatus = AsyncReducerStatus.Loading
     })
-    builder.addCase(fetch4WingInteractionThunk.fulfilled, (state, action) => {
-      state.fourWingsStatus = AsyncReducerStatus.Finished
+    builder.addCase(fetchFishingActivityInteractionThunk.fulfilled, (state, action) => {
+      state.fishingStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
 
       action.payload.vessels.forEach((sublayerVessels) => {
@@ -371,11 +404,35 @@ const slice = createSlice({
         sublayer.vessels = sublayerVessels.vessels
       })
     })
-    builder.addCase(fetch4WingInteractionThunk.rejected, (state, action) => {
+    builder.addCase(fetchFishingActivityInteractionThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
-        state.fourWingsStatus = AsyncReducerStatus.Idle
+        state.fishingStatus = AsyncReducerStatus.Idle
       } else {
-        state.fourWingsStatus = AsyncReducerStatus.Error
+        state.fishingStatus = AsyncReducerStatus.Error
+      }
+    })
+    builder.addCase(fetchViirsInteractionThunk.pending, (state, action) => {
+      state.viirsStatus = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchViirsInteractionThunk.fulfilled, (state, action) => {
+      state.viirsStatus = AsyncReducerStatus.Finished
+      if (!state.clicked || !state.clicked.features || !action.payload) return
+      const feature = state.clicked?.features?.find((feature) => {
+        const sameFeatureId = feature.id && action.meta.arg.feature.id
+        const sameFeatureInteractionType =
+          feature.temporalgrid?.sublayerInteractionType ===
+          action.meta.arg.feature.temporalgrid?.sublayerInteractionType
+        return sameFeatureId && sameFeatureInteractionType
+      })
+      if (feature && action.payload) {
+        feature.viirs = action.payload
+      }
+    })
+    builder.addCase(fetchViirsInteractionThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.viirsStatus = AsyncReducerStatus.Idle
+      } else {
+        state.viirsStatus = AsyncReducerStatus.Error
       }
     })
     builder.addCase(fetchEncounterEventThunk.pending, (state, action) => {
@@ -400,7 +457,8 @@ const slice = createSlice({
 })
 
 export const selectClickedEvent = (state: RootState) => state.map.clicked
-export const selectFourWingsStatus = (state: RootState) => state.map.fourWingsStatus
+export const selectFishingInteractionStatus = (state: RootState) => state.map.fishingStatus
+export const selectViirsInteractionStatus = (state: RootState) => state.map.viirsStatus
 export const selectApiEventStatus = (state: RootState) => state.map.apiEventStatus
 
 export const { setClickedEvent } = slice.actions

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components/dist'
 import { InteractiveMap, MapRequest } from '@globalfishingwatch/react-map-gl'
 import GFWAPI from '@globalfishingwatch/api-client'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import useLayerComposer from '@globalfishingwatch/react-hooks/dist/use-layer-composer'
 import {
   useMapClick,
@@ -22,11 +23,15 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   useClickedEventConnect,
-  useMapTooltip,
+  useMapHighlightedEvent,
+  parseMapTooltipEvent,
   useGeneratorsConnect,
   TooltipEventFeature,
 } from 'features/map/map.hooks'
-import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActivityDataviews,
+  selectDataviewInstancesResolved,
+} from 'features/dataviews/dataviews.selectors'
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import MapScreenshot from 'features/map/MapScreenshot'
@@ -70,13 +75,15 @@ const MapWrapper = (): React.ReactElement | null => {
   const map = useMapInstance()
   const { t } = useTranslation()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
+  const dataviews = useSelector(selectDataviewInstancesResolved)
+  const temporalgridDataviews = useSelector(selectActivityDataviews)
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
   const { style, loading: layerComposerLoading } = useLayerComposer(generatorsConfig, globalConfig)
 
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
-  const clickedTooltipEvent = useMapTooltip(clickedEvent)
+  const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
   const { cleanFeatureState } = useFeatureState(map)
   const { onMapHoverWithRuler, onMapClickWithRuler, getRulersCursor, rulersEditing } = useRulers()
 
@@ -103,6 +110,7 @@ const MapWrapper = (): React.ReactElement | null => {
         `${featureCategory}: ${features.map((f) => f.layerId).join(',')}`
     )
   }, [clickedEvent, clickedTooltipEvent])
+
   const currentClickCallback = useMemo(() => {
     const clickEvent = (event: any) => {
       uaEvent({
@@ -134,7 +142,8 @@ const MapWrapper = (): React.ReactElement | null => {
     return rulersEditing ? onMapHoverWithRuler : onMapHover
   }, [rulersEditing, onMapHoverWithRuler, onMapHover])
 
-  const hoveredTooltipEvent = useMapTooltip(hoveredEvent)
+  const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
+  useMapHighlightedEvent(hoveredTooltipEvent?.features)
 
   const resetHoverState = useCallback(() => {
     setHoveredEvent(null)
@@ -150,7 +159,6 @@ const MapWrapper = (): React.ReactElement | null => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewport])
 
-  const dataviews = useSelector(selectDataviewInstancesResolved)
   const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
 
   const legendsTranslated = useMemo(() => {
@@ -161,10 +169,10 @@ const MapWrapper = (): React.ReactElement | null => {
         const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
         const gridAreaFormatted = gridArea
           ? formatI18nNumber(gridArea, {
-            style: 'unit',
-            unit: isSquareKm ? 'kilometer' : 'meter',
-            unitDisplay: 'short',
-          })
+              style: 'unit',
+              unit: isSquareKm ? 'kilometer' : 'meter',
+              unitDisplay: 'short',
+            })
           : ''
         if (legend.unit === 'hours') {
           label = `${t('common.hour_plural', 'hours')} / ${gridAreaFormatted}²`
@@ -183,11 +191,23 @@ const MapWrapper = (): React.ReactElement | null => {
     (state) => {
       // The default implementation of getCursor returns 'pointer' if isHovering, 'grabbing' if isDragging and 'grab' otherwise.
       if (state.isHovering && hoveredTooltipEvent) {
+        // Workaround to fix cluster events duplicated, only working for encounters and needs
+        // TODO if wanted to scale it to other layers
+        const clusterConfig = dataviews.find((d) => d.config?.type === Generators.Type.TileCluster)
+        const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
+
         const isCluster = hoveredTooltipEvent.features.find(
-          (f) => f.type === Generators.Type.TileCluster && parseInt(f.properties.count) > 1
+          (f) =>
+            f.type === Generators.Type.TileCluster && parseInt(f.properties.count) > eventsCount
         )
         if (isCluster) {
           return encounterSourceLoaded ? 'zoom-in' : 'progress'
+        }
+        const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
+          (f) => f.category === DataviewCategory.Vessels
+        )
+        if (vesselFeatureEvents.length > 0) {
+          return 'grab'
         }
         return 'pointer'
       } else if (state.isDragging) {
@@ -195,7 +215,7 @@ const MapWrapper = (): React.ReactElement | null => {
       }
       return 'grab'
     },
-    [hoveredTooltipEvent, encounterSourceLoaded]
+    [hoveredTooltipEvent, encounterSourceLoaded, dataviews]
   )
 
   useEffect(() => {
