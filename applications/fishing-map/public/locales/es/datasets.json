@@ -392,8 +392,8 @@
     "schema": {}
   },
   "public-global-encounters-events-carriers-fishing": {
-    "name": "Encounter Events for Carriers-Fishing Vessels (AIS)",
-    "description": "The dataset contains encounter events for AIS (Carriers-Fishing)",
+    "name": "Encuentros para embarcaciones Transportistas y Pesqueras (AIS)",
+    "description": "Identificado de los datos AIS como lugares donde dos buques, un transportador y uno pesquero; estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media de &lt;2 nudos, y a menos de 10 km de la costa.",
     "schema": {
       "fields": "fields",
       "event_id": "event_id",
