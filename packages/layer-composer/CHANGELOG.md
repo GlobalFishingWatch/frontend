@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.9.1
+
+### Patch Changes
+
+- 0ea624c9: make cluster interaction unique
+
 ## 8.9.0
 
 ### Minor Changes

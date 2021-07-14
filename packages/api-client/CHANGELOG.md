@@ -1,5 +1,11 @@
 # @globalfishingwatch/api-client
 
+## 2.0.1
+
+### Patch Changes
+
+- 08b8209f: don't decode bracket to save some url characters
+
 ## 2.0.0
 
 ### Patch Changes
