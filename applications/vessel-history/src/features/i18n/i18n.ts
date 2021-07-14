@@ -10,8 +10,6 @@ export const LocaleLabels = [
   { id: Locale.fr, label: 'Français' },
 ]
 
-const pathPrefix = process.env.NODE_ENV === 'production' ? 'map' : ''
-
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -24,9 +22,6 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    backend: {
-      loadPath: `/${pathPrefix}/locales/{{lng}}/{{ns}}.json`,
-    },
     ns: ['translations', 'flags'],
     defaultNS: 'translations',
     fallbackLng: Locale.en,
