@@ -312,8 +312,17 @@ export const parseMapTooltipEvent = (
       ],
     }
   }
+  const hasClusterPointFeature = event.features.find(
+    (f) => f.generatorType === Generators.Type.TileCluster
+  )
+  const filteredFeatures = event.features.filter((feature) => {
+    if (hasClusterPointFeature) {
+      return feature.generatorType === Generators.Type.TileCluster
+    }
+    return true
+  })
 
-  const tooltipEventFeatures: TooltipEventFeature[] = event.features.flatMap((feature) => {
+  const tooltipEventFeatures: TooltipEventFeature[] = filteredFeatures.flatMap((feature) => {
     let dataview
     if (feature.generatorId === MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID) {
       const { temporalgrid } = feature
