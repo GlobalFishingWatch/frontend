@@ -116,7 +116,7 @@ class TileClusterGenerator {
         metadata: {
           interactive: true,
           generatorId: config.id,
-          uniqueFeatureInteraction: config.duplicatedEventsWorkaround ? true : false,
+          uniqueFeatureInteraction: true,
           group: Group.Cluster,
         },
       },

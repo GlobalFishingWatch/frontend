@@ -113,46 +113,50 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
                       <span className={styles.rowText}>
                         <I18nDate date={feature.event?.start as string} />
                       </span>
-                      {feature.event?.vessel && (
-                        <div className={styles.rowColum}>
-                          <p className={styles.rowTitle}>{t('vessel.carrier', 'Carrier')}</p>
-                          <div className={styles.centered}>
-                            <span className={styles.rowText}>
-                              {formatInfoField(feature.event?.vessel?.name, 'name')}
-                            </span>
-                            <IconButton
-                              icon="pin"
-                              size="small"
-                              onClick={() =>
-                                onPinClick(feature.event?.vessel as ExtendedEventVessel)
-                              }
-                            />
-                          </div>
-                        </div>
-                      )}
-                      {feature.event.encounter?.vessel && (
-                        <div className={styles.row}>
-                          <div className={styles.column}>
-                            <span className={styles.rowTitle}>
-                              {t('vessel.donor', 'Donor vessel')}
-                            </span>
+                      <div className={styles.flex}>
+                        {feature.event?.vessel && (
+                          <div className={styles.rowColum}>
+                            <p className={styles.rowTitle}>{t('vessel.carrier', 'Carrier')}</p>
                             <div className={styles.centered}>
                               <span className={styles.rowText}>
-                                {formatInfoField(feature.event.encounter?.vessel?.name, 'name')}
+                                {formatInfoField(feature.event?.vessel?.name, 'name')}
                               </span>
                               <IconButton
                                 icon="pin"
                                 size="small"
+                                tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
                                 onClick={() =>
-                                  onPinClick(
-                                    feature.event?.encounter?.vessel as ExtendedEventVessel
-                                  )
+                                  onPinClick(feature.event?.vessel as ExtendedEventVessel)
                                 }
                               />
                             </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+                        {feature.event.encounter?.vessel && (
+                          <div className={styles.row}>
+                            <div className={styles.rowColum}>
+                              <span className={styles.rowTitle}>
+                                {t('vessel.donor', 'Donor vessel')}
+                              </span>
+                              <div className={styles.centered}>
+                                <span className={styles.rowText}>
+                                  {formatInfoField(feature.event.encounter?.vessel?.name, 'name')}
+                                </span>
+                                <IconButton
+                                  icon="pin"
+                                  size="small"
+                                  tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
+                                  onClick={() =>
+                                    onPinClick(
+                                      feature.event?.encounter?.vessel as ExtendedEventVessel
+                                    )
+                                  }
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                       <div className={styles.row}>
                         <Button
                           href={urlLink}

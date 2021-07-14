@@ -1,6 +1,7 @@
 import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { DateTime } from 'luxon'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectDataviewInstancesByIds } from 'features/dataviews/dataviews.selectors'
 import { getFlagsByIds } from 'utils/flags'
@@ -136,8 +137,13 @@ const getDescription = (
   titleChunks: { label: string; strong?: boolean }[],
   analysisAreaName: string,
   start: string | undefined,
-  end: string | undefined
+  end: string | undefined,
+  graphData: AnalysisGraphProps | undefined
 ) => {
+  const dateFormat =
+    graphData?.interval === 'hour'
+      ? DateTime.DATETIME_MED_WITH_WEEKDAY
+      : DateTime.DATE_MED_WITH_WEEKDAY
   const descriptionChunks = [...titleChunks]
   if (analysisAreaName) {
     descriptionChunks.push({ label: t('common.in', 'in') })
@@ -146,8 +152,8 @@ const getDescription = (
   if (start && end) {
     descriptionChunks.push({
       label: t('common.dateRange', {
-        start: formatI18nDate(start),
-        end: formatI18nDate(end),
+        start: formatI18nDate(start, { format: dateFormat }),
+        end: formatI18nDate(end, { format: dateFormat }),
         defaultValue: 'between {{start}} and {{end}}',
       }),
       strong: true,
@@ -175,7 +181,7 @@ function AnalysisItem({
     return getCommonProperties(dataviews)
   }, [dataviews])
 
-  const description = getDescription(titleChunks, analysisAreaName, start, end)
+  const description = getDescription(titleChunks, analysisAreaName, start, end, graphData)
 
   return (
     <div className={styles.container}>

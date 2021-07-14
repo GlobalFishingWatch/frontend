@@ -1,5 +1,14 @@
 # tile-inspector
 
+## 0.1.62
+
+### Patch Changes
+
+- Updated dependencies [0ea624c9]
+- Updated dependencies [08b8209f]
+  - @globalfishingwatch/layer-composer@8.9.1
+  - @globalfishingwatch/api-client@2.0.1
+
 ## 0.1.61
 
 ### Patch Changes

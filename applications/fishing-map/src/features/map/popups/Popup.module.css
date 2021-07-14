@@ -158,6 +158,7 @@
 }
 
 .rowTitle {
+  font: var(--font-XS);
   text-transform: uppercase;
   color: var(--color-secondary-blue);
 }
@@ -198,6 +199,13 @@
 
 .secondary {
   color: var(--color-secondary-blue);
+}
+
+.flex {
+  margin-top: var(--space-S);
+  display: flex;
+  column-gap: var(--space-M);
+  flex-wrap: wrap;
 }
 
 :global(.mapboxgl-popup .mapboxgl-popup-content) {

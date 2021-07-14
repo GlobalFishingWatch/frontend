@@ -274,6 +274,7 @@
     "title": "User"
   },
   "vessel": {
+    "addToWorkspace": "Add vessel to view",
     "beam": "Beam",
     "callsign": "Call sign",
     "capacity": "Capacity",
