@@ -41,6 +41,7 @@ declare namespace Timebar {
         const maximumRange: any;
         const maximumRangeUnit: any;
         const showLastUpdate: any;
+        const locale: any;
     }
     namespace defaultProps {
         const latestAvailableDataDate_1: string;
@@ -112,6 +113,8 @@ declare namespace Timebar {
         export { maximumRangeUnit_1 as maximumRangeUnit };
         const showLastUpdate_1: boolean;
         export { showLastUpdate_1 as showLastUpdate };
+        const locale_1: string;
+        export { locale_1 as locale };
     }
 }
 import { Component } from "react";

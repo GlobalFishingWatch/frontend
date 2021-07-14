@@ -5,6 +5,10 @@ import dayjs from 'dayjs'
 import memoize from 'memoize-one'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
+import 'dayjs/locale/en'
+import 'dayjs/locale/es'
+import 'dayjs/locale/fr'
+import 'dayjs/locale/id'
 import ImmediateContext from './immediateContext'
 import {
   getTime,
@@ -86,9 +90,18 @@ class Timebar extends Component {
     return getRangeMs(minimumRange, minimumRangeUnit)
   })
 
-  componentDidMount() {
-    const { start, end } = this.props
+  componentDidUpdate(prevProps) {
+    const { locale: prevLocale } = prevProps
+    const { start, end, locale } = this.props
+    if (prevLocale !== locale) {
+      dayjs.locale(locale)
+      this.notifyChange(start, end, EVENT_SOURCE.TIME_RANGE_SELECTOR)
+    }
+  }
 
+  componentDidMount() {
+    const { start, end, locale } = this.props
+    dayjs.locale(locale)
     // TODO stick to day/hour here too
     this.notifyChange(start, end, EVENT_SOURCE.MOUNT)
   }
@@ -400,6 +413,7 @@ Timebar.propTypes = {
   maximumRange: PropTypes.number,
   maximumRangeUnit: PropTypes.string,
   showLastUpdate: PropTypes.bool,
+  locale: PropTypes.oneOf(['en', 'es', 'fr', 'id']),
 }
 
 Timebar.defaultProps = {
@@ -462,6 +476,7 @@ Timebar.defaultProps = {
   maximumRange: null,
   maximumRangeUnit: 'month',
   showLastUpdate: true,
+  locale: 'en',
 }
 
 export default Timebar
