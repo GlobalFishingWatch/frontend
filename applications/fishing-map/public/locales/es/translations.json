@@ -274,6 +274,7 @@
     "title": "Usuario"
   },
   "vessel": {
+    "addToWorkspace": "Add vessel to view",
     "beam": "Manga",
     "callsign": "Señal distintiva de llamada",
     "capacity": "Capacidad",
