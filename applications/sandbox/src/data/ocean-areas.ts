@@ -144,7 +144,10 @@ const oceanAreas: FeatureCollection<Geometry, OceanAreaProperties> = {
     },
     {
       type: 'Feature',
-      properties: { type: 'EEZ', name: 'Falkland / Malvinas Islands' },
+      properties: {
+        type: 'EEZ',
+        name: 'British / Argentinean EEZ (Overlapping claim Falkland / Malvinas Islands)',
+      },
       geometry: {
         type: 'Polygon',
         coordinates: [
@@ -9909,7 +9912,7 @@ const oceanAreas: FeatureCollection<Geometry, OceanAreaProperties> = {
     },
     {
       type: 'Feature',
-      properties: { type: 'EEZ', name: 'Taiwan' },
+      properties: { type: 'EEZ', name: 'Chinese Taipei' },
       geometry: {
         type: 'Polygon',
         coordinates: [
