@@ -42,7 +42,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk(
       const workspacesParams = {
         ...(uniqIds?.length && { ids: uniqIds }),
         include: 'endpoints',
-        cache: process.env.NODE_ENV !== 'development',
+        cache: false,
       }
       const initialDatasets = await GFWAPI.fetch<Dataset[]>(
         `/v1/datasets?${stringify(workspacesParams, { arrayFormat: 'comma' })}`,
