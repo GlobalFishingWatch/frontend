@@ -356,7 +356,11 @@ function NewDataset(): React.ReactElement {
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
           <span className={styles.hint}>
-            <a href="https://globalfishingwatch.org/faqs/" target="_blank" rel="noreferrer">
+            <a
+              href="https://globalfishingwatch.org/article-categories/reference-layers/"
+              target="_blank"
+              rel="noreferrer"
+            >
               {t('dataset.hint', 'Find out more about the supported formats')}
             </a>
           </span>
