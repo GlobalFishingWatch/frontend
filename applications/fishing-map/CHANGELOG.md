@@ -1,5 +1,12 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.2
+
+### Patch Changes
+
+- Updated dependencies [52296801]
+  - @globalfishingwatch/ocean-areas@0.2.3
+
 ## 1.1.1
 
 ### Patch Changes
