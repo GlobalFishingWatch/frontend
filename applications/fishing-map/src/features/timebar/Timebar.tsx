@@ -18,7 +18,7 @@ import {
   useDisableHighlightTimeConnect,
 } from 'features/timebar/timebar.hooks'
 import { DEFAULT_WORKSPACE, LAST_DATA_UPDATE } from 'data/config'
-import { TimebarVisualisations, TimebarGraphs } from 'types'
+import { TimebarVisualisations } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
 import { selectActivityCategory, selectTimebarGraph } from 'features/app/app.selectors'
 import { getEventLabel } from 'utils/analytics'
@@ -34,6 +34,8 @@ import {
   selectTracksData,
   selectTracksGraphs,
   selectEventsWithRenderingInfo,
+  TimebarTrack,
+  RenderedEvent,
 } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
@@ -63,7 +65,7 @@ const TimebarWrapper = () => {
   const { setMapCoordinates } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
-  const tracksGraph = useSelector(selectTracksGraphs)
+  const tracksGraphs = useSelector(selectTracksGraphs)
   const tracksEvents = useSelector(selectEventsWithRenderingInfo)
 
   const dispatch = useDispatch()
@@ -181,14 +183,46 @@ const TimebarWrapper = () => {
     },
     [dispatch, dispatchHighlightedEvent]
   )
+  const showGraph = useMemo(() => {
+    return timebarGraph !== 'none' && tracksGraphs && tracksGraphs.length === 1
+  }, [timebarGraph, tracksGraphs])
 
   const highlighterActivity = useMemo(() => {
-    return timebarVisualisation === TimebarVisualisations.Vessel &&
-      timebarGraph === TimebarGraphs.Speed &&
-      tracksGraph
-      ? tracksGraph
+    return timebarVisualisation === TimebarVisualisations.Vessel && showGraph && tracksGraphs
+      ? tracksGraphs
       : null
-  }, [timebarVisualisation, timebarGraph, tracksGraph])
+  }, [timebarVisualisation, timebarGraph, tracksGraphs])
+
+  const { syncedTracks, syncedTracksEvents } = useMemo<{
+    syncedTracks: (TimebarTrack | null)[] | undefined
+    syncedTracksEvents: RenderedEvent[][]
+  }>(() => {
+    if (!tracks) {
+      return {
+        syncedTracks: [],
+        syncedTracksEvents: [],
+      }
+    }
+    if (tracks.length !== tracksEvents.length) {
+      console.warn('tracks and tracks events dont have the same length')
+      return {
+        syncedTracks: [],
+        syncedTracksEvents: [],
+      }
+    }
+    const syncedTracks = []
+    const syncedTracksEvents = []
+    for (let i = 0; i < tracks.length; i++) {
+      if (tracks[i] && tracksEvents[i] && tracksEvents[i].length) {
+        syncedTracks.push(tracks[i])
+        syncedTracksEvents.push(tracksEvents[i])
+      }
+    }
+    return {
+      syncedTracks,
+      syncedTracksEvents,
+    }
+  }, [tracks, tracksEvents])
 
   if (!start || !end) return null
 
@@ -218,21 +252,17 @@ const TimebarWrapper = () => {
           <Fragment>
             {timebarVisualisation === TimebarVisualisations.Heatmap && <TimebarActivityGraph />}
             {timebarVisualisation === TimebarVisualisations.Vessel &&
-              (tracks && tracks.length <= MAX_TIMEBAR_VESSELS ? (
+              (syncedTracks && syncedTracks.length <= MAX_TIMEBAR_VESSELS ? (
                 <Fragment>
-                  {timebarGraph !== TimebarGraphs.Speed && (
-                    <TimebarTracks key="tracks" tracks={tracks} />
+                  <TimebarTracks key="tracks" tracks={syncedTracks} />
+                  {showGraph && tracksGraphs && (
+                    <TimebarActivity key="trackActivity" graphTracks={tracksGraphs} />
                   )}
-                  {timebarGraph === TimebarGraphs.Speed &&
-                    tracksGraph &&
-                    tracksGraph.length <= 10 && (
-                      <TimebarActivity key="trackActivity" graphTracks={tracksGraph} />
-                    )}
-                  {tracksEvents && tracksEvents.length <= 10 && (
+                  {syncedTracksEvents && (
                     <TimebarTracksEvents
                       key="events"
                       preselectedEventId={highlightedEvent?.id}
-                      tracksEvents={tracksEvents}
+                      tracksEvents={syncedTracksEvents}
                       onEventClick={onEventClick}
                       onEventHover={onEventHover}
                     />
