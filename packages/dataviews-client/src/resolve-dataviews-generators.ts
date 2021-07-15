@@ -283,6 +283,11 @@ export function getGeneratorConfig(
             .map((_, i) => parseFloat((i / (numSteps - 1))?.toFixed(2)))
             .map((value) => parseFloat((rampScale(value) as number)?.toFixed(3)))
           generator.steps = steps
+        } else if (
+          dataset.category === DatasetCategory.Context &&
+          dataview.config?.type === Generators.Type.UserContext
+        ) {
+          generator.disableInteraction = dataset.configuration?.disableInteraction
         }
       }
       if (!generator.tilesUrl) {
