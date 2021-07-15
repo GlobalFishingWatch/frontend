@@ -35,6 +35,8 @@ class UserContextGenerator {
       'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
     }
 
+    const interactive = !config.disableInteraction
+
     if (config.steps?.length && config.colorRamp) {
       const originalColorRamp = HEATMAP_COLOR_RAMPS[config.colorRamp]
       const legendRamp = zip(config.steps, originalColorRamp)
@@ -54,7 +56,7 @@ class UserContextGenerator {
         },
         metadata: {
           color: config.color,
-          interactive: true,
+          interactive,
           generatorId,
           group: Group.OutlinePolygonsFill,
           uniqueFeatureInteraction: true,
@@ -96,7 +98,7 @@ class UserContextGenerator {
         ...getFillPaintWithFeatureState('transparent'),
       },
       metadata: {
-        interactive: true,
+        interactive,
         generatorId: generatorId,
         group: Group.OutlinePolygonsFill,
       },
