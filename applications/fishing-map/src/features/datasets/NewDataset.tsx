@@ -282,7 +282,7 @@ function NewDataset(): React.ReactElement {
         label: userTrackGeoJSONFile?.name ?? file.name,
       })
       setLoading(true)
-      console.log(metadata)
+
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
         dataset: {
           ...metadata,
