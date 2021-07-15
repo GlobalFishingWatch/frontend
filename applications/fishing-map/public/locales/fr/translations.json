@@ -2,7 +2,7 @@
   "analysis": {
     "close": "Fermer l'analyse",
     "completed": "Vous recevrez le rapport par e-mail sous peu",
-    "disclaimer": "Les données indiquées ci-dessus doivent être considérées comme une estimation. Cliquez sur le bouton ci-dessous si vous avez besoin d'une analyse plus précise, y compris la liste des navires concernés, et nous vous l'enverrons par e-mail.",
+    "disclaimer": "Les données indiquées ci-dessus doivent être considérées comme une estimation. Cliquez sur le bouton ci-dessous si vous avez besoin d'une analyse plus précise, incluant la liste des navires concernés, et nous vous l'enverrons par e-mail.",
     "download": "Télécharger le rapport",
     "downloadLogin": "Vous devez vous connecter pour télécharger le rapport (gratuit, 2 minutes)",
     "empty": "Vos jeux de données sélectionnés apparaîtront ici",
@@ -32,7 +32,7 @@
     "days_plural": "Jours",
     "description": "Libellé",
     "detection": "Détection",
-    "detection_plural": "Detections",
+    "detection_plural": "Détections",
     "environment": "Environnement",
     "events": "Évènements",
     "feedback": "Vos commentaires",
@@ -56,7 +56,7 @@
     "presence": "Présence",
     "report": "Rapporter",
     "seeDefault": "Voir la vue par défaut",
-    "share": "Partager la carte",
+    "share": "Partager la vue actuelle",
     "unknown": "Inconnu",
     "update": "Mise à jour",
     "vessel": "Navire",
@@ -65,9 +65,9 @@
     "welcomePopupDisable": "Ne plus afficher"
   },
   "dataset": {
-    "addContext": "Ajouter la couche de référence",
+    "addContext": "Ajouter un calque de référence",
     "addEnvironmental": "Ajouter un jeu de données environnemental",
-    "colorByValue": "Caractéristiques de couleur par valeur",
+    "colorByValue": "Associer la couleur à une valeur",
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement ce jeu de données ?",
     "dragActive": "Déposez le fichier ici ...",
     "dragFilePlaceholder": "Glissez et déposez un fichier shapefile ou un geojson ici ou cliquez pour le sélectionner",
@@ -80,28 +80,28 @@
     "hint": "En savoir plus sur les formats pris en charge",
     "importing": "Le jeu de données est en cours d'importation",
     "individualIdField": "Champ ID Individuel",
-    "latitudeNameField": "Champ Latitude",
+    "latitudeNameField": "Champ de Latitude",
     "longitudeNameField": "Champ de longitude",
     "new": "Nouveau jeu de données",
-    "notUploadedYet": "Aucune couche de référence téléchargée pour le moment",
-    "notUploadedYetEnvironment": "Aucune couche d'environnement téléchargée pour le moment",
+    "notUploadedYet": "Aucun calque de référence ajouté pour le moment",
+    "notUploadedYetEnvironment": "Aucun calque d'environnement ajouté pour le moment",
     "remove": "Supprimer les jeux de données",
     "requiredFields": "Champs requis {{fields}}",
-    "timeNameField": "Champ du nom de l'heure",
+    "timeNameField": "Champ date/heure",
     "title": "Jeu de données",
     "typePoints": " Points",
-    "typePointsDescription": "Affichez une ou plusieurs positions par n'importe quelle valeur quantitative dans votre jeu de données.",
+    "typePointsDescription": "Affichez des points dont la taille est corrélée à n'importe quelle valeur quantitative de votre jeu de données.",
     "typePolygons": " Polygones",
-    "typePolygonsDescription": "Affichez une ou plusieurs zones colorées par n'importe quelle valeur quantitative dans votre jeu de données.",
+    "typePolygonsDescription": "Affichez des polygones dont la couleur est corrélée à n'importe quelle valeur quantitative de votre jeu de données.",
     "typeTracks": "Trajectoires",
-    "typeTracksDescription": "Afficher le mouvement d'un ou de plusieurs animaux ou vaisseaux.",
+    "typeTracksDescription": "Afficher le mouvement d'un ou de plusieurs animaux ou navires.",
     "uploadLogin": "Inscrivez-vous et  <1>connectez-vous</1> pour télécharger des jeux de données (gratuit, 2 minutes)",
-    "uploadNewContext": "Télécharger de nouvelles couches de référence",
-    "uploadNewEnviroment": "Charger un nouveau jeu de données d'environnement",
+    "uploadNewContext": "Ajouter de nouveux calques de référence",
+    "uploadNewEnviroment": "Ajouter un nouveau jeu de données d'environnement",
     "title_plural": "Jeux de données"
   },
   "errors": {
-    "contactUs": "Veuillez <1>nous contacter</1> pour rapporter le problème.",
+    "contactUs": "Veuillez <1>nous contacter</1> pour signaler le problème.",
     "datasetNotFound": "Jeu de données introuvable",
     "datasetNotValid": "Il semble y avoir un problème avec votre fichier",
     "fields": "Erreurs avec les champs {{fields}}",
@@ -117,18 +117,18 @@
     "switchAccount": "Changer de compte",
     "trackLoading": "Une erreur s'est produite lors du chargement de la trajectoire du navire",
     "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
-    "vesselLoading": "Une erreur s'est produite lors du chargement de la trajectoire des détails du vaisseau",
+    "vesselLoading": "Une erreur s'est produite lors du chargement des détails du vaisseau",
     "workspaceCreate": "Une erreur s'est produite lors de la création de l'espace de travail. Veuillez réessayer ",
     "workspaceDuplicatedName": "Il existe déjà un espace de travail portant ce nom",
     "workspaceLoad": "Une erreur a été rencontrée lors du chargement de l'espace de travail. Veuillez réessayer.",
     "workspaceMissingName": "Le nom de l'espace de travail est requis",
-    "workspaceNotFound": "L'espace de travail demandé n'a pas été trouvé"
+    "workspaceNotFound": "La vue demandée n'a pas été trouvée"
   },
   "event": {
     "during": "pendant",
     "encounter": "Rencontre",
     "encounterAction": "a eu une rencontre avec",
-    "encounterActionWith": "had an encounter with",
+    "encounterActionWith": "a eu une rencontre avec",
     "encounterAnotherVessel": "un autre navire",
     "fishing": "Pêche",
     "fishingAction": "À pêché pendant",
@@ -142,9 +142,9 @@
     "notInCVP": "Événement non disponible.",
     "port": "Port",
     "portAction": "À quai pendant",
-    "portAt": "Docked at {{port}} for",
+    "portAt": "Ancré à {{port}} pendant",
     "seeInCVP": "Voir dans le Carrier Vessel Portal",
-    "unknown": "Unknown event"
+    "unknown": "Événement inconnu"
   },
   "feedback": {
     "descriptionPlaceholder": "Merci d'être aussi descriptif que possible",
@@ -157,7 +157,7 @@
       "other": "Autres",
       "referenceLayers": "Calques de référence",
       "timebar": "Barre de temps en bas de la carte",
-      "vesselSearch": "Recherche de Navire",
+      "vesselSearch": "Recherche de navire",
       "vesselTracks": "Trajectoires de navire"
     },
     "improvements": "Améliorations de la plateforme",
@@ -167,7 +167,7 @@
     "role": "Rôle",
     "roles": {
       "analyst": "Analyste",
-      "fisheries": "Responsable de l'application des pêches ou de la conformité",
+      "fisheries": "Agent de l'industrie de la pêche, responsable de la conformité",
       "general": "Public général",
       "GFW": "Équipe GFW",
       "journalist": "Journaliste",
@@ -175,7 +175,7 @@
       "ngo": "Organisation non gouvernementale",
       "other": "Autres",
       "scientist": "Scientifique",
-      "student": "Etudiant",
+      "student": "Étudiant",
       "watch": "Officier de surveillance"
     },
     "send": "Envoyer",
@@ -199,16 +199,16 @@
     "infoOpen": "Afficher les infos",
     "qf": "Qualité du signal",
     "remove": "Supprimer le calque",
-    "seeDescription": "Cliquez pour voir la description de la couche",
+    "seeDescription": "Cliquez pour voir la description du calque",
     "source": "Source",
     "source_plural": "Sources",
     "toggleCombinationMode": {
       "combine": "Combiner les calques",
       "split": "Séparer les calques"
     },
-    "toggleVisibility": "Activer/désactiver la visibilité de la couche",
-    "vessel_fit_bounds": "Centrer la carte sur le tracé du navire",
-    "vessel_fit_bounds_out_of_timerange": "La piste n'a aucune activité dans le chronomètre sélectionné. Changer la plage de temps pour correspondre à cette piste ?"
+    "toggleVisibility": "Afficher/cacher calque",
+    "vessel_fit_bounds": "Centrer la carte sur la trajectoire du navire",
+    "vessel_fit_bounds_out_of_timerange": "La piste n'a aucune activité dans la plage temporelle sélectionnée. Changer la plage temporelle pour l'ajuster à cette trajectoire ?"
   },
   "map": {
     "captureMap": "Enregistrer une image de la carte",
@@ -218,7 +218,7 @@
     "loading": "Chargement",
     "mapLoadingWait": "Veuillez patienter jusqu'à ce que la carte soit chargée",
     "rulers_add": "Mesurer des distances",
-    "rulers_remove": "Supprimer toutes les distances",
+    "rulers_remove": "Supprimer toutes les mesures",
     "search": "Rechercher des zones",
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
@@ -231,14 +231,14 @@
     "description": "Recherche par nom de navire ou code d'identification . Vous pouvez affiner votre recherche en cliquant sur \"Avancé\" dans la barre supérieure.",
     "mainQueryLabel": "Nom, IMO ou MMSI",
     "noResults": "Vous ne trouvez pas le navire que vous recherchez ? Essayez d'utiliser MMSI, IMO ou Callsign",
-    "notAllowed": "Vous n'êtes pas autorisé à rechercher ces données.",
-    "placeholder": "Tapez pour rechercher des navires",
-    "seeVessel": "Voir le bateau",
+    "notAllowed": "Les jeux de données disponibles ne permettent pas la recherche de navires",
+    "placeholder": "Entrez un texte pour rechercher des navires",
+    "seeVessel": "Voir le navire",
     "seeVessels": "Voir {{count}} navires",
     "seeVessels_plural": "Voir les navires",
     "suggestion": "Vouliez-vous dire",
     "title": "Chercher",
-    "vesselAlreadyInWorkspace": "Ce vaisseau est déjà dans votre espace de travail",
+    "vesselAlreadyInWorkspace": "Ce vaisseau est déjà dans votre vue",
     "vessels": "Rechercher des navires",
     "vesselSelected": "Navire sélectionné"
   },
@@ -251,19 +251,19 @@
     "maxTracksNumber": "Détail des trajectoires non disponible pour plus de 10 navires"
   },
   "timebarSettings": {
-    "fishingEffortDisabled": "Sélectionnez au moins une couche apparente d'effort de pêche",
+    "fishingEffortDisabled": "Sélectionnez au moins un calque d'effort de pêche apparent",
     "graph": "Graphique",
     "graphOptions": {
-      "depth": "Profondeur $t(common.comingBientôt)",
+      "depth": "Profondeur",
       "none": "Aucun",
-      "speed": "Rapidité"
+      "speed": "Vitesse"
     },
     "presenceDisabled": "Sélectionnez au moins un calque de présence",
     "settings_close": "Fermer les paramètres de la barre de temps",
     "settings_open": "Ouvrir les paramètres de la barre de temps",
     "showFishingEffort": "Afficher le graphique des heures de pêche",
     "showPresence": "Montrer le graphique de présence",
-    "showTracks": "Afficher le graphe des pistes",
+    "showTracks": "Afficher le graphe des trajectoires",
     "tracks": "Trajectoires",
     "tracksDisabled": "Sélectionnez au moins un navire"
   },
@@ -274,14 +274,14 @@
     "title": "Utilisateur"
   },
   "vessel": {
-    "addToWorkspace": "Add vessel to view",
-    "beam": "Rayon",
+    "addToWorkspace": "Ajouter un navire à la vue",
+    "beam": "Largeur",
     "callsign": "Indicatif",
     "capacity": "Capacité",
     "carrier": "Transporteur",
     "donor": "Navire donneur",
     "firstTransmissionDate": "Première date de transmission",
-    "flag": "Drapeau",
+    "flag": "Pavillon",
     "fleet": "Flotte",
     "geartype": "Type d'équipement",
     "gearTypes": {
@@ -309,7 +309,7 @@
     "lastTransmissionDate": "Dernière date de transmission",
     "length": "Longueur",
     "lengthRange": "Plage de longueur",
-    "loading": "Chargement de la piste du navire",
+    "loading": "Chargement de la trajectoire du navire",
     "login": "Vous devez <1>vous connecter</1> pour voir plus de détails (gratuit, 2 minutes)",
     "mmsi": "MMSI",
     "nationalId": "Identifiant national",
@@ -323,16 +323,16 @@
   },
   "workspace": {
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement cet espace de travail ?",
-    "editName": "Modifier le nom de l'espace de travail",
-    "emptyState": "Vos espaces de travail apparaîtront ici",
+    "editName": "Modifier le nom de la vue",
+    "emptyState": "Vos vues apparaîtront ici",
     "emptyStateEnvironment": "Chargez des jeux de données personnalisés comme la télémétrie animale, en cliquant sur l'icône plus.",
     "emptyStateVessels": "Les navires sélectionnés dans la recherche ou en cliquant sur la carte de chaleur apparaîtront ici.",
-    "nameInput": "Nom de l'espace de travail",
-    "new": "Nouvel espace de travail",
-    "remove": "Supprimer l'espace de travail",
+    "nameInput": "Nom de la vue",
+    "new": "Nouvelle vue",
+    "remove": "Supprimer la vue",
     "save": "Enregistrer la vue actuelle",
     "saved": "La vue actuelle a été enregistrée et est disponible dans votre profil",
     "saveLogin": "Vous devez vous connecter pour enregistrer les vues (gratuit, 2 minutes)",
-    "title_plural": "Espaces de travail"
+    "title_plural": "Vues"
   }
 }
