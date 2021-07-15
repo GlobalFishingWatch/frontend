@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.8.0
+
+### Minor Changes
+
+- 58d28355: Handle user context layers with line features
+
 ## 11.7.0
 
 ### Minor Changes
