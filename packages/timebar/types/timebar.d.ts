@@ -10,6 +10,7 @@ declare class Timebar extends Component<any, any, any> {
     getMinimumRangeMs: (this: any, minimumRange: any, minimumRangeUnit: any) => any;
     toggleTimeRangeSelector: () => void;
     setBookmark: () => void;
+    setLocale: (this: any, locale: any) => any;
     onTimeRangeSelectorSubmit: (start: any, end: any) => void;
     zoom: (zoom: any) => void;
     notifyChange: (start: any, end: any, source: any, clampToEnd?: boolean) => void;

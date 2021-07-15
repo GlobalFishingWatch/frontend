@@ -90,18 +90,9 @@ class Timebar extends Component {
     return getRangeMs(minimumRange, minimumRangeUnit)
   })
 
-  componentDidUpdate(prevProps) {
-    const { locale: prevLocale } = prevProps
-    const { start, end, locale } = this.props
-    if (prevLocale !== locale) {
-      dayjs.locale(locale)
-      this.notifyChange(start, end, EVENT_SOURCE.TIME_RANGE_SELECTOR)
-    }
-  }
-
   componentDidMount() {
-    const { start, end, locale } = this.props
-    dayjs.locale(locale)
+    const { start, end } = this.props
+
     // TODO stick to day/hour here too
     this.notifyChange(start, end, EVENT_SOURCE.MOUNT)
   }
@@ -124,6 +115,8 @@ class Timebar extends Component {
     const { start, end, onBookmarkChange } = this.props
     onBookmarkChange !== null && onBookmarkChange(start, end)
   }
+
+  setLocale = memoize((locale) => dayjs.locale(locale))
 
   onTimeRangeSelectorSubmit = (start, end) => {
     this.notifyChange(start, end, EVENT_SOURCE.TIME_RANGE_SELECTOR)
@@ -232,6 +225,7 @@ class Timebar extends Component {
       bookmarkEnd,
       bookmarkPlacement,
       enablePlayback,
+      locale,
       minimumRange,
       minimumRangeUnit,
       maximumRange,
@@ -239,6 +233,7 @@ class Timebar extends Component {
     } = this.props
     const { immediate } = this.state
 
+    this.setLocale(locale)
     // state.absoluteEnd overrides the value set in props.absoluteEnd - see getDerivedStateFromProps
     const { showTimeRangeSelector, absoluteEnd } = this.state
 
