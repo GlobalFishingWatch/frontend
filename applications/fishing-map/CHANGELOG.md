@@ -1,5 +1,51 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.6
+
+### Patch Changes
+
+- Updated dependencies [58d28355]
+  - @globalfishingwatch/dataviews-client@11.8.0
+  - @globalfishingwatch/layer-composer@8.10.0
+
+## 1.1.5
+
+### Patch Changes
+
+- Timebar localization i18n
+- Updated dependencies [undefined]
+  - @globalfishingwatch/timebar@2.0.3
+
+## 1.1.4
+
+### Patch Changes
+
+- Updated dependencies [undefined]
+  - @globalfishingwatch/ocean-areas@0.2.5
+
+## 1.1.3
+
+### Patch Changes
+
+- Updated dependencies [cc73f7d3]
+  - @globalfishingwatch/ocean-areas@0.2.4
+
+## 1.1.2
+
+### Patch Changes
+
+- Updated dependencies [52296801]
+  - @globalfishingwatch/ocean-areas@0.2.3
+
+## 1.1.1
+
+### Patch Changes
+
+- Updated dependencies [0ea624c9]
+- Updated dependencies [08b8209f]
+  - @globalfishingwatch/layer-composer@8.9.1
+  - @globalfishingwatch/api-client@2.0.1
+
 ## 1.0.26
 
 ### Patch Changes

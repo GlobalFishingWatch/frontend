@@ -7,11 +7,11 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { MAX_TOOLTIP_LIST } from '../map.slice'
 import styles from './Popup.module.css'
 
-type ContextTooltipRowProps = {
+type VesselEventsTooltipRowProps = {
   features: TooltipEventFeature[]
 }
 
-function VesselEventsTooltipSection({ features }: ContextTooltipRowProps) {
+function VesselEventsTooltipSection({ features }: VesselEventsTooltipRowProps) {
   const { t } = useTranslation()
   const overflows = features?.length > MAX_TOOLTIP_LIST
   const maxFeatures = overflows ? features.slice(0, MAX_TOOLTIP_LIST) : features

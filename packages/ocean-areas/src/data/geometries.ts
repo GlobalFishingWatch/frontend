@@ -7144,7 +7144,11 @@ const oceanAreas: FeatureCollection<Geometry, OceanAreaProperties> = {
           ],
         ],
       },
-      properties: { name: 'Falkland Islands', area: 562944, type: 'eez' },
+      properties: {
+        name: 'British / Argentinean EEZ (Overlapping claim Falkland / Malvinas Islands)',
+        area: 562944,
+        type: 'eez',
+      },
     },
     {
       type: 'Feature',
@@ -8878,26 +8882,6 @@ const oceanAreas: FeatureCollection<Geometry, OceanAreaProperties> = {
         type: 'Polygon',
         coordinates: [
           [
-            [73.33, 7.65],
-            [69.56, 7.95],
-            [69.22, 5.93],
-            [70.16, -2.23],
-            [75.26, -3.31],
-            [76.89, -0.04],
-            [77.05, 4.73],
-            [74.94, 7.86],
-            [73.33, 7.65],
-          ],
-        ],
-      },
-      properties: { name: 'Maldives', area: 921036, type: 'eez' },
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
             [9.55, 30.23],
             [13.65, 35.13],
             [13.61, 35.25],
@@ -10266,7 +10250,7 @@ const oceanAreas: FeatureCollection<Geometry, OceanAreaProperties> = {
           ],
         ],
       },
-      properties: { name: 'Taiwan', area: 391613, type: 'eez' },
+      properties: { name: 'Chinese Taipei', area: 391613, type: 'eez' },
     },
     {
       type: 'Feature',

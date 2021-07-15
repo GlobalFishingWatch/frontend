@@ -123,6 +123,8 @@ export class GFWAPI {
       (typeof localStorage !== undefined ? localStorage.getItem('i18nextLng') : '') ||
       'en'
     const callbackUrlEncoded = encodeURIComponent(callbackUrl)
+      .replace(/%5B/g, '[') // As the brackets character are very often in our urls we do this to save length in the url
+      .replace(/%5D/g, ']') // and avoid HTTP 431 error (Request Header Fields Too Large)
     return `${this.baseUrl}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`
   }
 

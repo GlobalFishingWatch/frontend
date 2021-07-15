@@ -31,9 +31,9 @@ export const LAST_DATA_UPDATE = DateTime.fromObject({ hour: 0, minute: 0, second
   .toISO()
 
 export const DEFAULT_VIEWPORT = {
-  latitude: 26,
-  longitude: 12,
-  zoom: 1,
+  zoom: 1.5,
+  latitude: 19,
+  longitude: 26,
 }
 export const DEFAULT_TIME_RANGE = {
   start: DateTime.fromISO(LAST_DATA_UPDATE).minus({ months: 3 }).toISO(),

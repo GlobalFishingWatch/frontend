@@ -1,5 +1,17 @@
 # @globalfishingwatch/layer-composer
 
+## 8.10.0
+
+### Minor Changes
+
+- 58d28355: Handle user context layers with line features
+
+## 8.9.1
+
+### Patch Changes
+
+- 0ea624c9: make cluster interaction unique
+
 ## 8.9.0
 
 ### Minor Changes
