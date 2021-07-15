@@ -5,6 +5,10 @@ import dayjs from 'dayjs'
 import memoize from 'memoize-one'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
+import 'dayjs/locale/en'
+import 'dayjs/locale/es'
+import 'dayjs/locale/fr'
+import 'dayjs/locale/id'
 import ImmediateContext from './immediateContext'
 import {
   getTime,
@@ -111,6 +115,8 @@ class Timebar extends Component {
     const { start, end, onBookmarkChange } = this.props
     onBookmarkChange !== null && onBookmarkChange(start, end)
   }
+
+  setLocale = memoize((locale) => dayjs.locale(locale))
 
   onTimeRangeSelectorSubmit = (start, end) => {
     this.notifyChange(start, end, EVENT_SOURCE.TIME_RANGE_SELECTOR)
@@ -219,6 +225,7 @@ class Timebar extends Component {
       bookmarkEnd,
       bookmarkPlacement,
       enablePlayback,
+      locale,
       minimumRange,
       minimumRangeUnit,
       maximumRange,
@@ -226,6 +233,7 @@ class Timebar extends Component {
     } = this.props
     const { immediate } = this.state
 
+    this.setLocale(locale)
     // state.absoluteEnd overrides the value set in props.absoluteEnd - see getDerivedStateFromProps
     const { showTimeRangeSelector, absoluteEnd } = this.state
 
@@ -400,6 +408,7 @@ Timebar.propTypes = {
   maximumRange: PropTypes.number,
   maximumRangeUnit: PropTypes.string,
   showLastUpdate: PropTypes.bool,
+  locale: PropTypes.oneOf(['en', 'es', 'fr', 'id']),
 }
 
 Timebar.defaultProps = {
@@ -462,6 +471,7 @@ Timebar.defaultProps = {
   maximumRange: null,
   maximumRangeUnit: 'month',
   showLastUpdate: true,
+  locale: 'en',
 }
 
 export default Timebar
