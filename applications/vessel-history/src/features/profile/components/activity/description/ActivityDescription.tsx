@@ -5,22 +5,32 @@ import ActivityDescriptionEEZ from './ActivityDescriptionEEZ'
 import ActivityDescriptionRFMO from './ActivityDescriptionRFMO'
 
 interface ActivityDescriptionProps {
-  event: ActivityEvent | null
+  event: ActivityEvent
 }
 
 const ActivityDescription: React.FC<ActivityDescriptionProps> = (props): React.ReactElement => {
   const event = props.event
   const { t } = useTranslation()
 
-  if (event?.regions.eez[0]){
-    return <ActivityDescriptionEEZ regionId={event.regions.eez[0]} type="event" ocean={event.regions.ocean[0]}></ActivityDescriptionEEZ>
+  if (event.regions.eez[0]) {
+    return (
+      <ActivityDescriptionEEZ
+        regionId={event.regions.eez[0]}
+        type="event"
+        ocean={event.regions.ocean[0]}
+      ></ActivityDescriptionEEZ>
+    )
   }
-  if (event?.regions.rfmo[0]){
-    return <ActivityDescriptionRFMO regionId={event.regions.rfmo[0]} type="event" ocean={event.regions.ocean[0]}></ActivityDescriptionRFMO>
+  if (event.regions.rfmo[0]) {
+    return (
+      <ActivityDescriptionRFMO
+        regionId={event.regions.rfmo[0]}
+        type="event"
+        ocean={event.regions.ocean[0]}
+      ></ActivityDescriptionRFMO>
+    )
   }
-  return (
-    <Fragment>{t('event.noDescription', 'No description found')}</Fragment>
-  )
+  return <Fragment>{t('event.noDescription', 'No description found')}</Fragment>
 }
 
 export default ActivityDescription

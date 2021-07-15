@@ -1,7 +1,8 @@
 .activityContainer {
-  padding: 8px;
+  padding: var(--space-XS);
 }
 
+/*
 .divider {
   opacity: 0.1;
   background-color: #22447e;
@@ -22,30 +23,24 @@
   background-size: 15px 15px;
   top: -6px;
   padding: 0 21px 0 10px;
-}
+} */
 
 .event {
-  padding: 0 7px;
+  padding: var(--space-XS);
   display: flex;
   align-items: center;
+  border-bottom: var(--border);
 }
 
 .event .eventData .date {
-  opacity: 0.5;
-  color: #22447e;
-  font-family: Roboto, 'Courier New', Courier, monospace;
-  font-size: 14px;
-  letter-spacing: 0;
-  line-height: 16px;
+  font-size: 1rem;
+  line-height: var(--space-S);
 }
 
 .event .eventData .description {
-  color: #22447e;
-  font-family: Roboto, 'Courier New', Courier, monospace;
-  font-size: 16px;
-  letter-spacing: 0;
-  line-height: 18px;
-  margin-top: 3px;
+  font: var(--font-XS);
+  line-height: var(--space-S);
+  margin-top: var(--space-XS);
 }
 
 .eventIcon {

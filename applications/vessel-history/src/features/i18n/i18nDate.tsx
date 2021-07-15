@@ -5,7 +5,7 @@ import { Locale } from 'types'
 import i18n from './i18n'
 
 type Dates = {
-  date: string
+  date: string | number
   format?: DateTimeFormatOptions
 }
 

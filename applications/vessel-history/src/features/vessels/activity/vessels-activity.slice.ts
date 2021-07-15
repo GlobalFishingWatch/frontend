@@ -6,11 +6,10 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
-import { ActivityEvent } from 'types/activity'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.selectors'
+import { ActivityEvent } from 'types/activity'
 import { selectVesselDataview } from '../vessels.slice'
-import { groupEvents } from './vessels-activity.utils'
 
 const selectVesselResourceByDatasetType = <T>(datasetType: DatasetTypes) =>
   createSelector(
@@ -24,12 +23,8 @@ const selectVesselResourceByDatasetType = <T>(datasetType: DatasetTypes) =>
   )
 
 export const selectVesselEvents = createSelector(
-  [selectVesselResourceByDatasetType<ActivityEvent[]>(DatasetTypes.Events)],
+  [selectVesselResourceByDatasetType(DatasetTypes.Events)],
   (eventsResource) => {
-    return eventsResource?.data
+    return eventsResource?.data as ActivityEvent[]
   }
 )
-
-export const selectVesselActivityEvents = createSelector([selectVesselEvents], (vesselEvents) => {
-  return groupEvents((vesselEvents as ActivityEvent[]) ?? [])
-})

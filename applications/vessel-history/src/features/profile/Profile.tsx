@@ -50,7 +50,6 @@ const Profile: React.FC = (props): React.ReactElement => {
   const trackResource = useSelector(selectResourceByUrl<Segment[]>(trackUrl))
   const vesselLoaded = useMemo(() => !!vessel, [vessel])
   const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])
-  const userLogged = true
 
   useEffect(() => {
     if (resourceQueries) {
@@ -77,7 +76,7 @@ const Profile: React.FC = (props): React.ReactElement => {
             const eventsRelatedDataset = getRelatedDatasetByType(
               vesselDataset,
               DatasetTypes.Events,
-              userLogged
+              true //userLogged
             )
             const vesselDataviewInstance = getVesselDataviewInstance(
               { id: gfwId },
