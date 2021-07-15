@@ -109,17 +109,30 @@ function NewDataset(): React.ReactElement {
         }
         if (geojson !== undefined) {
           setFileData(geojson)
+          const configuration = {
+            geometryType: datasetGeometryType,
+            // TODO when supporting multiple files upload
+            // ...(geojson?.fileName && { file: geojson.fileName }),
+            ...(isGeojson && { format: 'geojson' }),
+          } as DatasetConfiguration
+
+          // Set disableInteraction flag when not all features are polygons
+          if (datasetCategory === 'context') {
+            if (
+              !geojson.features.every((feature) =>
+                ['Polygon', 'MultiPolygon'].includes(feature.geometry.type)
+              )
+            ) {
+              configuration.disableInteraction = true
+            }
+          }
+
           setMetadata((metadata) => ({
             ...metadata,
             name: metadataName,
             type: DatasetTypes.Context,
             category: datasetCategory,
-            configuration: {
-              geometryType: datasetGeometryType,
-              // TODO when supporting multiple files upload
-              // ...(geojson?.fileName && { file: geojson.fileName }),
-              ...(isGeojson && { format: 'geojson' }),
-            } as DatasetConfiguration,
+            configuration,
           }))
         } else {
           setFileData(undefined)
@@ -269,8 +282,11 @@ function NewDataset(): React.ReactElement {
         label: userTrackGeoJSONFile?.name ?? file.name,
       })
       setLoading(true)
+
       const { payload, error: createDatasetError } = await dispatchCreateDataset({
-        dataset: { ...metadata },
+        dataset: {
+          ...metadata,
+        },
         file: userTrackGeoJSONFile || file,
       })
       setLoading(false)

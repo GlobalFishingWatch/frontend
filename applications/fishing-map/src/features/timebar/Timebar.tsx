@@ -212,6 +212,7 @@ const TimebarWrapper = () => {
         bookmarkPlacement="bottom"
         minimumRange={1}
         minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
+        locale={i18n.language}
       >
         {!isSmallScreen ? (
           <Fragment>

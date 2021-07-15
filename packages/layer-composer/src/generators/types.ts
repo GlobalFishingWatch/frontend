@@ -114,6 +114,10 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    * Property to get value to display the ramp
    */
   pickValueAt?: string
+  /**
+   * Disable interaction (needed when user uploaded a non-polygon layer)
+   */
+  disableInteraction?: boolean
 }
 
 /**

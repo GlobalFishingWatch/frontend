@@ -8,7 +8,6 @@ import Modal from '@globalfishingwatch/ui-components/dist/modal'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetStatus } from '@globalfishingwatch/api-types/dist'
 import { removeDatasetVersion } from 'features/datasets/datasets.utils'
-import { isGuestUser } from 'features/user/user.selectors'
 import styles from './InfoModal.module.css'
 
 type InfoModalProps = {
@@ -19,10 +18,8 @@ type InfoModalProps = {
 
 const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
   const { t } = useTranslation()
-  const guestUser = useSelector(isGuestUser)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const dataset = dataview.datasets?.[0]
-  const isUserLayer = !guestUser && dataset?.ownerType === 'user'
 
   const tabs = useMemo(() => {
     return dataview.datasets?.flatMap((dataset) => {
@@ -32,23 +29,22 @@ const InfoModal = ({ dataview, onClick, className }: InfoModalProps) => {
       const datasetId = removeDatasetVersion(dataset?.id)
       if (!datasetId) return []
 
+      const description = t(`datasets:${datasetId}.description` as any, '')
       return {
         id: datasetId,
-        title: isUserLayer
-          ? dataset.name
-          : t(`datasets:${removeDatasetVersion(dataset?.id)}.name` as any),
+        title: t(`datasets:${datasetId}.name` as any, dataset.name),
         content: (
           <p className={styles.content}>
-            {isUserLayer
-              ? dataset.description
-              : ReactHtmlParser(
-                  t(`datasets:${removeDatasetVersion(dataset?.id)}.description` as any)
-                )}
+            {/**
+             * For security reasons, we are only parsing html
+             * coming from translated descriptions
+             **/}
+            {description.length > 0 ? ReactHtmlParser(description) : dataset.description}
           </p>
         ),
       }
     })
-  }, [dataview, isUserLayer, t])
+  }, [dataview, t])
 
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs?.[0])
   const handleClick = useCallback(

@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.72
+
+### Patch Changes
+
+- Updated dependencies [58d28355]
+  - @globalfishingwatch/dataviews-client@11.8.0
+  - @globalfishingwatch/layer-composer@8.10.0
+
 ## 0.0.71
 
 ### Patch Changes
