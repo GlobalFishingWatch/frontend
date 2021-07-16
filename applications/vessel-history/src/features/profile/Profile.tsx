@@ -17,7 +17,10 @@ import {
   upsertVesselDataview,
 } from 'features/vessels/vessels.slice'
 import Map from 'features/map/Map'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.selectors'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+} from 'features/datasets/datasets.selectors'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectDatasets } from 'features/datasets/datasets.slice'
@@ -73,17 +76,22 @@ const Profile: React.FC = (props): React.ReactElement => {
         if (vesselDataset) {
           const trackDatasetId = getRelatedDatasetByType(vesselDataset, DatasetTypes.Tracks)?.id
           if (trackDatasetId) {
-            const eventsRelatedDataset = getRelatedDatasetByType(
+            const eventsRelatedDatasets = getRelatedDatasetsByType(
               vesselDataset,
-              DatasetTypes.Events,
-              true //userLogged
+              DatasetTypes.Events
             )
+
+            const eventsDatasetsId =
+              eventsRelatedDatasets && eventsRelatedDatasets?.length
+                ? eventsRelatedDatasets.map((d) => d.id)
+                : []
+
             const vesselDataviewInstance = getVesselDataviewInstance(
               { id: gfwId },
               {
                 trackDatasetId: trackDatasetId as string,
                 infoDatasetId: dataset,
-                ...(eventsRelatedDataset && { eventsDatasetId: eventsRelatedDataset?.id }),
+                ...(eventsDatasetsId.length > 0 && { eventsDatasetsId }),
               }
             )
             dispatch(upsertVesselDataview(vesselDataviewInstance))

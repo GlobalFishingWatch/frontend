@@ -23,11 +23,11 @@ export const VESSEL_LAYER_PREFIX = 'vessel-'
 type VesselInstanceDatasets = {
   trackDatasetId: string
   infoDatasetId: string
-  eventsDatasetId?: string
+  eventsDatasetsId?: string[]
 }
 export const getVesselDataviewInstance = (
   vessel: { id: string },
-  { trackDatasetId, infoDatasetId, eventsDatasetId }: VesselInstanceDatasets
+  { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets
 ): DataviewInstance<Generators.Type> => {
   const datasetsConfig: DataviewDatasetConfig[] = [
     {
@@ -41,12 +41,14 @@ export const getVesselDataviewInstance = (
       endpoint: EndpointId.Vessel,
     },
   ]
-  if (eventsDatasetId) {
-    datasetsConfig.push({
-      datasetId: eventsDatasetId,
-      query: [{ id: 'vessels', value: vessel.id }],
-      params: [],
-      endpoint: EndpointId.Events,
+  if (eventsDatasetsId) {
+    eventsDatasetsId.forEach((eventDatasetId) => {
+      datasetsConfig.push({
+        datasetId: eventDatasetId,
+        query: [{ id: 'vessels', value: vessel.id }],
+        params: [],
+        endpoint: EndpointId.Events,
+      })
     })
   }
   const vesselDataviewInstance = {
