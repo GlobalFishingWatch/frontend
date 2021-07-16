@@ -191,7 +191,7 @@ const TimebarWrapper = () => {
     return timebarVisualisation === TimebarVisualisations.Vessel && showGraph && tracksGraphs
       ? tracksGraphs
       : null
-  }, [timebarVisualisation, timebarGraph, tracksGraphs])
+  }, [timebarVisualisation, showGraph, tracksGraphs])
 
   const { syncedTracks, syncedTracksEvents } = useMemo<{
     syncedTracks: (TimebarTrack | null)[] | undefined
