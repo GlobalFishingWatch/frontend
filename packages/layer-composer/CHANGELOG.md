@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.10.1
+
+### Patch Changes
+
+- a583eba9: rollback track highlight
+
 ## 8.10.0
 
 ### Minor Changes
