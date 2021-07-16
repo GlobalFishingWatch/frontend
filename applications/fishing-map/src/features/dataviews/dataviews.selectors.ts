@@ -146,13 +146,10 @@ export const selectTrackDataviews = createSelector(
 
 export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
-    (dataview) => !dataview.datasets || dataview.datasets?.[0]?.type !== DatasetTypes.UserTracks
-  )
-})
-
-export const selectUserTracksDataviews = createSelector([selectTrackDataviews], (dataviews) => {
-  return dataviews?.filter(
-    (dataview) => dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
+    (dataview) =>
+      !dataview.datasets ||
+      (dataview.datasets?.[0]?.type !== DatasetTypes.UserTracks &&
+        dataview.category === DataviewCategory.Vessels)
   )
 })
 
@@ -200,14 +197,7 @@ export const selectActiveActivityDataviews = createSelector(
 
 export const selectEnvironmentalDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
-  (dataviews) =>
-    dataviews.filter((d) => {
-      if (!d.datasets?.length) {
-        console.warn('This dataview has no datasets:', d)
-        return false
-      }
-      return true
-    })
+  (dataviews) => dataviews
 )
 
 export const selectActiveEnvironmentalDataviews = createSelector(
