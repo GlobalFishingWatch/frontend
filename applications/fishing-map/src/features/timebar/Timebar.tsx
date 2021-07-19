@@ -62,7 +62,7 @@ const TimebarWrapper = () => {
   const { highlightedEvent, dispatchHighlightedEvent } = useHighlightEventConnect()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisation()
-  const { setMapCoordinates } = useViewport()
+  const { setMapCoordinates, viewport } = useViewport()
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
   const tracksGraphs = useSelector(selectTracksGraphs)
@@ -168,6 +168,7 @@ const TimebarWrapper = () => {
       setMapCoordinates({
         latitude: event.position.lat,
         longitude: event.position.lon,
+        zoom: viewport.zoom < 8 ? 8 : viewport.zoom,
       })
     },
     [setMapCoordinates]
