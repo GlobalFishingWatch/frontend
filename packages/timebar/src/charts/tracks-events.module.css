@@ -11,6 +11,7 @@
   transform: translateY(-50%);
   border-radius: 7px;
   border: 2px solid transparent;
+  cursor: pointer;
 }
 
 .event:hover,

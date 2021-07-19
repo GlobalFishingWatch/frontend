@@ -96,7 +96,17 @@ class VesselsEventsGenerator {
         ...(showTrackSegments && { maxzoom: POINTS_TO_SEGMENTS_ZOOM_LEVEL_SWITCH }),
         paint: {
           'circle-color': ['get', 'color'],
-          'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, 0, 8, 1, 14, 3],
+          'circle-stroke-width': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            2,
+            [...activeFilter, 2, 0],
+            8,
+            [...activeFilter, 2, 1],
+            14,
+            [...activeFilter, 2, 3],
+          ],
           'circle-stroke-color': [
             ...activeFilter,
             config.color || DEFAULT_STROKE_COLOR,
