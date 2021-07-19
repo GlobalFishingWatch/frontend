@@ -1,13 +1,15 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { initialize as uaInitialize, set as uaSet, event as uaEvent } from 'react-ga'
+import { initialize as uaInitialize, set as uaSet, event as uaEvent, pageview } from 'react-ga'
 import { selectUserData } from 'features/user/user.slice'
 import { GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS, IS_PRODUCTION } from 'data/config'
+import { selectLocationCategory } from 'routes/routes.selectors'
 
 const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.REACT_APP_GOOGLE_UNIVERSAL_ANALYTICS_ID
 
 export const useAnalytics = () => {
   const userData = useSelector(selectUserData)
+  const locationCategory = useSelector(selectLocationCategory)
 
   useEffect(() => {
     if (GOOGLE_UNIVERSAL_ANALYTICS_ID) {
@@ -20,6 +22,12 @@ export const useAnalytics = () => {
       }
     }
   }, [])
+
+  useEffect(() => {
+    if (locationCategory && GOOGLE_UNIVERSAL_ANALYTICS_ID) {
+      pageview(window.location.pathname + window.location.search)
+    }
+  }, [locationCategory])
 
   useEffect(() => {
     if (userData && GOOGLE_UNIVERSAL_ANALYTICS_ID) {
