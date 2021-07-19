@@ -1,5 +1,11 @@
 # @globalfishingwatch/layer-composer
 
+## 8.10.2
+
+### Patch Changes
+
+- 43d60480: Fishing map/improve vessel events highlight
+
 ## 8.10.1
 
 ### Patch Changes

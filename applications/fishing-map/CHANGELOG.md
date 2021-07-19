@@ -1,5 +1,14 @@
 # @globalfishingwatchapp/fishing-map
 
+## 1.1.8
+
+### Patch Changes
+
+- 43d60480: Fishing map/improve vessel events highlight
+- Updated dependencies [43d60480]
+  - @globalfishingwatch/layer-composer@8.10.2
+  - @globalfishingwatch/timebar@2.0.4
+
 ## 1.1.7
 
 ### Patch Changes
