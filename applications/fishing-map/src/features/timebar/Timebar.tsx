@@ -163,15 +163,16 @@ const TimebarWrapper = () => {
     [start, end]
   )
 
+  const { zoom } = viewport
   const onEventClick = useCallback(
     (event: ApiEvent) => {
       setMapCoordinates({
         latitude: event.position.lat,
         longitude: event.position.lon,
-        zoom: viewport.zoom < 8 ? 8 : viewport.zoom,
+        zoom: zoom < 8 ? 8 : zoom,
       })
     },
-    [setMapCoordinates]
+    [setMapCoordinates, zoom]
   )
 
   const onEventHover = useCallback(
