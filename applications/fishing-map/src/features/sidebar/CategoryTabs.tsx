@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux'
 import Icon, { IconType } from '@globalfishingwatch/ui-components/dist/icon'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
-import GFWAPI from '@globalfishingwatch/api-client'
 import Tooltip from '@globalfishingwatch/ui-components/dist/tooltip'
 import { WorkspaceCategories } from 'data/workspaces'
 import { HOME, USER, WORKSPACES_LIST } from 'routes/routes'
@@ -20,6 +19,7 @@ import useViewport from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
 import FeedbackModal from 'features/feedback/FeedbackModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
+import LocalStorageLoginLink from 'routes/LoginLink'
 import styles from './CategoryTabs.module.css'
 
 const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
@@ -123,9 +123,9 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         >
           {guestUser ? (
             <Tooltip content={t('common.login', 'Log in')}>
-              <a href={GFWAPI.getLoginUrl(window.location.toString())} className={styles.loginLink}>
+              <LocalStorageLoginLink className={styles.loginLink}>
                 <Icon icon="user" />
-              </a>
+              </LocalStorageLoginLink>
             </Tooltip>
           ) : (
             <Link

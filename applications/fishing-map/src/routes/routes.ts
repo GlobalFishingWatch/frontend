@@ -219,6 +219,7 @@ const parseWorkspace = (queryString: string) => {
 }
 
 const routesOptions: Options = {
+  initialDispatch: false,
   querySerializer: {
     stringify: stringifyWorkspace,
     parse: parseWorkspace,
