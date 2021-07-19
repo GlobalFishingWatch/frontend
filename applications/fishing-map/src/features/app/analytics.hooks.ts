@@ -24,7 +24,7 @@ export const useAnalytics = () => {
   }, [])
 
   useEffect(() => {
-    if (locationCategory && GOOGLE_UNIVERSAL_ANALYTICS_ID) {
+    if (GOOGLE_UNIVERSAL_ANALYTICS_ID) {
       pageview(window.location.pathname + window.location.search)
     }
   }, [locationCategory])
