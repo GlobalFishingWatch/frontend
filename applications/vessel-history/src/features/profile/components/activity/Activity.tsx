@@ -1,29 +1,36 @@
 import React, { Fragment, useCallback, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { IconButton, Modal } from '@globalfishingwatch/ui-components'
+import { Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { VesselWithHistory } from 'types'
-import { selectEventsForTracks } from 'features/vessels/activity/vessels-activity.slice'
-import { ActivityEvent } from 'types/activity'
+import {
+  RenderedEvent,
+  selectEventsWithRenderingInfo,
+} from 'features/vessels/activity/vessels-activity.slice'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
-import styles from './Activity.module.css'
-import ActivityDate from './ActivityDate'
+import ActivityItem from './ActivityItem'
 import ActivityDescription from './description/ActivityDescription'
 import ActivityModalContent from './ActivityModalContent'
-interface InfoProps {
+import styles from './Activity.module.css'
+interface ActivityProps {
   vessel: VesselWithHistory | null
   lastPosition: any
   lastPortVisit: any
 }
 
-const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
+const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
 
-  const eventsForTracks = useSelector(selectEventsForTracks) ?? []
-  const events = useMemo(() => eventsForTracks.map((e) => e.data).flat(), [eventsForTracks])
+  const eventsLoading = useSelector(selectResourcesLoading)
+  const eventsForTracks = useSelector(selectEventsWithRenderingInfo)
+  const events = useMemo(
+    () => eventsForTracks.flat().sort((a, b) => (a.start > b.start ? -1 : 1)),
+    [eventsForTracks]
+  )
 
   const [isModalOpen, setIsOpen] = useState(false)
-  const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
-  const openModal = useCallback((event: ActivityEvent) => {
+  const [selectedEvent, setSelectedEvent] = useState<RenderedEvent>()
+  const openModal = useCallback((event: RenderedEvent) => {
     setSelectedEvent(event)
     setIsOpen(true)
   }, [])
@@ -35,42 +42,31 @@ const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
 
   return (
     <Fragment>
-      <Modal
-        title={
-          selectedEvent ? <ActivityDescription event={selectedEvent}></ActivityDescription> : ''
-        }
-        isOpen={isModalOpen}
-        onClose={closeModal}
-      >
-        {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
-      </Modal>
-      <div className={styles.activityContainer}>
-        {/* TODO: Implement virtual rendering|filtering to boost performance and usability  */}
-        {events &&
-          events.map((event, eventIndex) => (
-            <Fragment key={eventIndex}>
-              <div className={styles.event}>
-                <div className={styles.eventIcon}>
-                  <i></i>
-                </div>
-                <div className={styles.eventData}>
-                  <ActivityDate event={event} />
-                  <div className={styles.description}>
-                    <ActivityDescription event={event}></ActivityDescription>
-                  </div>
-                </div>
-                <div className={styles.actions}>
-                  <IconButton
-                    icon="info"
-                    size="small"
-                    onClick={() => openModal(event)}
-                  ></IconButton>
-                  <IconButton icon="view-on-map" size="small"></IconButton>
-                </div>
-              </div>
-            </Fragment>
-          ))}
-      </div>
+      {eventsLoading && <Spinner className={styles.spinnerFull} />}
+      {!eventsLoading && (
+        <Fragment>
+          <Modal
+            title={
+              selectedEvent ? <ActivityDescription event={selectedEvent}></ActivityDescription> : ''
+            }
+            isOpen={isModalOpen}
+            onClose={closeModal}
+          >
+            {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
+          </Modal>
+          <div className={styles.activityContainer}>
+            {/* TODO: Implement virtual rendering|filtering to boost performance and usability  */}
+            {events &&
+              events.map((event, eventIndex) => (
+                <ActivityItem
+                  key={eventIndex}
+                  event={event}
+                  onInfoClick={(event) => openModal(event)}
+                />
+              ))}
+          </div>
+        </Fragment>
+      )}
     </Fragment>
   )
 }

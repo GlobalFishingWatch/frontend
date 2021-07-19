@@ -31,7 +31,7 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const vesselId = useSelector(selectVesselId)
-  const eventsForTracks = useSelector(selectEventsForTracks) ?? []
+  const eventsForTracks = useSelector(selectEventsForTracks)
   const activities = useMemo(() => eventsForTracks.map((e) => e.data).flat(), [eventsForTracks])
   const vesselTmtId = useSelector(selectTmtId)
   const vesselDataset = useSelector(selectDataset)

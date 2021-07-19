@@ -90,3 +90,7 @@
 .event .actions.oneIcon {
   min-width: 28px;
 }
+
+.spinnerFull {
+  height: calc(100vh - 110px);
+}
