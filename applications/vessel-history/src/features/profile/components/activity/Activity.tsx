@@ -1,8 +1,8 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { IconButton, Modal } from '@globalfishingwatch/ui-components'
 import { VesselWithHistory } from 'types'
-import { selectVesselEvents } from 'features/vessels/activity/vessels-activity.slice'
+import { selectEventsForTracks } from 'features/vessels/activity/vessels-activity.slice'
 import { ActivityEvent } from 'types/activity'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import styles from './Activity.module.css'
@@ -18,7 +18,8 @@ interface InfoProps {
 const Activity: React.FC<InfoProps> = (props): React.ReactElement => {
   const dispatch = useDispatch()
 
-  const events = useSelector(selectVesselEvents) ?? []
+  const eventsForTracks = useSelector(selectEventsForTracks) ?? []
+  const events = useMemo(() => eventsForTracks.map((e) => e.data).flat(), [eventsForTracks])
 
   const [isModalOpen, setIsOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()

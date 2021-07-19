@@ -90,12 +90,12 @@ export const selectDataviewInstancesResolved = createSelector(
     datasets,
     datasetsStatus,
     dataviewInstances
-  ): UrlDataviewInstance[] | undefined => {
+  ): UrlDataviewInstance[] => {
     if (
       dataviewsStatus !== AsyncReducerStatus.Finished ||
       datasetsStatus !== AsyncReducerStatus.Finished
     )
-      return
+      return []
     const dataviewInstancesResolved = resolveDataviews(
       dataviewInstances as UrlDataviewInstance[],
       dataviews,
@@ -138,6 +138,9 @@ export const selectActiveVesselsDataviews = createSelector([selectVesselsDatavie
   dataviews?.filter((d) => d.config?.visible)
 )
 
+export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) =>
+  dataviews?.filter((d) => d.config?.visible)
+)
 // export const selectEventsDataviews = createSelector(
 //   [selectDataviewInstancesByCategory(DataviewCategory.Events)],
 //   (dataviews) => dataviews

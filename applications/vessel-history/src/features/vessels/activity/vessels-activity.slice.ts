@@ -1,30 +1,55 @@
 import { createSelector } from '@reduxjs/toolkit'
 import {
-  PartialStoreResources,
   resolveDataviewDatasetResource,
-  UrlDataviewInstance,
+  resolveDataviewEventsResources,
+  selectResources,
 } from '@globalfishingwatch/dataviews-client'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { RootState } from 'store'
-import { selectResourceByUrl } from 'features/resources/resources.slice'
-import { selectVesselsDataviews } from 'features/dataviews/dataviews.selectors'
+import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.selectors'
 import { ActivityEvent } from 'types/activity'
-import { selectVesselDataview } from '../vessels.slice'
 
-const selectVesselResourceByDatasetType = <T>(datasetType: DatasetTypes) =>
-  createSelector(
-    [selectVesselDataview, selectVesselsDataviews, (state: RootState) => state],
-    (currentVesselDataview, dataviews, state) => {
-      const dataview = dataviews?.find((d) => currentVesselDataview?.id === d.id)
-      if (!dataview) return
-      const { url } = resolveDataviewDatasetResource(dataview as UrlDataviewInstance, datasetType)
-      return selectResourceByUrl<T>(url)(state as PartialStoreResources)
-    }
-  )
+export const selectEventsForTracks = createSelector(
+  [selectActiveTrackDataviews, selectResources],
+  (trackDataviews, resources) => {
+    // const visibleEvents: (EventType[] | 'all') = 'all'
+    const vesselsEvents = trackDataviews.map((dataview) => {
+      const { url: tracksUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
+      // const { url: eventsUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Events)
+      const eventsResources = resolveDataviewEventsResources(dataview)
+      const hasEventData =
+        eventsResources?.length && eventsResources.every(({ url }) => resources[url]?.data)
+      const tracksResourceResolved =
+        tracksUrl && resources[tracksUrl]?.status === ResourceStatus.Finished
 
-export const selectVesselEvents = createSelector(
-  [selectVesselResourceByDatasetType(DatasetTypes.Events)],
-  (eventsResource) => {
-    return eventsResource?.data as ActivityEvent[]
+      // Waiting for the tracks resource to be resolved to show the events
+      if (
+        !hasEventData ||
+        !tracksResourceResolved //||
+        // (Array.isArray(visibleEvents) && visibleEvents?.length === 0)
+      ) {
+        return { dataview, data: [] }
+      }
+
+      const eventsResourcesFiltered = eventsResources
+      // .filter(({ dataset }) => {
+      //   if (visibleEvents === 'all') {
+      //     return true
+      //   }
+      //   return (
+      //     dataset.configuration?.type &&
+      //     visibleEvents?.includes(dataset.configuration?.type))
+      //   )
+      // })
+
+      const data = eventsResourcesFiltered.flatMap(({ url }) => {
+        if (!url || !resources[url].data) {
+          return []
+        }
+
+        return resources[url].data as ActivityEvent[]
+      })
+      return { dataview, data }
+    })
+    return vesselsEvents
   }
 )

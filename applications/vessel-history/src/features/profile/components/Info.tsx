@@ -15,7 +15,7 @@ import {
   selectVesselId,
   selectVesselProfileId,
 } from 'routes/routes.selectors'
-import { selectVesselEvents } from 'features/vessels/activity/vessels-activity.slice'
+import { selectEventsForTracks } from 'features/vessels/activity/vessels-activity.slice'
 import InfoField, { VesselFieldLabel } from './InfoField'
 import styles from './Info.module.css'
 import 'react-image-gallery/styles/css/image-gallery.css'
@@ -31,7 +31,8 @@ const Info: React.FC<InfoProps> = (props): React.ReactElement => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const vesselId = useSelector(selectVesselId)
-  const activities = useSelector(selectVesselEvents)
+  const eventsForTracks = useSelector(selectEventsForTracks) ?? []
+  const activities = useMemo(() => eventsForTracks.map((e) => e.data).flat(), [eventsForTracks])
   const vesselTmtId = useSelector(selectTmtId)
   const vesselDataset = useSelector(selectDataset)
   const vesselProfileId = useSelector(selectVesselProfileId)
