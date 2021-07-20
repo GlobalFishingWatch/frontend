@@ -11,6 +11,14 @@ export const LocaleLabels = [
   { id: Locale.id, label: 'Bahasa Indonesia' },
 ]
 
+// TODO find beter var names
+const COMMON_JSON_BRANCH =
+  process.env.REACT_APP_WORKSPACE_ENV === 'development' ? 'i18n-labels' : 'master'
+export const COMMON_JSON_PATH = process.env.i18n_USE_LOCAL_SHARED
+  ? 'http://localhost:8000'
+  : `https://raw.githubusercontent.com/GlobalFishingWatch/frontend/${COMMON_JSON_BRANCH}/packages/i18-labels/src`
+export const COMMON_NAMESPACES = ['flags', 'datasets', 'timebar']
+
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -23,6 +31,16 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
+    backend: {
+      loadPath: (lngs: any, namespaces: any) => {
+        console.log(namespaces)
+        console.log(lngs)
+        if (namespaces.some((namespace: string) => COMMON_NAMESPACES.includes(namespace))) {
+          return `${COMMON_JSON_PATH}/{{lng}}/{{ns}}.json`
+        }
+        return '/locales/{{lng}}/{{ns}}.json'
+      },
+    },
     ns: ['translations', 'flags', 'datasets', 'timebar'],
     defaultNS: 'translations',
     fallbackLng: Locale.en,
