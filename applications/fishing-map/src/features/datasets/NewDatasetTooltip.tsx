@@ -68,7 +68,7 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
           <p>
             <Trans i18nKey="dataset.uploadLogin">
               You need to
-              <LocalStorageLoginLink>login</LocalStorageLoginLink>
+              <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
               to upload datasets
             </Trans>
           </p>
