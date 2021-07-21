@@ -46,7 +46,9 @@ RUN htpasswd -Bbn "${BASIC_AUTH_USER}" "${BASIC_AUTH_PASS}" > /tmp/.htpasswd
 #################################################################################
 # Actual application to run
 #################################################################################
-FROM nginx:alpine as production
+# Using stable version that uses alpine 3.14 to fix build errors
+# https://github.com/alpinelinux/docker-alpine/issues/182
+FROM nginx:stable-alpine as production
 RUN apk -U upgrade
 
 COPY nginx/nginx.conf /etc/nginx/nginx.template
