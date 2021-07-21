@@ -7,10 +7,10 @@ type LocalStorageLoginLinkProps = {
 }
 
 function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLinkProps, ref: any) {
-  const { onLoginClick } = useLoginRedirect()
+  const { saveRedirectUrl } = useLoginRedirect()
 
   return (
-    <a ref={ref} href={getLoginUrl()} onClick={onLoginClick} className={className}>
+    <a ref={ref} href={getLoginUrl()} onClick={saveRedirectUrl} className={className}>
       {children}
     </a>
   )

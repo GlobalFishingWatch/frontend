@@ -6,6 +6,7 @@ import GFWAPI, {
 import { UserData } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { redirectToLogin } from 'routes/routes.hook'
 
 interface UserState {
   logged: boolean
@@ -50,14 +51,14 @@ export const fetchUserThunk = createAsyncThunk(
 
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
-  async ({ redirectToLogin }: { redirectToLogin: boolean } = { redirectToLogin: false }) => {
+  async ({ loginRedirect }: { loginRedirect: boolean } = { loginRedirect: false }) => {
     try {
       await GFWAPI.logout()
     } catch (e) {
       console.warn(e)
     }
-    if (redirectToLogin) {
-      window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+    if (loginRedirect) {
+      redirectToLogin()
     }
   }
 )

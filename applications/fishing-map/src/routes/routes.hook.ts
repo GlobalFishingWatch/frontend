@@ -13,24 +13,37 @@ import { updateLocation } from './routes.actions'
 export const CALLBACK_URL_KEY = 'CallbackUrl'
 export const CALLBACK_URL_PARAM = 'callbackUrlStorage'
 
+export const setRedirectUrl = () => {
+  window.localStorage.setItem(CALLBACK_URL_KEY, window.location.toString())
+}
+
 export const getLoginUrl = () => {
   const { origin, pathname } = window.location
   return GFWAPI.getLoginUrl(`${origin}${pathname}?${CALLBACK_URL_PARAM}=true`)
 }
 
+export const redirectToLogin = () => {
+  setRedirectUrl()
+  window.location.href = getLoginUrl()
+}
+
 export const useLoginRedirect = () => {
   const [redirectUrl, setRedirectUrl] = useLocalStorage(CALLBACK_URL_KEY, '')
 
-  const onLoginClick = useCallback(() => {
+  const saveRedirectUrl = useCallback(() => {
     setRedirectUrl(window.location.toString())
-    return getLoginUrl()
   }, [setRedirectUrl])
+
+  const onLoginClick = useCallback(() => {
+    saveRedirectUrl()
+    window.location.href = getLoginUrl()
+  }, [saveRedirectUrl])
 
   const cleanRedirectUrl = useCallback(() => {
     localStorage.removeItem(CALLBACK_URL_KEY)
   }, [])
 
-  return { redirectUrl, onLoginClick, cleanRedirectUrl }
+  return { redirectUrl, onLoginClick, saveRedirectUrl, cleanRedirectUrl }
 }
 
 export const useReplaceLoginUrl = () => {

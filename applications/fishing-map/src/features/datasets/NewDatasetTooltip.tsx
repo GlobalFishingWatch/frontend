@@ -5,7 +5,7 @@ import { event as uaEvent } from 'react-ga'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import { Dataset, DatasetCategory } from '@globalfishingwatch/api-types'
-import GFWAPI from '@globalfishingwatch/api-client'
+import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGuestUser, selectUserDatasetsNotUsed } from 'features/user/user.selectors'
 import { useDatasetModalConnect, useAddDataviewFromDatasetToWorkspace } from './datasets.hook'
@@ -68,9 +68,7 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
           <p>
             <Trans i18nKey="dataset.uploadLogin">
               You need to
-              <a className={styles.link} href={GFWAPI.getLoginUrl(window.location.toString())}>
-                login
-              </a>
+              <LocalStorageLoginLink>login</LocalStorageLoginLink>
               to upload datasets
             </Trans>
           </p>

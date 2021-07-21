@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
 import Button from '@globalfishingwatch/ui-components/dist/button'
-import GFWAPI from '@globalfishingwatch/api-client'
 import Search from 'features/search/Search'
 import {
   selectWorkspaceStatus,
@@ -16,6 +15,7 @@ import { isGuestUser } from 'features/user/user.selectors'
 import { selectLocationCategory, selectWorkspaceId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
+import LocalStorageLoginLink from 'routes/LoginLink'
 import { logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
 import { SUPPORT_EMAIL } from 'data/config'
@@ -49,9 +49,9 @@ function WorkspaceError(): React.ReactElement {
     return (
       <ErrorPlaceHolder title={t('errors.privateView', 'This is a private view')}>
         {guestUser ? (
-          <Button href={GFWAPI.getLoginUrl(window.location.toString())}>
+          <LocalStorageLoginLink className={styles.button}>
             {t('common.login', 'Log in') as string}
-          </Button>
+          </LocalStorageLoginLink>
         ) : (
           <Fragment>
             <Button
@@ -70,7 +70,7 @@ function WorkspaceError(): React.ReactElement {
               loading={logoutLoading}
               onClick={async () => {
                 setLogoutLoading(true)
-                await dispatch(logoutUserThunk({ redirectToLogin: true }))
+                await dispatch(logoutUserThunk({ loginRedirect: true }))
                 setLogoutLoading(false)
               }}
             >
