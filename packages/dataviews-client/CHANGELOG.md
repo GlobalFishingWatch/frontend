@@ -1,5 +1,11 @@
 # @globalfishingwatch/dataviews-client
 
+## 11.8.1
+
+### Patch Changes
+
+- Include resources slice, selectors and helpers to consume API
+
 ## 11.8.0
 
 ### Minor Changes

@@ -1,5 +1,13 @@
 # @globalfishingwatchapp/vessel-history
 
+## 0.0.75
+
+### Patch Changes
+
+- Include resources slice, selectors and helpers to consume API
+- Updated dependencies [undefined]
+  - @globalfishingwatch/dataviews-client@11.8.1
+
 ## 0.0.74
 
 ### Patch Changes

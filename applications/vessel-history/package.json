@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/vessel-history",
-  "version": "0.0.74",
+  "version": "0.0.75",
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
   "scripts": {
@@ -16,7 +16,7 @@
     "@globalfishingwatch/api-client": "^2.0.1",
     "@globalfishingwatch/api-types": "^4.6.0",
     "@globalfishingwatch/data-transforms": "^1.2.0",
-    "@globalfishingwatch/dataviews-client": "^11.8.0",
+    "@globalfishingwatch/dataviews-client": "^11.8.1",
     "@globalfishingwatch/layer-composer": "8.10.2",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22",
     "@globalfishingwatch/pbf": "^1.0.10",
