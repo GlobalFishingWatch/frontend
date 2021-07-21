@@ -5,11 +5,10 @@ import { useTranslation } from 'react-i18next'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import GFWAPI from '@globalfishingwatch/api-client'
 import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { useFeatureState } from '@globalfishingwatch/react-hooks/dist/use-map-interaction'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useLocationConnect, useLoginRedirect } from 'routes/routes.hook'
 import sectionStyles from 'features/workspace/shared/Sections.module.css'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectUserData } from 'features/user/user.slice'
@@ -38,8 +37,11 @@ import {
 import AnalysisItem from './AnalysisItem'
 import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
 
+const DATASETS_REPORT_SUPPORTED = ['global', 'private-ecuador']
+
 function Analysis() {
   const { t } = useTranslation()
+  const { onLoginClick } = useLoginRedirect()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { start, end } = useTimerangeConnect()
   const dispatch = useDispatch()
@@ -67,8 +69,10 @@ function Analysis() {
       })
     return datasets
   })
-  const AISInDatasetsReport =
-    datasetsReportAllowed.find((dataset) => dataset.id.includes('global')) !== undefined
+
+  const datasetsReportSupported = datasetsReportAllowed.some((dataset) =>
+    DATASETS_REPORT_SUPPORTED.some((datasetSupported) => dataset.id.includes(datasetSupported))
+  )
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
@@ -148,7 +152,7 @@ function Analysis() {
       'analysis.timeRangeTooLong',
       'Reports are only allowed for time ranges up to a year'
     )
-  } else if (!AISInDatasetsReport) {
+  } else if (!datasetsReportSupported) {
     downloadTooltip = t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
   }
 
@@ -224,9 +228,7 @@ function Analysis() {
                   type="secondary"
                   className={styles.saveBtn}
                   tooltip={t('analysis.downloadLogin', 'Please login to download report')}
-                  onClick={() => {
-                    window.location.href = GFWAPI.getLoginUrl(window.location.toString())
-                  }}
+                  onClick={onLoginClick}
                 >
                   {t('analysis.download', 'Download report')}
                 </Button>
@@ -240,7 +242,7 @@ function Analysis() {
                   disabled={
                     timeRangeTooLong ||
                     !hasAnalysisLayers ||
-                    !AISInDatasetsReport ||
+                    !datasetsReportSupported ||
                     reportStatus === AsyncReducerStatus.Finished
                   }
                 >

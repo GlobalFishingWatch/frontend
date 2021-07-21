@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Spinner from '@globalfishingwatch/ui-components/dist/spinner'
-import GFWAPI from '@globalfishingwatch/api-client'
 import { DatasetCategory } from '@globalfishingwatch/api-types/dist'
 import EditDataset from 'features/datasets/EditDataset'
 import {
@@ -10,6 +9,7 @@ import {
 } from 'features/workspaces-list/workspaces-list.slice'
 import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
+import { redirectToLogin } from 'routes/routes.hook'
 import styles from './User.module.css'
 import { GUEST_USER_TYPE, selectUserData } from './user.slice'
 import { isUserLogged } from './user.selectors'
@@ -36,7 +36,7 @@ function User() {
 
   useEffect(() => {
     if (userData?.type === GUEST_USER_TYPE) {
-      window.location.href = GFWAPI.getLoginUrl(window.location.toString())
+      redirectToLogin()
     }
   }, [userData?.type])
 

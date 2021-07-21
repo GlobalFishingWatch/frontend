@@ -1,5 +1,11 @@
 # @globalfishingwatch/timebar
 
+## 2.0.4
+
+### Patch Changes
+
+- 43d60480: Fishing map/improve vessel events highlight
+
 ## 2.0.3
 
 ### Patch Changes

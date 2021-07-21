@@ -40,7 +40,7 @@
     "@globalfishingwatch/api-client": "^2.0.1",
     "@globalfishingwatch/dataviews-client": "^11.8.0",
     "@globalfishingwatch/fourwings-aggregate": "4.0.3",
-    "@globalfishingwatch/layer-composer": "8.10.0",
+    "@globalfishingwatch/layer-composer": "8.10.2",
     "@globalfishingwatch/mapbox-gl": "1.12.0-gfw.22"
   },
   "peerDependencies": {

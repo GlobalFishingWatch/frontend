@@ -1,6 +1,5 @@
 import { Fragment, useState, useCallback, useMemo } from 'react'
 import ReactHtmlParser from 'react-html-parser'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import Tabs, { Tab } from '@globalfishingwatch/ui-components/dist/tabs'
