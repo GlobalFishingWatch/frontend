@@ -38,6 +38,8 @@ import {
 import AnalysisItem from './AnalysisItem'
 import { useAnalysisGeometry, useFilteredTimeSeries } from './analysis.hooks'
 
+const DATASETS_REPORT_SUPPORTED = ['global', 'private-ecuador']
+
 function Analysis() {
   const { t } = useTranslation()
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -67,8 +69,10 @@ function Analysis() {
       })
     return datasets
   })
-  const AISInDatasetsReport =
-    datasetsReportAllowed.find((dataset) => dataset.id.includes('global')) !== undefined
+
+  const datasetsReportSupported = datasetsReportAllowed.some((dataset) =>
+    DATASETS_REPORT_SUPPORTED.some((datasetSupported) => dataset.id.includes(datasetSupported))
+  )
 
   const [timeRangeTooLong, setTimeRangeTooLong] = useState<boolean>(true)
 
@@ -148,7 +152,7 @@ function Analysis() {
       'analysis.timeRangeTooLong',
       'Reports are only allowed for time ranges up to a year'
     )
-  } else if (!AISInDatasetsReport) {
+  } else if (!datasetsReportSupported) {
     downloadTooltip = t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
   }
 
@@ -240,7 +244,7 @@ function Analysis() {
                   disabled={
                     timeRangeTooLong ||
                     !hasAnalysisLayers ||
-                    !AISInDatasetsReport ||
+                    !datasetsReportSupported ||
                     reportStatus === AsyncReducerStatus.Finished
                   }
                 >
