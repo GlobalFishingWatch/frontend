@@ -7,6 +7,8 @@ export const WORKSPACE_ENV =
   (process.env.NODE_ENV as WorkspaceEnv) ||
   'production'
 
+export const FULL_SUFIX = 'full'
+
 export const DEFAULT_WORKSPACE: AppState = {
   zoom: 3,
   colorMode: 'all',
@@ -37,3 +39,15 @@ export const DEFAULT_VIEWPORT = {
 }
 
 export const DEFAULT_VESSEL_MAP_ZOOM = 8
+
+export const EVENTS_COLORS: Record<string, string> = {
+  encounterauthorized: '#FAE9A0',
+  encounterauthorizedLabels: '#DCC76D',
+  encounterpartially: '#F59E84',
+  encounterunmatched: '#CE2C54',
+  encounter: '#FAE9A0',
+  loitering: '#cfa9f9',
+  port: '#99EEFF',
+  fishing: '#fff',
+  fishingLabels: '#163f89',
+}

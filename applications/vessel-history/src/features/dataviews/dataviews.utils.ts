@@ -1,5 +1,10 @@
 import { uniq } from 'lodash'
-import { Dataview, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
+import {
+  Dataview,
+  DataviewDatasetConfig,
+  DataviewInstance,
+  EndpointId,
+} from '@globalfishingwatch/api-types'
 import { Generators } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AppDispatch } from 'store'
@@ -18,12 +23,13 @@ export const VESSEL_LAYER_PREFIX = 'vessel-'
 type VesselInstanceDatasets = {
   trackDatasetId: string
   infoDatasetId: string
+  eventsDatasetsId?: string[]
 }
 export const getVesselDataviewInstance = (
   vessel: { id: string },
-  { trackDatasetId, infoDatasetId }: VesselInstanceDatasets
+  { trackDatasetId, infoDatasetId, eventsDatasetsId }: VesselInstanceDatasets
 ): DataviewInstance<Generators.Type> => {
-  const datasetsConfig = [
+  const datasetsConfig: DataviewDatasetConfig[] = [
     {
       datasetId: trackDatasetId,
       params: [{ id: 'vesselId', value: vessel.id }],
@@ -35,6 +41,16 @@ export const getVesselDataviewInstance = (
       endpoint: EndpointId.Vessel,
     },
   ]
+  if (eventsDatasetsId) {
+    eventsDatasetsId.forEach((eventDatasetId) => {
+      datasetsConfig.push({
+        datasetId: eventDatasetId,
+        query: [{ id: 'vessels', value: vessel.id }],
+        params: [],
+        endpoint: EndpointId.Events,
+      })
+    })
+  }
   const vesselDataviewInstance = {
     id: `${VESSEL_LAYER_PREFIX}${vessel.id}`,
     dataviewId: DEFAULT_VESSEL_DATAVIEW_ID,

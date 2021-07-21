@@ -1,5 +1,10 @@
 import { createSelector } from 'reselect'
-import { DataviewCategory, DataviewInstance, EndpointId } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DataviewCategory,
+  DataviewInstance,
+  EndpointId,
+} from '@globalfishingwatch/api-types'
 import {
   resolveDataviews,
   UrlDataviewInstance,
@@ -85,12 +90,12 @@ export const selectDataviewInstancesResolved = createSelector(
     datasets,
     datasetsStatus,
     dataviewInstances
-  ): UrlDataviewInstance[] | undefined => {
+  ): UrlDataviewInstance[] => {
     if (
       dataviewsStatus !== AsyncReducerStatus.Finished ||
       datasetsStatus !== AsyncReducerStatus.Finished
     )
-      return
+      return []
     const dataviewInstancesResolved = resolveDataviews(
       dataviewInstances as UrlDataviewInstance[],
       dataviews,
@@ -118,15 +123,24 @@ export const selectDataviewInstancesByIds = (ids: string[]) => {
   })
 }
 
-export const selectVesselsDataviews = createSelector(
+export const selectTrackDataviews = createSelector(
   [selectDataviewInstancesByType(Generators.Type.Track)],
   (dataviews) => dataviews
 )
+
+export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
+  return dataviews?.filter(
+    (dataview) => !dataview.datasets || dataview.datasets?.[0]?.type !== DatasetTypes.UserTracks
+  )
+})
 
 export const selectActiveVesselsDataviews = createSelector([selectVesselsDataviews], (dataviews) =>
   dataviews?.filter((d) => d.config?.visible)
 )
 
+export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) =>
+  dataviews?.filter((d) => d.config?.visible)
+)
 // export const selectEventsDataviews = createSelector(
 //   [selectDataviewInstancesByCategory(DataviewCategory.Events)],
 //   (dataviews) => dataviews
