@@ -15,7 +15,7 @@ import {
   selectWorkspaceId,
 } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
 import DebugMenu from 'features/debug/DebugMenu'
 import Sidebar from 'features/sidebar/Sidebar'
 import Footer from 'features/footer/Footer'
@@ -68,6 +68,7 @@ const isFirstTimeVisit = !localStorage.getItem(MARINE_MANAGER_LAST_VISIT)
 
 function App(): React.ReactElement {
   useAnalytics()
+  useReplaceLoginUrl()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const readOnly = useSelector(selectReadOnly)

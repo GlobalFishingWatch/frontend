@@ -6,7 +6,6 @@ import cx from 'classnames'
 import Downshift from 'downshift'
 import { Trans, useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
-import GFWAPI from '@globalfishingwatch/api-client'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import InputText from '@globalfishingwatch/ui-components/dist/input-text'
@@ -21,6 +20,7 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getVesselDataviewInstance, VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectSearchQuery } from 'features/app/app.selectors'
 import I18nDate from 'features/i18n/i18nDate'
+import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/dataviews.selectors'
@@ -299,9 +299,7 @@ function Search() {
             <SearchPlaceholder>
               <Trans i18nKey="search.advancedDisabled">
                 You need to
-                <a className={styles.link} href={GFWAPI.getLoginUrl(window.location.toString())}>
-                  login
-                </a>
+                <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
                 to use advanced search
               </Trans>
             </SearchPlaceholder>
