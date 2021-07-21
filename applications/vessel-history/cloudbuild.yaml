@@ -44,6 +44,7 @@ steps:
     id: 'Build nginx server image'
     args:
       [
+        '--whitelist-var-run=false',
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$COMMIT_SHA',
         '--cache=true',
         '--build-arg',
