@@ -1,8 +1,7 @@
 import React, { Fragment, useMemo } from 'react'
-import { DateTime, DurationUnit } from 'luxon'
+import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { ActivityEvent } from 'types/activity'
 import I18nDate from 'features/i18n/i18nDate'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.slice'
 import ActivityModalContentDetailsFishing from './ActivityModalContentDetailsFishing'
@@ -16,10 +15,6 @@ interface ActivityModalContentProps {
 const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React.ReactElement => {
   const event = props.event
   const { t } = useTranslation()
-  const start = DateTime.fromMillis(event.start as number)
-  const end = DateTime.fromMillis(event.end as number)
-  const unit: DurationUnit = 'hours'
-  const diff = Math.round(end.diff(start).as(unit) * 10) / 10
 
   const detailsPerType = useMemo(() => {
     switch (event.type) {
@@ -63,19 +58,35 @@ const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React
         {detailsPerType}
         <p>
           <span>{t('event.startDistanceShore', 'Start distance from shore')}:</span>{' '}
-          {event.distances.startDistanceFromShoreKm?.toFixed(2)}km
+          {event.distances?.startDistanceFromShoreKm
+            ? t('event.formatDistanceKm', '{{value}} km', {
+                value: event.distances?.startDistanceFromShoreKm?.toFixed(2),
+              })
+            : '-'}
         </p>
         <p>
           <span>{t('event.endDistanceShore', 'End distance from shore')}:</span>{' '}
-          {event.distances.endDistanceFromShoreKm.toFixed(2)}km
+          {event.distances?.endDistanceFromShoreKm
+            ? t('event.formatDistanceKm', '{{value}} km', {
+                value: event.distances?.endDistanceFromShoreKm?.toFixed(2),
+              })
+            : '-'}
         </p>
         <p>
           <span>{t('event.startDistancePort', 'Start distance from port')}:</span>{' '}
-          {event.distances.startDistanceFromPortKm?.toFixed(2)}km
+          {event.distances?.startDistanceFromPortKm
+            ? t('event.formatDistanceKm', '{{value}} km', {
+                value: event.distances?.startDistanceFromPortKm?.toFixed(2),
+              })
+            : '-'}
         </p>
         <p>
           <span>{t('event.endDistancePort', 'End distance from port')}:</span>{' '}
-          {event.distances.endDistanceFromPortKm.toFixed(2)}km
+          {event.distances?.endDistanceFromPortKm
+            ? t('event.formatDistanceKm', '{{value}} km', {
+                value: event.distances?.endDistanceFromPortKm?.toFixed(2),
+              })
+            : '-'}
         </p>
       </div>
     </Fragment>
