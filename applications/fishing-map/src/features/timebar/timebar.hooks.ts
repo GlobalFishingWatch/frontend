@@ -39,13 +39,17 @@ export const TimeRangeAtom = atom<Range | null>({
             ...urlTimeRange,
           })
         } else if (redirectUrl) {
-          // Workaround to get start and end date from redirect url as the
-          // location reducer isn't ready until initialDispatch
-          const url = new URL(redirectUrl)
-          const start = url.searchParams.get('start')
-          const end = url.searchParams.get('end')
-          if (start && end) {
-            setSelf({ start, end })
+          try {
+            // Workaround to get start and end date from redirect url as the
+            // location reducer isn't ready until initialDispatch
+            const url = new URL(JSON.parse(redirectUrl))
+            const start = url.searchParams.get('start')
+            const end = url.searchParams.get('end')
+            if (start && end) {
+              setSelf({ start, end })
+            }
+          } catch (e) {
+            console.warn(e)
           }
         }
       }
