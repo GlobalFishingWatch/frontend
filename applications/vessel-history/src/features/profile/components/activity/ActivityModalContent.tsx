@@ -33,8 +33,6 @@ const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React
     }
   }, [event])
 
-  const [minLon, minLat, maxLon, maxLat] = useMemo(() => event.boundingBox, [event.boundingBox])
-
   return (
     <Fragment>
       <div className={styles.modalContainer}>
@@ -48,12 +46,6 @@ const ActivityModalContent: React.FC<ActivityModalContentProps> = (props): React
         </p>
         <p>
           <span>{t('event.avgDuration', 'Avg Duration')}:</span> {event.durationDescription}
-        </p>
-        <p>
-          <span>{t('event.minCoords', 'Min coordinates')}:</span> {`${minLat}, ${minLon}`}
-        </p>
-        <p>
-          <span>{t('event.maxCoords', 'Max coordinates')}:</span> {`${maxLat}, ${maxLon}`}
         </p>
         {detailsPerType}
         <p>

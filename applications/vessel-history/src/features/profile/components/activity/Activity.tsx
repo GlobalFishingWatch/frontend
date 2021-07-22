@@ -9,7 +9,6 @@ import {
 } from 'features/vessels/activity/vessels-activity.slice'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import ActivityItem from './ActivityItem'
-import ActivityDescription from './description/ActivityDescription'
 import ActivityModalContent from './ActivityModalContent'
 import styles from './Activity.module.css'
 interface ActivityProps {
@@ -45,13 +44,7 @@ const Activity: React.FC<ActivityProps> = (props): React.ReactElement => {
       {eventsLoading && <Spinner className={styles.spinnerFull} />}
       {!eventsLoading && (
         <Fragment>
-          <Modal
-            title={
-              selectedEvent ? <ActivityDescription event={selectedEvent}></ActivityDescription> : ''
-            }
-            isOpen={isModalOpen}
-            onClose={closeModal}
-          >
+          <Modal title={selectedEvent?.description ?? ''} isOpen={isModalOpen} onClose={closeModal}>
             {selectedEvent && <ActivityModalContent event={selectedEvent}></ActivityModalContent>}
           </Modal>
           <div className={styles.activityContainer}>

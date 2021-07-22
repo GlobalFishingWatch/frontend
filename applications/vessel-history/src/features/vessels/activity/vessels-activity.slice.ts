@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { capitalize } from 'lodash'
 import { DateTime } from 'luxon'
 import {
   resolveDataviewDatasetResource,
@@ -76,16 +75,23 @@ export const selectEventsWithRenderingInfo = createSelector(
       return (data || []).map((event: ActivityEvent, index) => {
         // const vesselName = event.vessel.name || event.vessel.id
 
-        let description
-        let descriptionGeneric
+        const regionDescription = getEventRegionDescription(event, eezs, rfmos)
+
+        let description = ''
+        let descriptionGeneric = ''
         switch (event.type) {
           case 'encounter':
             if (event.encounter) {
-              description = `${t('event.encounterActionWith', 'had an encounter with')} ${
-                event.encounter.vessel.name
-                  ? event.encounter.vessel.name
-                  : t('event.encounterAnotherVessel', 'another vessel')
-              } `
+              description = t(
+                'event.encounterActionWith',
+                'had an encounter with {{vessel}} in {{regionName}}',
+                {
+                  vessel:
+                    event.encounter.vessel.name ??
+                    t('event.encounterAnotherVessel', 'another vessel'),
+                  regionName: regionDescription,
+                }
+              )
             }
             descriptionGeneric = t('event.encounter')
             break
@@ -98,11 +104,15 @@ export const selectEventsWithRenderingInfo = createSelector(
             descriptionGeneric = t('event.port')
             break
           case 'loitering':
-            description = t('event.loiteringAction')
+            description = t('event.loiteringAction', 'Loitering in {{regionName}}', {
+              regionName: regionDescription,
+            })
             descriptionGeneric = t('event.loitering')
             break
           case 'fishing':
-            description = t('event.fishingAction')
+            description = t('event.fishingAction', 'Fishing in {{regionName}}', {
+              regionName: regionDescription,
+            })
             descriptionGeneric = t('event.fishing')
             break
           default:
@@ -123,7 +133,6 @@ export const selectEventsWithRenderingInfo = createSelector(
               })
             : '',
         ].join(' ')
-        description = [description, durationDescription].join(' ')
 
         let colorKey = event.type as string
         if (event.type === 'encounter' && dataview.config?.showAuthorizationStatus) {
@@ -132,7 +141,6 @@ export const selectEventsWithRenderingInfo = createSelector(
         const color = EVENTS_COLORS[colorKey]
         const colorLabels = EVENTS_COLORS[`${colorKey}Labels`]
 
-        const regionDescription = getEventRegionDescription(event, eezs, rfmos)
         return {
           ...event,
           color,
@@ -153,18 +161,20 @@ const getEventRegionDescription = (event: ActivityEvent, eezs: Region[], rfmos: 
     switch (regionType) {
       case 'eez':
         return values
-          .map((eezId) => capitalize(getEEZName(eezs.find((eez) => eez.id.toString() === eezId))))
+          .map((eezId) => getEEZName(eezs.find((eez) => eez.id.toString() === eezId)))
           .filter((value) => value.length > 0)
           .join(', ')
       case 'rfmo':
-        return values
-          .map((regionId) =>
-            capitalize(rfmos.find((rfmo) => rfmo.id.toString() === regionId)?.label ?? '')
-          )
-          .filter((value) => value.length > 0)
-          .join(', ')
+        return (
+          t('event.internationalWaters', 'International Waters') +
+          ': ' +
+          values
+            .map((regionId) => rfmos.find((rfmo) => rfmo.id.toString() === regionId)?.label ?? '')
+            .filter((value) => value.length > 0)
+            .join(', ')
+        )
       case 'ocean':
-        return values.map((ocean) => capitalize(ocean)).join(', ')
+        return t('event.internationalWaters', 'International Waters') //values.map((ocean) => ocean).join(', ')
       default:
         return values.join(', ')
     }
