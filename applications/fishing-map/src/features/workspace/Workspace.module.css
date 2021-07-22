@@ -24,3 +24,23 @@
   margin-top: var(--space-M);
   margin-bottom: var(--space-S);
 }
+
+.button,
+.button:visited {
+  font: var(--font-S);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  background-repeat: no-repeat;
+  background-position: center center;
+  padding: 0 var(--space-S);
+  text-transform: uppercase;
+  min-width: 150px;
+  line-height: 1;
+  height: var(--size-M);
+  color: var(--color-white);
+  background-color: var(--color-primary-blue);
+}

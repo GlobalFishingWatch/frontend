@@ -7,7 +7,6 @@ import Link from 'redux-first-router-link'
 import IconButton from '@globalfishingwatch/ui-components/dist/icon-button'
 import Logo, { SubBrands } from '@globalfishingwatch/ui-components/dist/logo'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import GFWAPI from '@globalfishingwatch/api-client'
 import {
   saveCurrentWorkspaceThunk,
   updatedCurrentWorkspaceThunk,
@@ -28,11 +27,13 @@ import { selectReadOnly, selectViewport } from 'features/app/app.selectors'
 import { selectUserData } from 'features/user/user.slice'
 import { isGuestUser } from 'features/user/user.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useLoginRedirect } from 'routes/routes.hook'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
 function SaveWorkspaceButton() {
-  const [loginLink, setLoginLink] = useState('')
+  const [showLoginLink, setShowLoginLink] = useState(false)
+  const { onLoginClick } = useLoginRedirect()
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const guestUser = useSelector(isGuestUser)
@@ -99,19 +100,17 @@ function SaveWorkspaceButton() {
   if (guestUser) {
     return (
       <IconButton
-        icon={loginLink ? 'user' : 'save'}
+        icon={showLoginLink ? 'user' : 'save'}
         size="medium"
-        disabled={!loginLink}
+        disabled={!showLoginLink}
         tooltip={t('workspace.saveLogin', 'You need to login to save views')}
         tooltipPlacement="bottom"
-        onClick={() => {
-          window.location.href = loginLink
-        }}
+        onClick={onLoginClick}
         onMouseEnter={() => {
-          setLoginLink(GFWAPI.getLoginUrl(window.location.toString()))
+          setShowLoginLink(true)
         }}
         onMouseLeave={() => {
-          setLoginLink('')
+          setShowLoginLink(false)
         }}
       />
     )

@@ -10,7 +10,6 @@ import {
   UrlDataviewInstance,
   resolveDataviewDatasetResource,
 } from '@globalfishingwatch/dataviews-client'
-import GFWAPI from '@globalfishingwatch/api-client'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -20,6 +19,7 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { isGuestUser } from 'features/user/user.selectors'
+import LocalStorageLoginLink from 'routes/LoginLink'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -84,9 +84,8 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     />
   )
 
-  const loading =
-    trackResource?.status === ResourceStatus.Loading ||
-    infoResource?.status === ResourceStatus.Loading
+  const trackLoading = trackResource?.status === ResourceStatus.Loading
+  const infoLoading = infoResource?.status === ResourceStatus.Loading
 
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = trackResource?.status === ResourceStatus.Error
@@ -133,16 +132,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {loading ? (
-            <IconButton
-              loading
-              className={styles.loadingIcon}
-              size="small"
-              tooltip={t('vessel.loading', 'Loading vessel track')}
-            />
-          ) : (
-            <Fragment>
-              {layerActive && (
+          <Fragment>
+            {layerActive && !infoLoading ? (
+              trackLoading ? (
+                <IconButton
+                  loading
+                  className={styles.loadingIcon}
+                  size="small"
+                  tooltip={t('vessel.loading', 'Loading vessel track')}
+                />
+              ) : (
                 <Fragment>
                   <Color
                     dataview={dataview}
@@ -153,7 +152,16 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                   />
                   <FitBounds hasError={trackError} trackResource={trackResource} />
                 </Fragment>
-              )}
+              )
+            ) : null}
+            {infoLoading ? (
+              <IconButton
+                loading
+                className={styles.loadingIcon}
+                size="small"
+                tooltip={t('vessel.loadingInfo', 'Loading vessel info')}
+              />
+            ) : (
               <ExpandedContainer
                 visible={infoOpen}
                 onClickOutside={closeExpandedContainer}
@@ -180,12 +188,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                       <li className={styles.infoLogin}>
                         <Trans i18nKey="vessel.login">
                           You need to
-                          <a
-                            className={styles.link}
-                            href={GFWAPI.getLoginUrl(window.location.toString())}
-                          >
+                          <LocalStorageLoginLink className={styles.link}>
                             login
-                          </a>
+                          </LocalStorageLoginLink>
                           to see more details
                         </Trans>
                       </li>
@@ -208,9 +213,9 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                   tooltipPlacement="top"
                 />
               </ExpandedContainer>
-              <Remove dataview={dataview} />
-            </Fragment>
-          )}
+            )}
+            <Remove dataview={dataview} />
+          </Fragment>
         </div>
       </div>
     </div>
