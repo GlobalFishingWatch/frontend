@@ -200,12 +200,13 @@ const decoder = (str: string, decoder?: any, charset?: string, type?: string) =>
   }
 }
 
-const parseWorkspace = (queryString: string) => {
+export const parseWorkspace = (queryString: string) => {
   const parsed = parse(queryString, {
     arrayLimit: 1000,
     depth: 20,
     decoder,
     strictNullHandling: true,
+    ignoreQueryPrefix: true,
   })
   const parsedWithAbbr = deepReplaceKeys(parsed, ABBREVIATED_TO_PARAMS)
   const parsedDetokenized = deepDetokenizeValues(parsedWithAbbr)
@@ -222,7 +223,6 @@ const parseWorkspace = (queryString: string) => {
 
 const routesOptions: Options = {
   basename: PATH_BASENAME,
-  initialDispatch: false,
   querySerializer: {
     stringify: stringifyWorkspace,
     parse: parseWorkspace,
