@@ -310,6 +310,7 @@
     "length": "Longitud",
     "lengthRange": "Rango de longitud",
     "loading": "Cargando la trayectoria de la embarcación",
+    "loadingInfo": "Loading vessel info",
     "login": "Necesita <1>iniciar sesión</1> para ver más detalles (gratis y toma 2 minutos)",
     "mmsi": "MMSI",
     "nationalId": "Identificación Nacional",
