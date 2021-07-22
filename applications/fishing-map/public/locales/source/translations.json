@@ -310,6 +310,7 @@
     "length": "Length",
     "lengthRange": "Length range",
     "loading": "Loading vessel track",
+    "loadingInfo": "Loading vessel info",
     "login": "You need to <1>login</1> to see more details",
     "mmsi": "MMSI",
     "nationalId": "National Id",
