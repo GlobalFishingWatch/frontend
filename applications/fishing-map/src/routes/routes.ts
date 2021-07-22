@@ -222,6 +222,7 @@ const parseWorkspace = (queryString: string) => {
 
 const routesOptions: Options = {
   basename: PATH_BASENAME,
+  initialDispatch: false,
   querySerializer: {
     stringify: stringifyWorkspace,
     parse: parseWorkspace,
