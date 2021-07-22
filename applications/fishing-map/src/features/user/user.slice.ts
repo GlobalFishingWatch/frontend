@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { history } from 'redux-first-router'
-import GFWAPI, { ACCESS_TOKEN_STRING, getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
+import GFWAPI, {
+  getAccessTokenFromUrl,
+  removeAccessTokenFromUrl,
+} from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
 import { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -36,10 +38,7 @@ export const fetchUserThunk = createAsyncThunk(
     }
     const accessToken = getAccessTokenFromUrl()
     if (accessToken) {
-      const { replace } = history()
-      const url = new URL(window.location.href)
-      url.searchParams.delete(ACCESS_TOKEN_STRING)
-      replace(url.toString())
+      removeAccessTokenFromUrl()
     }
 
     try {

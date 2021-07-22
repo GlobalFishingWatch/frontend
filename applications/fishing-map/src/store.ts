@@ -19,7 +19,7 @@ const {
   reducer: location,
   middleware: routerMiddleware,
   enhancer: routerEnhancer,
-  initialDispatch,
+  // initialDispatch,
 } = connectedRoutes
 
 const rootReducer = combineReducers({
@@ -83,7 +83,5 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >
-
-export { initialDispatch }
 
 export default store
